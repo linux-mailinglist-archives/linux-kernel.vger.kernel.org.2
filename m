@@ -2,173 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD2B325AF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6666E325B05
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhBZA2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 19:28:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
+        id S232375AbhBZAkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 19:40:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhBZA2I (ORCPT
+        with ESMTP id S231375AbhBZAkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 19:28:08 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF66C061574;
-        Thu, 25 Feb 2021 16:27:28 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id d2so4782703pjs.4;
-        Thu, 25 Feb 2021 16:27:28 -0800 (PST)
+        Thu, 25 Feb 2021 19:40:17 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF3BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:39:36 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id h19so9034706edb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:39:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s+E1myvL+FQNMLBHh7YhNNO6xrcap4dEx+GlOPcwYn0=;
-        b=eqbKJ6bIiWeOJUgULqrl1KIIkrtbyYy+Q6N60mi+a7TonVXtuRDW47W+klAkHew56a
-         2W5OMyFOTJmXsVT5ETL7ck42vyFPTugKtM9M5pxmfAloxRQo4kqtZE+7Ig9bAlilN6N+
-         Xj48m0+LYl6kOx+D7P5/MUB7wVWiOKlpm+1FiXLjDNfv14jPHAVxPZF+4NbyOWMkyajt
-         NfYif2Jp42/SPKVTI6o0GzYcv+jJVpbP8qCbbR9qJ41+02K7X2oDtocSruSSHI+wfzE4
-         6zNhoUPLJcWgLpngoIcl9nOmuRYUOKl6UtA85P8na522ytOHPZn2/UxSSbYS7lN0ryp1
-         YAIw==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XmLxJanLQP5zlvTr0lHfERaUmIlBn1hGQvIYEHAd1VE=;
+        b=iZdHHXZSbHdR5dKDCo525KezV4dxOz5nv72LzKLWSINFsoqHiG0Gd+IVYSo7YcbflP
+         bdu5/yw1VmBug1lHNPGHgbXV8B7gfOw174JUDSc8tfmED7sV+O68KOaeeollSdGl1x/2
+         yZCYeIrdJ0Sw1RmuhTWrJnUq+5/CwMKYGR1KIh7IMwo9li/cvbwrlPWNCe/w0S0jDJW6
+         fHrKNM/zp4HxsGBopcbDJeUyGb9uCtbQ+h2JhrM8m3deyiUSETASp4advUEucqoF7xyb
+         9Z3TNJRCIn00x7+r7iheFEtv7M5AkOOe1NbTBAPBT4X/Eo6D3FVrhQza1fdg//lZ8uxO
+         MTrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s+E1myvL+FQNMLBHh7YhNNO6xrcap4dEx+GlOPcwYn0=;
-        b=gA/OMO/VGUOU9VBEGvKAeFUuOy62bGQdFidrih+c9f5augW4Ct/7RQuN5/AA0E7B/j
-         J95uYt+iWUlHxwUD2JEVU30JWQXLItmqwxFTevtnlFi9BQ3brpRot2J1sbuC+e6w6Ynr
-         +ZZi4QEGFNvHm27aqr4VeKmyYTw7PhkeXJ7sTfbWGhjuw+SkMLb37mxpsO6xRSLn9PO+
-         0h96kkUvnXyTzFxLTW+JfLUTLdSMCcho5OBHbk+6GfoAnal20DNEVGfeONZYjaAts2CU
-         hlhnNbrJ2XLGxcbycgEc6A76a7t2j6Wpo865NdZvXXEHz7dTFSqDZGFNCkSgUEeZiWIO
-         v//w==
-X-Gm-Message-State: AOAM531HLtPkwowqE3SFl9/wSZZ7SUBdSZSmaEH9qDArA7t+UVVSp1pL
-        IbKXl1tFdZCIxQjko2DBTkE=
-X-Google-Smtp-Source: ABdhPJyBWK8l+Vs9F7nSxWHA9Ox00Bl2mkrTMaen0lTs6mgq6C+dK8ZKuwfA4zP9ufteNrOiEt1yzw==
-X-Received: by 2002:a17:90b:4a0b:: with SMTP id kk11mr514890pjb.95.1614299248296;
-        Thu, 25 Feb 2021 16:27:28 -0800 (PST)
-Received: from shinobu (113x37x72x20.ap113.ftth.ucom.ne.jp. [113.37.72.20])
-        by smtp.gmail.com with ESMTPSA id q4sm7800846pfq.103.2021.02.25.16.27.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 16:27:27 -0800 (PST)
-Date:   Fri, 26 Feb 2021 09:27:19 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Jonathan Cameron <jic23@kernel.org>, kernel@pengutronix.de,
-        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, david@lechnology.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de
-Subject: Re: [PATCH v8 18/22] docs: counter: Document character device
- interface
-Message-ID: <YDhAZ5bQ9fqd3FWB@shinobu>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
- <350cafba81d3220b64efdb019bd76c08eb1e5d10.1613131238.git.vilhelm.gray@gmail.com>
- <20210214174819.6757e2b0@archlinux>
- <20210222101133.GB14587@amd>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XmLxJanLQP5zlvTr0lHfERaUmIlBn1hGQvIYEHAd1VE=;
+        b=JHIUbrGPSk4mgfEBuqmXlhX64miTR9/QAbqJBw0rWjtdahVVdYqt5LoRlBmK64/Ssd
+         FZDvy6eIZ4tKFqEGMelrHvNOM8XTR6GD6OqiWJVL2NYaRFFrTpY1lG1Zcz3btuooMjhm
+         oeo0GMe3yecrh8MyHWkmuEYFzGMDuPNVDDpawQFRiZvo4oVHZqsH/ZnmeRvKe+WkJRPg
+         OMcAosu2GfFUjP7v7Pgexv43llD0MhNX6W65FWf0ZbVk1hGZl6HOLQIur/vnEVSuGCPq
+         Gs08P7Z1poRhT/j0bIoEHQo/tTn4x6s06GTGhpgUz8Or/ihJI/jEXCyayNAOn7DqJvMN
+         5caA==
+X-Gm-Message-State: AOAM531Ue0/2qTI603BWAlNHQyEGqVq1HlUSDD2sNRMgGGnjbDyhvJ9G
+        5BaX/nhH5ND6adQiyoDosMKUoB8GFtXJnHCmO4onawREnn4t1A==
+X-Google-Smtp-Source: ABdhPJyyKy2FNR2CmpJkLSzJTHl5UQ61szbLff8tCa6nbLkhsZu4rcNSYDNZjhAl/8xiy0ylpYnUDaL7bJqNANQYC+g=
+X-Received: by 2002:a17:906:25c4:: with SMTP id n4mr284890ejb.359.1614299528736;
+ Thu, 25 Feb 2021 16:32:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EjvxlyKqXuKwBAVF"
-Content-Disposition: inline
-In-Reply-To: <20210222101133.GB14587@amd>
+Received: by 2002:a17:906:4012:0:0:0:0 with HTTP; Thu, 25 Feb 2021 16:32:07
+ -0800 (PST)
+Reply-To: us.immigrationofficer.service1@gmail.com
+From:   Mr Jeffery Mark <info.immigrationoficer.usa@gmail.com>
+Date:   Thu, 25 Feb 2021 16:32:07 -0800
+Message-ID: <CAFZyOtjwipiCTnwV6C4DVxueiqMK9zCt5dKY14g365AWvtNXaw@mail.gmail.com>
+Subject: Re:Reconfirm your Details
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+-- 
+-- 
+Dear Friend,
 
---EjvxlyKqXuKwBAVF
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+My name is Jeffrey Mark, U.S. Immigration and Customs Enforcement
+officer.I wish to acquaint you that a diplomat in position of a box
+containing worth $12.5 million dollars died after being confirmed
+positive for the corona virus on the 17Th of September,2020, at the
+Austin Bergstrom  International Airport on his way to your city to
+deliver the Box to you.
 
-On Mon, Feb 22, 2021 at 11:11:33AM +0100, Pavel Machek wrote:
-> Hi!
->=20
-> > > +* COUNTER_ENABLE_EVENTS_IOCTL:
-> > > +  Enables monitoring the events specified by the Counter watches that
-> > > +  were queued by ``COUNTER_ADD_WATCH_IOCTL``. If events are already
-> > > +  enabled, the new set of watches replaces the old one. Calling this
-> > > +  ioctl also has the effect of clearing the queue of watches added by
-> > > +  ``COUNTER_ADD_WATCH_IOCTL``.
-> > > +
-> > > +* COUNTER_DISABLE_EVENTS_IOCTL:
-> > > +  Stops monitoring the previously enabled events.
-> >=20
-> > Is there a way to remove a watch?=20
->=20
-> Is there a way to eat all kernel memory and crash the system by adding
-> too many watches?
+He secretly informed me before his demise that the box belong to
+you,and pleaded to me that I should assist him to get this box to you
+before his death at the isolation center. To ensure that the box is
+delivered to the right person reconfirm your following information
+details below:
 
-There can only ever be as many watches as there are Counter components
-for the respective Counter device. This is enforced by
-counter_set_event_node() which checks whether a particular watch has
-been created before and returns an EINVAL if it so has.
+FULL NAME:
+AGE:
+HOME ADDRESS FOR THE DELIVERY:
+MOBILE NO:
+OCCUPATION:
+COUNTRY:
+NEAREST AIRPORT:
 
-> > > +For example, the following userspace code opens ``/dev/counter0``,
-> > > +configures the ``COUNTER_EVENT_INDEX`` event channel 0 to gather Cou=
-nt 0
-> > > +and Count 1, and prints out the data as it becomes available on the
-> > > +character device node::
-> > > +
-> >=20
-> > Consider adding an example program under tools/
-> >=20
-> > > +        #include <fcntl.h>
-> > > +        #include <linux/counter.h>
-> > > +        #include <stdio.h>
-> > > +        #include <string.h>
-> > > +        #include <sys/ioctl.h>
-> > > +        #include <unistd.h>
-> > > +
-> > > +        struct counter_watch watches[2] =3D {
-> > > +                {
-> > > +                        .component.type =3D COUNTER_COMPONENT_COUNT,
-> > > +                        .component.scope =3D COUNTER_SCOPE_COUNT,
-> > > +                        .component.parent =3D 0,
-> >=20
-> > Good to add comments on what these elements actually are?
->=20
-> > > +                fd =3D open("/dev/counter0", O_RDWR);
-> > > +
-> > > +                ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches);
-> > > +                ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches + 1);
-> > > +                ioctl(fd, COUNTER_ENABLE_EVENTS_IOCTL);
->=20
-> > > +                for (;;) {
-> > > +                        read(fd, event_data, sizeof(event_data));
->=20
-> If this goes to tools it really should have error handling and
-> handling of short read.
->=20
-> Best regards,
-> 							Pavel
->=20
-> --=20
-> http://www.livejournal.com/~pavelmachek
+Please, get back to me asap and also endeavor to keep this to yourself
+as am doing this selfless service to ensure the diplomat's last wish
+is honored.
+Sincerely
 
-Ack. I'll improve the error handling for this.
-
-William Breathitt Gray
-
---EjvxlyKqXuKwBAVF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA4QGcACgkQhvpINdm7
-VJKWJw/9GRJWjfb/0hc9uFqEfRRMHfpTYcUMnoHAZLdRvq4x0y+IvSO+GwI+knBV
-/peeZ3Pb7Y+LgR859jKBq3eGAjQutYpTGf06a8KyWFBmC8mZklZGfMrxNRsQfvCJ
-Ug2UrJRi/pfFN+/NuFBws/oEORNMkra+xF81HOc877HJXVchWEwoHos7mNVGrBeZ
-iLJOOLW6s5o4CrjJE9voDUthSCkZBvqjZo6Y0ulFyX/Z2rMv9Ey0v/+rRzAbWRRo
-4/T4ITdlDxN56OX0HV5CMMt1gZhACQDdNLO8owXc+8qXxGPsKnyHhYbswFVk7iv6
-xS05D4XJnic6orhBlvWq6WJ43IgHGtLTmOrbdpeuP8DBpHBZx50EDpNysajG2sr9
-5v7twAvRJGVe1boJryMZ1sfb0/07CxvifSeJNzvrK/wHjHQyZk62w3Jx9eZ5t45c
-8mqSyUbpSFdoUN2XivYYXpAu+m0myUKFr2iGT9uATuW+xLFb1T6qv4sKwgQpNv7c
-hLS1OFzLHSy9QsOOM0/oU4Ian53VZKMk+BNck2shidCXIYzt8vsqJgqHYpOV41MK
-YpnCriW4/fTS1LQoBDJKPNREtN7X7+QA3O+TvsPwnIxlBgnDmzuK85N3ofg55Eyy
-N51/6UHDZLWvqY+jrzrB1ZHHDiMQfNYmbMqEfl3nha1c4hC02QU=
-=ULaJ
------END PGP SIGNATURE-----
-
---EjvxlyKqXuKwBAVF--
+Mr Jeffery Mark
+Email: us.immigrationofficer.service1@gmail.com
