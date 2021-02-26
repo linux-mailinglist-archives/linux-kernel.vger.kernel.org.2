@@ -2,157 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E775832671F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8C5326723
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhBZStG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 13:49:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
+        id S230177AbhBZSyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 13:54:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhBZSs5 (ORCPT
+        with ESMTP id S229598AbhBZSyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 13:48:57 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30694C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 10:48:16 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id g27so9311744iox.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 10:48:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cosmicpenguin-net.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dFlVFMXR6zkeSmTa+VmhKZsBr7CDjQVvbvNL54kRIqM=;
-        b=lPOMa+8pvfomnNffVsiwlHQ22Eqfsox3m5BrPOt8XmAT8QMELdsaOcKmDKK4NyC0IH
-         yarH4QuwPNfNLn7Aj1q1GrIYyz4DHgoe8Z4hAPa8GgjS+ca1x4/18xaUDxHQ942fDHMd
-         43PaWg5k76d9y84bYv64IkqR0sIM1PxDLH9LpEwMBgt0Qg8jB7vVgO1998dOItGkAAS1
-         xclYdZjvB+A8QuGH6HlT5f36+Fio8F/CmWEw63mIIYpR0mhJXiXBmR1h+mDs+WESU6OS
-         Pm6d34hPOoT1mV0Jfg5H73VoRPyHWcnx0KRlMsmb3ZhVd7IKBqJA6hvNDcIf+zaOemba
-         pX4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=dFlVFMXR6zkeSmTa+VmhKZsBr7CDjQVvbvNL54kRIqM=;
-        b=Zf6v4IfGiM19SKJ6IoB8qWz/mdluGMppbnk6AbrtY9I6PYYzFdjA9fFvGw1F+ulUzQ
-         wgDIHK3/EOn7bAf6P8Kwo+yWO/L/xrN+P8YgGqMi2EKJLzXLh3/xqv/4soMPpi5XfjFZ
-         y91gNAktgtJQLcT/87Ge7Q3AnJSvH7VRmmHOKNN/PuCPrsYoScap//VOh/lKvWiboE50
-         grox3Ql6St1jju7flcpR7tt0gGvBV1AHZF7T+bHyyafq5/y/NsSOIuILX/OYwxzgnsbs
-         Pk2kX8t9GhGM6rBNXDK064smiRadW7vX+xOsTBZb4XjjQyzhZBJhPdLKu0Er3gzaBK3C
-         0m/Q==
-X-Gm-Message-State: AOAM531iiNCVLtk8XHpusWG1d9e9W8wHXEzpzcJhoKwB4KHdpweEs7UC
-        ADCTkf3OxPKWyheNkXzyHvWlOA==
-X-Google-Smtp-Source: ABdhPJzz6Vy+v1BXGIBBrGM1fsQ0mK/bOWqRSOpsYqFZq6XCJvNZFJP25EUBTuUjZXnR7EaojvuObQ==
-X-Received: by 2002:a6b:fe13:: with SMTP id x19mr1661589ioh.73.1614365295679;
-        Fri, 26 Feb 2021 10:48:15 -0800 (PST)
-Received: from cosmicpenguin.net (c-71-237-100-236.hsd1.co.comcast.net. [71.237.100.236])
-        by smtp.gmail.com with ESMTPSA id h23sm4744598ila.15.2021.02.26.10.48.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 10:48:15 -0800 (PST)
-Date:   Fri, 26 Feb 2021 11:48:13 -0700
-From:   Jordan Crouse <jordan@cosmicpenguin.net>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/2] iommu/arm-smmu-qcom: Move the adreno smmu specific
- impl earlier
-Message-ID: <20210226184813.t6ohkh3gxeseev2j@cosmicpenguin.net>
-Mail-Followup-To: Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1614332994.git.saiprakash.ranjan@codeaurora.org>
- <c607d71eb0fe507c8b83cc0ea9b393777f22149a.1614332994.git.saiprakash.ranjan@codeaurora.org>
- <YDku5PFQZetP4iG8@builder.lan>
+        Fri, 26 Feb 2021 13:54:46 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FC8C061574;
+        Fri, 26 Feb 2021 10:54:05 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 5BAA32ED;
+        Fri, 26 Feb 2021 18:54:05 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5BAA32ED
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614365645; bh=07qo+f5FyVdCDPdARO4iRb+hdwhOO6h7yOzWMm94L40=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fw74H5J7vNcSuTJYxnmY4/wbzEyCw2GBKS8psk8Grnngdc+74L7CUGVRaVe9KDNrO
+         lw3i43GsogvHHye8hHq3/UYZAtHCjKv7YjlyrqCWtSh8HZFqAewrF8+r8623NV/ivU
+         5z5QnUtE5nqj6iiSmURy47X8I6HbjuQ11Sq7h+NwPd7FvYT6/AiqU80NOCUqVoAmOk
+         6lvXi+/jFOQWqHw0gpadikkfk9ihfOdT68hNhUyEQowkyt+iZlF352sGJOJptvjtJT
+         CQL60CJA4KHCi6rD+9gKmduILzwp6nRpDCkQVqK7zTmcXLneTnrFq4D7Zth5ulwLqJ
+         irNJJ7H4FedXg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [GIT PULL] Documentation fixes for 5.12
+Date:   Fri, 26 Feb 2021 11:54:04 -0700
+Message-ID: <87blc68xtf.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDku5PFQZetP4iG8@builder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 11:24:52AM -0600, Bjorn Andersson wrote:
-> On Fri 26 Feb 03:55 CST 2021, Sai Prakash Ranjan wrote:
-> 
-> > Adreno(GPU) SMMU and APSS(Application Processor SubSystem) SMMU
-> > both implement "arm,mmu-500" in some QTI SoCs and to run through
-> > adreno smmu specific implementation such as enabling split pagetables
-> > support, we need to match the "qcom,adreno-smmu" compatible first
-> > before apss smmu or else we will be running apps smmu implementation
-> > for adreno smmu and the additional features for adreno smmu is never
-> > set. For ex: we have "qcom,sc7280-smmu-500" compatible for both apps
-> > and adreno smmu implementing "arm,mmu-500", so the adreno smmu
-> > implementation is never reached because the current sequence checks
-> > for apps smmu compatible(qcom,sc7280-smmu-500) first and runs that
-> > specific impl and we never reach adreno smmu specific implementation.
-> > 
-> 
-> So you're saying that you have a single SMMU instance that's compatible
-> with both an entry in qcom_smmu_impl_of_match[] and "qcom,adreno-smmu"?
-> 
-> Per your proposed change we will pick the adreno ops _only_ for this
-> component, essentially disabling the non-Adreno quirks selected by the
-> qcom impl. As such keeping the non-adreno compatible in the
-> qcom_smmu_impl_init[] seems to only serve to obfuscate the situation.
-> 
-> Don't we somehow need the combined set of quirks? (At least if we're
-> running this with a standard UEFI based boot flow?)
+The following changes since commit 3c2e0a489da6a7c48ad67a246c7a287fcb4a4607:
 
-We *do* need the combined set of quirks, so there has to be an adreno-smmu
-impelmentation that matches the "generic" implementation with a few extra
-function hooks added on. I'm not sure if there is a clever way to figure out how
-to meld the implementation hooks at runtime but the alternative is to just make
-sure that the adreno-smmu static struct calls the same quirks as its generic
-partner.
+  docs: kernel-hacking: be more civil (2021-02-11 10:00:40 -0700)
 
-Jordan
+are available in the Git repository at:
 
-> > Suggested-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> > ---
-> >  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > index bea3ee0dabc2..03f048aebb80 100644
-> > --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > @@ -345,11 +345,17 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
-> >  {
-> >  	const struct device_node *np = smmu->dev->of_node;
-> >  
-> > -	if (of_match_node(qcom_smmu_impl_of_match, np))
-> > -		return qcom_smmu_create(smmu, &qcom_smmu_impl);
-> > -
-> > +	/*
-> > +	 * Do not change this order of implementation, i.e., first adreno
-> > +	 * smmu impl and then apss smmu since we can have both implementing
-> > +	 * arm,mmu-500 in which case we will miss setting adreno smmu specific
-> > +	 * features if the order is changed.
-> > +	 */
-> >  	if (of_device_is_compatible(np, "qcom,adreno-smmu"))
-> >  		return qcom_smmu_create(smmu, &qcom_adreno_smmu_impl);
-> >  
-> > +	if (of_match_node(qcom_smmu_impl_of_match, np))
-> > +		return qcom_smmu_create(smmu, &qcom_smmu_impl);
-> > +
-> >  	return smmu;
-> >  }
-> > -- 
-> > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> > of Code Aurora Forum, hosted by The Linux Foundation
-> > 
-> _______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+  git://git.lwn.net/linux.git tags/docs-5.12-2
+
+for you to fetch changes up to f37a15ea8db022373a2cb6d1a6004c65c2b7f17e:
+
+  docs: proc.rst: fix indentation warning (2021-02-25 13:11:00 -0700)
+
+----------------------------------------------------------------
+A handful of late-arriving documentation fixes, nothing all that notable.
+
+----------------------------------------------------------------
+Aditya Srivastava (1):
+      scripts: kernel-doc: fix array element capture in pointer-to-func par=
+sing
+
+Andrew Donnellan (1):
+      docs: powerpc: Fix tables in syscall64-abi.rst
+
+Antonio Terceiro (1):
+      Documentation: cgroup-v2: fix path to example BPF program
+
+Arnd Bergmann (2):
+      Documentation: features: remove c6x references
+      Documentation: features: refresh feature list
+
+Masahiro Yamada (1):
+      doc: use KCFLAGS instead of EXTRA_CFLAGS to pass flags from command l=
+ine
+
+Matthew Wilcox (1):
+      Fix unaesthetic indentation
+
+Michael Wei=C3=9F (1):
+      docs: ABI: testing: ima_policy: Fixed missing bracket
+
+Randy Dunlap (2):
+      Documentation: proc.rst: add more about the 6 fields in loadavg
+      docs: proc.rst: fix indentation warning
+
+ Documentation/ABI/testing/ima_policy               |  2 +-
+ Documentation/admin-guide/cgroup-v2.rst            |  2 +-
+ Documentation/conf.py                              |  3 +-
+ .../features/core/cBPF-JIT/arch-support.txt        |  1 -
+ .../features/core/eBPF-JIT/arch-support.txt        |  1 -
+ .../core/generic-idle-thread/arch-support.txt      |  1 -
+ .../features/core/jump-labels/arch-support.txt     |  1 -
+ .../features/core/tracehook/arch-support.txt       |  1 -
+ .../features/debug/KASAN/arch-support.txt          |  1 -
+ .../debug/debug-vm-pgtable/arch-support.txt        |  1 -
+ .../debug/gcov-profile-all/arch-support.txt        |  3 +-
+ Documentation/features/debug/kcov/arch-support.txt |  1 -
+ Documentation/features/debug/kgdb/arch-support.txt |  1 -
+ .../features/debug/kmemleak/arch-support.txt       |  3 +-
+ .../debug/kprobes-on-ftrace/arch-support.txt       |  3 +-
+ .../features/debug/kprobes/arch-support.txt        |  3 +-
+ .../features/debug/kretprobes/arch-support.txt     |  3 +-
+ .../features/debug/optprobes/arch-support.txt      |  1 -
+ .../features/debug/stackprotector/arch-support.txt |  1 -
+ .../features/debug/uprobes/arch-support.txt        |  3 +-
+ .../debug/user-ret-profiler/arch-support.txt       |  1 -
+ .../features/io/dma-contiguous/arch-support.txt    |  1 -
+ .../locking/cmpxchg-local/arch-support.txt         |  1 -
+ .../features/locking/lockdep/arch-support.txt      |  1 -
+ .../locking/queued-rwlocks/arch-support.txt        |  1 -
+ .../locking/queued-spinlocks/arch-support.txt      |  1 -
+ .../features/perf/kprobes-event/arch-support.txt   |  3 +-
+ .../features/perf/perf-regs/arch-support.txt       |  3 +-
+ .../features/perf/perf-stackdump/arch-support.txt  |  3 +-
+ .../sched/membarrier-sync-core/arch-support.txt    |  1 -
+ .../features/sched/numa-balancing/arch-support.txt |  3 +-
+ .../seccomp/seccomp-filter/arch-support.txt        |  1 -
+ .../time/arch-tick-broadcast/arch-support.txt      |  1 -
+ .../features/time/clockevents/arch-support.txt     |  1 -
+ .../time/context-tracking/arch-support.txt         |  1 -
+ .../features/time/irq-time-acct/arch-support.txt   |  1 -
+ .../features/time/virt-cpuacct/arch-support.txt    |  1 -
+ .../features/vm/ELF-ASLR/arch-support.txt          |  1 -
+ .../features/vm/PG_uncached/arch-support.txt       |  1 -
+ Documentation/features/vm/THP/arch-support.txt     |  1 -
+ Documentation/features/vm/TLB/arch-support.txt     |  1 -
+ .../features/vm/huge-vmap/arch-support.txt         |  1 -
+ .../features/vm/ioremap_prot/arch-support.txt      |  1 -
+ .../features/vm/pte_special/arch-support.txt       |  1 -
+ Documentation/filesystems/proc.rst                 |  4 ++
+ Documentation/powerpc/syscall64-abi.rst            | 51 ++++++++++++++----=
+----
+ Documentation/process/4.Coding.rst                 |  2 +-
+ Documentation/process/submit-checklist.rst         |  2 +-
+ .../translations/it_IT/process/4.Coding.rst        |  2 +-
+ .../it_IT/process/submit-checklist.rst             |  2 +-
+ .../translations/zh_CN/process/4.Coding.rst        |  2 +-
+ drivers/gpu/drm/tilcdc/Makefile                    |  2 +-
+ scripts/kernel-doc                                 |  2 +-
+ 53 files changed, 56 insertions(+), 81 deletions(-)
