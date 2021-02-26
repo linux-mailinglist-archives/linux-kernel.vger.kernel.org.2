@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E430326199
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 680EE32619F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:58:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhBZKzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:55:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58186 "EHLO mail.kernel.org"
+        id S230315AbhBZK6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:58:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230083AbhBZKzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:55:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 421E164EE1;
-        Fri, 26 Feb 2021 10:54:50 +0000 (UTC)
+        id S229556AbhBZK6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:58:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3816964EE1;
+        Fri, 26 Feb 2021 10:57:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614336891;
-        bh=edOHBPkEfxZwmBzRX/ETwqCCjnmKyxVyCmVbup1TnxI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IV33vp+bm0TaEniNyLKnEhZNNyMe5o6i0vDlknB2i7pKOibVQL/cbZbCBFHcyjtVo
-         tQF7NCMzUDK4L8fulLQ3GX094g3mrbsGl8AP32nLPXpEnebmUXSW2JYEiXw8dSH1Sd
-         eV9KCdza8kopNvajD3TTsMQru5v/fCglwZuWTLOEU5b1lbZgHUhkf9tEHMoqbWGQJy
-         n8diK9/PcJoLLiWEs5QndEKqE36ya/9JyzZU7L6pevpdxlCeAppV6nDjzt0RWUuoMA
-         BjvnSaDJVoJJMZAlMaIEymDES9r+spxtuNRocOkmvsbt/BVDN8DQbX2YZ68LSdflXM
-         5yagWUk1uAF3Q==
-Date:   Fri, 26 Feb 2021 11:54:47 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+        s=k20201202; t=1614337055;
+        bh=00rc4RUiQWZ4q7RnENrzGetH5T02eUu9IMxTo8Kdgjc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hhWtCujebkitKYQm4YIa58nOtrACAyc9BbCc1w2h0yDcL2d13EEzOFfpAIFu4dIRw
+         FTJlZH7w2jAFCIEnHlCPMV8sdAkEilYJOHZbA3tbIcOabDiOW36q0MwSOqMeUvL1hO
+         i+LNzo/q1Cr7iVXU+KNY/pSInllfNGhY2RXyuy6SJptZmngwN5Ry7kxYim0eKGsMAp
+         8t9t5akqw8O75pi/Mofs/2GKA0BunbsUssMKq3riNLxwoEKxDSqKnV6yoVxtmXHC4o
+         BY/aikGhGgLfPYgjfXhk45kfODtG9UaE3eti+sPXoanpqfNFHJXS0KWp/rSm8K9msU
+         wQne/sl5YNdqw==
+Date:   Fri, 26 Feb 2021 16:27:29 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
 To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     linux-usb@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] USB: serial: xr: fix NULL-deref on disconnect
-Message-ID: <20210226115447.6ace5490@coco.lan>
-In-Reply-To: <20210226100826.18987-1-johan@kernel.org>
+Message-ID: <20210226105729.GA7069@work>
 References: <20210226100826.18987-1-johan@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226100826.18987-1-johan@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 26 Feb 2021 11:08:26 +0100
-Johan Hovold <johan@kernel.org> escreveu:
-
+On Fri, Feb 26, 2021 at 11:08:26AM +0100, Johan Hovold wrote:
 > Claiming the sibling control interface is a bit more involved and
 > specifically requires adding support to USB-serial core for managing
 > either interface being unbound first, something which could otherwise
@@ -59,22 +58,10 @@ Johan Hovold <johan@kernel.org> escreveu:
 > Cc: Manivannan Sadhasivam <mani@kernel.org>
 > Signed-off-by: Johan Hovold <johan@kernel.org>
 
-That solved the issue with XR21V1410:
+Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
 
-	[ 8176.265862] usbcore: registered new interface driver xr_serial
-	[ 8176.265885] usbserial: USB Serial support registered for xr_serial
-	[ 8176.265921] xr_serial 2-1:1.1: xr_serial converter detected
-	[ 8176.266041] usb 2-1: xr_serial converter now attached to ttyUSB0
-	[ 8176.268023] printk: console [ttyUSB0] enabled
-	[ 8186.512841] usb 2-1: USB disconnect, device number 5
-	[ 8186.513131] printk: console [ttyUSB0] disabled
-	[ 8186.513340] xr_serial ttyUSB0: xr_serial converter now disconnected from ttyUSB0
-	[ 8186.513376] xr_serial 2-1:1.1: device disconnected
-
-Tested-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Regards,
-Mauro
+Thanks,
+Mani
 
 > ---
 >  drivers/usb/serial/xr_serial.c | 25 -------------------------
@@ -130,8 +117,6 @@ Mauro
 >  	.open			= xr_open,
 >  	.close			= xr_close,
 >  	.break_ctl		= xr_break_ctl,
-
-
-
-Thanks,
-Mauro
+> -- 
+> 2.26.2
+> 
