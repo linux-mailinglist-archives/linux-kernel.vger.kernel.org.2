@@ -2,149 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D165326626
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C635D326628
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBZRKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:10:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
+        id S230063AbhBZRLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhBZRKB (ORCPT
+        with ESMTP id S229885AbhBZRLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:10:01 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E905FC061786
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:09:08 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id w7so7983610wmb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:09:08 -0800 (PST)
+        Fri, 26 Feb 2021 12:11:17 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17143C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:10:36 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id lr13so16031654ejb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:10:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oPmNNtgVI1eH+eqDytkra/zaGpGkiEOuBv8E+PK1q2E=;
-        b=L7hDueq6FbCIPz8Y3pcSNYtyDe8eNaCraw1jcrjoeS23ebZwbWTe2IvnUl3GTrNLmq
-         dp/21SOTMaADDXil2WuhCsxvlC5Bd8t6Q0CQjJBwgdkDx6CfVANpZLQhHs7HuFp/tUKp
-         ugk+lZE1L3c+edikdt8ARj5u40FArM+iVyHpBjX8Uv1EsQ60LVXZpBDQQ8fdHQnKZfNz
-         cTjpmuu4CpOZKv6UhEPfmTf1zEiyzlIUG2JkbTKRtqrdRvBv5kIBCgG2Genf1uTGFD+J
-         sm4ouIPR9uM8KYMJ6DojeiG7g8mio0pX6cOcHUcdrBSc1xVMNbSKwqDTO5CEYpuya8rP
-         U7mg==
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8cbXSutADW2HnccBzsx17kylWCaUrrRJFrKcsn0yvik=;
+        b=JfbszjOmCX+PVGFopEGBxjB1Jak26rT0UOItBmRUGXhJTtXcJonq69NSSbUk1sIOW3
+         LW0urpPkZpl7FR1LLt/bgc6TQZ68AQTowHwzxTxI6wSTZBaSN7knNI7GcIWPf0DR2u9Y
+         iD8feA+xWmrW5CGxpGtSI2yDDu4vthuo+eaf8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oPmNNtgVI1eH+eqDytkra/zaGpGkiEOuBv8E+PK1q2E=;
-        b=Ylw21nVXKsu17DRDwClBkjNSBNX4wx5vEAa1WmEbt9/ZFbDyeiAmlOuy7skRvXreNk
-         5kEb5b3cqePdb6PX5xvG5NouT83MvnCKg+1DJ9h0zFtMRt2Yisusgo3BqsZTbzJkWvLf
-         +rNb/nlroxrT5Wp1JJxacUh4WbYFTUkYv1bFeVVrrhtzXlw/LmY7AqpRRFOtmCMN7j8X
-         jKAVv1/qVprqRXzHfx9VPM/dEaX3mwHsQfHeuSDjNtnX9JN88gbfJcLrZVIPnMpZK9GO
-         K8+Yo+n8MShtl9RVQDC+ZLpGiIekXyqba36ANAPGK6VO4l5cQkbQpf216K+dXRM6oHsy
-         gUAg==
-X-Gm-Message-State: AOAM533ZKHXkW7OitcUZHI3pgGCU7OpkgBlQJkcSIhu4jpf0wahLDx/E
-        h+W+Qcc8tt/8KIrUHEJYPGnyuQ==
-X-Google-Smtp-Source: ABdhPJy+3JLr8vLHWKe27u3nSTX1ODTzNCh6BSKvpoFvfptBEwnzyGPmA8wyoRhYBiUAbOt8tHcXWw==
-X-Received: by 2002:a1c:5584:: with SMTP id j126mr3925587wmb.153.1614359347431;
-        Fri, 26 Feb 2021 09:09:07 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id m9sm19290337wml.3.2021.02.26.09.09.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 09:09:06 -0800 (PST)
-Date:   Fri, 26 Feb 2021 17:09:04 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Kiran Gunda <kgunda@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
-        lee.jones@linaro.org, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, jacek.anaszewski@gmail.com,
-        pavel@ucw.cz, robh+dt@kernel.org, mark.rutland@arm.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH V2 1/2] backlight: qcom-wled: Fix FSC update issue for
- WLED5
-Message-ID: <20210226170904.u5ysz6kg4tqbh3us@maple.lan>
-References: <1614341544-5306-1-git-send-email-kgunda@codeaurora.org>
- <1614341544-5306-2-git-send-email-kgunda@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8cbXSutADW2HnccBzsx17kylWCaUrrRJFrKcsn0yvik=;
+        b=AcixuXDMFXE7hUNEI8jBP2bdjm9Zrb9zhDq5F7gJoZq2QtnICxPPerBpb810+/WkYd
+         TjJYFRkwdfVfE6FbIM0jO8wD7Mr8RdUIuTz85q4cjOV8yNWoy1AX3UphijNRqVrXc14z
+         1M7Jy6BHbpxkmkH5BtbOpckun7Dr0dUy5Fh9nOCyNyV2XZKFi7KQzwyny1TXYLERav+F
+         IlpAe539zYY3gJ9UdNya9k8HSbZWsQKMzs7W6CvFY0eQAGwCqanVR4XjcuHTrqQ1JwaK
+         zOgCgShQ0DuOOjFY7I318O/cfjo7IBjz+rmnRQxRobpqKgCmQIbUsqrKKAYqKEeLCGJb
+         JJ7g==
+X-Gm-Message-State: AOAM531COyVIILhQ+nYeKVtpe+HsXyXsG5GL7zPO9FI9mrW6TlalLRC4
+        bALEkeS0GtkUB28GRG8MQYzcaCitITIOrJoEqnWmDQ==
+X-Google-Smtp-Source: ABdhPJyoRe19nZ9z4W4jlGo1Iv1K22wYujENsfoQaGitC+8/Bf6NlCl1UQGu+3U13HjQEIT69OXRAFMFqUHPeiblH/o=
+X-Received: by 2002:a17:906:3fc3:: with SMTP id k3mr4479825ejj.522.1614359435652;
+ Fri, 26 Feb 2021 09:10:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614341544-5306-2-git-send-email-kgunda@codeaurora.org>
+References: <20210214194102.126146-1-jagan@amarulasolutions.com>
+ <20210214194102.126146-7-jagan@amarulasolutions.com> <20210226165723.szblbiswz5vgapq2@hendrix>
+In-Reply-To: <20210226165723.szblbiswz5vgapq2@hendrix>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Fri, 26 Feb 2021 22:40:24 +0530
+Message-ID: <CAMty3ZC0ynvk3qnWDSnpMD-_hJiP-edga6+HfqhRH_g0BkAqgg@mail.gmail.com>
+Subject: Re: [PATCH v3 6/7] drm: sun4i: dsi: Use drm_panel_bridge, connector API
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 05:42:23PM +0530, Kiran Gunda wrote:
-> Currently, for WLED5, the FSC (Full scale current) setting is not
-> updated properly due to driver toggling the wrong register after
-> an FSC update.
-> 
-> On WLED5 we should only toggle the MOD_SYNC bit after a brightness
-> update. For an FSC update we need to toggle the SYNC bits instead.
-> 
-> Fix it by adopting the common wled3_sync_toggle() for WLED5 and
-> introducing new code to the brightness update path to compensate.
-> 
-> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+On Fri, Feb 26, 2021 at 10:27 PM Maxime Ripard <mripard@kernel.org> wrote:
+>
+> Hi,
+>
+> On Mon, Feb 15, 2021 at 01:11:01AM +0530, Jagan Teki wrote:
+> > Use drm_panel_bridge to replace manual panel handling code.
+> >
+> > This simplifies the driver to allows all components in the
+> > display pipeline to be treated as bridges, paving the way
+> > to generic connector handling.
+> >
+> > Use drm_bridge_connector_init to create a connector for display
+> > pipelines that use drm_bridge.
+> >
+> > This allows splitting connector operations across multiple bridges
+> > when necessary, instead of having the last bridge in the chain
+> > creating the connector and handling all connector operations
+> > internally.
+> >
+> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+>
+> Most of the code removed in that patch was actually introduced earlier
+> which feels a bit weird. Is there a reason we can't do that one first,
+> and then introduce the bridge support?
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+This patch adds new bridge API's which requires the driver has to
+support the bridge first.
 
-
-Daniel.
-
-> ---
->  drivers/video/backlight/qcom-wled.c | 25 +++++++++++++++++++------
->  1 file changed, 19 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> index 3bc7800..aef52b9 100644
-> --- a/drivers/video/backlight/qcom-wled.c
-> +++ b/drivers/video/backlight/qcom-wled.c
-> @@ -348,7 +348,7 @@ static int wled3_sync_toggle(struct wled *wled)
->  	return rc;
->  }
->  
-> -static int wled5_sync_toggle(struct wled *wled)
-> +static int wled5_mod_sync_toggle(struct wled *wled)
->  {
->  	int rc;
->  	u8 val;
-> @@ -445,10 +445,23 @@ static int wled_update_status(struct backlight_device *bl)
->  			goto unlock_mutex;
->  		}
->  
-> -		rc = wled->wled_sync_toggle(wled);
-> -		if (rc < 0) {
-> -			dev_err(wled->dev, "wled sync failed rc:%d\n", rc);
-> -			goto unlock_mutex;
-> +		if (wled->version < 5) {
-> +			rc = wled->wled_sync_toggle(wled);
-> +			if (rc < 0) {
-> +				dev_err(wled->dev, "wled sync failed rc:%d\n", rc);
-> +				goto unlock_mutex;
-> +			}
-> +		} else {
-> +			/*
-> +			 * For WLED5 toggling the MOD_SYNC_BIT updates the
-> +			 * brightness
-> +			 */
-> +			rc = wled5_mod_sync_toggle(wled);
-> +			if (rc < 0) {
-> +				dev_err(wled->dev, "wled mod sync failed rc:%d\n",
-> +					rc);
-> +				goto unlock_mutex;
-> +			}
->  		}
->  	}
->  
-> @@ -1459,7 +1472,7 @@ static int wled_configure(struct wled *wled)
->  		size = ARRAY_SIZE(wled5_opts);
->  		*cfg = wled5_config_defaults;
->  		wled->wled_set_brightness = wled5_set_brightness;
-> -		wled->wled_sync_toggle = wled5_sync_toggle;
-> +		wled->wled_sync_toggle = wled3_sync_toggle;
->  		wled->wled_cabc_config = wled5_cabc_config;
->  		wled->wled_ovp_delay = wled5_ovp_delay;
->  		wled->wled_auto_detection_required =
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->  a Linux Foundation Collaborative Project
-> 
+Jagan.
