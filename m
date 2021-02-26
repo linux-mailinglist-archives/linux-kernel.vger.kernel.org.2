@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D35325B59
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 02:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB70325B5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 02:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBZBie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 20:38:34 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:57116 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229534AbhBZBic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 20:38:32 -0500
-Received: from [10.130.0.55] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_PoUDhgULMPAA--.2921S3;
-        Fri, 26 Feb 2021 09:37:45 +0800 (CST)
-Subject: Re: [PATCH RFC] MIPS: Remove detect_memory_region()
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>
-References: <1614171720-13221-1-git-send-email-hejinyang@loongson.cn>
- <987b0dc5-9306-4271-afc0-7c44dba644b7@www.fastmail.com>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        id S229993AbhBZBiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 20:38:55 -0500
+Received: from mga09.intel.com ([134.134.136.24]:62051 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229534AbhBZBiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 20:38:52 -0500
+IronPort-SDR: q+H4wR18JTdBlj1xVr31Jbxu57NaY0zcvwu9ZyQLhELdzCw6WlcwKY36MCdLcBsF9Rf9g8JXUn
+ gyQb3uAneGdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="185862046"
+X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
+   d="scan'208";a="185862046"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 17:38:11 -0800
+IronPort-SDR: hCUO2ULXAnczIGQEbRPZd/IawMZg2PrD20vXp+OdVmL2/WTgpqFQt1DUuB491BdlZjsVxh6Ys0
+ bnWYBoNVrbNg==
+X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
+   d="scan'208";a="404661950"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 17:38:09 -0800
+Date:   Fri, 26 Feb 2021 09:38:07 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Reinette Chatre <reinette.chatre@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Zhi Wang <zhi.a.wang@intel.com>,
         linux-kernel@vger.kernel.org
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <a657ea7c-3d0e-6b92-5ad6-c445e827a845@loongson.cn>
-Date:   Fri, 26 Feb 2021 09:37:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+Subject: Re: [PATCH] virt: acrn: add hotplug_cpu dependency
+Message-ID: <20210226013807.GA9695@shuo-intel.sh.intel.com>
+References: <20210225133838.2196965-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <987b0dc5-9306-4271-afc0-7c44dba644b7@www.fastmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dxn_PoUDhgULMPAA--.2921S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFy5JryruF17ur13Jw48Crg_yoW8uw48p3
-        98GanI9rs8tryIvws7Zw409rWfA395Ga15XFyYyryDu345WrnayF4Sqw4UK34qyr1fGw4U
-        Za10qr4UZa4qvaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvSb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG
-        8wCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
-        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
-        ZEXa7IU8sqXPUUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210225133838.2196965-1-arnd@kernel.org>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/24/2021 11:40 PM, Jiaxun Yang wrote:
+Hi Arnd,
 
+There is already a patchset for this build issue. Please refer to
+https://lore.kernel.org/lkml/20210221134339.57851-1-shuo.a.liu@intel.com/.
+
+Hi Greg, 
+Would you like accept that patchset in you tree?
+
+Thanks
+shuo
+
+On Thu 25.Feb'21 at 14:38:30 +0100, Arnd Bergmann wrote:
+>From: Arnd Bergmann <arnd@arndb.de>
 >
-> On Wed, Feb 24, 2021, at 9:02 PM, Jinyang He wrote:
->> detect_memory_region() was committed by Commit 4d9f77d25268 ("MIPS: add
->> detect_memory_region()"). Then it was equipped by Commit dd63b00804a5
->> ("MIPS: ralink: make use of the new memory detection code") and
->> Commit 9b75733b7b5e ("MIPS: ath79: make use of the new memory detection
->> code"). Its code is based on early ath79 platform code.
->>
->> What puzzles me is that how memcmp() detect the memory region. If `break`
->> was touched, the function could make sense. That means memcmp() should
->> return zero. Otherwise, the loop will be end by size > sz_max.
->>
->> I have tested detect_memory_region() on Loongson64 3A3000. On our design,
->> kseg0 low 256MB maps real memory and kseg0 high 256MB maps IO/PCI. The
->> function runs and last stopped on kseg1 where is uncached. In this process
->> memcmp also returned non-zero when detected kseg0 high 256MB. Then I did
->> another thing. memcpy first and test memcmp then (after &_end). It works
->> well on 3A3000 but badly on 3A4000. Maybe because kseg0 high 256MB maps
->> IO/PCI and it is dangerous to write like write memory.
->>
->> At last, read memory from where is not memory region may always return 0.
->> (Or trigger exception.) This function have been used several years and
->> seems no error occur. Maybe it's a fallback way.
-> That is not true for other platforms like ath79 or mtk.
-> They'll wrap around or return 0xffffffff for out of boundary accessing.
+>Without CPU hotplug, acrn fails to build:
 >
-> Loongson does not apply to this case as it have special "Address Window"
-> design to accurately describe address regions.
-> Any access beyond described windows will be handled by MC and return 0 or random stuff.
+>drivers/virt/acrn/hsm.c:389:3: error: implicit declaration of function 'remove_cpu' [-Werror,-Wimplicit-function-declaration]
+>                remove_cpu(cpu);
+>                ^
+>drivers/virt/acrn/hsm.c:402:2: error: implicit declaration of function 'add_cpu' [-Werror,-Wimplicit-function-declaration]
+>        add_cpu(cpu);
+>        ^
 >
-> Again, please don't make changes because you can.
+>Enforce the dependency through Kconfig to avoid the build failure.
 >
-> Thanks.
+>Fixes: 666834c47d3b ("virt: acrn: Introduce ACRN HSM basic driver")
+>Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>---
+> drivers/virt/acrn/Kconfig | 1 +
+> 1 file changed, 1 insertion(+)
 >
-> - Jiaxun
-
-Hi, Jiaxun,
-
-Thank you for answering this puzzle for me in detail.
-
-Assume that the machine has 8MB real memory and dm address is (base + 3M).
-When size = 8MB, there will be a phenomenon of `wrap around`, the actual
-content of (dm + 8M + 3M) is content of (dm + 3M), so it will trigger
-`break`, right? At this time, the kernel will add 8M to the memory.
-
-Thanks,
-Jinyang
-
+>diff --git a/drivers/virt/acrn/Kconfig b/drivers/virt/acrn/Kconfig
+>index 3e1a61c9d8d8..fbb0e3234aaf 100644
+>--- a/drivers/virt/acrn/Kconfig
+>+++ b/drivers/virt/acrn/Kconfig
+>@@ -2,6 +2,7 @@
+> config ACRN_HSM
+> 	tristate "ACRN Hypervisor Service Module"
+> 	depends on ACRN_GUEST
+>+	depends on HOTPLUG_CPU
+> 	select EVENTFD
+> 	help
+> 	  ACRN Hypervisor Service Module (HSM) is a kernel module which
+>-- 
+>2.29.2
+>
