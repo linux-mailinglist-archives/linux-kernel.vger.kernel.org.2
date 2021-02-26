@@ -2,196 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B91B32622C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F65632622F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBZLxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:53:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        id S230045AbhBZLxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:53:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhBZLxa (ORCPT
+        with ESMTP id S229996AbhBZLxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:53:30 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF23C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:52:50 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id e9so5184825plh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:52:50 -0800 (PST)
+        Fri, 26 Feb 2021 06:53:33 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C7EC061786;
+        Fri, 26 Feb 2021 03:52:53 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id w7so7201213wmb.5;
+        Fri, 26 Feb 2021 03:52:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MboCJTnSVOsg8iDl/Ytx71C/vRtXv8vtcexDfc3Ue6Q=;
-        b=ciW/AiXB8i8nLGP934iHFFnQEtqDN6xDF/7p7P/mEe1/XJTnSNexLZkPm7joRF7lOY
-         cE0Cn3WHbKC1oskCjNIdD3Q/H/oWQt2cmsos27FAty4Wy+708ZaO2bywYURhJ4iZk5Cf
-         ChaYps5qpb7yT8MlORTSqv+Iopb920EhqN7aUJo0SxaXLb1OvvCp/pMuglMoEOKDwLGr
-         QuIqIrpUcduiuRCusADGM62Yu1pgizOs1+tM8TeFc40pirsqAg9i7tgVfF6V3zjNlckO
-         qPDssRfGEHO5OYRvqGw2PQazlGsdTR/IZDwqQ0aymVuO0tEfRZTyaleLAH78Tlpjkig/
-         YYbg==
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NuBVfX255qpiXY+NtMUSxqbUxAFE9mom/YBJSTCC9hE=;
+        b=LnpJP5aU2oEr0vdBo6tihdbXydtoCRpxVK0C4gAai13hHeEw7kfL7oqvttIX+vFzSM
+         Gi/kCW32/uCVf+s2oNWXrceBs997dRjIxfZBGrVpuOAPh6/UvaIRDXStv5435hYS2Y8o
+         dRbZ0+6OBsFtnUTKfjPZzANAnzS3yMiKKWqIHKPS12+UEbp8i7+Wi7DAilYnVKuza4eb
+         O/GFzl3vk/Fqnd2aKCiOBCE6IiOn8dxOq2Ax4vfej/XLSuQaFwGbWcZBUEI6fvF3A//v
+         fM8jyGFLWrHnp9PjwjomqRobXsj2yGK88lzAFv4XiqiSiQnlcwBavxDItQ0EqU+8qlZt
+         K6hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MboCJTnSVOsg8iDl/Ytx71C/vRtXv8vtcexDfc3Ue6Q=;
-        b=AQoYoZUsS64rHzb6N0jXQriii/6YXGL8U81xuW3D0+65DXdBNEj3oUO2Sb6/hNbc8C
-         xNFCO5XJ8AWFdsbOT/fI5Ua/EgJh3xfnmOg1+7YJLBJxxsZZlfP3QXlXvf3Jyx6Y3b9R
-         ie+Io8vupeefUA4cOxquaP/m+QmQBctP329hh+MhffKiXF4HGLYglL1TJtqb5VboEpV7
-         9qlaRucdB69h0C5ZQJEwdBwSfhRy8bXr/zGv5aoyRI3P1Bbh2cDTQHMQlEGN8H/DrqN4
-         ePfPUjGqq+cwMFb9VdKQISQslfRFsoTo9kjxRaThFfODkKcmRzu1bFB6+hsJnksgjf4A
-         jR3A==
-X-Gm-Message-State: AOAM530P8NX9CgLoH3kIcA1wo4J/IfJQRymp+Y5CxLM0FofD0lfX0+uD
-        hMjHLIiN8j5Jg0jPaihgAuGpPl2zaQ/ajfjL4oEeuA==
-X-Google-Smtp-Source: ABdhPJwXRb71oswV+DAkAJmkVpFsBDgs0LQFkzICKAIYFYSo49YWbwL95uo+mAX/yk0mnI/bxGguPfEj3sfTIkzCrdo=
-X-Received: by 2002:a17:90b:1b52:: with SMTP id nv18mr3187467pjb.19.1614340369882;
- Fri, 26 Feb 2021 03:52:49 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NuBVfX255qpiXY+NtMUSxqbUxAFE9mom/YBJSTCC9hE=;
+        b=sHpb4aF1YcEcWyq8Xsnn4+N7L/lJ+vJrellWlBoTa693Ct2TJLppEa38FSdfYCvcwD
+         iiph7lzT05ndvi7zj6Qss2ADbVg731s4+Mk5pd2PJ637t/MBBBM60PH+aJUhh2R7EmR3
+         nVMXtto7St/Naio1qolsYz6tgxtiHiNj10miG9k69k5U0oSj6GElIKC3O3RUZBt2Fbhi
+         X2MXt1zP0hiEITbHexD85ZQ7fGFOQmDn/IRddCDMR57H/9Mt50cxHRxl/Inw7SjUdlID
+         jjsk7qgcQgheXgTwcXAyjsKBTGKdJfOiD3kQxCiIZOO7l+WLOhYar5b9LbH4vRgvQbUQ
+         CgQA==
+X-Gm-Message-State: AOAM533f4mTpdV9JTNPythy4CYzJi/Q1M0PVNcTVwJMKzegOJEBPS1RX
+        Wwwnlko+xla1YPjy+X1GdTqKabbs1jVgRw==
+X-Google-Smtp-Source: ABdhPJx8qHuzpGfQk0t2uqF8fDSJvNKOspYW5KLD0cfOCnzoSUDJE6HJ2UKPQwH+eex/WeIUry5+sQ==
+X-Received: by 2002:a05:600c:2291:: with SMTP id 17mr2568678wmf.169.1614340372239;
+        Fri, 26 Feb 2021 03:52:52 -0800 (PST)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id s2sm13214774wrt.33.2021.02.26.03.52.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 03:52:51 -0800 (PST)
+Subject: Re: [RFC v2] execve.2: SYNOPSIS: Document both glibc wrapper and
+ kernel sycalls
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org, libc-alpha@sourceware.org,
+        Florian Weimer <fweimer@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <938df2c0-04b5-f6a4-79c3-b8fe09973828@gmail.com>
+ <20210218151341.51095-1-alx.manpages@gmail.com>
+ <db155b69-e58c-32c2-6fc7-89b8329fbf2c@gmail.com>
+ <ca34c574-72f1-f174-1de4-e2c1b7600640@gmail.com>
+Message-ID: <50102170-ead4-fa2e-2855-26f06543f95d@gmail.com>
+Date:   Fri, 26 Feb 2021 12:52:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <1613619715-28785-1-git-send-email-victor.liu@nxp.com> <1613619715-28785-2-git-send-email-victor.liu@nxp.com>
-In-Reply-To: <1613619715-28785-2-git-send-email-victor.liu@nxp.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 26 Feb 2021 12:52:39 +0100
-Message-ID: <CAG3jFyskt5ottSuGVe2VgR-rvbieauaFZFhXg5sYJxqwxgKawA@mail.gmail.com>
-Subject: Re: [PATCH v4 01/14] phy: Add LVDS configuration options
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de,
-        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>, kishon@ti.com,
-        Vinod Koul <vkoul@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ca34c574-72f1-f174-1de4-e2c1b7600640@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Liu,
+Hi Michael,
 
-Thanks for submitting this series.
 
-This patch looks good to me.
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Okay, after a few days of thinking, I'm not sure about what to do in 
+some cases.
 
-On Thu, 18 Feb 2021 at 04:56, Liu Ying <victor.liu@nxp.com> wrote:
->
-> This patch allows LVDS PHYs to be configured through
-> the generic functions and through a custom structure
-> added to the generic union.
->
-> The parameters added here are based on common LVDS PHY
-> implementation practices.  The set of parameters
-> should cover all potential users.
->
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: NXP Linux Team <linux-imx@nxp.com>
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v3->v4:
-> * No change.
->
-> v2->v3:
-> * No change.
->
-> v1->v2:
-> * No change.
->
->  include/linux/phy/phy-lvds.h | 48 ++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/phy/phy.h      |  4 ++++
->  2 files changed, 52 insertions(+)
->  create mode 100644 include/linux/phy/phy-lvds.h
->
-> diff --git a/include/linux/phy/phy-lvds.h b/include/linux/phy/phy-lvds.h
-> new file mode 100644
-> index 00000000..1b5b9d6
-> --- /dev/null
-> +++ b/include/linux/phy/phy-lvds.h
-> @@ -0,0 +1,48 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright 2020 NXP
-> + */
-> +
-> +#ifndef __PHY_LVDS_H_
-> +#define __PHY_LVDS_H_
-> +
-> +/**
-> + * struct phy_configure_opts_lvds - LVDS configuration set
-> + *
-> + * This structure is used to represent the configuration state of a
-> + * LVDS phy.
-> + */
-> +struct phy_configure_opts_lvds {
-> +       /**
-> +        * @bits_per_lane_and_dclk_cycle:
-> +        *
-> +        * Number of bits per data lane and differential clock cycle.
-> +        */
-> +       unsigned int bits_per_lane_and_dclk_cycle;
-> +
-> +       /**
-> +        * @differential_clk_rate:
-> +        *
-> +        * Clock rate, in Hertz, of the LVDS differential clock.
-> +        */
-> +       unsigned long differential_clk_rate;
-> +
-> +       /**
-> +        * @lanes:
-> +        *
-> +        * Number of active, consecutive, data lanes, starting from
-> +        * lane 0, used for the transmissions.
-> +        */
-> +       unsigned int lanes;
-> +
-> +       /**
-> +        * @is_slave:
-> +        *
-> +        * Boolean, true if the phy is a slave which works together
-> +        * with a master phy to support dual link transmission,
-> +        * otherwise a regular phy or a master phy.
-> +        */
-> +       bool is_slave;
-> +};
-> +
-> +#endif /* __PHY_LVDS_H_ */
-> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> index e435bdb..d450b44 100644
-> --- a/include/linux/phy/phy.h
-> +++ b/include/linux/phy/phy.h
-> @@ -17,6 +17,7 @@
->  #include <linux/regulator/consumer.h>
->
->  #include <linux/phy/phy-dp.h>
-> +#include <linux/phy/phy-lvds.h>
->  #include <linux/phy/phy-mipi-dphy.h>
->
->  struct phy;
-> @@ -51,10 +52,13 @@ enum phy_mode {
->   *             the MIPI_DPHY phy mode.
->   * @dp:                Configuration set applicable for phys supporting
->   *             the DisplayPort protocol.
-> + * @lvds:      Configuration set applicable for phys supporting
-> + *             the LVDS phy mode.
->   */
->  union phy_configure_opts {
->         struct phy_configure_opts_mipi_dphy     mipi_dphy;
->         struct phy_configure_opts_dp            dp;
-> +       struct phy_configure_opts_lvds          lvds;
->  };
->
->  /**
-> --
-> 2.7.4
->
+But I think we agree to use syscall(SYS_ ...) for syscalls with no 
+wrapper (such as membarrier(2)).
+
+Is that right?
+
+I think it may be better to separate this into 2 sets of changes.
+
+1)  Document syscalls without wrappers as syscall(SYS_ ...).
+     We could already start with this.
+     (Actually, after I finish fixing the prototypes in man3.)
+     This change will be fast, because there aren't many of these.
+
+2)  Do the rest, I don't know yet how.  We'll see.
+
+
+Thanks,
+
+Alex
+
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
