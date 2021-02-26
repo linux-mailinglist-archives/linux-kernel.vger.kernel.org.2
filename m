@@ -2,121 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280CB326746
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:12:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C66F32674E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhBZTMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 14:12:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
+        id S230142AbhBZTP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 14:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhBZTMO (ORCPT
+        with ESMTP id S229571AbhBZTPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 14:12:14 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A469AC061574;
-        Fri, 26 Feb 2021 11:11:33 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id 2so7276791ljr.5;
-        Fri, 26 Feb 2021 11:11:33 -0800 (PST)
+        Fri, 26 Feb 2021 14:15:25 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC913C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:14:44 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id n4so9625481wrx.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:14:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IBtIidwVwaIktxepbeCDx/8gfJLnxmhlZEhvJa7e2JM=;
-        b=MoI9sH+xS+N7OBJbwDA0LImxeRrpl7LUczU+TJTygbMNzB22Qdr1WjaavoIxuqpExh
-         ThwGYWvP7XH/yISb2ieM1zg3qlTQItUxEVDiShJB7FQw3d/R7WHAXXHQfPzowbJhQ2eH
-         f/MsMF4UpF4lfPb/3BSVyltleh5h/W34iFaHJ4v/YZw/7tmRABEGfNBG83CwEUymXj8A
-         Wz9AWiHaRd2A0m2LUMxeQE1ertmO8ALzETCNLAyqjY/qL6yL9hDrYFy7sv7bOORmLxoA
-         hHl8RRqffc48Vp3sb+XewfvCvope5o2n0LwyjhmI8fLRkQlpNZ0b7QhVt3bJR4UcKUFG
-         aCAw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/RuZp97vmbX3iIDJQaLWaML/+bFGYgXRX8cY/lFqCb0=;
+        b=SnBNKxyPwjxV1r4q+dVPz/jQz/ZPn7P571slVmVk1YK1kCiwwyzqHV51yA9tnmUJbB
+         paSiXtb5lBKCrElhg1bHAnABFfu1XL5pN5OlvRb+9ORdJibuJ4bxnRja3JbSm1axWX62
+         n7WGc2uZmO2o+/HQQGZMmxnnXs9zVW65Lz5UNyaUoueI1SlJNMudcBGQgMhSC7+VjRMm
+         mXOof6DQAWCh5jVmiPuor+j0QsmWBvawconkyomG/LMCGIKzClSORwenxdiacvsCrRgG
+         dWg0TTHNE0AIBtlDLyZBP4w+MzktYm7VI6dvRlZeUnssCLw7VseKo0sJy/RrswSzY7bP
+         cNBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IBtIidwVwaIktxepbeCDx/8gfJLnxmhlZEhvJa7e2JM=;
-        b=iDay+iHIZIl+uRZVsQ2tOcicB3tNUmag+lkCgb3MeowOoxcMC8Ng8DrTZcHI9kGOQX
-         xWXD8SJE7plzShgrDyHlMGu9iPY18rmTAJks0RjhEq+mhciI34s5+4rbXmVrqOoy+84z
-         l5/6s6X0i9J4KXVI46GBSuq89Cwly6otxjYBEaePXcyuQOfxc+uAvg/QNaFdJCqI1ig4
-         8LZmCA+K/ZyWOD2GoDkFJqQpwBAVp1/AYdWd2BQhU9VtBSxc5BitRww/Uc66//A7FzJ4
-         UPuGYvxlbMTi1eVgZw5N4fYxtG1ah5JnjfDl+T7KiiLsZK5AbL5OPoS0j7G3tOz6oeUH
-         kRSw==
-X-Gm-Message-State: AOAM533XmSqqpyfNc2yTcrjPmoiwRtJ6ZlvLolkoIgNZVeAsj7904gtE
-        ZLzvw86znKDBoYKZZfMNpUM=
-X-Google-Smtp-Source: ABdhPJysY0omAmg5k2/lT1pUubT7iOOiWMSX8eFbJyo1D/LcaV3cOa42Hj1XnztgLuDez6RV12a+Cw==
-X-Received: by 2002:a2e:7f1b:: with SMTP id a27mr2411804ljd.225.1614366692167;
-        Fri, 26 Feb 2021 11:11:32 -0800 (PST)
-Received: from localhost.localdomain ([94.103.235.59])
-        by smtp.gmail.com with ESMTPSA id n7sm1472506lfu.123.2021.02.26.11.11.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 11:11:31 -0800 (PST)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linmiaohe@huawei.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com
-Subject: [PATCH] net/core/skbuff.c: __netdev_alloc_skb fix when len is greater than KMALLOC_MAX_SIZE
-Date:   Fri, 26 Feb 2021 22:11:06 +0300
-Message-Id: <20210226191106.554553-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/RuZp97vmbX3iIDJQaLWaML/+bFGYgXRX8cY/lFqCb0=;
+        b=E0tGsbA7aj4LYxzyt2jgSin85nLCkzba6PVPR7bnsKsRuK59gRJXspvAR2/62a8iXA
+         DKZin1oLU6AtNrRI6SmfvPcTkIUdvhimIgaOrqzg2RGeGn21aN+4fzaYQpOOgQSQV4tm
+         0ejrJfV9KUUz5WYaX95AggvqS+vFDWzhZZ+8eCZ+pNNu0C7XCTsQb+QMBfns44m/8ZgQ
+         gGwlcnc5OkXwGhOwkHGlnsLfEa3ElMuoFvIKWeQLx6OCRlvn1MMebSOleHXZw5ZpZc2M
+         fU6TLE6bjziwmZH0O1heCV7qlJJx7JHMnrINq1VtnKQqoyVhe8H/oNbxj7SOd6K9n/0+
+         97dQ==
+X-Gm-Message-State: AOAM5304iRSN1G44xpn/KXt4voSX95Uw6uP5o5MLzZqKzszdlTPeT2Er
+        KBluhbXC/MvXu52G+oHWNFgHhSoQUT6P0sPPGquX3Q==
+X-Google-Smtp-Source: ABdhPJxSHnkbQV0oSfGegVOoaPiiMqcDhERK3pBj182Gl1wWtE17kVrglCwBzTMER3A2OJEoW7PqwMtI93lYmsfpSvo=
+X-Received: by 2002:a5d:4fd0:: with SMTP id h16mr4537164wrw.178.1614366883308;
+ Fri, 26 Feb 2021 11:14:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210128170936.9222-1-mike.leach@linaro.org> <20210128170936.9222-3-mike.leach@linaro.org>
+ <20210219184313.GA3065106@xps15>
+In-Reply-To: <20210219184313.GA3065106@xps15>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Fri, 26 Feb 2021 19:14:32 +0000
+Message-ID: <CAJ9a7Vhh5xdbmMgcTLjU3qJEg2nbZoZ5j2HqvenwNGoqo+54Rw@mail.gmail.com>
+Subject: Re: [PATCH v4 02/10] coresight: syscfg: Add registration and feature
+ loading for cs devices
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Yabin Cui <yabinc@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot found WARNING in __alloc_pages_nodemask()[1] when order >= MAX_ORDER.
-It was caused by __netdev_alloc_skb(), which doesn't check len value after adding NET_SKB_PAD.
-Order will be >= MAX_ORDER and passed to __alloc_pages_nodemask() if size > KMALLOC_MAX_SIZE.
+Hi Mathieu,
 
-static void *kmalloc_large_node(size_t size, gfp_t flags, int node)
-{
-	struct page *page;
-	void *ptr = NULL;
-	unsigned int order = get_order(size);
-...
-	page = alloc_pages_node(node, flags, order);
-...
+On Fri, 19 Feb 2021 at 18:43, Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> [...]
+>
+> > +/**
+> > + * List entry for Coresight devices that are registered as supporting complex
+> > + * config operations.
+> > + *
+> > + * @csdev:   The registered device.
+> > + * @match_info: The matching type information.
+> > + * @ops:     Operations supported by the registered device.
+> > + * @item:    list entry.
+> > + */
+> > +struct cscfg_csdev_register {
+> > +     struct coresight_device *csdev;
+> > +     struct cscfg_match_desc match_info;
+> > +     struct cscfg_csdev_feat_ops ops;
+> > +     struct list_head item;
+> > +};
+>
+> I would call this structure cscfg_registered_csdev and move it to
+> coresight-config.h.  That way it is consistent with cscfg_config_csdev and
+> cscfg_feature_csdev and located all in the same file.
+>
 
-[1] WARNING in __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5014
-Call Trace:
- __alloc_pages include/linux/gfp.h:511 [inline]
- __alloc_pages_node include/linux/gfp.h:524 [inline]
- alloc_pages_node include/linux/gfp.h:538 [inline]
- kmalloc_large_node+0x60/0x110 mm/slub.c:3999
- __kmalloc_node_track_caller+0x319/0x3f0 mm/slub.c:4496
- __kmalloc_reserve net/core/skbuff.c:150 [inline]
- __alloc_skb+0x4e4/0x5a0 net/core/skbuff.c:210
- __netdev_alloc_skb+0x70/0x400 net/core/skbuff.c:446
- netdev_alloc_skb include/linux/skbuff.h:2832 [inline]
- qrtr_endpoint_post+0x84/0x11b0 net/qrtr/qrtr.c:442
- qrtr_tun_write_iter+0x11f/0x1a0 net/qrtr/tun.c:98
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+I was trying to separate structures that are used to define
+configurations and features, with those that are used to manage the
+same. Hence, most things in coresight_config.h define configurations,
+or their device loaded instance equivalents, and things in
+coresight_syscfg.h are management items. I am happy to change the name
+but would prefer is stay in coresight_syscfg.h
 
-Reported-by: syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Change-Id: I480a6d6f818a4c0a387db0cd3f230b68a7daeb16
----
- net/core/skbuff.c | 3 +++
- 1 file changed, 3 insertions(+)
+Thanks
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 785daff48030..dc28c8f7bf5f 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -443,6 +443,9 @@ struct sk_buff *__netdev_alloc_skb(struct net_device *dev, unsigned int len,
- 	if (len <= SKB_WITH_OVERHEAD(1024) ||
- 	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
- 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
-+		if (len > KMALLOC_MAX_SIZE)
-+			return NULL;
-+
- 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
- 		if (!skb)
- 			goto skb_fail;
+Mike
+
+
+> I may have to come back to this patch but for now it holds together.
+>
+> More comments to come on Monday.
+>
+> Thanks,
+> Mathieu
+>
+> > +
+> >  /* internal core operations for cscfg */
+> >  int __init cscfg_init(void);
+> >  void __exit cscfg_exit(void);
+> > @@ -33,6 +49,10 @@ void __exit cscfg_exit(void);
+> >  /* syscfg manager external API */
+> >  int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
+> >                          struct cscfg_feature_desc **feat_descs);
+> > +int cscfg_register_csdev(struct coresight_device *csdev,
+> > +                      struct cscfg_match_desc *info,
+> > +                      struct cscfg_csdev_feat_ops *ops);
+> > +void cscfg_unregister_csdev(struct coresight_device *csdev);
+> >
+> >  /**
+> >   * System configuration manager device.
+> > diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> > index 976ec2697610..d0126ed326a6 100644
+> > --- a/include/linux/coresight.h
+> > +++ b/include/linux/coresight.h
+> > @@ -219,6 +219,8 @@ struct coresight_sysfs_link {
+> >   * @nr_links:   number of sysfs links created to other components from this
+> >   *           device. These will appear in the "connections" group.
+> >   * @has_conns_grp: Have added a "connections" group for sysfs links.
+> > + * @feature_csdev_list: List of complex feature programming added to the device.
+> > + * @config_csdev_list:  List of system configurations added to the device.
+> >   */
+> >  struct coresight_device {
+> >       struct coresight_platform_data *pdata;
+> > @@ -240,6 +242,9 @@ struct coresight_device {
+> >       int nr_links;
+> >       bool has_conns_grp;
+> >       bool ect_enabled; /* true only if associated ect device is enabled */
+> > +     /* system configuration and feature lists */
+> > +     struct list_head feature_csdev_list;
+> > +     struct list_head config_csdev_list;
+> >  };
+> >
+> >  /*
+> > --
+> > 2.17.1
+> >
+
+
+
 -- 
-2.25.1
-
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
