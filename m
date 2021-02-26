@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1303263BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1454E3263B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhBZOFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:05:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53628 "EHLO mx2.suse.de"
+        id S230104AbhBZOE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:04:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53688 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229991AbhBZOEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229993AbhBZOEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Feb 2021 09:04:00 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C3E23AD73;
-        Fri, 26 Feb 2021 14:03:17 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 70AB3B06A;
+        Fri, 26 Feb 2021 14:03:18 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
@@ -23,9 +23,9 @@ Cc:     f.fainelli@gmail.com, robh+dt@kernel.org, robin.murphy@arm.com,
         dwmw2@infradead.org, linux@armlinux.org.uk,
         catalin.marinas@arm.com, arnd@arndb.de, will@kernel.org,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [RFC 03/13] of: device: Introduce of_mmio_configure()
-Date:   Fri, 26 Feb 2021 15:02:55 +0100
-Message-Id: <20210226140305.26356-4-nsaenzjulienne@suse.de>
+Subject: [RFC 04/13] driver core: plafrom: Introduce platform_mmio_configure()
+Date:   Fri, 26 Feb 2021 15:02:56 +0100
+Message-Id: <20210226140305.26356-5-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210226140305.26356-1-nsaenzjulienne@suse.de>
 References: <20210226140305.26356-1-nsaenzjulienne@suse.de>
@@ -35,72 +35,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function will traverse a device's bus hierarchy looking for MMIO
-limited buses. If found it'll populate the relevant struct device
-quirks.
+The function will traverse the platform device's bus hierarchy and set
+the relevant MMIO access flags.
 
 Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- drivers/of/device.c       | 19 +++++++++++++++++++
- include/linux/of_device.h |  8 ++++++++
- 2 files changed, 27 insertions(+)
+ drivers/base/platform.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index 6cb86de404f1..b80367a2764b 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -169,6 +169,25 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 6e1f8e0b661c..31772fd4ca1d 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -1504,6 +1504,14 @@ int platform_dma_configure(struct device *dev)
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(of_dma_configure_id);
  
-+int of_mmio_configure(struct device *dev, struct device_node *np)
++static int platform_mmio_configure(struct device *dev)
 +{
-+#if defined(CONFIG_ARCH_HAS_64BIT_MMIO_BROKEN)
-+	struct device_node *node = of_node_get(np);
++	if (dev->parent && dev->parent->of_node)
++		return of_mmio_configure(dev, dev->parent->of_node);
 +
-+	do {
-+		if (of_property_read_bool(node, "64bit-mmio-broken")) {
-+			dev->mmio_64bit_broken = true;
-+			dev_dbg(dev, "device behind 64bit mmio broken bus\n");
-+			break;
-+		}
-+	} while ((node = of_get_next_parent(node)));
-+
-+	of_node_put(node);
-+#endif
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(of_mmio_configure);
 +
- int of_device_register(struct platform_device *pdev)
- {
- 	device_initialize(&pdev->dev);
-diff --git a/include/linux/of_device.h b/include/linux/of_device.h
-index 1d7992a02e36..c465edd509c7 100644
---- a/include/linux/of_device.h
-+++ b/include/linux/of_device.h
-@@ -56,6 +56,9 @@ static inline int of_dma_configure(struct device *dev,
- {
- 	return of_dma_configure_id(dev, np, force_dma, NULL);
- }
-+
-+int of_mmio_configure(struct device *dev, struct device_node *np);
-+
- #else /* CONFIG_OF */
- 
- static inline int of_driver_match_device(struct device *dev,
-@@ -112,6 +115,11 @@ static inline int of_dma_configure(struct device *dev,
- {
- 	return 0;
- }
-+
-+static inline int of_mmio_configure(struct device *dev, struct device_node *np);
-+{
-+	return 0;
-+}
- #endif /* CONFIG_OF */
- 
- #endif /* _LINUX_OF_DEVICE_H */
+ static const struct dev_pm_ops platform_dev_pm_ops = {
+ 	.runtime_suspend = pm_generic_runtime_suspend,
+ 	.runtime_resume = pm_generic_runtime_resume,
+@@ -1519,6 +1527,7 @@ struct bus_type platform_bus_type = {
+ 	.remove		= platform_remove,
+ 	.shutdown	= platform_shutdown,
+ 	.dma_configure	= platform_dma_configure,
++	.mmio_configure = platform_mmio_configure,
+ 	.pm		= &platform_dev_pm_ops,
+ };
+ EXPORT_SYMBOL_GPL(platform_bus_type);
 -- 
 2.30.1
 
