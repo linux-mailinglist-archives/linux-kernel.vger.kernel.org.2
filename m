@@ -2,108 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32EF23262BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9213262C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhBZMcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 07:32:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbhBZMcs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:32:48 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53918C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:32:08 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id d13so5720861edp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:32:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=GCu0hDorWnnS7HlnLgsgdPKlD9qx5NPHhv/TQ0Dvwf8=;
-        b=LkYTlqy1E04E6yiFg3imxnxZl2eDuE7gimiCB3O0aoMKlQR46zABeAoPNsIJOstndX
-         HJ9ZIhfs6fcT5fAmmoNk+6iacNnwXwevZjjZN4wp8jAxX46y4pGa6CxQ7vyzb181d1+x
-         fdIm6IJcGkgfNPo9CKkHxvolxBhLrFXqSfT4A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=GCu0hDorWnnS7HlnLgsgdPKlD9qx5NPHhv/TQ0Dvwf8=;
-        b=hJzCzu8vVNHYOxSuDLyBsE9EVcsmIomSgwa4TE7rkZzQhDmcVJUU6DDD1whR5hAKN8
-         mLRN8y5uDKWXV0faNfbf3lX1HtGRgDvLtsvclzGDuPvJurvhAzekcxDJ/ej62pkz9SGd
-         l/RDGJPCQ7EwasUa/6tOg/JYaVwp6wiXPLvhcnC4CufgqHxU55G1QX9gr4gise/UQVX1
-         /FI1+z4ZWv4C8wCEAJIJwhGESq930FRLADxGRWVbg/dJhIuXQD18X7AJRQ9n2lJnzTK0
-         yJMTcbJI+dvhrqpUT75WnTMJ/bFWq33MtU4m9cOLIDbHaCEj/QgTbjmEVw4QJIpots+n
-         AvqA==
-X-Gm-Message-State: AOAM533lgFtnCwZJ/W2EuBBJUyf7HiWydwlGlx3QqLLk4+wHBPz+6eU5
-        3uEW+E9Q3JJ76qN7qET37HfgnQ==
-X-Google-Smtp-Source: ABdhPJxpow3e0iZ1BhGhGv76Vzsh7zztXx4EoEwDIcnNAmH1VbnmwMBMAQoz8kK3BmfadNmg9mXTxA==
-X-Received: by 2002:a05:6402:17b6:: with SMTP id j22mr2920170edy.325.1614342726056;
-        Fri, 26 Feb 2021 04:32:06 -0800 (PST)
-Received: from [192.168.1.149] ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id v11sm5005116eds.14.2021.02.26.04.32.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 04:32:05 -0800 (PST)
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: spdx spring cleaning
-Message-ID: <84ce357f-3400-2a4d-02e9-01e659829560@rasmusvillemoes.dk>
-Date:   Fri, 26 Feb 2021 13:32:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230203AbhBZMdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:33:18 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:47110 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230140AbhBZMdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 07:33:15 -0500
+Received: by ajax-webmail-mail-app2 (Coremail) ; Fri, 26 Feb 2021 20:32:22
+ +0800 (GMT+08:00)
+X-Originating-IP: [10.192.85.18]
+Date:   Fri, 26 Feb 2021 20:32:22 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Bernard Metzler" <BMT@zurich.ibm.com>
+Cc:     kjlu <kjlu@umn.edu>, "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: Re:  [PATCH] RDMA/siw: Fix missing check in siw_get_hdr
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <OF56E5E5C1.78489712-ON00258688.0032E2EA-00258688.003301A1@notes.na.collabserv.com>
+References: <20210226075515.21371-1-dinghao.liu@zju.edu.cn>
+ <OF56E5E5C1.78489712-ON00258688.0032E2EA-00258688.003301A1@notes.na.collabserv.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Message-ID: <4ded6c6f.9953b.177de5360ef.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: by_KCgDnrvBW6jhg9mPIAQ--.60326W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQGBlZdtSfEeAAPss
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+CgomcXVvdDtCZXJuYXJkIE1ldHpsZXImcXVvdDsgJmx0O0JNVEB6dXJpY2guaWJtLmNvbSZndDvl
+hpnpgZPvvJoKPiAtLS0tLSJEaW5naGFvIExpdSIgPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+IHdy
+b3RlOiAtLS0tLQo+IAo+ID5UbzogZGluZ2hhby5saXVAemp1LmVkdS5jbiwga2psdUB1bW4uZWR1
+Cj4gPkZyb206ICJEaW5naGFvIExpdSIgPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+Cj4gPkRhdGU6
+IDAyLzI2LzIwMjEgMDg6NTZBTQo+ID5DYzogIkJlcm5hcmQgTWV0emxlciIgPGJtdEB6dXJpY2gu
+aWJtLmNvbT4sICJEb3VnIExlZGZvcmQiCj4gPjxkbGVkZm9yZEByZWRoYXQuY29tPiwgIkphc29u
+IEd1bnRob3JwZSIgPGpnZ0B6aWVwZS5jYT4sCj4gPmxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3Jn
+LCBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnCj4gPlN1YmplY3Q6IFtFWFRFUk5BTF0gW1BB
+VENIXSBSRE1BL3NpdzogRml4IG1pc3NpbmcgY2hlY2sgaW4KPiA+c2l3X2dldF9oZHIKPiA+Cj4g
+PldlIHNob3VsZCBhbHNvIGNoZWNrIHRoZSByYW5nZSBvZiBvcGNvZGUgYWZ0ZXIgY2FsbGluZwo+
+ID5fX3JkbWFwX2dldF9vcGNvZGUoKSBpbiB0aGUgZWxzZSBicmFuY2ggdG8gcHJldmVudCBwb3Rl
+bnRpYWwKPiA+b3ZlcmZsb3cuCj4gCj4gSGkgRGluZ2hhbywKPiBObyB0aGlzIGlzIG5vdCBuZWVk
+ZWQuIFdlIGFsd2F5cyBmaXJzdCByZWFkIHRoZSBtaW5pbXVtCj4gaGVhZGVyIGluZm9ybWF0aW9u
+IChNUEEgbGVuLCBERFAgZmxhZ3MsIFJETUFQIG9wY29kZSwKPiBTVGFnLCB0YXJnZXQgb2Zmc2V0
+KS4gT25seSBpZiB3ZSBoYXZlIHJlY2VpdmVkIHRoYXQKPiBpbnRvIGxvY2FsIGJ1ZmZlciwgd2Ug
+Y2hlY2sgZm9yIHRoZSBvcGNvZGUgdGhpcyBvbmUgdGltZS4KPiBOb3cgdGhlIG9wY29kZSBkZXRl
+cm1pbmVzIHRoZSByZW1haW5pbmcgbGVuZ3RoIG9mIHRoZQo+IHZhcmlhYmx5IHNpemVkIHBhcnQg
+b2YgdGhlIGhlYWRlciB0byBiZSByZWNlaXZlZC4KPiAKPiBXZSBkbyBub3QgaGF2ZSB0byBjaGVj
+ayB0aGUgb3Bjb2RlIGFnYWluLCBzaW5jZSB3ZQo+IGFscmVhZHkgcmVjZWl2ZWQgYW5kIGNoZWNr
+ZWQgaXQuCj4gCgpJdCdzIGNsZWFyIHRvIG1lLCB0aGFua3MhCgpSZWdhcmRzLApEaW5naGFvCg==
 
-I was doing some 'git grep SPDX-License-Identifier' statistics, but
-noticed that I had to do a lot more normalization than expected (clearly
-handling different comment markers is needed).
-
-How about running something like the below after -rc1? The end result is
-
- 2558 files changed, 2558 insertions(+), 2558 deletions(-)
-
-mostly from the last fixup, before that it's merely
-
- 90 files changed, 90 insertions(+), 90 deletions(-)
-
-Rasmus
-
-#!/bin/sh
-
-fixup() {
-    gp="$1"
-    cmd="$2"
-
-    git grep --files-with-matches "SPDX-License-Identifier:$gp" | grep
--v COPYING | \
-        xargs -r -P8 sed -E -s -i -e "1,3 { /SPDX-License-Identifier/ {
-$cmd } }"
-    git diff --stat | tail -n1
-}
-
-# tab->space, the first string is "dot asterisk tab"
-fixup '.*	' 's/\t/ /g'
-
-# trailing space
-fixup '.* $' 's/ *$//'
-
-# collapse multiple spaces
-fixup '.*  ' 's/  */ /g'
-
-# or -> OR
-fixup '.* or ' 's/ or / OR /g'
-
-# Remove outer parenthesis - when that pair is the only set of
-# parenthesis. Only none or */ trailing comment marker is handled.
-fixup ' (' 's|Identifier: \(([^()]*)\)( \*/)?$|Identifier: \1\2|'
