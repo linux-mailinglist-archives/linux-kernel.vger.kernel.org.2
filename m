@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F213263D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE02D3263D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhBZOL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:11:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47542 "EHLO
+        id S230198AbhBZOM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:12:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhBZOKv (ORCPT
+        with ESMTP id S230037AbhBZOMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:10:51 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3B2C061574;
-        Fri, 26 Feb 2021 06:09:57 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id o11so1805552iob.1;
-        Fri, 26 Feb 2021 06:09:57 -0800 (PST)
+        Fri, 26 Feb 2021 09:12:23 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC7EC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:11:42 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id n20so15060603ejb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:11:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=QA/d0cFunzbxzCuiklavIRwd25SEC2LCzhPw4fegxCo=;
-        b=XqMcdEoTrxRRGDlG9nwcvIXz45i1/9KiirgMGaAJUxUQjlUDy33iaM+Uk2JfEG4e8X
-         a6d0I5LGe8ZNcv2oyaj0JfPXmFASYmrU10dDLdEEH8JECPxmL9LK0cNw/lZplANQY0MD
-         Nbn6X6IgYBAHddDY1aE216Cfl2onJpPaKi/VaVel2Z/wKpWauG90x0oQFIfxdvEKM3L2
-         +38+LVg0j3iydZ2Uv6oQHB0nSWkbJ67GihJPqEnLv/KOuXJcxkFTUkD007u0roQ8BCVR
-         TykLw4RBW0rwD74AhmjoPN3ELoi1GD9rrb/f0L3T8DvDu+oRVZeNpCrpmrRmhi9qQnCL
-         SsIg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Jnh1SE8zbpwk949b54dGh9DYrH/OVDUsV/NTP0TaGA8=;
+        b=DXULFdn4CEbckS2lPio4aZdYxD+y/P4KHA5Jk3+OHObW2Dw9c6ji001fX4L6oP1WUO
+         PP2EQMQ4SWzVjIMTawQ2+i3gtw2ACKt9VullGltebUfLErxKxU9Di6g9eHlN+FHJoXzx
+         7hbO1EM2cIwAidFHZsn5MQE8UNwZNs9FFkGwHYmiEjFI26le1s42xVFgqZdR7G9Qn1N2
+         mlU1g1aUUihZrp6/fg8/G0ihzLQCm0E1h6H+ZWdmSAWFqeVcKtlCgQJvd7vJFc75nRoj
+         w7xAejQDDfmwzMz/qdOOOy35aAUlcEJ+WD2WXjOo4u3XLCMoiiWZQvPdc8FbSS60m657
+         /6CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=QA/d0cFunzbxzCuiklavIRwd25SEC2LCzhPw4fegxCo=;
-        b=V4Aw+KIGFT7RAnkp39Eoc3e1JCDFij/vC1sOZ+ZcXqgSZTcyOaWJkTYMIH1WP3W58a
-         M4PyGxedjAPGm+eVuNVVMaYQIuEFOYYMZKJyNN8bP7FaRguzqwU0OpRBZ5M1ZYqWxELI
-         Kzo0ZYu8+HUuM+vNdwqPEnNnkB/+365Ib3Ka2ae0nRWB0hT2Bumm13+oqmIdux4dDqgT
-         SICxBCv401qV+NW8/E6psu2zNS8Nq8v86NieT+AjN8oXtbKWN7dH8JcqwjcIGbkjKxWM
-         O11C80gizSd+9vcVae53V7lDljQ2mUwhdePrC+huIqlVm7y6r7cBUJsr1gtQ3bKRS7Rt
-         JN6A==
-X-Gm-Message-State: AOAM532+xsUssrjaZ37cu8gytIhlqn7chG5TTT66MdOheTycyIOyk6PN
-        Vlwb0h6OyWq6EpyplUpdKAQpzq0qxPJsKWtV
-X-Google-Smtp-Source: ABdhPJzUtiamVNwT6wcNQlzQhqI8qB6XodhQaVnErvchcxDLIhot2fWopEldwVaGoneCN3Li7UelpA==
-X-Received: by 2002:a5d:8b8b:: with SMTP id p11mr2915771iol.45.1614348596698;
-        Fri, 26 Feb 2021 06:09:56 -0800 (PST)
-Received: from llvm-development.us-central1-a.c.llvm-285123.internal (191.6.226.35.bc.googleusercontent.com. [35.226.6.191])
-        by smtp.gmail.com with ESMTPSA id r12sm4657881ile.59.2021.02.26.06.09.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jnh1SE8zbpwk949b54dGh9DYrH/OVDUsV/NTP0TaGA8=;
+        b=Mgtxtja7+2O22SBj1QTdwqQTGWcGpy5ZUnL3HvPz7h4YAlEqHVrwzBPb+b6P156IM8
+         EYV+ivPp94xPd/KFXz8U1SDJQRFme5NXQ7sxkY8VBeQW/rpv7qYkJy7vUNgPZQeEYQTo
+         u+u5BAlm8hmqErFwT0h8D1VR79gqlkBXagRM5+FxzdqIL5Hizv4ocN7wARt+Fxvti5BM
+         PXM2ZsNnWn3FPLMZP5cxjm0p+kmxl3ZAt3ru0wVucWHNmACMTyDeHG8nRzxwnKxb0SkI
+         borzVLLFkeKLdtK/mpAidG/Vg3a8N9/jmG02ysitsb8Un2xGEFWLGDCpQ9dGSWfBbAa3
+         Lifw==
+X-Gm-Message-State: AOAM531g74RbJTdUAiz7HgvyfACP5xc06QdA0KcT3zfJh/+6xr56roHD
+        KpKwARy78hmonAUbvvv5hwNftA==
+X-Google-Smtp-Source: ABdhPJzCijFzqq1xKdpyjO3GBPtL5z1mF4ZY/hr9Sb4rC+wOlu6/GvikruQSNYjbKkyJ+NfV/5qkVQ==
+X-Received: by 2002:a17:906:7b8d:: with SMTP id s13mr3561402ejo.247.1614348701266;
+        Fri, 26 Feb 2021 06:11:41 -0800 (PST)
+Received: from google.com ([2a00:79e0:2:11:8026:754f:d3fb:e1d8])
+        by smtp.gmail.com with ESMTPSA id i2sm5817296edy.72.2021.02.26.06.11.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 06:09:56 -0800 (PST)
-Date:   Fri, 26 Feb 2021 14:09:54 +0000
-From:   Vinicius Tinti <viniciustinti@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsa@cumulusnetworks.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Vinicius Tinti <viniciustinti@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Similar functions in net/core/dev.c
-Message-ID: <20210226140954.GA752212@llvm-development.us-central1-a.c.llvm-285123.internal>
+        Fri, 26 Feb 2021 06:11:40 -0800 (PST)
+Date:   Fri, 26 Feb 2021 15:11:33 +0100
+From:   Piotr Figiel <figiel@google.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Oskolkov <posk@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Paul Turner <pjt@google.com>, emmir@google.com,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>
+Subject: Re: [PATCH] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+Message-ID: <YDkBlYp76PGsgUZs@google.com>
+References: <20210222100443.4155938-1-figiel@google.com>
+ <1521573573.29432.1614005597395.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1521573573.29432.1614005597395.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-All these functions in net/core/dev.c are very similar.
+On Mon, Feb 22, 2021 at 09:53:17AM -0500, Mathieu Desnoyers wrote:
 
-__netdev_walk_all_upper_dev
-netdev_walk_all_upper_dev_rcu
-netdev_walk_all_lower_dev
-__netdev_walk_all_lower_dev
-netdev_walk_all_lower_dev_rcu
+> I notice that other structures defined in this UAPI header are not
+> packed as well.  Should we add an attribute packed on new structures ?
+> It seems like it is generally a safer course of action, even though
+> each field is naturally aligned here (there is no padding/hole in the
+> structure).
 
-Can they be merged in one function? Are they a hot path?
+I considered this for quite a while. There are some gains for this
+approach, i.e. it's safer towards the ISO C, as theoretically compiler
+can generate arbitrary offsets as long as struct elements have correct
+order in memory.
+Also with packed attribute it would be harder to make it incorrect in
+future modifications.
+User code also could theoretically put the structure on any misaligned
+address.
 
-Regards,
-Vinicius
+But the drawback is that all accesses to the structure contents are
+inefficient and some compilers may generate large chunks of code
+whenever the structure elements are accessed (I recall at least one ARM
+compiler which generates series of single-byte accesses for those). For
+kernel it doesn't matter much because the structure type is used in one
+place, but it may be different for the application code.
+
+The change would be also inconsistent with the rest of the file and IMO
+the gains are only theoretical.
+
+If there are more opinions on this or you have some argument I'm missing
+please let me know I can send v3 with packed and explicit padding
+removed. I think this is rather borderline trade off.
+
+Best regards and thanks for looking at this,
+Piotr.
