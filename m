@@ -2,113 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A595325E92
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78088325E94
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbhBZIBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
+        id S230135AbhBZIBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:01:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhBZIAu (ORCPT
+        with ESMTP id S229751AbhBZIB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:00:50 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C028C06174A;
-        Fri, 26 Feb 2021 00:00:10 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id j24so5744922pfi.2;
-        Fri, 26 Feb 2021 00:00:10 -0800 (PST)
+        Fri, 26 Feb 2021 03:01:27 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29029C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:00:47 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id cf12so9023307edb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:00:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=SGKC+JVft3JHE0DGY/zfVH90D0jA8OCfIOyzcJ20Wcc=;
-        b=XffIAJbzfF4FyjDlJxNDHc5mU8K/77RZLqJY5xBu0uRny+QbYcdpYFDPREhFxOlqix
-         lrGIs9z2Y2XGFmY6pm7B9DKLyHjhLkZTRFW/wwFhQIrcuAZT6mW0O7jYWZOIB9acIbhw
-         9xxaiFwOG7UgnRoSU5z3nCsTGLdKJlPdgYMeLg7OE1fAh+xw/iLBKELLpcPM2i0JfSQY
-         UhZzSfahv/u/+IXT2AVo4DwVQ0V5Xyl3kvqIV7wex8wLiI0TfAZfp8V4X3/6qk3pOpOK
-         IpyvdF87hkmFEKDg5oUm4Th4TZ4uNgSYlLdTCSOCFCZgzL/knheRrii92UXoBIcoCwrL
-         Mfcw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+cCnvqPl/AB2g/rBCqOWO+msBf4tIh3Bh6qIDLBPfpE=;
+        b=JsAvrIKlM3pL20nlLL0BGEAkMQ3GUpsDs0XoRGguz27yaqnCrbkbOF9kproZLnThBV
+         5E+hiLimH0JGxTQ7lO4zwbefzp7zDJ3blbEg3Q7s4Dv6yX2x69aEnlq4OKdpTVSf+X4h
+         iJjSipoy6nTbZpZr7K6o97b3oP+XpIknAERMe8K5YnH0mmQufDu+S7GhPX30jeHE9UhD
+         eN1QZOsgF3imwOK3dFkI50oJCYmDNPl4odkxgz+WODdlUKNSCGyhMXpzUpUpz1+tVY2X
+         Af19VZthnhkhZc3zn5zLBcHHRylF7vHPugX9g5QMbBDKNPyW80BCw/BFiuxBkNVubT+f
+         PY8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SGKC+JVft3JHE0DGY/zfVH90D0jA8OCfIOyzcJ20Wcc=;
-        b=aTn5ca/Oh7muRoFzdWffcev9wcBBJwJdtWhxcqAkQbsymNxg0m27aeUavRYJfmPZd7
-         wQcmg8VtHxpYUqw1nBXzlEJlmpodwuSdm57R5ObC6E8v4lw6R1etIiwUOUQpb1tImZlB
-         WN1PHOPKLcwyQPcXFH5JUFuaziJx4cWAhPHlxuvypiZWJ7iCGdemfVJf6wCf+GoZAUSO
-         T4Q3ao53/t8OotikLTzgSx52GjcMoCPn2TLGrnIyiYrS2zoMfj5CDGlOHhziQY3ZmsR4
-         EkB7j4dXaS1HAqKRo/jVgKV2mv/q+ujN+bRsveKH2qGO4T2Ld460aAy1Q+oIEwZucatz
-         QEBw==
-X-Gm-Message-State: AOAM533TyF6yxy49uXEbGErwLc6SpEo0vFFJVZigvZ6sgs4erqMa5hTf
-        rteIlZshMCIyTv3XsFygKi/taxBlheXhcw==
-X-Google-Smtp-Source: ABdhPJxawGKZ4ZgAsRE/UqeSM6fJzqrwWfMq6XhqheJIZuUgfWr+DWX8mVWgINCwXXDMPA8ZxrbQPw==
-X-Received: by 2002:a63:dd49:: with SMTP id g9mr1900154pgj.175.1614326409597;
-        Fri, 26 Feb 2021 00:00:09 -0800 (PST)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id b18sm8785961pfi.173.2021.02.26.00.00.07
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Feb 2021 00:00:09 -0800 (PST)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH] KVM: x86: hyper-v: Fix Hyper-V context null-ptr-deref
-Date:   Fri, 26 Feb 2021 15:59:59 +0800
-Message-Id: <1614326399-5762-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+cCnvqPl/AB2g/rBCqOWO+msBf4tIh3Bh6qIDLBPfpE=;
+        b=mEGC7aqCuXYaiKuCKCD+OGjNA4z/0njt2tuT6uAWUP6+OCtgKs093kUyKfx8EE/F1k
+         RLcyVxMzMOYW/YehCI3ik7UftdY5F3pft3DgewvbdLqTXg2tjovHyXdmow8P0diara5P
+         f7w7AGYfJN8uNZyDNly84G0Hn+zuuoPnfyX0huaVfa0Qsy1SQodPs7OxwC3j7ShktI3N
+         XMVLE5GahWnKhoaMbtUUEMrS9Ed+08Ii3R7fflLWcPGRc56uBeVra5Luuq8RJCdwde1X
+         nyVh0rvJg2w2yeJPEBl6hRbVOV6YkRzGWgGVwedpl1gVE1Rb2p/Vhk0B/eQ5i9Jdyvqu
+         N5og==
+X-Gm-Message-State: AOAM533LqtaF92iRa8z/zbPKqH7t/Pf9ArI/KySLCypGmGaZi/iLiY64
+        yQNHpZ9ZzsTXmbfsW+I384/2866w8xt/Cy2UK9DYZA==
+X-Google-Smtp-Source: ABdhPJy+9ukdO4/4f4X7C9KDKCtQDucXdj3+WjwRZkYshjkjwzKOaFEWBvOHrT9uAZCURYIRIPxV2ImOkm21opowz2c=
+X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr1870001edt.221.1614326445786;
+ Fri, 26 Feb 2021 00:00:45 -0800 (PST)
+MIME-Version: 1.0
+References: <20210225092515.015261674@linuxfoundation.org>
+In-Reply-To: <20210225092515.015261674@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 26 Feb 2021 13:30:34 +0530
+Message-ID: <CA+G9fYu-UQxh+TppNVU88wWcLtBgrB-FseSf-MdGN02EAkd5aA@mail.gmail.com>
+Subject: Re: [PATCH 5.11 00/12] 5.11.2-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Thu, 25 Feb 2021 at 15:24, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.11.2 release.
+> There are 12 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 27 Feb 2021 09:25:06 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.11.2-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.11.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Reported by syzkaller:
 
-    KASAN: null-ptr-deref in range [0x0000000000000140-0x0000000000000147]
-    CPU: 1 PID: 8370 Comm: syz-executor859 Not tainted 5.11.0-syzkaller #0
-    RIP: 0010:synic_get arch/x86/kvm/hyperv.c:165 [inline]
-    RIP: 0010:kvm_hv_set_sint_gsi arch/x86/kvm/hyperv.c:475 [inline]
-    RIP: 0010:kvm_hv_irq_routing_update+0x230/0x460 arch/x86/kvm/hyperv.c:498
-    Call Trace:
-     kvm_set_irq_routing+0x69b/0x940 arch/x86/kvm/../../../virt/kvm/irqchip.c:223
-     kvm_vm_ioctl+0x12d0/0x2800 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3959
-     vfs_ioctl fs/ioctl.c:48 [inline]
-     __do_sys_ioctl fs/ioctl.c:753 [inline]
-     __se_sys_ioctl fs/ioctl.c:739 [inline]
-     __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
-     do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-     entry_SYSCALL_64_after_hwframe+0x44/0xae
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Hyper-V context is lazily allocated until Hyper-V specific MSRs are accessed 
-or SynIC is enabled. However, the syzkaller testcase sets irq routing table 
-directly w/o enabling SynIC. This results in null-ptr-deref when accessing 
-SynIC Hyper-V context. This patch fixes it.
-     
-syzkaller source: https://syzkaller.appspot.com/x/repro.c?x=163342ccd00000
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Reported-by: syzbot+6987f3b2dbd9eda95f12@syzkaller.appspotmail.com
-Fixes: 8f014550dfb1 ("KVM: x86: hyper-v: Make Hyper-V emulation enablement conditional")
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/hyperv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Summary
+------------------------------------------------------------------------
 
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 7d2dae9..58fa8c0 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -159,7 +159,7 @@ static struct kvm_vcpu_hv_synic *synic_get(struct kvm *kvm, u32 vpidx)
- 	struct kvm_vcpu_hv_synic *synic;
- 
- 	vcpu = get_vcpu_by_vpidx(kvm, vpidx);
--	if (!vcpu)
-+	if (!vcpu || !to_hv_vcpu(vcpu))
- 		return NULL;
- 	synic = to_hv_synic(vcpu);
- 	return (synic->active) ? synic : NULL;
--- 
-2.7.4
+kernel: 5.11.2-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.11.y
+git commit: 68eabe17bf08272cb338564500da7be0d4aad9a5
+git describe: v5.11.1-13-g68eabe17bf08
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
+.y/build/v5.11.1-13-g68eabe17bf08
 
+No regressions (compared to build v5.11-13-g6380656c9227)
+
+
+No fixes (compared to build v5.11-13-g6380656c9227)
+
+
+Ran 46115 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-64k_page_size
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-bpf
+* kselftest-intel_pstate
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* perf
+* v4l2-compliance
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* kselftest-android
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lkdtm
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* ltp-controllers-tests
+* ltp-open-posix-tests
+* ltp-sched-tests
+* kvm-unit-tests
+* fwts
+* kunit
+* rcutorture
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
