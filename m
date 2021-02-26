@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02828326654
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF17D326659
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhBZR3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:29:15 -0500
-Received: from mga18.intel.com ([134.134.136.126]:11180 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhBZR3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:29:09 -0500
-IronPort-SDR: D/VfvmTR5ATfkswZahODZMySIaSUEAULDrbmuHUARSCyzxbJQAYOpINfbTk2uU2SUyUZKE3sn0
- 7DmNGnasL+0w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="173587224"
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="173587224"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:27:57 -0800
-IronPort-SDR: kWM7i6bjCnSp3GFBkPPuXG6TEQ8gl2sM91C8rHZuwUn4QGEn2r9gs7D2f0QdAbeKOvMAjafXzV
- QLa6+fK0Ff8A==
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="405052447"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:27:57 -0800
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     linux-man@vger.kernel.org
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-api@vger.kenel.org
-Subject: [PATCH 2/2] sigaction.2: wfix - Clarify si_addr description.
-Date:   Fri, 26 Feb 2021 09:26:34 -0800
-Message-Id: <20210226172634.26905-3-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210226172634.26905-1-yu-cheng.yu@intel.com>
-References: <20210226172634.26905-1-yu-cheng.yu@intel.com>
+        id S230140AbhBZRa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:30:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhBZRa5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 12:30:57 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489D4C061574;
+        Fri, 26 Feb 2021 09:30:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=cUpjOvqMFT82ciPpS3h3o5kw6NB7VHxKS03NBNLEB6M=; b=UaiPO/LgLQiER5zhsEULNyTVN+
+        TmwnBO4Z/tFKMrmlKMmPfy3CB92WJPrWm5gY5caTqf6W5/a0GCMl3c9P6N7gNrEgS05wSFMbNwT5f
+        2Rd6M7cLbjEKvtQK6mlk31Dm2p5NIlLYHD5f/LhIBPuKcviX1awZ5SCECfRzjo4T0j/hIHpa9CgLb
+        kwu6NBNJ5ZyuQO9/JJTJ/0fdO6GEHHhDV+G5pb1PHkL5LH0J5X8VLh82czZzVss4OjsPZDJ2k1Jv5
+        8yqDLkvGm/0/UmRwr4IA391AoLwSSjO8i+0uahbG8XMPGSmh+Gvlu6cMV0/+P3FBh2sqVx3IWR+pP
+        CkJVfmaQ==;
+Received: from [2601:1c0:6280:3f0::3ba4] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lFgwP-0008Ov-Tg; Fri, 26 Feb 2021 17:30:14 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@linux.intel.com>
+Subject: [PATCH -next v2] fbdev: atyfb: use LCD management functions for PPC_PMAC also
+Date:   Fri, 26 Feb 2021 09:30:08 -0800
+Message-Id: <20210226173008.18236-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SIGSEGV fills si_addr only for memory access faults.  Add a note to clarify.
+Include PPC_PMAC in the configs that use aty_ld_lcd() and
+aty_st_lcd() implementations so that the PM code may work
+correctly for PPC_PMAC.
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc: Alejandro Colomar <alx.manpages@gmail.com>
-Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Florian Weimer <fweimer@redhat.com>
-Cc: "H.J. Lu" <hjl.tools@gmail.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-api@vger.kenel.org
-Link: https://lore.kernel.org/linux-api/20210217222730.15819-7-yu-cheng.yu@intel.com/
+Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: linux-fbdev@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
 ---
- man2/sigaction.2 | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Daniel- We also need this patch:
+https://lore.kernel.org/dri-devel/20210224215528.822-1-rdunlap@infradead.org/
+to fix a kernel test robot build error.
 
-diff --git a/man2/sigaction.2 b/man2/sigaction.2
-index 49a30f11e..bea884a23 100644
---- a/man2/sigaction.2
-+++ b/man2/sigaction.2
-@@ -467,7 +467,7 @@ and
- .BR SIGTRAP
- fill in
- .I si_addr
--with the address of the fault.
-+with the address of the fault (see notes).
- On some architectures,
- these signals also fill in the
- .I si_trapno
-@@ -955,6 +955,11 @@ It is not possible to block
- .IR sa_mask ).
- Attempts to do so are silently ignored.
- .PP
-+In a
-+.B SIGSEGV,
-+if the fault is a memory access fault, si_addr is filled with the address
-+causing the fault, otherwise it is not filled.
-+.PP
- See
- .BR sigsetops (3)
- for details on manipulating signal sets.
--- 
-2.21.0
+v2: send the correct version of this patch (thanks, Ville)
 
+ drivers/video/fbdev/aty/atyfb_base.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+--- linux-next-20210219.orig/drivers/video/fbdev/aty/atyfb_base.c
++++ linux-next-20210219/drivers/video/fbdev/aty/atyfb_base.c
+@@ -133,7 +133,7 @@
+ #define PRINTKE(fmt, args...)	printk(KERN_ERR "atyfb: " fmt, ## args)
+ 
+ #if defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_GENERIC_LCD) || \
+-defined(CONFIG_FB_ATY_BACKLIGHT)
++defined(CONFIG_FB_ATY_BACKLIGHT) || defined (CONFIG_PPC_PMAC)
+ static const u32 lt_lcd_regs[] = {
+ 	CNFG_PANEL_LG,
+ 	LCD_GEN_CNTL_LG,
+@@ -175,8 +175,8 @@ u32 aty_ld_lcd(int index, const struct a
+ 		return aty_ld_le32(LCD_DATA, par);
+ 	}
+ }
+-#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) \
+-	 defined(CONFIG_FB_ATY_GENERIC_LCD) */
++#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) ||
++	 defined(CONFIG_FB_ATY_GENERIC_LCD) || defined(CONFIG_PPC_PMAC) */
+ void aty_st_lcd(int index, u32 val, const struct atyfb_par *par)
+ { }
+ 
+@@ -184,7 +184,8 @@ u32 aty_ld_lcd(int index, const struct a
+ {
+ 	return 0;
+ }
+-#endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined (CONFIG_FB_ATY_GENERIC_LCD) */
++#endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) ||
++	  defined (CONFIG_FB_ATY_GENERIC_LCD) || defined(CONFIG_PPC_PMAC) */
+ 
+ #ifdef CONFIG_FB_ATY_GENERIC_LCD
+ /*
