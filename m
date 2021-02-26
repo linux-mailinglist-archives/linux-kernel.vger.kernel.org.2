@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73C8325DF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2198A325DFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhBZHFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 02:05:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40710 "EHLO
+        id S229482AbhBZHFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 02:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhBZHEd (ORCPT
+        with ESMTP id S230084AbhBZHEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 02:04:33 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CC5C0617AB
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:03:53 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id w18so5646971pfu.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:03:53 -0800 (PST)
+        Fri, 26 Feb 2021 02:04:40 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A75BC06121D
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:03:57 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id w18so5647088pfu.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:03:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Nt/87T8Oe1O4rtLmNP94vxQZOdydKRwsIkh35yYg1yk=;
-        b=IJhZHgg+y0yJBepC3PAYs0FDVrcYcIo8Au9TwDYVJUFuUgW5hGQwdbUSxrbhSREvQy
-         c0QkwKTaRYPSjiaE7TUENOmQGl5RfjYst4uUaf3vC5BKVj7qdJNwgZ6ohLukDUMb9nbd
-         X4xMu1M6Nz2D4CrdDOZ5ijDW3OMncacL2KQVA=
+        bh=zRx9AiKQC/slnSNzXR9EFgvzT3DZpBE4nYv/SE8+b14=;
+        b=QfcyLwnQSH+FrQRCg4FzWeLiwqE0R+P4SzMJ1mks9ipHjVCeaUD5nl4hWCcJEjDqC4
+         rrfYZBT1goEDnecIfnf4YVSwILMZWhkvX2XFJ52YQtyPvpUkRH155BlC+DP5TW6tevsG
+         LoRuPEshQ91oYU185Ngi1P5lsDIb0JQgoSSyk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Nt/87T8Oe1O4rtLmNP94vxQZOdydKRwsIkh35yYg1yk=;
-        b=b09hCajdDFrEHhsgc4hj43/grPWjSF5zAzcBF7xG8DHNIFx1tCtqNOnEFbNNJMML2x
-         9pLjyjpixDPhT7iXAL56gKSCTl880iHToo40A2qutdIxKAd/WFMqpUUfR/KeVf0hKKHt
-         F6YoUcP3lm3UTkl0D1G0ac4+Qg4MdeEriJr4UkCfA3/DFsk3PZxKfZmfb41/2NDpejCv
-         jN4wXhbowJRm/0UR8ZnCf7oRMQbapEASvT6t72+vVnZwKhh62hyjOzYjHj8YI25N6ChH
-         hPFDWkZ1ra6v0V9BZIO+J7zlNjNFuBORZTEsrMrNiKwRCDj+5OCdEttg0GCFK/QiGkwY
-         zQeQ==
-X-Gm-Message-State: AOAM532a0c6LN3SPAWbjlfbK45PpFLnom67W9o9Yo++J9gXOc5/let2c
-        1GGLtCD6PmRFVSSFKCViovnM/w==
-X-Google-Smtp-Source: ABdhPJxtngTccqhogsLP5ubkMdy7NMhmDUzhWZKPl5sneGLDFPDMM4xDG3rAWR8H4ryADY/hi+wGXQ==
-X-Received: by 2002:a63:4f56:: with SMTP id p22mr1745529pgl.224.1614323032859;
-        Thu, 25 Feb 2021 23:03:52 -0800 (PST)
+        bh=zRx9AiKQC/slnSNzXR9EFgvzT3DZpBE4nYv/SE8+b14=;
+        b=H83d5lWHevXxYSwT3+0ZoWPzPKWHbsG050Osnsw9OD/uU3Jl56BlGsc52xl2MRamOh
+         7bBsp6najTWaUh1/pSMzBPKOrq3BKACCUNnconKlfBcko/Ru+xwY2zvTaHqs6Me9wOpJ
+         jrZsHQpMMGwbAANwMqwoMaUE1G2zBebFDtjVIdyvYdDQCblyqxiUV9PSSpq7TH6Yz3Av
+         ygRdEOOkFfeshygMWQI9oRUmE1VNwGOGiQoUn7gHvTygH+rI0CpsOk3LsU/imjyPKCYr
+         24e4I3ty+jHvxgk+AgZleLjrTNz6W6HUTgKnPOqxXTGvOSmRFu4dZLtPE59eiQ1l/atI
+         XI8Q==
+X-Gm-Message-State: AOAM532dCdq/jqdisJ3R9+ZtozD8uIyd/ubaYvsdr8Z/g0Z6qCyfH/fh
+        No7QRxW+xtLMWb4jIVepVyBX0w==
+X-Google-Smtp-Source: ABdhPJzZ0RNGbFGasTbv8VW8sDcLxEsqYE/deHqBqAntJJhILzIhTTDrgcggBBBo3kq6RaR89vqikA==
+X-Received: by 2002:a63:d18:: with SMTP id c24mr1665409pgl.442.1614323036817;
+        Thu, 25 Feb 2021 23:03:56 -0800 (PST)
 Received: from ub-XPS-13-9350.domain.name ([103.161.30.220])
-        by smtp.gmail.com with ESMTPSA id f7sm7592156pjh.45.2021.02.25.23.03.49
+        by smtp.gmail.com with ESMTPSA id f7sm7592156pjh.45.2021.02.25.23.03.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 23:03:52 -0800 (PST)
+        Thu, 25 Feb 2021 23:03:56 -0800 (PST)
 From:   Jagan Teki <jagan@amarulasolutions.com>
 To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         Alexandre Torgue <alexandre.torgue@st.com>,
@@ -54,9 +54,9 @@ Cc:     devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-amarula@amarulasolutions.com,
         Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH v2 07/10] ARM: dts: stm32: Add Engicam i.Core STM32MP1 SoM
-Date:   Fri, 26 Feb 2021 12:33:01 +0530
-Message-Id: <20210226070304.8028-8-jagan@amarulasolutions.com>
+Subject: [PATCH v2 08/10] ARM: dts: stm32: Add Engicam i.Core STM32MP1 C.TOUCH 2.0
+Date:   Fri, 26 Feb 2021 12:33:02 +0530
+Message-Id: <20210226070304.8028-9-jagan@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210226070304.8028-1-jagan@amarulasolutions.com>
 References: <20210226070304.8028-1-jagan@amarulasolutions.com>
@@ -66,20 +66,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Engicam C.TOUCH 2.0 is an EDIMM compliant general purpose Carrier
+board.
+
+Genaral features:
+- Ethernet 10/100
+- Wifi/BT
+- USB Type A/OTG
+- Audio Out
+- CAN
+- LVDS panel connector
+
 i.Core STM32MP1 is an EDIMM SoM based on STM32MP157A from Engicam.
 
-General features:
-- STM32MP157A
-- Up to 1GB DDR3L
-- 4GB eMMC
-- 10/100 Ethernet
-- USB 2.0 Host/OTG
-- I2S
-- MIPI DSI to LVDS
-- rest of STM32MP157A features
-
-i.Core STM32MP1 needs to mount on top of Engicam baseboards
-for creating complete platform solutions.
+i.Core STM32MP1 needs to mount on top of this Carrier board for
+creating complete i.Core STM32MP1 C.TOUCH 2.0 board.
 
 Add support for it.
 
@@ -88,16 +89,29 @@ Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 Changes for v2:
 - new patch
 
- .../boot/dts/stm32mp157a-icore-stm32mp1.dtsi  | 195 ++++++++++++++++++
- 1 file changed, 195 insertions(+)
- create mode 100644 arch/arm/boot/dts/stm32mp157a-icore-stm32mp1.dtsi
+ arch/arm/boot/dts/Makefile                    |  1 +
+ .../stm32mp157a-icore-stm32mp1-ctouch2.dts    | 47 +++++++++++++++++++
+ 2 files changed, 48 insertions(+)
+ create mode 100644 arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dts
 
-diff --git a/arch/arm/boot/dts/stm32mp157a-icore-stm32mp1.dtsi b/arch/arm/boot/dts/stm32mp157a-icore-stm32mp1.dtsi
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 1332622a3f9f..6dc39bddaf7e 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1073,6 +1073,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
+ 	stm32mp157a-iot-box.dtb \
+ 	stm32mp157a-microgea-stm32mp1-microdev2.0.dtb \
+ 	stm32mp157a-microgea-stm32mp1-microdev2.0-of7.dtb \
++	stm32mp157a-icore-stm32mp1-ctouch2.dtb \
+ 	stm32mp157a-stinger96.dtb \
+ 	stm32mp157c-dhcom-pdk2.dtb \
+ 	stm32mp157c-dhcom-picoitx.dtb \
+diff --git a/arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dts b/arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dts
 new file mode 100644
-index 000000000000..c8e4b68c5661
+index 000000000000..d3058a036c74
 --- /dev/null
-+++ b/arch/arm/boot/dts/stm32mp157a-icore-stm32mp1.dtsi
-@@ -0,0 +1,195 @@
++++ b/arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dts
+@@ -0,0 +1,47 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
 +/*
 + * Copyright (c) STMicroelectronics 2019 - All Rights Reserved
@@ -105,192 +119,44 @@ index 000000000000..c8e4b68c5661
 + * Copyright (c) 2020 Amarula Solutons(India)
 + */
 +
++/dts-v1/;
++#include "stm32mp157.dtsi"
++#include "stm32mp157a-icore-stm32mp1.dtsi"
++#include "stm32mp15-pinctrl.dtsi"
++#include "stm32mp15xxaa-pinctrl.dtsi"
++#include <dt-bindings/gpio/gpio.h>
++
 +/ {
-+	compatible = "engicam,icore-stm32mp1", "st,stm32mp157";
++	model = "Engicam i.Core STM32MP1 C.TOUCH 2.0";
++	compatible = "engicam,icore-stm32mp1-ctouch2",
++		     "engicam,icore-stm32mp1", "st,stm32mp157";
 +
-+	memory@c0000000 {
-+		reg = <0xc0000000 0x20000000>;
++	aliases {
++		serial0 = &uart4;
 +	};
 +
-+	reserved-memory {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges;
-+
-+		mcuram2: mcuram2@10000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x10000000 0x40000>;
-+			no-map;
-+		};
-+
-+		vdev0vring0: vdev0vring0@10040000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x10040000 0x1000>;
-+			no-map;
-+		};
-+
-+		vdev0vring1: vdev0vring1@10041000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x10041000 0x1000>;
-+			no-map;
-+		};
-+
-+		vdev0buffer: vdev0buffer@10042000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x10042000 0x4000>;
-+			no-map;
-+		};
-+
-+		mcuram: mcuram@30000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x30000000 0x40000>;
-+			no-map;
-+		};
-+
-+		retram: retram@38000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x38000000 0x10000>;
-+			no-map;
-+		};
-+	};
-+
-+	vddcore: regulator-vddcore {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vddcore";
-+		regulator-min-microvolt = <1200000>;
-+		regulator-max-microvolt = <1200000>;
-+		regulator-always-on;
-+	};
-+
-+	vdd: regulator-vdd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	vdd_usb: regulator-vdd-usb {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd_usb";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	vdda: regulator-vdda {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdda";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	vdd_ddr: regulator-vdd-ddr {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd_ddr";
-+		regulator-min-microvolt = <1350000>;
-+		regulator-max-microvolt = <1350000>;
-+		regulator-always-on;
-+	};
-+
-+	vtt_ddr: regulator-vtt-ddr {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vtt_ddr";
-+		regulator-min-microvolt = <675000>;
-+		regulator-max-microvolt = <675000>;
-+		regulator-always-on;
-+		vin-supply = <&vdd>;
-+	};
-+
-+	vref_ddr: regulator-vref-ddr {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vref_ddr";
-+		regulator-min-microvolt = <675000>;
-+		regulator-max-microvolt = <675000>;
-+		regulator-always-on;
-+		vin-supply = <&vdd>;
-+	};
-+
-+	vdd_sd: regulator-vdd-sd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vdd_sd";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	v3v3: regulator-v3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "v3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	v2v8: regulator-v2v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "v2v8";
-+		regulator-min-microvolt = <2800000>;
-+		regulator-max-microvolt = <2800000>;
-+		regulator-always-on;
-+		vin-supply = <&v3v3>;
-+	};
-+
-+	v1v8: regulator-v1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "v1v8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+		vin-supply = <&v3v3>;
++	chosen {
++		stdout-path = "serial0:115200n8";
 +	};
 +};
 +
-+&dts {
++&sdmmc1 {
++	bus-width = <4>;
++	disable-wp;
++	pinctrl-names = "default", "opendrain", "sleep";
++	pinctrl-0 = <&sdmmc1_b4_pins_a>;
++	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
++	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
++	st,neg-edge;
++	vmmc-supply = <&v3v3>;
 +	status = "okay";
 +};
 +
-+&i2c2 {
-+	i2c-scl-falling-time-ns = <20>;
-+	i2c-scl-rising-time-ns = <185>;
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&i2c2_pins_a>;
-+	pinctrl-1 = <&i2c2_sleep_pins_a>;
-+	status = "okay";
-+};
-+
-+&ipcc {
-+	status = "okay";
-+};
-+
-+&iwdg2{
-+	timeout-sec = <32>;
-+	status = "okay";
-+};
-+
-+&m4_rproc{
-+	memory-region = <&retram>, <&mcuram>, <&mcuram2>, <&vdev0vring0>,
-+			<&vdev0vring1>, <&vdev0buffer>;
-+	mboxes = <&ipcc 0>, <&ipcc 1>, <&ipcc 2>;
-+	mbox-names = "vq0", "vq1", "shutdown";
-+	interrupt-parent = <&exti>;
-+	interrupts = <68 1>;
-+	status = "okay";
-+};
-+
-+&rng1 {
-+	status = "okay";
-+};
-+
-+&rtc{
-+	status = "okay";
-+};
-+
-+&vrefbuf {
-+	regulator-min-microvolt = <2500000>;
-+	regulator-max-microvolt = <2500000>;
-+	vdda-supply = <&vdd>;
++&uart4 {
++	pinctrl-names = "default", "sleep", "idle";
++	pinctrl-0 = <&uart4_pins_a>;
++	pinctrl-1 = <&uart4_sleep_pins_a>;
++	pinctrl-2 = <&uart4_idle_pins_a>;
 +	status = "okay";
 +};
 -- 
