@@ -2,67 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19793268F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1F73268FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhBZUwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:52:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        id S230321AbhBZUy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhBZUwd (ORCPT
+        with ESMTP id S229949AbhBZUyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:52:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30184C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:51:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+udi+amsuo05IzVe+P9jhzY7ydKiUiOHNE7tYtPijPo=; b=ltlrfKs/tgZ+46eyE+BCDfcOCA
-        J7sUTEbAy8u8GPVXJccQYwlZhFGRrVORtpHlHks86G1tlin3p59e3/ktqx0wrS0ACz/jYWQ8HI0z7
-        n0axc0QzaKGM2mcAAorWuF5uV8szCENe4rFvjMO/FFgu2FdNtDWLm135bq/WbuL6VmFoXXd29gRmD
-        b/wF9uWCrtVgzHcHlh+lq+2q5OQKhacw6WGgJCXbpPvVoU1bJf1Eur3yO6ICpVQ1pENRQ95SjS0Df
-        Xy/Ia17eYdw/0k2eDBDdRKL258S+VZE8l3+RAtmucbmUCxzPoDH7ftwuOESeneQvafc/Xc/WD6Bwi
-        CDdOU5iw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFk5L-00CUjl-2O; Fri, 26 Feb 2021 20:51:41 +0000
-Date:   Fri, 26 Feb 2021 20:51:39 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] Fix zero_user_segments() with start > end
-Message-ID: <20210226205139.GI2723601@casper.infradead.org>
-References: <87eeh2erm0.fsf@mail.parknet.co.jp>
+        Fri, 26 Feb 2021 15:54:55 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91FCC06174A;
+        Fri, 26 Feb 2021 12:54:14 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id k5so5181324qvu.2;
+        Fri, 26 Feb 2021 12:54:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=lprh19f9DdU1Ukj+xhNEllV46kCwHQGRCuKxdl6/+6M=;
+        b=ZrnDnY8JHtIY76Qv42WAiZCTV7omWkz585QFZ7WFheTDlgFCLXk2k6kR+XFXLWCW8O
+         in5GfXsyPD+uQeIrckBOQSjS6LxOguCxqsDWVglDA7orSRjGJF6GcDv+r0Yr61vV0lvl
+         7k9kWrvUaMxjKWMPgaqcI1W1X7zMFqOyFHr+8yEAq7lkK71OwzpypO0fevpcJDbA7eih
+         n1/lKXGyqTk5+B9JjtUNJLlXf9axKhqLRvBd1xe7pwpAvMAkKV3MuE5M5+J2YluAlBm5
+         hvIUfZPfftvS5L3mWHzEEMxb5xKfG3BuxIq1podIxiB6a030X8YbvSca/scPZUm9kRuj
+         byyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=lprh19f9DdU1Ukj+xhNEllV46kCwHQGRCuKxdl6/+6M=;
+        b=tyoRyRoL2q5ePthGZr+6K8UBT4X0lvy3aNAiqe6755RG7qd2bjGxKCy9oAfFqt2zKe
+         INxl2ej/5Aw/+rkWe05pl1DU5aQ7yWhjFwI2ieOK7KCRdhC2O0X7DsEOsgfVDOOoe38t
+         4459DcyB6wSvnU7bw9OsTc/8DP+oFO/htF4qRiMQGc4oY31g0h1DrqvV1gLomBuLUQja
+         P/fKI6Md5rfF9iprx9k5yug/Enpds04vAhDEiyTHxEt4z4rRMqy8WPNjChi0d49N4SlL
+         vwKVqqw2/5ocT7lJ7BhXf2eNrmVy0sic8tep+cSL3K8Vu4W+hEhlwSyFiWxDTxf+kFWT
+         pVHw==
+X-Gm-Message-State: AOAM5319vfGX2SI6ibiGqTMrAKWA0h9B+cd6NGI6/EYq/pRkq5MepxZ9
+        Tuf+Ac2m/2wuK1IcQ/JsV4I=
+X-Google-Smtp-Source: ABdhPJxTv7Tbc++eYs+AYN1gu06PSyF50S8J/LEP4jvknCJRTSsWtTXQf5CuxlCodaKu5kolYc3jvg==
+X-Received: by 2002:ad4:4c83:: with SMTP id bs3mr3160700qvb.41.1614372854181;
+        Fri, 26 Feb 2021 12:54:14 -0800 (PST)
+Received: from smtp.gmail.com ([2804:14c:73:9e91:8b8:81b4:5ef9:821d])
+        by smtp.gmail.com with ESMTPSA id h27sm7168705qkk.49.2021.02.26.12.54.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 12:54:13 -0800 (PST)
+Date:   Fri, 26 Feb 2021 17:54:10 -0300
+From:   Lucas Pires Stankus <lucas.p.stankus@gmail.com>
+To:     brendanhiggins@google.com
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kunit: fix checkpatch warning
+Message-ID: <20210226205410.nnwstno5xrsb5ci3@smtp.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87eeh2erm0.fsf@mail.parknet.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 01:11:35AM +0900, OGAWA Hirofumi wrote:
-> zero_user_segments() is used from __block_write_begin_int(), for
-> example like the following
-> 
-> 	zero_user_segments(page, 4096, 1024, 512, 918)
-> 
-> But new zero_user_segments() implements for HIGMEM + TRANSPARENT_HUGEPAGE 
-> doesn't handle "start > end" case correctly, and hits BUG_ON(). (we
-> can fix __block_write_begin_int() instead though, it is the old and
-> multiple usage)
+Tidy up code by fixing the following checkpatch warnings:
+CHECK: Alignment should match open parenthesis
+CHECK: Lines should not end with a '('
 
-Why don't we just take out the BUG_ON instead?  The function doesn't
-actually do the wrong thing.
+Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+---
+ lib/kunit/assert.c | 31 ++++++++++++++++++++-----------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
 
-> Also it calls kmap_atomic() unnecessary while start == end == 0.
-
-I'm OK with that.  It always used to do that.
-
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-
-Fixes: 0060ef3b4e6d ("mm: support THPs in zero_user_segments")
+diff --git a/lib/kunit/assert.c b/lib/kunit/assert.c
+index 33acdaa28a7d..309f49d70b2f 100644
+--- a/lib/kunit/assert.c
++++ b/lib/kunit/assert.c
+@@ -25,7 +25,7 @@ void kunit_base_assert_format(const struct kunit_assert *assert,
+ 	}
+ 
+ 	string_stream_add(stream, "%s FAILED at %s:%d\n",
+-			 expect_or_assert, assert->file, assert->line);
++			  expect_or_assert, assert->file, assert->line);
+ }
+ EXPORT_SYMBOL_GPL(kunit_base_assert_format);
+ 
+@@ -48,8 +48,9 @@ EXPORT_SYMBOL_GPL(kunit_fail_assert_format);
+ void kunit_unary_assert_format(const struct kunit_assert *assert,
+ 			       struct string_stream *stream)
+ {
+-	struct kunit_unary_assert *unary_assert = container_of(
+-			assert, struct kunit_unary_assert, assert);
++	struct kunit_unary_assert *unary_assert;
++
++	unary_assert = container_of(assert, struct kunit_unary_assert, assert);
+ 
+ 	kunit_base_assert_format(assert, stream);
+ 	if (unary_assert->expected_true)
+@@ -67,8 +68,10 @@ EXPORT_SYMBOL_GPL(kunit_unary_assert_format);
+ void kunit_ptr_not_err_assert_format(const struct kunit_assert *assert,
+ 				     struct string_stream *stream)
+ {
+-	struct kunit_ptr_not_err_assert *ptr_assert = container_of(
+-			assert, struct kunit_ptr_not_err_assert, assert);
++	struct kunit_ptr_not_err_assert *ptr_assert;
++
++	ptr_assert = container_of(assert, struct kunit_ptr_not_err_assert,
++				  assert);
+ 
+ 	kunit_base_assert_format(assert, stream);
+ 	if (!ptr_assert->value) {
+@@ -88,8 +91,10 @@ EXPORT_SYMBOL_GPL(kunit_ptr_not_err_assert_format);
+ void kunit_binary_assert_format(const struct kunit_assert *assert,
+ 				struct string_stream *stream)
+ {
+-	struct kunit_binary_assert *binary_assert = container_of(
+-			assert, struct kunit_binary_assert, assert);
++	struct kunit_binary_assert *binary_assert;
++
++	binary_assert = container_of(assert, struct kunit_binary_assert,
++				     assert);
+ 
+ 	kunit_base_assert_format(assert, stream);
+ 	string_stream_add(stream,
+@@ -110,8 +115,10 @@ EXPORT_SYMBOL_GPL(kunit_binary_assert_format);
+ void kunit_binary_ptr_assert_format(const struct kunit_assert *assert,
+ 				    struct string_stream *stream)
+ {
+-	struct kunit_binary_ptr_assert *binary_assert = container_of(
+-			assert, struct kunit_binary_ptr_assert, assert);
++	struct kunit_binary_ptr_assert *binary_assert;
++
++	binary_assert = container_of(assert, struct kunit_binary_ptr_assert,
++				     assert);
+ 
+ 	kunit_base_assert_format(assert, stream);
+ 	string_stream_add(stream,
+@@ -132,8 +139,10 @@ EXPORT_SYMBOL_GPL(kunit_binary_ptr_assert_format);
+ void kunit_binary_str_assert_format(const struct kunit_assert *assert,
+ 				    struct string_stream *stream)
+ {
+-	struct kunit_binary_str_assert *binary_assert = container_of(
+-			assert, struct kunit_binary_str_assert, assert);
++	struct kunit_binary_str_assert *binary_assert;
++
++	binary_assert = container_of(assert, struct kunit_binary_str_assert,
++				     assert);
+ 
+ 	kunit_base_assert_format(assert, stream);
+ 	string_stream_add(stream,
+-- 
+2.30.1
 
