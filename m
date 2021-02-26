@@ -2,141 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC61326305
+	by mail.lfdr.de (Postfix) with ESMTP id 6E013326304
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhBZNAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 08:00:50 -0500
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:54875 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhBZNAj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 08:00:39 -0500
-X-Originating-IP: 81.185.174.212
-Received: from localhost.localdomain (212.174.185.81.rev.sfr.net [81.185.174.212])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 4FAAF1C000A;
-        Fri, 26 Feb 2021 12:59:49 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nylon Chen <nylon7@andestech.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH] riscv: Improve KASAN_VMALLOC support
-Date:   Fri, 26 Feb 2021 07:59:33 -0500
-Message-Id: <20210226125933.32023-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.20.1
+        id S230107AbhBZNAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 08:00:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhBZNAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 08:00:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B42EB64E4D;
+        Fri, 26 Feb 2021 12:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614344391;
+        bh=jROorbZuXee0443nkbVh1AgriDGvjjSbnVGbV2NXTR8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1TIA6mp+T+bPraWU5z2dlFWxdQ3cLz1WnIxbWPN0DmPPXjgkMI2LUa53LP6L7ayi7
+         qjDPX8w3GD9/gj3nzCMxC+hSnQJMTYSQdt3ojDkFZTw3fAbIOPbUjVklikvsKj+gDG
+         0d/Qbz1oHdHdcGwACBB9qWF6Sd1morArLgWgOkfc=
+Date:   Fri, 26 Feb 2021 13:59:48 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jim Mattson <jmattson@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.4 12/47] KVM: x86: avoid incorrect writes to host
+ MSR_IA32_SPEC_CTRL
+Message-ID: <YDjwxF2RyKnsQqF/@kroah.com>
+References: <20210104155705.740576914@linuxfoundation.org>
+ <20210104155706.339275609@linuxfoundation.org>
+ <85e3f488-4ec5-2ad3-26a6-097d532824e1@proxmox.com>
+ <4fa31425-3c13-0a4f-167b-6566c6302334@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4fa31425-3c13-0a4f-167b-6566c6302334@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When KASAN vmalloc region is populated, there is no userspace process and
-the page table in use is swapper_pg_dir, so there is no need to read
-SATP. Then we can use the same scheme used by kasan_populate_p*d
-functions to go through the page table, which harmonizes the code.
+On Fri, Feb 26, 2021 at 12:27:49PM +0100, Paolo Bonzini wrote:
+> On 26/02/21 12:03, Thomas Lamprecht wrote:
+> > On 04.01.21 16:57, Greg Kroah-Hartman wrote:
+> > > From: Paolo Bonzini <pbonzini@redhat.com>
+> > > 
+> > > [ Upstream commit 6441fa6178f5456d1d4b512c08798888f99db185 ]
+> > > 
+> > > If the guest is configured to have SPEC_CTRL but the host does not
+> > > (which is a nonsensical configuration but these are not explicitly
+> > > forbidden) then a host-initiated MSR write can write vmx->spec_ctrl
+> > > (respectively svm->spec_ctrl) and trigger a #GP when KVM tries to
+> > > restore the host value of the MSR.  Add a more comprehensive check
+> > > for valid bits of SPEC_CTRL, covering host CPUID flags and,
+> > > since we are at it and it is more correct that way, guest CPUID
+> > > flags too.
+> > > 
+> > > For AMD, remove the unnecessary is_guest_mode check around setting
+> > > the MSR interception bitmap, so that the code looks the same as
+> > > for Intel.
+> > > 
+> > 
+> > A git bisect between 5.4.86 and 5.4.98 showed that this breaks boot of QEMU
+> > guests running Windows 10 20H2 on AMD Ryzen X3700 CPUs with a BSOD showing
+> > "KERNEL SECURITY CHECK FAILURE".
+> > 
+> > Reverting this commit or setting the CPU type of the QEMU/KVM command from
+> > host to qemu64 allows one to boot Windows 10 in the VM again.
+> > 
+> > I found a followup, commit 841c2be09fe4f495fe5224952a419bd8c7e5b455 [0],
+> > which has a fixes line for this commit and mentions Zen2 AMD CPUs (which
+> > the X3700 is).
+> > Applying a backport of that commit on top of 5.4.98 stable tree fixed the
+> > issue here see below for the backport I used, it applies also cleanly on the
+> > more current 5.4.101 release.
+> > 
+> > So can you please add this patch to the stable trees that backported the
+> > problematic upstream commit 6441fa6178f5456d1d4b512c08798888f99db185 ?
+> > 
+> > If I should submit this in any other way just ask, was not sure about
+> > what works best with a patch which cannot be cherry-picked cleanly.
+> 
+> Ok, I'll submit it.
+> 
+> Thanks for the testing.
 
-In addition, make use of set_pgd that goes through all unused page table
-levels, contrary to p*d_populate functions, which makes this function work
-whatever the number of page table levels.
+Does that mean I should not take the patch here in this email and that
+you will submit it after some timeperiod, or that I should take this
+patch as-is?
 
-And finally, make sure the writes to swapper_pg_dir are visible using
-an sfence.vma.
+thanks,
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
- arch/riscv/mm/kasan_init.c | 59 ++++++++++++--------------------------
- 1 file changed, 19 insertions(+), 40 deletions(-)
-
-diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-index e3d91f334b57..b0cee8d35938 100644
---- a/arch/riscv/mm/kasan_init.c
-+++ b/arch/riscv/mm/kasan_init.c
-@@ -11,18 +11,6 @@
- #include <asm/fixmap.h>
- #include <asm/pgalloc.h>
- 
--static __init void *early_alloc(size_t size, int node)
--{
--	void *ptr = memblock_alloc_try_nid(size, size,
--		__pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
--
--	if (!ptr)
--		panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d from=%llx\n",
--			__func__, size, size, node, (u64)__pa(MAX_DMA_ADDRESS));
--
--	return ptr;
--}
--
- extern pgd_t early_pg_dir[PTRS_PER_PGD];
- asmlinkage void __init kasan_early_init(void)
- {
-@@ -155,38 +143,29 @@ static void __init kasan_populate(void *start, void *end)
- 	memset(start, KASAN_SHADOW_INIT, end - start);
- }
- 
-+void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned long end)
-+{
-+	unsigned long next;
-+	void *p;
-+	pgd_t *pgd_k = pgd_offset_k(vaddr);
-+
-+	do {
-+		next = pgd_addr_end(vaddr, end);
-+		if (pgd_page_vaddr(*pgd_k) == (unsigned long)lm_alias(kasan_early_shadow_pmd)) {
-+			p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-+			set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), PAGE_TABLE));
-+		}
-+	} while (pgd_k++, vaddr = next, vaddr != end);
-+}
-+
- void __init kasan_shallow_populate(void *start, void *end)
- {
- 	unsigned long vaddr = (unsigned long)start & PAGE_MASK;
- 	unsigned long vend = PAGE_ALIGN((unsigned long)end);
--	unsigned long pfn;
--	int index;
--	void *p;
--	pud_t *pud_dir, *pud_k;
--	pgd_t *pgd_dir, *pgd_k;
--	p4d_t *p4d_dir, *p4d_k;
--
--	while (vaddr < vend) {
--		index = pgd_index(vaddr);
--		pfn = csr_read(CSR_SATP) & SATP_PPN;
--		pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
--		pgd_k = init_mm.pgd + index;
--		pgd_dir = pgd_offset_k(vaddr);
--		set_pgd(pgd_dir, *pgd_k);
--
--		p4d_dir = p4d_offset(pgd_dir, vaddr);
--		p4d_k  = p4d_offset(pgd_k, vaddr);
--
--		vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
--		pud_dir = pud_offset(p4d_dir, vaddr);
--		pud_k = pud_offset(p4d_k, vaddr);
--
--		if (pud_present(*pud_dir)) {
--			p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
--			pud_populate(&init_mm, pud_dir, p);
--		}
--		vaddr += PAGE_SIZE;
--	}
-+
-+	kasan_shallow_populate_pgd(vaddr, vend);
-+
-+	local_flush_tlb_all();
- }
- 
- void __init kasan_init(void)
--- 
-2.20.1
-
+greg k-h
