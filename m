@@ -2,612 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19354326478
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8AE326484
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhBZPCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 10:02:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25633 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229621AbhBZPCi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:02:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614351671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HuhuudeL5vkjrVLiOf6VXt9FizvMi8CKDbWM1bNqAV4=;
-        b=P6wOUAzCZkwBo2xPowEfEAbqdcC2T7iUtUN2XRKbr0sM9jr2o9q3qAwFnQbEoYw5Br8K3C
-        zCnU0F9LwPRV3pKQunD3GPYnalxHGol9jbMRwlKh0qtTJ7Lv+eR95l3RjAQM6Z5i/5x38c
-        85ABJvWxLaMK7ZToOzgaUnw5PmqWnO8=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-vvxTil1zMp-MaFytilZ_0Q-1; Fri, 26 Feb 2021 10:01:09 -0500
-X-MC-Unique: vvxTil1zMp-MaFytilZ_0Q-1
-Received: by mail-qv1-f70.google.com with SMTP id q104so6986367qvq.20
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 07:01:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=HuhuudeL5vkjrVLiOf6VXt9FizvMi8CKDbWM1bNqAV4=;
-        b=f65iOvb+FwCVX+P31/kY8ZOfZf/Oyng+M9WRrlELbR5oo8ImLxzuNNkqrYnrwa+YXi
-         gbm+rCu5wpB+vvJMEB5JoHdHMkHjiCHoijyQsU4zVKBPqF8eD5VR36siNwDuZ/XQunib
-         cUJruHp9fXPcl2NDrRZzyzZTsd4hNALHGJIU3kgr5PovOPPGDrQ9FtjarGvYCM6WH4g4
-         und05yfwY1aB4ydtvF221goVGY/RBowI8wD1SZZr+lnlqWfvhwz+HdKgz3IPwL+mVZfT
-         DCrDBuAlje3RRXuRsF5e2Kb2R1D64p4RwTrIPOqSRMz8SkGUhp43CZIBRWlhnipuMb5U
-         P1AQ==
-X-Gm-Message-State: AOAM530OVqwYFcTilndQNEho6Cx3zqwI9Q1PKDaZB4WlveUW1rHUoJSc
-        wPdx9aKKVslRqMkDo9MNi1o8DucWof2QJPnwWZHaQB+I95sGRBimND+OPdygNKdww93huiiB14V
-        4b2LceMu3syCGIM972Hw74e4O
-X-Received: by 2002:a37:615:: with SMTP id 21mr2942229qkg.421.1614351668704;
-        Fri, 26 Feb 2021 07:01:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyDk3NWeUtf5dAvbc5uHyM7lICHFrGfe0MY+ex1ZFExlNedFgAxLukNJY5yIBJ5LJwDhLBm0g==
-X-Received: by 2002:a37:615:: with SMTP id 21mr2942174qkg.421.1614351668237;
-        Fri, 26 Feb 2021 07:01:08 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w9sm2682574qto.68.2021.02.26.07.01.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 07:01:07 -0800 (PST)
-Subject: Re: [PATCH V3 XRT Alveo 07/18] fpga: xrt: management physical
- function driver (root)
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org,
-        "mdf@kernel.org" <mdf@kernel.org>
-Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
-        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210218064019.29189-1-lizhih@xilinx.com>
- <20210218064019.29189-8-lizhih@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <d0057bee-2cf1-b560-c160-636d8e76cbda@redhat.com>
-Date:   Fri, 26 Feb 2021 07:01:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230018AbhBZPKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 10:10:46 -0500
+Received: from btbn.de ([5.9.118.179]:42014 "EHLO btbn.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229598AbhBZPKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 10:10:44 -0500
+X-Greylist: delayed 372 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 10:10:42 EST
+Received: from [IPv6:2001:16b8:64c0:6700:50d3:5f50:f141:161] (200116b864c0670050d35f50f1410161.dip.versatel-1u1.de [IPv6:2001:16b8:64c0:6700:50d3:5f50:f141:161])
+        by btbn.de (Postfix) with ESMTPSA id B1B3625EA8D;
+        Fri, 26 Feb 2021 16:03:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rothenpieler.org;
+        s=mail; t=1614351828;
+        bh=c30HSZJschWPSlpWwlIXJRzxEJlkwoEp2JzTZidoWRk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=MlQh8/ocq183ogh1pxnesAlZL6A9mZxITtDfH5C06bOOPIbktITCOikozLVTAq+B4
+         er8yHRhhD1Cy5wl8RKSNxvsBevwnAuTgHnNincCg38+6mShRrnJTw8Hf6lTbtPgaAj
+         yB0xbCDHbLIwjhPBINCWvrcxkHpBc679o0l90pSu48Qxo9DHLF3/hAH4WNA393Cx7+
+         iI/NRDaaaev/iPZpJbxr7lfXXmXUUTlQVbK3HpH+CkI9HcIIT0POFW3tDzIrBGkpIi
+         z/cxwqsiKk2qhJvPLAihDxZIRYHlaoed0M7QVcoJv9WOz6Z9Wx7v/R74q35+x4qJYH
+         3TMc7B4OMVTcA==
+Subject: Re: NFS Caching broken in 4.19.37
+To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Bruce Fields <bfields@fieldses.org>
+Cc:     Salvatore Bonaccorso <carnil@debian.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "940821@bugs.debian.org" <940821@bugs.debian.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
+References: <5022bdc4-9f3e-9756-cbca-ada37f88ecc7@cambridgegreys.com>
+ <YDFrN0rZAJBbouly@eldamar.lan>
+ <af5cebbd-74c9-9345-9fe8-253fb96033f6@cambridgegreys.com>
+ <BEBA9809-373A-4172-B4AD-E19D82E56DB1@oracle.com>
+ <YDIkH6yVgLoALT6x@eldamar.lan>
+ <9305dc03-5557-5e18-e5c9-aaf886a03fff@cambridgegreys.com>
+ <20210221143712.GA15975@fieldses.org>
+ <f0edfaf5-457d-2334-ee4f-a6bf9d13917b@cambridgegreys.com>
+From:   Timo Rothenpieler <timo@rothenpieler.org>
+Message-ID: <1b701f2b-d185-dd30-0aca-ba6d280221d5@rothenpieler.org>
+Date:   Fri, 26 Feb 2021 16:03:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210218064019.29189-8-lizhih@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <f0edfaf5-457d-2334-ee4f-a6bf9d13917b@cambridgegreys.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms050206020807030402020003"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A question i do not know the answer to.
+This is a cryptographically signed message in MIME format.
 
-Seems like 'golden' is linked to a manufacturing (diagnostics?) image.
+--------------ms050206020807030402020003
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-If the public will never see it, should handling it here be done ?
+I think I can reproduce this, or something that at least looks very=20
+similar to this, on 5.10. Namely on 5.10.17 (On both Client and Server).
 
-Moritz, do you know ?
+We are running slurm, and since a while now (coincides with updating=20
+from 5.4 to 5.10, but a whole bunch of other stuff was updated at the=20
+same time, so it took me a while to correlate this) the logs it writes=20
+have been truncated, but only while they're being observed on the=20
+client, using tail -f or something like that.
+
+Looks like this then:
+
+On Server:
+> store01 /srv/export/home/users/timo/TestRun # ls -l slurm-41101.out
+> -rw-r--r-- 1 timo timo 1931 Feb 26 15:46 slurm-41101.out
+> store01 /srv/export/home/users/timo/TestRun # wc -l slurm-41101.out
+> 61 slurm-41101.out
+
+On Client:
+> timo@login01 ~/TestRun $ ls -l slurm-41101.out
+> -rw-r--r-- 1 timo timo 1931 Feb 26 15:46 slurm-41101.out
+> timo@login01 ~/TestRun $ wc -l slurm-41101.out
+> 24 slurm-41101.out
+
+See https://gist.github.com/BtbN/b9eb4fc08ccc53bb20087bce0bf9f826 for=20
+the respective file-contents.
+
+If I run the same test job, wait until its done, and then look at its=20
+slurm.out file, it matches between NFS Client and Server.
+If I tail -f the slurm.out on an NFS client, the file stops getting=20
+updated on the client, but keeps getting more logs written to it on the=20
+NFS server.
+
+The slurm.out file is being written to by another NFS client, which is=20
+running on one of the compute nodes of the system. It's being reads from =
+
+a login node.
 
 
-On 2/17/21 10:40 PM, Lizhi Hou wrote:
-> The PCIE device driver which attaches to management function on Alveo
-to the management
-> devices. It instantiates one or more partition drivers which in turn
-more fpga partition / group ?
-> instantiate platform drivers. The instantiation of partition and platform
-> drivers is completely data driven.
-data driven ? everything is data driven.  do you mean dtb driven ?
->
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
-> ---
->  drivers/fpga/xrt/include/xroot.h | 114 +++++++++++
->  drivers/fpga/xrt/mgmt/root.c     | 342 +++++++++++++++++++++++++++++++
->  2 files changed, 456 insertions(+)
->  create mode 100644 drivers/fpga/xrt/include/xroot.h
->  create mode 100644 drivers/fpga/xrt/mgmt/root.c
->
-> diff --git a/drivers/fpga/xrt/include/xroot.h b/drivers/fpga/xrt/include/xroot.h
-> new file mode 100644
-> index 000000000000..752e10daa85e
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/include/xroot.h
-> @@ -0,0 +1,114 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Header file for Xilinx Runtime (XRT) driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *	Cheng Zhen <maxz@xilinx.com>
-> + */
-> +
-> +#ifndef _XRT_ROOT_H_
-> +#define _XRT_ROOT_H_
-> +
-> +#include <linux/pci.h>
-> +#include "subdev_id.h"
-> +#include "events.h"
-> +
-> +typedef bool (*xrt_subdev_match_t)(enum xrt_subdev_id,
-> +	struct platform_device *, void *);
-> +#define XRT_SUBDEV_MATCH_PREV	((xrt_subdev_match_t)-1)
-> +#define XRT_SUBDEV_MATCH_NEXT	((xrt_subdev_match_t)-2)
-> +
-> +/*
-> + * Root IOCTL calls.
-> + */
-> +enum xrt_root_ioctl_cmd {
-> +	/* Leaf actions. */
-> +	XRT_ROOT_GET_LEAF = 0,
-> +	XRT_ROOT_PUT_LEAF,
-> +	XRT_ROOT_GET_LEAF_HOLDERS,
-> +
-> +	/* Group actions. */
-> +	XRT_ROOT_CREATE_GROUP,
-> +	XRT_ROOT_REMOVE_GROUP,
-> +	XRT_ROOT_LOOKUP_GROUP,
-> +	XRT_ROOT_WAIT_GROUP_BRINGUP,
-> +
-> +	/* Event actions. */
-> +	XRT_ROOT_EVENT,
-should this be XRT_ROOT_EVENT_SYNC ?
-> +	XRT_ROOT_EVENT_ASYNC,
-> +
-> +	/* Device info. */
-> +	XRT_ROOT_GET_RESOURCE,
-> +	XRT_ROOT_GET_ID,
-> +
-> +	/* Misc. */
-> +	XRT_ROOT_HOT_RESET,
-> +	XRT_ROOT_HWMON,
-> +};
-> +
-> +struct xrt_root_ioctl_get_leaf {
-> +	struct platform_device *xpigl_pdev; /* caller's pdev */
-xpigl_ ? unneeded suffix in element names
-> +	xrt_subdev_match_t xpigl_match_cb;
-> +	void *xpigl_match_arg;
-> +	struct platform_device *xpigl_leaf; /* target leaf pdev */
-> +};
-> +
-> +struct xrt_root_ioctl_put_leaf {
-> +	struct platform_device *xpipl_pdev; /* caller's pdev */
-> +	struct platform_device *xpipl_leaf; /* target's pdev */
 
-caller_pdev;
+Timo
 
-target_pdev;
 
-> +};
-> +
-> +struct xrt_root_ioctl_lookup_group {
-> +	struct platform_device *xpilp_pdev; /* caller's pdev */
-> +	xrt_subdev_match_t xpilp_match_cb;
-> +	void *xpilp_match_arg;
-> +	int xpilp_grp_inst;
-> +};
-> +
-> +struct xrt_root_ioctl_get_holders {
-> +	struct platform_device *xpigh_pdev; /* caller's pdev */
-> +	char *xpigh_holder_buf;
-> +	size_t xpigh_holder_buf_len;
-> +};
-> +
-> +struct xrt_root_ioctl_get_res {
-> +	struct resource *xpigr_res;
-> +};
-> +
-> +struct xrt_root_ioctl_get_id {
-> +	unsigned short  xpigi_vendor_id;
-> +	unsigned short  xpigi_device_id;
-> +	unsigned short  xpigi_sub_vendor_id;
-> +	unsigned short  xpigi_sub_device_id;
-> +};
-> +
-> +struct xrt_root_ioctl_hwmon {
-> +	bool xpih_register;
-> +	const char *xpih_name;
-> +	void *xpih_drvdata;
-> +	const struct attribute_group **xpih_groups;
-> +	struct device *xpih_hwmon_dev;
-> +};
-> +
-> +typedef int (*xrt_subdev_root_cb_t)(struct device *, void *, u32, void *);
-This function pointer type is important, please add a comment about its use and expected parameters
-> +int xrt_subdev_root_request(struct platform_device *self, u32 cmd, void *arg);
-> +
-> +/*
-> + * Defines physical function (MPF / UPF) specific operations
-> + * needed in common root driver.
-> + */
-> +struct xroot_pf_cb {
-> +	void (*xpc_hot_reset)(struct pci_dev *pdev);
-This is only ever set to xmgmt_root_hot_reset, why is this abstraction needed ?
-> +};
-> +
-> +int xroot_probe(struct pci_dev *pdev, struct xroot_pf_cb *cb, void **root);
-> +void xroot_remove(void *root);
-> +bool xroot_wait_for_bringup(void *root);
-> +int xroot_add_vsec_node(void *root, char *dtb);
-> +int xroot_create_group(void *xr, char *dtb);
-> +int xroot_add_simple_node(void *root, char *dtb, const char *endpoint);
-> +void xroot_broadcast(void *root, enum xrt_events evt);
-> +
-> +#endif	/* _XRT_ROOT_H_ */
-> diff --git a/drivers/fpga/xrt/mgmt/root.c b/drivers/fpga/xrt/mgmt/root.c
-> new file mode 100644
-> index 000000000000..583a37c9d30c
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/mgmt/root.c
-> @@ -0,0 +1,342 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Xilinx Alveo Management Function Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *	Cheng Zhen <maxz@xilinx.com>
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/aer.h>
-> +#include <linux/vmalloc.h>
-> +#include <linux/delay.h>
-> +
-> +#include "xroot.h"
-> +#include "main-impl.h"
-> +#include "metadata.h"
-> +
-> +#define XMGMT_MODULE_NAME	"xmgmt"
-The xrt modules would be more easily identified with a 'xrt' prefix instead of 'x'
-> +#define XMGMT_DRIVER_VERSION	"4.0.0"
-> +
-> +#define XMGMT_PDEV(xm)		((xm)->pdev)
-> +#define XMGMT_DEV(xm)		(&(XMGMT_PDEV(xm)->dev))
-> +#define xmgmt_err(xm, fmt, args...)	\
-> +	dev_err(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
-> +#define xmgmt_warn(xm, fmt, args...)	\
-> +	dev_warn(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
-> +#define xmgmt_info(xm, fmt, args...)	\
-> +	dev_info(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
-> +#define xmgmt_dbg(xm, fmt, args...)	\
-> +	dev_dbg(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
-> +#define XMGMT_DEV_ID(_pcidev)			\
-> +	({ typeof(_pcidev) (pcidev) = (_pcidev);	\
-> +	((pci_domain_nr((pcidev)->bus) << 16) |	\
-> +	PCI_DEVID((pcidev)->bus->number, 0)); })
-> +
-> +static struct class *xmgmt_class;
-> +static const struct pci_device_id xmgmt_pci_ids[] = {
-> +	{ PCI_DEVICE(0x10EE, 0xd020), }, /* Alveo U50 (golden image) */
-> +	{ PCI_DEVICE(0x10EE, 0x5020), }, /* Alveo U50 */
+On 21.02.2021 16:53, Anton Ivanov wrote:
+> Client side. This seems to be an entirely client side issue.
+>=20
+> A variety of kernels on the clients starting from 4.9 and up to 5.10=20
+> using 4.19 servers. I have observed it on a 4.9 client versus 4.9 serve=
+r=20
+> earlier.
+>=20
+> 4.9 fails, 4.19 fails, 5.2 fails, 5.4 fails, 5.10 works.
+>=20
+> At present the server is at 4.19.67 in all tests.
+>=20
+> Linux jain 4.19.0-6-amd64 #1 SMP Debian 4.19.67-2+deb10u2 (2019-11-11) =
 
-demagic this table, look at dfl-pci for how to use existing #define for the vendor and create a new on for the device.  If there are vf's add them at the same time.
+> x86_64 GNU/Linux
+>=20
+> I can set-up a couple of alternative servers during the week, but so fa=
+r=20
+> everything is pointing towards a client fs cache issue, not a server on=
+e.
+>=20
+> Brgds,
+>=20
 
-What is a golden image ?
 
-> +	{ 0, }
-> +};
-> +
-> +struct xmgmt {
-> +	struct pci_dev *pdev;
-> +	void *root;
-> +
-> +	bool ready;
-> +};
-> +
-> +static int xmgmt_config_pci(struct xmgmt *xm)
-> +{
-> +	struct pci_dev *pdev = XMGMT_PDEV(xm);
-> +	int rc;
-> +
-> +	rc = pcim_enable_device(pdev);
-> +	if (rc < 0) {
-> +		xmgmt_err(xm, "failed to enable device: %d", rc);
-> +		return rc;
-> +	}
-> +
-> +	rc = pci_enable_pcie_error_reporting(pdev);
-> +	if (rc)
-> +		xmgmt_warn(xm, "failed to enable AER: %d", rc);
-> +
-> +	pci_set_master(pdev);
-> +
-> +	rc = pcie_get_readrq(pdev);
-Review this call, it does not go negative
-> +	if (rc < 0) {
-> +		xmgmt_err(xm, "failed to read mrrs %d", rc);
-> +		return rc;
-> +	}
-this is a quirk, add a comment.
-> +	if (rc > 512) {
-> +		rc = pcie_set_readrq(pdev, 512);
-> +		if (rc) {
-> +			xmgmt_err(xm, "failed to force mrrs %d", rc);
-similar calls do not fail here.
-> +			return rc;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int xmgmt_match_slot_and_save(struct device *dev, void *data)
-> +{
-> +	struct xmgmt *xm = data;
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +
-> +	if (XMGMT_DEV_ID(pdev) == XMGMT_DEV_ID(xm->pdev)) {
-> +		pci_cfg_access_lock(pdev);
-> +		pci_save_state(pdev);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void xmgmt_pci_save_config_all(struct xmgmt *xm)
-> +{
-> +	bus_for_each_dev(&pci_bus_type, NULL, xm, xmgmt_match_slot_and_save);
 
-This is a bus call, not a device call.
+--------------ms050206020807030402020003
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Can this be changed into something like what hot reset does ?
-
-> +}
-> +
-> +static int xmgmt_match_slot_and_restore(struct device *dev, void *data)
-> +{
-> +	struct xmgmt *xm = data;
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +
-> +	if (XMGMT_DEV_ID(pdev) == XMGMT_DEV_ID(xm->pdev)) {
-> +		pci_restore_state(pdev);
-> +		pci_cfg_access_unlock(pdev);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void xmgmt_pci_restore_config_all(struct xmgmt *xm)
-> +{
-> +	bus_for_each_dev(&pci_bus_type, NULL, xm, xmgmt_match_slot_and_restore);
-> +}
-> +
-> +static void xmgmt_root_hot_reset(struct pci_dev *pdev)
-> +{
-> +	struct xmgmt *xm = pci_get_drvdata(pdev);
-> +	struct pci_bus *bus;
-> +	u8 pci_bctl;
-> +	u16 pci_cmd, devctl;
-> +	int i, ret;
-> +
-> +	xmgmt_info(xm, "hot reset start");
-> +
-> +	xmgmt_pci_save_config_all(xm);
-> +
-> +	pci_disable_device(pdev);
-> +
-> +	bus = pdev->bus;
-> +
-> +	/*
-> +	 * When flipping the SBR bit, device can fall off the bus. This is
-> +	 * usually no problem at all so long as drivers are working properly
-> +	 * after SBR. However, some systems complain bitterly when the device
-> +	 * falls off the bus.
-> +	 * The quick solution is to temporarily disable the SERR reporting of
-> +	 * switch port during SBR.
-> +	 */
-> +
-> +	pci_read_config_word(bus->self, PCI_COMMAND, &pci_cmd);
-> +	pci_write_config_word(bus->self, PCI_COMMAND,
-> +			      (pci_cmd & ~PCI_COMMAND_SERR));
-> +	pcie_capability_read_word(bus->self, PCI_EXP_DEVCTL, &devctl);
-> +	pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL,
-> +				   (devctl & ~PCI_EXP_DEVCTL_FERE));
-> +	pci_read_config_byte(bus->self, PCI_BRIDGE_CONTROL, &pci_bctl);
-> +	pci_bctl |= PCI_BRIDGE_CTL_BUS_RESET;
-> +	pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl);
-
-how the pci config values are set and cleared should be consistent.
-
-this call should be
-
-pci_write_config_byte (... pci_bctl | PCI_BRIDGE_CTL_BUF_RESET )
-
-and the next &= avoided
-
-> +
-> +	msleep(100);
-> +	pci_bctl &= ~PCI_BRIDGE_CTL_BUS_RESET;
-> +	pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl);
-> +	ssleep(1);
-> +
-> +	pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL, devctl);
-> +	pci_write_config_word(bus->self, PCI_COMMAND, pci_cmd);
-> +
-> +	ret = pci_enable_device(pdev);
-> +	if (ret)
-> +		xmgmt_err(xm, "failed to enable device, ret %d", ret);
-> +
-> +	for (i = 0; i < 300; i++) {
-> +		pci_read_config_word(pdev, PCI_COMMAND, &pci_cmd);
-> +		if (pci_cmd != 0xffff)
-what happens with i == 300 and pci_cmd is still 0xffff ?
-> +			break;
-> +		msleep(20);
-> +	}
-> +
-> +	xmgmt_info(xm, "waiting for %d ms", i * 20);
-> +	xmgmt_pci_restore_config_all(xm);
-> +	xmgmt_config_pci(xm);
-> +}
-> +
-> +static int xmgmt_create_root_metadata(struct xmgmt *xm, char **root_dtb)
-> +{
-> +	char *dtb = NULL;
-> +	int ret;
-> +
-> +	ret = xrt_md_create(XMGMT_DEV(xm), &dtb);
-> +	if (ret) {
-> +		xmgmt_err(xm, "create metadata failed, ret %d", ret);
-> +		goto failed;
-> +	}
-> +
-> +	ret = xroot_add_vsec_node(xm->root, dtb);
-> +	if (ret == -ENOENT) {
-> +		/*
-> +		 * We may be dealing with a MFG board.
-> +		 * Try vsec-golden which will bring up all hard-coded leaves
-> +		 * at hard-coded offsets.
-> +		 */
-> +		ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_VSEC_GOLDEN);
-
-Manufacturing diagnostics ?
-
-Tom
-
-> +	} else if (ret == 0) {
-> +		ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_MGMT_MAIN);
-> +	}
-> +	if (ret)
-> +		goto failed;
-> +
-> +	*root_dtb = dtb;
-> +	return 0;
-> +
-> +failed:
-> +	vfree(dtb);
-> +	return ret;
-> +}
-> +
-> +static ssize_t ready_show(struct device *dev,
-> +			  struct device_attribute *da,
-> +			  char *buf)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	struct xmgmt *xm = pci_get_drvdata(pdev);
-> +
-> +	return sprintf(buf, "%d\n", xm->ready);
-> +}
-> +static DEVICE_ATTR_RO(ready);
-> +
-> +static struct attribute *xmgmt_root_attrs[] = {
-> +	&dev_attr_ready.attr,
-> +	NULL
-> +};
-> +
-> +static struct attribute_group xmgmt_root_attr_group = {
-> +	.attrs = xmgmt_root_attrs,
-> +};
-> +
-> +static struct xroot_pf_cb xmgmt_xroot_pf_cb = {
-> +	.xpc_hot_reset = xmgmt_root_hot_reset,
-> +};
-> +
-> +static int xmgmt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> +{
-> +	int ret;
-> +	struct device *dev = &pdev->dev;
-> +	struct xmgmt *xm = devm_kzalloc(dev, sizeof(*xm), GFP_KERNEL);
-> +	char *dtb = NULL;
-> +
-> +	if (!xm)
-> +		return -ENOMEM;
-> +	xm->pdev = pdev;
-> +	pci_set_drvdata(pdev, xm);
-> +
-> +	ret = xmgmt_config_pci(xm);
-> +	if (ret)
-> +		goto failed;
-> +
-> +	ret = xroot_probe(pdev, &xmgmt_xroot_pf_cb, &xm->root);
-> +	if (ret)
-> +		goto failed;
-> +
-> +	ret = xmgmt_create_root_metadata(xm, &dtb);
-> +	if (ret)
-> +		goto failed_metadata;
-> +
-> +	ret = xroot_create_group(xm->root, dtb);
-> +	vfree(dtb);
-> +	if (ret)
-> +		xmgmt_err(xm, "failed to create root group: %d", ret);
-> +
-> +	if (!xroot_wait_for_bringup(xm->root))
-> +		xmgmt_err(xm, "failed to bringup all groups");
-> +	else
-> +		xm->ready = true;
-> +
-> +	ret = sysfs_create_group(&pdev->dev.kobj, &xmgmt_root_attr_group);
-> +	if (ret) {
-> +		/* Warning instead of failing the probe. */
-> +		xmgmt_warn(xm, "create xmgmt root attrs failed: %d", ret);
-> +	}
-> +
-> +	xroot_broadcast(xm->root, XRT_EVENT_POST_CREATION);
-> +	xmgmt_info(xm, "%s started successfully", XMGMT_MODULE_NAME);
-> +	return 0;
-> +
-> +failed_metadata:
-> +	(void)xroot_remove(xm->root);
-> +failed:
-> +	pci_set_drvdata(pdev, NULL);
-> +	return ret;
-> +}
-> +
-> +static void xmgmt_remove(struct pci_dev *pdev)
-> +{
-> +	struct xmgmt *xm = pci_get_drvdata(pdev);
-> +
-> +	xroot_broadcast(xm->root, XRT_EVENT_PRE_REMOVAL);
-> +	sysfs_remove_group(&pdev->dev.kobj, &xmgmt_root_attr_group);
-> +	(void)xroot_remove(xm->root);
-> +	pci_disable_pcie_error_reporting(xm->pdev);
-> +	xmgmt_info(xm, "%s cleaned up successfully", XMGMT_MODULE_NAME);
-> +}
-> +
-> +static struct pci_driver xmgmt_driver = {
-> +	.name = XMGMT_MODULE_NAME,
-> +	.id_table = xmgmt_pci_ids,
-> +	.probe = xmgmt_probe,
-> +	.remove = xmgmt_remove,
-> +};
-> +
-> +static int __init xmgmt_init(void)
-> +{
-> +	int res = 0;
-> +
-> +	res = xmgmt_main_register_leaf();
-> +	if (res)
-> +		return res;
-> +
-> +	xmgmt_class = class_create(THIS_MODULE, XMGMT_MODULE_NAME);
-> +	if (IS_ERR(xmgmt_class))
-> +		return PTR_ERR(xmgmt_class);
-> +
-> +	res = pci_register_driver(&xmgmt_driver);
-> +	if (res) {
-> +		class_destroy(xmgmt_class);
-> +		return res;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static __exit void xmgmt_exit(void)
-> +{
-> +	pci_unregister_driver(&xmgmt_driver);
-> +	class_destroy(xmgmt_class);
-> +	xmgmt_main_unregister_leaf();
-> +}
-> +
-> +module_init(xmgmt_init);
-> +module_exit(xmgmt_exit);
-> +
-> +MODULE_DEVICE_TABLE(pci, xmgmt_pci_ids);
-> +MODULE_VERSION(XMGMT_DRIVER_VERSION);
-> +MODULE_AUTHOR("XRT Team <runtime@xilinx.com>");
-> +MODULE_DESCRIPTION("Xilinx Alveo management function driver");
-> +MODULE_LICENSE("GPL v2");
-
+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
+LnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczMIIC
+IjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA7eaHlqHBpLbtwkJV9z8PDyJgXxPgpkOI
+hkmReRwbLxpQD9xGAe72ujqGzFFh78QPgAhxKVqtGHzYeq0VJVCzhnCKRBbVX+JwIhL3ULYh
+UAZrViUp952qDB6qTL5sGeJS9F69VPSR5k6pFNw7mHDTTt0voWFg2aVkG3khomzVXoieJGOi
+Q4dH76paCtQbLkt59joAKz2BnwGLQ4wr09nfumJt5AKx2YxHK2XgSPslVZ4z8G00gimsfA7U
+tjT/wiekY6Z0b7ksLrEcvODncHQe9VSrNRA149SE3AlkWaZM/joVei/GYfj9K5jkiReinR4m
+qM353FEceLOeBhSTURpMdQ5wsXLi9DSTGBuNv4aw2Dozb/qBlkhGTvwk92mi0jAecE22Sn3A
+9UfrU2p1w/uRs+TIteQ0xO0B/J2mY2caqocsS9SsriIGlQ8b0LT0o6Ob07KGtPa5/lIvMmx5
+72Dv2v+vDiECByxm1Hdgjp8JtE4mdyYP6GBscJyT71NZw1zXHnFkyCbxReag9qaSR9x4CVVX
+j1BDmNROCqd5NAfIXUXYTFeZ/jukQigkxXGWhEhfLBC4Ha6pwizz9fq1+wwPKcWaF9P/SZOu
+BDrG30MiyCZa66G9mEtF5ZLuh4rGfKqxy4Z5Mxecuzt+MZmrSKfKGeXOeED/iuX5Z02M1o7i
+MS8CAwEAAaOCAfQwggHwMA8GA1UdEwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAUUtiIOsifeGbt
+ifN7OHCUyQICNtAwQQYIKwYBBQUHAQEENTAzMDEGCCsGAQUFBzABhiVodHRwOi8vb2NzcDA1
+LmFjdGFsaXMuaXQvVkEvQVVUSC1ST09UMEUGA1UdIAQ+MDwwOgYEVR0gADAyMDAGCCsGAQUF
+BwIBFiRodHRwczovL3d3dy5hY3RhbGlzLml0L2FyZWEtZG93bmxvYWQwHQYDVR0lBBYwFAYI
+KwYBBQUHAwIGCCsGAQUFBwMEMIHjBgNVHR8EgdswgdgwgZaggZOggZCGgY1sZGFwOi8vbGRh
+cDA1LmFjdGFsaXMuaXQvY24lM2RBY3RhbGlzJTIwQXV0aGVudGljYXRpb24lMjBSb290JTIw
+Q0EsbyUzZEFjdGFsaXMlMjBTLnAuQS4lMmYwMzM1ODUyMDk2NyxjJTNkSVQ/Y2VydGlmaWNh
+dGVSZXZvY2F0aW9uTGlzdDtiaW5hcnkwPaA7oDmGN2h0dHA6Ly9jcmwwNS5hY3RhbGlzLml0
+L1JlcG9zaXRvcnkvQVVUSC1ST09UL2dldExhc3RDUkwwHQYDVR0OBBYEFL6XqaqEv4C/EFN9
+CTL54S4yG893MA4GA1UdDwEB/wQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAgEAJpvnG1kNdLMS
+A+nnVfeEgIXNQsM7YRxXx6bmEt9IIrFlH1qYKeNw4NV8xtop91Rle168wghmYeCTP10FqfuK
+MZsleNkI8/b3PBkZLIKOl9p2Dmz2Gc0I3WvcMbAgd/IuBtx998PJX/bBb5dMZuGV2drNmxfz
+3ar6ytGYLxedfjKCD55Yv8CQcN6e9sW5OUm9TJ3kjt7Wdvd1hcw5s+7bhlND38rWFJBuzump
+5xqm1NSOggOkFSlKnhSz6HUjgwBaid6Ypig9L1/TLrkmtEIpx+wpIj7WTA9JqcMMyLJ0rN6j
+jpetLSGUDk3NCOpQntSy4a8+0O+SepzS/Tec1cGdSN6Ni2/A7ewQNd1Rbmb2SM2qVBlfN0e6
+ZklWo9QYpNZyf0d/d3upsKabE9eNCg1S4eDnp8sJqdlaQQ7hI/UYCAgDtLIm7/J9+/S2zuwE
+WtJMPcvaYIBczdjwF9uW+8NJ/Zu/JKb98971uua7OsJexPFRBzX7/PnJ2/NXcTdwudShJc/p
+d9c3IRU7qw+RxRKchIczv3zEuQJMHkSSM8KM8TbOzi/0v0lU6SSyS9bpGdZZxx19Hd8Qs0cv
++R6nyt7ohttizwefkYzQ6GzwIwM9gSjH5Bf/r9Kc5/JqqpKKUGicxAGy2zKYEGB0Qo761Mcc
+IyclBW9mfuNFDbTBeDEyu80xggPzMIID7wIBATCBljCBgTELMAkGA1UEBhMCSVQxEDAOBgNV
+BAgMB0JlcmdhbW8xGTAXBgNVBAcMEFBvbnRlIFNhbiBQaWV0cm8xFzAVBgNVBAoMDkFjdGFs
+aXMgUy5wLkEuMSwwKgYDVQQDDCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBH
+MwIQCP8se1eXTyBvFrjHrZ83LDANBglghkgBZQMEAgEFAKCCAi0wGAYJKoZIhvcNAQkDMQsG
+CSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMjI2MTUwMzQ2WjAvBgkqhkiG9w0BCQQx
+IgQguq9c27oQJweY3lR8gZbjy5cGNtTTgN/QwEUmuBplubcwbAYJKoZIhvcNAQkPMV8wXTAL
+BglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAN
+BggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBpwYJKwYBBAGCNxAEMYGZ
+MIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwHQmVyZ2FtbzEZMBcGA1UEBwwQUG9udGUg
+U2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBTLnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMg
+Q2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhAI/yx7V5dPIG8WuMetnzcsMIGpBgsqhkiG
+9w0BCRACCzGBmaCBljCBgTELMAkGA1UEBhMCSVQxEDAOBgNVBAgMB0JlcmdhbW8xGTAXBgNV
+BAcMEFBvbnRlIFNhbiBQaWV0cm8xFzAVBgNVBAoMDkFjdGFsaXMgUy5wLkEuMSwwKgYDVQQD
+DCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBHMwIQCP8se1eXTyBvFrjHrZ83
+LDANBgkqhkiG9w0BAQEFAASCAQAnM5zTplSrYLBf4xb7+nRkuwAaahJssIkWz0F+BWVNdFzU
+PQVyNz5FEd2vtST1LbP6kxK0NaAbDNY5O7UIBDVUGkeRwuP2QHyeOw5MWyujfoqigq9e6/AL
+NVWoL/G7h45Knubgs0sIqjsnx5U7KJHd/OVRUKriTulerFxOquUMjYQNIPoBu4eVnuptLoFq
+XUS0ikEvYIroJ8JJY6yJloAkdSpekfZDMBqGiEj2IqxL3yN98C2A038oarSiy/4xiCIs9947
+dJNVn43xy7wMh73fS/DtCUdynG7yA6DG8z5gq79/BOzLKJDI9wQ/nVBJB7d2gJTokyMFckan
+6Q1XtTJxAAAAAAAA
+--------------ms050206020807030402020003--
