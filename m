@@ -2,223 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2675326A7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BD4326A85
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhBZXsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 18:48:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52730 "EHLO mail.kernel.org"
+        id S230083AbhBZXuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 18:50:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229622AbhBZXsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 18:48:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23C7564EFA;
-        Fri, 26 Feb 2021 23:47:39 +0000 (UTC)
+        id S230010AbhBZXuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 18:50:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14E2964F0D;
+        Fri, 26 Feb 2021 23:49:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614383259;
-        bh=mJmhgb1ENqSPoT/kdRZ1i3I2jcWdAdpEDiJifCHL+fI=;
+        s=k20201202; t=1614383372;
+        bh=FJfO+W8fyUECYOdGIep5b4LImXRbOi0Z1NVltz2ti4s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LZj63Tk2majjXEHT+i49RbEISRXJCWinGPKuLwCAIgeNYDwhMYGnMJghBtzmTBMFy
-         k7Y9ukwLVUPcIIsX+Rq9p1KBcW75fmPnMznI/iJXPkpFw7na/i69+dkjfc8+hYzhSM
-         gC/HLxuLYK+IAWlKNSxv3BP3UhdRVHk9/herSTicLvj6B+/1wORwkXBb8ua/9T1A/C
-         0GnPAWXzmvwAu08DOpLNG9PT9v8elCSW/5WQ7Yr9L68S+Wwz3OaPbZqKFdV8t0n4mv
-         nBaQ3+cDN9kRLkgZGKcAAY/sSfFw0Nj80AUYGz3qjo+OLSP7gmWfDLrcqhgmGp2lhC
-         flPvHyrH+9A8A==
+        b=rz2NZaYc4EGL6UjobhkxzdEbib/UErIdpjVVIgR7/PaCmVEpIn7vexehAOO9DBWgO
+         mx+/FSmHekA3u1juygm16M3Aa4i9FbdSGVTQrK5L+FLUQWtzY3hGdLSwSxdh5OteR+
+         4yfcW71HeYDkUG91CmtRncQwkX19EvdZu8PkdzcP/KCTVLPumKuwYvVIPnz99MHLGF
+         IM4v15AuWS9lzqldeUjjT02K6iKDCR4RuYdIqVmyYFejOwOCavqWyMsmg+3ZpiqWRa
+         s41SSiBflWbx0QG0FCabWeU90uXiMdi5dzhsETvHRELgQOx0XlxyRToWYEcvQkO3LJ
+         Pv9j9eogJgyIw==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CF0F140CD9; Fri, 26 Feb 2021 20:47:36 -0300 (-03)
-Date:   Fri, 26 Feb 2021 20:47:36 -0300
+        id D5CF940CD9; Fri, 26 Feb 2021 20:49:29 -0300 (-03)
+Date:   Fri, 26 Feb 2021 20:49:29 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Nicholas Fraser <nfraser@codeweavers.com>,
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
-        Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-Subject: Re: [PATCH] perf buildid-cache: Add test for PE executable
-Message-ID: <YDmImAQ1Lloa2d5y@kernel.org>
-References: <790bfe67-2155-a426-7130-ae7c45cb055b@codeweavers.com>
- <YDgJ+JTiOsGX288R@krava>
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Juxin Gao <gaojuxin@loongson.cn>
+Subject: Re: [PATCH v2 0/3] Add some perf support for mips
+Message-ID: <YDmJCTxOBb7TGhqw@kernel.org>
+References: <1612409724-3516-1-git-send-email-yangtiezhu@loongson.cn>
+ <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
+ <YDZRxz1yRwgWc47F@kernel.org>
+ <YDec9LIikZ9EVufH@kernel.org>
+ <YDehtDi4q+lFO2l6@kernel.org>
+ <YDeiR66J0ohidVSq@kernel.org>
+ <8894bb31-ec2b-7324-9c7f-6820d12d951e@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YDgJ+JTiOsGX288R@krava>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <8894bb31-ec2b-7324-9c7f-6820d12d951e@loongson.cn>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Feb 25, 2021 at 09:35:04PM +0100, Jiri Olsa escreveu:
-> On Wed, Feb 24, 2021 at 02:59:16PM -0500, Nicholas Fraser wrote:
-> > From 9fd0b3889f00ad13662879767d833309d8a035b6 Mon Sep 17 00:00:00 2001
-> > From: Nicholas Fraser <nfraser@codeweavers.com>
-> > Date: Thu, 18 Feb 2021 13:24:03 -0500
-> > Subject: [PATCH] perf buildid-cache: Add test for PE executable
-> > 
-> > This builds on the previous changes to tests/shell/buildid.sh, adding
-> > tests for a PE file. It adds it to the build-id cache manually and, if
-> > Wine is available, runs it under "perf record" and verifies that it was
-> > added automatically.
-> > 
-> > If wine is not installed, only warnings are printed; the test can still
-> > exit 0.
-> > 
-> > Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
-> 
-> works nicely now, thanks
-> 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+Em Fri, Feb 26, 2021 at 09:11:17AM +0800, Tiezhu Yang escreveu:
+> On 02/25/2021 09:12 PM, Arnaldo Carvalho de Melo wrote:
+> > Em Thu, Feb 25, 2021 at 10:10:12AM -0300, Arnaldo Carvalho de Melo escr=
+eveu:
+> > > Em Thu, Feb 25, 2021 at 09:49:56AM -0300, Arnaldo Carvalho de Melo es=
+creveu:
+> > > > Em Wed, Feb 24, 2021 at 10:16:55AM -0300, Arnaldo Carvalho de Melo =
+escreveu:
+> > > > > Em Mon, Feb 22, 2021 at 02:43:39PM +0800, Tiezhu Yang escreveu:
+> > > > > > On 02/04/2021 11:35 AM, Tiezhu Yang wrote:
+> > > > > > > v2: add R26 and R27 to the enum perf_event_mips_regs in patch=
+ #1
+> > > > > > >=20
+> > > > > > > Tiezhu Yang (3):
+> > > > > > >     MIPS: kernel: Support extracting off-line stack traces fr=
+om user-space
+> > > > > > >       with perf
+> > > > > > >     perf tools: Support mips unwinding and dwarf-regs
+> > > > > > >     perf tools: Generate mips syscalls_n64.c syscall table
+> > > > > > Hi Arnaldo,
+> > > > > >=20
+> > > > > > The kernel part patch #1 has been merged.
+> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git/commit/?id=3D1ddc96bd42da
+> > > > > >=20
+> > > > > > Could the perf tool patches #2 and #3 have a chance to be merge=
+d before
+> > > > > > 5.12-rc1?
+> > > > > > If yes, we can use this feature in 5.12-rc1.
+> > > > > Thanks, applied, should make it into 5.12-rc1.
+> > > > First we'll have to fix this problem:
+> > > >=20
+> > > >    28    12.45 debian:experimental-x-mips64  : FAIL gcc version 10.=
+2.1 20201224 (Debian 10.2.1-3)
+> > > >                       from builtin-diff.c:12:
+> > > >      /git/linux/tools/perf/arch/mips/include/perf_regs.h:7:10: fata=
+l error: asm/perf_regs.h: No such file or directory
+> > > >          7 | #include <asm/perf_regs.h>
+> > > >            |          ^~~~~~~~~~~~~~~~~
+> > > >      compilation terminated.
+> > > >      In file included from util/perf_regs.h:30,
+> > > >                       from util/event.h:15,
+> > > >                       from util/branch.h:15,
+> > > >                       from util/callchain.h:8,
+> > > >                       from builtin-record.c:16:
+> > > >      /git/linux/tools/perf/arch/mips/include/perf_regs.h:7:10: fata=
+l error: asm/perf_regs.h: No such file or directory
+>=20
+> Sorry for the late reply. I asked for a leave yesterday.
+>=20
+> asm/perf_regs.h is a new added file in the patch #1,
+> the patch link is:
+> https://lore.kernel.org/patchwork/patch/1375477/
+> the commit is:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/a=
+rch/mips/include/uapi/asm/perf_regs.h?id=3D1ddc96bd42da
+>=20
+> So we should build patch #2 based on patch #1.
 
-Thanks for checking it, but if you did a review, i.e. if you looked at
-the code, made suggestions, the submitter acted upon those changes, you
-looked again, etc, shouldn't this be a more appropriate:
-
-Reviewed-by: Jiri Olsa <jolsa@redhat.com>
-
-?
-
-I think we need to make these tags reflect more what really happened,
-i.e. if you just glanced over and thought, quickly, that it seems
-okayish, then Acked-by is what we should use, but if you gone thru the
-trouble of actually _looking hard_ at it, sometimes multiple times, then
-we should really use Reviewed-by and not take that lightly.
+yeah, my bad, since perf wasn't supported on MIPS, how could cross build
+environments have the needed files? Stooooopid me, sorry. :-) I'll
+retest after adding the needed files to my test containers.
 
 - Arnaldo
+=20
+> Thanks,
+> Tiezhu
+>=20
+> > > I'm not finding it in the debian cross build packages:
+> > >=20
+> > > root@d77a78c0aa1c:/# apt-file find perf_regs.h | grep cross
+> > > linux-libc-dev-amd64-cross: /usr/x86_64-linux-gnu/include/asm/perf_re=
+gs.h
+> > > linux-libc-dev-arm64-cross: /usr/aarch64-linux-gnu/include/asm/perf_r=
+egs.h
+> > > linux-libc-dev-armel-cross: /usr/arm-linux-gnueabi/include/asm/perf_r=
+egs.h
+> > > linux-libc-dev-armhf-cross: /usr/arm-linux-gnueabihf/include/asm/perf=
+_regs.h
+> > > linux-libc-dev-i386-cross: /usr/i686-linux-gnu/include/asm/perf_regs.h
+> > > linux-libc-dev-powerpc-cross: /usr/powerpc-linux-gnu/include/asm/perf=
+_regs.h
+> > > linux-libc-dev-ppc64-cross: /usr/powerpc64-linux-gnu/include/asm/perf=
+_regs.h
+> > > linux-libc-dev-ppc64el-cross: /usr/powerpc64le-linux-gnu/include/asm/=
+perf_regs.h
+> > > linux-libc-dev-riscv64-cross: /usr/riscv64-linux-gnu/include/asm/perf=
+_regs.h
+> > > linux-libc-dev-s390x-cross: /usr/s390x-linux-gnu/include/asm/perf_reg=
+s.h
+> > > linux-libc-dev-x32-cross: /usr/x86_64-linux-gnux32/include/asm/perf_r=
+egs.h
+> > > root@d77a78c0aa1c:/#
+> > >=20
+> > > Ideas?
+> > Trying with:
+> >=20
+> > [perfbuilder@five x-mips]$ db
+> > acmel/linux-perf-tools-build-ubuntu:19.10-x-mips
+> > STEP 1: FROM ubuntu:21.04
+> > STEP 2: MAINTAINER Arnaldo Carvalho de Melo <acme@kernel.org>
+> > STEP 3: ENV ARCH mips
+> > STEP 4: ENV TARGET mips-linux-gnu
+> > STEP 5: ENV CROSS_COMPILE=3D${TARGET}-
+> > STEP 6: RUN apt-get -y update &&     apt-get -y install make gcc-${TARG=
+ET} g++-${TARGET} flex bison git python3 &&     apt-get -y install curl wge=
+t bzip2 xz-utils file &&     export ELFUTILS_VER=3D0.173 &&     export ZLIB=
+_VER=3D1.2.11 &&     export INSTALLDIR=3D/usr/${TARGET} &&     export PATH=
+=3D$INSTALLDIR/bin:$PATH &&     export TARGETMACH=3D${TARGET} &&     export=
+ CROSS=3D${TARGET}- &&     export CC=3D${CROSS}gcc &&     export LD=3D${CRO=
+SS}ld &&     export AS=3D${CROSS}as &&     wget -q http://zlib.net/zlib-${Z=
+LIB_VER}.tar.gz &&     wget -q https://fedorahosted.org/releases/e/l/elfuti=
+ls/${ELFUTILS_VER}/elfutils-${ELFUTILS_VER}.tar.bz2 &&     tar xf zlib-${ZL=
+IB_VER}.tar.gz &&     cd zlib-${ZLIB_VER} &&     ./configure --prefix=3D${I=
+NSTALLDIR} &&     make &&     make install &&     cd .. &&     rm -rf zlib-=
+${ZLIB_VER} &&     rm -f zlib-${ZLIB_VER}.tar.gz &&     tar xf elfutils-${E=
+LFUTILS_VER}.tar.bz2 &&     cd elfutils-${ELFUTILS_VER} &&     ./configure =
+--host=3D${TARGET} --prefix=3D${INSTALLDIR} &&     make &&     make install=
+ &&     cd .. &&     rm -rf elfutils-${ELFUTILS_VER}* &&     git clone http=
+s://github.com/Linaro/OpenCSD.git &&     make -C OpenCSD/decoder/build/linu=
+x/ CROSS_COMPILE=3D${CROSS} install &&     rm -rf OpenCSD &&     apt-get -y=
+ remove wget bzip2 &&     apt-get -y clean &&     unset TARGET INSTALLDIR T=
+ARGETMACH CROSS CC LD AS &&     mkdir -m 777 -p /git /tmp/build/perf /tmp/b=
+uild/objtool /tmp/build/linux &&     groupadd -r perfbuilder &&     useradd=
+ -m -r -g perfbuilder perfbuilder &&     chown -R perfbuilder.perfbuilder /=
+tmp/build/ /git/
+>=20
 
- 
-> jirka
-> 
-> > ---
-> >  tools/perf/tests/shell/buildid.sh | 65 +++++++++++++++++++++++++++----
-> >  1 file changed, 58 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
-> > index 416af614bbe0..f05670d1e39e 100755
-> > --- a/tools/perf/tests/shell/buildid.sh
-> > +++ b/tools/perf/tests/shell/buildid.sh
-> > @@ -14,18 +14,56 @@ if ! [ -x "$(command -v cc)" ]; then
-> >  	exit 2
-> >  fi
-> >  
-> > +# check what we need to test windows binaries
-> > +add_pe=1
-> > +run_pe=1
-> > +if ! perf version --build-options | grep -q 'libbfd: .* on '; then
-> > +	echo "WARNING: perf not built with libbfd. PE binaries will not be tested."
-> > +	add_pe=0
-> > +	run_pe=0
-> > +fi
-> > +if ! which wine > /dev/null; then
-> > +	echo "WARNING: wine not found. PE binaries will not be run."
-> > +	run_pe=0
-> > +fi
-> > +
-> > +# set up wine
-> > +if [ ${run_pe} -eq 1 ]; then
-> > +	wineprefix=$(mktemp -d /tmp/perf.wineprefix.XXX)
-> > +	export WINEPREFIX=${wineprefix}
-> > +	# clear display variables to prevent wine from popping up dialogs
-> > +	unset DISPLAY
-> > +	unset WAYLAND_DISPLAY
-> > +fi
-> > +
-> >  ex_md5=$(mktemp /tmp/perf.ex.MD5.XXX)
-> >  ex_sha1=$(mktemp /tmp/perf.ex.SHA1.XXX)
-> > +ex_pe=$(dirname $0)/../pe-file.exe
-> >  
-> >  echo 'int main(void) { return 0; }' | cc -Wl,--build-id=sha1 -o ${ex_sha1} -x c -
-> >  echo 'int main(void) { return 0; }' | cc -Wl,--build-id=md5 -o ${ex_md5} -x c -
-> >  
-> > -echo "test binaries: ${ex_sha1} ${ex_md5}"
-> > +echo "test binaries: ${ex_sha1} ${ex_md5} ${ex_pe}"
-> >  
-> >  check()
-> >  {
-> > -	id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
-> > -
-> > +	case $1 in
-> > +	*.exe)
-> > +		# We don't have a tool that can pull a nicely formatted build-id out of
-> > +		# a PE file, but we can extract the whole section with objcopy and
-> > +		# format it ourselves. The .buildid section is a Debug Directory
-> > +		# containing a CodeView entry:
-> > +		#     https://docs.microsoft.com/en-us/windows/win32/debug/pe-format#debug-directory-image-only
-> > +		#     https://github.com/dotnet/runtime/blob/da94c022576a5c3bbc0e896f006565905eb137f9/docs/design/specs/PE-COFF.md
-> > +		# The build-id starts at byte 33 and must be rearranged into a GUID.
-> > +		id=`objcopy -O binary --only-section=.buildid $1 /dev/stdout | \
-> > +			cut -c 33-48 | hexdump -ve '/1 "%02x"' | \
-> > +			sed 's@^\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(.*\)0a$@\4\3\2\1\6\5\8\7\9@'`
-> > +		;;
-> > +	*)
-> > +		id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
-> > +		;;
-> > +	esac
-> >  	echo "build id: ${id}"
-> >  
-> >  	link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
-> > @@ -50,7 +88,7 @@ check()
-> >  		exit 1
-> >  	fi
-> >  
-> > -	${perf} buildid-cache -l | grep $id
-> > +	${perf} buildid-cache -l | grep ${id}
-> >  	if [ $? -ne 0 ]; then
-> >  		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
-> >  		exit 1
-> > @@ -79,16 +117,20 @@ test_record()
-> >  {
-> >  	data=$(mktemp /tmp/perf.data.XXX)
-> >  	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
-> > +	log=$(mktemp /tmp/perf.log.XXX)
-> >  	perf="perf --buildid-dir ${build_id_dir}"
-> >  
-> > -	${perf} record --buildid-all -o ${data} ${1}
-> > +	echo "running: perf record $@"
-> > +	${perf} record --buildid-all -o ${data} $@ &> ${log}
-> >  	if [ $? -ne 0 ]; then
-> > -		echo "failed: record ${1}"
-> > +		echo "failed: record $@"
-> > +		echo "see log: ${log}"
-> >  		exit 1
-> >  	fi
-> >  
-> > -	check ${1}
-> > +	check ${@: -1}
-> >  
-> > +	rm -f ${log}
-> >  	rm -rf ${build_id_dir}
-> >  	rm -rf ${data}
-> >  }
-> > @@ -96,12 +138,21 @@ test_record()
-> >  # add binaries manual via perf buildid-cache -a
-> >  test_add ${ex_sha1}
-> >  test_add ${ex_md5}
-> > +if [ ${add_pe} -eq 1 ]; then
-> > +	test_add ${ex_pe}
-> > +fi
-> >  
-> >  # add binaries via perf record post processing
-> >  test_record ${ex_sha1}
-> >  test_record ${ex_md5}
-> > +if [ ${run_pe} -eq 1 ]; then
-> > +	test_record wine ${ex_pe}
-> > +fi
-> >  
-> >  # cleanup
-> >  rm ${ex_sha1} ${ex_md5}
-> > +if [ ${run_pe} -eq 1 ]; then
-> > +	rm -r ${wineprefix}
-> > +fi
-> >  
-> >  exit ${err}
-> > -- 
-> > 2.30.1
-> > 
-> > 
-> 
-
--- 
+--=20
 
 - Arnaldo
