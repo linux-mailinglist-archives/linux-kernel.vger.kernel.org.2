@@ -2,92 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8C33266B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 353083266C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhBZSHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 13:07:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52222 "EHLO mail.kernel.org"
+        id S230032AbhBZSMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 13:12:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhBZSHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 13:07:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3327A64F17;
-        Fri, 26 Feb 2021 18:07:01 +0000 (UTC)
+        id S229823AbhBZSMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 13:12:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A88D064F0D;
+        Fri, 26 Feb 2021 18:12:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614362821;
-        bh=MsTenNoyOnWmOLDR4TgPo35YUl2jpUyfq4i4eUjVLSY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Rh1bns5sUNNDacFR+rXol0byU633qLb3eJ3Fy/97VgbvaWXeP1X0Jbcgwdvc8LrG4
-         c42fkje7HR81HJlf03QcNz45JISLidxUahvGTS86gtQvmmlBU8aU000OwRtcyScAIU
-         f9ERBN0D/HrA/S0mjKWbHgM7l3qSz7ZMIC2O2dd6nTlP64d7zilQZZ3Qu6y66KDQnU
-         i2teBVtXx0kdoULktpCNWZfd89/LJSnroftYnGgaEfP7pKLxaY/pEpEQDr055SxYjP
-         Iz3HRLSvnxit637oMepDvYl+p0YF+iUB42doBLa2gvjtsiA5akdt8/QohTtV53Vh9g
-         Qk14gwmJi+D2w==
-Received: by mail-oi1-f177.google.com with SMTP id j1so10623639oiw.3;
-        Fri, 26 Feb 2021 10:07:01 -0800 (PST)
-X-Gm-Message-State: AOAM533CEkOq1J+isYDREutBBGn2CGE7MweNJPXUB4g3aIGaLgMnNGZl
-        6x0D1ck0MUd5gnBZsEhTkBdB34PmXcvlF9PXmJg=
-X-Google-Smtp-Source: ABdhPJyeZg3Pwe0jqw+NGo0qyDRNND7ksKo0FA7RNXG7z9WTLUgtfxlM+JIQEpOq+Q9tvDsGtU+39X1uraynmxH6nvs=
-X-Received: by 2002:aca:4fd3:: with SMTP id d202mr2839613oib.11.1614362820512;
- Fri, 26 Feb 2021 10:07:00 -0800 (PST)
+        s=k20201202; t=1614363125;
+        bh=Hq9nQud27ajZQKgTqLPDkKCQ20aGL8YgtoWSdS1bxYM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=H83hjdZwUr1CQdNx1CJmo9ueIjpSgNEYT57R8TgZxWrrFwhGasx5iLpy9YxoKuhfE
+         oABEeeGWg3um4I5Egd0Eqg7l33rNI08U0jEn84L2A/r8ZMmEpHGJBbG/Sr/Nj3j3km
+         ynMoqGeWYHsRPY9L77510BozuadAFnzlgcUVXEWk1lRPCqj4DMipgFfRuF+9nLPc6i
+         QfvLUB0BEYgjvNPn0zqQNo8afVDexqYZZAZYUR8H/KVDgO6WkRbMqw9kFsI4WC21rT
+         AxGdFDFhFUM8P7cTf8WL0gdPa231ywseFR2N0msr4zLUxdUhclrNxwEmBEmcTkmoRt
+         H9VYLTZyqvlZQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 62F263522FAD; Fri, 26 Feb 2021 10:12:05 -0800 (PST)
+Date:   Fri, 26 Feb 2021 10:12:05 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, mhocko@suse.com,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 3/3] kernel/smp: add more data to CSD lock debugging
+Message-ID: <20210226181205.GZ2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210226112521.8641-1-jgross@suse.com>
+ <20210226112521.8641-4-jgross@suse.com>
+ <YDkkFBerBlW5uUBS@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210226140305.26356-1-nsaenzjulienne@suse.de>
- <20210226140305.26356-14-nsaenzjulienne@suse.de> <CAK8P3a1cDgSo7LTtBZpzBo3xu23_uDEux8=15Xyw6JTpXtGqhw@mail.gmail.com>
-In-Reply-To: <CAK8P3a1cDgSo7LTtBZpzBo3xu23_uDEux8=15Xyw6JTpXtGqhw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 26 Feb 2021 19:06:43 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a03BcXZu+On885GaR547SHJYtiu3d_QHG0zOr2UiKn6qQ@mail.gmail.com>
-Message-ID: <CAK8P3a03BcXZu+On885GaR547SHJYtiu3d_QHG0zOr2UiKn6qQ@mail.gmail.com>
-Subject: Re: [RFC 13/13] scsi: megaraid: Make use of dev_64bit_mmio_supported()
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDkkFBerBlW5uUBS@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 3:30 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Fri, Feb 26, 2021 at 3:03 PM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
->
-> >         unsigned long flags;
-> > -       spin_lock_irqsave(&instance->hba_lock, flags);
-> > -       writel(le32_to_cpu(req_desc->u.low),
-> > -               &instance->reg_set->inbound_low_queue_port);
-> > -       writel(le32_to_cpu(req_desc->u.high),
-> > -               &instance->reg_set->inbound_high_queue_port);
-> > -       spin_unlock_irqrestore(&instance->hba_lock, flags);
->
+On Fri, Feb 26, 2021 at 05:38:44PM +0100, Peter Zijlstra wrote:
+> 
+> I hate all of this, but if this will finally catch the actual problem,
+> we can then revert all this, so sure.
+
+OK, I will bite...  What exactly do you hate about it?
+
+							Thanx, Paul
+
+> Also, I think this will conflict with the patches from Nadav that I have
+> queued:
+> 
+>   https://lkml.kernel.org/r/20210220231712.2475218-1-namit@vmware.com
+> 
+> which I'll be pushing to tip/x86/mm once -rc1 happens.
+> 
+> On Fri, Feb 26, 2021 at 12:25:21PM +0100, Juergen Gross wrote:
+> 
+> > +static void __smp_call_single_queue_debug(int cpu, struct llist_node *node)
+> > +{
+> > +	unsigned int this_cpu = smp_processor_id();
+> > +	struct cfd_seq_local *seq = this_cpu_ptr(&cfd_seq_local);
+> > +	struct call_function_data *cfd = this_cpu_ptr(&cfd_data);
+> > +	struct cfd_percpu *pcpu = per_cpu_ptr(cfd->pcpu, cpu);
 > > +
-> > +       if (dev_64bit_mmio_supported(&instance->pdev->dev)) {
-> > +               writeq(req_data, &instance->reg_set->inbound_low_queue_port);
-> > +       } else {
-> > +               spin_lock_irqsave(&instance->hba_lock, flags);
-> > +               lo_hi_writeq(req_data, &instance->reg_set->inbound_low_queue_port);
-> > +               spin_unlock_irqrestore(&instance->hba_lock, flags);
-> > +       }
->
-> I see your patch changes the code to the lo_hi_writeq() accessor,
-> and it also fixes the endianness bug (double byteswap on big-endian),
-> but it does not fix the spinlock bug (writel on pci leaks out of the lock
-> unless it's followed by a read).
-
-On second look, it seems your patch breaks the byteorder logic,
-rather than fixing it. It would seem better to leave it unchanged
-then, or to send a separate rework of the endianness conversion if
-you think it is wrong.
-
-       Arnd
+> > +	cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
+> > +	if (llist_add(node, &per_cpu(call_single_queue, cpu))) {
+> > +		cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
+> > +		cfd_seq_store(seq->ping, this_cpu, cpu, CFD_SEQ_PING);
+> > +		send_call_function_single_ipi(cpu);
+> > +		cfd_seq_store(seq->pinged, this_cpu, cpu, CFD_SEQ_PINGED);
+> > +	} else {
+> > +		cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
+> > +	}
+> > +}
+> >  #else
+> > +#define cfd_seq_store(var, src, dst, type)
+> > +
+> >  static void csd_lock_record(call_single_data_t *csd)
+> >  {
+> >  }
+> > @@ -290,6 +396,19 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
+> >  
+> >  void __smp_call_single_queue(int cpu, struct llist_node *node)
+> >  {
+> > +#ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
+> > +	if (static_branch_unlikely(&csdlock_debug_extended)) {
+> > +		unsigned int type;
+> > +
+> > +		type = CSD_TYPE(container_of(node, call_single_data_t,
+> > +					     node.llist));
+> > +		if (type == CSD_TYPE_SYNC || type == CSD_TYPE_ASYNC) {
+> > +			__smp_call_single_queue_debug(cpu, node);
+> > +			return;
+> > +		}
+> > +	}
+> > +#endif
+> 
+> This is a bit weird, might as well put it in generic_exec_single()
+> because there you still know the type matches.
+> 
+> 
+> > @@ -712,12 +840,21 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+> >  		csd->node.src = smp_processor_id();
+> >  		csd->node.dst = cpu;
+> >  #endif
+> > -		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu)))
+> > +		cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
+> > +		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu))) {
+> >  			__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
+> > +			cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
+> > +		} else {
+> > +			cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
+> > +		}
+> >  	}
+> >  
+> >  	/* Send a message to all CPUs in the map */
+> > +	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->ping, this_cpu,
+> > +		      CFD_SEQ_NOCPU, CFD_SEQ_PING);
+> >  	arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
+> > +	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->pinged, this_cpu,
+> > +		      CFD_SEQ_NOCPU, CFD_SEQ_PINGED);
+> 
+> Too bad we can't share with the single case, a well.
