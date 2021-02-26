@@ -2,134 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D67A326750
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33DB326752
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhBZTPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 14:15:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
+        id S230268AbhBZTQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 14:16:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhBZTPh (ORCPT
+        with ESMTP id S229990AbhBZTQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 14:15:37 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B0CC061788
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:14:56 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id k13so10030777otn.13
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:14:56 -0800 (PST)
+        Fri, 26 Feb 2021 14:16:17 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46853C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:15:37 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id x19so9983184ybe.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:15:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rdjUcLxk2QvpLN9cIgDlB2j3H6R/HkQpTGOCpOO1Kzc=;
-        b=mkm2dkX4Y+Z734KK7R323V1DAZfdISDSI0DyUExHe3MEfmafJkwFgjh/MTITPaACIx
-         6ri8ig6m2bvOCL6L5Vlj2iD5X04ZxDr7tMQYc+Vl09dTP5tcXLzXZP4enTSGazUZ8WUT
-         9jo8+oA2bc4w/7CQ1305a0+MIWEVgGfzw/gBlGvjFRDkrZjYkh1LipSMxOxUqoRuzjnh
-         3F2SpdqnJdHkzxXCh/DwUKJGbMPlGENG8X+95/t66ABEPVttZ8DvUR4BYhcWwuM8E2Ga
-         bMT64Tv03tP5ceB2fLJJO8qqQctHge9YmIawYoxZN6PXA239Et13LGoTpuh6sg0BHgRC
-         Tbbg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RmNPihVYfoHDM3Z6zETchBPFQqTyDidGTwTaEWOkuxQ=;
+        b=hnEtnl8Tz18q1Pms6/HbWvyKXM387au2eBsjS3MlO8e51EmZqW71Rw+xE3xtL9zZdm
+         e3E4UWmHGKLED5x88gts3yc9id4jGA/I5H+Z6GRboxJTK2KXJhus2sJH1LCX4pI99Ypz
+         0ULD1F6YRjcs3RxkgX43DJGsYE+2fLhz+0rY6ASAfspRMpy9M6jAUCoOI5GdMgBQ3DfI
+         tPKWjP0Y8IxOh91iGhyMQqGASJJOSDFW3477y43CJF//+DmLZIIV3q8oImcNmf5RLUVK
+         Vajp6CFqIgIC1nSRGXmbvLhD1rhrerVkOklhrDXChSplRLf5/X21gvZOhzLrplVGRb9m
+         kl9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rdjUcLxk2QvpLN9cIgDlB2j3H6R/HkQpTGOCpOO1Kzc=;
-        b=irK9TAsdEeFx5h+/QdhgR/QPDTe/t6ScYaEezuPxmtoBQgRnVReOBGZ9yg9X+N91di
-         8gWrv4l0Z/NC6RdJ8VMPXrdA0hIFHc/xE6/K//RcnELjJ2vHgzJe1fjUaOo+8BWEdxKH
-         iKO/EvfOAf378tykRGSEJuqjtKu7VNAyrwLqJLC8cklsAHAliD7uYGNB9HePfFUS2du2
-         +E8mkIMy1gWvsKOo3AxaxtR7xjfbb8HZgOUfpXa7AW8tw8NkGUWvdNndH9clep1EfFme
-         pvmoaaoNxciY3hzMfqr0BaSTMtgZNbjXD/VFhfnoix4aRELB/H9ifgrn0Vdo6bPNBLvx
-         uvjg==
-X-Gm-Message-State: AOAM532mHC6fjWSLSVRb2kwPARmV3maeX7KgJU2JteM07trdVqdUd24M
-        caMHm+vdrVtJaemTbQZjm2gb/Q==
-X-Google-Smtp-Source: ABdhPJxzYAfho+QsHxzw0qLDDKe+oOdenr7TqRA2BY16Q3eGFcAz2SSEe8X4Q7pgZcv10c+yJEjeAg==
-X-Received: by 2002:a9d:ec8:: with SMTP id 66mr3553224otj.217.1614366896253;
-        Fri, 26 Feb 2021 11:14:56 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 64sm1965824otl.5.2021.02.26.11.14.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 11:14:55 -0800 (PST)
-Date:   Fri, 26 Feb 2021 13:14:54 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RmNPihVYfoHDM3Z6zETchBPFQqTyDidGTwTaEWOkuxQ=;
+        b=Sgd9dqo4XOZmZCJ3yOPy5O9Mo+1ZLv5UlkntCr4U701dNeCn6KalUy4SzXYMSaWhbJ
+         0Hklov9cK/ekNDuMew/ME9474Sih/Qb3k4LZACHoo7ltx7hERsZv1mOZwjSmnfaqIPEo
+         oVd6dUvWsq+AR6zdYPXUcyVwLFA5mvQnF21iLQXY4FY6R5jVHzn0KJp+EH6O465ws0Uf
+         UeXN2J21TKMdRM5b/E55j+8drMg9Le5Ki2o07oZGJ9zkQ/1p3KuhR623Oglm0vFmR0Ao
+         n6gpATFirm9r1ehWA/yXymS7H3D6EA+wMKF8MqL/QOsKBdOHTUK9mPV4b1KivLnLrvAL
+         krHg==
+X-Gm-Message-State: AOAM5310MkpXnGdP7kK6a/124pMZcbq9KVKTbJxXmY+aPRSj4zxXsx/1
+        gvjzuQ3X2LAifJAkMHX5Jd7D+b2wwCPe8je5QCh2zA==
+X-Google-Smtp-Source: ABdhPJwGyUYN9fQQ5qT1ybP2TfMSmigM4iMawzKtDdjz8mYVhaStq7qHukjcUzSeHaMa2zFPGI+scsfDJeMq+pa95BE=
+X-Received: by 2002:a25:2a04:: with SMTP id q4mr7129613ybq.412.1614366936409;
+ Fri, 26 Feb 2021 11:15:36 -0800 (PST)
+MIME-Version: 1.0
+References: <20210205013847.1736929-1-saravanak@google.com>
+ <CAOMZO5DRjT4d8gzSZZX4itcOXO_pye-1aq658EX2vQJ5xhEi8A@mail.gmail.com>
+ <CAGETcx9E+dw3HS+DHMhzbrQGcrT6z4kDH=ziS=1=i-7=0rLwgw@mail.gmail.com> <CAGETcx9r5=zZZ445ou3Vd0hWCfb_HH6bHnE_XMTAWwvr7bW=OA@mail.gmail.com>
+In-Reply-To: <CAGETcx9r5=zZZ445ou3Vd0hWCfb_HH6bHnE_XMTAWwvr7bW=OA@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 26 Feb 2021 11:15:00 -0800
+Message-ID: <CAGETcx9VJjxej1TD3sX_u+U=CPiFfqxykqoy4tCeqhFkxyMOAw@mail.gmail.com>
+Subject: Re: [PATCH v3] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Android Kernel Team <kernel-team@android.com>,
         "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
         <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCHv2 2/2] iommu/arm-smmu-qcom: Move the adreno smmu specific
- impl earlier
-Message-ID: <YDlIrjkfv16o4Nu3@builder.lan>
-References: <cover.1614332994.git.saiprakash.ranjan@codeaurora.org>
- <c607d71eb0fe507c8b83cc0ea9b393777f22149a.1614332994.git.saiprakash.ranjan@codeaurora.org>
- <YDku5PFQZetP4iG8@builder.lan>
- <CAF6AEGvJF19JA5hNps37urMrF5r03y90XgvO4FtT6wFPD6UZcA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGvJF19JA5hNps37urMrF5r03y90XgvO4FtT6wFPD6UZcA@mail.gmail.com>
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26 Feb 12:23 CST 2021, Rob Clark wrote:
-
-> On Fri, Feb 26, 2021 at 9:24 AM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
+On Mon, Feb 22, 2021 at 6:33 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Feb 4, 2021 at 6:07 PM Saravana Kannan <saravanak@google.com> wrote:
 > >
-> > On Fri 26 Feb 03:55 CST 2021, Sai Prakash Ranjan wrote:
-> >
-> > > Adreno(GPU) SMMU and APSS(Application Processor SubSystem) SMMU
-> > > both implement "arm,mmu-500" in some QTI SoCs and to run through
-> > > adreno smmu specific implementation such as enabling split pagetables
-> > > support, we need to match the "qcom,adreno-smmu" compatible first
-> > > before apss smmu or else we will be running apps smmu implementation
-> > > for adreno smmu and the additional features for adreno smmu is never
-> > > set. For ex: we have "qcom,sc7280-smmu-500" compatible for both apps
-> > > and adreno smmu implementing "arm,mmu-500", so the adreno smmu
-> > > implementation is never reached because the current sequence checks
-> > > for apps smmu compatible(qcom,sc7280-smmu-500) first and runs that
-> > > specific impl and we never reach adreno smmu specific implementation.
+> > On Thu, Feb 4, 2021 at 5:54 PM Fabio Estevam <festevam@gmail.com> wrote:
 > > >
+> > > Hi Saravana,
+> > >
+> > > On Thu, Feb 4, 2021 at 10:39 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > Using IRQCHIP_DECLARE lets fw_devlink know that it should not wait for
+> > > > these interrupt controllers to be populated as struct devices. Without
+> > > > this change, fw_devlink=on will make the consumers of these interrupt
+> > > > controllers wait for the struct device to be added and thereby block the
+> > > > consumers' probes forever. Converting to IRQCHIP_DECLARE addresses boot
+> > > > issues on imx25 with fw_devlink=on that were reported by Martin.
+> > > >
+> > > > This also removes a lot of boilerplate code.
+> > > >
+> > > > Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+> > > > Reported-by: Martin Kaiser <martin@kaiser.cx>
+> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > Tested-by: Martin Kaiser <martin@kaiser.cx>
+> > >
+> > > Thanks for the respin:
+> > >
+> > > Reviewed-by: Fabio Estevam <festevam@gmail.com>
 > >
-> > So you're saying that you have a single SMMU instance that's compatible
-> > with both an entry in qcom_smmu_impl_of_match[] and "qcom,adreno-smmu"?
+> > Thanks for the quick review.
 > >
-> > Per your proposed change we will pick the adreno ops _only_ for this
-> > component, essentially disabling the non-Adreno quirks selected by the
-> > qcom impl. As such keeping the non-adreno compatible in the
-> > qcom_smmu_impl_init[] seems to only serve to obfuscate the situation.
-> >
-> > Don't we somehow need the combined set of quirks? (At least if we're
-> > running this with a standard UEFI based boot flow?)
-> >
-> 
-> are you thinking of the apps-smmu handover of display context bank?
-> That shouldn't change, the only thing that changes is that gpu-smmu
-> becomes an mmu-500, whereas previously only apps-smmu was..
-> 
+>
+> Maintainers,
+>
+> Is this getting picked up for 5.12?
+>
 
-The current logic picks one of:
-1) is the compatible mentioned in qcom_smmu_impl_of_match[]
-2) is the compatible an adreno
-3) no quirks needed
+Gentle reminder.
 
-The change flips the order of these, so the only way I can see this
-change affecting things is if we expected a match on #2, but we got one
-on #1.
-
-Which implies that the instance that we want to act according to the
-adreno impl was listed in qcom_smmu_impl_of_match[] - which either is
-wrong, or there's a single instance that needs both behaviors.
-
-(And I believe Jordan's answer confirms the latter - there's a single
-SMMU instance that needs all them quirks at once)
-
-Regards,
-Bjorn
+-Saravana
