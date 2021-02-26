@@ -2,63 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 842CA326007
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D3A326000
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhBZJ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:28:39 -0500
-Received: from mout.kundenserver.de ([217.72.192.75]:45347 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhBZJ0b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:26:31 -0500
-Received: from localhost ([109.247.224.130]) by mrelayeu.kundenserver.de
- (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1M1YpJ-1lEBVP1ocN-0031i0; Fri, 26 Feb 2021 10:23:56 +0100
-Date:   Fri, 26 Feb 2021 10:23:55 +0100
-From:   Heinz Diehl <htd+ml@fritha.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     tiwai@suse.de, lpoetter@redhat.com
-Subject: Re: [BISECTED] Kernel 5.11.x breaks pulseaudio
-Message-ID: <YDi+K4RXmoZ0AM3z@fritha.org>
-References: <YDfYAYCaC9KDc1F0@fritha.org>
- <s5him6gnkdu.wl-tiwai@suse.de>
- <YDfeSZjdNKFcNKN8@fritha.org>
- <s5hft1kni08.wl-tiwai@suse.de>
+        id S230360AbhBZJ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:26:58 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53886 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230352AbhBZJYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 04:24:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 90375B0E5;
+        Fri, 26 Feb 2021 09:24:00 +0000 (UTC)
+Subject: Re: [PATCH] perf annotate: improve --stdio mode
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <a0d53f31-f633-5013-c386-a4452391b081@suse.cz>
+ <YDVb4KS/ARbtfoAw@kernel.org>
+From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
+Message-ID: <fedc723d-1c8f-fcd7-accb-421707b3a09f@suse.cz>
+Date:   Fri, 26 Feb 2021 10:24:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hft1kni08.wl-tiwai@suse.de>
-X-Accept-Language: no,dk,se,en,de
-Organization: private site
-OpenPGP: id=60F4A92C; url=http://www.fritha.org/htd.asc;
- preference=signencrypt
-User-Agent: Mutt/1.14.7+158 (b0ccf259) (2020-09-25)
-X-Provags-ID: V03:K1:3ic/i931As9LCJJEC3kWPP8Kqnau7MH2EaC/E2+JfRsP/GOnQLw
- 8mJ/lGlrmvKKhW2iMQsU21oqTgqwegRoY/gKtu3ARKHjQz7llSrGIi4FBX8C+8vMTNy2kNy
- +kPGsskTVs6QsQH8vXp+xy14Dey3Xh0P0f17fz7fA1Hja90f378L09ayCUuWBuue0nmu8CS
- hGeGELT9aozVXaJQcJYYA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:oS4cSzpf6e4=:0PjyLKMtDxQvLDD6JQyyr3
- +i3CQxPJNwjkE1/xLuEab7FFy0mQuIcvnSyosEkUhSogSHdt+hCAcWBwyAfNrUrYHCpG927ZU
- txziujATHAfh7ROmh2qXQZSm9kdiifWKs69OhDWs/s/0H/eFKXylw6Hl90Zwgxl3iuQhSCecP
- CIXeNwx4gXVHCpTqLasak2B9PpuE3+N0DnjcnW0isiaoB+oeH9l1xuV/2JdwiEUe1Zng9PDUt
- mdhbwzyrdHKUWWaMeA68EavuObUdSMgn1E7KvTwMrlpJ2l1M6L5qYJIVXJhiHzM0onS2efFtu
- OCYqn9T262vbc3GTQ+1oloUluV/DnT3GfXO8AX6uTft1s8TLSAhDeXVF482ONCKlHmbpS8xQI
- h3HOn69rkkc0oCvKmfmxs2lzOOWr474ufrIPln8zs6kqJ3iMaTcAvaAJM/En+KvXuW/lJMSjO
- 0c0l5KCBTQ==
+In-Reply-To: <YDVb4KS/ARbtfoAw@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.02.2021, Takashi Iwai wrote: 
+On 2/23/21 8:47 PM, Arnaldo Carvalho de Melo wrote:
+> Em Sun, Feb 21, 2021 at 01:46:36PM +0100, Martin Liška escreveu:
+>> The patch changes the output format in 2 ways:
+>> - line number is displayed for all source lines (matching TUI mode)
+> 
+> Are you aware of 'perf annotate --stdio2' ? If the goal is to make the
+> stdio mode better, doing it in that mode would be best, as it was done
+> to share as much code as possible, not just the looks, with the TUI
+> mode.
 
-> Check which streams are running when you get the unexpected sample
-> rate by inspecting /proc/asound/card*/pcm* entries.
+Yes, I'm aware of it. My motivation is to generate a HTML perf annotate report
+and I see the following parts of --stdio2 not ideal:
 
-I see, thanks for explaining! Pulseaudio no longer works properly for me, but
-after configuring my audio player to use ALSA directly, all is fine so
-far and all audio files are played with the correct sample rate and
-without any resampling, just as they should.
+- coloring is not available (--stdio-color=always does not work)
+- 'Sorted summary for file ' is missing so one can't easily search for
+   hot spots in browser
+- source line number are displayed, but not the source files
+- there's a missing option for 'Toggle disassembler output/simplified view' which
+   is available in TUI mode
 
-Thanks, Heinz.
+That said, the stdio2 annotation report is quite different and so handy for my use case.
+
+> 
+> I kept --stdio around because changing the output in that way could
+> annoy people used to that format.
+
+Sure. But I think the current format provides quite broken visual layout:
+
+       0.00 :   405ef1: inc    %r15
+       0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+    eff.c:1811    0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8>
+           :            TA + tmpsd * (TB +
+
+vs.
+
+       0.00 :   405ef1: inc    %r15
+       0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+       0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8> // eff.c:1811
+            : 1810   TA + tmpsd * (TB +
+
+I bet also the current users of --stdio mode would benefit from it.
+What do you think?
+
+Thanks,
+Martin
+
+> 
+> Please take a look at 'man perf-config' and see what can be configured
+> for both 'perf annotate --tui' and 'perf annotate --stdio2'.
+> 
+> Perhaps we can do something like:
+> 
+> perf config annotate.stdio=tui_like
+> 
+> And, for completeness have:
+> 
+> perf config annotate.stdio=classical
+> 
+> wdyt?
+> 
+> Looking at the other patches now.
+> 
+> - Arnaldo
+> 
+>> - source locations for the hottest lines are printed
+>>    at the line end in order to preserve layout
+>>
+>> Before:
+>>
+>>      0.00 :   405ef1: inc    %r15
+>>           :            tmpsd * (TD + tmpsd * TDD)));
+>>      0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+>>           :            tmpsd * (TC +
+>>   eff.c:1811    0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8>
+>>           :            TA + tmpsd * (TB +
+>>      0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
+>>           :            dumbo =
+>>   eff.c:1809    1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8>
+>>           :            sumi -= sj * tmpsd * dij2i * dumbo;
+>>   eff.c:1813    2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0
+>>      2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
+>>      3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
+>>           :            for (k = 0; k < lpears[i] + upears[i]; k++) {
+>>   eff.c:1761    0.90 :   405f29: cmp    %r15d,%r12d
+>>
+>> After:
+>>
+>>      0.00 :   405ef1: inc    %r15
+>>           : 1812   tmpsd * (TD + tmpsd * TDD)));
+>>      0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
+>>           : 1811   tmpsd * (TC +
+>>      0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8> // eff.c:1811
+>>           : 1810   TA + tmpsd * (TB +
+>>      0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
+>>           : 1809   dumbo =
+>>      1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8> // eff.c:1809
+>>           : 1813   sumi -= sj * tmpsd * dij2i * dumbo;
+>>      2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0 // eff.c:1813
+>>      2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
+>>      3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
+>>           : 1761   for (k = 0; k < lpears[i] + upears[i]; k++) {
+>>
+>> Where e.g. '// eff.c:1811' shares the same color as the percentantage
+>> at the line beginning.
+>>
+>> Signed-off-by: Martin Liška <mliska@suse.cz>
+>> ---
+>>   tools/perf/util/annotate.c | 30 ++++++++++++++----------------
+>>   1 file changed, 14 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+>> index e60841b86d27..80542012ec1b 100644
+>> --- a/tools/perf/util/annotate.c
+>> +++ b/tools/perf/util/annotate.c
+>> @@ -1366,7 +1366,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>>   {
+>>   	struct disasm_line *dl = container_of(al, struct disasm_line, al);
+>>   	static const char *prev_line;
+>> -	static const char *prev_color;
+>>   	if (al->offset != -1) {
+>>   		double max_percent = 0.0;
+>> @@ -1405,20 +1404,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>>   		color = get_percent_color(max_percent);
+>> -		/*
+>> -		 * Also color the filename and line if needed, with
+>> -		 * the same color than the percentage. Don't print it
+>> -		 * twice for close colored addr with the same filename:line
+>> -		 */
+>> -		if (al->path) {
+>> -			if (!prev_line || strcmp(prev_line, al->path)
+>> -				       || color != prev_color) {
+>> -				color_fprintf(stdout, color, " %s", al->path);
+>> -				prev_line = al->path;
+>> -				prev_color = color;
+>> -			}
+>> -		}
+>> -
+>>   		for (i = 0; i < nr_percent; i++) {
+>>   			struct annotation_data *data = &al->data[i];
+>>   			double percent;
+>> @@ -1439,6 +1424,19 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>>   		printf(" : ");
+>>   		disasm_line__print(dl, start, addr_fmt_width);
+>> +
+>> +		/*
+>> +		 * Also color the filename and line if needed, with
+>> +		 * the same color than the percentage. Don't print it
+>> +		 * twice for close colored addr with the same filename:line
+>> +		 */
+>> +		if (al->path) {
+>> +			if (!prev_line || strcmp(prev_line, al->path)) {
+>> +				color_fprintf(stdout, color, " // %s", al->path);
+>> +				prev_line = al->path;
+>> +			}
+>> +		}
+>> +
+>>   		printf("\n");
+>>   	} else if (max_lines && printed >= max_lines)
+>>   		return 1;
+>> @@ -1454,7 +1452,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
+>>   		if (!*al->line)
+>>   			printf(" %*s:\n", width, " ");
+>>   		else
+>> -			printf(" %*s:     %*s %s\n", width, " ", addr_fmt_width, " ", al->line);
+>> +			printf(" %*s: %-*d %s\n", width, " ", addr_fmt_width, al->line_nr, al->line);
+>>   	}
+>>   	return 0;
+>> -- 
+>> 2.30.1
+>>
+> 
+
