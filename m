@@ -2,90 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B89F3269CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 23:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5553E3269D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 23:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhBZWHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 17:07:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhBZWHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 17:07:09 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26AF0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 14:06:29 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id o1so9308978ila.11
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 14:06:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=VANCDcWoh1f32URoRwsZjblU0mIeGcRR751Yd9L+eAs=;
-        b=dQj/x877P0oLdf6q6o1dwI2+hNol8yWG+5uHa4l5EVZ6WrFVdLa3NaSlF+sEbGG8eN
-         wWbe7XW/RiZMUeNtf/oj1yUbZER5crvmBJQiq4JTYPzWb0+FIdH8lLebN/SESU8dk9/x
-         L21fnF/F1N3y4dtRtG3t2Wz2AgG0b3Xi602Hy/ZhzP+5XN9VEi3/JMmHhb0blWsd2cLn
-         hZuwcjxlOhD9dQsf9ucLXgs4xZOgx7vIy7OMau3/jZ7kXRn41KU4mfFaLKZdJDb7Euq4
-         CXmb5JeRBinEzLOpdcXOjRclGJVCAuawbmceWSGUBlZc8EscmXUdoaup+M+9BUeKSVT4
-         bTTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VANCDcWoh1f32URoRwsZjblU0mIeGcRR751Yd9L+eAs=;
-        b=EmUtpv0WaKFWOzc5jP6oSH8pKeNnTBwFo1g6qqTfR97AJ126SxbXyoIjj4YfUQrSEg
-         QMiDLeZvl1eBomWiBk01woLelvkpAR8QFjFM5TyKmg84snzezVCfVWh1G/c2kn6wQFpN
-         HWrENfXsd0/fHMInQwijV+uejhjXdVcuL+VLHZLSYi4Cr/mAn0f5DY3ULHeK39oxblvy
-         3/jq4HyaJUvBIrsbCi9ZKyF9hhc7dQaBqerEvWg6I+tqJ7F+fZkW4yltD8EnLc+oP26h
-         jdZPr7eQUxETg7+fnMuenwGYrNHXhh3DdIP7PN8Pn1deNzxYJ2R07yxW2bLKxxbANnE1
-         Oagw==
-X-Gm-Message-State: AOAM533V92EIxtQrO9QO/Ki6ecEc8IRBIkZlJEeu0T2g91pNhK3sApU4
-        f3iDlbOfkt4uqSU7sRDKYgtIEQ==
-X-Google-Smtp-Source: ABdhPJzPVWG0HeuUpPqT6vVcIZ6xemEmt2aexRvX3sdsSySMca54739XfKRTI5lc4ntTlJXPaffcBQ==
-X-Received: by 2002:a92:1e12:: with SMTP id e18mr4238333ile.270.1614377188641;
-        Fri, 26 Feb 2021 14:06:28 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id x3sm6044374iof.21.2021.02.26.14.06.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 14:06:22 -0800 (PST)
-Subject: Re: KASAN: use-after-free Read in __cpuhp_state_remove_instance
-To:     syzbot <syzbot+38769495e847cea2dcca@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, dvyukov@google.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mpe@ellerman.id.au, paulmck@kernel.org, peterz@infradead.org,
-        qais.yousef@arm.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
-References: <000000000000f3daed05bc440347@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <806645c8-5a35-2341-a08f-ccb93a9a1fb0@kernel.dk>
-Date:   Fri, 26 Feb 2021 15:06:21 -0700
+        id S230012AbhBZWHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 17:07:48 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:12436 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229598AbhBZWHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 17:07:46 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614377244; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=bSGUK32O8UCe/VfHem0U/voNTp1WJZFoh+x84Rxcu/U=; b=Sm4PzdoRVTEN++wG/fGKfaoEDXN8Ny61GiKkxzyPEX6qrjSUXeRMVYA9Fxb92Yeitj9ONdUS
+ /14t/5PIZOt5rlIugDDzEg3Xl/HTL/ioMcRMXuP/pC2svQ8ajP1G8f9SSp7WRsT5QdxO/Lkm
+ NWQrobdnZR1ZoacNSENa1gArRWE=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 603970ed8f0d5ba6c58b9dbb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 22:06:37
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 95A7AC433C6; Fri, 26 Feb 2021 22:06:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F555C433C6;
+        Fri, 26 Feb 2021 22:06:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7F555C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v6 1/4] bus: mhi: core: Destroy SBL devices when moving to
+ mission mode
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com
+References: <1614208985-20851-1-git-send-email-bbhatt@codeaurora.org>
+ <1614208985-20851-2-git-send-email-bbhatt@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <6790d212-5980-39bd-ac4c-1176225604fd@codeaurora.org>
+Date:   Fri, 26 Feb 2021 14:06:36 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <000000000000f3daed05bc440347@google.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1614208985-20851-2-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/21 2:33 PM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    d01f2f7e Add linux-next specific files for 20210226
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=114fa9ccd00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a1746d2802a82a05
-> dashboard link: https://syzkaller.appspot.com/bug?extid=38769495e847cea2dcca
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1181e0dad00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+38769495e847cea2dcca@syzkaller.appspotmail.com
 
-This one is already fixed in the current tree.
+
+On 2/24/21 3:23 PM, Bhaumik Bhatt wrote:
+> Currently, client devices are created in SBL or AMSS (mission
+> mode) and only destroyed after power down or SYS ERROR. When
+> moving between certain execution environments, such as from SBL
+> to AMSS, no clean-up is required. This presents an issue where
+> SBL-specific channels are left open and client drivers now run in
+> an execution environment where they cannot operate. Fix this by
+> expanding the mhi_destroy_device() to do an execution environment
+> specific clean-up if one is requested. Close the gap and destroy
+> devices in such scenarios that allow SBL client drivers to clean
+> up once device enters mission mode.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+It make sense to clean up previous execution env related resources.
+
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 
 -- 
-Jens Axboe
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
