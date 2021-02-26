@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442A73263E2
+	by mail.lfdr.de (Postfix) with ESMTP id B49303263E3
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhBZOPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:15:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        id S230090AbhBZOPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:15:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhBZOO5 (ORCPT
+        with ESMTP id S229996AbhBZOO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:14:57 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60829C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:14:16 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id l12so11132330edt.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:14:16 -0800 (PST)
+        Fri, 26 Feb 2021 09:14:58 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A3DC061786
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:14:17 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id gt32so3533937ejc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:14:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KoK826DVw45RSIr335dfSy5TyJSQwwkfzzkU1fu3OEk=;
-        b=cZkTHSJQ1r4p4PitkU+/vlDTzmJg/V9nX2WMHhQJxJoERKL9NFhitjzsc5EiUnHIup
-         oRr/wP47bDW4/E6DZ3P0aRDX2piGYfFtiIlzynodqk/4dzzLitA4hawc6gMGVrWWf6So
-         4foAsZlCzcrFpybhzSxYqAYHtxVK9TO0y+LTE=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LUu93rGA1cHh0fyqCMn68WZCCrDnAzCezR4V6cd4F40=;
+        b=af+gg5BZ4ZAapi4Qfsk9u7x2RNMSU0TV+BRUD5V4dMNR83ZAHBB/2nGj6S0A4j2K+0
+         s7og7GkPbfioM1qaDCoKg0W8is2b0pJDWy5qXZsU8B/jbzYD3urYQL4odSEOMEVVH7Rc
+         qeIxewcBW6HuJ75ZEUNeRzqU2cMv9wYlDkTkY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KoK826DVw45RSIr335dfSy5TyJSQwwkfzzkU1fu3OEk=;
-        b=h0eIZxlcvre0mdYNDg4jL9ukzIqUBYev9+2wGFV3gONkzMM+gfnQ1h7zKZGSNbJxEp
-         XtteU6joiilYS0luHnbWZel+vMiG+r9r30o2djumXyDMRNQSWKtGqthTkOowoJlpeZIZ
-         mmEzOfr4KXeWpastVIipnjGloTv5GQwct2H5SSiwaSW9E9cveQOGsputtaR1JGfQgP+l
-         B7mWBB62S/eyqg6n/9SrvGrBDWXphH12HiqqP8tq+kgu4ZPAihriCCPuJdDxa8LeBK3P
-         ZzoOVfVmFXpMxSkuWG9rlWuTh7DdxWNUXFmq5s0uHDH7VNWZkaKM/8YmYPcdp8Sy0v06
-         RPQg==
-X-Gm-Message-State: AOAM5314r47MFN8gEhupZKrhph+BjhhzUzsXpwe1miW4eeY314RSzHJI
-        y6/yu/o0Y+LO4dY52Q4ORPSC+nvGY4PZ6A==
-X-Google-Smtp-Source: ABdhPJyQT4fNHYcSdyEohDne+SLW167qPUaA5ARIIc3MduU1I9qui5Ic3KhEBXHGpsBnUBhz2mxR9g==
-X-Received: by 2002:a05:6402:2054:: with SMTP id bc20mr3575708edb.190.1614348855092;
-        Fri, 26 Feb 2021 06:14:15 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LUu93rGA1cHh0fyqCMn68WZCCrDnAzCezR4V6cd4F40=;
+        b=VNu4DLO4dYPq0amQA1gjURLqe6ZDXnKtGIQo767k29pAMCqKH5A1GHn4yZSehMc3yG
+         KEcOQC+dX2cxxzL9nf4kpXw+VRr5W/3sKnfzmx347pQJ3vrm92GCF5fODkv5jyYvmAi7
+         IweSb5mXSQ183RVF5NmGc1mb2WOGpfWv436H6gxuuzVUkcBLvONkZCMg+XdPfJnjmef4
+         d69ytsWKMFxWDFdgBY8/UjqFzedYOEyCNuKZfnrfsY89glVnXdio25iUaTtO1q+W4Hee
+         Kmqf2gxjfjMK+C+LU/thRUa5f1ItZZwbrFnFJtH/B8OCkMGliPIFqiaxPWIxEdF7cWaZ
+         CY8A==
+X-Gm-Message-State: AOAM5315IQELPiLV+KZvI4dnzKEYWDVJZ5wU2Rkj+zYYwkg30CSBqOf5
+        ECaGmKK7WldASf5e7PxTC4W2gg==
+X-Google-Smtp-Source: ABdhPJzabGx6JCofY0z/Cp5d89cR8H1+SNGOEkjVaC9c8nTuduiSccUfn/vsu5zSdaHECDAwJmIUCg==
+X-Received: by 2002:a17:906:8147:: with SMTP id z7mr3451969ejw.436.1614348856083;
+        Fri, 26 Feb 2021 06:14:16 -0800 (PST)
 Received: from prevas-ravi.prevas.se ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id g3sm5316838ejz.91.2021.02.26.06.14.13
+        by smtp.gmail.com with ESMTPSA id g3sm5316838ejz.91.2021.02.26.06.14.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 06:14:14 -0800 (PST)
+        Fri, 26 Feb 2021 06:14:15 -0800 (PST)
 From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Arnd Bergmann <arnd@arndb.de>, linux-clk@vger.kernel.org,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH 0/2] add ripple counter dt binding and driver
-Date:   Fri, 26 Feb 2021 15:14:09 +0100
-Message-Id: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
+Subject: [PATCH 1/2] dt-bindings: misc: add binding for generic ripple counter
+Date:   Fri, 26 Feb 2021 15:14:10 +0100
+Message-Id: <20210226141411.2517368-2-linux@rasmusvillemoes.dk>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
+References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-What I'm trying to do:
+While a ripple counter can not usually be interfaced with (directly)
+from software, it may still be a crucial component in a board
+layout. To prevent its input clock from being disabled by the clock
+core because it apparently has no consumer, one needs to be able to
+represent that consumer in DT.
 
-We have a board with an external watchdog circuit (the kind that is
-petted by flipping a gpio). The reset output of that is split in two:
-One gives an immediate interrupt, so software knows that a hard reset
-is imminent. The other half removes the "reset input" from a ripple
-counter, causing that to start counting at 32kHz, and after 64ms, the
-SOC's reset pin then gets pulled.
-
-Unfortunately, the board designer overlooked that the 32kHz output
-from the RTC can be disabled, which (since no other component uses
-it), is just what happens when clk_disable_unused() gets called. When
-the watchdog fires, we do get the interrupt, but the board does not
-get reset as it should, since the counter doesn't count.
-
-So I'm thinking that the proper way to handle this is to be able to
-represent that ripple counter as a clock consumer in DT and have a
-driver do the clk_prepare_enable(), even if that driver doesn't and
-can't do anything else. But I'm certainly open to other suggestions.
-
-The "clk_ignore_unused" kernel parameter is fine for debugging, but
-too big a hammer (since it applies to all "unused" clocks).
-
-
-Rasmus Villemoes (2):
-  dt-bindings: misc: add binding for generic ripple counter
-  drivers: misc: add ripple counter driver
-
- .../devicetree/bindings/misc/ripple-ctr.txt   |  8 +++++
- drivers/misc/Kconfig                          |  7 +++++
- drivers/misc/Makefile                         |  1 +
- drivers/misc/ripple-ctr.c                     | 31 +++++++++++++++++++
- 4 files changed, 47 insertions(+)
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ Documentation/devicetree/bindings/misc/ripple-ctr.txt | 8 ++++++++
+ 1 file changed, 8 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/misc/ripple-ctr.txt
- create mode 100644 drivers/misc/ripple-ctr.c
 
+diff --git a/Documentation/devicetree/bindings/misc/ripple-ctr.txt b/Documentation/devicetree/bindings/misc/ripple-ctr.txt
+new file mode 100644
+index 000000000000..1497d3a237a7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/misc/ripple-ctr.txt
+@@ -0,0 +1,8 @@
++Generic ripple counter
++
++A ripple counter is a simple component that can for example be used to
++delay propagation of a signal.
++
++Required properties:
++- compatible: Must be "linux,ripple-ctr".
++- clocks: Input clock specifier. Refer to common clock bindings.
 -- 
 2.29.2
 
