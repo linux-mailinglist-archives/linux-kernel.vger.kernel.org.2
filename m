@@ -2,169 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A6D326874
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DF832687C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhBZUSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:18:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhBZUMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:12:06 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB14BC0698D0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:10:09 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id u14so9747535wri.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:10:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DYHcnJh5U/6gVrGS5eDqixWkprjFpWIsSZ52nLUsrJc=;
-        b=DSfMOLBxr80hV9v8h3EUvd/OLOFky0SJeRZdwhBnc36/ZpcPbQsu5d5PKODXq4bHIF
-         QJdAYs0TDqk7dKTWHhHZa2YZgnRoL2P3vWK5eoR+rVuc7A/ys1fYWanQcSikr8Z2n7u4
-         nQZEq8a2UwIPn2Gz4IAazI7WeFdCqjNzjWjO62WgIZCWfWU+VM5XJC1uwpQvabQGRuFv
-         N+sJMaudVZtLvfyJWtZeeU+doAwBIb+ZwnP1AvfVgpbJNku6a0hLN4Tz4nMU/NWrHntN
-         brqTKkRrR2dLtVIFdehSmuhnOMxDyAORHnDaPaWvXxAFjZ1rL000wgyeQidxbB8FT+m3
-         985g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DYHcnJh5U/6gVrGS5eDqixWkprjFpWIsSZ52nLUsrJc=;
-        b=Prn9Qw2BDUr1RLxGYd7o7IfbULGPGSfZExTmXZcdCdSc8op4Isi5YtSZjFpS7YFaO4
-         lqL65XdUbCa7c51fcggCiUKkS4ZFQ8f9YolsFCR2EUjvwuHn+Y6aAx53AMQTpoYaXVpq
-         pcYYg05Ie5JLyX0c/VYSXvi0v9fHbT0Rt0IxVPK89l25T616HqCVkD6yAYVjkH1OV7cV
-         A4BB1BOdvzitxHjPTK2+oP7K3LroE6KqXdwqbvI+PwLqzo2EOjsy/6hhvHCvLguE2vFz
-         zs2UROWWJOVkGKXX0h+XAsv4hIASvHssrT5llJIFiOm7WQl8Ub7E/eWL36IQcJgNaTj6
-         fR0g==
-X-Gm-Message-State: AOAM530q5EGatUeayj76b4DdkRWptSxPEXTgGd///xOof14K461pjK9P
-        0j0k6PcwW5kZYrL8X2iRN/Acfw/xipc47UrNKB9+mw==
-X-Google-Smtp-Source: ABdhPJzFk/7GIOENhAIWM+EZkNdE/mONUK5IXOXD3LykxferNg9wj5MnKOvayTLAOrdBVIDUHJnk4J+G73gZ7GaKm6w=
-X-Received: by 2002:a5d:6643:: with SMTP id f3mr4867346wrw.182.1614370208353;
- Fri, 26 Feb 2021 12:10:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20210128170936.9222-1-mike.leach@linaro.org> <20210128170936.9222-7-mike.leach@linaro.org>
- <20210225215122.GC3567106@xps15>
-In-Reply-To: <20210225215122.GC3567106@xps15>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Fri, 26 Feb 2021 20:09:57 +0000
-Message-ID: <CAJ9a7Vi5Dyb2k7uDxqRg99e-cxKyLkCgimMD8ZSO2m+1NdbFjg@mail.gmail.com>
-Subject: Re: [PATCH v4 06/10] coresight: etm-perf: Update to activate selected configuration
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        Yabin Cui <yabinc@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231230AbhBZUUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:20:11 -0500
+Received: from mga17.intel.com ([192.55.52.151]:35662 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230024AbhBZUM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 15:12:29 -0500
+IronPort-SDR: GX8V3bE+rN2o6VCZI71iKbPWngd0DfU5jBYGYyzOS/P7P0uzglbLq2A6NOkRpd451g505DY6bl
+ 5dtHS9rJd9DA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="165846885"
+X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
+   d="scan'208";a="165846885"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 12:11:11 -0800
+IronPort-SDR: IyZ2IpXRfbmEHcV4hiAMmMvrpklHRgTe7EdusvO1084PNG83I0fduqXETi5E4sUMFXg4iEUdbn
+ akD/3E8MYV3A==
+X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
+   d="scan'208";a="405109420"
+Received: from megha-z97x-ud7-th.sc.intel.com ([143.183.85.154])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Feb 2021 12:11:11 -0800
+From:   Megha Dey <megha.dey@intel.com>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, dave.jiang@intel.com,
+        ashok.raj@intel.com, kevin.tian@intel.com, dwmw@amazon.co.uk,
+        x86@kernel.org, tony.luck@intel.com, dan.j.williams@intel.com,
+        megha.dey@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, alex.williamson@redhat.com,
+        bhelgaas@google.com, maz@kernel.org, linux-pci@vger.kernel.org,
+        baolu.lu@linux.intel.com, ravi.v.shankar@intel.com
+Subject: [Patch V2 02/13] x86/msi: Rename and rework pci_msi_prepare() to cover non-PCI MSI
+Date:   Fri, 26 Feb 2021 12:11:06 -0800
+Message-Id: <1614370277-23235-3-git-send-email-megha.dey@intel.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1614370277-23235-1-git-send-email-megha.dey@intel.com>
+References: <1614370277-23235-1-git-send-email-megha.dey@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+From: Thomas Gleixner <tglx@linutronix.de>
 
-On Thu, 25 Feb 2021 at 21:51, Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
->
-> On Thu, Jan 28, 2021 at 05:09:32PM +0000, Mike Leach wrote:
-> > Add calls to activate the selected configuration as perf starts
-> > and stops the tracing session.
-> >
-> > Signed-off-by: Mike Leach <mike.leach@linaro.org>
-> > ---
-> >  drivers/hwtracing/coresight/coresight-etm-perf.c | 14 +++++++++++++-
-> >  drivers/hwtracing/coresight/coresight-etm-perf.h |  2 ++
-> >  2 files changed, 15 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> > index e270bb1e0f7d..5c1aeddabc59 100644
-> > --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> > +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> > @@ -178,6 +178,10 @@ static void free_event_data(struct work_struct *work)
-> >       /* Free the sink buffers, if there are any */
-> >       free_sink_buffer(event_data);
-> >
-> > +     /* clear any configuration we were using */
-> > +     if (event_data->config_id_hash)
-> > +             cscfg_deactivate_config(event_data->config_id_hash);
-> > +
-> >       for_each_cpu(cpu, mask) {
-> >               struct list_head **ppath;
-> >
-> > @@ -236,7 +240,7 @@ static void etm_free_aux(void *data)
-> >  static void *etm_setup_aux(struct perf_event *event, void **pages,
-> >                          int nr_pages, bool overwrite)
-> >  {
-> > -     u32 id;
-> > +     u32 id, config_id;
->
-> config_id, cfg_hash, id_hash...
->
+Rename it to x86_msi_prepare() and handle the allocation type setup
+depending on the device type.
 
-OK - I'll get the naming consistent.
+Add a new arch_msi_prepare define which will be utilized by the upcoming
+device MSI support. Define it to NULL if not provided by an architecture
+in the generic MSI header.
 
-> >       int cpu = event->cpu;
-> >       cpumask_t *mask;
-> >       struct coresight_device *sink = NULL;
-> > @@ -253,6 +257,14 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
-> >               sink = coresight_get_sink_by_id(id);
-> >       }
-> >
-> > +     /* check if user wants a coresight configuration selected */
-> > +     config_id = (u32)((event->attr.config2 & GENMASK_ULL(63, 32)) >> 32);
-> > +     if (config_id) {
-> > +             if (cscfg_activate_config(config_id))
-> > +                     goto err;
-> > +             event_data->config_id_hash = config_id;
-> > +     }
-> > +
-> >       mask = &event_data->mask;
-> >
-> >       /*
-> > diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.h b/drivers/hwtracing/coresight/coresight-etm-perf.h
-> > index 3646a3837a0b..751d768939d8 100644
-> > --- a/drivers/hwtracing/coresight/coresight-etm-perf.h
-> > +++ b/drivers/hwtracing/coresight/coresight-etm-perf.h
-> > @@ -49,12 +49,14 @@ struct etm_filters {
-> >   * @work:            Handle to free allocated memory outside IRQ context.
-> >   * @mask:            Hold the CPU(s) this event was set for.
-> >   * @snk_config:              The sink configuration.
-> > + * @config_id_hash:  The id of any coresight config selected.
-> >   * @path:            An array of path, each slot for one CPU.
-> >   */
-> >  struct etm_event_data {
-> >       struct work_struct work;
-> >       cpumask_t mask;
-> >       void *snk_config;
-> > +     u32 config_id_hash;
->
-> Please align this with the naming convention you will be using above and
-> throughout.
->
-> More comments tomorrow.
->
-> Thanks,
-> Mathieu
->
-> >       struct list_head * __percpu *path;
-> >  };
-> >
-> > --
-> > 2.17.1
-> >
+One arch specific function for MSI support is truly enough.
 
-Thanks
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Megha Dey <megha.dey@intel.com>
+---
+ arch/x86/include/asm/msi.h          |  4 +++-
+ arch/x86/kernel/apic/msi.c          | 27 ++++++++++++++++++++-------
+ drivers/pci/controller/pci-hyperv.c |  2 +-
+ include/linux/msi.h                 |  4 ++++
+ 4 files changed, 28 insertions(+), 9 deletions(-)
 
-Mike
-
+diff --git a/arch/x86/include/asm/msi.h b/arch/x86/include/asm/msi.h
+index b85147d..9bd214e 100644
+--- a/arch/x86/include/asm/msi.h
++++ b/arch/x86/include/asm/msi.h
+@@ -6,9 +6,11 @@
+ 
+ typedef struct irq_alloc_info msi_alloc_info_t;
+ 
+-int pci_msi_prepare(struct irq_domain *domain, struct device *dev, int nvec,
++int x86_msi_prepare(struct irq_domain *domain, struct device *dev, int nvec,
+ 		    msi_alloc_info_t *arg);
+ 
++#define arch_msi_prepare		x86_msi_prepare
++
+ /* Structs and defines for the X86 specific MSI message format */
+ 
+ typedef struct x86_msi_data {
+diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
+index 44ebe25..84b16c7 100644
+--- a/arch/x86/kernel/apic/msi.c
++++ b/arch/x86/kernel/apic/msi.c
+@@ -153,26 +153,39 @@ static struct irq_chip pci_msi_controller = {
+ 	.flags			= IRQCHIP_SKIP_SET_WAKE,
+ };
+ 
+-int pci_msi_prepare(struct irq_domain *domain, struct device *dev, int nvec,
+-		    msi_alloc_info_t *arg)
++static void pci_msi_prepare(struct device *dev, msi_alloc_info_t *arg)
+ {
+-	struct pci_dev *pdev = to_pci_dev(dev);
+-	struct msi_desc *desc = first_pci_msi_entry(pdev);
++	struct msi_desc *desc = first_msi_entry(dev);
+ 
+-	init_irq_alloc_info(arg, NULL);
+ 	if (desc->msi_attrib.is_msix) {
+ 		arg->type = X86_IRQ_ALLOC_TYPE_PCI_MSIX;
+ 	} else {
+ 		arg->type = X86_IRQ_ALLOC_TYPE_PCI_MSI;
+ 		arg->flags |= X86_IRQ_ALLOC_CONTIGUOUS_VECTORS;
+ 	}
++}
++
++static void dev_msi_prepare(struct device *dev, msi_alloc_info_t *arg)
++{
++	arg->type = X86_IRQ_ALLOC_TYPE_DEV_MSI;
++}
++
++int x86_msi_prepare(struct irq_domain *domain, struct device *dev, int nvec,
++		    msi_alloc_info_t *arg)
++{
++	init_irq_alloc_info(arg, NULL);
++
++	if (dev_is_pci(dev))
++		pci_msi_prepare(dev, arg);
++	else
++		dev_msi_prepare(dev, arg);
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(pci_msi_prepare);
++EXPORT_SYMBOL_GPL(x86_msi_prepare);
+ 
+ static struct msi_domain_ops pci_msi_domain_ops = {
+-	.msi_prepare	= pci_msi_prepare,
++	.msi_prepare	= x86_msi_prepare,
+ };
+ 
+ static struct msi_domain_info pci_msi_domain_info = {
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index 27a17a1..ac4fe8b7 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -1546,7 +1546,7 @@ static struct irq_chip hv_msi_irq_chip = {
+ };
+ 
+ static struct msi_domain_ops hv_msi_ops = {
+-	.msi_prepare	= pci_msi_prepare,
++	.msi_prepare	= arch_msi_prepare,
+ 	.msi_free	= hv_msi_free,
+ };
+ 
+diff --git a/include/linux/msi.h b/include/linux/msi.h
+index aef35fd..f3e54d2 100644
+--- a/include/linux/msi.h
++++ b/include/linux/msi.h
+@@ -473,4 +473,8 @@ static inline struct irq_domain *pci_msi_get_device_domain(struct pci_dev *pdev)
+ }
+ #endif /* CONFIG_PCI_MSI_IRQ_DOMAIN */
+ 
++#ifndef arch_msi_prepare
++# define arch_msi_prepare	NULL
++#endif
++
+ #endif /* LINUX_MSI_H */
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+2.7.4
+
