@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353083266C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A03073266CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhBZSMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 13:12:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54080 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229823AbhBZSMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 13:12:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A88D064F0D;
-        Fri, 26 Feb 2021 18:12:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614363125;
-        bh=Hq9nQud27ajZQKgTqLPDkKCQ20aGL8YgtoWSdS1bxYM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=H83hjdZwUr1CQdNx1CJmo9ueIjpSgNEYT57R8TgZxWrrFwhGasx5iLpy9YxoKuhfE
-         oABEeeGWg3um4I5Egd0Eqg7l33rNI08U0jEn84L2A/r8ZMmEpHGJBbG/Sr/Nj3j3km
-         ynMoqGeWYHsRPY9L77510BozuadAFnzlgcUVXEWk1lRPCqj4DMipgFfRuF+9nLPc6i
-         QfvLUB0BEYgjvNPn0zqQNo8afVDexqYZZAZYUR8H/KVDgO6WkRbMqw9kFsI4WC21rT
-         AxGdFDFhFUM8P7cTf8WL0gdPa231ywseFR2N0msr4zLUxdUhclrNxwEmBEmcTkmoRt
-         H9VYLTZyqvlZQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 62F263522FAD; Fri, 26 Feb 2021 10:12:05 -0800 (PST)
-Date:   Fri, 26 Feb 2021 10:12:05 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, mhocko@suse.com,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 3/3] kernel/smp: add more data to CSD lock debugging
-Message-ID: <20210226181205.GZ2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210226112521.8641-1-jgross@suse.com>
- <20210226112521.8641-4-jgross@suse.com>
- <YDkkFBerBlW5uUBS@hirez.programming.kicks-ass.net>
+        id S230144AbhBZSRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 13:17:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229571AbhBZSRW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 13:17:22 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBC3C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 10:16:42 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id u20so10566742iot.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 10:16:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=++70fAlAOH2s61QgMcTjkJmnOFcHIUa2TWnJxzUPnsQ=;
+        b=U/cgqgeFEP7+jbZav60kIxVxhmp/WjepC70KAl79RUsnNypDQ7vIB9AKjaFuD1XImn
+         +EsEWWlsekQYuYCc2I2X63/p8j7L9nOWK3h3XpoYp8m2cpLkVNlggFKqWZmCe0zHFiyt
+         smEFFEssVXqte3MwHGZ/XtnMxduVXf8l/guIk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=++70fAlAOH2s61QgMcTjkJmnOFcHIUa2TWnJxzUPnsQ=;
+        b=CTWBLmMiJos7G1uCvq5Vzq2Cw7TdySJcVP/5sJdu+X9tNS8oicV9NzsJUDK1IcDrvk
+         xZWdX0a73fu49AVxX1hyNS67k+d0pWHKAVe2to6FlbGKAo+HpWOcqHJzNoNux0GbiZTv
+         QqnvTUARUjAK6JLaj9v2MTjudNl1d5FrFdeglVtaC0VgDIp6c5zLI7nuaz3GX8xpW/OT
+         F1gBkUEYT/tS2Fp1bYNboaYSH55h69ddLMMLiVq9dcuFlF8Cs+DrSiwcnCKdRgTObMiB
+         e3DUNTtGH7yKzYEHs9oEVZuvcYBKx8Ju74NS84cOePbye1DpiU2bLyGq/+8rMNvqHdGM
+         KV3g==
+X-Gm-Message-State: AOAM530CCraWwZPWJvIkwKMYh28EkMQScPK8zeOEIOdSoHW2vtQwJL0w
+        zSKOcNfmwpm1O4rXJW2Nwoe7+Q==
+X-Google-Smtp-Source: ABdhPJwpHZPEqcg0TRe5ho36fp9HDmq8putkCfuc32ip2fHjH1r7zpddswLZ6FdnDWpXc758aSMEqA==
+X-Received: by 2002:a05:6638:e93:: with SMTP id p19mr4134186jas.10.1614363402047;
+        Fri, 26 Feb 2021 10:16:42 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id m11sm2318054iop.11.2021.02.26.10.16.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 10:16:41 -0800 (PST)
+Subject: Re: [PATCH v2 2/3] lockdep: add lockdep lock state defines
+To:     Johannes Berg <johannes@sipsolutions.net>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1614355914.git.skhan@linuxfoundation.org>
+ <af1511df953fe49f95953cbc23d86fb7cdaff58d.1614355914.git.skhan@linuxfoundation.org>
+ <4a997ea7b6625428c21dc3e423e96ee54d6785e2.camel@sipsolutions.net>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <bb815b1d-5377-95a1-9610-827a30cb8525@linuxfoundation.org>
+Date:   Fri, 26 Feb 2021 11:16:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDkkFBerBlW5uUBS@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <4a997ea7b6625428c21dc3e423e96ee54d6785e2.camel@sipsolutions.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 05:38:44PM +0100, Peter Zijlstra wrote:
+On 2/26/21 11:03 AM, Johannes Berg wrote:
 > 
-> I hate all of this, but if this will finally catch the actual problem,
-> we can then revert all this, so sure.
+>> @@ -5475,7 +5476,7 @@ noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
+>>   		/* avoid false negative lockdep_assert_not_held()
+>>   		 * and lockdep_assert_held()
+>>   		 */
+>> -		return -1;
+>> +		return LOCK_STATE_UNKNOWN;
+> 
+> I'd argue that then the other two return places here should also be
+> changed.
+> 
 
-OK, I will bite...  What exactly do you hate about it?
+Makes sense.
 
-							Thanx, Paul
+Since lock_is_held_type() simply returns what  __lock_is_held() for the
+other cases, __lock_is_held() is the one that needs changes to use these 
+defines.
 
-> Also, I think this will conflict with the patches from Nadav that I have
-> queued:
-> 
->   https://lkml.kernel.org/r/20210220231712.2475218-1-namit@vmware.com
-> 
-> which I'll be pushing to tip/x86/mm once -rc1 happens.
-> 
-> On Fri, Feb 26, 2021 at 12:25:21PM +0100, Juergen Gross wrote:
-> 
-> > +static void __smp_call_single_queue_debug(int cpu, struct llist_node *node)
-> > +{
-> > +	unsigned int this_cpu = smp_processor_id();
-> > +	struct cfd_seq_local *seq = this_cpu_ptr(&cfd_seq_local);
-> > +	struct call_function_data *cfd = this_cpu_ptr(&cfd_data);
-> > +	struct cfd_percpu *pcpu = per_cpu_ptr(cfd->pcpu, cpu);
-> > +
-> > +	cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
-> > +	if (llist_add(node, &per_cpu(call_single_queue, cpu))) {
-> > +		cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
-> > +		cfd_seq_store(seq->ping, this_cpu, cpu, CFD_SEQ_PING);
-> > +		send_call_function_single_ipi(cpu);
-> > +		cfd_seq_store(seq->pinged, this_cpu, cpu, CFD_SEQ_PINGED);
-> > +	} else {
-> > +		cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
-> > +	}
-> > +}
-> >  #else
-> > +#define cfd_seq_store(var, src, dst, type)
-> > +
-> >  static void csd_lock_record(call_single_data_t *csd)
-> >  {
-> >  }
-> > @@ -290,6 +396,19 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
-> >  
-> >  void __smp_call_single_queue(int cpu, struct llist_node *node)
-> >  {
-> > +#ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
-> > +	if (static_branch_unlikely(&csdlock_debug_extended)) {
-> > +		unsigned int type;
-> > +
-> > +		type = CSD_TYPE(container_of(node, call_single_data_t,
-> > +					     node.llist));
-> > +		if (type == CSD_TYPE_SYNC || type == CSD_TYPE_ASYNC) {
-> > +			__smp_call_single_queue_debug(cpu, node);
-> > +			return;
-> > +		}
-> > +	}
-> > +#endif
-> 
-> This is a bit weird, might as well put it in generic_exec_single()
-> because there you still know the type matches.
-> 
-> 
-> > @@ -712,12 +840,21 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
-> >  		csd->node.src = smp_processor_id();
-> >  		csd->node.dst = cpu;
-> >  #endif
-> > -		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu)))
-> > +		cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
-> > +		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu))) {
-> >  			__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
-> > +			cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
-> > +		} else {
-> > +			cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
-> > +		}
-> >  	}
-> >  
-> >  	/* Send a message to all CPUs in the map */
-> > +	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->ping, this_cpu,
-> > +		      CFD_SEQ_NOCPU, CFD_SEQ_PING);
-> >  	arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
-> > +	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->pinged, this_cpu,
-> > +		      CFD_SEQ_NOCPU, CFD_SEQ_PINGED);
-> 
-> Too bad we can't share with the single case, a well.
+thanks,
+-- Shuah
+
+
+
+
