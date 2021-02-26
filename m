@@ -2,110 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBF4325B29
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 02:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897C6325B31
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 02:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232544AbhBZBHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 20:07:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232372AbhBZBHZ (ORCPT
+        id S230008AbhBZBRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 20:17:49 -0500
+Received: from regular1.263xmail.com ([211.150.70.203]:51028 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhBZBRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 20:07:25 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31458C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:06:58 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id g5so12009883ejt.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:06:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hshTohekKVzxbI8Gdg4o7wDfhyGczePTc6NMf/Dm1B0=;
-        b=t8Jhg/Wo4q4oMpwBzWgLwhR2qoUKb1jrUkLmUrJbhzrdFa1lvtizQEf/FQBlf4CxX5
-         kfPYsVQXSwyirI34aU5APwxO2Wi1OfjPAqb9789iPnqnUGIOrQm94kKJ3NVewuGJzH5q
-         70hpGID4SGwqyrlm5Jj8QwiJPPyVoKoVCjS7xmzvr5kBP9/1CxPppioQGyLBb1DMP0de
-         zRvcaQY7LJMjI8lnWjKJnJJC6GIlZRX0jSI0+vuNg0KJc0YcnLVf4wBJHJ+NfKYiXyAY
-         c1KFNQucGUusUaHkNrxPdz/+qJZ0quh0PvJZlao46WMYwCEm0pWdnnSou1wVaY1KI51v
-         famw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hshTohekKVzxbI8Gdg4o7wDfhyGczePTc6NMf/Dm1B0=;
-        b=p80SdipQAu9W1cQ6v1ZObblKk3xbDhgUmCC2vj7FLMPNWMGsbNignaUTSaLSTXXs0n
-         ZfJ1Gy/h+iwMKrGDCu9ORv36h5lgEHww0a3PzcYSFn/Gu0uVXrqMkL5Ig7V4S2jKu33l
-         2pRFhkvm94DWwh+e3e5UDd+zUf1ayhpwpR2k46GkNL3BI3M8TYTVEolzg5CjRQFmTGdN
-         e8hbp1tRi/eQjQTDSH944BKXpgWNAmTz2P4ZWFZ+76v0muXRfWS9P4NA7GiriXKDREc+
-         0duCoSuJfXHyCrkjpJ0FN16Vbz5texxwhXpyAp25ocWvh82xm5IDvZtm6ENCAG9x56gE
-         bnEg==
-X-Gm-Message-State: AOAM530i8boIhYzHUMmYjNo3TKy1Y8UVEG498wuPh+NkHaN3JzT+ywEm
-        rRoQ3qpJdDJkta1kzKfJ7m4twKASZmloAF0bSKr6
-X-Google-Smtp-Source: ABdhPJz9Ym22J+71vu28hduTtY1dbebaSSmN+CFMDHNnCACBgGb8WrLJ4GnFK7OSVWzIx5rZEe326i5FwFwvcgLs/QI=
-X-Received: by 2002:a17:907:3e14:: with SMTP id hp20mr509206ejc.106.1614301616841;
- Thu, 25 Feb 2021 17:06:56 -0800 (PST)
+        Thu, 25 Feb 2021 20:17:31 -0500
+Received: from localhost (unknown [192.168.167.130])
+        by regular1.263xmail.com (Postfix) with ESMTP id 0A1297F0;
+        Fri, 26 Feb 2021 09:11:15 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.236] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P21325T140438822438656S1614301874165605_;
+        Fri, 26 Feb 2021 09:11:14 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <f4a5708efab962670bcfc1bbf59d8cf6>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: ulf.hansson@linaro.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v2] PM: runtime: Update device status before letting
+ suppliers suspend
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+References: <2024466.aZ6alR0V7q@kreacher>
+From:   "elaine.zhang" <zhangqing@rock-chips.com>
+Organization: rockchip
+Message-ID: <e49804e9-24f3-006e-0668-f6df2176eafe@rock-chips.com>
+Date:   Fri, 26 Feb 2021 09:11:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia>
- <20210223223652.GD6000@sequoia> <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
-In-Reply-To: <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 25 Feb 2021 20:06:45 -0500
-Message-ID: <CAHC9VhSaU-3_fs83kEA5bxBf9xMsE29B_O5nXFpROk4=y9kgXw@mail.gmail.com>
-Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2024466.aZ6alR0V7q@kreacher>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 4:35 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> After the switch to RCU, we now have:
-> 1. Start live conversion of new entries.
-> 2. Convert existing entries.
-> 3. RCU-assign the new policy pointer to selinux_state.
-> [!!! Now actually both old and new sidtab may be referenced by
-> readers, since there is no synchronization barrier previously provided
-> by the write lock.]
-> 4. Wait for synchronize_rcu() to return.
-> 5. Now only the new sidtab is visible to readers, so the old one can
-> be destroyed.
+Hi, Rafael:
+
+The patch V2 test works well.
+
+Tested-by: Elaine Zhang <zhangiqng@rock-chips.com>
+
+ÔÚ 2021/2/26 ÉÏÎç2:23, Rafael J. Wysocki Ð´µÀ:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 >
-> So the race can happen between 3. and 5., if one thread already sees
-> the new sidtab and adds a new entry there, and a second thread still
-> has the reference to the old sidtab and also tires to add a new entry;
-> live-converting to the new sidtab, which it doesn't expect to change
-> by itself. Unfortunately I failed to realize this when reviewing the
-> patch :/
+> Because the PM-runtime status of the device is not updated in
+> __rpm_callback(), attempts to suspend the suppliers of the given
+> device triggered by rpm_put_suppliers() called by it may fail.
+>
+> Fix this by making __rpm_callback() update the device's status to
+> RPM_SUSPENDED before calling rpm_put_suppliers() if the current
+> status of the device is RPM_SUSPENDING and the callback just invoked
+> by it has returned 0 (success).
+>
+> While at it, modify the code in __rpm_callback() to always check
+> the device's PM-runtime status under its PM lock.
+>
+> Link: https://lore.kernel.org/linux-pm/CAPDyKFqm06KDw_p8WXsM4dijDbho4bb6T4k50UqqvR1_COsp8g@mail.gmail.com/
+> Fixes: 21d5c57b3726 ("PM / runtime: Use device links")
+> Reported-by: elaine.zhang <zhangqing@rock-chips.com>
+> Diagnosed-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+>
+> v1 -> v2:
+>     * Initialize the "get" variable to avoid a false-positive warning from
+>       the compiler.
+>
+> ---
+>   drivers/base/power/runtime.c |   62 +++++++++++++++++++++++++------------------
+>   1 file changed, 37 insertions(+), 25 deletions(-)
+>
+> Index: linux-pm/drivers/base/power/runtime.c
+> ===================================================================
+> --- linux-pm.orig/drivers/base/power/runtime.c
+> +++ linux-pm/drivers/base/power/runtime.c
+> @@ -325,22 +325,22 @@ static void rpm_put_suppliers(struct dev
+>   static int __rpm_callback(int (*cb)(struct device *), struct device *dev)
+>   	__releases(&dev->power.lock) __acquires(&dev->power.lock)
+>   {
+> -	int retval, idx;
+>   	bool use_links = dev->power.links_count > 0;
+> +	bool get = false;
+> +	int retval, idx;
+> +	bool put;
+>   
+>   	if (dev->power.irq_safe) {
+>   		spin_unlock(&dev->power.lock);
+> +	} else if (!use_links) {
+> +		spin_unlock_irq(&dev->power.lock);
+>   	} else {
+> +		get = dev->power.runtime_status == RPM_RESUMING;
+> +
+>   		spin_unlock_irq(&dev->power.lock);
+>   
+> -		/*
+> -		 * Resume suppliers if necessary.
+> -		 *
+> -		 * The device's runtime PM status cannot change until this
+> -		 * routine returns, so it is safe to read the status outside of
+> -		 * the lock.
+> -		 */
+> -		if (use_links && dev->power.runtime_status == RPM_RESUMING) {
+> +		/* Resume suppliers if necessary. */
+> +		if (get) {
+>   			idx = device_links_read_lock();
+>   
+>   			retval = rpm_get_suppliers(dev);
+> @@ -355,24 +355,36 @@ static int __rpm_callback(int (*cb)(stru
+>   
+>   	if (dev->power.irq_safe) {
+>   		spin_lock(&dev->power.lock);
+> -	} else {
+> -		/*
+> -		 * If the device is suspending and the callback has returned
+> -		 * success, drop the usage counters of the suppliers that have
+> -		 * been reference counted on its resume.
+> -		 *
+> -		 * Do that if resume fails too.
+> -		 */
+> -		if (use_links
+> -		    && ((dev->power.runtime_status == RPM_SUSPENDING && !retval)
+> -		    || (dev->power.runtime_status == RPM_RESUMING && retval))) {
+> -			idx = device_links_read_lock();
+> +		return retval;
+> +	}
+>   
+> - fail:
+> -			rpm_put_suppliers(dev);
+> +	spin_lock_irq(&dev->power.lock);
+>   
+> -			device_links_read_unlock(idx);
+> -		}
+> +	if (!use_links)
+> +		return retval;
+> +
+> +	/*
+> +	 * If the device is suspending and the callback has returned success,
+> +	 * drop the usage counters of the suppliers that have been reference
+> +	 * counted on its resume.
+> +	 *
+> +	 * Do that if the resume fails too.
+> +	 */
+> +	put = dev->power.runtime_status == RPM_SUSPENDING && !retval;
+> +	if (put)
+> +		__update_runtime_status(dev, RPM_SUSPENDED);
+> +	else
+> +		put = get && retval;
+> +
+> +	if (put) {
+> +		spin_unlock_irq(&dev->power.lock);
+> +
+> +		idx = device_links_read_lock();
+> +
+> +fail:
+> +		rpm_put_suppliers(dev);
+> +
+> +		device_links_read_unlock(idx);
+>   
+>   		spin_lock_irq(&dev->power.lock);
+>   	}
+>
+>
+>
+>
+>
+>
 
-It is possible I'm not fully understanding the problem and/or missing
-an important detail - it is rather tricky code, and RCU can be very
-hard to reason at times - but I think we may be able to solve this
-with some lock fixes inside sidtab_context_to_sid().  Let me try to
-explain to see if we are on the same page here ...
 
-The problem is when we have two (or more) threads trying to
-add/convert the same context into a sid; the task with new_sidtab is
-looking to add a new sidtab entry, while the task with old_sidtab is
-looking to convert an entry in old_sidtab into a new entry in
-new_sidtab.  Boom.
-
-Looking at the code in sidtab_context_to_sid(), when we have two
-sidtabs that are currently active (old_sidtab->convert pointer is
-valid) and a task with old_sidtab attempts to add a new entry to both
-sidtabs it first adds it to the old sidtab then it also adds it to the
-new sidtab.  I believe the problem is that in this case while the task
-grabs the old_sidtab->lock, it never grabs the new_sidtab->lock which
-allows it to race with tasks that already see only new_sidtab.  I
-think adding code to sidtab_context_to_sid() which grabs the
-new_sidtab->lock when adding entries to the new_sidtab *should* solve
-the problem.
-
-Did I miss something important? ;)
-
--- 
-paul moore
-www.paul-moore.com
