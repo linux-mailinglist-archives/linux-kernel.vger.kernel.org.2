@@ -2,206 +2,612 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF6C326475
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19354326478
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhBZPCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 10:02:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53165 "EHLO
+        id S229996AbhBZPCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 10:02:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25633 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229554AbhBZPCJ (ORCPT
+        by vger.kernel.org with ESMTP id S229621AbhBZPCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:02:09 -0500
+        Fri, 26 Feb 2021 10:02:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614351643;
+        s=mimecast20190719; t=1614351671;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DCvRIc6aFyDWWBSHSRb4uuO8gchdZno7LFN7Leg6qNQ=;
-        b=WkrToZver/LteCce+lJx+4Lj21XPI5QyXOb52aRoFa/GPsvIKM+41HMESEHF3rLaqBeEWn
-        zKJCQ9TYaqXvXAZsgQGRK80cMFO3fL25UJCwtjwblNeO7zzEhSKgJIiKB9c/jOFNi2xwRI
-        yt79aXfsfdYiCBabESFFWKYSp5N7oKM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-418-pJ3hftgcMNej6d5E3QjHUA-1; Fri, 26 Feb 2021 10:00:39 -0500
-X-MC-Unique: pJ3hftgcMNej6d5E3QjHUA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0DFC801975;
-        Fri, 26 Feb 2021 15:00:37 +0000 (UTC)
-Received: from pick.fieldses.org (ovpn-114-99.rdu2.redhat.com [10.10.114.99])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2817A1001E73;
-        Fri, 26 Feb 2021 15:00:37 +0000 (UTC)
-Received: by pick.fieldses.org (Postfix, from userid 2815)
-        id 34808120400; Fri, 26 Feb 2021 10:00:36 -0500 (EST)
-Date:   Fri, 26 Feb 2021 10:00:36 -0500
-From:   "J. Bruce Fields" <bfields@redhat.com>
-To:     Joe Korty <joe.korty@concurrent-rt.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chuck Lever <chuck.lever@oracle.com>, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH] Repair misuse of sv_lock in 5.10.16-rt30.
-Message-ID: <YDkNFKmzb7rbumYf@pick.fieldses.org>
-References: <20210226143820.GA49043@zipoli.concurrent-rt.com>
+        bh=HuhuudeL5vkjrVLiOf6VXt9FizvMi8CKDbWM1bNqAV4=;
+        b=P6wOUAzCZkwBo2xPowEfEAbqdcC2T7iUtUN2XRKbr0sM9jr2o9q3qAwFnQbEoYw5Br8K3C
+        zCnU0F9LwPRV3pKQunD3GPYnalxHGol9jbMRwlKh0qtTJ7Lv+eR95l3RjAQM6Z5i/5x38c
+        85ABJvWxLaMK7ZToOzgaUnw5PmqWnO8=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-vvxTil1zMp-MaFytilZ_0Q-1; Fri, 26 Feb 2021 10:01:09 -0500
+X-MC-Unique: vvxTil1zMp-MaFytilZ_0Q-1
+Received: by mail-qv1-f70.google.com with SMTP id q104so6986367qvq.20
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 07:01:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=HuhuudeL5vkjrVLiOf6VXt9FizvMi8CKDbWM1bNqAV4=;
+        b=f65iOvb+FwCVX+P31/kY8ZOfZf/Oyng+M9WRrlELbR5oo8ImLxzuNNkqrYnrwa+YXi
+         gbm+rCu5wpB+vvJMEB5JoHdHMkHjiCHoijyQsU4zVKBPqF8eD5VR36siNwDuZ/XQunib
+         cUJruHp9fXPcl2NDrRZzyzZTsd4hNALHGJIU3kgr5PovOPPGDrQ9FtjarGvYCM6WH4g4
+         und05yfwY1aB4ydtvF221goVGY/RBowI8wD1SZZr+lnlqWfvhwz+HdKgz3IPwL+mVZfT
+         DCrDBuAlje3RRXuRsF5e2Kb2R1D64p4RwTrIPOqSRMz8SkGUhp43CZIBRWlhnipuMb5U
+         P1AQ==
+X-Gm-Message-State: AOAM530OVqwYFcTilndQNEho6Cx3zqwI9Q1PKDaZB4WlveUW1rHUoJSc
+        wPdx9aKKVslRqMkDo9MNi1o8DucWof2QJPnwWZHaQB+I95sGRBimND+OPdygNKdww93huiiB14V
+        4b2LceMu3syCGIM972Hw74e4O
+X-Received: by 2002:a37:615:: with SMTP id 21mr2942229qkg.421.1614351668704;
+        Fri, 26 Feb 2021 07:01:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyDk3NWeUtf5dAvbc5uHyM7lICHFrGfe0MY+ex1ZFExlNedFgAxLukNJY5yIBJ5LJwDhLBm0g==
+X-Received: by 2002:a37:615:: with SMTP id 21mr2942174qkg.421.1614351668237;
+        Fri, 26 Feb 2021 07:01:08 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id w9sm2682574qto.68.2021.02.26.07.01.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 07:01:07 -0800 (PST)
+Subject: Re: [PATCH V3 XRT Alveo 07/18] fpga: xrt: management physical
+ function driver (root)
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org,
+        "mdf@kernel.org" <mdf@kernel.org>
+Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
+        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-8-lizhih@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <d0057bee-2cf1-b560-c160-636d8e76cbda@redhat.com>
+Date:   Fri, 26 Feb 2021 07:01:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226143820.GA49043@zipoli.concurrent-rt.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210218064019.29189-8-lizhih@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding Chuck, linux-nfs.
+A question i do not know the answer to.
 
-Makes sense to me.--b.
+Seems like 'golden' is linked to a manufacturing (diagnostics?) image.
 
-On Fri, Feb 26, 2021 at 09:38:20AM -0500, Joe Korty wrote:
-> Repair misuse of sv_lock in 5.10.16-rt30.
-> 
-> [ This problem is in mainline, but only rt has the chops to be
-> able to detect it. ]
-> 
-> Lockdep reports a circular lock dependency between serv->sv_lock and
-> softirq_ctl.lock on system shutdown, when using a kernel built with
-> CONFIG_PREEMPT_RT=y, and a nfs mount exists.
-> 
-> This is due to the definition of spin_lock_bh on rt:
-> 
-> 	local_bh_disable();
-> 	rt_spin_lock(lock);
-> 
-> which forces a softirq_ctl.lock -> serv->sv_lock dependency.  This is
-> not a problem as long as _every_ lock of serv->sv_lock is a:
-> 
-> 	spin_lock_bh(&serv->sv_lock);
-> 
-> but there is one of the form:
-> 
-> 	spin_lock(&serv->sv_lock);
-> 
-> This is what is causing the circular dependency splat.  The spin_lock()
-> grabs the lock without first grabbing softirq_ctl.lock via local_bh_disable.
-> If later on in the critical region,  someone does a local_bh_disable, we
-> get a serv->sv_lock -> softirq_ctrl.lock dependency established.  Deadlock.
-> 
-> Fix is to make serv->sv_lock be locked with spin_lock_bh everywhere, no
-> exceptions.
-> 
-> Signed-off-by: Joe Korty <joe.korty@concurrent-rt.com>
-> 
-> 
-> 
-> 
-> [  OK  ] Stopped target NFS client services.
->          Stopping Logout off all iSCSI sessions on shutdown...
->          Stopping NFS server and services...
-> [  109.442380] 
-> [  109.442385] ======================================================
-> [  109.442386] WARNING: possible circular locking dependency detected
-> [  109.442387] 5.10.16-rt30 #1 Not tainted
-> [  109.442389] ------------------------------------------------------
-> [  109.442390] nfsd/1032 is trying to acquire lock:
-> [  109.442392] ffff994237617f60 ((softirq_ctrl.lock).lock){+.+.}-{2:2}, at: __local_bh_disable_ip+0xd9/0x270
-> [  109.442405] 
-> [  109.442405] but task is already holding lock:
-> [  109.442406] ffff994245cb00b0 (&serv->sv_lock){+.+.}-{0:0}, at: svc_close_list+0x1f/0x90
-> [  109.442415] 
-> [  109.442415] which lock already depends on the new lock.
-> [  109.442415] 
-> [  109.442416] 
-> [  109.442416] the existing dependency chain (in reverse order) is:
-> [  109.442417] 
-> [  109.442417] -> #1 (&serv->sv_lock){+.+.}-{0:0}:
-> [  109.442421]        rt_spin_lock+0x2b/0xc0
-> [  109.442428]        svc_add_new_perm_xprt+0x42/0xa0
-> [  109.442430]        svc_addsock+0x135/0x220
-> [  109.442434]        write_ports+0x4b3/0x620
-> [  109.442438]        nfsctl_transaction_write+0x45/0x80
-> [  109.442440]        vfs_write+0xff/0x420
-> [  109.442444]        ksys_write+0x4f/0xc0
-> [  109.442446]        do_syscall_64+0x33/0x40
-> [  109.442450]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  109.442454] 
-> [  109.442454] -> #0 ((softirq_ctrl.lock).lock){+.+.}-{2:2}:
-> [  109.442457]        __lock_acquire+0x1264/0x20b0
-> [  109.442463]        lock_acquire+0xc2/0x400
-> [  109.442466]        rt_spin_lock+0x2b/0xc0
-> [  109.442469]        __local_bh_disable_ip+0xd9/0x270
-> [  109.442471]        svc_xprt_do_enqueue+0xc0/0x4d0
-> [  109.442474]        svc_close_list+0x60/0x90
-> [  109.442476]        svc_close_net+0x49/0x1a0
-> [  109.442478]        svc_shutdown_net+0x12/0x40
-> [  109.442480]        nfsd_destroy+0xc5/0x180
-> [  109.442482]        nfsd+0x1bc/0x270
-> [  109.442483]        kthread+0x194/0x1b0
-> [  109.442487]        ret_from_fork+0x22/0x30
-> [  109.442492] 
-> [  109.442492] other info that might help us debug this:
-> [  109.442492] 
-> [  109.442493]  Possible unsafe locking scenario:
-> [  109.442493] 
-> [  109.442493]        CPU0                    CPU1
-> [  109.442494]        ----                    ----
-> [  109.442495]   lock(&serv->sv_lock);
-> [  109.442496]                                lock((softirq_ctrl.lock).lock);
-> [  109.442498]                                lock(&serv->sv_lock);
-> [  109.442499]   lock((softirq_ctrl.lock).lock);
-> [  109.442501] 
-> [  109.442501]  *** DEADLOCK ***
-> [  109.442501] 
-> [  109.442501] 3 locks held by nfsd/1032:
-> [  109.442503]  #0: ffffffff93b49258 (nfsd_mutex){+.+.}-{3:3}, at: nfsd+0x19a/0x270
-> [  109.442508]  #1: ffff994245cb00b0 (&serv->sv_lock){+.+.}-{0:0}, at: svc_close_list+0x1f/0x90
-> [  109.442512]  #2: ffffffff93a81b20 (rcu_read_lock){....}-{1:2}, at: rt_spin_lock+0x5/0xc0
-> [  109.442518] 
-> [  109.442518] stack backtrace:
-> [  109.442519] CPU: 0 PID: 1032 Comm: nfsd Not tainted 5.10.16-rt30 #1
-> [  109.442522] Hardware name: Supermicro X9DRL-3F/iF/X9DRL-3F/iF, BIOS 3.2 09/22/2015
-> [  109.442524] Call Trace:
-> [  109.442527]  dump_stack+0x77/0x97
-> [  109.442533]  check_noncircular+0xdc/0xf0
-> [  109.442546]  __lock_acquire+0x1264/0x20b0
-> [  109.442553]  lock_acquire+0xc2/0x400
-> [  109.442564]  rt_spin_lock+0x2b/0xc0
-> [  109.442570]  __local_bh_disable_ip+0xd9/0x270
-> [  109.442573]  svc_xprt_do_enqueue+0xc0/0x4d0
-> [  109.442577]  svc_close_list+0x60/0x90
-> [  109.442581]  svc_close_net+0x49/0x1a0
-> [  109.442585]  svc_shutdown_net+0x12/0x40
-> [  109.442588]  nfsd_destroy+0xc5/0x180
-> [  109.442590]  nfsd+0x1bc/0x270
-> [  109.442595]  kthread+0x194/0x1b0
-> [  109.442600]  ret_from_fork+0x22/0x30
-> [  109.518225] nfsd: last server has exited, flushing export cache
-> [  OK  ] Stopped NFSv4 ID-name mapping service.
-> [  OK  ] Stopped GSSAPI Proxy Daemon.
-> [  OK  ] Stopped NFS Mount Daemon.
-> [  OK  ] Stopped NFS status monitor for NFSv2/3 locking..
-> Index: b/net/sunrpc/svc_xprt.c
-> ===================================================================
-> --- a/net/sunrpc/svc_xprt.c
-> +++ b/net/sunrpc/svc_xprt.c
-> @@ -1062,7 +1062,7 @@ static int svc_close_list(struct svc_ser
->  	struct svc_xprt *xprt;
->  	int ret = 0;
->  
-> -	spin_lock(&serv->sv_lock);
-> +	spin_lock_bh(&serv->sv_lock);
->  	list_for_each_entry(xprt, xprt_list, xpt_list) {
->  		if (xprt->xpt_net != net)
->  			continue;
-> @@ -1070,7 +1070,7 @@ static int svc_close_list(struct svc_ser
->  		set_bit(XPT_CLOSE, &xprt->xpt_flags);
->  		svc_xprt_enqueue(xprt);
->  	}
-> -	spin_unlock(&serv->sv_lock);
-> +	spin_unlock_bh(&serv->sv_lock);
->  	return ret;
->  }
->  
-> 
+If the public will never see it, should handling it here be done ?
+
+Moritz, do you know ?
+
+
+On 2/17/21 10:40 PM, Lizhi Hou wrote:
+> The PCIE device driver which attaches to management function on Alveo
+to the management
+> devices. It instantiates one or more partition drivers which in turn
+more fpga partition / group ?
+> instantiate platform drivers. The instantiation of partition and platform
+> drivers is completely data driven.
+data driven ? everything is data driven.  do you mean dtb driven ?
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
+> ---
+>  drivers/fpga/xrt/include/xroot.h | 114 +++++++++++
+>  drivers/fpga/xrt/mgmt/root.c     | 342 +++++++++++++++++++++++++++++++
+>  2 files changed, 456 insertions(+)
+>  create mode 100644 drivers/fpga/xrt/include/xroot.h
+>  create mode 100644 drivers/fpga/xrt/mgmt/root.c
+>
+> diff --git a/drivers/fpga/xrt/include/xroot.h b/drivers/fpga/xrt/include/xroot.h
+> new file mode 100644
+> index 000000000000..752e10daa85e
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/include/xroot.h
+> @@ -0,0 +1,114 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Header file for Xilinx Runtime (XRT) driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#ifndef _XRT_ROOT_H_
+> +#define _XRT_ROOT_H_
+> +
+> +#include <linux/pci.h>
+> +#include "subdev_id.h"
+> +#include "events.h"
+> +
+> +typedef bool (*xrt_subdev_match_t)(enum xrt_subdev_id,
+> +	struct platform_device *, void *);
+> +#define XRT_SUBDEV_MATCH_PREV	((xrt_subdev_match_t)-1)
+> +#define XRT_SUBDEV_MATCH_NEXT	((xrt_subdev_match_t)-2)
+> +
+> +/*
+> + * Root IOCTL calls.
+> + */
+> +enum xrt_root_ioctl_cmd {
+> +	/* Leaf actions. */
+> +	XRT_ROOT_GET_LEAF = 0,
+> +	XRT_ROOT_PUT_LEAF,
+> +	XRT_ROOT_GET_LEAF_HOLDERS,
+> +
+> +	/* Group actions. */
+> +	XRT_ROOT_CREATE_GROUP,
+> +	XRT_ROOT_REMOVE_GROUP,
+> +	XRT_ROOT_LOOKUP_GROUP,
+> +	XRT_ROOT_WAIT_GROUP_BRINGUP,
+> +
+> +	/* Event actions. */
+> +	XRT_ROOT_EVENT,
+should this be XRT_ROOT_EVENT_SYNC ?
+> +	XRT_ROOT_EVENT_ASYNC,
+> +
+> +	/* Device info. */
+> +	XRT_ROOT_GET_RESOURCE,
+> +	XRT_ROOT_GET_ID,
+> +
+> +	/* Misc. */
+> +	XRT_ROOT_HOT_RESET,
+> +	XRT_ROOT_HWMON,
+> +};
+> +
+> +struct xrt_root_ioctl_get_leaf {
+> +	struct platform_device *xpigl_pdev; /* caller's pdev */
+xpigl_ ? unneeded suffix in element names
+> +	xrt_subdev_match_t xpigl_match_cb;
+> +	void *xpigl_match_arg;
+> +	struct platform_device *xpigl_leaf; /* target leaf pdev */
+> +};
+> +
+> +struct xrt_root_ioctl_put_leaf {
+> +	struct platform_device *xpipl_pdev; /* caller's pdev */
+> +	struct platform_device *xpipl_leaf; /* target's pdev */
+
+caller_pdev;
+
+target_pdev;
+
+> +};
+> +
+> +struct xrt_root_ioctl_lookup_group {
+> +	struct platform_device *xpilp_pdev; /* caller's pdev */
+> +	xrt_subdev_match_t xpilp_match_cb;
+> +	void *xpilp_match_arg;
+> +	int xpilp_grp_inst;
+> +};
+> +
+> +struct xrt_root_ioctl_get_holders {
+> +	struct platform_device *xpigh_pdev; /* caller's pdev */
+> +	char *xpigh_holder_buf;
+> +	size_t xpigh_holder_buf_len;
+> +};
+> +
+> +struct xrt_root_ioctl_get_res {
+> +	struct resource *xpigr_res;
+> +};
+> +
+> +struct xrt_root_ioctl_get_id {
+> +	unsigned short  xpigi_vendor_id;
+> +	unsigned short  xpigi_device_id;
+> +	unsigned short  xpigi_sub_vendor_id;
+> +	unsigned short  xpigi_sub_device_id;
+> +};
+> +
+> +struct xrt_root_ioctl_hwmon {
+> +	bool xpih_register;
+> +	const char *xpih_name;
+> +	void *xpih_drvdata;
+> +	const struct attribute_group **xpih_groups;
+> +	struct device *xpih_hwmon_dev;
+> +};
+> +
+> +typedef int (*xrt_subdev_root_cb_t)(struct device *, void *, u32, void *);
+This function pointer type is important, please add a comment about its use and expected parameters
+> +int xrt_subdev_root_request(struct platform_device *self, u32 cmd, void *arg);
+> +
+> +/*
+> + * Defines physical function (MPF / UPF) specific operations
+> + * needed in common root driver.
+> + */
+> +struct xroot_pf_cb {
+> +	void (*xpc_hot_reset)(struct pci_dev *pdev);
+This is only ever set to xmgmt_root_hot_reset, why is this abstraction needed ?
+> +};
+> +
+> +int xroot_probe(struct pci_dev *pdev, struct xroot_pf_cb *cb, void **root);
+> +void xroot_remove(void *root);
+> +bool xroot_wait_for_bringup(void *root);
+> +int xroot_add_vsec_node(void *root, char *dtb);
+> +int xroot_create_group(void *xr, char *dtb);
+> +int xroot_add_simple_node(void *root, char *dtb, const char *endpoint);
+> +void xroot_broadcast(void *root, enum xrt_events evt);
+> +
+> +#endif	/* _XRT_ROOT_H_ */
+> diff --git a/drivers/fpga/xrt/mgmt/root.c b/drivers/fpga/xrt/mgmt/root.c
+> new file mode 100644
+> index 000000000000..583a37c9d30c
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/mgmt/root.c
+> @@ -0,0 +1,342 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo Management Function Driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/aer.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/delay.h>
+> +
+> +#include "xroot.h"
+> +#include "main-impl.h"
+> +#include "metadata.h"
+> +
+> +#define XMGMT_MODULE_NAME	"xmgmt"
+The xrt modules would be more easily identified with a 'xrt' prefix instead of 'x'
+> +#define XMGMT_DRIVER_VERSION	"4.0.0"
+> +
+> +#define XMGMT_PDEV(xm)		((xm)->pdev)
+> +#define XMGMT_DEV(xm)		(&(XMGMT_PDEV(xm)->dev))
+> +#define xmgmt_err(xm, fmt, args...)	\
+> +	dev_err(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
+> +#define xmgmt_warn(xm, fmt, args...)	\
+> +	dev_warn(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
+> +#define xmgmt_info(xm, fmt, args...)	\
+> +	dev_info(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
+> +#define xmgmt_dbg(xm, fmt, args...)	\
+> +	dev_dbg(XMGMT_DEV(xm), "%s: " fmt, __func__, ##args)
+> +#define XMGMT_DEV_ID(_pcidev)			\
+> +	({ typeof(_pcidev) (pcidev) = (_pcidev);	\
+> +	((pci_domain_nr((pcidev)->bus) << 16) |	\
+> +	PCI_DEVID((pcidev)->bus->number, 0)); })
+> +
+> +static struct class *xmgmt_class;
+> +static const struct pci_device_id xmgmt_pci_ids[] = {
+> +	{ PCI_DEVICE(0x10EE, 0xd020), }, /* Alveo U50 (golden image) */
+> +	{ PCI_DEVICE(0x10EE, 0x5020), }, /* Alveo U50 */
+
+demagic this table, look at dfl-pci for how to use existing #define for the vendor and create a new on for the device.  If there are vf's add them at the same time.
+
+What is a golden image ?
+
+> +	{ 0, }
+> +};
+> +
+> +struct xmgmt {
+> +	struct pci_dev *pdev;
+> +	void *root;
+> +
+> +	bool ready;
+> +};
+> +
+> +static int xmgmt_config_pci(struct xmgmt *xm)
+> +{
+> +	struct pci_dev *pdev = XMGMT_PDEV(xm);
+> +	int rc;
+> +
+> +	rc = pcim_enable_device(pdev);
+> +	if (rc < 0) {
+> +		xmgmt_err(xm, "failed to enable device: %d", rc);
+> +		return rc;
+> +	}
+> +
+> +	rc = pci_enable_pcie_error_reporting(pdev);
+> +	if (rc)
+> +		xmgmt_warn(xm, "failed to enable AER: %d", rc);
+> +
+> +	pci_set_master(pdev);
+> +
+> +	rc = pcie_get_readrq(pdev);
+Review this call, it does not go negative
+> +	if (rc < 0) {
+> +		xmgmt_err(xm, "failed to read mrrs %d", rc);
+> +		return rc;
+> +	}
+this is a quirk, add a comment.
+> +	if (rc > 512) {
+> +		rc = pcie_set_readrq(pdev, 512);
+> +		if (rc) {
+> +			xmgmt_err(xm, "failed to force mrrs %d", rc);
+similar calls do not fail here.
+> +			return rc;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int xmgmt_match_slot_and_save(struct device *dev, void *data)
+> +{
+> +	struct xmgmt *xm = data;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	if (XMGMT_DEV_ID(pdev) == XMGMT_DEV_ID(xm->pdev)) {
+> +		pci_cfg_access_lock(pdev);
+> +		pci_save_state(pdev);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void xmgmt_pci_save_config_all(struct xmgmt *xm)
+> +{
+> +	bus_for_each_dev(&pci_bus_type, NULL, xm, xmgmt_match_slot_and_save);
+
+This is a bus call, not a device call.
+
+Can this be changed into something like what hot reset does ?
+
+> +}
+> +
+> +static int xmgmt_match_slot_and_restore(struct device *dev, void *data)
+> +{
+> +	struct xmgmt *xm = data;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +
+> +	if (XMGMT_DEV_ID(pdev) == XMGMT_DEV_ID(xm->pdev)) {
+> +		pci_restore_state(pdev);
+> +		pci_cfg_access_unlock(pdev);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void xmgmt_pci_restore_config_all(struct xmgmt *xm)
+> +{
+> +	bus_for_each_dev(&pci_bus_type, NULL, xm, xmgmt_match_slot_and_restore);
+> +}
+> +
+> +static void xmgmt_root_hot_reset(struct pci_dev *pdev)
+> +{
+> +	struct xmgmt *xm = pci_get_drvdata(pdev);
+> +	struct pci_bus *bus;
+> +	u8 pci_bctl;
+> +	u16 pci_cmd, devctl;
+> +	int i, ret;
+> +
+> +	xmgmt_info(xm, "hot reset start");
+> +
+> +	xmgmt_pci_save_config_all(xm);
+> +
+> +	pci_disable_device(pdev);
+> +
+> +	bus = pdev->bus;
+> +
+> +	/*
+> +	 * When flipping the SBR bit, device can fall off the bus. This is
+> +	 * usually no problem at all so long as drivers are working properly
+> +	 * after SBR. However, some systems complain bitterly when the device
+> +	 * falls off the bus.
+> +	 * The quick solution is to temporarily disable the SERR reporting of
+> +	 * switch port during SBR.
+> +	 */
+> +
+> +	pci_read_config_word(bus->self, PCI_COMMAND, &pci_cmd);
+> +	pci_write_config_word(bus->self, PCI_COMMAND,
+> +			      (pci_cmd & ~PCI_COMMAND_SERR));
+> +	pcie_capability_read_word(bus->self, PCI_EXP_DEVCTL, &devctl);
+> +	pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL,
+> +				   (devctl & ~PCI_EXP_DEVCTL_FERE));
+> +	pci_read_config_byte(bus->self, PCI_BRIDGE_CONTROL, &pci_bctl);
+> +	pci_bctl |= PCI_BRIDGE_CTL_BUS_RESET;
+> +	pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl);
+
+how the pci config values are set and cleared should be consistent.
+
+this call should be
+
+pci_write_config_byte (... pci_bctl | PCI_BRIDGE_CTL_BUF_RESET )
+
+and the next &= avoided
+
+> +
+> +	msleep(100);
+> +	pci_bctl &= ~PCI_BRIDGE_CTL_BUS_RESET;
+> +	pci_write_config_byte(bus->self, PCI_BRIDGE_CONTROL, pci_bctl);
+> +	ssleep(1);
+> +
+> +	pcie_capability_write_word(bus->self, PCI_EXP_DEVCTL, devctl);
+> +	pci_write_config_word(bus->self, PCI_COMMAND, pci_cmd);
+> +
+> +	ret = pci_enable_device(pdev);
+> +	if (ret)
+> +		xmgmt_err(xm, "failed to enable device, ret %d", ret);
+> +
+> +	for (i = 0; i < 300; i++) {
+> +		pci_read_config_word(pdev, PCI_COMMAND, &pci_cmd);
+> +		if (pci_cmd != 0xffff)
+what happens with i == 300 and pci_cmd is still 0xffff ?
+> +			break;
+> +		msleep(20);
+> +	}
+> +
+> +	xmgmt_info(xm, "waiting for %d ms", i * 20);
+> +	xmgmt_pci_restore_config_all(xm);
+> +	xmgmt_config_pci(xm);
+> +}
+> +
+> +static int xmgmt_create_root_metadata(struct xmgmt *xm, char **root_dtb)
+> +{
+> +	char *dtb = NULL;
+> +	int ret;
+> +
+> +	ret = xrt_md_create(XMGMT_DEV(xm), &dtb);
+> +	if (ret) {
+> +		xmgmt_err(xm, "create metadata failed, ret %d", ret);
+> +		goto failed;
+> +	}
+> +
+> +	ret = xroot_add_vsec_node(xm->root, dtb);
+> +	if (ret == -ENOENT) {
+> +		/*
+> +		 * We may be dealing with a MFG board.
+> +		 * Try vsec-golden which will bring up all hard-coded leaves
+> +		 * at hard-coded offsets.
+> +		 */
+> +		ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_VSEC_GOLDEN);
+
+Manufacturing diagnostics ?
+
+Tom
+
+> +	} else if (ret == 0) {
+> +		ret = xroot_add_simple_node(xm->root, dtb, XRT_MD_NODE_MGMT_MAIN);
+> +	}
+> +	if (ret)
+> +		goto failed;
+> +
+> +	*root_dtb = dtb;
+> +	return 0;
+> +
+> +failed:
+> +	vfree(dtb);
+> +	return ret;
+> +}
+> +
+> +static ssize_t ready_show(struct device *dev,
+> +			  struct device_attribute *da,
+> +			  char *buf)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	struct xmgmt *xm = pci_get_drvdata(pdev);
+> +
+> +	return sprintf(buf, "%d\n", xm->ready);
+> +}
+> +static DEVICE_ATTR_RO(ready);
+> +
+> +static struct attribute *xmgmt_root_attrs[] = {
+> +	&dev_attr_ready.attr,
+> +	NULL
+> +};
+> +
+> +static struct attribute_group xmgmt_root_attr_group = {
+> +	.attrs = xmgmt_root_attrs,
+> +};
+> +
+> +static struct xroot_pf_cb xmgmt_xroot_pf_cb = {
+> +	.xpc_hot_reset = xmgmt_root_hot_reset,
+> +};
+> +
+> +static int xmgmt_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> +{
+> +	int ret;
+> +	struct device *dev = &pdev->dev;
+> +	struct xmgmt *xm = devm_kzalloc(dev, sizeof(*xm), GFP_KERNEL);
+> +	char *dtb = NULL;
+> +
+> +	if (!xm)
+> +		return -ENOMEM;
+> +	xm->pdev = pdev;
+> +	pci_set_drvdata(pdev, xm);
+> +
+> +	ret = xmgmt_config_pci(xm);
+> +	if (ret)
+> +		goto failed;
+> +
+> +	ret = xroot_probe(pdev, &xmgmt_xroot_pf_cb, &xm->root);
+> +	if (ret)
+> +		goto failed;
+> +
+> +	ret = xmgmt_create_root_metadata(xm, &dtb);
+> +	if (ret)
+> +		goto failed_metadata;
+> +
+> +	ret = xroot_create_group(xm->root, dtb);
+> +	vfree(dtb);
+> +	if (ret)
+> +		xmgmt_err(xm, "failed to create root group: %d", ret);
+> +
+> +	if (!xroot_wait_for_bringup(xm->root))
+> +		xmgmt_err(xm, "failed to bringup all groups");
+> +	else
+> +		xm->ready = true;
+> +
+> +	ret = sysfs_create_group(&pdev->dev.kobj, &xmgmt_root_attr_group);
+> +	if (ret) {
+> +		/* Warning instead of failing the probe. */
+> +		xmgmt_warn(xm, "create xmgmt root attrs failed: %d", ret);
+> +	}
+> +
+> +	xroot_broadcast(xm->root, XRT_EVENT_POST_CREATION);
+> +	xmgmt_info(xm, "%s started successfully", XMGMT_MODULE_NAME);
+> +	return 0;
+> +
+> +failed_metadata:
+> +	(void)xroot_remove(xm->root);
+> +failed:
+> +	pci_set_drvdata(pdev, NULL);
+> +	return ret;
+> +}
+> +
+> +static void xmgmt_remove(struct pci_dev *pdev)
+> +{
+> +	struct xmgmt *xm = pci_get_drvdata(pdev);
+> +
+> +	xroot_broadcast(xm->root, XRT_EVENT_PRE_REMOVAL);
+> +	sysfs_remove_group(&pdev->dev.kobj, &xmgmt_root_attr_group);
+> +	(void)xroot_remove(xm->root);
+> +	pci_disable_pcie_error_reporting(xm->pdev);
+> +	xmgmt_info(xm, "%s cleaned up successfully", XMGMT_MODULE_NAME);
+> +}
+> +
+> +static struct pci_driver xmgmt_driver = {
+> +	.name = XMGMT_MODULE_NAME,
+> +	.id_table = xmgmt_pci_ids,
+> +	.probe = xmgmt_probe,
+> +	.remove = xmgmt_remove,
+> +};
+> +
+> +static int __init xmgmt_init(void)
+> +{
+> +	int res = 0;
+> +
+> +	res = xmgmt_main_register_leaf();
+> +	if (res)
+> +		return res;
+> +
+> +	xmgmt_class = class_create(THIS_MODULE, XMGMT_MODULE_NAME);
+> +	if (IS_ERR(xmgmt_class))
+> +		return PTR_ERR(xmgmt_class);
+> +
+> +	res = pci_register_driver(&xmgmt_driver);
+> +	if (res) {
+> +		class_destroy(xmgmt_class);
+> +		return res;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static __exit void xmgmt_exit(void)
+> +{
+> +	pci_unregister_driver(&xmgmt_driver);
+> +	class_destroy(xmgmt_class);
+> +	xmgmt_main_unregister_leaf();
+> +}
+> +
+> +module_init(xmgmt_init);
+> +module_exit(xmgmt_exit);
+> +
+> +MODULE_DEVICE_TABLE(pci, xmgmt_pci_ids);
+> +MODULE_VERSION(XMGMT_DRIVER_VERSION);
+> +MODULE_AUTHOR("XRT Team <runtime@xilinx.com>");
+> +MODULE_DESCRIPTION("Xilinx Alveo management function driver");
+> +MODULE_LICENSE("GPL v2");
 
