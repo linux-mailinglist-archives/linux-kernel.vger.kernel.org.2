@@ -2,92 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C87F3264AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F113264B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhBZPYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 10:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhBZPYQ (ORCPT
+        id S230144AbhBZPZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 10:25:37 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:48068 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229745AbhBZPZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:24:16 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0716FC06174A;
-        Fri, 26 Feb 2021 07:23:35 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id e9so5471761plh.3;
-        Fri, 26 Feb 2021 07:23:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KJuay+IZ+1N+1Y1/y/2UF7sO86HdqKbbyx571Yc0XCk=;
-        b=qQIZRwAQkkH/lCc+oNsgACw3PtZvESQwyx/r94RXlZXUN9qrwvzXbT9ArHolpsp1rM
-         OuHz2dBq+xb15a4XK4I9ugB2wyHVcuJ6Bm3zZgVMR368xxlvpAjOaow+ICrsnb/Z0RzT
-         fXKet2SWvpu4shrUDs3x0CR7xUbxfhjnPpPoZaGn/L3y0xHOJhrLFOm2ne7AGkJDv0OH
-         V93YhO2ah2ElfwS8QTusI6v1ycWWju3yQFGpj0o7OxkCg54sXEn1m0RqBDKit0WZcElF
-         eEIGape+JbKHPk/7cvUYG20+4EvkeSm39KTI4z0OVsacIHoG9BhjFidX9apDfTcM1GxY
-         HQ3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KJuay+IZ+1N+1Y1/y/2UF7sO86HdqKbbyx571Yc0XCk=;
-        b=Yg9D9QLsiwbOGoQ5CjZCzhvZkWQkFpWM65Q9kgZgsTffoGXbcjLUdNOyVkmLbmyQFu
-         6kKBKHHaTqWcN7SxVIffr4sCHhLEoWhrWFLpxynMDCpRQWVvLs9Pe1U9N7r31sJtLQEG
-         uzidYoCImdACytNrY85/C44JJuKRaFTu+sA+33yD3aEL3wNm4c0rIK7SLg/o5EHoww5U
-         1PsbiBI5oRvwqIKghruWVyH9+VE9r3BxlaJmS6G+2VRQzEFic4/jgF/NTAcS1XYZZD6q
-         8XaRd/TrBrRHA8Q0+zhMguDwO46yB3EBvcQgdLJq3wnMp8d2DDHEBLrT+/Uyi1FLAGq5
-         Ht1g==
-X-Gm-Message-State: AOAM532tqDED2wnCwfpKr2NuW7m7B1nebDlhFpYUBWvZvLK7+8w3drwh
-        8RPeavEthqwq910BkSPdAwQ=
-X-Google-Smtp-Source: ABdhPJx84Iq7lvc08dPpwLD5xVytmNOWduKHSiUjv5wiFPO+vrke6nAjIs3OI+4DdWZDjkVMCe/WOQ==
-X-Received: by 2002:a17:90a:b28b:: with SMTP id c11mr3955608pjr.62.1614353014614;
-        Fri, 26 Feb 2021 07:23:34 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id w17sm7691746pgg.41.2021.02.26.07.23.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 07:23:33 -0800 (PST)
-Date:   Fri, 26 Feb 2021 07:23:31 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fugang Duan <fugang.duan@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH v2 1/1] net: fec: ptp: avoid register access when ipg
- clock is disabled
-Message-ID: <20210226152331.GD26140@hoboy.vegasvil.org>
-References: <20210225211514.9115-1-heiko.thiery@gmail.com>
+        Fri, 26 Feb 2021 10:25:26 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QFMuTb029488;
+        Fri, 26 Feb 2021 16:24:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=enMfC+PWGoNkoTGsyvHg5qpNwFuwchf5UpLej42yuI4=;
+ b=iuI1YDxdQ5L5AWX9ZzptPh6xYtZ+Lr9X6+B1p0cGGIQKVfuk8ajUV9kJjDJ/2HR/CiMd
+ 4TK6E1cOpWDsrgQRkdliLuft43Yf0lczUm+NE5Yv9FSJ1bov6/+N57u/HwHvN2B+5EB1
+ C/IrWCM+9vpLooIx8+sODbh2Y74Cc58civ9xu1M2aISqIf6+sKoBfGDox+0UXP7sWLKp
+ jeDglU9SNBz7u3XSf41RzmNz8f1/ssE5omdXOJLZ0jQ+TfaH8+aKxu9ozmcBjgyxc1Ay
+ 3ddcfTtMZpoHN3McsyQAMgB3rm0apz+y8rYhYlSd6U+frPM2eQyr0YApv2QWKUYi6wt2 yA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36w66vxdrq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Feb 2021 16:24:35 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5B7F010002A;
+        Fri, 26 Feb 2021 16:24:34 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4983724ABBE;
+        Fri, 26 Feb 2021 16:24:34 +0100 (CET)
+Received: from [10.211.2.127] (10.75.127.44) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Feb
+ 2021 16:24:33 +0100
+Subject: Re: [PATCH v2] counter: stm32-timer-cnt: Report count function when
+ SLAVE_MODE_DISABLED
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, <jic23@kernel.org>
+CC:     <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
+        <benjamin.gaignard@st.com>
+References: <20210226012931.161429-1-vilhelm.gray@gmail.com>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <d6ae294d-5d49-bb3f-6456-a485a247323c@foss.st.com>
+Date:   Fri, 26 Feb 2021 16:24:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225211514.9115-1-heiko.thiery@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210226012931.161429-1-vilhelm.gray@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-26_03:2021-02-24,2021-02-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 10:15:16PM +0100, Heiko Thiery wrote:
-> When accessing the timecounter register on an i.MX8MQ the kernel hangs.
-> This is only the case when the interface is down. This can be reproduced
-> by reading with 'phc_ctrl eth0 get'.
+On 2/26/21 2:29 AM, William Breathitt Gray wrote:
+> When in SLAVE_MODE_DISABLED mode, the count still increases if the
+> counter is enabled because an internal clock is used. This patch fixes
+> the stm32_count_function_get() and stm32_count_function_set() functions
+> to properly handle this behavior.
 > 
-> Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
-> the igp clock is disabled when the interface is down and leads to a
-> system hang.
-> 
-> So we check if the ptp clock status before reading the timecounter
-> register.
-> 
-> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+> Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
+> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@st.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 > ---
-> v2:
->  - add mutex (thanks to Richard)
+> Changes in v2:
+>  - Support an explicit 0 case for function_get()/function_set()
 > 
-> v3:
-> I did a mistake and did not test properly
->  - add parenteses
->  - fix the used variable
+>  drivers/counter/stm32-timer-cnt.c | 39 ++++++++++++++++++++-----------
+>  1 file changed, 25 insertions(+), 14 deletions(-)
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+Hi William,
+
+Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+
+Many thanks for this fix.
+Best Regards,
+Fabrice
+
+
+> 
+> diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
+> index ef2a974a2f10..cd50dc12bd02 100644
+> --- a/drivers/counter/stm32-timer-cnt.c
+> +++ b/drivers/counter/stm32-timer-cnt.c
+> @@ -44,13 +44,14 @@ struct stm32_timer_cnt {
+>   * @STM32_COUNT_ENCODER_MODE_3: counts on both TI1FP1 and TI2FP2 edges
+>   */
+>  enum stm32_count_function {
+> -	STM32_COUNT_SLAVE_MODE_DISABLED = -1,
+> +	STM32_COUNT_SLAVE_MODE_DISABLED,
+>  	STM32_COUNT_ENCODER_MODE_1,
+>  	STM32_COUNT_ENCODER_MODE_2,
+>  	STM32_COUNT_ENCODER_MODE_3,
+>  };
+>  
+>  static enum counter_count_function stm32_count_functions[] = {
+> +	[STM32_COUNT_SLAVE_MODE_DISABLED] = COUNTER_COUNT_FUNCTION_INCREASE,
+>  	[STM32_COUNT_ENCODER_MODE_1] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_A,
+>  	[STM32_COUNT_ENCODER_MODE_2] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_B,
+>  	[STM32_COUNT_ENCODER_MODE_3] = COUNTER_COUNT_FUNCTION_QUADRATURE_X4,
+> @@ -90,6 +91,9 @@ static int stm32_count_function_get(struct counter_device *counter,
+>  	regmap_read(priv->regmap, TIM_SMCR, &smcr);
+>  
+>  	switch (smcr & TIM_SMCR_SMS) {
+> +	case 0:
+> +		*function = STM32_COUNT_SLAVE_MODE_DISABLED;
+> +		return 0;
+>  	case 1:
+>  		*function = STM32_COUNT_ENCODER_MODE_1;
+>  		return 0;
+> @@ -99,9 +103,9 @@ static int stm32_count_function_get(struct counter_device *counter,
+>  	case 3:
+>  		*function = STM32_COUNT_ENCODER_MODE_3;
+>  		return 0;
+> +	default:
+> +		return -EINVAL;
+>  	}
+> -
+> -	return -EINVAL;
+>  }
+>  
+>  static int stm32_count_function_set(struct counter_device *counter,
+> @@ -112,6 +116,9 @@ static int stm32_count_function_set(struct counter_device *counter,
+>  	u32 cr1, sms;
+>  
+>  	switch (function) {
+> +	case STM32_COUNT_SLAVE_MODE_DISABLED:
+> +		sms = 0;
+> +		break;
+>  	case STM32_COUNT_ENCODER_MODE_1:
+>  		sms = 1;
+>  		break;
+> @@ -122,8 +129,7 @@ static int stm32_count_function_set(struct counter_device *counter,
+>  		sms = 3;
+>  		break;
+>  	default:
+> -		sms = 0;
+> -		break;
+> +		return -EINVAL;
+>  	}
+>  
+>  	/* Store enable status */
+> @@ -274,31 +280,36 @@ static int stm32_action_get(struct counter_device *counter,
+>  	size_t function;
+>  	int err;
+>  
+> -	/* Default action mode (e.g. STM32_COUNT_SLAVE_MODE_DISABLED) */
+> -	*action = STM32_SYNAPSE_ACTION_NONE;
+> -
+>  	err = stm32_count_function_get(counter, count, &function);
+>  	if (err)
+> -		return 0;
+> +		return err;
+>  
+>  	switch (function) {
+> +	case STM32_COUNT_SLAVE_MODE_DISABLED:
+> +		/* counts on internal clock when CEN=1 */
+> +		*action = STM32_SYNAPSE_ACTION_NONE;
+> +		return 0;
+>  	case STM32_COUNT_ENCODER_MODE_1:
+>  		/* counts up/down on TI1FP1 edge depending on TI2FP2 level */
+>  		if (synapse->signal->id == count->synapses[0].signal->id)
+>  			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
+> -		break;
+> +		else
+> +			*action = STM32_SYNAPSE_ACTION_NONE;
+> +		return 0;
+>  	case STM32_COUNT_ENCODER_MODE_2:
+>  		/* counts up/down on TI2FP2 edge depending on TI1FP1 level */
+>  		if (synapse->signal->id == count->synapses[1].signal->id)
+>  			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
+> -		break;
+> +		else
+> +			*action = STM32_SYNAPSE_ACTION_NONE;
+> +		return 0;
+>  	case STM32_COUNT_ENCODER_MODE_3:
+>  		/* counts up/down on both TI1FP1 and TI2FP2 edges */
+>  		*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
+> -		break;
+> +		return 0;
+> +	default:
+> +		return -EINVAL;
+>  	}
+> -
+> -	return 0;
+>  }
+>  
+>  static const struct counter_ops stm32_timer_cnt_ops = {
+> 
