@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1183C325D9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A776325DA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbhBZGiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:38:00 -0500
-Received: from conuserg-07.nifty.com ([210.131.2.74]:34904 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhBZGh6 (ORCPT
+        id S229751AbhBZGlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhBZGlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:37:58 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 11Q6aLlf015692;
-        Fri, 26 Feb 2021 15:36:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 11Q6aLlf015692
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614321382;
-        bh=3EyAn1oBogvw+4z1UfD+liYPR0MvrLj+uuVZw+YxBuc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RX4V98Ps/dlExxulJAZBZvX/sBANN4XTJqJV8OVo/P7z6gp3m+apsAo1ETq4H7XeN
-         tHD6T0gi3nIfIro0/mA6R7oSZq0rINNJe/xlxlu83AUf7Xnv/SKAiCcOKgsSYvuXyk
-         ocX+meoYZaBKU6jkUSP46xOOJfYK67Ojuc9DjmSDsUx2t1hMNl7YQJZyIIq3fNw+I3
-         T4EuOEmCzXb1Jol3swuVsTv1KTaP0GgxtN7keQTX27VpeoZbIXvqStj6TsZ2fmH87E
-         yxM+Px5mbb7Oh0pe6LlQ1zecmESdUK6TaoHd5YhFhPIK2+4sVfnVjQEO7Rxfp0XCEW
-         qIRIlWBGzz8Ng==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matthias Maennich <maennich@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Quentin Perret <qperret@google.com>
-Subject: [PATCH] kbuild: do not include include/config/auto.conf from adjust_autoksyms.sh
-Date:   Fri, 26 Feb 2021 15:36:15 +0900
-Message-Id: <20210226063615.3335021-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 26 Feb 2021 01:41:19 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FF9C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:40:38 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id k66so6805573wmf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:40:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=qBv4V4EmN8qA0cU5ivOCn36uSWbsf+UfWEMpu3Xsvg0=;
+        b=u0HvfMPQE6pgcPWA3xteryuDihSM8934hE5IHWnPWPUtjWK/vGj+L1Wo0s/0YqsQB8
+         mmW8iareV9clEPA2G0t0P3KrdessD2h8zGt3dU0/v2hoQA31XQnWn6rndiL+j0E/KDiH
+         0sd8OA8566yoKpvZojRGS3DGW3usPrHj5gQcQpKVyGDs8Ng9SPdeUmDjrnYu64y2iA5M
+         3haiRUgQNXKZaIoC47EMaqfkvz4PYqWC3UGouNmH65kUiBYcnxu5qLMOXrKkZOIO1RpR
+         hmOqd57ufYWZRsB1oTOX5DsStg0xz99eTiwGwobAp2oWxPP9uZEQnd7ygq+AzyCpAi1b
+         6GDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=qBv4V4EmN8qA0cU5ivOCn36uSWbsf+UfWEMpu3Xsvg0=;
+        b=eX2KeD9CCueaRkmMx3yWI41vMt8QInrHj7X2IXwUj4OA7V17AbV7zClanLeNHXR9Ue
+         wlMRIZ3GSJe6ZLH+33SxCUExcH59nDrP8H60+DEpwMm3DNGfXfBOblc4uXOp+Wz/uRKB
+         MpAKaFFi1DHonjxFTR9e1o2lOOOmQ3V3+8HSpZXbjRAmKw0M8O6bgT6MvdWr40zXXIQm
+         +/qbRrAptIamaOFboNVSlGXWL939LBzl1DBus9jksvKixBWgXXsbu0ekr21JJ0Lp/NxK
+         6sYDKNkoOre7M1aunMJsmpM/YA8wvdCJenhHDnAtlD8LKK23+yoHS5QOaZbPS75f0ZhK
+         PtzA==
+X-Gm-Message-State: AOAM533RHSLKXPz21rZ5wbZ0vkaTrooxyurtk5dVrHuoB/Oprh/lDco+
+        hjf7zRb5Gvk0gQhVXb0aoJB8jSHKuB3xxw==
+X-Google-Smtp-Source: ABdhPJwwamyIgSijLzbYxxqyCfR/axISib20Qfp6SAN1d2ny0CIzlWWodzGRYHoYobaPdAY/SNRRkA==
+X-Received: by 2002:a1c:a5c7:: with SMTP id o190mr1221496wme.172.1614321637313;
+        Thu, 25 Feb 2021 22:40:37 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d82:8b00:f574:4738:807d:ed97])
+        by smtp.gmail.com with ESMTPSA id 4sm11512687wma.0.2021.02.25.22.40.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 22:40:36 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH for Dwaipayan] MAINTAINERS: clarify responsibility for checkpatch documentation
+Date:   Fri, 26 Feb 2021 07:40:29 +0100
+Message-Id: <20210226064029.1143-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit cd195bc4775a ("kbuild: split adjust_autoksyms.sh in two parts")
-split out the code that needs include/config/auto.conf.
+As discussed, Dwaipayan and Lukas take the responsibility for maintaining
+the checkpatch documentation that is currently being built up.
 
-This script no longer needs to include include/config/auto.conf.
+To be sure that the checkpatch maintainers and the corresponding
+documentation maintainers can keep the content synchronized, add them as
+reviewers to the counterpart.
 
-Fixes: cd195bc4775a ("kbuild: split adjust_autoksyms.sh in two parts")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Link: https://lore.kernel.org/lkml/bcee822d1934772f47702ee257bc735c8f467088.camel@perches.com/
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
+applies cleanly on next-20210226
 
- scripts/adjust_autoksyms.sh | 3 ---
- 1 file changed, 3 deletions(-)
+Dwaipayan, you probably want to add this patch to your patch series for checkpatch
+documentation.
 
-diff --git a/scripts/adjust_autoksyms.sh b/scripts/adjust_autoksyms.sh
-index 2b366d945ccb..d8f6f9c63043 100755
---- a/scripts/adjust_autoksyms.sh
-+++ b/scripts/adjust_autoksyms.sh
-@@ -34,9 +34,6 @@ case "$KBUILD_VERBOSE" in
- 	;;
- esac
+Feel free to add your Signed-off-by tag just following mine. 
+
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 16ada1a4b751..6b48b79ba284 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4181,9 +4181,18 @@ X:	drivers/char/tpm/
+ CHECKPATCH
+ M:	Andy Whitcroft <apw@canonical.com>
+ M:	Joe Perches <joe@perches.com>
++R:	Dwaipayan Ray <dwaipayanray1@gmail.com>
++R:	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+ S:	Maintained
+ F:	scripts/checkpatch.pl
  
--# We need access to CONFIG_ symbols
--. include/config/auto.conf
--
- # Generate a new symbol list file
- $CONFIG_SHELL $srctree/scripts/gen_autoksyms.sh "$new_ksyms_file"
- 
++CHECKPATCH DOCUMENTATION
++M:	Dwaipayan Ray <dwaipayanray1@gmail.com>
++M:	Lukas Bulwahn <lukas.bulwahn@gmail.com>
++R:	Joe Perches <joe@perches.com>
++S:	Maintained
++F:	Documentation/dev-tools/checkpatch.rst
++
+ CHINESE DOCUMENTATION
+ M:	Harry Wei <harryxiyou@gmail.com>
+ M:	Alex Shi <alex.shi@linux.alibaba.com>
 -- 
-2.27.0
+2.17.1
 
