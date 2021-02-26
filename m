@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1063266FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE01D326705
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhBZSfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 13:35:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52786 "EHLO mx2.suse.de"
+        id S230444AbhBZSnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 13:43:09 -0500
+Received: from mga17.intel.com ([192.55.52.151]:28289 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230360AbhBZSdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 13:33:33 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 795F6AFF5;
-        Fri, 26 Feb 2021 18:32:51 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 57c09077;
-        Fri, 26 Feb 2021 18:33:58 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        Luis Henriques <lhenriques@suse.de>
-Subject: [RFC PATCH] fuse: Clear SGID bit when setting mode in setacl
-Date:   Fri, 26 Feb 2021 18:33:57 +0000
-Message-Id: <20210226183357.28467-1-lhenriques@suse.de>
+        id S229545AbhBZSnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 13:43:04 -0500
+IronPort-SDR: rDI9yPTONGmL6MsH9UjC+CTMjLKi+wMbk/H+JhTiVZT04dKn0OZuNZ4Lq5zuFKcGE9Xer39Aal
+ dV4p8xPIqrDw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="165826680"
+X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
+   d="scan'208";a="165826680"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 10:41:18 -0800
+IronPort-SDR: bL1XGi92rH/3RGsWFz4Wyypgta23yvFeP2vhh3M12Ms4x4mV2wB5tvQhPN7OuosUVB/M7+QXSK
+ 5NwOTWi4VG5g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
+   d="scan'208";a="594642279"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 26 Feb 2021 10:41:17 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 5EA0317E; Fri, 26 Feb 2021 20:38:56 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: [PATCH v1 1/1] HID: i2c-hid: acpi: Get ACPI companion only once and reuse it
+Date:   Fri, 26 Feb 2021 20:38:54 +0200
+Message-Id: <20210226183854.11608-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting file permissions with POSIX ACLs (setxattr) isn't clearing the
-setgid bit.  This seems to be CVE-2016-7097, detected by running fstest
-generic/375 in virtiofs.  Unfortunately, when the fix for this CVE landed
-in the kernel with commit 073931017b49 ("posix_acl: Clear SGID bit when
-setting file permissions"), FUSE didn't had ACLs support yet.
+Currently the ACPI companion and handle are retrieved and checked
+a few times in different functions. Instead get ACPI companion only
+once and reuse it everywhere.
 
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- fs/fuse/acl.c | 29 ++++++++++++++++++++++++++---
- 1 file changed, 26 insertions(+), 3 deletions(-)
 
-diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
-index f529075a2ce8..1b273277c1c9 100644
---- a/fs/fuse/acl.c
-+++ b/fs/fuse/acl.c
-@@ -54,7 +54,9 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+It depends on previously sent patch that moves GUID out of the function.
+If needed I can resend all of them as a series.
+
+ drivers/hid/i2c-hid/i2c-hid-acpi.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/hid/i2c-hid/i2c-hid-acpi.c b/drivers/hid/i2c-hid/i2c-hid-acpi.c
+index d35ff3f16a5b..b438806f7cb3 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-acpi.c
++++ b/drivers/hid/i2c-hid/i2c-hid-acpi.c
+@@ -48,26 +48,19 @@ static guid_t i2c_hid_guid =
+ 	GUID_INIT(0x3CDFF6F7, 0x4267, 0x4555,
+ 		  0xAD, 0x05, 0xB3, 0x0A, 0x3D, 0x89, 0x38, 0xDE);
+ 
+-static int i2c_hid_acpi_get_descriptor(struct i2c_client *client)
++static int i2c_hid_acpi_get_descriptor(struct acpi_device *adev)
  {
- 	struct fuse_conn *fc = get_fuse_conn(inode);
- 	const char *name;
-+	umode_t mode = inode->i_mode;
- 	int ret;
-+	bool update_mode = false;
++	acpi_handle handle = acpi_device_handle(adev);
+ 	union acpi_object *obj;
+-	struct acpi_device *adev;
+-	acpi_handle handle;
+ 	u16 hid_descriptor_address;
  
- 	if (fuse_is_bad(inode))
- 		return -EIO;
-@@ -62,11 +64,18 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
- 	if (!fc->posix_acl || fc->no_setxattr)
- 		return -EOPNOTSUPP;
+-	handle = ACPI_HANDLE(&client->dev);
+-	if (!handle || acpi_bus_get_device(handle, &adev)) {
+-		dev_err(&client->dev, "Error could not get ACPI device\n");
+-		return -ENODEV;
+-	}
+-
+ 	if (acpi_match_device_ids(adev, i2c_hid_acpi_blacklist) == 0)
+ 		return -ENODEV;
  
--	if (type == ACL_TYPE_ACCESS)
-+	if (type == ACL_TYPE_ACCESS) {
- 		name = XATTR_NAME_POSIX_ACL_ACCESS;
--	else if (type == ACL_TYPE_DEFAULT)
-+		if (acl) {
-+			ret = posix_acl_update_mode(inode, &mode, &acl);
-+			if (ret)
-+				return ret;
-+			if (inode->i_mode != mode)
-+				update_mode = true;
-+		}
-+	} else if (type == ACL_TYPE_DEFAULT) {
- 		name = XATTR_NAME_POSIX_ACL_DEFAULT;
--	else
-+	} else
- 		return -EINVAL;
- 
- 	if (acl) {
-@@ -98,6 +107,20 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
- 	} else {
- 		ret = fuse_removexattr(inode, name);
+ 	obj = acpi_evaluate_dsm_typed(handle, &i2c_hid_guid, 1, 1, NULL,
+ 				      ACPI_TYPE_INTEGER);
+ 	if (!obj) {
+-		dev_err(&client->dev, "Error _DSM call to get HID descriptor address failed\n");
++		acpi_handle_err(handle, "Error _DSM call to get HID descriptor address failed\n");
+ 		return -ENODEV;
  	}
-+	if (!ret && update_mode) {
-+		struct dentry *entry;
-+		struct iattr attr;
-+
-+		entry = d_find_alias(inode);
-+		if (entry) {
-+			memset(&attr, 0, sizeof(attr));
-+			attr.ia_valid = ATTR_MODE | ATTR_CTIME;
-+			attr.ia_mode = mode;
-+			attr.ia_ctime = current_time(inode);
-+			ret = fuse_do_setattr(entry, &attr, NULL);
-+			dput(entry);
-+		}
-+	}
- 	forget_all_cached_acls(inode);
- 	fuse_invalidate_attr(inode);
  
+@@ -94,6 +87,12 @@ static int i2c_hid_acpi_probe(struct i2c_client *client,
+ 	u16 hid_descriptor_address;
+ 	int ret;
+ 
++	adev = ACPI_COMPANION(dev);
++	if (!adev) {
++		dev_err(&client->dev, "Error could not get ACPI device\n");
++		return -ENODEV;
++	}
++
+ 	ihid_acpi = devm_kzalloc(&client->dev, sizeof(*ihid_acpi), GFP_KERNEL);
+ 	if (!ihid_acpi)
+ 		return -ENOMEM;
+@@ -101,14 +100,12 @@ static int i2c_hid_acpi_probe(struct i2c_client *client,
+ 	ihid_acpi->client = client;
+ 	ihid_acpi->ops.shutdown_tail = i2c_hid_acpi_shutdown_tail;
+ 
+-	ret = i2c_hid_acpi_get_descriptor(client);
++	ret = i2c_hid_acpi_get_descriptor(adev);
+ 	if (ret < 0)
+ 		return ret;
+ 	hid_descriptor_address = ret;
+ 
+-	adev = ACPI_COMPANION(dev);
+-	if (adev)
+-		acpi_device_fix_up_power(adev);
++	acpi_device_fix_up_power(adev);
+ 
+ 	if (acpi_gbl_FADT.flags & ACPI_FADT_LOW_POWER_S0) {
+ 		device_set_wakeup_capable(dev, true);
+-- 
+2.30.0
+
