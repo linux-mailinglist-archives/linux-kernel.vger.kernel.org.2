@@ -2,56 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8624326275
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACC3326278
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhBZMOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 07:14:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbhBZMOd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:14:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5D2C06178B
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:13:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=W+BHG2rTIxJEd48HjrwhvEiIlo5wfdJwA+Qad46qFNo=; b=Yqx4Zk38X8po2iPpxD21IYnw5q
-        JiwCQiOlnWy8V33H9DnKo8WMuIGJuPGf/KJQ1n6K09aRWsQdsW2CRKebm89xlHrTi8wy5aJa16pj7
-        +yUhqvwa/J7HaO72DH6Y/4q+85xGe3TzjDyreMA2joUFI7fXuLN9lqBa0AYJV58U5u6gjdfWBb0VP
-        37nnyUaGwARo1F8zLA9lwoJZ48SjcNQ89uCRKp8Qgqq2qspncObQsdU48NPFsDqSGc38K2Kq4QRMK
-        84N3/UqkR7UwoRmJ06j0A6NLbNKp3M397qwZb2mLAqCD1noaUL3pTG1PUb2Az63fwJrC/B4G+DBHF
-        lQ2Q9W5g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFbze-00By35-2u; Fri, 26 Feb 2021 12:13:15 +0000
-Date:   Fri, 26 Feb 2021 12:13:14 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
-        vbabka@suse.cz, guro@fb.com, hannes@cmpxchg.org, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com
-Subject: Re: [PATCH v2 3/3] mm: use PF_ONLY_HEAD for PG_active and
- PG_unevictable
-Message-ID: <20210226121314.GB2723601@casper.infradead.org>
-References: <20210224084807.2179942-1-yuzhao@google.com>
- <20210226091718.2927291-1-yuzhao@google.com>
- <20210226091718.2927291-4-yuzhao@google.com>
+        id S230037AbhBZMPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:15:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34730 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230264AbhBZMPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 07:15:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 54D3BAFE5;
+        Fri, 26 Feb 2021 12:14:42 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 13:14:40 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>, VlastimilBabkavbabka@suse.cz,
+        pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: Re: [PATCH v2 3/7] mm,memory_hotplug: Add kernel boot option to
+ enable memmap_on_memory
+Message-ID: <20210226121440.GE3661@localhost.localdomain>
+References: <20210209133854.17399-1-osalvador@suse.de>
+ <20210209133854.17399-4-osalvador@suse.de>
+ <02041ab3-dcbd-9056-5571-48b84f527e42@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210226091718.2927291-4-yuzhao@google.com>
+In-Reply-To: <02041ab3-dcbd-9056-5571-48b84f527e42@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 02:17:18AM -0700, Yu Zhao wrote:
-> All places but one test, set or clear PG_active and PG_unevictable on
-> small or head pages. Use compound_head() explicitly for that singleton
-> so the rest can rid of redundant compound_head().
+On Thu, Feb 25, 2021 at 07:25:58PM +0100, David Hildenbrand wrote:
+> > +static __meminit int memmap_on_memory_store(const char *val,
+> > +					    const struct kernel_param *kp)
+> > +{
+> > +	/*
+> > +	 * Fail silently in case we cannot enable it due to platform constraints.
+> > +	 * User can always check whether it is enabled or not via /sys/module.
+> > +	 */
+> > +	if (!IS_ENABLED(CONFIG_ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE))
+> > +		return 0;
+> > +
+> > +	return param_set_bool(val, kp);
+> > +}
+> > +module_param_call(memmap_on_memory, memmap_on_memory_store,
+> > +		  memmap_on_memory_show, &memmap_on_memory_enabled, 0400);
+> 
+> Why are other users not allowed to read?
 
-How do you know it's only one place?  I really wish you'd work with me
-on folios.  They make the compiler prove that it's not a tail page.
+I copied it from the shuffle one. I guess shuffle code made it 0400 for
+security reasons.
+Since we do not need that here, I will switch it to 0444.
+
+> Might want to add a MODULE_PARM_DESC().
+
+Sure
+
+> As we fail silently already, I'd keep it simple and use a
+> 
+> module_param(memmap_on_memory, bool, 0444);
+> 
+> moving the IS_ENABLED(CONFIG_ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE) into the
+> runtime check.
+
+You mean moving this check into mhp_supports_memmap_on_memory() check
+from patch#1 right?
+
+Makes sense.
+
+
+-- 
+Oscar Salvador
+SUSE L3
