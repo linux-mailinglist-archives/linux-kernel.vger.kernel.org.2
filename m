@@ -2,87 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57661326222
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A607326223
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhBZLsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:48:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        id S230083AbhBZLtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhBZLsq (ORCPT
+        with ESMTP id S229849AbhBZLtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:48:46 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BCFFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:48:06 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id c6so10645794ede.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:48:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p4qJGLkjE+ZTf4s2f/49t4kWBaGGOzuYYXQVPUg3WZI=;
-        b=FlzAqwfzLgX8RhWInKuCrnVfD5WpWalYUibUel9W/M5vZ2DqQIy4OnCnl1dOLZoicD
-         bSC+3Ku4ST/FPX4m4xELECRfA+GCzTkbdDmO/Q/ladLDX6D67VBhqtqeDEYx0OSnSHZs
-         wKB3sYGwJ1O02aX1tp15QuI3ChyjfA04FxIfQa36ItsRPjU5+rKPDNE+PhmT2KgcCcdx
-         0TSTw4fHiDnCH5SUrR2vRq7auZ5VgF3RNtgne2fqcgvr/l1+KssYUaAHiyM/u5pKD4Ew
-         6P9Tpxc1SuhaEapi4HpqDpSJYZZ70ztf4zz4o0PAAk2tM3nZqfGLkmlopOqzKZLPjDcH
-         8iuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p4qJGLkjE+ZTf4s2f/49t4kWBaGGOzuYYXQVPUg3WZI=;
-        b=gS7xFylqU3zBE7NQWqV3ezXstAq0X8H+h+R4F6aNMovmxPVEincxjo1mpnmZIz+AZn
-         Y4Ump0dvnpp1G00i7+W0lGNpodoRETsZWtjb2tI46VSEL8yrIcGEixFVw0Ztlgok+Hzk
-         zAEWmxXfH3w3nyfs91LhBdvOCJWcfzcSXY3a+/+Aza+qudPbPqF/kAB0iQly9wzvsH4b
-         aUOWAKBPyCMS9B9IozFs9NOutldpxFI5AOyqxd0QOW9E22519NgdKBhomg7ZaHUgcQ3b
-         eeoMTZyQp47/5cipdENc9hJwQZdpOsklTJQS9q8YpqEuurEQvf61gAc5DHQFAt6OKZ/p
-         GStQ==
-X-Gm-Message-State: AOAM533/IXBy38dB8RPI4+u+Bxzzf/CxziK9SkdxlqhiAcEEmXF3EWIx
-        RXrT6cCcrgdRL/KxmInYAUc=
-X-Google-Smtp-Source: ABdhPJzy2OC3XcGlKwr3feiGZ9P7GSKAcF8kyhJY8jSMNYfwjJzBJAHAE2kXrc/p2McMKovuTsJlzw==
-X-Received: by 2002:aa7:d5c4:: with SMTP id d4mr2764010eds.49.1614340084754;
-        Fri, 26 Feb 2021 03:48:04 -0800 (PST)
-Received: from ubuntudesktop.lan (205.158.32.217.dyn.plus.net. [217.32.158.205])
-        by smtp.gmail.com with ESMTPSA id t16sm5622442edi.60.2021.02.26.03.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 03:48:04 -0800 (PST)
-From:   Lee Gibson <leegib@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Lee Gibson <leegib@gmail.com>
-Subject: [PATCH] staging: fwserial: minor coding style fix
-Date:   Fri, 26 Feb 2021 11:48:00 +0000
-Message-Id: <20210226114800.316897-1-leegib@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 26 Feb 2021 06:49:09 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DA8C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:48:28 -0800 (PST)
+Received: from zn.tnic (p200300ec2f086900dfbc884e5f24c36d.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6900:dfbc:884e:5f24:c36d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E07691EC038E;
+        Fri, 26 Feb 2021 12:48:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614340107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Kdgy2RXJ2A00wGzw/dGKKYDFkMjnXtbb6c45QRkooTw=;
+        b=kLhxjYLgDkA67QwYqME5mz7/MYFCvVuEH4R3Xl/sEaZzNRWdc4+F8Fm7pVFSYO2LLE7Shx
+        zQVaTGjpLuHDB/eg77g8jbXj18gpS5Y3JFcbnfk/PyPbnTEYqcYhAbtyAXA7yD1ims2ntx
+        p6W+B6mQNpwLvuGjCElm4usKjA1pnLQ=
+Date:   Fri, 26 Feb 2021 12:48:19 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     jpoimboe@redhat.com, mbenes@suze.cz, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH 1/3] objtool: Add --backup
+Message-ID: <20210226114819.GC19284@zn.tnic>
+References: <20210226105742.844988140@infradead.org>
+ <20210226110004.133170708@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210226110004.133170708@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes this checkpatch warning
-WARNING: Integer promotion: Using 'h' in '%04hx' is unnecessary
+On Fri, Feb 26, 2021 at 11:57:43AM +0100, Peter Zijlstra wrote:
+> +static bool objtool_create_backup(const char *_objname)
+> +{
+> +	int len = strlen(_objname);
+> +	char *buf, *base, *name = malloc(len+3);
+> +	int s, d, l, t;
+> +
+> +	if (!name) {
+> +		WARN("failed backup name malloc");
+> +		return false;
+> +	}
+> +
+> +	strcpy(name, _objname);
+> +	strcpy(name + len, "bj");
+> +
+> +	d = open(name, O_CREAT|O_WRONLY|O_TRUNC);
 
-Signed-off-by: Lee Gibson <leegib@gmail.com>
----
- drivers/staging/fwserial/fwserial.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yah, as mentioned on IRC and let me paste it here too, you need to
+supply mode with O_CREAT:
 
-diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
-index c368082aae1a..a020f533c982 100644
---- a/drivers/staging/fwserial/fwserial.c
-+++ b/drivers/staging/fwserial/fwserial.c
-@@ -2632,7 +2632,7 @@ static int fwserial_parse_mgmt_write(struct fwtty_peer *peer,
- 
- 	rcode = RCODE_COMPLETE;
- 
--	fwtty_dbg(&peer->unit, "mgmt: hdr.code: %04hx\n", pkt->hdr.code);
-+	fwtty_dbg(&peer->unit, "mgmt: hdr.code: %04x\n", pkt->hdr.code);
- 
- 	switch (be16_to_cpu(pkt->hdr.code) & FWSC_CODE_MASK) {
- 	case FWSC_VIRT_CABLE_PLUG:
+	d = open(name, O_CREAT|O_RDWR|O_TRUNC,S_IRUSR);
+
+or so. Also you could add perror("open") to those error paths so that it
+can say why it failed creating the backup file.
+
+With that, thanks for doing those!
+
+Acked-by: Borislav Petkov <bp@suse.de>
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
