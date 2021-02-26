@@ -2,22 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4AE3267D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:08:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B973267C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhBZUHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:07:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbhBZUGZ (ORCPT
+        id S230230AbhBZUGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:06:33 -0500
+Received: from relay02.th.seeweb.it ([5.144.164.163]:55833 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230148AbhBZUFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:06:25 -0500
-Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [IPv6:2001:4b7a:2000:18::162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDCAC0617AB
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:05:04 -0800 (PST)
+        Fri, 26 Feb 2021 15:05:50 -0500
 Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 1ECFA1FACC;
-        Fri, 26 Feb 2021 21:04:59 +0100 (CET)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 480621FAD3;
+        Fri, 26 Feb 2021 21:05:05 +0100 (CET)
 From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     phone-devel@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
@@ -31,11 +28,10 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konradybcio@gmail.com>
-Subject: [PATCH 06/41] arm64: dts: qcom: sdm630: Fix intc reg indentation
-Date:   Fri, 26 Feb 2021 21:03:36 +0100
-Message-Id: <20210226200414.167762-7-konrad.dybcio@somainline.org>
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 07/41] arm64: dts: qcom: sdm630: Add qfprom subnodes
+Date:   Fri, 26 Feb 2021 21:03:37 +0100
+Message-Id: <20210226200414.167762-8-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210226200414.167762-1-konrad.dybcio@somainline.org>
 References: <20210226200414.167762-1-konrad.dybcio@somainline.org>
@@ -45,28 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konrad Dybcio <konradybcio@gmail.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+These will be required for USB and Adreno support.
+
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- arch/arm64/boot/dts/qcom/sdm630.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm630.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index e0c6099d0810..274d39d4ab35 100644
+index 274d39d4ab35..6a6a34438ac8 100644
 --- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -1477,8 +1477,8 @@ frame@17928000 {
- 
- 		intc: interrupt-controller@17a00000 {
- 			compatible = "arm,gic-v3";
--			reg = <0x17a00000 0x10000>,	   /* GICD */
--				  <0x17b00000 0x100000>;	  /* GICR * 8 */
-+			reg = <0x17a00000 0x10000>,	/* GICD */
-+			      <0x17b00000 0x100000>;	/* GICR * 8 */
- 			#interrupt-cells = <3>;
+@@ -508,6 +508,16 @@ qfprom: qfprom@780000 {
+ 			reg = <0x00780000 0x621c>;
  			#address-cells = <1>;
  			#size-cells = <1>;
++
++			qusb2_hstx_trim: hstx-trim@240 {
++				reg = <0x240 0x1>;
++				bits = <25 3>;
++			};
++
++			gpu_speed_bin: gpu_speed_bin@41a0 {
++				reg = <0x41a0 0x1>;
++				bits = <21 7>;
++			};
+ 		};
+ 
+ 		rng: rng@793000 {
 -- 
 2.30.1
 
