@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853AE326807
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3261F3267A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:07:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhBZUJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:09:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
+        id S229864AbhBZUEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:04:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbhBZUHS (ORCPT
+        with ESMTP id S229545AbhBZUEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:07:18 -0500
-Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [IPv6:2001:4b7a:2000:18::162])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AFAC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:05:30 -0800 (PST)
-Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id B1BCC1FADD;
-        Fri, 26 Feb 2021 21:05:27 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 12/41] arm64: dts: qcom: sdm630: Add GPU Clock Controller node
-Date:   Fri, 26 Feb 2021 21:03:42 +0100
-Message-Id: <20210226200414.167762-13-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210226200414.167762-1-konrad.dybcio@somainline.org>
-References: <20210226200414.167762-1-konrad.dybcio@somainline.org>
+        Fri, 26 Feb 2021 15:04:36 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA8C061574;
+        Fri, 26 Feb 2021 12:03:56 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id u4so11974911ljh.6;
+        Fri, 26 Feb 2021 12:03:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zx4wWUTPjkEoZMfdFukEwwHYmqNG3sfw0pU4Ec9E4uA=;
+        b=Snr+kyjMGdVKvorvrl0RwG7Nhs3MxTXrcura/wtnx1BwuxyXMo5IK1koqPR7pSOwCk
+         5pP70wsFngb2ETVZdl4VV+yzc5DdeGM9MehmDwiz3Pd5JcUnpbhkEZ948vHA51sLWIJ0
+         QIg1Pen6Y56W2bjImPYNhDC5cQtoq6aKWrD/AzO9b5aoGXMO3u7xO0TCr54qTao1oIcV
+         RAzdWDuS6X92B/P3ao2Lbc1FbuCRU5KQRsvqg8Ja8G3QnpXZ3mjoAoPGo8jp18V9gfwr
+         PWTSoqBQpgZDLBOIwnW9DaSkC9H1NJJEk6z2ijtCunw264kG+UKTW2CLHor1aXHdi0Ru
+         oxrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zx4wWUTPjkEoZMfdFukEwwHYmqNG3sfw0pU4Ec9E4uA=;
+        b=pR7Kp8V7pPv4NAFyN68Fd9xWScx7mObyXUp1EF1MwBfDhuiL/VhE6wU0XM3KJ3X2HH
+         n2AiT0QpOPVuSh6YVJ90glBBSpdn59RDF9NbYfftjEi+2VnnsMYFCUvlJI7xEcuRBrdO
+         oSpJghzlgT/pMVlHW7DeRZ8aKDI0uhxYOxCrs8UbSyBp4sAodneQvmFzPKaSahxQNCVf
+         xwUCVvAD+faOGZHpci0FLKmdGNALWsyogB0oqFjSu8e5cI3h4V7HES6zITDeP3Jsotbp
+         Hd84vaE4Z9z8XY7+5oX+PrO8n5cJ3tlX9IS14wn/F3H4HyI/k2AdWDeozrvfIFpacNyO
+         pO/g==
+X-Gm-Message-State: AOAM530pNNX2Mv/TOUpTKGisCiok/kDJz+IaAnPb5xGtvQOSbauF44/z
+        KxReKb/HA3V8uycS242qW3kPEeBcai0TNc3acAjyIoGU
+X-Google-Smtp-Source: ABdhPJwTMTg2ATqmr33jGu88YKPjfTzN5Dz5HF5o6G0ONsYfB4ZNpVAgifgx1ZOqc/qfL1bg1FZX0ugdTqMAdG3nNDA=
+X-Received: by 2002:a2e:964e:: with SMTP id z14mr2629715ljh.204.1614369834704;
+ Fri, 26 Feb 2021 12:03:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210225234319.336131-1-songliubraving@fb.com> <20210226000344.a6aud7aaimrc6wzt@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210226000344.a6aud7aaimrc6wzt@kafai-mbp.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 26 Feb 2021 12:03:43 -0800
+Message-ID: <CAADnVQKofEPSABz-+WQ65XTcOEQPke08Nity2Mo7-bD2gopVpg@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 0/6] bpf: enable task local storage for
+ tracing programs
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+On Thu, Feb 25, 2021 at 4:04 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Thu, Feb 25, 2021 at 03:43:13PM -0800, Song Liu wrote:
+> > This set enables task local storage for non-BPF_LSM programs.
+> >
+> > It is common for tracing BPF program to access per-task data. Currently,
+> > these data are stored in hash tables with pid as the key. In
+> > bcc/libbpftools [1], 9 out of 23 tools use such hash tables. However,
+> > hash table is not ideal for many use case. Task local storage provides
+> > better usability and performance for BPF programs. Please refer to 6/6 for
+> > some performance comparison of task local storage vs. hash table.
+> Thanks for the patches.
+>
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-Add the GPU Clock Controller in SDM630 and keep it disabled by
-default.
+Applied. Thanks.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- arch/arm64/boot/dts/qcom/sdm630.dtsi | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index ed7d22aa734c..cc8589cb5095 100644
---- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -4,6 +4,7 @@
-  */
- 
- #include <dt-bindings/clock/qcom,gcc-sdm660.h>
-+#include <dt-bindings/clock/qcom,gpucc-sdm660.h>
- #include <dt-bindings/clock/qcom,mmcc-sdm660.h>
- #include <dt-bindings/clock/qcom,rpmcc.h>
- #include <dt-bindings/power/qcom-rpmpd.h>
-@@ -925,6 +926,22 @@ kgsl_smmu: iommu@5040000 {
- 			status = "disabled";
- 		};
- 
-+		gpucc: clock-controller@5065000 {
-+			compatible = "qcom,gpucc-sdm630";
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+			reg = <0x05065000 0x9038>;
-+
-+			clocks = <&xo_board>,
-+				 <&gcc GCC_GPU_GPLL0_CLK>,
-+				 <&gcc GCC_GPU_GPLL0_DIV_CLK>;
-+			clock-names = "xo",
-+				      "gcc_gpu_gpll0_clk",
-+				      "gcc_gpu_gpll0_div_clk";
-+			status = "disabled";
-+		};
-+
- 		lpass_smmu: iommu@5100000 {
- 			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
- 			reg = <0x05100000 0x40000>;
--- 
-2.30.1
-
+9 out of 23 libbpf-tools will significantly reduce the tracing overhead. Hooray!
