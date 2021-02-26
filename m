@@ -2,234 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DEA3265BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A307C3265B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:42:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbhBZQmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:42:52 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27256 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230087AbhBZQmk (ORCPT
+        id S230215AbhBZQlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:41:42 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:40826 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229769AbhBZQlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:42:40 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QGXEQk052748;
-        Fri, 26 Feb 2021 11:41:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=K3DYIlWypkL55/JmMleuk0xOoXsZIayghxQ9QnsumB8=;
- b=WEHyJV7cFPhxqOMWX+IIavr4T/VAB+N/llxqS8BMOaPRvtQCcnCS1H60V1MIWen6xeva
- M9DfOp8lh9My5Q/frm2uqi0dJ536uoOQX991b+SQwYSzHZ6eD2O+Y5+Ur6pnR/36piBM
- q8qr19UJCJpKdhHUL14FvYZ4ZCxEo5zgsWImb9TjkkDwaNLWYUZaTVbyB4f7Cj5czViu
- 7ZDrP5hnhePvjRMEx/+FEWxHCNnW9yU9CZdoZdsFzo64nvNqfFJOyJS7uzrb/T7CWpnl
- wlS7jXaKXv2tREnb1G0bqPIOfVZAXpf/t/l79u4XaePllMpZm3Qs9tKkMaajHAnLzLRB KA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xrf56mh9-1
+        Fri, 26 Feb 2021 11:41:39 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QGR2fZ025164;
+        Fri, 26 Feb 2021 17:40:52 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=o+3X4BLuP5e42GOpScJQqAr//WbdMHgL/Zpk/eGJKqA=;
+ b=ynektlSvURU73KKGUMj/mpyXAaO0ThH4BZC0kKl1+WOcgoUYaNJ42V+1uVjAHX6yOf7L
+ WOZhDeUDi2PCWG4CVzTeNQze+Rb/IuIL6LQyDXhowIYCjGVgfyhTauPdZ8laxvZEmtsf
+ BFGmK3t/cIDat9P5TZ+vKU5HbIQo3XcUBdlFEIr6SXchGNhM51wn80srGoO2u2A7Qs+z
+ kpAY04eOdQHp7zDlofSDAQjQs+YT8OG3ZnKx4V2o1uqyTcSCRrswyCeIJxW34fU/8LOM
+ 0Euaq3nLx2dFlLIYCOtQMWY7G5KSLB8O/5xe+csl9kbZ5DBM8hIjQhaoqa13urv6zAZ2 Ag== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36w66vxuud-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 11:41:36 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11QGWDWp002115;
-        Fri, 26 Feb 2021 16:41:34 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 36y223g45u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 16:41:34 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11QGfWF533685982
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 16:41:32 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EAE9442047;
-        Fri, 26 Feb 2021 16:41:31 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F3B3242041;
-        Fri, 26 Feb 2021 16:41:28 +0000 (GMT)
-Received: from saptagiri.in.ibm.com (unknown [9.85.73.168])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 26 Feb 2021 16:41:28 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Subject: [PATCH] sched/fair: Prefer idle CPU to cache affinity
-Date:   Fri, 26 Feb 2021 22:10:29 +0530
-Message-Id: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 26 Feb 2021 17:40:52 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 694B5100038;
+        Fri, 26 Feb 2021 17:40:51 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5693B24163A;
+        Fri, 26 Feb 2021 17:40:51 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Feb
+ 2021 17:40:50 +0100
+Subject: Re: [PATCH v6 00/16] remoteproc: Add support for detaching a remote
+ processor
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <ohad@wizery.com>,
+        <bjorn.andersson@linaro.org>, <arnaud.pouliquen@st.com>
+CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <af614b83-de31-f8fe-8b7d-181a71886aa0@foss.st.com>
+Date:   Fri, 26 Feb 2021 17:40:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+In-Reply-To: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-26_05:2021-02-26,2021-02-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxscore=0 mlxlogscore=979 clxscore=1011 lowpriorityscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 spamscore=0 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102260123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On POWER8 and POWER9, the last level cache (L2) has been at the level of
-a group of 8 threads (SMT8 on POWER8, a big-core comprising of a pair of
-SMT4 cores on POWER9). However, on POWER10, the LLC domain is at the
-level of a group of SMT4 threads within the SMT8 core. Due to the
-shrinking in the size of the LLC domain, the probability of finding an
-idle CPU in the LLC domain of the target is lesser on POWER10 compared
-to the previous generation processors.
+Hi Mathieu,
 
-With commit 9538abee18cc ("powerpc/smp: Add support detecting
-thread-groups sharing L2 cache") benchmarks such as Daytrader
-(https://github.com/WASdev/sample.daytrader7) show a drop in throughput
-in a configuration consisting of 1 JVM spanning across 6-8 Bigcores on
-POWER10.  Analysis showed that this was because more number of wakeups
-were happening on busy CPUs when the utilization was 60-70%. This drop
-in throughput also shows up as a drop in CPU utilization. However most
-other benchmarks benefit with detecting the thread-groups that share L2
-cache.
+On 2/24/21 12:34 AM, Mathieu Poirier wrote:
+> Following the work done here [1], this set provides support for the
+> remoteproc core to release resources associated with a remote processor
+> without having to switch it off. That way a platform driver can be removed
+> or the application processor power cycled while the remote processor is
+> still operating.
+> 
+> Modifications for this revision are detailed in the changelog of each patch
+> but the main difference is that going from RPROC_RUNNING -> RPROC_DETACHED
+> is no longer supported to avoid dealing tricky resource table issues.
 
-Current order of preference to pick a LLC while waking a wake-affine
-task:
-1. Between the waker CPU and previous CPU, prefer the LLC of the CPU
-   that is idle.
+This seems reasonable to me. If necessary, this could be part of a separate series.
 
-2. Between the waker CPU and previous CPU, prefer the LLC of the CPU
-   that is less lightly loaded.
+From test point of view, it is working pretty well on my side.
 
-In the current situation where waker and previous CPUs are busy, but
-only one of its LLC has an idle CPU, Scheduler may end up picking a LLC
-with no idle CPUs. To mitigate this, add a new step between 1 and 2
-where Scheduler compares idle CPUs in waker and previous LLCs and picks
-the appropriate one.
+Thanks,
+Arnaud
 
-The other alternative is to search for an idle CPU in the other LLC, if
-the current select_idle_sibling is unable to find an idle CPU in the
-preferred LLC. But that may increase the time to select a CPU.
-
-
-                                     5.11-rc6      5.11-rc6+revert   5.11-rc6+patch
-8CORE/1JVM  80USERS   throughput     6651.6        6716.3 (0.97%)    6940 (4.34%)
-                      sys/user:time  59.75/23.86   61.77/24.55       60/24
-
-8CORE/2JVM  80USERS   throughput     6425.4        6446.8 (0.33%)    6473.2 (0.74%)
-                      sys/user:time  70.59/24.25   72.28/23.77       70/24
-
-8CORE/4JVM  80USERS   throughput     5355.3        5551.2 (3.66%)    5586.6 (4.32%)
-                      sys/user:time  76.74/21.79   76.54/22.73       76/22
-
-8CORE/8JVM  80USERS   throughput     4420.6        4553.3 (3.00%)    4405.8 (-0.33%)
-                      sys/user:time  79.13/20.32   78.76/21.01       79/20
-
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Michael Neuling <mikey@neuling.org>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Parth Shah <parth@linux.ibm.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Co-developed-by: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Signed-off-by: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Co-developed-by: Parth Shah <parth@linux.ibm.com>
-Signed-off-by: Parth Shah <parth@linux.ibm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
- kernel/sched/fair.c     | 41 +++++++++++++++++++++++++++++++++++++++--
- kernel/sched/features.h |  2 ++
- 2 files changed, 41 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 8a8bd7b13634..d49bfcdc4a19 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5869,6 +5869,36 @@ wake_affine_weight(struct sched_domain *sd, struct task_struct *p,
- 	return this_eff_load < prev_eff_load ? this_cpu : nr_cpumask_bits;
- }
-
-+static int prefer_idler_llc(int this_cpu, int prev_cpu, int sync)
-+{
-+	struct sched_domain_shared *tsds, *psds;
-+	int pnr_busy, pllc_size, tnr_busy, tllc_size, diff;
-+
-+	tsds = rcu_dereference(per_cpu(sd_llc_shared, this_cpu));
-+	tnr_busy = atomic_read(&tsds->nr_busy_cpus);
-+	tllc_size = per_cpu(sd_llc_size, this_cpu);
-+
-+	psds = rcu_dereference(per_cpu(sd_llc_shared, prev_cpu));
-+	pnr_busy = atomic_read(&psds->nr_busy_cpus);
-+	pllc_size = per_cpu(sd_llc_size, prev_cpu);
-+
-+	/* No need to compare, if both LLCs are fully loaded */
-+	if (pnr_busy == pllc_size && tnr_busy == pllc_size)
-+		return nr_cpumask_bits;
-+
-+	if (sched_feat(WA_WAKER) && tnr_busy < tllc_size)
-+		return this_cpu;
-+
-+	/* For better wakeup latency, prefer idler LLC to cache affinity */
-+	diff = tnr_busy * pllc_size - sync - pnr_busy * tllc_size;
-+	if (!diff)
-+		return nr_cpumask_bits;
-+	if (diff < 0)
-+		return this_cpu;
-+
-+	return prev_cpu;
-+}
-+
- static int wake_affine(struct sched_domain *sd, struct task_struct *p,
- 		       int this_cpu, int prev_cpu, int sync)
- {
-@@ -5877,6 +5907,10 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
- 	if (sched_feat(WA_IDLE))
- 		target = wake_affine_idle(this_cpu, prev_cpu, sync);
-
-+	if (sched_feat(WA_IDLER_LLC) && target == nr_cpumask_bits &&
-+				!cpus_share_cache(this_cpu, prev_cpu))
-+		target = prefer_idler_llc(this_cpu, prev_cpu, sync);
-+
- 	if (sched_feat(WA_WEIGHT) && target == nr_cpumask_bits)
- 		target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
-
-@@ -5884,8 +5918,11 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
- 	if (target == nr_cpumask_bits)
- 		return prev_cpu;
-
--	schedstat_inc(sd->ttwu_move_affine);
--	schedstat_inc(p->se.statistics.nr_wakeups_affine);
-+	if (target == this_cpu) {
-+		schedstat_inc(sd->ttwu_move_affine);
-+		schedstat_inc(p->se.statistics.nr_wakeups_affine);
-+	}
-+
- 	return target;
- }
-
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 1bc2b158fc51..e2de3ba8d5b1 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -83,6 +83,8 @@ SCHED_FEAT(ATTACH_AGE_LOAD, true)
-
- SCHED_FEAT(WA_IDLE, true)
- SCHED_FEAT(WA_WEIGHT, true)
-+SCHED_FEAT(WA_IDLER_LLC, true)
-+SCHED_FEAT(WA_WAKER, false)
- SCHED_FEAT(WA_BIAS, true)
-
- /*
---
-2.18.4
-
+> 
+> Applies cleanly on rproc-next (e8b4e9a21af7).  I will rebase on 5.12-rc1 when it
+> comes out next week.
+> 
+> Thanks,
+> Mathieu
+> 
+> Arnaud POULIQUEN (1):
+>   remoteproc: stm32: Move memory parsing to rproc_ops
+> 
+> Mathieu Poirier (15):
+>   remoteproc: Remove useless check in rproc_del()
+>   remoteproc: Rename function rproc_actuate()
+>   remoteproc: Add new RPROC_ATTACHED state
+>   remoteproc: Properly represent the attached state
+>   remoteproc: Add new get_loaded_rsc_table() to rproc_ops
+>   remoteproc: stm32: Move resource table setup to rproc_ops
+>   remoteproc: Add new detach() remoteproc operation
+>   remoteproc: Introduce function __rproc_detach()
+>   remoteproc: Introduce function rproc_detach()
+>   remoteproc: Properly deal with the resource table when attached
+>   remoteproc: Properly deal with a kernel panic when attached
+>   remoteproc: Properly deal with a start request when attached
+>   remoteproc: Properly deal with a stop request when attached
+>   remoteproc: Properly deal with a detach request when attached
+>   remoteproc: Refactor rproc delete and cdev release path
+> 
+>  drivers/remoteproc/remoteproc_cdev.c     |  21 +-
+>  drivers/remoteproc/remoteproc_core.c     | 263 ++++++++++++++++++++---
+>  drivers/remoteproc/remoteproc_internal.h |  10 +
+>  drivers/remoteproc/remoteproc_sysfs.c    |  17 +-
+>  drivers/remoteproc/stm32_rproc.c         | 168 +++++++--------
+>  include/linux/remoteproc.h               |  21 +-
+>  6 files changed, 362 insertions(+), 138 deletions(-)
+> 
