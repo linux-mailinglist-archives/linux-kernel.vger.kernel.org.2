@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5354D325B80
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 03:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F210325B82
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 03:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhBZCNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 21:13:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35328 "EHLO
+        id S230112AbhBZCOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 21:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhBZCNh (ORCPT
+        with ESMTP id S230090AbhBZCOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 21:13:37 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52FBAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:12:57 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d12so2684143pfo.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:12:57 -0800 (PST)
+        Thu, 25 Feb 2021 21:14:11 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4161BC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:13:31 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id t9so5096171pjl.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:13:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yeWyaSel7U9eSxOcBt5qJfEQetEzs7vQl7xINbGhi+A=;
-        b=XY79rE3hGyDbLdFZT8nD2HQ1isKgQ+OFXiOIFTeR5H5a4FsQVMdFmsvacNlq6pS2lJ
-         6GEHyvu4EenSb95Z985YMZlDcrT9jFr5k6UHhpDX1lTCfy55JW/r0VBqmhCPvs9QvsJS
-         ue0OTjy5vzxt+HAv6Ly+dnAPPjSa+gWpta1e+bGZWtR+GLbTwd+O7w+vE78ZDdO5bYEh
-         vCjFC9c1jP7tyIDYo3u85cqKvMwxnDB4w2K7tS5cV90u4kr6WLzbKDwWTnMcJlrRHxTF
-         h5CM+3Nl9E/dvsPEhZTwffOc2UEJLB/UWrfQuDj5xWjKqKaW9RpZ6L2myBIXiB4XIvD6
-         MPaQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eCQDyjSjrPOnC5kBdIWB+6uWOY9PLaOhvG7UuaHLMBs=;
+        b=hzQEPy6po5uMlNt0Zt2fNrmKhe+2t6IXQjWLf9e9fSsIRAxq8g77yMUNBKK5YQVDqH
+         Gi419EyzG4KPVI0SMS5MzP4bw48wj3nB9IWmuOSspMiQiS36aaxomlYQ6WVOSxTcCCmi
+         nyMp5RNbCQDDnG7ygq/7HxOd0y8fssESR9iks=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yeWyaSel7U9eSxOcBt5qJfEQetEzs7vQl7xINbGhi+A=;
-        b=iu68XfP+fWZxDkrKnblpZoLFqNHc4dQ+DapyS85OVlNvfTTUac73NDv9BI+xQMy6YL
-         Xp5l6obfIKojZkWgNBG8fhgDHX9jTsdWByQkf219Pz1YWdYvL1f+O1HQfDzzWbYmhXip
-         18yhwHaKm3cOaeSv4RDemEhwntJhGCmyFQW1hnwPiq5mdcxTJp7JG8EUH+DuaFlK4uqt
-         in61J4z2lTzkXzHpyDFkmk0qrGmrdTHhUuDV3836izPslGOttarzlJ42MrRxTRO28KWB
-         0NUX+yEGNluis3Tl/fl27V9MnAMgJuxXlV7TFnlkAtHBU9UwXW/ubXfnNsDsl96CzcbU
-         9iXQ==
-X-Gm-Message-State: AOAM530usElRTJpyDiFKAm+DwrmFGYjbLNHrm4h2+PjuureyqOu6dYB2
-        xH/SXyw5jffS8Ke/KVw1aiUl5tZ9nOY=
-X-Google-Smtp-Source: ABdhPJw2+rDNi4gbjIsJUVGbsD6lPhwC1Ye+NPiIPMpls61+YQ/vGQj+DCb4ukpnWdAi4yyH7OokWg==
-X-Received: by 2002:aa7:8f15:0:b029:1ed:9356:a9e with SMTP id x21-20020aa78f150000b02901ed93560a9emr691428pfr.73.1614305576840;
-        Thu, 25 Feb 2021 18:12:56 -0800 (PST)
-Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
-        by smtp.gmail.com with ESMTPSA id 8sm7773531pfp.171.2021.02.25.18.12.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 18:12:56 -0800 (PST)
-From:   Yang Shi <shy828301@gmail.com>
-To:     hannes@cmpxchg.org, mhocko@suse.com, guro@fb.com,
-        shakeelb@google.com, akpm@linux-foundation.org, corbet@lwn.net
-Cc:     shy828301@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] doc: memcontrol: add description for oom_kill
-Date:   Thu, 25 Feb 2021 18:12:54 -0800
-Message-Id: <20210226021254.3980-1-shy828301@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eCQDyjSjrPOnC5kBdIWB+6uWOY9PLaOhvG7UuaHLMBs=;
+        b=FuoVQKkSiQ1MDnACW4/F/I940g0LIk5TrOjrnsQjo7px3zufoncRSeA6PrYF0RwgSi
+         MKekp5MsmrguUP71QJX4YExICGF2nO+0eoDmp66SK5sLJgQluoUWupaYi56ePvCyHiEo
+         Q64lJAqO5LnliQ2oz3F2AqJOvxPg685p86hTPDNG+SufgXGY/UBSMlsuleRmWslBoj2X
+         HWNdhC9F/ICp5ffsZcYOfQUe+hNzO9zMHN23QIhxhBBcanOQP/c3RvZEjFjDkBWZzf2d
+         Bq/uMKNrpZ9ndDIefqcIvYEbliEjYqL/5LYo+Ga0M2GRuwKgyBLy/pUtTha1CfvNGkt1
+         EAiA==
+X-Gm-Message-State: AOAM531bc2NvQMEG6JUXhLf7L+5XmUARE3EICBIr62begbEvVTy/F9Un
+        b2Dm5m4QVKqbmaLmTCnkZs81eA==
+X-Google-Smtp-Source: ABdhPJxbCC7G//bSUsPbyD6uOE13QyYXQG2FJO0dCZ69QsD+hhc3QGnvoJBGzIwOGDsY4l9xpjlXdw==
+X-Received: by 2002:a17:90a:7405:: with SMTP id a5mr936844pjg.13.1614305610829;
+        Thu, 25 Feb 2021 18:13:30 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:1d8:8d0c:f75e:edd8])
+        by smtp.gmail.com with UTF8SMTPSA id w24sm7119977pgl.19.2021.02.25.18.13.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Feb 2021 18:13:30 -0800 (PST)
+Date:   Thu, 25 Feb 2021 18:13:28 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexandru M Stan <amstan@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Philip Chen <philipchen@google.com>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/13] arm64: dts: qcom: Add sc7180-lazor-pompom skus
+Message-ID: <YDhZSAd0XLgdHEEm@google.com>
+References: <20210225221310.1939599-1-dianders@chromium.org>
+ <20210225141022.12.If93a01b30d20dccacbad4be8ddc519dc20a51a1e@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210225141022.12.If93a01b30d20dccacbad4be8ddc519dc20a51a1e@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When debugging an oom issue, I found the oom_kill counter of memcg is
-confusing.  At the first glance without checking document, I thought it
-just counts for memcg oom, but it turns out it counts both global and
-memcg oom.
+On Thu, Feb 25, 2021 at 02:13:09PM -0800, Douglas Anderson wrote:
+> This is a trogdor variant.  This is mostly a grab from the downstream
+> tree with notable exceptions:
+> - I skip -rev0.  This was a super early build and there's no advantage
+>   of long term support.
+> - In -rev1 I translate the handling of the USB hub like is done for
+>   similar boards.  See the difference between the downstream and
+>   upstream 'sc7180-trogdor-lazor-r0.dts' for an example.  This will
+>   need to be resolved when proper support for the USB hub is figured
+>   out upstream.
+> - I remove sound node since sound hasn't landed upstream yet.
+> - In incorporate the pending <https://crrev.com/c/2719075> for the
+>   keyboard.
+> 
+> Cc: Philip Chen <philipchen@google.com>
+> Cc: Matthias Kaehlcke <mka@chromium.org>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Tzung-Bi Shih <tzungbi@chromium.org>
+> Cc: Judy Hsiao <judyhsiao@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-The cgroup v2 documents it, but the description is missed for cgroup v1.
+<snip>
 
-Signed-off-by: Yang Shi <shy828301@gmail.com>
----
- Documentation/admin-guide/cgroup-v1/memory.rst | 3 +++
- 1 file changed, 3 insertions(+)
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+> new file mode 100644
+> index 000000000000..8f1596b8e90a
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
+> @@ -0,0 +1,288 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Google Pompom board device tree source
+> + *
+> + * Copyright 2020 Google LLC.
+> + */
+> +
+> +#include "sc7180.dtsi"
+> +
+> +ap_ec_spi: &spi6 {};
+> +ap_h1_spi: &spi0 {};
+> +
+> +#include "sc7180-trogdor.dtsi"
+> +
+> +/ {
+> +	thermal-zones {
+> +		5v-choke-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <250>;
+> +
+> +			thermal-sensors = <&pm6150_adc_tm 0>;
 
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 0936412e044e..44d5429636e2 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -851,6 +851,9 @@ At reading, current status of OOM is shown.
- 	  (if 1, oom-killer is disabled)
- 	- under_oom	   0 or 1
- 	  (if 1, the memory cgroup is under OOM, tasks may be stopped.)
-+        - oom_kill         integer counter
-+          The number of processes belonging to this cgroup killed by any
-+          kind of OOM killer.
- 
- 11. Memory Pressure
- ===================
--- 
-2.26.2
+This is fine with how things are currently configured for trogdor, however be
+aware that in the ADC thermal monitor config your patch is racing with 'arm64:
+dts: qcom: sc7180: trogdor: Use ADC TM channel 0 instead of 1 for charger
+temperature' (https://lore.kernel.org/patchwork/patch/1384514/). That patch
+changes the charger thermistor for all trogdor boards to ADC TM channel 0,
+so the 5v-choke thermistor would have to move to another channel (most
+likely 1).
 
+<snip>
+
+> +&pm6150_adc_tm {
+> +	status = "okay";
+> +
+> +	5v-choke-thermistor@0 {
+> +		reg = <0>;
+
+s/0/1/ in the two lines above if 'arm64: dts: qcom: sc7180: trogdor: Use ADC
+TM channel 0 instead of 1 for charger temperature' lands before this patch.
+
+The other deltas with downstream are mentioned in the commit message, as long
+as we keep the change of the ADC TM channel in mind this looks good to me.
+
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
