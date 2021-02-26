@@ -2,102 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDFC326333
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDDC326337
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhBZNQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 08:16:34 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19272 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhBZNQb (ORCPT
+        id S230001AbhBZNRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 08:17:23 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34883 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhBZNRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 08:16:31 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6038f4840000>; Fri, 26 Feb 2021 05:15:48 -0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Feb
- 2021 13:15:47 +0000
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Feb
- 2021 13:15:45 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.107)
- by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Fri, 26 Feb 2021 13:15:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NT1A3eKS+fbx4i9vcgh+TULUlrcIJwIxoAmD7U+hc3e5M3sLjlGby06EF86HSb8lzMDFp2kxfxJK1QSN3cdAoHL8Y/3KYumzQo1a1Uq8Ool8IsnuHTdrkU9e18T/TNNtxAHZbwEzNikxV/FiBPmoq8ZBwAVzeN4u6CfJX2lSSZf4hdhaGYb2nYiqxPoplylMI+TqquKoUegh4Y7ypJ/xf/YkbN9r3x0cGjFIVD034iDBRLP6XJhzqpnTGoa0lqiC3Mtd7XOMTd13mkms+8H0c/GsbiG0y+0WBSY5O/PiK8aEfZOS7jwYAuHWhHJ+6KYkFolXGJziGSnHoU1A6gWOzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3mMqB3DlSEPfPUmiJ2G36doXPv9/ibiqfrnYrng0lXo=;
- b=UmXXy5yE7OGsF8Dl18Qo0//ekaYeHpWE0RZQf0Q1CZnIeSdW2sigD0IY/MQpOhtqkQXfRSQSAWTLani4lCEcheWYgG50gZBCs1g71+x1wFMAzdLqRsUQkts2tf8nxTK9zWnJnT6X0mSlVIaFhvsTdvpUWcjCI/VSISoc8ew47T8jMZ+1noxiBChrXq3hAPwKj/UWjtmQX6LEQu6JIz0N404cJHazb6vCg0EkfvM/7hfjrRnSCcb8kAIiUihROADLfbIHRzJo5haSLF5GmvHk1wIQmeWbYJ4nZARQ/01J+oTzr/FHB+wczU+J5Mj5Kl/bVl5kDu5OtPu/9GMfZ7NQgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4057.namprd12.prod.outlook.com (2603:10b6:5:213::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23; Fri, 26 Feb
- 2021 13:15:43 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
- 13:15:43 +0000
-Date:   Fri, 26 Feb 2021 09:15:41 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Alex Williamson <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <peterx@redhat.com>, <viro@zeniv.linux.org.uk>
-Subject: Re: [RFC PATCH 01/10] vfio: Create vfio_fs_type with inode per device
-Message-ID: <20210226131541.GY4247@nvidia.com>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
- <161401263517.16443.7534035240372538844.stgit@gimli.home>
- <20210226053804.GA2764758@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210226053804.GA2764758@infradead.org>
-X-ClientProxiedBy: BL0PR0102CA0038.prod.exchangelabs.com
- (2603:10b6:208:25::15) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Fri, 26 Feb 2021 08:17:20 -0500
+X-Originating-IP: 81.185.174.212
+Received: from [192.168.43.237] (212.174.185.81.rev.sfr.net [81.185.174.212])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id DA1281BF203;
+        Fri, 26 Feb 2021 13:16:15 +0000 (UTC)
+Subject: Re: [RFC PATCH 1/8] RISC-V: Enable CPU_IDLE drivers
+To:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Liush <liush@allwinnertech.com>, linux-riscv@lists.infradead.org,
+        Sandeep Tripathy <milun.tripathy@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210221093758.210981-1-anup.patel@wdc.com>
+ <20210221093758.210981-2-anup.patel@wdc.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <3a6e2af7-934d-078f-4e19-d4241809e7fb@ghiti.fr>
+Date:   Fri, 26 Feb 2021 08:16:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR0102CA0038.prod.exchangelabs.com (2603:10b6:208:25::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Fri, 26 Feb 2021 13:15:43 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lFcy5-000oG7-Sp; Fri, 26 Feb 2021 09:15:41 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614345348; bh=3mMqB3DlSEPfPUmiJ2G36doXPv9/ibiqfrnYrng0lXo=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=jjHCL6mfCiWI/SANTebvvxU0GKmIQZl59kNZK9hEq4JxhzTjqDR4XVbcy39tWEn6+
-         T5rJI67cWlXqF5V6tcMjLGtjdyMnE+rfNAqD2dRTvkbUg2AFgZuJ3qBGPIxPYybhwZ
-         rj8S+KA5wyP8u7mlOpqi1HS97qi7ufCxW5ZGvSPg7Pa2TfkyWTPWsxPFfUkiLpRgTp
-         n9lFfbqpx0uV3rcOPH5pSgHvM1HVkt0QuSgiAOED+IYy3vsJH//EicWghei9995Byi
-         vXFVe3TKHqRBYt0Z3zXrJDm7LBAjD+f7Ewcg54Q46ZtAGvmR7WPsTNkJH5Y9dAkwZr
-         tCe6U3NpQDeLQ==
+In-Reply-To: <20210221093758.210981-2-anup.patel@wdc.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 05:38:04AM +0000, Christoph Hellwig wrote:
-> On Mon, Feb 22, 2021 at 09:50:35AM -0700, Alex Williamson wrote:
-> > By linking all the device fds we provide to userspace to an
-> > address space through a new pseudo fs, we can use tools like
-> > unmap_mapping_range() to zap all vmas associated with a device.
-> > 
-> > Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> 
-> Adding Al:
-> 
-> I hate how we're are growing these tiny file systems just to allocate an
-> anonymous inode all over.  Shouldn't we allow to enhance fs/anon_inodes.c
-> to add a new API to allocate a new specific inode from anon_inodefs
-> instead?
+Hi Anup,
 
-+1 when I was researching this I also felt this was alot of
-boilerplate to just get an inode. With vfio and rdma getting this it
-is at least 5 places now.
+Le 2/21/21 à 4:37 AM, Anup Patel a écrit :
+> We force select CPU_PM and provide asm/cpuidle.h so that we can
+> use CPU IDLE drivers for Linux RISC-V kernel.
+> 
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> ---
+>   arch/riscv/Kconfig                |  7 +++++++
+>   arch/riscv/configs/defconfig      |  7 +++----
+>   arch/riscv/configs/rv32_defconfig |  4 ++--
+>   arch/riscv/include/asm/cpuidle.h  | 24 ++++++++++++++++++++++++
+>   arch/riscv/kernel/process.c       |  3 ++-
+>   5 files changed, 38 insertions(+), 7 deletions(-)
+>   create mode 100644 arch/riscv/include/asm/cpuidle.h
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index fe6862b06ead..4901200b6b6c 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -37,6 +37,7 @@ config RISCV
+>   	select CLONE_BACKWARDS
+>   	select CLINT_TIMER if !MMU
+>   	select COMMON_CLK
+> +	select CPU_PM if CPU_IDLE
+>   	select EDAC_SUPPORT
+>   	select GENERIC_ARCH_TOPOLOGY if SMP
+>   	select GENERIC_ATOMIC64 if !64BIT
+> @@ -430,4 +431,10 @@ source "kernel/power/Kconfig"
+>   
+>   endmenu
+>   
+> +menu "CPU Power Management"
+> +
+> +source "drivers/cpuidle/Kconfig"
+> +
+> +endmenu
+> +
+>   source "drivers/firmware/Kconfig"
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index 6c0625aa96c7..dc4927c0e44b 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -13,11 +13,13 @@ CONFIG_USER_NS=y
+>   CONFIG_CHECKPOINT_RESTORE=y
+>   CONFIG_BLK_DEV_INITRD=y
+>   CONFIG_EXPERT=y
+> +# CONFIG_SYSFS_SYSCALL is not set
+>   CONFIG_BPF_SYSCALL=y
+>   CONFIG_SOC_SIFIVE=y
+>   CONFIG_SOC_VIRT=y
+>   CONFIG_SMP=y
+>   CONFIG_HOTPLUG_CPU=y
+> +CONFIG_CPU_IDLE=y
+>   CONFIG_JUMP_LABEL=y
+>   CONFIG_MODULES=y
+>   CONFIG_MODULE_UNLOAD=y
+> @@ -65,10 +67,9 @@ CONFIG_HW_RANDOM=y
+>   CONFIG_HW_RANDOM_VIRTIO=y
+>   CONFIG_SPI=y
+>   CONFIG_SPI_SIFIVE=y
+> +# CONFIG_PTP_1588_CLOCK is not set
+>   CONFIG_GPIOLIB=y
+>   CONFIG_GPIO_SIFIVE=y
+> -# CONFIG_PTP_1588_CLOCK is not set
+> -CONFIG_POWER_RESET=y
 
-Jason
+Why do you remove this config ?
+
+>   CONFIG_DRM=y
+>   CONFIG_DRM_RADEON=y
+>   CONFIG_DRM_VIRTIO_GPU=y
+> @@ -132,5 +133,3 @@ CONFIG_DEBUG_BLOCK_EXT_DEVT=y
+>   # CONFIG_FTRACE is not set
+>   # CONFIG_RUNTIME_TESTING_MENU is not set
+>   CONFIG_MEMTEST=y
+> -# CONFIG_SYSFS_SYSCALL is not set
+> -CONFIG_EFI=y
+
+And this is one too ? If those removals are intentional, maybe you can 
+add something about that in the commit description ?
+
+> diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
+> index 8dd02b842fef..332e43a4a2c3 100644
+> --- a/arch/riscv/configs/rv32_defconfig
+> +++ b/arch/riscv/configs/rv32_defconfig
+> @@ -13,12 +13,14 @@ CONFIG_USER_NS=y
+>   CONFIG_CHECKPOINT_RESTORE=y
+>   CONFIG_BLK_DEV_INITRD=y
+>   CONFIG_EXPERT=y
+> +# CONFIG_SYSFS_SYSCALL is not set
+>   CONFIG_BPF_SYSCALL=y
+>   CONFIG_SOC_SIFIVE=y
+>   CONFIG_SOC_VIRT=y
+>   CONFIG_ARCH_RV32I=y
+>   CONFIG_SMP=y
+>   CONFIG_HOTPLUG_CPU=y
+> +CONFIG_CPU_IDLE=y
+>   CONFIG_JUMP_LABEL=y
+>   CONFIG_MODULES=y
+>   CONFIG_MODULE_UNLOAD=y
+> @@ -67,7 +69,6 @@ CONFIG_HW_RANDOM_VIRTIO=y
+>   CONFIG_SPI=y
+>   CONFIG_SPI_SIFIVE=y
+>   # CONFIG_PTP_1588_CLOCK is not set
+> -CONFIG_POWER_RESET=y
+>   CONFIG_DRM=y
+>   CONFIG_DRM_RADEON=y
+>   CONFIG_DRM_VIRTIO_GPU=y
+> @@ -131,4 +132,3 @@ CONFIG_DEBUG_BLOCK_EXT_DEVT=y
+>   # CONFIG_FTRACE is not set
+>   # CONFIG_RUNTIME_TESTING_MENU is not set
+>   CONFIG_MEMTEST=y
+> -# CONFIG_SYSFS_SYSCALL is not set
+> diff --git a/arch/riscv/include/asm/cpuidle.h b/arch/riscv/include/asm/cpuidle.h
+> new file mode 100644
+> index 000000000000..1042d790e446
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/cpuidle.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2021 Allwinner Ltd
+> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
+> + */
+> +
+> +#ifndef _ASM_RISCV_CPUIDLE_H
+> +#define _ASM_RISCV_CPUIDLE_H
+> +
+> +#include <asm/barrier.h>
+> +#include <asm/processor.h>
+> +
+> +static inline void cpu_do_idle(void)
+> +{
+> +	/*
+> +	 * Add mb() here to ensure that all
+> +	 * IO/MEM access are completed prior
+
+accessES ?
+
+> +	 * to enter WFI.
+> +	 */
+> +	mb();
+> +	wait_for_interrupt();
+> +}
+> +
+> +#endif
+> diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
+> index dd5f985b1f40..b5b51fd26624 100644
+> --- a/arch/riscv/kernel/process.c
+> +++ b/arch/riscv/kernel/process.c
+> @@ -21,6 +21,7 @@
+>   #include <asm/string.h>
+>   #include <asm/switch_to.h>
+>   #include <asm/thread_info.h>
+> +#include <asm/cpuidle.h>
+>   
+>   register unsigned long gp_in_global __asm__("gp");
+>   
+> @@ -35,7 +36,7 @@ extern asmlinkage void ret_from_kernel_thread(void);
+>   
+>   void arch_cpu_idle(void)
+>   {
+> -	wait_for_interrupt();
+> +	cpu_do_idle();
+>   	raw_local_irq_enable();
+>   }
+>   
+> 
