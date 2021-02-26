@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071C932640B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580D332640A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhBZO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:26:25 -0500
-Received: from mx2.suse.de ([195.135.220.15]:32896 "EHLO mx2.suse.de"
+        id S230184AbhBZOZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:25:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56710 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhBZO0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:26:15 -0500
+        id S230125AbhBZOYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 09:24:38 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614349429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EZ8keW/MmYo/ENSptctxMrJ/qqagf2xtsHbib8YaQAw=;
+        b=LSycJx2ivWEdJJgeje1f3n3MzxIWq9i+1H14zarEBVnqfjsRyrE1qdgTZ8NRjn2eZHcbOM
+        XyLdocTAt8/EyLAHtETrPeE/SklJq3eKUO2b+f5R8AKF6x5kuJ09iEfrJeDvX7XVPiq1ra
+        t+e3m83qhS/4gCKyc9EfHgyaAdxWen4=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3F5C4ADDC;
-        Fri, 26 Feb 2021 14:25:33 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1867FDA7FF; Fri, 26 Feb 2021 15:23:40 +0100 (CET)
-Date:   Fri, 26 Feb 2021 15:23:40 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [GIT PULL] Kmap conversions for 5.12
-Message-ID: <20210226142339.GK7604@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Ira Weiny <ira.weiny@intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <cover.1614090658.git.dsterba@suse.com>
- <CAHk-=wijdojzo56FzYqE5TOYw2Vws7ik3LEMGj9SPQaJJ+Z73Q@mail.gmail.com>
- <20210223192506.GY3014244@iweiny-DESK2.sc.intel.com>
- <20210224123049.GX1993@twin.jikos.cz>
- <20210224175912.GA3014244@iweiny-DESK2.sc.intel.com>
- <20210225131252.GA7604@suse.cz>
- <20210225163234.GD3014244@iweiny-DESK2.sc.intel.com>
+        by mx2.suse.de (Postfix) with ESMTP id 5A13EAE30;
+        Fri, 26 Feb 2021 14:23:49 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 15:23:42 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     thomas.lendacky@amd.com, tj@kernel.org, brijesh.singh@amd.com,
+        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
+        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
+        corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <YDkEbv9u3OBNpk6f@blackbook>
+References: <20210218195549.1696769-1-vipinsh@google.com>
+ <20210218195549.1696769-2-vipinsh@google.com>
+ <YDVIdycgk8XL0Zgx@blackbook>
+ <YDcuQFMbe5MaatBe@google.com>
+ <YDdzcfLxsCeYxLNG@blackbook>
+ <YDf6bpSxX6I5xdqZ@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0cdvV5m4yIkS6Bx1"
 Content-Disposition: inline
-In-Reply-To: <20210225163234.GD3014244@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <YDf6bpSxX6I5xdqZ@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 08:32:34AM -0800, Ira Weiny wrote:
-> On Thu, Feb 25, 2021 at 02:12:52PM +0100, David Sterba wrote:
-> > On Wed, Feb 24, 2021 at 09:59:12AM -0800, Ira Weiny wrote:
-> > > On Wed, Feb 24, 2021 at 01:30:49PM +0100, David Sterba wrote:
-> > > > On Tue, Feb 23, 2021 at 11:25:06AM -0800, Ira Weiny wrote:
-> > > > > On Tue, Feb 23, 2021 at 09:13:42AM -0800, Linus Torvalds wrote:
-> > > > > > On Tue, Feb 23, 2021 at 7:03 AM David Sterba <dsterba@suse.com> wrote:
-> > > > [...]
-> > > > 
-> > > > > Sorry.  I will change it.
-> > > > 
-> > > > Let me know how you want to proceed with the patchset/pull request.
-> > > 
-> > > To be clear I'd like to just drop the 2 patches which use zero_user() for this
-> > > merge window.
-> > > 
-> > > I've already submitted some additional btrfs changes for 5.13[1].  I can rework
-> > > these zero_user() patches and submit them through Andrew for 5.13 as separate
-> > > set.  That is what I meant by 'I will change it'.
-> > > 
-> > > > I
-> > > > can play the messenger again but now it seems a round of review is
-> > > > needed and with some testing it'll be possible in some -rc. At that
-> > > > point you may take the patches via the mm tree, unless Linus is ok with
-> > > > a late pull.
-> > > 
-> > > I'm ok with delaying the memzero_page() change to 5.13.  There are a lot of
-> > > kmap changes to come.  But I'm trying to do them as smaller series just for
-> > > this reason.  I don't want valid changes to be denied due to my messing up just
-> > > a few patches...  :-(  Hopefully you and Linus can forgive me on this one.
-> > > 
-> > > Is ok to just drop them and merge the rest of this series in 5.12?
-> > 
-> > Ok, no problem. Please let me know exactly which patches to drop, I'll
-> > respin the branch. Thanks.
-> 
-> Drop These 2:
-> 
-> [PATCH V2 5/8] iov_iter: Remove memzero_page() in favor of zero_user()
-> https://lore.kernel.org/lkml/20210210062221.3023586-6-ira.weiny@intel.com/
-> 
-> [PATCH V2 8/8] btrfs: convert to zero_user()
-> https://lore.kernel.org/lkml/20210210062221.3023586-9-ira.weiny@intel.com/
-> 
-> 
-> Keep:
-> 
-> [PATCH V2 1/8] mm/highmem: Lift memcpy_[to|from]_page to core 
-> [PATCH V2 2/8] mm/highmem: Convert memcpy_[to|from]_page() to kmap_local_page()
-> [PATCH V2 3/8] mm/highmem: Introduce memcpy_page(), memmove_page(), and memset_page()
-> [PATCH V2 4/8] mm/highmem: Add VM_BUG_ON() to mem*_page() calls
-> 	...
-> [PATCH V2 6/8] btrfs: use memcpy_[to|from]_page() and kmap_local_page()
-> [PATCH V2 7/8] btrfs: use copy_highpage() instead of 2 kmaps()
-> 	...
-> 
-> I would resend but I'd rather keep the exact commits you had in your testing
-> rather than potentially messing up the rebase this late.
 
-Got it, thanks. It's easier for me to delete the patches once I have
-them in the branch, that's been updated and now pushed to kernel org
-again (https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git/log/?h=kmap-conversion-for-5.12)
+--0cdvV5m4yIkS6Bx1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'll add it to testing branches and let it test over the weekend,
-sending the pull request next week.
+On Thu, Feb 25, 2021 at 11:28:46AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
+> My approach here is that it is the responsibility of the caller to:
+> 1. Check the return value and proceed accordingly.
+> 2. Ideally, let all of the usage be 0 before deactivating this resource
+>    by setting capacity to 0
+If the calling side can ensure itself that no new units of the resource
+are used from that moment on, then it can work this way -- but describe
+that in misc_cg_set_capacity() comment.
+
+> Is the above change good?
+I think both alternatives would work. But the latter (as I see it now)
+would mandate dependency on CONFIG_CGROUP or it'd have to double the
+similar logic itself. So maybe keeping the caller responsible explicitly
+is simpler from this POV.
+
+> Will there be any objection to extra information?
+IMO it's unnecessary (stating this just for consistency reasons), no
+strong opinion.
+
+Michal
+
+--0cdvV5m4yIkS6Bx1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmA5BGsACgkQia1+riC5
+qSgTGRAAoZ8UZQoAOpamNp2/t/ZoGBQlc2u+5XDs9tPI1LzW7tJ3hNNitPkhB+aC
+oh7SiaI8f6LkAqKPRjKsZwPi1oXJUHjaf9T7Vf8HF+CfmahqQBDI+iR3tHO2GDw8
+Fn8GabyVuBtFQn8XDHmINeiYkXhTn4IGBO0VO1vrYkZrUSOoE4uIfIRz+8thfpeh
+vigJRDm+DTSyNX1klJlfe3li8UHgK282Hf/C2EqXmpMULCdTcrxmsayzh9UgONjX
+6ElaMeFSjYIPyYZUFlkwGYmXZ6Kfk0Z+HTm6D+/1nIIuvFImr5u7lY6ssxIb5BhG
+VDuJDoIGZp+H7MvB1yRhPnygltT1JkRbi1EDpX5q8HDtFn05h/opFWU5A1leAh6U
+mVwn1i6VZ7DEtyqEaCI8iyRLqCK86+fr4W0q9i5QzG5YzddlHqv9QZkF8mPJL5aj
+ng008bFSfGliYdIoqmTeHYho+K6hgSVT6W+Sf5bUb0P2w8vWKPwJiFiYlBtitdv/
+gReKLtnFUAzHV+w2J7loq0ZbrPAQhdqzHrJo1zpQsByTed0q/Nby8MM3OKk3vmFo
+RjxxF7cLao8PIsud76c8LnwkLe3tqLjaXeUYeIKlLdrTjOJeSBjfUEx0nhywg88R
+CDTzmts8VVbqWyhBmyuxSmgxYLWdcyX/XZlVexBZotGpGDk6ZWI=
+=uKkz
+-----END PGP SIGNATURE-----
+
+--0cdvV5m4yIkS6Bx1--
