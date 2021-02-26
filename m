@@ -2,74 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A66B132652E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2285F326534
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhBZQCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhBZQC0 (ORCPT
+        id S229545AbhBZQEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:04:32 -0500
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:33605 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhBZQE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:02:26 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09BEAC061786;
-        Fri, 26 Feb 2021 08:01:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=K+eqvkP8AJTMZD+lmlvgsFHKMBlDoaA3WKhboefhy+0=; b=gF1fSE3K6s1efQMQu0eJjUR6PV
-        XRNovWxLRNzb/56kmzR67SWUfqlAiC/1M0OFuGrxuZAYN6YMQX927zF6lg7aRO+6QCS+AS4mPmuMD
-        0n11lBCsrTs5Fszlhf+PsaaQSVA0hrheUXtB/HelGBomDgiTK21sl0mPHgrPyPyrSjqNtyEkZA2+j
-        PjG4mNC1Kp16wof9FXPBGQHaJB4LMagg9RJTuIV7NMiE/NmHcMyqWWHTZ38XQz9tVNetd9qUNFHC9
-        X6FXMaHoIExpPdIrTsNCFxj6jABcTF4NRDJNBwKNLgAa/+gMqszVDSErehvXUlsNJK4ujjqATqtao
-        N2xvsrcg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFfYd-00CDEw-0B; Fri, 26 Feb 2021 16:01:35 +0000
-Date:   Fri, 26 Feb 2021 16:01:34 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, nouveau@lists.freedesktop.org,
-        bskeggs@redhat.com, akpm@linux-foundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, jhubbard@nvidia.com,
-        rcampbell@nvidia.com, jglisse@redhat.com, jgg@nvidia.com,
-        hch@infradead.org, daniel@ffwll.ch
-Subject: Re: [PATCH v3 3/8] mm/rmap: Split try_to_munlock from try_to_unmap
-Message-ID: <20210226160134.GC2907711@infradead.org>
-References: <20210226071832.31547-1-apopple@nvidia.com>
- <20210226071832.31547-4-apopple@nvidia.com>
+        Fri, 26 Feb 2021 11:04:26 -0500
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 11QG2siE015402;
+        Sat, 27 Feb 2021 01:02:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 11QG2siE015402
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614355375;
+        bh=8j0Ze921wbGXQAuaG7gMVtTKBTCVeH8BFJy61xBEP9Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=e5u5CidM19nmLu991NaCLy64wKVWMD+vtVRa/f2Z81hWFUO9qhzNsrfMuLYTKY/fG
+         UyNqSVfF9ro/0JYf78I5N6x9Uq4MRIB6egqAdNMUUXGq80AFxqTLHewsOTWf2Wh/XP
+         WUFuqKt7n+fFaIOEjdliI/yWItafLCJYekbcda85g5pXjm+km+9ZDNP+/TL+hW3i8Z
+         iotgextVjsXGAYhIgM8M/yt9gUVkzuLA5Q1IvCt0ZQfsWo2t6WjaOzeBBbDUdJTQPa
+         W5Xm6oyV0RBvOl7R74v3bO3y4lsLrQxf2IGAJPV93aNujK4D77n4atxUY0Kj42Fgyq
+         lMsI4tX+HvilA==
+X-Nifty-SrcIP: [209.85.215.175]
+Received: by mail-pg1-f175.google.com with SMTP id n10so6449173pgl.10;
+        Fri, 26 Feb 2021 08:02:54 -0800 (PST)
+X-Gm-Message-State: AOAM530QRWYkThP1CK1enhI4eYQuz9Dy2nFKunLmNBiPpNCcxmxPmfuh
+        HjGMNOGSN2d92aXyKLp2ko/EvwMadeaW5s9jSoE=
+X-Google-Smtp-Source: ABdhPJzagjyLLC9CISdik0AnO1ynuPjXffY/Np8yFsTj0zTkuff9TXl1Xy8eVL5XmDvuPnwjrACT4EqJYQvX6yNg07E=
+X-Received: by 2002:a63:dd49:: with SMTP id g9mr3546859pgj.175.1614355373895;
+ Fri, 26 Feb 2021 08:02:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226071832.31547-4-apopple@nvidia.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210226155142.2909545-1-geert@linux-m68k.org>
+In-Reply-To: <20210226155142.2909545-1-geert@linux-m68k.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 27 Feb 2021 01:02:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQnk2=4e_A0qd5Ke43DCMbpLRv45ydu81CGxr=JGc7s+g@mail.gmail.com>
+Message-ID: <CAK7LNAQnk2=4e_A0qd5Ke43DCMbpLRv45ydu81CGxr=JGc7s+g@mail.gmail.com>
+Subject: Re: [PATCH v3] f2fs: compress: Allow modular (de)compression algorithms
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	while (page_vma_mapped_walk(&pvmw)) {
-> +		/*
-> +		 * If the page is mlock()d, we cannot swap it out.
-> +		 * If it's recently referenced (perhaps page_referenced
-> +		 * skipped over this mm) then we should reactivate it.
-> +		 */
-> +		if (vma->vm_flags & VM_LOCKED) {
-> +			/* PTE-mapped THP are never mlocked */
-> +			if (!PageTransCompound(page)) {
-> +				/*
-> +				 * Holding pte lock, we do *not* need
-> +				 * mmap_lock here
-> +				 */
-> +				mlock_vma_page(page);
-> +			}
-> +			ret = false;
-> +			page_vma_mapped_walk_done(&pvmw);
-> +			break;
+On Sat, Feb 27, 2021 at 12:51 AM Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>
+> If F2FS_FS is modular, enabling the compressions options
+> F2FS_FS_{LZ4,LZ4HZ,LZO,LZORLE,ZSTD} will make the (de)compression
+> algorithms {LZ4,LZ4HC,LZO,ZSTD}_{,DE}COMPRESS builtin instead of
+> modular, as the former depend on an intermediate boolean
+> F2FS_FS_COMPRESSION, which in-turn depends on tristate F2FS_FS.
+>
+> Indeed, if a boolean symbol A depends directly on a tristate symbol B
+> and selects another tristate symbol C:
+>
+>     tristate B
+>
+>     tristate C
+>
+>     bool A
+>       depends on B
+>       select C
+>
+> and B is modular, then C will also be modular.
+>
+> However, if there is an intermediate boolean D in the dependency chain
+> between A and B:
+>
+>     tristate B
+>
+>     tristate C
+>
+>     bool D
+>       depends on B
+>
+>     bool A
+>       depends on D
+>       select C
+>
+> then the modular state won't propagate from B to C, and C will be
+> builtin instead of modular.
+>
+> As modular dependency propagation through intermediate symbols is
+> obscure, fix this in a robust way by moving the selection of tristate
+> (de)compression algorithms from the boolean compression options to the
+> tristate main F2FS_FS option.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Just return false here directly and remove the ret variable?
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Very nice cleanup!
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+> ---
+> v3:
+>   - Drop redundant selects (F2FS_FS_LZORLE depends on F2FS_FS_LZO),
+>
+> v2:
+>   - Move the selects to F2FS_FS instead of adding direct dependencies
+>     on F2FS_FS.
+> ---
+>  fs/f2fs/Kconfig | 16 +++++++---------
+>  1 file changed, 7 insertions(+), 9 deletions(-)
+>
+> diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
+> index 62e638a49bbf089a..7669de7b49cea189 100644
+> --- a/fs/f2fs/Kconfig
+> +++ b/fs/f2fs/Kconfig
+> @@ -7,6 +7,13 @@ config F2FS_FS
+>         select CRYPTO_CRC32
+>         select F2FS_FS_XATTR if FS_ENCRYPTION
+>         select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+> +       select LZ4_COMPRESS if F2FS_FS_LZ4
+> +       select LZ4_DECOMPRESS if F2FS_FS_LZ4
+> +       select LZ4HC_COMPRESS if F2FS_FS_LZ4HC
+> +       select LZO_COMPRESS if F2FS_FS_LZO
+> +       select LZO_DECOMPRESS if F2FS_FS_LZO
+> +       select ZSTD_COMPRESS if F2FS_FS_ZSTD
+> +       select ZSTD_DECOMPRESS if F2FS_FS_ZSTD
+>         help
+>           F2FS is based on Log-structured File System (LFS), which supports
+>           versatile "flash-friendly" features. The design has been focused on
+> @@ -94,8 +101,6 @@ config F2FS_FS_COMPRESSION
+>  config F2FS_FS_LZO
+>         bool "LZO compression support"
+>         depends on F2FS_FS_COMPRESSION
+> -       select LZO_COMPRESS
+> -       select LZO_DECOMPRESS
+>         default y
+>         help
+>           Support LZO compress algorithm, if unsure, say Y.
+> @@ -103,8 +108,6 @@ config F2FS_FS_LZO
+>  config F2FS_FS_LZ4
+>         bool "LZ4 compression support"
+>         depends on F2FS_FS_COMPRESSION
+> -       select LZ4_COMPRESS
+> -       select LZ4_DECOMPRESS
+>         default y
+>         help
+>           Support LZ4 compress algorithm, if unsure, say Y.
+> @@ -113,7 +116,6 @@ config F2FS_FS_LZ4HC
+>         bool "LZ4HC compression support"
+>         depends on F2FS_FS_COMPRESSION
+>         depends on F2FS_FS_LZ4
+> -       select LZ4HC_COMPRESS
+>         default y
+>         help
+>           Support LZ4HC compress algorithm, LZ4HC has compatible on-disk
+> @@ -122,8 +124,6 @@ config F2FS_FS_LZ4HC
+>  config F2FS_FS_ZSTD
+>         bool "ZSTD compression support"
+>         depends on F2FS_FS_COMPRESSION
+> -       select ZSTD_COMPRESS
+> -       select ZSTD_DECOMPRESS
+>         default y
+>         help
+>           Support ZSTD compress algorithm, if unsure, say Y.
+> @@ -132,8 +132,6 @@ config F2FS_FS_LZORLE
+>         bool "LZO-RLE compression support"
+>         depends on F2FS_FS_COMPRESSION
+>         depends on F2FS_FS_LZO
+> -       select LZO_COMPRESS
+> -       select LZO_DECOMPRESS
+>         default y
+>         help
+>           Support LZO-RLE compress algorithm, if unsure, say Y.
+> --
+> 2.25.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
