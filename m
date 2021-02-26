@@ -2,131 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F78325FE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BA9325FEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhBZJWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:22:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41630 "EHLO
+        id S230260AbhBZJXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:23:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhBZJUc (ORCPT
+        with ESMTP id S230377AbhBZJVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:20:32 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D698C06178A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:17:41 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id h126so6831905qkd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:17:41 -0800 (PST)
+        Fri, 26 Feb 2021 04:21:31 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEB8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:20:50 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id k12so805706ljg.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:20:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=Sbwg5mnD28MfpC+5A1wM48SOZxACByUsBU0/u8gNTKY=;
-        b=pDKOOjv7DnHHQqrg/o+zEsKkWF6x5gJ8Fur6sxRl9VJeF+L2t+3lXAtN4UD3QfSEGf
-         gNuU11Wvw8rCxdt+EtvkzV0n17p5vz/d2YcjCL/AJ+Wq2obyFyYTXnOQmxJoPP2Vfqjg
-         egIrc2c6XpfhqnxV640YmCd8zBD/336iPLy2rZ/sgobFxh0J2C9KF4lJFihbfy5U41Z0
-         KXTFcssDgfbdmsGx08n3uKiG3a+GYRPOmiGO7rCb/QJ9JtlMgmnW4mH4b7olvP1gnS3e
-         KZA231HlJ5VE7LiFn+VXX19WqPl501ql30DaMJFESUtP7G1mUtQPxdck5md0v29w6DPM
-         5Qhg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/+uOWPFzzCIa7OYqY/m1Q3ZpjqDPg+5pHoY+BALxZ/U=;
+        b=Z3rbVEuy27QsFeKZW3PXq2Elhy38QzYQkMGUZuaCQQteEwN/jhUxUY9fbtCQqwK6Kv
+         GtdHt/k67d1Ys2qI21wo0X7bE1OF+QmLJ93Exj34/bVHBj7R5sIlBbHKDc3nTW73Ppjq
+         eEu5TGjUhTY97dEIDA2t2vH/U8wS282yAlXa3lKedB4ugsHCO66ax74UJd9cMM+0iWcx
+         FpamZupq+ysl+W7OvoUNBKNLecDKkaA0rTZzu+/N7CgA4lraiGD9vFWgYo/ap31MTvWO
+         izW4Byrt8c5/UbHRdMJuFPTUHWn68zRckOwMhhtTsKgExEpgYclhGzZaVyZpX/ITRh6c
+         ED8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Sbwg5mnD28MfpC+5A1wM48SOZxACByUsBU0/u8gNTKY=;
-        b=ClvY0K+gwuvNXSwpwt3luAz7jTZiN0kio3kPVLDV9G75NZo2WQQs1rbtD9arlSxxnm
-         nhIR/yFMWQcfnV+Eg0uJqpsDV+3ERDjOO82dqUDTfzxkj6VeHqPTar/aGgVFioQ4b/VO
-         Cy0qzAc74LnuiRLL0LIM0VMND0+HHoxlzA0B7eSPqQo5XE3Eyypd5KpHN+RV8XLbbh6z
-         cM4+KYI+9wdv+hVpWJ5miYu/6fIZ8yIwxnN59HPtr5inozP6BBncsXdktqx/T/VkizU+
-         yqSvIjCYL82N4Uv8YEvMOQYtfiYYwKsOJ3vsUHiIpuGzUqEs+pUC16KTKl4isZwSYYDK
-         s4Xg==
-X-Gm-Message-State: AOAM533nk7JveaqBTgW4Iinq5Eem4HfISkr9nvEhIuv7BqGc+pLPVa5F
-        RJfZ1k1zN4P6it27ump4k824sV2ocAU=
-X-Google-Smtp-Source: ABdhPJw49NwW1osDcsWfZjZWCmhBnG2VmrWEsp3yjpjWhKXeQaLf57JEP91v5nodzzC+al8WBoFwA4ENe74=
-Sender: "yuzhao via sendgmr" <yuzhao@yuzhao.bld.corp.google.com>
-X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:69b6:2618:c96a:ceba])
- (user=yuzhao job=sendgmr) by 2002:a0c:b998:: with SMTP id v24mr1673365qvf.4.1614331060711;
- Fri, 26 Feb 2021 01:17:40 -0800 (PST)
-Date:   Fri, 26 Feb 2021 02:17:18 -0700
-In-Reply-To: <20210226091718.2927291-1-yuzhao@google.com>
-Message-Id: <20210226091718.2927291-4-yuzhao@google.com>
-Mime-Version: 1.0
-References: <20210224084807.2179942-1-yuzhao@google.com> <20210226091718.2927291-1-yuzhao@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v2 3/3] mm: use PF_ONLY_HEAD for PG_active and PG_unevictable
-From:   Yu Zhao <yuzhao@google.com>
-To:     akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
-        vbabka@suse.cz, willy@infradead.org
-Cc:     guro@fb.com, hannes@cmpxchg.org, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        Yu Zhao <yuzhao@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/+uOWPFzzCIa7OYqY/m1Q3ZpjqDPg+5pHoY+BALxZ/U=;
+        b=RvLaeQZ+cl1ttVJCvs4k1DrrlG208otYvCs1dCldDo44DzwOiSgflv05wcf0ZDiGlZ
+         lTpVNl7fS/0X0tz+q70SOxcafO3SkR6zq5pE6hAviltVpBfgXNjxq+C/LtG6l3x+AMsY
+         CdOi2rnw2w+/cPkR92+V3JH30b3FgSOunkSvKagmqDGxHoOBiR5a1O9em73E8wJktnbj
+         4T6lIuX4Fm2jwPbZyamYW1/KFRLn64mHk1Qsage7ajHnd9ER/avSbCfkHq8NndzUZH6R
+         wX4zsHsucStm5n5AG3HrxUVdWKrbnMj5xuy/iTb/rnoB+QC9mOEhoD5BZZjPJ+RSyucS
+         wg0g==
+X-Gm-Message-State: AOAM5312R1KGVhjTqj5Mq2AdItW4UFg8lDm0cl61tgyu4cDABZFxyfuh
+        G4F54TkjORH8FLo4pTpeBpiNP8JTbiN1LYvnBnPG8QwsWn6O3w==
+X-Google-Smtp-Source: ABdhPJxHwDkk2RC7PSi6k/SLb9+txpNmUX6H23sBPggngMR9pIJX2L7M/PBPNvFd01zy6xoKYhf/pi55HjzF21w3+1U=
+X-Received: by 2002:a2e:8e33:: with SMTP id r19mr1185265ljk.40.1614331249049;
+ Fri, 26 Feb 2021 01:20:49 -0800 (PST)
+MIME-Version: 1.0
+References: <20210222075205.19834-1-dwaipayanray1@gmail.com>
+ <bcee822d1934772f47702ee257bc735c8f467088.camel@perches.com>
+ <CABJPP5AARO3h2mt-piPWuOD3kY_XzNfW-s2mi=btfOayVPURHg@mail.gmail.com> <CAKXUXMyShHc8wu1HhVvr5tJYNL+sc_Yc-mfeoosK6hAL-HF_gQ@mail.gmail.com>
+In-Reply-To: <CAKXUXMyShHc8wu1HhVvr5tJYNL+sc_Yc-mfeoosK6hAL-HF_gQ@mail.gmail.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Fri, 26 Feb 2021 14:50:48 +0530
+Message-ID: <CABJPP5BTLzQHVBtyqHofiRxZ4QkQ-OxBECvnQJE8e-yKmuUJWA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/2] checkpatch: add verbose mode
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Joe Perches <joe@perches.com>, Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All places but one test, set or clear PG_active and PG_unevictable on
-small or head pages. Use compound_head() explicitly for that singleton
-so the rest can rid of redundant compound_head().
+On Fri, Feb 26, 2021 at 11:29 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+>
+> On Thu, Feb 25, 2021 at 7:08 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+> >
+> > On Thu, Feb 25, 2021 at 11:03 PM Joe Perches <joe@perches.com> wrote:
+> > >
+> > > On Mon, 2021-02-22 at 13:22 +0530, Dwaipayan Ray wrote:
+> > > > Add a new verbose mode to checkpatch. The verbose test
+> > > > descriptions are read from the checkpatch documentation
+> > > > file at `Documentation/dev-tools/checkpatch.rst`.
+> > > >
+> > > > The verbose mode is optional and can be enabled by the
+> > > > flag -v or --verbose.
+> > > >
+> > > > The documentation file is only parsed by checkpatch.pl
+> > > > if the verbose mode is enabled. The verbose mode can
+> > > > not be used together with the --terse option.
+> > >
+> > > I don't have any real objection to this patch set, but as this
+> > > might be added to the Documentation tree and in .rst format,
+> > > perhaps Jonathan Corbet and/or Mauro Carvalho Chehab might have
+> > > some opinion.
+> > >
+> > > Also I do not want to be a maintainer of this .rst file and
+> > > likely neither Jon nor Mauro would either.  Perhaps you?
+> > >
+> >
+> > I could take it up if everybody is okay with it!
+> >
+>
+> And as I set Dwaipayan on this task on documenting checkpatch, I will
+> assist in maintaining this file as well. I will also pull some strings
+> to increase chances that Dwaipayan becomes a longer-term member in
+> this community and on this maintainer task.
+>
+Sounds nice to me! I would definitely love to remain as a active
+member even after the mentorship period ends. So I think this is a good
+start :)
 
-bloat-o-meter result:
-  add/remove: 0/0 grow/shrink: 3/38 up/down: 388/-4270 (-3882)
+> > > Ideally, the patch order would be reversed so the .rst file
+> > > is added first, then checkpatch updated to use it.
+> > >
+> >
+> > Sure, if Jonathan or Mauro has no objections to it, I will be happy
+> > to resend it so that it can be picked up properly.
+> >
+> > > And _a lot_ more types and descriptive content should be added.
+> >
+> > Yes that's for sure. If this makes it I will try to get all of the
+> > other types in.
+>
+> I agree as well, probably a critical mass for inclusion is that we
+> have at least 25% (so roughly 50 rules) documented.
+>
+> > And if Lukas agrees, a little help from my fellow kernel mentees will
+> > be nice as well!
+> >
+>
+> Completely agree. I will recruit new mentees and go through the
+> exercises with them, until they are ready to send proper patches to
+> checkpatch.rst. As the designated maintainer of that file, you will be
+> busy reviewing, consolidating that content and pushing back if it is
+> not good enough for inclusion (so just as in the typical "good cop-bad
+> cop" game: I will motivate and help them to submit, you make sure you
+> get good content).
+>
+That is a nice plan! Certainly looking forward to it.
 
-Signed-off-by: Yu Zhao <yuzhao@google.com>
----
- fs/proc/task_mmu.c         |  3 ++-
- include/linux/page-flags.h | 10 +++++-----
- 2 files changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 3cec6fbef725..c866c363bb41 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1712,6 +1712,7 @@ static void gather_stats(struct page *page, struct numa_maps *md, int pte_dirty,
- 			unsigned long nr_pages)
- {
- 	int count = page_mapcount(page);
-+	struct page *head = compound_head(page);
- 
- 	md->pages += nr_pages;
- 	if (pte_dirty || PageDirty(page))
-@@ -1720,7 +1721,7 @@ static void gather_stats(struct page *page, struct numa_maps *md, int pte_dirty,
- 	if (PageSwapCache(page))
- 		md->swapcache += nr_pages;
- 
--	if (PageActive(page) || PageUnevictable(page))
-+	if (PageActive(head) || PageUnevictable(head))
- 		md->active += nr_pages;
- 
- 	if (PageWriteback(page))
-diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-index c9626e54df8d..b7fe855a6ee9 100644
---- a/include/linux/page-flags.h
-+++ b/include/linux/page-flags.h
-@@ -335,8 +335,8 @@ PAGEFLAG(Dirty, dirty, PF_HEAD) TESTSCFLAG(Dirty, dirty, PF_HEAD)
- 	__CLEARPAGEFLAG(Dirty, dirty, PF_HEAD)
- PAGEFLAG(LRU, lru, PF_NO_TAIL) __CLEARPAGEFLAG(LRU, lru, PF_NO_TAIL)
- 	TESTCLEARFLAG(LRU, lru, PF_NO_TAIL)
--PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
--	TESTCLEARFLAG(Active, active, PF_HEAD)
-+PAGEFLAG(Active, active, PF_ONLY_HEAD) __CLEARPAGEFLAG(Active, active, PF_ONLY_HEAD)
-+	TESTCLEARFLAG(Active, active, PF_ONLY_HEAD)
- PAGEFLAG(Workingset, workingset, PF_HEAD)
- 	TESTCLEARFLAG(Workingset, workingset, PF_HEAD)
- __PAGEFLAG(Slab, slab, PF_NO_TAIL)
-@@ -407,9 +407,9 @@ CLEARPAGEFLAG(SwapCache, swapcache, PF_NO_TAIL)
- PAGEFLAG_FALSE(SwapCache)
- #endif
- 
--PAGEFLAG(Unevictable, unevictable, PF_HEAD)
--	__CLEARPAGEFLAG(Unevictable, unevictable, PF_HEAD)
--	TESTCLEARFLAG(Unevictable, unevictable, PF_HEAD)
-+PAGEFLAG(Unevictable, unevictable, PF_ONLY_HEAD)
-+	__CLEARPAGEFLAG(Unevictable, unevictable, PF_ONLY_HEAD)
-+	TESTCLEARFLAG(Unevictable, unevictable, PF_ONLY_HEAD)
- 
- #ifdef CONFIG_MMU
- PAGEFLAG(Mlocked, mlocked, PF_NO_TAIL)
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+Thanks & Regards,
+Dwaipayan.
