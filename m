@@ -2,151 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FBB32645C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFE3326460
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhBZOst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:48:49 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:15186 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230141AbhBZOsq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:48:46 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614350902; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=NEG83TkMHpRAWl3xgAzXyhzVCeSLiXGOQy7KRgVMUkY=; b=S05dslq9rbMPiYH9rOHrvGB6O9G5gSmvyqm57DTp5croieiZq0+LlSj6xhMOO2kubWO7xan1
- KTomegIXUdmhExXHnmYZ0vbG4W+kTBARykfqEpjb32tnDEWiLkdSVekjoGCp9p1kWTPuEJ3K
- D63LTubr4/5RpEOMxnXYTaFZmOE=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60390a0bea39d1db6de0157e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 14:47:39
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 13690C433C6; Fri, 26 Feb 2021 14:47:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0E5FC433C6;
-        Fri, 26 Feb 2021 14:47:37 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B0E5FC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v2] bus: mhi: core: Add unique qrtr node id support
-To:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
-        sricharan@codeaurora.org
-References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
- <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <41a9538c-be60-f98d-34ad-b028b2a83496@codeaurora.org>
-Date:   Fri, 26 Feb 2021 07:47:37 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230179AbhBZOtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:49:12 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:45550 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230141AbhBZOs4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 09:48:56 -0500
+Received: by mail-io1-f70.google.com with SMTP id u1so7364151ior.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:48:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=UL/N5d3J1rT+ym+/Jn9kHXUDPqBkiL4ljBzXNafEZSU=;
+        b=p5HkyBkcYKfWfz+6+1GUMfjxR/RA+RhfQXOeMI4FEEhnwXx4aSm0yeP0cOiw9u1s+j
+         U4xdq3GZ8xxuXOb20omjoYPTh0C59mphVK1A0oUxH11KOHraDwv4HQ+gmPQ/2dfXDd5F
+         fO+f4+RKF2fywV6UMfsjlWVv5QGVQAxRVBk4QxLRAKwjyDPlrFGzy3jkilIhT/8dNWLA
+         oncvTHHHLInRksgMqLTY8bzSYOfMczYQzrXtzK6noN1fSvuZnW68B29Oprz2/fn8FosF
+         X7ZozO4gqUkYwtnd8RgMqKuDs++SgtC1iNYAQ82BW/24VftlLWOHyLMeZ3T3OQcdJ1E7
+         ijPA==
+X-Gm-Message-State: AOAM5321xAbnq3ce/T7XnyAeXWqu8qlROUd0FNpnYbm2JizWUUzwA53i
+        9InUbays1CUlWfXa4+cDKtXOPHDlK+PqLa+sQtm1pXLPvZbn
+X-Google-Smtp-Source: ABdhPJzI+gtHTkL5rLWZ9Ur1x5Itb6365yRJD2pcnhr2YLIsGNcZcow+L1pOt9HtAKFwwHIPFq/WH8JQLq0WtnLDcrQEIicldJOb
 MIME-Version: 1.0
-In-Reply-To: <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a5e:8903:: with SMTP id k3mr3029786ioj.54.1614350895999;
+ Fri, 26 Feb 2021 06:48:15 -0800 (PST)
+Date:   Fri, 26 Feb 2021 06:48:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b304d505bc3e5b3a@google.com>
+Subject: general protection fault in try_to_wake_up (2)
+From:   syzbot <syzbot+b4a81dc8727e513f364d@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, christian@brauner.io,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/2021 3:42 AM, Gokul Sriram Palanisamy wrote:
-> On platforms with two or more identical mhi
-> devices, qmi service will run with identical
-> qrtr-node-id. Because of this identical ID,
-> host qrtr-lookup cannot register more than one
-> qmi service with identical node ID. Ultimately,
-> only one qmi service will be avilable for the
-> underlying drivers to communicate with.
-> 
-> On QCN9000, it implements a unique qrtr-node-id
-> and qmi instance ID using a unique instance ID
-> written to a debug register from host driver
-> soon after SBL is loaded.
-> 
-> This change generates a unique instance ID from
-> PCIe domain number and bus number, writes to the
-> given debug register just after SBL is loaded so
-> that it is available for FW when the QMI service
-> is spawned.
-> 
-> sample:
-> root@OpenWrt:/# qrtr-lookup
->    Service Version Instance Node  Port
->         15       1        0    8     1 Test service
->         69       1        8    8     2 ATH10k WLAN firmware service
->         15       1        0   24     1 Test service
->         69       1       24   24     2 ATH10k WLAN firmware service
-> 
-> Here 8 and 24 on column 3 (QMI Instance ID)
-> and 4 (QRTR Node ID) are the node IDs that
-> is unique per mhi device.
-> 
-> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-> ---
->   drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
->   1 file changed, 14 insertions(+)
-> 
-> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-> index c2546bf..5e5dad5 100644
-> --- a/drivers/bus/mhi/core/boot.c
-> +++ b/drivers/bus/mhi/core/boot.c
-> @@ -16,8 +16,12 @@
->   #include <linux/random.h>
->   #include <linux/slab.h>
->   #include <linux/wait.h>
-> +#include <linux/pci.h>
->   #include "internal.h"
->   
-> +#define QRTR_INSTANCE_MASK	0x000000FF
-> +#define QRTR_INSTANCE_SHIFT	0
-> +
->   /* Setup RDDM vector table for RDDM transfer and program RXVEC */
->   void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
->   		      struct image_info *img_info)
-> @@ -391,6 +395,9 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->   	const struct firmware *firmware = NULL;
->   	struct image_info *image_info;
->   	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> +	struct pci_dev *pci_dev = to_pci_dev(mhi_cntrl->cntrl_dev);
-> +	struct pci_bus *bus = pci_dev->bus;
-> +	uint32_t instance;
->   	const char *fw_name;
->   	void *buf;
->   	dma_addr_t dma_addr;
-> @@ -466,6 +473,13 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->   		return;
->   	}
->   
-> +	instance = ((pci_domain_nr(bus) & 0xF) << 4) | (bus->number & 0xF);
-> +	instance &= QRTR_INSTANCE_MASK;
-> +
-> +	mhi_write_reg_field(mhi_cntrl, mhi_cntrl->bhi,
-> +			    BHI_ERRDBG2, QRTR_INSTANCE_MASK,
-> +			    QRTR_INSTANCE_SHIFT, instance);
-> +
->   	write_lock_irq(&mhi_cntrl->pm_lock);
->   	mhi_cntrl->dev_state = MHI_STATE_RESET;
->   	write_unlock_irq(&mhi_cntrl->pm_lock);
-> 
+Hello,
 
-NACK.  Please see my comments on v1.
+syzbot found the following issue on:
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+HEAD commit:    7f206cf3 Add linux-next specific files for 20210225
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15280e32d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a1746d2802a82a05
+dashboard link: https://syzkaller.appspot.com/bug?extid=b4a81dc8727e513f364d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10bc8466d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f5bf5ad00000
+
+The issue was bisected to:
+
+commit 7c25c0d16ef3c37e49c593ac92f69fa3884d4bb9
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Tue Feb 16 14:17:00 2021 +0000
+
+    io_uring: remove the need for relying on an io-wq fallback worker
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14269b96d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16269b96d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12269b96d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b4a81dc8727e513f364d@syzkaller.appspotmail.com
+Fixes: 7c25c0d16ef3 ("io_uring: remove the need for relying on an io-wq fallback worker")
+
+general protection fault, probably for non-canonical address 0xdffffc000000011a: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000008d0-0x00000000000008d7]
+CPU: 0 PID: 8677 Comm: iou-wrk-8423 Not tainted 5.11.0-next-20210225-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__lock_acquire+0xcfe/0x54c0 kernel/locking/lockdep.c:4770
+Code: 0c 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 08 41 0c 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 5b 31 00 00 49 81 3e 80 73 3a 8f 0f 84 d0 f3 ff
+RSP: 0018:ffffc9000213f988 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000011a RSI: 1ffff92000427f42 RDI: 00000000000008d0
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000001 R11: 0000000000000000 R12: ffff88801ae7d400
+R13: 0000000000000000 R14: 00000000000008d0 R15: 0000000000000000
+FS:  000000000088a400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa46e8f46c0 CR3: 000000001be5b000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+ try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3347
+ io_wqe_wake_worker+0x51a/0x680 fs/io-wq.c:248
+ io_wqe_dec_running.isra.0+0xe6/0x100 fs/io-wq.c:265
+ __io_worker_busy fs/io-wq.c:296 [inline]
+ io_worker_handle_work+0x34f/0x1950 fs/io-wq.c:449
+ io_wqe_worker fs/io-wq.c:531 [inline]
+ task_thread.isra.0+0xfa8/0x1340 fs/io-wq.c:608
+ task_thread_bound+0x18/0x20 fs/io-wq.c:614
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Modules linked in:
+---[ end trace 1ccdee97cc2e65dd ]---
+RIP: 0010:__lock_acquire+0xcfe/0x54c0 kernel/locking/lockdep.c:4770
+Code: 0c 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 08 41 0c 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 5b 31 00 00 49 81 3e 80 73 3a 8f 0f 84 d0 f3 ff
+RSP: 0018:ffffc9000213f988 EFLAGS: 00010002
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000011a RSI: 1ffff92000427f42 RDI: 00000000000008d0
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+R10: 0000000000000001 R11: 0000000000000000 R12: ffff88801ae7d400
+R13: 0000000000000000 R14: 00000000000008d0 R15: 0000000000000000
+FS:  000000000088a400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fa46e8f46c0 CR3: 000000001be5b000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
