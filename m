@@ -2,230 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040093262D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1123262D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhBZMmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 07:42:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
+        id S230105AbhBZMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhBZMmB (ORCPT
+        with ESMTP id S230042AbhBZMnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:42:01 -0500
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47ABBC061574;
-        Fri, 26 Feb 2021 04:41:20 -0800 (PST)
-Received: by mail-ua1-x936.google.com with SMTP id o31so3020152uae.2;
-        Fri, 26 Feb 2021 04:41:20 -0800 (PST)
+        Fri, 26 Feb 2021 07:43:06 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60086C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:42:26 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id q14so10454290ljp.4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:42:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GwcTLQq3H5c2UK+OWGZKD2GMY78k6FaSogjGLTzQit8=;
-        b=M9p/Cwg3Hk2dvA+4WL3gl2+aEcE0ue3aBk9SU7aQbc2qmuL+BX36vV0xKLLTJh9tJa
-         Fh/WU8GsgK8dL6w8baYWFT9ZeSmeFOTWpjdVZ86huewZfkSyqnR4RwJjnVJwK3kfN4PN
-         Sxnhv9Eh8vIkdIqcrD7ub5yRDWZcioX3dtXpRrX/jO74RH/yzV3SccMxIpQVDlf1jetu
-         RudRuCpW+8QISOsEu8ydsbrq46FpZIE0vTtthLsoBIU2oH3TDYNsqtHgYZJoe1aHFjQb
-         UyQMkIpRyUTTwGaghKdb/6vmqmECC8xainPpgSLLjRWDUPOCO/PJZg4WAKzt+VXriyew
-         Nf4Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w3fME1d4VIB5ZDW+Zg5+fz2IFPz3UwmBc0l8F1kXAFM=;
+        b=xZ3dKPHZO5QvdJGOlSxgGavwkjcKeYv3pwIwSaw/A/JtyRnbbXXjgLbbMbKzFa8gcD
+         ekFYJqEahA7tihnQ7Cz/4aOok1S0P+R6fYYUvRPhWEdolLCOwNpasYURdVtK2Rp05oMB
+         iWChaLwejieKSxxdssyHe2iPXcgWQwCWIwKmDCqZX46Kk7gx7vP+5xI9R1qNMpKhsWk+
+         UwcI5wvXEY4WD6A3FevR3Q3N4cUtwVTgwrtR9q5WexjS8Y7vfyqLhu7Qnh5GfK+cdbtK
+         Sk5jKMsFJetDgpM0oZrsyjCaXSmP7qDvSuV9xgwN2UzpBItCgUiIVI5ObH1mYK6vMkCU
+         MCjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GwcTLQq3H5c2UK+OWGZKD2GMY78k6FaSogjGLTzQit8=;
-        b=PoL+5vcGGMX5ftaeL6Z8Qx2vd7e3NW6MLm5RGtPIiUNe9HuD8iKPYrS6SaY3cCwKpb
-         ZUPJRcGXh2Or0QS+MgMQ1JPjMU1hRAxMDRPwgBFiCsG0sEFmw7nzszmCYvSsLWFfIq7Z
-         3TjKG9m11ue4WnBz0kganmzLxB5CWMDXr4eV7AoQkLKZ4T6gikT4YDk0FT7wtUFgQJxW
-         CrcgOBZhTi+5vsWkBfUfF1Q9NUyQFKySdgWYR6LD/rUOPTThZx7OBdjYomy98+pUu4Rk
-         uErPJVk6/rfFDqxVZROpyFf2px4PWsvxyhaKnFqpOmLaPVmbjbDCDLFolJddyF8ENiyY
-         dkpg==
-X-Gm-Message-State: AOAM531MYrz5LYvYm3oTWmHBqugCJPOXu6k2T4tw1hXW1YUGHxpxeSXW
-        5LGQOt4HWleyvB+fc58ZRok=
-X-Google-Smtp-Source: ABdhPJzMFEgfXaU6K+NKWQQKLNJlmLF00kHu1fORscS0i96AsC2HhFP+MQfxEHsi96P69E1a6IMneA==
-X-Received: by 2002:ab0:1c1b:: with SMTP id a27mr1457614uaj.62.1614343279413;
-        Fri, 26 Feb 2021 04:41:19 -0800 (PST)
-Received: from shinobu ([193.27.12.132])
-        by smtp.gmail.com with ESMTPSA id e128sm1062680vkg.1.2021.02.26.04.41.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 04:41:18 -0800 (PST)
-Date:   Fri, 26 Feb 2021 21:41:11 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v7 2/2] counter: add IRQ or GPIO based counter
-Message-ID: <YDjsZ8hyETN0VpCM@shinobu>
-References: <20210226090830.10927-1-o.rempel@pengutronix.de>
- <20210226090830.10927-3-o.rempel@pengutronix.de>
- <YDjDMBfWwdImiZxY@shinobu>
- <20210226121455.t7kz4cxtganzt2xz@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w3fME1d4VIB5ZDW+Zg5+fz2IFPz3UwmBc0l8F1kXAFM=;
+        b=Jqo396dz4kZSK0gbCJBt+FQvHocbUJ2/M1geuYE9syQnpqb+Qyfp0AZfAwoBLWDHlD
+         9uJ87mY7oFSD1tKE1wB6lFnhy3m7H21eX2o+Jo1DCN+iRjDNAVqNjX+Hp+MNsT6Nc45T
+         lO+kyyPeps+9BHGtxGlTLHXex0cwY6XiP0y/jccmOUBQQuCAlZcODLfX9As6VSmsQFtV
+         V/U4ZEDGOsanu85wDlu4KfsKIvgZlpNW3cNFJ2VFV0qqHJ3Ji5JU+SFjK/GaHzUO/p4+
+         gLiLTobdoYyQhAuBUqqt0buaTvP9r6trZffplZHE0tBsrDVQEoGgWZshcYgVf5iOlZoY
+         DPfQ==
+X-Gm-Message-State: AOAM530jB9ZoNkTivXSk9fOPzje/3nICNkwiRsbUX52iS/7aqDUGgNLX
+        6DVbP+MIFFDC/t/Jt1SNSiRPygP8q7HjXKtkerXyShXDs2jlRg==
+X-Google-Smtp-Source: ABdhPJw7oH109Dg4gqkMhZt7HREBU+yHbE5JwvdS0fD3Fs7vdC2qy1/240GAXNFq01wAJq4JZttc7aq+oIYlbDN1DnM=
+X-Received: by 2002:a2e:5c47:: with SMTP id q68mr1681266ljb.314.1614343344870;
+ Fri, 26 Feb 2021 04:42:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zDZZKf6/pb+UPY5C"
-Content-Disposition: inline
-In-Reply-To: <20210226121455.t7kz4cxtganzt2xz@pengutronix.de>
+References: <20210226095306.1236539-1-sumit.garg@linaro.org> <20210226105934.gmppt6kubfadv4uf@maple.lan>
+In-Reply-To: <20210226105934.gmppt6kubfadv4uf@maple.lan>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Fri, 26 Feb 2021 18:12:13 +0530
+Message-ID: <CAFA6WYPXCKSYBH8Tapf_yg-jS7G0sH0Dmi27s6hutUMtSE39-Q@mail.gmail.com>
+Subject: Re: [PATCH v2] kdb: Get rid of custom debug heap allocator
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 26 Feb 2021 at 16:29, Daniel Thompson
+<daniel.thompson@linaro.org> wrote:
+>
+> On Fri, Feb 26, 2021 at 03:23:06PM +0530, Sumit Garg wrote:
+> > Currently the only user for debug heap is kdbnearsym() which can be
+> > modified to rather ask the caller to supply a buffer for symbol name.
+> > So do that and modify kdbnearsym() callers to pass a symbol name buffer
+> > allocated statically and hence remove custom debug heap allocator.
+>
+> Why make the callers do this?
+>
+> The LRU buffers were managed inside kdbnearsym() why does switching to
+> an approach with a single buffer require us to push that buffer out to
+> the callers?
+>
 
---zDZZKf6/pb+UPY5C
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Earlier the LRU buffers managed namebuf uniqueness per caller (upto
+100 callers) but if we switch to single entry in kdbnearsym() then all
+callers need to share common buffer which will lead to incorrect
+results from following simple sequence:
 
-On Fri, Feb 26, 2021 at 01:14:55PM +0100, Oleksij Rempel wrote:
-> On Fri, Feb 26, 2021 at 06:45:20PM +0900, William Breathitt Gray wrote:
-> > On Fri, Feb 26, 2021 at 10:08:30AM +0100, Oleksij Rempel wrote:
-> > > +static int interrupt_cnt_signal_read(struct counter_device *counter,
-> > > +				     struct counter_signal *signal,
-> > > +				     enum counter_signal_value *val)
-> > > +{
-> > > +	struct interrupt_cnt_priv *priv =3D counter->priv;
-> > > +	int ret;
+kdbnearsym(word, &symtab1);
+kdbnearsym(word, &symtab2);
+kdb_symbol_print(word, &symtab1, 0);
+kdb_symbol_print(word, &symtab2, 0);
 
-I forgot about this function. Add a check here to return -EINVAL if
-we're not dealing with a GPIO:
+But if we change to a unique static namebuf per caller then the
+following sequence will work:
 
-	if (!priv->gpio)
-		return -EINVAL;
+kdbnearsym(word, &symtab1, namebuf1);
+kdbnearsym(word, &symtab2, namebuf2);
+kdb_symbol_print(word, &symtab1, 0);
+kdb_symbol_print(word, &symtab2, 0);
 
-> > > +
-> > > +	ret =3D gpiod_get_value(priv->gpio);
-> > > +	if (ret < 0)
-> > > +		return ret;
-> > > +
-> > > +	*val =3D ret ? COUNTER_SIGNAL_HIGH : COUNTER_SIGNAL_LOW;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static const struct counter_ops interrupt_cnt_ops =3D {
-> > > +	.action_get =3D interrupt_cnt_action_get,
-> > > +	.count_read =3D interrupt_cnt_read,
-> > > +	.count_write =3D interrupt_cnt_write,
-> > > +	.function_get =3D interrupt_cnt_function_get,
-> > > +	.signal_read  =3D interrupt_cnt_signal_read,
-> > > +};
-> > > +
-> > > +static int interrupt_cnt_probe(struct platform_device *pdev)
-> > > +{
-> > > +	struct device *dev =3D &pdev->dev;
-> > > +	struct interrupt_cnt_priv *priv;
-> > > +	int ret;
-> > > +
-> > > +	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> > > +	if (!priv)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	priv->irq =3D platform_get_irq_optional(pdev,  0);
-> > > +	if (priv->irq =3D=3D -ENXIO)
-> > > +		priv->irq =3D 0;
-> > > +	else if (priv->irq < 0)
-> > > +		return dev_err_probe(dev, priv->irq, "failed to get IRQ\n");
-> > > +
-> > > +	priv->gpio =3D devm_gpiod_get_optional(dev, NULL, GPIOD_IN);
-> > > +	if (IS_ERR(priv->gpio))
-> > > +		return dev_err_probe(dev, PTR_ERR(priv->gpio), "failed to get GPIO=
-\n");
-> > > +
-> > > +	if (!priv->irq && !priv->gpio) {
-> > > +		dev_err(dev, "IRQ and GPIO are not found. At least one source shou=
-ld be provided\n");
-> > > +		return -ENODEV;
-> > > +	}
-> > > +
-> > > +	if (!priv->irq) {
-> > > +		int irq =3D gpiod_to_irq(priv->gpio);
-> > > +
-> > > +		if (irq < 0)
-> > > +			return dev_err_probe(dev, irq, "failed to get IRQ from GPIO\n");
-> > > +
-> > > +		priv->irq =3D irq;
-> > > +	}
-> > > +
-> > > +	if (priv->gpio) {
-> >=20
-> > This if statement can be removed. There's no need to restrict this to
-> > just GPIO because we're always dealing with an IRQ, so allocate the
-> > "IRQ #" name unconditionally and set signals/num_signals.
->=20
-> Your previous suggestion was to no assign signals if there is no gpios.
-> What should I do?
->=20
-> Regards,
-> Oleksij
-> --=20
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+>
+> > diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+> > index 9d69169582c6..6efe9ec53906 100644
+> > --- a/kernel/debug/kdb/kdb_main.c
+> > +++ b/kernel/debug/kdb/kdb_main.c
+> > @@ -526,6 +526,7 @@ int kdbgetaddrarg(int argc, const char **argv, int *nextarg,
+>
+> The documentation comment for this function has not been updated to
+> describe the new contract on callers of this function (e.g. if they
+> consume the symbol name they must do so before calling kdbgetaddrarg()
+> (and maybe kdbnearsym() again).
+>
 
-I'm sorry for not being clear. I'm saying there is no need to
-differentiate here because there will always be a respective IRQ line
-whether there is a GPIO line or not. So removing the if statement is all
-you need to do.
+I am not sure if I follow you here. If we have a unique static buffer
+per caller then why do we need this new contract?
 
-Instead of:
+>
+> >       char symbol = '\0';
+> >       char *cp;
+> >       kdb_symtab_t symtab;
+> > +     static char namebuf[KSYM_NAME_LEN];
+> >
+> >       /*
+> >        * If the enable flags prohibit both arbitrary memory access
+> > diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
+> > index b59aad1f0b55..9b907a84f2db 100644
+> > --- a/kernel/debug/kdb/kdb_support.c
+> > +++ b/kernel/debug/kdb/kdb_support.c
+> > @@ -57,8 +57,6 @@ int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
+> >  }
+> >  EXPORT_SYMBOL(kdbgetsymval);
+> >
+> > -static char *kdb_name_table[100];    /* arbitrary size */
+> > -
+> >  /*
+> >   * kdbnearsym -      Return the name of the symbol with the nearest address
+> >   *   less than 'addr'.
+>
+> Again the documentation comment has not been updated and, in this case,
+> is now misleading.
 
-	if (priv->gpio) {
-		priv->signals.name =3D devm_kasprintf(dev, GFP_KERNEL, "IRQ %d",
-					    priv->irq);
-		if (!priv->signals.name)
-			return -ENOMEM;
+Okay, I will fix it.
 
-		priv->counter.signals =3D &priv->signals;
-		priv->counter.num_signals =3D 1;
-	}
-=09
-	priv->synapses.actions_list =3D interrupt_cnt_synapse_actionss;
-	priv->synapses.num_actions =3D ARRAY_SIZE(interrupt_cnt_synapse_actionss);
-	priv->synapses.signal =3D &priv->signals;
-	...
+>
+> If we move the static buffer here then the remarks section on this
+> function is a really good place to describe what the callers must do to
+> manage the static buffer safely as well as a convenient place to mention
+> that we tolerate the reuse of the static buffer if kdb is re-entered
+> becase a) kdb is broken if that happens and b) we are crash resilient
+> if if does.
+>
+>
+> > @@ -79,13 +77,11 @@ static char *kdb_name_table[100]; /* arbitrary size */
+> >   *   hold active strings, no kdb caller of kdbnearsym makes more
+> >   *   than ~20 later calls before using a saved value.
+> >   */
+> > -int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+> > +int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab, char *namebuf)
+>
+> As above, I don't understand why we need to add namebuf here. I think
+> the prototype can remain the same.
+>
+> Think of it simple that we have reduce the cache from having 100 entries
+> to having just 1 ;-) .
 
-You can just have those lines execute unconditionally even if there are
-no gpios:
+Please see my response above.
 
-	priv->signals.name =3D devm_kasprintf(dev, GFP_KERNEL, "IRQ %d",
-				    priv->irq);
-	if (!priv->signals.name)
-		return -ENOMEM;
+-Sumit
 
-	priv->counter.signals =3D &priv->signals;
-	priv->counter.num_signals =3D 1;
-=09
-	priv->synapses.actions_list =3D interrupt_cnt_synapse_actionss;
-	priv->synapses.num_actions =3D ARRAY_SIZE(interrupt_cnt_synapse_actionss);
-	priv->synapses.signal =3D &priv->signals;
-	...
-
-William Breathitt Gray
-
---zDZZKf6/pb+UPY5C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA47EQACgkQhvpINdm7
-VJL2OxAAw+LYMNXAWMCpkG64pnB+bM+4rXT547BrG7UkDPr7qvDHgVHY5cx+jTwR
-Uaisl3EGDMLID45fIiDXkZ74WYJB16xrVGTi8/4msfoJFINgKR7AzQ90wUqSx1VF
-3GOTy/kKTokzJQ41Hv1sJtGX5rh+5+bzt62nTpEuY4lc3lQAlgZk3/03IoR33zoX
-eAQ0eQFxyjIdakF3HYlGodS8Vz5dSviBNmmtElvaGRgEdBFiz6fxaKMGHV15nWO/
-BfhIf78TyPCq+KqhQLJb+L7Hvz4cv2bqLHxPOCkmXODBrylYd7TbmVA0JEl8prGM
-OlwPazjT+5a8/yNh/CM09G2xiUUzwunB61Hiny64MWPeWRNM3M4W0ErxQqmp3sgz
-k8QJJ+swppHzC/pLeZTJAEySwQk/eGGu9x3TL2r+GVpegsDkbeaiXqmFRy2+EiIx
-royJZVa6/7HJ0xTrCO8gUHSMFIK4dwAUpQaPeyXaJ/zEdlgdYxy5a9TugNVyVaez
-Zs2UtajmVUNHvqIVkbZUt8oQ6ZghMaHwZ2ffDMqG2249umcC7/RkmvpMH97XEDIj
-MqKCer2gVLqkLAGOV++7MiWLNgjBtCvDkH8atWPCNPny6mcUHE9bfWF1h8/Ckhn3
-5jU/aboI6HYWBfEwnmmMM7KE4J12jZeWZ/gzcFulV3j/JesOY2c=
-=lFTA
------END PGP SIGNATURE-----
-
---zDZZKf6/pb+UPY5C--
+>
+>
+> Daniel.
