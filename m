@@ -2,127 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 315653261E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7892C3261ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhBZLVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:21:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28648 "EHLO
+        id S230474AbhBZLXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:23:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35202 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230139AbhBZLVP (ORCPT
+        by vger.kernel.org with ESMTP id S230107AbhBZLXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:21:15 -0500
+        Fri, 26 Feb 2021 06:23:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614338388;
+        s=mimecast20190719; t=1614338530;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=21WHWcxyW0R0i+nu89iK+hY7xxF9KTjB2gFpICOTc2I=;
-        b=P1TiQBc/KH5BmtGi8aPb83HW5vq7BqNpmd40OlipK/LeoFSToRVXe1fC1rBnDW6o7gBM2U
-        AHErgJMKrPiKkmQNkgsvVk9IMu0J0KB8ztiSrY0MqzLh+W/9DNZKochGCWmPPQUroE0E/R
-        CYCpTaci76NxvKA9onStIuTMH4VULQI=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-nmOt5DJEOy-v8JCRDGcwdQ-1; Fri, 26 Feb 2021 06:19:46 -0500
-X-MC-Unique: nmOt5DJEOy-v8JCRDGcwdQ-1
-Received: by mail-yb1-f199.google.com with SMTP id o9so9595913yba.18
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:19:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=21WHWcxyW0R0i+nu89iK+hY7xxF9KTjB2gFpICOTc2I=;
-        b=GSSB2Jxo1n4hTYg0VilhEizyZDEkVLSUdQwyqXH3zGdLRA8AimqMAfGGfCSGNjqlWu
-         2tUhDWQV3psVL1G0MQiV7IRVETZih4lpyotMFpPFVfJRaGK9cBDeY7n/2HLcu25ARqFy
-         V0o1e+y/NbArk9/vUSLzUiHfJUdmjkmOP4V0klujcq9e+viT3X3WIV/vYuOLQ2Srf3IX
-         ll2iyfI2UEpzbo1TvS/knzNq+t28I/0jh72xTtznEhb6EKkRln2cUxiDbJTs71zFDhpu
-         +vLVHkW2VsiEHCeOHtof1JBnfvxnSVQQlR3p2UdUc0J77lhyyTgPkNd84kXUvUp6Ahiy
-         Zbvg==
-X-Gm-Message-State: AOAM530hIQwiQ8LNsu3SEZg4D36eWsCSlKtvI3bNfFn3Ub4HvA75zidB
-        Zq2poEkKfsNzlZywaMlJafVhnAPVL6whRZnVgCEvJkMQRepEO3aXXXyQbMlyd8hJUejhOOG8Afs
-        T+Tw+r28HgVpoqQG5S/7Ls6UVhzgW+6ritC5imBBy
-X-Received: by 2002:a25:d104:: with SMTP id i4mr3775493ybg.227.1614338385618;
-        Fri, 26 Feb 2021 03:19:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwdQiHBNItfITac2JMT1HbsAti2DvmAEICafs5OqhUYvrC/r11A5AD8rclfrmyW0zhJGa3ZvorxhEGSxhnFBN4=
-X-Received: by 2002:a25:d104:: with SMTP id i4mr3775471ybg.227.1614338385419;
- Fri, 26 Feb 2021 03:19:45 -0800 (PST)
+        bh=wFz5i37rqgxdlak3BUpsEVKF5RFJ7HeoRxmzcOPQc6w=;
+        b=BAYHNdoj0u/mkRmfsXAJgZHeovmj1XXpwiWauA9lN0z69Fhf+8IxQWM4ekb88WjwWiabTj
+        nDh1GrjPFdf0UGhoEN1wPcTLvss4sZopyY3Zwn/dbsd+c/4WA8KwJSg4ePtFurrH5wbuVu
+        Ruudk4HFztLfeT0kGeGKldHVyMuILBQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-4nnZXRUaNzK_KcPAJp6NOQ-1; Fri, 26 Feb 2021 06:22:06 -0500
+X-MC-Unique: 4nnZXRUaNzK_KcPAJp6NOQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57570185A0CE;
+        Fri, 26 Feb 2021 11:22:03 +0000 (UTC)
+Received: from [10.36.113.8] (ovpn-113-8.ams2.redhat.com [10.36.113.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F3BEC5D9D2;
+        Fri, 26 Feb 2021 11:21:59 +0000 (UTC)
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+To:     Hanjun Guo <guohanjun@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Scott Branden <scott.branden@broadcom.com>
+Cc:     Huxinwei <huxinwei@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yanjin <yanjin.yan@huawei.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Zhaohongjiang <zhaohongjiang@huawei.com>,
+        "Zhangdianfang (Dianfang, OS Lab)" <zhangdianfang@huawei.com>,
+        PEIXIN HOU <PEIXIN.HOU@huawei.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kernelci@groups.io, Wei Yongjun <weiyongjun1@huawei.com>,
+        Lijinyue <lijinyue@huawei.com>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+ <YA/E1bHRmZb50MlS@kroah.com>
+ <595affb4-36e8-0a63-ebb3-a4fd0e3c243a@huawei.com>
+ <2a7ff382-1d35-0eeb-6fb6-bad37aa4c1d7@redhat.com>
+ <4abea94d-5232-19ab-3139-569e485403b3@huawei.com>
+From:   Nikolai Kondrashov <Nikolai.Kondrashov@redhat.com>
+Message-ID: <a8518d24-8b02-39f7-d4e3-82c28715191d@redhat.com>
+Date:   Fri, 26 Feb 2021 13:21:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia>
- <20210223223652.GD6000@sequoia> <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
- <CAHC9VhSaU-3_fs83kEA5bxBf9xMsE29B_O5nXFpROk4=y9kgXw@mail.gmail.com> <20210226040542.1137-1-hdanton@sina.com>
-In-Reply-To: <20210226040542.1137-1-hdanton@sina.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Fri, 26 Feb 2021 12:19:35 +0100
-Message-ID: <CAFqZXNu8xyeVUcYud9MLF4yp57dSb4FDyOBDyajh+=SwwomNhQ@mail.gmail.com>
-Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4abea94d-5232-19ab-3139-569e485403b3@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 5:08 AM Hillf Danton <hdanton@sina.com> wrote:
-> On Thu, 25 Feb 2021 20:06:45 -0500 Paul Moore wrote:
-> > On Wed, Feb 24, 2021 at 4:35 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > > After the switch to RCU, we now have:
-> > > 1. Start live conversion of new entries.
-> > > 2. Convert existing entries.
-> > > 3. RCU-assign the new policy pointer to selinux_state.
-> > > [!!! Now actually both old and new sidtab may be referenced by
-> > > readers, since there is no synchronization barrier previously provided
-> > > by the write lock.]
-> > > 4. Wait for synchronize_rcu() to return.
-> > > 5. Now only the new sidtab is visible to readers, so the old one can
-> > > be destroyed.
-> > >
-> > > So the race can happen between 3. and 5., if one thread already sees
-> > > the new sidtab and adds a new entry there, and a second thread still
-> > > has the reference to the old sidtab and also tires to add a new entry;
-> > > live-converting to the new sidtab, which it doesn't expect to change
-> > > by itself. Unfortunately I failed to realize this when reviewing the
-> > > patch :/
-> >
-> > It is possible I'm not fully understanding the problem and/or missing
-> > an important detail - it is rather tricky code, and RCU can be very
-> > hard to reason at times - but I think we may be able to solve this
-> > with some lock fixes inside sidtab_context_to_sid().  Let me try to
-> > explain to see if we are on the same page here ...
-> >
-> > The problem is when we have two (or more) threads trying to
-> > add/convert the same context into a sid; the task with new_sidtab is
-> > looking to add a new sidtab entry, while the task with old_sidtab is
-> > looking to convert an entry in old_sidtab into a new entry in
-> > new_sidtab.  Boom.
-> >
-> > Looking at the code in sidtab_context_to_sid(), when we have two
-> > sidtabs that are currently active (old_sidtab->convert pointer is
-> > valid) and a task with old_sidtab attempts to add a new entry to both
-> > sidtabs it first adds it to the old sidtab then it also adds it to the
-> > new sidtab.  I believe the problem is that in this case while the task
-> > grabs the old_sidtab->lock, it never grabs the new_sidtab->lock which
-> > allows it to race with tasks that already see only new_sidtab.  I
-> > think adding code to sidtab_context_to_sid() which grabs the
-> > new_sidtab->lock when adding entries to the new_sidtab *should* solve
-> > the problem.
-> >
-> > Did I miss something important? ;)
->
-> If the convert pointer can be derefered without lock, we can opt to
-> convert context after building sidtab with the risk of AB BA deadlock
-> cut. Below is the minimum change I can think of along your direction.
+Hi Hanjun,
 
-We could fix this a bit more easily by just having a shared spinlock
-for both (well, *all*) sidtabs. Yes, we'd need to have it all the way
-up in selinux_state and pass it through to sidtab_init(), but IMHO
-that's less bad than trying to get it right with two locks.
+On 2/26/21 10:03 AM, Hanjun Guo wrote:
+ > On 2021/2/19 22:45, Nikolai Kondrashov wrote:
+ >> Would you be interested in working with the Linux Foundation KernelCI project
+ >> on submitting your build and test results to the common database - KCIDB?
+ >
+ > Yes, we are willing to sent the test results to KCIDB.
 
--- 
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+Wonderful!
+
+ > For now, all the tests are inside the company, which blocks us to
+ > directly sent the test results out of the test machine due to the
+ > security policy, it takes us sometime to discuss how to send out
+ > the test results, and we may need do the test in a public cloud.
+
+I understand. We faced the same dilemma at Red Hat with the CKI project, where
+I'm employed. In the end we just decided to publish the logs from the test
+lab (most sensitive part, I suppose) as they are, but then Red Hat is already
+a very open company.
+
+Here's an example of all logs we publish for a revision:
+
+     https://arr-cki-prod-datawarehouse-public.s3.amazonaws.com/index.html?prefix=datawarehouse-public/2021/02/22/624489
+
+And here's that revision in KCIDB:
+
+     https://staging.kernelci.org:3000/d/revision/revision?orgId=1&var-dataset=kernelci04&var-id=093ae67c90a629599a0cb2300c5686ec7d8bbdd0
+
+Take your time, there is a range of solutions to choose from, starting from
+isolating your test machines/boards, to running the test in the public cloud
+as you mention. Although the latter lacks the benefit of testing your own
+hardware, of course.
+
+Please also note that we require the tested kernel's code to be publicly
+available to accept results.
+
+ >> We are working on aggregating results from various testing systems so we can
+ >> provide a dashboard, and a single, aggregated e-mail report to subscribed
+ >> maintainers and developers.
+ >>
+ >> We have a prototype dashboard at https://staging.kernelci.org:3000/ and are
+ >> working hard on making the e-mail reports good enough to start reaching out to
+ >> maintainers.
+ >>
+ >> We already have ARM, Google Syzbot, Gentoo GKernelCI, Red Hat CKI, and, of
+ >> course, KernelCI native tests sending data to the database. Linaro Tuxsuite is
+ >> starting sending today. We could use your data, and of course any development
+ >> help you could spare :)
+ >
+ > How can we connect to the KCIDB? Can we send the test data out by email
+ > first?
+
+The simplest way would be using our "kcidb-submit" command-line tool.
+
+Here's a minimal example of sending an empty report:
+
+     echo '{"version":{"major":3,"minor":0}}' |
+             kcidb-submit -p kernelci-production -t kernelci_new
+
+Another way could be using our Python 3 library, which is a little more
+involved. Here's an example sending the same empty report in Python:
+
+     import kcidb
+     client = kcidb.Client(project_id="kernelci-production",
+                           topic_name="kernelci_new")
+     client.submit({"version":{"major":3,"minor":0}})
+
+Finally, you can send (validated) data using the Google Cloud Pub/Sub service
+directly, using the library in one of the supported languages:
+
+     https://cloud.google.com/pubsub/docs/tutorials
+
+The latter would be the least stable option (change-wise), but something e.g.
+Google Syzbot is already using.
+
+See more details in our Submission HOWTO:
+
+     https://github.com/kernelci/kcidb/blob/main/SUBMISSION_HOWTO.md
+
+Although email submissions are theoretically possible (with due
+authentication, setup, etc.), they're not currently supported, and we would
+not put them at the top of our (rather large) priority list. Topmost item
+being getting the data we already have to developers.
+
+Would be excited to have you on board!
+Nick
+
+On 2/26/21 10:03 AM, Hanjun Guo wrote:
+ > Hi Nick,
+ >
+ > Sorry for taking so long to reply you, we had discussions on how to
+ > corporate with KCIDB, please see my comments inline.
+ >
+ > On 2021/2/19 22:45, Nikolai Kondrashov wrote:
+ >> Hi Hanjun,
+ >>
+ >> On 2/19/21 10:54 AM, Hanjun Guo wrote:
+ >>  > In specific, we will start from the testing work, using HULK robot
+ >>  > (reports lots of bugs to mainline kernel) testing framework to test
+ >>  > compile, reboot, functional testing, and will extend to basic
+ >>  > performance regression testing in the future.
+ >>
+ >> I heard about Huawei ramping up kernel testing from someone at FOSDEM
+ >> 2019. I wonder if it was you :) Nice to see your progress and the company
+ >> stepping up to help with testing!
+ >
+ > I Cced Yongjun and Jinyue, they are the key persons :)
+ >
+ >>
+ >> Would you be interested in working with the Linux Foundation KernelCI project
+ >> on submitting your build and test results to the common database - KCIDB?
+ >
+ > Yes, we are willing to sent the test results to KCIDB.
+ >
+ > For now, all the tests are inside the company, which blocks us to
+ > directly sent the test results out of the test machine due to the
+ > security policy, it takes us sometime to discuss how to send out
+ > the test results, and we may need do the test in a public cloud.
+ >
+ >>
+ >> We are working on aggregating results from various testing systems so we can
+ >> provide a dashboard, and a single, aggregated e-mail report to subscribed
+ >> maintainers and developers.
+ >>
+ >> We have a prototype dashboard at https://staging.kernelci.org:3000/ and are
+ >> working hard on making the e-mail reports good enough to start reaching out to
+ >> maintainers.
+ >>
+ >> We already have ARM, Google Syzbot, Gentoo GKernelCI, Red Hat CKI, and, of
+ >> course, KernelCI native tests sending data to the database. Linaro Tuxsuite is
+ >> starting sending today. We could use your data, and of course any development
+ >> help you could spare :)
+ >
+ > How can we connect to the KCIDB? Can we send the test data out by email
+ > first?
+ >
+ >>
+ >> I wish I could show you my today's KCIDB presentation at DevConf.cz, but the
+ >> recording is not out yet. Meanwhile you can take a look at our presentation at
+ >> last year's Linux Plumbers: https://youtu.be/y9Glc90WUN0?t=10739
+ >>
+ >> Or see our intro in an older blog post:
+ >> https://foundation.kernelci.org/blog/2020/08/21/introducing-common-reporting/
+ >>
+ >> Anyone wishing to contribute to KCIDB gets credentials and permissions to
+ >> submit to our "playground" setup where they can send their data, see it in a
+ >> dashboard, experiment without worrying about breaking anything, and decide if
+ >> they like it or n >
+ >> If you're interested, take a look at our Submission HOWTO:
+ >> https://github.com/kernelci/kcidb/blob/v8/SUBMISSION_HOWTO.md
+ >> and send an email to kernelci@groups.io (CC'd), or come over to the #kernelci
+ >> channel on freenode.net!
+ >
+ > Thanks!
+ > Hanjun
 
