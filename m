@@ -2,142 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CC2325FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2676B325FE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:22:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhBZJTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:19:49 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10988 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230313AbhBZJR4 (ORCPT
+        id S230357AbhBZJU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:20:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhBZJSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:17:56 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11Q93C71057230
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:17:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : from : to
- : cc : date : mime-version : references : content-transfer-encoding :
- content-type : message-id : subject; s=pp1;
- bh=PotH5JG2MHJrOoczVTQTAqzpckFfWobxnwyEJO3Vjpk=;
- b=s41TMNVJ6kLaZ9KHcRK3pU+cUGC38FZMO+e2hPu8KJPdc7nka9dTew8ba138K5Zob8LX
- pHABIloUSzblVoQAkIYt6HeMSxg2RlWOVbxKqTDI9sYp1q6CrhElIC6ADXcrIMHQW3Y6
- 4BnaNEKFNMCBTNQYZ45S51dM4lR88f9ywt6koMBFBO2e6DOy8UBzzjcQMLAgVO8gow4H
- vlNM+8dpJcxrDVrB4NFGYJMl4y7I4fPCiICBR8MZND0tzrLKkx++yWc7qpq/rTwf5Yt9
- FzwX5RuuD0YGySw9ViHM69LCDPyYCtdRE3HdcPEZUPxAq6dhEhYVBIjLnPUk4aUv+AFp eg== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.74])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xphukfp1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:17:10 -0500
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-kernel@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Fri, 26 Feb 2021 09:17:10 -0000
-Received: from us1a3-smtp02.a3.dal06.isc4sb.com (10.106.154.159)
-        by smtp.notes.na.collabserv.com (10.106.227.92) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 26 Feb 2021 09:17:08 -0000
-Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
-          by us1a3-smtp02.a3.dal06.isc4sb.com
-          with ESMTP id 2021022609170854-204592 ;
-          Fri, 26 Feb 2021 09:17:08 +0000 
-In-Reply-To: <20210226075515.21371-1-dinghao.liu@zju.edu.cn>
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Dinghao Liu" <dinghao.liu@zju.edu.cn>
-Cc:     "kjlu" <kjlu@umn.edu>, "Doug Ledford" <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "linux-rdma" <linux-rdma@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Date:   Fri, 26 Feb 2021 09:17:07 +0000
-MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20210226075515.21371-1-dinghao.liu@zju.edu.cn>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
-X-LLNOutbound: False
-X-Disclaimed: 2983
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 21022609-3165-0000-0000-000005880C6A
-X-IBM-SpamModules-Scores: BY=0.05931; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.017918
-X-IBM-SpamModules-Versions: BY=3.00014794; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000295; SDB=6.01513339; UDB=6.00817410; IPR=6.01295862;
- MB=3.00036258; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-26 09:17:09
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2021-02-26 08:29:56 - 6.00012332
-x-cbparentid: 21022609-3166-0000-0000-0000CD7A0FDD
-Message-Id: <OF56E5E5C1.78489712-ON00258688.0032E2EA-00258688.003301A1@notes.na.collabserv.com>
-Subject: Re:  [PATCH] RDMA/siw: Fix missing check in siw_get_hdr
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-26_02:2021-02-24,2021-02-26 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+        Fri, 26 Feb 2021 04:18:18 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8103CC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:17:37 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id t18so6365350qva.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:17:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=3ZV7zZPMbpU90hBRfWaNQjlV4YJIoQKZGm7WEWLxpX4=;
+        b=bVhcMmIyAbwGbLJBYZ75Qq9rNu19JeSUX5B4gMG2srJgTft177olYXRffkrhdTHnTA
+         BRELpmytdqOo1mKL5BOGk77f0O069iHh8TR8mDx1fYQ8IErV8OtvmwGnSjFdWD6qCM8E
+         5Z3qyAYaasiI7I7U2iy7nePmC+aKb4N0rBoe8hNh85tTAXQEXomY7GrKeJMIG14qK/rp
+         /YaKvpGEoFsBm7+hGRnTeHKSzVYP3d3SUTIDQ3DV5PtxR2pyUHtjGRfuMj09T9ATPsrJ
+         /A/KQIjZ1xiHWBlHtpvmFVUQGfspEQwfjfzOXSqwaH3BC5mx+Of1ztfhf/7ekrblccD1
+         qSrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=3ZV7zZPMbpU90hBRfWaNQjlV4YJIoQKZGm7WEWLxpX4=;
+        b=KEedIpS+TgXzdeU6VBUy1M6qj3udJGfcmXl+ZO78vtVs+pUwedJijpo39NwXsOnNnZ
+         FXzJ8zUaGJd29TZB9N2rICkXFwMg1swGbOou68BiXWMtHK5+8a+1h0IOenf1K0mLpxOt
+         tE7xdpnRx8ieEg7fFTFLc1xtF7tlqSocTc5HDFT9oqdnHga4Qmj31UurflFyMib9Ft+o
+         K0AXPY79LdJjjWS8OFQfpzxEBs+exsMIXq20tnprm8FOLHi5ViLeM/+zrjyYS/FayNol
+         c7lRFFAjsoOGgjlHn/Y/DBkrj5hYjr/oAQTtht8+9DSCwiDjUqT4nC9KWYRf41N+T4PB
+         /kZw==
+X-Gm-Message-State: AOAM533xZl4ED9gnO1/HR1t7MpIR6g40WbiJ0EMIizcezq1XeHddzFyS
+        9dSU8ktJyMrhgaOTzu9EfjIBvKBDOts=
+X-Google-Smtp-Source: ABdhPJx8nJVj5jAhSGuPMleKa6a6NW+uOHQVRn7EGIb51y0p35dsddTx/zqDTNTX0eFHlbdcF2Ta3TyGIOA=
+Sender: "yuzhao via sendgmr" <yuzhao@yuzhao.bld.corp.google.com>
+X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:69b6:2618:c96a:ceba])
+ (user=yuzhao job=sendgmr) by 2002:a05:6214:aae:: with SMTP id
+ ew14mr1604473qvb.24.1614331056594; Fri, 26 Feb 2021 01:17:36 -0800 (PST)
+Date:   Fri, 26 Feb 2021 02:17:15 -0700
+In-Reply-To: <20210224084807.2179942-1-yuzhao@google.com>
+Message-Id: <20210226091718.2927291-1-yuzhao@google.com>
+Mime-Version: 1.0
+References: <20210224084807.2179942-1-yuzhao@google.com>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH v2 0/3] trim the uses of compound_head()
+From:   Yu Zhao <yuzhao@google.com>
+To:     akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
+        vbabka@suse.cz, willy@infradead.org
+Cc:     guro@fb.com, hannes@cmpxchg.org, hughd@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------"Dinghao Liu" <dinghao.liu@zju.edu.cn> wrote: -----
+Patch series "mm: lru related cleanups" starting at commit 42895ea73bcd
+("mm/vmscan.c: use add_page_to_lru_list()") bloated vmlinux by 1777
+bytes, according to:
+  https://lore.kernel.org/linux-mm/85b3e8f2-5982-3329-c20d-cf062b8da71e@suse.cz/
 
->To: dinghao.liu@zju.edu.cn, kjlu@umn.edu
->From: "Dinghao Liu" <dinghao.liu@zju.edu.cn>
->Date: 02/26/2021 08:56AM
->Cc: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
-><dledford@redhat.com>, "Jason Gunthorpe" <jgg@ziepe.ca>,
->linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
->Subject: [EXTERNAL] [PATCH] RDMA/siw: Fix missing check in
->siw=5Fget=5Fhdr
->
->We should also check the range of opcode after calling
->=5F=5Frdmap=5Fget=5Fopcode() in the else branch to prevent potential
->overflow.
+It turned out many places inline Page{Active,Unevictable} which in
+turn include compound_head().
 
-Hi Dinghao,
-No this is not needed. We always first read the minimum
-header information (MPA len, DDP flags, RDMAP opcode,
-STag, target offset). Only if we have received that
-into local buffer, we check for the opcode this one time.
-Now the opcode determines the remaining length of the
-variably sized part of the header to be received.
+From the v1:
+  Removing compound_head() entirely from Page{Active,Unevictable} may
+  not be the best option (for the moment) because there may be other
+  cases that need compound_head().
 
-We do not have to check the opcode again, since we
-already received and checked it.
+In addition to picking a couple pieces of low-hanging fruit, this v2
+removes compound_head() completely from Page{Active,Unevictable}.
 
-Best,
-Bernard.
+bloat-o-meter result before and after the series:
+  add/remove: 0/0 grow/shrink: 6/92 up/down: 697/-7656 (-6959)
 
->
->Fixes: 8b6a361b8c482 ("rdma/siw: receive path")
->Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
->---
-> drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c | 10 ++++++++++
-> 1 file changed, 10 insertions(+)
->
->diff --git a/drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c
->b/drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c
->index 60116f20653c..301e7fe2c61a 100644
->--- a/drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c
->+++ b/drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c
->@@ -1072,6 +1072,16 @@ static int siw=5Fget=5Fhdr(struct siw=5Frx=5Fstream
->*srx)
-> 		siw=5Fdbg=5Fqp(rx=5Fqp(srx), "new header, opcode %u\n", opcode);
-> 	} else {
-> 		opcode =3D =5F=5Frdmap=5Fget=5Fopcode(c=5Fhdr);
->+
->+		if (opcode > RDMAP=5FTERMINATE) {
->+			pr=5Fwarn("siw: received unknown packet type %u\n",
->+				opcode);
->+
->+			siw=5Finit=5Fterminate(rx=5Fqp(srx), TERM=5FERROR=5FLAYER=5FRDMAP,
->+					   RDMAP=5FETYPE=5FREMOTE=5FOPERATION,
->+					   RDMAP=5FECODE=5FOPCODE, 0);
->+			return -EINVAL;
->+		}
-> 	}
-> 	set=5Frx=5Ffpdu=5Fcontext(qp, opcode);
-> 	frx =3D qp->rx=5Ffpdu;
->--=20
->2.17.1
->
->
+Yu Zhao (3):
+  mm: bypass compound_head() for PF_NO_TAIL when enforce=1
+  mm: use PF_NO_TAIL for PG_lru
+  mm: use PF_ONLY_HEAD for PG_active and PG_unevictable
 
+ fs/proc/task_mmu.c         |  3 ++-
+ include/linux/page-flags.h | 16 ++++++++--------
+ 2 files changed, 10 insertions(+), 9 deletions(-)
+
+-- 
+2.30.1.766.gb4fecdf3b7-goog
