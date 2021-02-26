@@ -2,176 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F5F325D91
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3561325D96
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhBZGcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:32:39 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:54289 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhBZGc2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:32:28 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614321126; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=hdl2zflkyzgnrN66H07L0bWdahCjua7YjvzKEgluVvI=;
- b=OXnsZBaItR+W5N0a3NskU9Le9q/zXQ1vNTP6CPpXtQbS+TOhTnONRIylEaNnbBCG4VNwo5Jv
- 9Wdsy80BdoWgeaeXfXOK7U0HbubPiosuELNHAVWCGC0oRvVDuk3Vs/z5od0LjUqoitUUdzhK
- mJknKdwxOOyJDteEra3gdkw2E8Q=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 603895c16bec4e44c6a4030b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 06:31:29
- GMT
-Sender: kgunda=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D0CA3C433CA; Fri, 26 Feb 2021 06:31:29 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kgunda)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B790FC433ED;
-        Fri, 26 Feb 2021 06:31:28 +0000 (UTC)
+        id S230019AbhBZGda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:33:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhBZGdR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 01:33:17 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50EDC061574;
+        Thu, 25 Feb 2021 22:32:36 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id e9so4780162plh.3;
+        Thu, 25 Feb 2021 22:32:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NpdHCFtO3bIe52UEacMInES0+SrQ248CIIeiK4xDEUY=;
+        b=d/TPMKkW0kBRd5/tm0Ztd3cdvVjKQvNroZzIVy1dAomZhSF8ugH3q17Io/56h9xWXW
+         b38TNWMrrTD7BnuP+Ufa6LT0vihdf9qEOHAsx+jJze8JYdwvNISvQ6OvOEYG6NJr+rmX
+         L4VsfAHhIh/f00HIpH2dlB8Di78mvRof7JZh4Xaq16FDCS8G+P4c2AOXQ8seCm7yZv9S
+         LasWksJI/YFyejpNCeuX+isJPdAX3LJA3c5RtGaqPdgWjGr8fy+O3mKlW0XZxrCadM/6
+         +ks2pj4Go0yd+aN2QYNZl9Hleq5bobCK4i/LznnCp8fYSbSCFxlAAKN8yIeQX7huT2/N
+         gzIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NpdHCFtO3bIe52UEacMInES0+SrQ248CIIeiK4xDEUY=;
+        b=rA6Bhg6svX/FfWP2zImG/k3W4vENE/jqf8SlMxW4F4QLUi2P0MEZ7a5VXXi4fqtpeP
+         U8X2vD3XjjMPBsxHDK8chaLT4jr+YQmNNIqQS7mQKdCehiuApdGMYreDoLwdKzUOprSB
+         8hWo5iJtcmrK/fKFDDomw5icJbv+kTqDbw5IjIEoqs6VwFUI4Y9zsPzNgMQ6MHvRQMK3
+         PtzkLEVlbiWWB0CmxyibSWeutRLkD5+8HhAtHB4R1JmYqQANglNRRQnDPXc+BZ/FZuJy
+         xqslZI0mcjguC+MTibkiGH9pz/NgBqmrHZ7HSWmCycLsIvq6/7KTV3fCvnQpihsON3rm
+         w01g==
+X-Gm-Message-State: AOAM530IT/B5/a8IVVWdDTVmpDV38e+hvWCiU5KKVJaCcKEhmV/S0lYz
+        lxFMon0Vtbzco7mNTdee4Ho=
+X-Google-Smtp-Source: ABdhPJwy4aE+bw9E/kOcYG6UVQypQ61Mae8c/cVEec5XMdphDpFdhMCVRI6SVHHNd1fNS5H71MTGCA==
+X-Received: by 2002:a17:90a:7c0c:: with SMTP id v12mr1845484pjf.63.1614321156143;
+        Thu, 25 Feb 2021 22:32:36 -0800 (PST)
+Received: from container-ubuntu.lan ([171.211.28.221])
+        by smtp.gmail.com with ESMTPSA id 134sm8491186pfc.113.2021.02.25.22.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 22:32:35 -0800 (PST)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Landen Chao <landen.chao@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: dsa: mt7530: don't build GPIO support if !GPIOLIB
+Date:   Fri, 26 Feb 2021 14:32:26 +0800
+Message-Id: <20210226063226.8474-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 26 Feb 2021 12:01:28 +0530
-From:   kgunda@codeaurora.org
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
-        lee.jones@linaro.org, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, jacek.anaszewski@gmail.com,
-        pavel@ucw.cz, robh+dt@kernel.org, mark.rutland@arm.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH V1 1/2] backlight: qcom-wled: Fix FSC update issue for
- WLED5
-In-Reply-To: <20210224111505.37t5aq25iszg23iv@maple.lan>
-References: <1614138648-2963-1-git-send-email-kgunda@codeaurora.org>
- <1614138648-2963-2-git-send-email-kgunda@codeaurora.org>
- <20210224111505.37t5aq25iszg23iv@maple.lan>
-Message-ID: <6ab55df25e193718c143964dda085d8c@codeaurora.org>
-X-Sender: kgunda@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-24 16:45, Daniel Thompson wrote:
-> On Wed, Feb 24, 2021 at 09:20:47AM +0530, Kiran Gunda wrote:
->> Currently, for WLED5, after FSC register update MOD_SYNC_BIT
->> is toggled instead of SYNC_BIT. MOD_SYNC_BIT has to be toggled
->> after the brightness update and SYNC_BIT has to be toggled after
->> FSC update for WLED5. Fix it.
-> 
-> Code looks fine but the description is a difficult to read (which makes
-> mining the history difficult).
-> 
-> Basically the descriptions here are very hard to read without the
-> context in PATCH 0/2. Since PATCH 0/2 won't enter the version history
-> that means these descriptions need to integrate some of the text from
-> what is currently PATCH 0/2.
-> 
-> I would expect this to be more like. It is basically joining together
-> text from PATCH 0 and PATCH 1 (I also switched to plural form for SYNC
-> bits... the code in the driver has mask generation based on the number
-> of strings, is that right?):
-Sorry for the trouble. Yes, you are correct. The mask generation is
-based on the number of strings defined in the device tree and only those
-strings are enabled. However, there is no issue if the SYNC bits of all
-the strings are cleared/set. The SYNC takes place only for enabled 
-strings.
+The new GPIO support may be optional at runtime, but it requires
+building against gpiolib:
 
-> ~~~
-> Currently, for WLED5, the FSC (Full scale current) setting is not
-> updated properly due to driver toggling the wrong register after an FSC
-> update.
-> 
-> On WLED5 we should only toggle the MOD_SYNC bit after a brightness
-> update. For an FSC update we need to toggle the SYNC bits instead.
-> 
-> Fix it by adopting the common wled3_sync_toggle() for WLED5 and
-> introducing new code to the brightness update path to
-> compensate.
-> ~~~
-> I will update the Documentation/patch description clearly
-as suggested.
-> 
-> Daniel.
-> 
-> 
-> 
->> 
->> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
->> ---
->>  drivers/video/backlight/qcom-wled.c | 25 +++++++++++++++++++------
->>  1 file changed, 19 insertions(+), 6 deletions(-)
->> 
->> diff --git a/drivers/video/backlight/qcom-wled.c 
->> b/drivers/video/backlight/qcom-wled.c
->> index 3bc7800..aef52b9 100644
->> --- a/drivers/video/backlight/qcom-wled.c
->> +++ b/drivers/video/backlight/qcom-wled.c
->> @@ -348,7 +348,7 @@ static int wled3_sync_toggle(struct wled *wled)
->>  	return rc;
->>  }
->> 
->> -static int wled5_sync_toggle(struct wled *wled)
->> +static int wled5_mod_sync_toggle(struct wled *wled)
->>  {
->>  	int rc;
->>  	u8 val;
->> @@ -445,10 +445,23 @@ static int wled_update_status(struct 
->> backlight_device *bl)
->>  			goto unlock_mutex;
->>  		}
->> 
->> -		rc = wled->wled_sync_toggle(wled);
->> -		if (rc < 0) {
->> -			dev_err(wled->dev, "wled sync failed rc:%d\n", rc);
->> -			goto unlock_mutex;
->> +		if (wled->version < 5) {
->> +			rc = wled->wled_sync_toggle(wled);
->> +			if (rc < 0) {
->> +				dev_err(wled->dev, "wled sync failed rc:%d\n", rc);
->> +				goto unlock_mutex;
->> +			}
->> +		} else {
->> +			/*
->> +			 * For WLED5 toggling the MOD_SYNC_BIT updates the
->> +			 * brightness
->> +			 */
->> +			rc = wled5_mod_sync_toggle(wled);
->> +			if (rc < 0) {
->> +				dev_err(wled->dev, "wled mod sync failed rc:%d\n",
->> +					rc);
->> +				goto unlock_mutex;
->> +			}
->>  		}
->>  	}
->> 
->> @@ -1459,7 +1472,7 @@ static int wled_configure(struct wled *wled)
->>  		size = ARRAY_SIZE(wled5_opts);
->>  		*cfg = wled5_config_defaults;
->>  		wled->wled_set_brightness = wled5_set_brightness;
->> -		wled->wled_sync_toggle = wled5_sync_toggle;
->> +		wled->wled_sync_toggle = wled3_sync_toggle;
->>  		wled->wled_cabc_config = wled5_cabc_config;
->>  		wled->wled_ovp_delay = wled5_ovp_delay;
->>  		wled->wled_auto_detection_required =
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->>  a Linux Foundation Collaborative Project
->> 
+ERROR: modpost: "gpiochip_get_data" [drivers/net/dsa/mt7530.ko]
+undefined!
+ERROR: modpost: "devm_gpiochip_add_data_with_key"
+[drivers/net/dsa/mt7530.ko] undefined!
+
+Add #ifdef to exclude GPIO support if GPIOLIB is not enabled.
+
+Fixes: 429a0edeefd8 ("net: dsa: mt7530: MT7530 optional GPIO support")
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+---
+ drivers/net/dsa/mt7530.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index c17de2bcf2fe..f06f5fa2f898 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -1624,6 +1624,7 @@ mtk_get_tag_protocol(struct dsa_switch *ds, int port,
+ 	}
+ }
+ 
++#ifdef CONFIG_GPIOLIB
+ static inline u32
+ mt7530_gpio_to_bit(unsigned int offset)
+ {
+@@ -1726,6 +1727,7 @@ mt7530_setup_gpio(struct mt7530_priv *priv)
+ 
+ 	return devm_gpiochip_add_data(dev, gc, priv);
+ }
++#endif /* CONFIG_GPIOLIB */
+ 
+ static int
+ mt7530_setup(struct dsa_switch *ds)
+@@ -1868,11 +1870,13 @@ mt7530_setup(struct dsa_switch *ds)
+ 		}
+ 	}
+ 
++#ifdef CONFIG_GPIOLIB
+ 	if (of_property_read_bool(priv->dev->of_node, "gpio-controller")) {
+ 		ret = mt7530_setup_gpio(priv);
+ 		if (ret)
+ 			return ret;
+ 	}
++#endif /* CONFIG_GPIOLIB */
+ 
+ 	mt7530_setup_port5(ds, interface);
+ 
+-- 
+2.25.1
+
