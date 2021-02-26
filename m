@@ -2,101 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEB1326730
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8490C326734
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhBZTE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 14:04:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBZTEx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 14:04:53 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C60AFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:04:12 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id k2so8919026ili.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:04:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AZ8qA7aQ5rpYT0V2sctlkBYPSd8hoeYCGiKdEoaJ6vM=;
-        b=oKvpOm5iarSQ50kIWkk9J3uYkaBdk2Rh6A5rsIzmPgynnXLl+CctGSG7eLJi6eUv06
-         RU7c8ld/yPnB7UH0ZSYOJIZ6w927LNIdI0xiV2eL3JknVbocjzaIowpPj9pIruNA0v0H
-         3Ivbv3STxsu14ZiPWD/EDorKRzfpdwAp26qDC57jCIicOoEcD+g+gCt5VTRhaD0cBEl1
-         MgA4f+ZtuQEpWPjhA4AV8jTQt2d6kQkolaMMHMeUVMMSeOQ0/MNSAov3prYsm7ptrpAE
-         UxO1bgHjdrKWimHZzLxf61lJRo1sdv9CjNSjx8qaXSNRW0WZQ9mbsMGBxBpUmRU+Vy7M
-         W6Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AZ8qA7aQ5rpYT0V2sctlkBYPSd8hoeYCGiKdEoaJ6vM=;
-        b=CQgfVQQXcHa7yDZXGL4t9NVB5YTaKNYmE19C9I3NcKm9r5VyBUs/10KCteLpBckhdA
-         vAsOmcRCgUKDJPMYuuKjYTkyUiGy+bH8iPGQq+zT2kisUqrVZTNkfnlDQA1uaU3xLHIK
-         b3WkMkz4fdSjHpTJqKLhekXPjWDqa8pYSUkSlneoB/QaF/XELqWiqYQF0RXpYY4EiatU
-         Quz1lJj0GPTxXL59ggUHyHd5ZDGZdzW6ZOvw4+v6tQJM7ob6ORvpc4G4FqMK48xBcMY5
-         aJxh/9xVEYtXrzLs8cGvz2aq1SQnp1AWkhwu7ZeHBgb9OBe1fYqajuQlq4Ibaih6FtFB
-         cciA==
-X-Gm-Message-State: AOAM53269ZDoA4Eo0Fxo5oxAzcyVzboYRSYYTALg5nUEKog1O3gAYdfK
-        ee+D9tlTtuvFNurlfLTeC2xPWg==
-X-Google-Smtp-Source: ABdhPJwnYu4zRP+tcyj4kccpaJX9VLj4BYvACrkR0IoFavyjLN8Ii1ceBJLPRpp3LrdbwgvzRZIK9w==
-X-Received: by 2002:a05:6e02:d4a:: with SMTP id h10mr3653155ilj.107.1614366251849;
-        Fri, 26 Feb 2021 11:04:11 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:bd06:d32d:458e:cd3a])
-        by smtp.gmail.com with ESMTPSA id o12sm5813972iop.42.2021.02.26.11.04.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 11:04:11 -0800 (PST)
-Date:   Fri, 26 Feb 2021 12:04:07 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
-        willy@infradead.org, guro@fb.com, hannes@cmpxchg.org,
-        hughd@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v2 0/3] trim the uses of compound_head()
-Message-ID: <YDlGJ4eRPCNWESkj@google.com>
-References: <20210224084807.2179942-1-yuzhao@google.com>
- <20210226091718.2927291-1-yuzhao@google.com>
- <bd876842-b1e6-66fd-da1a-b181cede101a@suse.cz>
+        id S230237AbhBZTFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 14:05:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhBZTFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 14:05:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B1D464F1B;
+        Fri, 26 Feb 2021 19:04:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614366295;
+        bh=PfeQuDYBIjQHtNJ4RxOXOTAV74C+Re27WPBrWtzUDU4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nGGKVLRykjmczWP3FyivF6q0SYw6J8EAG4OIZIx2MxP8mAiZ/Isk3756eCG1HlOdt
+         E/oCaXcPPD8hThBiCj/+yfoWeN0n2CjA/Z/05xkmNmTvaxvC1Tmwpj9PM+P6+2q7zT
+         1w2DKcFQSLF7aMWyQc2Zr1L3FiSB1ZR1/RjUmfWcmebygeM6qp0oenFuBe1DutDFWw
+         2iXkgZarGC5e6UNsbo+wm3l93zCTzETISjYVwRYJZGJwUvovCL9yboyyXfx4sLxw+y
+         qGOl89rmrHNo9QgYn5VEseoY1bwzOSPMtj4cw8YtZWrBYgo4prpP+aUsJsoXaYAW5S
+         kdxN4BoF0OWHg==
+Date:   Fri, 26 Feb 2021 11:04:54 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
+Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
+Message-ID: <20210226190454.GD7272@magnolia>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bd876842-b1e6-66fd-da1a-b181cede101a@suse.cz>
+In-Reply-To: <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 11:52:03AM +0100, Vlastimil Babka wrote:
-> On 2/26/21 10:17 AM, Yu Zhao wrote:
-> > Patch series "mm: lru related cleanups" starting at commit 42895ea73bcd
-> > ("mm/vmscan.c: use add_page_to_lru_list()") bloated vmlinux by 1777
-> > bytes, according to:
-> >   https://lore.kernel.org/linux-mm/85b3e8f2-5982-3329-c20d-cf062b8da71e@suse.cz/
+On Fri, Feb 26, 2021 at 09:45:45AM +0000, ruansy.fnst@fujitsu.com wrote:
+> Hi, guys
 > 
-> Huh, I thought Andrew didn't want to send it for 5.12:
-> https://lore.kernel.org/linux-mm/20210223145011.0181eed96ab0091a493b51f6@linux-foundation.org/
+> Beside this patchset, I'd like to confirm something about the
+> "EXPERIMENTAL" tag for dax in XFS.
 > 
-> > It turned out many places inline Page{Active,Unevictable} which in
-> > turn include compound_head().
-> > 
-> > From the v1:
-> >   Removing compound_head() entirely from Page{Active,Unevictable} may
-> >   not be the best option (for the moment) because there may be other
-> >   cases that need compound_head().
-> > 
-> > In addition to picking a couple pieces of low-hanging fruit, this v2
-> > removes compound_head() completely from Page{Active,Unevictable}.
-> > 
-> > bloat-o-meter result before and after the series:
-> >   add/remove: 0/0 grow/shrink: 6/92 up/down: 697/-7656 (-6959)
+> In XFS, the "EXPERIMENTAL" tag, which is reported in waring message
+> when we mount a pmem device with dax option, has been existed for a
+> while.  It's a bit annoying when using fsdax feature.  So, my initial
+> intention was to remove this tag.  And I started to find out and solve
+> the problems which prevent it from being removed.
 > 
-> Good that you found a way to more than undo the bloat then. But we need to be
-> careful so bugs are not introduced due to pressure to not have bloated 5.12.
+> As is talked before, there are 3 main problems.  The first one is "dax
+> semantics", which has been resolved.  The rest two are "RMAP for
+> fsdax" and "support dax reflink for filesystem", which I have been
+> working on.  
 
-I was very conservative and only picked a few pieces of low-hanging
-fruit. The pressure is good -- if you hadn't noticed it and Andrew
-hadn't been emphatic about it, it'd have been left for another time
-and to another person, and so on.
+<nod>
+
+> So, what I want to confirm is: does it means that we can remove the
+> "EXPERIMENTAL" tag when the rest two problem are solved?
+
+Yes.  I'd keep the experimental tag for a cycle or two to make sure that
+nothing new pops up, but otherwise the two patchsets you've sent close
+those two big remaining gaps.  Thank you for working on this!
+
+> Or maybe there are other important problems need to be fixed before
+> removing it?  If there are, could you please show me that?
+
+That remains to be seen through QA/validation, but I think that's it.
+
+Granted, I still have to read through the two patchsets...
+
+--D
+
+> 
+> Thank you.
+> 
+> 
+> --
+> Ruan Shiyang.
