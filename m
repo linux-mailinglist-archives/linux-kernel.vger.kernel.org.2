@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A607326223
+	by mail.lfdr.de (Postfix) with ESMTP id 76BB6326224
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhBZLtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:49:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
+        id S230105AbhBZLtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhBZLtJ (ORCPT
+        with ESMTP id S229835AbhBZLtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:49:09 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DA8C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:48:28 -0800 (PST)
-Received: from zn.tnic (p200300ec2f086900dfbc884e5f24c36d.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6900:dfbc:884e:5f24:c36d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E07691EC038E;
-        Fri, 26 Feb 2021 12:48:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614340107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Kdgy2RXJ2A00wGzw/dGKKYDFkMjnXtbb6c45QRkooTw=;
-        b=kLhxjYLgDkA67QwYqME5mz7/MYFCvVuEH4R3Xl/sEaZzNRWdc4+F8Fm7pVFSYO2LLE7Shx
-        zQVaTGjpLuHDB/eg77g8jbXj18gpS5Y3JFcbnfk/PyPbnTEYqcYhAbtyAXA7yD1ims2ntx
-        p6W+B6mQNpwLvuGjCElm4usKjA1pnLQ=
-Date:   Fri, 26 Feb 2021 12:48:19 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     jpoimboe@redhat.com, mbenes@suze.cz, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH 1/3] objtool: Add --backup
-Message-ID: <20210226114819.GC19284@zn.tnic>
-References: <20210226105742.844988140@infradead.org>
- <20210226110004.133170708@infradead.org>
+        Fri, 26 Feb 2021 06:49:15 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BC2C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:48:34 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id mm21so14045299ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:48:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DBG5WvPZaDPwblLH9T9vz8x1fojhLKSAMhdgTzRHk+I=;
+        b=Sf73sbSRBO9rG9o0CTmQQrowLuD1E+c4VCkKYIPVcStPfLVZhmNCnt3uA7kLhrj9LC
+         qrrdvZ7wy8mRCADG3HhUvoHkSwHImrD6Wd/xqj/Khpu5Ecv+xN5ekKU8joFMW5pdwujE
+         04yxGmP6+lrJpliRd3LgTSE6i2aKUQk5pZ23FdgG//tKmY758gDsSzlfC4oAYrMMJvII
+         7+r1yuOMKtXt5r/os3gGAynV2s3gh8HsanuK6YJYEodTUTOjUcrBRdIVvWboPMX7x9J8
+         AqwaIUMuzfXblBO3GxQV4j1jb2YWo9AJAdr9sEnlRG/LmXx0skqJTNJHMCzG9w3Y5zNQ
+         AepA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DBG5WvPZaDPwblLH9T9vz8x1fojhLKSAMhdgTzRHk+I=;
+        b=MFK/b2rnwAMbyQg7zoMan5TS9TGiJNsMsNtiiCah4ZxxJQA2dNNQHadbs12pLVLgPB
+         winaPnIscoSPFTaVRk2FicvQXJdsUYil8sRJFNZF2LRsOmAQ9ogqOVTP/8KY1a/jpsSo
+         jG8uFTgALWV1xlcJy0DWQNo4KLh8EuKoDLY72rpG1a6gG6Z5nC9OIf9MMv5agOz5rAuF
+         laLec80iDyJNQu0sTmFG52TZjTZ2MbdLuny5mO8oF/LKQlLTlyqZ7eu0xt2zuGnS/dQJ
+         EPvtVlQITt7hXIIIOye9jDMkvz7SXT4YO+sGmBvhSVZtYGlBZ3TsSyUMgo7462jp+9tM
+         Yn9g==
+X-Gm-Message-State: AOAM533BuyZkJp7VaIZajVvSUfxgTZr/GnUaCgyhJxRTdPT5uhdejcYi
+        ePa3bMG7wY4o/D/iKS9CboOw1ilUrCXAKOop
+X-Google-Smtp-Source: ABdhPJzI0jJVXXO8VNqIFxaN2M/S15jyvoKq/t+1R3Kr5AWiX2eKWMjdnWp8S0VtgOphX0mDp38BeA==
+X-Received: by 2002:a17:906:4088:: with SMTP id u8mr2944879ejj.208.1614340113486;
+        Fri, 26 Feb 2021 03:48:33 -0800 (PST)
+Received: from ubuntudesktop.lan (205.158.32.217.dyn.plus.net. [217.32.158.205])
+        by smtp.gmail.com with ESMTPSA id l6sm2772013edw.90.2021.02.26.03.48.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 03:48:33 -0800 (PST)
+From:   Lee Gibson <leegib@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Lee Gibson <leegib@gmail.com>
+Subject: [PATCH] staging: rtl8192e: Fix possible buffer overflow in _rtl92e_wx_set_scan
+Date:   Fri, 26 Feb 2021 11:48:29 +0000
+Message-Id: <20210226114829.316980-1-leegib@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210226110004.133170708@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 11:57:43AM +0100, Peter Zijlstra wrote:
-> +static bool objtool_create_backup(const char *_objname)
-> +{
-> +	int len = strlen(_objname);
-> +	char *buf, *base, *name = malloc(len+3);
-> +	int s, d, l, t;
-> +
-> +	if (!name) {
-> +		WARN("failed backup name malloc");
-> +		return false;
-> +	}
-> +
-> +	strcpy(name, _objname);
-> +	strcpy(name + len, "bj");
-> +
-> +	d = open(name, O_CREAT|O_WRONLY|O_TRUNC);
+Function _rtl92e_wx_set_scan calls memcpy without checking the length.
+A user could control that length and trigger a buffer overflow.
+Fix by checking the length is within the maximum allowed size.
 
-Yah, as mentioned on IRC and let me paste it here too, you need to
-supply mode with O_CREAT:
+Signed-off-by: Lee Gibson <leegib@gmail.com>
+---
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-	d = open(name, O_CREAT|O_RDWR|O_TRUNC,S_IRUSR);
-
-or so. Also you could add perror("open") to those error paths so that it
-can say why it failed creating the backup file.
-
-With that, thanks for doing those!
-
-Acked-by: Borislav Petkov <bp@suse.de>
-
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+index 16bcee13f64b..2acc4f314732 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+@@ -406,6 +406,9 @@ static int _rtl92e_wx_set_scan(struct net_device *dev,
+ 		struct iw_scan_req *req = (struct iw_scan_req *)b;
+ 
+ 		if (req->essid_len) {
++			if (req->essid_len > IW_ESSID_MAX_SIZE)
++				req->essid_len = IW_ESSID_MAX_SIZE;
++
+ 			ieee->current_network.ssid_len = req->essid_len;
+ 			memcpy(ieee->current_network.ssid, req->essid,
+ 			       req->essid_len);
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
