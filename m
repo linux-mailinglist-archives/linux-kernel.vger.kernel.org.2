@@ -2,207 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D3A326000
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B97326005
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhBZJ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:26:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53886 "EHLO mx2.suse.de"
+        id S230144AbhBZJ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:28:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230352AbhBZJYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:24:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 90375B0E5;
-        Fri, 26 Feb 2021 09:24:00 +0000 (UTC)
-Subject: Re: [PATCH] perf annotate: improve --stdio mode
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <a0d53f31-f633-5013-c386-a4452391b081@suse.cz>
- <YDVb4KS/ARbtfoAw@kernel.org>
-From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
-Message-ID: <fedc723d-1c8f-fcd7-accb-421707b3a09f@suse.cz>
-Date:   Fri, 26 Feb 2021 10:24:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230416AbhBZJZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 04:25:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF8764F3B;
+        Fri, 26 Feb 2021 09:24:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614331497;
+        bh=nCtH3BlN7/0k3eh6WNHHrnSaaqBcXlvynYDx+WKTIpk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=z+2NS/Fn4NwLiTwoJaeAZgi5cQxU1K0CDXHj9oilmAUM/50cqi1ZeTLgBnfg5JUBi
+         tP8GsYhqWlM0idKm5K3D/IyK5NEjLA3UfSNhraGE+irhHp/hCu0gGJ7a2ERTzS81ML
+         wJRy1qtCmoIsViqGLAB/GUyDVrIV8UhfkjjR8VyQ=
+Date:   Fri, 26 Feb 2021 10:24:54 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Ricky Niu <rickyniu@google.com>
+Cc:     stern@rowland.harvard.edu, erosca@de.adit-jv.com,
+        gustavoars@kernel.org, a.darwish@linutronix.de, oneukum@suse.com,
+        kyletso@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ANDROID: usb: core: Send uevent when USB TOPO layer over
+ 6
+Message-ID: <YDi+Zug0t6lgn+ER@kroah.com>
+References: <20210226091612.508639-1-rickyniu@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YDVb4KS/ARbtfoAw@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226091612.508639-1-rickyniu@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/23/21 8:47 PM, Arnaldo Carvalho de Melo wrote:
-> Em Sun, Feb 21, 2021 at 01:46:36PM +0100, Martin Liška escreveu:
->> The patch changes the output format in 2 ways:
->> - line number is displayed for all source lines (matching TUI mode)
+On Fri, Feb 26, 2021 at 05:16:12PM +0800, Ricky Niu wrote:
+> When the topology of the nested hubs are over 6 layers
+> Send uevent to user space when USB TOPO layer over 6.
+> Let end user more understand what happened.
 > 
-> Are you aware of 'perf annotate --stdio2' ? If the goal is to make the
-> stdio mode better, doing it in that mode would be best, as it was done
-> to share as much code as possible, not just the looks, with the TUI
-> mode.
-
-Yes, I'm aware of it. My motivation is to generate a HTML perf annotate report
-and I see the following parts of --stdio2 not ideal:
-
-- coloring is not available (--stdio-color=always does not work)
-- 'Sorted summary for file ' is missing so one can't easily search for
-   hot spots in browser
-- source line number are displayed, but not the source files
-- there's a missing option for 'Toggle disassembler output/simplified view' which
-   is available in TUI mode
-
-That said, the stdio2 annotation report is quite different and so handy for my use case.
-
+> Signed-off-by: Ricky Niu <rickyniu@google.com>
+> ---
+>  drivers/usb/core/hub.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 > 
-> I kept --stdio around because changing the output in that way could
-> annoy people used to that format.
+> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> index 7f71218cc1e5..e5e924526822 100644
+> --- a/drivers/usb/core/hub.c
+> +++ b/drivers/usb/core/hub.c
+> @@ -55,6 +55,10 @@ static DEFINE_SPINLOCK(device_state_lock);
+>  static struct workqueue_struct *hub_wq;
+>  static void hub_event(struct work_struct *work);
+>  
+> +/* struct to notify userspace of hub events */
+> +static struct class *hub_class;
+> +static struct device *hub_device;
+> +
+>  /* synchronize hub-port add/remove and peering operations */
+>  DEFINE_MUTEX(usb_port_peer_mutex);
+>  
+> @@ -1764,6 +1768,13 @@ static bool hub_descriptor_is_sane(struct usb_host_interface *desc)
+>          return true;
+>  }
+>  
+> +static void hub_over_tier(void)
+> +{
+> +	char *envp[2] = { "HUB=OVERTIER", NULL };
+> +
+> +	kobject_uevent_env(&hub_device->kobj, KOBJ_CHANGE, envp);
 
-Sure. But I think the current format provides quite broken visual layout:
+Where have you now documented this odd uevent that is never sent by
+anything else?
 
-       0.00 :   405ef1: inc    %r15
-       0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
-    eff.c:1811    0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8>
-           :            TA + tmpsd * (TB +
+What tool will "catch" this?  Where is that code located at?
 
-vs.
+uevents are not for stuff like this, you are trying to send "error
+conditions" to userspace, please use the "proper" interfaces like this
+and not abuse existing ones.
 
-       0.00 :   405ef1: inc    %r15
-       0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
-       0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8> // eff.c:1811
-            : 1810   TA + tmpsd * (TB +
 
-I bet also the current users of --stdio mode would benefit from it.
-What do you think?
+> +}
+> +
+>  static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
+>  {
+>  	struct usb_host_interface *desc;
+> @@ -1831,6 +1842,7 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
+>  	if (hdev->level == MAX_TOPO_LEVEL) {
+>  		dev_err(&intf->dev,
+>  			"Unsupported bus topology: hub nested too deep\n");
+> +		hub_over_tier();
+>  		return -E2BIG;
+>  	}
+>  
+> @@ -5680,6 +5692,13 @@ int usb_hub_init(void)
+>  		return -1;
+>  	}
+>  
+> +	hub_class = class_create(THIS_MODULE, "usb_hub");
+> +	if (IS_ERR(hub_class))
+> +		return PTR_ERR(hub_class);
+> +
+> +	hub_device =
+> +		device_create(hub_class, NULL, MKDEV(0, 0), NULL, "usb_hub");
 
-Thanks,
-Martin
+You just created a whole new sysfs class with no Documentation/ABI/
+update?
 
-> 
-> Please take a look at 'man perf-config' and see what can be configured
-> for both 'perf annotate --tui' and 'perf annotate --stdio2'.
-> 
-> Perhaps we can do something like:
-> 
-> perf config annotate.stdio=tui_like
-> 
-> And, for completeness have:
-> 
-> perf config annotate.stdio=classical
-> 
-> wdyt?
-> 
-> Looking at the other patches now.
-> 
-> - Arnaldo
-> 
->> - source locations for the hottest lines are printed
->>    at the line end in order to preserve layout
->>
->> Before:
->>
->>      0.00 :   405ef1: inc    %r15
->>           :            tmpsd * (TD + tmpsd * TDD)));
->>      0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
->>           :            tmpsd * (TC +
->>   eff.c:1811    0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8>
->>           :            TA + tmpsd * (TB +
->>      0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
->>           :            dumbo =
->>   eff.c:1809    1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8>
->>           :            sumi -= sj * tmpsd * dij2i * dumbo;
->>   eff.c:1813    2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0
->>      2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
->>      3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
->>           :            for (k = 0; k < lpears[i] + upears[i]; k++) {
->>   eff.c:1761    0.90 :   405f29: cmp    %r15d,%r12d
->>
->> After:
->>
->>      0.00 :   405ef1: inc    %r15
->>           : 1812   tmpsd * (TD + tmpsd * TDD)));
->>      0.01 :   405ef4: vfmadd213sd 0x2b9b3(%rip),%xmm0,%xmm3        # 4318b0 <_IO_stdin_used+0x8b0>
->>           : 1811   tmpsd * (TC +
->>      0.67 :   405efd: vfmadd213sd 0x2b9b2(%rip),%xmm0,%xmm3        # 4318b8 <_IO_stdin_used+0x8b8> // eff.c:1811
->>           : 1810   TA + tmpsd * (TB +
->>      0.35 :   405f06: vfmadd213sd 0x2b9b1(%rip),%xmm0,%xmm3        # 4318c0 <_IO_stdin_used+0x8c0>
->>           : 1809   dumbo =
->>      1.41 :   405f0f: vfmadd213sd 0x2b9b0(%rip),%xmm0,%xmm3        # 4318c8 <_IO_stdin_used+0x8c8> // eff.c:1809
->>           : 1813   sumi -= sj * tmpsd * dij2i * dumbo;
->>      2.58 :   405f18: vmulsd %xmm3,%xmm0,%xmm0 // eff.c:1813
->>      2.81 :   405f1c: vfnmadd213sd 0x30(%rsp),%xmm1,%xmm0
->>      3.78 :   405f23: vmovsd %xmm0,0x30(%rsp)
->>           : 1761   for (k = 0; k < lpears[i] + upears[i]; k++) {
->>
->> Where e.g. '// eff.c:1811' shares the same color as the percentantage
->> at the line beginning.
->>
->> Signed-off-by: Martin Liška <mliska@suse.cz>
->> ---
->>   tools/perf/util/annotate.c | 30 ++++++++++++++----------------
->>   1 file changed, 14 insertions(+), 16 deletions(-)
->>
->> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
->> index e60841b86d27..80542012ec1b 100644
->> --- a/tools/perf/util/annotate.c
->> +++ b/tools/perf/util/annotate.c
->> @@ -1366,7 +1366,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
->>   {
->>   	struct disasm_line *dl = container_of(al, struct disasm_line, al);
->>   	static const char *prev_line;
->> -	static const char *prev_color;
->>   	if (al->offset != -1) {
->>   		double max_percent = 0.0;
->> @@ -1405,20 +1404,6 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
->>   		color = get_percent_color(max_percent);
->> -		/*
->> -		 * Also color the filename and line if needed, with
->> -		 * the same color than the percentage. Don't print it
->> -		 * twice for close colored addr with the same filename:line
->> -		 */
->> -		if (al->path) {
->> -			if (!prev_line || strcmp(prev_line, al->path)
->> -				       || color != prev_color) {
->> -				color_fprintf(stdout, color, " %s", al->path);
->> -				prev_line = al->path;
->> -				prev_color = color;
->> -			}
->> -		}
->> -
->>   		for (i = 0; i < nr_percent; i++) {
->>   			struct annotation_data *data = &al->data[i];
->>   			double percent;
->> @@ -1439,6 +1424,19 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
->>   		printf(" : ");
->>   		disasm_line__print(dl, start, addr_fmt_width);
->> +
->> +		/*
->> +		 * Also color the filename and line if needed, with
->> +		 * the same color than the percentage. Don't print it
->> +		 * twice for close colored addr with the same filename:line
->> +		 */
->> +		if (al->path) {
->> +			if (!prev_line || strcmp(prev_line, al->path)) {
->> +				color_fprintf(stdout, color, " // %s", al->path);
->> +				prev_line = al->path;
->> +			}
->> +		}
->> +
->>   		printf("\n");
->>   	} else if (max_lines && printed >= max_lines)
->>   		return 1;
->> @@ -1454,7 +1452,7 @@ annotation_line__print(struct annotation_line *al, struct symbol *sym, u64 start
->>   		if (!*al->line)
->>   			printf(" %*s:\n", width, " ");
->>   		else
->> -			printf(" %*s:     %*s %s\n", width, " ", addr_fmt_width, " ", al->line);
->> +			printf(" %*s: %-*d %s\n", width, " ", addr_fmt_width, al->line_nr, al->line);
->>   	}
->>   	return 0;
->> -- 
->> 2.30.1
->>
-> 
+{sigh}
 
+greg k-h
