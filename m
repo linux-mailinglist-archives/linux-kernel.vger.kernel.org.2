@@ -2,144 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9079325DCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55555325DD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:01:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBZG7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:59:11 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:45172 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhBZG6y (ORCPT
+        id S230012AbhBZG7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:59:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229894AbhBZG7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:58:54 -0500
-Received: by mail-io1-f72.google.com with SMTP id u1so6403515ior.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:58:38 -0800 (PST)
+        Fri, 26 Feb 2021 01:59:23 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E95C061574;
+        Thu, 25 Feb 2021 22:58:43 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id v200so5654038pfc.0;
+        Thu, 25 Feb 2021 22:58:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4Fjv+Mg1IirWBDNHEKw5akbiHL4HaXzu4m92i4TVus8=;
+        b=uuQUzmsZzBHr6oJXZHn3KJjD6zPx24UHtm1jYJjHO2T5lAZwaWzzF3deH+To9oQOvv
+         MRt0s7BI1/Gc4bprjWeQncOEKU3KJwotP8z2MBF6DOyYsHq+93qg7YA2n2gvLPv4wrV7
+         uZpgy5oDHsfys2RadBQSt8jq2uyUC6ybYAReiQXNAta4QXXD8LbDFdH+WTKlCC8XlK+F
+         Axe0XJ6WA/cgixAjP12FLOHLxzxjQSrcOWDe+T/h5OtNdtkC9OF/oNCs0gkpVS9gRB/C
+         FyLzOKlDRoS9YhRhijHpEWq5zm0NNDOULaDBk/bjUadzGmbobz3SMsqHZOF9gqFGtTBS
+         cfFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=HvtxSlnkKCjNyZT0wEb2/bz1bqloYHt5btZDhiiQNMw=;
-        b=SfyGZTKHSajSxlv7zlIRxZSwR9pZcRG1fiQinu4kElj8I3S4XGFzN9pCD5c30UGSWg
-         Gy9S3t4jyB/SDBf8ZWEW9tCWYDyPaHcXHKmsLFxFQUh+wZRmTTUtLJHK+EQo002rjJHi
-         /VTAZ0Zdl8+04cCurfAkcT0G54ScfkHPyh+NJmJ8M5OYdhv6GlOn3NGGvq4WsOmDwVdk
-         diN2n/qQ6bSkZnI72XdS3uNYSKByyW6jZeC0axljj4MmAVkcZM/gwqrnMddRDUuxUXBG
-         kL2uxPFAw8rjK7VQKT/EYibVPh6s0HFLDPQuJwnGzgZmNIfUP57kJq05z/eKgA7fDm50
-         R7Yg==
-X-Gm-Message-State: AOAM533jeUI8jow7zwkB+XfxD+/La+8EusMrz4L+093m9YudEiaZm5NU
-        hpFt0KJbE0WJ93BUpQzxvwHIPaOmqtcfiUUeOiETNz0Mef6Q
-X-Google-Smtp-Source: ABdhPJxI+mzmBz1ZfCN/cLim2VzndeY1gOTYkUwCuSZQxW+bnQAaX6rYquy9IfcqPUVm5FDdKSv/xgFFPP6FOCZzWXi7kf3Xvd3b
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4Fjv+Mg1IirWBDNHEKw5akbiHL4HaXzu4m92i4TVus8=;
+        b=IbhkJxOulWqW4VPu8WMrp1wdqYUw1fVwJ9cMe82pU2ayG2Xq0QJ5GyFVrnE3Cw3S1k
+         Ak+St+y6No2Xzd6hWZzm6nMjBML1nK9A413CH1lIHptHjHi6VVIj6/2J+pofPBe8KN0k
+         qabi4LCxDL3pjkVSgQoc6gboBzGbfNaZnb/ot+7h1vBn1iiLA/Yve+cVUxYggN9ojtkW
+         v2kvt/7NYcFWCHe3UrPnVXZ+UGTy/P1m0g+gT/ObqmsNSftk8YOTzX1AL7e+UPcWBPTY
+         9DLARLQzQeCG3IfGaXnOHbwIHSwOVNQ1o7Jbz946AsWlmdLM0LeHKEa+CgdgnaYqCFwB
+         oN5A==
+X-Gm-Message-State: AOAM530Y1dX83WxVdEZXEjg8FXFFholU5a4KzPpDxZ2N8cfk4a4NgRGJ
+        v2kdMW4wielL3GeAc+W53tA=
+X-Google-Smtp-Source: ABdhPJwZTjVfJEYyJR7dc7yd/1oHzucRgSSV9m6dclvd77VfundjDQL9uafKAPGuggW8eBCWtA4VNA==
+X-Received: by 2002:a63:490d:: with SMTP id w13mr1678390pga.314.1614322722709;
+        Thu, 25 Feb 2021 22:58:42 -0800 (PST)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id b18sm8529406pfi.173.2021.02.25.22.58.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 22:58:41 -0800 (PST)
+Date:   Fri, 26 Feb 2021 15:58:36 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     devicetree@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        linux-iio@vger.kernel.org,
+        Robin van der Gracht <robin@protonic.nl>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v5 2/2] counter: add IRQ or GPIO based event counter
+Message-ID: <YDicHHebw9scA7to@shinobu>
+References: <YCjlPhEtyH+vfSi4@shinobu>
+ <20210215091737.fx6dwiz7tt56wbkr@pengutronix.de>
+ <YDMMJJ985Zq9oEOv@shinobu>
+ <20210223100656.efbshsh5bz66uhj5@pengutronix.de>
+ <20210223174516.wjlh7hnrd5qe5s6w@pengutronix.de>
+ <YDW7Hihg0gGQh8UR@shinobu>
+ <20210224073506.GA24260@pengutronix.de>
+ <YDYKF7zdyjZX30gX@shinobu>
+ <YDYMRVgC3BrjISKU@shinobu>
+ <20210226064601.io6tznddikhcmvb3@pengutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a92:6403:: with SMTP id y3mr1283700ilb.90.1614322692653;
- Thu, 25 Feb 2021 22:58:12 -0800 (PST)
-Date:   Thu, 25 Feb 2021 22:58:12 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a6093b05bc37caae@google.com>
-Subject: general protection fault in kvm_hv_irq_routing_update
-From:   syzbot <syzbot+6987f3b2dbd9eda95f12@syzkaller.appspotmail.com>
-To:     aaronlewis@google.com, bp@alien8.de, drjones@redhat.com,
-        graf@amazon.com, hpa@zytor.com, jmattson@google.com,
-        joro@8bytes.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, makarandsonare@google.com,
-        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
-        shuah@kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Pis9j1JpD2v1lmaJ"
+Content-Disposition: inline
+In-Reply-To: <20210226064601.io6tznddikhcmvb3@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--Pis9j1JpD2v1lmaJ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    a99163e9 Merge tag 'devicetree-for-5.12' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d72682d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7a875029a795d230
-dashboard link: https://syzkaller.appspot.com/bug?extid=6987f3b2dbd9eda95f12
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12faef12d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=163342ccd00000
+On Fri, Feb 26, 2021 at 07:46:01AM +0100, Oleksij Rempel wrote:
+> On Wed, Feb 24, 2021 at 05:20:21PM +0900, William Breathitt Gray wrote:
+> > On Wed, Feb 24, 2021 at 05:11:03PM +0900, William Breathitt Gray wrote:
+> > > On Wed, Feb 24, 2021 at 08:35:06AM +0100, Oleksij Rempel wrote:
+> > > > On Wed, Feb 24, 2021 at 11:34:06AM +0900, William Breathitt Gray wr=
+ote:
+> > > > > Alternatively, we can take a more generic approach: ignore the GP=
+IO
+> > > > > names and focus solely on the IRQ lines; because the GPIO lines w=
+ill
+> > > > > always be tied to respective IRQ lines here, using the IRQ as the=
+ basis
+> > > > > of the name should always be valid. The "name" member of the stru=
+ct
+> > > > > irq_chip can work for this. I haven't tested this, but I think so=
+mething
+> > > > > like this would work:
+> > > > >=20
+> > > > > 	cnt_signals[0].name =3D irq_get_chip(priv->irq)->name;
+> > > >=20
+> > > > ok, i'll take a look at it.
+> > >=20
+> > > If that doesn't work, then use devm_kasprintf() to generate the name
+> > > based on the IRQ line number. The idea here is that the user should be
+> > > able to identify that the Signal component for this Count is the
+> > > respective IRQ.
+> > >=20
+> > > William Breathitt Gray
+> >=20
+> > I realized that these irq_chip names are often just the device name
+> > which isn't very useful either. :-(
+> >=20
+> > In that case, I suppose we really are just left with generating the name
+> > based on the IRQ line number then. This should be fine then:
+> >=20
+> > 	cnt_signals[0].name =3D devm_kasprintf(dev, GFP_KERNEL, "IRQ %d",
+> > 					     priv->irq);
+> > 	if (!cnt_signals[0].name)
+> > 		return -ENOMEM;
+> >=20
+> > I think this would make it clear to the user that this Signal is the
+> > respective IRQ (whether sourced from GPIO or not).
+>=20
+> ack, with one correction. cnt_signals should be allocated, otherwise
+> this value will be set per driver not per device.
+>=20
+> Regards,
+> Oleksij
+> --=20
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
-The issue was bisected to:
+Yes you're right, cnt_signals will need to be allocated then because
+these will be different per device.
 
-commit 8f014550dfb114cc7f42a517d20d2cf887a0b771
-Author: Vitaly Kuznetsov <vkuznets@redhat.com>
-Date:   Tue Jan 26 13:48:14 2021 +0000
+Thanks,
 
-    KVM: x86: hyper-v: Make Hyper-V emulation enablement conditional
+William Breathitt Gray
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10df16a8d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12df16a8d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14df16a8d00000
+--Pis9j1JpD2v1lmaJ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6987f3b2dbd9eda95f12@syzkaller.appspotmail.com
-Fixes: 8f014550dfb1 ("KVM: x86: hyper-v: Make Hyper-V emulation enablement conditional")
+-----BEGIN PGP SIGNATURE-----
 
-L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.
-general protection fault, probably for non-canonical address 0xdffffc0000000028: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000140-0x0000000000000147]
-CPU: 1 PID: 8370 Comm: syz-executor859 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:synic_get arch/x86/kvm/hyperv.c:165 [inline]
-RIP: 0010:kvm_hv_set_sint_gsi arch/x86/kvm/hyperv.c:475 [inline]
-RIP: 0010:kvm_hv_irq_routing_update+0x230/0x460 arch/x86/kvm/hyperv.c:498
-Code: 80 19 00 00 48 89 f8 48 c1 e8 03 80 3c 28 00 0f 85 ff 01 00 00 4d 8b ad 80 19 00 00 49 8d bd 40 01 00 00 48 89 f8 48 c1 e8 03 <0f> b6 04 28 84 c0 74 06 0f 8e d2 01 00 00 45 0f b6 bd 40 01 00 00
-RSP: 0018:ffffc90001b3fac0 EFLAGS: 00010206
-RAX: 0000000000000028 RBX: ffff888012df5900 RCX: 0000000000000000
-RDX: ffff888022193780 RSI: ffffffff81174d43 RDI: 0000000000000140
-RBP: dffffc0000000000 R08: 0000000000000000 R09: ffffc900018819eb
-R10: ffffffff81170f3e R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-FS:  0000000000a73300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000557e8c876888 CR3: 0000000013c0b000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- kvm_set_irq_routing+0x69b/0x940 arch/x86/kvm/../../../virt/kvm/irqchip.c:223
- kvm_vm_ioctl+0x12d0/0x2800 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3959
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ef29
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe391eb808 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef29
-RDX: 0000000020000140 RSI: 000000004008ae6a RDI: 0000000000000004
-RBP: 0000000000402f10 R08: 0000000000400488 R09: 0000000000400488
-R10: 0000000000400488 R11: 0000000000000246 R12: 0000000000402fa0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-Modules linked in:
----[ end trace 2aa75ec1dd148710 ]---
-RIP: 0010:synic_get arch/x86/kvm/hyperv.c:165 [inline]
-RIP: 0010:kvm_hv_set_sint_gsi arch/x86/kvm/hyperv.c:475 [inline]
-RIP: 0010:kvm_hv_irq_routing_update+0x230/0x460 arch/x86/kvm/hyperv.c:498
-Code: 80 19 00 00 48 89 f8 48 c1 e8 03 80 3c 28 00 0f 85 ff 01 00 00 4d 8b ad 80 19 00 00 49 8d bd 40 01 00 00 48 89 f8 48 c1 e8 03 <0f> b6 04 28 84 c0 74 06 0f 8e d2 01 00 00 45 0f b6 bd 40 01 00 00
-RSP: 0018:ffffc90001b3fac0 EFLAGS: 00010206
-RAX: 0000000000000028 RBX: ffff888012df5900 RCX: 0000000000000000
-RDX: ffff888022193780 RSI: ffffffff81174d43 RDI: 0000000000000140
-RBP: dffffc0000000000 R08: 0000000000000000 R09: ffffc900018819eb
-R10: ffffffff81170f3e R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
-FS:  0000000000a73300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000557e8c876888 CR3: 0000000013c0b000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA4nBwACgkQhvpINdm7
+VJKExg//b27mkhYXkMNHzSL6sQeEllxjr3OIkBcSDhPQAzVH5SGVTO1q4Oqeo2YZ
+FXLwk3LeKc/gewbqqnE/cBOgWT7iySRUp8ppBtjarqr54ftpKjtV4zaLGzeveoHB
+wZpu1FzOr0FZs85CO3xJVzPALZtqdOtSgXkOn4fV3Ee6Oz4DQuHND5Jlqm0gkyFV
+FRedDngp7sCN3s8k5y7V/yvaQlrkrNqyn9lqY+hYc+F/uSfg5ODSZlicNPe/L0+8
+bPqy2fV0bRr7iCgCadlAMZn9fmv0yPMcrvW5QMbcQaSP9KJZe9oXaE+ockD1mKY8
+OlvFMaimQYe2PHVCCIRTqea8YGbB1BUZLMvFKSDG4OvB2yqZWIqWq0vxmcOjhSwN
+RIdzDVbvfpGOZDpAizW1Upe3ctgy35Bff7QYob8kHkL8CdxLeNhkteTHWUvJjzMN
+qrk0jfboNVNt9BCTP9cpj2kxFet4d4541KFijLqPoQas2+x8qRM0htG1ZpWP5Cve
+beR5A8HOd7NXZzYiy42fIO510ySfUvs3iX5YHh1gZRcBYnd8j9sO3ojbQmkyKQ79
+U2EUPEVwws3OIfcd6/jMc2QwWtzTsSHq3OU/SP762nv2IO+/P5Il6NYS1cSOAMC8
+3xl7WlDVnmvxjQQ6QXR97qgrC4ufBtekqdH3+wqV00MYnxNb9DU=
+=MF5Y
+-----END PGP SIGNATURE-----
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--Pis9j1JpD2v1lmaJ--
