@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A302325A8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C83325A90
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhBZAGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 19:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        id S232601AbhBZAHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 19:07:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhBZAGa (ORCPT
+        with ESMTP id S232237AbhBZAH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 19:06:30 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE10FC061574;
-        Thu, 25 Feb 2021 16:05:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=24dyXhbUb6BL7Gvc/cK7SPB9p+BywOZYcYYdftrrIeU=; b=fRv0oPAPX5XbjEKm5/EQWt1L+A
-        U5Lr/DpfM3BaNtbQPUMjeNsLZFBoggvQzn4Ry00EMtcjAY7ouP0dqwIGapb70DNkhOtjMOpeSCM0X
-        q3xoXoDecVJcjJiHimtshgtcPMTE6gns2PHaKI+4YSvO8jEOGEi2lcfbIpL9aTQ2xE2PY62SUcI0f
-        Yh8VPvCejcEAiMmTw42bYisAMa6r+PNKO3Wa/PJBGH8oiB1RPbeXvXP3IWs5sWIBh1pGxCVaIEHgQ
-        yZv+oyydwkCfo4rPtb1q5W8U4Hv0GvFmAS7Ol0xvE4j2KrQP5hTaa3EaNvol9DzOikGWhcOZkxYQQ
-        c/oXIatA==;
-Received: from [2601:1c0:6280:3f0::3ba4] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lFQdc-0006Ha-H8; Fri, 26 Feb 2021 00:05:45 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Subject: [PATCH -next] fbdev: atyfb: use LCD management functions for PPC_PMAC also
-Date:   Thu, 25 Feb 2021 16:05:37 -0800
-Message-Id: <20210226000537.8674-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Thu, 25 Feb 2021 19:07:27 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88FCBC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:06:47 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id u11so4137215plg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:06:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jd/OnRJh1i86MX4kb4wWJ6SXAk8C/QNnURtbIB9fl/o=;
+        b=SKierCz1m1yUyfQLozNCj+0yuGMrBg2RYe0xUI1TSSZ02aX4Uonu6kGqa2UOSDtcnu
+         Y73YmTZj8SywkOtzzxX0xTZd+GqRtU6TIxbJfA4W/67RJrbTRITUZ3buOe+Ijf6NRd6j
+         LH9UDpBsc+w4kEGr6fJw0Jf2rutUPS2sxMr/k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jd/OnRJh1i86MX4kb4wWJ6SXAk8C/QNnURtbIB9fl/o=;
+        b=t8f1hPcdaDK/B+o2gglYhv/Bk1mc1ltM+l7VcjHGjEndqkQ7oS/bW+pVhX/XqNv7FN
+         UIrVGmH42m4PLjIsFetgXJvza2ZOYcseLkhBbK2VFIUpMszZ+RPuHQ5Q63hiFA/FlFLW
+         mVqjUadoANX36Z4D2cLhDsDc5jTLOrT6elbmYdlYjg8b/VomsJn9DaWMkYPcmXUT8xy5
+         O8SgNkg0qWaJNhDzCGaQPUe/7JcH2f+Som9kt2jPRSabrjpKT9nbcnm3KDpJ8oQOZWrs
+         VxJyg2S6VlZOliv6Lu/THkBTCubXhPaN94PtCKHWzlwCAIkBQxjwN89vKWIHTi1+7Y2G
+         bKjA==
+X-Gm-Message-State: AOAM530MkUhwWxXd6GQbrQclhWbX9pWnhIO/c2AqE1jmnAzrm32lvuQw
+        fP4U0YseC1ggtfaJwVppu5OX4g==
+X-Google-Smtp-Source: ABdhPJzwJmzMkYeM5EQiDfWM3PIMrCHqATtQO4VSS2Ue6nElK2JwLZLQnkRW34VAaoIsB+6G+r0DRQ==
+X-Received: by 2002:a17:902:e750:b029:e3:a720:f4c with SMTP id p16-20020a170902e750b02900e3a7200f4cmr321029plf.31.1614298007063;
+        Thu, 25 Feb 2021 16:06:47 -0800 (PST)
+Received: from localhost ([2620:15c:202:1:1d8:8d0c:f75e:edd8])
+        by smtp.gmail.com with UTF8SMTPSA id k8sm3206163pjj.31.2021.02.25.16.06.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Feb 2021 16:06:46 -0800 (PST)
+Date:   Thu, 25 Feb 2021 16:06:45 -0800
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexandru M Stan <amstan@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/13] arm64: dts: qcom: Disable camera clk on
+ sc7180-trogdor devices by default
+Message-ID: <YDg7lbbrdwqsssfc@google.com>
+References: <20210225221310.1939599-1-dianders@chromium.org>
+ <20210225141022.6.I22522b0c9db505ee43ed08e8d5d9e8fe632e7447@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210225141022.6.I22522b0c9db505ee43ed08e8d5d9e8fe632e7447@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include PPC_PMAC in the configs that use aty_ld_lcd() and
-aty_st_lcd() implementations so that the PM code may work
-correctly for PPC_PMAC.
+On Thu, Feb 25, 2021 at 02:13:03PM -0800, Douglas Anderson wrote:
+> From: Stephen Boyd <swboyd@chromium.org>
+> 
+> We only want to use this clk driver on CoachZ devices. Disable it for
+> all other Trogdor boards.  NOTE: CoachZ devices aren't yet supported
+> upstream so until it is this is just disabled for all trogdor.
+> 
+> Cc: Tomasz Figa <tfiga@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> [dianders:adjusted since no coachz upstream yet]
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
----
-Daniel- We also need this patch:
-https://lore.kernel.org/dri-devel/20210224215528.822-1-rdunlap@infradead.org/
-to fix a kernel test robot build error.
-
- drivers/video/fbdev/aty/atyfb_base.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
---- linux-next-20210219.orig/drivers/video/fbdev/aty/atyfb_base.c
-+++ linux-next-20210219/drivers/video/fbdev/aty/atyfb_base.c
-@@ -132,8 +132,7 @@
- #define PRINTKI(fmt, args...)	printk(KERN_INFO "atyfb: " fmt, ## args)
- #define PRINTKE(fmt, args...)	printk(KERN_ERR "atyfb: " fmt, ## args)
- 
--#if defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_GENERIC_LCD) || \
--defined(CONFIG_FB_ATY_BACKLIGHT)
-+#if defined(CONFIG_PPC_PMAC)
- static const u32 lt_lcd_regs[] = {
- 	CNFG_PANEL_LG,
- 	LCD_GEN_CNTL_LG,
-@@ -175,8 +174,7 @@ u32 aty_ld_lcd(int index, const struct a
- 		return aty_ld_le32(LCD_DATA, par);
- 	}
- }
--#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) \
--	 defined(CONFIG_FB_ATY_GENERIC_LCD) */
-+#else /* defined(CONFIG_PPC_PMAC) */
- void aty_st_lcd(int index, u32 val, const struct atyfb_par *par)
- { }
- 
-@@ -184,7 +182,7 @@ u32 aty_ld_lcd(int index, const struct a
- {
- 	return 0;
- }
--#endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined (CONFIG_FB_ATY_GENERIC_LCD) */
-+#endif /* defined(CONFIG_PPC_PMAC) */
- 
- #ifdef CONFIG_FB_ATY_GENERIC_LCD
- /*
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
