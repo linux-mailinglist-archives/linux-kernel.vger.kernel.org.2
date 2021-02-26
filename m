@@ -2,148 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD46325E71
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 892A4325E78
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhBZHt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 02:49:57 -0500
-Received: from mail-dm6nam11on2072.outbound.protection.outlook.com ([40.107.223.72]:61025
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229537AbhBZHtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 02:49:53 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=chiwwKR68cYfKy59HAlF6DFPidiVg4X8yt9Vd+2lFv6hSai7kcBd+gvVz4Dul7uglWYWs8LZVbKeBWvCu8iSDQDaHPGJT6LDLi3NJ5VZQPcMayqIHV5Kzl96AzPA0ePzNdr/o2GVdQzKYkTQMGptSEzGYvG0K058ii25C+ycydX8Qdl5jjFcNAgA8P7DZ6itxUJq5qFaMCNu6ptuG2LYU3fOIEyoUAhDikBlEcyX+uf102GZbw7zVWiGeYtEj1Ep3Y1wv9Qw7YvkbuU7CRwQpdPyjifwb/YcRlntPbpT9SG8Nb31XQEkkFNqqBe4PFCsC+xs37upWlkSWs3FjHbXSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+x4QlB798Rm7bFJ8i8H4Is1HqrRV0qbaPOhxttuFK/M=;
- b=doBhqlZUVlvdNw+jZDjC4HemnHK+86o5B7L9z/AMUyCEoTRFSMVbuf1oFXdkttHYLHHCs3hoGwz61Yti0kVM4ciGoyi4Wk9kCp9GJGHmtakip0t1OBPQOdqswucINbJHe8JWm0plOJi6fbhURl8+d7UGE6g/irsRifVWbeSQkZ4YNHp33eLSQBB9wQoRQbngmEomcAmMULz5GZ8EVimFMpn5qg38WLIWZyB30oQnh9Ejex8UFDaRm2OUoxrkFdZmoDFoXc9prsJvum6A7wq13n4wSv8iz99mydvqEF3Yjx+IGGqJgpUPMTFzWXrvgpXYGk/tcjiT1EC5jbbYULtCOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+x4QlB798Rm7bFJ8i8H4Is1HqrRV0qbaPOhxttuFK/M=;
- b=injALVq0px9Y1Xx1teWqklFDNnEV3hQAYhTVN0c13ZAsK9wENxJMqFo/OD6QQzMTBRtarhq5kFgnc7DrP4VE+jBEzWatReDX4ELZC6zcLhAtyQ/RIPUVWYkANvfFNE3RatkbiOKxiH3lcQXBPlpdT0Sm63UseMP6TsKnwXKI7v0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4047.namprd12.prod.outlook.com (2603:10b6:208:1de::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Fri, 26 Feb
- 2021 07:48:59 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
- 07:48:59 +0000
-Subject: Re: [PATCH] radeon: ERROR: space prohibited before that ','
-To:     wangjingyu <wangjingyu@uniontech.com>, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     alexander.deucher@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210226060528.12964-1-wangjingyu@uniontech.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <170cf966-2248-605a-d640-8e574f94b419@amd.com>
-Date:   Fri, 26 Feb 2021 08:48:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210226060528.12964-1-wangjingyu@uniontech.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:bcf6:4057:c09:be71]
-X-ClientProxiedBy: AM0PR01CA0088.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:10e::29) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S229849AbhBZHv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 02:51:57 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:29209 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229550AbhBZHvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 02:51:54 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614325889; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=r8ceqRaD6vKp+3sEIocnghQuW8k5dUvRT7WlMB6q6bw=;
+ b=jRzf+p+UjtTXFF7DlzkGusxotGmPXWsLPBXaSgaZ/C1WgOPfdAgn5Ht1DQk2pixhhoRaSZkn
+ 5qQJrkxL8UMCDobZzyzdTdxv8OQCdUHD4J2BjJV+W7oBFLR1NE0SyV20jRDMFwVkbz15Tffx
+ rFfeXERXQIgG2ftRdSTPEJmret8=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6038a865ea793fa303212753 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 07:51:01
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 17073C43462; Fri, 26 Feb 2021 07:51:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4B4FFC433C6;
+        Fri, 26 Feb 2021 07:51:00 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:bcf6:4057:c09:be71] (2a02:908:1252:fb60:bcf6:4057:c09:be71) by AM0PR01CA0088.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20 via Frontend Transport; Fri, 26 Feb 2021 07:48:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 03fa274e-a9df-4e79-db7e-08d8da2afa3f
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4047:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4047A2E9FB045DEC2AF34473839D9@MN2PR12MB4047.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AzsJAppDOdPcSQ2yKn0I5UzijHVmXF7JXzJgOvTV1oCZH7ztIbj7aVQiyEZeaCel3Hfa+V8lux9rMjHbl+wmPztJ7a/XVRHeGjYIh/ni3CVLDBAbBmiB/KxOCISFxu+HokTb4kSPVLQBcQ59UA1nnCnMT4H0BKy4/rZRXcqSZfGHewutMw+XPm1QZm2Nij2LZ3rv30TDGYlMM7f2EfuiIGVLhBFZdKr1fnU//y1jNjhPaPyElfjpGsmSB8DpIZiWMLnbdpHmvGxco9g0s0OM4dA6T0BJ5WEbP8lkSnWVrTI1idpjB0Py2A1dnx1Jn7DtFSOdvgL3VwxU90nG4Z1pcKbNMB9au07Vpa8FC07YRf326aBmV6+x4cDnmemoE4aBNwOpqeoMwAYpQOBBIUD+FsEDmRY2rV1SVs21ge5zHB9x1n6yZxvywBp+QOC1AdQa4aytwPmzGWZP5ULO1kYBVEtM37UwxIafe9c+BXGc40TnmPzvK0QIMadsO32jM8jZXTFoie7jxvBSIDAxNgtsI7DF1fZIvobO/yg7sn0QQ7tlEuO5iUYcRZBRkpdfN3UwDkRsgG9TtQkSajhqW79AVg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(136003)(396003)(39860400002)(83380400001)(4326008)(478600001)(186003)(2906002)(2616005)(36756003)(66946007)(6486002)(31686004)(16526019)(5660300002)(6666004)(52116002)(8676002)(86362001)(8936002)(316002)(31696002)(66556008)(66476007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MDBrR3pXalpHWE16R205cGpTYTVIT21iMDdadWdKdmExMGZUUWFWQlNHZ2cr?=
- =?utf-8?B?TjBITmxYS3Z1SG9mZzgyVHdhbVAwY1Jnc0wzS2s3SXc1cHZTUmFMMzIwaWlE?=
- =?utf-8?B?WmpEWXd1UTNaQmVWTDdMbFNpdTFFbkVsWllzQmJxMnJiaWZuQXBnaWx1QXcr?=
- =?utf-8?B?RTZELzY3ZTBlTkk4aE9tUStZRHdmMWxpTytDWTFhMS9YOWJLeDdsUW5MdDE2?=
- =?utf-8?B?dVRuWVY0dVlvclF2ckdxSzVIV1Vpc2ZIZDB1czRpTWY2QXJPTUdiNmtRR21h?=
- =?utf-8?B?WHlRdUd2QThxYkFZYjREOWFNRXZtSlFRcXlRSUJHRkdaZE5kbVpOUkx2VTRz?=
- =?utf-8?B?MHBEeWVqcnRhYjhZayt3bEFUQkFIQ2p2ai9TemtycjJoQUo5UFl2cWZJZnRm?=
- =?utf-8?B?RW5Na0ZEc0lXOVJsVHZxdlR0OUxnRk9SUWJOQkJaUldqaGxoZ3lmclpOSlBI?=
- =?utf-8?B?NFQralE3b3BSdDN6MHQxNEtKTFFKM1dlOTFuRXdSVkIzWjc1QXFORm85b3pn?=
- =?utf-8?B?V21tN3JhWTdWdWpJbjhmRVdMLzY2LytZM0xQS3FWQnB5VUNBMnFDWEdJenpY?=
- =?utf-8?B?SFdidTkzbHZPSjN5U2VhblRZYzFJejM5NHh0THBkckNtbjdYQlZuN0VTYUwv?=
- =?utf-8?B?OFRpVDVDVTNValc4UDZPQWlIaGVWODBPY3NINFc5R3ptbkdTVDd5amlSQ0U2?=
- =?utf-8?B?WVd0cnVwb0dUY1c5Sml4SlQ5SWU4bk5sdWJKVUF1Z2dId0E4dHRxK1FWTDJ0?=
- =?utf-8?B?OWpRVE1CdXNUTnMrQXFYL3RXNTZ4dkdEMEsxQVhUbFBWWkhKL1FITHdOTjZt?=
- =?utf-8?B?NVpwZCs0MUZPbHV6Rml2cVBDTUZjTmN3M3UrSkd3U2ZBS29wTTBYUWNoZzNn?=
- =?utf-8?B?ajFOWTJXZ3RuMjR4SGhsMWxlRk5rZGtoUzNaS1VqaHhhV2kvMWJNb3BRbW5t?=
- =?utf-8?B?K3k2cDBKMGZ6ejRJRGxMZUZYcjBRYU40Rnc5MWZjalhKeW9DYTFDWGtiUnov?=
- =?utf-8?B?R2FqVEQzTHlPU1cxbGtSdWVxemZYR1Bpb01xdVE4YmRYT25odUE1dXJ0VTRX?=
- =?utf-8?B?ZzRoSnVPTVJKOHZDbXZ5MnRFcDlBQU5BeW4wOVR6QjJVWTRULytzVlZreHA0?=
- =?utf-8?B?WnFsUGpCTkFKT0hwc0FQczYrR1R3M2pUdmdqMHdaQko4WTBxN1cycmdPY1ky?=
- =?utf-8?B?L1RaUzkxTUlCaW1YYkc5WmRzdW5pMFRQejB4ZmFMZmhiNXJ6dGcweWp6bllB?=
- =?utf-8?B?S1IxcVVhMGM1MjZhSDJjOEtiTG4vbUljR1ZZWDJSMnEwWkQ0TmRoUEdwL1Nx?=
- =?utf-8?B?T2RkQzBUdm9waWRpTEJTcExYekhUSFNVV0xGTzJEcHdERnB1NlV6ZzB2Vkpr?=
- =?utf-8?B?Ymx3SnRuMHJmeUluQXRkbHYrNVlpZWxLTEtSRDJUenJ6cFQ4RHROSFVIM0ll?=
- =?utf-8?B?Rm9kU0owY2txNDJxRVNQUkVCbExweGhXQ1FxVnV2clVsSWorbWxxWTkvN3k0?=
- =?utf-8?B?QlR3Tis2YTcxN0M5MlN1TFhuSERZUWdmVTlNalE0ajY2R3owTkEwVm9mYVB0?=
- =?utf-8?B?cFdrQnZ2eWFSdXJ1aGFEVkJqRTBiRHdTN2ppSVlua1dsbmtSTWJPVmlnMVlB?=
- =?utf-8?B?Tldsc00rbmRSbXg4Q29vRlptSm14VFVlMFlacXpRWHEydEtCWTd2Q0N1WlFx?=
- =?utf-8?B?NWVZSktWL00vS0dQWmI1YVF6ZktKUU9LckJqbnBLbWt5eit0OUg2Y3lzbDNP?=
- =?utf-8?B?RXFRTmk3R1ZEemxyTkExbmZhamxkOTVBNVZPRnJHejhKMXpHeHBxb0w0NjNx?=
- =?utf-8?B?M09WNTVCOEwvZG1mWDBpaUU2SG56UnVHUzVDcFptMHIrdlBFVTlRZHdtQ3lw?=
- =?utf-8?Q?WAAhe4E6kB7LN?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03fa274e-a9df-4e79-db7e-08d8da2afa3f
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2021 07:48:59.8073
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0iViIb0aKL7bjqUauYo0OMQvNswGclt0pnZqFyQ59AHd0hJttPFh3xuOgmvYhfzR
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4047
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 26 Feb 2021 13:21:00 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: Re: [PATCH 8/9] arm64: dts: qcom: sc7280: Add AOSS QMP node
+In-Reply-To: <161428210272.1254594.16034240343090747878@swboyd.mtv.corp.google.com>
+References: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org>
+ <463a45f2c3e4a91430c006fa1637c7f4f124185e.1614244789.git.saiprakash.ranjan@codeaurora.org>
+ <161428210272.1254594.16034240343090747878@swboyd.mtv.corp.google.com>
+Message-ID: <dc3be32a3f8197d3138fe1ef6c24316a@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Well coding style clean ups are usually welcome, but not necessarily one 
-by one.
+On 2021-02-26 01:11, Stephen Boyd wrote:
+> Quoting Sai Prakash Ranjan (2021-02-25 01:30:24)
+>> Add a DT node for the AOSS QMP on SC7280 SoC.
+>> 
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 65c1e0f2fb56..cbd567ccc04e 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -9,6 +9,7 @@
+>>  #include <dt-bindings/clock/qcom,rpmh.h>
+>>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+>> +#include <dt-bindings/power/qcom-aoss-qmp.h>
+>>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>> 
+>>  / {
+>> @@ -368,6 +369,19 @@ pdc: interrupt-controller@b220000 {
+>>                         interrupt-controller;
+>>                 };
+>> 
+>> +               aoss_qmp: qmp@c300000 {
+> 
+> power-domain-controller@c300000? power-controller@c300000?
+> 
 
-We can probably merge this if you clean up all checkpatch.pl warnings in 
-the whole file.
+Its an AOSS message RAM and all other SM* SoCs have as qmp@
+and the dt binding as well, I see only SM8150 with power-controller,
+that should probably be fixed?
 
-Christian.
+>> +                       compatible = "qcom,sc7280-aoss-qmp";
+>> +                       reg = <0 0x0c300000 0 0x100000>;
+>> +                       interrupts-extended = <&ipcc IPCC_CLIENT_AOP
+>> +                                                    
+>> IPCC_MPROC_SIGNAL_GLINK_QMP
+>> +                                                    
+>> IRQ_TYPE_EDGE_RISING>;
+>> +                       mboxes = <&ipcc IPCC_CLIENT_AOP
+>> +                                       IPCC_MPROC_SIGNAL_GLINK_QMP>;
+>> +
+>> +                       #clock-cells = <0>;
+>> +                       #power-domain-cells = <1>;
+>> +               };
+>> +
+>>                 spmi_bus: qcom,spmi@c440000 {
+> 
+> Ick, should be spmi@
+> 
 
-Am 26.02.21 um 07:05 schrieb wangjingyu:
-> drm_property_create_range(rdev->ddev, 0 , "coherent", 0, 1);
->
-> Signed-off-by: wangjingyu <wangjingyu@uniontech.com>
-> ---
->   drivers/gpu/drm/radeon/radeon_display.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
-> index 3a6fedad002d..439d1b3e87d8 100644
-> --- a/drivers/gpu/drm/radeon/radeon_display.c
-> +++ b/drivers/gpu/drm/radeon/radeon_display.c
-> @@ -1396,7 +1396,7 @@ static int radeon_modeset_create_props(struct radeon_device *rdev)
->   
->   	if (rdev->is_atom_bios) {
->   		rdev->mode_info.coherent_mode_property =
-> -			drm_property_create_range(rdev->ddev, 0 , "coherent", 0, 1);
-> +			drm_property_create_range(rdev->ddev, 0, "coherent", 0, 1);
->   		if (!rdev->mode_info.coherent_mode_property)
->   			return -ENOMEM;
->   	}
+Not introduced by this patch but I'll pass on the comment.
 
+>>                         compatible = "qcom,spmi-pmic-arb";
+>>                         reg = <0 0x0c440000 0 0x1100>,
+
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
