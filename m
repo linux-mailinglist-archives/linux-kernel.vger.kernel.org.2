@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A55E326150
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D06DA326155
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhBZKce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:32:34 -0500
-Received: from mail.manjaro.org ([176.9.38.148]:51474 "EHLO mail.manjaro.org"
+        id S230416AbhBZKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:32:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230444AbhBZKbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:31:21 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id 8E1293DC0E31;
-        Fri, 26 Feb 2021 11:30:30 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id CGEMCot-z218; Fri, 26 Feb 2021 11:30:28 +0100 (CET)
-From:   Tobias Schramm <t.schramm@manjaro.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH 3/3] ARM: dts: sun8i: V3/S3: add i2s peripheral
-Date:   Fri, 26 Feb 2021 11:30:28 +0100
-Message-Id: <20210226103028.729172-4-t.schramm@manjaro.org>
-In-Reply-To: <20210226103028.729172-1-t.schramm@manjaro.org>
-References: <20210226103028.729172-1-t.schramm@manjaro.org>
+        id S230473AbhBZKbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:31:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB33764EEE;
+        Fri, 26 Feb 2021 10:31:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614335461;
+        bh=cbgMj02ws1ox1ax+5/yQQcl3dPfXcdcjRcxxC4rOdew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H+s/EB1JZ0WFaGuI4TyjS3Hhoo8t2srHkHsDT+BfqZzi6Lbk9WrU5pklSYY3q6FHT
+         7BJHmSvai8mp8zz1VdY9T6TP2Po964LrMoPhW0U/roxOiRG8Whzx3260YFVcPVd2UO
+         bOLfp7joJi9g80T+geL7nweSd8aya2/WVsEpuZxF3BSZsil/sYEyHaHPImsq/7CevA
+         VWZB25YJ4/8V6OLCmQCowUg0ObscORuhKXr3l594xQAFUpwVeI75fu7JDiyV1JWkWU
+         w/hqRoUOxhk3yi49AWLUDK8On15dMikP3ws5MXeHikcryoXkJxBpxQne7RhmDboI0t
+         w1/KsdHGFjABw==
+Date:   Fri, 26 Feb 2021 11:30:57 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Liguang Zhang <zhangliguang@linux.alibaba.com>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: designware: Get right data length
+Message-ID: <20210226103057.GD1014@ninjato>
+References: <20210225142631.1882-1-zhangliguang@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TybLhxa8M7aNoW+V"
+Content-Disposition: inline
+In-Reply-To: <20210225142631.1882-1-zhangliguang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The V3 and S3 SoCs feature an i2s peripheral identical to that of the H3.
-Add it to the dts.
 
-Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
----
- arch/arm/boot/dts/sun8i-v3.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+--TybLhxa8M7aNoW+V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/boot/dts/sun8i-v3.dtsi b/arch/arm/boot/dts/sun8i-v3.dtsi
-index c279e13583ba..17ea6b8f091f 100644
---- a/arch/arm/boot/dts/sun8i-v3.dtsi
-+++ b/arch/arm/boot/dts/sun8i-v3.dtsi
-@@ -30,3 +30,18 @@ uart1_pg_pins: uart1-pg-pins {
- 		function = "uart1";
- 	};
- };
-+
-+&soc {
-+		i2s0: i2s@1c22000 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun8i-h3-i2s";
-+			reg = <0x01c22000 0x400>;
-+			interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_I2S0>, <&ccu CLK_I2S0>;
-+			clock-names = "apb", "mod";
-+			dmas = <&dma 3>, <&dma 3>;
-+			dma-names = "rx", "tx";
-+			resets = <&ccu RST_BUS_I2S0>;
-+			status = "disabled";
-+		};
-+};
--- 
-2.30.1
+On Thu, Feb 25, 2021 at 10:26:31PM +0800, Liguang Zhang wrote:
+> IC_DATA_CMD[11] indicates the first data byte received after the address
+> phase for receive transfer in Master receiver or Slave receiver mode,
+> this bit was set in some transfer flow. IC_DATA_CMD[7:0] contains the
+> data to be transmitted or received on the I2C bus, so we should use the
+> lower 8 bits to get the real data length.
+>=20
+> Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
 
+Applied to for-current, thanks!
+
+
+--TybLhxa8M7aNoW+V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmA4zeEACgkQFA3kzBSg
+KbayxQ//VStvwCcJeXZgB+XWQQ2tzZBBemXbVP55M91Yle06cngZTram7k11/oQN
+9wA1hjFjU8XYfvzVck8sGpKHjyOW+GdCMkfeyt3SsAYF9tZSdQ0K0+BDwq3R5NEx
+DIXBKc6AMXDpc2a3nSGBQU++P2pZSPe2sPySAGz5MqxI1BGP122ps6e6LtRnnpUV
+6F/RE8tJJ0wSZ9dYdeZVr2cxS/UQzPeMu83l1Y+uGj3fZ52IiaFZCjB2FE60qSLi
+Cy+u7yK2bXgEDSv3LohrTdN9I6yIk9Y4JUZ1zhybC8Psb5EqcD5FmG17lMWFWAqR
+0+foN2/nK3Jrd9YLiyZJHVfisbYTIt+lWI4lutc/pycLEjmpNwxps2WSWmVjJ/lV
+7sKjjYOqGTixwMRW/pVWTV7/4C97sohVCBEhZGojk4TzQBVoPxuw7y2wC2v1q6dR
+vpjI93RY73Idxu+yD3S5t65UAZjY5we2RyReGHiBM+MSEIIj0tbIRoUOCReVU0Mf
+8VfMDtjwqcdDlpd6WGTGvJVu2aQI9fptru+ac7JkS4cFk9R4MKpjHoGNT7yKeplD
+arIUrRUqZTThzvVzkhTUrjDUIMQoZh/4HX+zpnTHw6JLdzQqXpvy8Qy7rRIh/o+g
+1zx8bwcJnTIX592b3PbNt0LOzm2XcgnxiE6feUOCXQyJfP1WNoM=
+=61r/
+-----END PGP SIGNATURE-----
+
+--TybLhxa8M7aNoW+V--
