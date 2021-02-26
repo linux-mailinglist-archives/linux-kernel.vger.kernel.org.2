@@ -2,297 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D460325F04
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0313325F09
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhBZIaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:30:21 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:45486 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229449AbhBZIaE (ORCPT
+        id S230060AbhBZIaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhBZIaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:30:04 -0500
-X-IronPort-AV: E=Sophos;i="5.81,208,1610380800"; 
-   d="scan'208";a="104901398"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 26 Feb 2021 16:28:10 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id D8B8A4CE76F9;
-        Fri, 26 Feb 2021 16:28:04 +0800 (CST)
-Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 26 Feb 2021 16:28:05 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Fri, 26 Feb 2021 16:28:05 +0800
-From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
-CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
-        <linux-btrfs@vger.kernel.org>, <ocfs2-devel@oss.oracle.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH v2 08/10] fsdax: Dedup file range to use a compare function
-Date:   Fri, 26 Feb 2021 16:28:03 +0800
-Message-ID: <20210226082803.825612-1-ruansy.fnst@fujitsu.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210226002030.653855-9-ruansy.fnst@fujitsu.com>
-References: <20210226002030.653855-9-ruansy.fnst@fujitsu.com>
+        Fri, 26 Feb 2021 03:30:30 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D255C061574;
+        Fri, 26 Feb 2021 00:29:45 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id a7so8809010iok.12;
+        Fri, 26 Feb 2021 00:29:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wv9SyvXPStH1HbSiyrd6dLJkIu8R0cmO6gcv4tLTSvQ=;
+        b=Rhl08QI0pfGUZYq6eTciDwuN89KLIIALSh8uKopiHPcUrfyNcHVdR0Y6PGJQ1Aw1Xp
+         vPXZjJhOIbKvkPRAco2v2VKNnyYBYI7anNnDxXs0xiSFo7fx91n4XiggVGMHNhhKvu4k
+         VOo44XIZnSglXqVUOvLckvmbXB7NqIerp5578rZZ7Kkq5DtCOVgLsBTzfYkva3pS5MmR
+         BAfHatL1uy5ftOMq0kGxA8XxXWQPdMPnpdScblfP9jVupdhUCn3EriJZ5//VUNid5wyo
+         f/ATH0swlnaPmd0JLN4HAMbgaAspgJBsV4EsG8vx1D8YainfyvDQL/PiOgyXGYZppUzS
+         m9qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wv9SyvXPStH1HbSiyrd6dLJkIu8R0cmO6gcv4tLTSvQ=;
+        b=eB7w4SrEh/UrtC8zeHrlQCVjDDWFPyXAvn1IO1w4ABpiJk9vUEQXrt5WzCYYQ15iij
+         VPbaWpiB+Fo0eF2cBVXkkpIv756TpG2ufOSV/DZ55llt95nN2sPSOS4Rn4K/yagiPdE/
+         b6+a+sPAuqxtgEZOt5eA+8VncJFssTLrutXC3N9HGzm0yf2uzEan7OLdI2EuMOna8ZFO
+         T+VLBcWiM41u/d2xg+CFwUGTvIN/SVLgEH0i4IfYbDw2rkSRmeWzgCYXrcTKJZxt66Ln
+         p+ZTEuSvHVmzb9ZV3hADIfmAABObMB0G2GslzUYE5LclhZ5l/hr4zVTZfXlZQgpwSKkk
+         zT2A==
+X-Gm-Message-State: AOAM531uSRRNbprZ5yxFh0qKgEsdXrMmXHI8gXuiO2bb+jvwjWLlpr/I
+        7yOWLs36t3mOaoQ9MHHxr6TbpvDXBn6CEzOTuZXLu9BVCxA=
+X-Google-Smtp-Source: ABdhPJzPdTp9oMZ+w5xch1v6D5+MMN1OxBLOqz/HNnorcjnd11QqrnQ4bhDhT4DYAfQxcYgPBGykY+glXt4wVghUZ0A=
+X-Received: by 2002:a05:6602:2bd5:: with SMTP id s21mr1906817iov.189.1614328185042;
+ Fri, 26 Feb 2021 00:29:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: D8B8A4CE76F9.A5BE0
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
-X-Spam-Status: No
+References: <20210222161905.1153-1-lukas.bulwahn@gmail.com>
+ <20210222161905.1153-3-lukas.bulwahn@gmail.com> <CAAdtpL4egZYCGS+2K5FQSFYcPKomosuvvrunpDskkiif5Ma5Uw@mail.gmail.com>
+In-Reply-To: <CAAdtpL4egZYCGS+2K5FQSFYcPKomosuvvrunpDskkiif5Ma5Uw@mail.gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 26 Feb 2021 09:29:34 +0100
+Message-ID: <CAKXUXMygO2caTv9D1dMv9dxJSgC8=CpcT3hYsNm_ko4HXdNmeg@mail.gmail.com>
+Subject: Re: [PATCH 2/5] MAINTAINERS: remove linux-mips.org references
+To:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
+        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With dax we cannot deal with readpage() etc. So, we create a dax
-comparison funciton which is similar with
-vfs_dedupe_file_range_compare().
-And introduce dax_remap_file_range_prep() for filesystem use.
+On Tue, Feb 23, 2021 at 10:48 AM Philippe Mathieu-Daud=C3=A9 <f4bug@amsat.o=
+rg> wrote:
+>
+> On Mon, Feb 22, 2021 at 5:22 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> w=
+rote:
+> >
+> > The domain lookup for linux-mips.org fails for quite some time now. Hen=
+ce,
+> > webpages, the patchwork instance and Ralf Baechle's email there is not
+> > reachable anymore.
+> >
+> > Remove all references of webpages from linux-mips.org in MAINTAINERS, a=
+nd
+> > refer to the kernel.org's linux-mips patchwork instance instead.
+> >
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> >  MAINTAINERS | 5 +----
+> >  1 file changed, 1 insertion(+), 4 deletions(-)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index e949e561867d..703a50183301 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -4980,7 +4980,6 @@ DECSTATION PLATFORM SUPPORT
+> >  M:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+> >  L:     linux-mips@vger.kernel.org
+> >  S:     Maintained
+> > -W:     http://www.linux-mips.org/wiki/DECstation
+>
+> Why not use the web archive? The information is still valuable.
+> https://web.archive.org/web/20190704000315/https://www.linux-mips.org/wik=
+i/DECstation
+>
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
----
- fs/dax.c             | 56 ++++++++++++++++++++++++++++++++++++++++++++
- fs/remap_range.c     | 45 ++++++++++++++++++++++++++++-------
- fs/xfs/xfs_reflink.c |  9 +++++--
- include/linux/dax.h  |  4 ++++
- include/linux/fs.h   | 15 ++++++++----
- 5 files changed, 115 insertions(+), 14 deletions(-)
+If that information is valuable, how about adding that into the kernel
+documentation page?
 
-diff --git a/fs/dax.c b/fs/dax.c
-index 4f6c6ba68e6f..dbb95f00b38b 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -1856,3 +1856,59 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,
- 	return dax_insert_pfn_mkwrite(vmf, pfn, order);
- }
- EXPORT_SYMBOL_GPL(dax_finish_sync_fault);
-+
-+static loff_t dax_range_compare_actor(struct inode *ino1, loff_t pos1,
-+		struct inode *ino2, loff_t pos2, loff_t len, void *data,
-+		struct iomap *smap, struct iomap *dmap)
-+{
-+	void *saddr, *daddr;
-+	bool *same = data;
-+	int ret;
-+
-+	if (smap->type == IOMAP_HOLE && dmap->type == IOMAP_HOLE) {
-+		*same = true;
-+		return len;
-+	}
-+
-+	if (smap->type == IOMAP_HOLE || dmap->type == IOMAP_HOLE) {
-+		*same = false;
-+		return 0;
-+	}
-+
-+	ret = dax_iomap_direct_access(smap, pos1, ALIGN(pos1 + len, PAGE_SIZE),
-+				      &saddr, NULL);
-+	if (ret < 0)
-+		return -EIO;
-+
-+	ret = dax_iomap_direct_access(dmap, pos2, ALIGN(pos2 + len, PAGE_SIZE),
-+				      &daddr, NULL);
-+	if (ret < 0)
-+		return -EIO;
-+
-+	*same = !memcmp(saddr, daddr, len);
-+	return len;
-+}
-+
-+int dax_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-+		struct inode *dest, loff_t destoff, loff_t len, bool *is_same,
-+		const struct iomap_ops *ops)
-+{
-+	int id, ret = 0;
-+
-+	id = dax_read_lock();
-+	while (len) {
-+		ret = iomap_apply2(src, srcoff, dest, destoff, len, 0, ops,
-+				   is_same, dax_range_compare_actor);
-+		if (ret < 0 || !*is_same)
-+			goto out;
-+
-+		len -= ret;
-+		srcoff += ret;
-+		destoff += ret;
-+	}
-+	ret = 0;
-+out:
-+	dax_read_unlock(id);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(dax_dedupe_file_range_compare);
-diff --git a/fs/remap_range.c b/fs/remap_range.c
-index 77dba3a49e65..9079390edaf3 100644
---- a/fs/remap_range.c
-+++ b/fs/remap_range.c
-@@ -14,6 +14,7 @@
- #include <linux/compat.h>
- #include <linux/mount.h>
- #include <linux/fs.h>
-+#include <linux/dax.h>
- #include "internal.h"
- 
- #include <linux/uaccess.h>
-@@ -199,9 +200,9 @@ static void vfs_unlock_two_pages(struct page *page1, struct page *page2)
-  * Compare extents of two files to see if they are the same.
-  * Caller must have locked both inodes to prevent write races.
-  */
--static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
--					 struct inode *dest, loff_t destoff,
--					 loff_t len, bool *is_same)
-+int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-+				  struct inode *dest, loff_t destoff,
-+				  loff_t len, bool *is_same)
- {
- 	loff_t src_poff;
- 	loff_t dest_poff;
-@@ -280,6 +281,7 @@ static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
- out_error:
- 	return error;
- }
-+EXPORT_SYMBOL(vfs_dedupe_file_range_compare);
- 
- /*
-  * Check that the two inodes are eligible for cloning, the ranges make
-@@ -289,9 +291,11 @@ static int vfs_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-  * If there's an error, then the usual negative error code is returned.
-  * Otherwise returns 0 with *len set to the request length.
-  */
--int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
--				  struct file *file_out, loff_t pos_out,
--				  loff_t *len, unsigned int remap_flags)
-+static int
-+__generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-+				struct file *file_out, loff_t pos_out,
-+				loff_t *len, unsigned int remap_flags,
-+				const struct iomap_ops *ops)
- {
- 	struct inode *inode_in = file_inode(file_in);
- 	struct inode *inode_out = file_inode(file_out);
-@@ -351,8 +355,15 @@ int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
- 	if (remap_flags & REMAP_FILE_DEDUP) {
- 		bool		is_same = false;
- 
--		ret = vfs_dedupe_file_range_compare(inode_in, pos_in,
--				inode_out, pos_out, *len, &is_same);
-+		if (!IS_DAX(inode_in) && !IS_DAX(inode_out))
-+			ret = vfs_dedupe_file_range_compare(inode_in, pos_in,
-+					inode_out, pos_out, *len, &is_same);
-+		else if (IS_DAX(inode_in) && IS_DAX(inode_out) && ops)
-+			ret = dax_dedupe_file_range_compare(inode_in, pos_in,
-+					inode_out, pos_out, *len, &is_same,
-+					ops);
-+		else
-+			return -EINVAL;
- 		if (ret)
- 			return ret;
- 		if (!is_same)
-@@ -370,6 +381,24 @@ int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
- 
- 	return ret;
- }
-+
-+int dax_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-+			      struct file *file_out, loff_t pos_out,
-+			      loff_t *len, unsigned int remap_flags,
-+			      const struct iomap_ops *ops)
-+{
-+	return __generic_remap_file_range_prep(file_in, pos_in, file_out,
-+					       pos_out, len, remap_flags, ops);
-+}
-+EXPORT_SYMBOL(dax_remap_file_range_prep);
-+
-+int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-+				  struct file *file_out, loff_t pos_out,
-+				  loff_t *len, unsigned int remap_flags)
-+{
-+	return __generic_remap_file_range_prep(file_in, pos_in, file_out,
-+					       pos_out, len, remap_flags, NULL);
-+}
- EXPORT_SYMBOL(generic_remap_file_range_prep);
- 
- loff_t do_clone_file_range(struct file *file_in, loff_t pos_in,
-diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
-index 6fa05fb78189..f5b3a3da36b7 100644
---- a/fs/xfs/xfs_reflink.c
-+++ b/fs/xfs/xfs_reflink.c
-@@ -1308,8 +1308,13 @@ xfs_reflink_remap_prep(
- 	if (IS_DAX(inode_in) || IS_DAX(inode_out))
- 		goto out_unlock;
- 
--	ret = generic_remap_file_range_prep(file_in, pos_in, file_out, pos_out,
--			len, remap_flags);
-+	if (IS_DAX(inode_in))
-+		ret = generic_remap_file_range_prep(file_in, pos_in, file_out,
-+						    pos_out, len, remap_flags);
-+	else
-+		ret = dax_remap_file_range_prep(file_in, pos_in, file_out,
-+						pos_out, len, remap_flags,
-+						&xfs_read_iomap_ops);
- 	if (ret || *len == 0)
- 		goto out_unlock;
- 
-diff --git a/include/linux/dax.h b/include/linux/dax.h
-index 3275e01ed33d..32e1c34349f2 100644
---- a/include/linux/dax.h
-+++ b/include/linux/dax.h
-@@ -239,6 +239,10 @@ int dax_invalidate_mapping_entry_sync(struct address_space *mapping,
- 				      pgoff_t index);
- s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap,
- 		struct iomap *srcmap);
-+int dax_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
-+				  struct inode *dest, loff_t destoff,
-+				  loff_t len, bool *is_same,
-+				  const struct iomap_ops *ops);
- static inline bool dax_mapping(struct address_space *mapping)
- {
- 	return mapping->host && IS_DAX(mapping->host);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index fd47deea7c17..2e6ec5bdf82a 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -68,6 +68,7 @@ struct fsverity_info;
- struct fsverity_operations;
- struct fs_context;
- struct fs_parameter_spec;
-+struct iomap_ops;
- 
- extern void __init inode_init(void);
- extern void __init inode_init_early(void);
-@@ -1910,13 +1911,19 @@ extern ssize_t vfs_read(struct file *, char __user *, size_t, loff_t *);
- extern ssize_t vfs_write(struct file *, const char __user *, size_t, loff_t *);
- extern ssize_t vfs_copy_file_range(struct file *, loff_t , struct file *,
- 				   loff_t, size_t, unsigned int);
-+typedef int (*compare_range_t)(struct inode *src, loff_t srcpos,
-+			       struct inode *dest, loff_t destpos,
-+			       loff_t len, bool *is_same);
- extern ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
- 				       struct file *file_out, loff_t pos_out,
- 				       size_t len, unsigned int flags);
--extern int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
--					 struct file *file_out, loff_t pos_out,
--					 loff_t *count,
--					 unsigned int remap_flags);
-+int generic_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-+				  struct file *file_out, loff_t pos_out,
-+				  loff_t *count, unsigned int remap_flags);
-+int dax_remap_file_range_prep(struct file *file_in, loff_t pos_in,
-+			      struct file *file_out, loff_t pos_out,
-+			      loff_t *len, unsigned int remap_flags,
-+			      const struct iomap_ops *ops);
- extern loff_t do_clone_file_range(struct file *file_in, loff_t pos_in,
- 				  struct file *file_out, loff_t pos_out,
- 				  loff_t len, unsigned int remap_flags);
--- 
-2.30.1
+If linux-mips.org wiki is back, we will keep this link; if not, we
+should get a copy of that information into the documentation (where it
+can survive some time) or we simply drop it.
 
+Putting a web.archive.org link into MAINTAINERS sounds like a really
+bad idea to me.
 
-
+Lukas
