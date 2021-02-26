@@ -2,103 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5E5325E6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD46325E71
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhBZHs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 02:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhBZHs1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 02:48:27 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85335C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:47:47 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id u20so13183560ejb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:47:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4DN+A5hkNrzxN+WZsFV8KY0Vzh1Hlgt+doIBF7EMR7I=;
-        b=OoI1pL7li43evyqmtnhBTd2iXlFkyRAtJhv0UsbG4sZLfAyi/0E8XbDi7CnfngA1Fb
-         EGbtX2gv6++FtCuAjoDpPQ1IYU7OoF5/Un1UtUwuyOHqnXLUpZk5dc9eAqRdY0ltJ74k
-         4pgIrvMRednWCeZd3/VXFtHGBWobptY3IRVGstcv9YFU2D4ySf87tegWKAWVMLAy8+hN
-         kWHT6uPCm0aYkMk+S3xSFj/yunSaZcE+rajXHiTKOEBk3CjT8OeFziRWhyWdwBjl5dZH
-         Fvt+rt7S7haJJnRpFTKXKI/1r7bafqK7NOZ1KOo+/yGia4FwyXIRjkTOyOLpbUMTtIAF
-         Ry9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4DN+A5hkNrzxN+WZsFV8KY0Vzh1Hlgt+doIBF7EMR7I=;
-        b=fGwibIPlViqSmt92atqAPKkf1TDM5x7YxuKcwvRwLxfhUdSgsVhJxt2gmKJcTt3GlN
-         T0lc1mFJy7G5HMBuO8Bm+onzcP1FGxhGBwsRDXFogTfmOkvgTnE+Oh+yGAdHzO2lC2d1
-         mb5CYTO2cSSucxEA+93I/QIBEEC68bIxjnhBgBFCTHLRj3ziEdZ0cxSm+/sKWkq+2ORx
-         hOF/Cw62Jm8Vy1Rih4WUVliolT0xoWV2XNL6pSw1vrRkQKNFI4ZpKCOCwcSy8wclbXCB
-         FC06h1XBl810xzl8Jmu8frn+nes+kvREXNOM+Q2tPuts0SheLif569T6Ly667ghE3IfZ
-         vRQQ==
-X-Gm-Message-State: AOAM533uToEhXGKrFYeKSMgllvc3P5BrjoWwrWUhdgxu7B7k3P+ryOKc
-        TrATIdaj6rtP3u4KYOry3Pc=
-X-Google-Smtp-Source: ABdhPJwrW0FJ/RaJDt5EhWCuNgGElTt9wm1O5HSJXbKCjzjKNlNnU7H9Yku4RgjqsySPL+sbBlfaHg==
-X-Received: by 2002:a17:906:4f96:: with SMTP id o22mr1846571eju.511.1614325666360;
-        Thu, 25 Feb 2021 23:47:46 -0800 (PST)
-Received: from mail ([2a02:a03f:b7fe:f700:b14f:9a2a:80ff:1887])
-        by smtp.gmail.com with ESMTPSA id t27sm4650257ejc.62.2021.02.25.23.47.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 23:47:45 -0800 (PST)
-Date:   Fri, 26 Feb 2021 08:47:43 +0100
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
-Message-ID: <20210226074743.krd3cixaf7bt5vsp@mail>
-References: <20210225164513.3667778-1-arnd@kernel.org>
+        id S230045AbhBZHt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 02:49:57 -0500
+Received: from mail-dm6nam11on2072.outbound.protection.outlook.com ([40.107.223.72]:61025
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229537AbhBZHtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 02:49:53 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=chiwwKR68cYfKy59HAlF6DFPidiVg4X8yt9Vd+2lFv6hSai7kcBd+gvVz4Dul7uglWYWs8LZVbKeBWvCu8iSDQDaHPGJT6LDLi3NJ5VZQPcMayqIHV5Kzl96AzPA0ePzNdr/o2GVdQzKYkTQMGptSEzGYvG0K058ii25C+ycydX8Qdl5jjFcNAgA8P7DZ6itxUJq5qFaMCNu6ptuG2LYU3fOIEyoUAhDikBlEcyX+uf102GZbw7zVWiGeYtEj1Ep3Y1wv9Qw7YvkbuU7CRwQpdPyjifwb/YcRlntPbpT9SG8Nb31XQEkkFNqqBe4PFCsC+xs37upWlkSWs3FjHbXSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+x4QlB798Rm7bFJ8i8H4Is1HqrRV0qbaPOhxttuFK/M=;
+ b=doBhqlZUVlvdNw+jZDjC4HemnHK+86o5B7L9z/AMUyCEoTRFSMVbuf1oFXdkttHYLHHCs3hoGwz61Yti0kVM4ciGoyi4Wk9kCp9GJGHmtakip0t1OBPQOdqswucINbJHe8JWm0plOJi6fbhURl8+d7UGE6g/irsRifVWbeSQkZ4YNHp33eLSQBB9wQoRQbngmEomcAmMULz5GZ8EVimFMpn5qg38WLIWZyB30oQnh9Ejex8UFDaRm2OUoxrkFdZmoDFoXc9prsJvum6A7wq13n4wSv8iz99mydvqEF3Yjx+IGGqJgpUPMTFzWXrvgpXYGk/tcjiT1EC5jbbYULtCOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+x4QlB798Rm7bFJ8i8H4Is1HqrRV0qbaPOhxttuFK/M=;
+ b=injALVq0px9Y1Xx1teWqklFDNnEV3hQAYhTVN0c13ZAsK9wENxJMqFo/OD6QQzMTBRtarhq5kFgnc7DrP4VE+jBEzWatReDX4ELZC6zcLhAtyQ/RIPUVWYkANvfFNE3RatkbiOKxiH3lcQXBPlpdT0Sm63UseMP6TsKnwXKI7v0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4047.namprd12.prod.outlook.com (2603:10b6:208:1de::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Fri, 26 Feb
+ 2021 07:48:59 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
+ 07:48:59 +0000
+Subject: Re: [PATCH] radeon: ERROR: space prohibited before that ','
+To:     wangjingyu <wangjingyu@uniontech.com>, airlied@linux.ie,
+        daniel@ffwll.ch
+Cc:     alexander.deucher@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210226060528.12964-1-wangjingyu@uniontech.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <170cf966-2248-605a-d640-8e574f94b419@amd.com>
+Date:   Fri, 26 Feb 2021 08:48:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210226060528.12964-1-wangjingyu@uniontech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:bcf6:4057:c09:be71]
+X-ClientProxiedBy: AM0PR01CA0088.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:10e::29) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225164513.3667778-1-arnd@kernel.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:bcf6:4057:c09:be71] (2a02:908:1252:fb60:bcf6:4057:c09:be71) by AM0PR01CA0088.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20 via Frontend Transport; Fri, 26 Feb 2021 07:48:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 03fa274e-a9df-4e79-db7e-08d8da2afa3f
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4047:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4047A2E9FB045DEC2AF34473839D9@MN2PR12MB4047.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AzsJAppDOdPcSQ2yKn0I5UzijHVmXF7JXzJgOvTV1oCZH7ztIbj7aVQiyEZeaCel3Hfa+V8lux9rMjHbl+wmPztJ7a/XVRHeGjYIh/ni3CVLDBAbBmiB/KxOCISFxu+HokTb4kSPVLQBcQ59UA1nnCnMT4H0BKy4/rZRXcqSZfGHewutMw+XPm1QZm2Nij2LZ3rv30TDGYlMM7f2EfuiIGVLhBFZdKr1fnU//y1jNjhPaPyElfjpGsmSB8DpIZiWMLnbdpHmvGxco9g0s0OM4dA6T0BJ5WEbP8lkSnWVrTI1idpjB0Py2A1dnx1Jn7DtFSOdvgL3VwxU90nG4Z1pcKbNMB9au07Vpa8FC07YRf326aBmV6+x4cDnmemoE4aBNwOpqeoMwAYpQOBBIUD+FsEDmRY2rV1SVs21ge5zHB9x1n6yZxvywBp+QOC1AdQa4aytwPmzGWZP5ULO1kYBVEtM37UwxIafe9c+BXGc40TnmPzvK0QIMadsO32jM8jZXTFoie7jxvBSIDAxNgtsI7DF1fZIvobO/yg7sn0QQ7tlEuO5iUYcRZBRkpdfN3UwDkRsgG9TtQkSajhqW79AVg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(136003)(396003)(39860400002)(83380400001)(4326008)(478600001)(186003)(2906002)(2616005)(36756003)(66946007)(6486002)(31686004)(16526019)(5660300002)(6666004)(52116002)(8676002)(86362001)(8936002)(316002)(31696002)(66556008)(66476007)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MDBrR3pXalpHWE16R205cGpTYTVIT21iMDdadWdKdmExMGZUUWFWQlNHZ2cr?=
+ =?utf-8?B?TjBITmxYS3Z1SG9mZzgyVHdhbVAwY1Jnc0wzS2s3SXc1cHZTUmFMMzIwaWlE?=
+ =?utf-8?B?WmpEWXd1UTNaQmVWTDdMbFNpdTFFbkVsWllzQmJxMnJiaWZuQXBnaWx1QXcr?=
+ =?utf-8?B?RTZELzY3ZTBlTkk4aE9tUStZRHdmMWxpTytDWTFhMS9YOWJLeDdsUW5MdDE2?=
+ =?utf-8?B?dVRuWVY0dVlvclF2ckdxSzVIV1Vpc2ZIZDB1czRpTWY2QXJPTUdiNmtRR21h?=
+ =?utf-8?B?WHlRdUd2QThxYkFZYjREOWFNRXZtSlFRcXlRSUJHRkdaZE5kbVpOUkx2VTRz?=
+ =?utf-8?B?MHBEeWVqcnRhYjhZayt3bEFUQkFIQ2p2ai9TemtycjJoQUo5UFl2cWZJZnRm?=
+ =?utf-8?B?RW5Na0ZEc0lXOVJsVHZxdlR0OUxnRk9SUWJOQkJaUldqaGxoZ3lmclpOSlBI?=
+ =?utf-8?B?NFQralE3b3BSdDN6MHQxNEtKTFFKM1dlOTFuRXdSVkIzWjc1QXFORm85b3pn?=
+ =?utf-8?B?V21tN3JhWTdWdWpJbjhmRVdMLzY2LytZM0xQS3FWQnB5VUNBMnFDWEdJenpY?=
+ =?utf-8?B?SFdidTkzbHZPSjN5U2VhblRZYzFJejM5NHh0THBkckNtbjdYQlZuN0VTYUwv?=
+ =?utf-8?B?OFRpVDVDVTNValc4UDZPQWlIaGVWODBPY3NINFc5R3ptbkdTVDd5amlSQ0U2?=
+ =?utf-8?B?WVd0cnVwb0dUY1c5Sml4SlQ5SWU4bk5sdWJKVUF1Z2dId0E4dHRxK1FWTDJ0?=
+ =?utf-8?B?OWpRVE1CdXNUTnMrQXFYL3RXNTZ4dkdEMEsxQVhUbFBWWkhKL1FITHdOTjZt?=
+ =?utf-8?B?NVpwZCs0MUZPbHV6Rml2cVBDTUZjTmN3M3UrSkd3U2ZBS29wTTBYUWNoZzNn?=
+ =?utf-8?B?ajFOWTJXZ3RuMjR4SGhsMWxlRk5rZGtoUzNaS1VqaHhhV2kvMWJNb3BRbW5t?=
+ =?utf-8?B?K3k2cDBKMGZ6ejRJRGxMZUZYcjBRYU40Rnc5MWZjalhKeW9DYTFDWGtiUnov?=
+ =?utf-8?B?R2FqVEQzTHlPU1cxbGtSdWVxemZYR1Bpb01xdVE4YmRYT25odUE1dXJ0VTRX?=
+ =?utf-8?B?ZzRoSnVPTVJKOHZDbXZ5MnRFcDlBQU5BeW4wOVR6QjJVWTRULytzVlZreHA0?=
+ =?utf-8?B?WnFsUGpCTkFKT0hwc0FQczYrR1R3M2pUdmdqMHdaQko4WTBxN1cycmdPY1ky?=
+ =?utf-8?B?L1RaUzkxTUlCaW1YYkc5WmRzdW5pMFRQejB4ZmFMZmhiNXJ6dGcweWp6bllB?=
+ =?utf-8?B?S1IxcVVhMGM1MjZhSDJjOEtiTG4vbUljR1ZZWDJSMnEwWkQ0TmRoUEdwL1Nx?=
+ =?utf-8?B?T2RkQzBUdm9waWRpTEJTcExYekhUSFNVV0xGTzJEcHdERnB1NlV6ZzB2Vkpr?=
+ =?utf-8?B?Ymx3SnRuMHJmeUluQXRkbHYrNVlpZWxLTEtSRDJUenJ6cFQ4RHROSFVIM0ll?=
+ =?utf-8?B?Rm9kU0owY2txNDJxRVNQUkVCbExweGhXQ1FxVnV2clVsSWorbWxxWTkvN3k0?=
+ =?utf-8?B?QlR3Tis2YTcxN0M5MlN1TFhuSERZUWdmVTlNalE0ajY2R3owTkEwVm9mYVB0?=
+ =?utf-8?B?cFdrQnZ2eWFSdXJ1aGFEVkJqRTBiRHdTN2ppSVlua1dsbmtSTWJPVmlnMVlB?=
+ =?utf-8?B?Tldsc00rbmRSbXg4Q29vRlptSm14VFVlMFlacXpRWHEydEtCWTd2Q0N1WlFx?=
+ =?utf-8?B?NWVZSktWL00vS0dQWmI1YVF6ZktKUU9LckJqbnBLbWt5eit0OUg2Y3lzbDNP?=
+ =?utf-8?B?RXFRTmk3R1ZEemxyTkExbmZhamxkOTVBNVZPRnJHejhKMXpHeHBxb0w0NjNx?=
+ =?utf-8?B?M09WNTVCOEwvZG1mWDBpaUU2SG56UnVHUzVDcFptMHIrdlBFVTlRZHdtQ3lw?=
+ =?utf-8?Q?WAAhe4E6kB7LN?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03fa274e-a9df-4e79-db7e-08d8da2afa3f
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2021 07:48:59.8073
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0iViIb0aKL7bjqUauYo0OMQvNswGclt0pnZqFyQ59AHd0hJttPFh3xuOgmvYhfzR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 05:45:09PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Well coding style clean ups are usually welcome, but not necessarily one 
+by one.
+
+We can probably merge this if you clean up all checkpatch.pl warnings in 
+the whole file.
+
+Christian.
+
+Am 26.02.21 um 07:05 schrieb wangjingyu:
+> drm_property_create_range(rdev->ddev, 0 , "coherent", 0, 1);
+>
+> Signed-off-by: wangjingyu <wangjingyu@uniontech.com>
 > ---
->  include/linux/compiler-clang.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index 6478bff6fcc2..bbfa9ff6a2ec 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -33,6 +33,16 @@
->  #define __no_sanitize_thread
->  #endif
->  
-> +/*
-> + * sparse (__CHECKER__) pretends to be gcc, but can't do constant
-> + * folding in __builtin_bswap*() (yet), so don't set these for it.
-> + */
+>   drivers/gpu/drm/radeon/radeon_display.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
+> index 3a6fedad002d..439d1b3e87d8 100644
+> --- a/drivers/gpu/drm/radeon/radeon_display.c
+> +++ b/drivers/gpu/drm/radeon/radeon_display.c
+> @@ -1396,7 +1396,7 @@ static int radeon_modeset_create_props(struct radeon_device *rdev)
+>   
+>   	if (rdev->is_atom_bios) {
+>   		rdev->mode_info.coherent_mode_property =
+> -			drm_property_create_range(rdev->ddev, 0 , "coherent", 0, 1);
+> +			drm_property_create_range(rdev->ddev, 0, "coherent", 0, 1);
+>   		if (!rdev->mode_info.coherent_mode_property)
+>   			return -ENOMEM;
+>   	}
 
-This is not true anymore since 2017. Also, a much recent version of
-Sparse is needed for _Generic(), for example).
-
-Can you remove the comment and the test for __CHECKER__?
-
-Best regards,
--- Luc
