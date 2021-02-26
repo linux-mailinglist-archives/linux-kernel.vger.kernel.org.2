@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CA73261C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590A33261BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:05:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhBZLHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:07:16 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42991 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230087AbhBZLHN (ORCPT
+        id S231129AbhBZLEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:04:50 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:49999 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230430AbhBZLEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:07:13 -0500
-X-UUID: fe58798b260a4997ae105309f2ae0558-20210226
-X-UUID: fe58798b260a4997ae105309f2ae0558-20210226
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <mason.zhang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1583209110; Fri, 26 Feb 2021 19:06:28 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 26 Feb 2021 19:06:05 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 26 Feb 2021 19:06:05 +0800
-From:   Mason Zhang <Mason.Zhang@mediatek.com>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <hanks.chen@mediateka.com>,
-        <wsd_upstream@mediatek.com>, Mason Zhang <Mason.Zhang@mediatek.com>
-Subject: [PATCH 2/2] dt-binding: mediatek: mt6779: update spi document
-Date:   Fri, 26 Feb 2021 19:01:10 +0800
-Message-ID: <20210226110109.30500-1-Mason.Zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Fri, 26 Feb 2021 06:04:21 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id BCD045C005E;
+        Fri, 26 Feb 2021 06:02:36 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 26 Feb 2021 06:02:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=C
+        Z2O07BJViQR9CxHpGvrSnFxsJN7ZsihXrlMMEDT4xY=; b=fy/bXOO/hPTQcQBy3
+        SncVeaCfKEF/vOucDsbmRXqqeyG61YR8uPEQ78tqzy/7KdK1A/8s6aLn+Ycr2oDj
+        SYwgVcni/xTI3KzQD30sl2CDFR8hpqQaw3/i5h+zPCqAhelGTvStN67xGTHzsmky
+        7C2PgzpdvmtuNg5eZnUuXwHfE5ANTYbtCIduoPkBJWo3Bsy661lBZftw3JsVAR/D
+        y44bbUHhKR9U1haeFxmWXr6M50cjJDUKQm4V5begVI4cB7L/FfqpPSsZ2OV9sapg
+        cLwuiVhcCtOEaYWaExIDPJOEP+BilfZ1jjgbof+wednwcg69cGCx/PzUivxxUKjU
+        e8yDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=CZ2O07BJViQR9CxHpGvrSnFxsJN7ZsihXrlMMEDT4
+        xY=; b=aWWPRvpOHg5bGYudiiOwOgNYvM7OK0kJPV6oC1ucGg3K4GsrP5pah84w0
+        oHKKcQj/Wo2odNjy1c0+7DBCAAo/8rxxG4+C7LmkpTaIKy0joix+Oqn9S+u+Btlk
+        oSfPGli9SetsFgwWHDUNruAdH32V9S/53FlVGnivBxonSzp0HWbp/EI1izhGeOc3
+        Fc31b6FdC0dgrr86FetHDTMRFaV1RRTTI+3GTo3JGTioI1pfoSYlOdHsngWfrIX1
+        JXlF9HakXC1mgs0U6tZnKRaf/PysjAtOcan+saFRTa1MO3MkuDoIo10rO60bBvC0
+        48FHXt0iB+KCkdm44t5Rb8qsswjkw==
+X-ME-Sender: <xms:TNU4YO_2ky1hQot727ctus235LEjZLsQ3-kCh2nNZAjaTdAKZMxLeg>
+    <xme:TNU4YOv5JIbsBpych4w1rU2xLpa3rDTo1Rp6SjfQygHzmbA--PXO__DJ5ieslfZzm
+    ADMXU5EXXmKAg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrledugddvgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggugfgjsehtkeertddttddunecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevtdeile
+    euteeggefgueefhfevgfdttefgtefgtddvgeejheeiuddvtdekffehffenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:TNU4YEDjS3y2EfM3cLtRBmvtNpotc8AD7GvrNArcpkZtx1fRB9wa2Q>
+    <xmx:TNU4YGeuXl70BIT9tEwt4jq__UakDcqPC-sln6sk1Qwh-UpflFyfgw>
+    <xmx:TNU4YDOQOJQ0gcYx7w_6Dgx_idxLozxSXBUnR2VmXnbocSOWqBhOlA>
+    <xmx:TNU4YFUoeug11KO93PTC5kDzTtnh07V6ltaZI9Z_IzuPWmzVX1NYKQ>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 59E221080054;
+        Fri, 26 Feb 2021 06:02:36 -0500 (EST)
+Date:   Fri, 26 Feb 2021 12:02:34 +0100
+From:   Greg KH <greg@kroah.com>
+To:     =?iso-8859-1?Q?J=F6rg-Volker?= Peetz <jvpeetz@web.de>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Linux 5.11.2
+Message-ID: <YDjVShQyMIVWfZU7@kroah.com>
+References: <1614334214168@kroah.com>
+ <s1ak0f$p2g$1@ciao.gmane.io>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 89044B18737F6A08210EDF845B0976A45BBB3832D3E72C978CC03E08F8493AE62000:8
-X-MTK:  N
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <s1ak0f$p2g$1@ciao.gmane.io>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-this patch update spi document for MT6779 SOC.
+On Fri, Feb 26, 2021 at 11:54:07AM +0100, Jörg-Volker Peetz wrote:
+> Hi,
+> 
+> thanks for the upgrade.
+> There seems to be a dangling link in the git repository:
+> `scripts/dtc/include-prefixes/c6x`
 
-Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
----
- Documentation/devicetree/bindings/spi/spi-mt65xx.txt | 1 +
- 1 file changed, 1 insertion(+)
+Is that new?  What commit caused it?
 
-diff --git a/Documentation/devicetree/bindings/spi/spi-mt65xx.txt b/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
-index 9e43721fa7d6..7bae7eef26c7 100644
---- a/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
-+++ b/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
-@@ -13,6 +13,7 @@ Required properties:
-     - mediatek,mt8183-spi: for mt8183 platforms
-     - "mediatek,mt8192-spi", "mediatek,mt6765-spi": for mt8192 platforms
-     - "mediatek,mt8516-spi", "mediatek,mt2712-spi": for mt8516 platforms
-+    - "mediatek,mt6779-spi", "mediatek,mt6765-spi": for mt6779 platforms
- 
- - #address-cells: should be 1.
- 
--- 
-2.18.0
+thanks,
 
+greg k-h
