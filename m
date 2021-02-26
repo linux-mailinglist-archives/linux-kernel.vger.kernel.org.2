@@ -2,142 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009973267A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D72EF3267B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhBZUDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:03:02 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16126 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229946AbhBZUC7 (ORCPT
+        id S230037AbhBZUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:05:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229989AbhBZUFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:02:59 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QJXAer021836;
-        Fri, 26 Feb 2021 15:02:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=XKRUARzaSZS0avrBeedJ1pcekWiA2Kc4k7bWljxzBlM=;
- b=Vx5/UTyNiLggos/dmuKw6jXAg9BS5N8kd0LbBpHRTPAWCBaOGczD51jjKCiQ6hxlSrDD
- 6f89PbVr0ALHtvUclQNraReRmzoNAfCTWS357RSdTmE62yX8K97bACVY4OEraWvIUbVX
- ZQrdU/lN7STQQjLCyW+bdRo08UMcfOWzO96PuaOxYF9fw9dAFk1jY3yFWza0afxE20Mk
- 5nK/KeTQcuUGU4XkG0JKnUhl2mUGO8qqR2PEE7PR0+yE4rS6CLboKzdVKa3dsXtk99gd
- PLfGYK0aSZqZLor31yQ+qo4LQhEdhf6jgZMRa19kYJItR3UKvVhzDhLTg/Ltj0NJiQMC nA== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36y6rf9eha-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 15:02:15 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11QK1k2W021402;
-        Fri, 26 Feb 2021 20:02:13 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 36tsphaydp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 20:02:13 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11QK1vLB23658836
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 20:01:57 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 644BBAE04D;
-        Fri, 26 Feb 2021 20:02:10 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0EAC9AE055;
-        Fri, 26 Feb 2021 20:02:10 +0000 (GMT)
-Received: from localhost (unknown [9.171.10.18])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 26 Feb 2021 20:02:09 +0000 (GMT)
-Date:   Fri, 26 Feb 2021 21:02:08 +0100
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 patches for the 5.12 merge window #2
-Message-ID: <your-ad-here.call-01614369728-ext-5933@work.hours>
+        Fri, 26 Feb 2021 15:05:12 -0500
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDD6C061786;
+        Fri, 26 Feb 2021 12:04:31 -0800 (PST)
+Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id E30FF1F995;
+        Fri, 26 Feb 2021 21:04:25 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/41] SDM630/636/660/Nile&Ganges DT feature enablement
+Date:   Fri, 26 Feb 2021 21:03:30 +0100
+Message-Id: <20210226200414.167762-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-26_07:2021-02-26,2021-02-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- bulkscore=0 spamscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
- malwarescore=0 suspectscore=0 lowpriorityscore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102260143
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Hi!
 
-please pull the second round of s390 fixes and features for 5.12.
+In this *mammoth* series we finally wire up things that
+have been ready for far too long.. We weren't able to
+send most of them earlier though, as CLK and ICC review
+took quite some time..
 
-Thank you,
-Vasily
+Speaking of ICC.. the defines are substituted by numbers,
+so as to allow merging independent of icc-next (Georgi Djakov stated
+the driver would be pulled in for 5.13).
 
-The following changes since commit df24212a493afda0d4de42176bea10d45825e9a0:
+AngeloGioacchino Del Regno (14):
+  arm64: dts: qcom: sdm630: Rewrite memory map
+  arm64: dts: qcom: sdm630: Add qfprom subnodes
+  arm64: dts: qcom: sdm630: Fix TLMM node and pinctrl configuration
+  arm64: dts: qcom: sdm630: Add SDHCI2 node
+  arm64: dts: qcom: sdm630: Add interconnect and opp table to sdhc_1
+  arm64: dts: qcom: sdm630: Add GPU Clock Controller node
+  arm64: dts: qcom: sdm630: Add clocks and power domains to SMMU nodes
+  arm64: dts: qcom: sdm630: Add qcom,adreno-smmu compatible
+  arm64: dts: qcom: sdm630: Add Adreno 508 GPU configuration
+  arm64: dts: qcom: pm660: Support SPMI regulators on PMIC sid 1
+  arm64: dts: qcom: pm660l: Support SPMI regulators on PMIC sid 3
+  arm64: dts: qcom: sdm630: Configure the camera subsystem
+  arm64: dts: qcom: sdm630-xperia-nile: Add all RPM and fixed regulators
+  arm64: dts: qcom: sdm630-nile: Configure WCN3990 Bluetooth
 
-  Merge tag 's390-5.12-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2021-02-21 13:40:06 -0800)
+Konrad Dybcio (27):
+  arm64: dts: qcom: sdm630: Add RPMPD nodes
+  arm64: dts: qcom: sdm630: Add MMCC node
+  arm64: dts: qcom: sdm630: Add interconnect provider nodes
+  arm64: dts: qcom: sdm630: Add MDSS nodes
+  arm64: dts: qcom: sdm630: Fix intc reg indentation
+  arm64: dts: qcom: sdm630: Add USB configuration
+  arm64: dts: qcom: sdm630: Add TSENS node
+  arm64: dts: qcom: sdm630: Add modem/ADSP SMP2P nodes
+  arm64: dts: qcom: sdm630: Add thermal-zones configuration
+  arm64: dts: qcom: sdm630: Add ADSP remoteproc configuration
+  arm64: dts: qcom: sdm630: Raise tcsr_mutex_regs size
+  arm64: dts: qcom: pm660l: Add WLED support
+  arm64: dts: qcom: pm660(l): Add VADC and temp alarm nodes
+  arm64: dts: qcom: sdm660: Make the DTS an overlay on top of 630
+  arm64: dts: qcom: Add device tree for SDM636
+  arm64: dts: qcom: sdm630: Add IMEM node
+  arm64: dts: qcom: sdm660: Add required nodes for DSI1
+  arm64: dts: qcom: sdm630-nile: Use &labels
+  arm64: dts: qcom: sdm630-nile: Add USB
+  arm64: dts: qcom: sdm630-nile: Add Volume up key
+  arm64: dts: qcom: sdm630-xperia: Retire sdm630-sony-xperia-ganges.dtsi
+  arm64: dts: qcom: sdm630-nile: Add Synaptics touchscreen.
+  arm64: dts: qcom: sdm630-nile: Specify ADSP firmware name
+  arm64: dts: qcom: sdm630-nile: Enable uSD card slot
+  arm64: dts: qcom: sdm630-nile: Remove gpio-keys autorepeat
+  arm64: dts: qcom: sdm630: Add I2C functions to I2C pins
+  arm64: dts: qcom: sdm630: Add DMA to I2C hosts
 
-are available in the Git repository at:
+ .../bindings/thermal/qcom-tsens.yaml          |    1 +
+ arch/arm64/boot/dts/qcom/pm660.dtsi           |  133 ++
+ arch/arm64/boot/dts/qcom/pm660l.dtsi          |   54 +
+ .../qcom/sdm630-sony-xperia-ganges-kirin.dts  |   14 +-
+ .../dts/qcom/sdm630-sony-xperia-ganges.dtsi   |   40 -
+ .../sdm630-sony-xperia-nile-discovery.dts     |    1 +
+ .../qcom/sdm630-sony-xperia-nile-pioneer.dts  |    1 +
+ .../qcom/sdm630-sony-xperia-nile-voyager.dts  |    1 +
+ .../dts/qcom/sdm630-sony-xperia-nile.dtsi     |  538 +++++-
+ arch/arm64/boot/dts/qcom/sdm630.dtsi          | 1446 +++++++++++++++--
+ .../sdm636-sony-xperia-ganges-mermaid.dts     |   14 +-
+ arch/arm64/boot/dts/qcom/sdm636.dtsi          |   23 +
+ .../boot/dts/qcom/sdm660-xiaomi-lavender.dts  |    2 -
+ arch/arm64/boot/dts/qcom/sdm660.dtsi          |  519 +++---
+ 14 files changed, 2292 insertions(+), 495 deletions(-)
+ delete mode 100644 arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges.dtsi
+ create mode 100644 arch/arm64/boot/dts/qcom/sdm636.dtsi
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.12-2
+-- 
+2.30.1
 
-for you to fetch changes up to cf6acb8bdb1d829b85a4daa2944bf9e71c93f4b9:
-
-  s390/cpumf: Add support for complete counter set extraction (2021-02-24 00:31:23 +0100)
-----------------------------------------------------------------
-s390 updates for the 5.12 merge window #2
-
-- Fix physical vs virtual confusion in some basic mm macros and
-  routines. Caused by __pa == __va on s390 currently.
-
-- Get rid of on-stack cpu masks.
-
-- Add support for complete CPU counter set extraction.
-
-- Add arch_irq_work_raise implementation.
-
-- virtio-ccw revision and opcode fixes.
-
-----------------------------------------------------------------
-Alexander Gordeev (4):
-      s390/mm: make pXd_deref() macros return a pointer
-      s390/mm: fix invalid __pa() usage in pfn_pXd() macros
-      s390/mm: fix phys vs virt confusion in pgtable allocation routines
-      s390/mm: fix phys vs virt confusion in vmem_*() functions family
-
-Cornelia Huck (1):
-      virtio/s390: implement virtio-ccw revision 2 correctly
-
-Heiko Carstens (5):
-      s390/opcodes: rename selhhhr to selfhr
-      s390/smp: consolidate locking for smp_rescan()
-      s390/smp: __smp_rescan_cpus() - move cpumask away from stack
-      s390/smp: smp_emergency_stop() - move cpumask away from stack
-      s390/topology: move cpumasks away from stack
-
-Ilya Leoshkevich (1):
-      s390/smp: implement arch_irq_work_raise()
-
-Thomas Richter (1):
-      s390/cpumf: Add support for complete counter set extraction
-
- arch/s390/include/asm/irq_work.h               |  12 +
- arch/s390/include/asm/pgalloc.h                |   2 +-
- arch/s390/include/asm/pgtable.h                |  16 +-
- arch/s390/include/uapi/asm/perf_cpum_cf_diag.h |  51 +++
- arch/s390/kernel/perf_cpum_cf_diag.c           | 548 +++++++++++++++++++++++--
- arch/s390/kernel/smp.c                         |  28 +-
- arch/s390/kernel/topology.c                    |  25 +-
- arch/s390/mm/pgalloc.c                         |  22 +-
- arch/s390/mm/vmem.c                            |  30 +-
- arch/s390/tools/opcodes.txt                    |   2 +-
- drivers/s390/virtio/virtio_ccw.c               |   4 +-
- include/linux/cpuhotplug.h                     |   1 +
- 12 files changed, 660 insertions(+), 81 deletions(-)
- create mode 100644 arch/s390/include/asm/irq_work.h
- create mode 100644 arch/s390/include/uapi/asm/perf_cpum_cf_diag.h
