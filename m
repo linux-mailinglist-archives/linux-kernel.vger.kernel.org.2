@@ -2,196 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15F2325B50
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 02:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F706325B52
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 02:32:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhBZBa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 20:30:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhBZBa0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 20:30:26 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239E9C061574;
-        Thu, 25 Feb 2021 17:29:46 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d11so4408307plo.8;
-        Thu, 25 Feb 2021 17:29:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XmwUKf+hUjG27sz2bJqruSzlU36nwLMx6Yr1Y6X8O/s=;
-        b=MUdlHZntR8igfGXzxHRYarSsJ1VNGC47LvAonEOY8JSg3/voXJcOe3iDjmLmjdWvLD
-         KMQxxUFn4AJKArwdElca1UiZ4WmORYgbm4q+yfMsgHRSIO/XwZ6smKLQ+zbl2qx/x19k
-         tYcVIoLCSGkXu9Qn9ocH+OsddRAXQ3WYhrfkyCfjTpuXv8iAo1cJyB/vJd+Xl8PR4car
-         gL7ieHzLY58KcoC3VYLAyBHw2rL+aRQ8W1z2YFBTExa1mEZSpZIgZF8o4uKKFHVT/l2o
-         JpDztCwRXGCdtsE0AbIfVd6QVjZlomLGclNvkjnxs5FAvR4eowQO5epx2bYWE5rywPnL
-         D1tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XmwUKf+hUjG27sz2bJqruSzlU36nwLMx6Yr1Y6X8O/s=;
-        b=ujJCK5Q6pcQAehLBMFmEg2FXgZ3rYeLpYuXdPfBZxnZ+AM6J4sGuUJ9zDbtlzBCfiw
-         DJcpfke0+hmme0VxMKA3DFPVH8KOmxItBCg+7MpMveI44YA2Oww0AOdKxNp/8jOiuw8v
-         fUS3ww6Hh/O7oSf0XbTIIiARIBL1JCAZE7NxSQA6tgFcV5wP4XaA7vo+BAVN71/bXxX8
-         qytDUUUvKnV6vPAOMLefTkzB9lhC/T7TUZQvwbIQnofz2LpAgOBMBY2Kse6tGcBtR62J
-         efXsVGQ7f+uqyBEHAcIP/i6lnXMV8ani6scmWa2leDfFeV3Eg+WcEvMk9QOUZnTNP1cH
-         52CA==
-X-Gm-Message-State: AOAM533ZwMiTyVEOf7Nfi51ocizO9RwtMSpVJHH7z8V8fHAXqmCEXOgr
-        uNcKwx4+2vISTmHKcEkY3U+eHIgJy9MnOw==
-X-Google-Smtp-Source: ABdhPJzDOcY0htBukhNsAGlPVzopVjSgvQVb9Vo/MdNoJwT2X1CB9g6ODBTdELCMsls/NK6rrrmQ3w==
-X-Received: by 2002:a17:902:e54f:b029:e2:8f59:6fe0 with SMTP id n15-20020a170902e54fb02900e28f596fe0mr618450plf.76.1614302985633;
-        Thu, 25 Feb 2021 17:29:45 -0800 (PST)
-Received: from localhost.localdomain ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id c6sm7773242pfc.94.2021.02.25.17.29.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 17:29:44 -0800 (PST)
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     jic23@kernel.org
-Cc:     linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, benjamin.gaignard@st.com,
-        fabrice.gasnier@foss.st.com,
-        William Breathitt Gray <vilhelm.gray@gmail.com>
-Subject: [PATCH v2] counter: stm32-timer-cnt: Report count function when SLAVE_MODE_DISABLED
-Date:   Fri, 26 Feb 2021 10:29:31 +0900
-Message-Id: <20210226012931.161429-1-vilhelm.gray@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        id S230022AbhBZBar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 20:30:47 -0500
+Received: from ozlabs.org ([203.11.71.1]:60879 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229492AbhBZBao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 20:30:44 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DmsXT46Zyz9sRR;
+        Fri, 26 Feb 2021 12:30:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614303001;
+        bh=vYjrrdyz1D/kTP8EJO28hOD7aS7TC14WbbTGWFOeKZU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mpRiaTe9CUqTzWGQMaiI0Qtrt7z7mwST2bQDBPaP3gapXZaiYAxzL1ufWfizWraGf
+         c6ct7/KMHsWHaFle4WUqtYyXv8GAcqM3WzWETu5HcXW/Xa/KUJjMljd+3jbXSUDa1V
+         D53wUWDLlHQJjxVyKdddyIzjiUq0K5SvNF/tJ/UucdNdykYGe9XiAJT1U+X9UGCt/4
+         GOblJAGfA3+1b1H8qUaSFFGlTdBaIRt41HmytgutXokXTR1NwEtSkf80i7dRqFRYG4
+         jlNMo/rkCf+ZWzI4IrtUNwIm5fJERLJ3ifR0jzH5PKjr1E5TQ8eIRcJvjJ7gPNjdZG
+         sjfNqexUpPFxQ==
+Date:   Fri, 26 Feb 2021 12:29:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     "Zhuo, Qingqing" <Qingqing.Zhuo@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the amdgpu tree
+Message-ID: <20210226122959.68baae71@canb.auug.org.au>
+In-Reply-To: <DM6PR12MB29394B1C0B88CE17F8CB98D4FB9F9@DM6PR12MB2939.namprd12.prod.outlook.com>
+References: <20210224132849.439973d5@canb.auug.org.au>
+        <DM6PR12MB29394B1C0B88CE17F8CB98D4FB9F9@DM6PR12MB2939.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/X_Dy=2M5J5cizqhC1tYETbg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When in SLAVE_MODE_DISABLED mode, the count still increases if the
-counter is enabled because an internal clock is used. This patch fixes
-the stm32_count_function_get() and stm32_count_function_set() functions
-to properly handle this behavior.
+--Sig_/X_Dy=2M5J5cizqhC1tYETbg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
-Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
----
-Changes in v2:
- - Support an explicit 0 case for function_get()/function_set()
+Hi all,
 
- drivers/counter/stm32-timer-cnt.c | 39 ++++++++++++++++++++-----------
- 1 file changed, 25 insertions(+), 14 deletions(-)
+On Wed, 24 Feb 2021 04:09:31 +0000 "Zhuo, Qingqing" <Qingqing.Zhuo@amd.com>=
+ wrote:
+>
+> [AMD Public Use]
+>=20
+> Hi Stephen,
+>=20
+> Thanks for your feedback. I will submit a fix for the warning.=20
+>=20
+> Thank you,
+> Lillian
+>=20
+> -----Original Message-----
+> From: Stephen Rothwell <sfr@canb.auug.org.au>=20
+> Sent: Tuesday, February 23, 2021 9:29 PM
+> To: Alex Deucher <alexdeucher@gmail.com>
+> Cc: Zhuo, Qingqing <Qingqing.Zhuo@amd.com>; Linux Kernel Mailing List <li=
+nux-kernel@vger.kernel.org>; Linux Next Mailing List <linux-next@vger.kerne=
+l.org>
+> Subject: linux-next: build warnings after merge of the amdgpu tree
+>=20
+> Hi all,
+>=20
+> After merging the amdgpu tree, today's linux-next build (htmldocs) produc=
+ed these warnings:
+>=20
+> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:380: warning: Function =
+parameter or member 'vblank_lock' not described in 'amdgpu_display_manager'
+> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:380: warning: Function =
+parameter or member 'vblank_workqueue' not described in 'amdgpu_display_man=
+ager'
+>=20
+> Introduced by commit
+>=20
+>   3cfd14b67b2c ("drm/amd/display: Fix system hang after multiple hotplugs=
+ (v2)")
 
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index ef2a974a2f10..cd50dc12bd02 100644
---- a/drivers/counter/stm32-timer-cnt.c
-+++ b/drivers/counter/stm32-timer-cnt.c
-@@ -44,13 +44,14 @@ struct stm32_timer_cnt {
-  * @STM32_COUNT_ENCODER_MODE_3: counts on both TI1FP1 and TI2FP2 edges
-  */
- enum stm32_count_function {
--	STM32_COUNT_SLAVE_MODE_DISABLED = -1,
-+	STM32_COUNT_SLAVE_MODE_DISABLED,
- 	STM32_COUNT_ENCODER_MODE_1,
- 	STM32_COUNT_ENCODER_MODE_2,
- 	STM32_COUNT_ENCODER_MODE_3,
- };
- 
- static enum counter_count_function stm32_count_functions[] = {
-+	[STM32_COUNT_SLAVE_MODE_DISABLED] = COUNTER_COUNT_FUNCTION_INCREASE,
- 	[STM32_COUNT_ENCODER_MODE_1] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_A,
- 	[STM32_COUNT_ENCODER_MODE_2] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_B,
- 	[STM32_COUNT_ENCODER_MODE_3] = COUNTER_COUNT_FUNCTION_QUADRATURE_X4,
-@@ -90,6 +91,9 @@ static int stm32_count_function_get(struct counter_device *counter,
- 	regmap_read(priv->regmap, TIM_SMCR, &smcr);
- 
- 	switch (smcr & TIM_SMCR_SMS) {
-+	case 0:
-+		*function = STM32_COUNT_SLAVE_MODE_DISABLED;
-+		return 0;
- 	case 1:
- 		*function = STM32_COUNT_ENCODER_MODE_1;
- 		return 0;
-@@ -99,9 +103,9 @@ static int stm32_count_function_get(struct counter_device *counter,
- 	case 3:
- 		*function = STM32_COUNT_ENCODER_MODE_3;
- 		return 0;
-+	default:
-+		return -EINVAL;
- 	}
--
--	return -EINVAL;
- }
- 
- static int stm32_count_function_set(struct counter_device *counter,
-@@ -112,6 +116,9 @@ static int stm32_count_function_set(struct counter_device *counter,
- 	u32 cr1, sms;
- 
- 	switch (function) {
-+	case STM32_COUNT_SLAVE_MODE_DISABLED:
-+		sms = 0;
-+		break;
- 	case STM32_COUNT_ENCODER_MODE_1:
- 		sms = 1;
- 		break;
-@@ -122,8 +129,7 @@ static int stm32_count_function_set(struct counter_device *counter,
- 		sms = 3;
- 		break;
- 	default:
--		sms = 0;
--		break;
-+		return -EINVAL;
- 	}
- 
- 	/* Store enable status */
-@@ -274,31 +280,36 @@ static int stm32_action_get(struct counter_device *counter,
- 	size_t function;
- 	int err;
- 
--	/* Default action mode (e.g. STM32_COUNT_SLAVE_MODE_DISABLED) */
--	*action = STM32_SYNAPSE_ACTION_NONE;
--
- 	err = stm32_count_function_get(counter, count, &function);
- 	if (err)
--		return 0;
-+		return err;
- 
- 	switch (function) {
-+	case STM32_COUNT_SLAVE_MODE_DISABLED:
-+		/* counts on internal clock when CEN=1 */
-+		*action = STM32_SYNAPSE_ACTION_NONE;
-+		return 0;
- 	case STM32_COUNT_ENCODER_MODE_1:
- 		/* counts up/down on TI1FP1 edge depending on TI2FP2 level */
- 		if (synapse->signal->id == count->synapses[0].signal->id)
- 			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
--		break;
-+		else
-+			*action = STM32_SYNAPSE_ACTION_NONE;
-+		return 0;
- 	case STM32_COUNT_ENCODER_MODE_2:
- 		/* counts up/down on TI2FP2 edge depending on TI1FP1 level */
- 		if (synapse->signal->id == count->synapses[1].signal->id)
- 			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
--		break;
-+		else
-+			*action = STM32_SYNAPSE_ACTION_NONE;
-+		return 0;
- 	case STM32_COUNT_ENCODER_MODE_3:
- 		/* counts up/down on both TI1FP1 and TI2FP2 edges */
- 		*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
--		break;
-+		return 0;
-+	default:
-+		return -EINVAL;
- 	}
--
--	return 0;
- }
- 
- static const struct counter_ops stm32_timer_cnt_ops = {
--- 
-2.30.1
+Those warnings have now made it into Linus' tree.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/X_Dy=2M5J5cizqhC1tYETbg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA4TxcACgkQAVBC80lX
+0GzYrgf+NfUhdLD7RUasSa+Xe9vWxrYrhv7xKl/NMCPB0UO/nYzbPsSA6Yy2WGgW
+6FF7no1esSZNERv2mUuItOncLxexrFNVr0LwQHHdsSeb1rkrdAU6N3WobJxEefgf
++82ZkzvjuzYxTWlEZ8IS1nsQDLBRfIVD+viw3eagRWmPsyf1qNQlKUaQ417Y9RuE
+NIcKRiyyHK2Uv+F+j/D8i+lP+IcDCsdZRAK2Q10+Mp1Hdj4s83xglDK0j4S16A8q
+qvXxnqbT/jdwnldHHnDONnws32dQayi1q/pswPSOQw7PzWIv6hcrEfjIHEgmSLE0
+r6zCkN27SM59Ol9BFiFDJbaVhXat5g==
+=W/MH
+-----END PGP SIGNATURE-----
+
+--Sig_/X_Dy=2M5J5cizqhC1tYETbg--
