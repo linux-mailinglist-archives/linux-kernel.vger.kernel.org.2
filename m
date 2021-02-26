@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAAB326A6A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E675326A6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:37:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBZXdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 18:33:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51076 "EHLO mail.kernel.org"
+        id S230079AbhBZXgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 18:36:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229698AbhBZXdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 18:33:52 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B907764E83;
-        Fri, 26 Feb 2021 23:33:11 +0000 (UTC)
-Date:   Fri, 26 Feb 2021 18:33:09 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jacob Wen <jian.w.wen@oracle.com>
-Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
- from trace events
-Message-ID: <20210226183309.0edcc54d@gandalf.local.home>
-In-Reply-To: <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
-References: <20210226185909.100032746@goodmis.org>
-        <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229622AbhBZXgs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 18:36:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E22B864EFA;
+        Fri, 26 Feb 2021 23:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614382568;
+        bh=qY4vMF6zA1Esx2A9+Ztvl2BvQl2kDYWfda3Ih0vakKU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fViSDvEHkvMkJN3excDFbrmSBWnWOOY5+ufot+sVO/a4JLoO484oBPgcLWqnVgld+
+         GMvbkApg93Fc6khHUhHS1gbfgYESXZRAuX1Zk0m7GnVdgFJzpjsvD1YbnAbxkq0+8a
+         fNzRBSI9lVbgTqbNm90F/Bj0wF1eIYQSXR+k/tEM6uXuM/B3Szq+df133IIfqKtfla
+         T0lqJ2N2Wezi48RBtocG5XaiO+8VSsff4BG9L40IKVxcXA9OwkUQQbegw3Rk6maa5X
+         u/fvplvv1Ysls/spUX0+c3BjiXqekhGKvrLFpKG0L/ZWSY9dulCe9lUxK2uo3eYn0d
+         U0GDc7dVCA90w==
+Date:   Fri, 26 Feb 2021 15:36:06 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] net: mscc: ocelot: select NET_DEVLINK
+Message-ID: <20210226153606.658b98d6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210225143910.3964364-1-arnd@kernel.org>
+References: <20210225143910.3964364-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -38,34 +44,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 14:21:00 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> > The second patch handles strings "%s" [..]  
+On Thu, 25 Feb 2021 15:38:31 +0100 Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Doing this at runtime really feels like the wrong thing to do.
+> Without this option, the driver fails to link:
 > 
-> It won't even protect us from what happened - people like me and
-> Andrew won't even run those tracepoints in the first place, so we
-> won't notice.
+> ld.lld: error: undefined symbol: devlink_sb_register
+>  [...]  
 > 
-> It really would be much better in every respect to have this done by
-> checkpatch, I think.
+> Fixes: f59fd9cab730 ("net: mscc: ocelot: configure watermarks using devlink-sb")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-They are not mutually exclusive. We could have both. One thing that's nice
-about this patch is that it removes the possibility of a real bug. That is,
-it will catch the dereferencing of a string that is not valid, WARN about
-it, but it wont try to dereference it (outside of the
-strcpy_from_kernel_nofault()). And hopefully the warning and lack of data
-they want, will have this get caught during development.
-
-Also, there's cases that %s is allowed to reference data that I don't know
-if checkpatch would be able to differentiate.
-
-As for the other pointer dereferences (the first patch), those get caught
-at boot up if they are compiled in. That is, you don't need to have the
-events enabled. The boot up code will do the verification on all events
-that are loaded (allyesconfig will catch all of them, which I need to try
-to boot with this code).
-
--- Steve
+Applied patch 1 and 2, I'll take Qingfang's patch for mt7530, thanks!
