@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DE3325FFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64010325FF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:27:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhBZJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:25:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhBZJX0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:23:26 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D704BC06178C
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:22:45 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id l12so10102703edt.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:22:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5J2u/RuThY09aoFuopTwJD+nrXnstG5Ldy/11ueD3Yc=;
-        b=DKMIkkrL7p7nvufrnq0hq03/Mmas+FpsR07zPSKqB9rbl8FpXOHSQevd1eaSGVkh4r
-         Tgq7r8A5FPzDsw3tJrhKf0RqU8M6zWpx6NVb3ODUvvVCe6OSoj0T/dUSzHxv+pGdI52C
-         hU4aWsTDzCqdqe/kiakHd34FBmMKdj/Vkxvw6o2GepoYxwrJ9stzxmAJSbhj5J7XzT3J
-         41SWFsNBsFh11Rg4og7tavD/eT44Okp5pQl4zzah2GljkeD5wuhM+77DmjbwS1tRbQqJ
-         aTyQKvycaKIFyHGAfV0C9+EHrRFhO5GNKxpQuSUBBchVogV9M1Uyul5xkcO4EWvJK3f1
-         9evw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5J2u/RuThY09aoFuopTwJD+nrXnstG5Ldy/11ueD3Yc=;
-        b=inmlKlr+Jt9/jr0NBrPP+r5jFXQuxu1uavzXBYDGiRBn3GIjmOYn6g9qQJjR3fdt8t
-         tMrrZjxug/72tX8SrCIAjcTG8CiETJyP5nTrIagDMKan09zTOchXMg756eYKIiltOgjq
-         y7N4tVBpmnlQlkGNYZid88BhA5lYfa9gSoIyXtdH360rkPUfsr67lgquzaI1eFUBF+iA
-         U+g9wuqOCS3oRWZm6axiixqbgBych3ENsU74VoCrqkP/E3FgMeoE8khQiulqjD8SKNkp
-         VEoBytHVEO8LeE4XGR2sC4uFyiicbOmvP13k0FamDKapcOUUtBDqqoOmTPQgyvgEMQpa
-         PM+g==
-X-Gm-Message-State: AOAM532p5XFIP2y7DY0gawXjYg7YUBzu9dxe08Ml9Q/YzLrsNay1lyhH
-        09VDvGuL3HGDtyLV2Y/u7iM=
-X-Google-Smtp-Source: ABdhPJz8OPdPTmro+Z9yv9pr9/qb/BHD9rDP8oKOl3LV7fYY7r22BD384HFvmpb5zNjxguowhqIhDg==
-X-Received: by 2002:a05:6402:30b9:: with SMTP id df25mr2286768edb.136.1614331364534;
-        Fri, 26 Feb 2021 01:22:44 -0800 (PST)
-Received: from localhost.localdomain ([2a02:a03f:b7fe:f700:b14f:9a2a:80ff:1887])
-        by smtp.gmail.com with ESMTPSA id 14sm4876416ejy.11.2021.02.26.01.22.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 01:22:43 -0800 (PST)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Subject: [PATCH] sparse: can do constant folding of __builtin_bswap*()
-Date:   Fri, 26 Feb 2021 10:22:36 +0100
-Message-Id: <20210226092236.99369-1-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S230402AbhBZJZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:25:07 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:60927 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230207AbhBZJXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 04:23:05 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614331358; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=WZto6la1xMW9OPXhnH+0FY0I0nURZt4YBbd4cgmNF6k=;
+ b=hzb/WHvjVCHkTCO4+LKd0XowbNEbAsFDDHvA8SAyP79kkG99yboFwk44Bk/3NpHZGrjNiNgU
+ 6KTMkFqPUBCnQbKLhKqL/GHLW2MA04519+N9ulduFy0edZdphKFy1hM0v0QV4Bs0EYEGlJoj
+ C5F6A1bknl4cKFbMpMea9g1kPTg=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 6038bdddcc1f7d7e958364b1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 09:22:37
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AC8BFC43466; Fri, 26 Feb 2021 09:22:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DCCB0C433CA;
+        Fri, 26 Feb 2021 09:22:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DCCB0C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 2/2] mt76: mt7921: remove incorrect error handling
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210225145953.404859-2-arnd@kernel.org>
+References: <20210225145953.404859-2-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Soul Huang <Soul.Huang@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210226092237.AC8BFC43466@smtp.codeaurora.org>
+Date:   Fri, 26 Feb 2021 09:22:37 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse can do constant folding of __builtin_bswap*() since 2017.
-Also, a much recent version of Sparse is needed anyway, see
-commit 6ec4476ac825 ("Raise gcc version requirement to 4.9").
+Arnd Bergmann <arnd@kernel.org> wrote:
 
-So, remove the comment about sparse not being yet able to constant
-fold __builtin_bswap*() and remove the corresponding test of __CHECKER__.
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Clang points out a mistake in the error handling in
+> mt7921_mcu_tx_rate_report(), which tries to dereference a pointer that
+> cannot be initialized because of the error that is being handled:
+> 
+> drivers/net/wireless/mediatek/mt76/mt7921/mcu.c:409:3: warning: variable 'stats' is uninitialized when used here [-Wuninitialized]
+>                 stats->tx_rate = rate;
+>                 ^~~~~
+> drivers/net/wireless/mediatek/mt76/mt7921/mcu.c:401:32: note: initialize the variable 'stats' to silence this warning
+>         struct mt7921_sta_stats *stats;
+>                                       ^
+> Just remove the obviously incorrect line.
+> 
+> Fixes: 1c099ab44727 ("mt76: mt7921: add MCU support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- include/linux/compiler-gcc.h | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+Patch applied to wireless-drivers.git, thanks.
 
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index 74c6c0486eed..d1016cc6798a 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -95,15 +95,11 @@
-  */
- #define asm_volatile_goto(x...)	do { asm goto(x); asm (""); } while (0)
- 
--/*
-- * sparse (__CHECKER__) pretends to be gcc, but can't do constant
-- * folding in __builtin_bswap*() (yet), so don't set these for it.
-- */
--#if defined(CONFIG_ARCH_USE_BUILTIN_BSWAP) && !defined(__CHECKER__)
-+#if defined(CONFIG_ARCH_USE_BUILTIN_BSWAP)
- #define __HAVE_BUILTIN_BSWAP32__
- #define __HAVE_BUILTIN_BSWAP64__
- #define __HAVE_BUILTIN_BSWAP16__
--#endif /* CONFIG_ARCH_USE_BUILTIN_BSWAP && !__CHECKER__ */
-+#endif /* CONFIG_ARCH_USE_BUILTIN_BSWAP */
- 
- #if GCC_VERSION >= 70000
- #define KASAN_ABI_VERSION 5
+fb5fabb192b2 mt76: mt7921: remove incorrect error handling
+
 -- 
-2.30.0
+https://patchwork.kernel.org/project/linux-wireless/patch/20210225145953.404859-2-arnd@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
