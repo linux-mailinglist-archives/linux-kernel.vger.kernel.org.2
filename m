@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71201325F44
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1417325F46
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhBZIlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbhBZIhx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:37:53 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCCCCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:37:12 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id k12so673834ljg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:37:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jSZBqZAXKahwfjTFGR80Ph8JTZn6RkUpzBNuGwlAGdI=;
-        b=gfVIEn0beAIzxTVbSLHOYYvkrceeXVeuGg7fF498f0/AzHxE28/Ozur2NMncMjnPGQ
-         oxvslqVUlxCf1d0tn29rQYQ92y7Dwu46eErFrnLly48vf3KhFy4v1UIvWfDEmRxsbmgB
-         Zw5rjDOj6XKB5MYum4ES7bZK4643V0faI8kB3PNMowmZ4z/UiUBcuwBaGDYD3B2GE1bH
-         dzEBfGqkwK3LOMiEcYbF3ebaR3obGrSiVe6JNyHQsXR7BjbUvvxsOdO+6MHMEieyUKJf
-         mDtUmUWegsz4po7HIZvChnujfU8FdigZGmQqsiAeeTrWz6vjV73ri18uvJF9P/aZiYwi
-         0Zxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jSZBqZAXKahwfjTFGR80Ph8JTZn6RkUpzBNuGwlAGdI=;
-        b=bC5QyvuqFiW9to2ZySkxl22nsp5KSeloQ1F2u5jiOVHZmmH9oV3Y9R/KZcYaUn7ktT
-         SJMlhVKQHzAYjJF2JebNEds3FuQ0Y8SlC6kHZF/Kc+vhMCLD34GDFXC5p7exCRjr1seD
-         gpPbXJO01knayriDes5gCJfeX+/yANjW5AUaD/lwOmZrjII8H3OOsP8XWfiuttdhW68Z
-         sTaXCzU3zVrRjgQW5FXiPL5nU/fWJp5fncsB4NVqzBighxUlH1Ei3/zwKlF3d+94EgP3
-         XcQu0rCZpGNV36oJ1wLTacxSAUs5h2yrH2cUTcDUPG2l8XuwOI1i079k/MQS8qYCJ8pY
-         kL/w==
-X-Gm-Message-State: AOAM532ijy5+rbXa+BL1YzEzBu017bNLmzcC7duoVCXjcofjiHKNBUG9
-        vrZrpn3wNKHl8b02nPWly3/xMG7KaR1NGYyhreEgsg191e3Nuw==
-X-Google-Smtp-Source: ABdhPJwq5DG6Je3O4p6W7g8qgiWIQD4z9T1oUesfkIf9Sl8aSAeRZk6isjff68ct9wosc259MA1cNg5OImBP3W2znfA=
-X-Received: by 2002:a2e:b814:: with SMTP id u20mr1091741ljo.370.1614328631073;
- Fri, 26 Feb 2021 00:37:11 -0800 (PST)
+        id S230318AbhBZIl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:41:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43260 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230261AbhBZIjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 03:39:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614328716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ryNEoNrCU7SPStlbI4pZYs4/RAqN6mJpaGrcrqsuyT4=;
+        b=kqPUtCnkz5X8zHmu2iF/9P7RwnnGl9g+rV3GmSwWupGNXw4KeotqBW8boZs9DRfQQBiRkU
+        K7tFA/9V6arLBwUVYQ2y7PFEcQgvShArJDBV25WFz6zXgHG7bwx/t7iuS+vwk2BTa9eUeQ
+        YYfXd+Ejq+sv20lqhpzXCaH8B4zzm1U=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 68A12AAAE;
+        Fri, 26 Feb 2021 08:38:36 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 09:38:35 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] mm: Make alloc_contig_range handle free hugetlb
+ pages
+Message-ID: <YDizi3/TKYnSi5Zo@dhcp22.suse.cz>
+References: <20210222135137.25717-1-osalvador@suse.de>
+ <20210222135137.25717-2-osalvador@suse.de>
+ <YDiyvQ2SCXxCjPJ2@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20210226064029.1143-1-lukas.bulwahn@gmail.com>
-In-Reply-To: <20210226064029.1143-1-lukas.bulwahn@gmail.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Fri, 26 Feb 2021 14:07:11 +0530
-Message-ID: <CABJPP5CZMecYBy3026JwTTW1d5zGp84xS0XiFFoarMVwUGDdDQ@mail.gmail.com>
-Subject: Re: [PATCH for Dwaipayan] MAINTAINERS: clarify responsibility for
- checkpatch documentation
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Joe Perches <joe@perches.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDiyvQ2SCXxCjPJ2@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 12:10 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> As discussed, Dwaipayan and Lukas take the responsibility for maintaining
-> the checkpatch documentation that is currently being built up.
->
-> To be sure that the checkpatch maintainers and the corresponding
-> documentation maintainers can keep the content synchronized, add them as
-> reviewers to the counterpart.
->
-> Link: https://lore.kernel.org/lkml/bcee822d1934772f47702ee257bc735c8f467088.camel@perches.com/
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on next-20210226
->
-> Dwaipayan, you probably want to add this patch to your patch series for checkpatch
-> documentation.
->
-Sure I will add it to my series.
+On Fri 26-02-21 09:35:10, Michal Hocko wrote:
+> On Mon 22-02-21 14:51:36, Oscar Salvador wrote:
+> > alloc_contig_range will fail if it ever sees a HugeTLB page within the
+> > range we are trying to allocate, even when that page is free and can be
+> > easily reallocated.
+> > This has proved to be problematic for some users of alloc_contic_range,
+> > e.g: CMA and virtio-mem, where those would fail the call even when those
+> > pages lay in ZONE_MOVABLE and are free.
+> > 
+> > We can do better by trying to replace such page.
+> > 
+> > Free hugepages are tricky to handle so as to no userspace application
+> > notices disruption, we need to replace the current free hugepage with
+> > a new one.
+> > 
+> > In order to do that, a new function called alloc_and_dissolve_huge_page
+> > is introduced.
+> > This function will first try to get a new fresh hugepage, and if it
+> > succeeds, it will replace the old one in the free hugepage pool.
+> > 
+> > All operations are being handled under hugetlb_lock, so no races are
+> > possible. The only exception is when page's refcount is 0, but it still
+> > has not been flagged as PageHugeFreed.
+> 
+> I think it would be helpful to call out that specific case explicitly
+> here. I can see only one scenario (are there more?)
+> __free_huge_page()		isolate_or_dissolve_huge_page
+> 				  PageHuge() == T
+> 				  alloc_and_dissolve_huge_page
+> 				    alloc_fresh_huge_page()
+> 				    spin_lock(hugetlb_lock)
+> 				    // PageHuge() && !PageHugeFreed &&
+> 				    // !PageCount()
+> 				    spin_unlock(hugetlb_lock)
+>   spin_lock(hugetlb_lock)
+>   1) update_and_free_page
+>        PageHuge() == F
+>        __free_pages()
+>   2) enqueue_huge_page
+>        SetPageHugeFreed()
+>   spin_unlock(&hugetlb_lock)			    
+> 
+> > In this case we retry as the window race is quite small and we have high
+> > chances to succeed next time.
+> > 
+> > With regard to the allocation, we restrict it to the node the page belongs
+> > to with __GFP_THISNODE, meaning we do not fallback on other node's zones.
+> > 
+> > Note that gigantic hugetlb pages are fenced off since there is a cyclic
+> > dependency between them and alloc_contig_range.
+> > 
+> > Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> 
+> Thanks this looks much better than the initial version. One nit below.
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Thanks,
-Dwaipayan.
-
-> Feel free to add your Signed-off-by tag just following mine.
->
->  MAINTAINERS | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 16ada1a4b751..6b48b79ba284 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4181,9 +4181,18 @@ X:       drivers/char/tpm/
->  CHECKPATCH
->  M:     Andy Whitcroft <apw@canonical.com>
->  M:     Joe Perches <joe@perches.com>
-> +R:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-> +R:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
->  S:     Maintained
->  F:     scripts/checkpatch.pl
->
-> +CHECKPATCH DOCUMENTATION
-> +M:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-> +M:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> +R:     Joe Perches <joe@perches.com>
-> +S:     Maintained
-> +F:     Documentation/dev-tools/checkpatch.rst
-> +
->  CHINESE DOCUMENTATION
->  M:     Harry Wei <harryxiyou@gmail.com>
->  M:     Alex Shi <alex.shi@linux.alibaba.com>
-> --
-> 2.17.1
->
+Btw. if David has some numbers it would be great to add them to the
+changelog.
+-- 
+Michal Hocko
+SUSE Labs
