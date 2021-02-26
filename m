@@ -2,271 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4619326171
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA4F326176
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhBZKjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:39:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49730 "EHLO mail.kernel.org"
+        id S231156AbhBZKjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:39:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231147AbhBZKh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:37:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D28A664ED2;
-        Fri, 26 Feb 2021 10:37:12 +0000 (UTC)
+        id S230495AbhBZKin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:38:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD9D264F03;
+        Fri, 26 Feb 2021 10:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614335835;
-        bh=KezX5t7qHzkeerivTKXTAEwvqB0ifGu59UmlkxxVnj4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oL0jyXORBfSNxZvBCNpelPmm2fY22L+cZOVoCAlIXD0sStf984uK/uiDoJUe8Vcrf
-         8qX+SsQSq+aLN6g47Fml2jHwsJkVQoa3xgwzcq0i9O+wqdtgxkVI9wNJeSXYq0ZQdQ
-         ZMvNuzB53R7w+JNlHFkMyeb/XZjayWoiAR4WnFGQ/LdD1cI32uRfiXYZVdEVZzkpuo
-         D2cZUw7v8QTl+b6uZZz+oGnP15yBZjzqBO6Elb5k8ncusfSAc8dN3iu0+jqaLGX8c8
-         cpSUCXrO6rpQeoo/bp3n17OAyDDYAe4e4LvW2BA9IqfqCgxRaljxfYXsrmGiKx+bMa
-         wAlKgqwrZQ9+g==
-Date:   Fri, 26 Feb 2021 11:37:09 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patong.mxl@gmail.com,
-        linus.walleij@linaro.org, angelo.dureghello@timesys.com
-Subject: Re: [PATCH v5 1/3] usb: serial: Add MaxLinear/Exar USB to Serial
- driver
-Message-ID: <20210226113709.733f6526@coco.lan>
-In-Reply-To: <YDjIS1QTVuy11nhA@hovoldconsulting.com>
-References: <20201122170822.21715-1-mani@kernel.org>
-        <20201122170822.21715-2-mani@kernel.org>
-        <YAlVLOqzx8otPgOg@hovoldconsulting.com>
-        <20210126154604.GC29751@thinkpad>
-        <YBBCvHvduivta07b@hovoldconsulting.com>
-        <20210222161119.0bd70a2b@coco.lan>
-        <YDPSGE5vLphfFNJn@hovoldconsulting.com>
-        <20210225185820.0ae38ca6@coco.lan>
-        <20210225190405.1f796da8@coco.lan>
-        <YDjIS1QTVuy11nhA@hovoldconsulting.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        s=k20201202; t=1614335881;
+        bh=H8HVbdFoLD9aL64l9aoJCNHX5FsjhZMjzGatuz4+oiY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QEzn1ldtP7wH67ppM8NvuV87amu0rHg0D1u+B6QZ4lIV9oBTg9NOC69He8bmIrbgS
+         Ta8J7QUW0GfXDGsMZ7ciWvECtNClh5Dg2jBjYL/6Yh4pZ0zn+U/jcpcIxgoR1Xn0lk
+         4f0vn/+0UnOn0RwvPZQwdYRCUOgPDOcFbmEIT6YFeRKJl8RvpQcfQcY8mRoZiCvf9N
+         AeNzuoZM+b5gSAbI9XGj6n0ieGaiCQ27ZgyqmKRtWaA7T6B1Ffj/dUqokb1f5i3gA2
+         /UyJWwzH1+MLZ2fcJ5BNgEeI0jQNiJckpREvUIWdVlSJ9+wDXyYpUwr80mMyt//9Ez
+         YHPc7A9WJ3VYg==
+Received: by mail-oi1-f179.google.com with SMTP id i21so6989252oii.2;
+        Fri, 26 Feb 2021 02:38:01 -0800 (PST)
+X-Gm-Message-State: AOAM530Scdj2hnrMWz+Uo3CMkSO9pSg17VwA4c6AIwAh9M2NJNmlOdR3
+        zuu6rIUdVnS/52dPhAcm1lpTuL9cFte1bWnpw/c=
+X-Google-Smtp-Source: ABdhPJzDtvRb8oB8ob5YmR+oTzoRhnFpIQ/IS1/6V4Sn7sFm6upNUoFcX/x93JkRdU7mvaQexwcbcZSVhYYJLhBQiaU=
+X-Received: by 2002:aca:4a47:: with SMTP id x68mr1476692oia.67.1614335880815;
+ Fri, 26 Feb 2021 02:38:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com> <20210225225147.29920-5-fabrizio.castro.jz@renesas.com>
+In-Reply-To: <20210225225147.29920-5-fabrizio.castro.jz@renesas.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 26 Feb 2021 11:37:44 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1+CZTAcR5T=gN565Q8=CdZnu5KYsAijKXLY8taofEpGg@mail.gmail.com>
+Message-ID: <CAK8P3a1+CZTAcR5T=gN565Q8=CdZnu5KYsAijKXLY8taofEpGg@mail.gmail.com>
+Subject: Re: [PATCH 4/7] misc: Add driver for DAB IP found on Renesas R-Car devices
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Dirk Behme <Dirk.Behme@de.bosch.com>,
+        Peter Erben <Peter.Erben@de.bosch.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 26 Feb 2021 11:07:07 +0100
-Johan Hovold <johan@kernel.org> escreveu:
+On Thu, Feb 25, 2021 at 11:51 PM Fabrizio Castro
+<fabrizio.castro.jz@renesas.com> wrote:
+>
+> The DAB hardware accelerator found on R-Car E3 and R-Car M3-N devices is
+> a hardware accelerator for software DAB demodulators.
+> It consists of one FFT (Fast Fourier Transform) module and one decoder
+> module, compatible with DAB specification (ETSI EN 300 401 and
+> ETSI TS 102 563).
+> The decoder module can perform FIC decoding and MSC decoding processing
+> from de-puncture to final decoded result.
+>
+> This patch adds a device driver to support the FFT module only.
+>
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> ---
+>  MAINTAINERS                      |   7 ++
+>  drivers/misc/Kconfig             |   1 +
+>  drivers/misc/Makefile            |   1 +
+>  drivers/misc/rcar_dab/Kconfig    |  11 ++
+>  drivers/misc/rcar_dab/Makefile   |   8 ++
+>  drivers/misc/rcar_dab/rcar_dev.c | 176 +++++++++++++++++++++++++++++++
+>  drivers/misc/rcar_dab/rcar_dev.h | 116 ++++++++++++++++++++
+>  drivers/misc/rcar_dab/rcar_fft.c | 160 ++++++++++++++++++++++++++++
+>  include/uapi/linux/rcar_dab.h    |  35 ++++++
 
-> On Thu, Feb 25, 2021 at 07:04:05PM +0100, Mauro Carvalho Chehab wrote:
-> > Em Thu, 25 Feb 2021 18:58:20 +0100
-> > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:  
-> 
-> > > While testing the xr_serial (as currently merged), I opted to apply
-> > > the patches on the top of vanilla Kernel 5.11 - as it sounds too risky
-> > > to use linux-next so early on a new development cycle :-)
-> > > 
-> > > There, I'm getting an OOPS:
-> > > 
-> > > 	[   30.261291] BUG: kernel NULL pointer dereference, address: 00000000000000a8
-> > > 	[   30.261375] #PF: supervisor write access in kernel mode
-> > > 	[   30.261438] #PF: error_code(0x0002) - not-present page
-> > > 	[   30.261500] PGD 0 P4D 0 
-> > > 	[   30.261539] Oops: 0002 [#1] SMP PTI
-> > > 	[   30.261586] CPU: 2 PID: 686 Comm: kworker/2:3 Not tainted 5.11.0+ #14
-> > > 	[   30.261666] Hardware name:  /NUC5i7RYB, BIOS RYBDWi35.86A.0380.2019.0517.1530 05/17/2019
-> > > 	[   30.261757] Workqueue: usb_hub_wq hub_event
-> > > 	[   30.261816] RIP: 0010:mutex_lock+0x1e/0x40  
-> 
-> > > 	[   30.262796] Call Trace:
-> > > 	[   30.262832]  usb_serial_disconnect+0x33/0x140
-> > > 	[   30.262897]  usb_unbind_interface+0x8c/0x260
-> > > 	[   30.262957]  device_release_driver_internal+0x103/0x1d0
-> > > 	[   30.263026]  device_release_driver+0x12/0x20
-> > > 	[   30.263083]  bus_remove_device+0xe1/0x150
-> > > 	[   30.263140]  device_del+0x192/0x3f0
-> > > 	[   30.263188]  ? usb_remove_ep_devs+0x1f/0x30
-> > > 	[   30.263244]  usb_disable_device+0x95/0x1c0
-> > > 	[   30.263300]  usb_disconnect+0xc0/0x270
-> > > 	[   30.263350]  hub_event+0xa2e/0x1620
-> > > 
-> > > After adding this hack:
-> > > 
-> > > <snip>
-> > > --- a/drivers/usb/serial/usb-serial.c
-> > > +++ b/drivers/usb/serial/usb-serial.c
-> > > @@ -1081,6 +1081,11 @@ static void usb_serial_disconnect(struct usb_interface *interface)
-> > >         struct usb_serial_port *port;
-> > >         struct tty_struct *tty;
-> > >  
-> > > +       if (!serial) {
-> > > +               dev_err(dev, "%s: Serial pointer is NULL!!!\n", __func__);
-> > > +               return;
-> > > +       }
-> > > +
-> > >         usb_serial_console_disconnect(serial);
-> > >  
-> > >         mutex_lock(&serial->disc_mutex);
-> > > </snip>
-> > > 
-> > > It works fine:
-> > > 
-> > > 	[  283.005625] xr_serial 2-1:1.1: xr_serial converter detected
-> > > 	[  283.005868] usb 2-1: xr_serial converter now attached to ttyUSB0
-> > > 	[  283.007284] printk: console [ttyUSB0] enabled
-> > > 	[  284.444419] usb 2-1: USB disconnect, device number 5
-> > > 	[  284.444520] xr_serial 2-1:1.0: usb_serial_disconnect: Serial pointer is NULL!!!
-> > > 	[  284.444894] printk: console [ttyUSB0] disabled
-> > > 	[  284.445091] xr_serial ttyUSB0: xr_serial converter now disconnected from ttyUSB0
-> > > 	[  284.445141] xr_disconnect
-> > > 	[  284.445156] xr_serial 2-1:1.1: device disconnected
-> > > 
-> > > I'm not sure if the bug is at xr_serial or if it is inside usb-serial.c.
-> > > 
-> > > Any ideas?  
-> > 
-> > Answering myself, as those devices may have two different interfaces
-> > (one for control and another one for data), I suspect that the
-> > driver needs to manually call usb_set_intfdata() after detecting the
-> > data interface.  
-> 
-> Thanks for reporting this.
-> 
-> I'm afraid it's a bit more involved than that; we'd need to add support
-> to USB-serial core for managing a sibling interface and either one being
-> disconnected first. This has implications for suspend as well.
-> 
-> I think we should just not claim the control interface for now since it
-> not currently used by the driver. I'll send a fix.
+Can you explain why this is not in drivers/media/?
 
-Thanks!
+I don't think we want a custom ioctl interface for a device that implements
+a generic specification. My first feeling would be that this should not
+have a user-level API but instead get called by the DAB radio driver.
 
-Yeah, I had a similar patch, moving out from 
-usb_driver_release_interface(), as it ends calling the serial
-disconnect method.
+What is the intended usage model here? I assume the idea is to
+use it in an application that receives audio or metadata from DAB.
+What driver do you use for that?
 
-Btw, for other xr_serial models, the driver will need to use
-the control interface, as it is used to do things like
-setting up the number of bits, stop bits and parity.
+> +static long rcar_dab_unlocked_ioctl(struct file *file, unsigned int cmd,
+> +                                   unsigned long arg)
+> +{
+> +       void __user *argp = (void __user *)arg;
+> +       struct rcar_dab *dab;
+> +       int ret;
+> +
+> +       dab = container_of(file->private_data, struct rcar_dab, misc);
+> +
+> +       switch (cmd) {
+> +       case RCAR_DAB_IOC_FFT:
+> +               if (!access_ok(argp, sizeof(struct rcar_dab_fft_req)))
+> +                       return -EFAULT;
+> +               ret = rcar_dab_fft(dab, argp);
+> +               break;
+> +       default:
+> +               ret = -ENOTTY;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +static const struct file_operations rcar_dab_fops = {
+> +       .owner          = THIS_MODULE,
+> +       .unlocked_ioctl = rcar_dab_unlocked_ioctl,
+> +};
 
-I'm still working on the patch.
+There should be a '.compat_ioctl = compat_ptr_ioctl'
+entry, provided that the arguments are compatible between
+32-bit and 64-bit user space.
 
-There, I'm using usb_get_intf() in order to avoid use-after-free
-at disconnect time, but I'm pretty sure something else is needed
-due to PM.
+> +
+> +static int rcar_dab_fft_init(struct rcar_dab *dab, struct rcar_dab_fft_req *fft)
+> +{
+> +       u32 mode;
+> +
+> +       for (mode = 0; mode < ARRAY_SIZE(rcar_dab_fft_size_lut); mode++)
+> +               if (rcar_dab_fft_size_lut[mode] == fft->points)
+> +                       break;
+> +       if (mode == ARRAY_SIZE(rcar_dab_fft_size_lut))
+> +               return -EINVAL;
+> +       if (fft->ofdm_number == 0)
+> +               return -EINVAL;
+> +
+> +       rcar_dab_write(dab, RCAR_DAB_FFTSSR, mode);
+> +       rcar_dab_write(dab, RCAR_DAB_FFTNUMOFDMR, fft->ofdm_number);
+> +       rcar_dab_write(dab, RCAR_DAB_FFTINADDR, (u32)dab->fft.dma_input_buf);
+> +       rcar_dab_write(dab, RCAR_DAB_FFTOUTADDR, (u32)dab->fft.dma_output_buf);
 
-FYI, that's the probe/disconnect part of the changeset. It works
-fine with both XR21B1424 and XR21V1410 models.
+Maybe use lower_32_bits() instead of the (u32) cast.
 
-I'm not sure if the probing part will work for the other ones. The
-original driver does something a lot more complex, parsing the
-CDC union tables that are present only at the control interfaces.
+For clarity, you may also want to specifically ask for a 32-bit DMA mask
+in the probe function, with a comment that describes what the hardware
+limitation is.
 
-Adding support for parsing it, while keeping using usb-serial
-as-is would be very difficult.
+> +
+> +       if (copy_from_user(dab->fft.input_buffer, fft_req->input_address,
+> +                          buffer_size)) {
+> +               mutex_unlock(&dab->fft.lock);
+> +               return -EFAULT;
+> +       }
+> +
+> +       dab->fft.done = false;
+> +       ret = rcar_dab_fft_init(dab, fft_req);
+> +       if (ret) {
+> +               mutex_unlock(&dab->fft.lock);
+> +               return ret;
+> +       }
+> +
+> +       rcar_dab_fft_enable(dab);
+> +       wait_event_interruptible_timeout(dab->fft.wait, dab->fft.done, HZ);
+> +       if (!dab->fft.done) {
+> +               rcar_dab_fft_disable(dab);
+> +               ret = -EFAULT;
 
-Perhaps the right solution would be to let usb-serial parse the
-CDC union structs, for the drivers that would need that.
+-EFAULT doesn't look like the right error for timeout or signal
+handling. Better check the return code from wait_event_interruptible_timeout()
+instead.
 
-Maybe we could add a new probe_cdc ops (or something similar)
-that would enable some logic there for it to work with separate
-data and control interfaces.
+> +
+> +struct rcar_dab_fft_req {
+> +       int points;                     /*
+> +                                        * The number of points to use.
+> +                                        * Legal values are 256, 512, 1024, and
+> +                                        * 2048.
+> +                                        */
+> +       unsigned char ofdm_number;      /*
+> +                                        * Orthogonal Frequency Division
+> +                                        * Multiplexing (OFDM).
+> +                                        * Minimum value is 1, maximum value is
+> +                                        * 255.
+> +                                        */
+> +       void __user *input_address;     /*
+> +                                        * User space address for the input
+> +                                        * buffer.
+> +                                        */
+> +       void __user *output_address;    /*
+> +                                        * User space address for the output
+> +                                        * buffer.
+> +                                        */
+> +};
 
-Thanks,
-Mauro
+Please read Documentation/driver-api/ioctl.rst and make this a portable
+data structure.
 
-diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
-index 483d07dee19d..679ac10be963 100644
---- a/drivers/usb/serial/xr_serial.c
-+++ b/drivers/usb/serial/xr_serial.c
-@@ -545,39 +878,70 @@ static void xr_close(struct usb_serial_port *port)
- 
- static int xr_probe(struct usb_serial *serial, const struct usb_device_id *id)
- {
--	struct usb_driver *driver = serial->type->usb_driver;
--	struct usb_interface *control_interface;
--	int ret;
--
--	/* Don't bind to control interface */
--	if (serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
-+	struct usb_interface *intf = serial->interface;
-+	struct usb_endpoint_descriptor *data_ep;
-+	struct usb_device *udev = serial->dev;
-+	struct xr_port_private *port_priv;
-+	struct usb_interface *ctrl_intf;
-+	int ifnum, ctrl_ifnum;
-+
-+	/* Attach only data interfaces */
-+	ifnum = intf->cur_altsetting->desc.bInterfaceNumber;
-+	if (!(ifnum % 2))
- 		return -ENODEV;
- 
--	/* But claim the control interface during data interface probe */
--	control_interface = usb_ifnum_to_if(serial->dev, 0);
--	if (!control_interface)
--		return -ENODEV;
-+	/* Control interfaces are the even numbers */
-+	ctrl_ifnum = ifnum - ifnum % 2;
- 
--	ret = usb_driver_claim_interface(driver, control_interface, NULL);
--	if (ret) {
--		dev_err(&serial->interface->dev, "Failed to claim control interface\n");
--		return ret;
--	}
-+	port_priv = kzalloc(sizeof(*port_priv), GFP_KERNEL);
-+	if (!port_priv)
-+		return -ENOMEM;
-+
-+	data_ep = &intf->cur_altsetting->endpoint[0].desc;
-+	ctrl_intf = usb_ifnum_to_if(udev, ctrl_ifnum);
-+
-+	port_priv->data_if = intf;
-+	port_priv->control_if = usb_get_intf(ctrl_intf);
-+	port_priv->model = id->driver_info;
-+	port_priv->channel = data_ep->bEndpointAddress;
-+
-+	usb_set_serial_data(serial, port_priv);
-+
-+	dev_info(&intf->dev, "port %d registered: control if: %d, data if: %d\n",
-+		 ifnum / 2, ctrl_ifnum, ifnum);
- 
- 	return 0;
- }
- 
- static void xr_disconnect(struct usb_serial *serial)
- {
-+	struct xr_port_private *port_priv = usb_get_serial_data(serial);
- 	struct usb_driver *driver = serial->type->usb_driver;
--	struct usb_interface *control_interface;
- 
--	control_interface = usb_ifnum_to_if(serial->dev, 0);
--	usb_driver_release_interface(driver, control_interface);
-+	usb_put_intf(port_priv->control_if);
-+
-+	usb_driver_release_interface(driver, port_priv->data_if);
- }
- 
- static const struct usb_device_id id_table[] = {
--	{ USB_DEVICE(0x04e2, 0x1410) }, /* XR21V141X */
-+	{ USB_DEVICE(0x04e2, 0x1400), .driver_info = XR2280X},
-+	{ USB_DEVICE(0x04e2, 0x1401), .driver_info = XR2280X},
-+	{ USB_DEVICE(0x04e2, 0x1402), .driver_info = XR2280X},
-+	{ USB_DEVICE(0x04e2, 0x1403), .driver_info = XR2280X},
-+
-+	{ USB_DEVICE(0x04e2, 0x1410), .driver_info = XR21V141X},
-+	{ USB_DEVICE(0x04e2, 0x1411), .driver_info = XR21B1411},
-+	{ USB_DEVICE(0x04e2, 0x1412), .driver_info = XR21V141X},
-+	{ USB_DEVICE(0x04e2, 0x1414), .driver_info = XR21V141X},
-+
-+	{ USB_DEVICE(0x04e2, 0x1420), .driver_info = XR21B142X},
-+#if 0
-+	/* FIXME: this one has just control interface! */
-+	{ USB_DEVICE(0x04e2, 0x1421), .driver_info = XR21B1421},
-+#endif
-+	{ USB_DEVICE(0x04e2, 0x1422), .driver_info = XR21B142X},
-+	{ USB_DEVICE(0x04e2, 0x1424), .driver_info = XR21B142X},
-+
- 	{ }
- };
- MODULE_DEVICE_TABLE(usb, id_table);
-
-
-
-
+      Arnd
