@@ -2,153 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B200732657F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2D732658A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhBZQYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:24:41 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36124 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229999AbhBZQYg (ORCPT
+        id S230144AbhBZQ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:28:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhBZQ2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:24:36 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QGCg7t030124;
-        Fri, 26 Feb 2021 17:23:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=sAC/fKyohJhsaMN0N9CSZbklAqAE2gwlIAJ+apwQbQU=;
- b=vQ6wdWdsNesM9qKO5jp7d9WC6StRlgCjTyqVasc7ACGT+r4sZq124IlKziiOL1nQ8qtO
- 1Mxb6d4JvLbDCNJEwJisXs/YkYeNATWsQx0DQbVMtqtlW5lwes4Bb9P493jYjZT92HOn
- CDexLUiam2mgkgbRLeHsQnv8LphRbBCZJmCX5VLqNxZ9qVqHrNa5imRoUw4X/X6RVkv8
- NsWqCezVU9zO0jOraI+fkkzNMcYdDr2u0s2SXQW8wBzjRe65G+vNxLAzLz9mM2xUrdl7
- kQiVH+iKvkdzCO15ehNWbWY2UayK4+mjVFkzB8XdGoO19hqeelV+jdUnN0LJW2UYOFTR 9A== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36w66vxrqp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 17:23:48 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DCE3410002A;
-        Fri, 26 Feb 2021 17:23:46 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CEA562BA2DB;
-        Fri, 26 Feb 2021 17:23:46 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Feb
- 2021 17:23:45 +0100
-Subject: Re: [PATCH v6 16/16] remoteproc: Refactor rproc delete and cdev
- release path
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <ohad@wizery.com>,
-        <bjorn.andersson@linaro.org>, <arnaud.pouliquen@st.com>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
- <20210223233515.3468677-17-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <80abdd3b-ffb0-1019-2a1f-fea4f7b51349@foss.st.com>
-Date:   Fri, 26 Feb 2021 17:23:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 26 Feb 2021 11:28:02 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF23AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 08:27:19 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id p2so11678953edm.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 08:27:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6BKeyIcRjzR84A9x0lbwBUm0rSexnKSuimviQvcPYuc=;
+        b=ZNm9FG8njbw0YZco/bpGOrjR44E9M4EuVHzJWtnNljcMn+/7OAywDvaSfqRF+bFY8V
+         u4RHzYU2KDaWUvFw5zG5IwplF0PP8NYmvTNt0YtH/JR1OSf7/jkdBN69W2gVcV9azTi9
+         H1mOZu4ojoYmbnwXuBl9fLil8YuZXP+ALRuUU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6BKeyIcRjzR84A9x0lbwBUm0rSexnKSuimviQvcPYuc=;
+        b=qj/rsm055KE2ypy7ceZWdkGT04RR60WHoqEibdDVal9f5K5SKoDAE9+XigTvPi/Xe9
+         ka7/bDAI9PoXQWXoJCJYsijUixAJ41DhJCNYkYQAbue4vWSP5WD8jVXJV0hPdxBtv8Da
+         PuMWS+BYWjxnUYz/A4VFGOEPfnDh1OyGYhYlWfhUvK+bBiD91JBNKVICjQ9yhtdQORWK
+         TFnf3I0sHwl4Q4XyRLuNUGWzl56AvxsKhSYdKOrbpc/D2HQpmDN6L2/syZG+VqyhGRRV
+         sG36id+4RmKs0QmqgCzqPNxxt4xIP7Uu2953/qbtaX0e4dcTK5PA2mGasuHA4aIMtxOa
+         Xplg==
+X-Gm-Message-State: AOAM531p5uyUIZzyL6xP5VjKn+fedcxOIRRWIHf3hLuZgB8Tw118AGgE
+        RByqPpmO2h4utyqW75Uw5sbkMpkkk3FBWN0TYBGMoQ==
+X-Google-Smtp-Source: ABdhPJwGCKt7zsL/y6NObCIYi35f4/YHkGRmg7kLDOYW+erS32FwkDnZ/eKzy1gDTP1pjLSdLD6kXvv5BmZCemgFzak=
+X-Received: by 2002:a50:d307:: with SMTP id g7mr4302596edh.204.1614356838561;
+ Fri, 26 Feb 2021 08:27:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210223233515.3468677-17-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-26_05:2021-02-26,2021-02-26 signatures=0
+References: <20210226070304.8028-1-jagan@amarulasolutions.com>
+ <20210226070304.8028-3-jagan@amarulasolutions.com> <611bce6f-7adb-f0b5-0c9b-d5d7bb8b90fb@foss.st.com>
+In-Reply-To: <611bce6f-7adb-f0b5-0c9b-d5d7bb8b90fb@foss.st.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Fri, 26 Feb 2021 21:57:07 +0530
+Message-ID: <CAMty3ZAKZ=ODtNMBu-XoFCmNRR8XCA42wTD1H8f_6wC+sn+wPg@mail.gmail.com>
+Subject: Re: [PATCH v2 02/10] ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 SoM
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Francesco Utel <francesco.utel@engicam.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mirko Ardinghi <mirko.ardinghi@engicam.com>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alexandre,
 
+On Fri, Feb 26, 2021 at 9:42 PM Alexandre TORGUE
+<alexandre.torgue@foss.st.com> wrote:
+>
+> Hi Jagan
+>
+> On 2/26/21 8:02 AM, Jagan Teki wrote:
+> > MicroGEA STM32MP1 is an EDIMM SoM based on STM32MP157A from Engicam.
+> >
+> > General features:
+> > - STM32MP157AAC
+> > - Up to 1GB DDR3L-800
+> > - 512MB Nand flash
+> > - I2S
+> >
+> > MicroGEA STM32MP1 needs to mount on top of Engicam MicroDev carrier
+> > boards for creating complete platform solutions.
+> >
+> > Add support for it.
+> >
+> > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
+> > Signed-off-by: Francesco Utel <francesco.utel@engicam.com>
+> > Signed-off-by: Mirko Ardinghi <mirko.ardinghi@engicam.com>
+> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+>
+> Minor question: if the stm32mp157 is soldered on Microdev boards why do
+> you mention it in this commit message ?
 
-On 2/24/21 12:35 AM, Mathieu Poirier wrote:
-> Refactor function rproc_del() and rproc_cdev_release() to take
-> into account the current state of the remote processor when choosing
-> the state to transition to.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
-> New for V6:
-> - The RPROC_RUNNING -> RPROC_DETACHED transition is no longer permitted.
->   to avoid dealing with complex resource table management problems.
-> - Transition to the next state is no longer dictated by a DT binding for
->   the same reason as above.
-> - Removed Peng and Arnaud's RB tags because of the above.
-> ---
-> 
->  drivers/remoteproc/remoteproc_cdev.c | 10 ++++++++--
->  drivers/remoteproc/remoteproc_core.c |  9 +++++++--
->  2 files changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
-> index 2db494816d5f..0b8a84c04f76 100644
-> --- a/drivers/remoteproc/remoteproc_cdev.c
-> +++ b/drivers/remoteproc/remoteproc_cdev.c
-> @@ -86,11 +86,17 @@ static long rproc_device_ioctl(struct file *filp, unsigned int ioctl, unsigned l
->  static int rproc_cdev_release(struct inode *inode, struct file *filp)
->  {
->  	struct rproc *rproc = container_of(inode->i_cdev, struct rproc, cdev);
-> +	int ret = 0;
-> +
-> +	if (!rproc->cdev_put_on_release)
-> +		return 0;
->  
-> -	if (rproc->cdev_put_on_release && rproc->state == RPROC_RUNNING)
-> +	if (rproc->state == RPROC_RUNNING)
->  		rproc_shutdown(rproc);
-> +	else if (rproc->state == RPROC_ATTACHED)
-> +		ret = rproc_detach(rproc);
->  
-> -	return 0;
-> +	return ret;
->  }
->  
->  static const struct file_operations rproc_fops = {
-> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> index 00452da25fba..a05d5fec43b1 100644
-> --- a/drivers/remoteproc/remoteproc_core.c
-> +++ b/drivers/remoteproc/remoteproc_core.c
-> @@ -2542,11 +2542,16 @@ EXPORT_SYMBOL(rproc_put);
->   */
->  int rproc_del(struct rproc *rproc)
->  {
-> +	int ret = 0;
-> +
->  	if (!rproc)
->  		return -EINVAL;
->  
->  	/* TODO: make sure this works with rproc->power > 1 */
-> -	rproc_shutdown(rproc);
-> +	if (rproc->state == RPROC_RUNNING)
-> +		rproc_shutdown(rproc);
-> +	else if (rproc->state == RPROC_ATTACHED)
-> +		ret = rproc_detach(rproc);
+It was there in the commit message:
 
-Here i would not update the code to not change the existing behavior of an
-attached firmware.
-The decision between a detach or a shutdown probably depends on platform.
-We could (as a next step) reintroduce the "autonomous-on-core-reboot" DT
-property for the decision.
+> > General features:
+> > - STM32MP157AAC
+> > - Up to 1GB DDR3L-800
+> > - 512MB Nand flash
+> > - I2S
 
-Regards
-Arnaud
+>
+> + a minor comment bellow.
+>
+> thanks
+> Alex
+>
+> > ---
+> > Changes for v2:
+> > - none
+> >
+> >   .../dts/stm32mp157a-microgea-stm32mp1.dtsi    | 147 ++++++++++++++++++
+> >   1 file changed, 147 insertions(+)
+> >   create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
+> >
+> > diff --git a/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
+> > new file mode 100644
+> > index 000000000000..97d569107bfe
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
+> > @@ -0,0 +1,147 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
+> > +/*
+> > + * Copyright (c) STMicroelectronics 2019 - All Rights Reserved
+> > + * Copyright (c) 2020 Engicam srl
+> > + * Copyright (c) 2020 Amarula Solutons(India)
+> > + */
+> > +
+> > +/ {
+> > +     compatible = "engicam,microgea-stm32mp1", "st,stm32mp157";
+> > +
+> > +     memory@c0000000 {
+>
+> you could add           device_type = "memory";
 
->  
->  	mutex_lock(&rproc->lock);
->  	rproc->state = RPROC_DELETED;
-> @@ -2565,7 +2570,7 @@ int rproc_del(struct rproc *rproc)
->  
->  	device_del(&rproc->dev);
->  
-> -	return 0;
-> +	return ret;
->  }
->  EXPORT_SYMBOL(rproc_del);
->  
-> 
+Okay.
+
+Jagan.
