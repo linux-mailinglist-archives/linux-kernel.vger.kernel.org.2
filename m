@@ -2,57 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D39326102
+	by mail.lfdr.de (Postfix) with ESMTP id B5D02326103
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbhBZKKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:10:47 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:36655 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230347AbhBZKID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:08:03 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UPdKhw-_1614334036;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPdKhw-_1614334036)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 26 Feb 2021 18:07:20 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     bskeggs@redhat.com
-Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/nouveau/fifo:  make tu102_fifo_runlist static
-Date:   Fri, 26 Feb 2021 18:07:15 +0800
-Message-Id: <1614334035-33886-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230455AbhBZKLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:11:05 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36362 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229990AbhBZKIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:08:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 95F28ACF6;
+        Fri, 26 Feb 2021 10:08:12 +0000 (UTC)
+Subject: Re: [PATCH] perf config: add annotate.demangle{,_kernel}
+From:   =?UTF-8?Q?Martin_Li=c5=a1ka?= <mliska@suse.cz>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+References: <deb2af9e-25dd-ac72-29f4-ab90c2b24237@suse.cz>
+ <YDVcZJscuKIgShsm@kernel.org> <a4e687b9-f611-1b24-ae7c-2ecd93c42ea8@suse.cz>
+Message-ID: <c96aabe7-791f-9503-295f-3147a9d19b60@suse.cz>
+Date:   Fri, 26 Feb 2021 11:08:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <a4e687b9-f611-1b24-ae7c-2ecd93c42ea8@suse.cz>
+Content-Type: multipart/mixed;
+ boundary="------------7ED3ADB86AC31C7AA548F629"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+This is a multi-part message in MIME format.
+--------------7ED3ADB86AC31C7AA548F629
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-drivers/gpu/drm/nouveau/nvkm/engine/fifo/tu102.c:53:1: warning: symbol
-'tu102_fifo_runlist' was not declared. Should it be static?
+On 2/26/21 11:03 AM, Martin Liška wrote:
+> On 2/23/21 8:49 PM, Arnaldo Carvalho de Melo wrote:
+>> Please consider making this configurable (if not already) via
+>> ~/.perfconfig, 'perf config', sure in a followup patch.
+> 
+> I'm doing that in the following patch.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+The patch contained a typo, fixed in the V2.
+
+Martin
+
+> 
+> Thanks,
+> Martin
+
+
+--------------7ED3ADB86AC31C7AA548F629
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-perf-config-add-annotate.demangle-_kernel.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+ filename="0001-perf-config-add-annotate.demangle-_kernel.patch"
+
+From a29a6d3ae717f19774a430ccf9a63a452376f359 Mon Sep 17 00:00:00 2001
+From: Martin Liska <mliska@suse.cz>
+Date: Fri, 26 Feb 2021 11:01:24 +0100
+Subject: [PATCH] perf config: add annotate.demangle{,_kernel}
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Martin Liška <mliska@suse.cz>
 ---
- drivers/gpu/drm/nouveau/nvkm/engine/fifo/tu102.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/Documentation/perf-config.txt | 6 ++++++
+ tools/perf/util/annotate.c               | 4 ++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/tu102.c b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/tu102.c
-index e417044..260b197 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/fifo/tu102.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/fifo/tu102.c
-@@ -49,7 +49,7 @@
- 	/*XXX: how to wait? can you even wait? */
- }
+diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
+index 153bde14bbe0..154a1ced72b2 100644
+--- a/tools/perf/Documentation/perf-config.txt
++++ b/tools/perf/Documentation/perf-config.txt
+@@ -393,6 +393,12 @@ annotate.*::
  
--const struct gk104_fifo_runlist_func
-+static const struct gk104_fifo_runlist_func
- tu102_fifo_runlist = {
- 	.size = 16,
- 	.cgrp = gv100_fifo_runlist_cgrp,
+ 		This option works with tui, stdio2 browsers.
+ 
++	annotate.demangle::
++		Demangle symbol names to human readable form. Default is 'true'.
++
++	annotate.demangle_kernel::
++		Demangle kernel symbol names to human readable form. Default is 'true'.
++
+ hist.*::
+ 	hist.percentage::
+ 		This option control the way to calculate overhead of filtered entries -
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 80542012ec1b..e35d56608986 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -3142,6 +3142,10 @@ static int annotation__config(const char *var, const char *value, void *data)
+ 		opt->use_offset = perf_config_bool("use_offset", value);
+ 	} else if (!strcmp(var, "annotate.disassembler_style")) {
+ 		opt->disassembler_style = value;
++	} else if (!strcmp(var, "annotate.demangle")) {
++		symbol_conf.demangle = perf_config_bool("demangle", value);
++	} else if (!strcmp(var, "annotate.demangle_kernel")) {
++		symbol_conf.demangle_kernel = perf_config_bool("demangle_kernel", value);
+ 	} else {
+ 		pr_debug("%s variable unknown, ignoring...", var);
+ 	}
 -- 
-1.8.3.1
+2.30.1
 
+
+--------------7ED3ADB86AC31C7AA548F629--
