@@ -2,162 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B36326311
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D26326307
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhBZNEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 08:04:24 -0500
-Received: from smtpcmd03117.aruba.it ([62.149.158.117]:47112 "EHLO
-        smtpcmd03117.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhBZNEO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 08:04:14 -0500
-X-Greylist: delayed 573 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 08:04:13 EST
-Received: from [192.168.1.133] ([79.10.42.7])
-        by Aruba Outgoing Smtp  with ESMTPA
-        id FccKlzwPoGnOmFccLlJn3t; Fri, 26 Feb 2021 13:53:17 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1614343997; bh=2rMVWXF8lNyJSU6nmJKiXTRpfRlzP9TAQ8yJ4iqi81E=;
-        h=Subject:To:From:Date:MIME-Version:Content-Type;
-        b=Bgn/1OvKfYcIJNO21gMdg2O88WFu3JpJ9dDm51f2mxa55QKDlLAQXiQUqUxKiz6de
-         LOb7q1xcsELgYdKq3AL4bUezqyWIcxBabFmao0qCZBg+3t6RgFZ6/r98tSqaEkxUst
-         VvE1xDXEGR7ShvfkOMgZmR54n5olw1jg5Wx6ZR+7H3shorJKhufOLQ+dYfeOtV26Go
-         52UBgAZkjcxuAhnTPVZFTFabrtBVEOTe4a5ynfZYQR7ZTnF3YluMV4qkKV4AXxSlZZ
-         9OxnYQwhDarwQnAri5u1MUuAH3bqtcJvgLsQstAg34uiF6B3IIE/pp/hCVq6/5vsVR
-         SiABdtLR28qDg==
-Subject: Re: [PATCH] pinctrl/sunxi: adding input-debounce-ns property
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     wens@csie.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <d244aa6b-00b7-d768-83cb-e5a228b7ee08@trexom.it>
- <20210114081732.9386-1-giulio.benetti@benettiengineering.com>
- <20210114114219.faulkwww3dhdqwmc@gilmour>
- <c3bc06e3-4193-dc0b-b2b3-d54636481e28@trexom.it>
- <20210217110313.ly5ly5u5vyh2s7dh@gilmour>
-From:   Marjan Pascolo <marjan.pascolo@trexom.it>
-Message-ID: <4171ad5c-97f1-5738-9127-078fea74bbf7@trexom.it>
-Date:   Fri, 26 Feb 2021 13:53:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230198AbhBZNBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 08:01:13 -0500
+Received: from mga05.intel.com ([192.55.52.43]:63566 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229835AbhBZNBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 08:01:08 -0500
+IronPort-SDR: MKk+sjI6fkDf+qwPixYK9Uo0PiLGiPBrkvJHdM7xbBixYwUfKDBUqQd904N1s9bjFQMdW78qGT
+ PWHuMg7nerLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="270843598"
+X-IronPort-AV: E=Sophos;i="5.81,208,1610438400"; 
+   d="scan'208";a="270843598"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 04:59:20 -0800
+IronPort-SDR: X1WOlhR3tq4jzAbAxzM37x9Ymi08+8tb1Aek+KRk5QedTqLUquA8ZW8F4+q8QosPOQqZ/QkWIe
+ 9+WtZgWqzZZw==
+X-IronPort-AV: E=Sophos;i="5.81,208,1610438400"; 
+   d="scan'208";a="404893045"
+Received: from gna-dev.igk.intel.com (HELO localhost) ([10.102.80.34])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 04:59:17 -0800
+References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com> <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com> <YCwFBNa2npYcEIQ+@kroah.com>
+User-agent: mu4e 1.4.13; emacs 26.3
+From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+Subject: Re: [PATCH v1 01/12] gna: add driver module
+In-reply-to: <YCwFBNa2npYcEIQ+@kroah.com>
+Date:   Fri, 26 Feb 2021 13:59:14 +0100
+Message-ID: <85wnuvrnml.fsf@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210217110313.ly5ly5u5vyh2s7dh@gilmour>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: it
-X-CMAE-Envelope: MS4wfPSXGG2O58ymEadOQn9t3b2CCvFJTGHtNrRAPDC5W/xe1ILKrHnZO0KXAe8IZ7oulpWh8RqmtHEnuIvk97tvC62odHVmCLVdoI3M0QHX730+Kygp5kgh
- Msq4dcnpSf2AM7oaZ0LSdE2MFzojJgb2G+zqw0V1G0ovJxbARr5yTzRrd2roX9Gw9TrpzKumr52fzykfGniU8F9w78D0RV+7jZo/e/9iHfbsTKynJmwiLqhJ
- G9OUDJSKoCd943+EFZMRjPLIzQz0mhi0TNAcHUW6UmC5dxGs5+UZw8fuAIcgJHg8Xc0qSARK+ljQWUy5DhwRplZqwagbtZ3IW0R0ye+xaYRlDwnfr6XQiVso
- gfa/ilDCq2nK0NHLUoZKWViwCQCPrA==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
 
-Il 17/02/2021 12:03, Maxime Ripard ha scritto:
-> Hi,
->
-> On Wed, Feb 10, 2021 at 05:22:37PM +0100, Marjan Pascolo wrote:
->> On Allwinner SoC interrupt debounce can be controlled by two oscillator
->> (32KHz and 24MHz) and a prescale divider.
->> Oscillator and prescale divider are set through
->> device tree property "input-debounce" which have 1uS accuracy.
->> For acheive nS precision a new device tree poperty is made
->> named "input-debounce-ns".
->> "input-debounce-ns" is checked only if "input-debounce"
->> property is not defined.
->>
->> Suggested-by: Maxime Ripard <maxime@cerno.tech>
->> Signed-off-by: Marjan Pascolo <marjan.pascolo@trexom.it>
->> ---
->> ---
->>   .../pinctrl/allwinner,sun4i-a10-pinctrl.yaml  |  9 +++++++
->>   drivers/pinctrl/sunxi/pinctrl-sunxi.c         | 25 ++++++++++++++++---
->>   2 files changed, 30 insertions(+), 4 deletions(-)
->>
->> diff --git
->> a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
->> b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
->> index 5240487dfe50..346776de3a44 100644
->> ---
->> a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
->> +++
->> b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.yaml
->> @@ -93,6 +93,15 @@ properties:
->>       minItems: 1
->>       maxItems: 5
->>
->> +  input-debounce-ns:
->> +    description:
->> +      Debouncing periods in nanoseconds, one period per interrupt
->> +      bank found in the controller.
->> +      Only checked if input-debounce is not present
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    minItems: 1
->> +    maxItems: 5
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+
+> On Tue, Feb 16, 2021 at 05:05:14PM +0100, Maciej Kwapulinski wrote:
+....
+>> --- /dev/null
+>> +++ b/drivers/misc/gna/gna_driver.h
+>> @@ -0,0 +1,41 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/* Copyright(c) 2017-2021 Intel Corporation */
 >> +
-> This should be a separate patch, with the DT maintainers in Cc.
->
-> You should enforce that the properties are mutually exclusive through
-> the schema too
-
-I'm sorry, I've ignored documentaion about /Documentation.
-
-I see that some additional YAML operator (like oneOf) are used.
-
-oneOf should fit the schema, but I can't understand if oneOf's options 
-must be a literal value, or if could also be a node.
-
-Otherwise I'll use if ..then..else.
-
-
->
->>   patternProperties:
->>     # It's pretty scary, but the basic idea is that:
->>     #   - One node name can start with either s- or r- for PRCM nodes,
->> diff --git a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
->> b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
->> index dc8d39ae045b..869b6d5743ba 100644
->> --- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
->> +++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
->> @@ -1335,14 +1335,31 @@ static int sunxi_pinctrl_setup_debounce(struct
->> sunxi_pinctrl *pctl,
->>       struct clk *hosc, *losc;
->>       u8 div, src;
->>       int i, ret;
->> +    /* Keeping for loop below clean */
->> +    const char* debounce_prop_name;
->> +    unsigned long debounce_dividend;
->>
->>       /* Deal with old DTs that didn't have the oscillators */
->>       if (of_clk_get_parent_count(node) != 3)
->>           return 0;
->>
->> +    /*
->> +     * Distinguish between simple input-debounce
->> +     * and new input-debounce-ns
->> +     */
+>> +#ifndef __GNA_DRIVER_H__
+>> +#define __GNA_DRIVER_H__
 >> +
-> I'm not sure that comment should stay, the code is obvious enough
+>> +#include <linux/kernel.h>
+>> +#include <linux/mutex.h>
+>> +#include <linux/types.h>
+>> +
+>> +#define GNA_DRV_NAME	"gna"
 >
->>       /* If we don't have any setup, bail out */
->> -    if (!of_find_property(node, "input-debounce", NULL))
->> -        return 0;
->> +    if (!of_find_property(node, "input-debounce", NULL)) {
->> +        if(!of_find_property(node, "input-debounce-ns", NULL)) {
->> +            return 0;
->> +        } else {
->> +            debounce_prop_name="input-debounce-ns";
->> +            debounce_dividend=NSEC_PER_SEC;
->> +        }
->> +    } else {
->> +        debounce_prop_name="input-debounce";
->> +        debounce_dividend=USEC_PER_SEC;
->> +    }
-> This doesn't follow the kernel coding style, make sure to run
-> scripts/checkpatch.pl on your patches before sending them.
-Spaces between operators, right. After /Documentation submission I'll 
-resubmit this one
+> Way too generic, no one knows what "gna" is.
 >
-> Maxime
+
+"intel gna" is much more verbose in search engines.
+As we do not (plan to) have more "gna" drivers, is the following ok?:
+
+intel-gna
+
+the change would imply the following:
+
+prompt$ lspci -s 00:00.3 -vvvv
+00:00.3 System peripheral: Intel Corporation Device 3190 (rev 03)
+	Subsystem: Intel Corporation Device 2072
+  ....
+	Kernel driver in use: intel-gna
+	Kernel modules: gna
+
+is it ok?
+
+also, how about the interface to library (it's part of one of next patches)?:
+prompt$ file /dev/gna0
+/dev/gna0: character special (235/0)
+
+can "gna" stay intact here?
+
+I'm pointing this out, because gna exists on the market for a while and
+changing the above may have some impact we'd like to avoid.
+
+>
+....
