@@ -2,107 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF127325FFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842CA326007
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229449AbhBZJ0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:26:18 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:23018 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230014AbhBZJYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:24:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614331442; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=mp7yRwPgCTm+lkMg8IO3FOrSKleFckToDfTuDIRWlJU=;
- b=kiqaIFoIjraNsTFb95oqSPCbt8OIl7oMk9H3eTvzmfYhdXHB4yvToOnw6FwIIL9UcmiUnHKP
- +LhoylZE7asu8RSOlreu4FzciRVlv0X8RzximE9lvYfZKcc3Lb9tAumGjyHePm/74zHsQhuN
- BTGWJK8LHLZoRhO5ef+ZDMRkggI=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6038be039a7cefa92af9a505 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 09:23:15
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 14FC6C43461; Fri, 26 Feb 2021 09:23:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7D371C433CA;
-        Fri, 26 Feb 2021 09:23:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7D371C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S230122AbhBZJ2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:28:39 -0500
+Received: from mout.kundenserver.de ([217.72.192.75]:45347 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhBZJ0b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 04:26:31 -0500
+Received: from localhost ([109.247.224.130]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1M1YpJ-1lEBVP1ocN-0031i0; Fri, 26 Feb 2021 10:23:56 +0100
+Date:   Fri, 26 Feb 2021 10:23:55 +0100
+From:   Heinz Diehl <htd+ml@fritha.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     tiwai@suse.de, lpoetter@redhat.com
+Subject: Re: [BISECTED] Kernel 5.11.x breaks pulseaudio
+Message-ID: <YDi+K4RXmoZ0AM3z@fritha.org>
+References: <YDfYAYCaC9KDc1F0@fritha.org>
+ <s5him6gnkdu.wl-tiwai@suse.de>
+ <YDfeSZjdNKFcNKN8@fritha.org>
+ <s5hft1kni08.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 1/2] mt76: mt7915: fix unused 'mode' variable
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210225145953.404859-1-arnd@kernel.org>
-References: <20210225145953.404859-1-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210226092315.14FC6C43461@smtp.codeaurora.org>
-Date:   Fri, 26 Feb 2021 09:23:15 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hft1kni08.wl-tiwai@suse.de>
+X-Accept-Language: no,dk,se,en,de
+Organization: private site
+OpenPGP: id=60F4A92C; url=http://www.fritha.org/htd.asc;
+ preference=signencrypt
+User-Agent: Mutt/1.14.7+158 (b0ccf259) (2020-09-25)
+X-Provags-ID: V03:K1:3ic/i931As9LCJJEC3kWPP8Kqnau7MH2EaC/E2+JfRsP/GOnQLw
+ 8mJ/lGlrmvKKhW2iMQsU21oqTgqwegRoY/gKtu3ARKHjQz7llSrGIi4FBX8C+8vMTNy2kNy
+ +kPGsskTVs6QsQH8vXp+xy14Dey3Xh0P0f17fz7fA1Hja90f378L09ayCUuWBuue0nmu8CS
+ hGeGELT9aozVXaJQcJYYA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oS4cSzpf6e4=:0PjyLKMtDxQvLDD6JQyyr3
+ +i3CQxPJNwjkE1/xLuEab7FFy0mQuIcvnSyosEkUhSogSHdt+hCAcWBwyAfNrUrYHCpG927ZU
+ txziujATHAfh7ROmh2qXQZSm9kdiifWKs69OhDWs/s/0H/eFKXylw6Hl90Zwgxl3iuQhSCecP
+ CIXeNwx4gXVHCpTqLasak2B9PpuE3+N0DnjcnW0isiaoB+oeH9l1xuV/2JdwiEUe1Zng9PDUt
+ mdhbwzyrdHKUWWaMeA68EavuObUdSMgn1E7KvTwMrlpJ2l1M6L5qYJIVXJhiHzM0onS2efFtu
+ OCYqn9T262vbc3GTQ+1oloUluV/DnT3GfXO8AX6uTft1s8TLSAhDeXVF482ONCKlHmbpS8xQI
+ h3HOn69rkkc0oCvKmfmxs2lzOOWr474ufrIPln8zs6kqJ3iMaTcAvaAJM/En+KvXuW/lJMSjO
+ 0c0l5KCBTQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> wrote:
+On 25.02.2021, Takashi Iwai wrote: 
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang points out a possible corner case in the mt7915_tm_set_tx_cont()
-> function if called with invalid arguments:
-> 
-> drivers/net/wireless/mediatek/mt76/mt7915/testmode.c:593:2: warning: variable 'mode' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
->         default:
->         ^~~~~~~
-> drivers/net/wireless/mediatek/mt76/mt7915/testmode.c:597:13: note: uninitialized use occurs here
->         rateval =  mode << 6 | rate_idx;
->                    ^~~~
-> drivers/net/wireless/mediatek/mt76/mt7915/testmode.c:506:37: note: initialize the variable 'mode' to silence this warning
->         u8 rate_idx = td->tx_rate_idx, mode;
->                                            ^
-> 
-> Change it to return an error instead of continuing with invalid data
-> here.
-> 
-> Fixes: 3f0caa3cbf94 ("mt76: mt7915: add support for continuous tx in testmode")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Check which streams are running when you get the unexpected sample
+> rate by inspecting /proc/asound/card*/pcm* entries.
 
-Please remove the break and send v2.
+I see, thanks for explaining! Pulseaudio no longer works properly for me, but
+after configuring my audio player to use ALSA directly, all is fine so
+far and all audio files are played with the correct sample rate and
+without any resampling, just as they should.
 
-Patch set to Changes Requested.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210225145953.404859-1-arnd@kernel.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Thanks, Heinz.
