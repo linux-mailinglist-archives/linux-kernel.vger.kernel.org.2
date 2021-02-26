@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED771325BFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 04:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96E5325C07
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 04:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhBZDfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 22:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
+        id S229752AbhBZDjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 22:39:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhBZDfG (ORCPT
+        with ESMTP id S229460AbhBZDjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 22:35:06 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E4B5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 19:34:26 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id n195so7601162ybg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 19:34:26 -0800 (PST)
+        Thu, 25 Feb 2021 22:39:21 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB893C061574;
+        Thu, 25 Feb 2021 19:38:41 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id a7so8266318iok.12;
+        Thu, 25 Feb 2021 19:38:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NCLOCkZfcktctstbvLCUj8NcVRDZM3ove1QcBc5lnhY=;
-        b=hCJus5y12fxkCAARRkZtBqaspNgbM5dnFfL155opWmrxvKXRtuNVSlEW/C8hFxlKb/
-         HoUcm77wE87abi1OJB2qSby0INcFXNyZmvlO3isEo99VjlIk5Uvtf35YjiHINT+pj3rU
-         VedllEOiB1TL/bxXcihpE6W5l1mVUSJQ/A/wv8F3HZRqGJjMaPY59/00KOFeFUO5TYk/
-         ANKrDFOBqeVsQ+zmvBfNjh64PHI5la1wzkHzjBaA01aJJJEzYGxM+hFYQzweu4JnXRRI
-         IKCOgLnwRPpvd31SxQc5Qlh2gY4Lhfr0VpVnVQjgXU3BiJC5oO+1IMClt8PkcSiOshlW
-         g1wA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=udmluXpMaci3ucoNswUdfC3FZ9ieEv+QjxuH8G5YDsw=;
+        b=rBLI57mIfxf3VaxSTdYGQLwKZA6Z/JYCfEg15IScOI4WmQ/kn0RTue+r/qrc2A2eFm
+         X1rwQOx0DW9EPQJt8A0ba1HPvwdx+soCfsNIZL/6FemjS5VFOD9whgMH3mJirygLNm4x
+         Xk+iXedqd0PlxpBclb8UGQCYPs9L495pDO5/kAs5QrbCSuytxg05cjGMjhUSuBMCQcox
+         th+RkfYsceVIhjcBHXAsaGUpRFgEEGUg5rRHzR+IdC9d+yjAl3/yZz4qHB4+Cty5jPxE
+         Cg3b/rPpULiuE1Oq5vMXu2g/lKKoJFt8gxj8zKUrYxjVedCdj9+yoLmaHXeHy5KQgHOA
+         wIXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NCLOCkZfcktctstbvLCUj8NcVRDZM3ove1QcBc5lnhY=;
-        b=eP+JhVDVgg+3haU3QGLAcRZjGSfHNs6CcAjs6K2L6epUnwvoW0dfa92O6Hv319lhlO
-         X0r2wNbgoffElNDXrMjSUy1ncEra1v7jhmRJwfFHJKR07RuR2zY/q5bryydWS6zE2YK1
-         RurpscBL9ubGVU9eMpV8HCeVsAnXktapKj4YBc/+gwxuLaUcT+T5mz7EHaKl0at7eeAB
-         zp2BW1unA5hA+xqr68uRU0Kp1r+XIF8EgDIOfGUxrEIzqqVvS0fLziWLdDXhOVnqbYwm
-         PJdA4wItU6y8UiYjen72LGG0VJTtAX2cZGX+F1Jzhmk4+R8XGdjMDlMfnxjyJeaNN8Gw
-         LbOw==
-X-Gm-Message-State: AOAM531u0PCmxVix2mbAEv3N2ZjLSaC32KD7gnubm67VtfW//5Z75nfz
-        o3lTQi7p+yoLBN9KqOuZLhLbR6wQA/cpKf0wUds=
-X-Google-Smtp-Source: ABdhPJwE5s/APyzYAxcOL86Y7Z22UnWsAGUmuLw52By0tNCg4IId8AdfTyQkK+ISQoCz6Urgc5ZkGoJt+RzaS/z7CMg=
-X-Received: by 2002:a25:6e02:: with SMTP id j2mr1521515ybc.247.1614310465345;
- Thu, 25 Feb 2021 19:34:25 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=udmluXpMaci3ucoNswUdfC3FZ9ieEv+QjxuH8G5YDsw=;
+        b=G1WFPE9jPGvXTyeWLhCFxzq4UFRVmNFmaam9Ex4izj+DRocTsBrs56NTHlxWuHbI/P
+         HTBZv701yLsLCQXNTyIpK8at+b05/ePK21PlgmuQ2fvTBPzF/k9qJDSL/YJW0LN4Cmkl
+         +omFR67UUbEpJzG60JJ+La7XAJ9xGYCO1M78QdrN5cQUnbdK7p9VZbxJT+b/4NmvKwHy
+         4U2LU6F0puhaGzdjuTP8RkNfm68RqXxsfyQVvTSCpQFOY59Oah4LHRz6mt+1oTTTzZPS
+         8+ECyv4Ygugm1mOC/SwrrbMCWcoJ12Cq1oEGtlkwNBKu3HjSKhDinx9WFvU/bpS1pAYT
+         G19g==
+X-Gm-Message-State: AOAM530I8Hznp/FC6f+uiTX3PosowjbhHr6kVivZwAzF8GhYWfWcjc62
+        dzm/GRtmX74ZVqzSBnzMf2A=
+X-Google-Smtp-Source: ABdhPJx82wb55P6Oj98cuE7Hs/obM9NwK1cIzalWOs8Kbe8jbSONnjuYt9/RGZkKxqL94b5W5Uw88g==
+X-Received: by 2002:a05:6638:12cf:: with SMTP id v15mr952778jas.77.1614310721190;
+        Thu, 25 Feb 2021 19:38:41 -0800 (PST)
+Received: from book ([2601:445:8200:6c90::4121])
+        by smtp.gmail.com with ESMTPSA id k14sm1901143ilv.41.2021.02.25.19.38.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 19:38:40 -0800 (PST)
+Date:   Thu, 25 Feb 2021 21:38:38 -0600
+From:   Ross Schmidt <ross.schm.dev@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/17] 5.4.101-rc1 review
+Message-ID: <20210226033838.GA5461@book>
+References: <20210225092515.001992375@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20210225164513.3667778-1-arnd@kernel.org> <202102251203.03762F77@keescook>
- <20210225120637.8e2a234f192952829fc5f471@linux-foundation.org> <202102251213.5815C9B33@keescook>
-In-Reply-To: <202102251213.5815C9B33@keescook>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 26 Feb 2021 04:34:14 +0100
-Message-ID: <CANiq72nP6Db4y8dKeO=iOQb8K1EE=fWactFswv+HPh-Pc69rvQ@mail.gmail.com>
-Subject: Re: [PATCH] linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
-        Marco Elver <elver@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225092515.001992375@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 9:14 PM Kees Cook <keescook@chromium.org> wrote:
+On Thu, Feb 25, 2021 at 10:53:45AM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.101 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> It's a trivial change, so I think it's worth it?
 
-It is simple, but it is not trivial since it may change codegen.
+Compiled and booted with no regressions on x86_64.
 
-Acked-by: Miguel Ojeda <ojeda@kernel.org>
+Tested-by: Ross Schmidt <ross.schm.dev@gmail.com>
 
-Cheers,
-Miguel
+
+thanks,
+
+Ross
