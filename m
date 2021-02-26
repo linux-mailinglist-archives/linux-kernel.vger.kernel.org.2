@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34A86326386
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A363326389
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbhBZNsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 08:48:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhBZNsC (ORCPT
+        id S230010AbhBZNtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 08:49:52 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49596 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhBZNtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 08:48:02 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C788C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 05:47:22 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id w11so8619734wrr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 05:47:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vTw5pV8CppqaFWYeiTnc7rI0doZYk4bhQx1gn2PUM+c=;
-        b=rQwYdC4L1ZQNePU5zXmJj4yQMRJzUx75u9nGyOrtOTzEf4kcM0mqcJefmV6wmB46ig
-         UxyjFkKq76yoz7mM854sr4iiDzvbgXSWYQeaVk2kmsJA6h7PVkE2ScDqX7mhdZv3t6t6
-         HYgQKCePp2o2dBRyWr2il29WE3zXnkf8Dv3u8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vTw5pV8CppqaFWYeiTnc7rI0doZYk4bhQx1gn2PUM+c=;
-        b=Nzx29+2P0fS6qWlkvAYj1lFPlzdYRvNaiNX4ubOvHvh3jcQLuzHyH8yvHdDfyo9a5G
-         9UKy2aMUE7/VyCMT21/WSrXHBbVR4ISjbQF43dNwADf2F9R/WZyyBNH2M15h2d37PlA7
-         Z3ZIVWOEcs8DRTvj78eEXXa/3Am2T1u7cqP3XBdyNJ4ABdSczVyLm4YIUIm2I5zkSGg6
-         0Ab3LpzrN0fd9P8Wcz2QLcD/e4CYlp3lzbTYQbXRWkAdMvzHgnDC8f8hP/LYsm3Tz8Nd
-         CxejxRIySLht2qf5SYHa5FGnLzC8EZA6K4ZN6Kbo9c/rYel8hg/cUsLbM8fN31Q291Jb
-         4hJQ==
-X-Gm-Message-State: AOAM530izS/eX8hkHkLn/ou15jznlcvee6AwUC8X34DpwbLeWVyh10VW
-        Z/l8LmAkXQgYDvkgiZ+F+wcwLw==
-X-Google-Smtp-Source: ABdhPJyPIZy8UwWq69q/gkkLW4ZIRBWdSesqrIV6aqBwCubu5YLuWEdVDHMLcKWfhMLfOO/m6Jmv9g==
-X-Received: by 2002:adf:fe09:: with SMTP id n9mr3390807wrr.104.1614347240990;
-        Fri, 26 Feb 2021 05:47:20 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:87b5])
-        by smtp.gmail.com with ESMTPSA id c11sm12808490wrs.28.2021.02.26.05.47.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 05:47:20 -0800 (PST)
-Date:   Fri, 26 Feb 2021 13:47:20 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] ia64: Depend on non-static printk for cmpxchg debug
-Message-ID: <YDj76FjQCL7YgQq+@chrisdown.name>
-References: <YCflN5zTvo5mxvKY@chrisdown.name>
- <YDjt/lI82VzZcCgq@chrisdown.name>
- <20210226130029.GC2723601@casper.infradead.org>
- <YDj0T7H4ZbuEAYwK@chrisdown.name>
+        Fri, 26 Feb 2021 08:49:49 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QDi6n3015652;
+        Fri, 26 Feb 2021 13:49:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=j6X7aMhyeHbfwWugkaYf+5JqZcw2yDe6NCV7HeplKdQ=;
+ b=E1QpblCl7irow6XTW5uqj4HwchxIlK8N2anfQalhxXhznagUaHus4kiHwYqJqdbjVSVR
+ rrT0an+xGCzd0MhR+g38rrFhpNspp05zFIOk7GfPvieHEg2CQIeVZTRNYzWFheqPlK8x
+ 5YfJ1+FWLk6YK7oNjdNOxW7B7zVdcpBgi333voF8kGMQPXVKDJkZvZj83ZR01AYUTJkR
+ Xjd+PLIUfn5ZrvowT/a5tY30MB1ATyT3nOZ4Rwju/ZxL1dOqASbpVV8dIvtgWocEDDL6
+ 0OC+MKmGD1wbTulL5m26mI39Fxr9MCAKW19qye497banR+QUzkZa/M/LDb7zJ0znE0BY Zg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 36xqkf9g50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Feb 2021 13:49:04 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QDilsK005186;
+        Fri, 26 Feb 2021 13:49:02 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 36ucb3e032-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Feb 2021 13:49:02 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11QDn1Oe004149;
+        Fri, 26 Feb 2021 13:49:01 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 26 Feb 2021 05:49:01 -0800
+Date:   Fri, 26 Feb 2021 16:48:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Lee Gibson <leegib@gmail.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: rtl8192e: Fix possible buffer overflow in
+ _rtl92e_wx_set_scan
+Message-ID: <20210226134855.GB2087@kadam>
+References: <20210226132725.401813-1-leegib@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YDj0T7H4ZbuEAYwK@chrisdown.name>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+In-Reply-To: <20210226132725.401813-1-leegib@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9906 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102260106
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9906 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1015
+ malwarescore=0 suspectscore=0 impostorscore=0 phishscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102260106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Down writes:
->I must confess I have no idea of the history of why it was `extern 
->int` in the first place -- my fear was somehow we use cmpxchg.h from a 
->different context.  Do you have any idea? :-)
+On Fri, Feb 26, 2021 at 01:27:25PM +0000, Lee Gibson wrote:
+> Function _rtl92e_wx_set_scan calls memcpy without checking the length.
+> A user could control that length and trigger a buffer overflow.
+> Fix by checking the length is within the maximum allowed size.
+> 
+> Changes in v2: 
+> 	Changed to use min_t as per useful suggestions
 
-Ok, found where it's introduced in the pre-git archives: "New file 
-asm-ia64/intrinsics.h." from David Mosberger <davidm@tiger.hpl.hp.com>, Dec 9 
-2002. No indication why it's extern, but it's been there since the dawn of 
-ia64.
+This kind of information is supposed to go below the --- cut off line
+
+> 
+> Signed-off-by: Lee Gibson <leegib@gmail.com>
+> ---
+  ^^^
+
+here.
+
+regards,
+dan carpenter
+
