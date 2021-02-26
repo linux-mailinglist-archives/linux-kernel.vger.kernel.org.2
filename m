@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A86E3263FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:23:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 648A83263F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBZOW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:22:56 -0500
-Received: from mxout70.expurgate.net ([91.198.224.70]:58921 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhBZOWv (ORCPT
+        id S229835AbhBZOWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:22:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44103 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229946AbhBZOWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:22:51 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lFdzG-000FB0-Ps; Fri, 26 Feb 2021 15:20:58 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1lFdzF-000PO6-IK; Fri, 26 Feb 2021 15:20:57 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id B884A240041;
-        Fri, 26 Feb 2021 15:20:56 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 12F2E240040;
-        Fri, 26 Feb 2021 15:20:56 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 7E2A4200E1;
-        Fri, 26 Feb 2021 15:20:55 +0100 (CET)
+        Fri, 26 Feb 2021 09:22:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614349277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fg24dKMXsylujCf9pV0ZPia44btO5GQG0RuB65YXV5I=;
+        b=gEQFvaZ8IaWkwZlsHwbrTZwisHvgrrrrrxa/8f+fF5fpyUN/FtPWMunspMxVCZXpkmzGse
+        Cx4gBwPejPH1wDn8rN0JpHCYDboiVE63mm4CVDUewK58gQMoq5HKlMPz7NA8FItFFNR882
+        p+GTZzjtCRoD+kTnigd2muuryoC/88w=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228-TuFBjM0mPkespy0E26Rhow-1; Fri, 26 Feb 2021 09:21:15 -0500
+X-MC-Unique: TuFBjM0mPkespy0E26Rhow-1
+Received: by mail-ed1-f69.google.com with SMTP id l23so4588479edt.23
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:21:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fg24dKMXsylujCf9pV0ZPia44btO5GQG0RuB65YXV5I=;
+        b=hwUS6g7YOOA5Zvlnf4+fVGnwnFirExkDBvlXNCeQssjFofk8MxYbd9REabIvAsEYMs
+         0UMsyem4JnHx4S9k8eKMlNmcLUlIrNC9+iZL+HnS/Bj2NXkkJxMFin+Z1Q5w+NjExeqq
+         6MizwhXKYSjSqQEWkliL8BLOpUBSYvq8xs8uZqw95HrPEnDj38vdbugyPqQyVPkueCNE
+         tn92TEAqY82DDmGWSX7uclFYMG1IqSRVvHK/NcTcyAhE93RsIxXZFiY05ANS3aaosADw
+         6j53fyVoKaGUbCAmdZqv+CiRurSWKyIQbsAaRAVuwUxrisRXowPXXZR1uqbEtGYBE6D/
+         wjbw==
+X-Gm-Message-State: AOAM532AixsLDqTAYitp8ayO82Tuv7Ru88l1GrkOTjA0Qiss+eJGgpjR
+        nLkffFwzAv28BLiO1mnBUJ5bhMTkMgbqIdtHDHnqS3aZblYufY8OYbkLj3LX9JS8/KfRx4ELpUY
+        aQdBUAkgJ0+s6giB2t6Y2IHV3
+X-Received: by 2002:a50:fd84:: with SMTP id o4mr3589774edt.382.1614349273760;
+        Fri, 26 Feb 2021 06:21:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwF+Kv12vY8XbNfuGeemSm2a6jx6vRslVESjaNVm1YkQa90zOI0swxYDiWa2DjC/178r6Bhdw==
+X-Received: by 2002:a50:fd84:: with SMTP id o4mr3589755edt.382.1614349273599;
+        Fri, 26 Feb 2021 06:21:13 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id hr3sm5204595ejc.41.2021.02.26.06.21.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 06:21:12 -0800 (PST)
+Subject: Re: [PATCH 5.4 12/47] KVM: x86: avoid incorrect writes to host
+ MSR_IA32_SPEC_CTRL
+To:     Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jim Mattson <jmattson@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+References: <20210104155705.740576914@linuxfoundation.org>
+ <20210104155706.339275609@linuxfoundation.org>
+ <85e3f488-4ec5-2ad3-26a6-097d532824e1@proxmox.com>
+ <4fa31425-3c13-0a4f-167b-6566c6302334@redhat.com>
+ <YDjwxF2RyKnsQqF/@kroah.com>
+ <34df16e4-06a1-3343-2fd9-5004ec5f5fa1@redhat.com>
+ <89a2c659-54d6-59ae-826e-c742efdb784b@proxmox.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b2f0a841-ec29-7463-8b9d-5524186e3a34@redhat.com>
+Date:   Fri, 26 Feb 2021 15:21:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <89a2c659-54d6-59ae-826e-c742efdb784b@proxmox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 26 Feb 2021 15:20:55 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
-Organization: TDT AG
-In-Reply-To: <CAJht_EPBJhhdCBoon=WMuPBk-sxaeYOq3veOpAd2jq5kFqQHBg@mail.gmail.com>
-References: <20210216201813.60394-1-xie.he.0141@gmail.com>
- <YC4sB9OCl5mm3JAw@unreal>
- <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
- <YC5DVTHHd6OOs459@unreal>
- <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
- <YC7GHgYfGmL2wVRR@unreal>
- <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
- <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com>
- <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com>
- <906d8114f1965965749f1890680f2547@dev.tdt.de>
- <CAJht_EPBJhhdCBoon=WMuPBk-sxaeYOq3veOpAd2jq5kFqQHBg@mail.gmail.com>
-Message-ID: <e1750da4179aca52960703890e985af3@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-type: clean
-X-purgate: clean
-X-purgate-ID: 151534::1614349258-000052FF-44B5BAFB/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-22 09:56, Xie He wrote:
-> On Sun, Feb 21, 2021 at 11:14 PM Martin Schiller <ms@dev.tdt.de> wrote:
->> 
->> I'm not really happy with this change because it breaks compatibility.
->> We then suddenly have 2 interfaces; the X.25 routings are to be set 
->> via
->> the "new" hdlc<x>_x25 interfaces instead of the hdlc<x> interfaces.
->> 
->> I currently just don't have a nicer solution to fix this queueing
->> problem either. On the other hand, since the many years we have been
->> using the current state, I have never noticed any problems with
->> discarded frames. So it might be more a theoretical problem than a
->> practical one.
+On 26/02/21 15:18, Thomas Lamprecht wrote:
+>>> Does that mean I should not take the patch here in this email and that
+>>> you will submit it after some timeperiod, or that I should take this
+>>> patch as-is?
+>> The patch that Thomas requested (commit 841c2be09fe) does not apply cleanly, so I'll take care of sending the backport.
+>>
+> Note that the patch I added inline in my initial mail here was already
+> adapted to apply cleanly, at least on stable-5.4.y
 > 
-> This problem becomes very serious when we use AF_PACKET sockets,
-> because the majority of frames would be dropped by the hardware
-> driver, which significantly impacts transmission speed. What I am
-> really doing is to enable adequate support for AF_PACKET sockets,
-> allowing users to use the bare (raw) LAPB protocol. If we take this
-> into consideration, this problem is no longer just a theoretical
-> problem, but a real practical issue.
+> May not have made that clear enough, so mentioning it here - ignore me this
+> message if that was read and thought of.
 
-I have now had a look at it. It works as expected.
-I just wonder if it would not be more appropriate to call
-the lapb_register() already in x25_hdlc_open(), so that the layer2
-(lapb) can already "work" before the hdlc<x>_x25 interface is up.
+No, I just didn't notice at all that you had taken care of backporting 
+the patch.  My brain processed it as the quote of the broken patch you 
+were replying to...  I wear glasses after all.
 
+Paolo
 
-Also, I have a hard time assessing if such a wrap is really enforceable.
-Unfortunately I have no idea how many users there actually are.
-
-
-> 
-> If we don't want to break backward compatibility, there is another 
-> option:
-> We can create a new API for the HDLC subsystem for stopping/restarting
-> the TX queue, and replace all HDLC hardware drivers' netif_stop_queue
-> and netif_wake_queue calls with calls to this new API. This new API
-> would then call hdlc_x25 to stop/restart its internal queue.
-> 
-> But this option would require modifying all HDLC hardware drivers'
-> code, and frankly, not all HDLC hardware drivers' developers care
-> about running X.25 protocols on their hardware. So this would cause
-> both hardware driver instabilities and confusion for hardware driver
-> developers.
