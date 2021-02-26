@@ -2,213 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAAD32623B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:00:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE56326240
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhBZL7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:59:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42605 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229537AbhBZL7P (ORCPT
+        id S230008AbhBZMAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhBZMAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:59:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614340668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=9ex2gVY8g3pHKx0BP1TDVrlr+j7IDrQGcZOuxsin5kk=;
-        b=YbY9jfYkPkalRpnNuS6aQfb3ZBOPvPHIHdHyKXcl3jsLiTJIMpZkZj06xsSpYkpPhcTNyn
-        wtjFF8DpAsERq7DDax87VAHg2IE/7KX38liDbzbXB0oZfWM9a8ZEUkQTE6PRMEo7WvrTcu
-        UUSXZ/FScwRFgI7aa1vOy8jEzTh06MQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-JQwEBj3xNemQtht-DdPDlA-1; Fri, 26 Feb 2021 06:57:46 -0500
-X-MC-Unique: JQwEBj3xNemQtht-DdPDlA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 907EAC280;
-        Fri, 26 Feb 2021 11:57:45 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C5F363746;
-        Fri, 26 Feb 2021 11:57:45 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>, David Woodhouse <dwmw@amazon.co.uk>
-Subject: [PATCH v2] KVM: x86: allow compiling out the Xen hypercall interface
-Date:   Fri, 26 Feb 2021 06:57:44 -0500
-Message-Id: <20210226115744.170536-1-pbonzini@redhat.com>
+        Fri, 26 Feb 2021 07:00:48 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEECAC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:00:07 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id e9so3198375pjs.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:00:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OTt+hzwUzbEnNK6etaUVSe6BNGtkKbiycN/jXlNteq0=;
+        b=asNZJiY/ZN5/+Dh0isecfCCWU4RODpQNusNjrlECjqzWIL/uwWIBOBPJCh5a8J+icW
+         58k9I4EH5I4J8AuSpTqnnQcatHcS4FICl89ylMgE79cPJMPQlwoD4Z/p7k5XYUTnrJ9i
+         DBGfYfLLHS7jSrrdepRYAYw2f2QJMR6adyYDSKAMy3Mx/V2f7O3VJO1n4oyhEBPiNSeX
+         L3u7OGk5NKdOPy6L05PUQtw8Fz6ksdNKiN25JGwnR/7D9ujyhoiPYkrB63j8RRydcs/W
+         LnXCfsNq7zfQLv/doZ4JHMDtMK2LOK9POnSS9qDubVbq2SgAs0KoG9BWMjrMktcCJ+gf
+         PUPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OTt+hzwUzbEnNK6etaUVSe6BNGtkKbiycN/jXlNteq0=;
+        b=YrfIcewryR36I8mIedK9j3VnrKvIarzRmw8ed8ZGv7RyouPtsV/oNQwJhosg/Efuij
+         fL/hNJd62pU1QunORPWKYcWewzgZhI+3bI3cb9piX5Nh4Cz3DFRRRMkOuJfNM1f0y8fB
+         +7qrda9Lb8S4Wi1HuIaEClIXsPMdfWVhwYyhKfnjHViFDoFAVtzsbxoATdYaRhFU/tx4
+         J9ezKHfgJ2oZ6RZTSPCPiP3/1Fyw1A+zwkFWhq5UTGnijWlnVadzyqYPra49IeUttxqV
+         6Qbo7wEQjO0VkLG/nDpdKBDVI2nacm2yIy1ZutLDJkv2abIruGul4QdsRf2cF8vDtn9c
+         PBag==
+X-Gm-Message-State: AOAM531jEzgIDv8P4C6CaSMwQmxKBmv9DE640Fcjv2Axj6Kr7P4A6dxg
+        c69b1iJ2skLmIYCA3/kHXhMiOQXpnGHqDVzuVsx/jA==
+X-Google-Smtp-Source: ABdhPJyfnocGVGubk0og9fBr+6c+QqVcyum8wyer3OWW0BX2xL+xddU+EDj2PYGrP8++GK2VEYgewJ7knmtQVGv/4t0=
+X-Received: by 2002:a17:90a:8b83:: with SMTP id z3mr3182942pjn.75.1614340807377;
+ Fri, 26 Feb 2021 04:00:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <1613619715-28785-1-git-send-email-victor.liu@nxp.com> <1613619715-28785-3-git-send-email-victor.liu@nxp.com>
+In-Reply-To: <1613619715-28785-3-git-send-email-victor.liu@nxp.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 26 Feb 2021 12:59:56 +0100
+Message-ID: <CAG3jFysoPCDW5RQeDLa3b97UrH0yKi=K=tJLFuXK6YZHZm+T+g@mail.gmail.com>
+Subject: Re: [PATCH v4 02/14] media: uapi: Add some RGB bus formats for
+ i.MX8qm/qxp pixel combiner
+To:     Liu Ying <victor.liu@nxp.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de,
+        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>, kishon@ti.com,
+        Vinod Koul <vkoul@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Xen hypercall interface adds to the attack surface of the hypervisor
-and will be used quite rarely.  Allow compiling it out.
+Hey Liu,
 
-Suggested-by: Christoph Hellwig <hch@lst.de>
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
-	v1->v2: do not use stubs for the ioctls, cull KVM_CAP_XEN_HVM too
+This patch looks good to me
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
- arch/x86/kvm/Kconfig  |  9 +++++++++
- arch/x86/kvm/Makefile |  3 ++-
- arch/x86/kvm/x86.c    |  8 ++++++++
- arch/x86/kvm/xen.h    | 24 +++++++++++++++++++++++-
- 4 files changed, 42 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index 7ac592664c52..bdda1a386293 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -103,6 +103,15 @@ config KVM_AMD_SEV
- 	  Provides support for launching Encrypted VMs (SEV) and Encrypted VMs
- 	  with Encrypted State (SEV-ES) on AMD processors.
- 
-+config KVM_XEN
-+	bool "Support for Xen hypercall interface"
-+	depends on KVM && IA32_FEAT_CTL
-+	help
-+	  Provides KVM support for the hosting Xen HVM guests and
-+	  passing Xen hypercalls to userspace.
-+
-+	  If in doubt, say "N".
-+
- config KVM_MMU_AUDIT
- 	bool "Audit KVM MMU"
- 	depends on KVM && TRACEPOINTS
-diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
-index aeab168c5711..1b4766fe1de2 100644
---- a/arch/x86/kvm/Makefile
-+++ b/arch/x86/kvm/Makefile
-@@ -14,11 +14,12 @@ kvm-y			+= $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o \
- 				$(KVM)/dirty_ring.o
- kvm-$(CONFIG_KVM_ASYNC_PF)	+= $(KVM)/async_pf.o
- 
--kvm-y			+= x86.o emulate.o i8259.o irq.o lapic.o xen.o \
-+kvm-y			+= x86.o emulate.o i8259.o irq.o lapic.o \
- 			   i8254.o ioapic.o irq_comm.o cpuid.o pmu.o mtrr.o \
- 			   hyperv.o debugfs.o mmu/mmu.o mmu/page_track.o \
- 			   mmu/spte.o
- kvm-$(CONFIG_X86_64) += mmu/tdp_iter.o mmu/tdp_mmu.o
-+kvm-$(CONFIG_KVM_XEN)	+= xen.o
- 
- kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
- 			   vmx/evmcs.o vmx/nested.o vmx/posted_intr.o
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index bfc928495bd4..4a5ce57b0bb2 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3755,11 +3755,13 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	case KVM_CAP_ENFORCE_PV_FEATURE_CPUID:
- 		r = 1;
- 		break;
-+#ifdef CONFIG_KVM_XEN
- 	case KVM_CAP_XEN_HVM:
- 		r = KVM_XEN_HVM_CONFIG_HYPERCALL_MSR |
- 		    KVM_XEN_HVM_CONFIG_INTERCEPT_HCALL |
- 		    KVM_XEN_HVM_CONFIG_SHARED_INFO;
- 		break;
-+#endif
- 	case KVM_CAP_SYNC_REGS:
- 		r = KVM_SYNC_X86_VALID_FIELDS;
- 		break;
-@@ -5012,6 +5014,7 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 	case KVM_GET_SUPPORTED_HV_CPUID:
- 		r = kvm_ioctl_get_supported_hv_cpuid(vcpu, argp);
- 		break;
-+#ifdef CONFIG_KVM_XEN
- 	case KVM_XEN_VCPU_GET_ATTR: {
- 		struct kvm_xen_vcpu_attr xva;
- 
-@@ -5032,6 +5035,7 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
- 		r = kvm_xen_vcpu_set_attr(vcpu, &xva);
- 		break;
- 	}
-+#endif
- 	default:
- 		r = -EINVAL;
- 	}
-@@ -5653,6 +5657,7 @@ long kvm_arch_vm_ioctl(struct file *filp,
- 			kvm->arch.bsp_vcpu_id = arg;
- 		mutex_unlock(&kvm->lock);
- 		break;
-+#ifdef CONFIG_KVM_XEN
- 	case KVM_XEN_HVM_CONFIG: {
- 		struct kvm_xen_hvm_config xhc;
- 		r = -EFAULT;
-@@ -5681,6 +5686,7 @@ long kvm_arch_vm_ioctl(struct file *filp,
- 		r = kvm_xen_hvm_set_attr(kvm, &xha);
- 		break;
- 	}
-+#endif
- 	case KVM_SET_CLOCK: {
- 		struct kvm_clock_data user_ns;
- 		u64 now_ns;
-@@ -8039,8 +8045,10 @@ void kvm_arch_exit(void)
- 	kvm_mmu_module_exit();
- 	free_percpu(user_return_msrs);
- 	kmem_cache_destroy(x86_fpu_cache);
-+#ifdef CONFIG_KVM_XEN
- 	static_key_deferred_flush(&kvm_xen_enabled);
- 	WARN_ON(static_branch_unlikely(&kvm_xen_enabled.key));
-+#endif
- }
- 
- static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
-diff --git a/arch/x86/kvm/xen.h b/arch/x86/kvm/xen.h
-index b66a921776f4..87eaf2be9549 100644
---- a/arch/x86/kvm/xen.h
-+++ b/arch/x86/kvm/xen.h
-@@ -9,6 +9,7 @@
- #ifndef __ARCH_X86_KVM_XEN_H__
- #define __ARCH_X86_KVM_XEN_H__
- 
-+#ifdef CONFIG_KVM_XEN
- #include <linux/jump_label_ratelimit.h>
- 
- extern struct static_key_false_deferred kvm_xen_enabled;
-@@ -18,7 +19,6 @@ int kvm_xen_vcpu_set_attr(struct kvm_vcpu *vcpu, struct kvm_xen_vcpu_attr *data)
- int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, struct kvm_xen_vcpu_attr *data);
- int kvm_xen_hvm_set_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data);
- int kvm_xen_hvm_get_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data);
--int kvm_xen_hypercall(struct kvm_vcpu *vcpu);
- int kvm_xen_write_hypercall_page(struct kvm_vcpu *vcpu, u64 data);
- int kvm_xen_hvm_config(struct kvm *kvm, struct kvm_xen_hvm_config *xhc);
- void kvm_xen_destroy_vm(struct kvm *kvm);
-@@ -38,6 +38,28 @@ static inline int kvm_xen_has_interrupt(struct kvm_vcpu *vcpu)
- 
- 	return 0;
- }
-+#else
-+static inline int kvm_xen_write_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
-+{
-+	return 1;
-+}
-+
-+static inline void kvm_xen_destroy_vm(struct kvm *kvm)
-+{
-+}
-+
-+static inline bool kvm_xen_hypercall_enabled(struct kvm *kvm)
-+{
-+	return false;
-+}
-+
-+static inline int kvm_xen_has_interrupt(struct kvm_vcpu *vcpu)
-+{
-+	return 0;
-+}
-+#endif
-+
-+int kvm_xen_hypercall(struct kvm_vcpu *vcpu);
- 
- /* 32-bit compatibility definitions, also used natively in 32-bit build */
- #include <asm/pvclock-abi.h>
--- 
-2.26.2
-
+On Thu, 18 Feb 2021 at 04:56, Liu Ying <victor.liu@nxp.com> wrote:
+>
+> This patch adds RGB666_1X30_CPADLO, RGB888_1X30_CPADLO, RGB666_1X36_CPADLO
+> and RGB888_1X36_CPADLO bus formats used by i.MX8qm/qxp pixel combiner.
+> The RGB pixels with padding low per component are transmitted on a 30-bit
+> input bus(10-bit per component) from a display controller or a 36-bit
+> output bus(12-bit per component) to a pixel link.
+>
+> Signed-off-by: Liu Ying <victor.liu@nxp.com>
+> ---
+> v3->v4:
+> * No change.
+>
+> v2->v3:
+> * No change.
+>
+> v1->v2:
+> * No change.
+>
+>  include/uapi/linux/media-bus-format.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/media-bus-format.h b/include/uapi/linux/media-bus-format.h
+> index 0dfc11e..ec3323d 100644
+> --- a/include/uapi/linux/media-bus-format.h
+> +++ b/include/uapi/linux/media-bus-format.h
+> @@ -34,7 +34,7 @@
+>
+>  #define MEDIA_BUS_FMT_FIXED                    0x0001
+>
+> -/* RGB - next is       0x101e */
+> +/* RGB - next is       0x1022 */
+>  #define MEDIA_BUS_FMT_RGB444_1X12              0x1016
+>  #define MEDIA_BUS_FMT_RGB444_2X8_PADHI_BE      0x1001
+>  #define MEDIA_BUS_FMT_RGB444_2X8_PADHI_LE      0x1002
+> @@ -59,9 +59,13 @@
+>  #define MEDIA_BUS_FMT_RGB888_3X8_DELTA         0x101d
+>  #define MEDIA_BUS_FMT_RGB888_1X7X4_SPWG                0x1011
+>  #define MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA       0x1012
+> +#define MEDIA_BUS_FMT_RGB666_1X30_CPADLO       0x101e
+> +#define MEDIA_BUS_FMT_RGB888_1X30_CPADLO       0x101f
+>  #define MEDIA_BUS_FMT_ARGB8888_1X32            0x100d
+>  #define MEDIA_BUS_FMT_RGB888_1X32_PADHI                0x100f
+>  #define MEDIA_BUS_FMT_RGB101010_1X30           0x1018
+> +#define MEDIA_BUS_FMT_RGB666_1X36_CPADLO       0x1020
+> +#define MEDIA_BUS_FMT_RGB888_1X36_CPADLO       0x1021
+>  #define MEDIA_BUS_FMT_RGB121212_1X36           0x1019
+>  #define MEDIA_BUS_FMT_RGB161616_1X48           0x101a
+>
+> --
+> 2.7.4
+>
