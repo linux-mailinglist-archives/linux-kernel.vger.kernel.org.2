@@ -2,134 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BA9325FEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D58C325FF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhBZJXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:23:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
+        id S230370AbhBZJYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:24:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhBZJVb (ORCPT
+        with ESMTP id S230360AbhBZJW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:21:31 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEB8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:20:50 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id k12so805706ljg.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:20:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/+uOWPFzzCIa7OYqY/m1Q3ZpjqDPg+5pHoY+BALxZ/U=;
-        b=Z3rbVEuy27QsFeKZW3PXq2Elhy38QzYQkMGUZuaCQQteEwN/jhUxUY9fbtCQqwK6Kv
-         GtdHt/k67d1Ys2qI21wo0X7bE1OF+QmLJ93Exj34/bVHBj7R5sIlBbHKDc3nTW73Ppjq
-         eEu5TGjUhTY97dEIDA2t2vH/U8wS282yAlXa3lKedB4ugsHCO66ax74UJd9cMM+0iWcx
-         FpamZupq+ysl+W7OvoUNBKNLecDKkaA0rTZzu+/N7CgA4lraiGD9vFWgYo/ap31MTvWO
-         izW4Byrt8c5/UbHRdMJuFPTUHWn68zRckOwMhhtTsKgExEpgYclhGzZaVyZpX/ITRh6c
-         ED8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/+uOWPFzzCIa7OYqY/m1Q3ZpjqDPg+5pHoY+BALxZ/U=;
-        b=RvLaeQZ+cl1ttVJCvs4k1DrrlG208otYvCs1dCldDo44DzwOiSgflv05wcf0ZDiGlZ
-         lTpVNl7fS/0X0tz+q70SOxcafO3SkR6zq5pE6hAviltVpBfgXNjxq+C/LtG6l3x+AMsY
-         CdOi2rnw2w+/cPkR92+V3JH30b3FgSOunkSvKagmqDGxHoOBiR5a1O9em73E8wJktnbj
-         4T6lIuX4Fm2jwPbZyamYW1/KFRLn64mHk1Qsage7ajHnd9ER/avSbCfkHq8NndzUZH6R
-         wX4zsHsucStm5n5AG3HrxUVdWKrbnMj5xuy/iTb/rnoB+QC9mOEhoD5BZZjPJ+RSyucS
-         wg0g==
-X-Gm-Message-State: AOAM5312R1KGVhjTqj5Mq2AdItW4UFg8lDm0cl61tgyu4cDABZFxyfuh
-        G4F54TkjORH8FLo4pTpeBpiNP8JTbiN1LYvnBnPG8QwsWn6O3w==
-X-Google-Smtp-Source: ABdhPJxHwDkk2RC7PSi6k/SLb9+txpNmUX6H23sBPggngMR9pIJX2L7M/PBPNvFd01zy6xoKYhf/pi55HjzF21w3+1U=
-X-Received: by 2002:a2e:8e33:: with SMTP id r19mr1185265ljk.40.1614331249049;
- Fri, 26 Feb 2021 01:20:49 -0800 (PST)
+        Fri, 26 Feb 2021 04:22:58 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA08C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:22:17 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lFZJy-0005J6-4z; Fri, 26 Feb 2021 10:22:02 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:adc1:3ee1:6274:c5d0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id DBBA05E99BB;
+        Fri, 26 Feb 2021 09:21:59 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 10:21:58 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Stein <alexander.stein@systec-electronic.com>,
+        Federico Vaga <federico.vaga@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] can: c_can: prepare to up the message objects
+ number
+Message-ID: <20210226092158.krmrds75hy6g3vks@pengutronix.de>
+References: <20210225215155.30509-1-dariobin@libero.it>
+ <20210225215155.30509-6-dariobin@libero.it>
 MIME-Version: 1.0
-References: <20210222075205.19834-1-dwaipayanray1@gmail.com>
- <bcee822d1934772f47702ee257bc735c8f467088.camel@perches.com>
- <CABJPP5AARO3h2mt-piPWuOD3kY_XzNfW-s2mi=btfOayVPURHg@mail.gmail.com> <CAKXUXMyShHc8wu1HhVvr5tJYNL+sc_Yc-mfeoosK6hAL-HF_gQ@mail.gmail.com>
-In-Reply-To: <CAKXUXMyShHc8wu1HhVvr5tJYNL+sc_Yc-mfeoosK6hAL-HF_gQ@mail.gmail.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Fri, 26 Feb 2021 14:50:48 +0530
-Message-ID: <CABJPP5BTLzQHVBtyqHofiRxZ4QkQ-OxBECvnQJE8e-yKmuUJWA@mail.gmail.com>
-Subject: Re: [PATCH v7 0/2] checkpatch: add verbose mode
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Joe Perches <joe@perches.com>, Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="hovsnqewnww35o2i"
+Content-Disposition: inline
+In-Reply-To: <20210225215155.30509-6-dariobin@libero.it>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 11:29 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
->
-> On Thu, Feb 25, 2021 at 7:08 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
-> >
-> > On Thu, Feb 25, 2021 at 11:03 PM Joe Perches <joe@perches.com> wrote:
-> > >
-> > > On Mon, 2021-02-22 at 13:22 +0530, Dwaipayan Ray wrote:
-> > > > Add a new verbose mode to checkpatch. The verbose test
-> > > > descriptions are read from the checkpatch documentation
-> > > > file at `Documentation/dev-tools/checkpatch.rst`.
-> > > >
-> > > > The verbose mode is optional and can be enabled by the
-> > > > flag -v or --verbose.
-> > > >
-> > > > The documentation file is only parsed by checkpatch.pl
-> > > > if the verbose mode is enabled. The verbose mode can
-> > > > not be used together with the --terse option.
-> > >
-> > > I don't have any real objection to this patch set, but as this
-> > > might be added to the Documentation tree and in .rst format,
-> > > perhaps Jonathan Corbet and/or Mauro Carvalho Chehab might have
-> > > some opinion.
-> > >
-> > > Also I do not want to be a maintainer of this .rst file and
-> > > likely neither Jon nor Mauro would either.  Perhaps you?
-> > >
-> >
-> > I could take it up if everybody is okay with it!
-> >
->
-> And as I set Dwaipayan on this task on documenting checkpatch, I will
-> assist in maintaining this file as well. I will also pull some strings
-> to increase chances that Dwaipayan becomes a longer-term member in
-> this community and on this maintainer task.
->
-Sounds nice to me! I would definitely love to remain as a active
-member even after the mentorship period ends. So I think this is a good
-start :)
 
-> > > Ideally, the patch order would be reversed so the .rst file
-> > > is added first, then checkpatch updated to use it.
-> > >
-> >
-> > Sure, if Jonathan or Mauro has no objections to it, I will be happy
-> > to resend it so that it can be picked up properly.
-> >
-> > > And _a lot_ more types and descriptive content should be added.
-> >
-> > Yes that's for sure. If this makes it I will try to get all of the
-> > other types in.
->
-> I agree as well, probably a critical mass for inclusion is that we
-> have at least 25% (so roughly 50 rules) documented.
->
-> > And if Lukas agrees, a little help from my fellow kernel mentees will
-> > be nice as well!
-> >
->
-> Completely agree. I will recruit new mentees and go through the
-> exercises with them, until they are ready to send proper patches to
-> checkpatch.rst. As the designated maintainer of that file, you will be
-> busy reviewing, consolidating that content and pushing back if it is
-> not good enough for inclusion (so just as in the typical "good cop-bad
-> cop" game: I will motivate and help them to submit, you make sure you
-> get good content).
->
-That is a nice plan! Certainly looking forward to it.
+--hovsnqewnww35o2i
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks & Regards,
-Dwaipayan.
+On 25.02.2021 22:51:54, Dario Binacchi wrote:
+> --- a/drivers/net/can/c_can/c_can.c
+> +++ b/drivers/net/can/c_can/c_can.c
+[...]
+> -struct net_device *alloc_c_can_dev(void)
+> +struct net_device *alloc_c_can_dev(int msg_obj_num)
+>  {
+>  	struct net_device *dev;
+>  	struct c_can_priv *priv;
+> +	int msg_obj_tx_num =3D msg_obj_num / 2;
+> =20
+> -	dev =3D alloc_candev(sizeof(struct c_can_priv), C_CAN_MSG_OBJ_TX_NUM);
+> +	dev =3D alloc_candev(sizeof(*priv) + sizeof(u32) * msg_obj_tx_num,
+> +			   msg_obj_tx_num);
+>  	if (!dev)
+>  		return NULL;
+> =20
+>  	priv =3D netdev_priv(dev);
+> -	netif_napi_add(dev, &priv->napi, c_can_poll, C_CAN_NAPI_WEIGHT);
+> +	priv->msg_obj_num =3D msg_obj_num;
+> +	priv->msg_obj_rx_num =3D msg_obj_num - msg_obj_tx_num;
+> +	priv->msg_obj_rx_first =3D 1;
+> +	priv->msg_obj_rx_last =3D
+> +		priv->msg_obj_rx_first + priv->msg_obj_rx_num - 1;
+> +	priv->msg_obj_rx_mask =3D ((u64)1 << priv->msg_obj_rx_num) - 1;
+
+Here you're casting the 1 to 64bit, but msg_obj_rx_mask is only u32. Use
+"1UL", if you are sure that rx_mask would never exceed 32 bit.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--hovsnqewnww35o2i
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA4vbMACgkQqclaivrt
+76lH3Af/daiXgsp1o5BDGL82GyxOG6ElrbK18/+tHyFptfaofu6jQHNYpdEawnl+
+T4vQrNUSmLWFGq5bCRq3Br58heLLauUCqg9FeJFEEMgZB4/3sja78lgyb00pWJra
+cozJH/YweiB8pqK/Vio5c2KDX1QG1fUfVaD4Q677wdtpLt8N8vqhwCYSm8+3dD3Z
+tQI37W6P9TqI+kughgahD9YZHkQbwX1S6uq7oXFEFhayhMfKtwxORnx8stu6dzdP
+sZYOnGO+FHRIlB1wpQ4Q7s6rRb5NXp4AVyIBeAWkM8oxv0lM9vWrSOhvecqOCf9U
+XmEswW396ahY0yMAtUe0kwrVi01mVQ==
+=FzS5
+-----END PGP SIGNATURE-----
+
+--hovsnqewnww35o2i--
