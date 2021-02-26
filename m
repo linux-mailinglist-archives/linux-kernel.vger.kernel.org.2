@@ -2,298 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DA63262C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 040093262D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:43:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhBZMgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 07:36:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49756 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229886AbhBZMgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:36:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 91C3FAE72;
-        Fri, 26 Feb 2021 12:35:34 +0000 (UTC)
-Date:   Fri, 26 Feb 2021 13:35:34 +0100
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Hannes Reinecke <hare@suse.de>, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
- it
-Message-ID: <20210226123534.4oovbzk4wrnfjp64@beryllium.lan>
-References: <20210212181738.79274-1-dwagner@suse.de>
- <c3a682d3-58f7-f5cc-caaa-75c36ca464e2@grimberg.me>
- <20210212210929.GA3851@redsun51.ssa.fujisawa.hgst.com>
- <ddf87227-1ad3-b8be-23ba-460433f70a85@grimberg.me>
- <73e4914e-f867-c899-954d-4b61ae2b4c33@suse.de>
- <20210215104020.yyithlo2hkxqvguj@beryllium.lan>
- <a2064070-b511-ba6d-bd64-0b3abc208356@grimberg.me>
+        id S230060AbhBZMmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:42:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhBZMmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 07:42:01 -0500
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47ABBC061574;
+        Fri, 26 Feb 2021 04:41:20 -0800 (PST)
+Received: by mail-ua1-x936.google.com with SMTP id o31so3020152uae.2;
+        Fri, 26 Feb 2021 04:41:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GwcTLQq3H5c2UK+OWGZKD2GMY78k6FaSogjGLTzQit8=;
+        b=M9p/Cwg3Hk2dvA+4WL3gl2+aEcE0ue3aBk9SU7aQbc2qmuL+BX36vV0xKLLTJh9tJa
+         Fh/WU8GsgK8dL6w8baYWFT9ZeSmeFOTWpjdVZ86huewZfkSyqnR4RwJjnVJwK3kfN4PN
+         Sxnhv9Eh8vIkdIqcrD7ub5yRDWZcioX3dtXpRrX/jO74RH/yzV3SccMxIpQVDlf1jetu
+         RudRuCpW+8QISOsEu8ydsbrq46FpZIE0vTtthLsoBIU2oH3TDYNsqtHgYZJoe1aHFjQb
+         UyQMkIpRyUTTwGaghKdb/6vmqmECC8xainPpgSLLjRWDUPOCO/PJZg4WAKzt+VXriyew
+         Nf4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GwcTLQq3H5c2UK+OWGZKD2GMY78k6FaSogjGLTzQit8=;
+        b=PoL+5vcGGMX5ftaeL6Z8Qx2vd7e3NW6MLm5RGtPIiUNe9HuD8iKPYrS6SaY3cCwKpb
+         ZUPJRcGXh2Or0QS+MgMQ1JPjMU1hRAxMDRPwgBFiCsG0sEFmw7nzszmCYvSsLWFfIq7Z
+         3TjKG9m11ue4WnBz0kganmzLxB5CWMDXr4eV7AoQkLKZ4T6gikT4YDk0FT7wtUFgQJxW
+         CrcgOBZhTi+5vsWkBfUfF1Q9NUyQFKySdgWYR6LD/rUOPTThZx7OBdjYomy98+pUu4Rk
+         uErPJVk6/rfFDqxVZROpyFf2px4PWsvxyhaKnFqpOmLaPVmbjbDCDLFolJddyF8ENiyY
+         dkpg==
+X-Gm-Message-State: AOAM531MYrz5LYvYm3oTWmHBqugCJPOXu6k2T4tw1hXW1YUGHxpxeSXW
+        5LGQOt4HWleyvB+fc58ZRok=
+X-Google-Smtp-Source: ABdhPJzMFEgfXaU6K+NKWQQKLNJlmLF00kHu1fORscS0i96AsC2HhFP+MQfxEHsi96P69E1a6IMneA==
+X-Received: by 2002:ab0:1c1b:: with SMTP id a27mr1457614uaj.62.1614343279413;
+        Fri, 26 Feb 2021 04:41:19 -0800 (PST)
+Received: from shinobu ([193.27.12.132])
+        by smtp.gmail.com with ESMTPSA id e128sm1062680vkg.1.2021.02.26.04.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 04:41:18 -0800 (PST)
+Date:   Fri, 26 Feb 2021 21:41:11 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v7 2/2] counter: add IRQ or GPIO based counter
+Message-ID: <YDjsZ8hyETN0VpCM@shinobu>
+References: <20210226090830.10927-1-o.rempel@pengutronix.de>
+ <20210226090830.10927-3-o.rempel@pengutronix.de>
+ <YDjDMBfWwdImiZxY@shinobu>
+ <20210226121455.t7kz4cxtganzt2xz@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zDZZKf6/pb+UPY5C"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a2064070-b511-ba6d-bd64-0b3abc208356@grimberg.me>
+In-Reply-To: <20210226121455.t7kz4cxtganzt2xz@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 01:29:45PM -0800, Sagi Grimberg wrote:
-> Well, I think we should probably figure out why that is happening first.
 
-I got my hands on a tcpdump trace. I've trimmed it to this:
+--zDZZKf6/pb+UPY5C
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Feb 26, 2021 at 01:14:55PM +0100, Oleksij Rempel wrote:
+> On Fri, Feb 26, 2021 at 06:45:20PM +0900, William Breathitt Gray wrote:
+> > On Fri, Feb 26, 2021 at 10:08:30AM +0100, Oleksij Rempel wrote:
+> > > +static int interrupt_cnt_signal_read(struct counter_device *counter,
+> > > +				     struct counter_signal *signal,
+> > > +				     enum counter_signal_value *val)
+> > > +{
+> > > +	struct interrupt_cnt_priv *priv =3D counter->priv;
+> > > +	int ret;
 
-No.     Time           Source                Destination           Protocol Length Info
-      1 0.000000       10.228.194.30         10.228.38.214         NVMe     138    NVMe Write
-      2 0.000285       10.228.38.214         10.228.194.30         NVMe/TCP 90     Ready To Transfer
-      3 0.000591       10.228.194.30         10.228.38.214         NVMe     4186   NVMe Write: Data
-      4 0.000673       10.228.38.214         10.228.194.30         TCP      66     4420 → 58535 [ACK] Seq=25 Ack=4193 Win=241 Len=0 TSval=2655324576 TSecr=1497295579
-      5 0.002140       10.228.38.214         10.228.194.30         NVMe     90     NVMe Write: Response
-      6 0.002511       10.228.194.30         10.228.38.175         NVMe     138    NVMe Write
-      7 0.002812       10.228.38.175         10.228.194.30         NVMe/TCP 90     Ready To Transfer
-      8 0.003006       10.228.194.30         10.228.38.175         NVMe     4186   NVMe Write: Data
-      9 0.003098       10.228.38.175         10.228.194.30         TCP      66     4420 → 51241 [ACK] Seq=25 Ack=4193 Win=241 Len=0 TSval=2183410196 TSecr=3601034207
-     10 0.004420       10.228.38.175         10.228.194.30         NVMe     90     NVMe Write: Response
-     11 0.004890       10.228.38.214         10.228.194.30         NVMe/TCP 90     
-     12 0.004969       10.228.38.175         10.228.194.30         NVMe/TCP 90  
+I forgot about this function. Add a check here to return -EINVAL if
+we're not dealing with a GPIO:
 
+	if (!priv->gpio)
+		return -EINVAL;
 
-The last few seconds contain only normal writes and suddenly the host
-receives two invalid packets. From what I see the host doesn't misbehave
-at all. I wonder if it would be possible to detect the invalid packet by
-locking at the PDU header only. If this would be possible we could
-discard it early and do not try to use the invalid command id.
+> > > +
+> > > +	ret =3D gpiod_get_value(priv->gpio);
+> > > +	if (ret < 0)
+> > > +		return ret;
+> > > +
+> > > +	*val =3D ret ? COUNTER_SIGNAL_HIGH : COUNTER_SIGNAL_LOW;
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static const struct counter_ops interrupt_cnt_ops =3D {
+> > > +	.action_get =3D interrupt_cnt_action_get,
+> > > +	.count_read =3D interrupt_cnt_read,
+> > > +	.count_write =3D interrupt_cnt_write,
+> > > +	.function_get =3D interrupt_cnt_function_get,
+> > > +	.signal_read  =3D interrupt_cnt_signal_read,
+> > > +};
+> > > +
+> > > +static int interrupt_cnt_probe(struct platform_device *pdev)
+> > > +{
+> > > +	struct device *dev =3D &pdev->dev;
+> > > +	struct interrupt_cnt_priv *priv;
+> > > +	int ret;
+> > > +
+> > > +	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> > > +	if (!priv)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	priv->irq =3D platform_get_irq_optional(pdev,  0);
+> > > +	if (priv->irq =3D=3D -ENXIO)
+> > > +		priv->irq =3D 0;
+> > > +	else if (priv->irq < 0)
+> > > +		return dev_err_probe(dev, priv->irq, "failed to get IRQ\n");
+> > > +
+> > > +	priv->gpio =3D devm_gpiod_get_optional(dev, NULL, GPIOD_IN);
+> > > +	if (IS_ERR(priv->gpio))
+> > > +		return dev_err_probe(dev, PTR_ERR(priv->gpio), "failed to get GPIO=
+\n");
+> > > +
+> > > +	if (!priv->irq && !priv->gpio) {
+> > > +		dev_err(dev, "IRQ and GPIO are not found. At least one source shou=
+ld be provided\n");
+> > > +		return -ENODEV;
+> > > +	}
+> > > +
+> > > +	if (!priv->irq) {
+> > > +		int irq =3D gpiod_to_irq(priv->gpio);
+> > > +
+> > > +		if (irq < 0)
+> > > +			return dev_err_probe(dev, irq, "failed to get IRQ from GPIO\n");
+> > > +
+> > > +		priv->irq =3D irq;
+> > > +	}
+> > > +
+> > > +	if (priv->gpio) {
+> >=20
+> > This if statement can be removed. There's no need to restrict this to
+> > just GPIO because we're always dealing with an IRQ, so allocate the
+> > "IRQ #" name unconditionally and set signals/num_signals.
+>=20
+> Your previous suggestion was to no assign signals if there is no gpios.
+> What should I do?
+>=20
+> Regards,
+> Oleksij
+> --=20
+> Pengutronix e.K.                           |                             |
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
-Here the last two packets with details:
+I'm sorry for not being clear. I'm saying there is no need to
+differentiate here because there will always be a respective IRQ line
+whether there is a GPIO line or not. So removing the if statement is all
+you need to do.
 
+Instead of:
 
-No.     Time           Source                Destination           Protocol Length Info
-     11 0.004890       10.228.38.214         10.228.194.30         NVMe/TCP 90     
+	if (priv->gpio) {
+		priv->signals.name =3D devm_kasprintf(dev, GFP_KERNEL, "IRQ %d",
+					    priv->irq);
+		if (!priv->signals.name)
+			return -ENOMEM;
 
-Frame 11: 90 bytes on wire (720 bits), 90 bytes captured (720 bits)
-    Encapsulation type: Ethernet (1)
-    Arrival Time: Feb 23, 2021 18:16:08.780574000 CET
-    [Time shift for this packet: 0.000000000 seconds]
-    Epoch Time: 1614100568.780574000 seconds
-    [Time delta from previous captured frame: 0.000470000 seconds]
-    [Time delta from previous displayed frame: 0.000470000 seconds]
-    [Time since reference or first frame: 0.004890000 seconds]
-    Frame Number: 11
-    Frame Length: 90 bytes (720 bits)
-    Capture Length: 90 bytes (720 bits)
-    [Frame is marked: False]
-    [Frame is ignored: False]
-    [Protocols in frame: eth:ethertype:ip:tcp:nvme-tcp]
-    [Coloring Rule Name: TCP]
-    [Coloring Rule String: tcp]
-Ethernet II, Src: IntelCor_41:16:c0 (b4:96:91:41:16:c0), Dst: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-    Destination: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-        Address: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
-        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
-    Source: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
-        Address: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
-        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
-        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
-    Type: IPv4 (0x0800)
-Internet Protocol Version 4, Src: 10.228.38.214, Dst: 10.228.194.30
-    0100 .... = Version: 4
-    .... 0101 = Header Length: 20 bytes (5)
-    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
-        0000 00.. = Differentiated Services Codepoint: Default (0)
-        .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
-    Total Length: 76
-    Identification: 0x0000 (0)
-    Flags: 0x40, Don't fragment
-        0... .... = Reserved bit: Not set
-        .1.. .... = Don't fragment: Set
-        ..0. .... = More fragments: Not set
-    Fragment Offset: 0
-    Time to Live: 64
-    Protocol: TCP (6)
-    Header Checksum: 0x0000 [validation disabled]
-    [Header checksum status: Unverified]
-    Source Address: 10.228.38.214
-    Destination Address: 10.228.194.30
-Transmission Control Protocol, Src Port: 4420, Dst Port: 46909, Seq: 1, Ack: 1, Len: 24
-    Source Port: 4420
-    Destination Port: 46909
-    [Stream index: 2]
-    [TCP Segment Len: 24]
-    Sequence Number: 1    (relative sequence number)
-    Sequence Number (raw): 4175488220
-    [Next Sequence Number: 25    (relative sequence number)]
-    Acknowledgment Number: 1    (relative ack number)
-    Acknowledgment number (raw): 2966903626
-    1000 .... = Header Length: 32 bytes (8)
-    Flags: 0x018 (PSH, ACK)
-        000. .... .... = Reserved: Not set
-        ...0 .... .... = Nonce: Not set
-        .... 0... .... = Congestion Window Reduced (CWR): Not set
-        .... .0.. .... = ECN-Echo: Not set
-        .... ..0. .... = Urgent: Not set
-        .... ...1 .... = Acknowledgment: Set
-        .... .... 1... = Push: Set
-        .... .... .0.. = Reset: Not set
-        .... .... ..0. = Syn: Not set
-        .... .... ...0 = Fin: Not set
-        [TCP Flags: ·······AP···]
-    Window: 257
-    [Calculated window size: 257]
-    [Window size scaling factor: -1 (unknown)]
-    Checksum: 0xfefa [unverified]
-    [Checksum Status: Unverified]
-    Urgent Pointer: 0
-    Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
-        TCP Option - No-Operation (NOP)
-            Kind: No-Operation (1)
-        TCP Option - No-Operation (NOP)
-            Kind: No-Operation (1)
-        TCP Option - Timestamps: TSval 4211986351, TSecr 1497291787
-            Kind: Time Stamp Option (8)
-            Length: 10
-            Timestamp value: 4211986351
-            Timestamp echo reply: 1497291787
-    [SEQ/ACK analysis]
-        [Bytes in flight: 24]
-        [Bytes sent since last PSH flag: 24]
-    [Timestamps]
-        [Time since first frame in this TCP stream: 0.000000000 seconds]
-        [Time since previous frame in this TCP stream: 0.000000000 seconds]
-    TCP payload (24 bytes)
-    [PDU Size: 24]
-NVM Express Fabrics TCP
-    Pdu Type: CapsuleResponse (5)
-    Pdu Specific Flags: 0x00
-        .... ...0 = PDU Header Digest: Not set
-        .... ..0. = PDU Data Digest: Not set
-        .... .0.. = PDU Data Last: Not set
-        .... 0... = PDU Data Success: Not set
-    Pdu Header Length: 24
-    Pdu Data Offset: 0
-    Packet Length: 24
-    Unknown Data: 02000400000000001c0000001f000000
+		priv->counter.signals =3D &priv->signals;
+		priv->counter.num_signals =3D 1;
+	}
+=09
+	priv->synapses.actions_list =3D interrupt_cnt_synapse_actionss;
+	priv->synapses.num_actions =3D ARRAY_SIZE(interrupt_cnt_synapse_actionss);
+	priv->synapses.signal =3D &priv->signals;
+	...
 
-0000  00 00 0c 9f f5 a8 b4 96 91 41 16 c0 08 00 45 00   .........A....E.
-0010  00 4c 00 00 40 00 40 06 00 00 0a e4 26 d6 0a e4   .L..@.@.....&...
-0020  c2 1e 11 44 b7 3d f8 e0 e4 dc b0 d7 5b 4a 80 18   ...D.=......[J..
-0030  01 01 fe fa 00 00 01 01 08 0a fb 0d cf af 59 3e   ..............Y>
-0040  dc 0b 05 00 18 00 18 00 00 00 02 00 04 00 00 00   ................
-0050  00 00 1c 00 00 00 1f 00 00 00                     ..........
+You can just have those lines execute unconditionally even if there are
+no gpios:
 
-No.     Time           Source                Destination           Protocol Length Info
-     12 0.004969       10.228.38.175         10.228.194.30         NVMe/TCP 90     
+	priv->signals.name =3D devm_kasprintf(dev, GFP_KERNEL, "IRQ %d",
+				    priv->irq);
+	if (!priv->signals.name)
+		return -ENOMEM;
 
-Frame 12: 90 bytes on wire (720 bits), 90 bytes captured (720 bits)
-    Encapsulation type: Ethernet (1)
-    Arrival Time: Feb 23, 2021 18:16:08.780653000 CET
-    [Time shift for this packet: 0.000000000 seconds]
-    Epoch Time: 1614100568.780653000 seconds
-    [Time delta from previous captured frame: 0.000079000 seconds]
-    [Time delta from previous displayed frame: 0.000079000 seconds]
-    [Time since reference or first frame: 0.004969000 seconds]
-    Frame Number: 12
-    Frame Length: 90 bytes (720 bits)
-    Capture Length: 90 bytes (720 bits)
-    [Frame is marked: False]
-    [Frame is ignored: False]
-    [Protocols in frame: eth:ethertype:ip:tcp:nvme-tcp]
-    [Coloring Rule Name: TCP]
-    [Coloring Rule String: tcp]
-Ethernet II, Src: IntelCor_41:16:c0 (b4:96:91:41:16:c0), Dst: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-    Destination: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-        Address: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
-        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
-    Source: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
-        Address: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
-        .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
-        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
-    Type: IPv4 (0x0800)
-Internet Protocol Version 4, Src: 10.228.38.175, Dst: 10.228.194.30
-    0100 .... = Version: 4
-    .... 0101 = Header Length: 20 bytes (5)
-    Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
-        0000 00.. = Differentiated Services Codepoint: Default (0)
-        .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
-    Total Length: 76
-    Identification: 0x0000 (0)
-    Flags: 0x40, Don't fragment
-        0... .... = Reserved bit: Not set
-        .1.. .... = Don't fragment: Set
-        ..0. .... = More fragments: Not set
-    Fragment Offset: 0
-    Time to Live: 64
-    Protocol: TCP (6)
-    Header Checksum: 0x0000 [validation disabled]
-    [Header checksum status: Unverified]
-    Source Address: 10.228.38.175
-    Destination Address: 10.228.194.30
-Transmission Control Protocol, Src Port: 4420, Dst Port: 34895, Seq: 1, Ack: 1, Len: 24
-    Source Port: 4420
-    Destination Port: 34895
-    [Stream index: 3]
-    [TCP Segment Len: 24]
-    Sequence Number: 1    (relative sequence number)
-    Sequence Number (raw): 3092812012
-    [Next Sequence Number: 25    (relative sequence number)]
-    Acknowledgment Number: 1    (relative ack number)
-    Acknowledgment number (raw): 2384147181
-    1000 .... = Header Length: 32 bytes (8)
-    Flags: 0x018 (PSH, ACK)
-        000. .... .... = Reserved: Not set
-        ...0 .... .... = Nonce: Not set
-        .... 0... .... = Congestion Window Reduced (CWR): Not set
-        .... .0.. .... = ECN-Echo: Not set
-        .... ..0. .... = Urgent: Not set
-        .... ...1 .... = Acknowledgment: Set
-        .... .... 1... = Push: Set
-        .... .... .0.. = Reset: Not set
-        .... .... ..0. = Syn: Not set
-        .... .... ...0 = Fin: Not set
-        [TCP Flags: ·······AP···]
-    Window: 257
-    [Calculated window size: 257]
-    [Window size scaling factor: -1 (unknown)]
-    Checksum: 0xfed3 [unverified]
-    [Checksum Status: Unverified]
-    Urgent Pointer: 0
-    Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
-        TCP Option - No-Operation (NOP)
-            Kind: No-Operation (1)
-        TCP Option - No-Operation (NOP)
-            Kind: No-Operation (1)
-        TCP Option - Timestamps: TSval 3874335934, TSecr 3601030412
-            Kind: Time Stamp Option (8)
-            Length: 10
-            Timestamp value: 3874335934
-            Timestamp echo reply: 3601030412
-    [SEQ/ACK analysis]
-        [Bytes in flight: 24]
-        [Bytes sent since last PSH flag: 24]
-    [Timestamps]
-        [Time since first frame in this TCP stream: 0.000000000 seconds]
-        [Time since previous frame in this TCP stream: 0.000000000 seconds]
-    TCP payload (24 bytes)
-    [PDU Size: 24]
-NVM Express Fabrics TCP
-    Pdu Type: CapsuleResponse (5)
-    Pdu Specific Flags: 0x00
-        .... ...0 = PDU Header Digest: Not set
-        .... ..0. = PDU Data Digest: Not set
-        .... .0.. = PDU Data Last: Not set
-        .... 0... = PDU Data Success: Not set
-    Pdu Header Length: 24
-    Pdu Data Offset: 0
-    Packet Length: 24
-    Unknown Data: 02000400000000001b0000001f000000
+	priv->counter.signals =3D &priv->signals;
+	priv->counter.num_signals =3D 1;
+=09
+	priv->synapses.actions_list =3D interrupt_cnt_synapse_actionss;
+	priv->synapses.num_actions =3D ARRAY_SIZE(interrupt_cnt_synapse_actionss);
+	priv->synapses.signal =3D &priv->signals;
+	...
 
-0000  00 00 0c 9f f5 a8 b4 96 91 41 16 c0 08 00 45 00   .........A....E.
-0010  00 4c 00 00 40 00 40 06 00 00 0a e4 26 af 0a e4   .L..@.@.....&...
-0020  c2 1e 11 44 88 4f b8 58 90 ec 8e 1b 32 ed 80 18   ...D.O.X....2...
-0030  01 01 fe d3 00 00 01 01 08 0a e6 ed ac be d6 a3   ................
-0040  5d 0c 05 00 18 00 18 00 00 00 02 00 04 00 00 00   ]...............
-0050  00 00 1b 00 00 00 1f 00 00 00                     ..........
+William Breathitt Gray
+
+--zDZZKf6/pb+UPY5C
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA47EQACgkQhvpINdm7
+VJL2OxAAw+LYMNXAWMCpkG64pnB+bM+4rXT547BrG7UkDPr7qvDHgVHY5cx+jTwR
+Uaisl3EGDMLID45fIiDXkZ74WYJB16xrVGTi8/4msfoJFINgKR7AzQ90wUqSx1VF
+3GOTy/kKTokzJQ41Hv1sJtGX5rh+5+bzt62nTpEuY4lc3lQAlgZk3/03IoR33zoX
+eAQ0eQFxyjIdakF3HYlGodS8Vz5dSviBNmmtElvaGRgEdBFiz6fxaKMGHV15nWO/
+BfhIf78TyPCq+KqhQLJb+L7Hvz4cv2bqLHxPOCkmXODBrylYd7TbmVA0JEl8prGM
+OlwPazjT+5a8/yNh/CM09G2xiUUzwunB61Hiny64MWPeWRNM3M4W0ErxQqmp3sgz
+k8QJJ+swppHzC/pLeZTJAEySwQk/eGGu9x3TL2r+GVpegsDkbeaiXqmFRy2+EiIx
+royJZVa6/7HJ0xTrCO8gUHSMFIK4dwAUpQaPeyXaJ/zEdlgdYxy5a9TugNVyVaez
+Zs2UtajmVUNHvqIVkbZUt8oQ6ZghMaHwZ2ffDMqG2249umcC7/RkmvpMH97XEDIj
+MqKCer2gVLqkLAGOV++7MiWLNgjBtCvDkH8atWPCNPny6mcUHE9bfWF1h8/Ckhn3
+5jU/aboI6HYWBfEwnmmMM7KE4J12jZeWZ/gzcFulV3j/JesOY2c=
+=lFTA
+-----END PGP SIGNATURE-----
+
+--zDZZKf6/pb+UPY5C--
