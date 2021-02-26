@@ -2,224 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4D0326864
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 795E032686E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhBZUQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:16:18 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:37660 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbhBZUK4 (ORCPT
+        id S231154AbhBZURg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:17:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230438AbhBZULQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:10:56 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QK4oAc062786;
-        Fri, 26 Feb 2021 20:07:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=H3mKiasUeLuAsoMflgub3ItN0OwWXnzkeSKoOn4I4ys=;
- b=CPieoA/fe690J1ElAHySV93NCUKL6EL9OBarjsx82R7KKNr4TbZW9lDr9rKgPVXyQaxr
- GCPCYSGXg9YNQSNQJtNQUH+c55qFyOrMwUMMFasdOesVYJoNBJgUYSMxwsz2FnsKD386
- VX65oWdKj9hYeuM7u8+dFwXzzhK1zaT4K0gOSQnb/V55AKuSlGDrK7wYUNZx9c+vbBNP
- ozKqjy+T0BIub0az7CU3eVur0cmoG24ZIfxBm9fOogDw4Y5d+yqnVcUPVg2dCIjej/4Y
- Y8+IvTYCOZXHvX7bVzg94zWPpeHZc0iD1vkKp8UbdJWlPXpu8bNFdX4U+xnsiQCnDGGY tg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 36xqkfaqhf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 20:07:34 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QK6hVK170833;
-        Fri, 26 Feb 2021 20:07:34 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by userp3030.oracle.com with ESMTP id 36ucc3252x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 20:07:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YjANfSnXmCUJhP1zpXQREkvEnebG4Y34Pdl2NLsZsP7pUMO+B69zJ0o4CqULMShpGBjz1/ORjpwRhJCvxjhCy8WHOpQy3X51dMjmN4jRAvPm+cMBatipBt6GLo47/tKxvat3QrUDpzEwOBXwk2oQvZyfWI+A6Kx1zfyKyfhrNzJbnGoFq8KncpiD5kB0sU+ofw4jfe1/SRvvF6hmPfw9evK9j3g1oWCIQsTxJwvfilmvmi4Bng1+0u0vQiPabo/YPsja2ZRrUYAz6yu9DCriiAy6U0Zdzl8lKmCTeMXG8tY84lWPiYN28VYzpXz60/R2oqgClGKolOKKG8+zw8kcaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H3mKiasUeLuAsoMflgub3ItN0OwWXnzkeSKoOn4I4ys=;
- b=P8xFqFKxtBkmNnz7m7pzTRaJDLE/Ym9z+BDvAp1Xjd5MSXCuHp9W7b2V3l6YX3TNrCGHTanN1sFa1D32D+5KMk76wPOPsbus363sT2vfPLqDHVa1NO8E+8/5K4SKX2aWXMcYtSkrPWEeDfPuVwZYiRnpQtd5bYSWEUucch7RDMf6w7rGSkSKw15EDZrBc6Tazms9yGhdgJwQTUmNMkSi+EZcQ8Zqv7BqFGY2xr6EsNcaWb10XeHYvU5YPcEccyGSSS+Mzzg+atufAFrkZoZUOn3eiJkwg/lA/hJDPETQ4mnPFq0h3mrXvfjOuKuSqlgkKD874agxSnwMxVlZg7Wyvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 26 Feb 2021 15:11:16 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB44C06178B
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:08:58 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id i9so8010208wml.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:08:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H3mKiasUeLuAsoMflgub3ItN0OwWXnzkeSKoOn4I4ys=;
- b=S36zg+ry37qQbNRjoSVUe6QqtpKIPq/wbCzuroJXgQJyGQEuXZ6C9D1vFz+aAnd3jCwnxbqvKICGTfu9ioEtIaK6k8iwN8kSiagyTRwDQu7w51BoDO4GyVK2mHWEIUBeofNITaM4pB6BADeivZ1uJV2BMYn2Oz5YwaXiin8SZwk=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=oracle.com;
-Received: from CO1PR10MB4705.namprd10.prod.outlook.com (2603:10b6:303:96::11)
- by MWHPR10MB1374.namprd10.prod.outlook.com (2603:10b6:300:24::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Fri, 26 Feb
- 2021 20:07:31 +0000
-Received: from CO1PR10MB4705.namprd10.prod.outlook.com
- ([fe80::28f7:d9ee:ff5a:578f]) by CO1PR10MB4705.namprd10.prod.outlook.com
- ([fe80::28f7:d9ee:ff5a:578f%4]) with mapi id 15.20.3890.020; Fri, 26 Feb 2021
- 20:07:31 +0000
-Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core
- scheduling
-From:   Chris Hyser <chris.hyser@oracle.com>
-To:     Josh Don <joshdon@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <20210123011704.1901835-1-joel@joelfernandes.org>
- <20210123011704.1901835-3-joel@joelfernandes.org>
- <0e91838e-4cca-4c3b-cb36-226c098f36c9@oracle.com>
- <YDTFWZPdmrDuYd91@hirez.programming.kicks-ass.net>
- <e1ee6187-77a7-dbf2-3e14-adba48460f5b@oracle.com>
- <CABk29NvX9_RxpZ71ihR7Y_Nhpg0TpBfdXzehptO52VuwOmS2Ww@mail.gmail.com>
- <c65bde1e-bac9-e6b6-e6c8-78b93f27b8e4@oracle.com>
- <94f43bb6-501c-2851-de32-6f4356b4a480@oracle.com>
- <ef574666-26f4-299e-65c8-2348948651f9@oracle.com>
-Message-ID: <238a7db7-3263-a391-3c57-143e9d422351@oracle.com>
-Date:   Fri, 26 Feb 2021 15:07:22 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
-In-Reply-To: <ef574666-26f4-299e-65c8-2348948651f9@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [69.207.174.138]
-X-ClientProxiedBy: CH0PR03CA0079.namprd03.prod.outlook.com
- (2603:10b6:610:cc::24) To CO1PR10MB4705.namprd10.prod.outlook.com
- (2603:10b6:303:96::11)
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qA79inqCbrjz8sKzpoyROoDbHQ92sBRaWEKpVIll+MM=;
+        b=NGyOewOZgFKMTMKbAAwyEg5kJW6UqI3AiQPcAHJ9NEc6zh2Xu12o8DabHNOKbT7Nh+
+         S7xE6F8xgae7V96FiFCnqJb8PuJdtT56rfzHgGqA5dwDlkVMjSd97b550KFEanMIueor
+         xeg0wvjj3ZdjFJc6qGAC3VUbIww99+GFdQcv0w2qhkwgDjSvtQ0R4TIZeVBCGyuOJ3a8
+         uHwpexMmXE981yV+CptzTdNDxFi4LTr+0QqtpL5owtBEIQ3ucTePCY5QbF03MHnvlBHb
+         9MlMv7k7gt+1LANBSg4uqnnDhZ6irwg8MunFLpqDBm4G1eRxSunMegqMjX8uHd9zL2YH
+         wqMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qA79inqCbrjz8sKzpoyROoDbHQ92sBRaWEKpVIll+MM=;
+        b=e2idSMmKD3ixyLwUN646shNbRihHtSx6GxzGF6wQw7/L07sOCZfPyi+7qAbxm/xl3N
+         sv7YV8g2DO5Yexs4WOgn6geZnyyiIK2T6O82OfotO5htSCja2eLUTQPi2tE/C7KU8SAp
+         j3P4bXWv7NIgTDoy5dvLM/6u6IyYMha8iWKA8XxXPlh7ZR6Wb2xw/9imkc/+L0NSDJBr
+         co+s6i1u1VidN9F5EETN4xPNJBCvkIfE5Xn0jnkot7Ajw8/GoL/REesmyR48KDYmk7pb
+         vjkvUYjivRP2d8YQ8VrmH9ruRFw/hACdl1XVW7GC67puBGupP53ec+Ge5kyFqbjDv7EA
+         b4oA==
+X-Gm-Message-State: AOAM531GYvnLzHdylLzFuYgeJWSdLGe66OZ4kOneVZGAUwKEEoXSu5N4
+        m6tHeJC52tKAFNLmO06Lp1auppe6d+Tg0NY93yQp4g==
+X-Google-Smtp-Source: ABdhPJwPJOpQZzoVQNguW3T8SiUbZswwi0ghUEpHWqxyCVZSl6BTFRNEdwgB1BcSxXWS0604nEKACpT3ivcyqZCBhE8=
+X-Received: by 2002:a1c:1b4d:: with SMTP id b74mr4505744wmb.31.1614370137092;
+ Fri, 26 Feb 2021 12:08:57 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.193] (69.207.174.138) by CH0PR03CA0079.namprd03.prod.outlook.com (2603:10b6:610:cc::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Fri, 26 Feb 2021 20:07:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 87e665c5-f317-4255-1dac-08d8da9225a8
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1374:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB13746F59DB22D4A64B8102A09B9D9@MWHPR10MB1374.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8Fc0d5pcKKDNH/l0We3MqJpxljSoxrNPbMyVD5F009Y9v/KwmObSz3WOZixUxmUwATySBbaLgCcefGuJPGoci8/xOP9qBYxtfHLs7h0XIfrHbEpCtO2ZmSArWsIUy3TUWsKpOq1u67uRYipNQUMtyih2hHWx/PGy/awcJUEFQkxVF37vv5A7esy7hKvohoji3rHgsd9KKNp2ImKEgvniQQOHaEACkaS1A+H7gIKVKeRUjWi+zVLEeyGlufq5mQrv7X73hW2KhdFyfR4PIWhCicllxWEh6Wsimku6ZptGJwAFjs/Rd8Ks2JHso1JD3kRyb4nh11dkDm37yzdN3teJf7EzKsWXFFJrY7THiDJwLZrNrTz7MbxadQkM5+0D3ohTdEaVOEojTnJ+dElILhzoUzR+Rujw/7b+8f0QZuygtZ4osVMRgWtaWWe7xmD5/9zK5ZsOaya/LRAqJNg07rNQbHQNqWHmCqjx2Ev7Ge6Ito8bSYa80IDv5yKDI7wmqQykhNkqRwetY/Me00Fidx/tPCu7inoh2tJIeF72YtBrXWz+2cMD84zIeGzy0FA1K1XhuIQMKx7ihjNYF59iuIC2v8+WBMG2upR+80wBR7BGnsY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4705.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(346002)(376002)(366004)(66946007)(478600001)(6486002)(31696002)(4326008)(36756003)(44832011)(66556008)(86362001)(31686004)(54906003)(6666004)(2906002)(52116002)(956004)(6916009)(53546011)(316002)(7406005)(83380400001)(7416002)(8676002)(8936002)(16576012)(5660300002)(66476007)(2616005)(186003)(26005)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WVZLUXFLaThLSTd5ZlREZFNGbTJpS3I1a04xVEluNExVM3RVT2cyaVU2THk1?=
- =?utf-8?B?cnNSVnRGQ29lWW1tVWF3QjF3ODVuZG5zVUNBVS9CbERYd0NZcWplT1pSSlI0?=
- =?utf-8?B?Zy9sdHBzK0dhSjBSRkNUTEdCWlE0V09nUmpxVncwbVo5ZGIzVHR3SnZLNXZH?=
- =?utf-8?B?d24xZ1hqOUVQV1F2NW4xcVRpVUYwaDM0dTZPRDlIZjY5elgyVjYxbjR4Yzhi?=
- =?utf-8?B?Z1hsb2ZCS3AxdUJEcldJaG0zaUc5QVpKK1o2cURsVS9waysvYnprL0RvMjZI?=
- =?utf-8?B?ZlJWNzNiVWE3b2YxZ01qdlk2Rjk2RXl6dHdFL1pBdHdaMmlITCtHVHhmVnVX?=
- =?utf-8?B?L3FSNHNNQXlFTVliVjBrdkFIL2I3UVpDUVY5LzZ4bzZla0VGMGM3MWF3ODhU?=
- =?utf-8?B?OFM5MzRLMmNhM2s5RnhGd2k0d2UrVm45UlFVSkFVTjVoNVdWditIR0lvNElL?=
- =?utf-8?B?Y0dXbHYvM3hpNmNFSTU1NXdOUHpvOTBuN3JRZWJ0NEd0TmdZaFlwdTZDYmJR?=
- =?utf-8?B?bytCeWJNcHlETmRaM3h2Vm0zUmcyWG9ia3lXUXFDRmh6eVprZy8yd2R2dWR0?=
- =?utf-8?B?VmtXamlIUjNkYXhiZlBlYkhqWFJjUEtWUGNDOWpsbFJrS01GVTFwZW1tejBu?=
- =?utf-8?B?UTVYR285QnhVTGllZHZYek1OZFduL20xYm1oZXFOVkY1ZVNmVDBQRkRkeDM1?=
- =?utf-8?B?Wk1mZGp4T2t0SkVNYTNxdnJPa1c3MW5xUGtINDJVR01kVHVrSkxQeDVOUFFu?=
- =?utf-8?B?b3Jwa1RxeFNYR043V0lLL2RzL0hwYkRjUlJzVWloZGRBWnBNMFZoN2Q4a1dN?=
- =?utf-8?B?RFdrbGd4QTdEckE1T0liR29HcnFmWHlVaFNNMkFjRGpTclMrWk9Deld2T3Jp?=
- =?utf-8?B?bVd2L3Z2QncvbHRwRFFmU0FrcVg4alFGOGxKNTZCd2QxUDYrcUJ6WTM2QUo0?=
- =?utf-8?B?T0dwQzRSOXhGRFJzQzhLNUpsQ28xa0N1Y0pxR2xpVnBSQ0gyWU1LQUNoR0l4?=
- =?utf-8?B?bHBvcS96WVVid0NLTDhBbi85dkp4SXpWV0JKMktMcngrSzV6ME9USkg1WjRx?=
- =?utf-8?B?c0lmdXF4ajhzWmZqWU9rSEt5YjVqQXdwcEVJVDZhVEtGMi9odVNwR0E1Y1B6?=
- =?utf-8?B?QVI4V3pjWTVPWFNnZzdjcGZuRmxvc2pCOFcxQ2pqRnR3aFNiWHZ6QUpyb1Y1?=
- =?utf-8?B?c2Jva2Q2UHUzNjRwcTAxUTYzWkd5eDlocWVtaFpqUGdaS3NUYnNmRFpSNm1x?=
- =?utf-8?B?WHZ0QlhSMlh3ZDhHSTZQTHNnWnd3a29HOUtpQ0V5bytncEo0NlNEbkYrdHk2?=
- =?utf-8?B?Y3JDWFJwR0dyd1lXSWYrdzQ4dkRVZUdFQVNsN0JRK0ZwTFpKT1Zjd1FEd3VB?=
- =?utf-8?B?RUc2Y1ZIY25nYnYwOXlrQXlNVjdRWFpOWmFsYXppL1RFNTRCNE5DK0pZZXo1?=
- =?utf-8?B?bkNtbURaQlpTbEZLM0FLRU9xZmtyUkNWbDZjZ1V4OXRGRXpkUEtlOEkrek9w?=
- =?utf-8?B?dGlDQ1FKcFdIeUYvU2xSR3M3a09pMHZqU1owL3BIdXA4UHVwRkJDS1BXLzEz?=
- =?utf-8?B?SWNWNTM4Z2IvUUhpWnRISjh2Z0ZpMWRxVk44VGQxRjRiNHI2K2VkcWhmc1gx?=
- =?utf-8?B?TlI4Kzl2a2tGbHgyNWxvYUpweWtNbFY4VEdQZ3cydGVuUDdMMlJqNkJ2ekw1?=
- =?utf-8?B?eEdwMnJXNXNZL0RpajVjQzRMRUtTSkV1cm9OR0dSbVY5STNmWGNvdHcvL1FM?=
- =?utf-8?Q?6MGU3neKYraPNCr6ejmRgDG+Ls1V/osEsodSiNn?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87e665c5-f317-4255-1dac-08d8da9225a8
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4705.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2021 20:07:30.7259
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h7ArH9j2xnfq+1yKuL/PL3giRqnVjVW7f5QQoy39ItZl7aeHM8ZSfYG2Kh32SKTRwlDNtAUJVJNMY/YmGfngCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1374
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9907 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- phishscore=0 spamscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102260148
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9907 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1015
- malwarescore=0 suspectscore=0 impostorscore=0 phishscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102260148
+References: <20210128170936.9222-1-mike.leach@linaro.org> <20210128170936.9222-6-mike.leach@linaro.org>
+ <20210225212050.GA3567106@xps15>
+In-Reply-To: <20210225212050.GA3567106@xps15>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Fri, 26 Feb 2021 20:08:46 +0000
+Message-ID: <CAJ9a7VgBAh_KiF8vP8Kzc89HLO9Le1DNKnXWYE0o0Y7-xEDK5w@mail.gmail.com>
+Subject: Re: [PATCH v4 05/10] coresight: syscfg: Add API to activate and
+ enable configurations
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        Yabin Cui <yabinc@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/24/21 10:47 AM, chris hyser wrote:
-> On 2/24/21 8:52 AM, chris hyser wrote:
->> On 2/24/21 8:02 AM, Chris Hyser wrote:
->>
->>>> However, it means that overall throughput of your binary is cut in
->>>> ~half, since none of the threads can share a core. Note that I never
->>>> saw an indefinite deadlock, just ~2x runtime for your binary vs th > control. I've verified that both a) manually 
->>>> hardcoding all threads to
->>>> be able to share regardless of cookie, and b) using a machine with 6
->>>> cores instead of 2, both allow your binary to complete in the same
->>>> amount of time as without the new API.
->>>
->>> This was on a 24 core box. When I run the test, I definitely hangs. I'll answer your other email as wwll.
->>
->>
->> I just want to clarify. The test completes in secs normally. When I run this on the 24 core box from the console, 
->> other ssh connections immediately freeze. The console is frozen. You can't ping the box and it has stayed that way for 
->> up to 1/2 hour before I reset it. I'm trying to get some kind of stack trace to see what it is doing. To the extent 
->> that I've been able to trace it or print it, the "next code" always seems to be __sched_core_update_cookie(p);
-> 
-> I cannot duplicate this on a 4 core box even with 1000's of processes and threads. The 24 core box does not even create 
-> the full 400 processes/threads in that test before it hangs and that test reliably fails almost instantly. The working 
-> theory is that the 24 core box is doing way more of the clone syscalls in parallel.
+HI Mathieu,
 
-Update:
+On Thu, 25 Feb 2021 at 21:20, Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
+>
+> On Thu, Jan 28, 2021 at 05:09:31PM +0000, Mike Leach wrote:
+> > Configurations are first activated, then when any coresight device is
+> > enabled, the active configurations are checked and any matching
+> > one is enabled.
+> >
+> > This patch provides the activation / enable API.
+> >
+> > Signed-off-by: Mike Leach <mike.leach@linaro.org>
+> > ---
+> >  .../hwtracing/coresight/coresight-config.h    |   2 +
+> >  .../hwtracing/coresight/coresight-syscfg.c    | 127 ++++++++++++++++++
+> >  .../hwtracing/coresight/coresight-syscfg.h    |  10 +-
+> >  include/linux/coresight.h                     |   2 +
+> >  4 files changed, 140 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
+> > index 98380b496046..26396b70c826 100644
+> > --- a/drivers/hwtracing/coresight/coresight-config.h
+> > +++ b/drivers/hwtracing/coresight/coresight-config.h
+> > @@ -156,6 +156,7 @@ struct cscfg_config_feat_ref {
+> >   * @presets: Array of preset values.
+> >   * @id_ea:   Extended attribute for perf configid value
+> >   * @event_ea:        Extended attribute for perf event value
+> > + * @active_cnt: ref count for activate on this configuration.
+> >   */
+> >  struct cscfg_config_desc {
+> >       const char *name;
+> > @@ -168,6 +169,7 @@ struct cscfg_config_desc {
+> >       const u64 *presets; /* nr_presets * nr_total_params */
+> >       struct dev_ext_attribute *id_ea;
+> >       struct dev_ext_attribute *event_ea;
+> > +     atomic_t active_cnt;
+> >  };
+> >
+> >  /**
+> > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
+> > index a070f135eca3..d79cf5b36758 100644
+> > --- a/drivers/hwtracing/coresight/coresight-syscfg.c
+> > +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
+> > @@ -298,6 +298,7 @@ static int cscfg_load_config(struct cscfg_config_desc *cfg_desc)
+> >               return err;
+> >
+> >       list_add(&cfg_desc->item, &cscfg_mgr->data.config_desc_list);
+> > +     atomic_set(&cfg_desc->active_cnt, 0);
+> >       return 0;
+> >  }
+> >
+> > @@ -477,6 +478,131 @@ void cscfg_unregister_csdev(struct coresight_device *csdev)
+> >  }
+> >  EXPORT_SYMBOL_GPL(cscfg_unregister_csdev);
+> >
+> > +void cscfg_csdev_reset_feats(struct coresight_device *csdev)
+> > +{
+> > +     struct cscfg_feature_csdev *feat;
+> > +
+> > +     mutex_lock(&cscfg_csdev_mutex);
+> > +     if (list_empty(&csdev->feature_csdev_list))
+> > +             goto unlock_exit;
+> > +
+> > +     list_for_each_entry(feat, &csdev->feature_csdev_list, node)
+> > +             cscfg_reset_feat(feat);
+> > +
+> > +unlock_exit:
+> > +     mutex_unlock(&cscfg_csdev_mutex);
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_csdev_reset_feats);
+> > +
+> > +/**
+> > + * Mark a config descriptor as active.
+> > + * This will be seen when csdev devices are activated in the system.
+> > + *
+> > + * Selection by hash value - generated from the configuration name when it
+> > + * was loaded and added to the cs_etm/configurations file system for selection
+> > + * by perf.
+> > + *
+> > + * @cfg_hash: Hash value of the selected configuration name.
+> > + */
+> > +int cscfg_activate_config(unsigned long cfg_hash)
+> > +{
+> > +     struct cscfg_config_desc *curr_item, *match_item = 0;
+> > +
+> > +     mutex_lock(&cscfg_mutex);
+> > +
+> > +     list_for_each_entry(curr_item, &cscfg_mgr->data.config_desc_list, item) {
+> > +             if ((unsigned long)curr_item->id_ea->var == cfg_hash) {
+> > +                     match_item = curr_item;
+> > +                     atomic_inc(&cscfg_mgr->data.sys_active_cnt);
+>
+> It would be nice to have a comment that mentions why this is needed.  I had to
+> go look in patch 09 to see that it prevents a feature from being changed when
+> any configuration is active.  And since patch 09 is the only place where
+> @sys_active_cnt is used, please move the declaration and handling of the
+> variable there.
+>
 
-The clone syscall stress test I have is causing a deadlock with this patchset when
-compiled with CONFIG_PROVE_RAW_LOCK_NESTING=y. I am able to get stacktraces with
-nmi_watchdog and am looking through those. Josh was not able to duplicate the
-deadlock, instead getting an actual warning about kmalloc w/GFP_ATOMIC while
-under a raw spinlock in the function __sched_core_update_cookie(). When I retry
-the test with a patch Josh sent, removing the kmalloc() and thus the trigger of
-the warning, no more deadlock. So some combination of CONFIGs, timing and
-function calls seems to have found something in this LOCK proving code.
+sys_active_cnt is used later in this patch in
+cscfg_csdev_enable_active_config().
+In that case it is to give a fast exit to the enable function if
+nothing is actually active. The set is written so that the process of
+enabling or disabling the config onto an actual device is effiecient
+as possible - as this can happen frequently and across many devices.
 
--chrish
+> > +                     break;
+> > +             }
+> > +     }
+> > +     mutex_unlock(&cscfg_mutex);
+> > +
+> > +     if (!match_item)
+> > +             return -EINVAL;
+> > +
+> > +     dev_dbg(to_device_cscfg(), "Activate config %s.\n", match_item->name);
+> > +
+> > +     /* mark the descriptors as active so enable config will use them */
+> > +     mutex_lock(&cscfg_csdev_mutex);
+> > +     atomic_inc(&match_item->active_cnt);
+>
+> What is ->active_cnt used for?  I see it referenced in
+> cscfg_csdev_enable_active_config() but it doesn't do much other than to confirm
+> the configuration has been activated by someone.
+>
+> There is also a chance that a caller would call cscfg_activate_config() once and
+> call cscfg_csdev_enable_active_config() multiple time, which would really create
+> problems.  I would move the incrementation of sys_active_cnt within the mutex
+> hold in cscfg_csdev_enable_active_config() and get rid of ->active_cnt.  If I am
+> correct we wouldn't need cscfg_activate_config() after that.
+>
+
+The activate / enable paradigm was developed when I was working on the
+dynamic feature load / unload in the follow up sets.
+A little of this has been pulled in here - just enough of the
+framework to get the built-in config going.
+
+The idea is that activate is called first - in this set perf calls it
+as it sets up / tears down and auxtrace session. In a later patchset,
+configfs will call it to activate a configuration to allow it for be
+active for sysfs controlled coresight.
+This also ensures that the configuration cannot be removed while it is
+needed, as you have observed in you next e-mail.
+
+Then as any (etm) device has the perf event on it and enabled, the
+cscfg_enable_active_config for the specific instance is then called.
+This is deliberately independent of the activate process - activate is
+system global, enable is per device. Therefore as an event moves
+across ETMs, the relevent ETM will have the configuration activated.
+The cscfg_enable_active_config() call matches the incoming config_hash
+with an active config ( ->active_cnt) and if it finds this then a call
+is made to do the actual activation on csdev.  This it does more than
+just check for the active configuration.
+
+This arrangement allows for different sessions of perf to have
+different active configurations (looking to the near future when it
+will be possible to support multiple perf sessions on 1:1 topologies).
+It also validates that the requested configuration for enable, has
+actually been activated.
+
+That said - active_cnt could be dropped if we don't want the
+additiional validation. (in the original dynamic load set I was
+considering allowing unload of inactive configs even if others were
+active - but that was too complicated and unnecessary).
+
+Thanks
+
+Mike
+
+
+
+> > +     mutex_unlock(&cscfg_csdev_mutex);
+> > +
+> > +     return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_activate_config);
+> > +
+> > +void cscfg_deactivate_config(unsigned long cfg_hash)
+>
+> I'm fine with either cfg_hash or id_hash, but not both.
+>
+> > +{
+> > +     struct cscfg_config_desc *curr_item, *match_item = 0;
+> > +
+> > +     mutex_lock(&cscfg_mutex);
+> > +
+> > +     list_for_each_entry(curr_item, &cscfg_mgr->data.config_desc_list, item) {
+> > +             if ((unsigned long)curr_item->id_ea->var == cfg_hash) {
+> > +                     match_item = curr_item;
+> > +                     break;
+> > +             }
+> > +     }
+> > +     mutex_unlock(&cscfg_mutex);
+> > +     if (!match_item)
+> > +             return;
+> > +
+> > +     dev_dbg(to_device_cscfg(), "Deactivate config %s.\n", match_item->name);
+> > +
+> > +     mutex_lock(&cscfg_csdev_mutex);
+> > +     atomic_dec(&match_item->active_cnt);
+> > +     mutex_unlock(&cscfg_csdev_mutex);
+> > +
+> > +     atomic_dec(&cscfg_mgr->data.sys_active_cnt);
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_deactivate_config);
+> > +
+> > +/* Find and program any active config for the supplied device.*/
+> > +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
+> > +                                  unsigned long id_hash, int preset)
+> > +{
+> > +     struct cscfg_config_csdev *cfg = NULL, *item;
+> > +     const struct cscfg_config_desc *desc;
+> > +     int err = 0;
+> > +
+> > +     /* quickly check global count */
+> > +     if (!atomic_read(&cscfg_mgr->data.sys_active_cnt))
+> > +             return 0;
+> > +
+> > +     mutex_lock(&cscfg_csdev_mutex);
+> > +     list_for_each_entry(item, &csdev->config_csdev_list, node) {
+> > +             desc = item->desc;
+> > +             if ((atomic_read(&desc->active_cnt)) &&
+> > +                 ((unsigned long)desc->id_ea->var == id_hash)) {
+> > +                     cfg = item;
+> > +                     break;
+> > +             }
+> > +     }
+> > +     if (cfg) {
+> > +             err = cscfg_csdev_enable_config(cfg, preset);
+> > +             if (!err)
+> > +                     csdev->active_cfg_ctxt = (void *)cfg;
+> > +     }
+> > +     mutex_unlock(&cscfg_csdev_mutex);
+> > +     return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_csdev_enable_active_config);
+> > +
+> > +/* save and disable the active config for the device */
+> > +void cscfg_csdev_disable_active_config(struct coresight_device *csdev)
+> > +{
+> > +     struct cscfg_config_csdev *cfg;
+> > +
+> > +     mutex_lock(&cscfg_csdev_mutex);
+> > +     cfg = (struct cscfg_config_csdev *)csdev->active_cfg_ctxt;
+> > +     if (cfg)
+> > +             cscfg_csdev_disable_config(cfg);
+> > +     mutex_unlock(&cscfg_csdev_mutex);
+> > +}
+> > +EXPORT_SYMBOL_GPL(cscfg_csdev_disable_active_config);
+> > +
+> >  /* Initialise system configuration management device. */
+> >
+> >  struct device *to_device_cscfg(void)
+> > @@ -546,6 +672,7 @@ int __init cscfg_init(void)
+> >       INIT_LIST_HEAD(&cscfg_mgr->data.feat_desc_list);
+> >       INIT_LIST_HEAD(&cscfg_mgr->data.config_desc_list);
+> >       cscfg_mgr->data.nr_csdev = 0;
+> > +     atomic_set(&cscfg_mgr->data.sys_active_cnt, 0);
+> >
+> >       dev_info(to_device_cscfg(), "CoreSight Configuration manager initialised");
+> >       return 0;
+> > diff --git a/drivers/hwtracing/coresight/coresight-syscfg.h b/drivers/hwtracing/coresight/coresight-syscfg.h
+> > index ebf5e1491d86..301e26e1e98f 100644
+> > --- a/drivers/hwtracing/coresight/coresight-syscfg.h
+> > +++ b/drivers/hwtracing/coresight/coresight-syscfg.h
+> > @@ -17,13 +17,15 @@
+> >   * @csdev_list:              List of coresight devices registered with the configuration manager.
+> >   * @feat_desc_list:  List of feature descriptors to load into registered devices.
+> >   * @config_desc_list:        List of system configuration descriptors to load into registered devices.
+> > - * @nr_csdev:        Number of registered devices with the cscfg system
+> > + * @nr_csdev:                Number of registered devices with the cscfg system
+> > + * @sys_active_cnt:  Total number of active config descriptor references.
+> >   */
+> >  struct cscfg_api_data {
+> >       struct list_head csdev_desc_list;
+> >       struct list_head feat_desc_list;
+> >       struct list_head config_desc_list;
+> >       int nr_csdev;
+> > +     atomic_t sys_active_cnt;
+> >  };
+> >
+> >  /**
+> > @@ -53,6 +55,12 @@ int cscfg_register_csdev(struct coresight_device *csdev,
+> >                        struct cscfg_match_desc *info,
+> >                        struct cscfg_csdev_feat_ops *ops);
+> >  void cscfg_unregister_csdev(struct coresight_device *csdev);
+> > +int cscfg_activate_config(unsigned long cfg_hash);
+> > +void cscfg_deactivate_config(unsigned long cfg_hash);
+> > +void cscfg_csdev_reset_feats(struct coresight_device *csdev);
+> > +int cscfg_csdev_enable_active_config(struct coresight_device *csdev,
+> > +                                  unsigned long id_hash, int preset);
+> > +void cscfg_csdev_disable_active_config(struct coresight_device *csdev);
+> >
+> >  /**
+> >   * System configuration manager device.
+> > diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> > index d0126ed326a6..3941854e8280 100644
+> > --- a/include/linux/coresight.h
+> > +++ b/include/linux/coresight.h
+> > @@ -221,6 +221,7 @@ struct coresight_sysfs_link {
+> >   * @has_conns_grp: Have added a "connections" group for sysfs links.
+> >   * @feature_csdev_list: List of complex feature programming added to the device.
+> >   * @config_csdev_list:  List of system configurations added to the device.
+> > + * @active_cfg_ctxt:    Context information for current active congfig.
+> >   */
+> >  struct coresight_device {
+> >       struct coresight_platform_data *pdata;
+> > @@ -245,6 +246,7 @@ struct coresight_device {
+> >       /* system configuration and feature lists */
+> >       struct list_head feature_csdev_list;
+> >       struct list_head config_csdev_list;
+> > +     void *active_cfg_ctxt;
+> >  };
+> >
+> >  /*
+> > --
+> > 2.17.1
+> >
+
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
