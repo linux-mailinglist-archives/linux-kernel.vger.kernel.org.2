@@ -2,60 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B996B326A8C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF08326A97
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhBZX4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 18:56:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229698AbhBZX4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 18:56:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0915564F03;
-        Fri, 26 Feb 2021 23:56:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614383764;
-        bh=iR7P4SkzF3nPAWbmhMR3Rouj0JoAcmY+IsCNgsX8Q7c=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=R9XM8gwB/2ioo1+337SymgNfGCc8ag7eVpSJqEqmA6gYtfPscZ4nYrKLe1guTcnpt
-         dK5i/qufglzx3OBajMkfjXqkf0yHP3QplrvBwheZeCKqWh1I4/CCylfn+kVyWyoSv0
-         y+xQf/OnwjEkygQ3BipOkUGGBygSwGXGtV3waCyyxAOJneRNRPW0Qt6KNCGLPwYVYd
-         8ebacs7YNOwTqDw3FvO4MUG3Y2sV70iG3yHJPUv3kUmYWvMgVqaZK633CWQ1A6z1dE
-         PFKLxE0J4OrTDXcQeKNtiq7+KCZ0OdMA4vpgJWlQJph85M8lkTItbH322/wkUYISob
-         FI60rIm0jt1ow==
-Date:   Fri, 26 Feb 2021 15:56:03 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Huazhong Tan <tanhuazhong@huawei.com>
-Cc:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
-        <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Guangbin Huang <huangguangbin2@huawei.com>
-Subject: Re: [PATCH net] net: phy: fix save wrong speed and duplex problem
- if autoneg is on
-Message-ID: <20210226155603.6a1cda0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1614325482-25208-1-git-send-email-tanhuazhong@huawei.com>
-References: <1614325482-25208-1-git-send-email-tanhuazhong@huawei.com>
+        id S230006AbhB0ABC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 19:01:02 -0500
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:15849 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229618AbhB0AAz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 19:00:55 -0500
+X-Greylist: delayed 950 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 19:00:54 EST
+Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Fri, 26 Feb 2021 15:44:14 -0800
+Received: from localhost (vbhakta-dev1.eng.vmware.com [10.20.72.253])
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 5248F206E8;
+        Fri, 26 Feb 2021 15:44:19 -0800 (PST)
+From:   Vishal Bhakta <vbhakta@vmware.com>
+To:     <jejb@linux.ibm.com>
+CC:     <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jgill@vmware.com>,
+        <pv-drivers@vmware.com>, <vbhakta@vmware.com>
+Subject: [PATCH] scsi: vmw_pvscsi: Update maintainer
+Date:   Fri, 26 Feb 2021 15:43:48 -0800
+Message-ID: <20210226234347.21535-1-vbhakta@vmware.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: vbhakta@vmware.com does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 15:44:42 +0800 Huazhong Tan wrote:
-> From: Guangbin Huang <huangguangbin2@huawei.com>
-> 
-> If phy uses generic driver and autoneg is on, enter command
-> "ethtool -s eth0 speed 50" will not change phy speed actually, but
-> command "ethtool eth0" shows speed is 50Mb/s because phydev->speed
-> has been set to 50 and no update later.
-> 
-> And duplex setting has same problem too.
-> 
-> However, if autoneg is on, phy only changes speed and duplex according to
-> phydev->advertising, but not phydev->speed and phydev->duplex. So in this
-> case, phydev->speed and phydev->duplex don't need to be set in function
-> phy_ethtool_ksettings_set() if autoneg is on.
+The entries in the source files are removed as well.
 
-Can we get a Fixes tag for this one? How far back does this behavior
-date?
+Signed-off-by: Vishal Bhakta <vbhakta@vmware.com>
+---
+ MAINTAINERS               | 2 +-
+ drivers/scsi/vmw_pvscsi.c | 2 --
+ drivers/scsi/vmw_pvscsi.h | 2 --
+ 3 files changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 97c8f2bb8de2..eb9480220e1d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -18999,7 +18999,7 @@ S:	Maintained
+ F:	drivers/infiniband/hw/vmw_pvrdma/
+ 
+ VMware PVSCSI driver
+-M:	Jim Gill <jgill@vmware.com>
++M:	Vishal Bhakta <vbhakta@vmware.com>
+ M:	VMware PV-Drivers <pv-drivers@vmware.com>
+ L:	linux-scsi@vger.kernel.org
+ S:	Maintained
+diff --git a/drivers/scsi/vmw_pvscsi.c b/drivers/scsi/vmw_pvscsi.c
+index 081f54ab7d86..8a79605d9652 100644
+--- a/drivers/scsi/vmw_pvscsi.c
++++ b/drivers/scsi/vmw_pvscsi.c
+@@ -17,8 +17,6 @@
+  * along with this program; if not, write to the Free Software
+  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+  *
+- * Maintained by: Jim Gill <jgill@vmware.com>
+- *
+  */
+ 
+ #include <linux/kernel.h>
+diff --git a/drivers/scsi/vmw_pvscsi.h b/drivers/scsi/vmw_pvscsi.h
+index 75966d3f326e..51a82f7803d3 100644
+--- a/drivers/scsi/vmw_pvscsi.h
++++ b/drivers/scsi/vmw_pvscsi.h
+@@ -17,8 +17,6 @@
+  * along with this program; if not, write to the Free Software
+  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+  *
+- * Maintained by: Jim Gill <jgill@vmware.com>
+- *
+  */
+ 
+ #ifndef _VMW_PVSCSI_H_
+-- 
+2.25.1
+
