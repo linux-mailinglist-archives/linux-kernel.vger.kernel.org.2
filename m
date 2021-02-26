@@ -2,142 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE3B325CC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 05:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA8C325CD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 06:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhBZEyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 23:54:36 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:50300 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhBZEyW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 23:54:22 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210226045339epoutp04bed5f18ed50cd8e3870d9d5b05526e9e~nMyOnVj_v1435314353epoutp04y
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:53:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210226045339epoutp04bed5f18ed50cd8e3870d9d5b05526e9e~nMyOnVj_v1435314353epoutp04y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1614315219;
-        bh=pp03IT5nIzsMg+G9CsdDb48hXFNgkdc2RK6xVCNBuTg=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=YkvEUgf6/STRSLk9xs48b0tWeI//4M0BkCfZfXYIXreX+2n2WVZMsyvzAEa9M5ZM6
-         MCcHdSdwBpYfvruKPYri+fHv4hAM6yWULbqQ/EVR05I4uoKOlxn6iN1awnn/Rb9dli
-         Fx8bJqruSkPs7sm647HxMoug3lSfMKJGBO1GqBuA=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210226045338epcas2p3e231265800700dabfbae471ed9dbc204~nMyNcCmEg0322703227epcas2p36;
-        Fri, 26 Feb 2021 04:53:38 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.185]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4Dmy3N3Ph4z4x9Pv; Fri, 26 Feb
-        2021 04:53:36 +0000 (GMT)
-X-AuditID: b6c32a47-b81ff7000000148e-52-60387ecfe7b7
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C5.FF.05262.FCE78306; Fri, 26 Feb 2021 13:53:35 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: Re: [PATCH v24 2/4] scsi: ufs: L2P map management for HPB read
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Bean Huo <huobean@gmail.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <23b7d59df2b83cdac53fdb4567c41c007257b436.camel@gmail.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210226045335epcms2p4beca6dda1e809534ac510926362e913c@epcms2p4>
-Date:   Fri, 26 Feb 2021 13:53:35 +0900
-X-CMS-MailID: 20210226045335epcms2p4beca6dda1e809534ac510926362e913c
-Content-Transfer-Encoding: 7bit
+        id S229599AbhBZFBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 00:01:54 -0500
+Received: from mga17.intel.com ([192.55.52.151]:3350 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229526AbhBZFBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 00:01:52 -0500
+IronPort-SDR: glmBWjdXDGKkkqOZdH8Zc4anoRqY11xp0FIbz7nOMoWWHB1cQF9akKNKKlhizg1s6UfmobVAiZ
+ kg9v9WY8XXMg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="165641726"
+X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
+   d="scan'208";a="165641726"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 21:01:09 -0800
+IronPort-SDR: MwUHK9Y/FNDbll/XnPZ49GjXvdQWmatbO8ziam9+t6CxyKyRwggiv877l1ZAgxmteTO0Igfd2+
+ A3yoEK9AEBYQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
+   d="scan'208";a="516384038"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by orsmga004.jf.intel.com with ESMTP; 25 Feb 2021 21:01:09 -0800
+Received: from bgsmsx602.gar.corp.intel.com (10.109.78.81) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 25 Feb 2021 21:01:08 -0800
+Received: from bgsmsx604.gar.corp.intel.com (10.67.234.6) by
+ BGSMSX602.gar.corp.intel.com (10.109.78.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 26 Feb 2021 10:31:06 +0530
+Received: from bgsmsx604.gar.corp.intel.com ([10.67.234.6]) by
+ BGSMSX604.gar.corp.intel.com ([10.67.234.6]) with mapi id 15.01.2106.002;
+ Fri, 26 Feb 2021 10:31:06 +0530
+From:   "Gupta, Anshuman" <anshuman.gupta@intel.com>
+To:     Colin King <colin.king@canonical.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "C, Ramalingam" <ramalingam.c@intel.com>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] drm/i915/hdcp: Fix null pointer dereference of
+ connector->encoder
+Thread-Topic: [PATCH][next] drm/i915/hdcp: Fix null pointer dereference of
+ connector->encoder
+Thread-Index: AQHXChjJmIv7gDW21UG5hJXtQsGn1Kpp5AuQ
+Date:   Fri, 26 Feb 2021 05:01:06 +0000
+Message-ID: <acbf924a09544030966f95c750b1bfa7@intel.com>
+References: <20210223191909.16682-1-colin.king@canonical.com>
+In-Reply-To: <20210223191909.16682-1-colin.king@canonical.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.5.1.3
+dlp-reaction: no-action
+x-originating-ip: [10.223.10.1]
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA52TbUxTVxjHd+4tvRe2btfysiMk2F2iASN9oxcPDtQty+hG5liyjQRioJY7
-        SoDS9baEOaPdcIAo8pINsWEoECQBMoRZKKDAYCAsI5sgqMUJRPjADNIBblKFraVlmn3ct9/5
-        5/+c5/mfk4fEhT1EIJmuNbB6rSqT5vvw2gfCUPgvx1GK9J6VQTPV7Xx0LX+YQAtrE3w0MPWQ
-        QBX2NRwtt1zyQgv9YahxJgHl1bXwUdWoCUPFJRY+un93hUC1t9sxVLJRwEPjXVV8dPqWlY8a
-        rm9gaOqKD6q33AHo1LlmHqqt6eYd9FeO34xTjp8txpSd5t8IZWltH1D2fttMKE+O9PKUf8zb
-        eMqzVxqBcqUtWFnQdxqL90k0gWiVXq1Jz2FFrFadnZquTYuhP/rw7XBEizTZnCGGTpIhuVgW
-        xYgVUWL53sP7ZFKpnKFFWlUWG0PnhnuqaZFerXO6DSxn0LNq1inpD3IGVRor5lRZnFGbJlZn
-        Z9GiHFWm0VlHS/ZHa1hVKqsXpcwBzfLgIy/dLJHbYy0BJpDvVQS8SUgpoOPWNSf7kELKCuDM
-        r9NYESBJAbUNrlt9XR5fKg7al8oIFwspGrbcMBNuXQxts83AxXxqDzw3PE247vGjHDjsmm3A
-        XAecqsdh07wJd3cTwMqCeZ6bg2BHg2Wz2puKhefnqwm3HgofXyr2+P3hnaZFYouXhi4AN/vB
-        r+6Nejzb4Mxat0ffDoe67ZibT0DLXQdwDQGpMwAOdNo8kSVwsrB1cwgB9R5cddzAXYl51E5Y
-        ZRO4LW/B1dGNTQtO7YAdi1WbFpwKgy1dEhdCKgT+aONtpTK1PiH+yzj1MiwcWP9Xt1bPeSbb
-        Bb9ba8FKQYj52Uubn+tlftbrIsAbQQCr47LSWE6ui3j+o9vA5g7sjrWCykW7uB9gJOgHkMRp
-        P8H3G0yKUJCq+uwoq89O1hszWa4fHHWGLMMD/dXZziXSGpJlkVJ5JBOhiIhgFMz/lhl5ZKQ0
-        ikFMpBzRrwo46UyykEpTGdgMltWx+q3mGOkdaMLq4tsVo1UBMV8m7FF8ajheIRt794eLoSXv
-        9OQdwjtODj7s/dreU/7C9ZyA4fgH4cl6SeKxn3PNh6Mdc/kIlpXbrlJ/9pky4j/4KeKCpDGO
-        rFjN6QoqnMvNSNqePmncOzlx5OrN1I/La75pDWMO7HqwYNTknbJ/XvB3SPP65ds1jxKenni/
-        fipqRDjpMK6G9ZSSl4V1uV5H7PvH9qV3LYM3ExMbiZUv+rPmkxTnf5/OULw01BA7cgZLZsvp
-        T4LLbOuS4Ps7DhwKfS2/olan1mBN5qCxobYSmaayaJl8EruAXl86RuYg+dpO36eLL/411Twx
-        MVjaSTveGOBe4Vumh0cei6ZpHqdRyXbjek71D35EJy/RBAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0
-References: <23b7d59df2b83cdac53fdb4567c41c007257b436.camel@gmail.com>
-        <20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p6>
-        <20210224045437epcms2p7ed0a41233d899337ddbd3525fddeb042@epcms2p7>
-        <CGME20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p4>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +static int ufshpb_init_mem_wq(void)
-> > +{
-> > +       int ret;
-> > +       unsigned int pool_size;
-> > +
-> > +       ufshpb_mctx_cache = kmem_cache_create("ufshpb_mctx_cache",
-> > +                                       sizeof(struct
-> > ufshpb_map_ctx),
-> > +                                       0, 0, NULL);
-> > +       if (!ufshpb_mctx_cache) {
-> > +               pr_err("ufshpb: cannot init mctx cache\n");
-> > +               return -ENOMEM;
-> > +       }
-> > +
-> > +       pool_size = PAGE_ALIGN(ufshpb_host_map_kbytes * 1024) /
-> > PAGE_SIZE;
-> > +       pr_info("%s:%d ufshpb_host_map_kbytes %u pool_size %u\n",
-> > +              __func__, __LINE__, ufshpb_host_map_kbytes,
-> > pool_size);
-> > +
-> 
-> I think print function name is not proper while booting.
-> And one HPB is associated with one HBA, if there are two UFS
-> controllers, how can I differentiate them? 
-
-I will use dev_info instead of pr_info.
-
-Thanks,
-Daejun
-
-> Bean
-> 
-> 
-> 
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ29saW4gS2luZyA8Y29s
+aW4ua2luZ0BjYW5vbmljYWwuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIEZlYnJ1YXJ5IDI0LCAy
+MDIxIDEyOjQ5IEFNDQo+IFRvOiBKYW5pIE5pa3VsYSA8amFuaS5uaWt1bGFAbGludXguaW50ZWwu
+Y29tPjsgSm9vbmFzIExhaHRpbmVuDQo+IDxqb29uYXMubGFodGluZW5AbGludXguaW50ZWwuY29t
+PjsgVml2aSwgUm9kcmlnbyA8cm9kcmlnby52aXZpQGludGVsLmNvbT47DQo+IERhdmlkIEFpcmxp
+ZSA8YWlybGllZEBsaW51eC5pZT47IERhbmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5jaD47IEMs
+IFJhbWFsaW5nYW0NCj4gPHJhbWFsaW5nYW0uY0BpbnRlbC5jb20+OyBHdXB0YSwgQW5zaHVtYW4g
+PGFuc2h1bWFuLmd1cHRhQGludGVsLmNvbT47DQo+IGludGVsLWdmeEBsaXN0cy5mcmVlZGVza3Rv
+cC5vcmc7IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNCj4gQ2M6IGtlcm5lbC1qYW5p
+dG9yc0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU3Vi
+amVjdDogW1BBVENIXVtuZXh0XSBkcm0vaTkxNS9oZGNwOiBGaXggbnVsbCBwb2ludGVyIGRlcmVm
+ZXJlbmNlIG9mDQo+IGNvbm5lY3Rvci0+ZW5jb2Rlcg0KPiANCj4gRnJvbTogQ29saW4gSWFuIEtp
+bmcgPGNvbGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCj4gDQo+IFRoZSByZWNlbnQgY29tbWl0IDZj
+NjNlNmUxNGRhNyAoImRybS9pOTE1L2hkY3A6IE5vIEhEQ1Agd2hlbiBlbmNvZGVyIGlzJ3QNCj4g
+aW5pdGlhbGl6ZWQiKSBhZGRlZCBhIG51bGwgcG9pbnRlciBjaGVjayBvbiBjb25uZWN0b3ItPmVu
+Y29kZXIgaGVuY2UgaW1wbHlpbmcNCj4gdGhhdCBpdCBjb3VsZCBwb3RlbnRpYWxseSBiZSBudWxs
+LiAgVGhpcyBtZWFucyB0aGF0IHRoZSBpbml0aWFsaXphdGlvbiBvZiBkaWdfcG9ydCB2aWENCj4g
+dGhlIGNhbGwgaW50ZWxfYXR0YWNoZWRfZGlnX3BvcnQgbWF5IGNhdXNlIGEgbnVsbCBwb2ludGVy
+IGRlcmVmZXJlbmNlIG9uDQo+IGNvbm5lY3Rvci0+ZW5jb2Rlci4gRml4IHRoaXMgYnkgb25seSBh
+c3NpZ25pbmcgZGlnX3BvcnQgYWZ0ZXIgYSBudWxsIGNoZWNrIGhhcw0KPiBiZWVuIHBlcmZvcm1l
+ZCBvbiBjb25uZWN0b3ItPmVuY29kZXIuDQo+IA0KPiBBZGRyZXNzZXMtQ292ZXJpdHk6ICgiRGVy
+ZWZlcmVuY2UgYmVmb3JlIG51bGwgY2hlY2siKQ0KPiBGaXhlczogMzZlNWU3MDQyYjIwICgiZHJt
+L2k5MTU6IERvbid0IGZ1bGx5IGRpc2FibGUgSERDUCBvbiBhIHBvcnQgaWYgbXVsdGlwbGUNCj4g
+cGlwZXMgYXJlIHVzaW5nIGl0IikNCj4gU2lnbmVkLW9mZi1ieTogQ29saW4gSWFuIEtpbmcgPGNv
+bGluLmtpbmdAY2Fub25pY2FsLmNvbT4NCkxvb2tzIGdvb2QgdG8gbWUuDQpSZXZpZXdlZC1ieTog
+QW5zaHVtYW4gR3VwdGEgPGFuc2h1bWFuLmd1cHRhQGludGVsLmNvbT4NCj4gLS0tDQo+ICBkcml2
+ZXJzL2dwdS9kcm0vaTkxNS9kaXNwbGF5L2ludGVsX2hkY3AuYyB8IDMgKystDQo+ICAxIGZpbGUg
+Y2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvZGlzcGxheS9pbnRlbF9oZGNwLmMNCj4gYi9kcml2ZXJz
+L2dwdS9kcm0vaTkxNS9kaXNwbGF5L2ludGVsX2hkY3AuYw0KPiBpbmRleCBhZTEzNzFjMzZhMzIu
+Ljc1MjVlYTMxNzY2YyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvZGlzcGxh
+eS9pbnRlbF9oZGNwLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvZGlzcGxheS9pbnRl
+bF9oZGNwLmMNCj4gQEAgLTIyNjAsNyArMjI2MCw3IEBAIGludCBpbnRlbF9oZGNwX2VuYWJsZShz
+dHJ1Y3QgaW50ZWxfY29ubmVjdG9yDQo+ICpjb25uZWN0b3IsDQo+ICAJCSAgICAgIGNvbnN0IHN0
+cnVjdCBpbnRlbF9jcnRjX3N0YXRlICpwaXBlX2NvbmZpZywgdTggY29udGVudF90eXBlKQ0KPiB7
+DQo+ICAJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gdG9faTkxNShjb25uZWN0
+b3ItPmJhc2UuZGV2KTsNCj4gLQlzdHJ1Y3QgaW50ZWxfZGlnaXRhbF9wb3J0ICpkaWdfcG9ydCA9
+DQo+IGludGVsX2F0dGFjaGVkX2RpZ19wb3J0KGNvbm5lY3Rvcik7DQo+ICsJc3RydWN0IGludGVs
+X2RpZ2l0YWxfcG9ydCAqZGlnX3BvcnQ7DQo+ICAJc3RydWN0IGludGVsX2hkY3AgKmhkY3AgPSAm
+Y29ubmVjdG9yLT5oZGNwOw0KPiAgCXVuc2lnbmVkIGxvbmcgY2hlY2tfbGlua19pbnRlcnZhbCA9
+IERSTV9IRENQX0NIRUNLX1BFUklPRF9NUzsNCj4gIAlpbnQgcmV0ID0gLUVJTlZBTDsNCj4gQEAg
+LTIyNzQsNiArMjI3NCw3IEBAIGludCBpbnRlbF9oZGNwX2VuYWJsZShzdHJ1Y3QgaW50ZWxfY29u
+bmVjdG9yDQo+ICpjb25uZWN0b3IsDQo+ICAJCXJldHVybiAtRU5PREVWOw0KPiAgCX0NCj4gDQo+
+ICsJZGlnX3BvcnQgPSBpbnRlbF9hdHRhY2hlZF9kaWdfcG9ydChjb25uZWN0b3IpOw0KPiAgCW11
+dGV4X2xvY2soJmhkY3AtPm11dGV4KTsNCj4gIAltdXRleF9sb2NrKCZkaWdfcG9ydC0+aGRjcF9t
+dXRleCk7DQo+ICAJZHJtX1dBUk5fT04oJmRldl9wcml2LT5kcm0sDQo+IC0tDQo+IDIuMzAuMA0K
+DQo=
