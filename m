@@ -2,84 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD22325D69
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADEDD325D6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhBZGGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:06:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        id S229947AbhBZGJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:09:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhBZGGV (ORCPT
+        with ESMTP id S229586AbhBZGJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:06:21 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E92AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:05:41 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id fb15so4044892qvb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:05:41 -0800 (PST)
+        Fri, 26 Feb 2021 01:09:01 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A115FC061574;
+        Thu, 25 Feb 2021 22:08:21 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id ba1so4766083plb.1;
+        Thu, 25 Feb 2021 22:08:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MYg4eVbwr39lKc3uuAMvjqg+Cg+k46HPoKOqEhnc4M0=;
-        b=aNulaLbShHGrrGAIOIVnoMFS7GA1WPvqdgqQWloxZ36+5m+1dacki93PSG1AybZLsT
-         ONqHjxDClQv34l5qUYtzQQIePQtqXkxIyzQ2bYGl2D0awkbMppG7O1ZbQsn8Od4ccqaC
-         ZNWdw12Ns86zd7C15kdUIx3qfU+b8X3paOYscBqusL0VLnVxZglfkVmEnjFwOFcdoZYB
-         zu5pAsNEoPp51XmSMrSk+n5pt7oz1OuuHPr1e/NOYu+6pOY2v6Zdn6hD1zhuFMakK49+
-         ZHQos4snnW6qEFGykFFv9mTwodUaPzTp0Ur9iYGt3v0yl9IexGdV0QzWilaGHdudNxBG
-         +u7Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=veBng1mAuJ4SODrmS5u/GO4AEOA3NFFcdFwKeTiCPqw=;
+        b=imS9E6f0cKH37G4/pJBghQJIRfaFYqbPgc/uDk/Cb84/2lxnLPn5gw2sjgnriHfbna
+         X1nbzoAqWsh0cz/8TTHSQGqiZyn0qGohBwaTiz5VRAvtRmrA+u+yowDmWCaMBaqoFJ2f
+         sEI9ccD0EfkymIWPal+gTh5OAnSMHcaX3vtuNclGsZ5BgwEsqOZmrY89gVabcIReH/pz
+         JTX7zUdhh4Yr9xyXnZmmEIWuZ8blyKjWGdbtJVmMbfwiTK+n3QcGU0DSsTeLbuqRux3d
+         Zq26A2ppStyhoj9KVxHNQIX/gpddWY4H5UZ7H/Jj76ru+ixrz2wj7UdLcz+1R8PBr4Bg
+         4hNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MYg4eVbwr39lKc3uuAMvjqg+Cg+k46HPoKOqEhnc4M0=;
-        b=THXQFpMoyhVIP+ulPy0qHd1ISj8IWJlyOCy4IzaeqII0MlkvPRv0pOTr4bMsJre4KA
-         SbyfVvF/04vI5KPTbNr8pqmduNXFdjD4HrBwGW3eHFOs/txatNpkbNsRnlZ6gP6i++3g
-         rXT5EvAqjQPvxzlHe459vfs0K1NIfivpeczVnoQUx9iTkDfhoUDFgmbo5ZppmbRugJBG
-         LzLn2C9AeJmuQwCWEblgG3VYuRor/TJQTa4A3PMDveQIfkst+DyDTF0qKjeckk/notnM
-         +ZY6U6rfZgoSd30fdv0pSm7z2kMpLZZ6E9/pbOObn7BkMJmb4oJ33kssvdXJknF+R/C6
-         tw4g==
-X-Gm-Message-State: AOAM5316syQmdQnbe583LKLwcDBOHzw0jZlghm/zc7mTCs40df+F2kjO
-        Vaw153LelN9aeh32iwa88TmQ3sX1tMhBmSTH6Io=
-X-Google-Smtp-Source: ABdhPJz4IcW1QTMR8Q4qK11JcPLmCFKX5157oQa7Xb1qX1ne3DNkUuMc4+jGF09j4yAL3FUz6v/GMdGq8OyTTO5CPno=
-X-Received: by 2002:a05:6214:76f:: with SMTP id f15mr1129944qvz.56.1614319540471;
- Thu, 25 Feb 2021 22:05:40 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=veBng1mAuJ4SODrmS5u/GO4AEOA3NFFcdFwKeTiCPqw=;
+        b=dj7yG3dCTi2FzwPu8xWyzMQUMFQTuH616g1KJw4OS9OcnCoR2PtphI+WobXxqlOBux
+         YgBeHaTM5B45dLYfwgDfZS37h++/7r9MqB8Mg+KsfR7DwC73HuQHO8RF1ZQhlH0OdEzj
+         0/Czp+f5G0gItI861ucHZnzRflSgrY33qj3bHAbqqX1glxsiTsZn446NT65OsWPfXC9T
+         FPDNtgyNk11g/8LPP9U3BDgZu0uToLBUB8qr5OnfhcR2BNYc0Iz+82Vu1/KCPSjvdM5t
+         RxpvOGgqI4rd4pgldsLA3QqbyBwVWGuCLTb9ypJom85+M0RrGu4gGYWfjUxYadnLPc/4
+         Ai4Q==
+X-Gm-Message-State: AOAM530nscukfKDyQQM5re2PZEdE69Jpcujw4tjkqjeAcS7j6pc7qU4S
+        r5qkEoNHkEmj/CJrYre+UBragzUvhhwstg==
+X-Google-Smtp-Source: ABdhPJzs3SHNsIs9pVK0Q669l1yQaooGtPba2zpx6ofMuc9x3CIEHHfa6ZEbD9hpr/HKDYc40D/xnA==
+X-Received: by 2002:a17:902:b598:b029:e2:daa2:161c with SMTP id a24-20020a170902b598b02900e2daa2161cmr1785961pls.20.1614319700667;
+        Thu, 25 Feb 2021 22:08:20 -0800 (PST)
+Received: from [172.30.1.19] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id p26sm8419064pfn.127.2021.02.25.22.08.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Feb 2021 22:08:20 -0800 (PST)
+Subject: Re: [PATCH v2 3/9] devfreq: Use HZ macros
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org,
+        andriy.shevchenko@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        "open list:DEVICE FREQUENCY (DEVFREQ)" <linux-pm@vger.kernel.org>
+References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
+ <20210224144222.23762-3-daniel.lezcano@linaro.org>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <0db79cd7-f062-b31b-2a6c-ecf8dadaf572@gmail.com>
+Date:   Fri, 26 Feb 2021 15:08:16 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1614254912-15746-1-git-send-email-shengjiu.wang@nxp.com> <20210225131533.GA5332@sirena.org.uk>
-In-Reply-To: <20210225131533.GA5332@sirena.org.uk>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Fri, 26 Feb 2021 14:05:29 +0800
-Message-ID: <CAA+D8AO8_ESHSyODXhx4Wf1Z5MbtxWRUa-k2d6wKSeA0yzD5uA@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: simple-card: Add dummy dai support simple sound card
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        guennadi.liakhovetski@linux.intel.com, alsa-devel@alsa-project.org,
-        kai.vehmanen@linux.intel.com, stephan@gerhold.net,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210224144222.23762-3-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 9:17 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Thu, Feb 25, 2021 at 08:08:32PM +0800, Shengjiu Wang wrote:
->
-> > If sound card doesn't need specific codec device, just
-> > dummy codec is enough, then we can link the dummy component
-> > directly.
->
-> This is a big red flag - what circumstances are these?  If it's a simple
-> CODEC with no control then the general approach is to provide a driver
-> which announces the capabilities of the CODEC and can be bound to as
-> normal, the dummy component should never actively be used.
 
-For the DMIC, SPDIF, HDMI ARC device or other
-similar device that there is no codec connected,  then dummy codec is
-just used for registering the sound card.
 
-best regards
-wang shengjiu
+On 21. 2. 24. 오후 11:42, Daniel Lezcano wrote:
+> HZ unit conversion macros are available in units.h, use them and
+> remove the duplicate definition.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Reviewed-by: Christian Eggers <ceggers@arri.de>
+> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> ---
+>   drivers/devfreq/devfreq.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index bf3047896e41..b6d63f02d293 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -26,6 +26,7 @@
+>   #include <linux/hrtimer.h>
+>   #include <linux/of.h>
+>   #include <linux/pm_qos.h>
+> +#include <linux/units.h>
+>   #include "governor.h"
+>   
+>   #define CREATE_TRACE_POINTS
+> @@ -33,7 +34,6 @@
+>   
+>   #define IS_SUPPORTED_FLAG(f, name) ((f & DEVFREQ_GOV_FLAG_##name) ? true : false)
+>   #define IS_SUPPORTED_ATTR(f, name) ((f & DEVFREQ_GOV_ATTR_##name) ? true : false)
+> -#define HZ_PER_KHZ	1000
+>   
+>   static struct class *devfreq_class;
+>   static struct dentry *devfreq_debugfs;
+> 
+
+I changed the patch title with 'PM /' prefix as following
+in order to keep the consistent patch style if there are no any special 
+objection.
+- PM / devfreq: Use HZ macros
+
+Applied it.
+
+Thanks,
+Chanwoo Choi
