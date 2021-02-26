@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DFF3265AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C520C3265AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhBZQi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:38:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50920 "EHLO
+        id S230177AbhBZQjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbhBZQiU (ORCPT
+        with ESMTP id S230014AbhBZQjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:38:20 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BE3C061574;
-        Fri, 26 Feb 2021 08:37:39 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a22so15873683ejv.9;
-        Fri, 26 Feb 2021 08:37:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KMT1d1Gs8BZ9utr+GYuVKfNILn5qh+CRx49B4cHumdg=;
-        b=ifH+WRoVDCq7KD0/hRxdhkyVlkjwcLAgzep2Rkx2WPSYpla3PHPRxxkVx2i1m4onFR
-         Qu5bA6//9R1+62IPc4K4EeUb7aEAZUfe3xtXQcc1Gt5kggS0VsrITKQXGrBtsmhGSI4M
-         j1Z3dNOpDaDHvSywSFOrR0Jhuu+Nt5eB49arcRM51hQxO629xa7tCHhJouIfYVnfi5cQ
-         jzROWH+L/B/+jWkMiSh7GjqPCc9KDj81cn2m4TgpWgSLOkxdqEmtQOTYJo7D7KlyZdGW
-         Aqi3dQSBUKOljFQLCc67tYRvL/f+0LSNOR9Myq4saHf+7SgEwdKQk/XkhhHk9TONunp7
-         DeWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KMT1d1Gs8BZ9utr+GYuVKfNILn5qh+CRx49B4cHumdg=;
-        b=YeU/6SstYEBBG3vHfdSjRDmD07AWleQajlrHZ0WR2gteHwZpnZJ14dawzthvUZAvnF
-         kUDOFqV7SknONALBxVOrGqoEDlGKqctYQoJujzcrbTg5tXOgsY4FdXmFpKiDKPMc4Jnf
-         DPLFLqLUNNSHu8FQiTLQfrbp7ilRoTePT7yh30TTF054rXIYeo6BzP8h5MYxx4gMMf4Y
-         WgrR2on8n149cZONnig6r9SfL3M8E9axll1vDBs8mFbRCS+yV5tuU7tF2CMx2wmEt0QR
-         G6XL8ha7WnuUUeKy+prS+y/WXUhqs7lmztNKid8R7ZCcrkrCkzr+9uJrlX42Ye5DPx2T
-         GLeg==
-X-Gm-Message-State: AOAM533mB24dQKe14JAAvegtTd//pg7sDVFa25iKJlNRc1HK8GOzEEJy
-        /3QgRW8ns09L3SDED6yO3M8=
-X-Google-Smtp-Source: ABdhPJw67rlPCl8cTfCkX5Bl7e62XoaFKe8iFWv2hpDqnNWTNfIT4TN/iXzQ+BnJP1FtmF07xkkc+g==
-X-Received: by 2002:a17:906:5797:: with SMTP id k23mr4142769ejq.489.1614357458064;
-        Fri, 26 Feb 2021 08:37:38 -0800 (PST)
-Received: from mail ([2a02:a03f:b7fe:f700:a502:29ea:4ea3:1c47])
-        by smtp.gmail.com with ESMTPSA id f5sm662940ejb.64.2021.02.26.08.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 08:37:37 -0800 (PST)
-Date:   Fri, 26 Feb 2021 17:37:34 +0100
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
+        Fri, 26 Feb 2021 11:39:02 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309C9C061574;
+        Fri, 26 Feb 2021 08:38:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=cJovxi5fmivlMzTNFK7Hd5WeerVzqJFBxjTpoKstnCE=; b=XZPpJxh2rt+EtM7F9/8orkDvql
+        c48+bn9P+Jx5tgPDS4YA2jYTdMgNUCFYmV5RMiQObH8/i0ZqpsYdVjBKY9gfk79xNxj4MwkTLjOv1
+        TtHkJePZ+d+Tzo8AR76MvgknBWL4+NMIifuapua/lzBY8/14zFcRXEidPhikakfSVICX92+ksNN8y
+        BB0KL/7QxTEyx4+5q9XgBH0Avk7KlWqaqQVyQ7zGR5AEGO9/l2JOvk3PLVJ1Il9x1UM620k592pMk
+        gOPQ27t1MMFBnZzjAguz92FFIR89l9ITBBBHnWhuaWSCHFdksr2vNCG5yDA9l+nbkuifjAMQXgvWX
+        DL2rf+kw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lFg80-0004FD-MQ; Fri, 26 Feb 2021 16:38:09 +0000
+Subject: Re: [PATCH -next] fbdev: atyfb: use LCD management functions for
+ PPC_PMAC also
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Marco Elver <elver@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org
-Subject: Re: [PATCH] [v2] linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
-Message-ID: <20210226163734.hjfhzwbqzedqjapy@mail>
-References: <20210226161151.2629097-1-arnd@kernel.org>
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Jani Nikula <jani.nikula@linux.intel.com>
+References: <20210226000537.8674-1-rdunlap@infradead.org>
+ <YDjlkzg7/qnPBIKI@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <03364ba0-8266-99e5-9315-34d8820e8732@infradead.org>
+Date:   Fri, 26 Feb 2021 08:38:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226161151.2629097-1-arnd@kernel.org>
+In-Reply-To: <YDjlkzg7/qnPBIKI@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Acked-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+On 2/26/21 4:12 AM, Ville Syrjälä wrote:
+> On Thu, Feb 25, 2021 at 04:05:37PM -0800, Randy Dunlap wrote:
+>> Include PPC_PMAC in the configs that use aty_ld_lcd() and
+>> aty_st_lcd() implementations so that the PM code may work
+>> correctly for PPC_PMAC.
+>>
+>> Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+>> Cc: Nick Desaulniers <ndesaulniers@google.com>
+>> Cc: linux-fbdev@vger.kernel.org
+>> Cc: dri-devel@lists.freedesktop.org
+>> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+>> Cc: Sam Ravnborg <sam@ravnborg.org>
+>> Cc: David Airlie <airlied@linux.ie>
+>> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+>> ---
+>> Daniel- We also need this patch:
+>> https://lore.kernel.org/dri-devel/20210224215528.822-1-rdunlap@infradead.org/
+>> to fix a kernel test robot build error.
+>>
+>>  drivers/video/fbdev/aty/atyfb_base.c |    8 +++-----
+>>  1 file changed, 3 insertions(+), 5 deletions(-)
+>>
+>> --- linux-next-20210219.orig/drivers/video/fbdev/aty/atyfb_base.c
+>> +++ linux-next-20210219/drivers/video/fbdev/aty/atyfb_base.c
+>> @@ -132,8 +132,7 @@
+>>  #define PRINTKI(fmt, args...)	printk(KERN_INFO "atyfb: " fmt, ## args)
+>>  #define PRINTKE(fmt, args...)	printk(KERN_ERR "atyfb: " fmt, ## args)
+>>  
+>> -#if defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_GENERIC_LCD) || \
+>> -defined(CONFIG_FB_ATY_BACKLIGHT)
+>> +#if defined(CONFIG_PPC_PMAC)
+> 
+> Did you send an old version by accident? That's definitely
+> not what we want since it would break everything except PPC_PMAC.
 
-Thanks,
--- Luc
+
+Yikes!
+
+Yes, thanks for catching that.
+I'll get the newer version out soon.
+
+>>  static const u32 lt_lcd_regs[] = {
+>>  	CNFG_PANEL_LG,
+>>  	LCD_GEN_CNTL_LG,
+>> @@ -175,8 +174,7 @@ u32 aty_ld_lcd(int index, const struct a
+>>  		return aty_ld_le32(LCD_DATA, par);
+>>  	}
+>>  }
+>> -#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) \
+>> -	 defined(CONFIG_FB_ATY_GENERIC_LCD) */
+>> +#else /* defined(CONFIG_PPC_PMAC) */
+>>  void aty_st_lcd(int index, u32 val, const struct atyfb_par *par)
+>>  { }
+>>  
+>> @@ -184,7 +182,7 @@ u32 aty_ld_lcd(int index, const struct a
+>>  {
+>>  	return 0;
+>>  }
+>> -#endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined (CONFIG_FB_ATY_GENERIC_LCD) */
+>> +#endif /* defined(CONFIG_PPC_PMAC) */
+>>  
+>>  #ifdef CONFIG_FB_ATY_GENERIC_LCD
+>>  /*
+> 
+
+
+-- 
+~Randy
+
