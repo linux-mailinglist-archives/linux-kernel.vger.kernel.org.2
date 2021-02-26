@@ -2,220 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8665C3261CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69933261C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhBZLK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:10:57 -0500
-Received: from proxmox-new.maurer-it.com ([212.186.127.180]:5637 "EHLO
-        proxmox-new.maurer-it.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbhBZLKy (ORCPT
+        id S230318AbhBZLHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:07:00 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:45048 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhBZLG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:10:54 -0500
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 06:10:52 EST
-Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
-        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id B606041CE7;
-        Fri, 26 Feb 2021 12:03:23 +0100 (CET)
-Message-ID: <85e3f488-4ec5-2ad3-26a6-097d532824e1@proxmox.com>
-Date:   Fri, 26 Feb 2021 12:03:21 +0100
+        Fri, 26 Feb 2021 06:06:57 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11QB4twq079584;
+        Fri, 26 Feb 2021 05:04:55 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614337495;
+        bh=MdgbDRHH4dg8uTJtgWTuDNWRvpN3VoqBOgFyw0Qzq/I=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ntQy2PrRI5Qsyt2FubX0iw8ZrbOAnRqJKEKlkAbQNAEAx3Bs7KIWLeKKGmjhofOzD
+         KfHtMhQYvnbGilCIUvCkSPyFkQXrPwpYkO+jcSX7Aorjo9GJqisVynL/SdIxD9RePg
+         V9k1ZcbDrFXFwZ13klbItKptOucLmvtQTctQL3HM=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11QB4t7L097559
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 26 Feb 2021 05:04:55 -0600
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 26
+ Feb 2021 05:04:54 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 26 Feb 2021 05:04:54 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11QB4s96066246;
+        Fri, 26 Feb 2021 05:04:54 -0600
+Date:   Fri, 26 Feb 2021 16:34:53 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jon Lin <jon.lin@rock-chips.com>,
+        Chris Ruehl <chris.ruehl@gtsys.com.hk>,
+        Alexander Kochetkov <al.kochet@gmail.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Vincent Pelletier <plr.vincent@gmail.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] spi: rockchip: avoid objtool warning
+Message-ID: <20210226110451.ijpllyczuquerfsr@ti.com>
+References: <20210225125541.1808719-1-arnd@kernel.org>
+ <20210226081548.h5ls5fxihunzxjvx@ti.com>
+ <CAK8P3a3ep7DFnMYnA7q5b-P8X7nd3TAz=t82011j8=koK3T08A@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:86.0) Gecko/20100101
- Thunderbird/86.0
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Jim Mattson <jmattson@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-References: <20210104155705.740576914@linuxfoundation.org>
- <20210104155706.339275609@linuxfoundation.org>
-From:   Thomas Lamprecht <t.lamprecht@proxmox.com>
-Subject: Re: [PATCH 5.4 12/47] KVM: x86: avoid incorrect writes to host
- MSR_IA32_SPEC_CTRL
-In-Reply-To: <20210104155706.339275609@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a3ep7DFnMYnA7q5b-P8X7nd3TAz=t82011j8=koK3T08A@mail.gmail.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.01.21 16:57, Greg Kroah-Hartman wrote:
-> From: Paolo Bonzini <pbonzini@redhat.com>
+On 26/02/21 10:49AM, Arnd Bergmann wrote:
+> On Fri, Feb 26, 2021 at 9:16 AM 'Pratyush Yadav' via Clang Built Linux
+> <clang-built-linux@googlegroups.com> wrote:
+> >
+> > Hi,
+> >
+> > On 25/02/21 01:55PM, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > Building this file with clang leads to a an unreachable code path
+> > > causing a warning from objtool:
+> > >
+> > > drivers/spi/spi-rockchip.o: warning: objtool: rockchip_spi_transfer_one()+0x2e0: sibling call from callable instruction with modified stack frame
+> > >
+> > > Use BUG() instead of unreachable() to avoid the undefined behavior
+> > > if it does happen.
+> > >
+> > > Fixes: 65498c6ae241 ("spi: rockchip: support 4bit words")
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > ---
+> > >  drivers/spi/spi-rockchip.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
+> > > index 936ef54e0903..972beac1169a 100644
+> > > --- a/drivers/spi/spi-rockchip.c
+> > > +++ b/drivers/spi/spi-rockchip.c
+> > > @@ -521,7 +521,7 @@ static void rockchip_spi_config(struct rockchip_spi *rs,
+> > >                * ctlr->bits_per_word_mask, so this shouldn't
+> > >                * happen
+> > >                */
+> > > -             unreachable();
+> > > +             BUG();
+> >
+> > checkpatch says:
+> >
+> >   Avoid crashing the kernel - try using WARN_ON & recovery code rather
+> >   than BUG() or BUG_ON()
+> >
+> > Which makes sense to me. This is not something bad enough to justify
+> > crashing the kernel.
 > 
-> [ Upstream commit 6441fa6178f5456d1d4b512c08798888f99db185 ]
+> I thought about rewriting it more thoroughly when I wrote the patch, but
+> couldn't come up with a good alternative, so I did the simplest change
+> in this direction, replacing the silent crash with a loud one.
 > 
-> If the guest is configured to have SPEC_CTRL but the host does not
-> (which is a nonsensical configuration but these are not explicitly
-> forbidden) then a host-initiated MSR write can write vmx->spec_ctrl
-> (respectively svm->spec_ctrl) and trigger a #GP when KVM tries to
-> restore the host value of the MSR.  Add a more comprehensive check
-> for valid bits of SPEC_CTRL, covering host CPUID flags and,
-> since we are at it and it is more correct that way, guest CPUID
-> flags too.
+> Should we just dev_warn() and return instead, hoping that it won't do
+> more harm?
+
+Hmm... I'm not very familiar with this device or driver so take what I 
+say with a grain of salt. On the surface level it looks like it might 
+end up doing something wrong or unexpected.
+
+Returning an error code from this function (along with the dev_warn() or 
+WARN_ON()) is the most sensible thing to do IMO. If the SPI layer sends 
+an invalid value then the driver should be well within its rights to 
+refuse the transaction. The function is currently void but making it 
+return int seems fairly straightforward.
+
 > 
-> For AMD, remove the unnecessary is_guest_mode check around setting
-> the MSR interception bitmap, so that the code looks the same as
-> for Intel.
+> The backtrace from WARN_ON() probably doesn't help here.
 > 
+>        Arnd
 
-A git bisect between 5.4.86 and 5.4.98 showed that this breaks boot of QEMU
-guests running Windows 10 20H2 on AMD Ryzen X3700 CPUs with a BSOD showing
-"KERNEL SECURITY CHECK FAILURE".
-
-Reverting this commit or setting the CPU type of the QEMU/KVM command from
-host to qemu64 allows one to boot Windows 10 in the VM again.
-
-I found a followup, commit 841c2be09fe4f495fe5224952a419bd8c7e5b455 [0],
-which has a fixes line for this commit and mentions Zen2 AMD CPUs (which
-the X3700 is).
-Applying a backport of that commit on top of 5.4.98 stable tree fixed the
-issue here see below for the backport I used, it applies also cleanly on the
-more current 5.4.101 release.
-
-So can you please add this patch to the stable trees that backported the
-problematic upstream commit 6441fa6178f5456d1d4b512c08798888f99db185 ?
-
-If I should submit this in any other way just ask, was not sure about
-what works best with a patch which cannot be cherry-picked cleanly.
-
-cheers,
-Thomas
-
-[0]: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=841c2be09fe4f495fe5224952a419bd8c7e5b455
-
-----8<---
-From: Maxim Levitsky <mlevitsk@redhat.com>
-Date: Wed, 8 Jul 2020 14:57:31 +0300
-Subject: [PATCH] kvm: x86: replace kvm_spec_ctrl_test_value with runtime test
- on the host
-
-To avoid complex and in some cases incorrect logic in
-kvm_spec_ctrl_test_value, just try the guest's given value on the host
-processor instead, and if it doesn't #GP, allow the guest to set it.
-
-One such case is when host CPU supports STIBP mitigation
-but doesn't support IBRS (as is the case with some Zen2 AMD cpus),
-and in this case we were giving guest #GP when it tried to use STIBP
-
-The reason why can can do the host test is that IA32_SPEC_CTRL msr is
-passed to the guest, after the guest sets it to a non zero value
-for the first time (due to performance reasons),
-and as as result of this, it is pointless to emulate #GP condition on
-this first access, in a different way than what the host CPU does.
-
-This is based on a patch from Sean Christopherson, who suggested this idea.
-
-Fixes: 6441fa6178f5 ("KVM: x86: avoid incorrect writes to host MSR_IA32_SPEC_CTRL")
-Cc: stable@vger.kernel.org
-Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Message-Id: <20200708115731.180097-1-mlevitsk@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-(cherry picked from commit 841c2be09fe4f495fe5224952a419bd8c7e5b455)
-[ Thomas: resolved merge conflict in arch/x86/kvm/x86.h and
-  replicated the change to arch/x86/kvm/svm/svm.c to the in 5.4 not
-  yet moved out arch/x86/kvm/svm.c ]
-Signed-off-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
----
- arch/x86/kvm/svm.c     |  2 +-
- arch/x86/kvm/vmx/vmx.c |  2 +-
- arch/x86/kvm/x86.c     | 38 +++++++++++++++++++++-----------------
- arch/x86/kvm/x86.h     |  2 +-
- 4 files changed, 24 insertions(+), 20 deletions(-)
-
-diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
-index 8d386efc2540..372a958bec72 100644
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -4327,7 +4327,7 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 		    !guest_has_spec_ctrl_msr(vcpu))
- 			return 1;
- 
--		if (data & ~kvm_spec_ctrl_valid_bits(vcpu))
-+		if (kvm_spec_ctrl_test_value(data))
- 			return 1;
- 
- 		svm->spec_ctrl = data;
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index e7fd2f00edc1..e177848a3631 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1974,7 +1974,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		    !guest_has_spec_ctrl_msr(vcpu))
- 			return 1;
- 
--		if (data & ~kvm_spec_ctrl_valid_bits(vcpu))
-+		if (kvm_spec_ctrl_test_value(data))
- 			return 1;
- 
- 		vmx->spec_ctrl = data;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index f5a827150664..1330fc4dc7c5 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10376,28 +10376,32 @@ bool kvm_arch_no_poll(struct kvm_vcpu *vcpu)
- }
- EXPORT_SYMBOL_GPL(kvm_arch_no_poll);
- 
--u64 kvm_spec_ctrl_valid_bits(struct kvm_vcpu *vcpu)
-+
-+int kvm_spec_ctrl_test_value(u64 value)
- {
--	uint64_t bits = SPEC_CTRL_IBRS | SPEC_CTRL_STIBP | SPEC_CTRL_SSBD;
-+	/*
-+	 * test that setting IA32_SPEC_CTRL to given value
-+	 * is allowed by the host processor
-+	 */
- 
--	/* The STIBP bit doesn't fault even if it's not advertised */
--	if (!guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL) &&
--	    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBRS))
--		bits &= ~(SPEC_CTRL_IBRS | SPEC_CTRL_STIBP);
--	if (!boot_cpu_has(X86_FEATURE_SPEC_CTRL) &&
--	    !boot_cpu_has(X86_FEATURE_AMD_IBRS))
--		bits &= ~(SPEC_CTRL_IBRS | SPEC_CTRL_STIBP);
-+	u64 saved_value;
-+	unsigned long flags;
-+	int ret = 0;
- 
--	if (!guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL_SSBD) &&
--	    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_SSBD))
--		bits &= ~SPEC_CTRL_SSBD;
--	if (!boot_cpu_has(X86_FEATURE_SPEC_CTRL_SSBD) &&
--	    !boot_cpu_has(X86_FEATURE_AMD_SSBD))
--		bits &= ~SPEC_CTRL_SSBD;
-+	local_irq_save(flags);
- 
--	return bits;
-+	if (rdmsrl_safe(MSR_IA32_SPEC_CTRL, &saved_value))
-+		ret = 1;
-+	else if (wrmsrl_safe(MSR_IA32_SPEC_CTRL, value))
-+		ret = 1;
-+	else
-+		wrmsrl(MSR_IA32_SPEC_CTRL, saved_value);
-+
-+	local_irq_restore(flags);
-+
-+	return ret;
- }
--EXPORT_SYMBOL_GPL(kvm_spec_ctrl_valid_bits);
-+EXPORT_SYMBOL_GPL(kvm_spec_ctrl_test_value);
- 
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_exit);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_fast_mmio);
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 301286d92432..c520d373790a 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -368,6 +368,6 @@ static inline bool kvm_pat_valid(u64 data)
- 
- void kvm_load_guest_xcr0(struct kvm_vcpu *vcpu);
- void kvm_put_guest_xcr0(struct kvm_vcpu *vcpu);
--u64 kvm_spec_ctrl_valid_bits(struct kvm_vcpu *vcpu);
-+int kvm_spec_ctrl_test_value(u64 value);
- 
- #endif
 -- 
-2.20.1
-
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
