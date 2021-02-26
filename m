@@ -2,156 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C51325E6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:48:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91830325E61
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhBZHqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 02:46:10 -0500
-Received: from emcscan.emc.com.tw ([192.72.220.5]:4013 "EHLO
-        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhBZHqI (ORCPT
+        id S229990AbhBZHiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 02:38:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230179AbhBZHhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 02:46:08 -0500
-X-Greylist: delayed 583 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 02:46:07 EST
-X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
-   d="scan'208";a="39567951"
-Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
-  by emcscan.emc.com.tw with ESMTP; 26 Feb 2021 15:35:42 +0800
-Received: from 192.168.10.23
-        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(122067:0:AUTH_RELAY)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 26 Feb 2021 15:35:39 +0800 (CST)
-Received: from 49.216.207.71
-        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2477:1:AUTH_LOGIN)
-        (envelope-from <jingle.wu@emc.com.tw>); Fri, 26 Feb 2021 15:35:39 +0800 (CST)
-From:   "jingle.wu" <jingle.wu@emc.com.tw>
-To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        dmitry.torokhov@gmail.com
-Cc:     phoenix@emc.com.tw, dave.wang@emc.com.tw, josh.chen@emc.com.tw,
-        "jingle.wu" <jingle.wu@emc.com.tw>
-Subject: [PATCH] Input: elan_i2c - Reduce the resume time for new devices
-Date:   Fri, 26 Feb 2021 15:35:37 +0800
-Message-Id: <20210226073537.4926-1-jingle.wu@emc.com.tw>
-X-Mailer: git-send-email 2.17.1
+        Fri, 26 Feb 2021 02:37:47 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306C4C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:37:07 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id g8so4647473otk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:37:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VQgZEeHJdf6Bfk1LIoWC2HIkTuWyVFZe6jHDYc9nISE=;
+        b=MTOO3T/7o4+Kk3jwJNeTNrbRnWQRL6blOAlspjkX9zFyM6aHksKTw5L9lX8ZhG//Ke
+         MRbs9dmfhRppCWYeENEHFnKToI3YNcFN0GTIaqMRgzaxHF+ARvRFMEEGLbEG7gIWgJyn
+         82/AghDRLileNUQNudm9qZHISDiEwDDqdF4Bw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VQgZEeHJdf6Bfk1LIoWC2HIkTuWyVFZe6jHDYc9nISE=;
+        b=skK/3IGVZJCLMuAta0eRPRawdwEW3Lv8p/jqjVo6WEyygHvmGskVz2Qfh1/Zvor+gU
+         +gisTdL8v3ZFWZP8gPwMjd3e7/jrbUoyDbV5v1/0bHzorEN3sI0+hYQppsLGDviSY3T8
+         fofosqyFl7owz4ZKJFCuj8zgcpENrwRpj88umFhE4jCjmepWkWwvThFfjhyjq5hWmT7s
+         RfnxA0uSWzPKe9Ek1t+uj8wNbcRx36LmvyLjSu1LiHZHGvBThDeBFTi4uBJ/HJBrYmsA
+         US9yGqLdNkOkpPeFuLokSYSS4x/WG3oG5DEdcfmXGjESZP/Hhrqq/pMpvnX4Gv5fk6sn
+         VUQQ==
+X-Gm-Message-State: AOAM533r9xTmde8MNqqQmAI20QUtP9gOFc5mxxJlo43OPmWSo9Rnw90C
+        6h7mX/5Us68IIpxlbOVPw3KZr35q0Pn8NtYzOjUrTA==
+X-Google-Smtp-Source: ABdhPJzr069PMRWNCVN2fwP3STHObwlwny7T1Jhy/pGm0WViCqvjVbehuOse2fxwPjKBXt2Y8wHFc/jl2bd+sCABeoI=
+X-Received: by 2002:a9d:46e:: with SMTP id 101mr1053650otc.303.1614325026472;
+ Thu, 25 Feb 2021 23:37:06 -0800 (PST)
+MIME-Version: 1.0
+References: <20210226040908.3274666-1-john.stultz@linaro.org>
+In-Reply-To: <20210226040908.3274666-1-john.stultz@linaro.org>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Fri, 26 Feb 2021 08:36:55 +0100
+Message-ID: <CAKMK7uHGutJiZ879NAweTHka=gZQBw9zWQSDJn6bTLS6bJwvvg@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: heaps: Set VM_PFNMAP in mmap for system and cma heaps
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove elan_initilize() function at resume state,
-for Voxel, Delbin, Magple, Bobba and new devices.
+On Fri, Feb 26, 2021 at 5:09 AM John Stultz <john.stultz@linaro.org> wrote:
+>
+> Per discussion and patches here:
+>   https://lore.kernel.org/dri-devel/20210223105951.912577-1-daniel.vetter=
+@ffwll.ch/
+>
+> Daniel is planning on making VM_PFNMAP required on dmabufs.
+>
+> Thus to avoid the warn_on noise, set the VM_PFNMAP in the
+> system and cma heap's mmap handler.
+>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: Liam Mark <lmark@codeaurora.org>
+> Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+> Cc: Laura Abbott <labbott@kernel.org>
+> Cc: Brian Starkey <Brian.Starkey@arm.com>
+> Cc: Hridya Valsaraju <hridya@google.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Sandeep Patil <sspatil@google.com>
+> Cc: Daniel Mentz <danielmentz@google.com>
+> Cc: =C3=98rjan Eide <orjan.eide@arm.com>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Ezequiel Garcia <ezequiel@collabora.com>
+> Cc: Simon Ser <contact@emersion.fr>
+> Cc: James Jones <jajones@nvidia.com>
+> Cc: linux-media@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
 
-Signed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
----
- drivers/input/mouse/elan_i2c.h      |  5 +++
- drivers/input/mouse/elan_i2c_core.c | 57 +++++++++++++++++++++++++++--
- 2 files changed, 58 insertions(+), 4 deletions(-)
+System heap uses remap_pfn_range so looks fine, but cma heap inserts
+pages, and that's not fine for VM_PFNMAP. You need to use
+vm_insert_pfn or remap_pfn_range or one of the related pfn mapping
+functions for that too. I think this should splat when you run it.
 
-diff --git a/drivers/input/mouse/elan_i2c.h b/drivers/input/mouse/elan_i2c.h
-index d5f9cd76eefb..16b795524179 100644
---- a/drivers/input/mouse/elan_i2c.h
-+++ b/drivers/input/mouse/elan_i2c.h
-@@ -45,6 +45,11 @@
- #define ETP_FW_PAGE_SIZE_512	512
- #define ETP_FW_SIGNATURE_SIZE	6
- 
-+#define ETP_PRODUCT_ID_DELBIN	0x00C2
-+#define ETP_PRODUCT_ID_VOXEL	0x00BF
-+#define ETP_PRODUCT_ID_MAGPIE   0x0120
-+#define ETP_PRODUCT_ID_BOBBA    0x0121
-+
- struct i2c_client;
- struct completion;
- 
-diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
-index 0f46e2f6c9e8..e75bbaeaf068 100644
---- a/drivers/input/mouse/elan_i2c_core.c
-+++ b/drivers/input/mouse/elan_i2c_core.c
-@@ -55,6 +55,9 @@
- #define ETP_MK_DATA_OFFSET	33	/* For high precision reports */
- #define ETP_MAX_REPORT_LEN	39
- 
-+/* quirks to control the device */
-+#define ETP_QUIRK_SET_QUICK_WAKEUP_DEV	BIT(0)
-+
- /* The main device structure */
- struct elan_tp_data {
- 	struct i2c_client	*client;
-@@ -99,8 +102,50 @@ struct elan_tp_data {
- 	bool			baseline_ready;
- 	u8			clickpad;
- 	bool			middle_button;
-+
-+	unsigned long		quirks;		/* Various quirks */
-+};
-+
-+
-+static const struct elan_i2c_quirks {
-+	__u16 ic_type;
-+	__u16 product_id;
-+	__u32 quirks;
-+} elan_i2c_quirks[] = {
-+	{ 0x0D, ETP_PRODUCT_ID_DELBIN,
-+		ETP_QUIRK_SET_QUICK_WAKEUP_DEV },
-+	{ 0x10, ETP_PRODUCT_ID_VOXEL,
-+		ETP_QUIRK_SET_QUICK_WAKEUP_DEV },
-+	{ 0x14, ETP_PRODUCT_ID_MAGPIE,
-+		ETP_QUIRK_SET_QUICK_WAKEUP_DEV },
-+	{ 0x14, ETP_PRODUCT_ID_BOBBA,
-+		ETP_QUIRK_SET_QUICK_WAKEUP_DEV },
-+	{ 0, 0 }
- };
- 
-+/*
-+ * elan_i2c_lookup_quirk: return any quirks associated with a elan i2c device
-+ * @ic_type: the 16-bit ic type
-+ * @product_id: the 16-bit product ID
-+ *
-+ * Returns: a u32 quirks value.
-+ */
-+static u32 elan_i2c_lookup_quirk(const u16 ic_type, const u16 product_id)
-+{
-+	u32 quirks = 0;
-+	int n;
-+
-+	for (n = 0; elan_i2c_quirks[n].ic_type; n++)
-+		if (elan_i2c_quirks[n].ic_type == ic_type &&
-+		    (elan_i2c_quirks[n].product_id == product_id))
-+			quirks = elan_i2c_quirks[n].quirks;
-+
-+	if ((ic_type >= 0x0D) && (product_id >= 0x123))
-+		quirks |= ETP_QUIRK_SET_QUICK_WAKEUP_DEV;
-+
-+	return quirks;
-+}
-+
- static int elan_get_fwinfo(u16 ic_type, u8 iap_version, u16 *validpage_count,
- 			   u32 *signature_address, u16 *page_size)
- {
-@@ -273,10 +318,12 @@ static int __elan_initialize(struct elan_tp_data *data)
- 	bool woken_up = false;
- 	int error;
- 
--	error = data->ops->initialize(client);
--	if (error) {
--		dev_err(&client->dev, "device initialize failed: %d\n", error);
--		return error;
-+	if (!(data->quirks & ETP_QUIRK_SET_QUICK_WAKEUP_DEV)) {
-+		error = data->ops->initialize(client);
-+		if (error) {
-+			dev_err(&client->dev, "device initialize failed: %d\n", error);
-+			return error;
-+		}
- 	}
- 
- 	error = elan_query_product(data);
-@@ -366,6 +413,8 @@ static int elan_query_device_info(struct elan_tp_data *data)
- 	if (error)
- 		return error;
- 
-+	data->quirks = elan_i2c_lookup_quirk(data->ic_type, data->product_id);
-+
- 	error = elan_get_fwinfo(data->ic_type, data->iap_version,
- 				&data->fw_validpage_count,
- 				&data->fw_signature_address,
--- 
-2.17.1
+Also note that remap_pfn_range updates the vma flags already correctly
+for you, so you probably don't want to do that.
 
+Also given that both deal with struct page there's a ton of divergence
+between these two that doesn't make much sense. Maybe could even share
+the code fully, aside from how you allocate the struct pages.
+-Daniel
+
+> ---
+>  drivers/dma-buf/heaps/cma_heap.c    | 1 +
+>  drivers/dma-buf/heaps/system_heap.c | 4 +++-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma=
+_heap.c
+> index 364fc2f3e499..34bc3987f942 100644
+> --- a/drivers/dma-buf/heaps/cma_heap.c
+> +++ b/drivers/dma-buf/heaps/cma_heap.c
+> @@ -185,6 +185,7 @@ static int cma_heap_mmap(struct dma_buf *dmabuf, stru=
+ct vm_area_struct *vma)
+>
+>         vma->vm_ops =3D &dma_heap_vm_ops;
+>         vma->vm_private_data =3D buffer;
+> +       vma->vm_flags |=3D VM_PFNMAP;
+>
+>         return 0;
+>  }
+> diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/=
+system_heap.c
+> index 3548b20cb98c..8995e3cbfcaf 100644
+> --- a/drivers/dma-buf/heaps/system_heap.c
+> +++ b/drivers/dma-buf/heaps/system_heap.c
+> @@ -228,8 +228,10 @@ static int system_heap_mmap(struct dma_buf *dmabuf, =
+struct vm_area_struct *vma)
+>                         return ret;
+>                 addr +=3D PAGE_SIZE;
+>                 if (addr >=3D vma->vm_end)
+> -                       return 0;
+> +                       break;
+>         }
+> +
+> +       vma->vm_flags |=3D VM_PFNMAP;
+>         return 0;
+>  }
+>
+> --
+> 2.25.1
+>
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
