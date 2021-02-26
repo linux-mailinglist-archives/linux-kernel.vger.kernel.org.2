@@ -2,72 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6541D32630A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30A3326310
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhBZNBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 08:01:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
+        id S230144AbhBZND3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 08:03:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbhBZNBa (ORCPT
+        with ESMTP id S230253AbhBZNDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 08:01:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F32C06174A;
-        Fri, 26 Feb 2021 05:00:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=E1qg03c0wEH1kCwm5wPTWr/kyq0GtF85jeiLNtREXMs=; b=ApzP7RAGkaSc8CkybIYXx6AF20
-        JnUr9mAz2jfz9WLfYOVXb4tyypH5D6uljEkt8Lo8+PCPwhlXhRD8h/erwo3LYC0xHdDgaX81Z59om
-        o0EGVOdUdGmZgKaHrAfXRRAC+qBw7Sga8xaZ4NvZw3pKtoNZks/RE0jgxJzoKmoi0EkF0EuoiXc3V
-        geu9HSi18UBVgLUxXa6l2SxAVkJ/BWQT2YldfhI0c9afXCyfEPl02PiUwF1bxZaQoFGwEbYDXSZD7
-        mSRzPxnA+pQM1NbQb4BwGT8nmt+sIemSRVjEEofT2/kcBOndKF0PDT5DoRm2rpp8FZKn22jSC1j6w
-        H24Yq20A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFcjN-00C1lT-Fa; Fri, 26 Feb 2021 13:00:32 +0000
-Date:   Fri, 26 Feb 2021 13:00:29 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] ia64: Depend on non-static printk for cmpxchg debug
-Message-ID: <20210226130029.GC2723601@casper.infradead.org>
-References: <YCflN5zTvo5mxvKY@chrisdown.name>
- <YDjt/lI82VzZcCgq@chrisdown.name>
+        Fri, 26 Feb 2021 08:03:01 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602B1C061574;
+        Fri, 26 Feb 2021 05:02:21 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B496F580;
+        Fri, 26 Feb 2021 14:02:19 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614344539;
+        bh=mZ0IYxBSn6iMGXpB0SlinpEe79W+pKlloE1WRBX6Gxw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pEhF8ZmT0ZwoEDSrw4uNlN9be8rkJOLn78EQDQxzgnSxLfUY+itfRXOmy46UEtFzi
+         hN0mSgQWWOUz6KRxbnmfabtTFx+EWHqlfETKxiDEJ4MS/LKyJC3ofWROC0ChVgO6/8
+         IqhCV3tp8+LpXo/f7oXVKsJgRSb/gJmIEYK774lM=
+Date:   Fri, 26 Feb 2021 15:01:52 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Dirk Behme <Dirk.Behme@de.bosch.com>,
+        Peter Erben <Peter.Erben@de.bosch.com>
+Subject: Re: [PATCH 3/7] dt-bindings: misc: Add binding for R-Car DAB
+Message-ID: <YDjxQOx9bDXLjk6E@pendragon.ideasonboard.com>
+References: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
+ <20210225225147.29920-4-fabrizio.castro.jz@renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YDjt/lI82VzZcCgq@chrisdown.name>
+In-Reply-To: <20210225225147.29920-4-fabrizio.castro.jz@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 12:47:58PM +0000, Chris Down wrote:
-> >    ./include/linux/printk.h:219:5: error: static declaration of 'printk' follows non-static declaration
-> >    219 | int printk(const char *s, ...)
-> > 	|     ^~~~~~
-> >    ./arch/ia64/include/uapi/asm/cmpxchg.h:142:14: note: previous declaration of 'printk' was here
-> >    142 |   extern int printk(const char *fmt, ...);  \
-> > 	|              ^~~~~~
-> > 
-> > Make CONFIG_IA64_DEBUG_CMPXCHG dependent on CONFIG_PRINTK to avoid this.
+Hi Fabrizio,
 
-Why not just fix it?
+Thank you for the patch.
 
-diff --git a/arch/ia64/include/uapi/asm/cmpxchg.h b/arch/ia64/include/uapi/asm/cmpxchg.h
-index 5d90307fd6e0..d955a8e3ebde 100644
---- a/arch/ia64/include/uapi/asm/cmpxchg.h
-+++ b/arch/ia64/include/uapi/asm/cmpxchg.h
-@@ -139,7 +139,7 @@ extern long ia64_cmpxchg_called_with_bad_pointer(void);
- do {									\
- 	if (_cmpxchg_bugcheck_count-- <= 0) {				\
- 		void *ip;						\
--		extern int printk(const char *fmt, ...);		\
-+		int printk(const char *fmt, ...);			\
- 		ip = (void *) ia64_getreg(_IA64_REG_IP);		\
- 		printk("CMPXCHG_BUGCHECK: stuck at %p on word %p\n", ip, (v));\
- 		break;							\
+On Thu, Feb 25, 2021 at 10:51:43PM +0000, Fabrizio Castro wrote:
+> Document bindings for R-Car DAB hardware accelerator, currently
+> found on the r8a77990 SoC (a.k.a. R-Car E3) and on the r8a77965
+> SoC (a.k.a. R-Car M3-N).
+> 
+> Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> ---
+>  .../devicetree/bindings/misc/renesas,dab.yaml | 75 +++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/renesas,dab.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/misc/renesas,dab.yaml b/Documentation/devicetree/bindings/misc/renesas,dab.yaml
+> new file mode 100644
+> index 000000000000..e9494add13d7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/renesas,dab.yaml
+> @@ -0,0 +1,75 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2021 Renesas Electronics Corporation
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/misc/renesas,dab.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Renesas R-Car DAB Hardware Accelerator
+> +
+> +maintainers:
+> +  - Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> +
+> +description:
+> +  The DAB hardware accelerator found on some R-Car devices is a hardware
+> +  accelerator for software DAB demodulators.
+> +  It consists of one FFT (Fast Fourier Transform) module and one decoder module,
+> +  compatible with DAB specification (ETSI EN 300 401 and ETSI TS 102 563).
+> +  The decoder module can perform FIC decoding and MSC decoding processing from
+> +  de-puncture to final decoded result.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - renesas,dab-r8a77965     # R-Car M3-N
+> +          - renesas,dab-r8a77990     # R-Car E3
+> +      - const: renesas,rcar-gen3-dab # Generic fallback for R-Car Gen3 devices
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+
+I usually try to describe clocks:
+
+  clocks:
+    items:
+      - description: The module functional clock
+
+but as there's a single clock, it may not be worth it. Up to you.
+
+> +
+> +  clock-names:
+> +    const: dab
+
+With Geert's and Sergei's comments addressed,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - power-domains
+> +  - resets
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  # R8A77990 (R-Car E3)
+> +  - |
+> +    #include <dt-bindings/clock/r8a77990-cpg-mssr.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/power/r8a77990-sysc.h>
+> +
+> +    dab: dab@e6730000 {
+> +        compatible = "renesas,dab-r8a77990",
+> +                     "renesas,rcar-gen3-dab";
+> +        reg = <0xe6730000 0x120>;
+> +        interrupts = <GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks = <&cpg CPG_MOD 1016>;
+> +        clock-names = "dab";
+> +        power-domains = <&sysc R8A77990_PD_ALWAYS_ON>;
+> +        resets = <&cpg 1016>;
+> +        status = "disabled";
+> +    };
+
+-- 
+Regards,
+
+Laurent Pinchart
