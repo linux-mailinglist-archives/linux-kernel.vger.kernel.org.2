@@ -2,177 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA68325E8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A595325E92
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbhBZH76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 02:59:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
+        id S229498AbhBZIBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:01:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhBZH7y (ORCPT
+        with ESMTP id S229541AbhBZIAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 02:59:54 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B422C061574;
-        Thu, 25 Feb 2021 23:59:14 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614326352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=As1fDYfwKrjxkKoe6zW8X2eDIPaM0LZx7cH6HHLoVWs=;
-        b=gbarmf2Qo6ckmhKhSwECGeeDceFfmjCgsZgbKbhtGOe/ZVnrkkWOYHfk9EX/OvaW1rRLNX
-        6LDrpfCyyASzExo2fQH3Wk6USh9mNHHsgvWuAZ0ub5xdUjEt5EUT6Vf5DxDGxiufDDA0dD
-        kAFR/HOCf19ewbMg3sDq6t6oq6IKm2/gnMZWkiBdDzKAc77Xol8evKFMxq42TLN5Mzy7Uy
-        RNyNAhsLGReJ53TJjBHzeNEoYHPjH6oRD0CNEhJq1Rdjk6kLa+SaZ2TLx2X4caPC7LziSo
-        LSCkRonnaAQbURvC/8avcnpGuSbPy+eih3OFwIP0fu687A4UJ2O4SpEJooilEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614326352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=As1fDYfwKrjxkKoe6zW8X2eDIPaM0LZx7cH6HHLoVWs=;
-        b=oBzcI9hkvNT1WswvpyoaczL8Miw+ylH42+GPWw36ZoSpeUkMPSwywAxm3+Z0cvgGSedn2L
-        iPW16K6EswEd9nAg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Thomas Meyer <thomas@m3y3r.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
-        linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH next v3 12/15] printk: introduce a kmsg_dump iterator
-In-Reply-To: <20210225202438.28985-13-john.ogness@linutronix.de>
-References: <20210225202438.28985-1-john.ogness@linutronix.de> <20210225202438.28985-13-john.ogness@linutronix.de>
-Date:   Fri, 26 Feb 2021 08:59:10 +0100
-Message-ID: <87a6rrxnsh.fsf@jogness.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Fri, 26 Feb 2021 03:00:50 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C028C06174A;
+        Fri, 26 Feb 2021 00:00:10 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id j24so5744922pfi.2;
+        Fri, 26 Feb 2021 00:00:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=SGKC+JVft3JHE0DGY/zfVH90D0jA8OCfIOyzcJ20Wcc=;
+        b=XffIAJbzfF4FyjDlJxNDHc5mU8K/77RZLqJY5xBu0uRny+QbYcdpYFDPREhFxOlqix
+         lrGIs9z2Y2XGFmY6pm7B9DKLyHjhLkZTRFW/wwFhQIrcuAZT6mW0O7jYWZOIB9acIbhw
+         9xxaiFwOG7UgnRoSU5z3nCsTGLdKJlPdgYMeLg7OE1fAh+xw/iLBKELLpcPM2i0JfSQY
+         UhZzSfahv/u/+IXT2AVo4DwVQ0V5Xyl3kvqIV7wex8wLiI0TfAZfp8V4X3/6qk3pOpOK
+         IpyvdF87hkmFEKDg5oUm4Th4TZ4uNgSYlLdTCSOCFCZgzL/knheRrii92UXoBIcoCwrL
+         Mfcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SGKC+JVft3JHE0DGY/zfVH90D0jA8OCfIOyzcJ20Wcc=;
+        b=aTn5ca/Oh7muRoFzdWffcev9wcBBJwJdtWhxcqAkQbsymNxg0m27aeUavRYJfmPZd7
+         wQcmg8VtHxpYUqw1nBXzlEJlmpodwuSdm57R5ObC6E8v4lw6R1etIiwUOUQpb1tImZlB
+         WN1PHOPKLcwyQPcXFH5JUFuaziJx4cWAhPHlxuvypiZWJ7iCGdemfVJf6wCf+GoZAUSO
+         T4Q3ao53/t8OotikLTzgSx52GjcMoCPn2TLGrnIyiYrS2zoMfj5CDGlOHhziQY3ZmsR4
+         EkB7j4dXaS1HAqKRo/jVgKV2mv/q+ujN+bRsveKH2qGO4T2Ld460aAy1Q+oIEwZucatz
+         QEBw==
+X-Gm-Message-State: AOAM533TyF6yxy49uXEbGErwLc6SpEo0vFFJVZigvZ6sgs4erqMa5hTf
+        rteIlZshMCIyTv3XsFygKi/taxBlheXhcw==
+X-Google-Smtp-Source: ABdhPJxawGKZ4ZgAsRE/UqeSM6fJzqrwWfMq6XhqheJIZuUgfWr+DWX8mVWgINCwXXDMPA8ZxrbQPw==
+X-Received: by 2002:a63:dd49:: with SMTP id g9mr1900154pgj.175.1614326409597;
+        Fri, 26 Feb 2021 00:00:09 -0800 (PST)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id b18sm8785961pfi.173.2021.02.26.00.00.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Feb 2021 00:00:09 -0800 (PST)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH] KVM: x86: hyper-v: Fix Hyper-V context null-ptr-deref
+Date:   Fri, 26 Feb 2021 15:59:59 +0800
+Message-Id: <1614326399-5762-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Wanpeng Li <wanpengli@tencent.com>
 
-Thank you kernel test robot!
+Reported by syzkaller:
 
-Despite all of my efforts to carefully construct and test this series,
-somehome I managed to miss a compile test with CONFIG_MTD_OOPS. That
-kmsg_dumper does require the dumper parameter so that it can use
-container_of().
+    KASAN: null-ptr-deref in range [0x0000000000000140-0x0000000000000147]
+    CPU: 1 PID: 8370 Comm: syz-executor859 Not tainted 5.11.0-syzkaller #0
+    RIP: 0010:synic_get arch/x86/kvm/hyperv.c:165 [inline]
+    RIP: 0010:kvm_hv_set_sint_gsi arch/x86/kvm/hyperv.c:475 [inline]
+    RIP: 0010:kvm_hv_irq_routing_update+0x230/0x460 arch/x86/kvm/hyperv.c:498
+    Call Trace:
+     kvm_set_irq_routing+0x69b/0x940 arch/x86/kvm/../../../virt/kvm/irqchip.c:223
+     kvm_vm_ioctl+0x12d0/0x2800 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3959
+     vfs_ioctl fs/ioctl.c:48 [inline]
+     __do_sys_ioctl fs/ioctl.c:753 [inline]
+     __se_sys_ioctl fs/ioctl.c:739 [inline]
+     __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+     do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+     entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-I will discuss this with the printk team. But most likely we will just
-re-instate the dumper parameter in the callback.
+Hyper-V context is lazily allocated until Hyper-V specific MSRs are accessed 
+or SynIC is enabled. However, the syzkaller testcase sets irq routing table 
+directly w/o enabling SynIC. This results in null-ptr-deref when accessing 
+SynIC Hyper-V context. This patch fixes it.
+     
+syzkaller source: https://syzkaller.appspot.com/x/repro.c?x=163342ccd00000
 
-I apologize for the lack of care on my part.
+Reported-by: syzbot+6987f3b2dbd9eda95f12@syzkaller.appspotmail.com
+Fixes: 8f014550dfb1 ("KVM: x86: hyper-v: Make Hyper-V emulation enablement conditional")
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+ arch/x86/kvm/hyperv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-John Ogness
+diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+index 7d2dae9..58fa8c0 100644
+--- a/arch/x86/kvm/hyperv.c
++++ b/arch/x86/kvm/hyperv.c
+@@ -159,7 +159,7 @@ static struct kvm_vcpu_hv_synic *synic_get(struct kvm *kvm, u32 vpidx)
+ 	struct kvm_vcpu_hv_synic *synic;
+ 
+ 	vcpu = get_vcpu_by_vpidx(kvm, vpidx);
+-	if (!vcpu)
++	if (!vcpu || !to_hv_vcpu(vcpu))
+ 		return NULL;
+ 	synic = to_hv_synic(vcpu);
+ 	return (synic->active) ? synic : NULL;
+-- 
+2.7.4
 
-On 2021-02-26, kernel test robot <lkp@intel.com> wrote:
-> Hi John,
->
-> I love your patch! Yet something to improve:
->
-> [auto build test ERROR on next-20210225]
->
-> url:    https://github.com/0day-ci/linux/commits/John-Ogness/printk-remove-logbuf_lock/20210226-043457
-> base:    7f206cf3ec2bee4621325cfacb2588e5085c07f5
-> config: arm-randconfig-r024-20210225 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a921aaf789912d981cbb2036bdc91ad7289e1523)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install arm cross compiling tool for clang build
->         # apt-get install binutils-arm-linux-gnueabi
->         # https://github.com/0day-ci/linux/commit/fc7f655cded40fc98ba5304c200e3a01e8291fb4
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review John-Ogness/printk-remove-logbuf_lock/20210226-043457
->         git checkout fc7f655cded40fc98ba5304c200e3a01e8291fb4
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm 
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->>> drivers/mtd/mtdoops.c:277:45: error: use of undeclared identifier 'dumper'
->            struct mtdoops_context *cxt = container_of(dumper,
->                                                       ^
->>> drivers/mtd/mtdoops.c:277:45: error: use of undeclared identifier 'dumper'
->>> drivers/mtd/mtdoops.c:277:45: error: use of undeclared identifier 'dumper'
->    3 errors generated.
->
->
-> vim +/dumper +277 drivers/mtd/mtdoops.c
->
-> 4b23aff083649e Richard Purdie 2007-05-29  274  
-> fc7f655cded40f John Ogness    2021-02-25  275  static void mtdoops_do_dump(enum kmsg_dump_reason reason)
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  276  {
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03 @277  	struct mtdoops_context *cxt = container_of(dumper,
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  278  			struct mtdoops_context, dump);
-> fc7f655cded40f John Ogness    2021-02-25  279  	struct kmsg_dump_iter iter;
-> fc2d557c74dc58 Seiji Aguchi   2011-01-12  280  
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  281  	/* Only dump oopses if dump_oops is set */
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  282  	if (reason == KMSG_DUMP_OOPS && !dump_oops)
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  283  		return;
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  284  
-> fc7f655cded40f John Ogness    2021-02-25  285  	kmsg_dump_rewind(&iter);
-> fc7f655cded40f John Ogness    2021-02-25  286  
-> df92cad8a03e83 John Ogness    2021-02-25  287  	if (test_and_set_bit(0, &cxt->oops_buf_busy))
-> df92cad8a03e83 John Ogness    2021-02-25  288  		return;
-> fc7f655cded40f John Ogness    2021-02-25  289  	kmsg_dump_get_buffer(&iter, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
-> e2ae715d66bf4b Kay Sievers    2012-06-15  290  			     record_size - MTDOOPS_HEADER_SIZE, NULL);
-> df92cad8a03e83 John Ogness    2021-02-25  291  	clear_bit(0, &cxt->oops_buf_busy);
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  292  
-> c1cf1d57d14922 Mark Tomlinson 2020-09-03  293  	if (reason != KMSG_DUMP_OOPS) {
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  294  		/* Panics must be written immediately */
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  295  		mtdoops_write(cxt, 1);
-> c1cf1d57d14922 Mark Tomlinson 2020-09-03  296  	} else {
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  297  		/* For other cases, schedule work to write it "nicely" */
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  298  		schedule_work(&cxt->work_write);
-> 2e386e4bac9055 Simon Kagstrom 2009-11-03  299  	}
-> c1cf1d57d14922 Mark Tomlinson 2020-09-03  300  }
-> 4b23aff083649e Richard Purdie 2007-05-29  301  
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
