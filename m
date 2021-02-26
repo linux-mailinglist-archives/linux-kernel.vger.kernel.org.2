@@ -2,318 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092AC326610
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACB5326613
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhBZRGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:06:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhBZREy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:04:54 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C072BC061786
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:04:12 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id n4so6985538wmq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:04:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HSGBCXrnmFpcu9xP5Fu7hsNHkO8470wY7hVrqUDHTAc=;
-        b=mCmKujyWV4+5a493B2ZFwQYeR1S4UnXxLT86/P0wYWvxvK2pVK3rI4M5T5qfZAI1MK
-         2dxJ4HNje167kd5u7tpeZLxN3YupJAf7U2A5WhBb2tKfUzJdgPiLoszVKRA3blpodd76
-         VUp5psDPVBtfVJ0ijxsIsXp4PTbgslSCAReGcdy0z7ijh4HY+OLrfLXChwouuLy2txma
-         WY+4V4lF5qQfl5cAm0EZ6Uqp4KfZbBeI2+yCJmOrDC4JUzh7kuj95frYjWRqILEZPzFe
-         skh4cTzjQfkzswDx1f9Mo0kpJ9lqW+Nn/EiEiToBVwb2X3AIEGD39Oypbw0ImLjKpln9
-         meig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HSGBCXrnmFpcu9xP5Fu7hsNHkO8470wY7hVrqUDHTAc=;
-        b=UVwX/eHPmW/IclNPf7/wU7HN4YlKk9c/Men9IxNyz99PkysPA8Ya42uI5ZgixWRtY8
-         Xs8ihqEDnnuJ9zK76cfypKOr+TO2YCm4Cj8PqjQDMOfZ+XCwacHENVShA1YAaljPuy6f
-         7dsTxT3L0PiqokNKIkzkZ4F/jPVBnP3ksMtmDv23EDHRe3+3qpzp2J8X15UHUlh3OGKo
-         ThuMZXSn8G9weHU2OgHJ/W2GXaYdOeG9k1IDehaS8AndxWWCKpvX+AKwDDZwsdox6gm+
-         0J29tSFvWmo2gy9yUKqytPr2B1E9zru+pxv2Q0XyxBybcX8bWE25QiEKwADgAO6cW++S
-         02tw==
-X-Gm-Message-State: AOAM5339DXAqN+NNz74xvhXd3WIpmujEhKRlAk39McY7C181jRMPheit
-        +USxbfI4NrxszE/8PYKJ7acPog==
-X-Google-Smtp-Source: ABdhPJw1bnUklU6l3SzESpOTeCGIfijBQDbl01b6ZyWLgaLOFxabRdBFxfHoI8mJcb9fmA7LQMi2uA==
-X-Received: by 2002:a1c:8005:: with SMTP id b5mr3842454wmd.130.1614359051501;
-        Fri, 26 Feb 2021 09:04:11 -0800 (PST)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id w13sm15962972wre.2.2021.02.26.09.04.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 09:04:11 -0800 (PST)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 3/3] soundwire: qcom: add clock stop via runtime pm support
-Date:   Fri, 26 Feb 2021 17:02:50 +0000
-Message-Id: <20210226170250.9067-4-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
-References: <20210226170250.9067-1-srinivas.kandagatla@linaro.org>
+        id S229864AbhBZRGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:06:43 -0500
+Received: from mga06.intel.com ([134.134.136.31]:50956 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229996AbhBZRFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 12:05:05 -0500
+IronPort-SDR: +c9y/S5se88wdus1BBlwGKdixztgK/4FstVqJgg8LqmAt1HpPeKBNaQaoOIPHDyMuA1Yp/QGBP
+ dLkUr5jt8Q4w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="247353201"
+X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
+   d="scan'208";a="247353201"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:03:12 -0800
+IronPort-SDR: z/vSgVa1z4xt+j8enQ47g/W/ChsEIJq16t8zawwQgZ9iNY52slQAVZOu3y/3i4fzjfN/Gor8uc
+ rTgyZ0n2n22A==
+X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
+   d="scan'208";a="502385376"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:03:11 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lFgWD-008PHW-43; Fri, 26 Feb 2021 19:03:09 +0200
+Date:   Fri, 26 Feb 2021 19:03:09 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] parport: Introduce module_parport_driver() helper
+ macro
+Message-ID: <YDkpzZ8jL7O9HJuG@smile.fi.intel.com>
+References: <20210216110741.1286-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216110741.1286-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Clock stop feature support using runtime PM.
+On Tue, Feb 16, 2021 at 01:07:39PM +0200, Andy Shevchenko wrote:
+> Introduce module_parport_driver() helper macro to reduce boilerplate
+> in the existing and new code.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/soundwire/qcom.c | 103 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 96 insertions(+), 7 deletions(-)
+Sudip, any comments on this?
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index d90eba6a1e88..0cf8c5c724e2 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -10,6 +10,7 @@
- #include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/of_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/slimbus.h>
-@@ -19,6 +20,8 @@
- #include <sound/soc.h>
- #include "bus.h"
- 
-+#define SWRM_COMP_SW_RESET					(0x008)
-+#define SWRM_COMP_STATUS					(0x014)
- #define SWRM_COMP_HW_VERSION					0x00
- #define SWRM_COMP_CFG_ADDR					0x04
- #define SWRM_COMP_CFG_IRQ_LEVEL_OR_PULSE_MSK			BIT(1)
-@@ -408,6 +411,9 @@ static int qcom_swrm_enumerate(struct sdw_bus *bus)
- 			}
- 		}
- 	}
-+	pm_runtime_get_sync(ctrl->dev);
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
- 
- 	complete(&ctrl->enumeration);
- 	return 0;
-@@ -421,6 +427,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
- 	u8 devnum = 0;
- 	int ret = IRQ_HANDLED;
- 
-+	clk_prepare_enable(swrm->hclk);
- 	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
- 	intr_sts_masked = intr_sts & swrm->intr_mask;
- 
-@@ -529,6 +536,7 @@ static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
- 		intr_sts_masked = intr_sts & swrm->intr_mask;
- 	} while (intr_sts_masked);
- 
-+	clk_disable_unprepare(swrm->hclk);
- 	return ret;
- }
- 
-@@ -587,6 +595,8 @@ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
- 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
- 	int ret, i, len;
- 
-+	pm_runtime_get_sync(ctrl->dev);
-+
- 	if (msg->flags == SDW_MSG_FLAG_READ) {
- 		for (i = 0; i < msg->len;) {
- 			if ((msg->len - i) < QCOM_SWRM_MAX_RD_LEN)
-@@ -598,7 +608,7 @@ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
- 							msg->addr + i, len,
- 						       &msg->buf[i]);
- 			if (ret)
--				return ret;
-+				goto done;
- 
- 			i = i + len;
- 		}
-@@ -607,12 +617,20 @@ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
- 			ret = qcom_swrm_cmd_fifo_wr_cmd(ctrl, msg->buf[i],
- 							msg->dev_num,
- 						       msg->addr + i);
--			if (ret)
--				return SDW_CMD_IGNORED;
-+			if (ret) {
-+				ret = SDW_CMD_IGNORED;
-+				goto done;
-+			}
- 		}
- 	}
- 
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+	pm_runtime_mark_last_busy(ctrl->dev);
- 	return SDW_CMD_OK;
-+done:
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+	return ret;
- }
- 
- static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
-@@ -620,13 +638,19 @@ static int qcom_swrm_pre_bank_switch(struct sdw_bus *bus)
- 	u32 reg = SWRM_MCP_FRAME_CTRL_BANK_ADDR(bus->params.next_bank);
- 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
- 	u32 val;
-+	int ret;
- 
-+	pm_runtime_get_sync(ctrl->dev);
- 	ctrl->reg_read(ctrl, reg, &val);
- 
- 	u32p_replace_bits(&val, ctrl->cols_index, SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK);
- 	u32p_replace_bits(&val, ctrl->rows_index, SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK);
- 
--	return ctrl->reg_write(ctrl, reg, val);
-+	ret = ctrl->reg_write(ctrl, reg, val);
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+
-+	return ret;
- }
- 
- static int qcom_swrm_port_params(struct sdw_bus *bus,
-@@ -634,13 +658,18 @@ static int qcom_swrm_port_params(struct sdw_bus *bus,
- 				 unsigned int bank)
- {
- 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
-+	int ret = 0;
-+	pm_runtime_get_sync(ctrl->dev);
- 
- 	if (p_params->bps != SWR_INVALID_PARAM)
--		return ctrl->reg_write(ctrl,
-+		ret = ctrl->reg_write(ctrl,
- 				       SWRM_DP_BLOCK_CTRL_1(p_params->num),
- 				       p_params->bps - 1);
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
- 
--	return 0;
-+
-+	return ret;
- }
- 
- static int qcom_swrm_transport_params(struct sdw_bus *bus,
-@@ -651,6 +680,7 @@ static int qcom_swrm_transport_params(struct sdw_bus *bus,
- 	u32 value;
- 	int reg = SWRM_DP_PORT_CTRL_BANK((params->port_num), bank);
- 	int ret;
-+	pm_runtime_get_sync(ctrl->dev);
- 
- 	value = params->offset1 << SWRM_DP_PORT_CTRL_OFFSET1_SHFT;
- 	value |= params->offset2 << SWRM_DP_PORT_CTRL_OFFSET2_SHFT;
-@@ -685,6 +715,9 @@ static int qcom_swrm_transport_params(struct sdw_bus *bus,
- 		reg = SWRM_DP_BLOCK_CTRL3_BANK(params->port_num, bank);
- 		ret = ctrl->reg_write(ctrl, reg, params->blk_pkg_mode);
- 	}
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+
- 
- 	return ret;
- }
-@@ -696,6 +729,9 @@ static int qcom_swrm_port_enable(struct sdw_bus *bus,
- 	u32 reg = SWRM_DP_PORT_CTRL_BANK(enable_ch->port_num, bank);
- 	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
- 	u32 val;
-+	int ret;
-+
-+	pm_runtime_get_sync(ctrl->dev);
- 
- 	ctrl->reg_read(ctrl, reg, &val);
- 
-@@ -704,7 +740,11 @@ static int qcom_swrm_port_enable(struct sdw_bus *bus,
- 	else
- 		val &= ~(0xff << SWRM_DP_PORT_CTRL_EN_CHAN_SHFT);
- 
--	return ctrl->reg_write(ctrl, reg, val);
-+	ret  = ctrl->reg_write(ctrl, reg, val);
-+	pm_runtime_mark_last_busy(ctrl->dev);
-+	pm_runtime_put_autosuspend(ctrl->dev);
-+
-+	return ret;
- }
- 
- static const struct sdw_master_port_ops qcom_swrm_port_ops = {
-@@ -1194,6 +1234,13 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 		 (ctrl->version >> 24) & 0xff, (ctrl->version >> 16) & 0xff,
- 		 ctrl->version & 0xffff);
- 
-+	pm_runtime_set_autosuspend_delay(dev, 30000);
-+	pm_runtime_use_autosuspend(dev);
-+	pm_runtime_mark_last_busy(dev);
-+
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+
- 	return 0;
- 
- err_master_add:
-@@ -1214,6 +1261,47 @@ static int qcom_swrm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int swrm_runtime_resume(struct device *dev)
-+{
-+	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
-+
-+	reinit_completion(&ctrl->enumeration);
-+	clk_prepare_enable(ctrl->hclk);
-+	ctrl->reg_write(ctrl, SWRM_COMP_SW_RESET, 0x01);
-+	qcom_swrm_get_device_status(ctrl);
-+	sdw_handle_slave_status(&ctrl->bus, ctrl->status);
-+	qcom_swrm_init(ctrl);
-+	wait_for_completion_timeout(&ctrl->enumeration,
-+					msecs_to_jiffies(TIMEOUT_MS));
-+	usleep_range(100, 105);
-+
-+	pm_runtime_mark_last_busy(dev);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused swrm_runtime_suspend(struct device *dev)
-+{
-+	struct qcom_swrm_ctrl *ctrl = dev_get_drvdata(dev);
-+
-+	/* Mask bus clash interrupt */
-+	ctrl->intr_mask &= ~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
-+	ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR, ctrl->intr_mask);
-+	ctrl->reg_write(ctrl, SWRM_INTERRUPT_CPU_EN, ctrl->intr_mask);
-+	/* clock stop sequence */
-+	qcom_swrm_cmd_fifo_wr_cmd(ctrl, 0x2, 0xF, SDW_SCP_CTRL);
-+
-+	clk_disable_unprepare(ctrl->hclk);
-+
-+	usleep_range(100, 105);
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops swrm_dev_pm_ops = {
-+	SET_RUNTIME_PM_OPS(swrm_runtime_suspend, swrm_runtime_resume, NULL)
-+};
-+
- static const struct of_device_id qcom_swrm_of_match[] = {
- 	{ .compatible = "qcom,soundwire-v1.3.0", .data = &swrm_v1_3_data },
- 	{ .compatible = "qcom,soundwire-v1.5.1", .data = &swrm_v1_5_data },
-@@ -1228,6 +1316,7 @@ static struct platform_driver qcom_swrm_driver = {
- 	.driver = {
- 		.name	= "qcom-soundwire",
- 		.of_match_table = qcom_swrm_of_match,
-+		.pm = &swrm_dev_pm_ops,
- 	}
- };
- module_platform_driver(qcom_swrm_driver);
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: fixed typo in the macro
+>  include/linux/parport.h | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/parport.h b/include/linux/parport.h
+> index 1fb508c19e83..54539b80021e 100644
+> --- a/include/linux/parport.h
+> +++ b/include/linux/parport.h
+> @@ -301,9 +301,19 @@ int __must_check __parport_register_driver(struct parport_driver *,
+>  	__parport_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
+>  
+>  /* Unregister a high-level driver. */
+> -extern void parport_unregister_driver (struct parport_driver *);
+>  void parport_unregister_driver(struct parport_driver *);
+>  
+> +/**
+> + * module_parport_driver() - Helper macro for registering a modular parport driver
+> + * @__parport_driver: struct parport_driver to be used
+> + *
+> + * Helper macro for parport drivers which do not do anything special in module
+> + * init and exit. This eliminates a lot of boilerplate. Each module may only
+> + * use this macro once, and calling it replaces module_init() and module_exit().
+> + */
+> +#define module_parport_driver(__parport_driver) \
+> +	module_driver(__parport_driver, parport_register_driver, parport_unregister_driver)
+> +
+>  /* If parport_register_driver doesn't fit your needs, perhaps
+>   * parport_find_xxx does. */
+>  extern struct parport *parport_find_number (int);
+> -- 
+> 2.30.0
+> 
+
 -- 
-2.21.0
+With Best Regards,
+Andy Shevchenko
+
 
