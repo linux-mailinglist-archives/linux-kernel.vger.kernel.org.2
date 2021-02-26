@@ -2,107 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330DD326313
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5D1326316
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhBZNEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 08:04:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230079AbhBZNEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 08:04:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32C5F64EE2;
-        Fri, 26 Feb 2021 13:03:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614344639;
-        bh=ZiJl8DpWEVCvIAtlfcxEMZ4oXLoAHaJv04eh0CYE7d0=;
+        id S230299AbhBZNGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 08:06:34 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49382 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhBZNG0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 08:06:26 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 438F6580;
+        Fri, 26 Feb 2021 14:05:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614344743;
+        bh=Pn1GXf496O59uPaYl6Kxb/FwBF+ERmIgv38ha8Jcl/E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0ml3fDh2uFY/AjFC4lthT/HDZ5Erk4mxqDdTIeSgPurDjrs59TOBDrcccL2Jm6kpG
-         L45u7ZKpIcpRsrKRLwvbznTMT3RGKEGZ61K83V+IXy5uCszoRL96WhwekWnqt5iZxs
-         iEMtOPFVEno5yP8A6ssdBpAGY2IeiPl2YoiY6H3Q=
-Date:   Fri, 26 Feb 2021 14:03:55 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
-        Savo Novakovic <savox.novakovic@intel.com>,
-        Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Subject: Re: [PATCH v1 01/12] gna: add driver module
-Message-ID: <YDjxu+0zvz3zsRb3@kroah.com>
-References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
- <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
- <YCwFBNa2npYcEIQ+@kroah.com>
- <85wnuvrnml.fsf@linux.intel.com>
+        b=AuZRBC/3EctvpMjBlzYhC9ZycLOxegiRu95vr8qxIHUUXBzx5yO2qx/pfpw+UKJtB
+         bS3EAh05N6xfEXLinLLFdtXaHlFYsY26hGX/O4BYtbyRtVMReCYidGaiEsb/qDhsvU
+         H8f0zXkYoNggy4PuccawOn9rEasjD2PM3QsVowYc=
+Date:   Fri, 26 Feb 2021 15:05:16 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Dirk Behme <Dirk.Behme@de.bosch.com>,
+        Peter Erben <Peter.Erben@de.bosch.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Subject: Re: [PATCH 4/7] misc: Add driver for DAB IP found on Renesas R-Car
+ devices
+Message-ID: <YDjyDB/l6dVoodKZ@pendragon.ideasonboard.com>
+References: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
+ <20210225225147.29920-5-fabrizio.castro.jz@renesas.com>
+ <CAK8P3a1+CZTAcR5T=gN565Q8=CdZnu5KYsAijKXLY8taofEpGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <85wnuvrnml.fsf@linux.intel.com>
+In-Reply-To: <CAK8P3a1+CZTAcR5T=gN565Q8=CdZnu5KYsAijKXLY8taofEpGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 01:59:14PM +0100, Maciej Kwapulinski wrote:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> 
-> > On Tue, Feb 16, 2021 at 05:05:14PM +0100, Maciej Kwapulinski wrote:
-> ....
-> >> --- /dev/null
-> >> +++ b/drivers/misc/gna/gna_driver.h
-> >> @@ -0,0 +1,41 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0-only */
-> >> +/* Copyright(c) 2017-2021 Intel Corporation */
-> >> +
-> >> +#ifndef __GNA_DRIVER_H__
-> >> +#define __GNA_DRIVER_H__
-> >> +
-> >> +#include <linux/kernel.h>
-> >> +#include <linux/mutex.h>
-> >> +#include <linux/types.h>
-> >> +
-> >> +#define GNA_DRV_NAME	"gna"
+Hi Fabrizio,
+
+Thank you for the patch.
+
+On Fri, Feb 26, 2021 at 11:37:44AM +0100, Arnd Bergmann wrote:
+> On Thu, Feb 25, 2021 at 11:51 PM Fabrizio Castro wrote:
 > >
-> > Way too generic, no one knows what "gna" is.
+> > The DAB hardware accelerator found on R-Car E3 and R-Car M3-N devices is
+> > a hardware accelerator for software DAB demodulators.
+> > It consists of one FFT (Fast Fourier Transform) module and one decoder
+> > module, compatible with DAB specification (ETSI EN 300 401 and
+> > ETSI TS 102 563).
+> > The decoder module can perform FIC decoding and MSC decoding processing
+> > from de-puncture to final decoded result.
 > >
+> > This patch adds a device driver to support the FFT module only.
+> >
+> > Signed-off-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> > ---
+> >  MAINTAINERS                      |   7 ++
+> >  drivers/misc/Kconfig             |   1 +
+> >  drivers/misc/Makefile            |   1 +
+> >  drivers/misc/rcar_dab/Kconfig    |  11 ++
+> >  drivers/misc/rcar_dab/Makefile   |   8 ++
+> >  drivers/misc/rcar_dab/rcar_dev.c | 176 +++++++++++++++++++++++++++++++
+> >  drivers/misc/rcar_dab/rcar_dev.h | 116 ++++++++++++++++++++
+> >  drivers/misc/rcar_dab/rcar_fft.c | 160 ++++++++++++++++++++++++++++
+> >  include/uapi/linux/rcar_dab.h    |  35 ++++++
 > 
-> "intel gna" is much more verbose in search engines.
-> As we do not (plan to) have more "gna" drivers, is the following ok?:
+> Can you explain why this is not in drivers/media/?
 > 
-> intel-gna
+> I don't think we want a custom ioctl interface for a device that implements
+> a generic specification. My first feeling would be that this should not
+> have a user-level API but instead get called by the DAB radio driver.
 > 
-> the change would imply the following:
+> What is the intended usage model here? I assume the idea is to
+> use it in an application that receives audio or metadata from DAB.
+> What driver do you use for that?
+
+I second Arnd here, a standard API would be best.
+
+> > +static long rcar_dab_unlocked_ioctl(struct file *file, unsigned int cmd,
+> > +                                   unsigned long arg)
+> > +{
+> > +       void __user *argp = (void __user *)arg;
+> > +       struct rcar_dab *dab;
+> > +       int ret;
+> > +
+> > +       dab = container_of(file->private_data, struct rcar_dab, misc);
+> > +
+> > +       switch (cmd) {
+> > +       case RCAR_DAB_IOC_FFT:
+> > +               if (!access_ok(argp, sizeof(struct rcar_dab_fft_req)))
+> > +                       return -EFAULT;
+> > +               ret = rcar_dab_fft(dab, argp);
+> > +               break;
+> > +       default:
+> > +               ret = -ENOTTY;
+> > +       }
+> > +
+> > +       return ret;
+> > +}
+> > +
+> > +static const struct file_operations rcar_dab_fops = {
+> > +       .owner          = THIS_MODULE,
+> > +       .unlocked_ioctl = rcar_dab_unlocked_ioctl,
+> > +};
 > 
-> prompt$ lspci -s 00:00.3 -vvvv
-> 00:00.3 System peripheral: Intel Corporation Device 3190 (rev 03)
-> 	Subsystem: Intel Corporation Device 2072
->   ....
-> 	Kernel driver in use: intel-gna
-> 	Kernel modules: gna
+> There should be a '.compat_ioctl = compat_ptr_ioctl'
+> entry, provided that the arguments are compatible between
+> 32-bit and 64-bit user space.
 > 
-> is it ok?
-
-Why not intel-gna as the kernel module as well?
-
-> also, how about the interface to library (it's part of one of next patches)?:
-> prompt$ file /dev/gna0
-> /dev/gna0: character special (235/0)
+> > +
+> > +static int rcar_dab_fft_init(struct rcar_dab *dab, struct rcar_dab_fft_req *fft)
+> > +{
+> > +       u32 mode;
+> > +
+> > +       for (mode = 0; mode < ARRAY_SIZE(rcar_dab_fft_size_lut); mode++)
+> > +               if (rcar_dab_fft_size_lut[mode] == fft->points)
+> > +                       break;
+> > +       if (mode == ARRAY_SIZE(rcar_dab_fft_size_lut))
+> > +               return -EINVAL;
+> > +       if (fft->ofdm_number == 0)
+> > +               return -EINVAL;
+> > +
+> > +       rcar_dab_write(dab, RCAR_DAB_FFTSSR, mode);
+> > +       rcar_dab_write(dab, RCAR_DAB_FFTNUMOFDMR, fft->ofdm_number);
+> > +       rcar_dab_write(dab, RCAR_DAB_FFTINADDR, (u32)dab->fft.dma_input_buf);
+> > +       rcar_dab_write(dab, RCAR_DAB_FFTOUTADDR, (u32)dab->fft.dma_output_buf);
 > 
-> can "gna" stay intact here?
+> Maybe use lower_32_bits() instead of the (u32) cast.
+> 
+> For clarity, you may also want to specifically ask for a 32-bit DMA mask
+> in the probe function, with a comment that describes what the hardware
+> limitation is.
+> 
+> > +
+> > +       if (copy_from_user(dab->fft.input_buffer, fft_req->input_address,
+> > +                          buffer_size)) {
+> > +               mutex_unlock(&dab->fft.lock);
+> > +               return -EFAULT;
+> > +       }
+> > +
+> > +       dab->fft.done = false;
+> > +       ret = rcar_dab_fft_init(dab, fft_req);
+> > +       if (ret) {
+> > +               mutex_unlock(&dab->fft.lock);
+> > +               return ret;
+> > +       }
+> > +
+> > +       rcar_dab_fft_enable(dab);
+> > +       wait_event_interruptible_timeout(dab->fft.wait, dab->fft.done, HZ);
+> > +       if (!dab->fft.done) {
+> > +               rcar_dab_fft_disable(dab);
+> > +               ret = -EFAULT;
+> 
+> -EFAULT doesn't look like the right error for timeout or signal
+> handling. Better check the return code from wait_event_interruptible_timeout()
+> instead.
+> 
+> > +
+> > +struct rcar_dab_fft_req {
+> > +       int points;                     /*
+> > +                                        * The number of points to use.
+> > +                                        * Legal values are 256, 512, 1024, and
+> > +                                        * 2048.
+> > +                                        */
+> > +       unsigned char ofdm_number;      /*
+> > +                                        * Orthogonal Frequency Division
+> > +                                        * Multiplexing (OFDM).
+> > +                                        * Minimum value is 1, maximum value is
+> > +                                        * 255.
+> > +                                        */
+> > +       void __user *input_address;     /*
+> > +                                        * User space address for the input
+> > +                                        * buffer.
+> > +                                        */
+> > +       void __user *output_address;    /*
+> > +                                        * User space address for the output
+> > +                                        * buffer.
+> > +                                        */
+> > +};
+> 
+> Please read Documentation/driver-api/ioctl.rst and make this a portable
+> data structure.
 
-Again, I have no idea what "gna" is, so you might want to pick something
-more descriptive?
+We've suffered enough with DMA to user pointers. Let's use dmabuf
+instead.
 
-> I'm pointing this out, because gna exists on the market for a while and
-> changing the above may have some impact we'd like to avoid.
+-- 
+Regards,
 
-If it exists but Linux does not support it, how would anyone know about
-it?  :)
-
-Please use real terms where possible.
-
-thanks,
-
-greg k-h
+Laurent Pinchart
