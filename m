@@ -2,77 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B739326194
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E430326199
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhBZKwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:52:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37028 "EHLO mx2.suse.de"
+        id S230427AbhBZKzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:55:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230144AbhBZKwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:52:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8D802AE72;
-        Fri, 26 Feb 2021 10:52:04 +0000 (UTC)
-Subject: Re: [PATCH v2 0/3] trim the uses of compound_head()
-To:     Yu Zhao <yuzhao@google.com>, akpm@linux-foundation.org,
-        alex.shi@linux.alibaba.com, willy@infradead.org
-Cc:     guro@fb.com, hannes@cmpxchg.org, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20210224084807.2179942-1-yuzhao@google.com>
- <20210226091718.2927291-1-yuzhao@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <bd876842-b1e6-66fd-da1a-b181cede101a@suse.cz>
-Date:   Fri, 26 Feb 2021 11:52:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230083AbhBZKzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:55:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 421E164EE1;
+        Fri, 26 Feb 2021 10:54:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614336891;
+        bh=edOHBPkEfxZwmBzRX/ETwqCCjnmKyxVyCmVbup1TnxI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IV33vp+bm0TaEniNyLKnEhZNNyMe5o6i0vDlknB2i7pKOibVQL/cbZbCBFHcyjtVo
+         tQF7NCMzUDK4L8fulLQ3GX094g3mrbsGl8AP32nLPXpEnebmUXSW2JYEiXw8dSH1Sd
+         eV9KCdza8kopNvajD3TTsMQru5v/fCglwZuWTLOEU5b1lbZgHUhkf9tEHMoqbWGQJy
+         n8diK9/PcJoLLiWEs5QndEKqE36ya/9JyzZU7L6pevpdxlCeAppV6nDjzt0RWUuoMA
+         BjvnSaDJVoJJMZAlMaIEymDES9r+spxtuNRocOkmvsbt/BVDN8DQbX2YZ68LSdflXM
+         5yagWUk1uAF3Q==
+Date:   Fri, 26 Feb 2021 11:54:47 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <mani@kernel.org>
+Subject: Re: [PATCH] USB: serial: xr: fix NULL-deref on disconnect
+Message-ID: <20210226115447.6ace5490@coco.lan>
+In-Reply-To: <20210226100826.18987-1-johan@kernel.org>
+References: <20210226100826.18987-1-johan@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210226091718.2927291-1-yuzhao@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/21 10:17 AM, Yu Zhao wrote:
-> Patch series "mm: lru related cleanups" starting at commit 42895ea73bcd
-> ("mm/vmscan.c: use add_page_to_lru_list()") bloated vmlinux by 1777
-> bytes, according to:
->   https://lore.kernel.org/linux-mm/85b3e8f2-5982-3329-c20d-cf062b8da71e@suse.cz/
+Em Fri, 26 Feb 2021 11:08:26 +0100
+Johan Hovold <johan@kernel.org> escreveu:
 
-Huh, I thought Andrew didn't want to send it for 5.12:
-https://lore.kernel.org/linux-mm/20210223145011.0181eed96ab0091a493b51f6@linux-foundation.org/
-
-> It turned out many places inline Page{Active,Unevictable} which in
-> turn include compound_head().
+> Claiming the sibling control interface is a bit more involved and
+> specifically requires adding support to USB-serial core for managing
+> either interface being unbound first, something which could otherwise
+> lead to a NULL-pointer dereference.
 > 
-> From the v1:
->   Removing compound_head() entirely from Page{Active,Unevictable} may
->   not be the best option (for the moment) because there may be other
->   cases that need compound_head().
+> Similarly, additional infrastructure is also needed to handle suspend
+> properly.
 > 
-> In addition to picking a couple pieces of low-hanging fruit, this v2
-> removes compound_head() completely from Page{Active,Unevictable}.
+> Since the driver currently isn't actually using the control interface,
+> we can defer this for now by simply not claiming the control interface.
 > 
-> bloat-o-meter result before and after the series:
->   add/remove: 0/0 grow/shrink: 6/92 up/down: 697/-7656 (-6959)
+> Fixes: c2d405aa86b4 ("USB: serial: add MaxLinear/Exar USB to Serial driver")
+> Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Cc: Manivannan Sadhasivam <mani@kernel.org>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
-Good that you found a way to more than undo the bloat then. But we need to be
-careful so bugs are not introduced due to pressure to not have bloated 5.12.
+That solved the issue with XR21V1410:
 
-IIRC Kirill introduced these macros so I'm CCing him.
+	[ 8176.265862] usbcore: registered new interface driver xr_serial
+	[ 8176.265885] usbserial: USB Serial support registered for xr_serial
+	[ 8176.265921] xr_serial 2-1:1.1: xr_serial converter detected
+	[ 8176.266041] usb 2-1: xr_serial converter now attached to ttyUSB0
+	[ 8176.268023] printk: console [ttyUSB0] enabled
+	[ 8186.512841] usb 2-1: USB disconnect, device number 5
+	[ 8186.513131] printk: console [ttyUSB0] disabled
+	[ 8186.513340] xr_serial ttyUSB0: xr_serial converter now disconnected from ttyUSB0
+	[ 8186.513376] xr_serial 2-1:1.1: device disconnected
 
-> Yu Zhao (3):
->   mm: bypass compound_head() for PF_NO_TAIL when enforce=1
->   mm: use PF_NO_TAIL for PG_lru
->   mm: use PF_ONLY_HEAD for PG_active and PG_unevictable
+Tested-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Regards,
+Mauro
+
+> ---
+>  drivers/usb/serial/xr_serial.c | 25 -------------------------
+>  1 file changed, 25 deletions(-)
 > 
->  fs/proc/task_mmu.c         |  3 ++-
->  include/linux/page-flags.h | 16 ++++++++--------
->  2 files changed, 10 insertions(+), 9 deletions(-)
-> 
+> diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
+> index 483d07dee19d..0ca04906da4b 100644
+> --- a/drivers/usb/serial/xr_serial.c
+> +++ b/drivers/usb/serial/xr_serial.c
+> @@ -545,37 +545,13 @@ static void xr_close(struct usb_serial_port *port)
+>  
+>  static int xr_probe(struct usb_serial *serial, const struct usb_device_id *id)
+>  {
+> -	struct usb_driver *driver = serial->type->usb_driver;
+> -	struct usb_interface *control_interface;
+> -	int ret;
+> -
+>  	/* Don't bind to control interface */
+>  	if (serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
+>  		return -ENODEV;
+>  
+> -	/* But claim the control interface during data interface probe */
+> -	control_interface = usb_ifnum_to_if(serial->dev, 0);
+> -	if (!control_interface)
+> -		return -ENODEV;
+> -
+> -	ret = usb_driver_claim_interface(driver, control_interface, NULL);
+> -	if (ret) {
+> -		dev_err(&serial->interface->dev, "Failed to claim control interface\n");
+> -		return ret;
+> -	}
+> -
+>  	return 0;
+>  }
+>  
+> -static void xr_disconnect(struct usb_serial *serial)
+> -{
+> -	struct usb_driver *driver = serial->type->usb_driver;
+> -	struct usb_interface *control_interface;
+> -
+> -	control_interface = usb_ifnum_to_if(serial->dev, 0);
+> -	usb_driver_release_interface(driver, control_interface);
+> -}
+> -
+>  static const struct usb_device_id id_table[] = {
+>  	{ USB_DEVICE(0x04e2, 0x1410) }, /* XR21V141X */
+>  	{ }
+> @@ -590,7 +566,6 @@ static struct usb_serial_driver xr_device = {
+>  	.id_table		= id_table,
+>  	.num_ports		= 1,
+>  	.probe			= xr_probe,
+> -	.disconnect		= xr_disconnect,
+>  	.open			= xr_open,
+>  	.close			= xr_close,
+>  	.break_ctl		= xr_break_ctl,
 
+
+
+Thanks,
+Mauro
