@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B2D3268BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 857D83268BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231494AbhBZU2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:28:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
+        id S231435AbhBZU2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbhBZUTA (ORCPT
+        with ESMTP id S230420AbhBZUTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:19:00 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EA6C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:18:20 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id i14so5023994pjz.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:18:20 -0800 (PST)
+        Fri, 26 Feb 2021 15:19:04 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0452C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:18:21 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id jx13so3165411pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:18:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=FP++fkW38doZ9W2MYsX+Ulsxt6WryiBxofgzcF/5/4U=;
-        b=Pu588gcoreQtwND83Deks/i9eB0usYHVKKnptjesTTx20IEpTyioW58+m/4Sgi/Cga
-         ToQuxUfrD6KNDYF58y42Qfe7mDyf60sQ9QGyT4tHT6zeVsChJ1E1sscoKdKnE+U28/gb
-         ZD7zBxAt4YIjYEf3dE+6k6FS/2kaWF9smvxp9cD9mOiuW/g0R/yjnUYD0hvlOu4SoPOu
-         hac7YWq5b0tnnak9mMLatdaiinTs4xmzPC0vcMpu+8LcDAE/qurvRk7XoiljdaXejB7q
-         4PJ7VBngaas9LwXmIRz3aQq4srO7QQ5e8+rvuRVVEPglJ3lNThs7iVTrQDOeSt7qlyb5
-         Pv8g==
+        h=subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=9E+CJGi9vbnEQTKM+ByNuYS5mQQ+2hX085/dBrdX5hI=;
+        b=eF0N998zDZscF98K/U6KhV/DH/lPR6SR4RV0yhiLLSA1L1B+bsfUSASoBRA24ZBPxi
+         9YHsHI7STyER7wx8VXHr+pXZiDyeyEFexER1GjWJpW9+RkC9gc0NEKN9c/TxELvKKb6q
+         N0eUIE3mxU66D/6Z+Qg+Usy0C3OfxqxCusn3UEvtAEEsHMPC9CENxdyNzpLUs/DE1tGL
+         TxwO3xig1gv3gSpLs7K6ZF8XThlVlazBd9QNYEEGElv8KDhjDhNKm22QONS1pJx2MXG3
+         Ri+tY+LYl1sH8hLOR2txXP0Wvn+8UpgIfTUZIFteH5z1pKqgxRJmdEk3VSS0RJ3Hx1Fy
+         8dFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=FP++fkW38doZ9W2MYsX+Ulsxt6WryiBxofgzcF/5/4U=;
-        b=o1fup9EuOEURuVCs12Pa0WivElx2DIl8I6wU4JOabLdoLtAOsfrf/WLg4jM/Duyalg
-         c5RY/KRAnsuwB48V0umSdonnZNOpmmVDsn153TmOCk0SPhSeDRlbQzkjML77qKioY7ZA
-         mz+EscNscnZXz5ce2jPsaGCum6hhk10GF6uPMaFlFfalFPmcxcEd91cG3MKcc76piAIX
-         xqs+3YgV8zozchanLSMbrucnqLmgfYkivY41W/qmVVBLBVkSo4ejzVtSbBJXojBZ3rNf
-         6BWq4f1S4KFjfhTg1hm8Qs0PW0eHW3QQZQUxgwLz3Ghw0LQbyGiULz+QLAbsprJsy43H
-         uaHQ==
-X-Gm-Message-State: AOAM531LXx+8jsA1dYMwdWPS1CBrid3PNyb1SNdnpHyv9yt48jceASvq
-        Pe12nrxPQsFNRkltj6VqMp+rOg==
-X-Google-Smtp-Source: ABdhPJz2k7Wd54A2UtRRtpS+NGvOx76/1827VyL9ji5paADxoZbNJx9OLEmXkc7EX4mOqAmkNY2DqA==
-X-Received: by 2002:a17:90b:1910:: with SMTP id mp16mr5067925pjb.0.1614370700158;
-        Fri, 26 Feb 2021 12:18:20 -0800 (PST)
+        h=x-gm-message-state:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding:cc:from:to;
+        bh=9E+CJGi9vbnEQTKM+ByNuYS5mQQ+2hX085/dBrdX5hI=;
+        b=bSskFpZkMg93RDvv9jVSN87vR0pxILP1aZ6lv6g4bmOGC2sDLjO5H72+sUAaWvKYpx
+         NaHEdfmeDScVCrnhkY2DuXdSROG/JxiMvHkiwjCr4yQabhMTiRg5rh7NxNJ0jAAWxwB6
+         0d6w6jJn/1r/hBTmT1LX3DoBZw8QGhwEnvceF5XGlBr+qEE8bINeNXuKtl8VHTgD2Zpa
+         6NTItWsuGWqLDfLFKwobaBixSxnplIsirdge/kumStW6e8e2IosYhYocWg0O/3psGUXe
+         SuAsYnKybfckkNPiH1lLmsS02wTCXvW/WarqRpa07UFvHiGgHrdgrx0IbizoqdPNeWzU
+         caQA==
+X-Gm-Message-State: AOAM531D6vDB30Do1FtG+8IzLQjunq++k2hROMHenkZfRVUDUDRwUuNH
+        aZpAubgIauK5pbYuMko4I4F3Bg==
+X-Google-Smtp-Source: ABdhPJyMDe4rbtveTYgncBcjGF3qz45nqxfrUYyHXvTYLo0tBDml/VM1sEKxYwUxRH3SrFB4qZpRcw==
+X-Received: by 2002:a17:90b:1213:: with SMTP id gl19mr5026942pjb.107.1614370701536;
+        Fri, 26 Feb 2021 12:18:21 -0800 (PST)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id y6sm672139pfm.99.2021.02.26.12.18.19
+        by smtp.gmail.com with ESMTPSA id e24sm9202856pjr.13.2021.02.26.12.18.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 12:18:19 -0800 (PST)
-Subject: [PATCH 1/2] mm: Guard a use of node_reclaim_distance with CONFIFG_NUMA
-Date:   Fri, 26 Feb 2021 12:17:20 -0800
-Message-Id: <20210226201721.510177-1-palmer@dabbelt.com>
+        Fri, 26 Feb 2021 12:18:21 -0800 (PST)
+Subject: [PATCH 2/2] topology: Guard node_reclaim_distance with CONFIFG_NUMA
+Date:   Fri, 26 Feb 2021 12:17:21 -0800
+Message-Id: <20210226201721.510177-2-palmer@dabbelt.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+In-Reply-To: <20210226201721.510177-1-palmer@dabbelt.com>
+References: <20210226201721.510177-1-palmer@dabbelt.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc:     peterz@infradead.org, srikar@linux.vnet.ibm.com,
@@ -67,39 +69,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-This is only useful under CONFIG_NUMA.  IIUC skipping the check is the
-right thing to do here, as without CONFIG_NUMA there will never be any
-large node distances on non-NUMA systems.
-
-I expected this to manifest as a link failure under (!CONFIG_NUMA &&
-CONFIG_TRANSPARENT_HUGE_PAGES), but I'm not actually seeing that.  I
-think the reference is just getting pruned before it's checked, but I
-didn't get that from reading the code so I'm worried I'm missing
-something.
-
-Either way, this is necessary to guard the definition of
-node_reclaim_distance with CONFIG_NUMA.
+This is only defined (and useful) for CONFIG_NUMA, but isn't
+conditionally declared.  This makes users a bit more of a headache to
+track down.
 
 Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 ---
- mm/khugepaged.c | 2 ++
+ include/linux/topology.h | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index a7d6cb912b05..b1bf191c3a54 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -819,8 +819,10 @@ static bool khugepaged_scan_abort(int nid)
- 	for (i = 0; i < MAX_NUMNODES; i++) {
- 		if (!khugepaged_node_load[i])
- 			continue;
+diff --git a/include/linux/topology.h b/include/linux/topology.h
+index 7634cd737061..15f02281bdf0 100644
+--- a/include/linux/topology.h
++++ b/include/linux/topology.h
+@@ -73,7 +73,9 @@ int arch_update_cpu_topology(void);
+  * *improves* if allowed to reclaim memory and load balance tasks
+  * between NUMA nodes 2-hops apart.
+  */
 +#ifdef CONFIG_NUMA
- 		if (node_distance(nid, i) > node_reclaim_distance)
- 			return true;
+ extern int __read_mostly node_reclaim_distance;
 +#endif
- 	}
- 	return false;
- }
+ 
+ #ifndef PENALTY_FOR_NODE_WITH_CPUS
+ #define PENALTY_FOR_NODE_WITH_CPUS	(1)
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
