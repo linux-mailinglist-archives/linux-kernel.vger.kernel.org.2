@@ -2,146 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6E7326A72
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A4B326A74
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhBZXi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 18:38:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhBZXiZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 18:38:25 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A145FC061574;
-        Fri, 26 Feb 2021 15:37:44 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id u4so12523269ljh.6;
-        Fri, 26 Feb 2021 15:37:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KnW56IPe7cM7eCh2ZZGsMpvgk4gpaWE3V70afPWQ50k=;
-        b=YE+hUqzismWFru2vRxe7H4amenr3nAgMT4V55nxIYBZbbns49bTGWnKxj84xpqLGqp
-         vDUUr9hJZxsIKNKGaUjMQCncBuh5q1yzFWpSAYUsq0sM+FbT7l2ePWtDLGl/VmH2du08
-         HJ72ZJgwQpbaXfG/tc8PaZmbXYsNKrOzRDcH8mckQ2WmxRXd5IjuBJWu1Kw4+vd6ZBU2
-         9O7VdxHrpiET1aqlNCHOptCEJQeou0n6NwYa4AvumLkHBPBE6e5FsoNjw5/R+fwym5Qn
-         iahbYkqrdnr++3yAJasmTATytKQOrdw9x90vlEo+gNTE+oaoRhdELCMzbzfkL6Eqi0NC
-         v2xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KnW56IPe7cM7eCh2ZZGsMpvgk4gpaWE3V70afPWQ50k=;
-        b=ehVL7Urm2ZU3lbS+TUzOGQZ4MoKUZt9olZnOl5TXVgPO6cBJJHRewxL1sIwx8vosCV
-         3MAEVlCT+yvthluOkQiErri5NcuiFKQNrwZVVfNSLzpm4+8kGlphFvhfAS85e/Iz+e3k
-         Y7H2teeV3uHlN7Y4UcE0ZmSYJany3l7W2Ekq0m48ANif+a5CQZ+zy36Wi/BjYdPdTvTw
-         xBoI1jhnE1NgHtE52JYdnLbJ9K5OiJkuOe8ohhgUJK9h8J8rAjsqBW1A/w5YS4K/uV7z
-         tJry8VUsgWyw3nY8MLLmESOmhGLje6lCx32LuJbh4sGJOD12C6Bi/+p/0hrpz8dpEEtB
-         wZ0Q==
-X-Gm-Message-State: AOAM530HSG5eSD8N+JFuPrpA2rJBTW5XXYEqWYEsG9bBuyiJ/9ZZKIHb
-        QxNU53zO7DV/10IgTgzD1YM=
-X-Google-Smtp-Source: ABdhPJzLDNSCEzlv70+y8aDIfuSk8FCNPbQe8YqbYU1grfhDTgx934bVSuXiss8tvTLFz5V0Lwtxaw==
-X-Received: by 2002:a2e:3a14:: with SMTP id h20mr2852883lja.168.1614382657954;
-        Fri, 26 Feb 2021 15:37:37 -0800 (PST)
-Received: from localhost.localdomain ([94.103.235.59])
-        by smtp.gmail.com with ESMTPSA id c13sm1590068ljd.4.2021.02.26.15.37.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 15:37:37 -0800 (PST)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     hverkuil@xs4all.nl, mchehab@kernel.org, linux-media@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com
-Subject: [PATCH] drivers/media/usb/gspca/stv06xx: fix memory leak
-Date:   Sat, 27 Feb 2021 02:37:31 +0300
-Message-Id: <20210226233731.614553-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230010AbhBZXkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 18:40:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229698AbhBZXkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 18:40:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E6F9B64F13;
+        Fri, 26 Feb 2021 23:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614382809;
+        bh=KsaD2a4pUvntQwIV9RRK+DaCGMzkSgC/qt8mdxixQV4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ODYqlGL42+ILOxgO75Zw+bHW1FN1CXpEH5orTw+6cIiOUdr4EJCzIOnmmvH4g+MnS
+         LB+IIoPA5Vv3tkYqMahdZGdZNv2qpy7aGo+VssnWBlz7EOn43hC3qbWs7EItdDMrqq
+         tsLW7WROuNU5iqXDDfLEVra/m3FKZhDV3duM1JvANR1X1bbTXbevfivzZc5gLpEw+S
+         fAXqEn7VHtHKQArwR2aUSUfnQhsXHuqBdXN5sHwxdUGyioNDeTFqXqoDO2NuA0E18X
+         r70q4BZ1VFFhzklPsDVTtnnnIYif5IvXOY+cO752lZZmwIvok1xAhb8cFb8454YX/r
+         5WDIb+ZachwDA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DB94660A14;
+        Fri, 26 Feb 2021 23:40:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: dsa: mt7530: don't build GPIO support if !GPIOLIB
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161438280889.26339.13789793775995873719.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Feb 2021 23:40:08 +0000
+References: <20210226063226.8474-1-dqfext@gmail.com>
+In-Reply-To: <20210226063226.8474-1-dqfext@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linus.walleij@linaro.org, arnd@arndb.de, landen.chao@mediatek.com,
+        sean.wang@mediatek.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported memory leak in hdcs_probe_1x00()[1].
-hdcs_probe_1x00() allocates memory for struct hdcs, but if hdcs_init() fails in gspca_dev_probe2()
-this memory becomes leaked.
+Hello:
 
-int gspca_dev_probe2(struct usb_interface *intf,
-		const struct usb_device_id *id,
-		const struct sd_desc *sd_desc,
-		int dev_size,
-		struct module *module)
-{
-...
+This patch was applied to netdev/net.git (refs/heads/master):
 
-	ret = sd_desc->config(gspca_dev, id);
-	if (ret < 0)
-		goto out;
-	ret = sd_desc->init(gspca_dev);
-	if (ret < 0)
-		goto out;
-...
-out:
-	if (gspca_dev->input_dev)
-		input_unregister_device(gspca_dev->input_dev);
-	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
-	v4l2_device_unregister(&gspca_dev->v4l2_dev);
-	kfree(gspca_dev->usb_buf);
-	kfree(gspca_dev);
-	return ret;
-}
+On Fri, 26 Feb 2021 14:32:26 +0800 you wrote:
+> The new GPIO support may be optional at runtime, but it requires
+> building against gpiolib:
+> 
+> ERROR: modpost: "gpiochip_get_data" [drivers/net/dsa/mt7530.ko]
+> undefined!
+> ERROR: modpost: "devm_gpiochip_add_data_with_key"
+> [drivers/net/dsa/mt7530.ko] undefined!
+> 
+> [...]
 
-Reported-by: syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Change-Id: Ia198671177ee346de61780813025110c7c491d7a
----
- drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+Here is the summary with links:
+  - [net] net: dsa: mt7530: don't build GPIO support if !GPIOLIB
+    https://git.kernel.org/netdev/net/c/63c75c053b41
 
-diff --git a/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c b/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c
-index 5a47dcbf1c8e..24df13b33a02 100644
---- a/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c
-+++ b/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c
-@@ -485,7 +485,7 @@ static int hdcs_init(struct sd *sd)
- 					   stv_bridge_init[i][1]);
- 	}
- 	if (err < 0)
--		return err;
-+		goto error;
- 
- 	/* sensor soft reset */
- 	hdcs_reset(sd);
-@@ -496,12 +496,12 @@ static int hdcs_init(struct sd *sd)
- 					     stv_sensor_init[i][1]);
- 	}
- 	if (err < 0)
--		return err;
-+		goto error;
- 
- 	/* Enable continuous frame capture, bit 2: stop when frame complete */
- 	err = stv06xx_write_sensor(sd, HDCS_REG_CONFIG(sd), BIT(3));
- 	if (err < 0)
--		return err;
-+		goto error;
- 
- 	/* Set PGA sample duration
- 	(was 0x7E for the STV602, but caused slow framerate with HDCS-1020) */
-@@ -512,9 +512,13 @@ static int hdcs_init(struct sd *sd)
- 		err = stv06xx_write_sensor(sd, HDCS_TCTRL,
- 				(HDCS_ADC_START_SIG_DUR << 5) | hdcs->psmp);
- 	if (err < 0)
--		return err;
-+		goto error;
- 
- 	return hdcs_set_size(sd, hdcs->array.width, hdcs->array.height);
-+
-+error:
-+	kfree(hdcs);
-+	return err;
- }
- 
- static int hdcs_dump(struct sd *sd)
--- 
-2.25.1
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
