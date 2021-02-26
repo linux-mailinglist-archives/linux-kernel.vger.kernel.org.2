@@ -2,94 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64349325C80
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 05:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE316325CBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 05:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhBZEWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 23:22:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhBZEWK (ORCPT
+        id S230010AbhBZEua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 23:50:30 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:46166 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229949AbhBZEuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 23:22:10 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4BFC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 20:21:30 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id t5so6087160pjd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 20:21:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yT5v0bJoOqV8v/vtReh7u5jHnFH2I4PrE3kiKoF6nh8=;
-        b=TCo5ef0l9pGX/3+phqBt2AmFexoawm5IrMZBba930eJsMgBquLxMDCMmV2HIamMu3Z
-         x4PEOyaUJRiZ6/r0XCjVF09eh+ekY7y/IB26sxxwUOb0xPRACJ9P8uEPQmrcs+fp5KGG
-         uH0ehUBJSpA8sEswHgD//45ybEZapp/2ZJCkRhF2MUTpTbuukZ8xl81BhYEzMylywc1s
-         g/8skPTW+I2bz+YFiFAlGygkyRFlvGxt4uMpAKCDeMPcRF7wrvl51EsoOAHF55srlO5t
-         PBklESnRyCydLXsY17gQCtyPshpPYEUvfifjdlo72Igw1chJiuMub3mQOGvReQRvXBYi
-         YvBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yT5v0bJoOqV8v/vtReh7u5jHnFH2I4PrE3kiKoF6nh8=;
-        b=FjaBwiqzz1ojd7R/SAgcrcYAawN6ppYgWSSZ3WxRZQbrli1sl0mufhNYSU7bzkSNqI
-         ZEKvQd3lVyByz3w+9EIK1R1nIiKsw2Nyh7odKlhokc4OO16JSyhjJD6A+z8xTdMT2GOB
-         G5eYhNqeuAH/d5c2IFH3Wn9v5AQCBbMELoc2YSaAnU7a33IShVUZGSZT/F6Gc/GuRAYt
-         8K5EmktzLjgU1W0j0WohWBSAN6T8Ma3yWy8hkkNXjdhvIpS2JTMn0XwBwhyHIXO8X7MD
-         ZZaWWB9xCPTO7nA+DhSA/9N18ztuDPd3z2AG5lUUqlGofsEOBe6S8LGd7ilUHaTFUahC
-         C3QA==
-X-Gm-Message-State: AOAM533vUaNzWKjptJFX5W3txFv1aDHEcTMeP2CnMNGOuiYDiWd/XmNf
-        0Q1umIuDlp/sYtWbsajasGHJZA==
-X-Google-Smtp-Source: ABdhPJy6rpH04MW45+IkH5QmDPPkYhMH7nMGGmDYCvUJMjRoL5FAIYqfO+UzNeKxaccOIDQj1SRyYg==
-X-Received: by 2002:a17:90a:7bce:: with SMTP id d14mr1427400pjl.139.1614313289749;
-        Thu, 25 Feb 2021 20:21:29 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id p19sm7361194pjo.7.2021.02.25.20.21.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Feb 2021 20:21:28 -0800 (PST)
-Date:   Fri, 26 Feb 2021 09:51:26 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
-        wsa+renesas@sang-engineering.com, wsa@kernel.org,
-        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
-        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
-        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
-        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
-        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com,
-        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH v4] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210226042126.rix5gjxqrazb6sao@vireshk-i7>
-References: <7c5e44c534b3fd07b855af22d8d4b78bc44cd7a4.1602465440.git.jie.deng@intel.com>
- <20210225072114.iwmtaexl3dkihlba@vireshk-i7>
- <a580de35-787e-4024-3c80-0a101b1a6d3b@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a580de35-787e-4024-3c80-0a101b1a6d3b@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+        Thu, 25 Feb 2021 23:50:10 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210226044926epoutp0410f4f47c7bf4d1876aadd333a6389a50~nMuiaiCAw1176011760epoutp04W
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:49:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210226044926epoutp0410f4f47c7bf4d1876aadd333a6389a50~nMuiaiCAw1176011760epoutp04W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614314966;
+        bh=tsfvXmtuiZ1/GT/n6PV0+9VfvhaOw8nxp2MALJ8W0P4=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=GxVwhlsp5pF1elxg+1Hsw9H+qyAvp5DSstUQcf+YSOM+TodiB9O9NWS0GzJzdirUJ
+         Y1M1TXppkRWAjdk7nFNgbykBOGQXuyTDYR5EXtCitx8HeoOw8oAhaoetQMbFGTZ8t8
+         MDp7uTL6Zlvoo69RKRbUOh2WbNx28Xmbwo9snRDM=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210226044925epcas2p2d8333adda2ed421d90fc60c5cee6a633~nMuhr8sYT1660116601epcas2p2a;
+        Fri, 26 Feb 2021 04:49:25 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DmxyW73Ncz4x9Q8; Fri, 26 Feb
+        2021 04:49:23 +0000 (GMT)
+X-AuditID: b6c32a48-4f9ff7000000cd1f-1f-60387dd355da
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1E.15.52511.3DD78306; Fri, 26 Feb 2021 13:49:23 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: Re: [PATCH v24 1/4] scsi: ufs: Introduce HPB feature
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Bean Huo <huobean@gmail.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <50f8a0963e887542a467e690b6d406675279a4e5.camel@gmail.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210226044923epcms2p1fa387ff8d1eaac09a8cce146d63ea205@epcms2p1>
+Date:   Fri, 26 Feb 2021 13:49:23 +0900
+X-CMS-MailID: 20210226044923epcms2p1fa387ff8d1eaac09a8cce146d63ea205
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEJsWRmVeSWpSXmKPExsWy7bCmue7lWosEg+3fjS0ezNvGZrG37QS7
+        xcufV9ksDt9+x24x7cNPZotP65exWrw8pGmx6kG4RfPi9WwWc842MFn09m9ls3h85zO7xaIb
+        25gs+v+1s1hc3jWHzaL7+g42i+XH/zFZ3N7CZbF0601Gi87pa1gsFi3czeIg6nH5irfH5b5e
+        Jo+ds+6ye0xYdIDRY//cNeweLSf3s3h8fHqLxaNvyypGj8+b5DzaD3QzBXBF5dhkpCampBYp
+        pOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAH2opFCWmFMKFApILC5W
+        0rezKcovLUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQwMDIFqkzIydhwcwVLwS2W
+        inNPxRoYFzJ3MXJySAiYSFzYto+9i5GLQ0hgB6PE1R/HgBIcHLwCghJ/dwiD1AgLOErM3XaQ
+        EcQWElCSWH9xFjtEXE/i1sM1YHE2AR2J6Sfug80REfjFLLHr4XImEIdZYCmzxOqnDVDbeCVm
+        tD9lgbClJbYv3wrWzSngLnFq3womiLiGxI9lvVD1ohI3V79lh7HfH5vPCGGLSLTeOwtVIyjx
+        4OduqLikxLHdH6Dm1EtsvfOLEeQICYEeRonDO2+xQiT0Ja51bAQ7glfAV2LL5s9MIB+zCKhK
+        XF+sAVHiIvHrYDdYObOAvMT2t3PAgcIsoCmxfpc+iCkhoCxx5BYLzFcNG3+zo7OZBfgkOg7/
+        hYvvmPcE6jI1iXU/1zNNYFSehQjpWUh2zULYtYCReRWjWGpBcW56arFRgQly3G5iBCd2LY8d
+        jLPfftA7xMjEwXiIUYKDWUmEd/M/0wQh3pTEyqrUovz4otKc1OJDjKZAT05klhJNzgfmlryS
+        eENTIzMzA0tTC1MzIwslcd4igwfxQgLpiSWp2ampBalFMH1MHJxSDUx6Gdf553v6aXOt2CB9
+        OcI4INuaX2HtJKU1E5bmf+6eG33Nt8/G9FLdvcYV9/Zd4Tx5qejUNua5S8NPW6yRrbTefXB1
+        yMSj9303bnt441l4eU7DQrmb/YHtz2N4tcRNNAoXZmQrLF6hWm63e8WuN588fJR/J1yKWaZh
+        k6i+tHzFtEkv7pt94IoJePz6vWi0wq9zZaF/tvndbhZezrnwtOmxc/8nqTFN6N+6uObDnV+/
+        FT0jT0y71rTzn5JAQWWs6Nc85uvKy+qVd05mOPvixH/vSW3nJwlMjpfQsX/nf5yvuzilyUBo
+        8pt3BVcqTj1kZzdzY++eZMd6k3HlO8FQZ68Vlkf3VLxW39pR/1zdTrBDiaU4I9FQi7moOBEA
+        3KNLFXUEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0
+References: <50f8a0963e887542a467e690b6d406675279a4e5.camel@gmail.com>
+        <20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p6>
+        <20210224045405epcms2p2d05f8563b1f121d2c2cc79b343e5af77@epcms2p2>
+        <CGME20210224045323epcms2p66cc6a4b73086621e050da37f12f432f0@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-02-21, 10:46, Jie Deng wrote:
-> This v4 was the old version before the specification was acked by the virtio
-> tc.
-> 
-> Following is the latest specification.
-> 
-> https://raw.githubusercontent.com/oasis-tcs/virtio-spec/master/virtio-i2c.tex
-> 
-> I will send the v5 since the host/guest ABI changes.
+> > 
+> > +void ufshpb_init(struct ufs_hba *hba)
+> > +{
+> > +        struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
+> > +        int try;
+> > +        int ret;
+> > +
+> > +        if (!ufshpb_is_allowed(hba))
+> > +                return;
+> > +
+>  
+> Here it is better to check "dev_info->hpb_enable", if HPB is not
+> enabled from UFS device level,  doesn't need to create mempool and take
+> other memory resource.
 
-Okay, now it makes some sense :)
+I will add checking dev_info->hpb_enable value.
+if (!ufshpb_is_allowed(hba) || !dev_info->hpb_enable)
 
-I am interested in this stuff, if possible please keep me Cc'd for following
-versions, thanks.
+Thanks,
+Daejun
 
--- 
-viresh
+> Bean
+>  
+>  
+>  
+>  
+>  
+>   
