@@ -2,448 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0C232606A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDF93260B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhBZJqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:46:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhBZJqH (ORCPT
+        id S230391AbhBZJ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:58:35 -0500
+Received: from esa14.fujitsucc.c3s2.iphmx.com ([68.232.156.101]:57830 "EHLO
+        esa14.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230439AbhBZJ4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:46:07 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D40DC061574;
-        Fri, 26 Feb 2021 01:45:27 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id c19so5668506pjq.3;
-        Fri, 26 Feb 2021 01:45:27 -0800 (PST)
+        Fri, 26 Feb 2021 04:56:25 -0500
+X-Greylist: delayed 478 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 04:56:09 EST
+IronPort-SDR: 30NIOz+v1U7CTutXgsRs+B3u20+2uEer2a+NbxzbQbCgp3zOsF28JaDmfwab+riwsUCo3Cmy2t
+ BmdEWl6zv+D28QlyiUHAASFe9UVQa8xOZ5DXlcn+zxdSue3o8Og2Lca4ur/AELapZRBx7HZa97
+ hNlDeei+QrQuiHCSnBdKXq2MwcZE34FX/0sfMKMa5oXr3xGeoWXyEXr7GrulQCvXeXe3W4dohn
+ 21BB81KHTJhiTKIkZRisyhpthSeW3fzCIKNb9TQJYnJ4j0mqtr3wQsmCkXpddXP2GyS9zFcI5r
+ Q9c=
+X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="26805831"
+X-IronPort-AV: E=Sophos;i="5.81,208,1610377200"; 
+   d="scan'208";a="26805831"
+Received: from mail-os2jpn01lp2058.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.58])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 18:45:48 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f1B7fr7M3/ILV0fyZLflcpt77M15UxdzvUFwAjHta8+BlGE9qrdyjctmG2J8CdoPvvY1EQtS+OmIfgy+6KrsnT9ylo6oobaZsl7vbAB0Gz5x+8G5u3YigbmwJplRhkTO2WT74OBg/ejS1nESeGuSv0UJcHFSR5pIeDFshettEunYtG9Ded2X53Yh9WUFhWB1J9jgcDE+rV+lNDGb+J/GW5Yo7DLjf8hV0GAQA70fD1LAgEMZmRXEnmtnFgdwLy8liBSLkeWoRxbIVdSyc+RB2si1W5JUvYmrxZ4m/7AM/8QWXS+ILsNEOekCeeH59ljkdA9otJQ4ma2KLoV1KFl4nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LJtXw0i4KVuKh0cTDpJQX59bhuFx0Wf4wSWTrGM2Asc=;
+ b=k4DYLD59EW4hLWo+37rtm4Ixhw4fDUq+UsisaYoL7GO7rtoSJVpwm8HM30lGlSA+9h4+/ke4AmnLjhAvV5GRyD5Fjpb+L8zyWHiRkY/LuRgi2GGH4LLx0volao+LW7zLLfhp7RXiOMD1v0KNXccle0ODEsWdG5dMh6MXXTSruwk8M+Sg1jEZGP7WXwFf76aVifyioxVLIgWZIvNN9CQ4nx2ynDEJ8XR3/08iCkuaWlnxRN198y0340fV697IYQDjm3LELtI4XHPUmfJq027YEKRtOCqLcBgHEB+IigsHvaBra6GCD3AHj0r2D33iOEF+H5DFPnHS7v1z1iN1zzFBUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7DB7rvwFqfFKue2IvxDTMhTNrw6PaagMofMVvcAa6HU=;
-        b=p0Aot7FaW4Ce3LBrUcexMec/PbNBrB5IcmyQGs17jbgmLWVovh2HBf5K4SC9dwaJZh
-         EGRQv5AfdVtN35wPpzlSmjJSzptgHQMuKad2zhAC5hyRMb+fPkes9gxEa/Nc87BqO3b+
-         Z89g7k9ZplPfC1URrY0/TxgFk9S6g9omPgXH+pKpc6OnZoJG6iJ40AMKDZMJ2fJHUGDZ
-         GJTjwmoHAVQ/0+DuTpyFI74sjv8KZBvwTUQYXn0WnSmrzo60yBM9woNIXJ1eIX3i0AHd
-         sp+eMOc6tdCTwWFJvuE6gbduTNEEPJWyA+ewkuh87TtWiW5W2QFIQseoBoctJS2yzI0h
-         r0dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7DB7rvwFqfFKue2IvxDTMhTNrw6PaagMofMVvcAa6HU=;
-        b=fd8716TOU8Vi6Ww6NtNeoMEI2P+UE2IEcUNUHPq9/uPiz3XpuiEgL2E9fiIbBgWraj
-         gJeuyyKcfV+qf/18uEYzrxp46YkMzzlJmorh89Luw/Sq9JR1ryvR7jUHtJ69YRO7LeQP
-         dZKdByz4zCk3YKzSBYs7K+OV1+EGLJuaklGDh2BKZyKSENDGS7InYHt/yUkiyY9Xs3Wa
-         RGh4KBjJH6GoFLsKeCUaeLUEs0SPxzmNgB+wT/iZRJUEW7P2cvXStnOZVqWyemKlWGgJ
-         9NEnu1ofANqqv3FovRD0z3DBdilMXpo06WarqYgWc+fqYPtNqGmuMTuagM+W/xmePpsT
-         aCNQ==
-X-Gm-Message-State: AOAM530Kg7un1S0FqdPbMd3K+scaVynkkeP2wLknZIrlUwIIK7QKGIH5
-        P+HCfa5Pzicsf9MR16pPsgM=
-X-Google-Smtp-Source: ABdhPJwLEYXeyG+fYgvSt/A9bQCuOy63RFQkkH4t6g2oTzT7T1NdTW+zmjPkSVKhDdEhO3682rO0/A==
-X-Received: by 2002:a17:902:e8d3:b029:e3:cb77:2dde with SMTP id v19-20020a170902e8d3b02900e3cb772ddemr2302489plg.78.1614332726685;
-        Fri, 26 Feb 2021 01:45:26 -0800 (PST)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id d16sm8201246pjd.25.2021.02.26.01.45.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 01:45:25 -0800 (PST)
-Date:   Fri, 26 Feb 2021 18:45:20 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v7 2/2] counter: add IRQ or GPIO based counter
-Message-ID: <YDjDMBfWwdImiZxY@shinobu>
-References: <20210226090830.10927-1-o.rempel@pengutronix.de>
- <20210226090830.10927-3-o.rempel@pengutronix.de>
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LJtXw0i4KVuKh0cTDpJQX59bhuFx0Wf4wSWTrGM2Asc=;
+ b=MFGrpZWey4OOwR89I8YAzKfjm06LGX0gbK4JGWkyhffYzZIa9Ronj62yAB7zlQGmZUOXIrROPbs+CKNAooUFLqQl2WHTQwBVDCOlN/lwoOcu84+TlBLN+OoWbgmgV2inCZ5TbOGtXMkRHnCT12Nf2RD2APWVbbBUjsI6kSTlyms=
+Received: from OSBPR01MB2920.jpnprd01.prod.outlook.com (2603:1096:604:18::16)
+ by OS3PR01MB5816.jpnprd01.prod.outlook.com (2603:1096:604:c4::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Fri, 26 Feb
+ 2021 09:45:46 +0000
+Received: from OSBPR01MB2920.jpnprd01.prod.outlook.com
+ ([fe80::7de7:2ce8:ffc0:d098]) by OSBPR01MB2920.jpnprd01.prod.outlook.com
+ ([fe80::7de7:2ce8:ffc0:d098%7]) with mapi id 15.20.3868.032; Fri, 26 Feb 2021
+ 09:45:46 +0000
+From:   "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+CC:     "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
+Subject: Question about the "EXPERIMENTAL" tag for dax in XFS
+Thread-Topic: Question about the "EXPERIMENTAL" tag for dax in XFS
+Thread-Index: AQHXDCQnpTImuSbsuEuKD1BHo1YY+g==
+Date:   Fri, 26 Feb 2021 09:45:45 +0000
+Message-ID: <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+In-Reply-To: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=fujitsu.com;
+x-originating-ip: [49.74.161.241]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f91ecbdd-db6b-4d96-5caf-08d8da3b4ab8
+x-ms-traffictypediagnostic: OS3PR01MB5816:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <OS3PR01MB5816BC74D5D1DDD232082EEDF49D9@OS3PR01MB5816.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9Q8rtszZWkgDFHOR4Q7xcuYxtpqq19TxUr/I2JQRudOKHQCslSZQYyEqexZtGEqdDdTrFmCgSmbgVpIxQcS3YieDDlGiWSUHQlycHW0SrBSBr89RRugwihofN7nCsuE4AbBf5npxqkrP+sUR6jUDlOuU4N/w8v/Mky7puaAxFoK04Wa/yONDJFgJsa+uToZPOQWCnAmzjP8oX5uj495rEB4uOX6FwzAmW4fk9G/6uPthe5cH8D6aH2d/bjszkmqRfZQnbCbibKqb8LbCBHUdyZ6TJGoAi9ihiQwkCw6aqR65sbMbdNW0jEuBdiPF2w4sPIM3u8zJyzbqR8GfqahMSJ9yP17o2CzQu8BUXHueVdWz9jaquaAAU4IVY8HL2NTHgp5kwkmFUh1DgQqT6mrxjBuizwmNesdETU3j7Ynvf80PbEzfnlWrhKYe88xqmNdxeJBIU/xV9dOwnI43+4FlfzAcT3A8ChMkvYyVMTk/UPx/qY8zW0bJR8kbR2NdoHFxIMcyfC+XbAa1ZZRbKJMCfQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB2920.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39860400002)(396003)(366004)(66556008)(52536014)(9686003)(7416002)(66476007)(55016002)(86362001)(64756008)(66946007)(66446008)(110136005)(83380400001)(71200400001)(316002)(107886003)(85182001)(7696005)(4326008)(186003)(8936002)(8676002)(26005)(6506007)(33656002)(4744005)(5660300002)(54906003)(2906002)(76116006)(91956017)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?SHUrakJTcU5DS0pvVUw3MjByNXlVc3QzZG9pdGhsQUdaRTZKRDlZbDN0MGNG?=
+ =?gb2312?B?TDFKaWZVNlk4ZTVMb1lNa01GN0NiR0xuaDVkWGkvVWZnYktuakR4V0hwQlhT?=
+ =?gb2312?B?dWlya3d5cEI3bXIzQ2RzYVFld01qTVRUaEJpRnd5UC83LysyQVF3SnBBbzdy?=
+ =?gb2312?B?RXI3dEdOYUE4MzB3SzQ2VXB1bWdMbFJuUm4wd0lQVURVbHViL2gwN1RycTEv?=
+ =?gb2312?B?VEc0UVc0NitoSXlRQVNwRm5sODgvcUhFVFRHSkFHL0VHUnA1TERzN3c3Tm0y?=
+ =?gb2312?B?SWF0d0xGZ0V1Zm1lYXdIZmgyVldnY2hHdUd0NVFYT2cxdUhzVmRvTjBVNU9u?=
+ =?gb2312?B?QTBKTXhLZmZNR3FkVUxwQ1BieEEvQWpXcU80dUtoWmpPRDdOZ0JjRVJ3R05j?=
+ =?gb2312?B?MnRTVFZqYUpIMXM5UlFtQUFtVEgvbEVOUnROUVRnc0J4WnVDdHFPVUpvTnU0?=
+ =?gb2312?B?bGwyUDZyWWlPVGlwdEI3czk4cTNvRHhwdFlROCtFWURyNWI5Q0x3UkdsR3M5?=
+ =?gb2312?B?OXhvZnJSeThCZmFuY3lOQyt2WjduZmRSVjBQay9VRjJaL1NtYVBidjF1QXlI?=
+ =?gb2312?B?R21taWM2d1VqcGthUExkemU0MjVOeFhwb2VaU01UZzFuTHJySDVzV2JheFVH?=
+ =?gb2312?B?eHJ2MFNkdktCUm8yU1p2UUx3Y3licE9UdW1WNEwvSDRZb2h0MElxNE8vdk9V?=
+ =?gb2312?B?c1g2Yzc2ZHhRcHpINm01c29xVk9SZk8zZ1psdTY5UEdLdUdrTFlBMmdvTHFq?=
+ =?gb2312?B?a2VBc24yQjlhZmg1ekZCL25RQWkrUksxMnVHMWJYaFpIRlV3dDYxeHlmbW9X?=
+ =?gb2312?B?ekpJT2FuY3NnaDNDNDhuTUkvQ0pQQjduVkExWGh2N1VQMXpxZHIyeFdlcytE?=
+ =?gb2312?B?OVVNOUo0WkpKR0RHQkNYRDU0Ulg5MDFMSkJlZm9EbTcxOWNSUll2MEgrM2tC?=
+ =?gb2312?B?ZzdNV3AwT2diUHVrMWlra0FoZU03MHFkVkJ2S2VnY3RoL1BWSTJabXRRVWRq?=
+ =?gb2312?B?ZWNJb3VzbFZmZ0pVRE9RQTYyNFN0VmNTWEszMWJBS3pGenFSay9EaTZtb3Nz?=
+ =?gb2312?B?T2NRbVRNcHNtejNJLytZeEF2eitSS3FEcVMyYWdBcVIvcEl2TysrdFJreTZW?=
+ =?gb2312?B?dzJpRGc2SVY2cHJEWmpid01XM2pQOWtDa09NdkdEMzlJQlVrQVV1Vlpxakxy?=
+ =?gb2312?B?VzBITytEM0VoZEhsSWd0MEt1OE9XSzdXeWxtc2FtVzhmWDlGVlpQcFZ5bVBW?=
+ =?gb2312?B?cTdUQ0VBKzltek9LcC81YlJFWnV3Q3VyRkFnaXZrYWFNcmU0ZlNlMkxvRWNi?=
+ =?gb2312?B?WFZJQjlPS0FORldkRTRVcFpUbHhkSWNXekFjeXlqclRqRFBub3MwWjM1Z2dn?=
+ =?gb2312?B?WXVxOEFjc0ZkL1dqYzd5MVhmb2xSajFNWEl0QTJadG50eHhPblo4NHFqRjh2?=
+ =?gb2312?B?THdvZXNDNytCQ3I2aVhzdXlheXdJUE1iZUNvaGxTYmRkZnVHSEFlS3JuQ2NT?=
+ =?gb2312?B?OTk4MGcrclc5VDF2Wm9TS09OYk9vUnhHc002a3Vlbk8wVXRIWUE4dWxRaEFF?=
+ =?gb2312?B?VzRTSWd4SjNUUndrTG5tY2tXckUvWWNxS1QrL1oySmRrMDE0NkQ0NzBFd0Jw?=
+ =?gb2312?B?bitudUdsZGs2WmxLbFY5YkwvTFRCTU1lc05Bc2tWdjBSV3lLbkErRFppTGlS?=
+ =?gb2312?B?cUNFRDlnWFJEK053eGFwRm1SLzlCbVdPWk1GZ0ZaZEQ3UVRmbmNGMzIzSXlW?=
+ =?gb2312?Q?8k/mqON7zWkH4Xlfcg=3D?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="H1nUU+bGlEdYHmqn"
-Content-Disposition: inline
-In-Reply-To: <20210226090830.10927-3-o.rempel@pengutronix.de>
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB2920.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f91ecbdd-db6b-4d96-5caf-08d8da3b4ab8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Feb 2021 09:45:45.4003
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: otIJH1RssPktwNRpAw+JDESOzIwYfxsevw0arpYCB3GzBsQoYWknNqOGh9az5QcVQTA5Aaz1oU9DD2tOSyBUlA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB5816
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---H1nUU+bGlEdYHmqn
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Feb 26, 2021 at 10:08:30AM +0100, Oleksij Rempel wrote:
-> Add simple IRQ or GPIO base counter. This device is used to measure
-> rotation speed of some agricultural devices, so no high frequency on the
-> counter pin is expected.
->=20
-> The maximal measurement frequency depends on the CPU and system load. On
-> the idle iMX6S I was able to measure up to 20kHz without count drops.
->=20
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-
-Hi Oleksij,
-
-We're almost there, but I spotted a couple of mistakes below.
-
-> ---
->  MAINTAINERS                     |   7 +
->  drivers/counter/Kconfig         |  10 ++
->  drivers/counter/Makefile        |   1 +
->  drivers/counter/interrupt-cnt.c | 243 ++++++++++++++++++++++++++++++++
->  4 files changed, 261 insertions(+)
->  create mode 100644 drivers/counter/interrupt-cnt.c
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a50a543e3c81..ad0a4455afec 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9217,6 +9217,13 @@ F:	include/dt-bindings/interconnect/
->  F:	include/linux/interconnect-provider.h
->  F:	include/linux/interconnect.h
-> =20
-> +INTERRUPT COUNTER DRIVER
-> +M:	Oleksij Rempel <o.rempel@pengutronix.de>
-> +R:	Pengutronix Kernel Team <kernel@pengutronix.de>
-> +L:	linux-iio@vger.kernel.org
-> +F:	Documentation/devicetree/bindings/counter/interrupt-counter.yaml
-> +F:	drivers/counter/interrupt-cnt.c
-> +
->  INVENSENSE ICM-426xx IMU DRIVER
->  M:	Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
->  L:	linux-iio@vger.kernel.org
-> diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
-> index 2de53ab0dd25..dcad13229134 100644
-> --- a/drivers/counter/Kconfig
-> +++ b/drivers/counter/Kconfig
-> @@ -29,6 +29,16 @@ config 104_QUAD_8
->  	  The base port addresses for the devices may be configured via the base
->  	  array module parameter.
-> =20
-> +config INTERRUPT_CNT
-> +	tristate "Interrupt counter driver"
-> +	depends on GPIOLIB
-> +	help
-> +	  Select this option to enable interrupt counter driver. Any interrupt
-> +	  source can be used by this driver as the event source.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called interrupt-cnt.
-> +
->  config STM32_TIMER_CNT
->  	tristate "STM32 Timer encoder counter driver"
->  	depends on MFD_STM32_TIMERS || COMPILE_TEST
-> diff --git a/drivers/counter/Makefile b/drivers/counter/Makefile
-> index 0a393f71e481..cb646ed2f039 100644
-> --- a/drivers/counter/Makefile
-> +++ b/drivers/counter/Makefile
-> @@ -6,6 +6,7 @@
->  obj-$(CONFIG_COUNTER) +=3D counter.o
-> =20
->  obj-$(CONFIG_104_QUAD_8)	+=3D 104-quad-8.o
-> +obj-$(CONFIG_INTERRUPT_CNT)		+=3D interrupt-cnt.o
->  obj-$(CONFIG_STM32_TIMER_CNT)	+=3D stm32-timer-cnt.o
->  obj-$(CONFIG_STM32_LPTIMER_CNT)	+=3D stm32-lptimer-cnt.o
->  obj-$(CONFIG_TI_EQEP)		+=3D ti-eqep.o
-> diff --git a/drivers/counter/interrupt-cnt.c b/drivers/counter/interrupt-=
-cnt.c
-> new file mode 100644
-> index 000000000000..550383b6b591
-> --- /dev/null
-> +++ b/drivers/counter/interrupt-cnt.c
-> @@ -0,0 +1,243 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
-> + */
-> +
-> +#include <linux/counter.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/irq.h>
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +
-> +#define INTERRUPT_CNT_NAME "interrupt-cnt"
-> +
-> +struct interrupt_cnt_priv {
-> +	atomic_t count;
-> +	struct counter_device counter;
-> +	struct gpio_desc *gpio;
-> +	int irq;
-> +	bool enabled;
-> +	struct counter_signal signals;
-> +	struct counter_synapse synapses;
-> +	struct counter_count cnts;
-> +};
-> +
-> +static irqreturn_t interrupt_cnt_isr(int irq, void *dev_id)
-> +{
-> +	struct interrupt_cnt_priv *priv =3D dev_id;
-> +
-> +	atomic_inc(&priv->count);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static ssize_t interrupt_cnt_enable_read(struct counter_device *counter,
-> +					 struct counter_count *count,
-> +					 void *private, char *buf)
-> +{
-> +	struct interrupt_cnt_priv *priv =3D counter->priv;
-> +
-> +	return sysfs_emit(buf, "%d\n", priv->enabled);
-> +}
-> +
-> +static ssize_t interrupt_cnt_enable_write(struct counter_device *counter,
-> +					  struct counter_count *count,
-> +					  void *private, const char *buf,
-> +					  size_t len)
-> +{
-> +	struct interrupt_cnt_priv *priv =3D counter->priv;
-> +	bool enable;
-> +	ssize_t ret;
-> +
-> +	ret =3D kstrtobool(buf, &enable);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (priv->enabled =3D=3D enable)
-> +		return len;
-> +
-> +	if (enable) {
-> +		priv->enabled =3D true;
-> +		enable_irq(priv->irq);
-> +	} else {
-> +		disable_irq(priv->irq);
-> +		priv->enabled =3D false;
-> +	}
-> +
-> +	return len;
-> +}
-> +
-> +static const struct counter_count_ext interrupt_cnt_ext[] =3D {
-> +	{
-> +		.name =3D "enable",
-> +		.read =3D interrupt_cnt_enable_read,
-> +		.write =3D interrupt_cnt_enable_write,
-> +	},
-> +};
-> +
-> +static enum counter_synapse_action interrupt_cnt_synapse_actionss[] =3D {
-> +	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> +};
-> +
-> +static int interrupt_cnt_action_get(struct counter_device *counter,
-> +				    struct counter_count *count,
-> +				    struct counter_synapse *synapse,
-> +				    size_t *action)
-> +{
-> +	*action =3D interrupt_cnt_synapse_actionss[0];
-
-This needs to be set to the index of the element, not the value:
-
-	*action =3D 0;
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int interrupt_cnt_read(struct counter_device *counter,
-> +			      struct counter_count *count, unsigned long *val)
-> +{
-> +	struct interrupt_cnt_priv *priv =3D counter->priv;
-> +
-> +	*val =3D atomic_read(&priv->count);
-> +
-> +	return 0;
-> +}
-> +
-> +static int interrupt_cnt_write(struct counter_device *counter,
-> +			       struct counter_count *count,
-> +			       const unsigned long val)
-> +{
-> +	struct interrupt_cnt_priv *priv =3D counter->priv;
-> +
-> +	atomic_set(&priv->count, val);
-> +
-> +	return 0;
-> +}
-> +
-> +static enum counter_count_function interrupt_cnt_functions[] =3D {
-> +	COUNTER_COUNT_FUNCTION_INCREASE,
-> +};
-> +
-> +static int interrupt_cnt_function_get(struct counter_device *counter,
-> +				      struct counter_count *count,
-> +				      size_t *function)
-> +{
-> +	*function =3D interrupt_cnt_functions[0];
-
-Same problem as action_get(); needs to be index, not value:
-
-	*function =3D 0;
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int interrupt_cnt_signal_read(struct counter_device *counter,
-> +				     struct counter_signal *signal,
-> +				     enum counter_signal_value *val)
-> +{
-> +	struct interrupt_cnt_priv *priv =3D counter->priv;
-> +	int ret;
-> +
-> +	ret =3D gpiod_get_value(priv->gpio);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	*val =3D ret ? COUNTER_SIGNAL_HIGH : COUNTER_SIGNAL_LOW;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct counter_ops interrupt_cnt_ops =3D {
-> +	.action_get =3D interrupt_cnt_action_get,
-> +	.count_read =3D interrupt_cnt_read,
-> +	.count_write =3D interrupt_cnt_write,
-> +	.function_get =3D interrupt_cnt_function_get,
-> +	.signal_read  =3D interrupt_cnt_signal_read,
-> +};
-> +
-> +static int interrupt_cnt_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev =3D &pdev->dev;
-> +	struct interrupt_cnt_priv *priv;
-> +	int ret;
-> +
-> +	priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->irq =3D platform_get_irq_optional(pdev,  0);
-> +	if (priv->irq =3D=3D -ENXIO)
-> +		priv->irq =3D 0;
-> +	else if (priv->irq < 0)
-> +		return dev_err_probe(dev, priv->irq, "failed to get IRQ\n");
-> +
-> +	priv->gpio =3D devm_gpiod_get_optional(dev, NULL, GPIOD_IN);
-> +	if (IS_ERR(priv->gpio))
-> +		return dev_err_probe(dev, PTR_ERR(priv->gpio), "failed to get GPIO\n");
-> +
-> +	if (!priv->irq && !priv->gpio) {
-> +		dev_err(dev, "IRQ and GPIO are not found. At least one source should b=
-e provided\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	if (!priv->irq) {
-> +		int irq =3D gpiod_to_irq(priv->gpio);
-> +
-> +		if (irq < 0)
-> +			return dev_err_probe(dev, irq, "failed to get IRQ from GPIO\n");
-> +
-> +		priv->irq =3D irq;
-> +	}
-> +
-> +	if (priv->gpio) {
-
-This if statement can be removed. There's no need to restrict this to
-just GPIO because we're always dealing with an IRQ, so allocate the
-"IRQ #" name unconditionally and set signals/num_signals.
-
-William Breathitt Gray
-
-> +		priv->signals.name =3D devm_kasprintf(dev, GFP_KERNEL, "IRQ %d",
-> +					    priv->irq);
-> +		if (!priv->signals.name)
-> +			return -ENOMEM;
-> +
-> +		priv->counter.signals =3D &priv->signals;
-> +		priv->counter.num_signals =3D 1;
-> +	}
-> +
-> +	priv->synapses.actions_list =3D interrupt_cnt_synapse_actionss;
-> +	priv->synapses.num_actions =3D ARRAY_SIZE(interrupt_cnt_synapse_actions=
-s);
-> +	priv->synapses.signal =3D &priv->signals;
-> +
-> +	priv->cnts.name =3D "Channel 0 Count";
-> +	priv->cnts.functions_list =3D interrupt_cnt_functions;
-> +	priv->cnts.num_functions =3D ARRAY_SIZE(interrupt_cnt_functions);
-> +	priv->cnts.synapses =3D &priv->synapses;
-> +	priv->cnts.num_synapses =3D 1;
-> +	priv->cnts.ext =3D interrupt_cnt_ext;
-> +	priv->cnts.num_ext =3D ARRAY_SIZE(interrupt_cnt_ext);
-> +
-> +	priv->counter.priv =3D priv;
-> +	priv->counter.name =3D dev_name(dev);
-> +	priv->counter.parent =3D dev;
-> +	priv->counter.ops =3D &interrupt_cnt_ops;
-> +	priv->counter.counts =3D &priv->cnts;
-> +	priv->counter.num_counts =3D 1;
-> +
-> +	irq_set_status_flags(priv->irq, IRQ_NOAUTOEN);
-> +	ret =3D devm_request_irq(dev, priv->irq, interrupt_cnt_isr,
-> +			       IRQF_TRIGGER_RISING | IRQF_NO_THREAD,
-> +			       dev_name(dev), priv);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_counter_register(dev, &priv->counter);
-> +}
-> +
-> +static const struct of_device_id interrupt_cnt_of_match[] =3D {
-> +	{ .compatible =3D "interrupt-counter", },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, interrupt_cnt_of_match);
-> +
-> +static struct platform_driver interrupt_cnt_driver =3D {
-> +	.probe =3D interrupt_cnt_probe,
-> +	.driver =3D {
-> +		.name =3D INTERRUPT_CNT_NAME,
-> +		.of_match_table =3D interrupt_cnt_of_match,
-> +	},
-> +};
-> +module_platform_driver(interrupt_cnt_driver);
-> +
-> +MODULE_ALIAS("platform:interrupt-counter");
-> +MODULE_AUTHOR("Oleksij Rempel <o.rempel@pengutronix.de>");
-> +MODULE_DESCRIPTION("Interrupt counter driver");
-> +MODULE_LICENSE("GPL v2");
-> --=20
-> 2.29.2
->=20
-
---H1nUU+bGlEdYHmqn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA4wyQACgkQhvpINdm7
-VJJxzA//V/buD+pOKghaucKGJOQgNsmMA8BaRkcHZunFnOS5D92VL4bBHsjv3D8o
-qnpkd+LWd26E+eD5KxO009A7Fvq0/TReyXInGmbnTAWirgsUXqt2sdRMhMMBt/x1
-UWy9kWwXEhevUPSvKfcyJ7Y2tzCyaWKT77Phl8PVHfbUxPWvlfnEB3+kBOiElnby
-kuJH7R4nxAyaavRLcba0b5pUp8wgqJkSsR+h0/KajSHn01IwjSWR6LQZlovb9Dpb
-GoZMssNnbRNSh4nVElOy80PM2p0v4FtK/3yBDKAU9GZngEHSQuBNDYdFz1tDihTX
-prTDFPZqNzpPE7wfJskuzXAkYQi7404R4wN4m9s6DO8/ThxOybotEjnIrOmAkjpg
-o5YC80uFJV6Lpt4BCDeoQ2KnYpHfKzEFK/i1APW2EjsTeSCE3uv+h+TOPvCOX/eA
-D/wSmRToDgmlMmzGZflAe9qsUFLql/4PiQxHRzy2A2I75Y3TjZjyCq1fUNxkR5nI
-xuAn2uufsoD5rYMWnDsGPRTsqhTQKMfRX0/RGCPoPrE0clGeATrvO4DULBU38PnP
-puzwCm28FWWTFcBFcr4mB4+RFUSbBRUCKqtGl8ZCyF34qTI6rRATAVKIj7J4fAER
-cAdJaaX68Qv9VUhi23pKCurD/qxYK6gnrL2d3cXZxGr4a++bnvA=
-=lpXM
------END PGP SIGNATURE-----
-
---H1nUU+bGlEdYHmqn--
+SGksIGd1eXMKCkJlc2lkZSB0aGlzIHBhdGNoc2V0LCBJJ2QgbGlrZSB0byBjb25maXJtIHNvbWV0
+aGluZyBhYm91dCB0aGUgIkVYUEVSSU1FTlRBTCIgdGFnIGZvciBkYXggaW4gWEZTLgoKSW4gWEZT
+LCB0aGUgIkVYUEVSSU1FTlRBTCIgdGFnLCB3aGljaCBpcyByZXBvcnRlZCBpbiB3YXJpbmcgbWVz
+c2FnZSB3aGVuIHdlIG1vdW50IGEgcG1lbSBkZXZpY2Ugd2l0aCBkYXggb3B0aW9uLCBoYXMgYmVl
+biBleGlzdGVkIGZvciBhIHdoaWxlLiAgSXQncyBhIGJpdCBhbm5veWluZyB3aGVuIHVzaW5nIGZz
+ZGF4IGZlYXR1cmUuICBTbywgbXkgaW5pdGlhbCBpbnRlbnRpb24gd2FzIHRvIHJlbW92ZSB0aGlz
+IHRhZy4gIEFuZCBJIHN0YXJ0ZWQgdG8gZmluZCBvdXQgYW5kIHNvbHZlIHRoZSBwcm9ibGVtcyB3
+aGljaCBwcmV2ZW50IGl0IGZyb20gYmVpbmcgcmVtb3ZlZC4KCkFzIGlzIHRhbGtlZCBiZWZvcmUs
+IHRoZXJlIGFyZSAzIG1haW4gcHJvYmxlbXMuICBUaGUgZmlyc3Qgb25lIGlzICJkYXggc2VtYW50
+aWNzIiwgd2hpY2ggaGFzIGJlZW4gcmVzb2x2ZWQuICBUaGUgcmVzdCB0d28gYXJlICJSTUFQIGZv
+ciBmc2RheCIgYW5kICJzdXBwb3J0IGRheCByZWZsaW5rIGZvciBmaWxlc3lzdGVtIiwgd2hpY2gg
+SSBoYXZlIGJlZW4gd29ya2luZyBvbi4gIAoKU28sIHdoYXQgSSB3YW50IHRvIGNvbmZpcm0gaXM6
+IGRvZXMgaXQgbWVhbnMgdGhhdCB3ZSBjYW4gcmVtb3ZlIHRoZSAiRVhQRVJJTUVOVEFMIiB0YWcg
+d2hlbiB0aGUgcmVzdCB0d28gcHJvYmxlbSBhcmUgc29sdmVkPyAgT3IgbWF5YmUgdGhlcmUgYXJl
+IG90aGVyIGltcG9ydGFudCBwcm9ibGVtcyBuZWVkIHRvIGJlIGZpeGVkIGJlZm9yZSByZW1vdmlu
+ZyBpdD8gIElmIHRoZXJlIGFyZSwgY291bGQgeW91IHBsZWFzZSBzaG93IG1lIHRoYXQ/CgpUaGFu
+ayB5b3UuCgoKLS0KUnVhbiBTaGl5YW5nLg==
