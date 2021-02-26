@@ -2,105 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 125CF3262A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EB23262B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhBZMWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 07:22:01 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:48842 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBZMV6 (ORCPT
+        id S230024AbhBZM3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:29:18 -0500
+Received: from lucky1.263xmail.com ([211.157.147.132]:45742 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhBZM3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:21:58 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 73C2C580;
-        Fri, 26 Feb 2021 13:21:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1614342075;
-        bh=nWbkyCTRl2N2loenx0RpKhmqgsTqWZeI/+24sE7lDhU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TcSjq8cDB3hjPdLb7dogNwqtilbbkVTw7X/DrsU17Nz9vFs3rx7+oez0CY5jLi9Ec
-         fMxcT0nUdoyjfSX1ngWRDP/xDrdl7tjSaqoYZY0ARG5pHHlrSSGv09J/8Kr+QU59Ij
-         r1ntDap30ZQLLhMtaGisDIueCD1Qw7F2yCzYFczY=
-Date:   Fri, 26 Feb 2021 14:20:48 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Phil Edworthy <phil.edworthy@renesas.com>,
-        Dirk Behme <Dirk.Behme@de.bosch.com>,
-        Peter Erben <Peter.Erben@de.bosch.com>
-Subject: Re: [PATCH 0/7] Add FFT Support for R-Car Gen3 devices
-Message-ID: <YDjnoGDOCXm86ffW@pendragon.ideasonboard.com>
-References: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
+        Fri, 26 Feb 2021 07:29:16 -0500
+Received: from localhost (unknown [192.168.167.69])
+        by lucky1.263xmail.com (Postfix) with ESMTP id A2E1DF25FE;
+        Fri, 26 Feb 2021 20:26:43 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P17142T139833041213184S1614342403054911_;
+        Fri, 26 Feb 2021 20:26:43 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <e61391619582dd86786afe0f7644a08e>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: tglx@linutronix.de
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org
+Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH] KVM: x86: fix the space error for the pointer variables.
+Date:   Fri, 26 Feb 2021 20:26:42 +0800
+Message-Id: <20210226122642.22174-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabrizio,
+The following pointer variables don't meet the kernel coding style,
+so fix the space error.
 
-On Thu, Feb 25, 2021 at 10:51:40PM +0000, Fabrizio Castro wrote:
-> The DAB hardware accelerator found on R-Car E3 (a.k.a. r8a77990)
-> and R-Car M3-N (a.k.a. r8a77965) devices is a hardware accelerator
-> for software DAB demodulators.
-> It consists of one FFT (Fast Fourier Transform) module and one
-> decoder module, compatible with DAB specification (ETSI EN 300 401
-> and ETSI TS 102 563).
-> The decoder module can perform FIC decoding and MSC decoding
-> processing from de-puncture to final decoded result.
-> 
-> This series adds FFT support only for R-Car E3 and R-Car M3-N,
-> FIC and MSC support will be added later on.
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+ arch/x86/kvm/x86.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Out of curiosity, could the FFT module be used as an accelerator for 2D
-FFT on images ?
-
-> Fabrizio Castro (7):
->   clk: renesas: r8a77990: Add DAB clock
->   clk: renesas: r8a77965: Add DAB clock
->   dt-bindings: misc: Add binding for R-Car DAB
->   misc: Add driver for DAB IP found on Renesas R-Car devices
->   arm64: dts: renesas: r8a77990: Add DAB support
->   arm64: dts: renesas: r8a77965: Add DAB support
->   arm64: configs: Add R-Car DAB support
-> 
->  .../devicetree/bindings/misc/renesas,dab.yaml |  75 ++++++++
->  MAINTAINERS                                   |   7 +
->  arch/arm64/boot/dts/renesas/r8a77965.dtsi     |  12 ++
->  arch/arm64/boot/dts/renesas/r8a77990.dtsi     |  12 ++
->  arch/arm64/configs/defconfig                  |   1 +
->  drivers/clk/renesas/r8a77965-cpg-mssr.c       |   1 +
->  drivers/clk/renesas/r8a77990-cpg-mssr.c       |   1 +
->  drivers/misc/Kconfig                          |   1 +
->  drivers/misc/Makefile                         |   1 +
->  drivers/misc/rcar_dab/Kconfig                 |  11 ++
->  drivers/misc/rcar_dab/Makefile                |   8 +
->  drivers/misc/rcar_dab/rcar_dev.c              | 176 ++++++++++++++++++
->  drivers/misc/rcar_dab/rcar_dev.h              | 116 ++++++++++++
->  drivers/misc/rcar_dab/rcar_fft.c              | 160 ++++++++++++++++
->  include/uapi/linux/rcar_dab.h                 |  35 ++++
->  15 files changed, 617 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/misc/renesas,dab.yaml
->  create mode 100644 drivers/misc/rcar_dab/Kconfig
->  create mode 100644 drivers/misc/rcar_dab/Makefile
->  create mode 100644 drivers/misc/rcar_dab/rcar_dev.c
->  create mode 100644 drivers/misc/rcar_dab/rcar_dev.h
->  create mode 100644 drivers/misc/rcar_dab/rcar_fft.c
->  create mode 100644 include/uapi/linux/rcar_dab.h
-
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 3712bb5245eb..98849f3112d4 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5368,7 +5368,7 @@ static int kvm_add_msr_filter(struct kvm *kvm, struct kvm_msr_filter_range *user
+ 	if (!bitmap_size || bitmap_size > KVM_MSR_FILTER_MAX_BITMAP_SIZE)
+ 		return -EINVAL;
+ 
+-	bitmap = memdup_user((__user u8*)user_range->bitmap, bitmap_size);
++	bitmap = memdup_user((__user u8 *)user_range->bitmap, bitmap_size);
+ 	if (IS_ERR(bitmap))
+ 		return PTR_ERR(bitmap);
+ 
+@@ -10554,7 +10554,7 @@ void kvm_arch_sync_events(struct kvm *kvm)
+  * address, i.e. its accessibility is not guaranteed, and must be
+  * accessed via __copy_{to,from}_user().
+  */
+-void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
++void __user *__x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
+ 				      u32 size)
+ {
+ 	int i, r;
 -- 
-Regards,
+2.20.1
 
-Laurent Pinchart
+
+
