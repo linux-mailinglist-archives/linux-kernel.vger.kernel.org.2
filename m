@@ -2,161 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D996325F1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CCA325F26
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhBZIcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:32:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbhBZIb7 (ORCPT
+        id S230131AbhBZIfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:35:04 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:39220 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230006AbhBZIen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:31:59 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694DAC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:31:18 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id i9so6409045wml.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:31:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=6d55hczQ7yC4fvKZlIJyccsSIieP5h08F8ol4aHjDSk=;
-        b=veP2th8n5/TCGhbAfadppIk6moovuPbnwz7txyIrcjYmTIlvQzaCm4g5KjCoHrQXKH
-         NUBVtOlP1i059ojGBq/mkxtq6yEH6qB76l8PmIzWjMTrEJzVCQCEed/BbLN9ioQSJb4P
-         u6bijGkY8Iq6GlEY3eqFpWBSyq0rT/htytRoRZKhg8VuaBg3vJgIoHT8yKnbNe3D27fi
-         lwX/YIPHXcEd9aqCqW+e38UGEfPetvDMUVvvUfkDAlBbCchQEnljAgP+1IT3ovHNsbfh
-         hh0KEGn6ex6Fbwa/8tyvYqS3uQ45Oi9EzBiLGP15g2st4h338LSrA1M4aJCmZYEzWocj
-         IwhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6d55hczQ7yC4fvKZlIJyccsSIieP5h08F8ol4aHjDSk=;
-        b=CWdQ3XGIE782sn9jRC+R3tP8B6qr3s4dA21qg3C4/pX5XYZ4BaG6extDe/G10YTV78
-         b29hOb7ShesRqaL7eO3j0mBIT6SYJEY2iNugM5fdgv74zQCwLz8gwp03wzOPVqnf97v4
-         DmyLBKQ/blkJMoPBuFaMnQ2Wb6H5WxKbv76qNpiZTV6pSwKOyRoRsSIFZfHczLglXYbv
-         OlCADl9j9ITzLutghN1TzXY0wtmyXa2gOt2PkHOgPnThsQNcnY2HYTmnn5quB6fXryBS
-         zFnEFZnOvwzB319tEm6gog9JYAw/or5o6oZAPb7MBYInYrsNV4v0wpOz6lRWrzGFQ90/
-         2RoQ==
-X-Gm-Message-State: AOAM533/1mOsQL4xw9u14NHRoUOzaHwSoYMmQmdx9+uh3P52dPy8bwfu
-        J3mp9zGHhjNETLDTNTPZVZ/jPg==
-X-Google-Smtp-Source: ABdhPJyNNPBJL8zVQ1bzYzDTc8Boiu+FQOindWJ9jhjeB/7vXL8rqC5WnS5NurawlXFFVEQ8EzTLXw==
-X-Received: by 2002:a05:600c:4c17:: with SMTP id d23mr1638944wmp.116.1614328276858;
-        Fri, 26 Feb 2021 00:31:16 -0800 (PST)
-Received: from dell ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id w13sm13617941wre.2.2021.02.26.00.31.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 00:31:16 -0800 (PST)
-Date:   Fri, 26 Feb 2021 08:31:14 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        openbmc@lists.ozlabs.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Subject: Re: [PATCH 2/4] mfd: simple-mfd-i2c: Adds Ampere's Altra SMpro
- support
-Message-ID: <20210226083114.GE641347@dell>
-References: <20210225101854.13896-1-quan@os.amperecomputing.com>
- <20210225101854.13896-3-quan@os.amperecomputing.com>
+        Fri, 26 Feb 2021 03:34:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1614328483; x=1645864483;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0pGRZXLb1+wtT643DBu0cIFZ+O3AdUvJpqIxwaTZzaE=;
+  b=GCCwgrQ+PImN4LhQjZOzSOqBXMxOHbP9CeNqgWLi/KpQDQumzOGM4e3x
+   FKCeUuddmA85pCorVecGRiAPvcAUe0n7a6CBZcjvDGlOOE2Dvr7IYp8cc
+   LvJDUrvPDEBtUTmhV4mbhYPwHUP6wmLufBWFTIhYm9uJNBKz2XRdaXlx2
+   gauVG56Ok7njBisR34myJZHdC/+b7SXa5AyvGKhnYsjsLOU+8b/wMk+ZF
+   f/T5B+5+yf3rj1IperNyA+wY8tO4H/U9tk2itf6OfqP9+JY4XQ8gVs4x1
+   QJuH+hhwSTGqmmyT/4ManIKGr0Kl8/e3+x2HLTlMPDw29R0U3JyLPVtuP
+   Q==;
+IronPort-SDR: baVBaYXnsGKwdw19dU+OEknaD26lQqO6xT+2o4GDEtRMj8wx2HVBa8YiQwWb9/HMMDleBTOlKI
+ dEtjqyHD9ilen6btuawDj8AviKY3V77r05Z8/0jxxwDcDpIQEKKhXRTDfkHxZusqyiqaKmLH5k
+ GpYTFvWFzA0Hkw2VEEYDvrUkEBBjRzmWgo2bt29mJvpY6EREyIcRM8I//5Mo//qxvecEIFvKyj
+ wUzbMbM3jPSNgZuNKk82z5rJgoftLaeZD9Gy+sU5rXTEMuOVrdlRF089FOhZNfYunGNmWAec8N
+ LuQ=
+X-IronPort-AV: E=Sophos;i="5.81,208,1610380800"; 
+   d="scan'208";a="162040897"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Feb 2021 16:33:28 +0800
+IronPort-SDR: 2eLVfA/RdUlBn+ygwwUndp3w3wFRyMqdKznU3aodnu0pbb5ohv/jqwvW9SAvC6cFbXC1d96btJ
+ Hs7NSMeqHQ+Pd76P7fsaFHwvzCtiVweR0+6/HUhxj7fZbpqXNRRP8Rz9jgL6siufvxM0/91qui
+ 0rtwCuvYM6GHtYsa33x5bFM6gLBYl62NMezEjMz8A4tmrB0cvEWuVVhYtqygNnw62uPf0Wl6BM
+ 5nSvQh9qBffqfCZHhSNl9W7FUb4t/dNFIDhV7WPA72dYkBi4WAmnVF0l/PMhWfdjl1k4Gazoro
+ 8z0BQt5kxMtFp8OpDgoOK+am
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 00:16:41 -0800
+IronPort-SDR: qsDd5HE+VLFeOkkbmI31DBIEi0LuuvYscolgNBXRMcpMSVmq5WJl+CZ/oB/9W9MX7rIC/K+L+J
+ hzgEKYDFf3YljLHkAQ8ibEWVa7HJ1kk1v0jasbXpQrvwM5IH5Z4vI4+DO4xaCxm5fJhgftCLtG
+ am0rgZCwIrZmn1jn5ZWYioCZ7sAc6PjsvxGEI58Oa7TgkPlUaGX3ZR2L4NV0j8DJBXc/WYqFyq
+ 6kGQNpvzFZfpQa7ZJb5c0jFIM/4az/3C5XQyX1e3OAn5Hr9qi9Fbi5G/tit2RU6cjw6ZIg24e5
+ FyQ=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 26 Feb 2021 00:33:24 -0800
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v4 0/9] Add Host control mode to HPB
+Date:   Fri, 26 Feb 2021 10:32:51 +0200
+Message-Id: <20210226083300.30934-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210225101854.13896-3-quan@os.amperecomputing.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021, Quan Nguyen wrote:
+v3 -> v4:
+ - rebase on Daejun's v25
 
-> Adds an MFD driver for SMpro found on the Mt.Jade hardware reference
-> platform with Ampere's Altra processor family.
-> 
-> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
-> ---
->  drivers/mfd/Kconfig          | 10 ++++++++++
->  drivers/mfd/simple-mfd-i2c.c | 15 +++++++++++++--
->  2 files changed, 23 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> index b74efa469e90..5414371bdea1 100644
-> --- a/drivers/mfd/Kconfig
-> +++ b/drivers/mfd/Kconfig
-> @@ -77,6 +77,16 @@ config MFD_AS3711
->  	help
->  	  Support for the AS3711 PMIC from AMS
->  
-> +config MFD_SMPRO
-> +	tristate "Ampere Computing MFD SMpro core driver"
-> +	select MFD_SIMPLE_MFD_I2C
+v2 -> v3:
+ - Attend Greg's and Can's comments
+ - rebase on Daejun's v21
 
-Nice to see another user here.
+v1 -> v2:
+ - attend Greg's and Daejun's comments
+ - add patch 9 making host mode parameters configurable
+ - rebase on Daejun's v19
 
-> +	help
-> +	  Say yes here to enable SMpro driver support for Ampere's Altra
-> +	  processor family.
-> +
-> +	  Ampere's Altra SMpro exposes an I2C regmap interface that can
-> +	  be accessed by child devices.
-> +
->  config MFD_AS3722
->  	tristate "ams AS3722 Power Management IC"
->  	select MFD_CORE
-> diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
-> index 87f684cff9a1..0459a9fbd3f5 100644
-> --- a/drivers/mfd/simple-mfd-i2c.c
-> +++ b/drivers/mfd/simple-mfd-i2c.c
-> @@ -21,14 +21,24 @@ static const struct regmap_config simple_regmap_config = {
->  	.val_bits = 8,
->  };
->  
-> +static const struct regmap_config simple_word_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 16,
-> +};
-> +
->  static int simple_mfd_i2c_probe(struct i2c_client *i2c)
->  {
->  	const struct regmap_config *config;
->  	struct regmap *regmap;
->  
->  	config = device_get_match_data(&i2c->dev);
-> -	if (!config)
-> -		config = &simple_regmap_config;
-> +	if (!config) {
-> +		if (of_device_is_compatible(i2c->dev.of_node,
-> +						"ampere,ac01-smpro"))
 
-Could you use 'struct of_device_id's .data attribute instead please?
+The HPB spec defines 2 control modes - device control mode and host
+control mode. In oppose to device control mode, in which the host obey
+to whatever recommendation received from the device - In host control
+mode, the host uses its own algorithms to decide which regions should
+be activated or inactivated.
 
-> +			config = &simple_word_regmap_config;
-> +		else
-> +			config = &simple_regmap_config;
-> +	}
->  
->  	regmap = devm_regmap_init_i2c(i2c, config);
->  	if (IS_ERR(regmap))
-> @@ -39,6 +49,7 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
->  
->  static const struct of_device_id simple_mfd_i2c_of_match[] = {
->  	{ .compatible = "kontron,sl28cpld" },
-> +	{ .compatible = "ampere,ac01-smpro" },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
+We kept the host managed heuristic simple and concise.
+
+Aside from adding a by-spec functionality, host control mode entails
+some further potential benefits: makes the hpb logic transparent and
+readable, while allow tuning / scaling its various parameters, and
+utilize system-wide info to optimize HPB potential.
+
+This series is based on Samsung's V25 device-control HPB2.0 driver, see
+msg-id: 20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8
+in lore.kernel.org.
+
+This version was tested on Galaxy S20, and Xiaomi Mi10 pro.
+Your meticulous review and testing is mostly welcome and appreciated.
+
+Thanks,
+Avri
+
+
+Avri Altman (9):
+  scsi: ufshpb: Cache HPB Control mode on init
+  scsi: ufshpb: Add host control mode support to rsp_upiu
+  scsi: ufshpb: Add region's reads counter
+  scsi: ufshpb: Make eviction depends on region's reads
+  scsi: ufshpb: Region inactivation in host mode
+  scsi: ufshpb: Add hpb dev reset response
+  scsi: ufshpb: Add "Cold" regions timer
+  scsi: ufshpb: Add support for host control mode
+  scsi: ufshpb: Make host mode parameters configurable
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  67 +++
+ drivers/scsi/ufs/ufshcd.h                  |   2 +
+ drivers/scsi/ufs/ufshpb.c                  | 528 ++++++++++++++++++++-
+ drivers/scsi/ufs/ufshpb.h                  |  40 ++
+ 4 files changed, 613 insertions(+), 24 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
