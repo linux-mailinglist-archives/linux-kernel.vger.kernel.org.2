@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF6F325C7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 05:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64349325C80
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 05:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhBZESs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 23:18:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33680 "EHLO
+        id S229841AbhBZEWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 23:22:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhBZESp (ORCPT
+        with ESMTP id S229491AbhBZEWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 23:18:45 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1A9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 20:18:05 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id 204so7950130qke.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 20:18:05 -0800 (PST)
+        Thu, 25 Feb 2021 23:22:10 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4BFC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 20:21:30 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id t5so6087160pjd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 20:21:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fDTKQXWPODousjcFxfPrAdhXiScgfthwkHIVsnIoPbM=;
-        b=abTtJIMMZ8KToSFWbjzFi32HOkPDN2rxZ+IfBv+eO62ap/dN702Uq0mU9oHC9j+snt
-         vnVWV+5jH/p/0R+4U10lm2zTMAo+mTTld64KVC2G+prj4nocAzeugJM4VE5FsldHI9zg
-         D677137O5m7d9bvVpQQ+IkqHWrA56M7YEa+Ng=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=yT5v0bJoOqV8v/vtReh7u5jHnFH2I4PrE3kiKoF6nh8=;
+        b=TCo5ef0l9pGX/3+phqBt2AmFexoawm5IrMZBba930eJsMgBquLxMDCMmV2HIamMu3Z
+         x4PEOyaUJRiZ6/r0XCjVF09eh+ekY7y/IB26sxxwUOb0xPRACJ9P8uEPQmrcs+fp5KGG
+         uH0ehUBJSpA8sEswHgD//45ybEZapp/2ZJCkRhF2MUTpTbuukZ8xl81BhYEzMylywc1s
+         g/8skPTW+I2bz+YFiFAlGygkyRFlvGxt4uMpAKCDeMPcRF7wrvl51EsoOAHF55srlO5t
+         PBklESnRyCydLXsY17gQCtyPshpPYEUvfifjdlo72Igw1chJiuMub3mQOGvReQRvXBYi
+         YvBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fDTKQXWPODousjcFxfPrAdhXiScgfthwkHIVsnIoPbM=;
-        b=GYb1AobVpOgxNWzeQkqnBgTR36GEuYAiqN4hGi5RJQWv4LsFbfv6BPmTzSPPPfOqkE
-         10PZfc7MxSv9+aAmOSPsvSYUQJ1e4bMYWpTiqxYjzZWWQq8xXFHrbpNT1I3XK/EikauG
-         0ma+ifQA2MwEUczXcb+Zml2bPoRjYjO8bRD/8CwELUrvCZOCwZ3RrDcaqqO0UNz7Hiir
-         H/A2U5j6MCzZCDyMSP9oZzqxGu7pcXb1TgcULODHAP4tIz8ap/fgqnROeEeIIXw133KQ
-         O76fsDrGvn8cbF8yQAts94csSB2ZDH8OIa9EqvNxo7rYchrLjnSL8YDfdKLb/NuQJNx/
-         p71g==
-X-Gm-Message-State: AOAM531QL81sVuDSkyM5UYSCKTEjjQHLR12yOcsHrNcEr+oE2UNzxprF
-        9QGlEsgRRIrKkVecCCqMUS+bblg+2L64VQ==
-X-Google-Smtp-Source: ABdhPJxDTSFWfKJYme4dHZxcwefIYNMukDkaQMQ9S3lXJo1ntWwgRLdzTKAxr5CjgBYRybcdj1CHQw==
-X-Received: by 2002:a05:620a:1351:: with SMTP id c17mr1029656qkl.350.1614313083979;
-        Thu, 25 Feb 2021 20:18:03 -0800 (PST)
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com. [209.85.222.171])
-        by smtp.gmail.com with ESMTPSA id 38sm4987924qtb.21.2021.02.25.20.18.02
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 20:18:03 -0800 (PST)
-Received: by mail-qk1-f171.google.com with SMTP id w19so7935669qki.13
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 20:18:02 -0800 (PST)
-X-Received: by 2002:a05:6638:5:: with SMTP id z5mr1097392jao.84.1614313081344;
- Thu, 25 Feb 2021 20:18:01 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yT5v0bJoOqV8v/vtReh7u5jHnFH2I4PrE3kiKoF6nh8=;
+        b=FjaBwiqzz1ojd7R/SAgcrcYAawN6ppYgWSSZ3WxRZQbrli1sl0mufhNYSU7bzkSNqI
+         ZEKvQd3lVyByz3w+9EIK1R1nIiKsw2Nyh7odKlhokc4OO16JSyhjJD6A+z8xTdMT2GOB
+         G5eYhNqeuAH/d5c2IFH3Wn9v5AQCBbMELoc2YSaAnU7a33IShVUZGSZT/F6Gc/GuRAYt
+         8K5EmktzLjgU1W0j0WohWBSAN6T8Ma3yWy8hkkNXjdhvIpS2JTMn0XwBwhyHIXO8X7MD
+         ZZaWWB9xCPTO7nA+DhSA/9N18ztuDPd3z2AG5lUUqlGofsEOBe6S8LGd7ilUHaTFUahC
+         C3QA==
+X-Gm-Message-State: AOAM533vUaNzWKjptJFX5W3txFv1aDHEcTMeP2CnMNGOuiYDiWd/XmNf
+        0Q1umIuDlp/sYtWbsajasGHJZA==
+X-Google-Smtp-Source: ABdhPJy6rpH04MW45+IkH5QmDPPkYhMH7nMGGmDYCvUJMjRoL5FAIYqfO+UzNeKxaccOIDQj1SRyYg==
+X-Received: by 2002:a17:90a:7bce:: with SMTP id d14mr1427400pjl.139.1614313289749;
+        Thu, 25 Feb 2021 20:21:29 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id p19sm7361194pjo.7.2021.02.25.20.21.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 25 Feb 2021 20:21:28 -0800 (PST)
+Date:   Fri, 26 Feb 2021 09:51:26 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        wsa+renesas@sang-engineering.com, wsa@kernel.org,
+        andriy.shevchenko@linux.intel.com, jarkko.nikula@linux.intel.com,
+        jdelvare@suse.de, Sergey.Semin@baikalelectronics.ru,
+        krzk@kernel.org, rppt@kernel.org, loic.poulain@linaro.org,
+        tali.perry1@gmail.com, bjorn.andersson@linaro.org,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, yu1.wang@intel.com,
+        Alex =?utf-8?Q?Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: Re: [PATCH v4] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210226042126.rix5gjxqrazb6sao@vireshk-i7>
+References: <7c5e44c534b3fd07b855af22d8d4b78bc44cd7a4.1602465440.git.jie.deng@intel.com>
+ <20210225072114.iwmtaexl3dkihlba@vireshk-i7>
+ <a580de35-787e-4024-3c80-0a101b1a6d3b@intel.com>
 MIME-Version: 1.0
-References: <20210209062131.2300005-1-tientzu@chromium.org> <20210209062131.2300005-13-tientzu@chromium.org>
-In-Reply-To: <20210209062131.2300005-13-tientzu@chromium.org>
-From:   Claire Chang <tientzu@chromium.org>
-Date:   Fri, 26 Feb 2021 12:17:50 +0800
-X-Gmail-Original-Message-ID: <CALiNf298+DLjTK6ALe0mYrRuCP_LtztMGuQQCS90ubDctbS0kw@mail.gmail.com>
-Message-ID: <CALiNf298+DLjTK6ALe0mYrRuCP_LtztMGuQQCS90ubDctbS0kw@mail.gmail.com>
-Subject: Re: [PATCH v4 12/14] swiotlb: Add restricted DMA alloc/free support.
-To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a580de35-787e-4024-3c80-0a101b1a6d3b@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index fd9c1bd183ac..8b77fd64199e 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -836,6 +836,40 @@ late_initcall(swiotlb_create_default_debugfs);
->  #endif
->
->  #ifdef CONFIG_DMA_RESTRICTED_POOL
-> +struct page *dev_swiotlb_alloc(struct device *dev, size_t size, gfp_t gfp)
-> +{
-> +       struct swiotlb *swiotlb;
-> +       phys_addr_t tlb_addr;
-> +       unsigned int index;
-> +
-> +       /* dev_swiotlb_alloc can be used only in the context which permits sleeping. */
-> +       if (!dev->dev_swiotlb || !gfpflags_allow_blocking(gfp))
+On 26-02-21, 10:46, Jie Deng wrote:
+> This v4 was the old version before the specification was acked by the virtio
+> tc.
+> 
+> Following is the latest specification.
+> 
+> https://raw.githubusercontent.com/oasis-tcs/virtio-spec/master/virtio-i2c.tex
+> 
+> I will send the v5 since the host/guest ABI changes.
 
-Just noticed that !gfpflags_allow_blocking(gfp) shouldn't be here.
+Okay, now it makes some sense :)
 
-Hi Christoph,
+I am interested in this stuff, if possible please keep me Cc'd for following
+versions, thanks.
 
-Do you think I should fix this and rebase on the latest linux-next
-now? I wonder if there are more factor and clean up coming and I
-should wait after that.
-
-Thanks,
-Claire
+-- 
+viresh
