@@ -2,55 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D51D325B19
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 02:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24850325B1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 02:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhBZBEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 20:04:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        id S230142AbhBZBEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 20:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbhBZBEN (ORCPT
+        with ESMTP id S231320AbhBZBEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 20:04:13 -0500
+        Thu, 25 Feb 2021 20:04:16 -0500
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DD0C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:03:33 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id d8so8387650ybs.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:03:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D57C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:03:36 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id g17so8409646ybh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:03:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=wTYAZE8l/zQPMkdzD7xsvIS6f4NgB+O0D1nsiwHUulE=;
-        b=TxqkVa6Q/RFAQfK5SS9lz1EFq/h95m+FCP8+yX5UEZCc3xGG+dozfQEcvKUuO2ZRV8
-         CaxYstOd+RXa1GhIT0nzmEgiVT3TiAHWmN/R6VTlmtyK026MgMkb3CzbgDSKYzE0bph8
-         AHROcj0cQrdcxr1v4xHv/KQXUZpp7168JPeXL3RrTriDlybgkZoBXH3Prdl74xmVHWmK
-         nEYjYLcPYHDWQscUwSa6ZJV/b4/Twjzw1BA/+Z3fufHCO+Z6RSzTg1C9uduDCP5poGqT
-         bINRgPXuUwVoS/P2pmewKoV9J1l5BkM8q3IryrywUKkG61rw7uLdxZ2rRHqI57A3/JNP
-         TUOw==
+        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=BZaWszN/LLBzcU94c/xowczYk0Zi91gjd6GZk09bLp8=;
+        b=Tqbg9PdKVSAx0v9v1M+vUle/2MQJ9wjgId2EgtMTB3GOHfGzXZbdf4Ua4weJGSWKcU
+         tcZXuhEBfMr9X7+A+v0/93pFy0mx+Ta5ntmHwHIn8e9k6a0s9V/nYJQ6I3QTMZS9Hdp7
+         VQpgETaIivseKcse3lEd2M4Rhg3nMs9FGnzqlHw3wZtkFWQRam41xDYf3XTQJ63bdmkO
+         uyWXD8yL3cEWfIOy/hD7gW9HCXw9xZjSd7P526xFqENKjPP0JLFOXsgrDNeV1lJokQrI
+         0wIVcXzKHdx3cW/hvn4e83cCKQVAzdtPu0Q0eiUBWLRc0xWMfO3jP9aUonNOUqW0bpqF
+         cOKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=wTYAZE8l/zQPMkdzD7xsvIS6f4NgB+O0D1nsiwHUulE=;
-        b=oWI9TOLDLVQjoS6KpdcNPduIsrX4VGD3frq55nPF00TtgqVN61cWMY+kJdpyodn7Mj
-         WnFoMmT1ut/xB8hDiTm52XApJUXYoUzLUG/G+3UDQ0W1soov8XD1EhrHMZ1TNH1O+C+4
-         uhIwLeVtmawGS2ZRmdbVaYwY4czcvpwoIijuKgTbxWpsOrallndfVhQlptS3gonnQMle
-         m3zI2fQXFCZB+M+Z/LxoFk/QH3iwnx72uqSmLZFnPsMiaRstqVUXEIIv1+txV6gEj/Zr
-         FD4rm/rqF5HhQThySNIVD0oEQbrX6ayuoDnPP0mDu1Lf8YgxfZ+UYmuCQLqYVK9/nTTo
-         ZGHg==
-X-Gm-Message-State: AOAM5307468dfDNGGH4lg11TMW+KS6lhZpyW1OQ7FLS0UUbnJT2fI1V8
-        819qCKzJ3fDqmrWNrTKvmqgjlyN6BIs=
-X-Google-Smtp-Source: ABdhPJx1I/DKz/d2vGPFiStKyjcq32wUL3PVrpnedWlv7bhpAr8F3TeftRKfJixHYbJLzoL/5ufr7zmZBU8=
+        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=BZaWszN/LLBzcU94c/xowczYk0Zi91gjd6GZk09bLp8=;
+        b=oPt2BV7nq8LRJ7xJ0GgzU2b3sNBVOVg9bhQKLDO3/6GFaRy6cRT2cww0ol7xWSkYuR
+         aXqT5BT0XNrwuIdpPcqoAo4ix5HrZxMIPcqU6x70NVkJfqC6JhEJwSu8oOjUjWUjCG99
+         G6jSEme0jFTIbTvXXQRp26Nv2CoU33s8ToAmn7k1ucUcKzEoZj+6MQOCXS6i6PxMLhPw
+         21ckpkDmV61HWHf5EluBabmvOhe8OZt9IFhQADBh4ZuoOeNyQGXvXvLPTLjsrHuM1wgK
+         p6vRkS3f9CsU2EBr5mO0bGB5tQRUTFsjFRQhiJyryqa1ePZpVIWrcr2gbKEf4EYvhUWC
+         z/6Q==
+X-Gm-Message-State: AOAM5327bxLSKT7KZzxQubOQt0FOqpVeQ/tTlcbtINLllK2trYms9Hp/
+        R1I1zQeNfKrtbAw7Gqq8d2IoE1LH69k=
+X-Google-Smtp-Source: ABdhPJzLd/OexlxhpNoqN6h4X4CVKwl6YHyGAR57H9qGFlrTHD2sD39ekg0Z+DEZAKW+a9hlzCBbwk2piJM=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:34c4:7c1d:f9ba:4576])
- (user=seanjc job=sendgmr) by 2002:a25:5ac2:: with SMTP id o185mr985108ybb.252.1614301412620;
- Thu, 25 Feb 2021 17:03:32 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:d314:: with SMTP id e20mr814723ybf.155.1614301415676;
+ Thu, 25 Feb 2021 17:03:35 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Feb 2021 17:03:24 -0800
-Message-Id: <20210226010329.1766033-1-seanjc@google.com>
+Date:   Thu, 25 Feb 2021 17:03:25 -0800
+In-Reply-To: <20210226010329.1766033-1-seanjc@google.com>
+Message-Id: <20210226010329.1766033-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210226010329.1766033-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 0/5] KVM: x86/mmu: Misc cleanups, mostly TDP MMU
+Subject: [PATCH 1/5] KVM: x86/mmu: Remove spurious TLB flush from TDP MMU's
+ change_pte() hook
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -64,21 +68,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Effectively belated code review of a few pieces of the TDP MMU.
+Remove an unnecessary remote TLB flush from set_tdp_spte(), the TDP MMu's
+hook for handling change_pte() invocations from the MMU notifier.  If
+the new host PTE is writable, the flush is completely redundant as there
+are no futher changes to the SPTE before the post-loop flush.  If the
+host PTE is read-only, then the primary MMU is responsible for ensuring
+that the contents of the old and new pages are identical, thus it's safe
+to let the guest continue reading both the old and new pages.  KVM must
+only ensure the old page cannot be referenced after returning from its
+callback; this is handled by the post-loop flush.
 
-Sean Christopherson (5):
-  KVM: x86/mmu: Remove spurious TLB flush from TDP MMU's change_pte()
-    hook
-  KVM: x86/mmu: WARN if TDP MMU's set_tdp_spte() sees multiple GFNs
-  KVM: x86/mmu: Use 'end' param in TDP MMU's test_age_gfn()
-  KVM: x86/mmu: Add typedefs for rmap/iter handlers
-  KVM: x86/mmu: Add convenience wrapper for acting on single hva in TDP
-    MMU
+Fixes: 1d8dd6b3f12b ("kvm: x86/mmu: Support changed pte notifier in tdp MMU")
+Cc: Ben Gardon <bgardon@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/mmu/tdp_mmu.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
- arch/x86/kvm/mmu/mmu.c     | 27 +++++++------------
- arch/x86/kvm/mmu/tdp_mmu.c | 54 ++++++++++++++++++++++----------------
- 2 files changed, 41 insertions(+), 40 deletions(-)
-
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index c926c6b899a1..3290e53fb850 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1044,10 +1044,14 @@ static int set_tdp_spte(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		if (!is_shadow_present_pte(iter.old_spte))
+ 			break;
+ 
++		/*
++		 * Note, when changing a read-only SPTE, it's not strictly
++		 * necessary to zero the SPTE before setting the new PFN, but
++		 * doing so preserves the invariant that the PFN of a present
++		 * leaf SPTE can never change.  See __handle_changed_spte().
++		 */
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
+ 
+-		kvm_flush_remote_tlbs_with_address(kvm, iter.gfn, 1);
+-
+ 		if (!pte_write(*ptep)) {
+ 			new_spte = kvm_mmu_changed_pte_notifier_make_spte(
+ 					iter.old_spte, new_pfn);
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
