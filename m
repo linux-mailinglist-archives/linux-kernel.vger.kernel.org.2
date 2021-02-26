@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFE3326460
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E846B326463
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhBZOtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:49:12 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:45550 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbhBZOs4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:48:56 -0500
-Received: by mail-io1-f70.google.com with SMTP id u1so7364151ior.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:48:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=UL/N5d3J1rT+ym+/Jn9kHXUDPqBkiL4ljBzXNafEZSU=;
-        b=p5HkyBkcYKfWfz+6+1GUMfjxR/RA+RhfQXOeMI4FEEhnwXx4aSm0yeP0cOiw9u1s+j
-         U4xdq3GZ8xxuXOb20omjoYPTh0C59mphVK1A0oUxH11KOHraDwv4HQ+gmPQ/2dfXDd5F
-         fO+f4+RKF2fywV6UMfsjlWVv5QGVQAxRVBk4QxLRAKwjyDPlrFGzy3jkilIhT/8dNWLA
-         oncvTHHHLInRksgMqLTY8bzSYOfMczYQzrXtzK6noN1fSvuZnW68B29Oprz2/fn8FosF
-         X7ZozO4gqUkYwtnd8RgMqKuDs++SgtC1iNYAQ82BW/24VftlLWOHyLMeZ3T3OQcdJ1E7
-         ijPA==
-X-Gm-Message-State: AOAM5321xAbnq3ce/T7XnyAeXWqu8qlROUd0FNpnYbm2JizWUUzwA53i
-        9InUbays1CUlWfXa4+cDKtXOPHDlK+PqLa+sQtm1pXLPvZbn
-X-Google-Smtp-Source: ABdhPJzI+gtHTkL5rLWZ9Ur1x5Itb6365yRJD2pcnhr2YLIsGNcZcow+L1pOt9HtAKFwwHIPFq/WH8JQLq0WtnLDcrQEIicldJOb
+        id S230232AbhBZOty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:49:54 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:36848 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230209AbhBZOtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 09:49:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614350933; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=7f6oYZbS+4PmPt/CVutDJnDyMbGA+QS/Vt1PzOpRTeM=; b=uknkUeJmrhwlIvsLt20HKsg2Uk1xqGq6R5y8VIOfIFAIXaYbZerZaYe2uP8uM0jYDPeigOrx
+ ZuIaJCI04Cv+e6D3jWefMIGgTTbRTFDxlSIZ+2P2NqIe7sq+1mbRAYj5Uffa0AZLcqn1WCJ4
+ 1j1imrLb8Z1MNnq/G0whfOdzl1Y=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60390a3475e4458f08685860 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 14:48:20
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3C62EC43461; Fri, 26 Feb 2021 14:48:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55A23C433C6;
+        Fri, 26 Feb 2021 14:48:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 55A23C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH RFC v2] mhi: Enable unique QRTR node ID support
+To:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org,
+        sricharan@codeaurora.org
+References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <838f49f6-ea8a-4c22-21f2-45721773bbc9@codeaurora.org>
+Date:   Fri, 26 Feb 2021 07:48:18 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8903:: with SMTP id k3mr3029786ioj.54.1614350895999;
- Fri, 26 Feb 2021 06:48:15 -0800 (PST)
-Date:   Fri, 26 Feb 2021 06:48:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b304d505bc3e5b3a@google.com>
-Subject: general protection fault in try_to_wake_up (2)
-From:   syzbot <syzbot+b4a81dc8727e513f364d@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, christian@brauner.io,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2/26/2021 3:42 AM, Gokul Sriram Palanisamy wrote:
+> On multi-mhi platforms, host WiFi driver and
+> QMI test driver needs to differntiate between
+> QMI packets received from multiple mhi devices.
+> 
+> With QCN9000 PCI cards, once SBL gets loaded, we
+> utilize ERRDBG2 register to write a unique value
+> per mhi device from device-tree that the device
+> utilizes to set a unique QRTR node ID and
+> instance ID for the QMI service. This helps QRTR
+> stack in differenting the packets in a multi-mhi
+> environment and can route them accordingly.
+> 
+> sample:
+> root@OpenWrt:/# qrtr-lookup
+>    Service Version Instance Node  Port
+>         15       1        0    8     1 Test service
+>         69       1        8    8     2 ATH10k WLAN firmware service
+>         15       1        0   24     1 Test service
+>         69       1       24   24     2 ATH10k WLAN firmware service
+> 
+> Here 8 and 24 on column 3 (QMI Instance ID)
+> and 4 (QRTR Node ID) are the node IDs that
+> is unique per mhi device.
+> 
+> Changes since v1:
+>   - Addressed review comments by Jeffrey Hugo.
 
-syzbot found the following issue on:
+No, you didn't.  You fixed the DT comment, but didn't address the rest. 
+  This gets a NACK from me.
 
-HEAD commit:    7f206cf3 Add linux-next specific files for 20210225
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15280e32d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a1746d2802a82a05
-dashboard link: https://syzkaller.appspot.com/bug?extid=b4a81dc8727e513f364d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10bc8466d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f5bf5ad00000
-
-The issue was bisected to:
-
-commit 7c25c0d16ef3c37e49c593ac92f69fa3884d4bb9
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Tue Feb 16 14:17:00 2021 +0000
-
-    io_uring: remove the need for relying on an io-wq fallback worker
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14269b96d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16269b96d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12269b96d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b4a81dc8727e513f364d@syzkaller.appspotmail.com
-Fixes: 7c25c0d16ef3 ("io_uring: remove the need for relying on an io-wq fallback worker")
-
-general protection fault, probably for non-canonical address 0xdffffc000000011a: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000008d0-0x00000000000008d7]
-CPU: 0 PID: 8677 Comm: iou-wrk-8423 Not tainted 5.11.0-next-20210225-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__lock_acquire+0xcfe/0x54c0 kernel/locking/lockdep.c:4770
-Code: 0c 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 08 41 0c 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 5b 31 00 00 49 81 3e 80 73 3a 8f 0f 84 d0 f3 ff
-RSP: 0018:ffffc9000213f988 EFLAGS: 00010002
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 000000000000011a RSI: 1ffff92000427f42 RDI: 00000000000008d0
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000001 R11: 0000000000000000 R12: ffff88801ae7d400
-R13: 0000000000000000 R14: 00000000000008d0 R15: 0000000000000000
-FS:  000000000088a400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa46e8f46c0 CR3: 000000001be5b000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- lock_acquire kernel/locking/lockdep.c:5510 [inline]
- lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
- try_to_wake_up+0x98/0x14a0 kernel/sched/core.c:3347
- io_wqe_wake_worker+0x51a/0x680 fs/io-wq.c:248
- io_wqe_dec_running.isra.0+0xe6/0x100 fs/io-wq.c:265
- __io_worker_busy fs/io-wq.c:296 [inline]
- io_worker_handle_work+0x34f/0x1950 fs/io-wq.c:449
- io_wqe_worker fs/io-wq.c:531 [inline]
- task_thread.isra.0+0xfa8/0x1340 fs/io-wq.c:608
- task_thread_bound+0x18/0x20 fs/io-wq.c:614
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
----[ end trace 1ccdee97cc2e65dd ]---
-RIP: 0010:__lock_acquire+0xcfe/0x54c0 kernel/locking/lockdep.c:4770
-Code: 0c 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 08 41 0c 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 5b 31 00 00 49 81 3e 80 73 3a 8f 0f 84 d0 f3 ff
-RSP: 0018:ffffc9000213f988 EFLAGS: 00010002
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 000000000000011a RSI: 1ffff92000427f42 RDI: 00000000000008d0
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000001 R11: 0000000000000000 R12: ffff88801ae7d400
-R13: 0000000000000000 R14: 00000000000008d0 R15: 0000000000000000
-FS:  000000000088a400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fa46e8f46c0 CR3: 000000001be5b000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> 
+> Gokul Sriram Palanisamy (1):
+>    bus: mhi: core: Add unique qrtr node id support
+> 
+>   drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+> 
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
