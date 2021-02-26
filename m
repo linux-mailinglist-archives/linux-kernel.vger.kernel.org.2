@@ -2,96 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9FB326011
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84BCA326013
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhBZJap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:30:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43707 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230264AbhBZJ2y (ORCPT
+        id S230431AbhBZJbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:31:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhBZJ3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:28:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614331642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q/y+jR/g8EuHkJQCgLp7Omv94p8gmPVQg8ZDs5ScTNo=;
-        b=ELMf/IgZnxbdn6eTEdAfGuKbpky95wBEwlTPc08E6laDXbn8ZxlaUhUWsxxGxd+oVBbnba
-        RJE67rs1m8NwlGvPkAEB0IEcmM8ZFrMSF0Mh66H5Zc/f/jNvoGmB0xhcppeJZ3jSaO+ICl
-        HftXvf/SukCVRDFst9tOKkJDkQUcMtc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-x4TcF-32Pp2l7AQwaqXc2w-1; Fri, 26 Feb 2021 04:27:20 -0500
-X-MC-Unique: x4TcF-32Pp2l7AQwaqXc2w-1
-Received: by mail-wm1-f71.google.com with SMTP id q24so3429351wmc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:27:20 -0800 (PST)
+        Fri, 26 Feb 2021 04:29:11 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EB9C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:28:31 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id p2so10081484edm.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:28:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ikw82zKGlH8aAdOC5tkm4HrIRJXbA069HBPJV+fwmJ4=;
+        b=vbv6w8323b60UCaA13z2PM/48T+4HYB2vQ0cbKzhx6wzjasKLh2c/wMDoVd/4HmTJg
+         Iwt15CXmb9lKeUGzjy/zaRFmxRVZ2NmiL8YGqq/+tCmiaBeals42k9oZo6vZq532zNNy
+         56Zv7TdqAPVeNiMkQPyvNZofrtpDEBoNZpZFNjCZDDLRCh517wT2c/H91sObtWxHKZ8d
+         vpTsAJPdMAzMo+CcqnC3ZrriCREtUQB9NXTZSlrbKHCobVtxoHYza4XafW0Fz3ZlJhMw
+         NJj/jP4RTh8SQwHxRsJCd4G6+j6tnphofbPYF/+suCQ+xRg0fDttKumwvaTI5hID6SRG
+         qzGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q/y+jR/g8EuHkJQCgLp7Omv94p8gmPVQg8ZDs5ScTNo=;
-        b=oS2cKZEvOnmMG9dYkoY2KtajCSXVIu9RC1cn1Y/b3G+2Ri8GHCUzXwb001ftqEcDHV
-         IKLz/OGG1G9SmF8zCV2XrboAE+pexg+RPQfMn2+IZuq3uwianTGdQSW4iOfreOklrOk7
-         2QjrfSwTWwpqY1LdtCMFnkQvcirUREHxJxeQARBTXVmcEjRO91AvzYgpx5Wv+8ttXFsX
-         meTu/gh1XBpkc2m+Co0hv8wVYShb370kBCraq1E2YJOl2SaiE2bXy7U2FGwaPPx8zZjT
-         cQ2EY1TBk+xvEQocLQP3caLz0q+37LC9GcdFQpZvfbkWxOSY8NChW5ZOcixC+R1gd+T7
-         /0+w==
-X-Gm-Message-State: AOAM531tRNY9mKDHBssffUc8nmqHXCI9mrmWzvTL5cdEyhW3ydIWws1c
-        aIKbWuAb7MZDBarZUm7oE9NM7s2DO5iNMf2Z7BnforhzGcH8rfyC15OycSwAGuoKZW3IL9Xknbe
-        YP8QUL+n3n54v0RA1whxTleDM
-X-Received: by 2002:a05:600c:2048:: with SMTP id p8mr1918188wmg.170.1614331639596;
-        Fri, 26 Feb 2021 01:27:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy670yapxAkaRw7Wk+SEQNtT/Q8HuiKzSitiWEVQQNP+hKpHWYUSv7TyL7LLaYZqN1j1619pg==
-X-Received: by 2002:a05:600c:2048:: with SMTP id p8mr1918171wmg.170.1614331639427;
-        Fri, 26 Feb 2021 01:27:19 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f2sm9261962wrq.34.2021.02.26.01.27.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 01:27:18 -0800 (PST)
-Subject: Re: [PATCH 0/5] KVM: x86/mmu: Misc cleanups, mostly TDP MMU
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-References: <20210226010329.1766033-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <3f88f1a9-a04d-bef1-e833-3c3ce108019a@redhat.com>
-Date:   Fri, 26 Feb 2021 10:27:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ikw82zKGlH8aAdOC5tkm4HrIRJXbA069HBPJV+fwmJ4=;
+        b=TH5mnwCDwc/qww3NF5crDqcelmRTQZ/hbGr9aWl4cd4Z1VpTH3P1dxWuOyzeUhypB4
+         Y5Fom6DCsdTjO2V3m3Gen0vjOQ4zL57htbclPjis2KuLISK9v5cFSnhed6cV/Oppzzze
+         l/WgKNc4GIZb+pKhL0bgqH+UvLEhwe92irv3nGJ1MxMqdFGf7tbxvrAcXKGIVKLqW9tB
+         NlDD4iHJpgK3h7kdNKgCSw/BKN9pRTjOY1yLUT/IdPBaMD4vBpZfx1B2mU51DVFfHhVk
+         xE30ZPR5onZPYp6XHiWT0jXbXYlgXx1HkCR9wI3XR9YpiZxVRWH6MDhIEWwNoEfaVD25
+         Bmxg==
+X-Gm-Message-State: AOAM532+33m74MOSPs8tIv16RSLZXDX+01sZpTI2NDHw/rk5FU4uDUAy
+        fwWd9hUmn+kRdYIXtVnKJTqTBSIK8ygFiHIuzDJ+7A==
+X-Google-Smtp-Source: ABdhPJyU+iQl+XEcAxPwhEKIEaWX3ogIJpJdI2dH3ThxmxvcmQDCgg9SZPvxqVCNNZOkThq9/uGhcZj13qB48MzOiYQ=
+X-Received: by 2002:aa7:cb0d:: with SMTP id s13mr2190198edt.221.1614331709840;
+ Fri, 26 Feb 2021 01:28:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210226010329.1766033-1-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210225092515.001992375@linuxfoundation.org>
+In-Reply-To: <20210225092515.001992375@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 26 Feb 2021 14:58:18 +0530
+Message-ID: <CA+G9fYv1OQ07KqgKPMbZZEX6z+ARB-rbZmYZ9Jfq4C7HtTTg7A@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/17] 5.4.101-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/02/21 02:03, Sean Christopherson wrote:
-> Effectively belated code review of a few pieces of the TDP MMU.
-> 
-> Sean Christopherson (5):
->    KVM: x86/mmu: Remove spurious TLB flush from TDP MMU's change_pte()
->      hook
->    KVM: x86/mmu: WARN if TDP MMU's set_tdp_spte() sees multiple GFNs
->    KVM: x86/mmu: Use 'end' param in TDP MMU's test_age_gfn()
->    KVM: x86/mmu: Add typedefs for rmap/iter handlers
->    KVM: x86/mmu: Add convenience wrapper for acting on single hva in TDP
->      MMU
-> 
->   arch/x86/kvm/mmu/mmu.c     | 27 +++++++------------
->   arch/x86/kvm/mmu/tdp_mmu.c | 54 ++++++++++++++++++++++----------------
->   2 files changed, 41 insertions(+), 40 deletions(-)
-> 
+On Thu, 25 Feb 2021 at 15:26, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.101 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 27 Feb 2021 09:25:06 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.101-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Queued (for 5.13), thanks.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Paolo
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.4.101-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: 981a14c3f32577a8b2c1d21b17f134b14d41c89a
+git describe: v5.4.100-18-g981a14c3f325
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.100-18-g981a14c3f325
+
+No regressions (compared to build v5.4.100)
+
+No fixes (compared to build v5.4.100)
+
+
+Ran 55957 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-bpf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-zram
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* fwts
+* kselftest-android
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* network-basic-tests
+* kselftest-kexec
+* kselftest-vm
+* kselftest-x86
+* ltp-dio-tests
+* ltp-io-tests
+* ltp-open-posix-tests
+* rcutorture
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
