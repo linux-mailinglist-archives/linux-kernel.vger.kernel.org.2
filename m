@@ -2,222 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DFB3261D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A23053261D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhBZLMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:12:45 -0500
-Received: from first.geanix.com ([116.203.34.67]:41488 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhBZLMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:12:40 -0500
-Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 27D001023542;
-        Fri, 26 Feb 2021 11:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1614337916; bh=6vr/bG1gH33fuG+X2JUsbjB3HstKZPBBGtJ14iDCJ6E=;
-        h=From:To:Cc:Subject:Date;
-        b=RRhaISA6Hoh88tM3W9Nd+BCMvHSMnr0A94D7ZE1VCfU2VFIJyCm72ZvXzQDD3nO0i
-         2QWhRDuVp1L9H/5EmNM7pg3RZW+Yc88O2/nLuRP0NkyCJPDqhCK02RU0bYDKjRZ7LX
-         wq1Q1GfkBzkLVFTxGrxU08uMi7zemAE7Xt92bp+TOQyv19B8zQZ9p7v0160MeDZmNQ
-         ySdzGCNGlXGAfU67EM/h99j/GzC6ATAQ8YRJBfwtjgq6+A0QtOAgtYglzNNUde2mte
-         DSHCilV5Q+jociDPUBsXSUpLuzpcp3cmf0hWIiaYAew9Bn22+6Kc3yMiqdioUNDDJ5
-         +HjRCwzHoOxZQ==
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc:     Sean Nyekjaer <sean@geanix.com>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: accel: mma8452: fix indentation
-Date:   Fri, 26 Feb 2021 12:11:42 +0100
-Message-Id: <20210226111142.1526909-1-sean@geanix.com>
-X-Mailer: git-send-email 2.29.2
+        id S231149AbhBZLNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:13:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59183 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230153AbhBZLNg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 06:13:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614337929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j6n53j9KxHkRJ3cFFI4fNEUccn3z7+2i49tGG9CMSsg=;
+        b=AA2+3HNABQOZNjfwkCtr5xj41H1pQnh1ggrHl3YefWKpzTpcRo8HPase+d/bfc/AuHXuPi
+        qJgNfTbzvuzB1TnYCRpkyaJ1o2Og/kgTScWrSrQ4K0Nf+vBz5Fixk8xOfruVOhfySPiaWH
+        D8Tjl42wvu8np4UyQvVbr5biHWHxUS0=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-MXqxFMPLPt6pfBy5KAQ6YQ-1; Fri, 26 Feb 2021 06:12:07 -0500
+X-MC-Unique: MXqxFMPLPt6pfBy5KAQ6YQ-1
+Received: by mail-yb1-f197.google.com with SMTP id a63so9733837yba.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:12:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j6n53j9KxHkRJ3cFFI4fNEUccn3z7+2i49tGG9CMSsg=;
+        b=jmFW6rCvwoCH48FeYLSfQ+EPNC6kjY1epLBMzd/hgrGVHZPwUt0GYKqDO9clMmYI0D
+         66B7AsJ7Gp8tqcrX832Yaad/ESQnpibUuIAqQ90OnGPArr10mdS3g4HU0FUsF1JQwFe9
+         9Lpn4X1LFd+MLhWb0Je814S79ipnOIT8CRNTMaJ+jzh30Klzc/rGtgz+RecYHY/sDwpQ
+         aFHSHGl85EwWEDefipWuVQjsYlT8AACvIK/Jde5k7SDAg1ewqfS2uWTMU9MInsq362zT
+         FQuoof5chz7Utkgbb5FGHGgeDYQ3rzeQxB9UHG8LthVQeVPxMRuXpr7ogcsaJO+00Oi/
+         xjRw==
+X-Gm-Message-State: AOAM531r8XIjvgf9/mrByUlebVvoQikATX21Ycmayscyo7hMfX1AaqvS
+        94BAV1Y9xUi5olwydvy3/W/pRnA+1s2RZgKUWQatmrAbKUeS3EEQvn+KWxPKshjBk5JPenq10Js
+        m3gMWpWC+bnN46ZJ4za8jkKlYocwuxln4qVubYQNZ
+X-Received: by 2002:a25:ad67:: with SMTP id l39mr3741084ybe.172.1614337926806;
+        Fri, 26 Feb 2021 03:12:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwfdmyB2V3wBE6ftPc+OWfFKzel7ICJXiZyI+YPfu/4JcOrmhdfSffcL8fWvhRbb6NfSZyvDzKX/HibndwRGC8=
+X-Received: by 2002:a25:ad67:: with SMTP id l39mr3741066ybe.172.1614337926612;
+ Fri, 26 Feb 2021 03:12:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.4 required=4.0 tests=ALL_TRUSTED,BAYES_50,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia>
+ <20210223223652.GD6000@sequoia> <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
+ <CAHC9VhSaU-3_fs83kEA5bxBf9xMsE29B_O5nXFpROk4=y9kgXw@mail.gmail.com>
+In-Reply-To: <CAHC9VhSaU-3_fs83kEA5bxBf9xMsE29B_O5nXFpROk4=y9kgXw@mail.gmail.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Fri, 26 Feb 2021 12:11:56 +0100
+Message-ID: <CAFqZXNu8s5edDbSZuSutetTsy58i08vPuP2h-n9=kT34HcPc4w@mail.gmail.com>
+Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve readability by using empty linies instead of extra spaces.
+On Fri, Feb 26, 2021 at 2:07 AM Paul Moore <paul@paul-moore.com> wrote:
+> On Wed, Feb 24, 2021 at 4:35 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > After the switch to RCU, we now have:
+> > 1. Start live conversion of new entries.
+> > 2. Convert existing entries.
+> > 3. RCU-assign the new policy pointer to selinux_state.
+> > [!!! Now actually both old and new sidtab may be referenced by
+> > readers, since there is no synchronization barrier previously provided
+> > by the write lock.]
+> > 4. Wait for synchronize_rcu() to return.
+> > 5. Now only the new sidtab is visible to readers, so the old one can
+> > be destroyed.
+> >
+> > So the race can happen between 3. and 5., if one thread already sees
+> > the new sidtab and adds a new entry there, and a second thread still
+> > has the reference to the old sidtab and also tires to add a new entry;
+> > live-converting to the new sidtab, which it doesn't expect to change
+> > by itself. Unfortunately I failed to realize this when reviewing the
+> > patch :/
+>
+> It is possible I'm not fully understanding the problem and/or missing
+> an important detail - it is rather tricky code, and RCU can be very
+> hard to reason at times - but I think we may be able to solve this
+> with some lock fixes inside sidtab_context_to_sid().  Let me try to
+> explain to see if we are on the same page here ...
+>
+> The problem is when we have two (or more) threads trying to
+> add/convert the same context into a sid; the task with new_sidtab is
+> looking to add a new sidtab entry, while the task with old_sidtab is
+> looking to convert an entry in old_sidtab into a new entry in
+> new_sidtab.  Boom.
+>
+> Looking at the code in sidtab_context_to_sid(), when we have two
+> sidtabs that are currently active (old_sidtab->convert pointer is
+> valid) and a task with old_sidtab attempts to add a new entry to both
+> sidtabs it first adds it to the old sidtab then it also adds it to the
+> new sidtab.  I believe the problem is that in this case while the task
+> grabs the old_sidtab->lock, it never grabs the new_sidtab->lock which
+> allows it to race with tasks that already see only new_sidtab.  I
+> think adding code to sidtab_context_to_sid() which grabs the
+> new_sidtab->lock when adding entries to the new_sidtab *should* solve
+> the problem.
+>
+> Did I miss something important? ;)
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
- drivers/iio/accel/mma8452.c | 120 ++++++++++++++++++++----------------
- 1 file changed, 67 insertions(+), 53 deletions(-)
+Sadly, yes :) Consider this scenario (assuming we fix the locking at
+sidtab level):
 
-diff --git a/drivers/iio/accel/mma8452.c b/drivers/iio/accel/mma8452.c
-index b0176d936423..9fc1f7550b9c 100644
---- a/drivers/iio/accel/mma8452.c
-+++ b/drivers/iio/accel/mma8452.c
-@@ -34,52 +34,66 @@
- #include <linux/regulator/consumer.h>
- 
- #define MMA8452_STATUS				0x00
--#define  MMA8452_STATUS_DRDY			(BIT(2) | BIT(1) | BIT(0))
-+#define MMA8452_STATUS_DRDY			(BIT(2) | BIT(1) | BIT(0))
-+
- #define MMA8452_OUT_X				0x01 /* MSB first */
- #define MMA8452_OUT_Y				0x03
- #define MMA8452_OUT_Z				0x05
- #define MMA8452_INT_SRC				0x0c
- #define MMA8452_WHO_AM_I			0x0d
-+
- #define MMA8452_DATA_CFG			0x0e
--#define  MMA8452_DATA_CFG_FS_MASK		GENMASK(1, 0)
--#define  MMA8452_DATA_CFG_FS_2G			0
--#define  MMA8452_DATA_CFG_FS_4G			1
--#define  MMA8452_DATA_CFG_FS_8G			2
--#define  MMA8452_DATA_CFG_HPF_MASK		BIT(4)
-+#define MMA8452_DATA_CFG_FS_MASK		GENMASK(1, 0)
-+#define MMA8452_DATA_CFG_FS_2G			0
-+#define MMA8452_DATA_CFG_FS_4G			1
-+#define MMA8452_DATA_CFG_FS_8G			2
-+#define MMA8452_DATA_CFG_HPF_MASK		BIT(4)
-+
- #define MMA8452_HP_FILTER_CUTOFF		0x0f
--#define  MMA8452_HP_FILTER_CUTOFF_SEL_MASK	GENMASK(1, 0)
-+#define MMA8452_HP_FILTER_CUTOFF_SEL_MASK	GENMASK(1, 0)
-+
- #define MMA8452_FF_MT_CFG			0x15
--#define  MMA8452_FF_MT_CFG_OAE			BIT(6)
--#define  MMA8452_FF_MT_CFG_ELE			BIT(7)
-+#define MMA8452_FF_MT_CFG_OAE			BIT(6)
-+#define MMA8452_FF_MT_CFG_ELE			BIT(7)
-+
- #define MMA8452_FF_MT_SRC			0x16
--#define  MMA8452_FF_MT_SRC_XHE			BIT(1)
--#define  MMA8452_FF_MT_SRC_YHE			BIT(3)
--#define  MMA8452_FF_MT_SRC_ZHE			BIT(5)
-+#define MMA8452_FF_MT_SRC_XHE			BIT(1)
-+#define MMA8452_FF_MT_SRC_YHE			BIT(3)
-+#define MMA8452_FF_MT_SRC_ZHE			BIT(5)
-+
- #define MMA8452_FF_MT_THS			0x17
--#define  MMA8452_FF_MT_THS_MASK			0x7f
-+#define MMA8452_FF_MT_THS_MASK			0x7f
-+
- #define MMA8452_FF_MT_COUNT			0x18
--#define MMA8452_FF_MT_CHAN_SHIFT	3
-+#define MMA8452_FF_MT_CHAN_SHIFT		3
-+
- #define MMA8452_TRANSIENT_CFG			0x1d
--#define  MMA8452_TRANSIENT_CFG_CHAN(chan)	BIT(chan + 1)
--#define  MMA8452_TRANSIENT_CFG_HPF_BYP		BIT(0)
--#define  MMA8452_TRANSIENT_CFG_ELE		BIT(4)
-+#define MMA8452_TRANSIENT_CFG_CHAN(chan)	BIT(chan + 1)
-+#define MMA8452_TRANSIENT_CFG_HPF_BYP		BIT(0)
-+#define MMA8452_TRANSIENT_CFG_ELE		BIT(4)
-+
- #define MMA8452_TRANSIENT_SRC			0x1e
--#define  MMA8452_TRANSIENT_SRC_XTRANSE		BIT(1)
--#define  MMA8452_TRANSIENT_SRC_YTRANSE		BIT(3)
--#define  MMA8452_TRANSIENT_SRC_ZTRANSE		BIT(5)
-+#define MMA8452_TRANSIENT_SRC_XTRANSE		BIT(1)
-+#define MMA8452_TRANSIENT_SRC_YTRANSE		BIT(3)
-+#define MMA8452_TRANSIENT_SRC_ZTRANSE		BIT(5)
-+
- #define MMA8452_TRANSIENT_THS			0x1f
--#define  MMA8452_TRANSIENT_THS_MASK		GENMASK(6, 0)
-+#define MMA8452_TRANSIENT_THS_MASK		GENMASK(6, 0)
-+
- #define MMA8452_TRANSIENT_COUNT			0x20
--#define MMA8452_TRANSIENT_CHAN_SHIFT 1
-+#define MMA8452_TRANSIENT_CHAN_SHIFT		1
-+
- #define MMA8452_CTRL_REG1			0x2a
--#define  MMA8452_CTRL_ACTIVE			BIT(0)
--#define  MMA8452_CTRL_DR_MASK			GENMASK(5, 3)
--#define  MMA8452_CTRL_DR_SHIFT			3
--#define  MMA8452_CTRL_DR_DEFAULT		0x4 /* 50 Hz sample frequency */
-+#define MMA8452_CTRL_ACTIVE			BIT(0)
-+#define MMA8452_CTRL_DR_MASK			GENMASK(5, 3)
-+#define MMA8452_CTRL_DR_SHIFT			3
-+#define MMA8452_CTRL_DR_DEFAULT			0x4 /* 50 Hz sample frequency */
-+
- #define MMA8452_CTRL_REG2			0x2b
--#define  MMA8452_CTRL_REG2_RST			BIT(6)
--#define  MMA8452_CTRL_REG2_MODS_SHIFT		3
--#define  MMA8452_CTRL_REG2_MODS_MASK		0x1b
-+#define MMA8452_CTRL_REG2_RST			BIT(6)
-+#define MMA8452_CTRL_REG2_MODS_SHIFT		3
-+#define MMA8452_CTRL_REG2_MODS_MASK		0x1b
-+
- #define MMA8452_CTRL_REG4			0x2d
- #define MMA8452_CTRL_REG5			0x2e
- #define MMA8452_OFF_X				0x2f
-@@ -88,9 +102,9 @@
- 
- #define MMA8452_MAX_REG				0x31
- 
--#define  MMA8452_INT_DRDY			BIT(0)
--#define  MMA8452_INT_FF_MT			BIT(2)
--#define  MMA8452_INT_TRANS			BIT(5)
-+#define MMA8452_INT_DRDY			BIT(0)
-+#define MMA8452_INT_FF_MT			BIT(2)
-+#define MMA8452_INT_TRANS			BIT(5)
- 
- #define MMA8451_DEVICE_ID			0x1a
- #define MMA8452_DEVICE_ID			0x2a
-@@ -134,33 +148,33 @@ struct mma8452_data {
-   * used for different chips and the relevant registers are included here.
-   */
- struct mma8452_event_regs {
--		u8 ev_cfg;
--		u8 ev_cfg_ele;
--		u8 ev_cfg_chan_shift;
--		u8 ev_src;
--		u8 ev_ths;
--		u8 ev_ths_mask;
--		u8 ev_count;
-+	u8 ev_cfg;
-+	u8 ev_cfg_ele;
-+	u8 ev_cfg_chan_shift;
-+	u8 ev_src;
-+	u8 ev_ths;
-+	u8 ev_ths_mask;
-+	u8 ev_count;
- };
- 
- static const struct mma8452_event_regs ff_mt_ev_regs = {
--		.ev_cfg = MMA8452_FF_MT_CFG,
--		.ev_cfg_ele = MMA8452_FF_MT_CFG_ELE,
--		.ev_cfg_chan_shift = MMA8452_FF_MT_CHAN_SHIFT,
--		.ev_src = MMA8452_FF_MT_SRC,
--		.ev_ths = MMA8452_FF_MT_THS,
--		.ev_ths_mask = MMA8452_FF_MT_THS_MASK,
--		.ev_count = MMA8452_FF_MT_COUNT
-+	.ev_cfg = MMA8452_FF_MT_CFG,
-+	.ev_cfg_ele = MMA8452_FF_MT_CFG_ELE,
-+	.ev_cfg_chan_shift = MMA8452_FF_MT_CHAN_SHIFT,
-+	.ev_src = MMA8452_FF_MT_SRC,
-+	.ev_ths = MMA8452_FF_MT_THS,
-+	.ev_ths_mask = MMA8452_FF_MT_THS_MASK,
-+	.ev_count = MMA8452_FF_MT_COUNT
- };
- 
- static const struct mma8452_event_regs trans_ev_regs = {
--		.ev_cfg = MMA8452_TRANSIENT_CFG,
--		.ev_cfg_ele = MMA8452_TRANSIENT_CFG_ELE,
--		.ev_cfg_chan_shift = MMA8452_TRANSIENT_CHAN_SHIFT,
--		.ev_src = MMA8452_TRANSIENT_SRC,
--		.ev_ths = MMA8452_TRANSIENT_THS,
--		.ev_ths_mask = MMA8452_TRANSIENT_THS_MASK,
--		.ev_count = MMA8452_TRANSIENT_COUNT,
-+	.ev_cfg = MMA8452_TRANSIENT_CFG,
-+	.ev_cfg_ele = MMA8452_TRANSIENT_CFG_ELE,
-+	.ev_cfg_chan_shift = MMA8452_TRANSIENT_CHAN_SHIFT,
-+	.ev_src = MMA8452_TRANSIENT_SRC,
-+	.ev_ths = MMA8452_TRANSIENT_THS,
-+	.ev_ths_mask = MMA8452_TRANSIENT_THS_MASK,
-+	.ev_count = MMA8452_TRANSIENT_COUNT,
- };
- 
- /**
--- 
-2.29.2
+If it happens that a new SID (x) is added via the new sidtab and then
+another one (y) via the old sidtab, to avoid clash of SIDs, we would
+need to leave a "hole" in the old sidtab for SID x. And this will
+cause trouble if the thread that has just added SID y, then tries to
+translate the context string corresponding to SID x (without re-taking
+the RCU read lock and refreshing the policy pointer). Even if we
+handle skipping the "holes" in the old sidtab safely, the translation
+would then end up adding a duplicate SID entry for the context already
+represented by SID x - which is not a state we want to end up in.
+
+This is why I said that to fully fix this, we'd need to have a
+both-ways live conversion in place. (And that already starts to feel
+like too much hacking for something that should probably go to
+stable@...)
+
+--
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
