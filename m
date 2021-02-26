@@ -2,321 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE72326554
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E6732655A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhBZQOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:14:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhBZQOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:14:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D82F264EBA;
-        Fri, 26 Feb 2021 16:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614356040;
-        bh=XIYrnMST0eMIO+QkazWoUPYEIVztH0rO3bxVtBoKcGM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pVbRmK1P0SrkCAhMPI5Wc6XGKamcCKljWz4QVOv+w39Np5W4Mxsg/nzsvg8GCZC2E
-         XrK+NZrNvmbu+8KTlc/FSddgXyJKyqUUW/5t4OTD0int0BCUkm6Z4lgecLVzjbi+0x
-         6cs3d4o73afRixsOz40/WIWsKIA2K4W0OXH0H9c0wQloPI2HK/dU0JvA87Dcjt7GZp
-         jzM119ZW21V1FPLL14hIYeCGmRVuFH2BJWsqCJwperT0JdL/8GoqpPLYa/2UUzANF9
-         N5aNyOVHdGKy7K8jW1mel0HIPuiGp1LfL1tOFkIq7tMn28hzBoUiSDv0MrcVKTM8lV
-         bnq30z8f48CSA==
-Date:   Sat, 27 Feb 2021 01:13:55 +0900
-From:   Keith Busch <kbusch@kernel.org>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Daniel Wagner <dwagner@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
- it
-Message-ID: <20210226161355.GG31593@redsun51.ssa.fujisawa.hgst.com>
-References: <20210212181738.79274-1-dwagner@suse.de>
- <c3a682d3-58f7-f5cc-caaa-75c36ca464e2@grimberg.me>
- <20210212210929.GA3851@redsun51.ssa.fujisawa.hgst.com>
- <ddf87227-1ad3-b8be-23ba-460433f70a85@grimberg.me>
- <73e4914e-f867-c899-954d-4b61ae2b4c33@suse.de>
- <20210215104020.yyithlo2hkxqvguj@beryllium.lan>
- <a2064070-b511-ba6d-bd64-0b3abc208356@grimberg.me>
- <20210226123534.4oovbzk4wrnfjp64@beryllium.lan>
- <9e209b12-3771-cdca-2c9d-50451061bd2a@suse.de>
+        id S230100AbhBZQPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:15:37 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:34142 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229566AbhBZQPc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 11:15:32 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QGCg5v030124;
+        Fri, 26 Feb 2021 17:14:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=aex4O8nt060PJ8vWZA6MQMuIBUc5PcSwyRTowyavlVI=;
+ b=BV02qu2qXdZ60BURL5fVj0YNA4BV4/U/mrH8uCjVa6ipGtxEohudGVdOqKXkZNJ83z0z
+ CacUaupZe5VG5wwvTZy1J+mIjyCapR9WtPlRpbJ7m59OG02M6DLnoZ3/1oEp39isOPeK
+ 20013dkVkKqn7UOnYCWvNso0cEWK1vpV7HiCf6wXpmHHcSuvrRyNVkHE/RJh9eTtn5xV
+ I73itI+JmDB0eFIFGVoGWDZPrSUo3M35bqcq6EjCmnf5ek1CIv7J+gBJzm8BoavNysIj
+ yVOuztySgnN0BD7YyHsUYdsitPxcBVfzFB7EA6LlcQWvtmcirULG+bx3Kyc1gNCl18q1 pQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36w66vxq5d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Feb 2021 17:14:39 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 94EBE100034;
+        Fri, 26 Feb 2021 17:14:38 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8355E2A4D98;
+        Fri, 26 Feb 2021 17:14:38 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Feb
+ 2021 17:14:37 +0100
+Subject: Re: [PATCH v6 05/16] remoteproc: Add new get_loaded_rsc_table() to
+ rproc_ops
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <ohad@wizery.com>,
+        <bjorn.andersson@linaro.org>, <arnaud.pouliquen@st.com>
+CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
+ <20210223233515.3468677-6-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <d21bebd0-6cf0-bc9d-c945-5e6aa2e5271d@foss.st.com>
+Date:   Fri, 26 Feb 2021 17:14:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9e209b12-3771-cdca-2c9d-50451061bd2a@suse.de>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20210223233515.3468677-6-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-26_05:2021-02-26,2021-02-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 01:54:00PM +0100, Hannes Reinecke wrote:
-> On 2/26/21 1:35 PM, Daniel Wagner wrote:
-> > On Mon, Feb 15, 2021 at 01:29:45PM -0800, Sagi Grimberg wrote:
-> > > Well, I think we should probably figure out why that is happening first.
-> > 
-> > I got my hands on a tcpdump trace. I've trimmed it to this:
-> > 
-> > 
-> > No.     Time           Source                Destination           Protocol Length Info
-> >        1 0.000000       10.228.194.30         10.228.38.214         NVMe     138    NVMe Write
-> >        2 0.000285       10.228.38.214         10.228.194.30         NVMe/TCP 90     Ready To Transfer
-> >        3 0.000591       10.228.194.30         10.228.38.214         NVMe     4186   NVMe Write: Data
-> >        4 0.000673       10.228.38.214         10.228.194.30         TCP      66     4420 → 58535 [ACK] Seq=25 Ack=4193 Win=241 Len=0 TSval=2655324576 TSecr=1497295579
-> >        5 0.002140       10.228.38.214         10.228.194.30         NVMe     90     NVMe Write: Response
-> >        6 0.002511       10.228.194.30         10.228.38.175         NVMe     138    NVMe Write
-> >        7 0.002812       10.228.38.175         10.228.194.30         NVMe/TCP 90     Ready To Transfer
-> >        8 0.003006       10.228.194.30         10.228.38.175         NVMe     4186   NVMe Write: Data
-> >        9 0.003098       10.228.38.175         10.228.194.30         TCP      66     4420 → 51241 [ACK] Seq=25 Ack=4193 Win=241 Len=0 TSval=2183410196 TSecr=3601034207
-> >       10 0.004420       10.228.38.175         10.228.194.30         NVMe     90     NVMe Write: Response
-> >       11 0.004890       10.228.38.214         10.228.194.30         NVMe/TCP 90
-> >       12 0.004969       10.228.38.175         10.228.194.30         NVMe/TCP 90
-> > 
-> > 
-> > The last few seconds contain only normal writes and suddenly the host
-> > receives two invalid packets. From what I see the host doesn't misbehave
-> > at all. I wonder if it would be possible to detect the invalid packet by
-> > locking at the PDU header only. If this would be possible we could
-> > discard it early and do not try to use the invalid command id.
-> > 
-> > Here the last two packets with details:
-> > 
-> > 
-> > No.     Time           Source                Destination           Protocol Length Info
-> >       11 0.004890       10.228.38.214         10.228.194.30         NVMe/TCP 90
-> > 
-> > Frame 11: 90 bytes on wire (720 bits), 90 bytes captured (720 bits)
-> >      Encapsulation type: Ethernet (1)
-> >      Arrival Time: Feb 23, 2021 18:16:08.780574000 CET
-> >      [Time shift for this packet: 0.000000000 seconds]
-> >      Epoch Time: 1614100568.780574000 seconds
-> >      [Time delta from previous captured frame: 0.000470000 seconds]
-> >      [Time delta from previous displayed frame: 0.000470000 seconds]
-> >      [Time since reference or first frame: 0.004890000 seconds]
-> >      Frame Number: 11
-> >      Frame Length: 90 bytes (720 bits)
-> >      Capture Length: 90 bytes (720 bits)
-> >      [Frame is marked: False]
-> >      [Frame is ignored: False]
-> >      [Protocols in frame: eth:ethertype:ip:tcp:nvme-tcp]
-> >      [Coloring Rule Name: TCP]
-> >      [Coloring Rule String: tcp]
-> > Ethernet II, Src: IntelCor_41:16:c0 (b4:96:91:41:16:c0), Dst: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-> >      Destination: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-> >          Address: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-> >          .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
-> >          .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
-> >      Source: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
-> >          Address: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
-> >          .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
-> >          .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
-> >      Type: IPv4 (0x0800)
-> > Internet Protocol Version 4, Src: 10.228.38.214, Dst: 10.228.194.30
-> >      0100 .... = Version: 4
-> >      .... 0101 = Header Length: 20 bytes (5)
-> >      Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
-> >          0000 00.. = Differentiated Services Codepoint: Default (0)
-> >          .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
-> >      Total Length: 76
-> >      Identification: 0x0000 (0)
-> >      Flags: 0x40, Don't fragment
-> >          0... .... = Reserved bit: Not set
-> >          .1.. .... = Don't fragment: Set
-> >          ..0. .... = More fragments: Not set
-> >      Fragment Offset: 0
-> >      Time to Live: 64
-> >      Protocol: TCP (6)
-> >      Header Checksum: 0x0000 [validation disabled]
-> >      [Header checksum status: Unverified]
-> >      Source Address: 10.228.38.214
-> >      Destination Address: 10.228.194.30
-> > Transmission Control Protocol, Src Port: 4420, Dst Port: 46909, Seq: 1, Ack: 1, Len: 24
-> >      Source Port: 4420
-> >      Destination Port: 46909
-> >      [Stream index: 2]
-> >      [TCP Segment Len: 24]
-> >      Sequence Number: 1    (relative sequence number)
-> >      Sequence Number (raw): 4175488220
-> >      [Next Sequence Number: 25    (relative sequence number)]
-> >      Acknowledgment Number: 1    (relative ack number)
-> >      Acknowledgment number (raw): 2966903626
-> >      1000 .... = Header Length: 32 bytes (8)
-> >      Flags: 0x018 (PSH, ACK)
-> >          000. .... .... = Reserved: Not set
-> >          ...0 .... .... = Nonce: Not set
-> >          .... 0... .... = Congestion Window Reduced (CWR): Not set
-> >          .... .0.. .... = ECN-Echo: Not set
-> >          .... ..0. .... = Urgent: Not set
-> >          .... ...1 .... = Acknowledgment: Set
-> >          .... .... 1... = Push: Set
-> >          .... .... .0.. = Reset: Not set
-> >          .... .... ..0. = Syn: Not set
-> >          .... .... ...0 = Fin: Not set
-> >          [TCP Flags: ·······AP···]
-> >      Window: 257
-> >      [Calculated window size: 257]
-> >      [Window size scaling factor: -1 (unknown)]
-> >      Checksum: 0xfefa [unverified]
-> >      [Checksum Status: Unverified]
-> >      Urgent Pointer: 0
-> >      Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
-> >          TCP Option - No-Operation (NOP)
-> >              Kind: No-Operation (1)
-> >          TCP Option - No-Operation (NOP)
-> >              Kind: No-Operation (1)
-> >          TCP Option - Timestamps: TSval 4211986351, TSecr 1497291787
-> >              Kind: Time Stamp Option (8)
-> >              Length: 10
-> >              Timestamp value: 4211986351
-> >              Timestamp echo reply: 1497291787
-> >      [SEQ/ACK analysis]
-> >          [Bytes in flight: 24]
-> >          [Bytes sent since last PSH flag: 24]
-> >      [Timestamps]
-> >          [Time since first frame in this TCP stream: 0.000000000 seconds]
-> >          [Time since previous frame in this TCP stream: 0.000000000 seconds]
-> >      TCP payload (24 bytes)
-> >      [PDU Size: 24]
-> > NVM Express Fabrics TCP
-> >      Pdu Type: CapsuleResponse (5)
-> >      Pdu Specific Flags: 0x00
-> >          .... ...0 = PDU Header Digest: Not set
-> >          .... ..0. = PDU Data Digest: Not set
-> >          .... .0.. = PDU Data Last: Not set
-> >          .... 0... = PDU Data Success: Not set
-> >      Pdu Header Length: 24
-> >      Pdu Data Offset: 0
-> >      Packet Length: 24
-> >      Unknown Data: 02000400000000001c0000001f000000
-> > 
-> > 0000  00 00 0c 9f f5 a8 b4 96 91 41 16 c0 08 00 45 00   .........A....E.
-> > 0010  00 4c 00 00 40 00 40 06 00 00 0a e4 26 d6 0a e4   .L..@.@.....&...
-> > 0020  c2 1e 11 44 b7 3d f8 e0 e4 dc b0 d7 5b 4a 80 18   ...D.=......[J..
-> > 0030  01 01 fe fa 00 00 01 01 08 0a fb 0d cf af 59 3e   ..............Y>
-> > 0040  dc 0b 05 00 18 00 18 00 00 00 02 00 04 00 00 00   ................
-> > 0050  00 00 1c 00 00 00 1f 00 00 00                     ..........
-> > 
-> > No.     Time           Source                Destination           Protocol Length Info
-> >       12 0.004969       10.228.38.175         10.228.194.30         NVMe/TCP 90
-> > 
-> > Frame 12: 90 bytes on wire (720 bits), 90 bytes captured (720 bits)
-> >      Encapsulation type: Ethernet (1)
-> >      Arrival Time: Feb 23, 2021 18:16:08.780653000 CET
-> >      [Time shift for this packet: 0.000000000 seconds]
-> >      Epoch Time: 1614100568.780653000 seconds
-> >      [Time delta from previous captured frame: 0.000079000 seconds]
-> >      [Time delta from previous displayed frame: 0.000079000 seconds]
-> >      [Time since reference or first frame: 0.004969000 seconds]
-> >      Frame Number: 12
-> >      Frame Length: 90 bytes (720 bits)
-> >      Capture Length: 90 bytes (720 bits)
-> >      [Frame is marked: False]
-> >      [Frame is ignored: False]
-> >      [Protocols in frame: eth:ethertype:ip:tcp:nvme-tcp]
-> >      [Coloring Rule Name: TCP]
-> >      [Coloring Rule String: tcp]
-> > Ethernet II, Src: IntelCor_41:16:c0 (b4:96:91:41:16:c0), Dst: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-> >      Destination: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-> >          Address: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
-> >          .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
-> >          .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
-> >      Source: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
-> >          Address: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
-> >          .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
-> >          .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
-> >      Type: IPv4 (0x0800)
-> > Internet Protocol Version 4, Src: 10.228.38.175, Dst: 10.228.194.30
-> >      0100 .... = Version: 4
-> >      .... 0101 = Header Length: 20 bytes (5)
-> >      Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
-> >          0000 00.. = Differentiated Services Codepoint: Default (0)
-> >          .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
-> >      Total Length: 76
-> >      Identification: 0x0000 (0)
-> >      Flags: 0x40, Don't fragment
-> >          0... .... = Reserved bit: Not set
-> >          .1.. .... = Don't fragment: Set
-> >          ..0. .... = More fragments: Not set
-> >      Fragment Offset: 0
-> >      Time to Live: 64
-> >      Protocol: TCP (6)
-> >      Header Checksum: 0x0000 [validation disabled]
-> >      [Header checksum status: Unverified]
-> >      Source Address: 10.228.38.175
-> >      Destination Address: 10.228.194.30
-> > Transmission Control Protocol, Src Port: 4420, Dst Port: 34895, Seq: 1, Ack: 1, Len: 24
-> >      Source Port: 4420
-> >      Destination Port: 34895
-> >      [Stream index: 3]
-> >      [TCP Segment Len: 24]
-> >      Sequence Number: 1    (relative sequence number)
-> >      Sequence Number (raw): 3092812012
-> >      [Next Sequence Number: 25    (relative sequence number)]
-> >      Acknowledgment Number: 1    (relative ack number)
-> >      Acknowledgment number (raw): 2384147181
-> >      1000 .... = Header Length: 32 bytes (8)
-> >      Flags: 0x018 (PSH, ACK)
-> >          000. .... .... = Reserved: Not set
-> >          ...0 .... .... = Nonce: Not set
-> >          .... 0... .... = Congestion Window Reduced (CWR): Not set
-> >          .... .0.. .... = ECN-Echo: Not set
-> >          .... ..0. .... = Urgent: Not set
-> >          .... ...1 .... = Acknowledgment: Set
-> >          .... .... 1... = Push: Set
-> >          .... .... .0.. = Reset: Not set
-> >          .... .... ..0. = Syn: Not set
-> >          .... .... ...0 = Fin: Not set
-> >          [TCP Flags: ·······AP···]
-> >      Window: 257
-> >      [Calculated window size: 257]
-> >      [Window size scaling factor: -1 (unknown)]
-> >      Checksum: 0xfed3 [unverified]
-> >      [Checksum Status: Unverified]
-> >      Urgent Pointer: 0
-> >      Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
-> >          TCP Option - No-Operation (NOP)
-> >              Kind: No-Operation (1)
-> >          TCP Option - No-Operation (NOP)
-> >              Kind: No-Operation (1)
-> >          TCP Option - Timestamps: TSval 3874335934, TSecr 3601030412
-> >              Kind: Time Stamp Option (8)
-> >              Length: 10
-> >              Timestamp value: 3874335934
-> >              Timestamp echo reply: 3601030412
-> >      [SEQ/ACK analysis]
-> >          [Bytes in flight: 24]
-> >          [Bytes sent since last PSH flag: 24]
-> >      [Timestamps]
-> >          [Time since first frame in this TCP stream: 0.000000000 seconds]
-> >          [Time since previous frame in this TCP stream: 0.000000000 seconds]
-> >      TCP payload (24 bytes)
-> >      [PDU Size: 24]
-> > NVM Express Fabrics TCP
-> >      Pdu Type: CapsuleResponse (5)
-> >      Pdu Specific Flags: 0x00
-> >          .... ...0 = PDU Header Digest: Not set
-> >          .... ..0. = PDU Data Digest: Not set
-> >          .... .0.. = PDU Data Last: Not set
-> >          .... 0... = PDU Data Success: Not set
-> >      Pdu Header Length: 24
-> >      Pdu Data Offset: 0
-> >      Packet Length: 24
-> >      Unknown Data: 02000400000000001b0000001f000000
-> > 
-> > 0000  00 00 0c 9f f5 a8 b4 96 91 41 16 c0 08 00 45 00   .........A....E.
-> > 0010  00 4c 00 00 40 00 40 06 00 00 0a e4 26 af 0a e4   .L..@.@.....&...
-> > 0020  c2 1e 11 44 88 4f b8 58 90 ec 8e 1b 32 ed 80 18   ...D.O.X....2...
-> > 0030  01 01 fe d3 00 00 01 01 08 0a e6 ed ac be d6 a3   ................
-> > 0040  5d 0c 05 00 18 00 18 00 00 00 02 00 04 00 00 00   ]...............
-> > 0050  00 00 1b 00 00 00 1f 00 00 00                     ..........
-> > 
-> As I suspected, we did receive an invalid frame.
-> Data digest would have saved us, but then it's not enabled.
-> 
-> So we do need to check if the request is valid before processing it.
+Hi Mathieu,
 
-That's just addressing a symptom. You can't fully verify the request is
-valid this way because the host could have started the same command ID
-the very moment before the code checks it, incorrectly completing an
-in-flight command and getting data corruption.
+On 2/24/21 12:35 AM, Mathieu Poirier wrote:
+> Add a new get_loaded_rsc_table() operation in order to support
+> scenarios where the remoteproc core has booted a remote processor
+> and detaches from it.  When re-attaching to the remote processor,
+> the core needs to know where the resource table has been placed
+> in memory.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+> New for V6:
+> - Don't return an error if a resource table doesn't exist.
+> ---
+> 
+>  drivers/remoteproc/remoteproc_core.c     | 32 ++++++++++++++++++++++++
+>  drivers/remoteproc/remoteproc_internal.h | 10 ++++++++
+>  include/linux/remoteproc.h               |  6 ++++-
+>  3 files changed, 47 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 8c7e9f1d50d7..0012b7bdce24 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1537,6 +1537,32 @@ static int rproc_fw_boot(struct rproc *rproc, const struct firmware *fw)
+>  	return ret;
+>  }
+>  
+> +static int rproc_set_loaded_rsc_table(struct rproc *rproc)
+> +{
+> +	struct resource_table *table_ptr;
+> +	struct device *dev = &rproc->dev;
+> +	size_t table_sz;
+> +	int ret;
+> +
+> +	table_ptr = rproc_get_loaded_rsc_table(rproc, &table_sz);
+> +	if (!table_ptr) {
+> +		/* Not having a resource table is acceptable */
+> +		return 0;
+
+Would it be an over protection to set rproc->table_ptr to NULL here?
+
+else
+
+Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+
+Thanks,
+Arnaud
+
+> +	}
+> +
+> +	if (IS_ERR(table_ptr)) {
+> +		ret = PTR_ERR(table_ptr);
+> +		dev_err(dev, "can't load resource table: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	rproc->cached_table = NULL;
+> +	rproc->table_ptr = table_ptr;
+> +	rproc->table_sz = table_sz;
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Attach to remote processor - similar to rproc_fw_boot() but without
+>   * the steps that deal with the firmware image.
+> @@ -1556,6 +1582,12 @@ static int rproc_attach(struct rproc *rproc)
+>  		return ret;
+>  	}
+>  
+> +	ret = rproc_set_loaded_rsc_table(rproc);
+> +	if (ret) {
+> +		dev_err(dev, "can't load resource table: %d\n", ret);
+> +		goto disable_iommu;
+> +	}
+> +
+>  	/* reset max_notifyid */
+>  	rproc->max_notifyid = -1;
+>  
+> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+> index c34002888d2c..4f73aac7e60d 100644
+> --- a/drivers/remoteproc/remoteproc_internal.h
+> +++ b/drivers/remoteproc/remoteproc_internal.h
+> @@ -177,6 +177,16 @@ struct resource_table *rproc_find_loaded_rsc_table(struct rproc *rproc,
+>  	return NULL;
+>  }
+>  
+> +static inline
+> +struct resource_table *rproc_get_loaded_rsc_table(struct rproc *rproc,
+> +						  size_t *size)
+> +{
+> +	if (rproc->ops->get_loaded_rsc_table)
+> +		return rproc->ops->get_loaded_rsc_table(rproc, size);
+> +
+> +	return NULL;
+> +}
+> +
+>  static inline
+>  bool rproc_u64_fit_in_size_t(u64 val)
+>  {
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index 6b0a0ed30a03..51538a7d120d 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -368,7 +368,9 @@ enum rsc_handling_status {
+>   * RSC_HANDLED if resource was handled, RSC_IGNORED if not handled and a
+>   * negative value on error
+>   * @load_rsc_table:	load resource table from firmware image
+> - * @find_loaded_rsc_table: find the loaded resouce table
+> + * @find_loaded_rsc_table: find the loaded resource table from firmware image
+> + * @get_loaded_rsc_table: get resource table installed in memory
+> + *			  by external entity
+>   * @load:		load firmware to memory, where the remote processor
+>   *			expects to find it
+>   * @sanity_check:	sanity check the fw image
+> @@ -390,6 +392,8 @@ struct rproc_ops {
+>  			  int offset, int avail);
+>  	struct resource_table *(*find_loaded_rsc_table)(
+>  				struct rproc *rproc, const struct firmware *fw);
+> +	struct resource_table *(*get_loaded_rsc_table)(
+> +				struct rproc *rproc, size_t *size);
+>  	int (*load)(struct rproc *rproc, const struct firmware *fw);
+>  	int (*sanity_check)(struct rproc *rproc, const struct firmware *fw);
+>  	u64 (*get_boot_addr)(struct rproc *rproc, const struct firmware *fw);
+> 
