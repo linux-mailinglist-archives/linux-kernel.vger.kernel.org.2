@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8104326617
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22879326618
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhBZRHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:07:11 -0500
-Received: from mga14.intel.com ([192.55.52.115]:65016 "EHLO mga14.intel.com"
+        id S230139AbhBZRHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:07:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230040AbhBZRFZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:05:25 -0500
-IronPort-SDR: OldlsLeSK1x3lAsir2KQ4z3RieaEKtyqvWwKX37qTYUxl9IQi+iS6GuyDzLs7eeXaqTXQcAC5N
- hq3KNnrOju/g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="185248072"
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="185248072"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:03:36 -0800
-IronPort-SDR: H163A0v8r6xd8gSA5UP4M+NVoDU1cL2trpXdJug28WbJCR/gkcNAfn2cEw4c/QU9/egfMmYP/y
- osQ1jDe9ip+g==
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="443137653"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:03:34 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lFgWa-008PHu-Fh; Fri, 26 Feb 2021 19:03:32 +0200
-Date:   Fri, 26 Feb 2021 19:03:32 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Rodolfo Giometti <giometti@enneenne.com>,
-        Ryan Govostes <rgovostes@whoi.edu>
-Subject: Re: [PATCH v1 1/7] pps: clients: gpio: Bail out on error when
- requesting GPIO echo line
-Message-ID: <YDkp5Jh8ZXWgr+zl@smile.fi.intel.com>
-References: <20210216113154.70852-1-andriy.shevchenko@linux.intel.com>
+        id S230106AbhBZRGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 12:06:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AADA64EEE;
+        Fri, 26 Feb 2021 17:05:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614359154;
+        bh=pS0c6BwAKO3ZjluaXv1iRIncVUi4cLS3BtdLS4xBl1w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OYW97vfBxwyIJC3LI6Bo+bbN81aYChOrzDRcDFF4KcMJ6XXu/fyXlIGBy2sMURUvs
+         iCcslhVW/RtaSyebIs5i9HzYPlgiSEIPX0maW26wowsVgVXV2Y60zbRN9R7TDqj//s
+         f1AtZtSoBFFAWjc8I/l59rDVAHLNJ8XD3d/1j2PY836c/TJuwz3LD8GKjIXBDRRqKk
+         3rsLNjBueLB2l3HEWN/GKnQ01ZVLiOJ5OGFwDU/aPLUSqlXmnXIMS340ToOtBb96OY
+         s5//0MX13QizRySjeNUdMiJ7SXrlV9MCw7LQfWiYg9R76v6N7mBqvJgg5GbL3OLPyb
+         dLDzLLOPMaM3g==
+Date:   Fri, 26 Feb 2021 12:05:53 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Andrea Parri <parri.andrea@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Juan Vazquez <juvazq@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.11 50/67] Drivers: hv: vmbus: Initialize memory
+ to be sent to the host
+Message-ID: <20210226170553.GB473487@sasha-vm>
+References: <20210224125026.481804-1-sashal@kernel.org>
+ <20210224125026.481804-50-sashal@kernel.org>
+ <20210224131457.GA1920@anparri>
+ <20210224133052.GA2058@anparri>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210216113154.70852-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210224133052.GA2058@anparri>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 01:31:48PM +0200, Andy Shevchenko wrote:
-> When requesting optional GPIO echo line, bail out on error,
-> so user will know that something wrong with the existing property.
+On Wed, Feb 24, 2021 at 02:30:52PM +0100, Andrea Parri wrote:
+>On Wed, Feb 24, 2021 at 02:16:00PM +0100, Andrea Parri wrote:
+>> On Wed, Feb 24, 2021 at 07:50:08AM -0500, Sasha Levin wrote:
+>> > From: "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+>> >
+>> > [ Upstream commit e99c4afbee07e9323e9191a20b24d74dbf815bdf ]
+>> >
+>> > __vmbus_open() and vmbus_teardown_gpadl() do not inizialite the memory
+>> > for the vmbus_channel_open_channel and the vmbus_channel_gpadl_teardown
+>> > objects they allocate respectively.  These objects contain padding bytes
+>> > and fields that are left uninitialized and that are later sent to the
+>> > host, potentially leaking guest data.  Zero initialize such fields to
+>> > avoid leaking sensitive information to the host.
+>> >
+>> > Reported-by: Juan Vazquez <juvazq@microsoft.com>
+>> > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+>> > Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+>> > Link: https://lore.kernel.org/r/20201209070827.29335-2-parri.andrea@gmail.com
+>> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+>> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>
+>> Sasha - This patch is one of a group of patches where a Linux guest running on
+>> Hyper-V will start assuming that hypervisor behavior might be malicious, and
+>> guards against such behavior.  Because this is a new assumption, these patches
+>> are more properly treated as new functionality rather than as bug fixes.  So I
+>> would propose that we *not* bring such patches back to stable branches.
+>
+>For future/similar cases: I'm wondering, is there some way to annotate a patch
+>with "please do not bring it back"?
 
-Guys, any comments on this series?
-
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/pps/clients/pps-gpio.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pps/clients/pps-gpio.c b/drivers/pps/clients/pps-gpio.c
-> index e0de1df2ede0..f89c31aa66f1 100644
-> --- a/drivers/pps/clients/pps-gpio.c
-> +++ b/drivers/pps/clients/pps-gpio.c
-> @@ -119,12 +119,12 @@ static int pps_gpio_setup(struct platform_device *pdev)
->  	data->echo_pin = devm_gpiod_get_optional(&pdev->dev,
->  			"echo",
->  			GPIOD_OUT_LOW);
-> -	if (data->echo_pin) {
-> -		if (IS_ERR(data->echo_pin)) {
-> -			dev_err(&pdev->dev, "failed to request ECHO GPIO\n");
-> -			return PTR_ERR(data->echo_pin);
-> -		}
-> +	if (IS_ERR(data->echo_pin)) {
-> +		dev_err(&pdev->dev, "failed to request ECHO GPIO\n");
-> +		return PTR_ERR(data->echo_pin);
-> +	}
->  
-> +	if (data->echo_pin) {
->  		ret = of_property_read_u32(np,
->  			"echo-active-ms",
->  			&value);
-> -- 
-> 2.30.0
-> 
+There's nothing explicit for the AUTOSEL stuff. A note in the changelog
+could work.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Sasha
