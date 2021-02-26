@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251CA32607E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F11A3326086
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhBZJuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:50:32 -0500
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:42775 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbhBZJtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:49:46 -0500
-Received: by mail-ej1-f47.google.com with SMTP id a22so13738461ejv.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:49:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qz7iF8KIepOE4aCxzuQPw/BTEyuyc4LjaMrR27h9584=;
-        b=sn0jUN5rgOydijiWmV3xW/uL07ZhnJWtQ9rTgtnDinXOyJX8nyFTIZrWyBM8FOIeFE
-         rNG1eGq86is9NMgqgwZeCKlY/UqSvTNnN1GodI6ZwlU3O9CZ8s7dFL+UHniqzI/hyHUP
-         397AKofvy1aeh6wcmolDFmIe5B+ZSWmcJ0fZ/EK/uGnVDYC2RiyB87ofgZzulhMjWnu1
-         tWJSE0+ywPJHIj3qO4W3ZvEd5DHgN5glI2gji32zSQPflQUU0pgjjxyak5n+2e8ougwB
-         rwrbqb42h4M7BQYd3pfvPXCEZRsAkre//p865XaVFKboxzTPOwc/9kEHMXGX2GUSqUJz
-         R6Rg==
-X-Gm-Message-State: AOAM531zzURWaQEU6aR+1LAUXgTDUv98asVYJAMKXCZHSNRG7daI2HtV
-        qc2NL+UF/2Dk9EN7MZqGMorNHLzNWS1VSA==
-X-Google-Smtp-Source: ABdhPJxa+ePfa8Re0o7FPIUeXTV3zNbjJ6/8zuXMfuHUQc76/Zay34GMNYowsatoX+YD24AqPO+Hiw==
-X-Received: by 2002:a17:906:1b0e:: with SMTP id o14mr2419608ejg.541.1614332943754;
-        Fri, 26 Feb 2021 01:49:03 -0800 (PST)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id ke18sm2145756ejc.117.2021.02.26.01.49.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 01:49:03 -0800 (PST)
-Subject: Re: [PATCH 17/20] vt: Manual replacement of the deprecated strlcpy()
- with return values
-To:     Romain Perier <romain.perier@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210222151231.22572-1-romain.perier@gmail.com>
- <20210222151231.22572-18-romain.perier@gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <a9f26339-c366-40c4-1cd6-c7ae1838e2b6@kernel.org>
-Date:   Fri, 26 Feb 2021 10:49:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230473AbhBZJvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:51:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230425AbhBZJuE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 04:50:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 085B964F1B;
+        Fri, 26 Feb 2021 09:49:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614332961;
+        bh=/p6dOhcOYpFM640Kb6MMyylYPi1RlfxvVA6ObczgEhE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lzJT/MU0B0CfNk3Od9WEkTaz2n39hSve8tsQ3B51OG+v8C9HX0tRwf4GTLm2dCCru
+         bKsQpfIyw5c5iUwmaaAiWiVB4XUYJK7IX1xXZNMtXoYEqWP12xMsiwbl36DmbqVi/z
+         ukRr5ZUvCD65qofwYxqx3J3F5TaiqaEYExRVZii1zRWSSWkbSD6iiDRpz0UZmHi2k2
+         1qY8kNEjVoIDLeAIKeO/lOI2VWNxQy5RcjPfkj3qP1S29nD+nyPojgBrdM+plQyZi2
+         Mg/7MwP2CW7wiCAOeezJLONwGgzqHlkfoUcd84vPXgZCN0e+HTe7MGqxhd03M6Vn/V
+         GYzpBWde0OF1Q==
+Received: by mail-ot1-f53.google.com with SMTP id g8so4903974otk.4;
+        Fri, 26 Feb 2021 01:49:20 -0800 (PST)
+X-Gm-Message-State: AOAM530wm272Kr9BSnn6ouIVs6pmYXn3kd2HyX/irVK1DisKQ6Y0h7U+
+        urjBdyimjh8Wn2XIuTAvgiv7P9DVcgkH8z4/Qa4=
+X-Google-Smtp-Source: ABdhPJz6LMQBQKLqBoeQS8rjpl42H7HBCEzMgMmWlkvE+pUpzvdpGIIYlIPKZf7sKPOWCYww0kyriDgqjAijjzESmdU=
+X-Received: by 2002:a9d:4802:: with SMTP id c2mr1608747otf.305.1614332960079;
+ Fri, 26 Feb 2021 01:49:20 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210222151231.22572-18-romain.perier@gmail.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210225125541.1808719-1-arnd@kernel.org> <20210226081548.h5ls5fxihunzxjvx@ti.com>
+In-Reply-To: <20210226081548.h5ls5fxihunzxjvx@ti.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 26 Feb 2021 10:49:04 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3ep7DFnMYnA7q5b-P8X7nd3TAz=t82011j8=koK3T08A@mail.gmail.com>
+Message-ID: <CAK8P3a3ep7DFnMYnA7q5b-P8X7nd3TAz=t82011j8=koK3T08A@mail.gmail.com>
+Subject: Re: [PATCH] spi: rockchip: avoid objtool warning
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jon Lin <jon.lin@rock-chips.com>,
+        Chris Ruehl <chris.ruehl@gtsys.com.hk>,
+        Alexander Kochetkov <al.kochet@gmail.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Vincent Pelletier <plr.vincent@gmail.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22. 02. 21, 16:12, Romain Perier wrote:
-> The strlcpy() reads the entire source buffer first, it is dangerous if
-> the source buffer lenght is unbounded or possibility non NULL-terminated.
+On Fri, Feb 26, 2021 at 9:16 AM 'Pratyush Yadav' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> Hi,
+>
+> On 25/02/21 01:55PM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > Building this file with clang leads to a an unreachable code path
+> > causing a warning from objtool:
+> >
+> > drivers/spi/spi-rockchip.o: warning: objtool: rockchip_spi_transfer_one()+0x2e0: sibling call from callable instruction with modified stack frame
+> >
+> > Use BUG() instead of unreachable() to avoid the undefined behavior
+> > if it does happen.
+> >
+> > Fixes: 65498c6ae241 ("spi: rockchip: support 4bit words")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  drivers/spi/spi-rockchip.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
+> > index 936ef54e0903..972beac1169a 100644
+> > --- a/drivers/spi/spi-rockchip.c
+> > +++ b/drivers/spi/spi-rockchip.c
+> > @@ -521,7 +521,7 @@ static void rockchip_spi_config(struct rockchip_spi *rs,
+> >                * ctlr->bits_per_word_mask, so this shouldn't
+> >                * happen
+> >                */
+> > -             unreachable();
+> > +             BUG();
+>
+> checkpatch says:
+>
+>   Avoid crashing the kernel - try using WARN_ON & recovery code rather
+>   than BUG() or BUG_ON()
+>
+> Which makes sense to me. This is not something bad enough to justify
+> crashing the kernel.
 
-"length" and it's NUL, not NULL in this case.
+I thought about rewriting it more thoroughly when I wrote the patch, but
+couldn't come up with a good alternative, so I did the simplest change
+in this direction, replacing the silent crash with a loud one.
 
-> It can lead to linear read overflows, crashes, etc...
-> 
-> As recommended in the deprecated interfaces [1], it should be replaced
-> by strscpy.
-> 
-> This commit replaces all calls to strlcpy that handle the return values
+Should we just dev_warn() and return instead, hoping that it won't do
+more harm?
 
-s/that/which/ ?
-"handles"
-"value"
+The backtrace from WARN_ON() probably doesn't help here.
 
-> by the corresponding strscpy calls with new handling of the return
-> values (as it is quite different between the two functions).
-
-Sorry, I have hard times understand the whole sentence. Could you 
-rephrase a bit?
-
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> ---
->   drivers/tty/vt/keyboard.c |    5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
-> index 77638629c562..5e20c6c307e0 100644
-> --- a/drivers/tty/vt/keyboard.c
-> +++ b/drivers/tty/vt/keyboard.c
-> @@ -2067,9 +2067,12 @@ int vt_do_kdgkb_ioctl(int cmd, struct kbsentry __user *user_kdgkb, int perm)
->   			return -ENOMEM;
->   
->   		spin_lock_irqsave(&func_buf_lock, flags);
-> -		len = strlcpy(kbs, func_table[kb_func] ? : "", len);
-> +		len = strscpy(kbs, func_table[kb_func] ? : "", len);
-
-func_table[kb_func] is NUL-terminated and kbs is of length len anyway, 
-so this is only cosmetical.
-
->   		spin_unlock_irqrestore(&func_buf_lock, flags);
->   
-> +		if (len == -E2BIG)
-> +			return -E2BIG;
-> +
-
-This can never happen, right?
-
->   		ret = copy_to_user(user_kdgkb->kb_string, kbs, len + 1) ?
->   			-EFAULT : 0;
->   
-> 
-
-thanks,
--- 
-js
+       Arnd
