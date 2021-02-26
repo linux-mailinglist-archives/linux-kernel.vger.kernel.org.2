@@ -2,130 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D913325F58
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49509325F5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhBZIni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:43:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S229769AbhBZIpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:45:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhBZInT (ORCPT
+        with ESMTP id S229886AbhBZIpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:43:19 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73ECDC061574;
-        Fri, 26 Feb 2021 00:42:39 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id a17so9724670ljq.2;
-        Fri, 26 Feb 2021 00:42:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=S793k6H/hAoKut98VLLNPVGW+xzCsgbTJeqIulBxCBw=;
-        b=h64S2zuIRShIjBfvFzDjoP6//eyY5VC6QbDGkArM0HMd6e4MmeZFplJrSqwvJlNWXU
-         RpW0UumJqRJFE9d5zSgYXZGfMXbOIEagfowr9VMZ2zm2jkGNiB4+37OdYmcm3vDWF56w
-         d30jPCUoqNExnK03TaUtur8nGH9evze4uVGY/OtXuOts6PKaAHXOvlEh9/+20aBoNC0o
-         0ANZhjAmaUz5L5XjCl84v9o2OvVMRa1BTiOOtmWMr03Y/Rl6yO+QTDoWmJd4lgCeUdIt
-         dtgFuwgMoNMUmSL8jpfHGAxFn8HCknmEB1o5gP9MDLOD9YcHjD0cMQiqK5CSNZDjYDeR
-         b4fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S793k6H/hAoKut98VLLNPVGW+xzCsgbTJeqIulBxCBw=;
-        b=HdGLzgGaJev/FxC6QNiAiRp9efrBhBU2O28HPxGl/1yx6cPenBaE8fbyu6tot2UrAT
-         dTt8TxI19WMVoKZp0NAYTrJfylgUcxxhPmHTXOpTTWYgqoeRqwTi18DUMqcP7L7Y9ELr
-         2diC+YrpzQU9HpQq1JcquiyMi8Oz36+1y1+qZaWoBnY3oHZ3sTdGnPxHpRbPoB1DuMFp
-         ZsdmC/sefmlsAnv8TbXxTEJfDQCZ9r97zQBG2Hpb/vFMeIJhbcjiXpn15rWbRvL2rS/6
-         YDCYzC1YSwwbAIQYjT+5vsLN/hsD6sexnJsOlH8Ih2wKbJGCfO6X5EMlYnvNI3HblB+V
-         okaA==
-X-Gm-Message-State: AOAM531T5YQeniAwelkWv5Sp/iUdj8xya5Z83ZsPTmVNsxMmuE6p2Uos
-        RxHLX7JDFl+npx5HfyieU7c=
-X-Google-Smtp-Source: ABdhPJyUy8uHsfuWICzA7wts9QSpVKpBFPWOl9A2pMGEOc3u63vmbe0M9XKkNd3Tsmi7TpQOvzttCQ==
-X-Received: by 2002:a05:651c:1183:: with SMTP id w3mr1059612ljo.131.1614328958012;
-        Fri, 26 Feb 2021 00:42:38 -0800 (PST)
-Received: from localhost.localdomain ([146.158.65.224])
-        by smtp.googlemail.com with ESMTPSA id 12sm1312245ljc.106.2021.02.26.00.42.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 00:42:37 -0800 (PST)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     snovitoll@gmail.com
-Cc:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rydberg@bitmath.org,
-        syzbot+0122fa359a69694395d5@syzkaller.appspotmail.com
-Subject: Re: [PATCH] drivers/mt: restrict num_slots in input_mt_init_slots()
-Date:   Fri, 26 Feb 2021 14:42:34 +0600
-Message-Id: <20210226084234.3477119-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210202120807.1394788-1-snovitoll@gmail.com>
-References: <20210202120807.1394788-1-snovitoll@gmail.com>
+        Fri, 26 Feb 2021 03:45:01 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6C1C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:44:20 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lFYjD-0000l9-5J; Fri, 26 Feb 2021 09:44:03 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:adc1:3ee1:6274:c5d0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id B0C4A5E9945;
+        Fri, 26 Feb 2021 08:43:59 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 09:43:59 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Stein <alexander.stein@systec-electronic.com>,
+        Federico Vaga <federico.vaga@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] can: c_can: add support to 64 message objects
+Message-ID: <20210226084359.jnlq6ccbeuib6zis@pengutronix.de>
+References: <20210225215155.30509-1-dariobin@libero.it>
+ <20210225215155.30509-7-dariobin@libero.it>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="z4je5v2dzmisaw5k"
+Content-Disposition: inline
+In-Reply-To: <20210225215155.30509-7-dariobin@libero.it>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  2 Feb 2021 18:08:07 +0600, Sabyrzhan Tasbolatov wrote:
-> syzbot found WARNING in input_mt_init_slots [1] when
-> struct_size(mt, slots, num_slots)=0x40006 where num_slots=0x10001,
-> which exceeds KMALLOC_MAX_SIZE (0x40000) and causes
-> order >= MAX_ORDER condition.
-> 
-> [1]
-> Call Trace:
->  alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
->  alloc_pages include/linux/gfp.h:547 [inline]
->  kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
->  kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
->  kmalloc include/linux/slab.h:557 [inline]
->  kzalloc include/linux/slab.h:682 [inline]
->  input_mt_init_slots drivers/input/input-mt.c:49 [inline]
-> 
-> Reported-by: syzbot+0122fa359a69694395d5@syzkaller.appspotmail.com
-> Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-> ---
->  drivers/input/input-mt.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/input-mt.c b/drivers/input/input-mt.c
-> index 44fe6f2f063c..e542f45a45ab 100644
-> --- a/drivers/input/input-mt.c
-> +++ b/drivers/input/input-mt.c
-> @@ -40,13 +40,18 @@ int input_mt_init_slots(struct input_dev *dev, unsigned int num_slots,
->  {
->  	struct input_mt *mt = dev->mt;
->  	int i;
-> +	size_t mt_size = 0;
->  
->  	if (!num_slots)
->  		return 0;
->  	if (mt)
->  		return mt->num_slots != num_slots ? -EINVAL : 0;
->  
-> -	mt = kzalloc(struct_size(mt, slots, num_slots), GFP_KERNEL);
-> +	mt_size = struct_size(mt, slots, num_slots);
-> +	if (mt_size > KMALLOC_MAX_SIZE)
-> +		return -ENOMEM;
-> +
-> +	mt = kzalloc(mt_size, GFP_KERNEL);
->  	if (!mt)
->  		goto err_mem;
->  
-> -- 
 
-Following-up. I've also just found out that in this function, there is another
-allocation with num_slots length:
+--z4je5v2dzmisaw5k
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-int input_mt_init_slots(..)
-{
-	..
-	if (flags & INPUT_MT_TRACK) {
-		unsigned int n2 = num_slots * num_slots;
-		mt->red = kcalloc(n2, sizeof(*mt->red), GFP_KERNEL);
-	..
+On 25.02.2021 22:51:55, Dario Binacchi wrote:
+> --- a/drivers/net/can/c_can/c_can.h
+> +++ b/drivers/net/can/c_can/c_can.h
+> @@ -22,8 +22,6 @@
+>  #ifndef C_CAN_H
+>  #define C_CAN_H
+> =20
+> -#define C_CAN_NO_OF_OBJECTS	32
+> -
+>  enum reg {
+>  	C_CAN_CTRL_REG =3D 0,
+>  	C_CAN_CTRL_EX_REG,
+> @@ -61,6 +59,7 @@ enum reg {
+>  	C_CAN_NEWDAT2_REG,
+>  	C_CAN_INTPND1_REG,
+>  	C_CAN_INTPND2_REG,
+> +	C_CAN_INTPND3_REG,
+>  	C_CAN_MSGVAL1_REG,
+>  	C_CAN_MSGVAL2_REG,
+>  	C_CAN_FUNCTION_REG,
+> @@ -122,6 +121,7 @@ static const u16 __maybe_unused reg_map_d_can[] =3D {
+>  	[C_CAN_NEWDAT2_REG]	=3D 0x9E,
+>  	[C_CAN_INTPND1_REG]	=3D 0xB0,
+>  	[C_CAN_INTPND2_REG]	=3D 0xB2,
+> +	[C_CAN_INTPND3_REG]	=3D 0xB4,
+>  	[C_CAN_MSGVAL1_REG]	=3D 0xC4,
+>  	[C_CAN_MSGVAL2_REG]	=3D 0xC6,
+>  	[C_CAN_IF1_COMREQ_REG]	=3D 0x100,
+> @@ -161,6 +161,7 @@ struct raminit_bits {
+> =20
+>  struct c_can_driver_data {
+>  	enum c_can_dev_id id;
+> +	int msg_obj_num;
 
-I've checked HID vendors' xrefs for input_mt_init_slots(), most of them
-pass >= 5 value to num_slots parameter. So either we should choose some
-optimal limit of num_slots or just restrict it with big KMALLOC_MAX_SIZE.
+unsigned int
 
-Comments?
+> =20
+>  	/* RAMINIT register description. Optional. */
+>  	const struct raminit_bits *raminit_bits; /* Array of START/DONE bit pos=
+itions */
+> diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_=
+can_pci.c
+> index 3752f68d095e..2cb98ccd04d7 100644
+> --- a/drivers/net/can/c_can/c_can_pci.c
+> +++ b/drivers/net/can/c_can/c_can_pci.c
+> @@ -31,6 +31,8 @@ enum c_can_pci_reg_align {
+>  struct c_can_pci_data {
+>  	/* Specify if is C_CAN or D_CAN */
+>  	enum c_can_dev_id type;
+> +	/* Number of message objects */
+> +	int msg_obj_num;
+
+unsigned int
+
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--z4je5v2dzmisaw5k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA4tMwACgkQqclaivrt
+76nrpQf/ZUDVh6uLkvCAhuPWsFDZMmKecK6Gf1z2SxqXpfV0K/F4mdh8jO9eEUhP
+1nbmdvwKwoDSOLJu19hfc20DVpcC1+o5mh+NwtLLCkWma0WKaeXe2K9/errZe3Vb
+9CXgaETQrRZSHTRi8gPcLfQMehRCYWiMLJ2yurv9zBBIfmOaKi81b+R6ciECWs1I
+MNwDhqXX+n18GmqgLKYLRuc1qDsUdGNCGmPzCA2kLtjSXb0EJDxe12DfpDJ+jWiO
+L4kSaRP6NkCWYPagCfuBl9nnokuJr3d+yK2qqTTO9b7KIiRqUbyhCx480E4fNcyp
+nkXZ2RhOsWQMafwc3ruxrDF2r92ETg==
+=6yrX
+-----END PGP SIGNATURE-----
+
+--z4je5v2dzmisaw5k--
