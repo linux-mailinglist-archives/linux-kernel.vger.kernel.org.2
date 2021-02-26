@@ -2,108 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF17D326659
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A6D32665A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhBZRa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:30:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
+        id S230153AbhBZRbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:31:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBZRa5 (ORCPT
+        with ESMTP id S229912AbhBZRbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:30:57 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489D4C061574;
-        Fri, 26 Feb 2021 09:30:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=cUpjOvqMFT82ciPpS3h3o5kw6NB7VHxKS03NBNLEB6M=; b=UaiPO/LgLQiER5zhsEULNyTVN+
-        TmwnBO4Z/tFKMrmlKMmPfy3CB92WJPrWm5gY5caTqf6W5/a0GCMl3c9P6N7gNrEgS05wSFMbNwT5f
-        2Rd6M7cLbjEKvtQK6mlk31Dm2p5NIlLYHD5f/LhIBPuKcviX1awZ5SCECfRzjo4T0j/hIHpa9CgLb
-        kwu6NBNJ5ZyuQO9/JJTJ/0fdO6GEHHhDV+G5pb1PHkL5LH0J5X8VLh82czZzVss4OjsPZDJ2k1Jv5
-        8yqDLkvGm/0/UmRwr4IA391AoLwSSjO8i+0uahbG8XMPGSmh+Gvlu6cMV0/+P3FBh2sqVx3IWR+pP
-        CkJVfmaQ==;
-Received: from [2601:1c0:6280:3f0::3ba4] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lFgwP-0008Ov-Tg; Fri, 26 Feb 2021 17:30:14 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Subject: [PATCH -next v2] fbdev: atyfb: use LCD management functions for PPC_PMAC also
-Date:   Fri, 26 Feb 2021 09:30:08 -0800
-Message-Id: <20210226173008.18236-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Fri, 26 Feb 2021 12:31:47 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E31C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:31:06 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id d3so14926791lfg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:31:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to;
+        bh=nfhYhhUoR2pCqMTHUNPNgO8uvmAp2Cp7XBHNPpmJIgY=;
+        b=CpMReeMFAGYUdY6aUaXf/OBDSikVA9jivmwzk6s9e8UWM1OWv2Z5kLaU/GEydMmbVH
+         dEtcjRwwK7WLJXGO29RTjo+BpNOjLTtTH469cNdQzciDgEJ3Xkepuny5RJPUr4CWbD8Q
+         cduLaSlxPao2/y8qm3KZJCFe3mjvzkLTzV5EDVCYpxHxPnhJ4yu8io5zkGpeT8ny8B2/
+         zoZlG9mbpXwHHq1MzxbSiuMy8Um6MURmKyp5n8hwKJVTsrW9ojoZKLxep3um0a7BgldZ
+         LxvqEA18FUxBYPuksGbeownY3EDJ7/GF4t+lEejPkmLAn2gTYaqsHcsNBD1Scz2Xf0Zm
+         5DkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:subject:to;
+        bh=nfhYhhUoR2pCqMTHUNPNgO8uvmAp2Cp7XBHNPpmJIgY=;
+        b=q65wfZDE7Ii82Slg/F0DYjrSe/kNGctHrWobv5I1Pa12i1/DUNCoD3I1w1dik9G2s8
+         J47KNzSp3NvIzIwG13rxu7hjmZN+mtPmMrTfbsYwm6PHawKdJSHmDlkogOedhkuWrbbs
+         hgKPYQETgSqGkW/9Llw8+SrQQ5yu7kGTz2F/b1kMuJeMk0LW8YOhusmH6YJCgMW4zPiE
+         P0HLd9N1MQgpbP1tWT9HxSMHnI/GfszU4oLod+XEpoiU7Gplgf5LYgXu5s1McCR+Xjcd
+         S1kZz0B/MA/EdhM/Xi70+TKcD3Pjacezy54lCJ7Se9yaXraTOO+cVobpQYeaWSR8zAzE
+         jqDg==
+X-Gm-Message-State: AOAM532IKUeMdptW5958aDWQj9S+2KBPbI0waqkJC9HaK8chKeC+c/5i
+        wQ9ZOYMXoF6M9sReZLnu9cDbUb3WiBxSMJLAzt4=
+X-Google-Smtp-Source: ABdhPJyLsGATep/I8MzxgxzT1qRXXsfXGbv2yvI/J+fRCHpyH39Y/Gp5YK+gKFmCQumWMmC6dN09UM7/BAqXFqBuddA=
+X-Received: by 2002:a19:7409:: with SMTP id v9mr2418601lfe.507.1614360665145;
+ Fri, 26 Feb 2021 09:31:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a19:5516:0:0:0:0:0 with HTTP; Fri, 26 Feb 2021 09:31:04
+ -0800 (PST)
+In-Reply-To: <CA+ESkMegOqpbLkM7TzAP6KdayEXeSJMDngn6EGumupei6xrU0g@mail.gmail.com>
+References: <CA+ESkMegOqpbLkM7TzAP6KdayEXeSJMDngn6EGumupei6xrU0g@mail.gmail.com>
+From:   willson mutanda <ncvbz0291@gmail.com>
+Date:   Fri, 26 Feb 2021 09:31:04 -0800
+Message-ID: <CA+ESkMdPVAM0bo1yO4sBWN6SpfKf4JXyFPn8bx3Thsw2mhx9HA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include PPC_PMAC in the configs that use aty_ld_lcd() and
-aty_st_lcd() implementations so that the PM code may work
-correctly for PPC_PMAC.
+Hello my friend
 
-Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: linux-fbdev@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>
----
-Daniel- We also need this patch:
-https://lore.kernel.org/dri-devel/20210224215528.822-1-rdunlap@infradead.org/
-to fix a kernel test robot build error.
+I have sent several emails, have you received my previous complaints?
 
-v2: send the correct version of this patch (thanks, Ville)
+Willson J. Mutanda
 
- drivers/video/fbdev/aty/atyfb_base.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
---- linux-next-20210219.orig/drivers/video/fbdev/aty/atyfb_base.c
-+++ linux-next-20210219/drivers/video/fbdev/aty/atyfb_base.c
-@@ -133,7 +133,7 @@
- #define PRINTKE(fmt, args...)	printk(KERN_ERR "atyfb: " fmt, ## args)
- 
- #if defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_GENERIC_LCD) || \
--defined(CONFIG_FB_ATY_BACKLIGHT)
-+defined(CONFIG_FB_ATY_BACKLIGHT) || defined (CONFIG_PPC_PMAC)
- static const u32 lt_lcd_regs[] = {
- 	CNFG_PANEL_LG,
- 	LCD_GEN_CNTL_LG,
-@@ -175,8 +175,8 @@ u32 aty_ld_lcd(int index, const struct a
- 		return aty_ld_le32(LCD_DATA, par);
- 	}
- }
--#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) \
--	 defined(CONFIG_FB_ATY_GENERIC_LCD) */
-+#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) ||
-+	 defined(CONFIG_FB_ATY_GENERIC_LCD) || defined(CONFIG_PPC_PMAC) */
- void aty_st_lcd(int index, u32 val, const struct atyfb_par *par)
- { }
- 
-@@ -184,7 +184,8 @@ u32 aty_ld_lcd(int index, const struct a
- {
- 	return 0;
- }
--#endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined (CONFIG_FB_ATY_GENERIC_LCD) */
-+#endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) ||
-+	  defined (CONFIG_FB_ATY_GENERIC_LCD) || defined(CONFIG_PPC_PMAC) */
- 
- #ifdef CONFIG_FB_ATY_GENERIC_LCD
- /*
+Email:   willsonmutanda.j@gmail.com
