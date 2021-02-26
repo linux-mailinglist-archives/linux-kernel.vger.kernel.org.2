@@ -2,106 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A776325DA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6B24325DA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhBZGlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:41:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBZGlT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:41:19 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FF9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:40:38 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id k66so6805573wmf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:40:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=qBv4V4EmN8qA0cU5ivOCn36uSWbsf+UfWEMpu3Xsvg0=;
-        b=u0HvfMPQE6pgcPWA3xteryuDihSM8934hE5IHWnPWPUtjWK/vGj+L1Wo0s/0YqsQB8
-         mmW8iareV9clEPA2G0t0P3KrdessD2h8zGt3dU0/v2hoQA31XQnWn6rndiL+j0E/KDiH
-         0sd8OA8566yoKpvZojRGS3DGW3usPrHj5gQcQpKVyGDs8Ng9SPdeUmDjrnYu64y2iA5M
-         3haiRUgQNXKZaIoC47EMaqfkvz4PYqWC3UGouNmH65kUiBYcnxu5qLMOXrKkZOIO1RpR
-         hmOqd57ufYWZRsB1oTOX5DsStg0xz99eTiwGwobAp2oWxPP9uZEQnd7ygq+AzyCpAi1b
-         6GDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qBv4V4EmN8qA0cU5ivOCn36uSWbsf+UfWEMpu3Xsvg0=;
-        b=eX2KeD9CCueaRkmMx3yWI41vMt8QInrHj7X2IXwUj4OA7V17AbV7zClanLeNHXR9Ue
-         wlMRIZ3GSJe6ZLH+33SxCUExcH59nDrP8H60+DEpwMm3DNGfXfBOblc4uXOp+Wz/uRKB
-         MpAKaFFi1DHonjxFTR9e1o2lOOOmQ3V3+8HSpZXbjRAmKw0M8O6bgT6MvdWr40zXXIQm
-         +/qbRrAptIamaOFboNVSlGXWL939LBzl1DBus9jksvKixBWgXXsbu0ekr21JJ0Lp/NxK
-         6sYDKNkoOre7M1aunMJsmpM/YA8wvdCJenhHDnAtlD8LKK23+yoHS5QOaZbPS75f0ZhK
-         PtzA==
-X-Gm-Message-State: AOAM533RHSLKXPz21rZ5wbZ0vkaTrooxyurtk5dVrHuoB/Oprh/lDco+
-        hjf7zRb5Gvk0gQhVXb0aoJB8jSHKuB3xxw==
-X-Google-Smtp-Source: ABdhPJwwamyIgSijLzbYxxqyCfR/axISib20Qfp6SAN1d2ny0CIzlWWodzGRYHoYobaPdAY/SNRRkA==
-X-Received: by 2002:a1c:a5c7:: with SMTP id o190mr1221496wme.172.1614321637313;
-        Thu, 25 Feb 2021 22:40:37 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d82:8b00:f574:4738:807d:ed97])
-        by smtp.gmail.com with ESMTPSA id 4sm11512687wma.0.2021.02.25.22.40.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 22:40:36 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH for Dwaipayan] MAINTAINERS: clarify responsibility for checkpatch documentation
-Date:   Fri, 26 Feb 2021 07:40:29 +0100
-Message-Id: <20210226064029.1143-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S229590AbhBZGmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:42:03 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:30859 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229953AbhBZGly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 01:41:54 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614321693; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=QGZVSyhl+UTYEZKQcx1TjnWHZZiS7iYEtl3Q3+3S5z8=;
+ b=rrwXbHG/WkCWToaXIMOFeGCmrKtkJC8fYhS43tHcrXZTSO34MTsYQBmO4MKwWPeDdsB1TIoX
+ yaOpxC/lRcwD8p+s+syO0UIRCcTLdIMMx/71J1WrTeZLEV8m5PwOaESM7AHbNsiQ82RM6D75
+ QAgQBPNMmXdkAvaz9m7oMXr4yzo=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 603897f66bec4e44c6a8a31c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 06:40:54
+ GMT
+Sender: kgunda=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0EEF1C43463; Fri, 26 Feb 2021 06:40:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kgunda)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F68FC433CA;
+        Fri, 26 Feb 2021 06:40:52 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 26 Feb 2021 12:10:52 +0530
+From:   kgunda@codeaurora.org
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
+        lee.jones@linaro.org, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, jacek.anaszewski@gmail.com,
+        pavel@ucw.cz, robh+dt@kernel.org, mark.rutland@arm.com,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH V1 2/2] backlight: qcom-wled: Correct the sync_toggle
+ sequence
+In-Reply-To: <20210224112632.lgm2yj6ekayuqg2p@maple.lan>
+References: <1614138648-2963-1-git-send-email-kgunda@codeaurora.org>
+ <1614138648-2963-3-git-send-email-kgunda@codeaurora.org>
+ <20210224112632.lgm2yj6ekayuqg2p@maple.lan>
+Message-ID: <427d82a0baa7ec1c3232469e81daa9a0@codeaurora.org>
+X-Sender: kgunda@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As discussed, Dwaipayan and Lukas take the responsibility for maintaining
-the checkpatch documentation that is currently being built up.
+On 2021-02-24 16:56, Daniel Thompson wrote:
+> On Wed, Feb 24, 2021 at 09:20:48AM +0530, Kiran Gunda wrote:
+>> Currently the FSC SYNC_BIT and MOD_SYNC_BIT are toggled
+>> from 1 to 0 to update the FSC and brightenss settings.
+>> Change this sequence form 0 to 1 as per the hardware team
+>> recommendation to update the FSC and brightness correctly.
+> 
+> Again... this patch description feels somewhat rushed. A patch
+> description is there to support code reviewer and to go on the version
+> history to assist with future maintainance. They matter!
+> 
+> Anyhow I don't recognise the "from 1 to 0" in the code since both 
+> before
+> an after the change it goes "from 0 to 1" and "from 1 to 0" but in a
+> different order. Doesn't the code actually currently implement "set 
+> then
+> clear"? If so then, likewise the new code is adopting "clear then set".
+> 
+I would have used "set" and "clear" instead of "0" and "1".
+Yes. The current code implementation is "set" all SYN bits and then 
+"clear"
+all SYNC bits. The new code is modified to change the sequence from 
+"clear"
+first and then "set" to ensure both FSC and brightness are updated.
 
-To be sure that the checkpatch maintainers and the corresponding
-documentation maintainers can keep the content synchronized, add them as
-reviewers to the counterpart.
-
-Link: https://lore.kernel.org/lkml/bcee822d1934772f47702ee257bc735c8f467088.camel@perches.com/
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210226
-
-Dwaipayan, you probably want to add this patch to your patch series for checkpatch
-documentation.
-
-Feel free to add your Signed-off-by tag just following mine. 
-
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 16ada1a4b751..6b48b79ba284 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4181,9 +4181,18 @@ X:	drivers/char/tpm/
- CHECKPATCH
- M:	Andy Whitcroft <apw@canonical.com>
- M:	Joe Perches <joe@perches.com>
-+R:	Dwaipayan Ray <dwaipayanray1@gmail.com>
-+R:	Lukas Bulwahn <lukas.bulwahn@gmail.com>
- S:	Maintained
- F:	scripts/checkpatch.pl
- 
-+CHECKPATCH DOCUMENTATION
-+M:	Dwaipayan Ray <dwaipayanray1@gmail.com>
-+M:	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-+R:	Joe Perches <joe@perches.com>
-+S:	Maintained
-+F:	Documentation/dev-tools/checkpatch.rst
-+
- CHINESE DOCUMENTATION
- M:	Harry Wei <harryxiyou@gmail.com>
- M:	Alex Shi <alex.shi@linux.alibaba.com>
--- 
-2.17.1
-
+> As with patch 1, the sync bits modified by wled3_sync_toggle singular
+> or plural?
+It is plural. We have to "clear" and "set" all sync bits.
+> 
+> Finally a description that is more sympathetic to the reviewer would be
+> welcome.  For example the following (if my guess is right and it is
+> true) makes things much easier for the reviewer:
+> Sure. I will update the documentation and patch description clearly.
+>   "The sync takes place during a 0 to 1 transition of the sync
+>   bits so the hardware team recommends a clear-then-set approach in
+>   order to guarantee such a transition regardless of the previous
+>   register state".
+> 
+> 
+> Daniel.
+> 
+> 
+>> 
+>> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+>> ---
+>>  drivers/video/backlight/qcom-wled.c | 12 ++++++------
+>>  1 file changed, 6 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/drivers/video/backlight/qcom-wled.c 
+>> b/drivers/video/backlight/qcom-wled.c
+>> index aef52b9..19f83ac 100644
+>> --- a/drivers/video/backlight/qcom-wled.c
+>> +++ b/drivers/video/backlight/qcom-wled.c
+>> @@ -337,13 +337,13 @@ static int wled3_sync_toggle(struct wled *wled)
+>> 
+>>  	rc = regmap_update_bits(wled->regmap,
+>>  				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+>> -				mask, mask);
+>> +				mask, WLED3_SINK_REG_SYNC_CLEAR);
+>>  	if (rc < 0)
+>>  		return rc;
+>> 
+>>  	rc = regmap_update_bits(wled->regmap,
+>>  				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+>> -				mask, WLED3_SINK_REG_SYNC_CLEAR);
+>> +				mask, mask);
+>> 
+>>  	return rc;
+>>  }
+>> @@ -353,17 +353,17 @@ static int wled5_mod_sync_toggle(struct wled 
+>> *wled)
+>>  	int rc;
+>>  	u8 val;
+>> 
+>> -	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
+>> -					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
+>>  	rc = regmap_update_bits(wled->regmap,
+>>  				wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
+>> -				WLED5_SINK_REG_SYNC_MASK, val);
+>> +				WLED5_SINK_REG_SYNC_MASK, 0);
+>>  	if (rc < 0)
+>>  		return rc;
+>> 
+>> +	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
+>> +					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
+>>  	return regmap_update_bits(wled->regmap,
+>>  				  wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
+>> -				  WLED5_SINK_REG_SYNC_MASK, 0);
+>> +				  WLED5_SINK_REG_SYNC_MASK, val);
+>>  }
+>> 
+>>  static int wled_ovp_fault_status(struct wled *wled, bool *fault_set)
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>>  a Linux Foundation Collaborative Project
+>> 
