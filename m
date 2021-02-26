@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629A93265C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240C93265C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhBZQna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:43:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhBZQnX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:43:23 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34D8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 08:42:41 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id mm21so15620937ejb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 08:42:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oJEVlbPPvFAyDZRVvcO+54tdbNeS7EYd7BewxLTv368=;
-        b=qZAoRzlNqnM4lCeuT+0qeH/osuFKDkds9fOdHbG3O55HfQhmH4G1aYpQ79hcrN+Npg
-         EL08UcuZvmID7f+0EZUGsIV6h8/zpWrkSSY01N5KKfADq4y2zvftjN4Cf21TK5ensKk/
-         OQgu/yH0lx5EhbR3ER6AhwYCFw6GzeBf9hAvVIybzbVuJ5y0dpS66myv5M7FqiXgLSMY
-         WNG7IIjEuHfVPU1acE95up21jWXKlPwZfeBjSf+udQEX17+tlgkkp+KKO3xxhCCxLohg
-         wC8fPusizxOA3O9003YKQHntLE9er5OMp85yCG2Opq9bQIfH+hQ8SFqwaVEHAeyT8TAP
-         pzLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oJEVlbPPvFAyDZRVvcO+54tdbNeS7EYd7BewxLTv368=;
-        b=gQX9ZPQs0IGoNJtcfu7MO/wrewCGT77jtIXhcxok6U5htZ3zovAa86nb17x8EDJcZS
-         AegodFB35Jb5HpDYJLAWK9B8Pv7gzeQP6xJz+yO9zAlodWx69Z7KotfSaAYn9yxy2KGN
-         8M9LSX3VMS0Y+OXoJOvVkwt26qx+EV5/St6hXFz/s+B1uO1XgqB6aiHwZpgwl0jRwY1e
-         XDZUjoRQK9Mgfw2Bk3xXKGPCWpJMRKgugMNyWJE7W/DJT/TQ58FCdR8vVPneF6rh4W5o
-         qK/HX2xehnTm1itUlpd82olQKL9VNbVjDx7ihgZMoCg3vBdVenT/2tLw1UXj+xrcpT61
-         BYNA==
-X-Gm-Message-State: AOAM530eefClss8ENAywSwMBnuUG2+vVl2F7DW3KndSRp662dBCCSvZ8
-        BO5AH/qtHyzF9qOI85myNNu3KKLuS1Utf61uBqc=
-X-Google-Smtp-Source: ABdhPJyfpJRQybvYVt2aEILrzYV6SzoOhkjtBY/y1tuM5k989hMs5JVczVQRJjKjzt2QhR6XWUNsOnkBvJmpl9M3Pbs=
-X-Received: by 2002:a17:906:3088:: with SMTP id 8mr4253944ejv.499.1614357760574;
- Fri, 26 Feb 2021 08:42:40 -0800 (PST)
+        id S230267AbhBZQns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:43:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41504 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230213AbhBZQn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 11:43:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 02C2CAE91;
+        Fri, 26 Feb 2021 16:42:47 +0000 (UTC)
+Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
+ it
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Daniel Wagner <dwagner@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210212181738.79274-1-dwagner@suse.de>
+ <c3a682d3-58f7-f5cc-caaa-75c36ca464e2@grimberg.me>
+ <20210212210929.GA3851@redsun51.ssa.fujisawa.hgst.com>
+ <ddf87227-1ad3-b8be-23ba-460433f70a85@grimberg.me>
+ <73e4914e-f867-c899-954d-4b61ae2b4c33@suse.de>
+ <20210215104020.yyithlo2hkxqvguj@beryllium.lan>
+ <a2064070-b511-ba6d-bd64-0b3abc208356@grimberg.me>
+ <20210226123534.4oovbzk4wrnfjp64@beryllium.lan>
+ <9e209b12-3771-cdca-2c9d-50451061bd2a@suse.de>
+ <20210226161355.GG31593@redsun51.ssa.fujisawa.hgst.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <a42d6285-ff32-3e16-b2b1-808d29f2a743@suse.de>
+Date:   Fri, 26 Feb 2021 17:42:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210226021254.3980-1-shy828301@gmail.com> <YDijjovHAer2tiL5@dhcp22.suse.cz>
-In-Reply-To: <YDijjovHAer2tiL5@dhcp22.suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 26 Feb 2021 08:42:29 -0800
-Message-ID: <CAHbLzkoLC-gGZA1GvDZjgTnVFzCTQnLMd4JWzZ6Ge_q63YhWKQ@mail.gmail.com>
-Subject: Re: [PATCH] doc: memcontrol: add description for oom_kill
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210226161355.GG31593@redsun51.ssa.fujisawa.hgst.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 11:30 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Thu 25-02-21 18:12:54, Yang Shi wrote:
-> > When debugging an oom issue, I found the oom_kill counter of memcg is
-> > confusing.  At the first glance without checking document, I thought it
-> > just counts for memcg oom, but it turns out it counts both global and
-> > memcg oom.
->
-> Yes, this is the case indeed. The point of the counter was to count oom
-> victims from the memcg rather than matching that to the source of the
-> oom. Rememeber that this could have been a memcg oom up in the
-> hierarchy as well. Counting victims on the oom origin could be equally
+On 2/26/21 5:13 PM, Keith Busch wrote:
+> On Fri, Feb 26, 2021 at 01:54:00PM +0100, Hannes Reinecke wrote:
+>> On 2/26/21 1:35 PM, Daniel Wagner wrote:
+>>> On Mon, Feb 15, 2021 at 01:29:45PM -0800, Sagi Grimberg wrote:
+>>>> Well, I think we should probably figure out why that is happening first.
+>>>
+>>> I got my hands on a tcpdump trace. I've trimmed it to this:
+>>>
+[ .. ]
+>>> NVM Express Fabrics TCP
+>>>       Pdu Type: CapsuleResponse (5)
+>>>       Pdu Specific Flags: 0x00
+>>>           .... ...0 = PDU Header Digest: Not set
+>>>           .... ..0. = PDU Data Digest: Not set
+>>>           .... .0.. = PDU Data Last: Not set
+>>>           .... 0... = PDU Data Success: Not set
+>>>       Pdu Header Length: 24
+>>>       Pdu Data Offset: 0
+>>>       Packet Length: 24
+>>>       Unknown Data: 02000400000000001b0000001f000000
+>>>
+>>> 0000  00 00 0c 9f f5 a8 b4 96 91 41 16 c0 08 00 45 00   .........A....E.
+>>> 0010  00 4c 00 00 40 00 40 06 00 00 0a e4 26 af 0a e4   .L..@.@.....&...
+>>> 0020  c2 1e 11 44 88 4f b8 58 90 ec 8e 1b 32 ed 80 18   ...D.O.X....2...
+>>> 0030  01 01 fe d3 00 00 01 01 08 0a e6 ed ac be d6 a3   ................
+>>> 0040  5d 0c 05 00 18 00 18 00 00 00 02 00 04 00 00 00   ]...............
+>>> 0050  00 00 1b 00 00 00 1f 00 00 00                     ..........
+>>>
+>> As I suspected, we did receive an invalid frame.
+>> Data digest would have saved us, but then it's not enabled.
+>>
+>> So we do need to check if the request is valid before processing it.
+> 
+> That's just addressing a symptom. You can't fully verify the request is
+> valid this way because the host could have started the same command ID
+> the very moment before the code checks it, incorrectly completing an
+> in-flight command and getting data corruption.
+> 
+Oh, I am fully aware.
 
-Yes, it is updated hierarchically on v2, but not on v1. I'm supposed
-this is because v1 may work in non-hierarchcal mode? If this is the
-only reason we may be able to remove this to get aligned with v2 since
-non-hierarchal mode is no longer supported.
+Bad frames are just that, bad frames.
+We can only fully validate that when digests are enabled, but I gather 
+that controllers sending out bad frames wouldn't want to enable digests, 
+either. So relying on that is possibly not an option.
 
-> confusing because in many cases there would be no victim counted for the
-> above mentioned memcg ooms.
->
-> > The cgroup v2 documents it, but the description is missed for cgroup v1.
-> >
-> > Signed-off-by: Yang Shi <shy828301@gmail.com>
->
-> Acked-by: Michal Hocko <mhocko@suse.com>
->
-> > ---
-> >  Documentation/admin-guide/cgroup-v1/memory.rst | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-> > index 0936412e044e..44d5429636e2 100644
-> > --- a/Documentation/admin-guide/cgroup-v1/memory.rst
-> > +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> > @@ -851,6 +851,9 @@ At reading, current status of OOM is shown.
-> >         (if 1, oom-killer is disabled)
-> >       - under_oom        0 or 1
-> >         (if 1, the memory cgroup is under OOM, tasks may be stopped.)
-> > +        - oom_kill         integer counter
-> > +          The number of processes belonging to this cgroup killed by any
-> > +          kind of OOM killer.
-> >
-> >  11. Memory Pressure
-> >  ===================
-> > --
-> > 2.26.2
-> >
->
-> --
-> Michal Hocko
-> SUSE Labs
+So really what I'm trying to avoid is the host crashing on a bad frame.
+That kind of thing always resonates bad with customers.
+And tripping over an uninitialized command is just too stupid IMO.
+
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
