@@ -2,140 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69933261C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC403261C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:09:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhBZLHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:07:00 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:45048 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhBZLG5 (ORCPT
+        id S230454AbhBZLIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:08:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46645 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230164AbhBZLIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:06:57 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 11QB4twq079584;
-        Fri, 26 Feb 2021 05:04:55 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614337495;
-        bh=MdgbDRHH4dg8uTJtgWTuDNWRvpN3VoqBOgFyw0Qzq/I=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ntQy2PrRI5Qsyt2FubX0iw8ZrbOAnRqJKEKlkAbQNAEAx3Bs7KIWLeKKGmjhofOzD
-         KfHtMhQYvnbGilCIUvCkSPyFkQXrPwpYkO+jcSX7Aorjo9GJqisVynL/SdIxD9RePg
-         V9k1ZcbDrFXFwZ13klbItKptOucLmvtQTctQL3HM=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 11QB4t7L097559
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 26 Feb 2021 05:04:55 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 26
- Feb 2021 05:04:54 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 26 Feb 2021 05:04:54 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 11QB4s96066246;
-        Fri, 26 Feb 2021 05:04:54 -0600
-Date:   Fri, 26 Feb 2021 16:34:53 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jon Lin <jon.lin@rock-chips.com>,
-        Chris Ruehl <chris.ruehl@gtsys.com.hk>,
-        Alexander Kochetkov <al.kochet@gmail.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Vincent Pelletier <plr.vincent@gmail.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC support" 
-        <linux-rockchip@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] spi: rockchip: avoid objtool warning
-Message-ID: <20210226110451.ijpllyczuquerfsr@ti.com>
-References: <20210225125541.1808719-1-arnd@kernel.org>
- <20210226081548.h5ls5fxihunzxjvx@ti.com>
- <CAK8P3a3ep7DFnMYnA7q5b-P8X7nd3TAz=t82011j8=koK3T08A@mail.gmail.com>
+        Fri, 26 Feb 2021 06:08:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614337636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tk06oGoT/WyXBHM/QvyAXYl1KqMGMDdyTbImAeS6eqY=;
+        b=Dc+xcAwHsUkj45s/gmduUpxL4+a46XsHmNlT8UyQA6GmLjVKJpo8cBjuAnSvvYJABsrCRY
+        CRhaNTMg+pD7KOi1gHWStK9Fn5J4Oz2ZnvP68ub9xNXV3imq9Y9KUMYgQSZel+NTXwbWz9
+        f8wNgae5PY3lYtdcRbTLq5MLXdTHM/k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-175-bFck02I7PoyTOVy4T72SBw-1; Fri, 26 Feb 2021 06:07:12 -0500
+X-MC-Unique: bFck02I7PoyTOVy4T72SBw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A38018BA28A;
+        Fri, 26 Feb 2021 11:07:05 +0000 (UTC)
+Received: from [10.36.112.148] (ovpn-112-148.ams2.redhat.com [10.36.112.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D60C7093A;
+        Fri, 26 Feb 2021 11:07:00 +0000 (UTC)
+Subject: Re: [PATCH v8 1/1] mm/page_alloc.c: refactor initialization of struct
+ page for holes in memory layout
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+References: <20210225224351.7356-1-rppt@kernel.org>
+ <20210225224351.7356-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <d1dff930-5719-c011-e5ee-b81f2a9fdb47@redhat.com>
+Date:   Fri, 26 Feb 2021 12:07:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3ep7DFnMYnA7q5b-P8X7nd3TAz=t82011j8=koK3T08A@mail.gmail.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210225224351.7356-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/02/21 10:49AM, Arnd Bergmann wrote:
-> On Fri, Feb 26, 2021 at 9:16 AM 'Pratyush Yadav' via Clang Built Linux
-> <clang-built-linux@googlegroups.com> wrote:
-> >
-> > Hi,
-> >
-> > On 25/02/21 01:55PM, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > Building this file with clang leads to a an unreachable code path
-> > > causing a warning from objtool:
-> > >
-> > > drivers/spi/spi-rockchip.o: warning: objtool: rockchip_spi_transfer_one()+0x2e0: sibling call from callable instruction with modified stack frame
-> > >
-> > > Use BUG() instead of unreachable() to avoid the undefined behavior
-> > > if it does happen.
-> > >
-> > > Fixes: 65498c6ae241 ("spi: rockchip: support 4bit words")
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > > ---
-> > >  drivers/spi/spi-rockchip.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-> > > index 936ef54e0903..972beac1169a 100644
-> > > --- a/drivers/spi/spi-rockchip.c
-> > > +++ b/drivers/spi/spi-rockchip.c
-> > > @@ -521,7 +521,7 @@ static void rockchip_spi_config(struct rockchip_spi *rs,
-> > >                * ctlr->bits_per_word_mask, so this shouldn't
-> > >                * happen
-> > >                */
-> > > -             unreachable();
-> > > +             BUG();
-> >
-> > checkpatch says:
-> >
-> >   Avoid crashing the kernel - try using WARN_ON & recovery code rather
-> >   than BUG() or BUG_ON()
-> >
-> > Which makes sense to me. This is not something bad enough to justify
-> > crashing the kernel.
+On 25.02.21 23:43, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> I thought about rewriting it more thoroughly when I wrote the patch, but
-> couldn't come up with a good alternative, so I did the simplest change
-> in this direction, replacing the silent crash with a loud one.
+> There could be struct pages that are not backed by actual physical memory.
+> This can happen when the actual memory bank is not a multiple of
+> SECTION_SIZE or when an architecture does not register memory holes
+> reserved by the firmware as memblock.memory.
 > 
-> Should we just dev_warn() and return instead, hoping that it won't do
-> more harm?
+> Such pages are currently initialized using init_unavailable_mem() function
+> that iterates through PFNs in holes in memblock.memory and if there is a
+> struct page corresponding to a PFN, the fields of this page are set to
+> default values and it is marked as Reserved.
+> 
+> init_unavailable_mem() does not take into account zone and node the page
+> belongs to and sets both zone and node links in struct page to zero.
+> 
+> Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+> rather that check each PFN") the holes inside a zone were re-initialized
+> during memmap_init() and got their zone/node links right. However, after
+> that commit nothing updates the struct pages representing such holes.
+> 
+> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+> instance in a configuration below:
+> 
+> 	# grep -A1 E820 /proc/iomem
+> 	7a17b000-7a216fff : Unknown E820 type
+> 	7a217000-7bffffff : System RAM
+> 
+> unset zone link in struct page will trigger
+> 
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> 
+> in set_pfnblock_flags_mask() when called with a struct page from a range
+> other than E820_TYPE_RAM because there are pages in the range of ZONE_DMA32
+> but the unset zone link in struct page makes them appear as a part of
+> ZONE_DMA.
+> 
+> Interleave initialization of the unavailable pages with the normal
+> initialization of memory map, so that zone and node information will be
+> properly set on struct pages that are not backed by the actual memory.
+> 
+> With this change the pages for holes inside a zone will get proper
+> zone/node links and the pages that are not spanned by any node will get
+> links to the adjacent zone/node. The holes between nodes will be prepended
+> to the zone/node above the hole and the trailing pages in the last section
+> that will be appended to the zone/node below.
+> 
+> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Reported-by: Qian Cai <cai@lca.pw>
+> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+> Reviewed-by: Baoquan He <bhe@redhat.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
 
-Hmm... I'm not very familiar with this device or driver so take what I 
-say with a grain of salt. On the surface level it looks like it might 
-end up doing something wrong or unexpected.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Returning an error code from this function (along with the dev_warn() or 
-WARN_ON()) is the most sensible thing to do IMO. If the SPI layer sends 
-an invalid value then the driver should be well within its rights to 
-refuse the transaction. The function is currently void but making it 
-return int seems fairly straightforward.
+Thanks Mike!
 
-> 
-> The backtrace from WARN_ON() probably doesn't help here.
-> 
->        Arnd
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Thanks,
+
+David / dhildenb
+
