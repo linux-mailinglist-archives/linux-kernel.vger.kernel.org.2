@@ -2,70 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032B732610A
+	by mail.lfdr.de (Postfix) with ESMTP id F0AEF32610C
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhBZKM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:12:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59817 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231156AbhBZKKX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:10:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614334137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=G43y8SBbvkYh1R+y/15Z6f9RmEMjkgNDToKDDC5hPAE=;
-        b=fh7iRc80rnB/PV7FEJl1X/YaX1s6QBQM42BD4kUWTPtAlJTlEeJqQ/9UB1CoiZFb6WMs6j
-        q1PNivFeHBY7EWDQFlEE1f4lLoR6juYl7P9yiU6uZhj8h+FXXBekVaEPDT04KYFLgIpYDP
-        +FV933pPfRirZIj6Iv3ke6hwlGPWvj0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-gZGwslxfNUesa8OLxzqTqQ-1; Fri, 26 Feb 2021 05:08:55 -0500
-X-MC-Unique: gZGwslxfNUesa8OLxzqTqQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B6F5980196C;
-        Fri, 26 Feb 2021 10:08:54 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4FC6F18A77;
-        Fri, 26 Feb 2021 10:08:54 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     David Woodhouse <dwmw@amazon.co.uk>
-Subject: [PATCH] KVM: flush deferred static key before checking it
-Date:   Fri, 26 Feb 2021 05:08:53 -0500
-Message-Id: <20210226100853.75344-1-pbonzini@redhat.com>
+        id S231215AbhBZKMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:12:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230347AbhBZKKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:10:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 527E664EF3;
+        Fri, 26 Feb 2021 10:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614334211;
+        bh=J8488/xWlzmQzNniMsL80fBVsFtQWrYNRztSdfJwqAk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WhCwCAwnN+mIiDnlP0uo/JttnWB4Zl9f3pi1WL6S+ek62KLlsQETmefsOijLSxAa9
+         dwObUzDq/Lx0RwWUqjwidIr4CPFemwOnJ4QWm91YUtA1qtyKuDhoH73K/xcLGuetCI
+         6HInXnvXkZi5cJ3pRUFFpuCmNEQ/tyOVvQmQNOwU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.4.101
+Date:   Fri, 26 Feb 2021 11:10:06 +0100
+Message-Id: <1614334206157249@kroah.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A missing flush would cause the static branch to trigger incorrectly.
+I'm announcing the release of the 5.4.101 kernel.
 
-Cc: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 1 +
- 1 file changed, 1 insertion(+)
+All users of the 5.4 kernel series must upgrade.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 1d2bc89431a2..bfc928495bd4 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8039,6 +8039,7 @@ void kvm_arch_exit(void)
- 	kvm_mmu_module_exit();
- 	free_percpu(user_return_msrs);
- 	kmem_cache_destroy(x86_fpu_cache);
-+	static_key_deferred_flush(&kvm_xen_enabled);
- 	WARN_ON(static_branch_unlikely(&kvm_xen_enabled.key));
- }
- 
--- 
-2.26.2
+The updated 5.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                           |    2 
+ arch/arm64/boot/dts/nvidia/tegra210.dtsi           |    1 
+ drivers/hid/hid-core.c                             |    6 +-
+ drivers/net/ethernet/chelsio/cxgb4/t4_pci_id_tbl.h |    1 
+ drivers/net/usb/qmi_wwan.c                         |    1 
+ drivers/usb/core/quirks.c                          |    9 ++-
+ fs/cifs/connect.c                                  |    1 
+ fs/dax.c                                           |   10 +--
+ fs/ntfs/inode.c                                    |    6 ++
+ include/linux/mm.h                                 |    8 +-
+ kernel/bpf/verifier.c                              |   10 ++-
+ mm/memory.c                                        |   57 +++++++++++----------
+ scripts/Makefile                                   |    9 ++-
+ scripts/recordmcount.pl                            |    6 +-
+ virt/kvm/kvm_main.c                                |   17 ++++--
+ 15 files changed, 92 insertions(+), 52 deletions(-)
+
+Christoph Hellwig (2):
+      mm: unexport follow_pte_pmd
+      mm: simplify follow_pte{,pmd}
+
+Christoph Schemmel (1):
+      NET: usb: qmi_wwan: Adding support for Cinterion MV31
+
+Daniel Borkmann (1):
+      bpf: Fix truncation handling for mod32 dst reg wrt zero
+
+Greg Kroah-Hartman (1):
+      Linux 5.4.101
+
+Johan Hovold (1):
+      USB: quirks: sort quirk entries
+
+Paolo Bonzini (2):
+      KVM: do not assume PTE is writable after follow_pfn
+      mm: provide a saner PTE walking API for modules
+
+Raju Rangoju (1):
+      cxgb4: Add new T6 PCI device id 0x6092
+
+Rolf Eike Beer (2):
+      scripts: use pkg-config to locate libcrypto
+      scripts: set proper OpenSSL include dir also for sign-file
+
+Rong Chen (1):
+      scripts/recordmcount.pl: support big endian for ARCH sh
+
+Rustam Kovhaev (1):
+      ntfs: check for valid standard information attribute
+
+Sameer Pujar (1):
+      arm64: tegra: Add power-domain for Tegra210 HDA
+
+Sean Christopherson (1):
+      KVM: Use kvm_pfn_t for local PFN variable in hva_to_pfn_remapped()
+
+Shyam Prasad N (1):
+      cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
+
+Stefan Ursella (1):
+      usb: quirks: add quirk to start video capture on ELMO L-12F document camera reliable
+
+Will McVicker (1):
+      HID: make arrays usage and value to be the same
 
