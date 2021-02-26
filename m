@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56ED3263CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7C43263C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhBZOJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:09:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55130 "EHLO mx2.suse.de"
+        id S230220AbhBZOII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:08:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230112AbhBZOFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:05:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 87AABAFE2;
-        Fri, 26 Feb 2021 14:03:24 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     f.fainelli@gmail.com, robh+dt@kernel.org, robin.murphy@arm.com,
-        ardb@kernel.org, hch@infradead.org, narmstrong@baylibre.com,
-        dwmw2@infradead.org, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, arnd@arndb.de, will@kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [RFC 13/13] scsi: megaraid: Make use of dev_64bit_mmio_supported()
-Date:   Fri, 26 Feb 2021 15:03:05 +0100
-Message-Id: <20210226140305.26356-14-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210226140305.26356-1-nsaenzjulienne@suse.de>
-References: <20210226140305.26356-1-nsaenzjulienne@suse.de>
+        id S230124AbhBZOFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 09:05:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7760564EF0;
+        Fri, 26 Feb 2021 14:04:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614348266;
+        bh=BLWeBOVF8W7renKagiVmUVTYjOP+aHJuqtrmyXlTh8U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ek7vXs+5VSbdLxV2e0+0bZQl7i7ZSgjFRndDVC6Y03eE+IjkKRMzeFH4oxuK9T8F1
+         LW/fERlBz4Vn9aMBg4kAV5FOl795O04gJ5bx7ENRVhlIvscXhGojmisg9gzmZVyI0O
+         vfUsL6msaEj0pfG268TePa0B06EM/g6yayoYh/I68Gm/8boIIwqhoNVYy5r6HEuhrT
+         ZcNLmrDB67t70FawNvVSiEBAb8bJGemvBkvYv4ctr7ZBvwhJL8iyqi237erv7oK2J0
+         VXSNmFyyUjw2zWBRVM9kgzOsPJEBPzoZDFl/E66OnzxJ+FdcjpQyVScNi8G9Oit16e
+         jxk4TyQj6TU2w==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: vmlinux.lds.S: keep .entry.tramp.text section
+Date:   Fri, 26 Feb 2021 15:03:39 +0100
+Message-Id: <20210226140352.3477860-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of relying on defines use dev_64bit_mmio_supported(), which
-provides the same functionality. On top of that convert the
-implementation to lo_hi_writeq(), for a cleaner end result.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+When building with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION,
+I sometimes see an assertion
+
+ ld.lld: error: Entry trampoline text too big
+
+This happens when any reference to the trampoline is discarded at link
+time. Marking the section as KEEP() avoids the assertion, but I have
+not figured out whether this is the correct solution for the underlying
+problem.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/scsi/megaraid/megaraid_sas_fusion.c | 23 ++++++++++-----------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ arch/arm64/kernel/vmlinux.lds.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-index 38fc9467c625..d4933a591330 100644
---- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
-@@ -36,6 +36,7 @@
- #include <linux/vmalloc.h>
- #include <linux/workqueue.h>
- #include <linux/irq_poll.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
- 
- #include <scsi/scsi.h>
- #include <scsi/scsi_cmnd.h>
-@@ -259,19 +260,17 @@ static void
- megasas_write_64bit_req_desc(struct megasas_instance *instance,
- 		union MEGASAS_REQUEST_DESCRIPTOR_UNION *req_desc)
- {
--#if defined(writeq) && defined(CONFIG_64BIT)
--	u64 req_data = (((u64)le32_to_cpu(req_desc->u.high) << 32) |
--		le32_to_cpu(req_desc->u.low));
--	writeq(req_data, &instance->reg_set->inbound_low_queue_port);
--#else
-+	u64 req_data = ((u64)le32_to_cpu(req_desc->u.high) << 32) |
-+		       le32_to_cpu(req_desc->u.low);
- 	unsigned long flags;
--	spin_lock_irqsave(&instance->hba_lock, flags);
--	writel(le32_to_cpu(req_desc->u.low),
--		&instance->reg_set->inbound_low_queue_port);
--	writel(le32_to_cpu(req_desc->u.high),
--		&instance->reg_set->inbound_high_queue_port);
--	spin_unlock_irqrestore(&instance->hba_lock, flags);
--#endif
-+
-+	if (dev_64bit_mmio_supported(&instance->pdev->dev)) {
-+		writeq(req_data, &instance->reg_set->inbound_low_queue_port);
-+	} else {
-+		spin_lock_irqsave(&instance->hba_lock, flags);
-+		lo_hi_writeq(req_data, &instance->reg_set->inbound_low_queue_port);
-+		spin_unlock_irqrestore(&instance->hba_lock, flags);
-+	}
- }
- 
- /**
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index 926cdb597a45..c5ee9d5842db 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -96,7 +96,7 @@ jiffies = jiffies_64;
+ #define TRAMP_TEXT					\
+ 	. = ALIGN(PAGE_SIZE);				\
+ 	__entry_tramp_text_start = .;			\
+-	*(.entry.tramp.text)				\
++	KEEP(*(.entry.tramp.text))			\
+ 	. = ALIGN(PAGE_SIZE);				\
+ 	__entry_tramp_text_end = .;
+ #else
 -- 
-2.30.1
+2.29.2
 
