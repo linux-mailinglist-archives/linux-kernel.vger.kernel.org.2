@@ -2,90 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C90F32694F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63064326954
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhBZVQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:16:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhBZVQy (ORCPT
+        id S231136AbhBZVSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:18:06 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:46948 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230459AbhBZVR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:16:54 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEF7C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:16:14 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id k2so5666657ioh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:16:14 -0800 (PST)
+        Fri, 26 Feb 2021 16:17:59 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QLBPGV166855;
+        Fri, 26 Feb 2021 21:17:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2020-01-29; bh=2llRLZIHWL+pGmQec56AjHC5rGXF8U2vaL9IgQ1wczk=;
+ b=a1fV4Muj1X2M+lyJbt2X2CFNkM4RYiRxloLQUuY+GiV1JdzwAqryOj6WmS6eSdNbTERV
+ MFZ3xPyWnSOCkfpwBzx9TrHnuCw2DHBTpWGXZ862xaPhJGe1ZF625pZdKcvCNo2nQxkF
+ eE0IGVxEvK4PVTtO2E3IR5Yc6ofRW5EeXayrQG06czGJPgMfAQmT/2aSUAr/v4wnk4ny
+ Rj3IsHvva4LAjdz+CEKs5gIjkOr64mvgxx0iqlRdxzrAQfdb9nmddFsE033weQEJ/Qnv
+ btYWc8u9SHbDcpKJXUiW2IT8aJfQKD2Rhc2a+3dm2NC2VZKEgHgNTuO7MzzzJl6S35T0 RA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 36xqkfavb5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Feb 2021 21:17:10 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QLAlxq045394;
+        Fri, 26 Feb 2021 21:17:10 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2172.outbound.protection.outlook.com [104.47.56.172])
+        by aserp3020.oracle.com with ESMTP id 36ucb3vy69-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Feb 2021 21:17:10 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i0c56xU+X9tzwb6zrYqJxx3zdT9SjZ7QzS6HjV9ptqgkurTVzrb8fxQs8uyFLB3FdwHIhH9EJjtOeiQGEg17waqHur2MQogauSe6JhEpatTYwwNQl+pDzDL2YLsCjnJ0Q/lTnXBXIaTIQDtC00JaEreQNphTeoUk4H0CKRWcD97M56GWo2SgzTMbNu5r5dCP/crPT464BpTrycF1AhWcKagNos/OsmpQtKfc4cvZmenyvSpvak7kYVPKjWkRAL86GDW5Je4+egMJ3LjaQKLS696n+irdhe3hdi3FGrICTn6YSqLjIWjYS51Wxj9F4lQst+1As2TcLQ3TE/vJF/0FWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2llRLZIHWL+pGmQec56AjHC5rGXF8U2vaL9IgQ1wczk=;
+ b=PiAcoI2meS8bMIOP2dF9zwul/YZBu/wfL6zMz8ByTlawEnVfDoSTj4x/uVjZhousmAC9PAQ8/4vs1LiYcuMH8qKNXJ/u3otxJd4OPfXeAyGplgk3hFKjfX6VftewIYDNlcom6Qr1KaGuAoC2uae5+SdeeJObJ6Dqo7r6YJaIE3/axy/VPTOgkEw+FsJTUwMdViBP5teWtgX04PjTYl/Adj0L1xhEUifRKUK165nfVvvUYzYFEhyQoI+dHPpHLuUrhj51mTZFVAvxaNi7wkq5kue0Df6aP3ED4Jb8X7vjDX36xKCW7zYDQwBIKAnXwgeYJqW/9yL1BvFqgnHtuIpusw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aEkqz2u+mz0t/VSEBaPY0HHIl5fJzCg4LIHOIOyh/9w=;
-        b=XkvlS/0/K8mzVYjc2SkwA1orhL7/IIKO+AlU1wIH6Yw7SKfNfEllTE0zHUERYgRN1k
-         alNACxacCD+FKU0qObNNT7n59QnH5+Nx0ATyOZeMJ3PkOqD2hSLHgr8UnENQgyenn06d
-         eG8mFZceeK++R9zJ1tRuh4KGxdyJyJZMKp1hw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aEkqz2u+mz0t/VSEBaPY0HHIl5fJzCg4LIHOIOyh/9w=;
-        b=nD0dNTL0uvzL5WPKcuXF5teusdXRz/Bu50JCWbZOUg4/lUjPaUZZ2kGlfL5LxpgNgj
-         PAzsH76wJYm5/eRNbVvOO2LUljdM2LLi8kN1yPVdN1UjfnlR+NIN1HyIUFMSJ0S45uCe
-         s188q7IxhC2XkJ97YLmSDsZEPBVuHdv5DdEknNICJwpprRzu5nEpyyDvFtKZKodAp2Vc
-         1PbcoDkWdVRAl6IQumnH0ducZfXdWiTzjRMDU/gQhT9EVWSbTDAKvA3TU+rzvQ0BpY8E
-         k4IAptIgNVgjSa2HVmlRxncHgiH2FAiYmCQW7ityLgO5flMJ5nr9MRnNJMPLF4fECrwQ
-         1l3A==
-X-Gm-Message-State: AOAM533hR7T4mhaDWpSGMtSJTET/dk/uezEmSeUV9eGviKM9Ejyb0D0A
-        M0Gc/U6IK9QrxuAzGMnaZmbrxw==
-X-Google-Smtp-Source: ABdhPJya4CVD+12xGI84DX9yRpBbPixLWbm2kpiFEPOxywzbJ0rPRLUtdkh2MXAsoQVrNpOXNqNePg==
-X-Received: by 2002:a05:6602:1799:: with SMTP id y25mr4200492iox.55.1614374173505;
-        Fri, 26 Feb 2021 13:16:13 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v8sm5223997ilg.21.2021.02.26.13.16.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 13:16:13 -0800 (PST)
-Subject: Re: [PATCH v2 1/3] lockdep: add lockdep_assert_not_held()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, will@kernel.org, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1614355914.git.skhan@linuxfoundation.org>
- <a40d18bba5a52662ac8fc556e1fce3752ea08472.1614355914.git.skhan@linuxfoundation.org>
- <YDli+H48Ft3F6k9/@hirez.programming.kicks-ass.net>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <0ee409b7-b0d5-43c2-c247-b0482c392dea@linuxfoundation.org>
-Date:   Fri, 26 Feb 2021 14:16:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2llRLZIHWL+pGmQec56AjHC5rGXF8U2vaL9IgQ1wczk=;
+ b=TatxP9FFGqiy4gvej/ShnaLPJhDvXrDyyprjh4bG4jPyXt0S0SnBWRyjlUpzIszbjpmPW6fLTi29fjg20wtaez1UEdH01CWBPKnfHjBgPHoDn3ICD+QzSYyPwEXtZ9w1t0DJb9+TZAAcNPMx5yLoJdwYKbKiR+ncyt7bZAObxQs=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by SJ0PR10MB4733.namprd10.prod.outlook.com (2603:10b6:a03:2ae::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Fri, 26 Feb
+ 2021 21:17:08 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
+ 21:17:08 +0000
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     alison.schofield@intel.com, vishal.l.verma@intel.com,
+        ira.weiny@intel.com, ben.widawsky@intel.com,
+        dan.j.williams@intel.com, linux-cxl@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Subject: [PATCH v2] cxl: Make loop variable be 'i' instead of 'j'
+Date:   Fri, 26 Feb 2021 16:16:56 -0500
+Message-Id: <20210226211656.46359-1-konrad.wilk@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <CAPcyv4iXhsOK0ZdHuHkQ-FwZbvT6H2M+FHRoZVr=Pv8SUdpT+g@mail.gmail.com>
+References: <CAPcyv4iXhsOK0ZdHuHkQ-FwZbvT6H2M+FHRoZVr=Pv8SUdpT+g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [209.6.208.110]
+X-ClientProxiedBy: SJ0PR03CA0074.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::19) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
 MIME-Version: 1.0
-In-Reply-To: <YDli+H48Ft3F6k9/@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (209.6.208.110) by SJ0PR03CA0074.namprd03.prod.outlook.com (2603:10b6:a03:331::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Fri, 26 Feb 2021 21:17:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 47e99ae4-7f72-4f39-228a-08d8da9bdfdc
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4733:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB4733825241A8B29D2BB7C693899D9@SJ0PR10MB4733.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qEI5fPkK6+qdi0FIJmtCAoY7Wo2xmg7d/2W+B0vLvcdytirxhaUpbp1YVx4H/yv2abMYpbIHcfEGrvhh+sg4793NvgeMPAmmcmBLyVRHn7Fb9aSXxratkBrrVGZJoohhbZatfkj2B8mMSSsJ2TYmEUZ3mEbZ95rar54AIwv5JBWY8i98rkEPqoLGb5o3g2xc1w42tYRGrtGEBrT84JgcXCcfqodwL2jf+O2djk3Injk7ffCoIn01JEWslr9SQE6tzmf2RBpD7271NW0aRPr8eo+393yMgQV1lNELP9lVkV2uvrEtnf2qcaVjUpbnqCTHeKeO2aeG2JGNrWgm+84DfJWO22XH8acXc8Y96wnI3/ioqt8k3Z+XGZ6HxkdKjc6+1BK320xZAN8BzuXSssbCOBznDqr3iPBpbaPw3Q77ToutBY6EHTfLmTunHZHgbCi+jFl6sMPVxs2eJ0P+0o/c6ArjxvQbumdxKi5Xz5+JwxE7Q9SlYLpPveDKBLeQElkbqtOLZN5Ben8vnq3Xeq3d38jPcaQrOvP9uGsW1dDNKFwiz/ZAnCeILSKN7XXEuL0sF6x+fY5F+uluyhTvN12ZuQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(136003)(376002)(396003)(346002)(36756003)(4326008)(6666004)(107886003)(186003)(16526019)(26005)(6486002)(2616005)(66476007)(66556008)(956004)(66946007)(1076003)(5660300002)(2906002)(69590400012)(52116002)(6506007)(8676002)(316002)(83380400001)(478600001)(86362001)(6512007)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 1Xp9R2qgWQrIkhAs3CtQxTrQ32EdsbaD3ja4MDxfyIyA/X2PvmShA+3NjtHgGQdLhkac4Qibh16npxEx+pf81cEGMA74czup1ZYwwCQBQuJt94rF+fEnUTMn1zRAYvCOli6WX+Lsn8JwwDTUQDUS0n4UgKAak7vWrkDArV7ne5h1KcJRjNg3EZXtpaM6cNCfTZGwGOp8szsSRd+0Q8dF8QIuih382GWkf2i/z4/vnYlU+aHnHTKZ8IsyBcFxt4/siVgkqc3TCbUA6zq7xZN19iZQmYNfO2UgkmGHLZk5rQvl75y4G77TF4XDp5zGe8svSM289UVPCRDZqE6OTPgV6/l7xNRBOT1uM6S7XRaxbpYTJ7Ad+KE/jQIi85j6oA0GqDd9od1wJLjTIpt9zIGMNvP732gyiZ7L0yqfhLnkyfj286Pb3Dg4jIzC172j2uBl9nVTLfn8O6Ft+oMOBDBDOXLbz+IbRVIDJiGlVZzPfC6OQA6N3Qzkv9a+e+g9xZsXkldTshH50bmmPEKqt26WGmp9lQB6UN/5OO3vVOA5TJ1Q1WuvkBjUNWGKRmb6Z7E/l7XFmH/8rZI2WbRSAU90mwdtQJCbYXGOAogfgDUzi8YBmznnRDFTBKsT9eSoZtkDKeFesiXPAUUedi/36KHTQtdpMfPGg+1VPP+zpE8Tb/0Dx3vBgkAV2Q9StEIx4O0KSlm9qzL7wXT+BUTQiYH+Y6wBYGMY0nmLKnG7cPhPICLrK20dOTF0P9j6AUdpyusP
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47e99ae4-7f72-4f39-228a-08d8da9bdfdc
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2021 21:17:08.6155
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9Qgj9toq86DebFBz6Uo5t4FhvFzAO5L2ajBUmTw34UHPjtUFu/G/iQlXo51A9w5JM8f+wBmOsiGaVWrDeQtLNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4733
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9907 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102260158
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9907 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1015
+ malwarescore=0 suspectscore=0 impostorscore=0 phishscore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102260158
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/21 2:07 PM, Peter Zijlstra wrote:
-> On Fri, Feb 26, 2021 at 10:52:13AM -0700, Shuah Khan wrote:
->> +		/* avoid false negative lockdep_assert_not_held()
->> +		 * and lockdep_assert_held()
->> +		 */
-> 
-> That's a coding style fail.
-> 
+.. otherwise people spend extra cycles looking for the
+inner loop and wondering 'why j'?
 
-Checkpatch didn't complain. What's your preference? Does the
-following work for you?
+This was an oversight when initial work was rebased
+so let's fix it here.
 
-/*
-  * avoid false negative lockdep_assert_not_held()
-  * and lockdep_assert_held()
-  */
+Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+---
+v1: Initial posting
+v2: Fix per Dan's request
+---
+ drivers/cxl/mem.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-thanks,
--- Shuah
+diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+index 244cb7d89678..d43197a193ce 100644
+--- a/drivers/cxl/mem.c
++++ b/drivers/cxl/mem.c
+@@ -698,7 +698,6 @@ static int cxl_query_cmd(struct cxl_memdev *cxlmd,
+ 	struct device *dev = &cxlmd->dev;
+ 	struct cxl_mem_command *cmd;
+ 	u32 n_commands;
+-	int j = 0;
+ 
+ 	dev_dbg(dev, "Query IOCTL\n");
+ 
+@@ -715,11 +714,12 @@ static int cxl_query_cmd(struct cxl_memdev *cxlmd,
+ 	 */
+ 	cxl_for_each_cmd(cmd) {
+ 		const struct cxl_command_info *info = &cmd->info;
++		int i = 0;
+ 
+-		if (copy_to_user(&q->commands[j++], info, sizeof(*info)))
++		if (copy_to_user(&q->commands[i++], info, sizeof(*info)))
+ 			return -EFAULT;
+ 
+-		if (j == n_commands)
++		if (i == n_commands)
+ 			break;
+ 	}
+ 
+-- 
+2.13.6
+
