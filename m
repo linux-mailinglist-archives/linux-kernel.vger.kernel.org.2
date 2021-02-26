@@ -2,141 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6843264C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4063264D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhBZPdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 10:33:23 -0500
-Received: from mail.efficios.com ([167.114.26.124]:57494 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBZPdU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:33:20 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6D5E830F9D0;
-        Fri, 26 Feb 2021 10:32:36 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 1wx23JkX2j13; Fri, 26 Feb 2021 10:32:36 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E7E1A30F9CF;
-        Fri, 26 Feb 2021 10:32:35 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E7E1A30F9CF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1614353556;
-        bh=lIk0nJ/zoaoI4S6yz+QKK2lq/rImbycdfBHkfxXXItg=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=b/t4RyJaCI9evNkbJeINEt0bSsVocZtyHQIvdGzgoGqVZ7mimfuomwXIX3wMj3yTP
-         R1FszRRf2HOPLXyFLuAu+XeUAPa1DFVwh4DTLZragq7YI58oXxK2XaDCb71RFdR93S
-         uMtdalk1ZnfSieo2pa4bTjeqTveMn8GNMMEZWq+8Oqlq6BZ0Kyt9VAk4BmReYTFT3w
-         Ma8oFLbAiOcm4EDUhlitHn1n9b6GbHcpxvJOuSaNjFw/TWeLhDQYIIMrceeDl37yP4
-         KVbh0Wu1CZW3JBtuJV7kqgulO3QuM2bchgjdceFsa75T0vDch/xM5c0hKSufey1L10
-         JlHdgrGAHhk5Q==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nI_BGAxrNA_7; Fri, 26 Feb 2021 10:32:35 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id D4EED30F9CE;
-        Fri, 26 Feb 2021 10:32:35 -0500 (EST)
-Date:   Fri, 26 Feb 2021 10:32:35 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Piotr Figiel <figiel@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Oskolkov <posk@google.com>,
-        Kamil Yurtsever <kyurtsever@google.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Paul Turner <pjt@google.com>, emmir <emmir@google.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>
-Message-ID: <192824546.8190.1614353555831.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210226135156.1081606-1-figiel@google.com>
-References: <20210226135156.1081606-1-figiel@google.com>
-Subject: Re: [PATCH v2] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+        id S229989AbhBZPjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 10:39:08 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:20133 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229571AbhBZPjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 10:39:06 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614353916; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=Y11jeY4eLgaDwVm86bt5UA29oOY9D+tX6VVltEVFFPs=; b=Lc9pMcSG5KcYPSA0T7t/2VZjGCUv4l17hdI0NElEvI6KCdBcPVSMrVNbrYshCdrIyDYo1Tfa
+ OsshoonDoUwSl4osZk58HOnYSfeE9dAaeOFdLc+sDiLCN5nntrvIbI7P7JPfaB/ESr6ab9kM
+ LPwP8S2er01Nl0o4nLAg7Q8zj0w=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 603915d69e950d0db1c942a7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 15:37:58
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 64348C433CA; Fri, 26 Feb 2021 15:37:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1ED7BC433C6;
+        Fri, 26 Feb 2021 15:37:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1ED7BC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH] [v2] mt76: mt7915: fix unused 'mode' variable
+References: <20210226142215.3482168-1-arnd@kernel.org>
+Date:   Fri, 26 Feb 2021 17:37:50 +0200
+In-Reply-To: <20210226142215.3482168-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Fri, 26 Feb 2021 15:21:27 +0100")
+Message-ID: <87lfbaalgx.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
-Thread-Topic: ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
-Thread-Index: 8ww6gQARVjS9yplUpDDdbZG1dtieAw==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Feb 26, 2021, at 8:51 AM, Piotr Figiel figiel@google.com wrote:
-[...]
++ linux-wireless
+
+Arnd Bergmann <arnd@kernel.org> writes:
+
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> clang points out a possible corner case in the mt7915_tm_set_tx_cont()
+> function if called with invalid arguments:
+>
+> drivers/net/wireless/mediatek/mt76/mt7915/testmode.c:593:2: warning: variable 'mode' is used uninitialized whenever switch default is taken [-Wsometimes-uninitialized]
+>         default:
+>         ^~~~~~~
+> drivers/net/wireless/mediatek/mt76/mt7915/testmode.c:597:13: note: uninitialized use occurs here
+>         rateval =  mode << 6 | rate_idx;
+>                    ^~~~
+> drivers/net/wireless/mediatek/mt76/mt7915/testmode.c:506:37: note: initialize the variable 'mode' to silence this warning
+>         u8 rate_idx = td->tx_rate_idx, mode;
+>                                            ^
+>
+> Change it to return an error instead of continuing with invalid data
+> here.
+>
+> Fixes: 3f0caa3cbf94 ("mt76: mt7915: add support for continuous tx in testmode")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
-> v2:
-> Applied review comments:
-> - changed return value from the ptrace request to the size of the
->   configuration structure
-> - expanded configuration structure with the flags field and
->   the rseq abi structure size
-> 
-[...]
-> +#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
-> +
-> +struct ptrace_rseq_configuration {
-> +	__u64 rseq_abi_pointer;
-> +	__u32 rseq_abi_size;
-> +	__u32 signature;
-> +	__u32 flags;
-> +	__u32 pad;
-> +};
-> +
-[...]
-> +#ifdef CONFIG_RSEQ
-> +static long ptrace_get_rseq_configuration(struct task_struct *task,
-> +					  unsigned long size, void __user *data)
-> +{
-> +	struct ptrace_rseq_configuration conf = {
-> +		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
-> +		.rseq_abi_size = sizeof(*task->rseq),
-> +		.signature = task->rseq_sig,
-> +		.flags = 0,
-> +	};
-> +
-> +	size = min_t(unsigned long, size, sizeof(conf));
-> +	if (copy_to_user(data, &conf, size))
-> +		return -EFAULT;
-> +	return sizeof(conf);
-> +}
+> v2: remove the extra 'break;' after return.
+> ---
+>  drivers/net/wireless/mediatek/mt76/mt7915/testmode.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-I think what Florian was after would be:
+You forgot to Cc linux-wireless and hence patchwork didn't see this, so
+I applied this manually instead:
 
-struct ptrace_rseq_configuration {
-	__u32 size;  /* size of struct ptrace_rseq_configuration */
-	__u32 flags;
-	__u64 rseq_abi_pointer;
-	__u32 signature;
-	__u32 pad;
-};
-
-where:
-
-    .size = sizeof(struct ptrace_rseq_configuration),
-
-This way, the configuration structure can be expanded in the future. The
-rseq ABI structure is by definition fixed-size, so there is no point in
-having its size here.
-
-Florian, did I understand your request correctly, or am I missing your point ?
-
-Thanks,
-
-Mathieu
-
+c490492f15f6 mt76: mt7915: fix unused 'mode' variable
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
