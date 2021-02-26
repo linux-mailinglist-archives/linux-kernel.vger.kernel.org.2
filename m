@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BB832698C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5CC326992
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbhBZV3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:29:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56902 "EHLO
+        id S229990AbhBZVau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:30:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhBZV30 (ORCPT
+        with ESMTP id S230083AbhBZVam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:29:26 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBDAC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:28:46 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id d9so10378797ote.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:28:46 -0800 (PST)
+        Fri, 26 Feb 2021 16:30:42 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE7FC061788
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:30:02 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id g3so12650657edb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:30:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=k0FQBH3XZRWaOEVdA/TaIzgXzrKxsUm8rwjI33W19Xo=;
-        b=ulH6diblgdIknIaJzStXLEnNMmRTYNNeQtO4iHIMd4VzYKb5VvExX8hjLev31N9TKm
-         7H/jkB0x6hbwcbBHoYcj+/Q9g4aeNgiHROw/yuQFrUzLvsTFilnXVm5YgQM6psNjAYgE
-         oam7aoCc/pErNv0iVJF9d/Z6X1POWJ08ASKMieRCrrhiTq0e6k2HtynAcQ7iHoOhKugh
-         XqQaOXSVUt7poktCQ3v0GWLjvV45jNunoKYLPlyM8AUaj3LKwHeo7IKWw2EbzRXbETCg
-         ikbgwbjMtnuVp7I+tZGMmXi4LmIJD27z2Egk4CZmfjdn/Mu38p1TXBs28Yrnqr9o5Gm3
-         XpYQ==
+        bh=oq+ziV5W+4fEB7+AhqNfzmL/v56Klno9yJ5KkNDHbIk=;
+        b=lgCtW/Yjv2mimZpK+rAl0afo5lamoHgXB1ZyR3nf/HIVD3AkIrzv8F68PpHt4s4RoC
+         DDJoegJdMQ2Tcae3+I6sSpnDorPEb11zApmi29GJPNjLCdN2no5i2PdSMSaZnfbb7+yo
+         YRFEySb1DigFpXmu2Q7g0DWZzrBhqyptwEO8IinjATl71E69DE0Y3r3qZqj4zQfsndB6
+         OMgjNIpKEG7cxVanbYHd6ZRNRd8pcTNFxCSJtYeyj8d0bNIylOAOuTf2dyl40im30IoH
+         ElkJK6JOR3Y5vL7jzdVWrc/6XtmvTdkeKIgENLsdSUtuhj5AgMsVl7g9N4btIliIudx9
+         WvTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=k0FQBH3XZRWaOEVdA/TaIzgXzrKxsUm8rwjI33W19Xo=;
-        b=KlpAp9FtNFDw1V4fOnzXQGsEU2xyIpRdqMA41JJeRWE+2nukJcQ+thh6y71PIQLx7J
-         3sGan0hYioAR0B/IjboPgCgZh66vdhss5N/EsVeYOuZDPvJW5BTw+x6on1aJtmHJyqF+
-         WhgrRrrbGcl/LMsKbRwVrc+24N30mHfVIr9sZglTrsyyJ6OBoiXmirzqD05huLQ3WMs9
-         P1OU8u7SUOLaeVxwc93Gmd8CAmdt2ECnaVXLrVeTPy1hhnRa19TRCgVLPOkfAjZdzwdh
-         P7Q00Xlnexi3YAOYX/gxf43rMPlJbH6g1caYCc5CzmHkhpc/Eistn+qcVmi+rf6VJMdM
-         w4Bg==
-X-Gm-Message-State: AOAM5326RPTEMLHF7NvXV3Rn/7082mtJGYeS2O8hfRxJ4d23npovj0ZT
-        mfbjZs10xRe3EmapkIsuH8Zc0idREUf2oy9k5Yg=
-X-Google-Smtp-Source: ABdhPJxeL1KhiiGw9G2A8daWBoi5NfRH+ResQd71t1cyA3TwtcRMdEOCybZypc2hTXvt/2T6PoxQ0GDGLIPgpa55rfg=
-X-Received: by 2002:a9d:760a:: with SMTP id k10mr3929555otl.23.1614374925511;
- Fri, 26 Feb 2021 13:28:45 -0800 (PST)
+        bh=oq+ziV5W+4fEB7+AhqNfzmL/v56Klno9yJ5KkNDHbIk=;
+        b=kaLFrjOL1rdFKfIj2VHxVB6pnjeOgMjCxpwBmaAEEhX5x+1qX1r/SSfH+l5RC/iknI
+         T4PQIUvgMb9r7pVmlGkUHOI3M8XRvGtrLSoC7E7WAsYKY4sFsdyP0GyHBudkHxfu2iOY
+         Y9egKTSSH0qd/TspsUfCOjzmn9SqNyWaQgvAUzBBwqC+3qz4OVKGwo6uq021zKdpCACD
+         GmaYqdi21+IRHJaChF4XxLBiOD3XfNr8shXe3pj+ed1LpUGaf5HvdNk5PLkXBmcEH2gA
+         Y8mTgepFUinugmTHVOPm1IV+smqOhtrCfUL5AKZeFLxCOzK0nFyUrTKY+TIGck4Y756a
+         /1+Q==
+X-Gm-Message-State: AOAM530Tcymi2sm3Hc67tPOtxjOk1fZGghjxZs4DAlRnDHh6whfzHLAP
+        e11JeXfhYmAc4sO84flCHANXU5nvYtU=
+X-Google-Smtp-Source: ABdhPJyfg/mm7yAA091OwnEtTEi97HOlDmY2zLZBD/YZhBo8rmyrkAAcft0QS723uHNHMfyL/kU8yw==
+X-Received: by 2002:a05:6402:ce:: with SMTP id i14mr5572238edu.42.1614375000794;
+        Fri, 26 Feb 2021 13:30:00 -0800 (PST)
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
+        by smtp.gmail.com with ESMTPSA id j17sm6784557edv.66.2021.02.26.13.29.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 13:29:59 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id f12so6108431wrx.8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:29:59 -0800 (PST)
+X-Received: by 2002:a5d:6cab:: with SMTP id a11mr5220400wra.419.1614374998947;
+ Fri, 26 Feb 2021 13:29:58 -0800 (PST)
 MIME-Version: 1.0
-References: <1614331036-110338-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1614331036-110338-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 26 Feb 2021 16:28:34 -0500
-Message-ID: <CADnq5_M7hfiHW8jOv+bAcQ9kVOY3EJibGLSUPW2eB3=aPBVLVA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm/swsmu: Remove unnecessary conversion to bool
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
+References: <20210226035721.40054-1-hxseverything@gmail.com> <CAM_iQpUAc5sB1xzqE7RvG5pQHQeCPJx5qAz_m9LaJYZ4pKfZsQ@mail.gmail.com>
+In-Reply-To: <CAM_iQpUAc5sB1xzqE7RvG5pQHQeCPJx5qAz_m9LaJYZ4pKfZsQ@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 26 Feb 2021 16:29:21 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSfrE_brf_KO+swvsqTVGuoXYhPNTvnyK-1gC8PxSKneUA@mail.gmail.com>
+Message-ID: <CA+FuTSfrE_brf_KO+swvsqTVGuoXYhPNTvnyK-1gC8PxSKneUA@mail.gmail.com>
+Subject: Re: [PATCH/v3] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Xuesen Huang <hxseverything@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Christian Koenig <christian.koenig@amd.com>
+        Xuesen Huang <huangxuesen@kuaishou.com>,
+        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
+        Li Wang <wangli09@kuaishou.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 4:17 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
+On Fri, Feb 26, 2021 at 3:15 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
 >
-> Fix the following coccicheck warnings:
+> On Thu, Feb 25, 2021 at 7:59 PM Xuesen Huang <hxseverything@gmail.com> wrote:
+> > v3:
+> > - Fix the code format.
+> >
+> > v2:
+> > Suggested-by: Willem de Bruijn <willemb@google.com>
+> > - Add a new flag to specify the type of the inner packet.
 >
-> ./drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c:924:47-52:
-> WARNING: conversion to bool not needed here.
+> These need to be moved after '---', otherwise it would be merged
+> into the final git log.
 >
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> >
+> > Suggested-by: Willem de Bruijn <willemb@google.com>
+> > Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+> > Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
+> > Signed-off-by: Li Wang <wangli09@kuaishou.com>
+> > ---
+> >  include/uapi/linux/bpf.h       |  5 +++++
+> >  net/core/filter.c              | 11 ++++++++++-
+> >  tools/include/uapi/linux/bpf.h |  5 +++++
+> >  3 files changed, 20 insertions(+), 1 deletion(-)
+>
+> As a good practice, please add a test case for this in
+> tools/testing/selftests/bpf/progs/test_tc_tunnel.c.
 
-Applied.  Thanks!
+That's a great idea. This function covers a lot of cases. Can use the
+code coverage against regressions.
 
-Alex
-
-> ---
->  drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-> index af73e14..2382438 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c
-> @@ -921,7 +921,7 @@ static bool sienna_cichlid_is_support_fine_grained_dpm(struct smu_context *smu,
->         dpm_desc = &pptable->DpmDescriptor[clk_index];
->
->         /* 0 - Fine grained DPM, 1 - Discrete DPM */
-> -       return dpm_desc->SnapToDiscrete == 0 ? true : false;
-> +       return dpm_desc->SnapToDiscrete == 0;
->  }
->
->  static bool sienna_cichlid_is_od_feature_supported(struct smu_11_0_7_overdrive_table *od_table,
-> --
-> 1.8.3.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+With that caveat, looks great to me, thanks.
