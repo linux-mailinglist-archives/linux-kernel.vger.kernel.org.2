@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0530E325F77
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:52:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA71D325F7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbhBZIwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:52:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhBZIwm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:52:42 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931A2C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:52:01 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id m1so7076513wml.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:52:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4I/9T27v5fuw5VieFV0ytWcSNAk1Bbl6fxq7D/9O4Aw=;
-        b=Jfw6tP2FVDpP7xS8MbqMlicPR0GZnIVCgiPOcK/MiszbWN4L4KBSdO2/h25VIMSeG+
-         7SAwS2q8Z7P7hrGER2mdTBRT+q3vSFnUVkeBj0HKYrJXd4mYDNLP2/ale6YrMg77bPz0
-         cYNXpUSSVzBgaTjGEEnvD3AM5sC0dr0P4pJs0MKmJ6VJrXscOFoCFmXm67XVlGZkroIf
-         TaP6BORXDmqVcynMjwc/tOSyFlPPV86DiB3empT8quFbYyXauzuVEM5kbtqChu5KNtvY
-         465h+fe4lpEQPLCTH3jrcXW9iHfbdBl9PyMrmL6Jr6pVxOt8ZneYJOpwGsa8EOXudSNN
-         vDJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4I/9T27v5fuw5VieFV0ytWcSNAk1Bbl6fxq7D/9O4Aw=;
-        b=ryvD8f1P6DrTgSzXycvbmKSSfCIdVEPpCJCwuaeAOBz49c4a2pBkkZZitD4KSGscbL
-         iAzk7qaHRjmYTUGIRIBOw6ylhq5bHML3Sp5e7uwFnuoT6QBS70KIU+ax29g9MFV2D3PC
-         DKoJaA/RHuyN7JlVUv0NyHCJRpoRRE5WSH3buK7QXYOKiyZqpoJciOWRyRqQHL+LTSri
-         XpHx13B8BUM+z+jGCR24x1FggIQWSkpjC2VljERrQf1hJk/YqCkV1QuSADK31dGecXLa
-         2kP8YzjObVZLH5gHD8n8KMfHV7/8bvJmNr8TP+zmLJb6zIiZ+i9Aq7W25nknuxzKFv0d
-         ai4A==
-X-Gm-Message-State: AOAM530hF/OWNmqMYPh6pi9ho3g3lyd9U89QzJmcOwUA0tMyfyZD9hsB
-        miDFe5rg/m15Elw+A8AlJj6lZw==
-X-Google-Smtp-Source: ABdhPJxHPYGVqRr09nDy1S17EJWwgU6sW5Cb/LJlPKbA3dZHEnjVzSLya6Tdt5HY+7+SnowqHW6fVw==
-X-Received: by 2002:a7b:cc0c:: with SMTP id f12mr1706548wmh.137.1614329520071;
-        Fri, 26 Feb 2021 00:52:00 -0800 (PST)
-Received: from ?IPv6:2a01:e34:ed2f:f020:f137:d18c:50a6:cc6a? ([2a01:e34:ed2f:f020:f137:d18c:50a6:cc6a])
-        by smtp.googlemail.com with ESMTPSA id j16sm12393890wra.17.2021.02.26.00.51.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 00:51:59 -0800 (PST)
-Subject: Re: [PATCH v2 3/9] devfreq: Use HZ macros
-To:     Chanwoo Choi <cwchoi00@gmail.com>, rafael@kernel.org,
-        andriy.shevchenko@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        "open list:DEVICE FREQUENCY (DEVFREQ)" <linux-pm@vger.kernel.org>
-References: <20210224144222.23762-1-daniel.lezcano@linaro.org>
- <20210224144222.23762-3-daniel.lezcano@linaro.org>
- <0db79cd7-f062-b31b-2a6c-ecf8dadaf572@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <09954745-5b39-8718-ca79-3e92a85e5ace@linaro.org>
-Date:   Fri, 26 Feb 2021 09:51:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230083AbhBZIw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:52:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55790 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229550AbhBZIw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 03:52:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614329530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NV8HHUAhGyMKMdxJOAqWE34D2NQYX6VFUHRpOEastO8=;
+        b=G45FTSyWYpZtUtKeL8sHnB58FYPM4Bd7jXJ+v5/01Mo/i//UxfXkkRztJDF1yupehrb0uU
+        +xshvAAQtIbQJ1sGTw8tyBnADadr6LGtauQGeLOJ3AHbCjViqimAZ1H4ZoHyqlDLFT3Hq/
+        4WJyi+qk+V7ApnoGE+7U+2qs6aRu0cU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1C97DAAAE;
+        Fri, 26 Feb 2021 08:52:10 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 09:52:09 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
+ usage excess
+Message-ID: <YDi2udQqIML6Vdpo@dhcp22.suse.cz>
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
+ <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
+ <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
+ <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
+ <YDQBh5th9txxEFUm@dhcp22.suse.cz>
+ <cf5ca7a1-7965-f307-22e1-e216316904cf@linux.intel.com>
+ <YDY+PydRUGQpHNaJ@dhcp22.suse.cz>
+ <b5b1944d-846b-3212-fe4a-f10f5fcb87d7@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <0db79cd7-f062-b31b-2a6c-ecf8dadaf572@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b5b1944d-846b-3212-fe4a-f10f5fcb87d7@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/02/2021 07:08, Chanwoo Choi wrote:
+On Thu 25-02-21 14:48:58, Tim Chen wrote:
 > 
 > 
-> On 21. 2. 24. 오후 11:42, Daniel Lezcano wrote:
->> HZ unit conversion macros are available in units.h, use them and
->> remove the duplicate definition.
->>
->> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->> Reviewed-by: Christian Eggers <ceggers@arri.de>
->> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
->> ---
->>   drivers/devfreq/devfreq.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
->> index bf3047896e41..b6d63f02d293 100644
->> --- a/drivers/devfreq/devfreq.c
->> +++ b/drivers/devfreq/devfreq.c
->> @@ -26,6 +26,7 @@
->>   #include <linux/hrtimer.h>
->>   #include <linux/of.h>
->>   #include <linux/pm_qos.h>
->> +#include <linux/units.h>
->>   #include "governor.h"
->>     #define CREATE_TRACE_POINTS
->> @@ -33,7 +34,6 @@
->>     #define IS_SUPPORTED_FLAG(f, name) ((f & DEVFREQ_GOV_FLAG_##name)
->> ? true : false)
->>   #define IS_SUPPORTED_ATTR(f, name) ((f & DEVFREQ_GOV_ATTR_##name) ?
->> true : false)
->> -#define HZ_PER_KHZ    1000
->>     static struct class *devfreq_class;
->>   static struct dentry *devfreq_debugfs;
->>
+> On 2/24/21 3:53 AM, Michal Hocko wrote:
+> > On Mon 22-02-21 11:48:37, Tim Chen wrote:
+> >>
+> >>
+> >> On 2/22/21 11:09 AM, Michal Hocko wrote:
+> >>
+> >>>>
+> >>>> I actually have tried adjusting the threshold but found that it doesn't work well for
+> >>>> the case with unenven memory access frequency between cgroups.  The soft
+> >>>> limit for the low memory event cgroup could creep up quite a lot, exceeding
+> >>>> the soft limit by hundreds of MB, even
+> >>>> if I drop the SOFTLIMIT_EVENTS_TARGET from 1024 to something like 8.
+> >>>
+> >>> What was the underlying reason? Higher order allocations?
+> >>>
+> >>
+> >> Not high order allocation.
+> >>
+> >> The reason was because the run away memcg asks for memory much less often, compared
+> >> to the other memcgs in the system.  So it escapes the sampling update and
+> >> was not put onto the tree and exceeds the soft limit
+> >> pretty badly.  Even if it was put onto the tree and gets page reclaimed below the
+> >> limit, it could escape the sampling the next time it exceeds the soft limit.
+> > 
+> > I am sorry but I really do not follow. Maybe I am missing something
+> > obvious but the the rate of events (charge/uncharge) shouldn't be really
+> > important. There is no way to exceed the limit without charging memory
+> > (either a new or via task migration in v1 and immigrate_on_move). If you
+> > have SOFTLIMIT_EVENTS_TARGET 8 then you should be 128 * 8 events to
+> > re-evaluate. Huge pages can make the runaway much bigger but how it
+> > would be possible to runaway outside of that bound.
 > 
-> I changed the patch title with 'PM /' prefix as following
-> in order to keep the consistent patch style if there are no any special
-> objection.
-> - PM / devfreq: Use HZ macros
 > 
-> Applied it.
+> Michal,
+> 
+> Let's take an extreme case where memcg 1 always generate the
+> first event and memcg 2 generates the rest of 128*8-1 events
+> and the pattern repeat.
 
-It should not compile. This patch and others depend on 1/9.
-
-It would make sense to merge all of them through linux-pm.
-
-
+I do not follow. Events are per-memcg, aren't they?
+	__this_cpu_read(memcg->vmstats_percpu->targets[target]);
+	[...]
+	__this_cpu_write(memcg->vmstats_percpu->targets[target], next);
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Michal Hocko
+SUSE Labs
