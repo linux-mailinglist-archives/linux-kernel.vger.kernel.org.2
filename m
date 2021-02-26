@@ -2,558 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4909B325F40
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB777325F20
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhBZIj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:39:56 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:52835 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230122AbhBZIgP (ORCPT
+        id S230063AbhBZIe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhBZIeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:36:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1614328574; x=1645864574;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=XzEuJ0bjvB4QfBo7WhmbY0snmseA3+UXNSyqutCePg8=;
-  b=Gmxf0cKwl3q4XMsgDVWcVgnMWYXghDGMLPxC6ztKfwio/LjK3PSvyLuq
-   h5ls2zx/lQkZnbFMOJqebicDkkWh+cKOhNqCtrtNnKnNTq8TnwSZnAleD
-   rI7/0HVWIX63gcxjbtb6Pqqg2L4UrTFPpq28Cme8Swe/aDAy3CnfXjpKE
-   bkC1ipu+PGQk7s9bkZpblqtMgk4dwXHweR+AvDq6X0xvJ4A2vgln05/4R
-   ZeroZK2RDJ2ewxqDP5HftcwiiuUe563Eyvl1akuY2GfuEEStjywgb10vj
-   ub6gh/dKcxk4vF9iItqFoGQZ8RmqHJufWQHYeepEjwsZ125ebWP4BAp9T
-   A==;
-IronPort-SDR: 9ArIrNgnBMUrnr/JcY22SXplFz8nDi5R2t1XTq/neigbXRuKil/O5dMct36wv4aTFaLma0K4/d
- WSpwD3jfa672HeyigeSYQf1RtuU9QK7eX3QUsUv0+UkH63Dx02NO6Wn0CKE4iym5pnp8Wwaqa3
- 0v3eZ4dnBRXXFTFsA916uEqmnuBwUKlQOMY+zWX7/TtkmHo/TJNFnXUHw8c1dpBdZf5qaHsYZC
- BRR5T1qZyA8EvGe2nRXtZ+KTIZpGcqd7bvN1higmJ0meQcuPAEJaMDPzr/JvW/oZaP4xKE12GQ
- T64=
-X-IronPort-AV: E=Sophos;i="5.81,208,1610380800"; 
-   d="scan'208";a="160859719"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Feb 2021 16:35:09 +0800
-IronPort-SDR: 331hAUSDZ7jS8/y7jdpssfw83nohfKEMU8jhbdWJlPwvIbJVXMJ1hTcAieQUXyFY6eu9OShW7k
- uxZcyJWkpzYkNH/RI5ORNhDFd69P5QrOGjoz7p2dSjNMiyDrqaNADivLDX3e2J84HfoM14emOs
- K8lbBzW0EpSK8DtfaT+wcB0KKvV+AuEUnY7MBxyPRN5g6bfhzmhzdeMngdaTlV/MDsFQW2uCaR
- cS6xZHgjQMMext3g8zuPLFgSGljY2BUocAE/TOigVbzOLg0RWeBtc6bQoOA3P4hjreZe/zOtlH
- OK6gU+E7fEeZk5LZcpkGq6tT
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 00:18:22 -0800
-IronPort-SDR: u3qggXPBISht++ka76ehj0azDnjwaC51rtxDICy0fNdeQkJqrjLo9ddLsgaPRMzVAItKt4TsDA
- yBhfidZzp8rlh06tWwuuUq5Tux7J+mBiGLX2ZDYg53WWe9LOb0spCJWmQDwCxoNZ4rlv3YvfCh
- bzzN725JcjIp/rV38CHMwhjcWZIkGV6/ngddPnpfl2GnC0tvGt8LcViJGCZQUQh+9XOb8H7A9X
- cBwZJN2DPovvSB3Z9F9QZmDlvjMcTQaU/KCRR0sirOisr0Zk0fwtR/RgAoNkOni/kgnO+/r4ZK
- GU0=
-WDCIronportException: Internal
-Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
-  by uls-op-cesaip02.wdc.com with ESMTP; 26 Feb 2021 00:35:05 -0800
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
-        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH v4 9/9] scsi: ufshpb: Make host mode parameters configurable
-Date:   Fri, 26 Feb 2021 10:33:00 +0200
-Message-Id: <20210226083300.30934-10-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210226083300.30934-1-avri.altman@wdc.com>
-References: <20210226083300.30934-1-avri.altman@wdc.com>
+        Fri, 26 Feb 2021 03:34:20 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3678DC06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:33:40 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lFYYp-00083f-NX; Fri, 26 Feb 2021 09:33:19 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:adc1:3ee1:6274:c5d0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id BFCFC5E9929;
+        Fri, 26 Feb 2021 08:33:16 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 09:33:15 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Stein <alexander.stein@systec-electronic.com>,
+        Federico Vaga <federico.vaga@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] can: c_can: prepare to up the message objects
+ number
+Message-ID: <20210226083315.cutpxc4iety4qedp@pengutronix.de>
+References: <20210225215155.30509-1-dariobin@libero.it>
+ <20210225215155.30509-6-dariobin@libero.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3ydqkgs77xla5x3p"
+Content-Disposition: inline
+In-Reply-To: <20210225215155.30509-6-dariobin@libero.it>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can make use of this commit, to elaborate some more of the host
-control mode logic, explaining what role play each and every variable.
 
-While at it, allow those parameters to be configurable.
+--3ydqkgs77xla5x3p
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- Documentation/ABI/testing/sysfs-driver-ufs |  67 ++++++
- drivers/scsi/ufs/ufshpb.c                  | 253 +++++++++++++++++++--
- drivers/scsi/ufs/ufshpb.h                  |  18 ++
- 3 files changed, 324 insertions(+), 14 deletions(-)
+On 25.02.2021 22:51:54, Dario Binacchi wrote:
+> As pointed by commit c0a9f4d396c9 ("can: c_can: Reduce register access")
+> the "driver casts the 16 message objects in stone, which is completely
+> braindead as contemporary hardware has up to 128 message objects".
+>=20
+> The patch prepares the module to extend the number of message objects
+> beyond the 32 currently managed. This was achieved by transforming the
+> constants used to manage RX/TX messages into variables without changing
+> the driver policy.
+>=20
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> Reported-by: kernel test robot <lkp@intel.com>
+>=20
+> ---
+>=20
+> Changes in v2:
+> - Fix compiling error reported by kernel test robot.
+> - Add Reported-by tag.
+> - Pass larger size to alloc_candev() routine to avoid an additional
+>   memory allocation/deallocation.
+>=20
+>  drivers/net/can/c_can/c_can.c          | 50 ++++++++++++++++----------
+>  drivers/net/can/c_can/c_can.h          | 23 ++++++------
+>  drivers/net/can/c_can/c_can_pci.c      |  2 +-
+>  drivers/net/can/c_can/c_can_platform.c |  2 +-
+>  4 files changed, 43 insertions(+), 34 deletions(-)
+>=20
+> diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
+> index 7081cfaf62e2..df1ad6b3fd3b 100644
+> --- a/drivers/net/can/c_can/c_can.c
+> +++ b/drivers/net/can/c_can/c_can.c
+> @@ -173,9 +173,6 @@
+>  /* Wait for ~1 sec for INIT bit */
+>  #define INIT_WAIT_MS		1000
+> =20
+> -/* napi related */
+> -#define C_CAN_NAPI_WEIGHT	C_CAN_MSG_OBJ_RX_NUM
+> -
+>  /* c_can lec values */
+>  enum c_can_lec_type {
+>  	LEC_NO_ERROR =3D 0,
+> @@ -325,7 +322,7 @@ static void c_can_setup_tx_object(struct net_device *=
+dev, int iface,
+>  	 * first, i.e. clear the MSGVAL flag in the arbiter.
+>  	 */
+>  	if (rtr !=3D (bool)test_bit(idx, &priv->tx_dir)) {
+> -		u32 obj =3D idx + C_CAN_MSG_OBJ_TX_FIRST;
+> +		u32 obj =3D idx + priv->msg_obj_tx_first;
+> =20
+>  		c_can_inval_msg_object(dev, iface, obj);
+>  		change_bit(idx, &priv->tx_dir);
+> @@ -463,10 +460,10 @@ static netdev_tx_t c_can_start_xmit(struct sk_buff =
+*skb,
+>  	 * prioritized. The lowest buffer number wins.
+>  	 */
+>  	idx =3D fls(atomic_read(&priv->tx_active));
+> -	obj =3D idx + C_CAN_MSG_OBJ_TX_FIRST;
+> +	obj =3D idx + priv->msg_obj_tx_first;
+> =20
+>  	/* If this is the last buffer, stop the xmit queue */
+> -	if (idx =3D=3D C_CAN_MSG_OBJ_TX_NUM - 1)
+> +	if (idx =3D=3D priv->msg_obj_tx_num - 1)
+>  		netif_stop_queue(dev);
+>  	/*
+>  	 * Store the message in the interface so we can call
+> @@ -549,17 +546,18 @@ static int c_can_set_bittiming(struct net_device *d=
+ev)
+>   */
+>  static void c_can_configure_msg_objects(struct net_device *dev)
+>  {
+> +	struct c_can_priv *priv =3D netdev_priv(dev);
+>  	int i;
+> =20
+>  	/* first invalidate all message objects */
+> -	for (i =3D C_CAN_MSG_OBJ_RX_FIRST; i <=3D C_CAN_NO_OF_OBJECTS; i++)
+> +	for (i =3D priv->msg_obj_rx_first; i <=3D priv->msg_obj_num; i++)
+>  		c_can_inval_msg_object(dev, IF_RX, i);
+> =20
+>  	/* setup receive message objects */
+> -	for (i =3D C_CAN_MSG_OBJ_RX_FIRST; i < C_CAN_MSG_OBJ_RX_LAST; i++)
+> +	for (i =3D priv->msg_obj_rx_first; i < priv->msg_obj_rx_last; i++)
+>  		c_can_setup_receive_object(dev, IF_RX, i, 0, 0, IF_MCONT_RCV);
+> =20
+> -	c_can_setup_receive_object(dev, IF_RX, C_CAN_MSG_OBJ_RX_LAST, 0, 0,
+> +	c_can_setup_receive_object(dev, IF_RX, priv->msg_obj_rx_last, 0, 0,
+>  				   IF_MCONT_RCV_EOB);
+>  }
+> =20
+> @@ -730,7 +728,7 @@ static void c_can_do_tx(struct net_device *dev)
+>  	while ((idx =3D ffs(pend))) {
+>  		idx--;
+>  		pend &=3D ~(1 << idx);
+> -		obj =3D idx + C_CAN_MSG_OBJ_TX_FIRST;
+> +		obj =3D idx + priv->msg_obj_tx_first;
+>  		c_can_inval_tx_object(dev, IF_TX, obj);
+>  		can_get_echo_skb(dev, idx, NULL);
+>  		bytes +=3D priv->dlc[idx];
+> @@ -740,7 +738,7 @@ static void c_can_do_tx(struct net_device *dev)
+>  	/* Clear the bits in the tx_active mask */
+>  	atomic_sub(clr, &priv->tx_active);
+> =20
+> -	if (clr & (1 << (C_CAN_MSG_OBJ_TX_NUM - 1)))
+> +	if (clr & (1 << (priv->msg_obj_tx_num - 1)))
+>  		netif_wake_queue(dev);
+> =20
+>  	if (pkts) {
+> @@ -755,11 +753,11 @@ static void c_can_do_tx(struct net_device *dev)
+>   * raced with the hardware or failed to readout all upper
+>   * objects in the last run due to quota limit.
+>   */
+> -static u32 c_can_adjust_pending(u32 pend)
+> +static u32 c_can_adjust_pending(u32 pend, u32 rx_mask)
+>  {
+>  	u32 weight, lasts;
+> =20
+> -	if (pend =3D=3D RECEIVE_OBJECT_BITS)
+> +	if (pend =3D=3D rx_mask)
+>  		return pend;
+> =20
+>  	/*
+> @@ -862,8 +860,7 @@ static int c_can_do_rx_poll(struct net_device *dev, i=
+nt quota)
+>  	 * It is faster to read only one 16bit register. This is only possible
+>  	 * for a maximum number of 16 objects.
+>  	 */
+> -	BUILD_BUG_ON_MSG(C_CAN_MSG_OBJ_RX_LAST > 16,
+> -			"Implementation does not support more message objects than 16");
+> +	WARN_ON(priv->msg_obj_rx_last > 16);
+> =20
+>  	while (quota > 0) {
+>  		if (!pend) {
+> @@ -874,7 +871,8 @@ static int c_can_do_rx_poll(struct net_device *dev, i=
+nt quota)
+>  			 * If the pending field has a gap, handle the
+>  			 * bits above the gap first.
+>  			 */
+> -			toread =3D c_can_adjust_pending(pend);
+> +			toread =3D c_can_adjust_pending(pend,
+> +						      priv->msg_obj_rx_mask);
+>  		} else {
+>  			toread =3D pend;
+>  		}
+> @@ -1205,17 +1203,31 @@ static int c_can_close(struct net_device *dev)
+>  	return 0;
+>  }
+> =20
+> -struct net_device *alloc_c_can_dev(void)
+> +struct net_device *alloc_c_can_dev(int msg_obj_num)
+>  {
+>  	struct net_device *dev;
+>  	struct c_can_priv *priv;
+> +	int msg_obj_tx_num =3D msg_obj_num / 2;
+> =20
+> -	dev =3D alloc_candev(sizeof(struct c_can_priv), C_CAN_MSG_OBJ_TX_NUM);
+> +	dev =3D alloc_candev(sizeof(*priv) + sizeof(u32) * msg_obj_tx_num,
+> +			   msg_obj_tx_num);
+>  	if (!dev)
+>  		return NULL;
+> =20
+>  	priv =3D netdev_priv(dev);
+> -	netif_napi_add(dev, &priv->napi, c_can_poll, C_CAN_NAPI_WEIGHT);
+> +	priv->msg_obj_num =3D msg_obj_num;
+> +	priv->msg_obj_rx_num =3D msg_obj_num - msg_obj_tx_num;
+> +	priv->msg_obj_rx_first =3D 1;
+> +	priv->msg_obj_rx_last =3D
+> +		priv->msg_obj_rx_first + priv->msg_obj_rx_num - 1;
+> +	priv->msg_obj_rx_mask =3D ((u64)1 << priv->msg_obj_rx_num) - 1;
+> +
+> +	priv->msg_obj_tx_num =3D msg_obj_tx_num;
+> +	priv->msg_obj_tx_first =3D priv->msg_obj_rx_last + 1;
+> +	priv->msg_obj_tx_last =3D
+> +		priv->msg_obj_tx_first + priv->msg_obj_tx_num - 1;
+> +
+> +	netif_napi_add(dev, &priv->napi, c_can_poll, priv->msg_obj_rx_num);
+> =20
+>  	priv->dev =3D dev;
+>  	priv->can.bittiming_const =3D &c_can_bittiming_const;
+> diff --git a/drivers/net/can/c_can/c_can.h b/drivers/net/can/c_can/c_can.h
+> index 90d3d2e7a086..22ae6077b489 100644
+> --- a/drivers/net/can/c_can/c_can.h
+> +++ b/drivers/net/can/c_can/c_can.h
+> @@ -22,18 +22,7 @@
+>  #ifndef C_CAN_H
+>  #define C_CAN_H
+> =20
+> -/* message object split */
+>  #define C_CAN_NO_OF_OBJECTS	32
+> -#define C_CAN_MSG_OBJ_RX_NUM	16
+> -#define C_CAN_MSG_OBJ_TX_NUM	16
+> -
+> -#define C_CAN_MSG_OBJ_RX_FIRST	1
+> -#define C_CAN_MSG_OBJ_RX_LAST	(C_CAN_MSG_OBJ_RX_FIRST + \
+> -				C_CAN_MSG_OBJ_RX_NUM - 1)
+> -
+> -#define C_CAN_MSG_OBJ_TX_FIRST	(C_CAN_MSG_OBJ_RX_LAST + 1)
+> -
+> -#define RECEIVE_OBJECT_BITS	0x0000ffff
+> =20
+>  enum reg {
+>  	C_CAN_CTRL_REG =3D 0,
+> @@ -193,6 +182,14 @@ struct c_can_priv {
+>  	struct napi_struct napi;
+>  	struct net_device *dev;
+>  	struct device *device;
+> +	int msg_obj_num;
+> +	int msg_obj_rx_num;
+> +	int msg_obj_tx_num;
+> +	int msg_obj_rx_first;
+> +	int msg_obj_rx_last;
+> +	int msg_obj_tx_first;
+> +	int msg_obj_tx_last;
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index 0017eaf89cbe..d9eca371c507 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -1322,3 +1322,70 @@ Description:	This entry shows the maximum HPB data size for using single HPB
- 		===  ========
- 
- 		The file is read only.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/activation_thld
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	In host control mode, reads are the major source of activation
-+		trials.  once this threshold hs met, the region is added to the
-+		"to-be-activated" list.  Since we reset the read counter upon
-+		write, this include sending a rb command updating the region
-+		ppn as well.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/normalization_factor
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	In host control mode, We think of the regions as "buckets".
-+		Those buckets are being filled with reads, and emptied on write.
-+		We use entries_per_srgn - the amount of blocks in a subregion as
-+		our bucket size.  This applies because HPB1.0 only concern a
-+		single-block reads.  Once the bucket size is crossed, we trigger
-+		a normalization work - not only to avoid overflow, but mainly
-+		because we want to keep those counters normalized, as we are
-+		using those reads as a comparative score, to make various decisions.
-+		The normalization is dividing (shift right) the read counter by
-+		the normalization_factor. If during consecutive normalizations
-+		an active region has exhaust its reads - inactivate it.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/eviction_thld_enter
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	Region deactivation is often due to the fact that eviction took
-+		place: a region become active on the expense of another. This is
-+		happening when the max-active-regions limit has crossed.
-+		In host mode, eviction is considered an extreme measure. We
-+		want to verify that the entering region has enough reads, and
-+		the exiting region has much less reads.  eviction_thld_enter is
-+		the min reads that a region must have in order to be considered
-+		as a candidate to evict other region.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/eviction_thld_exit
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	same as above for the exiting region. A region is consider to
-+		be a candidate to be evicted, only if it has less reads than
-+		eviction_thld_exit.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/read_timeout_ms
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	In order not to hang on to “cold” regions, we shall inactivate
-+		a region that has no READ access for a predefined amount of
-+		time - read_timeout_ms. If read_timeout_ms has expired, and the
-+		region is dirty - it is less likely that we can make any use of
-+		HPB-READing it.  So we inactivate it.  Still, deactivation has
-+		its overhead, and we may still benefit from HPB-READing this
-+		region if it is clean - see read_timeout_expiries.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/read_timeout_expiries
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	if the region read timeout has expired, but the region is clean,
-+		just re-wind its timer for another spin.  Do that as long as it
-+		is clean and did not exhaust its read_timeout_expiries threshold.
-+
-+What:		/sys/class/scsi_device/*/device/hpb_param_sysfs/timeout_polling_interval_ms
-+Date:		February 2021
-+Contact:	Avri Altman <avri.altman@wdc.com>
-+Description:	the frequency in which the delayed worker that checks the
-+		read_timeouts is awaken.
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index 86f4720f4f0d..7387c6d0f663 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -17,7 +17,6 @@
- #include "../sd.h"
- 
- #define ACTIVATION_THRESHOLD 4 /* 4 IOs */
--#define EVICTION_THRESHOLD (ACTIVATION_THRESHOLD << 6) /* 256 IOs */
- #define READ_TO_MS 1000
- #define READ_TO_EXPIRIES 100
- #define POLLING_INTERVAL_MS 200
-@@ -642,7 +641,7 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 		 */
- 		spin_lock_irqsave(&rgn->rgn_lock, flags);
- 		rgn->reads++;
--		if (rgn->reads == ACTIVATION_THRESHOLD)
-+		if (rgn->reads == hpb->params.activation_thld)
- 			activate = true;
- 		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
- 		if (activate ||
-@@ -1035,6 +1034,7 @@ static void ufshpb_read_to_handler(struct work_struct *work)
- 	struct victim_select_info *lru_info;
- 	struct ufshpb_region *rgn;
- 	unsigned long flags;
-+	unsigned int poll;
- 	LIST_HEAD(expired_list);
- 
- 	hpb = container_of(dwork, struct ufshpb_lu, ufshpb_read_to_work);
-@@ -1056,7 +1056,7 @@ static void ufshpb_read_to_handler(struct work_struct *work)
- 				list_add(&rgn->list_expired_rgn, &expired_list);
- 			else
- 				rgn->read_timeout = ktime_add_ms(ktime_get(),
--							 READ_TO_MS);
-+						hpb->params.read_timeout_ms);
- 		}
- 	}
- 
-@@ -1074,8 +1074,9 @@ static void ufshpb_read_to_handler(struct work_struct *work)
- 
- 	clear_bit(TIMEOUT_WORK_PENDING, &hpb->work_data_bits);
- 
-+	poll = hpb->params.timeout_polling_interval_ms;
- 	schedule_delayed_work(&hpb->ufshpb_read_to_work,
--			      msecs_to_jiffies(POLLING_INTERVAL_MS));
-+			      msecs_to_jiffies(poll));
- }
- 
- static void ufshpb_add_lru_info(struct victim_select_info *lru_info,
-@@ -1085,8 +1086,11 @@ static void ufshpb_add_lru_info(struct victim_select_info *lru_info,
- 	list_add_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
- 	atomic_inc(&lru_info->active_cnt);
- 	if (rgn->hpb->is_hcm) {
--		rgn->read_timeout = ktime_add_ms(ktime_get(), READ_TO_MS);
--		rgn->read_timeout_expiries = READ_TO_EXPIRIES;
-+		rgn->read_timeout =
-+			ktime_add_ms(ktime_get(),
-+				     rgn->hpb->params.read_timeout_ms);
-+		rgn->read_timeout_expiries =
-+			rgn->hpb->params.read_timeout_expiries;
- 	}
- }
- 
-@@ -1115,7 +1119,8 @@ static struct ufshpb_region *ufshpb_victim_lru_info(struct ufshpb_lu *hpb)
- 		 * in host control mode, verify that the exiting region
- 		 * has less reads
- 		 */
--		if (hpb->is_hcm && rgn->reads > (EVICTION_THRESHOLD >> 1))
-+		if (hpb->is_hcm &&
-+		    rgn->reads > hpb->params.eviction_thld_exit)
- 			continue;
- 
- 		victim_rgn = rgn;
-@@ -1346,7 +1351,8 @@ static int ufshpb_add_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
- 			 * in host control mode, verify that the entering
- 			 * region has enough reads
- 			 */
--			if (hpb->is_hcm && rgn->reads < EVICTION_THRESHOLD) {
-+			if (hpb->is_hcm &&
-+			    rgn->reads < hpb->params.eviction_thld_enter) {
- 				ret = -EACCES;
- 				goto out;
- 			}
-@@ -1696,8 +1702,10 @@ static void ufshpb_normalization_work_handler(struct work_struct *work)
- {
- 	struct ufshpb_lu *hpb;
- 	int rgn_idx;
-+	u8 factor;
- 
- 	hpb = container_of(work, struct ufshpb_lu, ufshpb_normalization_work);
-+	factor = hpb->params.normalization_factor;
- 
- 	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
- 		struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
-@@ -1706,7 +1714,7 @@ static void ufshpb_normalization_work_handler(struct work_struct *work)
- 			unsigned long flags;
- 
- 			spin_lock_irqsave(&rgn->rgn_lock, flags);
--			rgn->reads = (rgn->reads >> 1);
-+			rgn->reads = (rgn->reads >> factor);
- 			spin_unlock_irqrestore(&rgn->rgn_lock, flags);
- 		}
- 
-@@ -2028,8 +2036,216 @@ requeue_timeout_ms_store(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RW(requeue_timeout_ms);
- 
-+ufshpb_sysfs_param_show_func(activation_thld);
-+static ssize_t
-+activation_thld_store(struct device *dev, struct device_attribute *attr,
-+		      const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0)
-+		return -EINVAL;
-+
-+	hpb->params.activation_thld = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(activation_thld);
-+
-+ufshpb_sysfs_param_show_func(normalization_factor);
-+static ssize_t
-+normalization_factor_store(struct device *dev, struct device_attribute *attr,
-+			   const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0 || val > ilog2(hpb->entries_per_srgn))
-+		return -EINVAL;
-+
-+	hpb->params.normalization_factor = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(normalization_factor);
-+
-+ufshpb_sysfs_param_show_func(eviction_thld_enter);
-+static ssize_t
-+eviction_thld_enter_store(struct device *dev, struct device_attribute *attr,
-+			  const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= hpb->params.eviction_thld_exit)
-+		return -EINVAL;
-+
-+	hpb->params.eviction_thld_enter = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(eviction_thld_enter);
-+
-+ufshpb_sysfs_param_show_func(eviction_thld_exit);
-+static ssize_t
-+eviction_thld_exit_store(struct device *dev, struct device_attribute *attr,
-+			 const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= hpb->params.activation_thld)
-+		return -EINVAL;
-+
-+	hpb->params.eviction_thld_exit = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(eviction_thld_exit);
-+
-+ufshpb_sysfs_param_show_func(read_timeout_ms);
-+static ssize_t
-+read_timeout_ms_store(struct device *dev, struct device_attribute *attr,
-+		      const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0)
-+		return -EINVAL;
-+
-+	hpb->params.read_timeout_ms = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(read_timeout_ms);
-+
-+ufshpb_sysfs_param_show_func(read_timeout_expiries);
-+static ssize_t
-+read_timeout_expiries_store(struct device *dev, struct device_attribute *attr,
-+			    const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0)
-+		return -EINVAL;
-+
-+	hpb->params.read_timeout_expiries = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(read_timeout_expiries);
-+
-+ufshpb_sysfs_param_show_func(timeout_polling_interval_ms);
-+static ssize_t
-+timeout_polling_interval_ms_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf, size_t count)
-+{
-+	struct scsi_device *sdev = to_scsi_device(dev);
-+	struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-+	int val;
-+
-+	if (!hpb)
-+		return -ENODEV;
-+
-+	if (!hpb->is_hcm)
-+		return -EOPNOTSUPP;
-+
-+	if (kstrtouint(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val <= 0)
-+		return -EINVAL;
-+
-+	hpb->params.timeout_polling_interval_ms = val;
-+
-+	return count;
-+}
-+static DEVICE_ATTR_RW(timeout_polling_interval_ms);
-+
-+static void ufshpb_hcm_param_init(struct ufshpb_lu *hpb)
-+{
-+	hpb->params.activation_thld = ACTIVATION_THRESHOLD;
-+	hpb->params.normalization_factor = 1;
-+	hpb->params.eviction_thld_enter = (ACTIVATION_THRESHOLD << 6);
-+	hpb->params.eviction_thld_exit = (ACTIVATION_THRESHOLD << 5);
-+	hpb->params.read_timeout_ms = READ_TO_MS;
-+	hpb->params.read_timeout_expiries = READ_TO_EXPIRIES;
-+	hpb->params.timeout_polling_interval_ms = POLLING_INTERVAL_MS;
-+}
-+
- static struct attribute *hpb_dev_param_attrs[] = {
- 	&dev_attr_requeue_timeout_ms.attr,
-+	&dev_attr_activation_thld.attr,
-+	&dev_attr_normalization_factor.attr,
-+	&dev_attr_eviction_thld_enter.attr,
-+	&dev_attr_eviction_thld_exit.attr,
-+	&dev_attr_read_timeout_ms.attr,
-+	&dev_attr_read_timeout_expiries.attr,
-+	&dev_attr_timeout_polling_interval_ms.attr,
- 	NULL,
- };
- 
-@@ -2104,6 +2320,8 @@ static void ufshpb_stat_init(struct ufshpb_lu *hpb)
- static void ufshpb_param_init(struct ufshpb_lu *hpb)
- {
- 	hpb->params.requeue_timeout_ms = HPB_REQUEUE_TIME_MS;
-+	if (hpb->is_hcm)
-+		ufshpb_hcm_param_init(hpb);
- }
- 
- static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
-@@ -2160,9 +2378,13 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
- 	ufshpb_stat_init(hpb);
- 	ufshpb_param_init(hpb);
- 
--	if (hpb->is_hcm)
-+	if (hpb->is_hcm) {
-+		unsigned int poll;
-+
-+		poll = hpb->params.timeout_polling_interval_ms;
- 		schedule_delayed_work(&hpb->ufshpb_read_to_work,
--				      msecs_to_jiffies(POLLING_INTERVAL_MS));
-+				      msecs_to_jiffies(poll));
-+	}
- 
- 	return 0;
- 
-@@ -2342,10 +2564,13 @@ void ufshpb_resume(struct ufs_hba *hba)
- 			continue;
- 		ufshpb_set_state(hpb, HPB_PRESENT);
- 		ufshpb_kick_map_work(hpb);
--		if (hpb->is_hcm)
--			schedule_delayed_work(&hpb->ufshpb_read_to_work,
--				msecs_to_jiffies(POLLING_INTERVAL_MS));
-+		if (hpb->is_hcm) {
-+			unsigned int poll =
-+				hpb->params.timeout_polling_interval_ms;
- 
-+			schedule_delayed_work(&hpb->ufshpb_read_to_work,
-+				msecs_to_jiffies(poll));
-+		}
- 	}
- }
- 
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index 8d14f01b0e7b..9703fe9807ad 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -180,8 +180,26 @@ struct victim_select_info {
- 	atomic_t active_cnt;
- };
- 
-+/**
-+ * ufshpb_params - ufs hpb parameters
-+ * @requeue_timeout_ms - requeue threshold of wb command (0x2)
-+ * @activation_thld - min reads [IOs] to activate/update a region
-+ * @normalization_factor - shift right the region's reads
-+ * @eviction_thld_enter - min reads [IOs] for the entering region in eviction
-+ * @eviction_thld_exit - max reads [IOs] for the exiting region in eviction
-+ * @read_timeout_ms - timeout [ms] from the last read IO to the region
-+ * @read_timeout_expiries - amount of allowable timeout expireis
-+ * @timeout_polling_interval_ms - frequency in which timeouts are checked
-+ */
- struct ufshpb_params {
- 	unsigned int requeue_timeout_ms;
-+	unsigned int activation_thld;
-+	unsigned int normalization_factor;
-+	unsigned int eviction_thld_enter;
-+	unsigned int eviction_thld_exit;
-+	unsigned int read_timeout_ms;
-+	unsigned int read_timeout_expiries;
-+	unsigned int timeout_polling_interval_ms;
- };
- 
- struct ufshpb_stats {
--- 
-2.25.1
+I think these should/could be unsigned int.
 
+> +	u32 msg_obj_rx_mask;
+
+Is this variable big enough after you've extended the driver to use 64
+mailboxes?
+
+If you want to support 128 message objects converting the driver to the
+linux bitmap API is another option.
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--3ydqkgs77xla5x3p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA4skkACgkQqclaivrt
+76nZTwf/c9SRJf+NPMxZZwsneaFxgV1Ph0EIMjBb/Bi3su0f+KHOZZPr8xQz4pDA
+8bNp4A0RDaGVtywg9aTJLf2ft/DgI9G0jl3q9KTCxZ+pUZ0t6z2cGdA5ZpThHXg+
+DUsxYj3DC5dpCmOyHNzeJTg7859clKSTdPHgvwnVkHNesouOBpmqtVUSWWKuewSF
+e+0xEnUmu0ovu9zilrzj3i9BeO9s+y2yu6ryORjBshbGyAOom/JBqvzcN+tkS4Eh
+VB5hnNIV5yij93rG/bhbdhMI88mMWp5Ml+Mb28kiJFwXp7fU3YwDEC/7L5DLdRX4
+MFYh8jfkopBMeJY3ur0yOnfOYCA3uQ==
+=dq56
+-----END PGP SIGNATURE-----
+
+--3ydqkgs77xla5x3p--
