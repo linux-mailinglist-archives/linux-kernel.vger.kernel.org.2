@@ -2,182 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF973264E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7613264EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhBZPs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 10:48:56 -0500
-Received: from btbn.de ([5.9.118.179]:48432 "EHLO btbn.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhBZPsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:48:51 -0500
-Received: from [IPv6:2001:16b8:64c0:6700:50d3:5f50:f141:161] (200116b864c0670050d35f50f1410161.dip.versatel-1u1.de [IPv6:2001:16b8:64c0:6700:50d3:5f50:f141:161])
-        by btbn.de (Postfix) with ESMTPSA id 509F325E233;
-        Fri, 26 Feb 2021 16:48:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rothenpieler.org;
-        s=mail; t=1614354486;
-        bh=RptMSF60N4U9caiXjTphxc/F5vhxTGqbJlp3HE+jFws=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=CU8TX+nFe0KghLhUzBNQvhvgLLf0zJNk6lHSjVvB5GY6oIhGTjw9fvAaNtWlY/W50
-         Z8gWB2XzVXXkSDjD5m04RJAEqQ5k6ZQQSvLRqiPs3Bdhk3Mk388BGpcBJbkou1Pgse
-         VvHlAPSbL3SYHcqjfCwNovsDzqJEofGK+sDDjtl5ZQ0qaLjn/7MKrFEVurg5m092Qp
-         LhA5cA4y24EyYXbw19dv0M6WQov4vVO5E2WvK5goTME3jRRWXoeM+2pXVNPj+3VWNk
-         g02TSQGKsE88VShQX5XFBuLGNv5fGGqvKIRctj+0sxw8Hrb3br5GkYZO52tXneK8By
-         3fj3mBzbXT0LQ==
-Subject: Re: NFS Caching broken in 4.19.37
-To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Bruce Fields <bfields@fieldses.org>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
-References: <5022bdc4-9f3e-9756-cbca-ada37f88ecc7@cambridgegreys.com>
- <YDFrN0rZAJBbouly@eldamar.lan>
- <af5cebbd-74c9-9345-9fe8-253fb96033f6@cambridgegreys.com>
- <BEBA9809-373A-4172-B4AD-E19D82E56DB1@oracle.com>
- <YDIkH6yVgLoALT6x@eldamar.lan>
- <9305dc03-5557-5e18-e5c9-aaf886a03fff@cambridgegreys.com>
- <20210221143712.GA15975@fieldses.org>
- <f0edfaf5-457d-2334-ee4f-a6bf9d13917b@cambridgegreys.com>
- <1b701f2b-d185-dd30-0aca-ba6d280221d5@rothenpieler.org>
- <72e16f18-d4ae-f963-fd09-5f1fa6885a1d@cambridgegreys.com>
-From:   Timo Rothenpieler <timo@rothenpieler.org>
-Message-ID: <946354d2-7a4d-348e-2c6d-285122503d4a@rothenpieler.org>
-Date:   Fri, 26 Feb 2021 16:48:06 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229545AbhBZPvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 10:51:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhBZPvr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 10:51:47 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCB9C06174A;
+        Fri, 26 Feb 2021 07:51:03 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id g20so5519646plo.2;
+        Fri, 26 Feb 2021 07:51:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ktT+GdjKKyhRnZ7kpXgzw67KpCbIpEYpAT6oM+VedEY=;
+        b=fHgyPyB96G0xA0bQbvkeXRwcSfe6c8XVo/mlI4Kemqq4FNnAUU+IUcRsVmHbSrS5ny
+         AwedSc9S8V2RRlSrRghYX4gCWKmYBGyIvT/9QcdAM0nfkhaca+ImPuctX7G1i1Euiiql
+         23mtqXVkIUeqv8pt3MqDctEw7q7LaCFO18dAqYEfY2EmHcH8zt6P3hkUT09hHA9/JVSw
+         kWINUz9iGcLJ5vpQzA0PTOr1vbbvkCm+K/DZmefv64A0WaIyrCFQGhFzzX0er82wPDaP
+         uMCA0CivbUFJf/Ftz7iwZI0ZHwCxq4j/10K46//QE6JYfX3Mjibhq0o7dsV4cEPr7nRV
+         L4gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ktT+GdjKKyhRnZ7kpXgzw67KpCbIpEYpAT6oM+VedEY=;
+        b=S2p+Pqs6inFasWb2QWYe1BE3E338gsyBJMdjveVQ5ndge0rZ/2YVMUdBWs/1TFeeAN
+         A1BcmlCnlqPEcMkCNC2a4F/uVdjnbYouOtxH5n/WB4+NtpNUJ0DtFG6uuazRcRi7C/eh
+         84iB8yLpgK7UoYDZaWoKbyJkmDAMvJ0P01pvPdzIvz3rjPwlzLpGLDPt0PQixCvcAA4W
+         g92Lpx+MKwRp7HTn+QJO3m8jPt5RR3vSDLSruKLyt2F/OqRyI9lnwPrCCwwxK2ZAL94X
+         atRiPPi2N5H9mgSHxSpH2WSo5IVsq0uxImWlIkKmoSBv+8vC2L7baH/N7Da2dg99Z+wG
+         HXhw==
+X-Gm-Message-State: AOAM531AfCzjaZCSEMraOGyiDVDwr+NSWNo2Z8qtw/puNCxd69k5a300
+        gLAU65C0HkwSlu+bzB6qU4M2GmlQq/f5PQ==
+X-Google-Smtp-Source: ABdhPJxrcTnOpWUnrcIrBUe+18eX21/3H+bCBon0eEyG86paYlNkLEy6NrGgoh8sWUBj8xosAz8Xog==
+X-Received: by 2002:a17:90a:4611:: with SMTP id w17mr4257481pjg.122.1614354663524;
+        Fri, 26 Feb 2021 07:51:03 -0800 (PST)
+Received: from localhost (89.208.244.53.16clouds.com. [89.208.244.53])
+        by smtp.gmail.com with ESMTPSA id n11sm9157293pgm.30.2021.02.26.07.51.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 07:51:03 -0800 (PST)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
+Subject: [PATCH v5 0/4] Introduce pcim_alloc_irq_vectors()
+Date:   Fri, 26 Feb 2021 23:50:52 +0800
+Message-Id: <20210226155056.1068534-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <72e16f18-d4ae-f963-fd09-5f1fa6885a1d@cambridgegreys.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms060808050107010206030806"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Introduce pcim_alloc_irq_vectors(), a device-managed version of
+pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
+has been called before, then pci_alloc_irq_vectors() is actually a
+device-managed function. It is used as a device-managed function, So
+replace it with pcim_alloc_irq_vectors().
 
---------------ms060808050107010206030806
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Changelog
+---------
+v4 -> v5:
+	- Remove the check of enable device in pcim_alloc_irq_vectors()
+	  and make it as a static line function.
+	- Modify the subject name in patch 3 and patch 4.
+v3 -> v4:
+	- add some commit comments for patch 3
+v2 -> v3:
+	- Add some commit comments for replace some codes in
+	  pcim_release() by pci_free_irq_vectors().
+	- Simplify the error handling path in i2c designware
+	  driver.
+v1 -> v2:
+	- Use pci_free_irq_vectors() to replace some code in
+	  pcim_release().
+	- Modify some commit messages.
 
-On 26.02.2021 16:40, Anton Ivanov wrote:
-> These are two different clients, then what you see is possible on NFS=20
-> with client side caching. If you have multiple clients reading/writing =
+Dejin Zheng (4):
+  PCI: Introduce pcim_alloc_irq_vectors()
+  Documentation: devres: Add pcim_alloc_irq_vectors()
+  i2c: designware: Use pcim_alloc_irq_vectors() to allocate IRQ vectors
+  i2c: thunderx: Use pcim_alloc_irq_vectors() to allocate IRQ vectors
 
-> to the same files you usually need to tune the caching options and/or=20
-> use locking. I suspect that if you leave it for a while (until the cach=
-e=20
-> expires) it will sort itself out.
+ .../driver-api/driver-model/devres.rst        |  1 +
+ drivers/i2c/busses/i2c-designware-pcidrv.c    | 15 ++++--------
+ drivers/i2c/busses/i2c-thunderx-pcidrv.c      |  2 +-
+ drivers/pci/pci.c                             |  5 +---
+ include/linux/pci.h                           | 24 +++++++++++++++++++
+ 5 files changed, 31 insertions(+), 16 deletions(-)
 
-Yes, letting the client sit for just a few minutes (without interacting=20
-with file or directory in question) gets it back in sync with the server.=
+-- 
+2.25.0
 
-
-> In my test-case it is just one client, it missed a file deletion and=20
-> nothing short of an unmount and remount fixes that. I have waited for 3=
-0=20
-> mins+. It does not seem to refresh or expire. I also see the opposite=20
-> behavior - the bug shows up on 4.x up to at least 5.4. I do not see it =
-
-> on 5.10.
-
-Yeah, that's indeed different, though still looks somewhat similar.
-Makes me wonder if what fixed that issue is what's causing mine.
-
-The primarily broken use case here is users starting their SLURM jobs,=20
-and then observing them via "tail -f slurm.out", which has worked=20
-perfectly fine in the past, prior to the update from 5.4 to 5.10.
-
-
---------------ms060808050107010206030806
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-LnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMgQ2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczMIIC
-IjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA7eaHlqHBpLbtwkJV9z8PDyJgXxPgpkOI
-hkmReRwbLxpQD9xGAe72ujqGzFFh78QPgAhxKVqtGHzYeq0VJVCzhnCKRBbVX+JwIhL3ULYh
-UAZrViUp952qDB6qTL5sGeJS9F69VPSR5k6pFNw7mHDTTt0voWFg2aVkG3khomzVXoieJGOi
-Q4dH76paCtQbLkt59joAKz2BnwGLQ4wr09nfumJt5AKx2YxHK2XgSPslVZ4z8G00gimsfA7U
-tjT/wiekY6Z0b7ksLrEcvODncHQe9VSrNRA149SE3AlkWaZM/joVei/GYfj9K5jkiReinR4m
-qM353FEceLOeBhSTURpMdQ5wsXLi9DSTGBuNv4aw2Dozb/qBlkhGTvwk92mi0jAecE22Sn3A
-9UfrU2p1w/uRs+TIteQ0xO0B/J2mY2caqocsS9SsriIGlQ8b0LT0o6Ob07KGtPa5/lIvMmx5
-72Dv2v+vDiECByxm1Hdgjp8JtE4mdyYP6GBscJyT71NZw1zXHnFkyCbxReag9qaSR9x4CVVX
-j1BDmNROCqd5NAfIXUXYTFeZ/jukQigkxXGWhEhfLBC4Ha6pwizz9fq1+wwPKcWaF9P/SZOu
-BDrG30MiyCZa66G9mEtF5ZLuh4rGfKqxy4Z5Mxecuzt+MZmrSKfKGeXOeED/iuX5Z02M1o7i
-MS8CAwEAAaOCAfQwggHwMA8GA1UdEwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAUUtiIOsifeGbt
-ifN7OHCUyQICNtAwQQYIKwYBBQUHAQEENTAzMDEGCCsGAQUFBzABhiVodHRwOi8vb2NzcDA1
-LmFjdGFsaXMuaXQvVkEvQVVUSC1ST09UMEUGA1UdIAQ+MDwwOgYEVR0gADAyMDAGCCsGAQUF
-BwIBFiRodHRwczovL3d3dy5hY3RhbGlzLml0L2FyZWEtZG93bmxvYWQwHQYDVR0lBBYwFAYI
-KwYBBQUHAwIGCCsGAQUFBwMEMIHjBgNVHR8EgdswgdgwgZaggZOggZCGgY1sZGFwOi8vbGRh
-cDA1LmFjdGFsaXMuaXQvY24lM2RBY3RhbGlzJTIwQXV0aGVudGljYXRpb24lMjBSb290JTIw
-Q0EsbyUzZEFjdGFsaXMlMjBTLnAuQS4lMmYwMzM1ODUyMDk2NyxjJTNkSVQ/Y2VydGlmaWNh
-dGVSZXZvY2F0aW9uTGlzdDtiaW5hcnkwPaA7oDmGN2h0dHA6Ly9jcmwwNS5hY3RhbGlzLml0
-L1JlcG9zaXRvcnkvQVVUSC1ST09UL2dldExhc3RDUkwwHQYDVR0OBBYEFL6XqaqEv4C/EFN9
-CTL54S4yG893MA4GA1UdDwEB/wQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAgEAJpvnG1kNdLMS
-A+nnVfeEgIXNQsM7YRxXx6bmEt9IIrFlH1qYKeNw4NV8xtop91Rle168wghmYeCTP10FqfuK
-MZsleNkI8/b3PBkZLIKOl9p2Dmz2Gc0I3WvcMbAgd/IuBtx998PJX/bBb5dMZuGV2drNmxfz
-3ar6ytGYLxedfjKCD55Yv8CQcN6e9sW5OUm9TJ3kjt7Wdvd1hcw5s+7bhlND38rWFJBuzump
-5xqm1NSOggOkFSlKnhSz6HUjgwBaid6Ypig9L1/TLrkmtEIpx+wpIj7WTA9JqcMMyLJ0rN6j
-jpetLSGUDk3NCOpQntSy4a8+0O+SepzS/Tec1cGdSN6Ni2/A7ewQNd1Rbmb2SM2qVBlfN0e6
-ZklWo9QYpNZyf0d/d3upsKabE9eNCg1S4eDnp8sJqdlaQQ7hI/UYCAgDtLIm7/J9+/S2zuwE
-WtJMPcvaYIBczdjwF9uW+8NJ/Zu/JKb98971uua7OsJexPFRBzX7/PnJ2/NXcTdwudShJc/p
-d9c3IRU7qw+RxRKchIczv3zEuQJMHkSSM8KM8TbOzi/0v0lU6SSyS9bpGdZZxx19Hd8Qs0cv
-+R6nyt7ohttizwefkYzQ6GzwIwM9gSjH5Bf/r9Kc5/JqqpKKUGicxAGy2zKYEGB0Qo761Mcc
-IyclBW9mfuNFDbTBeDEyu80xggPzMIID7wIBATCBljCBgTELMAkGA1UEBhMCSVQxEDAOBgNV
-BAgMB0JlcmdhbW8xGTAXBgNVBAcMEFBvbnRlIFNhbiBQaWV0cm8xFzAVBgNVBAoMDkFjdGFs
-aXMgUy5wLkEuMSwwKgYDVQQDDCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBH
-MwIQCP8se1eXTyBvFrjHrZ83LDANBglghkgBZQMEAgEFAKCCAi0wGAYJKoZIhvcNAQkDMQsG
-CSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMjI2MTU0ODA2WjAvBgkqhkiG9w0BCQQx
-IgQgsLQwB6+5kLTYhflNIpvQvko1Qsdy7Mc8vijmDE99oBQwbAYJKoZIhvcNAQkPMV8wXTAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAN
-BggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBpwYJKwYBBAGCNxAEMYGZ
-MIGWMIGBMQswCQYDVQQGEwJJVDEQMA4GA1UECAwHQmVyZ2FtbzEZMBcGA1UEBwwQUG9udGUg
-U2FuIFBpZXRybzEXMBUGA1UECgwOQWN0YWxpcyBTLnAuQS4xLDAqBgNVBAMMI0FjdGFsaXMg
-Q2xpZW50IEF1dGhlbnRpY2F0aW9uIENBIEczAhAI/yx7V5dPIG8WuMetnzcsMIGpBgsqhkiG
-9w0BCRACCzGBmaCBljCBgTELMAkGA1UEBhMCSVQxEDAOBgNVBAgMB0JlcmdhbW8xGTAXBgNV
-BAcMEFBvbnRlIFNhbiBQaWV0cm8xFzAVBgNVBAoMDkFjdGFsaXMgUy5wLkEuMSwwKgYDVQQD
-DCNBY3RhbGlzIENsaWVudCBBdXRoZW50aWNhdGlvbiBDQSBHMwIQCP8se1eXTyBvFrjHrZ83
-LDANBgkqhkiG9w0BAQEFAASCAQBMLvLa5YH3BYxx4PtXboFSRfPzf+t4g1c+Khv/u+iq/n+o
-o8oxdtFxJfJm4rxJonQTk6o2r/1ZTJunwCVTTCqnOc39v1VTuvEHdNIaZVAzyy0zFlSga1oI
-87FTc6lu9/fSLuSsz20rt+L42DjKeujXlvlU8QseZJ5z5/L1kf+Oo6a1d3eINEDBwXCIvTHQ
-7Sv6SNgmR8Dpy7j9sbicposttL4uWhr30hIITWI4Y3HeuQsUWmUL1+t2wSls6AMQ8uVTXfsw
-uvbGjQLPuHdyrrsmo3gAoTau7IyDfrak6+ZnTol6sVYICNyNaL147zNS4BoSpEs2S9RlAqyh
-auZTqBQ9AAAAAAAA
---------------ms060808050107010206030806--
