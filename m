@@ -2,248 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F06932609E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B0C326094
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhBZJy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:54:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50494 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230315AbhBZJxa (ORCPT
+        id S230153AbhBZJxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:53:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhBZJww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:53:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614333123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eQcJhplU2pF60vZdxj0LZc9BO0+5KBxLxzI7j9VXerE=;
-        b=VY7fMwJqz1OtwWlRJtoq7H+Xte9UxiQ5k7/iCObnEaqJHTvsslCaeF8KJn0tWedutrdTQQ
-        irhH3rwFMyDasyvNVUhZVFDlCRfpob1dZW3/oTpkIlYLewG6AhVQSVEhKvekZuNxmEkkAP
-        qkyCtFUFW/2DashXVogjUVqT4eJSYFI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-dNVDaYqyMpy9aPXwPBx1FA-1; Fri, 26 Feb 2021 04:52:00 -0500
-X-MC-Unique: dNVDaYqyMpy9aPXwPBx1FA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7609E1005501;
-        Fri, 26 Feb 2021 09:51:59 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BC08660BE5;
-        Fri, 26 Feb 2021 09:51:57 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v2 2/4] certs: Move load_system_certificate_list to a common
- function
-From:   David Howells <dhowells@redhat.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 26 Feb 2021 09:51:56 +0000
-Message-ID: <161433311696.902181.3599366124784670368.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161433310139.902181.11787442834918634133.stgit@warthog.procyon.org.uk>
-References: <161433310139.902181.11787442834918634133.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Fri, 26 Feb 2021 04:52:52 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E25C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:52:12 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id t25so5915394pga.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:52:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hnnanrWTNg2jT3kmApBFVzR+WBdWvVozJWPDZ+h5DIk=;
+        b=mxANwjkh3DAS+qI3KIQXTBgBicNnM8c4B0dLIzPB14c3GMLGfKY6jy8mA+lHlEDl6k
+         IUBv7p0li+7WJ3/Vf0e48Nb8IcUO+n+GSAJoBGbBuKxo0cKA6dtxVGlFKbaIVqZx6rwu
+         yHPJ8mj2keKM5PP+TXbB6AC7+kTytdIAFYoZU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hnnanrWTNg2jT3kmApBFVzR+WBdWvVozJWPDZ+h5DIk=;
+        b=nDRAMLxjbwJJuTfeHk3qRvYGjzEfr8QuyKi4RnT8rE6mNcbDF7POTzMA7mmHMe8Mwj
+         WdKA2GFuz6Ib/MEdvSne3Yp6k4vkZ72Esykms89EbnD0tpVGNFeZr+z5sxpR46ZhKcdT
+         N9OCVrI48ZiFigtqbDz9GH3P0CK71E7b/+ys9AxvQZ2xfzS7+8JiKEwPC1gHmypSKGtu
+         3B7dg382/45FhTdzE7e58tq9ATYSeWRSRT1e4mlxmU07eQWfZuU45AWBnvML/AY7lzQ5
+         cpAOTcqPRVw3KM9jF2Awv+zxX/+ti6BQ42x1xhmUnfSI38orr3l+O35/4O7ghO/4HX7E
+         GRgQ==
+X-Gm-Message-State: AOAM533z5nzmtuPSHKHNxJ5dtmx09yq9xYGZL8Ds6viZLvvd+WJ8Yx48
+        8SVJAhPph/O98fCIVJ3fz3I1IQ==
+X-Google-Smtp-Source: ABdhPJxKHWkljHIsQKuRZYIEQtpNxuxOZMJigquhnP9JaQDPwnMLx5mQ2HldGwn7oW0IfteZkCPhZQ==
+X-Received: by 2002:a63:1648:: with SMTP id 8mr2275871pgw.392.1614333131763;
+        Fri, 26 Feb 2021 01:52:11 -0800 (PST)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:5c91:233c:dd5b:b1b0])
+        by smtp.gmail.com with ESMTPSA id q4sm9013458pfs.134.2021.02.26.01.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 01:52:11 -0800 (PST)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>
+Cc:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH] media: mtk-vcodec: venc: remove redundant code
+Date:   Fri, 26 Feb 2021 18:52:02 +0900
+Message-Id: <20210226095203.1661054-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Snowberg <eric.snowberg@oracle.com>
+vidioc_try_fmt() does clamp height and width when called on the OUTPUT
+queue, so clamping them prior to calling this function is redundant. Set
+the queue's parameters after calling vidioc_try_fmt() so we can use the
+values it computed.
 
-Move functionality within load_system_certificate_list to a common
-function, so it can be reused in the future.
-
-DH Changes:
- - Added inclusion of common.h to common.c (Eric [1]).
-
-Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-Acked-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Link: https://lore.kernel.org/r/20200930201508.35113-2-eric.snowberg@oracle.com/
-Link: https://lore.kernel.org/r/20210122181054.32635-3-eric.snowberg@oracle.com/ # v5
-Link: https://lore.kernel.org/r/EDA280F9-F72D-4181-93C7-CDBE95976FF7@oracle.com/ [1]
-Link: https://lore.kernel.org/r/161428672825.677100.7545516389752262918.stgit@warthog.procyon.org.uk/
+Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 ---
+ .../media/platform/mtk-vcodec/mtk_vcodec_enc.c   | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
- certs/Makefile         |    2 +-
- certs/common.c         |   57 ++++++++++++++++++++++++++++++++++++++++++++++++
- certs/common.h         |    9 ++++++++
- certs/system_keyring.c |   49 +++--------------------------------------
- 4 files changed, 70 insertions(+), 47 deletions(-)
- create mode 100644 certs/common.c
- create mode 100644 certs/common.h
-
-diff --git a/certs/Makefile b/certs/Makefile
-index f4c25b67aad9..f4b90bad8690 100644
---- a/certs/Makefile
-+++ b/certs/Makefile
-@@ -3,7 +3,7 @@
- # Makefile for the linux kernel signature checking certificates.
- #
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+index 8c917969c2f1..d16e1ec87a49 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+@@ -442,7 +442,6 @@ static int vidioc_venc_s_fmt_out(struct file *file, void *priv,
+ 	struct mtk_q_data *q_data;
+ 	int ret, i;
+ 	const struct mtk_video_fmt *fmt;
+-	struct v4l2_pix_format_mplane *pix_fmt_mp = &f->fmt.pix_mp;
  
--obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
-+obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o common.o
- obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist.o
- ifneq ($(CONFIG_SYSTEM_BLACKLIST_HASH_LIST),"")
- obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist_hashes.o
-diff --git a/certs/common.c b/certs/common.c
-new file mode 100644
-index 000000000000..16a220887a53
---- /dev/null
-+++ b/certs/common.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <linux/kernel.h>
-+#include <linux/key.h>
-+#include "common.h"
-+
-+int load_certificate_list(const u8 cert_list[],
-+			  const unsigned long list_size,
-+			  const struct key *keyring)
-+{
-+	key_ref_t key;
-+	const u8 *p, *end;
-+	size_t plen;
-+
-+	p = cert_list;
-+	end = p + list_size;
-+	while (p < end) {
-+		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
-+		 * than 256 bytes in size.
-+		 */
-+		if (end - p < 4)
-+			goto dodgy_cert;
-+		if (p[0] != 0x30 &&
-+		    p[1] != 0x82)
-+			goto dodgy_cert;
-+		plen = (p[2] << 8) | p[3];
-+		plen += 4;
-+		if (plen > end - p)
-+			goto dodgy_cert;
-+
-+		key = key_create_or_update(make_key_ref(keyring, 1),
-+					   "asymmetric",
-+					   NULL,
-+					   p,
-+					   plen,
-+					   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
-+					   KEY_USR_VIEW | KEY_USR_READ),
-+					   KEY_ALLOC_NOT_IN_QUOTA |
-+					   KEY_ALLOC_BUILT_IN |
-+					   KEY_ALLOC_BYPASS_RESTRICTION);
-+		if (IS_ERR(key)) {
-+			pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
-+			       PTR_ERR(key));
-+		} else {
-+			pr_notice("Loaded X.509 cert '%s'\n",
-+				  key_ref_to_ptr(key)->description);
-+			key_ref_put(key);
-+		}
-+		p += plen;
-+	}
-+
-+	return 0;
-+
-+dodgy_cert:
-+	pr_err("Problem parsing in-kernel X.509 certificate list\n");
-+	return 0;
-+}
-diff --git a/certs/common.h b/certs/common.h
-new file mode 100644
-index 000000000000..abdb5795936b
---- /dev/null
-+++ b/certs/common.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+
-+#ifndef _CERT_COMMON_H
-+#define _CERT_COMMON_H
-+
-+int load_certificate_list(const u8 cert_list[], const unsigned long list_size,
-+			  const struct key *keyring);
-+
-+#endif
-diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-index ed98754d5795..0c9a4795e847 100644
---- a/certs/system_keyring.c
-+++ b/certs/system_keyring.c
-@@ -16,6 +16,7 @@
- #include <keys/asymmetric-type.h>
- #include <keys/system_keyring.h>
- #include <crypto/pkcs7.h>
-+#include "common.h"
+ 	vq = v4l2_m2m_get_vq(ctx->m2m_ctx, f->type);
+ 	if (!vq) {
+@@ -467,20 +466,13 @@ static int vidioc_venc_s_fmt_out(struct file *file, void *priv,
+ 		f->fmt.pix.pixelformat = fmt->fourcc;
+ 	}
  
- static struct key *builtin_trusted_keys;
- #ifdef CONFIG_SECONDARY_TRUSTED_KEYRING
-@@ -137,54 +138,10 @@ device_initcall(system_trusted_keyring_init);
-  */
- static __init int load_system_certificate_list(void)
- {
--	key_ref_t key;
--	const u8 *p, *end;
--	size_t plen;
+-	pix_fmt_mp->height = clamp(pix_fmt_mp->height,
+-				MTK_VENC_MIN_H,
+-				MTK_VENC_MAX_H);
+-	pix_fmt_mp->width = clamp(pix_fmt_mp->width,
+-				MTK_VENC_MIN_W,
+-				MTK_VENC_MAX_W);
 -
- 	pr_notice("Loading compiled-in X.509 certificates\n");
+-	q_data->visible_width = f->fmt.pix_mp.width;
+-	q_data->visible_height = f->fmt.pix_mp.height;
+-	q_data->fmt = fmt;
+-	ret = vidioc_try_fmt(f, q_data->fmt);
++	ret = vidioc_try_fmt(f, fmt);
+ 	if (ret)
+ 		return ret;
  
--	p = system_certificate_list;
--	end = p + system_certificate_list_size;
--	while (p < end) {
--		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
--		 * than 256 bytes in size.
--		 */
--		if (end - p < 4)
--			goto dodgy_cert;
--		if (p[0] != 0x30 &&
--		    p[1] != 0x82)
--			goto dodgy_cert;
--		plen = (p[2] << 8) | p[3];
--		plen += 4;
--		if (plen > end - p)
--			goto dodgy_cert;
--
--		key = key_create_or_update(make_key_ref(builtin_trusted_keys, 1),
--					   "asymmetric",
--					   NULL,
--					   p,
--					   plen,
--					   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
--					   KEY_USR_VIEW | KEY_USR_READ),
--					   KEY_ALLOC_NOT_IN_QUOTA |
--					   KEY_ALLOC_BUILT_IN |
--					   KEY_ALLOC_BYPASS_RESTRICTION);
--		if (IS_ERR(key)) {
--			pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
--			       PTR_ERR(key));
--		} else {
--			pr_notice("Loaded X.509 cert '%s'\n",
--				  key_ref_to_ptr(key)->description);
--			key_ref_put(key);
--		}
--		p += plen;
--	}
--
--	return 0;
--
--dodgy_cert:
--	pr_err("Problem parsing in-kernel X.509 certificate list\n");
--	return 0;
-+	return load_certificate_list(system_certificate_list, system_certificate_list_size,
-+				     builtin_trusted_keys);
- }
- late_initcall(load_system_certificate_list);
++	q_data->fmt = fmt;
++	q_data->visible_width = f->fmt.pix_mp.width;
++	q_data->visible_height = f->fmt.pix_mp.height;
+ 	q_data->coded_width = f->fmt.pix_mp.width;
+ 	q_data->coded_height = f->fmt.pix_mp.height;
  
-
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
