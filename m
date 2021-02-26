@@ -2,145 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F210325B82
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 03:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 611BB325B88
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 03:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhBZCOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 21:14:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhBZCOL (ORCPT
+        id S230134AbhBZCPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 21:15:04 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12582 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229800AbhBZCPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 21:14:11 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4161BC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:13:31 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id t9so5096171pjl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:13:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eCQDyjSjrPOnC5kBdIWB+6uWOY9PLaOhvG7UuaHLMBs=;
-        b=hzQEPy6po5uMlNt0Zt2fNrmKhe+2t6IXQjWLf9e9fSsIRAxq8g77yMUNBKK5YQVDqH
-         Gi419EyzG4KPVI0SMS5MzP4bw48wj3nB9IWmuOSspMiQiS36aaxomlYQ6WVOSxTcCCmi
-         nyMp5RNbCQDDnG7ygq/7HxOd0y8fssESR9iks=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eCQDyjSjrPOnC5kBdIWB+6uWOY9PLaOhvG7UuaHLMBs=;
-        b=FuoVQKkSiQ1MDnACW4/F/I940g0LIk5TrOjrnsQjo7px3zufoncRSeA6PrYF0RwgSi
-         MKekp5MsmrguUP71QJX4YExICGF2nO+0eoDmp66SK5sLJgQluoUWupaYi56ePvCyHiEo
-         Q64lJAqO5LnliQ2oz3F2AqJOvxPg685p86hTPDNG+SufgXGY/UBSMlsuleRmWslBoj2X
-         HWNdhC9F/ICp5ffsZcYOfQUe+hNzO9zMHN23QIhxhBBcanOQP/c3RvZEjFjDkBWZzf2d
-         Bq/uMKNrpZ9ndDIefqcIvYEbliEjYqL/5LYo+Ga0M2GRuwKgyBLy/pUtTha1CfvNGkt1
-         EAiA==
-X-Gm-Message-State: AOAM531bc2NvQMEG6JUXhLf7L+5XmUARE3EICBIr62begbEvVTy/F9Un
-        b2Dm5m4QVKqbmaLmTCnkZs81eA==
-X-Google-Smtp-Source: ABdhPJxbCC7G//bSUsPbyD6uOE13QyYXQG2FJO0dCZ69QsD+hhc3QGnvoJBGzIwOGDsY4l9xpjlXdw==
-X-Received: by 2002:a17:90a:7405:: with SMTP id a5mr936844pjg.13.1614305610829;
-        Thu, 25 Feb 2021 18:13:30 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:1d8:8d0c:f75e:edd8])
-        by smtp.gmail.com with UTF8SMTPSA id w24sm7119977pgl.19.2021.02.25.18.13.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 18:13:30 -0800 (PST)
-Date:   Thu, 25 Feb 2021 18:13:28 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Philip Chen <philipchen@google.com>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Judy Hsiao <judyhsiao@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/13] arm64: dts: qcom: Add sc7180-lazor-pompom skus
-Message-ID: <YDhZSAd0XLgdHEEm@google.com>
-References: <20210225221310.1939599-1-dianders@chromium.org>
- <20210225141022.12.If93a01b30d20dccacbad4be8ddc519dc20a51a1e@changeid>
+        Thu, 25 Feb 2021 21:15:02 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DmtTC6kgVzMf1Q;
+        Fri, 26 Feb 2021 10:12:15 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 26 Feb
+ 2021 10:14:13 +0800
+Subject: Re: [f2fs-dev] [PATCH] f2fs: compress: Allow modular (de)compression
+ algorithms
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+CC:     Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+References: <20210222125916.4168804-1-geert@linux-m68k.org>
+ <CAK7LNARxO6O7aRwzJ+i9hEGvWBTCukpwGBC6B79c7UdO=f0Ymw@mail.gmail.com>
+ <CAMuHMdX-t4Z27RnWn0Sp1AoO3A=+aT8GXkcGC5gSArtm+W9w1Q@mail.gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <f1e9abe1-6c43-cefc-276b-d36fec72e4a4@huawei.com>
+Date:   Fri, 26 Feb 2021 10:14:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210225141022.12.If93a01b30d20dccacbad4be8ddc519dc20a51a1e@changeid>
+In-Reply-To: <CAMuHMdX-t4Z27RnWn0Sp1AoO3A=+aT8GXkcGC5gSArtm+W9w1Q@mail.gmail.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 02:13:09PM -0800, Douglas Anderson wrote:
-> This is a trogdor variant.  This is mostly a grab from the downstream
-> tree with notable exceptions:
-> - I skip -rev0.  This was a super early build and there's no advantage
->   of long term support.
-> - In -rev1 I translate the handling of the USB hub like is done for
->   similar boards.  See the difference between the downstream and
->   upstream 'sc7180-trogdor-lazor-r0.dts' for an example.  This will
->   need to be resolved when proper support for the USB hub is figured
->   out upstream.
-> - I remove sound node since sound hasn't landed upstream yet.
-> - In incorporate the pending <https://crrev.com/c/2719075> for the
->   keyboard.
+Hi Geert,
+
+On 2021/2/23 15:42, Geert Uytterhoeven wrote:
+>> I checked the code in menu_finalize(), and this seems to work like this.
+>>
+>> I discussed the oddity of the select behavior before
+>> (https://lore.kernel.org/linux-kbuild/e1a6228d-1341-6264-d97a-e2bd52a65c82@infradead.org/),
+>> but I was not confident about what the right direction was.
+>>
+>>
+>> Anyway, the behavior is obscure from the current code.
+>>
+>> If you want to make this more robust,
+>> you can write as follows:
+>>
+>> config F2FS_FS
+>>          tristate "F2FS filesystem support"
+>>          depends on BLOCK
+>>          select NLS
+>>          select CRYPTO
+>>          select CRYPTO_CRC32
+>>          select F2FS_FS_XATTR if FS_ENCRYPTION
+>>          select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+>>          select LZO_COMPRESS if F2FS_FS_LZO
+>>          select LZO_DECOMPRESS if F2FS_FS_LZO
+>>          select LZ4_COMPRESS if F2FS_FS_LZ4
+>>          select LZ4_DECOMPRESS if F2FS_FS_LZ4
+>>          select LZ4HC_COMPRESS if F2FS_FS_LZ4HC
+>>          select ZSTD_COMPRESS if F2FS_FS_ZSTD
+>>          select ZSTD_DECOMPRESS if F2FS_FS_ZSTD
+>>
+>> The code is a bit clumsy, but it is clear
+>> that the module (F2FS_FS) is selecting the
+>> compress/decompress libraries.
+> Actually the above is what I tried first ;-)  Works fine.
 > 
-> Cc: Philip Chen <philipchen@google.com>
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Cc: Stephen Boyd <swboyd@chromium.org>
-> Cc: Tzung-Bi Shih <tzungbi@chromium.org>
-> Cc: Judy Hsiao <judyhsiao@chromium.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Then I started to look for similar cases in other file systems (e.g.
+> EROFS_FS_ZIP), and discovered the issue doesn't happen there, which
+> sparked my investigation.  So I settled on the direct dependency,
+> because it keeps all compression-related logic together.
 
-<snip>
+It looks above way is more explicit, how about using your previous implementation?
 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-> new file mode 100644
-> index 000000000000..8f1596b8e90a
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom.dtsi
-> @@ -0,0 +1,288 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Google Pompom board device tree source
-> + *
-> + * Copyright 2020 Google LLC.
-> + */
-> +
-> +#include "sc7180.dtsi"
-> +
-> +ap_ec_spi: &spi6 {};
-> +ap_h1_spi: &spi0 {};
-> +
-> +#include "sc7180-trogdor.dtsi"
-> +
-> +/ {
-> +	thermal-zones {
-> +		5v-choke-thermal {
-> +			polling-delay-passive = <0>;
-> +			polling-delay = <250>;
-> +
-> +			thermal-sensors = <&pm6150_adc_tm 0>;
+Thank,
 
-This is fine with how things are currently configured for trogdor, however be
-aware that in the ADC thermal monitor config your patch is racing with 'arm64:
-dts: qcom: sc7180: trogdor: Use ADC TM channel 0 instead of 1 for charger
-temperature' (https://lore.kernel.org/patchwork/patch/1384514/). That patch
-changes the charger thermistor for all trogdor boards to ADC TM channel 0,
-so the 5v-choke thermistor would have to move to another channel (most
-likely 1).
-
-<snip>
-
-> +&pm6150_adc_tm {
-> +	status = "okay";
-> +
-> +	5v-choke-thermistor@0 {
-> +		reg = <0>;
-
-s/0/1/ in the two lines above if 'arm64: dts: qcom: sc7180: trogdor: Use ADC
-TM channel 0 instead of 1 for charger temperature' lands before this patch.
-
-The other deltas with downstream are mentioned in the commit message, as long
-as we keep the change of the ADC TM channel in mind this looks good to me.
-
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+> 
+> Gr{oetje,eeting}s,
