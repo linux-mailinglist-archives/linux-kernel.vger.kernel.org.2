@@ -2,89 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDA9325BC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 03:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B886325BC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 03:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhBZCxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 21:53:39 -0500
-Received: from mail.kingsoft.com ([114.255.44.145]:12469 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhBZCxi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 21:53:38 -0500
-X-AuditID: 0a580155-713ff700000550c6-27-60385b685238
-Received: from mail.kingsoft.com (localhost [10.88.1.32])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id D9.AF.20678.86B58306; Fri, 26 Feb 2021 10:22:32 +0800 (HKT)
-Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
- (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 26 Feb
- 2021 10:52:51 +0800
-Date:   Fri, 26 Feb 2021 10:52:50 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Oscar Salvador <osalvador@suse.de>
-CC:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
-        <naoya.horiguchi@nec.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <inux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Message-ID: <20210226105250.3a15e35c@alex-virtual-machine>
-In-Reply-To: <20210225113930.GA7227@localhost.localdomain>
-References: <20210224151619.67c29731@alex-virtual-machine>
-        <20210224103105.GA16368@linux>
-        <20210225114329.4e1a41c6@alex-virtual-machine>
-        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
-        <20210225113930.GA7227@localhost.localdomain>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S230041AbhBZCzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 21:55:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229885AbhBZCzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 21:55:02 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A6F564EE1;
+        Fri, 26 Feb 2021 02:54:19 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 21:54:17 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jacob Wen <jian.w.wen@oracle.com>
+Subject: [GIT PULL] Tracing: Fixes for 5.12
+Message-ID: <20210225215417.1e19b408@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.16.253.254]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
- (10.88.1.32)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsXCFcGooJsRbZFg8LOB3WLO+jVsFp83/GOz
-        +Lr+F7PFtI3iFrcPrGG0uLxrDpvFvTX/WS0uHVjAZHGx8QCjxZlpRRabN01ltnhz4R6LxY8N
-        j1kdeD2+t/axeCze85LJY9OqTjaPTZ8msXu8O3eO3ePEjN8sHi+ubmTxeL/vKpvH5tPVHp83
-        yXmcaPnCGsAdxWWTkpqTWZZapG+XwJVx4OVS1oJHLBUnjjUwNTDeYu5i5OSQEDCROLLsAmMX
-        IxeHkMB0JomTb44wQTivGCX6mw6ygVSxCKhK9O/bwQRiswHZu+7NYgWxRQTUJKa9amQHaWAW
-        6GaVOLtxPTtIQljAS+LL/bWMIDavgJXE/OYmFhCbE8hetX46K8SGz4wSMxf0gW3gFxCT6L3y
-        nwniJnuJti2LoJoFJU7OfALWzCygI3Fi1TFmCFteYvvbOWC2kICixOElv9ghepUkjnTPYIOw
-        YyWWzXvFOoFReBaSUbOQjJqFZNQCRuZVjCzFuelGmxghMRi6g3FG00e9Q4xMHIyHGCU4mJVE
-        eDf/M00Q4k1JrKxKLcqPLyrNSS0+xCjNwaIkzjt1q0mCkEB6YklqdmpqQWoRTJaJg1OqgSnt
-        sMaDi3tubduy4f8LxWq2F2/2LZ2yISE6PyXxzRfzziUC9a8stfjOGu9t2s7k/+Hl4rlib7xP
-        fFlSK98QJO/kF7Q1/MLq/gjBfbExP+RNynqaspc1HpAp40mx87pl3ms6a/cfT+57Pj76GgJL
-        w4uL05y8vuZUX3ykzFeRNkH2lGz933c/zPweuU50rGDnWzpZcu3OptbuPIHpT3hftxtp/sri
-        Ws51Pcdk7blFH0qv/XfWdhV26PaX4nzuM2/tv7+7OGr+WL656rN8dunCCZ89flw2ky97U/3Y
-        XeNyaRvXd8GL8gzmK085ye/Sty6rzfR3cuq6pbtzgcuTe7vUttUt3GHpsq79WnnwgpBJQUos
-        xRmJhlrMRcWJADSJYpIwAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi naoya,Oscar,david:
-> 
-> > We could use some negative value (error code) to report the reported case,
-> > then as you mentioned above, some callers need change to handle the
-> > new case, and the same is true if you use some positive value.
-> > My preference is -EHWPOISON, but other options are fine if justified well.  
-> 
-> -EHWPOISON seems like a good fit.
-> 
-I am OK with the -EHWPOISON error code, But I have one doubt here:
-When we return this -EHWPOISON error code, Does this means we have to add a new error code
-to error-base.h or errno.h? Is this easy realized?
 
-Thanks!
-Aili Yao
+Linus,
 
+Tracing: Fixes for 5.12
+
+Two fixes:
+
+ - Fix an unsafe printf string usage in a kmem trace event
+ - Fix spelling in output from the latency-collector tool
+
+Note, since the broken commit was not in my tree, nor was it in any of
+your tags, I just based this on top of the broken commit.
+
+I also included a spelling fix patch to the latency-collector tool as
+it doesn't affect any other part of the kernel.
+
+Please pull the latest trace-v5.12-2 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.12-2
+
+Tag SHA1: c07e93a2a5d138b7efadb97045f77d736d5079b8
+Head SHA1: c1d96fa61eb74b1e211f1653acc5b68ac62c8ef4
+
+
+Colin Ian King (1):
+      tracing/tools: fix a couple of spelling mistakes
+
+Steven Rostedt (VMware) (1):
+      mm, tracing: Fix kmem_cache_free trace event to not print stale pointers
+
+----
+ include/trace/events/kmem.h               | 6 +++---
+ tools/tracing/latency/latency-collector.c | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+---------------------------
+diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
+index 40845b0d5dad..3a60b6b6db32 100644
+--- a/include/trace/events/kmem.h
++++ b/include/trace/events/kmem.h
+@@ -144,17 +144,17 @@ TRACE_EVENT(kmem_cache_free,
+ 	TP_STRUCT__entry(
+ 		__field(	unsigned long,	call_site	)
+ 		__field(	const void *,	ptr		)
+-		__field(	const char *,	name		)
++		__string(	name,	name	)
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__entry->call_site	= call_site;
+ 		__entry->ptr		= ptr;
+-		__entry->name		= name;
++		__assign_str(name, name);
+ 	),
+ 
+ 	TP_printk("call_site=%pS ptr=%p name=%s",
+-		  (void *)__entry->call_site, __entry->ptr, __entry->name)
++		  (void *)__entry->call_site, __entry->ptr, __get_str(name))
+ );
+ 
+ TRACE_EVENT(mm_page_free,
+diff --git a/tools/tracing/latency/latency-collector.c b/tools/tracing/latency/latency-collector.c
+index 57b20802e71b..b69de9263ee6 100644
+--- a/tools/tracing/latency/latency-collector.c
++++ b/tools/tracing/latency/latency-collector.c
+@@ -1650,7 +1650,7 @@ static void start_printthread(void)
+ 		if (ufd <  0 ||
+ 		    read(ufd, seed, sizeof(*seed)) != sizeof(*seed)) {
+ 			printf(
+-"Warning! Using trivial random nummer seed, since %s not available\n",
++"Warning! Using trivial random number seed, since %s not available\n",
+ 			DEV_URANDOM);
+ 			fflush(stdout);
+ 			*seed = i;
+@@ -1711,8 +1711,8 @@ static void show_usage(void)
+ "\t\t\tbeginning, end, and backtrace.\n\n"
+ 
+ "-g, --graph\t\tEnable the display-graph option in trace_option. This\n"
+-"\t\t\toption causes ftrace to show the functionph of how\n"
+-"\t\t\tfunctions are calling other functions.\n\n"
++"\t\t\toption causes ftrace to show the graph of how functions\n"
++"\t\t\tare calling other functions.\n\n"
+ 
+ "-c, --policy POL\tRun the program with scheduling policy POL. POL can be\n"
+ "\t\t\tother, batch, idle, rr or fifo. The default is rr. When\n"
