@@ -2,84 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3261F3267A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C676532680E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhBZUEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
+        id S230006AbhBZUKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:10:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBZUEg (ORCPT
+        with ESMTP id S230303AbhBZUHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:04:36 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA8C061574;
-        Fri, 26 Feb 2021 12:03:56 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id u4so11974911ljh.6;
-        Fri, 26 Feb 2021 12:03:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zx4wWUTPjkEoZMfdFukEwwHYmqNG3sfw0pU4Ec9E4uA=;
-        b=Snr+kyjMGdVKvorvrl0RwG7Nhs3MxTXrcura/wtnx1BwuxyXMo5IK1koqPR7pSOwCk
-         5pP70wsFngb2ETVZdl4VV+yzc5DdeGM9MehmDwiz3Pd5JcUnpbhkEZ948vHA51sLWIJ0
-         QIg1Pen6Y56W2bjImPYNhDC5cQtoq6aKWrD/AzO9b5aoGXMO3u7xO0TCr54qTao1oIcV
-         RAzdWDuS6X92B/P3ao2Lbc1FbuCRU5KQRsvqg8Ja8G3QnpXZ3mjoAoPGo8jp18V9gfwr
-         PWTSoqBQpgZDLBOIwnW9DaSkC9H1NJJEk6z2ijtCunw264kG+UKTW2CLHor1aXHdi0Ru
-         oxrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zx4wWUTPjkEoZMfdFukEwwHYmqNG3sfw0pU4Ec9E4uA=;
-        b=pR7Kp8V7pPv4NAFyN68Fd9xWScx7mObyXUp1EF1MwBfDhuiL/VhE6wU0XM3KJ3X2HH
-         n2AiT0QpOPVuSh6YVJ90glBBSpdn59RDF9NbYfftjEi+2VnnsMYFCUvlJI7xEcuRBrdO
-         oSpJghzlgT/pMVlHW7DeRZ8aKDI0uhxYOxCrs8UbSyBp4sAodneQvmFzPKaSahxQNCVf
-         xwUCVvAD+faOGZHpci0FLKmdGNALWsyogB0oqFjSu8e5cI3h4V7HES6zITDeP3Jsotbp
-         Hd84vaE4Z9z8XY7+5oX+PrO8n5cJ3tlX9IS14wn/F3H4HyI/k2AdWDeozrvfIFpacNyO
-         pO/g==
-X-Gm-Message-State: AOAM530pNNX2Mv/TOUpTKGisCiok/kDJz+IaAnPb5xGtvQOSbauF44/z
-        KxReKb/HA3V8uycS242qW3kPEeBcai0TNc3acAjyIoGU
-X-Google-Smtp-Source: ABdhPJwTMTg2ATqmr33jGu88YKPjfTzN5Dz5HF5o6G0ONsYfB4ZNpVAgifgx1ZOqc/qfL1bg1FZX0ugdTqMAdG3nNDA=
-X-Received: by 2002:a2e:964e:: with SMTP id z14mr2629715ljh.204.1614369834704;
- Fri, 26 Feb 2021 12:03:54 -0800 (PST)
+        Fri, 26 Feb 2021 15:07:50 -0500
+Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBA4C06178B;
+        Fri, 26 Feb 2021 12:05:36 -0800 (PST)
+Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 1BF051FABA;
+        Fri, 26 Feb 2021 21:05:32 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 13/41] arm64: dts: qcom: sdm630: Add clocks and power domains to SMMU nodes
+Date:   Fri, 26 Feb 2021 21:03:43 +0100
+Message-Id: <20210226200414.167762-14-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210226200414.167762-1-konrad.dybcio@somainline.org>
+References: <20210226200414.167762-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-References: <20210225234319.336131-1-songliubraving@fb.com> <20210226000344.a6aud7aaimrc6wzt@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210226000344.a6aud7aaimrc6wzt@kafai-mbp.dhcp.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 26 Feb 2021 12:03:43 -0800
-Message-ID: <CAADnVQKofEPSABz-+WQ65XTcOEQPke08Nity2Mo7-bD2gopVpg@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 0/6] bpf: enable task local storage for
- tracing programs
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 4:04 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Thu, Feb 25, 2021 at 03:43:13PM -0800, Song Liu wrote:
-> > This set enables task local storage for non-BPF_LSM programs.
-> >
-> > It is common for tracing BPF program to access per-task data. Currently,
-> > these data are stored in hash tables with pid as the key. In
-> > bcc/libbpftools [1], 9 out of 23 tools use such hash tables. However,
-> > hash table is not ideal for many use case. Task local storage provides
-> > better usability and performance for BPF programs. Please refer to 6/6 for
-> > some performance comparison of task local storage vs. hash table.
-> Thanks for the patches.
->
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-Applied. Thanks.
+Add the required clocks and power domains for the SMMUs to work.
 
-9 out of 23 libbpf-tools will significantly reduce the tracing overhead. Hooray!
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+---
+ arch/arm64/boot/dts/qcom/sdm630.dtsi | 31 +++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+index cc8589cb5095..9e50c9adada6 100644
+--- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
+@@ -563,9 +563,14 @@ snoc: interconnect@1626000 {
+ 		anoc2_smmu: iommu@16c0000 {
+ 			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
+ 			reg = <0x016c0000 0x40000>;
+-			#iommu-cells = <1>;
+ 
++			assigned-clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
++			assigned-clock-rates = <1000>;
++			clocks = <&rpmcc RPM_SMD_AGGR2_NOC_CLK>;
++			clock-names = "bus";
+ 			#global-interrupts = <2>;
++			#iommu-cells = <1>;
++
+ 			interrupts =
+ 				<GIC_SPI 229 IRQ_TYPE_LEVEL_HIGH>,
+ 				<GIC_SPI 231 IRQ_TYPE_LEVEL_HIGH>,
+@@ -907,9 +912,22 @@ pinconf-sd-cd {
+ 		kgsl_smmu: iommu@5040000 {
+ 			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
+ 			reg = <0x05040000 0x10000>;
+-			#iommu-cells = <1>;
+ 
++			/*
++			 * GX GDSC parent is CX. We need to bring up CX for SMMU
++			 * but we need both up for Adreno. On the other hand, we
++			 * need to manage the GX rpmpd domain in the adreno driver.
++			 * Enable CX/GX GDSCs here so that we can manage just the GX
++			 * RPM Power Domain in the Adreno driver.
++			 */
++			power-domains = <&gpucc GPU_GX_GDSC>;
++			clocks = <&gcc GCC_GPU_CFG_AHB_CLK>,
++				 <&gcc GCC_BIMC_GFX_CLK>,
++				 <&gcc GCC_GPU_BIMC_GFX_CLK>;
++			clock-names = "iface", "mem", "mem_iface";
+ 			#global-interrupts = <2>;
++			#iommu-cells = <1>;
++
+ 			interrupts =
+ 				<GIC_SPI 229 IRQ_TYPE_LEVEL_HIGH>,
+ 				<GIC_SPI 231 IRQ_TYPE_LEVEL_HIGH>,
+@@ -1600,9 +1618,16 @@ blsp_i2c8: i2c@c1b8000 {
+ 		mmss_smmu: iommu@cd00000 {
+ 			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
+ 			reg = <0x0cd00000 0x40000>;
+-			#iommu-cells = <1>;
+ 
++			clocks = <&mmcc MNOC_AHB_CLK>,
++				 <&mmcc BIMC_SMMU_AHB_CLK>,
++				 <&rpmcc RPM_SMD_MMSSNOC_AXI_CLK>,
++				 <&mmcc BIMC_SMMU_AXI_CLK>;
++			clock-names = "iface-mm", "iface-smmu",
++				      "bus-mm", "bus-smmu";
+ 			#global-interrupts = <2>;
++			#iommu-cells = <1>;
++
+ 			interrupts =
+ 				<GIC_SPI 229 IRQ_TYPE_LEVEL_HIGH>,
+ 				<GIC_SPI 231 IRQ_TYPE_LEVEL_HIGH>,
+-- 
+2.30.1
+
