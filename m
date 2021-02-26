@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D26326307
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC61326305
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhBZNBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 08:01:13 -0500
-Received: from mga05.intel.com ([192.55.52.43]:63566 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229835AbhBZNBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 08:01:08 -0500
-IronPort-SDR: MKk+sjI6fkDf+qwPixYK9Uo0PiLGiPBrkvJHdM7xbBixYwUfKDBUqQd904N1s9bjFQMdW78qGT
- PWHuMg7nerLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="270843598"
-X-IronPort-AV: E=Sophos;i="5.81,208,1610438400"; 
-   d="scan'208";a="270843598"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 04:59:20 -0800
-IronPort-SDR: X1WOlhR3tq4jzAbAxzM37x9Ymi08+8tb1Aek+KRk5QedTqLUquA8ZW8F4+q8QosPOQqZ/QkWIe
- 9+WtZgWqzZZw==
-X-IronPort-AV: E=Sophos;i="5.81,208,1610438400"; 
-   d="scan'208";a="404893045"
-Received: from gna-dev.igk.intel.com (HELO localhost) ([10.102.80.34])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 04:59:17 -0800
-References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com> <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com> <YCwFBNa2npYcEIQ+@kroah.com>
-User-agent: mu4e 1.4.13; emacs 26.3
-From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
-        Savo Novakovic <savox.novakovic@intel.com>,
-        Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Subject: Re: [PATCH v1 01/12] gna: add driver module
-In-reply-to: <YCwFBNa2npYcEIQ+@kroah.com>
-Date:   Fri, 26 Feb 2021 13:59:14 +0100
-Message-ID: <85wnuvrnml.fsf@linux.intel.com>
+        id S230163AbhBZNAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 08:00:50 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:54875 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhBZNAj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 08:00:39 -0500
+X-Originating-IP: 81.185.174.212
+Received: from localhost.localdomain (212.174.185.81.rev.sfr.net [81.185.174.212])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 4FAAF1C000A;
+        Fri, 26 Feb 2021 12:59:49 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nylon Chen <nylon7@andestech.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH] riscv: Improve KASAN_VMALLOC support
+Date:   Fri, 26 Feb 2021 07:59:33 -0500
+Message-Id: <20210226125933.32023-1-alex@ghiti.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When KASAN vmalloc region is populated, there is no userspace process and
+the page table in use is swapper_pg_dir, so there is no need to read
+SATP. Then we can use the same scheme used by kasan_populate_p*d
+functions to go through the page table, which harmonizes the code.
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+In addition, make use of set_pgd that goes through all unused page table
+levels, contrary to p*d_populate functions, which makes this function work
+whatever the number of page table levels.
 
-> On Tue, Feb 16, 2021 at 05:05:14PM +0100, Maciej Kwapulinski wrote:
-....
->> --- /dev/null
->> +++ b/drivers/misc/gna/gna_driver.h
->> @@ -0,0 +1,41 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/* Copyright(c) 2017-2021 Intel Corporation */
->> +
->> +#ifndef __GNA_DRIVER_H__
->> +#define __GNA_DRIVER_H__
->> +
->> +#include <linux/kernel.h>
->> +#include <linux/mutex.h>
->> +#include <linux/types.h>
->> +
->> +#define GNA_DRV_NAME	"gna"
->
-> Way too generic, no one knows what "gna" is.
->
+And finally, make sure the writes to swapper_pg_dir are visible using
+an sfence.vma.
 
-"intel gna" is much more verbose in search engines.
-As we do not (plan to) have more "gna" drivers, is the following ok?:
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+---
+ arch/riscv/mm/kasan_init.c | 59 ++++++++++++--------------------------
+ 1 file changed, 19 insertions(+), 40 deletions(-)
 
-intel-gna
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+index e3d91f334b57..b0cee8d35938 100644
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -11,18 +11,6 @@
+ #include <asm/fixmap.h>
+ #include <asm/pgalloc.h>
+ 
+-static __init void *early_alloc(size_t size, int node)
+-{
+-	void *ptr = memblock_alloc_try_nid(size, size,
+-		__pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
+-
+-	if (!ptr)
+-		panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d from=%llx\n",
+-			__func__, size, size, node, (u64)__pa(MAX_DMA_ADDRESS));
+-
+-	return ptr;
+-}
+-
+ extern pgd_t early_pg_dir[PTRS_PER_PGD];
+ asmlinkage void __init kasan_early_init(void)
+ {
+@@ -155,38 +143,29 @@ static void __init kasan_populate(void *start, void *end)
+ 	memset(start, KASAN_SHADOW_INIT, end - start);
+ }
+ 
++void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned long end)
++{
++	unsigned long next;
++	void *p;
++	pgd_t *pgd_k = pgd_offset_k(vaddr);
++
++	do {
++		next = pgd_addr_end(vaddr, end);
++		if (pgd_page_vaddr(*pgd_k) == (unsigned long)lm_alias(kasan_early_shadow_pmd)) {
++			p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
++			set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), PAGE_TABLE));
++		}
++	} while (pgd_k++, vaddr = next, vaddr != end);
++}
++
+ void __init kasan_shallow_populate(void *start, void *end)
+ {
+ 	unsigned long vaddr = (unsigned long)start & PAGE_MASK;
+ 	unsigned long vend = PAGE_ALIGN((unsigned long)end);
+-	unsigned long pfn;
+-	int index;
+-	void *p;
+-	pud_t *pud_dir, *pud_k;
+-	pgd_t *pgd_dir, *pgd_k;
+-	p4d_t *p4d_dir, *p4d_k;
+-
+-	while (vaddr < vend) {
+-		index = pgd_index(vaddr);
+-		pfn = csr_read(CSR_SATP) & SATP_PPN;
+-		pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
+-		pgd_k = init_mm.pgd + index;
+-		pgd_dir = pgd_offset_k(vaddr);
+-		set_pgd(pgd_dir, *pgd_k);
+-
+-		p4d_dir = p4d_offset(pgd_dir, vaddr);
+-		p4d_k  = p4d_offset(pgd_k, vaddr);
+-
+-		vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
+-		pud_dir = pud_offset(p4d_dir, vaddr);
+-		pud_k = pud_offset(p4d_k, vaddr);
+-
+-		if (pud_present(*pud_dir)) {
+-			p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
+-			pud_populate(&init_mm, pud_dir, p);
+-		}
+-		vaddr += PAGE_SIZE;
+-	}
++
++	kasan_shallow_populate_pgd(vaddr, vend);
++
++	local_flush_tlb_all();
+ }
+ 
+ void __init kasan_init(void)
+-- 
+2.20.1
 
-the change would imply the following:
-
-prompt$ lspci -s 00:00.3 -vvvv
-00:00.3 System peripheral: Intel Corporation Device 3190 (rev 03)
-	Subsystem: Intel Corporation Device 2072
-  ....
-	Kernel driver in use: intel-gna
-	Kernel modules: gna
-
-is it ok?
-
-also, how about the interface to library (it's part of one of next patches)?:
-prompt$ file /dev/gna0
-/dev/gna0: character special (235/0)
-
-can "gna" stay intact here?
-
-I'm pointing this out, because gna exists on the market for a while and
-changing the above may have some impact we'd like to avoid.
-
->
-....
