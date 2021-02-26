@@ -2,121 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680EE32619F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:58:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD043261A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhBZK6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:58:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229556AbhBZK6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:58:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3816964EE1;
-        Fri, 26 Feb 2021 10:57:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614337055;
-        bh=00rc4RUiQWZ4q7RnENrzGetH5T02eUu9IMxTo8Kdgjc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hhWtCujebkitKYQm4YIa58nOtrACAyc9BbCc1w2h0yDcL2d13EEzOFfpAIFu4dIRw
-         FTJlZH7w2jAFCIEnHlCPMV8sdAkEilYJOHZbA3tbIcOabDiOW36q0MwSOqMeUvL1hO
-         i+LNzo/q1Cr7iVXU+KNY/pSInllfNGhY2RXyuy6SJptZmngwN5Ry7kxYim0eKGsMAp
-         8t9t5akqw8O75pi/Mofs/2GKA0BunbsUssMKq3riNLxwoEKxDSqKnV6yoVxtmXHC4o
-         BY/aikGhGgLfPYgjfXhk45kfODtG9UaE3eti+sPXoanpqfNFHJXS0KWp/rSm8K9msU
-         wQne/sl5YNdqw==
-Date:   Fri, 26 Feb 2021 16:27:29 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] USB: serial: xr: fix NULL-deref on disconnect
-Message-ID: <20210226105729.GA7069@work>
-References: <20210226100826.18987-1-johan@kernel.org>
+        id S230087AbhBZK6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230165AbhBZK6f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:58:35 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8F3C061756;
+        Fri, 26 Feb 2021 02:57:55 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id w18so6021004pfu.9;
+        Fri, 26 Feb 2021 02:57:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nkqZfm1IVmHlgkfrgERi5+nsYfFO9YY+14JhEYD2HfQ=;
+        b=a/en15zUF4ioqnE5XPA0bez1vpCKbJQSQSt2N8kc/F5ChUb1cS8xRUtjVE/pNxpGVY
+         CxBx1t/cO3O4TpQu5mFMdox+8udJxVHPmB39nYf/Ds5K8Ae+QfK9i1xfqPG5BlMCo8ma
+         zNOox6I8DSquOnM9/2m08cSZVk7QGKBtUwloJo+PQvxAM306Pig/+N7vUD/aweuPr83Q
+         nL96ir2FNwwI1ozhTk1HCKBvZ/n9nSvZkrtGF1d9xdhIx7upIA3V8HF+DCUSjON4P5dH
+         yqZeq4xpPcBC/uys3WZi6w4g8S+cWS1L+NLwyiisWwfo2Vy5Nx9m9usILg6b2ZGZHGox
+         OdVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nkqZfm1IVmHlgkfrgERi5+nsYfFO9YY+14JhEYD2HfQ=;
+        b=H46ZMzOSdarzDitYoNkaSN1FCREgQF8AE6oJIvhepaW2fi2PbbG9QIOjlqBST7FIVB
+         zGcT4mCT6t0XYOTuzWZNTS+MeFIvk+2WmpJQVmQ5snF13DmYpH4emlb/hQD5d8dPaT3W
+         vKaDuRTy6dCPTDibsud9PpyadbMSqVD664wYVbql2V2wTsBfG6L4BNZnIyJl+JdKqNO2
+         BC0eJwdTs/GCYU0E8ifbDBN2uncd0E1yWaXQr+86gpLHJWvL0owo1lXzWLDhUC7smFyV
+         y+UVci/wMi8cW1iOQ4PfEyVdOYHLXshRoB8+Isv7xWsgmxQ+nHX0fLilpPEEzHSDlcnb
+         nEPw==
+X-Gm-Message-State: AOAM533+T7TdOuzEEsmRzDVxY/YoMEYYRaduFyG6x6xxEgd+6MtvEZdk
+        nx0+ogBysjaVo/vywUKOM/A=
+X-Google-Smtp-Source: ABdhPJz62xOF1pYl8xcDg8Zn98lb7EuaeS4GF1FAPVvcDCO4HSMtZ1sxOf1/gTOJ7/K0tUMaVbNo1g==
+X-Received: by 2002:a63:374f:: with SMTP id g15mr2459219pgn.212.1614337075362;
+        Fri, 26 Feb 2021 02:57:55 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id b3sm8412038pjh.22.2021.02.26.02.57.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Feb 2021 02:57:54 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] inetpeer: use else if instead of if to reduce judgment
+Date:   Fri, 26 Feb 2021 18:57:46 +0800
+Message-Id: <20210226105746.29240-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226100826.18987-1-johan@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 11:08:26AM +0100, Johan Hovold wrote:
-> Claiming the sibling control interface is a bit more involved and
-> specifically requires adding support to USB-serial core for managing
-> either interface being unbound first, something which could otherwise
-> lead to a NULL-pointer dereference.
-> 
-> Similarly, additional infrastructure is also needed to handle suspend
-> properly.
-> 
-> Since the driver currently isn't actually using the control interface,
-> we can defer this for now by simply not claiming the control interface.
-> 
-> Fixes: c2d405aa86b4 ("USB: serial: add MaxLinear/Exar USB to Serial driver")
-> Reported-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Cc: Manivannan Sadhasivam <mani@kernel.org>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+In inet_initpeers(), if si.totalram <= (8192*1024)/PAGE_SIZE, it will
+be judged three times. Use else if instead of if, it only needs to be
+judged once.
 
-Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ net/ipv4/inetpeer.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Thanks,
-Mani
+diff --git a/net/ipv4/inetpeer.c b/net/ipv4/inetpeer.c
+index ff327a62c9ce..07cd1f8204b3 100644
+--- a/net/ipv4/inetpeer.c
++++ b/net/ipv4/inetpeer.c
+@@ -81,12 +81,12 @@ void __init inet_initpeers(void)
+ 	 * <kuznet@ms2.inr.ac.ru>.  I don't have any opinion about the values
+ 	 * myself.  --SAW
+ 	 */
+-	if (si.totalram <= (32768*1024)/PAGE_SIZE)
++	if (si.totalram <= (8192 * 1024) / PAGE_SIZE)
++		inet_peer_threshold >>= 4; /* about 128KB */
++	else if (si.totalram <= (16384 * 1024) / PAGE_SIZE)
++		inet_peer_threshold >>= 2; /* about 512KB */
++	else if (si.totalram <= (32768 * 1024) / PAGE_SIZE)
+ 		inet_peer_threshold >>= 1; /* max pool size about 1MB on IA32 */
+-	if (si.totalram <= (16384*1024)/PAGE_SIZE)
+-		inet_peer_threshold >>= 1; /* about 512KB */
+-	if (si.totalram <= (8192*1024)/PAGE_SIZE)
+-		inet_peer_threshold >>= 2; /* about 128KB */
+ 
+ 	peer_cachep = kmem_cache_create("inet_peer_cache",
+ 			sizeof(struct inet_peer),
+-- 
+2.29.0
 
-> ---
->  drivers/usb/serial/xr_serial.c | 25 -------------------------
->  1 file changed, 25 deletions(-)
-> 
-> diff --git a/drivers/usb/serial/xr_serial.c b/drivers/usb/serial/xr_serial.c
-> index 483d07dee19d..0ca04906da4b 100644
-> --- a/drivers/usb/serial/xr_serial.c
-> +++ b/drivers/usb/serial/xr_serial.c
-> @@ -545,37 +545,13 @@ static void xr_close(struct usb_serial_port *port)
->  
->  static int xr_probe(struct usb_serial *serial, const struct usb_device_id *id)
->  {
-> -	struct usb_driver *driver = serial->type->usb_driver;
-> -	struct usb_interface *control_interface;
-> -	int ret;
-> -
->  	/* Don't bind to control interface */
->  	if (serial->interface->cur_altsetting->desc.bInterfaceNumber == 0)
->  		return -ENODEV;
->  
-> -	/* But claim the control interface during data interface probe */
-> -	control_interface = usb_ifnum_to_if(serial->dev, 0);
-> -	if (!control_interface)
-> -		return -ENODEV;
-> -
-> -	ret = usb_driver_claim_interface(driver, control_interface, NULL);
-> -	if (ret) {
-> -		dev_err(&serial->interface->dev, "Failed to claim control interface\n");
-> -		return ret;
-> -	}
-> -
->  	return 0;
->  }
->  
-> -static void xr_disconnect(struct usb_serial *serial)
-> -{
-> -	struct usb_driver *driver = serial->type->usb_driver;
-> -	struct usb_interface *control_interface;
-> -
-> -	control_interface = usb_ifnum_to_if(serial->dev, 0);
-> -	usb_driver_release_interface(driver, control_interface);
-> -}
-> -
->  static const struct usb_device_id id_table[] = {
->  	{ USB_DEVICE(0x04e2, 0x1410) }, /* XR21V141X */
->  	{ }
-> @@ -590,7 +566,6 @@ static struct usb_serial_driver xr_device = {
->  	.id_table		= id_table,
->  	.num_ports		= 1,
->  	.probe			= xr_probe,
-> -	.disconnect		= xr_disconnect,
->  	.open			= xr_open,
->  	.close			= xr_close,
->  	.break_ctl		= xr_break_ctl,
-> -- 
-> 2.26.2
-> 
