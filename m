@@ -2,113 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0313325F09
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0FC325F11
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhBZIaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:30:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhBZIaa (ORCPT
+        id S230100AbhBZIaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:30:55 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:60875 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhBZIap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:30:30 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D255C061574;
-        Fri, 26 Feb 2021 00:29:45 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id a7so8809010iok.12;
-        Fri, 26 Feb 2021 00:29:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wv9SyvXPStH1HbSiyrd6dLJkIu8R0cmO6gcv4tLTSvQ=;
-        b=Rhl08QI0pfGUZYq6eTciDwuN89KLIIALSh8uKopiHPcUrfyNcHVdR0Y6PGJQ1Aw1Xp
-         vPXZjJhOIbKvkPRAco2v2VKNnyYBYI7anNnDxXs0xiSFo7fx91n4XiggVGMHNhhKvu4k
-         VOo44XIZnSglXqVUOvLckvmbXB7NqIerp5578rZZ7Kkq5DtCOVgLsBTzfYkva3pS5MmR
-         BAfHatL1uy5ftOMq0kGxA8XxXWQPdMPnpdScblfP9jVupdhUCn3EriJZ5//VUNid5wyo
-         f/ATH0swlnaPmd0JLN4HAMbgaAspgJBsV4EsG8vx1D8YainfyvDQL/PiOgyXGYZppUzS
-         m9qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wv9SyvXPStH1HbSiyrd6dLJkIu8R0cmO6gcv4tLTSvQ=;
-        b=eB7w4SrEh/UrtC8zeHrlQCVjDDWFPyXAvn1IO1w4ABpiJk9vUEQXrt5WzCYYQ15iij
-         VPbaWpiB+Fo0eF2cBVXkkpIv756TpG2ufOSV/DZ55llt95nN2sPSOS4Rn4K/yagiPdE/
-         b6+a+sPAuqxtgEZOt5eA+8VncJFssTLrutXC3N9HGzm0yf2uzEan7OLdI2EuMOna8ZFO
-         T+VLBcWiM41u/d2xg+CFwUGTvIN/SVLgEH0i4IfYbDw2rkSRmeWzgCYXrcTKJZxt66Ln
-         p+ZTEuSvHVmzb9ZV3hADIfmAABObMB0G2GslzUYE5LclhZ5l/hr4zVTZfXlZQgpwSKkk
-         zT2A==
-X-Gm-Message-State: AOAM531uSRRNbprZ5yxFh0qKgEsdXrMmXHI8gXuiO2bb+jvwjWLlpr/I
-        7yOWLs36t3mOaoQ9MHHxr6TbpvDXBn6CEzOTuZXLu9BVCxA=
-X-Google-Smtp-Source: ABdhPJzPdTp9oMZ+w5xch1v6D5+MMN1OxBLOqz/HNnorcjnd11QqrnQ4bhDhT4DYAfQxcYgPBGykY+glXt4wVghUZ0A=
-X-Received: by 2002:a05:6602:2bd5:: with SMTP id s21mr1906817iov.189.1614328185042;
- Fri, 26 Feb 2021 00:29:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20210222161905.1153-1-lukas.bulwahn@gmail.com>
- <20210222161905.1153-3-lukas.bulwahn@gmail.com> <CAAdtpL4egZYCGS+2K5FQSFYcPKomosuvvrunpDskkiif5Ma5Uw@mail.gmail.com>
-In-Reply-To: <CAAdtpL4egZYCGS+2K5FQSFYcPKomosuvvrunpDskkiif5Ma5Uw@mail.gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Fri, 26 Feb 2021 09:29:34 +0100
-Message-ID: <CAKXUXMygO2caTv9D1dMv9dxJSgC8=CpcT3hYsNm_ko4HXdNmeg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] MAINTAINERS: remove linux-mips.org references
-To:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>, Willy Tarreau <w@1wt.eu>,
-        linux-edac@vger.kernel.org, linux-hams@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 26 Feb 2021 03:30:45 -0500
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 26 Feb 2021 00:30:00 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Feb 2021 00:29:58 -0800
+X-QCInternal: smtphost
+Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 26 Feb 2021 13:59:33 +0530
+Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
+        id E6D9720E0E; Fri, 26 Feb 2021 13:59:31 +0530 (IST)
+From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+To:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        manivannan.sadhasivam@linaro.org, robh+dt@kernel.org,
+        sboyd@kernel.org, sricharan@codeaurora.org,
+        Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+Subject: [PATCH v5] Add board support for HK10 board variants
+Date:   Fri, 26 Feb 2021 13:58:29 +0530
+Message-Id: <1614328110-28866-1-git-send-email-gokulsri@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 10:48 AM Philippe Mathieu-Daud=C3=A9 <f4bug@amsat.o=
-rg> wrote:
->
-> On Mon, Feb 22, 2021 at 5:22 PM Lukas Bulwahn <lukas.bulwahn@gmail.com> w=
-rote:
-> >
-> > The domain lookup for linux-mips.org fails for quite some time now. Hen=
-ce,
-> > webpages, the patchwork instance and Ralf Baechle's email there is not
-> > reachable anymore.
-> >
-> > Remove all references of webpages from linux-mips.org in MAINTAINERS, a=
-nd
-> > refer to the kernel.org's linux-mips patchwork instance instead.
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> >  MAINTAINERS | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index e949e561867d..703a50183301 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -4980,7 +4980,6 @@ DECSTATION PLATFORM SUPPORT
-> >  M:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-> >  L:     linux-mips@vger.kernel.org
-> >  S:     Maintained
-> > -W:     http://www.linux-mips.org/wiki/DECstation
->
-> Why not use the web archive? The information is still valuable.
-> https://web.archive.org/web/20190704000315/https://www.linux-mips.org/wik=
-i/DECstation
->
+Added support for HK10-C1 and HK10-C2 board variants based on IPQ8074 SoC.
+Both these variants support dual QCN9000 PCIe cards that uses MHI communication
+protocol over PCIe. In addition, HK10-C1 support on-chip radio.
+Both these variants slightly differ in clock configuation for ethernet.
 
-If that information is valuable, how about adding that into the kernel
-documentation page?
+This series depends on below series:
+[V2,0/7] Add PCIe support for IPQ8074
+[v8,0/9] remoteproc: qcom: q6v5-wcss: Add support for secure pil
 
-If linux-mips.org wiki is back, we will keep this link; if not, we
-should get a copy of that information into the documentation (where it
-can survive some time) or we simply drop it.
+changes since v4:
+ - Addressed review comments.
+ - Addressing Kalle's comments, removed memory reservations in dts.
+ - Addressing Manivannan's comments, removed dts entry for mhi
 
-Putting a web.archive.org link into MAINTAINERS sounds like a really
-bad idea to me.
+changes since v3:
+ - Addressed build failure reported by test robot
+   in patch 3
 
-Lukas
+changes since v2:
+ - In patch 3, Moved pcie0_rp and pcie1_rp nodes and
+   removed unused members and subnodes
+
+
+Gokul Sriram Palanisamy (1):
+  arm64: dts: Add board support for HK10
+
+ arch/arm64/boot/dts/qcom/Makefile            |  2 +
+ arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts | 11 ++++
+ arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts | 14 +++++
+ arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi   | 76 ++++++++++++++++++++++++++++
+ 4 files changed, 103 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+
+-- 
+2.7.4
+
