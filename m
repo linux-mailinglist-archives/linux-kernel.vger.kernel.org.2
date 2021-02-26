@@ -2,127 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FF132675A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 146CE326763
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhBZTUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 14:20:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBZTUp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 14:20:45 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425F0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:20:05 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id c23so5869500edr.13
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:20:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tAgRNmsGOdl3/cgNTgckimnaWEgU9jQUQCrsL7tdGio=;
-        b=F1YoAeR9FAM+1UpF++eXbPXOyDleQgQIJdYrUNA6Let3x//1AiwIJSWD7pxtFT0vZM
-         NIaDUywKwuqGKv20X+MY40UhdKSXyjjasOV9BnSfdT5MVDX2t3P0cKCCNci2BXD0PMW5
-         UVO4tqS8pHBZQrxLCrh/VePbmmM7/rKDqEkBYDC1EOOYBW7MzPW5Ou+814mdiQGNiU1K
-         4xYoFHu2X7v7Vu0R2HyADlRS1Ohivsk2TKqWtHaixzQwID4kMWCCInNhkDIXKXihzeU6
-         otdd1Aqr/oTWTl7ESxd/VGrgJZswC6fxO94tmhbm6hzh29dGbljlOeoMCwdJP7A0S7IL
-         YRCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tAgRNmsGOdl3/cgNTgckimnaWEgU9jQUQCrsL7tdGio=;
-        b=R26tJW9vVAFx2tmjDa4y35X2WrRwZL8TwTo7uV09MR8kX9b70ePQIqegPGxF48ufOX
-         4nHC4IRwGv2yEWS6AycDHmcWACrtAwkI/i9b3OA1xiOFVKD3/faCZUo/2tDDF//qM3YJ
-         6msBi8W1gcdDOe+knE9wcoTh25JwDTnBhg/ikN976OPeDghZe2hXn51fMJCcP2M7wBL+
-         VMj0dnrIpAUne+fXA7lSwBe9UK6rjL1ogwUAfs4lRq2/mFP4cx1LyzhNOdVjHFFBTM8y
-         Uj7GzEw6Wi0AD8P2dvoftIdybrS3n3heIxYI54g3CiPj+Ck7iVa6m7bh1UHEZlsMKNuS
-         zCrw==
-X-Gm-Message-State: AOAM533dwJj4KCq2tasPPD6xC6sxSDdfnTUWmqkfwX2mUXxSqVv16Qof
-        3P2wJG3GLPCdIleWT1H0LZM+ei0kIfj/Ze8IDpsYAnQK
-X-Google-Smtp-Source: ABdhPJwyIGx+Yr3meZzdDNV+mbQOAEIbg9OJktwdmHZEQg5KEhJoQx+crPdWgBDj4Mj/HN/DwWl6v4zMZSIK+z49AQQ=
-X-Received: by 2002:a50:bec3:: with SMTP id e3mr5102234edk.290.1614367204017;
- Fri, 26 Feb 2021 11:20:04 -0800 (PST)
+        id S230310AbhBZTVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 14:21:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230231AbhBZTVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 14:21:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 526D064ED2;
+        Fri, 26 Feb 2021 19:20:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614367260;
+        bh=vzH3Me+LHIo8JCm3dGDHzL3yDONG+P0UzLulsz5oymA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ORZ20mtIF+Gy/RQ6d0BYEnEtHHuIHchZlPsB/gCD84oqL38U2KKtihVXMZV2DCFr1
+         1cHHHpfWf6WNeYXLYOn3YbfrJfoSHGzftuv50vitELxIsBnKGAx6zzr+3wadqcMKa+
+         nWSKMlMAnos8gjdpgZ4O2GbW333RqvASKlO5UIsFXd6GwrNTDDKoVa6hMDV5VL5A5X
+         95lJ+3vGcTiDzW/uKiN9v/GNSJQFNuZfumNClUKgUGbCaFfjpLdAw7qs2+HCD4XuLk
+         Jk4xss8CRF/x2s158C99oCTshHNvAuYausLRhkVEEVuEABQtTxgl3JxiCWAUmLVCld
+         0ePDAdbBJb97g==
+Date:   Fri, 26 Feb 2021 20:20:55 +0100
+From:   Robert Richter <rric@kernel.org>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/4] Introduce pcim_alloc_irq_vectors()
+Message-ID: <YDlKF1MP0p7l8vxb@rric.localdomain>
+References: <20210226155056.1068534-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
-References: <20210226021254.3980-1-shy828301@gmail.com> <YDijjovHAer2tiL5@dhcp22.suse.cz>
- <CAHbLzkoLC-gGZA1GvDZjgTnVFzCTQnLMd4JWzZ6Ge_q63YhWKQ@mail.gmail.com>
-In-Reply-To: <CAHbLzkoLC-gGZA1GvDZjgTnVFzCTQnLMd4JWzZ6Ge_q63YhWKQ@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 26 Feb 2021 11:19:51 -0800
-Message-ID: <CAHbLzkrgtbR1o3pTSh_hqPhrkugXBnB4uwdHh+uK6Ndp-u_fEw@mail.gmail.com>
-Subject: Re: [PATCH] doc: memcontrol: add description for oom_kill
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226155056.1068534-1-zhengdejin5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 8:42 AM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Thu, Feb 25, 2021 at 11:30 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 25-02-21 18:12:54, Yang Shi wrote:
-> > > When debugging an oom issue, I found the oom_kill counter of memcg is
-> > > confusing.  At the first glance without checking document, I thought it
-> > > just counts for memcg oom, but it turns out it counts both global and
-> > > memcg oom.
-> >
-> > Yes, this is the case indeed. The point of the counter was to count oom
-> > victims from the memcg rather than matching that to the source of the
-> > oom. Rememeber that this could have been a memcg oom up in the
-> > hierarchy as well. Counting victims on the oom origin could be equally
->
-> Yes, it is updated hierarchically on v2, but not on v1. I'm supposed
-> this is because v1 may work in non-hierarchcal mode? If this is the
-> only reason we may be able to remove this to get aligned with v2 since
-> non-hierarchal mode is no longer supported.
+On 26.02.21 23:50:52, Dejin Zheng wrote:
+> Introduce pcim_alloc_irq_vectors(), a device-managed version of
+> pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
+> has been called before, then pci_alloc_irq_vectors() is actually a
+> device-managed function. It is used as a device-managed function, So
+> replace it with pcim_alloc_irq_vectors().
 
-BTW, having the counter recorded hierarchically may help out one of
-our usecases. We want to monitor the oom_kill for some services, but
-systemd would wipe out the cgroup if the service is oom killed then
-restart the service from scratch (it means create a brand new cgroup
-with the same name). So this systemd behavior makes the counter
-useless if it is not recorded hierarchically.
+For the whole series:
 
->
-> > confusing because in many cases there would be no victim counted for the
-> > above mentioned memcg ooms.
-> >
-> > > The cgroup v2 documents it, but the description is missed for cgroup v1.
-> > >
-> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
-> >
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> >
-> > > ---
-> > >  Documentation/admin-guide/cgroup-v1/memory.rst | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-> > > index 0936412e044e..44d5429636e2 100644
-> > > --- a/Documentation/admin-guide/cgroup-v1/memory.rst
-> > > +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> > > @@ -851,6 +851,9 @@ At reading, current status of OOM is shown.
-> > >         (if 1, oom-killer is disabled)
-> > >       - under_oom        0 or 1
-> > >         (if 1, the memory cgroup is under OOM, tasks may be stopped.)
-> > > +        - oom_kill         integer counter
-> > > +          The number of processes belonging to this cgroup killed by any
-> > > +          kind of OOM killer.
-> > >
-> > >  11. Memory Pressure
-> > >  ===================
-> > > --
-> > > 2.26.2
-> > >
-> >
-> > --
-> > Michal Hocko
-> > SUSE Labs
+Reviewed-by: Robert Richter <rric@kernel.org>
+
+Thanks.
