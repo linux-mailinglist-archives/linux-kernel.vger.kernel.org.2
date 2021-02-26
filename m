@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB127325E7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F29325E7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhBZH4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 02:56:25 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:12464 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229449AbhBZH4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 02:56:22 -0500
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app2 (Coremail) with SMTP id by_KCgBHLollqThghRfHAQ--.22203S4;
-        Fri, 26 Feb 2021 15:55:21 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        id S230049AbhBZHxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 02:53:30 -0500
+Received: from mga14.intel.com ([192.55.52.115]:37006 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229800AbhBZHx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 02:53:27 -0500
+IronPort-SDR: mLrEcBkzPIr+vDDeeuGV5SXYyQB01Com7YTau375syMxkCaUvHtzMDGUMMgoJn8qv12CyszAWB
+ rUU1l8uMZnrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="185118894"
+X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
+   d="scan'208";a="185118894"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 23:52:46 -0800
+IronPort-SDR: EgQBwrnMWF0ZF+1qC1DNq57FF0ROm0nZzUn5xBIEH0yhP9YyNd0DLRFAVQLnbR96GGWsly9/PX
+ zW4Csgc/frdA==
+X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
+   d="scan'208";a="404797767"
+Received: from chenyi-pc.sh.intel.com ([10.239.159.24])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 23:52:33 -0800
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jonathan Corbet <corbet@lwn.net>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/siw: Fix missing check in siw_get_hdr
-Date:   Fri, 26 Feb 2021 15:55:15 +0800
-Message-Id: <20210226075515.21371-1-dinghao.liu@zju.edu.cn>
+Subject: [PATCH] KVM: Documentation: rectify rst markup in kvm_run->flags
+Date:   Fri, 26 Feb 2021 15:55:41 +0800
+Message-Id: <20210226075541.27179-1-chenyi.qiang@intel.com>
 X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgBHLollqThghRfHAQ--.22203S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gw45Jry7Kw18Ar15Wry8Krg_yoWkJFX_Kr
-        1rXr97Aw4jvrsrCw45uF15uryDtr4FvF1Fgas2g3W3AayYgw1rX3yIqF48Cr15WF4kCFWD
-        ZrWUCws3CrW5JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2xFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280
-        aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07
-        x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18
-        McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
-        1lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIE
-        Y20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQGBlZdtSfEeAAKsp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should also check the range of opcode after calling
-__rdmap_get_opcode() in the else branch to prevent potential
-overflow.
+Commit c32b1b896d2a ("KVM: X86: Add the Document for
+KVM_CAP_X86_BUS_LOCK_EXIT") added a new flag in kvm_run->flags
+documentation, and caused warning in make htmldocs:
 
-Fixes: 8b6a361b8c482 ("rdma/siw: receive path")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+  Documentation/virt/kvm/api.rst:5004: WARNING: Unexpected indentation
+  Documentation/virt/kvm/api.rst:5004: WARNING: Inline emphasis start-string without end-string
+
+Fix this rst markup issue.
+
+Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
 ---
- drivers/infiniband/sw/siw/siw_qp_rx.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ Documentation/virt/kvm/api.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
-index 60116f20653c..301e7fe2c61a 100644
---- a/drivers/infiniband/sw/siw/siw_qp_rx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
-@@ -1072,6 +1072,16 @@ static int siw_get_hdr(struct siw_rx_stream *srx)
- 		siw_dbg_qp(rx_qp(srx), "new header, opcode %u\n", opcode);
- 	} else {
- 		opcode = __rdmap_get_opcode(c_hdr);
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index aed52b0fc16e..0717bf523034 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -5000,7 +5000,8 @@ local APIC is not used.
+ 	__u16 flags;
+ 
+ More architecture-specific flags detailing state of the VCPU that may
+-affect the device's behavior. Current defined flags:
++affect the device's behavior. Current defined flags::
 +
-+		if (opcode > RDMAP_TERMINATE) {
-+			pr_warn("siw: received unknown packet type %u\n",
-+				opcode);
-+
-+			siw_init_terminate(rx_qp(srx), TERM_ERROR_LAYER_RDMAP,
-+					   RDMAP_ETYPE_REMOTE_OPERATION,
-+					   RDMAP_ECODE_OPCODE, 0);
-+			return -EINVAL;
-+		}
- 	}
- 	set_rx_fpdu_context(qp, opcode);
- 	frx = qp->rx_fpdu;
+   /* x86, set if the VCPU is in system management mode */
+   #define KVM_RUN_X86_SMM     (1 << 0)
+   /* x86, set if bus lock detected in VM */
 -- 
 2.17.1
 
