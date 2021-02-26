@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCDD3261B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CA73261C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhBZLBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:01:52 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:42556 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbhBZLA5 (ORCPT
+        id S230493AbhBZLHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:07:16 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:42991 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230087AbhBZLHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:00:57 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C0CA81C0B78; Fri, 26 Feb 2021 12:00:10 +0100 (CET)
-Date:   Fri, 26 Feb 2021 12:00:10 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     wangjingyu <wangjingyu@uniontech.com>
-Cc:     rjw@rjwysocki.net, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, pa@zytor.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch: x86/power Missing a blank line after declarations
-Message-ID: <20210226110009.GA26606@amd>
-References: <20210226090205.24132-1-wangjingyu@uniontech.com>
+        Fri, 26 Feb 2021 06:07:13 -0500
+X-UUID: fe58798b260a4997ae105309f2ae0558-20210226
+X-UUID: fe58798b260a4997ae105309f2ae0558-20210226
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1583209110; Fri, 26 Feb 2021 19:06:28 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 26 Feb 2021 19:06:05 +0800
+Received: from localhost.localdomain (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 26 Feb 2021 19:06:05 +0800
+From:   Mason Zhang <Mason.Zhang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <hanks.chen@mediateka.com>,
+        <wsd_upstream@mediatek.com>, Mason Zhang <Mason.Zhang@mediatek.com>
+Subject: [PATCH 2/2] dt-binding: mediatek: mt6779: update spi document
+Date:   Fri, 26 Feb 2021 19:01:10 +0800
+Message-ID: <20210226110109.30500-1-Mason.Zhang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="PEIAKu/WMn1b1Hv9"
-Content-Disposition: inline
-In-Reply-To: <20210226090205.24132-1-wangjingyu@uniontech.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 89044B18737F6A08210EDF845B0976A45BBB3832D3E72C978CC03E08F8493AE62000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+this patch update spi document for MT6779 SOC.
 
---PEIAKu/WMn1b1Hv9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Mason Zhang <Mason.Zhang@mediatek.com>
+---
+ Documentation/devicetree/bindings/spi/spi-mt65xx.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Fri 2021-02-26 17:02:05, wangjingyu wrote:
-> Ensure checkpatch compliance
->=20
-> Signed-off-by: wangjingyu <wangjingyu@uniontech.com>
+diff --git a/Documentation/devicetree/bindings/spi/spi-mt65xx.txt b/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
+index 9e43721fa7d6..7bae7eef26c7 100644
+--- a/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
++++ b/Documentation/devicetree/bindings/spi/spi-mt65xx.txt
+@@ -13,6 +13,7 @@ Required properties:
+     - mediatek,mt8183-spi: for mt8183 platforms
+     - "mediatek,mt8192-spi", "mediatek,mt6765-spi": for mt8192 platforms
+     - "mediatek,mt8516-spi", "mediatek,mt2712-spi": for mt8516 platforms
++    - "mediatek,mt6779-spi", "mediatek,mt6765-spi": for mt6779 platforms
+ 
+ - #address-cells: should be 1.
+ 
+-- 
+2.18.0
 
-NAK.
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---PEIAKu/WMn1b1Hv9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmA41LkACgkQMOfwapXb+vJTeQCfYvgfX2bMk/ACZR0DeJoW9eQm
-1lAAnjLY1Lac7jkGrOxD2OmlF67xx1We
-=+qgJ
------END PGP SIGNATURE-----
-
---PEIAKu/WMn1b1Hv9--
