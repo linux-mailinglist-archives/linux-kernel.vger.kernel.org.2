@@ -2,112 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD3E325A92
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD8D325A96
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbhBZAID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 19:08:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbhBZAH7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 19:07:59 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AD1C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:07:18 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id p2so8947445edm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:07:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0dMNeVGeNEmq1dAI13Mytw4Ljru52gLa+2kqt1mu+Ns=;
-        b=METfQ3BbsD7YYDm9ZB2eQh1FLAqtJK/MIpVHTLeVQbpVt9Ux685sNV3kKIidveaJR7
-         Pc322TlXOrqsKq6CUOsEkxghMCtAQXXTXW3rv/oO8M4TeXIg6vPy5bsT0LKJC/wenc2e
-         z0ATStODbpurtX2KqgKVZ+ZZjg6ROh0h0g9oYtI3X7NszSMrmqMBIoJ94CAuCf8fJFD6
-         xYxYDis8HF/y13Wp1l8P+RdzBNRFESddiBSwBP4dYOP1l/kJEA1XkETk7nmZGpY1Kz75
-         6h8PpGz0wFn6l/Bxh4BQd0y10iLvR2BhE0lu+14D1yqv3pUsCIAJXJQOObcMXCm6uHbY
-         /K5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0dMNeVGeNEmq1dAI13Mytw4Ljru52gLa+2kqt1mu+Ns=;
-        b=qxhlfj/ClZGe3W/sENeih3kiluL3KCzQMVhdb+4N31qS25wNKc7DT/KqmGVFFsA6E0
-         xdQd6fyyzyNodKFzgMxO4HOk+Zcaf4N9Z1rWty5rgFQxixhIfe5sPv+NGIVF73lTRKI3
-         bP2yQHJ54sX6Yyz2td4G21XtE9pWl12WJvHigvIG8LONfgL9cg1jf7/MxSyAQKpzsWpO
-         QeyBqYvmZDtCYPXyYtGzmZmaK5xtqLwEjAx4f20XSqM/4FRM9VjQKhpbgDijaKTgI9nl
-         lXtpE+MagtJYwE2zbdScsh9quLt7+L1e6uMdPx4ZTVBW9wLXMu1LC//RQwdpR/I2it+r
-         Z6hQ==
-X-Gm-Message-State: AOAM530iFfsXUEDyqNLPF3h279z8cZilEcDFGREjLdqnbtAkRbQWSElL
-        G5tZUzxZ/eiPLhJgMdmoK8wONVSIFMx8Reo+8NaKAw==
-X-Google-Smtp-Source: ABdhPJz3vDnmJKa1/D8y2YKRdHcDVB2YrPbbchrmyz/pA3o6/3+TJEWKTt8v+d+9rqLT6nw3XmAQzPHb1Ft4fkxcspA=
-X-Received: by 2002:a05:6402:2ce:: with SMTP id b14mr500529edx.13.1614298037635;
- Thu, 25 Feb 2021 16:07:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20210225120601.669238-1-enric.balletbo@collabora.com>
-In-Reply-To: <20210225120601.669238-1-enric.balletbo@collabora.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Thu, 25 Feb 2021 21:07:05 -0300
-Message-ID: <CAAEAJfAubBp4t=6N1vVmH6ksuChZK9GnHydGf-v-3wy9Z9GQrg@mail.gmail.com>
-Subject: Re: [PATCH] media: hantro: Auto generate the AXI ID to avoid conflicts
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        fbuergisser@google.com, Doug Anderson <dianders@google.com>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        acourbot@google.com, tfiga@google.com,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devel@driverdev.osuosl.org,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231439AbhBZAJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 19:09:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229993AbhBZAJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 19:09:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45E2E64F1B;
+        Fri, 26 Feb 2021 00:08:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1614298133;
+        bh=SPGaR5g39UFjRRi+Wfd5TSNrBSS9mMOZ47S3ieVyolQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aZr7iSM7EJuEHyUbA+qvCZz3rZ2Df2jXCHkrnAt25Wl5S4j3XV0yBGb4OaY63aTOu
+         iq08VqOiNPdBH5QjhiU7kLEVMGDrFL0LejspCLsbdV+mWGmZv9iY8WdFbDu2bYkouM
+         KdU13l5zpuWp0MtGfxEfuD7Ynr/9cxIZ6qq/KBBk=
+Date:   Thu, 25 Feb 2021 16:08:51 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v8 1/1] mm/page_alloc.c: refactor initialization of
+ struct page for holes in memory layout
+Message-Id: <20210225160851.43b50f0d02f8da958a2b7887@linux-foundation.org>
+In-Reply-To: <20210225224351.7356-2-rppt@kernel.org>
+References: <20210225224351.7356-1-rppt@kernel.org>
+        <20210225224351.7356-2-rppt@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enric,
+On Fri, 26 Feb 2021 00:43:51 +0200 Mike Rapoport <rppt@kernel.org> wrote:
 
-Thanks a lot for the patch.
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> There could be struct pages that are not backed by actual physical memory.
+> This can happen when the actual memory bank is not a multiple of
+> SECTION_SIZE or when an architecture does not register memory holes
+> reserved by the firmware as memblock.memory.
+> 
+> Such pages are currently initialized using init_unavailable_mem() function
+> that iterates through PFNs in holes in memblock.memory and if there is a
+> struct page corresponding to a PFN, the fields of this page are set to
+> default values and it is marked as Reserved.
+> 
+> init_unavailable_mem() does not take into account zone and node the page
+> belongs to and sets both zone and node links in struct page to zero.
+> 
+> Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+> rather that check each PFN") the holes inside a zone were re-initialized
+> during memmap_init() and got their zone/node links right. However, after
+> that commit nothing updates the struct pages representing such holes.
+> 
+> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+> instance in a configuration below:
+> 
+> 	# grep -A1 E820 /proc/iomem
+> 	7a17b000-7a216fff : Unknown E820 type
+> 	7a217000-7bffffff : System RAM
+> 
+> unset zone link in struct page will trigger
+> 
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> 
+> in set_pfnblock_flags_mask() when called with a struct page from a range
+> other than E820_TYPE_RAM because there are pages in the range of ZONE_DMA32
+> but the unset zone link in struct page makes them appear as a part of
+> ZONE_DMA.
+> 
+> Interleave initialization of the unavailable pages with the normal
+> initialization of memory map, so that zone and node information will be
+> properly set on struct pages that are not backed by the actual memory.
+> 
+> With this change the pages for holes inside a zone will get proper
+> zone/node links and the pages that are not spanned by any node will get
+> links to the adjacent zone/node. The holes between nodes will be prepended
+> to the zone/node above the hole and the trailing pages in the last section
+> that will be appended to the zone/node below.
+> 
+> ...
+>
+> +#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
+> +/*
+> + * Only struct pages that correspond to ranges defined by memblock.memory
+> + * are zeroed and initialized by going through __init_single_page() during
+> + * memmap_init_zone().
+> + *
+> + * But, there could be struct pages that correspond to holes in
+> + * memblock.memory. This can happen because of the following reasons:
+> + * - physical memory bank size is not necessarily the exact multiple of the
+> + *   arbitrary section size
+> + * - early reserved memory may not be listed in memblock.memory
+> + * - memory layouts defined with memmap= kernel parameter may not align
+> + *   nicely with memmap sections
+> + *
+> + * Explicitly initialize those struct pages so that:
+> + * - PG_Reserved is set
+> + * - zone and node links point to zone and node that span the page if the
+> + *   hole is in the middle of a zone
+> + * - zone and node links point to adjacent zone/node if the hole falls on
+> + *   the zone boundary; the pages in such holes will be prepended to the
+> + *   zone/node above the hole except for the trailing pages in the last
+> + *   section that will be appended to the zone/node below.
+> + */
 
-On Thu, 25 Feb 2021 at 09:08, Enric Balletbo i Serra
-<enric.balletbo@collabora.com> wrote:
->
-> The AXI ID is an AXI bus configuration for improve bus performance. If
-> read and write operations use different ID the operations can be
-> paralleled, whereas when they have the same ID the operations will be
-> serialized. Right now, the write ID is fixed to 0 but we can set it to
-> 0xff to get auto generated ID to avoid possible conflicts.
->
-> This change has no functional changes, but seems reasonable to let the
-> hardware to autogenerate the ID instead of hardcoding in software.
->
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
->
->  drivers/staging/media/hantro/hantro_g1_h264_dec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/staging/media/hantro/hantro_g1_h264_dec.c b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
-> index 845bef73d218..090088cd98ea 100644
-> --- a/drivers/staging/media/hantro/hantro_g1_h264_dec.c
-> +++ b/drivers/staging/media/hantro/hantro_g1_h264_dec.c
-> @@ -30,7 +30,7 @@ static void set_params(struct hantro_ctx *ctx)
->         u32 reg;
->
->         /* Decoder control register 0. */
-> -       reg = G1_REG_DEC_CTRL0_DEC_AXI_WR_ID(0x0);
-> +       reg = G1_REG_DEC_CTRL0_DEC_AXI_WR_ID(0xff);
+The comment helps lot.
 
-Can we define a macro to avoid this magic number,
-and add some comments explaining what's 0xff for?
+>  void __meminit __weak memmap_init_zone(struct zone *zone)
+>  {
+>  	unsigned long zone_start_pfn = zone->zone_start_pfn;
+>  	unsigned long zone_end_pfn = zone_start_pfn + zone->spanned_pages;
+>  	int i, nid = zone_to_nid(zone), zone_id = zone_idx(zone);
+> +	static unsigned long hole_pfn = 0;
 
-Given this is AXI configuration, I'd expect it's CODEC-agnostic.
-Maybe we could move CODEC-agnostic path to avoid duplicating the code?
+static implies that pgdat->node_zones[] is alwyas sorted in ascending
+pfn order.  Always true?
 
-Does this change apply to the rkvdec driver?
+>  	unsigned long start_pfn, end_pfn;
+> +	u64 pgcnt = 0;
+>  
+>  	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
+>  		start_pfn = clamp(start_pfn, zone_start_pfn, zone_end_pfn);
+> @@ -6295,7 +6348,29 @@ void __meminit __weak memmap_init_zone(struct zone *zone)
+>  			memmap_init_range(end_pfn - start_pfn, nid,
+>  					zone_id, start_pfn, zone_end_pfn,
+>  					MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
+> +
+> +		if (hole_pfn < start_pfn)
+> +			pgcnt += init_unavailable_range(hole_pfn, start_pfn,
+> +							zone_id, nid);
+> +		hole_pfn = end_pfn;
+>  	}
+> +
+> +#ifdef CONFIG_SPARSEMEM
+> +	/*
+> +	 * Initialize the hole in the range [zone_end_pfn, section_end].
+> +	 * If zone boundary falls in the middle of a section, this hole
+> +	 * will be re-initialized during the call to this function for the
+> +	 * higher zone.
+> +	 */
+> +	end_pfn = round_up(zone_end_pfn, PAGES_PER_SECTION);
+> +	if (hole_pfn < end_pfn)
+> +		pgcnt += init_unavailable_range(hole_pfn, end_pfn,
+> +						zone_id, nid);
+> +#endif
+> +
+> +	if (pgcnt)
+> +		pr_info("  %s zone: %lld pages in unavailable ranges\n",
+> +			zone->name, pgcnt);
 
-Thanks,
-Ezequiel
+I'll make that %llu
+
+
