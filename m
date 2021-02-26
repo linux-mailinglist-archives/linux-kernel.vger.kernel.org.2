@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0128532632D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDFC326333
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 14:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhBZNPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 08:15:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhBZNPi (ORCPT
+        id S230071AbhBZNQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 08:16:34 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:19272 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229993AbhBZNQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 08:15:38 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B980CC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 05:14:57 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id n4so6326699wmq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 05:14:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XxDrSAz+s0u9GghMJmZiJqB1we4OdhhnM7uHXW+NNPE=;
-        b=ktc1OuuclGHmKXvMLlLD6jYnuTewLQk7HEJiXkEJ5+Rj8HE0Xm2Ym75TsHFXjMBTCc
-         z415izJUnuxOB9AejmcZK0UuVd7gzPLIfDljK4sg7yVLVYwaytbFUFNHftoyNGkEiR91
-         N2pf6b2h+7lJzLhkiAQGEL4oSTlDNLG7sgC4M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XxDrSAz+s0u9GghMJmZiJqB1we4OdhhnM7uHXW+NNPE=;
-        b=JSyNpTB9vxHv3Uz7GeyRDAnVtf7uibvG1PSeZ/MUMYar+4a0hk4pDIjat4gWoNJH1R
-         anGVrCV6UXFN8tQOWKqqEyUkDBVFe7/kZ8RFrqYk37EOoG94NqHZ3RRVct6WxtTqx1A4
-         EkC+8psSczKImDOmxeQOq0csjP8emifjvKqkbFY0/6oNKc5Hp4jOgeTWlY49nJyBFG0r
-         11ZwTIAlPimA15Jeft7MvgJ4HNt1Ryta0BfL00CGXCyACqy4671MIbdaFM1LY6zpQYXG
-         RnOlbspYDhmbyAcZ9zqRQi+K6RRk8cH6FegJJX3lO29siDqDoFRXbvVu53bfq1KxTp07
-         5azg==
-X-Gm-Message-State: AOAM53209h+lkFgnoaBELdDnE6WW3Ad+jDcjMn3JcXtSrbRJD4p6isSt
-        pIZo2VHlbAqr7ZBnhPBNOZ36hw==
-X-Google-Smtp-Source: ABdhPJx11ViKkHeTCGdq24CUxuZuIoHqBbIapPfsx41pNzZU0pPcPNM6MKdfoXlH0CeMaH26vgT3tQ==
-X-Received: by 2002:a1c:f20f:: with SMTP id s15mr2796384wmc.35.1614345296506;
-        Fri, 26 Feb 2021 05:14:56 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:87b5])
-        by smtp.gmail.com with ESMTPSA id p18sm1584342wro.18.2021.02.26.05.14.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 05:14:56 -0800 (PST)
-Date:   Fri, 26 Feb 2021 13:14:55 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] ia64: Depend on non-static printk for cmpxchg debug
-Message-ID: <YDj0T7H4ZbuEAYwK@chrisdown.name>
-References: <YCflN5zTvo5mxvKY@chrisdown.name>
- <YDjt/lI82VzZcCgq@chrisdown.name>
- <20210226130029.GC2723601@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+        Fri, 26 Feb 2021 08:16:31 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6038f4840000>; Fri, 26 Feb 2021 05:15:48 -0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Feb
+ 2021 13:15:47 +0000
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Feb
+ 2021 13:15:45 +0000
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.107)
+ by HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 26 Feb 2021 13:15:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NT1A3eKS+fbx4i9vcgh+TULUlrcIJwIxoAmD7U+hc3e5M3sLjlGby06EF86HSb8lzMDFp2kxfxJK1QSN3cdAoHL8Y/3KYumzQo1a1Uq8Ool8IsnuHTdrkU9e18T/TNNtxAHZbwEzNikxV/FiBPmoq8ZBwAVzeN4u6CfJX2lSSZf4hdhaGYb2nYiqxPoplylMI+TqquKoUegh4Y7ypJ/xf/YkbN9r3x0cGjFIVD034iDBRLP6XJhzqpnTGoa0lqiC3Mtd7XOMTd13mkms+8H0c/GsbiG0y+0WBSY5O/PiK8aEfZOS7jwYAuHWhHJ+6KYkFolXGJziGSnHoU1A6gWOzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3mMqB3DlSEPfPUmiJ2G36doXPv9/ibiqfrnYrng0lXo=;
+ b=UmXXy5yE7OGsF8Dl18Qo0//ekaYeHpWE0RZQf0Q1CZnIeSdW2sigD0IY/MQpOhtqkQXfRSQSAWTLani4lCEcheWYgG50gZBCs1g71+x1wFMAzdLqRsUQkts2tf8nxTK9zWnJnT6X0mSlVIaFhvsTdvpUWcjCI/VSISoc8ew47T8jMZ+1noxiBChrXq3hAPwKj/UWjtmQX6LEQu6JIz0N404cJHazb6vCg0EkfvM/7hfjrRnSCcb8kAIiUihROADLfbIHRzJo5haSLF5GmvHk1wIQmeWbYJ4nZARQ/01J+oTzr/FHB+wczU+J5Mj5Kl/bVl5kDu5OtPu/9GMfZ7NQgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4057.namprd12.prod.outlook.com (2603:10b6:5:213::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23; Fri, 26 Feb
+ 2021 13:15:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
+ 13:15:43 +0000
+Date:   Fri, 26 Feb 2021 09:15:41 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     Alex Williamson <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <peterx@redhat.com>, <viro@zeniv.linux.org.uk>
+Subject: Re: [RFC PATCH 01/10] vfio: Create vfio_fs_type with inode per device
+Message-ID: <20210226131541.GY4247@nvidia.com>
+References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
+ <161401263517.16443.7534035240372538844.stgit@gimli.home>
+ <20210226053804.GA2764758@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210226130029.GC2723601@casper.infradead.org>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+In-Reply-To: <20210226053804.GA2764758@infradead.org>
+X-ClientProxiedBy: BL0PR0102CA0038.prod.exchangelabs.com
+ (2603:10b6:208:25::15) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR0102CA0038.prod.exchangelabs.com (2603:10b6:208:25::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Fri, 26 Feb 2021 13:15:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lFcy5-000oG7-Sp; Fri, 26 Feb 2021 09:15:41 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614345348; bh=3mMqB3DlSEPfPUmiJ2G36doXPv9/ibiqfrnYrng0lXo=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=jjHCL6mfCiWI/SANTebvvxU0GKmIQZl59kNZK9hEq4JxhzTjqDR4XVbcy39tWEn6+
+         T5rJI67cWlXqF5V6tcMjLGtjdyMnE+rfNAqD2dRTvkbUg2AFgZuJ3qBGPIxPYybhwZ
+         rj8S+KA5wyP8u7mlOpqi1HS97qi7ufCxW5ZGvSPg7Pa2TfkyWTPWsxPFfUkiLpRgTp
+         n9lFfbqpx0uV3rcOPH5pSgHvM1HVkt0QuSgiAOED+IYy3vsJH//EicWghei9995Byi
+         vXFVe3TKHqRBYt0Z3zXrJDm7LBAjD+f7Ewcg54Q46ZtAGvmR7WPsTNkJH5Y9dAkwZr
+         tCe6U3NpQDeLQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox writes:
->Why not just fix it?
->
->diff --git a/arch/ia64/include/uapi/asm/cmpxchg.h b/arch/ia64/include/uapi/asm/cmpxchg.h
->index 5d90307fd6e0..d955a8e3ebde 100644
->--- a/arch/ia64/include/uapi/asm/cmpxchg.h
->+++ b/arch/ia64/include/uapi/asm/cmpxchg.h
->@@ -139,7 +139,7 @@ extern long ia64_cmpxchg_called_with_bad_pointer(void);
-> do {									\
-> 	if (_cmpxchg_bugcheck_count-- <= 0) {				\
-> 		void *ip;						\
->-		extern int printk(const char *fmt, ...);		\
->+		int printk(const char *fmt, ...);			\
-> 		ip = (void *) ia64_getreg(_IA64_REG_IP);		\
-> 		printk("CMPXCHG_BUGCHECK: stuck at %p on word %p\n", ip, (v));\
-> 		break;							\
+On Fri, Feb 26, 2021 at 05:38:04AM +0000, Christoph Hellwig wrote:
+> On Mon, Feb 22, 2021 at 09:50:35AM -0700, Alex Williamson wrote:
+> > By linking all the device fds we provide to userspace to an
+> > address space through a new pseudo fs, we can use tools like
+> > unmap_mapping_range() to zap all vmas associated with a device.
+> > 
+> > Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> 
+> Adding Al:
+> 
+> I hate how we're are growing these tiny file systems just to allocate an
+> anonymous inode all over.  Shouldn't we allow to enhance fs/anon_inodes.c
+> to add a new API to allocate a new specific inode from anon_inodefs
+> instead?
 
-I must confess I have no idea of the history of why it was `extern int` in the 
-first place -- my fear was somehow we use cmpxchg.h from a different context.  
-Do you have any idea? :-)
++1 when I was researching this I also felt this was alot of
+boilerplate to just get an inode. With vfio and rdma getting this it
+is at least 5 places now.
+
+Jason
