@@ -2,133 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7203265B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9B63265B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhBZQjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:39:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhBZQjj (ORCPT
+        id S230212AbhBZQkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:40:11 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42776 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229993AbhBZQj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:39:39 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E87BC06174A;
-        Fri, 26 Feb 2021 08:38:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nm4khSh0bKFhxk1r0BlEoBUvtSkHO0c2Y7hbZV61JR8=; b=nPSju8JU7vBXX3kruXvSLHeziZ
-        S8lINxs+syQf2YVCw1PsLv6zWiMerA8fUzIr1OWQ2gmSr9K0NxAufT7PRSz4JWbrrte0vcVRzGs1W
-        RYwzdFet7yL9rHFVKoiTudDleqPpMpS1gyPQwrh1ge1kHRJhwkC9Eq5CJu8FcfqC1levS426zLOy+
-        ehcge+yrnqszaAQ1MlLtq0thbKAghv65XXqSGVm78IK9K+rPplNxcZiMB/xpvJqmUQiJcD3mnAeKy
-        KGAKL9JPjMu4kY8Womd9svGt6cxn23O6fQEWR0qlPRVdy1I8A1/4OGdk+jX0Gnd+O2WjKajAkk1E+
-        pfcp1zGA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFg8c-00CFL1-5a; Fri, 26 Feb 2021 16:38:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B57223011F0;
-        Fri, 26 Feb 2021 17:38:44 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A0ED720BC9288; Fri, 26 Feb 2021 17:38:44 +0100 (CET)
-Date:   Fri, 26 Feb 2021 17:38:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        paulmck@kernel.org, mhocko@suse.com,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 3/3] kernel/smp: add more data to CSD lock debugging
-Message-ID: <YDkkFBerBlW5uUBS@hirez.programming.kicks-ass.net>
-References: <20210226112521.8641-1-jgross@suse.com>
- <20210226112521.8641-4-jgross@suse.com>
+        Fri, 26 Feb 2021 11:39:58 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QGXMxZ013154;
+        Fri, 26 Feb 2021 11:39:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pqOo7IEXZuN4o2GJtHjkXskjvWSpvNljjvnukPmdQyc=;
+ b=f8e9Vi8/lklPfvZdQ8ZWF5Y6vjqXxp7Ukz7d2dGtXKlWCyJgKexLqxzHPoxq6mo0pnee
+ ohKUFJAICiUi+GzSdaM0ggkf0aq5mEyYLHwW9fRHu/rk52PQTqJQsxiDWuOvKRLVda++
+ o9RQSuQBb103x0zxYod13oqjRy87VvFdubKwhxMRCZ5zW9GPb4s76XmKDPoLC8NiGrDU
+ 9ym8rrn7m3kakbq5VYsAWu07svLpZAvhnEN/kqJcDeDPPFPFJ8upkmDAZb0IwsQoMmCu
+ fGgvIf48oTeDX4FVsTHeZMeYkbRlE3jpX5rdA9Wv4l2IiQEhvMBBn3MTF5uWGPA8a2BQ ig== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36xphv13vf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Feb 2021 11:39:09 -0500
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11QGVvqt010940;
+        Fri, 26 Feb 2021 16:39:07 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma05wdc.us.ibm.com with ESMTP id 36y2re0vph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Feb 2021 16:39:07 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11QGd7QZ14680536
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Feb 2021 16:39:07 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 598B328064;
+        Fri, 26 Feb 2021 16:39:07 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 55C932805A;
+        Fri, 26 Feb 2021 16:39:06 +0000 (GMT)
+Received: from oc6034535106.ibm.com (unknown [9.211.115.75])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 26 Feb 2021 16:39:06 +0000 (GMT)
+Subject: Re: [PATCH v4 2/5] ibmvfc: fix invalid sub-CRQ handles after hard
+ reset
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        james.bottomley@hansenpartnership.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        brking@linux.ibm.com
+References: <20210225215057.23020-1-tyreld@linux.ibm.com>
+ <20210225215057.23020-3-tyreld@linux.ibm.com>
+From:   Brian King <brking@linux.vnet.ibm.com>
+Message-ID: <3309f472-51ca-e2f5-8b74-0dfb9382e53a@linux.vnet.ibm.com>
+Date:   Fri, 26 Feb 2021 10:39:05 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226112521.8641-4-jgross@suse.com>
+In-Reply-To: <20210225215057.23020-3-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-26_05:2021-02-26,2021-02-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=885
+ malwarescore=0 suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ bulkscore=0 mlxscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102260123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
 
-I hate all of this, but if this will finally catch the actual problem,
-we can then revert all this, so sure.
+-- 
+Brian King
+Power Linux I/O
+IBM Linux Technology Center
 
-Also, I think this will conflict with the patches from Nadav that I have
-queued:
-
-  https://lkml.kernel.org/r/20210220231712.2475218-1-namit@vmware.com
-
-which I'll be pushing to tip/x86/mm once -rc1 happens.
-
-On Fri, Feb 26, 2021 at 12:25:21PM +0100, Juergen Gross wrote:
-
-> +static void __smp_call_single_queue_debug(int cpu, struct llist_node *node)
-> +{
-> +	unsigned int this_cpu = smp_processor_id();
-> +	struct cfd_seq_local *seq = this_cpu_ptr(&cfd_seq_local);
-> +	struct call_function_data *cfd = this_cpu_ptr(&cfd_data);
-> +	struct cfd_percpu *pcpu = per_cpu_ptr(cfd->pcpu, cpu);
-> +
-> +	cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
-> +	if (llist_add(node, &per_cpu(call_single_queue, cpu))) {
-> +		cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
-> +		cfd_seq_store(seq->ping, this_cpu, cpu, CFD_SEQ_PING);
-> +		send_call_function_single_ipi(cpu);
-> +		cfd_seq_store(seq->pinged, this_cpu, cpu, CFD_SEQ_PINGED);
-> +	} else {
-> +		cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
-> +	}
-> +}
->  #else
-> +#define cfd_seq_store(var, src, dst, type)
-> +
->  static void csd_lock_record(call_single_data_t *csd)
->  {
->  }
-> @@ -290,6 +396,19 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
->  
->  void __smp_call_single_queue(int cpu, struct llist_node *node)
->  {
-> +#ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
-> +	if (static_branch_unlikely(&csdlock_debug_extended)) {
-> +		unsigned int type;
-> +
-> +		type = CSD_TYPE(container_of(node, call_single_data_t,
-> +					     node.llist));
-> +		if (type == CSD_TYPE_SYNC || type == CSD_TYPE_ASYNC) {
-> +			__smp_call_single_queue_debug(cpu, node);
-> +			return;
-> +		}
-> +	}
-> +#endif
-
-This is a bit weird, might as well put it in generic_exec_single()
-because there you still know the type matches.
-
-
-> @@ -712,12 +840,21 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
->  		csd->node.src = smp_processor_id();
->  		csd->node.dst = cpu;
->  #endif
-> -		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu)))
-> +		cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
-> +		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu))) {
->  			__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
-> +			cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
-> +		} else {
-> +			cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
-> +		}
->  	}
->  
->  	/* Send a message to all CPUs in the map */
-> +	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->ping, this_cpu,
-> +		      CFD_SEQ_NOCPU, CFD_SEQ_PING);
->  	arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
-> +	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->pinged, this_cpu,
-> +		      CFD_SEQ_NOCPU, CFD_SEQ_PINGED);
-
-Too bad we can't share with the single case, a well.
