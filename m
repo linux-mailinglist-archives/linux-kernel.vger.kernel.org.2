@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4953263ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483C03263F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhBZOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhBZOP4 (ORCPT
+        id S230222AbhBZORS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:17:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23373 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229566AbhBZORB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:15:56 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD68C061574;
-        Fri, 26 Feb 2021 06:15:15 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id b21so4070698eja.4;
-        Fri, 26 Feb 2021 06:15:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9l+3BZETuAdB+apeVzqHpst3kL/611qF17fjEEfDPUo=;
-        b=eM+MyqF5sqSIFTdzCtorsv8yUQKamOOEwOje4kumaUSf6LnZRQaRe4bz9bJkjZctVZ
-         ih1mMFYZNJntFLAfx1dIQvfcv5+kU3oTqaMX2K89bDoWHpZR/pMz5eeoMm5sUEW+box7
-         iIUmPzXW/mgLw5csgH5QSVMgodVtGO7Su0kcuMvcnJd0CFgvR10NIUZgZguo6fE8oaeg
-         FqxRJI7O9tRc8opzzkejmfVj5Ri0x6n7rtti8bXKZrJHin6cq6Daj9lObWWX8Zj5yMUy
-         gsDqY0KNENEnT1doiSFPuEVttzHBAKeQI0bM9ii6HvCz6uyYXdjrmA6KeAH27O0Zj2Gk
-         WXxA==
+        Fri, 26 Feb 2021 09:17:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614348932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4kRH4vZslkX9Yf42k0RaWB9YdK7vW9HptLZSW8LNHNg=;
+        b=Mz2soumOTeLznrShsmsnfLKDvNke9e4deDPKiiL5UpeqBW6jTT5FymkqRW3U1W6uPs4PMm
+        P92l93fD4QECmHDLXM0HJIDWTLLc/fNMmDLIdHpbarCfO6lH9UtQQqK8m/3Mj7OmbTbMOQ
+        Lzxf8ZAWhRKnU1zB+bw7qeOpvZ86cLk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-WQUfBUJSPTWPe02wC08i9Q-1; Fri, 26 Feb 2021 09:15:30 -0500
+X-MC-Unique: WQUfBUJSPTWPe02wC08i9Q-1
+Received: by mail-ed1-f70.google.com with SMTP id i19so2111501edy.18
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:15:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9l+3BZETuAdB+apeVzqHpst3kL/611qF17fjEEfDPUo=;
-        b=BTrWVQcLKNxakkRaT3dRlernO+vlnzC40yrzwSTC3wEvzlGdd/HjMwJS+xrsJgYUCL
-         yLhDHuxJhlhEgcmAx50EcAOyTdkq/Bp4n6yQIDC9yf3STZwDuG86mA6IgfFtXoQIZJ0s
-         +GJ/3mRzGbEVugM/q6jm6pU1WzG1/6rZPdkcR/k4fJfhm5X1Ez7kAW+wKlNSHaFGRdJr
-         yhdecGZvKDbGsTmjKGbUiysiOwLHLpJo87z6xEMcu3Sarb62P8Ef5NC1QkgywY3x34SN
-         5PK3SdU3U2RIbJNQYrQ5pJN+thgTWY2QFDqxQ7lTCP6Z9/7RowDeztiQaDocI7ox3MWH
-         5IFA==
-X-Gm-Message-State: AOAM532y8uasO3ksuBGlRrPvbvD4+c8jp6bUd81P32QqsGnctOil6kTf
-        E7aLRR7IoTskQHRlkv4w66gfvJnH9diXK1EkPXw=
-X-Google-Smtp-Source: ABdhPJwka2N97gMh7fc6+s0EpkhK43Eab7WY4zfuii/FBuAJZSs74sIoQx0O41Kaar0ZHsbVJ0peDoPhI/DPRRLRPMo=
-X-Received: by 2002:a17:906:9888:: with SMTP id zc8mr3716523ejb.310.1614348914441;
- Fri, 26 Feb 2021 06:15:14 -0800 (PST)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4kRH4vZslkX9Yf42k0RaWB9YdK7vW9HptLZSW8LNHNg=;
+        b=jpTzS1SUBP5y52Gr05DcYyMDBABfHIcjaYK2u2rvZd1GGyaC8JYdSugejUgFlz3/QV
+         amEc/QYZKp+sbGZx2e7RWn8+/8oZhQk1KBABJLBUBs2zUTD2NXRw3O76xQpT2xF4cByU
+         Zu3rmyXVLgPMeXoOSRQEGDBQfFwWYWLy6FFB1/iW6yvCCfSKhD1ykN5c1s+muk9FPIDO
+         qLRePeFIWIj4q/tHR+t50Vv7ScqpzATqyLfg3FVjM0/oormDPeYMUABspaIdBmjZrTYt
+         DJ4TxNEPHb7VEmtrjjJqkfhCtzu7Lf5LbI8ip+RRDSIgLahPAlqFGN/WqZM9bhfWMzaa
+         nFPQ==
+X-Gm-Message-State: AOAM530wuBEW01GcvvC5BvnXKXVXBagYGPQ9tqqNGOXiVOS3QSCb60TH
+        /7UYDSdmyy48wu6cL7ez4ZhD3R2C/o+5S1I2GdOdXs4OkDX7nZUV2Alp9b3NkLc9G5ZKFjxeGnx
+        anEfi/rhOGrN8aBR/6mYqNTiQ
+X-Received: by 2002:a17:906:9455:: with SMTP id z21mr3593225ejx.174.1614348929099;
+        Fri, 26 Feb 2021 06:15:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzA/A1HwjyNJo2CiRQRHDk6PYRktz0aj+HEKsx75YP4xTsAoCrBb3vAmZGu+ERlBnprwQsS2A==
+X-Received: by 2002:a17:906:9455:: with SMTP id z21mr3593207ejx.174.1614348928925;
+        Fri, 26 Feb 2021 06:15:28 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id i13sm5974548edk.38.2021.02.26.06.15.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 06:15:28 -0800 (PST)
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Jim Mattson <jmattson@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+References: <20210104155705.740576914@linuxfoundation.org>
+ <20210104155706.339275609@linuxfoundation.org>
+ <85e3f488-4ec5-2ad3-26a6-097d532824e1@proxmox.com>
+ <4fa31425-3c13-0a4f-167b-6566c6302334@redhat.com>
+ <YDjwxF2RyKnsQqF/@kroah.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 5.4 12/47] KVM: x86: avoid incorrect writes to host
+ MSR_IA32_SPEC_CTRL
+Message-ID: <34df16e4-06a1-3343-2fd9-5004ec5f5fa1@redhat.com>
+Date:   Fri, 26 Feb 2021 15:15:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <CAH+2xPCmZNW0ct8XoBmAnd0QK53guv2e4HLn40NvWrEA7pj3qw@mail.gmail.com>
- <CAH+2xPCkKRhXJSqMx7kzsO53JwXbrmYPLLL-_ANO9waNJREDWA@mail.gmail.com>
- <777991bb72f8842e3e730f9b600b2086478f5d36.camel@suse.com> <CAH+2xPAB4bWN9NiTQr4WggUX6eDXzMikzYJySx3sAj3Ho3AdxA@mail.gmail.com>
- <b71b85a588c3e27d2de129723468263d932ab435.camel@suse.com>
-In-Reply-To: <b71b85a588c3e27d2de129723468263d932ab435.camel@suse.com>
-From:   Bruno Thomsen <bruno.thomsen@gmail.com>
-Date:   Fri, 26 Feb 2021 15:14:58 +0100
-Message-ID: <CAH+2xPA4yUwbcOaO4OH-LaAwC820ZoFmAf_eUdf6+xgiTPWz8g@mail.gmail.com>
-Subject: Re: usb: cdc-acm: BUG kmalloc-128 Poison overwritten
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     linux-usb@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Bruno Thomsen <bth@kamstrup.com>,
-        Lars Alex Pedersen <laa@kamstrup.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YDjwxF2RyKnsQqF/@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Den tor. 25. feb. 2021 kl. 10.57 skrev Oliver Neukum <oneukum@suse.com>:
->
-> Am Mittwoch, den 24.02.2021, 16:21 +0100 schrieb Bruno Thomsen:
->
-> Hi,
->
-> > No, this is not a regression from 5.10. It seems that many attempts to
-> > fix cdc-acm in the 5.x kernel series have failed to fix the root cause of
-> > these oops. I have not seen this on 4.14 and 4.19, but I have observed
-> > it on at least 5.3 and newer kernels in slight variations.
-> > I guess this is because cdc-acm is very common in the embedded
-> > ARM world and rarely used on servers or laptops. Combined with
-> > ARM devices still commonly use 4.x LTS kernels. Not sure if
-> > hardening options on the kernel has increased change of reproducing
-> > oops.
->
-> OK, so this is not an additional problem.
-> According to your logs, an URB that should have been killed wasn't.
+On 26/02/21 13:59, Greg Kroah-Hartman wrote:
+>>> So can you please add this patch to the stable trees that backported the
+>>> problematic upstream commit 6441fa6178f5456d1d4b512c08798888f99db185 ?
+>>>
+>>> If I should submit this in any other way just ask, was not sure about
+>>> what works best with a patch which cannot be cherry-picked cleanly.
+>>
+>> Ok, I'll submit it.
+>>
+>> Thanks for the testing.
+> 
+> Does that mean I should not take the patch here in this email and that
+> you will submit it after some timeperiod, or that I should take this
+> patch as-is?
 
-Thanks for looking into this bug rapport.
+The patch that Thomas requested (commit 841c2be09fe) does not apply 
+cleanly, so I'll take care of sending the backport.
 
-> > I am ready to test new patches and will continue to report oops
->
-> Could you test the attached patches?
+Paolo
 
-Yes, I am already running tests on the patches.
-I have not seen any oops yet and it seems the USB cdc-acm driver is still
-working as intended.
-
-The only notable trace I have seen is this new error from the cdc-acm driver
-but everything kept on working.
-kernel: cdc_acm 1-1.1:1.7: acm_start_wb - usb_submit_urb(write bulk) failed: -19
-
-Other then that I see this common error (should probably be a warning) during
-device enumeration:
-kernel: cdc_acm 1-1.2:1.0: failed to set dtr/rts
-
-I will post an update next week when the patches have survived some
-more runtime.
-
-/Bruno
