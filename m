@@ -2,186 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA09F326915
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DDF326917
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhBZVB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:01:29 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:37626 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbhBZVBW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:01:22 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QL0HKT157633;
-        Fri, 26 Feb 2021 21:00:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=Wzko8tN8AC3KoM1YoFRoQjAeq7qx9dbGu3Xscz42UDQ=;
- b=UkB71Xcy+7w7WPZ8mvQhnKjVy+nMwziBBGEw51GYg7Z4tWFW9b+wxgGMczcu3QoTGFEC
- fPxyOaX3KW3LCJHTbLecaIiAL8FRKArxiHzq7CSiOId1l50Bq2LmTz/4eqtj5ww30nf7
- 0y29Wom//XHN2mB6in/mV0XEkSSpcEHP79+cQqOO6Kd3DfoDM1XbLgABiPS4JhHN97rA
- yzkra/8R8om0DB4LMXEhWfgC86KeAJ6Oy6LBO4zzusZaQyvhRv9sy7bktZrJMVE0gVxs
- kbI+Eh+e5EhLkJjfBg3ElqzHXaWePtTT6/qUOwIVmq9Txi8oGBvDdqFwvQ7+mQHD6MWK 3w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 36xqkfau61-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 21:00:28 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11QKkj8t140821;
-        Fri, 26 Feb 2021 21:00:27 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2105.outbound.protection.outlook.com [104.47.58.105])
-        by userp3030.oracle.com with ESMTP id 36ucc33n15-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 21:00:27 +0000
+        id S230462AbhBZVB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:01:58 -0500
+Received: from mail-bl2gcc02on2131.outbound.protection.outlook.com ([40.107.89.131]:23904
+        "EHLO GCC02-BL0-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230434AbhBZVBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 16:01:40 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GQZJGybelbrrd4Jbr3nIFtEMXL7JK631t4V0+4mVBF/dErtHUmOLJplM7CyySFT6b3GstmqKpnDsbXWqF3iVtCpLtMvwfmzvueHXkyTVWauo4jGVqJe63/Ov/zz91mOQWjFFbIFfjg+x5EhgYKFKMNYBQ2xjaIKFqYcZNe/0tAfpmbET4RPMO+BGt+8umfFLgDOeZJp/dpYfG2fsxQFwtoNOGFHIRycLE6ze/e2xR3SKPHn2VNDX9xoDJ17p8JZbfINEtU45HI+z6HuUrV3uCkCHxgYNdYO/qvBIeGzygaEjAFMO+NxaUw3TsH2cm/PoXOXENRHAaoTSmORmAkK5+Q==
+ b=BRgoRGWWAda4nuZ939KKjbogtbzXiMQM1tIPiRPN5nuFEsQ9Gd6JDvwMehp5erjnXqtfVRePn3yLBcbMqSWEsgPRAGSts5Pv8eKHqJ0sPG8lXpnbsFC299Z7zcETaj7Ew1jD3hJ9U39Cmue+ec02p4bIG2F4YSIfHzwebFu/vqFccKPLdkYg1wEqIzWO6rntE0kfe6nD1nDgxWUT57bEy1uO1q3bPk0bCMpwuxSzqh0g5o0NxTrhojDzXO9P/UTNXwqUxzgwwZ3ZUKtD4BmbFENXqOsNLOv3IVFinVe2PJb9ZMVOT6XI9Zh19DTThrx15G3T6WkJpy0BIuH9lWuyOQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wzko8tN8AC3KoM1YoFRoQjAeq7qx9dbGu3Xscz42UDQ=;
- b=eRff7qSgi55QQk2eFoBJ99Ysp50sI4dZAy6Vhp9f9IDAl2xFi17SAxiR5O9OyODfsZxoBq2O0Gdu5MDIAx1jHmTSe366UfBzOA4jABkQFVvGGrURa2NTPrSaCp4aFQklaTvn4ZKfUxs1Nr2F9cOgzv6kQaQK81fRTlJ92eztMKnHGPHCw9xx3B4Ivz4qpPOwftnKHzTneA7YrBmbWrRBn0DewlakMq6b4ckaxYU5uHkCmDzLXCuqL0aGOZlNu9S9+n9AV0uo3pOHWwhSmJq34ROmxVquTP+2bjxLPLivqNet4HscYi7Lnz4PASKGgyrjQ9YSKQ5u2foTQnJD/S4W7A==
+ bh=Mquy+E8E5+aNzmEJNGxO9kE1CgZy5cXnnr5YVr9in68=;
+ b=jkfnd4dRybLjdlPwN/zya0lVPku47MukBd6k6YGySl9gJFAmHjINDXkz7PAp8nKxzcUJspslTKvxHf4/gRGhpyPHgKphzkYTP/uCe85KOFLqcxIVauTBImW2VwLwG6OdRsk0pahbyKwnCccRuiBs8GkDlHr9OrGkfazZ9pup383hI4NVChKMpwaOC6vfz6V25rxsepfd4CV5HKpQk08AyQRdZnHY6AzblZP0uZA+125RyeN7TGFXjXDb64plBu+jD6kc+mShv+d+SlUa1JcgMD9LJrXiUV1vffkAmjHZwFEJ0S0719dQKFXsPM4t/AMzofNForTE4Hl3BQYhoX+QlA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=starlab.io; dmarc=pass action=none header.from=starlab.io;
+ dkim=pass header.d=starlab.io; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=starlab.io;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wzko8tN8AC3KoM1YoFRoQjAeq7qx9dbGu3Xscz42UDQ=;
- b=PVrGN6BbhecMnib/C9RaBdoZ0GArXnJ3sUboFmXo+HVi48DuHg4IrXDCLip2ChKbtP0tkM16+Ss48WOvkk2NFcoh1LgygI3CPCsGO0NBMfWptaDA7BXEE/aieIHjBFGoZa55kfLWRs1CSAP9yTP1bGISDNglNFW+MgIMCeVhpT8=
-Authentication-Results: pensando.io; dkim=none (message not signed)
- header.d=none;pensando.io; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BY5PR10MB3972.namprd10.prod.outlook.com (2603:10b6:a03:1b6::22) with
+ bh=Mquy+E8E5+aNzmEJNGxO9kE1CgZy5cXnnr5YVr9in68=;
+ b=GRhTNfn0coOLkSZKzCWm8vYPagUsbzcvzpmFnU1XAQNivWbPiV/0FRpVYXutqXvXLLMQ8Hb4wrSssei/o7vGDLPqZo7CVXfzHoMtwZbaNL9g2CN1MX0EtNkPhadcHUTG+mv0zXWb+yma/wIJBtrHqZKZ0Aj6qhoXizNORLstBlY=
+Authentication-Results: starlab.io; dkim=none (message not signed)
+ header.d=none;starlab.io; dmarc=none action=none header.from=starlab.io;
+Received: from DM8PR09MB6997.namprd09.prod.outlook.com (2603:10b6:5:2e0::10)
+ by DM8PR09MB6054.namprd09.prod.outlook.com (2603:10b6:5:2e1::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.33; Fri, 26 Feb
- 2021 21:00:25 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
- 21:00:25 +0000
-Date:   Fri, 26 Feb 2021 16:00:20 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Brad Larson <brad@pensando.io>
-Cc:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] swiotlb: swiotlb_tbl_map_single() kernel BUG in
- iommu-helper.h:30
-Message-ID: <YDlhZDgsAZ2j0b1z@Konrads-MacBook-Pro.local>
-References: <20210226204307.50413-1-brad@pensando.io>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226204307.50413-1-brad@pensando.io>
-X-Originating-IP: [209.6.208.110]
-X-ClientProxiedBy: SJ0PR03CA0378.namprd03.prod.outlook.com
- (2603:10b6:a03:3a1::23) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Fri, 26 Feb
+ 2021 21:00:43 +0000
+Received: from DM8PR09MB6997.namprd09.prod.outlook.com
+ ([fe80::6502:414c:a91c:8c38]) by DM8PR09MB6997.namprd09.prod.outlook.com
+ ([fe80::6502:414c:a91c:8c38%4]) with mapi id 15.20.3890.023; Fri, 26 Feb 2021
+ 21:00:43 +0000
+From:   Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
+To:     Tyler Hicks <code@tyhicks.com>
+Cc:     ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
+Subject: [PATCH] ecryptfs: fix kernel panic with null dev_name
+Date:   Fri, 26 Feb 2021 15:00:23 -0600
+Message-Id: <20210226210023.77597-1-jeffrey.mitchell@starlab.io>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [47.218.202.86]
+X-ClientProxiedBy: SA0PR11CA0035.namprd11.prod.outlook.com
+ (2603:10b6:806:d0::10) To DM8PR09MB6997.namprd09.prod.outlook.com
+ (2603:10b6:5:2e0::10)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Konrads-MacBook-Pro.local (209.6.208.110) by SJ0PR03CA0378.namprd03.prod.outlook.com (2603:10b6:a03:3a1::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Fri, 26 Feb 2021 21:00:24 +0000
+Received: from jeffrey-work-20 (47.218.202.86) by SA0PR11CA0035.namprd11.prod.outlook.com (2603:10b6:806:d0::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Fri, 26 Feb 2021 21:00:43 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0cf5c786-bd7c-49d9-86f8-08d8da9989b1
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3972:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3972FD81A8C42D97F988C69E899D9@BY5PR10MB3972.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 5f9fdcdb-f239-4491-bb68-08d8da9994f4
+X-MS-TrafficTypeDiagnostic: DM8PR09MB6054:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM8PR09MB605414A2BAE4414005FCC4EDF89D9@DM8PR09MB6054.namprd09.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IFVbKpkEtKnfwgKtlXRIyLBKF5z+IE2pIj/wetPG68e9zPphZICpHs6nxVlBwu017JdF3JnLjHvXI/QXKgdVBXVpiW0kVYD3kjnVAd/3eGp3hW260M5Q65ghF8oJ18EugzKAGIGM4xVEJ6mhzXbb7WvAs7Wj7jzYxeWgq7lBZ+6S24bYtTNxN4eDq//GSaVOqrf3jzFLInfyfCqO6NGAHFt/f/aQG7kD3OtW2dazkN87LSE3zJsB5o/4QFb+JEjtrpJpollzEL1Meh2QwD2DEjwOmk8CpZxyP6LatEVcDEpcurTbJgzu+AhHwSFZ7tuMUK5FgZoZ2zyyv1MvMXZFUYyiK5ZdYBBDBFo5pc+EM1nR/6KRe/z154cMntDGnFOdkexKIpbBwRr1Lc1b6L+n96zqMY1NBvzge84e3y01+ou3IjUJW7SDfnqyls32Zqn1eoYeIWuAkm4vg0MVGi5j0x6Nd3YO8tjN1KkamD0PGgN3RI3G4ALMXl0u/fwzAZa5AXYFjdRaw3Pd6wsP4l89ug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(136003)(366004)(376002)(8936002)(7696005)(66476007)(956004)(16526019)(86362001)(52116002)(8676002)(6506007)(9686003)(83380400001)(66556008)(66946007)(316002)(478600001)(2906002)(45080400002)(6666004)(6916009)(4326008)(5660300002)(186003)(26005)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: d3kqjirmaSVZ63IjrsAsoCd6s0hfuPC5B7I+zbWvltvdy0Ken2NTIazuCtkKrZuyx81NSjGL6jinj4wm1sXdvUUVsF5kBd9Yvq72WcQOpktROmbClMAwwQwKJy1NYxY7UjcbgLmUZCBue9RwmDic8ZXNKl/1wSaaXb91BpXckHb6FD+fIB1XQq9/h1aiigkYJBbymiiho04yRjGGnLRIYobuixoxVNmI6uzkkJKs6bWR6YUJFClL9WOHNbaO7vdLODuR2DAj3XG1qe+rY4JQLUdmAd4nCvbz5qkCB21PCU6XVcVjveo4K2Z4bhc5Ndx/W+pcM/QfZ3iLz9yl7Ve2R4xrYfoyFxjHGZ+66mbUKChBAiSrzFThhllsSf1xKLYuytZxqF8Ilx3uBAHEwWOZaXfISEt8dKGTAL/gkz+nbNDAx4NCgkId+zNm4CieXxhWO468UA2/jlOP3m2tTiQocGmVwLXlHAoMI6kp+mGmGT1cJp4WQa44z8qNIu/UEpZZdTFPl57jRH1LyUDIAZzIgt7d1VA0S4VCY3AE3bhlSjNzEPEU4zJUybtshp17GhdZ6uX1qep4KdlX6sT7qmxVUWWtVSoidM5IRMVJfZ1FXgYjMzj/ur0YcajacvTor2AwCt6jWlYMFF0qiiDrxIEaWGpphTkCQZ7dc6la6PamxgVPSyQOqHQ6SX+euKxfGn+MyJinxFpep7pYCfkGyUjnwKbHs2cIDCsJmm/fp4PK1wAOyALWKw2UuurnUonY3M7l
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0cf5c786-bd7c-49d9-86f8-08d8da9989b1
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: rf0UiOI6OZP52v/lW8LYD7c00RV2VU3hQsir5Ugbv0OflcO+JnkTC1P4ATFNIMxYCYzii1/NS2GmmC3fuPCCX2rt15+cXoL624c4PjfBRvskPkOfAhUFEkWtJ+Lfq585N+tSVuWasVMlHkcksBY76qUCfgDUwxtpu2HX0tosFEiog+TOvcE3vIcEpxfskAgjAwR+smdz9UEpRW5sIXXeppYJpBQONJl8oIvPpPrnayJdF9uOY43eimO3B9L1TGJYucuOIXkXxD3lLVoNjl8plY1xQE5KQp+7cdf5uTX+xJwaiV1FA8PEv/Cmfyfsxs5Uj5WW2NzgPQX971Cpea0De0VA6zCwUWh54JbnJnc6FPjNxBUjNsloUrSa+/DQHUjbwgrKO9bYTplv9xHptL7QC1sps6/Z3szi/nkv6oiJ05Nq5bag0TsSOf+CBh1Tc4KCIw1TbTe+N5K0ahf3WMcLMKgkbDX53iAP0rDWUsFqV4z9P/CSfUK34X3I6kl2UtVndRvxQPt2TjBoW0JisGTiQg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR09MB6997.namprd09.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39830400003)(376002)(346002)(396003)(366004)(136003)(1076003)(36756003)(478600001)(66946007)(66476007)(66556008)(44832011)(8936002)(8676002)(186003)(86362001)(26005)(5660300002)(16526019)(316002)(4744005)(6486002)(6916009)(6496006)(4326008)(2906002)(6666004)(52116002)(2616005)(956004)(107886003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?DNx5dyWVP699S03vUyHQL72MtbJ8+8EiIteTV3G+KzLpSNnkqqHO3nsoeHd3?=
+ =?us-ascii?Q?V+nd3TjGPgKK3R+Pv66lD9B2cDarZekfJpdbJdeTstDCfjuBrLxxjHuhj3Ck?=
+ =?us-ascii?Q?BV8NsGIMgEoNF7phEBW3FHN+rmsyp1ab1G4qnw507UvXMgftT/6lg63h0kE5?=
+ =?us-ascii?Q?FQU6E2Yn7xTdW5/WjKwcjcv+gZ7dWEqp7Xc4FtlHYadjqDVYIaXQ1SLmndAO?=
+ =?us-ascii?Q?TJoBD6Iqr0c+W6tzNWoAuTZo7IUlVx8CZwA+k4AubWMtpxyXGMPwEi1XLm3r?=
+ =?us-ascii?Q?18Q0jfx5yY7FNzLz/gzfXfe98EmQpWr6FSJhO8k//P8qtLi/OODnFLfZVfif?=
+ =?us-ascii?Q?XlzZBjsw5xK0/v+B39xpFhEw0DRijFy8hsYIaCctoWI5Fv+MM6705pA0jDFC?=
+ =?us-ascii?Q?hgLKt4pNLbi1N2RBYhUe4l4wukcCMkwofG+owGvFo31e+zMYi7d5HV+o4zqf?=
+ =?us-ascii?Q?xHMOvOTOYLNA4A6DYBGup+yjx3rX/5NdnVB0+GDStBZMW49fO7PHvSx34rOb?=
+ =?us-ascii?Q?xtNeaH45uZoZTxkTy5wKh0vukDhaoDonDq+noveIV0dEa1HDuwmSyssMUW5v?=
+ =?us-ascii?Q?8BMNmskmu16lrmYGxrwlVHyaQcn8Mj+G6ohFKG0XSyFdgUzRZemaIZtWLuV1?=
+ =?us-ascii?Q?3qOkxidJcujWSaMA1AwBB+KShc9dV6NR+SIzEU/ZWYZvgjmc7dfhyDXT7o3k?=
+ =?us-ascii?Q?+bHHLKBZaaRawa/PD1lm7Tk601PnbceBESGKF0X+p7+x7BoGwya+MGUrkNBW?=
+ =?us-ascii?Q?s6f+dmSvOatNkVBsDDy194VT8h1pg9DabcA5pox+1zR6pYaM2JSbFp1suApd?=
+ =?us-ascii?Q?7bCjbcc4kFdlOyWbU6QJAgLf6fsFMUhPtLlRMERC11atNLH8HNNHrgtgNqx3?=
+ =?us-ascii?Q?W9LWjyg0yJmxLhVbs2UL3Z+sMRh5xi4523YCgk1HgDFIx3LpFHgGS/vRs58q?=
+ =?us-ascii?Q?KK7qn5Oz8ss7VhLoOxWqkf/ntUxHkhNq94g84/9qefycv+aK1QPx0U7A5zdn?=
+ =?us-ascii?Q?qzrKypvw1evCZJFpdQCOymriJEfrCTUBqGzXHcGyfUktxqD+dr19PYd1xKyN?=
+ =?us-ascii?Q?yRJK62AuBL8tBEFJUCVy+iYGHliGyVKOEKoFsHyc8OiWowE8Nrmw6QjKOL78?=
+ =?us-ascii?Q?BUkCMbS2Qp26GDV81YbXsbanhaqnJaKPe4ntB9lBhPQsQOap8haMc+UwyrMp?=
+ =?us-ascii?Q?mCby5hWpfLUQ7njGnc19HhVooF6EpBzZSq2zbjbtghXypj2qWl+KQKnilhaF?=
+ =?us-ascii?Q?vm3RPJC3rLRoNNNhF5Hme2eam9yVSr4I+goyAwEfz7lD9g4Pfh3gZdbmfWnA?=
+ =?us-ascii?Q?EWsiGrTnOnBytV3oOxPnpBaG?=
+X-OriginatorOrg: starlab.io
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f9fdcdb-f239-4491-bb68-08d8da9994f4
+X-MS-Exchange-CrossTenant-AuthSource: DM8PR09MB6997.namprd09.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2021 21:00:25.0947
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2021 21:00:43.8008
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 5e611933-986f-4838-a403-4acb432ce224
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rjNYxQT/2N7iovAXtJ4y7/x6Yb3T19XbTGyyYeEIhhnUDlV9gA6I3PdXKuZhMDthCuNxRT6EQP6FGCImxtiJfQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3972
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9907 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- phishscore=0 spamscore=0 suspectscore=0 bulkscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102260155
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9907 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1011
- malwarescore=0 suspectscore=0 impostorscore=0 phishscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102260157
+X-MS-Exchange-CrossTenant-UserPrincipalName: xThXhMaHZbzeR6yrWwB0cYeAFl1vCEnlQJ4bv0QlwEkFqEsWN7uZgCvqsmODS1r6IsCc1H+IzDk/eypC3V2GOmLqUUSv9ySm4RQ4i5FpsDE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR09MB6054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 12:43:07PM -0800, Brad Larson wrote:
-> Kernel Oops introduced in next-20210222 due to get_max_slots return arg size.
-> In the function find_slots() variable max_slots is zero when boundary_mask is
-> 0xffffffffffffffff.
+When mounting eCryptfs, a null "dev_name" argument to ecryptfs_mount()
+causes a kernel panic if the parsed options are valid. The easiest way to
+reproduce this is to call mount() from userspace with an existing
+eCryptfs mount's options and a "source" argument of 0.
 
-I am looking at the stable/for-linus-5.12 and what I sent out for
-a GIT PULL and I believe this is already squashed in:
+Error out if "dev_name" is null in ecryptfs_mount()
 
-531 static int find_slots(struct device *dev, phys_addr_t orig_addr,                
-532                 size_t alloc_size)                                              
-533 {                                                                               
-534         unsigned long boundary_mask = dma_get_seg_boundary(dev);                
-535         dma_addr_t tbl_dma_addr =                                               
-536                 phys_to_dma_unencrypted(dev, io_tlb_start) & boundary_mask;     
-537         unsigned long max_slots = get_max_slots(boundary_mask);
+Signed-off-by: Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
+---
+ fs/ecryptfs/main.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Could you double-check please?
+diff --git a/fs/ecryptfs/main.c b/fs/ecryptfs/main.c
+index e63259fdef28..b2f6a1937d23 100644
+--- a/fs/ecryptfs/main.c
++++ b/fs/ecryptfs/main.c
+@@ -492,6 +492,12 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
+ 		goto out;
+ 	}
+ 
++	if (!dev_name) {
++		rc = -EINVAL;
++		err = "Device name cannot be null";
++		goto out;
++	}
++
+ 	rc = ecryptfs_parse_options(sbi, raw_data, &check_ruid);
+ 	if (rc) {
+ 		err = "Error parsing options";
+-- 
+2.25.1
 
-> 
-> [    0.242119] kernel BUG at ./include/linux/iommu-helper.h:30!
-> [    0.247793] Internal error: Oops - BUG: 0 [#1] SMP
-> [    0.252595] Modules linked in:
-> [    0.255657] CPU: 0 PID: 93 Comm: kworker/0:1 Not tainted 5.11.0-next-20210224+ #25
-> [    0.263245] Hardware name: Elba ASIC Board (DT)
-> [    0.267784] Workqueue: events_freezable mmc_rescan
-> [    0.272592] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
-> [    0.278612] pc : swiotlb_tbl_map_single+0x2b0/0x6a0
-> [    0.283505] lr : swiotlb_tbl_map_single+0x440/0x6a0
-> [    0.288395] sp : ffffffc0122736b0
-> [    0.291713] x29: ffffffc0122736b0 x28: ffffffc010e30000
-> [    0.297039] x27: 00000000bbf58000 x26: 0000000000000000
-> [    0.302364] x25: 0000000000000000 x24: 0000000000000001
-> [    0.307689] x23: 0000000000000000 x22: 0000000000000000
-> [    0.313013] x21: 0000000000000000 x20: 0000000000000000
-> [    0.318338] x19: 0000001241fd4600 x18: ffffffc010d288c8
-> [    0.323662] x17: 0000000000000007 x16: 0000000000000001
-> [    0.328987] x15: ffffffc092273367 x14: 3a424c54204f4920
-> [    0.334311] x13: 6572617774666f73 x12: 20726e2030207865
-> [    0.339636] x11: 646e692078787820 x10: 3062653737317830
-> [    0.344960] x9 : 2074666968732031 x8 : ffffff977cf82368
-> [    0.350285] x7 : 0000000000000001 x6 : c0000000ffffefff
-> [    0.355609] x5 : 0000000000017fe8 x4 : 0000000000000000
-> [    0.360934] x3 : 0000000000000000 x2 : 18b0d50da009d000
-> [    0.366258] x1 : 0000000000000000 x0 : 0000000000000042
-> [    0.371583] Call trace:
-> [    0.374032]  swiotlb_tbl_map_single+0x2b0/0x6a0
-> [    0.378573]  swiotlb_map+0xa8/0x2b0
-> 
-> Signed-off-by: Brad Larson <brad@pensando.io>
-> ---
->  kernel/dma/swiotlb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 369e4c3a0f2b..c10e855a03bc 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -534,7 +534,7 @@ static int find_slots(struct device *dev, phys_addr_t orig_addr,
->  	unsigned long boundary_mask = dma_get_seg_boundary(dev);
->  	dma_addr_t tbl_dma_addr =
->  		phys_to_dma_unencrypted(dev, io_tlb_start) & boundary_mask;
-> -	unsigned int max_slots = get_max_slots(boundary_mask);
-> +	unsigned long max_slots = get_max_slots(boundary_mask);
->  	unsigned int iotlb_align_mask =
->  		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
->  	unsigned int nslots = nr_slots(alloc_size), stride;
-> -- 
-> 2.17.1
-> 
