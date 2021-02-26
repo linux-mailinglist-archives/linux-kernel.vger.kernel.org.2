@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD76325E9F
+	by mail.lfdr.de (Postfix) with ESMTP id DDA9A325EA0
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhBZIFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:05:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60997 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230024AbhBZIFI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:05:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614326621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HV5MSlda6N597b7xTJHRQ+L2lFOzy5bnowVO9E3RZ1I=;
-        b=Dagp2sIF2GfVCzQ2ZOQbK37DTrdflH2V0/a/j9u30EEyZOcB6v6SurYLFRiWnhuvi/YjrF
-        eN0rQjvA9o4CbMFix5UZbmBo2EWiPGHpJ49uALbcLO7y2l92wzZGgglwRcR8sL+67MeZCN
-        V5db0ed9sm6VhYVjmOsTuvp+/eFJSoM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-Tmf3M9KcM1yl6hxlXgJ-Iw-1; Fri, 26 Feb 2021 03:03:39 -0500
-X-MC-Unique: Tmf3M9KcM1yl6hxlXgJ-Iw-1
-Received: by mail-ed1-f72.google.com with SMTP id m1so4120198edv.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:03:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HV5MSlda6N597b7xTJHRQ+L2lFOzy5bnowVO9E3RZ1I=;
-        b=ma3UfNqp1Dqh4KG2KMMqQC0I0TyqMO67zht2N0jxPAqxxZe1+ub1NHaSzWWVdNOEw2
-         Hq1jeknRdtNkreBYY27pqygJ5px9LrUOm+h4EpLv8xxj7CwO6UW+XM7/P2OO5ADBVXyc
-         8GLeIxR0bOcruCS9cD5xAEvOKrt8DqLEoWDA9dQb6d2wl1hmVFg25UHiaxPGyiejjSEP
-         aMJmAzWsBFotJNYH5rruammCfLUtYutdYUW6LDgrjb2RVa2vBY2o+JPOBA5Gmcmhwrzr
-         frsQkB/zo1IiPgBTfM/2t5JiH2kRQxNCC3heXZ61YMdOFHZlj8Uxx0Jw5dbi9oDzRL0G
-         M6WQ==
-X-Gm-Message-State: AOAM532gYIzi+DG8S9IN4uqsKLziXLDkubM5VcysAw1fZ9DGH8D/X8w0
-        79J4W/05mrAF7LkPBDFeiI2DLR6+UN8SsNnY7JR+WfoWE8QN5Q71ixyvFzWFUOUxPXGLye3BctI
-        92cDjjV+DHku2hEEgQYXJ11WyaT7dWOPW8NFzhqLPd2AnjIZecpnk/p1jRQyCTmhfhEUe2DZI4u
-        r6
-X-Received: by 2002:a05:6402:229a:: with SMTP id cw26mr1907119edb.224.1614326618195;
-        Fri, 26 Feb 2021 00:03:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyfJ/56anmdqRgmUDCVI/eXzg0ztaoCYcPKcBOmWVb3dRcYNUvgm0Qxijvi78GBg1a1ORFB1Q==
-X-Received: by 2002:a05:6402:229a:: with SMTP id cw26mr1907083edb.224.1614326617991;
-        Fri, 26 Feb 2021 00:03:37 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id l7sm5058597edv.50.2021.02.26.00.03.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 00:03:37 -0800 (PST)
-Subject: Re: [PATCH v2 1/1] KVM: x86: remove misplaced comment on
- active_mmu_pages
-To:     Dongli Zhang <dongli.zhang@oracle.com>, kvm@vger.kernel.org,
-        x86@kernel.org
-Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        linux-kernel@vger.kernel.org
-References: <20210226061945.1222-1-dongli.zhang@oracle.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <78662af6-be71-4a81-8999-5b7011682728@redhat.com>
-Date:   Fri, 26 Feb 2021 09:03:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230179AbhBZIFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:05:43 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:48587 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230147AbhBZIFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 03:05:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614326696; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=fbNvhhKzdpXJJ0I5AN1rDrugUmvG1VlpDxjACOCxKlM=;
+ b=ccb06bMr++hF8t1Ck8GrjAnUKzxJRcFoIImis9A1LeLfNhiNobYRaIVBVZzxFuwKWn8EbmzC
+ 8lbHQbrnu3ne+04EdAdwMSIokb0H6LIYKbfFcNwchO5nnAZ38B6A50qJksg7SHGoY+byHamc
+ srz6GIkV4vzW0mg+4F/v+pyVQEU=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6038ab8d7ea222fbf5083148 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 08:04:29
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B69EAC433CA; Fri, 26 Feb 2021 08:04:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 057AAC433ED;
+        Fri, 26 Feb 2021 08:04:27 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210226061945.1222-1-dongli.zhang@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 26 Feb 2021 13:34:27 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: Re: [PATCH 3/9] arm64: dts: qcom: sc7280: Add device tree node for
+ LLCC
+In-Reply-To: <161428185152.1254594.1426736986245389798@swboyd.mtv.corp.google.com>
+References: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org>
+ <c4b7ae4dd009f563e6786f4a41f09efa38636fb6.1614244789.git.saiprakash.ranjan@codeaurora.org>
+ <161428185152.1254594.1426736986245389798@swboyd.mtv.corp.google.com>
+Message-ID: <a35e6dcba758be4af3d111fe92cfbcd6@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/02/21 07:19, Dongli Zhang wrote:
-> The 'mmu_page_hash' is used as hash table while 'active_mmu_pages' is a
-> list. Remove the misplaced comment as it's mostly stating the obvious
-> anyways.
+On 2021-02-26 01:07, Stephen Boyd wrote:
+> Quoting Sai Prakash Ranjan (2021-02-25 01:30:19)
+>> Add a DT node for Last level cache (aka. system cache)
+>> controller which provides control over the last level
+>> cache present on SC7280 SoC.
+>> 
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> ---
 > 
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
-> ---
-> Changed since v1:
->    - change 'incorrect' to 'misplaced'
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 > 
->   arch/x86/include/asm/kvm_host.h | 3 ---
->   1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 84499aad01a4..318242512407 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -937,9 +937,6 @@ struct kvm_arch {
->   	unsigned int indirect_shadow_pages;
->   	u8 mmu_valid_gen;
->   	struct hlist_head mmu_page_hash[KVM_NUM_MMU_PAGES];
-> -	/*
-> -	 * Hash table of struct kvm_mmu_page.
-> -	 */
->   	struct list_head active_mmu_pages;
->   	struct list_head zapped_obsolete_pages;
->   	struct list_head lpage_disallowed_mmu_pages;
-> 
+> Should add system-cache-controller to the devicetree spec. Or just use
+> cache-controller for the node name.
 
-Queued, thanks.
+This was as per discussion in [1][2] where dt-schema throws an error
+since it expects cache-level to be associated with cache-controller.
 
-Paolo
+[1] 
+https://lore.kernel.org/lkml/5dcd8588.1c69fb81.2528a.3460@mx.google.com/
+[2] 
+https://lore.kernel.org/lkml/cover.1573814758.git.saiprakash.ranjan@codeaurora.org/
 
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
