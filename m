@@ -2,133 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892A4325E78
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4010A325E8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhBZHv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 02:51:57 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:29209 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhBZHvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 02:51:54 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614325889; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=r8ceqRaD6vKp+3sEIocnghQuW8k5dUvRT7WlMB6q6bw=;
- b=jRzf+p+UjtTXFF7DlzkGusxotGmPXWsLPBXaSgaZ/C1WgOPfdAgn5Ht1DQk2pixhhoRaSZkn
- 5qQJrkxL8UMCDobZzyzdTdxv8OQCdUHD4J2BjJV+W7oBFLR1NE0SyV20jRDMFwVkbz15Tffx
- rFfeXERXQIgG2ftRdSTPEJmret8=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6038a865ea793fa303212753 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 07:51:01
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 17073C43462; Fri, 26 Feb 2021 07:51:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4B4FFC433C6;
-        Fri, 26 Feb 2021 07:51:00 +0000 (UTC)
+        id S230083AbhBZIAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:00:47 -0500
+Received: from aegir.uberspace.de ([185.26.156.141]:44910 "EHLO
+        aegir.uberspace.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhBZIAc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 03:00:32 -0500
+X-Greylist: delayed 440 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 03:00:31 EST
+Received: (qmail 10560 invoked from network); 26 Feb 2021 07:52:27 -0000
+Received: from localhost (HELO localhost) (127.0.0.1)
+  by aegir.uberspace.de with SMTP; 26 Feb 2021 07:52:27 -0000
+Date:   Fri, 26 Feb 2021 02:52:23 -0500
+From:   Fabian Hemmer <copy@copy.sh>
+To:     linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: [PATCH] perf tools: Preserve identifier id in OCaml demangler
+Message-ID: <20210226075223.p3s5oz4jbxwnqjtv@nyu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 26 Feb 2021 13:21:00 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: Re: [PATCH 8/9] arm64: dts: qcom: sc7280: Add AOSS QMP node
-In-Reply-To: <161428210272.1254594.16034240343090747878@swboyd.mtv.corp.google.com>
-References: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org>
- <463a45f2c3e4a91430c006fa1637c7f4f124185e.1614244789.git.saiprakash.ranjan@codeaurora.org>
- <161428210272.1254594.16034240343090747878@swboyd.mtv.corp.google.com>
-Message-ID: <dc3be32a3f8197d3138fe1ef6c24316a@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-26 01:11, Stephen Boyd wrote:
-> Quoting Sai Prakash Ranjan (2021-02-25 01:30:24)
->> Add a DT node for the AOSS QMP on SC7280 SoC.
->> 
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 14 ++++++++++++++
->>  1 file changed, 14 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 65c1e0f2fb56..cbd567ccc04e 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -9,6 +9,7 @@
->>  #include <dt-bindings/clock/qcom,rpmh.h>
->>  #include <dt-bindings/interrupt-controller/arm-gic.h>
->>  #include <dt-bindings/mailbox/qcom-ipcc.h>
->> +#include <dt-bindings/power/qcom-aoss-qmp.h>
->>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
->> 
->>  / {
->> @@ -368,6 +369,19 @@ pdc: interrupt-controller@b220000 {
->>                         interrupt-controller;
->>                 };
->> 
->> +               aoss_qmp: qmp@c300000 {
-> 
-> power-domain-controller@c300000? power-controller@c300000?
-> 
+Some OCaml developers reported that this bit of information is sometimes
+useful for disambiguating functions for which the OCaml compiler assigns
+the same name, e.g. nested or inlined functions.
 
-Its an AOSS message RAM and all other SM* SoCs have as qmp@
-and the dt binding as well, I see only SM8150 with power-controller,
-that should probably be fixed?
+Signed-off-by: Fabian Hemmer <copy@copy.sh>
+---
+ tools/perf/tests/demangle-ocaml-test.c |  6 +++---
+ tools/perf/util/demangle-ocaml.c       | 12 ------------
+ 2 files changed, 3 insertions(+), 15 deletions(-)
 
->> +                       compatible = "qcom,sc7280-aoss-qmp";
->> +                       reg = <0 0x0c300000 0 0x100000>;
->> +                       interrupts-extended = <&ipcc IPCC_CLIENT_AOP
->> +                                                    
->> IPCC_MPROC_SIGNAL_GLINK_QMP
->> +                                                    
->> IRQ_TYPE_EDGE_RISING>;
->> +                       mboxes = <&ipcc IPCC_CLIENT_AOP
->> +                                       IPCC_MPROC_SIGNAL_GLINK_QMP>;
->> +
->> +                       #clock-cells = <0>;
->> +                       #power-domain-cells = <1>;
->> +               };
->> +
->>                 spmi_bus: qcom,spmi@c440000 {
-> 
-> Ick, should be spmi@
-> 
-
-Not introduced by this patch but I'll pass on the comment.
-
->>                         compatible = "qcom,spmi-pmic-arb";
->>                         reg = <0 0x0c440000 0 0x1100>,
-
-
-Thanks,
-Sai
-
+diff --git a/tools/perf/tests/demangle-ocaml-test.c b/tools/perf/tests/demangle-ocaml-test.c
+index a273ed5163d7..1d232c2e2190 100644
+--- a/tools/perf/tests/demangle-ocaml-test.c
++++ b/tools/perf/tests/demangle-ocaml-test.c
+@@ -19,11 +19,11 @@ int test__demangle_ocaml(struct test *test __maybe_unused, int subtest __maybe_u
+ 		{ "main",
+ 		  NULL },
+ 		{ "camlStdlib__array__map_154",
+-		  "Stdlib.array.map" },
++		  "Stdlib.array.map_154" },
+ 		{ "camlStdlib__anon_fn$5bstdlib$2eml$3a334$2c0$2d$2d54$5d_1453",
+-		  "Stdlib.anon_fn[stdlib.ml:334,0--54]" },
++		  "Stdlib.anon_fn[stdlib.ml:334,0--54]_1453" },
+ 		{ "camlStdlib__bytes__$2b$2b_2205",
+-		  "Stdlib.bytes.++" },
++		  "Stdlib.bytes.++_2205" },
+ 	};
+ 
+ 	for (i = 0; i < sizeof(test_cases) / sizeof(test_cases[0]); i++) {
+diff --git a/tools/perf/util/demangle-ocaml.c b/tools/perf/util/demangle-ocaml.c
+index 3df14e67c622..9d707bb60b4b 100644
+--- a/tools/perf/util/demangle-ocaml.c
++++ b/tools/perf/util/demangle-ocaml.c
+@@ -64,17 +64,5 @@ ocaml_demangle_sym(const char *sym)
+ 	}
+ 	result[j] = '\0';
+ 
+-	/* scan backwards to remove an "_" followed by decimal digits */
+-	if (j != 0 && isdigit(result[j - 1])) {
+-		while (--j) {
+-			if (!isdigit(result[j])) {
+-				break;
+-			}
+-		}
+-		if (result[j] == '_') {
+-			result[j] = '\0';
+-		}
+-	}
+-
+ 	return result;
+ }
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.30.1
+
