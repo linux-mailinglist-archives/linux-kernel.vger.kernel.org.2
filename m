@@ -2,237 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A18E325D7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37135325D7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229835AbhBZGW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:22:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229556AbhBZGWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:22:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B902564E02;
-        Fri, 26 Feb 2021 06:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614320503;
-        bh=BX4ANU+deMF/gCnboQiDGoO4O8tphEU0zGUoRnCR8+g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qfHHydEIR/PrCEjFmvW05eOKcqgxnIKVRlNys0hmd4Jt6eF4++8eqlDkNDxD8fMb7
-         z9uFv19hoTaovxU4em4pKiE/pnRtfkxl+Od1tBuqagziI9T7rTErCnaDEtPlyaiPLU
-         SlXlvcZCqdeHj+zE5MfwcqLUwvG4NiEBiM3xrXnoQ59mPLoY3iFTRm+r4i0KULpw2V
-         T4jamGddsxz0q0TNA60vkOYo/tJWe4AWQgCWoj/68JBPzCtlP0esZmvOZVuhaN51WO
-         PRZyjsEEfQqRJAM1cTQmxTlGjW+L2V3MeCXFP4gYjw5wQ4h7NtLN7GBDdGF06i3+ie
-         VZuhpgLH/pU2Q==
-Received: by mail-lj1-f177.google.com with SMTP id a17so9367370ljq.2;
-        Thu, 25 Feb 2021 22:21:42 -0800 (PST)
-X-Gm-Message-State: AOAM531njM7/3G+CoNMyvivOhGJOYIQjXZ0gW2EMaNFQC2G2a2l9MYSY
-        yOVzlex3ZjNRugfjkgxc4ejOjm2o8YiVjL7WnVw=
-X-Google-Smtp-Source: ABdhPJz6GQ02m5yKncjhLrHyBdN+zIU3XRAYgog6pHcVmxWLyha3SvidqvgQS/WKsUsg1QE4UoT+9SSgSw5aoCdPnI4=
-X-Received: by 2002:a2e:919a:: with SMTP id f26mr793595ljg.508.1614320500903;
- Thu, 25 Feb 2021 22:21:40 -0800 (PST)
+        id S229886AbhBZGZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:25:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhBZGZI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 01:25:08 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EAEC061574;
+        Thu, 25 Feb 2021 22:24:27 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id k12so335900ljg.9;
+        Thu, 25 Feb 2021 22:24:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=60b0NKkE4IS8WeqdaHkGZTCzE12kooB885932AJOIEs=;
+        b=e0HslaQ/AwybaSkuUGc4MCNSabaipnTeaWgkptSLNoI23I/B02uWKSUlGXQtnmHVr4
+         LWl/I6mB2KtL+Ko1akrg88baTFREWLbJ7AQD4963YFVeN/1ClIL5GACxw6nvKHEc7yz9
+         unAEPOGbXx7w97yOTUzJ8ef2WMjvzLtlmmgiIj7R1H9B9AUjYhJhhykxNthf8CM4RdKZ
+         uWR5E0Hn39JlGBRbkuVU1TKjAoFYBDdYIpFRpBZSePOORNyi5/85ZsWsdGfbYCT+5Ajg
+         /v1cfycqGeSTTzlyxXDG+cnoUoL2oQ4RWfuJbnvn68KOlES552MC9AZOM8Yp44Cd6hmz
+         FhHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=60b0NKkE4IS8WeqdaHkGZTCzE12kooB885932AJOIEs=;
+        b=lUiREfqWi2pxCDKIhm0bHjGVh5m7YfldWEgyEwE/6gXGxpAU29/orCYkTBTn4BP7oH
+         fPduqJwlFVoTugP/97ZciUaprpL2BI9KStqMpHbE09jZF2QsmwAl260lcgq8QtsLvDqs
+         ZJx3N3IKgKZnd8J72lSyQXlVXgmA+3MPzw0CWw503aGcc/iOKHAC5ucoSxVJ7neWuzS0
+         vJn7Wj5ol+SFdt9saS1O3oFw31L3dJBjCWQV3GCteRVKrZLoZysogp2+FwYYEysF7NN3
+         6gKB5//nMZ06FSK0NSlrQWfr/Nb74Qk1A2XLu4WUhiAPEDxN8Z96n3B5k/Bp3ESkgpbE
+         6TRw==
+X-Gm-Message-State: AOAM531keOnM513YrIEvFI8YDyFj1XbKkaCrvRmp1NYbWHsjTZX9WnPJ
+        bsEeycVREIJEI4rpVg295Q0jJDVSGTdwg1XZCqitko/Cacg8Hw==
+X-Google-Smtp-Source: ABdhPJwVaa3LlpORKZNkzn5nWVM2AUd3+dpl+2M9SnGBqMSL1kCpT7MHNsEwt4+VcUNI36PLLQcCVl3bwYG4sFETseQ=
+X-Received: by 2002:a05:651c:548:: with SMTP id q8mr803473ljp.256.1614320665499;
+ Thu, 25 Feb 2021 22:24:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225142841.3385428-1-arnd@kernel.org> <20210225142841.3385428-2-arnd@kernel.org>
-In-Reply-To: <20210225142841.3385428-2-arnd@kernel.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 26 Feb 2021 14:21:29 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQriSy2rLHkvJ+YwHtyBE3BwneZQ-FqwSUzLjSRc9gRcA@mail.gmail.com>
-Message-ID: <CAJF2gTQriSy2rLHkvJ+YwHtyBE3BwneZQ-FqwSUzLjSRc9gRcA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Documentation: features: refresh feature list
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Arnd Bergmann <arnd@arndb.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Youling Tang <tangyouling@loongson.cn>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        David Daney <david.daney@cavium.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Archer Yan <ayan@wavecomp.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        =?UTF-8?Q?Patrick_St=C3=A4hlin?= <me@packi.ch>,
-        Zong Li <zong.li@sifive.com>, linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-csky@vger.kernel.org
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 26 Feb 2021 00:24:14 -0600
+Message-ID: <CAH2r5mudreWgQdGQPSn++0H6zzY-3fcCZvxga7PcNqt4EDWo9Q@mail.gmail.com>
+Subject: [GIT PULL] CIFS/SMB3 Fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx Arnd,
+Please pull the following changes since commit
+f40ddce88593482919761f74910f42f4b84c004b:
 
-I'm very glad to see C-SKY & RISC-V features updated.
+  Linux 5.11 (2021-02-14 14:32:24 -0800)
 
-Signed-off-by: Guo Ren <guoren@kernel.org>
+are available in the Git repository at:
 
-On Thu, Feb 25, 2021 at 10:29 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Run the update script to document the recent feature additions
-> on riscv, mips and csky.
->
-> Fixes: c109f42450ec ("csky: Add kmemleak support")
-> Fixes: 8b3165e54566 ("MIPS: Enable GCOV")
-> Fixes: 1ddc96bd42da ("MIPS: kernel: Support extracting off-line stack traces from user-space with perf")
-> Fixes: 74784081aac8 ("riscv: Add uprobes supported")
-> Fixes: 829adda597fe ("riscv: Add KPROBES_ON_FTRACE supported")
-> Fixes: c22b0bcb1dd0 ("riscv: Add kprobes supported")
-> Fixes: dcdc7a53a890 ("RISC-V: Implement ptrace regs and stack API")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  Documentation/features/debug/gcov-profile-all/arch-support.txt  | 2 +-
->  Documentation/features/debug/kmemleak/arch-support.txt          | 2 +-
->  Documentation/features/debug/kprobes-on-ftrace/arch-support.txt | 2 +-
->  Documentation/features/debug/kprobes/arch-support.txt           | 2 +-
->  Documentation/features/debug/kretprobes/arch-support.txt        | 2 +-
->  Documentation/features/debug/uprobes/arch-support.txt           | 2 +-
->  Documentation/features/perf/kprobes-event/arch-support.txt      | 2 +-
->  Documentation/features/perf/perf-regs/arch-support.txt          | 2 +-
->  Documentation/features/perf/perf-stackdump/arch-support.txt     | 2 +-
->  Documentation/features/sched/numa-balancing/arch-support.txt    | 2 +-
->  10 files changed, 10 insertions(+), 10 deletions(-)
->
-> diff --git a/Documentation/features/debug/gcov-profile-all/arch-support.txt b/Documentation/features/debug/gcov-profile-all/arch-support.txt
-> index 416c70345946..b39c1a5de3f3 100644
-> --- a/Documentation/features/debug/gcov-profile-all/arch-support.txt
-> +++ b/Documentation/features/debug/gcov-profile-all/arch-support.txt
-> @@ -16,7 +16,7 @@
->      |        ia64: | TODO |
->      |        m68k: | TODO |
->      |  microblaze: |  ok  |
-> -    |        mips: | TODO |
-> +    |        mips: |  ok  |
->      |       nds32: | TODO |
->      |       nios2: | TODO |
->      |    openrisc: | TODO |
-> diff --git a/Documentation/features/debug/kmemleak/arch-support.txt b/Documentation/features/debug/kmemleak/arch-support.txt
-> index 915185634611..e9ac415f8aec 100644
-> --- a/Documentation/features/debug/kmemleak/arch-support.txt
-> +++ b/Documentation/features/debug/kmemleak/arch-support.txt
-> @@ -10,7 +10,7 @@
->      |         arc: |  ok  |
->      |         arm: |  ok  |
->      |       arm64: |  ok  |
-> -    |        csky: | TODO |
-> +    |        csky: |  ok  |
->      |       h8300: | TODO |
->      |     hexagon: | TODO |
->      |        ia64: | TODO |
-> diff --git a/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt b/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt
-> index aade7816cb87..96156e8802a7 100644
-> --- a/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt
-> +++ b/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt
-> @@ -22,7 +22,7 @@
->      |    openrisc: | TODO |
->      |      parisc: |  ok  |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: |  ok  |
->      |          sh: | TODO |
->      |       sparc: | TODO |
-> diff --git a/Documentation/features/debug/kprobes/arch-support.txt b/Documentation/features/debug/kprobes/arch-support.txt
-> index 4b663c124d1c..ee95ed61909a 100644
-> --- a/Documentation/features/debug/kprobes/arch-support.txt
-> +++ b/Documentation/features/debug/kprobes/arch-support.txt
-> @@ -22,7 +22,7 @@
->      |    openrisc: | TODO |
->      |      parisc: |  ok  |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: |  ok  |
->      |          sh: |  ok  |
->      |       sparc: |  ok  |
-> diff --git a/Documentation/features/debug/kretprobes/arch-support.txt b/Documentation/features/debug/kretprobes/arch-support.txt
-> index 5449bb808442..612cb97d47b8 100644
-> --- a/Documentation/features/debug/kretprobes/arch-support.txt
-> +++ b/Documentation/features/debug/kretprobes/arch-support.txt
-> @@ -22,7 +22,7 @@
->      |    openrisc: | TODO |
->      |      parisc: |  ok  |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: |  ok  |
->      |          sh: |  ok  |
->      |       sparc: |  ok  |
-> diff --git a/Documentation/features/debug/uprobes/arch-support.txt b/Documentation/features/debug/uprobes/arch-support.txt
-> index 2820177787e1..8bd5548a4485 100644
-> --- a/Documentation/features/debug/uprobes/arch-support.txt
-> +++ b/Documentation/features/debug/uprobes/arch-support.txt
-> @@ -22,7 +22,7 @@
->      |    openrisc: | TODO |
->      |      parisc: | TODO |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: |  ok  |
->      |          sh: | TODO |
->      |       sparc: |  ok  |
-> diff --git a/Documentation/features/perf/kprobes-event/arch-support.txt b/Documentation/features/perf/kprobes-event/arch-support.txt
-> index 75739a0007e0..78f3fe080f0e 100644
-> --- a/Documentation/features/perf/kprobes-event/arch-support.txt
-> +++ b/Documentation/features/perf/kprobes-event/arch-support.txt
-> @@ -22,7 +22,7 @@
->      |    openrisc: | TODO |
->      |      parisc: |  ok  |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: |  ok  |
->      |          sh: |  ok  |
->      |       sparc: |  ok  |
-> diff --git a/Documentation/features/perf/perf-regs/arch-support.txt b/Documentation/features/perf/perf-regs/arch-support.txt
-> index ea8b6d96633a..5bf3b1854a1f 100644
-> --- a/Documentation/features/perf/perf-regs/arch-support.txt
-> +++ b/Documentation/features/perf/perf-regs/arch-support.txt
-> @@ -16,7 +16,7 @@
->      |        ia64: | TODO |
->      |        m68k: | TODO |
->      |  microblaze: | TODO |
-> -    |        mips: | TODO |
-> +    |        mips: |  ok  |
->      |       nds32: | TODO |
->      |       nios2: | TODO |
->      |    openrisc: | TODO |
-> diff --git a/Documentation/features/perf/perf-stackdump/arch-support.txt b/Documentation/features/perf/perf-stackdump/arch-support.txt
-> index 87165861037e..d88659bb4fc1 100644
-> --- a/Documentation/features/perf/perf-stackdump/arch-support.txt
-> +++ b/Documentation/features/perf/perf-stackdump/arch-support.txt
-> @@ -16,7 +16,7 @@
->      |        ia64: | TODO |
->      |        m68k: | TODO |
->      |  microblaze: | TODO |
-> -    |        mips: | TODO |
-> +    |        mips: |  ok  |
->      |       nds32: | TODO |
->      |       nios2: | TODO |
->      |    openrisc: | TODO |
-> diff --git a/Documentation/features/sched/numa-balancing/arch-support.txt b/Documentation/features/sched/numa-balancing/arch-support.txt
-> index bfcfaff67a1b..9affb7c2c500 100644
-> --- a/Documentation/features/sched/numa-balancing/arch-support.txt
-> +++ b/Documentation/features/sched/numa-balancing/arch-support.txt
-> @@ -22,7 +22,7 @@
->      |    openrisc: |  ..  |
->      |      parisc: |  ..  |
->      |     powerpc: |  ok  |
-> -    |       riscv: | TODO |
-> +    |       riscv: |  ok  |
->      |        s390: |  ok  |
->      |          sh: |  ..  |
->      |       sparc: | TODO |
-> --
-> 2.29.2
->
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.12-smb3-part1
 
+for you to fetch changes up to 8369dfd7841e70711c53a065ffb8029f24520200:
+
+  cifs: update internal version number (2021-02-25 19:08:11 -0600)
+
+----------------------------------------------------------------
+cifs/smb3 fixes:
+    - improvements to mode bit conversion, chmod and chown when using
+cifsacl mount option
+     - two new mount options for controlling attribute caching
+     - improvements to crediting and reconnect, improved debugging
+     - reconnect fix
+     - add SMB3.1.1 dialect to default dialects for vers=3
+
+Still working on a security fix and some multichannel fixes which are
+not included in this pull request
+
+Test results: http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/513
+----------------------------------------------------------------
+David Howells (1):
+      cifs: use discard iterator to discard unneeded network data more
+efficiently
+
+Paulo Alcantara (4):
+      cifs: fix nodfs mount option
+      cifs: fix DFS failover
+      cifs: check all path components in resolved dfs target
+      cifs: introduce helper for finding referral server to improve
+DFS target resolution
+
+Rohith Surabattula (1):
+      TCON Reconnect during STATUS_NETWORK_NAME_DELETED
+
+Ronnie Sahlberg (1):
+      cifs: fix handling of escaped ',' in the password mount argument
+
+Shyam Prasad N (8):
+      cifs: New optype for session operations.
+      cifs: Fix in error types returned for out-of-credit situations.
+      cifs: Identify a connection by a conn_id.
+      cifs: Reformat DebugData and index connections by conn_id.
+      cifs: Fix cifsacl ACE mask for group and others.
+      cifs: Retain old ACEs when converting between mode bits and ACL.
+      cifs: Change SIDs in ACEs while transferring file ownership.
+      cifs: If a corrupted DACL is returned by the server, bail out.
+
+Steve French (11):
+      smb3: negotiate current dialect (SMB3.1.1) when version 3 or
+greater requested
+      cifs: fix trivial typo
+      cifs: documentation cleanup
+      cifs: change confusing field serverName (to ip_addr)
+      cifs: clarify hostname vs ip address in /proc/fs/cifs/DebugData
+      cifs: cleanup a few le16 vs. le32 uses in cifsacl.c
+      cifs: minor simplification to smb2_is_network_name_deleted
+      cifs: Add new mount parameter "acdirmax" to allow caching
+directory metadata
+      cifs: convert revalidate of directories to using directory
+metadata cache timeout
+      cifs: Add new parameter "acregmax" for distinct file and
+directory metadata timeout
+      cifs: update internal version number
+
+YueHaibing (1):
+      cifs: Fix inconsistent IS_ERR and PTR_ERR
+
+ Documentation/admin-guide/cifs/authors.rst      |   6 +-
+ Documentation/admin-guide/cifs/changes.rst      |   5 +-
+ Documentation/admin-guide/cifs/introduction.rst |  30 +-
+ Documentation/admin-guide/cifs/todo.rst         |  34 ++-
+ Documentation/admin-guide/cifs/usage.rst        |   2 +-
+ fs/cifs/cifs_debug.c                            | 121 ++++----
+ fs/cifs/cifs_swn.c                              |   2 +-
+ fs/cifs/cifsacl.c                               | 379 +++++++++++++++++++-----
+ fs/cifs/cifsacl.h                               |   4 +-
+ fs/cifs/cifsencrypt.c                           |   6 +-
+ fs/cifs/cifsfs.c                                |  15 +-
+ fs/cifs/cifsfs.h                                |   2 +-
+ fs/cifs/cifsglob.h                              |  11 +-
+ fs/cifs/cifsproto.h                             |   2 +
+ fs/cifs/cifssmb.c                               |   6 +-
+ fs/cifs/connect.c                               | 301 ++++++++++---------
+ fs/cifs/dfs_cache.c                             |  33 ++-
+ fs/cifs/file.c                                  |   2 +-
+ fs/cifs/fs_context.c                            |  75 +++--
+ fs/cifs/fs_context.h                            |   6 +-
+ fs/cifs/inode.c                                 |  23 +-
+ fs/cifs/sess.c                                  |   2 +-
+ fs/cifs/smb2ops.c                               | 109 +++++--
+ fs/cifs/smb2pdu.c                               |  22 +-
+ fs/cifs/trace.h                                 |  36 ++-
+ fs/cifs/transport.c                             |  63 ++--
+ 26 files changed, 883 insertions(+), 414 deletions(-)
 
 -- 
-Best Regards
- Guo Ren
+Thanks,
 
-ML: https://lore.kernel.org/linux-csky/
+Steve
