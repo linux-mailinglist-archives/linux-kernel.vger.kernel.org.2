@@ -2,124 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCD33261DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6453261E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230468AbhBZLQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhBZLPy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:15:54 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9521C061574;
-        Fri, 26 Feb 2021 03:15:13 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id x16so7108633wmk.3;
-        Fri, 26 Feb 2021 03:15:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k9sgvuu+Qg7wjNtisoO7UUJtH7RFCSXcGRmLfuSyvbk=;
-        b=OAzPZsAKVzOOVk/lVwdaN7WCTeTKAS+mUNsholcGXOu+X8jjx7HMZ8C3pqb6iDPL17
-         gFQzW+tyuhdZTIMcw6kK9dDvlxagLHfNyy0+3/VXGekWkABdR/RtJ1lJQ7m37E9IaXV+
-         ObcCxwk8GacZFucrwObVzBobJwVvQirVAzUJVomaeXMIGmSAa7CRRI8aLPex3mmI4nRZ
-         8ai7sEXyxpF/JGSLrLvhAx/CXWqMkZcTGXlXWcfeKWDge74fGEYiFwa2kw5FrG0x1mWC
-         Wl4w8UwwPD9Zr1fu6oEIjEsSpQQSAGRpANKf57sBTH/xj3VbKoziVY5ayS1wTdLMimVx
-         zY3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k9sgvuu+Qg7wjNtisoO7UUJtH7RFCSXcGRmLfuSyvbk=;
-        b=oCwGnKlouDZna3L3VPpYTMMs2xNqtbs7RVOaea84jRFdsJp8Cek/4gByMdw3iaOVlw
-         W7pBo93hscPMNQzPrarAEU47cFcUdZl/26DtVY9+r+Epn6YquaDXItG4uvRhvmgHjzkv
-         psQpckPHBupJgUwwSuJXs88YH7QSd2eTQLbZ5cFw4j0Yf8/WYhmSa4GJZ6McOq2RxBZj
-         p4ZuemdNid0ffyVN/8B5Uxil3XGKUzfFq6eb+MYZNyLq5LVtTpYkHlTxe6I3YPtguCi0
-         CeRNPTwfyEcesdTHjBUoU1s4vWBBCd46rarYXb/mf7xldVUpCD8cGtj7sENhFJAI2Ndv
-         5w3w==
-X-Gm-Message-State: AOAM5331APQQlglaqxp6lEq6urRUNvhoweJwDawX6M41RJjRfgEzx5l6
-        mgUsJSe2nrbfp5kuYVPmEXhhZt1IvXuWlQ==
-X-Google-Smtp-Source: ABdhPJw53tMXBEIgjj5Ydx1dx2zknCtn2TrKdJOPUiAyxh8gwjNqu3cCzVaxU88Bf3Vqq3INSHd1wQ==
-X-Received: by 2002:a7b:c303:: with SMTP id k3mr2366345wmj.67.1614338112576;
-        Fri, 26 Feb 2021 03:15:12 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id r9sm10358838wmq.26.2021.02.26.03.15.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 03:15:11 -0800 (PST)
-Subject: Re: [PATCH] copy_file_range.2: Kernel v5.12 updates
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Luis Henriques <lhenriques@suse.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-References: <20210222102456.6692-1-lhenriques@suse.de>
- <20210224142307.7284-1-lhenriques@suse.de>
- <CAOQ4uxi3-+tOgHV_GUnWtJoQXbV5ZS9qDZsLsd9sJxX5Aftyew@mail.gmail.com>
- <YDd6EMpvZhHq6ncM@suse.de> <fd5d0d24-35e3-6097-31a9-029475308f15@gmail.com>
- <CAOQ4uxiVxEwvgFhdHGWLpdCk==NcGXgu52r_mXA+ebbLp_XPzQ@mail.gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <abf61760-2099-634a-7519-2138bb75e41b@gmail.com>
-Date:   Fri, 26 Feb 2021 12:15:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230493AbhBZLQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:16:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42692 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229556AbhBZLQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 06:16:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA12A64F13;
+        Fri, 26 Feb 2021 11:16:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614338162;
+        bh=Tq7NSjbRAdAUuZaD3N8ugNfUFezue/5tJoEZmiouilE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HSDB8oCeaoz1dG4ZA8Ol0WP+pHw/nmGxHXL83nYMrOu4l80vxZfAKYqMgcAo1TZiG
+         26YyUWdS99K2D8XNFoOOYjtTcjzmRfD/IIC+Y0EH/PsAEM5MM8dDYrh9h3J/tVm6BD
+         Qek6yDAQRYGEAj8qNsWq5a+T1kBeQbtxRAtEhDw232oQpvc3KaXqfn1MqY/azmfLAu
+         aCUEi3Uq+MoAeSsmLdXq3kDj+T2+tz4+PXljT4okPQZLJ0SD7RVOuAW7D+3M86IQwY
+         gXSdEpfghNjOT8oIkC5gPcLRBXhco4ZFVn3/Tw9V9p/nSjc9kVaS2GMdOQrvP1NjLd
+         tKRoJ8WcTCx2w==
+Received: by mail-ot1-f41.google.com with SMTP id f33so8699654otf.11;
+        Fri, 26 Feb 2021 03:16:01 -0800 (PST)
+X-Gm-Message-State: AOAM530wQ9RzXNMw7j5ejFu6gVx8MeAZ5OssvyVxHrO3RbNFTLl3nMZ/
+        3Co8eVszOyNbgeOT1tR8m5G6tj4GAhAZlvvTOF4=
+X-Google-Smtp-Source: ABdhPJzbTD9+oRPkTWtTivkvm9UEiJBIin+bmH7bPY6EBzrYJP+wMWV0rwR2zLORG1tj9Ocwv5TU3B9IwWvguTNSaxo=
+X-Received: by 2002:a9d:6b8b:: with SMTP id b11mr1870333otq.210.1614338160965;
+ Fri, 26 Feb 2021 03:16:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAOQ4uxiVxEwvgFhdHGWLpdCk==NcGXgu52r_mXA+ebbLp_XPzQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210225125541.1808719-1-arnd@kernel.org> <20210226081548.h5ls5fxihunzxjvx@ti.com>
+ <CAK8P3a3ep7DFnMYnA7q5b-P8X7nd3TAz=t82011j8=koK3T08A@mail.gmail.com> <20210226110451.ijpllyczuquerfsr@ti.com>
+In-Reply-To: <20210226110451.ijpllyczuquerfsr@ti.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 26 Feb 2021 12:15:44 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0C1aSgDm10gPtcognECo0tq3oRw+DbFsy+wz383qmrJw@mail.gmail.com>
+Message-ID: <CAK8P3a0C1aSgDm10gPtcognECo0tq3oRw+DbFsy+wz383qmrJw@mail.gmail.com>
+Subject: Re: [PATCH] spi: rockchip: avoid objtool warning
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jon Lin <jon.lin@rock-chips.com>,
+        Chris Ruehl <chris.ruehl@gtsys.com.hk>,
+        Alexander Kochetkov <al.kochet@gmail.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Vincent Pelletier <plr.vincent@gmail.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC support" 
+        <linux-rockchip@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Amir,
+On Fri, Feb 26, 2021 at 12:05 PM 'Pratyush Yadav' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+> On 26/02/21 10:49AM, Arnd Bergmann wrote:
+> > On Fri, Feb 26, 2021 at 9:16 AM 'Pratyush Yadav' via Clang Built Linux <clang-built-linux@googlegroups.com> wrote:
 
-On 2/26/21 11:34 AM, Amir Goldstein wrote:
-> Is this detailed enough? ;-)
-> 
-> https://lwn.net/Articles/846403/
+>
+> Returning an error code from this function (along with the dev_warn() or
+> WARN_ON()) is the most sensible thing to do IMO. If the SPI layer sends
+> an invalid value then the driver should be well within its rights to
+> refuse the transaction. The function is currently void but making it
+> return int seems fairly straightforward.
 
-I'm sorry I can't read it yet:
+Indeed, this seems like a clear -EINVAL case. I've updated my patch, will
+send after build testing.
 
-[
-Subscription required
-The page you have tried to view (How useful should copy_file_range() 
-be?) is currently available to LWN subscribers only. Reader 
-subscriptions are a necessary way to fund the continued existence of LWN 
-and the quality of its content.
-[...]
-(Alternatively, this item will become freely available on March 4, 2021)
-]
-
-However, the 4th of March is close enough, i guess.
-
-Thanks,
-
-Alex
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+       Arnd
