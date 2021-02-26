@@ -2,189 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72D8325F14
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D996325F1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbhBZIbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:31:40 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:60875 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhBZIbD (ORCPT
+        id S230153AbhBZIcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:32:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230040AbhBZIb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:31:03 -0500
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 26 Feb 2021 00:30:02 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Feb 2021 00:29:59 -0800
-X-QCInternal: smtphost
-Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 26 Feb 2021 13:59:52 +0530
-Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
-        id 65E5F20E0E; Fri, 26 Feb 2021 13:59:51 +0530 (IST)
-From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-To:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        manivannan.sadhasivam@linaro.org, robh+dt@kernel.org,
-        sboyd@kernel.org, sricharan@codeaurora.org,
-        Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-Subject: [PATCH v5] arm64: dts: Add board support for HK10
-Date:   Fri, 26 Feb 2021 13:58:30 +0530
-Message-Id: <1614328110-28866-2-git-send-email-gokulsri@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614328110-28866-1-git-send-email-gokulsri@codeaurora.org>
-References: <1614328110-28866-1-git-send-email-gokulsri@codeaurora.org>
+        Fri, 26 Feb 2021 03:31:59 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694DAC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:31:18 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id i9so6409045wml.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:31:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=6d55hczQ7yC4fvKZlIJyccsSIieP5h08F8ol4aHjDSk=;
+        b=veP2th8n5/TCGhbAfadppIk6moovuPbnwz7txyIrcjYmTIlvQzaCm4g5KjCoHrQXKH
+         NUBVtOlP1i059ojGBq/mkxtq6yEH6qB76l8PmIzWjMTrEJzVCQCEed/BbLN9ioQSJb4P
+         u6bijGkY8Iq6GlEY3eqFpWBSyq0rT/htytRoRZKhg8VuaBg3vJgIoHT8yKnbNe3D27fi
+         lwX/YIPHXcEd9aqCqW+e38UGEfPetvDMUVvvUfkDAlBbCchQEnljAgP+1IT3ovHNsbfh
+         hh0KEGn6ex6Fbwa/8tyvYqS3uQ45Oi9EzBiLGP15g2st4h338LSrA1M4aJCmZYEzWocj
+         IwhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6d55hczQ7yC4fvKZlIJyccsSIieP5h08F8ol4aHjDSk=;
+        b=CWdQ3XGIE782sn9jRC+R3tP8B6qr3s4dA21qg3C4/pX5XYZ4BaG6extDe/G10YTV78
+         b29hOb7ShesRqaL7eO3j0mBIT6SYJEY2iNugM5fdgv74zQCwLz8gwp03wzOPVqnf97v4
+         DmyLBKQ/blkJMoPBuFaMnQ2Wb6H5WxKbv76qNpiZTV6pSwKOyRoRsSIFZfHczLglXYbv
+         OlCADl9j9ITzLutghN1TzXY0wtmyXa2gOt2PkHOgPnThsQNcnY2HYTmnn5quB6fXryBS
+         zFnEFZnOvwzB319tEm6gog9JYAw/or5o6oZAPb7MBYInYrsNV4v0wpOz6lRWrzGFQ90/
+         2RoQ==
+X-Gm-Message-State: AOAM533/1mOsQL4xw9u14NHRoUOzaHwSoYMmQmdx9+uh3P52dPy8bwfu
+        J3mp9zGHhjNETLDTNTPZVZ/jPg==
+X-Google-Smtp-Source: ABdhPJyNNPBJL8zVQ1bzYzDTc8Boiu+FQOindWJ9jhjeB/7vXL8rqC5WnS5NurawlXFFVEQ8EzTLXw==
+X-Received: by 2002:a05:600c:4c17:: with SMTP id d23mr1638944wmp.116.1614328276858;
+        Fri, 26 Feb 2021 00:31:16 -0800 (PST)
+Received: from dell ([91.110.221.155])
+        by smtp.gmail.com with ESMTPSA id w13sm13617941wre.2.2021.02.26.00.31.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 00:31:16 -0800 (PST)
+Date:   Fri, 26 Feb 2021 08:31:14 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        openbmc@lists.ozlabs.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: Re: [PATCH 2/4] mfd: simple-mfd-i2c: Adds Ampere's Altra SMpro
+ support
+Message-ID: <20210226083114.GE641347@dell>
+References: <20210225101854.13896-1-quan@os.amperecomputing.com>
+ <20210225101854.13896-3-quan@os.amperecomputing.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210225101854.13896-3-quan@os.amperecomputing.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support for IPQ8074 SoC based HK10-C1
-and HK10-C2 evaluation boards.
+On Thu, 25 Feb 2021, Quan Nguyen wrote:
 
-Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/Makefile            |  2 +
- arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts | 11 ++++
- arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts | 14 +++++
- arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi   | 76 ++++++++++++++++++++++++++++
- 4 files changed, 103 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts
- create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts
- create mode 100644 arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
+> Adds an MFD driver for SMpro found on the Mt.Jade hardware reference
+> platform with Ampere's Altra processor family.
+> 
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+> ---
+>  drivers/mfd/Kconfig          | 10 ++++++++++
+>  drivers/mfd/simple-mfd-i2c.c | 15 +++++++++++++--
+>  2 files changed, 23 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index b74efa469e90..5414371bdea1 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -77,6 +77,16 @@ config MFD_AS3711
+>  	help
+>  	  Support for the AS3711 PMIC from AMS
+>  
+> +config MFD_SMPRO
+> +	tristate "Ampere Computing MFD SMpro core driver"
+> +	select MFD_SIMPLE_MFD_I2C
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 5113fac..4098c5e 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -4,6 +4,8 @@ dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-ifc6640.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c1.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk10-c2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-longcheer-l8150.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-mtp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-samsung-a3u-eur.dtb
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts b/arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts
-new file mode 100644
-index 00000000..2bfcf42
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10-c1.dts
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2020 The Linux Foundation. All rights reserved.
-+ */
-+/dts-v1/;
-+
-+#include "ipq8074-hk10.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. IPQ8074/AP-HK10-C1";
-+	compatible = "qcom,ipq8074-hk10-c1", "qcom,ipq8074";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts b/arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts
-new file mode 100644
-index 00000000..1897e96
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10-c2.dts
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/dts-v1/;
-+/* Copyright (c) 2020 The Linux Foundation. All rights reserved.
-+ */
-+#include "ipq8074-hk10.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. IPQ8074/AP-HK10-C2";
-+	compatible = "qcom,ipq8074-hk10-c2", "qcom,ipq8074";
-+};
-+
-+&q6v5_wcss {
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
-new file mode 100644
-index 00000000..0827055
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/ipq8074-hk10.dtsi
-@@ -0,0 +1,76 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-+ */
-+/dts-v1/;
-+
-+#include "ipq8074.dtsi"
-+
-+/ {
-+	#address-cells = <0x2>;
-+	#size-cells = <0x2>;
-+
-+	interrupt-parent = <&intc>;
-+
-+	aliases {
-+		serial0 = &blsp1_uart5;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0";
-+	};
-+
-+	memory {
-+		device_type = "memory";
-+		reg = <0x0 0x40000000 0x0 0x20000000>;
-+	};
-+};
-+
-+&blsp1_spi1 {
-+	status = "ok";
-+
-+	m25p80@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <50000000>;
-+	};
-+};
-+
-+&blsp1_uart5 {
-+	status = "ok";
-+};
-+
-+&pcie0 {
-+	status = "ok";
-+	perst-gpio = <&tlmm 58 0x1>;
-+};
-+
-+&pcie1 {
-+	status = "ok";
-+	perst-gpio = <&tlmm 61 0x1>;
-+};
-+
-+&qmp_pcie_phy0 {
-+	status = "ok";
-+};
-+
-+&qmp_pcie_phy1 {
-+	status = "ok";
-+};
-+
-+&qpic_bam {
-+	status = "ok";
-+};
-+
-+&qpic_nand {
-+	status = "ok";
-+
-+	nand@0 {
-+		reg = <0>;
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+		nand-bus-width = <8>;
-+	};
-+};
+Nice to see another user here.
+
+> +	help
+> +	  Say yes here to enable SMpro driver support for Ampere's Altra
+> +	  processor family.
+> +
+> +	  Ampere's Altra SMpro exposes an I2C regmap interface that can
+> +	  be accessed by child devices.
+> +
+>  config MFD_AS3722
+>  	tristate "ams AS3722 Power Management IC"
+>  	select MFD_CORE
+> diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
+> index 87f684cff9a1..0459a9fbd3f5 100644
+> --- a/drivers/mfd/simple-mfd-i2c.c
+> +++ b/drivers/mfd/simple-mfd-i2c.c
+> @@ -21,14 +21,24 @@ static const struct regmap_config simple_regmap_config = {
+>  	.val_bits = 8,
+>  };
+>  
+> +static const struct regmap_config simple_word_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 16,
+> +};
+> +
+>  static int simple_mfd_i2c_probe(struct i2c_client *i2c)
+>  {
+>  	const struct regmap_config *config;
+>  	struct regmap *regmap;
+>  
+>  	config = device_get_match_data(&i2c->dev);
+> -	if (!config)
+> -		config = &simple_regmap_config;
+> +	if (!config) {
+> +		if (of_device_is_compatible(i2c->dev.of_node,
+> +						"ampere,ac01-smpro"))
+
+Could you use 'struct of_device_id's .data attribute instead please?
+
+> +			config = &simple_word_regmap_config;
+> +		else
+> +			config = &simple_regmap_config;
+> +	}
+>  
+>  	regmap = devm_regmap_init_i2c(i2c, config);
+>  	if (IS_ERR(regmap))
+> @@ -39,6 +49,7 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
+>  
+>  static const struct of_device_id simple_mfd_i2c_of_match[] = {
+>  	{ .compatible = "kontron,sl28cpld" },
+> +	{ .compatible = "ampere,ac01-smpro" },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
+
 -- 
-2.7.4
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
