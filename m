@@ -2,219 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CB132669F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF193266A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 19:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhBZR7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:59:23 -0500
-Received: from mga14.intel.com ([192.55.52.115]:5134 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229949AbhBZR7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:59:20 -0500
-IronPort-SDR: NVFVAGmqR6E4V6vh+JaHh+Fq7Oc1/eTFdu+NuscGoMZhGqxQxzjZYSaObO0A7lifXuk9VKCvvZ
- 74jtN9M4ikrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="185265198"
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="185265198"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:58:39 -0800
-IronPort-SDR: QHSNmYkMoCK8MwS31AsKm/UZdgerEwOX1IHFXVdS2UQgJCL8Dvt9egpqf/7O9lSnPTns7KXiRP
- Kv3nhlu00h7Q==
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="405065941"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 09:58:39 -0800
-Date:   Fri, 26 Feb 2021 09:58:37 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Aili Yao <yaoaili@kingsoft.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>, "david@redhat.com" <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
-Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
-Message-ID: <20210226175837.GA184397@agluck-desk2.amr.corp.intel.com>
-References: <20210224151619.67c29731@alex-virtual-machine>
- <20210224103105.GA16368@linux>
- <20210225114329.4e1a41c6@alex-virtual-machine>
- <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
- <20210225113930.GA7227@localhost.localdomain>
- <20210226105250.3a15e35c@alex-virtual-machine>
+        id S229586AbhBZSCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 13:02:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhBZSCe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 13:02:34 -0500
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDBE0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 10:01:53 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id s3so9847177otg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 10:01:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=J3D1ZBXfHJ7T5OxXlR3ELZS2hjiPuLERxYL/JoPYBLg=;
+        b=em6t2aIGUSHjJ/uI9iLtOHsLnHHm7jMylbWwnlaQSffVQyI99zLOYCtGceNuRQdMR3
+         p/fcZkxAh3PgLrGTGsZ4WrchrB/MMUfrBOdki8JYYruxepwR814fPQ28v3JOAPDGacsX
+         mivZTkNGNrzIqA3NoWL7jA+4hlXYXauWd2B+U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J3D1ZBXfHJ7T5OxXlR3ELZS2hjiPuLERxYL/JoPYBLg=;
+        b=Z0zWqtcGFLPondggkcccLJzl2XbnWzMOhfmImqjn9F0n1zCItbzXiMKYywSGdyox7q
+         LdlusmmTiVFC+9+qBREQRr6/fXPbhRfTGtTUP+Z5EN/3T2iBc1r5E9g/xPTiCFrz8yKy
+         USQdS1IrTTU6PvqL6GRE68YmJXepEkjw1EL0rmZ/wL/27hhhHBhTpaGJ8eO6+d6lnIC2
+         iFJsMK6IFq6ETu8zruYN3ZJOlyYgxx8hvKOBp3M/yKV7jndRpdgUTHbRnzluSCMjgDdU
+         h0JM+/iuKX3vmq7cItp6ZlZhmTpotXjcRo6segfvGXHho5p6dfNbPxAA55JiloJOnSR9
+         OqDg==
+X-Gm-Message-State: AOAM531uzjoxY73gZKPTlaRGdfz3WhiyICXRIpPIf6NzP0R+6ogbrmdb
+        JSjCz2vTwV7n+9DgIO8Zf2019IXfZjZgqg==
+X-Google-Smtp-Source: ABdhPJyXTO4fVVhj3Lz7WaoyA3SHDDtpNMqnkToCAKlLscHCfj/Sw8klMeVZN9tZvRI7+y2ssm3m/Q==
+X-Received: by 2002:a05:6830:244b:: with SMTP id x11mr3098309otr.19.1614362513366;
+        Fri, 26 Feb 2021 10:01:53 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id j25sm1231790ota.37.2021.02.26.10.01.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 10:01:53 -0800 (PST)
+Subject: Re: [PATCH 5/5] ath10k: reduce invalid ht params rate message noise
+To:     Kalle Valo <kvalo@codeaurora.org>, Wen Gong <wgong@codeaurora.org>
+Cc:     netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
+        kuba@kernel.org, davem@davemloft.net,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1612915444.git.skhan@linuxfoundation.org>
+ <76a816d983e6c4d636311738396f97971b5523fb.1612915444.git.skhan@linuxfoundation.org>
+ <5c31f6dadbcc3dcb19239ad2b6106773@codeaurora.org>
+ <87h7mktjgi.fsf@codeaurora.org>
+ <db4cd172-6121-a0b7-6c3f-f95baae1c1ed@linuxfoundation.org>
+ <87wnvesv8t.fsf@codeaurora.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <82e3e0a2-d95b-cffb-4fa7-2eaa4513dd48@linuxfoundation.org>
+Date:   Fri, 26 Feb 2021 11:01:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226105250.3a15e35c@alex-virtual-machine>
+In-Reply-To: <87wnvesv8t.fsf@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 10:52:50AM +0800, Aili Yao wrote:
-> Hi naoya,Oscar,david:
-> > 
-> > > We could use some negative value (error code) to report the reported case,
-> > > then as you mentioned above, some callers need change to handle the
-> > > new case, and the same is true if you use some positive value.
-> > > My preference is -EHWPOISON, but other options are fine if justified well.  
-> > 
-> > -EHWPOISON seems like a good fit.
-> > 
-> I am OK with the -EHWPOISON error code, But I have one doubt here:
-> When we return this -EHWPOISON error code, Does this means we have to add a new error code
-> to error-base.h or errno.h? Is this easy realized?
+On 2/11/21 4:24 AM, Kalle Valo wrote:
+> Shuah Khan <skhan@linuxfoundation.org> writes:
+> 
+>> On 2/10/21 1:28 AM, Kalle Valo wrote:
+>>> Wen Gong <wgong@codeaurora.org> writes:
+>>>
+>>>> On 2021-02-10 08:42, Shuah Khan wrote:
+>>>>> ath10k_mac_get_rate_flags_ht() floods dmesg with the following
+>>>>> messages,
+>>>>> when it fails to find a match for mcs=7 and rate=1440.
+>>>>>
+>>>>> supported_ht_mcs_rate_nss2:
+>>>>> {7,  {1300, 2700, 1444, 3000} }
+>>>>>
+>>>>> ath10k_pci 0000:02:00.0: invalid ht params rate 1440 100kbps nss 2
+>>>>> mcs 7
+>>>>>
+>>>>> dev_warn_ratelimited() isn't helping the noise. Use dev_warn_once()
+>>>>> instead.
+>>>>>
+>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>>> ---
+>>>>>    drivers/net/wireless/ath/ath10k/mac.c | 5 +++--
+>>>>>    1 file changed, 3 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c
+>>>>> b/drivers/net/wireless/ath/ath10k/mac.c
+>>>>> index 3545ce7dce0a..276321f0cfdd 100644
+>>>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>>>> @@ -8970,8 +8970,9 @@ static void ath10k_mac_get_rate_flags_ht(struct
+>>>>> ath10k *ar, u32 rate, u8 nss, u8
+>>>>>    		*bw |= RATE_INFO_BW_40;
+>>>>>    		*flags |= RATE_INFO_FLAGS_SHORT_GI;
+>>>>>    	} else {
+>>>>> -		ath10k_warn(ar, "invalid ht params rate %d 100kbps nss %d mcs %d",
+>>>>> -			    rate, nss, mcs);
+>>>>> +		dev_warn_once(ar->dev,
+>>>>> +			      "invalid ht params rate %d 100kbps nss %d mcs %d",
+>>>>> +			      rate, nss, mcs);
+>>>>>    	}
+>>>>>    }
+>>>>
+>>>> The {7,  {1300, 2700, 1444, 3000} } is a correct value.
+>>>> The 1440 is report from firmware, its a wrong value, it has fixed in
+>>>> firmware.
+>>>
+>>> In what version?
+>>>
+>>
+>> Here is the info:
+>>
+>> ath10k_pci 0000:02:00.0: qca6174 hw3.2 target 0x05030000 chip_id
+>> 0x00340aff sub 17aa:0827
+>>
+>> ath10k_pci 0000:02:00.0: firmware ver WLAN.RM.4.4.1-00140-QCARMSWPZ-1
+>> api 6 features wowlan,ignore-otp,mfp crc32 29eb8ca1
+>>
+>> ath10k_pci 0000:02:00.0: board_file api 2 bmi_id N/A crc32 4ac0889b
+>>
+>> ath10k_pci 0000:02:00.0: htt-ver 3.60 wmi-op 4 htt-op 3 cal otp
+>> max-sta 32 raw 0 hwcrypto 1
+>>
+>>>> If change it to dev_warn_once, then it will have no chance to find the
+>>>> other wrong values which report by firmware, and it indicate
+>>>> a wrong value to mac80211/cfg80211 and lead "iw wlan0 station dump"
+>>>> get a wrong bitrate.
+>>>
+>>
+>> Agreed.
+>>
+>>> I agree, we should keep this warning. If the firmware still keeps
+>>> sending invalid rates we should add a specific check to ignore the known
+>>> invalid values, but not all of them.
+>>>
+>>
+>> Would it be helpful to adjust the default rate limits and set the to
+>> a higher value instead. It might be difficult to account all possible
+>> invalid values?
+>>
+>> Something like, ath10k_warn_ratelimited() to adjust the
+>>
+>> DEFAULT_RATELIMIT_INTERVAL and DEFAULT_RATELIMIT_BURST using
+>> DEFINE_RATELIMIT_STATE
+>>
+>> Let me know if you like this idea. I can send a patch in to do this.
+>> I will hang on to this firmware version for a little but longer, so
+>> we have a test case. :)
+> 
+> I would rather first try to fix the root cause, which is the firmware
+> sending invalid rates. Wen, you mentioned there's a fix in firmware. Do
+> you know which firmware version (and branch) has the fix?
+> 
 
-The page already poisoned isn't really an error though. Just the result
-of a race condition.  What if we added an extra argument to memory_failure()
-so it can tell the caller that the specific reason for the early successful
-return is that the page was already poisoned?
+Picking this back up. Wen, which firmware version has this fix? I can
+test this on my system and get rid of the noisy messages. :)
 
-Something like this (untested - patch against v5.11):
-
--Tony
-
----
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index e133ce1e562b..0e32c4d879fb 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -637,6 +637,7 @@ static int uc_decode_notifier(struct notifier_block *nb, unsigned long val,
- {
- 	struct mce *mce = (struct mce *)data;
- 	unsigned long pfn;
-+	int already = 0;
- 
- 	if (!mce || !mce_usable_address(mce))
- 		return NOTIFY_DONE;
-@@ -646,8 +647,9 @@ static int uc_decode_notifier(struct notifier_block *nb, unsigned long val,
- 		return NOTIFY_DONE;
- 
- 	pfn = mce->addr >> PAGE_SHIFT;
--	if (!memory_failure(pfn, 0)) {
--		set_mce_nospec(pfn, whole_page(mce));
-+	if (!memory_failure(pfn, 0, &already)) {
-+		if (!already)
-+			set_mce_nospec(pfn, whole_page(mce));
- 		mce->kflags |= MCE_HANDLED_UC;
- 	}
- 
-@@ -1245,15 +1247,19 @@ static void kill_me_maybe(struct callback_head *cb)
- {
- 	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
- 	int flags = MF_ACTION_REQUIRED;
-+	int already = 0;
- 
- 	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
- 
- 	if (!p->mce_ripv)
- 		flags |= MF_MUST_KILL;
- 
--	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
-+	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags, &already) &&
- 	    !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
--		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
-+		if (already)
-+			force_sig(SIGBUS); // BETTER CODE NEEDED HERE!!!
-+		else
-+			set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
- 		sync_core();
- 		return;
- 	}
-@@ -1440,7 +1446,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
- EXPORT_SYMBOL_GPL(do_machine_check);
- 
- #ifndef CONFIG_MEMORY_FAILURE
--int memory_failure(unsigned long pfn, int flags)
-+int memory_failure(unsigned long pfn, int flags, int *already)
- {
- 	/* mce_severity() should not hand us an ACTION_REQUIRED error */
- 	BUG_ON(flags & MF_ACTION_REQUIRED);
-diff --git a/drivers/base/memory.c b/drivers/base/memory.c
-index eef4ffb6122c..24c36623e492 100644
---- a/drivers/base/memory.c
-+++ b/drivers/base/memory.c
-@@ -480,7 +480,7 @@ static ssize_t hard_offline_page_store(struct device *dev,
- 	if (kstrtoull(buf, 0, &pfn) < 0)
- 		return -EINVAL;
- 	pfn >>= PAGE_SHIFT;
--	ret = memory_failure(pfn, 0);
-+	ret = memory_failure(pfn, 0, NULL);
- 	return ret ? ret : count;
- }
- 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index ecdf8a8cd6ae..88b92820465c 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3045,7 +3045,7 @@ enum mf_flags {
- 	MF_MUST_KILL = 1 << 2,
- 	MF_SOFT_OFFLINE = 1 << 3,
- };
--extern int memory_failure(unsigned long pfn, int flags);
-+extern int memory_failure(unsigned long pfn, int flags, int *already);
- extern void memory_failure_queue(unsigned long pfn, int flags);
- extern void memory_failure_queue_kick(int cpu);
- extern int unpoison_memory(unsigned long pfn);
-diff --git a/mm/hwpoison-inject.c b/mm/hwpoison-inject.c
-index 1ae1ebc2b9b1..bfd5151dcd3f 100644
---- a/mm/hwpoison-inject.c
-+++ b/mm/hwpoison-inject.c
-@@ -48,7 +48,7 @@ static int hwpoison_inject(void *data, u64 val)
- 
- inject:
- 	pr_info("Injecting memory failure at pfn %#lx\n", pfn);
--	return memory_failure(pfn, 0);
-+	return memory_failure(pfn, 0, NULL);
- }
- 
- static int hwpoison_unpoison(void *data, u64 val)
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 6a660858784b..ade1956632aa 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -907,7 +907,7 @@ static int madvise_inject_error(int behavior,
- 		} else {
- 			pr_info("Injecting memory failure for pfn %#lx at process virtual address %#lx\n",
- 				 pfn, start);
--			ret = memory_failure(pfn, MF_COUNT_INCREASED);
-+			ret = memory_failure(pfn, MF_COUNT_INCREASED, NULL);
- 		}
- 
- 		if (ret)
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index e9481632fcd1..e8508e4d70e5 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1388,7 +1388,7 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
-  * Must run in process context (e.g. a work queue) with interrupts
-  * enabled and no spinlocks hold.
-  */
--int memory_failure(unsigned long pfn, int flags)
-+int memory_failure(unsigned long pfn, int flags, int *already)
- {
- 	struct page *p;
- 	struct page *hpage;
-@@ -1418,6 +1418,8 @@ int memory_failure(unsigned long pfn, int flags)
- 	if (PageHuge(p))
- 		return memory_failure_hugetlb(pfn, flags);
- 	if (TestSetPageHWPoison(p)) {
-+		if (already)
-+			*already = 1;
- 		pr_err("Memory failure: %#lx: already hardware poisoned\n",
- 			pfn);
- 		return 0;
-@@ -1624,7 +1626,7 @@ static void memory_failure_work_func(struct work_struct *work)
- 		if (entry.flags & MF_SOFT_OFFLINE)
- 			soft_offline_page(entry.pfn, entry.flags);
- 		else
--			memory_failure(entry.pfn, entry.flags);
-+			memory_failure(entry.pfn, entry.flags, NULL);
- 	}
- }
- 
+thanks,
+-- Shuah
