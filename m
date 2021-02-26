@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5CC326992
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D67AA32698E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhBZVau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:30:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
+        id S230375AbhBZVaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:30:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbhBZVam (ORCPT
+        with ESMTP id S230018AbhBZVaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:30:42 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE7FC061788
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:30:02 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id g3so12650657edb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:30:02 -0800 (PST)
+        Fri, 26 Feb 2021 16:30:20 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB12C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:29:39 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id z126so11211250oiz.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:29:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oq+ziV5W+4fEB7+AhqNfzmL/v56Klno9yJ5KkNDHbIk=;
-        b=lgCtW/Yjv2mimZpK+rAl0afo5lamoHgXB1ZyR3nf/HIVD3AkIrzv8F68PpHt4s4RoC
-         DDJoegJdMQ2Tcae3+I6sSpnDorPEb11zApmi29GJPNjLCdN2no5i2PdSMSaZnfbb7+yo
-         YRFEySb1DigFpXmu2Q7g0DWZzrBhqyptwEO8IinjATl71E69DE0Y3r3qZqj4zQfsndB6
-         OMgjNIpKEG7cxVanbYHd6ZRNRd8pcTNFxCSJtYeyj8d0bNIylOAOuTf2dyl40im30IoH
-         ElkJK6JOR3Y5vL7jzdVWrc/6XtmvTdkeKIgENLsdSUtuhj5AgMsVl7g9N4btIliIudx9
-         WvTw==
+        bh=T+XuI1x+8YDlt07TAQPA3xx8+2WYMMEBzo0uXxTMkC4=;
+        b=mJlk0wqt+hovCyn5pQJ5lMizNw18al5kCVeYtx1FPDccDVE7hpeji7OHh9al4m/HAf
+         Pxsnznei5j6RO9dyA23/LwklDtMFEo/dljBb7oKyGLlW8u7+g+XtIq8ySo6pXhdKwvbh
+         jSxviSw42gDvyi3+A9tuXV/lIYwfPVLlZ4bgLvyVkdoM5grOxKP5GYFdXXpQmGVfoh2S
+         fwwZT+mwfymQN2ZtjF9u5noz+qnIAc4DJvV5HB9l+TpV05wY2m6w9Zm4ChBqELnsTDT0
+         vkiPG+VuQpEDn6MPfwAzRwJ3uBMTC6msW7Qb8BFZLBBtTTsxj2k+pdnZQ/X2orhJio02
+         IsVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oq+ziV5W+4fEB7+AhqNfzmL/v56Klno9yJ5KkNDHbIk=;
-        b=kaLFrjOL1rdFKfIj2VHxVB6pnjeOgMjCxpwBmaAEEhX5x+1qX1r/SSfH+l5RC/iknI
-         T4PQIUvgMb9r7pVmlGkUHOI3M8XRvGtrLSoC7E7WAsYKY4sFsdyP0GyHBudkHxfu2iOY
-         Y9egKTSSH0qd/TspsUfCOjzmn9SqNyWaQgvAUzBBwqC+3qz4OVKGwo6uq021zKdpCACD
-         GmaYqdi21+IRHJaChF4XxLBiOD3XfNr8shXe3pj+ed1LpUGaf5HvdNk5PLkXBmcEH2gA
-         Y8mTgepFUinugmTHVOPm1IV+smqOhtrCfUL5AKZeFLxCOzK0nFyUrTKY+TIGck4Y756a
-         /1+Q==
-X-Gm-Message-State: AOAM530Tcymi2sm3Hc67tPOtxjOk1fZGghjxZs4DAlRnDHh6whfzHLAP
-        e11JeXfhYmAc4sO84flCHANXU5nvYtU=
-X-Google-Smtp-Source: ABdhPJyfg/mm7yAA091OwnEtTEi97HOlDmY2zLZBD/YZhBo8rmyrkAAcft0QS723uHNHMfyL/kU8yw==
-X-Received: by 2002:a05:6402:ce:: with SMTP id i14mr5572238edu.42.1614375000794;
-        Fri, 26 Feb 2021 13:30:00 -0800 (PST)
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
-        by smtp.gmail.com with ESMTPSA id j17sm6784557edv.66.2021.02.26.13.29.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 13:29:59 -0800 (PST)
-Received: by mail-wr1-f47.google.com with SMTP id f12so6108431wrx.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:29:59 -0800 (PST)
-X-Received: by 2002:a5d:6cab:: with SMTP id a11mr5220400wra.419.1614374998947;
- Fri, 26 Feb 2021 13:29:58 -0800 (PST)
+        bh=T+XuI1x+8YDlt07TAQPA3xx8+2WYMMEBzo0uXxTMkC4=;
+        b=iSlq5pOjSL9rXiFNSvwsSJyW0zTwoEYAUR4bwz29OhMMbd4KmiZG6F44jZj46QBKgo
+         zv6arDYeK9drMCTwCDVz/cV5ePGYVFsFKeM71QdBsl+YQ7ZQgRl+55MrgPAPzebFcQP+
+         FcydmwAYuHvcgvZnLd5n4OMk7cybwPqOe2Q58RwDwhjgH77Tl1/5ntKDvLloKul3l+DU
+         XUggbc04ZlpR+cGi3CrsmfrHKTt1iEYb1a2dZ3VFJ4oPUBMRkS+zX/t25F0568OdYPXO
+         7/pmypLdNLQZQjHJK7GaUprRLaDmNsBfW/xRoH2439A9FYg9P+Ltl5NoU/NVLYSSFg3L
+         U7qw==
+X-Gm-Message-State: AOAM533v1I3GVcMrR84tg3SZUzz3+ou5FcG7XEA9BoyABdU/nkxhS77P
+        vdIE+7gLyUEx96Uau1l9ck2t9uuYEwsUip0iEK1RyGIy
+X-Google-Smtp-Source: ABdhPJzM/GD97FBNksX+qUYYCV5b+mBloW+GDX6JAIooMsjETRDa6/4gNIukKjRYSZ1ufHxF9fzRZbq2+cKYNgPZDsQ=
+X-Received: by 2002:aca:fccb:: with SMTP id a194mr3362138oii.5.1614374979385;
+ Fri, 26 Feb 2021 13:29:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20210226035721.40054-1-hxseverything@gmail.com> <CAM_iQpUAc5sB1xzqE7RvG5pQHQeCPJx5qAz_m9LaJYZ4pKfZsQ@mail.gmail.com>
-In-Reply-To: <CAM_iQpUAc5sB1xzqE7RvG5pQHQeCPJx5qAz_m9LaJYZ4pKfZsQ@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 26 Feb 2021 16:29:21 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSfrE_brf_KO+swvsqTVGuoXYhPNTvnyK-1gC8PxSKneUA@mail.gmail.com>
-Message-ID: <CA+FuTSfrE_brf_KO+swvsqTVGuoXYhPNTvnyK-1gC8PxSKneUA@mail.gmail.com>
-Subject: Re: [PATCH/v3] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Xuesen Huang <hxseverything@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+References: <1614332527-5014-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1614332527-5014-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 26 Feb 2021 16:29:28 -0500
+Message-ID: <CADnq5_M2vL2RE5eJ727FFskdONAmW4RL-0LrXRTiJiACHY8SYQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display/dc/dce/dmub_psr: Remove unnecessary
+ conversion to bool
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Xuesen Huang <huangxuesen@kuaishou.com>,
-        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
-        Li Wang <wangli09@kuaishou.com>
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 3:15 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+On Fri, Feb 26, 2021 at 4:42 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
 >
-> On Thu, Feb 25, 2021 at 7:59 PM Xuesen Huang <hxseverything@gmail.com> wrote:
-> > v3:
-> > - Fix the code format.
-> >
-> > v2:
-> > Suggested-by: Willem de Bruijn <willemb@google.com>
-> > - Add a new flag to specify the type of the inner packet.
+> Fix the following coccicheck warnings:
 >
-> These need to be moved after '---', otherwise it would be merged
-> into the final git log.
+> ./drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c:273:16-21: WARNING:
+> conversion to bool not needed here.
 >
-> >
-> > Suggested-by: Willem de Bruijn <willemb@google.com>
-> > Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
-> > Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
-> > Signed-off-by: Li Wang <wangli09@kuaishou.com>
-> > ---
-> >  include/uapi/linux/bpf.h       |  5 +++++
-> >  net/core/filter.c              | 11 ++++++++++-
-> >  tools/include/uapi/linux/bpf.h |  5 +++++
-> >  3 files changed, 20 insertions(+), 1 deletion(-)
->
-> As a good practice, please add a test case for this in
-> tools/testing/selftests/bpf/progs/test_tc_tunnel.c.
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-That's a great idea. This function covers a lot of cases. Can use the
-code coverage against regressions.
+Applied.  Thanks!
 
-With that caveat, looks great to me, thanks.
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c b/drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c
+> index 69e34be..c13f967 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c
+> @@ -269,8 +269,7 @@ static bool dmub_psr_copy_settings(struct dmub_psr *dmub,
+>         copy_settings_data->frame_cap_ind                       = psr_context->psrFrameCaptureIndicationReq;
+>         copy_settings_data->init_sdp_deadline                   = psr_context->sdpTransmitLineNumDeadline;
+>         copy_settings_data->debug.u32All = 0;
+> -       copy_settings_data->debug.bitfields.visual_confirm      = dc->dc->debug.visual_confirm == VISUAL_CONFIRM_PSR ?
+> -                                                                       true : false;
+> +       copy_settings_data->debug.bitfields.visual_confirm      = dc->dc->debug.visual_confirm == VISUAL_CONFIRM_PSR;
+>         copy_settings_data->debug.bitfields.use_hw_lock_mgr             = 1;
+>
+>         dc_dmub_srv_cmd_queue(dc->dmub_srv, &cmd);
+> --
+> 1.8.3.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
