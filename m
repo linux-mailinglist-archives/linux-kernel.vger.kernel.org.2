@@ -2,121 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B886325BC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 03:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8CD325BCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 04:00:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhBZCzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 21:55:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229885AbhBZCzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 21:55:02 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A6F564EE1;
-        Fri, 26 Feb 2021 02:54:19 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 21:54:17 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jacob Wen <jian.w.wen@oracle.com>
-Subject: [GIT PULL] Tracing: Fixes for 5.12
-Message-ID: <20210225215417.1e19b408@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229947AbhBZDAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 22:00:05 -0500
+Received: from mail.kingsoft.com ([114.255.44.146]:45527 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229508AbhBZDAA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 22:00:00 -0500
+X-AuditID: 0a580157-f39ff7000005df43-98-60385db523a9
+Received: from mail.kingsoft.com (localhost [10.88.1.32])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 0D.82.57155.5BD58306; Fri, 26 Feb 2021 10:32:21 +0800 (HKT)
+Received: from alex-virtual-machine (172.16.253.254) by KSBJMAIL2.kingsoft.cn
+ (10.88.1.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Fri, 26 Feb
+ 2021 10:59:15 +0800
+Date:   Fri, 26 Feb 2021 10:59:15 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
+        <naoya.horiguchi@nec.com>, "Luck, Tony" <tony.luck@intel.com>
+CC:     Oscar Salvador <osalvador@suse.de>,
+        "david@redhat.com" <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "yangfeng1@kingsoft.com" <yangfeng1@kingsoft.com>
+Subject: Re: [PATCH] mm,hwpoison: return -EBUSY when page already poisoned
+Message-ID: <20210226105915.6cf7d2b8@alex-virtual-machine>
+In-Reply-To: <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
+References: <20210224151619.67c29731@alex-virtual-machine>
+        <20210224103105.GA16368@linux>
+        <20210225114329.4e1a41c6@alex-virtual-machine>
+        <20210225112818.GA10141@hori.linux.bs1.fc.nec.co.jp>
+        <20210225113930.GA7227@localhost.localdomain>
+        <20210225123806.GA15006@hori.linux.bs1.fc.nec.co.jp>
+        <20210225181542.GA178925@agluck-desk2.amr.corp.intel.com>
+        <20210226021907.GA27861@hori.linux.bs1.fc.nec.co.jp>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.16.253.254]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL2.kingsoft.cn
+ (10.88.1.32)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDIsWRmVeSWpSXmKPExsXCFcGooLs11iLBYH+/scWc9WvYLD5v+Mdm
+        8XX9L2aLaRvFLS6camCyuLxrDpvFvTX/WS0uHVjAZHGx8QCjxZlpRRabN01ltnhz4R6LxY8N
+        j1kdeD2+t/axeCze85LJY9OqTjaPTZ8msXu8O3eO3ePEjN8sHi+ubmTxeL/vKpvH5tPVHp83
+        yXmcaPnCGsAdxWWTkpqTWZZapG+XwJUx/8ls5oJP7BVzjv5mbGCcw9bFyMkhIWAi0fK8jbmL
+        kYtDSGA6k8ThN19YIJxXjBLLtp4Dq2IRUJVYseYaO4jNBmTvujeLFaRIRKCNUWL9mvNsIA6z
+        wEIWiU8LdjGBVAkLeEl8ub+WEcTmFbCSuHajGaibg4NTwFHizOVckLCQwFxmiTVLlEFsfgEx
+        id4r/5kgTrKXaNuyCKpVUOLkzCcsIDazgI7EiVXHmCFseYntb+cwQ8xRlDi85Bc7RK+SxJHu
+        GVCvxUosm/eKdQKj8Cwko2YhGTULyagFjMyrGFmKc9MNNzFCIjB8B+O8po96hxiZOBgPMUpw
+        MCuJ8G7+Z5ogxJuSWFmVWpQfX1Sak1p8iFGag0VJnFeKzTxBSCA9sSQ1OzW1ILUIJsvEwSnV
+        wMQVLhhwqkt/TYjYp46XupYaUouKgtpZ7nP0cLfa7pqnrpmT3mIYX/SjjnlyQRrTiupvZ6M5
+        EkR36W3UCltbzNF2aoKD7mKdNAlRE7eSf62+PCFlx+ou3Ti8gHPeR+lzH9yP7r5TlCqknu1x
+        1Wf1xJN9ux491/UWF2fi7pDWllFWj568bqt1aa1W59XUFqUrmdq7F5VZdri4Ht2pk5Ddm77/
+        m2vUpjmllnybpc07bZaWHzf8/XuvreTKEqPNgvUHRGeYys1VuskiHRiwiXFj0g8dtUvftnYL
+        JydrlgndY7fntbrz5PsalnM3zkvLazjnHz27Pru8W/XA5hdTH01VeaLRvF6T8Xxr0pTM3ypK
+        LMUZiYZazEXFiQBuLmVkLwMAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi naoya, tony:
+> > 
+> > Idea for what we should do next ... Now that x86 is calling memory_failure()
+> > from user context ... maybe parallel calls for the same page should
+> > be blocked until the first caller completes so we can:
+> > a) know that pages are unmapped (if that happens)
+> > b) all get the same success/fail status  
+> 
+> One memory_failure() call changes the target page's status and
+> affects all mappings to all affected processes, so I think that
+> (ideally) we don't have to block other threads (letting them
+> early return seems fine).  Sometimes memory_failure() fails,
+> but even in such case, PG_hwpoison is set on the page and other
+> threads properly get SIGBUSs with this patch, so I think that
+> we can avoid the worst scenario (like system stall by MCE loop).
+> 
+I agree with naoya's point, if we block for this issue, Does this change the result
+that the process should be killed? Or is there something other still need to be considered?
 
-Linus,
-
-Tracing: Fixes for 5.12
-
-Two fixes:
-
- - Fix an unsafe printf string usage in a kmem trace event
- - Fix spelling in output from the latency-collector tool
-
-Note, since the broken commit was not in my tree, nor was it in any of
-your tags, I just based this on top of the broken commit.
-
-I also included a spelling fix patch to the latency-collector tool as
-it doesn't affect any other part of the kernel.
-
-Please pull the latest trace-v5.12-2 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.12-2
-
-Tag SHA1: c07e93a2a5d138b7efadb97045f77d736d5079b8
-Head SHA1: c1d96fa61eb74b1e211f1653acc5b68ac62c8ef4
-
-
-Colin Ian King (1):
-      tracing/tools: fix a couple of spelling mistakes
-
-Steven Rostedt (VMware) (1):
-      mm, tracing: Fix kmem_cache_free trace event to not print stale pointers
-
-----
- include/trace/events/kmem.h               | 6 +++---
- tools/tracing/latency/latency-collector.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
----------------------------
-diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
-index 40845b0d5dad..3a60b6b6db32 100644
---- a/include/trace/events/kmem.h
-+++ b/include/trace/events/kmem.h
-@@ -144,17 +144,17 @@ TRACE_EVENT(kmem_cache_free,
- 	TP_STRUCT__entry(
- 		__field(	unsigned long,	call_site	)
- 		__field(	const void *,	ptr		)
--		__field(	const char *,	name		)
-+		__string(	name,	name	)
- 	),
- 
- 	TP_fast_assign(
- 		__entry->call_site	= call_site;
- 		__entry->ptr		= ptr;
--		__entry->name		= name;
-+		__assign_str(name, name);
- 	),
- 
- 	TP_printk("call_site=%pS ptr=%p name=%s",
--		  (void *)__entry->call_site, __entry->ptr, __entry->name)
-+		  (void *)__entry->call_site, __entry->ptr, __get_str(name))
- );
- 
- TRACE_EVENT(mm_page_free,
-diff --git a/tools/tracing/latency/latency-collector.c b/tools/tracing/latency/latency-collector.c
-index 57b20802e71b..b69de9263ee6 100644
---- a/tools/tracing/latency/latency-collector.c
-+++ b/tools/tracing/latency/latency-collector.c
-@@ -1650,7 +1650,7 @@ static void start_printthread(void)
- 		if (ufd <  0 ||
- 		    read(ufd, seed, sizeof(*seed)) != sizeof(*seed)) {
- 			printf(
--"Warning! Using trivial random nummer seed, since %s not available\n",
-+"Warning! Using trivial random number seed, since %s not available\n",
- 			DEV_URANDOM);
- 			fflush(stdout);
- 			*seed = i;
-@@ -1711,8 +1711,8 @@ static void show_usage(void)
- "\t\t\tbeginning, end, and backtrace.\n\n"
- 
- "-g, --graph\t\tEnable the display-graph option in trace_option. This\n"
--"\t\t\toption causes ftrace to show the functionph of how\n"
--"\t\t\tfunctions are calling other functions.\n\n"
-+"\t\t\toption causes ftrace to show the graph of how functions\n"
-+"\t\t\tare calling other functions.\n\n"
- 
- "-c, --policy POL\tRun the program with scheduling policy POL. POL can be\n"
- "\t\t\tother, batch, idle, rr or fifo. The default is rr. When\n"
+Thanks!
+Aili Yao  
