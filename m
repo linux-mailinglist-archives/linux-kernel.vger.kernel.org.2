@@ -2,142 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212E0326582
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B200732657F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhBZQZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:25:02 -0500
-Received: from mga01.intel.com ([192.55.52.88]:12400 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230022AbhBZQYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:24:55 -0500
-IronPort-SDR: RESG+ueW1J3GLWWFDgPPpalNgLFwFtjG3LZiKMeO2nxkrQ6ZFmytkEwKf9NxJw3y72SmiNdY2f
- uU0xqyVlEB5w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="205457859"
-X-IronPort-AV: E=Sophos;i="5.81,208,1610438400"; 
-   d="scan'208";a="205457859"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 08:23:07 -0800
-IronPort-SDR: ntFgGzsWwrCyDkuti811a99kOYPGX0R4MIVYZc60jEYPKH3BATJSEO3mAZeKKvYyyGkyVEU+aw
- 3689bu+XTFkA==
-X-IronPort-AV: E=Sophos;i="5.81,208,1610438400"; 
-   d="scan'208";a="382060060"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 08:23:05 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lFftO-008OTZ-3y; Fri, 26 Feb 2021 18:23:02 +0200
-Date:   Fri, 26 Feb 2021 18:23:02 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, rric@kernel.org,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <YDkgZoscLyOnc5l6@smile.fi.intel.com>
-References: <20210226155056.1068534-1-zhengdejin5@gmail.com>
- <20210226155056.1068534-2-zhengdejin5@gmail.com>
+        id S229586AbhBZQYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:24:41 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36124 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229999AbhBZQYg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 11:24:36 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QGCg7t030124;
+        Fri, 26 Feb 2021 17:23:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=sAC/fKyohJhsaMN0N9CSZbklAqAE2gwlIAJ+apwQbQU=;
+ b=vQ6wdWdsNesM9qKO5jp7d9WC6StRlgCjTyqVasc7ACGT+r4sZq124IlKziiOL1nQ8qtO
+ 1Mxb6d4JvLbDCNJEwJisXs/YkYeNATWsQx0DQbVMtqtlW5lwes4Bb9P493jYjZT92HOn
+ CDexLUiam2mgkgbRLeHsQnv8LphRbBCZJmCX5VLqNxZ9qVqHrNa5imRoUw4X/X6RVkv8
+ NsWqCezVU9zO0jOraI+fkkzNMcYdDr2u0s2SXQW8wBzjRe65G+vNxLAzLz9mM2xUrdl7
+ kQiVH+iKvkdzCO15ehNWbWY2UayK4+mjVFkzB8XdGoO19hqeelV+jdUnN0LJW2UYOFTR 9A== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36w66vxrqp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Feb 2021 17:23:48 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DCE3410002A;
+        Fri, 26 Feb 2021 17:23:46 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CEA562BA2DB;
+        Fri, 26 Feb 2021 17:23:46 +0100 (CET)
+Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Feb
+ 2021 17:23:45 +0100
+Subject: Re: [PATCH v6 16/16] remoteproc: Refactor rproc delete and cdev
+ release path
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <ohad@wizery.com>,
+        <bjorn.andersson@linaro.org>, <arnaud.pouliquen@st.com>
+CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
+ <20210223233515.3468677-17-mathieu.poirier@linaro.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <80abdd3b-ffb0-1019-2a1f-fea4f7b51349@foss.st.com>
+Date:   Fri, 26 Feb 2021 17:23:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226155056.1068534-2-zhengdejin5@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210223233515.3468677-17-mathieu.poirier@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-26_05:2021-02-26,2021-02-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 11:50:53PM +0800, Dejin Zheng wrote:
-> Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> pci_alloc_irq_vectors(). Introducing this function can simplify
-> the error handling path in many drivers.
+
+
+On 2/24/21 12:35 AM, Mathieu Poirier wrote:
+> Refactor function rproc_del() and rproc_cdev_release() to take
+> into account the current state of the remote processor when choosing
+> the state to transition to.
 > 
-> And use pci_free_irq_vectors() to replace some code in pcim_release(),
-> they are equivalent, and no functional change. It is more explicit
-> that pcim_alloc_irq_vectors() is a device-managed function.
-
-Thanks!
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 > ---
-> v4 -> v5:
-> 	- Remove the check of enable device in pcim_alloc_irq_vectors()
-> 	  and make it as a static line function.
-> v3 -> v4:
-> 	- No change
-> v2 -> v3:
-> 	- Add some commit comments for replace some codes in
-> 	  pcim_release() by pci_free_irq_vectors().
-> v1 -> v2:
-> 	- Use pci_free_irq_vectors() to replace some code in
-> 	  pcim_release().
-> 	- Modify some commit messages.
+> New for V6:
+> - The RPROC_RUNNING -> RPROC_DETACHED transition is no longer permitted.
+>   to avoid dealing with complex resource table management problems.
+> - Transition to the next state is no longer dictated by a DT binding for
+>   the same reason as above.
+> - Removed Peng and Arnaud's RB tags because of the above.
+> ---
 > 
->  drivers/pci/pci.c   |  5 +----
->  include/linux/pci.h | 24 ++++++++++++++++++++++++
->  2 files changed, 25 insertions(+), 4 deletions(-)
+>  drivers/remoteproc/remoteproc_cdev.c | 10 ++++++++--
+>  drivers/remoteproc/remoteproc_core.c |  9 +++++++--
+>  2 files changed, 15 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 16a17215f633..fecfdc0add2f 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -1969,10 +1969,7 @@ static void pcim_release(struct device *gendev, void *res)
->  	struct pci_devres *this = res;
->  	int i;
+> diff --git a/drivers/remoteproc/remoteproc_cdev.c b/drivers/remoteproc/remoteproc_cdev.c
+> index 2db494816d5f..0b8a84c04f76 100644
+> --- a/drivers/remoteproc/remoteproc_cdev.c
+> +++ b/drivers/remoteproc/remoteproc_cdev.c
+> @@ -86,11 +86,17 @@ static long rproc_device_ioctl(struct file *filp, unsigned int ioctl, unsigned l
+>  static int rproc_cdev_release(struct inode *inode, struct file *filp)
+>  {
+>  	struct rproc *rproc = container_of(inode->i_cdev, struct rproc, cdev);
+> +	int ret = 0;
+> +
+> +	if (!rproc->cdev_put_on_release)
+> +		return 0;
 >  
-> -	if (dev->msi_enabled)
-> -		pci_disable_msi(dev);
-> -	if (dev->msix_enabled)
-> -		pci_disable_msix(dev);
-> +	pci_free_irq_vectors(dev);
+> -	if (rproc->cdev_put_on_release && rproc->state == RPROC_RUNNING)
+> +	if (rproc->state == RPROC_RUNNING)
+>  		rproc_shutdown(rproc);
+> +	else if (rproc->state == RPROC_ATTACHED)
+> +		ret = rproc_detach(rproc);
 >  
->  	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++)
->  		if (this->region_mask & (1 << i))
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 86c799c97b77..5cafd7d65fd7 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -1818,6 +1818,30 @@ pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
->  					      NULL);
+> -	return 0;
+> +	return ret;
 >  }
 >  
-> +/**
-> + * pcim_alloc_irq_vectors - a device-managed pci_alloc_irq_vectors()
-> + * @dev:		PCI device to operate on
-> + * @min_vecs:		minimum number of vectors required (must be >= 1)
-> + * @max_vecs:		maximum (desired) number of vectors
-> + * @flags:		flags or quirks for the allocation
-> + *
-> + * Return the number of vectors allocated, (which might be smaller than
-> + * @max_vecs) if successful, or a negative error code on error. If less
-> + * than @min_vecs interrupt vectors are available for @dev the function
-> + * will fail with -ENOSPC.
-> + *
-> + * It depends on calling pcim_enable_device() to make IRQ resources
-> + * manageable.
-> + */
-> +static inline int
-> +pcim_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
-> +			unsigned int max_vecs, unsigned int flags)
-> +{
-> +	if (!pci_is_managed(dev))
-> +		return -EINVAL;
-> +	return pci_alloc_irq_vectors(dev, min_vecs, max_vecs, flags);
-> +}
+>  static const struct file_operations rproc_fops = {
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 00452da25fba..a05d5fec43b1 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -2542,11 +2542,16 @@ EXPORT_SYMBOL(rproc_put);
+>   */
+>  int rproc_del(struct rproc *rproc)
+>  {
+> +	int ret = 0;
 > +
->  /* Include architecture-dependent settings and functions */
+>  	if (!rproc)
+>  		return -EINVAL;
 >  
->  #include <asm/pci.h>
-> -- 
-> 2.25.0
+>  	/* TODO: make sure this works with rproc->power > 1 */
+> -	rproc_shutdown(rproc);
+> +	if (rproc->state == RPROC_RUNNING)
+> +		rproc_shutdown(rproc);
+> +	else if (rproc->state == RPROC_ATTACHED)
+> +		ret = rproc_detach(rproc);
+
+Here i would not update the code to not change the existing behavior of an
+attached firmware.
+The decision between a detach or a shutdown probably depends on platform.
+We could (as a next step) reintroduce the "autonomous-on-core-reboot" DT
+property for the decision.
+
+Regards
+Arnaud
+
+>  
+>  	mutex_lock(&rproc->lock);
+>  	rproc->state = RPROC_DELETED;
+> @@ -2565,7 +2570,7 @@ int rproc_del(struct rproc *rproc)
+>  
+>  	device_del(&rproc->dev);
+>  
+> -	return 0;
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL(rproc_del);
+>  
 > 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
