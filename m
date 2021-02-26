@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A04326177
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3E032617A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhBZKkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:40:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50582 "EHLO mail.kernel.org"
+        id S231153AbhBZKk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:40:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231153AbhBZKjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:39:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 871D464EF3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 10:39:03 +0000 (UTC)
+        id S230225AbhBZKky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:40:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FF0C64EFA;
+        Fri, 26 Feb 2021 10:40:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614335943;
-        bh=sYJ82XkX6uFJ+iJIFDN5aR1JbVOg/WJlNAEEYcCgjMA=;
+        s=k20201202; t=1614336013;
+        bh=qtsNbxlwWusja+8qgfUIhAWUqV+NaDdmvSMT4ORU/CQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=n6onfYU9vCg57SaCDOPi3yFuU65Ht42R5kK7rRW/O939b+dO8zjwQRho5ER+4xsOA
-         U8okrD3GwZozb5tT9cWYpZm2Mt7tUb14NF1XGYfXEr6WlCiiPlVttaofa4Y/CCIXmP
-         6qUbxX6XCoGCF1hnCwEa1rU8wu2uV1OSplysdUEau9YksP4q8quRnxPJy4ZQ9Nikjc
-         CnUr14pARyMTa73K0HRqsSfdv0fyOYBpeJu9q3tlV1GS+biaZ6qIf0C3z8+MQLF4jT
-         wTm0Eb/ns+0+V291Y7e2Fpta5942w8T2MFqZoiu5SWUQwGot8R96zZHiFvpLeLv0sZ
-         YoR8CoOJnHN4g==
-Received: by mail-oi1-f169.google.com with SMTP id j1so9289227oiw.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 02:39:03 -0800 (PST)
-X-Gm-Message-State: AOAM533tPBoIh4ffkbje3wiNJ1ZbvaLozgtLzp5g50zlBVYDvjQSqf72
-        Cxeh6RsvA9tfDsomE66qeOcxg9x0FvgT12ZLq5I=
-X-Google-Smtp-Source: ABdhPJwo+uI8OmcHVl56p139qDmQbi6AFQkG6a29WvyDMkD/gBVZO8CnUjA4Ef6lR70h+0/+4etB0XeUgE+FptO95Ag=
-X-Received: by 2002:aca:4a47:: with SMTP id x68mr1478742oia.67.1614335942813;
- Fri, 26 Feb 2021 02:39:02 -0800 (PST)
+        b=GBkGz5QJPyHmuazztCt0WheomivNVsz6a+EE6GjVbz7QUGYOl/8tu8D6GSm3l5CfX
+         MmrOTKLmeAUMq3Avcl4vZzY4kr1sbXasCvKE+jK54PsKtftTikuFfG5n78a5sobKfK
+         mCiM+RA4eQ1U2KKuZFIE1m4hLicsMpN9EPVW0F/YZbXk2MkHYCwAiXZfFdmlVboZlo
+         +n0gRZN+6cxq1OVc2KuUN5r/kYAJIrFGMmmQkpgIx6khPvY9X7ka1kiEvYqJFj2t1o
+         njJbGZbGDhKBYatcAAtHyX462FnRRj8pi49OWTqPLFHHvVjjsbUkh/GLkVabtOlPPU
+         P1UaQKYPZlVHw==
+Received: by mail-ed1-f54.google.com with SMTP id g3so10322678edb.11;
+        Fri, 26 Feb 2021 02:40:13 -0800 (PST)
+X-Gm-Message-State: AOAM530ZCrBtaqPeGeNmQ1NRnDODpJCiZy2/rN22V/qcfGtYhejPwaAq
+        CmTi5g2HwRgGSMhTiHKBX6RpWBuKQA6Xoaj6qcc=
+X-Google-Smtp-Source: ABdhPJzvD8qfYZQ8TNla0DO68ZCxCgmWQRYQNKcyGlyFWTS+CWctTyBGxzSdI/WIW1/CYu1f+fWhUXC4nN3dS3NOMEE=
+X-Received: by 2002:a05:6402:d05:: with SMTP id eb5mr2500229edb.143.1614336012091;
+ Fri, 26 Feb 2021 02:40:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20210226092236.99369-1-luc.vanoostenryck@gmail.com>
-In-Reply-To: <20210226092236.99369-1-luc.vanoostenryck@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 26 Feb 2021 11:38:46 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a07tzCBO-eXy9eZ7yxaddRFiMn4+xPqLC64vKWw+QLCBg@mail.gmail.com>
-Message-ID: <CAK8P3a07tzCBO-eXy9eZ7yxaddRFiMn4+xPqLC64vKWw+QLCBg@mail.gmail.com>
-Subject: Re: [PATCH] sparse: can do constant folding of __builtin_bswap*()
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+References: <20210216222538.6427-1-marten.lindahl@axis.com> <20210226103407.GF1014@ninjato>
+In-Reply-To: <20210226103407.GF1014@ninjato>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 26 Feb 2021 11:40:00 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPcx5a7m0ChqA8BimK=JhnzSgm0cx07RhSu+P8D-2YsfWw@mail.gmail.com>
+Message-ID: <CAJKOXPcx5a7m0ChqA8BimK=JhnzSgm0cx07RhSu+P8D-2YsfWw@mail.gmail.com>
+Subject: Re: [PATCH v2] i2c: exynos5: Preserve high speed master code
+To:     Wolfram Sang <wsa@kernel.org>
+Cc:     =?UTF-8?Q?M=C3=A5rten_Lindahl?= <marten.lindahl@axis.com>,
+        kernel@axis.com,
+        =?UTF-8?Q?M=C3=A5rten_Lindahl?= <martenli@axis.com>,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 10:22 AM Luc Van Oostenryck
-<luc.vanoostenryck@gmail.com> wrote:
+On Fri, 26 Feb 2021 at 11:34, Wolfram Sang <wsa@kernel.org> wrote:
 >
-> Sparse can do constant folding of __builtin_bswap*() since 2017.
-> Also, a much recent version of Sparse is needed anyway, see
-> commit 6ec4476ac825 ("Raise gcc version requirement to 4.9").
+> On Tue, Feb 16, 2021 at 11:25:38PM +0100, M=C3=A5rten Lindahl wrote:
+> > From: M=C3=A5rten Lindahl <martenli@axis.com>
+> >
+> > When the driver starts to send a message with the MASTER_ID field
+> > set (high speed), the whole I2C_ADDR register is overwritten including
+> > MASTER_ID as the SLV_ADDR_MAS field is set.
+> >
+> > This patch preserves already written fields in I2C_ADDR when writing
+> > SLV_ADDR_MAS.
+> >
+> > Signed-off-by: M=C3=A5rten Lindahl <martenli@axis.com>
 >
-> So, remove the comment about sparse not being yet able to constant
-> fold __builtin_bswap*() and remove the corresponding test of __CHECKER__.
->
-> Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+> Looks good. Is there a Fixes-tag we could apply?
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+The first commit, 2013 :)
+Fixes: 8a73cd4cfa15 ("i2c: exynos5: add High Speed I2C controller driver")
+
+Best regards,
+Krzysztof
