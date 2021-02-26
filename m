@@ -2,132 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E9F325EBA
+	by mail.lfdr.de (Postfix) with ESMTP id C9362325EBB
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:15:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhBZIOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:14:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhBZIOV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:14:21 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A1BC06174A;
-        Fri, 26 Feb 2021 00:13:41 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id m22so12620112lfg.5;
-        Fri, 26 Feb 2021 00:13:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OqJt217dC4T+T87HRrDiZ5UQcEroafziB7c4ElX1J0M=;
-        b=tIF8ucVjW2Xt3YkCytPne8zyP2LJ+O5VNs5QU81NzM3+MvPsnJQMMiRur3kkJ2S8CW
-         ljEbo3xtThUyZwLUZwWgq+CrEq6Cozz10w/JyM2luu/USjNqt9esfBYFEoMYUiiV8Kk1
-         PWxs63jopYA96hE63AeY2wS51Yy78HLGFWLfy2y4QIp10udGB691Xd8yppahnT6ed0GN
-         nzA58NpsG8mzczle5ViMLhS8otiUZx3fC78btPjbbzxx4LZPF8N8rm+G1yqlDB0DV3rG
-         lBuf80gRpkfKmB1ar4WGSZua6XtL7X3dFf3pGlTMbZQJCAhk6qgRI/13EkQ1CJw5S4FF
-         ClEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OqJt217dC4T+T87HRrDiZ5UQcEroafziB7c4ElX1J0M=;
-        b=Zi4JGcSWUrDcNXTZWk2mZ8ZzwX8X3xRGfm1Y7UCVP/ZYFiZGoCjdHEh4jARs6wwioA
-         mY12sXV99R6enMGv+CINAX3m4DEINCvPBPPSDgTcHmeKulKbjT39h78uLFlvu/TXEk3L
-         pPVG57UJkMrUEsSaJSKumjeyiU8bnQNkQuvJCqhdQ+pSB9/PQCPXv8TaRl0iDRJM+mvk
-         LM+DWXU48csukNqfp1lV91ztGr+YGQOrhL3G1bmu4OqNl3eM1kTck6+bsNwjlV7DYGZU
-         cR3q0NtXc7yijrm1GycHpRuCkrJnSk2HQeBaGzWTYnfZrzqkmYIWNsIWVUW4ro6zCM89
-         p0bQ==
-X-Gm-Message-State: AOAM530idOf/WBk9fzF/qFgboM54B/EaaSshAgUarYo34MQXziPruQGT
-        Vk+h55kq+F8IhZqXPF9b4rc=
-X-Google-Smtp-Source: ABdhPJzVIvesm/SKXS6n7c+2q1ZolirgWPlRr/48kUDI75daMKmMI7nO44d3GOoRM3ZGc6tzsQv/gg==
-X-Received: by 2002:a19:858b:: with SMTP id h133mr1133474lfd.86.1614327219701;
-        Fri, 26 Feb 2021 00:13:39 -0800 (PST)
-Received: from localhost.localdomain ([146.158.65.224])
-        by smtp.googlemail.com with ESMTPSA id w6sm1305128lfn.136.2021.02.26.00.13.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 00:13:39 -0800 (PST)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     stern@rowland.harvard.edu
-Cc:     benjamin.tissoires@redhat.com, jikos@kernel.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, snovitoll@gmail.com,
-        syzbot+ab02336a647181a886a6@syzkaller.appspotmail.com
-Subject: Re: [PATCH] drivers/hid: fix for the big hid report length
-Date:   Fri, 26 Feb 2021 14:13:36 +0600
-Message-Id: <20210226081336.3475085-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210225155914.GA1350993@rowland.harvard.edu>
-References: <20210225155914.GA1350993@rowland.harvard.edu>
+        id S229989AbhBZIPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:15:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229482AbhBZIPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 03:15:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7190664EE4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 08:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614327266;
+        bh=Eo2tKPNmvmbEpnYKsR3W4TzcmK2bAwkJr9OFxHhNTPA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=n9feerzoyPz2GZ1ZWK1yrvTGwB6yEs646LEEIwgf7C/AxiSw1HkJ1UDS5DTSU0HaK
+         NCEi76biGLZq5PjDczGLDUlR7SS8FIkYe9iMBhaFws0nHm0zqpl1G+NZIyd7sE3jrJ
+         AaBUM0fFJX7gyDd8VLBJj3w+NTejzSr0+sshpbmViDOyvorzt5+QeL4PMYnfeUEDcf
+         tYq6O0Exx8b0A8jSP36lVis0LRaxGCR2l/1qRqY1tKXx19wxa2LQvHdRcms1Q/5Tgr
+         tkScCnD7bSzEa7OeB8kUsp9STZtsg/pHAH3NB51aFPpksHpjFGIC7A2/FTqkk3M4Vt
+         s0kyF7vWlYF4Q==
+Received: by mail-oi1-f176.google.com with SMTP id d20so8933944oiw.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:14:26 -0800 (PST)
+X-Gm-Message-State: AOAM5323JYA6G7ACulX377qr4aKZ1PjFNylGWUMFwsql3uJvTCSYRpnl
+        d/54TXPw8jB5ssHeD3y481bhCZnEeIWtmLEQS/4=
+X-Google-Smtp-Source: ABdhPJzKfPEDoJuQo8Zs6R2bVcnz5F6nl0/rf60VZJ1iVoxVaQpBMnDHAU0IhDLZCa06jnEc6nzP5E4WZDvA54/7xEg=
+X-Received: by 2002:aca:4a47:: with SMTP id x68mr1202138oia.67.1614327265563;
+ Fri, 26 Feb 2021 00:14:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210225112122.2198845-1-arnd@kernel.org> <CA+icZUUDnKBxkfgOVYDdpA29GnLUTT22mqRNyxQeYmay044ejg@mail.gmail.com>
+In-Reply-To: <CA+icZUUDnKBxkfgOVYDdpA29GnLUTT22mqRNyxQeYmay044ejg@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 26 Feb 2021 09:14:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1QmS6g3cHTR93wWPkKs8vaP6RJEb8nZbTMLX+xphLJRw@mail.gmail.com>
+Message-ID: <CAK8P3a1QmS6g3cHTR93wWPkKs8vaP6RJEb8nZbTMLX+xphLJRw@mail.gmail.com>
+Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andrew Scull <ascull@google.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 10:59:14 -0500, Alan Stern wrote:
-> Won't this cause silent errors?
+On Fri, Feb 26, 2021 at 1:36 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Thu, Feb 25, 2021 at 12:21 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> >
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > When looking at kernel size optimizations, I found that arm64
+> > does not currently support HAVE_LD_DEAD_CODE_DATA_ELIMINATION,
+> > which enables the --gc-sections flag to the linker.
+> >
+> > I see that for a defconfig build with llvm, there are some
+> > notable improvements from enabling this, in particular when
+> > combined with the recently added CONFIG_LTO_CLANG_THIN
+> > and CONFIG_TRIM_UNUSED_KSYMS:
+> >
+> >    text    data     bss     dec     hex filename
+> > 16570322 10998617 506468 28075407 1ac658f defconfig/vmlinux
+> > 16318793 10569913 506468 27395174 1a20466 trim_defconfig/vmlinux
+> > 16281234 10984848 504291 27770373 1a7be05 gc_defconfig/vmlinux
+> > 16029705 10556880 504355 27090940 19d5ffc gc+trim_defconfig/vmlinux
+> > 17040142 11102945 504196 28647283 1b51f73 thinlto_defconfig/vmlinux
+> > 16788613 10663201 504196 27956010 1aa932a thinlto+trim_defconfig/vmlinux
+> > 16347062 11043384 502499 27892945 1a99cd1 gc+thinlto_defconfig/vmlinux
+> > 15759453 10532792 502395 26794640 198da90 gc+thinlto+trim_defconfig/vmlinux
+> >
+>
+> Thanks for the numbers.
+> Does CONFIG_TRIM_UNUSED_KSYMS=y have an impact to the build-time (and
+> disc-usage - negative way means longer/bigger)?
+> Do you have any build-time for the above numbers?
 
-Agree. But there are already such as cases like in:
+They are in the mailing list archive I linked to:
 
-// net/bluetooth/hidp/core.c
-static void hidp_process_report(..)
-{
-	..
-	if (len > HID_MAX_BUFFER_SIZE)
-		len = HID_MAX_BUFFER_SIZE;
-	..
+==== defconfig ====
+     332.001786355 seconds time elapsed
+    8599.464163000 seconds user
+     676.919635000 seconds sys
+==== trim_defconfig ====
+     448.378576012 seconds time elapsed
+   10735.489271000 seconds user
+     964.006504000 seconds sys
+==== gc_defconfig ====
+     324.347492236 seconds time elapsed
+    8465.785800000 seconds user
+     614.899797000 seconds sys
+==== gc+trim_defconfig ====
+     429.188875620 seconds time elapsed
+   10203.759658000 seconds user
+     871.307973000 seconds sys
+==== thinlto_defconfig ====
+     389.793540200 seconds time elapsed
+    9491.665320000 seconds user
+     664.858109000 seconds sys
+==== thinlto+trim_defconfig ====
+     580.431820561 seconds time elapsed
+   11429.515538000 seconds user
+    1056.985745000 seconds sys
+==== gc+thinlto_defconfig ====
+     389.484364525 seconds time elapsed
+    9473.831980000 seconds user
+     675.057675000 seconds sys
+==== gc+thinlto+trim_defconfig ====
+     580.824912807 seconds time elapsed
+   11433.650337000 seconds user
+    1049.845569000 seconds sys
 
-// drivers/hid/hid-core.c
-int hid_report_raw_event(..)
-{
-	..
-	rsize = hid_compute_report_size(report);
+So HAVE_LD_DEAD_CODE_DATA_ELIMINATION is a small improvement
+on build time (since it can spend less time linking), while
+CONFIG_TRIM_UNUSED_KSYMS slows it down quite a bit. Combining
+CONFIG_TRIM_UNUSED_KSYMS with CONFIG_THINLTO is really
+slow because here most of the time is spent in the final link (especially
+when you have many CPU cores to do the earlier bits quickly), but then
+it does the link twice.
 
-	if (report_enum->numbered && rsize >= HID_MAX_BUFFER_SIZE)
-		rsize = HID_MAX_BUFFER_SIZE - 1;
-	else if (rsize > HID_MAX_BUFFER_SIZE)
-		rsize = HID_MAX_BUFFER_SIZE;
-	..
+> BTW, is CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y setable for x86 (64bit)?
+> ( Did not look or check for it. )
 
-// drivers/staging/greybus/hid.c
-static int gb_hid_start(..)
-{
-	..
-	if (bufsize > HID_MAX_BUFFER_SIZE)
-		bufsize = HID_MAX_BUFFER_SIZE;
-	..
+No, in mainline, HAVE_LD_DEAD_CODE_DATA_ELIMINATION is currently
+only selected on MIPS and PowerPC. I only sent experimental patches to
+enable it on arm64 and m68k, but have not tried booting them. If you
+select the symbol on x86, you should see similar results.
 
-> How about instead just rejecting any device which includes a report 
-> whose length is too big (along with an line in the system log explaining 
-> what's wrong)?
-
-Not everywhere, but there are already such as logs when > HID_MAX_BUFFER_SIZE
-
-// drivers/hid/hidraw.c
-static ssize_t hidraw_send_report(..)
-{
-	..
-	if (count > HID_MAX_BUFFER_SIZE) {
-		hid_warn(dev, "pid %d passed too large report\n",
-			 task_pid_nr(current));
-		ret = -EINVAL;
-		goto out;
-	}
-
-
-I've just noticed that hid_compute_report_size() doing the same thing as
-hid_report_len(). So I will replace it with latter one with length check.
-
-So in [PATCH v2] I will do following:
-
- 1. replace hid_compute_report_size() with hid_report_len()
-
- 2. in hid_report_len() we can hid_warn() if length > HID_MAX_BUFFER_SIZE,
-and return HID_MAX_BUFFER_SIZE. Or we can return 0 in hid_report_len() to let
-functions like hid_hw_raw_request(), hid_hw_output_report() to validate
-invalid report length and return -EINVAL. Though I'll need to add !length
-missing checks in other places.
-
-Please let me know what it's preferred way in 2nd step.
+       Arnd
