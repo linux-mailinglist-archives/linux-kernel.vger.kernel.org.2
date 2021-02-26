@@ -2,60 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD46D3269FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 23:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44EBF326A0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 23:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhBZWZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 17:25:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
+        id S230018AbhBZWfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 17:35:40 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:60924 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230018AbhBZWZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 17:25:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2C4F764F17;
-        Fri, 26 Feb 2021 22:24:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614378256;
-        bh=JgTnQbtD4JFxeMKljzCUrIEaZf7ZvFJBNU5GLQawZAE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Jtw3KeghhjHNPjmKiEE59/aWLC2AzL9LfF4yZAmzk+/BJ/SirxHHIQvMThkjckA9R
-         nMsl+iZWwu3wHlcGYy7ybcto4Onf5gHkyNFKZHx9PjWbqFklpjWIsEjkLbELAXglgq
-         +uf9+yXN4e50x/8ke9a+uUo7I+VE1kzbbBTvriPHnLkwIXJDtqOr7fS6OIqhEESbjM
-         09SyS9c8E+DBfqpK1uqtZeBOyLvbvwmYd80YYEDVztpqyfS87Jjuqb1hzrWhYbSqTR
-         Y2DcaZwbwCHafVtN0mP4H+ozt5NgTrWgUAXXNsDpnA9kNQ+fzSG/X7Me1mrM9XBApr
-         HLFumcetL4Bjg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 25DD560A0E;
-        Fri, 26 Feb 2021 22:24:16 +0000 (UTC)
-Subject: Re: [GIT PULL] OpenRISC updates for 5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210226215619.GC365039@lianli.shorne-pla.net>
-References: <20210226215619.GC365039@lianli.shorne-pla.net>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210226215619.GC365039@lianli.shorne-pla.net>
-X-PR-Tracked-Remote: git@github.com:openrisc/linux.git tags/for-linus
-X-PR-Tracked-Commit-Id: 8f722f67452f4b28cd8d7acf1658daa5796437c2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a3905af5be36b9aa9f17657a02eeb2a08e939c13
-Message-Id: <161437825614.23821.17989905886733438519.pr-tracker-bot@kernel.org>
-Date:   Fri, 26 Feb 2021 22:24:16 +0000
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Openrisc <openrisc@lists.librecores.org>
+        id S229795AbhBZWfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 17:35:34 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lFlh1-008fcg-S9; Fri, 26 Feb 2021 23:34:39 +0100
+Date:   Fri, 26 Feb 2021 23:34:39 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     arndb@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, brandon_chuang@edge-core.com,
+        wally_wang@accton.com, aken_liu@edge-core.com, gulv@microsoft.com,
+        jolevequ@microsoft.com, xinxliu@microsoft.com,
+        netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YDl3f8MNWdZWeOBh@lunn.ch>
+References: <20210215193821.3345-1-don@thebollingers.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215193821.3345-1-don@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 27 Feb 2021 06:56:19 +0900:
+On Mon, Feb 15, 2021 at 11:38:21AM -0800, Don Bollinger wrote:
+> optoe is an i2c based driver that supports read/write access to all
+> the pages (tables) of MSA standard SFP and similar devices (conforming
+> to the SFF-8472 spec), MSA standard QSFP and similar devices (conforming
+> to the SFF-8636 spec) and CMIS and similar devices (conforming to the
+> Common Management Interface Specfication).
 
-> git@github.com:openrisc/linux.git tags/for-linus
+Hi Don
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a3905af5be36b9aa9f17657a02eeb2a08e939c13
+Please make sure you Cc: netdev. This is networking stuff.
 
-Thank you!
+And we have seen this code before, and the netdev Maintainers have
+argued against it before.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> These devices provide identification, operational status and control
+> registers via an EEPROM model.  These devices support one or 3 fixed pages
+> (128 bytes) of data, and one page that is selected via a page register on
+> the first fixed page.  Thus the driver's main task is to map these pages
+> onto a simple linear address space for user space management applications.
+> See the driver code for a detailed layout.
+
+I assume you have seen the work NVIDIA submitted last week? This idea
+of linear pages is really restrictive and we are moving away from it.
+
+> The EEPROM data is accessible to user space and kernel consumers via the
+> nvmem interface.
+
+ethtool -m ?
+
+In the past, this code has been NACKed because it does not integrate
+into the networking stack. Is this attempt any different?
+
+Thanks
+	Andrew
