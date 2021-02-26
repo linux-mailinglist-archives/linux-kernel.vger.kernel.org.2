@@ -2,156 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47247326551
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE72326554
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhBZQN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:13:58 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33042 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229566AbhBZQNx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:13:53 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QG4imG095183;
-        Fri, 26 Feb 2021 11:12:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=zOkPsoMZ6RMzq/KFXTwBxweXFDIsf9ZjL3lIr22Id/Q=;
- b=m1ZsyrjCnrwANQ807oEzqd/ChrGy5YO7tiizEiqbqDAY414j/nLCULMmxp+pL+T5ZV1J
- NQtDvI21/gwjwsWikOchBaQAXdP3EmXoVOqUPJW0z54skgRLBOtTAt+FTRPTOp1XhE3n
- 1gziEYkNIDUXc0gSfbxLzraC1GW8Z+IvkScsH7E0g1TihdBFJSJOqGoR/rtWpuK9VsbL
- 4DTAyhEj/cW9deAzkbmTlT3nM/aCnbJXal2f7JPwZIx7CvBYER3IlobJ3ktRYwUgwqHw
- rb9/udpRUObyLzmCzor+FvQMLwy5mGj/vSwUgRJJYHVW3P7v7EhqLBZAchgqLnGt/e+O eA== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36y02t0wb6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 11:12:53 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11QG4XVI017456;
-        Fri, 26 Feb 2021 16:12:51 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 36y30wr13j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 16:12:51 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11QGCZH425297284
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 16:12:35 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5ABEDAE051;
-        Fri, 26 Feb 2021 16:12:48 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D5570AE055;
-        Fri, 26 Feb 2021 16:12:47 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.23.180])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 26 Feb 2021 16:12:47 +0000 (GMT)
-Date:   Fri, 26 Feb 2021 17:12:46 +0100
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>
-Subject: Re: Freeing page tables through RCU
-Message-ID: <20210226171246.4afba7e9@thinkpad>
-In-Reply-To: <20210225205820.GC2858050@casper.infradead.org>
-References: <20210225205820.GC2858050@casper.infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S230053AbhBZQOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:14:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229566AbhBZQOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 11:14:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D82F264EBA;
+        Fri, 26 Feb 2021 16:13:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614356040;
+        bh=XIYrnMST0eMIO+QkazWoUPYEIVztH0rO3bxVtBoKcGM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pVbRmK1P0SrkCAhMPI5Wc6XGKamcCKljWz4QVOv+w39Np5W4Mxsg/nzsvg8GCZC2E
+         XrK+NZrNvmbu+8KTlc/FSddgXyJKyqUUW/5t4OTD0int0BCUkm6Z4lgecLVzjbi+0x
+         6cs3d4o73afRixsOz40/WIWsKIA2K4W0OXH0H9c0wQloPI2HK/dU0JvA87Dcjt7GZp
+         jzM119ZW21V1FPLL14hIYeCGmRVuFH2BJWsqCJwperT0JdL/8GoqpPLYa/2UUzANF9
+         N5aNyOVHdGKy7K8jW1mel0HIPuiGp1LfL1tOFkIq7tMn28hzBoUiSDv0MrcVKTM8lV
+         bnq30z8f48CSA==
+Date:   Sat, 27 Feb 2021 01:13:55 +0900
+From:   Keith Busch <kbusch@kernel.org>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Daniel Wagner <dwagner@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
+ it
+Message-ID: <20210226161355.GG31593@redsun51.ssa.fujisawa.hgst.com>
+References: <20210212181738.79274-1-dwagner@suse.de>
+ <c3a682d3-58f7-f5cc-caaa-75c36ca464e2@grimberg.me>
+ <20210212210929.GA3851@redsun51.ssa.fujisawa.hgst.com>
+ <ddf87227-1ad3-b8be-23ba-460433f70a85@grimberg.me>
+ <73e4914e-f867-c899-954d-4b61ae2b4c33@suse.de>
+ <20210215104020.yyithlo2hkxqvguj@beryllium.lan>
+ <a2064070-b511-ba6d-bd64-0b3abc208356@grimberg.me>
+ <20210226123534.4oovbzk4wrnfjp64@beryllium.lan>
+ <9e209b12-3771-cdca-2c9d-50451061bd2a@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-26_05:2021-02-26,2021-02-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- mlxscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0
- adultscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102260119
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9e209b12-3771-cdca-2c9d-50451061bd2a@suse.de>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 20:58:20 +0000
-Matthew Wilcox <willy@infradead.org> wrote:
-
-> In order to walk the page tables without the mmap semaphore, it must
-> be possible to prevent them from being freed and reused (eg if munmap()
-> races with viewing /proc/$pid/smaps).
+On Fri, Feb 26, 2021 at 01:54:00PM +0100, Hannes Reinecke wrote:
+> On 2/26/21 1:35 PM, Daniel Wagner wrote:
+> > On Mon, Feb 15, 2021 at 01:29:45PM -0800, Sagi Grimberg wrote:
+> > > Well, I think we should probably figure out why that is happening first.
+> > 
+> > I got my hands on a tcpdump trace. I've trimmed it to this:
+> > 
+> > 
+> > No.     Time           Source                Destination           Protocol Length Info
+> >        1 0.000000       10.228.194.30         10.228.38.214         NVMe     138    NVMe Write
+> >        2 0.000285       10.228.38.214         10.228.194.30         NVMe/TCP 90     Ready To Transfer
+> >        3 0.000591       10.228.194.30         10.228.38.214         NVMe     4186   NVMe Write: Data
+> >        4 0.000673       10.228.38.214         10.228.194.30         TCP      66     4420 → 58535 [ACK] Seq=25 Ack=4193 Win=241 Len=0 TSval=2655324576 TSecr=1497295579
+> >        5 0.002140       10.228.38.214         10.228.194.30         NVMe     90     NVMe Write: Response
+> >        6 0.002511       10.228.194.30         10.228.38.175         NVMe     138    NVMe Write
+> >        7 0.002812       10.228.38.175         10.228.194.30         NVMe/TCP 90     Ready To Transfer
+> >        8 0.003006       10.228.194.30         10.228.38.175         NVMe     4186   NVMe Write: Data
+> >        9 0.003098       10.228.38.175         10.228.194.30         TCP      66     4420 → 51241 [ACK] Seq=25 Ack=4193 Win=241 Len=0 TSval=2183410196 TSecr=3601034207
+> >       10 0.004420       10.228.38.175         10.228.194.30         NVMe     90     NVMe Write: Response
+> >       11 0.004890       10.228.38.214         10.228.194.30         NVMe/TCP 90
+> >       12 0.004969       10.228.38.175         10.228.194.30         NVMe/TCP 90
+> > 
+> > 
+> > The last few seconds contain only normal writes and suddenly the host
+> > receives two invalid packets. From what I see the host doesn't misbehave
+> > at all. I wonder if it would be possible to detect the invalid packet by
+> > locking at the PDU header only. If this would be possible we could
+> > discard it early and do not try to use the invalid command id.
+> > 
+> > Here the last two packets with details:
+> > 
+> > 
+> > No.     Time           Source                Destination           Protocol Length Info
+> >       11 0.004890       10.228.38.214         10.228.194.30         NVMe/TCP 90
+> > 
+> > Frame 11: 90 bytes on wire (720 bits), 90 bytes captured (720 bits)
+> >      Encapsulation type: Ethernet (1)
+> >      Arrival Time: Feb 23, 2021 18:16:08.780574000 CET
+> >      [Time shift for this packet: 0.000000000 seconds]
+> >      Epoch Time: 1614100568.780574000 seconds
+> >      [Time delta from previous captured frame: 0.000470000 seconds]
+> >      [Time delta from previous displayed frame: 0.000470000 seconds]
+> >      [Time since reference or first frame: 0.004890000 seconds]
+> >      Frame Number: 11
+> >      Frame Length: 90 bytes (720 bits)
+> >      Capture Length: 90 bytes (720 bits)
+> >      [Frame is marked: False]
+> >      [Frame is ignored: False]
+> >      [Protocols in frame: eth:ethertype:ip:tcp:nvme-tcp]
+> >      [Coloring Rule Name: TCP]
+> >      [Coloring Rule String: tcp]
+> > Ethernet II, Src: IntelCor_41:16:c0 (b4:96:91:41:16:c0), Dst: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
+> >      Destination: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
+> >          Address: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
+> >          .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+> >          .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+> >      Source: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
+> >          Address: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
+> >          .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+> >          .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+> >      Type: IPv4 (0x0800)
+> > Internet Protocol Version 4, Src: 10.228.38.214, Dst: 10.228.194.30
+> >      0100 .... = Version: 4
+> >      .... 0101 = Header Length: 20 bytes (5)
+> >      Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+> >          0000 00.. = Differentiated Services Codepoint: Default (0)
+> >          .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+> >      Total Length: 76
+> >      Identification: 0x0000 (0)
+> >      Flags: 0x40, Don't fragment
+> >          0... .... = Reserved bit: Not set
+> >          .1.. .... = Don't fragment: Set
+> >          ..0. .... = More fragments: Not set
+> >      Fragment Offset: 0
+> >      Time to Live: 64
+> >      Protocol: TCP (6)
+> >      Header Checksum: 0x0000 [validation disabled]
+> >      [Header checksum status: Unverified]
+> >      Source Address: 10.228.38.214
+> >      Destination Address: 10.228.194.30
+> > Transmission Control Protocol, Src Port: 4420, Dst Port: 46909, Seq: 1, Ack: 1, Len: 24
+> >      Source Port: 4420
+> >      Destination Port: 46909
+> >      [Stream index: 2]
+> >      [TCP Segment Len: 24]
+> >      Sequence Number: 1    (relative sequence number)
+> >      Sequence Number (raw): 4175488220
+> >      [Next Sequence Number: 25    (relative sequence number)]
+> >      Acknowledgment Number: 1    (relative ack number)
+> >      Acknowledgment number (raw): 2966903626
+> >      1000 .... = Header Length: 32 bytes (8)
+> >      Flags: 0x018 (PSH, ACK)
+> >          000. .... .... = Reserved: Not set
+> >          ...0 .... .... = Nonce: Not set
+> >          .... 0... .... = Congestion Window Reduced (CWR): Not set
+> >          .... .0.. .... = ECN-Echo: Not set
+> >          .... ..0. .... = Urgent: Not set
+> >          .... ...1 .... = Acknowledgment: Set
+> >          .... .... 1... = Push: Set
+> >          .... .... .0.. = Reset: Not set
+> >          .... .... ..0. = Syn: Not set
+> >          .... .... ...0 = Fin: Not set
+> >          [TCP Flags: ·······AP···]
+> >      Window: 257
+> >      [Calculated window size: 257]
+> >      [Window size scaling factor: -1 (unknown)]
+> >      Checksum: 0xfefa [unverified]
+> >      [Checksum Status: Unverified]
+> >      Urgent Pointer: 0
+> >      Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
+> >          TCP Option - No-Operation (NOP)
+> >              Kind: No-Operation (1)
+> >          TCP Option - No-Operation (NOP)
+> >              Kind: No-Operation (1)
+> >          TCP Option - Timestamps: TSval 4211986351, TSecr 1497291787
+> >              Kind: Time Stamp Option (8)
+> >              Length: 10
+> >              Timestamp value: 4211986351
+> >              Timestamp echo reply: 1497291787
+> >      [SEQ/ACK analysis]
+> >          [Bytes in flight: 24]
+> >          [Bytes sent since last PSH flag: 24]
+> >      [Timestamps]
+> >          [Time since first frame in this TCP stream: 0.000000000 seconds]
+> >          [Time since previous frame in this TCP stream: 0.000000000 seconds]
+> >      TCP payload (24 bytes)
+> >      [PDU Size: 24]
+> > NVM Express Fabrics TCP
+> >      Pdu Type: CapsuleResponse (5)
+> >      Pdu Specific Flags: 0x00
+> >          .... ...0 = PDU Header Digest: Not set
+> >          .... ..0. = PDU Data Digest: Not set
+> >          .... .0.. = PDU Data Last: Not set
+> >          .... 0... = PDU Data Success: Not set
+> >      Pdu Header Length: 24
+> >      Pdu Data Offset: 0
+> >      Packet Length: 24
+> >      Unknown Data: 02000400000000001c0000001f000000
+> > 
+> > 0000  00 00 0c 9f f5 a8 b4 96 91 41 16 c0 08 00 45 00   .........A....E.
+> > 0010  00 4c 00 00 40 00 40 06 00 00 0a e4 26 d6 0a e4   .L..@.@.....&...
+> > 0020  c2 1e 11 44 b7 3d f8 e0 e4 dc b0 d7 5b 4a 80 18   ...D.=......[J..
+> > 0030  01 01 fe fa 00 00 01 01 08 0a fb 0d cf af 59 3e   ..............Y>
+> > 0040  dc 0b 05 00 18 00 18 00 00 00 02 00 04 00 00 00   ................
+> > 0050  00 00 1c 00 00 00 1f 00 00 00                     ..........
+> > 
+> > No.     Time           Source                Destination           Protocol Length Info
+> >       12 0.004969       10.228.38.175         10.228.194.30         NVMe/TCP 90
+> > 
+> > Frame 12: 90 bytes on wire (720 bits), 90 bytes captured (720 bits)
+> >      Encapsulation type: Ethernet (1)
+> >      Arrival Time: Feb 23, 2021 18:16:08.780653000 CET
+> >      [Time shift for this packet: 0.000000000 seconds]
+> >      Epoch Time: 1614100568.780653000 seconds
+> >      [Time delta from previous captured frame: 0.000079000 seconds]
+> >      [Time delta from previous displayed frame: 0.000079000 seconds]
+> >      [Time since reference or first frame: 0.004969000 seconds]
+> >      Frame Number: 12
+> >      Frame Length: 90 bytes (720 bits)
+> >      Capture Length: 90 bytes (720 bits)
+> >      [Frame is marked: False]
+> >      [Frame is ignored: False]
+> >      [Protocols in frame: eth:ethertype:ip:tcp:nvme-tcp]
+> >      [Coloring Rule Name: TCP]
+> >      [Coloring Rule String: tcp]
+> > Ethernet II, Src: IntelCor_41:16:c0 (b4:96:91:41:16:c0), Dst: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
+> >      Destination: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
+> >          Address: Cisco_9f:f5:a8 (00:00:0c:9f:f5:a8)
+> >          .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+> >          .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+> >      Source: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
+> >          Address: IntelCor_41:16:c0 (b4:96:91:41:16:c0)
+> >          .... ..0. .... .... .... .... = LG bit: Globally unique address (factory default)
+> >          .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+> >      Type: IPv4 (0x0800)
+> > Internet Protocol Version 4, Src: 10.228.38.175, Dst: 10.228.194.30
+> >      0100 .... = Version: 4
+> >      .... 0101 = Header Length: 20 bytes (5)
+> >      Differentiated Services Field: 0x00 (DSCP: CS0, ECN: Not-ECT)
+> >          0000 00.. = Differentiated Services Codepoint: Default (0)
+> >          .... ..00 = Explicit Congestion Notification: Not ECN-Capable Transport (0)
+> >      Total Length: 76
+> >      Identification: 0x0000 (0)
+> >      Flags: 0x40, Don't fragment
+> >          0... .... = Reserved bit: Not set
+> >          .1.. .... = Don't fragment: Set
+> >          ..0. .... = More fragments: Not set
+> >      Fragment Offset: 0
+> >      Time to Live: 64
+> >      Protocol: TCP (6)
+> >      Header Checksum: 0x0000 [validation disabled]
+> >      [Header checksum status: Unverified]
+> >      Source Address: 10.228.38.175
+> >      Destination Address: 10.228.194.30
+> > Transmission Control Protocol, Src Port: 4420, Dst Port: 34895, Seq: 1, Ack: 1, Len: 24
+> >      Source Port: 4420
+> >      Destination Port: 34895
+> >      [Stream index: 3]
+> >      [TCP Segment Len: 24]
+> >      Sequence Number: 1    (relative sequence number)
+> >      Sequence Number (raw): 3092812012
+> >      [Next Sequence Number: 25    (relative sequence number)]
+> >      Acknowledgment Number: 1    (relative ack number)
+> >      Acknowledgment number (raw): 2384147181
+> >      1000 .... = Header Length: 32 bytes (8)
+> >      Flags: 0x018 (PSH, ACK)
+> >          000. .... .... = Reserved: Not set
+> >          ...0 .... .... = Nonce: Not set
+> >          .... 0... .... = Congestion Window Reduced (CWR): Not set
+> >          .... .0.. .... = ECN-Echo: Not set
+> >          .... ..0. .... = Urgent: Not set
+> >          .... ...1 .... = Acknowledgment: Set
+> >          .... .... 1... = Push: Set
+> >          .... .... .0.. = Reset: Not set
+> >          .... .... ..0. = Syn: Not set
+> >          .... .... ...0 = Fin: Not set
+> >          [TCP Flags: ·······AP···]
+> >      Window: 257
+> >      [Calculated window size: 257]
+> >      [Window size scaling factor: -1 (unknown)]
+> >      Checksum: 0xfed3 [unverified]
+> >      [Checksum Status: Unverified]
+> >      Urgent Pointer: 0
+> >      Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
+> >          TCP Option - No-Operation (NOP)
+> >              Kind: No-Operation (1)
+> >          TCP Option - No-Operation (NOP)
+> >              Kind: No-Operation (1)
+> >          TCP Option - Timestamps: TSval 3874335934, TSecr 3601030412
+> >              Kind: Time Stamp Option (8)
+> >              Length: 10
+> >              Timestamp value: 3874335934
+> >              Timestamp echo reply: 3601030412
+> >      [SEQ/ACK analysis]
+> >          [Bytes in flight: 24]
+> >          [Bytes sent since last PSH flag: 24]
+> >      [Timestamps]
+> >          [Time since first frame in this TCP stream: 0.000000000 seconds]
+> >          [Time since previous frame in this TCP stream: 0.000000000 seconds]
+> >      TCP payload (24 bytes)
+> >      [PDU Size: 24]
+> > NVM Express Fabrics TCP
+> >      Pdu Type: CapsuleResponse (5)
+> >      Pdu Specific Flags: 0x00
+> >          .... ...0 = PDU Header Digest: Not set
+> >          .... ..0. = PDU Data Digest: Not set
+> >          .... .0.. = PDU Data Last: Not set
+> >          .... 0... = PDU Data Success: Not set
+> >      Pdu Header Length: 24
+> >      Pdu Data Offset: 0
+> >      Packet Length: 24
+> >      Unknown Data: 02000400000000001b0000001f000000
+> > 
+> > 0000  00 00 0c 9f f5 a8 b4 96 91 41 16 c0 08 00 45 00   .........A....E.
+> > 0010  00 4c 00 00 40 00 40 06 00 00 0a e4 26 af 0a e4   .L..@.@.....&...
+> > 0020  c2 1e 11 44 88 4f b8 58 90 ec 8e 1b 32 ed 80 18   ...D.O.X....2...
+> > 0030  01 01 fe d3 00 00 01 01 08 0a e6 ed ac be d6 a3   ................
+> > 0040  5d 0c 05 00 18 00 18 00 00 00 02 00 04 00 00 00   ]...............
+> > 0050  00 00 1b 00 00 00 1f 00 00 00                     ..........
+> > 
+> As I suspected, we did receive an invalid frame.
+> Data digest would have saved us, but then it's not enabled.
 > 
-> There is various commentary within the mm on how to prevent this.  One way
-> is to disable interrupts, relying on that to block rcu_sched or IPIs.
-> I don't think the RT people are terribly happy about reading a proc file
-> disabling interrupts, and it doesn't work for architectures that free
-> page tables directly instead of batching them into an rcu_sched (because
-> the IPI may not be sent to this CPU if the task has never run on it).
-> 
-> See "Fast GUP" in mm/gup.c
-> 
-> Ideally, I'd like rcu_read_lock() to delay page table reuse.  This is
-> close to trivial for architectures which use entire pages or multiple
-> pages for levels of their page tables as we can use the rcu_head embedded
-> in struct page to queue the page for RCU.
-> 
-> s390 and powerpc are the only two architectures I know of that have
-> levels of their page table that are smaller than their PAGE_SIZE.
-> I'd like to discuss options.  There may be a complicated scheme that
-> allows partial pages to be freed via RCU, but I have something simpler
-> in mind.  For powerpc in particular, it can have a PAGE_SIZE of 64kB
-> and then the MMU wants to see 4kB entries in the PMD.  I suggest that
-> instead of allocating each 4kB entry individually, we allocate a 64kB
-> page and fill in 16 consecutive PMDs.  This could cost a bit more memory
-> (although if you've asked for a CONFIG_PAGE_SIZE of 64kB, you presumably
-> don't care too much about it), but it'll make future page faults cheaper
-> (as the PMDs will already be present, assuming you have good locality
-> of reference).
-> 
-> I'd like to hear better ideas than this.
+> So we do need to check if the request is valid before processing it.
 
-Some background on the situation for s390: The architecture defines
-an 8 bit pagetable index, so we have 256 entries in a 2 KB pagetable,
-but PAGE_SIZE is 4 KB. pte_alloc(_one) will use alloc_page() to allocate
-a full 4 KB page, and then do some housekeeping to maintain a per-mm list
-of such 4 KB pages, which will contain either one or two 2 KB pagetable
-fragments.
-
-This is also the reason why pgtable_t on s390 is not pointing to the
-struct page of the (4 KB) page containing a 2 KB pagetable fragment, but
-rather to the 2 KB pagetable itself.
-
-I see at least two issues here, with using rcu_head embedded in the
-struct page (for a 4 KB page):
-
-1) There might be two 2 KB pagetables present in that 4 KB page,
-and the rcu_head would affect both. Not sure if this would really be
-a problem, because we already have a similar situation with the split
-ptlock embedded in struct page, which also might lock two 2 KB pagetables,
-i.e. more than necessary. It still is far less "over-locking" than
-using mm->page_table_lock, and the move_pte() code e.g. takes care
-to avoid a deadlock if src and dst ptlocks happen to be on the
-same page.
-
-So, a similar "over-locking" might also be possible and acceptable
-for the rcu_head approach, but I do not really understand if that could
-have some deadlock or other unwanted side-effects.
-
-2) The "housekeeping" of our 2 KB pagetable fragments uses page->lru
-to maintain the per-mm list. It also (mis)uses page->_refcount to mark
-which 2 KB half is used/free, but that should not be an issue I guess.
-Using page->lru will be an issue though. IIUC, then page->rcu_head will
-overlay with page->lru, so using page->rcu_head for pagetable pages
-on s390 would conflict with our page->lru usage for such pagetable pages.
-
-I do not really see how that could be fixed, maybe we could find and
-re-use other struct page members for our 2 KB fragment list. Also, for
-kvm, there seem to be even more users of page->lru for pagetable pages,
-in arch/s390/mm/gmap.c. Not sure though if those would actually also
-affect "regular" pagetable walks, or if they are somehow independent.
-But if we'd find some new list home for the 2 KB fragments, then that
-could probably also be used for the gmap stuff.
+That's just addressing a symptom. You can't fully verify the request is
+valid this way because the host could have started the same command ID
+the very moment before the code checks it, incorrectly completing an
+in-flight command and getting data corruption.
