@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E86326776
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC6432678F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhBZTdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 14:33:40 -0500
-Received: from mail-dm6nam11on2132.outbound.protection.outlook.com ([40.107.223.132]:50208
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229545AbhBZTdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 14:33:36 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bU2ROT9Aso8+lHchjvd4j8+cwj51O9I1SclKMwcUl1NEAktmP9nBDs14fWlc3NoOHvlnmR0ow9RTFuHBPYEskqWxuWdOP9wPHwY2V7pAeP7hBi3j6oE555z3SPa/4pU+PXjVB5HePlwze825ceOzHNM1m7seqIcQkOkBJLJ7ZMhr3tqKqproy7HSxD4hJYRLqdKKkJz+Dw04g7KXEE2VOe5aLVPGt+MFzgZwM0hLc4+xVCgrlv+fah+be5L50BdHP7V29A9daZ7V9PfzLXmFT92clZLXMHqUuAQxXyg+K0AU55vRGIqzTaEVc+OKLN4j5lB+Ijo8gqNhyEAYBphmOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HLTRQFueVRhAB0K40qdJE/0p9R/1Wtk230ZcsqWFPQk=;
- b=gmUzY5g5OcgnE/v3c8ChInnAjVZKLkrcaGUD9EoK3uFOpJrhiOoqK2TRQh/xWfsH7LZiBulptbaJ/ovKeTPVPcEw57/SrFHMEnk62YMiNoy2O1HeuDZpENQbLrteib+K+qxgemi71CbwpVfVSgrMTHlKuRDgiqt5gSqubKsavBOohM8GuMZ8f9ftaxlE5Q/P74D4RZ8aGsGqfGhP5MDhqFn4/dsDvfCEn7ER91TZbBoeAr5EhCddNHcTVnBVgQWnVgFLt/KUP5m80IdqjF4gdFInqfk/Mj/1IF65viRfG1RKetZMh8BCfd7aG38LFP8zc96xVJRjpdbM6uMtm4N5wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=visionengravers.com; dmarc=pass action=none
- header.from=visionengravers.com; dkim=pass header.d=visionengravers.com;
- arc=none
-Received: from BYAPR01MB5621.prod.exchangelabs.com (2603:10b6:a03:118::32) by
- BY5PR01MB5779.prod.exchangelabs.com (2603:10b6:a03:1ce::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3890.19; Fri, 26 Feb 2021 19:32:42 +0000
-Received: from BYAPR01MB5621.prod.exchangelabs.com
- ([fe80::c4cc:6fb9:44da:e2dc]) by BYAPR01MB5621.prod.exchangelabs.com
- ([fe80::c4cc:6fb9:44da:e2dc%6]) with mapi id 15.20.3846.041; Fri, 26 Feb 2021
- 19:32:42 +0000
-From:   Hartley Sweeten <HartleyS@visionengravers.com>
-To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>
-CC:     "soc@kernel.org" <soc@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH] ARM: ep93xx: don't use clang IAS for crunch
-Thread-Topic: [PATCH] ARM: ep93xx: don't use clang IAS for crunch
-Thread-Index: AQHXDF6daAHoIbKUtEazeMb2p7+FnKpq0PYAgAABKaA=
-Date:   Fri, 26 Feb 2021 19:32:42 +0000
-Message-ID: <BYAPR01MB5621DC2003DA49EA64AD46A0D09D9@BYAPR01MB5621.prod.exchangelabs.com>
-References: <20210226164345.3889993-1-arnd@kernel.org>
- <141f3098744ea8d1cc39abcdce89c0e513bfbc70.camel@gmail.com>
-In-Reply-To: <141f3098744ea8d1cc39abcdce89c0e513bfbc70.camel@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=visionengravers.com;
-x-originating-ip: [63.230.248.205]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5adf1bbd-676a-416a-4dce-08d8da8d4915
-x-ms-traffictypediagnostic: BY5PR01MB5779:
-x-microsoft-antispam-prvs: <BY5PR01MB5779019AF9CF17B1E1AFECBED09D9@BY5PR01MB5779.prod.exchangelabs.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: BTCSu9be5eLB8ZVIFygNk4Juzma/ElYzCmn2x0tpFg/g5QQjarX9Q1Jd1ShkZ0ghyf8F47SsQTYghTTwRWNQ2LsVZnKCRBbMYmJUg9/uhj7nYQ+IxjsS+Ka7c2WZOre5YXrOy+S8rgm2tB1ZBXx/OGKTAh6qZkZxjEMMWBU6VVQFEX6SsAydR7WWU6p7UBzuRF+arql4PCCunb7smm6c5k5T+dQUo5nFSzPUqD+RDHuAOFcA7IFjetrnLRz44QpkVlnBliDLw2/DWoLosA4Yyp+SaQByd0BNAlPboChe6nv+h6hvlQW0t5PBY/JSB8HmIraUBLiTyu2ezaUQ0KRkTQBGNepoJHqLheQz3QdwpiCnsa9sWJb8c67wzvg+8iTy/nZzwEh5NdGncFFlv9JMgp+3l/fTvE+mt1UVfjbwuCoiT01w2m3FhXinlulqcRh5rmWgtcVlqR14YZSk1zIDraocNXrn2mLrl+qoWPvn6YlBCSBH10I7NCSw9TgA0yIXsjHbdgKFBWeZWGtdiI8esQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB5621.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(346002)(396003)(366004)(376002)(39840400004)(136003)(4326008)(110136005)(7696005)(7416002)(186003)(8676002)(66476007)(66946007)(5660300002)(8936002)(64756008)(33656002)(55016002)(76116006)(2906002)(54906003)(66556008)(66446008)(52536014)(316002)(478600001)(6506007)(53546011)(86362001)(71200400001)(26005)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?eGVGZFF3TmZCR0NrdkJjU0tkOEU0dEdsbE1TcnRVdlliRVcrdzdEb2xrVVdB?=
- =?utf-8?B?UzVtN0JwbkZmdjFuWlVnTkMrYktpc2t3Y3Q3b1FPZ3kxRFlKYVluL2MzYloy?=
- =?utf-8?B?WVA4QlVWTDZNc3dLelQyYTY5K3hiWHFENk52Rk5GbGE5M2FWRXVDL09YbXFk?=
- =?utf-8?B?K0dqQVlIQitwUzh6akRTRGxzRVlndEZCU3J3eDE0YkxRdTJTTDlkb2ZOMXRs?=
- =?utf-8?B?bjdXQkJMV3l5ckFuR3JhdVh4YUxmcE9Ya21iWHhXTzdiRFZ2OFd4UEVyaUVn?=
- =?utf-8?B?UFZCZmVaQjJHKzUrbmdIZTArZzAxSCtrLyt1QUIwNUNVZkQwZTErMTUyMkl5?=
- =?utf-8?B?TmdzMTJkSTBNUDlFbCs4TWFsWHVmaWNpQnBaMjdiYm9hb1ZhSjZNem9NSHFQ?=
- =?utf-8?B?ME9DcksrZ2Z6RDNGSGgrMXlBSHpoOHVydHFXOGVhbGNOcC9zbWhMa2ZCRldj?=
- =?utf-8?B?ZHB6L0xOcHlHeGZUYUJ2UjYxaCtIYlp4eUQwWUt0dmZBT2drUjBtMnhjQ2V6?=
- =?utf-8?B?WWNYSmVJR2ZKQzh0dDdMdWkzQU5UdjN0S05haGM2MGFnbktQYllBOE5DRzRS?=
- =?utf-8?B?bnJmaXNRTTA5UVFJaW5oWExWVHY5T1ZWTjltKy9XcUNjNnNyTGlmc2hUMGVV?=
- =?utf-8?B?MU9YS1hCQm53bVJKK2UxdFJWTVE3RUhsNzJwQlJYTURGWXRBR0RiZzJoQVRu?=
- =?utf-8?B?Y0NXYzRjTTd5YXRwMDNnV2NpZ0xGRHZBa0hzYjJrdVBtSzJSd1YvbFduNmFN?=
- =?utf-8?B?SUlLTC9FSVMreVF0ekg3czZsMUlGeXRGQlFhakY3QytNSUcyeDlkN2lwV20w?=
- =?utf-8?B?YjNza3RpRWtuMXpSbVQ0N29TTjN4THBob291cFRpdHVwQUNNcG0yT0tBWFQw?=
- =?utf-8?B?NlNtcFkxdzZWeitvUkV0UEoyeitsUFBnTkdSK09aMDVpY29LajBUdUxkcXNY?=
- =?utf-8?B?RUZBSHppck51VnU4SWlIUkl5dW5LK3VsbnBnQ01pWU95SEZYOWJMWmhlYUE1?=
- =?utf-8?B?eldRR2xIcWJ2RlFQT0NIL3V5WnkyL2R6VXZHM1phTlNDUTlSQjdiTEJDUEw0?=
- =?utf-8?B?emlScVFIT0tEQnRqbVJwLzFiRm5yWTZLeC9PaGpzOU9DRjU0amJManZ3QjR0?=
- =?utf-8?B?SStVdjdXWmxmYjlNTWVzSitJTlZzTTA0Y3hCc3cxUnNOWDJOQWJQRmRPcjFm?=
- =?utf-8?B?b05EcFlQK2Z3SjZzQWxreUdOaXp6Y2xFMll5emk5M2lwa2pqWHBZL2xvTi9V?=
- =?utf-8?B?ZVdVdDB1UXU0cktkSFovUStBdlcyS0pwaFZUMHUrSVltbGlQYmNUSGFPNldY?=
- =?utf-8?B?L0dMcDdubStKUVdrTlVjU3p3ZnlqVTZsQUlINWd3MmZUQ283WGpiOEszWFhh?=
- =?utf-8?B?MG5NNmEvcklZanVNY0dEUTFmU1MrZkVCbUZOZ0diWnBScVRUcW85b1pLUEVq?=
- =?utf-8?B?YUtCLzNQWFlGbXRjbVU0eTM1d01oZTdXR1l2eUl6SmtMNmJsS0tPeTVPL1Fy?=
- =?utf-8?B?dkhQUzNIb2ptZytraFh3WjhZYUtzUU5mdmtRWlVQU2J6bUJZS25YaURFdk1P?=
- =?utf-8?B?bEdlM3g2ditpUU5WSVRZUDVJRENuMk5mN0hlZlMwR0s5RmdiMHBBYnlFaDZj?=
- =?utf-8?B?a1A4V1l5Q29mcEVFSFZyT2t5cXlrZkI0dHJYL2RPM1c0MUNOY2JHY2E4L08v?=
- =?utf-8?B?ZkRnRjlJMElKbThJb2dOelJKTmJvY3pKUXVIMHMyVmNiMFZRNllZK0M4c2Nu?=
- =?utf-8?Q?1x70yMGxha/HVbGKMt+b6OM8/88bYZq+cRrLoQk?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229835AbhBZTu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 14:50:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229622AbhBZTu1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 14:50:27 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10559C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:49:47 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id e2so9041363ilu.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:49:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=43Qu7rQobpoCb4pqwKbZdlIAWt2FrSZkSPCwmQLfeds=;
+        b=JkyFluRpI7IzCKigoybqtH/jF03s8co1GHwfUDjED8MbWcWqopzRJaw/iLFyQonBiv
+         m96bjExzqRUJOX6UC4UHdkPfrBG/vXcxOu6i/TrdSzgrZFZ4O7mJtdYTAOPvwNfffN3z
+         Advgv3ZdPFRos4gOu04K9M+0AjfNwe58lk/roxaT07ihiPmEzw0di3kz9Diz4bFX3pXT
+         UhQfNwPVom/9HcMkFD5HTqpUIgJ0+XZJf4X+hEKBrrmwDIrqa2cuBv0olZce7xa75rky
+         aHc79A8Qm2SyvcAFRMniCFKwzPHnktGM1/NLVNzOxpdb6cOmIjAxY5esFfqbxY8LHbph
+         JViA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=43Qu7rQobpoCb4pqwKbZdlIAWt2FrSZkSPCwmQLfeds=;
+        b=KXELX9d0Ta6vgxBFqC0X2RHFD8GPnN28YcLXsp8uPkxjEJi/pZC8Actie3e6XBhk3M
+         eGCvgOR/35nz1VLvfPgZ+dSiOcawpRPLMBBGCQI+TgktsLwAA3Jxjv3utyUrfgcL9+2+
+         JuntI0UYtfZcnBB+ejmLZPXr+ru3kiRdH0LAIUkMKNe3yea4Sq9wfQFSBnVaybQH7GuP
+         BD5MYMJSI5Hlul2YKIunvFRlpzRvjVyYxKDH63vGGv/Gd8vuMdf3w03S9HNwszcytFBg
+         OLs1UnrBc3lCS1G4xetXV/qtBCvcAMpndYwW118lyNbPUPkjMSZb5dXk0NWhFzyu67H0
+         1ZzA==
+X-Gm-Message-State: AOAM531JBnEG4qUAhtL/Nl7rG+8Jn9vtqam+RTc19LlV9m3Jj/m5eBRE
+        mwnTigJU9fWpJf/n6zD6Zpmf/w==
+X-Google-Smtp-Source: ABdhPJzjnQCgG3yL6cjbdr7w+h5H6KBFQzWcXNyrd+79rpGVvoTVFEr4u3m65/jwPVu6rfUXZo2ytA==
+X-Received: by 2002:a05:6e02:f47:: with SMTP id y7mr3826768ilj.87.1614368986310;
+        Fri, 26 Feb 2021 11:49:46 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:bd06:d32d:458e:cd3a])
+        by smtp.gmail.com with ESMTPSA id w1sm4829876ilv.52.2021.02.26.11.49.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 11:49:45 -0800 (PST)
+Date:   Fri, 26 Feb 2021 12:49:41 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
+        vbabka@suse.cz, guro@fb.com, hannes@cmpxchg.org, hughd@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com
+Subject: Re: [PATCH v2 3/3] mm: use PF_ONLY_HEAD for PG_active and
+ PG_unevictable
+Message-ID: <YDlQ1VLtGsTbwp4z@google.com>
+References: <20210224084807.2179942-1-yuzhao@google.com>
+ <20210226091718.2927291-1-yuzhao@google.com>
+ <20210226091718.2927291-4-yuzhao@google.com>
+ <20210226121314.GB2723601@casper.infradead.org>
 MIME-Version: 1.0
-X-OriginatorOrg: visionengravers.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB5621.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5adf1bbd-676a-416a-4dce-08d8da8d4915
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Feb 2021 19:32:42.3382
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d698601f-af92-4269-8099-fd6f11636477
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Wxbxpkg3ioBuT9PFI+BlR4MV3qWdJlLBDObtI2qVws4uE4WUew+kwpLeCmGydQ1gEuTO722H/2Ae3qlhbiDdKfbcSA3KEm/H84dJPvN5FDA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR01MB5779
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226121314.GB2723601@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpZGF5LCBGZWJydWFyeSAyNiwgMjAyMSAxMjoyMyBQTSwgQWxleGFuZGVyIFN2ZXJkbGlu
-IHdyb3RlOg0KPiBPbiBGcmksIDIwMjEtMDItMjYgYXQgMTc6NDMgKzAxMDAsIEFybmQgQmVyZ21h
-bm4gd3JvdGU6DQo+PiBSYW5kY29uZmlnIGJ1aWxkcyB3aXRoIGVwOTN4eCBmYWlsIHdpdGggdGhl
-IGNsYW5nIGludGVncmF0ZWQgYXNzZW1ibGVyIA0KPj4gdGhhdCBkb2VzIG5vdCB1bmRlcnN0YW5k
-IHRoZSBtYXZlcmljayBjcnVuY2ggZXh0ZW5zaW9uczoNCj4+IA0KPj4gYXJjaC9hcm0vbWFjaC1l
-cDkzeHgvY3J1bmNoLWJpdHMuUzo5NDoyOiBlcnJvcjogaW52YWxpZCBpbnN0cnVjdGlvbg0KPj4g
-wqBjZnN0cjY0IG12ZHgwLCBbcjEsICMwXSBAIHNhdmUgNjRiIHJlZ2lzdGVycw0KPj4gDQo+PiBJ
-dCBpcyB1bmNsZWFyIGlmIGFueW9uZSBpcyBzdGlsbCB1c2luZyBzdXBwb3J0IGZvciBjcnVuY2g6
-IGdjYy00LjggDQo+PiBkcm9wcGVkIGl0IGluIDIwMTIgd2hlbiBpdCB3YXMgYWxyZWFkeSB0b28g
-YnJva2VuIHRvIGJlIHVzZWQgDQo+PiByZWxpYWJsZWQuIGdsaWJjIHN1cHBvcnQgZXhpc3RlZCBh
-cyBhbiBleHRlcm5hbCBwYXRjaCBidXQgd2FzIG5ldmVyIG1lcmdlZCB1cHN0cmVhbS4NCj4+IFdl
-IGNvdWxkIGNvbnNpZGVyIHJlbW92aW5nIHRoZSBsYXN0IGJpdHMgb2YgdGhlIGtlcm5lbCBzdXBw
-b3J0IGFzIHdlbGwuDQo+DQo+IFRoaXMgd2FzIG15IGltcHJlc3Npb24gYWxyZWFkeSBpbiAyMDA2
-LCB0aGF0IENpcnJ1cyBpcyBub3QgZ29pbmcgdG8gd29yayBvbiBDcnVuY2ggc3VwcG9ydC4gRnJv
-bSBteSBQb1YgaXQncyBPSyB0byByZW1vdmUgdGhlIHN1cHBvcnQgaW4gdGhlIGtlcm5lbCBjb21w
-bGV0ZWx5Lg0KDQpNYXJ0aW4gR3V5IGRpZCBhIGxvdCBvZiB3b3JrIHRyeWluZyB0byBnZXQgdGhl
-IG1hdmVyaWNrIGNydW5jaCB3b3JraW5nIGJ1dCBJIHdhcyBuZXZlciBhYmxlIHRvIHN1Y2Nlc3Nm
-dWxseSB1c2UgaXQgZm9yIGFueXRoaW5nLiBJdCAia2luZCIgb2Ygd29ya3MgYnV0IGRlcGVuZGlu
-ZyBvbiB0aGUgRVA5M3h4IHNpbGljb24gcmV2aXNpb24gdGhlcmUgYXJlIHN0aWxsIGEgbnVtYmVy
-IG9mIGhhcmR3YXJlIGJ1Z3MgdGhhdCBlaXRoZXIgZ2l2ZSBpbXByZWNpc2Ugb3IgZ2FyYmFnZSBy
-ZXN1bHRzLg0KDQpJIGhhdmUgbm8gcHJvYmxlbSB3aXRoIHJlbW92aW5nIHRoZSBrZXJuZWwgc3Vw
-cG9ydCBmb3IgdGhlIG1hdmVyaWNrIGNydW5jaC4NCg0KSGFydGxleQ0K
+On Fri, Feb 26, 2021 at 12:13:14PM +0000, Matthew Wilcox wrote:
+> On Fri, Feb 26, 2021 at 02:17:18AM -0700, Yu Zhao wrote:
+> > All places but one test, set or clear PG_active and PG_unevictable on
+> > small or head pages. Use compound_head() explicitly for that singleton
+> > so the rest can rid of redundant compound_head().
+> 
+> How do you know it's only one place?  I really wish you'd work with me
+> on folios.  They make the compiler prove that it's not a tail page.
+
+I hasn't been following the effort closely, so I'm rereading the very
+first discussion "Are THPs the right model for the pagecache?" and
+then I need to rewatch the recorded Zoom meeting. As I said I'm on
+board with the idea, but I can't create a roadmap based on my current
+rough understanding, unless you prefer me to just randomly throw some
+reviewed-bys at your patches in the next few days. (Our long-term plan
+for folios is to support arbitrary anon page sizes because anon memory
+is more than 90% of total user memory on Android, Chrome OS and in our
+data centers.)
+
+That said, if you have something ready to test, we could do it for you
+in our runtime environments immediately.
