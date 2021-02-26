@@ -2,261 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218FF325D3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 06:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74AA325D40
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 06:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229621AbhBZFeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 00:34:25 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27306 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229482AbhBZFeI (ORCPT
+        id S229915AbhBZFfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 00:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhBZFfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 00:34:08 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11Q5Wtbt042701;
-        Fri, 26 Feb 2021 00:33:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=bO1anYwVvQVltDafqeTvliRLVSy+FmejRj0vltLJCyU=;
- b=XIP8WcR1K1r+sLDDEozJzWoFA6uoLnnFvltk8unRns0VrN7S29zD35uKfO9gDo38NehN
- htRXH/aUQVk6UDup52eHt75sK6nwq1JQq0NBoHfz3okUL9jV04l1xDz4lndRTXa18hc1
- T8xhM9kLhCjdzs3sUE78BEz1Zo6YYAY89J8p3cNWfKCJIvQvFjIHYmtXAg4nmu8Eh3Bh
- sIxjyG+PV6o/40RdxQz8N8C6Lo7N2gdI01nrAWFRRz850Wk5kTAl0EjUZbBlLnjh0Dby
- PfcfJdvNggmYla2BEaTuqtRTQzer9kuxC4DbMDb4BWnr2Dbbk/2uYbxSHY8TlmJPMdF0 mw== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36xtfy8ky8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 00:33:17 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11Q5XAoC007358;
-        Fri, 26 Feb 2021 05:33:16 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma02dal.us.ibm.com with ESMTP id 36tt2aq7na-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 05:33:16 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11Q5XFfU17039700
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Feb 2021 05:33:15 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 653E1AC05E;
-        Fri, 26 Feb 2021 05:33:15 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 85738AC05B;
-        Fri, 26 Feb 2021 05:33:12 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.102.16.158])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 26 Feb 2021 05:33:12 +0000 (GMT)
-Subject: Re: [PATCH] [perf] powerpc: Remove unsupported metrics
-To:     "Paul A. Clarke" <pc@us.ibm.com>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, acme@kernel.org
-Cc:     mpe@ellerman.id.au, ananth@linux.vnet.ibm.com,
-        maddy@linux.vnet.ibm.com, naveen.n.rao@linux.vnet.ibm.com,
-        sukadev@linux.ibm.com
-References: <20210224181436.782091-1-pc@us.ibm.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <262409c9-11e2-3327-e645-604c9d300a2d@linux.ibm.com>
-Date:   Fri, 26 Feb 2021 11:03:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20210224181436.782091-1-pc@us.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-26_01:2021-02-24,2021-02-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 adultscore=0 spamscore=0 suspectscore=0 lowpriorityscore=0
- mlxscore=0 clxscore=1011 impostorscore=0 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102260042
+        Fri, 26 Feb 2021 00:35:25 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D784C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 21:34:45 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id s23so5440344pji.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 21:34:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E/72ukQbxYFbVDYN4+VjF6J8sjswQu6JBy9Ss0as/qU=;
+        b=vhgwHnFNT/68Ayu7hro0UxDnpQReFVDyOPHPkE0/XUKxwK8kZmaS8R7kq78Q0Us743
+         SGyU1Ac82gfd9zr8RCIdEyGBwS8c3kH02NmTGHzjn5GDNSilpugoe7ewdOfrVZYp3f5o
+         KCrdW3pjxtOhhuf0z8v9/TPAHxjTxrjwpNfLKxVt23zoDOYQmQYzPke+//rhUDzRBwRe
+         IcG6lgAJBcZ+jlCmERdKj0dUfL/aSHZbET2IsyHTFFBYbWsztxywU5PIj9jPqxRmStMe
+         wL/0YzryIUBLtuWKpuvp9HlAybL+dAc49h8aLMdSl8ki/dfYVqmmxrGmG6pCfCOJaCNv
+         EXkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=E/72ukQbxYFbVDYN4+VjF6J8sjswQu6JBy9Ss0as/qU=;
+        b=JD7dVkLFOSzlLOYYfwk222kb9oCERfheGTNOc4fdUNAsm2V0ZxHZMhXYPImlwCsItH
+         b20LLQBIb5UNdoJn0xLLwNLlxJbcmHJyv43QHrs518+kIVlbZjra5msBvenCygsEKdh6
+         J6Y2G4LSHRjVECU2q/oNsxq0W51vmr5hcmJDmzeVvWA5RIXEFSrkxjfGXgOf5uO7ystC
+         Xq3p8J35cCjcauqvWgEIbeBCReJNMfUGWLFzRMyaNa/IuiXkvob0It9uHH45xkrafX7j
+         4yrLM8lndxxRxlAfvG7seiJR9SJ1EDjzwEXUzBmRC9o2KAviMZHxfwXbSMGofzDMmewj
+         0OSw==
+X-Gm-Message-State: AOAM530t9ZZZV1xG/ftEleWqG5KgViRuu9OFoEk6aJB791iIRxFlCDxi
+        sAWrXL+WlJvRYhjb0a35A2IvNw==
+X-Google-Smtp-Source: ABdhPJzW1IJ4S3iG3hcraE3lyy9TjHQW8d0WKS43o1bxGTLqIkJbTOvVQByksy5Oj08iXyZRZy7qjg==
+X-Received: by 2002:a17:903:2491:b029:e4:16d6:e0a4 with SMTP id p17-20020a1709032491b02900e416d6e0a4mr1704912plw.64.1614317684998;
+        Thu, 25 Feb 2021 21:34:44 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id h3sm7631695pgm.67.2021.02.25.21.34.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 21:34:44 -0800 (PST)
+Date:   Thu, 25 Feb 2021 21:34:44 -0800 (PST)
+X-Google-Original-Date: Thu, 25 Feb 2021 21:34:10 PST (-0800)
+Subject:     Re: [PATCH 2/2] Documentation: features: refresh feature list
+In-Reply-To: <20210225142841.3385428-2-arnd@kernel.org>
+CC:     corbet@lwn.net, Arnd Bergmann <arnd@arndb.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, guoren@kernel.org,
+        tsbogend@alpha.franken.de, tangyouling@loongson.cn,
+        suxingxing@loongson.cn, ralf@linux-mips.org,
+        david.daney@cavium.com, yangtiezhu@loongson.cn, ayan@wavecomp.com,
+        penberg@kernel.org, mhiramat@kernel.org, me@packi.ch,
+        zong.li@sifive.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-csky@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     arnd@kernel.org
+Message-ID: <mhng-dba4c3e2-9d1f-4e1d-8b9a-f19eb9bf519a@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 25 Feb 2021 06:27:18 PST (-0800), arnd@kernel.org wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Run the update script to document the recent feature additions
+> on riscv, mips and csky.
+>
+> Fixes: c109f42450ec ("csky: Add kmemleak support")
+> Fixes: 8b3165e54566 ("MIPS: Enable GCOV")
+> Fixes: 1ddc96bd42da ("MIPS: kernel: Support extracting off-line stack traces from user-space with perf")
+> Fixes: 74784081aac8 ("riscv: Add uprobes supported")
+> Fixes: 829adda597fe ("riscv: Add KPROBES_ON_FTRACE supported")
+> Fixes: c22b0bcb1dd0 ("riscv: Add kprobes supported")
+> Fixes: dcdc7a53a890 ("RISC-V: Implement ptrace regs and stack API")
 
+For the RISC-V stuff
 
-On 2/24/21 11:44 PM, Paul A. Clarke wrote:
-> Several metrics are defined based on unsupported / non-existent
-> events, and silently discarded.  Remove them for good code hygiene
-> and to avoid confusion.
-> 
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Hi Paul,
-  Thanks for the patch. Changes looks good to me.
+Thanks!
 
-Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
-
-Thanks,
-Kajol Jain
-
-> Signed-off-by: Paul A. Clarke <pc@us.ibm.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  .../arch/powerpc/power9/metrics.json          | 132 ------------------
->  1 file changed, 132 deletions(-)
-> 
-> diff --git a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> index f8784c608479..140402d2855f 100644
-> --- a/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> +++ b/tools/perf/pmu-events/arch/powerpc/power9/metrics.json
-> @@ -1209,156 +1209,24 @@
->          "MetricGroup": "instruction_stats_percent_per_ref",
->          "MetricName": "inst_from_rmem_percent"
->      },
-> -    {
-> -        "BriefDescription": "%L2 Modified CO Cache read Utilization (4 pclks per disp attempt)",
-> -        "MetricExpr": "((PM_L2_CASTOUT_MOD/2)*4)/ PM_RUN_CYC * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_co_m_rd_util"
-> -    },
-> -    {
-> -        "BriefDescription": "L2 dcache invalidates per run inst (per core)",
-> -        "MetricExpr": "(PM_L2_DC_INV / 2) / PM_RUN_INST_CMPL * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_dc_inv_rate_percent"
-> -    },
->      {
->          "BriefDescription": "Demand load misses as a % of L2 LD dispatches (per thread)",
->          "MetricExpr": "PM_L1_DCACHE_RELOAD_VALID / (PM_L2_LD / 2) * 100",
->          "MetricGroup": "l2_stats",
->          "MetricName": "l2_dem_ld_disp_percent"
->      },
-> -    {
-> -        "BriefDescription": "L2 Icache invalidates per run inst (per core)",
-> -        "MetricExpr": "(PM_L2_IC_INV / 2) / PM_RUN_INST_CMPL * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_ic_inv_rate_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "L2 Inst misses as a % of total L2 Inst dispatches (per thread)",
-> -        "MetricExpr": "PM_L2_INST_MISS / PM_L2_INST * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_inst_miss_ratio_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "Average number of cycles between L2 Load hits",
-> -        "MetricExpr": "(PM_L2_LD_HIT / PM_RUN_CYC) / 2",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_ld_hit_frequency"
-> -    },
-> -    {
-> -        "BriefDescription": "Average number of cycles between L2 Load misses",
-> -        "MetricExpr": "(PM_L2_LD_MISS / PM_RUN_CYC) / 2",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_ld_miss_frequency"
-> -    },
-> -    {
-> -        "BriefDescription": "L2 Load misses as a % of total L2 Load dispatches (per thread)",
-> -        "MetricExpr": "PM_L2_LD_MISS / PM_L2_LD * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_ld_miss_ratio_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "% L2 load disp attempts Cache read Utilization (4 pclks per disp attempt)",
-> -        "MetricExpr": "((PM_L2_RCLD_DISP/2)*4)/ PM_RUN_CYC * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_ld_rd_util"
-> -    },
-> -    {
-> -        "BriefDescription": "L2 load misses that require a cache write (4 pclks per disp attempt) % of pclks",
-> -        "MetricExpr": "((( PM_L2_LD_DISP - PM_L2_LD_HIT)/2)*4)/ PM_RUN_CYC * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_ldmiss_wr_util"
-> -    },
-> -    {
-> -        "BriefDescription": "L2 local pump prediction success",
-> -        "MetricExpr": "PM_L2_LOC_GUESS_CORRECT / (PM_L2_LOC_GUESS_CORRECT + PM_L2_LOC_GUESS_WRONG) * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_local_pred_correct_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "L2 COs that were in M,Me,Mu state as a % of all L2 COs",
-> -        "MetricExpr": "PM_L2_CASTOUT_MOD / (PM_L2_CASTOUT_MOD + PM_L2_CASTOUT_SHR) * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_mod_co_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "% of L2 Load RC dispatch atampts that failed because of address collisions and cclass conflicts",
-> -        "MetricExpr": "(PM_L2_RCLD_DISP_FAIL_ADDR )/ PM_L2_RCLD_DISP * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_rc_ld_disp_addr_fail_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "% of L2 Load RC dispatch attempts that failed",
-> -        "MetricExpr": "(PM_L2_RCLD_DISP_FAIL_ADDR + PM_L2_RCLD_DISP_FAIL_OTHER)/ PM_L2_RCLD_DISP * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_rc_ld_disp_fail_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "% of L2 Store RC dispatch atampts that failed because of address collisions and cclass conflicts",
-> -        "MetricExpr": "PM_L2_RCST_DISP_FAIL_ADDR / PM_L2_RCST_DISP * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_rc_st_disp_addr_fail_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "% of L2 Store RC dispatch attempts that failed",
-> -        "MetricExpr": "(PM_L2_RCST_DISP_FAIL_ADDR + PM_L2_RCST_DISP_FAIL_OTHER)/ PM_L2_RCST_DISP * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_rc_st_disp_fail_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "L2 Cache Read Utilization (per core)",
-> -        "MetricExpr": "(((PM_L2_RCLD_DISP/2)*4)/ PM_RUN_CYC * 100) + (((PM_L2_RCST_DISP/2)*4)/PM_RUN_CYC * 100) + (((PM_L2_CASTOUT_MOD/2)*4)/PM_RUN_CYC * 100)",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_rd_util_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "L2 COs that were in T,Te,Si,S state as a % of all L2 COs",
-> -        "MetricExpr": "PM_L2_CASTOUT_SHR / (PM_L2_CASTOUT_MOD + PM_L2_CASTOUT_SHR) * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_shr_co_percent"
-> -    },
->      {
->          "BriefDescription": "L2 Store misses as a % of total L2 Store dispatches (per thread)",
->          "MetricExpr": "PM_L2_ST_MISS / PM_L2_ST * 100",
->          "MetricGroup": "l2_stats",
->          "MetricName": "l2_st_miss_ratio_percent"
->      },
-> -    {
-> -        "BriefDescription": "% L2 store disp attempts Cache read Utilization (4 pclks per disp attempt)",
-> -        "MetricExpr": "((PM_L2_RCST_DISP/2)*4) / PM_RUN_CYC * 100",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_st_rd_util"
-> -    },
->      {
->          "BriefDescription": "L2 stores that require a cache write (4 pclks per disp attempt) % of pclks",
->          "MetricExpr": "((PM_L2_ST_DISP/2)*4) / PM_RUN_CYC * 100",
->          "MetricGroup": "l2_stats",
->          "MetricName": "l2_st_wr_util"
->      },
-> -    {
-> -        "BriefDescription": "L2 Cache Write Utilization (per core)",
-> -        "MetricExpr": "((((PM_L2_LD_DISP - PM_L2_LD_HIT)/2)*4) / PM_RUN_CYC * 100) + (((PM_L2_ST_DISP/2)*4) / PM_RUN_CYC * 100)",
-> -        "MetricGroup": "l2_stats",
-> -        "MetricName": "l2_wr_util_percent"
-> -    },
-> -    {
-> -        "BriefDescription": "Average number of cycles between L3 Load hits",
-> -        "MetricExpr": "(PM_L3_LD_HIT / PM_RUN_CYC) / 2",
-> -        "MetricGroup": "l3_stats",
-> -        "MetricName": "l3_ld_hit_frequency"
-> -    },
-> -    {
-> -        "BriefDescription": "Average number of cycles between L3 Load misses",
-> -        "MetricExpr": "(PM_L3_LD_MISS / PM_RUN_CYC) / 2",
-> -        "MetricGroup": "l3_stats",
-> -        "MetricName": "l3_ld_miss_frequency"
-> -    },
-> -    {
-> -        "BriefDescription": "Average number of Write-in machines used. 1 of 8 WI machines is sampled every L3 cycle",
-> -        "MetricExpr": "(PM_L3_WI_USAGE / PM_RUN_CYC) * 8",
-> -        "MetricGroup": "l3_stats",
-> -        "MetricName": "l3_wi_usage"
-> -    },
->      {
->          "BriefDescription": "Average icache miss latency",
->          "MetricExpr": "PM_IC_DEMAND_CYC / PM_IC_DEMAND_REQ",
-> 
+>  Documentation/features/debug/gcov-profile-all/arch-support.txt  | 2 +-
+>  Documentation/features/debug/kmemleak/arch-support.txt          | 2 +-
+>  Documentation/features/debug/kprobes-on-ftrace/arch-support.txt | 2 +-
+>  Documentation/features/debug/kprobes/arch-support.txt           | 2 +-
+>  Documentation/features/debug/kretprobes/arch-support.txt        | 2 +-
+>  Documentation/features/debug/uprobes/arch-support.txt           | 2 +-
+>  Documentation/features/perf/kprobes-event/arch-support.txt      | 2 +-
+>  Documentation/features/perf/perf-regs/arch-support.txt          | 2 +-
+>  Documentation/features/perf/perf-stackdump/arch-support.txt     | 2 +-
+>  Documentation/features/sched/numa-balancing/arch-support.txt    | 2 +-
+>  10 files changed, 10 insertions(+), 10 deletions(-)
+>
+> diff --git a/Documentation/features/debug/gcov-profile-all/arch-support.txt b/Documentation/features/debug/gcov-profile-all/arch-support.txt
+> index 416c70345946..b39c1a5de3f3 100644
+> --- a/Documentation/features/debug/gcov-profile-all/arch-support.txt
+> +++ b/Documentation/features/debug/gcov-profile-all/arch-support.txt
+> @@ -16,7 +16,7 @@
+>      |        ia64: | TODO |
+>      |        m68k: | TODO |
+>      |  microblaze: |  ok  |
+> -    |        mips: | TODO |
+> +    |        mips: |  ok  |
+>      |       nds32: | TODO |
+>      |       nios2: | TODO |
+>      |    openrisc: | TODO |
+> diff --git a/Documentation/features/debug/kmemleak/arch-support.txt b/Documentation/features/debug/kmemleak/arch-support.txt
+> index 915185634611..e9ac415f8aec 100644
+> --- a/Documentation/features/debug/kmemleak/arch-support.txt
+> +++ b/Documentation/features/debug/kmemleak/arch-support.txt
+> @@ -10,7 +10,7 @@
+>      |         arc: |  ok  |
+>      |         arm: |  ok  |
+>      |       arm64: |  ok  |
+> -    |        csky: | TODO |
+> +    |        csky: |  ok  |
+>      |       h8300: | TODO |
+>      |     hexagon: | TODO |
+>      |        ia64: | TODO |
+> diff --git a/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt b/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt
+> index aade7816cb87..96156e8802a7 100644
+> --- a/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt
+> +++ b/Documentation/features/debug/kprobes-on-ftrace/arch-support.txt
+> @@ -22,7 +22,7 @@
+>      |    openrisc: | TODO |
+>      |      parisc: |  ok  |
+>      |     powerpc: |  ok  |
+> -    |       riscv: | TODO |
+> +    |       riscv: |  ok  |
+>      |        s390: |  ok  |
+>      |          sh: | TODO |
+>      |       sparc: | TODO |
+> diff --git a/Documentation/features/debug/kprobes/arch-support.txt b/Documentation/features/debug/kprobes/arch-support.txt
+> index 4b663c124d1c..ee95ed61909a 100644
+> --- a/Documentation/features/debug/kprobes/arch-support.txt
+> +++ b/Documentation/features/debug/kprobes/arch-support.txt
+> @@ -22,7 +22,7 @@
+>      |    openrisc: | TODO |
+>      |      parisc: |  ok  |
+>      |     powerpc: |  ok  |
+> -    |       riscv: | TODO |
+> +    |       riscv: |  ok  |
+>      |        s390: |  ok  |
+>      |          sh: |  ok  |
+>      |       sparc: |  ok  |
+> diff --git a/Documentation/features/debug/kretprobes/arch-support.txt b/Documentation/features/debug/kretprobes/arch-support.txt
+> index 5449bb808442..612cb97d47b8 100644
+> --- a/Documentation/features/debug/kretprobes/arch-support.txt
+> +++ b/Documentation/features/debug/kretprobes/arch-support.txt
+> @@ -22,7 +22,7 @@
+>      |    openrisc: | TODO |
+>      |      parisc: |  ok  |
+>      |     powerpc: |  ok  |
+> -    |       riscv: | TODO |
+> +    |       riscv: |  ok  |
+>      |        s390: |  ok  |
+>      |          sh: |  ok  |
+>      |       sparc: |  ok  |
+> diff --git a/Documentation/features/debug/uprobes/arch-support.txt b/Documentation/features/debug/uprobes/arch-support.txt
+> index 2820177787e1..8bd5548a4485 100644
+> --- a/Documentation/features/debug/uprobes/arch-support.txt
+> +++ b/Documentation/features/debug/uprobes/arch-support.txt
+> @@ -22,7 +22,7 @@
+>      |    openrisc: | TODO |
+>      |      parisc: | TODO |
+>      |     powerpc: |  ok  |
+> -    |       riscv: | TODO |
+> +    |       riscv: |  ok  |
+>      |        s390: |  ok  |
+>      |          sh: | TODO |
+>      |       sparc: |  ok  |
+> diff --git a/Documentation/features/perf/kprobes-event/arch-support.txt b/Documentation/features/perf/kprobes-event/arch-support.txt
+> index 75739a0007e0..78f3fe080f0e 100644
+> --- a/Documentation/features/perf/kprobes-event/arch-support.txt
+> +++ b/Documentation/features/perf/kprobes-event/arch-support.txt
+> @@ -22,7 +22,7 @@
+>      |    openrisc: | TODO |
+>      |      parisc: |  ok  |
+>      |     powerpc: |  ok  |
+> -    |       riscv: | TODO |
+> +    |       riscv: |  ok  |
+>      |        s390: |  ok  |
+>      |          sh: |  ok  |
+>      |       sparc: |  ok  |
+> diff --git a/Documentation/features/perf/perf-regs/arch-support.txt b/Documentation/features/perf/perf-regs/arch-support.txt
+> index ea8b6d96633a..5bf3b1854a1f 100644
+> --- a/Documentation/features/perf/perf-regs/arch-support.txt
+> +++ b/Documentation/features/perf/perf-regs/arch-support.txt
+> @@ -16,7 +16,7 @@
+>      |        ia64: | TODO |
+>      |        m68k: | TODO |
+>      |  microblaze: | TODO |
+> -    |        mips: | TODO |
+> +    |        mips: |  ok  |
+>      |       nds32: | TODO |
+>      |       nios2: | TODO |
+>      |    openrisc: | TODO |
+> diff --git a/Documentation/features/perf/perf-stackdump/arch-support.txt b/Documentation/features/perf/perf-stackdump/arch-support.txt
+> index 87165861037e..d88659bb4fc1 100644
+> --- a/Documentation/features/perf/perf-stackdump/arch-support.txt
+> +++ b/Documentation/features/perf/perf-stackdump/arch-support.txt
+> @@ -16,7 +16,7 @@
+>      |        ia64: | TODO |
+>      |        m68k: | TODO |
+>      |  microblaze: | TODO |
+> -    |        mips: | TODO |
+> +    |        mips: |  ok  |
+>      |       nds32: | TODO |
+>      |       nios2: | TODO |
+>      |    openrisc: | TODO |
+> diff --git a/Documentation/features/sched/numa-balancing/arch-support.txt b/Documentation/features/sched/numa-balancing/arch-support.txt
+> index bfcfaff67a1b..9affb7c2c500 100644
+> --- a/Documentation/features/sched/numa-balancing/arch-support.txt
+> +++ b/Documentation/features/sched/numa-balancing/arch-support.txt
+> @@ -22,7 +22,7 @@
+>      |    openrisc: |  ..  |
+>      |      parisc: |  ..  |
+>      |     powerpc: |  ok  |
+> -    |       riscv: | TODO |
+> +    |       riscv: |  ok  |
+>      |        s390: |  ok  |
+>      |          sh: |  ..  |
+>      |       sparc: | TODO |
