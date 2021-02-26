@@ -2,141 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2D732658A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4982B32658D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhBZQ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:28:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhBZQ2C (ORCPT
+        id S230001AbhBZQ3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:29:14 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:33639 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229769AbhBZQ3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:28:02 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF23AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 08:27:19 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id p2so11678953edm.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 08:27:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6BKeyIcRjzR84A9x0lbwBUm0rSexnKSuimviQvcPYuc=;
-        b=ZNm9FG8njbw0YZco/bpGOrjR44E9M4EuVHzJWtnNljcMn+/7OAywDvaSfqRF+bFY8V
-         u4RHzYU2KDaWUvFw5zG5IwplF0PP8NYmvTNt0YtH/JR1OSf7/jkdBN69W2gVcV9azTi9
-         H1mOZu4ojoYmbnwXuBl9fLil8YuZXP+ALRuUU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6BKeyIcRjzR84A9x0lbwBUm0rSexnKSuimviQvcPYuc=;
-        b=qj/rsm055KE2ypy7ceZWdkGT04RR60WHoqEibdDVal9f5K5SKoDAE9+XigTvPi/Xe9
-         ka7/bDAI9PoXQWXoJCJYsijUixAJ41DhJCNYkYQAbue4vWSP5WD8jVXJV0hPdxBtv8Da
-         PuMWS+BYWjxnUYz/A4VFGOEPfnDh1OyGYhYlWfhUvK+bBiD91JBNKVICjQ9yhtdQORWK
-         TFnf3I0sHwl4Q4XyRLuNUGWzl56AvxsKhSYdKOrbpc/D2HQpmDN6L2/syZG+VqyhGRRV
-         sG36id+4RmKs0QmqgCzqPNxxt4xIP7Uu2953/qbtaX0e4dcTK5PA2mGasuHA4aIMtxOa
-         Xplg==
-X-Gm-Message-State: AOAM531p5uyUIZzyL6xP5VjKn+fedcxOIRRWIHf3hLuZgB8Tw118AGgE
-        RByqPpmO2h4utyqW75Uw5sbkMpkkk3FBWN0TYBGMoQ==
-X-Google-Smtp-Source: ABdhPJwGCKt7zsL/y6NObCIYi35f4/YHkGRmg7kLDOYW+erS32FwkDnZ/eKzy1gDTP1pjLSdLD6kXvv5BmZCemgFzak=
-X-Received: by 2002:a50:d307:: with SMTP id g7mr4302596edh.204.1614356838561;
- Fri, 26 Feb 2021 08:27:18 -0800 (PST)
+        Fri, 26 Feb 2021 11:29:08 -0500
+Received: (qmail 1393709 invoked by uid 1000); 26 Feb 2021 11:28:21 -0500
+Date:   Fri, 26 Feb 2021 11:28:21 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Cc:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org,
+        syzbot+ab02336a647181a886a6@syzkaller.appspotmail.com
+Subject: Re: [PATCH] drivers/hid: fix for the big hid report length
+Message-ID: <20210226162821.GA1392547@rowland.harvard.edu>
+References: <20210225155914.GA1350993@rowland.harvard.edu>
+ <20210226081336.3475085-1-snovitoll@gmail.com>
 MIME-Version: 1.0
-References: <20210226070304.8028-1-jagan@amarulasolutions.com>
- <20210226070304.8028-3-jagan@amarulasolutions.com> <611bce6f-7adb-f0b5-0c9b-d5d7bb8b90fb@foss.st.com>
-In-Reply-To: <611bce6f-7adb-f0b5-0c9b-d5d7bb8b90fb@foss.st.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Fri, 26 Feb 2021 21:57:07 +0530
-Message-ID: <CAMty3ZAKZ=ODtNMBu-XoFCmNRR8XCA42wTD1H8f_6wC+sn+wPg@mail.gmail.com>
-Subject: Re: [PATCH v2 02/10] ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 SoM
-To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Francesco Utel <francesco.utel@engicam.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mirko Ardinghi <mirko.ardinghi@engicam.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226081336.3475085-1-snovitoll@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+On Fri, Feb 26, 2021 at 02:13:36PM +0600, Sabyrzhan Tasbolatov wrote:
+> On Thu, 25 Feb 2021 10:59:14 -0500, Alan Stern wrote:
+> > Won't this cause silent errors?
+> 
+> Agree. But there are already such as cases like in:
+> 
+> // net/bluetooth/hidp/core.c
+> static void hidp_process_report(..)
+> {
+> 	..
+> 	if (len > HID_MAX_BUFFER_SIZE)
+> 		len = HID_MAX_BUFFER_SIZE;
+> 	..
+> 
+> // drivers/hid/hid-core.c
+> int hid_report_raw_event(..)
+> {
+> 	..
+> 	rsize = hid_compute_report_size(report);
+> 
+> 	if (report_enum->numbered && rsize >= HID_MAX_BUFFER_SIZE)
+> 		rsize = HID_MAX_BUFFER_SIZE - 1;
+> 	else if (rsize > HID_MAX_BUFFER_SIZE)
+> 		rsize = HID_MAX_BUFFER_SIZE;
+> 	..
+> 
+> // drivers/staging/greybus/hid.c
+> static int gb_hid_start(..)
+> {
+> 	..
+> 	if (bufsize > HID_MAX_BUFFER_SIZE)
+> 		bufsize = HID_MAX_BUFFER_SIZE;
+> 	..
+> 
+> > How about instead just rejecting any device which includes a report 
+> > whose length is too big (along with an line in the system log explaining 
+> > what's wrong)?
+> 
+> Not everywhere, but there are already such as logs when > HID_MAX_BUFFER_SIZE
+> 
+> // drivers/hid/hidraw.c
+> static ssize_t hidraw_send_report(..)
+> {
+> 	..
+> 	if (count > HID_MAX_BUFFER_SIZE) {
+> 		hid_warn(dev, "pid %d passed too large report\n",
+> 			 task_pid_nr(current));
+> 		ret = -EINVAL;
+> 		goto out;
+> 	}
+> 
+> 
+> I've just noticed that hid_compute_report_size() doing the same thing as
+> hid_report_len(). So I will replace it with latter one with length check.
+> 
+> So in [PATCH v2] I will do following:
+> 
+>  1. replace hid_compute_report_size() with hid_report_len()
+> 
+>  2. in hid_report_len() we can hid_warn() if length > HID_MAX_BUFFER_SIZE,
+> and return HID_MAX_BUFFER_SIZE. Or we can return 0 in hid_report_len() to let
+> functions like hid_hw_raw_request(), hid_hw_output_report() to validate
+> invalid report length and return -EINVAL. Though I'll need to add !length
+> missing checks in other places.
+> 
+> Please let me know what it's preferred way in 2nd step.
 
-On Fri, Feb 26, 2021 at 9:42 PM Alexandre TORGUE
-<alexandre.torgue@foss.st.com> wrote:
->
-> Hi Jagan
->
-> On 2/26/21 8:02 AM, Jagan Teki wrote:
-> > MicroGEA STM32MP1 is an EDIMM SoM based on STM32MP157A from Engicam.
-> >
-> > General features:
-> > - STM32MP157AAC
-> > - Up to 1GB DDR3L-800
-> > - 512MB Nand flash
-> > - I2S
-> >
-> > MicroGEA STM32MP1 needs to mount on top of Engicam MicroDev carrier
-> > boards for creating complete platform solutions.
-> >
-> > Add support for it.
-> >
-> > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
-> > Signed-off-by: Francesco Utel <francesco.utel@engicam.com>
-> > Signed-off-by: Mirko Ardinghi <mirko.ardinghi@engicam.com>
-> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
->
-> Minor question: if the stm32mp157 is soldered on Microdev boards why do
-> you mention it in this commit message ?
+It's been too long since I worked on this stuff; you should check with 
+the maintainers.
 
-It was there in the commit message:
+Another thing to consider: There probably are devices with multiple 
+reports, where one of the reports is too big but people only want to use 
+the other, smaller reports.  For situations like that, we don't want to 
+reject the entire device.
 
-> > General features:
-> > - STM32MP157AAC
-> > - Up to 1GB DDR3L-800
-> > - 512MB Nand flash
-> > - I2S
+I don't know if parsing a partiall part is a good thing to do.
 
->
-> + a minor comment bellow.
->
-> thanks
-> Alex
->
-> > ---
-> > Changes for v2:
-> > - none
-> >
-> >   .../dts/stm32mp157a-microgea-stm32mp1.dtsi    | 147 ++++++++++++++++++
-> >   1 file changed, 147 insertions(+)
-> >   create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
-> >
-> > diff --git a/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
-> > new file mode 100644
-> > index 000000000000..97d569107bfe
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
-> > @@ -0,0 +1,147 @@
-> > +// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
-> > +/*
-> > + * Copyright (c) STMicroelectronics 2019 - All Rights Reserved
-> > + * Copyright (c) 2020 Engicam srl
-> > + * Copyright (c) 2020 Amarula Solutons(India)
-> > + */
-> > +
-> > +/ {
-> > +     compatible = "engicam,microgea-stm32mp1", "st,stm32mp157";
-> > +
-> > +     memory@c0000000 {
->
-> you could add           device_type = "memory";
-
-Okay.
-
-Jagan.
+Alan Stern
