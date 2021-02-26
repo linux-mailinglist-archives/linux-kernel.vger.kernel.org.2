@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA71D325F7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73031325F80
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhBZIw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:52:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55790 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhBZIw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:52:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614329530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NV8HHUAhGyMKMdxJOAqWE34D2NQYX6VFUHRpOEastO8=;
-        b=G45FTSyWYpZtUtKeL8sHnB58FYPM4Bd7jXJ+v5/01Mo/i//UxfXkkRztJDF1yupehrb0uU
-        +xshvAAQtIbQJ1sGTw8tyBnADadr6LGtauQGeLOJ3AHbCjViqimAZ1H4ZoHyqlDLFT3Hq/
-        4WJyi+qk+V7ApnoGE+7U+2qs6aRu0cU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1C97DAAAE;
-        Fri, 26 Feb 2021 08:52:10 +0000 (UTC)
-Date:   Fri, 26 Feb 2021 09:52:09 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
- usage excess
-Message-ID: <YDi2udQqIML6Vdpo@dhcp22.suse.cz>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
- <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
- <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
- <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
- <YDQBh5th9txxEFUm@dhcp22.suse.cz>
- <cf5ca7a1-7965-f307-22e1-e216316904cf@linux.intel.com>
- <YDY+PydRUGQpHNaJ@dhcp22.suse.cz>
- <b5b1944d-846b-3212-fe4a-f10f5fcb87d7@linux.intel.com>
+        id S229835AbhBZIyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:54:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhBZIy2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 03:54:28 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8B2C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:53:47 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id w11so7771246wrr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:53:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7kNEmrMUnoRO3jTYiSsoULEzq/+mwZ/afdSXWdymP48=;
+        b=tAlcyLRXVkY+yIqpFQ3R3Y5HkxH6+QALeswaRb1bDca5i33FVKfdIHrQTxPq3myZqG
+         BVxiEeXozhM7ONvkyzC/j+n1doiN2U94iG7AAX6vejluri/HNv5FGT2QxRQ/intiKyEZ
+         ulcS0+AnNdOT8X1oX7rP3mHIcXXwCoe3n2q4GvbGAw+yGJybvPYEqJ2tfIg6DJOMHWCD
+         Chmn6raavsakWK/afMhft765MroKboZf1Fz6Nm/5z6x+EJRb2VJ5ldD3wSf0FtVSYXCN
+         mwpmIesKoW42UahpeHVtfCvq6KfT3dagb5iQfECwUjPF64Y7+gLjosKnJ/ZiA91cpvru
+         LhIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7kNEmrMUnoRO3jTYiSsoULEzq/+mwZ/afdSXWdymP48=;
+        b=JzZ4WwqJMUl4/gcnMF+99Gn+GVsJmZMwbOOUGGGRvH/uoIAuXx8arX2RnN9/APgkG5
+         w7DELgzQPXXa4u8HxUabLnyzJXnLBn25Khayv6GX3TWsvq7m8PM4A2IvltDxoqExm/zA
+         h0xlu7TstUDOchV1Ow7kaWfojOrGmPYcAUwWEnBETuxen6dR/zlfAQHBJvsrJ1VwwDQh
+         j3KZZ7xiNNnyk2ml5QoMWe/14IoucV3DkGkuFt/KJNRF1d4pA+kVJGrT+qdzjRKf+v/6
+         I4wpOdBl1mxQOy1N2Bvf/n7IFCmFkoX5pzVJ9jttDYXTqAG0nhlVgT5hS/9qfBkVMXj4
+         IZYw==
+X-Gm-Message-State: AOAM532j2mjeFQeFKCfM6jJ99o7mwOf4o1HNCq5r10aRIZtBLcPdW5KC
+        PWDL4MDyNA7JTzlBzTmPxFeg6Q5e/u7RO/yZnHU=
+X-Google-Smtp-Source: ABdhPJyPB9pHDA3cux0fkSStbgJSLMHmFjWlwBhDYI4jG2WuPBWqV7hlzmOlRQdWCRI90pIDl/VB8gR8RAXsWWfRIJQ=
+X-Received: by 2002:adf:d1cb:: with SMTP id b11mr2091283wrd.118.1614329626375;
+ Fri, 26 Feb 2021 00:53:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5b1944d-846b-3212-fe4a-f10f5fcb87d7@linux.intel.com>
+References: <20210222075205.19834-1-dwaipayanray1@gmail.com>
+ <bcee822d1934772f47702ee257bc735c8f467088.camel@perches.com>
+ <CABJPP5AARO3h2mt-piPWuOD3kY_XzNfW-s2mi=btfOayVPURHg@mail.gmail.com> <87mtvrc0gz.fsf@meer.lwn.net>
+In-Reply-To: <87mtvrc0gz.fsf@meer.lwn.net>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Fri, 26 Feb 2021 14:23:46 +0530
+Message-ID: <CABJPP5CjbKCCtnafg6BP6CXTwCVMtGw15jk=jFvWLjij2kp_jA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/2] checkpatch: add verbose mode
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Joe Perches <joe@perches.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25-02-21 14:48:58, Tim Chen wrote:
-> 
-> 
-> On 2/24/21 3:53 AM, Michal Hocko wrote:
-> > On Mon 22-02-21 11:48:37, Tim Chen wrote:
+On Fri, Feb 26, 2021 at 2:46 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> Dwaipayan Ray <dwaipayanray1@gmail.com> writes:
+>
+> > On Thu, Feb 25, 2021 at 11:03 PM Joe Perches <joe@perches.com> wrote:
+> >> I don't have any real objection to this patch set, but as this
+> >> might be added to the Documentation tree and in .rst format,
+> >> perhaps Jonathan Corbet and/or Mauro Carvalho Chehab might have
+> >> some opinion.
 > >>
+> >> Also I do not want to be a maintainer of this .rst file and
+> >> likely neither Jon nor Mauro would either.  Perhaps you?
 > >>
-> >> On 2/22/21 11:09 AM, Michal Hocko wrote:
+> >
+> > I could take it up if everybody is okay with it!
+> >
+> >> Ideally, the patch order would be reversed so the .rst file
+> >> is added first, then checkpatch updated to use it.
 > >>
-> >>>>
-> >>>> I actually have tried adjusting the threshold but found that it doesn't work well for
-> >>>> the case with unenven memory access frequency between cgroups.  The soft
-> >>>> limit for the low memory event cgroup could creep up quite a lot, exceeding
-> >>>> the soft limit by hundreds of MB, even
-> >>>> if I drop the SOFTLIMIT_EVENTS_TARGET from 1024 to something like 8.
-> >>>
-> >>> What was the underlying reason? Higher order allocations?
-> >>>
-> >>
-> >> Not high order allocation.
-> >>
-> >> The reason was because the run away memcg asks for memory much less often, compared
-> >> to the other memcgs in the system.  So it escapes the sampling update and
-> >> was not put onto the tree and exceeds the soft limit
-> >> pretty badly.  Even if it was put onto the tree and gets page reclaimed below the
-> >> limit, it could escape the sampling the next time it exceeds the soft limit.
-> > 
-> > I am sorry but I really do not follow. Maybe I am missing something
-> > obvious but the the rate of events (charge/uncharge) shouldn't be really
-> > important. There is no way to exceed the limit without charging memory
-> > (either a new or via task migration in v1 and immigrate_on_move). If you
-> > have SOFTLIMIT_EVENTS_TARGET 8 then you should be 128 * 8 events to
-> > re-evaluate. Huge pages can make the runaway much bigger but how it
-> > would be possible to runaway outside of that bound.
-> 
-> 
-> Michal,
-> 
-> Let's take an extreme case where memcg 1 always generate the
-> first event and memcg 2 generates the rest of 128*8-1 events
-> and the pattern repeat.
+> >
+> > Sure, if Jonathan or Mauro has no objections to it, I will be happy
+> > to resend it so that it can be picked up properly.
+>
+> So I haven't been copied on this for a while.  Looking in the archives,
+> I see that you have a manual table of contents at the top of the
+> document; you could take that out and let Sphinx generate it (and keep
+> it current!) for you.
+>
 
-I do not follow. Events are per-memcg, aren't they?
-	__this_cpu_read(memcg->vmstats_percpu->targets[target]);
-	[...]
-	__this_cpu_write(memcg->vmstats_percpu->targets[target], next);
--- 
-Michal Hocko
-SUSE Labs
+Sure that sounds nice.
+I will modify the series and send the v8 in so that you can pick it up
+from there. That shall include the MAINTAINERS patch sent by Lukas
+as well.
+
+> Either way, though, if you want to merge this via some other path, it's
+> OK by me:
+>
+> Acked-by: Jonathan Corbet <corbet@lwn.net>
+>
+Thanks for the ack!
+
+Regards,
+Dwaipayan.
+
+> Thanks,
+>
+> jon
