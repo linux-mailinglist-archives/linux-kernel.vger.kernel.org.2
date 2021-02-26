@@ -2,204 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F113264B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6843264C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhBZPZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 10:25:37 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:48068 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229745AbhBZPZ0 (ORCPT
+        id S230041AbhBZPdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 10:33:23 -0500
+Received: from mail.efficios.com ([167.114.26.124]:57494 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhBZPdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:25:26 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QFMuTb029488;
-        Fri, 26 Feb 2021 16:24:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=enMfC+PWGoNkoTGsyvHg5qpNwFuwchf5UpLej42yuI4=;
- b=iuI1YDxdQ5L5AWX9ZzptPh6xYtZ+Lr9X6+B1p0cGGIQKVfuk8ajUV9kJjDJ/2HR/CiMd
- 4TK6E1cOpWDsrgQRkdliLuft43Yf0lczUm+NE5Yv9FSJ1bov6/+N57u/HwHvN2B+5EB1
- C/IrWCM+9vpLooIx8+sODbh2Y74Cc58civ9xu1M2aISqIf6+sKoBfGDox+0UXP7sWLKp
- jeDglU9SNBz7u3XSf41RzmNz8f1/ssE5omdXOJLZ0jQ+TfaH8+aKxu9ozmcBjgyxc1Ay
- 3ddcfTtMZpoHN3McsyQAMgB3rm0apz+y8rYhYlSd6U+frPM2eQyr0YApv2QWKUYi6wt2 yA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36w66vxdrq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 16:24:35 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5B7F010002A;
-        Fri, 26 Feb 2021 16:24:34 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4983724ABBE;
-        Fri, 26 Feb 2021 16:24:34 +0100 (CET)
-Received: from [10.211.2.127] (10.75.127.44) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Feb
- 2021 16:24:33 +0100
-Subject: Re: [PATCH v2] counter: stm32-timer-cnt: Report count function when
- SLAVE_MODE_DISABLED
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, <jic23@kernel.org>
-CC:     <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <benjamin.gaignard@st.com>
-References: <20210226012931.161429-1-vilhelm.gray@gmail.com>
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Message-ID: <d6ae294d-5d49-bb3f-6456-a485a247323c@foss.st.com>
-Date:   Fri, 26 Feb 2021 16:24:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 26 Feb 2021 10:33:20 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 6D5E830F9D0;
+        Fri, 26 Feb 2021 10:32:36 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 1wx23JkX2j13; Fri, 26 Feb 2021 10:32:36 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E7E1A30F9CF;
+        Fri, 26 Feb 2021 10:32:35 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E7E1A30F9CF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1614353556;
+        bh=lIk0nJ/zoaoI4S6yz+QKK2lq/rImbycdfBHkfxXXItg=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=b/t4RyJaCI9evNkbJeINEt0bSsVocZtyHQIvdGzgoGqVZ7mimfuomwXIX3wMj3yTP
+         R1FszRRf2HOPLXyFLuAu+XeUAPa1DFVwh4DTLZragq7YI58oXxK2XaDCb71RFdR93S
+         uMtdalk1ZnfSieo2pa4bTjeqTveMn8GNMMEZWq+8Oqlq6BZ0Kyt9VAk4BmReYTFT3w
+         Ma8oFLbAiOcm4EDUhlitHn1n9b6GbHcpxvJOuSaNjFw/TWeLhDQYIIMrceeDl37yP4
+         KVbh0Wu1CZW3JBtuJV7kqgulO3QuM2bchgjdceFsa75T0vDch/xM5c0hKSufey1L10
+         JlHdgrGAHhk5Q==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id nI_BGAxrNA_7; Fri, 26 Feb 2021 10:32:35 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id D4EED30F9CE;
+        Fri, 26 Feb 2021 10:32:35 -0500 (EST)
+Date:   Fri, 26 Feb 2021 10:32:35 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Piotr Figiel <figiel@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Dmitry V. Levin" <ldv@altlinux.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Oskolkov <posk@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Paul Turner <pjt@google.com>, emmir <emmir@google.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>
+Message-ID: <192824546.8190.1614353555831.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210226135156.1081606-1-figiel@google.com>
+References: <20210226135156.1081606-1-figiel@google.com>
+Subject: Re: [PATCH v2] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
 MIME-Version: 1.0
-In-Reply-To: <20210226012931.161429-1-vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-26_03:2021-02-24,2021-02-26 signatures=0
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
+Thread-Topic: ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+Thread-Index: 8ww6gQARVjS9yplUpDDdbZG1dtieAw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/21 2:29 AM, William Breathitt Gray wrote:
-> When in SLAVE_MODE_DISABLED mode, the count still increases if the
-> counter is enabled because an internal clock is used. This patch fixes
-> the stm32_count_function_get() and stm32_count_function_set() functions
-> to properly handle this behavior.
-> 
-> Fixes: ad29937e206f ("counter: Add STM32 Timer quadrature encoder")
-> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+----- On Feb 26, 2021, at 8:51 AM, Piotr Figiel figiel@google.com wrote:
+[...]
 > ---
-> Changes in v2:
->  - Support an explicit 0 case for function_get()/function_set()
+> v2:
+> Applied review comments:
+> - changed return value from the ptrace request to the size of the
+>   configuration structure
+> - expanded configuration structure with the flags field and
+>   the rseq abi structure size
 > 
->  drivers/counter/stm32-timer-cnt.c | 39 ++++++++++++++++++++-----------
->  1 file changed, 25 insertions(+), 14 deletions(-)
+[...]
+> +#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
+> +
+> +struct ptrace_rseq_configuration {
+> +	__u64 rseq_abi_pointer;
+> +	__u32 rseq_abi_size;
+> +	__u32 signature;
+> +	__u32 flags;
+> +	__u32 pad;
+> +};
+> +
+[...]
+> +#ifdef CONFIG_RSEQ
+> +static long ptrace_get_rseq_configuration(struct task_struct *task,
+> +					  unsigned long size, void __user *data)
+> +{
+> +	struct ptrace_rseq_configuration conf = {
+> +		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
+> +		.rseq_abi_size = sizeof(*task->rseq),
+> +		.signature = task->rseq_sig,
+> +		.flags = 0,
+> +	};
+> +
+> +	size = min_t(unsigned long, size, sizeof(conf));
+> +	if (copy_to_user(data, &conf, size))
+> +		return -EFAULT;
+> +	return sizeof(conf);
+> +}
 
-Hi William,
+I think what Florian was after would be:
 
-Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+struct ptrace_rseq_configuration {
+	__u32 size;  /* size of struct ptrace_rseq_configuration */
+	__u32 flags;
+	__u64 rseq_abi_pointer;
+	__u32 signature;
+	__u32 pad;
+};
 
-Many thanks for this fix.
-Best Regards,
-Fabrice
+where:
+
+    .size = sizeof(struct ptrace_rseq_configuration),
+
+This way, the configuration structure can be expanded in the future. The
+rseq ABI structure is by definition fixed-size, so there is no point in
+having its size here.
+
+Florian, did I understand your request correctly, or am I missing your point ?
+
+Thanks,
+
+Mathieu
 
 
-> 
-> diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-> index ef2a974a2f10..cd50dc12bd02 100644
-> --- a/drivers/counter/stm32-timer-cnt.c
-> +++ b/drivers/counter/stm32-timer-cnt.c
-> @@ -44,13 +44,14 @@ struct stm32_timer_cnt {
->   * @STM32_COUNT_ENCODER_MODE_3: counts on both TI1FP1 and TI2FP2 edges
->   */
->  enum stm32_count_function {
-> -	STM32_COUNT_SLAVE_MODE_DISABLED = -1,
-> +	STM32_COUNT_SLAVE_MODE_DISABLED,
->  	STM32_COUNT_ENCODER_MODE_1,
->  	STM32_COUNT_ENCODER_MODE_2,
->  	STM32_COUNT_ENCODER_MODE_3,
->  };
->  
->  static enum counter_count_function stm32_count_functions[] = {
-> +	[STM32_COUNT_SLAVE_MODE_DISABLED] = COUNTER_COUNT_FUNCTION_INCREASE,
->  	[STM32_COUNT_ENCODER_MODE_1] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_A,
->  	[STM32_COUNT_ENCODER_MODE_2] = COUNTER_COUNT_FUNCTION_QUADRATURE_X2_B,
->  	[STM32_COUNT_ENCODER_MODE_3] = COUNTER_COUNT_FUNCTION_QUADRATURE_X4,
-> @@ -90,6 +91,9 @@ static int stm32_count_function_get(struct counter_device *counter,
->  	regmap_read(priv->regmap, TIM_SMCR, &smcr);
->  
->  	switch (smcr & TIM_SMCR_SMS) {
-> +	case 0:
-> +		*function = STM32_COUNT_SLAVE_MODE_DISABLED;
-> +		return 0;
->  	case 1:
->  		*function = STM32_COUNT_ENCODER_MODE_1;
->  		return 0;
-> @@ -99,9 +103,9 @@ static int stm32_count_function_get(struct counter_device *counter,
->  	case 3:
->  		*function = STM32_COUNT_ENCODER_MODE_3;
->  		return 0;
-> +	default:
-> +		return -EINVAL;
->  	}
-> -
-> -	return -EINVAL;
->  }
->  
->  static int stm32_count_function_set(struct counter_device *counter,
-> @@ -112,6 +116,9 @@ static int stm32_count_function_set(struct counter_device *counter,
->  	u32 cr1, sms;
->  
->  	switch (function) {
-> +	case STM32_COUNT_SLAVE_MODE_DISABLED:
-> +		sms = 0;
-> +		break;
->  	case STM32_COUNT_ENCODER_MODE_1:
->  		sms = 1;
->  		break;
-> @@ -122,8 +129,7 @@ static int stm32_count_function_set(struct counter_device *counter,
->  		sms = 3;
->  		break;
->  	default:
-> -		sms = 0;
-> -		break;
-> +		return -EINVAL;
->  	}
->  
->  	/* Store enable status */
-> @@ -274,31 +280,36 @@ static int stm32_action_get(struct counter_device *counter,
->  	size_t function;
->  	int err;
->  
-> -	/* Default action mode (e.g. STM32_COUNT_SLAVE_MODE_DISABLED) */
-> -	*action = STM32_SYNAPSE_ACTION_NONE;
-> -
->  	err = stm32_count_function_get(counter, count, &function);
->  	if (err)
-> -		return 0;
-> +		return err;
->  
->  	switch (function) {
-> +	case STM32_COUNT_SLAVE_MODE_DISABLED:
-> +		/* counts on internal clock when CEN=1 */
-> +		*action = STM32_SYNAPSE_ACTION_NONE;
-> +		return 0;
->  	case STM32_COUNT_ENCODER_MODE_1:
->  		/* counts up/down on TI1FP1 edge depending on TI2FP2 level */
->  		if (synapse->signal->id == count->synapses[0].signal->id)
->  			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
-> -		break;
-> +		else
-> +			*action = STM32_SYNAPSE_ACTION_NONE;
-> +		return 0;
->  	case STM32_COUNT_ENCODER_MODE_2:
->  		/* counts up/down on TI2FP2 edge depending on TI1FP1 level */
->  		if (synapse->signal->id == count->synapses[1].signal->id)
->  			*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
-> -		break;
-> +		else
-> +			*action = STM32_SYNAPSE_ACTION_NONE;
-> +		return 0;
->  	case STM32_COUNT_ENCODER_MODE_3:
->  		/* counts up/down on both TI1FP1 and TI2FP2 edges */
->  		*action = STM32_SYNAPSE_ACTION_BOTH_EDGES;
-> -		break;
-> +		return 0;
-> +	default:
-> +		return -EINVAL;
->  	}
-> -
-> -	return 0;
->  }
->  
->  static const struct counter_ops stm32_timer_cnt_ops = {
-> 
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
