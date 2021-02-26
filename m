@@ -2,71 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21C9326146
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D462326158
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhBZKaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:30:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47184 "EHLO mail.kernel.org"
+        id S231175AbhBZKd2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Feb 2021 05:33:28 -0500
+Received: from leonov.paulk.fr ([185.233.101.22]:55092 "EHLO leonov.paulk.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230139AbhBZKaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:30:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B41F964EE2;
-        Fri, 26 Feb 2021 10:29:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614335377;
-        bh=YNWSUpBBEtxB4i+CJpuo5l2fb40VGQVshhznjKLxP/8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o5YM32uniY8JGmhdU2mfkWTfNTmgARB+SFtM4x+jSOvD++I4WFNm2UbirQ8aFyOpG
-         bwoZgpv6LOq1mi1z/gIDVTyj3eZ6j/WLKoyK/la5rUIlPGXT048TC9X1GQVSkQ4d0v
-         ULWHuf8nEsc4NwgepmYgGO+IJPJTP0MYztgVd9BeE0vkaDUkCu2wSx+rntN4QOZOct
-         Q5CY0wxd4DU1+K51NkxrF+tlk+5bZKeetn/ANusAnmCmIa1MIYT1jUQ5bI0j6sP9xR
-         Kr8oz1Psy+9Smpd6vBYtdnY+YAQTvCM9HrduwgxaH9PeWBbcOEjVqRb1w9HZfSzbuU
-         3l/TDreckHeXQ==
-Received: by mail-ej1-f44.google.com with SMTP id g5so13957637ejt.2;
-        Fri, 26 Feb 2021 02:29:36 -0800 (PST)
-X-Gm-Message-State: AOAM5312LpBx7tbaIBJK5BRc0Ibf/q8RLedSn9bjWqxJPT9gQCPeVjiu
-        6rBq0USRs9HzAM5DF4t989cJkYAd1LdaO4b1R5A=
-X-Google-Smtp-Source: ABdhPJw6j1MeqTqnvIznLmkp9C+b/BZM5vgzxywTeZDDKXiREVY8JIiGwzwmpM/kNtkC39EdkWsuS/sfffdaO3zcHNU=
-X-Received: by 2002:a17:906:a896:: with SMTP id ha22mr2522464ejb.503.1614335375164;
- Fri, 26 Feb 2021 02:29:35 -0800 (PST)
+        id S230474AbhBZKb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:31:57 -0500
+X-Greylist: delayed 505 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Feb 2021 05:31:52 EST
+Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
+        by leonov.paulk.fr (Postfix) with ESMTPS id D70D6C01C7;
+        Fri, 26 Feb 2021 11:22:33 +0100 (CET)
+Received: by gagarine.paulk.fr (Postfix, from userid 114)
+        id 86FC4C1E7C; Fri, 26 Feb 2021 11:22:32 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,SHORTCIRCUIT
+        autolearn=disabled version=3.4.2
+Received: from aptenodytes (unknown [192.168.1.1])
+        by gagarine.paulk.fr (Postfix) with ESMTPSA id 1D145C1E76;
+        Fri, 26 Feb 2021 11:22:16 +0100 (CET)
+Date:   Fri, 26 Feb 2021 11:22:15 +0100
+From:   Paul Kocialkowski <contact@paulk.fr>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Samuel Holland <samuel@sholland.org>
+Subject: Re: linux-next: manual merge of the irqchip tree with the sunxi tree
+Message-ID: <YDjL1zcCNDlFVKbj@aptenodytes>
+References: <20210201144259.102ae6ab@canb.auug.org.au>
+ <20210215091124.46c005ad@canb.auug.org.au>
+ <20210218154857.75bad5df@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1614302920-19505-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1614302920-19505-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Fri, 26 Feb 2021 11:29:23 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPf9kqOSng5XULJ8qTADfk3VB273dTqY2qoUA3b+MUPJ+g@mail.gmail.com>
-Message-ID: <CAJKOXPf9kqOSng5XULJ8qTADfk3VB273dTqY2qoUA3b+MUPJ+g@mail.gmail.com>
-Subject: Re: [PATCH v2] media: exynos4-is: add missing call to of_node_put()
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     mchehab@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210218154857.75bad5df@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 at 02:28, Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> In one of the error paths of the for_each_child_of_node() loop in
-> fimc_md_parse_one_endpoint, add missing call to of_node_put().
->
-> Fix the following coccicheck warning:
-> ./drivers/media/platform/exynos4-is/media-dev.c:489:1-23: WARNING:
-> Function "for_each_child_of_node" should have of_node_put() before
-> return around line 492.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Hi,
 
-You ignored the comment for this. Anyone can run Coccinelle and it
-does not equal "Reported-by" credit. Reported by is for reported bugs,
-but I asked three times to you guys to share the reports. This is not
-an open way of working.
+On Thu 18 Feb 21, 15:48, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Mon, 15 Feb 2021 09:11:24 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > On Mon, 1 Feb 2021 14:42:59 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > Today's linux-next merge of the irqchip tree got a conflict in:
+> > > 
+> > >   Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
+> > > 
+> > > between commit:
+> > > 
+> > >   752b0aac99c7 ("dt-bindings: irq: sun7i-nmi: Add binding documentation for the V3s NMI")
+> > > 
+> > > from the sunxi tree and commit:
+> > > 
+> > >   ad6b47cdef76 ("dt-bindings: irq: sun6i-r: Split the binding from sun7i-nmi")
+> > > 
+> > > from the irqchip tree.
+> > > 
+> > > I fixed it up (I think - see below) and can carry the fix as
+> > > necessary. This is now fixed as far as linux-next is concerned, but any
+> > > non trivial conflicts should be mentioned to your upstream maintainer
+> > > when your tree is submitted for merging.  You may also want to consider
+> > > cooperating with the maintainer of the conflicting tree to minimise any
+> > > particularly complex conflicts.
+> > > 
+> > > diff --cc Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
+> > > index 4fd1e2780026,f34ecc8c7093..000000000000
+> > > --- a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
+> > > +++ b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a20-sc-nmi.yaml
+> > > @@@ -25,17 -25,7 +25,10 @@@ properties
+> > >         - const: allwinner,sun6i-a31-sc-nmi
+> > >           deprecated: true
+> > >         - const: allwinner,sun7i-a20-sc-nmi
+> > > -       - items:
+> > > -           - const: allwinner,sun8i-a83t-r-intc
+> > > -           - const: allwinner,sun6i-a31-r-intc
+> > >  +      - items:
+> > >  +          - const: allwinner,sun8i-v3s-nmi
+> > >  +          - const: allwinner,sun9i-a80-nmi
+> > >         - const: allwinner,sun9i-a80-nmi
+> > > -       - items:
+> > > -           - const: allwinner,sun50i-a64-r-intc
+> > > -           - const: allwinner,sun6i-a31-r-intc
+> > >         - items:
+> > >             - const: allwinner,sun50i-a100-nmi
+> > >             - const: allwinner,sun9i-a80-nmi  
+> > 
+> > With the merge window about to open, this is a reminder that this
+> > conflict still exists.  It is now between the arm-soc tree and the
+> > irqchip tree.
+> 
+> This is now a conflict between the arm-soc tree and the tip tree.
 
-This should be removed.
+The resolution looks correct to me!
 
-Best regards,
-Krzysztof
+Cheers,
+
+Paul
+
+-- 
+Developer of free digital technology and hardware support.
+
+Website: https://www.paulk.fr/
+Coding blog: https://code.paulk.fr/
+Git repositories: https://git.paulk.fr/ https://git.code.paulk.fr/
