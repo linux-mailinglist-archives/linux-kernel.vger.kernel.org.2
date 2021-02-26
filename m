@@ -2,57 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA23832667F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17406326684
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 18:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhBZRw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 12:52:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54850 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230049AbhBZRvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 12:51:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 84CDCAFCC;
-        Fri, 26 Feb 2021 17:51:08 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     tglx@linutronix.de
-Cc:     mingo@redhat.com, peterz@infradead.org, dvhart@infradead.org,
-        dave@stgolabs.net, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH 4/4] kernel/futex: Explicitly document pi_lock for pi_state owner fixup
-Date:   Fri, 26 Feb 2021 09:50:29 -0800
-Message-Id: <20210226175029.50335-4-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210226175029.50335-1-dave@stgolabs.net>
-References: <20210226175029.50335-1-dave@stgolabs.net>
+        id S230234AbhBZRxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 12:53:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhBZRw7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 12:52:59 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52A1C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:52:18 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id g9so8748928ilc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 09:52:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dY88CmhEdqi8wt/ahIMuuDlu90hzE7DFVh5FsuKso0s=;
+        b=GEozSIwSQMHght7BICfIen1ZuqO1Uu8LnD6oos4DAN9zjNzl+T9of+vQKxslcE2Bjl
+         B+55kRiyHRj05v6DxQbsCcajyLUzb5WsFfKr2roMoSzknE6EsZ/a5Yc++mYmoMWZoxEj
+         pCBOx2bG1l70JBbuNroc8ck/XWt9UWsOLppl0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dY88CmhEdqi8wt/ahIMuuDlu90hzE7DFVh5FsuKso0s=;
+        b=YexVcYZ/2VCr84FXIXwDrOA8f7PRHSWrier22Uvr1qyemU7LXwbE+LeVlzwmQgfhOh
+         gHwAhMxu6V+N8qLIo49OEdZHFRC8ei4cJEh/USkDm+UCp3Y18FRNRttCHhA27fAStT6F
+         Oi7YAoXmopz5zHcSHyOGE202JISP85NaCGaoCcbkxFFtXzuMraYX/BHK6GojVGfV5250
+         C5BAYiFTdJqA++I3UWkARcupUkH/pXDGsLu/0Ggm3lxuisX4CYiybP7U0skZ/v8TVkki
+         bCd7hH5EPg3sumvQtlczZQ0ZMXstonAJLMcf6yTGGYTNL2xxgdCj10B+DeeS7xnwZE5F
+         HyMg==
+X-Gm-Message-State: AOAM5337KhSAhM3P8RUc3Bs4PocMLUZF3uGDmslyWxS4XJ1q4YARh6VD
+        BRqJjSfTMhwdlGtSp9NBwNNKxQ==
+X-Google-Smtp-Source: ABdhPJyk6Fd7CHK3TK6ZvIe6aA/9gQV5HhrgT8cwxOjO3hwk/x87J2J5g+K3jvzjCy1GS3+/u9qmFg==
+X-Received: by 2002:a05:6e02:881:: with SMTP id z1mr3371733ils.288.1614361938177;
+        Fri, 26 Feb 2021 09:52:18 -0800 (PST)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y25sm5594060ioa.5.2021.02.26.09.52.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 09:52:17 -0800 (PST)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] Add lockdep_assert_not_held()
+Date:   Fri, 26 Feb 2021 10:52:12 -0700
+Message-Id: <cover.1614355914.git.skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This seems to belong in the serialization and lifetime rules section.
-pi_state_update_owner() will take the pi_mutex's owner's pi_lock to
-do whatever fixup, successful or not.
+Some kernel functions must not be called holding a specific lock. Doing
+so could lead to locking problems. Currently these routines call
+lock_is_held() to check for lock hold followed by WARN_ON.
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
- kernel/futex.c | 1 +
- 1 file changed, 1 insertion(+)
+Adding a common lockdep interface will help reduce the duplication of this
+logic in the rest of the kernel.
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index dcd6132485e1..475055715371 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -981,6 +981,7 @@ static inline void exit_pi_state_list(struct task_struct *curr) { }
-  * p->pi_lock:
-  *
-  *	p->pi_state_list -> pi_state->list, relation
-+ *	pi_mutex->owner -> pi_state->owner, relation
-  *
-  * pi_state->refcount:
-  *
+Add lockdep_assert_not_held() to be used in these functions to detect
+incorrect calls while holding a lock.
+
+lockdep_assert_not_held() provides the opposite functionality of
+lockdep_assert_held() which is used to assert calls that require
+holding a specific lock.
+
+The need for lockdep_assert_not_held() came up in a discussion on
+ath10k patch. ath10k_drain_tx() and i915_vma_pin_ww() are examples
+of functions that can use lockdep_assert_not_held().
+
+Link: https://lore.kernel.org/lkml/37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org/
+Link: https://lore.kernel.org/linux-wireless/871rdmu9z9.fsf@codeaurora.org/
+
+This patch series adds lockdep_assert_not_held() and uses it in the
+second patch in ath10k_drain_tx() function.
+
+Patch 1 incorporates suggestions from Peter Zijlstra on v1 series
+to avoid misfires when lockdep_off() is employed.
+
+Patch 2 Johannes Berg's suggestions as it make it easier to read and
+maintain the lock states. These are defines and a enum to avoid changes
+to lock_is_held_type() and lockdep_is_held() return types.
+
+Patch 2 is a separate patch because it adds defines to lockdep.h and
+kernel/locking/lockdep.c now includes lockdep.h - decided make this
+a separate patch just in case issues related to header dependencies
+pop up. I can combine Patches 1&2 if that is preferred.
+
+Patch 3 uses the new interface in ath10k_drain_tx() function. Added
+Kalle Valo's Ack from v1 for this change.
+
+Tested on the mainline from yesterday.
+
+Shuah Khan (3):
+  lockdep: add lockdep_assert_not_held()
+  lockdep: add lockdep lock state defines
+  ath10k: detect conf_mutex held ath10k_drain_tx() calls
+
+ drivers/net/wireless/ath/ath10k/mac.c |  2 ++
+ include/linux/lockdep.h               | 18 +++++++++++++++---
+ kernel/locking/lockdep.c              |  6 +++++-
+ 3 files changed, 22 insertions(+), 4 deletions(-)
+
 -- 
-2.26.2
+2.27.0
 
