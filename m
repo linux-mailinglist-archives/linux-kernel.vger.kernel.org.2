@@ -2,152 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5C3325B71
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 03:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5354D325B80
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 03:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBZCGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 21:06:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        id S230084AbhBZCNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 21:13:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhBZCGl (ORCPT
+        with ESMTP id S229460AbhBZCNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 21:06:41 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAA4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:06:01 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id o3so8227320oic.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:06:01 -0800 (PST)
+        Thu, 25 Feb 2021 21:13:37 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52FBAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:12:57 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d12so2684143pfo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 18:12:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TEurnvnOY0UmTThAshzFygi7pp659PSVZrpUu3wFGLI=;
-        b=hROQH+eH59ynw+jEXUoBS0nUrg2rlQn1mDsc21mT6SdgqHwCZ8nkfIH1gSD9P5zl5N
-         r5Fv7JHPDEiGIWRF5ZoAXuW3Zwba1oQ6CU5A85a8kK9j2S0T7mBWJqsUyeryI+qGJASp
-         eN4V/WX+nSc0ROtexYEksc8y58dZgp2LKBJ4iSNuItO60HpGked6tt1HuzLdyYd+p89s
-         gScgX+CRPW7nsc/Zv93TbMt/TptyXcxmqQ59pGK/bBxC5J+dOuHv9knzVH/g7CRHOojl
-         yzxGRv9c6RlrY2bvjbP/FyFR2gWZJrFxVATpMfweVuUziXUAxfWPIc9Aix2tUdXs17Ae
-         HLDg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yeWyaSel7U9eSxOcBt5qJfEQetEzs7vQl7xINbGhi+A=;
+        b=XY79rE3hGyDbLdFZT8nD2HQ1isKgQ+OFXiOIFTeR5H5a4FsQVMdFmsvacNlq6pS2lJ
+         6GEHyvu4EenSb95Z985YMZlDcrT9jFr5k6UHhpDX1lTCfy55JW/r0VBqmhCPvs9QvsJS
+         ue0OTjy5vzxt+HAv6Ly+dnAPPjSa+gWpta1e+bGZWtR+GLbTwd+O7w+vE78ZDdO5bYEh
+         vCjFC9c1jP7tyIDYo3u85cqKvMwxnDB4w2K7tS5cV90u4kr6WLzbKDwWTnMcJlrRHxTF
+         h5CM+3Nl9E/dvsPEhZTwffOc2UEJLB/UWrfQuDj5xWjKqKaW9RpZ6L2myBIXiB4XIvD6
+         MPaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TEurnvnOY0UmTThAshzFygi7pp659PSVZrpUu3wFGLI=;
-        b=ZQyGER5AEdZZuvNraFpMFVvoYfOrd8po7JXVJiIIl1UMZDWLyYxZJZ1l/TptkdHpPI
-         O4t/eNnACAC7vMbBcwahf+DIF7IdmMBkbFgwG1/YSLoOF8JvxsZAGW4ExcfQ2dxHzFff
-         1QDVgSpvb+Bvrz/cPPtA3HX3RS4yTgJ+r8oioPJ8kQaohS5fOVXSxvGWD9i9e7Dy5RYt
-         gPw+QmIhDXzopu4+2ts9UfFccWHX9cJlbcBipfcb29DmBm7vOm2qpWj97oWZnsKjOm6d
-         tzJKDIsKFOKA8hUYSte6gCGbYvcRZcl92ppRtdFrPYB67CRyweUJgRtLR4MXZaarh/ot
-         9NuQ==
-X-Gm-Message-State: AOAM531v+Xg8EAvE1eb+lUH/rc23Y+3JVzg58EyiXPmz8V62TnwV94Sz
-        GBhpZ/x/sg/AvG73POADHAsVJ1hw7F2l/oAVxae2Lk6Y6Y2HSrud
-X-Google-Smtp-Source: ABdhPJwLbdjjSEpA9tPDJIp0UgD57ayyTMBSweHYSzyH1GU8UUElIgexqisJ4ZVko/j3oM0sqm+3BBahbvZXbhoIN+U=
-X-Received: by 2002:a05:6808:1290:: with SMTP id a16mr541518oiw.161.1614305160603;
- Thu, 25 Feb 2021 18:06:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yeWyaSel7U9eSxOcBt5qJfEQetEzs7vQl7xINbGhi+A=;
+        b=iu68XfP+fWZxDkrKnblpZoLFqNHc4dQ+DapyS85OVlNvfTTUac73NDv9BI+xQMy6YL
+         Xp5l6obfIKojZkWgNBG8fhgDHX9jTsdWByQkf219Pz1YWdYvL1f+O1HQfDzzWbYmhXip
+         18yhwHaKm3cOaeSv4RDemEhwntJhGCmyFQW1hnwPiq5mdcxTJp7JG8EUH+DuaFlK4uqt
+         in61J4z2lTzkXzHpyDFkmk0qrGmrdTHhUuDV3836izPslGOttarzlJ42MrRxTRO28KWB
+         0NUX+yEGNluis3Tl/fl27V9MnAMgJuxXlV7TFnlkAtHBU9UwXW/ubXfnNsDsl96CzcbU
+         9iXQ==
+X-Gm-Message-State: AOAM530usElRTJpyDiFKAm+DwrmFGYjbLNHrm4h2+PjuureyqOu6dYB2
+        xH/SXyw5jffS8Ke/KVw1aiUl5tZ9nOY=
+X-Google-Smtp-Source: ABdhPJw2+rDNi4gbjIsJUVGbsD6lPhwC1Ye+NPiIPMpls61+YQ/vGQj+DCb4ukpnWdAi4yyH7OokWg==
+X-Received: by 2002:aa7:8f15:0:b029:1ed:9356:a9e with SMTP id x21-20020aa78f150000b02901ed93560a9emr691428pfr.73.1614305576840;
+        Thu, 25 Feb 2021 18:12:56 -0800 (PST)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id 8sm7773531pfp.171.2021.02.25.18.12.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 18:12:56 -0800 (PST)
+From:   Yang Shi <shy828301@gmail.com>
+To:     hannes@cmpxchg.org, mhocko@suse.com, guro@fb.com,
+        shakeelb@google.com, akpm@linux-foundation.org, corbet@lwn.net
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] doc: memcontrol: add description for oom_kill
+Date:   Thu, 25 Feb 2021 18:12:54 -0800
+Message-Id: <20210226021254.3980-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210226010440.8474-1-chris.chiu@canonical.com>
-In-Reply-To: <20210226010440.8474-1-chris.chiu@canonical.com>
-From:   Jian-Hong Pan <jhp@endlessos.org>
-Date:   Fri, 26 Feb 2021 10:05:00 +0800
-Message-ID: <CAPpJ_ed1VqLQxcfdNobqWSkgtE7xrWKu8jK0U6jxWF1m3THdaA@mail.gmail.com>
-Subject: Re: [PATCH v2] ALSA: hda/realtek: Enable headset mic of Acer SWIFT
- with ALC256
-To:     chris.chiu@canonical.com
-Cc:     Takashi Iwai <tiwai@suse.com>, Kailang Yang <kailang@realtek.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Hui Wang <hui.wang@canonical.com>, alsa-devel@alsa-project.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<chris.chiu@canonical.com> =E6=96=BC 2021=E5=B9=B42=E6=9C=8826=E6=97=A5 =E9=
-=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=889:04=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> From: Chris Chiu <chris.chiu@canonical.com>
->
-> The Acer SWIFT Swift SF314-54/55 laptops with ALC256 cannot detect
-> both the headset mic and the internal mic. Introduce new fixup
-> to enable the jack sense and the headset mic. However, the internal
-> mic actually connects to Intel SST audio. It still needs Intel SST
-> support to make internal mic capture work.
->
-> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
-> ---
->   v1 -> v2: remove unnecessary aamix fixup
->
->  sound/pci/hda/patch_realtek.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
-c
-> index 1927605f0f7e..4871507cd4bf 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6406,6 +6406,7 @@ enum {
->         ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
->         ALC282_FIXUP_ACER_DISABLE_LINEOUT,
->         ALC255_FIXUP_ACER_LIMIT_INT_MIC_BOOST,
-> +       ALC256_FIXUP_ACER_HEADSET_MIC,
->  };
->
->  static const struct hda_fixup alc269_fixups[] =3D {
-> @@ -7853,6 +7854,16 @@ static const struct hda_fixup alc269_fixups[] =3D =
-{
->                 .chained =3D true,
->                 .chain_id =3D ALC255_FIXUP_ACER_MIC_NO_PRESENCE,
->         },
-> +       [ALC256_FIXUP_ACER_HEADSET_MIC] =3D {
-> +               .type =3D HDA_FIXUP_PINS,
-> +               .v.pins =3D (const struct hda_pintbl[]) {
-> +                       { 0x19, 0x02a1113c }, /* use as headset mic, with=
-out its own jack detect */
-> +                       { 0x1a, 0x90a1092f }, /* use as internal mic */
+When debugging an oom issue, I found the oom_kill counter of memcg is
+confusing.  At the first glance without checking document, I thought it
+just counts for memcg oom, but it turns out it counts both global and
+memcg oom.
 
-Since NID 0x1a is an internal DMIC, should this connection type be 0h?
-Or, even the quirk of the internal DMIC is not needed for this case.
-Because, it is Intel SST DMIC that does not connect to Realtek HDA
-CODEC.  (Not sure for this one)
+The cgroup v2 documents it, but the description is missed for cgroup v1.
 
-The quirk of NID 0x19 is okay for me.
+Signed-off-by: Yang Shi <shy828301@gmail.com>
+---
+ Documentation/admin-guide/cgroup-v1/memory.rst | 3 +++
+ 1 file changed, 3 insertions(+)
 
-BR,
-Jian-Hong Pan
+diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
+index 0936412e044e..44d5429636e2 100644
+--- a/Documentation/admin-guide/cgroup-v1/memory.rst
++++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+@@ -851,6 +851,9 @@ At reading, current status of OOM is shown.
+ 	  (if 1, oom-killer is disabled)
+ 	- under_oom	   0 or 1
+ 	  (if 1, the memory cgroup is under OOM, tasks may be stopped.)
++        - oom_kill         integer counter
++          The number of processes belonging to this cgroup killed by any
++          kind of OOM killer.
+ 
+ 11. Memory Pressure
+ ===================
+-- 
+2.26.2
 
-> +                       { }
-> +               },
-> +               .chained =3D true,
-> +               .chain_id =3D ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
-> +       },
->  };
->
->  static const struct snd_pci_quirk alc269_fixup_tbl[] =3D {
-> @@ -7879,9 +7890,11 @@ static const struct snd_pci_quirk alc269_fixup_tbl=
-[] =3D {
->         SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC299_=
-FIXUP_PREDATOR_SPK),
->         SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox", ALC269VC_FIXUP_A=
-CER_VCOPPERBOX_PINS),
->         SND_PCI_QUIRK(0x1025, 0x1248, "Acer Veriton N4660G", ALC269VC_FIX=
-UP_ACER_MIC_NO_PRESENCE),
-> +       SND_PCI_QUIRK(0x1025, 0x1269, "Acer SWIFT SF314-54", ALC256_FIXUP=
-_ACER_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x128f, "Acer Veriton Z6860G", ALC286_FIXUP=
-_ACER_AIO_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x1290, "Acer Veriton Z4860G", ALC286_FIXUP=
-_ACER_AIO_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x1291, "Acer Veriton Z4660G", ALC286_FIXUP=
-_ACER_AIO_HEADSET_MIC),
-> +       SND_PCI_QUIRK(0x1025, 0x129c, "Acer SWIFT SF314-55", ALC256_FIXUP=
-_ACER_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x1308, "Acer Aspire Z24-890", ALC286_FIXUP=
-_ACER_AIO_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x132a, "Acer TravelMate B114-21", ALC233_F=
-IXUP_ACER_HEADSET_MIC),
->         SND_PCI_QUIRK(0x1025, 0x1330, "Acer TravelMate X514-51T", ALC255_=
-FIXUP_ACER_HEADSET_MIC),
-> --
-> 2.20.1
->
