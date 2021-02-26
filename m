@@ -2,130 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFD032696B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FDE326976
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBZV07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
+        id S230210AbhBZV1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:27:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbhBZV0x (ORCPT
+        with ESMTP id S229745AbhBZV1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:26:53 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D686DC061574;
-        Fri, 26 Feb 2021 13:26:12 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id k66so8944810wmf.1;
-        Fri, 26 Feb 2021 13:26:12 -0800 (PST)
+        Fri, 26 Feb 2021 16:27:17 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819B3C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:26:37 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id a4so6952222pgc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:26:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WtfPlX43FY10uur2tSwLAOsOecSUXbzQq7gDehGeFQk=;
-        b=C1f+rfQEmJIcXY/fWrA0CizUUxPGSklId6ZGan2XVBY51iXtn6IvRUtmyvGfUlFTq2
-         ShMYwk0MRyKmdy2+Q/6yzId/XYgv1djCYfhVSADvpaDYXT9Su9skLbeAonU6htnuNoad
-         GOAi5sbItXzPpy1+07iY7T2lvVIrgiakORLvRqIXVpGMiAUD7VNnYImh1DSHZPprQaz0
-         nCxC+rBtbk27ZX2G113tZww3lOJHeVzOuuzoGW3V1YRYRFkGjbS8CENnaQP27TNDtcR/
-         uaSXb/YCefTzCYWYEqPbib+RzWqBxTmNT3JgQWXl1S1fCWgFoJRwMFRNdn1pLtkhvXAs
-         DL6w==
+        d=george-graphics-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=cQuLN6vQ1ptZtp4bMRyyZsTd6BPgreKDQsJfM9SJC9A=;
+        b=z0wP+jbM8a/adjYckcngBEkj2zXwVLvEBn3vXSDtf1a6Y0jvtGJFxOg4yRsVtx3EpP
+         NNBnzHcf/0Htw5NGifO11vjhzkwDe7TK7VQdOqquglYuMgz1YJQ+USY2KC8nzB55e2lI
+         uKDEjnPuLm2IFn1H1AddfMyALhDt2PxSgp7WGKAwBTK65uCk3/csgDFeNJd0ThxKDGyr
+         IL7ZfqazEfJw14JeGOkb1+4S6QpLPAi1xEgPYG04K4yl1OEvcDf9StevIGs7shu8g6GS
+         tGe8O0QUwi7xsBnur2LqxbJujG9dzrQGvV83Pxlx0jFeoEVTi3uelAbdgXLEzD4jFBrb
+         L6IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WtfPlX43FY10uur2tSwLAOsOecSUXbzQq7gDehGeFQk=;
-        b=uJz0+dLnmtQwjB5gsfNBImS0h6skm6ndqQ93WtywRLnDKaGgOlhB2bIthvAuLEiCSK
-         2wjsbMQcqOpfU+Jcj8Kb5a/JWqVpqwEO42PAY/xD7A6QnwPuoDRJ7JWxgH4IFTNXrWy5
-         5IHGRfrBEaY2QW6a18migi8V4YtrqmDwgWysa0cYxWlLmjDl1EM3Pb2VFFP/QbN7y+Uf
-         YdfL6KlaSYlc1kDam8Qii8u8GHSYK4IqCnjMBQIsFr60rgIv9a1vC55TDgbDXnuGH4K6
-         gCsK9w27E/aFq6UeF+kl4GBD3RIsTx4uxfh8pjKwAt1VHOXvnZNSC3tFWKN/GxC41k2/
-         OBUQ==
-X-Gm-Message-State: AOAM533felkZWJ1y1+82/9jXr8P9SHVzomBUpddfKQI3Ls3DTqvmmJL3
-        w9fz4QgzDwELvamQ69mYNfLRuE57Snzi3A==
-X-Google-Smtp-Source: ABdhPJxTzfmIPyTFwFH1G03DQSgJUsasDwqPaNA8iZQ8pV+jSew9oUhcqYy/ycCyIQUj298aV0CZdw==
-X-Received: by 2002:a1c:7c14:: with SMTP id x20mr4440175wmc.17.1614374766631;
-        Fri, 26 Feb 2021 13:26:06 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id u4sm6756453wrm.24.2021.02.26.13.26.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 13:26:05 -0800 (PST)
-Subject: Re: [PATCH] copy_file_range.2: Kernel v5.12 updates
-To:     Jeff Layton <jlayton@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>
-Cc:     Luis Henriques <lhenriques@suse.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-References: <20210222102456.6692-1-lhenriques@suse.de>
- <20210224142307.7284-1-lhenriques@suse.de>
- <CAOQ4uxi3-+tOgHV_GUnWtJoQXbV5ZS9qDZsLsd9sJxX5Aftyew@mail.gmail.com>
- <YDd6EMpvZhHq6ncM@suse.de> <fd5d0d24-35e3-6097-31a9-029475308f15@gmail.com>
- <CAOQ4uxiVxEwvgFhdHGWLpdCk==NcGXgu52r_mXA+ebbLp_XPzQ@mail.gmail.com>
- <abf61760-2099-634a-7519-2138bb75e41b@gmail.com>
- <5da210ecdf9d01552f1f69f928ce68747a68bf08.camel@kernel.org>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <7469f0a9-216e-599c-e926-bbb5e6142d13@gmail.com>
-Date:   Fri, 26 Feb 2021 22:26:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=cQuLN6vQ1ptZtp4bMRyyZsTd6BPgreKDQsJfM9SJC9A=;
+        b=ThvPfzqm0/3eR7lGUQMaRAl7uOyASsEKAtiJnK4MLFDFgxQmcXue6UZGSZ5WHo3+ZO
+         +Tpb6U9Lr5hHH5ATN5F5gWx5ih9Bfy0+L7KyLg9OK2pdP1iqsjB9BiuwhDiZ6vak2EAo
+         mjGispo+J9i4lbAaZycr5vz70J80HHUulUFkxkBS3VBobWqqb6guOD1oiKF7x/yDAL71
+         2lP6EUTR7f+zAYJ5QhEGh0eFJYP1h15yMc/fTXz8Kx/kizMiPInnRqSBLaGVPw4eBevf
+         LCgsvfGgqA2mVASKjY9gPDbOYGr4QoeMm+HXnABDlWt24E6S2tnfH1lKh7KfCnAr7XL7
+         vbnw==
+X-Gm-Message-State: AOAM532gODJ9nEMJwqdBTul9fe03bNgjktdWO4ZVPOQZmHqul4aiuo+C
+        u4WH6HU8KTLI1dGFKcWcKxMc2g==
+X-Google-Smtp-Source: ABdhPJwKt6VhW0uARrhC1Yo5BYTAj+wNNG5F0IdDYp9dGwXZrVt4dYMh6wS8oGRsvr11C7IBIhtYCQ==
+X-Received: by 2002:aa7:9aad:0:b029:1ee:468a:d950 with SMTP id x13-20020aa79aad0000b02901ee468ad950mr2812806pfi.40.1614374796894;
+        Fri, 26 Feb 2021 13:26:36 -0800 (PST)
+Received: from sequencer.hsd1.wa.comcast.net ([2601:602:8000:181:df1d:64b5:575f:9598])
+        by smtp.gmail.com with ESMTPSA id 125sm10862073pfu.7.2021.02.26.13.26.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 13:26:36 -0800 (PST)
+From:   George Harker <george@george-graphics.co.uk>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     George Harker <george@george-graphics.co.uk>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] midi streaming substream names from jack names A number of devices have named substreams which are hard to remember / decypher from <device> MIDI n names.  Eg. Korg puts a pass through on one substream and iConnectivity devices name the connections.
+Date:   Fri, 26 Feb 2021 21:26:16 +0000
+Message-Id: <20210226212617.24616-1-george@george-graphics.co.uk>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <s5hczwpucd3.wl-tiwai@suse.de>
+References: <s5hczwpucd3.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <5da210ecdf9d01552f1f69f928ce68747a68bf08.camel@kernel.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jeff,
+This makes it easier to connect to the correct device.  Devices which
+handle naming through quirks are unaffected by this change.
 
-On 2/26/21 2:59 PM, Jeff Layton wrote:
-> Here's a link that should work. I'm probably breaking the rules a bit as
-> a subscriber, but hopefully Jon won't mind too much. FWIW, I've found it
-> to be worthwhile to subscribe to LWN if you're doing a lot of kernel
-> development:
-> 
->      https://lwn.net/SubscriberLink/846403/0fd639403e629cab/
+Addresses TODO comment in sound/usb/midi.c
 
-Thanks!  (I already received the link privately some minutes before from 
-various people.)
+Signed-off-by: George Harker <george@george-graphics.co.uk>
+---
+ sound/usb/midi.c | 103 ++++++++++++++++++++++++++++++++++++++++++++---
+ sound/usb/midi.h |   2 +
+ 2 files changed, 100 insertions(+), 5 deletions(-)
 
-It seems that he considers it fair use :)
-
-[[
-Where is it appropriate to post a subscriber link?
-
-Almost anywhere. Private mail, messages to project mailing lists, and 
-blog entries are all appropriate. As long as people do not use 
-subscriber links as a way to defeat our attempts to gain subscribers, we 
-are happy to see them shared.
-]]
-<https://lwn.net/op/FAQ.lwn#site>
-
-Cheers,
-
-Alex
-
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index 610cf54ee..9efda4b06 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1740,12 +1740,68 @@ static void snd_usbmidi_get_port_info(struct snd_rawmidi *rmidi, int number,
+ 	}
+ }
+ 
++static struct usb_midi_in_jack_descriptor *find_usb_in_jack_descriptor(
++					struct usb_host_interface *hostif, uint8_t jack_id)
++{
++	unsigned char *extra = hostif->extra;
++	int extralen = hostif->extralen;
++
++	while (extralen > 4) {
++		struct usb_midi_in_jack_descriptor *injd =
++				(struct usb_midi_in_jack_descriptor *)extra;
++
++		if (injd->bLength > 4 &&
++		    injd->bDescriptorType == USB_DT_CS_INTERFACE &&
++		    injd->bDescriptorSubtype == UAC_MIDI_IN_JACK &&
++				injd->bJackID == jack_id)
++			return injd;
++		if (!extra[0])
++			break;
++		extralen -= extra[0];
++		extra += extra[0];
++	}
++	return NULL;
++}
++
++static struct usb_midi_out_jack_descriptor *find_usb_out_jack_descriptor(
++					struct usb_host_interface *hostif, uint8_t jack_id)
++{
++	unsigned char *extra = hostif->extra;
++	int extralen = hostif->extralen;
++
++	while (extralen > 4) {
++		struct usb_midi_out_jack_descriptor *outjd =
++				(struct usb_midi_out_jack_descriptor *)extra;
++
++		if (outjd->bLength > 4 &&
++		    outjd->bDescriptorType == USB_DT_CS_INTERFACE &&
++		    outjd->bDescriptorSubtype == UAC_MIDI_OUT_JACK &&
++				outjd->bJackID == jack_id)
++			return outjd;
++		if (!extra[0])
++			break;
++		extralen -= extra[0];
++		extra += extra[0];
++	}
++	return NULL;
++}
++
+ static void snd_usbmidi_init_substream(struct snd_usb_midi *umidi,
+-				       int stream, int number,
++				       int stream, int number, int jack_id,
+ 				       struct snd_rawmidi_substream **rsubstream)
+ {
+ 	struct port_info *port_info;
+ 	const char *name_format;
++	struct usb_interface *intf;
++	struct usb_host_interface *hostif;
++	struct usb_midi_in_jack_descriptor *injd;
++	struct usb_midi_out_jack_descriptor *outjd;
++	uint8_t jack_name_buf[32];
++	uint8_t *default_jack_name = "MIDI";
++	uint8_t *jack_name = default_jack_name;
++	uint8_t iJack;
++	size_t sz;
++	int res;
+ 
+ 	struct snd_rawmidi_substream *substream =
+ 		snd_usbmidi_find_substream(umidi, stream, number);
+@@ -1755,11 +1811,36 @@ static void snd_usbmidi_init_substream(struct snd_usb_midi *umidi,
+ 		return;
+ 	}
+ 
+-	/* TODO: read port name from jack descriptor */
++	intf = umidi->iface;
++	if (intf && jack_id >= 0) {
++		hostif = intf->cur_altsetting;
++		iJack = 0;
++		if (stream != SNDRV_RAWMIDI_STREAM_OUTPUT) {
++			/* in jacks connect to outs */
++			outjd = find_usb_out_jack_descriptor(hostif, jack_id);
++			if (outjd) {
++				sz = USB_DT_MIDI_OUT_SIZE(outjd->bNrInputPins);
++				iJack = *(((uint8_t *) outjd) + sz - sizeof(uint8_t));
++			}
++		} else {
++			/* and out jacks connect to ins */
++			injd = find_usb_in_jack_descriptor(hostif, jack_id);
++			if (injd)
++				iJack = injd->iJack;
++		}
++		if (iJack != 0) {
++			res = usb_string(umidi->dev, iJack, jack_name_buf,
++			  ARRAY_SIZE(jack_name_buf));
++			if (res)
++				jack_name = jack_name_buf;
++		}
++	}
++
+ 	port_info = find_port_info(umidi, number);
+-	name_format = port_info ? port_info->name : "%s MIDI %d";
++	name_format = port_info ? port_info->name :
++		(jack_name != default_jack_name  ? "%s %s" : "%s %s %d");
+ 	snprintf(substream->name, sizeof(substream->name),
+-		 name_format, umidi->card->shortname, number + 1);
++		 name_format, umidi->card->shortname, jack_name, number + 1);
+ 
+ 	*rsubstream = substream;
+ }
+@@ -1794,6 +1875,7 @@ static int snd_usbmidi_create_endpoints(struct snd_usb_midi *umidi,
+ 				snd_usbmidi_init_substream(umidi,
+ 							   SNDRV_RAWMIDI_STREAM_OUTPUT,
+ 							   out_ports,
++							   endpoints[i].assoc_out_jacks[j],
+ 							   &umidi->endpoints[i].out->ports[j].substream);
+ 				++out_ports;
+ 			}
+@@ -1801,6 +1883,7 @@ static int snd_usbmidi_create_endpoints(struct snd_usb_midi *umidi,
+ 				snd_usbmidi_init_substream(umidi,
+ 							   SNDRV_RAWMIDI_STREAM_INPUT,
+ 							   in_ports,
++							   endpoints[i].assoc_in_jacks[j],
+ 							   &umidi->endpoints[i].in->ports[j].substream);
+ 				++in_ports;
+ 			}
+@@ -1846,7 +1929,7 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
+ 	struct usb_host_endpoint *hostep;
+ 	struct usb_endpoint_descriptor *ep;
+ 	struct usb_ms_endpoint_descriptor *ms_ep;
+-	int i, epidx;
++	int i, j, epidx;
+ 
+ 	intf = umidi->iface;
+ 	if (!intf)
+@@ -1895,6 +1978,10 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
+ 				endpoints[epidx].out_interval = 1;
+ 			endpoints[epidx].out_cables =
+ 				(1 << ms_ep->bNumEmbMIDIJack) - 1;
++			for (j = 0; j < ms_ep->bNumEmbMIDIJack; ++j)
++				endpoints[epidx].assoc_out_jacks[j] = ms_ep->baAssocJackID[j];
++			for (; j < ARRAY_SIZE(endpoints[epidx].assoc_out_jacks); ++j)
++				endpoints[epidx].assoc_out_jacks[j] = -1;
+ 			dev_dbg(&umidi->dev->dev, "EP %02X: %d jack(s)\n",
+ 				ep->bEndpointAddress, ms_ep->bNumEmbMIDIJack);
+ 		} else {
+@@ -1912,6 +1999,10 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
+ 				endpoints[epidx].in_interval = 1;
+ 			endpoints[epidx].in_cables =
+ 				(1 << ms_ep->bNumEmbMIDIJack) - 1;
++			for (j = 0; j < ms_ep->bNumEmbMIDIJack; ++j)
++				endpoints[epidx].assoc_in_jacks[j] = ms_ep->baAssocJackID[j];
++			for (; j < ARRAY_SIZE(endpoints[epidx].assoc_in_jacks); ++j)
++				endpoints[epidx].assoc_in_jacks[j] = -1;
+ 			dev_dbg(&umidi->dev->dev, "EP %02X: %d jack(s)\n",
+ 				ep->bEndpointAddress, ms_ep->bNumEmbMIDIJack);
+ 		}
+@@ -2228,11 +2319,13 @@ static int snd_usbmidi_create_endpoints_midiman(struct snd_usb_midi *umidi,
+ 			snd_usbmidi_init_substream(umidi,
+ 						   SNDRV_RAWMIDI_STREAM_OUTPUT,
+ 						   cable,
++						   -1 /* prevent trying to find jack */,
+ 						   &umidi->endpoints[cable & 1].out->ports[cable].substream);
+ 		if (endpoint->in_cables & (1 << cable))
+ 			snd_usbmidi_init_substream(umidi,
+ 						   SNDRV_RAWMIDI_STREAM_INPUT,
+ 						   cable,
++						   -1 /* prevent trying to find jack */,
+ 						   &umidi->endpoints[0].in->ports[cable].substream);
+ 	}
+ 	return 0;
+diff --git a/sound/usb/midi.h b/sound/usb/midi.h
+index 8c38aec22..3f153195c 100644
+--- a/sound/usb/midi.h
++++ b/sound/usb/midi.h
+@@ -13,6 +13,8 @@ struct snd_usb_midi_endpoint_info {
+ 	uint8_t  in_interval;
+ 	uint16_t out_cables;	/* bitmask */
+ 	uint16_t in_cables;	/* bitmask */
++	int16_t  assoc_in_jacks[16];
++	int16_t  assoc_out_jacks[16];
+ };
+ 
+ /* for QUIRK_MIDI_YAMAHA, data is NULL */
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+2.20.1
+
