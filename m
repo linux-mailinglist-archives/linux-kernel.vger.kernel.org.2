@@ -2,102 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A8E32690E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D470D326913
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhBZVAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:00:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50668 "EHLO
+        id S230422AbhBZVA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:00:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhBZVAe (ORCPT
+        with ESMTP id S230185AbhBZVAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:00:34 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2326C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:59:53 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id x19so10258509ybe.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 12:59:53 -0800 (PST)
+        Fri, 26 Feb 2021 16:00:47 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59117C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:00:05 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id r17so16962254ejy.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:00:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OQ3uCqKtxHunbFIt0ruK6PxkQ3eNGZHTwV/YrcwIFXw=;
-        b=uWV9w/YN3vsb+dJr7QVQ3p23vztqZdtyNRbHkb3+2I5teJCDcvw9IGB0Osc2cNjvtM
-         lAdHxn8xMX/JTB6bGtsn5r5OPjSSIwO8xo0XL7phT9AVJbHgIXbTjxShGXa4ir+/x81a
-         7zesy2B1Kw0IhcR8VE3Ig1KwnBzGBzOT5LNotQng2SE2R4jJeCOkNIVlbSzuKLSTIRvx
-         vGMWAzMgrzwp5M9Lqw9wu7vFQbcfFLYpl/0LkhZR67HlmoWfvpI0BhwyZL470pMQXkxj
-         BABYycc6MeaFvDH4xaLodDhTEpO5NmdiXuHTYjG+XhqCGBPQj8e9jnM3R2URPKEQuHAr
-         bX2A==
+        bh=zcQVf2L16DF1R7/sAErfdlf5yiNv7ZgQmWWZvBx0O7Y=;
+        b=i9J2NEsaXdVW+xwyoC4uKryJBgK9gHlQ7rn0quR2L+4Oc/C8oI27RfDLQZQo0NCs/g
+         hnrG1r6gm7njrx0fVEjP15LRadpIIXN/fOV5yKa01mFTbo1gcBDGjhwbZ7ZOLVe9f3cs
+         rSg899zbhjmj9QpjjBl4C7469jymgZ1pywhm0Yi9YbtPNPwZ2dPcm+SZW7JxR+if3mxW
+         2ovsyRLMabpzn+UfK4PuDGgo/cUZoppPCV+qLm/F+ETuObciepwGF7IQ1xtRVWFJLB+b
+         KZEQJrNlzzrVi641tIumtAdQnvy83AqgijwIGL3hqkDEuk1oRuBS/V/pxBDajS2Srnrr
+         4QGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OQ3uCqKtxHunbFIt0ruK6PxkQ3eNGZHTwV/YrcwIFXw=;
-        b=LKIsWxfAQulfSNaWgWBVzwrglOOhrDbwP6TAdD4xtLd6DHqvCrRE6hp1zjg47f6FYu
-         6RNs4gg9/y5hzIodXs95xRQfX9BCKFanYDVwvCy/e0ww9UDG9TU1EUce4dYcuEgMFZsv
-         Fi7bBG6PzoMDnGyRM97icwNpfQtAWMOSiU/mce3KO6U1B0Chf+VOoQErb/VfbKGLvhtW
-         zhRzKf2UJIwRtdLpgqQidbMkVPJ0zjlOyYN57AbJ+cz1mWtM3y5wZHS8AVPaQ5er1lRG
-         Z06RT57RLZ9pjV8H8j+uyukHpizi9+tBBJN+ZdqntO25WbeyLmasNa96K2QXJd8ZEUy4
-         WYLw==
-X-Gm-Message-State: AOAM531aLFR/HY54XBYPDjTbTcRa0bNgegP7BKhL+0aNodpnyxOZaJ5G
-        E60jjuIVdvjhkACYgNpZLqh6Tduv012/vTwiFp6eQA==
-X-Google-Smtp-Source: ABdhPJwTS6ztKzPGi+b6i/fWrf0Ve/YSTf4gj+rLuWe5Ub370djTYP3Wb2hFphW7m6seH6RjpMxbI9S07o9Xv8qLs1E=
-X-Received: by 2002:a25:ca8f:: with SMTP id a137mr7070683ybg.228.1614373192926;
- Fri, 26 Feb 2021 12:59:52 -0800 (PST)
+        bh=zcQVf2L16DF1R7/sAErfdlf5yiNv7ZgQmWWZvBx0O7Y=;
+        b=np4cXOFlP3TctT52zWBmHAGIJ+o3jOY4DMR7t60eztvWB6TipBm8LO1zu/Ri6wAyeB
+         Hn4XZCp750ToJacIE6CM1/xZyt3ECqZkGrSwsuJiRtaw/0S/MgFsDsbF8+oTms7V6Y3z
+         y8bTlUT6fpPyknODjha5MlKbCe/dEsn7gcEpI577uxlNVRAd5szqP71cFGlf3BS8MoYP
+         huvTLAffJjr8Lm5WX00XC58YVMZbATGhRDardrv6jlA44F+vBzgBgZawczK/DEcqgndM
+         B7oHgj4OLHCqdrqR8LYjJh6nwLA+GK38mtZpsadJG6Hy1W6wWbpRup/9hPCMutYiAfSe
+         2piA==
+X-Gm-Message-State: AOAM532c0aoT9to/5IfpYbDJ5jBg05NWVRxvklXI0cS+m8ETH35NZYz8
+        aKlPqruVNN7dJ/6kJ3vcqAdJL47CAnCAGMqKqIN8mA==
+X-Google-Smtp-Source: ABdhPJxDAdEBlk0RbwYt70jYfdky1u7QL1zNZXib8jYKCmqQiS//AXLx/UeM+e6rrhKUOcntNXe+fmaTNeYAK6yOe7A=
+X-Received: by 2002:a17:906:6088:: with SMTP id t8mr5436602ejj.323.1614373204093;
+ Fri, 26 Feb 2021 13:00:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20210226145246.1171-1-johan@kernel.org> <20210226145246.1171-3-johan@kernel.org>
-In-Reply-To: <20210226145246.1171-3-johan@kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 26 Feb 2021 12:59:17 -0800
-Message-ID: <CAGETcx--z+W4OHTOX-F73a3bvyDahivSB42kojOnzQh-WLmd7g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpio: fix gpio-device list corruption
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+ <20210226190454.GD7272@magnolia> <CAPcyv4iJiYsM5FQdpMvCi24aCi7RqUnnxC6sM0umFqiN+Q59cg@mail.gmail.com>
+ <20210226205126.GX4662@dread.disaster.area>
+In-Reply-To: <20210226205126.GX4662@dread.disaster.area>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 26 Feb 2021 12:59:53 -0800
+Message-ID: <CAPcyv4iDefA3Y0wUW=p080SYAsM_2TPJba-V-sxdK_BeJMkmsw@mail.gmail.com>
+Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 6:55 AM Johan Hovold <johan@kernel.org> wrote:
+On Fri, Feb 26, 2021 at 12:51 PM Dave Chinner <david@fromorbit.com> wrote:
 >
-> Make sure to hold the gpio_lock when removing the gpio device from the
-> gpio_devices list (when dropping the last reference) to avoid corrupting
-> the list when there are concurrent accesses.
+> On Fri, Feb 26, 2021 at 11:24:53AM -0800, Dan Williams wrote:
+> > On Fri, Feb 26, 2021 at 11:05 AM Darrick J. Wong <djwong@kernel.org> wrote:
+> > >
+> > > On Fri, Feb 26, 2021 at 09:45:45AM +0000, ruansy.fnst@fujitsu.com wrote:
+> > > > Hi, guys
+> > > >
+> > > > Beside this patchset, I'd like to confirm something about the
+> > > > "EXPERIMENTAL" tag for dax in XFS.
+> > > >
+> > > > In XFS, the "EXPERIMENTAL" tag, which is reported in waring message
+> > > > when we mount a pmem device with dax option, has been existed for a
+> > > > while.  It's a bit annoying when using fsdax feature.  So, my initial
+> > > > intention was to remove this tag.  And I started to find out and solve
+> > > > the problems which prevent it from being removed.
+> > > >
+> > > > As is talked before, there are 3 main problems.  The first one is "dax
+> > > > semantics", which has been resolved.  The rest two are "RMAP for
+> > > > fsdax" and "support dax reflink for filesystem", which I have been
+> > > > working on.
+> > >
+> > > <nod>
+> > >
+> > > > So, what I want to confirm is: does it means that we can remove the
+> > > > "EXPERIMENTAL" tag when the rest two problem are solved?
+> > >
+> > > Yes.  I'd keep the experimental tag for a cycle or two to make sure that
+> > > nothing new pops up, but otherwise the two patchsets you've sent close
+> > > those two big remaining gaps.  Thank you for working on this!
+> > >
+> > > > Or maybe there are other important problems need to be fixed before
+> > > > removing it?  If there are, could you please show me that?
+> > >
+> > > That remains to be seen through QA/validation, but I think that's it.
+> > >
+> > > Granted, I still have to read through the two patchsets...
+> >
+> > I've been meaning to circle back here as well.
+> >
+> > My immediate concern is the issue Jason recently highlighted [1] with
+> > respect to invalidating all dax mappings when / if the device is
+> > ripped out from underneath the fs. I don't think that will collide
+> > with Ruan's implementation, but it does need new communication from
+> > driver to fs about removal events.
+> >
+> > [1]: http://lore.kernel.org/r/CAPcyv4i+PZhYZiePf2PaH0dT5jDfkmkDX-3usQy1fAhf6LPyfw@mail.gmail.com
 >
-> Fixes: ff2b13592299 ("gpio: make the gpiochip a real device")
-> Cc: stable@vger.kernel.org      # 4.6
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->  drivers/gpio/gpiolib.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> Oh, yay.
 >
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index e1016bc8cf14..42bdc55a15f9 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -475,8 +475,12 @@ EXPORT_SYMBOL_GPL(gpiochip_line_is_valid);
->  static void gpiodevice_release(struct device *dev)
->  {
->         struct gpio_device *gdev = container_of(dev, struct gpio_device, dev);
-> +       unsigned long flags;
+> The XFS shutdown code is centred around preventing new IO from being
+> issued - we don't actually do anything about DAX mappings because,
+> well, I don't think anyone on the filesystem side thought they had
+> to do anything special if pmem went away from under it.
 >
-> +       spin_lock_irqsave(&gpio_lock, flags);
->         list_del(&gdev->list);
-> +       spin_unlock_irqrestore(&gpio_lock, flags);
-> +
+> My understanding -was- that the pmem removal invalidates
+> all the ptes currently mapped into CPU page tables that point at
+> the dax device across the system. THe vmas that manage these
+> mappings are not really something the filesystem really manages,
+> but a function of the mm subsystem. What the filesystem cares about
+> is that it gets page faults triggered when a change of state occurs
+> so that it can remap the page to it's backing store correctly.
+>
+> IOWs, all the mm subsystem needs to when pmem goes away is clear the
+> CPU ptes, because then when then when userspace tries to access the
+> mapped DAX pages we get a new page fault. In processing the fault, the
+> filesystem will try to get direct access to the pmem from the block
+> device. This will get an ENODEV error from the block device because
+> because the backing store (pmem) has been unplugged and is no longer
+> there...
+>
+> AFAICT, as long as pmem removal invalidates all the active ptes that
+> point at the pmem being removed, the filesystem doesn't need to
+> care about device removal at all, DAX or no DAX...
 
-Reviewed-by: Saravana Kannan <saravanak@google.com>
+How would the pmem removal do that without walking all the active
+inodes in the fs at the time of shutdown and call
+unmap_mapping_range(inode->i_mapping, 0, 0, 1)?
 
--Saravana
-
->         ida_free(&gpio_ida, gdev->id);
->         kfree_const(gdev->label);
->         kfree(gdev->descs);
-> --
-> 2.26.2
->
+The core-mm does tear down the ptes in the direct map, but user
+mappings to pmem are not afaics in xfs_do_force_shutdown().
