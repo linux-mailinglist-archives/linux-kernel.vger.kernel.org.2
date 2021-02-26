@@ -2,135 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B106325FE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CC2325FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 10:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhBZJUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 04:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbhBZJSE (ORCPT
+        id S230139AbhBZJTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 04:19:49 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10988 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230313AbhBZJR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 04:18:04 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613FFC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:17:24 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 127so9419782ybc.19
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 01:17:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=iUHJ4YRRisIbzj/gPDQEXxkcbY1C4+1mIu/PFaLnQog=;
-        b=eVtjykQX7a3iQvYl2bryk72OmiRH+ix56YgMq3gp+OyFVrGHnyNBRWN7vpKH6aO4nA
-         tC4Jj8ZX/96l5YY5non2b8713wHBOP28FSZzrVgbw99Z3VG1r7rDcdA2CCSmY4zSDmjI
-         4In7oI7MfV8pipMsksdREMEb5Y+ctolmwIMeV2PAvbobF/7bO2nxJS3pIlWrhQLt/mJT
-         s2ptlYRPfHgch0+FY3IrtUqEYMlFEKDF/QApTNeJjc+idJmwxlLU8NU93WtADCOpLGzs
-         upCIfBcgLrZyKK9sCdcLizsbifzXZumDN5hK01kv+cwnMHp4t2oHFMZksRFIAVhto66V
-         HN+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=iUHJ4YRRisIbzj/gPDQEXxkcbY1C4+1mIu/PFaLnQog=;
-        b=fRsyYRz1SXTI5kAkA2IAsK7g6yr+yvuj7wcTUiaqxjlyDAEY3eQ7xtXkE6a3MjuhZq
-         4CO9h3S4GGRmiM/0guKdRCIj+JiARCFTBE3D3Z1TxcEZdOWHJB5FLuoI8z1bkCXYAbVH
-         N1yGFnH2KahzEHJLnQROG0Sx0J/kIzvTSfPgKEjCFlEBmilxEs8ytmTpEIjy2qfSZzB1
-         xWy4xehpcTKl1lHNCXEAvbNTO9GBwIijKB2pF6t4oBO6qrrl/mvIxGyhtvfy7iXZu/pd
-         CqgK+qZD6iO0sGq2TSTidR388EGleq5rpL8MThbtshWIRSJwfRlD/IxLkYI5JpWDx65X
-         BnIg==
-X-Gm-Message-State: AOAM531kqlXhr9Cg9nwhUj6FU5v8+eiTTOT2UCOXn+UuUKy0zblPNGYZ
-        3T6RUcs34Y6leC8oNSSam0ffb5/DlcHmCg==
-X-Google-Smtp-Source: ABdhPJytZ18QpC2AWlBHthypibLz2u/M0bX/RCMi3QsWmxODseYTeUPwkrdiZEDkWozlw050dv53yYiotb+pfQ==
-Sender: "rickyniu via sendgmr" <rickyniu@rickyniu.ntc.corp.google.com>
-X-Received: from rickyniu.ntc.corp.google.com ([2401:fa00:fc:202:31d4:be2d:8e3e:f8d3])
- (user=rickyniu job=sendgmr) by 2002:a25:ca8f:: with SMTP id
- a137mr3118930ybg.228.1614331043606; Fri, 26 Feb 2021 01:17:23 -0800 (PST)
-Date:   Fri, 26 Feb 2021 17:16:12 +0800
-Message-Id: <20210226091612.508639-1-rickyniu@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] ANDROID: usb: core: Send uevent when USB TOPO layer over 6
-From:   Ricky Niu <rickyniu@google.com>
-To:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu,
-        erosca@de.adit-jv.com, gustavoars@kernel.org,
-        a.darwish@linutronix.de, rickyniu@google.com, oneukum@suse.com,
-        kyletso@google.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 26 Feb 2021 04:17:56 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11Q93C71057230
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:17:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : from : to
+ : cc : date : mime-version : references : content-transfer-encoding :
+ content-type : message-id : subject; s=pp1;
+ bh=PotH5JG2MHJrOoczVTQTAqzpckFfWobxnwyEJO3Vjpk=;
+ b=s41TMNVJ6kLaZ9KHcRK3pU+cUGC38FZMO+e2hPu8KJPdc7nka9dTew8ba138K5Zob8LX
+ pHABIloUSzblVoQAkIYt6HeMSxg2RlWOVbxKqTDI9sYp1q6CrhElIC6ADXcrIMHQW3Y6
+ 4BnaNEKFNMCBTNQYZ45S51dM4lR88f9ywt6koMBFBO2e6DOy8UBzzjcQMLAgVO8gow4H
+ vlNM+8dpJcxrDVrB4NFGYJMl4y7I4fPCiICBR8MZND0tzrLKkx++yWc7qpq/rTwf5Yt9
+ FzwX5RuuD0YGySw9ViHM69LCDPyYCtdRE3HdcPEZUPxAq6dhEhYVBIjLnPUk4aUv+AFp eg== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.74])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36xphukfp1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 04:17:10 -0500
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-kernel@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Fri, 26 Feb 2021 09:17:10 -0000
+Received: from us1a3-smtp02.a3.dal06.isc4sb.com (10.106.154.159)
+        by smtp.notes.na.collabserv.com (10.106.227.92) with smtp.notes.na.collabserv.com ESMTP;
+        Fri, 26 Feb 2021 09:17:08 -0000
+Received: from us1a3-mail162.a3.dal06.isc4sb.com ([10.146.71.4])
+          by us1a3-smtp02.a3.dal06.isc4sb.com
+          with ESMTP id 2021022609170854-204592 ;
+          Fri, 26 Feb 2021 09:17:08 +0000 
+In-Reply-To: <20210226075515.21371-1-dinghao.liu@zju.edu.cn>
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "Dinghao Liu" <dinghao.liu@zju.edu.cn>
+Cc:     "kjlu" <kjlu@umn.edu>, "Doug Ledford" <dledford@redhat.com>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "linux-rdma" <linux-rdma@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Date:   Fri, 26 Feb 2021 09:17:07 +0000
+MIME-Version: 1.0
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20210226075515.21371-1-dinghao.liu@zju.edu.cn>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-LLNOutbound: False
+X-Disclaimed: 2983
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21022609-3165-0000-0000-000005880C6A
+X-IBM-SpamModules-Scores: BY=0.05931; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0.40962; ST=0; TS=0; UL=0; ISC=; MB=0.017918
+X-IBM-SpamModules-Versions: BY=3.00014794; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000295; SDB=6.01513339; UDB=6.00817410; IPR=6.01295862;
+ MB=3.00036258; MTD=3.00000008; XFM=3.00000015; UTC=2021-02-26 09:17:09
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-02-26 08:29:56 - 6.00012332
+x-cbparentid: 21022609-3166-0000-0000-0000CD7A0FDD
+Message-Id: <OF56E5E5C1.78489712-ON00258688.0032E2EA-00258688.003301A1@notes.na.collabserv.com>
+Subject: Re:  [PATCH] RDMA/siw: Fix missing check in siw_get_hdr
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-26_02:2021-02-24,2021-02-26 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the topology of the nested hubs are over 6 layers
-Send uevent to user space when USB TOPO layer over 6.
-Let end user more understand what happened.
+-----"Dinghao Liu" <dinghao.liu@zju.edu.cn> wrote: -----
 
-Signed-off-by: Ricky Niu <rickyniu@google.com>
----
- drivers/usb/core/hub.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+>To: dinghao.liu@zju.edu.cn, kjlu@umn.edu
+>From: "Dinghao Liu" <dinghao.liu@zju.edu.cn>
+>Date: 02/26/2021 08:56AM
+>Cc: "Bernard Metzler" <bmt@zurich.ibm.com>, "Doug Ledford"
+><dledford@redhat.com>, "Jason Gunthorpe" <jgg@ziepe.ca>,
+>linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+>Subject: [EXTERNAL] [PATCH] RDMA/siw: Fix missing check in
+>siw=5Fget=5Fhdr
+>
+>We should also check the range of opcode after calling
+>=5F=5Frdmap=5Fget=5Fopcode() in the else branch to prevent potential
+>overflow.
 
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index 7f71218cc1e5..e5e924526822 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -55,6 +55,10 @@ static DEFINE_SPINLOCK(device_state_lock);
- static struct workqueue_struct *hub_wq;
- static void hub_event(struct work_struct *work);
- 
-+/* struct to notify userspace of hub events */
-+static struct class *hub_class;
-+static struct device *hub_device;
-+
- /* synchronize hub-port add/remove and peering operations */
- DEFINE_MUTEX(usb_port_peer_mutex);
- 
-@@ -1764,6 +1768,13 @@ static bool hub_descriptor_is_sane(struct usb_host_interface *desc)
-         return true;
- }
- 
-+static void hub_over_tier(void)
-+{
-+	char *envp[2] = { "HUB=OVERTIER", NULL };
-+
-+	kobject_uevent_env(&hub_device->kobj, KOBJ_CHANGE, envp);
-+}
-+
- static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
- {
- 	struct usb_host_interface *desc;
-@@ -1831,6 +1842,7 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
- 	if (hdev->level == MAX_TOPO_LEVEL) {
- 		dev_err(&intf->dev,
- 			"Unsupported bus topology: hub nested too deep\n");
-+		hub_over_tier();
- 		return -E2BIG;
- 	}
- 
-@@ -5680,6 +5692,13 @@ int usb_hub_init(void)
- 		return -1;
- 	}
- 
-+	hub_class = class_create(THIS_MODULE, "usb_hub");
-+	if (IS_ERR(hub_class))
-+		return PTR_ERR(hub_class);
-+
-+	hub_device =
-+		device_create(hub_class, NULL, MKDEV(0, 0), NULL, "usb_hub");
-+
- 	/*
- 	 * The workqueue needs to be freezable to avoid interfering with
- 	 * USB-PERSIST port handover. Otherwise it might see that a full-speed
-@@ -5699,6 +5718,9 @@ int usb_hub_init(void)
- 
- void usb_hub_cleanup(void)
- {
-+	if (!IS_ERR(hub_class))
-+		class_destroy(hub_class);
-+
- 	destroy_workqueue(hub_wq);
- 
- 	/*
--- 
-2.30.1.766.gb4fecdf3b7-goog
+Hi Dinghao,
+No this is not needed. We always first read the minimum
+header information (MPA len, DDP flags, RDMAP opcode,
+STag, target offset). Only if we have received that
+into local buffer, we check for the opcode this one time.
+Now the opcode determines the remaining length of the
+variably sized part of the header to be received.
+
+We do not have to check the opcode again, since we
+already received and checked it.
+
+Best,
+Bernard.
+
+>
+>Fixes: 8b6a361b8c482 ("rdma/siw: receive path")
+>Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+>---
+> drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c | 10 ++++++++++
+> 1 file changed, 10 insertions(+)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c
+>b/drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c
+>index 60116f20653c..301e7fe2c61a 100644
+>--- a/drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c
+>+++ b/drivers/infiniband/sw/siw/siw=5Fqp=5Frx.c
+>@@ -1072,6 +1072,16 @@ static int siw=5Fget=5Fhdr(struct siw=5Frx=5Fstream
+>*srx)
+> 		siw=5Fdbg=5Fqp(rx=5Fqp(srx), "new header, opcode %u\n", opcode);
+> 	} else {
+> 		opcode =3D =5F=5Frdmap=5Fget=5Fopcode(c=5Fhdr);
+>+
+>+		if (opcode > RDMAP=5FTERMINATE) {
+>+			pr=5Fwarn("siw: received unknown packet type %u\n",
+>+				opcode);
+>+
+>+			siw=5Finit=5Fterminate(rx=5Fqp(srx), TERM=5FERROR=5FLAYER=5FRDMAP,
+>+					   RDMAP=5FETYPE=5FREMOTE=5FOPERATION,
+>+					   RDMAP=5FECODE=5FOPCODE, 0);
+>+			return -EINVAL;
+>+		}
+> 	}
+> 	set=5Frx=5Ffpdu=5Fcontext(qp, opcode);
+> 	frx =3D qp->rx=5Ffpdu;
+>--=20
+>2.17.1
+>
+>
 
