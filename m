@@ -2,127 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C520C3265AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7203265B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhBZQjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:39:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
+        id S230202AbhBZQjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:39:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbhBZQjC (ORCPT
+        with ESMTP id S229849AbhBZQjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:39:02 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309C9C061574;
-        Fri, 26 Feb 2021 08:38:21 -0800 (PST)
+        Fri, 26 Feb 2021 11:39:39 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E87BC06174A;
+        Fri, 26 Feb 2021 08:38:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=cJovxi5fmivlMzTNFK7Hd5WeerVzqJFBxjTpoKstnCE=; b=XZPpJxh2rt+EtM7F9/8orkDvql
-        c48+bn9P+Jx5tgPDS4YA2jYTdMgNUCFYmV5RMiQObH8/i0ZqpsYdVjBKY9gfk79xNxj4MwkTLjOv1
-        TtHkJePZ+d+Tzo8AR76MvgknBWL4+NMIifuapua/lzBY8/14zFcRXEidPhikakfSVICX92+ksNN8y
-        BB0KL/7QxTEyx4+5q9XgBH0Avk7KlWqaqQVyQ7zGR5AEGO9/l2JOvk3PLVJ1Il9x1UM620k592pMk
-        gOPQ27t1MMFBnZzjAguz92FFIR89l9ITBBBHnWhuaWSCHFdksr2vNCG5yDA9l+nbkuifjAMQXgvWX
-        DL2rf+kw==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lFg80-0004FD-MQ; Fri, 26 Feb 2021 16:38:09 +0000
-Subject: Re: [PATCH -next] fbdev: atyfb: use LCD management functions for
- PPC_PMAC also
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-References: <20210226000537.8674-1-rdunlap@infradead.org>
- <YDjlkzg7/qnPBIKI@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <03364ba0-8266-99e5-9315-34d8820e8732@infradead.org>
-Date:   Fri, 26 Feb 2021 08:38:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nm4khSh0bKFhxk1r0BlEoBUvtSkHO0c2Y7hbZV61JR8=; b=nPSju8JU7vBXX3kruXvSLHeziZ
+        S8lINxs+syQf2YVCw1PsLv6zWiMerA8fUzIr1OWQ2gmSr9K0NxAufT7PRSz4JWbrrte0vcVRzGs1W
+        RYwzdFet7yL9rHFVKoiTudDleqPpMpS1gyPQwrh1ge1kHRJhwkC9Eq5CJu8FcfqC1levS426zLOy+
+        ehcge+yrnqszaAQ1MlLtq0thbKAghv65XXqSGVm78IK9K+rPplNxcZiMB/xpvJqmUQiJcD3mnAeKy
+        KGAKL9JPjMu4kY8Womd9svGt6cxn23O6fQEWR0qlPRVdy1I8A1/4OGdk+jX0Gnd+O2WjKajAkk1E+
+        pfcp1zGA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lFg8c-00CFL1-5a; Fri, 26 Feb 2021 16:38:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B57223011F0;
+        Fri, 26 Feb 2021 17:38:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A0ED720BC9288; Fri, 26 Feb 2021 17:38:44 +0100 (CET)
+Date:   Fri, 26 Feb 2021 17:38:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        paulmck@kernel.org, mhocko@suse.com,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 3/3] kernel/smp: add more data to CSD lock debugging
+Message-ID: <YDkkFBerBlW5uUBS@hirez.programming.kicks-ass.net>
+References: <20210226112521.8641-1-jgross@suse.com>
+ <20210226112521.8641-4-jgross@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <YDjlkzg7/qnPBIKI@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226112521.8641-4-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/21 4:12 AM, Ville Syrjälä wrote:
-> On Thu, Feb 25, 2021 at 04:05:37PM -0800, Randy Dunlap wrote:
->> Include PPC_PMAC in the configs that use aty_ld_lcd() and
->> aty_st_lcd() implementations so that the PM code may work
->> correctly for PPC_PMAC.
->>
->> Suggested-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
->> Cc: Nick Desaulniers <ndesaulniers@google.com>
->> Cc: linux-fbdev@vger.kernel.org
->> Cc: dri-devel@lists.freedesktop.org
->> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
->> Cc: Sam Ravnborg <sam@ravnborg.org>
->> Cc: David Airlie <airlied@linux.ie>
->> Cc: Jani Nikula <jani.nikula@linux.intel.com>
->> ---
->> Daniel- We also need this patch:
->> https://lore.kernel.org/dri-devel/20210224215528.822-1-rdunlap@infradead.org/
->> to fix a kernel test robot build error.
->>
->>  drivers/video/fbdev/aty/atyfb_base.c |    8 +++-----
->>  1 file changed, 3 insertions(+), 5 deletions(-)
->>
->> --- linux-next-20210219.orig/drivers/video/fbdev/aty/atyfb_base.c
->> +++ linux-next-20210219/drivers/video/fbdev/aty/atyfb_base.c
->> @@ -132,8 +132,7 @@
->>  #define PRINTKI(fmt, args...)	printk(KERN_INFO "atyfb: " fmt, ## args)
->>  #define PRINTKE(fmt, args...)	printk(KERN_ERR "atyfb: " fmt, ## args)
->>  
->> -#if defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_GENERIC_LCD) || \
->> -defined(CONFIG_FB_ATY_BACKLIGHT)
->> +#if defined(CONFIG_PPC_PMAC)
-> 
-> Did you send an old version by accident? That's definitely
-> not what we want since it would break everything except PPC_PMAC.
+
+I hate all of this, but if this will finally catch the actual problem,
+we can then revert all this, so sure.
+
+Also, I think this will conflict with the patches from Nadav that I have
+queued:
+
+  https://lkml.kernel.org/r/20210220231712.2475218-1-namit@vmware.com
+
+which I'll be pushing to tip/x86/mm once -rc1 happens.
+
+On Fri, Feb 26, 2021 at 12:25:21PM +0100, Juergen Gross wrote:
+
+> +static void __smp_call_single_queue_debug(int cpu, struct llist_node *node)
+> +{
+> +	unsigned int this_cpu = smp_processor_id();
+> +	struct cfd_seq_local *seq = this_cpu_ptr(&cfd_seq_local);
+> +	struct call_function_data *cfd = this_cpu_ptr(&cfd_data);
+> +	struct cfd_percpu *pcpu = per_cpu_ptr(cfd->pcpu, cpu);
+> +
+> +	cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
+> +	if (llist_add(node, &per_cpu(call_single_queue, cpu))) {
+> +		cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
+> +		cfd_seq_store(seq->ping, this_cpu, cpu, CFD_SEQ_PING);
+> +		send_call_function_single_ipi(cpu);
+> +		cfd_seq_store(seq->pinged, this_cpu, cpu, CFD_SEQ_PINGED);
+> +	} else {
+> +		cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
+> +	}
+> +}
+>  #else
+> +#define cfd_seq_store(var, src, dst, type)
+> +
+>  static void csd_lock_record(call_single_data_t *csd)
+>  {
+>  }
+> @@ -290,6 +396,19 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
+>  
+>  void __smp_call_single_queue(int cpu, struct llist_node *node)
+>  {
+> +#ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
+> +	if (static_branch_unlikely(&csdlock_debug_extended)) {
+> +		unsigned int type;
+> +
+> +		type = CSD_TYPE(container_of(node, call_single_data_t,
+> +					     node.llist));
+> +		if (type == CSD_TYPE_SYNC || type == CSD_TYPE_ASYNC) {
+> +			__smp_call_single_queue_debug(cpu, node);
+> +			return;
+> +		}
+> +	}
+> +#endif
+
+This is a bit weird, might as well put it in generic_exec_single()
+because there you still know the type matches.
 
 
-Yikes!
+> @@ -712,12 +840,21 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+>  		csd->node.src = smp_processor_id();
+>  		csd->node.dst = cpu;
+>  #endif
+> -		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu)))
+> +		cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
+> +		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu))) {
+>  			__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
+> +			cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
+> +		} else {
+> +			cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
+> +		}
+>  	}
+>  
+>  	/* Send a message to all CPUs in the map */
+> +	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->ping, this_cpu,
+> +		      CFD_SEQ_NOCPU, CFD_SEQ_PING);
+>  	arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
+> +	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->pinged, this_cpu,
+> +		      CFD_SEQ_NOCPU, CFD_SEQ_PINGED);
 
-Yes, thanks for catching that.
-I'll get the newer version out soon.
-
->>  static const u32 lt_lcd_regs[] = {
->>  	CNFG_PANEL_LG,
->>  	LCD_GEN_CNTL_LG,
->> @@ -175,8 +174,7 @@ u32 aty_ld_lcd(int index, const struct a
->>  		return aty_ld_le32(LCD_DATA, par);
->>  	}
->>  }
->> -#else /* defined(CONFIG_PMAC_BACKLIGHT) || defined(CONFIG_FB_ATY_BACKLIGHT) \
->> -	 defined(CONFIG_FB_ATY_GENERIC_LCD) */
->> +#else /* defined(CONFIG_PPC_PMAC) */
->>  void aty_st_lcd(int index, u32 val, const struct atyfb_par *par)
->>  { }
->>  
->> @@ -184,7 +182,7 @@ u32 aty_ld_lcd(int index, const struct a
->>  {
->>  	return 0;
->>  }
->> -#endif /* defined(CONFIG_PMAC_BACKLIGHT) || defined (CONFIG_FB_ATY_GENERIC_LCD) */
->> +#endif /* defined(CONFIG_PPC_PMAC) */
->>  
->>  #ifdef CONFIG_FB_ATY_GENERIC_LCD
->>  /*
-> 
-
-
--- 
-~Randy
-
+Too bad we can't share with the single case, a well.
