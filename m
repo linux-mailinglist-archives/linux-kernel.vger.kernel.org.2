@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2CF325DF2
+	by mail.lfdr.de (Postfix) with ESMTP id DC0EA325DF3
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBZHE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 02:04:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40668 "EHLO
+        id S230081AbhBZHEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 02:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhBZHEF (ORCPT
+        with ESMTP id S230010AbhBZHEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 02:04:05 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F425C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:03:23 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id e3so1659087pfj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:03:23 -0800 (PST)
+        Fri, 26 Feb 2021 02:04:08 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6747EC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:03:27 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id e9so4817503plh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:03:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+j5qJuOZSbQysXD/JvLKk0ZQswOeC5SGkz/d6BdcFcg=;
-        b=N2XLogZuLsxAgBn8YmeZBrAP87b2Ul4RMTTf5CT3klEH9Un+lFYDL8t2qz4GlaWOFP
-         TSBNgirKvPcQ0ttYcHMluSYqirsjgDJiPo7v4m6CL9Iwb4ZMp6l1I7QXGikpBenmvKvK
-         fE3ugSlT+/xBqvULXQLNlvp2rpaa8dk3BIChc=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ydvIgxOmjmtqfE+xKiN5KcJPEjgA9fZIcPJEUX/WuAM=;
+        b=B1UBaSFh2mk74rH1StciX/kRrgwOc+4VAV1DfySJFKUYhoImWg1F/x69MMylGtk5YY
+         irFCXgVxF9p8AOhjKWu7vzjoXaYcFjeKszsO+9HyOE23kk/3zNC/0HuFAq7WIl8p3Sj2
+         DiFhN3JUeD9rKVTzwk48bdl7jM2MbuKEwoFx8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+j5qJuOZSbQysXD/JvLKk0ZQswOeC5SGkz/d6BdcFcg=;
-        b=INAU8+uPBC+1lf+gxrsUVyHutE3QHpAnTqtJHppnDS0Hr/2qc9cKc1qePev89oA8rR
-         Oi/stwKBA2d6lZp9xUHJ7my5+GJcB/2fv9RsJ+cOJO7h7WZ335qfX16btnvnOv3jyk3W
-         y/rpiM77NOP4xfHMxJ9GyrNJDTfxwSiqqJ7EjHh2c+sYdJ5tIArWEoyXqZuPIeZItSNq
-         TVU3mVQzu+GgyYY0ijk+k63NoRHcxLKQ5WXWDBbbQezF0yChqpHsz1mFSZGi92HYs7RO
-         0SygxrN7ShnIIBbzvvHvETCJnKyMsz1XJZr+30zkX2oSDQvTWgDGP5PAN/0cRTGZe2kb
-         wqog==
-X-Gm-Message-State: AOAM530QDETLNEszT6UynjeHpkJ57wS7c233MqbuwAaRTFnkGMgaYExf
-        FS7MjrpXrJQHikSCBDoCN+fehA==
-X-Google-Smtp-Source: ABdhPJwYBClGgFC8cYKGWzWdFhfQORrre5aTlESCiZ/M7eXTZMRntwBrV1DvM3urLS5FLfHk1E5oow==
-X-Received: by 2002:a62:1e41:0:b029:1e6:fe13:b78e with SMTP id e62-20020a621e410000b02901e6fe13b78emr1911923pfe.26.1614323003138;
-        Thu, 25 Feb 2021 23:03:23 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ydvIgxOmjmtqfE+xKiN5KcJPEjgA9fZIcPJEUX/WuAM=;
+        b=bdmAFujecLynJD2DYppRrWXXEBi0YQ+yG5LQvEtJtkYBKfvyTQtqBgqpnsV+Saq5UN
+         mBHPTFeGUpzMvZhDIgCyW9tcVAKILlF4N/q9gvWaV5RNNS4xFsjIGAEVq5gfKJT3iUBC
+         rSKMGmLzSKDZTAOXYZPVBrQ6rk/HMi2qFEf1DAPlRP7w9nxD/HJJCxfFn57frVzpPnVE
+         j1n4dlBQ29izISvyBjf7nCJJ3iFc8m++/kWmvoNMQv6nIqjoQ09W8+wiM9DGsWsBSDqY
+         vkPftnq9ykkfwrhEvJZUzV0YGeTiH7Gw5EzsDquRCXxoqtKSPs5WWStb2+31dv0XX9CF
+         Jzyw==
+X-Gm-Message-State: AOAM531XvSJW8zoH0MhbZOmfbYffbcWYfH5H+aZ0GiECt5KoJrhXLV8u
+        6rJms6CeJ0XxfNgTSA4dFAvkRc+I8ldxcw==
+X-Google-Smtp-Source: ABdhPJw5sSWi/Lr2Jhk69jCnXKBWOfVI+hjw2QCEtcG8QS5n5oApjApq7NeRIFFCdvsWr6uJlONUog==
+X-Received: by 2002:a17:902:7006:b029:e3:dd4d:85ac with SMTP id y6-20020a1709027006b02900e3dd4d85acmr1755908plk.41.1614323007007;
+        Thu, 25 Feb 2021 23:03:27 -0800 (PST)
 Received: from ub-XPS-13-9350.domain.name ([103.161.30.220])
-        by smtp.gmail.com with ESMTPSA id f7sm7592156pjh.45.2021.02.25.23.03.19
+        by smtp.gmail.com with ESMTPSA id f7sm7592156pjh.45.2021.02.25.23.03.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 23:03:22 -0800 (PST)
+        Thu, 25 Feb 2021 23:03:26 -0800 (PST)
 From:   Jagan Teki <jagan@amarulasolutions.com>
 To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         Alexandre Torgue <alexandre.torgue@st.com>,
@@ -54,51 +54,54 @@ Cc:     devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-amarula@amarulasolutions.com,
         Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH v2 00/10] ARM: dts: stm32: Add Engicam STM32MP1 SoM
-Date:   Fri, 26 Feb 2021 12:32:54 +0530
-Message-Id: <20210226070304.8028-1-jagan@amarulasolutions.com>
+Subject: [PATCH v2 01/10] dt-bindings: arm: stm32: Add Engicam MicroGEA STM32MP1 MicroDev 2.0
+Date:   Fri, 26 Feb 2021 12:32:55 +0530
+Message-Id: <20210226070304.8028-2-jagan@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210226070304.8028-1-jagan@amarulasolutions.com>
+References: <20210226070304.8028-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the initial series to support Engicam MicroGEA STM32MP1 and
-i.Core STM32MP1 SoM and it's associated carrier board dts(i) support.
+MicroGEA STM32MP1 is an EDIMM SoM based on STM32MP157A from Engicam.
 
+MicroDev 2.0 is a general purpose miniature carrier board with CAN,
+LTE and LVDS panel interfaces.
+
+MicroGEA STM32MP1 needs to mount on top of this MicroDev 2.0 board
+for creating complete MicroGEA STM32MP1 MicroDev 2.0 Carrier board.
+
+Add bindings for it.
+
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
 Changes for v2:
-- fixed v1 comments
-- add i.Core STM32MP1 SoM 
+- none
 
-Jagan Teki (10):
-  dt-bindings: arm: stm32: Add Engicam MicroGEA STM32MP1 MicroDev 2.0
-  ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 SoM
-  ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 MicroDev 2.0 board
-  dt-bindings: arm: stm32: Add Engicam MicroGEA STM32MP1 MicroDev 2.0 7" OF
-  ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 MicroDev 2.0 7" OF
-  dt-bindings: arm: stm32: Add Engicam i.Core STM32MP1 C.TOUCH 2.0
-  ARM: dts: stm32: Add Engicam i.Core STM32MP1 SoM
-  ARM: dts: stm32: Add Engicam i.Core STM32MP1 C.TOUCH 2.0
-  dt-bindings: arm: stm32: Add Engicam i.Core STM32MP1 EDIMM2.2 Starter Kit
-  ARM: dts: stm32: Add Engicam i.Core STM32MP1 EDIMM2.2 Starter Kit
+ Documentation/devicetree/bindings/arm/stm32/stm32.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
- .../devicetree/bindings/arm/stm32/stm32.yaml  |  17 ++
- arch/arm/boot/dts/Makefile                    |   4 +
- .../stm32mp157a-icore-stm32mp1-ctouch2.dts    |  47 +++++
- .../stm32mp157a-icore-stm32mp1-edimm2.2.dts   |  47 +++++
- .../boot/dts/stm32mp157a-icore-stm32mp1.dtsi  | 195 ++++++++++++++++++
- ...157a-microgea-stm32mp1-microdev2.0-of7.dts | 154 ++++++++++++++
- ...32mp157a-microgea-stm32mp1-microdev2.0.dts |  55 +++++
- .../dts/stm32mp157a-microgea-stm32mp1.dtsi    | 147 +++++++++++++
- 8 files changed, 666 insertions(+)
- create mode 100644 arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dts
- create mode 100644 arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dts
- create mode 100644 arch/arm/boot/dts/stm32mp157a-icore-stm32mp1.dtsi
- create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0-of7.dts
- create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0.dts
- create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
-
+diff --git a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+index e7525a3395e5..56b7e0b800b3 100644
+--- a/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
++++ b/Documentation/devicetree/bindings/arm/stm32/stm32.yaml
+@@ -64,6 +64,13 @@ properties:
+           - const: st,stm32mp157c-ev1
+           - const: st,stm32mp157c-ed1
+           - const: st,stm32mp157
++
++      - description: Engicam MicroGEA STM32MP1 SoM based Boards
++        items:
++          - const: engicam,microgea-stm32mp1-microdev2.0
++          - const: engicam,microgea-stm32mp1
++          - const: st,stm32mp157
++
+       - description: Octavo OSD32MP15x System-in-Package based boards
+         items:
+           - enum:
 -- 
 2.25.1
 
