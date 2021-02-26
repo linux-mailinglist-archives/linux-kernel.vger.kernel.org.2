@@ -2,252 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58385325DCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9079325DCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhBZG6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:58:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhBZG62 (ORCPT
+        id S229989AbhBZG7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:59:11 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:45172 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229894AbhBZG6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:58:28 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DA7C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:57:48 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id mm21so12676443ejb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:57:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wi5VvusttMA+MBJc6HO2q4L5QyU7/Qv6UujnAJKL9O0=;
-        b=zbtG7psKY8lRiuxSMgC9zhmX4FA/XNFL0jHBQqFqEWiFH9KmSEhuMeXY+eCGgTQwmc
-         aW6//kQ0iDCnaBLlFvTVGRUgLa9cdAFfQX4Y1i2h8NQbFGNOZ5MIlsWdFi6JRnALV7ll
-         2grGRxV0kzRFyZgxLHZtK/MThLjLRMTvrG8huvquEjVt4lUnMEmWkHPWjGj5KHadwzgF
-         fm+WOpEyTMbkroYThb8GPULiifHYI6PqVx+Z8yLNcaa9Tvh2Ja/+BX2+NFp5hV7/Pr79
-         sJidgcHFanFZbZjVDhN+T4+k4UuMjCVcTMOutQln26d9Nz18d3KAVlysgf56/NUVubbu
-         2Ptg==
+        Fri, 26 Feb 2021 01:58:54 -0500
+Received: by mail-io1-f72.google.com with SMTP id u1so6403515ior.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 22:58:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wi5VvusttMA+MBJc6HO2q4L5QyU7/Qv6UujnAJKL9O0=;
-        b=PtBy+2NyA+oB+Tg5/GeToV8URoav0LGBFlH/HL+/xG8VqutP1406u1YTBj7ouo3OId
-         /WVyfs6c6a6wzHJGqFqzbyVf+EpdRcrt9+NUnBDayEUIQFGSDmESZ36IGdFTVIh8kC8U
-         sK4Lyn/dy+g7RmVj98OQND4zTAJMBHN2k0mp/LxmtE1hCqxvvMWU/zTjUDWEhfSo3QZ/
-         K6RD44d9VTrAZuu+Vdru5vCxBhQKq2x+bGg1Tg67bvR5k4TdzgydQa6iS5bA8q+npZWh
-         E2SaAwwwgAon9lcc02hXVD0NdDdUyxOF2SlSvcchhm50IuDXD93Xp9hewxjgdsalpI1I
-         o5/g==
-X-Gm-Message-State: AOAM531E6WuB29aR3vOn/a2WznsNLI2rBbDlAIpn0AxLXLeWUj8KiiPZ
-        DU+eqRF4oirOOWl+lw0nEaWiTfo5ZkifScp7y+xVYg==
-X-Google-Smtp-Source: ABdhPJwnAD2bUrzQtrQaKtFeCtX+RBV1M0kWnGUI+CnMF8p/QvgY2AsRYmeSsORVXZBLDQ10oxyZD1vqebHzy8EtAPM=
-X-Received: by 2002:a17:906:a896:: with SMTP id ha22mr1692415ejb.503.1614322660679;
- Thu, 25 Feb 2021 22:57:40 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HvtxSlnkKCjNyZT0wEb2/bz1bqloYHt5btZDhiiQNMw=;
+        b=SfyGZTKHSajSxlv7zlIRxZSwR9pZcRG1fiQinu4kElj8I3S4XGFzN9pCD5c30UGSWg
+         Gy9S3t4jyB/SDBf8ZWEW9tCWYDyPaHcXHKmsLFxFQUh+wZRmTTUtLJHK+EQo002rjJHi
+         /VTAZ0Zdl8+04cCurfAkcT0G54ScfkHPyh+NJmJ8M5OYdhv6GlOn3NGGvq4WsOmDwVdk
+         diN2n/qQ6bSkZnI72XdS3uNYSKByyW6jZeC0axljj4MmAVkcZM/gwqrnMddRDUuxUXBG
+         kL2uxPFAw8rjK7VQKT/EYibVPh6s0HFLDPQuJwnGzgZmNIfUP57kJq05z/eKgA7fDm50
+         R7Yg==
+X-Gm-Message-State: AOAM533jeUI8jow7zwkB+XfxD+/La+8EusMrz4L+093m9YudEiaZm5NU
+        hpFt0KJbE0WJ93BUpQzxvwHIPaOmqtcfiUUeOiETNz0Mef6Q
+X-Google-Smtp-Source: ABdhPJxI+mzmBz1ZfCN/cLim2VzndeY1gOTYkUwCuSZQxW+bnQAaX6rYquy9IfcqPUVm5FDdKSv/xgFFPP6FOCZzWXi7kf3Xvd3b
 MIME-Version: 1.0
-References: <20210225092516.531932232@linuxfoundation.org>
-In-Reply-To: <20210225092516.531932232@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 26 Feb 2021 12:27:29 +0530
-Message-ID: <CA+G9fYs2y7WcvZ1DTRkTNy3pzYAz0k+HeRS4XFhZTF4x9JKMVQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/23] 5.10.19-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+X-Received: by 2002:a92:6403:: with SMTP id y3mr1283700ilb.90.1614322692653;
+ Thu, 25 Feb 2021 22:58:12 -0800 (PST)
+Date:   Thu, 25 Feb 2021 22:58:12 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a6093b05bc37caae@google.com>
+Subject: general protection fault in kvm_hv_irq_routing_update
+From:   syzbot <syzbot+6987f3b2dbd9eda95f12@syzkaller.appspotmail.com>
+To:     aaronlewis@google.com, bp@alien8.de, drjones@redhat.com,
+        graf@amazon.com, hpa@zytor.com, jmattson@google.com,
+        joro@8bytes.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, makarandsonare@google.com,
+        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
+        shuah@kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 at 15:24, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.19 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 27 Feb 2021 09:25:06 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.19-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    a99163e9 Merge tag 'devicetree-for-5.12' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12d72682d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7a875029a795d230
+dashboard link: https://syzkaller.appspot.com/bug?extid=6987f3b2dbd9eda95f12
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12faef12d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=163342ccd00000
+
+The issue was bisected to:
+
+commit 8f014550dfb114cc7f42a517d20d2cf887a0b771
+Author: Vitaly Kuznetsov <vkuznets@redhat.com>
+Date:   Tue Jan 26 13:48:14 2021 +0000
+
+    KVM: x86: hyper-v: Make Hyper-V emulation enablement conditional
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10df16a8d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12df16a8d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14df16a8d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6987f3b2dbd9eda95f12@syzkaller.appspotmail.com
+Fixes: 8f014550dfb1 ("KVM: x86: hyper-v: Make Hyper-V emulation enablement conditional")
+
+L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.
+general protection fault, probably for non-canonical address 0xdffffc0000000028: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000140-0x0000000000000147]
+CPU: 1 PID: 8370 Comm: syz-executor859 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:synic_get arch/x86/kvm/hyperv.c:165 [inline]
+RIP: 0010:kvm_hv_set_sint_gsi arch/x86/kvm/hyperv.c:475 [inline]
+RIP: 0010:kvm_hv_irq_routing_update+0x230/0x460 arch/x86/kvm/hyperv.c:498
+Code: 80 19 00 00 48 89 f8 48 c1 e8 03 80 3c 28 00 0f 85 ff 01 00 00 4d 8b ad 80 19 00 00 49 8d bd 40 01 00 00 48 89 f8 48 c1 e8 03 <0f> b6 04 28 84 c0 74 06 0f 8e d2 01 00 00 45 0f b6 bd 40 01 00 00
+RSP: 0018:ffffc90001b3fac0 EFLAGS: 00010206
+RAX: 0000000000000028 RBX: ffff888012df5900 RCX: 0000000000000000
+RDX: ffff888022193780 RSI: ffffffff81174d43 RDI: 0000000000000140
+RBP: dffffc0000000000 R08: 0000000000000000 R09: ffffc900018819eb
+R10: ffffffff81170f3e R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000a73300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557e8c876888 CR3: 0000000013c0b000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kvm_set_irq_routing+0x69b/0x940 arch/x86/kvm/../../../virt/kvm/irqchip.c:223
+ kvm_vm_ioctl+0x12d0/0x2800 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3959
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ef29
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe391eb808 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ef29
+RDX: 0000000020000140 RSI: 000000004008ae6a RDI: 0000000000000004
+RBP: 0000000000402f10 R08: 0000000000400488 R09: 0000000000400488
+R10: 0000000000400488 R11: 0000000000000246 R12: 0000000000402fa0
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+Modules linked in:
+---[ end trace 2aa75ec1dd148710 ]---
+RIP: 0010:synic_get arch/x86/kvm/hyperv.c:165 [inline]
+RIP: 0010:kvm_hv_set_sint_gsi arch/x86/kvm/hyperv.c:475 [inline]
+RIP: 0010:kvm_hv_irq_routing_update+0x230/0x460 arch/x86/kvm/hyperv.c:498
+Code: 80 19 00 00 48 89 f8 48 c1 e8 03 80 3c 28 00 0f 85 ff 01 00 00 4d 8b ad 80 19 00 00 49 8d bd 40 01 00 00 48 89 f8 48 c1 e8 03 <0f> b6 04 28 84 c0 74 06 0f 8e d2 01 00 00 45 0f b6 bd 40 01 00 00
+RSP: 0018:ffffc90001b3fac0 EFLAGS: 00010206
+RAX: 0000000000000028 RBX: ffff888012df5900 RCX: 0000000000000000
+RDX: ffff888022193780 RSI: ffffffff81174d43 RDI: 0000000000000140
+RBP: dffffc0000000000 R08: 0000000000000000 R09: ffffc900018819eb
+R10: ffffffff81170f3e R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000a73300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000557e8c876888 CR3: 0000000013c0b000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.10.19-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.10.y
-git commit: 6ffb943c0e01d843a06842f9a7bcfc008e10a6d2
-git describe: v5.10.18-24-g6ffb943c0e01
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
-.y/build/v5.10.18-24-g6ffb943c0e01
-
-No regressions (compared to build v5.10.18)
-
-No fixes (compared to build v5.10.18)
-
-Ran 50352 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-livepatch
-* kselftest-ptrace
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* fwts
-* kselftest-
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* ltp-dio-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* network-basic-tests
-* perf
-* kselftest-bpf
-* kselftest-kexec
-* kselftest-lkdtm
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* v4l2-compliance
-* kvm-unit-tests
-* kunit
-* rcutorture
-* ssuite
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
