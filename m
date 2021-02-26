@@ -2,95 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C80B326A4F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22706326A53
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 00:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhBZXEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 18:04:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48916 "EHLO
+        id S230104AbhBZXFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 18:05:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhBZXEC (ORCPT
+        with ESMTP id S230014AbhBZXFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 18:04:02 -0500
+        Fri, 26 Feb 2021 18:05:39 -0500
 Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E91C06174A;
-        Fri, 26 Feb 2021 15:03:22 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id s23so6998460pji.1;
-        Fri, 26 Feb 2021 15:03:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F291C06174A;
+        Fri, 26 Feb 2021 15:04:59 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id t9so6859148pjl.5;
+        Fri, 26 Feb 2021 15:04:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MTE5995sW7xCg6+cKusbl1v/9cFqGNg5CN+o+ZRAfSo=;
-        b=OEK3agoH/vKSQ9T+6ySU8JlUUJVwfeMErbjV082/J+5HPKHg1Lg373HLrTQMISERqq
-         MF7oeJ/MszWlLnf2rD6HXq3fceyJ5dm5TaemKhNaZ/kvNejVELiqTXlUV0vO8Gjm8VIX
-         QnA6qzmq+uoeHfqtFSDzObZcpbNG5GAHPl1PE9Nd/JEqOXIgkH3mVgyON76JndBmuDJO
-         AIYVXtPwirUSMfogPcvDNF/+h75nSxcgyNKGRpi/u0ro5bhzR7qXtb8bhf5yVgbYxWz9
-         cLzkmiE5QzSyTqxsjKMadzlDNEdOMTPVQVtqaoJiJZrZHLeGon4dhC9pmdfl9jBvJEKa
-         i/Ng==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2RxeM0yijnoNlTINwzzd+KCKF/DAIhG1UdTOfwx8N/o=;
+        b=HuNZ4Jqry98TyKjAmSVE74O3H+y6KGzp/6YG+3Y7qYO+THQJCLWQq9yqFkABEjhYTe
+         8O8BmI3b5fdbkMQ7Ym759pnW6/koHWsgR0P33jMTNofE/1EGUcugSgDuHmRRXwAayrwk
+         vNwp2eYvHVfCJwmhHgocz4zqS6FjX/Flgox2SOkwSZmNnw9qAOjZpJNulhDfYYQdHSZn
+         YD7T5Nym2FhuIvyaZSUxhKVBz4dIbD3W9JlXkVHnOBjz7Uf3v9h8NnqMfHd7aw8rLYZz
+         RSOqM6c3Q160yNYTorVHwJZy0v0LPIwv6bx74+yDz5lQrHU0ZbM2WCYd6opakxtfQWiJ
+         txWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MTE5995sW7xCg6+cKusbl1v/9cFqGNg5CN+o+ZRAfSo=;
-        b=WU+i1yUdmtJ+aLllWrEMndpSyO1bDjAqmlCd/+vGmGhuRbp9mf5Npyx0DSNLAGjv6Z
-         VfIvEO2LfDDLiLO9Y5coNtWd+2S2wkasRfBXE2xetVP/Hjei2ihshtfWZerQfXnZ5HxV
-         2jyDBxct0+unntR4ws43c46ylhJg16WEkxBqnIhIKMTZnofpHmNVWd1Cyh1rNf9Tbk5k
-         FQVkP7vo9KEyU7BiRcBEa4BOTDuwZ9VkwAhvvfsEMq5OPNhASIo6hQPIMdWFHXp7uYNK
-         nTwrE/LFO4sXxrKHNkWt0SeVobZbtRsSdy4ee+jimXSmuMway9KQng1Ry3VTj97g2cG0
-         Ja3Q==
-X-Gm-Message-State: AOAM533lcd3WC++aPQlBg4Ey8uJ71aO8itMdO1XNzyvTOXprMkIpeRpW
-        cxGbJikDQfsb5Pd/xBktXLSv6Eq8sP7jYS8VZzo=
-X-Google-Smtp-Source: ABdhPJzOH9d25r0TOB+9aLqWrsbb5RGizo1REEYWgjMf9b67Sl6+dWZATP+rBxbDQxl0ic8KnhjBgrt+vNvPBWLBY7M=
-X-Received: by 2002:a17:902:8209:b029:e3:2c17:73a9 with SMTP id
- x9-20020a1709028209b02900e32c1773a9mr5057040pln.23.1614380602051; Fri, 26 Feb
- 2021 15:03:22 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2RxeM0yijnoNlTINwzzd+KCKF/DAIhG1UdTOfwx8N/o=;
+        b=njpNPy5X7tm0Xs0XdPWjJKUWwIBGc9uA4GEWu1CzqUL0HgZVF4dATenvxi2eBbFco7
+         1bEIXNmvgjJb5vwhl8a6BMZbJTCczMk74XvcrSasV+E9zMaApenezdTx3geeOSgLxIYC
+         tC1P5e9UnUZpMj5RdIuIBS4CRfpvr2v+yVdeIVuPFzYDA03TcqqOJkHyw4qk++4Pt7nJ
+         P5wq52sGkCG3HafYLUcdqavUKaG0w6xEahJMfp4vDVz1M+nhFEP4Yq7ba5HY1RO2hHpA
+         bSYM8PS9KoUoN3D8llK1rZUjViNZHZnEv8qZCSCkHujM7VA8ww+9OhnO7B+pELFxN/CY
+         VgOA==
+X-Gm-Message-State: AOAM531xvKaiBXZYk3QOXtdMod9RzABrYpeaZHpPAxhon+Pa84hqTXHE
+        pYPgY7U3jv/xuocBbVh6rgWQ1HH23BFkhg==
+X-Google-Smtp-Source: ABdhPJzBRm5p29RXoLWL0ErdVU0iNimtD+CgQGAsC5BoJpPKdEJ3LrZigx+C19G7U1i8GcFXgthXRg==
+X-Received: by 2002:a17:902:b7cb:b029:e4:55cd:ddf0 with SMTP id v11-20020a170902b7cbb02900e455cdddf0mr5229301plz.45.1614380698483;
+        Fri, 26 Feb 2021 15:04:58 -0800 (PST)
+Received: from [172.30.1.19] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id ie12sm9668602pjb.52.2021.02.26.15.04.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 15:04:57 -0800 (PST)
+Subject: Re: [RFC 00/19] Rework support for i.MX8MQ interconnect with devfreq
+To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Martin Kepplinger <martink@posteo.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     NXP Linux Team <linux-imx@nxp.com>
+References: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <def4e2dd-5e9c-5878-a116-754f9bfe735e@gmail.com>
+Date:   Sat, 27 Feb 2021 08:04:52 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210216201813.60394-1-xie.he.0141@gmail.com> <YC4sB9OCl5mm3JAw@unreal>
- <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
- <YC5DVTHHd6OOs459@unreal> <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
- <YC7GHgYfGmL2wVRR@unreal> <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
- <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com>
- <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com>
- <906d8114f1965965749f1890680f2547@dev.tdt.de> <CAJht_EPBJhhdCBoon=WMuPBk-sxaeYOq3veOpAd2jq5kFqQHBg@mail.gmail.com>
- <e1750da4179aca52960703890e985af3@dev.tdt.de>
-In-Reply-To: <e1750da4179aca52960703890e985af3@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Fri, 26 Feb 2021 15:03:11 -0800
-Message-ID: <CAJht_ENP3Y98jgj1peGa3fGpQ-qPaF=1gtyYwMcawRFW_UCpeA@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 6:21 AM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> I have now had a look at it. It works as expected.
-> I just wonder if it would not be more appropriate to call
-> the lapb_register() already in x25_hdlc_open(), so that the layer2
-> (lapb) can already "work" before the hdlc<x>_x25 interface is up.
+Hi,
 
-I think it's better not to keep LAPB running unless hdlc<x>_x25 is up.
-If I am the user, I would expect that when I change the X.25 interface
-to the DOWN state, the LAPB protocol would be completely stopped and
-the LAPB layer would not generate any new frames anymore (even if the
-other side wants to connect), and when I change the X.25 interface
-back to the UP state, it would be a fresh new start for the LAPB
-protocol.
+You missed sending the patches to linux-pm mailing list.
+On next version, please send it linux-pm.
 
-> Also, I have a hard time assessing if such a wrap is really enforceable.
+Thanks,
+Chanwoo Choi
 
-Sorry. I don't understand what you mean. What "wrap" are you referring to?
-
-> Unfortunately I have no idea how many users there actually are.
+On 21. 2. 20. 오전 12:59, Abel Vesa wrote:
+> This has been on my queue for quite some time now. It is more of a
+> proof-of-concept.
+> 
+> This rework is done with the compatibility of future i.MX platforms in
+> mind. For example, the i.MX8MP platform has multiple NoCs. This
+> patchsets prepares the imx interconnect and imx devfreq for that too.
+> 
+> As of now, none of the drivers involved are being used and there is no
+> icc consumer on any off the i.MX platforms.
+> 
+> Basically, the steps taken here are the following:
+> 
+> 1. Make the dram_apb clock "reparantable" from kernel.
+> This is needed in order to keep track of the actual parent of the
+> dram_apb clock in the kernel clock hierarchy. Note that the actual
+> switch is done EL3 (TF-A).
+> 
+> 2. Rework the imx-bus so the actual link between the icc and the
+> NoCs or the pl301s is not tightly coupled. This allows us to have
+> as many NoCs as necessary but also allows as to use the same driver
+> for the pl301s. The pl301s have their own clocks too, so we need to
+> reduce their rates too.
+> 
+> 3. Rework the imx8m-ddrc driver. Remove the support for dts defined
+> OPPs. The EL3 provides those. So instead of havingi to keep the OPP table in
+> both EL3 and kernel in sync, we rely on what the EL3 gives us.
+> Also, when the platform suspends, the bus needs to be running at highest
+> rate, otherwise there is a chance it might not resume anymore.
+> By adding the late system sleep PM ops we can handle that easily.
+> 
+> 4. Rework the imx interconnect driver to use the fsl,icc-id instead
+> of the robust imx_icc_node_adj_desc for linking with the target node.
+> By adding the fsl,icc-id property to all the NoC and pl301 dts nodes,
+> we can link each icc node to their corresponding NoC, pl301 or dram.
+> Basically, when the imx interconnect platform specific driver probes,
+> it will take each node defined for that platform and look-up the
+> corresponding dts node based on the id and add that as the qos device.
+> 
+> 5. Added the fec and usdhc as icc consumers. This is just as an example.
+> All the other consumers can be added later. Basically, each consumer
+> will add a path to their device node and in the driver will have to
+> handle that icc path accordingly.
+> 
+> Abel Vesa (19):
+>    clk: imx8mq: Replace critical with ignore_unused flag for dram_apb
+>      clock
+>    dt-bindings: interconnect: imx8mq: Add missing pl301 and SAI ids
+>    devfreq: imx-bus: Switch governor to powersave
+>    devfreq: imx-bus: Decouple imx-bus from icc made
+>    devfreq: imx8m-ddrc: Change governor to powersave
+>    devfreq: imx8m-ddrc: Use the opps acquired from EL3
+>    devfreq: imx8m-ddrc: Add late system sleep PM ops
+>    interconnect: imx: Switch from imx_icc_node_adj_desc to fsl,icc-id
+>      node assignment
+>    interconnect: imx8: Remove the imx_icc_node_adj_desc
+>    interconnect: imx8mq: Add the pl301_per_m and pl301_wakeup nodes and
+>      subnodes
+>    interconnect: imx8mq: Add of_match_table
+>    interconnect: imx: Add imx_icc_get_bw and imx_icc_aggregate functions
+>    arm64: dts: imx8mq: Add fsl,icc-id property to ddrc node
+>    arm64: dts: imx8mq: Add fsl,icc-id to noc node
+>    arm64: dts: imx8mq: Add all pl301 nodes
+>    arm64: dts: imx8mq: Add the interconnect node
+>    arm64: dts: imx8mq: Add interconnect properties to icc consumer nodes
+>    net: ethernet: fec_main: Add interconnect support
+>    mmc: sdhci-esdhc-imx: Add interconnect support
+> 
+>   arch/arm64/boot/dts/freescale/imx8mq.dtsi | 200 +++++++++++++++++++++-
+>   drivers/clk/imx/clk-imx8mq.c              |   2 +-
+>   drivers/devfreq/imx-bus.c                 |  42 +----
+>   drivers/devfreq/imx8m-ddrc.c              |  75 +++-----
+>   drivers/interconnect/imx/imx.c            |  92 +++++-----
+>   drivers/interconnect/imx/imx.h            |  19 +-
+>   drivers/interconnect/imx/imx8mm.c         |  32 ++--
+>   drivers/interconnect/imx/imx8mn.c         |  28 +--
+>   drivers/interconnect/imx/imx8mq.c         |  59 ++++---
+>   drivers/mmc/host/sdhci-esdhc-imx.c        |  26 +++
+>   drivers/net/ethernet/freescale/fec.h      |   3 +
+>   drivers/net/ethernet/freescale/fec_main.c |  19 ++
+>   include/dt-bindings/interconnect/imx8mq.h |   9 +
+>   scripts/dtc/fdtoverlay                    | Bin 0 -> 61280 bytes
+>   14 files changed, 393 insertions(+), 213 deletions(-)
+>   create mode 100755 scripts/dtc/fdtoverlay
+> 
