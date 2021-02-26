@@ -2,120 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A307C3265B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:42:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7161F3265BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 17:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhBZQlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 11:41:42 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:40826 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229769AbhBZQlj (ORCPT
+        id S230175AbhBZQml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 11:42:41 -0500
+Received: from mail.efficios.com ([167.114.26.124]:36424 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229698AbhBZQmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 11:41:39 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QGR2fZ025164;
-        Fri, 26 Feb 2021 17:40:52 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=o+3X4BLuP5e42GOpScJQqAr//WbdMHgL/Zpk/eGJKqA=;
- b=ynektlSvURU73KKGUMj/mpyXAaO0ThH4BZC0kKl1+WOcgoUYaNJ42V+1uVjAHX6yOf7L
- WOZhDeUDi2PCWG4CVzTeNQze+Rb/IuIL6LQyDXhowIYCjGVgfyhTauPdZ8laxvZEmtsf
- BFGmK3t/cIDat9P5TZ+vKU5HbIQo3XcUBdlFEIr6SXchGNhM51wn80srGoO2u2A7Qs+z
- kpAY04eOdQHp7zDlofSDAQjQs+YT8OG3ZnKx4V2o1uqyTcSCRrswyCeIJxW34fU/8LOM
- 0Euaq3nLx2dFlLIYCOtQMWY7G5KSLB8O/5xe+csl9kbZ5DBM8hIjQhaoqa13urv6zAZ2 Ag== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36w66vxuud-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Feb 2021 17:40:52 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 694B5100038;
-        Fri, 26 Feb 2021 17:40:51 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5693B24163A;
-        Fri, 26 Feb 2021 17:40:51 +0100 (CET)
-Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 26 Feb
- 2021 17:40:50 +0100
-Subject: Re: [PATCH v6 00/16] remoteproc: Add support for detaching a remote
- processor
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>, <ohad@wizery.com>,
-        <bjorn.andersson@linaro.org>, <arnaud.pouliquen@st.com>
-CC:     <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <af614b83-de31-f8fe-8b7d-181a71886aa0@foss.st.com>
-Date:   Fri, 26 Feb 2021 17:40:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 26 Feb 2021 11:42:37 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id AFBCA30FFD5;
+        Fri, 26 Feb 2021 11:41:54 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id CpPO6ujUHOK6; Fri, 26 Feb 2021 11:41:54 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 5644330FFD4;
+        Fri, 26 Feb 2021 11:41:54 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 5644330FFD4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1614357714;
+        bh=9EqQ5l+XNXPd5I1zSOvJAP0xTZ+Swb445kGkcyrpk8U=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Z0WEmsDshbewOVhb0LWdVoVeUqkFM6z29cy7WbqIfMl0OkeZEbtRIeihwDZ+1oNER
+         3kWTdFN0yvkhrEEpFtsQ3Dc2IchPGFg9yUGZgWnhX7sjh1xigATUc0RF5dUhUw08DO
+         yD/Esss/cvDaG2ufKqtHe3tT+ZX5NvSPzksMk18mlpj9S5WAazLyQPDmAIia1j5cAF
+         WuWkAVRmRBFqh7kBdLoT2ibTFVMMUvyjGE/TuHNdDj9Hcbs4MJQ9LQVwDcu+PKzuWF
+         bvyjeLyW+DnMphE2XU4rKWBlfvUkGBHEU8tPpiFC0lh3AQR4pH7zZ7sKTAoLykFH2d
+         CkCqg8nEHARsw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gQj5kSzTepm5; Fri, 26 Feb 2021 11:41:54 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 419EA30FFCF;
+        Fri, 26 Feb 2021 11:41:54 -0500 (EST)
+Date:   Fri, 26 Feb 2021 11:41:54 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     emmir <emmir@google.com>
+Cc:     Piotr Figiel <figiel@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Dmitry V. Levin" <ldv@altlinux.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Oskolkov <posk@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Paul Turner <pjt@google.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>
+Message-ID: <1701013445.8323.1614357714148.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CABb0KFFhbxU0xq0A=m2FO83j04vrzwVa2-JwKJi1mtRhu_0kSg@mail.gmail.com>
+References: <20210226135156.1081606-1-figiel@google.com> <192824546.8190.1614353555831.JavaMail.zimbra@efficios.com> <CABb0KFFhbxU0xq0A=m2FO83j04vrzwVa2-JwKJi1mtRhu_0kSg@mail.gmail.com>
+Subject: Re: [PATCH v2] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
 MIME-Version: 1.0
-In-Reply-To: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-26_05:2021-02-26,2021-02-26 signatures=0
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
+Thread-Topic: ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+Thread-Index: fQP+S8uPXpOVtfpNg34/mjrGX16yEg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+----- On Feb 26, 2021, at 11:04 AM, emmir emmir@google.com wrote:
 
-On 2/24/21 12:34 AM, Mathieu Poirier wrote:
-> Following the work done here [1], this set provides support for the
-> remoteproc core to release resources associated with a remote processor
-> without having to switch it off. That way a platform driver can be removed
-> or the application processor power cycled while the remote processor is
-> still operating.
+> On Fri, 26 Feb 2021 at 16:32, Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>>
+>> ----- On Feb 26, 2021, at 8:51 AM, Piotr Figiel figiel@google.com wrote:
+>> [...]
+>> > ---
+>> > v2:
+>> > Applied review comments:
+>> > - changed return value from the ptrace request to the size of the
+>> >   configuration structure
+>> > - expanded configuration structure with the flags field and
+>> >   the rseq abi structure size
+>> >
+>> [...]
+>> > +#define PTRACE_GET_RSEQ_CONFIGURATION        0x420f
+>> > +
+>> > +struct ptrace_rseq_configuration {
+>> > +     __u64 rseq_abi_pointer;
+>> > +     __u32 rseq_abi_size;
+>> > +     __u32 signature;
+>> > +     __u32 flags;
+>> > +     __u32 pad;
+>> > +};
+>> > +
+>> [...]
+>> > +#ifdef CONFIG_RSEQ
+>> > +static long ptrace_get_rseq_configuration(struct task_struct *task,
+>> > +                                       unsigned long size, void __user *data)
+>> > +{
+>> > +     struct ptrace_rseq_configuration conf = {
+>> > +             .rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
+>> > +             .rseq_abi_size = sizeof(*task->rseq),
+>> > +             .signature = task->rseq_sig,
+>> > +             .flags = 0,
+>> > +     };
+>> > +
+>> > +     size = min_t(unsigned long, size, sizeof(conf));
+>> > +     if (copy_to_user(data, &conf, size))
+>> > +             return -EFAULT;
+>> > +     return sizeof(conf);
+>> > +}
+>>
+>> I think what Florian was after would be:
+>>
+>> struct ptrace_rseq_configuration {
+>>         __u32 size;  /* size of struct ptrace_rseq_configuration */
+>>         __u32 flags;
+>>         __u64 rseq_abi_pointer;
+>>         __u32 signature;
+>>         __u32 pad;
+>> };
+>>
+>> where:
+>>
+>>     .size = sizeof(struct ptrace_rseq_configuration),
+>>
+>> This way, the configuration structure can be expanded in the future. The
+>> rseq ABI structure is by definition fixed-size, so there is no point in
+>> having its size here.
+>>
+>> Florian, did I understand your request correctly, or am I missing your point ?
 > 
-> Modifications for this revision are detailed in the changelog of each patch
-> but the main difference is that going from RPROC_RUNNING -> RPROC_DETACHED
-> is no longer supported to avoid dealing tricky resource table issues.
+> In this case returning sizeof(conf) would serve the same purpose, wouldn't it?
 
-This seems reasonable to me. If necessary, this could be part of a separate series.
-
-From test point of view, it is working pretty well on my side.
+If the size is received as input from user-space as well, this can be used to
+make sure the kernel detects what size is expected by user-space and act accordingly.
 
 Thanks,
-Arnaud
 
-> 
-> Applies cleanly on rproc-next (e8b4e9a21af7).  I will rebase on 5.12-rc1 when it
-> comes out next week.
-> 
-> Thanks,
-> Mathieu
-> 
-> Arnaud POULIQUEN (1):
->   remoteproc: stm32: Move memory parsing to rproc_ops
-> 
-> Mathieu Poirier (15):
->   remoteproc: Remove useless check in rproc_del()
->   remoteproc: Rename function rproc_actuate()
->   remoteproc: Add new RPROC_ATTACHED state
->   remoteproc: Properly represent the attached state
->   remoteproc: Add new get_loaded_rsc_table() to rproc_ops
->   remoteproc: stm32: Move resource table setup to rproc_ops
->   remoteproc: Add new detach() remoteproc operation
->   remoteproc: Introduce function __rproc_detach()
->   remoteproc: Introduce function rproc_detach()
->   remoteproc: Properly deal with the resource table when attached
->   remoteproc: Properly deal with a kernel panic when attached
->   remoteproc: Properly deal with a start request when attached
->   remoteproc: Properly deal with a stop request when attached
->   remoteproc: Properly deal with a detach request when attached
->   remoteproc: Refactor rproc delete and cdev release path
-> 
->  drivers/remoteproc/remoteproc_cdev.c     |  21 +-
->  drivers/remoteproc/remoteproc_core.c     | 263 ++++++++++++++++++++---
->  drivers/remoteproc/remoteproc_internal.h |  10 +
->  drivers/remoteproc/remoteproc_sysfs.c    |  17 +-
->  drivers/remoteproc/stm32_rproc.c         | 168 +++++++--------
->  include/linux/remoteproc.h               |  21 +-
->  6 files changed, 362 insertions(+), 138 deletions(-)
-> 
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
