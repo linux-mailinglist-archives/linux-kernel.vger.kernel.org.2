@@ -2,100 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9E4326421
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2BF326426
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhBZOe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:34:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhBZOeS (ORCPT
+        id S230104AbhBZOgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:36:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60399 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230096AbhBZOgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:34:18 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DCBC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:33:38 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id v15so8799215wrx.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:33:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IhezNL16J7Th24xbSsx4YTV98HHNpYtn/0HBhefr0V4=;
-        b=eslLXHut7tNA3RhWZmCcUY1v+p6KPXdk9Fi5tCTXMsDAPV/2mJjIC8LHuceGvSbA6K
-         oxcCxlWgyq/Kzqlnzwm54bww0IFxJIg/I2c8u1i1g2Jt0SnA/9d1zY+nGODBXlC+j3WA
-         S9tw3Dzt6Jq/2NN5KM/HE7b+O8S2QQOae8nBk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IhezNL16J7Th24xbSsx4YTV98HHNpYtn/0HBhefr0V4=;
-        b=czbxDvKkIH0+IDscCzYBW2YJE6L+WodF+NBMcjrm1UEA9JSWzRhuKLfYIjKSvzdxRT
-         jynfSfr+fUoCt1MsbOeWmLr2aaPORg11pfZNByUZhy7fGI7jF8W0AHz0bNiJZ5IrP6gy
-         9UO9hUmPgimHT3+AWJ5t4pVKD9EfwPuHDTE4jzyeprJmhJczFqdU3hqwOvgGR7TNaQbQ
-         hlHmLoKfdhhoc1NFtAaRkDohm3lLSa6K9PJfXbW7vyj6jw6uqGDBdNhYDtoPLZn/FvHc
-         qybFImkreifusJePNxLBg74/ETcMUsLZGTCs4EegYTcraRcPzGIhUcCbU3Nsm4QCxxcB
-         c9zg==
-X-Gm-Message-State: AOAM531C6T7qTMlOnE7Oko2tpjxkDr6Kx4PgEmmvJ3InvNxpm/BeV7qI
-        wGr9dcwJGF94XPsZlmMsJFdQwQ==
-X-Google-Smtp-Source: ABdhPJwDK3CF3SWBwEUCcV2yoITN/VX/sNO223Q6WaZadO5gz8/IYFES7//jVGgasK4kXjrj+ZXMHw==
-X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr3551877wri.373.1614350017275;
-        Fri, 26 Feb 2021 06:33:37 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:87b5])
-        by smtp.gmail.com with ESMTPSA id l15sm6422733wru.38.2021.02.26.06.33.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 06:33:37 -0800 (PST)
-Date:   Fri, 26 Feb 2021 14:33:36 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     hannes@cmpxchg.org, mhocko@suse.com, guro@fb.com,
-        shakeelb@google.com, akpm@linux-foundation.org, corbet@lwn.net,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] doc: memcontrol: add description for oom_kill
-Message-ID: <YDkGwN2rQ5lI6LnE@chrisdown.name>
-References: <20210226021254.3980-1-shy828301@gmail.com>
+        Fri, 26 Feb 2021 09:36:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614350085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lLxfh5W64Qm8bILSP59FC31GWqzCy9y4iw1b2YdlEyg=;
+        b=aLrYvmtF25/fd+usFXDJoga97VNODGUua5mSHOQ0DGIYTMTnzo16aNNNNlsBc4kiB+RyBO
+        BV2nKpADvcuX/mtzLv8x+Rv9+HoJOP0NY0j7PdkfyOhG0CU2K0TLuac3NBelCZLz57WPqp
+        c2s75MLViofkRQIOLGI+UOq6Sg/a8rs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-aAu7JTolOyaHRWA2B0UJ-A-1; Fri, 26 Feb 2021 09:34:43 -0500
+X-MC-Unique: aAu7JTolOyaHRWA2B0UJ-A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7A046D4E3;
+        Fri, 26 Feb 2021 14:34:41 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E9DCB18AAB;
+        Fri, 26 Feb 2021 14:34:36 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 15:34:35 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     linux-mm@kvack.org, chuck.lever@oracle.com, netdev@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brouer@redhat.com
+Subject: Re: [PATCH RFC net-next 3/3] mm: make zone->free_area[order] access
+ faster
+Message-ID: <20210226153435.6708d171@carbon>
+In-Reply-To: <20210225153815.GN3697@techsingularity.net>
+References: <161419296941.2718959.12575257358107256094.stgit@firesoul>
+        <161419301128.2718959.4838557038019199822.stgit@firesoul>
+        <20210225112849.GM3697@techsingularity.net>
+        <20210225161633.53e5f910@carbon>
+        <20210225153815.GN3697@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210226021254.3980-1-shy828301@gmail.com>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Shi writes:
->When debugging an oom issue, I found the oom_kill counter of memcg is
->confusing.  At the first glance without checking document, I thought it
->just counts for memcg oom, but it turns out it counts both global and
->memcg oom.
->
->The cgroup v2 documents it, but the description is missed for cgroup v1.
->
->Signed-off-by: Yang Shi <shy828301@gmail.com>
+On Thu, 25 Feb 2021 15:38:15 +0000
+Mel Gorman <mgorman@techsingularity.net> wrote:
 
-Thanks.
+> On Thu, Feb 25, 2021 at 04:16:33PM +0100, Jesper Dangaard Brouer wrote:
+> > > On Wed, Feb 24, 2021 at 07:56:51PM +0100, Jesper Dangaard Brouer wrote:  
+> > > > Avoid multiplication (imul) operations when accessing:
+> > > >  zone->free_area[order].nr_free
+> > > > 
+> > > > This was really tricky to find. I was puzzled why perf reported that
+> > > > rmqueue_bulk was using 44% of the time in an imul operation:
+> > > > 
+> > > >        ???     del_page_from_free_list():
+> > > >  44,54 ??? e2:   imul   $0x58,%rax,%rax
+> > > > 
+> > > > This operation was generated (by compiler) because the struct free_area have
+> > > > size 88 bytes or 0x58 hex. The compiler cannot find a shift operation to use
+> > > > and instead choose to use a more expensive imul, to find the offset into the
+> > > > array free_area[].
+> > > > 
+> > > > The patch align struct free_area to a cache-line, which cause the
+> > > > compiler avoid the imul operation. The imul operation is very fast on
+> > > > modern Intel CPUs. To help fast-path that decrement 'nr_free' move the
+> > > > member 'nr_free' to be first element, which saves one 'add' operation.
+> > > > 
+> > > > Looking up instruction latency this exchange a 3-cycle imul with a
+> > > > 1-cycle shl, saving 2-cycles. It does trade some space to do this.
+> > > > 
+> > > > Used: gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2)
+> > > >     
+> > > 
+> > > I'm having some trouble parsing this and matching it to the patch itself.
+> > > 
+> > > First off, on my system (x86-64), the size of struct free area is 72,
+> > > not 88 bytes. For either size, cache-aligning the structure is a big
+> > > increase in the struct size.  
+> > 
+> > Yes, the increase in size is big. For the struct free_area 40 bytes for
+> > my case and 56 bytes for your case.  The real problem is that this is
+> > multiplied by 11 (MAX_ORDER) and multiplied by number of zone structs
+> > (is it 5?).  Thus, 56*11*5 = 3080 bytes.
+> > 
+> > Thus, I'm not sure it is worth it!  As I'm only saving 2-cycles, for
+> > something that depends on the compiler generating specific code.  And
+> > the compiler can easily change, and "fix" this on-its-own in a later
+> > release, and then we are just wasting memory.
+> > 
+> > I did notice this imul happens 45 times in mm/page_alloc.o, with this
+> > offset 0x58, but still this is likely not on hot-path.
+> >   
+> 
+> Yeah, I'm not convinced it's worth it. The benefit of 2 cycles is small and
+> it's config-dependant. While some configurations will benefit, others do
+> not but the increased consumption is universal. I think there are better
+> ways to save 2 cycles in the page allocator and this seems like a costly
+> micro-optimisation.
+> 
+> > > <SNIP>
+> > >
+> > > With gcc-9, I'm also not seeing the imul instruction outputted like you
+> > > described in rmqueue_pcplist which inlines rmqueue_bulk. At the point
+> > > where it calls get_page_from_free_area, it's using shl for the page list
+> > > operation. This might be a compiler glitch but given that free_area is a
+> > > different size, I'm less certain and wonder if something else is going on.  
+> > 
+> > I think it is the size variation.
+> >   
+> 
+> Yes.
+> 
+> > > Finally, moving nr_free to the end and cache aligning it will make the
+> > > started of each free_list cache-aligned because of its location in the
+> > > struct zone so what purpose does __pad_to_align_free_list serve?  
+> > 
+> > The purpose of purpose of __pad_to_align_free_list is because struct
+> > list_head is 16 bytes, thus I wanted to align free_list to 16, given we
+> > already have wasted the space.
+> >   
+> 
+> Ok, that's fair enough but it's also somewhat of a micro-optimisation as
+> whether it helps or not depends on the architecture.
+> 
+> I don't think I'll pick this up, certainly in the context of the bulk
+> allocator but it's worth keeping in mind. It's an interesting corner case
+> at least.
 
-Acked-by: Chris Down <chris@chrisdown.name>
+I fully agree. Lets drop this patch.
 
->---
-> Documentation/admin-guide/cgroup-v1/memory.rst | 3 +++
-> 1 file changed, 3 insertions(+)
->
->diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
->index 0936412e044e..44d5429636e2 100644
->--- a/Documentation/admin-guide/cgroup-v1/memory.rst
->+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
->@@ -851,6 +851,9 @@ At reading, current status of OOM is shown.
-> 	  (if 1, oom-killer is disabled)
-> 	- under_oom	   0 or 1
-> 	  (if 1, the memory cgroup is under OOM, tasks may be stopped.)
->+        - oom_kill         integer counter
->+          The number of processes belonging to this cgroup killed by any
->+          kind of OOM killer.
->
-> 11. Memory Pressure
-> ===================
->-- 
->2.26.2
->
->
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
