@@ -2,116 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D600326767
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2737432676D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhBZTYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 14:24:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58122 "EHLO
+        id S230235AbhBZTZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 14:25:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhBZTYH (ORCPT
+        with ESMTP id S229698AbhBZTZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 14:24:07 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BA3C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:23:27 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id w11so9612373wrr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:23:26 -0800 (PST)
+        Fri, 26 Feb 2021 14:25:46 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39259C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:25:06 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id do6so16655377ejc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:25:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=OsztXS2pxF0mqVb9NZgLRR6d9O9wIrx2e3naQfnixyw=;
-        b=mvJeaORv08NO8JFv6YX3OR8eF2mGEPxZfE4KvPhccDkBqlM+vFrbJ8EUbyPW+S4KFL
-         IKg5IoaxhhzeHbhRwG7qmM1yla9/TV2WIFUHoLqAiLUPw9Eo1/xpVgYtQ5kMGqSMYMPo
-         nCdzHOFFywol73/GqgJw3G1tqgQY2i6vmjlASg+WIWtL2gWbVucVYF9DYeHH2oUDF5mt
-         YGhIgGCDR9xuuQYwjVngxJH5HrHTgat5f/CcwODnA3wAd/9GrQjArsY/xpDU9soy0/Np
-         TlQyg2IS+HctwnnB+Pt5gfP5E+BMoXR2TwsYCLKkp5bWoXCoTi11PrEkafAmHa7dV1Zc
-         x/Uw==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AdceXkUat0y3I1W10TQaOb2nva8EpX5XfJ5IibDVBuM=;
+        b=DPa6Vh392csOE5ijiNRTWgG7GUi3kKjY8LOBEhxF6H7gF7J8KahKgnxLlU4iYgfSeY
+         Pbs8Vc17TTolZLRSHhw5iCYfpNtd2t1xcYFFKQ3fO0G0P2fg3i+ZYVYW+wfvE3qrVPet
+         2E/m7gPkNFcdJheH9N9j50LssiHOaF6yNI0g6wZFo6yWh/hSm23Riv3KyIzgVx7k/Ls4
+         o1Y4ydnYLrl3SjoziD977quqS+lhcudZ1ex+w4C30hrZA/3+lOd2xJK7KGuApblCVUbP
+         zyMwzpY2cHE2rR0/qLP0kT+5zg0IYM1Io+3P8b8kf1zp5BxfcTw8rv+QxLhplFhOrvcR
+         Yw/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=OsztXS2pxF0mqVb9NZgLRR6d9O9wIrx2e3naQfnixyw=;
-        b=hAJKLXkU88JA6NqHN1kq4nx6se1x0ZA91h55blxJalVBe2NQgqC6oG6SgTo/Ko7oL9
-         LcJX3vJKRRmG9zW3FE+iGhLMLfH83bDbsNhXLoFg9lVzrtNFKayhBQOSikazJk0EYc6C
-         Pwpry+Brxg1damQKTC7YCAQKScCR0jstBeGaIaTacuF9wvcVA49kDPwgirvq393aUvRK
-         qy+3hha3YTcSkh045oAIaWs7nt7t1QiVmKGBOuzhG8n8mswQm4kP5MH/1Rka1wzl3aDx
-         LJ58jKDP4H1LY+A8MC3iteGlPbcvYD63Kygopinx1OCAZbhjo9HW0WVHvpM9/xLs20xt
-         sEHA==
-X-Gm-Message-State: AOAM532Tf8YtDhMy9vLh8m8nE5HNSJz5QhXfjhMccs9OIKFCinwgvU+w
-        6uJo8juODbIkRppRlMkpaaw=
-X-Google-Smtp-Source: ABdhPJwSLG2nJ/s2aJyqjLoRzlpNT/jkEbmhfYg2OHWfEm5RLYiq3iP9n9FdRbVdUHCVfr8UUSz6LQ==
-X-Received: by 2002:adf:d20c:: with SMTP id j12mr4729579wrh.76.1614367405841;
-        Fri, 26 Feb 2021 11:23:25 -0800 (PST)
-Received: from [192.168.1.21] ([195.245.17.255])
-        by smtp.gmail.com with ESMTPSA id t23sm13630703wmn.13.2021.02.26.11.23.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 11:23:25 -0800 (PST)
-Message-ID: <141f3098744ea8d1cc39abcdce89c0e513bfbc70.camel@gmail.com>
-Subject: Re: [PATCH] ARM: ep93xx: don't use clang IAS for crunch
-From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Hartley Sweeten <hsweeten@visionengravers.com>
-Cc:     soc@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Date:   Fri, 26 Feb 2021 20:23:24 +0100
-In-Reply-To: <20210226164345.3889993-1-arnd@kernel.org>
-References: <20210226164345.3889993-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AdceXkUat0y3I1W10TQaOb2nva8EpX5XfJ5IibDVBuM=;
+        b=BmCrYi7YLW1k9CX80ULDeTDJ6C3fJH55JHdNwuk6+S+d9letYBUV06LR41PRuBxZjl
+         O6X873aWVKB3ymfsZa8pjeSV0FxIU4W3Bo2oFo6yn3/r7oU/3O+EoTDu1gqk/p3qU5fO
+         wv5ySc5tkGzBpDlXMTfm7Xw8ZbKPCgifad/4AGfsq71e3mWxiBcSaftQ0K2nTNCnHyy6
+         N9tP9vGcQkd6bZVuLayykP0H0Noi3asX/YsehLmRq5+F9FTz92lxSoIXFvEBbkAy88Ol
+         6+ivacoJHAYVIvBMH/SsTtHGgHF3F6sDXc1J5g/x5fbgwE2dhmOHdqQnUdY63fLvxUYF
+         PMfQ==
+X-Gm-Message-State: AOAM533klFA4Ddwdqf3wykal6XjMfV71s3Tf9PR0shAry8GZqHyMwcDA
+        0coRQqO6yXti+7qkSSSJ6yR9ouzypuYmNs2Y9U1xdA==
+X-Google-Smtp-Source: ABdhPJzUZ1ukwr7S7OH8h0lWao0WUwN2w4vieDP+yhbhYknurSEDgZngirw/nE+KWvrmB7T8lvwVfPOXST5nKZQzUdo=
+X-Received: by 2002:a17:906:6088:: with SMTP id t8mr5106839ejj.323.1614367504798;
+ Fri, 26 Feb 2021 11:25:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+ <20210226190454.GD7272@magnolia>
+In-Reply-To: <20210226190454.GD7272@magnolia>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 26 Feb 2021 11:24:53 -0800
+Message-ID: <CAPcyv4iJiYsM5FQdpMvCi24aCi7RqUnnxC6sM0umFqiN+Q59cg@mail.gmail.com>
+Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Fri, Feb 26, 2021 at 11:05 AM Darrick J. Wong <djwong@kernel.org> wrote:
+>
+> On Fri, Feb 26, 2021 at 09:45:45AM +0000, ruansy.fnst@fujitsu.com wrote:
+> > Hi, guys
+> >
+> > Beside this patchset, I'd like to confirm something about the
+> > "EXPERIMENTAL" tag for dax in XFS.
+> >
+> > In XFS, the "EXPERIMENTAL" tag, which is reported in waring message
+> > when we mount a pmem device with dax option, has been existed for a
+> > while.  It's a bit annoying when using fsdax feature.  So, my initial
+> > intention was to remove this tag.  And I started to find out and solve
+> > the problems which prevent it from being removed.
+> >
+> > As is talked before, there are 3 main problems.  The first one is "dax
+> > semantics", which has been resolved.  The rest two are "RMAP for
+> > fsdax" and "support dax reflink for filesystem", which I have been
+> > working on.
+>
+> <nod>
+>
+> > So, what I want to confirm is: does it means that we can remove the
+> > "EXPERIMENTAL" tag when the rest two problem are solved?
+>
+> Yes.  I'd keep the experimental tag for a cycle or two to make sure that
+> nothing new pops up, but otherwise the two patchsets you've sent close
+> those two big remaining gaps.  Thank you for working on this!
+>
+> > Or maybe there are other important problems need to be fixed before
+> > removing it?  If there are, could you please show me that?
+>
+> That remains to be seen through QA/validation, but I think that's it.
+>
+> Granted, I still have to read through the two patchsets...
 
-On Fri, 2021-02-26 at 17:43 +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Randconfig builds with ep93xx fail with the clang integrated
-> assembler that does not understand the maverick crunch extensions:
-> 
-> arch/arm/mach-ep93xx/crunch-bits.S:94:2: error: invalid instruction
->  cfstr64 mvdx0, [r1, #0] @ save 64b registers
-> 
-> It is unclear if anyone is still using support for crunch: gcc-4.8 dropped
-> it in 2012 when it was already too broken to be used reliabled. glibc
-> support existed as an external patch but was never merged upstream.
-> We could consider removing the last bits of the kernel support as well.
+I've been meaning to circle back here as well.
 
-This was my impression already in 2006, that Cirrus is not going to work
-on Crunch support. From my PoV it's OK to remove the support in the
-kernel completely.
+My immediate concern is the issue Jason recently highlighted [1] with
+respect to invalidating all dax mappings when / if the device is
+ripped out from underneath the fs. I don't think that will collide
+with Ruan's implementation, but it does need new communication from
+driver to fs about removal events.
 
-> Turn off the integrated assembler for this file for now.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/arm/mach-ep93xx/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-ep93xx/Makefile b/arch/arm/mach-ep93xx/Makefile
-> index 86768495f61d..f686577ba059 100644
-> --- a/arch/arm/mach-ep93xx/Makefile
-> +++ b/arch/arm/mach-ep93xx/Makefile
-> @@ -7,7 +7,7 @@ obj-y                   := core.o clock.o timer-ep93xx.o
->  obj-$(CONFIG_EP93XX_DMA)       += dma.o
->  
->  obj-$(CONFIG_CRUNCH)           += crunch.o crunch-bits.o
-> -AFLAGS_crunch-bits.o           := -Wa,-mcpu=ep9312
-> +AFLAGS_crunch-bits.o           := -Wa,-mcpu=ep9312 $(cc-option, -fno-integrated-as)
->  
->  obj-$(CONFIG_MACH_ADSSPHERE)   += adssphere.o
->  obj-$(CONFIG_MACH_EDB93XX)     += edb93xx.o
-
--- 
-Alexander Sverdlin.
-
-
+[1]: http://lore.kernel.org/r/CAPcyv4i+PZhYZiePf2PaH0dT5jDfkmkDX-3usQy1fAhf6LPyfw@mail.gmail.com
