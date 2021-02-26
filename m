@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3E2325AA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B67C3325ABF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhBZATr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 19:19:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbhBZATn (ORCPT
+        id S232196AbhBZAWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 19:22:49 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:12518 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231530AbhBZAWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 19:19:43 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E47C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:19:03 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id b21so5026878pgk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:19:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EpLLhisLnKlrh/KO9qG6Kmzca1e22HdLGOqsO0hQAnQ=;
-        b=fBWETq+7jgrQIAa83TLSvqi0KPX3lG6JPAJHk0fwJ4eH3Gu+mZPFs6265I5bcFUgxF
-         8p5gAelIvilquUp5H302B78kywoBrfgvFq6tU6ZpFOuupGbmxAqYwryUHL/WNiqW9OPv
-         dT5D5fTh+zlOdJloeJcKzeSGON15a4m3M9YcU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EpLLhisLnKlrh/KO9qG6Kmzca1e22HdLGOqsO0hQAnQ=;
-        b=lMuQdK1eh4Ovkfl+8skAhtANYtn1qCktCvMJ6m88GVyYa2nNoP0Y7EnOHieTZzFyJW
-         YKtv6khBRvBtlyclQV22LO+hIlhwICEzdB52PJ+YLH1THBbceKVv84Pk8dfcQXXLeusL
-         KYhYWFJjb3v1mJ9WapQBt7cDbEtBr+YVHHlpF2L9hVJMBUtrYdW51PP+umQczLlUZeHm
-         k+KsF0nHV+yotDXEFfRaG88sMGHO33V6nCJdyv5oXe8QruCeO4auSHg5zophHu3+DRn9
-         PzXb2OOuN/Wpje18fC4n2x3d91TcjMR94bb7wynb1wZr63TtaQdln5cQ7tWv6mQYzkoa
-         H6RQ==
-X-Gm-Message-State: AOAM530NHwTlHLVv9Af41uwgyeXgVj++6ekPf2aRlF2y10vvGN/L9iMl
-        UuwCXgoAhcoRIcseIm3SlmK38g==
-X-Google-Smtp-Source: ABdhPJzd0qB647RFl4SgkXhkXemEci3xzGR+wupLWWkZdHLdouVqp6NgBRHSdXVEgyYNrl7nOKiaXA==
-X-Received: by 2002:a63:4c4e:: with SMTP id m14mr444952pgl.35.1614298742500;
-        Thu, 25 Feb 2021 16:19:02 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:1d8:8d0c:f75e:edd8])
-        by smtp.gmail.com with UTF8SMTPSA id d16sm6700471pgb.12.2021.02.25.16.19.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Feb 2021 16:19:02 -0800 (PST)
-Date:   Thu, 25 Feb 2021 16:19:00 -0800
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexandru M Stan <amstan@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/13] arm64: dts: qcom: sc7180: Remove clock for
- bluetooth on Trogdor
-Message-ID: <YDg+dCuGd+v2z+3S@google.com>
-References: <20210225221310.1939599-1-dianders@chromium.org>
- <20210225141022.8.I80c268f163e6d49a70af1238be442b5de400c579@changeid>
+        Thu, 25 Feb 2021 19:22:44 -0500
+X-IronPort-AV: E=Sophos;i="5.81,207,1610380800"; 
+   d="scan'208";a="104882807"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 26 Feb 2021 08:20:41 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id E41984CE1A08;
+        Fri, 26 Feb 2021 08:20:38 +0800 (CST)
+Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Fri, 26 Feb 2021 08:20:34 +0800
+Received: from irides.mr.mr.mr (10.167.225.141) by
+ G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Fri, 26 Feb 2021 08:20:33 +0800
+From:   Shiyang Ruan <ruansy.fnst@fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <willy@infradead.org>, <jack@suse.cz>, <viro@zeniv.linux.org.uk>,
+        <linux-btrfs@vger.kernel.org>, <ocfs2-devel@oss.oracle.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <rgoldwyn@suse.de>
+Subject: [PATCH v2 00/10] fsdax,xfs: Add reflink&dedupe support for fsdax
+Date:   Fri, 26 Feb 2021 08:20:20 +0800
+Message-ID: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210225141022.8.I80c268f163e6d49a70af1238be442b5de400c579@changeid>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: E41984CE1A08.A2B24
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 02:13:05PM -0800, Douglas Anderson wrote:
-> From: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-> 
-> Removed voting for RPMH_RF_CLK2 which is not required as it is
-> getting managed by BT SoC through SW_CTRL line.
-> 
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+This patchset is attempt to add CoW support for fsdax, and take XFS,
+which has both reflink and fsdax feature, as an example.
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+Changes from V1:
+ - Factor some helper functions to simplify dax fault code
+ - Introduce iomap_apply2() for dax_dedupe_file_range_compare()
+ - Fix mistakes and other problems
+ - Rebased on v5.11
+
+One of the key mechanism need to be implemented in fsdax is CoW.  Copy
+the data from srcmap before we actually write data to the destance
+iomap.  And we just copy range in which data won't be changed.
+
+Another mechanism is range comparison.  In page cache case, readpage()
+is used to load data on disk to page cache in order to be able to
+compare data.  In fsdax case, readpage() does not work.  So, we need
+another compare data with direct access support.
+
+With the two mechanism implemented in fsdax, we are able to make reflink
+and fsdax work together in XFS.
+
+
+Some of the patches are picked up from Goldwyn's patchset.  I made some
+changes to adapt to this patchset.
+
+(Rebased on v5.11)
+==
+
+Shiyang Ruan (10):
+  fsdax: Factor helpers to simplify dax fault code
+  fsdax: Factor helper: dax_fault_actor()
+  fsdax: Output address in dax_iomap_pfn() and rename it
+  fsdax: Introduce dax_iomap_cow_copy()
+  fsdax: Replace mmap entry in case of CoW
+  fsdax: Add dax_iomap_cow_copy() for dax_iomap_zero
+  iomap: Introduce iomap_apply2() for operations on two files
+  fsdax: Dedup file range to use a compare function
+  fs/xfs: Handle CoW for fsdax write() path
+  fs/xfs: Add dedupe support for fsdax
+
+ fs/dax.c               | 532 +++++++++++++++++++++++++++--------------
+ fs/iomap/apply.c       |  51 ++++
+ fs/iomap/buffered-io.c |   2 +-
+ fs/remap_range.c       |  45 +++-
+ fs/xfs/xfs_bmap_util.c |   3 +-
+ fs/xfs/xfs_file.c      |  29 ++-
+ fs/xfs/xfs_inode.c     |   8 +-
+ fs/xfs/xfs_inode.h     |   1 +
+ fs/xfs/xfs_iomap.c     |  30 ++-
+ fs/xfs/xfs_iomap.h     |   1 +
+ fs/xfs/xfs_iops.c      |  11 +-
+ fs/xfs/xfs_reflink.c   |  16 +-
+ include/linux/dax.h    |   7 +-
+ include/linux/fs.h     |  15 +-
+ include/linux/iomap.h  |   7 +-
+ 15 files changed, 550 insertions(+), 208 deletions(-)
+
+-- 
+2.30.1
+
+
+
