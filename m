@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66038326927
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C649132692A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhBZVHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:07:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52174 "EHLO
+        id S230095AbhBZVIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbhBZVHf (ORCPT
+        with ESMTP id S229990AbhBZVIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:07:35 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7D3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:06:54 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id p3so8423638wmc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 13:06:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=4YoSdm1oq7pZ9SWUTs03pmy+FFIeYuVC1lSLrRDUq4w=;
-        b=tbqquS2/20kcvklz577EBt42YtZWDq5De1QLRTwqRwnaM/dIocD36J0MGOfgT+9ZJ1
-         on8GuMyTGL2XK4CCPjNjvaRHqp74erxRxZip50uz+V8c2lhuW8ozrg3FwR4HRY2K91Li
-         zbu6qK7h/YpZ6xJpE8Xeh6NYEsMIGdYZe66K3hVLWMTHZT/OvGeTTFlbt9zhClI39gZH
-         K4TqlMBSm5wrHhtgaBz9zJ+qSRuGpfJzjbkdlLhvo3gHXsZEYtIk30UYMgcZNretNFH0
-         xp2VWzG5VFfF7T3pjFfEK2esij5ifCipVA9X1Zu6FcwTw5vJ4HP77/GUiaxbTPSe78iN
-         FnCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=4YoSdm1oq7pZ9SWUTs03pmy+FFIeYuVC1lSLrRDUq4w=;
-        b=eK8O9C1WUzUYBwUq5X5VH2arqwleTAi1xJq814LEUYaNnDjfYLEKHw/DO3VreZn5m0
-         /DE8Aj6shcBYWjGxG7dMvxVaIQj1EAsl3YxMeCjztDWMwUoRIUNi8g4eVOtic2xciwKz
-         jwSXIb2rAY5vSO6S80YrX09uXcFZXcOxmFpwnFkSXD5Z+TXsvXDpPcy0s5w1AJUJQQnC
-         tYqBnJVKObDC3zryZtZhCO7QF//uUwJP+KJxQNTRAkX0dx+2N10Z1DFaKCMjUq2yx8X0
-         3sGU+UNQHPs91KH4HbHJdTuWnVnaW7fmVyVn4JUHls2ULmmTYPCpbUY4ES4P6qiz8BWd
-         82vA==
-X-Gm-Message-State: AOAM530h+A+PJfBAHSRKoYj/ZhOpJ0fB6UFLNRW1V1w1GfyNJWZKpLiM
-        vQaqWk788+f6EAjhStA+QhUErIZ97GKV9RoAd04=
-X-Google-Smtp-Source: ABdhPJxWpe+uWQx1ibXdarzhnc7TmZxMW0v7cpzwZGxc+CjA75wSlTjs32QhnP3FrIXuXbVAcMor40edO9ZUA5t+Wvg=
-X-Received: by 2002:a7b:cc1a:: with SMTP id f26mr4510142wmh.19.1614373613686;
- Fri, 26 Feb 2021 13:06:53 -0800 (PST)
+        Fri, 26 Feb 2021 16:08:14 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2D4C061756;
+        Fri, 26 Feb 2021 13:07:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7pgftJoNP5KTdbInm9s0p3yXUSHbaaNN6wUdMbqk36Q=; b=iiQ3KmXmdmtEz3zoxoZjCfxwfG
+        jdd70ti+Bkd01AvEbuYEA93mZ5RxbcslWYlslLagJqUxLmTq+FY3f5Dx749FY5vIS0nlDP1hmce1V
+        etaW4F0Qal/ZfdjqmAUKMzfF8mP3WKiH8C+gUzC0iGL2xb5PQT6vwGcnobN5nsC6VYTEf8jDCw3dj
+        cCu9tOQwgTyuQf1oUE0XGJYPpyiU2taOff/CHWOi1cIuMkEOsfIVl38BoqmLKlw65QR+mYD9LrKDY
+        wuBaYI2/HVpH3vgLMnUiWS31zzPWnFQBqMLDzOwbQKSYP3MclasDj9rSUtJvyQYrg2oNaOfZ7/rxe
+        /S1kQXEQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lFkKI-00CVhR-Ph; Fri, 26 Feb 2021 21:07:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2D6843006D0;
+        Fri, 26 Feb 2021 22:07:04 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1BDE720616380; Fri, 26 Feb 2021 22:07:04 +0100 (CET)
+Date:   Fri, 26 Feb 2021 22:07:04 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     mingo@redhat.com, will@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] lockdep: add lockdep_assert_not_held()
+Message-ID: <YDli+H48Ft3F6k9/@hirez.programming.kicks-ass.net>
+References: <cover.1614355914.git.skhan@linuxfoundation.org>
+ <a40d18bba5a52662ac8fc556e1fce3752ea08472.1614355914.git.skhan@linuxfoundation.org>
 MIME-Version: 1.0
-Sender: bipingameti7@gmail.com
-Received: by 2002:a1c:de87:0:0:0:0:0 with HTTP; Fri, 26 Feb 2021 13:06:53
- -0800 (PST)
-From:   "Mr. Dabire Basole" <mrdabirebasole@gmail.com>
-Date:   Fri, 26 Feb 2021 21:06:53 +0000
-X-Google-Sender-Auth: RJdJv5kSK52HWFIemkeKIepbfDY
-Message-ID: <CAFw7CDgbCrkAzjaP+ztJ+pWek42vRb0UVsgi86hUc398eaSiLw@mail.gmail.com>
-Subject: TREAT AND REPLY URGENTLY.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a40d18bba5a52662ac8fc556e1fce3752ea08472.1614355914.git.skhan@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Fri, Feb 26, 2021 at 10:52:13AM -0700, Shuah Khan wrote:
+> +		/* avoid false negative lockdep_assert_not_held()
+> +		 * and lockdep_assert_held()
+> +		 */
 
-Greetings!
-
-How are you with your family today? I hope both of you are in good
-health decently, I know that this message might meet you in utmost
-surprise as we never know each other before. I am Mr. Dabire Basole a
-banker by profession, I need your urgent assist in transferring the
-sum of $10.5 Million U.S Dollars into your account. It is 100% risk
-free and under this achievement you are entitled to receive 40% of the
-total cash. More details will be sent to you on confirmation of your interest.
-Please if you are real interest on my proposer, just providing me your
-following information details such as:
-
-(1)NAME..............
-(2)AGE:................
-(3)SEX:.....................
-(4)PHONE NUMBER:.................
-(5)OCCUPATION:................ .....
-(6)YOUR COUNTRY:.....................
-
-Yours sincerely,
-
-Mr.  Dabire Basole.
+That's a coding style fail.
