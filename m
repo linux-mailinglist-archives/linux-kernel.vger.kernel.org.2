@@ -2,149 +2,381 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4E93264D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89C33264E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhBZPlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 10:41:12 -0500
-Received: from ivanoab7.miniserver.com ([37.128.132.42]:58668 "EHLO
-        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhBZPlI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:41:08 -0500
-Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
-        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1lFfDz-0002o5-PW; Fri, 26 Feb 2021 15:40:16 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1lFfDx-0003yv-ES; Fri, 26 Feb 2021 15:40:15 +0000
-Subject: Re: NFS Caching broken in 4.19.37
-To:     Timo Rothenpieler <timo@rothenpieler.org>,
-        Bruce Fields <bfields@fieldses.org>
-Cc:     Salvatore Bonaccorso <carnil@debian.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "940821@bugs.debian.org" <940821@bugs.debian.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
-References: <5022bdc4-9f3e-9756-cbca-ada37f88ecc7@cambridgegreys.com>
- <YDFrN0rZAJBbouly@eldamar.lan>
- <af5cebbd-74c9-9345-9fe8-253fb96033f6@cambridgegreys.com>
- <BEBA9809-373A-4172-B4AD-E19D82E56DB1@oracle.com>
- <YDIkH6yVgLoALT6x@eldamar.lan>
- <9305dc03-5557-5e18-e5c9-aaf886a03fff@cambridgegreys.com>
- <20210221143712.GA15975@fieldses.org>
- <f0edfaf5-457d-2334-ee4f-a6bf9d13917b@cambridgegreys.com>
- <1b701f2b-d185-dd30-0aca-ba6d280221d5@rothenpieler.org>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-Message-ID: <72e16f18-d4ae-f963-fd09-5f1fa6885a1d@cambridgegreys.com>
-Date:   Fri, 26 Feb 2021 15:40:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <1b701f2b-d185-dd30-0aca-ba6d280221d5@rothenpieler.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S229769AbhBZPp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 10:45:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229621AbhBZPpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 10:45:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC10064EC4;
+        Fri, 26 Feb 2021 15:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614354310;
+        bh=7NmQRozZ7mAFH/uNMd/JSu3yi3u2x2VT8yp7NbbnUk4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=l8BSnEdac0l0gTsTYEbTCnqAsifpK4+IY8Bk1E+xkmUgbTRcEkRg2qBGRnejOQWLt
+         4Rat2AsIB24MkA1ycpik0yrmdkIup4vCf8F/wyqEtG94XM+P9bq8G6Z4N0A439L5KR
+         Zm6GtPccNgIdyGTLfuU8/f2m+26A4Go1ZIYfgMsmGWVCgJinarSPf7qK2h82GDDGvQ
+         ubu5doKep3hlBngF2scCNkV3eTtOBAYlwYQbmy0J68MS4653uHQ1VUA6aJggEDZFe6
+         ErhHk1Qwn2xch6RplrdHpWDA4e1SA0Xs0JS7I1KBIEFXI+bhAbIZPvd9P5bPMzyqbE
+         uxkWU/Z1Nb24Q==
+Date:   Sat, 27 Feb 2021 00:45:06 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 04/21] x86/insn: Add an insn_decode() API
+Message-Id: <20210227004506.2247a6709947977ee769755c@kernel.org>
+In-Reply-To: <20210224110233.19715-5-bp@alien8.de>
+References: <20210224110233.19715-1-bp@alien8.de>
+        <20210224110233.19715-5-bp@alien8.de>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Spam-Score: -1.0
-X-Spam-Score: -1.0
-X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/02/2021 15:03, Timo Rothenpieler wrote:
-> I think I can reproduce this, or something that at least looks very 
-> similar to this, on 5.10. Namely on 5.10.17 (On both Client and Server).
+Hi Borislav,
 
-I think this is a different issue - see below.
+On Wed, 24 Feb 2021 12:02:16 +0100
+Borislav Petkov <bp@alien8.de> wrote:
 
->
-> We are running slurm, and since a while now (coincides with updating 
-> from 5.4 to 5.10, but a whole bunch of other stuff was updated at the 
-> same time, so it took me a while to correlate this) the logs it writes 
-> have been truncated, but only while they're being observed on the 
-> client, using tail -f or something like that.
->
-> Looks like this then:
->
-> On Server:
->> store01 /srv/export/home/users/timo/TestRun # ls -l slurm-41101.out
->> -rw-r--r-- 1 timo timo 1931 Feb 26 15:46 slurm-41101.out
->> store01 /srv/export/home/users/timo/TestRun # wc -l slurm-41101.out
->> 61 slurm-41101.out
->
-> On Client:
->> timo@login01 ~/TestRun $ ls -l slurm-41101.out
->> -rw-r--r-- 1 timo timo 1931 Feb 26 15:46 slurm-41101.out
->> timo@login01 ~/TestRun $ wc -l slurm-41101.out
->> 24 slurm-41101.out
->
-> See https://gist.github.com/BtbN/b9eb4fc08ccc53bb20087bce0bf9f826 for 
-> the respective file-contents.
->
-> If I run the same test job, wait until its done, and then look at its 
-> slurm.out file, it matches between NFS Client and Server.
-> If I tail -f the slurm.out on an NFS client, the file stops getting 
-> updated on the client, but keeps getting more logs written to it on 
-> the NFS server.
->
-> The slurm.out file is being written to by another NFS client, which is 
-> running on one of the compute nodes of the system. It's being reads 
-> from a login node.
+> From: Borislav Petkov <bp@suse.de>
+> 
+> Users of the instruction decoder should use this to decode instruction
+> bytes. For that, have insn*() helpers return an int value to denote
+> success/failure. When there's an error fetching the next insn byte and
+> the insn falls short, return -ENODATA to denote that.
+> 
+> While at it, make insn_get_opcode() more stricter as to whether what has
+> seen so far is a valid insn and if not.
+> 
 
-These are two different clients, then what you see is possible on NFS 
-with client side caching. If you have multiple clients reading/writing 
-to the same files you usually need to tune the caching options and/or 
-use locking. I suspect that if you leave it for a while (until the cache 
-expires) it will sort itself out.
+OK, but I think it should return -EINVAL or -EILSEQ for bad instruction.
+And I found a bug.
 
-In my test-case it is just one client, it missed a file deletion and 
-nothing short of an unmount and remount fixes that. I have waited for 30 
-mins+. It does not seem to refresh or expire. I also see the opposite 
-behavior - the bug shows up on 4.x up to at least 5.4. I do not see it 
-on 5.10.
+[...]
 
-Brgds,
+> @@ -231,16 +243,25 @@ void insn_get_prefixes(struct insn *insn)
+>   * If necessary, first collects any preceding (prefix) bytes.
+>   * Sets @insn->opcode.value = opcode1.  No effect if @insn->opcode.got
+>   * is already 1.
+> + *
+> + * Returns:
+> + * 0:  on success
+> + * < 0: on error
+
+OK, but
+
+>   */
+> -void insn_get_opcode(struct insn *insn)
+> +int insn_get_opcode(struct insn *insn)
+>  {
+>  	struct insn_field *opcode = &insn->opcode;
+> +	int pfx_id, ret;
+>  	insn_byte_t op;
+> -	int pfx_id;
+> +
+>  	if (opcode->got)
+> -		return;
+> -	if (!insn->prefixes.got)
+> -		insn_get_prefixes(insn);
+> +		return 0;
+> +
+> +	if (!insn->prefixes.got) {
+> +		ret = insn_get_prefixes(insn);
+> +		if (ret)
+> +			return ret;
+> +	}
+>  
+>  	/* Get first opcode */
+>  	op = get_next(insn_byte_t, insn);
+> @@ -255,9 +276,13 @@ void insn_get_opcode(struct insn *insn)
+>  		insn->attr = inat_get_avx_attribute(op, m, p);
+>  		if ((inat_must_evex(insn->attr) && !insn_is_evex(insn)) ||
+>  		    (!inat_accept_vex(insn->attr) &&
+> -		     !inat_is_group(insn->attr)))
+> -			insn->attr = 0;	/* This instruction is bad */
+> -		goto end;	/* VEX has only 1 byte for opcode */
+> +		     !inat_is_group(insn->attr))) {
+> +			/* This instruction is bad */
+> +			insn->attr = 0;
+> +			return 1;
+
+Here you return 1 for a bad opcode. 
+
+> +		}
+> +		/* VEX has only 1 byte for opcode */
+> +		goto end;
+>  	}
+>  
+>  	insn->attr = inat_get_opcode_attribute(op);
+> @@ -268,13 +293,18 @@ void insn_get_opcode(struct insn *insn)
+>  		pfx_id = insn_last_prefix_id(insn);
+>  		insn->attr = inat_get_escape_attribute(op, pfx_id, insn->attr);
+>  	}
+> -	if (inat_must_vex(insn->attr))
+> -		insn->attr = 0;	/* This instruction is bad */
+> +
+> +	if (inat_must_vex(insn->attr)) {
+> +		/* This instruction is bad */
+> +		insn->attr = 0;
+> +		return 1;
+
+Ditto.
+Would you mean -EINVAL?
+
+> +	}
+>  end:
+>  	opcode->got = 1;
+> +	return 0;
+>  
+>  err_out:
+> -	return;
+> +	return -ENODATA;
+>  }
+>  
+>  /**
+> @@ -284,15 +314,25 @@ void insn_get_opcode(struct insn *insn)
+>   * Populates @insn->modrm and updates @insn->next_byte to point past the
+>   * ModRM byte, if any.  If necessary, first collects the preceding bytes
+>   * (prefixes and opcode(s)).  No effect if @insn->modrm.got is already 1.
+> + *
+> + * Returns:
+> + * 0:  on success
+> + * < 0: on error
 
 
->
->
->
->
-> Timo
->
->
-> On 21.02.2021 16:53, Anton Ivanov wrote:
->> Client side. This seems to be an entirely client side issue.
->>
->> A variety of kernels on the clients starting from 4.9 and up to 5.10 
->> using 4.19 servers. I have observed it on a 4.9 client versus 4.9 
->> server earlier.
->>
->> 4.9 fails, 4.19 fails, 5.2 fails, 5.4 fails, 5.10 works.
->>
->> At present the server is at 4.19.67 in all tests.
->>
->> Linux jain 4.19.0-6-amd64 #1 SMP Debian 4.19.67-2+deb10u2 
->> (2019-11-11) x86_64 GNU/Linux
->>
->> I can set-up a couple of alternative servers during the week, but so 
->> far everything is pointing towards a client fs cache issue, not a 
->> server one.
->>
->> Brgds,
->>
->
->
+
+>   */
+> -void insn_get_modrm(struct insn *insn)
+> +int insn_get_modrm(struct insn *insn)
+>  {
+>  	struct insn_field *modrm = &insn->modrm;
+>  	insn_byte_t pfx_id, mod;
+> +	int ret;
+> +
+>  	if (modrm->got)
+> -		return;
+> -	if (!insn->opcode.got)
+> -		insn_get_opcode(insn);
+> +		return 0;
+> +
+> +	if (!insn->opcode.got) {
+> +		ret = insn_get_opcode(insn);
+> +		if (ret)
+> +			return ret;
+> +	}
+>  
+>  	if (inat_has_modrm(insn->attr)) {
+>  		mod = get_next(insn_byte_t, insn);
+> @@ -302,17 +342,22 @@ void insn_get_modrm(struct insn *insn)
+>  			pfx_id = insn_last_prefix_id(insn);
+>  			insn->attr = inat_get_group_attribute(mod, pfx_id,
+>  							      insn->attr);
+> -			if (insn_is_avx(insn) && !inat_accept_vex(insn->attr))
+> -				insn->attr = 0;	/* This is bad */
+> +			if (insn_is_avx(insn) && !inat_accept_vex(insn->attr)) {
+> +				/* Bad insn */
+> +				insn->attr = 0;
+> +				return 1;
+
+Here is another return 1. 
+
+> +			}
+>  		}
+>  	}
+>  
+>  	if (insn->x86_64 && inat_is_force64(insn->attr))
+>  		insn->opnd_bytes = 8;
+> +
+>  	modrm->got = 1;
+> +	return 0;
+>  
+>  err_out:
+> -	return;
+> +	return -ENODATA;
+>  }
+>  
+>  
+> @@ -326,11 +371,16 @@ void insn_get_modrm(struct insn *insn)
+>  int insn_rip_relative(struct insn *insn)
+>  {
+>  	struct insn_field *modrm = &insn->modrm;
+> +	int ret;
+>  
+>  	if (!insn->x86_64)
+>  		return 0;
+> -	if (!modrm->got)
+> -		insn_get_modrm(insn);
+> +
+> +	if (!modrm->got) {
+> +		ret = insn_get_modrm(insn);
+> +		if (ret)
+> +			return ret;
+> +	}
+>  	/*
+>  	 * For rip-relative instructions, the mod field (top 2 bits)
+>  	 * is zero and the r/m field (bottom 3 bits) is 0x5.
+> @@ -344,15 +394,25 @@ int insn_rip_relative(struct insn *insn)
+>   *
+>   * If necessary, first collects the instruction up to and including the
+>   * ModRM byte.
+> + *
+> + * Returns:
+> + * 0: if decoding succeeded
+> + * < 0: otherwise.
+>   */
+> -void insn_get_sib(struct insn *insn)
+> +int insn_get_sib(struct insn *insn)
+>  {
+>  	insn_byte_t modrm;
+> +	int ret;
+>  
+>  	if (insn->sib.got)
+> -		return;
+> -	if (!insn->modrm.got)
+> -		insn_get_modrm(insn);
+> +		return 0;
+> +
+> +	if (!insn->modrm.got) {
+> +		ret = insn_get_modrm(insn);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	if (insn->modrm.nbytes) {
+>  		modrm = (insn_byte_t)insn->modrm.value;
+>  		if (insn->addr_bytes != 2 &&
+> @@ -363,8 +423,10 @@ void insn_get_sib(struct insn *insn)
+>  	}
+>  	insn->sib.got = 1;
+>  
+> +	return 0;
+> +
+>  err_out:
+> -	return;
+> +	return -ENODATA;
+>  }
+>  
+>  
+> @@ -375,15 +437,25 @@ void insn_get_sib(struct insn *insn)
+>   * If necessary, first collects the instruction up to and including the
+>   * SIB byte.
+>   * Displacement value is sign-expanded.
+> + *
+> + * * Returns:
+> + * 0: if decoding succeeded
+> + * < 0: otherwise.
+>   */
+> -void insn_get_displacement(struct insn *insn)
+> +int insn_get_displacement(struct insn *insn)
+>  {
+>  	insn_byte_t mod, rm, base;
+> +	int ret;
+>  
+>  	if (insn->displacement.got)
+> -		return;
+> -	if (!insn->sib.got)
+> -		insn_get_sib(insn);
+> +		return 0;
+> +
+> +	if (!insn->sib.got) {
+> +		ret = insn_get_sib(insn);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	if (insn->modrm.nbytes) {
+>  		/*
+>  		 * Interpreting the modrm byte:
+> @@ -426,12 +498,13 @@ void insn_get_displacement(struct insn *insn)
+>  	}
+>  out:
+>  	insn->displacement.got = 1;
+> +	return 0;
+>  
+>  err_out:
+> -	return;
+> +	return -ENODATA;
+>  }
+>  
+> -/* Decode moffset16/32/64. Return 0 if failed */
+> +/* Decode moffset16/32/64. Return a negative value if failed. */
+>  static int __get_moffset(struct insn *insn)
+>  {
+>  	switch (insn->addr_bytes) {
+> @@ -457,10 +530,10 @@ static int __get_moffset(struct insn *insn)
+>  	return 1;
+>  
+>  err_out:
+> -	return 0;
+> +	return -ENODATA;
+
+Also, __get_*() functions are expected to return bool (1/0)
+for checking bad data. See insn_get_immediate() INAT_IMM_PTR case for example.
+
+>  }
+>  
+> -/* Decode imm v32(Iz). Return 0 if failed */
+> +/* Decode imm v32(Iz). Return a negative value if failed. */
+>  static int __get_immv32(struct insn *insn)
+>  {
+>  	switch (insn->opnd_bytes) {
+> @@ -480,10 +553,10 @@ static int __get_immv32(struct insn *insn)
+>  	return 1;
+>  
+>  err_out:
+> -	return 0;
+> +	return -ENODATA;
+
+Ditto.
+
+>  }
+>  
+> -/* Decode imm v64(Iv/Ov), Return 0 if failed */
+> +/* Decode imm v64(Iv/Ov). Return a negative value if failed. */
+>  static int __get_immv(struct insn *insn)
+>  {
+>  	switch (insn->opnd_bytes) {
+> @@ -507,11 +580,12 @@ static int __get_immv(struct insn *insn)
+>  	insn->immediate1.got = insn->immediate2.got = 1;
+>  
+>  	return 1;
+> +
+>  err_out:
+> -	return 0;
+> +	return -ENODATA;
+
+Ditto.
+
+>  }
+>  
+> -/* Decode ptr16:16/32(Ap) */
+> +/* Decode ptr16:16/32(Ap). Return a negative value if failed. */
+>  static int __get_immptr(struct insn *insn)
+>  {
+>  	switch (insn->opnd_bytes) {
+> @@ -534,25 +608,36 @@ static int __get_immptr(struct insn *insn)
+>  	insn->immediate1.got = insn->immediate2.got = 1;
+>  
+>  	return 1;
+> +
+>  err_out:
+> -	return 0;
+> +	return -ENODATA;
+
+Ditto.
+
+
+Thank you,
+
+
 
 -- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
-
+Masami Hiramatsu <mhiramat@kernel.org>
