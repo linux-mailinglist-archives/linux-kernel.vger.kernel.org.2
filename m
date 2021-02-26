@@ -2,111 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569A0326452
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:48:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED31326455
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 15:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbhBZOri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 09:47:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhBZOrg (ORCPT
+        id S230099AbhBZOsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 09:48:05 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:40248 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhBZOsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 09:47:36 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B049DC061574;
-        Fri, 26 Feb 2021 06:46:55 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id b145so6400706pfb.4;
-        Fri, 26 Feb 2021 06:46:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/TYKTW6vMSX34Lo/QP5TakGrXtS+bClWHXgI2d5DqyQ=;
-        b=L0lUCJp9XkmJVz3q6dE3tyoJFZkBu75c6aO0q/ToTIvSGxFld33n5Ki3ripOT3u172
-         XML3Uh3pAWpgpEA5SHslYde+YTLM+HhfAc+uSzDMn//XeTA8+igF+1Zxt7/fpCm5v967
-         H14LAaPaJs7qM8zITe3ua1sASnviAXJF+yAUCdGo/35muU+2RtPZxnUJHYwlJ2qT4v9m
-         nJlEsmd8VFfLAXoOHVevS/9XkczHKlg/yR91T/uxSl1+MjpzCV/TRD7UBBsaNg4tT5Jw
-         1S866zzQgslUPKpMk96TNC8y9tGjpS/rQQ/sZbotTvN0wbjc9uRP3ojXOCL+wZuTz4h3
-         RUqQ==
+        Fri, 26 Feb 2021 09:48:01 -0500
+Received: by mail-il1-f198.google.com with SMTP id j7so7238795ilu.7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 06:47:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/TYKTW6vMSX34Lo/QP5TakGrXtS+bClWHXgI2d5DqyQ=;
-        b=HB5fth3S2JDdYhWtNWOGFMGzLD7KRGM2gevgfg9L+veseg9Y51qSLLAM7H+nnJOWTQ
-         NtJE/uHGWUW/6gImayWudn0NK+JiSNIflHFKF7QIjAJh3A809Uyn60OWwmF+QGh3RDgl
-         we12+jiRKYOZK0jfY8JFwcrmKwdRhZ7WFVlm///XBZsShg3vexEgAWgmmIWIaZADo34P
-         ObdMTFIeps8D8MdJQxoNQT3G6LIQ5z2EF54YoyMdwNSi47c3Sfy7sL9TzwGdTjVxKvNp
-         pkS8oZqmUyEwCpAkzxwz7yj0GyEIao5NBnNLOVAnnIG86Uv7BNvlccGB0/fCsBm6yiSo
-         sY9g==
-X-Gm-Message-State: AOAM530l1BPVT3QWIpfK2nxLJqVip60RkaLmf+bVom4JeSbSk3Szwi5t
-        eu14vcPxOdfdChepZcY77Hc=
-X-Google-Smtp-Source: ABdhPJzgzMzZw142DhrijVdDEDJdI5Lzi3mX1asOgEN3CNBuneOFmrwmJ+sgVNSX00IM18o9PxP0ag==
-X-Received: by 2002:a62:2acf:0:b029:1ed:5dbb:717a with SMTP id q198-20020a622acf0000b02901ed5dbb717amr3632787pfq.39.1614350815072;
-        Fri, 26 Feb 2021 06:46:55 -0800 (PST)
-Received: from [172.30.1.19] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id r2sm9174176pgv.50.2021.02.26.06.46.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Feb 2021 06:46:54 -0800 (PST)
-Subject: Re: [RFC 03/19] devfreq: imx-bus: Switch governor to powersave
-To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Georgi Djakov <djakov@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     NXP Linux Team <linux-imx@nxp.com>
-References: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
- <1613750416-11901-4-git-send-email-abel.vesa@nxp.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <d953245b-ebac-30bb-1887-1b97b921bade@gmail.com>
-Date:   Fri, 26 Feb 2021 23:46:46 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=W1S5B4bK9C7BXUt+vz8qQzy7anosGhMHUOVweTQwoOg=;
+        b=Mmgcikhi8aPiUQzLbKS7TLmmoeCegH99+KN2NUhrBqQ9gOKduFZRO7AanabkWcYFsg
+         Du2ZEXKgvStHDqO64Uj1LO6vNPWBfz1LWshZomFgDOWck9j7cpvNFZdWX8+TfC4Ue38/
+         Gp21QW7GPVxzxecm7mwIh7RCKWbCDBdrF328i7PFJj6i1Jyr5EHG0hbNkjVp85OHmKF4
+         PPIbat3CKAvIr3h6mutTjU+M7zoTNTxPLHeROZs6i1ZehYA83/PNyz95VrRS9mC+bj5K
+         DZEFjz/Y33lfo2o2Mb2izmt2S4LRkRbNUDf4YH5PZOfgQT+apGE0QH9EVsAmbQ6gSioj
+         4uIw==
+X-Gm-Message-State: AOAM5313BS9mz+8hMBqJWh5YWiCO+WpokNrkESx9bqaA0h0pr9Q4v3ax
+        rPQY2pa5s8UpY7coNMdkI5xboU1o/WToauiqV7cL2q9pl5TG
+X-Google-Smtp-Source: ABdhPJz/PllE9/nxt7h+qRzHkPZSV4FFXIwC2e0lrQcQ6BPQLcDN74jfrJ+0RfthOE/Nzx09N9/p3qQ6Ig2egMaKlbzjzxKkZNFZ
 MIME-Version: 1.0
-In-Reply-To: <1613750416-11901-4-git-send-email-abel.vesa@nxp.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1806:: with SMTP id a6mr2733423ilv.8.1614350840203;
+ Fri, 26 Feb 2021 06:47:20 -0800 (PST)
+Date:   Fri, 26 Feb 2021 06:47:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005f907b05bc3e584e@google.com>
+Subject: memory leak in hdcs_probe_1x00
+From:   syzbot <syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com>
+To:     hverkuil@xs4all.nl, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    2c87f7a3 Merge tag 'pwm/for-5.12-rc1' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16400946d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3dfc598676a6f0b5
+dashboard link: https://syzkaller.appspot.com/bug?extid=e7f4c64a4248a0340c37
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=123a6632d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1689a292d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff8881100c0300 (size 64):
+  comm "kworker/0:3", pid 3861, jiffies 4294943205 (age 14.560s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 08 00 00 00  ................
+    08 00 00 00 68 01 00 00 28 01 00 00 04 00 00 00  ....h...(.......
+  backtrace:
+    [<000000004eb4188f>] kmalloc include/linux/slab.h:554 [inline]
+    [<000000004eb4188f>] hdcs_probe_1x00 drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c:371 [inline]
+    [<000000004eb4188f>] hdcs_probe_1x00.cold+0x39/0xc1 drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c:356
+    [<0000000031bd6da6>] stv06xx_config+0xdf/0x190 drivers/media/usb/gspca/stv06xx/stv06xx.c:571
+    [<000000007be62196>] gspca_dev_probe2+0x359/0x6c5 drivers/media/usb/gspca/gspca.c:1529
+    [<00000000afeef2a3>] gspca_dev_probe.cold+0x42/0x4a drivers/media/usb/gspca/gspca.c:1606
+    [<000000006d63a9d3>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<000000004f1fef67>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
+    [<00000000ced991e0>] driver_probe_device+0x84/0x100 drivers/base/dd.c:740
+    [<000000001687c39d>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:846
+    [<0000000046da487b>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000df1d85bd>] __device_attach+0x122/0x250 drivers/base/dd.c:914
+    [<00000000fa336975>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<000000002214a827>] device_add+0x5d5/0xc40 drivers/base/core.c:3242
+    [<00000000782f72d5>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<000000000815ea76>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<0000000028850013>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<000000004f1fef67>] really_probe+0x159/0x4a0 drivers/base/dd.c:554
 
 
-On 21. 2. 20. 오전 1:00, Abel Vesa wrote:
-> By switching to powersave governor, we allow the imx-bus to always run
-> at minimum rate needed by all the running masters.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->   drivers/devfreq/imx-bus.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/devfreq/imx-bus.c b/drivers/devfreq/imx-bus.c
-> index 4f38455ad742..1c0c92d0eb08 100644
-> --- a/drivers/devfreq/imx-bus.c
-> +++ b/drivers/devfreq/imx-bus.c
-> @@ -99,7 +99,7 @@ static int imx_bus_probe(struct platform_device *pdev)
->   {
->   	struct device *dev = &pdev->dev;
->   	struct imx_bus *priv;
-> -	const char *gov = DEVFREQ_GOV_USERSPACE;
-> +	const char *gov = DEVFREQ_GOV_POWERSAVE;
->   	int ret;
->   
->   	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> 
 
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Thanks,
-Chanwoo Choi
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
