@@ -2,118 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864A4326181
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B9C326184
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhBZKoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:44:05 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:45850 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhBZKny (ORCPT
+        id S230512AbhBZKo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:44:27 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12954 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231219AbhBZKoC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:43:54 -0500
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 26 Feb 2021 02:43:12 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 26 Feb 2021 02:43:11 -0800
-X-QCInternal: smtphost
-Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 26 Feb 2021 16:12:52 +0530
-Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
-        id 6DAFE20E7E; Fri, 26 Feb 2021 16:12:52 +0530 (IST)
-From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     manivannan.sadhasivam@linaro.org, jhugo@codeaurora.org,
-        hemantk@codeaurora.org, sricharan@codeaurora.org,
-        gokulsri@codeaurora.org
-Subject: [PATCH v2] bus: mhi: core: Add unique qrtr node id support
-Date:   Fri, 26 Feb 2021 16:12:49 +0530
-Message-Id: <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
-References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
+        Fri, 26 Feb 2021 05:44:02 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Dn5nK5TKZzjRDC;
+        Fri, 26 Feb 2021 18:41:57 +0800 (CST)
+Received: from [10.174.176.191] (10.174.176.191) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 26 Feb 2021 18:43:08 +0800
+Subject: Re: [PATCH v14 08/11] arm64: kdump: reimplement crashkernel=X
+To:     Catalin Marinas <catalin.marinas@arm.com>, <bhe@redhat.com>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+ <20210130071025.65258-9-chenzhou10@huawei.com>
+ <20210224160408.GC28965@arm.com>
+ <94cc9191-4eff-355f-ff02-1c5da416960e@huawei.com>
+CC:     <mingo@redhat.com>, <tglx@linutronix.de>, <rppt@kernel.org>,
+        <dyoung@redhat.com>, <will@kernel.org>, <nsaenzjulienne@suse.de>,
+        <corbet@lwn.net>, <John.P.donnelly@oracle.com>,
+        <bhsharma@redhat.com>, <prabhakar.pkin@gmail.com>,
+        <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
+        <james.morse@arm.com>, <xiexiuqi@huawei.com>,
+        <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
+        <wangkefeng.wang@huawei.com>, <linux-doc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <4722d365-154b-d3bb-3897-92f229e8e84f@huawei.com>
+Date:   Fri, 26 Feb 2021 18:43:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <94cc9191-4eff-355f-ff02-1c5da416960e@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.191]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On platforms with two or more identical mhi
-devices, qmi service will run with identical
-qrtr-node-id. Because of this identical ID,
-host qrtr-lookup cannot register more than one
-qmi service with identical node ID. Ultimately,
-only one qmi service will be avilable for the
-underlying drivers to communicate with.
 
-On QCN9000, it implements a unique qrtr-node-id
-and qmi instance ID using a unique instance ID
-written to a debug register from host driver
-soon after SBL is loaded.
 
-This change generates a unique instance ID from
-PCIe domain number and bus number, writes to the
-given debug register just after SBL is loaded so
-that it is available for FW when the QMI service
-is spawned.
+On 2021/2/26 18:31, chenzhou wrote:
+>
+> On 2021/2/25 0:04, Catalin Marinas wrote:
+>> On Sat, Jan 30, 2021 at 03:10:22PM +0800, Chen Zhou wrote:
+>>> There are following issues in arm64 kdump:
+>>> 1. We use crashkernel=X to reserve crashkernel below 4G, which
+>>> will fail when there is no enough low memory.
+>>> 2. If reserving crashkernel above 4G, in this case, crash dump
+>>> kernel will boot failure because there is no low memory available
+>>> for allocation.
+>>>
+>>> To solve these issues, change the behavior of crashkernel=X and
+>>> introduce crashkernel=X,[high,low]. crashkernel=X tries low allocation
+>>> in DMA zone, and fall back to high allocation if it fails.
+>>> We can also use "crashkernel=X,high" to select a region above DMA zone,
+>>> which also tries to allocate at least 256M in DMA zone automatically.
+>>> "crashkernel=Y,low" can be used to allocate specified size low memory.
+>>>
+>>> Another minor change, there may be two regions reserved for crash
+>>> dump kernel, in order to distinct from the high region and make no
+>>> effect to the use of existing kexec-tools, rename the low region as
+>>> "Crash kernel (low)".
+>> I think we discussed this but I don't remember the conclusion. Is this
+>> only renamed conditionally so that we don't break current kexec-tools?
+> Yes.
+>> IOW, assuming that the full crashkernel region is reserved below 4GB,
+>> does the "(low)" suffix still appear or it's only if a high region is
+>> additionally reserved?
+> Suffix "low" only appear if a high region is additionally reserved.
+>>> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+>>> index 3f6ecae0bc68..f0caed0cb5e1 100644
+>>> --- a/arch/arm64/include/asm/kexec.h
+>>> +++ b/arch/arm64/include/asm/kexec.h
+>>> @@ -96,6 +96,10 @@ static inline void crash_prepare_suspend(void) {}
+>>>  static inline void crash_post_resume(void) {}
+>>>  #endif
+>>>  
+>>> +#ifdef CONFIG_KEXEC_CORE
+>>> +extern void __init reserve_crashkernel(void);
+>>> +#endif
+>> Why not have this in some generic header?
+>>
+>>> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+>>> index c18aacde8bb0..69c592c546de 100644
+>>> --- a/arch/arm64/kernel/setup.c
+>>> +++ b/arch/arm64/kernel/setup.c
+>>> @@ -238,7 +238,18 @@ static void __init request_standard_resources(void)
+>>>  		    kernel_data.end <= res->end)
+>>>  			request_resource(res, &kernel_data);
+>>>  #ifdef CONFIG_KEXEC_CORE
+>>> -		/* Userspace will find "Crash kernel" region in /proc/iomem. */
+>>> +		/*
+>>> +		 * Userspace will find "Crash kernel" or "Crash kernel (low)"
+>>> +		 * region in /proc/iomem.
+>>> +		 * In order to distinct from the high region and make no effect
+>>> +		 * to the use of existing kexec-tools, rename the low region as
+>>> +		 * "Crash kernel (low)".
+>>> +		 */
+>>> +		if (crashk_low_res.end && crashk_low_res.start >= res->start &&
+>>> +				crashk_low_res.end <= res->end) {
+>>> +			crashk_low_res.name = "Crash kernel (low)";
+>>> +			request_resource(res, &crashk_low_res);
+>>> +		}
+>>>  		if (crashk_res.end && crashk_res.start >= res->start &&
+>>>  		    crashk_res.end <= res->end)
+>>>  			request_resource(res, &crashk_res);
+>> My reading of the new generic reserve_crashkernel() is that
+>> crashk_low_res will only be populated if crask_res is above 4GB. If
+>> that's correct, I'm fine with the renaming here since current systems
+>> would not get a renamed low reservation (as long as they don't change
+>> the kernel cmdline).
+>>
+>>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+>>> index 912f64f505f7..d20f5c444ebf 100644
+>>> --- a/arch/arm64/mm/init.c
+>>> +++ b/arch/arm64/mm/init.c
+>>> @@ -35,6 +35,7 @@
+>>>  #include <asm/fixmap.h>
+>>>  #include <asm/kasan.h>
+>>>  #include <asm/kernel-pgtable.h>
+>>> +#include <asm/kexec.h>
+>>>  #include <asm/memory.h>
+>>>  #include <asm/numa.h>
+>>>  #include <asm/sections.h>
+>>> @@ -61,66 +62,11 @@ EXPORT_SYMBOL(memstart_addr);
+>>>   */
+>>>  phys_addr_t arm64_dma_phys_limit __ro_after_init;
+>>>  
+>>> -#ifdef CONFIG_KEXEC_CORE
+>>> -/*
+>>> - * reserve_crashkernel() - reserves memory for crash kernel
+>>> - *
+>>> - * This function reserves memory area given in "crashkernel=" kernel command
+>>> - * line parameter. The memory reserved is used by dump capture kernel when
+>>> - * primary kernel is crashing.
+>>> - */
+>>> +#ifndef CONFIG_KEXEC_CORE
+>>>  static void __init reserve_crashkernel(void)
+>>>  {
+>> [...]
+>>>  }
+>>> +#endif
+>> Can we not have the dummy reserve_crashkernel() in the generic code as
+>> well and avoid the #ifndef here?
+> You mean put the dummy reserve_crashkernel() and the relate function declaration in some generic header?
+>  
+> Baoquan also mentioned about this.
+> Now all the arch that support kdump have the dummy reserve_crashkernel() and
+> function declaration, such as arm/arm64/ppc/s390..
+>
+> But currently different arch may have different CONFIG and different function declaration about this,
+> for example,
+>
+> for s390,
+> static void __init reserve_crashkernel(void)
+> {                  
+> #ifdef CONFIG_CRASH_DUMP
+> ...
+> #endif        
+> }
+>
+> for ppc,
+> #ifdef CONFIG_KEXEC_CORE
+> extern void reserve_crashkernel(void);
+> #else
+> static inline void reserve_crashkernel(void) { ; }
+> #endif
+>
+> If we move these to generic header we need think about:
+> 1. the related config in different arch
+> 2. function declaration(static/non static)
+>
+> As Baoquan said in patch 9, how about leave with it for now and i try to solve this later?
+>
+>>>  #ifdef CONFIG_CRASH_DUMP
+>>>  static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
+>>> @@ -446,6 +392,14 @@ void __init bootmem_init(void)
+>>>  	 * reserved, so do it here.
+>>>  	 */
+>>>  	reserve_crashkernel();
+>>> +#ifdef CONFIG_KEXEC_CORE
+>>> +	/*
+>>> +	 * The low region is intended to be used for crash dump kernel devices,
+>>> +	 * just mark the low region as "nomap" simply.
+>>> +	 */
+>>> +	if (crashk_low_res.end)
+>>> +		memblock_mark_nomap(crashk_low_res.start, resource_size(&crashk_low_res));
+>>> +#endif
+>> Do we do something similar for crashk_res?
+> Not. In the primary kernel(production kernel), we need to use crashk_res memory for crash kernel
+> elf core header, initrd...
 
-sample:
-root@OpenWrt:/# qrtr-lookup
-  Service Version Instance Node  Port
-       15       1        0    8     1 Test service
-       69       1        8    8     2 ATH10k WLAN firmware service
-       15       1        0   24     1 Test service
-       69       1       24   24     2 ATH10k WLAN firmware service
+Sorry, missed one comma after crash kernel.
+Not. In the primary kernel(production kernel), we need to use crashk_res memory for crash kernel,
+elf core header, initrd and so on.
 
-Here 8 and 24 on column 3 (QMI Instance ID)
-and 4 (QRTR Node ID) are the node IDs that
-is unique per mhi device.
 
-Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
----
- drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
-index c2546bf..5e5dad5 100644
---- a/drivers/bus/mhi/core/boot.c
-+++ b/drivers/bus/mhi/core/boot.c
-@@ -16,8 +16,12 @@
- #include <linux/random.h>
- #include <linux/slab.h>
- #include <linux/wait.h>
-+#include <linux/pci.h>
- #include "internal.h"
- 
-+#define QRTR_INSTANCE_MASK	0x000000FF
-+#define QRTR_INSTANCE_SHIFT	0
-+
- /* Setup RDDM vector table for RDDM transfer and program RXVEC */
- void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
- 		      struct image_info *img_info)
-@@ -391,6 +395,9 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
- 	const struct firmware *firmware = NULL;
- 	struct image_info *image_info;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-+	struct pci_dev *pci_dev = to_pci_dev(mhi_cntrl->cntrl_dev);
-+	struct pci_bus *bus = pci_dev->bus;
-+	uint32_t instance;
- 	const char *fw_name;
- 	void *buf;
- 	dma_addr_t dma_addr;
-@@ -466,6 +473,13 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
- 		return;
- 	}
- 
-+	instance = ((pci_domain_nr(bus) & 0xF) << 4) | (bus->number & 0xF);
-+	instance &= QRTR_INSTANCE_MASK;
-+
-+	mhi_write_reg_field(mhi_cntrl, mhi_cntrl->bhi,
-+			    BHI_ERRDBG2, QRTR_INSTANCE_MASK,
-+			    QRTR_INSTANCE_SHIFT, instance);
-+
- 	write_lock_irq(&mhi_cntrl->pm_lock);
- 	mhi_cntrl->dev_state = MHI_STATE_RESET;
- 	write_unlock_irq(&mhi_cntrl->pm_lock);
--- 
-2.7.4
+>
+> Different with this, the crashk_low_res is only for crash dump kernel devices.
+>> Also, I can see we call crash_exclude_mem_range() only for crashk_res.
+>> Do we need to do this for crashk_low_res as well?
+> You are right, i missed about this. Will do in next version.
+>
+> Thanks,
+> Chen Zhou
 
