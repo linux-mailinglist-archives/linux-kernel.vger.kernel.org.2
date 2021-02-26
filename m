@@ -2,154 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295E7325D89
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:29:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C629325DB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhBZG1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:27:40 -0500
-Received: from conuserg-11.nifty.com ([210.131.2.78]:62273 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhBZG1d (ORCPT
+        id S229745AbhBZGvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:51:20 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12583 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhBZGvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:27:33 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 11Q6PpRG013655;
-        Fri, 26 Feb 2021 15:25:51 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 11Q6PpRG013655
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614320752;
-        bh=LyrVsIEuYAv9pPkWzpKnN5i3nqD4903BbQ4luSd4oVA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qFK5HKo+KVKJB9eUGeGlXiG/Tcu9hegTLgr8FfLR/Aje4OmFpwwd0Of1PUgFGhNQL
-         BQ/zZW1TAr96krw28C0Osve41s9fOqnLezUd557BT1ACrvjdENVLQoHPvYgrN3598c
-         TLNcjNsgEFtjXilDiCZ4WbtjOnNMgBtEwbGgwwmWAaoakLY1l2Rl4tt0Gk8zO3/UK5
-         Ibbaorz8C57m/GztlUPZFPLOwOtRy8zr/bx6+h3mQPP7OxZHidGWVvjB7E8c0mYtAW
-         MjhDNmRsrCUkn2RiH8bApD9bqbERBDSvt5nRiXO4h9kI6lLwUZjr3y2kvsGDRGysjj
-         w45XBYuGihfTg==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH v2] kbuild: fix UNUSED_KSYMS_WHITELIST for Clang LTO
-Date:   Fri, 26 Feb 2021 15:25:48 +0900
-Message-Id: <20210226062548.3334081-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Fri, 26 Feb 2021 01:51:17 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dn0by6MRJzMfMs;
+        Fri, 26 Feb 2021 14:48:30 +0800 (CST)
+Received: from huawei.com (10.151.151.241) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Fri, 26 Feb 2021
+ 14:50:25 +0800
+From:   Luo Longjun <luolongjun@huawei.com>
+To:     <viro@zeniv.linux.org.uk>, <jlayton@kernel.org>,
+        <bfields@fieldses.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sangyan@huawei.com>, <luchunhua@huawei.com>,
+        <luolongjun@huawei.com>
+Subject: [PATCH v3] fs/locks: print full locks information
+Date:   Thu, 25 Feb 2021 22:58:29 -0500
+Message-ID: <685386c2840b76c49b060bf7dcea1fefacf18176.1614322182.git.luolongjun@huawei.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210221201024.GB15975@fieldses.org>
+References: <20210221201024.GB15975@fieldses.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.151.151.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
-does not work as expected if the .config file has already specified
-CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list" before enabling
-CONFIG_LTO_CLANG.
+Commit fd7732e033e3 ("fs/locks: create a tree of dependent requests.")
+has put blocked locks into a tree.
 
-So, the user-supplied whitelist and LTO-specific white list must be
-independent of each other.
+So, with a for loop, we can't check all locks information.
 
-I refactored the shell script so CONFIG_MODVERSIONS and CONFIG_CLANG_LTO
-handle whitelists in the same way.
+To solve this problem, we should traverse the tree.
 
-Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Luo Longjun <luolongjun@huawei.com>
 ---
+ fs/locks.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 56 insertions(+), 9 deletions(-)
 
-Changes in v2:
-  - Rebase on top of Arnd's patch:
-    https://lore.kernel.org/lkml/20210225143456.3829513-1-arnd@kernel.org/
-
- init/Kconfig                    |  1 -
- scripts/gen_autoksyms.sh        | 35 ++++++++++++++++++++++++---------
- scripts/lto-used-symbollist.txt |  6 ------
- 3 files changed, 26 insertions(+), 16 deletions(-)
- delete mode 100644 scripts/lto-used-symbollist.txt
-
-diff --git a/init/Kconfig b/init/Kconfig
-index 719871f8727c..64c32300d1b4 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -2283,7 +2283,6 @@ config TRIM_UNUSED_KSYMS
- config UNUSED_KSYMS_WHITELIST
- 	string "Whitelist of symbols to keep in ksymtab"
- 	depends on TRIM_UNUSED_KSYMS
--	default "scripts/lto-used-symbollist.txt" if LTO_CLANG
- 	help
- 	  By default, all unused exported symbols will be un-exported from the
- 	  build when TRIM_UNUSED_KSYMS is selected.
-diff --git a/scripts/gen_autoksyms.sh b/scripts/gen_autoksyms.sh
-index d54dfba15bf2..da320151e7c3 100755
---- a/scripts/gen_autoksyms.sh
-+++ b/scripts/gen_autoksyms.sh
-@@ -19,7 +19,26 @@ esac
- # We need access to CONFIG_ symbols
- . include/config/auto.conf
+diff --git a/fs/locks.c b/fs/locks.c
+index 99ca97e81b7a..ecaecd1f1b58 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -2828,7 +2828,7 @@ struct locks_iterator {
+ };
  
--ksym_wl=/dev/null
-+needed_symbols=
-+
-+# Special case for modversions (see modpost.c)
-+if [ -n "$CONFIG_MODVERSIONS" ]; then
-+	needed_symbols="$needed_symbols module_layout"
-+fi
-+
-+# With CONFIG_LTO_CLANG, LLVM bitcode has not yet been compiled into a binary
-+# when the .mod files are generated, which means they don't yet contain
-+# references to certain symbols that will be present in the final binaries.
-+if [ -n "$CONFIG_LTO_CLANG" ]; then
-+	# intrinsic functions
-+	needed_symbols="$needed_symbols memcpy memmove memset"
-+	# ftrace
-+	needed_symbols="$needed_symbols _mcount"
-+	# stack protector symbols
-+	needed_symbols="$needed_symbols __stack_chk_fail __stack_chk_guard"
-+fi
-+
-+ksym_wl=
- if [ -n "$CONFIG_UNUSED_KSYMS_WHITELIST" ]; then
- 	# Use 'eval' to expand the whitelist path and check if it is relative
- 	eval ksym_wl="$CONFIG_UNUSED_KSYMS_WHITELIST"
-@@ -40,16 +59,14 @@ cat > "$output_file" << EOT
- EOT
+ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
+-			    loff_t id, char *pfx)
++			    loff_t id, char *pfx, int repeat)
+ {
+ 	struct inode *inode = NULL;
+ 	unsigned int fl_pid;
+@@ -2844,7 +2844,11 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
+ 	if (fl->fl_file != NULL)
+ 		inode = locks_inode(fl->fl_file);
  
- [ -f modules.order ] && modlist=modules.order || modlist=/dev/null
--sed 's/ko$/mod/' $modlist |
--xargs -n1 sed -n -e '2{s/ /\n/g;/^$/!p;}' -- |
--cat - "$ksym_wl" |
+-	seq_printf(f, "%lld:%s ", id, pfx);
++	seq_printf(f, "%lld: ", id);
 +
++	if (repeat)
++		seq_printf(f, "%*s", repeat - 1 + (int)strlen(pfx), pfx);
++
+ 	if (IS_POSIX(fl)) {
+ 		if (fl->fl_flags & FL_ACCESS)
+ 			seq_puts(f, "ACCESS");
+@@ -2906,21 +2910,64 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
+ 	}
+ }
+ 
++static struct file_lock *get_next_blocked_member(struct file_lock *node)
 +{
-+	sed 's/ko$/mod/' $modlist | xargs -n1 sed -n -e '2p'
-+	echo "$needed_symbols"
-+	[ -n "$ksym_wl" ] && cat "$ksym_wl"
-+} | sed -e 's/ /\n/g' | sed -n -e '/^$/!p' |
- # Remove the dot prefix for ppc64; symbol names with a dot (.) hold entry
- # point addresses.
- sed -e 's/^\.//' |
- sort -u |
- sed -e 's/\(.*\)/#define __KSYM_\1 1/' >> "$output_file"
--
--# Special case for modversions (see modpost.c)
--if [ -n "$CONFIG_MODVERSIONS" ]; then
--	echo "#define __KSYM_module_layout 1" >> "$output_file"
--fi
-diff --git a/scripts/lto-used-symbollist.txt b/scripts/lto-used-symbollist.txt
-deleted file mode 100644
-index 406ada65e926..000000000000
---- a/scripts/lto-used-symbollist.txt
-+++ /dev/null
-@@ -1,6 +0,0 @@
--memcpy
--memmove
--memset
--_mcount
--__stack_chk_fail
--__stack_chk_guard
++	struct file_lock *tmp;
++
++	/* NULL node or root node */
++	if (node == NULL || node->fl_blocker == NULL)
++		return NULL;
++
++	/* Next member in the linked list could be itself */
++	tmp = list_next_entry(node, fl_blocked_member);
++	if (list_entry_is_head(tmp, &node->fl_blocker->fl_blocked_requests, fl_blocked_member)
++		|| tmp == node) {
++		return NULL;
++	}
++
++	return tmp;
++}
++
+ static int locks_show(struct seq_file *f, void *v)
+ {
+ 	struct locks_iterator *iter = f->private;
+-	struct file_lock *fl, *bfl;
++	struct file_lock *cur, *tmp;
+ 	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file)->i_sb);
++	int level = 0;
+ 
+-	fl = hlist_entry(v, struct file_lock, fl_link);
++	cur = hlist_entry(v, struct file_lock, fl_link);
+ 
+-	if (locks_translate_pid(fl, proc_pidns) == 0)
++	if (locks_translate_pid(cur, proc_pidns) == 0)
+ 		return 0;
+ 
+-	lock_get_status(f, fl, iter->li_pos, "");
++	/* View this crossed linked list as a binary tree, the first member of fl_blocked_requests
++	 * is the left child of current node, the next silibing in fl_blocked_member is the
++	 * right child, we can alse get the parent of current node from fl_blocker, so this
++	 * question becomes traversal of a binary tree
++	 */
++	while (cur != NULL) {
++		if (level)
++			lock_get_status(f, cur, iter->li_pos, "-> ", level);
++		else
++			lock_get_status(f, cur, iter->li_pos, "", level);
+ 
+-	list_for_each_entry(bfl, &fl->fl_blocked_requests, fl_blocked_member)
+-		lock_get_status(f, bfl, iter->li_pos, " ->");
++		if (!list_empty(&cur->fl_blocked_requests)) {
++			/* Turn left */
++			cur = list_first_entry_or_null(&cur->fl_blocked_requests,
++				struct file_lock, fl_blocked_member);
++			level++;
++		} else {
++			/* Turn right */
++			tmp = get_next_blocked_member(cur);
++			/* Fall back to parent node */
++			while (tmp == NULL && cur->fl_blocker != NULL) {
++				cur = cur->fl_blocker;
++				level--;
++				tmp = get_next_blocked_member(cur);
++			}
++			cur = tmp;
++		}
++	}
+ 
+ 	return 0;
+ }
+@@ -2941,7 +2988,7 @@ static void __show_fd_locks(struct seq_file *f,
+ 
+ 		(*id)++;
+ 		seq_puts(f, "lock:\t");
+-		lock_get_status(f, fl, *id, "");
++		lock_get_status(f, fl, *id, "", 0);
+ 	}
+ }
+ 
 -- 
-2.27.0
+2.17.1
 
