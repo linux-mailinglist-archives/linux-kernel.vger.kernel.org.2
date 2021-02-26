@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638B7325C41
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 05:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620AD325C4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 05:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhBZD7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 22:59:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhBZD7a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 22:59:30 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D843C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 19:58:50 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id u3so7655786ybk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 19:58:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DR7Dnd24+rlaYf99PAlqhwVRNpL9GcKCVK3DbGNBrek=;
-        b=U2nwcGm2hY+IwkHqVz0vJLcPbSA0sak7u0hqv5m3rjcmoLnI0Im4QNAssftyTJeoHI
-         zOOLElNM47FZ3Q6dWiXKcqbo+r1Bh0HyCmZYNswPVgqW037epoH0kFWYIK7hKSZVrDHx
-         9R+JZXW58+N+MkosR1qdlC4eEy9b/icSeZ3IzzZw51G5sGRJCx1IfC4ogrz7H2B1yztm
-         NkgtD8c6Be0o7gujR58K5TUYLluYqfChWTRtlL5TrifL4TQGBjW4kJH3QWxIuOUY6x9D
-         V6baAWO9MpRCxbgZ8XbuGTc0EEbc/C6LZ84LS5Aint+OD29DuFzGG4yhZDu6Km+vReKg
-         hHZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DR7Dnd24+rlaYf99PAlqhwVRNpL9GcKCVK3DbGNBrek=;
-        b=EZb3kg/Jajp5EVuJwEhLbkgj1YF3ZxYgkP5gwfMaxw1BwAqqShdQs16YQdxWcvKW/I
-         8jFqzDhsL3n/b9DdZRkNn+79fBXYIL0oNFQVc7ePEaT42t/Nk03UCDAJ0yRhojGkYixY
-         arodC2x/cYRuMsCwtOAu9NwyL9zbthIiK1eCO4zD/YZ02wYxKjD8mN9/k5pTVHvQBQC4
-         C+m+GfVWUfRAOXFGjds1vb/gsAis1swsoaxf5RR6AspZMihw6gmEN3s0RR6oIg6pGEon
-         WbN/XqUtIEkDo8/MLEQXZOBDLgJj8YGyaDl4U4QZ8YU7+GXwB2zdyWFYKsPmjytONoCF
-         Ns9g==
-X-Gm-Message-State: AOAM530Zz4UPC99cQPdfsdQ/YHiV5RxpBJiyI9yR/J5yn9nl5DnFAujf
-        LarTb7gYuHOQ1ozOCoUebOKl7FghROKeGNk/W7M=
-X-Google-Smtp-Source: ABdhPJyA+U3p7S4LVlULul/gukKq7Znt/rO8nSS8W9Q+ZKmQNUt7TfBo8nj6FSaaFwEpfk3AIvK5OwParuYnBvDJHiM=
-X-Received: by 2002:a25:3208:: with SMTP id y8mr1760714yby.422.1614311929791;
- Thu, 25 Feb 2021 19:58:49 -0800 (PST)
+        id S229800AbhBZEDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 23:03:54 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:59773 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229598AbhBZEDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Feb 2021 23:03:51 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614312213; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=/AYYQ53KB6GkHI9+D+m4kG48J4CbiF9uvcpnz2Jpajg=;
+ b=h9sg5L7stYepHS215GbVjzeOlz+4rSQ+NnPIugM46KgaJvhKCAA7IXcMpRUh12JmRax8ap+W
+ bH98QEb/TAGC8m8yRv5o8rdro+A7+65GskECH3oizpqpijDc5uV7oOy/X42nC/xhU25FA9yD
+ m9ijX2DhaqbVCpdSQ/L1LrHvYlY=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 603872f2ea793fa303d13936 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Feb 2021 04:02:58
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3A5EFC43461; Fri, 26 Feb 2021 04:02:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D02CEC433C6;
+        Fri, 26 Feb 2021 04:02:57 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210225164513.3667778-1-arnd@kernel.org> <202102251203.03762F77@keescook>
- <20210225120637.8e2a234f192952829fc5f471@linux-foundation.org>
- <202102251213.5815C9B33@keescook> <20210225201801.GA3119@MSI.localdomain>
-In-Reply-To: <20210225201801.GA3119@MSI.localdomain>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 26 Feb 2021 04:58:38 +0100
-Message-ID: <CANiq72=5t1maOv1FerMLRVCRos_yv-iQGLzB21Z+aYxTXLy8gA@mail.gmail.com>
-Subject: Re: [PATCH] linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>,
-        Marco Elver <elver@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 26 Feb 2021 09:32:57 +0530
+From:   skakit@codeaurora.org
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, rnayak@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH 7/7] arm64: dts: qcom: sc7280: Add RPMh regulators for
+ sc7280-idp
+In-Reply-To: <f640503a-d87a-6ecd-7acf-73be47402d92@somainline.org>
+References: <1614155592-14060-1-git-send-email-skakit@codeaurora.org>
+ <1614155592-14060-8-git-send-email-skakit@codeaurora.org>
+ <f640503a-d87a-6ecd-7acf-73be47402d92@somainline.org>
+Message-ID: <f4813aef015dc5991abc4c7a7a82835d@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 9:18 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Indeed. Any wins that we can get with compile time, we should take.
-> Clang is being widely used in production systems now so I feel like with
-> a trivial change plus user visible impact, it should be backported.
->
-> Not to mention that the generated code in theory should be better
-> because it is the compiler's builtin, rather than a hand rolled one, AND
-> this is technically a regression, given that it worked before compiler.h
-> was split.
+On 2021-02-25 00:47, Konrad Dybcio wrote:
+> Hi,
+> 
+> 
+>> +	};
+>> +
+>> +	pm8350c-regulators {
+>> +	compatible = "qcom,pm8350c-rpmh-regulators";
+>> +	qcom,pmic-id = "c";
+>> +		vreg_s1c_2p2: smps1 {
+>> +			regulator-min-microvolt = <2190000>;
+> 
+> 
+> The indentation on "compatible" and "qcom,pmic-id" is off.
+> 
 
-Compilation speed shouldn't be an argument for a stable change unless
-it is something egregious like a 50% that may affect users or tightly
-timed CIs.
+Okay, will correct this.
 
-Fixing an important runtime regression is a stronger argument, but the
-patch doesn't show what the effects are, so it isn't justified (yet).
+> 
+> Konrad
 
-Please note that this kind of change touches a lot of code all over
-the place, which could always trigger other runtime regressions or
-even bad codegen (yes, very unlikely, but it happens).
-
-Cheers,
-Miguel
+Thanks,
+Satya Priya
