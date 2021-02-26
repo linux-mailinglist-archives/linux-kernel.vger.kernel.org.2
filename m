@@ -2,258 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5105A325DB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A34C6325DBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhBZGsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:48:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhBZGsw (ORCPT
+        id S229621AbhBZGxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:53:54 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33293 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229482AbhBZGxw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:48:52 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00AC9C061574;
-        Thu, 25 Feb 2021 22:48:10 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id u11so647660wmq.5;
-        Thu, 25 Feb 2021 22:48:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3KF2MfP0h0ey8fV09btIjMeC2JUn7szb+GXFQCJ3kWQ=;
-        b=spQS/8C0EIuB0oHuTEC4JEIgdaaWPquNa+IPb2b0o4Oia2Vo7/BUy4F1iFHKLLXxam
-         3UW7j+OEOR6XPUukFbZuwvjPXsyeQFqAM3KRfXifT2xzQt/53FtEr5yxoZADa/oa4MI5
-         mxTL/mUMmxgxRO1CvgMbCFG114x3v1iMWfniV3Hy09R7CWfzXq2l+rz9Uwja3Wfmkt9k
-         MAJVqeZ6qU+4G8xfvpi0/NkXxVw6INkurk4WEEV7Ecd3mituVIiSf7d9ZOTpQVST/GTY
-         tRb6HIzZ/gZGY+vPWkSF8DcIWZgZ2AI+iiPS4f9S7RqKwyL/SucRiMRsdR/CfNTLqvRv
-         6RUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3KF2MfP0h0ey8fV09btIjMeC2JUn7szb+GXFQCJ3kWQ=;
-        b=aJs6hK0LtFmmNCADlhSgqk5QwPc0q9a0XQ1E1eKs1PnuqKIh7yxLFIB85Z+SywUgTN
-         IoDnz5qEOhzj0dO9vn2YvLXh+G+7XWRSKajkR1+ExEq60Nftc2v28dAE6KUACe+tBcce
-         DGfI1M7kUMSGe47mAIh6NaSTHtIR6Ke1LNVUkPX406jSxYqB4pfRraMucJDqaHpPs9jF
-         xTAkA73jvPawwPWrf082/oYok9fl13RXITB3DOmMHefPkvnPg1OKqrKBQG4vOKJ4TVvu
-         FyNrg0Owqfq9DKPAuIQQirhfIoRfa5JGOXTIsk0Q2rprxwfC4mDgskijgLvZkRB9wHhy
-         kKrg==
-X-Gm-Message-State: AOAM533TknUQ2h6KXIaUXJUCITV8PtN7eXstGhDeN2l2cDfrxWCQNszj
-        Lr1IP0R98bOxxbApVXaS8N2RGMALEo0bfsDciKY=
-X-Google-Smtp-Source: ABdhPJxhtDO+zlg5kiunT7XaFHp0euGqWP7G8T1agyEapoYFjcgOayVb9pNxUmGu8P3pWhw3Z/BSycLaQPb+FvnvwHA=
-X-Received: by 2002:a1c:7402:: with SMTP id p2mr1193624wmc.43.1614322089697;
- Thu, 25 Feb 2021 22:48:09 -0800 (PST)
+        Fri, 26 Feb 2021 01:53:52 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2AB935C00C4;
+        Fri, 26 Feb 2021 01:53:06 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 26 Feb 2021 01:53:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=i
+        7m4H3xz7cUcEC09O4w9iOsviObRN/Oa4xlAc5IYr8A=; b=AhHnXf8/jOqDcDiR5
+        SuWIOji93zDqi4rYcGnDFqGWTC+D/mI25KUgr9dWJ6vRI7TvrLnjr3SXtyZbafcn
+        lUskaPovJGcD3BOATOex+KysktMDf+omj0+3pwFpdQ/3rZYxJr4v6+cjeD+3NazL
+        10aMqQv3k7OP53Eswwv6wJf0m24Fq/7MpDwPb6hufvlRiwbgYa6tQ6R6H1vlZK+d
+        Y5EV8wRlNrFBa0HUWzrbgBlRAv6On5oSQYeRp4YW0FUvfqt+6aIQuDYVZxzCCbcZ
+        Q8Gtxh4JRkyq8mc6Jl+0k8uZllqcS321Lx0k8hoVNPxx7iB0z12Rh70Cr0Bsuerv
+        SThhQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=i7m4H3xz7cUcEC09O4w9iOsviObRN/Oa4xlAc5IYr
+        8A=; b=QIDddVguzSpYbhmGdlrl+OkosoabhMOZN54w+ufqfQWO9mmTbGofihzwa
+        0gExUWWKXjjDZrc/t7FCGXEvD3350vMkaiSjEN2VSDoK399zvXo1s1vqfgeA8PKG
+        rMToz+R3h1sHGlIleE22qisbvD17lGGMAXAmKjTWbj/rr+8jz6WwO44HSsR3SONG
+        UHYZwkTntvuRLeSCc5OaxkpTMpjEntkz3lHL7ifjH3ciAyCY9CBuHOzWk+q6vaz3
+        xasvuWSw9JzEsqPvKPvpnhK9JEu25zsg2bHaMNccAp1Kjwg+LBc7xWGagTy7Z0ti
+        41798qhHALusTeq1LCh5UAc5Ln7oQ==
+X-ME-Sender: <xms:0Jo4YAiO0f3mdc-kQ2xblnP-kaRxWA4M8RbPS_Uy0MMVI1KWoitPvQ>
+    <xme:0Jo4YJDFKn9NqU852SFdvyrhMQM2sPephid497z5LPIEN-chkFvDklWLpCzLFyEr7
+    f4Qbui-iGINWc4onkg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrledtgddutddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeeihffghfeikedugeejvefgffevgeevgeehfffhudeiieffffev
+    ffeugeevfefgfeenucfkphepudelkedrjeegrdehuddrieeknecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhl
+    hihgohgrthdrtghomh
+X-ME-Proxy: <xmx:0Jo4YIHW1Yq_AvOLOx6XIcG71dHPBfweWePeDMogY9nYnf12rlcDYg>
+    <xmx:0Jo4YBSnkx1ZIEF4PMbJOs4BTp7_ivJagOSH3cdwz-gKCi5oUHlhNQ>
+    <xmx:0Jo4YNzfrdqllkqW85IudgwxUw9nbsZ4qpqUWcAYw3AqzXSI_s_orA>
+    <xmx:0po4YI-MCuppUHhsyN3uGWX6xfLr-A4NGlW1ZJ1o5tzR5UiFVTJyAA>
+Received: from [0.0.0.0] (li551-68.members.linode.com [198.74.51.68])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9996D1080057;
+        Fri, 26 Feb 2021 01:53:02 -0500 (EST)
+Subject: Re: [PATCH RFC] MIPS: Remove detect_memory_region()
+To:     Jinyang He <hejinyang@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        John Crispin <john@phrozen.org>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <1614171720-13221-1-git-send-email-hejinyang@loongson.cn>
+ <987b0dc5-9306-4271-afc0-7c44dba644b7@www.fastmail.com>
+ <a657ea7c-3d0e-6b92-5ad6-c445e827a845@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <ba014ac1-6a83-7b11-e9a7-e6ad9ba1aa62@flygoat.com>
+Date:   Fri, 26 Feb 2021 14:52:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210203090727.789939-1-zhang.lyra@gmail.com> <20210203090727.789939-2-zhang.lyra@gmail.com>
- <20210204232549.GA1305874@robh.at.kernel.org> <CAAfSe-tQ+7GuO1PgYa=9wqrpVf3N4br=bn8gJcaEJmnYpc1sxA@mail.gmail.com>
- <CAL_JsqLi3vJ2tDrwa3YL1rdxtAYWnA72rxCRNPtz_EzvWhTn7w@mail.gmail.com> <4b88182c-f3fb-20d5-de6f-7fd6eddbcba7@arm.com>
-In-Reply-To: <4b88182c-f3fb-20d5-de6f-7fd6eddbcba7@arm.com>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Fri, 26 Feb 2021 14:47:33 +0800
-Message-ID: <CAAfSe-swNcmKfy7set1TFMG-r_eXqZLdYY2867J=3yo=EDmmEQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: iommu: add bindings for sprd iommu
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Rob Herring <robh@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Sheng Xu <sheng.xu@unisoc.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a657ea7c-3d0e-6b92-5ad6-c445e827a845@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 at 23:10, Robin Murphy <robin.murphy@arm.com> wrote:
+在 2021/2/26 上午9:37, Jinyang He 写道:
+> On 02/24/2021 11:40 PM, Jiaxun Yang wrote:
 >
-> On 2021-02-10 19:21, Rob Herring wrote:
-> > On Fri, Feb 5, 2021 at 1:21 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
-> >>
-> >> Hi Rob,
-> >>
-> >> On Fri, 5 Feb 2021 at 07:25, Rob Herring <robh@kernel.org> wrote:
-> >>>
-> >>> On Wed, Feb 03, 2021 at 05:07:26PM +0800, Chunyan Zhang wrote:
-> >>>> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> >>>>
-> >>>> This iommu module can be used by Unisoc's multimedia devices, such as
-> >>>> display, Image codec(jpeg) and a few signal processors, including
-> >>>> VSP(video), GSP(graphic), ISP(image), and CPP(camera pixel processor), etc.
-> >>>>
-> >>>> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> >>>> ---
-> >>>>   .../devicetree/bindings/iommu/sprd,iommu.yaml | 72 +++++++++++++++++++
-> >>>>   1 file changed, 72 insertions(+)
-> >>>>   create mode 100644 Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> >>>>
-> >>>> diff --git a/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> >>>> new file mode 100644
-> >>>> index 000000000000..4fc99e81fa66
-> >>>> --- /dev/null
-> >>>> +++ b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> >>>> @@ -0,0 +1,72 @@
-> >>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >>>> +# Copyright 2020 Unisoc Inc.
-> >>>> +%YAML 1.2
-> >>>> +---
-> >>>> +$id: http://devicetree.org/schemas/iommu/sprd,iommu.yaml#
-> >>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >>>> +
-> >>>> +title: Unisoc IOMMU and Multi-media MMU
-> >>>> +
-> >>>> +maintainers:
-> >>>> +  - Chunyan Zhang <zhang.lyra@gmail.com>
-> >>>> +
-> >>>> +properties:
-> >>>> +  compatible:
-> >>>> +    enum:
-> >>>> +      - sprd,iommu-v1
-> >>>> +
-> >>>> +  "#iommu-cells":
-> >>>> +    const: 0
-> >>>> +    description:
-> >>>> +      Unisoc IOMMUs are all single-master IOMMU devices, therefore no
-> >>>> +      additional information needs to associate with its master device.
-> >>>> +      Please refer to the generic bindings document for more details,
-> >>>> +      Documentation/devicetree/bindings/iommu/iommu.txt
-> >>>> +
-> >>>> +  reg:
-> >>>> +    maxItems: 1
-> >>>> +    description:
-> >>>> +      Not required if 'sprd,iommu-regs' is defined.
-> >>>> +
-> >>>> +  clocks:
-> >>>> +    description:
-> >>>> +      Reference to a gate clock phandle, since access to some of IOMMUs are
-> >>>> +      controlled by gate clock, but this is not required.
-> >>>> +
-> >>>> +  sprd,iommu-regs:
-> >>>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> >>>> +    description:
-> >>>> +      Reference to a syscon phandle plus 1 cell, the syscon defines the
-> >>>> +      register range used by the iommu and the media device, the cell
-> >>>> +      defines the offset for iommu registers. Since iommu module shares
-> >>>> +      the same register range with the media device which uses it.
-> >>>> +
-> >>>> +required:
-> >>>> +  - compatible
-> >>>> +  - "#iommu-cells"
+>>
+>> On Wed, Feb 24, 2021, at 9:02 PM, Jinyang He wrote:
+>>> detect_memory_region() was committed by Commit 4d9f77d25268 ("MIPS: add
+>>> detect_memory_region()"). Then it was equipped by Commit dd63b00804a5
+>>> ("MIPS: ralink: make use of the new memory detection code") and
+>>> Commit 9b75733b7b5e ("MIPS: ath79: make use of the new memory detection
+>>> code"). Its code is based on early ath79 platform code.
+>>>
+>>> What puzzles me is that how memcmp() detect the memory region. If 
+>>> `break`
+>>> was touched, the function could make sense. That means memcmp() should
+>>> return zero. Otherwise, the loop will be end by size > sz_max.
+>>>
+>>> I have tested detect_memory_region() on Loongson64 3A3000. On our 
+>>> design,
+>>> kseg0 low 256MB maps real memory and kseg0 high 256MB maps IO/PCI. The
+>>> function runs and last stopped on kseg1 where is uncached. In this 
+>>> process
+>>> memcmp also returned non-zero when detected kseg0 high 256MB. Then I 
+>>> did
+>>> another thing. memcpy first and test memcmp then (after &_end). It 
+>>> works
+>>> well on 3A3000 but badly on 3A4000. Maybe because kseg0 high 256MB maps
+>>> IO/PCI and it is dangerous to write like write memory.
+>>>
+>>> At last, read memory from where is not memory region may always 
+>>> return 0.
+>>> (Or trigger exception.) This function have been used several years and
+>>> seems no error occur. Maybe it's a fallback way.
+>> That is not true for other platforms like ath79 or mtk.
+>> They'll wrap around or return 0xffffffff for out of boundary accessing.
+>>
+>> Loongson does not apply to this case as it have special "Address Window"
+>> design to accurately describe address regions.
+>> Any access beyond described windows will be handled by MC and return 
+>> 0 or random stuff.
+>>
+>> Again, please don't make changes because you can.
+>>
+>> Thanks.
+>>
+>> - Jiaxun
 >
-> OK, so apparently the hardware is not quite as trivial as my initial
-> impression, and you should have interrupts as well.
+> Hi, Jiaxun,
+>
+> Thank you for answering this puzzle for me in detail.
+>
+> Assume that the machine has 8MB real memory and dm address is (base + 
+> 3M).
+> When size = 8MB, there will be a phenomenon of `wrap around`, the actual
+> content of (dm + 8M + 3M) is content of (dm + 3M), so it will trigger
+> `break`, right? At this time, the kernel will add 8M to the memory.
 
-Ok, I will have a look.
+Hi Jingyang,
+
+How can you boot kernel with 8M memory in present days ;-)
+(Ohh with respect to Nintendo64 developer who had proven it's possible)
+
+For what I can say, detect_memory_region exists because many devices
+doesn't have a way to pass memory size information from bootloader to
+kernel. Or their bootloader even don't care about memory size.
+
+Kernel needs it to get memory size correctly. Although it seems fragile.
+
+That's life, we must accept imperfect past and don't repeat it in future.
+
+Thanks.
+
+- Jiaxun
+
 
 >
-> >>>> +
-> >>>> +oneOf:
-> >>>> +  - required:
-> >>>> +      - reg
-> >>>> +  - required:
-> >>>> +      - sprd,iommu-regs
-> >>>> +
-> >>>> +additionalProperties: false
-> >>>> +
-> >>>> +examples:
-> >>>> +  - |
-> >>>> +    iommu_disp: iommu-disp {
-> >>>> +      compatible = "sprd,iommu-v1";
-> >>>> +      sprd,iommu-regs = <&dpu_regs 0x800>;
-> >>>
-> >>> If the IOMMU is contained within another device, then it should just be
-> >>> a child node of that device.
-> >>
-> >> Yes, actually IOMMU can be seen as a child of multimedia devices, I
-> >> considered moving IOMMU under into multimedia device node, but
-> >> multimedia devices need IOMMU when probe[1], so I dropped that idea.
-> >
-> > Don't design your binding around working-around linux issues.
->
-> Having stumbled across the DRM driver patches the other day, I now see
-> where this is coming from, and it's even worse than that - this whole
-> binding seems to be largely working around bad driver design.
+> Thanks,
+> Jinyang
 >
 
-I guess you mean bad h/w design (not bad driver design)?
-Having this syscon node just because I don't want a same register
-range to be mapped to multiple virtual address ranges, and that's the
-case for many media devices and their IOMMUs. If this issue exsists
-for one device only, I can even endure, but that's not unfortunately.
-But anyway, as you all think this is not a good way, I will change to
-use reg property.
-
-> >> And they share the same register base, e.g.
-> >>
-> >> +               mm {
-> >> +                       compatible = "simple-bus";
-> >> +                       #address-cells = <2>;
-> >> +                       #size-cells = <2>;
-> >> +                       ranges;
-> >> +
-> >> +                       dpu_regs: syscon@63000000 {
-> >
-> > Drop this node.
-> >
-> >> +                               compatible = "sprd,sc9863a-dpuregs", "syscon";
-> >> +                               reg = <0 0x63000000 0 0x1000>;
-> >> +                       };
-> >> +
-> >> +                       dpu: dpu@63000000 {
-> >> +                               compatible = "sprd,sharkl3-dpu";
-> >> +                               sprd,disp-regs = <&dpu_regs>;
-> >
-> > reg = <0 0x63000000 0 0x800>;
->
-> In fact judging by the other driver it looks like the length only needs
-> to be 0x200 here (but maybe there's more to come in future).
->
-> >> +                               iommus = <&iommu_dispc>;
-> >> +                       };
-> >> +
-> >> +                       iommu_dispc: iommu@63000000 {
-> >> +                               compatible = "sprd,iommu-v1";
-> >> +                               sprd,iommu-regs = <&dpu_regs 0x800>;
-> >
-> > reg = <0 0x63000800 0 0x800>;
->
-> ...and this one looks to need less than 0x80, even :)
-
-There're some registers not be added in the current driver indeed. The
-specification defines registers up to 0x7c.
-
->
-> >
-> >> +                               #iommu-cells = <0>;
-> >
-> > Though given it seems there is only 1 client and this might really be
-> > just 1 h/w block, you don't really need to use the iommu binding at
-> > all. The DPU should be able to instantiate it's own IOMMU device.
-> > There's other examples of this such as mali GPU though that is all one
-> > driver, but that's a Linux implementation detail.
->
-> FWIW that's really a very different situation - the MMUs in a Mali GPU
-> are fundamental parts of its internal pipelines and would never make
-> sense to handle as separate devices (if it were even feasible to try).
-> An IOMMU like this one is typically a logically-distinct block stuck to
-> the external bus interface of any old device, rewriting transactions
-> that said device has already issued - it's telling that it needs to
-> allocate the prot_page scratchpad for "faulting" transactions to still
-> flow somewhere, implying that it's not even involved enough to be able
-> to terminate them.
->
-> As such I think it *does* make complete sense to describe even
-> "dedicated" IOMMUs like this one, Rockchip, Exynos, etc. in DT.
-> Otherwise you'd be effectively forcing OSes to turn half their
-> display/media drivers into mini board files with secret knowledge of
-> which blocks are integrated with IOMMUs on which SoCs.
->
-
- Thanks for helping me explain the situation.
-
-Regards,
-Chunyan
-
-> Robin.
