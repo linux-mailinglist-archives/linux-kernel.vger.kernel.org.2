@@ -2,164 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7F6325EDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 425E5325EE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:25:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhBZIXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:23:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbhBZIXJ (ORCPT
+        id S230128AbhBZIZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:25:12 -0500
+Received: from lucky1.263xmail.com ([211.157.147.131]:57118 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhBZIZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:23:09 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E78AC06174A;
-        Fri, 26 Feb 2021 00:22:29 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id e9so2890442pjs.2;
-        Fri, 26 Feb 2021 00:22:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Lf0RP6AWNkPsAQL2oVEp2TVD1wy1RanwfgCPUOayM4c=;
-        b=WKwkhyilQl5a9kG7HMphFNeig60dCMgmpHKLWrlXVfCzatiOlKxm0F021oFRNuVWb/
-         kiCIjl95ej7pQJkubLQhPb4OMIbqQEfOFhSdGS2k9ZFy8sMZc5yQ98w1NFGJVGyZGshp
-         PXQSDP3brGIDyklcO0uxBtuGFbwiMAmfXOs2cSw8PRQBN5NWikRKG8Ep/OfvTgN0Boua
-         NA7Xvvc8B+IB6EnCPy8nPiNaLpz0EJS962UUotRwLPLZvTjbxkkhn1dUv2IQN35GkCpb
-         HMnqHTRwXh8Wts2GCH/3QgxKdTPvvpBKpo1s+5T7BkVp1z756HHOTUFRyfZ7btUMdQz1
-         +VqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Lf0RP6AWNkPsAQL2oVEp2TVD1wy1RanwfgCPUOayM4c=;
-        b=KHqe1VzeWEfaQxy7RIIjkNjVg1Wxx0pO1ABYPIwTiN1tTaRFsVHVN/fANCd5BCWGg6
-         pYEtbE7PtzmDLObxv/0/awbEXjF128hk7R0YQ2W5J860WBFJkRC6BFSmY6hhe7I2nuHB
-         MPPnNpI8MAhYfREc3MH6KfRixml9bmZOG25k/7tQbpodJBG+IvRE58yYKmk7jMpxD26T
-         wztqtsi12QU3q1D5ROrSDLj4vDgOAKqLC4Zo76unvA7Zyxza+8xurnk/gO+FL9p3q0d6
-         gqzWVe8qnefLoqTzIPY0cXgjID3KXIVlJ1S5E1k8isiobt0iQeHcIqYtjDvibTkL1CWn
-         oaQg==
-X-Gm-Message-State: AOAM532XPvLDDyOwRfii1MfiRiR4uTNpb79ozV3pmgoCmWlYrsDdRQ39
-        3FBCd1vMtvq2ounORd1zO58=
-X-Google-Smtp-Source: ABdhPJwmYYiFXfn3Bh/XIs5iYnRmfPWYauleaeHa5rh2vi33lsGkIC+YLcNfpzIC8wr2qDgAcmLIFg==
-X-Received: by 2002:a17:90a:df12:: with SMTP id gp18mr2294256pjb.25.1614327748552;
-        Fri, 26 Feb 2021 00:22:28 -0800 (PST)
-Received: from octofox.hsd1.ca.comcast.net (c-24-130-92-200.hsd1.ca.comcast.net. [24.130.92.200])
-        by smtp.gmail.com with ESMTPSA id c6sm9020138pfc.94.2021.02.26.00.22.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 00:22:27 -0800 (PST)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     linux-xtensa@linux-xtensa.org
-Cc:     Chris Zankel <chris@zankel.net>, linux-kernel@vger.kernel.org,
-        Max Filippov <jcmvbkbc@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH] xtensa: move coprocessor_flush to the .text section
-Date:   Fri, 26 Feb 2021 00:22:19 -0800
-Message-Id: <20210226082219.8224-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 26 Feb 2021 03:25:07 -0500
+Received: from localhost (unknown [192.168.167.225])
+        by lucky1.263xmail.com (Postfix) with ESMTP id D5C2EB879F;
+        Fri, 26 Feb 2021 16:22:42 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P5973T140596920432384S1614327760837004_;
+        Fri, 26 Feb 2021 16:22:42 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <55aca934b821fe2b99e3523b58234e25>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: mturquette@baylibre.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     mturquette@baylibre.com, robh+dt@kernel.org, sboyd@kernel.org,
+        heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v2 0/4] clk: rockchip: add clock controller for rk3568
+Date:   Fri, 26 Feb 2021 16:22:30 +0800
+Message-Id: <20210226082234.1733-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-coprocessor_flush is not a part of fast exception handlers, but it uses
-parts of fast coprocessor handling code that's why it's in the same
-source file. It uses call0 opcode to invoke those parts so there are no
-limitations on their relative location, but the rest of the code calls
-coprocessor_flush with call8 and that doesn't work when vectors are
-placed in a different gigabyte-aligned area than the rest of the kernel.
+Add the clock tree definition for the new rk3568 SoC.
 
-Move coprocessor_flush from the .exception.text section to the .text so
-that it's reachable from the rest of the kernel with call8.
+Change in V2:
+[PATCH v2 1/4]: Convert rockchip,rk3568-cru.txt to YAML,
+		And update commit message.
+[PATCH v2 2/4]: No change.
+[PATCH v2 3/4]: Use arrays to support more core independent div settings.
+[PATCH v2 4/4]: Adapter [PATCH v2 3/4] changes.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
----
- arch/xtensa/kernel/coprocessor.S | 64 ++++++++++++++++----------------
- 1 file changed, 33 insertions(+), 31 deletions(-)
+Elaine Zhang (4):
+  dt-binding: clock: Document rockchip,rk3568-cru bindings
+  clk: rockchip: add dt-binding header for rk3568
+  clk: rockchip: support more core div setting
+  clk: rockchip: add clock controller for rk3568
 
-diff --git a/arch/xtensa/kernel/coprocessor.S b/arch/xtensa/kernel/coprocessor.S
-index c426b846beef..45cc0ae0af6f 100644
---- a/arch/xtensa/kernel/coprocessor.S
-+++ b/arch/xtensa/kernel/coprocessor.S
-@@ -99,37 +99,6 @@
- 	LOAD_CP_REGS_TAB(6)
- 	LOAD_CP_REGS_TAB(7)
- 
--/*
-- * coprocessor_flush(struct thread_info*, index)
-- *                             a2        a3
-- *
-- * Save coprocessor registers for coprocessor 'index'.
-- * The register values are saved to or loaded from the coprocessor area 
-- * inside the task_info structure.
-- *
-- * Note that this function doesn't update the coprocessor_owner information!
-- *
-- */
--
--ENTRY(coprocessor_flush)
--
--	/* reserve 4 bytes on stack to save a0 */
--	abi_entry(4)
--
--	s32i	a0, a1, 0
--	movi	a0, .Lsave_cp_regs_jump_table
--	addx8	a3, a3, a0
--	l32i	a4, a3, 4
--	l32i	a3, a3, 0
--	add	a2, a2, a4
--	beqz	a3, 1f
--	callx0	a3
--1:	l32i	a0, a1, 0
--
--	abi_ret(4)
--
--ENDPROC(coprocessor_flush)
--
- /*
-  * Entry condition:
-  *
-@@ -245,6 +214,39 @@ ENTRY(fast_coprocessor)
- 
- ENDPROC(fast_coprocessor)
- 
-+	.text
-+
-+/*
-+ * coprocessor_flush(struct thread_info*, index)
-+ *                             a2        a3
-+ *
-+ * Save coprocessor registers for coprocessor 'index'.
-+ * The register values are saved to or loaded from the coprocessor area
-+ * inside the task_info structure.
-+ *
-+ * Note that this function doesn't update the coprocessor_owner information!
-+ *
-+ */
-+
-+ENTRY(coprocessor_flush)
-+
-+	/* reserve 4 bytes on stack to save a0 */
-+	abi_entry(4)
-+
-+	s32i	a0, a1, 0
-+	movi	a0, .Lsave_cp_regs_jump_table
-+	addx8	a3, a3, a0
-+	l32i	a4, a3, 4
-+	l32i	a3, a3, 0
-+	add	a2, a2, a4
-+	beqz	a3, 1f
-+	callx0	a3
-+1:	l32i	a0, a1, 0
-+
-+	abi_ret(4)
-+
-+ENDPROC(coprocessor_flush)
-+
- 	.data
- 
- ENTRY(coprocessor_owner)
+ .../bindings/clock/rockchip,rk3568-cru.yaml   |   55 +
+ drivers/clk/rockchip/Kconfig                  |    7 +
+ drivers/clk/rockchip/Makefile                 |    1 +
+ drivers/clk/rockchip/clk-cpu.c                |   40 +-
+ drivers/clk/rockchip/clk-px30.c               |    7 +-
+ drivers/clk/rockchip/clk-rk3036.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3128.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3188.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3228.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3288.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3308.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3328.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3368.c             |   14 +-
+ drivers/clk/rockchip/clk-rk3399.c             |   14 +-
+ drivers/clk/rockchip/clk-rk3568.c             | 1726 +++++++++++++++++
+ drivers/clk/rockchip/clk-rv1108.c             |    7 +-
+ drivers/clk/rockchip/clk.h                    |   54 +-
+ include/dt-bindings/clock/rk3568-cru.h        |  926 +++++++++
+ 18 files changed, 2834 insertions(+), 66 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.yaml
+ create mode 100644 drivers/clk/rockchip/clk-rk3568.c
+ create mode 100644 include/dt-bindings/clock/rk3568-cru.h
+
 -- 
-2.20.1
+2.17.1
+
+
 
