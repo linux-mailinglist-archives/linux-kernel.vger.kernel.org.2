@@ -2,345 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D55A3261FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9F03261FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 12:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhBZL0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 06:26:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60192 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230292AbhBZL0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 06:26:21 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614338733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
+        id S230460AbhBZL3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 06:29:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33747 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230288AbhBZL3V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 06:29:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614338874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JBpwkpRBjPYpONcCK58de+e0K3J8PANk86L4naG0G9s=;
-        b=CmgA5SqQRgJjLlCBNtTU6SqjdTiGNVbTLRjQQ+HkAOfR1m2eg8NY2NKb7lbh1h/MLSpqHt
-        FYRlygxv+nCOK87b3iUZS1LU8PfYrNFtEvTt0NMVlvR6GehKh6B13mX7tl6zU0UGdvaHVW
-        mhCy4/tPNupQpoZiU2ILv/PmjD201P4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5F983B004;
-        Fri, 26 Feb 2021 11:25:33 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Cc:     paulmck@kernel.org, mhocko@suse.com,
-        Juergen Gross <jgross@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 3/3] kernel/smp: add more data to CSD lock debugging
-Date:   Fri, 26 Feb 2021 12:25:21 +0100
-Message-Id: <20210226112521.8641-4-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210226112521.8641-1-jgross@suse.com>
-References: <20210226112521.8641-1-jgross@suse.com>
+        bh=CysTHbMerlf4apmQH2SRsi1FoacLpdphMu+/V7YBJMU=;
+        b=JRDqENpm5+g7uSgyEWPlmwkQaSXJiIr7VZxeBzS651na/PgZtB3XgyDu+o8MztEM8cHL1i
+        911wnxL1I9yY9VLcLOuiQAxTo9paWh2YzLIFfQW5HNM9cjmTd6u7dpgBS6TbZNoDUTO8s1
+        jRkUYhW/L7LFe953ThamTHLCzyqyG5o=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-566-lxrqJIE5MouOinTzNpl5QA-1; Fri, 26 Feb 2021 06:27:52 -0500
+X-MC-Unique: lxrqJIE5MouOinTzNpl5QA-1
+Received: by mail-wm1-f70.google.com with SMTP id f18so1641589wmq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 03:27:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CysTHbMerlf4apmQH2SRsi1FoacLpdphMu+/V7YBJMU=;
+        b=CjH+/ZjolcXs3CbRAIeVbHLckAhuYAqGkY2fV8qzQaJNnWYqchOAtOokqNp3zIgoBu
+         PNOnJPH60jJd0tNkwjo1eIItHSk9U+dkhineaZzH60KEvMelPOOxNkPVLR8pbvMnv2rl
+         I3tcvJ6BghQEwFWAOneSqOzRdzDC15/QROf8QPJB3i7RmHTQjLZVnLInmtdaHdIAeFSB
+         peEDyFwnpZAonEwGVsTxZRxVtuEFK+QeZXMTu/onLluzTCx/JuvrcgQTQhVpYDVkubgy
+         Lp/H5mU++/2oQ+1LrWdQ8exbWnVI9Axafdn6nPVVyk0faunV7bvFx7ytDoOMfES6QyHj
+         92cQ==
+X-Gm-Message-State: AOAM530LFJgeiCS2YEKgULjSbATPsLt/aStVTb3XqtPyD2c8VnYvsQ0W
+        TMwof7/WhnQhm0Nbpcnyi6Dv2zTuKLgXCc74hQXF0tlIfEoR0T3efXRlLigszXtKK6r04x/3mvI
+        yowus96Ve4IMHOO7IFuiqr2kF
+X-Received: by 2002:a5d:6152:: with SMTP id y18mr2691455wrt.381.1614338871150;
+        Fri, 26 Feb 2021 03:27:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw2EGi+BH7hQTbkk8ZkMw9nXlenxOM8LexWMrPw2JAf79k19AL4kPPeObJ2ZHye0K9oEMpEOQ==
+X-Received: by 2002:a5d:6152:: with SMTP id y18mr2691433wrt.381.1614338870924;
+        Fri, 26 Feb 2021 03:27:50 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id y10sm4568778wrl.19.2021.02.26.03.27.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 03:27:50 -0800 (PST)
+Subject: Re: [PATCH 5.4 12/47] KVM: x86: avoid incorrect writes to host
+ MSR_IA32_SPEC_CTRL
+To:     Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Jim Mattson <jmattson@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+References: <20210104155705.740576914@linuxfoundation.org>
+ <20210104155706.339275609@linuxfoundation.org>
+ <85e3f488-4ec5-2ad3-26a6-097d532824e1@proxmox.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <4fa31425-3c13-0a4f-167b-6566c6302334@redhat.com>
+Date:   Fri, 26 Feb 2021 12:27:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <85e3f488-4ec5-2ad3-26a6-097d532824e1@proxmox.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to help identifying problems with IPI handling and remote
-function execution add some more data to IPI debugging code.
+On 26/02/21 12:03, Thomas Lamprecht wrote:
+> On 04.01.21 16:57, Greg Kroah-Hartman wrote:
+>> From: Paolo Bonzini <pbonzini@redhat.com>
+>>
+>> [ Upstream commit 6441fa6178f5456d1d4b512c08798888f99db185 ]
+>>
+>> If the guest is configured to have SPEC_CTRL but the host does not
+>> (which is a nonsensical configuration but these are not explicitly
+>> forbidden) then a host-initiated MSR write can write vmx->spec_ctrl
+>> (respectively svm->spec_ctrl) and trigger a #GP when KVM tries to
+>> restore the host value of the MSR.  Add a more comprehensive check
+>> for valid bits of SPEC_CTRL, covering host CPUID flags and,
+>> since we are at it and it is more correct that way, guest CPUID
+>> flags too.
+>>
+>> For AMD, remove the unnecessary is_guest_mode check around setting
+>> the MSR interception bitmap, so that the code looks the same as
+>> for Intel.
+>>
+> 
+> A git bisect between 5.4.86 and 5.4.98 showed that this breaks boot of QEMU
+> guests running Windows 10 20H2 on AMD Ryzen X3700 CPUs with a BSOD showing
+> "KERNEL SECURITY CHECK FAILURE".
+> 
+> Reverting this commit or setting the CPU type of the QEMU/KVM command from
+> host to qemu64 allows one to boot Windows 10 in the VM again.
+> 
+> I found a followup, commit 841c2be09fe4f495fe5224952a419bd8c7e5b455 [0],
+> which has a fixes line for this commit and mentions Zen2 AMD CPUs (which
+> the X3700 is).
+> Applying a backport of that commit on top of 5.4.98 stable tree fixed the
+> issue here see below for the backport I used, it applies also cleanly on the
+> more current 5.4.101 release.
+> 
+> So can you please add this patch to the stable trees that backported the
+> problematic upstream commit 6441fa6178f5456d1d4b512c08798888f99db185 ?
+> 
+> If I should submit this in any other way just ask, was not sure about
+> what works best with a patch which cannot be cherry-picked cleanly.
 
-There have been multiple reports of cpus looping long times (many
-seconds) in smp_call_function_many() waiting for another cpu executing
-a function like tlb flushing. Most of these reports have been for
-cases where the kernel was running as a guest on top of KVM or Xen
-(there are rumours of that happening under VMWare, too, and even on
-bare metal).
+Ok, I'll submit it.
 
-Finding the root cause hasn't been successful yet, even after more than
-2 years of chasing this bug by different developers.
+Thanks for the testing.
 
-Commit 35feb60474bf4f7 ("kernel/smp: Provide CSD lock timeout
-diagnostics") tried to address this by adding some debug code and by
-issuing another IPI when a hang was detected. This helped mitigating
-the problem (the repeated IPI unlocks the hang), but the root cause is
-still unknown.
+Paolo
 
-Current available data suggests that either an IPI wasn't sent when it
-should have been, or that the IPI didn't result in the target cpu
-executing the queued function (due to the IPI not reaching the cpu,
-the IPI handler not being called, or the handler not seeing the queued
-request).
-
-Try to add more diagnostic data by introducing a global atomic counter
-which is being incremented when doing critical operations (before and
-after queueing a new request, when sending an IPI, and when dequeueing
-a request). The counter value is stored in percpu variables which can
-be printed out when a hang is detected.
-
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- .../admin-guide/kernel-parameters.txt         |   4 +
- kernel/smp.c                                  | 143 +++++++++++++++++-
- 2 files changed, 144 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index af9749b866c2..89da345ec8f1 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -789,6 +789,10 @@
- 			printed to the console in case a hanging cpu is
- 			detected and that cpu is pinged again in order to try
- 			to resolve the hang situation.
-+			0: disable csdlock debugging (default)
-+			1: enable basic csdlock debugging (minor impact)
-+			ext: enable extended csdlock debugging (more impact,
-+			     but more data)
- 
- 	dasd=		[HW,NET]
- 			See header of drivers/s390/block/dasd_devmap.c.
-diff --git a/kernel/smp.c b/kernel/smp.c
-index 6d7e6dbe33dc..0d6a6a802fd1 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -31,8 +31,44 @@
- 
- #define CSD_TYPE(_csd)	((_csd)->node.u_flags & CSD_FLAG_TYPE_MASK)
- 
-+#ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
-+union cfd_seq_cnt {
-+	u64		val;
-+	struct {
-+		u64	src:16;
-+		u64	dst:16;
-+#define CFD_SEQ_NOCPU	0xffff
-+		u64	type:4;
-+#define CFD_SEQ_QUEUE	0
-+#define CFD_SEQ_IPI	1
-+#define CFD_SEQ_NOIPI	2
-+#define CFD_SEQ_PING	3
-+#define CFD_SEQ_PINGED	4
-+#define CFD_SEQ_HANDLE	5
-+#define CFD_SEQ_DEQUEUE	6
-+#define CFD_SEQ_IDLE	7
-+#define CFD_SEQ_GOTIPI	8
-+		u64	cnt:28;
-+	}		u;
-+};
-+
-+struct cfd_seq_local {
-+	u64	ping;
-+	u64	pinged;
-+	u64	handle;
-+	u64	dequeue;
-+	u64	idle;
-+	u64	gotipi;
-+};
-+#endif
-+
- struct cfd_percpu {
- 	call_single_data_t	csd;
-+#ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
-+	u64	seq_queue;
-+	u64	seq_ipi;
-+	u64	seq_noipi;
-+#endif
- };
- 
- struct call_function_data {
-@@ -108,12 +144,18 @@ void __init call_function_init(void)
- #ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
- 
- static DEFINE_STATIC_KEY_FALSE(csdlock_debug_enabled);
-+static DEFINE_STATIC_KEY_FALSE(csdlock_debug_extended);
- 
- static int __init csdlock_debug(char *str)
- {
- 	unsigned int val = 0;
- 
--	get_option(&str, &val);
-+	if (str && !strcmp(str, "ext")) {
-+		val = 1;
-+		static_branch_enable(&csdlock_debug_extended);
-+	} else
-+		get_option(&str, &val);
-+
- 	if (val)
- 		static_branch_enable(&csdlock_debug_enabled);
- 
-@@ -124,9 +166,33 @@ early_param("csdlock_debug", csdlock_debug);
- static DEFINE_PER_CPU(call_single_data_t *, cur_csd);
- static DEFINE_PER_CPU(smp_call_func_t, cur_csd_func);
- static DEFINE_PER_CPU(void *, cur_csd_info);
-+static DEFINE_PER_CPU(struct cfd_seq_local, cfd_seq_local);
- 
- #define CSD_LOCK_TIMEOUT (5ULL * NSEC_PER_SEC)
- static atomic_t csd_bug_count = ATOMIC_INIT(0);
-+static u64 cfd_seq;
-+
-+static u64 cfd_seq_inc(unsigned int src, unsigned int dst, unsigned int type)
-+{
-+	union cfd_seq_cnt new, old;
-+
-+	new.u.src = src;
-+	new.u.dst = dst;
-+	new.u.type = type;
-+
-+	do {
-+		old.val = READ_ONCE(cfd_seq);
-+		new.u.cnt = old.u.cnt + 1;
-+	} while (cmpxchg(&cfd_seq, old.val, new.val) != old.val);
-+
-+	return old.val;
-+}
-+
-+#define cfd_seq_store(var, src, dst, type)				\
-+	do {								\
-+		if (static_branch_unlikely(&csdlock_debug_extended))	\
-+			var = cfd_seq_inc(src, dst, type);		\
-+	} while (0)
- 
- /* Record current CSD work for current CPU, NULL to erase. */
- static void __csd_lock_record(call_single_data_t *csd)
-@@ -160,6 +226,24 @@ static int csd_lock_wait_getcpu(call_single_data_t *csd)
- 	return -1;
- }
- 
-+static void csd_lock_print_extended(call_single_data_t *csd, int cpu)
-+{
-+	struct cfd_seq_local *seq = &per_cpu(cfd_seq_local, cpu);
-+	unsigned int srccpu = csd->node.src;
-+	struct call_function_data *cfd = per_cpu_ptr(&cfd_data, srccpu);
-+	struct cfd_percpu *pcpu = per_cpu_ptr(cfd->pcpu, cpu);
-+
-+	pr_alert("\tcsd: CPU#%d->CPU#%d%s: queue=%016llx, ipi=%016llx, noipi=%016llx\n",
-+		 srccpu, cpu,
-+		 (srccpu != raw_smp_processor_id()) ? " (might be stale)" : "",
-+		 pcpu->seq_queue, pcpu->seq_ipi, pcpu->seq_noipi);
-+	pr_alert("\tcsd: CSD source CPU#%d: ping=%016llx, pinged=%016llx\n", srccpu,
-+		 per_cpu(cfd_seq_local.ping, srccpu),
-+		 per_cpu(cfd_seq_local.pinged, srccpu));
-+	pr_alert("\tcsd: CSD target CPU#%d: idle=%016llx, gotipi=%016llx, handle=%016llx, dequeue=%016llx\n",
-+		 cpu, seq->idle, seq->gotipi, seq->handle, seq->dequeue);
-+}
-+
- /*
-  * Complain if too much time spent waiting.  Note that only
-  * the CSD_TYPE_SYNC/ASYNC types provide the destination CPU,
-@@ -209,6 +293,8 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, in
- 			 *bug_id, !cpu_cur_csd ? "unresponsive" : "handling this request");
- 	}
- 	if (cpu >= 0) {
-+		if (static_branch_unlikely(&csdlock_debug_extended))
-+			csd_lock_print_extended(csd, cpu);
- 		if (!trigger_single_cpu_backtrace(cpu))
- 			dump_cpu_task(cpu);
- 		if (!cpu_cur_csd) {
-@@ -252,7 +338,27 @@ static __always_inline void csd_lock_wait(call_single_data_t *csd)
- 
- 	smp_cond_load_acquire(&csd->node.u_flags, !(VAL & CSD_FLAG_LOCK));
- }
-+
-+static void __smp_call_single_queue_debug(int cpu, struct llist_node *node)
-+{
-+	unsigned int this_cpu = smp_processor_id();
-+	struct cfd_seq_local *seq = this_cpu_ptr(&cfd_seq_local);
-+	struct call_function_data *cfd = this_cpu_ptr(&cfd_data);
-+	struct cfd_percpu *pcpu = per_cpu_ptr(cfd->pcpu, cpu);
-+
-+	cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
-+	if (llist_add(node, &per_cpu(call_single_queue, cpu))) {
-+		cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
-+		cfd_seq_store(seq->ping, this_cpu, cpu, CFD_SEQ_PING);
-+		send_call_function_single_ipi(cpu);
-+		cfd_seq_store(seq->pinged, this_cpu, cpu, CFD_SEQ_PINGED);
-+	} else {
-+		cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
-+	}
-+}
- #else
-+#define cfd_seq_store(var, src, dst, type)
-+
- static void csd_lock_record(call_single_data_t *csd)
- {
- }
-@@ -290,6 +396,19 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
- 
- void __smp_call_single_queue(int cpu, struct llist_node *node)
- {
-+#ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
-+	if (static_branch_unlikely(&csdlock_debug_extended)) {
-+		unsigned int type;
-+
-+		type = CSD_TYPE(container_of(node, call_single_data_t,
-+					     node.llist));
-+		if (type == CSD_TYPE_SYNC || type == CSD_TYPE_ASYNC) {
-+			__smp_call_single_queue_debug(cpu, node);
-+			return;
-+		}
-+	}
-+#endif
-+
- 	/*
- 	 * The list addition should be visible before sending the IPI
- 	 * handler locks the list to pull the entry off it because of
-@@ -348,6 +467,8 @@ static int generic_exec_single(int cpu, call_single_data_t *csd)
-  */
- void generic_smp_call_function_single_interrupt(void)
- {
-+	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->gotipi, CFD_SEQ_NOCPU,
-+		      smp_processor_id(), CFD_SEQ_GOTIPI);
- 	flush_smp_call_function_queue(true);
- }
- 
-@@ -375,7 +496,11 @@ static void flush_smp_call_function_queue(bool warn_cpu_offline)
- 	lockdep_assert_irqs_disabled();
- 
- 	head = this_cpu_ptr(&call_single_queue);
-+	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->handle, CFD_SEQ_NOCPU,
-+		      smp_processor_id(), CFD_SEQ_HANDLE);
- 	entry = llist_del_all(head);
-+	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->dequeue, CFD_SEQ_NOCPU,
-+		      smp_processor_id(), CFD_SEQ_DEQUEUE);
- 	entry = llist_reverse_order(entry);
- 
- 	/* There shouldn't be any pending callbacks on an offline CPU. */
-@@ -482,6 +607,8 @@ void flush_smp_call_function_from_idle(void)
- 	if (llist_empty(this_cpu_ptr(&call_single_queue)))
- 		return;
- 
-+	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->idle, CFD_SEQ_NOCPU,
-+		      smp_processor_id(), CFD_SEQ_IDLE);
- 	local_irq_save(flags);
- 	flush_smp_call_function_queue(true);
- 	if (local_softirq_pending())
-@@ -698,7 +825,8 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
- 
- 	cpumask_clear(cfd->cpumask_ipi);
- 	for_each_cpu(cpu, cfd->cpumask) {
--		call_single_data_t *csd = &per_cpu_ptr(cfd->pcpu, cpu)->csd;
-+		struct cfd_percpu *pcpu = per_cpu_ptr(cfd->pcpu, cpu);
-+		call_single_data_t *csd = &pcpu->csd;
- 
- 		if (cond_func && !cond_func(cpu, info))
- 			continue;
-@@ -712,12 +840,21 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
- 		csd->node.src = smp_processor_id();
- 		csd->node.dst = cpu;
- #endif
--		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu)))
-+		cfd_seq_store(pcpu->seq_queue, this_cpu, cpu, CFD_SEQ_QUEUE);
-+		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu))) {
- 			__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
-+			cfd_seq_store(pcpu->seq_ipi, this_cpu, cpu, CFD_SEQ_IPI);
-+		} else {
-+			cfd_seq_store(pcpu->seq_noipi, this_cpu, cpu, CFD_SEQ_NOIPI);
-+		}
- 	}
- 
- 	/* Send a message to all CPUs in the map */
-+	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->ping, this_cpu,
-+		      CFD_SEQ_NOCPU, CFD_SEQ_PING);
- 	arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
-+	cfd_seq_store(this_cpu_ptr(&cfd_seq_local)->pinged, this_cpu,
-+		      CFD_SEQ_NOCPU, CFD_SEQ_PINGED);
- 
- 	if (wait) {
- 		for_each_cpu(cpu, cfd->cpumask) {
--- 
-2.26.2
+> 
+> cheers,
+> Thomas
+> 
+> [0]: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?id=841c2be09fe4f495fe5224952a419bd8c7e5b455
+> 
+> ----8<---
+> From: Maxim Levitsky <mlevitsk@redhat.com>
+> Date: Wed, 8 Jul 2020 14:57:31 +0300
+> Subject: [PATCH] kvm: x86: replace kvm_spec_ctrl_test_value with runtime test
+>   on the host
+> 
+> To avoid complex and in some cases incorrect logic in
+> kvm_spec_ctrl_test_value, just try the guest's given value on the host
+> processor instead, and if it doesn't #GP, allow the guest to set it.
+> 
+> One such case is when host CPU supports STIBP mitigation
+> but doesn't support IBRS (as is the case with some Zen2 AMD cpus),
+> and in this case we were giving guest #GP when it tried to use STIBP
+> 
+> The reason why can can do the host test is that IA32_SPEC_CTRL msr is
+> passed to the guest, after the guest sets it to a non zero value
+> for the first time (due to performance reasons),
+> and as as result of this, it is pointless to emulate #GP condition on
+> this first access, in a different way than what the host CPU does.
+> 
+> This is based on a patch from Sean Christopherson, who suggested this idea.
+> 
+> Fixes: 6441fa6178f5 ("KVM: x86: avoid incorrect writes to host MSR_IA32_SPEC_CTRL")
+> Cc: stable@vger.kernel.org
+> Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Message-Id: <20200708115731.180097-1-mlevitsk@redhat.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> (cherry picked from commit 841c2be09fe4f495fe5224952a419bd8c7e5b455)
+> [ Thomas: resolved merge conflict in arch/x86/kvm/x86.h and
+>    replicated the change to arch/x86/kvm/svm/svm.c to the in 5.4 not
+>    yet moved out arch/x86/kvm/svm.c ]
+> Signed-off-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
+> ---
+>   arch/x86/kvm/svm.c     |  2 +-
+>   arch/x86/kvm/vmx/vmx.c |  2 +-
+>   arch/x86/kvm/x86.c     | 38 +++++++++++++++++++++-----------------
+>   arch/x86/kvm/x86.h     |  2 +-
+>   4 files changed, 24 insertions(+), 20 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
+> index 8d386efc2540..372a958bec72 100644
+> --- a/arch/x86/kvm/svm.c
+> +++ b/arch/x86/kvm/svm.c
+> @@ -4327,7 +4327,7 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+>   		    !guest_has_spec_ctrl_msr(vcpu))
+>   			return 1;
+>   
+> -		if (data & ~kvm_spec_ctrl_valid_bits(vcpu))
+> +		if (kvm_spec_ctrl_test_value(data))
+>   			return 1;
+>   
+>   		svm->spec_ctrl = data;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index e7fd2f00edc1..e177848a3631 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -1974,7 +1974,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   		    !guest_has_spec_ctrl_msr(vcpu))
+>   			return 1;
+>   
+> -		if (data & ~kvm_spec_ctrl_valid_bits(vcpu))
+> +		if (kvm_spec_ctrl_test_value(data))
+>   			return 1;
+>   
+>   		vmx->spec_ctrl = data;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index f5a827150664..1330fc4dc7c5 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10376,28 +10376,32 @@ bool kvm_arch_no_poll(struct kvm_vcpu *vcpu)
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_arch_no_poll);
+>   
+> -u64 kvm_spec_ctrl_valid_bits(struct kvm_vcpu *vcpu)
+> +
+> +int kvm_spec_ctrl_test_value(u64 value)
+>   {
+> -	uint64_t bits = SPEC_CTRL_IBRS | SPEC_CTRL_STIBP | SPEC_CTRL_SSBD;
+> +	/*
+> +	 * test that setting IA32_SPEC_CTRL to given value
+> +	 * is allowed by the host processor
+> +	 */
+>   
+> -	/* The STIBP bit doesn't fault even if it's not advertised */
+> -	if (!guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL) &&
+> -	    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_IBRS))
+> -		bits &= ~(SPEC_CTRL_IBRS | SPEC_CTRL_STIBP);
+> -	if (!boot_cpu_has(X86_FEATURE_SPEC_CTRL) &&
+> -	    !boot_cpu_has(X86_FEATURE_AMD_IBRS))
+> -		bits &= ~(SPEC_CTRL_IBRS | SPEC_CTRL_STIBP);
+> +	u64 saved_value;
+> +	unsigned long flags;
+> +	int ret = 0;
+>   
+> -	if (!guest_cpuid_has(vcpu, X86_FEATURE_SPEC_CTRL_SSBD) &&
+> -	    !guest_cpuid_has(vcpu, X86_FEATURE_AMD_SSBD))
+> -		bits &= ~SPEC_CTRL_SSBD;
+> -	if (!boot_cpu_has(X86_FEATURE_SPEC_CTRL_SSBD) &&
+> -	    !boot_cpu_has(X86_FEATURE_AMD_SSBD))
+> -		bits &= ~SPEC_CTRL_SSBD;
+> +	local_irq_save(flags);
+>   
+> -	return bits;
+> +	if (rdmsrl_safe(MSR_IA32_SPEC_CTRL, &saved_value))
+> +		ret = 1;
+> +	else if (wrmsrl_safe(MSR_IA32_SPEC_CTRL, value))
+> +		ret = 1;
+> +	else
+> +		wrmsrl(MSR_IA32_SPEC_CTRL, saved_value);
+> +
+> +	local_irq_restore(flags);
+> +
+> +	return ret;
+>   }
+> -EXPORT_SYMBOL_GPL(kvm_spec_ctrl_valid_bits);
+> +EXPORT_SYMBOL_GPL(kvm_spec_ctrl_test_value);
+>   
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_exit);
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_fast_mmio);
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 301286d92432..c520d373790a 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -368,6 +368,6 @@ static inline bool kvm_pat_valid(u64 data)
+>   
+>   void kvm_load_guest_xcr0(struct kvm_vcpu *vcpu);
+>   void kvm_put_guest_xcr0(struct kvm_vcpu *vcpu);
+> -u64 kvm_spec_ctrl_valid_bits(struct kvm_vcpu *vcpu);
+> +int kvm_spec_ctrl_test_value(u64 value);
+>   
+>   #endif
+> 
 
