@@ -2,125 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF9C3264A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8A23264A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 16:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhBZPXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 10:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
+        id S230212AbhBZPYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 10:24:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhBZPXE (ORCPT
+        with ESMTP id S229823AbhBZPX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 10:23:04 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB6BC061574;
-        Fri, 26 Feb 2021 07:22:23 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id f8so5467137plg.5;
-        Fri, 26 Feb 2021 07:22:23 -0800 (PST)
+        Fri, 26 Feb 2021 10:23:56 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1ACC061574;
+        Fri, 26 Feb 2021 07:23:15 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id a4so6376547pgc.11;
+        Fri, 26 Feb 2021 07:23:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N+8bSP4jmKRK45sk0elNZOZAzDCg0/KrbuIhk6AYYpI=;
-        b=of6GrdclCGu6wWKR3lfeZTkk193cw4Pc/er951ZhLuVJbFJ+Q4X8ib+ietQkvWsuEg
-         V7Mn/cpu1wKOZpPuAIlLcXKCu142LRz0FezFPS+CZkcmjOYofO1MpCdPmS+3hqb1k0pE
-         Tq3VHW7wcuTh4y1GeinZeoFlSRqFhwbrvxoFNdcHE8/6AhjOss2yS+ltfOxQ8for4sr1
-         xfqqFbK4IUnq2ZiKZNXlNY1VjmWsKbmHrXk84zvGxhgqw7P2janJ4zGkhN4bXXNjo5II
-         TrXvgZW0/JxUebyaCNZKD0YM/N3mnvxTYMZQKN29/MVecbOnHIF9SX1SUQqHEFO9hn9z
-         sB/Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QHXSVsXuKx/MuCcoIzA9gGr9Kr4SzJ4/NTJV4xdPiLE=;
+        b=bg2stdC71+bgN8bhm92ZNYTejyoO/Gcm9LW4jOHsZ2ItE5nxs2BJnAiaSoBB+yaLx0
+         qMz2FO5paUx9R+OdJLJDkwAkw99qmGwHnV7lCP5ZC78zgCdy+XDjOEhqPHe25NXwZEQL
+         43hS5bYgP/onLPvgSaKObjgDKMRETB7fwPAEgHf0yRoVraHE2DO9c0gXmTpzwrsPyG7f
+         U2Pvkcz66BhlEcNMCeBZICL2xQU48D5ZNBrbR30jQYevLfZzLEfWgsQ/46HMpdp5npHJ
+         So18s9U6Wr5gz/JhiyuYdo/QyC4bObinEauEuwHJxauJTg0YGnWKJf+NgsuJ7tRAHKIz
+         Xq0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N+8bSP4jmKRK45sk0elNZOZAzDCg0/KrbuIhk6AYYpI=;
-        b=JLTasXmVvehLKnj49qjNbFZYDzxfoF4MVQnCaHmIvJ6beYlb8+6C9RxklQyGGVFop/
-         CDvt623ZP7F0cgpLikfZjkUCxPaFBVOhmFAzIaYo3ATot8P+Fp5rcPYMfu3U6JZsk0q/
-         SiaPz7zkUfQMWdy6q6zEKWPPgTgP+dbaHIAIFJJ8g0N7MCETwBTR5fhkVMRBmQEYu/Fw
-         ZphGeCe3ePFMNeWeRZ56eIiYg8CcvJoBcHkaiit/NZ/lIJuzzWY6aZfcHw+6xohsWEWe
-         NmX1aeHuJc/v08355F2ZyYXKKngJdEcw0+9nIN4vnydYuOLgn2xm03b3+oiVPSigWaiC
-         gsVQ==
-X-Gm-Message-State: AOAM532JUqVXP9lV0w3o4PCPQUdnZ8cAQZ7FtMtslJgEtPQ32Fyi7NSx
-        SQJy3pRYLGJdhcJQsXzscKh1NrZ1pOGh4g==
-X-Google-Smtp-Source: ABdhPJxhJNQFy77Bza8Jh3C1dv53eJTpmV0dwial77CDPlDY1jQvGL2YNRo4nRBr0bPrIAP1L7+nbw==
-X-Received: by 2002:a17:90a:13c1:: with SMTP id s1mr3878764pjf.60.1614352942649;
-        Fri, 26 Feb 2021 07:22:22 -0800 (PST)
-Received: from localhost (89.208.244.53.16clouds.com. [89.208.244.53])
-        by smtp.gmail.com with ESMTPSA id gm13sm9401596pjb.47.2021.02.26.07.22.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 07:22:22 -0800 (PST)
-Date:   Fri, 26 Feb 2021 23:22:20 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Robert Richter <rric@kernel.org>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <20210226152220.GA1053401@nuc8i5>
-References: <20210218150458.798347-1-zhengdejin5@gmail.com>
- <20210218150458.798347-2-zhengdejin5@gmail.com>
- <YC/NxfsQn2RKkrp8@rric.localdomain>
- <20210219164649.GA814637@nuc8i5>
- <YDONyMSHO9FDeY69@rric.localdomain>
- <20210222151415.GA896979@nuc8i5>
- <YDS2rkJu7PTJJiZr@rric.localdomain>
- <20210223141435.GA912403@nuc8i5>
- <YDdvAYLckBHi7qSe@rric.localdomain>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QHXSVsXuKx/MuCcoIzA9gGr9Kr4SzJ4/NTJV4xdPiLE=;
+        b=rcqdKkKUZGexIH27+P2yNHTdS3V82bjdqE1JEDN2Jnpw01c10AYzcWmae0ptyUQmoR
+         4ppuu0ROpNO6b1yrodxAU+vBQp6cjtiF5AYMytNhT94zOoEv+5wWYTS5CoWVh3iP4rlo
+         Wb/VnnDOw1X8s3VoiGbHbRN8+DbjCnozkZghx3QLkN4KH4PwI4WdyCrvHfFYTjtVussQ
+         jUsiTP6X49MwkUk8+6zir/Wb3cxNQVSwmf4eUdvGbZ414XTNSrc66ksIEy+QqmsVb4jm
+         8N+/uhYBfpNEN+Ax7qk9hsf2SSh10ylxpB8tq4tpB7VoRKhvcMPU7zIucmTccm2/04au
+         E1HQ==
+X-Gm-Message-State: AOAM531H+U/zf5sYK1cDgMfSEEgvEfauLHLS3/Mr1qIB0DbGU5Bblwyr
+        VgDSglbnbBOwQfOvSsuqVCo=
+X-Google-Smtp-Source: ABdhPJzt8BF/doAkmZUR6YeiIzcrt84/ecWfGKljw82X+19oR9qeBhNWLtNCimzGQ+8smXNI/AMnIw==
+X-Received: by 2002:a63:724a:: with SMTP id c10mr3377749pgn.124.1614352994989;
+        Fri, 26 Feb 2021 07:23:14 -0800 (PST)
+Received: from [172.30.1.19] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id s27sm8854875pgk.77.2021.02.26.07.23.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Feb 2021 07:23:14 -0800 (PST)
+Subject: Re: [RFC 07/19] devfreq: imx8m-ddrc: Add late system sleep PM ops
+To:     Abel Vesa <abel.vesa@nxp.com>, Rob Herring <robh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Martin Kepplinger <martink@posteo.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     NXP Linux Team <linux-imx@nxp.com>
+References: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
+ <1613750416-11901-8-git-send-email-abel.vesa@nxp.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <58c4b791-fe7c-6b34-0c13-9e41a6960c7f@gmail.com>
+Date:   Sat, 27 Feb 2021 00:23:07 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDdvAYLckBHi7qSe@rric.localdomain>
+In-Reply-To: <1613750416-11901-8-git-send-email-abel.vesa@nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 10:33:53AM +0100, Robert Richter wrote:
-> On 23.02.21 22:14:35, Dejin Zheng wrote:
-> > On Tue, Feb 23, 2021 at 09:02:54AM +0100, Robert Richter wrote:
-> > > On 22.02.21 23:14:15, Dejin Zheng wrote:
-> > > > On Mon, Feb 22, 2021 at 11:56:08AM +0100, Robert Richter wrote:
-> > > > > On 20.02.21 00:46:49, Dejin Zheng wrote:
-> > > > > > > On 18.02.21 23:04:55, Dejin Zheng wrote:
-> > > > > 
-> > > > > > > > +	if (!dr || !dr->enabled)
-> > > > > > here checks whether the pci device is enabled.
-> > > > > 
-> > > > > What is the purpose of this? The device "is_managed" or not.
-> > > > >
-> > > > The device is managed or not by check whether "dr" is NULL. And
-> > > > check the "dr->enabled" is for the PCI device enable. I think it
-> > > > may not make sense to apply for irq vectors when PCI device is not
-> > > > enabled.
-> > > 
-> > > I don't see how a disabled device affects in any way the release of
-> > > the irq vectors during device removal. dr is always non-null in case
-> > > the device is managed, a check isn't needed for that.
-> > >
-> > Yes, the disabled device does not affect release irq vectors, But
-> > the disabled device affects apply for irq vectors, It is wrong to apply
-> > for the irq vectors when the device is not enabled.
-> 
-> What is the scenario you have in mind here? What does happen then?
-> The typical use case is to pcim_enable_device() it and then add the
-> irq vectors. It is always enabled then.
-> 
-> Even if the device could wrongly be disabled, it does not affect the
-> device's release.
-> 
-> Also, how is this related to pcim? There isn't a check in
-> pci_alloc_irq_vectors() either for that case. 
-> 
-> > Add this check can
-> > facilitate developers to find problems as soon as possible.
-> 
-> No, there are many ways to shoot yourself in the foot. We cannot add
-> checks here and there for this, esp. at runtime. If there is a valid
-> reason that the device must always be enabled and we cannot assume
-> this is the case, then we could add a WARN_ON(). But I doubt that.
->
-Robert, You are right, I will remove the enable check. Thanks!
 
-BR,
-Dejin
-> -Robert
+
+On 21. 2. 20. 오전 1:00, Abel Vesa wrote:
+> Seems that, in order to be able to resume from suspend, the dram rate
+> needs to be the highest one available. Therefore, add the late system
+> suspend/resume PM ops which set the highest rate on suspend and the
+> latest one used before suspending on resume.
+> 
+> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+> ---
+>   drivers/devfreq/imx8m-ddrc.c | 26 ++++++++++++++++++++++++++
+>   1 file changed, 26 insertions(+)
+> 
+> diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
+> index 33de83acfd8b..04347dee781b 100644
+> --- a/drivers/devfreq/imx8m-ddrc.c
+> +++ b/drivers/devfreq/imx8m-ddrc.c
+> @@ -72,6 +72,8 @@ struct imx8m_ddrc {
+>   	struct clk *dram_alt;
+>   	struct clk *dram_apb;
+>   
+> +	unsigned long suspend_rate;
+> +	unsigned long resume_rate;
+>   	int freq_count;
+>   	struct imx8m_ddrc_freq freq_table[IMX8M_DDRC_MAX_FREQ_COUNT];
+>   };
+> @@ -271,6 +273,22 @@ static int imx8m_ddrc_target(struct device *dev, unsigned long *freq, u32 flags)
+>   	return ret;
+>   }
+>   
+> +static int imx8m_ddrc_suspend(struct device *dev)
+> +{
+> +	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> +
+> +	priv->resume_rate = clk_get_rate(priv->dram_core);
+> +
+> +	return imx8m_ddrc_target(dev, &priv->suspend_rate, 0);
+> +}
+> +
+> +static int imx8m_ddrc_resume(struct device *dev)
+> +{
+> +	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> +
+> +	return imx8m_ddrc_target(dev, &priv->resume_rate, 0);
+> +}
+> +
+>   static int imx8m_ddrc_get_cur_freq(struct device *dev, unsigned long *freq)
+>   {
+>   	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+> @@ -336,6 +354,9 @@ static int imx8m_ddrc_init_freq_info(struct device *dev)
+>   
+>   		if (dev_pm_opp_add(dev, freq->rate * 250000, 0))
+>   			return -ENODEV;
+> +
+> +		if (index ==  0)
+> +			priv->suspend_rate = freq->rate * 250000;
+>   	}
+>   
+>   	return 0;
+> @@ -412,10 +433,15 @@ static const struct of_device_id imx8m_ddrc_of_match[] = {
+>   };
+>   MODULE_DEVICE_TABLE(of, imx8m_ddrc_of_match);
+>   
+> +static const struct dev_pm_ops imx8m_ddrc_pm_ops = {
+> +	SET_LATE_SYSTEM_SLEEP_PM_OPS(imx8m_ddrc_suspend, imx8m_ddrc_resume)
+> +};
+
+Are there any reason to use suspend_late instead of suspend?
+Usually, it is enough to change the frequency on normal suspend() step.
+The devfreq supports the 'opp-suspend' property[1]. If you keep the OPP 
+entries on DT, you simply support your goal with 'opp-suspend'.
+
+[1] 
+https://elixir.bootlin.com/linux/latest/source/Documentation/devicetree/bindings/opp/opp.txt#L156
+
+> +
+>   static struct platform_driver imx8m_ddrc_platdrv = {
+>   	.probe		= imx8m_ddrc_probe,
+>   	.driver = {
+>   		.name	= "imx8m-ddrc-devfreq",
+> +		.pm = &imx8m_ddrc_pm_ops,
+>   		.of_match_table = of_match_ptr(imx8m_ddrc_of_match),
+>   	},
+>   };
+> 
