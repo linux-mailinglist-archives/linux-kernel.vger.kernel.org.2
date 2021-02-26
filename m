@@ -2,128 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E860A3268B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 994273268BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:42:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhBZU0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 15:26:10 -0500
-Received: from mga17.intel.com ([192.55.52.151]:35678 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231150AbhBZUOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:14:02 -0500
-IronPort-SDR: VxfR5jkt3HFxkn681jJcDta0X1KeYqEP8rBlGLR3rNCUxrT7N/VncmFDF1QYT1WzgTA0JcUM2m
- Ykl42Q2WsRvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="165846919"
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="165846919"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 12:11:15 -0800
-IronPort-SDR: nb0fcvfHHm0m8Hdy1+xls3a8hEnYNqDlXOEEWSI1luFshB5X1P5oXgEgsXgT8eoI0Qn46ShK9E
- yLC1P6ZemW2g==
-X-IronPort-AV: E=Sophos;i="5.81,209,1610438400"; 
-   d="scan'208";a="405109464"
-Received: from megha-z97x-ud7-th.sc.intel.com ([143.183.85.154])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Feb 2021 12:11:15 -0800
-From:   Megha Dey <megha.dey@intel.com>
-To:     tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, dave.jiang@intel.com,
-        ashok.raj@intel.com, kevin.tian@intel.com, dwmw@amazon.co.uk,
-        x86@kernel.org, tony.luck@intel.com, dan.j.williams@intel.com,
-        megha.dey@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, alex.williamson@redhat.com,
-        bhelgaas@google.com, maz@kernel.org, linux-pci@vger.kernel.org,
-        baolu.lu@linux.intel.com, ravi.v.shankar@intel.com
-Subject: [Patch V2 13/13] genirq/msi: Provide helpers to return Linux IRQ/dev_msi hw IRQ number
-Date:   Fri, 26 Feb 2021 12:11:17 -0800
-Message-Id: <1614370277-23235-14-git-send-email-megha.dey@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614370277-23235-1-git-send-email-megha.dey@intel.com>
-References: <1614370277-23235-1-git-send-email-megha.dey@intel.com>
+        id S231220AbhBZU1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:27:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhBZUSe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 15:18:34 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8067C061222;
+        Fri, 26 Feb 2021 12:15:53 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id o22so7197312pjs.1;
+        Fri, 26 Feb 2021 12:15:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mb+a+iPifUcMlypSO/2znNyZszUx5kqHHIYdplyNQKE=;
+        b=tv+erJ3fIJqxkJRhk3AyA8tVrsaRhN1kcda8ZThAF2/2aKoyGroiN9OpEDPCSduCmM
+         +qVdya9vF+GOmCjijCs5zvcEaFq5uDTbyUA6XfBImxHPUQvwC5quQobrK4BHSQLAVQK5
+         //Qr2scExcx9xzdjfYElFsQLXswfq/D+PlsSBbn3YbBy1QacalTTIDV7gqGpoJj5lnJd
+         HJ5NMEw339qlO82opPfzTuZkRZMwupUgdpLGfVcyPVuS6hjC4VDgU0OofFPCDSns9PsE
+         J+oyR+PikcSjOjfB6mDjm7v4bJXQhz3SGAMxbM0MnXJbKW7q8mQ9xpbf2UoCuJSxACmu
+         9wDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mb+a+iPifUcMlypSO/2znNyZszUx5kqHHIYdplyNQKE=;
+        b=PhOQbBriq2spT1U9wkIOPoSvgUqCzBMKlDuB5vWyUI8MqDOOkFDw0RJbJcmWq3dII8
+         Vf9DT/ZNKkkwuXpn61L86RpPHct6QWMrQ/jtm+xq1o/k6m+Hl2C5DtqHap2WtX8Sa+pX
+         /WJN0o0w4ph7Jrcw2nLejkFvm6WWCDYJ7EaHcYvwgbuhv2dtj7HimcLUm2q1ciG/WhGn
+         146kt29jVIhQS1P4rKSptZD4HIRvRUKLb84gZMb2C8cGhOR4SY7oC2qAel6L7FiGEuJ5
+         29yt0e+mN3zOtGnxtp4ZfJAUZyuVJ7gbWpcKYn+R/mXT4yzQQUbz5Ggsp2yuw1JhFWXb
+         EZzg==
+X-Gm-Message-State: AOAM532OxfHKU93WLau0P6SqlERawzS8qFTRnYYJgjmuABRscNQ9QohB
+        bmmjvNODHlhK8+00K9dgxa78EVRCxZsh6QRN4cfUaGZayfHE9w==
+X-Google-Smtp-Source: ABdhPJyBhtaFW+5H3Hag4UkmWG0/rwnGcCy0YKzQCDAn1APtu1dQOnmYkbs1hMZRsKITYMf6wQB96LLiLTTHLZjgWvU=
+X-Received: by 2002:a17:902:9691:b029:e3:dd4b:f6bb with SMTP id
+ n17-20020a1709029691b02900e3dd4bf6bbmr4519309plp.77.1614370553485; Fri, 26
+ Feb 2021 12:15:53 -0800 (PST)
+MIME-Version: 1.0
+References: <20210226035721.40054-1-hxseverything@gmail.com>
+In-Reply-To: <20210226035721.40054-1-hxseverything@gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Fri, 26 Feb 2021 12:15:42 -0800
+Message-ID: <CAM_iQpUAc5sB1xzqE7RvG5pQHQeCPJx5qAz_m9LaJYZ4pKfZsQ@mail.gmail.com>
+Subject: Re: [PATCH/v3] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+To:     Xuesen Huang <hxseverything@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuesen Huang <huangxuesen@kuaishou.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
+        Li Wang <wangli09@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Jiang <dave.jiang@intel.com>
+On Thu, Feb 25, 2021 at 7:59 PM Xuesen Huang <hxseverything@gmail.com> wrote:
+> v3:
+> - Fix the code format.
+>
+> v2:
+> Suggested-by: Willem de Bruijn <willemb@google.com>
+> - Add a new flag to specify the type of the inner packet.
 
-Add new helpers to get the Linux IRQ number and device specific index
-for given device-relative vector so that the drivers don't need to
-allocate their own arrays to keep track of the vectors and hwirq for
-the multi vector device MSI case.
+These need to be moved after '---', otherwise it would be merged
+into the final git log.
 
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Megha Dey <megha.dey@intel.com>
----
- include/linux/msi.h |  2 ++
- kernel/irq/msi.c    | 44 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 46 insertions(+)
+>
+> Suggested-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+> Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
+> Signed-off-by: Li Wang <wangli09@kuaishou.com>
+> ---
+>  include/uapi/linux/bpf.h       |  5 +++++
+>  net/core/filter.c              | 11 ++++++++++-
+>  tools/include/uapi/linux/bpf.h |  5 +++++
+>  3 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/msi.h b/include/linux/msi.h
-index 24abec0..d60a6ba 100644
---- a/include/linux/msi.h
-+++ b/include/linux/msi.h
-@@ -451,6 +451,8 @@ struct irq_domain *platform_msi_create_irq_domain(struct fwnode_handle *fwnode,
- int platform_msi_domain_alloc_irqs(struct device *dev, unsigned int nvec,
- 				   irq_write_msi_msg_t write_msi_msg);
- void platform_msi_domain_free_irqs(struct device *dev);
-+int msi_irq_vector(struct device *dev, unsigned int nr);
-+int dev_msi_hwirq(struct device *dev, unsigned int nr);
- 
- /* When an MSI domain is used as an intermediate domain */
- int msi_domain_prepare_irqs(struct irq_domain *domain, struct device *dev,
-diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
-index 047b59d..f2a8f55 100644
---- a/kernel/irq/msi.c
-+++ b/kernel/irq/msi.c
-@@ -581,4 +581,48 @@ struct msi_domain_info *msi_get_domain_info(struct irq_domain *domain)
- 	return (struct msi_domain_info *)domain->host_data;
- }
- 
-+/**
-+ * msi_irq_vector - Get the Linux IRQ number of a device vector
-+ * @dev: device to operate on
-+ * @nr: device-relative interrupt vector index (0-based).
-+ *
-+ * Returns the Linux IRQ number of a device vector.
-+ */
-+int msi_irq_vector(struct device *dev, unsigned int nr)
-+{
-+	struct msi_desc *entry;
-+	int i = 0;
-+
-+	for_each_msi_entry(entry, dev) {
-+		if (i == nr)
-+			return entry->irq;
-+		i++;
-+	}
-+	WARN_ON_ONCE(1);
-+	return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(msi_irq_vector);
-+
-+/**
-+ * dev_msi_hwirq - Get the device MSI hw IRQ number of a device vector
-+ * @dev: device to operate on
-+ * @nr: device-relative interrupt vector index (0-based).
-+ *
-+ * Return the dev_msi hw IRQ number of a device vector.
-+ */
-+int dev_msi_hwirq(struct device *dev, unsigned int nr)
-+{
-+	struct msi_desc *entry;
-+	int i = 0;
-+
-+	for_each_msi_entry(entry, dev) {
-+		if (i == nr)
-+			return entry->device_msi.hwirq;
-+		i++;
-+	}
-+	WARN_ON_ONCE(1);
-+	return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(dev_msi_hwirq);
-+
- #endif /* CONFIG_GENERIC_MSI_IRQ_DOMAIN */
--- 
-2.7.4
+As a good practice, please add a test case for this in
+tools/testing/selftests/bpf/progs/test_tc_tunnel.c.
 
+Thanks.
