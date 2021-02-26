@@ -2,161 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B62325E42
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 684F4325E43
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 08:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhBZHXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 02:23:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
+        id S230178AbhBZHYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 02:24:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbhBZHXf (ORCPT
+        with ESMTP id S230128AbhBZHXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 02:23:35 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C844EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:22:54 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id c8so9461595ljd.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 23:22:54 -0800 (PST)
+        Fri, 26 Feb 2021 02:23:42 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CDDC06174A;
+        Thu, 25 Feb 2021 23:23:02 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id k2so7234122ili.4;
+        Thu, 25 Feb 2021 23:23:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vNO0Htm8xCelrNaO6KBr1YYMZtpaorqQRsRnHcTJ/qQ=;
-        b=ABRWJc9D3L7ChseSsMkYamV4y06JyHrqtMG776Td97pgzHVah2ihx2cSSK8IfNlGjW
-         P7njwHtI8q9Rq3KJQpmkt/rKpOXIH02yb0cyPRN7fY6X8EOY9OO4GAePOvht0nZ9B7ya
-         R0vV7D1K5JELbciXiA/uB08s88XgPN9y5LTZFHE07gnrd9F4sOkQmhcR84T1GlgF5lQO
-         wHFsvB5fr+okUgJ/cG7hDyOZAFNiT0vjnPjEDKCZ6Ny44DvQne8wSrEE8sHSENRjjrgV
-         0BwKssLuOf18FhfCkjl+kR3NiUgV4Y+P8o2j3phfm0gatR+SJ45frm3m1IZs5NQn6a6v
-         z8Uw==
+        bh=CIXHLLcdF3NPwLoLYR00+kIyGCbIxIClS6D5W4I5jx0=;
+        b=SKXb9V2iZE/41Xxmsfy4qYz4maXOMAMdbhUTmW6Yuu+Bo64nSj1bbNzTjSv0rZFCL3
+         1pTPGiu4/k4M3ePEjwVSplTAW1KhEa2hbIuKPX72AH2QEK8yQ0SBSGXRYGIrgXYZa7DT
+         dYmcBbFYgUcZ66aMHLb3Hsr3xydLXhl6ngVlUvXkfTtuc/HtMKxEWSAfCXDJVaQAS6FR
+         7BNO65vWjgcwpczCLibrsVKoL6imCL247D+zjQ1weCmZEKp6IMnHxTYtilNLLVm8DFTw
+         QSXaedY9oZMDMvpmSaztbZViYQckR53tiLbrPx6/WVVYiIiKpLJjkCBrNghEhktqjPGX
+         Wz2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vNO0Htm8xCelrNaO6KBr1YYMZtpaorqQRsRnHcTJ/qQ=;
-        b=skD0fSLflXTwSmuEsydjq8W1ZN5a9uE0T342LOV16KcjYWhNQ1ntuEGSEgaLxSJqfj
-         pXGG9SBu7hxkCq6uivfg+T30WZWOoFeaE7U2wKZ9FEWr4oZPkmVJ6x+2+u6YXWft95T+
-         81TNk3XLfOXWAHniH23YDJKcXABD3aUVuXi438g29RdEZtmZ4Sol/jT8Ng26Po74BrU9
-         W4qcbtwHWAjLq5gWlcuXNSnsIq4Z2lyb07+nKL+foU+UkFbnbufRQz8U04QwO6p0DyhC
-         8o5v75j/L4tkgJzUrMPmqmyqT/YwhV/aUi9lDlTykw7OdyU+cQCEQR6gbkkVQgjs2Lnb
-         dKdg==
-X-Gm-Message-State: AOAM532RRcRWKwYEtLPyWc42tcuB6H0MhDvFzAtDjOFNY89UMj4tzr15
-        Oshx2SbQjfWlhq8EDM0UbSccs7ArQZU7sN89j3P3+RJKat4=
-X-Google-Smtp-Source: ABdhPJxAd5M6b2aGObHZq+GGi4ANVaIJp/NODKfeUM7GlfzxAjEPcCbEZkCYun8DRcMRVrknf4Tb/8BLw9D/wYjhil8=
-X-Received: by 2002:a2e:b8cc:: with SMTP id s12mr892225ljp.221.1614324173112;
- Thu, 25 Feb 2021 23:22:53 -0800 (PST)
+        bh=CIXHLLcdF3NPwLoLYR00+kIyGCbIxIClS6D5W4I5jx0=;
+        b=O0zNV9yw2w9BOnUIuIKCo81fMczveDp6ibC2umDpjWj2UFOEmNwPjWFuDR2ogOQ0Im
+         sZo+i6WL95CRb4ZCJEaCUr+l/VV50Q3ou7PdJRHKdrqrKur0HE1hAujmi+Jak7qn3gkr
+         Zga6s+iH/uXHuNBs82lJYleZPiaz8Bpw9+9i1/2L8ZYPSIcxS68mTRSo6QYyo6KmAfFx
+         K6l9H+fIqg4+iFq0tQxI/SzQKOkhGdN4ueKgj0YNHELlsepWpg0tqrpUjpZvd8McgkCE
+         Qh0ROgSXMQBin63imvdhcJZ7qav0QMxpIe+MmNN7e79E42WCHf71HRAuCBxA5fcwakG+
+         g5Sw==
+X-Gm-Message-State: AOAM533W/Kr4ba5kMfD+mbLjK0mRfNK6fwXYSFYbK1Nf68y0IpKqEga5
+        dv3/LadIw+AuJNNAhauEHSwMkFBcVFoUqjt1TLTqStgwjR0a4g==
+X-Google-Smtp-Source: ABdhPJwS4Z69cthjSLIia/lIbBl077kBrEYsnHRSDMkX3sQsovzELPXmUDLAd7CBAi7MjKb5yjx0KOca2MeMhBP0J3M=
+X-Received: by 2002:a92:c265:: with SMTP id h5mr1261035ild.225.1614324181404;
+ Thu, 25 Feb 2021 23:23:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225165820.1377125-1-vincent.donnefort@arm.com>
-In-Reply-To: <20210225165820.1377125-1-vincent.donnefort@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 26 Feb 2021 08:22:41 +0100
-Message-ID: <CAKfTPtCXEEQBXTzm7+HVUrmXbuJJKAwRZNr2PP72c55-TSZixg@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/pelt: Fix task util_est update filtering
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@readhat.com,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Valentin Schneider <valentin.schneider@arm.com>
+References: <20210225211514.9115-1-heiko.thiery@gmail.com>
+In-Reply-To: <20210225211514.9115-1-heiko.thiery@gmail.com>
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+Date:   Fri, 26 Feb 2021 08:22:50 +0100
+Message-ID: <CAEyMn7aijecc6ai5YaaHFa1Y7u52v=KEga3nRKvXE3o-mCQLYA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] net: fec: ptp: avoid register access when ipg
+ clock is disabled
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Fugang Duan <fugang.duan@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 at 17:58, Vincent Donnefort
-<vincent.donnefort@arm.com> wrote:
->
-> Being called for each dequeue, util_est reduces the number of its updates
-> by filtering out when the EWMA signal is different from the task util_avg
-> by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
-> decay from a previous high util_avg, EWMA might now be close enough to
-> the new util_avg. No update would then happen while it would leave
-> ue.enqueued with an out-of-date value.
->
-> Taking into consideration the two util_est members, EWMA and enqueued for
-> the filtering, ensures, for both, an up-to-date value.
->
-> This is for now an issue only for the trace probe that might return the
-> stale value. Functional-wise, it isn't a problem, as the value is always
-> accessed through max(enqueued, ewma).
->
-> This problem has been observed using LISA's UtilConvergence:test_means on
-> the sd845c board.
->
-> No regression observed with Hackbench on sd845c and Perf-bench sched pipe
-> on hikey/hikey960.
->
-> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Hi all,
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Am Do., 25. Feb. 2021 um 22:15 Uhr schrieb Heiko Thiery
+<heiko.thiery@gmail.com>:
+>
+> When accessing the timecounter register on an i.MX8MQ the kernel hangs.
+> This is only the case when the interface is down. This can be reproduced
+> by reading with 'phc_ctrl eth0 get'.
+>
+> Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
+> the igp clock is disabled when the interface is down and leads to a
+> system hang.
+>
+> So we check if the ptp clock status before reading the timecounter
+> register.
+>
+> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
 
+
+Sorry for the noise. But just realized that I sent a v3 version of the
+patch but forgot to update the subject line (still v2). Should I
+resend it with the correct subject?
+
+> ---
+> v2:
+>  - add mutex (thanks to Richard)
 >
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 9e4104ae39ae..214e02862994 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3966,24 +3966,27 @@ static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
->         trace_sched_util_est_cfs_tp(cfs_rq);
->  }
+> v3:
+> I did a mistake and did not test properly
+>  - add parenteses
+>  - fix the used variable
 >
-> +#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
-> +
->  /*
-> - * Check if a (signed) value is within a specified (unsigned) margin,
-> + * Check if a (signed) value is within the (unsigned) util_est margin,
->   * based on the observation that:
->   *
->   *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
->   *
-> - * NOTE: this only works when value + maring < INT_MAX.
-> + * NOTE: this only works when value + UTIL_EST_MARGIN < INT_MAX.
->   */
-> -static inline bool within_margin(int value, int margin)
-> +static inline bool util_est_within_margin(int value)
->  {
-> -       return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
-> +       return ((unsigned int)(value + UTIL_EST_MARGIN - 1) <
-> +               (2 * UTIL_EST_MARGIN - 1));
->  }
+>  drivers/net/ethernet/freescale/fec_ptp.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 >
->  static inline void util_est_update(struct cfs_rq *cfs_rq,
->                                    struct task_struct *p,
->                                    bool task_sleep)
->  {
-> -       long last_ewma_diff;
-> +       long last_ewma_diff, last_enqueued_diff;
->         struct util_est ue;
+> diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
+> index 2e344aada4c6..1753807cbf97 100644
+> --- a/drivers/net/ethernet/freescale/fec_ptp.c
+> +++ b/drivers/net/ethernet/freescale/fec_ptp.c
+> @@ -377,9 +377,16 @@ static int fec_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
+>         u64 ns;
+>         unsigned long flags;
 >
->         if (!sched_feat(UTIL_EST))
-> @@ -4004,6 +4007,8 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
->         if (ue.enqueued & UTIL_AVG_UNCHANGED)
->                 return;
->
-> +       last_enqueued_diff = ue.enqueued;
-> +
->         /*
->          * Reset EWMA on utilization increases, the moving average is used only
->          * to smooth utilization decreases.
-> @@ -4017,12 +4022,17 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
->         }
->
->         /*
-> -        * Skip update of task's estimated utilization when its EWMA is
-> +        * Skip update of task's estimated utilization when its members are
->          * already ~1% close to its last activation value.
->          */
->         last_ewma_diff = ue.enqueued - ue.ewma;
-> -       if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
-> +       last_enqueued_diff -= ue.enqueued;
-> +       if (util_est_within_margin(last_ewma_diff)) {
-> +               if (!util_est_within_margin(last_enqueued_diff))
-> +                       goto done;
-> +
->                 return;
+> +       mutex_lock(&adapter->ptp_clk_mutex);
+> +       /* Check the ptp clock */
+> +       if (!adapter->ptp_clk_on) {
+> +               mutex_unlock(&adapter->ptp_clk_mutex);
+> +               return -EINVAL;
 > +       }
+>         spin_lock_irqsave(&adapter->tmreg_lock, flags);
+>         ns = timecounter_read(&adapter->tc);
+>         spin_unlock_irqrestore(&adapter->tmreg_lock, flags);
+> +       mutex_unlock(&adapter->ptp_clk_mutex);
 >
->         /*
->          * To avoid overestimation of actual task utilization, skip updates if
+>         *ts = ns_to_timespec64(ns);
+>
 > --
-> 2.25.1
+> 2.30.0
 >
