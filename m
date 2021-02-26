@@ -2,64 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E80325DA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC94B325DAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBZGll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 01:41:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43206 "EHLO mail.kernel.org"
+        id S229986AbhBZGnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:43:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhBZGlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 01:41:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45194601FA;
-        Fri, 26 Feb 2021 06:40:58 +0000 (UTC)
+        id S229727AbhBZGnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 01:43:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 132F160238;
+        Fri, 26 Feb 2021 06:42:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614321659;
-        bh=Paic+lKzSMeQ6CtUb4dplXqhyZZJH3hQU+cnvVbjFiQ=;
+        s=korg; t=1614321758;
+        bh=hX4Qhz8Qgp1SzWBjSDDYOU56u7r54bsxVnDXREAgGN8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k9wTy0xjc4UnFiJw2n7MKV7lX/TGgYca8QyGAifHYac95GpQg1whteZ+ClAGbBM1t
-         svCOt9bhQgp+qqUlMg1siT6J9+pchLfIB0rBIzYGN8uI/6sU499U4MCtyxYVtTDwrA
-         6VGoWbqlpxMv8W+YVOB6LkF0T+YjHkDdsCVYLcdc=
-Date:   Fri, 26 Feb 2021 07:40:56 +0100
+        b=R25R6XdINokIbzL59wiY4Rkm7fp/nYt523xLNqSO0+TQ5gWmHqqUDlZEpbY5jiNIP
+         YfzetFUC3HabYiPDRO+DwX3HrzfMbqYEB8cqbIelYbyk2KvtGQtLlyY1oZaJjr/cVI
+         KxfBlbqWJS863wM/eXzhvONJqNtWukSRuusF3u8A=
+Date:   Fri, 26 Feb 2021 07:42:36 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH v11 0/2] UIO support for dfl devices
-Message-ID: <YDiX+Fl0AiQrdZJL@kroah.com>
-References: <1612403971-13291-1-git-send-email-yilun.xu@intel.com>
- <9b5f6e54-7122-8cfb-39f8-a84599e081f1@redhat.com>
- <20210226012237.GA27194@yilunxu-OptiPlex-7050>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v8 1/1] mm/page_alloc.c: refactor initialization of
+ struct page for holes in memory layout
+Message-ID: <YDiYXPRr5v0MAQOe@kroah.com>
+References: <20210225224351.7356-1-rppt@kernel.org>
+ <20210225224351.7356-2-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210226012237.GA27194@yilunxu-OptiPlex-7050>
+In-Reply-To: <20210225224351.7356-2-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 09:22:37AM +0800, Xu Yilun wrote:
-> On Mon, Feb 22, 2021 at 10:56:45AM -0800, Tom Rix wrote:
-> > Yilun,
-> > 
-> > Is there anything outstanding or remaining to be done ?
+On Fri, Feb 26, 2021 at 12:43:51AM +0200, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> Sorry for late reply. No, this is my lastest version now.
+> There could be struct pages that are not backed by actual physical memory.
+> This can happen when the actual memory bank is not a multiple of
+> SECTION_SIZE or when an architecture does not register memory holes
+> reserved by the firmware as memblock.memory.
 > 
+> Such pages are currently initialized using init_unavailable_mem() function
+> that iterates through PFNs in holes in memblock.memory and if there is a
+> struct page corresponding to a PFN, the fields of this page are set to
+> default values and it is marked as Reserved.
 > 
-> Hi Greg:
+> init_unavailable_mem() does not take into account zone and node the page
+> belongs to and sets both zone and node links in struct page to zero.
 > 
-> Do you have some comments on this patchset?
+> Before commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions
+> rather that check each PFN") the holes inside a zone were re-initialized
+> during memmap_init() and got their zone/node links right. However, after
+> that commit nothing updates the struct pages representing such holes.
+> 
+> On a system that has firmware reserved holes in a zone above ZONE_DMA, for
+> instance in a configuration below:
+> 
+> 	# grep -A1 E820 /proc/iomem
+> 	7a17b000-7a216fff : Unknown E820 type
+> 	7a217000-7bffffff : System RAM
+> 
+> unset zone link in struct page will trigger
+> 
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> 
+> in set_pfnblock_flags_mask() when called with a struct page from a range
+> other than E820_TYPE_RAM because there are pages in the range of ZONE_DMA32
+> but the unset zone link in struct page makes them appear as a part of
+> ZONE_DMA.
+> 
+> Interleave initialization of the unavailable pages with the normal
+> initialization of memory map, so that zone and node information will be
+> properly set on struct pages that are not backed by the actual memory.
+> 
+> With this change the pages for holes inside a zone will get proper
+> zone/node links and the pages that are not spanned by any node will get
+> links to the adjacent zone/node. The holes between nodes will be prepended
+> to the zone/node above the hole and the trailing pages in the last section
+> that will be appended to the zone/node below.
+> 
+> Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Reported-by: Qian Cai <cai@lca.pw>
+> Reported-by: Andrea Arcangeli <aarcange@redhat.com>
+> Reviewed-by: Baoquan He <bhe@redhat.com>
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/page_alloc.c | 158 +++++++++++++++++++++++-------------------------
+>  1 file changed, 75 insertions(+), 83 deletions(-)
 
-It's the middle of the merge window, I can't accept anything right
-now...
+<formletter>
 
-But this doesn't even look like it is in my "to review" queue anymore,
-which means that there must have been a lot of discussion on it and
-others asking for changes, so why not work on that right now while you
-can and resubmit it when you have done that?
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-No need to ever wait on me for fixing things up.
-
-greg k-h
+</formletter>
