@@ -2,156 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CDA325B01
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCAD325B03
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 01:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhBZAgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 19:36:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbhBZAgx (ORCPT
+        id S232113AbhBZAkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 19:40:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37736 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231530AbhBZAkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 19:36:53 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB60C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:36:13 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id o11so21267iob.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 16:36:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=zSQkfXYILeFIsnw9KPEpR0PnZSHnbzsSZbKt0dU2Xn4=;
-        b=Sd2TROa1mctfXj+UUVvMkeau6EdMtkXhi9JcWQa1ABoOk15mmQEdyYhU+yxe/qx6s9
-         zp8p2HujWwDhdWUEeEB3fi5JHzUGeIGl/H/55kyI7XzRbVz5fSqE8bVGYnod2vvjJrlf
-         x+0M7U2kJ/8v7oli95zqvEhfSHLYixt9T3XaHT4xjIMH98zWyMx9qKwoZYEJJVj/8PyR
-         +JAsUJ53DqavDuoq3j1i1c16JjNXDpeTOH0UsZoGICAO41H3fAJlq3vhAB+j7AGKOFkp
-         dbg+hXP55ZUefNxzbfLNYByV6X39QrDFgiuoLXPjArU66RoRoHjI/n7D/LpakwAnSztL
-         ZDLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=zSQkfXYILeFIsnw9KPEpR0PnZSHnbzsSZbKt0dU2Xn4=;
-        b=Yss5fLUsTdQ1GrNxmfdEStjFkpPmaKqo+jsCYAKM7oxLYiKU+Q4tIMOLAQ+B+FgUJ4
-         ViURU6Wny04ZH3/4fiRpfMtBS2vYLkUvtgCeTUTmBTGbI7QpjxVrxI7viWjIsBEd5sIh
-         qFh8hb1UrZBSQ8Uu7EJrlBO3LE1QL4B2D2qsfyb2nsIRgkN4cUNHJqKHUZ866vmGgyzw
-         qvIiCwYQZDeYyClaBHTo+18N3ONpwAmt1WyI7fwxRMhiGTqHEfPn8nnFEWho9V+0T05O
-         y/rLn9NPk3wCtQ8R+G6Cuhb9EJKpKulU2arWwL2IwMi3uACNnT3nDTgkB+yqq2E3PpQM
-         CJYA==
-X-Gm-Message-State: AOAM5334knY6JTZtUUjlBMPQm8dnbUN3yILr/HXWLZfzqcX2WYv3bI8P
-        3BHfOfkww6Cb1u90DxKse3w/r4u4A5/Ipkud6Yc=
-X-Google-Smtp-Source: ABdhPJy+HgJo8xZYh16y+XIWLiocSWn6g+3sgej1nJA5g8zRH7hTxPUUiakJxfGih26J0RCMxq0pOstjqZSE5Nxb+QU=
-X-Received: by 2002:a02:b890:: with SMTP id p16mr399359jam.138.1614299773124;
- Thu, 25 Feb 2021 16:36:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20210225112122.2198845-1-arnd@kernel.org>
-In-Reply-To: <20210225112122.2198845-1-arnd@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 26 Feb 2021 01:36:02 +0100
-Message-ID: <CA+icZUUDnKBxkfgOVYDdpA29GnLUTT22mqRNyxQeYmay044ejg@mail.gmail.com>
-Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Thu, 25 Feb 2021 19:40:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614299923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vSXC9yIgh5tleRih4hQt+MZKLSFZRL9ARBNJhQxf7EE=;
+        b=K5ommcPZ1ISMx8nLuMO2cefQg57a0/eVzm+UFrObSD2MAfsS31b1VvnHmm47d2M1w4giRO
+        H4VSxRKKl3eWsJFJ9QpFcDS/EE4rTSVLoMFWAv20xlKqSSDTtMXt94YE0ZnnL0ACt0kJzR
+        Fz5MDnSz7+V3/KVyqdv3CzSCldxy6Yw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-29-oG67MtUYMJar7vOSDWFFjw-1; Thu, 25 Feb 2021 19:38:39 -0500
+X-MC-Unique: oG67MtUYMJar7vOSDWFFjw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EB52801981;
+        Fri, 26 Feb 2021 00:38:36 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-40.pek2.redhat.com [10.72.12.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1F9B961F38;
+        Fri, 26 Feb 2021 00:38:25 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 08:38:22 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+Cc:     John Donnelly <john.p.donnelly@oracle.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
         Kees Cook <keescook@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Scull <ascull@google.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] kernel/crash_core: Add crashkernel=auto for
+ vmcore creation
+Message-ID: <20210226003822.GA2953@dhcp-128-65.nay.redhat.com>
+References: <20210223174153.72802-1-saeed.mirzamohammadi@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223174153.72802-1-saeed.mirzamohammadi@oracle.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 12:21 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> When looking at kernel size optimizations, I found that arm64
-> does not currently support HAVE_LD_DEAD_CODE_DATA_ELIMINATION,
-> which enables the --gc-sections flag to the linker.
->
-> I see that for a defconfig build with llvm, there are some
-> notable improvements from enabling this, in particular when
-> combined with the recently added CONFIG_LTO_CLANG_THIN
-> and CONFIG_TRIM_UNUSED_KSYMS:
->
->    text    data     bss     dec     hex filename
-> 16570322 10998617 506468 28075407 1ac658f defconfig/vmlinux
-> 16318793 10569913 506468 27395174 1a20466 trim_defconfig/vmlinux
-> 16281234 10984848 504291 27770373 1a7be05 gc_defconfig/vmlinux
-> 16029705 10556880 504355 27090940 19d5ffc gc+trim_defconfig/vmlinux
-> 17040142 11102945 504196 28647283 1b51f73 thinlto_defconfig/vmlinux
-> 16788613 10663201 504196 27956010 1aa932a thinlto+trim_defconfig/vmlinux
-> 16347062 11043384 502499 27892945 1a99cd1 gc+thinlto_defconfig/vmlinux
-> 15759453 10532792 502395 26794640 198da90 gc+thinlto+trim_defconfig/vmlinux
->
-
-Thanks for the numbers.
-Does CONFIG_TRIM_UNUSED_KSYMS=y have an impact to the build-time (and
-disc-usage - negative way means longer/bigger)?
-Do you have any build-time for the above numbers?
-
-BTW, is CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y setable for x86 (64bit)?
-( Did not look or check for it. )
-
-- Sedat -
-
-> I needed a small change to the linker script to get clean randconfig
-> builds, but I have not done any meaningful boot testing on it to
-> see if it works. If there are no regressions, I wonder whether this
-> should be autmatically done for LTO builds, given that it improves
-> both kernel size and compile speed.
->
-> Link: https://lore.kernel.org/lkml/CAK8P3a05VZ9hSKRzVTxTn+1nf9E+gqebJWTj6N23nfm+ELHt9A@mail.gmail.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On 02/23/21 at 09:41am, Saeed Mirzamohammadi wrote:
+> This adds crashkernel=auto feature to configure reserved memory for
+> vmcore creation. CONFIG_CRASH_AUTO_STR is defined to be set for
+> different kernel distributions and different archs based on their
+> needs.
+> 
+> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
+> Tested-by: John Donnelly <john.p.donnelly@oracle.com>
 > ---
->  arch/arm64/Kconfig              | 1 +
->  arch/arm64/kernel/vmlinux.lds.S | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index b94a678afce4..75e13cc52928 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -2,6 +2,7 @@
->  config ARM64
->         def_bool y
->         select ACPI_CCA_REQUIRED if ACPI
-> +       select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
->         select ACPI_GENERIC_GSI if ACPI
->         select ACPI_GTDT if ACPI
->         select ACPI_IORT if ACPI
-> diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-> index bad2b9eaab22..926cdb597a45 100644
-> --- a/arch/arm64/kernel/vmlinux.lds.S
-> +++ b/arch/arm64/kernel/vmlinux.lds.S
-> @@ -217,7 +217,7 @@ SECTIONS
->                 INIT_CALLS
->                 CON_INITCALL
->                 INIT_RAM_FS
-> -               *(.init.altinstructions .init.bss .init.bss.*)  /* from the EFI stub */
-> +               *(.init.altinstructions .init.data.* .init.bss .init.bss.*)     /* from the EFI stub */
->         }
->         .exit.data : {
->                 EXIT_DATA
-> --
-> 2.29.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210225112122.2198845-1-arnd%40kernel.org.
+>  Documentation/admin-guide/kdump/kdump.rst     |  3 ++-
+>  .../admin-guide/kernel-parameters.txt         |  6 ++++++
+>  arch/Kconfig                                  | 20 +++++++++++++++++++
+>  kernel/crash_core.c                           |  7 +++++++
+>  4 files changed, 35 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+> index 75a9dd98e76e..ae030111e22a 100644
+> --- a/Documentation/admin-guide/kdump/kdump.rst
+> +++ b/Documentation/admin-guide/kdump/kdump.rst
+> @@ -285,7 +285,8 @@ This would mean:
+>      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
+>      3) if the RAM size is larger than 2G, then reserve 128M
+>  
+> -
+> +Or you can use crashkernel=auto to choose the crash kernel memory size
+> +based on the recommended configuration set for each arch.
+>  
+>  Boot into System Kernel
+>  =======================
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 9e3cdb271d06..a5deda5c85fe 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -747,6 +747,12 @@
+>  			a memory unit (amount[KMG]). See also
+>  			Documentation/admin-guide/kdump/kdump.rst for an example.
+>  
+> +	crashkernel=auto
+> +			[KNL] This parameter will set the reserved memory for
+> +			the crash kernel based on the value of the CRASH_AUTO_STR
+> +			that is the best effort estimation for each arch. See also
+> +			arch/Kconfig for further details.
+> +
+>  	crashkernel=size[KMG],high
+>  			[KNL, X86-64] range could be above 4G. Allow kernel
+>  			to allocate physical memory region from top, so could
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 24862d15f3a3..23d047548772 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -14,6 +14,26 @@ menu "General architecture-dependent options"
+>  config CRASH_CORE
+>  	bool
+>  
+> +config CRASH_AUTO_STR
+> +	string "Memory reserved for crash kernel"
+> +	depends on CRASH_CORE
+> +	default "1G-64G:128M,64G-1T:256M,1T-:512M"
+> +	help
+> +	  This configures the reserved memory dependent
+> +	  on the value of System RAM. The syntax is:
+> +	  crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
+> +	              range=start-[end]
+> +
+> +	  For example:
+> +	      crashkernel=512M-2G:64M,2G-:128M
+> +
+> +	  This would mean:
+> +
+> +	      1) if the RAM is smaller than 512M, then don't reserve anything
+> +	         (this is the "rescue" case)
+> +	      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
+> +	      3) if the RAM size is larger than 2G, then reserve 128M
+> +
+>  config KEXEC_CORE
+>  	select CRASH_CORE
+>  	bool
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 825284baaf46..90f9e4bb6704 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/crash_core.h>
+>  #include <linux/utsname.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/kexec.h>
+>  
+>  #include <asm/page.h>
+>  #include <asm/sections.h>
+> @@ -250,6 +251,12 @@ static int __init __parse_crashkernel(char *cmdline,
+>  	if (suffix)
+>  		return parse_crashkernel_suffix(ck_cmdline, crash_size,
+>  				suffix);
+> +#ifdef CONFIG_CRASH_AUTO_STR
+> +	if (strncmp(ck_cmdline, "auto", 4) == 0) {
+> +		ck_cmdline = CONFIG_CRASH_AUTO_STR;
+> +		pr_info("Using crashkernel=auto, the size chosen is a best effort estimation.\n");
+> +	}
+> +#endif
+>  	/*
+>  	 * if the commandline contains a ':', then that's the extended
+>  	 * syntax -- if not, it must be the classic syntax
+> -- 
+> 2.27.0
+> 
+
+
+Acked-by: Dave Young <dyoung@redhat.com>
+
+Thanks
+Dave
+
