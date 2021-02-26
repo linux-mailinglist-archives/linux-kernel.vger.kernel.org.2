@@ -2,85 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB30D326169
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F254D32616A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 11:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhBZKhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 05:37:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230209AbhBZKew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 05:34:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBC2964EF3;
-        Fri, 26 Feb 2021 10:34:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614335650;
-        bh=SIuXvoyqUYnr8BUATfL804vOgzeqKEzaYbFmE6A/AGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A77r2pQdIXPQLrVw961zech2JCWrRQEFPnXK1ileQ14G59V8oD4zrgn2NLW9kw4kB
-         hbvrmNVAiP1kALZVg/ClUDcZ4EC6HqTuCnnCn4SVh29X9my4hruff29O+ia0n7+1hW
-         qiewnpk9OrfMdSFJ9LJ5NWMYoH4bMjo/JvRCVhExp5RbZdltaSxdmT8u88G5WTxIHT
-         QmKXdtJrjjUiPaAah5o2jt/ucCbyhz1TlmeIE1pTCw5zxQuAGfEmAftPSWTI3/rIiV
-         Go5Q9YI0L2gzmKNaWu7UVtUNHVnLOLNe9x4KDLXcljSVemta8PrxV4/8vnxUJW2z9U
-         pAP4t7dzIrAhA==
-Date:   Fri, 26 Feb 2021 11:34:07 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     =?utf-8?Q?M=C3=A5rten?= Lindahl <marten.lindahl@axis.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>, kernel@axis.com,
-        =?utf-8?Q?M=C3=A5rten?= Lindahl <martenli@axis.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: exynos5: Preserve high speed master code
-Message-ID: <20210226103407.GF1014@ninjato>
-References: <20210216222538.6427-1-marten.lindahl@axis.com>
+        id S231175AbhBZKhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 05:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231201AbhBZKfS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 05:35:18 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6901AC061574;
+        Fri, 26 Feb 2021 02:34:38 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id e7so7591221ile.7;
+        Fri, 26 Feb 2021 02:34:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dKPWJ2vXHOJ7BygK8wqPKLpAtkdMRDyOo5zcEtzB+lQ=;
+        b=aDCpldvU7pTZUlcU0bh6o6izJC3pMqDFf8ZoDaybY8UHQjifgj4QKmw6tHh6dmWjs3
+         g/6JzYFlohIuHURl2qjlVa45z5RI1iWkiPBqRsOYYWUyvzR3k/kUjIuCBYbGP9x6+pSy
+         a8EUhKcyvGGm8hQBgvPLAM+KJcKKKQcxqT2E+w55xSfNV6k8QxIPLxE/Mi5YQ7V8aWmI
+         uR5PCEOJqUV3yfiJwcLovgZnaSB0/E+uV8qd11D7DH1KFuREX0JZ2R4e/bmS+fAbG5fo
+         q6kOEL485/WcHBRPc3Oiv0OQ0T1YXAgROhbbjEsROUg2CiABoxGyLa4mHWXc6atJxf8y
+         Oidg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dKPWJ2vXHOJ7BygK8wqPKLpAtkdMRDyOo5zcEtzB+lQ=;
+        b=ZFLJ3fXAeJovWGhtUQZWjcDMIf41JuKHp8d+l/XHcQlVDCgIhNJ4E/UFy1a6siBWc8
+         rITx5AkJxeE40cIdrB7jMAZJayK3oHLBeXVR2Rc0UYpIEiNpFG8lBFJHRkBqAaZFELdG
+         lpFLP9AUn67oj39BKz73dM0zDzJp7OxJsFxoIg3pPjrnbr1cEApAms0QZFoeFKW2UMrd
+         oTeMtyGTxFQICxWM7wp7R3RBmRSTez277HZR/m30YFVtqmYLDzqvFf0nZ9owZnzp5WcK
+         NyyZS3/oLwDbEH64PKSbwres1ITbQ/l2r8e82cUYyc4/rlzqpcDQAQ1/t+1XXRgfblTH
+         HMdw==
+X-Gm-Message-State: AOAM530mkxc/rGqFSM5iDYbToO7stEEhnJ03E4vZgZU68D+/aCo3Utzv
+        stM+U9DUTvpM7HYR2y142Yf+ghGQ40KXXkWl0AI=
+X-Google-Smtp-Source: ABdhPJyVvQafC62ZZanNVOmiYZS+T7dRdoUjzY7ufrxA7FhWOl4Xvpul8DKSph5sHFpVYsYNJ4N2URBdaIKR7OVs1xg=
+X-Received: by 2002:a92:da90:: with SMTP id u16mr1918861iln.275.1614335677822;
+ Fri, 26 Feb 2021 02:34:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GV0iVqYguTV4Q9ER"
-Content-Disposition: inline
-In-Reply-To: <20210216222538.6427-1-marten.lindahl@axis.com>
+References: <20210222102456.6692-1-lhenriques@suse.de> <20210224142307.7284-1-lhenriques@suse.de>
+ <CAOQ4uxi3-+tOgHV_GUnWtJoQXbV5ZS9qDZsLsd9sJxX5Aftyew@mail.gmail.com>
+ <YDd6EMpvZhHq6ncM@suse.de> <fd5d0d24-35e3-6097-31a9-029475308f15@gmail.com>
+In-Reply-To: <fd5d0d24-35e3-6097-31a9-029475308f15@gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 26 Feb 2021 12:34:26 +0200
+Message-ID: <CAOQ4uxiVxEwvgFhdHGWLpdCk==NcGXgu52r_mXA+ebbLp_XPzQ@mail.gmail.com>
+Subject: Re: [PATCH] copy_file_range.2: Kernel v5.12 updates
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     Luis Henriques <lhenriques@suse.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 26, 2021 at 12:13 PM Alejandro Colomar (man-pages)
+<alx.manpages@gmail.com> wrote:
+>
+> Hello Luis,
+>
+> On 2/25/21 11:21 AM, Luis Henriques wrote:
+> > On Wed, Feb 24, 2021 at 06:10:45PM +0200, Amir Goldstein wrote:
+> >> If it were me, I would provide all the details of the situation to
+> >> Michael and ask him
+> >> to write the best description for this section.
+> >
+> > Thanks Amir.
+> >
+> > Yeah, it's tricky.  Support was added and then dropped.   Since stable
+> > kernels will be picking this patch,  maybe the best thing to do is to no
+> > mention the generic cross-filesystem support at all...?  Or simply say
+> > that 5.3 temporarily supported it but that support was later dropped.
+> >
+> > Michael (or Alejandro), would you be OK handling this yourself as Amir
+> > suggested?
+>
+> Could you please provide a more detailed history of what is to be
+> documented?
+>
 
---GV0iVqYguTV4Q9ER
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Is this detailed enough? ;-)
 
-On Tue, Feb 16, 2021 at 11:25:38PM +0100, M=C3=A5rten Lindahl wrote:
-> From: M=C3=A5rten Lindahl <martenli@axis.com>
->=20
-> When the driver starts to send a message with the MASTER_ID field
-> set (high speed), the whole I2C_ADDR register is overwritten including
-> MASTER_ID as the SLV_ADDR_MAS field is set.
->=20
-> This patch preserves already written fields in I2C_ADDR when writing
-> SLV_ADDR_MAS.
->=20
-> Signed-off-by: M=C3=A5rten Lindahl <martenli@axis.com>
+https://lwn.net/Articles/846403/
 
-Looks good. Is there a Fixes-tag we could apply?
-
-
---GV0iVqYguTV4Q9ER
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmA4zp8ACgkQFA3kzBSg
-KbauHA/+NmyLBf76UbCWT/9RhQNRyWbVeXT6kyynoPUq9Y4RwM9nCnEK++X2gmyB
-8X64UrUUBImMu9zmWS4rKcqYP2GN7dxEyfxuhTALpcC5kvA3FvukIgmtT+8ZsZID
-ZkO/zF4z3jm8BMC0hHE8DHah60JQF4o2opItiFEaz7hN9na83dWzyF0OM15h6xh6
-k39IkoMgN2ZgzwahqTGA5ohUnakuD4qQdbGDudLyR3+J4KF53WhmTtX8xk3WTr6I
-FtWFxr0KjidHMed4tXYJt09vUacjpx4bPSTRe6AcHH8y3uRkzS2Q5OCinytDzN0y
-5/yXFUPZ63cDzp9HA/CB0qgSCDrRprpabjlD+sTSC5NWQNqMh7MlgEdVKJJS9Dy7
-0QEzi1BUGP5BO6fOZgdti8PAKH+8sUkFJ2Yd+jsxJmG2Z+cutwwN6irNXb1GK8iI
-XHss4SYNua5XzDrkuNzOO6Mg/RQ/1wUUJnXrDiDPpX8c394olae4AiSRk4GZJrFf
-vys3dBz3MxuAaRNFkNnWg9L3mrfiVagat8Acei3lmlTAlwFMgeIkNh27peFkc/tY
-rE/U8uLf4nxOuQcwhw00/RILz4kHNOn4RvIeBVV7wi6B1X4lOeNPBVQKi2Z5YWBR
-MsfZcdeydPYjjvTT9UplaMy3HEnUWfOzhALD2Sb8ioFHYtV56DU=
-=LEVv
------END PGP SIGNATURE-----
-
---GV0iVqYguTV4Q9ER--
+Thanks,
+Amir.
