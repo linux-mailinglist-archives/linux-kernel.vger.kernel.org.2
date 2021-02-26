@@ -2,145 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C2F3262A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125CF3262A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 13:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhBZMUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 07:20:41 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51640 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbhBZMTr (ORCPT
+        id S230153AbhBZMWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 07:22:01 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:48842 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229545AbhBZMV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 07:19:47 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1FC541C0B7D; Fri, 26 Feb 2021 13:18:49 +0100 (CET)
-Date:   Fri, 26 Feb 2021 13:18:48 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        jacek.anaszewski@gmail.com, linux-leds@vger.kernel.org
-Subject: [GIT PULL] LEDs changes for 5.12-rc1
-Message-ID: <20210226121848.GA20159@duo.ucw.cz>
+        Fri, 26 Feb 2021 07:21:58 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 73C2C580;
+        Fri, 26 Feb 2021 13:21:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1614342075;
+        bh=nWbkyCTRl2N2loenx0RpKhmqgsTqWZeI/+24sE7lDhU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TcSjq8cDB3hjPdLb7dogNwqtilbbkVTw7X/DrsU17Nz9vFs3rx7+oez0CY5jLi9Ec
+         fMxcT0nUdoyjfSX1ngWRDP/xDrdl7tjSaqoYZY0ARG5pHHlrSSGv09J/8Kr+QU59Ij
+         r1ntDap30ZQLLhMtaGisDIueCD1Qw7F2yCzYFczY=
+Date:   Fri, 26 Feb 2021 14:20:48 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Phil Edworthy <phil.edworthy@renesas.com>,
+        Dirk Behme <Dirk.Behme@de.bosch.com>,
+        Peter Erben <Peter.Erben@de.bosch.com>
+Subject: Re: [PATCH 0/7] Add FFT Support for R-Car Gen3 devices
+Message-ID: <YDjnoGDOCXm86ffW@pendragon.ideasonboard.com>
+References: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210225225147.29920-1-fabrizio.castro.jz@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Fabrizio,
 
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 25, 2021 at 10:51:40PM +0000, Fabrizio Castro wrote:
+> The DAB hardware accelerator found on R-Car E3 (a.k.a. r8a77990)
+> and R-Car M3-N (a.k.a. r8a77965) devices is a hardware accelerator
+> for software DAB demodulators.
+> It consists of one FFT (Fast Fourier Transform) module and one
+> decoder module, compatible with DAB specification (ETSI EN 300 401
+> and ETSI TS 102 563).
+> The decoder module can perform FIC decoding and MSC decoding
+> processing from de-puncture to final decoded result.
+> 
+> This series adds FFT support only for R-Car E3 and R-Car M3-N,
+> FIC and MSC support will be added later on.
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+Out of curiosity, could the FFT module be used as an accelerator for 2D
+FFT on images ?
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+> Fabrizio Castro (7):
+>   clk: renesas: r8a77990: Add DAB clock
+>   clk: renesas: r8a77965: Add DAB clock
+>   dt-bindings: misc: Add binding for R-Car DAB
+>   misc: Add driver for DAB IP found on Renesas R-Car devices
+>   arm64: dts: renesas: r8a77990: Add DAB support
+>   arm64: dts: renesas: r8a77965: Add DAB support
+>   arm64: configs: Add R-Car DAB support
+> 
+>  .../devicetree/bindings/misc/renesas,dab.yaml |  75 ++++++++
+>  MAINTAINERS                                   |   7 +
+>  arch/arm64/boot/dts/renesas/r8a77965.dtsi     |  12 ++
+>  arch/arm64/boot/dts/renesas/r8a77990.dtsi     |  12 ++
+>  arch/arm64/configs/defconfig                  |   1 +
+>  drivers/clk/renesas/r8a77965-cpg-mssr.c       |   1 +
+>  drivers/clk/renesas/r8a77990-cpg-mssr.c       |   1 +
+>  drivers/misc/Kconfig                          |   1 +
+>  drivers/misc/Makefile                         |   1 +
+>  drivers/misc/rcar_dab/Kconfig                 |  11 ++
+>  drivers/misc/rcar_dab/Makefile                |   8 +
+>  drivers/misc/rcar_dab/rcar_dev.c              | 176 ++++++++++++++++++
+>  drivers/misc/rcar_dab/rcar_dev.h              | 116 ++++++++++++
+>  drivers/misc/rcar_dab/rcar_fft.c              | 160 ++++++++++++++++
+>  include/uapi/linux/rcar_dab.h                 |  35 ++++
+>  15 files changed, 617 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/renesas,dab.yaml
+>  create mode 100644 drivers/misc/rcar_dab/Kconfig
+>  create mode 100644 drivers/misc/rcar_dab/Makefile
+>  create mode 100644 drivers/misc/rcar_dab/rcar_dev.c
+>  create mode 100644 drivers/misc/rcar_dab/rcar_dev.h
+>  create mode 100644 drivers/misc/rcar_dab/rcar_fft.c
+>  create mode 100644 include/uapi/linux/rcar_dab.h
 
-are available in the Git repository at:
+-- 
+Regards,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/ tags/=
-leds-5.12-rc1
-
-for you to fetch changes up to b0a82efa51ad3ba1117817817cbabe9c9a37b893:
-
-  leds: lp50xx: Get rid of redundant explicit casting (2021-02-19 22:15:50 =
-+0100)
-
-----------------------------------------------------------------
-Updates for 5.12-rc1. Besides usual fixes and new drivers, we are
-changing CLASS_FLASH to return success to make it easier to work with
-V4L2 stuff disabled, and we are getting rid of enum that should have
-been plain integer long time ago. I'm slightly nervous about potential
-warnings, but it needed to be fixed at some point.
-
-Sorry this is a bit late and a bit rushed. But its not a rocket
-science, so hopefully we'll be fine. I'll try better next time.
-
-Best regards,
-							Pavel
-
-----------------------------------------------------------------
-Abanoub Sameh (1):
-      leds: led-core: Get rid of enum led_brightness
-
-Amireddy Mallikarjuna reddy (2):
-      dt-bindings: leds: Add bindings for Intel LGM SoC
-      leds: lgm: Add LED controller driver for LGM SoC
-
-Andreas Eberlein (1):
-      leds: apu: extend support for PC Engines APU1 with newer firmware
-
-Andy Shevchenko (6):
-      leds: lp50xx: Don't spam logs when probe is deferred
-      leds: lp50xx: Switch to new style i2c-driver probe function
-      leds: lp50xx: Reduce level of dereferences
-      leds: lp50xx: Get rid of redundant check in lp50xx_enable_disable()
-      leds: lp50xx: Update headers block to reflect reality
-      leds: lp50xx: Get rid of redundant explicit casting
-
-Dwaipayan Ray (1):
-      leds: Use DEVICE_ATTR_{RW, RO, WO} macros
-
-Dylan Van Assche (1):
-      leds: gpio: Set max brightness to 1
-
-Gene Chen (2):
-      leds: flash: Add flash registration with undefined CONFIG_LEDS_CLASS_=
-FLASH
-      leds: flash: Fix multicolor no-ops registration by return 0
-
-Tian Tao (1):
-      leds: lm3533: Switch to using the new API kobj_to_dev()
-
-Zheng Yongjun (1):
-      leds: ss4200: simplify the return expression of register_nasgpio_led()
-
- .../devicetree/bindings/leds/leds-lgm.yaml         | 113 +++
- drivers/leds/Kconfig                               |   3 +
- drivers/leds/Makefile                              |   3 +
- drivers/leds/blink/Kconfig                         |  20 +
- drivers/leds/blink/Makefile                        |   2 +
- drivers/leds/blink/leds-lgm-sso.c                  | 888 +++++++++++++++++=
-++++
- drivers/leds/led-class.c                           |   3 +-
- drivers/leds/led-core.c                            |  20 +-
- drivers/leds/leds-apu.c                            |  11 +-
- drivers/leds/leds-blinkm.c                         |  24 +-
- drivers/leds/leds-gpio.c                           |   3 +-
- drivers/leds/leds-lm3530.c                         |  10 +-
- drivers/leds/leds-lm3533.c                         |   2 +-
- drivers/leds/leds-lm355x.c                         |   8 +-
- drivers/leds/leds-lm3642.c                         |  16 +-
- drivers/leds/leds-lp50xx.c                         |  83 +-
- drivers/leds/leds-max8997.c                        |  12 +-
- drivers/leds/leds-netxbig.c                        |  12 +-
- drivers/leds/leds-ss4200.c                         |  18 +-
- drivers/leds/leds-wm831x-status.c                  |  12 +-
- drivers/leds/leds.h                                |   6 +-
- include/linux/led-class-flash.h                    |  42 +-
- include/linux/led-class-multicolor.h               |  42 +-
- include/linux/leds.h                               |  12 +-
- 24 files changed, 1196 insertions(+), 169 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/leds/leds-lgm.yaml
- create mode 100644 drivers/leds/blink/Kconfig
- create mode 100644 drivers/leds/blink/Makefile
- create mode 100644 drivers/leds/blink/leds-lgm-sso.c
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---LZvS9be/3tNcYl/X
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYDjnKAAKCRAw5/Bqldv6
-8l31AKDAaXysClCLvjVoeboJU8vdkA2ZCQCfR5irhxiyXRe6LY9Gx1NNo4PrEQc=
-=cgCD
------END PGP SIGNATURE-----
-
---LZvS9be/3tNcYl/X--
+Laurent Pinchart
