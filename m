@@ -2,129 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29304325D5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 06:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC22325D5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 07:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhBZF5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 00:57:30 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:2591 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBZF51 (ORCPT
+        id S229590AbhBZGAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 01:00:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhBZGAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 00:57:27 -0500
-Received: from dggeme711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DmzP95f9FzWBGL;
-        Fri, 26 Feb 2021 13:54:05 +0800 (CST)
-Received: from [10.174.187.128] (10.174.187.128) by
- dggeme711-chm.china.huawei.com (10.1.199.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 26 Feb 2021 13:56:42 +0800
-Subject: Re: [RFC PATCH v2 3/7] KVM: selftests: Make a generic helper to get
- vm guest mode strings
-To:     <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210225055940.18748-1-wangyanan55@huawei.com>
- <20210225055940.18748-4-wangyanan55@huawei.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <5fb5933a-0191-5901-e0e2-eeb4583b40d8@huawei.com>
-Date:   Fri, 26 Feb 2021 13:56:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Fri, 26 Feb 2021 01:00:31 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318E4C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 21:59:51 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id 81so4879722iou.11
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 21:59:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SUbJkX3+ChwFs5viSnYM7S9ECtxTPFKeIwcxjjxFkE8=;
+        b=e3YOIj91iZfaskr8kUU3POmC1+y3wMjvg+H27v7mBd7E/msI941MLffxWLme+copNS
+         jDHFWkKw1YeFJs5PVKrcMmcK4LJ9gRxLZdWaQ4f7aGjC/NgfYNOORFaowoz1Su9//5rg
+         xn4JQ61vEP1+oLtotjYKy3DshBwjnGNGhyskbW+Lz1f7vKSJwhMB70+Uc1MlA4cL7SsR
+         E/hjE4UYPGhviTCkwNXgV4R74Fgx2IAHJggbCqqC5/8MqqQTa4quNpjLR1+ctf3mdeaC
+         jQbd0rD39oZroLEkgmFyNPJccNMHp8aRQBOX4ihMkaderKRB+nq6FzmQBHRbj3S0+FBW
+         Nzbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SUbJkX3+ChwFs5viSnYM7S9ECtxTPFKeIwcxjjxFkE8=;
+        b=hRa7YbkMmAUcNpgVEe3ahWZfDnNxujrxjgFF0f8WvqKxFvzWqZp9iOQ8gmU4XvwPzG
+         WP//f2heBXeeKzwXxxN6iaZtzxQn0TVpuK18RThBqlCXKOVbrpKeFex34K6OEuKjQqXH
+         eJByQrM3vhcDhd2VBoI7VQxIt1kMOZK9PoemI1gKiti/D0MSZJT9XwyGul0O18amSh6n
+         /5fnPmimJ7N4Suf0/4Qc7JCEmXi5CYEgP9StF+1ihjcXR9MCt+bivJV5WCXCsdECx+IH
+         uhs9ZPWQtvQbbP+jLttEVC5LvLEVUB9sWFHzEsbapnlPHv1lf7pgFgdehMXtiwzwmWx3
+         Fqog==
+X-Gm-Message-State: AOAM533S8EUjTqVpO+tmPgE2naPRzumLPQEwgHwPcrwJm6xCHE8kWAPf
+        NyYPqMiObVBJ6de0Uq4Asu+Q1MspfKrLGofc5tyhQTS70mQ=
+X-Google-Smtp-Source: ABdhPJzuSg1UQWeKsgrDpYfnjKaISZo81CZ+CD+r3v2tNd4ZN9NqxgPQtyYHWp0llkR1l6tNb6+g5hOxTccejJtgdoQ=
+X-Received: by 2002:a02:866d:: with SMTP id e100mr1347002jai.139.1614319190497;
+ Thu, 25 Feb 2021 21:59:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210225055940.18748-4-wangyanan55@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggeme711-chm.china.huawei.com (10.1.199.107)
-X-CFilter-Loop: Reflected
+References: <20210222075205.19834-1-dwaipayanray1@gmail.com>
+ <bcee822d1934772f47702ee257bc735c8f467088.camel@perches.com> <CABJPP5AARO3h2mt-piPWuOD3kY_XzNfW-s2mi=btfOayVPURHg@mail.gmail.com>
+In-Reply-To: <CABJPP5AARO3h2mt-piPWuOD3kY_XzNfW-s2mi=btfOayVPURHg@mail.gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 26 Feb 2021 06:59:39 +0100
+Message-ID: <CAKXUXMyShHc8wu1HhVvr5tJYNL+sc_Yc-mfeoosK6hAL-HF_gQ@mail.gmail.com>
+Subject: Re: [PATCH v7 0/2] checkpatch: add verbose mode
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Joe Perches <joe@perches.com>, Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 25, 2021 at 7:08 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+>
+> On Thu, Feb 25, 2021 at 11:03 PM Joe Perches <joe@perches.com> wrote:
+> >
+> > On Mon, 2021-02-22 at 13:22 +0530, Dwaipayan Ray wrote:
+> > > Add a new verbose mode to checkpatch. The verbose test
+> > > descriptions are read from the checkpatch documentation
+> > > file at `Documentation/dev-tools/checkpatch.rst`.
+> > >
+> > > The verbose mode is optional and can be enabled by the
+> > > flag -v or --verbose.
+> > >
+> > > The documentation file is only parsed by checkpatch.pl
+> > > if the verbose mode is enabled. The verbose mode can
+> > > not be used together with the --terse option.
+> >
+> > I don't have any real objection to this patch set, but as this
+> > might be added to the Documentation tree and in .rst format,
+> > perhaps Jonathan Corbet and/or Mauro Carvalho Chehab might have
+> > some opinion.
+> >
+> > Also I do not want to be a maintainer of this .rst file and
+> > likely neither Jon nor Mauro would either.  Perhaps you?
+> >
+>
+> I could take it up if everybody is okay with it!
+>
 
-On 2021/2/25 13:59, Yanan Wang wrote:
-> For generality and conciseness, make an API which can be used in all
-> kvm libs and selftests to get vm guest mode strings. And the index i
-> is checked in the API in case of possiable faults.
+And as I set Dwaipayan on this task on documenting checkpatch, I will
+assist in maintaining this file as well. I will also pull some strings
+to increase chances that Dwaipayan becomes a longer-term member in
+this community and on this maintainer task.
+
+> > Ideally, the patch order would be reversed so the .rst file
+> > is added first, then checkpatch updated to use it.
+> >
 >
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-And here too, will include Suggested-by: Sean Christopherson 
-<seanjc@google.com>.
-> ---
->   .../testing/selftests/kvm/include/kvm_util.h  |  4 +--
->   tools/testing/selftests/kvm/lib/kvm_util.c    | 29 ++++++++++++-------
->   2 files changed, 19 insertions(+), 14 deletions(-)
+> Sure, if Jonathan or Mauro has no objections to it, I will be happy
+> to resend it so that it can be picked up properly.
 >
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-> index 2d7eb6989e83..f52a7492f47f 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
-> @@ -68,9 +68,6 @@ enum vm_guest_mode {
->   #define MIN_PAGE_SIZE		(1U << MIN_PAGE_SHIFT)
->   #define PTES_PER_MIN_PAGE	ptes_per_page(MIN_PAGE_SIZE)
->   
-> -#define vm_guest_mode_string(m) vm_guest_mode_string[m]
-> -extern const char * const vm_guest_mode_string[];
-> -
->   struct vm_guest_mode_params {
->   	unsigned int pa_bits;
->   	unsigned int va_bits;
-> @@ -84,6 +81,7 @@ int vm_enable_cap(struct kvm_vm *vm, struct kvm_enable_cap *cap);
->   int vcpu_enable_cap(struct kvm_vm *vm, uint32_t vcpu_id,
->   		    struct kvm_enable_cap *cap);
->   void vm_enable_dirty_ring(struct kvm_vm *vm, uint32_t ring_size);
-> +const char *vm_guest_mode_string(uint32_t i);
->   
->   struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
->   void kvm_vm_free(struct kvm_vm *vmp);
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index d787cb802b4a..cc22c4ab7d67 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -141,17 +141,24 @@ static void vm_open(struct kvm_vm *vm, int perm)
->   		"rc: %i errno: %i", vm->fd, errno);
->   }
->   
-> -const char * const vm_guest_mode_string[] = {
-> -	"PA-bits:52,  VA-bits:48,  4K pages",
-> -	"PA-bits:52,  VA-bits:48, 64K pages",
-> -	"PA-bits:48,  VA-bits:48,  4K pages",
-> -	"PA-bits:48,  VA-bits:48, 64K pages",
-> -	"PA-bits:40,  VA-bits:48,  4K pages",
-> -	"PA-bits:40,  VA-bits:48, 64K pages",
-> -	"PA-bits:ANY, VA-bits:48,  4K pages",
-> -};
-> -_Static_assert(sizeof(vm_guest_mode_string)/sizeof(char *) == NUM_VM_MODES,
-> -	       "Missing new mode strings?");
-> +const char *vm_guest_mode_string(uint32_t i)
-> +{
-> +	static const char * const strings[] = {
-> +		[VM_MODE_P52V48_4K]	= "PA-bits:52,  VA-bits:48,  4K pages",
-> +		[VM_MODE_P52V48_64K]	= "PA-bits:52,  VA-bits:48, 64K pages",
-> +		[VM_MODE_P48V48_4K]	= "PA-bits:48,  VA-bits:48,  4K pages",
-> +		[VM_MODE_P48V48_64K]	= "PA-bits:48,  VA-bits:48, 64K pages",
-> +		[VM_MODE_P40V48_4K]	= "PA-bits:40,  VA-bits:48,  4K pages",
-> +		[VM_MODE_P40V48_64K]	= "PA-bits:40,  VA-bits:48, 64K pages",
-> +		[VM_MODE_PXXV48_4K]	= "PA-bits:ANY, VA-bits:48,  4K pages",
-> +	};
-> +	_Static_assert(sizeof(strings)/sizeof(char *) == NUM_VM_MODES,
-> +		       "Missing new mode strings?");
-> +
-> +	TEST_ASSERT(i < NUM_VM_MODES, "Guest mode ID %d too big", i);
-> +
-> +	return strings[i];
-> +}
->   
->   const struct vm_guest_mode_params vm_guest_mode_params[] = {
->   	{ 52, 48,  0x1000, 12 },
+> > And _a lot_ more types and descriptive content should be added.
+>
+> Yes that's for sure. If this makes it I will try to get all of the
+> other types in.
+
+I agree as well, probably a critical mass for inclusion is that we
+have at least 25% (so roughly 50 rules) documented.
+
+> And if Lukas agrees, a little help from my fellow kernel mentees will
+> be nice as well!
+>
+
+Completely agree. I will recruit new mentees and go through the
+exercises with them, until they are ready to send proper patches to
+checkpatch.rst. As the designated maintainer of that file, you will be
+busy reviewing, consolidating that content and pushing back if it is
+not good enough for inclusion (so just as in the typical "good cop-bad
+cop" game: I will motivate and help them to submit, you make sure you
+get good content).
+
+Lukas
