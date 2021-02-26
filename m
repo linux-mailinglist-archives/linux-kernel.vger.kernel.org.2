@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0CB325B26
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE0F325B25
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 02:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbhBZBFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Feb 2021 20:05:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
+        id S232203AbhBZBFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Feb 2021 20:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbhBZBFH (ORCPT
+        with ESMTP id S231822AbhBZBFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Feb 2021 20:05:07 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DEF7C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:03:44 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id n4so5438687qte.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:03:44 -0800 (PST)
+        Thu, 25 Feb 2021 20:05:06 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F786C0617A7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:03:47 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id r15so5977837qke.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Feb 2021 17:03:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=VwL4OKVPwLd2Pg+VBJhmXhH54fx49qLMEAmb7K/yfzE=;
-        b=asBlIwqlyL3G7lCGd6ftlZ1p4O/OaNv+4nvJBXTpJ1jQp9zF54AfPzE2oHarE2oPsQ
-         zqzpcbUazeizOI4ugER4Iq0P3Uxm6BML7s8w8CYGRsylnB4OdekwN05mrsLfCCGGyI8m
-         B0O6TRQ/8Jl67lg5q9sr/kzygY3f7g/0+WxJNgfPg1Z4Fze39MwwRD2qPh6KcjhWkDhK
-         MAFCL3PZO/mZUOph13ndkkV8vxBu6lT30P0mcAV31ueREbJFCBskk4seupk5D4/ai+/m
-         T/ePm4CejvmH0ND4V/1pMjINhZyxXmFdeWWGV/ApdZWpSv6xRwnvfNR1v0Go5Z7TtUGT
-         BMLg==
+        bh=e6eBX5arsmuvKaEXCcMohgv1CZ2IbMRSR/jmdxJbsBs=;
+        b=Y/DgjEw5meqAmc3rYmAoRFfyLa9ujttNoYX0gjpaDAOvdALuUc3aWqHBmi7WMr57Ka
+         KSGo3dC2CNtKbk2fNeH6tdeVKf7ZT+tI9Fr6r+0kn6EG+H/BGiHXgOgBh4OsaDt2zNzn
+         Y6IwwKEVksZET6NDCsWSKe84B9xWOI0Xm0zICDOE5U/eiH09luAf+xPlj4UAHP2WW5DZ
+         yZ2ysR8BZj2EgY/1nhU8akd6gSYn+/jF3VXwmg1GeVOGgrg5L4cEPQ+OnOmtytFU759Z
+         e7af6XNiMkYjuqqlzrwrgaLOG8WCKQHG6hZ+lSWO0md/Y30u/OTQaASPZjgoFhT5wCFN
+         SSEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=VwL4OKVPwLd2Pg+VBJhmXhH54fx49qLMEAmb7K/yfzE=;
-        b=clsPzEG9VvlgFA8eX7daGR224DQWHwsDfzhZRxXTOI3mgZZUPKsIllxX+ANPzqLTVR
-         BAZL3FS6UPtjdlVdZuf4j5hQVslTfk6FVTpgoIvsfuiX5JsnBQp8f6+zNwf48/q8A6S8
-         RAwm17QYef+JaeJsFFZo7YjeU/CpcmmzQA//IuNde/xm2MoXd4qwsJv82TwNKDgyGL0q
-         nrXsCkBccnNqz55HCM7SWaRmUZF0Kz3GG4j1OFymwB3G8VRQ9bz/xhcm+guqyuRELd0R
-         vZZu3or3FLl8NTsJl+9Yo8cf6kizMt90z/n45F/JYPOHcubHuGOmpemAPaPbo72yEG8f
-         G7Cw==
-X-Gm-Message-State: AOAM5304AfPqc/1f//Tv0nPcSo68lVG2yVTxCypG4ey4AFDwUhz6+7Zx
-        1nFOXWey+onvUeSa+6muLuVuG8RsbmY=
-X-Google-Smtp-Source: ABdhPJzH0AkeJmFJPvLyy38HssKzf5B73Itkikl9QMv9yK+MbjaJztQXtpP6dNt9q7l96dZUTk/jbOfcwWY=
+        bh=e6eBX5arsmuvKaEXCcMohgv1CZ2IbMRSR/jmdxJbsBs=;
+        b=L/dNyoXRqduImarmEk0QqIG/b46UTs/RaR/YRf4miuHCkWuFjYebKIh3FVjHGDA6Cw
+         gNxa6W6D3BuRhbTGhdl0yagSlrRPuEn9a6F9ADY5KL9MHFxXC+k7P+GosXFn6JzPNlb7
+         ob57tAD5mRpzCUG086I44F7t65J1hwvCJjLjEXtHfZx33SYqW3Rd1r7IMOaV2GQb8ILV
+         i1M/58J3pnix9nJYSdJkrCdDU9jH6f1LJKqIQ/foRoJ100vnUtjtiL4pBdxHnZaXJi0V
+         nUvmHX+mbHRXGisYC4fdcS2QaqbSdKDsFpV88vQU9q2+SuKFFRBvxap9mH84H4ZaHp8z
+         Pupw==
+X-Gm-Message-State: AOAM530r5mmTY2duzNrLBdWsnFzs6Z7qWKZqdA3fsF5M0fZP+3zEtlHu
+        qF9qEeBI8nps4fgGYhBTljtM+J9zpSI=
+X-Google-Smtp-Source: ABdhPJwP4vEFvry4fCj958VczSglgLQSQer805zjAzOvhXuyKzXxpumXWcVQucW1d65igOwn1MFganW1ets=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:34c4:7c1d:f9ba:4576])
- (user=seanjc job=sendgmr) by 2002:a0c:d78e:: with SMTP id z14mr477802qvi.8.1614301423475;
- Thu, 25 Feb 2021 17:03:43 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:2402:: with SMTP id
+ fv2mr417147qvb.49.1614301426291; Thu, 25 Feb 2021 17:03:46 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Feb 2021 17:03:28 -0800
+Date:   Thu, 25 Feb 2021 17:03:29 -0800
 In-Reply-To: <20210226010329.1766033-1-seanjc@google.com>
-Message-Id: <20210226010329.1766033-5-seanjc@google.com>
+Message-Id: <20210226010329.1766033-6-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210226010329.1766033-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 4/5] KVM: x86/mmu: Add typedefs for rmap/iter handlers
+Subject: [PATCH 5/5] KVM: x86/mmu: Add convenience wrapper for acting on
+ single hva in TDP MMU
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,94 +68,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add typedefs for the MMU handlers that are invoked when walking the MMU
-SPTEs (rmaps in legacy MMU) to act on a host virtual address range.
+Add a TDP MMU helper to handle a single HVA hook, the name is a nice
+reminder that the flow in question is operating on a single HVA.
 
 No functional change intended.
 
 Cc: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c     | 27 ++++++++++-----------------
- arch/x86/kvm/mmu/tdp_mmu.c | 20 +++++++++-----------
- 2 files changed, 19 insertions(+), 28 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index d75524bc8423..1ee01ca196bd 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1424,17 +1424,15 @@ static void slot_rmap_walk_next(struct slot_rmap_walk_iterator *iterator)
- 	     slot_rmap_walk_okay(_iter_);				\
- 	     slot_rmap_walk_next(_iter_))
- 
--static __always_inline int
--kvm_handle_hva_range(struct kvm *kvm,
--		     unsigned long start,
--		     unsigned long end,
--		     unsigned long data,
--		     int (*handler)(struct kvm *kvm,
--				    struct kvm_rmap_head *rmap_head,
--				    struct kvm_memory_slot *slot,
--				    gfn_t gfn,
--				    int level,
--				    unsigned long data))
-+typedef int (*rmap_handler_t)(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-+			      struct kvm_memory_slot *slot, gfn_t gfn,
-+			      int level, unsigned long data);
-+
-+static __always_inline int kvm_handle_hva_range(struct kvm *kvm,
-+						unsigned long start,
-+						unsigned long end,
-+						unsigned long data,
-+						rmap_handler_t handler)
- {
- 	struct kvm_memslots *slots;
- 	struct kvm_memory_slot *memslot;
-@@ -1473,12 +1471,7 @@ kvm_handle_hva_range(struct kvm *kvm,
- }
- 
- static int kvm_handle_hva(struct kvm *kvm, unsigned long hva,
--			  unsigned long data,
--			  int (*handler)(struct kvm *kvm,
--					 struct kvm_rmap_head *rmap_head,
--					 struct kvm_memory_slot *slot,
--					 gfn_t gfn, int level,
--					 unsigned long data))
-+			  unsigned long data, rmap_handler_t handler)
- {
- 	return kvm_handle_hva_range(kvm, hva, hva + 1, data, handler);
- }
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 9ce8d226b621..b6f829b58e67 100644
+index b6f829b58e67..c0c09ec07c53 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -879,17 +879,15 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+@@ -922,6 +922,14 @@ static __always_inline int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm,
  	return ret;
  }
  
--static __always_inline int
--kvm_tdp_mmu_handle_hva_range(struct kvm *kvm,
--			     unsigned long start,
--			     unsigned long end,
--			     unsigned long data,
--			     int (*handler)(struct kvm *kvm,
--					    struct kvm_memory_slot *slot,
--					    struct kvm_mmu_page *root,
--					    gfn_t start,
--					    gfn_t end,
--					    unsigned long data))
-+typedef int (*tdp_handler_t)(struct kvm *kvm, struct kvm_memory_slot *slot,
-+			     struct kvm_mmu_page *root, gfn_t start, gfn_t end,
-+			     unsigned long data);
++static __always_inline int kvm_tdp_mmu_handle_hva(struct kvm *kvm,
++						  unsigned long addr,
++						  unsigned long data,
++						  tdp_handler_t handler)
++{
++	return kvm_tdp_mmu_handle_hva_range(kvm, addr, addr + 1, data, handler);
++}
 +
-+static __always_inline int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm,
-+							unsigned long start,
-+							unsigned long end,
-+							unsigned long data,
-+							tdp_handler_t handler)
+ static int zap_gfn_range_hva_wrapper(struct kvm *kvm,
+ 				     struct kvm_memory_slot *slot,
+ 				     struct kvm_mmu_page *root, gfn_t start,
+@@ -1009,8 +1017,7 @@ static int test_age_gfn(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 
+ int kvm_tdp_mmu_test_age_hva(struct kvm *kvm, unsigned long hva)
  {
- 	struct kvm_memslots *slots;
- 	struct kvm_memory_slot *memslot;
+-	return kvm_tdp_mmu_handle_hva_range(kvm, hva, hva + 1, 0,
+-					    test_age_gfn);
++	return kvm_tdp_mmu_handle_hva(kvm, hva, 0, test_age_gfn);
+ }
+ 
+ /*
+@@ -1071,9 +1078,8 @@ static int set_tdp_spte(struct kvm *kvm, struct kvm_memory_slot *slot,
+ int kvm_tdp_mmu_set_spte_hva(struct kvm *kvm, unsigned long address,
+ 			     pte_t *host_ptep)
+ {
+-	return kvm_tdp_mmu_handle_hva_range(kvm, address, address + 1,
+-					    (unsigned long)host_ptep,
+-					    set_tdp_spte);
++	return kvm_tdp_mmu_handle_hva(kvm, address, (unsigned long)host_ptep,
++				      set_tdp_spte);
+ }
+ 
+ /*
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
