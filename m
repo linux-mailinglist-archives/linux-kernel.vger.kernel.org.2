@@ -2,167 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5069B326799
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 20:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 009973267A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 21:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhBZTzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 14:55:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhBZTzB (ORCPT
+        id S229586AbhBZUDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 15:03:02 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16126 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229946AbhBZUC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 14:55:01 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D17C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:54:20 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id e2so7592871iog.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 11:54:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cosmicpenguin-net.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JIP7pj2bII2YYqVDvOr4T8XZtG0IKAlZ5S5uVeQftY8=;
-        b=ReNrLHuTcYMc5CV8DYEubwqgUp8OLflDGEY3KtfN43gOeixyXRxztxX99MgxHh0g5d
-         64KTNKWWxXh2DgacpC4Wr91I7A5c/DV52KLxiNYe3/k3tSnFScQqUEYqVhFnrqyAJPCv
-         OU7V7jy/7u93j2hDr4MzeddvDsi7nOAxg/L86PTHJhXfrSfMy5J+Wj6K1fp0e7IsjMFI
-         b9S9V8UPPqDvUV/hcyBozDp+3fFJuK3M6drZly2dsWbnlnimNN39KgKUgcUMs0xLzOhb
-         rRqpiSFSTrSfDaJo77cGfE9CpNFM0cy4knvulCrmTuoZeplJi6wi92xK1eRB97L/Vr6b
-         duKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=JIP7pj2bII2YYqVDvOr4T8XZtG0IKAlZ5S5uVeQftY8=;
-        b=p7b0xG04I22Txf26p/x08HXea+1GJVSz4Pj0eigAbYSTc0+JTEFPJl5W6VIBKw4S9n
-         SUnFIfZBlasAvt+IZF6J/B5PhmwMbbup5mmoQJVAAgncxdLVB2+d+FozGmbcQKYZph7a
-         auvetI0XU/9pP7w9P/2sVo6TcrtO5pNPNJMEl/tfKSDiS5lhVYrY5ouX8CB5EEuNgYX1
-         mvlEelBuYqvoqAkJfIOthHHUH4c6KJ4+n4NDFwce69XiQabMb9L/xQuMu0GpUmFEg7fu
-         vU93je6JuQIjj+CPyiNNVUEVVJbT0v/3MC1OFWBT7G3IwjjCXpKA97Cp6wcNZNVYuiy4
-         4fqQ==
-X-Gm-Message-State: AOAM53154769nrf8dUSZzRNkuAaFui+BjZrhJGZp7cSwOTOhtOZHMgVc
-        /kAC/wKrjFYSHjatpo77xIO0Cg==
-X-Google-Smtp-Source: ABdhPJxT3JMfcN7o0fe55mwMhIvwoQjsrhAEaDedA6b09+t1iIJRi3Lvanp7xOpZX4iPzsgu8QnT+Q==
-X-Received: by 2002:a02:3541:: with SMTP id y1mr4532704jae.66.1614369259483;
-        Fri, 26 Feb 2021 11:54:19 -0800 (PST)
-Received: from cosmicpenguin.net (c-71-237-100-236.hsd1.co.comcast.net. [71.237.100.236])
-        by smtp.gmail.com with ESMTPSA id u14sm5012109ilv.0.2021.02.26.11.54.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 11:54:19 -0800 (PST)
-Date:   Fri, 26 Feb 2021 12:54:16 -0700
-From:   Jordan Crouse <jordan@cosmicpenguin.net>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/2] iommu/arm-smmu-qcom: Move the adreno smmu specific
- impl earlier
-Message-ID: <20210226195416.7dzyln7v6lke6ssr@cosmicpenguin.net>
-Mail-Followup-To: Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Will Deacon <will@kernel.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1614332994.git.saiprakash.ranjan@codeaurora.org>
- <c607d71eb0fe507c8b83cc0ea9b393777f22149a.1614332994.git.saiprakash.ranjan@codeaurora.org>
- <YDku5PFQZetP4iG8@builder.lan>
- <20210226184813.t6ohkh3gxeseev2j@cosmicpenguin.net>
+        Fri, 26 Feb 2021 15:02:59 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QJXAer021836;
+        Fri, 26 Feb 2021 15:02:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=XKRUARzaSZS0avrBeedJ1pcekWiA2Kc4k7bWljxzBlM=;
+ b=Vx5/UTyNiLggos/dmuKw6jXAg9BS5N8kd0LbBpHRTPAWCBaOGczD51jjKCiQ6hxlSrDD
+ 6f89PbVr0ALHtvUclQNraReRmzoNAfCTWS357RSdTmE62yX8K97bACVY4OEraWvIUbVX
+ ZQrdU/lN7STQQjLCyW+bdRo08UMcfOWzO96PuaOxYF9fw9dAFk1jY3yFWza0afxE20Mk
+ 5nK/KeTQcuUGU4XkG0JKnUhl2mUGO8qqR2PEE7PR0+yE4rS6CLboKzdVKa3dsXtk99gd
+ PLfGYK0aSZqZLor31yQ+qo4LQhEdhf6jgZMRa19kYJItR3UKvVhzDhLTg/Ltj0NJiQMC nA== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36y6rf9eha-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Feb 2021 15:02:15 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11QK1k2W021402;
+        Fri, 26 Feb 2021 20:02:13 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 36tsphaydp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Feb 2021 20:02:13 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11QK1vLB23658836
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Feb 2021 20:01:57 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 644BBAE04D;
+        Fri, 26 Feb 2021 20:02:10 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0EAC9AE055;
+        Fri, 26 Feb 2021 20:02:10 +0000 (GMT)
+Received: from localhost (unknown [9.171.10.18])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 26 Feb 2021 20:02:09 +0000 (GMT)
+Date:   Fri, 26 Feb 2021 21:02:08 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 patches for the 5.12 merge window #2
+Message-ID: <your-ad-here.call-01614369728-ext-5933@work.hours>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210226184813.t6ohkh3gxeseev2j@cosmicpenguin.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-26_07:2021-02-26,2021-02-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ bulkscore=0 spamscore=0 mlxlogscore=999 adultscore=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 lowpriorityscore=0 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102260143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 11:48:13AM -0700, Jordan Crouse wrote:
-> On Fri, Feb 26, 2021 at 11:24:52AM -0600, Bjorn Andersson wrote:
-> > On Fri 26 Feb 03:55 CST 2021, Sai Prakash Ranjan wrote:
-> > 
-> > > Adreno(GPU) SMMU and APSS(Application Processor SubSystem) SMMU
-> > > both implement "arm,mmu-500" in some QTI SoCs and to run through
-> > > adreno smmu specific implementation such as enabling split pagetables
-> > > support, we need to match the "qcom,adreno-smmu" compatible first
-> > > before apss smmu or else we will be running apps smmu implementation
-> > > for adreno smmu and the additional features for adreno smmu is never
-> > > set. For ex: we have "qcom,sc7280-smmu-500" compatible for both apps
-> > > and adreno smmu implementing "arm,mmu-500", so the adreno smmu
-> > > implementation is never reached because the current sequence checks
-> > > for apps smmu compatible(qcom,sc7280-smmu-500) first and runs that
-> > > specific impl and we never reach adreno smmu specific implementation.
-> > > 
-> > 
-> > So you're saying that you have a single SMMU instance that's compatible
-> > with both an entry in qcom_smmu_impl_of_match[] and "qcom,adreno-smmu"?
-> > 
-> > Per your proposed change we will pick the adreno ops _only_ for this
-> > component, essentially disabling the non-Adreno quirks selected by the
-> > qcom impl. As such keeping the non-adreno compatible in the
-> > qcom_smmu_impl_init[] seems to only serve to obfuscate the situation.
-> > 
-> > Don't we somehow need the combined set of quirks? (At least if we're
-> > running this with a standard UEFI based boot flow?)
-> 
-> We *do* need the combined set of quirks, so there has to be an adreno-smmu
-> impelmentation that matches the "generic" implementation with a few extra
-> function hooks added on. I'm not sure if there is a clever way to figure out how
-> to meld the implementation hooks at runtime but the alternative is to just make
-> sure that the adreno-smmu static struct calls the same quirks as its generic
-> partner.
+Hello Linus,
 
-To clarify, the gpu-smmu doesn't strictly need the s2cr handoff or the cfg_probe
-though it wouldn't hurt to have them since they would be essentially
-passthroughs for the GPU. We do need to capture errata like the
-sdm845_smmu500_reset which is already part of the upstream adreno
-implementation.
+please pull the second round of s390 fixes and features for 5.12.
 
-I think the main takeaway is that if a new errata or quirk is added
-for main mmu500 it needs to be considered for adreno-smmu too.
+Thank you,
+Vasily
 
-Jordan
+The following changes since commit df24212a493afda0d4de42176bea10d45825e9a0:
 
-> > > Suggested-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> > > ---
-> > >  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 12 +++++++++---
-> > >  1 file changed, 9 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > > index bea3ee0dabc2..03f048aebb80 100644
-> > > --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> > > @@ -345,11 +345,17 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
-> > >  {
-> > >  	const struct device_node *np = smmu->dev->of_node;
-> > >  
-> > > -	if (of_match_node(qcom_smmu_impl_of_match, np))
-> > > -		return qcom_smmu_create(smmu, &qcom_smmu_impl);
-> > > -
-> > > +	/*
-> > > +	 * Do not change this order of implementation, i.e., first adreno
-> > > +	 * smmu impl and then apss smmu since we can have both implementing
-> > > +	 * arm,mmu-500 in which case we will miss setting adreno smmu specific
-> > > +	 * features if the order is changed.
-> > > +	 */
-> > >  	if (of_device_is_compatible(np, "qcom,adreno-smmu"))
-> > >  		return qcom_smmu_create(smmu, &qcom_adreno_smmu_impl);
-> > >  
-> > > +	if (of_match_node(qcom_smmu_impl_of_match, np))
-> > > +		return qcom_smmu_create(smmu, &qcom_smmu_impl);
-> > > +
-> > >  	return smmu;
-> > >  }
-> > > -- 
-> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> > > of Code Aurora Forum, hosted by The Linux Foundation
-> > > 
-> > _______________________________________________
-> > iommu mailing list
-> > iommu@lists.linux-foundation.org
-> > https://lists.linuxfoundation.org/mailman/listinfo/iommu
+  Merge tag 's390-5.12-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2021-02-21 13:40:06 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.12-2
+
+for you to fetch changes up to cf6acb8bdb1d829b85a4daa2944bf9e71c93f4b9:
+
+  s390/cpumf: Add support for complete counter set extraction (2021-02-24 00:31:23 +0100)
+----------------------------------------------------------------
+s390 updates for the 5.12 merge window #2
+
+- Fix physical vs virtual confusion in some basic mm macros and
+  routines. Caused by __pa == __va on s390 currently.
+
+- Get rid of on-stack cpu masks.
+
+- Add support for complete CPU counter set extraction.
+
+- Add arch_irq_work_raise implementation.
+
+- virtio-ccw revision and opcode fixes.
+
+----------------------------------------------------------------
+Alexander Gordeev (4):
+      s390/mm: make pXd_deref() macros return a pointer
+      s390/mm: fix invalid __pa() usage in pfn_pXd() macros
+      s390/mm: fix phys vs virt confusion in pgtable allocation routines
+      s390/mm: fix phys vs virt confusion in vmem_*() functions family
+
+Cornelia Huck (1):
+      virtio/s390: implement virtio-ccw revision 2 correctly
+
+Heiko Carstens (5):
+      s390/opcodes: rename selhhhr to selfhr
+      s390/smp: consolidate locking for smp_rescan()
+      s390/smp: __smp_rescan_cpus() - move cpumask away from stack
+      s390/smp: smp_emergency_stop() - move cpumask away from stack
+      s390/topology: move cpumasks away from stack
+
+Ilya Leoshkevich (1):
+      s390/smp: implement arch_irq_work_raise()
+
+Thomas Richter (1):
+      s390/cpumf: Add support for complete counter set extraction
+
+ arch/s390/include/asm/irq_work.h               |  12 +
+ arch/s390/include/asm/pgalloc.h                |   2 +-
+ arch/s390/include/asm/pgtable.h                |  16 +-
+ arch/s390/include/uapi/asm/perf_cpum_cf_diag.h |  51 +++
+ arch/s390/kernel/perf_cpum_cf_diag.c           | 548 +++++++++++++++++++++++--
+ arch/s390/kernel/smp.c                         |  28 +-
+ arch/s390/kernel/topology.c                    |  25 +-
+ arch/s390/mm/pgalloc.c                         |  22 +-
+ arch/s390/mm/vmem.c                            |  30 +-
+ arch/s390/tools/opcodes.txt                    |   2 +-
+ drivers/s390/virtio/virtio_ccw.c               |   4 +-
+ include/linux/cpuhotplug.h                     |   1 +
+ 12 files changed, 660 insertions(+), 81 deletions(-)
+ create mode 100644 arch/s390/include/asm/irq_work.h
+ create mode 100644 arch/s390/include/uapi/asm/perf_cpum_cf_diag.h
