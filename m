@@ -2,90 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E100325EB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E9F325EBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 09:15:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbhBZIOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 03:14:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
+        id S229953AbhBZIOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 03:14:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBZIOO (ORCPT
+        with ESMTP id S229823AbhBZIOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 03:14:14 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AE8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 00:13:34 -0800 (PST)
-Received: from zn.tnic (p200300ec2f08690046fe8a0234e2694f.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:6900:46fe:8a02:34e2:694f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BDAA71EC03A0;
-        Fri, 26 Feb 2021 09:13:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614327212;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=l1+9HfOoW+GEk2Nht8GoIcMQYtZGuUP8lH6O60vFDzA=;
-        b=TbRfkcyfwJcHUqNdxSXuwXY/4l2B7wRXelMi/7bGJio3EK2H08u9mx0qqezzN8La3DL4f9
-        VUO+6KFDSiU0m71IOyvncUIM6tK06fuaMhi4EcFhwCnPxAj+cP19TJjEsvzhFgoQDjQxyL
-        dkhZEISYSOsDqn8L6Rykk/kWYSR22OA=
-Date:   Fri, 26 Feb 2021 09:13:27 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH] x86: mark some mpspec inline functions as __init
-Message-ID: <20210226081327.GB19284@zn.tnic>
-References: <20210225112247.2240389-1-arnd@kernel.org>
- <20210225114533.GA380@zn.tnic>
- <CAK8P3a0BN3p0F3UAxs9TKsHs--AiAPE0uf6126GVJNhmVTGCsw@mail.gmail.com>
- <20210225124218.GC380@zn.tnic>
- <CAK8P3a1ZiUHRxKr=SFgEFETLcSQeViPnR+XB2gBvbVk24vGvqQ@mail.gmail.com>
- <CAKwvOd=B=cHpp_XfPTtyVpQyrwQrFZX9SXKw=SJC1VC-VbEwFA@mail.gmail.com>
- <20210225213300.GF380@zn.tnic>
- <CAKwvOdkKjOb8fS7NgFxvAwEQTp3fPjenhvehnjh5xRw=HevQ=Q@mail.gmail.com>
+        Fri, 26 Feb 2021 03:14:21 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A1BC06174A;
+        Fri, 26 Feb 2021 00:13:41 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id m22so12620112lfg.5;
+        Fri, 26 Feb 2021 00:13:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OqJt217dC4T+T87HRrDiZ5UQcEroafziB7c4ElX1J0M=;
+        b=tIF8ucVjW2Xt3YkCytPne8zyP2LJ+O5VNs5QU81NzM3+MvPsnJQMMiRur3kkJ2S8CW
+         ljEbo3xtThUyZwLUZwWgq+CrEq6Cozz10w/JyM2luu/USjNqt9esfBYFEoMYUiiV8Kk1
+         PWxs63jopYA96hE63AeY2wS51Yy78HLGFWLfy2y4QIp10udGB691Xd8yppahnT6ed0GN
+         nzA58NpsG8mzczle5ViMLhS8otiUZx3fC78btPjbbzxx4LZPF8N8rm+G1yqlDB0DV3rG
+         lBuf80gRpkfKmB1ar4WGSZua6XtL7X3dFf3pGlTMbZQJCAhk6qgRI/13EkQ1CJw5S4FF
+         ClEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OqJt217dC4T+T87HRrDiZ5UQcEroafziB7c4ElX1J0M=;
+        b=Zi4JGcSWUrDcNXTZWk2mZ8ZzwX8X3xRGfm1Y7UCVP/ZYFiZGoCjdHEh4jARs6wwioA
+         mY12sXV99R6enMGv+CINAX3m4DEINCvPBPPSDgTcHmeKulKbjT39h78uLFlvu/TXEk3L
+         pPVG57UJkMrUEsSaJSKumjeyiU8bnQNkQuvJCqhdQ+pSB9/PQCPXv8TaRl0iDRJM+mvk
+         LM+DWXU48csukNqfp1lV91ztGr+YGQOrhL3G1bmu4OqNl3eM1kTck6+bsNwjlV7DYGZU
+         cR3q0NtXc7yijrm1GycHpRuCkrJnSk2HQeBaGzWTYnfZrzqkmYIWNsIWVUW4ro6zCM89
+         p0bQ==
+X-Gm-Message-State: AOAM530idOf/WBk9fzF/qFgboM54B/EaaSshAgUarYo34MQXziPruQGT
+        Vk+h55kq+F8IhZqXPF9b4rc=
+X-Google-Smtp-Source: ABdhPJzVIvesm/SKXS6n7c+2q1ZolirgWPlRr/48kUDI75daMKmMI7nO44d3GOoRM3ZGc6tzsQv/gg==
+X-Received: by 2002:a19:858b:: with SMTP id h133mr1133474lfd.86.1614327219701;
+        Fri, 26 Feb 2021 00:13:39 -0800 (PST)
+Received: from localhost.localdomain ([146.158.65.224])
+        by smtp.googlemail.com with ESMTPSA id w6sm1305128lfn.136.2021.02.26.00.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 00:13:39 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     stern@rowland.harvard.edu
+Cc:     benjamin.tissoires@redhat.com, jikos@kernel.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, snovitoll@gmail.com,
+        syzbot+ab02336a647181a886a6@syzkaller.appspotmail.com
+Subject: Re: [PATCH] drivers/hid: fix for the big hid report length
+Date:   Fri, 26 Feb 2021 14:13:36 +0600
+Message-Id: <20210226081336.3475085-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210225155914.GA1350993@rowland.harvard.edu>
+References: <20210225155914.GA1350993@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdkKjOb8fS7NgFxvAwEQTp3fPjenhvehnjh5xRw=HevQ=Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 01:58:48PM -0800, Nick Desaulniers wrote:
-> The config that reproduces it wasn't shared here; I wouldn't be
-> surprised if this was found via randconfig that enabled some config
-> that led to excessive code bloat somewhere somehow.
+On Thu, 25 Feb 2021 10:59:14 -0500, Alan Stern wrote:
+> Won't this cause silent errors?
 
-I'm sceptical it is the .config. As I said, those single function calls
-which I could replace by hand - the wrappers simply make the code
-cleaner. They could just as well be macros FWIW and then the inlining
-will be practically forced at preprocess time.
+Agree. But there are already such as cases like in:
 
-> Oh, I don't expect everyone to; just leaving breadcrumbs showing other
-> people on thread how to fish. ;)
+// net/bluetooth/hidp/core.c
+static void hidp_process_report(..)
+{
+	..
+	if (len > HID_MAX_BUFFER_SIZE)
+		len = HID_MAX_BUFFER_SIZE;
+	..
 
-Yap, that's appreciated.
+// drivers/hid/hid-core.c
+int hid_report_raw_event(..)
+{
+	..
+	rsize = hid_compute_report_size(report);
 
-> Sure, it doesn't really matter to me which way this is fixed.  I
-> personally prefer placing functions in the correct sections and
-> letting the compiler be flexible, since if all of this is to satisfy
-> some randconfig then __always_inline is making a decision for all
-> configs, but perhaps it doesn't matter.
+	if (report_enum->numbered && rsize >= HID_MAX_BUFFER_SIZE)
+		rsize = HID_MAX_BUFFER_SIZE - 1;
+	else if (rsize > HID_MAX_BUFFER_SIZE)
+		rsize = HID_MAX_BUFFER_SIZE;
+	..
 
-I hope.
+// drivers/staging/greybus/hid.c
+static int gb_hid_start(..)
+{
+	..
+	if (bufsize > HID_MAX_BUFFER_SIZE)
+		bufsize = HID_MAX_BUFFER_SIZE;
+	..
 
-Thx.
+> How about instead just rejecting any device which includes a report 
+> whose length is too big (along with an line in the system log explaining 
+> what's wrong)?
 
--- 
-Regards/Gruss,
-    Boris.
+Not everywhere, but there are already such as logs when > HID_MAX_BUFFER_SIZE
 
-https://people.kernel.org/tglx/notes-about-netiquette
+// drivers/hid/hidraw.c
+static ssize_t hidraw_send_report(..)
+{
+	..
+	if (count > HID_MAX_BUFFER_SIZE) {
+		hid_warn(dev, "pid %d passed too large report\n",
+			 task_pid_nr(current));
+		ret = -EINVAL;
+		goto out;
+	}
+
+
+I've just noticed that hid_compute_report_size() doing the same thing as
+hid_report_len(). So I will replace it with latter one with length check.
+
+So in [PATCH v2] I will do following:
+
+ 1. replace hid_compute_report_size() with hid_report_len()
+
+ 2. in hid_report_len() we can hid_warn() if length > HID_MAX_BUFFER_SIZE,
+and return HID_MAX_BUFFER_SIZE. Or we can return 0 in hid_report_len() to let
+functions like hid_hw_raw_request(), hid_hw_output_report() to validate
+invalid report length and return -EINVAL. Though I'll need to add !length
+missing checks in other places.
+
+Please let me know what it's preferred way in 2nd step.
