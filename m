@@ -2,61 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C649132692A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 448A4326940
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Feb 2021 22:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhBZVIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 16:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhBZVIO (ORCPT
+        id S230403AbhBZVKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 16:10:04 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59540 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhBZVJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:08:14 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2D4C061756;
-        Fri, 26 Feb 2021 13:07:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7pgftJoNP5KTdbInm9s0p3yXUSHbaaNN6wUdMbqk36Q=; b=iiQ3KmXmdmtEz3zoxoZjCfxwfG
-        jdd70ti+Bkd01AvEbuYEA93mZ5RxbcslWYlslLagJqUxLmTq+FY3f5Dx749FY5vIS0nlDP1hmce1V
-        etaW4F0Qal/ZfdjqmAUKMzfF8mP3WKiH8C+gUzC0iGL2xb5PQT6vwGcnobN5nsC6VYTEf8jDCw3dj
-        cCu9tOQwgTyuQf1oUE0XGJYPpyiU2taOff/CHWOi1cIuMkEOsfIVl38BoqmLKlw65QR+mYD9LrKDY
-        wuBaYI2/HVpH3vgLMnUiWS31zzPWnFQBqMLDzOwbQKSYP3MclasDj9rSUtJvyQYrg2oNaOfZ7/rxe
-        /S1kQXEQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lFkKI-00CVhR-Ph; Fri, 26 Feb 2021 21:07:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2D6843006D0;
-        Fri, 26 Feb 2021 22:07:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1BDE720616380; Fri, 26 Feb 2021 22:07:04 +0100 (CET)
-Date:   Fri, 26 Feb 2021 22:07:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     mingo@redhat.com, will@kernel.org, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] lockdep: add lockdep_assert_not_held()
-Message-ID: <YDli+H48Ft3F6k9/@hirez.programming.kicks-ass.net>
-References: <cover.1614355914.git.skhan@linuxfoundation.org>
- <a40d18bba5a52662ac8fc556e1fce3752ea08472.1614355914.git.skhan@linuxfoundation.org>
+        Fri, 26 Feb 2021 16:09:11 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 3CD871F467C9
+Message-ID: <75696dd2ae8c78f626db4e59300d3f04e348f341.camel@collabora.com>
+Subject: Re: [PATCH v3 5/9] media: hantro: Introduce G2/HEVC decoder
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, peng.fan@nxp.com,
+        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Date:   Fri, 26 Feb 2021 18:08:12 -0300
+In-Reply-To: <6f3c23a6-4b74-c7b4-f6b2-2fb983a8bbb8@collabora.com>
+References: <20210222122406.41782-1-benjamin.gaignard@collabora.com>
+         <20210222122406.41782-6-benjamin.gaignard@collabora.com>
+         <4a432492dc3894bef6024c74140891acc2e17604.camel@collabora.com>
+         <6f3c23a6-4b74-c7b4-f6b2-2fb983a8bbb8@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a40d18bba5a52662ac8fc556e1fce3752ea08472.1614355914.git.skhan@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 10:52:13AM -0700, Shuah Khan wrote:
-> +		/* avoid false negative lockdep_assert_not_held()
-> +		 * and lockdep_assert_held()
-> +		 */
+On Fri, 2021-02-26 at 10:47 +0100, Benjamin Gaignard wrote:
+> 
+> Le 25/02/2021 à 18:55, Ezequiel Garcia a écrit :
+> > Hi Benjamin,
+> > 
+> > Thanks for the good work!
+> > I mostly have two concerns with this implementation,
+> > the tiled output and the allocation path.
+> > 
+> > More below.
+> > 
+> > On Mon, 2021-02-22 at 13:24 +0100, Benjamin Gaignard wrote:
+> > > Implement all the logic to get G2 hardware decoding HEVC frames.
+> > > It support up level 5.1 HEVC stream.
+> > > It doesn't support yet 10 bits formats or scaling feature.
+> > > 
+> > > Add HANTRO HEVC dedicated control to skip some bits at the beginning
+> > > of the slice header. That is very specific to this hardware so can't
+> > > go into uapi structures. Compute the needed value is complex and require
+> > > information from the stream that only the userland knows so let it
+> > > provide the correct value to the driver.
+> > > 
+> > > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> > > ---
+> > > version 2:
+> > > - squash multiple commits in this one.
+> > > - fix the comments done by Ezequiel about dma_alloc_coherent usage
+> > > - fix Dan's comments about control copy, reverse the test logic
+> > > in tile_buffer_reallocate, rework some goto and return cases.
+> > > 
+> > >   drivers/staging/media/hantro/Makefile         |   2 +
+> > >   drivers/staging/media/hantro/hantro.h         |  19 +
+> > >   drivers/staging/media/hantro/hantro_drv.c     |  42 ++
+> > >   .../staging/media/hantro/hantro_g2_hevc_dec.c | 587 ++++++++++++++++++
+> > >   drivers/staging/media/hantro/hantro_g2_regs.h | 198 ++++++
+> > >   drivers/staging/media/hantro/hantro_hevc.c    | 321 ++++++++++
+> > >   drivers/staging/media/hantro/hantro_hw.h      |  47 ++
+> > >   7 files changed, 1216 insertions(+)
+> > >   create mode 100644 drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+> > >   create mode 100644 drivers/staging/media/hantro/hantro_g2_regs.h
+> > >   create mode 100644 drivers/staging/media/hantro/hantro_hevc.c
+> > > 
+> > > 
+> > [snip]
+> > > +
+> > > +static void set_buffers(struct hantro_ctx *ctx)
+> > > +{
+> > > +       struct vb2_v4l2_buffer *src_buf, *dst_buf;
+> > > +       struct hantro_dev *vpu = ctx->dev;
+> > > +       const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
+> > > +       const struct v4l2_ctrl_hevc_sps *sps = ctrls->sps;
+> > > +       size_t cr_offset = hantro_hevc_chroma_offset(sps);
+> > > +       dma_addr_t src_dma, dst_dma;
+> > > +       u32 src_len, src_buf_len;
+> > > +
+> > > +       src_buf = hantro_get_src_buf(ctx);
+> > > +       dst_buf = hantro_get_dst_buf(ctx);
+> > > +
+> > > +       /* Source (stream) buffer. */
+> > > +       src_dma = vb2_dma_contig_plane_dma_addr(&src_buf->vb2_buf, 0);
+> > > +       src_len = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
+> > > +       src_buf_len = vb2_plane_size(&src_buf->vb2_buf, 0);
+> > > +
+> > > +       hantro_write_addr(vpu, HEVC_ADDR_STR, src_dma);
+> > > +       hantro_reg_write(vpu, hevc_stream_len, src_len);
+> > > +       hantro_reg_write(vpu, hevc_strm_buffer_len, src_buf_len);
+> > > +       hantro_reg_write(vpu, hevc_strm_start_offset, 0);
+> > > +       hantro_reg_write(vpu, hevc_write_mvs_e, 1);
+> > > +
+> > > +       /* Destination (decoded frame) buffer. */
+> > > +       dst_dma = hantro_get_dec_buf_addr(ctx, &dst_buf->vb2_buf);
+> > > +
+> > > +       hantro_write_addr(vpu, HEVC_RASTER_SCAN, dst_dma);
+> > > +       hantro_write_addr(vpu, HEVC_RASTER_SCAN_CHR, dst_dma + cr_offset);
+> > The way this is done the raster-scan output is the only
+> > output, and the tiled ouput it kept entirely internal, in hantro_hevc_dec_hw_ctx.ref_bufs.
+> > 
+> > This means there's no way to expose tiled NV12 in i.MX8M VPU tiled format
+> > to userspace, which could be desirable for some use cases.
+> > 
+> > I'm not suggesting to actually expose tiled NV12 in this patch, but to prepare
+> > the driver to be able to support that easily in the future.
+> > 
+> > It should be possible to consider this detiling as
+> > post-processing, adding some code in hantro_postproc.c
+> > leveraging the existing post-proc support.
+> > 
+> > IOW, hantro_postproc_ctx.dec_q would hold the tiled output,
+> > hantro_postproc_enable() writes the raster-scan
+> > buffer destination address, and so on.
+> 
+> Well the G2 can't use the post-processor so I'm reluctant to do as if it was the case.
+> 
 
-That's a coding style fail.
+I don't really see a big difference between G1 post-processing, and G2 raster-scan
+detiling. As a user of the device, both features offer a post-processing.
+
+In any case, it's not a big deal, it's fine as-is if you are inclined to this implementation.
+
+> To support tiled NV12 for me the solution is to create a hantro_hevc_add_ref_buf() function
+> to add the destination buffer in hevc_dec->ref_bufs.
+> We can test destination format to set hevc_out_rs_e bit and HEVC_RASTER_SCAN register.
+> 
+
+Is it worth adding some boilerplate and/or refactoring things a bit, so it's
+easier to expose tiled NV12 once that format is exposable?
+
+> > 
+> > > +       hantro_write_addr(vpu, HEVC_ADDR_TILE_SIZE, ctx->hevc_dec.tile_sizes.dma);
+> > > +       hantro_write_addr(vpu, HEVC_TILE_FILTER, ctx->hevc_dec.tile_filter.dma);
+> > > +       hantro_write_addr(vpu, HEVC_TILE_SAO, ctx->hevc_dec.tile_sao.dma);
+> > > +       hantro_write_addr(vpu, HEVC_TILE_BSD, ctx->hevc_dec.tile_bsd.dma);
+> > > +}
+> > > +
+> > > +void hantro_g2_check_idle(struct hantro_dev *vpu)
+> > > +{
+> > > +       int i;
+> > > +
+> > > +       for (i = 0; i < 3; i++) {
+> > > +               u32 status;
+> > > +
+> > > +               /* Make sure the VPU is idle */
+> > > +               status = vdpu_read(vpu, HEVC_REG_INTERRUPT);
+> > > +               if (status & HEVC_REG_INTERRUPT_DEC_E) {
+> > > +                       pr_warn("%s: still enabled!!! resetting.\n", __func__);
+> > > +                       status |= HEVC_REG_INTERRUPT_DEC_ABORT_E | HEVC_REG_INTERRUPT_DEC_IRQ_DIS;
+> > > +                       vdpu_write(vpu, status, HEVC_REG_INTERRUPT);
+> > > +               }
+> > > +       }
+> > > +}
+> > > +
+> > > +void hantro_g2_hevc_dec_run(struct hantro_ctx *ctx)
+> > > +{
+> > > +       struct hantro_dev *vpu = ctx->dev;
+> > > +
+> > > +       hantro_g2_check_idle(vpu);
+> > > +
+> > > +       /* Prepare HEVC decoder context. */
+> > > +       if (hantro_hevc_dec_prepare_run(ctx))
+> > > +               return;
+> > > +
+> > > +       /* Configure hardware registers. */
+> > > +       set_params(ctx);
+> > > +
+> > > +       /* set reference pictures */
+> > > +       if (set_ref(ctx))
+> > > +               /* something goes wrong */
+> > > +               hantro_irq_done(vpu, VB2_BUF_STATE_ERROR);
+> > > +
+> > I don't think we want to allow the _run() operation to fail like this.
+> > In other words, I would avoid allocating buffers in the _run() path,
+> > and doing all allocation at start() time.
+> > 
+> > That's why hantro_start_streaming() calls hantro_postproc_alloc() if needed.
+> 
+> The error could also be that the reference picture isn't found in the list so
+> we can't perform the decode operation.
+> If we do the allocation at start time we will allocate all the reference frames
+> buffers even if we don't know if we will use them. That could increase a lot
+> memory usage. Note that buffers allocated once and re-used until the end of the
+> session.
+> 
+
+Improving memory usage is a good point. I wonder if it makes sense to release
+some buffers under some condition, instead of keeping then allocated (and unused)
+until the end of the session.
+
+(BTW, the same can be done with the post-processor, as it's basically
+the same process. It would be interesting to explore.)
+
+I'm still unsure why we'd call hantro_irq_done() (which cancels the timeout
+handler and returns buffers to userspace), but we would keep programming
+the operation. 
+
+Thanks,
+Ezequiel
+
