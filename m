@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19B9326DD2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 17:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F7C326DD4
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 17:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhB0QXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 11:23:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbhB0QW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 11:22:56 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7475FC06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 08:22:14 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id m22so18593461lfg.5
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 08:22:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7rdkQd2nFo/KCgD1LcCFyZvYpZw3T9bvfpxt4ESvC74=;
-        b=g83yuITN74+zzKknKk40bwZmybSxrR4J6Dt/SRQIsqRwol3dO6PJp11DL6FG6pjj+e
-         V6nsjoYNFg20Au0H7BtkAf75VI6j/R8rS0XYhvcgrdsWxTgxGml880FfPz3PnEgbkCYM
-         Lf6BX69TlWhFtZ/4uFjS4epYIuhbfnuuvCFvo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7rdkQd2nFo/KCgD1LcCFyZvYpZw3T9bvfpxt4ESvC74=;
-        b=L9U9BDaXvBN3N3AtFVYiEvR3fExyWBmA8oJVlo+qpGjjnMD7dTLZ2NG6nkjQm8Sv26
-         lVsNVY7AS5rIuJ5hbjqCzBFdJAZ0Ljx50+SA5xOEo7ToIasiDYVcQBS7EfttDMKauH4z
-         XOKf3pe4poE9SjP+cHdUooRO2UavdwjaQvks0dhjCv79bRJVijBWYxz/00LSm25v4GhV
-         5kNyNrjQtXxfcAUmxn7M7WnhlH12uiXn+xgZz6pbrJoosUnHzByQuCciFDGvcnYn2Fg9
-         Vj+OrTbxJ8hPLuMVipi+tX5sQLMnAE3GT2/8sFWlQbot1Zjx8LTcEkqc+qRt5cdpSu99
-         awWw==
-X-Gm-Message-State: AOAM530/H80RyIlvIz4LQVBJknJAt+rBrSoxDikZQCzzKVVqrx1THCnV
-        4d01BAI6U32vzjZwa+2vG1pxgHAP6zZo4g==
-X-Google-Smtp-Source: ABdhPJydC5ZVFMyJYCSOJXeNTsqTn/raiUoOZz2LsaoA+y4YuOufjvLvCbB0yAxr4/0Pfx3oKY5ahw==
-X-Received: by 2002:a19:6d01:: with SMTP id i1mr4816489lfc.36.1614442932651;
-        Sat, 27 Feb 2021 08:22:12 -0800 (PST)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id t16sm1624854lfe.179.2021.02.27.08.22.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Feb 2021 08:22:12 -0800 (PST)
-Received: by mail-lf1-f41.google.com with SMTP id n16so1643507lfb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 08:22:11 -0800 (PST)
-X-Received: by 2002:a19:ed03:: with SMTP id y3mr3977259lfy.377.1614442931514;
- Sat, 27 Feb 2021 08:22:11 -0800 (PST)
+        id S230164AbhB0QZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 11:25:10 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:33140 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230010AbhB0QY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 11:24:28 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lG2NQ-008lOw-KV; Sat, 27 Feb 2021 17:23:32 +0100
+Date:   Sat, 27 Feb 2021 17:23:32 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     arndb@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, brandon_chuang@edge-core.com,
+        wally_wang@accton.com, aken_liu@edge-core.com, gulv@microsoft.com,
+        jolevequ@microsoft.com, xinxliu@microsoft.com,
+        'netdev' <netdev@vger.kernel.org>
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YDpyBLFLD/E9D1OU@lunn.ch>
+References: <20210215193821.3345-1-don@thebollingers.org>
+ <YDl3f8MNWdZWeOBh@lunn.ch>
+ <000901d70cb2$b2848420$178d8c60$@thebollingers.org>
 MIME-Version: 1.0
-References: <YDnf/cY4c0uOIcVd@zeniv-ca.linux.org.uk>
-In-Reply-To: <YDnf/cY4c0uOIcVd@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 27 Feb 2021 08:21:55 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whHCLK=_h27zMi8A=sn-GO=C+JOAX4nb7QjuGRbLebgbQ@mail.gmail.com>
-Message-ID: <CAHk-=whHCLK=_h27zMi8A=sn-GO=C+JOAX4nb7QjuGRbLebgbQ@mail.gmail.com>
-Subject: Re: [git pull] vfs.git misc stuff
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000901d70cb2$b2848420$178d8c60$@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 10:00 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> Al Viro (3):
->       9p: fix misuse of sscanf() in v9fs_stat2inode()
+> > I assume you have seen the work NVIDIA submitted last week? This idea of
+> > linear pages is really restrictive and we are moving away from it.
+> 
+> No, I haven't seen it.  I can't seem to locate anything in the past month on
+> LMKL from NVIDIA.  Please point me to it.
 
-Hmm. Technically this changes some of the rules. It used to check that
-i tall fit in 32 bytes. Now there could be arbitrary spaces in there
-that pushes it over the limit.
+[RFC PATCH net-next 0/5] ethtool: Extend module EEPROM dump
+Message-Id: <1614181274-28482-1-git-send-email-moshe@nvidia.com>
 
-I don't think we care, but..
+b4 should be able to fetch it for you, using that message id.
 
-             Linus
+Clearly, we don't want two different kernel APIs for doing the same
+thing. This new KAPI is still in its early days. You can contribute to
+it, and make it work for your use case. If i understand correctly, you
+are using Linux as a bootloader, and running the complete switch
+driver in userspace, not making use of the Linux network stack. This
+is not something the netdev community likes, but if you work within
+the networking KAPI, rather than adding parallel KAPI, we can probably
+work together. I think the biggest problem you have is identifiers.
+Since you don't have the SFP associated to a netdev, the current IOCTL
+interface which us the netdev name as an identifier does not work. But
+the new code is netlink based. The identifier is just an attribute in
+the message. See if you can use an alternative attribute which
+directly identifies the SFP, not the netdev. It is O.K. to instantiate
+an SFP device and then not make use of it in PHYLINK. So this should
+work.
+
+     Andrew
