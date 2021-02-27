@@ -2,1418 +2,618 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67629326E04
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 17:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744CE326E0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 18:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhB0Q40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 11:56:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40994 "EHLO mail.kernel.org"
+        id S230188AbhB0RAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 12:00:36 -0500
+Received: from mout.gmx.net ([212.227.17.21]:46397 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230001AbhB0Q4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 11:56:13 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB69E61606;
-        Sat, 27 Feb 2021 16:55:29 +0000 (UTC)
-Date:   Sat, 27 Feb 2021 16:55:26 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Joe Sandom <joe.g.sandom@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joe Sandom <joe.sandom@outlook.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND][PATCH v4 1/2] Added AMS tsl2591 driver implementation
-Message-ID: <20210227165526.0f8917c8@archlinux>
-In-Reply-To: <20210222212313.29319-1-joe.g.sandom@gmail.com>
-References: <20210222212313.29319-1-joe.g.sandom@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230001AbhB0Q7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 11:59:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614445047;
+        bh=SJ2STixNt0PyHngT/tiJ3uhIXPFdc+NSRSH1mAaXNlM=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=kk0rutEsjrywZbaGeKW4Qg+vakTIglVmnIjrc6QY1hVEQJymoN/1P1aqltHNkmMGb
+         rizl4btZ2NEFafFRXIc8kWC1e9OVR85gOx08CO2jETOidiGjUX7iQfGpMJkOVgYZ4c
+         4sLJgyLOY92MUJ9kGQ5R/I21jLVbIkZKYzu36Sj0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.229.153]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MZCbB-1lKbBP3xhp-00VARV; Sat, 27 Feb 2021 17:57:27 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
+Cc:     John Wood <john.wood@gmx.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: [PATCH v5 4/8] security/brute: Fine tuning the attack detection
+Date:   Sat, 27 Feb 2021 16:30:09 +0100
+Message-Id: <20210227153013.6747-5-john.wood@gmx.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210227153013.6747-1-john.wood@gmx.com>
+References: <20210227153013.6747-1-john.wood@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:yn40DS4mJdQuKPVzadkjhT2DScePirPzJ8fREP8J8G8Rig3hU5E
+ GH/IWR8VO6eAFVrES1ZfdO++lnJCEUioggFdwxMpDqKz0dUAdr5Hx42H9vmJjthehQ+suc3
+ PArJfqpFPCQMHvXQ7x8rGT1PtoP53hbCM11qS5jQ+1OUHs1+IrIGsUU/SU99x21w7bPqUr+
+ GZYw4hFxzjzbpGRva1FgQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:btTvl7/folo=:oKP2bWtdEKLK10rmjQkYmZ
+ ohTo8Ok81RGK+fGc5rCZeZD8thtz9PlkXParvM3qSROMHASwB208pGvOfCg4wsa6S2TCssaLv
+ eDHeOv4V+4Dh+dYTKmGSQFoqyCaByuNwfvwf1NWD/53b71Mt50Es9ebhBP5o21c1LU0r9swCf
+ wwi4SLzZ8gfV+ST0yPnLJlVFuDPNThEV4cr1BMzdd5AgT+XfZpXD3Z+NDdtl24OTxTNbeA/Dq
+ s/lKbanafhqYnx+nK5jwz3YleGko+lqABw1DM5dtBXetngnEY16v50Oi/afYuCjmIbCn+eK/C
+ oB1Ryz3RpKVgU0xeoQaMSLZH0VZDMQrXK955lDHDt3GOoPq6+w7RVcEyTnAGoG2TQnYnR9JgA
+ rOXZ4WH0bxTf/AKyFC40jz0gBExRyTRcYb45ZIp6ddr5/42Uyqe8CfF43jeTtvkSZo25RWgHY
+ 6e7Yxlr5pM8/C1M8LnkSg4L3IBLrYxm9SH78z0X1tMlNed4sESReHfG2dKOUmUPLQ2yKaEbmS
+ m235STy8zVuig444LzfsfGSqb+40ZwmTXRYd5+hXn+xMxNbRlQSCCoyFL09tiBd13lnc2v3w5
+ /FWZzj5xdg2HK0URMSQiSumeRE7WwYRiollngI0sOO5d3Yqp/ci1oDxtMD17Iz+PJFxZwrIec
+ r2r5eLxjkWLQFjrqyC+QDV15hd2RXfMc3+t2t90blO5TpvR5TxMiJODqlsPf+Jh9opin0JSR/
+ EjdrbmoTZl27i0WP3nui6NiPSB/R8N6xwSaC+YzIRx8Tf/lCctMwh3HS0/HDFji8bKx5fmMNo
+ NH3oeVYI+VMAtfKp4Bzs0WYsoi6ppCyyAvERvndW7vqGY6op1etoqsmMN/iThK7nBqcc32hVg
+ J1zOgkaUGM1jVF0nL+zA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 21:23:12 +0000
-Joe Sandom <joe.g.sandom@gmail.com> wrote:
+To avoid false positives during the attack detection it is necessary to
+narrow the possible cases. Only the following scenarios are taken into
+account:
 
-> Driver implementation for AMS/TAOS tsl2591 ambient light sensor.
-> 
-> This driver supports configuration via device tree and sysfs.
-> Supported channels for raw infrared light intensity,
-> raw combined light intensity and illuminance in lux.
-> The driver additionally supports iio events on lower and
-> upper thresholds.
-> 
-> This is a very-high sensitivity light-to-digital converter that
-> transforms light intensity into a digital signal.
-> 
-> Datasheet Available at: https://ams.com/tsl25911
-> 
-> Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
+1.- Launching (fork()/exec()) a setuid/setgid process repeatedly until a
+    desirable memory layout is got (e.g. Stack Clash).
+2.- Connecting to an exec()ing network daemon (e.g. xinetd) repeatedly
+    until a desirable memory layout is got (e.g. what CTFs do for simple
+    network service).
+3.- Launching processes without exec() (e.g. Android Zygote) and exposing
+    state to attack a sibling.
+4.- Connecting to a fork()ing network daemon (e.g. apache) repeatedly unti=
+l
+    the previously shared memory layout of all the other children is
+    exposed (e.g. kind of related to HeartBleed).
 
-Hi Joe,
+In each case, a privilege boundary has been crossed:
 
-A few minor things left that I've comment on inline. Very nearly
-ready to merge I think.  We have lots of time until next merge
-window anyway so it is good to take the opportunity to clean these
-little things up.
+Case 1: setuid/setgid process
+Case 2: network to local
+Case 3: privilege changes
+Case 4: network to local
 
-Jonathan
+So, this patch checks if any of these privilege boundaries have been
+crossed before to compute the application crash period.
 
-> ---
-> 
-> Changes in v4:
-> - Moved binding document to a separate patch and is now formed as a patch series
-> - Ensure vendor prefix is included in macros and that macros have appropriate naming
-> - Made use of BIT, GENMASK and FIELD_GET where appropriate for improved readability
-> - Corrected data channels terminology to more appropriate data register naming
-> - Removed tsl2591_als_readings and return data directly depending on the channel being read. See tsl2591_read_channel_data.
-> - Add more detailed comment on mutex definition
-> - Read als data as a block read instead of 4 separate byte reads
-> - Reserve *_compatible functions for checking compatibility, not for assigning the setting value
-> - Enforce setting corresponding upper/lower threshold to avoid issues in ordering when modifying thresholds
-> - Remove tsl2591_sysfs_attrs_ctrl and use info_mask to handle sysfs configuration where applicable
-> - Use .read_avail callback for *_available functions
-> - In .write_event_value, clean up period calculation handling. Removed some redundant code.
-> - Cleaned up some debug prints
-> - Cleaned up mutex handling for improved readability
-> - Ensured not to swallow return code in if statements in function calls
-> 
-> Reason for re-send;
-> - Maintainer email was outlook address, changed to gmail address as this
->   is the email the patch is being sent from.
-> 
->  drivers/iio/light/Kconfig   |   11 +
->  drivers/iio/light/Makefile  |    1 +
->  drivers/iio/light/tsl2591.c | 1217 +++++++++++++++++++++++++++++++++++
->  3 files changed, 1229 insertions(+)
->  create mode 100644 drivers/iio/light/tsl2591.c
-> 
-> diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
-> index 33ad4dd0b5c7..07550f1a1783 100644
-> --- a/drivers/iio/light/Kconfig
-> +++ b/drivers/iio/light/Kconfig
-> @@ -501,6 +501,17 @@ config TSL2583
->  	  Provides support for the TAOS tsl2580, tsl2581 and tsl2583 devices.
->  	  Access ALS data via iio, sysfs.
->  
-> +config TSL2591
-> +        tristate "TAOS TSL2591 ambient light sensor"
-> +        depends on I2C
-> +        help
-> +          Select Y here for support of the AMS/TAOS TSL2591 ambient light sensor,
-> +          featuring channels for combined visible + IR intensity and lux illuminance.
-> +          Access als data via iio and sysfs. Supports iio_events.
-> +
-> +          To compile this driver as a module, select M: the
-> +          module will be called tsl2591.
-> +
->  config TSL2772
->  	tristate "TAOS TSL/TMD2x71 and TSL/TMD2x72 Family of light and proximity sensors"
->  	depends on I2C
-> diff --git a/drivers/iio/light/Makefile b/drivers/iio/light/Makefile
-> index ea376deaca54..d10912faf964 100644
-> --- a/drivers/iio/light/Makefile
-> +++ b/drivers/iio/light/Makefile
-> @@ -48,6 +48,7 @@ obj-$(CONFIG_ST_UVIS25_SPI)	+= st_uvis25_spi.o
->  obj-$(CONFIG_TCS3414)		+= tcs3414.o
->  obj-$(CONFIG_TCS3472)		+= tcs3472.o
->  obj-$(CONFIG_TSL2583)		+= tsl2583.o
-> +obj-$(CONFIG_TSL2591)		+= tsl2591.o
->  obj-$(CONFIG_TSL2772)		+= tsl2772.o
->  obj-$(CONFIG_TSL4531)		+= tsl4531.o
->  obj-$(CONFIG_US5182D)		+= us5182d.o
-> diff --git a/drivers/iio/light/tsl2591.c b/drivers/iio/light/tsl2591.c
-> new file mode 100644
-> index 000000000000..1124e9da5106
-> --- /dev/null
-> +++ b/drivers/iio/light/tsl2591.c
-> @@ -0,0 +1,1217 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2020 Joe Sandom <joe.g.sandom@gmail.com>
-> + *
-> + * Datasheet available at: https://ams.com/tsl25911
-> + *
-> + * Device driver for the TAOS TSL2591. This is a very-high sensitivity
-> + * light-to-digital converter that transforms light intensity into a digital
-> + * signal.
-> + */
-> +
-> +#include <linux/bitfield.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/delay.h>
-> +#include <linux/i2c.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/pm_runtime.h>
-> +
-> +#include <linux/iio/events.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/iio/sysfs.h>
-> +
-> +/* ALS integration time field value to als time*/
-> +#define TSL2591_FVAL_TO_ATIME(x) (((x) + 1) * 100)
-> +
-> +/* TSL2591 register set */
-> +#define TSL2591_ENABLE      0x00
-> +#define TSL2591_CONTROL     0x01
-> +#define TSL2591_AILTL       0x04
-> +#define TSL2591_AILTH       0x05
-> +#define TSL2591_AIHTL       0x06
-> +#define TSL2591_AIHTH       0x07
-> +#define TSL2591_NP_AILTL    0x08
-> +#define TSL2591_NP_AILTH    0x09
-> +#define TSL2591_NP_AIHTL    0x0A
-> +#define TSL2591_NP_AIHTH    0x0B
-> +#define TSL2591_PERSIST     0x0C
-> +#define TSL2591_PACKAGE_ID  0x11
-> +#define TSL2591_DEVICE_ID   0x12
-> +#define TSL2591_STATUS      0x13
-> +#define TSL2591_C0_DATAL    0x14
-> +#define TSL2591_C0_DATAH    0x15
-> +#define TSL2591_C1_DATAL    0x16
-> +#define TSL2591_C1_DATAH    0x17
-> +
-> +/* TSL2591 command register definitions */
-> +#define TSL2591_CMD_NOP             (BIT(5) | BIT(7))
-> +#define TSL2591_CMD_SF_INTSET       (BIT(2) | GENMASK(7, 5))
-> +#define TSL2591_CMD_SF_CALS_I       (BIT(0) | BIT(2) | GENMASK(7, 5))
-> +#define TSL2591_CMD_SF_CALS_NPI     (GENMASK(2, 0) | GENMASK(7, 5))
-> +#define TSL2591_CMD_SF_CNP_ALSI     (BIT(1) | BIT(3) | GENMASK(7, 5))
-> +
-> +/* TSL2591 enable register definitions */
-> +#define TSL2591_PWR_ON              BIT(0)
-> +#define TSL2591_PWR_OFF             0x00
-> +#define TSL2591_ENABLE_ALS          BIT(1)
-> +#define TSL2591_ENABLE_ALS_INT      BIT(4)
-> +#define TSL2591_ENABLE_SLEEP_INT    BIT(6)
-> +#define TSL2591_ENABLE_NP_INT       BIT(7)
-> +
-> +/* TSL2591 control register definitions */
-> +#define TSL2591_CTRL_ALS_INTEGRATION_100MS  0x00
-> +#define TSL2591_CTRL_ALS_INTEGRATION_200MS  BIT(0)
-> +#define TSL2591_CTRL_ALS_INTEGRATION_300MS  BIT(1)
-> +#define TSL2591_CTRL_ALS_INTEGRATION_400MS  GENMASK(1, 0)
-> +#define TSL2591_CTRL_ALS_INTEGRATION_500MS  BIT(2)
-> +#define TSL2591_CTRL_ALS_INTEGRATION_600MS  (BIT(0) | BIT(2))
-> +#define TSL2591_CTRL_ALS_LOW_GAIN           0x00
-> +#define TSL2591_CTRL_ALS_MED_GAIN           BIT(4)
-> +#define TSL2591_CTRL_ALS_HIGH_GAIN          BIT(5)
-> +#define TSL2591_CTRL_ALS_MAX_GAIN           GENMASK(5, 4)
-> +#define TSL2591_CTRL_SYS_RESET              BIT(7)
-> +
-> +/* TSL2591 persist register definitions */
-> +#define TSL2591_PRST_ALS_INT_CYCLE_0        0x00
-> +#define TSL2591_PRST_ALS_INT_CYCLE_ANY      BIT(0)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_2        BIT(1)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_3        GENMASK(1, 0)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_5        BIT(2)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_10       (BIT(0) | BIT(2))
-> +#define TSL2591_PRST_ALS_INT_CYCLE_15       GENMASK(2, 1)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_20       GENMASK(2, 0)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_25       BIT(3)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_30       (BIT(0) | BIT(3))
-> +#define TSL2591_PRST_ALS_INT_CYCLE_35       (BIT(1) | BIT(3))
-> +#define TSL2591_PRST_ALS_INT_CYCLE_40       (GENMASK(1, 0) | BIT(3))
-> +#define TSL2591_PRST_ALS_INT_CYCLE_45       GENMASK(3, 2)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_50       (BIT(0) | GENMASK(3, 2))
-> +#define TSL2591_PRST_ALS_INT_CYCLE_55       GENMASK(3, 1)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_60       GENMASK(3, 0)
-> +#define TSL2591_PRST_ALS_INT_CYCLE_MAX      TSL2591_PRST_ALS_INT_CYCLE_60
-> +
-> +/* TSL2591 persist interrupt cycle literals */
-> +#define TSL2591_PRST_ALS_INT_CYCLE_1_LIT      1
+Also, in every fatal crash only the signals delivered by the kernel are
+taken into account with the exception of the SIGABRT signal since the
+latter is used by glibc for stack canary, malloc, etc failures, which may
+indicate that a mitigation has been triggered.
 
-Why?  These just map a define with the number in it to the number.
-Hence not magic numbers, just put the values inline instead of the defines.
+Signed-off-by: John Wood <john.wood@gmx.com>
+=2D--
+ security/brute/brute.c | 293 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 280 insertions(+), 13 deletions(-)
 
-> +#define TSL2591_PRST_ALS_INT_CYCLE_2_LIT      2
-> +#define TSL2591_PRST_ALS_INT_CYCLE_3_LIT      3
-> +#define TSL2591_PRST_ALS_INT_CYCLE_5_LIT      5
-> +#define TSL2591_PRST_ALS_INT_CYCLE_10_LIT     10
-> +#define TSL2591_PRST_ALS_INT_CYCLE_15_LIT     15
-> +#define TSL2591_PRST_ALS_INT_CYCLE_20_LIT     20
-> +#define TSL2591_PRST_ALS_INT_CYCLE_25_LIT     25
-> +#define TSL2591_PRST_ALS_INT_CYCLE_30_LIT     30
-> +#define TSL2591_PRST_ALS_INT_CYCLE_35_LIT     35
-> +#define TSL2591_PRST_ALS_INT_CYCLE_40_LIT     40
-> +#define TSL2591_PRST_ALS_INT_CYCLE_45_LIT     45
-> +#define TSL2591_PRST_ALS_INT_CYCLE_50_LIT     50
-> +#define TSL2591_PRST_ALS_INT_CYCLE_55_LIT     55
-> +#define TSL2591_PRST_ALS_INT_CYCLE_60_LIT     60
-> +
-> +/* TSL2591 PID register mask */
-> +#define TSL2591_PACKAGE_ID_MASK    GENMASK(5, 4)
-> +
-> +/* TSL2591 ID register mask */
-> +#define TSL2591_DEVICE_ID_MASK     GENMASK(7, 0)
-> +
-> +/* TSL2591 status register masks */
-> +#define TSL2591_STS_ALS_VALID_MASK   BIT(0)
-> +#define TSL2591_STS_ALS_INT_MASK     BIT(4)
-> +#define TSL2591_STS_NPERS_INT_MASK   BIT(5)
-> +#define TSL2591_STS_VAL_HIGH_MASK    BIT(0)
-> +
-> +/* TSL2591 constant values */
-> +#define TSL2591_PACKAGE_ID_VAL  0x00
-> +#define TSL2591_DEVICE_ID_VAL   0x50
-> +
-> +/* Power off suspend delay time MS */
-> +#define TSL2591_POWER_OFF_DELAY_MS   2000
-> +
-> +/* TSL2591 default values */
-> +#define TSL2591_DEFAULT_ALS_INT_TIME          TSL2591_CTRL_ALS_INTEGRATION_300MS
-> +#define TSL2591_DEFAULT_ALS_GAIN              TSL2591_CTRL_ALS_MED_GAIN
-> +#define TSL2591_DEFAULT_ALS_PERSIST           TSL2591_PRST_ALS_INT_CYCLE_ANY
-> +#define TSL2591_DEFAULT_ALS_LOWER_THRESH      100
-> +#define TSL2591_DEFAULT_ALS_UPPER_THRESH      1500
-> +
-> +/* TSL2591 number of data registers */
-> +#define TSL2591_NUM_DATA_REGISTERS     4
-> +
-> +/* TSL2591 number of valid status reads on ADC complete */
-> +#define TSL2591_ALS_STS_VALID_COUNT    10
-> +
-> +/* TSL2591 maximum values */
-> +#define TSL2591_MAX_ALS_INT_TIME_MS    600
-> +#define TSL2591_ALS_MAX_VALUE	       65535
-> +
-> +/*
-> + * LUX calculations;
-> + * AGAIN values from Adafruits TSL2591 Arduino library
-> + * https://github.com/adafruit/Adafruit_TSL2591_Library
-> + */
-> +#define TSL2591_CTRL_ALS_LOW_GAIN_MULTIPLIER   1
-> +#define TSL2591_CTRL_ALS_MED_GAIN_MULTIPLIER   25
-> +#define TSL2591_CTRL_ALS_HIGH_GAIN_MULTIPLIER  428
-> +#define TSL2591_CTRL_ALS_MAX_GAIN_MULTIPLIER   9876
-> +#define TSL2591_LUX_COEFFICIENT                408
-> +
-> +struct tsl2591_als_settings {
-> +	u8 als_int_time;
-> +	u8 als_gain;
-> +	u8 als_persist;
-> +	u16 als_lower_thresh;
-> +	u16 als_upper_thresh;
-> +};
-> +
-> +struct tsl2591_chip {
-> +	/*
-> +	 * Keep als_settings in sync with hardware state
-> +	 * and ensure multiple readers are serialized.
-> +	 */
-> +	struct mutex als_mutex;
-> +	struct i2c_client *client;
-> +	struct tsl2591_als_settings als_settings;
-> +
-> +	bool events_enabled;
-> +};
-> +
-> +/*
-> + * Period table is ALS persist cycle x integration time setting
-> + * Integration times: 100ms, 200ms, 300ms, 400ms, 500ms, 600ms
-> + * ALS cycles: 1, 2, 3, 5, 10, 20, 25, 30, 35, 40, 45, 50, 55, 60
-> + */
-> +static const char * const tsl2591_als_period_list[] = {
-> +	"0.1 0.2 0.3 0.5 1.0 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0",
-> +	"0.2 0.4 0.6 1.0 2.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0",
-> +	"0.3 0.6 0.9 1.5 3.0 6.0 7.5 9.0 10.5 12.0 13.5 15.0 16.5 18.0",
-> +	"0.4 0.8 1.2 2.0 4.0 8.0 10.0 12.0 14.0 16.0 18.0 20.0 22.0 24.0",
-> +	"0.5 1.0 1.5 2.5 5.0 10.0 12.5 15.0 17.5 20.0 22.5 25.0 27.5 30.0",
-> +	"0.6 1.2 1.8 3.0 6.0 12.0 15.0 18.0 21.0 24.0 27.0 30.0 33.0 36.0",
-> +};
-> +
-> +static const int tsl2591_int_time_available[] = {
-> +	100, 200, 300, 400, 500, 600,
-> +};
-> +
-> +static const int tsl2591_calibscale_available[] = {
-> +	1, 25, 428, 9876,
-> +};
-> +
-> +static int tsl2591_gain_to_multiplier(const u8 als_gain)
-> +{
-> +	switch (als_gain) {
-> +	case TSL2591_CTRL_ALS_LOW_GAIN:
-> +		return TSL2591_CTRL_ALS_LOW_GAIN_MULTIPLIER;
-> +	case TSL2591_CTRL_ALS_MED_GAIN:
-> +		return TSL2591_CTRL_ALS_MED_GAIN_MULTIPLIER;
-> +	case TSL2591_CTRL_ALS_HIGH_GAIN:
-> +		return TSL2591_CTRL_ALS_HIGH_GAIN_MULTIPLIER;
-> +	case TSL2591_CTRL_ALS_MAX_GAIN:
-> +		return TSL2591_CTRL_ALS_MAX_GAIN_MULTIPLIER;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static u8 tsl2591_multiplier_to_gain(const u32 multiplier)
-> +{
-> +	switch (multiplier) {
-> +	case TSL2591_CTRL_ALS_LOW_GAIN_MULTIPLIER:
-> +		return TSL2591_CTRL_ALS_LOW_GAIN;
-> +	case TSL2591_CTRL_ALS_MED_GAIN_MULTIPLIER:
-> +		return TSL2591_CTRL_ALS_MED_GAIN;
-> +	case TSL2591_CTRL_ALS_HIGH_GAIN_MULTIPLIER:
-> +		return TSL2591_CTRL_ALS_HIGH_GAIN;
-> +	case TSL2591_CTRL_ALS_MAX_GAIN_MULTIPLIER:
-> +		return TSL2591_CTRL_ALS_MAX_GAIN;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int tsl2591_persist_cycle_to_lit(const u8 als_persist)
-> +{
-> +	switch (als_persist) {
-> +	case TSL2591_PRST_ALS_INT_CYCLE_ANY:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_1_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_2:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_2_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_3:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_3_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_5:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_5_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_10:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_10_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_15:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_15_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_20:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_20_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_25:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_25_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_30:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_30_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_35:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_35_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_40:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_40_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_45:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_45_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_50:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_50_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_55:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_55_LIT;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_60:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_60_LIT;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int tsl2591_persist_lit_to_cycle(const u8 als_persist)
-> +{
-> +	switch (als_persist) {
-> +	case TSL2591_PRST_ALS_INT_CYCLE_1_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_ANY;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_2_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_2;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_3_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_3;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_5_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_5;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_10_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_10;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_15_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_15;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_20_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_20;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_25_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_25;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_30_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_30;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_35_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_35;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_40_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_40;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_45_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_45;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_50_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_50;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_55_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_55;
-> +	case TSL2591_PRST_ALS_INT_CYCLE_60_LIT:
-> +		return TSL2591_PRST_ALS_INT_CYCLE_60;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int tsl2591_compatible_int_time(struct tsl2591_chip *chip,
-> +				       const u32 als_integration_time)
-> +{
-> +	switch (als_integration_time) {
-> +	case TSL2591_CTRL_ALS_INTEGRATION_100MS:
-> +	case TSL2591_CTRL_ALS_INTEGRATION_200MS:
-> +	case TSL2591_CTRL_ALS_INTEGRATION_300MS:
-> +	case TSL2591_CTRL_ALS_INTEGRATION_400MS:
-> +	case TSL2591_CTRL_ALS_INTEGRATION_500MS:
-> +	case TSL2591_CTRL_ALS_INTEGRATION_600MS:
-> +		return 0;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int tsl2591_als_time_to_fval(const u32 als_integration_time)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(tsl2591_int_time_available); ++i) {
-> +		if (als_integration_time == tsl2591_int_time_available[i])
-> +			return ((als_integration_time / 100) - 1);
-> +		if (i == (ARRAY_SIZE(tsl2591_int_time_available) - 1))
-> +			break;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static int tsl2591_compatible_gain(struct tsl2591_chip *chip, const u8 als_gain)
-> +{
-> +	switch (als_gain) {
-> +	case TSL2591_CTRL_ALS_LOW_GAIN:
-> +	case TSL2591_CTRL_ALS_MED_GAIN:
-> +	case TSL2591_CTRL_ALS_HIGH_GAIN:
-> +	case TSL2591_CTRL_ALS_MAX_GAIN:
-> +		return 0;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int tsl2591_compatible_als_persist_cycle(struct tsl2591_chip *chip,
-> +						const u32 als_persist)
-> +{
-> +	switch (als_persist) {
-> +	case TSL2591_PRST_ALS_INT_CYCLE_ANY:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_2:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_3:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_5:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_10:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_15:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_20:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_25:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_30:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_35:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_40:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_45:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_50:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_55:
-> +	case TSL2591_PRST_ALS_INT_CYCLE_60:
-> +		return 0;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int tsl2591_wait_adc_complete(struct tsl2591_chip *chip)
-> +{
-> +	struct i2c_client *client = chip->client;
-> +	struct tsl2591_als_settings settings = chip->als_settings;
-> +	int delay = TSL2591_FVAL_TO_ATIME(settings.als_int_time);
-> +	int ret;
-> +	int i;
-> +
-> +	if (!delay)
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * Sleep for ALS integration time to allow enough time
-> +	 * for an ADC read cycle to complete. Check status after
-> +	 * delay for ALS valid
-> +	 */
-> +	msleep(delay);
-> +
-> +	/* Check for status ALS valid flag for up to 100ms */
-> +	for (i = 0; i < TSL2591_ALS_STS_VALID_COUNT; ++i) {
-> +		ret = i2c_smbus_read_byte_data(client,
-> +					       TSL2591_CMD_NOP | TSL2591_STATUS);
-> +		if (ret < 0) {
-> +			dev_err(&client->dev, "Failed to read register\n");
-> +			return -EINVAL;
-> +		}
-> +		ret = FIELD_GET(TSL2591_STS_ALS_VALID_MASK, ret);
-> +		if (ret == TSL2591_STS_VAL_HIGH_MASK)
-> +			break;
-> +
-> +		if (i == (TSL2591_ALS_STS_VALID_COUNT - 1))
-> +			return -ENODATA;
-> +
-> +		usleep_range(9000, 10000);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * tsl2591_read_channel_data - Reads raw channel data and calculates lux
-> + *
-> + * Formula for lux calculation;
-> + * Derived from Adafruit's TSL2591 library
-> + * Link: https://github.com/adafruit/Adafruit_TSL2591_Library
-> + * Counts Per Lux (CPL) = (ATIME_ms * AGAIN) / LUX DF
-> + * lux = ((C0DATA - C1DATA) * (1 - (C1DATA / C0DATA))) / CPL
-> + *
-> + * Scale values to get more representative value of lux i.e.
-> + * lux = ((C0DATA - C1DATA) * (1000 - ((C1DATA * 1000) / C0DATA))) / CPL
-> + *
-> + * Channel 0 = IR + Visible
-> + * Channel 1 = IR only
-> + *
+diff --git a/security/brute/brute.c b/security/brute/brute.c
+index 7ebc8dbf5e86..0a99cd4c3303 100644
+=2D-- a/security/brute/brute.c
++++ b/security/brute/brute.c
+@@ -3,15 +3,25 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
-Blank line here doesn't add anything, so good to drop it.
+ #include <asm/current.h>
++#include <asm/rwonce.h>
++#include <asm/siginfo.h>
++#include <asm/signal.h>
++#include <linux/binfmts.h>
+ #include <linux/bug.h>
+ #include <linux/compiler.h>
++#include <linux/cred.h>
++#include <linux/dcache.h>
+ #include <linux/errno.h>
++#include <linux/fs.h>
+ #include <linux/gfp.h>
++#include <linux/if.h>
+ #include <linux/init.h>
+ #include <linux/jiffies.h>
+ #include <linux/kernel.h>
+ #include <linux/lsm_hooks.h>
+ #include <linux/math64.h>
++#include <linux/netdevice.h>
++#include <linux/path.h>
+ #include <linux/printk.h>
+ #include <linux/refcount.h>
+ #include <linux/rwlock.h>
+@@ -19,9 +29,35 @@
+ #include <linux/sched.h>
+ #include <linux/sched/signal.h>
+ #include <linux/sched/task.h>
++#include <linux/signal.h>
++#include <linux/skbuff.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
++#include <linux/stat.h>
+ #include <linux/types.h>
++#include <linux/uidgid.h>
++
++/**
++ * struct brute_cred - Saved credentials.
++ * @uid: Real UID of the task.
++ * @gid: Real GID of the task.
++ * @suid: Saved UID of the task.
++ * @sgid: Saved GID of the task.
++ * @euid: Effective UID of the task.
++ * @egid: Effective GID of the task.
++ * @fsuid: UID for VFS ops.
++ * @fsgid: GID for VFS ops.
++ */
++struct brute_cred {
++	kuid_t uid;
++	kgid_t gid;
++	kuid_t suid;
++	kgid_t sgid;
++	kuid_t euid;
++	kgid_t egid;
++	kuid_t fsuid;
++	kgid_t fsgid;
++};
 
-> + */
-> +static int tsl2591_read_channel_data(struct iio_dev *indio_dev,
-> +				     struct iio_chan_spec const *chan,
-> +				     int *val, int *val2)
-> +{
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +	struct tsl2591_als_settings *settings = &chip->als_settings;
-> +	struct i2c_client *client = chip->client;
-> +	int ret;
-> +	u8 als_data[TSL2591_NUM_DATA_REGISTERS];
-> +
-> +	int counts_per_lux;
-> +	int lux;
-> +	int gain_multi;
-> +	int int_time_fval;
-> +
-> +	u16 als_ch0;
-> +	u16 als_ch1;
-> +
-> +	ret = tsl2591_wait_adc_complete(chip);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "No data available. Err: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = i2c_smbus_read_i2c_block_data(client,
-> +					    TSL2591_CMD_NOP | TSL2591_C0_DATAL,
-> +					    sizeof(als_data), als_data);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to read data bytes");
-> +			return ret;
-For comment below if (ret), that won't work on these calls because IIRC they
-return the number of bytes transferred.  However, you can move the check locally
-that this is the right length and ensure 0 is returned for the good path.
-> +	}
-> +
-> +	als_ch0 = le16_to_cpup((const __le16 *)&als_data[0]);
-> +	als_ch1 = le16_to_cpup((const __le16 *)&als_data[2]);
-> +
-> +	switch (chan->type) {
-> +	case IIO_INTENSITY:
-> +		if (chan->channel2 == IIO_MOD_LIGHT_BOTH)
-> +			*val = als_ch0;
-> +		else if (chan->channel2 == IIO_MOD_LIGHT_IR)
-> +			*val = als_ch1;
-> +		else
-> +			return -EINVAL;
-> +		break;
-> +	case IIO_LIGHT:
-> +		gain_multi = tsl2591_gain_to_multiplier(settings->als_gain);
-> +		if (gain_multi < 0) {
-> +			dev_err(&client->dev, "Invalid multiplier");
-> +			return gain_multi;
-> +		}
-> +
-> +		int_time_fval = TSL2591_FVAL_TO_ATIME(settings->als_int_time);
-> +		/* Calculate counts per lux value */
-> +		counts_per_lux =
-> +			(int_time_fval * gain_multi) / TSL2591_LUX_COEFFICIENT;
-> +
-> +		dev_dbg(&client->dev, "Counts Per Lux: %d\n", counts_per_lux);
-> +
-> +		/* Calculate lux value */
-> +		lux = ((als_ch0 - als_ch1) *
-> +		       (1000 - ((als_ch1 * 1000) / als_ch0))) / counts_per_lux;
-> +
-> +		dev_dbg(&client->dev, "Raw lux calculation: %d\n", lux);
-> +
-> +		/* Divide by 1000 to get real lux value before scaling */
-> +		*val = lux / 1000;
-> +
-> +		/* Get the decimal part of lux reading */
-> +		*val2 = ((lux - (*val * 1000)) * 1000);
-> +
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return ret;
+ /**
+  * struct brute_stats - Fork brute force attack statistics.
+@@ -30,6 +66,9 @@
+  * @faults: Number of crashes.
+  * @jiffies: Last crash timestamp.
+  * @period: Crash period's moving average.
++ * @saved_cred: Saved credentials.
++ * @network: Network activity flag.
++ * @bounds_crossed: Privilege bounds crossed flag.
+  *
+  * This structure holds the statistical data shared by all the fork hiera=
+rchy
+  * processes.
+@@ -40,6 +79,9 @@ struct brute_stats {
+ 	unsigned char faults;
+ 	u64 jiffies;
+ 	u64 period;
++	struct brute_cred saved_cred;
++	unsigned char network : 1;
++	unsigned char bounds_crossed : 1;
+ };
 
-See above for why: I'd return 0 here
+ /*
+@@ -71,18 +113,25 @@ static inline struct brute_stats **brute_stats_ptr(st=
+ruct task_struct *task)
 
-> +}
-> +
-> +static int tsl2591_set_als_gain_int_time(struct tsl2591_chip *chip)
-> +{
-> +	struct i2c_client *client = chip->client;
-> +	struct tsl2591_als_settings als_settings = chip->als_settings;
-> +	int ret;
-> +
-> +	ret = i2c_smbus_write_byte_data(client,
-> +					TSL2591_CMD_NOP | TSL2591_CONTROL,
-> +					als_settings.als_int_time | als_settings.als_gain);
-> +	if (ret < 0)
-> +		dev_err(&client->dev, "Failed to set als gain & int time\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static int tsl2591_set_als_thresholds(struct tsl2591_chip *chip)
-> +{
-> +	struct i2c_client *client = chip->client;
-> +	struct tsl2591_als_settings als_settings = chip->als_settings;
-> +	int ret;
-> +
-> +	u8 als_lower_l;
-> +	u8 als_lower_h;
-> +	u8 als_upper_l;
-> +	u8 als_upper_h;
-> +
-> +	if (als_settings.als_lower_thresh >= als_settings.als_upper_thresh)
-> +		return -EINVAL;
-> +
-> +	if (als_settings.als_upper_thresh > TSL2591_ALS_MAX_VALUE)
-> +		return -EINVAL;
-> +
-> +	if (als_settings.als_upper_thresh < als_settings.als_lower_thresh)
-> +		return -EINVAL;
-> +
-> +	als_lower_l = (als_settings.als_lower_thresh & 0x00FF);
+ /**
+  * brute_new_stats() - Allocate a new statistics structure.
++ * @network_to_local: Network activity followed by a fork or execve syste=
+m call.
++ * @is_setid: The executable file has the setid flags set.
+  *
+  * If the allocation is successful the reference counter is set to one to
+  * indicate that there will be one task that points to this structure. Al=
+so, the
+  * last crash timestamp is set to now. This way, it is possible to comput=
+e the
+  * application crash period at the first fault.
+  *
++ * Moreover, the credentials of the current task are saved. Also, the net=
+work
++ * and bounds_crossed flags are set based on the network_to_local and is_=
+setid
++ * parameters.
++ *
+  * Return: NULL if the allocation fails. A pointer to the new allocated
+  *         statistics structure if it success.
+  */
+-static struct brute_stats *brute_new_stats(void)
++static struct brute_stats *brute_new_stats(bool network_to_local, bool is=
+_setid)
+ {
+ 	struct brute_stats *stats;
++	const struct cred *cred =3D current_cred();
 
-Given you are writing these into a byte field, probably better to express those
-masks as 0xFF.
+ 	stats =3D kmalloc(sizeof(struct brute_stats), GFP_ATOMIC);
+ 	if (!stats)
+@@ -93,6 +142,16 @@ static struct brute_stats *brute_new_stats(void)
+ 	stats->faults =3D 0;
+ 	stats->jiffies =3D get_jiffies_64();
+ 	stats->period =3D 0;
++	stats->saved_cred.uid =3D cred->uid;
++	stats->saved_cred.gid =3D cred->gid;
++	stats->saved_cred.suid =3D cred->suid;
++	stats->saved_cred.sgid =3D cred->sgid;
++	stats->saved_cred.euid =3D cred->euid;
++	stats->saved_cred.egid =3D cred->egid;
++	stats->saved_cred.fsuid =3D cred->fsuid;
++	stats->saved_cred.fsgid =3D cred->fsgid;
++	stats->network =3D network_to_local;
++	stats->bounds_crossed =3D network_to_local || is_setid;
 
-> +	als_lower_h = ((als_settings.als_lower_thresh >> 8) & 0x00FF);
-> +	als_upper_l = (als_settings.als_upper_thresh & 0x00FF);
-> +	als_upper_h = ((als_settings.als_upper_thresh >> 8) & 0x00FF);
-> +
-> +	ret = i2c_smbus_write_byte_data(client,
-> +					TSL2591_CMD_NOP | TSL2591_AILTL,
-> +					als_lower_l);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to set als lower threshold\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = i2c_smbus_write_byte_data(client,
-> +					TSL2591_CMD_NOP | TSL2591_AILTH,
-> +					als_lower_h);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to set als lower threshold\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = i2c_smbus_write_byte_data(client,
-> +					TSL2591_CMD_NOP | TSL2591_AIHTL,
-> +					als_upper_l);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to set als upper threshold\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = i2c_smbus_write_byte_data(client,
-> +					TSL2591_CMD_NOP | TSL2591_AIHTH,
-> +					als_upper_h);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to set als upper threshold\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int tsl2591_set_als_persist_cycle(struct tsl2591_chip *chip)
-> +{
-> +	struct i2c_client *client = chip->client;
-> +	struct tsl2591_als_settings als_settings = chip->als_settings;
-> +	int ret;
-> +
-> +	ret = i2c_smbus_write_byte_data(client,
-> +					TSL2591_CMD_NOP | TSL2591_PERSIST,
-> +					als_settings.als_persist);
-> +	if (ret < 0)
-> +		dev_err(&client->dev, "Failed to set als persist cycle\n");
+ 	return stats;
+ }
+@@ -137,6 +196,10 @@ static void brute_share_stats(struct brute_stats *src=
+,
+  * this task and the new one being allocated. Otherwise, share the statis=
+tics
+  * that the current task already has.
+  *
++ * Also, if the shared statistics indicate a previous network activity, t=
+he
++ * bounds_crossed flag must be set to show that a network-to-local privil=
+ege
++ * boundary has been crossed.
++ *
+  * It's mandatory to disable interrupts before acquiring brute_stats_ptr_=
+lock
+  * and brute_stats::lock since the task_free hook can be called from an I=
+RQ
+  * context during the execution of the task_alloc hook.
+@@ -155,11 +218,14 @@ static int brute_task_alloc(struct task_struct *task=
+, unsigned long clone_flags)
 
-All of these can only return ret < 0 || ret == 0 so if you instead just check
-if (ret) 
+ 	if (likely(*p_stats)) {
+ 		brute_share_stats(*p_stats, stats);
++		spin_lock(&(*stats)->lock);
++		(*stats)->bounds_crossed |=3D (*stats)->network;
++		spin_unlock(&(*stats)->lock);
+ 		write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+ 		return 0;
+ 	}
 
-then that logic is clear to any callers.  The advantage is some of the control
-flow below becomes simpler because you can rely on ret never being greater than
-0 (which could be a non error value)
+-	*stats =3D brute_new_stats();
++	*stats =3D brute_new_stats(false, false);
+ 	if (!*stats) {
+ 		write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+ 		return -ENOMEM;
+@@ -170,6 +236,61 @@ static int brute_task_alloc(struct task_struct *task,=
+ unsigned long clone_flags)
+ 	return 0;
+ }
 
-> +
-> +	return ret;
-> +}
-> +
-> +static int tsl2591_set_power_state(struct tsl2591_chip *chip, u8 state)
-> +{
-> +	struct i2c_client *client = chip->client;
-> +	int ret;
-> +
-> +	ret = i2c_smbus_write_byte_data(client,
-> +					TSL2591_CMD_NOP | TSL2591_ENABLE,
-> +					state);
-> +	if (ret < 0)
-> +		dev_err(&client->dev,
-> +			"Failed to set the power state to %#04x\n", state);
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t tsl2591_in_illuminance_period_available_show(struct device *dev,
-> +							    struct device_attribute *attr,
-> +							    char *buf)
-> +{
-> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +
-> +	return snprintf(buf, PAGE_SIZE, "%s\n",
-> +		       tsl2591_als_period_list[chip->als_settings.als_int_time]);
-> +}
-> +
-> +static IIO_DEVICE_ATTR_RO(tsl2591_in_illuminance_period_available, 0);
-> +
-> +static struct attribute *tsl2591_event_attrs_ctrl[] = {
-> +	&iio_dev_attr_tsl2591_in_illuminance_period_available.dev_attr.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group tsl2591_event_attribute_group = {
-> +	.attrs = tsl2591_event_attrs_ctrl,
-> +};
-> +
-> +static const struct iio_event_spec tsl2591_events[] = {
-> +	{
-> +		.type = IIO_EV_TYPE_THRESH,
-> +		.dir = IIO_EV_DIR_RISING,
-> +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
-> +	}, {
-> +		.type = IIO_EV_TYPE_THRESH,
-> +		.dir = IIO_EV_DIR_FALLING,
-> +		.mask_separate = BIT(IIO_EV_INFO_VALUE),
-> +	}, {
-> +		.type = IIO_EV_TYPE_THRESH,
-> +		.dir = IIO_EV_DIR_EITHER,
-> +		.mask_separate = BIT(IIO_EV_INFO_PERIOD) |
-> +				BIT(IIO_EV_INFO_ENABLE),
-> +	},
-> +};
-> +
-> +static const struct iio_chan_spec tsl2591_channels[] = {
-> +	{
-> +		.type = IIO_INTENSITY,
-> +		.modified = 1,
-> +		.channel2 = IIO_MOD_LIGHT_IR,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) |
-> +						     BIT(IIO_CHAN_INFO_CALIBSCALE),
-> +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) |
-> +					   BIT(IIO_CHAN_INFO_CALIBSCALE)
-> +	},
-> +	{
-> +		.type = IIO_INTENSITY,
-> +		.modified = 1,
-> +		.channel2 = IIO_MOD_LIGHT_BOTH,
-> +		.event_spec = tsl2591_events,
-> +		.num_event_specs = ARRAY_SIZE(tsl2591_events),
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) |
-> +						     BIT(IIO_CHAN_INFO_CALIBSCALE),
-> +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) |
-> +					   BIT(IIO_CHAN_INFO_CALIBSCALE)
-> +	},
-> +	{
-> +		.type = IIO_LIGHT,
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED),
-> +		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) |
-> +						     BIT(IIO_CHAN_INFO_CALIBSCALE),
-> +		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) |
-> +					   BIT(IIO_CHAN_INFO_CALIBSCALE)
-> +	},
-> +};
-> +
-> +static int tsl2591_read_raw(struct iio_dev *indio_dev,
-> +			    struct iio_chan_spec const *chan,
-> +			    int *val, int *val2, long mask)
-> +{
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +	struct i2c_client *client = chip->client;
-> +	int ret;
-> +
-> +	pm_runtime_get_sync(&client->dev);
-> +
-> +	mutex_lock(&chip->als_mutex);
-> +
-> +	ret = -EINVAL;
++/**
++ * brute_is_setid() - Test if the executable file has the setid flags set=
+.
++ * @bprm: Points to the linux_binprm structure.
++ *
++ * Return: True if the executable file has the setid flags set. False oth=
+erwise.
++ */
++static bool brute_is_setid(const struct linux_binprm *bprm)
++{
++	struct file *file =3D bprm->file;
++	struct inode *inode;
++	umode_t mode;
++
++	if (!file)
++		return false;
++
++	inode =3D file->f_path.dentry->d_inode;
++	mode =3D inode->i_mode;
++
++	return !!(mode & (S_ISUID | S_ISGID));
++}
++
++/**
++ * brute_reset_stats() - Reset the statistical data.
++ * @stats: Statistics to be reset.
++ * @is_setid: The executable file has the setid flags set.
++ *
++ * Reset the faults and period and set the last crash timestamp to now. T=
+his
++ * way, it is possible to compute the application crash period at the nex=
+t
++ * fault. Also, save the credentials of the current task and update the
++ * bounds_crossed flag based on a previous network activity and the is_se=
+tid
++ * parameter.
++ *
++ * The statistics to be reset cannot be NULL.
++ *
++ * Context: Must be called with interrupts disabled and brute_stats_ptr_l=
+ock
++ *          and brute_stats::lock held.
++ */
++static void brute_reset_stats(struct brute_stats *stats, bool is_setid)
++{
++	const struct cred *cred =3D current_cred();
++
++	stats->faults =3D 0;
++	stats->jiffies =3D get_jiffies_64();
++	stats->period =3D 0;
++	stats->saved_cred.uid =3D cred->uid;
++	stats->saved_cred.gid =3D cred->gid;
++	stats->saved_cred.suid =3D cred->suid;
++	stats->saved_cred.sgid =3D cred->sgid;
++	stats->saved_cred.euid =3D cred->euid;
++	stats->saved_cred.egid =3D cred->egid;
++	stats->saved_cred.fsuid =3D cred->fsuid;
++	stats->saved_cred.fsgid =3D cred->fsgid;
++	stats->bounds_crossed =3D stats->network || is_setid;
++}
++
+ /**
+  * brute_task_execve() - Target for the bprm_committing_creds hook.
+  * @bprm: Points to the linux_binprm structure.
+@@ -188,6 +309,11 @@ static int brute_task_alloc(struct task_struct *task,=
+ unsigned long clone_flags)
+  * only one task (the task that calls the execve function) points to the =
+data.
+  * In this case, the previous allocation is used but the statistics are r=
+eset.
+  *
++ * Also, if the statistics of the process that calls the execve system ca=
+ll
++ * indicate a previous network activity or the executable file has the se=
+tid
++ * flags set, the bounds_crossed flag must be set to show that a network =
+to
++ * local privilege boundary or setid boundary has been crossed respective=
+ly.
++ *
+  * It's mandatory to disable interrupts before acquiring brute_stats_ptr_=
+lock
+  * and brute_stats::lock since the task_free hook can be called from an I=
+RQ
+  * context during the execution of the bprm_committing_creds hook.
+@@ -196,6 +322,8 @@ static void brute_task_execve(struct linux_binprm *bpr=
+m)
+ {
+ 	struct brute_stats **stats;
+ 	unsigned long flags;
++	bool network_to_local;
++	bool is_setid =3D false;
 
-As below, better to move this into the places where the error occurs
-even if you need to repeat it a few times.
+ 	stats =3D brute_stats_ptr(current);
+ 	read_lock_irqsave(&brute_stats_ptr_lock, flags);
+@@ -206,12 +334,18 @@ static void brute_task_execve(struct linux_binprm *b=
+prm)
+ 	}
 
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		if (chan->type != IIO_INTENSITY)
-> +			break;
-> +
-> +		ret = tsl2591_read_channel_data(indio_dev, chan, val, val2);
-> +		if (ret < 0)
-> +			break;
-> +
-> +		ret = IIO_VAL_INT;
-> +		break;
-> +	case IIO_CHAN_INFO_PROCESSED:
-> +		if (chan->type != IIO_LIGHT)
-> +			break;
-> +
-> +		ret = tsl2591_read_channel_data(indio_dev, chan, val, val2);
-> +		if (ret < 0)
-> +			break;
-> +
-> +		ret = IIO_VAL_INT_PLUS_MICRO;
-> +		break;
-> +	case IIO_CHAN_INFO_INT_TIME:
-> +		if (chan->type != IIO_INTENSITY)
-> +			break;
-> +
-> +		*val = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
-> +		ret = IIO_VAL_INT;
-> +		break;
-> +	case IIO_CHAN_INFO_CALIBSCALE:
-> +		if (chan->type != IIO_INTENSITY)
-> +			break;
-> +
-> +		*val = tsl2591_gain_to_multiplier(chip->als_settings.als_gain);
-> +		ret = IIO_VAL_INT;
-> +		break;
-> +	}
-> +
-> +	mutex_unlock(&chip->als_mutex);
-> +
-> +	pm_runtime_mark_last_busy(&client->dev);
-> +	pm_runtime_put_autosuspend(&client->dev);
-> +
-> +	return ret;
-> +}
-> +
-> +static int tsl2591_write_raw(struct iio_dev *indio_dev,
-> +			     struct iio_chan_spec const *chan,
-> +			     int val, int val2, long mask)
-> +{
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +
-> +	u8 gain;
-> +	u32 int_time;
-> +	int ret;
-> +
-> +	mutex_lock(&chip->als_mutex);
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_INT_TIME:
-> +		int_time = tsl2591_als_time_to_fval(val);
-> +		if (int_time < 0) {
-> +			ret = int_time;
-> +			goto err;
-> +		}
-> +		ret = tsl2591_compatible_int_time(chip, int_time);
-> +		if (ret < 0)
-> +			goto err;
-> +
-> +		chip->als_settings.als_int_time = int_time;
-> +		break;
-> +	case IIO_CHAN_INFO_CALIBSCALE:
-> +		gain = tsl2591_multiplier_to_gain(val);
-> +		if (gain < 0) {
-> +			ret = gain;
-> +			goto err;
-> +		}
-> +		ret = tsl2591_compatible_gain(chip, gain);
-> +		if (ret < 0)
-> +			goto err;
-> +
-> +		chip->als_settings.als_gain = gain;
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		goto err;
-> +	}
-> +
-> +	ret = tsl2591_set_als_gain_int_time(chip);
-> +	if (ret < 0)
-> +		goto err;
-> +
-> +	mutex_unlock(&chip->als_mutex);
-> +
-> +	return 0;
-> +err:
+ 	spin_lock(&(*stats)->lock);
++	network_to_local =3D (*stats)->network;
++
++	/*
++	 * A network_to_local flag equal to true will set the bounds_crossed
++	 * flag. So, in this scenario the "is setid" test can be avoided.
++	 */
++	if (!network_to_local)
++		is_setid =3D brute_is_setid(bprm);
 
-Same as below.
+ 	if (!refcount_dec_not_one(&(*stats)->refc)) {
+ 		/* execve call after an execve call */
+-		(*stats)->faults =3D 0;
+-		(*stats)->jiffies =3D get_jiffies_64();
+-		(*stats)->period =3D 0;
++		brute_reset_stats(*stats, is_setid);
+ 		spin_unlock(&(*stats)->lock);
+ 		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+ 		return;
+@@ -222,7 +356,7 @@ static void brute_task_execve(struct linux_binprm *bpr=
+m)
+ 	read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
 
-> +	mutex_unlock(&chip->als_mutex);
-> +	return ret;
-> +}
-> +
-> +static int tsl2591_read_available(struct iio_dev *indio_dev,
-> +				  struct iio_chan_spec const *chan,
-> +				  const int **vals, int *type, int *length,
-> +				  long mask)
-> +{
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_INT_TIME:
-> +		*length = ARRAY_SIZE(tsl2591_int_time_available);
-> +		*vals = tsl2591_int_time_available;
-> +		*type = IIO_VAL_INT;
-> +		return IIO_AVAIL_LIST;
-> +
-> +	case IIO_CHAN_INFO_CALIBSCALE:
-> +		*length = ARRAY_SIZE(tsl2591_calibscale_available);
-> +		*vals = tsl2591_calibscale_available;
-> +		*type = IIO_VAL_INT;
-> +		return IIO_AVAIL_LIST;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int tsl2591_read_event_value(struct iio_dev *indio_dev,
-> +				    const struct iio_chan_spec *chan,
-> +				    enum iio_event_type type,
-> +				    enum iio_event_direction dir,
-> +				    enum iio_event_info info, int *val,
-> +				    int *val2)
-> +{
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +	struct i2c_client *client = chip->client;
-> +	int als_persist;
-> +	int period;
-> +	int ret;
-> +	int int_time;
-> +
-> +	mutex_lock(&chip->als_mutex);
-> +
-> +	switch (info) {
-> +	case IIO_EV_INFO_VALUE:
-> +		switch (dir) {
-> +		case IIO_EV_DIR_RISING:
-> +			*val = chip->als_settings.als_upper_thresh;
-> +			break;
-> +		case IIO_EV_DIR_FALLING:
-> +			*val = chip->als_settings.als_lower_thresh;
-> +			break;
-> +		default:
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
-> +		ret = IIO_VAL_INT;
-> +		break;
-> +	case IIO_EV_INFO_PERIOD:
-> +		ret = i2c_smbus_read_byte_data(client,
-> +					       TSL2591_CMD_NOP | TSL2591_PERSIST);
-> +		if (ret <= 0 || ret > TSL2591_PRST_ALS_INT_CYCLE_MAX)
-> +			goto err;
-> +
-> +		als_persist = tsl2591_persist_cycle_to_lit(ret);
-> +		int_time = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
-> +		period = als_persist * (int_time * MSEC_PER_SEC);
-> +
-> +		*val = period / USEC_PER_SEC;
-> +		*val2 = period % USEC_PER_SEC;
-> +
-> +		ret = IIO_VAL_INT_PLUS_MICRO;
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		goto err;
-> +	}
-> +
-> +	mutex_unlock(&chip->als_mutex);
-> +
-> +	return ret;
-> +
-> +err:
-> +	mutex_unlock(&chip->als_mutex);
+ 	write_lock_irqsave(&brute_stats_ptr_lock, flags);
+-	*stats =3D brute_new_stats();
++	*stats =3D brute_new_stats(network_to_local, is_setid);
+ 	WARN(!*stats, "Cannot allocate statistical data\n");
+ 	write_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+ }
+@@ -648,12 +782,103 @@ static void brute_manage_exec_attack(struct brute_s=
+tats *stats, u64 now,
+ 		print_exec_attack_running(exec_stats);
+ }
 
-As below, combine this and the good path by moving the label
-to before the unlock above.
++/**
++ * brute_priv_have_changed() - Test if the privileges have changed.
++ * @stats: Statistics that hold the saved credentials.
++ *
++ * The privileges have changed if the credentials of the current task are
++ * different from the credentials saved in the statistics structure.
++ *
++ * The statistics that hold the saved credentials cannot be NULL.
++ *
++ * Context: Must be called with interrupts disabled and brute_stats_ptr_l=
+ock
++ *          and brute_stats::lock held.
++ * Return: True if the privileges have changed. False otherwise.
++ */
++static bool brute_priv_have_changed(struct brute_stats *stats)
++{
++	const struct cred *cred =3D current_cred();
++	bool priv_have_changed;
++
++	priv_have_changed =3D !uid_eq(stats->saved_cred.uid, cred->uid) ||
++		!gid_eq(stats->saved_cred.gid, cred->gid) ||
++		!uid_eq(stats->saved_cred.suid, cred->suid) ||
++		!gid_eq(stats->saved_cred.sgid, cred->sgid) ||
++		!uid_eq(stats->saved_cred.euid, cred->euid) ||
++		!gid_eq(stats->saved_cred.egid, cred->egid) ||
++		!uid_eq(stats->saved_cred.fsuid, cred->fsuid) ||
++		!gid_eq(stats->saved_cred.fsgid, cred->fsgid);
++
++	return priv_have_changed;
++}
++
++/**
++ * brute_threat_model_supported() - Test if the threat model is supported=
+.
++ * @siginfo: Contains the signal information.
++ * @stats: Statistical data shared by all the fork hierarchy processes.
++ *
++ * To avoid false positives during the attack detection it is necessary t=
+o
++ * narrow the possible cases. Only the following scenarios are taken into
++ * account:
++ *
++ * 1.- Launching (fork()/exec()) a setuid/setgid process repeatedly until=
+ a
++ *     desirable memory layout is got (e.g. Stack Clash).
++ * 2.- Connecting to an exec()ing network daemon (e.g. xinetd) repeatedly=
+ until
++ *     a desirable memory layout is got (e.g. what CTFs do for simple net=
+work
++ *     service).
++ * 3.- Launching processes without exec() (e.g. Android Zygote) and expos=
+ing
++ *     state to attack a sibling.
++ * 4.- Connecting to a fork()ing network daemon (e.g. apache) repeatedly =
+until
++ *     the previously shared memory layout of all the other children is e=
+xposed
++ *     (e.g. kind of related to HeartBleed).
++ *
++ * In each case, a privilege boundary has been crossed:
++ *
++ * Case 1: setuid/setgid process
++ * Case 2: network to local
++ * Case 3: privilege changes
++ * Case 4: network to local
++ *
++ * Also, only the signals delivered by the kernel are taken into account =
+with
++ * the exception of the SIGABRT signal since the latter is used by glibc =
+for
++ * stack canary, malloc, etc failures, which may indicate that a mitigati=
+on has
++ * been triggered.
++ *
++ * The signal information and the statistical data shared by all the fork
++ * hierarchy processes cannot be NULL.
++ *
++ * It's mandatory to disable interrupts before acquiring the brute_stats:=
+:lock
++ * since the task_free hook can be called from an IRQ context during the
++ * execution of the task_fatal_signal hook.
++ *
++ * Context: Must be called with interrupts disabled and brute_stats_ptr_l=
+ock
++ *          held.
++ * Return: True if the threat model is supported. False otherwise.
++ */
++static bool brute_threat_model_supported(const kernel_siginfo_t *siginfo,
++					 struct brute_stats *stats)
++{
++	bool bounds_crossed;
++
++	if (siginfo->si_signo =3D=3D SIGKILL && siginfo->si_code !=3D SIGABRT)
++		return false;
++
++	spin_lock(&stats->lock);
++	bounds_crossed =3D stats->bounds_crossed;
++	bounds_crossed =3D bounds_crossed || brute_priv_have_changed(stats);
++	stats->bounds_crossed =3D bounds_crossed;
++	spin_unlock(&stats->lock);
++
++	return bounds_crossed;
++}
++
+ /**
+  * brute_task_fatal_signal() - Target for the task_fatal_signal hook.
+  * @siginfo: Contains the signal information.
+  *
+- * To detect a brute force attack is necessary to update the fork and exe=
+c
+- * statistics in every fatal crash and act based on these data.
++ * To detect a brute force attack it is necessary, as a first step, to te=
+st in
++ * every fatal crash if the threat model is supported. If so, update the =
+fork
++ * and exec statistics and act based on these data.
+  *
+  * It's mandatory to disable interrupts before acquiring brute_stats_ptr_=
+lock
+  * and brute_stats::lock since the task_free hook can be called from an I=
+RQ
+@@ -670,18 +895,59 @@ static void brute_task_fatal_signal(const kernel_sig=
+info_t *siginfo)
+ 	read_lock(&tasklist_lock);
+ 	read_lock_irqsave(&brute_stats_ptr_lock, flags);
 
-> +	return ret;
-> +}
-> +
-> +static int tsl2591_write_event_value(struct iio_dev *indio_dev,
-> +				     const struct iio_chan_spec *chan,
-> +				     enum iio_event_type type,
-> +				     enum iio_event_direction dir,
-> +				     enum iio_event_info info, int val,
-> +				     int val2)
-> +{
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +	int period, int_time, als_persist;
-> +	int ret;
-> +
-> +	if (val < 0 || val2 < 0)
-> +		return -EINVAL;
-> +
-> +	mutex_lock(&chip->als_mutex);
-> +
-> +	ret = -EINVAL;
+-	if (WARN(!*stats, "No statistical data\n")) {
+-		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+-		read_unlock(&tasklist_lock);
+-		return;
+-	}
++	if (WARN(!*stats, "No statistical data\n"))
++		goto unlock;
++
++	if (!brute_threat_model_supported(siginfo, *stats))
++		goto unlock;
 
-Better to make this flow clearer by moving that to the default: element of
-the switch.  Obviously you'll have to repeat it a few times, but at least
-a reviewer doesn't need to look all the way up here to see it was set to
-the right thing.
+ 	last_fork_crash =3D brute_manage_fork_attack(*stats, now);
+ 	brute_manage_exec_attack(*stats, now, last_fork_crash);
++unlock:
+ 	read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
+ 	read_unlock(&tasklist_lock);
+ }
 
++/**
++ * brute_network() - Target for the socket_sock_rcv_skb hook.
++ * @sk: Contains the sock (not socket) associated with the incoming sk_bu=
+ff.
++ * @skb: Contains the incoming network data.
++ *
++ * A previous step to detect that a network to local boundary has been cr=
+ossed
++ * is to detect if there is network activity. To do this, it is only nece=
+ssary
++ * to check if there are data packets received from a network device othe=
+r than
++ * loopback.
++ *
++ * It's mandatory to disable interrupts before acquiring brute_stats_ptr_=
+lock
++ * and brute_stats::lock since the task_free hook can be called from an I=
+RQ
++ * context during the execution of the socket_sock_rcv_skb hook.
++ *
++ * Return: -EFAULT if the current task doesn't have statistical data. Zer=
+o
++ *         otherwise.
++ */
++static int brute_network(struct sock *sk, struct sk_buff *skb)
++{
++	struct brute_stats **stats;
++	unsigned long flags;
++
++	if (!skb->dev || (skb->dev->flags & IFF_LOOPBACK))
++		return 0;
++
++	stats =3D brute_stats_ptr(current);
++	read_lock_irqsave(&brute_stats_ptr_lock, flags);
++
++	if (!*stats) {
++		read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
++		return -EFAULT;
++	}
++
++	spin_lock(&(*stats)->lock);
++	(*stats)->network =3D true;
++	spin_unlock(&(*stats)->lock);
++	read_unlock_irqrestore(&brute_stats_ptr_lock, flags);
++	return 0;
++}
++
+ /*
+  * brute_hooks - Targets for the LSM's hooks.
+  */
+@@ -690,6 +956,7 @@ static struct security_hook_list brute_hooks[] __lsm_r=
+o_after_init =3D {
+ 	LSM_HOOK_INIT(bprm_committing_creds, brute_task_execve),
+ 	LSM_HOOK_INIT(task_free, brute_task_free),
+ 	LSM_HOOK_INIT(task_fatal_signal, brute_task_fatal_signal),
++	LSM_HOOK_INIT(socket_sock_rcv_skb, brute_network),
+ };
 
-> +	switch (info) {
-> +	case IIO_EV_INFO_VALUE:
-> +		if (val > TSL2591_ALS_MAX_VALUE)
-> +			return -EINVAL;
-
-Lock is still held so you can't return directly here.
-
-> +
-> +		/*
-> +		 * Lower threshold should not be greater than upper. If this
-> +		 * is the case, then assert upper threshold to new lower
-> +		 * threshold + 1 to avoid ordering issues when setting
-> +		 * thresholds.
-> +		 */
-> +		if (dir == IIO_EV_DIR_FALLING)
-> +			if (val > chip->als_settings.als_upper_thresh)
-> +				chip->als_settings.als_upper_thresh = val + 1;
-> +
-> +		/*
-> +		 * Upper threshold should not be less than lower. If this
-> +		 * is the case, then assert lower threshold to new upper
-> +		 * threshold - 1 to avoid ordering issues when setting
-> +		 * thresholds.
-> +		 */
-> +		if (dir == IIO_EV_DIR_RISING)
-> +			if (val < chip->als_settings.als_lower_thresh)
-> +				chip->als_settings.als_lower_thresh = val - 1;
-> +
-> +		switch (dir) {
-> +		case IIO_EV_DIR_RISING:
-> +			chip->als_settings.als_upper_thresh = val;
-> +			ret = tsl2591_set_als_thresholds(chip);
-> +			if (ret < 0)
-> +				goto err;
-> +			break;
-> +		case IIO_EV_DIR_FALLING:
-> +			chip->als_settings.als_lower_thresh = val;
-> +			ret = tsl2591_set_als_thresholds(chip);
-> +			if (ret < 0)
-> +				goto err;
-> +			break;
-> +		default:
-> +			goto err;
-> +		}
-> +		break;
-> +	case IIO_EV_INFO_PERIOD:
-> +		int_time = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
-> +
-> +		period = ((val * MSEC_PER_SEC) +
-> +			 (val2 / MSEC_PER_SEC)) / int_time;
-> +
-> +		als_persist = tsl2591_persist_lit_to_cycle(period);
-> +		if (als_persist < 0)
-> +			goto err;
-> +
-> +		ret = tsl2591_compatible_als_persist_cycle(chip, als_persist);
-> +		if (ret < 0)
-> +			goto err;
-> +		chip->als_settings.als_persist = als_persist;
-> +		ret = tsl2591_set_als_persist_cycle(chip);
-> +		if (ret < 0)
-> +			goto err;
-> +		break;
-> +	default:
-> +		goto err;
-> +	}
-> +
-> +	mutex_unlock(&chip->als_mutex);
-> +
-> +	return 0;
-> +err:
-> +	mutex_unlock(&chip->als_mutex);
-> +	return ret;
-
-Normal kernel idiom for this would be to combine the two exit paths.
-That is move there err label to just after the switch and then return ret
-on all occasions.  It will be 0 anyway I think if no errors have occurred.
-
-> +}
-> +
-> +static int tsl2591_read_event_config(struct iio_dev *indio_dev,
-> +				     const struct iio_chan_spec *chan,
-> +				     enum iio_event_type type,
-> +				     enum iio_event_direction dir)
-> +{
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +
-> +	return chip->events_enabled;
-> +}
-> +
-> +static int tsl2591_write_event_config(struct iio_dev *indio_dev,
-> +				      const struct iio_chan_spec *chan,
-> +				      enum iio_event_type type,
-> +				      enum iio_event_direction dir,
-> +				      int state)
-> +{
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +	struct i2c_client *client = chip->client;
-> +
-> +	if (state && !chip->events_enabled) {
-> +		chip->events_enabled = true;
-> +		pm_runtime_get_sync(&client->dev);
-> +	} else if (!state && chip->events_enabled) {
-> +		chip->events_enabled = false;
-> +		pm_runtime_mark_last_busy(&client->dev);
-> +		pm_runtime_put_autosuspend(&client->dev);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct iio_info tsl2591_info = {
-> +	.event_attrs = &tsl2591_event_attribute_group,
-> +	.read_raw = tsl2591_read_raw,
-> +	.write_raw = tsl2591_write_raw,
-> +	.read_avail = tsl2591_read_available,
-> +	.read_event_value = tsl2591_read_event_value,
-> +	.write_event_value = tsl2591_write_event_value,
-> +	.read_event_config = tsl2591_read_event_config,
-> +	.write_event_config = tsl2591_write_event_config,
-> +};
-> +
-> +static int __maybe_unused tsl2591_suspend(struct device *dev)
-> +{
-> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	mutex_lock(&chip->als_mutex);
-> +	ret = tsl2591_set_power_state(chip, TSL2591_PWR_OFF);
-> +	mutex_unlock(&chip->als_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static int __maybe_unused tsl2591_resume(struct device *dev)
-> +{
-> +	struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +	int ret;
-> +	int power_state;
-> +
-> +	if (chip->events_enabled)
-> +		power_state = TSL2591_PWR_ON |
-> +			      TSL2591_ENABLE_ALS_INT |
-> +			      TSL2591_ENABLE_ALS;
-> +	else
-> +		power_state = TSL2591_PWR_ON | TSL2591_ENABLE_ALS;
-> +
-> +	mutex_lock(&chip->als_mutex);
-> +	ret = tsl2591_set_power_state(chip, power_state);
-> +	mutex_unlock(&chip->als_mutex);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct dev_pm_ops tsl2591_pm_ops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-> +				pm_runtime_force_resume)
-> +	SET_RUNTIME_PM_OPS(tsl2591_suspend, tsl2591_resume, NULL)
-> +};
-> +
-> +static irqreturn_t tsl2591_event_handler(int irq, void *private)
-> +{
-> +	struct iio_dev *dev_info = private;
-> +	struct tsl2591_chip *chip = iio_priv(dev_info);
-> +	struct i2c_client *client = chip->client;
-> +	int ret;
-> +
-> +	if (!chip->events_enabled)
-> +		return IRQ_HANDLED;
-> +
-> +	iio_push_event(dev_info,
-> +		       IIO_UNMOD_EVENT_CODE(IIO_LIGHT, 0,
-> +					    IIO_EV_TYPE_THRESH,
-> +					    IIO_EV_DIR_EITHER),
-> +					    iio_get_time_ns(dev_info));
-> +
-> +	/* Clear ALS irq */
-> +	ret = i2c_smbus_write_byte(client, TSL2591_CMD_SF_CALS_NPI);
-> +	if (ret < 0)
-> +		dev_err(&client->dev, "Failed to clear als irq\n");
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int tsl2591_load_defaults(struct tsl2591_chip *chip)
-> +{
-> +	int ret;
-> +
-> +	chip->als_settings.als_int_time = TSL2591_DEFAULT_ALS_INT_TIME;
-> +	chip->als_settings.als_gain = TSL2591_DEFAULT_ALS_GAIN;
-> +	chip->als_settings.als_persist = TSL2591_DEFAULT_ALS_PERSIST;
-> +	chip->als_settings.als_lower_thresh = TSL2591_DEFAULT_ALS_LOWER_THRESH;
-> +	chip->als_settings.als_upper_thresh = TSL2591_DEFAULT_ALS_UPPER_THRESH;
-> +
-> +	ret = tsl2591_set_als_gain_int_time(chip);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = tsl2591_set_als_persist_cycle(chip);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = tsl2591_set_als_thresholds(chip);
-Trivial point, but these functions never return positive values, so you could
-do the cleaner
-
-return tsl2591_set_als_thresholds(chip);
-
-Doesn't really matter though if you prefer this form.
-
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static void tsl2591_chip_off(void *data)
-> +{
-> +	struct iio_dev *indio_dev = data;
-> +	struct tsl2591_chip *chip = iio_priv(indio_dev);
-> +	struct i2c_client *client = chip->client;
-> +
-> +	pm_runtime_disable(&client->dev);
-> +	pm_runtime_set_suspended(&client->dev);
-> +	pm_runtime_put_noidle(&client->dev);
-> +
-> +	tsl2591_set_power_state(chip, TSL2591_PWR_OFF);
-> +}
-> +
-> +static int tsl2591_probe(struct i2c_client *client)
-> +{
-> +	struct tsl2591_chip *chip;
-> +	struct iio_dev *indio_dev;
-> +	int ret;
-> +
-> +	if (!i2c_check_functionality(client->adapter,
-> +				     I2C_FUNC_SMBUS_BYTE_DATA)) {
-> +		dev_err(&client->dev,
-> +			"I2C smbus byte data functionality is not supported\n");
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	chip = iio_priv(indio_dev);
-> +	chip->client = client;
-> +	i2c_set_clientdata(client, indio_dev);
-> +
-> +	if (client->irq) {
-> +		ret = devm_request_threaded_irq(&client->dev, client->irq,
-> +						NULL, tsl2591_event_handler,
-> +						IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-> +						"tsl2591_irq", indio_dev);
-> +		if (ret) {
-> +			dev_err(&client->dev, "IRQ request error %d\n", -ret);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	mutex_init(&chip->als_mutex);
-> +
-> +	ret = i2c_smbus_read_byte_data(client,
-> +				       TSL2591_CMD_NOP | TSL2591_DEVICE_ID);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev,
-> +			"Failed to read the device ID register\n");
-> +		return ret;
-> +	}
-> +	ret = FIELD_GET(TSL2591_DEVICE_ID_MASK, ret);
-> +	if (ret != TSL2591_DEVICE_ID_VAL) {
-> +		dev_err(&client->dev, "Device ID: %#04x unknown\n", ret);
-> +		return -EINVAL;
-> +	}
-> +
-> +	indio_dev->info = &tsl2591_info;
-> +	indio_dev->channels = tsl2591_channels;
-> +	indio_dev->num_channels = ARRAY_SIZE(tsl2591_channels);
-> +	indio_dev->modes = INDIO_DIRECT_MODE;
-> +	indio_dev->name = chip->client->name;
-> +	chip->events_enabled = false;
-> +
-> +	pm_runtime_enable(&client->dev);
-> +	pm_runtime_set_autosuspend_delay(&client->dev,
-> +					 TSL2591_POWER_OFF_DELAY_MS);
-> +	pm_runtime_use_autosuspend(&client->dev);
-> +
-> +	ret = tsl2591_load_defaults(chip);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to load sensor defaults\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = i2c_smbus_write_byte(client, TSL2591_CMD_SF_CALS_NPI);
-> +	if (ret < 0) {
-> +		dev_err(&client->dev, "Failed to clear als irq\n");
-
-If we get a failure here or in the error path above, runtime pm is still enabeld
-because we won't be able to rely on the managed disable of it above.
-
-So you need to reorganise things a little.  Any runtime pm that is enabled
-in these two error handling paths should be provided via devm_add_action_or_reset()
-before these, and then register a second one to deal with what these functions
-have enabled (i.e disabling that).
-
-> +		return -EINVAL;
-> +	}
-> +
-> +	/*
-> +	 * Add chip off to automatically managed path and disable runtime
-> +	 * power management. This ensures that the chip power management
-> +	 * is handled correctly on driver remove.
-> +	 */
-> +	ret = devm_add_action_or_reset(&client->dev, tsl2591_chip_off,
-> +				       indio_dev);
-> +	if (ret < 0)
-> +		return -EINVAL;
-> +
-> +	return devm_iio_device_register(&client->dev, indio_dev);
-> +}
-> +
-> +static const struct of_device_id tsl2591_of_match[] = {
-> +	{ .compatible = "amstaos,tsl2591"},
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, tsl2591_of_match);
-> +
-> +static struct i2c_driver tsl2591_driver = {
-> +	.driver = {
-> +		.name = "tsl2591",
-> +		.pm = &tsl2591_pm_ops,
-> +		.of_match_table = tsl2591_of_match,
-> +	},
-> +	.probe_new = tsl2591_probe,
-> +};
-> +module_i2c_driver(tsl2591_driver);
-> +
-> +MODULE_AUTHOR("Joe Sandom <joe.g.sandom@gmail.com>");
-> +MODULE_DESCRIPTION("TAOS tsl2591 ambient light sensor driver");
-> +MODULE_LICENSE("GPL");
+ /**
+=2D-
+2.25.1
 
