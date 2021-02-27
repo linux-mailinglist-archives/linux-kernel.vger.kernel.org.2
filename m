@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B811326ED6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 20:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4805326EDB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 21:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbhB0T5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 14:57:11 -0500
-Received: from shelob.surriel.com ([96.67.55.147]:40756 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbhB0T5C (ORCPT
+        id S230083AbhB0UGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 15:06:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230041AbhB0UF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 14:57:02 -0500
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lG5hA-0003pP-16; Sat, 27 Feb 2021 14:56:08 -0500
-Message-ID: <ab046b9d5bcd29b2eb759cd999e2f578a683c673.camel@surriel.com>
-Subject: Re: [PATCH] sched/fair: Prefer idle CPU to cache affinity
-From:   Rik van Riel <riel@surriel.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Date:   Sat, 27 Feb 2021 14:56:07 -0500
-In-Reply-To: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
-References: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-p2iMuyud8R1l++kK4rlj"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Sat, 27 Feb 2021 15:05:56 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF06C061756;
+        Sat, 27 Feb 2021 12:05:15 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id z13so13408126iox.8;
+        Sat, 27 Feb 2021 12:05:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=pPLwDk2zrlTCS7ma3hl5yenNNvgqmaQf23Nh8H3r+G0=;
+        b=brdjTEjgbxgvPcS8VPwVrrOBBLqoGYBFiWx8NOR/ROph/0CFpz/kzM9Gnq0UNBOb+p
+         U/xtNjc45s01upl2sNKK9vUAJfpTDUmfY4MY0FJSRtuIt61G3cavQz76eV/mLzJ+ibE7
+         ga0j+ixZ75fmEiteHQfxeJRQ+TImjOEFRoTseHCKofw/ELVUUEN7aQqVey46WtZGhG7U
+         vlOySm7Mlcfm9P1iEaS8JUY8jJjVROts557usSVCLWJwrRcUZP2qRziK0OKtob0mkyx8
+         cUj92rLwfEZIfDdrXWRIC5Er8DWgxBC9BghCu/C649r+olrR7dUrSOTGvWJQHy+HRFUC
+         eEIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=pPLwDk2zrlTCS7ma3hl5yenNNvgqmaQf23Nh8H3r+G0=;
+        b=sexpPxDzAzxfpu6XwDX9aNmCrd9Yu0tqQ2eBpo0zNhFmfuZROvNpchT+tVlPaPKR6x
+         CJdhpol5smxQccyYWqS8sKrgy0Pg7asZ54DmPgq5YGgOEinmmo4g9B/e+tEeR+sQfX6c
+         KkAHIn8dAO/+E/WBV9LeU/wHG/HeHGvH+ofehPh95tEPhOZnZ5UhD9uDtzYIDnLirsIK
+         qEDQ4MGvjR7aoQ7EX14H30YFUunz8uztyxhJHVTSQOppLIEHaGBzsDw4orNz1I0tEXzq
+         fzBTbRSgPlfz1yKh020mGu9GO4UYJKsYdrDXaoKkRUmzjN3zuQAxP7KwA+t/qWPeiCcW
+         7rrQ==
+X-Gm-Message-State: AOAM530YYwn+t2jI1jSUhhrKdlf5fH/P5kPGbjh81DDFhk85kO91+gaU
+        A09Q3Ci2Wkr9L9pP84taD6OxITKIMcF47AcaazQ=
+X-Google-Smtp-Source: ABdhPJzGzujnXPZz2n1OgiBLYq4n8jl/zoN4TcFPzQISesqX87BBbnvHQN0hg6rk09DNzERu5byJH2pb339L/79AYb8=
+X-Received: by 2002:a5e:8c16:: with SMTP id n22mr7789426ioj.156.1614456314650;
+ Sat, 27 Feb 2021 12:05:14 -0800 (PST)
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+References: <20210226062548.3334081-1-masahiroy@kernel.org>
+ <CA+icZUXYLVjs-hXEu_5Vy=TdNvOHhyiXe=hc-jc7SAU04Dtstw@mail.gmail.com>
+ <CAK7LNARmQzJwUWcYPj9QKZatYpC6-gegTuJiAvyhR==8ezWdHg@mail.gmail.com> <CA+icZUXGnOCY5O=cupmmjGnVpYA=Q=cm69ih5HrgpV9sOPozYQ@mail.gmail.com>
+In-Reply-To: <CA+icZUXGnOCY5O=cupmmjGnVpYA=Q=cm69ih5HrgpV9sOPozYQ@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 27 Feb 2021 21:05:03 +0100
+Message-ID: <CA+icZUWT7hqzA=OT=HU2CqE5EBDFZa7vh3mdtyDjhFSSgv8BkA@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: fix UNUSED_KSYMS_WHITELIST for Clang LTO
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Feb 27, 2021 at 8:08 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Sat, Feb 27, 2021 at 7:55 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > On Fri, Feb 26, 2021 at 6:26 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > >
+> > > On Fri, Feb 26, 2021 at 7:26 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > > >
+> > > > Commit fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> > > > does not work as expected if the .config file has already specified
+> > > > CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list" before enabling
+> > > > CONFIG_LTO_CLANG.
+> > > >
+> > > > So, the user-supplied whitelist and LTO-specific white list must be
+> > > > independent of each other.
+> > > >
+> > > > I refactored the shell script so CONFIG_MODVERSIONS and CONFIG_CLANG_LTO
+> > > > handle whitelists in the same way.
+> > > >
+> > > > Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> > > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
---=-p2iMuyud8R1l++kK4rlj
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
 
-On Fri, 2021-02-26 at 22:10 +0530, Srikar Dronamraju wrote:
+- Sedat -
 
-> Current order of preference to pick a LLC while waking a wake-affine
-> task:
-> 1. Between the waker CPU and previous CPU, prefer the LLC of the CPU
->    that is idle.
->=20
-> 2. Between the waker CPU and previous CPU, prefer the LLC of the CPU
->    that is less lightly loaded.
->=20
-> In the current situation where waker and previous CPUs are busy, but
-> only one of its LLC has an idle CPU, Scheduler may end up picking a
-> LLC
-> with no idle CPUs. To mitigate this, add a new step between 1 and 2
-> where Scheduler compares idle CPUs in waker and previous LLCs and
-> picks
-> the appropriate one.
-
-I like that idea a lot. That could also solve some of the
-issues sometimes observed on multi-node x86 systems, and
-probably on the newer AMD chips with several LLCs on chip.
-
-> +	if (sched_feat(WA_WAKER) && tnr_busy < tllc_size)
-> +		return this_cpu;
-
-I wonder if we need to use a slightly lower threshold on
-very large LLCs, both to account for the fact that the
-select_idle_cpu code may not find the single idle CPU
-among a dozen busy ones, or because on a system with
-hyperthreading we may often be better off picking another
-LLC for HT contention issues?
-
-Maybe we could use "tnr_busy * 4 <
-tllc_size * 3" or
-something like that?
-
-That way we will only try to find the last 5 idle
-CPUs
-in a 22 CPU LLC if the other LLC also has fewer than 6
-idle cores.
-
-That might increase our chances of finding an idle CPU
-with SIS_PROP enabled, and might allow WA_WAKER to be
-true by default.
-
-> +	/* For better wakeup latency, prefer idler LLC to cache
-> affinity */
-> +	diff =3D tnr_busy * pllc_size - sync - pnr_busy * tllc_size;
-> +	if (!diff)
-> +		return nr_cpumask_bits;
-> +	if (diff < 0)
-> +		return this_cpu;
-> +
-> +	return prev_cpu;
-> +}
-
---=20
-All Rights Reversed.
-
---=-p2iMuyud8R1l++kK4rlj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmA6o9cACgkQznnekoTE
-3oOwmQf5AcNEkODl1mcUA9dumuWDRBi4LvyhOEXhI2llLN9yZMzvNW9n/2rLLEX3
-freYfyTjKB4reIXFydXQiHFOetlsudfgxszGYVroyXVse8IG0p+qxlVzc1Z/s8aO
-PFKu+wG9kShkA7LX4OaWFPCsnse3/eO3IEfPIbWyaMn8/+karmKBdtgqCCdEpAt8
-rG5HWI5ta5dfpOvuFBJReBe+0vYLhCXvClMJeL4Hg+8eSlHuL6OOtGQ+NX7gD6Ma
-500P1NrpsfY0QMSALfjaqr0fdw2aIexVk8nt3Pf/oMzwwdk9AEkq59ln7xzALriq
-Fez+fUFI5PlCkUyGow2YU9B1Cukeaw==
-=PQF9
------END PGP SIGNATURE-----
-
---=-p2iMuyud8R1l++kK4rlj--
-
+> > > > ---
+> > > >
+> > > > Changes in v2:
+> > > >   - Rebase on top of Arnd's patch:
+> > > >     https://lore.kernel.org/lkml/20210225143456.3829513-1-arnd@kernel.org/
+> > > >
+> > > >  init/Kconfig                    |  1 -
+> > > >  scripts/gen_autoksyms.sh        | 35 ++++++++++++++++++++++++---------
+> > > >  scripts/lto-used-symbollist.txt |  6 ------
+> > >
+> > > People who want to use their own "white-listed" (allow-listed)
+> > > symbollist-file can do that via
+> > > CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list".
+> > > Correct?
+> > >
+> > > Why do you delete the default "scripts/lto-used-symbollist.txt" file
+> > > and remove the default in the appropriate Kconfig for people who want
+> > > to enable Clang-(Thin)LTO?
+> > > These people should now use
+> > > CONFIG_UNUSED_KSYMS_WHITELIST="scripts/lto-used-symbollist.txt"?
+> > > But again - the file was deleted with your patch.
+> > > Do I miss something?
+> >
+> > I think so.
+> >
+> > I moved those symbols to scripts/gen_autoksyms.sh
+> >
+>
+> OK, I have overseen hat.
+>
+> - Sedat -
