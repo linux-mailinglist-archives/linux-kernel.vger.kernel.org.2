@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2654C326B8E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 05:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E19F326BCF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 06:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhB0Edn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 23:33:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        id S229991AbhB0F37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 00:29:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbhB0Edl (ORCPT
+        with ESMTP id S229846AbhB0F35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 23:33:41 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC80C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 20:33:01 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id h4so7442395pgf.13
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 20:33:01 -0800 (PST)
+        Sat, 27 Feb 2021 00:29:57 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36A0C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 21:29:15 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id l18so7353322pji.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 21:29:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=acGrNbfX1ONJlBYzGoeWien8tX1BAEMbXbxus24dvo4=;
-        b=VwhYGS10gHHtx4bHrQ+wdwiMVGIFYdndXhNbDSfz8LMNKUZDsxDS77KcBXcM48iDsf
-         9Yx4pIOReijOyL27CHIKdm8BwvkfjeEYo9cDnsBzlVmT7Ox1+zJUDuXeWPtcn1d8D7dS
-         NjIRO1lR9xVX6PnAd2pqMx6+nfu0y2yeWfL9J6XBE50qTOjiwP8sppW9V8NxCvMW/Pmi
-         hXh3f/58KJZhyZKf7TTCoQP9cDYdD0AGueo9F6F1MhCKkTcjlvmOVTVoXGLxP+W+uXaF
-         I6kOux4osK/cQG/fBojEJSHumtDiGPajb8aGeeBidUi7StBiFkkxhioNoOmFhDcAHY/O
-         ImIA==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FOIh0C6p3H+/JCgzGYGGAscTPrZ5Gvg80ujzoULD2s4=;
+        b=0OqHQexTKfdmlFKyKJDt1xoZPVDLkTmpgkslAOzpRmyTvw07KLYhfbbDP5Za2IygZC
+         nGrGoARGHxBYp7sYhQItAp+OC/f51zDLMBsHeNZd2vnlcyEr/b37JCjk0s81jwjHCJa8
+         u/kJ5kcv8MF8+Jae9QAZtAjqYV4LiARUkaG0m3ZoV6ISCPaXlEVzKTiwPTyJoZxYq669
+         vkWy8VU+UxQ1O6UwMdgFyNUC9JMeVPzlehdq2OJZ1SAeODK81UXH8iePMPyNJTgN/V2f
+         Lits+tZIaMnA8IpR99Y60K8zQ+3UYxiC/28YTZWTEzdYLVE76JxTrJRKaWt899TDkq2X
+         OzlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=acGrNbfX1ONJlBYzGoeWien8tX1BAEMbXbxus24dvo4=;
-        b=D/GEVqQp5mztatGfgPPZdmWXyZOYyelg+u/Uk0AuB8vpLp3Vx0SIXvedI4AXdW7Lbm
-         tIyPBkhk50khL1Mdaq3Aq+5tELqsLAPiF8xB9b8Pr6y1ynq9nC7hgFIj72Gm25iKa+0R
-         70ZH5RLcsIxATplcRI2Eubz3MZppNje8yAUKCeorcepH8bkbB1tnvUUtUOWgUH1nY04U
-         6lzWIKGUbIJJI/m2qujlGkJ8yJyPGxZHBlvwWnJLLdKt4IEEoprIF2dUuNvHbT9V4xqh
-         DVUDbPnFRAX0gUco7T0VGoziB5cim0yeu5+I6/MvtRM/dsXaHJOeiumkJGSeGUNOpdOD
-         RiMg==
-X-Gm-Message-State: AOAM530m6f8hReadPLN8OKmPauP6TuZhlSjsn5/S6hRImMTUWJ12xlJ9
-        hptf2LYJw28W4q+XIqQLC1rHRQ==
-X-Google-Smtp-Source: ABdhPJz7f04Lrx3tfHHrsCRXLLVkuuTouZTHKhhx2qi6IMSYDexUKG5EZ6UhtonHmgDkT+l9SID3fg==
-X-Received: by 2002:a63:a22:: with SMTP id 34mr5663613pgk.328.1614400380990;
-        Fri, 26 Feb 2021 20:33:00 -0800 (PST)
-Received: from google.com ([2620:15c:2ce:0:48ad:d4d0:f627:c01f])
-        by smtp.gmail.com with ESMTPSA id v5sm10761519pfc.100.2021.02.26.20.32.59
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=FOIh0C6p3H+/JCgzGYGGAscTPrZ5Gvg80ujzoULD2s4=;
+        b=IkEx9c6bVP1NUnRcVxufIo2Qy8OrWZr4KHPgVySyOZz72cYG178My0Yto2QzDutIW9
+         22TAokXluBL5NzVNr5uSsJl3yvTq71POGlfwRTLrVBf/hQefjbmJG9trhKglRErVmKhl
+         2iRRz2HlfIy7IqFeQbM7CKA851VHvbPc3BkaphE1oCeIIbpTciKY1GCIdeteAjykCtw3
+         7n2zd44XTJCxKrD11KLoaCSnQkTWmowqmySNxzakJDRqtUizGR2k3Iy/1eXHUt+KJ+aO
+         uY4brclAQqDQC+74ouu/1IEAkz4w/iyy85q9QecGM/Ig4efBSanw4xrrsAU09HKG1EzM
+         euDg==
+X-Gm-Message-State: AOAM533ZktMnT8JU6OYVENj41LRWaCHhqIoW4Rm2vGTFE3l3/22C+jG8
+        ZcsABjEma/pQ/IjZn/V2yiuvEpYHovs2yehR
+X-Google-Smtp-Source: ABdhPJx1hFmgkOpRQCZvfZEJZq9FZOaO4yip8ci844PJDkDteECpwN8ig742xVNy+hIN+Ksyuuyidg==
+X-Received: by 2002:a17:90a:7104:: with SMTP id h4mr6561000pjk.189.1614403755369;
+        Fri, 26 Feb 2021 21:29:15 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id q128sm11246093pfb.51.2021.02.26.21.29.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 20:33:00 -0800 (PST)
-Date:   Fri, 26 Feb 2021 20:32:57 -0800
-From:   Fangrui Song <maskray@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: vmlinux.lds.S: keep .entry.tramp.text section
-Message-ID: <20210227043257.k3aernmnzsvitp7c@google.com>
-References: <20210226140352.3477860-1-arnd@kernel.org>
- <202102261256.AF256702@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <202102261256.AF256702@keescook>
+        Fri, 26 Feb 2021 21:29:14 -0800 (PST)
+Date:   Fri, 26 Feb 2021 21:29:14 -0800 (PST)
+X-Google-Original-Date: Fri, 26 Feb 2021 21:29:13 PST (-0800)
+Subject:     Re: [PATCH] RISC-V: Enable CPU Hotplug in defconfigs
+In-Reply-To: <20210209054620.25005-1-anup.patel@wdc.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        anup@brainfault.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Anup Patel <Anup.Patel@wdc.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Anup Patel <Anup.Patel@wdc.com>
+Message-ID: <mhng-1c7a9de4-c98a-4b2f-bcee-dc0d618b8c26@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021-02-26, Kees Cook wrote:
->On Fri, Feb 26, 2021 at 03:03:39PM +0100, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> When building with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION,
->> I sometimes see an assertion
->>
->>  ld.lld: error: Entry trampoline text too big
+On Mon, 08 Feb 2021 21:46:20 PST (-0800), Anup Patel wrote:
+> The CPU hotplug support has been tested on QEMU, Spike, and SiFive
+> Unleashed so let's enable it by default in RV32 and RV64 defconfigs.
 >
->Heh, "too big" seems a weird report for having it discarded. :)
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> ---
+>  arch/riscv/configs/defconfig      | 1 +
+>  arch/riscv/configs/rv32_defconfig | 1 +
+>  2 files changed, 2 insertions(+)
 >
->Any idea on this Fangrui?
->
->( I see this is https://github.com/ClangBuiltLinux/linux/issues/1311 )
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index 8c3d1e451703..6c0625aa96c7 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -17,6 +17,7 @@ CONFIG_BPF_SYSCALL=y
+>  CONFIG_SOC_SIFIVE=y
+>  CONFIG_SOC_VIRT=y
+>  CONFIG_SMP=y
+> +CONFIG_HOTPLUG_CPU=y
+>  CONFIG_JUMP_LABEL=y
+>  CONFIG_MODULES=y
+>  CONFIG_MODULE_UNLOAD=y
+> diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
+> index 2c2cda6cc1c5..8dd02b842fef 100644
+> --- a/arch/riscv/configs/rv32_defconfig
+> +++ b/arch/riscv/configs/rv32_defconfig
+> @@ -18,6 +18,7 @@ CONFIG_SOC_SIFIVE=y
+>  CONFIG_SOC_VIRT=y
+>  CONFIG_ARCH_RV32I=y
+>  CONFIG_SMP=y
+> +CONFIG_HOTPLUG_CPU=y
+>  CONFIG_JUMP_LABEL=y
+>  CONFIG_MODULES=y
+>  CONFIG_MODULE_UNLOAD=y
 
-This diagnostic is from an ASSERT in arch/arm64/kernel/vmlinux.lds
-
-   ASSERT((__entry_tramp_text_end - __entry_tramp_text_start) == (1 << 16),
-    "Entry trampoline text too big")
-
-In our case (aarch64-linux-gnu-ld or LLD, --gc-sections), all the input sections with this name
-are discarded, so the output section is either absent (GNU ld) or empty (LLD).
-
-KEEP  makes the sections GC roots, and it is appropriate to use here.
-
-
-However, I worry that many other KEEP keywords in vmlinux.lds are unnecessary:
-https://lore.kernel.org/linux-arm-kernel/20210226211323.arkvjnr4hifxapqu@google.com/
-
-git log -S KEEP -- include/asm-generic/vmlinux.lds.h => there is quite a
-bit unjustified usage. Sure, adding KEEP (GC root) is easy and
-works around problems, but it not good for CONFIG_LD_DEAD_CODE_DATA_ELIMINATION.
-
-Reviewed-by: Fangrui Song <maskray@google.com>
-
->
-
->>
->> This happens when any reference to the trampoline is discarded at link
->> time. Marking the section as KEEP() avoids the assertion, but I have
->> not figured out whether this is the correct solution for the underlying
->> problem.
->>
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
->As a work-around, it seems fine to me.
->
->Reviewed-by: Kees Cook <keescook@chromium.org>
->
->-Kees
->
->> ---
->>  arch/arm64/kernel/vmlinux.lds.S | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
->> index 926cdb597a45..c5ee9d5842db 100644
->> --- a/arch/arm64/kernel/vmlinux.lds.S
->> +++ b/arch/arm64/kernel/vmlinux.lds.S
->> @@ -96,7 +96,7 @@ jiffies = jiffies_64;
->>  #define TRAMP_TEXT					\
->>  	. = ALIGN(PAGE_SIZE);				\
->>  	__entry_tramp_text_start = .;			\
->> -	*(.entry.tramp.text)				\
->> +	KEEP(*(.entry.tramp.text))			\
->>  	. = ALIGN(PAGE_SIZE);				\
->>  	__entry_tramp_text_end = .;
->>  #else
->> --
->> 2.29.2
->>
->
->-- 
->Kees Cook
+Sorry about that.  I missed a handful of things, I'll send this out tomorrow.
