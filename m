@@ -2,152 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC06326B8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 05:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2654C326B8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 05:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhB0EPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 23:15:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58686 "EHLO
+        id S230001AbhB0Edn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 23:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbhB0EP3 (ORCPT
+        with ESMTP id S229795AbhB0Edl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 23:15:29 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F14C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 20:14:48 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id b21so7459997pgk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 20:14:48 -0800 (PST)
+        Fri, 26 Feb 2021 23:33:41 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC80C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 20:33:01 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id h4so7442395pgf.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 20:33:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HAWqJh5bH0SBnTvxI36sdd7e6koG3nqFv5InO++pzdY=;
-        b=xve7mwNKx/vYEK9kReHFU6UyxBQOISTwlspvgLp0jv/P/32Kf7hFq9gUPaG9xa+A/w
-         9ZEx9OOTv6zBRKyJ7LtXlcLxvgLux3qIzvIphJ4ByyKHyvX3uEwBQ174q8dBT2w8Se/y
-         uyxEpUUDPJkfNO/JLBjS9iqT9jwSCEsCPrnwdZ/UjDRluSdyj1FIfei/xbSSV0dGNZoh
-         hKoMerrPp0K5eZGpivKf4dN8+XSYzpdrOcj3lW4EHAiD7f2m3ZPG50c89UAURhXKvkDB
-         LejmDB9lsqlfoLIjqYOuFkAuungCwwkNYKcKcP5fg0u8AyLc6BdNnm6CpvfSMyPRoC7/
-         AxvQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=acGrNbfX1ONJlBYzGoeWien8tX1BAEMbXbxus24dvo4=;
+        b=VwhYGS10gHHtx4bHrQ+wdwiMVGIFYdndXhNbDSfz8LMNKUZDsxDS77KcBXcM48iDsf
+         9Yx4pIOReijOyL27CHIKdm8BwvkfjeEYo9cDnsBzlVmT7Ox1+zJUDuXeWPtcn1d8D7dS
+         NjIRO1lR9xVX6PnAd2pqMx6+nfu0y2yeWfL9J6XBE50qTOjiwP8sppW9V8NxCvMW/Pmi
+         hXh3f/58KJZhyZKf7TTCoQP9cDYdD0AGueo9F6F1MhCKkTcjlvmOVTVoXGLxP+W+uXaF
+         I6kOux4osK/cQG/fBojEJSHumtDiGPajb8aGeeBidUi7StBiFkkxhioNoOmFhDcAHY/O
+         ImIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=HAWqJh5bH0SBnTvxI36sdd7e6koG3nqFv5InO++pzdY=;
-        b=tueK5YzwsT4Z6MNuFEKl3e8NSMb42mlq24a1D9ri8y6CbLtpLnvvVHEdfeFCBk0J2k
-         4pMvMWQ6Zc/TamQqs4fSxfq6vc+YM5316MWeSv51ekTV7pn7ygN2Ckdxo+/88R0qEX3m
-         fS5YDQT7xLujNq6quKnblmfTor9WeEppqXRgW0hDSJadwwFSorQnTJLNGTNeqV4WkZMo
-         ygojHmEz8kIFINx0uf3gL+x6AqwvQG6XP0xSCiuLN9h1/bxgx6QaP1wo1ImCN6c7h3GB
-         JcIjsoF//MHTwUo81Xh7ht62NPyLqZpYtS8N/wxaWOfHpUiaEWNdVfaCiVcV4xnzbfBZ
-         Nwgw==
-X-Gm-Message-State: AOAM531Ysy/yUwOACXeYRrxI5uEORPhHf5FYp5jCA9ZiaEWZJf61mPdz
-        qs/M9l2durLAMgQCsOrMEq1cs9xSuEYAiFbA
-X-Google-Smtp-Source: ABdhPJwnZHCvJ5CYxZZAoue5BWmBrNhTCBhcDNKZasUQtgpWSzXSHo89jKW2v0Xwu7h2k9YiFZTQYA==
-X-Received: by 2002:a63:1505:: with SMTP id v5mr5782922pgl.95.1614399288412;
-        Fri, 26 Feb 2021 20:14:48 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id j1sm10773163pfr.78.2021.02.26.20.14.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=acGrNbfX1ONJlBYzGoeWien8tX1BAEMbXbxus24dvo4=;
+        b=D/GEVqQp5mztatGfgPPZdmWXyZOYyelg+u/Uk0AuB8vpLp3Vx0SIXvedI4AXdW7Lbm
+         tIyPBkhk50khL1Mdaq3Aq+5tELqsLAPiF8xB9b8Pr6y1ynq9nC7hgFIj72Gm25iKa+0R
+         70ZH5RLcsIxATplcRI2Eubz3MZppNje8yAUKCeorcepH8bkbB1tnvUUtUOWgUH1nY04U
+         6lzWIKGUbIJJI/m2qujlGkJ8yJyPGxZHBlvwWnJLLdKt4IEEoprIF2dUuNvHbT9V4xqh
+         DVUDbPnFRAX0gUco7T0VGoziB5cim0yeu5+I6/MvtRM/dsXaHJOeiumkJGSeGUNOpdOD
+         RiMg==
+X-Gm-Message-State: AOAM530m6f8hReadPLN8OKmPauP6TuZhlSjsn5/S6hRImMTUWJ12xlJ9
+        hptf2LYJw28W4q+XIqQLC1rHRQ==
+X-Google-Smtp-Source: ABdhPJz7f04Lrx3tfHHrsCRXLLVkuuTouZTHKhhx2qi6IMSYDexUKG5EZ6UhtonHmgDkT+l9SID3fg==
+X-Received: by 2002:a63:a22:: with SMTP id 34mr5663613pgk.328.1614400380990;
+        Fri, 26 Feb 2021 20:33:00 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:48ad:d4d0:f627:c01f])
+        by smtp.gmail.com with ESMTPSA id v5sm10761519pfc.100.2021.02.26.20.32.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 20:14:47 -0800 (PST)
-Date:   Fri, 26 Feb 2021 20:14:47 -0800 (PST)
-X-Google-Original-Date: Fri, 26 Feb 2021 20:14:32 PST (-0800)
-Subject:     Re: [PATCH 1/2] mm: Guard a use of node_reclaim_distance with CONFIFG_NUMA
-In-Reply-To: <alpine.LSU.2.11.2102261918250.15774@eggly.anvils>
-CC:     hughd@google.com, akpm@linux-foundation.org, atishp@atishpatra.org,
-        peterz@infradead.org, srikar@linux.vnet.ibm.com,
-        valentin.schneider@arm.com, vbabka@suse.cz, mpe@ellerman.id.au,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel-team@android.com, kirill.shutemov@linux.intel.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     hughd@google.com
-Message-ID: <mhng-3f22abd3-c7a3-4a5f-b068-ed5bfe9a2e71@penguin>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Fri, 26 Feb 2021 20:33:00 -0800 (PST)
+Date:   Fri, 26 Feb 2021 20:32:57 -0800
+From:   Fangrui Song <maskray@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: vmlinux.lds.S: keep .entry.tramp.text section
+Message-ID: <20210227043257.k3aernmnzsvitp7c@google.com>
+References: <20210226140352.3477860-1-arnd@kernel.org>
+ <202102261256.AF256702@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <202102261256.AF256702@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 19:41:40 PST (-0800), hughd@google.com wrote:
-> On Fri, 26 Feb 2021, Palmer Dabbelt wrote:
->> On Fri, 26 Feb 2021 17:31:40 PST (-0800), hughd@google.com wrote:
->> > On Fri, 26 Feb 2021, Andrew Morton wrote:
->> > > On Fri, 26 Feb 2021 12:17:20 -0800 Palmer Dabbelt <palmer@dabbelt.com>
->> > > wrote:
->> > > > From: Palmer Dabbelt <palmerdabbelt@google.com>
->> > > >
->> > > > This is only useful under CONFIG_NUMA.  IIUC skipping the check is the
->> > > > right thing to do here, as without CONFIG_NUMA there will never be any
->> > > > large node distances on non-NUMA systems.
->> > > >
->> > > > I expected this to manifest as a link failure under (!CONFIG_NUMA &&
->> > > > CONFIG_TRANSPARENT_HUGE_PAGES), but I'm not actually seeing that.  I
->> > > > think the reference is just getting pruned before it's checked, but I
->> > > > didn't get that from reading the code so I'm worried I'm missing
->> > > > something.
->> > > >
->> > > > Either way, this is necessary to guard the definition of
->> > > > node_reclaim_distance with CONFIG_NUMA.
->> > > >
->> > > > Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
->> > > > ---
->> > > >  mm/khugepaged.c | 2 ++
->> > > >  1 file changed, 2 insertions(+)
->> > > >
->> > > > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
->> > > > index a7d6cb912b05..b1bf191c3a54 100644
->> > > > --- a/mm/khugepaged.c
->> > > > +++ b/mm/khugepaged.c
->> > > > @@ -819,8 +819,10 @@ static bool khugepaged_scan_abort(int nid)
->> > > >  	for (i = 0; i < MAX_NUMNODES; i++) {
->> > > >  		if (!khugepaged_node_load[i])
->> > > >  			continue;
->> > > > +#ifdef CONFIG_NUMA
->> > > >  		if (node_distance(nid, i) > node_reclaim_distance)
->> > > >  			return true;
->> > > > +#endif
->> > > >  	}
->> > > >  	return false;
->> > > >  }
->> > >
->> > > This makes the entire loop a no-op.  Perhaps Kirill can help take a
->> > > look at removing unnecessary code in khugepaged.c when CONFIG_NUMA=n?
->> >
->> > First lines of khugepaged_scan_abort() say
->> > 	if (!node_reclaim_mode)
->> > 		return false;
->> >
->> > And include/linux/swap.h says
->> > #ifdef CONFIG_NUMA
->> > extern int node_reclaim_mode;
->> > extern int sysctl_min_unmapped_ratio;
->> > extern int sysctl_min_slab_ratio;
->> > #else
->> > #define node_reclaim_mode 0
->> > #endif
->> >
->> > So, no need for an #ifdef CONFIG_NUMA inside khugepaged_scan_abort().
+
+On 2021-02-26, Kees Cook wrote:
+>On Fri, Feb 26, 2021 at 03:03:39PM +0100, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
 >>
->> Ah, thanks, I hadn't seen that.  That certainly explains the lack of an
->> undefined reference.
+>> When building with CONFIG_LD_DEAD_CODE_DATA_ELIMINATION,
+>> I sometimes see an assertion
 >>
->> That said: do we generally rely on DCE to prune references to undefined
->> symbols?  This particular one seems like it'd get reliably deleted, but it
->> seems like a fragile thing to do in general.  This kind of stuff would
->> certainly make some code easier to write, though.
+>>  ld.lld: error: Entry trampoline text too big
 >
-> Yes, the kernel build very much depends on the optimizer eliminating
-> dead code, in many many places.  We do prefer to keep the #ifdefs to
-> the header files as much as possible.
-
-OK, makes sense.  Thanks!
-
->> I don't really care all that much, though, as I was just sending this along
->> due to some build failure report from a user that I couldn't reproduce.  It
->> looked like they had some out-of-tree stuff, so in this case I'm fine on
->> fixing this being their problem.
+>Heh, "too big" seems a weird report for having it discarded. :)
 >
-> I didn't see your 2/2 at the time; but wouldn't be surprised if that
-> needs 1/2, to avoid an error on undeclared node_reclaim_distance before
-> the optimizer comes into play.  If so, best just to drop 2/2 too.
+>Any idea on this Fangrui?
+>
+>( I see this is https://github.com/ClangBuiltLinux/linux/issues/1311 )
 
-Ya, definitely.  Sorry for the noise!
+This diagnostic is from an ASSERT in arch/arm64/kernel/vmlinux.lds
+
+   ASSERT((__entry_tramp_text_end - __entry_tramp_text_start) == (1 << 16),
+    "Entry trampoline text too big")
+
+In our case (aarch64-linux-gnu-ld or LLD, --gc-sections), all the input sections with this name
+are discarded, so the output section is either absent (GNU ld) or empty (LLD).
+
+KEEP  makes the sections GC roots, and it is appropriate to use here.
+
+
+However, I worry that many other KEEP keywords in vmlinux.lds are unnecessary:
+https://lore.kernel.org/linux-arm-kernel/20210226211323.arkvjnr4hifxapqu@google.com/
+
+git log -S KEEP -- include/asm-generic/vmlinux.lds.h => there is quite a
+bit unjustified usage. Sure, adding KEEP (GC root) is easy and
+works around problems, but it not good for CONFIG_LD_DEAD_CODE_DATA_ELIMINATION.
+
+Reviewed-by: Fangrui Song <maskray@google.com>
+
+>
+
+>>
+>> This happens when any reference to the trampoline is discarded at link
+>> time. Marking the section as KEEP() avoids the assertion, but I have
+>> not figured out whether this is the correct solution for the underlying
+>> problem.
+>>
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+>As a work-around, it seems fine to me.
+>
+>Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+>-Kees
+>
+>> ---
+>>  arch/arm64/kernel/vmlinux.lds.S | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+>> index 926cdb597a45..c5ee9d5842db 100644
+>> --- a/arch/arm64/kernel/vmlinux.lds.S
+>> +++ b/arch/arm64/kernel/vmlinux.lds.S
+>> @@ -96,7 +96,7 @@ jiffies = jiffies_64;
+>>  #define TRAMP_TEXT					\
+>>  	. = ALIGN(PAGE_SIZE);				\
+>>  	__entry_tramp_text_start = .;			\
+>> -	*(.entry.tramp.text)				\
+>> +	KEEP(*(.entry.tramp.text))			\
+>>  	. = ALIGN(PAGE_SIZE);				\
+>>  	__entry_tramp_text_end = .;
+>>  #else
+>> --
+>> 2.29.2
+>>
+>
+>-- 
+>Kees Cook
