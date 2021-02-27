@@ -2,101 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E62326C32
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 09:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3905326C3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 09:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhB0IJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 03:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhB0IJG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 03:09:06 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2A3C06174A;
-        Sat, 27 Feb 2021 00:08:22 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id k12so4281983ljg.9;
-        Sat, 27 Feb 2021 00:08:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ml3mDD0xY/VjmOnKUym0KmbG6rdyhQ3p6qFu1Ts6+ss=;
-        b=kzVxjYPsxjFuHzRp7sCPtajEW8sPI6n46NLkyHoCEm6qA6lfO6w5Y+Ql7x/fcFZ5Vp
-         A9E82/aQxKz+Na17wdrVxUo1+IGCU3AFe1npmcTa5/yxHq5acaqit8fq4MKh2rtonmJl
-         NzBCF6lufw3SXvfHOefyaUCBpJcpbOIvhbnrpJwINPT3oBoZrKi2XnuAtFpeSSjf19cf
-         OjDof4HC63HCXoqyVeuLOw507kGLKanCS5PzwPtilEvzWn08n3KvUSrMuRicMiL0unVl
-         ihxhclsw7r/fM0o6O/JbYphB+VsOnv/95I66z8tFoVTHIoq4mBc//YfZpQSlZlLPO2U9
-         dW0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ml3mDD0xY/VjmOnKUym0KmbG6rdyhQ3p6qFu1Ts6+ss=;
-        b=POOPlQrhQ3OSqFROKZxN2Yo5Bf03pcOpxT4jn4res09RvMgjyu4JwI5698DtSI6oWY
-         bsHocbATHINYoz4edkiGagtt38IuJ6vEMVeraaeqXLh54vfHZuDLcD2FfZ76YpfQ6O5J
-         q0SGd+oW56yXICafyf7kk2mEWrGMHuhOVtlCqFROhmnAHVTEW5m70LsY5bWVB6M/OdyC
-         PmwVmghdfepg+6yP3/2FYCb+Kob4auG9xIzUN+oCGNzwkawOxSErzesDD6jh3XeLxEBL
-         KXOVa/K7FkQwD9LDnRVqpoqfzvwJkUB7kyUkqo5PY5nyem0fTRtytn8c6UwiQcCn2lWD
-         8IqQ==
-X-Gm-Message-State: AOAM533DCaYcnnOTrLimZQduwpHok5ogoGtD4NXGUAskiag2MizkS2jV
-        rQOHAF99DjV44tVkXYtRfsHBuTor+Pk=
-X-Google-Smtp-Source: ABdhPJzSWD9ri8pIU3PeN1AuuFpUfz2deqxrZ1wUhr+g4qJEQTcZa7SGuXcmTsUfK4gUmnI6z2hBQw==
-X-Received: by 2002:a2e:8157:: with SMTP id t23mr3780650ljg.214.1614413297661;
-        Sat, 27 Feb 2021 00:08:17 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id d1sm1626499lfq.156.2021.02.27.00.08.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Feb 2021 00:08:17 -0800 (PST)
-Subject: Re: [PATCH] rtc: tps65910: include linux/property.h
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210225134215.2263694-1-arnd@kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b267c5da-a6ea-7d18-265c-7f63ed7e60f9@gmail.com>
-Date:   Sat, 27 Feb 2021 11:08:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S229967AbhB0I0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 03:26:05 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:27449 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229795AbhB0I0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 03:26:02 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614414341; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vTSvXCBTxMLKclBkDKtSO8OPYx3V4W4y9TZ3gbaKO4g=;
+ b=CnZ6Oiltt8iKTiDAgwxb7whFM8q/vE1Yw+oRGQ3iykvXL/kHBjDD7n6iqFfZbHVWY2UWMUTv
+ 2ppbRv8Q7ABONUsEMWhTCGT3EUIpM4nSQd9eRzy+ArUUsuqI0lWdW9TCaa7WiYYYEW5lT5lh
+ Q61DEmFZJqGj6ooQ9E5aJvTotzw=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 603a01ea8f0d5ba6c5e9b77b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 27 Feb 2021 08:25:14
+ GMT
+Sender: gokulsri=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BBCACC43461; Sat, 27 Feb 2021 08:25:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: gokulsri)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D83BDC433CA;
+        Sat, 27 Feb 2021 08:25:12 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210225134215.2263694-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 27 Feb 2021 13:55:12 +0530
+From:   gokulsri@codeaurora.org
+To:     bbhatt@codeaurora.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        jhugo@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hemantk@codeaurora.org, sricharan@codeaurora.org,
+        bjorn.andersson@linaro.org
+Subject: Re: [PATCH v2] bus: mhi: core: Add unique qrtr node id support
+In-Reply-To: <ee9edb7c59a20e5ea2af59de21e815ee@codeaurora.org>
+References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
+ <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
+ <20210226145245.GB70936@thinkpad>
+ <ee9edb7c59a20e5ea2af59de21e815ee@codeaurora.org>
+Message-ID: <444e646b9781e24f9e2f95f7db85fcbd@codeaurora.org>
+X-Sender: gokulsri@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.02.2021 16:42, Arnd Bergmann пишет:
-> From: Arnd Bergmann <arnd@arndb.de>
+  Hi
+On 2021-02-26 23:01, Bhaumik Bhatt wrote:
+> On 2021-02-26 06:52 AM, Manivannan Sadhasivam wrote:
+>> On Fri, Feb 26, 2021 at 04:12:49PM +0530, Gokul Sriram Palanisamy 
+>> wrote:
+>>> On platforms with two or more identical mhi
+>>> devices, qmi service will run with identical
+>>> qrtr-node-id. Because of this identical ID,
+>>> host qrtr-lookup cannot register more than one
+>>> qmi service with identical node ID. Ultimately,
+>>> only one qmi service will be avilable for the
+>>> underlying drivers to communicate with.
+>>> 
+>>> On QCN9000, it implements a unique qrtr-node-id
+>>> and qmi instance ID using a unique instance ID
+>>> written to a debug register from host driver
+>>> soon after SBL is loaded.
+>>> 
+>>> This change generates a unique instance ID from
+>>> PCIe domain number and bus number, writes to the
+>>> given debug register just after SBL is loaded so
+>>> that it is available for FW when the QMI service
+>>> is spawned.
+>>> 
+>>> sample:
+>>> root@OpenWrt:/# qrtr-lookup
+>>>   Service Version Instance Node  Port
+>>>        15       1        0    8     1 Test service
+>>>        69       1        8    8     2 ATH10k WLAN firmware service
+>>>        15       1        0   24     1 Test service
+>>>        69       1       24   24     2 ATH10k WLAN firmware service
+>>> 
+>>> Here 8 and 24 on column 3 (QMI Instance ID)
+>>> and 4 (QRTR Node ID) are the node IDs that
+>>> is unique per mhi device.
+>>> 
+>>> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+>>> ---
+>>>  drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
+>>>  1 file changed, 14 insertions(+)
+>>> 
+>>> diff --git a/drivers/bus/mhi/core/boot.c 
+>>> b/drivers/bus/mhi/core/boot.c
+>>> index c2546bf..5e5dad5 100644
+>>> --- a/drivers/bus/mhi/core/boot.c
+>>> +++ b/drivers/bus/mhi/core/boot.c
+>>> @@ -16,8 +16,12 @@
+>>>  #include <linux/random.h>
+>>>  #include <linux/slab.h>
+>>>  #include <linux/wait.h>
+>>> +#include <linux/pci.h>
+>>>  #include "internal.h"
+>>> 
+>>> +#define QRTR_INSTANCE_MASK	0x000000FF
+>>> +#define QRTR_INSTANCE_SHIFT	0
+>>> +
+>>>  /* Setup RDDM vector table for RDDM transfer and program RXVEC */
+>>>  void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+>>>  		      struct image_info *img_info)
+>>> @@ -391,6 +395,9 @@ void mhi_fw_load_handler(struct mhi_controller 
+>>> *mhi_cntrl)
+>>>  	const struct firmware *firmware = NULL;
+>>>  	struct image_info *image_info;
+>>>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>>> +	struct pci_dev *pci_dev = to_pci_dev(mhi_cntrl->cntrl_dev);
+>>> +	struct pci_bus *bus = pci_dev->bus;
+>>> +	uint32_t instance;
+>>>  	const char *fw_name;
+>>>  	void *buf;
+>>>  	dma_addr_t dma_addr;
+>>> @@ -466,6 +473,13 @@ void mhi_fw_load_handler(struct mhi_controller 
+>>> *mhi_cntrl)
+>>>  		return;
+>>>  	}
+>>> 
+>>> +	instance = ((pci_domain_nr(bus) & 0xF) << 4) | (bus->number & 0xF);
+>>> +	instance &= QRTR_INSTANCE_MASK;
+>>> +
+>>> +	mhi_write_reg_field(mhi_cntrl, mhi_cntrl->bhi,
+>>> +			    BHI_ERRDBG2, QRTR_INSTANCE_MASK,
+>>> +			    QRTR_INSTANCE_SHIFT, instance);
+>> 
+>> You cannot not do this in MHI stack. Why can't you do this in the MHI 
+>> controller
+>> specific to QCN9000? And btw, is QCN9000 supported in mainline?
+>> 
+>> Thanks,
+>> Mani
+>> 
+>>> +
+>>>  	write_lock_irq(&mhi_cntrl->pm_lock);
+>>>  	mhi_cntrl->dev_state = MHI_STATE_RESET;
+>>>  	write_unlock_irq(&mhi_cntrl->pm_lock);
+>>> --
+>>> 2.7.4
+>>> 
 > 
-> The added device_property_present() call causes a build
-> failure in some configurations because of the missing header:
+> As others have stated, please refrain from adding protocol specific
+> code (such as PCIe)
+> in the MHI core driver. Please have this change in your controller.
 > 
-> drivers/rtc/rtc-tps65910.c:422:7: error: implicit declaration of function 'device_property_present' [-Werror,-Wimplicit-function-declaration]
+> If there is access to BHI registers required prior to power up from
+> MHI core, it is not
+> exposed right now. We can talk about how you can  achieve that, so you
+> can do this write
+> in your controller after mhi_prepare_for_power_up().
 > 
-> Fixes: 454ba154a62c ("rtc: tps65910: Support wakeup-source property")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Thanks,
+> Bhaumik
 > ---
->  drivers/rtc/rtc-tps65910.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/rtc/rtc-tps65910.c b/drivers/rtc/rtc-tps65910.c
-> index 288abb1abdb8..bc89c62ccb9b 100644
-> --- a/drivers/rtc/rtc-tps65910.c
-> +++ b/drivers/rtc/rtc-tps65910.c
-> @@ -18,6 +18,7 @@
->  #include <linux/rtc.h>
->  #include <linux/bcd.h>
->  #include <linux/math64.h>
-> +#include <linux/property.h>
->  #include <linux/platform_device.h>
->  #include <linux/interrupt.h>
->  #include <linux/mfd/tps65910.h>
-> 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+> Forum,
+> a Linux Foundation Collaborative Project
+  Thank you Jeffrey, Manivannan and Bhaumik.
+  Adding Bjorn for his review and suggestions.
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+  Thanks,
+  Gokul
