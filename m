@@ -2,74 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B221D326BFE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 07:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B33326C03
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 07:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhB0GeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 01:34:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhB0GeT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 01:34:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BD8664E60;
-        Sat, 27 Feb 2021 06:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614407618;
-        bh=hPrMFC+Ygct040kW5JEcTSOS+HxpDkAB5GYpG8D3qDE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mo7zcR5toS4981MKiJ4tPNqwOPHUGD87cZxZJcKqWHb80Aa71GLlRLSrRkoKpTNGz
-         lDwM53N2vzPxjN3ILDKxZRj+lj5x8Gz2avurBU9SSgiVzWGQcIIt8RIHLMDUlOqgRy
-         V/M6J3WKJvWhXxjy86tTKUikPzFpgNOqOxxmJgpE=
-Date:   Sat, 27 Feb 2021 07:33:34 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
-        Savo Novakovic <savox.novakovic@intel.com>,
-        Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Subject: Re: [PATCH v1 01/12] gna: add driver module
-Message-ID: <YDnnvl8OsWdf9sq9@kroah.com>
-References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
- <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
- <CAHp75Vep0Fm1k_7gJcozk4t316QmUgt5Qe3PauwDg=py5VnHfQ@mail.gmail.com>
- <85tupysmwc.fsf@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85tupysmwc.fsf@linux.intel.com>
+        id S229990AbhB0Gs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 01:48:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhB0Gs0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 01:48:26 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313FCC06174A;
+        Fri, 26 Feb 2021 22:47:46 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id r3so10661690wro.9;
+        Fri, 26 Feb 2021 22:47:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:content-transfer-encoding:mime-version:subject:date:references
+         :to:in-reply-to:message-id;
+        bh=F9ny4jQTCeFtjViuEvQMbnhYKNWR/5nTD8Caa29xSeY=;
+        b=aiG54aljaWyk1GYdsHS05xajJZEgCKmqBh6YipyN6IDUqf5VbuIVgTc2lpsXsk0nOo
+         L/LiJNOmndQ/TjXHPTLwLc+FFArOfvaf1TRUQLt0gMT+GH28kCKABw4OJE9NI5eL5iGd
+         QHqO30w2eeIMVyxcEueki5vWcAThdNOt3Gkj+mRUixCI3YNdZNAyvPAKt0q8JcY0ABMu
+         VKwbfGz9/8m1X3OC5eNIUJAmyniw3Yx4+9x+KwIpnOXSMTxh5iAu8oMU3plf0Fppemyh
+         KE8An79P1BwcXw9xPwQZfiPSaYQtq5LSrNur1gfu3NjQKEZYvQ98IQSV6qQd/BrtpYVa
+         8j3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:date:references:to:in-reply-to:message-id;
+        bh=F9ny4jQTCeFtjViuEvQMbnhYKNWR/5nTD8Caa29xSeY=;
+        b=jSL3RvuoA2s86zJdMBTsXd2WkRHYNnSaquKs/ATyigR2Qxg6fFmGlGrVnKnFNgfObW
+         5TUN/vLmLgOfw8/P0Ta+y3dGssbUXaCaCRUvzj06WFvf0oY+T9iNuBPZnMPOsV35HNEj
+         hLhQSSC+2bobFyyUkaBVBQnJIiNIQg6Kx4/sUM7pbdkrtIIqt4NfclMsE15Goafo/p66
+         k/wU/Enlok1y/aEMstn4aaCs957MDbl7EFw1/Z9Z7UXiglL1E0h2/NO0YQgNie7uMd5n
+         S/q18hYEgYPHCFPs3y4SpPHwBygDomPBKOgVQXD0qZHRmXEMyV4B8EOdJiBtzQswAh12
+         dlrw==
+X-Gm-Message-State: AOAM533tAZEUMdrKHkVrOV16lXeVFNxSpOIfopYUrVgYBVM8wbfO/vyl
+        r+n8wTK1xfJaycbNq5SbYyo=
+X-Google-Smtp-Source: ABdhPJwNahhs7PGMrH0V3yPNBo1ZBibcxA7EC2sItE4aR88pprl+rlN/P4xhHMgF6ribfPm+X1j4aQ==
+X-Received: by 2002:a05:6000:1819:: with SMTP id m25mr2474961wrh.169.1614408464708;
+        Fri, 26 Feb 2021 22:47:44 -0800 (PST)
+Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id f7sm17054139wrm.92.2021.02.26.22.47.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Feb 2021 22:47:44 -0800 (PST)
+From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
+Content-Type: text/plain;
+        charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2] mips: smp-bmips: fix CPU mappings
+Date:   Sat, 27 Feb 2021 07:47:42 +0100
+References: <20210223124817.26486-1-noltari@gmail.com>
+ <20210224073336.32265-1-noltari@gmail.com>
+To:     Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210224073336.32265-1-noltari@gmail.com>
+Message-Id: <F06822DE-1335-40E8-944D-CACC423FAB87@gmail.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 07:29:39PM +0100, Maciej Kwapulinski wrote:
-> 
-> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
-> 
-> > On Tue, Feb 16, 2021 at 6:11 PM Maciej Kwapulinski
-> > <maciej.kwapulinski@linux.intel.com> wrote:
-> >>
-> ....
-> >> +#define GNA_DRV_VER    "1.2.0"
-> >
-> > Nowadays the version is the Git SHA sum.
-> >
-> 
-> right, "version" is present in about 7% of all modules
+Hi all,
 
-And it should be removed from them.
+Apparently, this patch was flagged as "Not Applicable" without an =
+explanation. Why?
+=
+https://patchwork.kernel.org/project/linux-mips/patch/20210224073336.32265=
+-1-noltari@gmail.com/
 
-> do You mean version should be skipped over (automatically generated)
-> srcversion field? or maybe You suggest any (better) technique?
+Best regarss,
+=C3=81lvaro.
 
-Drop it entirely from the driver code, it means nothing when the driver
-is merged into the kernel tree.
+> El 24 feb 2021, a las 8:33, =C3=81lvaro Fern=C3=A1ndez Rojas =
+<noltari@gmail.com> escribi=C3=B3:
+>=20
+> When booting bmips with SMP enabled on a BCM6358 running on CPU #1 =
+instead of
+> CPU #0, the current CPU mapping code produces the following:
+> - smp_processor_id(): 0
+> - cpu_logical_map(0): 1
+> - cpu_number_map(0): 1
+>=20
+> This is because SMP isn't supported on BCM6358 since it has a shared =
+TLB, so
+> it is disabled and max_cpus is decreased from 2 to 1.
+>=20
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+> v2: Fix duplicated line
+>=20
+> arch/mips/kernel/smp-bmips.c | 27 +++++++++++++++++----------
+> 1 file changed, 17 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/arch/mips/kernel/smp-bmips.c =
+b/arch/mips/kernel/smp-bmips.c
+> index 359b176b665f..b6ef5f7312cf 100644
+> --- a/arch/mips/kernel/smp-bmips.c
+> +++ b/arch/mips/kernel/smp-bmips.c
+> @@ -134,17 +134,24 @@ static void __init bmips_smp_setup(void)
+> 	if (!board_ebase_setup)
+> 		board_ebase_setup =3D &bmips_ebase_setup;
+>=20
+> -	__cpu_number_map[boot_cpu] =3D 0;
+> -	__cpu_logical_map[0] =3D boot_cpu;
+> -
+> -	for (i =3D 0; i < max_cpus; i++) {
+> -		if (i !=3D boot_cpu) {
+> -			__cpu_number_map[i] =3D cpu;
+> -			__cpu_logical_map[cpu] =3D i;
+> -			cpu++;
+> +	if (max_cpus > 1) {
+> +		__cpu_number_map[boot_cpu] =3D 0;
+> +		__cpu_logical_map[0] =3D boot_cpu;
+> +
+> +		for (i =3D 0; i < max_cpus; i++) {
+> +			if (i !=3D boot_cpu) {
+> +				__cpu_number_map[i] =3D cpu;
+> +				__cpu_logical_map[cpu] =3D i;
+> +				cpu++;
+> +			}
+> +			set_cpu_possible(i, 1);
+> +			set_cpu_present(i, 1);
+> 		}
+> -		set_cpu_possible(i, 1);
+> -		set_cpu_present(i, 1);
+> +	} else {
+> +		__cpu_number_map[0] =3D boot_cpu;
+> +		__cpu_logical_map[0] =3D 0;
+> +		set_cpu_possible(0, 1);
+> +		set_cpu_present(0, 1);
+> 	}
+> }
+>=20
+> --=20
+> 2.20.1
+>=20
 
-thanks,
-
-greg k-h
