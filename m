@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3C1326AE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AEC326AEE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 02:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhB0A6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 19:58:21 -0500
-Received: from mga14.intel.com ([192.55.52.115]:34606 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229863AbhB0A6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 19:58:17 -0500
-IronPort-SDR: R9HHtZKp2Ee0WknCguH9utQOmOqPD0Bv/8fldCtNZZbd455FZq15KANag6MHd1QBhDZKYd8VxX
- rSk/N2A1ChGg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="185348032"
-X-IronPort-AV: E=Sophos;i="5.81,210,1610438400"; 
-   d="scan'208";a="185348032"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 16:56:29 -0800
-IronPort-SDR: gsUOB9ZTOZYp/ns1WJT9bxRzgmff3p+kS3YpgPsI5tSgngoDM1o3s3cwHqZfjZ4aEv/4PvaL40
- qsVKiq5yeGLQ==
-X-IronPort-AV: E=Sophos;i="5.81,210,1610438400"; 
-   d="scan'208";a="584781614"
-Received: from schen9-mobl.amr.corp.intel.com ([10.251.14.198])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2021 16:56:28 -0800
-Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
- usage excess
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
- <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
- <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
- <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
- <YDQBh5th9txxEFUm@dhcp22.suse.cz>
- <cf5ca7a1-7965-f307-22e1-e216316904cf@linux.intel.com>
- <YDY+PydRUGQpHNaJ@dhcp22.suse.cz>
- <b5b1944d-846b-3212-fe4a-f10f5fcb87d7@linux.intel.com>
- <YDi2udQqIML6Vdpo@dhcp22.suse.cz>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <781634ee-ffb9-598d-fdb6-0ae6067448b7@linux.intel.com>
-Date:   Fri, 26 Feb 2021 16:56:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S229967AbhB0BEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 20:04:41 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12585 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhB0BEh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 20:04:37 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DnSsV6l6bzMd8F;
+        Sat, 27 Feb 2021 09:01:50 +0800 (CST)
+Received: from [10.174.177.244] (10.174.177.244) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Feb 2021 09:03:54 +0800
+Subject: Re: [PATCH] RISC-V: Make NUMA depend on SMP
+To:     Palmer Dabbelt <palmer@dabbelt.com>, <akpm@linux-foundation.org>,
+        <atishp@atishpatra.org>
+CC:     <aou@eecs.berkeley.edu>, Palmer Dabbelt <palmerdabbelt@google.com>,
+        <linux-kernel@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        <linux-riscv@lists.infradead.org>, <kernel-team@android.com>
+References: <20210226202550.512012-1-palmer@dabbelt.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+Message-ID: <e76cf929-ba52-6d53-9ac8-ef403f9b1f4f@huawei.com>
+Date:   Sat, 27 Feb 2021 09:03:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <YDi2udQqIML6Vdpo@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210226202550.512012-1-palmer@dabbelt.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.244]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+On 2021/2/27 4:25, Palmer Dabbelt wrote:
+> From: Palmer Dabbelt <palmerdabbelt@google.com>
+>
+> In theory these are orthogonal, but in practice all NUMA systems are
+> SMP.  NUMA && !SMP doesn't build, everyone else is coupling them, and I
+> don't really see any value in supporting that configuration.
+>
+> Fixes: 4f0e8eef772e ("riscv: Add numa support for riscv64 platform")
+> Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+> Suggested-by: Atish Patra <atishp@atishpatra.org>
+> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-On 2/26/21 12:52 AM, Michal Hocko wrote:
+Reported-and-Tested-by:  Kefeng Wang <wangkefeng.wang@huawei.com>
 
->>
->> Michal,
->>
->> Let's take an extreme case where memcg 1 always generate the
->> first event and memcg 2 generates the rest of 128*8-1 events
->> and the pattern repeat.
-> 
-> I do not follow. Events are per-memcg, aren't they?
-> 	__this_cpu_read(memcg->vmstats_percpu->targets[target]);
-> 	[...]
-> 	__this_cpu_write(memcg->vmstats_percpu->targets[target], next);
-> 
 
-You are right. My previous reasoning is incorrect as the sampling is done per memcg.
-I'll do some additional debugging on why memcg is not on the tree.
-
-Tim 
+> ---
+> This is on fixes.
+> ---
+>   arch/riscv/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index a998babc1237..85d626b8ce5e 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -314,6 +314,7 @@ endchoice
+>   # Common NUMA Features
+>   config NUMA
+>   	bool "NUMA Memory Allocation and Scheduler Support"
+> +	depends on SMP
+>   	select GENERIC_ARCH_NUMA
+>   	select OF_NUMA
+>   	select ARCH_SUPPORTS_NUMA_BALANCING
