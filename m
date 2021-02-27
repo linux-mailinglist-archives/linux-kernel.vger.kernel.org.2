@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471E6326D63
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 15:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766D2326D65
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 15:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhB0OWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 09:22:18 -0500
-Received: from conuserg-12.nifty.com ([210.131.2.79]:57430 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbhB0OWL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 09:22:11 -0500
-Received: from grover.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 11REKQlX016879;
-        Sat, 27 Feb 2021 23:20:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 11REKQlX016879
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614435627;
-        bh=hqwuc663/AcMwLNoYEQHruIpUXyKQVSDyKQphv7Uqi4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sPRuuqx5RK2aO3wlwNgsLFk1IcbGurfosxwFp2jSkMWmdn38OUTEco3Aho7o5+xoF
-         cym8OGI6vasWI06hPXU74BFz55Y0lzsSDI+vdnabDjUyxjsRPrfQ9nIVfHvHzaDC8o
-         P3YILLcU3BUGKE8NhfgbDNYMoOvheraBpmdn5Rpur9mAaXBdYfvZSb853M9jZACiOs
-         MK5nWpqITuU9yZVUzFZ+CW5rFG4XJ1x6MaCV3pf95h/jh7DxMRW+HKCDNYTxyUgqII
-         hBN79CCu1nPs1Qgwjv2Re3LtYtyaS6gULjmt8tFV6WcQONgkPlu3M0ooi/AIIbANx3
-         MqJSSS+OxPtww==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Christian Zigotzky <chzigotzky@xenosoft.de>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] kbuild: Fix <linux/version.h> for empty SUBLEVEL or PATCHLEVEL again
-Date:   Sat, 27 Feb 2021 23:20:23 +0900
-Message-Id: <20210227142023.63480-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S230032AbhB0O1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 09:27:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229999AbhB0O1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 09:27:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 433A564EC6;
+        Sat, 27 Feb 2021 14:26:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614436019;
+        bh=BAUsoxDia95Yu5oGpOfWnmpRFLgOLXYVNWKOgTGNnHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t1d4vU1NaR/j1qBBzwe3Ok22pMb9WjzDN1Kjv9nN2q4mdVWgLQ1D/g5MfYa235ZT5
+         6F/uo39776HchffkML4oOv1Qt7QmAwguQXkE3o9YgQbp5AKv8Oq8Sf2mWO9qFVf5+f
+         yEocOACSiVlp4j/LDAXWZ++htRDeR4D5Cs6+4bS8=
+Date:   Sat, 27 Feb 2021 15:26:57 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Saravana Kannan <saravanak@google.com>
+Subject: Re: [GIT PULL] Driver core / debugfs changes for 5.12-rc1
+Message-ID: <YDpWsXwB6MJPjS7J@kroah.com>
+References: <YDZiQoP8h/QDSNkJ@kroah.com>
+ <CAHk-=wj2kJRPWx8B09AAtzj+_g+T6UBX11TP0ebs1WJdTtv=WQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj2kJRPWx8B09AAtzj+_g+T6UBX11TP0ebs1WJdTtv=WQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 9b82f13e7ef3 ("kbuild: clamp SUBLEVEL to 255") breaks the build
-if SUBLEVEL or PATCHLEVEL is empty.
+On Wed, Feb 24, 2021 at 10:20:44AM -0800, Linus Torvalds wrote:
+> On Wed, Feb 24, 2021 at 6:27 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> >  [..] I've reverted that change at
+> > the very end so we don't have to worry about regressions in 5.12.
+> 
+> Side note: it would have been really nice to see links to the actual
+> problem reports in the revert commit.
 
-Commit 78d3bb4483ba ("kbuild: Fix <linux/version.h> for empty SUBLEVEL
-or PATCHLEVEL") fixed the issue by prepending a zero.
+Odd, this showed up in my gmail spam folder, just saw this now :(
 
-This time, we cannot take the same approach because we have C code:
+> Yes, there's a "Link:" line there, but that points to the
+> less-than-useful patch submission for the revert, not to the actual
+> _reasons_ for the revert.
+> 
+> Now I'm looking at that revert, and I have absolutely no idea why it
+> happened. Only a very vague "there are still reported regressions
+> happening".
+> 
+> I've pulled it, but wanted to just point out that when there's some
+> fairly fundamental revert like this, it really would be good to link
+> to the problems, so that when people try to re-enable it, they have
+> the history for why it didn't work the first time.
+> 
+> Now all that history is basically lost (well, hopefully Saravana and
+> you actually remember, but you get my point).
 
-  #define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL)
-  #define LINUX_VERSION_SUBLEVEL $(SUBLEVEL)
+Sorry, the history is on the original commit Link that was reverted, and
+in lots of other emails on lkml over the past few weeks.  Next time I'll
+include links to those threads as well.
 
-Replace empty SUBLEVEL or PATCHLEVEL with a zero.
+thanks,
 
-Fixes: 9b82f13e7ef3 ("kbuild: clamp SUBLEVEL to 255")
-Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- Makefile | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index f2dc2f953e23..14c13b09a9e7 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1283,10 +1283,10 @@ endef
- define filechk_version.h
- 	if [ $(SUBLEVEL) -gt 255 ]; then                                 \
- 		echo \#define LINUX_VERSION_CODE $(shell                 \
--		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
-+		expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + 255); \
- 	else                                                             \
- 		echo \#define LINUX_VERSION_CODE $(shell                 \
--		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
-+		expr $(VERSION) \* 65536 + $(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
- 	fi;                                                              \
- 	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
- 	((c) > 255 ? 255 : (c)))';                                       \
-@@ -1295,6 +1295,8 @@ define filechk_version.h
- 	echo \#define LINUX_VERSION_SUBLEVEL $(SUBLEVEL)
- endef
- 
-+$(version_h): PATCHLEVEL := $(if $(PATCHLEVEL), $(PATCHLEVEL), 0)
-+$(version_h): SUBLEVEL := $(if $(SUBLEVEL), $(SUBLEVEL), 0)
- $(version_h): FORCE
- 	$(call filechk,version.h)
- 
--- 
-2.27.0
-
+greg k-h
