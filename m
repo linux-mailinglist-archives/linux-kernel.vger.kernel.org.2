@@ -2,123 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19419326E65
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 18:26:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B2E326E1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 18:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhB0RYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 12:24:50 -0500
-Received: from mga01.intel.com ([192.55.52.88]:56739 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhB0RMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 12:12:10 -0500
-IronPort-SDR: tQ3nt26qHzn60S6tgma9wTD5mb55+x7RHFbbQu8sBUncjtUjKNmZL7dj8CvYmhx+usp+thN1ds
- jFRwG0Swqflw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9908"; a="205700336"
-X-IronPort-AV: E=Sophos;i="5.81,211,1610438400"; 
-   d="scan'208";a="205700336"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2021 09:03:59 -0800
-IronPort-SDR: qDBf28JvrWl4kJOegFm5AnoReBa7dcgejc0weSFNCzsG3g9f5PVOp9XdK57fuq1YLVaYXqDhn2
- v+SheuDRzpGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,211,1610438400"; 
-   d="scan'208";a="503906854"
-Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by fmsmga001.fm.intel.com with ESMTP; 27 Feb 2021 09:03:58 -0800
-From:   "Chang S. Bae" <chang.seok.bae@intel.com>
-To:     bp@suse.de, tglx@linutronix.de, mingo@kernel.org, luto@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
-        Dave.Martin@arm.com, jannh@google.com, mpe@ellerman.id.au,
-        carlos@redhat.com, tony.luck@intel.com, ravi.v.shankar@intel.com,
-        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com
-Subject: [PATCH v6 5/6] x86/signal: Detect and prevent an alternate signal stack overflow
-Date:   Sat, 27 Feb 2021 08:59:10 -0800
-Message-Id: <20210227165911.32757-6-chang.seok.bae@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210227165911.32757-1-chang.seok.bae@intel.com>
-References: <20210227165911.32757-1-chang.seok.bae@intel.com>
+        id S230251AbhB0RHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 12:07:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhB0RCQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 12:02:16 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034FAC06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 09:01:30 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id h98so11607900wrh.11
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 09:01:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PqXGV7zjXw1rNw/jHveNt81v2NuoqJy6tipiJjF8GcQ=;
+        b=KKSaA5547YrwPdvV9eYBziv0bTqz86hbZvOQcvPGIm7Cg1UCTtk55fABOqV3HsnDeQ
+         73rNztZ90cpVFJ4vjLuudasiUway7iRjAVL9xvazHgnG1SlxlOROCjHm8dLD9p+sorhi
+         BYGLQJHHXBwSLUvlcppgrGkJHMVAkII1R/IzxRlkPGqWtdqrm3CmvvbRPg59Y8qVaZhN
+         p8eSojTFo3X2sMyQoCCWudZuy2dFyvi3xbzldg/Adntow2/aPbzi2bbDVVSh8zEuAWKo
+         P17lFrFveoDl0urqJhlmqEcn3Dso5f+yv1AXKZJ+Wgu3/2Yge0ApzDwScTteB5qlStn3
+         /aIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PqXGV7zjXw1rNw/jHveNt81v2NuoqJy6tipiJjF8GcQ=;
+        b=C+zc6CFoAGMjXPiDwC4G3CgCemc9oPuSg+EFjzfzajmKkSMjoSU1EdW+oTMXFpFYHA
+         oL50A9ncpNsCr2MIlMmXa1SNtjQc4KUo3c8xdSpocZiVqpgayJFtY4+H/V3pTDKh6qW9
+         XfKj1ZFepqhhPq5MKHUJ9/a3h2vFPDUnMFVxqDyXSDMnPoykeNku0bsBxAcNy0HJ4azy
+         C3ApsxgCeVNrh793sogt3J6SwJhVpFlgdfIZdivHEDDaPi1SgHmkOHexJ5anNVCVS4h0
+         5D6D+S6iwVXAi4snb73LUn45iOuT1qArqcX1RurtkIeIsLYKI8qKlCHgR8qFjqa4sHc6
+         bhLA==
+X-Gm-Message-State: AOAM5315rLAECwMDTHWfYSPK7HgzttH7NYVXRGb8YU/LIQU0YCGYvfMp
+        kxxt9upoFy8K825Dsp10YNo=
+X-Google-Smtp-Source: ABdhPJzkNScUo/Wr7yoKnSzbvmTWoEh93ni1deVG8FbMmjiClNzW4RCGmO/d8bPLuuit6ApH2iVrcw==
+X-Received: by 2002:adf:ed90:: with SMTP id c16mr8686352wro.215.1614445288512;
+        Sat, 27 Feb 2021 09:01:28 -0800 (PST)
+Received: from localhost.localdomain ([149.74.155.145])
+        by smtp.gmail.com with ESMTPSA id c6sm18578661wrt.26.2021.02.27.09.01.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Feb 2021 09:01:28 -0800 (PST)
+From:   Javier Contreras <contreras.javi.0@gmail.com>
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Javier Contreras <contreras.javi.0@gmail.com>
+Subject: [PATCH] init: init_task.c: fixed two spaces coding style issue
+Date:   Sat, 27 Feb 2021 18:01:18 +0100
+Message-Id: <20210227170118.24056-1-contreras.javi.0@gmail.com>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel pushes context on to the userspace stack to prepare for the
-user's signal handler. When the user has supplied an alternate signal
-stack, via sigaltstack(2), it is easy for the kernel to verify that the
-stack size is sufficient for the current hardware context.
+Fixed two spaces coding style issue.
 
-Check if writing the hardware context to the alternate stack will exceed
-it's size. If yes, then instead of corrupting user-data and proceeding with
-the original signal handler, an immediate SIGSEGV signal is delivered.
-
-Instead of calling on_sig_stack(), directly check the new stack pointer
-whether in the bounds.
-
-While the kernel allows new source code to discover and use a sufficient
-alternate signal stack size, this check is still necessary to protect
-binaries with insufficient alternate signal stack size from data
-corruption.
-
-Suggested-by: Jann Horn <jannh@google.com>
-Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-Reviewed-by: Len Brown <len.brown@intel.com>
-Reviewed-by: Jann Horn <jannh@google.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: x86@kernel.org
-Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Javier Contreras <contreras.javi.0@gmail.com>
 ---
-Changes from v5:
-* Fixed the overflow check. (Andy Lutomirski)
-* Updated the changelog.
+ init/init_task.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-Changes from v3:
-* Updated the changelog (Borislav Petkov)
-
-Changes from v2:
-* Simplified the implementation (Jann Horn)
----
- arch/x86/kernel/signal.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 0d24f64d0145..9a62604fbf63 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -242,7 +242,7 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
- 	unsigned long math_size = 0;
- 	unsigned long sp = regs->sp;
- 	unsigned long buf_fx = 0;
--	int onsigstack = on_sig_stack(sp);
-+	bool onsigstack = on_sig_stack(sp);
- 	int ret;
- 
- 	/* redzone */
-@@ -251,8 +251,11 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
- 
- 	/* This is the X/Open sanctioned signal stack switching.  */
- 	if (ka->sa.sa_flags & SA_ONSTACK) {
--		if (sas_ss_flags(sp) == 0)
-+		if (sas_ss_flags(sp) == 0) {
- 			sp = current->sas_ss_sp + current->sas_ss_size;
-+			/* On the alternate signal stack */
-+			onsigstack = true;
-+		}
- 	} else if (IS_ENABLED(CONFIG_X86_32) &&
- 		   !onsigstack &&
- 		   regs->ss != __USER_DS &&
-@@ -272,7 +275,8 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
- 	 * If we are on the alternate signal stack and would overflow it, don't.
- 	 * Return an always-bogus address instead so we will die with SIGSEGV.
- 	 */
--	if (onsigstack && !likely(on_sig_stack(sp)))
-+	if (onsigstack && unlikely(sp <= current->sas_ss_sp ||
-+				   sp - current->sas_ss_sp > current->sas_ss_size))
- 		return (void __user *)-1L;
- 
- 	/* save i387 and extended state */
+diff --git a/init/init_task.c b/init/init_task.c
+index 3711cdaafed2..85d6b045ef7a 100644
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -71,24 +71,24 @@ struct task_struct init_task
+ 	.thread_info	= INIT_THREAD_INFO(init_task),
+ 	.stack_refcount	= REFCOUNT_INIT(1),
+ #endif
+-	.state		= 0,
+-	.stack		= init_stack,
+-	.usage		= REFCOUNT_INIT(2),
+-	.flags		= PF_KTHREAD,
+-	.prio		= MAX_PRIO - 20,
+-	.static_prio	= MAX_PRIO - 20,
+-	.normal_prio	= MAX_PRIO - 20,
+-	.policy		= SCHED_NORMAL,
+-	.cpus_ptr	= &init_task.cpus_mask,
+-	.cpus_mask	= CPU_MASK_ALL,
+-	.nr_cpus_allowed= NR_CPUS,
+-	.mm		= NULL,
+-	.active_mm	= &init_mm,
+-	.restart_block	= {
++	.state		 = 0,
++	.stack		 = init_stack,
++	.usage		 = REFCOUNT_INIT(2),
++	.flags		 = PF_KTHREAD,
++	.prio		 = MAX_PRIO - 20,
++	.static_prio	 = MAX_PRIO - 20,
++	.normal_prio	 = MAX_PRIO - 20,
++	.policy		 = SCHED_NORMAL,
++	.cpus_ptr	 = &init_task.cpus_mask,
++	.cpus_mask	 = CPU_MASK_ALL,
++	.nr_cpus_allowed = NR_CPUS,
++	.mm		 = NULL,
++	.active_mm	 = &init_mm,
++	.restart_block	 = {
+ 		.fn = do_no_restart_syscall,
+ 	},
+ 	.se		= {
+-		.group_node 	= LIST_HEAD_INIT(init_task.se.group_node),
++		.group_node	= LIST_HEAD_INIT(init_task.se.group_node),
+ 	},
+ 	.rt		= {
+ 		.run_list	= LIST_HEAD_INIT(init_task.rt.run_list),
 -- 
-2.17.1
+2.30.1
 
