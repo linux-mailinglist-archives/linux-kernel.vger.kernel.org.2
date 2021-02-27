@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F7C326DD4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 17:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82AA9326DD7
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 17:28:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbhB0QZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 11:25:10 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:33140 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230010AbhB0QY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 11:24:28 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lG2NQ-008lOw-KV; Sat, 27 Feb 2021 17:23:32 +0100
-Date:   Sat, 27 Feb 2021 17:23:32 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Don Bollinger <don@thebollingers.org>
-Cc:     arndb@arndb.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, brandon_chuang@edge-core.com,
-        wally_wang@accton.com, aken_liu@edge-core.com, gulv@microsoft.com,
-        jolevequ@microsoft.com, xinxliu@microsoft.com,
-        'netdev' <netdev@vger.kernel.org>
-Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
- EEPROMS
-Message-ID: <YDpyBLFLD/E9D1OU@lunn.ch>
-References: <20210215193821.3345-1-don@thebollingers.org>
- <YDl3f8MNWdZWeOBh@lunn.ch>
- <000901d70cb2$b2848420$178d8c60$@thebollingers.org>
+        id S230202AbhB0Q16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 11:27:58 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:55941 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230169AbhB0Q1q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 11:27:46 -0500
+Received: (qmail 1429364 invoked by uid 1000); 27 Feb 2021 11:27:03 -0500
+Date:   Sat, 27 Feb 2021 11:27:03 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     liulongfang <liulongfang@huawei.com>
+Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
+        linux-usb@vger.kernel.org, yisen.zhuang@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] USB:XHCI:Modify XHCI driver for USB2.0 controller
+Message-ID: <20210227162703.GA1429200@rowland.harvard.edu>
+References: <1614327697-1021-1-git-send-email-liulongfang@huawei.com>
+ <20210226163004.GB1392547@rowland.harvard.edu>
+ <acfdf816-e295-df1d-4039-784fb0d417c4@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000901d70cb2$b2848420$178d8c60$@thebollingers.org>
+In-Reply-To: <acfdf816-e295-df1d-4039-784fb0d417c4@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I assume you have seen the work NVIDIA submitted last week? This idea of
-> > linear pages is really restrictive and we are moving away from it.
-> 
-> No, I haven't seen it.  I can't seem to locate anything in the past month on
-> LMKL from NVIDIA.  Please point me to it.
+On Sat, Feb 27, 2021 at 11:38:08AM +0800, liulongfang wrote:
+> On 2021/2/27 0:30, Alan Stern wrote:
+> > On Fri, Feb 26, 2021 at 04:21:37PM +0800, Longfang Liu wrote:
+> >> Our current XHCI hardware controller has been customized to only
+> >> support USB 2.0 ports. When using the current xhci driver, an xhci
+> >> controller device and an ehci controller device will be created
+> >> automatically.
+> > 
+> > That sentence makes no sense at all.  An EHCI controller device is a 
+> > piece of hardware.  How can an xHCI driver, which is a piece of 
+> > software, create a piece of hardware?
+> > 
+> > Alan Stern
+> > .
+> > 
+> The hardware device is a complete USB3.0 controller,
+> but I hope to support a USB2.0-only mode through software configuration.
 
-[RFC PATCH net-next 0/5] ethtool: Extend module EEPROM dump
-Message-Id: <1614181274-28482-1-git-send-email-moshe@nvidia.com>
+Even if it only supports USB-2.0 connections, an xHCI controller is 
+still an xHCI controller.  It doesn't magically transform into an EHCI 
+controller.
 
-b4 should be able to fetch it for you, using that message id.
+You are not creating an EHCI controller device.  Rather, you are trying 
+to restrict an xHCI controller device to make it handle only USB-2.0 
+connections.  If you run lsusb on a system that has an xHCI controller, 
+you'll see that the controller is bound to two USB buses: a USB-2 bus 
+and a USB-3 bus.  But for both buses, the controller is xHCI -- not 
+EHCI.
 
-Clearly, we don't want two different kernel APIs for doing the same
-thing. This new KAPI is still in its early days. You can contribute to
-it, and make it work for your use case. If i understand correctly, you
-are using Linux as a bootloader, and running the complete switch
-driver in userspace, not making use of the Linux network stack. This
-is not something the netdev community likes, but if you work within
-the networking KAPI, rather than adding parallel KAPI, we can probably
-work together. I think the biggest problem you have is identifiers.
-Since you don't have the SFP associated to a netdev, the current IOCTL
-interface which us the netdev name as an identifier does not work. But
-the new code is netlink based. The identifier is just an attribute in
-the message. See if you can use an alternative attribute which
-directly identifies the SFP, not the netdev. It is O.K. to instantiate
-an SFP device and then not make use of it in PHYLINK. So this should
-work.
+Your patch description is inaccurate.
 
-     Andrew
+Alan Stern
