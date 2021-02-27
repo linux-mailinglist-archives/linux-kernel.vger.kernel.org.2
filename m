@@ -2,66 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82AA9326DD7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 17:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE58326DDB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 17:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhB0Q16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 11:27:58 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:55941 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230169AbhB0Q1q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 11:27:46 -0500
-Received: (qmail 1429364 invoked by uid 1000); 27 Feb 2021 11:27:03 -0500
-Date:   Sat, 27 Feb 2021 11:27:03 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     liulongfang <liulongfang@huawei.com>
-Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
-        linux-usb@vger.kernel.org, yisen.zhuang@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] USB:XHCI:Modify XHCI driver for USB2.0 controller
-Message-ID: <20210227162703.GA1429200@rowland.harvard.edu>
-References: <1614327697-1021-1-git-send-email-liulongfang@huawei.com>
- <20210226163004.GB1392547@rowland.harvard.edu>
- <acfdf816-e295-df1d-4039-784fb0d417c4@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <acfdf816-e295-df1d-4039-784fb0d417c4@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230178AbhB0QaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 11:30:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229999AbhB0Q3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 11:29:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 174B264DED;
+        Sat, 27 Feb 2021 16:29:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614443345;
+        bh=IF5KrOhlU8cBLHUhpwdTgbI39xpEkuocUjU5GL0divI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=L+YYPufDIECLo7BD4dbaKqJYQkxpBVzdDJ4lT1/A8LquaG7YKxdZhogrYNvyNQI4k
+         xfsxlLbgkpKA2ruLp9VREy4qLp6W/Na4PRH81Abuu3us2EYHCbAfKQ9GNn/O/3TmOC
+         UB17GQQFGjBImDOZcLxUyPtIU51MkF7J3YqYyy+6FoONvksyKJ7vUlfJCsfsFrRMw6
+         oSX54JDNzkHZWsE6FQAYizr8WRjZT/Pq/x2ne9fa/QZQGbZxTxA7YUHigWmcUNndCo
+         sj3IrlCMT7TtgYxWXhgXqeHhQkfP2LZRXDDvABFa/LPTKfwQjP3fAuJtUEo30/YiO8
+         z4h0wP4ZSRDBg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 04B3460A23;
+        Sat, 27 Feb 2021 16:29:05 +0000 (UTC)
+Subject: Re: [git pull] vfs.git misc stuff
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YDnf/cY4c0uOIcVd@zeniv-ca.linux.org.uk>
+References: <YDnf/cY4c0uOIcVd@zeniv-ca.linux.org.uk>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YDnf/cY4c0uOIcVd@zeniv-ca.linux.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.misc
+X-PR-Tracked-Commit-Id: 6f24784f00f2b5862b367caeecc5cca22a77faa3
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5ceabb6078b80a8544ba86d6ee523ad755ae6d5e
+Message-Id: <161444334496.24634.2390663305624345985.pr-tracker-bot@kernel.org>
+Date:   Sat, 27 Feb 2021 16:29:04 +0000
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 11:38:08AM +0800, liulongfang wrote:
-> On 2021/2/27 0:30, Alan Stern wrote:
-> > On Fri, Feb 26, 2021 at 04:21:37PM +0800, Longfang Liu wrote:
-> >> Our current XHCI hardware controller has been customized to only
-> >> support USB 2.0 ports. When using the current xhci driver, an xhci
-> >> controller device and an ehci controller device will be created
-> >> automatically.
-> > 
-> > That sentence makes no sense at all.  An EHCI controller device is a 
-> > piece of hardware.  How can an xHCI driver, which is a piece of 
-> > software, create a piece of hardware?
-> > 
-> > Alan Stern
-> > .
-> > 
-> The hardware device is a complete USB3.0 controller,
-> but I hope to support a USB2.0-only mode through software configuration.
+The pull request you sent on Sat, 27 Feb 2021 06:00:29 +0000:
 
-Even if it only supports USB-2.0 connections, an xHCI controller is 
-still an xHCI controller.  It doesn't magically transform into an EHCI 
-controller.
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.misc
 
-You are not creating an EHCI controller device.  Rather, you are trying 
-to restrict an xHCI controller device to make it handle only USB-2.0 
-connections.  If you run lsusb on a system that has an xHCI controller, 
-you'll see that the controller is bound to two USB buses: a USB-2 bus 
-and a USB-3 bus.  But for both buses, the controller is xHCI -- not 
-EHCI.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5ceabb6078b80a8544ba86d6ee523ad755ae6d5e
 
-Your patch description is inaccurate.
+Thank you!
 
-Alan Stern
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
