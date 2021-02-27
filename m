@@ -2,149 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3955B326D0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 13:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7942B326D0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 13:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhB0Ma3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 07:30:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40310 "EHLO mail.kernel.org"
+        id S230084AbhB0McW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 07:32:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229864AbhB0Ma0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 07:30:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C693664F30;
-        Sat, 27 Feb 2021 12:29:45 +0000 (UTC)
+        id S230041AbhB0McS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 07:32:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D27864EED;
+        Sat, 27 Feb 2021 12:31:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614428985;
-        bh=MCaTtkyFYXAFPxtrnr47vRHXHJOy/Gg2Vrr9l/na0sg=;
+        s=k20201202; t=1614429098;
+        bh=xCbEHh+FkWpSJkLJVph2u7gMhzOwLYE0/eak4nPjjxI=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CKh7xfyclyllhRVu4I19vTdJumgCcMnWUTj3YuPPr6n9s0ZwarhwYKwvaXpA5zsPk
-         kjheqrihhZX9hTum3WvSGTgeoJ+xzL2a3tFIsYwPT2DYFkGsXFLtNbH1AQK/XE65Jy
-         7ODttEw7Aw819AV+g2vrIBapd68nJgXEHkuKup43oUbNS75BcOG8PU3kGIxYTIuFgQ
-         kr35RilkrLGxVzsCHpKSv01urnc5s8IaN23UnTsVMsNuL7dS7f4/3rJ0+OEmb9edTe
-         Rtl9QZ0TJZHHGxSEkkTDznfomkTSjXewIxRsLTOFSbgxtuT0PJqfh5Jv+XXd6TpuEJ
-         1sL6oERHBuDBw==
-Received: by mail-oi1-f177.google.com with SMTP id x20so12785028oie.11;
-        Sat, 27 Feb 2021 04:29:45 -0800 (PST)
-X-Gm-Message-State: AOAM533i8A+rD3h+bo9ws+Wa0rIPTxAqePfEVrYQfFPSXmVbG2eCnjqk
-        B94bvBk6hamp9YFzsm4pizn4fBbZj1IfOXjn+nM=
-X-Google-Smtp-Source: ABdhPJw+sS31kUMuqqG7Xvzrc/bl5nZf4IXDxtaoqR1oc3oCESkxd/Uqpt93xGp+rerEKCpBIjcnLJNsJvd5DN5hCDI=
-X-Received: by 2002:aca:4fd3:: with SMTP id d202mr5148843oib.11.1614428984716;
- Sat, 27 Feb 2021 04:29:44 -0800 (PST)
+        b=GlkK5zzF3cOoHDgGOwPCURT5LSJHIiIjfahVY7wyjoik5XrnsJ6f8Wct4rTnhveGM
+         u5kpDEa54ghQ//woMoAdpCQyZPAEYWfgTlDOWeQuORMECtJs5srnpMyRDxZfUeildM
+         tevzrjkIVXrsb09geHHAcflskXAqfuXYIR0EhjCb7rbDpFUVJ5cEiEuftX1q1eFbC+
+         HbYAd9YhxYoRbwTW10hKms88rePgnaWbomLAtteX+iNpGMHTjmH3F1TDRqo7tQTUvd
+         c2Whpu5GCDHX0Ggmd3njgIDDQUYdRJ1u7uggg0Cmc3s/WWa4VpyT06zzJXw56ET1Dt
+         kL8q89WL5fWpg==
+Received: by mail-ot1-f45.google.com with SMTP id k13so11762488otn.13;
+        Sat, 27 Feb 2021 04:31:38 -0800 (PST)
+X-Gm-Message-State: AOAM533z/LdoTn2IyI1UuKayxVZPTD5+jFlgYmGoUZTSMOTt9XUZ7IzL
+        anipH1k4RvBZT41nM2fn3XmeSbO3/Gq61em5HBo=
+X-Google-Smtp-Source: ABdhPJwcnl8F5FKz59tIBI0s9av0ixuP1VHt2AlYhsmpbwl2BHS6VeMe96XVuDdzDoM6mkkRvk7YKxiHU1a8Kb/IKDM=
+X-Received: by 2002:a9d:7f11:: with SMTP id j17mr6368646otq.251.1614429097292;
+ Sat, 27 Feb 2021 04:31:37 -0800 (PST)
 MIME-Version: 1.0
-References: <tencent_30362DDFFEE04E6CDACB6F803734A8DC7B06@qq.com>
-In-Reply-To: <tencent_30362DDFFEE04E6CDACB6F803734A8DC7B06@qq.com>
+References: <20210225143727.3912204-1-arnd@kernel.org> <20210225143727.3912204-2-arnd@kernel.org>
+ <YDlHSYxayqq5WMt0@rric.localdomain>
+In-Reply-To: <YDlHSYxayqq5WMt0@rric.localdomain>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 27 Feb 2021 13:29:28 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3UOpW_m=_VfxzmC_FxRnG4yYKRXnkP8k4HeNtuu7dVcg@mail.gmail.com>
-Message-ID: <CAK8P3a3UOpW_m=_VfxzmC_FxRnG4yYKRXnkP8k4HeNtuu7dVcg@mail.gmail.com>
-Subject: Re: [PATCH] ipc/msg: add msgsnd_timed and msgrcv_timed syscall for
- system V message queue
-To:     Eric Gao <eric.tech@foxmail.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        David Miller <davem@davemloft.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
+Date:   Sat, 27 Feb 2021 13:31:21 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1DMCUPgJ5CMfJv3MnTLV8cmv0BdeyCuRjsL0oEZwaJ+g@mail.gmail.com>
+Message-ID: <CAK8P3a1DMCUPgJ5CMfJv3MnTLV8cmv0BdeyCuRjsL0oEZwaJ+g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] PCI: controller: avoid building empty drivers
+To:     Robert Richter <rric@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Bharat Kumar Gogada <bharat.kumar.gogada@xilinx.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 7:52 AM Eric Gao <eric.tech@foxmail.com> wrote:
+On Fri, Feb 26, 2021 at 8:08 PM Robert Richter <rric@kernel.org> wrote:
+> On 25.02.21 15:37:10, Arnd Bergmann wrote:
 >
-> sometimes, we need the msgsnd or msgrcv syscall can return after a limited
-> time, so that the business thread do not be blocked here all the time. In
-> this case, I add the msgsnd_timed and msgrcv_timed syscall that with time
-> parameter, which has a unit of ms.
+> A possible double inclusion isn't really nice here, but it should work
+> that way.
 >
-> Signed-off-by: Eric Gao <eric.tech@foxmail.com>
+> Also, the menu entry for the driver is in fact only for the OF case,
+> as it is always included for ACPI even if the option is disabled (and
+> thus the choice is useless). But this is unrelated to this patch.
 
-I have no opinion on whether we want or need this, but I'll have a look
-at the implementation, to see if the ABI makes sense.
+Yes, I considered doing this using Kconfig syntax by adding another
+symbol for each affected driver and selecting those, but the Makefile
+hack seemed easier here.
 
-> index 8fd8c17..42b7db5 100644
-> --- a/arch/mips/kernel/syscalls/syscall_n32.tbl
-> +++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
-> @@ -381,3 +381,5 @@
->  440    n32     process_madvise                 sys_process_madvise
->  441    n32     epoll_pwait2                    compat_sys_epoll_pwait2
->  442    n32     mount_setattr                   sys_mount_setattr
-> +443    n32     msgrcv_timed                    sys_msgrcv_timed
-> +444    n32     msgsnd_timed                    sys_msgsnd_timed
-> diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
-> index 090d29c..0f1f6ee 100644
-> --- a/arch/mips/kernel/syscalls/syscall_o32.tbl
-> +++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
-> @@ -430,3 +430,5 @@
->  440    o32     process_madvise                 sys_process_madvise
->  441    o32     epoll_pwait2                    sys_epoll_pwait2                compat_sys_epoll_pwait2
->  442    o32     mount_setattr                   sys_mount_setattr
-> +443    o32     msgrcv_timed                    sys_msgrcv_timed
-> +444    o32     msgsnd_timed                    sys_msgsnd_timed
+> Reviewed-by: Robert Richter <rric@kernel.org>
 
-I think mips n32 and o32 both need to use the compat version when running on
-a 64-bit kernel, while your patch makes them use the native version.
+Thanks,
 
-> @@ -905,7 +906,15 @@ static long do_msgsnd(int msqid, long mtype, void __user *mtext,
->
->                 ipc_unlock_object(&msq->q_perm);
->                 rcu_read_unlock();
-> -               schedule();
-> +
-> +               /* sometimes, we need msgsnd syscall return after a given time */
-> +               if (timeoutms <= 0) {
-> +                       schedule();
-> +               } else {
-> +                       timeoutms = schedule_timeout(timeoutms);
-> +                       if (timeoutms == 0)
-> +                               timeoutflag = true;
-> +               }
-
-I wonder if this should be schedule_timeout_interruptible() or at least
-schedule_timeout_killable() instead of schedule_timeout(). If it should,
-this should probably be done as a separate change.
-
-> +COMPAT_SYSCALL_DEFINE5(msgsnd_timed, int, msqid, compat_uptr_t, msgp,
-> +                      compat_ssize_t, msgsz, int, msgflg, compat_long_t, timeoutms)
-> +{
-> +       struct compat_msgbuf __user *up = compat_ptr(msgp);
-> +       compat_long_t mtype;
-> +
-> +       timeoutms = (timeoutms + 9) / 10;
-> +
-> +       if (get_user(mtype, &up->mtype))
-> +               return -EFAULT;
-> +
-> +       return do_msgsnd(msqid, mtype, up->mtext, (ssize_t)msgsz, msgflg, (long)timeoutms);
-> +}
-
-My preference would be to simplify both the timed and non-timed version by
-moving the get_user() into do_msgsnd() and using in_compat_task() to pick
-the right type. Same for the receive side of course. If you do this,
-watch out for
-x32 support, which uses the 64-bit version.
-
-       Arnd
+        Arnd
