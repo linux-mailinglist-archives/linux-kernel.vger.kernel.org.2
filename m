@@ -2,100 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C620326AA6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97634326AAC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhB0AIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 19:08:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhB0AIY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 19:08:24 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DF9C061797
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 16:07:07 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id e2so9548595ilu.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 16:07:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KDyipOQ/zGVT/OsO6YP4rsNag+Kuytihig+gLKvB9Z8=;
-        b=LaYZeGozYDZh8m9Zcr5DguvGQyzVvG1qk6+v/7FntdsL/I3sVG06wPjHdPnjcZrUET
-         xY5SJ7hU/xLUPFWSmJiJh2JucnddnVTTkkP5NzwA29W6K1xcDQ1SIXbxGUPeBds0IIBb
-         /0QQjolx3Ez78Pr0DP8b/cqMkvnkaddIjzBWY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KDyipOQ/zGVT/OsO6YP4rsNag+Kuytihig+gLKvB9Z8=;
-        b=XMc1W38d25M2IbRFD1KlOX9bCiHlekT7q+LbVjT0usfiByav+lqls+JZ00a4BLOSpm
-         2HrhcTOMHp9NM02fXJnSbuxsiEJkQmtoCuJNhOxld+Y/VCFXTP+4A8eL1hgvwRfHYIa+
-         lSGJIqGCfIzRMP+hT5qdjSCuOPdnKHO0pJtLOWpLbX2g++pFsCIKX9kNTMwV+ZDN6BBH
-         IpCqV9g2j9p8ki5+bKt/46ihb6m++R4IxSderd5qndxAi23kvHtqxqzvG6AjFKeHyG5r
-         FEZdKttl8utU19yJUcfF+IfJ0G6/p74cSiKDMIoNcfzMg8iR7mikOfJ/8jG9/+XC6Qyo
-         qHfA==
-X-Gm-Message-State: AOAM530hGFsa9Bw/0WBlBwvuCnNwZtZfsZKz7+PUkd3NEVrzKahxWGGj
-        nSA+RoEbjqBefvWqBCWEIZL03w==
-X-Google-Smtp-Source: ABdhPJwzOwoAwB9GujMwkiN8ETBH1uSIX3ovqFMW7TfdMkfk0kJBXFE16/UXQm9KzXnBkIgQeIHe0w==
-X-Received: by 2002:a92:cd8a:: with SMTP id r10mr4471884ilb.110.1614384427380;
-        Fri, 26 Feb 2021 16:07:07 -0800 (PST)
-Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id w16sm5228805ilh.35.2021.02.26.16.07.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 16:07:07 -0800 (PST)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] ath10k: detect conf_mutex held ath10k_drain_tx() calls
-Date:   Fri, 26 Feb 2021 17:07:00 -0700
-Message-Id: <c9c2cd7b79f5551741c063239013919bf0e3f984.1614383025.git.skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1614383025.git.skhan@linuxfoundation.org>
-References: <cover.1614383025.git.skhan@linuxfoundation.org>
+        id S229949AbhB0APW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 19:15:22 -0500
+Received: from vern.gendns.com ([98.142.107.122]:59606 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229622AbhB0APR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 19:15:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=s16MGPq7cmMC6iNOsv2GUH6wTNHOr8Jp0D2VwkY95zg=; b=WdqLnQAWYjusoziOcrrjFj5HhY
+        0rcJETlMmTmJvyP9fOd9mmWivdwn6cj4K7n21WeuP2UAmM4/S3kbjJX7y8PrCcaX2OYkI83bhQcBv
+        dxdu44MxZvXI7GtgInJpnBX0pkWpcKq220NjdJzRwLCN0mGHmagQr4rEq4DJdJg/IsfffblTgxBZN
+        a6jCAnkL7blx66u1Vg0xESqYw/iXJyi9BgzvOGCn1UmBdOoQfWfNfnNSGB72jUz9TbxnQbtGmeprP
+        jV/tdANz/7VPPgO0iuf9sD/Q8zkO6Cr/TAybOHKkf33vc6Yod1BryFqhML3+qwZYanIPZWLYwHKyF
+        j11p8JGQ==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:52154 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1lFnFg-0001uQ-IX; Fri, 26 Feb 2021 19:14:32 -0500
+Subject: Re: [PATCH v8 20/22] counter: Implement events_queue_size sysfs
+ attribute
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        o.rempel@pengutronix.de
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+ <013b2b8682ddc3c85038083e6d5567696b6254b3.1613131238.git.vilhelm.gray@gmail.com>
+ <20210214181146.66d43da7@archlinux> <YC5CMLuKnXbkZond@shinobu>
+ <20210221155140.3e1ef13c@archlinux> <YDg65OmLa05g53qc@shinobu>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <37ea96a2-d4a1-7d4c-a68a-8dc82896e86c@lechnology.com>
+Date:   Fri, 26 Feb 2021 18:14:12 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YDg65OmLa05g53qc@shinobu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ath10k_drain_tx() must not be called with conf_mutex held as workers can
-use that also. Add call to lockdep_assert_not_held() on conf_mutex to
-detect if conf_mutex is held by the caller.
+On 2/25/21 6:03 PM, William Breathitt Gray wrote:
+> On Sun, Feb 21, 2021 at 03:51:40PM +0000, Jonathan Cameron wrote:
+>> On Thu, 18 Feb 2021 19:32:16 +0900
+>> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+>>
+>>> On Sun, Feb 14, 2021 at 06:11:46PM +0000, Jonathan Cameron wrote:
+>>>> On Fri, 12 Feb 2021 21:13:44 +0900
+>>>> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+>>>>    
+>>>>> The events_queue_size sysfs attribute provides a way for users to
+>>>>> dynamically configure the Counter events queue size for the Counter
+>>>>> character device interface. The size is in number of struct
+>>>>> counter_event data structures. The number of elements will be rounded-up
+>>>>> to a power of 2 due to a requirement of the kfifo_alloc function called
+>>>>> during reallocation of the queue.
+>>>>>
+>>>>> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+>>>>> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+>>>>> ---
+>>>>>   Documentation/ABI/testing/sysfs-bus-counter |  8 +++++++
+>>>>>   drivers/counter/counter-chrdev.c            | 23 +++++++++++++++++++
+>>>>>   drivers/counter/counter-chrdev.h            |  2 ++
+>>>>>   drivers/counter/counter-sysfs.c             | 25 +++++++++++++++++++++
+>>>>>   4 files changed, 58 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/ABI/testing/sysfs-bus-counter
+>>>>> index 847e96f19d19..f6cb2a8b08a7 100644
+>>>>> --- a/Documentation/ABI/testing/sysfs-bus-counter
+>>>>> +++ b/Documentation/ABI/testing/sysfs-bus-counter
+>>>>> @@ -212,6 +212,14 @@ Description:
+>>>>>   		both edges:
+>>>>>   			Any state transition.
+>>>>>   
+>>>>> +What:		/sys/bus/counter/devices/counterX/events_queue_size
+>>>>> +KernelVersion:	5.13
+>>>>> +Contact:	linux-iio@vger.kernel.org
+>>>>> +Description:
+>>>>> +		Size of the Counter events queue in number of struct
+>>>>> +		counter_event data structures. The number of elements will be
+>>>>> +		rounded-up to a power of 2.
+>>>>> +
+>>>>>   What:		/sys/bus/counter/devices/counterX/name
+>>>>>   KernelVersion:	5.2
+>>>>>   Contact:	linux-iio@vger.kernel.org
+>>>>> diff --git a/drivers/counter/counter-chrdev.c b/drivers/counter/counter-chrdev.c
+>>>>> index 16f02df7f73d..53eea894e13f 100644
+>>>>> --- a/drivers/counter/counter-chrdev.c
+>>>>> +++ b/drivers/counter/counter-chrdev.c
+>>>>> @@ -375,6 +375,29 @@ void counter_chrdev_remove(struct counter_device *const counter)
+>>>>>   	cdev_del(&counter->chrdev);
+>>>>>   }
+>>>>>   
+>>>>> +int counter_chrdev_realloc_queue(struct counter_device *const counter,
+>>>>> +				 size_t queue_size)
+>>>>> +{
+>>>>> +	int err;
+>>>>> +	DECLARE_KFIFO_PTR(events, struct counter_event);
+>>>>> +	unsigned long flags;
+>>>>> +
+>>>>> +	/* Allocate new events queue */
+>>>>> +	err = kfifo_alloc(&events, queue_size, GFP_ATOMIC);
+>>>>
+>>>> Is there any potential for losing events?
+>>>
+>>> We take the events_list_lock down below so we're safe against missing an
+>>> event, but past events currently unread in the queue will be lost.
+>>>
+>>> Shortening the size of the queue is inherently a destructive process if
+>>> we have more events in the current queue than can fit in the new queue.
+>>> Because we a liable to lose some events in such a case, I think it's
+>>> best to keep the behavior of this reallocation consistent and have it
+>>> provide a fresh empty queue every time, as opposed to sometimes dropping
+>>> events and sometimes not.
+>>>
+>>> I also suspect an actual user would be setting the size of their queue
+>>> to the required amount before they begin watching events, rather than
+>>> adjusting it sporadically during a live operation.
+>>>
+>>
+>> Absolutely agree.   As such I wonder if you are better off enforcing this
+>> behaviour?  If the cdev is open for reading, don't allow the fifo to be
+>> resized.
+>>
+>> Jonathan
+> 
+> I can't really think of a good reason not to, so let's enforce it: if
+> the cdev is open, then we'll return an EINVAL if the user attempts to
+> resize the queue.
+> 
+> What is a good way to check for this condition? Should I just call
+> kref_read() and see if it's greater than 1? For example, in
+> counter_chrdev_realloc_queue():
+> 
+> 	if (kref_read(&counter->dev.kobj.kref) > 1)
+> 		return -EINVAL;
+> 
+> William Breathitt Gray
+> 
 
-The idea for this patch stemmed from coming across the comment block
-above the ath10k_drain_tx() while reviewing the conf_mutex holds during
-to debug the conf_mutex lock assert in ath10k_debug_fw_stats_request().
-
-Adding detection to assert on conf_mutex hold will help detect incorrect
-usages that could lead to locking problems when async worker routines try
-to call this routine.
-
-Link: https://lore.kernel.org/lkml/37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org/
-Link: https://lore.kernel.org/linux-wireless/871rdmu9z9.fsf@codeaurora.org/
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- drivers/net/wireless/ath/ath10k/mac.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index bb6c5ee43ac0..5ce4f8d038b9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4727,6 +4727,8 @@ static void ath10k_mac_op_wake_tx_queue(struct ieee80211_hw *hw,
- /* Must not be called with conf_mutex held as workers can use that also. */
- void ath10k_drain_tx(struct ath10k *ar)
- {
-+	lockdep_assert_not_held(&ar->conf_mutex);
-+
- 	/* make sure rcu-protected mac80211 tx path itself is drained */
- 	synchronize_net();
- 
--- 
-2.27.0
-
+Wouldn't EBUSY make more sense?
