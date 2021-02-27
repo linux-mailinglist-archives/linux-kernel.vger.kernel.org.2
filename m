@@ -2,118 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D37E326C06
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 07:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA932326C0B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 07:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhB0Gt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 01:49:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhB0Gtx (ORCPT
+        id S230014AbhB0G4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 01:56:21 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:44448 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhB0G4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 01:49:53 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77267C06174A;
-        Fri, 26 Feb 2021 22:49:13 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id y22-20020a1c4b160000b029010b2094f5deso562218wma.0;
-        Fri, 26 Feb 2021 22:49:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:content-transfer-encoding:mime-version:subject:date:references
-         :to:in-reply-to:message-id;
-        bh=rvkyeJb5q0jr7Z6gx+qK+ZBArGjBdhjVlNLRJhyB0Ro=;
-        b=ht/Av20SVUoSF8+iosDo1X0qtqHSiKPofYLTuzyprWa4XbAN74jabmXW4K3XzfBfIu
-         p6TwrCc8Y16g7kEdaClRObLkOzo27Q334xKPOlN+lvFush6WlA6ZqtEsn/VYGyXXarKq
-         TvbHBjRubhkdisIqgpS9KWQR0kTtbHs0c0tIjQ+l8ibxgY6aAWhF3LQfHhQX4HC8hTyf
-         mmekTDmSiWrKLhpu+XL8P5JRVYVG2gGWv0393dETd8NVbI1uzrJB1xmefNK2IQl1RtQk
-         3LEnS7mTkYTej3NdLTBPuDONFoOaKA9hKX99o7YSsbtZcxglKVSKq70wPgw/aLgoBeIA
-         fwcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:date:references:to:in-reply-to:message-id;
-        bh=rvkyeJb5q0jr7Z6gx+qK+ZBArGjBdhjVlNLRJhyB0Ro=;
-        b=GTnSyV7fhqDLHceymnzjgWmrHwiGAXHFTxPntPMbui8ubomrQw08401G8bRFvAbxJ9
-         WjE49LaV6icmL/l+oBrdSGn6Qwtfwk15wDWt/NlrBRPJV5T0bg82/sOuENai63c2qK8s
-         2+3q3vO1DUnULGinj+fP8Pv/FflZF/ApMAiIUXiyGYEo2Lo8e9azgiCUv/PJkJ43Y+22
-         CsksBL+RTkydu6TCyuZ8Uj2+FMg+hK2MbyKjsyykFovJCS8WNJf3+VYFOhQZ5OmKZWka
-         hCaEeqnqn+IUWQMgD2F7BargegxKWATuNrYrNmbVMDFJY9PX598xl4j/OYhZOt+i3XGV
-         YuxQ==
-X-Gm-Message-State: AOAM530TZRCLCKZ2Hpdj5rz1a1OtRIxqkb8UCOX8VkCGOEYzmuuIBe6C
-        B7kZ7jP58+VWPgYoaWBvAZWTdAmppgscQQ==
-X-Google-Smtp-Source: ABdhPJw724bJS+vznqBNOK4a6Ty7Yl9ETuCX91zfzUnwH8Evlh0H5k6Qzqt9vF/7F67WSN+DiPu1UA==
-X-Received: by 2002:a1c:c906:: with SMTP id f6mr5883337wmb.128.1614408551624;
-        Fri, 26 Feb 2021 22:49:11 -0800 (PST)
-Received: from macbook-pro-alvaro.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id y10sm8317211wrl.19.2021.02.26.22.49.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Feb 2021 22:49:11 -0800 (PST)
-From:   =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v2 0/2] irqchip: add support for BCM6345 interrupt
- controller
-Date:   Sat, 27 Feb 2021 07:49:09 +0100
-References: <20210223204340.312-1-noltari@gmail.com>
- <20210224075640.20465-1-noltari@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        =?utf-8?Q?=C3=81lvaro_Fern=C3=A1ndez_Rojas?= <noltari@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org
-In-Reply-To: <20210224075640.20465-1-noltari@gmail.com>
-Message-Id: <8C8FF886-6DCF-4308-B516-17BBFEBADB98@gmail.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Sat, 27 Feb 2021 01:56:19 -0500
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 11R6tHvD029484;
+        Sat, 27 Feb 2021 15:55:17 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11R6tHvD029484
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614408917;
+        bh=bHffv351LtHI0LzqaBGpYJnkjtPtn6I884Zf4L50dws=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=e6sy3FPUht0xrp+ulnLBX1ai8s9jAuI/wE0xaEkH2BYO+qcR1CfnVO7+6SVK3u6fv
+         8NZB2kjSjbkhZFqCi0PpfHayFzZtC62gTLjJVaWQdShYh31kVVfQKmzq4VdDTeQpPX
+         mp1SiLVHOcOldseHcw0DqqoTZO5knOpuAXcSz08a4O8DUlko9MkhO0AmZay0iP28jF
+         VYZhSB+WUpGGIpenv+0oalS/HG6UR7ntDETh7nMeHFnAbZfS2w833ndZSqVKyWuGco
+         pPC+WsUgtpf3QqeYixbyAfYlmCgqzi9oZvlFtQaN555Pi7zZTW/00asuAhAnFYlKaX
+         iePhUxvgKy4tA==
+X-Nifty-SrcIP: [209.85.210.180]
+Received: by mail-pf1-f180.google.com with SMTP id 201so7774198pfw.5;
+        Fri, 26 Feb 2021 22:55:17 -0800 (PST)
+X-Gm-Message-State: AOAM532riPo1jg9lhisUIlBw1qa4iCY4+G5dX2pexnJ/Yi1M2sgo2J7a
+        WaCzn8r0Nn9CzQLBY0F0UZRlN5Dj2AOYMCe7DcY=
+X-Google-Smtp-Source: ABdhPJyZn4kUkkoqOs7sfR9iAupy1Oo7fwn/GRCA9/SQl0DFc80L7dqVoXZVyI06m3DD6jxn0Sipf4hpI2RFxephv7A=
+X-Received: by 2002:a62:1412:0:b029:1ec:bc11:31fd with SMTP id
+ 18-20020a6214120000b02901ecbc1131fdmr6450801pfu.76.1614408916611; Fri, 26 Feb
+ 2021 22:55:16 -0800 (PST)
+MIME-Version: 1.0
+References: <20210226062548.3334081-1-masahiroy@kernel.org> <CA+icZUXYLVjs-hXEu_5Vy=TdNvOHhyiXe=hc-jc7SAU04Dtstw@mail.gmail.com>
+In-Reply-To: <CA+icZUXYLVjs-hXEu_5Vy=TdNvOHhyiXe=hc-jc7SAU04Dtstw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 27 Feb 2021 15:54:38 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARmQzJwUWcYPj9QKZatYpC6-gegTuJiAvyhR==8ezWdHg@mail.gmail.com>
+Message-ID: <CAK7LNARmQzJwUWcYPj9QKZatYpC6-gegTuJiAvyhR==8ezWdHg@mail.gmail.com>
+Subject: Re: [PATCH v2] kbuild: fix UNUSED_KSYMS_WHITELIST for Clang LTO
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Fri, Feb 26, 2021 at 6:26 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Fri, Feb 26, 2021 at 7:26 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > Commit fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> > does not work as expected if the .config file has already specified
+> > CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list" before enabling
+> > CONFIG_LTO_CLANG.
+> >
+> > So, the user-supplied whitelist and LTO-specific white list must be
+> > independent of each other.
+> >
+> > I refactored the shell script so CONFIG_MODVERSIONS and CONFIG_CLANG_LTO
+> > handle whitelists in the same way.
+> >
+> > Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> > Changes in v2:
+> >   - Rebase on top of Arnd's patch:
+> >     https://lore.kernel.org/lkml/20210225143456.3829513-1-arnd@kernel.org/
+> >
+> >  init/Kconfig                    |  1 -
+> >  scripts/gen_autoksyms.sh        | 35 ++++++++++++++++++++++++---------
+> >  scripts/lto-used-symbollist.txt |  6 ------
+>
+> People who want to use their own "white-listed" (allow-listed)
+> symbollist-file can do that via
+> CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list".
+> Correct?
+>
+> Why do you delete the default "scripts/lto-used-symbollist.txt" file
+> and remove the default in the appropriate Kconfig for people who want
+> to enable Clang-(Thin)LTO?
+> These people should now use
+> CONFIG_UNUSED_KSYMS_WHITELIST="scripts/lto-used-symbollist.txt"?
+> But again - the file was deleted with your patch.
+> Do I miss something?
 
-Apparently these patches were flagged as =E2=80=9CNot Applicable=E2=80=9D =
-without an explanation. Why?
-=
-https://patchwork.kernel.org/project/linux-mips/patch/20210224075640.20465=
--2-noltari@gmail.com/
-=
-https://patchwork.kernel.org/project/linux-mips/patch/20210224075640.20465=
--3-noltari@gmail.com/
+I think so.
 
-Best regards,
-=C3=81lvaro.
+I moved those symbols to scripts/gen_autoksyms.sh
 
-> El 24 feb 2021, a las 8:56, =C3=81lvaro Fern=C3=A1ndez Rojas =
-<noltari@gmail.com> escribi=C3=B3:
->=20
-> This interrupt controller is present on bcm63xx SoCs in order to =
-generate
-> interrupts based on GPIO status changes.
->=20
-> v3: pass dt_binding_check.
-> v2: fix documentation title typo.
->=20
-> =C3=81lvaro Fern=C3=A1ndez Rojas (2):
->  dt-bindings: interrupt-controller: document BCM6345 external =
-interrupt
->    controller
->  irqchip: add support for BCM6345 external interrupt controller
->=20
-> .../brcm,bcm6345-ext-intc.yaml                |  78 +++++
-> drivers/irqchip/Kconfig                       |   4 +
-> drivers/irqchip/Makefile                      |   1 +
-> drivers/irqchip/irq-bcm6345-ext.c             | 271 ++++++++++++++++++
-> 4 files changed, 354 insertions(+)
-> create mode 100644 =
-Documentation/devicetree/bindings/interrupt-controller/brcm,bcm6345-ext-in=
-tc.yaml
-> create mode 100644 drivers/irqchip/irq-bcm6345-ext.c
->=20
-> --=20
-> 2.20.1
->=20
 
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
