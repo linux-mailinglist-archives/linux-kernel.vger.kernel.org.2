@@ -2,90 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1130B326EC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 20:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEAB326ECD
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 20:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbhB0TTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 14:19:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230282AbhB0TSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 14:18:49 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C19E564E04;
-        Sat, 27 Feb 2021 19:18:04 +0000 (UTC)
-Date:   Sat, 27 Feb 2021 14:18:02 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jacob Wen <jian.w.wen@oracle.com>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
- from trace events
-Message-ID: <20210227141802.5c9aca91@oasis.local.home>
-In-Reply-To: <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
-References: <20210226185909.100032746@goodmis.org>
-        <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230113AbhB0Ttm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 14:49:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhB0TtY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 14:49:24 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC91C06174A;
+        Sat, 27 Feb 2021 11:48:43 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id n4so11917226wrx.1;
+        Sat, 27 Feb 2021 11:48:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pCdXkUGdbXxFWrdiSKZfKK1y/JajvMt7IrRHviPqOz0=;
+        b=onzxmnsTlNeB9dC9J7rdV7ptcwlxHTIBpgpxZXjv8/FHudXcYgeeqiaBgZeiXDYntz
+         vtRuUCw8Yo8ZOQhAVuYYzkz3umOci/qSK+wIek+5kAvYwOLvtKS0vcC+Z5CQgNvFHo0e
+         v2JfZndjJ+mSuEuvtQPfl3k1Ii/rnF3UYEM7ltFUBL9NEoyqRUxm8tNPjffJ1LTNqzf0
+         iIq26tFMBbv4DWdCMeRhVlQ95dWSoX8ODnvi0OlY6ZkxMuLbdIDMcmIUU/BCIuITa7YZ
+         3ZFSTY4qgET0VGxV5YwXmPLLBs/l643AQrLs56q+/+vBdbvU+FD98Db9W6F8pCulibhi
+         CQxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pCdXkUGdbXxFWrdiSKZfKK1y/JajvMt7IrRHviPqOz0=;
+        b=UyUQZQK1+0hbVjdE3Y0376IDRLvgrJUsQJ3GJy4VHw8L02XJMbOgu9e3CmcMd5T+t2
+         Lo0ErB4GUKx0TC1+g2CkI/xDBCTJOIKQoUYrHSk85IJVHfampm6Gf/6IARnDGq25GSCa
+         cnTooDxiksetoXgy5rxKjPLAoK9ZbZYCDdbNpmLpBGZBkpWni6BgaU1B4gWf27AowCVf
+         sFBk1NVQq5jtBIi/soUDYU0WjBLD34x/rX7m301vLbYp7p13QnrwNCFxG//LUNTASQuS
+         ixe0f9awZBOcaQzS+15s2BS9k7f/M5vTr7iT0mtohX/JYUMtqAXRqMaCYavQiID2ie0Y
+         8o1g==
+X-Gm-Message-State: AOAM531+Lr8j1CbhVUN7WkvNu3zlSzBN4Ci2SdJAfbhmxhhFlsf8TAEM
+        uHSHXXDqck4g6v7W3k9bZZo=
+X-Google-Smtp-Source: ABdhPJyz/QGbhv7EhcO+Hxa4/UEfYcnXP98xYulRVfFLCIJ7Ph1hsXUKcPtLBABP0YsS9pvfFtcwzQ==
+X-Received: by 2002:a5d:640b:: with SMTP id z11mr9027206wru.327.1614455322140;
+        Sat, 27 Feb 2021 11:48:42 -0800 (PST)
+Received: from adgra-XPS-15-9570.home (2a01cb0008bd2700289c166d32b9da85.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:289c:166d:32b9:da85])
+        by smtp.gmail.com with ESMTPSA id f9sm12453123wro.77.2021.02.27.11.48.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Feb 2021 11:48:41 -0800 (PST)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robert.foss@linaro.org, airlied@linux.ie, daniel@ffwll.ch,
+        a.hajda@samsung.com, robh+dt@kernel.org, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v6 0/2] Add support of Lontium lt8912 MIPI to HDMI bridge
+Date:   Sat, 27 Feb 2021 20:48:34 +0100
+Message-Id: <20210227194836.1848753-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 14:21:00 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+Hi,
+this patch set adds the support of the Lontium lt8912 MIPI to HDMI
+bridge in the kernel.
 
-> On Fri, Feb 26, 2021 at 11:07 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > The first patch scans the print fmts of the trace events looking for
-> > dereferencing pointers from %p*, and making sure that they refer back
-> > to the trace event itself.
-> >
-> > The second patch handles strings "%s" [..]  
-> 
-> Doing this at runtime really feels like the wrong thing to do.
-> 
-> It won't even protect us from what happened - people like me and
-> Andrew won't even run those tracepoints in the first place, so we
-> won't notice.
-> 
-> It really would be much better in every respect to have this done by
-> checkpatch, I think.
+It's only support the video part, not the audio part yet
+since I don't have the datasheet of this component.
+I get the current i2c configuration from Digi and
+Boundary drivers.
+Developed using the DB_DSIHD board from BoundaryDevices.
 
-And after fixing the parsing to not trigger false positives, an
-allyesconfig boot found this:
+Update in v2
+  - Use standard data-lanes instead of a custom prop;
+  - Use hdmi-connector node.
 
-event cdns3_gadget_giveback has unsafe dereference of argument 11
-print_fmt: "%s: req: %p, req buff %p, length: %u/%u %s%s%s, status: %d, trb: [start:%d, end:%d: virt addr %pa], flags:%x SID: %u", __get_str(name), REC->req, REC->buf,
- REC->actual, REC->length, REC->zero ? "Z" : "z", REC->short_not_ok ? "S" : "s", REC->no_interrupt ? "I" : "i", REC->status, REC->start_trb, REC->end_trb, REC->start_trb_addr, REC->flags, RE
-C->stream_id
+Update in v3
+  - Fix indentation;
+  - Implement missing bridge functions;
+  - Add some comments.
 
-(as the above is from a trace event class, it triggered for every event
-in that class).
+Update in v4
+  - Fix bridge ops;
+  - Fix i2c error detection.
 
-As it looks like it uses %pa which IIUC from the printk code, it
-dereferences the pointer to find it's virtual address. The event has
-this as the field:
+Update in v5
+  - Fix lt8912 name (lt8912b instead of lt8912);
+  - Implement HPD via a workaround. In fact I don't have the datasheet
+    of this component yet so I can't say if the configuration of the
+registers is correct or if I have an HW issue on my board. So, I choose
+to implement a fake version of HPD using a workqueue and polling the
+status regularly.
 
-                __field(struct cdns3_trb *, start_trb_addr)
+Update in v6
+  - Fix a warning found by "kernel test robot"
 
-Assigns it with:
+Thanks,
 
-                __entry->start_trb_addr = req->trb;
+Adrien Grassein (2):
+  dt-bindings: display: bridge: Add documentation for LT8912B
+  drm/bridge: Introduce LT8912B DSI to HDMI bridge
 
-And prints that with %pa, which will dereference pointer at the time of
-reading, where the address in question may no longer be around. That
-looks to me as a potential bug.
+ .../display/bridge/lontium,lt8912b.yaml       | 102 +++
+ MAINTAINERS                                   |   6 +
+ drivers/gpu/drm/bridge/Kconfig                |  14 +
+ drivers/gpu/drm/bridge/Makefile               |   1 +
+ drivers/gpu/drm/bridge/lontium-lt8912b.c      | 818 ++++++++++++++++++
+ 5 files changed, 941 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.yaml
+ create mode 100644 drivers/gpu/drm/bridge/lontium-lt8912b.c
 
-[ Cc'd the people responsible for that code. ]
+-- 
+2.25.1
 
--- Steve
