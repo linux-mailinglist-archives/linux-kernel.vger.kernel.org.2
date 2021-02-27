@@ -2,45 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702CC326D58
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 15:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9818C326D5F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 15:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhB0OA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 09:00:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhB0OAI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 09:00:08 -0500
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DB0C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 05:59:07 -0800 (PST)
-Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=50158)
-        by smtp.domeneshop.no with esmtpa (Exim 4.92)
-        (envelope-from <Ywe@itdevs.dev>)
-        id 1lG07X-0006ZJ-DY
-        for linux-kernel@vger.kernel.org; Sat, 27 Feb 2021 14:58:59 +0100
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe@itdevs.dev>
-Subject: ITd - fair pay & generalizations
-Message-ID: <4e959fb6-3755-2b9a-f5fa-3e088144fbc3@itdevs.dev>
-Date:   Sat, 27 Feb 2021 14:58:48 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230063AbhB0ONN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 09:13:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229912AbhB0ONL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 09:13:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C659364EBC;
+        Sat, 27 Feb 2021 14:12:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614435149;
+        bh=EG2dTmL+C79jw0ZfgsnTA+HlsmjYsm4eLiAQ+fjuRSM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZSVdiuEgf2GenOlCRQnYHYBch2+5doJW13GbJPPOgSACzVTxCpzNSvp9T1arfrh0G
+         1vzdYdrX9wEthuOe+loML5fo0C9RUsMcT2Q/wkbVEMSS7kM8egEvHpvlG35j3bGF78
+         nwJdogFlfQHmRaCS6D5id8Eh7GqtxFjnNvLTdVdjs0KFwD6lWRVmG/4oaECrEYqemD
+         wyWhp3O5QWD8ifgIhGX63BBzwYm8unrMk7LzMCqN0bXhuScjWxvdC/e7pPcvLJVIws
+         nPiutSBKwfySnwDYbshO6YQBfh2lMAb3AE13zNlQhHisZ7YQRZ4Fmla1BkGQL5nHjj
+         9ZE083rB0grPw==
+Date:   Sat, 27 Feb 2021 15:12:23 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c fixes for v5.12
+Message-ID: <20210227141223.GA3333@ninjato>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I made some generalisations to this project.
 
-It is now ITd X, (IT developments X), and think a generalization of 
-related media can be about 24-bit streaming.
+--pWyiEgJYm5f9v55/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-And thus generalized media to this channel: 
-https://www.youtube.com/channel/UCmcb1ZPp4tW3eji-0Jaja9Q/videos
+Linus,
 
-Serenity,
-Ywe.
+I2C has three more bugfixes and one revert for you. I accidently applied
+one patch too early.
+
+Please pull.
+
+Thanks,
+
+   Wolfram
+
+
+The following changes since commit 2c87f7a38f930ef6f6a7bdd04aeb82ce3971b54b:
+
+  Merge tag 'pwm/for-5.12-rc1' of git://git.kernel.org/pub/scm/linux/kernel=
+/git/thierry.reding/linux-pwm (2021-02-25 12:23:49 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-curre=
+nt
+
+for you to fetch changes up to f4ff0104d4c807a7f96aa3358c03d694895ee8ea:
+
+  i2c: exynos5: Preserve high speed master code (2021-02-26 11:47:42 +0100)
+
+----------------------------------------------------------------
+Liguang Zhang (1):
+      i2c: designware: Get right data length
+
+Maxime Ripard (1):
+      i2c: brcmstb: Fix brcmstd_send_i2c_cmd condition
+
+M=C3=A5rten Lindahl (1):
+      i2c: exynos5: Preserve high speed master code
+
+Wolfram Sang (1):
+      Revert "i2c: i2c-qcom-geni: Add shutdown callback for i2c"
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      (Rev.) i2c: designware: Get right data length
+
+Krzysztof Kozlowski (2):
+      (Rev.) i2c: exynos5: Preserve high speed master code
+      (Test) i2c: exynos5: Preserve high speed master code
+
+ drivers/i2c/busses/i2c-brcmstb.c           |  2 +-
+ drivers/i2c/busses/i2c-designware-core.h   |  2 ++
+ drivers/i2c/busses/i2c-designware-master.c |  2 +-
+ drivers/i2c/busses/i2c-exynos5.c           |  8 ++++++-
+ drivers/i2c/busses/i2c-qcom-geni.c         | 34 --------------------------=
+----
+ 5 files changed, 11 insertions(+), 37 deletions(-)
+
+--pWyiEgJYm5f9v55/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmA6U0MACgkQFA3kzBSg
+KbZovA/8DUVirASR6oOaqS5NTv7jbc1om5LJjYoCTOododbxxQBInuF42GBLqg7q
+xgtuari+SLuvVV8frHWLeVMFTwBuzk+IK/+vqRVmlNcJRjhnrFzvLHtMCaycFKY3
+vQkNbYHH0vzhdxszmQb+T01C4ePEJT2iFrPwdpAZe4V1hiStos8gpjJJd3FX0gCN
+d6GP/ILVe1Ev3sRyj7sGPHiCjqEIXEzhmUKGLBUuCFT4bQN7PCt74AlCwOHT1F93
+YldDfwm9byzSnDSwW7GTHVlb0nOa895asej/ZHmFoyRdY7CxSflh1m50m+LJy680
+6nSOnQO6fDJrCzVwDLD5fz1edkxawO6iocpCEz8uBYZtHbsYLQ4cB94a2J1T+f1B
+HvivYA7fL0nC/b+XTA1+NmHrhire2+yObIAI3NOocAJ7yDm1IdB/96ruQ3CItXRg
+kgW9JkKHxrL34426Oo+xs8CgBxTbSa6aRLQeoPv/BqDGNN7lbzNhSB+s/i3nkGfU
+QTyQNVgO3ZGvbUekVfKnTujl3UbpMvLqWfmVD2sLJP71A9nMEk5gCXH/SV14O2f/
+d7lZzzDoCqCxZi+rz4OE+BJzMGEfJIoI7Y10x6hQ23l6hYU11RRZ0u5dyhSMocHT
+329OYYH8NaqcKwUryF7EhrsHfsVQuDJja2xKYkkMZsTWELlHPd0=
+=LK0b
+-----END PGP SIGNATURE-----
+
+--pWyiEgJYm5f9v55/--
