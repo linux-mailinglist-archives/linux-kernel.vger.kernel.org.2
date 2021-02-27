@@ -2,48 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA932326C0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 07:56:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9CA326C11
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 08:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhB0G4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 01:56:21 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:44448 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhB0G4T (ORCPT
+        id S230001AbhB0HJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 02:09:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229752AbhB0HJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 01:56:19 -0500
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 11R6tHvD029484;
-        Sat, 27 Feb 2021 15:55:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11R6tHvD029484
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614408917;
-        bh=bHffv351LtHI0LzqaBGpYJnkjtPtn6I884Zf4L50dws=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=e6sy3FPUht0xrp+ulnLBX1ai8s9jAuI/wE0xaEkH2BYO+qcR1CfnVO7+6SVK3u6fv
-         8NZB2kjSjbkhZFqCi0PpfHayFzZtC62gTLjJVaWQdShYh31kVVfQKmzq4VdDTeQpPX
-         mp1SiLVHOcOldseHcw0DqqoTZO5knOpuAXcSz08a4O8DUlko9MkhO0AmZay0iP28jF
-         VYZhSB+WUpGGIpenv+0oalS/HG6UR7ntDETh7nMeHFnAbZfS2w833ndZSqVKyWuGco
-         pPC+WsUgtpf3QqeYixbyAfYlmCgqzi9oZvlFtQaN555Pi7zZTW/00asuAhAnFYlKaX
-         iePhUxvgKy4tA==
-X-Nifty-SrcIP: [209.85.210.180]
-Received: by mail-pf1-f180.google.com with SMTP id 201so7774198pfw.5;
-        Fri, 26 Feb 2021 22:55:17 -0800 (PST)
-X-Gm-Message-State: AOAM532riPo1jg9lhisUIlBw1qa4iCY4+G5dX2pexnJ/Yi1M2sgo2J7a
-        WaCzn8r0Nn9CzQLBY0F0UZRlN5Dj2AOYMCe7DcY=
-X-Google-Smtp-Source: ABdhPJyZn4kUkkoqOs7sfR9iAupy1Oo7fwn/GRCA9/SQl0DFc80L7dqVoXZVyI06m3DD6jxn0Sipf4hpI2RFxephv7A=
-X-Received: by 2002:a62:1412:0:b029:1ec:bc11:31fd with SMTP id
- 18-20020a6214120000b02901ecbc1131fdmr6450801pfu.76.1614408916611; Fri, 26 Feb
- 2021 22:55:16 -0800 (PST)
+        Sat, 27 Feb 2021 02:09:25 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B15C06174A;
+        Fri, 26 Feb 2021 23:08:45 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id f20so12111153ioo.10;
+        Fri, 26 Feb 2021 23:08:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=qVGH2wiGbZpiWspViguKvdqRScf2gnv+vmRA21DFLsY=;
+        b=Q4Htg/c6LSzG2fo7loeK7ALQB3/4mwU0kvCZUMlVYS7WxOV2STBFw4bjAo7HVDCFG+
+         nwHm1dUiz8IPUBZ+eFmuZfgX8IrVZ91lX5+YI5N611qtqH+9D6qtcCT5fNwWrFzvUp/b
+         sn2w8j0MEvbIcoY1M9hYYh+qRzuE9Mh5q+DK+J2bloQxWIPM1b+z3w6o46MGRy9ddhca
+         AgOLN5ypLZohW6Dc5+42dKOSpNmPbQQujRokptx/2EAK/A2RG/1COOLQV1vykYrFDm5Q
+         rG1wh7X417eaxKayu2QSYbLgMn6AV8eo2IJaV516DH2p5KN4+h47hbUS2rgR9BTQdJo7
+         hvHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=qVGH2wiGbZpiWspViguKvdqRScf2gnv+vmRA21DFLsY=;
+        b=Uqr/RIyKeKEoy0RirIzA1Yrm0RJ0ClNWW8g341d8hNtlb1BO/DxCm/pgNeHyJ1bhwe
+         kzBzHQ5HghiGJBxanGis5m+wtoP1v/WjTUZeZXJSYgBQ7pPU1hNdMFCKclrKqktCeHMG
+         wXBqZNAyWR8Cu4fpU1Q3B4ADF81laJ/ZSX4AQz3RsQS64tbgB1B/kuqUbTVDyxfWJPOL
+         N6yUbC+PwWR120hpIBm0Lrc1mf3FuJsLkyWF3o6Bd4yegsWwlMNwzWMZttW9Ms/aEmb8
+         +TXtFi0MsrASsWIMiZ+EERamOy+6Ab3cH3zTsRKkURbU0k8Rnvp8Q8BkyOaoBxuOqwqA
+         U4qQ==
+X-Gm-Message-State: AOAM5311JZaUTpRlEs+HEjpvAEYXn2G3vNHabe2+lUK8mBcrNXfmu5of
+        0QiEUXtCLFa0JZa1jipxvaPpXMYFZPP+nQm0Cy0=
+X-Google-Smtp-Source: ABdhPJySDgdt49qPoEjzw22gyawwRGQPrVumJiJJDXm9BO1CPyQwHJnfTg4tPA2YitoyUwLvX/Uc0ssECJqB9N1BzaU=
+X-Received: by 2002:a05:6638:2381:: with SMTP id q1mr6553430jat.132.1614409724904;
+ Fri, 26 Feb 2021 23:08:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20210226062548.3334081-1-masahiroy@kernel.org> <CA+icZUXYLVjs-hXEu_5Vy=TdNvOHhyiXe=hc-jc7SAU04Dtstw@mail.gmail.com>
-In-Reply-To: <CA+icZUXYLVjs-hXEu_5Vy=TdNvOHhyiXe=hc-jc7SAU04Dtstw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 27 Feb 2021 15:54:38 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARmQzJwUWcYPj9QKZatYpC6-gegTuJiAvyhR==8ezWdHg@mail.gmail.com>
-Message-ID: <CAK7LNARmQzJwUWcYPj9QKZatYpC6-gegTuJiAvyhR==8ezWdHg@mail.gmail.com>
+References: <20210226062548.3334081-1-masahiroy@kernel.org>
+ <CA+icZUXYLVjs-hXEu_5Vy=TdNvOHhyiXe=hc-jc7SAU04Dtstw@mail.gmail.com> <CAK7LNARmQzJwUWcYPj9QKZatYpC6-gegTuJiAvyhR==8ezWdHg@mail.gmail.com>
+In-Reply-To: <CAK7LNARmQzJwUWcYPj9QKZatYpC6-gegTuJiAvyhR==8ezWdHg@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 27 Feb 2021 08:08:33 +0100
+Message-ID: <CA+icZUXGnOCY5O=cupmmjGnVpYA=Q=cm69ih5HrgpV9sOPozYQ@mail.gmail.com>
 Subject: Re: [PATCH v2] kbuild: fix UNUSED_KSYMS_WHITELIST for Clang LTO
-To:     Sedat Dilek <sedat.dilek@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
 Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         Sami Tolvanen <samitolvanen@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
@@ -57,54 +67,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 6:26 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+On Sat, Feb 27, 2021 at 7:55 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> On Fri, Feb 26, 2021 at 7:26 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> On Fri, Feb 26, 2021 at 6:26 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 > >
-> > Commit fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
-> > does not work as expected if the .config file has already specified
-> > CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list" before enabling
-> > CONFIG_LTO_CLANG.
+> > On Fri, Feb 26, 2021 at 7:26 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > Commit fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> > > does not work as expected if the .config file has already specified
+> > > CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list" before enabling
+> > > CONFIG_LTO_CLANG.
+> > >
+> > > So, the user-supplied whitelist and LTO-specific white list must be
+> > > independent of each other.
+> > >
+> > > I refactored the shell script so CONFIG_MODVERSIONS and CONFIG_CLANG_LTO
+> > > handle whitelists in the same way.
+> > >
+> > > Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > > ---
+> > >
+> > > Changes in v2:
+> > >   - Rebase on top of Arnd's patch:
+> > >     https://lore.kernel.org/lkml/20210225143456.3829513-1-arnd@kernel.org/
+> > >
+> > >  init/Kconfig                    |  1 -
+> > >  scripts/gen_autoksyms.sh        | 35 ++++++++++++++++++++++++---------
+> > >  scripts/lto-used-symbollist.txt |  6 ------
 > >
-> > So, the user-supplied whitelist and LTO-specific white list must be
-> > independent of each other.
+> > People who want to use their own "white-listed" (allow-listed)
+> > symbollist-file can do that via
+> > CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list".
+> > Correct?
 > >
-> > I refactored the shell script so CONFIG_MODVERSIONS and CONFIG_CLANG_LTO
-> > handle whitelists in the same way.
-> >
-> > Fixes: fbe078d397b4 ("kbuild: lto: add a default list of used symbols")
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> > Changes in v2:
-> >   - Rebase on top of Arnd's patch:
-> >     https://lore.kernel.org/lkml/20210225143456.3829513-1-arnd@kernel.org/
-> >
-> >  init/Kconfig                    |  1 -
-> >  scripts/gen_autoksyms.sh        | 35 ++++++++++++++++++++++++---------
-> >  scripts/lto-used-symbollist.txt |  6 ------
+> > Why do you delete the default "scripts/lto-used-symbollist.txt" file
+> > and remove the default in the appropriate Kconfig for people who want
+> > to enable Clang-(Thin)LTO?
+> > These people should now use
+> > CONFIG_UNUSED_KSYMS_WHITELIST="scripts/lto-used-symbollist.txt"?
+> > But again - the file was deleted with your patch.
+> > Do I miss something?
 >
-> People who want to use their own "white-listed" (allow-listed)
-> symbollist-file can do that via
-> CONFIG_UNUSED_KSYMS_WHITELIST="my/own/white/list".
-> Correct?
+> I think so.
 >
-> Why do you delete the default "scripts/lto-used-symbollist.txt" file
-> and remove the default in the appropriate Kconfig for people who want
-> to enable Clang-(Thin)LTO?
-> These people should now use
-> CONFIG_UNUSED_KSYMS_WHITELIST="scripts/lto-used-symbollist.txt"?
-> But again - the file was deleted with your patch.
-> Do I miss something?
+> I moved those symbols to scripts/gen_autoksyms.sh
+>
 
-I think so.
+OK, I have overseen hat.
 
-I moved those symbols to scripts/gen_autoksyms.sh
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+- Sedat -
