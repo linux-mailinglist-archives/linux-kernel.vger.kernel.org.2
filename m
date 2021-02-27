@@ -2,226 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72FE326AB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4DCF326ABB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhB0AVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 19:21:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
+        id S230010AbhB0AYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 19:24:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhB0AVi (ORCPT
+        with ESMTP id S229618AbhB0AYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 19:21:38 -0500
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5617C061574;
-        Fri, 26 Feb 2021 16:20:57 -0800 (PST)
-Received: by mail-vs1-xe2d.google.com with SMTP id f19so1052572vsk.13;
-        Fri, 26 Feb 2021 16:20:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MDe5+O2spJHSt6JrFGkCdGoYYocliObqhGtzWKjr3VY=;
-        b=BidCqg9ZIdNd1XcUAlLWvwsWoDJUE+PSJFh5ja/DAiY0yeLnijRL1NIDyEtLZ9KYyS
-         BTapOMCIIcCjvpEEI3gWSYrnA/qLpM2TLVNRJHlOXRRuQ+WLd9LNEJ3Rr/KWKayjgbPx
-         GYe3InfVTKvg88hc1weU4Gcl4F+iTLwKbWR2sU1DIZARNX4TKcpLK842su6EVqYyF9Xr
-         cA7jEIf4Jwz8/DKl/PIuDhRb7Rsn63hUzE3gQ8tuLaTCWG6ctToQO5p0KBDJ7VVO3ojG
-         JUUc/5sRw19x7C133UvnKJ/t6qZuSeZBeFvPijn++PhzC0E22esEne7CxUPBugN9Rbgt
-         lqdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MDe5+O2spJHSt6JrFGkCdGoYYocliObqhGtzWKjr3VY=;
-        b=d+cNAAOuq/A2aNMyRwE2Gt3rtr+O30W/gzGkNogoVbIpt+QWLQmdCtyvN5HBXKTFOc
-         OnsoOE9PndVdJs+xfuY+CiS6G8Y061QzPCT4XD8iWTr67YEPm4/ZnjY9DHZVGFMBHhHF
-         5bshcWP/l07PInOcrGbYg18JxZVkEWpTeTDpp7HqwmUbW2/T8p6YOT1xx0+XhxGYPjFx
-         SSSW+oPSqegsB4+3/iQO0Anjj/aSdSdqkWQLY1gLWoc75P+Uffh+y/AV6VumcAN8Fn9a
-         N2NdQOdp+cKdGA31VXyjBZNCzjZHH5WB7odOpXA2PhTXOrZyoUWifhHWCnkntRvNFEhr
-         QLwg==
-X-Gm-Message-State: AOAM531wSr1ciNtsBMTkcwZCYIQMUkXS6pbNZGFIkPnVLFu8MOI04DVf
-        3lCIWROmmj8XlXku63WqOr5RmHnzgWYd/w==
-X-Google-Smtp-Source: ABdhPJwzdyZ/ny9vR8ICikk+Ze2fTUzs1GlD+G4s/w+njrYAF+YzoIOUmTGTciaz0G/5xSWIx/6HxA==
-X-Received: by 2002:a67:a85:: with SMTP id 127mr3432003vsk.16.1614385256799;
-        Fri, 26 Feb 2021 16:20:56 -0800 (PST)
-Received: from shinobu ([193.27.12.132])
-        by smtp.gmail.com with ESMTPSA id t6sm1267925vke.13.2021.02.26.16.20.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 16:20:56 -0800 (PST)
-Date:   Sat, 27 Feb 2021 09:20:48 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>, kernel@pengutronix.de,
-        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de
-Subject: Re: [PATCH v8 20/22] counter: Implement events_queue_size sysfs
- attribute
-Message-ID: <YDmQYK1lWXl7H5lm@shinobu>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
- <013b2b8682ddc3c85038083e6d5567696b6254b3.1613131238.git.vilhelm.gray@gmail.com>
- <20210214181146.66d43da7@archlinux>
- <YC5CMLuKnXbkZond@shinobu>
- <20210221155140.3e1ef13c@archlinux>
- <YDg65OmLa05g53qc@shinobu>
- <37ea96a2-d4a1-7d4c-a68a-8dc82896e86c@lechnology.com>
+        Fri, 26 Feb 2021 19:24:43 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EA5C061574;
+        Fri, 26 Feb 2021 16:24:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=MiXuw9pY4dNQm+8S7V4mY3M5EpoJSQlwICOeG/t1UDI=; b=ZzUs2f6eEWMkEmCQD41C7Lgh+b
+        GFGp2YdavOPxNworB6WnzcTQH7rqry8TAXJozyX7BWoVON3TmdTOziLw1DT1ait8mbvt4QCCDw0d4
+        DIT6+EqMQpGsD6RpyzKfWEH6LyBJf0PYQSicsoJK1iNQ1SL83cxqR2ADanMjZIROYtlL5jFmHc+h/
+        Y1TRF1ACwWjQK6Mzk/92s4PBq9myDt8vKooaCYLwMo8Jhr3yHy+i23sNQiqqjSvjEhFlPEIOeD8u4
+        uUGyyCax3KyZC/6O5B0/u1k83h3974Lrnd9i9ifXAlMcRgmqpKaFcr17h92S6sN77NPoK2i9fZkBX
+        zU8L7NUw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lFnOq-0001oE-J3; Sat, 27 Feb 2021 00:24:00 +0000
+Subject: Re: [PATCH v2] media: add a subsystem profile documentation
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <67c1aa1e5f29ef0cb4127e6303a5ffa1a391afc2.1614260439.git.mchehab+huawei@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bb836e27-82e8-f86b-c89b-a8937eb9ca62@infradead.org>
+Date:   Fri, 26 Feb 2021 16:23:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/fFfRNp8huk1mEVl"
-Content-Disposition: inline
-In-Reply-To: <37ea96a2-d4a1-7d4c-a68a-8dc82896e86c@lechnology.com>
+In-Reply-To: <67c1aa1e5f29ef0cb4127e6303a5ffa1a391afc2.1614260439.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mauro-
 
---/fFfRNp8huk1mEVl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 26, 2021 at 06:14:12PM -0600, David Lechner wrote:
-> On 2/25/21 6:03 PM, William Breathitt Gray wrote:
-> > On Sun, Feb 21, 2021 at 03:51:40PM +0000, Jonathan Cameron wrote:
-> >> On Thu, 18 Feb 2021 19:32:16 +0900
-> >> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> >>
-> >>> On Sun, Feb 14, 2021 at 06:11:46PM +0000, Jonathan Cameron wrote:
-> >>>> On Fri, 12 Feb 2021 21:13:44 +0900
-> >>>> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> >>>>   =20
-> >>>>> The events_queue_size sysfs attribute provides a way for users to
-> >>>>> dynamically configure the Counter events queue size for the Counter
-> >>>>> character device interface. The size is in number of struct
-> >>>>> counter_event data structures. The number of elements will be round=
-ed-up
-> >>>>> to a power of 2 due to a requirement of the kfifo_alloc function ca=
-lled
-> >>>>> during reallocation of the queue.
-> >>>>>
-> >>>>> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> >>>>> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> >>>>> ---
-> >>>>>   Documentation/ABI/testing/sysfs-bus-counter |  8 +++++++
-> >>>>>   drivers/counter/counter-chrdev.c            | 23 ++++++++++++++++=
-+++
-> >>>>>   drivers/counter/counter-chrdev.h            |  2 ++
-> >>>>>   drivers/counter/counter-sysfs.c             | 25 ++++++++++++++++=
-+++++
-> >>>>>   4 files changed, 58 insertions(+)
-> >>>>>
-> >>>>> diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Document=
-ation/ABI/testing/sysfs-bus-counter
-> >>>>> index 847e96f19d19..f6cb2a8b08a7 100644
-> >>>>> --- a/Documentation/ABI/testing/sysfs-bus-counter
-> >>>>> +++ b/Documentation/ABI/testing/sysfs-bus-counter
-> >>>>> @@ -212,6 +212,14 @@ Description:
-> >>>>>   		both edges:
-> >>>>>   			Any state transition.
-> >>>>>  =20
-> >>>>> +What:		/sys/bus/counter/devices/counterX/events_queue_size
-> >>>>> +KernelVersion:	5.13
-> >>>>> +Contact:	linux-iio@vger.kernel.org
-> >>>>> +Description:
-> >>>>> +		Size of the Counter events queue in number of struct
-> >>>>> +		counter_event data structures. The number of elements will be
-> >>>>> +		rounded-up to a power of 2.
-> >>>>> +
-> >>>>>   What:		/sys/bus/counter/devices/counterX/name
-> >>>>>   KernelVersion:	5.2
-> >>>>>   Contact:	linux-iio@vger.kernel.org
-> >>>>> diff --git a/drivers/counter/counter-chrdev.c b/drivers/counter/cou=
-nter-chrdev.c
-> >>>>> index 16f02df7f73d..53eea894e13f 100644
-> >>>>> --- a/drivers/counter/counter-chrdev.c
-> >>>>> +++ b/drivers/counter/counter-chrdev.c
-> >>>>> @@ -375,6 +375,29 @@ void counter_chrdev_remove(struct counter_devi=
-ce *const counter)
-> >>>>>   	cdev_del(&counter->chrdev);
-> >>>>>   }
-> >>>>>  =20
-> >>>>> +int counter_chrdev_realloc_queue(struct counter_device *const coun=
-ter,
-> >>>>> +				 size_t queue_size)
-> >>>>> +{
-> >>>>> +	int err;
-> >>>>> +	DECLARE_KFIFO_PTR(events, struct counter_event);
-> >>>>> +	unsigned long flags;
-> >>>>> +
-> >>>>> +	/* Allocate new events queue */
-> >>>>> +	err =3D kfifo_alloc(&events, queue_size, GFP_ATOMIC);
-> >>>>
-> >>>> Is there any potential for losing events?
-> >>>
-> >>> We take the events_list_lock down below so we're safe against missing=
- an
-> >>> event, but past events currently unread in the queue will be lost.
-> >>>
-> >>> Shortening the size of the queue is inherently a destructive process =
-if
-> >>> we have more events in the current queue than can fit in the new queu=
-e.
-> >>> Because we a liable to lose some events in such a case, I think it's
-> >>> best to keep the behavior of this reallocation consistent and have it
-> >>> provide a fresh empty queue every time, as opposed to sometimes dropp=
-ing
-> >>> events and sometimes not.
-> >>>
-> >>> I also suspect an actual user would be setting the size of their queue
-> >>> to the required amount before they begin watching events, rather than
-> >>> adjusting it sporadically during a live operation.
-> >>>
-> >>
-> >> Absolutely agree.   As such I wonder if you are better off enforcing t=
-his
-> >> behaviour?  If the cdev is open for reading, don't allow the fifo to be
-> >> resized.
-> >>
-> >> Jonathan
-> >=20
-> > I can't really think of a good reason not to, so let's enforce it: if
-> > the cdev is open, then we'll return an EINVAL if the user attempts to
-> > resize the queue.
-> >=20
-> > What is a good way to check for this condition? Should I just call
-> > kref_read() and see if it's greater than 1? For example, in
-> > counter_chrdev_realloc_queue():
-> >=20
-> > 	if (kref_read(&counter->dev.kobj.kref) > 1)
-> > 		return -EINVAL;
-> >=20
-> > William Breathitt Gray
-> >=20
->=20
-> Wouldn't EBUSY make more sense?
+On 2/25/21 5:41 AM, Mauro Carvalho Chehab wrote:
+> Document the basic policies of the media subsystem profile.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+> 
+> v2: fix the Documentation/*/media directories
+> 
+> 
+>  Documentation/driver-api/media/index.rst      |   2 +
+>  .../media/maintainer-entry-profile.rst        | 161 ++++++++++++++++++
+>  .../maintainer/maintainer-entry-profile.rst   |   1 +
+>  3 files changed, 164 insertions(+)
+>  create mode 100644 Documentation/driver-api/media/maintainer-entry-profile.rst
+> 
 
-Yes, EBUSY would be better here because the operation isn't necessarily
-invalid, just unavailable because someone else has the cdev open.
+> diff --git a/Documentation/driver-api/media/maintainer-entry-profile.rst b/Documentation/driver-api/media/maintainer-entry-profile.rst
+> new file mode 100644
+> index 000000000000..6318be833bfb
+> --- /dev/null
+> +++ b/Documentation/driver-api/media/maintainer-entry-profile.rst
+> @@ -0,0 +1,161 @@
+> +Media Subsystem Profile
+> +=======================
+> +
+> +Overview
+> +--------
+> +
+> +The media subsystem covers support for a variety of devices: stream
+> +capture, analog and digital TV, cameras, remote controllers, HDMI CEC
+> +and media pipeline control.
+> +
+> +It covers, mainly, the contents of those directories:
+> +
+> +  - drivers/media
+> +  - drivers/staging/media
+> +  - Documentation/admin-guide/media
+> +  - Documentation/driver-api/media
+> +  - Documentation/userspace-api/media
+> +  - include/media
+> +
+> +Both media userspace and Kernel APIs are documented and should be kept in
+> +sync with the API changes. It means that all patches that add new
+> +features to the subsystem should also bring changes to the corresponding
+> +API files.
+> +
+> +Due to the size and wide scope of the media subsystem, media's
+> +maintainership model is to have sub-maintainers that have a broad
+> +knowledge of a specific aspect of the subsystem. It is the sub-maintainers'
+> +task to review the patches, providing feedback to users if the patches are
+> +following the subsystem rules and are properly using the media kernel and
+> +userspace APIs.
+> +
+> +Patches for the media subsystem should be sent to the media mailing list
+> +at linux-media@vger.kernel.org as plain text only e-mail. Emails with
+> +HTML will be automatically rejected by the mail server. It could be wise
+> +to also copy the sub-maintainer(s).
+> +
+> +Media's workflow is heavily based on Patchwork, meaning that, once a patch
+> +is submitted, it should appear at:
+> +
+> +   - https://patchwork.linuxtv.org/project/linux-media/list/
+> +
+> +If it doesn't automatically appear there after a few minutes, then
+> +probably something got wrong on your submission. Please check if the
+> +email is in plain text only and if your emailer is not mangling with
+> +whitespaces before complaining or submitting them again.
+> +
+> +Sub-maintainers
+> ++++++++++++++++
+> +
+> +At the media subsystem, we have a group of experienced developers that
+> +are responsible for doing the code reviews at the drivers (called
+> +sub-maintainers), and another senior developer responsible for the
+> +subsystem as a hole. For core changes, whenever possible, multiple
+> +media (sub-)maintainers do the review.
+> +
+> +The sub-maintainers work on specific areas of the subsystem, as
+> +described below:
+> +
+> +Digital TV:
+> +  Sean Young <sean@mess.org>
+> +
+> +HDMI CEC:
+> +  Hans Verkuil <hverkuil@xs4all.nl>
+> +
+> +Media controller drivers:
+> +  Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> +
+> +Remote Controllers:
+> +  Sean Young <sean@mess.org>
+> +
+> +Sensor drivers:
+> +  Sakari Ailus <sakari.ailus@linux.intel.com>
+> +
+> +V4L2 drivers:
+> +  Hans Verkuil <hverkuil@xs4all.nl>
+> +
+> +Submit Checklist Addendum
+> +-------------------------
+> +
+> +Patches that change the Open Firmware/Device Tree bindings should be
+> +reviewed by the Device Tree maintainers. So, DT maintainers should be
+> +c/c when those are submitted.
 
-William Breathitt Gray
+   Cc:ed
 
---/fFfRNp8huk1mEVl
-Content-Type: application/pgp-signature; name="signature.asc"
+> +
+> +There is a set of compliance tools at https://git.linuxtv.org/v4l-utils.git/
+> +that should be used in order to check if the drivers are properly
+> +implementing the media APIs.
+> +
+> +Those tests need to pass before the patches go upstream.
+> +
+> +Also, please notice that we build the Kernel with::
+> +
+> +	make CF=-D__CHECK_ENDIAN__ CONFIG_DEBUG_SECTION_MISMATCH=y C=1 W=1 CHECK=check_script
+> +
+> +Where the check script is::
+> +
+> +	#!/bin/bash
+> +	/devel/smatch/smatch -p=kernel $@ >&2
+> +	/devel/sparse/sparse $@ >&2
+> +
+> +Be sure to not introduce new warnings on your patches without a
+> +very good reason.
+> +
+> +Style Cleanup Patches
+> ++++++++++++++++++++++
+> +
+> +Style-cleanups are welcome when they come together with other changes
 
------BEGIN PGP SIGNATURE-----
+   Style cleanups
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmA5kFEACgkQhvpINdm7
-VJKsqw//XGoYUzTvd45HLoZSMeCbqIqTUfHfIWRim7jSN79aeGhCPltRc08n0OcW
-23ZMcoib3ZEvpCheGx76fstTsNvWj+H+uMoB6Finr7ALskttCVzRlbYtYwk8eimX
-/XyIpiF2g9I5movwM5+8AZWC5ZKnBCDhTHshzdiT8KUt4UbLSGz13kA0FUCFAk8Y
-/fcF76ID+84EcC/fM/0+St6woF3nDUZ//VB50iYqOV5YPZSudDH093jsv+bNWjMr
-1Y9sTajY48nSHoMeRjvul1UUxKVsagYprCD3UhlRZFCQhmF4zganDtSOcijCjPUJ
-aD4ltmneDf9db1DU7WshKmQxwEyq+14J2Yvm93bowVTzcI2g3mqqDM1iCmk49AYD
-tnfYCuRxCPmCRnXF1KHmb6Gfqx3tWAsTN3ArfhJE61cE8nyQxBTCbgWbrN6SC12z
-1peklmfYc4aXq2bkn1/dGQvooZ6mXWJNABx7sxCBM/X9rvnBMwrdOIRuCTMFkM7U
-UgenrI5Pa2pjKgpkmIQg/5+BnT3fK2q/U4vRGBTmIyxDnQwMEb4CNZPcQb4Wj2zW
-9oNxnp00jD+/l41UJyFbwUAqOzgcPbymqzUaP5eOtjk1gYmnXJasVtRn9iKUjg1y
-4gt+wYOnQum0khjg/a7uqEhTMEuILLBJy3tnxm6BxnvR5ieEyuY=
-=P9yS
------END PGP SIGNATURE-----
+> +at the files where the style changes will affect.
+> +
+> +We may accept pure standalone style-cleanups, but they should ideally
 
---/fFfRNp8huk1mEVl--
+                                 style cleanups,
+
+> +be one patch for the hole subsystem (if the cleanup is low volume),
+
+                        whole (or entire)
+
+> +or at least be grouped per directory. So, for example, if you're doing
+
+                                                                    doing a
+
+> +big cleanup change set at drivers under drivers/media, please send a single
+> +patch for all drivers under drivers/media/pci, another one for
+> +drivers/media/usb and so on.
+> +
+> +Coding Style Addendum
+> ++++++++++++++++++++++
+> +
+> +Media development uses checkpatch on strict mode to verify the code style,
+> +e. g.::
+
+usually no space (in the kernel source tree)
+   e.g.::
+
+> +
+> +	$ ./script/checkpatch.pl --strict
+> +
+> +Please notice that the goal here is to improve code readability. On a few
+> +cases, checkpatch may actually point to something that would look worse.
+> +
+> +So, you should use good send sense here, being prepared to justify any
+> +coding style decision.
+> +
+> +Please also notice that, on some cases, when you fix one issue, you may
+> +receive warnings about lines longer than 80 columns. It is fine to have
+> +longer lines if this means that other warnings will be fixed by that.
+> +
+> +Yet, if you're having more than 80 columns on a line, please consider
+> +simplifying the code - if too indented - or to use shorter names for
+> +variables.
+> +
+> +Key Cycle Dates
+> +---------------
+> +
+> +New submissions can be sent at any time, but if they intend to hit the
+> +next merge window they should be sent before -rc5, and ideally stabilized
+> +in the linux-media branch by -rc6.
+> +
+> +Review Cadence
+> +--------------
+> +
+> +Provided that your patch is at https://patchwork.linuxtv.org, it should
+> +be sooner or later handled, so you don't need to re-submit a patch.
+> +
+> +Except for bug fixes, we don't usually add new patches to the development
+> +tree between -rc6 and the next -rc1.
+> +
+> +Please notice that the media subsystem is a high traffic one, so it
+> +could take a while for us to be able to review your patches. Feel free
+> +to ping if you don't get a feedback in a couple of weeks or to ask
+> +other developers to publicly add Reviewed-by and, more importantly,
+> +Tested-by tags.
+> +
+> +Please note that we expect a detailed description for Tested-by,
+> +identifying what boards were used at the test and what it was tested.
+
+Good info here.
+Thanks.
+
+-- 
+~Randy
+
