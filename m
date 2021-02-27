@@ -2,234 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E2B326C71
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 10:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0337326C78
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 10:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhB0JJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 04:09:19 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:30473 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbhB0JBy (ORCPT
+        id S230082AbhB0JPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 04:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230014AbhB0JPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 04:01:54 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id 547D9A1765;
-        Sat, 27 Feb 2021 10:00:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=zLcadKSiDEB2
-        5euoNy23WAsizIICsggTnRBQxLzaEyk=; b=Xlopr/eWd8YAOS0Eq0Z5K60FlzOz
-        bU5/TBb1pB5ZKQL4nQdWmOfb4CP8BVBaKMiRUTizHmrAdIZ/j41753zNj8Ya8IFN
-        +aNd+oaKAF1PoeDzX3i1Ybxhqrxcqnx+4ig6A65sDmwh819Yui1/WE9CNDLlv+oI
-        cUYRdXgwk9edgYAj6XgRyHQ43LYBBSDVh1yzPewBV+Ck0ImSleEZM11HYhOajP25
-        EST9S6ndRwNVuws6+ZYtl4+oyZv/5ydv/L0Dzhic+/oeQ2vah+3kGSG5LISIUC98
-        XOMN/S9asSSsEUf+plIANnLVAOny61yBt0NwquFfJ5AERcOVGZh13JH1xQ==
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-To:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 9/9] ALSA: virtio: introduce device suspend/resume support
-Date:   Sat, 27 Feb 2021 09:59:56 +0100
-Message-ID: <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
-References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+        Sat, 27 Feb 2021 04:15:39 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E766EC06174A;
+        Sat, 27 Feb 2021 01:14:58 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id y12so485127ljj.12;
+        Sat, 27 Feb 2021 01:14:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rFn3WZXquuWhJU4qu+ClIPvji0Vi9A60lu/mbJJHGK0=;
+        b=PpqZWET30mB6ohRaAsLn8uBfFQFKXMjj/+gAF8bJmLlOt5L6QEf8EE3zJIRqpo1rHW
+         4pvjVFar0d7IZY6Aox8gdLYsuBG5twI6RQnEecBLmzcMcN3OzvopA5kGdBIF9DPST+C+
+         o+m821BNmiOyUZswIkQsiX5vLctqgqRe1+Up0T46jjW/2J+MgQXo7U4H+uaKsgjWo8Nj
+         xsDwD+1jkTRqXAiRomSufeqBE9uHHDYEGmtiZ2aJ362Iu2ReXcSxM3q5MlAYuZuqs43l
+         6rPVKQw2KgohXOGfZJdNHpFHTw2cDNtr70DuOcFE9rgXdthjJgNBdRJev5W33/uhcYEg
+         r5vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=rFn3WZXquuWhJU4qu+ClIPvji0Vi9A60lu/mbJJHGK0=;
+        b=HG//b4U4g9tWdObP/Y+gWOFHKKnrxfcItCBNavqUTqBn41w/jzx2yzcRO6tglrtmjm
+         rKgYmZCF1E6qOU3P2GhThC1Oh8hruDrlsNRcp3VBW4quV+Yyp2/wrK0JHGkurHUMYswU
+         xrQDiblFOhEebJKfdmQMspTVQWIAYdlHvzPh9OwPngKDPPmu5r2SdW6fRfTKY1OtO5pn
+         Rh0+CUINdkjz7IqftbdnlDWun8MS1JSeGiBkwqCLOd8sWYgSUA99GgUDoxNjCTXtPGbI
+         9CIUY8lzshUUDdlGzNsCWLubLxZz3c+V5eM4I/4QYQ1MjAgu7j04Ie9tcB6LwJ+arJOG
+         E0Pw==
+X-Gm-Message-State: AOAM531+J74/limwoDVbC6d2hlOlvg+g+aFq0eSvzGT/C+RKQT5xnyuA
+        7jnnuJ5ZXLeuQ1j75fUaKIv3rCDIWWo=
+X-Google-Smtp-Source: ABdhPJzxHxyqZoK5YJNYJWF2+bNis5ySHfsDPBXcyUgRz7RW03QWtHc5QRPqs4W9O3qdpTDQRBoN0A==
+X-Received: by 2002:a2e:9143:: with SMTP id q3mr1090486ljg.283.1614417297367;
+        Sat, 27 Feb 2021 01:14:57 -0800 (PST)
+Received: from [192.168.1.100] ([178.176.75.167])
+        by smtp.gmail.com with ESMTPSA id h27sm1674574lfp.120.2021.02.27.01.14.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Feb 2021 01:14:56 -0800 (PST)
+Subject: Re: [PATCH 1/2] list: Add list_is_null() to check if a list_head has
+ been initialized
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-renesas-soc@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+References: <20210226224938.18166-1-laurent.pinchart@ideasonboard.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <5272a97f-b221-82f0-f1ee-10eccd05fc09@gmail.com>
+Date:   Sat, 27 Feb 2021 12:14:55 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+In-Reply-To: <20210226224938.18166-1-laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All running PCM substreams are stopped on device suspend and restarted
-on device resume.
+Hello!
 
-Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
----
- sound/virtio/virtio_card.c    | 56 +++++++++++++++++++++++++++++++++++
- sound/virtio/virtio_pcm.c     |  1 +
- sound/virtio/virtio_pcm_ops.c | 41 ++++++++++++++++++++-----
- 3 files changed, 90 insertions(+), 8 deletions(-)
+On 27.02.2021 1:49, Laurent Pinchart wrote:
 
-diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
-index 59455a562018..c7ae8801991d 100644
---- a/sound/virtio/virtio_card.c
-+++ b/sound/virtio/virtio_card.c
-@@ -323,6 +323,58 @@ static void virtsnd_remove(struct virtio_device *vdev)
- 	kfree(snd->event_msgs);
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+/**
-+ * virtsnd_freeze() - Suspend device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_freeze(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+
-+	virtsnd_ctl_msg_cancel_all(snd);
-+
-+	vdev->config->del_vqs(vdev);
-+	vdev->config->reset(vdev);
-+
-+	kfree(snd->event_msgs);
-+
-+	/*
-+	 * If the virtsnd_restore() fails before re-allocating events, then we
-+	 * get a dangling pointer here.
-+	 */
-+	snd->event_msgs = NULL;
-+
-+	return 0;
-+}
-+
-+/**
-+ * virtsnd_restore() - Resume device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_restore(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+	int rc;
-+
-+	rc = virtsnd_find_vqs(snd);
-+	if (rc)
-+		return rc;
-+
-+	virtio_device_ready(vdev);
-+
-+	virtsnd_enable_event_vq(snd);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
- static const struct virtio_device_id id_table[] = {
- 	{ VIRTIO_ID_SOUND, VIRTIO_DEV_ANY_ID },
- 	{ 0 },
-@@ -335,6 +387,10 @@ static struct virtio_driver virtsnd_driver = {
- 	.validate = virtsnd_validate,
- 	.probe = virtsnd_probe,
- 	.remove = virtsnd_remove,
-+#ifdef CONFIG_PM_SLEEP
-+	.freeze = virtsnd_freeze,
-+	.restore = virtsnd_restore,
-+#endif
- };
- 
- static int __init init(void)
-diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
-index 3605151860f2..4a4a6583b002 100644
---- a/sound/virtio/virtio_pcm.c
-+++ b/sound/virtio/virtio_pcm.c
-@@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
- 		SNDRV_PCM_INFO_BATCH |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_RESUME |
- 		SNDRV_PCM_INFO_PAUSE;
- 
- 	if (!info->channels_min || info->channels_min > info->channels_max) {
-diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
-index d02d79bd94f3..03a7e2666cfb 100644
---- a/sound/virtio/virtio_pcm_ops.c
-+++ b/sound/virtio/virtio_pcm_ops.c
-@@ -167,7 +167,8 @@ static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
- 	int vrate = -1;
- 	int rc;
- 
--	if (virtsnd_pcm_msg_pending_num(vss)) {
-+	if (runtime->status->state != SNDRV_PCM_STATE_SUSPENDED &&
-+	    virtsnd_pcm_msg_pending_num(vss)) {
- 		dev_err(&vdev->dev, "SID %u: invalid I/O queue state\n",
- 			vss->sid);
- 		return -EBADFD;
-@@ -231,6 +232,10 @@ static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (rc)
- 		return rc;
- 
-+	/* If messages have already been allocated before, do nothing. */
-+	if (runtime->status->state == SNDRV_PCM_STATE_SUSPENDED)
-+		return 0;
-+
- 	/* Free previously allocated messages (if any). */
- 	virtsnd_pcm_msg_free(vss);
- 
-@@ -267,20 +272,24 @@ static int virtsnd_pcm_hw_free(struct snd_pcm_substream *substream)
-  */
- static int virtsnd_pcm_prepare(struct snd_pcm_substream *substream)
- {
-+	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
- 	struct virtio_device *vdev = vss->snd->vdev;
- 	struct virtio_snd_msg *msg;
- 
--	if (virtsnd_pcm_msg_pending_num(vss)) {
--		dev_err(&vdev->dev, "SID %u: invalid I/O queue state\n",
--			vss->sid);
--		return -EBADFD;
-+	if (runtime->status->state != SNDRV_PCM_STATE_SUSPENDED) {
-+		if (virtsnd_pcm_msg_pending_num(vss)) {
-+			dev_err(&vdev->dev, "SID %u: invalid I/O queue state\n",
-+				vss->sid);
-+			return -EBADFD;
-+		}
-+
-+		vss->buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
-+		vss->hw_ptr = 0;
-+		vss->msg_last_enqueued = -1;
- 	}
- 
--	vss->buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
--	vss->hw_ptr = 0;
- 	vss->xfer_xrun = false;
--	vss->msg_last_enqueued = -1;
- 	vss->msg_count = 0;
- 
- 	msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_PREPARE,
-@@ -309,6 +318,21 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 	int rc;
- 
- 	switch (command) {
-+	case SNDRV_PCM_TRIGGER_RESUME: {
-+		/*
-+		 * We restart the substream by executing the standard command
-+		 * sequence.
-+		 */
-+		rc = virtsnd_pcm_hw_params(substream, NULL);
-+		if (rc)
-+			return rc;
-+
-+		rc = virtsnd_pcm_prepare(substream);
-+		if (rc)
-+			return rc;
-+
-+		fallthrough;
-+	}
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: {
- 		struct virtio_snd_queue *queue = virtsnd_pcm_queue(vss);
-@@ -335,6 +359,7 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 
- 		return virtsnd_ctl_msg_send_sync(snd, msg);
- 	}
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: {
- 		spin_lock_irqsave(&vss->lock, flags);
--- 
-2.30.1
+> From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> 
+> The new function checks if the list_head prev and next pointers are
+> NULL, in order to see if a list_head that has been zeroed when allocated
+> has been initialized with INIT_LIST_HEAD() or added to a list.
 
+    So zeroed or initialized/added? :-)
 
+> This can be used in cleanup functions that want to support being safely
+> called when an object has not been initialized, to return immediately.
+> In most cases other fields of the object can be checked for this
+> purpose, but in some cases a list_head field is the only option.
+> 
+> Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> ---
+>   include/linux/list.h | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
+> 
+> diff --git a/include/linux/list.h b/include/linux/list.h
+> index 85c92555e31f..e4fc6954de3b 100644
+> --- a/include/linux/list.h
+> +++ b/include/linux/list.h
+> @@ -29,6 +29,19 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
+>   	list->prev = list;
+>   }
+>   
+> +/**
+> + * list_is_null - check if a list_head has been initialized
+> + * @list: the list
+> + *
+> + * Check if the list_head prev and next pointers are NULL. This is useful to
+> + * see if a list_head that has been zeroed when allocated has been initialized
+> + * with INIT_LIST_HEAD() or added to a list.
+
+    So zeroed or initialized/added? :-)
+
+> + */
+> +static inline bool list_is_null(struct list_head *list)
+> +{
+> +	return list->prev == NULL && list->next == NULL;
+
+    Maybe instead:
+
+	return !list->prev && !list->next;
+
+[...]
+
+MBR, Sergei
