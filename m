@@ -2,109 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 554C7326DE3
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 17:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF55326DEC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 17:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhB0QgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 11:36:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60780 "EHLO mail.kernel.org"
+        id S230212AbhB0Qk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 11:40:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229999AbhB0QgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 11:36:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15C0F64E56;
-        Sat, 27 Feb 2021 16:35:36 +0000 (UTC)
+        id S230063AbhB0Qiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 11:38:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE0F364E56;
+        Sat, 27 Feb 2021 16:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614443736;
-        bh=pThp2YUgioKYQbON2ROnR85+avA0x0gvTYbNYvNV6vY=;
+        s=k20201202; t=1614443883;
+        bh=1anu053GguZ3XCbvS5ygkoPLcj3znMShlaNgpC+E1y0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IMTwSCAaYbowhVS5Ca4ty45IBUiAriKlT4GDmENMgW5L1Jr+FGS+UjN+dOJiUTXG7
-         yAafWli/v4hfgzkeXop+a1V+VnlOrmxoAkSPE+D3Ws3nX3aVd4HS/9fL031ziYkwo/
-         2pWeZet15MgSqd02hEAz7gnTLXlpxq+Avldx991O+q9Dh+14OtD8FS0T2kMhoT/mDJ
-         QA5i5jBMGQbEge+2fuzdpco7COx3SWE+STQHy0D3q14+yW+M+rnue5NcsUJLdYXtHX
-         eKmFWMzh8xg6Rk75ORhGMKCvJU7Q/Zx7baZnbLi6ucseadHg305WDxar4KsYKZoL4L
-         F+ttLs9BETv8A==
-Received: by mail-ed1-f43.google.com with SMTP id bd6so1609104edb.10;
-        Sat, 27 Feb 2021 08:35:35 -0800 (PST)
-X-Gm-Message-State: AOAM532187yUpS9HP2geGEwCIF7GVpLH5e+mw60ePng5YA2DbRLYo7BT
-        VhUe0v1C5KIi6RukFKWZkQdE9a+xU/Tm/Wirrrc=
-X-Google-Smtp-Source: ABdhPJxQm0jaP77z6+UGYSa5Hs2fDfI5iQdZ+h9KP1qAoa6iJSIhOcfec28JA/ljt5drqEwpIlE72Fd14uxdzUWYqek=
-X-Received: by 2002:a05:6402:10ce:: with SMTP id p14mr8645979edu.348.1614443734715;
- Sat, 27 Feb 2021 08:35:34 -0800 (PST)
+        b=jDImAwgbBb0G2bLtf4mpNrG0bqB59IVjn/Yow8DMSA7XYboWNu5rgW6Klarla5vXg
+         QfgcSjaoUhXFpv0EQ3b4UtIopuXsHvmnOhUH6KdpS+1Q954foaFnO2SffCUP5tCAjG
+         pcBl8et3YvtLUnbyFPNwHpqaltKvU+Ilvzp3kMpVqWRPCqaouSW5rFEMWqhDcVsTjU
+         wpshqd/F69k0l9leXDz+AcjW29vr9nrqSymDnuFwygWXplT0tlB+stG/xuozu65aNj
+         DK/iAmYWSqo+Y3ojx5d/HfEaLZK/j96CBE9fA3B186Wjdp6FmbDSqGIc9hiCyzD+Bv
+         sEwHTXWDuj7Bg==
+Received: by mail-ed1-f53.google.com with SMTP id h10so14806962edl.6;
+        Sat, 27 Feb 2021 08:38:02 -0800 (PST)
+X-Gm-Message-State: AOAM531lmRTH+LPFrzuOwWZL1bQ8j8RQkEc3hhYLGUpYTgYI9ZAcr1Gz
+        VZ7Tk+UnTiJIJbxh5WnMFxbj/9AHLj96Ds35M7Y=
+X-Google-Smtp-Source: ABdhPJwn27tq6U86eyjNIIhtXjQ36wkwUTAo3xCFwCoCjKkSb8GZMEYA6snPnwlD5dg7TXKUYDdpn2U1z7mIUp+QDVE=
+X-Received: by 2002:a05:6402:3d8:: with SMTP id t24mr8768323edw.298.1614443881380;
+ Sat, 27 Feb 2021 08:38:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20200828153100.19006-1-krzk@kernel.org> <CAGTfZH3+mxBXzVp5Wz=F6nbx3bfubrmJozVzVdt8s1e45WQOqg@mail.gmail.com>
-In-Reply-To: <CAGTfZH3+mxBXzVp5Wz=F6nbx3bfubrmJozVzVdt8s1e45WQOqg@mail.gmail.com>
+References: <20200826162954.28636-1-krzk@kernel.org> <20200904082804.GB1214@gondor.apana.org.au>
+In-Reply-To: <20200904082804.GB1214@gondor.apana.org.au>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sat, 27 Feb 2021 17:35:23 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPdw=2MMT+5=_TtOqEwPA8s40J21eYXfzv8Whk7F8uF9dw@mail.gmail.com>
-Message-ID: <CAJKOXPdw=2MMT+5=_TtOqEwPA8s40J21eYXfzv8Whk7F8uF9dw@mail.gmail.com>
-Subject: Re: [PATCH] devfreq: rk3399_dmc: Simplify with dev_err_probe()
-To:     Chanwoo Choi <chanwoo@kernel.org>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sat, 27 Feb 2021 17:37:49 +0100
+X-Gmail-Original-Message-ID: <CAJKOXPfktQY_T0UpsZaGv-gUpyWmfrWVbB1yENEBtcJkZv2WKA@mail.gmail.com>
+Message-ID: <CAJKOXPfktQY_T0UpsZaGv-gUpyWmfrWVbB1yENEBtcJkZv2WKA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] crypto: sa2ul - Hide pointer and fix
+ -Wpointer-to-int-cast in dev_dbg()
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 Aug 2020 at 15:10, Chanwoo Choi <chanwoo@kernel.org> wrote:
+On Fri, 4 Sept 2020 at 10:28, Herbert Xu <herbert@gondor.apana.org.au> wrote:
 >
-> On Sat, Aug 29, 2020 at 12:31 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> On Wed, Aug 26, 2020 at 06:29:52PM +0200, Krzysztof Kozlowski wrote:
+> > Pointers should not be printed because they might leak important
+> > information about address space layout.  Use %p to hash the value.  This
+> > also fixes compilation warnings on 32-bit architecture:
 > >
-> > Common pattern of handling deferred probe can be simplified with
-> > dev_err_probe().  Less code and the error value gets printed.
+> >     drivers/crypto/sa2ul.c:1486:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 > >
 > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > > ---
-> >  drivers/devfreq/rk3399_dmc.c | 20 ++++++--------------
-> >  1 file changed, 6 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/drivers/devfreq/rk3399_dmc.c b/drivers/devfreq/rk3399_dmc.c
-> > index 027769e39f9b..35b3542f1f7b 100644
-> > --- a/drivers/devfreq/rk3399_dmc.c
-> > +++ b/drivers/devfreq/rk3399_dmc.c
-> > @@ -324,22 +324,14 @@ static int rk3399_dmcfreq_probe(struct platform_device *pdev)
-> >         mutex_init(&data->lock);
-> >
-> >         data->vdd_center = devm_regulator_get(dev, "center");
-> > -       if (IS_ERR(data->vdd_center)) {
-> > -               if (PTR_ERR(data->vdd_center) == -EPROBE_DEFER)
-> > -                       return -EPROBE_DEFER;
-> > -
-> > -               dev_err(dev, "Cannot get the regulator \"center\"\n");
-> > -               return PTR_ERR(data->vdd_center);
-> > -       }
-> > +       if (IS_ERR(data->vdd_center))
-> > +               return dev_err_probe(dev, PTR_ERR(data->vdd_center),
-> > +                                    "Cannot get the regulator \"center\"\n");
-> >
-> >         data->dmc_clk = devm_clk_get(dev, "dmc_clk");
-> > -       if (IS_ERR(data->dmc_clk)) {
-> > -               if (PTR_ERR(data->dmc_clk) == -EPROBE_DEFER)
-> > -                       return -EPROBE_DEFER;
-> > -
-> > -               dev_err(dev, "Cannot get the clk dmc_clk\n");
-> > -               return PTR_ERR(data->dmc_clk);
-> > -       }
-> > +       if (IS_ERR(data->dmc_clk))
-> > +               return dev_err_probe(dev, PTR_ERR(data->dmc_clk),
-> > +                                    "Cannot get the clk dmc_clk\n");
-> >
-> >         data->edev = devfreq_event_get_edev_by_phandle(dev, 0);
-> >         if (IS_ERR(data->edev))
-> > --
-> > 2.17.1
-> >
+> >  drivers/crypto/sa2ul.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> Applied it. Thanks.
+> All applied.  Thanks.
 
-Hi Chanwoo,
+Hi Herbert,
 
-Do you know what happened with this patch? You replied that it is
-applied but I cannot find it in the Linus' or next trees.
+I think this patch was lost, although you replied that the entire set
+is applied.
 
+Can you pick it up?
 
 Best regards,
 Krzysztof
