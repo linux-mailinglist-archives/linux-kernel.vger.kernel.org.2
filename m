@@ -2,95 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BB6326E81
+	by mail.lfdr.de (Postfix) with ESMTP id F3412326E83
 	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 18:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhB0Rzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 12:55:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230261AbhB0Rui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 12:50:38 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FF8F64E46;
-        Sat, 27 Feb 2021 17:49:55 +0000 (UTC)
-Date:   Sat, 27 Feb 2021 17:49:52 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: Re: [PATCH v2] iio: core: use kstrdup_const/kfree_const for buffer
- attributes
-Message-ID: <20210227174952.06f45503@archlinux>
-In-Reply-To: <20210223072926.79590-1-alexandru.ardelean@analog.com>
-References: <20210219085826.46622-2-alexandru.ardelean@analog.com>
-        <20210223072926.79590-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230326AbhB0R6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 12:58:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230203AbhB0RwI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 12:52:08 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1970C061786;
+        Sat, 27 Feb 2021 09:51:26 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id m22so18831947lfg.5;
+        Sat, 27 Feb 2021 09:51:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Ob2T5k5brIJdqBYE3JocrXjjMAfzSoc4Yi9iZ4BS4g0=;
+        b=nljZq5CZm9iha7F+TswMiWD+hvhRHZnQYr8qKmzybXWkNyEEcF8GzWeTrQ30PoIiL0
+         J6lCfl8asKJ1HA4AzjU13ufz7jj0XZP38lnav3h/wyBCBdftr7Rpy2ujv/81oGtww54F
+         KeM7boqNAe9H/L4uFsKvkz4X6D9AWj15ARaI6FG8+KOciYJEC1Tq9jakyvQARh9XO/y8
+         AmT3daoTVpg6KvnorlkKvGzZKzucrHZVVG9Q3lhR2uwlGInh+jN/1Z5wcBc43UTBj+MG
+         OU6oUmtDJiwSbyw/97/V9WTDm/pWaYKRdaHIGenlXTLlQmBvoVWwrntowNztpOu6djq7
+         nHUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Ob2T5k5brIJdqBYE3JocrXjjMAfzSoc4Yi9iZ4BS4g0=;
+        b=hHlEcaNmvBnKZ/kub9sRUA/k5HqqV6Zsa2OukB+/hqziskNNQERW0jA2em0drYo41N
+         kdogV1B0XQJukuOcQmjEa/SHC8eD04duzDgrkDMZdpcVPpKspaBIwPEtj4fx5maMXWeH
+         1i9bpnHiCdQ1jyMaZL/hxKRMpQ8QHovCug9Yc5bIv1qO9vx8BezWb1q6Yy8QVw0R18dy
+         ImPR8SXsFr2II1FS/1r4/wBRwh80FN9sZO8pJg5N0UA2XpVj+i4bpO7TJkBgjZq8agFs
+         3CK1YsJAPER5zAYbHVlafxE57Go4Dx08cJ2MykcEk0yVpydL6C3NSW/m7HegnQryuqPl
+         dlPA==
+X-Gm-Message-State: AOAM530y2U7hE8Sb4eW+edJf5Tymd0xJfS3lL+j8zt17rYK8FmB0ioB9
+        TXU6KEPdPa/yy05Nbe2P4Nk=
+X-Google-Smtp-Source: ABdhPJyj1b5SuvwrUqVrc2WxYEd/+2Y6h5HzYiycTLhmbuDXDQY89gnMjIphPbsj/3pXEEaRkxZbKw==
+X-Received: by 2002:a05:6512:3184:: with SMTP id i4mr5109972lfe.314.1614448285223;
+        Sat, 27 Feb 2021 09:51:25 -0800 (PST)
+Received: from localhost.localdomain ([94.103.235.59])
+        by smtp.gmail.com with ESMTPSA id x192sm522455lff.68.2021.02.27.09.51.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Feb 2021 09:51:24 -0800 (PST)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     alobakin@pm.me
+Cc:     davem@davemloft.net, linmiaohe@huawei.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com
+Subject: [PATCH v3] net/core/skbuff: fix passing wrong size to __alloc_skb
+Date:   Sat, 27 Feb 2021 20:51:14 +0300
+Message-Id: <20210227175114.28645-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210227110306.13360-1-alobakin@pm.me>
+References: <20210227110306.13360-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 09:29:26 +0200
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+syzbot found WARNING in __alloc_pages_nodemask()[1] when order >= MAX_ORDER.
+It was caused by __netdev_alloc_skb(), which doesn't check len value after adding NET_SKB_PAD.
+Order will be >= MAX_ORDER and passed to __alloc_pages_nodemask() if size > KMALLOC_MAX_SIZE.
+Same happens in __napi_alloc_skb.
 
-> When the buffer attributes were wrapped in iio_dev_attr types, I forgot to
-> duplicate the names, so that when iio_free_chan_devattr_list() gets called
-> on cleanup, these get free'd.
-> I stumbled over this while accidentally breaking a driver doing
-> iio_device_register(), and then the issue appeared.
-> 
-> Some ways to fix this are:
-> 1. Just use kstrdup() during iio_buffer_wrap_attr()
-> 2. Just use kfree_const() during iio_free_chan_devattr_list
-> 3. Use both kstrdup_const() & kfree_const() (in the places mentioned above)
-> 
-> This implements the third option, as it allows some users/drivers to
-> specify some attributes allocated on the heap.
-> 
-> Fixes: a1a11142f66c ("iio: buffer: wrap all buffer attributes into iio_dev_attr")
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/industrialio-buffer.c | 1 +
->  drivers/iio/industrialio-core.c   | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 5d641f8adfbd..ac882e60c419 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -1306,6 +1306,7 @@ static struct attribute *iio_buffer_wrap_attr(struct iio_buffer *buffer,
->  		return NULL;
->  
->  	iio_attr->buffer = buffer;
-> +	iio_attr->dev_attr.attr.name = kstrdup_const(attr->name, GFP_KERNEL);
->  	memcpy(&iio_attr->dev_attr, dattr, sizeof(iio_attr->dev_attr));
+static void *kmalloc_large_node(size_t size, gfp_t flags, int node)
+{
+	struct page *page;
+	void *ptr = NULL;
+	unsigned int order = get_order(size);
+...
+	page = alloc_pages_node(node, flags, order);
+...
 
-Doesn't this wipe out the duplicated string?  I swapped the two lines above
-which I think should avoid that.
+[1] WARNING in __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5014
+Call Trace:
+ __alloc_pages include/linux/gfp.h:511 [inline]
+ __alloc_pages_node include/linux/gfp.h:524 [inline]
+ alloc_pages_node include/linux/gfp.h:538 [inline]
+ kmalloc_large_node+0x60/0x110 mm/slub.c:3999
+ __kmalloc_node_track_caller+0x319/0x3f0 mm/slub.c:4496
+ __kmalloc_reserve net/core/skbuff.c:150 [inline]
+ __alloc_skb+0x4e4/0x5a0 net/core/skbuff.c:210
+ __netdev_alloc_skb+0x70/0x400 net/core/skbuff.c:446
+ netdev_alloc_skb include/linux/skbuff.h:2832 [inline]
+ qrtr_endpoint_post+0x84/0x11b0 net/qrtr/qrtr.c:442
+ qrtr_tun_write_iter+0x11f/0x1a0 net/qrtr/tun.c:98
+ call_write_iter include/linux/fs.h:1901 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x791/0xa30 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Merged into original patch
+Reported-by: syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-Jonathan
+---
+Changes from v3:
+* Removed Change-Id and extra tabs in net/core/skbuff.c
 
+Changes from v2:
+* Added length check to __napi_alloc_skb
+* Added unlikely() in checks
 
->  
->  	list_add(&iio_attr->l, &buffer->buffer_attr_list);
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 0d8c6e88d993..cb2735d2ae4b 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -1358,7 +1358,7 @@ void iio_free_chan_devattr_list(struct list_head *attr_list)
->  	struct iio_dev_attr *p, *n;
->  
->  	list_for_each_entry_safe(p, n, attr_list, l) {
-> -		kfree(p->dev_attr.attr.name);
-> +		kfree_const(p->dev_attr.attr.name);
->  		list_del(&p->l);
->  		kfree(p);
->  	}
+Change from v1:
+* Added length check to __netdev_alloc_skb
+---
+ net/core/skbuff.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 785daff48030..ec7ba8728b61 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -443,6 +443,9 @@ struct sk_buff *__netdev_alloc_skb(struct net_device *dev, unsigned int len,
+ 	if (len <= SKB_WITH_OVERHEAD(1024) ||
+ 	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
+ 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
++		if (unlikely(len > KMALLOC_MAX_SIZE))
++			return NULL;
++
+ 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
+ 		if (!skb)
+ 			goto skb_fail;
+@@ -517,6 +520,9 @@ struct sk_buff *__napi_alloc_skb(struct napi_struct *napi, unsigned int len,
+ 	if (len <= SKB_WITH_OVERHEAD(1024) ||
+ 	    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
+ 	    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
++		if (unlikely(len > KMALLOC_MAX_SIZE))
++			return NULL;
++
+ 		skb = __alloc_skb(len, gfp_mask, SKB_ALLOC_RX, NUMA_NO_NODE);
+ 		if (!skb)
+ 			goto skb_fail;
+-- 
+2.25.1
 
