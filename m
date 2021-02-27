@@ -2,144 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B0F326C92
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 10:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D666326C93
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 10:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhB0Jys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 04:54:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229795AbhB0Jyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 04:54:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0DB64D79;
-        Sat, 27 Feb 2021 09:54:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614419644;
-        bh=j3RwbfThaUpYvBa7m8hG0lrEWionVb9TwJ5oGgzfn/8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sfPFQCu2fwVjI3ZVN1ypeYJWwOVwkSwNPYnYJ8S0Af1qPap1lBwNTPWqYYZh33jZH
-         qQ2jRPFp672N9sT+JjmTja16+RXSQHrz3CgWLWtgjIrQXE3ym/5yys8vZ5QdwH4g5p
-         doOJ95CfFwtrLLKifjnz2dz17mtgg0HQLIam9iaI=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     x86@kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/tools/relocs: add __printf attribute to die()
-Date:   Sat, 27 Feb 2021 10:53:56 +0100
-Message-Id: <20210227095356.603513-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
+        id S230124AbhB0Jzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 04:55:51 -0500
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:33837 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229953AbhB0Jzq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 04:55:46 -0500
+Received: by mail-oi1-f176.google.com with SMTP id w69so12599173oif.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 01:55:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2FtblZAdeGtW05dqBERy4tBfNxSBQQUNZrk6WUT7tes=;
+        b=kB8iBrBTwfcgKvXXKbcv8ClQQvEWlFwmvEIBPK6BA4C7NzQ3BxW1Pnuzeo+8X80UpS
+         +vHiYmAweM4/Rp9Vvr5p0XKlLFlMxaVZKAC1k06nE4oJWBecq9F5gS3r31sy1HSDl4ig
+         G+ZahpANjV2ecJw5Yrdxv7zV41LZiaxEoqNUSjOq/LjHQkh/ElO/xvG2e1g556YThkGP
+         QyrUH7lvFlDL6moha7Uh9qf46n08YFfoyXyIdFc4PT7aCjYIxAqUZDf/+OcFvMglRpgL
+         eawrA1Wr1Ww77SJRi0SeeWvTCdRyD8rww/ypU8Te/6RIwCDUbiGIr1/KbfDlu2iUVlGU
+         jA1w==
+X-Gm-Message-State: AOAM531iND6wvdvPhWGrRYvHlIkNCwR4y4U8EkbeYfeI50RfoHZJtRQ9
+        f6dV+UQt7z0ASwqKOIN2Qy8Mc6QUd2w6PM64eH8=
+X-Google-Smtp-Source: ABdhPJyVDvGOAo5h/1njy2ZWzsN292YK/QBvIUeu6+36GUs4/LNPUA3WOMboZA1/9xQ3xGosYNh4Wmn91631VGY3+zA=
+X-Received: by 2002:a05:6808:a0b:: with SMTP id n11mr4995768oij.161.1614419705255;
+ Sat, 27 Feb 2021 01:55:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202102271029.FTsmHEk9-lkp@intel.com>
+In-Reply-To: <202102271029.FTsmHEk9-lkp@intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 27 Feb 2021 10:54:52 +0100
+Message-ID: <CAMuHMdVEpQhBTATr876LF7r3r=zEtnS=V8OFL6_0pgNWDWR0hA@mail.gmail.com>
+Subject: Re: arch/arm/boot/compressed/fdt_check_mem_start.c:62:10: warning: no
+ previous prototype for function 'fdt_check_mem_start'
+To:     kbuild test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a number of printf "mismatches" in the use of die() in
-x86/tools/relocs.c.  Fix them up and add the printf attribute to the
-reloc.h header file to prevent them from ever coming back.
+Hi Kernel Test Robot,
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/tools/relocs.c | 21 +++++++++++----------
- arch/x86/tools/relocs.h |  1 +
- 2 files changed, 12 insertions(+), 10 deletions(-)
+On Sat, Feb 27, 2021 at 3:47 AM kernel test robot <lkp@intel.com> wrote:
+> FYI, the error/warning still remains.
 
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index ce7188cbdae5..c3105a8c6cde 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -389,7 +389,8 @@ static void read_ehdr(FILE *fp)
- 		Elf_Shdr shdr;
- 
- 		if (fseek(fp, ehdr.e_shoff, SEEK_SET) < 0)
--			die("Seek to %d failed: %s\n", ehdr.e_shoff, strerror(errno));
-+			die("Seek to %d failed: %s\n",
-+			    (int)ehdr.e_shoff, strerror(errno));
- 
- 		if (fread(&shdr, sizeof(shdr), 1, fp) != 1)
- 			die("Cannot read initial ELF section header: %s\n", strerror(errno));
-@@ -412,17 +413,17 @@ static void read_shdrs(FILE *fp)
- 
- 	secs = calloc(shnum, sizeof(struct section));
- 	if (!secs) {
--		die("Unable to allocate %d section headers\n",
-+		die("Unable to allocate %ld section headers\n",
- 		    shnum);
- 	}
- 	if (fseek(fp, ehdr.e_shoff, SEEK_SET) < 0) {
- 		die("Seek to %d failed: %s\n",
--			ehdr.e_shoff, strerror(errno));
-+			(int)ehdr.e_shoff, strerror(errno));
- 	}
- 	for (i = 0; i < shnum; i++) {
- 		struct section *sec = &secs[i];
- 		if (fread(&shdr, sizeof(shdr), 1, fp) != 1)
--			die("Cannot read ELF section headers %d/%d: %s\n",
-+			die("Cannot read ELF section headers %d/%ld: %s\n",
- 			    i, shnum, strerror(errno));
- 		sec->shdr.sh_name      = elf_word_to_cpu(shdr.sh_name);
- 		sec->shdr.sh_type      = elf_word_to_cpu(shdr.sh_type);
-@@ -451,11 +452,11 @@ static void read_strtabs(FILE *fp)
- 		sec->strtab = malloc(sec->shdr.sh_size);
- 		if (!sec->strtab) {
- 			die("malloc of %d bytes for strtab failed\n",
--				sec->shdr.sh_size);
-+				(int)sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
- 			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+				(int)sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->strtab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-@@ -476,11 +477,11 @@ static void read_symtabs(FILE *fp)
- 		sec->symtab = malloc(sec->shdr.sh_size);
- 		if (!sec->symtab) {
- 			die("malloc of %d bytes for symtab failed\n",
--				sec->shdr.sh_size);
-+				(int)sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
- 			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+				(int)sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->symtab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-@@ -509,11 +510,11 @@ static void read_relocs(FILE *fp)
- 		sec->reltab = malloc(sec->shdr.sh_size);
- 		if (!sec->reltab) {
- 			die("malloc of %d bytes for relocs failed\n",
--				sec->shdr.sh_size);
-+				(int)sec->shdr.sh_size);
- 		}
- 		if (fseek(fp, sec->shdr.sh_offset, SEEK_SET) < 0) {
- 			die("Seek to %d failed: %s\n",
--				sec->shdr.sh_offset, strerror(errno));
-+				(int)sec->shdr.sh_offset, strerror(errno));
- 		}
- 		if (fread(sec->reltab, 1, sec->shdr.sh_size, fp)
- 		    != sec->shdr.sh_size) {
-diff --git a/arch/x86/tools/relocs.h b/arch/x86/tools/relocs.h
-index 43c83c0fd22c..4c49c82446eb 100644
---- a/arch/x86/tools/relocs.h
-+++ b/arch/x86/tools/relocs.h
-@@ -17,6 +17,7 @@
- #include <regex.h>
- #include <tools/le_byteshift.h>
- 
-+__attribute__((__format__(printf, 1, 2)))
- void die(char *fmt, ...) __attribute__((noreturn));
- 
- #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+My response in
+https://lore.kernel.org/linux-arm-kernel/CAMuHMdVmMLvvJ4mAa+y8JCJ2+5Bwu2W=psgn3toC1msTghn=Xg@mail.gmail.com/
+is still valid.
+
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   3fb6d0e00efc958d01c2f109c8453033a2d96796
+> commit: 0673cb38951215060d7993b43ad3c45cd413c2c3 ARM: 9045/1: uncompress: Validate start of physical memory against passed DTB
+> date:   4 weeks ago
+> config: arm-randconfig-r003-20210226 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project b889ef4214bc6dc8880fdd4badc0dcd9a3197753)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm cross compiling tool for clang build
+>         # apt-get install binutils-arm-linux-gnueabi
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0673cb38951215060d7993b43ad3c45cd413c2c3
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 0673cb38951215060d7993b43ad3c45cd413c2c3
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+> >> arch/arm/boot/compressed/fdt_check_mem_start.c:62:10: warning: no previous prototype for function 'fdt_check_mem_start' [-Wmissing-prototypes]
+>    uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>             ^
+>    arch/arm/boot/compressed/fdt_check_mem_start.c:62:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+>    uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>    ^
+>    static
+>    1 warning generated.
+>
+>
+> vim +/fdt_check_mem_start +62 arch/arm/boot/compressed/fdt_check_mem_start.c
+>
+>     46
+>     47  /*
+>     48   * Check the start of physical memory
+>     49   *
+>     50   * Traditionally, the start address of physical memory is obtained by masking
+>     51   * the program counter.  However, this does require that this address is a
+>     52   * multiple of 128 MiB, precluding booting Linux on platforms where this
+>     53   * requirement is not fulfilled.
+>     54   * Hence validate the calculated address against the memory information in the
+>     55   * DTB, and, if out-of-range, replace it by the real start address.
+>     56   * To preserve backwards compatibility (systems reserving a block of memory
+>     57   * at the start of physical memory, kdump, ...), the traditional method is
+>     58   * always used if it yields a valid address.
+>     59   *
+>     60   * Return value: start address of physical memory to use
+>     61   */
+>   > 62  uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
+
 -- 
-2.30.1
+Gr{oetje,eeting}s,
 
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
