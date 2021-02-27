@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0337326C78
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 10:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD662326C7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 10:19:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhB0JPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 04:15:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbhB0JPj (ORCPT
+        id S230083AbhB0JSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 04:18:14 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12654 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229993AbhB0JSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 04:15:39 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E766EC06174A;
-        Sat, 27 Feb 2021 01:14:58 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id y12so485127ljj.12;
-        Sat, 27 Feb 2021 01:14:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rFn3WZXquuWhJU4qu+ClIPvji0Vi9A60lu/mbJJHGK0=;
-        b=PpqZWET30mB6ohRaAsLn8uBfFQFKXMjj/+gAF8bJmLlOt5L6QEf8EE3zJIRqpo1rHW
-         4pvjVFar0d7IZY6Aox8gdLYsuBG5twI6RQnEecBLmzcMcN3OzvopA5kGdBIF9DPST+C+
-         o+m821BNmiOyUZswIkQsiX5vLctqgqRe1+Up0T46jjW/2J+MgQXo7U4H+uaKsgjWo8Nj
-         xsDwD+1jkTRqXAiRomSufeqBE9uHHDYEGmtiZ2aJ362Iu2ReXcSxM3q5MlAYuZuqs43l
-         6rPVKQw2KgohXOGfZJdNHpFHTw2cDNtr70DuOcFE9rgXdthjJgNBdRJev5W33/uhcYEg
-         r5vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=rFn3WZXquuWhJU4qu+ClIPvji0Vi9A60lu/mbJJHGK0=;
-        b=HG//b4U4g9tWdObP/Y+gWOFHKKnrxfcItCBNavqUTqBn41w/jzx2yzcRO6tglrtmjm
-         rKgYmZCF1E6qOU3P2GhThC1Oh8hruDrlsNRcp3VBW4quV+Yyp2/wrK0JHGkurHUMYswU
-         xrQDiblFOhEebJKfdmQMspTVQWIAYdlHvzPh9OwPngKDPPmu5r2SdW6fRfTKY1OtO5pn
-         Rh0+CUINdkjz7IqftbdnlDWun8MS1JSeGiBkwqCLOd8sWYgSUA99GgUDoxNjCTXtPGbI
-         9CIUY8lzshUUDdlGzNsCWLubLxZz3c+V5eM4I/4QYQ1MjAgu7j04Ie9tcB6LwJ+arJOG
-         E0Pw==
-X-Gm-Message-State: AOAM531+J74/limwoDVbC6d2hlOlvg+g+aFq0eSvzGT/C+RKQT5xnyuA
-        7jnnuJ5ZXLeuQ1j75fUaKIv3rCDIWWo=
-X-Google-Smtp-Source: ABdhPJzxHxyqZoK5YJNYJWF2+bNis5ySHfsDPBXcyUgRz7RW03QWtHc5QRPqs4W9O3qdpTDQRBoN0A==
-X-Received: by 2002:a2e:9143:: with SMTP id q3mr1090486ljg.283.1614417297367;
-        Sat, 27 Feb 2021 01:14:57 -0800 (PST)
-Received: from [192.168.1.100] ([178.176.75.167])
-        by smtp.gmail.com with ESMTPSA id h27sm1674574lfp.120.2021.02.27.01.14.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Feb 2021 01:14:56 -0800 (PST)
-Subject: Re: [PATCH 1/2] list: Add list_is_null() to check if a list_head has
- been initialized
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-renesas-soc@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-References: <20210226224938.18166-1-laurent.pinchart@ideasonboard.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <5272a97f-b221-82f0-f1ee-10eccd05fc09@gmail.com>
-Date:   Sat, 27 Feb 2021 12:14:55 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Sat, 27 Feb 2021 04:18:11 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dngpv2RCFzlPmM;
+        Sat, 27 Feb 2021 17:15:19 +0800 (CST)
+Received: from DESKTOP-E0KHRBE.china.huawei.com (10.67.103.82) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Feb 2021 17:17:17 +0800
+From:   huangshaobo <huangshaobo6@huawei.com>
+To:     <linux@arm.linux.org.uk>, <huangshaobo6@huawei.com>,
+        <mhiramat@kernel.org>, <tixy@linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <gregkh@linuxfoundation.org>
+CC:     <zengweilin@huawei.com>, <young.liuyang@huawei.com>,
+        <nixiaoming@huawei.com>, <chenzefeng2@huawei.com>,
+        <liucheng32@huawei.com>, <kepler.chenxin@huawei.com>,
+        <xiaoqian9@huawei.com>
+Subject: [PATCH 4.4.y] arm: kprobes: Allow to handle reentered kprobe on single-stepping
+Date:   Sat, 27 Feb 2021 17:17:01 +0800
+Message-ID: <20210227091701.23944-1-huangshaobo6@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210226224938.18166-1-laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.103.82]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-On 27.02.2021 1:49, Laurent Pinchart wrote:
+commit f3fbd7ec62dec1528fb8044034e2885f2b257941 upstream
 
-> From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> 
-> The new function checks if the list_head prev and next pointers are
-> NULL, in order to see if a list_head that has been zeroed when allocated
-> has been initialized with INIT_LIST_HEAD() or added to a list.
+This is arm port of commit 6a5022a56ac3 ("kprobes/x86: Allow to
+handle reentered kprobe on single-stepping")
 
-    So zeroed or initialized/added? :-)
+Since the FIQ handlers can interrupt in the single stepping
+(or preparing the single stepping, do_debug etc.), we should
+consider a kprobe is hit in the NMI handler. Even in that
+case, the kprobe is allowed to be reentered as same as the
+kprobes hit in kprobe handlers
+(KPROBE_HIT_ACTIVE or KPROBE_HIT_SSDONE).
 
-> This can be used in cleanup functions that want to support being safely
-> called when an object has not been initialized, to return immediately.
-> In most cases other fields of the object can be checked for this
-> purpose, but in some cases a list_head field is the only option.
-> 
-> Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> ---
->   include/linux/list.h | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
-> 
-> diff --git a/include/linux/list.h b/include/linux/list.h
-> index 85c92555e31f..e4fc6954de3b 100644
-> --- a/include/linux/list.h
-> +++ b/include/linux/list.h
-> @@ -29,6 +29,19 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
->   	list->prev = list;
->   }
->   
-> +/**
-> + * list_is_null - check if a list_head has been initialized
-> + * @list: the list
-> + *
-> + * Check if the list_head prev and next pointers are NULL. This is useful to
-> + * see if a list_head that has been zeroed when allocated has been initialized
-> + * with INIT_LIST_HEAD() or added to a list.
+The real issue will happen when a kprobe hit while another
+reentered kprobe is processing (KPROBE_REENTER), because
+we already consumed a saved-area for the previous kprobe.
 
-    So zeroed or initialized/added? :-)
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Jon Medhurst <tixy@linaro.org>
+Fixes: 24ba613c9d6c ("ARM kprobes: core code")
+Cc: stable@vger.kernel.org #v2.6.25~v4.11
+Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
+---
+ arch/arm/probes/kprobes/core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> + */
-> +static inline bool list_is_null(struct list_head *list)
-> +{
-> +	return list->prev == NULL && list->next == NULL;
+diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
+index 3eb018fa1a1f..c3362ddd6c4c 100644
+--- a/arch/arm/probes/kprobes/core.c
++++ b/arch/arm/probes/kprobes/core.c
+@@ -270,6 +270,7 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
+ 			switch (kcb->kprobe_status) {
+ 			case KPROBE_HIT_ACTIVE:
+ 			case KPROBE_HIT_SSDONE:
++			case KPROBE_HIT_SS:
+ 				/* A pre- or post-handler probe got us here. */
+ 				kprobes_inc_nmissed_count(p);
+ 				save_previous_kprobe(kcb);
+@@ -278,6 +279,11 @@ void __kprobes kprobe_handler(struct pt_regs *regs)
+ 				singlestep(p, regs, kcb);
+ 				restore_previous_kprobe(kcb);
+ 				break;
++			case KPROBE_REENTER:
++				/* A nested probe was hit in FIQ, it is a BUG */
++				pr_warn("Unrecoverable kprobe detected at %p.\n",
++					p->addr);
++				/* fall through */
+ 			default:
+ 				/* impossible cases */
+ 				BUG();
+-- 
+2.12.3
 
-    Maybe instead:
-
-	return !list->prev && !list->next;
-
-[...]
-
-MBR, Sergei
