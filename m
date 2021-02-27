@@ -2,958 +2,469 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F477326ED0
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 20:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 157CF326ED1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 20:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhB0TuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 14:50:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhB0Tta (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 14:49:30 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8F1C061786;
-        Sat, 27 Feb 2021 11:48:49 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id a18so3693696wrc.13;
-        Sat, 27 Feb 2021 11:48:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=BiDkjlsqT93vrG5trX4VJL/3EzNpi4h3y5PJHGeYa7c=;
-        b=GD8Mp7pqxS72HznuHfy5S5E60QfzLzqP8uHmyafXEsoW5l2g2UNrg3CzuB8K0g2PQ4
-         zwMjqGlGxza7/yhP9gAeQI8d1sAnTaTQkJkm3PfiuaAXKMHCfqAgPJo2G/AHwggj+5IF
-         19/7cWAHPBB3YmqMubEQuPXn5OKNZM1X6qeh47oIqAilkgRbuMNMd/p+CmsoDJBpFuM1
-         cHYu//EnoHXKmY0AntsMjeDQUr9SiWtWRqvrLBNX9AEFV2xBpzUxBvEJ9anPcB5ONONa
-         eV+ZJn9DPbc6PG2MAtgHtYQZSxN7u81rclxJvBwYsXsRmeoXqJ7icc0t0XA1AocfqiXv
-         SVhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BiDkjlsqT93vrG5trX4VJL/3EzNpi4h3y5PJHGeYa7c=;
-        b=cSDKf1UY81i+MRYioTLIHawRggz7vRMNrcEnxAhymcjWoj8slUHoI2uZLXh7YLUIau
-         ez1cFLcHHS8NUfrO9Gi06mQJKvu8EDaCuPojSfKZ5PX6JgZPR8SugyXpD56mbDG4Ez1S
-         i4UVh2vaPCiFi9wOp49XtSFu1nJX3L1VguZkOBC4VrHiOuDAiiMCVDJ3s4m00Hw7lwAl
-         QpBE/cJluBx7MHTzB7ODcok7D3eWiw7qDFKMXojaKYgIopHz/lh0PvFlAwfJVfV802sU
-         c3I3Ty6hzPFN5LgTObgacxmXrL8beS+VykuVu01Xbbzii/5QZzPDa7LSQAkYo084GNSC
-         oDjw==
-X-Gm-Message-State: AOAM531c+w+KEJ2VTvtXFG2iAQFGjq2K75srEvy42t5F8o2dHvdt9hRT
-        9UALU4fH/QpjK01WpC9Bw0Y=
-X-Google-Smtp-Source: ABdhPJw2B4a6TdxjwZaw9aAB8GvmgPfKAjLlM2MgWnlyb/kVH+nLBCpNb6E4C7IvEon0wBQMYQenWw==
-X-Received: by 2002:a05:6000:107:: with SMTP id o7mr9118924wrx.87.1614455328078;
-        Sat, 27 Feb 2021 11:48:48 -0800 (PST)
-Received: from adgra-XPS-15-9570.home (2a01cb0008bd2700289c166d32b9da85.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:289c:166d:32b9:da85])
-        by smtp.gmail.com with ESMTPSA id f9sm12453123wro.77.2021.02.27.11.48.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Feb 2021 11:48:47 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     robert.foss@linaro.org, airlied@linux.ie, daniel@ffwll.ch,
-        a.hajda@samsung.com, robh+dt@kernel.org, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Adrien Grassein <adrien.grassein@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH v6 2/2] drm/bridge: Introduce LT8912B DSI to HDMI bridge
-Date:   Sat, 27 Feb 2021 20:48:36 +0100
-Message-Id: <20210227194836.1848753-3-adrien.grassein@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210227194836.1848753-1-adrien.grassein@gmail.com>
-References: <20210227194836.1848753-1-adrien.grassein@gmail.com>
+        id S230318AbhB0Twy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 14:52:54 -0500
+Received: from mga02.intel.com ([134.134.136.20]:5376 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230336AbhB0Tvn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 14:51:43 -0500
+IronPort-SDR: nuU3MOdGbpJeEXVwklJV7zo3H/+r/B+t72v6UjCNduZ5aKdRpOoIv3gjwItT0H+az3MDVy2uTR
+ WzeeQo8YyvXw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9908"; a="173294089"
+X-IronPort-AV: E=Sophos;i="5.81,211,1610438400"; 
+   d="gz'50?scan'50,208,50";a="173294089"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2021 11:50:48 -0800
+IronPort-SDR: oUUha7Bais+HqmvWDZtD+Fj6ObhHW8oReJrqSc3HPNwcWNvzsMvO4RhLnDjnicKZKI3n0P+WVV
+ zZYl/DVK5wdw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,211,1610438400"; 
+   d="gz'50?scan'50,208,50";a="368142126"
+Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 27 Feb 2021 11:50:46 -0800
+Received: from kbuild by 16660e54978b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lG5bx-0003pk-UQ; Sat, 27 Feb 2021 19:50:45 +0000
+Date:   Sun, 28 Feb 2021 03:49:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: nds32le-linux-ld: sil-sii8620.c:undefined reference to
+ `extcon_unregister_notifier'
+Message-ID: <202102280339.2vUb81VE-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/mixed; boundary="qMm9M+Fa2AknHoGS"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lontium LT8912B is a DSI to HDMI bridge.
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+--qMm9M+Fa2AknHoGS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Masahiro,
+
+FYI, the error/warning still remains.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5695e51619745d4fe3ec2506a2f0cd982c5e27a4
+commit: def2fbffe62c00c330c7f41584a356001179c59c kconfig: allow symbols implied by y to become m
+date:   12 months ago
+config: nds32-randconfig-p002-20210228 (attached as .config)
+compiler: nds32le-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=def2fbffe62c00c330c7f41584a356001179c59c
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout def2fbffe62c00c330c7f41584a356001179c59c
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=nds32 
+
+If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   nds32le-linux-ld: drivers/gpu/drm/bridge/sil-sii8620.o: in function `sii8620_remove':
+   sil-sii8620.c:(.text+0x160): undefined reference to `extcon_unregister_notifier'
+>> nds32le-linux-ld: sil-sii8620.c:(.text+0x164): undefined reference to `extcon_unregister_notifier'
+   nds32le-linux-ld: drivers/gpu/drm/bridge/sil-sii8620.o: in function `sii8620_probe':
+   sil-sii8620.c:(.text+0x2b68): undefined reference to `extcon_find_edev_by_node'
+>> nds32le-linux-ld: sil-sii8620.c:(.text+0x2b6c): undefined reference to `extcon_find_edev_by_node'
+>> nds32le-linux-ld: sil-sii8620.c:(.text+0x2be6): undefined reference to `extcon_register_notifier'
+   nds32le-linux-ld: sil-sii8620.c:(.text+0x2bea): undefined reference to `extcon_register_notifier'
+   nds32le-linux-ld: drivers/gpu/drm/bridge/sil-sii8620.o: in function `sii8620_extcon_work':
+   sil-sii8620.c:(.text+0x2c46): undefined reference to `extcon_get_state'
+>> nds32le-linux-ld: sil-sii8620.c:(.text+0x2c4a): undefined reference to `extcon_get_state'
+
 ---
- MAINTAINERS                              |   1 +
- drivers/gpu/drm/bridge/Kconfig           |  14 +
- drivers/gpu/drm/bridge/Makefile          |   1 +
- drivers/gpu/drm/bridge/lontium-lt8912b.c | 818 +++++++++++++++++++++++
- 4 files changed, 834 insertions(+)
- create mode 100644 drivers/gpu/drm/bridge/lontium-lt8912b.c
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6366b8eac3f6..e075a74f57dd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10464,6 +10464,7 @@ LONTIUM LT8912B MIPI TO HDMI BRIDGE
- M:	Adrien Grassein <adrien.grassein@gmail.com>
- S:	Maintained
- F:	Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.yaml
-+F:	drivers/gpu/drm/bridge/lontium-lt8912b.c
- 
- LSILOGIC MPT FUSION DRIVERS (FC/SAS/SPI)
- M:	Sathya Prakash <sathya.prakash@broadcom.com>
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index e4110d6ca7b3..f2c5ec75d2f5 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -48,6 +48,20 @@ config DRM_DISPLAY_CONNECTOR
- 	  on ARM-based platforms. Saying Y here when this driver is not needed
- 	  will not cause any issue.
- 
-+config DRM_LONTIUM_LT8912B
-+	tristate "Lontium LT8912B DSI/HDMI bridge"
-+	depends on OF
-+	select DRM_PANEL_BRIDGE
-+	select DRM_KMS_HELPER
-+	select REGMAP_I2C
-+	help
-+	  Driver for Lontium LT8912B DSI to HDMI bridge
-+	  chip driver.
-+	  Please say Y if you have such hardware.
-+
-+	  Say M here if you want to support this hardware as a module.
-+	  The module will be named "lontium-lt8912b".
-+
- config DRM_LONTIUM_LT9611
- 	tristate "Lontium LT9611 DSI/HDMI bridge"
- 	select SND_SOC_HDMI_CODEC if SND_SOC
-diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
-index 86e7acc76f8d..756ce401aad3 100644
---- a/drivers/gpu/drm/bridge/Makefile
-+++ b/drivers/gpu/drm/bridge/Makefile
-@@ -2,6 +2,7 @@
- obj-$(CONFIG_DRM_CDNS_DSI) += cdns-dsi.o
- obj-$(CONFIG_DRM_CHRONTEL_CH7033) += chrontel-ch7033.o
- obj-$(CONFIG_DRM_DISPLAY_CONNECTOR) += display-connector.o
-+obj-$(CONFIG_DRM_LONTIUM_LT8912B) += lontium-lt8912b.o
- obj-$(CONFIG_DRM_LONTIUM_LT9611) += lontium-lt9611.o
- obj-$(CONFIG_DRM_LONTIUM_LT9611UXC) += lontium-lt9611uxc.o
- obj-$(CONFIG_DRM_LVDS_CODEC) += lvds-codec.o
-diff --git a/drivers/gpu/drm/bridge/lontium-lt8912b.c b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-new file mode 100644
-index 000000000000..3d55f5dec197
---- /dev/null
-+++ b/drivers/gpu/drm/bridge/lontium-lt8912b.c
-@@ -0,0 +1,818 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/delay.h>
-+#include <linux/i2c.h>
-+#include <linux/gpio.h>
-+#include <linux/of_gpio.h>
-+#include <linux/regmap.h>
-+
-+#include <drm/drm_probe_helper.h>
-+#include <drm/drm_atomic_helper.h>
-+#include <drm/drm_mipi_dsi.h>
-+#include <drm/drm_of.h>
-+
-+#include <video/videomode.h>
-+
-+#define I2C_MAIN 0
-+#define I2C_ADDR_MAIN 0x48
-+
-+#define I2C_CEC_DSI 1
-+#define I2C_ADDR_CEC_DSI 0x49
-+
-+#define I2C_MAX_IDX 2
-+
-+#define HPD_WORK_DELAY_MS 1000
-+
-+struct lt8912 {
-+	struct device *dev;
-+	struct drm_bridge bridge;
-+	struct drm_connector connector;
-+
-+	struct i2c_client *i2c_client[I2C_MAX_IDX];
-+	struct regmap *regmap[I2C_MAX_IDX];
-+
-+	struct device_node *host_node;
-+	struct drm_bridge *hdmi_port;
-+
-+	struct mipi_dsi_device *dsi;
-+
-+	struct gpio_desc *gp_reset;
-+
-+	struct videomode mode;
-+
-+	u8 data_lanes;
-+	bool is_power_on;
-+	bool is_attached;
-+
-+	enum drm_connector_status cable_status;
-+	struct workqueue_struct *workq;
-+	struct delayed_work lt8912_check_hpd_work_id;
-+};
-+
-+static int lt8912_write_init_config(struct lt8912 *lt)
-+{
-+	const struct reg_sequence seq[] = {
-+		/* Digital clock en*/
-+		{0x08, 0xff},
-+		{0x09, 0xff},
-+		{0x0a, 0xff},
-+		{0x0b, 0x7c},
-+		{0x0c, 0xff},
-+		{0x42, 0x04},
-+
-+		/*Tx Analog*/
-+		{0x31, 0xb1},
-+		{0x32, 0xb1},
-+		{0x33, 0x0e},
-+		{0x37, 0x00},
-+		{0x38, 0x22},
-+		{0x60, 0x82},
-+
-+		/*Cbus Analog*/
-+		{0x39, 0x45},
-+		{0x3a, 0x00},
-+		{0x3b, 0x00},
-+
-+		/*HDMI Pll Analog*/
-+		{0x44, 0x31},
-+		{0x55, 0x44},
-+		{0x57, 0x01},
-+		{0x5a, 0x02},
-+
-+		/*MIPI Analog*/
-+		{0x3e, 0xd6},
-+		{0x3f, 0xd4},
-+		{0x41, 0x3c},
-+		{0xB2, 0x00},
-+	};
-+
-+	return regmap_multi_reg_write(lt->regmap[I2C_MAIN], seq, ARRAY_SIZE(seq));
-+}
-+
-+static int lt8912_write_mipi_basic_config(struct lt8912 *lt)
-+{
-+	const struct reg_sequence seq[] = {
-+		{0x12, 0x04},
-+		{0x14, 0x00},
-+		{0x15, 0x00},
-+		{0x1a, 0x03},
-+		{0x1b, 0x03},
-+	};
-+
-+	return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], seq, ARRAY_SIZE(seq));
-+};
-+
-+static int lt8912_write_dds_config(struct lt8912 *lt)
-+{
-+	const struct reg_sequence seq[] = {
-+		{0x4e, 0xff},
-+		{0x4f, 0x56},
-+		{0x50, 0x69},
-+		{0x51, 0x80},
-+		{0x1f, 0x5e},
-+		{0x20, 0x01},
-+		{0x21, 0x2c},
-+		{0x22, 0x01},
-+		{0x23, 0xfa},
-+		{0x24, 0x00},
-+		{0x25, 0xc8},
-+		{0x26, 0x00},
-+		{0x27, 0x5e},
-+		{0x28, 0x01},
-+		{0x29, 0x2c},
-+		{0x2a, 0x01},
-+		{0x2b, 0xfa},
-+		{0x2c, 0x00},
-+		{0x2d, 0xc8},
-+		{0x2e, 0x00},
-+		{0x42, 0x64},
-+		{0x43, 0x00},
-+		{0x44, 0x04},
-+		{0x45, 0x00},
-+		{0x46, 0x59},
-+		{0x47, 0x00},
-+		{0x48, 0xf2},
-+		{0x49, 0x06},
-+		{0x4a, 0x00},
-+		{0x4b, 0x72},
-+		{0x4c, 0x45},
-+		{0x4d, 0x00},
-+		{0x52, 0x08},
-+		{0x53, 0x00},
-+		{0x54, 0xb2},
-+		{0x55, 0x00},
-+		{0x56, 0xe4},
-+		{0x57, 0x0d},
-+		{0x58, 0x00},
-+		{0x59, 0xe4},
-+		{0x5a, 0x8a},
-+		{0x5b, 0x00},
-+		{0x5c, 0x34},
-+		{0x1e, 0x4f},
-+		{0x51, 0x00},
-+	};
-+
-+	return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], seq, ARRAY_SIZE(seq));
-+}
-+
-+static int lt8912_write_rxlogicres_config(struct lt8912 *lt)
-+{
-+	int ret;
-+
-+	ret = regmap_write(lt->regmap[I2C_MAIN], 0x03, 0x7f);
-+	usleep_range(10000, 20000);
-+	ret |= regmap_write(lt->regmap[I2C_MAIN], 0x03, 0xff);
-+
-+	return ret;
-+};
-+
-+static int lt8912_write_lvds_config(struct lt8912 *lt)
-+{
-+	const struct reg_sequence seq[] = {
-+		{0x44, 0x30},
-+		{0x51, 0x05},
-+		{0x50, 0x24},
-+		{0x51, 0x2d},
-+		{0x52, 0x04},
-+		{0x69, 0x0e},
-+		{0x69, 0x8e},
-+		{0x6a, 0x00},
-+		{0x6c, 0xb8},
-+		{0x6b, 0x51},
-+		{0x04, 0xfb},
-+		{0x04, 0xff},
-+		{0x7f, 0x00},
-+		{0xa8, 0x13},
-+		{0x02, 0xf7},
-+		{0x02, 0xff},
-+		{0x03, 0xcf},
-+		{0x03, 0xff},
-+	};
-+
-+	return regmap_multi_reg_write(lt->regmap[I2C_CEC_DSI], seq, ARRAY_SIZE(seq));
-+};
-+
-+static inline struct lt8912 *bridge_to_lt8912(struct drm_bridge *b)
-+{
-+	return container_of(b, struct lt8912, bridge);
-+}
-+
-+static inline struct lt8912 *connector_to_lt8912(struct drm_connector *c)
-+{
-+	return container_of(c, struct lt8912, connector);
-+}
-+
-+static const struct regmap_config lt8912_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = 0xff,
-+};
-+
-+static int lt8912_init_i2c(struct lt8912 *lt, struct i2c_client *client)
-+{
-+	unsigned int i;
-+	/*
-+	 * At this time we only initialize 2 chips, but the lt8912 provides
-+	 * a third interface for the audio over HDMI configuration.
-+	 */
-+	struct i2c_board_info info[] = {
-+		{ I2C_BOARD_INFO("lt8912p0", I2C_ADDR_MAIN), },
-+		{ I2C_BOARD_INFO("lt8912p1", I2C_ADDR_CEC_DSI), },
-+	};
-+
-+	if (!lt)
-+		return -ENODEV;
-+
-+	for (i = 0; i < ARRAY_SIZE(info); i++) {
-+		if (i > 0) {
-+			lt->i2c_client[i] = i2c_new_dummy_device(client->adapter,
-+								 info[i].addr);
-+			if (IS_ERR(lt->i2c_client[i]))
-+				return PTR_ERR(lt->i2c_client[i]);
-+		}
-+
-+		lt->regmap[i] = devm_regmap_init_i2c(lt->i2c_client[i],
-+						     &lt8912_regmap_config);
-+		if (IS_ERR(lt->regmap[i]))
-+			return PTR_ERR(lt->regmap[i]);
-+	}
-+	return 0;
-+}
-+
-+static int lt8912_free_i2c(struct lt8912 *lt)
-+{
-+	unsigned int i;
-+
-+	for (i = 1; i < I2C_MAX_IDX; i++)
-+		i2c_unregister_device(lt->i2c_client[i]);
-+
-+	return 0;
-+}
-+
-+static int lt8912_hard_power_on(struct lt8912 *lt)
-+{
-+	gpiod_set_value_cansleep(lt->gp_reset, 0);
-+	msleep(20);
-+
-+	return 0;
-+}
-+
-+static void lt8912_hard_power_off(struct lt8912 *lt)
-+{
-+	gpiod_set_value_cansleep(lt->gp_reset, 1);
-+	msleep(20);
-+	lt->is_power_on = false;
-+}
-+
-+static int lt8912_video_setup(struct lt8912 *lt)
-+{
-+	u32 hactive, h_total, hpw, hfp, hbp;
-+	u32 vactive, v_total, vpw, vfp, vbp;
-+	u8 settle = 0x08;
-+	int ret;
-+
-+	if (!lt)
-+		return -EINVAL;
-+
-+	hactive = lt->mode.hactive;
-+	hfp = lt->mode.hfront_porch;
-+	hpw = lt->mode.hsync_len;
-+	hbp = lt->mode.hback_porch;
-+	h_total = hactive + hfp + hpw + hbp;
-+
-+	vactive = lt->mode.vactive;
-+	vfp = lt->mode.vfront_porch;
-+	vpw = lt->mode.vsync_len;
-+	vbp = lt->mode.vback_porch;
-+	v_total = vactive + vfp + vpw + vbp;
-+
-+	if (vactive <= 600)
-+		settle = 0x04;
-+	else if (vactive == 1080)
-+		settle = 0x0a;
-+
-+	ret = regmap_write(lt->regmap[I2C_CEC_DSI], 0x10, 0x01);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x11, settle);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x18, hpw);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x19, vpw);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x1c, hactive & 0xff);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x1d, hactive >> 8);
-+
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x2f, 0x0c);
-+
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x34, h_total & 0xff);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x35, h_total >> 8);
-+
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x36, v_total & 0xff);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x37, v_total >> 8);
-+
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x38, vbp & 0xff);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x39, vbp >> 8);
-+
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x3a, vfp & 0xff);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x3b, vfp >> 8);
-+
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x3c, hbp & 0xff);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x3d, hbp >> 8);
-+
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x3e, hfp & 0xff);
-+	ret |= regmap_write(lt->regmap[I2C_CEC_DSI], 0x3f, hfp >> 8);
-+
-+	return ret;
-+}
-+
-+static int lt8912_soft_power_on(struct lt8912 *lt)
-+{
-+	if (!lt->is_power_on) {
-+		u32 lanes = lt->data_lanes;
-+
-+		lt8912_write_init_config(lt);
-+		regmap_write(lt->regmap[I2C_CEC_DSI], 0x13, lanes & 3);
-+
-+		lt8912_write_mipi_basic_config(lt);
-+
-+		lt->is_power_on = true;
-+	}
-+
-+	return 0;
-+}
-+
-+static int lt8912_video_on(struct lt8912 *lt)
-+{
-+	int ret;
-+
-+	ret = lt8912_video_setup(lt);
-+	if (ret < 0)
-+		goto end;
-+
-+	ret = lt8912_write_dds_config(lt);
-+	if (ret < 0)
-+		goto end;
-+
-+	ret = lt8912_write_rxlogicres_config(lt);
-+	if (ret < 0)
-+		goto end;
-+
-+	ret = lt8912_write_lvds_config(lt);
-+	if (ret < 0)
-+		goto end;
-+
-+end:
-+	return ret;
-+}
-+
-+
-+static enum drm_connector_status lt8912_check_cable_status(struct lt8912 *lt)
-+{
-+	int ret;
-+	unsigned int reg_val;
-+
-+	ret = regmap_read(lt->regmap[I2C_MAIN], 0xC1, &reg_val);
-+	if (ret)
-+		return connector_status_unknown;
-+
-+	if (reg_val & BIT(7))
-+		return connector_status_connected;
-+
-+	return connector_status_disconnected;
-+}
-+
-+static void lt8912_check_hpd_work(struct work_struct *work)
-+{
-+	struct delayed_work *dw = to_delayed_work(work);
-+	struct lt8912 *lt = container_of(dw, struct lt8912,
-+					 lt8912_check_hpd_work_id);
-+	struct drm_connector *connector = &lt->connector;
-+
-+	enum drm_connector_status current_state = lt8912_check_cable_status(lt);
-+
-+	if (current_state != lt->cable_status) {
-+		drm_kms_helper_hotplug_event(connector->dev);
-+		lt->cable_status = current_state;
-+	}
-+
-+	queue_delayed_work(lt->workq,
-+			   &lt->lt8912_check_hpd_work_id,
-+			   msecs_to_jiffies(HPD_WORK_DELAY_MS));
-+}
-+
-+static void lt8912_setup_hpd(struct lt8912 *lt)
-+{
-+	INIT_DELAYED_WORK(&lt->lt8912_check_hpd_work_id,
-+			  lt8912_check_hpd_work);
-+	queue_delayed_work(lt->workq,
-+			   &lt->lt8912_check_hpd_work_id,
-+			   msecs_to_jiffies(HPD_WORK_DELAY_MS));
-+}
-+
-+
-+static enum drm_connector_status
-+lt8912_connector_detect(struct drm_connector *connector, bool force)
-+{
-+	struct lt8912 *lt = connector_to_lt8912(connector);
-+
-+	if (lt->hdmi_port->ops & DRM_BRIDGE_OP_DETECT)
-+		return drm_bridge_detect(lt->hdmi_port);
-+
-+	return lt8912_check_cable_status(lt);
-+}
-+
-+static const struct drm_connector_funcs lt8912_connector_funcs = {
-+	.detect = lt8912_connector_detect,
-+	.fill_modes = drm_helper_probe_single_connector_modes,
-+	.destroy = drm_connector_cleanup,
-+	.reset = drm_atomic_helper_connector_reset,
-+	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
-+	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
-+};
-+
-+static enum drm_mode_status
-+lt8912_connector_mode_valid(struct drm_connector *connector,
-+			    struct drm_display_mode *mode)
-+{
-+	if (mode->clock > 150000)
-+		return MODE_CLOCK_HIGH;
-+
-+	if (mode->hdisplay > 1920)
-+		return MODE_BAD_HVALUE;
-+
-+	if (mode->vdisplay > 1080)
-+		return MODE_BAD_VVALUE;
-+
-+	return MODE_OK;
-+}
-+
-+static int lt8912_connector_get_modes(struct drm_connector *connector)
-+{
-+	struct edid *edid;
-+	int ret = -1;
-+	int num = 0;
-+	struct lt8912 *lt = connector_to_lt8912(connector);
-+	u32 bus_format = MEDIA_BUS_FMT_RGB888_1X24;
-+
-+	edid = drm_bridge_get_edid(lt->hdmi_port, connector);
-+	if (edid) {
-+		drm_connector_update_edid_property(connector, edid);
-+		num = drm_add_edid_modes(connector, edid);
-+	} else
-+		return ret;
-+
-+	ret = drm_display_info_set_bus_formats(&connector->display_info,
-+					       &bus_format, 1);
-+	if (ret)
-+		num = ret;
-+
-+	kfree(edid);
-+	return num;
-+}
-+
-+static const struct drm_connector_helper_funcs lt8912_connector_helper_funcs = {
-+	.get_modes = lt8912_connector_get_modes,
-+	.mode_valid = lt8912_connector_mode_valid,
-+};
-+
-+static void lt8912_bridge_mode_set(struct drm_bridge *bridge,
-+				   const struct drm_display_mode *mode,
-+				   const struct drm_display_mode *adj)
-+{
-+	struct lt8912 *lt = bridge_to_lt8912(bridge);
-+
-+	drm_display_mode_to_videomode(adj, &lt->mode);
-+}
-+
-+static void lt8912_bridge_enable(struct drm_bridge *bridge)
-+{
-+	struct lt8912 *lt = bridge_to_lt8912(bridge);
-+
-+	lt8912_video_on(lt);
-+}
-+
-+static int lt8912_attach_dsi(struct lt8912 *lt)
-+{
-+	struct device *dev = lt->dev;
-+	struct mipi_dsi_host *host;
-+	struct mipi_dsi_device *dsi;
-+	int ret = -1;
-+	const struct mipi_dsi_device_info info = { .type = "lt8912",
-+						   .channel = 0,
-+						   .node = NULL,
-+						 };
-+
-+	host = of_find_mipi_dsi_host_by_node(lt->host_node);
-+	if (!host) {
-+		dev_err(dev, "failed to find dsi host\n");
-+		return -EPROBE_DEFER;
-+	}
-+
-+	dsi = mipi_dsi_device_register_full(host, &info);
-+	if (IS_ERR(dsi)) {
-+		ret = PTR_ERR(dsi);
-+		dev_err(dev, "failed to create dsi device (%d)\n", ret);
-+		goto err_dsi_device;
-+	}
-+
-+	lt->dsi = dsi;
-+
-+	dsi->lanes = lt->data_lanes;
-+	dsi->format = MIPI_DSI_FMT_RGB888;
-+
-+	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
-+			  MIPI_DSI_MODE_VIDEO_BURST |
-+			  MIPI_DSI_MODE_LPM |
-+			  MIPI_DSI_MODE_EOT_PACKET;
-+
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to attach dsi to host\n");
-+		goto err_dsi_attach;
-+	}
-+
-+	return 0;
-+
-+err_dsi_attach:
-+	mipi_dsi_device_unregister(dsi);
-+err_dsi_device:
-+	return ret;
-+}
-+
-+static void lt8912_detach_dsi(struct lt8912 *lt)
-+{
-+	mipi_dsi_detach(lt->dsi);
-+	mipi_dsi_device_unregister(lt->dsi);
-+}
-+
-+static int lt8912_bridge_connector_init(struct drm_bridge *bridge)
-+{
-+	int ret;
-+	struct lt8912 *lt = bridge_to_lt8912(bridge);
-+	struct drm_connector *connector = &lt->connector;
-+
-+	connector->polled = DRM_CONNECTOR_POLL_HPD;
-+
-+	ret = drm_connector_init(bridge->dev, connector,
-+				 &lt8912_connector_funcs,
-+				 lt->hdmi_port->type);
-+	if (ret)
-+		goto exit;
-+
-+	drm_connector_helper_add(connector, &lt8912_connector_helper_funcs);
-+
-+	connector->dpms = DRM_MODE_DPMS_OFF;
-+	drm_connector_attach_encoder(connector, bridge->encoder);
-+
-+	lt8912_setup_hpd(lt);
-+
-+exit:
-+	return ret;
-+}
-+
-+static int lt8912_bridge_attach(struct drm_bridge *bridge,
-+				enum drm_bridge_attach_flags flags)
-+{
-+	struct lt8912 *lt = bridge_to_lt8912(bridge);
-+	int ret;
-+
-+	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
-+		ret = lt8912_bridge_connector_init(bridge);
-+		if (ret) {
-+			dev_err(lt->dev, "Failed to init bridge ! (%d)\n", ret);
-+			return ret;
-+		}
-+	}
-+
-+
-+	ret = lt8912_hard_power_on(lt);
-+	if (ret)
-+		return ret;
-+
-+	ret = lt8912_soft_power_on(lt);
-+	if (ret)
-+		goto error;
-+
-+	ret = lt8912_attach_dsi(lt);
-+	if (ret)
-+		goto error;
-+
-+	lt->is_attached = true;
-+
-+	return 0;
-+
-+error:
-+	lt8912_hard_power_off(lt);
-+	return ret;
-+}
-+
-+static void lt8912_bridge_detach(struct drm_bridge *bridge)
-+{
-+	struct lt8912 *lt = bridge_to_lt8912(bridge);
-+
-+	if (lt->is_attached) {
-+		if (lt->hdmi_port->ops & DRM_BRIDGE_OP_HPD)
-+			drm_bridge_hpd_disable(lt->hdmi_port);
-+		lt8912_detach_dsi(lt);
-+		lt8912_hard_power_off(lt);
-+	}
-+
-+	cancel_delayed_work_sync(&lt->lt8912_check_hpd_work_id);
-+}
-+
-+static enum drm_connector_status
-+lt8912_bridge_detect(struct drm_bridge *bridge)
-+{
-+	struct lt8912 *lt = bridge_to_lt8912(bridge);
-+
-+	if (lt->hdmi_port->ops & DRM_BRIDGE_OP_DETECT)
-+		return drm_bridge_detect(lt->hdmi_port);
-+
-+	return lt8912_check_cable_status(lt);
-+}
-+
-+static struct edid *lt8912_bridge_get_edid(struct drm_bridge *bridge,
-+					    struct drm_connector *connector)
-+{
-+	struct lt8912 *lt = bridge_to_lt8912(bridge);
-+
-+	/*
-+	 * edid must be read through the ddc bus but it must be
-+	 * given to the hdmi connector node.
-+	 */
-+	if (lt->hdmi_port->ops & DRM_BRIDGE_OP_EDID)
-+		return drm_bridge_get_edid(lt->hdmi_port, connector);
-+
-+	dev_warn(lt->dev, "The connected bridge does not supports DRM_BRIDGE_OP_EDID\n");
-+	return NULL;
-+}
-+
-+static void lt8912_bridge_hpd_enable(struct drm_bridge *bridge)
-+{
-+	struct lt8912 *lt = bridge_to_lt8912(bridge);
-+
-+	if (!(lt->hdmi_port->ops & DRM_BRIDGE_OP_EDID))
-+		lt8912_setup_hpd(lt);
-+}
-+
-+static const struct drm_bridge_funcs lt8912_bridge_funcs = {
-+	.attach = lt8912_bridge_attach,
-+	.detach = lt8912_bridge_detach,
-+	.mode_set = lt8912_bridge_mode_set,
-+	.enable = lt8912_bridge_enable,
-+	.detect = lt8912_bridge_detect,
-+	.get_edid = lt8912_bridge_get_edid,
-+	.hpd_enable = lt8912_bridge_hpd_enable
-+};
-+
-+static int lt8912_parse_dt(struct lt8912 *lt)
-+{
-+	struct gpio_desc *gp_reset;
-+	struct device *dev = lt->dev;
-+	int ret = 0;
-+	struct device_node *port_node;
-+	struct device_node *endpoint;
-+
-+	gp_reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(gp_reset)) {
-+		ret = PTR_ERR(gp_reset);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to get reset gpio: %d\n", ret);
-+		return ret;
-+	}
-+	lt->gp_reset = gp_reset;
-+
-+
-+	endpoint = of_graph_get_endpoint_by_regs(dev->of_node, 0, -1);
-+	if (IS_ERR(endpoint)) {
-+		ret = PTR_ERR(endpoint);
-+		goto end;
-+	}
-+
-+	lt->data_lanes = of_property_count_u32_elems(endpoint, "data-lanes");
-+	of_node_put(endpoint);
-+
-+	lt->host_node = of_graph_get_remote_node(dev->of_node, 0, -1);
-+	if (!lt->host_node) {
-+		dev_err(lt->dev, "%s: Failed to get remote port\n", __func__);
-+		ret = -ENODEV;
-+		goto end;
-+	}
-+
-+	port_node = of_graph_get_remote_node(dev->of_node, 1, -1);
-+	if (!port_node) {
-+		dev_err(lt->dev, "%s: Failed to get connector port\n", __func__);
-+		ret = -ENODEV;
-+		goto err_free_host_node;
-+	}
-+
-+	lt->hdmi_port = of_drm_find_bridge(port_node);
-+	if (IS_ERR(lt->hdmi_port)) {
-+		dev_err(lt->dev, "%s: Failed to get hdmi port\n", __func__);
-+		ret = PTR_ERR(lt->hdmi_port);
-+		of_node_put(lt->host_node);
-+		goto end;
-+	}
-+
-+	if (!of_device_is_compatible(port_node, "hdmi-connector")) {
-+		dev_err(lt->dev, "%s: Failed to get hdmi port\n", __func__);
-+		ret = -EINVAL;
-+	}
-+
-+	of_node_put(port_node);
-+
-+end:
-+	return ret;
-+
-+err_free_host_node:
-+	of_node_put(lt->host_node);
-+	return ret;
-+}
-+
-+static int lt8912_put_dt(struct lt8912 *lt)
-+{
-+	of_node_put(lt->host_node);
-+	return 0;
-+}
-+
-+static int lt8912_probe(struct i2c_client *client,
-+	 const struct i2c_device_id *id)
-+{
-+	static struct lt8912 *lt;
-+	int ret = 0;
-+	struct device *dev = &client->dev;
-+
-+	lt = devm_kzalloc(dev, sizeof(struct lt8912), GFP_KERNEL);
-+	if (!lt)
-+		return -ENOMEM;
-+
-+	lt->dev = dev;
-+	lt->i2c_client[0] = client;
-+	lt->cable_status = connector_status_unknown;
-+	lt->workq = create_workqueue("lt8912_workq");
-+
-+	ret = lt8912_parse_dt(lt);
-+	if (ret)
-+		goto err_dt_parse;
-+
-+	ret = lt8912_init_i2c(lt, client);
-+	if (ret)
-+		goto err_i2c;
-+
-+	i2c_set_clientdata(client, lt);
-+
-+	lt->bridge.funcs = &lt8912_bridge_funcs;
-+	lt->bridge.of_node = dev->of_node;
-+	lt->bridge.ops = (DRM_BRIDGE_OP_EDID |
-+			  DRM_BRIDGE_OP_DETECT |
-+			  DRM_BRIDGE_OP_HPD);
-+
-+	drm_bridge_add(&lt->bridge);
-+
-+	return 0;
-+
-+err_i2c:
-+	lt8912_put_dt(lt);
-+err_dt_parse:
-+	return ret;
-+}
-+
-+static int lt8912_remove(struct i2c_client *client)
-+{
-+	struct lt8912 *lt = i2c_get_clientdata(client);
-+
-+	lt8912_bridge_detach(&lt->bridge);
-+	drm_bridge_remove(&lt->bridge);
-+	lt8912_free_i2c(lt);
-+	lt8912_put_dt(lt);
-+	destroy_workqueue(lt->workq);
-+	return 0;
-+}
-+
-+static const struct of_device_id lt8912_dt_match[] = {
-+	{.compatible = "lontium,lt8912b"},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, lt8912_dt_match);
-+
-+static const struct i2c_device_id lt8912_id[] = {
-+	{"lt8912", 0},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(i2c, lt8912_id);
-+
-+static struct i2c_driver lt8912_i2c_driver = {
-+	.driver = {
-+		.name = "lt8912",
-+		.of_match_table = lt8912_dt_match,
-+		.owner = THIS_MODULE,
-+	},
-+	.probe = lt8912_probe,
-+	.remove = lt8912_remove,
-+	.id_table = lt8912_id,
-+};
-+module_i2c_driver(lt8912_i2c_driver);
-+
-+MODULE_AUTHOR("Adrien Grassein <adrien.grassein@gmail.com>");
-+MODULE_DESCRIPTION("lt8912 drm driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.25.1
+--qMm9M+Fa2AknHoGS
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+
+--qMm9M+Fa2AknHoGS--
