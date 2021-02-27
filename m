@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BDA326D7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 16:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D190326D86
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 16:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhB0PMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 10:12:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
+        id S230142AbhB0POz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 10:14:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229953AbhB0PMS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 10:12:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF2E964EF0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 15:11:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614438698;
-        bh=39xvGhqYCYfKAhPPgyBtKVjORFqxpO1/Y9IikQxSD6U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jK7xODuw3jnQgwDNGWmBUxqW9RXsL8wnYAzMOfH2fdlBwJc/69VrKNMR1oYHSkq3o
-         oCqVsBsAFy2k/B1KBOj8DGh7f3vAjZEs9XfJoZri0jcpPu5c8IIn1QI+CyUh92KReP
-         r4MBxSYWn3uEsTN9Ev8h8/uvAvkHyT0u4fnikGlKnFVgJePvzUF5Fl650eNhAo4qxi
-         AYDgKXc2hMB+xVbNiItIaHzmeKpcr4DPvh2BbBlKLfzaSwoNQfM2216eGCyYD1BxgN
-         AMr19Q7bVwOH4dOsUfZVv8ti5YoDdHU/4Q0xDPbABr1MzNucSvvaz/e7ouo5FupP2+
-         DX/32WuvL2Zcg==
-Received: by mail-ot1-f42.google.com with SMTP id 40so3661137otu.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 07:11:37 -0800 (PST)
-X-Gm-Message-State: AOAM531ssYVEmQufNgsgMVnElIS4Xa3OmovE07eDoXB84fzLcYJJVX5p
-        YGeyOrI68kJomeaeIuJn2wBCEx8E/XWnBeq9Mhw=
-X-Google-Smtp-Source: ABdhPJwBLwXjdMMuLYHRW77d9y0SUcCRAnn5SkDghlBCT6AGuG09VU+/4yvQshgXQWybv7VmGVGdGJqXcIY1mP1V/I0=
-X-Received: by 2002:a9d:7f11:: with SMTP id j17mr6847492otq.251.1614438697150;
- Sat, 27 Feb 2021 07:11:37 -0800 (PST)
+        id S229999AbhB0POw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 10:14:52 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09C0164D79;
+        Sat, 27 Feb 2021 15:14:08 +0000 (UTC)
+Date:   Sat, 27 Feb 2021 15:14:05 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v8 19/22] counter: Implement extension*_name sysfs
+ attributes
+Message-ID: <20210227151405.0de48038@archlinux>
+In-Reply-To: <YDgzq6t5YRm6cFvO@shinobu>
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+        <c9b55d1cff6acac692a7853b0a25777ecf017b12.1613131238.git.vilhelm.gray@gmail.com>
+        <20210214180913.05bd3498@archlinux>
+        <YC98GTwzwt+pkzMO@shinobu>
+        <20210221140507.0a5ef57f@archlinux>
+        <YDgzq6t5YRm6cFvO@shinobu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210225112247.2240389-1-arnd@kernel.org> <20210225114533.GA380@zn.tnic>
- <CAK8P3a0BN3p0F3UAxs9TKsHs--AiAPE0uf6126GVJNhmVTGCsw@mail.gmail.com>
- <20210225124218.GC380@zn.tnic> <CAK8P3a1ZiUHRxKr=SFgEFETLcSQeViPnR+XB2gBvbVk24vGvqQ@mail.gmail.com>
- <CAKwvOd=B=cHpp_XfPTtyVpQyrwQrFZX9SXKw=SJC1VC-VbEwFA@mail.gmail.com>
- <20210225213300.GF380@zn.tnic> <CAKwvOdkKjOb8fS7NgFxvAwEQTp3fPjenhvehnjh5xRw=HevQ=Q@mail.gmail.com>
- <20210226081327.GB19284@zn.tnic> <CAK8P3a21A4nAraeUeabNjHe3QNc+sX6XFYTHA=K0wX1nV-Qetg@mail.gmail.com>
-In-Reply-To: <CAK8P3a21A4nAraeUeabNjHe3QNc+sX6XFYTHA=K0wX1nV-Qetg@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 27 Feb 2021 16:11:20 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2niRdnVMMtBrudLAq7s=2c1sH=YC2REwujm5piHmnH6g@mail.gmail.com>
-Message-ID: <CAK8P3a2niRdnVMMtBrudLAq7s=2c1sH=YC2REwujm5piHmnH6g@mail.gmail.com>
-Subject: Re: [PATCH] x86: mark some mpspec inline functions as __init
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 2:24 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Fri, Feb 26, 2021 at 9:13 AM Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Thu, Feb 25, 2021 at 01:58:48PM -0800, Nick Desaulniers wrote:
-> > > The config that reproduces it wasn't shared here; I wouldn't be
-> > > surprised if this was found via randconfig that enabled some config
-> > > that led to excessive code bloat somewhere somehow.
-> >
-> > I'm sceptical it is the .config. As I said, those single function calls
-> > which I could replace by hand - the wrappers simply make the code
-> > cleaner. They could just as well be macros FWIW and then the inlining
-> > will be practically forced at preprocess time.
->
-> I managed to track down the configurations: This particular function is
-> not inlined whenever CONFIG_UBSAN_OBJECT_SIZE is enabled
-> and CONFIG_UBSAN_TRAP is disabled, plus obviously any
-> configuration option that is needed to build the file.
+On Fri, 26 Feb 2021 08:32:59 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-And I now had another look at the output after reducing the test case
-with cvise to:
+> On Sun, Feb 21, 2021 at 02:05:07PM +0000, Jonathan Cameron wrote:
+> > On Fri, 19 Feb 2021 17:51:37 +0900
+> > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+> >   
+> > > On Sun, Feb 14, 2021 at 06:09:13PM +0000, Jonathan Cameron wrote:  
+> > > > On Fri, 12 Feb 2021 21:13:43 +0900
+> > > > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+> > > >     
+> > > > > The Generic Counter chrdev interface expects users to supply extension
+> > > > > IDs in order to select extensions for requests. In order for users to
+> > > > > know what extension ID belongs to which extension this information must
+> > > > > be exposed. The extension*_name attribute provides a way for users to
+> > > > > discover what extension ID belongs to which extension by reading the
+> > > > > respective extension name for an extension ID.
+> > > > > 
+> > > > > Cc: David Lechner <david@lechnology.com>
+> > > > > Cc: Gwendal Grignou <gwendal@chromium.org>
+> > > > > Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> > > > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > > > > ---
+> > > > >  Documentation/ABI/testing/sysfs-bus-counter |  9 ++++
+> > > > >  drivers/counter/counter-sysfs.c             | 51 +++++++++++++++++----
+> > > > >  2 files changed, 50 insertions(+), 10 deletions(-)
+> > > > > 
+> > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/ABI/testing/sysfs-bus-counter
+> > > > > index 6353f0a2f8f8..847e96f19d19 100644
+> > > > > --- a/Documentation/ABI/testing/sysfs-bus-counter
+> > > > > +++ b/Documentation/ABI/testing/sysfs-bus-counter
+> > > > > @@ -100,6 +100,15 @@ Description:
+> > > > >  		Read-only attribute that indicates whether excessive noise is
+> > > > >  		present at the channel Y counter inputs.
+> > > > >  
+> > > > > +What:		/sys/bus/counter/devices/counterX/countY/extensionZ_name
+> > > > > +What:		/sys/bus/counter/devices/counterX/extensionZ_name
+> > > > > +What:		/sys/bus/counter/devices/counterX/signalY/extensionZ_name
+> > > > > +KernelVersion:	5.13
+> > > > > +Contact:	linux-iio@vger.kernel.org
+> > > > > +Description:
+> > > > > +		Read-only attribute that indicates the component name of
+> > > > > +		Extension Z.    
+> > > > 
+> > > > Good to say what form this takes.    
+> > > 
+> > > Do you mean a description like this: "Read-only string attribute that
+> > > indicates the component name of Extension Z"?  
+> > 
+> > My expectation would be that the possible strings are tightly constrained
+> > (perhaps via review). So I'd like to see what they are and a brief description
+> > of what each one means.
+> > 
+> > Jonathan  
+> 
+> Okay I see what you mean now. These names will match the sysfs attribute
+> filenames. So for example, if Extension 9 of Count 2 of Counter device
+> is /sys/bus/counter/devices/counter4/count2/ceiling, then the attribute
+> /sys/bus/counter/devices/counter4/count2/extension9_name will hold a
+> value of "ceiling".
+> 
+> The idea is that the user walks down through each extension*_name to
+> find sysfs attribute name for the Extension that they want. When they
+> find the desired Extension name in say sysfs attribute extension9_name,
+> then they know 9 is the ID number for that Extension.
+> 
+> There is an alternative design I was considering: instead of
+> extension*_name attributes, we could have each Extension sysfs attribute
+> have a matching *_extension_id attribute which provides the respective
+> Extension ID. So for example, using the same Extension as before:
+> /sys/bus/counter/devices/counter4/count2/ceiling_extension_id will hold
+> a value of 9.
+> 
+> Do you think this alternative design would be more intuitive to users?
+It feels like the user is going to start from what they want to enable
+then get the ID from that.   With the current way around they'll have
+to search the extensionX_name files to find it, rather than a direct
+look up.  So immediate thought is this second way would be easier to
+use, but perhaps others think differently.
 
-struct b {
-  void *c;
-};
-struct {
-  struct b d;
-} extern e;
-int f;
+Jonathan
 
-__attribute__((__cold__)) int a();
-static inline void early_get_smp_config() {(void) e.d.c; }
+> 
+> William Breathitt Gray
 
-int g()
-{
-  if (a())
-    return 2;
-  a();
-  if (f)
-    return f;
-  a();
-  early_get_smp_config();
-  return 0;
-}
-
-See https://godbolt.org/z/8qbY65
-
-Some observations:
-
-- The early_get_smp_config function literally does nothing in the
-   reduced test case, but is still not inlined.
-
-- This happens regardless of target architecture
-
-- It happens in a code path of the calling function that is 'cold'
-   at this point, which presumably is an indication to clang that
-   any functions called from here are also cold, and not worth
-   inlining.
-
-- I have found no indication why -fsanitize=object-size should
-  make a difference.
-
-         Arnd
