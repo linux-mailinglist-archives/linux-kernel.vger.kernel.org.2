@@ -2,132 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26924326AC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3162326AD7
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhB0A1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 19:27:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhB0A1p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 19:27:45 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D45C06178C
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 16:26:29 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id g20so6168877plo.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 16:26:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7vT9C4uK5m9m8aSd4JIqeVek2WQmiJglw5BM22hi2qE=;
-        b=ExBnl+1zHVaGtFVHNR7bFHyLqGMR9rgJu/ts+PqWr/fJVyC2AZvd3SEpb36Qm8GHB7
-         Ta1pg7NnrSVBong/uGVc6ETZ6bNXqj5goRvlhvBhAX9PR6/hlgcaAdtkcLUyO8HRxt9w
-         k2xwR2Z7r47DF5mqFNITKvWD0WWUOJbG0K81Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7vT9C4uK5m9m8aSd4JIqeVek2WQmiJglw5BM22hi2qE=;
-        b=DY0Hh6S+4lW5rzULGpBzpGARQYAEcz/GHAq5hGkY6339PR5AwGsuYM6qQE5E6sphf8
-         /62mvoXO0C1WHKRbuT3kBYDyanZvBOyeBtOoym/Uab7DEaW2qoFA+EsoTAY8yx4WJUgw
-         ZieBUK7+aXaG5Js+sneM8eOOfH9/c4+JqFBfO07ynNlhsjQYf6QeCzz84yPcZitvxX0H
-         FbrPWSKl20m3neyZVgOiIgo3IGAv2qA6fw8kbVFRQWEN0kUtfS6tjgXdNZe+XYhpQEdL
-         WPuNVt8gpXxsXWPyXbD4IRmYtHLFaPe4W4wYv6vS+ZIpE4l6V6NS4uT4OIVPKS8JWyNl
-         2Mug==
-X-Gm-Message-State: AOAM5312OpBgfvqY4gt7A9WCmSi4tfnhUL3NBPpeeDqeWazR74+s9Ek1
-        GE9XRntE+hDqat0xYAaG67Wssw==
-X-Google-Smtp-Source: ABdhPJxRz+kMv//a9n7/44AZQdUJvK6HEviDg4TqN0DeHJRGDDYbx5409puKNu0VN0yQLeCTKTJ87g==
-X-Received: by 2002:a17:90a:b782:: with SMTP id m2mr5833394pjr.220.1614385589412;
-        Fri, 26 Feb 2021 16:26:29 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:7525:b50:4b48:1a6d])
-        by smtp.gmail.com with ESMTPSA id t6sm9793744pgp.57.2021.02.26.16.26.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 16:26:29 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>
-Cc:     Niklas Cassel <niklas.cassel@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] nvmem: core: nvmem_cell_read() should return the true size
-Date:   Fri, 26 Feb 2021 16:26:03 -0800
-Message-Id: <20210226162521.3.I4bf6b274645a06943a421a90c14a97e8c03e6830@changeid>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-In-Reply-To: <20210227002603.3260599-1-dianders@chromium.org>
-References: <20210227002603.3260599-1-dianders@chromium.org>
+        id S229999AbhB0Ayp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 19:54:45 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:32858 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229622AbhB0Aym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Feb 2021 19:54:42 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lFnrl-008gSc-0W; Sat, 27 Feb 2021 01:53:53 +0100
+Date:   Sat, 27 Feb 2021 01:53:53 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Huazhong Tan <tanhuazhong@huawei.com>
+Cc:     f.fainelli@gmail.com, hkallweit1@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Guangbin Huang <huangguangbin2@huawei.com>
+Subject: Re: [PATCH net] net: phy: fix save wrong speed and duplex problem if
+ autoneg is on
+Message-ID: <YDmYIb0O5DZkL+X3@lunn.ch>
+References: <1614325482-25208-1-git-send-email-tanhuazhong@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614325482-25208-1-git-send-email-tanhuazhong@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we look at the gpu speed bin currently in sc7180.dtsi:
-  gpu_speed_bin: gpu_speed_bin@1d2 {
-    reg = <0x1d2 0x2>;
-    bits = <5 8>;
-  };
+On Fri, Feb 26, 2021 at 03:44:42PM +0800, Huazhong Tan wrote:
+> From: Guangbin Huang <huangguangbin2@huawei.com>
+> 
+> If phy uses generic driver and autoneg is on, enter command
+> "ethtool -s eth0 speed 50" will not change phy speed actually, but
+> command "ethtool eth0" shows speed is 50Mb/s because phydev->speed
+> has been set to 50 and no update later.
+> 
+> And duplex setting has same problem too.
+> 
+> However, if autoneg is on, phy only changes speed and duplex according to
+> phydev->advertising, but not phydev->speed and phydev->duplex. So in this
+> case, phydev->speed and phydev->duplex don't need to be set in function
+> phy_ethtool_ksettings_set() if autoneg is on.
+> 
+> Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+> Signed-off-by: Huazhong Tan <tanhuazhong@huawei.com>
 
-We can see that this is an 8-bit value.  However we had to specify the
-"reg" as 16 bits because the value was spread out over two bytes.
+I'm not sure, but i think this happens after
 
-It doesn't make sense to expose the fact that the value was spread out
-over two bytes to the client.  Let's use the number of bits to return
-the length to the client.
+commit 51e2a3846eab18711f4eb59cd0a4c33054e2980a
+Author: Trent Piepho <tpiepho@freescale.com>
+Date:   Wed Sep 24 10:55:46 2008 +0000
 
-NOTE: this change has the potential to break clients!  Hopefully this
-breakage will be lessened (or eliminated) with the previous patch
-("nvmem: core: Allow nvmem_cell_read_u16/32/64 to read smaller
-cells"), but it is possible for anyone directly calling
-nvmem_cell_read().  From a quick audit of mainline I don't _see_ any
-problems.  Most cases won't change at all (number of bits matched the
-length) and the big case that will change is the Qualcomm "CPR" driver
-which seems to handle the length properly (it could probably be
-simplified now, actually).
+    PHY: Avoid unnecessary aneg restarts
+    
+    The PHY's aneg is configured and restarted whenever the link is brought up,
+    e.g. when DHCP is started after the kernel has booted.  This can take the
+    link down for several seconds while auto-negotiation is redone.
+    
+    If the advertised features haven't changed, then it shouldn't be necessary
+    to bring down the link and start auto-negotiation over again.
+    
+    genphy_config_advert() is enhanced to return 0 when the advertised features
+    haven't been changed and >0 when they have been.
+    
+    genphy_config_aneg() then uses this information to not call
+    genphy_restart_aneg() if there has been no change.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+Before then, i think autoneg was unconditionally restarted, and so the
+speed would get overwritten when autoneg completed. After this patch,
+since autoneg is not being changed when only speed is set, autoneg is
+not triggered.
 
- drivers/nvmem/core.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 8602390bb124..00454d841a7f 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -1379,6 +1379,7 @@ static int __nvmem_cell_read(struct nvmem_device *nvmem,
- 		      void *buf, size_t *len)
- {
- 	int rc;
-+	size_t bytes;
- 
- 	rc = nvmem_reg_read(nvmem, cell->offset, buf, cell->bytes);
- 
-@@ -1386,11 +1387,15 @@ static int __nvmem_cell_read(struct nvmem_device *nvmem,
- 		return rc;
- 
- 	/* shift bits in-place */
--	if (cell->bit_offset || cell->nbits)
-+	if (cell->bit_offset || cell->nbits) {
- 		nvmem_shift_read_buffer_in_place(cell, buf);
-+		bytes = DIV_ROUND_UP(cell->nbits, 8);
-+	} else {
-+		bytes = cell->bytes;
-+	}
- 
- 	if (len)
--		*len = cell->bytes;
-+		*len = bytes;
- 
- 	return 0;
- }
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+	Andrew
