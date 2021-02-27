@@ -2,79 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DE6326FA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 00:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4451326FAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 00:43:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhB0Xjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 18:39:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51592 "EHLO
+        id S230190AbhB0XlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 18:41:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhB0Xjq (ORCPT
+        with ESMTP id S230140AbhB0XlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 18:39:46 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B133C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 15:39:05 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id e7so19597236lft.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 15:39:05 -0800 (PST)
+        Sat, 27 Feb 2021 18:41:15 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC25C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 15:40:35 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id mj10so1222332ejb.5
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 15:40:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lHYf5YOcJirX+nDC2Sh0poowt9oWDI+kNOd5H2EyN1Y=;
-        b=YG34fAKTflHVpLgMkjOhd3eYHYCwQTrqNVIxg6HIeb6qH4OT5Xg2iEGnxhtl3D83VU
-         jXx38jfvUQrfrvdmtQYOZ0gEGgYvOP3Vixl5HvfqPu11v5IokKd210p3JXveQBHMfKOF
-         FrFntvyTHnLERkoj7XV7uenr6Z623guT239JLNm3PgN/DDs99CsvLSk2LE8OuNtbQKIJ
-         LsJFromt/lFqrcol7JcNqMIJkclf9zOOHy+2eEU4bpuXP9sn5AOGBR1hcwdBqN9DeC+d
-         XzhJ73zGSuONBnPxzIlZcSLeV1JyTM5R4epZgzdU0zir7c4TpNpCJKfIbw2rrt5QRgB6
-         zLvg==
+        bh=0ElBUABiAQGzdBb9Q14hhgxo5CKFBJ/fW6SlESrFX9c=;
+        b=0d/WY1VbsmftP5txlFPrN06ZSFwAfu/IzMFnySmCKUxeZh76AWOWhvMNPjRDVkAIFL
+         dk6y3c78mH1V6FDD52TW3RE2pfToGib3K8Lg2GdOpluHw/SfUtUjvw7KPrFmRL5O+7Q/
+         W5MhvvnE8la08VUW1FQ3RwzbTpghL0fiSOENkZcZY1DChYaNNluUAGILW/o/QkX4vzA4
+         MAIKveH6uUSub4mm/Qx4FlzXWMM4pcU4XVJkTbmCQYhE4T23cq6XxcdfOdWax87TKduI
+         XoecLuzoQQqfB/pm+H7NJg4Dpj83ClY7bydMO5sBLRMXOosSpuwO2yTW8aX+lPZ+4hlp
+         LpJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lHYf5YOcJirX+nDC2Sh0poowt9oWDI+kNOd5H2EyN1Y=;
-        b=jNZm98UROJScz5bUQZwsGF4+OwFq1a8JYxLox8xVDXnmjlaB8DUExO06Au4P/aDIJV
-         vWvRvXHstET7SO6m3GNWONBJwzAOzupNhY+tuJYW8XWEco9dgPlAjVT2ubiSBvSPyjHQ
-         EuMnKbW/+7FILXb8Rze5rNnoeKkWAA+/kgVmEz2ZDdE1amFwf0y//h6tViJbY5phSFM7
-         srk9E5bf44LagNTFjpoPCFjSoiJ7mV85fG63EPGT/Ce4t2wqjbs5oYcraTq4ho9UrEv6
-         aao0RO0bOb5BRlYn9WBFy3dk9bfUpL8RcekCXg/jRF0xrEvPd8wEY+x2mJVoCbwaENrz
-         EN1w==
-X-Gm-Message-State: AOAM531TG7dYaovZfRT1Uatt91VgNiYXX8bGGF8+MJqfp862HEXwCb/F
-        rnFas3jauqyUZ5VPfYugSmabVsEhZCB+f6O2GfonLA==
-X-Google-Smtp-Source: ABdhPJx45U+cYpscpM6EC0bwdf1lUtE10L6rS094zfbujxE7qiqPep+VnzN53U6f9OJjvpsiC3nNytSXy7caYe7NlCM=
-X-Received: by 2002:a05:6512:74a:: with SMTP id c10mr5493986lfs.586.1614469144151;
- Sat, 27 Feb 2021 15:39:04 -0800 (PST)
+        bh=0ElBUABiAQGzdBb9Q14hhgxo5CKFBJ/fW6SlESrFX9c=;
+        b=F79KRZoqDOpsGyBLqcsdhj4tt9QUE9PzyHsy5XT5gox4UpN953z9yNI5qu07CduGxn
+         URpd26DNQOPLmwum11AG26TBxhoTsBa76cLq2z1hrt6nUgGV5y84iDIx663mfgp+Qev7
+         jqyxRG4OYr0yQ89vo0c5NGzadlKc1tYYTeCqiv+1SYj/oVnPCr2wEn1CWvxcv5xgkoJi
+         Aug6gMcqH7oyNA/VvIz7uVGzdkGf+E2oe/CGguFD52eru1SCg2Ea6aSkz56NIS9I2L6g
+         VX47Cp/xhnZpm24VC+Eo85q9lzvY+dd2MwLxkBcrfdzY3f13QuqauMVbDHnxnDt/ZdMW
+         kO5w==
+X-Gm-Message-State: AOAM533PSfl8MvHg2bHTEZyx8oeEzReo73ZnF6hwxDaXTsiXKJgNUIZw
+        +OUSUuqzK+zxyK3X4PsahGX6e2vTqHGECfXAWP4ebg==
+X-Google-Smtp-Source: ABdhPJxbfr1J+RzSUV7IBi8GoEnzC9yBAlDFbKQxsZp0Gu26nrbT35J97kR4cgoSTL5V4L7WiF5R1/XaKW63d8ST/2A=
+X-Received: by 2002:a17:907:3fa3:: with SMTP id hr35mr9631355ejc.418.1614469233758;
+ Sat, 27 Feb 2021 15:40:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20210224113108.4c05915e@canb.auug.org.au> <CAHk-=wi1FEJfk9r4Jw90kU3aayXka4Y4HOWdgAtVQHRFTgpQ+A@mail.gmail.com>
- <20210224114942.4b07cece@canb.auug.org.au> <202102241324.E784B6A0@keescook>
-In-Reply-To: <202102241324.E784B6A0@keescook>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 28 Feb 2021 00:38:53 +0100
-Message-ID: <CACRpkdYgh21LcWEip=rhduQEUYYdMYpEyUNNq86DM4Kk+TPhGg@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commits in Linus' tree
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg KH <gregkh@linuxfoundation.org>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+ <20210226190454.GD7272@magnolia> <CAPcyv4iJiYsM5FQdpMvCi24aCi7RqUnnxC6sM0umFqiN+Q59cg@mail.gmail.com>
+ <20210226205126.GX4662@dread.disaster.area> <CAPcyv4iDefA3Y0wUW=p080SYAsM_2TPJba-V-sxdK_BeJMkmsw@mail.gmail.com>
+ <20210226212748.GY4662@dread.disaster.area> <CAPcyv4jryJ32R5vOwwEdoU3V8C0B7zu_pCt=7f6A3Gk-9h6Dfg@mail.gmail.com>
+ <20210227223611.GZ4662@dread.disaster.area>
+In-Reply-To: <20210227223611.GZ4662@dread.disaster.area>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Sat, 27 Feb 2021 15:40:24 -0800
+Message-ID: <CAPcyv4h7XA3Jorcy_J+t9scw0A4KdT2WEwAhE-Nbjc=C2qmkMw@mail.gmail.com>
+Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 10:30 PM Kees Cook <keescook@chromium.org> wrote:
+On Sat, Feb 27, 2021 at 2:36 PM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Fri, Feb 26, 2021 at 02:41:34PM -0800, Dan Williams wrote:
+> > On Fri, Feb 26, 2021 at 1:28 PM Dave Chinner <david@fromorbit.com> wrote:
+> > > On Fri, Feb 26, 2021 at 12:59:53PM -0800, Dan Williams wrote:
+> > > > On Fri, Feb 26, 2021 at 12:51 PM Dave Chinner <david@fromorbit.com> wrote:
+> > > > > > My immediate concern is the issue Jason recently highlighted [1] with
+> > > > > > respect to invalidating all dax mappings when / if the device is
+> > > > > > ripped out from underneath the fs. I don't think that will collide
+> > > > > > with Ruan's implementation, but it does need new communication from
+> > > > > > driver to fs about removal events.
+> > > > > >
+> > > > > > [1]: http://lore.kernel.org/r/CAPcyv4i+PZhYZiePf2PaH0dT5jDfkmkDX-3usQy1fAhf6LPyfw@mail.gmail.com
+> > > > >
+> > > > > Oh, yay.
+> > > > >
+> > > > > The XFS shutdown code is centred around preventing new IO from being
+> > > > > issued - we don't actually do anything about DAX mappings because,
+> > > > > well, I don't think anyone on the filesystem side thought they had
+> > > > > to do anything special if pmem went away from under it.
+> > > > >
+> > > > > My understanding -was- that the pmem removal invalidates
+> > > > > all the ptes currently mapped into CPU page tables that point at
+> > > > > the dax device across the system. THe vmas that manage these
+> > > > > mappings are not really something the filesystem really manages,
+> > > > > but a function of the mm subsystem. What the filesystem cares about
+> > > > > is that it gets page faults triggered when a change of state occurs
+> > > > > so that it can remap the page to it's backing store correctly.
+> > > > >
+> > > > > IOWs, all the mm subsystem needs to when pmem goes away is clear the
+> > > > > CPU ptes, because then when then when userspace tries to access the
+> > > > > mapped DAX pages we get a new page fault. In processing the fault, the
+> > > > > filesystem will try to get direct access to the pmem from the block
+> > > > > device. This will get an ENODEV error from the block device because
+> > > > > because the backing store (pmem) has been unplugged and is no longer
+> > > > > there...
+> > > > >
+> > > > > AFAICT, as long as pmem removal invalidates all the active ptes that
+> > > > > point at the pmem being removed, the filesystem doesn't need to
+> > > > > care about device removal at all, DAX or no DAX...
+> > > >
+> > > > How would the pmem removal do that without walking all the active
+> > > > inodes in the fs at the time of shutdown and call
+> > > > unmap_mapping_range(inode->i_mapping, 0, 0, 1)?
+> > >
+> > > Which then immediately ends up back at the vmas that manage the ptes
+> > > to unmap them.
+> > >
+> > > Isn't finding the vma(s) that map a specific memory range exactly
+> > > what the rmap code in the mm subsystem is supposed to address?
+> >
+> > rmap can lookup only vmas from a virt address relative to a given
+> > mm_struct. The driver has neither the list of mm_struct objects nor
+> > virt addresses to do a lookup. All it knows is that someone might have
+> > mapped pages through the fsdax interface.
+>
+> So there's no physical addr to vma translation in the mm subsystem
+> at all?
+>
+> That doesn't make sense. We do exactly this for hwpoison for DAX
+> mappings. While we don't look at ptes, we get a pfn,
 
-> I wonder if we need this in Documentation/maintainer/configure-git.rst
+True hwpoison does get a known failing pfn and then uses page->mapping
+to get the 'struct address_space' to do the unmap. I discounted that
+approach from the outset because it would mean walking every pfn in a
+multi-terabyte device just in case one is mapped at device shutdown.
 
-That is generally a good idea.
+> it points to, check if it points to the PMEM that is being removed,
+> grab the page it points to, map that to the relevant struct page,
+> run collect_procs() on that page, then kill the user processes that
+> map that page.
+>
+> So why can't we walk the ptescheck the physical pages that they
+> map to and if they map to a pmem page we go poison that
+> page and that kills any user process that maps it.
+>
+> i.e. I can't see how unexpected pmem device unplug is any different
+> to an MCE delivering a hwpoison event to a DAX mapped page.
 
-> and to put check_commits and check_fixes into tools/ somewhere?
+I guess the tradeoff is walking a long list of inodes vs walking a
+large array of pages.
 
-People keep saying we should put git hooks somewhere where
-they can be reused easily. What about just creating
-scripts/git-hooks?
+There's likely always more pages than inodes, but perhaps it's more
+efficient to walk the 'struct page' array than sb->s_inodes?
 
-Yours,
-Linus Walleij
+>  Both
+> indicate a physical address range now contains invalid data and the
+> filesystem has to take the same action...
+>
+> IOWs, we could just call ->corrupted_range(0, EOD) here to tell the
+> filesystem the entire device went away. Then the filesystem deal
+> with this however it needs to. However, it would be more efficient
+> from an invalidation POV to just call it on the pages that have
+> currently active ptes because once the block device is dead
+> new page faults on DAX mappings will get a SIGBUS naturally.
+
+There is no efficient way to lookup "currently active ptes" relative
+to a physical pfn range.
+
+SIGBUS will happen naturally either way. I don't think the hwpoison
+signal with the extra BUS_MCEERR_* info is appropriate given that
+indicates data loss vs data offline of a device being unplugged.
+
+>
+> > To me this looks like a notifier that fires from memunmap_pages()
+> > after dev_pagemap_kill() to notify any block_device associated with
+> > that dev_pagemap() to say that any dax mappings arranged through this
+> > block_device are now invalid. The reason to do this after
+> > dev_pagemap_kill() is so that any new mapping attempts that are racing
+> > the removal will be blocked.
+>
+> I don't see why this needs a unique notifier. At the filesystem
+> level, we want a single interface that tells us "something bad
+> happened to the block device", not a proliferation of similar but
+> subtly different "bad thing X happened to block device" interfaces
+> that are unique to specific physical device drivers...
+>
+> > The receiver of that notification needs to go from a block_device to a
+> > superblock that has mapped inodes and walk ->sb_inodes triggering the
+> > unmap/invalidation.
+>
+> Not necessarily.
+>
+> What if the filesystem is managing mirrored data across multiple
+> devices and this device is only one leg of the mirror?
+
+I can see DAX mapping for read access to one leg of the mirror. The
+unplug would fire zap_pte for all the inodes with DAX mappings for
+that fs. Filesystem is still free at that point to wait for the next
+user access, take a refault, and re-establish the mapping to another
+leg of the mirror.
+
+> Or that the
+> pmem was used by the RT device in XFS and the data/log devices are
+> still fine?
+
+I was assuming that the callback would only be triggered for a dax
+device as the data device. So xfs_open_devices() would register
+mp->m_super for dax_rtdev.
+
+> What if the pmem is just being used as a cache tier, and
+> no data was actually lost?
+
+That's fine the cache mapping is zapped and re-fault figures out what
+to do. If anything these questions are a reason not to use
+->corrupted_range() for this because recovery can happen at refault vs
+taking permanent action on a data loss event.
+
+>
+> IOWs, what needs to happen at this point is very filesystem
+> specific. Assuming that "device unplug == filesystem dead" is not
+> correct, nor is specifying a generic action that assumes the
+> filesystem is dead because a device it is using went away.
+
+Ok, I think I set this discussion in the wrong direction implying any
+mapping of this action to a "filesystem dead" event. It's just a "zap
+all ptes" event and upper layers recover from there.
