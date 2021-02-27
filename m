@@ -2,117 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B2E326E1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 18:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A51A9326E6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 18:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhB0RHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 12:07:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhB0RCQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 12:02:16 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034FAC06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 09:01:30 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id h98so11607900wrh.11
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 09:01:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PqXGV7zjXw1rNw/jHveNt81v2NuoqJy6tipiJjF8GcQ=;
-        b=KKSaA5547YrwPdvV9eYBziv0bTqz86hbZvOQcvPGIm7Cg1UCTtk55fABOqV3HsnDeQ
-         73rNztZ90cpVFJ4vjLuudasiUway7iRjAVL9xvazHgnG1SlxlOROCjHm8dLD9p+sorhi
-         BYGLQJHHXBwSLUvlcppgrGkJHMVAkII1R/IzxRlkPGqWtdqrm3CmvvbRPg59Y8qVaZhN
-         p8eSojTFo3X2sMyQoCCWudZuy2dFyvi3xbzldg/Adntow2/aPbzi2bbDVVSh8zEuAWKo
-         P17lFrFveoDl0urqJhlmqEcn3Dso5f+yv1AXKZJ+Wgu3/2Yge0ApzDwScTteB5qlStn3
-         /aIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PqXGV7zjXw1rNw/jHveNt81v2NuoqJy6tipiJjF8GcQ=;
-        b=C+zc6CFoAGMjXPiDwC4G3CgCemc9oPuSg+EFjzfzajmKkSMjoSU1EdW+oTMXFpFYHA
-         oL50A9ncpNsCr2MIlMmXa1SNtjQc4KUo3c8xdSpocZiVqpgayJFtY4+H/V3pTDKh6qW9
-         XfKj1ZFepqhhPq5MKHUJ9/a3h2vFPDUnMFVxqDyXSDMnPoykeNku0bsBxAcNy0HJ4azy
-         C3ApsxgCeVNrh793sogt3J6SwJhVpFlgdfIZdivHEDDaPi1SgHmkOHexJ5anNVCVS4h0
-         5D6D+S6iwVXAi4snb73LUn45iOuT1qArqcX1RurtkIeIsLYKI8qKlCHgR8qFjqa4sHc6
-         bhLA==
-X-Gm-Message-State: AOAM5315rLAECwMDTHWfYSPK7HgzttH7NYVXRGb8YU/LIQU0YCGYvfMp
-        kxxt9upoFy8K825Dsp10YNo=
-X-Google-Smtp-Source: ABdhPJzkNScUo/Wr7yoKnSzbvmTWoEh93ni1deVG8FbMmjiClNzW4RCGmO/d8bPLuuit6ApH2iVrcw==
-X-Received: by 2002:adf:ed90:: with SMTP id c16mr8686352wro.215.1614445288512;
-        Sat, 27 Feb 2021 09:01:28 -0800 (PST)
-Received: from localhost.localdomain ([149.74.155.145])
-        by smtp.gmail.com with ESMTPSA id c6sm18578661wrt.26.2021.02.27.09.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Feb 2021 09:01:28 -0800 (PST)
-From:   Javier Contreras <contreras.javi.0@gmail.com>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Javier Contreras <contreras.javi.0@gmail.com>
-Subject: [PATCH] init: init_task.c: fixed two spaces coding style issue
-Date:   Sat, 27 Feb 2021 18:01:18 +0100
-Message-Id: <20210227170118.24056-1-contreras.javi.0@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        id S229999AbhB0Rdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 12:33:47 -0500
+Received: from mout.gmx.net ([212.227.17.20]:38983 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230223AbhB0RWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 12:22:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614446351;
+        bh=f9979xLEL4tmv6pKlArL8pZAWWrdLIZBJP+PfwGW+EA=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=T3kumE5gYLo5QzBPFZQcwh7tzNIsDWpTas1Qg1qFxEPS9RQc2BC9KsO2WOD4pP5Ju
+         ob7lYgT8hsIkERwxAFrpSFyDjoWJC8iZ+QVGqa4M8TYrgOPqE2qGsAo0SBQfPBVkQr
+         /HuPIdPM/nNbfb6Z5sS3AxuDx2aD0fQdQiiF3mWg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.229.153]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MY6Cb-1lJUaB3DxN-00YTBq; Sat, 27 Feb 2021 18:19:10 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
+Cc:     John Wood <john.wood@gmx.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: [PATCH v5 5/8] security/brute: Mitigate a brute force attack
+Date:   Sat, 27 Feb 2021 16:30:10 +0100
+Message-Id: <20210227153013.6747-6-john.wood@gmx.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210227153013.6747-1-john.wood@gmx.com>
+References: <20210227153013.6747-1-john.wood@gmx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:N9BKOY8hiGdBPHnQMaciOAbJcMHRrfanbEh/6b//IXbA/ZK30Qt
+ GWzzwDIpksnfdMGLROP0Qf+owHixm9rLyGW74QMTaex4gWWyZjhWKmwR4tu9Flz8A7R6iZA
+ zzyRVmqA5xFj6Wy4pIEYA4iNGQF5Wg1U6IDEm9x4hxidxG/nGRHMauakmZWTaOlgCY0KyC0
+ 0j9kLkRX8qItyZF2WBicQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kSdF3TXhtH8=:9SQpwjKK38trO/Q6Wq4i0P
+ 1RYb5ygdlQo/huv4F5I2cWU1m7kdTD3s04IEf62MeM9Nh4dy/FC7yYw3/N92PCyUnoEMWF6Ln
+ AWmmVjhXtSCjxZ0ZAqGtAjgvaGke203UeLnCLANXPRX3Fv9X/qfU/SXMA7HTbksKyn9VaKYp5
+ r9iORiEnE9FxjYnEXj6zwwSJTnTayLUTNn7fgqSV9qwVb+4mtt8dOD/iTqk7G7k/dLbFOSDST
+ BU3+AFoeUilaOCIetT64xoeIynNEWNcqSqn2QQ/kEkF9kRYpKkj7bzjHbSkO0Plmq2cTEZ3pB
+ 6Wgj6v5m+PdtBCSA+LWmdQlY/c/oG0YrHLn2VqcWHodxWl89WLe03/AoKEtO7QMoS3VvOOSqA
+ DrL15NWaGtfyYqxp6+YC6jLih+hdaqe6rARcuDdAqXTGmL3yKN5yxiwG9F7zxXQsQEyTxm63Q
+ lWZSlYWvRoV8U8z1l+O5B244cHuyN1TKOag2sUuOsaA4iG4KoXU8diPEtDW9HmotTRrzHD+Pk
+ Di6lYLpyW/urOlXZmEhwqX9i3XfWTkhrxhrZowglIQi2vqXxbg6/RLYJvuJW+QPf7twapHVJ1
+ EsTHP4Ke3+7HYV/0CPUdUOcLLkFX4xqx5Y7YgkV/5N3moFEbriJnFn63cvUcV2caBzXU3fMhb
+ 8zNp/Bpqj14Wa3PCNBh3hpQXVFkee3B7jfzuTLsv1d1UNWxTbkmIMv/H5QUCJ55Af4bhOtdFW
+ kBcn4nw0BwVt/hm/rcM4nLGUgiqfZ8cuVNEcFSZYO1sIsjS8A95U2XTkbfYgkuulOaEsiNYbX
+ nIp2TP3PpI4CUV4aPnRSs5//obp57eJzjnbJna4zaDJNSnidtwmsuMd2jnWTQJ0oooYRfhxSk
+ Bg0+iS09JAaEkCm3Cd5w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed two spaces coding style issue.
+In order to mitigate a brute force attack all the offending tasks involved
+in the attack must be killed. In other words, it is necessary to kill all
+the tasks that share the fork and/or exec statistical data related to the
+attack. Moreover, if the attack happens through the fork system call, the
+processes that have the same group_leader that the current task (the task
+that has crashed) must be avoided since they are in the path to be killed.
 
-Signed-off-by: Javier Contreras <contreras.javi.0@gmail.com>
----
- init/init_task.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+When the SIGKILL signal is sent to the offending tasks, the function
+"brute_kill_offending_tasks" will be called in a recursive way from the
+task_fatal_signal LSM hook due to a small crash period. So, to avoid kill
+again the same tasks due to a recursive call of this function, it is
+necessary to disable the attack detection for the involved hierarchies.
 
-diff --git a/init/init_task.c b/init/init_task.c
-index 3711cdaafed2..85d6b045ef7a 100644
---- a/init/init_task.c
-+++ b/init/init_task.c
-@@ -71,24 +71,24 @@ struct task_struct init_task
- 	.thread_info	= INIT_THREAD_INFO(init_task),
- 	.stack_refcount	= REFCOUNT_INIT(1),
- #endif
--	.state		= 0,
--	.stack		= init_stack,
--	.usage		= REFCOUNT_INIT(2),
--	.flags		= PF_KTHREAD,
--	.prio		= MAX_PRIO - 20,
--	.static_prio	= MAX_PRIO - 20,
--	.normal_prio	= MAX_PRIO - 20,
--	.policy		= SCHED_NORMAL,
--	.cpus_ptr	= &init_task.cpus_mask,
--	.cpus_mask	= CPU_MASK_ALL,
--	.nr_cpus_allowed= NR_CPUS,
--	.mm		= NULL,
--	.active_mm	= &init_mm,
--	.restart_block	= {
-+	.state		 = 0,
-+	.stack		 = init_stack,
-+	.usage		 = REFCOUNT_INIT(2),
-+	.flags		 = PF_KTHREAD,
-+	.prio		 = MAX_PRIO - 20,
-+	.static_prio	 = MAX_PRIO - 20,
-+	.normal_prio	 = MAX_PRIO - 20,
-+	.policy		 = SCHED_NORMAL,
-+	.cpus_ptr	 = &init_task.cpus_mask,
-+	.cpus_mask	 = CPU_MASK_ALL,
-+	.nr_cpus_allowed = NR_CPUS,
-+	.mm		 = NULL,
-+	.active_mm	 = &init_mm,
-+	.restart_block	 = {
- 		.fn = do_no_restart_syscall,
- 	},
- 	.se		= {
--		.group_node 	= LIST_HEAD_INIT(init_task.se.group_node),
-+		.group_node	= LIST_HEAD_INIT(init_task.se.group_node),
- 	},
- 	.rt		= {
- 		.run_list	= LIST_HEAD_INIT(init_task.rt.run_list),
--- 
-2.30.1
+To disable the attack detection, set to zero the last crash timestamp and
+avoid to compute the application crash period in this case.
+
+Signed-off-by: John Wood <john.wood@gmx.com>
+=2D--
+ security/brute/brute.c | 141 ++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 132 insertions(+), 9 deletions(-)
+
+diff --git a/security/brute/brute.c b/security/brute/brute.c
+index 0a99cd4c3303..48b07d923ec7 100644
+=2D-- a/security/brute/brute.c
++++ b/security/brute/brute.c
+@@ -22,6 +22,7 @@
+ #include <linux/math64.h>
+ #include <linux/netdevice.h>
+ #include <linux/path.h>
++#include <linux/pid.h>
+ #include <linux/printk.h>
+ #include <linux/refcount.h>
+ #include <linux/rwlock.h>
+@@ -64,7 +65,7 @@ struct brute_cred {
+  * @lock: Lock to protect the brute_stats structure.
+  * @refc: Reference counter.
+  * @faults: Number of crashes.
+- * @jiffies: Last crash timestamp.
++ * @jiffies: Last crash timestamp. If zero, the attack detection is disab=
+led.
+  * @period: Crash period's moving average.
+  * @saved_cred: Saved credentials.
+  * @network: Network activity flag.
+@@ -566,6 +567,125 @@ static inline void print_fork_attack_running(void)
+ 	pr_warn("Fork brute force attack detected [%s]\n", current->comm);
+ }
+
++/**
++ * brute_disabled() - Test if the brute force attack detection is disable=
+d.
++ * @stats: Statistical data shared by all the fork hierarchy processes.
++ *
++ * The brute force attack detection enabling/disabling is based on the la=
+st
++ * crash timestamp. A zero timestamp indicates that this feature is disab=
+led. A
++ * timestamp greater than zero indicates that the attack detection is ena=
+bled.
++ *
++ * The statistical data shared by all the fork hierarchy processes cannot=
+ be
++ * NULL.
++ *
++ * It's mandatory to disable interrupts before acquiring the brute_stats:=
+:lock
++ * since the task_free hook can be called from an IRQ context during the
++ * execution of the task_fatal_signal hook.
++ *
++ * Context: Must be called with interrupts disabled and brute_stats_ptr_l=
+ock
++ *          held.
++ * Return: True if the brute force attack detection is disabled. False
++ *         otherwise.
++ */
++static bool brute_disabled(struct brute_stats *stats)
++{
++	bool disabled;
++
++	spin_lock(&stats->lock);
++	disabled =3D !stats->jiffies;
++	spin_unlock(&stats->lock);
++
++	return disabled;
++}
++
++/**
++ * brute_disable() - Disable the brute force attack detection.
++ * @stats: Statistical data shared by all the fork hierarchy processes.
++ *
++ * To disable the brute force attack detection it is only necessary to se=
+t the
++ * last crash timestamp to zero. A zero timestamp indicates that this fea=
+ture is
++ * disabled. A timestamp greater than zero indicates that the attack dete=
+ction
++ * is enabled.
++ *
++ * The statistical data shared by all the fork hierarchy processes cannot=
+ be
++ * NULL.
++ *
++ * Context: Must be called with interrupts disabled and brute_stats_ptr_l=
+ock
++ *          and brute_stats::lock held.
++ */
++static inline void brute_disable(struct brute_stats *stats)
++{
++	stats->jiffies =3D 0;
++}
++
++/**
++ * enum brute_attack_type - Brute force attack type.
++ * @BRUTE_ATTACK_TYPE_FORK: Attack that happens through the fork system c=
+all.
++ * @BRUTE_ATTACK_TYPE_EXEC: Attack that happens through the execve system=
+ call.
++ */
++enum brute_attack_type {
++	BRUTE_ATTACK_TYPE_FORK,
++	BRUTE_ATTACK_TYPE_EXEC,
++};
++
++/**
++ * brute_kill_offending_tasks() - Kill the offending tasks.
++ * @attack_type: Brute force attack type.
++ * @stats: Statistical data shared by all the fork hierarchy processes.
++ *
++ * When a brute force attack is detected all the offending tasks involved=
+ in the
++ * attack must be killed. In other words, it is necessary to kill all the=
+ tasks
++ * that share the same statistical data. Moreover, if the attack happens =
+through
++ * the fork system call, the processes that have the same group_leader th=
+at the
++ * current task must be avoided since they are in the path to be killed.
++ *
++ * When the SIGKILL signal is sent to the offending tasks, this function =
+will be
++ * called again from the task_fatal_signal hook due to a small crash peri=
+od. So,
++ * to avoid kill again the same tasks due to a recursive call of this fun=
+ction,
++ * it is necessary to disable the attack detection for this fork hierarch=
+y.
++ *
++ * The statistical data shared by all the fork hierarchy processes cannot=
+ be
++ * NULL.
++ *
++ * It's mandatory to disable interrupts before acquiring the brute_stats:=
+:lock
++ * since the task_free hook can be called from an IRQ context during the
++ * execution of the task_fatal_signal hook.
++ *
++ * Context: Must be called with interrupts disabled and tasklist_lock and
++ *          brute_stats_ptr_lock held.
++ */
++static void brute_kill_offending_tasks(enum brute_attack_type attack_type=
+,
++				       struct brute_stats *stats)
++{
++	struct task_struct *p;
++	struct brute_stats **p_stats;
++
++	spin_lock(&stats->lock);
++
++	if (attack_type =3D=3D BRUTE_ATTACK_TYPE_FORK &&
++	    refcount_read(&stats->refc) =3D=3D 1) {
++		spin_unlock(&stats->lock);
++		return;
++	}
++
++	brute_disable(stats);
++	spin_unlock(&stats->lock);
++
++	for_each_process(p) {
++		if (attack_type =3D=3D BRUTE_ATTACK_TYPE_FORK &&
++		    p->group_leader =3D=3D current->group_leader)
++			continue;
++
++		p_stats =3D brute_stats_ptr(p);
++		if (*p_stats !=3D stats)
++			continue;
++
++		do_send_sig_info(SIGKILL, SEND_SIG_PRIV, p, PIDTYPE_PID);
++		pr_warn_ratelimited("Offending process %d [%s] killed\n",
++				    p->pid, p->comm);
++	}
++}
++
+ /**
+  * brute_manage_fork_attack() - Manage a fork brute force attack.
+  * @stats: Statistical data shared by all the fork hierarchy processes.
+@@ -581,8 +701,8 @@ static inline void print_fork_attack_running(void)
+  * since the task_free hook can be called from an IRQ context during the
+  * execution of the task_fatal_signal hook.
+  *
+- * Context: Must be called with interrupts disabled and brute_stats_ptr_l=
+ock
+- *          held.
++ * Context: Must be called with interrupts disabled and tasklist_lock and
++ *          brute_stats_ptr_lock held.
+  * Return: The last crash timestamp before updating it.
+  */
+ static u64 brute_manage_fork_attack(struct brute_stats *stats, u64 now)
+@@ -590,8 +710,10 @@ static u64 brute_manage_fork_attack(struct brute_stat=
+s *stats, u64 now)
+ 	u64 last_fork_crash;
+
+ 	last_fork_crash =3D brute_update_crash_period(stats, now);
+-	if (brute_attack_running(stats))
++	if (brute_attack_running(stats)) {
+ 		print_fork_attack_running();
++		brute_kill_offending_tasks(BRUTE_ATTACK_TYPE_FORK, stats);
++	}
+
+ 	return last_fork_crash;
+ }
+@@ -778,8 +900,10 @@ static void brute_manage_exec_attack(struct brute_sta=
+ts *stats, u64 now,
+ 	if (fork_period =3D=3D exec_period)
+ 		return;
+
+-	if (brute_attack_running(exec_stats))
++	if (brute_attack_running(exec_stats)) {
+ 		print_exec_attack_running(exec_stats);
++		brute_kill_offending_tasks(BRUTE_ATTACK_TYPE_EXEC, exec_stats);
++	}
+ }
+
+ /**
+@@ -895,10 +1019,9 @@ static void brute_task_fatal_signal(const kernel_sig=
+info_t *siginfo)
+ 	read_lock(&tasklist_lock);
+ 	read_lock_irqsave(&brute_stats_ptr_lock, flags);
+
+-	if (WARN(!*stats, "No statistical data\n"))
+-		goto unlock;
+-
+-	if (!brute_threat_model_supported(siginfo, *stats))
++	if (WARN(!*stats, "No statistical data\n") ||
++	    brute_disabled(*stats) ||
++	    !brute_threat_model_supported(siginfo, *stats))
+ 		goto unlock;
+
+ 	last_fork_crash =3D brute_manage_fork_attack(*stats, now);
+=2D-
+2.25.1
 
