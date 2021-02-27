@@ -2,79 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F55326BE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 06:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89296326BEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 07:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhB0F5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 00:57:17 -0500
-Received: from conuserg-12.nifty.com ([210.131.2.79]:45246 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhB0F5P (ORCPT
+        id S230041AbhB0GBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 01:01:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229989AbhB0GBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 00:57:15 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 11R5u3gx010766;
-        Sat, 27 Feb 2021 14:56:03 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 11R5u3gx010766
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614405364;
-        bh=/q1Avax0ounMnO0YqBoMtCz7O0Hq5Yo1VY1sj8TE76w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oji/EvEK8zD65htnWnKXSLjxEQFnsMzalHV0AIUCEuQLzn9vdcIOlGBfmTuqyoMCC
-         /QpTFa6ccDaoeVed5HiyssjbtKBvAQqIiYH7YyJilAy1tWWhkVqO0Oxhw8Yut6GDgA
-         plfRQCaGkXzGoi6/+zrMQcb0YLkcpJXyjfZRxnzFcXtJ4kxIlF4Laae89XjxpVSQwH
-         mnYmFlOHzc5theBAyzIANeJ9jMLUQKcyKjk0Kdh/OffG+bvkTm2yWHyVI9Rs3kKGUA
-         VG58a85FoAGQqOhFh8sXAE6WqjybH094qLI7T+PTjOCNw5P4jlehXgc2FZDV9EPb67
-         0gj987T4pI4vg==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>
-Subject: [PATCH] nios2: add arch/nios2/Kbuild
-Date:   Sat, 27 Feb 2021 14:56:00 +0900
-Message-Id: <20210227055600.4075333-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Sat, 27 Feb 2021 01:01:16 -0500
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606D4C06174A;
+        Fri, 26 Feb 2021 22:00:36 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lFseT-001Ggb-U6; Sat, 27 Feb 2021 06:00:30 +0000
+Date:   Sat, 27 Feb 2021 06:00:29 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [git pull] vfs.git misc stuff
+Message-ID: <YDnf/cY4c0uOIcVd@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the standard obj-y form to specify the sub-directories under
-arch/nios2/. No functional change intended.
+	Assorted stuff pile - no common topic here.
+One trivial conflict in Documentation/filesystems/porting.rst  
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
- arch/nios2/Kbuild   | 2 ++
- arch/nios2/Makefile | 3 +--
- 2 files changed, 3 insertions(+), 2 deletions(-)
- create mode 100644 arch/nios2/Kbuild
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 
-diff --git a/arch/nios2/Kbuild b/arch/nios2/Kbuild
-new file mode 100644
-index 000000000000..98b454beae92
---- /dev/null
-+++ b/arch/nios2/Kbuild
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-y += kernel/ mm/ platform/
-diff --git a/arch/nios2/Makefile b/arch/nios2/Makefile
-index 52c03e60b114..f06ac8c6c7ea 100644
---- a/arch/nios2/Makefile
-+++ b/arch/nios2/Makefile
-@@ -40,8 +40,7 @@ KBUILD_CFLAGS += -G 0
- 
- head-y		:= arch/nios2/kernel/head.o
- libs-y		+= arch/nios2/lib/ $(LIBGCC)
--core-y		+= arch/nios2/kernel/ arch/nios2/mm/
--core-y		+= arch/nios2/platform/
-+core-y		+= arch/nios2/
- 
- INSTALL_PATH ?= /tftpboot
- nios2-boot := arch/$(ARCH)/boot
--- 
-2.27.0
+are available in the git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.misc
+
+for you to fetch changes up to 6f24784f00f2b5862b367caeecc5cca22a77faa3:
+
+  whack-a-mole: don't open-code iminor/imajor (2021-02-23 10:25:29 -0500)
+
+----------------------------------------------------------------
+Al Viro (3):
+      audit_alloc_mark(): don't open-code ERR_CAST()
+      9p: fix misuse of sscanf() in v9fs_stat2inode()
+      whack-a-mole: don't open-code iminor/imajor
+
+Eric Biggers (2):
+      vfs: don't unnecessarily clone write access for writable fds
+      fs/inode.c: make inode_init_always() initialize i_ino to 0
+
+ Documentation/filesystems/porting.rst  |  7 +++++
+ arch/sh/boards/mach-landisk/gio.c      |  6 ++--
+ drivers/block/loop.c                   |  2 +-
+ drivers/dax/super.c                    |  2 +-
+ drivers/rtc/rtc-m41t80.c               |  4 +--
+ drivers/s390/char/vmur.c               |  2 +-
+ drivers/staging/vme/devices/vme_user.c | 12 ++++----
+ fs/9p/vfs_inode.c                      | 21 ++++++--------
+ fs/gfs2/inode.c                        |  4 +--
+ fs/inode.c                             |  1 +
+ fs/jfs/super.c                         |  1 -
+ fs/namespace.c                         | 53 +++++++++++++---------------------
+ include/linux/mount.h                  |  1 -
+ kernel/audit_fsnotify.c                |  2 +-
+ 14 files changed, 53 insertions(+), 65 deletions(-)
