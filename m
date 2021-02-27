@@ -2,138 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8A1326BEE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 07:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE11C326BF8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 07:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhB0GDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 01:03:03 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:50822 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhB0GDA (ORCPT
+        id S229953AbhB0G1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 01:27:25 -0500
+Received: from conuserg-08.nifty.com ([210.131.2.75]:23578 "EHLO
+        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhB0G1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 01:03:00 -0500
-Received: by mail-io1-f71.google.com with SMTP id w15so8945699ioa.17
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 22:02:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5Rvpq0XsNHUHuj6bSqvupVKIf/dYlzM+MjqKaai2hjk=;
-        b=I3Ec4n1LnAwysLLGt25cqtTzus+q2MItLqcuKeJAS0h1iFLty9k7Op2j2GYIbX0AxH
-         qawEP61smHqXLQkm6tngyIF7AgvOFK6wDZkzhIUt1gTPq7vBNIa7KdLX2YENC5wC1XE9
-         zPAfPVeAF7m5L6jlwoDN/g7I+o984FCBrZ27YziUZRfxPMfPKsk0fPbim96uhBkMF5L6
-         Un2GbPOXnObFAxOEb/SbyaBEFgA8xsuSnsMtzT27nvaVjKhTrV8Jtusv0s/JZ5FfPUhU
-         VGWQ41q6yDQscdm6OFKKjmBZXqo+piO1UtgkfsukMhIYnnlfdHaxr1ew6LEZyE0bxJ5f
-         oFKA==
-X-Gm-Message-State: AOAM533S9j9iktEeENC7XBtnsW7ctIzMRRGo52M4rKjTW/9Bzt5h2hZY
-        M5mV5McABlO7kzbhR55khGphF5RMRjyHRWlD4UawI77mLVWc
-X-Google-Smtp-Source: ABdhPJw4kba9ucswxdfQlxaeZpaCCLfHIH7Vpaw2l1GUdYWI54Wr0v40j2xE0mFfTAMOeF4urdAxezMiymwCPxksbCKM2hVjiHwl
+        Sat, 27 Feb 2021 01:27:22 -0500
+Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-08.nifty.com with ESMTP id 11R6QMHG007635;
+        Sat, 27 Feb 2021 15:26:23 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 11R6QMHG007635
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614407183;
+        bh=aKY/yH1zHb7OPSoBCjjFTImuEDgWLl8bijXnPmZ+cNM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=o/A9YOc94Jz8rKw4xIr7Db38CnPxNjhpDVgZHgDyWEaFmR7l6qhe0jQNqjaldIGAB
+         IdGdZDSQZRlbQrJhZw0eJ2saWdAgjV/JjMhntEEmWDccyBs7VFuqw1dB8MZjNErJ91
+         cdtHhzhnV9NKC9s1I6OiAFyiTx9L8irJiJv9e6B0oobcFu3J7IVUHd9AHbKs83Cjop
+         wiXxkR/9w6GB0F78UuyuKepI18tUSFsmVmuLb86AgsELO8SFwglRlimxNhFk6yT3wV
+         5INNAwu8PM4jUIi+yz6zw/0fIvEwBYdotM/n/DPTB8xkF299XbzznkPDLqzYRr33rH
+         EJHXSOEAiaZgg==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: [PATCH] kbuild: make -s option take precedence over V=
+Date:   Sat, 27 Feb 2021 15:26:20 +0900
+Message-Id: <20210227062620.44708-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:da11:: with SMTP id z17mr5148259ilm.45.1614405739499;
- Fri, 26 Feb 2021 22:02:19 -0800 (PST)
-Date:   Fri, 26 Feb 2021 22:02:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a054ee05bc4b2009@google.com>
-Subject: BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (2)
-From:   syzbot <syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+'make -s' should be really silent. However, 'make -s V=1' prints noisy
+log messages from some shell scripts.
 
-syzbot found the following issue on:
+Of course, the combination of -s and V=1 is odd, but the build system
+needs to do the right thing even if a user gives strange input.
 
-HEAD commit:    557c223b selftests/bpf: No need to drop the packet when th..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=156409a8d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8307379601586a
-dashboard link: https://syzkaller.appspot.com/bug?extid=9bbbacfbf1e04d5221f7
+If -s is given, KBUILD_VERBOSE should be forced to 0.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9bbbacfbf1e04d5221f7@syzkaller.appspotmail.com
-
-netlink: 'syz-executor.4': attribute type 10 has an invalid length.
-BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!
-turning off the locking correctness validator.
-CPU: 1 PID: 22786 Comm: syz-executor.4 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- add_chain_cache kernel/locking/lockdep.c:3540 [inline]
- lookup_chain_cache_add kernel/locking/lockdep.c:3621 [inline]
- validate_chain kernel/locking/lockdep.c:3642 [inline]
- __lock_acquire.cold+0x3af/0x3b4 kernel/locking/lockdep.c:4900
- lock_acquire kernel/locking/lockdep.c:5510 [inline]
- lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
- do_write_seqcount_begin_nested include/linux/seqlock.h:520 [inline]
- do_write_seqcount_begin include/linux/seqlock.h:545 [inline]
- psi_group_change+0x123/0x8d0 kernel/sched/psi.c:707
- psi_task_change+0x142/0x220 kernel/sched/psi.c:807
- psi_enqueue kernel/sched/stats.h:82 [inline]
- enqueue_task kernel/sched/core.c:1590 [inline]
- activate_task kernel/sched/core.c:1613 [inline]
- ttwu_do_activate+0x25b/0x660 kernel/sched/core.c:2991
- ttwu_queue kernel/sched/core.c:3188 [inline]
- try_to_wake_up+0x60e/0x14a0 kernel/sched/core.c:3466
- wake_up_worker kernel/workqueue.c:837 [inline]
- insert_work+0x2a0/0x370 kernel/workqueue.c:1346
- __queue_work+0x5c1/0xf00 kernel/workqueue.c:1497
- __queue_delayed_work+0x1c8/0x270 kernel/workqueue.c:1644
- mod_delayed_work_on+0xdd/0x1e0 kernel/workqueue.c:1718
- mod_delayed_work include/linux/workqueue.h:537 [inline]
- addrconf_mod_dad_work net/ipv6/addrconf.c:328 [inline]
- addrconf_dad_start net/ipv6/addrconf.c:4013 [inline]
- addrconf_add_linklocal+0x321/0x590 net/ipv6/addrconf.c:3186
- addrconf_addr_gen+0x3a4/0x3e0 net/ipv6/addrconf.c:3313
- addrconf_dev_config+0x26c/0x410 net/ipv6/addrconf.c:3360
- addrconf_notify+0x362/0x23e0 net/ipv6/addrconf.c:3593
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2063
- call_netdevice_notifiers_extack net/core/dev.c:2075 [inline]
- call_netdevice_notifiers net/core/dev.c:2089 [inline]
- dev_open net/core/dev.c:1592 [inline]
- dev_open+0x132/0x150 net/core/dev.c:1580
- team_port_add drivers/net/team/team.c:1210 [inline]
- team_add_slave+0xa53/0x1c20 drivers/net/team/team.c:1967
- do_set_master+0x1c8/0x220 net/core/rtnetlink.c:2519
- do_setlink+0x920/0x3a70 net/core/rtnetlink.c:2715
- __rtnl_newlink+0xdc6/0x1710 net/core/rtnetlink.c:3376
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2348
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2402
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2435
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x465ef9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f2db3282188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465ef9
-RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000004
-RBP: 00000000004bcd1c R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007ffea3f3a6af R14: 00007f2db3282300 R15: 0000000000022000
-team0: Device ipvlan0 failed to register rx_handler
-
-
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Makefile b/Makefile
+index 6ecd0d22e608..0a655469cafb 100644
+--- a/Makefile
++++ b/Makefile
+@@ -96,6 +96,7 @@ endif
+ 
+ ifneq ($(findstring s,$(filter-out --%,$(MAKEFLAGS))),)
+   quiet=silent_
++  KBUILD_VERBOSE = 0
+ endif
+ 
+ export quiet Q KBUILD_VERBOSE
+-- 
+2.27.0
+
