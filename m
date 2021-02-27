@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB44F326A98
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:03:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E85326A9D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 01:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhB0AB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Feb 2021 19:01:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
+        id S230019AbhB0AHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Feb 2021 19:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhB0AB1 (ORCPT
+        with ESMTP id S229745AbhB0AHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Feb 2021 19:01:27 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA9C9C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 16:00:46 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id d3so16337058lfg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 16:00:46 -0800 (PST)
+        Fri, 26 Feb 2021 19:07:44 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A61C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 16:07:03 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id g9so9570539ilc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Feb 2021 16:07:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aYTn2RsRhI2Df4daFJ4TP47tBaYxEFBrTiAP9a7aC0g=;
-        b=o6kPKv3wxHpYD7k0rSRibyaVaAgQcF7OL+FgLZX5IjA8o9dsnsMMZTQRZK+6EXxWJC
-         uvIgLCy/2HjaZo30sdFqu2ProOkM14RhejEz+IbJLZhfw7/HuPpEdpybozAIDg5jVlBh
-         E/hWwYj8syeS8vW3FPsSZUSnbdQ3rnDKGLQwqxYim8+jPVjTVLJVqsz5JIpPxtWncwcV
-         RTHTwex6oYezFpoiIrQpPclJS0rfYzXkUWoMpC08RmIb138+XIz93D9ZqEvQt8rpuHsm
-         8RA/KfM1IcODGdWZwIAoK2PQSlqayTV2h3aq2KlfyK/8EjHXcGsQPRYWszFHbQ62lOvq
-         pm/w==
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OSmlNKAH65bzlnQXsk21f+18mG93Ep8ybFIZEp9s10U=;
+        b=Zb2vsPMYmiEqTdjWpz46Iy4Guw0uZfsmTR8lWFEGzTskhLkQtwu7rX8BTJ61kA9XZP
+         4P/tjGg6FpU88o3v9O6XvZrGDP4NtyxelZCvZ9Eu98a9eXgj/MY0A+4uAodEbKaA+cWJ
+         po9s6C9FB1Vr+WYeAzAbOnsyinTTfofwEpQag=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aYTn2RsRhI2Df4daFJ4TP47tBaYxEFBrTiAP9a7aC0g=;
-        b=Yd5Rh/Bn4hMP0akUGFrILhurq08W8weNUMjhUiiDXhWNJhC+2VU98NLQ5BfpOHaCL3
-         /TiV9/OBZIfcxBXxwqtJOqTb/TnDvJsDE0RHR86PL1LTtef857bq16P8Vvb7R5i0wSQM
-         fPkBWbcHCL0uCPVbcphwTkzR50QzotBnLMAsy3WgKMIty5KUrpqcTSYfjrjYS8B7usvY
-         H3/e+UdGP8TMCMMPpbdn1Zgnwd1FC4Zgb6GThd4sZMjB2XvvR7nLinTFC41dc1bmlwi2
-         oqtmPkerXX3w9V3/gFeXLKgOGSpxqN/kt4RrIsBW9/XOKjO35c7tOgSX+NRgSSpmoGRz
-         0zFg==
-X-Gm-Message-State: AOAM530KDKqxCqNVYREJEkn7eA4ZjGsaExSaeRnw4mIoWXomdmKkjOZR
-        RPaUiI1anSxjBhR1NEC2wzYp8j2cXqy7Ty8yruH4Mw==
-X-Google-Smtp-Source: ABdhPJwOLCGXvB6scWEWV0XJGGu89gKZEPooyWEQwZolS/vKBxz5Gv+zx3mcESOVxxhMMU10WmGnMlbyLNlZ41ABbQo=
-X-Received: by 2002:a05:6512:942:: with SMTP id u2mr3106548lft.117.1614384044474;
- Fri, 26 Feb 2021 16:00:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OSmlNKAH65bzlnQXsk21f+18mG93Ep8ybFIZEp9s10U=;
+        b=KyF1QbswhrP2wRrEHmIyZkfNjIuwBSLrr89cCbY5Ke6ZC7ogMn+6wqclLZiVJbkFvT
+         1E9Fxlz/pvLaZVMxqSsud7wXK17l7lXV6F6FwGXiE65ZSwU530Hu8Qg3hruL/KsSOEoH
+         kbpPzAOJ9J3UoAZA+qxJ5TFVDff+D+hW+UnDiAkaP6bcB/myjdWij5y3mp/QZzVMPoDi
+         Mr63pQsLBJ9JkNnzJku2oxLrGbVYFyo6IFtArKDz3v0XpiKkU/imOgN9R+I/JxXxU2gq
+         QAPKFJtBJsXYYsrbxLpOOk9YiojyNA1+ndh0F6UNeL2CjdLgyrlLojOSW+K+xSf7Iopk
+         kWTQ==
+X-Gm-Message-State: AOAM533MRXMT0SEw6ZLP496k9VpKX9z2ICHVU+IoDlJsiajcIVcWrPwE
+        VR/JzoegN9KMs2ON8ZCaFLRB6g==
+X-Google-Smtp-Source: ABdhPJweVmTRywkMYBz2Qghux6InHjNKdPGIkkwPvC9/BRfhxBjqwSHM4Pnp6/Rz/easnQEPe+Li/w==
+X-Received: by 2002:a92:4412:: with SMTP id r18mr4455803ila.170.1614384422849;
+        Fri, 26 Feb 2021 16:07:02 -0800 (PST)
+Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id w16sm5228805ilh.35.2021.02.26.16.07.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Feb 2021 16:07:02 -0800 (PST)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     Shuah Khan <skhan@linuxfoundation.org>, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] Add lockdep_assert_not_held()
+Date:   Fri, 26 Feb 2021 17:06:57 -0700
+Message-Id: <cover.1614383025.git.skhan@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <000000000000f1c03b05bc43aadc@google.com> <CALvZod4vGj0P6WKncdKpGaVEb1Ui_fyHm+-hbCJTmbvo43CJ=A@mail.gmail.com>
- <7b7c4f41-b72e-840f-278a-320b9d97f887@oracle.com>
-In-Reply-To: <7b7c4f41-b72e-840f-278a-320b9d97f887@oracle.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 26 Feb 2021 16:00:30 -0800
-Message-ID: <CALvZod5qODDSxqHqQ=_1roYVGVVvEvP3FnYMnAPQZgvUjxotsw@mail.gmail.com>
-Subject: Re: possible deadlock in sk_clone_lock
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     syzbot <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 3:14 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> Cc: Michal
->
-> On 2/26/21 2:44 PM, Shakeel Butt wrote:
-> > On Fri, Feb 26, 2021 at 2:09 PM syzbot
-> > <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com> wrote:
-> <snip>
-> >> other info that might help us debug this:
-> >>
-> >>  Possible interrupt unsafe locking scenario:
-> >>
-> >>        CPU0                    CPU1
-> >>        ----                    ----
-> >>   lock(hugetlb_lock);
-> >>                                local_irq_disable();
-> >>                                lock(slock-AF_INET);
-> >>                                lock(hugetlb_lock);
-> >>   <Interrupt>
-> >>     lock(slock-AF_INET);
-> >>
-> >>  *** DEADLOCK ***
-> >
-> > This has been reproduced on 4.19 stable kernel as well [1] and there
-> > is a reproducer as well.
-> >
-> > It seems like sendmsg(MSG_ZEROCOPY) from a buffer backed by hugetlb. I
-> > wonder if we just need to make hugetlb_lock softirq-safe.
-> >
-> > [1] https://syzkaller.appspot.com/bug?extid=6383ce4b0b8ec575ad93
->
-> Thanks Shakeel,
->
-> Commit c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in non-task
-> context") attempted to address this issue.  It uses a work queue to
-> acquire hugetlb_lock if the caller is !in_task().
->
-> In another recent thread, there was the suggestion to change the
-> !in_task to in_atomic.
->
-> I need to do some research on the subtle differences between in_task,
-> in_atomic, etc.  TBH, I 'thought' !in_task would prevent the issue
-> reported here.  But, that obviously is not the case.
+Some kernel functions must not be called holding a specific lock. Doing
+so could lead to locking problems. Currently these routines call
+lock_is_held() to check for lock hold followed by WARN_ON.
 
-I think the freeing is happening in the process context in this report
-but it is creating the lock chain from softirq-safe slock to
-irq-unsafe hugetlb_lock. So, two solutions I can think of are: (1)
-always defer the freeing of hugetlb pages to a work queue or (2) make
-hugetlb_lock softirq-safe.
+Adding a common lockdep interface will help reduce the duplication of this
+logic in the rest of the kernel.
+
+Add lockdep_assert_not_held() to be used in these functions to detect
+incorrect calls while holding a lock.
+
+lockdep_assert_not_held() provides the opposite functionality of
+lockdep_assert_held() which is used to assert calls that require
+holding a specific lock.
+
+The need for lockdep_assert_not_held() came up in a discussion on
+ath10k patch. ath10k_drain_tx() and i915_vma_pin_ww() are examples
+of functions that can use lockdep_assert_not_held().
+
+Link: https://lore.kernel.org/lkml/37a29c383bff2fb1605241ee6c7c9be3784fb3c6.1613171185.git.skhan@linuxfoundation.org/
+Link: https://lore.kernel.org/linux-wireless/871rdmu9z9.fsf@codeaurora.org/
+
+This patch series adds lockdep_assert_not_held() and uses it in the
+second patch in ath10k_drain_tx() function.
+
+Changes since v2:
+-- Fixed coding style issues
+-- Patch 2 uses new lock states in __lock_is_held() and
+   lock_is_held_type
+
+Patch 1 incorporates suggestions from Peter Zijlstra on v1 series
+to avoid misfires when lockdep_off() is employed.
+
+Patch 2 Johannes Berg's suggestions as it make it easier to read and
+maintain the lock states. These are defines and a enum to avoid changes
+to lock_is_held_type() and lockdep_is_held() return types.
+
+Patch 2 is a separate patch because it adds defines to lockdep.h and
+kernel/locking/lockdep.c now includes lockdep.h - decided make this
+a separate patch just in case issues related to header dependencies
+pop up. I can combine Patches 1&2 if that is preferred.
+
+Patch 3 uses the new interface in ath10k_drain_tx() function. Added
+Kalle Valo's Ack from v1 for this change.
+
+Tested on the mainline from yesterday.
+
+Shuah Khan (3):
+  lockdep: add lockdep_assert_not_held()
+  lockdep: add lockdep lock state defines
+  ath10k: detect conf_mutex held ath10k_drain_tx() calls
+
+ drivers/net/wireless/ath/ath10k/mac.c |  2 ++
+ include/linux/lockdep.h               | 18 +++++++++++++++---
+ kernel/locking/lockdep.c              | 15 ++++++++++-----
+ 3 files changed, 27 insertions(+), 8 deletions(-)
+
+-- 
+2.27.0
+
