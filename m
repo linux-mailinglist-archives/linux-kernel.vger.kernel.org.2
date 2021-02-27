@@ -2,101 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F64326D50
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 14:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C45326D57
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 15:01:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhB0N6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 08:58:54 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:63762 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230001AbhB0N6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 08:58:53 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614434314; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=gTwquvFrx7AN37qAgtjT40H+hxoUXNtw3JF4EET/sGU=;
- b=psuuyP7fZB7Drl6RFZhH8+c/BVM81vABbnbjoDAXue5JOHL8fVvoyGpW4dBAtj/JQN2Sy2eN
- y4NFjMosb38GgV12eFI++1J4QOBZ80+VwkNQbcsnezpPuRlW3tCco0oAR9OSJUHaVhpP7meL
- 5+JXqFjb8tGpBLx7GsvIVDakzOE=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 603a50027aa94c52e7f15581 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 27 Feb 2021 13:58:26
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7159BC43463; Sat, 27 Feb 2021 13:58:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ABA73C433C6;
-        Sat, 27 Feb 2021 13:58:25 +0000 (UTC)
+        id S230207AbhB0OAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 09:00:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhB0OAJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 09:00:09 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB68C061756;
+        Sat, 27 Feb 2021 05:59:29 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id u11so3991085wmq.5;
+        Sat, 27 Feb 2021 05:59:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tvAI4IdeCO4sgAZNtE9xDAeulh8mRYshdjpgF2TPJtQ=;
+        b=b3FMrX8YKqdozH2POjKQ+nxkWJquvm5hRtl3h1dXTQJoPlINIRcY6gEeQWkGu4UwTf
+         3JgyqYgejIWxklabYKU1NL1rsXaPWtA6qB/9OGWxoUuCGMQ2ga9eyaUTow9ROHIPX6s1
+         gO9PUHl5oM30m63BL+b5iWtgPAIPSCgup+sieUe8U/PEJwCIIObPyKuTCxjx36guplVJ
+         AcUt8MXyc60m7K1uFQA25F63QMDHrzDrQ9gYprwbfkoBBmZj0FNxFxS6F29Zn5UzOl11
+         ILjHw9/94z7IjKjZEQAI5zaeCmA8kq6AcBom8vo5MsdIQSg/h7eYKD4z2Wt/jmJEahdQ
+         Yv0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tvAI4IdeCO4sgAZNtE9xDAeulh8mRYshdjpgF2TPJtQ=;
+        b=e6COPEbP0AD+vm1rh50eRl/LIhmz48No6XhS5JgWoOp3hxcOHVAkZDNe752dCCG6QA
+         XUnu45K6xgrpch+EKUTk34wprterSmerkUhxq5RTDDKFdKzXPzJhEDz7qwJVHS5RRn1o
+         4f/QrsC6dfcNIzOBaR3hnVMvuLLAJE/0KUhIsITCf7OOi9ykK8acrX/2Z/0Mw64K5JvU
+         geQDf0pvMMqFGlS1oTsgrlTuqyvzjLXHvGMjzxZR+PAqthFoledR5NX+AYHvooqu/UsT
+         ANQ6czEvrm718NmDq6lO3Y2mpg8zYplQfarhwCxTnC39lhILL16+TaCLYfofVLO2Svc+
+         NzWw==
+X-Gm-Message-State: AOAM5319eAKKY6JwHco5G7omM37djwLWc+y6drjXt1X5EBYgap0PIopM
+        +CCOsPvhkIMgRbiG5VWj6s8=
+X-Google-Smtp-Source: ABdhPJwYoK9qHMRToQ8OSAFFvjw3ofxdQdQc+A0olkG2RZQTSwYLePQCK0BRbAbiYqgeGFJSaZF0fA==
+X-Received: by 2002:a05:600c:350c:: with SMTP id h12mr7336570wmq.39.1614434367999;
+        Sat, 27 Feb 2021 05:59:27 -0800 (PST)
+Received: from localhost.localdomain ([170.253.51.130])
+        by smtp.googlemail.com with ESMTPSA id f22sm3871680wmc.33.2021.02.27.05.59.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Feb 2021 05:59:27 -0800 (PST)
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+To:     Amir Goldstein <amir73il@gmail.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        linux-man@vger.kernel.org, Luis Henriques <lhenriques@suse.de>
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Walter Harms <wharms@bfs.de>
+Subject: [RFC v2] copy_file_range.2: Update cross-filesystem support for 5.12
+Date:   Sat, 27 Feb 2021 14:49:23 +0100
+Message-Id: <20210227134922.5706-1-alx.manpages@gmail.com>
+X-Mailer: git-send-email 2.30.1.721.g45526154a5
+In-Reply-To: <ffd92bb4-8f72-cbec-045f-a2ad7869ab3b@gmail.com>
+References: <ffd92bb4-8f72-cbec-045f-a2ad7869ab3b@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 27 Feb 2021 19:28:25 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>
-Subject: Re: [PATCH 3/9] arm64: dts: qcom: sc7280: Add device tree node for
- LLCC
-In-Reply-To: <161436514295.1254594.2789904935200051795@swboyd.mtv.corp.google.com>
-References: <cover.1614244789.git.saiprakash.ranjan@codeaurora.org>
- <c4b7ae4dd009f563e6786f4a41f09efa38636fb6.1614244789.git.saiprakash.ranjan@codeaurora.org>
- <161428185152.1254594.1426736986245389798@swboyd.mtv.corp.google.com>
- <a35e6dcba758be4af3d111fe92cfbcd6@codeaurora.org>
- <161436514295.1254594.2789904935200051795@swboyd.mtv.corp.google.com>
-Message-ID: <48278c3db41c3f46eac8892d1383444c@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-27 00:15, Stephen Boyd wrote:
-> Quoting Sai Prakash Ranjan (2021-02-26 00:04:27)
->> On 2021-02-26 01:07, Stephen Boyd wrote:
->> > Quoting Sai Prakash Ranjan (2021-02-25 01:30:19)
->> >> Add a DT node for Last level cache (aka. system cache)
->> >> controller which provides control over the last level
->> >> cache present on SC7280 SoC.
->> >>
->> >> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> >> ---
->> >
->> > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
->> >
->> > Should add system-cache-controller to the devicetree spec. Or just use
->> > cache-controller for the node name.
->> 
->> This was as per discussion in [1][2] where dt-schema throws an error
->> since it expects cache-level to be associated with cache-controller.
->> 
-> 
-> Ah right. Can you add system-cache-controller to the dt spec?
+Linux 5.12 fixes a regression.
 
-Sure, I'll add it. Hopefully that won't have to block this change?
-Because I might need some time to get permissions to add it there.
+Cross-filesystem copies (introduced in 5.3) were buggy.
+
+Move the statements documenting cross-fs to BUGS.
+Kernels 5.3..5.11 should be patched soon.
+
+State version information for some errors related to this.
+
+Reported-by: Luis Henriques <lhenriques@suse.de>
+Reported-by: Amir Goldstein <amir73il@gmail.com>
+Related: <https://lwn.net/Articles/846403/>
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Cc: Michael Kerrisk <mtk.manpages@gmail.com>
+Cc: Anna Schumaker <anna.schumaker@netapp.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+Cc: Steve French <sfrench@samba.org>
+Cc: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Dave Chinner <dchinner@redhat.com>
+Cc: Nicolas Boichat <drinkcat@chromium.org>
+Cc: Ian Lance Taylor <iant@google.com>
+Cc: Luis Lozano <llozano@chromium.org>
+Cc: Andreas Dilger <adilger@dilger.ca>
+Cc: Olga Kornievskaia <aglo@umich.edu>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: ceph-devel <ceph-devel@vger.kernel.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: CIFS <linux-cifs@vger.kernel.org>
+Cc: samba-technical <samba-technical@lists.samba.org>
+Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Cc: Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Cc: Walter Harms <wharms@bfs.de>
+Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+---
+
+Hi all,
+
+Please check that this is correct.
+I wrote it as I understood copy_file_range() from the LWN article,
+and the conversation on this thread,
+but maybe someone with more experience on this syscall find bugs in my patch.
+
+When kernels 5.3..5.11 fix this, some info could be compacted a bit more,
+and maybe the BUGS section could be removed.
+
+Also, I'd like to know which filesystems support cross-fs, and since when.
+
+Amir, you said that it was only cifs and nfs (since when? 5.3? 5.12?).
+
+Also, I'm a bit surprised that <5.3 could fail with EOPNOTSUPP
+and it wasn't documented.  Is that for sure, Amir?
 
 Thanks,
-Sai
 
+Alex
+
+---
+ man2/copy_file_range.2 | 29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
+
+diff --git a/man2/copy_file_range.2 b/man2/copy_file_range.2
+index 611a39b80..93f54889d 100644
+--- a/man2/copy_file_range.2
++++ b/man2/copy_file_range.2
+@@ -169,6 +169,9 @@ Out of memory.
+ .B ENOSPC
+ There is not enough space on the target filesystem to complete the copy.
+ .TP
++.BR EOPNOTSUPP " (before Linux 5.3; or since Linux 5.12)"
++The filesystem does not support this operation.
++.TP
+ .B EOVERFLOW
+ The requested source or destination range is too large to represent in the
+ specified data types.
+@@ -184,10 +187,17 @@ or
+ .I fd_out
+ refers to an active swap file.
+ .TP
+-.B EXDEV
++.BR EXDEV " (before Linux 5.3)"
+ The files referred to by
+ .IR fd_in " and " fd_out
+-are not on the same mounted filesystem (pre Linux 5.3).
++are not on the same filesystem.
++.TP
++.BR EXDEV " (or since Linux 5.12)"
++The files referred to by
++.IR fd_in " and " fd_out
++are not on the same filesystem,
++and the source and target filesystems are not of the same type,
++or do not support cross-filesystem copy.
+ .SH VERSIONS
+ The
+ .BR copy_file_range ()
+@@ -195,13 +205,10 @@ system call first appeared in Linux 4.5, but glibc 2.27 provides a user-space
+ emulation when it is not available.
+ .\" https://sourceware.org/git/?p=glibc.git;a=commit;f=posix/unistd.h;h=bad7a0c81f501fbbcc79af9eaa4b8254441c4a1f
+ .PP
+-A major rework of the kernel implementation occurred in 5.3.
+-Areas of the API that weren't clearly defined were clarified and the API bounds
+-are much more strictly checked than on earlier kernels.
+-Applications should target the behaviour and requirements of 5.3 kernels.
+-.PP
+-First support for cross-filesystem copies was introduced in Linux 5.3.
+-Older kernels will return -EXDEV when cross-filesystem copies are attempted.
++Since 5.12,
++cross-filesystem copies can be achieved
++when both filesystems are of the same type,
++and that filesystem implements support for it.
+ .SH CONFORMING TO
+ The
+ .BR copy_file_range ()
+@@ -226,6 +233,10 @@ gives filesystems an opportunity to implement "copy acceleration" techniques,
+ such as the use of reflinks (i.e., two or more inodes that share
+ pointers to the same copy-on-write disk blocks)
+ or server-side-copy (in the case of NFS).
++.SH BUGS
++In Linux kernels 5.3 to 5.11, cross-filesystem copies were supported.
++However, on some virtual filesystems, the call failed to copy,
++eventhough it may have reported success.
+ .SH EXAMPLES
+ .EX
+ #define _GNU_SOURCE
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.30.1.721.g45526154a5
+
