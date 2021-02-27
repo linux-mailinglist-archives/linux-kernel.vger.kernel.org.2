@@ -2,108 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB08C326E8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 19:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BF0326E86
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Feb 2021 19:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhB0SDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 13:03:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57486 "EHLO mail.kernel.org"
+        id S230184AbhB0R7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 12:59:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230251AbhB0R4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 12:56:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45AD464E83;
-        Sat, 27 Feb 2021 17:44:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614447858;
-        bh=wl0bPRid1P3GRcDi+IxVTiaUvww8jAAXvf5pQd1H/qA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TPtbvqIMvJPOtmGFc4Ywvyn3+Kvy4GhegH6h2ezEuDbehF+wBjsO8fJcN5v4t4DMS
-         kk18unpgvHQWkMafbF5YV46oNOmJjKly5PVI2/0tC/O0gilKyb9DWA2j4PphLV470y
-         VnzwjNatJ5paj+Og2BsLFT8zTcWREGhtgl46G1NBUWccPdAkJNYiWx+DV1hjUaKj+r
-         +VOkPkQ7aWAFVpWG7ei4ks29PhcLBaP3SKjA+hYgMuOVtegX69o9icYxjIlPVSOIPJ
-         XH3AsTGT2jvAvtEPHyCBCHLn39baxHo+Gug3DzW66+foOmvNzEcFefZBqUoB/AIyJI
-         KX1XxeMB3KL0A==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 0A14C35239CC; Sat, 27 Feb 2021 09:44:18 -0800 (PST)
-Date:   Sat, 27 Feb 2021 09:44:18 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Javier Contreras <contreras.javi.0@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] init: init_task.c: fixed two spaces coding style issue
-Message-ID: <20210227174417.GA18947@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210227170118.24056-1-contreras.javi.0@gmail.com>
+        id S230235AbhB0Rxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 12:53:42 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5226964E46;
+        Sat, 27 Feb 2021 17:53:00 +0000 (UTC)
+Date:   Sat, 27 Feb 2021 17:52:56 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
+Subject: Re: [PATCH v4 0/6] iio: core: Add mmap interface infrastructure
+Message-ID: <20210227175256.021b8542@archlinux>
+In-Reply-To: <20210218131045.1a34d0a1@archlinux>
+References: <20210217073638.21681-1-alexandru.ardelean@analog.com>
+        <20210218131045.1a34d0a1@archlinux>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210227170118.24056-1-contreras.javi.0@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 06:01:18PM +0100, Javier Contreras wrote:
-> Fixed two spaces coding style issue.
-> 
-> Signed-off-by: Javier Contreras <contreras.javi.0@gmail.com>
+On Thu, 18 Feb 2021 13:10:45 +0000
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-I am not maintainer for this code, and also wangjingyu beat you to this
-one.  But one question:  Given that this patch would cause "git blame"
-to list you as the immediate point of contact for each line changed,
-are you ready to answer all questions about each of those lines of code?
-For example, given C's default initialization to zero, why is the "mm"
-field explicitly set to NULL?
-
-						Thanx, Paul
-
-> ---
->  init/init_task.c | 30 +++++++++++++++---------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
+> On Wed, 17 Feb 2021 09:36:32 +0200
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 > 
-> diff --git a/init/init_task.c b/init/init_task.c
-> index 3711cdaafed2..85d6b045ef7a 100644
-> --- a/init/init_task.c
-> +++ b/init/init_task.c
-> @@ -71,24 +71,24 @@ struct task_struct init_task
->  	.thread_info	= INIT_THREAD_INFO(init_task),
->  	.stack_refcount	= REFCOUNT_INIT(1),
->  #endif
-> -	.state		= 0,
-> -	.stack		= init_stack,
-> -	.usage		= REFCOUNT_INIT(2),
-> -	.flags		= PF_KTHREAD,
-> -	.prio		= MAX_PRIO - 20,
-> -	.static_prio	= MAX_PRIO - 20,
-> -	.normal_prio	= MAX_PRIO - 20,
-> -	.policy		= SCHED_NORMAL,
-> -	.cpus_ptr	= &init_task.cpus_mask,
-> -	.cpus_mask	= CPU_MASK_ALL,
-> -	.nr_cpus_allowed= NR_CPUS,
-> -	.mm		= NULL,
-> -	.active_mm	= &init_mm,
-> -	.restart_block	= {
-> +	.state		 = 0,
-> +	.stack		 = init_stack,
-> +	.usage		 = REFCOUNT_INIT(2),
-> +	.flags		 = PF_KTHREAD,
-> +	.prio		 = MAX_PRIO - 20,
-> +	.static_prio	 = MAX_PRIO - 20,
-> +	.normal_prio	 = MAX_PRIO - 20,
-> +	.policy		 = SCHED_NORMAL,
-> +	.cpus_ptr	 = &init_task.cpus_mask,
-> +	.cpus_mask	 = CPU_MASK_ALL,
-> +	.nr_cpus_allowed = NR_CPUS,
-> +	.mm		 = NULL,
-> +	.active_mm	 = &init_mm,
-> +	.restart_block	 = {
->  		.fn = do_no_restart_syscall,
->  	},
->  	.se		= {
-> -		.group_node 	= LIST_HEAD_INIT(init_task.se.group_node),
-> +		.group_node	= LIST_HEAD_INIT(init_task.se.group_node),
->  	},
->  	.rt		= {
->  		.run_list	= LIST_HEAD_INIT(init_task.rt.run_list),
-> -- 
-> 2.30.1
+> Dropped v3 and applied v4 to the togreg branch of iio.git and pushed
+> it out as testing for the autobuilders to poke at it and see what
+> else they can find :)
 > 
+> Jonathan
+
+Following an off list discussion, I've dropped this series for now as more
+time is needed to consider if the approach is the right way to go.
+
+Jonathan
+
+> 
+> 
+> > Changelog v3 -> v4:
+> > * https://lore.kernel.org/linux-iio/20210215143234.3248-5-alexandru.ardelean@analog.com/T/
+> > * added patch 'iio: buffer-dma: reduce the type of block.size to u32'
+> >   - resolves error on 64 bit archs; 32 bit block size should be enough
+> > * in patch 'iio: buffer-dma: Add mmap support'
+> >   - added 'linux/types.h' include in uapi buffer.h header; an error
+> >     shows up when building with 'make allmodconfig'
+> > * in patch 'tools: iio: add example for high-speed buffer support'
+> >   - calling ioctl(BOCK_FREE) only if use_high_speed is true
+> > 
+> > Changelog v2 -> v3:
+> > * https://lore.kernel.org/linux-iio/20210212101143.18993-1-alexandru.ardelean@analog.com/T/#u
+> > * added 'Documentation: iio: add doc for high-speed buffer API'
+> > * add 'iio: buffer-dma: split iio_dma_buffer_fileio_free() function'
+> > * patch 'iio: buffer-dma: Add mmap support'
+> >    - unwind free on error path in iio_dma_buffer_alloc_blocks()
+> >    - removed double mm.h include
+> > * patch 'tools: iio: add example for high-speed buffer support'
+> >    - call IIO_BUFFER_BLOCK_FREE_IOCTL on the error path of the
+> >      enable_high_speed() function
+> > 
+> > Changelog v1 -> v2:
+> > * https://lore.kernel.org/linux-iio/20210211123353.78963-1-alexandru.ardelean@analog.com/T/#t
+> > * removed IIO_BUFFER_BLOCK_FLAG_CYCLIC flag; will be added in a later
+> >   patch
+> > * removed extra line in tools/iio/iio_generic_buffer.c
+> > * patch 'iio: core: Add mmap interface infrastructure'
+> >   added docstrings for new hooks (alloc_blocks, mmap, etc)
+> > 
+> > This is basically Lars' work adapted from branch:
+> >   https://github.com/larsclausen/linux/commits/iio-high-speed-5.10
+> > [hopefully i got the stuff correctly from that branch]
+> > 
+> > What is different, is that this one is adapted on top of the multibuffer
+> > support (currently at v5) discussed here:
+> >   https://lore.kernel.org/linux-iio/20210211122452.78106-1-alexandru.ardelean@analog.com/T/#t
+> > 
+> > Also, adapted an example for high-speed/mmap support in
+> > 'tools/iio/iio_generic_buffer.c'
+> > 
+> > The example is adapted from libiio:
+> >   https://github.com/analogdevicesinc/libiio/blob/master/local.c#L51
+> > but will all the ioctl()s organized after the one that are reserved
+> > (hopefully) for IIO
+> > 
+> > Tested that mmap() works.
+> > Moved (artifically) valid buffer0 as buffer2 and the operation still
+> > works.
+> > 
+> > Alexandru Ardelean (4):
+> >   Documentation: iio: add doc for high-speed buffer API
+> >   iio: buffer-dma: split iio_dma_buffer_fileio_free() function
+> >   iio: buffer-dma: reduce the type of block.size to u32
+> >   tools: iio: add example for high-speed buffer support
+> > 
+> > Lars-Peter Clausen (2):
+> >   iio: core: Add mmap interface infrastructure
+> >   iio: buffer-dma: Add mmap support
+> > 
+> >  Documentation/iio/iio_high_speed_buffers.rst  | 100 ++++++
+> >  Documentation/iio/index.rst                   |   2 +
+> >  drivers/iio/buffer/industrialio-buffer-dma.c  | 324 ++++++++++++++++--
+> >  .../buffer/industrialio-buffer-dmaengine.c    |  28 +-
+> >  drivers/iio/industrialio-buffer.c             | 158 +++++++++
+> >  include/linux/iio/buffer-dma.h                |  27 +-
+> >  include/linux/iio/buffer_impl.h               |  23 ++
+> >  include/uapi/linux/iio/buffer.h               |  51 +++
+> >  tools/iio/iio_generic_buffer.c                | 185 +++++++++-
+> >  9 files changed, 847 insertions(+), 51 deletions(-)
+> >  create mode 100644 Documentation/iio/iio_high_speed_buffers.rst
+> >   
+> 
+
