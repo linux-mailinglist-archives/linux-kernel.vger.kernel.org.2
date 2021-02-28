@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC1D32717F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 09:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95062327184
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 09:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhB1H7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 02:59:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhB1H7q (ORCPT
+        id S230399AbhB1IHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 03:07:21 -0500
+Received: from www381.your-server.de ([78.46.137.84]:44590 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230061AbhB1IHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 02:59:46 -0500
-Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:84:22e::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18070C06174A;
-        Sat, 27 Feb 2021 23:59:05 -0800 (PST)
-Received: by cavan.codon.org.uk (Postfix, from userid 1000)
-        id 1B1A540A0A; Sun, 28 Feb 2021 07:59:02 +0000 (UTC)
-Date:   Sun, 28 Feb 2021 07:59:02 +0000
-From:   Matthew Garrett <mjg59@srcf.ucam.org>
-To:     James Bottomley <jejb@linux.ibm.com>
-Cc:     Matthew Garrett <matthewgarrett@google.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-pm@vger.kernel.org, keyrings@vger.kernel.org,
-        zohar@linux.ibm.com, jarkko@kernel.org, corbet@lwn.net,
-        rjw@rjwysocki.net, Matthew Garrett <mjg59@google.com>
-Subject: Re: [PATCH 2/9] tpm: Allow PCR 23 to be restricted to kernel-only use
-Message-ID: <20210228075902.GA9183@codon.org.uk>
-References: <20210220013255.1083202-1-matthewgarrett@google.com>
- <20210220013255.1083202-3-matthewgarrett@google.com>
- <b0c4980c8fad14115daa3040979c52f07f7fbe2c.camel@linux.ibm.com>
+        Sun, 28 Feb 2021 03:07:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=B9OZjisZDX8Qs3+RcaljLhAAmht/cIkc7wgQ3CQ34vk=; b=lrmBZ59/aJRAz+zhb0ZzsAO4v3
+        778WWCIoczKHKyUdNz16swEWFL84Qs+Geluwf3cc4I9HKpUokXZfvORsFVxFCk0weiFPK52k3Pz12
+        zM4iE+2+EdA9yFR/IFXNBOpUwWN9yXzV8mbdxyX7SzeJRJo7ABZnFO7APuZOSLe1/IXY+YAEXzpQT
+        grH9w7reqOm1ElvJgE1dHPgxnbm4WwANtEXTtKuEdtS29wKkMAytU41COFNh43BWZK5IPAq90REtl
+        stpdymIetO/1Cnq1GdnGCBkJro44cSE4ymPcQDfL2otueMwR+FT6B+AEgYRED/qJZC5cC+66QTIVh
+        OxDS7d1Q==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lGH5c-0002Nc-Dh; Sun, 28 Feb 2021 09:06:08 +0100
+Received: from [62.216.202.180] (helo=[192.168.178.20])
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lGH5c-0009HL-8Q; Sun, 28 Feb 2021 09:06:08 +0100
+Subject: Re: [PATCH v6 02/24] iio: kfifo: add devm_iio_kfifo_buffer_setup()
+ helper
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Cc:     Michael.Hennerich@analog.com, jic23@kernel.org, nuno.sa@analog.com,
+        dragos.bogdan@analog.com
+References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
+ <20210215104043.91251-3-alexandru.ardelean@analog.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <2e6f90be-5dbf-1356-d1ac-22a4273c87ee@metafoo.de>
+Date:   Sun, 28 Feb 2021 09:06:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0c4980c8fad14115daa3040979c52f07f7fbe2c.camel@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210215104043.91251-3-alexandru.ardelean@analog.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26093/Sat Feb 27 13:05:31 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 10:00:53AM -0800, James Bottomley wrote:
-> On Sat, 2021-02-20 at 01:32 +0000, Matthew Garrett wrote:
-> > Under certain circumstances it might be desirable to enable the
-> > creation of TPM-backed secrets that are only accessible to the
-> > kernel. In an ideal world this could be achieved by using TPM
-> > localities, but these don't appear to be available on consumer
-> > systems.
-> 
-> I don't understand this ... the localities seem to work fine on all the
-> systems I have ... is this some embedded thing?
+On 2/15/21 11:40 AM, Alexandru Ardelean wrote:
+> +int devm_iio_kfifo_buffer_setup(struct device *dev,
+> +				struct iio_dev *indio_dev,
+> +				int mode_flags,
+> +				const struct iio_buffer_setup_ops *setup_ops)
+> +{
+> +	struct iio_buffer *buffer;
+> +
+> +	if (mode_flags)
+> +		mode_flags &= kfifo_access_funcs.modes;
 
-I haven't made it work on an HP Z440 or a Lenovo P520. So now I'm
-wondering whether having chipsets with TXT support (even if it's turned
-off) confuse this point. Sigh. I'd really prefer to use localities than
-a PCR, so if it works on client platforms I'd be inclined to say we'll
-do a self-test and go for that, and workstation vendors can just
-recommend their customers use UPSes or something.
+The if seems unnecessary. If it is 0 and we AND it with something it is 
+still 0.
 
-> >  An alternative is to simply block userland from modifying one of the
-> > resettable PCRs, leaving it available to the kernel. If the kernel
-> > ensures that no userland can access the TPM while it is carrying out
-> > work, it can reset PCR 23, extend it to an arbitrary value, create or
-> > load a secret, and then reset the PCR again. Even if userland somehow
-> > obtains the sealed material, it will be unable to unseal it since PCR
-> > 23 will never be in the appropriate state.
-> 
-> This seems a bit arbitrary: You're removing this PCR from user space
-> accessibility, but PCR 23 is defined as "Application Support" how can
-> we be sure no application will actually want to use it (and then fail)?
-
-Absolutely no way of guaranteeing that, and enabling this option is
-certainly an ABI break.
-
-> Since PCRs are very scarce, why not use a NV index instead.  They're
-> still a bounded resource, but most TPMs have far more of them than they
-> do PCRs, and the address space is much bigger so picking a nice
-> arbitrary 24 bit value reduces the chance of collisions.
-
-How many write cycles do we expect the NV to survive? But I'll find a
-client system with a TPM and play with locality support there - maybe we
-can just avoid this problem anyway.
