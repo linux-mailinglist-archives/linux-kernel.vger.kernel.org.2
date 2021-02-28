@@ -2,95 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E537327458
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 21:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6132F327461
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 21:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhB1UOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 15:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhB1UOT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 15:14:19 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C04C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 12:13:39 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id e45so14419422ote.9
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 12:13:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7gZfPgzWrN7aQrhLlhRVvvza5A8VMSV9ZBHx3+Axvf4=;
-        b=QfSxGlGrSq1Iu6x88NNp2rtebfgHneFmQV2+uI/P4vzWNfxSs8do0KM8NboHnhA7eK
-         f6w0lfR4ER8rmesPimn12dl5dcP10KFq2WHqKLkNbPdBRKbiBp/f69Xmr39XB40jm83/
-         Ijfte7rU4iDdJBcuWclr/AGMzyLPtE7x/zqFiXa39U08tqWoMHVqdwWnCZSDGA274Ua8
-         zb3pLKelz/MVDkPt9jQSr8n28WFJCY7UUtRa1skXQvywKMY9ZJTdNmbClBfTX0ifCGii
-         ST+ohB7pmI7+zJwQIDhi5/unD186PoOGGjIeYw1sqtd3HsPAZoph/2dCb24+ZqQslDTU
-         xfGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7gZfPgzWrN7aQrhLlhRVvvza5A8VMSV9ZBHx3+Axvf4=;
-        b=UGaMcP2StA/iyXrivJw6ZQqquARkGuIVwbwYS/IX1w/DKGAv8KV/VX0uT+JXUDYsoH
-         QVUsbFiLPbg3zdpdzAruAmsEyGD2D5m1i1ONl7fyBZQQGybiQknkbnrFKeAAHFlISvWf
-         e6/2qv1MXXLGCjarYS2NV/o0PfoFYAZS6fQwHplDVeF3Ec7kE74ET1B/GnRRED25Z0p0
-         fH7Ho3wi1pzhbRy85oZzOeGJAhZMyuey9kQIGKaLl8ytC4Ak8ZFVnQL2hcR930SpCkSw
-         /T0TiRJggC8ah4H2D8IKqGq+kR8ofKgZCJ6rgR4MXtrLGxJ/55p4A7mNh0dvcJev3VEo
-         uE6g==
-X-Gm-Message-State: AOAM533hXKY5QZDP4DKn2bU2VNbzNEyFCjhbS8L0U5VrVbjeIfWHlQTl
-        2+1GPRsgdAPJQ9gYD1o2/3JUHYJvS6HDeY1qtL4QTJCDowE=
-X-Google-Smtp-Source: ABdhPJzjlov4TsqLPLJG7am3dHdlNYN83ZWl4xsANjiZU07fGY3M5yMaYkDSmHYQH+PMuq35Q0rrsm4Yx183BRTwJHU=
-X-Received: by 2002:a9d:6382:: with SMTP id w2mr10979738otk.145.1614543218450;
- Sun, 28 Feb 2021 12:13:38 -0800 (PST)
-MIME-Version: 1.0
-References: <1614071544-130951-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1614071544-130951-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Sun, 28 Feb 2021 22:13:11 +0200
-Message-ID: <CAFCwf12mapgw=dFkqHr__P4ur6R3D=fyCVW2KSzMLL0qu0t3HQ@mail.gmail.com>
-Subject: Re: [PATCH] banalabs: Switch to using the new API kobj_to_dev()
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231357AbhB1UPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 15:15:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231264AbhB1UOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 15:14:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4F7BC64E62;
+        Sun, 28 Feb 2021 20:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614543246;
+        bh=ifvnJfxXmGrftMuOMoc+1CmH7A81MmPX4MVcE/CKjlM=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=DeW/JWe9K845MI6ceKft3tz0LNH9zElN7evA8ifEE5ZLOkqs6e6KlpnB0YaQM7eHQ
+         UcObNf8m2ygytVC28z7/UWnMAfoB7rw2K1cMNcf0S2DXxV8bf2IBAiPP2NG8p01rEF
+         wvJHznEeWp1DzZhWP9cVSdwCvRScE1dmGxQchuD13fJc+Y3wv2m4Jypjl5CYzCQa9o
+         lNyJNN80kowpQJCCJtvaVmaIGzT0HDcZG9s10mzNfn0MyFwhZCviH1ICizAgwkwg9m
+         DnJC7oRegGrQGLGF+0dHEkeTz31XtEBePBmUj9fcS8tcRfQcIW/Sf4itFaQ+upHO9W
+         fJM4FVxBW0Yrg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3EB1960A13;
+        Sun, 28 Feb 2021 20:14:06 +0000 (UTC)
+Subject: Re: [GIT PULL] csky changes for v5.12-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210228034300.1090149-1-guoren@kernel.org>
+References: <20210228034300.1090149-1-guoren@kernel.org>
+X-PR-Tracked-List-Id: <linux-csky.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210228034300.1090149-1-guoren@kernel.org>
+X-PR-Tracked-Remote: https://github.com/c-sky/csky-linux.git tags/csky-for-linus-5.12-rc1
+X-PR-Tracked-Commit-Id: 6607aa6f6b68fc9b5955755f1b1be125cf2a9d03
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: cd278456d4ca0e6b3d5e10ace4566524baa144eb
+Message-Id: <161454324620.2182.2972358139345966200.pr-tracker-bot@kernel.org>
+Date:   Sun, 28 Feb 2021 20:14:06 +0000
+To:     guoren@kernel.org
+Cc:     torvalds@linux-foundation.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-csky@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 11:12 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> fixed the following coccicheck:
-> ./drivers/misc/habanalabs/common/sysfs.c:347:60-61: WARNING opportunity
-> for kobj_to_dev()
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/misc/habanalabs/common/sysfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/misc/habanalabs/common/sysfs.c b/drivers/misc/habanalabs/common/sysfs.c
-> index 4366d8f..79c1ddf 100644
-> --- a/drivers/misc/habanalabs/common/sysfs.c
-> +++ b/drivers/misc/habanalabs/common/sysfs.c
-> @@ -344,7 +344,7 @@ static ssize_t eeprom_read_handler(struct file *filp, struct kobject *kobj,
->                         struct bin_attribute *attr, char *buf, loff_t offset,
->                         size_t max_size)
->  {
-> -       struct device *dev = container_of(kobj, struct device, kobj);
-> +       struct device *dev = kobj_to_dev(kobj);
->         struct hl_device *hdev = dev_get_drvdata(dev);
->         char *data;
->         int rc;
-> --
-> 1.8.3.1
->
+The pull request you sent on Sun, 28 Feb 2021 11:43:00 +0800:
 
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Applied to -next.
+> https://github.com/c-sky/csky-linux.git tags/csky-for-linus-5.12-rc1
 
-Thanks,
-Oded
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/cd278456d4ca0e6b3d5e10ace4566524baa144eb
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
