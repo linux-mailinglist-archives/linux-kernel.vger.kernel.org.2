@@ -2,444 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2854327158
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 07:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A0D32715E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 08:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhB1Gxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 01:53:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230178AbhB1Gxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 01:53:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02FF064E09;
-        Sun, 28 Feb 2021 06:52:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614495182;
-        bh=1rorF2txUowcwRru9bDVATKhWuoedaZfSgA7FMdIVEs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BrBVUuc/ve3BczQCJ2GJN3I5TAcPvuUewrAkTPUhxYaDVQqmvERnPfYCNJWAMTSyT
-         1DsMiAAEgK0TlHcgFQU7GbyEJzRrZZovNrMCEpZFNYob5FASRsJY9fND4qchKh5hgJ
-         f8pYdN7+5Yw1qWhrGWKw4ju7nFSTL5tB20R1q7fM1P+dfuz+aVthcSJ0ks/4LQ6u6v
-         JmqppISwkpc4ACb7j66S7WoSDYHUiHGusKsL4V761x9klUOj22gRYAdloDVDkcKYUC
-         8I2xBWwe/0mNW27fLGq1yJOA0ziLtCBeUE5bdGpY+R9TYuRm543+WclRrlCUhoPg6A
-         wazh/CQIflbNw==
-Date:   Sat, 27 Feb 2021 23:52:54 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fangrui Song <maskray@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "H . J . Lu" <hjl.tools@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Chao Yu <chao@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kees Cook <keescook@chromium.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH RFC] x86: remove toolchain check for X32 ABI capability
-Message-ID: <20210228065254.GA30798@24bbad8f3778>
-References: <20210227183910.221873-1-masahiroy@kernel.org>
- <CAK7LNASL_X43_nMTz1CZQB+jiLCRAJbh-wQdc23QV0pWceL_Lw@mail.gmail.com>
- <20210228064936.zixrhxlthyy6fmid@24bbad8f3778>
+        id S230161AbhB1G74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 01:59:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229736AbhB1G7N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 01:59:13 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFBBC06174A;
+        Sat, 27 Feb 2021 22:58:33 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id k22so7636568pll.6;
+        Sat, 27 Feb 2021 22:58:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=r8CLTUXVVZcMiqETcvGKGx4dgIVTKeUoOcCN29WuOTI=;
+        b=pZXOz7dSMFcRlF92cWgx1jtDPCUCzNTibhUw/QK3IMW4hHVgCbD4UIsZXFsyRaE2ko
+         qcKIjE6+JXXMn5jICu0FGQY2RQ4ODfa6TTA38qzlCUolNqyw8K3bcWTNK0desIMxJU6i
+         /Pa3Z9gmK06ioRO7l2j3GSt0i5u+J3CXCQbtlofX+M+tK6BwtpuPWAs0fd6Pyxfw9H8C
+         AP06UL92/CkFi3JGp8AynbS9QTaMmAaZRcK6X0VAJ3Y/9MfOrmE0NZWECZbk/gdxFfk+
+         T21qztGHpCHFnuzhm/9uMSDYGUdlT0aU1neZo3qtMFOr/H9z2iB9WaF1qP8DZHy8CSjM
+         TeNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=r8CLTUXVVZcMiqETcvGKGx4dgIVTKeUoOcCN29WuOTI=;
+        b=L3AjQAI7g4HyA7rWSyEGR1umpSeAN6O9W2Efub6j6m/DikqohZhsOCc1My7/zw0qic
+         elh9Tcbhjf3Up3uqluAYNgDCYdkE3G/pCd/SRIUjo0lugBToQxw/CHSUFM26/STTX1UK
+         NCwZ+y5fbKgQjw/KquswE+HfKZcMIGlrGs+6YU5one5lIob8IyTDKMDrhbTD62/Aub1j
+         7H+sBVchQRSgMqwBpU1gqnUQaSn13Nqkk2yBX7WZ0bvfBj+r/2puy2U3idgZRl2AvhLE
+         XVCAmykgVC6MCZ18bQltwx9yUVLys5KjV4Mlw1g++ns5/UrWHaLYxf/xCgHjcaAGZwZR
+         2MxQ==
+X-Gm-Message-State: AOAM533DzKC0fxXjT0Ts9r8QTeABwVR2zBNLfFZpcPoKWc/iF7Xg/ibB
+        ZBXXIUzxB5Y6Sh7bLk6xhgV0D7uD6bUDsg==
+X-Google-Smtp-Source: ABdhPJxLl1eeT6VENQBjMZTEP9NmHMBjwg3TG64+8zuHU8eT3mS4phpRucptnYESkO+JHospYb5qZw==
+X-Received: by 2002:a17:90a:a10a:: with SMTP id s10mr11502337pjp.36.1614495512210;
+        Sat, 27 Feb 2021 22:58:32 -0800 (PST)
+Received: from [172.30.1.25] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id e8sm10252764pfl.101.2021.02.27.22.58.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 27 Feb 2021 22:58:31 -0800 (PST)
+Subject: Re: [PATCH] devfreq: rk3399_dmc: Simplify with dev_err_probe()
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Chanwoo Choi <chanwoo@kernel.org>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200828153100.19006-1-krzk@kernel.org>
+ <CAGTfZH3+mxBXzVp5Wz=F6nbx3bfubrmJozVzVdt8s1e45WQOqg@mail.gmail.com>
+ <CAJKOXPdw=2MMT+5=_TtOqEwPA8s40J21eYXfzv8Whk7F8uF9dw@mail.gmail.com>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <8c7f16ac-2287-eddb-e074-90cfec56500b@gmail.com>
+Date:   Sun, 28 Feb 2021 15:58:26 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210228064936.zixrhxlthyy6fmid@24bbad8f3778>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAJKOXPdw=2MMT+5=_TtOqEwPA8s40J21eYXfzv8Whk7F8uF9dw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 11:49:36PM -0700, Nathan Chancellor wrote:
-> On Sun, Feb 28, 2021 at 12:15:16PM +0900, Masahiro Yamada wrote:
-> > On Sun, Feb 28, 2021 at 3:41 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > This commit reverts 0bf6276392e9 ("x32: Warn and disable rather than
-> > > error if binutils too old").
-> > >
-> > > The help text in arch/x86/Kconfig says enabling the X32 ABI support
-> > > needs binutils 2.22 or later. This is met because the minimal binutils
-> > > version is 2.23 according to Documentation/process/changes.rst.
-> > >
-> > > I would not say I am not familiar with toolchain configuration, but
-> > 
-> > I mean:
-> > I would not say I am familiar ...
-> > That is why I added RFC.
-> > 
-> > I appreciate comments from people who are familiar
-> > with toolchains (binutils, llvm).
-> > 
-> > If this change is not safe,
-> > we can move this check to Kconfig at least.
+On 21. 2. 28. 오전 1:35, Krzysztof Kozlowski wrote:
+> On Sat, 29 Aug 2020 at 15:10, Chanwoo Choi <chanwoo@kernel.org> wrote:
+>>
+>> On Sat, Aug 29, 2020 at 12:31 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>>>
+>>> Common pattern of handling deferred probe can be simplified with
+>>> dev_err_probe().  Less code and the error value gets printed.
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>>> ---
+>>>   drivers/devfreq/rk3399_dmc.c | 20 ++++++--------------
+>>>   1 file changed, 6 insertions(+), 14 deletions(-)
+>>>
+>>> diff --git a/drivers/devfreq/rk3399_dmc.c b/drivers/devfreq/rk3399_dmc.c
+>>> index 027769e39f9b..35b3542f1f7b 100644
+>>> --- a/drivers/devfreq/rk3399_dmc.c
+>>> +++ b/drivers/devfreq/rk3399_dmc.c
+>>> @@ -324,22 +324,14 @@ static int rk3399_dmcfreq_probe(struct platform_device *pdev)
+>>>          mutex_init(&data->lock);
+>>>
+>>>          data->vdd_center = devm_regulator_get(dev, "center");
+>>> -       if (IS_ERR(data->vdd_center)) {
+>>> -               if (PTR_ERR(data->vdd_center) == -EPROBE_DEFER)
+>>> -                       return -EPROBE_DEFER;
+>>> -
+>>> -               dev_err(dev, "Cannot get the regulator \"center\"\n");
+>>> -               return PTR_ERR(data->vdd_center);
+>>> -       }
+>>> +       if (IS_ERR(data->vdd_center))
+>>> +               return dev_err_probe(dev, PTR_ERR(data->vdd_center),
+>>> +                                    "Cannot get the regulator \"center\"\n");
+>>>
+>>>          data->dmc_clk = devm_clk_get(dev, "dmc_clk");
+>>> -       if (IS_ERR(data->dmc_clk)) {
+>>> -               if (PTR_ERR(data->dmc_clk) == -EPROBE_DEFER)
+>>> -                       return -EPROBE_DEFER;
+>>> -
+>>> -               dev_err(dev, "Cannot get the clk dmc_clk\n");
+>>> -               return PTR_ERR(data->dmc_clk);
+>>> -       }
+>>> +       if (IS_ERR(data->dmc_clk))
+>>> +               return dev_err_probe(dev, PTR_ERR(data->dmc_clk),
+>>> +                                    "Cannot get the clk dmc_clk\n");
+>>>
+>>>          data->edev = devfreq_event_get_edev_by_phandle(dev, 0);
+>>>          if (IS_ERR(data->edev))
+>>> --
+>>> 2.17.1
+>>>
+>>
+>> Applied it. Thanks.
 > 
-> Hi Masahiro,
+> Hi Chanwoo,
 > 
-> As Fangrui pointed out, there are two outstanding issues with x32 with
-> LLVM=1, both seemingly related to LLVM=1.
-                                    ^ llvm-objcopy
+> Do you know what happened with this patch? You replied that it is
+> applied but I cannot find it in the Linus' or next trees.
+> 
 
-Sigh, note to self, don't write emails while tired...
+Hi Krzysztof,
 
-Cheers,
-Nathan
+There was some my mistake. I'm sorry.
+I applied it again to next branch.
 
-> 
-> https://github.com/ClangBuiltLinux/linux/issues/514
-> https://github.com/ClangBuiltLinux/linux/issues/1141
-> 
-> Additionally, there appears to be one from Arnd as well but that one has
-> received no triage yet.
-> 
-> https://github.com/ClangBuiltLinux/linux/issues/1205
-> 
-> I intend to test this patch as well as a few others at some point in the
-> coming week although I am having to play sysadmin due to moving servers
-> so I might not be able to get to it until later in the week.
-> 
-> Cheers,
-> Nathan
-> 
-> > > I checked the configure.tgt code in binutils. The elf32_x86_64
-> > > emulation mode seems to be included when it is configured for the
-> > > x86_64-*-linux-* target.
-> > >
-> > > I also tried lld and llvm-objcopy, and succeeded in building x32 VDSO.
-> > >
-> > > I removed the compile-time check in arch/x86/Makefile, in the hope of
-> > > elf32_x86_64 being always supported.
-> > >
-> > > With this, CONFIG_X86_X32 and CONFIG_X86_X32_ABI will be equivalent.
-> > > Rename the former to the latter.
-> > >
-> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > ---
-> > >
-> > >  arch/x86/Kconfig                       |  8 ++------
-> > >  arch/x86/Makefile                      | 16 ----------------
-> > >  arch/x86/include/asm/syscall_wrapper.h |  6 +++---
-> > >  arch/x86/include/asm/vdso.h            |  2 +-
-> > >  arch/x86/kernel/process_64.c           |  2 +-
-> > >  fs/fuse/file.c                         |  2 +-
-> > >  fs/xfs/xfs_ioctl32.c                   |  2 +-
-> > >  sound/core/control_compat.c            | 16 ++++++++--------
-> > >  sound/core/pcm_compat.c                | 20 ++++++++++----------
-> > >  9 files changed, 27 insertions(+), 47 deletions(-)
-> > >
-> > > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > > index 2792879d398e..7272cba2744c 100644
-> > > --- a/arch/x86/Kconfig
-> > > +++ b/arch/x86/Kconfig
-> > > @@ -2865,7 +2865,7 @@ config IA32_AOUT
-> > >         help
-> > >           Support old a.out binaries in the 32bit emulation.
-> > >
-> > > -config X86_X32
-> > > +config X86_X32_ABI
-> > >         bool "x32 ABI for 64-bit mode"
-> > >         depends on X86_64
-> > >         help
-> > > @@ -2874,10 +2874,6 @@ config X86_X32
-> > >           full 64-bit register file and wide data path while leaving
-> > >           pointers at 32 bits for smaller memory footprint.
-> > >
-> > > -         You will need a recent binutils (2.22 or later) with
-> > > -         elf32_x86_64 support enabled to compile a kernel with this
-> > > -         option set.
-> > > -
-> > >  config COMPAT_32
-> > >         def_bool y
-> > >         depends on IA32_EMULATION || X86_32
-> > > @@ -2886,7 +2882,7 @@ config COMPAT_32
-> > >
-> > >  config COMPAT
-> > >         def_bool y
-> > > -       depends on IA32_EMULATION || X86_X32
-> > > +       depends on IA32_EMULATION || X86_X32_ABI
-> > >
-> > >  if COMPAT
-> > >  config COMPAT_FOR_U64_ALIGNMENT
-> > > diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> > > index 2d6d5a28c3bf..e163549f5be7 100644
-> > > --- a/arch/x86/Makefile
-> > > +++ b/arch/x86/Makefile
-> > > @@ -125,22 +125,6 @@ else
-> > >          KBUILD_CFLAGS += -mcmodel=kernel
-> > >  endif
-> > >
-> > > -ifdef CONFIG_X86_X32
-> > > -       x32_ld_ok := $(call try-run,\
-> > > -                       /bin/echo -e '1: .quad 1b' | \
-> > > -                       $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" - && \
-> > > -                       $(OBJCOPY) -O elf32-x86-64 "$$TMP" "$$TMPO" && \
-> > > -                       $(LD) -m elf32_x86_64 "$$TMPO" -o "$$TMP",y,n)
-> > > -        ifeq ($(x32_ld_ok),y)
-> > > -                CONFIG_X86_X32_ABI := y
-> > > -                KBUILD_AFLAGS += -DCONFIG_X86_X32_ABI
-> > > -                KBUILD_CFLAGS += -DCONFIG_X86_X32_ABI
-> > > -        else
-> > > -                $(warning CONFIG_X86_X32 enabled but no binutils support)
-> > > -        endif
-> > > -endif
-> > > -export CONFIG_X86_X32_ABI
-> > > -
-> > >  #
-> > >  # If the function graph tracer is used with mcount instead of fentry,
-> > >  # '-maccumulate-outgoing-args' is needed to prevent a GCC bug
-> > > diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-> > > index a84333adeef2..69bf87c41a0b 100644
-> > > --- a/arch/x86/include/asm/syscall_wrapper.h
-> > > +++ b/arch/x86/include/asm/syscall_wrapper.h
-> > > @@ -158,7 +158,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
-> > >  #endif /* CONFIG_IA32_EMULATION */
-> > >
-> > >
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >  /*
-> > >   * For the x32 ABI, we need to create a stub for compat_sys_*() which is aware
-> > >   * of the x86-64-style parameter ordering of x32 syscalls. The syscalls common
-> > > @@ -176,12 +176,12 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
-> > >
-> > >  #define __X32_COMPAT_SYS_NI(name)                                      \
-> > >         __SYS_NI(x32, compat_sys_##name)
-> > > -#else /* CONFIG_X86_X32 */
-> > > +#else /* CONFIG_X86_X32_ABI */
-> > >  #define __X32_COMPAT_SYS_STUB0(name)
-> > >  #define __X32_COMPAT_SYS_STUBx(x, name, ...)
-> > >  #define __X32_COMPAT_COND_SYSCALL(name)
-> > >  #define __X32_COMPAT_SYS_NI(name)
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >
-> > >
-> > >  #ifdef CONFIG_COMPAT
-> > > diff --git a/arch/x86/include/asm/vdso.h b/arch/x86/include/asm/vdso.h
-> > > index 98aa103eb4ab..2963a2f5dbc4 100644
-> > > --- a/arch/x86/include/asm/vdso.h
-> > > +++ b/arch/x86/include/asm/vdso.h
-> > > @@ -37,7 +37,7 @@ struct vdso_image {
-> > >  extern const struct vdso_image vdso_image_64;
-> > >  #endif
-> > >
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >  extern const struct vdso_image vdso_image_x32;
-> > >  #endif
-> > >
-> > > diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-> > > index d08307df69ad..a93b6f4296fc 100644
-> > > --- a/arch/x86/kernel/process_64.c
-> > > +++ b/arch/x86/kernel/process_64.c
-> > > @@ -656,7 +656,7 @@ void set_personality_64bit(void)
-> > >
-> > >  static void __set_personality_x32(void)
-> > >  {
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >         if (current->mm)
-> > >                 current->mm->context.flags = 0;
-> > >
-> > > diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> > > index 8cccecb55fb8..c53c620d1a7a 100644
-> > > --- a/fs/fuse/file.c
-> > > +++ b/fs/fuse/file.c
-> > > @@ -2797,7 +2797,7 @@ long fuse_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg,
-> > >  #else
-> > >         if (flags & FUSE_IOCTL_COMPAT) {
-> > >                 inarg.flags |= FUSE_IOCTL_32BIT;
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >                 if (in_x32_syscall())
-> > >                         inarg.flags |= FUSE_IOCTL_COMPAT_X32;
-> > >  #endif
-> > > diff --git a/fs/xfs/xfs_ioctl32.c b/fs/xfs/xfs_ioctl32.c
-> > > index 33c09ec8e6c0..e8038bc966e7 100644
-> > > --- a/fs/xfs/xfs_ioctl32.c
-> > > +++ b/fs/xfs/xfs_ioctl32.c
-> > > @@ -233,7 +233,7 @@ xfs_compat_ioc_fsbulkstat(
-> > >         inumbers_fmt_pf         inumbers_func = xfs_fsinumbers_fmt_compat;
-> > >         bulkstat_one_fmt_pf     bs_one_func = xfs_fsbulkstat_one_fmt_compat;
-> > >
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >         if (in_x32_syscall()) {
-> > >                 /*
-> > >                  * ... but on x32 the input xfs_fsop_bulkreq has pointers
-> > > diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-> > > index 1d708aab9c98..5d1b94bda2cd 100644
-> > > --- a/sound/core/control_compat.c
-> > > +++ b/sound/core/control_compat.c
-> > > @@ -153,7 +153,7 @@ struct snd_ctl_elem_value32 {
-> > >          unsigned char reserved[128];
-> > >  };
-> > >
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >  /* x32 has a different alignment for 64bit values from ia32 */
-> > >  struct snd_ctl_elem_value_x32 {
-> > >         struct snd_ctl_elem_id id;
-> > > @@ -165,7 +165,7 @@ struct snd_ctl_elem_value_x32 {
-> > >         } value;
-> > >         unsigned char reserved[128];
-> > >  };
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >
-> > >  /* get the value type and count of the control */
-> > >  static int get_ctl_type(struct snd_card *card, struct snd_ctl_elem_id *id,
-> > > @@ -350,7 +350,7 @@ static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
-> > >         return ctl_elem_write_user(file, data32, &data32->value);
-> > >  }
-> > >
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >  static int snd_ctl_elem_read_user_x32(struct snd_card *card,
-> > >                                       struct snd_ctl_elem_value_x32 __user *data32)
-> > >  {
-> > > @@ -362,7 +362,7 @@ static int snd_ctl_elem_write_user_x32(struct snd_ctl_file *file,
-> > >  {
-> > >         return ctl_elem_write_user(file, data32, &data32->value);
-> > >  }
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >
-> > >  /* add or replace a user control */
-> > >  static int snd_ctl_elem_add_compat(struct snd_ctl_file *file,
-> > > @@ -421,10 +421,10 @@ enum {
-> > >         SNDRV_CTL_IOCTL_ELEM_WRITE32 = _IOWR('U', 0x13, struct snd_ctl_elem_value32),
-> > >         SNDRV_CTL_IOCTL_ELEM_ADD32 = _IOWR('U', 0x17, struct snd_ctl_elem_info32),
-> > >         SNDRV_CTL_IOCTL_ELEM_REPLACE32 = _IOWR('U', 0x18, struct snd_ctl_elem_info32),
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >         SNDRV_CTL_IOCTL_ELEM_READ_X32 = _IOWR('U', 0x12, struct snd_ctl_elem_value_x32),
-> > >         SNDRV_CTL_IOCTL_ELEM_WRITE_X32 = _IOWR('U', 0x13, struct snd_ctl_elem_value_x32),
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >  };
-> > >
-> > >  static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
-> > > @@ -463,12 +463,12 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
-> > >                 return snd_ctl_elem_add_compat(ctl, argp, 0);
-> > >         case SNDRV_CTL_IOCTL_ELEM_REPLACE32:
-> > >                 return snd_ctl_elem_add_compat(ctl, argp, 1);
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >         case SNDRV_CTL_IOCTL_ELEM_READ_X32:
-> > >                 return snd_ctl_elem_read_user_x32(ctl->card, argp);
-> > >         case SNDRV_CTL_IOCTL_ELEM_WRITE_X32:
-> > >                 return snd_ctl_elem_write_user_x32(ctl, argp);
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >         }
-> > >
-> > >         down_read(&snd_ioctl_rwsem);
-> > > diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-> > > index 590a46a9e78d..937f5117a81f 100644
-> > > --- a/sound/core/pcm_compat.c
-> > > +++ b/sound/core/pcm_compat.c
-> > > @@ -147,13 +147,13 @@ static int snd_pcm_ioctl_channel_info_compat(struct snd_pcm_substream *substream
-> > >         return err;
-> > >  }
-> > >
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >  /* X32 ABI has the same struct as x86-64 for snd_pcm_channel_info */
-> > >  static int snd_pcm_channel_info_user(struct snd_pcm_substream *substream,
-> > >                                      struct snd_pcm_channel_info __user *src);
-> > >  #define snd_pcm_ioctl_channel_info_x32(s, p)   \
-> > >         snd_pcm_channel_info_user(s, p)
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >
-> > >  struct compat_snd_pcm_status64 {
-> > >         snd_pcm_state_t state;
-> > > @@ -373,7 +373,7 @@ static int snd_pcm_ioctl_xfern_compat(struct snd_pcm_substream *substream,
-> > >         return err;
-> > >  }
-> > >
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >  /* X32 ABI has 64bit timespec and 64bit alignment */
-> > >  struct snd_pcm_mmap_status_x32 {
-> > >         snd_pcm_state_t state;
-> > > @@ -464,7 +464,7 @@ static int snd_pcm_ioctl_sync_ptr_x32(struct snd_pcm_substream *substream,
-> > >
-> > >         return 0;
-> > >  }
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >
-> > >  /*
-> > >   */
-> > > @@ -484,10 +484,10 @@ enum {
-> > >         SNDRV_PCM_IOCTL_READN_FRAMES32 = _IOR('A', 0x53, struct snd_xfern32),
-> > >         SNDRV_PCM_IOCTL_STATUS_COMPAT64 = _IOR('A', 0x20, struct compat_snd_pcm_status64),
-> > >         SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT64 = _IOWR('A', 0x24, struct compat_snd_pcm_status64),
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >         SNDRV_PCM_IOCTL_CHANNEL_INFO_X32 = _IOR('A', 0x32, struct snd_pcm_channel_info),
-> > >         SNDRV_PCM_IOCTL_SYNC_PTR_X32 = _IOWR('A', 0x23, struct snd_pcm_sync_ptr_x32),
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >  };
-> > >
-> > >  static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
-> > > @@ -531,10 +531,10 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
-> > >         case __SNDRV_PCM_IOCTL_SYNC_PTR32:
-> > >                 return snd_pcm_common_ioctl(file, substream, cmd, argp);
-> > >         case __SNDRV_PCM_IOCTL_SYNC_PTR64:
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >                 if (in_x32_syscall())
-> > >                         return snd_pcm_ioctl_sync_ptr_x32(substream, argp);
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >                 return snd_pcm_common_ioctl(file, substream, cmd, argp);
-> > >         case SNDRV_PCM_IOCTL_HW_REFINE32:
-> > >                 return snd_pcm_ioctl_hw_params_compat(substream, 1, argp);
-> > > @@ -566,10 +566,10 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
-> > >                 return snd_pcm_status_user_compat64(substream, argp, false);
-> > >         case SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT64:
-> > >                 return snd_pcm_status_user_compat64(substream, argp, true);
-> > > -#ifdef CONFIG_X86_X32
-> > > +#ifdef CONFIG_X86_X32_ABI
-> > >         case SNDRV_PCM_IOCTL_CHANNEL_INFO_X32:
-> > >                 return snd_pcm_ioctl_channel_info_x32(substream, argp);
-> > > -#endif /* CONFIG_X86_X32 */
-> > > +#endif /* CONFIG_X86_X32_ABI */
-> > >         }
-> > >
-> > >         return -ENOIOCTLCMD;
-> > > --
-> > > 2.27.0
-> > >
-> > > --
-> > > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> > > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> > > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210227183910.221873-1-masahiroy%40kernel.org.
-> > 
-> > 
-> > 
-> > --
-> > Best Regards
-> > Masahiro Yamada
+-- 
+Best Regards,
+Samsung Electronics
+Chanwoo Choi
