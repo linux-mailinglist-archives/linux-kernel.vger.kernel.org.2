@@ -2,687 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC1632714F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 07:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71ED2327152
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 07:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231126AbhB1GoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 01:44:09 -0500
-Received: from mga09.intel.com ([134.134.136.24]:58906 "EHLO mga09.intel.com"
+        id S230299AbhB1Gua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 01:50:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230466AbhB1Gn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 01:43:27 -0500
-IronPort-SDR: iTx8qochyhzy5yrqN8wXYu2oisRICHtEv2TR+QA29ScyC4pH5iCMiKUPdRE9EfjT74JTWY2AsQ
- pudwX6FO6Z2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9908"; a="186323920"
-X-IronPort-AV: E=Sophos;i="5.81,211,1610438400"; 
-   d="scan'208";a="186323920"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2021 22:33:10 -0800
-IronPort-SDR: tbRZKK+vUMEdRufM6ZrxaDYyvvFN15WVuP4e9FL0GklsqCy35097fCgWmhpVEXYeITP4V1RJIj
- AHXAulb/mgQA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,211,1610438400"; 
-   d="scan'208";a="517029749"
-Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
-  by orsmga004.jf.intel.com with ESMTP; 27 Feb 2021 22:33:10 -0800
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
-Subject: [RFC PATCH 18/18] ioasid: Add /dev/ioasid for userspace
-Date:   Sat, 27 Feb 2021 14:01:26 -0800
-Message-Id: <1614463286-97618-19-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S229941AbhB1GuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 01:50:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F61364DF4;
+        Sun, 28 Feb 2021 06:49:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614494984;
+        bh=BZLDEqUws59xw1Ga8DEtDJN2MCcjM8144YR7AoGDmiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mR0LrfP15ZIuQx0ePZsFHMlItDLzs4epj9wqIaqYMcdrR/EzzfKYdSBnbvM7jXOd/
+         mlzw2WPp9PL+5O3Qj7Q0IwNjXbQ+dKP/3Yp5CPD5bFT2OwME1Sl9wMkUVY5dMWLgPD
+         BGmhTdDPikfWXwU4mOF+tnBGnk9hGxAIP1Bmd33Np6tNokbmeDB8fz70ta4ho5Rlm8
+         55dzKSmA3pM5ps5cmgK4hNlqJpfuYESimeK64FPkLTsMKVVJ0ZJ9DEB1l+ZKS+7NLS
+         4oxbblwf7xZwSqyGa+vAFQcvf/DyKz/67ehtL2hiJ1+9w29IitBIkJfOxtf1Cg3eZs
+         D+HZxD3EiTjmQ==
+Date:   Sat, 27 Feb 2021 23:49:36 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Fangrui Song <maskray@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "H . J . Lu" <hjl.tools@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kees Cook <keescook@chromium.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
+Subject: Re: [PATCH RFC] x86: remove toolchain check for X32 ABI capability
+Message-ID: <20210228064936.zixrhxlthyy6fmid@24bbad8f3778>
+References: <20210227183910.221873-1-masahiroy@kernel.org>
+ <CAK7LNASL_X43_nMTz1CZQB+jiLCRAJbh-wQdc23QV0pWceL_Lw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNASL_X43_nMTz1CZQB+jiLCRAJbh-wQdc23QV0pWceL_Lw@mail.gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liu Yi L <yi.l.liu@intel.com>
+On Sun, Feb 28, 2021 at 12:15:16PM +0900, Masahiro Yamada wrote:
+> On Sun, Feb 28, 2021 at 3:41 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > This commit reverts 0bf6276392e9 ("x32: Warn and disable rather than
+> > error if binutils too old").
+> >
+> > The help text in arch/x86/Kconfig says enabling the X32 ABI support
+> > needs binutils 2.22 or later. This is met because the minimal binutils
+> > version is 2.23 according to Documentation/process/changes.rst.
+> >
+> > I would not say I am not familiar with toolchain configuration, but
+> 
+> I mean:
+> I would not say I am familiar ...
+> That is why I added RFC.
+> 
+> I appreciate comments from people who are familiar
+> with toolchains (binutils, llvm).
+> 
+> If this change is not safe,
+> we can move this check to Kconfig at least.
 
-I/O Address Space IDs (IOASIDs) is used to tag DMA requests to target
-multiple DMA address spaces for physical devices. Its PCI terminology
-is called PASID (Process Address Space ID). Platforms with PASID support
-can provide PASID granularity DMA isolation, which is very useful for
-efficient and secure device sharing (SVA, subdevice passthrough, etc.).
+Hi Masahiro,
 
-Today only kernel drivers are allowed to allocate IOASIDs [1]. This patch
-aims to extend this capability to userspace as required in device pass-
-through scenarios. For example, a userspace driver may want to create its
-own DMA address spaces besides the default IOVA address space established
-by the kernel on the assigned device (e.g. vDPA control vq [2] and guest
-SVA [3]), thus need to get IOASIDs from the kernel IOASID allocator for
-tagging. In concept, each device can have its own IOASID space, thus it's
-also possible for userspace driver to manage a private IOASID space itself,
-say, when PF/VF is assigned. However it doesn't work for subdevice pass-
-through, as multiple subdevices under the same parent device share a single
-IOASID space thus IOASIDs must be centrally managed by the kernel in such
-case.
+As Fangrui pointed out, there are two outstanding issues with x32 with
+LLVM=1, both seemingly related to LLVM=1.
 
-This patch introduces a /dev/ioasid interface for this purpose (per discussion
-in [4]). An IOASID is just a number before it is tagged to a specific DMA
-address space. The actual IOASID tagging (to DMA requests) and association
-(with DMA address spaces) operations from userspace are scrutinized by specific
-device passthrough frameworks, which must ensure that a malicious driver
-cannot program arbitrary IOASIDs to its assigned device to access DMA address
-spaces that don't belong to it, this is out of the scope of this patch (a
-reference VFIO implementation will be posted soon).
+https://github.com/ClangBuiltLinux/linux/issues/514
+https://github.com/ClangBuiltLinux/linux/issues/1141
 
-Open:
+Additionally, there appears to be one from Arnd as well but that one has
+received no triage yet.
 
-PCIe PASID is 20bit implying a space with 1M IOASIDs. although it's plenty
-there was an open [4] on whether this user interface is open to all processes
-or only selective processes (e.g. with device assigned). In this patchseries,
-a cgroup controller is introduced to manage IOASID quota that a process is
-allowed to use. A cgroup-enabled system may by default set quota=0 to disallow
-IOASID allocation for most processes, and then having the virt management
-stack to adjust the quota for a process which gets device assigned. But yeah,
-we are also willing to hear more suggestions.
+https://github.com/ClangBuiltLinux/linux/issues/1205
 
-[1] https://lore.kernel.org/linux-iommu/1565900005-62508-8-git-send-email-jacob.jun.pan@linux.intel.com/
-[2] https://lore.kernel.org/kvm/20201216064818.48239-1-jasowang@redhat.com/
-[3] https://lore.kernel.org/linux-iommu/1599734733-6431-1-git-send-email-yi.l.liu@intel.com/
-[4] https://lore.kernel.org/kvm/20201014171055.328a52f4@w520.home/
+I intend to test this patch as well as a few others at some point in the
+coming week although I am having to play sysadmin due to moving servers
+so I might not be able to get to it until later in the week.
 
-Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
----
- Documentation/userspace-api/index.rst  |   1 +
- Documentation/userspace-api/ioasid.rst |  49 ++++
- drivers/iommu/Kconfig                  |   5 +
- drivers/iommu/Makefile                 |   1 +
- drivers/iommu/intel/Kconfig            |   1 +
- drivers/iommu/ioasid_user.c            | 297 +++++++++++++++++++++++++
- include/linux/ioasid.h                 |  26 +++
- include/linux/miscdevice.h             |   1 +
- include/uapi/linux/ioasid.h            |  98 ++++++++
- 9 files changed, 479 insertions(+)
- create mode 100644 Documentation/userspace-api/ioasid.rst
- create mode 100644 drivers/iommu/ioasid_user.c
- create mode 100644 include/uapi/linux/ioasid.h
+Cheers,
+Nathan
 
-diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
-index acd2cc2a538d..69e1be7c67ee 100644
---- a/Documentation/userspace-api/index.rst
-+++ b/Documentation/userspace-api/index.rst
-@@ -24,6 +24,7 @@ place where this information is gathered.
-    ioctl/index
-    iommu
-    media/index
-+   ioasid
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/userspace-api/ioasid.rst b/Documentation/userspace-api/ioasid.rst
-new file mode 100644
-index 000000000000..879d6cbae858
---- /dev/null
-+++ b/Documentation/userspace-api/ioasid.rst
-@@ -0,0 +1,49 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+.. ioasid:
-+
-+=====================================
-+IOASID Userspace API
-+=====================================
-+
-+The IOASID UAPI is used for userspace IOASID allocation/free requests,
-+thus IOASID management is centralized in the IOASID core[1] in the kernel. The
-+primary use case is guest Shared Virtual Address (SVA) today.
-+
-+Requests such as allocation/free can be issued by the users and managed
-+on a per-process basis through the ioasid core. Upon opening ("/dev/ioasid"),
-+a process obtains a unique handle associated with the process's mm_struct.
-+This handle is mapped to an FD in the userspace. Only a single open is
-+allowed per process.
-+
-+File descriptors can be transferred across processes by employing fork() or
-+UNIX domain socket. FDs obtained by transfer cannot be used to perform
-+IOASID requests. The following behaviors are recommended for the
-+applications:
-+
-+ - forked children close the parent's IOASID FDs immediately, open new
-+   /dev/ioasid FDs if IOASID allocation is desired
-+
-+ - do not share FDs via UNIX domain socket, e.g. via sendmsg
-+
-+================
-+Userspace APIs
-+================
-+
-+/dev/ioasid provides below ioctls:
-+
-+*) IOASID_GET_API_VERSION: returns the API version, userspace should check
-+   the API version first with the one it has embedded.
-+*) IOASID_GET_INFO: returns the information on the /dev/ioasid.
-+   - ioasid_bits: the ioasid bit width supported by this uAPI, userspace
-+     should check the ioasid_bits returned by this ioctl with the ioasid
-+     bits it wants and should fail if it's smaller than the one that
-+     userspace wants, otherwise, allocation will be failed.
-+*) IOASID_REQUEST_ALLOC: returns an IOASID which is allocated in kernel within
-+   the specified ioasid range.
-+*) IOASID_REQUEST_FREE: free an IOASID per userspace's request.
-+
-+For detailed definition, please see include/uapi/linux/ioasid.h.
-+
-+.. contents:: :local:
-+
-+[1] Documentation/driver-api/ioasid.rst
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index 192ef8f61310..830f4ec28a16 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -7,6 +7,11 @@ config IOMMU_IOVA
- config IOASID
- 	tristate
- 
-+config IOASID_USER
-+	tristate
-+	depends on IOASID
-+	default n
-+
- # IOMMU_API always gets selected by whoever wants it.
- config IOMMU_API
- 	bool
-diff --git a/drivers/iommu/Makefile b/drivers/iommu/Makefile
-index 61bd30cd8369..305dd019ff49 100644
---- a/drivers/iommu/Makefile
-+++ b/drivers/iommu/Makefile
-@@ -9,6 +9,7 @@ obj-$(CONFIG_IOMMU_IO_PGTABLE) += io-pgtable.o
- obj-$(CONFIG_IOMMU_IO_PGTABLE_ARMV7S) += io-pgtable-arm-v7s.o
- obj-$(CONFIG_IOMMU_IO_PGTABLE_LPAE) += io-pgtable-arm.o
- obj-$(CONFIG_IOASID) += ioasid.o
-+obj-$(CONFIG_IOASID_USER) += ioasid_user.o
- obj-$(CONFIG_IOMMU_IOVA) += iova.o
- obj-$(CONFIG_OF_IOMMU)	+= of_iommu.o
- obj-$(CONFIG_MSM_IOMMU) += msm_iommu.o
-diff --git a/drivers/iommu/intel/Kconfig b/drivers/iommu/intel/Kconfig
-index 28a3d1596c76..a6d9dea61d58 100644
---- a/drivers/iommu/intel/Kconfig
-+++ b/drivers/iommu/intel/Kconfig
-@@ -13,6 +13,7 @@ config INTEL_IOMMU
- 	select DMAR_TABLE
- 	select SWIOTLB
- 	select IOASID
-+	select IOASID_USER
- 	select IOMMU_DMA
- 	help
- 	  DMA remapping (DMAR) devices support enables independent address
-diff --git a/drivers/iommu/ioasid_user.c b/drivers/iommu/ioasid_user.c
-new file mode 100644
-index 000000000000..2f8957cd055a
---- /dev/null
-+++ b/drivers/iommu/ioasid_user.c
-@@ -0,0 +1,297 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Support IOASID allocation/free from user space.
-+ *
-+ * Copyright (C) 2021 Intel Corporation.
-+ *     Author: Liu Yi L <yi.l.liu@intel.com>
-+ *
-+ */
-+
-+#include <linux/ioasid.h>
-+#include <linux/file.h>
-+#include <linux/fs.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include <linux/sched/mm.h>
-+#include <linux/miscdevice.h>
-+
-+#define DRIVER_VERSION  "0.1"
-+#define DRIVER_AUTHOR   "Liu Yi L <yi.l.liu@intel.com>"
-+#define DRIVER_DESC     "IOASID management for user space"
-+
-+/* Current user ioasid uapi supports 31 bits */
-+#define IOASID_BITS	31
-+
-+struct ioasid_user_token {
-+	unsigned long long val;
-+};
-+
-+struct ioasid_user {
-+	struct kref		kref;
-+	struct ioasid_set	*ioasid_set;
-+	struct mutex		lock;
-+	struct list_head	next;
-+	struct ioasid_user_token	token;
-+};
-+
-+static struct mutex		ioasid_user_lock;
-+static struct list_head		ioasid_user_list;
-+
-+/* called with ioasid_user_lock held */
-+static void ioasid_user_release(struct kref *kref)
-+{
-+	struct ioasid_user *iuser = container_of(kref, struct ioasid_user, kref);
-+
-+	ioasid_free_all_in_set(iuser->ioasid_set);
-+	list_del(&iuser->next);
-+	mutex_unlock(&ioasid_user_lock);
-+	ioasid_set_free(iuser->ioasid_set);
-+	kfree(iuser);
-+}
-+
-+void ioasid_user_put(struct ioasid_user *iuser)
-+{
-+	kref_put_mutex(&iuser->kref, ioasid_user_release, &ioasid_user_lock);
-+}
-+EXPORT_SYMBOL_GPL(ioasid_user_put);
-+
-+static void ioasid_user_get(struct ioasid_user *iuser)
-+{
-+	kref_get(&iuser->kref);
-+}
-+
-+struct ioasid_user *ioasid_user_get_from_task(struct task_struct *task)
-+{
-+	struct mm_struct *mm = get_task_mm(task);
-+	unsigned long long val = (unsigned long long)mm;
-+	struct ioasid_user *iuser;
-+	bool found = false;
-+
-+	if (!mm)
-+		return NULL;
-+
-+	mutex_lock(&ioasid_user_lock);
-+	/* Search existing ioasid_user with current mm pointer */
-+	list_for_each_entry(iuser, &ioasid_user_list, next) {
-+		if (iuser->token.val == val) {
-+			ioasid_user_get(iuser);
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	mmput(mm);
-+
-+	mutex_unlock(&ioasid_user_lock);
-+	return found ? iuser : NULL;
-+}
-+EXPORT_SYMBOL_GPL(ioasid_user_get_from_task);
-+
-+void ioasid_user_for_each_id(struct ioasid_user *iuser, void *data,
-+			    void (*fn)(ioasid_t id, void *data))
-+{
-+	mutex_lock(&iuser->lock);
-+	ioasid_set_for_each_ioasid(iuser->ioasid_set, fn, data);
-+	mutex_unlock(&iuser->lock);
-+}
-+EXPORT_SYMBOL_GPL(ioasid_user_for_each_id);
-+
-+static int ioasid_fops_open(struct inode *inode, struct file *filep)
-+{
-+	struct mm_struct *mm = get_task_mm(current);
-+	unsigned long long val = (unsigned long long)mm;
-+	struct ioasid_set *iset;
-+	struct ioasid_user *iuser;
-+	int ret = 0;
-+
-+	mutex_lock(&ioasid_user_lock);
-+	/* Only allow one single open per process */
-+	list_for_each_entry(iuser, &ioasid_user_list, next) {
-+		if (iuser->token.val == val) {
-+			ret = -EBUSY;
-+			goto out;
-+		}
-+	}
-+
-+	iuser = kzalloc(sizeof(*iuser), GFP_KERNEL);
-+	if (!iuser) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	/*
-+	 * IOASID core provides a 'IOASID set' concept to track all
-+	 * IOASIDs associated with a token. Here we use mm_struct as
-+	 * the token and create a IOASID set per mm_struct. All the
-+	 * containers of the process share the same IOASID set.
-+	 */
-+	iset = ioasid_set_alloc(mm, 0, IOASID_SET_TYPE_MM);
-+	if (IS_ERR(iset)) {
-+		kfree(iuser);
-+		ret = PTR_ERR(iset);
-+		goto out;
-+	}
-+
-+	iuser->ioasid_set = iset;
-+	kref_init(&iuser->kref);
-+	iuser->token.val = val;
-+	mutex_init(&iuser->lock);
-+	filep->private_data = iuser;
-+
-+	list_add(&iuser->next, &ioasid_user_list);
-+out:
-+	mutex_unlock(&ioasid_user_lock);
-+	mmput(mm);
-+	return ret;
-+}
-+
-+static int ioasid_fops_release(struct inode *inode, struct file *filep)
-+{
-+	struct ioasid_user *iuser = filep->private_data;
-+
-+	filep->private_data = NULL;
-+
-+	ioasid_user_put(iuser);
-+
-+	return 0;
-+}
-+
-+static int ioasid_get_info(struct ioasid_user *iuser, unsigned long arg)
-+{
-+	struct ioasid_info info;
-+	unsigned long minsz;
-+
-+	minsz = offsetofend(struct ioasid_info, ioasid_bits);
-+
-+	if (copy_from_user(&info, (void __user *)arg, minsz))
-+		return -EFAULT;
-+
-+	if (info.argsz < minsz || info.flags)
-+		return -EINVAL;
-+
-+	info.ioasid_bits = IOASID_BITS;
-+
-+	return copy_to_user((void __user *)arg, &info, minsz) ? -EFAULT : 0;
-+}
-+
-+static int ioasid_alloc_request(struct ioasid_user *iuser, unsigned long arg)
-+{
-+	struct ioasid_alloc_request req;
-+	unsigned long minsz;
-+	ioasid_t ioasid;
-+
-+	minsz = offsetofend(struct ioasid_alloc_request, range);
-+
-+	if (copy_from_user(&req, (void __user *)arg, minsz))
-+		return -EFAULT;
-+
-+	if (req.argsz < minsz || req.flags)
-+		return -EINVAL;
-+
-+	if (req.range.min > req.range.max ||
-+	    req.range.min >= (1 << IOASID_BITS) ||
-+	    req.range.max >= (1 << IOASID_BITS))
-+		return -EINVAL;
-+
-+	ioasid = ioasid_alloc(iuser->ioasid_set, req.range.min,
-+			    req.range.max, NULL);
-+
-+	if (ioasid == INVALID_IOASID)
-+		return -EINVAL;
-+
-+	return ioasid;
-+
-+}
-+
-+static int ioasid_free_request(struct ioasid_user *iuser, unsigned long arg)
-+{
-+	int ioasid;
-+
-+	if (copy_from_user(&ioasid, (void __user *)arg, sizeof(ioasid)))
-+		return -EFAULT;
-+
-+	if (ioasid < 0)
-+		return -EINVAL;
-+
-+	ioasid_free(iuser->ioasid_set, ioasid);
-+
-+	return 0;
-+}
-+
-+static long ioasid_fops_unl_ioctl(struct file *filep,
-+				  unsigned int cmd, unsigned long arg)
-+{
-+	struct ioasid_user *iuser = filep->private_data;
-+	long ret = -EINVAL;
-+
-+	if (!iuser)
-+		return ret;
-+
-+	mutex_lock(&iuser->lock);
-+
-+	switch (cmd) {
-+	case IOASID_GET_API_VERSION:
-+		ret = IOASID_API_VERSION;
-+		break;
-+	case IOASID_GET_INFO:
-+		ret = ioasid_get_info(iuser, arg);
-+		break;
-+	case IOASID_REQUEST_ALLOC:
-+		ret = ioasid_alloc_request(iuser, arg);
-+		break;
-+	case IOASID_REQUEST_FREE:
-+		ret = ioasid_free_request(iuser, arg);
-+		break;
-+	default:
-+		pr_err("Unsupported cmd %u\n", cmd);
-+		break;
-+	}
-+
-+	mutex_unlock(&iuser->lock);
-+	return ret;
-+}
-+
-+static const struct file_operations ioasid_user_fops = {
-+	.owner		= THIS_MODULE,
-+	.open		= ioasid_fops_open,
-+	.release	= ioasid_fops_release,
-+	.unlocked_ioctl	= ioasid_fops_unl_ioctl,
-+};
-+
-+static struct miscdevice ioasid_user = {
-+	.minor = IOASID_MINOR,
-+	.name = "ioasid_user",
-+	.fops = &ioasid_user_fops,
-+	.nodename = "ioasid",
-+	.mode = S_IRUGO | S_IWUGO,
-+};
-+
-+
-+static int __init ioasid_user_init(void)
-+{
-+	int ret;
-+
-+	ret = misc_register(&ioasid_user);
-+	if (ret) {
-+		pr_err("ioasid_user: misc device register failed\n");
-+		return ret;
-+	}
-+
-+	mutex_init(&ioasid_user_lock);
-+	INIT_LIST_HEAD(&ioasid_user_list);
-+	return 0;
-+}
-+
-+static void __exit ioasid_user_exit(void)
-+{
-+	WARN_ON(!list_empty(&ioasid_user_list));
-+	misc_deregister(&ioasid_user);
-+}
-+
-+module_init(ioasid_user_init);
-+module_exit(ioasid_user_exit);
-+
-+MODULE_VERSION(DRIVER_VERSION);
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR(DRIVER_AUTHOR);
-+MODULE_DESCRIPTION(DRIVER_DESC);
-diff --git a/include/linux/ioasid.h b/include/linux/ioasid.h
-index 5ea4710efb02..b82abe6325f7 100644
---- a/include/linux/ioasid.h
-+++ b/include/linux/ioasid.h
-@@ -6,6 +6,7 @@
- #include <linux/errno.h>
- #include <linux/xarray.h>
- #include <linux/refcount.h>
-+#include <uapi/linux/ioasid.h>
- 
- #define INVALID_IOASID ((ioasid_t)-1)
- typedef unsigned int ioasid_t;
-@@ -152,6 +153,31 @@ static inline int ioasid_cg_uncharge(struct ioasid_set *set)
- #endif /* CGROUP_IOASIDS */
- bool ioasid_queue_work(struct work_struct *work);
- 
-+/* IOASID userspace support */
-+struct ioasid_user;
-+#if IS_ENABLED(CONFIG_IOASID_USER)
-+extern struct ioasid_user *ioasid_user_get_from_task(struct task_struct *task);
-+extern void ioasid_user_put(struct ioasid_user *iuser);
-+extern void ioasid_user_for_each_id(struct ioasid_user *iuser, void *data,
-+				   void (*fn)(ioasid_t id, void *data));
-+
-+#else /* CONFIG_IOASID_USER */
-+static inline struct ioasid_user *
-+ioasid_user_get_from_task(struct task_struct *task)
-+{
-+	return ERR_PTR(-ENOTTY);
-+}
-+
-+static inline void ioasid_user_put(struct ioasid_user *iuser)
-+{
-+}
-+
-+static inline void ioasid_user_for_each_id(struct ioasid_user *iuser, void *data,
-+					  void (*fn)(ioasid_t id, void *data))
-+{
-+}
-+#endif /* CONFIG_IOASID_USER */
-+
- #else /* !CONFIG_IOASID */
- 
- static inline void ioasid_install_capacity(ioasid_t total)
-diff --git a/include/linux/miscdevice.h b/include/linux/miscdevice.h
-index 0676f18093f9..9823901f11a4 100644
---- a/include/linux/miscdevice.h
-+++ b/include/linux/miscdevice.h
-@@ -21,6 +21,7 @@
- #define APOLLO_MOUSE_MINOR	7	/* unused */
- #define PC110PAD_MINOR		9	/* unused */
- /*#define ADB_MOUSE_MINOR	10	FIXME OBSOLETE */
-+#define IOASID_MINOR		129     /* /dev/ioasid     */
- #define WATCHDOG_MINOR		130	/* Watchdog timer     */
- #define TEMP_MINOR		131	/* Temperature Sensor */
- #define APM_MINOR_DEV		134
-diff --git a/include/uapi/linux/ioasid.h b/include/uapi/linux/ioasid.h
-new file mode 100644
-index 000000000000..1529070c0317
---- /dev/null
-+++ b/include/uapi/linux/ioasid.h
-@@ -0,0 +1,98 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * PASID (Processor Address Space ID) is a PCIe concept for tagging
-+ * address spaces in DMA requests. When system-wide PASID allocation
-+ * is required by the underlying iommu driver (e.g. Intel VT-d), this
-+ * provides an interface for userspace to request ioasid alloc/free
-+ * for its assigned devices.
-+ *
-+ * Copyright (C) 2021 Intel Corporation.  All rights reserved.
-+ *     Author: Liu Yi L <yi.l.liu@intel.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+#ifndef _UAPI_IOASID_H
-+#define _UAPI_IOASID_H
-+
-+#include <linux/types.h>
-+#include <linux/ioctl.h>
-+#include <linux/ioasid.h>
-+
-+#define IOASID_API_VERSION	0
-+
-+
-+/* Kernel & User level defines for IOASID IOCTLs. */
-+
-+#define IOASID_TYPE	('i')
-+#define IOASID_BASE	100
-+
-+/* -------- IOCTLs for IOASID file descriptor (/dev/ioasid) -------- */
-+
-+/**
-+ * IOASID_GET_API_VERSION - _IO(IOASID_TYPE, IOASID_BASE + 0)
-+ *
-+ * Report the version of the IOASID API.  This allows us to bump the entire
-+ * API version should we later need to add or change features in incompatible
-+ * ways.
-+ * Return: IOASID_API_VERSION
-+ * Availability: Always
-+ */
-+#define IOASID_GET_API_VERSION		_IO(IOASID_TYPE, IOASID_BASE + 0)
-+
-+/**
-+ * IOASID_GET_INFO - _IOR(IOASID_TYPE, IOASID_BASE + 1, struct ioasid_info)
-+ *
-+ * Retrieve information about the IOASID object. Fills in provided
-+ * struct ioasid_info. Caller sets argsz.
-+ *
-+ * @argsz:	 user filled size of this data.
-+ * @flags:	 currently reserved for future extension. must set to 0.
-+ * @ioasid_bits: maximum supported PASID bits, 0 represents no PASID
-+ *		 support.
-+
-+ * Availability: Always
-+ */
-+struct ioasid_info {
-+	__u32	argsz;
-+	__u32	flags;
-+	__u32	ioasid_bits;
-+};
-+#define IOASID_GET_INFO _IO(IOASID_TYPE, IOASID_BASE + 1)
-+
-+/**
-+ * IOASID_REQUEST_ALLOC - _IOWR(IOASID_TYPE, IOASID_BASE + 2,
-+ *					struct ioasid_request)
-+ *
-+ * Alloc a PASID within @range. @range is [min, max], which means both
-+ * @min and @max are inclusive.
-+ * User space should provide min, max no more than the ioasid bits reports
-+ * in ioasid_info via IOASID_GET_INFO.
-+ *
-+ * @argsz: user filled size of this data.
-+ * @flags: currently reserved for future extension. must set to 0.
-+ * @range: allocated ioasid is expected in the range.
-+ *
-+ * returns: allocated ID on success, -errno on failure
-+ */
-+struct ioasid_alloc_request {
-+	__u32	argsz;
-+	__u32	flags;
-+	struct {
-+		__u32	min;
-+		__u32	max;
-+	} range;
-+};
-+#define IOASID_REQUEST_ALLOC	_IO(IOASID_TYPE, IOASID_BASE + 2)
-+
-+/**
-+ * IOASID_REQUEST_FREE - _IOWR(IOASID_TYPE, IOASID_BASE + 3, int)
-+ *
-+ * Free a PASID.
-+ *
-+ * returns: 0 on success, -errno on failure
-+ */
-+#define IOASID_REQUEST_FREE	_IO(IOASID_TYPE, IOASID_BASE + 3)
-+
-+#endif /* _UAPI_IOASID_H */
--- 
-2.25.1
-
+> > I checked the configure.tgt code in binutils. The elf32_x86_64
+> > emulation mode seems to be included when it is configured for the
+> > x86_64-*-linux-* target.
+> >
+> > I also tried lld and llvm-objcopy, and succeeded in building x32 VDSO.
+> >
+> > I removed the compile-time check in arch/x86/Makefile, in the hope of
+> > elf32_x86_64 being always supported.
+> >
+> > With this, CONFIG_X86_X32 and CONFIG_X86_X32_ABI will be equivalent.
+> > Rename the former to the latter.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  arch/x86/Kconfig                       |  8 ++------
+> >  arch/x86/Makefile                      | 16 ----------------
+> >  arch/x86/include/asm/syscall_wrapper.h |  6 +++---
+> >  arch/x86/include/asm/vdso.h            |  2 +-
+> >  arch/x86/kernel/process_64.c           |  2 +-
+> >  fs/fuse/file.c                         |  2 +-
+> >  fs/xfs/xfs_ioctl32.c                   |  2 +-
+> >  sound/core/control_compat.c            | 16 ++++++++--------
+> >  sound/core/pcm_compat.c                | 20 ++++++++++----------
+> >  9 files changed, 27 insertions(+), 47 deletions(-)
+> >
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 2792879d398e..7272cba2744c 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -2865,7 +2865,7 @@ config IA32_AOUT
+> >         help
+> >           Support old a.out binaries in the 32bit emulation.
+> >
+> > -config X86_X32
+> > +config X86_X32_ABI
+> >         bool "x32 ABI for 64-bit mode"
+> >         depends on X86_64
+> >         help
+> > @@ -2874,10 +2874,6 @@ config X86_X32
+> >           full 64-bit register file and wide data path while leaving
+> >           pointers at 32 bits for smaller memory footprint.
+> >
+> > -         You will need a recent binutils (2.22 or later) with
+> > -         elf32_x86_64 support enabled to compile a kernel with this
+> > -         option set.
+> > -
+> >  config COMPAT_32
+> >         def_bool y
+> >         depends on IA32_EMULATION || X86_32
+> > @@ -2886,7 +2882,7 @@ config COMPAT_32
+> >
+> >  config COMPAT
+> >         def_bool y
+> > -       depends on IA32_EMULATION || X86_X32
+> > +       depends on IA32_EMULATION || X86_X32_ABI
+> >
+> >  if COMPAT
+> >  config COMPAT_FOR_U64_ALIGNMENT
+> > diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> > index 2d6d5a28c3bf..e163549f5be7 100644
+> > --- a/arch/x86/Makefile
+> > +++ b/arch/x86/Makefile
+> > @@ -125,22 +125,6 @@ else
+> >          KBUILD_CFLAGS += -mcmodel=kernel
+> >  endif
+> >
+> > -ifdef CONFIG_X86_X32
+> > -       x32_ld_ok := $(call try-run,\
+> > -                       /bin/echo -e '1: .quad 1b' | \
+> > -                       $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" - && \
+> > -                       $(OBJCOPY) -O elf32-x86-64 "$$TMP" "$$TMPO" && \
+> > -                       $(LD) -m elf32_x86_64 "$$TMPO" -o "$$TMP",y,n)
+> > -        ifeq ($(x32_ld_ok),y)
+> > -                CONFIG_X86_X32_ABI := y
+> > -                KBUILD_AFLAGS += -DCONFIG_X86_X32_ABI
+> > -                KBUILD_CFLAGS += -DCONFIG_X86_X32_ABI
+> > -        else
+> > -                $(warning CONFIG_X86_X32 enabled but no binutils support)
+> > -        endif
+> > -endif
+> > -export CONFIG_X86_X32_ABI
+> > -
+> >  #
+> >  # If the function graph tracer is used with mcount instead of fentry,
+> >  # '-maccumulate-outgoing-args' is needed to prevent a GCC bug
+> > diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+> > index a84333adeef2..69bf87c41a0b 100644
+> > --- a/arch/x86/include/asm/syscall_wrapper.h
+> > +++ b/arch/x86/include/asm/syscall_wrapper.h
+> > @@ -158,7 +158,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+> >  #endif /* CONFIG_IA32_EMULATION */
+> >
+> >
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >  /*
+> >   * For the x32 ABI, we need to create a stub for compat_sys_*() which is aware
+> >   * of the x86-64-style parameter ordering of x32 syscalls. The syscalls common
+> > @@ -176,12 +176,12 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+> >
+> >  #define __X32_COMPAT_SYS_NI(name)                                      \
+> >         __SYS_NI(x32, compat_sys_##name)
+> > -#else /* CONFIG_X86_X32 */
+> > +#else /* CONFIG_X86_X32_ABI */
+> >  #define __X32_COMPAT_SYS_STUB0(name)
+> >  #define __X32_COMPAT_SYS_STUBx(x, name, ...)
+> >  #define __X32_COMPAT_COND_SYSCALL(name)
+> >  #define __X32_COMPAT_SYS_NI(name)
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >
+> >
+> >  #ifdef CONFIG_COMPAT
+> > diff --git a/arch/x86/include/asm/vdso.h b/arch/x86/include/asm/vdso.h
+> > index 98aa103eb4ab..2963a2f5dbc4 100644
+> > --- a/arch/x86/include/asm/vdso.h
+> > +++ b/arch/x86/include/asm/vdso.h
+> > @@ -37,7 +37,7 @@ struct vdso_image {
+> >  extern const struct vdso_image vdso_image_64;
+> >  #endif
+> >
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >  extern const struct vdso_image vdso_image_x32;
+> >  #endif
+> >
+> > diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
+> > index d08307df69ad..a93b6f4296fc 100644
+> > --- a/arch/x86/kernel/process_64.c
+> > +++ b/arch/x86/kernel/process_64.c
+> > @@ -656,7 +656,7 @@ void set_personality_64bit(void)
+> >
+> >  static void __set_personality_x32(void)
+> >  {
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >         if (current->mm)
+> >                 current->mm->context.flags = 0;
+> >
+> > diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+> > index 8cccecb55fb8..c53c620d1a7a 100644
+> > --- a/fs/fuse/file.c
+> > +++ b/fs/fuse/file.c
+> > @@ -2797,7 +2797,7 @@ long fuse_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg,
+> >  #else
+> >         if (flags & FUSE_IOCTL_COMPAT) {
+> >                 inarg.flags |= FUSE_IOCTL_32BIT;
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >                 if (in_x32_syscall())
+> >                         inarg.flags |= FUSE_IOCTL_COMPAT_X32;
+> >  #endif
+> > diff --git a/fs/xfs/xfs_ioctl32.c b/fs/xfs/xfs_ioctl32.c
+> > index 33c09ec8e6c0..e8038bc966e7 100644
+> > --- a/fs/xfs/xfs_ioctl32.c
+> > +++ b/fs/xfs/xfs_ioctl32.c
+> > @@ -233,7 +233,7 @@ xfs_compat_ioc_fsbulkstat(
+> >         inumbers_fmt_pf         inumbers_func = xfs_fsinumbers_fmt_compat;
+> >         bulkstat_one_fmt_pf     bs_one_func = xfs_fsbulkstat_one_fmt_compat;
+> >
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >         if (in_x32_syscall()) {
+> >                 /*
+> >                  * ... but on x32 the input xfs_fsop_bulkreq has pointers
+> > diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
+> > index 1d708aab9c98..5d1b94bda2cd 100644
+> > --- a/sound/core/control_compat.c
+> > +++ b/sound/core/control_compat.c
+> > @@ -153,7 +153,7 @@ struct snd_ctl_elem_value32 {
+> >          unsigned char reserved[128];
+> >  };
+> >
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >  /* x32 has a different alignment for 64bit values from ia32 */
+> >  struct snd_ctl_elem_value_x32 {
+> >         struct snd_ctl_elem_id id;
+> > @@ -165,7 +165,7 @@ struct snd_ctl_elem_value_x32 {
+> >         } value;
+> >         unsigned char reserved[128];
+> >  };
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >
+> >  /* get the value type and count of the control */
+> >  static int get_ctl_type(struct snd_card *card, struct snd_ctl_elem_id *id,
+> > @@ -350,7 +350,7 @@ static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
+> >         return ctl_elem_write_user(file, data32, &data32->value);
+> >  }
+> >
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >  static int snd_ctl_elem_read_user_x32(struct snd_card *card,
+> >                                       struct snd_ctl_elem_value_x32 __user *data32)
+> >  {
+> > @@ -362,7 +362,7 @@ static int snd_ctl_elem_write_user_x32(struct snd_ctl_file *file,
+> >  {
+> >         return ctl_elem_write_user(file, data32, &data32->value);
+> >  }
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >
+> >  /* add or replace a user control */
+> >  static int snd_ctl_elem_add_compat(struct snd_ctl_file *file,
+> > @@ -421,10 +421,10 @@ enum {
+> >         SNDRV_CTL_IOCTL_ELEM_WRITE32 = _IOWR('U', 0x13, struct snd_ctl_elem_value32),
+> >         SNDRV_CTL_IOCTL_ELEM_ADD32 = _IOWR('U', 0x17, struct snd_ctl_elem_info32),
+> >         SNDRV_CTL_IOCTL_ELEM_REPLACE32 = _IOWR('U', 0x18, struct snd_ctl_elem_info32),
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >         SNDRV_CTL_IOCTL_ELEM_READ_X32 = _IOWR('U', 0x12, struct snd_ctl_elem_value_x32),
+> >         SNDRV_CTL_IOCTL_ELEM_WRITE_X32 = _IOWR('U', 0x13, struct snd_ctl_elem_value_x32),
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >  };
+> >
+> >  static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
+> > @@ -463,12 +463,12 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
+> >                 return snd_ctl_elem_add_compat(ctl, argp, 0);
+> >         case SNDRV_CTL_IOCTL_ELEM_REPLACE32:
+> >                 return snd_ctl_elem_add_compat(ctl, argp, 1);
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >         case SNDRV_CTL_IOCTL_ELEM_READ_X32:
+> >                 return snd_ctl_elem_read_user_x32(ctl->card, argp);
+> >         case SNDRV_CTL_IOCTL_ELEM_WRITE_X32:
+> >                 return snd_ctl_elem_write_user_x32(ctl, argp);
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >         }
+> >
+> >         down_read(&snd_ioctl_rwsem);
+> > diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+> > index 590a46a9e78d..937f5117a81f 100644
+> > --- a/sound/core/pcm_compat.c
+> > +++ b/sound/core/pcm_compat.c
+> > @@ -147,13 +147,13 @@ static int snd_pcm_ioctl_channel_info_compat(struct snd_pcm_substream *substream
+> >         return err;
+> >  }
+> >
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >  /* X32 ABI has the same struct as x86-64 for snd_pcm_channel_info */
+> >  static int snd_pcm_channel_info_user(struct snd_pcm_substream *substream,
+> >                                      struct snd_pcm_channel_info __user *src);
+> >  #define snd_pcm_ioctl_channel_info_x32(s, p)   \
+> >         snd_pcm_channel_info_user(s, p)
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >
+> >  struct compat_snd_pcm_status64 {
+> >         snd_pcm_state_t state;
+> > @@ -373,7 +373,7 @@ static int snd_pcm_ioctl_xfern_compat(struct snd_pcm_substream *substream,
+> >         return err;
+> >  }
+> >
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >  /* X32 ABI has 64bit timespec and 64bit alignment */
+> >  struct snd_pcm_mmap_status_x32 {
+> >         snd_pcm_state_t state;
+> > @@ -464,7 +464,7 @@ static int snd_pcm_ioctl_sync_ptr_x32(struct snd_pcm_substream *substream,
+> >
+> >         return 0;
+> >  }
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >
+> >  /*
+> >   */
+> > @@ -484,10 +484,10 @@ enum {
+> >         SNDRV_PCM_IOCTL_READN_FRAMES32 = _IOR('A', 0x53, struct snd_xfern32),
+> >         SNDRV_PCM_IOCTL_STATUS_COMPAT64 = _IOR('A', 0x20, struct compat_snd_pcm_status64),
+> >         SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT64 = _IOWR('A', 0x24, struct compat_snd_pcm_status64),
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >         SNDRV_PCM_IOCTL_CHANNEL_INFO_X32 = _IOR('A', 0x32, struct snd_pcm_channel_info),
+> >         SNDRV_PCM_IOCTL_SYNC_PTR_X32 = _IOWR('A', 0x23, struct snd_pcm_sync_ptr_x32),
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >  };
+> >
+> >  static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
+> > @@ -531,10 +531,10 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+> >         case __SNDRV_PCM_IOCTL_SYNC_PTR32:
+> >                 return snd_pcm_common_ioctl(file, substream, cmd, argp);
+> >         case __SNDRV_PCM_IOCTL_SYNC_PTR64:
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >                 if (in_x32_syscall())
+> >                         return snd_pcm_ioctl_sync_ptr_x32(substream, argp);
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >                 return snd_pcm_common_ioctl(file, substream, cmd, argp);
+> >         case SNDRV_PCM_IOCTL_HW_REFINE32:
+> >                 return snd_pcm_ioctl_hw_params_compat(substream, 1, argp);
+> > @@ -566,10 +566,10 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+> >                 return snd_pcm_status_user_compat64(substream, argp, false);
+> >         case SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT64:
+> >                 return snd_pcm_status_user_compat64(substream, argp, true);
+> > -#ifdef CONFIG_X86_X32
+> > +#ifdef CONFIG_X86_X32_ABI
+> >         case SNDRV_PCM_IOCTL_CHANNEL_INFO_X32:
+> >                 return snd_pcm_ioctl_channel_info_x32(substream, argp);
+> > -#endif /* CONFIG_X86_X32 */
+> > +#endif /* CONFIG_X86_X32_ABI */
+> >         }
+> >
+> >         return -ENOIOCTLCMD;
+> > --
+> > 2.27.0
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210227183910.221873-1-masahiroy%40kernel.org.
+> 
+> 
+> 
+> --
+> Best Regards
+> Masahiro Yamada
