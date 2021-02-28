@@ -2,281 +2,450 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB2C327513
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 00:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C454932751D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 00:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhB1XIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 18:08:04 -0500
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:35298 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbhB1XIC (ORCPT
+        id S231394AbhB1XJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 18:09:28 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:42158 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230412AbhB1XJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 18:08:02 -0500
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 1D670891AF;
-        Mon,  1 Mar 2021 12:07:18 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1614553638;
-        bh=mTm99MPkc+6dS7pISgrAnkJH72py1xCk7Vkk6ktc3EU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=a9j2RyeJrnhMOjj5G1DP57GC2bonpTQBEI9sm0XmDXY6GO1zpmtq2ITdw9r90Vzf/
-         SOnqvVtPLcFU2j8I66E6I0TQ4J24csYrFWerFgOuchBn9hQrhBS7MdZ+jHAF3ZRYrW
-         EMqBWWsteDw0Pv4UyAhcZj12l8x7leMPqfIqCUryFL87/e5g0/pLlywlI0hhEP5RGb
-         nCC//Q1e8JrrS+r2dTvuEoR8lBC1a3gC9t3VSo6W4Wf2+qBs2Lqm7+BsecJRGAy3A/
-         o4S6nAuo9EvCdJaz8lFO14d7tdbRDkZyyedqOjheweVYnrEPOlfOARIfBHqa3rlKIA
-         kH0rK6Q0LcsVA==
-Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B603c22250002>; Mon, 01 Mar 2021 12:07:17 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by smtp (Postfix) with ESMTP id 0165113EF08;
-        Mon,  1 Mar 2021 12:07:28 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id 8D7DF283985; Mon,  1 Mar 2021 12:07:17 +1300 (NZDT)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net
-Cc:     devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH 2/2] hwmon: (pmbus): Add driver for Infineon IR36021
-Date:   Mon,  1 Mar 2021 12:07:14 +1300
-Message-Id: <20210228230714.26578-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210228230714.26578-1-chris.packham@alliedtelesis.co.nz>
-References: <20210228230714.26578-1-chris.packham@alliedtelesis.co.nz>
+        Sun, 28 Feb 2021 18:09:06 -0500
+Date:   Mon, 1 Mar 2021 02:08:11 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
+        <linux-mips@linux-mips.org>, Paul Cercueil <paul@crapouillou.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        <iamjoonsoo.kim@lge.com>, <riel@surriel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>
+Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations with
+ kernel_end
+Message-ID: <20210228230811.wdae7oaaf3mbpgwl@mobilestation>
+References: <20201217201214.3414100-1-guro@fb.com>
+ <20201217201214.3414100-2-guro@fb.com>
+ <23fc1ef9-7342-8bc2-d184-d898107c52b2@gmail.com>
+ <20210228090041.GO1447004@kernel.org>
+ <8cbafe95-0f8c-a9b7-2dc9-cded846622fd@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=bUQKSiCPAAAA:8 a=eFSOPmDLR39FoRlrkAYA:9 a=QEXdDO2ut3YA:10 a=-fHZXUhsFbuwFN3fwQAr:22
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <8cbafe95-0f8c-a9b7-2dc9-cded846622fd@gmail.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IR36021 is a dual=E2=80=90loop digital multi=E2=80=90phase buck contr=
-oller.
+Hi folks,
+What you've got here seems a more complicated problem than it
+could originally look like. Please, see my comments below.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- Documentation/hwmon/index.rst   |  1 +
- Documentation/hwmon/ir36021.rst | 62 +++++++++++++++++++++++++
- drivers/hwmon/pmbus/Kconfig     |  9 ++++
- drivers/hwmon/pmbus/Makefile    |  1 +
- drivers/hwmon/pmbus/ir36021.c   | 81 +++++++++++++++++++++++++++++++++
- 5 files changed, 154 insertions(+)
- create mode 100644 Documentation/hwmon/ir36021.rst
- create mode 100644 drivers/hwmon/pmbus/ir36021.c
+(Note I've discarded some of the email logs, which of no interest
+to the discovered problem. Please also note that I haven't got any
+Broadcom hardware to test out a solution suggested below.)
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rs=
-t
-index 8d5a2df1ecb6..b34894403c2b 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -77,6 +77,7 @@ Hardware Monitoring Kernel Drivers
-    intel-m10-bmc-hwmon
-    ir35221
-    ir38064
-+   ir36021
-    isl68137
-    it87
-    jc42
-diff --git a/Documentation/hwmon/ir36021.rst b/Documentation/hwmon/ir3602=
-1.rst
-new file mode 100644
-index 000000000000..36ef8d518b81
---- /dev/null
-+++ b/Documentation/hwmon/ir36021.rst
-@@ -0,0 +1,62 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Kernel driver ir36021
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+Supported chips:
-+
-+  * Infineon IR36021
-+
-+    Prefix: ir36021
-+    Addresses scanned: -
-+
-+    Datasheet: Publicly available at the Infineon website
-+      https://www.infineon.com/dgdl/ir36021.pdf?fileId=3D5546d462533600a=
-4015355d0aa2d1775
-+
-+Authors:
-+      - Chris Packham <chris.packham@alliedtelesis.co.nz>
-+
-+Description
-+-----------
-+
-+The IR36021 is a dual=E2=80=90loop digital multi=E2=80=90phase buck cont=
-roller designed for
-+point of load applications.
-+
-+Usage Notes
-+-----------
-+
-+This driver does not probe for PMBus devices. You will have to instantia=
-te
-+devices explicitly.
-+
-+Sysfs attributes
-+----------------
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-+curr1_label             "iin"
-+curr1_input             Measured input current
-+curr1_alarm             Input fault alarm
-+
-+curr2_label             "iout1"
-+curr2_input             Measured output current
-+curr2_alarm             Output over-current alarm
-+
-+in1_label               "vin"
-+in1_input               Measured input voltage
-+in1_alarm               Input under-voltage alarm
-+
-+in2_label               "vout1"
-+in2_input               Measured output voltage
-+in2_alarm               Output over-voltage alarm
-+
-+power1_label            "pin"
-+power1_input            Measured input power
-+power1_alarm            Input under-voltage alarm
-+
-+power2_label            "pout1"
-+power2_input            Measured output power
-+
-+temp1_input             Measured temperature
-+temp1_alarm             Temperature alarm
-+
-+temp2_input             Measured other loop temperature
-+temp2_alarm             Temperature alarm
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index 32d2fc850621..ee8c27b3b83d 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -84,6 +84,15 @@ config SENSORS_IR35221
- 	  This driver can also be built as a module. If so, the module will
- 	  be called ir35221.
-=20
-+config SENSORS_IR36021
-+	tristate "Infineon IR36021"
-+	help
-+	  If you say yes here you get hardware monitoring support for Infineon
-+	  IR36021.
-+
-+	  This driver can also be built as a module. If so, the module will
-+	  be called ir36021.
-+
- config SENSORS_IR38064
- 	tristate "Infineon IR38064"
- 	help
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index 6a4ba0fdc1db..685a6bc2b15f 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_SENSORS_BEL_PFE)	+=3D bel-pfe.o
- obj-$(CONFIG_SENSORS_IBM_CFFPS)	+=3D ibm-cffps.o
- obj-$(CONFIG_SENSORS_INSPUR_IPSPS) +=3D inspur-ipsps.o
- obj-$(CONFIG_SENSORS_IR35221)	+=3D ir35221.o
-+obj-$(CONFIG_SENSORS_IR36021)	+=3D ir36021.o
- obj-$(CONFIG_SENSORS_IR38064)	+=3D ir38064.o
- obj-$(CONFIG_SENSORS_IRPS5401)	+=3D irps5401.o
- obj-$(CONFIG_SENSORS_ISL68137)	+=3D isl68137.o
-diff --git a/drivers/hwmon/pmbus/ir36021.c b/drivers/hwmon/pmbus/ir36021.=
-c
-new file mode 100644
-index 000000000000..99b5c7311afd
---- /dev/null
-+++ b/drivers/hwmon/pmbus/ir36021.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Hardware monitoring driver for Infineon IR36021
-+ *
-+ * Copyright (c) 2021 Allied Telesis
-+ */
-+#include <linux/err.h>
-+#include <linux/i2c.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include "pmbus.h"
-+
-+static struct pmbus_driver_info ir36021_info =3D {
-+	.pages =3D 1,
-+	.format[PSC_VOLTAGE_IN] =3D linear,
-+	.format[PSC_VOLTAGE_OUT] =3D linear,
-+	.format[PSC_CURRENT_IN] =3D linear,
-+	.format[PSC_CURRENT_OUT] =3D linear,
-+	.format[PSC_POWER] =3D linear,
-+	.format[PSC_TEMPERATURE] =3D linear,
-+	.func[0] =3D PMBUS_HAVE_VIN | PMBUS_HAVE_VOUT
-+		| PMBUS_HAVE_IIN | PMBUS_HAVE_IOUT
-+		| PMBUS_HAVE_PIN | PMBUS_HAVE_POUT
-+		| PMBUS_HAVE_TEMP | PMBUS_HAVE_TEMP2
-+		| PMBUS_HAVE_STATUS_TEMP,
-+};
-+
-+static int ir36021_probe(struct i2c_client *client,
-+			 const struct i2c_device_id *id)
-+{
-+	u8 buf[I2C_SMBUS_BLOCK_MAX];
-+	int ret;
-+
-+	if (!i2c_check_functionality(client->adapter,
-+				     I2C_FUNC_SMBUS_READ_BYTE_DATA
-+				     | I2C_FUNC_SMBUS_READ_WORD_DATA
-+				     | I2C_FUNC_SMBUS_READ_BLOCK_DATA))
-+		return -ENODEV;
-+
-+	ret =3D i2c_smbus_read_i2c_block_data(client, PMBUS_MFR_MODEL, 2, buf);
-+	if (ret < 0) {
-+		dev_err(&client->dev, "Failed to read PMBUS_MFR_MODEL\n");
-+		return ret;
-+	}
-+	if (ret !=3D 2 || !(buf[0] =3D=3D 0x01 || buf[1] =3D=3D 0x2d)) {
-+		dev_err(&client->dev, "MFR_MODEL unrecognised\n");
-+		return -ENODEV;
-+	}
-+
-+	return pmbus_do_probe(client, id, &ir36021_info);
-+}
-+
-+static const struct i2c_device_id ir36021_id[] =3D {
-+	{ "ir36021", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(i2c, ir36021_id);
-+
-+static const struct of_device_id __maybe_unused ir36021_of_id[] =3D {
-+	{ .compatible =3D "infineon,ir36021" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, ir36021_of_id);
-+
-+static struct i2c_driver ir36021_driver =3D {
-+	.class =3D I2C_CLASS_HWMON,
-+	.driver =3D {
-+		.name =3D "ir36021",
-+		.of_match_table =3D of_match_ptr(ir36021_of_id),
-+	},
-+	.probe =3D ir36021_probe,
-+	.remove =3D pmbus_do_remove,
-+	.id_table =3D ir36021_id,
-+};
-+
-+module_i2c_driver(ir36021_driver);
-+
-+MODULE_AUTHOR("Chris Packham <chris.packham@alliedtelesis.co.nz>");
-+MODULE_DESCRIPTION("PMBus driver for Infineon IR36021");
-+MODULE_LICENSE("GPL");
---=20
-2.30.0
+On Sun, Feb 28, 2021 at 10:19:51AM -0800, Florian Fainelli wrote:
+> Hi Mike,
+> 
+> On 2/28/2021 1:00 AM, Mike Rapoport wrote:
+> > Hi Florian,
+> > 
+> > On Sat, Feb 27, 2021 at 08:18:47PM -0800, Florian Fainelli wrote:
+> >>
 
+> >> [...]
+
+> >>
+> >> Hi Roman, Thomas and other linux-mips folks,
+> >>
+> >> Kamal and myself have been unable to boot v5.11 on MIPS since this
+> >> commit, reverting it makes our MIPS platforms boot successfully. We do
+> >> not see a warning like this one in the commit message, instead what
+> >> happens appear to be a corrupted Device Tree which prevents the parsing
+> >> of the "rdb" node and leading to the interrupt controllers not being
+> >> registered, and the system eventually not booting.
+> >>
+> >> The Device Tree is built-into the kernel image and resides at
+> >> arch/mips/boot/dts/brcm/bcm97435svmb.dts.
+> >>
+> >> Do you have any idea what could be wrong with MIPS specifically here?
+
+Most likely the problem you've discovered has been there for quite
+some time. The patch you are referring to just caused it to be
+triggered by extending the early allocation range. See before that
+patch was accepted the early memory allocations had been performed
+in the range:
+[kernel_end, RAM_END].
+The patch changed that, so the early allocations are done within
+[RAM_START + PAGE_SIZE, RAM_END].
+
+In normal situations it's safe to do that as long as all the critical
+memory regions (including the memory residing a space below the
+kernel) have been reserved. But as soon as a memory with some critical
+structures haven't been reserved, the kernel may allocate it to be used
+for instance for early initializations with obviously unpredictable but
+most of the times unpleasant consequences.
+
+> > 
+> > Apparently there is a memblock allocation in one of the functions called
+> > from arch_mem_init() between plat_mem_setup() and
+> > early_init_fdt_reserve_self().
+
+Mike, alas according to the log provided by Florian that's not the reason
+of the problem. Please, see my considerations below.
+
+> [...]
+> 
+> [    0.000000] Linux version 5.11.0-g5695e5161974 (florian@localhost)
+> (mipsel-linux-gcc (GCC) 8.3.0, GNU ld (GNU Binutils) 2.32) #84 SMP Sun
+> Feb 28 10:01:50 PST 2021
+> [    0.000000] CPU0 revision is: 00025b00 (Broadcom BMIPS5200)
+> [    0.000000] FPU revision is: 00130001
+
+> [    0.000000] memblock_add: [0x00000000-0x0fffffff]
+> early_init_dt_scan_memory+0x160/0x1e0
+> [    0.000000] memblock_add: [0x20000000-0x4fffffff]
+> early_init_dt_scan_memory+0x160/0x1e0
+> [    0.000000] memblock_add: [0x90000000-0xcfffffff]
+> early_init_dt_scan_memory+0x160/0x1e0
+
+Here the memory has been added to the memblock allocator.
+
+> [    0.000000] MIPS: machine is Broadcom BCM97435SVMB
+> [    0.000000] earlycon: ns16550a0 at MMIO32 0x10406b00 (options '')
+> [    0.000000] printk: bootconsole [ns16550a0] enabled
+
+> [    0.000000] memblock_reserve: [0x00aa7600-0x00aaa0a0]
+> setup_arch+0x128/0x69c
+
+Here the fdt memory has been reserved. (Note it's built into the
+kernel.)
+
+> [    0.000000] memblock_reserve: [0x00010000-0x018313cf]
+> setup_arch+0x1f8/0x69c
+
+Here the kernel itself together with built-in dtb have been reserved.
+So far so good.
+
+> [    0.000000] Initrd not found or empty - disabling initrd
+
+> [    0.000000] memblock_alloc_try_nid: 10913 bytes align=0x40 nid=-1
+> from=0x00000000 max_addr=0x00000000
+> early_init_dt_alloc_memory_arch+0x40/0x84
+> [    0.000000] memblock_reserve: [0x00001000-0x00003aa0]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 32680 bytes align=0x4 nid=-1
+> from=0x00000000 max_addr=0x00000000
+> early_init_dt_alloc_memory_arch+0x40/0x84
+> [    0.000000] memblock_reserve: [0x00003aa4-0x0000ba4b]
+> memblock_alloc_range_nid+0xf8/0x198
+
+The log above most likely belongs to the call-chain:
+setup_arch()
++-> arch_mem_init()
+    +-> device_tree_init() - BMIPS specific method
+        +-> unflatten_and_copy_device_tree()
+
+So to speak here we've copied the fdt from the original space
+[0x00aa7600-0x00aaa0a0] into [0x00001000-0x00003aa0] and unflattened
+it to [0x00003aa4-0x0000ba4b].
+
+The problem is that a bit later the next call-chain is performed:
+setup_arch()
++-> plat_smp_setup()
+    +-> mp_ops->smp_setup(); - registered by prom_init()->register_bmips_smp_ops();
+        +-> if (!board_ebase_setup)
+                 board_ebase_setup = &bmips_ebase_setup;
+
+So at the moment of the CPU traps initialization the bmips_ebase_setup()
+method is called. What trap_init() does isn't compatible with the
+allocation performed by the unflatten_and_copy_device_tree() method.
+See the next comment.
+
+> [    0.000000] memblock_alloc_try_nid: 25 bytes align=0x4 nid=-1
+> from=0x00000000 max_addr=0x00000000
+> early_init_dt_alloc_memory_arch+0x40/0x84
+> [    0.000000] memblock_reserve: [0x0000ba4c-0x0000ba64]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_reserve: [0x0096a000-0x00969fff]
+> setup_arch+0x3fc/0x69c
+> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
+> [    0.000000] memblock_reserve: [0x0000ba80-0x0000ba9f]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
+> [    0.000000] memblock_reserve: [0x0000bb00-0x0000bb1f]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
+> [    0.000000] memblock_reserve: [0x0000bb80-0x0000bb9f]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] Primary instruction cache 32kB, VIPT, 4-way, linesize 64
+> bytes.
+> [    0.000000] Primary data cache 32kB, 4-way, VIPT, no aliases,
+> linesize 32 bytes
+> [    0.000000] MIPS secondary cache 512kB, 8-way, linesize 128 bytes.
+> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
+> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
+> [    0.000000] memblock_reserve: [0x0000c000-0x0000cfff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
+> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
+> [    0.000000] memblock_reserve: [0x0000d000-0x0000dfff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
+> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
+> [    0.000000] memblock_reserve: [0x0000e000-0x0000efff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] Zone ranges:
+> [    0.000000]   Normal   [mem 0x0000000000000000-0x000000000fffffff]
+> [    0.000000]   HighMem  [mem 0x0000000010000000-0x00000000cfffffff]
+> [    0.000000] Movable zone start for each node
+> [    0.000000] Early memory node ranges
+> [    0.000000]   node   0: [mem 0x0000000000000000-0x000000000fffffff]
+> [    0.000000]   node   0: [mem 0x0000000020000000-0x000000004fffffff]
+> [    0.000000]   node   0: [mem 0x0000000090000000-0x00000000cfffffff]
+> [    0.000000] Initmem setup node 0 [mem
+> 0x0000000000000000-0x00000000cfffffff]
+> [    0.000000] memblock_alloc_try_nid: 27262976 bytes align=0x80 nid=0
+> from=0x00000000 max_addr=0x00000000
+> alloc_node_mem_map.constprop.135+0x6c/0xc8
+> [    0.000000] memblock_reserve: [0x01831400-0x032313ff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=0
+> from=0x00000000 max_addr=0x00000000 setup_usemap+0x64/0x98
+> [    0.000000] memblock_reserve: [0x0000bc00-0x0000bc1f]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 384 bytes align=0x80 nid=0
+> from=0x00000000 max_addr=0x00000000 setup_usemap+0x64/0x98
+> [    0.000000] memblock_reserve: [0x0000bc80-0x0000bdff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] MEMBLOCK configuration:
+> [    0.000000]  memory size = 0x80000000 reserved size = 0x0322f032
+> [    0.000000]  memory.cnt  = 0x3
+> [    0.000000]  memory[0x0]     [0x00000000-0x0fffffff], 0x10000000
+> bytes flags: 0x0
+> [    0.000000]  memory[0x1]     [0x20000000-0x4fffffff], 0x30000000
+> bytes flags: 0x0
+> [    0.000000]  memory[0x2]     [0x90000000-0xcfffffff], 0x40000000
+> bytes flags: 0x0
+> [    0.000000]  reserved.cnt  = 0xa
+> [    0.000000]  reserved[0x0]   [0x00001000-0x00003aa0], 0x00002aa1
+> bytes flags: 0x0
+> [    0.000000]  reserved[0x1]   [0x00003aa4-0x0000ba64], 0x00007fc1
+> bytes flags: 0x0
+> [    0.000000]  reserved[0x2]   [0x0000ba80-0x0000ba9f], 0x00000020
+> bytes flags: 0x0
+> [    0.000000]  reserved[0x3]   [0x0000bb00-0x0000bb1f], 0x00000020
+> bytes flags: 0x0
+> [    0.000000]  reserved[0x4]   [0x0000bb80-0x0000bb9f], 0x00000020
+> bytes flags: 0x0
+> [    0.000000]  reserved[0x5]   [0x0000bc00-0x0000bc1f], 0x00000020
+> bytes flags: 0x0
+> [    0.000000]  reserved[0x6]   [0x0000bc80-0x0000bdff], 0x00000180
+> bytes flags: 0x0
+> [    0.000000]  reserved[0x7]   [0x0000c000-0x0000efff], 0x00003000
+> bytes flags: 0x0
+> [    0.000000]  reserved[0x8]   [0x00010000-0x018313cf], 0x018213d0
+> bytes flags: 0x0
+> [    0.000000]  reserved[0x9]   [0x01831400-0x032313ff], 0x01a00000
+> bytes flags: 0x0
+> [    0.000000] memblock_alloc_try_nid: 30 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 start_kernel+0x12c/0x654
+> [    0.000000] memblock_reserve: [0x0000be00-0x0000be1d]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 30 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 start_kernel+0x150/0x654
+> [    0.000000] memblock_reserve: [0x0000be80-0x0000be9d]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_embed_first_chunk+0x3b0/0x884
+> [    0.000000] memblock_reserve: [0x0000f000-0x0000ffff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_embed_first_chunk+0x5a4/0x884
+> [    0.000000] memblock_reserve: [0x03231400-0x032323ff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 294912 bytes align=0x1000 nid=-1
+> from=0x01000000 max_addr=0x00000000 pcpu_dfl_fc_alloc+0x24/0x30
+> [    0.000000] memblock_reserve: [0x03233000-0x0327afff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_free: [0x03245000-0x03244fff]
+> pcpu_embed_first_chunk+0x7a0/0x884
+> [    0.000000] memblock_free: [0x03257000-0x03256fff]
+> pcpu_embed_first_chunk+0x7a0/0x884
+> [    0.000000] memblock_free: [0x03269000-0x03268fff]
+> pcpu_embed_first_chunk+0x7a0/0x884
+> [    0.000000] memblock_free: [0x0327b000-0x0327afff]
+> pcpu_embed_first_chunk+0x7a0/0x884
+> [    0.000000] percpu: Embedded 18 pages/cpu s50704 r0 d23024 u73728
+> [    0.000000] memblock_alloc_try_nid: 4 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x178/0x6ec
+> [    0.000000] memblock_reserve: [0x0000bf00-0x0000bf03]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 4 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x1a8/0x6ec
+> [    0.000000] memblock_reserve: [0x0000bf80-0x0000bf83]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 16 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x1dc/0x6ec
+> [    0.000000] memblock_reserve: [0x03232400-0x0323240f]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 16 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x20c/0x6ec
+> [    0.000000] memblock_reserve: [0x03232480-0x0323248f]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 128 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x558/0x6ec
+> [    0.000000] memblock_reserve: [0x03232500-0x0323257f]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 92 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x8c/0x294
+> [    0.000000] memblock_reserve: [0x03232580-0x032325db]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 768 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0xe0/0x294
+> [    0.000000] memblock_reserve: [0x03232600-0x032328ff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 772 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x124/0x294
+> [    0.000000] memblock_reserve: [0x03232900-0x03232c03]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_alloc_try_nid: 192 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x158/0x294
+> [    0.000000] memblock_reserve: [0x03232c80-0x03232d3f]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] memblock_free: [0x0000f000-0x0000ffff]
+> pcpu_embed_first_chunk+0x838/0x884
+> [    0.000000] memblock_free: [0x03231400-0x032323ff]
+> pcpu_embed_first_chunk+0x850/0x884
+> [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 523776
+> [    0.000000] Kernel command line: console=ttyS0,115200 earlycon
+> [    0.000000] memblock_alloc_try_nid: 131072 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 alloc_large_system_hash+0x1f8/0x33c
+> [    0.000000] memblock_reserve: [0x0327b000-0x0329afff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] Dentry cache hash table entries: 32768 (order: 5, 131072
+> bytes, linear)
+> [    0.000000] memblock_alloc_try_nid: 65536 bytes align=0x80 nid=-1
+> from=0x00000000 max_addr=0x00000000 alloc_large_system_hash+0x1f8/0x33c
+> [    0.000000] memblock_reserve: [0x0329b000-0x032aafff]
+> memblock_alloc_range_nid+0xf8/0x198
+> [    0.000000] Inode-cache hash table entries: 16384 (order: 4, 65536
+> bytes, linear)
+
+> [    0.000000] memblock_reserve: [0x00000000-0x000003ff]
+> trap_init+0x70/0x4e8
+
+Most likely someplace here the corruption has happened. The log above
+has just reserved a memory for NMI/reset vectors:
+arch/mips/kernel/traps.c: trap_init(void): Line 2373.
+
+But then the board_ebase_setup() pointer is dereferenced and called,
+which has been initialized with bmips_ebase_setup() earlier and which
+overwrites the ebase variable with: 0x80001000 as this is
+CPU_BMIPS5000 CPU. So any further calls of the functions like
+set_handler()/set_except_vector()/set_vi_srs_handler()/etc may cause a
+corruption of the memory above 0x80001000, which as we have discovered
+belongs to fdt and unflattened device tree.
+
+> [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+> [    0.000000] Memory: 2045268K/2097152K available (8226K kernel code,
+> 1070K rwdata, 1336K rodata, 13808K init, 260K bss, 51884K reserved, 0K
+> cma-reserved, 1835008K highmem)
+> [    0.000000] SLUB: HWalign=128, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+> [    0.000000] rcu: Hierarchical RCU implementation.
+> [    0.000000] rcu:     RCU event tracing is enabled.
+> [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay
+> is 25 jiffies.
+> [    0.000000] NR_IRQS: 256
+
+> [    0.000000] OF: Bad cell count for /rdb
+> [    0.000000] irq_bcm7038_l1: failed to remap intc L1 registers
+> [    0.000000] OF: of_irq_init: children remain, but no parents
+
+So here is the first time we have got the consequence of the corruption
+popped up. Luckily it's just the "Bad cells count" error. We could have
+got much less obvious log here up to getting a crash at some place
+further...
+
+> [    0.000000] random: get_random_bytes called from
+> start_kernel+0x444/0x654 with crng_init=0
+> [    0.000000] sched_clock: 32 bits at 250 Hz, resolution 4000000ns,
+> wraps every 8589934590000000ns
+
+> 
+> and with your patch applied which unfortunately did not work we have the
+> following:
+>
+> [...]
+
+So a patch like this shall workaround the corruption:
+
+--- a/arch/mips/bmips/setup.c
++++ b/arch/mips/bmips/setup.c
+@@ -174,6 +174,8 @@ void __init plat_mem_setup(void)
+ 
+ 	__dt_setup_arch(dtb);
+ 
++	memblock_reserve(0x0, 0x1000 + 0x100*64);
++
+ 	for (q = bmips_quirk_list; q->quirk_fn; q++) {
+ 		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
+ 					     q->compatible)) {
+
+But the main question is how to fix the problem in general. At least
+for Broadcom CPUs the reservation needs to be performed before
+device_tree_init() is called, since the later is the very first
+method which starts allocating from memblock. So the best candidate is
+to use plat_mem_setup() for reservation right after the memory is
+added to the memblock allocator by means of the __dt_setup_arch()
+function invocation. In addition, we need take into account the amount
+of memory each type of the Broadcom CPU needs for the exception
+vectors. So a function like this could be used to reserve the
+exception vectors memory:
+
+static void bmips_ebase_reserve(void)
+{
+	phys_addr_t base, size = VECTORSPACING*64;
+
+	switch (current_cpu_type()) {
+	case CPU_BMIPS4350:
+		return;
+	case CPU_BMIPS3300:        
+	case CPU_BMIPS4380:
+		base = 0x0400;
+		break;
+	case CPU_BMIPS5000:
+		base = 0x1000;
+		break;
+	default:
+		return;
+	}
+
+	memblock_reserve(base, size);
+}
+
+Though I am not sure it's correct. At least on P5600 the vector spacing
+is configurable.
+
+Anyway all of that concerns the Broadcom CPUs. But the same problem we
+can experience for some other platforms which developers weren't
+careful enough in reserving all the critical memory sections in the
+platform code. Especially after the introduced by Roman patch has been
+merged into the kernel.
+
+-Sergey
+
+> 
+> [...]
+> -- 
+> Florian
