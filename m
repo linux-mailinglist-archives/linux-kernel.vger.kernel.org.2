@@ -2,104 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D678B327304
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA77732730E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhB1PXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 10:23:45 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:63786 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhB1PXl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 10:23:41 -0500
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 11SFMhff004288;
-        Mon, 1 Mar 2021 00:22:44 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11SFMhff004288
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614525764;
-        bh=E8MbUsVktI17bys/jc4lb5vE3K2baWFXsZLNPNNa6b0=;
-        h=From:Date:Subject:To:Cc:From;
-        b=gzSEqLorE9eyinwGJWvaGz3Y7CaqzctNejogguiEGZKdTWacBcsKsxmsGeOpZm+fR
-         ZOpqm7Gu35CZvpMYPQpxqIbZadWk6pMoXWhuG6tNxuJqfhMXf9bokWdJXqdssIaPHT
-         NC5pWJNYAzzR8u/F4CktYJ82QKIf6syimkZKaxEt+PzXGU0eYmfGwnL7ZPYxnyboPt
-         5Xya2G8Z04vletL5FWafcBfnYyldwBcfG3NG+QiqNECjlu+8sPkNkWTIe3uIkdmHKt
-         7qFilpR6qrFJ6tgD6ATekt9xtLDZ5tvyE6OBdNHfBfCvKWWQh7qzY4zkdGRrOMS/qh
-         Cznr9pmgbWYSQ==
-X-Nifty-SrcIP: [209.85.214.176]
-Received: by mail-pl1-f176.google.com with SMTP id z11so577572plg.10;
-        Sun, 28 Feb 2021 07:22:44 -0800 (PST)
-X-Gm-Message-State: AOAM531lU5avC+UduWrutRg4MOt9ogM7HDcK4Q44RSEcsZsvyZDW6lJF
-        eXJP80JVB6yMALV839n9Ytd9R5820dL8Ti3+fHA=
-X-Google-Smtp-Source: ABdhPJwvWfUtAelcjmbFxRIMHctHI6y/Zu/j0B0WLOu73zIaZLGjMJ1aef0gBo3wzHLTCXc5f/pcKBBru0PP38FCYMM=
-X-Received: by 2002:a17:902:e891:b029:e4:20d3:3d5c with SMTP id
- w17-20020a170902e891b02900e420d33d5cmr11824115plg.71.1614525763284; Sun, 28
- Feb 2021 07:22:43 -0800 (PST)
+        id S230215AbhB1PjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 10:39:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229982AbhB1PjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 10:39:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6714464EB7;
+        Sun, 28 Feb 2021 15:38:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614526705;
+        bh=E7HgKVhlosJg15hIUr/EmO0wWkQU1/oxAJWlN6Q9ekM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=P/8fQw14UgAojURnnhC1qXm5JxqAzrfnquPYekrFh3NAi4sK8qPbRlZmylRuamaTn
+         KfLWltggn3KgBBpTilaItC7vEIrcZ1dBInjGsp5OYSDZSDZ5KqXMTsRvkhnWuJk1zl
+         KWgAK2/3qAeitl9qzLmyxnBVdvgHgf98EvD6uuSIAjdHhXj/FsuJ8GVPviW8cCwl1y
+         JcmNwBaXDm7ggax1X5Rro8TqH0aBFlyL7qTaMRAipOJg8/VtiA8OGEQKxQhQvLPond
+         p/kATJFWq5nYiF+oDCePPfKNjVlAS/2AcUqFUQk9oJCZ9SGx4GNQfAJ8DxKlQ+6E0q
+         XWjvlMgcu3ZaA==
+Received: by mail-ua1-f44.google.com with SMTP id g24so4226478uaw.0;
+        Sun, 28 Feb 2021 07:38:25 -0800 (PST)
+X-Gm-Message-State: AOAM531Ma/Ltz5nkEPc6D4l0J8bKm/qU6g/pXksP0FU4Ux/Y+ETcT9qX
+        Ibu5lWfdSKF29PRMTsDag/T6311ugxqWSjRR+yM=
+X-Google-Smtp-Source: ABdhPJxIQFrXRMPgAQLkjAn4SwEcmufhxK1dfoMeqRrCI4qZ9f8WFoUQND4s8J3n6XGf/JxsJujuXs0YyGVtEJ38ahY=
+X-Received: by 2002:a9d:7f11:: with SMTP id j17mr10493539otq.251.1614526704026;
+ Sun, 28 Feb 2021 07:38:24 -0800 (PST)
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 1 Mar 2021 00:22:06 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASnND8Vs1q4_6ceuEBPo=JbeoWYFTJBp_t-gYQy4BjVNw@mail.gmail.com>
-Message-ID: <CAK7LNASnND8Vs1q4_6ceuEBPo=JbeoWYFTJBp_t-gYQy4BjVNw@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v5.12-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+References: <tencent_2CB9BD7D4063DE3F6845F79176B2D29A7E09@qq.com>
+In-Reply-To: <tencent_2CB9BD7D4063DE3F6845F79176B2D29A7E09@qq.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sun, 28 Feb 2021 16:38:07 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2TEc4CzE5Wg7pNy9Oq2p=HKNO7k2y2SmeD1mamqJ3Z9w@mail.gmail.com>
+Message-ID: <CAK8P3a2TEc4CzE5Wg7pNy9Oq2p=HKNO7k2y2SmeD1mamqJ3Z9w@mail.gmail.com>
+Subject: Re: [PATCH] ipc/msg: add msgsnd_timed and msgrcv_timed syscall for
+ system V message queue
+To:     Eric Gao <eric.tech@foxmail.com>
+Cc:     "catalin.marinas" <catalin.marinas@arm.com>,
+        will <will@kernel.org>, geert <geert@linux-m68k.org>,
+        monstr <monstr@monstr.eu>, tsbogend <tsbogend@alpha.franken.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        deller <deller@gmx.de>, mpe <mpe@ellerman.id.au>,
+        hca <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        borntraeger <borntraeger@de.ibm.com>,
+        ysato <ysato@users.sourceforge.jp>, dalias <dalias@libc.org>,
+        davem <davem@davemloft.net>, luto <luto@kernel.org>,
+        tglx <tglx@linutronix.de>, mingo <mingo@redhat.com>,
+        bp <bp@alien8.de>, chris <chris@zankel.net>,
+        jcmvbkbc <jcmvbkbc@gmail.com>, arnd <arnd@arndb.de>,
+        benh <benh@kernel.crashing.org>, paulus <paulus@samba.org>,
+        hpa <hpa@zytor.com>, linux-alpha <linux-alpha@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sun, Feb 28, 2021 at 4:16 PM Eric Gao <eric.tech@foxmail.com> wrote:
+>
+> Hi Arnd:
+>
+>             Thanks for your kindly reply.
+>
+>             I want to prove you and all of others that these syscalls are very useful and necessary. Actually,  I add these syscalls
+>
+>     when I try to implement the local rpc by system v message queue (some people might think I am crazy to using message
+>
+>     queue, but it's truly a very efficient method than socket except it don't have a time-controlled msgrcv syscall).
 
-Please pull some Kbuild fixes.
-Thanks.
+(note: please don't reply in html)
 
+>             In addition,  msgrcv_timed is also necessary in usual bidirection communication.  For example:
+> A send a message to B, and try to receive a reply  from B  by msgrcv syscall.  But A need to do
+> something else in case of  that B has terminated. So
+>
+>     we need the msgrcv syscall return after a preset time. The similar syscall can be found in
+> posix message queue(mq_timedreceive)  and in z/OS system of
+>  IBM(https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.2.0/com.ibm.zos.v2r2.bpxbd00/msgrcvt.htm).
+>
+>   And when I search the web, I can find that many people need such like syscall in their
+> applications. so I hope this patch can be merged into the mainline, Thanks a lot.
 
+It might help to add some explanation on why you need to add the timeout
+to the old sysv message queues, when the more modern posix message
+queues already support this.
 
-The following changes since commit 3fb6d0e00efc958d01c2f109c8453033a2d96796:
+Is there something that mq_timedsend/mq_timedreceive cannot do that
+you need? Would it be possible to add that feature to the posix message
+queues instead?
 
-  Merge tag 'docs-5.12-2' of git://git.lwn.net/linux (2021-02-26 14:21:18 -0800)
+> +COMPAT_SYSCALL_DEFINE5(msgsnd_timed, int, msqid, compat_uptr_t, msgp,
+> +                      compat_ssize_t, msgsz, int, msgflg, compat_long_t, timeoutms)
+> +{
+> +       struct compat_msgbuf __user *up = compat_ptr(msgp);
+> +       compat_long_t mtype;
+> +
+> +       timeoutms = (timeoutms + 9) / 10;
+> +
+> +       if (get_user(mtype, &up->mtype))
+> +               return -EFAULT;
+> +
+> +       return do_msgsnd(msqid, mtype, up->mtext, (ssize_t)msgsz, msgflg, (long)timeoutms);
+> +}
+>
+> My preference would be to simplify both the timed and non-timed version by
+> moving the get_user() into do_msgsnd() and using in_compat_task() to pick
+> the right type. Same for the receive side of course. If you do this,
+> watch out for x32 support, which uses the 64-bit version.
+>
+>     Actually, the timed and non-timed version have different number of
+>  parameter(timed version have timeoutms), so I don't
+> think they can be combine together,  and I don't want to impact the
+> applications which  have been using the old style msgrcv syscall.
 
-are available in the Git repository at:
+What I meant was combining the implementation of the native and
+compat versions, not combining the timed and non-timed versions,
+which you already do to the degree possible.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v5.12
-
-for you to fetch changes up to 207da4c82ade9a6d59f7e794d737ba0748613fa2:
-
-  kbuild: Fix <linux/version.h> for empty SUBLEVEL or PATCHLEVEL again
-(2021-02-28 15:23:48 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v5.12
-
- - Fix UNUSED_KSYMS_WHITELIST for Clang LTO
-
- - Make -s builds really silent irrespective of V= option
-
- - Fix build error when SUBLEVEL or PATCHLEVEL is empty
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      kbuild: lto: add _mcount to list of used symbols
-
-Masahiro Yamada (5):
-      kbuild: fix UNUSED_KSYMS_WHITELIST for Clang LTO
-      kbuild: do not include include/config/auto.conf from adjust_autoksyms.sh
-      ia64: remove redundant READELF from arch/ia64/Makefile
-      kbuild: make -s option take precedence over V=1
-      kbuild: Fix <linux/version.h> for empty SUBLEVEL or PATCHLEVEL again
-
- Makefile                        |  7 +++++--
- arch/ia64/Makefile              |  1 -
- init/Kconfig                    |  1 -
- scripts/adjust_autoksyms.sh     |  3 ---
- scripts/gen_autoksyms.sh        | 35 ++++++++++++++++++++++++++---------
- scripts/lto-used-symbollist.txt |  5 -----
- 6 files changed, 31 insertions(+), 21 deletions(-)
- delete mode 100644 scripts/lto-used-symbollist.txt
-
-
--- 
-Best Regards
-Masahiro Yamada
+           Arnd
