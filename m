@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C8B327511
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 00:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DF3327517
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 00:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhB1XHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 18:07:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbhB1XHh (ORCPT
+        id S231318AbhB1XIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 18:08:13 -0500
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:35306 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231263AbhB1XIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 18:07:37 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F9CC06174A;
-        Sun, 28 Feb 2021 15:06:56 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id e7so22512368lft.2;
-        Sun, 28 Feb 2021 15:06:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=iyKrp7I82f3wYzsbQR/1Jeu1cFgJoa6hSbBVeuarAhw=;
-        b=oHViD70z0SbOQqFxh5RghAauVZ/voXlwny9gh7JGx3X/bSiex+wP1sATNKpuhZI/IN
-         SX0Mdgb11BtRrfhI2K8ooXb2vT/LTWPsIIzgGrcXd3GaBwpxLh+At5bk4wT66+eRJmf4
-         VDAfmAB9qxb4dB5QRuFDy9eTS5M4Nwj179xJpTP5gs+LX+XpuROJmgX+iHb/WGH4Pgj0
-         Ewt5fJ6aXh66PJdU7BVobFE46028SV8xeas9NF8t6hJ3ACDzZB971m8EZ+zc5HReRA6c
-         IJgK83CiKkSOoLAlwuHBiE7NKkHDkOk0wuJvAZL7sTwK1qY8e8rYfREpjLyGuui1c24w
-         R2Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=iyKrp7I82f3wYzsbQR/1Jeu1cFgJoa6hSbBVeuarAhw=;
-        b=dJkwH6+IwcEc/NawBmR+Sn6Ql4F2mH1V2VhhuADtKOlPLbLyYX1pDzB4iU7n9DXBpe
-         FfyQ++JxwBzTjpH5eY2p1vf8LZ0oEiOF2ocb+H/GGNCo04Vj7G8YghW4xl2K5/HNAnmL
-         vGrF4DkQ4VEtpj4MyYTf27GlalNWs2QolCFWv7ax7L2gxKT3em1Zxcv0UOAB3nPMDWwj
-         xQouBHLfz/GntEwRcO5Q+jUBGltoy7af1neVobkwwNdHgI3U6Q2sUM1WqW2qKKljKSmW
-         d/V4DSoDbY2jSIla3aYOdN6z6pCJ84Wn4RwVSMEfkq5ju/2XvhgsXlV0BleCg8drY7T5
-         UNIQ==
-X-Gm-Message-State: AOAM533u8CR/UGassaVukAyjnzTNTN+Hp0xcFmT3vYJOG8xtj1WvLLqf
-        LG+RhKL8UJeRaT+XKabhwnaFNBhXUtsrWd2ziqA=
-X-Google-Smtp-Source: ABdhPJwtbA7bN5MLn3JH5hs5sFQbh2m5M/Xv/WbMEQz0B/AnkXbDnYdZULJwQmauC+SmDjuh/gR60Q==
-X-Received: by 2002:ac2:484d:: with SMTP id 13mr3258103lfy.124.1614553615186;
-        Sun, 28 Feb 2021 15:06:55 -0800 (PST)
-Received: from pskrgag-home ([94.103.235.167])
-        by smtp.gmail.com with ESMTPSA id i18sm2097297lfe.177.2021.02.28.15.06.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 15:06:54 -0800 (PST)
-Message-ID: <b78123e002c7fde2bf3cfc1b708544ff605c4831.camel@gmail.com>
-Subject: [PATCH v4] net/qrtr: fix __netdev_alloc_skb call
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     davem@davemloft.net, linmiaohe@huawei.com, netdev@vger.kernel.org,
+        Sun, 28 Feb 2021 18:08:05 -0500
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 43A9D806B7;
+        Mon,  1 Mar 2021 12:07:17 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1614553637;
+        bh=j/4y79Sbn2mTxUOqHjk7rek/Rc6O8m6q4ne8OexoRHI=;
+        h=From:To:Cc:Subject:Date;
+        b=ZhC0tKdePGVFXUgTMgE+pqToPzeuSe+oAmnGXXCTtsutVkykj3HVNYlLB1iYPUYUy
+         lWvVMslWgZwpp4ZtH0pZrzmYrVV9sA3QsqumEt36wVUP6lHNtUmJ4JsRCujXtQRUf4
+         gZTQXjXUks8MPiVgwtx0FdZ4pMGrChfkzNVgeu8QIaBJyYrRg/TQeasnjXTO9CYA1X
+         oVOAQTMMWIyi3ROkTcoiDE9GHph/Fv8yVtURRXpo5kPLjtOM7IT9pt+vDheWI6j8Ao
+         k5T7jdusy1CAurKHPU8vUmeiZHFoZ006TO1ly4esvV3lRVeJMPLXSzQGlk37Dg3dm+
+         oVx4AzkJW+q2g==
+Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B603c22250000>; Mon, 01 Mar 2021 12:07:17 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 8281C13EF08;
+        Mon,  1 Mar 2021 12:07:27 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 1877C283985; Mon,  1 Mar 2021 12:07:17 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net
+Cc:     devicetree@vger.kernel.org, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com
-Date:   Mon, 01 Mar 2021 02:06:44 +0300
-In-Reply-To: <20210228201000.13606-1-alobakin@pm.me>
-References: <20210227110306.13360-1-alobakin@pm.me>
-         <20210227175114.28645-1-paskripkin@gmail.com>
-         <20210228181440.1715-1-alobakin@pm.me>
-         <47681a0b629ac0efb2ce0d92c3181db08e5ea3c8.camel@gmail.com>
-         <20210228201000.13606-1-alobakin@pm.me>
-Content-Type: text/plain
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH 0/2] hwmon: (pmbus): Infineon IR36021 driver
+Date:   Mon,  1 Mar 2021 12:07:12 +1300
+Message-Id: <20210228230714.26578-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=JyPFgGt3d6mCrvuXJWMA:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo=
+This adds a basic driver for the IR36021. This chip as both a PMBUS and I=
+2C
+interface that is available simultaenously. This driver is just the PMBUS
+interface.
 
+Chris Packham (2):
+  dt-bindings: trivial-devices: Add infineon,ir36021
+  hwmon: (pmbus): Add driver for Infineon IR36021
+
+ .../devicetree/bindings/trivial-devices.yaml  |  2 +
+ Documentation/hwmon/index.rst                 |  1 +
+ Documentation/hwmon/ir36021.rst               | 62 ++++++++++++++
+ drivers/hwmon/pmbus/Kconfig                   |  9 +++
+ drivers/hwmon/pmbus/Makefile                  |  1 +
+ drivers/hwmon/pmbus/ir36021.c                 | 81 +++++++++++++++++++
+ 6 files changed, 156 insertions(+)
+ create mode 100644 Documentation/hwmon/ir36021.rst
+ create mode 100644 drivers/hwmon/pmbus/ir36021.c
+
+--=20
+2.30.0
 
