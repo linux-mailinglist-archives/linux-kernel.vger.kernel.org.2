@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CAD7327160
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 08:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 236B4327165
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 08:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbhB1HEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 02:04:52 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:29690 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhB1HE2 (ORCPT
+        id S230386AbhB1HJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 02:09:09 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:50809 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229941AbhB1HJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 02:04:28 -0500
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 11S70lE9021634;
-        Sun, 28 Feb 2021 16:00:47 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 11S70lE9021634
+        Sun, 28 Feb 2021 02:09:00 -0500
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 11S786F3000515;
+        Sun, 28 Feb 2021 16:08:07 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 11S786F3000515
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614495647;
-        bh=tv5SDnKyPgoNP6YiEnF6vKsgSgqKofgv5GPg1jxlWHo=;
+        s=dec2015msa; t=1614496087;
+        bh=ldg+O7sE55to+alrJE10yp3zvi7BbH+3v1wNoAJS4q4=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AqYiemIQdGS7+6qTzFRIOsa0vrTOnXKmqd8bP2egk3+fLmNTxpD6rDl60wZ566qNx
-         whxufXp3wD3ru3jgdraO2wf7HUhzuaTtt1eP1b+jz+qdAtnHC16FylwiDMT091YgkP
-         08x4SZPthTdZp3D/l1vHMWPFqNVU1ev7EV56RrcZCXg46xKegocZqc3aHpkDJ83u3r
-         BWo9veP1HTNPgpPc+/uPHjdyLJI5vfabEOInD3PZ6SdlwvvAms1M2TjJr8f3idb3ja
-         oGG1AMcUToNexOOkMoNMalzyv/ByktPBJ70CF8uldRNItyG5/LtFEW4OTs+bOxV87R
-         bHx+jmvV1xupg==
-X-Nifty-SrcIP: [209.85.216.54]
-Received: by mail-pj1-f54.google.com with SMTP id t9so8489068pjl.5;
-        Sat, 27 Feb 2021 23:00:47 -0800 (PST)
-X-Gm-Message-State: AOAM533SbQyiqVuIbka3PalnV1zCWAP39Ql/xyadtoxaMazZA0TWD5s2
-        VWwrYsdQMT055e0NYKH+kluA8HZkHvNJdoM7RBU=
-X-Google-Smtp-Source: ABdhPJxbsLViJKD15RYvEtsukfPTiWhOx3l3YaSLDqvhv2WZlKrOxfrIHl0DSd7zO+LNS0ZBsnf5ZE8BZiNfCJWVNew=
-X-Received: by 2002:a17:90a:3b0e:: with SMTP id d14mr1565162pjc.198.1614495646276;
- Sat, 27 Feb 2021 23:00:46 -0800 (PST)
+        b=I0VcDFnKJ9ZI1vl7gD1o63BMh27v5/xoqXdGImvPu9vZui8he0MXNPPjpWB3VH5h8
+         654FJ/8jnrBo5STG+/dhi9ANpCEbDnnwjbd5y3G4dTTUQynxO8grRRui6E3F/8oQyh
+         LVGCXb3weyzFn+tAxU2lGl/B6t88CGfK8MlFdkikbfr/LWyyTbZYpUX5HDGNbqKd/v
+         0J81h/U6rkVmP7Z6SOzLA0CYTB8S0P2KiESCBYDf1jW2gkaVrbX7qEHgIU71bsJZ57
+         XpgCdgTR4vuY6aBffaqXg5pBsk4wN4Anr1btjcelqzm78oqpfWaWnnl94figzXnxGZ
+         JUHqBEMIi8z6A==
+X-Nifty-SrcIP: [209.85.167.173]
+Received: by mail-oi1-f173.google.com with SMTP id m25so1692836oie.12;
+        Sat, 27 Feb 2021 23:08:07 -0800 (PST)
+X-Gm-Message-State: AOAM530zU8zcvbJN7+aYQyrCZR2wmOiL6npiMFl1I9OXKxMHZk5yZYKc
+        k6HjUbWu2YfJbhntAdKF6Hg8w4+b20VhdUVAwH4=
+X-Google-Smtp-Source: ABdhPJxnVdF9Cvtz3QuQ9Z55mLc0nR7ZPvYqUNLa1UMZMC9CH1qH9+VqVFfmtGZF/+QiECQmAdbbtJL43yO3rdbPYM4=
+X-Received: by 2002:a17:90a:dc08:: with SMTP id i8mr10797186pjv.153.1614496085241;
+ Sat, 27 Feb 2021 23:08:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20210228061028.239459-1-masahiroy@kernel.org> <20210228061028.239459-4-masahiroy@kernel.org>
-In-Reply-To: <20210228061028.239459-4-masahiroy@kernel.org>
+References: <20210227183910.221873-1-masahiroy@kernel.org> <CAK7LNASL_X43_nMTz1CZQB+jiLCRAJbh-wQdc23QV0pWceL_Lw@mail.gmail.com>
+ <20210228064936.zixrhxlthyy6fmid@24bbad8f3778> <20210228065254.GA30798@24bbad8f3778>
+In-Reply-To: <20210228065254.GA30798@24bbad8f3778>
 From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 28 Feb 2021 16:00:09 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ+3WNf=9047abBH-jD8XcgJe0V0rGhuo9Ta218UPswqQ@mail.gmail.com>
-Message-ID: <CAK7LNAQ+3WNf=9047abBH-jD8XcgJe0V0rGhuo9Ta218UPswqQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] kbuild: include Makefile.compiler only when compiler
- is required
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Israel Tsadok <itsadok@gmail.com>
+Date:   Sun, 28 Feb 2021 16:07:27 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATmHU48mg4uh2H0VZDuhg6-Fwz=uF0rKSHuCJK-soZbUQ@mail.gmail.com>
+Message-ID: <CAK7LNATmHU48mg4uh2H0VZDuhg6-Fwz=uF0rKSHuCJK-soZbUQ@mail.gmail.com>
+Subject: Re: [PATCH RFC] x86: remove toolchain check for X32 ABI capability
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Fangrui Song <maskray@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "H . J . Lu" <hjl.tools@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Chao Yu <chao@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Kees Cook <keescook@chromium.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 3:10 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Sun, Feb 28, 2021 at 3:53 PM Nathan Chancellor <nathan@kernel.org> wrote:
 >
-> Since commit f2f02ebd8f38 ("kbuild: improve cc-option to clean up all
-> temporary files"), running 'make kernelversion' in a read-only source
-> tree emits a bunch of warnings:
+> On Sat, Feb 27, 2021 at 11:49:36PM -0700, Nathan Chancellor wrote:
+> > On Sun, Feb 28, 2021 at 12:15:16PM +0900, Masahiro Yamada wrote:
+> > > On Sun, Feb 28, 2021 at 3:41 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > > >
+> > > > This commit reverts 0bf6276392e9 ("x32: Warn and disable rather than
+> > > > error if binutils too old").
+> > > >
+> > > > The help text in arch/x86/Kconfig says enabling the X32 ABI support
+> > > > needs binutils 2.22 or later. This is met because the minimal binutils
+> > > > version is 2.23 according to Documentation/process/changes.rst.
+> > > >
+> > > > I would not say I am not familiar with toolchain configuration, but
+> > >
+> > > I mean:
+> > > I would not say I am familiar ...
+> > > That is why I added RFC.
+> > >
+> > > I appreciate comments from people who are familiar
+> > > with toolchains (binutils, llvm).
+> > >
+> > > If this change is not safe,
+> > > we can move this check to Kconfig at least.
+> >
+> > Hi Masahiro,
+> >
+> > As Fangrui pointed out, there are two outstanding issues with x32 with
+> > LLVM=1, both seemingly related to LLVM=1.
+>                                     ^ llvm-objcopy
 >
->   mkdir: cannot create directory '.tmp_12345': Permission denied
->
-> Non-build targets such as kernelversion, clean, help, etc. do not
-> need to evaluate $(call cc-option,) and friends. Do not include
-> Makefile.compiler so $(call cc-option,) becomes no-op.
->
-> This not only fix the warnings, but also runs non-build targets much
-> faster.
->
-> Basically, all installation targets should also be non-build targets.
-> Unfortunately, vdso_install requires the compiler because it builds
-> vdso before installtion. This is a problem that must be fixed by a
-> separate patch.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
-> I am not adding Reported-by for now because a reporter sent me
-> an email privately.
->
-> If he allows me to add Reported-by, I will add it to record
-> the credit.
->
-> (Perhaps, another person might have reported a similar issue
-> somewhere, but my memory is obsure. I cannot recall it.)
+> Sigh, note to self, don't write emails while tired...
 >
 
-Now, I got acknowledge to add this:
+Fangrui, Nathan, thanks for your comments.
 
-Reported-by: Israel Tsadok <itsadok@gmail.com>
-
-
-
-
-
-
-
->  Makefile | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/Makefile b/Makefile
-> index eec7a94f5c33..20724711dc71 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -263,6 +263,10 @@ no-dot-config-targets := $(clean-targets) \
->                          $(version_h) headers headers_% archheaders archscripts \
->                          %asm-generic kernelversion %src-pkg dt_binding_check \
->                          outputmakefile
-> +# Installation targets should not require compiler. Unfortunately, vdso_install
-> +# is an exception where build artifacts may be updated. This must be fixed.
-> +no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
-> +                       headers_install modules_install kernelrelease image_name
->  no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease \
->                           image_name
->  single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
-> @@ -270,6 +274,7 @@ single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
->  config-build   :=
->  mixed-build    :=
->  need-config    := 1
-> +need-compiler  := 1
->  may-sync-config        := 1
->  single-build   :=
->
-> @@ -279,6 +284,12 @@ ifneq ($(filter $(no-dot-config-targets), $(MAKECMDGOALS)),)
->         endif
->  endif
->
-> +ifneq ($(filter $(no-compiler-targets), $(MAKECMDGOALS)),)
-> +       ifeq ($(filter-out $(no-compiler-targets), $(MAKECMDGOALS)),)
-> +               need-compiler :=
-> +       endif
-> +endif
-> +
->  ifneq ($(filter $(no-sync-config-targets), $(MAKECMDGOALS)),)
->         ifeq ($(filter-out $(no-sync-config-targets), $(MAKECMDGOALS)),)
->                 may-sync-config :=
-> @@ -584,7 +595,9 @@ endif
->
->  # Include this also for config targets because some architectures need
->  # cc-cross-prefix to determine CROSS_COMPILE.
-> +ifdef need-compiler
->  include $(srctree)/scripts/Makefile.compiler
-> +endif
->
->  ifdef config-build
->  # ===========================================================================
-> --
-> 2.27.0
->
+OK, then we still need to carry this toolchain check.
 
 
 -- 
