@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FDE327376
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D939327379
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhB1RBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 12:01:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
+        id S231253AbhB1RCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 12:02:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhB1RB2 (ORCPT
+        with ESMTP id S230386AbhB1RCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 12:01:28 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8A8C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:00:47 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id s16so8406115plr.9
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:00:47 -0800 (PST)
+        Sun, 28 Feb 2021 12:02:06 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CB2C061788;
+        Sun, 28 Feb 2021 09:01:26 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id gt32so12244426ejc.6;
+        Sun, 28 Feb 2021 09:01:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Denx7bVQXCP6YfuPAwEe4t9EGKBMnQn7SlWiMFUGxOs=;
-        b=Xo3sZSgrW1NhJE5dl2OJTlvB3AtZNMI877HR8upcSV6t+MAklNn6CShP8XRRRaz8ZC
-         IkzJBdDDz+o1ZXx7Ec4o7naroVrI9k3VtuiTXQu4LOgncoenaPRImTQ2o/VU3vKjkC4c
-         nTVsY68Qh/DXSKsSukyqXjg6k8WZxI/nm3NS5lBTtqgjln+3Q0LdP7bi9v0BbdOu2n1O
-         s4EzkPZZp9NQOxEwfHP0ua8EBwWSYNM5j8UWzHv4zA2VOZE3wYQjGtnK1Fe4b2vLSRFa
-         Q2ZRa0gU1dDQUCxozDx1Eg+Jj/5N1CquCcq+hlIRkv/ycAPxj9vfsmB13y/167f/mbvi
-         ZLcw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BMOPT37fnakvBunZ8XC0WYfWKMh6h5+h+w227EOuVKw=;
+        b=RKrTvJXrHoWinwWtdLcnR9FACjdw9kBEuiB4sD4CeOQoBIsTsAMxV7RS1v6m5DUfJW
+         XhqYzJYs5jmt4EnKh7IONO3xDn9lydYuPbt9XpGhIBlh+JsKoBgKKYpaMk5h8onKVPPP
+         +sG7OI7XY/w9UIFSzoKIj8LigmMmeGT/uT/SsqwSP+pp8q4IoyWFwCjudGMrWeTrILOs
+         S016kSdAg7Z2UIG/YYXh10c07ZG216VMsHR9KELG+a1Afe5HbD6AEjrt04OA7cNI5Btr
+         ig3NXuhFNzObI+G6EZ8mPWMaIZtQkhj+uyIABkdB3VqauyWJ0IXBtsH/4zHROcZ+932W
+         n9Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Denx7bVQXCP6YfuPAwEe4t9EGKBMnQn7SlWiMFUGxOs=;
-        b=LfvBIfXULnGlkFdO66PANchNDBAjIf+9Zk0YwWMhKVCej3vlDvYT587o1VQenOhxDj
-         S8c2mKmZ3A6xlAu/QYmGmgpCpmqvW0cPwwpoPbGHGdgih6ij3uRzogQ04edCIXu7rk/X
-         NciiOlBQZpWoQ7jLkc6NPZoDSmhAQo46NxFEhj4xc+TeNCgmsprunNK5ZIwNnDLSmygc
-         HMDPeX6LxL5uCJQGuuQ6VSnPloprqihP0GwvIJSXVGponnn3yuQ1wJqVlupBUd38XWhr
-         b0dco5NMZBwrtgGwhdAXRG3/hqLAkPYrxU33NDgUSN6yYatRmO2mzzxSJF0x9VLBK2Mw
-         A9ZQ==
-X-Gm-Message-State: AOAM532w95fdmZTTtKxknoebNwz6Nrxs984IoiBMV0JsEumonQYxGnHm
-        UHIAnBqmEiBxwU83UI2V1OSjcg==
-X-Google-Smtp-Source: ABdhPJz7944pxBYukv3GgmwZQSOZf1DRsn8Jj/uqXefzM5Ua3K+ux0lbrREcPLZAJB4dvRSniXuhNA==
-X-Received: by 2002:a17:902:d886:b029:e1:7784:4db5 with SMTP id b6-20020a170902d886b02900e177844db5mr12090286plz.72.1614531647260;
-        Sun, 28 Feb 2021 09:00:47 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id o11sm15110420pjg.41.2021.02.28.09.00.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Feb 2021 09:00:46 -0800 (PST)
-Subject: Re: KASAN: use-after-free Read in tctx_task_work
-To:     syzbot <syzbot+a157ac7c03a56397f553@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000fd274b05bc628d6a@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f6566e78-f7c8-d30b-29ad-d60775906017@kernel.dk>
-Date:   Sun, 28 Feb 2021 10:00:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BMOPT37fnakvBunZ8XC0WYfWKMh6h5+h+w227EOuVKw=;
+        b=SyqGebcJqoaKcIe1PuYK0dZGoQPBqmljgJ8i+f+VOXOnrCRPXSdFNupo1tOpW5/D1N
+         Ltwv/ZMldMBwOynqn+o12UNOZt5e7xCHr8+SFqeSy/IWgcZQ65zEfXPVUYwEHeiGQDdX
+         CgqKOWGDWAz66PXaqB3foxxhjbLHqSP3Saas12cA3ckGWBt8YjylVCCimWepg2aGEr6M
+         L0krWEq+NyZEyLrbyDjIfTjPmrT0siwSOrFnbAJnz5UnGYdU/zOfldhRz7MaogSJxwgM
+         PG2ESGLJ+EW30qGOaKagFlSvHHbcOhMRdaLz+SL1h2mKXeTyC0gWUV3i9AQsQOrwh2zh
+         JE0w==
+X-Gm-Message-State: AOAM530ytBpEPAkO+RNlINosBTbDf8E6/SBkiok5C2zjy1GNrv3mlZMw
+        RQJBv/YTVoY8I2STHEyaGnc36Lb74A==
+X-Google-Smtp-Source: ABdhPJy1s864frZyG5KmBIaTKOXdbLOArJate9zFizZlre2IOoKe93aDfgqfshYhFtVqx7PvqT4Khg==
+X-Received: by 2002:a17:907:e8c:: with SMTP id ho12mr12185817ejc.435.1614531684893;
+        Sun, 28 Feb 2021 09:01:24 -0800 (PST)
+Received: from localhost.localdomain ([46.53.249.223])
+        by smtp.gmail.com with ESMTPSA id pk5sm10464220ejb.119.2021.02.28.09.01.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Feb 2021 09:01:24 -0800 (PST)
+Date:   Sun, 28 Feb 2021 20:01:22 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        njavali@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH 05/11] pragma once: convert drivers/scsi/qla2xxx/qla_target.h
+Message-ID: <YDvMYoYcHN5wVDpo@localhost.localdomain>
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <000000000000fd274b05bc628d6a@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/28/21 2:59 AM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    29c395c7 Merge tag 'x86-entry-2021-02-24' of git://git.ker..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11cd05cad00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c581c545cb4ffac7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a157ac7c03a56397f553
-> compiler:       Debian clang version 11.0.1-2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a157ac7c03a56397f553@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: use-after-free in __tctx_task_work fs/io_uring.c:2217 [inline]
-> BUG: KASAN: use-after-free in tctx_task_work+0x238/0x280 fs/io_uring.c:2230
-> Read of size 4 at addr ffff88802178e3f0 by task syz-executor.2/12656
+From 1f58b4923ca9bfb8b1e73554d3793ee98ab58a77 Mon Sep 17 00:00:00 2001
+From: Alexey Dobriyan <adobriyan@gmail.com>
+Date: Tue, 9 Feb 2021 17:14:25 +0300
+Subject: [PATCH 05/11] pragma once: convert drivers/scsi/qla2xxx/qla_target.h
 
-This should fix it.
+This file has broken include guard which is not obvious just by looking
+at the code. Convert it manually. I think I got #endif right.
 
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
+ drivers/scsi/qla2xxx/qla_target.h | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-commit adc34362605c08e622c0750ae3377ed03637abd1
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Sun Feb 28 09:59:26 2021 -0700
-
-    io_uring: don't attempt to re-flush completions
-    
-    If 'node' is NULL, there are no more completions to flush after doing
-    this round. And since the req flushing will put ctx references, it's
-    quite possible that the ctx is gone after the flush. Don't dereference
-    it unless we know we have more to flush.
-    
-    Fixes: 65453d1efbd2 ("io_uring: enable req cache for task_work items")
-    Reported-by: syzbot+a157ac7c03a56397f553@syzkaller.appspotmail.com
-    Signed-off-by: Jens Axboe <axboe@kernel.dk>
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 87e8e40b566e..9db79d4b0827 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1829,7 +1829,7 @@ static bool __tctx_task_work(struct io_uring_task *tctx)
- 			mutex_lock(&ctx->uring_lock);
- 			io_submit_flush_completions(&ctx->submit_state.comp, ctx);
- 			mutex_unlock(&ctx->uring_lock);
--			ctx = this_ctx;
-+			ctx = node ? this_ctx : NULL;
- 		}
- 	}
+diff --git a/drivers/scsi/qla2xxx/qla_target.h b/drivers/scsi/qla2xxx/qla_target.h
+index 10e5e6c8087d..923910dd1809 100644
+--- a/drivers/scsi/qla2xxx/qla_target.h
++++ b/drivers/scsi/qla2xxx/qla_target.h
+@@ -15,10 +15,7 @@
+  * This is the global def file that is useful for including from the
+  * target portion.
+  */
+-
+-#ifndef __QLA_TARGET_H
+-#define __QLA_TARGET_H
+-
++#pragma once
+ #include "qla_def.h"
+ #include "qla_dsd.h"
  
-
+@@ -116,7 +113,6 @@
+ 	(min(1270, ((ql) > 0) ? (QLA_TGT_DATASEGS_PER_CMD_24XX + \
+ 		QLA_TGT_DATASEGS_PER_CONT_24XX*((ql) - 1)) : 0))
+ #endif
+-#endif
+ 
+ #define GET_TARGET_ID(ha, iocb) ((HAS_EXTENDED_IDS(ha))			\
+ 			 ? le16_to_cpu((iocb)->u.isp2x.target.extended)	\
+@@ -244,6 +240,7 @@ struct ctio_to_2xxx {
+ #ifndef CTIO_RET_TYPE
+ #define CTIO_RET_TYPE	0x17		/* CTIO return entry */
+ #define ATIO_TYPE7 0x06 /* Accept target I/O entry for 24xx */
++#endif
+ 
+ struct fcp_hdr {
+ 	uint8_t  r_ctl;
+@@ -1082,5 +1079,3 @@ extern void qlt_do_generation_tick(struct scsi_qla_host *, int *);
+ 
+ void qlt_send_resp_ctio(struct qla_qpair *, struct qla_tgt_cmd *, uint8_t,
+     uint8_t, uint8_t, uint8_t);
+-
+-#endif /* __QLA_TARGET_H */
 -- 
-Jens Axboe
+2.29.2
 
