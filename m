@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBF5327373
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A035327375
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhB1RAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 12:00:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46550 "EHLO
+        id S231234AbhB1RBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 12:01:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbhB1RAk (ORCPT
+        with ESMTP id S230449AbhB1RB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 12:00:40 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C57C061756;
-        Sun, 28 Feb 2021 08:59:59 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id h10so17479462edl.6;
-        Sun, 28 Feb 2021 08:59:59 -0800 (PST)
+        Sun, 28 Feb 2021 12:01:28 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E803C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:00:46 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id d13so12489808edp.4
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:00:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=CPEIN09wDGtkCb8Hq6OIvTK/905Oh/m5CADJ4r6c2LE=;
-        b=fyKtar+RwTLgcYg3W6FUSj+8SNXTeYykG6lcex3qg1BBqkYOEkQOrElxX+MpRTc0HB
-         miKBiChfz6+yGPADlIpDjKRMEW3WqtFsxsEA2d2WVXylHfxM6jtneLguIbP/iPTdLoJB
-         xMHRgYf5DPPre9esQtSbOlrfzMv9NjkFzGIDUPXk5jIEf4u/ZuBHtEL/JJC1Up58AKsR
-         1TNRG9878R3kglrt8KnWdrlbfgfNYzpzI1aGAQg7JeydfoFcaQBNcthL5i76o9fFfk1J
-         ye1uad5TZQ7JeRFHa8ctKHwYt+hZMmMItGvoUjuTGxeCsFpziyw1I20sGo5AOmGxNpch
-         RhEw==
+        bh=1nO8DN9qj06zKLWl1W6gXx6dVH7T5boOgxNKKypwyvM=;
+        b=Zx1bmPRjsXaxhCckxSVpxaw046VLxfNJbu9tFJhVEoFXTL7l8PQl2ut9rqI2/UAuBu
+         AQqo9UmD7+hNWT2cqU5lZbr1qwtlAh5Zl4G1oblQ4dImD1lo1Ih+m2SlmIAy4Mg4g38L
+         +PiOvutyztqJN7s+k1Lp52IWS8XvPBqG0Io4f5WCz4uAHVKA4H66/CjCJUZPbKFupJZ8
+         29wCRmkdozX7+0OhiezLfZBJ4rNxb9SxvV5udMYbUrGX/WG2QH1FKadsEj4Onjj1jtDX
+         79z5WDgfBmR4H7uSOfaNQ7dn3AQ+mg0vpPy3SdXm8xXUfLfV1NeKmvayqNm83yxwAOI+
+         K7HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CPEIN09wDGtkCb8Hq6OIvTK/905Oh/m5CADJ4r6c2LE=;
-        b=RqqBJHBginKdnakOFRNj5L06JFTH8jfhlMwyCbIWWnWmvLul/qGRQCX8Y7fc0+Evf6
-         NQwx76uZp5Ntz4Kq5nS9bE9sFEv9i8OrIYpsTbYsOdb1Bp46bo+n1W+mFhP8vTP3UM78
-         9I0X/ydatAaDsNCIQBNH4F/8RetBd/f6c3jD+H7IzE/N5mQE5i3o0f0jojzdl80djADZ
-         dST+T5TvH/zz7wvim/+BBr8wrGI/Xmq5XX7q+hnP9WV89/LRzSvOxOr7qMYnI2EcliIo
-         yk8Z3lpU2Aw/sp+e1zU6ICXDU0FDxQlnk0GkDLrgmnCizBMrxK4cs59iAvQL9kIlkgN/
-         1K4w==
-X-Gm-Message-State: AOAM533Id99J4sb9r4LwtQiClLXeWgXBfbJY/ZVtoXCAYlXA/w+CaAoV
-        N9sfhsMsV1xYB5qF4MUczQ==
-X-Google-Smtp-Source: ABdhPJzwqO2LSvZzxq4LaDuPWLZtnlIleqfdCl7EVK2Fwtjrk/uAIBWF+mQ0fLbsNkxPwoeUeLQxNw==
-X-Received: by 2002:a05:6402:30a5:: with SMTP id df5mr13018630edb.24.1614531598536;
-        Sun, 28 Feb 2021 08:59:58 -0800 (PST)
+        bh=1nO8DN9qj06zKLWl1W6gXx6dVH7T5boOgxNKKypwyvM=;
+        b=JxTu4f2E8rm57cUvd7JflQQI+qm1IrOZOgbcaov7CraNdaT0rLHvo094cZcT4pm0Cs
+         Mr/v4/VddJ+YQWLU7pGpCCDOsVKgl/1iLFsIznS/Fh/sFEJXc6N/LznEsMyNGf2m38bD
+         l8cguw4vizLt9PCUSUusysKOdhsYIB6wCDOYWB3u/WkukcP4GqpnOcU4WuxPZxC4ceSx
+         djg+ZXztTw8tkCHTv8D72hM9W4ldYOauOMxsVHBjbjhRAf2TXjBwpRowrepApbIQO7jp
+         iUzOsqgmD6dRyklMV7arS35GDR8YBaGdP89mDnt9mZ4p3YeblYfJaqN1lMGPI8UU9yJX
+         nUcA==
+X-Gm-Message-State: AOAM530QJWtNftrv32kmwN3wSbAjNVQC25NPVMbkGJIJ5WML3G46/Spa
+        Wr7BEVVCk9S5WXGZPeeTZE571+t8QQ==
+X-Google-Smtp-Source: ABdhPJwO5gY8Ahd1DqN7RLUySkKiPuJch2s0mgEyXWPmaVwsZgu4sa3+cHAAZ/YauwosnLnJQUMYXA==
+X-Received: by 2002:a05:6402:1649:: with SMTP id s9mr12793763edx.177.1614531644817;
+        Sun, 28 Feb 2021 09:00:44 -0800 (PST)
 Received: from localhost.localdomain ([46.53.249.223])
-        by smtp.gmail.com with ESMTPSA id m14sm4715188edd.63.2021.02.28.08.59.57
+        by smtp.gmail.com with ESMTPSA id oy8sm10406866ejb.58.2021.02.28.09.00.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 08:59:58 -0800 (PST)
-Date:   Sun, 28 Feb 2021 19:59:56 +0300
+        Sun, 28 Feb 2021 09:00:44 -0800 (PST)
+Date:   Sun, 28 Feb 2021 20:00:42 +0300
 From:   Alexey Dobriyan <adobriyan@gmail.com>
 To:     torvalds@linux-foundation.org
 Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-s390@vger.kernel.org
-Subject: [PATCH 03/11] pragma once: convert arch/s390/tools/gen_facilities.c
-Message-ID: <YDvMDFKvpL0864fF@localhost.localdomain>
+        linus.walleij@linaro.org
+Subject: [PATCH 04/11] pragma once: convert
+ drivers/gpu/drm/pl111/pl111_nomadik.h
+Message-ID: <YDvMOp41h6UlCKMP@localhost.localdomain>
 References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -65,41 +65,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From 45622ce1e4db512ad603dd90f959e61285b7541a Mon Sep 17 00:00:00 2001
+From fe8504a1a0b5352cbc676b933c3dbb79ae9f59c9 Mon Sep 17 00:00:00 2001
 From: Alexey Dobriyan <adobriyan@gmail.com>
-Date: Tue, 9 Feb 2021 14:43:52 +0300
-Subject: [PATCH 03/11] pragma once: convert arch/s390/tools/gen_facilities.c
+Date: Tue, 9 Feb 2021 16:50:24 +0300
+Subject: [PATCH 04/11] pragma once: convert drivers/gpu/drm/pl111/pl111_nomadik.h
 
-Generate arch/s390/include/generated/asm/facility-defs.h without include
-guard.
+This file has broken include guard, convert it manually.
 
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
- arch/s390/tools/gen_facilities.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/pl111/pl111_nomadik.h | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/s390/tools/gen_facilities.c b/arch/s390/tools/gen_facilities.c
-index 61ce5b59b828..cd5055994206 100644
---- a/arch/s390/tools/gen_facilities.c
-+++ b/arch/s390/tools/gen_facilities.c
-@@ -157,8 +157,7 @@ static void print_facility_lists(void)
+diff --git a/drivers/gpu/drm/pl111/pl111_nomadik.h b/drivers/gpu/drm/pl111/pl111_nomadik.h
+index 47ccf5c839fc..00592a38c7d8 100644
+--- a/drivers/gpu/drm/pl111/pl111_nomadik.h
++++ b/drivers/gpu/drm/pl111/pl111_nomadik.h
+@@ -1,9 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0+
+-
+-#ifndef PL111_NOMADIK_H
+-#define PL111_NOMADIK_H
+-#endif
+-
++#pragma once
+ struct device;
  
- int main(int argc, char **argv)
- {
--	printf("#ifndef __ASM_S390_FACILITY_DEFS__\n");
--	printf("#define __ASM_S390_FACILITY_DEFS__\n");
-+	printf("#pragma once\n");
- 	printf("/*\n");
- 	printf(" * DO NOT MODIFY.\n");
- 	printf(" *\n");
-@@ -166,6 +165,6 @@ int main(int argc, char **argv)
- 	printf(" */\n\n");
- 	printf("#include <linux/const.h>\n\n");
- 	print_facility_lists();
--	printf("\n#endif\n");
-+	printf("\n");
- 	return 0;
- }
+ #ifdef CONFIG_ARCH_NOMADIK
 -- 
 2.29.2
 
