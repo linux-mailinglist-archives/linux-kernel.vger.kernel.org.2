@@ -2,84 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A37327211
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 12:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB71327216
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 12:29:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhB1LSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 06:18:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230464AbhB1LSI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 06:18:08 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD77C061756;
-        Sun, 28 Feb 2021 03:17:27 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id q20so9327246pfu.8;
-        Sun, 28 Feb 2021 03:17:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JlynXNbY6xtNwpUIbNR5mK4XzxI5oyN+o8r6CEItL0c=;
-        b=GUFXQsNYhpqWZ2IIRF5cXzpN106IU3qF+Aojjjy4fRssqCVRoW7I8C5Kdn86IFLZ/4
-         rlOtCDbY04DIMUK7LBwjob6vvW1QW9gSM607xspkYYm7cin8cZ7SzJjorwSk+mG0iGWC
-         gUOwI9RZOtGMsOTRyKuRP5p+FJLFOYet+7wcU3kH2ZDRtmV4az4EJzKmgAov4aHFBxac
-         NKUl4H2M+GClMI51wL4wpcEOyY10GcQcjN3YJKNS3ELwnEKsrjKV8R1YejbfAk/C1odc
-         ESOpwIzp+xGWhGlN0xQFfZhBFk3ccPXjBhwvlGOi2WY62mM+6LlUkMhl64lWbE9mEk9S
-         j6aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JlynXNbY6xtNwpUIbNR5mK4XzxI5oyN+o8r6CEItL0c=;
-        b=BCHrqrUSF/tc79+nwWn6L1d3WWdHJmuj9AZ6eVt9kViUoDBzqrSytQ6jScuiowo1aS
-         BCqaetbDM7amccpScwoTytNt538rxe1z5+tKxNFR1HDUAsayEJvVbRXA58tDBsVDyaC8
-         V1AbYeLYqBVA+8onOwDgmXav0McenIisqUiykUdIt1hDOnK6pUCFo45+KIIfbuMH5EXB
-         iAWpOiWdmDqU9ZuEeBYY+qkyrmzXtnlJcO0orV931waIlukW5euiiKd0af/xWwN+QSjI
-         3OIr5ZrRTebc2H2QZ5n40fz1K0LlnQFsDi/KnySF+3a0ZkgBHluILNtYWDtcquwyDJzb
-         9xHQ==
-X-Gm-Message-State: AOAM5326f476gDj9nG1KvdX4c4oSce/kZp6ncv68vKGYE+vbmxOfbgAk
-        gZB1U0hiRmGleQr7HjJns48=
-X-Google-Smtp-Source: ABdhPJx/ocMnKxd7MNvQvR5coaflictNpLOW9H8+pA8BOG4h2eqUPKSEm5Nf2JZZz5wUHfpSshllyQ==
-X-Received: by 2002:aa7:9ecf:0:b029:1ee:93a1:6e2d with SMTP id r15-20020aa79ecf0000b02901ee93a16e2dmr1298380pfq.27.1614511047400;
-        Sun, 28 Feb 2021 03:17:27 -0800 (PST)
-Received: from localhost (89.208.244.53.16clouds.com. [89.208.244.53])
-        by smtp.gmail.com with ESMTPSA id r186sm9911593pfr.124.2021.02.28.03.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 03:17:26 -0800 (PST)
-Date:   Sun, 28 Feb 2021 19:17:25 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Robert Richter <rric@kernel.org>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/4] Introduce pcim_alloc_irq_vectors()
-Message-ID: <20210228111725.GB1091046@nuc8i5>
-References: <20210226155056.1068534-1-zhengdejin5@gmail.com>
- <YDlKF1MP0p7l8vxb@rric.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDlKF1MP0p7l8vxb@rric.localdomain>
+        id S230475AbhB1L2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 06:28:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40778 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230045AbhB1L2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 06:28:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 839B3AB7D;
+        Sun, 28 Feb 2021 11:27:55 +0000 (UTC)
+Date:   Sun, 28 Feb 2021 12:27:55 +0100
+Message-ID: <s5hsg5gjutg.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Cc:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages for the PCM device
+In-Reply-To: <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+        <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 08:20:55PM +0100, Robert Richter wrote:
-> On 26.02.21 23:50:52, Dejin Zheng wrote:
-> > Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> > pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
-> > has been called before, then pci_alloc_irq_vectors() is actually a
-> > device-managed function. It is used as a device-managed function, So
-> > replace it with pcim_alloc_irq_vectors().
-> 
-> For the whole series:
-> 
-> Reviewed-by: Robert Richter <rric@kernel.org>
->
-Robert, Thanks very much for your help!
+On Sat, 27 Feb 2021 09:59:52 +0100,
+Anton Yakovlev wrote:
+> +/**
+> + * virtsnd_pcm_event() - Handle the PCM device event notification.
+> + * @snd: VirtIO sound device.
+> + * @event: VirtIO sound event.
+> + *
+> + * Context: Interrupt context.
 
-> Thanks.
+OK, then nonatomic PCM flag is invalid...
+
+> +/**
+> + * virtsnd_pcm_sg_num() - Count the number of sg-elements required to represent
+> + *                        vmalloc'ed buffer.
+> + * @data: Pointer to vmalloc'ed buffer.
+> + * @length: Buffer size.
+> + *
+> + * Context: Any context.
+> + * Return: Number of physically contiguous parts in the @data.
+> + */
+> +static int virtsnd_pcm_sg_num(u8 *data, unsigned int length)
+> +{
+> +	phys_addr_t sg_address;
+> +	unsigned int sg_length;
+> +	int num = 0;
+> +
+> +	while (length) {
+> +		struct page *pg = vmalloc_to_page(data);
+> +		phys_addr_t pg_address = page_to_phys(pg);
+> +		size_t pg_length;
+> +
+> +		pg_length = PAGE_SIZE - offset_in_page(data);
+> +		if (pg_length > length)
+> +			pg_length = length;
+> +
+> +		if (!num || sg_address + sg_length != pg_address) {
+> +			sg_address = pg_address;
+> +			sg_length = pg_length;
+> +			num++;
+> +		} else {
+> +			sg_length += pg_length;
+> +		}
+> +
+> +		data += pg_length;
+> +		length -= pg_length;
+> +	}
+> +
+> +	return num;
+> +}
+> +
+> +/**
+> + * virtsnd_pcm_sg_from() - Build sg-list from vmalloc'ed buffer.
+> + * @sgs: Preallocated sg-list to populate.
+> + * @nsgs: The maximum number of elements in the @sgs.
+> + * @data: Pointer to vmalloc'ed buffer.
+> + * @length: Buffer size.
+> + *
+> + * Splits the buffer into physically contiguous parts and makes an sg-list of
+> + * such parts.
+> + *
+> + * Context: Any context.
+> + */
+> +static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
+> +				unsigned int length)
+> +{
+> +	int idx = -1;
+> +
+> +	while (length) {
+> +		struct page *pg = vmalloc_to_page(data);
+> +		size_t pg_length;
+> +
+> +		pg_length = PAGE_SIZE - offset_in_page(data);
+> +		if (pg_length > length)
+> +			pg_length = length;
+> +
+> +		if (idx == -1 ||
+> +		    sg_phys(&sgs[idx]) + sgs[idx].length != page_to_phys(pg)) {
+> +			if (idx + 1 == nsgs)
+> +				break;
+> +			sg_set_page(&sgs[++idx], pg, pg_length,
+> +				    offset_in_page(data));
+> +		} else {
+> +			sgs[idx].length += pg_length;
+> +		}
+> +
+> +		data += pg_length;
+> +		length -= pg_length;
+> +	}
+> +
+> +	sg_mark_end(&sgs[idx]);
+> +}
+
+Hmm, I thought there can be already a handy helper to convert vmalloc
+to sglist, but apparently not.  It should have been trivial to get the
+page list from vmalloc, e.g.
+
+int vmalloc_to_page_list(void *p, struct page **page_ret)
+{
+	struct vmap_area *va;
+
+	va = find_vmap_area((unsigned long)p);
+	if (!va)
+		return 0;
+	*page_ret = va->vm->pages;
+	return va->vm->nr_pages;
+}
+
+Then you can set up the sg list in a single call from the given page
+list.
+
+But it's just a cleanup, and let's mark it as a room for
+improvements.
+
+(snip)
+> +/**
+> + * virtsnd_pcm_msg_complete() - Complete an I/O message.
+> + * @msg: I/O message.
+> + * @written_bytes: Number of bytes written to the message.
+> + *
+> + * Completion of the message means the elapsed period. If transmission is
+> + * allowed, then each completed message is immediately placed back at the end
+> + * of the queue.
+> + *
+> + * For the playback substream, @written_bytes is equal to sizeof(msg->status).
+> + *
+> + * For the capture substream, @written_bytes is equal to sizeof(msg->status)
+> + * plus the number of captured bytes.
+> + *
+> + * Context: Interrupt context. Takes and releases the VirtIO substream spinlock.
+> + */
+> +static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg,
+> +				     size_t written_bytes)
+> +{
+> +	struct virtio_pcm_substream *vss = msg->substream;
+> +
+> +	/*
+> +	 * hw_ptr always indicates the buffer position of the first I/O message
+> +	 * in the virtqueue. Therefore, on each completion of an I/O message,
+> +	 * the hw_ptr value is unconditionally advanced.
+> +	 */
+> +	spin_lock(&vss->lock);
+> +	/*
+> +	 * If the capture substream returned an incorrect status, then just
+> +	 * increase the hw_ptr by the message size.
+> +	 */
+> +	if (vss->direction == SNDRV_PCM_STREAM_PLAYBACK ||
+> +	    written_bytes <= sizeof(msg->status)) {
+> +		struct scatterlist *sg;
+> +
+> +		for (sg = &msg->sgs[PCM_MSG_SG_DATA]; sg; sg = sg_next(sg))
+> +			vss->hw_ptr += sg->length;
+
+So the sg list entries are supposed to be updated?  Or if the length
+there are constant, we don't need to iterate the sg entries but keep
+the total length beforehand?
+
+
+thanks,
+
+Takashi
