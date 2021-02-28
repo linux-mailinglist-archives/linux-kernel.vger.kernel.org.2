@@ -2,154 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8942F3274D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 23:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2813274DE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 23:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbhB1WaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 17:30:25 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39807 "EHLO ozlabs.org"
+        id S231572AbhB1Wdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 17:33:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231534AbhB1WaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 17:30:23 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DpdNz3hTsz9sWD;
-        Mon,  1 Mar 2021 09:29:39 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614551379;
-        bh=p+bZDgqx03t8WGhBZ6AXbMgZRxejBJLIyk/vWmrxN6g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OIudWXD3JgGfOn2NJmGGlusS0SzxB6I7ixy4Hdgf9QXGmv2EDlRNs449DRirf1Gf+
-         z0zD6B3XJiQiriBaaWHZ5iqIb7JcJm07aI470eHvIbJ+UKl+yhck64fIOwCV2okstY
-         OXZHFz16WquBW/pbrcfw8BNu01M4eOWzANTSxgAEABzbmprgVJ0lQYk81bMGc8D4X5
-         mXnmOCnF3k5Fk9nwOlWemV7A6jTU3wcVbAnVS437GhmPh6ShThRCiX/2sVF1ECG0tC
-         U2lv1qEDcxY4R1bf0v+jIcSR6Q24Rpc63uOp/U0/ZZ2noUu+3v+M8183TWRd4yQlra
-         2RjTxVkk8Kkkg==
-Date:   Mon, 1 Mar 2021 09:29:38 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- fscache tree
-Message-ID: <20210301092938.33116d24@canb.auug.org.au>
-In-Reply-To: <20210211212437.6d3df60f@canb.auug.org.au>
-References: <20210211212437.6d3df60f@canb.auug.org.au>
+        id S230437AbhB1Wdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 17:33:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BED064E6B;
+        Sun, 28 Feb 2021 22:33:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614551583;
+        bh=VObIh5CNbumDqgZFvzBZjm6yvpKD+a7f2t02dn0j1os=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=EmszaI2I4im8zuwZvhp6oj8YIQYDgt9ynsYMuWFC4CNiIuVM+GTDR9XiYd7S8FghT
+         0OhUKbcu8V5bz1EeJGE5Nsa2PZL9QlfOxGO9hDgtoOcoa5bO/IWZo0aNy9j1kMO6gS
+         QmDKVCEmZl1cuZr29zegc50jEBdU28rDLUdGxdta0um2aJwZUWKvx9OsJfoh/cfMun
+         cTqQJsSlM1acHk1l+EZgfoqrh/wbifK6ZEptT5C+ttCOQahs6smMJqEZkCG1Lr/Ndu
+         p850v953S2v7zGTjbkg95MAC0rrGyV1G6Hb1rxed8dlBmKARhL9j4kpy7OJr0vodfE
+         n7XpiQyl0XXqg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D915535239D3; Sun, 28 Feb 2021 14:33:02 -0800 (PST)
+Date:   Sun, 28 Feb 2021 14:33:02 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Helge Deller <deller@gmx.de>
+Cc:     kernel test robot <lkp@intel.com>,
+        linux-parisc <linux-parisc@vger.kernel.org>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: hppa64-linux-ld: kernel/rcu/refscale.o(.init.text+0x228): cannot
+ reach schedule_timeout_uninterruptible
+Message-ID: <20210228223302.GE2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <202102281205.3F9aEA0G-lkp@intel.com>
+ <20210228050526.GD2696@paulmck-ThinkPad-P72>
+ <d14b90db-4052-544a-9743-748c653f3ad7@gmx.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Jt8wmJbd/vd120kPu_VcB8R";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d14b90db-4052-544a-9743-748c653f3ad7@gmx.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Jt8wmJbd/vd120kPu_VcB8R
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Feb 28, 2021 at 09:51:35PM +0100, Helge Deller wrote:
+> Adding parisc-parisc mailing list...
+> 
+> On 2/28/21 6:05 AM, Paul E. McKenney wrote:
+> > On Sun, Feb 28, 2021 at 12:08:08PM +0800, kernel test robot wrote:
+> > > Hi Paul,
+> > > 
+> > > First bad commit (maybe != root cause):
+> > > 
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > > head:   5695e51619745d4fe3ec2506a2f0cd982c5e27a4
+> > > commit: 1fbeb3a8c4de29433a8d230ee600b13d369b6c0f refperf: Rename refperf.c to refscale.c and change internal names
+> > > date:   8 months ago
+> > > config: parisc-randconfig-s031-20210228 (attached as .config)
+> > > compiler: hppa64-linux-gcc (GCC) 9.3.0
+> > > reproduce:
+> > >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >          chmod +x ~/bin/make.cross
+> > >          # apt-get install sparse
+> > >          # sparse version: v0.6.3-241-geaceeafa-dirty
+> > >          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1fbeb3a8c4de29433a8d230ee600b13d369b6c0f
+> > >          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > >          git fetch --no-tags linus master
+> > >          git checkout 1fbeb3a8c4de29433a8d230ee600b13d369b6c0f
+> > >          # save the attached .config to linux build tree
+> > >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=parisc
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All errors (new ones prefixed by >>):
+> > 
+> > I must confess that I have no idea what I can do about these errors.
+> > 
+> > Did the kernel maybe grow larger than can be handled by the PA-RISC
+> > toolchain?
+> 
+> No, I assume it's because the function calls from the .init section are
+> located too far away from the other code. Reason is probably because
+> huge pages are selected and thus I tried to pack the init section so that
+> it can get discarded after bootup.
+> 
+> I'll look into it now...
 
-Hi all,
+Thank you!
 
-On Thu, 11 Feb 2021 21:24:37 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the akpm-current tree got a conflict in:
->=20
->   include/linux/pagemap.h
->=20
-> between commits:
->=20
->   13aecd8259dc ("mm: Implement readahead_control pageset expansion")
->   9a28f7e68602 ("netfs: Rename unlock_page_fscache() and wait_on_page_fsc=
-ache()")
->=20
-> from the fscache tree and commits:
->=20
->   cd669a9cbd89 ("mm/filemap: add mapping_seek_hole_data")
->   34c37da5f411 ("mm/filemap: pass a sleep state to put_and_wait_on_page_l=
-ocked")
->=20
-> from the akpm-current tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc include/linux/pagemap.h
-> index a88ccc9ab0b1,20225b067583..000000000000
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@@ -682,22 -681,7 +682,21 @@@ static inline int wait_on_page_locked_k
->   	return wait_on_page_bit_killable(compound_head(page), PG_locked);
->   }
->  =20
->  +/**
->  + * wait_on_page_private_2 - Wait for PG_private_2 to be cleared on a pa=
-ge
->  + * @page: The page
->  + *
->  + * Wait for the PG_private_2 page bit to be removed from a page.  This =
-is, for
->  + * example, used to handle a netfs page being written to a local disk c=
-ache,
->  + * thereby allowing writes to the cache for the same page to be seriali=
-sed.
->  + */
->  +static inline void wait_on_page_private_2(struct page *page)
->  +{
->  +	if (PagePrivate2(page))
->  +		wait_on_page_bit(compound_head(page), PG_private_2);
->  +}
->  +
-> - extern void put_and_wait_on_page_locked(struct page *page);
-> -=20
-> + int put_and_wait_on_page_locked(struct page *page, int state);
->   void wait_on_page_writeback(struct page *page);
->   extern void end_page_writeback(struct page *page);
->   void wait_for_stable_page(struct page *page);
-> @@@ -772,11 -756,11 +771,13 @@@ int add_to_page_cache_lru(struct page *
->   				pgoff_t index, gfp_t gfp_mask);
->   extern void delete_from_page_cache(struct page *page);
->   extern void __delete_from_page_cache(struct page *page, void *shadow);
-> - int replace_page_cache_page(struct page *old, struct page *new, gfp_t g=
-fp_mask);
-> + void replace_page_cache_page(struct page *old, struct page *new);
->   void delete_from_page_cache_batch(struct address_space *mapping,
->   				  struct pagevec *pvec);
->  +void readahead_expand(struct readahead_control *ractl,
->  +		      loff_t new_start, size_t new_len);
-> + loff_t mapping_seek_hole_data(struct address_space *, loff_t start, lof=
-f_t end,
-> + 		int whence);
->  =20
->   /*
->    * Like add_to_page_cache_locked, but used to add newly allocated pages:
+							Thanx, Paul
 
-This is now a conflict between the fscache tree and Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Jt8wmJbd/vd120kPu_VcB8R
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA8GVIACgkQAVBC80lX
-0GxZYwf/bEUsErGa2YVe74mxg7z+Xm9GHNvIBb3GY0fCM+R9Vy/0J+3CORSKygaq
-mSw3TG1PKfrPSrQCI4+UxV8OhZrm/uqi07ix3fac1JQSwv+TnnoOcb2Ly0ztta4+
-1VKcO/wlGoHgWcX6f5iE1J0TK7J8XwE0FK+xh4e3RhI04oPiiNMbRdsyAfKsDvut
-B2ughBalvR6eDi84aTp9N0sfyiVpyWenIE9yIgOmq6p8K1aWhIGF8bjc1LXie9lR
-jQWLr+khYt2DW1s45fLz6FDF52JUhzGHTO7xX4R62FrVTOzS0ZsW0KYIeu3kQGIO
-aNrw79TSBS6sVTxzEJ4kJKCJZnx+jQ==
-=qw/J
------END PGP SIGNATURE-----
-
---Sig_/Jt8wmJbd/vd120kPu_VcB8R--
+> Helge
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > >     hppa64-linux-ld: init/main.o(.init.text+0xdd8): cannot reach rest_init
+> > >     init/main.o: in function `arch_call_rest_init':
+> > >     (.init.text+0xdd8): relocation truncated to fit: R_PARISC_PCREL22F against symbol `rest_init' defined in .ref.text section in init/main.o
+> > >     hppa64-linux-ld: init/main.o(.init.text+0x13d8): cannot reach build_all_zonelists
+> > >     init/main.o: in function `start_kernel':
+> > >     (.init.text+0x13d8): relocation truncated to fit: R_PARISC_PCREL22F against symbol `build_all_zonelists' defined in .ref.text section in mm/page_alloc.o
+> > >     hppa64-linux-ld: init/main.o(.init.text+0x176c): cannot reach profile_init
+> > >     (.init.text+0x176c): relocation truncated to fit: R_PARISC_PCREL22F against symbol `profile_init' defined in .ref.text section in kernel/profile.o
+> > >     hppa64-linux-ld: init/main.o(.init.text+0x1ac0): cannot reach wait_for_completion
+> > >     init/main.o: in function `kernel_init_freeable':
+> > >     (.init.text+0x1ac0): relocation truncated to fit: R_PARISC_PCREL22F against symbol `wait_for_completion' defined in .sched.text section in kernel/sched/completion.o
+> > >     hppa64-linux-ld: init/main.o(.ref.text+0x1c): cannot reach rcu_scheduler_starting
+> > >     init/main.o: in function `rest_init':
+> > >     (.ref.text+0x1c): relocation truncated to fit: R_PARISC_PCREL22F against symbol `rcu_scheduler_starting' defined in .init.text section in kernel/rcu/srcutiny.o
+> > >     hppa64-linux-ld: init/main.o(.ref.text+0x17c): cannot reach unknown
+> > >     init/main.o: in function `kernel_init':
+> > >     (.ref.text+0x17c): relocation truncated to fit: R_PARISC_PCREL22F against `kernel_init_freeable'
+> > >     hppa64-linux-ld: arch/parisc/mm/init.o(.ref.text+0x78): cannot reach unknown
+> > >     arch/parisc/mm/init.o: in function `free_initmem':
+> > >     (.ref.text+0x78): relocation truncated to fit: R_PARISC_PCREL22F against `map_pages'
+> > >     hppa64-linux-ld: arch/parisc/mm/init.o(.ref.text+0xa0): cannot reach unknown
+> > >     (.ref.text+0xa0): relocation truncated to fit: R_PARISC_PCREL22F against `map_pages'
+> > >     hppa64-linux-ld: arch/parisc/mm/init.o(.ref.text+0xc4): cannot reach unknown
+> > >     (.ref.text+0xc4): relocation truncated to fit: R_PARISC_PCREL22F against `map_pages'
+> > >     hppa64-linux-ld: kernel/printk/printk.o(.init.text+0x768): cannot reach _raw_spin_lock
+> > >     kernel/printk/printk.o: in function `setup_log_buf':
+> > >     (.init.text+0x768): relocation truncated to fit: R_PARISC_PCREL22F against symbol `_raw_spin_lock' defined in .spinlock.text section in kernel/locking/spinlock.o
+> > >     hppa64-linux-ld: kernel/printk/printk.o(.init.text+0x7c4): cannot reach _raw_spin_unlock
+> > >     (.init.text+0x7c4): additional relocation overflows omitted from the output
+> > >     hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0x228): cannot reach mutex_lock
+> > >     hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0x440): cannot reach mutex_unlock
+> > >     hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0x7a0): cannot reach mutex_lock
+> > >     hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0x878): cannot reach mutex_unlock
+> > >     hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0xad4): cannot reach mutex_lock
+> > >     hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0xafc): cannot reach mutex_unlock
+> > >     hppa64-linux-ld: kernel/resource.o(.init.text+0x32c): cannot reach _raw_write_lock
+> > >     hppa64-linux-ld: kernel/resource.o(.init.text+0x4f8): cannot reach _raw_write_unlock
+> > >     hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0x90): cannot reach mutex_lock
+> > >     hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0xc4): cannot reach mutex_unlock
+> > >     hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0x1b8): cannot reach mutex_lock
+> > >     hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0x208): cannot reach mutex_unlock
+> > >     hppa64-linux-ld: kernel/workqueue.o(.init.text+0xa8): cannot reach mutex_lock
+> > >     hppa64-linux-ld: kernel/workqueue.o(.init.text+0x128): cannot reach mutex_unlock
+> > >     hppa64-linux-ld: kernel/workqueue.o(.init.text+0x354): cannot reach mutex_lock
+> > >     hppa64-linux-ld: kernel/workqueue.o(.init.text+0x388): cannot reach mutex_unlock
+> > >     hppa64-linux-ld: kernel/user.o(.init.text+0x80): cannot reach _raw_spin_lock_irq
+> > >     hppa64-linux-ld: kernel/user.o(.init.text+0xb8): cannot reach _raw_spin_unlock_irq
+> > > > > hppa64-linux-ld: kernel/rcu/refscale.o(.init.text+0x228): cannot reach schedule_timeout_uninterruptible
+> > >     hppa64-linux-ld: kernel/time/timekeeping.o(.init.text+0x228): cannot reach _raw_spin_lock_irqsave
+> > >     hppa64-linux-ld: kernel/time/timekeeping.o(.init.text+0x320): cannot reach _raw_spin_unlock_irqrestore
+> > >     hppa64-linux-ld: kernel/time/sched_clock.o(.init.text+0x170): cannot reach __muldi3
+> > >     hppa64-linux-ld: kernel/time/sched_clock.o(.init.text+0x214): cannot reach __udivdi3
+> > >     hppa64-linux-ld: kernel/time/sched_clock.o(.init.text+0x240): cannot reach __udivdi3
+> > >     hppa64-linux-ld: arch/parisc/kernel/cache.o(.init.text+0x2d4): cannot reach __muldi3
+> > >     hppa64-linux-ld: arch/parisc/kernel/cache.o(.init.text+0x2ec): cannot reach __udivdi3
+> > >     hppa64-linux-ld: arch/parisc/kernel/cache.o(.init.text+0x3d4): cannot reach __muldi3
+> > >     hppa64-linux-ld: arch/parisc/kernel/cache.o(.init.text+0x3ec): cannot reach __udivdi3
+> > >     hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x3c): cannot reach _raw_spin_lock_irqsave
+> > >     hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0xe8): cannot reach _raw_spin_unlock_irqrestore
+> > >     hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x170): cannot reach _raw_spin_lock_irqsave
+> > >     hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x288): cannot reach _raw_spin_unlock_irqrestore
+> > >     hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x30c): cannot reach _raw_spin_lock_irqsave
+> > >     hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x3d8): cannot reach _raw_spin_unlock_irqrestore
+> > > 
+> > > ---
+> > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > 
+> > 
+> > 
+> 
