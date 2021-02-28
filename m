@@ -2,96 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A035327375
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37FDE327376
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbhB1RBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 12:01:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46724 "EHLO
+        id S231246AbhB1RBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 12:01:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhB1RB2 (ORCPT
+        with ESMTP id S230477AbhB1RB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 28 Feb 2021 12:01:28 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E803C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:00:46 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id d13so12489808edp.4
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:00:45 -0800 (PST)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8A8C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:00:47 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id s16so8406115plr.9
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:00:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1nO8DN9qj06zKLWl1W6gXx6dVH7T5boOgxNKKypwyvM=;
-        b=Zx1bmPRjsXaxhCckxSVpxaw046VLxfNJbu9tFJhVEoFXTL7l8PQl2ut9rqI2/UAuBu
-         AQqo9UmD7+hNWT2cqU5lZbr1qwtlAh5Zl4G1oblQ4dImD1lo1Ih+m2SlmIAy4Mg4g38L
-         +PiOvutyztqJN7s+k1Lp52IWS8XvPBqG0Io4f5WCz4uAHVKA4H66/CjCJUZPbKFupJZ8
-         29wCRmkdozX7+0OhiezLfZBJ4rNxb9SxvV5udMYbUrGX/WG2QH1FKadsEj4Onjj1jtDX
-         79z5WDgfBmR4H7uSOfaNQ7dn3AQ+mg0vpPy3SdXm8xXUfLfV1NeKmvayqNm83yxwAOI+
-         K7HQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Denx7bVQXCP6YfuPAwEe4t9EGKBMnQn7SlWiMFUGxOs=;
+        b=Xo3sZSgrW1NhJE5dl2OJTlvB3AtZNMI877HR8upcSV6t+MAklNn6CShP8XRRRaz8ZC
+         IkzJBdDDz+o1ZXx7Ec4o7naroVrI9k3VtuiTXQu4LOgncoenaPRImTQ2o/VU3vKjkC4c
+         nTVsY68Qh/DXSKsSukyqXjg6k8WZxI/nm3NS5lBTtqgjln+3Q0LdP7bi9v0BbdOu2n1O
+         s4EzkPZZp9NQOxEwfHP0ua8EBwWSYNM5j8UWzHv4zA2VOZE3wYQjGtnK1Fe4b2vLSRFa
+         Q2ZRa0gU1dDQUCxozDx1Eg+Jj/5N1CquCcq+hlIRkv/ycAPxj9vfsmB13y/167f/mbvi
+         ZLcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1nO8DN9qj06zKLWl1W6gXx6dVH7T5boOgxNKKypwyvM=;
-        b=JxTu4f2E8rm57cUvd7JflQQI+qm1IrOZOgbcaov7CraNdaT0rLHvo094cZcT4pm0Cs
-         Mr/v4/VddJ+YQWLU7pGpCCDOsVKgl/1iLFsIznS/Fh/sFEJXc6N/LznEsMyNGf2m38bD
-         l8cguw4vizLt9PCUSUusysKOdhsYIB6wCDOYWB3u/WkukcP4GqpnOcU4WuxPZxC4ceSx
-         djg+ZXztTw8tkCHTv8D72hM9W4ldYOauOMxsVHBjbjhRAf2TXjBwpRowrepApbIQO7jp
-         iUzOsqgmD6dRyklMV7arS35GDR8YBaGdP89mDnt9mZ4p3YeblYfJaqN1lMGPI8UU9yJX
-         nUcA==
-X-Gm-Message-State: AOAM530QJWtNftrv32kmwN3wSbAjNVQC25NPVMbkGJIJ5WML3G46/Spa
-        Wr7BEVVCk9S5WXGZPeeTZE571+t8QQ==
-X-Google-Smtp-Source: ABdhPJwO5gY8Ahd1DqN7RLUySkKiPuJch2s0mgEyXWPmaVwsZgu4sa3+cHAAZ/YauwosnLnJQUMYXA==
-X-Received: by 2002:a05:6402:1649:: with SMTP id s9mr12793763edx.177.1614531644817;
-        Sun, 28 Feb 2021 09:00:44 -0800 (PST)
-Received: from localhost.localdomain ([46.53.249.223])
-        by smtp.gmail.com with ESMTPSA id oy8sm10406866ejb.58.2021.02.28.09.00.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 09:00:44 -0800 (PST)
-Date:   Sun, 28 Feb 2021 20:00:42 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linus.walleij@linaro.org
-Subject: [PATCH 04/11] pragma once: convert
- drivers/gpu/drm/pl111/pl111_nomadik.h
-Message-ID: <YDvMOp41h6UlCKMP@localhost.localdomain>
-References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Denx7bVQXCP6YfuPAwEe4t9EGKBMnQn7SlWiMFUGxOs=;
+        b=LfvBIfXULnGlkFdO66PANchNDBAjIf+9Zk0YwWMhKVCej3vlDvYT587o1VQenOhxDj
+         S8c2mKmZ3A6xlAu/QYmGmgpCpmqvW0cPwwpoPbGHGdgih6ij3uRzogQ04edCIXu7rk/X
+         NciiOlBQZpWoQ7jLkc6NPZoDSmhAQo46NxFEhj4xc+TeNCgmsprunNK5ZIwNnDLSmygc
+         HMDPeX6LxL5uCJQGuuQ6VSnPloprqihP0GwvIJSXVGponnn3yuQ1wJqVlupBUd38XWhr
+         b0dco5NMZBwrtgGwhdAXRG3/hqLAkPYrxU33NDgUSN6yYatRmO2mzzxSJF0x9VLBK2Mw
+         A9ZQ==
+X-Gm-Message-State: AOAM532w95fdmZTTtKxknoebNwz6Nrxs984IoiBMV0JsEumonQYxGnHm
+        UHIAnBqmEiBxwU83UI2V1OSjcg==
+X-Google-Smtp-Source: ABdhPJz7944pxBYukv3GgmwZQSOZf1DRsn8Jj/uqXefzM5Ua3K+ux0lbrREcPLZAJB4dvRSniXuhNA==
+X-Received: by 2002:a17:902:d886:b029:e1:7784:4db5 with SMTP id b6-20020a170902d886b02900e177844db5mr12090286plz.72.1614531647260;
+        Sun, 28 Feb 2021 09:00:47 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id o11sm15110420pjg.41.2021.02.28.09.00.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Feb 2021 09:00:46 -0800 (PST)
+Subject: Re: KASAN: use-after-free Read in tctx_task_work
+To:     syzbot <syzbot+a157ac7c03a56397f553@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000fd274b05bc628d6a@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f6566e78-f7c8-d30b-29ad-d60775906017@kernel.dk>
+Date:   Sun, 28 Feb 2021 10:00:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <000000000000fd274b05bc628d6a@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From fe8504a1a0b5352cbc676b933c3dbb79ae9f59c9 Mon Sep 17 00:00:00 2001
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Date: Tue, 9 Feb 2021 16:50:24 +0300
-Subject: [PATCH 04/11] pragma once: convert drivers/gpu/drm/pl111/pl111_nomadik.h
+On 2/28/21 2:59 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    29c395c7 Merge tag 'x86-entry-2021-02-24' of git://git.ker..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=11cd05cad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c581c545cb4ffac7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a157ac7c03a56397f553
+> compiler:       Debian clang version 11.0.1-2
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+a157ac7c03a56397f553@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in __tctx_task_work fs/io_uring.c:2217 [inline]
+> BUG: KASAN: use-after-free in tctx_task_work+0x238/0x280 fs/io_uring.c:2230
+> Read of size 4 at addr ffff88802178e3f0 by task syz-executor.2/12656
 
-This file has broken include guard, convert it manually.
+This should fix it.
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
- drivers/gpu/drm/pl111/pl111_nomadik.h | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/pl111/pl111_nomadik.h b/drivers/gpu/drm/pl111/pl111_nomadik.h
-index 47ccf5c839fc..00592a38c7d8 100644
---- a/drivers/gpu/drm/pl111/pl111_nomadik.h
-+++ b/drivers/gpu/drm/pl111/pl111_nomadik.h
-@@ -1,9 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0+
--
--#ifndef PL111_NOMADIK_H
--#define PL111_NOMADIK_H
--#endif
--
-+#pragma once
- struct device;
+commit adc34362605c08e622c0750ae3377ed03637abd1
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Sun Feb 28 09:59:26 2021 -0700
+
+    io_uring: don't attempt to re-flush completions
+    
+    If 'node' is NULL, there are no more completions to flush after doing
+    this round. And since the req flushing will put ctx references, it's
+    quite possible that the ctx is gone after the flush. Don't dereference
+    it unless we know we have more to flush.
+    
+    Fixes: 65453d1efbd2 ("io_uring: enable req cache for task_work items")
+    Reported-by: syzbot+a157ac7c03a56397f553@syzkaller.appspotmail.com
+    Signed-off-by: Jens Axboe <axboe@kernel.dk>
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 87e8e40b566e..9db79d4b0827 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1829,7 +1829,7 @@ static bool __tctx_task_work(struct io_uring_task *tctx)
+ 			mutex_lock(&ctx->uring_lock);
+ 			io_submit_flush_completions(&ctx->submit_state.comp, ctx);
+ 			mutex_unlock(&ctx->uring_lock);
+-			ctx = this_ctx;
++			ctx = node ? this_ctx : NULL;
+ 		}
+ 	}
  
- #ifdef CONFIG_ARCH_NOMADIK
+
 -- 
-2.29.2
+Jens Axboe
 
