@@ -2,91 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2313271C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 10:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3253271C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 10:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhB1Jec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 04:34:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230184AbhB1JeY (ORCPT
+        id S230371AbhB1Jfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 04:35:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51253 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230402AbhB1Jfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 04:34:24 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FFCC06174A;
-        Sun, 28 Feb 2021 01:33:44 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id b21so9150575pgk.7;
-        Sun, 28 Feb 2021 01:33:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CQcNXul42OdjZ/11X+dsEbe6I5ZkvgAlKEhd5f4JttI=;
-        b=YseBDxj1XmfQfRHJIiRpyFyEQaAdJ1XSqsmj/a3cNrAH4rTo05OqSEqN709gYJZ7nj
-         CL8zUmadfUm/18uH9fwD6EiJ9wxI9Wey8/+vTEkO62Y245p88m1WSQNwUy1fHQtvlY98
-         vaARp4jdXcxYHuVpfJcqLhw266NtjaJzK4ohEQD8T3B47414tJaU4KcWeayRc/Ru9aq1
-         sl7XFi6RFKKuZCJKAs/opsBVTYTZce1MlhkMiMTWRM1rx8D+bpoyVB8c/8423919doqb
-         nq/R0st/DzAX8fB2Ff60aEgD4UtjOCMG2P5MfyxFKJROPsTQ7GMrGJnizh6y2rGijJSA
-         S9bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CQcNXul42OdjZ/11X+dsEbe6I5ZkvgAlKEhd5f4JttI=;
-        b=D3ryjpc6vDKtIGWrnwup5puN0LkrQEbUbFuUdqog0VBX2H3bJWoTZAIepZzmUgDj59
-         9APoU6N6Ycs1b1sffzI48bDewYA4T1SDOqPSs42BVAN/5oX04f9kICblxXv93Wr5QGhU
-         6iQVrfPzPhQ3TY0/ro8XVhb/TCwWrdrPHxtChqE3zhrNJfG32dcait05uAw5ANXRNb/M
-         CPegHA/976FbEFwHJnz4W7GtPQ7o8s0C0z6uALX/owTaSYy7vrCwDXDxyiMgFDkv0ndQ
-         m8n4atwW5XaNjGhzSgrGeNKF/0sfXBRuph+IkIMizWKZT85TqVnCdRnV8j2f444Wn47T
-         lpKQ==
-X-Gm-Message-State: AOAM531jtQ5yl0RjxtsyyxdRzgja8ogo5oVujLuOhOKvDpE2Tqcmqmox
-        Xi14iCKCR/wkydnZ0cF2q1v4mxS4s8F2qfbYjms=
-X-Google-Smtp-Source: ABdhPJwxr7BtwuTnM0O+LoVoUmW80xOoplvQc9dCHbDauAAnMHRzRq8Hjjo0tErujsvqMSbphiXZXNKmnSyMu9aq6lI=
-X-Received: by 2002:a65:5ac9:: with SMTP id d9mr9365056pgt.74.1614504824125;
- Sun, 28 Feb 2021 01:33:44 -0800 (PST)
+        Sun, 28 Feb 2021 04:35:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614504843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MfErU+o2IpTfmX8Bo8uI0qToZvbwIUPvy2u1IZDsMXg=;
+        b=dS7Ohw5g4oHjNKmi8YWVjuEhEtBOdBaPQlGzY9WOTj8kXeve1jqCVbBqxvvFw9b8PhcN31
+        qkA+A6lPupB1mH5vipYRdRJt+tZ60Gjml3boOlGa/deGh7RerQ1qynglnAN3pynN+fp3Tp
+        xPaq/xBcDgfOI2aYkjrBZ7Nagrxwt9s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-C5aHa_i2NamZLFlHWYaEsg-1; Sun, 28 Feb 2021 04:34:01 -0500
+X-MC-Unique: C5aHa_i2NamZLFlHWYaEsg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E38938030C2;
+        Sun, 28 Feb 2021 09:33:58 +0000 (UTC)
+Received: from krava (unknown [10.40.192.3])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1095C5C1BD;
+        Sun, 28 Feb 2021 09:33:53 +0000 (UTC)
+Date:   Sun, 28 Feb 2021 10:33:52 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Liang, Kan" <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>,
+        "Yi, Ammy" <ammy.yi@intel.com>
+Subject: Re: [drm/i915/gt] 8c3b1ba0e7:
+ perf-sanity-tests.Parse_event_definition_strings.fail
+Message-ID: <YDtjgCcP9mLBcu/y@krava>
+References: <20210224074841.GD6114@xsang-OptiPlex-9020>
+ <cabd8692-07ca-13c8-efb5-e088b4547f80@linux.intel.com>
+ <YDenRVGzh5Dv1pC2@krava>
+ <YDfph8b9p8sSk1AF@krava>
+ <YDfxgfi5DBDMFgwu@krava>
+ <YDf0fP8XmnTrkIT8@krava>
+ <d416a908-6a54-5e4c-e377-dc9d2b778941@linux.intel.com>
+ <YDodJb4CXDT8VemG@krava>
 MIME-Version: 1.0
-References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
- <20210226141411.2517368-3-linux@rasmusvillemoes.dk> <CAHp75Vc8S2E0vWFcqK-jO9Nhd-Us_7t-aWNj-7k+fWDcqR1XkQ@mail.gmail.com>
- <CAHp75VfNHkJp-SMacKdaSuy3gDECs=u4BNMNe2KjYkrDiwb8jg@mail.gmail.com>
-In-Reply-To: <CAHp75VfNHkJp-SMacKdaSuy3gDECs=u4BNMNe2KjYkrDiwb8jg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 28 Feb 2021 11:33:28 +0200
-Message-ID: <CAHp75Vdrsr8zJzuovUEd6RtSHOmdASrQa1--A6HBVmj8mx8+Kw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drivers: misc: add ripple counter driver
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDodJb4CXDT8VemG@krava>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 11:29 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Sun, Feb 28, 2021 at 11:07 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Friday, February 26, 2021, Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
-> >>
-> >> The only purpose of this driver is to serve as a consumer of the input
-> >> clock, to prevent it from being disabled by clk_disable_unused().
-> >
-> > We have a clock API to do the same (something like marking it used or so) why do you need a driver?
->
-> Example:
-> https://elixir.bootlin.com/linux/latest/source/drivers/platform/x86/pmc_atom.c#L365
->
-> If it's a DT based platform I think you can make it somehow work thru DT.
+On Sat, Feb 27, 2021 at 11:21:25AM +0100, Jiri Olsa wrote:
+> On Fri, Feb 26, 2021 at 08:41:26AM +0800, Jin, Yao wrote:
+> 
+> SNIP
+> 
+> > > +				SET_SYMBOL(prefix, PMU_EVENT_SYMBOL);
+> > >   				len++;
+> > >   			}
+> > >   		}
+> > >   	}
+> > > +
+> > > +	/* unlikely, but still.. */
+> > > +	if (!len)
+> > > +		goto err;
+> > > +	perf_pmu_events_list_num = len;
+> > > +
+> > >   	qsort(perf_pmu_events_list, len,
+> > >   		sizeof(struct perf_pmu_event_symbol), comp_pmu);
+> > > 
+> > 
+> > Thanks so much for the patch! It works with my tests.
+> > 
+> > # ./perf test 6
+> >  6: Parse event definition strings                                  : Ok
+> > 
+> > # ./perf stat -e software/r1a/ -a -- sleep 1
+> > 
+> >  Performance counter stats for 'system wide':
+> > 
+> >    <not supported>      software/r1a/
+> > 
+> >        1.000940433 seconds time elapsed
+> > 
+> > In theory, do we also need to check suffix as well? I think returning
+> > PMU_EVENT_SYMBOL_SUFFIX may also confuse the parser. But yes, we don't have
+> > this case now.
+> 
+> yep, let's wait for use case ;-) you can't have suffix
+> without prefix, and that's the one failing, so I think
+> we are fine
 
-Okay, briefly looking at the state of affairs [1] seems like you need
-to hack it into clock provider.
+actualy this one seems to work as well, could you plz check
 
-[1]: https://elixir.bootlin.com/linux/latest/C/ident/CLK_IS_CRITICAL
+thanks,
+jirka
 
--- 
-With Best Regards,
-Andy Shevchenko
+
+---
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index d5b6aff82f21..d57ac86ce7ca 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -89,6 +89,7 @@ static void inc_group_count(struct list_head *list,
+ %type <str> PE_EVENT_NAME
+ %type <str> PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
+ %type <str> PE_DRV_CFG_TERM
++%type <str> event_pmu_name
+ %destructor { free ($$); } <str>
+ %type <term> event_term
+ %destructor { parse_events_term__delete ($$); } <term>
+@@ -272,8 +273,11 @@ event_def: event_pmu |
+ 	   event_legacy_raw sep_dc |
+ 	   event_bpf_file
+ 
++event_pmu_name:
++PE_NAME | PE_PMU_EVENT_PRE
++
+ event_pmu:
+-PE_NAME opt_pmu_config
++event_pmu_name opt_pmu_config
+ {
+ 	struct parse_events_state *parse_state = _parse_state;
+ 	struct parse_events_error *error = parse_state->error;
+
