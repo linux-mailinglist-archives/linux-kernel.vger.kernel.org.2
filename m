@@ -2,109 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF133274A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 22:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E153274B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 22:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhB1VjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 16:39:03 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:42725 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231406AbhB1VjA (ORCPT
+        id S231435AbhB1Vxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 16:53:35 -0500
+Received: from dyslmr.btconnect.com ([193.113.5.105]:21699 "EHLO
+        mail.btconnect.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231398AbhB1Vxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 16:39:00 -0500
-Received: by mail-io1-f71.google.com with SMTP id q5so11797471iot.9
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 13:38:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Eans+Y8M5kEDbsfDM4w+vnrR9uMK3i6NDK+ASbnwiqw=;
-        b=L2uKfy5Bgbonmz9vQ+HV83M6PV3SLIyUaaszrU3dqilS5qJ4yO6H1tuR5nahaptfue
-         OHJU/zFiCfZVntgfk7eLNmNGpHQA059tuJnS5kA7F1CY6Gi4j/EWUS6/QGaUXq0CuLGA
-         Rw6sI3dbDVIkYoqtj9Ow2uoVyqlhJMZQ0MPXTBY97blYx+6nOsm5Fmx7wZPBmMHUnQuJ
-         iStTg8QVC4Z4HfLsMtz+jyeIMSBD0J550PnViZq7pkeQehb/5c7yIpCIG+3vqocbrSwT
-         Xle5LIQkHbEtqe1XPNf51USlP/FnyNN7Z86j5YTM1YgYa6sf3bCzZChEGFcfzKInMFx2
-         RbmQ==
-X-Gm-Message-State: AOAM531uU3razt/dl7gmolcLJ7jKdU4fya0GKIgq2WWbZB7rPW6djPRr
-        i5pNEmtWThy1nXTvltVKQRHPJM14rKkHMldQDxTHA7Pbty3a
-X-Google-Smtp-Source: ABdhPJzSIoA34gS/Jw7BAERzxmfGTaBs67RN3urq1p5QkgRKW2vregW0I/rm33/bQextDyUbE9nUgN4A5Z1G8E4jAT3GH/WXyRSH
+        Sun, 28 Feb 2021 16:53:34 -0500
+X-Greylist: delayed 414 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Feb 2021 16:53:33 EST
+Received: from mail.btconnect.com (dy11780omr11.iuser.iroot.adidom.com [10.35.83.172])
+        by dy11780slr11.dci.bt.com (MOS 4.4.8-GA)
+        with ESMTP id BEL81101;
+        Sun, 28 Feb 2021 21:44:48 GMT
+Received: (from localhost [127.0.0.1])
+        by dy11780omr11.dci.bt.com (MOS 4.4.8-GA)
+        id ALK74206;
+        Sun, 28 Feb 2021 21:44:47 +0000 (GMT)
+Received: from 69.12.85.220.static.quadranet.com (EHLO User) ([69.12.85.220])
+        by dy11780omr11.dci.bt.com
+        with ESMTP id ALK73656 (AUTH bap@btconnect.com);
+        Sun, 28 Feb 2021 21:44:44 +0000 (GMT)
+Reply-To: <jimyang975@gmail.com>
+From:   "Jim Yang" <bap@btconnect.com>
+Subject: Good  day
+Date:   Sun, 28 Feb 2021 13:44:33 -0800
 MIME-Version: 1.0
-X-Received: by 2002:a92:d7c7:: with SMTP id g7mr10592113ilq.305.1614548299301;
- Sun, 28 Feb 2021 13:38:19 -0800 (PST)
-Date:   Sun, 28 Feb 2021 13:38:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000da67e105bc6c51d4@google.com>
-Subject: WARNING: suspicious RCU usage in __inode_security_revalidate
-From:   syzbot <syzbot+1058632e58766789d9f2@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <202102282144.ALK73656@dy11780omr11.dci.bt.com>
+X-Mirapoint-IP-Reputation: reputation=Poor-1,
+        source=Queried,
+        refid=tid=0001.0A782F8F.603C0EA3.0014,
+        actions=TAG
+X-Junkmail: UCE(57)
+X-Junkmail-Status: score=57/50, host=dy11780omr11.dci.bt.com
+X-Junkmail-Signature-Raw: score=bulk(7),
+        refid=str=0001.0A782F21.603B7ADB.0049,ss=3,sh,re=0.000,recu=0.000,reip=0.000,cl=3,cld=1,fgs=0,
+        ip=69.12.85.220,
+        so=2016-11-06 16:00:04,
+        dmn=2013-03-21 17:37:32,
+        mode=multiengine
+X-Junkmail-IWF: false
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    719bbd4a Merge tag 'vfio-v5.12-rc1' of git://github.com/aw..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17b131b6d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8d398c54d51d75eb
-dashboard link: https://syzkaller.appspot.com/bug?extid=1058632e58766789d9f2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1058632e58766789d9f2@syzkaller.appspotmail.com
-
-=============================
-WARNING: suspicious RCU usage
-5.11.0-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:8296 Illegal context switch in RCU-sched read-side critical section!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 0
-2 locks held by syz-executor.0/10588:
- #0: ffff88801ec94460 (sb_writers#5){.+.+}-{0:0}, at: do_unlinkat+0x190/0x690 fs/namei.c:4075
- #1: ffff888024cc2548 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:810 [inline]
- #1: ffff888024cc2548 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: do_unlinkat+0x27d/0x690 fs/namei.c:4079
-
-stack backtrace:
-CPU: 1 PID: 10588 Comm: syz-executor.0 Not tainted 5.11.0-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- ___might_sleep+0x266/0x2c0 kernel/sched/core.c:8296
- __inode_security_revalidate+0x112/0x140 security/selinux/hooks.c:259
- inode_security_rcu security/selinux/hooks.c:285 [inline]
- selinux_inode_permission+0x2e1/0x670 security/selinux/hooks.c:3137
- security_inode_permission+0x92/0xf0 security/security.c:1268
- inode_permission.part.0+0x119/0x440 fs/namei.c:521
- inode_permission fs/namei.c:2812 [inline]
- may_delete+0x318/0x750 fs/namei.c:2790
- vfs_unlink+0x53/0x610 fs/namei.c:4012
- do_unlinkat+0x3de/0x690 fs/namei.c:4096
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x465837
-Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdb29f6728 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000465837
-RDX: 00007ffdb29f6760 RSI: 00007ffdb29f6760 RDI: 00007ffdb29f67f0
-RBP: 00007ffdb29f67f0 R08: 0000000000000001 R09: 00007ffdb29f65c0
-R10: 000000000253588b R11: 0000000000000206 R12: 00000000004bbe42
-R13: 00007ffdb29f78c0 R14: 0000000002535810 R15: 00007ffdb29f7900
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I am Jim Yang. I am the Operation Manager at China Citic Bank International, Hong Kong. I do not know if we can work together in transferring US$48.2 million from my bank to your bank account. Finally if you are interested I shall provide you with more details. Please contact me with this Email:jimyang975@gmail.com
