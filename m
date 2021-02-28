@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA943274A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 22:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF133274A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 22:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhB1Vga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 16:36:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60837 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230414AbhB1VgZ (ORCPT
+        id S231431AbhB1VjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 16:39:03 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:42725 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231406AbhB1VjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 16:36:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614548099;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ReI9nC5t0ilGJKO9iEAq6ntFlruOaE8Rz2Sr5GLVUJo=;
-        b=Hm330mEl0HmLWRDSjiGWPTI+Ji90yV+g5IW3uZCqQqflFQy59EzDK1OadFZ32R2lQus2zQ
-        mxeDp8lIhI9l9hQLSPXOIFeOXBY9STuLWZzl1iqEmMHdw/Ez61quNhLUixZ0I63MY/FQQW
-        3ZTDPrjSV/JvZrJN06mOOGXJOSFH1s0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-49-B0xp6CNBNSqPRQIU_c-Wbw-1; Sun, 28 Feb 2021 16:34:58 -0500
-X-MC-Unique: B0xp6CNBNSqPRQIU_c-Wbw-1
-Received: by mail-ej1-f72.google.com with SMTP id au15so168428ejc.8
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 13:34:57 -0800 (PST)
+        Sun, 28 Feb 2021 16:39:00 -0500
+Received: by mail-io1-f71.google.com with SMTP id q5so11797471iot.9
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 13:38:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ReI9nC5t0ilGJKO9iEAq6ntFlruOaE8Rz2Sr5GLVUJo=;
-        b=GkiqPKcRwHDr+PGJJtURKcRXaG+336hgdlcn2JB3siFTBkMhQBlpI0/PlKQGZSBqh3
-         UgZn58VuvQEsly3LLjWVX/v98FvBndXmvpxDYNVD+lA69YT5tXqkPYewF+c8n8vHbz5G
-         pI1m4+M0rWYHt64pk4XWWrCrhtrxv2uBSAz+nVWg/grMoE+Ve+y3rZ0hfVhrcAxUblNh
-         WULgFvP7G5A9E3Txb+JUgwalkU0gls4pVIgCa2Hao67xVOenhWZfBSSsZc8280uDuzqw
-         gIwszepA2+f9hAKSsIFKNG5esgtybVkKRfn8urWEqiK1+zf7zHOnVbs75/b1mVLwoZxb
-         kT0w==
-X-Gm-Message-State: AOAM533NtPxonyeBptHbt7ZGMLp0Lm5O0hd9bNan2mRiOm4Et1YMXewV
-        hC8ViwzBgf8TxML6vgz76iHtO6Jd8rmNTj1KdR+w0kNoRQcnOAU9+kA8WpoT5/3EkJOfmCl1lFm
-        Zy164iZOEtOJbBn1C6o3LmyNG
-X-Received: by 2002:aa7:d954:: with SMTP id l20mr9537928eds.1.1614548096612;
-        Sun, 28 Feb 2021 13:34:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyZfpQusPlK8SeLupsX5MkpMrCMoVqG9E1G+3AItVqjBlS3hF76KS3hDto3VFFR3Yt+hLv8gQ==
-X-Received: by 2002:aa7:d954:: with SMTP id l20mr9537925eds.1.1614548096518;
-        Sun, 28 Feb 2021 13:34:56 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id lm24sm4333097ejb.53.2021.02.28.13.34.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 13:34:56 -0800 (PST)
-Date:   Sun, 28 Feb 2021 16:34:53 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-Cc:     Jason Wang <jasowang@redhat.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-Message-ID: <20210228163031-mutt-send-email-mst@kernel.org>
-References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
- <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
- <20210222023040-mutt-send-email-mst@kernel.org>
- <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
- <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
- <20210223082536-mutt-send-email-mst@kernel.org>
- <3ff5fd23-1db0-2f95-4cf9-711ef403fb62@oracle.com>
- <20210224000057-mutt-send-email-mst@kernel.org>
- <52836a63-4e00-ff58-50fb-9f450ce968d7@oracle.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Eans+Y8M5kEDbsfDM4w+vnrR9uMK3i6NDK+ASbnwiqw=;
+        b=L2uKfy5Bgbonmz9vQ+HV83M6PV3SLIyUaaszrU3dqilS5qJ4yO6H1tuR5nahaptfue
+         OHJU/zFiCfZVntgfk7eLNmNGpHQA059tuJnS5kA7F1CY6Gi4j/EWUS6/QGaUXq0CuLGA
+         Rw6sI3dbDVIkYoqtj9Ow2uoVyqlhJMZQ0MPXTBY97blYx+6nOsm5Fmx7wZPBmMHUnQuJ
+         iStTg8QVC4Z4HfLsMtz+jyeIMSBD0J550PnViZq7pkeQehb/5c7yIpCIG+3vqocbrSwT
+         Xle5LIQkHbEtqe1XPNf51USlP/FnyNN7Z86j5YTM1YgYa6sf3bCzZChEGFcfzKInMFx2
+         RbmQ==
+X-Gm-Message-State: AOAM531uU3razt/dl7gmolcLJ7jKdU4fya0GKIgq2WWbZB7rPW6djPRr
+        i5pNEmtWThy1nXTvltVKQRHPJM14rKkHMldQDxTHA7Pbty3a
+X-Google-Smtp-Source: ABdhPJzSIoA34gS/Jw7BAERzxmfGTaBs67RN3urq1p5QkgRKW2vregW0I/rm33/bQextDyUbE9nUgN4A5Z1G8E4jAT3GH/WXyRSH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <52836a63-4e00-ff58-50fb-9f450ce968d7@oracle.com>
+X-Received: by 2002:a92:d7c7:: with SMTP id g7mr10592113ilq.305.1614548299301;
+ Sun, 28 Feb 2021 13:38:19 -0800 (PST)
+Date:   Sun, 28 Feb 2021 13:38:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000da67e105bc6c51d4@google.com>
+Subject: WARNING: suspicious RCU usage in __inode_security_revalidate
+From:   syzbot <syzbot+1058632e58766789d9f2@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 10:24:41AM -0800, Si-Wei Liu wrote:
-> > Detecting it isn't enough though, we will need a new ioctl to notify
-> > the kernel that it's a legacy guest. Ugh :(
-> Well, although I think adding an ioctl is doable, may I know what the use
-> case there will be for kernel to leverage such info directly? Is there a
-> case QEMU can't do with dedicate ioctls later if there's indeed
-> differentiation (legacy v.s. modern) needed?
+Hello,
 
-BTW a good API could be
+syzbot found the following issue on:
 
-#define VHOST_SET_ENDIAN _IOW(VHOST_VIRTIO, ?, int)
-#define VHOST_GET_ENDIAN _IOW(VHOST_VIRTIO, ?, int)
+HEAD commit:    719bbd4a Merge tag 'vfio-v5.12-rc1' of git://github.com/aw..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b131b6d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8d398c54d51d75eb
+dashboard link: https://syzkaller.appspot.com/bug?extid=1058632e58766789d9f2
 
-we did it per vring but maybe that was a mistake ...
+Unfortunately, I don't have any reproducer for this issue yet.
 
--- 
-MST
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1058632e58766789d9f2@syzkaller.appspotmail.com
 
+=============================
+WARNING: suspicious RCU usage
+5.11.0-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:8296 Illegal context switch in RCU-sched read-side critical section!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 0
+2 locks held by syz-executor.0/10588:
+ #0: ffff88801ec94460 (sb_writers#5){.+.+}-{0:0}, at: do_unlinkat+0x190/0x690 fs/namei.c:4075
+ #1: ffff888024cc2548 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:810 [inline]
+ #1: ffff888024cc2548 (&type->i_mutex_dir_key#4/1){+.+.}-{3:3}, at: do_unlinkat+0x27d/0x690 fs/namei.c:4079
+
+stack backtrace:
+CPU: 1 PID: 10588 Comm: syz-executor.0 Not tainted 5.11.0-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0xfa/0x151 lib/dump_stack.c:120
+ ___might_sleep+0x266/0x2c0 kernel/sched/core.c:8296
+ __inode_security_revalidate+0x112/0x140 security/selinux/hooks.c:259
+ inode_security_rcu security/selinux/hooks.c:285 [inline]
+ selinux_inode_permission+0x2e1/0x670 security/selinux/hooks.c:3137
+ security_inode_permission+0x92/0xf0 security/security.c:1268
+ inode_permission.part.0+0x119/0x440 fs/namei.c:521
+ inode_permission fs/namei.c:2812 [inline]
+ may_delete+0x318/0x750 fs/namei.c:2790
+ vfs_unlink+0x53/0x610 fs/namei.c:4012
+ do_unlinkat+0x3de/0x690 fs/namei.c:4096
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465837
+Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdb29f6728 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000465837
+RDX: 00007ffdb29f6760 RSI: 00007ffdb29f6760 RDI: 00007ffdb29f67f0
+RBP: 00007ffdb29f67f0 R08: 0000000000000001 R09: 00007ffdb29f65c0
+R10: 000000000253588b R11: 0000000000000206 R12: 00000000004bbe42
+R13: 00007ffdb29f78c0 R14: 0000000002535810 R15: 00007ffdb29f7900
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
