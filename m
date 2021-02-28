@@ -2,209 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663CB327340
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAFD327343
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhB1Pwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 10:52:53 -0500
-Received: from www381.your-server.de ([78.46.137.84]:33528 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhB1Pwm (ORCPT
+        id S231153AbhB1Pxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 10:53:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230163AbhB1Px3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 10:52:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=nieBiiebJb3oXYZlYeMGP6lVgw/bisqi9Ti4NzL+qMw=; b=aV/akS88Rw4BU+B4Jbxs7Ff9fD
-        0MiIZBdrjPHCFESOGGm1rQNMaXc0AERgeRIGEl1spJAfXj4D367N5o3wFzoERynBM1KufagNtJOK5
-        FEs+VSkbDJKuuJNG2+YLc0ws25Wau+E2axjJEu6yeSp3mBnGgff458/D6TVnvmfq5aYFOfC/Xn4lb
-        xj34YD1sGRpylLr7ydi7Y9zoBsm2EAhA0w/YqzlGWHUfs+LOXfrA1bDcwGZF1SkVvVC3W0wp614g6
-        trbB3ktuRPlmNwc4i4mXoGcv7emhBgWCtQ0mCIBC/NHAl8gDWWOTuEiCfhVExU2cuRYV99VkxGLCj
-        NgoxbrFA==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lGOMK-000Adb-7L; Sun, 28 Feb 2021 16:51:52 +0100
-Received: from [62.216.202.180] (helo=[192.168.178.20])
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lGOMK-0004iy-0P; Sun, 28 Feb 2021 16:51:52 +0100
-Subject: Re: [PATCH v6 20/24] iio: buffer: add ioctl() to support opening
- extra buffers for IIO device
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Michael.Hennerich@analog.com, jic23@kernel.org, nuno.sa@analog.com,
-        dragos.bogdan@analog.com
-References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
- <20210215104043.91251-21-alexandru.ardelean@analog.com>
- <877ca331-1a56-1bd3-6637-482bbf060ba9@metafoo.de>
- <20210228143429.00001f01@Huawei.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <5f9070a5-2c3d-f185-1981-10ec768dbb4a@metafoo.de>
-Date:   Sun, 28 Feb 2021 16:51:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sun, 28 Feb 2021 10:53:29 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE649C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 07:52:48 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id p5so8316929plo.4
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 07:52:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+MDVsqFDrX74IRsp1myuYu41HQaFKHLL77DDnEB1Fqk=;
+        b=QFt4hidHZE4BfKl25fDDfoXQ5/4d4UZEpkGApT7taJp9DlVTsH/3YgSE+WtqZm+r/R
+         ahteSvZNOLUtbll6//Hx/6QHnM9QFDT3ocjQtNbUxVbeTL3zZ2hG1qWX4vd+UipKMsep
+         Pmg9QIp9LQ58rwLbo05hzNHJbCXnkaYWdNcUQtA44CKw/H/A1ErZwjbN07Gz4KQdrYUJ
+         aieFypSsfr6BF/jp872hanyTO8CrLEHMxxxXeOCVBJNhMGc9gcr19ZQ27c1vHg7TFGe6
+         BI+2eEKYHQAgVQEODsnclaXDloWogLAMNU+dGHuJkHjrLO0RY8Sp+ec+tOwN2KkThrd1
+         q/oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+MDVsqFDrX74IRsp1myuYu41HQaFKHLL77DDnEB1Fqk=;
+        b=p1VQJ4WMGqwas2GuBEzcGR932Gkg+rVJf9XQfND6sY4YP5SYixSmOtp56tzyznF6/7
+         Wy4CIxwsPi/QyAw5qAyEjTnguNXaAfVX0/W/qi5/vKFTIR9/hI9vasHGn0LWwsd0ecsp
+         ydZb19/smZ7u2zwgTGASAJqua/RqYlgt5VKDh838rWni/li+kERZ4vQFR9Zi5Tpt98p9
+         V6kUJiofI9XpLOmbCvRnquFkGa07DhGdWj+iGJ1aSrDG547U+971tLT68+UgMQXmXWRQ
+         X9nHI5yNgLZIhuxWdPbAMrUWL3hZg1mHQ8fLyyrKLXKXHuSnD0YJ2vwyurqL0OecGMS2
+         gv/Q==
+X-Gm-Message-State: AOAM5321hkvwnfzPdq+de0x799xkeQmMWH/KZWFoxQVvDl5ey9kIKgJ8
+        1n21Zi8+RrVi5Es4JuwBTskI7GF4fBxR
+X-Google-Smtp-Source: ABdhPJwnbT7D4+J5kaM+lK5Oa96bxgW7RFnZGoENJR/wCg5zoTWrXJrYf4oM6h1msGStQUy0MD7XSw==
+X-Received: by 2002:a17:90a:67ca:: with SMTP id g10mr12617629pjm.166.1614527568432;
+        Sun, 28 Feb 2021 07:52:48 -0800 (PST)
+Received: from thinkpad ([2409:4072:630a:43e1:8418:10a8:7c13:a7a3])
+        by smtp.gmail.com with ESMTPSA id q3sm15303413pfn.14.2021.02.28.07.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Feb 2021 07:52:47 -0800 (PST)
+Date:   Sun, 28 Feb 2021 21:22:36 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Aleksander Morgado <aleksander@aleksander.es>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
+Message-ID: <20210228155236.GA54373@thinkpad>
+References: <20210202042208.GB840@work>
+ <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org>
+ <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com>
+ <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAAP7ucLZ5jKbKriSp39OtDLotbv72eBWKFCfqCbAF854kCBU8w@mail.gmail.com>
+ <20210209081744.43eea7b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210210062531.GA13668@work>
+ <CAAP7uc+Q=ToKVNz4wDv0JWHK4NTniSLE1QwMbP0eXEqVMTUwwQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210228143429.00001f01@Huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26094/Sun Feb 28 13:14:26 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAP7uc+Q=ToKVNz4wDv0JWHK4NTniSLE1QwMbP0eXEqVMTUwwQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/28/21 3:34 PM, Jonathan Cameron wrote:
-> On Sun, 28 Feb 2021 09:51:38 +0100
-> Lars-Peter Clausen <lars@metafoo.de> wrote:
->
->> On 2/15/21 11:40 AM, Alexandru Ardelean wrote:
->>> With this change, an ioctl() call is added to open a character device for a
->>> buffer. The ioctl() number is 'i' 0x91, which follows the
->>> IIO_GET_EVENT_FD_IOCTL ioctl.
->>>
->>> The ioctl() will return an FD for the requested buffer index. The indexes
->>> are the same from the /sys/iio/devices/iio:deviceX/bufferY (i.e. the Y
->>> variable).
->>>
->>> Since there doesn't seem to be a sane way to return the FD for buffer0 to
->>> be the same FD for the /dev/iio:deviceX, this ioctl() will return another
->>> FD for buffer0 (or the first buffer). This duplicate FD will be able to
->>> access the same buffer object (for buffer0) as accessing directly the
->>> /dev/iio:deviceX chardev.
->>>
->>> Also, there is no IIO_BUFFER_GET_BUFFER_COUNT ioctl() implemented, as the
->>> index for each buffer (and the count) can be deduced from the
->>> '/sys/bus/iio/devices/iio:deviceX/bufferY' folders (i.e the number of
->>> bufferY folders).
->>>
->>> Used following C code to test this:
->>> -------------------------------------------------------------------
->>>
->>>    #include <stdio.h>
->>>    #include <stdlib.h>
->>>    #include <unistd.h>
->>>    #include <sys/ioctl.h>
->>>    #include <fcntl.h"
->>>    #include <errno.h>
->>>
->>>    #define IIO_BUFFER_GET_FD_IOCTL      _IOWR('i', 0x91, int)
->>>
->>> int main(int argc, char *argv[])
->>> {
->>>           int fd;
->>>           int fd1;
->>>           int ret;
->>>
->>>           if ((fd = open("/dev/iio:device0", O_RDWR))<0) {
->>>                   fprintf(stderr, "Error open() %d errno %d\n",fd, errno);
->>>                   return -1;
->>>           }
->>>
->>>           fprintf(stderr, "Using FD %d\n", fd);
->>>
->>>           fd1 = atoi(argv[1]);
->>>
->>>           ret = ioctl(fd, IIO_BUFFER_GET_FD_IOCTL, &fd1);
->>>           if (ret < 0) {
->>>                   fprintf(stderr, "Error for buffer %d ioctl() %d errno %d\n", fd1, ret, errno);
->>>                   close(fd);
->>>                   return -1;
->>>           }
->>>
->>>           fprintf(stderr, "Got FD %d\n", fd1);
->>>
->>>           close(fd1);
->>>           close(fd);
->>>
->>>           return 0;
->>> }
->>> -------------------------------------------------------------------
->>>
->>> Results are:
->>> -------------------------------------------------------------------
->>>    # ./test 0
->>>    Using FD 3
->>>    Got FD 4
->>>
->>>    # ./test 1
->>>    Using FD 3
->>>    Got FD 4
->>>
->>>    # ./test 2
->>>    Using FD 3
->>>    Got FD 4
->>>
->>>    # ./test 3
->>>    Using FD 3
->>>    Got FD 4
->>>
->>>    # ls /sys/bus/iio/devices/iio\:device0
->>>    buffer  buffer0  buffer1  buffer2  buffer3  dev
->>>    in_voltage_sampling_frequency  in_voltage_scale
->>>    in_voltage_scale_available
->>>    name  of_node  power  scan_elements  subsystem  uevent
->>> -------------------------------------------------------------------
->>>
->>> iio:device0 has some fake kfifo buffers attached to an IIO device.
->> For me there is one major problem with this approach. We only allow one
->> application to open /dev/iio:deviceX at a time. This means we can't have
->> different applications access different buffers of the same device. I
->> believe this is a circuital feature.
-> Thats not quite true (I think - though I've not tested it).  What we don't
-> allow is for multiple processes to access them in an unaware fashion.
-> My assumption is we can rely on fork + fd passing via appropriate sockets.
->
->> It is possible to open the chardev, get the annonfd, close the chardev
->> and keep the annonfd open. Then the next application can do the same and
->> get access to a different buffer. But this has room for race conditions
->> when two applications try this at the very same time.
->>
->> We need to somehow address this.
-> I'd count this as a bug :).  It could be safely done in a particular custom
-> system but in general it opens a can of worm.
->
->> I'm also not much of a fan of using ioctls to create annon fds. In part
->> because all the standard mechanisms for access control no longer work.
-> The inability to trivially have multiple processes open the anon fds
-> without care is one of the things I like most about them.
->
-> IIO drivers and interfaces really aren't designed for multiple unaware
-> processes to access them.  We don't have per process controls for device
-> wide sysfs attributes etc.  In general, it would be hard to
-> do due to the complexity of modeling all the interactions between the
-> different interfaces (events / buffers / sysfs access) in a generic fashion.
->
-> As such, the model, in my head at least, is that we only want a single
-> process to ever be responsible for access control.  That process can then
-> assign access to children or via a deliberate action (I think passing the
-> anon fd over a unix socket should work for example).  The intent being
-> that it is also responsible for mediating access to infrastructure that
-> multiple child processes all want to access.
->
-> As such, having one chrdev isn't a disadvantage because only one process
-> should ever open it at a time.  This same process also handles the
-> resource / control mediation.  Therefore we should only have one file
-> exposed for all the standard access control mechanisms.
->
-Hm, I see your point, but I'm not convinced.
+On Sun, Feb 28, 2021 at 03:12:42PM +0100, Aleksander Morgado wrote:
+> Hey Manivannan, Jakub & all,
+> 
+> >
+> > So please let us know the path forward on this series. We are open to
+> > any suggestions but you haven't provided one till now.
+> >
+> 
+> I just found out that Sierra Wireless also provides their own version
+> of mhi-net and mhi-uci in precompiled binaries for several Ubuntu
+> kernel versions and other setups; and that made me extremely unhappy.
+> They're not the only manufacturer doing that; most of them are doing
+> it, because we don't have yet a common solution in upstream Linux. Not
+> the first time we've seen this either, see the per-vendor GobiNet
+> implementations vs the upstream qmi_wwan one. I was hoping we could
+> avoid that mess again with the newer Qualcomm modules! :)
+> 
+> In ModemManager we've always *forced* all manufacturers we interact
+> with to first do the work in upstream Linux, and then we integrate
+> support in MM for those drivers. We've never accepted support for
+> vendor-specific proprietary kernel drivers, and that's something I
+> would personally like to keep on doing. The sad status right now is
+> that any user that wants to use the newer 5G modules with Qualcomm
+> chipsets, they need to go look for manufacturer-built precompiled
+> drivers for their specific kernel, and also then patch ModemManager
+> and the tools themselves. Obviously almost no one is doing all that,
+> except for some company with resources or a lot of interest. Some of
+> these new 5G modules are PCIe-only by default, unless some pin in the
+> chipset is brought up and then some of them may switch to USB support.
+> No one is really doing that either, as tampering with the hardware
+> voids warranty.
+> 
+> The iosm driver is also stalled in the mailing list and there doesn't
+> seem to be a lot of real need for a new common wwan subsystem to
+> rework everything...
+> 
+> I'm not involved with the mhi-uci driver development at all, and I
+> also don't have anything to say on what goes in the upstream kernel
+> and what doesn't. But as one of the ModemManager/libqmi/libmbim
+> maintainers I would like to represent all the users of these modules
+> that are right now forced to look for shady binary precompiled drivers
+> out there... that is no better solution than this proposed mhi-uci
+> common driver.
+> 
+> Manivannan, are you attempting to rework the mhi-uci driver in a
+> different way, or have you given up? Is there anything I could help
+> with?
+> 
 
-Having to have explicit synchronization makes it difficult to mix and 
-match. E.g. at ADI a popular use case for testing was to run some signal 
-generator application on the TX buffer and some signal analyzer 
-application on the RX buffer.
+Hemant is currently in-charge of the MHI UCI development effort. We were
+thinking about doing "mhi-wwan" driver which just exposes the channels needed
+for WWAN as Jakub said "you can move forward on purpose build drivers
+(e.g. for WWAN)." But we are open to other suggestions also.
 
-Both can be launched independently and there can be different types of 
-generator and analyzer applications. Having to have a 3rd application to 
-arbitrate access makes this quite cumbersome. And I'm afraid that in 
-reality people might just stick with the two devices model just to avoid 
-this restriction.
-
-- Lars
-
+Thanks,
+Mani
