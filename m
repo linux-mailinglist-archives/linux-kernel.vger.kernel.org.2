@@ -2,104 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F1F327281
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 14:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 129C0327290
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 15:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhB1NyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 08:54:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
+        id S230437AbhB1ONh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 09:13:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhB1Nx7 (ORCPT
+        with ESMTP id S230139AbhB1ONe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 08:53:59 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9993EC06174A;
-        Sun, 28 Feb 2021 05:53:18 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id l22so1583878wme.1;
-        Sun, 28 Feb 2021 05:53:18 -0800 (PST)
+        Sun, 28 Feb 2021 09:13:34 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185F7C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 06:12:54 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id g8so10275620otk.4
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 06:12:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2oIwWi1iuHOKuAMOebM+Y52Z/7RvFaXsTIQjnr0jMfc=;
-        b=f6JS53aD784G4/zqHlNnWLi/AhS7N1WfHEPj6MFEBizaq1id2Ihrx4pZad4Xi5i+Qa
-         m7Mkqm9vr88yG4nCQ4CF/ezPnLsoE+umnRyhCMM/tk9dU4IMwYYv4RCdJ/ASeBQbqbN9
-         6sCW6EqIPGUD/YJ1SofXnFl5jNIvlFz1B9YBD6bEdUFZ/dClFbUTXVr43YJv1F/en6dx
-         vWkj08Bm7HkmvQoHJlja4UGOpEom0IKK23Sys0FJb2qFWmwaODWEDqfhORpB97E0kx0d
-         Zyg2smBG3TNjAUkcMX7mxbsZ5WGb2eoQehAuMJ3KpzA/tKWDrrwgg/kaMrsHv2aTGoLP
-         YSYA==
+        d=aleksander-es.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2FusiFiz0X86EPMHGdKHS7UxChtJqFIAQKwqNSegRJI=;
+        b=kuqs/varyC0CfTq+gxGmOMXaztlbrXePfmB2FleBx3n1SkuYpluH3XMLBMedDMcVwk
+         Cl5rTxhhuvWHLNZzL3vfsK0Xd+C0KaSRpJjjOVPGuyix0yYihLCUPxdXSi5ZyP5rg4mg
+         F6xSBRYyIzLN1h86tEwNcTxuxTmKJXCiPcuA193BLmPBaZXC3EpJjHd1J4OWdKKOHtWY
+         7dsPqo4A56Ngd2y8mnyAknhr3nEgczxx736+mNJQMDTAh8JdgEjeOJG8tf1Uv/8gfC98
+         1k4uhctwtdIlpqZdXDKYuPFzwD5fVqvMbpAggN7clrIEf1593IqlbojZt1+ybWoDWT8+
+         YlQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2oIwWi1iuHOKuAMOebM+Y52Z/7RvFaXsTIQjnr0jMfc=;
-        b=PThQw5oMCzw+rjWDW58Wg1R4qOIqwcvThEhPLr+8+/mc972rc8y7LoZf8ouciOjobu
-         7S86AnhQ/pvWIl5OGs6yIAY6o9dIRRLIVWFiGRK+7hDCdKLDHz1u2PhUccCoeokLmbEm
-         UFL87/QH202DXYVsanTS5jS2krtQ8F8qYNYS9XQJs6JhC7I842TRG5GvOXwVSEcQYAR6
-         cmr+mmFgsc0eqO7NaXaThqKnB3BltB/SvLLuMUViwbYYk7LYOcsgsSTpbZb0fNy6twD3
-         ZiYM9QuFS2yeMdAL7k3ccpJVmZnUjMwSQ2BQabKTSg3hOwbwM/goZKZshGb8zfcVehJX
-         GIlw==
-X-Gm-Message-State: AOAM533BnCtQB4M0+hqlvNdtoHqrcyRAp8b6HW8LjDyUdS6WXIWNnhND
-        s06hBCXkFBPjriOjgnazlj4=
-X-Google-Smtp-Source: ABdhPJwX+o3U/8mqXWSknRmCalM3SkJ8jvecMDcfOyeuydwyyb4SilOgO52z4DqpRMunAZtQ6TsuLg==
-X-Received: by 2002:a05:600c:4eca:: with SMTP id g10mr11602506wmq.149.1614520397160;
-        Sun, 28 Feb 2021 05:53:17 -0800 (PST)
-Received: from localhost ([168.61.80.221])
-        by smtp.gmail.com with ESMTPSA id z188sm12220803wme.32.2021.02.28.05.53.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 28 Feb 2021 05:53:16 -0800 (PST)
-From:   =?UTF-8?q?Antti=20J=C3=A4rvinen?= <antti.jarvinen@gmail.com>
-To:     helgaas@kernel.org
-Cc:     alex.williamson@redhat.com, antti.jarvinen@gmail.com,
-        bhelgaas@google.com, kishon@ti.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, m-karicheri2@ti.com
-Subject: [PATCH v2] PCI: quirk for preventing bus reset on TI C667X
-Date:   Sun, 28 Feb 2021 13:53:11 +0000
-Message-Id: <20210228135311.668-1-antti.jarvinen@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210217211817.GA914074@bjorn-Precision-5520>
-References: <20210217211817.GA914074@bjorn-Precision-5520>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2FusiFiz0X86EPMHGdKHS7UxChtJqFIAQKwqNSegRJI=;
+        b=d1wq1g4+ENl0cUBw0HMKvGQG5nrknIBgvKKx2xsYxCIxDmKrvBrN/2jnVfe/EpfBUz
+         4zJv8hOVtR9RYkm/DDw84CnXh1FoHSiwPKRnV1TCfRWAIGkgBfBmbys+BB5TogVtZIXp
+         6atCJPcxxbbm2Vy5JUFFtKqGWAZEV2ufKeIZkjmvJHwCeXkQwaXs7kznWMtR1QI+awjZ
+         N3TaVZvoeGmrZxy4vrUHb0oVLkBQzW0L9rRUHPpgCIt6gjKjpTyMN+pFRqUGCQtIgfZY
+         K84BssnxTUg3eKPZzNn8VEBCdvvYLPTwc0lyN7RlnISYRqzE9maYheJ+6zbkhl1xDM5P
+         XMsQ==
+X-Gm-Message-State: AOAM5332Ds3r3e0+9fuaBth14z3Mz4MBRzna3EifwP9K8ztNgLVobdpz
+        PKMvBKfew+6g0EQFy5fWzX+fL3iINtA6G3qt4SOXlQ==
+X-Google-Smtp-Source: ABdhPJxbAVFinsYw6ljwDBh6vBidfD1MwQjl+p3XMISJMExPhTMIPnKo7bYd1V0jz5Nk4OkPPQe2y8BBJxvdyTKhAsc=
+X-Received: by 2002:a05:6830:151:: with SMTP id j17mr10155633otp.252.1614521573376;
+ Sun, 28 Feb 2021 06:12:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <YBfi573Bdfxy0GBt@kroah.com> <20210201121322.GC108653@thinkpad>
+ <20210202042208.GB840@work> <20210202201008.274209f9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <835B2E08-7B84-4A02-B82F-445467D69083@linaro.org> <20210203100508.1082f73e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAMZdPi8o44RPTGcLSvP0nptmdUEmJWFO4HkCB_kjJvfPDgchhQ@mail.gmail.com>
+ <20210203104028.62d41962@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAAP7ucLZ5jKbKriSp39OtDLotbv72eBWKFCfqCbAF854kCBU8w@mail.gmail.com>
+ <20210209081744.43eea7b5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <20210210062531.GA13668@work>
+In-Reply-To: <20210210062531.GA13668@work>
+From:   Aleksander Morgado <aleksander@aleksander.es>
+Date:   Sun, 28 Feb 2021 15:12:42 +0100
+Message-ID: <CAAP7uc+Q=ToKVNz4wDv0JWHK4NTniSLE1QwMbP0eXEqVMTUwwQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v18 0/3] userspace MHI client interface driver
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        David Miller <davem@davemloft.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some TI keystone C667X devices do no support bus/hot reset. Its PCIESS
-automatically disables LTSSM when secondary bus reset is received and
-device stops working. Prevent bus reset by adding quirk_no_bus_reset to
-the device. With this change device can be assigned to VMs with VFIO,
-but it will leak state between VMs.
+Hey Manivannan, Jakub & all,
 
-Reference https://e2e.ti.com/support/processors/f/791/t/954382
+>
+> So please let us know the path forward on this series. We are open to
+> any suggestions but you haven't provided one till now.
+>
 
-Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
----
- drivers/pci/quirks.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+I just found out that Sierra Wireless also provides their own version
+of mhi-net and mhi-uci in precompiled binaries for several Ubuntu
+kernel versions and other setups; and that made me extremely unhappy.
+They're not the only manufacturer doing that; most of them are doing
+it, because we don't have yet a common solution in upstream Linux. Not
+the first time we've seen this either, see the per-vendor GobiNet
+implementations vs the upstream qmi_wwan one. I was hoping we could
+avoid that mess again with the newer Qualcomm modules! :)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 653660e3ba9e..d9201ad1ca39 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3578,6 +3578,16 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
-  */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
- 
-+/*
-+ * Some TI keystone C667X devices do no support bus/hot reset.
-+ * Its PCIESS automatically disables LTSSM when secondary bus reset is
-+ * received and device stops working. Prevent bus reset by adding
-+ * quirk_no_bus_reset to the device. With this change device can be
-+ * assigned to VMs with VFIO, but it will leak state between VMs.
-+ * Reference https://e2e.ti.com/support/processors/f/791/t/954382
-+ */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
-+
- static void quirk_no_pm_reset(struct pci_dev *dev)
- {
- 	/*
--- 
-2.17.1
+In ModemManager we've always *forced* all manufacturers we interact
+with to first do the work in upstream Linux, and then we integrate
+support in MM for those drivers. We've never accepted support for
+vendor-specific proprietary kernel drivers, and that's something I
+would personally like to keep on doing. The sad status right now is
+that any user that wants to use the newer 5G modules with Qualcomm
+chipsets, they need to go look for manufacturer-built precompiled
+drivers for their specific kernel, and also then patch ModemManager
+and the tools themselves. Obviously almost no one is doing all that,
+except for some company with resources or a lot of interest. Some of
+these new 5G modules are PCIe-only by default, unless some pin in the
+chipset is brought up and then some of them may switch to USB support.
+No one is really doing that either, as tampering with the hardware
+voids warranty.
 
+The iosm driver is also stalled in the mailing list and there doesn't
+seem to be a lot of real need for a new common wwan subsystem to
+rework everything...
+
+I'm not involved with the mhi-uci driver development at all, and I
+also don't have anything to say on what goes in the upstream kernel
+and what doesn't. But as one of the ModemManager/libqmi/libmbim
+maintainers I would like to represent all the users of these modules
+that are right now forced to look for shady binary precompiled drivers
+out there... that is no better solution than this proposed mhi-uci
+common driver.
+
+Manivannan, are you attempting to rework the mhi-uci driver in a
+different way, or have you given up? Is there anything I could help
+with?
+
+Jakub, is there really no way you can be convinced that this mhi-uci
+driver isn't that bad after all? :) All the mhi-net bits are already
+integrated I think, even the MBIM support over MHI in the net device,
+but all that is truly useless without a way to control the modem
+sending and receiving messages.
+
+Sorry for being back again with this discussion :)
+
+Cheers!
+
+
+--
+Aleksander
+https://aleksander.es
