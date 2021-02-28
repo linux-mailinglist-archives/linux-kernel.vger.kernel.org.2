@@ -2,81 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E683272D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E36F83272B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhB1PLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 10:11:03 -0500
-Received: from wforward2-smtp.messagingengine.com ([64.147.123.31]:50347 "EHLO
-        wforward2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230222AbhB1PG7 (ORCPT
+        id S230403AbhB1PEf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 28 Feb 2021 10:04:35 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2613 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhB1PEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 10:06:59 -0500
-X-Greylist: delayed 555 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Feb 2021 10:06:59 EST
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailforward.west.internal (Postfix) with ESMTP id 67A585A3;
-        Sun, 28 Feb 2021 09:56:54 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 28 Feb 2021 09:56:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=782KU7
-        FtcV9VAbOEc47VnKe1z6z5fBgcfhkg54o08c8=; b=PgIxRFtENQopyi1W6OxA2Q
-        KcOnwMdiZrG2aimNG0rMvwzNMExOQMjjgkRuwVSsT4FiwhFo5oB1/Kl3XLLmVTwm
-        /YHdGPg4M+nhOY+KBXDxUllcKQ1zJ/XEdkvv//m/mOKpE7QicVW5LeA46eLVs/Ax
-        psEee0H5RO/N6WTN6tfI5YHwqUf9MN9UVEq0LuG7PF46TZr3GVf6wGjg0EPig9Po
-        PF+kKoix1nuVtQIOSIjWck6J9oC2H5AIg2A+eBmNXClmPtiqmHZiDzJu/rrBLMn4
-        opxCSCgWXrE3VT0PKEt9jJmDBFG7n0VuHt0MnhpIRB+KIkw9yt5NK/tDVsiWdZKg
-        ==
-X-ME-Sender: <xms:M687YE9ausAefp9z9tLrjc_80mQxv0fZibhjv56ut2sIBaPHhL6jSw>
-    <xme:M687YMuJRYeddorHOKWAAxUeNEyB5AdHIK2Im1fvHkPiA4xoyoEh3Ut3W3BSukUgq
-    DKJnh0DLPvKFYhUcw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrleeigdejvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheprfgvkhhkrgcu
-    gfhnsggvrhhguceophgvnhgsvghrghesihhkihdrfhhiqeenucggtffrrghtthgvrhhnpe
-    fgffegkeettedvjeeludefleelueduiefgvedvieelleduheeiudeghfelhedvueenucfk
-    phepiedvrdejkedrudejledrudefudenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehpvghnsggvrhhgsehikhhirdhfih
-X-ME-Proxy: <xmx:M687YKBl7Bq8Y3eBFlUT0J3L3d8PoE7klojhUzeF9entuQ5h6E0zdg>
-    <xmx:M687YEdxWI7wxQ8vQ6bnnBUsJfN9Mbbty2CsOW6lefDTJ5MvZY9qOQ>
-    <xmx:M687YJPJJU0efkJhfJFjUOpGDayS0GYXDRepmHogmWtT9887UhIy3w>
-    <xmx:Nq87YOri00x1Vwtv0PT74H251ClOlc2VF2S_W0qrHlEB9qQHNfx4zJbqYBo>
-Received: from localhost (62-78-179-131.bb.dnainternet.fi [62.78.179.131])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 95DA5240054;
-        Sun, 28 Feb 2021 09:56:51 -0500 (EST)
-Date:   Sun, 28 Feb 2021 16:56:49 +0200
-From:   Pekka Enberg <penberg@iki.fi>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Guo Ren <guoren@linux.alibaba.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Patrick =?iso-8859-1?Q?St=E4hlin?= <me@packi.ch>,
-        Pekka Enberg <penberg@kernel.org>,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
-Subject: Re: [PATCH] riscv: fix bugon.cocci warnings
-Message-ID: <20210228145649.GA453839@nero>
-References: <alpine.DEB.2.22.394.2102281209040.2892@hadrien>
+        Sun, 28 Feb 2021 10:04:32 -0500
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DpRN35tl8z67qtQ;
+        Sun, 28 Feb 2021 22:58:11 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Sun, 28 Feb 2021 16:03:47 +0100
+Received: from localhost (10.47.88.221) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Sun, 28 Feb
+ 2021 15:03:47 +0000
+Date:   Sun, 28 Feb 2021 15:02:39 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ronald =?ISO-8859-1?Q?Tschal=E4r?= <ronald@innovation.ch>
+CC:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>
+Subject: Re: [PATCH 4/5] HID: apple-ibridge: Add Apple iBridge HID driver
+ for T1 chip.
+Message-ID: <20210228150239.00007d34@Huawei.com>
+In-Reply-To: <20210228012643.69944-5-ronald@innovation.ch>
+References: <20210228012643.69944-1-ronald@innovation.ch>
+        <20210228012643.69944-5-ronald@innovation.ch>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2102281209040.2892@hadrien>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.47.88.221]
+X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 12:10:22PM +0100, Julia Lawall wrote:
-> From: kernel test robot <lkp@intel.com>
-> 
-> Use BUG_ON instead of a if condition followed by BUG.
-> 
-> Generated by: scripts/coccinelle/misc/bugon.cocci
-> 
-> Fixes: c22b0bcb1dd0 ("riscv: Add kprobes supported")
-> CC: Guo Ren <guoren@linux.alibaba.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+On Sat, 27 Feb 2021 17:26:42 -0800
+Ronald Tschalär <ronald@innovation.ch> wrote:
 
-Reviewed-by: Pekka Enberg <penberg@kernel.org>
+> The iBridge device provides access to several devices, including:
+> - the Touch Bar
+> - the iSight webcam
+> - the light sensor
+> - the fingerprint sensor
+> 
+> This driver provides the core support for managing the iBridge device
+> and the access to the underlying devices. In particular, the
+> functionality for the touch bar and light sensor is exposed via USB HID
+> interfaces, and on devices with the T1 chip one of the HID devices is
+> used for both functions. So this driver creates virtual HID devices, one
+> per top-level report collection on each HID device (for a total of 3
+> virtual HID devices). The sub-drivers then bind to these virtual HID
+> devices.
+> 
+> This way the Touch Bar and ALS drivers can be kept in their own modules,
+> while at the same time making them look very much like as if they were
+> connected to the real HID devices. And those drivers then work (mostly)
+> without further changes on MacBooks with the T2 chip that don't need
+> this driver.
+> 
+> Signed-off-by: Ronald Tschalär <ronald@innovation.ch>
+Hi Ronald.
+
+This is far from my specialty but mostly looks sensible to me.
+
+Just one thing stood out that I couldn't understand. See below.
+
+Jonathan
+
+> new file mode 100644
+> index 0000000000000..5f2b71c199746
+> --- /dev/null
+> +++ b/drivers/hid/apple-ibridge.c
+> @@ -0,0 +1,682 @@
+
+...
+
+> +
+> +#ifdef CONFIG_PM
+> +/**
+> + * appleib_forward_int_op() - Forward a hid-driver callback to all drivers on
+> + * all virtual HID devices attached to the given real HID device.
+> + * @hdev the real hid-device
+> + * @forward a function that calls the callback on the given driver
+> + * @args arguments for the forward function
+> + *
+> + * This is for callbacks that return a status as an int.
+> + *
+> + * Returns: 0 on success, or the first error returned by the @forward function.
+> + */
+> +static int appleib_forward_int_op(struct hid_device *hdev,
+> +				  int (*forward)(struct hid_driver *,
+> +						 struct hid_device *, void *),
+> +				  void *args)
+> +{
+> +	struct appleib_hid_dev_info *hdev_info = hid_get_drvdata(hdev);
+> +	struct hid_device *sub_hdev;
+> +	int rc = 0;
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(hdev_info->sub_hdevs); i++) {
+> +		sub_hdev = hdev_info->sub_hdevs[i];
+> +		if (sub_hdev->driver) {
+> +			rc = forward(sub_hdev->driver, sub_hdev, args);
+> +			if (rc)
+> +				break;
+
+return rc; here would be cleaner.
+
+> +		}
+> +
+> +		break;
+
+This is unusual.  It's a for loop but as far as I can see only first iteration
+can ever run as we exit the loop at this break if we haven't done so earlier.
+What is the intent here?
+
+> +	}
+> +
+> +	return rc;
+> +}
+
