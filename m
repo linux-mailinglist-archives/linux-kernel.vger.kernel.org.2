@@ -2,142 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A0D32715E
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 08:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAD7327160
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 08:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhB1G74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 01:59:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhB1G7N (ORCPT
+        id S230371AbhB1HEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 02:04:52 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:29690 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229736AbhB1HE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 01:59:13 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFBBC06174A;
-        Sat, 27 Feb 2021 22:58:33 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id k22so7636568pll.6;
-        Sat, 27 Feb 2021 22:58:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=r8CLTUXVVZcMiqETcvGKGx4dgIVTKeUoOcCN29WuOTI=;
-        b=pZXOz7dSMFcRlF92cWgx1jtDPCUCzNTibhUw/QK3IMW4hHVgCbD4UIsZXFsyRaE2ko
-         qcKIjE6+JXXMn5jICu0FGQY2RQ4ODfa6TTA38qzlCUolNqyw8K3bcWTNK0desIMxJU6i
-         /Pa3Z9gmK06ioRO7l2j3GSt0i5u+J3CXCQbtlofX+M+tK6BwtpuPWAs0fd6Pyxfw9H8C
-         AP06UL92/CkFi3JGp8AynbS9QTaMmAaZRcK6X0VAJ3Y/9MfOrmE0NZWECZbk/gdxFfk+
-         T21qztGHpCHFnuzhm/9uMSDYGUdlT0aU1neZo3qtMFOr/H9z2iB9WaF1qP8DZHy8CSjM
-         TeNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r8CLTUXVVZcMiqETcvGKGx4dgIVTKeUoOcCN29WuOTI=;
-        b=L3AjQAI7g4HyA7rWSyEGR1umpSeAN6O9W2Efub6j6m/DikqohZhsOCc1My7/zw0qic
-         elh9Tcbhjf3Up3uqluAYNgDCYdkE3G/pCd/SRIUjo0lugBToQxw/CHSUFM26/STTX1UK
-         NCwZ+y5fbKgQjw/KquswE+HfKZcMIGlrGs+6YU5one5lIob8IyTDKMDrhbTD62/Aub1j
-         7H+sBVchQRSgMqwBpU1gqnUQaSn13Nqkk2yBX7WZ0bvfBj+r/2puy2U3idgZRl2AvhLE
-         XVCAmykgVC6MCZ18bQltwx9yUVLys5KjV4Mlw1g++ns5/UrWHaLYxf/xCgHjcaAGZwZR
-         2MxQ==
-X-Gm-Message-State: AOAM533DzKC0fxXjT0Ts9r8QTeABwVR2zBNLfFZpcPoKWc/iF7Xg/ibB
-        ZBXXIUzxB5Y6Sh7bLk6xhgV0D7uD6bUDsg==
-X-Google-Smtp-Source: ABdhPJxLl1eeT6VENQBjMZTEP9NmHMBjwg3TG64+8zuHU8eT3mS4phpRucptnYESkO+JHospYb5qZw==
-X-Received: by 2002:a17:90a:a10a:: with SMTP id s10mr11502337pjp.36.1614495512210;
-        Sat, 27 Feb 2021 22:58:32 -0800 (PST)
-Received: from [172.30.1.25] ([14.32.163.5])
-        by smtp.gmail.com with ESMTPSA id e8sm10252764pfl.101.2021.02.27.22.58.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Feb 2021 22:58:31 -0800 (PST)
-Subject: Re: [PATCH] devfreq: rk3399_dmc: Simplify with dev_err_probe()
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Chanwoo Choi <chanwoo@kernel.org>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200828153100.19006-1-krzk@kernel.org>
- <CAGTfZH3+mxBXzVp5Wz=F6nbx3bfubrmJozVzVdt8s1e45WQOqg@mail.gmail.com>
- <CAJKOXPdw=2MMT+5=_TtOqEwPA8s40J21eYXfzv8Whk7F8uF9dw@mail.gmail.com>
-From:   Chanwoo Choi <cwchoi00@gmail.com>
-Message-ID: <8c7f16ac-2287-eddb-e074-90cfec56500b@gmail.com>
-Date:   Sun, 28 Feb 2021 15:58:26 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Sun, 28 Feb 2021 02:04:28 -0500
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 11S70lE9021634;
+        Sun, 28 Feb 2021 16:00:47 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 11S70lE9021634
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614495647;
+        bh=tv5SDnKyPgoNP6YiEnF6vKsgSgqKofgv5GPg1jxlWHo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AqYiemIQdGS7+6qTzFRIOsa0vrTOnXKmqd8bP2egk3+fLmNTxpD6rDl60wZ566qNx
+         whxufXp3wD3ru3jgdraO2wf7HUhzuaTtt1eP1b+jz+qdAtnHC16FylwiDMT091YgkP
+         08x4SZPthTdZp3D/l1vHMWPFqNVU1ev7EV56RrcZCXg46xKegocZqc3aHpkDJ83u3r
+         BWo9veP1HTNPgpPc+/uPHjdyLJI5vfabEOInD3PZ6SdlwvvAms1M2TjJr8f3idb3ja
+         oGG1AMcUToNexOOkMoNMalzyv/ByktPBJ70CF8uldRNItyG5/LtFEW4OTs+bOxV87R
+         bHx+jmvV1xupg==
+X-Nifty-SrcIP: [209.85.216.54]
+Received: by mail-pj1-f54.google.com with SMTP id t9so8489068pjl.5;
+        Sat, 27 Feb 2021 23:00:47 -0800 (PST)
+X-Gm-Message-State: AOAM533SbQyiqVuIbka3PalnV1zCWAP39Ql/xyadtoxaMazZA0TWD5s2
+        VWwrYsdQMT055e0NYKH+kluA8HZkHvNJdoM7RBU=
+X-Google-Smtp-Source: ABdhPJxbsLViJKD15RYvEtsukfPTiWhOx3l3YaSLDqvhv2WZlKrOxfrIHl0DSd7zO+LNS0ZBsnf5ZE8BZiNfCJWVNew=
+X-Received: by 2002:a17:90a:3b0e:: with SMTP id d14mr1565162pjc.198.1614495646276;
+ Sat, 27 Feb 2021 23:00:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJKOXPdw=2MMT+5=_TtOqEwPA8s40J21eYXfzv8Whk7F8uF9dw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210228061028.239459-1-masahiroy@kernel.org> <20210228061028.239459-4-masahiroy@kernel.org>
+In-Reply-To: <20210228061028.239459-4-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 28 Feb 2021 16:00:09 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ+3WNf=9047abBH-jD8XcgJe0V0rGhuo9Ta218UPswqQ@mail.gmail.com>
+Message-ID: <CAK7LNAQ+3WNf=9047abBH-jD8XcgJe0V0rGhuo9Ta218UPswqQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] kbuild: include Makefile.compiler only when compiler
+ is required
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Israel Tsadok <itsadok@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21. 2. 28. 오전 1:35, Krzysztof Kozlowski wrote:
-> On Sat, 29 Aug 2020 at 15:10, Chanwoo Choi <chanwoo@kernel.org> wrote:
->>
->> On Sat, Aug 29, 2020 at 12:31 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->>>
->>> Common pattern of handling deferred probe can be simplified with
->>> dev_err_probe().  Less code and the error value gets printed.
->>>
->>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->>> ---
->>>   drivers/devfreq/rk3399_dmc.c | 20 ++++++--------------
->>>   1 file changed, 6 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/drivers/devfreq/rk3399_dmc.c b/drivers/devfreq/rk3399_dmc.c
->>> index 027769e39f9b..35b3542f1f7b 100644
->>> --- a/drivers/devfreq/rk3399_dmc.c
->>> +++ b/drivers/devfreq/rk3399_dmc.c
->>> @@ -324,22 +324,14 @@ static int rk3399_dmcfreq_probe(struct platform_device *pdev)
->>>          mutex_init(&data->lock);
->>>
->>>          data->vdd_center = devm_regulator_get(dev, "center");
->>> -       if (IS_ERR(data->vdd_center)) {
->>> -               if (PTR_ERR(data->vdd_center) == -EPROBE_DEFER)
->>> -                       return -EPROBE_DEFER;
->>> -
->>> -               dev_err(dev, "Cannot get the regulator \"center\"\n");
->>> -               return PTR_ERR(data->vdd_center);
->>> -       }
->>> +       if (IS_ERR(data->vdd_center))
->>> +               return dev_err_probe(dev, PTR_ERR(data->vdd_center),
->>> +                                    "Cannot get the regulator \"center\"\n");
->>>
->>>          data->dmc_clk = devm_clk_get(dev, "dmc_clk");
->>> -       if (IS_ERR(data->dmc_clk)) {
->>> -               if (PTR_ERR(data->dmc_clk) == -EPROBE_DEFER)
->>> -                       return -EPROBE_DEFER;
->>> -
->>> -               dev_err(dev, "Cannot get the clk dmc_clk\n");
->>> -               return PTR_ERR(data->dmc_clk);
->>> -       }
->>> +       if (IS_ERR(data->dmc_clk))
->>> +               return dev_err_probe(dev, PTR_ERR(data->dmc_clk),
->>> +                                    "Cannot get the clk dmc_clk\n");
->>>
->>>          data->edev = devfreq_event_get_edev_by_phandle(dev, 0);
->>>          if (IS_ERR(data->edev))
->>> --
->>> 2.17.1
->>>
->>
->> Applied it. Thanks.
-> 
-> Hi Chanwoo,
-> 
-> Do you know what happened with this patch? You replied that it is
-> applied but I cannot find it in the Linus' or next trees.
-> 
+On Sun, Feb 28, 2021 at 3:10 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Since commit f2f02ebd8f38 ("kbuild: improve cc-option to clean up all
+> temporary files"), running 'make kernelversion' in a read-only source
+> tree emits a bunch of warnings:
+>
+>   mkdir: cannot create directory '.tmp_12345': Permission denied
+>
+> Non-build targets such as kernelversion, clean, help, etc. do not
+> need to evaluate $(call cc-option,) and friends. Do not include
+> Makefile.compiler so $(call cc-option,) becomes no-op.
+>
+> This not only fix the warnings, but also runs non-build targets much
+> faster.
+>
+> Basically, all installation targets should also be non-build targets.
+> Unfortunately, vdso_install requires the compiler because it builds
+> vdso before installtion. This is a problem that must be fixed by a
+> separate patch.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
+> I am not adding Reported-by for now because a reporter sent me
+> an email privately.
+>
+> If he allows me to add Reported-by, I will add it to record
+> the credit.
+>
+> (Perhaps, another person might have reported a similar issue
+> somewhere, but my memory is obsure. I cannot recall it.)
+>
 
-Hi Krzysztof,
+Now, I got acknowledge to add this:
 
-There was some my mistake. I'm sorry.
-I applied it again to next branch.
+Reported-by: Israel Tsadok <itsadok@gmail.com>
+
+
+
+
+
+
+
+>  Makefile | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/Makefile b/Makefile
+> index eec7a94f5c33..20724711dc71 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -263,6 +263,10 @@ no-dot-config-targets := $(clean-targets) \
+>                          $(version_h) headers headers_% archheaders archscripts \
+>                          %asm-generic kernelversion %src-pkg dt_binding_check \
+>                          outputmakefile
+> +# Installation targets should not require compiler. Unfortunately, vdso_install
+> +# is an exception where build artifacts may be updated. This must be fixed.
+> +no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
+> +                       headers_install modules_install kernelrelease image_name
+>  no-sync-config-targets := $(no-dot-config-targets) %install kernelrelease \
+>                           image_name
+>  single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
+> @@ -270,6 +274,7 @@ single-targets := %.a %.i %.ko %.lds %.ll %.lst %.mod %.o %.s %.symtypes %/
+>  config-build   :=
+>  mixed-build    :=
+>  need-config    := 1
+> +need-compiler  := 1
+>  may-sync-config        := 1
+>  single-build   :=
+>
+> @@ -279,6 +284,12 @@ ifneq ($(filter $(no-dot-config-targets), $(MAKECMDGOALS)),)
+>         endif
+>  endif
+>
+> +ifneq ($(filter $(no-compiler-targets), $(MAKECMDGOALS)),)
+> +       ifeq ($(filter-out $(no-compiler-targets), $(MAKECMDGOALS)),)
+> +               need-compiler :=
+> +       endif
+> +endif
+> +
+>  ifneq ($(filter $(no-sync-config-targets), $(MAKECMDGOALS)),)
+>         ifeq ($(filter-out $(no-sync-config-targets), $(MAKECMDGOALS)),)
+>                 may-sync-config :=
+> @@ -584,7 +595,9 @@ endif
+>
+>  # Include this also for config targets because some architectures need
+>  # cc-cross-prefix to determine CROSS_COMPILE.
+> +ifdef need-compiler
+>  include $(srctree)/scripts/Makefile.compiler
+> +endif
+>
+>  ifdef config-build
+>  # ===========================================================================
+> --
+> 2.27.0
+>
+
 
 -- 
-Best Regards,
-Samsung Electronics
-Chanwoo Choi
+Best Regards
+Masahiro Yamada
