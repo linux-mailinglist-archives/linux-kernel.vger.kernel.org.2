@@ -2,22 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4303F32726F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 14:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA6C327268
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 14:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhB1NMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 08:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbhB1NK1 (ORCPT
+        id S230499AbhB1NKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 08:10:42 -0500
+Received: from m-r1.th.seeweb.it ([5.144.164.170]:41321 "EHLO
+        m-r1.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhB1NKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 08:10:27 -0500
-Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B157C06178B;
-        Sun, 28 Feb 2021 05:08:59 -0800 (PST)
+        Sun, 28 Feb 2021 08:10:06 -0500
 Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
-        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 06C5D1F571;
-        Sun, 28 Feb 2021 14:08:56 +0100 (CET)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id DC4BC1F570;
+        Sun, 28 Feb 2021 14:08:59 +0100 (CET)
 From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     phone-devel@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
@@ -29,9 +26,9 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
         Rob Herring <robh+dt@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 08/11] arm64: dts: qcom: pm8994: Add RESIN node
-Date:   Sun, 28 Feb 2021 14:08:26 +0100
-Message-Id: <20210228130831.203765-8-konrad.dybcio@somainline.org>
+Subject: [PATCH 09/11] arm64: dts: qcom: msm8996: Add DSI0 nodes
+Date:   Sun, 28 Feb 2021 14:08:27 +0100
+Message-Id: <20210228130831.203765-9-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210228130831.203765-1-konrad.dybcio@somainline.org>
 References: <20210228130831.203765-1-konrad.dybcio@somainline.org>
@@ -41,78 +38,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a RESIN node to support RESIN-connected buttons on some
-devices.
+Add required nodes to support DSI displays connected to the
+primary interface.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 19 +++++--------------
- arch/arm64/boot/dts/qcom/pm8994.dtsi         |  8 +++++++-
- 2 files changed, 12 insertions(+), 15 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 78 +++++++++++++++++++++++++++
+ 1 file changed, 78 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index e6ef76971c31..d2a5fb0c8df1 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -249,6 +249,11 @@ &mmcc {
- 	vdd-gfx-supply = <&vdd_gfx>;
- };
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+index d557fd5b9f82..75675fae0334 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -544,6 +544,11 @@ mdp: mdp@901000 {
  
-+&pm8994_resin {
-+	status = "okay";
-+	linux,code = <KEY_VOLUMEDOWN>;
-+};
+ 				iommus = <&mdp_smmu 0>;
+ 
++				assigned-clocks = <&mmcc MDSS_MDP_CLK>,
++					 <&mmcc MDSS_VSYNC_CLK>;
++				assigned-clock-rates = <300000000>,
++					 <19200000>;
 +
- &tlmm {
- 	gpio-line-names =
- 		"[SPI0_DOUT]", /* GPIO_0, BLSP1_SPI_MOSI, LSEC pin 14 */
-@@ -1030,20 +1035,6 @@ codec {
- 	};
- };
- 
--&spmi_bus {
--	pmic@0 {
--		pon@800 {
--			resin {
--				compatible = "qcom,pm8941-resin";
--				interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
--				debounce = <15625>;
--				bias-pull-up;
--				linux,code = <KEY_VOLUMEDOWN>;
--			};
--		};
--	};
--};
--
- &ufsphy {
- 	status = "okay";
- 
-diff --git a/arch/arm64/boot/dts/qcom/pm8994.dtsi b/arch/arm64/boot/dts/qcom/pm8994.dtsi
-index c3876c82c874..ad19016df047 100644
---- a/arch/arm64/boot/dts/qcom/pm8994.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8994.dtsi
-@@ -45,7 +45,6 @@ rtc@6000 {
- 
- 		pm8994_pon: pon@800 {
- 			compatible = "qcom,pm8916-pon";
--
- 			reg = <0x800>;
- 			mode-bootloader = <0x2>;
- 			mode-recovery = <0x1>;
-@@ -58,6 +57,13 @@ pwrkey {
- 				linux,code = <KEY_POWER>;
+ 				ports {
+ 					#address-cells = <1>;
+ 					#size-cells = <0>;
+@@ -554,9 +559,82 @@ mdp5_intf3_out: endpoint {
+ 							remote-endpoint = <&hdmi_in>;
+ 						};
+ 					};
++
++					port@1 {
++						reg = <1>;
++						mdp5_intf1_out: endpoint {
++							remote-endpoint = <&dsi0_in>;
++						};
++					};
+ 				};
  			};
  
-+			pm8994_resin: resin {
-+				compatible = "qcom,pm8941-resin";
-+				interrupts = <0x0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
-+				debounce = <15625>;
-+				bias-pull-up;
++			dsi0: dsi@994000 {
++				compatible = "qcom,mdss-dsi-ctrl";
++				reg = <0x00994000 0x400>;
++				reg-names = "dsi_ctrl";
++
++				interrupt-parent = <&mdss>;
++				interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
++
++				clocks = <&mmcc MDSS_MDP_CLK>,
++					 <&mmcc MDSS_BYTE0_CLK>,
++					 <&mmcc MDSS_AHB_CLK>,
++					 <&mmcc MDSS_AXI_CLK>,
++					 <&mmcc MMSS_MISC_AHB_CLK>,
++					 <&mmcc MDSS_PCLK0_CLK>,
++					 <&mmcc MDSS_ESC0_CLK>;
++				clock-names = "mdp_core",
++					      "byte",
++					      "iface",
++					      "bus",
++					      "core_mmss",
++					      "pixel",
++					      "core";
++
++				phys = <&dsi0_phy>;
++				phy-names = "dsi";
++				status = "disabled";
++
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				ports {
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					port@0 {
++						reg = <0>;
++						dsi0_in: endpoint {
++							remote-endpoint = <&mdp5_intf1_out>;
++						};
++					};
++
++					port@1 {
++						reg = <1>;
++						dsi0_out: endpoint {
++						};
++					};
++				};
++			};
++
++			dsi0_phy: dsi-phy@994400 {
++				compatible = "qcom,dsi-phy-14nm";
++				reg = <0x00994400 0x100>,
++				      <0x00994500 0x300>,
++				      <0x00994800 0x188>;
++				reg-names = "dsi_phy",
++					    "dsi_phy_lane",
++					    "dsi_pll";
++
++				#clock-cells = <1>;
++				#phy-cells = <0>;
++
++				clocks = <&mmcc MDSS_AHB_CLK>, <&xo_board>;
++				clock-names = "iface", "ref";
 +				status = "disabled";
 +			};
- 		};
- 
- 		pm8994_temp: temp-alarm@2400 {
++
+ 			hdmi: hdmi-tx@9a0000 {
+ 				compatible = "qcom,hdmi-tx-8996";
+ 				reg =	<0x009a0000 0x50c>,
 -- 
 2.30.1
 
