@@ -2,77 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C71327226
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 13:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EF2327228
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 13:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbhB1Lva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 06:51:30 -0500
-Received: from smtprelay0196.hostedemail.com ([216.40.44.196]:49726 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230049AbhB1Lv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 06:51:28 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id A34D0837F24D;
-        Sun, 28 Feb 2021 11:50:46 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2693:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7514:7652:7903:9025:10004:10400:10848:11232:11658:11914:12043:12048:12297:12438:12555:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:14764:21080:21433:21451:21611:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: lake55_4500ff4276ab
-X-Filterd-Recvd-Size: 2254
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 28 Feb 2021 11:50:45 +0000 (UTC)
-Message-ID: <1bf09d848148311a952870113401077dfc956bbd.camel@perches.com>
-Subject: Re: [PATCH 11/20] hwmon: Manual replacement of the deprecated
- strlcpy() with return values
-From:   Joe Perches <joe@perches.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Romain Perier <romain.perier@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 28 Feb 2021 03:50:44 -0800
-In-Reply-To: <3b8dd556-8c09-9686-dec6-9d523a9762a8@roeck-us.net>
-References: <20210222151231.22572-1-romain.perier@gmail.com>
-         <20210222151231.22572-12-romain.perier@gmail.com>
-         <3b8dd556-8c09-9686-dec6-9d523a9762a8@roeck-us.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S230527AbhB1LwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 06:52:21 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:40206 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230049AbhB1LwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 06:52:16 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app3 (Coremail) with SMTP id cC_KCgD3TSSjgztgu_zZAQ--.16213S4;
+        Sun, 28 Feb 2021 19:51:02 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Catherine Sullivan <catherine.sullivan@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Shannon Nelson <shannon.nelson@intel.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] i40e: Fix error handling in i40e_vsi_open
+Date:   Sun, 28 Feb 2021 19:50:58 +0800
+Message-Id: <20210228115059.28686-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgD3TSSjgztgu_zZAQ--.16213S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7WryrXFWUGw1Dtr1xKr1xKrg_yoWfKFc_Gr
+        nxXw1xGr45GryF9r1Ykr4xurWFyw4DXryrCFW7K34fu3yDCw1xAr97ur4fXw47Ww4xGa47
+        Aw1aga4fC348AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQGBlZdtSfEeAAUs3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-22 at 07:46 -0800, Guenter Roeck wrote:
-> On 2/22/21 7:12 AM, Romain Perier wrote:
-> > The strlcpy() reads the entire source buffer first, it is dangerous if
-> > the source buffer lenght is unbounded or possibility non NULL-terminated.
-> 
-> length
-> 
-> > It can lead to linear read overflows, crashes, etc...
-> > 
-> Not here. This description is misleading.
-> 
-> > As recommended in the deprecated interfaces [1], it should be replaced
-> > by strscpy.
-> > 
-> > This commit replaces all calls to strlcpy that handle the return values
-> > by the corresponding strscpy calls with new handling of the return
-> > values (as it is quite different between the two functions).
-> > 
-> > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> > 
-> > Signed-off-by: Romain Perier <romain.perier@gmail.com>
-> 
-> This patch just adds pain to injury, as the source 'buffers' are all fixed
-> strings and their length will never exceed the maximum buffer length.
-> I really don't see the point of using strscpy() in this situation.
+When vsi->type == I40E_VSI_FDIR, we have caught the return value of
+i40e_vsi_request_irq() but without further handling. Check and execute
+memory clean on failure just like the other i40e_vsi_request_irq().
 
-Might as well just use strcpy (I'd still prefer stracpy)
+Fixes: 8a9eb7d3cbcab ("i40e: rework fdir setup and teardown")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-https://lore.kernel.org/lkml/24bb53c57767c1c2a8f266c305a670f7@sk2.org/T/
-
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 353deae139f9..c3bbc1310f8e 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -8724,6 +8724,8 @@ int i40e_vsi_open(struct i40e_vsi *vsi)
+ 			 dev_driver_string(&pf->pdev->dev),
+ 			 dev_name(&pf->pdev->dev));
+ 		err = i40e_vsi_request_irq(vsi, int_name);
++		if (err)
++			goto err_setup_rx;
+ 
+ 	} else {
+ 		err = -EINVAL;
+-- 
+2.17.1
 
