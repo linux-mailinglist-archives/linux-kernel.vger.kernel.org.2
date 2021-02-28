@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6C43273EC
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 19:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511083273E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 19:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhB1S6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 13:58:42 -0500
-Received: from mga07.intel.com ([134.134.136.100]:56460 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231308AbhB1S6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 13:58:32 -0500
-IronPort-SDR: MfbyOPu0Yx+WHZxJ4WLyRmdzYnfL6K7KwEyugnR/mBM71IAw1+8FcUcZKvjWmFt2up4BPNMavj
- XluFkyBADXbA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="250344198"
-X-IronPort-AV: E=Sophos;i="5.81,213,1610438400"; 
-   d="scan'208";a="250344198"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2021 10:56:45 -0800
-IronPort-SDR: xO1quA5tSkLr7Wa+aYfB/kLKW49fcvhM94c931ze3tJs/vunXvX5r099AOLt2c3f4sxun4b6LN
- d6gKQrkop9Iw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,213,1610438400"; 
-   d="scan'208";a="368370565"
-Received: from tassilo.jf.intel.com (HELO tassilo.localdomain) ([10.54.74.11])
-  by orsmga006.jf.intel.com with ESMTP; 28 Feb 2021 10:56:45 -0800
-Received: by tassilo.localdomain (Postfix, from userid 1000)
-        id 7FB5E3015E2; Sun, 28 Feb 2021 10:56:45 -0800 (PST)
-From:   Andi Kleen <ak@linux.intel.com>
-To:     John Wood <john.wood@gmx.com>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: Re: [PATCH v5 7/8] Documentation: Add documentation for the Brute LSM
-References: <20210227153013.6747-1-john.wood@gmx.com>
-        <20210227153013.6747-8-john.wood@gmx.com>
-Date:   Sun, 28 Feb 2021 10:56:45 -0800
-In-Reply-To: <20210227153013.6747-8-john.wood@gmx.com> (John Wood's message of
-        "Sat, 27 Feb 2021 16:30:12 +0100")
-Message-ID: <878s78dnrm.fsf@linux.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S231435AbhB1S56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 13:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231376AbhB1S5w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 13:57:52 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C21CC06174A;
+        Sun, 28 Feb 2021 10:57:12 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id w1so24157639ejf.11;
+        Sun, 28 Feb 2021 10:57:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WGackHlMqLcsa5EmwPJ7kiwHldPgT/RGt4PyODRzqNQ=;
+        b=tM4tF/j7cMCJsiN0g+3jpfiK3Vu4+tkgCe4xasFo6/y6YYgVShfgLhYzeDIF5FAY5l
+         Mo9bFRg8tHxu8ltzNuEByFEocFfgElUiSAtsKQKmr8KbyrdRLsdGSWXAAHl6y6vZpSNJ
+         14+O940l57cfDy5TI0FiukVbW/KkQKJytTyY65hjgCG2l0bAUQINEqREKWopN9zcK/RI
+         k2b/Kci41lZEjKORJEtzzqq3YIN987WaLvkaQJBL8HQkQtyySHAfNz11wAa/Si3qnxAD
+         X/tsWQP1nDeUhsbeqw7J5if27QLIA/5ByWjb/m6hAgZLCQbg/8au4OSl4qbY4V/GqmaS
+         kSbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WGackHlMqLcsa5EmwPJ7kiwHldPgT/RGt4PyODRzqNQ=;
+        b=ewGXkb/a6Bzz6Muf1MLPpxluDgtZAm0vgGZhh4l9UYmTZozkSVAGAefunoVunITSUE
+         CeKqJwnLDdbZP6XZSqrKq2TjSataU6n6Kzv8HGxmqaQtPrgIdRDRt/nuWEwx0KCnfvMC
+         OMC5kSVE5k9v0qM/jZv2jTrMk10H+8KjdXP1yASKEYhr1z5ydz7PnP7pz8F4yIbLsuvv
+         RSxGXy+n+C5bTRe2cJo+/6OWWSMJdd798ZGwGS9/TrKAIUD8EWbE/bVBtr6zlP5tJ1Oi
+         vhv2qDT1TvlwGxvFp6UH4uWtyf0bGtLZ6BrhSA/UcM8n9FY4pwHL1PEPs/9bsW0n0bbm
+         M/0A==
+X-Gm-Message-State: AOAM532tWH9Y+asb3KlvKHCmLTRKAZt/Fm7yCRHdpkhcz8Lx3TTuVISb
+        1syjAtD4uINbiCcrdSCIQQ==
+X-Google-Smtp-Source: ABdhPJwcxswYxwoujA0TBNm20ZIM0B2TPmDMjbhy2MMXdtaYVTdJCGgHOxcUajX5x09b/mV3/JwYWw==
+X-Received: by 2002:a17:906:1ecc:: with SMTP id m12mr12786914ejj.4.1614538631112;
+        Sun, 28 Feb 2021 10:57:11 -0800 (PST)
+Received: from localhost.localdomain ([46.53.249.223])
+        by smtp.gmail.com with ESMTPSA id r11sm11964176edt.58.2021.02.28.10.57.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Feb 2021 10:57:10 -0800 (PST)
+Date:   Sun, 28 Feb 2021 21:57:09 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org
+Subject: Re: [PATCH 09/11] pragma once: convert
+ scripts/selinux/genheaders/genheaders.c
+Message-ID: <YDvnhQY+kuMVtwVf@localhost.localdomain>
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+ <YDvNF+QVOv3vqDbm@localhost.localdomain>
+ <CAHC9VhTr0=WGvacsCGgpwiPwU_ziQeThV88ZqZRdVXqO+HafYQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhTr0=WGvacsCGgpwiPwU_ziQeThV88ZqZRdVXqO+HafYQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John Wood <john.wood@gmx.com> writes:
-> +
-> +To detect a brute force attack it is necessary that the statistics shared by all
-> +the fork hierarchy processes be updated in every fatal crash and the most
-> +important data to update is the application crash period.
+On Sun, Feb 28, 2021 at 01:37:41PM -0500, Paul Moore wrote:
+> On Sun, Feb 28, 2021 at 12:04 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> >
+> > From 097f2c8b2af7d9e88cff59376ea0ad51b95341cb Mon Sep 17 00:00:00 2001
+> > From: Alexey Dobriyan <adobriyan@gmail.com>
+> > Date: Tue, 9 Feb 2021 00:39:23 +0300
+> > Subject: [PATCH 09/11] pragma once: convert scripts/selinux/genheaders/genheaders.c
+> >
+> > Generate security/selinux/flask.h and security/selinux/av_permissions.h
+> > without include guards.
+> >
+> > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> > ---
+> >  scripts/selinux/genheaders/genheaders.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> My LKML subscription must have died at some point due to mail bounces,
+> or maybe I dopped it (?), because I'm not seeing the rest of this
+> patchset for context.
+> 
+> However, unless the rest of the kernel transitions to this, or there
+> is some other big win that I'm missing, I don't see much of a reason
+> for this; can you provide some compelling reason for why we should
+> make this change?  A quick search on "#pragma once" seems to indicate
+> it is non-standard, so why replace the simple #ifdef/#define solution
+> for this?
 
-So I haven't really followed the discussion and also not completely read
-the patches (so apologies if that was already explained or is documented
-somewhere else).
-
-But what I'm missing here is some indication how much
-memory these statistics can use up and how are they limited.
-
-How much is the worst case extra memory consumption?
-
-If there is no limit how is DoS prevented?
-
-If there is a limit, there likely needs to be a way to throw out
-information, and so the attack would just shift to forcing the kernel
-to throw out this information before retrying.
-
-e.g. if the data is hold for the parent shell: restart the parent
-shell all the time.
-e.g. if the data is hold for the sshd daemon used to log in:
-Somehow cause sshd to respawn to discard the statistics.
-
-Do I miss something here? How is that mitigated?
-
-Instead of discussing all the low level tedious details of the
-statistics it would be better to focus on these "high level"
-problems here.
-
--Andi
-
+See https://lore.kernel.org/lkml/CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com/T/#t
