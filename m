@@ -2,169 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1C1327332
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 663CB327340
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhB1Prl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 10:47:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbhB1Pps (ORCPT
+        id S231174AbhB1Pwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 10:52:53 -0500
+Received: from www381.your-server.de ([78.46.137.84]:33528 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhB1Pwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 10:45:48 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D8FC061223
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 07:44:25 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id e9so8300786plh.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 07:44:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=P8xuLB+PW3vzd/2H+nv/FYwlg2xPXL9X/0ZCidUY03A=;
-        b=GTHfepeMME8ETHJ9D17UUQlIWYTFf4lYClQwCQIUOC1oKAGJgzR3euzonM0vWhJci7
-         TSppLrKhyfNsWCsXIJqzg5FXr0v1J95UnRMiUrzOyX8byY+RtVKhUubnX9B9qNo442jJ
-         Fnnv6pSzMiAS8udimqeZ651R7iVF1iwjSC0cY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=P8xuLB+PW3vzd/2H+nv/FYwlg2xPXL9X/0ZCidUY03A=;
-        b=arNhS+qH4PnVXI5aBxBAKtPj0+9AZypEdGno3tkTm/othXtNCDDh4IGC23g1o6ydR1
-         HAiShrvjOGcwfgbBAIVusXQdsRx95W4TCtivr5+1CVD8b2oO3FJa2QTLbDX3F62rrnn6
-         b8Rm5eh0YvFdmTGmLztgBWkjNVOTqLeeqlopxiYaLK+srJ3hNn9AbJQw3gmigbVFaQzn
-         DEMVv1yAyZZFIt1unXchTDsWhkhJBjAbdLbtDy5W098ifRTsUmtizjmsftEemlgOXDAG
-         ajElMSpQEqM6faNpOkbH8cBteNrTC79FbVK1lUEvfIHxFTANax1WyiDC3tgqNaQIhUEJ
-         DbdA==
-X-Gm-Message-State: AOAM530JLRK78UyEDAsEQJhJiR0wsx93O9i4F0vYqqNh2ue9TgMlUjCa
-        2GxtV/m6COKS8DrsRtwVmR8KfQ==
-X-Google-Smtp-Source: ABdhPJxfIBewbERSLjK/TGwJqJEMQTPLphwQZKKTzUvXvWHtlP24xZS8O3qwJbFmLnm3mZesUyhs+g==
-X-Received: by 2002:a17:903:1cc:b029:de:98bb:d46d with SMTP id e12-20020a17090301ccb02900de98bbd46dmr11601415plh.54.1614527064698;
-        Sun, 28 Feb 2021 07:44:24 -0800 (PST)
-Received: from ub-XPS-13-9350.domain.name ([103.161.30.225])
-        by smtp.gmail.com with ESMTPSA id j3sm13522133pgk.24.2021.02.28.07.44.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 07:44:24 -0800 (PST)
-From:   Jagan Teki <jagan@amarulasolutions.com>
-To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amarula@amarulasolutions.com,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH v3 10/10] ARM: dts: stm32: Add Engicam i.Core STM32MP1 EDIMM2.2 Starter Kit
-Date:   Sun, 28 Feb 2021 21:13:23 +0530
-Message-Id: <20210228154323.76911-11-jagan@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210228154323.76911-1-jagan@amarulasolutions.com>
-References: <20210228154323.76911-1-jagan@amarulasolutions.com>
+        Sun, 28 Feb 2021 10:52:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=nieBiiebJb3oXYZlYeMGP6lVgw/bisqi9Ti4NzL+qMw=; b=aV/akS88Rw4BU+B4Jbxs7Ff9fD
+        0MiIZBdrjPHCFESOGGm1rQNMaXc0AERgeRIGEl1spJAfXj4D367N5o3wFzoERynBM1KufagNtJOK5
+        FEs+VSkbDJKuuJNG2+YLc0ws25Wau+E2axjJEu6yeSp3mBnGgff458/D6TVnvmfq5aYFOfC/Xn4lb
+        xj34YD1sGRpylLr7ydi7Y9zoBsm2EAhA0w/YqzlGWHUfs+LOXfrA1bDcwGZF1SkVvVC3W0wp614g6
+        trbB3ktuRPlmNwc4i4mXoGcv7emhBgWCtQ0mCIBC/NHAl8gDWWOTuEiCfhVExU2cuRYV99VkxGLCj
+        NgoxbrFA==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lGOMK-000Adb-7L; Sun, 28 Feb 2021 16:51:52 +0100
+Received: from [62.216.202.180] (helo=[192.168.178.20])
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lGOMK-0004iy-0P; Sun, 28 Feb 2021 16:51:52 +0100
+Subject: Re: [PATCH v6 20/24] iio: buffer: add ioctl() to support opening
+ extra buffers for IIO device
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Michael.Hennerich@analog.com, jic23@kernel.org, nuno.sa@analog.com,
+        dragos.bogdan@analog.com
+References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
+ <20210215104043.91251-21-alexandru.ardelean@analog.com>
+ <877ca331-1a56-1bd3-6637-482bbf060ba9@metafoo.de>
+ <20210228143429.00001f01@Huawei.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <5f9070a5-2c3d-f185-1981-10ec768dbb4a@metafoo.de>
+Date:   Sun, 28 Feb 2021 16:51:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210228143429.00001f01@Huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26094/Sun Feb 28 13:14:26 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Engicam EDIMM2.2 Starter Kit is an EDIMM 2.2 Form Factor Capacitive
-Evaluation Board.
+On 2/28/21 3:34 PM, Jonathan Cameron wrote:
+> On Sun, 28 Feb 2021 09:51:38 +0100
+> Lars-Peter Clausen <lars@metafoo.de> wrote:
+>
+>> On 2/15/21 11:40 AM, Alexandru Ardelean wrote:
+>>> With this change, an ioctl() call is added to open a character device for a
+>>> buffer. The ioctl() number is 'i' 0x91, which follows the
+>>> IIO_GET_EVENT_FD_IOCTL ioctl.
+>>>
+>>> The ioctl() will return an FD for the requested buffer index. The indexes
+>>> are the same from the /sys/iio/devices/iio:deviceX/bufferY (i.e. the Y
+>>> variable).
+>>>
+>>> Since there doesn't seem to be a sane way to return the FD for buffer0 to
+>>> be the same FD for the /dev/iio:deviceX, this ioctl() will return another
+>>> FD for buffer0 (or the first buffer). This duplicate FD will be able to
+>>> access the same buffer object (for buffer0) as accessing directly the
+>>> /dev/iio:deviceX chardev.
+>>>
+>>> Also, there is no IIO_BUFFER_GET_BUFFER_COUNT ioctl() implemented, as the
+>>> index for each buffer (and the count) can be deduced from the
+>>> '/sys/bus/iio/devices/iio:deviceX/bufferY' folders (i.e the number of
+>>> bufferY folders).
+>>>
+>>> Used following C code to test this:
+>>> -------------------------------------------------------------------
+>>>
+>>>    #include <stdio.h>
+>>>    #include <stdlib.h>
+>>>    #include <unistd.h>
+>>>    #include <sys/ioctl.h>
+>>>    #include <fcntl.h"
+>>>    #include <errno.h>
+>>>
+>>>    #define IIO_BUFFER_GET_FD_IOCTL      _IOWR('i', 0x91, int)
+>>>
+>>> int main(int argc, char *argv[])
+>>> {
+>>>           int fd;
+>>>           int fd1;
+>>>           int ret;
+>>>
+>>>           if ((fd = open("/dev/iio:device0", O_RDWR))<0) {
+>>>                   fprintf(stderr, "Error open() %d errno %d\n",fd, errno);
+>>>                   return -1;
+>>>           }
+>>>
+>>>           fprintf(stderr, "Using FD %d\n", fd);
+>>>
+>>>           fd1 = atoi(argv[1]);
+>>>
+>>>           ret = ioctl(fd, IIO_BUFFER_GET_FD_IOCTL, &fd1);
+>>>           if (ret < 0) {
+>>>                   fprintf(stderr, "Error for buffer %d ioctl() %d errno %d\n", fd1, ret, errno);
+>>>                   close(fd);
+>>>                   return -1;
+>>>           }
+>>>
+>>>           fprintf(stderr, "Got FD %d\n", fd1);
+>>>
+>>>           close(fd1);
+>>>           close(fd);
+>>>
+>>>           return 0;
+>>> }
+>>> -------------------------------------------------------------------
+>>>
+>>> Results are:
+>>> -------------------------------------------------------------------
+>>>    # ./test 0
+>>>    Using FD 3
+>>>    Got FD 4
+>>>
+>>>    # ./test 1
+>>>    Using FD 3
+>>>    Got FD 4
+>>>
+>>>    # ./test 2
+>>>    Using FD 3
+>>>    Got FD 4
+>>>
+>>>    # ./test 3
+>>>    Using FD 3
+>>>    Got FD 4
+>>>
+>>>    # ls /sys/bus/iio/devices/iio\:device0
+>>>    buffer  buffer0  buffer1  buffer2  buffer3  dev
+>>>    in_voltage_sampling_frequency  in_voltage_scale
+>>>    in_voltage_scale_available
+>>>    name  of_node  power  scan_elements  subsystem  uevent
+>>> -------------------------------------------------------------------
+>>>
+>>> iio:device0 has some fake kfifo buffers attached to an IIO device.
+>> For me there is one major problem with this approach. We only allow one
+>> application to open /dev/iio:deviceX at a time. This means we can't have
+>> different applications access different buffers of the same device. I
+>> believe this is a circuital feature.
+> Thats not quite true (I think - though I've not tested it).  What we don't
+> allow is for multiple processes to access them in an unaware fashion.
+> My assumption is we can rely on fork + fd passing via appropriate sockets.
+>
+>> It is possible to open the chardev, get the annonfd, close the chardev
+>> and keep the annonfd open. Then the next application can do the same and
+>> get access to a different buffer. But this has room for race conditions
+>> when two applications try this at the very same time.
+>>
+>> We need to somehow address this.
+> I'd count this as a bug :).  It could be safely done in a particular custom
+> system but in general it opens a can of worm.
+>
+>> I'm also not much of a fan of using ioctls to create annon fds. In part
+>> because all the standard mechanisms for access control no longer work.
+> The inability to trivially have multiple processes open the anon fds
+> without care is one of the things I like most about them.
+>
+> IIO drivers and interfaces really aren't designed for multiple unaware
+> processes to access them.  We don't have per process controls for device
+> wide sysfs attributes etc.  In general, it would be hard to
+> do due to the complexity of modeling all the interactions between the
+> different interfaces (events / buffers / sysfs access) in a generic fashion.
+>
+> As such, the model, in my head at least, is that we only want a single
+> process to ever be responsible for access control.  That process can then
+> assign access to children or via a deliberate action (I think passing the
+> anon fd over a unix socket should work for example).  The intent being
+> that it is also responsible for mediating access to infrastructure that
+> multiple child processes all want to access.
+>
+> As such, having one chrdev isn't a disadvantage because only one process
+> should ever open it at a time.  This same process also handles the
+> resource / control mediation.  Therefore we should only have one file
+> exposed for all the standard access control mechanisms.
+>
+Hm, I see your point, but I'm not convinced.
 
-Genaral features:
-- LCD 7" C.Touch
-- microSD slot
-- Ethernet 1Gb
-- Wifi/BT
-- 2x LVDS Full HD interfaces
-- 3x USB 2.0
-- 1x USB 3.0
-- HDMI Out
-- Mini PCIe
-- MIPI CSI
-- 2x CAN
-- Audio Out
+Having to have explicit synchronization makes it difficult to mix and 
+match. E.g. at ADI a popular use case for testing was to run some signal 
+generator application on the TX buffer and some signal analyzer 
+application on the RX buffer.
 
-i.Core STM32MP1 is an EDIMM SoM based on STM32MP157A from Engicam.
+Both can be launched independently and there can be different types of 
+generator and analyzer applications. Having to have a 3rd application to 
+arbitrate access makes this quite cumbersome. And I'm afraid that in 
+reality people might just stick with the two devices model just to avoid 
+this restriction.
 
-i.Core STM32MP1 needs to mount on top of this Evaluation board for
-creating complete i.Core STM32MP1 EDIMM2.2 Starter Kit.
-
-Add support for it.
-
-Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
----
-Changes for v3:
-- none 
-
- arch/arm/boot/dts/Makefile                    |  1 +
- .../stm32mp157a-icore-stm32mp1-edimm2.2.dts   | 47 +++++++++++++++++++
- 2 files changed, 48 insertions(+)
- create mode 100644 arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dts
-
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 6dc39bddaf7e..e86c46d7ca66 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1074,6 +1074,7 @@ dtb-$(CONFIG_ARCH_STM32) += \
- 	stm32mp157a-microgea-stm32mp1-microdev2.0.dtb \
- 	stm32mp157a-microgea-stm32mp1-microdev2.0-of7.dtb \
- 	stm32mp157a-icore-stm32mp1-ctouch2.dtb \
-+	stm32mp157a-icore-stm32mp1-edimm2.2.dtb \
- 	stm32mp157a-stinger96.dtb \
- 	stm32mp157c-dhcom-pdk2.dtb \
- 	stm32mp157c-dhcom-picoitx.dtb \
-diff --git a/arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dts b/arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dts
-new file mode 100644
-index 000000000000..ec9f1d1cd50f
---- /dev/null
-+++ b/arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dts
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause)
-+/*
-+ * Copyright (c) STMicroelectronics 2019 - All Rights Reserved
-+ * Copyright (c) 2020 Engicam srl
-+ * Copyright (c) 2020 Amarula Solutons(India)
-+ */
-+
-+/dts-v1/;
-+#include "stm32mp157.dtsi"
-+#include "stm32mp157a-icore-stm32mp1.dtsi"
-+#include "stm32mp15-pinctrl.dtsi"
-+#include "stm32mp15xxaa-pinctrl.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+
-+/ {
-+	model = "Engicam i.Core STM32MP1 EDIMM2.2 Starter Kit";
-+	compatible = "engicam,icore-stm32mp1-edimm2.2",
-+		     "engicam,icore-stm32mp1", "st,stm32mp157";
-+
-+	aliases {
-+		serial0 = &uart4;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&sdmmc1 {
-+	bus-width = <4>;
-+	disable-wp;
-+	pinctrl-names = "default", "opendrain", "sleep";
-+	pinctrl-0 = <&sdmmc1_b4_pins_a>;
-+	pinctrl-1 = <&sdmmc1_b4_od_pins_a>;
-+	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>;
-+	st,neg-edge;
-+	vmmc-supply = <&v3v3>;
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	pinctrl-names = "default", "sleep", "idle";
-+	pinctrl-0 = <&uart4_pins_a>;
-+	pinctrl-1 = <&uart4_sleep_pins_a>;
-+	pinctrl-2 = <&uart4_idle_pins_a>;
-+	status = "okay";
-+};
--- 
-2.25.1
+- Lars
 
