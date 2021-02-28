@@ -2,178 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26DD32742C
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 20:36:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB53327443
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 20:50:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhB1Tfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 14:35:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbhB1Tfa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 14:35:30 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476BDC06174A;
-        Sun, 28 Feb 2021 11:34:50 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id mm21so23962917ejb.12;
-        Sun, 28 Feb 2021 11:34:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S5KfXXaQvt6j7WDZcPct+Ak/9/AyhidEr7ALQ5SkfaQ=;
-        b=hDdtIyyX/3NqIWoSpmfpnm0A3ibi9UTwnDydNYf0r+wE8f5cESO5SdHdVIZ3gWAYQq
-         bIAk2d4CUkqPsHAtb9c6mi22POyick7yfTMLyLd9mYAh1wko9B2F2i814+NGYchqxp3X
-         wedSrWIA2bt2Emvpeu0kfsDSWBaQLuM/7DFCorLKqa2ymm9tVepMtTIAibWkL9ZmdcZQ
-         t3hVboqF+q7y4b9K3FtS/gMwD53abboSbrplKY6TmnK8fU0stFLDqC6a5uExZSesm7Wj
-         wzyixWT0kXZ+hArzyvQQ2u0zxGbwwOQw57u3HQYWPjXHWTXAdTJyj3Dmg4QSIb/03bHp
-         EnuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S5KfXXaQvt6j7WDZcPct+Ak/9/AyhidEr7ALQ5SkfaQ=;
-        b=Cvo95Qfb4k2s2ZWqJJhZKvzZLNm18bG5dArZjqhAq6L4u8aIjnZEQnY7gGWR7Xcho6
-         BnQPJAqSqJUKWEHFXMTYt822fPWOUqX08yM6+6mKxg6cWVIoPj1HvWdy6DDJ1DLajZ+/
-         A7x0kXhmUpm2rsfN+xs47UuHRo8E4NpDAiuo8ppHMtgUD3Ge8EkM0TYVJNDvcIEAZRGx
-         yU6TpAgMNsTE/PdDC8m/SRE5ZTE0breYfvZnSUvFY5tu53jR4tZthKMfUkd1nJ+LBtq8
-         SK5cKLQE04Jbswi/r8MkbjYzBLl/NmGcEfPlZBrs6PAXiV2ITbZCiYaBdUPeZBcWSul5
-         dyVA==
-X-Gm-Message-State: AOAM531RsmHSTGIxC3Hlz8PsNgH7MqqKxWjgmUJa07CitrKWsIgMyFYa
-        qzI4q1M3Wdood+bp3lFZwA/4mxXSiliK
-X-Google-Smtp-Source: ABdhPJzABw151d9xu1bnTlvPCib3PdR1IqvQlR23nPm8d5XXRcoPU8P8sWiKj9U+KhFKiXVAHJFtnQ==
-X-Received: by 2002:a17:906:7d7:: with SMTP id m23mr12849912ejc.205.1614540888946;
-        Sun, 28 Feb 2021 11:34:48 -0800 (PST)
-Received: from localhost.localdomain ([46.53.249.223])
-        by smtp.gmail.com with ESMTPSA id c17sm10445730edw.32.2021.02.28.11.34.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 11:34:48 -0800 (PST)
-Date:   Sun, 28 Feb 2021 22:34:46 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Subject: Re: [PATCH 00/11] pragma once: treewide conversion
-Message-ID: <YDvwVlG/fqVxVYlQ@localhost.localdomain>
-References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
- <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
+        id S231508AbhB1Tuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 14:50:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230426AbhB1Tuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 14:50:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B57D664EBB;
+        Sun, 28 Feb 2021 19:49:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614541792;
+        bh=dZgO6FxYn+Uq8d8DXJml+c02cu3lM6vLbO249U6mLVI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T7dOAml4L2aCFNfxPIFfdL2AfmnxuOTXjR6aAOKStuybawYGkl72lGpNNDArawWRE
+         bIzt4cIP80LbjLcdubGhfvSv0Zd08pAsDTQJ/MBH3LpTi9ar922/ro8F+bAj2xQEpw
+         BQd/4ikx+OeYPfVRGPjnpBgWIYPkUlFetLMMSNT49CG5pocXxEvCVP8CoYA5Hy6H+p
+         nMnKfyS2ZjmfwmzAjP12GroQGZo5WTRL42MRtL7mHBH4bs+1U22Au2m2ztAm08/rI5
+         VqrFZrh/MID2xLhGxjrIrrZgiYlmVcekSpHEbTlvn4iDN51e2APDcPtfknV1agK+9E
+         U2HAmMZxv4szw==
+Received: by mail-oi1-f172.google.com with SMTP id l64so15898961oig.9;
+        Sun, 28 Feb 2021 11:49:52 -0800 (PST)
+X-Gm-Message-State: AOAM5317/1MtcIbwk1U/Bqvn911XI4tECxEBF2LEu60LXpDlzPNGeDEO
+        NUsBOe7bG8Qlbgua+IakGbymrdYKrY7C8/UbwBc=
+X-Google-Smtp-Source: ABdhPJzVPe+JDSbwJJu/9VPn9RXrwOYg1LrMfh0qSgg3xP2rPMpeZECKgNVZJpcXwleef24vg9C08sq7NdoQ9DPgneM=
+X-Received: by 2002:aca:4a47:: with SMTP id x68mr8851896oia.67.1614541790992;
+ Sun, 28 Feb 2021 11:49:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjFWZMVWTbvUMVxQqGKvGMC_BNrahCtTkpEjxoC0k-T=A@mail.gmail.com>
+References: <tencent_2CB9BD7D4063DE3F6845F79176B2D29A7E09@qq.com>
+ <CAK8P3a2TEc4CzE5Wg7pNy9Oq2p=HKNO7k2y2SmeD1mamqJ3Z9w@mail.gmail.com> <tencent_2B7E37BD494059DF7D6845F641769CD28209@qq.com>
+In-Reply-To: <tencent_2B7E37BD494059DF7D6845F641769CD28209@qq.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sun, 28 Feb 2021 20:49:34 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2o=GfLCBiQh=fuRor3yKd0h7zKDZoqj8bsReoQNEA1eg@mail.gmail.com>
+Message-ID: <CAK8P3a2o=GfLCBiQh=fuRor3yKd0h7zKDZoqj8bsReoQNEA1eg@mail.gmail.com>
+Subject: Re: [PATCH] ipc/msg: add msgsnd_timed and msgrcv_timed syscall for
+ system V message queue
+To:     Eric Gao <eric.tech@foxmail.com>
+Cc:     "catalin.marinas" <catalin.marinas@arm.com>,
+        will <will@kernel.org>, geert <geert@linux-m68k.org>,
+        monstr <monstr@monstr.eu>, tsbogend <tsbogend@alpha.franken.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        deller <deller@gmx.de>, mpe <mpe@ellerman.id.au>,
+        hca <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        borntraeger <borntraeger@de.ibm.com>,
+        ysato <ysato@users.sourceforge.jp>, dalias <dalias@libc.org>,
+        davem <davem@davemloft.net>, luto <luto@kernel.org>,
+        tglx <tglx@linutronix.de>, mingo <mingo@redhat.com>,
+        bp <bp@alien8.de>, chris <chris@zankel.net>,
+        jcmvbkbc <jcmvbkbc@gmail.com>, arnd <arnd@arndb.de>,
+        benh <benh@kernel.crashing.org>, paulus <paulus@samba.org>,
+        hpa <hpa@zytor.com>, linux-alpha <linux-alpha@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 09:46:17AM -0800, Linus Torvalds wrote:
-> On Sun, Feb 28, 2021 at 8:57 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
-> >
-> > This is bulk deletion of preprocessor include guards and conversion
-> > to #pragma once directive.
-> 
-> So as mentioned earlier, I'm not 100% convinced about the advantage of
-> #pragma once.
-> 
-> But I decided to actually test it, and it turns out that it causes
-> problems for at least sparse.
+On Sun, Feb 28, 2021 at 5:16 PM Eric Gao <eric.tech@foxmail.com> wrote:
+>
+> > Is there something that mq_timedsend/mq_timedreceive cannot do that
+> > you need? Would it be possible to add that feature to the posix message
+> > queues instead?
+>
+> the system v message queue have a mtype parameter both in msgsnd and msgrcv which can be
+> used to implement message routing(mtype as the target id. For example, I filling the target thread
+> id that waiting message). It's the most important.
+>
+> but mq_timedsend/mq_timedreceive in posix message queue don't have this feature.
 
-Oh no.
+I'm not sure I'm following here. With posix message queues, can't you just open
+one queue per target thread? That would seem simpler and more efficient besides
+also allowing the timeout.
 
-> Sparse *does* support pragma once, but it does it purely based on
-> pathname equality.
-
-Doing what gcc or clang does seems like a smart thing to do.
-
-> So a simple test-program like this:
-> 
->  File 'pragma.h':
-> 
->     #pragma once
->     #include "header.h"
-> 
-> works fine. But this doesn't work at all:
-> 
->     #pragma once
->     #include "./header.h"
-> 
-> because it causes the filename to be different every time, and you
-> eventually end up with trying to open   "././....../pragma.h" and it
-> causes ENAMETOOLONG.
-> 
-> So at least sparse isn't ready for this.
-> 
-> I guess sparse could always simplify the name, but that's non-trivial.
-> 
-> And honestly, using st_dev/st_ino is problematic too, since
-> 
->  (a) they can easily be re-used for generated files
-> 
->  (b) you'd have to actually open/fstat the filename to use it, which
-> obviates one of the optimizations
-
-fstat is more or less necessary anyway to allocate just enough memory
-for 1 read. fstat is not a problem, read is (and subsequent parsing).
-
-> Trying the same on gcc, you don't get that endless "add "./" behavior"
-> that sparse did, but a quick test shows that it actually opens the
-> file and reads it three times: once for "pramga.h", once for
-> "./pragma.h" and a third time for "pragma.h". It only seems to
-> _expand_ it once, though.
-> 
-> I have no idea what gcc does. Maybe it does some "different name, so
-> let's open and read it, and then does st_dev/st_ino again". But if so,
-> why the _third_ time? Is it some guard against "st_ino might have been
-> re-used, so I'll open the original name and re-verify"?
-> 
-> End result: #pragma is fundamentally less reliable than the
-> traditional #ifdef guard. The #ifdef guard works fine even if you
-> re-read the file for whatever reason, while #pragma relies on some
-> kind of magical behavior.
-> 
-> I'm adding Luc in case he has any ideas of what the magical behavior might be.
-
-gcc does
-
-	open "/" + "whatever between quotes"
-	fstat
-
-so that "1.h" and "./1.h" differ
-
-	https://github.com/gcc-mirror/gcc/blob/master/libcpp/files.c#L377
-
-clang does better:
-
-	"./" + "whatever between quotes"
-	open
-	fstat
-	normalise pathname via readlink /proc/*/fd
-
-I think it is quite hard to break something with double inclusion
-without trying to actually break stuff. Macros has to be token
-for token identical or compiler warn. Types definition too.
-Function prototypes and so on.
-
-This is how I found half of the exception list.
-
-The "no leading ./ in includes is trivially enforced with checkpatch.pl
-or even grep! And it will optimise the build now that gcc behaviour has
-been uncovered.
-
-Include guards aren't without problems.
-
-We have at least 1 identical include guard in the tree for two
-completely unrelated headers (allmodconfig of some fringe arch found it)
-Nobody complains because only defconfigs are run apparently.
-
-Developer can typo it disabling double inclusion.
-
-	#ifndef FOO_H
-	#define FOO_h
-	#endif
-
-I've seen a reference to a static checker checking for such stuff
-so this problem exists.
-
-Invisibly broken inlcude guards (see qla2xxx patch in the series).
+         Arnd
