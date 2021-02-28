@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8080932731D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B70327320
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhB1Po0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 10:44:26 -0500
-Received: from mga11.intel.com ([192.55.52.93]:12581 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230228AbhB1PoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 10:44:17 -0500
-IronPort-SDR: 5ooTB0pWCFQWSlAH4X1SUguk6O3g+zcYf/aI5fVJKuZ8P6Qpo2f6b2Y5NAl9LkSORWwmTRvudy
- RvH+6zNIaRWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="182859921"
-X-IronPort-AV: E=Sophos;i="5.81,213,1610438400"; 
-   d="scan'208";a="182859921"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2021 07:42:31 -0800
-IronPort-SDR: +HjWRq1K/RLC7zS4juh4aHx8voq+CEGvmGCz8xnc2D+4yuSM0bdLXSf3Z8BLpVTw97CivYXp0v
- lpqLWUBOCLIg==
-X-IronPort-AV: E=Sophos;i="5.81,213,1610438400"; 
-   d="scan'208";a="405808377"
-Received: from mvvallab-mobl1.amr.corp.intel.com ([10.254.180.194])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2021 07:42:30 -0800
-Message-ID: <0a8f11cfbc761767b7a994f724af3dac124184c9.camel@linux.intel.com>
-Subject: Re: [RFC PATCH] powercap: Add Hygon Fam18h RAPL support
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Pu Wen <puwen@hygon.cn>, linux-kernel@vger.kernel.org
-Cc:     linux-pm@vger.kernel.org, rjw@rjwysocki.net, rafael@kernel.org,
-        bp@alien8.de, victording@google.com, kim.phillips@amd.com,
-        rui.zhang@intel.com
-Date:   Sun, 28 Feb 2021 07:42:29 -0800
-In-Reply-To: <20210225130129.21512-1-puwen@hygon.cn>
-References: <20210225130129.21512-1-puwen@hygon.cn>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S230420AbhB1Pod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 10:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230228AbhB1Po1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 10:44:27 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE91C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 07:43:41 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id e6so9813451pgk.5
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 07:43:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nJS6qrjZ8dafduMG2mJ+d0lKpg1t0+WahrbSxWdeR6w=;
+        b=WpOAosuE+317rG0hKkZT1QmVtawXOC+4f0laoXjx8uwmSbOFP/rSCEua8dh6FW8kZa
+         zjYOpFaJ5oUASIXytJIJVFymbethww49+LhvwpTBDFr65qYW1qDu6r46/hxteb0f4YVo
+         nCDIkJVk4mKuqUZR6njHPeqGpdkS3WFpbhQ6A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nJS6qrjZ8dafduMG2mJ+d0lKpg1t0+WahrbSxWdeR6w=;
+        b=av/kXSsLSTUxzwesdGuvll/HdZ/AEOyxPII/4UYigKIboZiuDWloqJqe7WhtI1PkMh
+         xg1uyjugtqucM2NMptLcnqFMPlmpFTaQIa9YdHP1G6xRMpMespOorzUu3KoU0fAY65UN
+         t0NqdyO3UOqIX0O1weFzNm6uUK3chLO2OlwYgvFhfe/ilu5jCoaNS/F7B2udP52tA5dI
+         4msqMlLfVfr9aAvVRFUmoo7Up6uc2BEpQ7PngSV2dbRuu11f0r0BPCt5rl46o2LAePbS
+         UifocPX0wrWc21oFc988qK4cK89bhyBAAEZ5Db+xJEiAOe5EjyRn+7X/SzGiJLa+gYYG
+         yVMA==
+X-Gm-Message-State: AOAM531yEJDNX2txs0g1T8Su193hAMC9GSeKt+povjv5tORwK2zUsDVD
+        6XQYtkHC3k/6PfI0Q3XbgfE12A==
+X-Google-Smtp-Source: ABdhPJwU+CCyfO3HGbmKVzzzxLyes6sekTdA2PHQPy2a8tgbO6xRdrip418RZFLLHbJMbMkv3iS/pw==
+X-Received: by 2002:a63:1505:: with SMTP id v5mr10567310pgl.95.1614527020647;
+        Sun, 28 Feb 2021 07:43:40 -0800 (PST)
+Received: from ub-XPS-13-9350.domain.name ([103.161.30.225])
+        by smtp.gmail.com with ESMTPSA id j3sm13522133pgk.24.2021.02.28.07.43.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Feb 2021 07:43:40 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH v3 00/10] ARM: dts: stm32: Add Engicam STM32MP1 SoM
+Date:   Sun, 28 Feb 2021 21:13:13 +0530
+Message-Id: <20210228154323.76911-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-02-25 at 21:01 +0800, Pu Wen wrote:
-> Enable Hygon Fam18h RAPL support for the power capping framework.
-> 
-If this patch is tested and works on this processor, not sure why this
-is RFC?
+This is the initial series to support Engicam MicroGEA STM32MP1 and
+i.Core STM32MP1 SoM and it's associated carrier board dts(i) support.
 
-Thanks,
-Srinivas
+Changes for v3:
+- fixed v2 comments
+- updated commit messages
+Changes for v2:
+- fixed v1 comments
+- add i.Core STM32MP1 SoM 
 
-> Signed-off-by: Pu Wen <puwen@hygon.cn>
-> ---
->  drivers/powercap/intel_rapl_common.c | 1 +
->  drivers/powercap/intel_rapl_msr.c    | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/drivers/powercap/intel_rapl_common.c
-> b/drivers/powercap/intel_rapl_common.c
-> index fdda2a737186..73cf68af9770 100644
-> --- a/drivers/powercap/intel_rapl_common.c
-> +++ b/drivers/powercap/intel_rapl_common.c
-> @@ -1069,6 +1069,7 @@ static const struct x86_cpu_id rapl_ids[]
-> __initconst = {
->  
->  	X86_MATCH_VENDOR_FAM(AMD, 0x17, &rapl_defaults_amd),
->  	X86_MATCH_VENDOR_FAM(AMD, 0x19, &rapl_defaults_amd),
-> +	X86_MATCH_VENDOR_FAM(HYGON, 0x18, &rapl_defaults_amd),
->  	{}
->  };
->  MODULE_DEVICE_TABLE(x86cpu, rapl_ids);
-> diff --git a/drivers/powercap/intel_rapl_msr.c
-> b/drivers/powercap/intel_rapl_msr.c
-> index 78213d4b5b16..cc3b22881bfe 100644
-> --- a/drivers/powercap/intel_rapl_msr.c
-> +++ b/drivers/powercap/intel_rapl_msr.c
-> @@ -150,6 +150,7 @@ static int rapl_msr_probe(struct platform_device
-> *pdev)
->  	case X86_VENDOR_INTEL:
->  		rapl_msr_priv = &rapl_msr_priv_intel;
->  		break;
-> +	case X86_VENDOR_HYGON:
->  	case X86_VENDOR_AMD:
->  		rapl_msr_priv = &rapl_msr_priv_amd;
->  		break;
+Any inputs?
+Jagan.
+
+Jagan Teki (10):
+  dt-bindings: arm: stm32: Add Engicam MicroGEA STM32MP1 MicroDev 2.0
+  ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 SoM
+  ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 MicroDev 2.0 board
+  dt-bindings: arm: stm32: Add Engicam MicroGEA STM32MP1 MicroDev 2.0 7" OF
+  ARM: dts: stm32: Add Engicam MicroGEA STM32MP1 MicroDev 2.0 7" OF
+  dt-bindings: arm: stm32: Add Engicam i.Core STM32MP1 C.TOUCH 2.0
+  ARM: dts: stm32: Add Engicam i.Core STM32MP1 SoM
+  ARM: dts: stm32: Add Engicam i.Core STM32MP1 C.TOUCH 2.0
+  dt-bindings: arm: stm32: Add Engicam i.Core STM32MP1 EDIMM2.2 Starter Kit
+  ARM: dts: stm32: Add Engicam i.Core STM32MP1 EDIMM2.2 Starter Kit
+
+ .../devicetree/bindings/arm/stm32/stm32.yaml  |  17 ++
+ arch/arm/boot/dts/Makefile                    |   4 +
+ .../stm32mp157a-icore-stm32mp1-ctouch2.dts    |  47 +++++
+ .../stm32mp157a-icore-stm32mp1-edimm2.2.dts   |  47 +++++
+ .../boot/dts/stm32mp157a-icore-stm32mp1.dtsi  | 196 ++++++++++++++++++
+ ...157a-microgea-stm32mp1-microdev2.0-of7.dts | 154 ++++++++++++++
+ ...32mp157a-microgea-stm32mp1-microdev2.0.dts |  55 +++++
+ .../dts/stm32mp157a-microgea-stm32mp1.dtsi    | 148 +++++++++++++
+ 8 files changed, 668 insertions(+)
+ create mode 100644 arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-ctouch2.dts
+ create mode 100644 arch/arm/boot/dts/stm32mp157a-icore-stm32mp1-edimm2.2.dts
+ create mode 100644 arch/arm/boot/dts/stm32mp157a-icore-stm32mp1.dtsi
+ create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0-of7.dts
+ create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1-microdev2.0.dts
+ create mode 100644 arch/arm/boot/dts/stm32mp157a-microgea-stm32mp1.dtsi
+
+-- 
+2.25.1
 
