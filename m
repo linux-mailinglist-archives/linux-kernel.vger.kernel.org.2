@@ -2,433 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF0E327027
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 04:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 582F832702F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 04:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhB1DRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 22:17:14 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:50876 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhB1DRH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 22:17:07 -0500
-X-Greylist: delayed 30749 seconds by postgrey-1.27 at vger.kernel.org; Sat, 27 Feb 2021 22:17:04 EST
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 11S3FtBN001671;
-        Sun, 28 Feb 2021 12:15:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 11S3FtBN001671
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614482156;
-        bh=f1LWgFSodjA4wcFmP29yk/uWZvPYc7HRvDqgGjiM/4k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hHJsgkmbxyw+CJdvuvNPrmm0tlBoRaDcGP885PUnZLeUn9FHpiHygIQ39hVTcE8aq
-         MjykSG9mob3PcU3w/R5iMxxA480mpRh7h5d3Cpctrha9vw71J0TJ4rOn6m+LR1e6oz
-         8sSnIIPm85ZmmnYoLx/E+hdz1q/iDgyJ7+zD0vXOmJySQxt4uwZ5sWqQiEkqntsczv
-         huPYfBtnJZmq6xv0j9jQu4yBhKpkbfa22gngdfAKu8SuSi7hvLabBoglPfTymRiSdt
-         vUcWP1dTlkKevu1Ue8/XNVaoyks1pBznat3V0l6wbt8fV7AhQ/4LL2esG5P8G1eQlJ
-         0u7t0DIi825hQ==
-X-Nifty-SrcIP: [209.85.215.170]
-Received: by mail-pg1-f170.google.com with SMTP id g4so8829793pgj.0;
-        Sat, 27 Feb 2021 19:15:55 -0800 (PST)
-X-Gm-Message-State: AOAM532bWOM/2U0fvJvRlgMnH6LgE8e0wWJFgGP6E1dENss7d3qawu5r
-        vBMDuZRBESCuE/q/Eqp34T6ayTxHwDr+6UHYo5g=
-X-Google-Smtp-Source: ABdhPJyT9GzFWPRDoPirMRaZf43G6lG4tfFgYVc0SpLrZkfXBYsmPEOkFNw5CEREcL4RlOkrfBCLqeYjlU5R0B9+rYk=
-X-Received: by 2002:a17:902:e891:b029:e4:20d3:3d5c with SMTP id
- w17-20020a170902e891b02900e420d33d5cmr9874257plg.71.1614482153775; Sat, 27
- Feb 2021 19:15:53 -0800 (PST)
+        id S230178AbhB1Dnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 22:43:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230090AbhB1Dnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Feb 2021 22:43:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 833BB64E38;
+        Sun, 28 Feb 2021 03:43:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614483784;
+        bh=iSYg3PQmQzHSmYCsrbphy/ikk+I0jqnR2OgkaYvOyfE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=V/sAaOkZGP6CBQSb9z9KVyt3Pa1ismuXdj7pOH4ZIcUnooVQScqbMcwCmynAi6J1j
+         jcssNeJkKWOe0e7+AQH3Gelpfn3GVsZETp0uKfQTuHJuNob6mLc7tqas6Pk7IoM4kK
+         9bnVEZr3+4/rI3vdR6xu6A7v6NR7NMPMieQb3eCdBIHXX0LTbeUxjfXohTLfvr8034
+         u2Eh663Nsqb640guioaCqMT9qcVv38oZoj1Z/XAMuL7Mdg8dN4PBU+m0V+3RW6afio
+         lhGCN/1dajrRBqc9INUs/V+CYmNge5pwJNuzRXCEN9Xjf4/1pcjhsogq/RrC1bSuBb
+         f3TsTA0iYthVQ==
+From:   guoren@kernel.org
+To:     torvalds@linux-foundation.org
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-csky@vger.kernel.org
+Subject: [GIT PULL] csky changes for v5.12-rc1
+Date:   Sun, 28 Feb 2021 11:43:00 +0800
+Message-Id: <20210228034300.1090149-1-guoren@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210227183910.221873-1-masahiroy@kernel.org>
-In-Reply-To: <20210227183910.221873-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 28 Feb 2021 12:15:16 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASL_X43_nMTz1CZQB+jiLCRAJbh-wQdc23QV0pWceL_Lw@mail.gmail.com>
-Message-ID: <CAK7LNASL_X43_nMTz1CZQB+jiLCRAJbh-wQdc23QV0pWceL_Lw@mail.gmail.com>
-Subject: Re: [PATCH RFC] x86: remove toolchain check for X32 ABI capability
-To:     X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Fangrui Song <maskray@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "H . J . Lu" <hjl.tools@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Chao Yu <chao@kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Kees Cook <keescook@chromium.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 3:41 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> This commit reverts 0bf6276392e9 ("x32: Warn and disable rather than
-> error if binutils too old").
->
-> The help text in arch/x86/Kconfig says enabling the X32 ABI support
-> needs binutils 2.22 or later. This is met because the minimal binutils
-> version is 2.23 according to Documentation/process/changes.rst.
->
-> I would not say I am not familiar with toolchain configuration, but
+Hi Linus,
 
-I mean:
-I would not say I am familiar ...
-That is why I added RFC.
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
 
-I appreciate comments from people who are familiar
-with toolchains (binutils, llvm).
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
 
-If this change is not safe,
-we can move this check to Kconfig at least.
+are available in the Git repository at:
 
+  https://github.com/c-sky/csky-linux.git tags/csky-for-linus-5.12-rc1
 
+for you to fetch changes up to 6607aa6f6b68fc9b5955755f1b1be125cf2a9d03:
 
+  csky: Fixup compile error (2021-02-27 22:04:14 +0800)
 
+----------------------------------------------------------------
+arch/csky patches for 5.12-rc1
 
+Features:
+ - Add new memory layout 2.5G(user):1.5G(kernel)
+ - Add kmemleak support
+ - Reconstruct VDSO framework
+   Add VDSO with GENERIC_GETTIMEOFDAY,
+   GENERIC_TIME_VSYSCALL, HAVE_GENERIC_VDSO
+ - Add faulthandler_disabled() check
+ - Support(Fixup) swapon
+ - Add(Fixup) _PAGE_ACCESSED for default pgprot
+ - abort uaccess retries upon fatal signal (From arm)
 
+Fixup & Optimization:
+ - Fixup perf probe failed
+ - Fixup show_regs doesn't contain regs->usp
+ - Remove custom asm/atomic.h implementation
+ - Fixup barrier design
+ - Fixup futex SMP implementation
+ - Fixup asm/cmpxchg.h with correct ordering barrier
+ - Cleanup asm/spinlock.h
+ - Fixup PTE global for 2.5:1.5 virtual memory
+ - Remove prologue of page fault handler in entry.S
+ - Fix TLB maintenance synchronization problem
+ - Add show_tlb for CPU_CK860 debug
+ - Fixup FAULT_FLAG_XXX param for handle_mm_fault
+ - Fixup update_mmu_cache called with user io mapping
+ - Fixup do_page_fault parent irq status
+ - Fix a size determination in gpr_get()
+ - pgtable.h: Coding convention
+ - kprobe: Fixup code in simulate without 'long'
+ - Fixup pfn_valid error with wrong max_mapnr
+ - use free_initmem_default() in free_initmem()
+ - Fixup compile error
 
+----------------------------------------------------------------
+David Hildenbrand (1):
+      csky: use free_initmem_default() in free_initmem()
 
+Guo Ren (27):
+      csky: Add memory layout 2.5G(user):1.5G(kernel)
+      csky: Fixup perf probe failed
+      csky: Fixup show_regs doesn't contain regs->usp
+      csky: Remove custom asm/atomic.h implementation
+      csky: Fixup barrier design
+      csky: Fixup futex SMP implementation
+      csky: Fixup asm/cmpxchg.h with correct ordering barrier
+      csky: Cleanup asm/spinlock.h
+      csky: Fixup PTE global for 2.5:1.5 virtual memory
+      csky: Remove prologue of page fault handler in entry.S
+      csky: Add kmemleak support
+      csky: Fix TLB maintenance synchronization problem
+      csky: Add show_tlb for CPU_CK860 debug
+      csky: Fixup FAULT_FLAG_XXX param for handle_mm_fault
+      csky: Fixup update_mmu_cache called with user io mapping
+      csky: Add faulthandler_disabled() check
+      csky: Fixup do_page_fault parent irq status
+      csky: Sync riscv mm/fault.c for easy maintenance
+      csky: mm: abort uaccess retries upon fatal signal
+      csky: Reconstruct VDSO framework
+      csky: Fixup _PAGE_ACCESSED for default pgprot
+      csky: pgtable.h: Coding convention
+      csky: Fixup swapon
+      csky: kprobe: Fixup code in simulate without 'long'
+      csky: Add VDSO with GENERIC_GETTIMEOFDAY, GENERIC_TIME_VSYSCALL, HAVE_GENERIC_VDSO
+      csky: Fixup pfn_valid error with wrong max_mapnr
+      csky: Fixup compile error
 
-> I checked the configure.tgt code in binutils. The elf32_x86_64
-> emulation mode seems to be included when it is configured for the
-> x86_64-*-linux-* target.
->
-> I also tried lld and llvm-objcopy, and succeeded in building x32 VDSO.
->
-> I removed the compile-time check in arch/x86/Makefile, in the hope of
-> elf32_x86_64 being always supported.
->
-> With this, CONFIG_X86_X32 and CONFIG_X86_X32_ABI will be equivalent.
-> Rename the former to the latter.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
->
->  arch/x86/Kconfig                       |  8 ++------
->  arch/x86/Makefile                      | 16 ----------------
->  arch/x86/include/asm/syscall_wrapper.h |  6 +++---
->  arch/x86/include/asm/vdso.h            |  2 +-
->  arch/x86/kernel/process_64.c           |  2 +-
->  fs/fuse/file.c                         |  2 +-
->  fs/xfs/xfs_ioctl32.c                   |  2 +-
->  sound/core/control_compat.c            | 16 ++++++++--------
->  sound/core/pcm_compat.c                | 20 ++++++++++----------
->  9 files changed, 27 insertions(+), 47 deletions(-)
->
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 2792879d398e..7272cba2744c 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -2865,7 +2865,7 @@ config IA32_AOUT
->         help
->           Support old a.out binaries in the 32bit emulation.
->
-> -config X86_X32
-> +config X86_X32_ABI
->         bool "x32 ABI for 64-bit mode"
->         depends on X86_64
->         help
-> @@ -2874,10 +2874,6 @@ config X86_X32
->           full 64-bit register file and wide data path while leaving
->           pointers at 32 bits for smaller memory footprint.
->
-> -         You will need a recent binutils (2.22 or later) with
-> -         elf32_x86_64 support enabled to compile a kernel with this
-> -         option set.
-> -
->  config COMPAT_32
->         def_bool y
->         depends on IA32_EMULATION || X86_32
-> @@ -2886,7 +2882,7 @@ config COMPAT_32
->
->  config COMPAT
->         def_bool y
-> -       depends on IA32_EMULATION || X86_X32
-> +       depends on IA32_EMULATION || X86_X32_ABI
->
->  if COMPAT
->  config COMPAT_FOR_U64_ALIGNMENT
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 2d6d5a28c3bf..e163549f5be7 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -125,22 +125,6 @@ else
->          KBUILD_CFLAGS += -mcmodel=kernel
->  endif
->
-> -ifdef CONFIG_X86_X32
-> -       x32_ld_ok := $(call try-run,\
-> -                       /bin/echo -e '1: .quad 1b' | \
-> -                       $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" - && \
-> -                       $(OBJCOPY) -O elf32-x86-64 "$$TMP" "$$TMPO" && \
-> -                       $(LD) -m elf32_x86_64 "$$TMPO" -o "$$TMP",y,n)
-> -        ifeq ($(x32_ld_ok),y)
-> -                CONFIG_X86_X32_ABI := y
-> -                KBUILD_AFLAGS += -DCONFIG_X86_X32_ABI
-> -                KBUILD_CFLAGS += -DCONFIG_X86_X32_ABI
-> -        else
-> -                $(warning CONFIG_X86_X32 enabled but no binutils support)
-> -        endif
-> -endif
-> -export CONFIG_X86_X32_ABI
-> -
->  #
->  # If the function graph tracer is used with mcount instead of fentry,
->  # '-maccumulate-outgoing-args' is needed to prevent a GCC bug
-> diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-> index a84333adeef2..69bf87c41a0b 100644
-> --- a/arch/x86/include/asm/syscall_wrapper.h
-> +++ b/arch/x86/include/asm/syscall_wrapper.h
-> @@ -158,7 +158,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
->  #endif /* CONFIG_IA32_EMULATION */
->
->
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->  /*
->   * For the x32 ABI, we need to create a stub for compat_sys_*() which is aware
->   * of the x86-64-style parameter ordering of x32 syscalls. The syscalls common
-> @@ -176,12 +176,12 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
->
->  #define __X32_COMPAT_SYS_NI(name)                                      \
->         __SYS_NI(x32, compat_sys_##name)
-> -#else /* CONFIG_X86_X32 */
-> +#else /* CONFIG_X86_X32_ABI */
->  #define __X32_COMPAT_SYS_STUB0(name)
->  #define __X32_COMPAT_SYS_STUBx(x, name, ...)
->  #define __X32_COMPAT_COND_SYSCALL(name)
->  #define __X32_COMPAT_SYS_NI(name)
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->
->
->  #ifdef CONFIG_COMPAT
-> diff --git a/arch/x86/include/asm/vdso.h b/arch/x86/include/asm/vdso.h
-> index 98aa103eb4ab..2963a2f5dbc4 100644
-> --- a/arch/x86/include/asm/vdso.h
-> +++ b/arch/x86/include/asm/vdso.h
-> @@ -37,7 +37,7 @@ struct vdso_image {
->  extern const struct vdso_image vdso_image_64;
->  #endif
->
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->  extern const struct vdso_image vdso_image_x32;
->  #endif
->
-> diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-> index d08307df69ad..a93b6f4296fc 100644
-> --- a/arch/x86/kernel/process_64.c
-> +++ b/arch/x86/kernel/process_64.c
-> @@ -656,7 +656,7 @@ void set_personality_64bit(void)
->
->  static void __set_personality_x32(void)
->  {
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->         if (current->mm)
->                 current->mm->context.flags = 0;
->
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index 8cccecb55fb8..c53c620d1a7a 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -2797,7 +2797,7 @@ long fuse_do_ioctl(struct file *file, unsigned int cmd, unsigned long arg,
->  #else
->         if (flags & FUSE_IOCTL_COMPAT) {
->                 inarg.flags |= FUSE_IOCTL_32BIT;
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->                 if (in_x32_syscall())
->                         inarg.flags |= FUSE_IOCTL_COMPAT_X32;
->  #endif
-> diff --git a/fs/xfs/xfs_ioctl32.c b/fs/xfs/xfs_ioctl32.c
-> index 33c09ec8e6c0..e8038bc966e7 100644
-> --- a/fs/xfs/xfs_ioctl32.c
-> +++ b/fs/xfs/xfs_ioctl32.c
-> @@ -233,7 +233,7 @@ xfs_compat_ioc_fsbulkstat(
->         inumbers_fmt_pf         inumbers_func = xfs_fsinumbers_fmt_compat;
->         bulkstat_one_fmt_pf     bs_one_func = xfs_fsbulkstat_one_fmt_compat;
->
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->         if (in_x32_syscall()) {
->                 /*
->                  * ... but on x32 the input xfs_fsop_bulkreq has pointers
-> diff --git a/sound/core/control_compat.c b/sound/core/control_compat.c
-> index 1d708aab9c98..5d1b94bda2cd 100644
-> --- a/sound/core/control_compat.c
-> +++ b/sound/core/control_compat.c
-> @@ -153,7 +153,7 @@ struct snd_ctl_elem_value32 {
->          unsigned char reserved[128];
->  };
->
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->  /* x32 has a different alignment for 64bit values from ia32 */
->  struct snd_ctl_elem_value_x32 {
->         struct snd_ctl_elem_id id;
-> @@ -165,7 +165,7 @@ struct snd_ctl_elem_value_x32 {
->         } value;
->         unsigned char reserved[128];
->  };
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->
->  /* get the value type and count of the control */
->  static int get_ctl_type(struct snd_card *card, struct snd_ctl_elem_id *id,
-> @@ -350,7 +350,7 @@ static int snd_ctl_elem_write_user_compat(struct snd_ctl_file *file,
->         return ctl_elem_write_user(file, data32, &data32->value);
->  }
->
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->  static int snd_ctl_elem_read_user_x32(struct snd_card *card,
->                                       struct snd_ctl_elem_value_x32 __user *data32)
->  {
-> @@ -362,7 +362,7 @@ static int snd_ctl_elem_write_user_x32(struct snd_ctl_file *file,
->  {
->         return ctl_elem_write_user(file, data32, &data32->value);
->  }
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->
->  /* add or replace a user control */
->  static int snd_ctl_elem_add_compat(struct snd_ctl_file *file,
-> @@ -421,10 +421,10 @@ enum {
->         SNDRV_CTL_IOCTL_ELEM_WRITE32 = _IOWR('U', 0x13, struct snd_ctl_elem_value32),
->         SNDRV_CTL_IOCTL_ELEM_ADD32 = _IOWR('U', 0x17, struct snd_ctl_elem_info32),
->         SNDRV_CTL_IOCTL_ELEM_REPLACE32 = _IOWR('U', 0x18, struct snd_ctl_elem_info32),
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->         SNDRV_CTL_IOCTL_ELEM_READ_X32 = _IOWR('U', 0x12, struct snd_ctl_elem_value_x32),
->         SNDRV_CTL_IOCTL_ELEM_WRITE_X32 = _IOWR('U', 0x13, struct snd_ctl_elem_value_x32),
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->  };
->
->  static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
-> @@ -463,12 +463,12 @@ static inline long snd_ctl_ioctl_compat(struct file *file, unsigned int cmd, uns
->                 return snd_ctl_elem_add_compat(ctl, argp, 0);
->         case SNDRV_CTL_IOCTL_ELEM_REPLACE32:
->                 return snd_ctl_elem_add_compat(ctl, argp, 1);
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->         case SNDRV_CTL_IOCTL_ELEM_READ_X32:
->                 return snd_ctl_elem_read_user_x32(ctl->card, argp);
->         case SNDRV_CTL_IOCTL_ELEM_WRITE_X32:
->                 return snd_ctl_elem_write_user_x32(ctl, argp);
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->         }
->
->         down_read(&snd_ioctl_rwsem);
-> diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
-> index 590a46a9e78d..937f5117a81f 100644
-> --- a/sound/core/pcm_compat.c
-> +++ b/sound/core/pcm_compat.c
-> @@ -147,13 +147,13 @@ static int snd_pcm_ioctl_channel_info_compat(struct snd_pcm_substream *substream
->         return err;
->  }
->
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->  /* X32 ABI has the same struct as x86-64 for snd_pcm_channel_info */
->  static int snd_pcm_channel_info_user(struct snd_pcm_substream *substream,
->                                      struct snd_pcm_channel_info __user *src);
->  #define snd_pcm_ioctl_channel_info_x32(s, p)   \
->         snd_pcm_channel_info_user(s, p)
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->
->  struct compat_snd_pcm_status64 {
->         snd_pcm_state_t state;
-> @@ -373,7 +373,7 @@ static int snd_pcm_ioctl_xfern_compat(struct snd_pcm_substream *substream,
->         return err;
->  }
->
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->  /* X32 ABI has 64bit timespec and 64bit alignment */
->  struct snd_pcm_mmap_status_x32 {
->         snd_pcm_state_t state;
-> @@ -464,7 +464,7 @@ static int snd_pcm_ioctl_sync_ptr_x32(struct snd_pcm_substream *substream,
->
->         return 0;
->  }
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->
->  /*
->   */
-> @@ -484,10 +484,10 @@ enum {
->         SNDRV_PCM_IOCTL_READN_FRAMES32 = _IOR('A', 0x53, struct snd_xfern32),
->         SNDRV_PCM_IOCTL_STATUS_COMPAT64 = _IOR('A', 0x20, struct compat_snd_pcm_status64),
->         SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT64 = _IOWR('A', 0x24, struct compat_snd_pcm_status64),
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->         SNDRV_PCM_IOCTL_CHANNEL_INFO_X32 = _IOR('A', 0x32, struct snd_pcm_channel_info),
->         SNDRV_PCM_IOCTL_SYNC_PTR_X32 = _IOWR('A', 0x23, struct snd_pcm_sync_ptr_x32),
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->  };
->
->  static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned long arg)
-> @@ -531,10 +531,10 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
->         case __SNDRV_PCM_IOCTL_SYNC_PTR32:
->                 return snd_pcm_common_ioctl(file, substream, cmd, argp);
->         case __SNDRV_PCM_IOCTL_SYNC_PTR64:
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->                 if (in_x32_syscall())
->                         return snd_pcm_ioctl_sync_ptr_x32(substream, argp);
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->                 return snd_pcm_common_ioctl(file, substream, cmd, argp);
->         case SNDRV_PCM_IOCTL_HW_REFINE32:
->                 return snd_pcm_ioctl_hw_params_compat(substream, 1, argp);
-> @@ -566,10 +566,10 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
->                 return snd_pcm_status_user_compat64(substream, argp, false);
->         case SNDRV_PCM_IOCTL_STATUS_EXT_COMPAT64:
->                 return snd_pcm_status_user_compat64(substream, argp, true);
-> -#ifdef CONFIG_X86_X32
-> +#ifdef CONFIG_X86_X32_ABI
->         case SNDRV_PCM_IOCTL_CHANNEL_INFO_X32:
->                 return snd_pcm_ioctl_channel_info_x32(substream, argp);
-> -#endif /* CONFIG_X86_X32 */
-> +#endif /* CONFIG_X86_X32_ABI */
->         }
->
->         return -ENOIOCTLCMD;
-> --
-> 2.27.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210227183910.221873-1-masahiroy%40kernel.org.
+Tian Tao (1):
+      csky: remove unused including <linux/version.h>
 
+Zhenzhong Duan (1):
+      csky: Fix a size determination in gpr_get()
 
-
---
-Best Regards
-Masahiro Yamada
+ arch/csky/Kconfig                         |  24 +-
+ arch/csky/abiv1/inc/abi/cacheflush.h      |   1 -
+ arch/csky/abiv1/inc/abi/ckmmu.h           |  10 +-
+ arch/csky/abiv1/inc/abi/entry.h           |   1 -
+ arch/csky/abiv1/inc/abi/page.h            |   1 -
+ arch/csky/abiv1/inc/abi/pgtable-bits.h    |  40 +--
+ arch/csky/abiv1/inc/abi/reg_ops.h         |   1 -
+ arch/csky/abiv1/inc/abi/regdef.h          |   6 +-
+ arch/csky/abiv1/inc/abi/string.h          |   1 -
+ arch/csky/abiv1/inc/abi/switch_context.h  |   1 -
+ arch/csky/abiv1/inc/abi/vdso.h            |  18 +-
+ arch/csky/abiv2/cacheflush.c              |   3 +
+ arch/csky/abiv2/inc/abi/ckmmu.h           |  44 +++-
+ arch/csky/abiv2/inc/abi/entry.h           |  20 +-
+ arch/csky/abiv2/inc/abi/fpu.h             |   1 -
+ arch/csky/abiv2/inc/abi/page.h            |   1 -
+ arch/csky/abiv2/inc/abi/pgtable-bits.h    |  37 ++-
+ arch/csky/abiv2/inc/abi/reg_ops.h         |   1 -
+ arch/csky/abiv2/inc/abi/regdef.h          |   6 +-
+ arch/csky/abiv2/inc/abi/switch_context.h  |   1 -
+ arch/csky/abiv2/inc/abi/vdso.h            |  20 +-
+ arch/csky/abiv2/sysdep.h                  |   1 -
+ arch/csky/include/asm/addrspace.h         |   1 -
+ arch/csky/include/asm/atomic.h            | 212 ----------------
+ arch/csky/include/asm/barrier.h           |  83 +++++--
+ arch/csky/include/asm/bitops.h            |   1 -
+ arch/csky/include/asm/bug.h               |   3 +-
+ arch/csky/include/asm/cacheflush.h        |   1 -
+ arch/csky/include/asm/checksum.h          |   1 -
+ arch/csky/include/asm/clocksource.h       |   8 +
+ arch/csky/include/asm/cmpxchg.h           |  27 ++-
+ arch/csky/include/asm/elf.h               |   1 -
+ arch/csky/include/asm/fixmap.h            |   1 -
+ arch/csky/include/asm/ftrace.h            |   1 -
+ arch/csky/include/asm/futex.h             | 121 ++++++++++
+ arch/csky/include/asm/highmem.h           |   1 -
+ arch/csky/include/asm/io.h                |   1 -
+ arch/csky/include/asm/memory.h            |   2 +-
+ arch/csky/include/asm/mmu.h               |   1 -
+ arch/csky/include/asm/mmu_context.h       |  10 +-
+ arch/csky/include/asm/page.h              |   2 +-
+ arch/csky/include/asm/perf_event.h        |   1 -
+ arch/csky/include/asm/pgalloc.h           |   3 +-
+ arch/csky/include/asm/pgtable.h           |  80 +++---
+ arch/csky/include/asm/processor.h         |   3 +-
+ arch/csky/include/asm/ptrace.h            |   1 -
+ arch/csky/include/asm/segment.h           |   3 +-
+ arch/csky/include/asm/shmparam.h          |   1 -
+ arch/csky/include/asm/spinlock.h          | 167 -------------
+ arch/csky/include/asm/spinlock_types.h    |  10 -
+ arch/csky/include/asm/string.h            |   1 -
+ arch/csky/include/asm/switch_to.h         |   1 -
+ arch/csky/include/asm/syscalls.h          |   1 -
+ arch/csky/include/asm/thread_info.h       |   2 -
+ arch/csky/include/asm/tlb.h               |   1 -
+ arch/csky/include/asm/tlbflush.h          |   1 -
+ arch/csky/include/asm/traps.h             |   1 -
+ arch/csky/include/asm/uaccess.h           |   1 -
+ arch/csky/include/asm/unistd.h            |   1 -
+ arch/csky/include/asm/vdso.h              |  21 +-
+ arch/csky/include/asm/vdso/clocksource.h  |   9 +
+ arch/csky/include/asm/vdso/gettimeofday.h | 114 +++++++++
+ arch/csky/include/asm/vdso/processor.h    |  12 +
+ arch/csky/include/asm/vdso/vsyscall.h     |  22 ++
+ arch/csky/include/uapi/asm/byteorder.h    |   1 -
+ arch/csky/include/uapi/asm/perf_regs.h    |   1 -
+ arch/csky/include/uapi/asm/ptrace.h       |   1 -
+ arch/csky/include/uapi/asm/sigcontext.h   |   1 -
+ arch/csky/include/uapi/asm/unistd.h       |   1 -
+ arch/csky/kernel/Makefile                 |   2 +-
+ arch/csky/kernel/atomic.S                 |  24 +-
+ arch/csky/kernel/entry.S                  | 106 +-------
+ arch/csky/kernel/head.S                   |  10 +-
+ arch/csky/kernel/perf_event.c             |   4 +-
+ arch/csky/kernel/probes/simulate-insn.c   |  22 +-
+ arch/csky/kernel/ptrace.c                 | 128 +++++++++-
+ arch/csky/kernel/setup.c                  |  18 +-
+ arch/csky/kernel/signal.c                 |   4 +-
+ arch/csky/kernel/smp.c                    |   7 +-
+ arch/csky/kernel/traps.c                  |  10 +-
+ arch/csky/kernel/vdso.c                   | 127 ++++++----
+ arch/csky/kernel/vdso/.gitignore          |   4 +
+ arch/csky/kernel/vdso/Makefile            |  72 ++++++
+ arch/csky/kernel/vdso/note.S              |  12 +
+ arch/csky/kernel/vdso/rt_sigreturn.S      |  14 ++
+ arch/csky/kernel/vdso/so2s.sh             |   5 +
+ arch/csky/kernel/vdso/vdso.S              |  16 ++
+ arch/csky/kernel/vdso/vdso.lds.S          |  58 +++++
+ arch/csky/kernel/vdso/vgettimeofday.c     |  28 +++
+ arch/csky/kernel/vmlinux.lds.S            |   2 +-
+ arch/csky/mm/fault.c                      | 388 ++++++++++++++++++------------
+ arch/csky/mm/init.c                       |  56 +++--
+ arch/csky/mm/tlb.c                        |  42 +++-
+ include/linux/cpuhotplug.h                |   1 +
+ 94 files changed, 1347 insertions(+), 992 deletions(-)
+ delete mode 100644 arch/csky/include/asm/atomic.h
+ create mode 100644 arch/csky/include/asm/clocksource.h
+ create mode 100644 arch/csky/include/asm/futex.h
+ create mode 100644 arch/csky/include/asm/vdso/clocksource.h
+ create mode 100644 arch/csky/include/asm/vdso/gettimeofday.h
+ create mode 100644 arch/csky/include/asm/vdso/processor.h
+ create mode 100644 arch/csky/include/asm/vdso/vsyscall.h
+ create mode 100644 arch/csky/kernel/vdso/.gitignore
+ create mode 100644 arch/csky/kernel/vdso/Makefile
+ create mode 100644 arch/csky/kernel/vdso/note.S
+ create mode 100644 arch/csky/kernel/vdso/rt_sigreturn.S
+ create mode 100755 arch/csky/kernel/vdso/so2s.sh
+ create mode 100644 arch/csky/kernel/vdso/vdso.S
+ create mode 100644 arch/csky/kernel/vdso/vdso.lds.S
+ create mode 100644 arch/csky/kernel/vdso/vgettimeofday.c
