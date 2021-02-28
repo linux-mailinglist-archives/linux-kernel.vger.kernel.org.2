@@ -2,142 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3253271C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 10:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B103271C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 10:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbhB1Jfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 04:35:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51253 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230402AbhB1Jfi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 04:35:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614504843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MfErU+o2IpTfmX8Bo8uI0qToZvbwIUPvy2u1IZDsMXg=;
-        b=dS7Ohw5g4oHjNKmi8YWVjuEhEtBOdBaPQlGzY9WOTj8kXeve1jqCVbBqxvvFw9b8PhcN31
-        qkA+A6lPupB1mH5vipYRdRJt+tZ60Gjml3boOlGa/deGh7RerQ1qynglnAN3pynN+fp3Tp
-        xPaq/xBcDgfOI2aYkjrBZ7Nagrxwt9s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-C5aHa_i2NamZLFlHWYaEsg-1; Sun, 28 Feb 2021 04:34:01 -0500
-X-MC-Unique: C5aHa_i2NamZLFlHWYaEsg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E38938030C2;
-        Sun, 28 Feb 2021 09:33:58 +0000 (UTC)
-Received: from krava (unknown [10.40.192.3])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 1095C5C1BD;
-        Sun, 28 Feb 2021 09:33:53 +0000 (UTC)
-Date:   Sun, 28 Feb 2021 10:33:52 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Liang, Kan" <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>,
-        "Yi, Ammy" <ammy.yi@intel.com>
-Subject: Re: [drm/i915/gt] 8c3b1ba0e7:
- perf-sanity-tests.Parse_event_definition_strings.fail
-Message-ID: <YDtjgCcP9mLBcu/y@krava>
-References: <20210224074841.GD6114@xsang-OptiPlex-9020>
- <cabd8692-07ca-13c8-efb5-e088b4547f80@linux.intel.com>
- <YDenRVGzh5Dv1pC2@krava>
- <YDfph8b9p8sSk1AF@krava>
- <YDfxgfi5DBDMFgwu@krava>
- <YDf0fP8XmnTrkIT8@krava>
- <d416a908-6a54-5e4c-e377-dc9d2b778941@linux.intel.com>
- <YDodJb4CXDT8VemG@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDodJb4CXDT8VemG@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S230442AbhB1JqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 04:46:03 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:31858 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230107AbhB1Jp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 04:45:59 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app2 (Coremail) with SMTP id by_KCgCXfYj4ZTtgpbnTAQ--.32511S4;
+        Sun, 28 Feb 2021 17:44:27 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] e1000e: Fix error handling in e1000_set_d0_lplu_state_82571
+Date:   Sun, 28 Feb 2021 17:44:23 +0800
+Message-Id: <20210228094424.7884-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgCXfYj4ZTtgpbnTAQ--.32511S4
+X-Coremail-Antispam: 1UD129KBjvdXoWruFy8Xr13tr48GrWfCw1kuFg_yoWDurX_Gw
+        1jqw1fKry5G3sYvF4UKr4fGa4Yva1DJa4kWa4vq39xZF429rWUGrykury7Jr13WF1kuFnr
+        CrnIka4xC34ayjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_
+        JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJw
+        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
+        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQGBlZdtSfEeAASsx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 11:21:25AM +0100, Jiri Olsa wrote:
-> On Fri, Feb 26, 2021 at 08:41:26AM +0800, Jin, Yao wrote:
-> 
-> SNIP
-> 
-> > > +				SET_SYMBOL(prefix, PMU_EVENT_SYMBOL);
-> > >   				len++;
-> > >   			}
-> > >   		}
-> > >   	}
-> > > +
-> > > +	/* unlikely, but still.. */
-> > > +	if (!len)
-> > > +		goto err;
-> > > +	perf_pmu_events_list_num = len;
-> > > +
-> > >   	qsort(perf_pmu_events_list, len,
-> > >   		sizeof(struct perf_pmu_event_symbol), comp_pmu);
-> > > 
-> > 
-> > Thanks so much for the patch! It works with my tests.
-> > 
-> > # ./perf test 6
-> >  6: Parse event definition strings                                  : Ok
-> > 
-> > # ./perf stat -e software/r1a/ -a -- sleep 1
-> > 
-> >  Performance counter stats for 'system wide':
-> > 
-> >    <not supported>      software/r1a/
-> > 
-> >        1.000940433 seconds time elapsed
-> > 
-> > In theory, do we also need to check suffix as well? I think returning
-> > PMU_EVENT_SYMBOL_SUFFIX may also confuse the parser. But yes, we don't have
-> > this case now.
-> 
-> yep, let's wait for use case ;-) you can't have suffix
-> without prefix, and that's the one failing, so I think
-> we are fine
+There is one e1e_wphy() call in e1000_set_d0_lplu_state_82571
+that we have caught its return value but lack further handling.
+Check and terminate the execution flow just like other e1e_wphy()
+in this function.
 
-actualy this one seems to work as well, could you plz check
-
-thanks,
-jirka
-
-
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index d5b6aff82f21..d57ac86ce7ca 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -89,6 +89,7 @@ static void inc_group_count(struct list_head *list,
- %type <str> PE_EVENT_NAME
- %type <str> PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
- %type <str> PE_DRV_CFG_TERM
-+%type <str> event_pmu_name
- %destructor { free ($$); } <str>
- %type <term> event_term
- %destructor { parse_events_term__delete ($$); } <term>
-@@ -272,8 +273,11 @@ event_def: event_pmu |
- 	   event_legacy_raw sep_dc |
- 	   event_bpf_file
- 
-+event_pmu_name:
-+PE_NAME | PE_PMU_EVENT_PRE
-+
- event_pmu:
--PE_NAME opt_pmu_config
-+event_pmu_name opt_pmu_config
- {
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct parse_events_error *error = parse_state->error;
+ drivers/net/ethernet/intel/e1000e/82571.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/ethernet/intel/e1000e/82571.c b/drivers/net/ethernet/intel/e1000e/82571.c
+index 88faf05e23ba..0b1e890dd583 100644
+--- a/drivers/net/ethernet/intel/e1000e/82571.c
++++ b/drivers/net/ethernet/intel/e1000e/82571.c
+@@ -899,6 +899,8 @@ static s32 e1000_set_d0_lplu_state_82571(struct e1000_hw *hw, bool active)
+ 	} else {
+ 		data &= ~IGP02E1000_PM_D0_LPLU;
+ 		ret_val = e1e_wphy(hw, IGP02E1000_PHY_POWER_MGMT, data);
++		if (ret_val)
++			return ret_val;
+ 		/* LPLU and SmartSpeed are mutually exclusive.  LPLU is used
+ 		 * during Dx states where the power conservation is most
+ 		 * important.  During driver activity we should enable
+-- 
+2.17.1
 
