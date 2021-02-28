@@ -2,163 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2673271A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 09:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE4BE3271AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 10:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhB1IwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 03:52:24 -0500
-Received: from www381.your-server.de ([78.46.137.84]:51004 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbhB1IwV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 03:52:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=8E7c/Z1a3sjaUgQcFNKtXe/vCdCcKhkLNcrSGUpc+Dc=; b=b9CDjPxRY25Ro8Z29cvKdM1Zhq
-        u4SL10j/hWm5n21f5KIfQumem74DS8D9zrmeOwSfC99+/CPAoXf/9UZec0U1WZ2XEFvn8cpmX5Rb/
-        zi4k2aeZVsc0ACX3yNjZoR1cjcFFrbcc+ikpLS5oj7siHXWF2z4hS1gLQlnUqw+LlFcZEW4JLjyLL
-        iPBZN5O0Wj36a+if0HS/+1fDgRrNOptynwvrvofK27oNWE5WWHsvKXz3TPTaoggsizSW8Hgc5z+9X
-        mMMQmci/3yDvUpoDdJeRi79i1ZJlvAZiZN5QwByssMJkhm6+m1Tbg4MsEg8mZk7t46beplMhNX4x3
-        boxMcTTA==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lGHne-0009ch-KT; Sun, 28 Feb 2021 09:51:38 +0100
-Received: from [62.216.202.180] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lGHne-000N8B-Em; Sun, 28 Feb 2021 09:51:38 +0100
-Subject: Re: [PATCH v6 20/24] iio: buffer: add ioctl() to support opening
- extra buffers for IIO device
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     Michael.Hennerich@analog.com, jic23@kernel.org, nuno.sa@analog.com,
-        dragos.bogdan@analog.com
-References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
- <20210215104043.91251-21-alexandru.ardelean@analog.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <877ca331-1a56-1bd3-6637-482bbf060ba9@metafoo.de>
-Date:   Sun, 28 Feb 2021 09:51:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230371AbhB1JBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 04:01:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230075AbhB1JBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 04:01:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9121464E38;
+        Sun, 28 Feb 2021 09:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614502850;
+        bh=8mA43d4QxG1l5TgOlrLJX5S5pb5qni0CUaJ+AOPZGK0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UF71Mq5Ww46r6dBcQL4HzYIaQ5z0eqD6pT/ugfzkxRKfJwgGkGn5YV6774jEEP0DE
+         t/LGLiaVLPpDH3R8xqfaoiIEzhxBrAvVukTRF1WDLa0vjwm97AVKHP9+0dssP7iyn6
+         ATvPJf+p6he86e9U/IN2/hCvp0v6VDnj6V5I786zPla0cf9SvuoyJrUBUSV4DCuVbM
+         WwlgXD89SO4N4It4pmgYNJfZB7fCrLdpINehc6xFptsp1P/NVPf2AzaVWADRjpB31n
+         BjJqIV1lUVH1Q8IYrQ78kUizbqVWN+w54n3va2X9v03NY43vmSlRk6apjPvo9UegXK
+         kdxTTC5q37a2g==
+Date:   Sun, 28 Feb 2021 11:00:41 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Kamal Dasu <kdasu.kdev@gmail.com>, linux-mips@linux-mips.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, iamjoonsoo.kim@lge.com,
+        riel@surriel.com, Michal Hocko <mhocko@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations with
+ kernel_end
+Message-ID: <20210228090041.GO1447004@kernel.org>
+References: <20201217201214.3414100-1-guro@fb.com>
+ <20201217201214.3414100-2-guro@fb.com>
+ <23fc1ef9-7342-8bc2-d184-d898107c52b2@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210215104043.91251-21-alexandru.ardelean@analog.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26093/Sat Feb 27 13:05:31 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23fc1ef9-7342-8bc2-d184-d898107c52b2@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/15/21 11:40 AM, Alexandru Ardelean wrote:
-> With this change, an ioctl() call is added to open a character device for a
-> buffer. The ioctl() number is 'i' 0x91, which follows the
-> IIO_GET_EVENT_FD_IOCTL ioctl.
->
-> The ioctl() will return an FD for the requested buffer index. The indexes
-> are the same from the /sys/iio/devices/iio:deviceX/bufferY (i.e. the Y
-> variable).
->
-> Since there doesn't seem to be a sane way to return the FD for buffer0 to
-> be the same FD for the /dev/iio:deviceX, this ioctl() will return another
-> FD for buffer0 (or the first buffer). This duplicate FD will be able to
-> access the same buffer object (for buffer0) as accessing directly the
-> /dev/iio:deviceX chardev.
->
-> Also, there is no IIO_BUFFER_GET_BUFFER_COUNT ioctl() implemented, as the
-> index for each buffer (and the count) can be deduced from the
-> '/sys/bus/iio/devices/iio:deviceX/bufferY' folders (i.e the number of
-> bufferY folders).
->
-> Used following C code to test this:
-> -------------------------------------------------------------------
->
->   #include <stdio.h>
->   #include <stdlib.h>
->   #include <unistd.h>
->   #include <sys/ioctl.h>
->   #include <fcntl.h"
->   #include <errno.h>
->
->   #define IIO_BUFFER_GET_FD_IOCTL      _IOWR('i', 0x91, int)
->
-> int main(int argc, char *argv[])
-> {
->          int fd;
->          int fd1;
->          int ret;
->
->          if ((fd = open("/dev/iio:device0", O_RDWR))<0) {
->                  fprintf(stderr, "Error open() %d errno %d\n",fd, errno);
->                  return -1;
->          }
->
->          fprintf(stderr, "Using FD %d\n", fd);
->
->          fd1 = atoi(argv[1]);
->
->          ret = ioctl(fd, IIO_BUFFER_GET_FD_IOCTL, &fd1);
->          if (ret < 0) {
->                  fprintf(stderr, "Error for buffer %d ioctl() %d errno %d\n", fd1, ret, errno);
->                  close(fd);
->                  return -1;
->          }
->
->          fprintf(stderr, "Got FD %d\n", fd1);
->
->          close(fd1);
->          close(fd);
->
->          return 0;
-> }
-> -------------------------------------------------------------------
->
-> Results are:
-> -------------------------------------------------------------------
->   # ./test 0
->   Using FD 3
->   Got FD 4
->
->   # ./test 1
->   Using FD 3
->   Got FD 4
->
->   # ./test 2
->   Using FD 3
->   Got FD 4
->
->   # ./test 3
->   Using FD 3
->   Got FD 4
->
->   # ls /sys/bus/iio/devices/iio\:device0
->   buffer  buffer0  buffer1  buffer2  buffer3  dev
->   in_voltage_sampling_frequency  in_voltage_scale
->   in_voltage_scale_available
->   name  of_node  power  scan_elements  subsystem  uevent
-> -------------------------------------------------------------------
->
-> iio:device0 has some fake kfifo buffers attached to an IIO device.
+Hi Florian,
 
-For me there is one major problem with this approach. We only allow one 
-application to open /dev/iio:deviceX at a time. This means we can't have 
-different applications access different buffers of the same device. I 
-believe this is a circuital feature.
+On Sat, Feb 27, 2021 at 08:18:47PM -0800, Florian Fainelli wrote:
+> 
+> On 12/17/2020 12:12 PM, Roman Gushchin wrote:
+> > With kaslr the kernel image is placed at a random place, so starting
+> > the bottom-up allocation with the kernel_end can result in an
+> > allocation failure and a warning like this one:
+> > 
+> > [    0.002920] hugetlb_cma: reserve 2048 MiB, up to 2048 MiB per node
+> > [    0.002921] ------------[ cut here ]------------
+> > [    0.002922] memblock: bottom-up allocation failed, memory hotremove may be affected
+> > [    0.002937] WARNING: CPU: 0 PID: 0 at mm/memblock.c:332 memblock_find_in_range_node+0x178/0x25a
+> > [    0.002937] Modules linked in:
+> > [    0.002939] CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0+ #1169
+> > [    0.002940] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc33 04/01/2014
+> > [    0.002942] RIP: 0010:memblock_find_in_range_node+0x178/0x25a
+> > [    0.002944] Code: e9 6d ff ff ff 48 85 c0 0f 85 da 00 00 00 80 3d 9b 35 df 00 00 75 15 48 c7 c7 c0 75 59 88 c6 05 8b 35 df 00 01 e8 25 8a fa ff <0f> 0b 48 c7 44 24 20 ff ff ff ff 44 89 e6 44 89 ea 48 c7 c1 70 5c
+> > [    0.002945] RSP: 0000:ffffffff88803d18 EFLAGS: 00010086 ORIG_RAX: 0000000000000000
+> > [    0.002947] RAX: 0000000000000000 RBX: 0000000240000000 RCX: 00000000ffffdfff
+> > [    0.002948] RDX: 00000000ffffdfff RSI: 00000000ffffffea RDI: 0000000000000046
+> > [    0.002948] RBP: 0000000100000000 R08: ffffffff88922788 R09: 0000000000009ffb
+> > [    0.002949] R10: 00000000ffffe000 R11: 3fffffffffffffff R12: 0000000000000000
+> > [    0.002950] R13: 0000000000000000 R14: 0000000080000000 R15: 00000001fb42c000
+> > [    0.002952] FS:  0000000000000000(0000) GS:ffffffff88f71000(0000) knlGS:0000000000000000
+> > [    0.002953] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [    0.002954] CR2: ffffa080fb401000 CR3: 00000001fa80a000 CR4: 00000000000406b0
+> > [    0.002956] Call Trace:
+> > [    0.002961]  ? memblock_alloc_range_nid+0x8d/0x11e
+> > [    0.002963]  ? cma_declare_contiguous_nid+0x2c4/0x38c
+> > [    0.002964]  ? hugetlb_cma_reserve+0xdc/0x128
+> > [    0.002968]  ? flush_tlb_one_kernel+0xc/0x20
+> > [    0.002969]  ? native_set_fixmap+0x82/0xd0
+> > [    0.002971]  ? flat_get_apic_id+0x5/0x10
+> > [    0.002973]  ? register_lapic_address+0x8e/0x97
+> > [    0.002975]  ? setup_arch+0x8a5/0xc3f
+> > [    0.002978]  ? start_kernel+0x66/0x547
+> > [    0.002980]  ? load_ucode_bsp+0x4c/0xcd
+> > [    0.002982]  ? secondary_startup_64_no_verify+0xb0/0xbb
+> > [    0.002986] random: get_random_bytes called from __warn+0xab/0x110 with crng_init=0
+> > [    0.002988] ---[ end trace f151227d0b39be70 ]---
+> > 
+> > At the same time, the kernel image is protected with memblock_reserve(),
+> > so we can just start searching at PAGE_SIZE. In this case the
+> > bottom-up allocation has the same chances to success as a top-down
+> > allocation, so there is no reason to fallback in the case of a
+> > failure. All together it simplifies the logic.
+> > 
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> 
+> Hi Roman, Thomas and other linux-mips folks,
+> 
+> Kamal and myself have been unable to boot v5.11 on MIPS since this
+> commit, reverting it makes our MIPS platforms boot successfully. We do
+> not see a warning like this one in the commit message, instead what
+> happens appear to be a corrupted Device Tree which prevents the parsing
+> of the "rdb" node and leading to the interrupt controllers not being
+> registered, and the system eventually not booting.
+> 
+> The Device Tree is built-into the kernel image and resides at
+> arch/mips/boot/dts/brcm/bcm97435svmb.dts.
+> 
+> Do you have any idea what could be wrong with MIPS specifically here?
 
-It is possible to open the chardev, get the annonfd, close the chardev 
-and keep the annonfd open. Then the next application can do the same and 
-get access to a different buffer. But this has room for race conditions 
-when two applications try this at the very same time.
+Apparently there is a memblock allocation in one of the functions called
+from arch_mem_init() between plat_mem_setup() and
+early_init_fdt_reserve_self().
 
-We need to somehow address this.
+If you have serial available that early we can try to track it down with
+forcing memblock_debug in mm/memblock.c to 1:
 
-I'm also not much of a fan of using ioctls to create annon fds. In part 
-because all the standard mechanisms for access control no longer work.
+diff --git a/mm/memblock.c b/mm/memblock.c
+index afaefa8fc6ab..83034245f8d5 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -151,7 +151,7 @@ static __refdata struct memblock_type *memblock_memory = &memblock.memory;
+                        pr_info(fmt, ##__VA_ARGS__);                    \
+        } while (0)
+ 
+-static int memblock_debug __initdata_memblock;
++static int memblock_debug __initdata_memblock = 1;
+ static bool system_has_some_mirror __initdata_memblock = false;
+ static int memblock_can_resize __initdata_memblock;
+ static int memblock_memory_in_slab __initdata_memblock = 0;
 
+
+Regardless, I think that moving DT self reservation just after
+plat_mem_setup() is safe and it'll make things more robust.
+
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 279be0153f8b..f476b99a7bcd 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -623,6 +623,8 @@ static void __init arch_mem_init(char **cmdline_p)
+ {
+ 	/* call board setup routine */
+ 	plat_mem_setup();
++	early_init_fdt_reserve_self();
++	early_init_fdt_scan_reserved_mem();
+ 	memblock_set_bottom_up(true);
+ 
+ 	bootcmdline_init();
+@@ -636,9 +638,6 @@ static void __init arch_mem_init(char **cmdline_p)
+ 
+ 	check_kernel_sections_mem();
+ 
+-	early_init_fdt_reserve_self();
+-	early_init_fdt_scan_reserved_mem();
+-
+ #ifndef CONFIG_NUMA
+ 	memblock_set_node(0, PHYS_ADDR_MAX, &memblock.memory, 0);
+ #endif
+ 
+-- 
+Sincerely yours,
+Mike.
