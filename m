@@ -2,173 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4643273D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 19:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4413273DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 19:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhB1Skg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 13:40:36 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:37967 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhB1Ske (ORCPT
+        id S231207AbhB1Ssx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 13:48:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230084AbhB1Ssv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 13:40:34 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id DD430A12C6;
-        Sun, 28 Feb 2021 19:39:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=TQGOK+H3KWlj
-        CSgBxmVAZ5kqTgWKUCfHswD0WpIouoI=; b=IXKlbZs23ot8LKgE30mND+jN51/N
-        yEm/tla4svftVORM8an8h+YMkxY64UbQRbGJfPrmpfXhWUrDqyWgsdwNfSEmD7CJ
-        FF6ANT/rpfw4Qu1LDvEfuTl5bkd1ElTZ64uVTJXoTAuvtsNrzsnelDPHJDnwASxU
-        ZQXTXZiva3pDzFWWBHERmLGGwgJPYWvQpGU/3EdSsJFw6/BurM1zVbnuF5OgjTEl
-        6YR2KDf+c7k3RyFsZPncc5Zrdqw1tbttFFLio8kV+dsbvPG14Mj7okA63k/Y5fdj
-        9qPQm4bcDEBdhUJ2iubQEglb7noAT3kHVY4a4fFP0/LL351ClHlQxl+IgA==
-Subject: Re: [PATCH v6 3/9] ALSA: virtio: handling control messages
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
- <20210227085956.1700687-4-anton.yakovlev@opensynergy.com>
- <s5hv9acjvw6.wl-tiwai@suse.de>
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <174d09dd-ed8a-ecda-a392-48a2971b06cf@opensynergy.com>
-Date:   Sun, 28 Feb 2021 19:39:49 +0100
+        Sun, 28 Feb 2021 13:48:51 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4649C06174A;
+        Sun, 28 Feb 2021 10:48:10 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id v13so1345075edw.9;
+        Sun, 28 Feb 2021 10:48:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6FN28+EGwV52y5fLBmFdolcmGnuxL558/53m8V0+MHs=;
+        b=PuwnMKZfF9jVmm8oa8y3QjE7JCwENco3bvbHskHMb3lb0hCkpHCrfv5oB/+tl45q1r
+         ZHDfY06rcWoX+6WMekZ9ezBMVVkUn/R7F2/6VDeXorStJJv5pwPOHQ7Llnwf9w3I4ubd
+         9V3/vRCvqJahnk4JIO1RRwiLSf9Zs/HlhxMGUfYdkH516u37+LgOsRkqoGC1qXARYrgM
+         HlmW1jIqUvg5vLyfvv1Fpz2EXuL/ILv2uNUgxP2xDb+f+NZXzQj51tBhdn1xWquiKvL8
+         xds4df9amNmFsI8+KGeKEBQjYACEfjtqetU85PW/kjIotDeFloSLcyIN1IGcqwxIj9Tp
+         ODQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6FN28+EGwV52y5fLBmFdolcmGnuxL558/53m8V0+MHs=;
+        b=NA3gs50lOTf6eUiwoBvvR1NwoqckbMKJeyafYd9pJH6QL6+jO6n3i7+elg63Cim/8Z
+         fl1yniQDfS3HNMTmzQzhG1Hcf68SCHL+mVKlloJ6IrFOwdCz4Cagr8ZrzPCDXeCLxbGG
+         BJkh1fdKx5H61fsLtCCJehGeo6qJTqz0eEXUYLyScoRRAY9Zt4iv6G4bUutMNOnnpmOc
+         9Hu/wvn5Hq0VfmJfPHYbQQelvOSUj7O1Cb1wfgLUr1N8Kyr4HwA+/NSwsiEuAkCKoLIE
+         e/qAHgNY+NKNzLOKnY4n09yRKYgspBWnJxFSTCJ1Z1Ue4jBmtnsNO4fGE2S/y8qzy4gZ
+         3wbQ==
+X-Gm-Message-State: AOAM530PTXILCN52zuB3HU0o5ci+lLH0CCFNZ4+RxpQNDxPCUmemmEjJ
+        28pTweXvu3xwp/lxTqd63cNP/milBuUGyg==
+X-Google-Smtp-Source: ABdhPJyvjekRu+I/lGwxqSoORkOQNSsmlj+tMS3vgn/nZmYclX07Y31NzYvg3A/TchA4e9wvrpkp5g==
+X-Received: by 2002:a50:da4f:: with SMTP id a15mr12866517edk.301.1614538089407;
+        Sun, 28 Feb 2021 10:48:09 -0800 (PST)
+Received: from [192.168.1.4] (ip-89-176-112-137.net.upcbroadband.cz. [89.176.112.137])
+        by smtp.gmail.com with ESMTPSA id g25sm1425341edp.95.2021.02.28.10.48.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Feb 2021 10:48:08 -0800 (PST)
+Subject: Re: [PATCH 02/13] PCI: rcar: Convert to MSI domains
+To:     Marc Zyngier <maz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+References: <20210225151023.3642391-1-maz@kernel.org>
+ <20210225151023.3642391-3-maz@kernel.org>
+From:   Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <91e327df-49de-e0b5-34bc-eae8b62e88ee@gmail.com>
+Date:   Sun, 28 Feb 2021 19:48:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <s5hv9acjvw6.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210225151023.3642391-3-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.02.2021 12:04, Takashi Iwai wrote:> On Sat, 27 Feb 2021 09:59:50 
-+0100,
-> Anton Yakovlev wrote:
->>
->> --- a/sound/virtio/virtio_card.c
->> +++ b/sound/virtio/virtio_card.c
->> @@ -11,6 +11,10 @@
->>
->>   #include "virtio_card.h"
->>
->> +int msg_timeout_ms = MSEC_PER_SEC;
->> +module_param(msg_timeout_ms, int, 0644);
->> +MODULE_PARM_DESC(msg_timeout_ms, "Message completion timeout in milliseconds");
+On 2/25/21 4:10 PM, Marc Zyngier wrote:
+> In anticipation of the removal of the msi_controller structure, convert
+> the Rcar host controller driver to MSI domains.
 > 
-> If it's a global variable, better to set a prefix to make it unique,
-> and use module_param_named().
-
-Yes, it makes sense.
-
-
-> And, it should be unsigned int, no? (unless a negative value has any meaning)
-> Otherwise...
-
-And yes, it must be unsigned!
-
-
->> +     if (!msg_timeout_ms) {
->> +             dev_err(&vdev->dev, "msg_timeout_ms value cannot be zero\n");
->> +             return -EINVAL;
+> We end-up with the usual two domain structure, the top one being a
+> generic PCI/MSI domain, the bottom one being Rcar-specific and handling
+> the actual HW interrupt allocation.
 > 
-> Here a negative value would pass.
-> 
-> (snip)
->> +int virtsnd_ctl_msg_send(struct virtio_snd *snd, struct virtio_snd_msg *msg,
->> +                      struct scatterlist *out_sgs,
->> +                      struct scatterlist *in_sgs, bool nowait)
->> +{
->> +     struct virtio_device *vdev = snd->vdev;
->> +     struct virtio_snd_queue *queue = virtsnd_control_queue(snd);
->> +     unsigned int js = msecs_to_jiffies(msg_timeout_ms);
->> +     struct virtio_snd_hdr *request = virtsnd_ctl_msg_request(msg);
->> +     struct virtio_snd_hdr *response = virtsnd_ctl_msg_response(msg);
->> +     unsigned int nouts = 0;
->> +     unsigned int nins = 0;
->> +     struct scatterlist *psgs[4];
->> +     bool notify = false;
->> +     unsigned long flags;
->> +     int rc;
->> +
->> +     virtsnd_ctl_msg_ref(msg);
->> +
->> +     /* Set the default status in case the message was canceled. */
->> +     response->code = cpu_to_le32(VIRTIO_SND_S_IO_ERR);
->> +
->> +     psgs[nouts++] = &msg->sg_request;
->> +     if (out_sgs)
->> +             psgs[nouts++] = out_sgs;
->> +
->> +     psgs[nouts + nins++] = &msg->sg_response;
->> +     if (in_sgs)
->> +             psgs[nouts + nins++] = in_sgs;
->> +
->> +     spin_lock_irqsave(&queue->lock, flags);
->> +     rc = virtqueue_add_sgs(queue->vqueue, psgs, nouts, nins, msg,
->> +                            GFP_ATOMIC);
-> 
-> It's a bit pity that we have to use GFP_ATOMIC always here...
-> As long as it's in spinlock, it's the only way.
+> Also take the opportunity to get rid of the cargo-culted memory allocation
+> for the MSI capture address. *ANY* sufficiently aligned address should
+> be good enough, so use the physical address of the msi structure instead.
 
-Well, here we have no other choices, since we share the queue with
-an interrupt handler.
-
-
-> However, this reminds me of another question: may the virtio event be
-> handled in an atomic context, e.g. the period elapsed or xrun events?
-> If so, the current implementation with non-atomic PCM mode is wrong.
-> Since the non-atomic PCM uses mutex instead of spinlock, it'll lead to
-> a sleep-in-atomic in snd_pcm_period_elapsed() handling.
-> 
-> I suggested the non-atomic PCM *iff* the all contexts are sleepable;
-> then the sync can be done in each callback, which makes the code much
-> simpler usually.  But you've already implemented the sync via
-> sync_stop call, hence the non-atomic PCM has little benefit by its
-> own.
-
-The device provides 4 separate queues for communication with the driver,
-and different data is transmitted over these queues:
-
-The control queue (actually shared between all driver components) for
-sending commands to the device. These requests must be synchronous. For
-each request, the device must send a response, and we must wait for it.
-What you can see in PCM ops are exactly sending these commands (set
-params, prepare, start and so on). But since some ops could be called in
-atomic context, there was no other choice but to add asynchronous
-messages and return from the operator without waiting for a response
-from the device. Because of this, the START command was a headache. We
-could not say for sure if the substream started at all on the device
-side. Also, the virtualization overhead was not taken into account
-(application might think that the substream is already running, but
-actually it was not).
-
-Then there are 2 queues for sending/receiving PCM frames. These contain
-i/o messages carrying actual buffer sliced into periods. Actually,
-snd_pcm_period_elapsed() is called from interrupt handlers here.
-
-And then there is an additional queue for events.
-
-All of these are handled in different ways.
-
-
-> 
-> thanks,
-> 
-> Takashi
-> 
-
--- 
-Anton Yakovlev
-Senior Software Engineer
-
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
-
+On R8A7795 with Intel 600p NVMe SSD and IWLwifi 6235 card,
+Tested-by: Marek Vasut <marek.vasut+renesas@gmail.com>
+Thanks.
