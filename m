@@ -2,200 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC7A327454
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 21:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E537327458
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 21:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhB1ULN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 15:11:13 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:39973 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbhB1ULJ (ORCPT
+        id S231243AbhB1UOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 15:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbhB1UOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 15:11:09 -0500
-Date:   Sun, 28 Feb 2021 20:10:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1614543020; bh=Ag77GPZFhp9P3u0v34MlsM/fenE+0ssu4ljL1jeWfV8=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=BUnEBSilp4FX1RQvEYfFBmdKNrDguWvoz84xF6WVZwlEx1ZBrtMxl6ZkK+JCrlTKw
-         aCbacKFVW7aEEBWYwQeaZ7MwBeW7ptmT1r9UExkErMYN4MfqBAnJwUqi1SSAc8GvdC
-         LvuVrY2YadjGImQYj0kXorZDU/gZAJqQrXmf3OATQVWr8C3WYia/geUVeOk5ZdXBJ0
-         adQ//5PdPNQRzUuMe2BeSuXE7rNuWyL7TctOstPOz/whjB2mafi2dHwjkC8baO8RhL
-         CS79f8XRc4B7DgCvQqiPY+3caC4nDjdHQm0Xvw91W2Ebv2/bEZjtg+qbqyn7kiLS5+
-         N6fwydkaixOaQ==
-To:     Pavel Skripkin <paskripkin@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>, davem@davemloft.net,
-        linmiaohe@huawei.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v3] net/core/skbuff: fix passing wrong size to __alloc_skb
-Message-ID: <20210228201000.13606-1-alobakin@pm.me>
-In-Reply-To: <47681a0b629ac0efb2ce0d92c3181db08e5ea3c8.camel@gmail.com>
-References: <20210227110306.13360-1-alobakin@pm.me> <20210227175114.28645-1-paskripkin@gmail.com> <20210228181440.1715-1-alobakin@pm.me> <47681a0b629ac0efb2ce0d92c3181db08e5ea3c8.camel@gmail.com>
+        Sun, 28 Feb 2021 15:14:19 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C04C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 12:13:39 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id e45so14419422ote.9
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 12:13:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7gZfPgzWrN7aQrhLlhRVvvza5A8VMSV9ZBHx3+Axvf4=;
+        b=QfSxGlGrSq1Iu6x88NNp2rtebfgHneFmQV2+uI/P4vzWNfxSs8do0KM8NboHnhA7eK
+         f6w0lfR4ER8rmesPimn12dl5dcP10KFq2WHqKLkNbPdBRKbiBp/f69Xmr39XB40jm83/
+         Ijfte7rU4iDdJBcuWclr/AGMzyLPtE7x/zqFiXa39U08tqWoMHVqdwWnCZSDGA274Ua8
+         zb3pLKelz/MVDkPt9jQSr8n28WFJCY7UUtRa1skXQvywKMY9ZJTdNmbClBfTX0ifCGii
+         ST+ohB7pmI7+zJwQIDhi5/unD186PoOGGjIeYw1sqtd3HsPAZoph/2dCb24+ZqQslDTU
+         xfGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7gZfPgzWrN7aQrhLlhRVvvza5A8VMSV9ZBHx3+Axvf4=;
+        b=UGaMcP2StA/iyXrivJw6ZQqquARkGuIVwbwYS/IX1w/DKGAv8KV/VX0uT+JXUDYsoH
+         QVUsbFiLPbg3zdpdzAruAmsEyGD2D5m1i1ONl7fyBZQQGybiQknkbnrFKeAAHFlISvWf
+         e6/2qv1MXXLGCjarYS2NV/o0PfoFYAZS6fQwHplDVeF3Ec7kE74ET1B/GnRRED25Z0p0
+         fH7Ho3wi1pzhbRy85oZzOeGJAhZMyuey9kQIGKaLl8ytC4Ak8ZFVnQL2hcR930SpCkSw
+         /T0TiRJggC8ah4H2D8IKqGq+kR8ofKgZCJ6rgR4MXtrLGxJ/55p4A7mNh0dvcJev3VEo
+         uE6g==
+X-Gm-Message-State: AOAM533hXKY5QZDP4DKn2bU2VNbzNEyFCjhbS8L0U5VrVbjeIfWHlQTl
+        2+1GPRsgdAPJQ9gYD1o2/3JUHYJvS6HDeY1qtL4QTJCDowE=
+X-Google-Smtp-Source: ABdhPJzjlov4TsqLPLJG7am3dHdlNYN83ZWl4xsANjiZU07fGY3M5yMaYkDSmHYQH+PMuq35Q0rrsm4Yx183BRTwJHU=
+X-Received: by 2002:a9d:6382:: with SMTP id w2mr10979738otk.145.1614543218450;
+ Sun, 28 Feb 2021 12:13:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <1614071544-130951-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1614071544-130951-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Sun, 28 Feb 2021 22:13:11 +0200
+Message-ID: <CAFCwf12mapgw=dFkqHr__P4ur6R3D=fyCVW2KSzMLL0qu0t3HQ@mail.gmail.com>
+Subject: Re: [PATCH] banalabs: Switch to using the new API kobj_to_dev()
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
-Date: Sun, 28 Feb 2021 22:28:13 +0300
-
-> Hi, thanks for reply!
+On Tue, Feb 23, 2021 at 11:12 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
 >
-> > From: Pavel Skripkin <paskripkin@gmail.com>
-> > Date: Sat, 27 Feb 2021 20:51:14 +0300
-> >
-> > Hi,
-> >
-> > > syzbot found WARNING in __alloc_pages_nodemask()[1] when order >=3D
-> > > MAX_ORDER.
-> > > It was caused by __netdev_alloc_skb(), which doesn't check len
-> > > value after adding NET_SKB_PAD.
-> > > Order will be >=3D MAX_ORDER and passed to __alloc_pages_nodemask()
-> > > if size > KMALLOC_MAX_SIZE.
-> > > Same happens in __napi_alloc_skb.
-> > >
-> > > static void *kmalloc_large_node(size_t size, gfp_t flags, int node)
-> > > {
-> > > =09struct page *page;
-> > > =09void *ptr =3D NULL;
-> > > =09unsigned int order =3D get_order(size);
-> > > ...
-> > > =09page =3D alloc_pages_node(node, flags, order);
-> > > ...
-> > >
-> > > [1] WARNING in __alloc_pages_nodemask+0x5f8/0x730
-> > > mm/page_alloc.c:5014
-> > > Call Trace:
-> > >  __alloc_pages include/linux/gfp.h:511 [inline]
-> > >  __alloc_pages_node include/linux/gfp.h:524 [inline]
-> > >  alloc_pages_node include/linux/gfp.h:538 [inline]
-> > >  kmalloc_large_node+0x60/0x110 mm/slub.c:3999
-> > >  __kmalloc_node_track_caller+0x319/0x3f0 mm/slub.c:4496
-> > >  __kmalloc_reserve net/core/skbuff.c:150 [inline]
-> > >  __alloc_skb+0x4e4/0x5a0 net/core/skbuff.c:210
-> > >  __netdev_alloc_skb+0x70/0x400 net/core/skbuff.c:446
-> > >  netdev_alloc_skb include/linux/skbuff.h:2832 [inline]
-> > >  qrtr_endpoint_post+0x84/0x11b0 net/qrtr/qrtr.c:442
-> > >  qrtr_tun_write_iter+0x11f/0x1a0 net/qrtr/tun.c:98
-> > >  call_write_iter include/linux/fs.h:1901 [inline]
-> > >  new_sync_write+0x426/0x650 fs/read_write.c:518
-> > >  vfs_write+0x791/0xa30 fs/read_write.c:605
-> > >  ksys_write+0x12d/0x250 fs/read_write.c:658
-> > >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> > >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >
-> > Ah, by the way. Have you tried to seek for the root cause, why
-> > a request for such insanely large (at least 4 Mib) skb happens
-> > in QRTR? I don't believe it's intended to be like this.
-> > Now I feel that silencing this error with early return isn't
-> > really correct approach for this.
+> fixed the following coccicheck:
+> ./drivers/misc/habanalabs/common/sysfs.c:347:60-61: WARNING opportunity
+> for kobj_to_dev()
 >
-> Yeah, i figured it out. Syzbot provides reproducer for thig bug:
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  drivers/misc/habanalabs/common/sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> void loop(void)
-> {
->   intptr_t res =3D 0;
->   memcpy((void*)0x20000000, "/dev/qrtr-tun\000", 14);
->   res =3D syscall(__NR_openat, 0xffffffffffffff9cul, 0x20000000ul, 1ul,
-> 0);
->   if (res !=3D -1)
->     r[0] =3D res;
->   memcpy((void*)0x20000040, "\x02", 1);
->   syscall(__NR_write, r[0], 0x20000040ul, 0x400000ul);
-> }
+> diff --git a/drivers/misc/habanalabs/common/sysfs.c b/drivers/misc/habanalabs/common/sysfs.c
+> index 4366d8f..79c1ddf 100644
+> --- a/drivers/misc/habanalabs/common/sysfs.c
+> +++ b/drivers/misc/habanalabs/common/sysfs.c
+> @@ -344,7 +344,7 @@ static ssize_t eeprom_read_handler(struct file *filp, struct kobject *kobj,
+>                         struct bin_attribute *attr, char *buf, loff_t offset,
+>                         size_t max_size)
+>  {
+> -       struct device *dev = container_of(kobj, struct device, kobj);
+> +       struct device *dev = kobj_to_dev(kobj);
+>         struct hl_device *hdev = dev_get_drvdata(dev);
+>         char *data;
+>         int rc;
+> --
+> 1.8.3.1
 >
-> So, simply it writes to /dev/qrtr-tun 0x400000 bytes.
-> In qrtr_tun_write_iter there is a check, that the length is smaller
-> than KMALLOC_MAX_VSIZE. Then the length is passed to
-> __netdev_alloc_skb, where it becomes more than KMALLOC_MAX_VSIZE.
 
-I've checked the logics in qrtr_tun_write_iter(). Seems like it's
-only trying to prevent kzallocs of sizes larger than the maximum
-and doesn't care about netdev_alloc_skb() at all, as it ignores
-the fact that, besides NET_SKB_PAD and NET_IP_ALIGN, skbs always
-have SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) on top of
-the "usable" size.
-
-On the other hand, skb memory overheads, kmalloc bounds etc. are
-an internal thing and all related corner cases should be handled
-inside the implementations, not the users. From this point, even
-this check for (len < KMALLOC_MAX_SIZE) is a bit bogus.
-I think in that particular case with the size coming from userspace
-(i.e. untrusted source), the allocations (both kzalloc() and
-__netdev_alloc_skb()) should be performed with __GFP_NOWARN, so
-insane values won't provoke any splats.
-
-So maybe use it as a fix for this particular warning (seems like
-it's the sole place in the entire kernel that can potentially
-request such skb allocations) and don't add any branches into
-hot *alloc_skb() at all?
-We might add a cap for max skb length later, as Jakub pointed.
-
-> >
-> > > Reported-by: syzbot+80dccaee7c6630fa9dcf@syzkaller.appspotmail.com
-> > > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> > >
-> > > ---
-> > > Changes from v3:
-> > > * Removed Change-Id and extra tabs in net/core/skbuff.c
-> > >
-> > > Changes from v2:
-> > > * Added length check to __napi_alloc_skb
-> > > * Added unlikely() in checks
-> > >
-> > > Change from v1:
-> > > * Added length check to __netdev_alloc_skb
-> > > ---
-> > >  net/core/skbuff.c | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > > index 785daff48030..ec7ba8728b61 100644
-> > > --- a/net/core/skbuff.c
-> > > +++ b/net/core/skbuff.c
-> > > @@ -443,6 +443,9 @@ struct sk_buff *__netdev_alloc_skb(struct
-> > > net_device *dev, unsigned int len,
-> > >  =09if (len <=3D SKB_WITH_OVERHEAD(1024) ||
-> > >  =09    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
-> > >  =09    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
-> > > +=09=09if (unlikely(len > KMALLOC_MAX_SIZE))
-> > > +=09=09=09return NULL;
-> > > +
-> > >  =09=09skb =3D __alloc_skb(len, gfp_mask, SKB_ALLOC_RX,
-> > > NUMA_NO_NODE);
-> > >  =09=09if (!skb)
-> > >  =09=09=09goto skb_fail;
-> > > @@ -517,6 +520,9 @@ struct sk_buff *__napi_alloc_skb(struct
-> > > napi_struct *napi, unsigned int len,
-> > >  =09if (len <=3D SKB_WITH_OVERHEAD(1024) ||
-> > >  =09    len > SKB_WITH_OVERHEAD(PAGE_SIZE) ||
-> > >  =09    (gfp_mask & (__GFP_DIRECT_RECLAIM | GFP_DMA))) {
-> > > +=09=09if (unlikely(len > KMALLOC_MAX_SIZE))
-> > > +=09=09=09return NULL;
-> > > +
-> > >  =09=09skb =3D __alloc_skb(len, gfp_mask, SKB_ALLOC_RX,
-> > > NUMA_NO_NODE);
-> > >  =09=09if (!skb)
-> > >  =09=09=09goto skb_fail;
-> > > --
-> > > 2.25.1
-> >
-> > Thanks,
-> > Al
-> >
->
-> With regards,
-> Pavel Skripkin
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Applied to -next.
 
 Thanks,
-Al
-
+Oded
