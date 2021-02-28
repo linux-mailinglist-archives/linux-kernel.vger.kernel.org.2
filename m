@@ -2,29 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE4632718B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 09:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A61732718C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 09:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhB1IP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 03:15:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43930 "EHLO mx2.suse.de"
+        id S230426AbhB1ISx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 03:18:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44248 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhB1IPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 03:15:16 -0500
+        id S230175AbhB1ISu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 03:18:50 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5E203AB8C;
-        Sun, 28 Feb 2021 08:14:34 +0000 (UTC)
-Date:   Sun, 28 Feb 2021 09:14:34 +0100
-Message-ID: <s5h7dmslic5.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 7FE63AB7D;
+        Sun, 28 Feb 2021 08:18:09 +0000 (UTC)
+Date:   Sun, 28 Feb 2021 09:18:09 +0100
+Message-ID: <s5h4khwli66.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     chris.chiu@canonical.com
-Cc:     tiwai@suse.com, kailang@realtek.com, jhp@endlessos.org,
-        kai.heng.feng@canonical.com, hui.wang@canonical.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ALSA: hda/realtek: Enable headset mic of Acer SWIFT with ALC256
-In-Reply-To: <20210226010440.8474-1-chris.chiu@canonical.com>
-References: <20210226010440.8474-1-chris.chiu@canonical.com>
+To:     Heinz Diehl <htd+ml@fritha.org>
+Cc:     linux-kernel@vger.kernel.org, lpoetter@redhat.com
+Subject: Re: [BISECTED] Kernel 5.11.x breaks pulseaudio
+In-Reply-To: <YDi+K4RXmoZ0AM3z@fritha.org>
+References: <YDfYAYCaC9KDc1F0@fritha.org>
+        <s5him6gnkdu.wl-tiwai@suse.de>
+        <YDfeSZjdNKFcNKN8@fritha.org>
+        <s5hft1kni08.wl-tiwai@suse.de>
+        <YDi+K4RXmoZ0AM3z@fritha.org>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -34,22 +36,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 02:04:40 +0100,
-chris.chiu@canonical.com wrote:
+On Fri, 26 Feb 2021 10:23:55 +0100,
+Heinz Diehl wrote:
 > 
-> From: Chris Chiu <chris.chiu@canonical.com>
+> On 25.02.2021, Takashi Iwai wrote: 
 > 
-> The Acer SWIFT Swift SF314-54/55 laptops with ALC256 cannot detect
-> both the headset mic and the internal mic. Introduce new fixup
-> to enable the jack sense and the headset mic. However, the internal
-> mic actually connects to Intel SST audio. It still needs Intel SST
-> support to make internal mic capture work.
+> > Check which streams are running when you get the unexpected sample
+> > rate by inspecting /proc/asound/card*/pcm* entries.
 > 
-> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
-> ---
->   v1 -> v2: remove unnecessary aamix fixup
+> I see, thanks for explaining! Pulseaudio no longer works properly for me, but
+> after configuring my audio player to use ALSA directly, all is fine so
+> far and all audio files are played with the correct sample rate and
+> without any resampling, just as they should.
 
-Applied now.  Thanks.
+The fix I merged today can also work around your problem.
+Please give it a try.
+  https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?id=5f5e6a3e8b1df52f79122e447855cffbf1710540
 
 
 Takashi
