@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E67327234
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 13:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C826132723C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 13:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhB1M02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 07:26:28 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:42754 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229715AbhB1M0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 07:26:24 -0500
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app3 (Coremail) with SMTP id cC_KCgCH3tiziztgoifaAQ--.16208S4;
-        Sun, 28 Feb 2021 20:25:26 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Stanislaw Gruszka <stf_xl@wp.pl>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] iwlegacy: Add missing check in il4965_commit_rxon
-Date:   Sun, 28 Feb 2021 20:25:22 +0800
-Message-Id: <20210228122522.2513-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgCH3tiziztgoifaAQ--.16208S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw4rXr17ZryfGFWkXF4ruFg_yoWDXFg_C3
-        4Igwn3trykGry093Wq9FZxArW0y3srGw1xua92qryfGw15G39ruFZ8ZF9xurWUXr4Y9Fn3
-        Crn8ZFy8J340qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
-        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQGBlZdtSfEeAAZs6
+        id S230134AbhB1Mhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 07:37:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229654AbhB1Mht (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 07:37:49 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A090C061756;
+        Sun, 28 Feb 2021 04:37:08 -0800 (PST)
+Received: from localhost.localdomain (abab236.neoplus.adsl.tpnet.pl [83.6.165.236])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id E554D3EBAD;
+        Sun, 28 Feb 2021 13:37:01 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/msm/adreno: a5xx_power: Don't apply A540 lm_setup to other GPUs
+Date:   Sun, 28 Feb 2021 13:36:51 +0100
+Message-Id: <20210228123652.134511-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is one il_set_tx_power() call in this function without
-return value check. Print error message and return error code
-on failure just like the other il_set_tx_power() call.
+While passing the A530-specific lm_setup func to A530 and A540
+to !A530 was fine back when only these two were supported, it
+certainly is not a good idea to send A540 specifics to smaller
+GPUs like A508 and friends.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- drivers/net/wireless/intel/iwlegacy/4965.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/msm/adreno/a5xx_power.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intel/iwlegacy/4965.c b/drivers/net/wireless/intel/iwlegacy/4965.c
-index 9fa556486511..3235b8be1894 100644
---- a/drivers/net/wireless/intel/iwlegacy/4965.c
-+++ b/drivers/net/wireless/intel/iwlegacy/4965.c
-@@ -1361,7 +1361,11 @@ il4965_commit_rxon(struct il_priv *il)
- 		 * We do not commit tx power settings while channel changing,
- 		 * do it now if tx power changed.
- 		 */
--		il_set_tx_power(il, il->tx_power_next, false);
-+		ret = il_set_tx_power(il, il->tx_power_next, false);
-+		if (ret) {
-+			IL_ERR("Error sending TX power (%d)\n", ret);
-+			return ret;
-+		}
- 		return 0;
- 	}
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_power.c b/drivers/gpu/drm/msm/adreno/a5xx_power.c
+index f176a6f3eff6..e58670a61df4 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_power.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_power.c
+@@ -304,7 +304,7 @@ int a5xx_power_init(struct msm_gpu *gpu)
+ 	/* Set up the limits management */
+ 	if (adreno_is_a530(adreno_gpu))
+ 		a530_lm_setup(gpu);
+-	else
++	else if (adreno_is_a540(adreno_gpu))
+ 		a540_lm_setup(gpu);
  
+ 	/* Set up SP/TP power collpase */
 -- 
-2.17.1
+2.30.1
 
