@@ -2,152 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFC3326FB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 01:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11605326FBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 01:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhB1ATH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 19:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbhB1ATD (ORCPT
+        id S230175AbhB1AUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 19:20:25 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:59690 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230010AbhB1AUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 19:19:03 -0500
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F12C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 16:18:23 -0800 (PST)
-Received: by mail-oo1-xc31.google.com with SMTP id f26so3086012oog.5
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 16:18:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NhLpIka0l+DtQFwtRx94mGt+L2X3B8MlJkoRIBCnKqI=;
-        b=QOqtQjGU26d2NAUtBWHPknrvTdZ1ylgRr+M2MUBtjDDP6MnIYXeAt5FD11Xf2jA4N+
-         aejWHbxIE/kzqp3Lsn/UqZ//gVIwTtihPf2EilEIJkMtbVElBdIetmdzYEPnBVXA9vLG
-         sm9lQzP1+gMZ7qhx26iVtW0NQCoWQrDr/eodBpEoUDwlSjdqwqBzn7J7UDciQr05wrt4
-         z0kawfn1MVermx00h555cbyowYJdKWMhMlSKilntlYi40TfF+V8JHTrmI/6cLOwclJHd
-         TFHdoW4OXTBMj7N/fLoB2KCFfdcb60hPjiXgaew58p71/LfqGMabgPbWWuj6ghgyTaZn
-         aB/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NhLpIka0l+DtQFwtRx94mGt+L2X3B8MlJkoRIBCnKqI=;
-        b=WE4ZMeSMdRMZzK1K+Q7JOgWK7vxZbJPEbEuU2KjI6oukxsQErJXENlreyYu6T2tLhq
-         AqhuujY1jsh6y46XQlv8AlFzW5OKafgI8DJ0eUs46Ac8VVD+jiVFrBIbvThY0kE6Mu/n
-         2yvs4EGWX0TmdTPlNUDC6bAuDn/E8Ua+37hvrXDQtVgQaJYjuI2KHbW49Xevl/sM2ibk
-         2Y4NYeHDbCb8ZkP44B4FqptkRIFGcaSUZQqmCEmS9X6hsM95eFZhmxFsikswT2Zmq/rP
-         eCVFKkRbG3u76hiM2Vxe9Yg1YFpNQqhNYlBq1eNAzODVwTPULNl/wMoJSrIDnYwwCOLq
-         yQKw==
-X-Gm-Message-State: AOAM533AMruXnUODJI72gq+fU5/K9k+WwDjJewRhJqjy4pYRENAx268y
-        PxHAXxokk7eltq5JH5rlI90Rf0t8k5ioL1VPGehE
-X-Google-Smtp-Source: ABdhPJw/2qEE4T0GbsPjQnvhTu2B66k0NmG+hhEKuH+cliA0hP4hzMtaxjvZAsfFJlL5/xdYOd3pwOHIxdVMHZIFmdA=
-X-Received: by 2002:a4a:98a3:: with SMTP id a32mr7334179ooj.51.1614471502634;
- Sat, 27 Feb 2021 16:18:22 -0800 (PST)
+        Sat, 27 Feb 2021 19:20:22 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 96D2A23F62;
+        Sat, 27 Feb 2021 19:19:35 -0500 (EST)
+Date:   Sun, 28 Feb 2021 11:19:31 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Jens Axboe <axboe@kernel.dk>
+cc:     "David S. Miller" <davem@davemloft.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] ide/falconide: Fix module unload
+In-Reply-To: <5d7fd7bb-1bb8-a21c-61d8-4d1046f92ca8@kernel.dk>
+Message-ID: <d92db64-cfb8-9640-35a4-4f864dfc99a2@telegraphics.com.au>
+References: <63369c9b96673442a4bd653fe92acda99172123a.1605847196.git.fthain@telegraphics.com.au> <alpine.LNX.2.23.453.2101031017290.12@nippy.intranet> <5d7fd7bb-1bb8-a21c-61d8-4d1046f92ca8@kernel.dk>
 MIME-Version: 1.0
-References: <1613131643-60062-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
- <1613131643-60062-2-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
-In-Reply-To: <1613131643-60062-2-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
-From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Date:   Sun, 28 Feb 2021 09:17:56 +0900
-Message-ID: <CABMQnVJ+hQ_sdXMdLzhv2Y65QW8Vi01VAjV=SCeOei-zOZ5dwQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] firmware: xilinx: Add pinctrl support
-To:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        git@xilinx.com, saikrishna12468@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, 3 Jan 2021, Jens Axboe wrote:
 
-2021=E5=B9=B42=E6=9C=8812=E6=97=A5(=E9=87=91) 21:10 Sai Krishna Potthuri
-<lakshmi.sai.krishna.potthuri@xilinx.com>:
->
-> Adding pinctrl support to query platform specific information (pins)
-> from firmware.
->
-> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.=
-com>
-> Acked-by: Michal Simek <michal.simek@xilinx.com>
-> ---
->  drivers/firmware/xilinx/zynqmp.c     | 114 +++++++++++++++++++++++++++
->  include/linux/firmware/xlnx-zynqmp.h |  90 +++++++++++++++++++++
->  2 files changed, 204 insertions(+)
->
-> diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/z=
-ynqmp.c
-> index efb8a66efc68..299c3d5a9ebd 100644
-> --- a/drivers/firmware/xilinx/zynqmp.c
-> +++ b/drivers/firmware/xilinx/zynqmp.c
-> @@ -784,6 +784,120 @@ int zynqmp_pm_fpga_get_status(u32 *value)
->  }
->  EXPORT_SYMBOL_GPL(zynqmp_pm_fpga_get_status);
->
+> > 
+> > This patch was sent in September and subsequently resent in November. 
+> > I've since learned that the maintainer has been ill. What's the best 
+> > way forward for fixes like this?
+> 
+> I can queue it up.
+> 
 
-<snip>
-
-> @@ -125,6 +131,12 @@ enum pm_query_id {
->         PM_QID_CLOCK_GET_FIXEDFACTOR_PARAMS,
->         PM_QID_CLOCK_GET_PARENTS,
->         PM_QID_CLOCK_GET_ATTRIBUTES,
-> +       PM_QID_PINCTRL_GET_NUM_PINS =3D 6,
-> +       PM_QID_PINCTRL_GET_NUM_FUNCTIONS =3D 7,
-> +       PM_QID_PINCTRL_GET_NUM_FUNCTION_GROUPS =3D 8,
-> +       PM_QID_PINCTRL_GET_FUNCTION_NAME =3D 9,
-> +       PM_QID_PINCTRL_GET_FUNCTION_GROUPS =3D 10,
-> +       PM_QID_PINCTRL_GET_PIN_GROUPS =3D 11,
-
-These do not have to have values, Because PM_QID_INVALID is 0.
-
->         PM_QID_CLOCK_GET_NUM_CLOCKS =3D 12,
-
-And you can drop value from this.
-
->         PM_QID_CLOCK_GET_MAX_DIVISOR,
->  };
-> @@ -288,6 +300,44 @@ enum dll_reset_type {
->         PM_DLL_RESET_PULSE,
->  };
->
-> +enum pm_pinctrl_config_param {
-> +       PM_PINCTRL_CONFIG_SLEW_RATE =3D 0,
-> +       PM_PINCTRL_CONFIG_BIAS_STATUS =3D 1,
-> +       PM_PINCTRL_CONFIG_PULL_CTRL =3D 2,
-> +       PM_PINCTRL_CONFIG_SCHMITT_CMOS =3D 3,
-> +       PM_PINCTRL_CONFIG_DRIVE_STRENGTH =3D 4,
-> +       PM_PINCTRL_CONFIG_VOLTAGE_STATUS =3D 5,
-> +       PM_PINCTRL_CONFIG_TRI_STATE =3D 6,
-> +       PM_PINCTRL_CONFIG_MAX =3D 7,
-> +};
-
-Same as above.
-
-> +
-> +enum pm_pinctrl_slew_rate {
-> +       PM_PINCTRL_SLEW_RATE_FAST =3D 0,
-> +       PM_PINCTRL_SLEW_RATE_SLOW =3D 1,
-> +};
-
-Same as above. Others are also specified.
-
-> +
-> +enum pm_pinctrl_bias_status {
-> +       PM_PINCTRL_BIAS_DISABLE =3D 0,
-> +       PM_PINCTRL_BIAS_ENABLE =3D 1,
-> +};
-
-Best regards,
-  Nobuhiro
---=20
-Nobuhiro Iwamatsu
-   iwamatsu at {nigauri.org / debian.org}
-   GPG ID: 40AD1FA6
+That would be great.
