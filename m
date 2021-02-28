@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106CA32736A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 17:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A100C327371
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhB1Q7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 11:59:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46192 "EHLO
+        id S231201AbhB1RAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 12:00:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230406AbhB1Q7B (ORCPT
+        with ESMTP id S230502AbhB1RAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 11:59:01 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A99C06174A;
-        Sun, 28 Feb 2021 08:58:20 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id b13so8343230edx.1;
-        Sun, 28 Feb 2021 08:58:20 -0800 (PST)
+        Sun, 28 Feb 2021 12:00:00 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E787C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 08:59:20 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id s8so17541199edd.5
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 08:59:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=en8tMAUOhm0zol63EybWgdjah1Cfm8+uJE0ewWMGLR8=;
-        b=LjAQMb/2mLqd8I0Qr753k4njtvN0STcSPRe+194lABtpckqihzrlIsXB2V+PFPbRx3
-         gsBKYMkZSk/ZxGRAmkLpvmmkKfnkvu/gUBm/M1JatsnJE8+SjcoEezLn/CNrAxH5IPFa
-         0FKFQmPCSc1UEkJBAE4QaWbPA7a/ggOAxPaYo3ZPcM5mbRUwsiE6Rnf4pXzQCIOm6ZLj
-         WkhmRMyU1ftbrKCocdYLXiG4JaKYoGsXSpBX8MoRKzw0tKBJxTwRGA8eKMzGJ4QD5e7c
-         fYkkXdCPY3xDZPizIjoPE6tCEUuGYmF0AqtgZq5PAzT4o8OshIMRGS1q449Tbtps1Otf
-         aIfA==
+        bh=qr1mInad1mHd60s/UOLdChNop/NTHLYaNHSOHJUdlmo=;
+        b=LpXYCLM0j+rXep2cIq0b1YzVUy2FnKhCNvFnsCd4PDfSOh4VNmif8h+6FSHSzq3HBP
+         CLVQoCvySiFWu/gjeOANG25VKbh3nnM+3zyf0oE0k+F79ERen7FUZDVa8uqFyml/hbn+
+         bx6YgjIfAs7ZvwuHPlSbJGRRZ5oOHGY/pX1TNSL17tZO/GoUqLbaAojVfHGTwM/eOber
+         ASZqxkHvf2W2VRCQVoQ+wjk+GG2HjFLNM4PDS6LnkF4v0aKjqW9xCrula6/CQy78uy8Y
+         SJ8jX179NhutIGWxP4tMMwBzqanQBpuKA915gkuR/RDqAEKOVijP0QnEkyqgaAps5Blv
+         PvTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=en8tMAUOhm0zol63EybWgdjah1Cfm8+uJE0ewWMGLR8=;
-        b=laB0t4iIdq57+M66Bc9E2UszmzOWkxETOx26ilz4UOucfWsN/p+zuRhH8y30apJX3w
-         2RdWFBPGWhQemLyItHSOidkqGxpCfh8u4px53JcepbAnXknUNyw+8XollVzPtWNAE6QI
-         q8Th2dpuClnXxp86kSB3w0waeiZXjfWXeMjF0tDdBvIbLU8+1UBbfSF/TtiicumeqABg
-         Naj3StzQF1MUeS3yhvEP4Mf9CI54e7fkIgDRt2+Pc2zCpIYFJHjDKBTlE7jXvtBZCiXx
-         +RX4Bj2aEqdyFCtlchx9cve0gvi3h+uJZaMJ3mvzCbpnxEpKvczsi38Wj6YR8LKmcs3M
-         T8LA==
-X-Gm-Message-State: AOAM530x7udMoX+0zisYniJcTXwto4z5Xoa4Ggh6Zi+ZOijoaNkYHoi4
-        RZd/gn4EGpV4DhY3NFGtIVRT2PYXAA==
-X-Google-Smtp-Source: ABdhPJw5P2i5visZ8O/qmxk5jr6+NrOm5mVoM3YkRYvedXG7ed+OLhlp5GvWW4DQcQMGnD2DdLKm9g==
-X-Received: by 2002:aa7:c95a:: with SMTP id h26mr12800318edt.166.1614531499325;
-        Sun, 28 Feb 2021 08:58:19 -0800 (PST)
+        bh=qr1mInad1mHd60s/UOLdChNop/NTHLYaNHSOHJUdlmo=;
+        b=T8tYp77Ka4fa+d6sD6ymZ9qH4ihHT3zgIgduqh0wQ/7JyzUiqyh+44EbNVNE1drO1H
+         YFf98cNw8FBuyAFjfO/j5vz0PDPb3aD7Y+tclAEVo/gBaGNPQc8MgcMx7JFVFJACiBfw
+         h+b7HMsMLMTHTMk+EK007KKNLqrzBPwKNFUwBeEkJ+jfyQZl2S2+6zLpY56DdDuvJaIt
+         MfOdJA+JeT1vtoAQvppqEQyDdLzQsMBqaWD81GPt4sSjNM17rNF00XqvwMu9i6OjKjZx
+         NUvCCYBKw/8i0TZLeiTOAUibypZ57TTqUvowD2mx969/XYNlnJHOwOdyMyJb1VO6kkYU
+         NkHw==
+X-Gm-Message-State: AOAM531CHBBPZ/2Wnf+YtNLfxyC8y4YeDUxpPD+dAL2YTRraYj2l/cfl
+        vN2XOK5ZkoHBhVdteIbzAw==
+X-Google-Smtp-Source: ABdhPJyCTJZz0pozZlob2zmGh5jlR3vbbJBpM0qwwscmt5Z//64N0IrUKbyykj9NXGLoyLeBYHI+Hw==
+X-Received: by 2002:aa7:c456:: with SMTP id n22mr12563233edr.277.1614531558919;
+        Sun, 28 Feb 2021 08:59:18 -0800 (PST)
 Received: from localhost.localdomain ([46.53.249.223])
-        by smtp.gmail.com with ESMTPSA id t21sm10446091ejc.98.2021.02.28.08.58.18
+        by smtp.gmail.com with ESMTPSA id g1sm7206482edh.31.2021.02.28.08.59.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 08:58:19 -0800 (PST)
-Date:   Sun, 28 Feb 2021 19:58:17 +0300
+        Sun, 28 Feb 2021 08:59:18 -0800 (PST)
+Date:   Sun, 28 Feb 2021 19:59:16 +0300
 From:   Alexey Dobriyan <adobriyan@gmail.com>
 To:     torvalds@linux-foundation.org
 Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        3chas3@gmail.com, linux-atm-general@lists.sourceforge.net,
-        netdev@vger.kernel.org
-Subject: [PATCH 01/11] pragma once: delete include/linux/atm_suni.h
-Message-ID: <YDvLqaIUVaoP8rtm@localhost.localdomain>
+        linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 02/11] pragma once: convert arch/arm/tools/gen-mach-types
+Message-ID: <YDvL5H9BLnLYuI2q@localhost.localdomain>
 References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -65,64 +64,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From c17ac63e1334c742686cd411736699c1d34d45a7 Mon Sep 17 00:00:00 2001
+From 72842f89ae91a4d02ea29604f87c373052bd3f64 Mon Sep 17 00:00:00 2001
 From: Alexey Dobriyan <adobriyan@gmail.com>
-Date: Wed, 10 Feb 2021 21:07:45 +0300
-Subject: [PATCH 01/11] pragma once: delete include/linux/atm_suni.h
+Date: Tue, 9 Feb 2021 14:37:40 +0300
+Subject: [PATCH 02/11] pragma once: convert arch/arm/tools/gen-mach-types
 
-This file has been empty since 2.3.99-pre3!
-Delete it instead of converting to #pragma once.
+Generate arch/arm/include/generated/asm/mach-types.h without include
+guard.
 
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
- drivers/atm/fore200e.c   |  1 -
- drivers/atm/suni.c       |  1 -
- include/linux/atm_suni.h | 12 ------------
- 3 files changed, 14 deletions(-)
- delete mode 100644 include/linux/atm_suni.h
+ arch/arm/tools/gen-mach-types | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/atm/fore200e.c b/drivers/atm/fore200e.c
-index 9a70bee84125..0b9c99c3d218 100644
---- a/drivers/atm/fore200e.c
-+++ b/drivers/atm/fore200e.c
-@@ -21,7 +21,6 @@
- #include <linux/module.h>
- #include <linux/atmdev.h>
- #include <linux/sonet.h>
--#include <linux/atm_suni.h>
- #include <linux/dma-mapping.h>
- #include <linux/delay.h>
- #include <linux/firmware.h>
-diff --git a/drivers/atm/suni.c b/drivers/atm/suni.c
-index c920a8c52925..21e5acc766b8 100644
---- a/drivers/atm/suni.c
-+++ b/drivers/atm/suni.c
-@@ -21,7 +21,6 @@
- #include <linux/timer.h>
- #include <linux/init.h>
- #include <linux/capability.h>
--#include <linux/atm_suni.h>
- #include <linux/slab.h>
- #include <asm/param.h>
- #include <linux/uaccess.h>
-diff --git a/include/linux/atm_suni.h b/include/linux/atm_suni.h
-deleted file mode 100644
-index 84f3aab54468..000000000000
---- a/include/linux/atm_suni.h
-+++ /dev/null
-@@ -1,12 +0,0 @@
--/* atm_suni.h - Driver-specific declarations of the SUNI driver (for use by
--		driver-specific utilities) */
--
--/* Written 1998,2000 by Werner Almesberger, EPFL ICA */
--
--
--#ifndef LINUX_ATM_SUNI_H
--#define LINUX_ATM_SUNI_H
--
--/* everything obsoleted */
--
--#endif
+diff --git a/arch/arm/tools/gen-mach-types b/arch/arm/tools/gen-mach-types
+index cbe1c33bb871..c28cd4b50f76 100644
+--- a/arch/arm/tools/gen-mach-types
++++ b/arch/arm/tools/gen-mach-types
+@@ -23,12 +23,11 @@ NF == 3 {
+ 
+ 
+ END	{
++	  printf("#pragma once\n");
+ 	  printf("/*\n");
+ 	  printf(" * This was automagically generated from %s!\n", FILENAME);
+ 	  printf(" * Do NOT edit\n");
+-	  printf(" */\n\n");
+-	  printf("#ifndef __ASM_ARM_MACH_TYPE_H\n");
+-	  printf("#define __ASM_ARM_MACH_TYPE_H\n\n");
++	  printf(" */\n");
+ 	  printf("#ifndef __ASSEMBLY__\n");
+ 	  printf("/* The type of machine we're running on */\n");
+ 	  printf("extern unsigned int __machine_arch_type;\n");
+@@ -68,6 +67,5 @@ END	{
+ 
+ 	  printf("\n#ifndef machine_arch_type\n");
+ 	  printf("#define machine_arch_type\t__machine_arch_type\n");
+-	  printf("#endif\n\n");
+ 	  printf("#endif\n");
+ 	}
 -- 
 2.29.2
 
