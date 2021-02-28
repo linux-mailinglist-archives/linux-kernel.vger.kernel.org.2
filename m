@@ -2,138 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBC632748D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 22:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7C7327495
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 22:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhB1VNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 16:13:47 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:18634 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbhB1VNo (ORCPT
+        id S231157AbhB1V0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 16:26:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35478 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230019AbhB1V0r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 16:13:44 -0500
-ARC-Seal: i=1; a=rsa-sha256; t=1614546624; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=NCX1BvortND0V29nOu4Tef/booradYZYhwQKXMOg5ljUAs5Cj4AOMmmwYZj7bJuJ1W
-    Jib/rb0ybHfplgvX/IcD2RXlJSJLdXFjF/1KJVCrpqeCLBHDKfHcteA5p8xAvmJd/pfi
-    sIZPb7LrTqkysgii+yZRMufbJMsKF/XcH030IYN2Dh0/N8pDRC4KG0DIxZnCd2q/jNfh
-    A634osdEy9w7mRBWeIJK8XsRwWyemRYlvE3q3j0OiI4NWkpno0xNzce91pfSunLZnMqm
-    097FXskbnFXzkVXeYA1w6/B8AEU82u6lu0XAV0IGynliL8VFt0DCj1UjGx3KeZOOdUIE
-    L3mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1614546624;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=1rqozWhERw2Mzsfqutmb+JRbzNkQ1UqtV2vcMBG6tMU=;
-    b=QQlrG+yjQAIwgF4rGh9UHYDk+yK/hdNJpc3ynZZQ34IwytQ+TmSzudNY6ePnEre1H7
-    V1RXx9oh1HPjRqqzS778XmfzciTGiBhwf5SPg+S6dWLwXXYmMvB2HXe8nTHiilhgS80+
-    kvh8BxL8M3T8nDVYEiejaEjXZMTNUSPgAn6oEKq81uNX0BGF8OAlM8OASr4B/iUX3C1i
-    gSCf0KPlbQOxhM0zbeEtU2+5/MVycTbHCTPEyhILxaW6H4EEYSPreD9itFf2GiZ1m3GD
-    Rh04kVGKg4XNsQKT+bkUeXeTk0qqiHQLulvhUC1TXAVHkiKBT7OxMy7CY0dykkfjun+U
-    CunQ==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1614546624;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=1rqozWhERw2Mzsfqutmb+JRbzNkQ1UqtV2vcMBG6tMU=;
-    b=NWECPwaYIHWZfBq2eMJY4rjlhtjos7jbFHsZDhgJzmyI2QaSXM91f1yOfwmTEieOd+
-    Me2X4uc+olgFjh5TI2z7CKXI4WYuAtaur3bk5kHcG3GyZ00H1OrTB/gsVMLwbPST2ZH7
-    vVxQmh60bzxiZgDwXkHYvM0FlxtJveeAB/3e17F71S3mFJlAUjR3nmht195Qwb5bfrcM
-    FS6xYoXBeb7E5BWa3nbRSeQDBPSfdIrmjXuJl2sPMkXj0jcvvaJJcnP2eE4aZ+3C6bZj
-    WOi0BhWgDEktG+IQzyXHH2jIF7YGQny4et95A9rsXOiXGceq5NkYVbLqtGb/F0SF7vd+
-    C6ag==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlaeXA0Jn04="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.19.0 DYNA|AUTH)
-    with ESMTPSA id L08d93x1SLANpOs
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Sun, 28 Feb 2021 22:10:23 +0100 (CET)
-Subject: Q: What ist the standard way to define connector type and bus format with device tree?
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <F038EBE2-132E-4390-85E3-74AE9FB512A2@goldelico.com>
-Date:   Sun, 28 Feb 2021 22:10:23 +0100
-Cc:     Paul Boddie <paul@boddie.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DCA66EAD-5403-4B0C-9194-F41C4783BD82@goldelico.com>
-References: <CD0942AC-045E-41A2-A24F-F368C9438899@goldelico.com> <F038EBE2-132E-4390-85E3-74AE9FB512A2@goldelico.com>
-To:     Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-X-Mailer: Apple Mail (2.3124)
+        Sun, 28 Feb 2021 16:26:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614547518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3yMfUwMSMlLzTtYBioGpjaiH9NykZNmNU2hz5aZaT5Q=;
+        b=Z8SekN/YB+8RH7h/PwsyaX890VyBxQPySf5BvG68OTE1XMmN6Uw/YhhKhj6PUGZNi3EeBu
+        290V2OceBBqmQrqn5rwqzt4r9q6bCXLXOc+RcKJ1mRd7Cwem6Ec+R4bzilomgBl76zOI67
+        Z8iYeT8yD2sSZiPmyUCy/yi5iM6mohk=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-504-xUyjLNxKOdaMLCDyu-XKcQ-1; Sun, 28 Feb 2021 16:25:17 -0500
+X-MC-Unique: xUyjLNxKOdaMLCDyu-XKcQ-1
+Received: by mail-ed1-f71.google.com with SMTP id i4so7877401edt.11
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 13:25:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3yMfUwMSMlLzTtYBioGpjaiH9NykZNmNU2hz5aZaT5Q=;
+        b=ejne7V3YrJPA23lzfSgV6d/HacX9lp2joBkHiHef+6tXiTZYhN5rb+zDL9WPgH7+tj
+         OyonddkpDc648YCSZRm60CrZbRJaAhoFGzi8KiS12Y0zpNB9/amwpbS2lP1nOCNAQeXy
+         hudoNJOQOEyAnjRrF9C8o4ISZ2ndspzowMEwZHmVCBbFw7wVuFMs+blCNS+SIvCZCeRe
+         TDbO0oCUtQqVeZCWVHPD63ve3913Y7i8U5myZ9kZksPbC4ydkHXRiASeEy2HsR4Lv6XZ
+         opA/lKmYPJlpycbpz0d9oeHxC7+2xx65Rp7LPn6r7J/+4meOFz+ngM0KpIY2Svz12NSL
+         bVTw==
+X-Gm-Message-State: AOAM530/4oNOG2FfU62dBw3WuAqlzF3y0jZ8084t/2pOdlTKrpl3hzFz
+        gQ45hdNdhgcTOPsLuzFeHkP0a9gi9tohqthbPpOtGynNDa7KDyzrGSiXPiAIm9wobu9HNoYOA7q
+        Et6dJwvX4StKFI1Vov0ZIFC98
+X-Received: by 2002:aa7:c403:: with SMTP id j3mr13466256edq.137.1614547515828;
+        Sun, 28 Feb 2021 13:25:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwRcQQYvlSJ36Xy6Hj8V4Z8794sGOmtN+bAL8Csgl0n1MU5SKaQ7rs0ucHXpwyqFI/lJoxhzw==
+X-Received: by 2002:aa7:c403:: with SMTP id j3mr13466237edq.137.1614547515530;
+        Sun, 28 Feb 2021 13:25:15 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id a14sm12258393edu.13.2021.02.28.13.25.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Feb 2021 13:25:14 -0800 (PST)
+Date:   Sun, 28 Feb 2021 16:25:11 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        virtio-dev@lists.oasis-open.org
+Subject: Re: [virtio-dev] Re: [PATCH] vdpa/mlx5: set_features should allow
+ reset to zero
+Message-ID: <20210228162306-mutt-send-email-mst@kernel.org>
+References: <20210223041740-mutt-send-email-mst@kernel.org>
+ <788a0880-0a68-20b7-5bdf-f8150b08276a@redhat.com>
+ <20210223110430.2f098bc0.cohuck@redhat.com>
+ <bbb0a09e-17e1-a397-1b64-6ce9afe18e44@redhat.com>
+ <20210223115833.732d809c.cohuck@redhat.com>
+ <8355f9b3-4cda-cd2e-98df-fed020193008@redhat.com>
+ <20210224121234.0127ae4b.cohuck@redhat.com>
+ <be6713d3-ac98-bbbf-1dc1-a003ed06a156@redhat.com>
+ <20210225135229-mutt-send-email-mst@kernel.org>
+ <0f8eb381-cc98-9e05-0e35-ccdb1cbd6119@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0f8eb381-cc98-9e05-0e35-ccdb1cbd6119@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No expert available?
+On Fri, Feb 26, 2021 at 04:19:16PM +0800, Jason Wang wrote:
+> 
+> On 2021/2/26 2:53 上午, Michael S. Tsirkin wrote:
+> > On Thu, Feb 25, 2021 at 12:36:07PM +0800, Jason Wang wrote:
+> > > On 2021/2/24 7:12 下午, Cornelia Huck wrote:
+> > > > On Wed, 24 Feb 2021 17:29:07 +0800
+> > > > Jason Wang <jasowang@redhat.com> wrote:
+> > > > 
+> > > > > On 2021/2/23 6:58 下午, Cornelia Huck wrote:
+> > > > > > On Tue, 23 Feb 2021 18:31:07 +0800
+> > > > > > Jason Wang <jasowang@redhat.com> wrote:
+> > > > > > > On 2021/2/23 6:04 下午, Cornelia Huck wrote:
+> > > > > > > > On Tue, 23 Feb 2021 17:46:20 +0800
+> > > > > > > > Jason Wang <jasowang@redhat.com> wrote:
+> > > > > > > > > On 2021/2/23 下午5:25, Michael S. Tsirkin wrote:
+> > > > > > > > > > On Mon, Feb 22, 2021 at 09:09:28AM -0800, Si-Wei Liu wrote:
+> > > > > > > > > > > On 2/21/2021 8:14 PM, Jason Wang wrote:
+> > > > > > > > > > > > On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
+> > > > > > > > > > > > > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
+> > > > > > > > > > > > > for legacy") made an exception for legacy guests to reset
+> > > > > > > > > > > > > features to 0, when config space is accessed before features
+> > > > > > > > > > > > > are set. We should relieve the verify_min_features() check
+> > > > > > > > > > > > > and allow features reset to 0 for this case.
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > > It's worth noting that not just legacy guests could access
+> > > > > > > > > > > > > config space before features are set. For instance, when
+> > > > > > > > > > > > > feature VIRTIO_NET_F_MTU is advertised some modern driver
+> > > > > > > > > > > > > will try to access and validate the MTU present in the config
+> > > > > > > > > > > > > space before virtio features are set.
+> > > > > > > > > > > > This looks like a spec violation:
+> > > > > > > > > > > > 
+> > > > > > > > > > > > "
+> > > > > > > > > > > > 
+> > > > > > > > > > > > The following driver-read-only field, mtu only exists if
+> > > > > > > > > > > > VIRTIO_NET_F_MTU is set. This field specifies the maximum MTU for the
+> > > > > > > > > > > > driver to use.
+> > > > > > > > > > > > "
+> > > > > > > > > > > > 
+> > > > > > > > > > > > Do we really want to workaround this?
+> > > > > > > > > > > Isn't the commit 452639a64ad8 itself is a workaround for legacy guest?
+> > > > > > > > > > > 
+> > > > > > > > > > > I think the point is, since there's legacy guest we'd have to support, this
+> > > > > > > > > > > host side workaround is unavoidable. Although I agree the violating driver
+> > > > > > > > > > > should be fixed (yes, it's in today's upstream kernel which exists for a
+> > > > > > > > > > > while now).
+> > > > > > > > > > Oh  you are right:
+> > > > > > > > > > 
+> > > > > > > > > > 
+> > > > > > > > > > static int virtnet_validate(struct virtio_device *vdev)
+> > > > > > > > > > {
+> > > > > > > > > >              if (!vdev->config->get) {
+> > > > > > > > > >                      dev_err(&vdev->dev, "%s failure: config access disabled\n",
+> > > > > > > > > >                              __func__);
+> > > > > > > > > >                      return -EINVAL;
+> > > > > > > > > >              }
+> > > > > > > > > > 
+> > > > > > > > > >              if (!virtnet_validate_features(vdev))
+> > > > > > > > > >                      return -EINVAL;
+> > > > > > > > > > 
+> > > > > > > > > >              if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
+> > > > > > > > > >                      int mtu = virtio_cread16(vdev,
+> > > > > > > > > >                                               offsetof(struct virtio_net_config,
+> > > > > > > > > >                                                        mtu));
+> > > > > > > > > >                      if (mtu < MIN_MTU)
+> > > > > > > > > >                              __virtio_clear_bit(vdev, VIRTIO_NET_F_MTU);
+> > > > > > > > > I wonder why not simply fail here?
+> > > > > > > > I think both failing or not accepting the feature can be argued to make
+> > > > > > > > sense: "the device presented us with a mtu size that does not make
+> > > > > > > > sense" would point to failing, "we cannot work with the mtu size that
+> > > > > > > > the device presented us" would point to not negotiating the feature.
+> > > > > > > > > >              }
+> > > > > > > > > > 
+> > > > > > > > > >              return 0;
+> > > > > > > > > > }
+> > > > > > > > > > 
+> > > > > > > > > > And the spec says:
+> > > > > > > > > > 
+> > > > > > > > > > 
+> > > > > > > > > > The driver MUST follow this sequence to initialize a device:
+> > > > > > > > > > 1. Reset the device.
+> > > > > > > > > > 2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
+> > > > > > > > > > 3. Set the DRIVER status bit: the guest OS knows how to drive the device.
+> > > > > > > > > > 4. Read device feature bits, and write the subset of feature bits understood by the OS and driver to the
+> > > > > > > > > > device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration
+> > > > > > > > > > fields to check that it can support the device before accepting it.
+> > > > > > > > > > 5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step.
+> > > > > > > > > > 6. Re-read device status to ensure the FEATURES_OK bit is still set: otherwise, the device does not
+> > > > > > > > > > support our subset of features and the device is unusable.
+> > > > > > > > > > 7. Perform device-specific setup, including discovery of virtqueues for the device, optional per-bus setup,
+> > > > > > > > > > reading and possibly writing the device’s virtio configuration space, and population of virtqueues.
+> > > > > > > > > > 8. Set the DRIVER_OK status bit. At this point the device is “live”.
+> > > > > > > > > > 
+> > > > > > > > > > 
+> > > > > > > > > > Item 4 on the list explicitly allows reading config space before
+> > > > > > > > > > FEATURES_OK.
+> > > > > > > > > > 
+> > > > > > > > > > I conclude that VIRTIO_NET_F_MTU is set means "set in device features".
+> > > > > > > > > So this probably need some clarification. "is set" is used many times in
+> > > > > > > > > the spec that has different implications.
+> > > > > > > > Before FEATURES_OK is set by the driver, I guess it means "the device
+> > > > > > > > has offered the feature";
+> > > > > > > For me this part is ok since it clarify that it's the driver that set
+> > > > > > > the bit.
+> > > > > > > 
+> > > > > > > 
+> > > > > > > > during normal usage, it means "the feature
+> > > > > > > > has been negotiated".
+> > > > > > > /?
+> > > > > > > 
+> > > > > > > It looks to me the feature negotiation is done only after device set
+> > > > > > > FEATURES_OK, or FEATURES_OK could be read from device status?
+> > > > > > I'd consider feature negotiation done when the driver reads FEATURES_OK
+> > > > > > back from the status.
+> > > > > I agree.
+> > > > > 
+> > > > > 
+> > > > > > > >      (This is a bit fuzzy for legacy mode.)
+> > > > > > ...because legacy does not have FEATURES_OK.
+> > > > > > > The problem is the MTU description for example:
+> > > > > > > 
+> > > > > > > "The following driver-read-only field, mtu only exists if
+> > > > > > > VIRTIO_NET_F_MTU is set."
+> > > > > > > 
+> > > > > > > It looks to me need to use "if VIRTIO_NET_F_MTU is set by device".
+> > > > > > "offered by the device"? I don't think it should 'disappear' from the
+> > > > > > config space if the driver won't use it. (Same for other config space
+> > > > > > fields that are tied to feature bits.)
+> > > > > But what happens if e.g device doesn't offer VIRTIO_NET_F_MTU? It looks
+> > > > > to according to the spec there will be no mtu field.
+> > > > I think so, yes.
+> > > > 
+> > > > > And a more interesting case is VIRTIO_NET_F_MQ is not offered but
+> > > > > VIRTIO_NET_F_MTU offered. To me, it means we don't have
+> > > > > max_virtqueue_pairs but it's not how the driver is wrote today.
+> > > > That would be a bug, but it seems to me that the virtio-net driver
+> > > > reads max_virtqueue_pairs conditionally and handles absence of the
+> > > > feature correctly?
+> > > 
+> > > Yes, see the avove codes:
+> > > 
+> > >          if (virtio_has_feature(vdev, VIRTIO_NET_F_MTU)) {
+> > >                  int mtu = virtio_cread16(vdev,
+> > >                                           offsetof(struct virtio_net_config,
+> > >                                                    mtu));
+> > >                  if (mtu < MIN_MTU)
+> > >                          __virtio_clear_bit(vdev, VIRTIO_NET_F_MTU);
+> > >          }
+> > > 
+> > > So it's probably too late to fix the driver.
+> > > 
+> > Confused. What is wrong with the above? It never reads the
+> > field unless the feature has been offered by device.
+> 
+> 
+> So the spec said:
+> 
+> "
+> 
+> The following driver-read-only field, max_virtqueue_pairs only exists if
+> VIRTIO_NET_F_MQ is set.
+> 
+> "
+> 
+> If I read this correctly, there will be no max_virtqueue_pairs field if the
+> VIRTIO_NET_F_MQ is not offered by device? If yes the offsetof() violates
+> what spec said.
+> 
+> Thanks
 
-Let me refine the question:
+I think that's a misunderstanding. This text was never intended to
+imply that field offsets change beased on feature bits.
+We had this pain with legacy and we never wanted to go back there.
 
-By using the descriptions of panel-common.yaml and panel-timing.yaml it
-is possible to define a simple-panel by pure DTS means.
+This merely implies that without VIRTIO_NET_F_MQ the field
+should not be accessed. Exists in the sense "is accessible to driver".
 
-This timing setup is done by code through:
-
-git blame drivers/gpu/drm/panel/panel-simple.c | grep =
-of_get_display_timing
-4a1d0dbc8332231 (Sam Ravnborg            2020-02-16 19:15:13 +0100  431) =
-	ret =3D of_get_display_timing(np, "panel-timing", timing);
-4a1d0dbc8332231 (Sam Ravnborg            2020-02-16 19:15:13 +0100  566) =
-		if (!of_get_display_timing(dev->of_node, "panel-timing", =
-&dt))
-
-But it seems to lack a mechanism to define the connector type and bus =
-format
-which is needed to make a panel finally work.
-
-Are we missing something or is the code/property missing?
-
-If it is the first, please let us know so that we can use it.
-If code is missing, please let us know so that we can suggest a patch.
-
-BR and thanks,
-Nikolaus
+Let's just clarify that in the spec, job done.
 
 
-> Am 31.01.2021 um 11:54 schrieb H. Nikolaus Schaller =
-<hns@goldelico.com>:
->=20
-> ping?
->=20
->> Am 12.01.2021 um 12:41 schrieb H. Nikolaus Schaller =
-<hns@goldelico.com>:
->>=20
->> Hi,
->> according to bindings/display/panel/panel-common.yaml
->> and by using "panel-simple" as compatible string we
->> can define almost all properties of a DSI panel by a
->> device tree entry.
->>=20
->> Except the connector type and bus format which can only be
->> set by adding the information to the panel-simple tables.
->>=20
->> This leads to big problems because DRM can't match the
->> display with any lcd controller. A smaller issue is a
->> warning:
->>=20
->> [    0.313431] panel-simple claa070vc01: Specify missing =
-connector_type
->>=20
->> Are we missing some documentation or code that reads
->> some "connector-type" and "bus-format" property?
->>=20
->> BR and thanks,
->> Nikolaus
->=20
+
+
+> 
+> > 
+> > 
+> > > > > > > Otherwise readers (at least for me), may think the MTU is only valid
+> > > > > > > if driver set the bit.
+> > > > > > I think it would still be 'valid' in the sense that it exists and has
+> > > > > > some value in there filled in by the device, but a driver reading it
+> > > > > > without negotiating the feature would be buggy. (Like in the kernel
+> > > > > > code above; the kernel not liking the value does not make the field
+> > > > > > invalid.)
+> > > > > See Michael's reply, the spec allows read the config before setting
+> > > > > features.
+> > > > Yes, the period prior to finishing negotiation is obviously special.
+> > > > 
+> > > > > > Maybe a statement covering everything would be:
+> > > > > > 
+> > > > > > "The following driver-read-only field mtu only exists if the device
+> > > > > > offers VIRTIO_NET_F_MTU and may be read by the driver during feature
+> > > > > > negotiation and after VIRTIO_NET_F_MTU has been successfully
+> > > > > > negotiated."
+> > > > > > > > Should we add a wording clarification to the spec?
+> > > > > > > I think so.
+> > > > > > Some clarification would be needed for each field that depends on a
+> > > > > > feature; that would be quite verbose. Maybe we can get away with a
+> > > > > > clarifying statement?
+> > > > > > 
+> > > > > > "Some config space fields may depend on a certain feature. In that
+> > > > > > case, the field exits if the device has offered the corresponding
+> > > > > > feature,
+> > > > > So this implies for !VIRTIO_NET_F_MQ && VIRTIO_NET_F_MTU, the config
+> > > > > will look like:
+> > > > > 
+> > > > > struct virtio_net_config {
+> > > > >            u8 mac[6];
+> > > > >            le16 status;
+> > > > >            le16 mtu;
+> > > > > };
+> > > > > 
+> > > > I agree.
+> > > 
+> > > So consider it's probably too late to fix the driver which assumes some
+> > > field are always persent, it looks to me need fix the spec do declare the
+> > > fields are always existing instead.
+> > > 
+> > > 
+> > > > > >     and may be read by the driver during feature negotiation, and
+> > > > > > accessed by the driver after the feature has been successfully
+> > > > > > negotiated. A shorthand for this is a statement that a field only
+> > > > > > exists if a certain feature bit is set."
+> > > > > I'm not sure using "shorthand" is good for the spec, at least we can
+> > > > > limit the its scope only to the configuration space part.
+> > > > Maybe "a shorthand expression"?
+> > > 
+> > > So the questions is should we use this for all over the spec or it will be
+> > > only used in this speicifc part (device configuration).
+> > > 
+> > > Thanks
+> > > 
 
