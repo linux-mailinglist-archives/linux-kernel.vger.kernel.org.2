@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F343271BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 10:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1F33271BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 10:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhB1JaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 04:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhB1JaC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 04:30:02 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3587C06174A;
-        Sun, 28 Feb 2021 01:29:21 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id g20so7755715plo.2;
-        Sun, 28 Feb 2021 01:29:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GAazO+nBXMsT103snH4x5HkngEVfAp+qpt118APbvvQ=;
-        b=pIlnhbit+gM35+aDuyaV5NeVvHNrbwwCD519PkxP2XwUrwEMWghbyMFj2G81Pemiya
-         wlzNjlP+6QYBGITCINqjk5x/iXAReoRWjIsfEXuXFjT74VZ+AFjTWgfTN278mNbUb++G
-         g780RJiEwZ73STzZ21Ik2Zi+8iTToUgEpapCgbASRnSpdvTD8pRhC160CeR/5ATUJgp+
-         kqOvupwz6T3AxByYib9YrSN/44zOJbOD2dREGBrfkhmKOtwbs1ealfAV/F7oAkltP/BZ
-         HX4X3DR/o1THm7otzSeLFrZLcpp3A9AK95tDeS9KDWIHhdd+BOUXJag4JvEphmqxlWoL
-         BsCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GAazO+nBXMsT103snH4x5HkngEVfAp+qpt118APbvvQ=;
-        b=dGTjgElEMzv+SNwQ1AqxA1xNMHCut3kRGeYRCemzMY82uA5MF6869TOALuIrJ3f+1V
-         q/BOhLi2op98TfKLrB44OovQ9pV8rDFSIbZ7w2j6Jx3wAw5QTaRngJ114UsldxTdwqQo
-         SwImZprATzl4JzDo9POeNDsEjRmok4SNoi3rOuZ/kYPSiYEURnJrnTeFqPlDfE8wQdZB
-         phamKdcFlyhWK5uZrcyBg/OJjiwTcHF+6wPY0ERv3Bj8hl0rGb4U9/TiahoQFW6sGhDt
-         0oMVeIPIiQIbOYXy16M84pd3E3Pg3wbD1QoIWo5EIXwJgsbcDvh+bqVXw/nVrEt5rsoB
-         yIxw==
-X-Gm-Message-State: AOAM530YuXwynqGQ98Mc+xWtwE3g15dHsA7KkwEEqBmy2Qj4tZDt1ZdO
-        LRPHneCmAQlC4f6sGOs8icRUn1lHCQZ7jzzhKaM=
-X-Google-Smtp-Source: ABdhPJypxMQC1yz70/Hvl5zwTafo+UQ9xLB4tEkstbtgsBQmBQThwJuOR5s0O5x+UIxDlfRP8+CuvUv18B18sZIQn5Q=
-X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr12118165pjx.181.1614504561428;
- Sun, 28 Feb 2021 01:29:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
- <20210226141411.2517368-3-linux@rasmusvillemoes.dk> <CAHp75Vc8S2E0vWFcqK-jO9Nhd-Us_7t-aWNj-7k+fWDcqR1XkQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vc8S2E0vWFcqK-jO9Nhd-Us_7t-aWNj-7k+fWDcqR1XkQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 28 Feb 2021 11:29:05 +0200
-Message-ID: <CAHp75VfNHkJp-SMacKdaSuy3gDECs=u4BNMNe2KjYkrDiwb8jg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drivers: misc: add ripple counter driver
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S230446AbhB1Jdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 04:33:38 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:31184 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230125AbhB1Jde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 04:33:34 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app3 (Coremail) with SMTP id cC_KCgDnPdgvYztgVk3ZAQ--.62003S4;
+        Sun, 28 Feb 2021 17:32:34 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Peter Huewe <peterhuewe@gmx.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] tpm: Add missing check in tpm_inf_recv
+Date:   Sun, 28 Feb 2021 17:32:30 +0800
+Message-Id: <20210228093230.5676-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgDnPdgvYztgVk3ZAQ--.62003S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrurW3AFW5Wr48uFyDCw1rZwb_yoW3CFb_C3
+        W8Jwn3C340vFy8CF1UJwn7Xa43Xws5uF1v93WUtay3Z34vkrW5W3yrZry3Zr18Gr4UtFsF
+        9a93XFWfAF1SkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQGBlZdtSfEeAAQsz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 11:07 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Friday, February 26, 2021, Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
->>
->> The only purpose of this driver is to serve as a consumer of the input
->> clock, to prevent it from being disabled by clk_disable_unused().
->
-> We have a clock API to do the same (something like marking it used or so) why do you need a driver?
+The use of wait() in tpm_inf_recv() is almost the same. It's odd that
+we only check the return value and terminate execution flow of one call.
 
-Example:
-https://elixir.bootlin.com/linux/latest/source/drivers/platform/x86/pmc_atom.c#L365
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/char/tpm/tpm_infineon.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-If it's a DT based platform I think you can make it somehow work thru DT.
-
+diff --git a/drivers/char/tpm/tpm_infineon.c b/drivers/char/tpm/tpm_infineon.c
+index 9c924a1440a9..abe00f45aa45 100644
+--- a/drivers/char/tpm/tpm_infineon.c
++++ b/drivers/char/tpm/tpm_infineon.c
+@@ -263,7 +263,9 @@ static int tpm_inf_recv(struct tpm_chip *chip, u8 * buf, size_t count)
+ 		size = ((buf[2] << 8) | buf[3]);
+ 
+ 		for (i = 0; i < size; i++) {
+-			wait(chip, STAT_RDA);
++			ret = wait(chip, STAT_RDA);
++			if (ret)
++				return -EIO;
+ 			buf[i] = tpm_data_in(RDFIFO);
+ 		}
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
