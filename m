@@ -2,140 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36F83272B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D92983272C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 16:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhB1PEf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 28 Feb 2021 10:04:35 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2613 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhB1PEc (ORCPT
+        id S231129AbhB1PGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 10:06:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230413AbhB1PEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 10:04:32 -0500
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DpRN35tl8z67qtQ;
-        Sun, 28 Feb 2021 22:58:11 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sun, 28 Feb 2021 16:03:47 +0100
-Received: from localhost (10.47.88.221) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Sun, 28 Feb
- 2021 15:03:47 +0000
-Date:   Sun, 28 Feb 2021 15:02:39 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ronald =?ISO-8859-1?Q?Tschal=E4r?= <ronald@innovation.ch>
-CC:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH 4/5] HID: apple-ibridge: Add Apple iBridge HID driver
- for T1 chip.
-Message-ID: <20210228150239.00007d34@Huawei.com>
-In-Reply-To: <20210228012643.69944-5-ronald@innovation.ch>
-References: <20210228012643.69944-1-ronald@innovation.ch>
-        <20210228012643.69944-5-ronald@innovation.ch>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Sun, 28 Feb 2021 10:04:54 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB63C06174A;
+        Sun, 28 Feb 2021 07:04:12 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id u18so2055505plc.12;
+        Sun, 28 Feb 2021 07:04:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dvx8sVFIDRwA8HVv8xs6M9vOFGJJY4qZU9vG5iVcN/Y=;
+        b=YsLAgDSNMyIOu25iL5HDcBHtEXYrJHnLmdyiqj1AARPg/PfsaJRNxva/ZmUaVRdoHv
+         rLkWgBcdz1Yrs/KlgNnltALdC4XAmlJUO2eW3dZuSTOvJgoo7TutGtB7KMtcvhKlkk4D
+         YAi7rWCAedue4X5LMIe/VeMgG1eKG5toeZARu1a6Cov0xPzJlSFtI+7JlZGwqxWjk7UO
+         /9Y4RXC1tJZQ6aH44tBe4XGScQbMLQJyWuVd15aQ58fCSXCqGm0XH4w79CcNAG2EJkJV
+         SQpQK5Z9SyaL1SCQOI78U01EW4Q3Myc/0sx6HjYIAR12WdeSidWSmehInifKRV7ROz4p
+         u3Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dvx8sVFIDRwA8HVv8xs6M9vOFGJJY4qZU9vG5iVcN/Y=;
+        b=OOfBU7ePH+U0995OjVNzGlfeWgsDPrCg27Hhu/peuniZLuwExuh3s/+oCWMm7jI1u+
+         WFYwkbkBeSkBsbMbpZaqlhe53AYNx/V5VfGyNMaXbj2kg7BvS7w8W6bIySCMHyRahwit
+         +AZeMcx49u/OPtlawECwFAdf6u4qWn5uchGeO1eTWtrfgRRyFY0OHQcuPuMMJnm+XZQo
+         s6E74pjYLOHwpkvl0QMQb6OhTPy1/aSOgEzQN0jzSlTPF2NIrA0N1JiuXyDDrNFhtueJ
+         XVrRR/LqjwBzXDsr2oHTscy+fqd5S/G1me4JUlFXDNKkzuXkbM8gSkg/ikzV1R1m5myD
+         pZbQ==
+X-Gm-Message-State: AOAM532A7l62AJ+pBvlKGh3N5+KrfsFwAm1tXtrtTfOkXEe+q8Kl4gqs
+        9vwJN62DXCwmqBIbUZyJexo=
+X-Google-Smtp-Source: ABdhPJx9/Zp+U49TtzTJQxCqHd5e6WrN5zxO4e73fPvqhTp4oeAJQVgJ5GrOQDMc7rVs1BQ0aBf5RA==
+X-Received: by 2002:a17:90a:8a8b:: with SMTP id x11mr11255886pjn.151.1614524651791;
+        Sun, 28 Feb 2021 07:04:11 -0800 (PST)
+Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:0:561f:afde:af07:8820])
+        by smtp.gmail.com with ESMTPSA id 142sm8391331pfz.196.2021.02.28.07.04.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Feb 2021 07:04:11 -0800 (PST)
+From:   Tianyu Lan <ltykernel@gmail.com>
+To:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, davem@davemloft.net,
+        kuba@kernel.org, gregkh@linuxfoundation.org, arnd@arndb.de,
+        akpm@linux-foundation.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>, linux-arch@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-scsi@vger.kernel.org,
+        netdev@vger.kernel.org, vkuznets@redhat.com,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com,
+        sunilmut@microsoft.com
+Subject: [RFC PATCH 00/12] x86/Hyper-V: Add Hyper-V Isolation VM support    
+Date:   Sun, 28 Feb 2021 10:03:03 -0500
+Message-Id: <20210228150315.2552437-1-ltykernel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.47.88.221]
-X-ClientProxiedBy: lhreml718-chm.china.huawei.com (10.201.108.69) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 27 Feb 2021 17:26:42 -0800
-Ronald Tschalär <ronald@innovation.ch> wrote:
+From: Tianyu Lan <Tianyu.Lan@microsoft.com>
 
-> The iBridge device provides access to several devices, including:
-> - the Touch Bar
-> - the iSight webcam
-> - the light sensor
-> - the fingerprint sensor
-> 
-> This driver provides the core support for managing the iBridge device
-> and the access to the underlying devices. In particular, the
-> functionality for the touch bar and light sensor is exposed via USB HID
-> interfaces, and on devices with the T1 chip one of the HID devices is
-> used for both functions. So this driver creates virtual HID devices, one
-> per top-level report collection on each HID device (for a total of 3
-> virtual HID devices). The sub-drivers then bind to these virtual HID
-> devices.
-> 
-> This way the Touch Bar and ALS drivers can be kept in their own modules,
-> while at the same time making them look very much like as if they were
-> connected to the real HID devices. And those drivers then work (mostly)
-> without further changes on MacBooks with the T2 chip that don't need
-> this driver.
-> 
-> Signed-off-by: Ronald Tschalär <ronald@innovation.ch>
-Hi Ronald.
+Hyper-V provides two kinds of Isolation VMs. VBS(Virtualization-based
+security) and AMD SEV-SNP unenlightened Isolation VMs. This patchset
+is to add support for these Isolation VM support in Linux.
 
-This is far from my specialty but mostly looks sensible to me.
+The memory of these vms are encrypted and host can't access guest
+memory directly. Hyper-V provides new host visibility hvcall and
+the guest needs to call new hvcall to mark memory visible to host
+before sharing memory with host. For security, all network/storage
+stack memory should not be shared with host and so there is bounce
+buffer requests.
 
-Just one thing stood out that I couldn't understand. See below.
+Vmbus channel ring buffer already plays bounce buffer role because
+all data from/to host needs to copy from/to between the ring buffer
+and IO stack memory. So mark vmbus channel ring buffer visible.
 
-Jonathan
+There are two exceptions - packets sent by vmbus_sendpacket_
+pagebuffer() and vmbus_sendpacket_mpb_desc(). These packets
+contains IO stack memory address and host will access these memory.
+So add allocation bounce buffer support in vmbus for these packets.
 
-> new file mode 100644
-> index 0000000000000..5f2b71c199746
-> --- /dev/null
-> +++ b/drivers/hid/apple-ibridge.c
-> @@ -0,0 +1,682 @@
+For SNP isolation VM, guest needs to access the shared memory via
+extra address space which is specified by Hyper-V CPUID HYPERV_CPUID_
+ISOLATION_CONFIG. The access physical address of the shared memory
+should be bounce buffer memory GPA plus with shared_gpa_boundary
+reported by CPUID.
 
-...
+Tianyu Lan (12):
+  x86/Hyper-V: Add visibility parameter for vmbus_establish_gpadl()
+  x86/Hyper-V: Add new hvcall guest address host visibility support
+  x86/HV: Initialize GHCB page and shared memory boundary
+  HV: Add Write/Read MSR registers via ghcb
+  HV: Add ghcb hvcall support for SNP VM
+  HV/Vmbus: Add SNP support for VMbus channel initiate message
+  hv/vmbus: Initialize VMbus ring buffer for Isolation VM
+  x86/Hyper-V: Initialize bounce buffer page cache and list
+  x86/Hyper-V: Add new parameter for
+    vmbus_sendpacket_pagebuffer()/mpb_desc()
+  HV: Add bounce buffer support for Isolation VM
+  HV/Netvsc: Add Isolation VM support for netvsc driver
+  HV/Storvsc: Add bounce buffer support for Storvsc
 
-> +
-> +#ifdef CONFIG_PM
-> +/**
-> + * appleib_forward_int_op() - Forward a hid-driver callback to all drivers on
-> + * all virtual HID devices attached to the given real HID device.
-> + * @hdev the real hid-device
-> + * @forward a function that calls the callback on the given driver
-> + * @args arguments for the forward function
-> + *
-> + * This is for callbacks that return a status as an int.
-> + *
-> + * Returns: 0 on success, or the first error returned by the @forward function.
-> + */
-> +static int appleib_forward_int_op(struct hid_device *hdev,
-> +				  int (*forward)(struct hid_driver *,
-> +						 struct hid_device *, void *),
-> +				  void *args)
-> +{
-> +	struct appleib_hid_dev_info *hdev_info = hid_get_drvdata(hdev);
-> +	struct hid_device *sub_hdev;
-> +	int rc = 0;
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(hdev_info->sub_hdevs); i++) {
-> +		sub_hdev = hdev_info->sub_hdevs[i];
-> +		if (sub_hdev->driver) {
-> +			rc = forward(sub_hdev->driver, sub_hdev, args);
-> +			if (rc)
-> +				break;
+ arch/x86/hyperv/Makefile           |   2 +-
+ arch/x86/hyperv/hv_init.c          |  70 +++-
+ arch/x86/hyperv/ivm.c              | 257 ++++++++++++
+ arch/x86/include/asm/hyperv-tlfs.h |  22 +
+ arch/x86/include/asm/mshyperv.h    |  26 +-
+ arch/x86/kernel/cpu/mshyperv.c     |   2 +
+ drivers/hv/Makefile                |   2 +-
+ drivers/hv/channel.c               | 103 ++++-
+ drivers/hv/channel_mgmt.c          |  30 +-
+ drivers/hv/connection.c            |  68 +++-
+ drivers/hv/hv.c                    | 196 ++++++---
+ drivers/hv/hv_bounce.c             | 619 +++++++++++++++++++++++++++++
+ drivers/hv/hyperv_vmbus.h          |  42 ++
+ drivers/hv/ring_buffer.c           |  83 +++-
+ drivers/net/hyperv/hyperv_net.h    |   5 +
+ drivers/net/hyperv/netvsc.c        | 111 +++++-
+ drivers/scsi/storvsc_drv.c         |  46 ++-
+ drivers/uio/uio_hv_generic.c       |  13 +-
+ include/asm-generic/hyperv-tlfs.h  |   1 +
+ include/asm-generic/mshyperv.h     |  24 +-
+ include/linux/hyperv.h             |  46 ++-
+ mm/ioremap.c                       |   1 +
+ mm/vmalloc.c                       |   1 +
+ 23 files changed, 1614 insertions(+), 156 deletions(-)
+ create mode 100644 arch/x86/hyperv/ivm.c
+ create mode 100644 drivers/hv/hv_bounce.c
 
-return rc; here would be cleaner.
-
-> +		}
-> +
-> +		break;
-
-This is unusual.  It's a for loop but as far as I can see only first iteration
-can ever run as we exit the loop at this break if we haven't done so earlier.
-What is the intent here?
-
-> +	}
-> +
-> +	return rc;
-> +}
+-- 
+2.25.1
 
