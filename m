@@ -2,275 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D54A3274D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 23:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8942F3274D9
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 23:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231532AbhB1W0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 17:26:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbhB1W0M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 17:26:12 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BD3C06174A;
-        Sun, 28 Feb 2021 14:25:32 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id f1so22424073lfu.3;
-        Sun, 28 Feb 2021 14:25:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wBQe5V0IU8TiizdPCwRfk89mG+ivUeczfqhWGif3PEM=;
-        b=KXicWDcP0XFzuvos+V9JSSKwR9ylGxji3fjKpRnTYUQoA+Ussbqsbo5RJpRsENjw1E
-         v4rfMSBCPdfHpdepmMrwW0prFaogRsFeGN3pxJn9mXWkBOLB5JmGVpbFd60PTqTQ6t2v
-         TWG13ZquLzRkpwhWqt47xJ/i/yYBrTJawzJ8CFhtaPFQYOykAjcwGwsQT802bzNaSg4w
-         I8YB6Ct5HwUZyNTzHLqCS3l91W8FY3MtrLQyxpzkOoYPN7qJZAIU8NuUphVIYldZLG5o
-         vp9aQg/+/I56aalGAukog/q/3tpUL7fpq3chSekT8drvdhrudQGbo7FjmBQBDhp20Y1R
-         yh4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wBQe5V0IU8TiizdPCwRfk89mG+ivUeczfqhWGif3PEM=;
-        b=TQhKzx1erdKL8Eyu+fBpA31d2DV73jTwoZSmfy3KZawNVVbeN/x27npNWq4CT1xSx2
-         +hy9+h8OC8Ki3ZxgGRfANh9/pjHPbeDwg7/SHlJEHuJ0OLbV4rJXZFEtt8srUSXJ1PDj
-         RVapxo/U/4xkOrzlrRQjjgqIayKFTvTl5Xlu0lLU7+17XnJ8zYoY8YFgx+NJ/zh0JSOA
-         x9edEm64/RmnRiUSe3E+nR/Y22vJkPa8ssYz5grhyLXJ/L4hLmXwJTUqMCGtFdsFbZBs
-         nUj/cxZ2LPiqLdnZ2/dqJDTHBrKX+fDnnw6WOF4uB30G3n/L6rVE1s8RW3lY8+wgTfjL
-         ewlw==
-X-Gm-Message-State: AOAM533PvUSCXZn0GvvkUhoaWwoY5g+UReBJcLpIH6708WQyZOnCZIWy
-        oLto47yq+HiyRLeCsE/HyBB6DY5dlyPyOpZ5aMI=
-X-Google-Smtp-Source: ABdhPJzrtzCov+zooWsD/CKa4ctwzQOcIAMA/ZKd/IK7udDRmLu4boBcDbptCcZeMyoTz7xloqwWZNuaoUfKK2LXX0M=
-X-Received: by 2002:a19:404f:: with SMTP id n76mr8055841lfa.184.1614551130649;
- Sun, 28 Feb 2021 14:25:30 -0800 (PST)
+        id S231562AbhB1WaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 17:30:25 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39807 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231534AbhB1WaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 17:30:23 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DpdNz3hTsz9sWD;
+        Mon,  1 Mar 2021 09:29:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614551379;
+        bh=p+bZDgqx03t8WGhBZ6AXbMgZRxejBJLIyk/vWmrxN6g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OIudWXD3JgGfOn2NJmGGlusS0SzxB6I7ixy4Hdgf9QXGmv2EDlRNs449DRirf1Gf+
+         z0zD6B3XJiQiriBaaWHZ5iqIb7JcJm07aI470eHvIbJ+UKl+yhck64fIOwCV2okstY
+         OXZHFz16WquBW/pbrcfw8BNu01M4eOWzANTSxgAEABzbmprgVJ0lQYk81bMGc8D4X5
+         mXnmOCnF3k5Fk9nwOlWemV7A6jTU3wcVbAnVS437GhmPh6ShThRCiX/2sVF1ECG0tC
+         U2lv1qEDcxY4R1bf0v+jIcSR6Q24Rpc63uOp/U0/ZZ2noUu+3v+M8183TWRd4yQlra
+         2RjTxVkk8Kkkg==
+Date:   Mon, 1 Mar 2021 09:29:38 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ fscache tree
+Message-ID: <20210301092938.33116d24@canb.auug.org.au>
+In-Reply-To: <20210211212437.6d3df60f@canb.auug.org.au>
+References: <20210211212437.6d3df60f@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210222102456.6692-1-lhenriques@suse.de> <20210224142307.7284-1-lhenriques@suse.de>
- <CAOQ4uxi3-+tOgHV_GUnWtJoQXbV5ZS9qDZsLsd9sJxX5Aftyew@mail.gmail.com>
- <6b896b29-6fc1-0586-ef31-f2f3298b56b0@gmail.com> <CAOQ4uxgFCBNwRD7e1srwaVrZMGfOE_JXENL4Q2En52srdj2AYA@mail.gmail.com>
- <CAH2r5mvJPh6H_Owt7QiBY0xWO0T6ai65R5tspn+cDru0_P0V4A@mail.gmail.com> <CAOQ4uxix2dTUcV+GF0+6vbw1_6dv3JSyBSLSeQH5Gsnwtf+8_A@mail.gmail.com>
-In-Reply-To: <CAOQ4uxix2dTUcV+GF0+6vbw1_6dv3JSyBSLSeQH5Gsnwtf+8_A@mail.gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Sun, 28 Feb 2021 16:25:19 -0600
-Message-ID: <CAH2r5mv4zkPCTTX-r+SYS0QLR1ix5TVeThMp-fx+=oUU_ht3Ow@mail.gmail.com>
-Subject: Re: [PATCH] copy_file_range.2: Kernel v5.12 updates
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        Luis Henriques <lhenriques@suse.de>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Jt8wmJbd/vd120kPu_VcB8R";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 1:36 AM Amir Goldstein <amir73il@gmail.com> wrote:
+--Sig_/Jt8wmJbd/vd120kPu_VcB8R
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Thu, 11 Feb 2021 21:24:37 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> On Sun, Feb 28, 2021 at 1:08 AM Steve French <smfrench@gmail.com> wrote:
-> >
-> > On Fri, Feb 26, 2021 at 11:43 PM Amir Goldstein <amir73il@gmail.com> wrote:
-> > >
-> > > On Sat, Feb 27, 2021 at 12:19 AM Alejandro Colomar (man-pages)
-> > > <alx.manpages@gmail.com> wrote:
-> > > >
-> > > > Hello Amir, Luis,
-> > > >
-> > > > On 2/24/21 5:10 PM, Amir Goldstein wrote:
-> > > > > On Wed, Feb 24, 2021 at 4:22 PM Luis Henriques <lhenriques@suse.de> wrote:
-> > > > >>
-> > > > >> Update man-page with recent changes to this syscall.
-> > > > >>
-> > > > >> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> > > > >> ---
-> > > > >> Hi!
-> > > > >>
-> > > > >> Here's a suggestion for fixing the manpage for copy_file_range().  Note that
-> > > > >> I've assumed the fix will hit 5.12.
-> > > > >>
-> > > > >>   man2/copy_file_range.2 | 10 +++++++++-
-> > > > >>   1 file changed, 9 insertions(+), 1 deletion(-)
-> > > > >>
-> > > > >> diff --git a/man2/copy_file_range.2 b/man2/copy_file_range.2
-> > > > >> index 611a39b8026b..b0fd85e2631e 100644
-> > > > >> --- a/man2/copy_file_range.2
-> > > > >> +++ b/man2/copy_file_range.2
-> > > > >> @@ -169,6 +169,9 @@ Out of memory.
-> > > > >>   .B ENOSPC
-> > > > >>   There is not enough space on the target filesystem to complete the copy.
-> > > > >>   .TP
-> > > > >> +.B EOPNOTSUPP
-> > > >
-> > > > I'll add the kernel version here:
-> > > >
-> > > > .BR EOPNOTSUPP " (since Linux 5.12)"
-> > >
-> > > Error could be returned prior to 5.3 and would be probably returned
-> > > by future stable kernels 5.3..5.12 too
-> > >
-> > > >
-> > > > >> +The filesystem does not support this operation >> +.TP
-> > > > >>   .B EOVERFLOW
-> > > > >>   The requested source or destination range is too large to represent in the
-> > > > >>   specified data types.
-> > > > >> @@ -187,7 +190,7 @@ refers to an active swap file.
-> > > > >>   .B EXDEV
-> > > > >>   The files referred to by
-> > > > >>   .IR fd_in " and " fd_out
-> > > > >> -are not on the same mounted filesystem (pre Linux 5.3).
-> > > > >> +are not on the same mounted filesystem (pre Linux 5.3 and post Linux 5.12).
-> > > >
-> > > > I'm not sure that 'mounted' adds any value here.  Would you remove the
-> > > > word here?
-> > >
-> > > See rename(2). 'mounted' in this context is explained there.
-> > > HOWEVER, it does not fit here.
-> > > copy_file_range() IS allowed between two mounts of the same filesystem instance.
-> > >
-> > > To make things more complicated, it appears that cross mount clone is not
-> > > allowed via FICLONE/FICLONERANGE ioctl, so ioctl_ficlonerange(2) man page
-> > > also uses the 'mounted filesystem' terminology for EXDEV
-> > >
-> > > As things stand now, because of the fallback to clone logic,
-> > > copy_file_range() provides a way for users to clone across different mounts
-> > > of the same filesystem instance, which they cannot do with the FICLONE ioctl.
-> > >
-> > > Fun :)
-> > >
-> > > BTW, I don't know if preventing cross mount clone was done intentionally,
-> > > but as I wrote in a comment in the code once:
-> > >
-> > >         /*
-> > >          * FICLONE/FICLONERANGE ioctls enforce that src and dest files are on
-> > >          * the same mount. Practically, they only need to be on the same file
-> > >          * system.
-> > >          */
-> > >
-> > > >
-> > > > It reads as if two separate devices with the same filesystem type would
-> > > > still give this error.
-> > > >
-> > > > Per the LWN.net article Amir shared, this is permitted ("When called
-> > > > from user space, copy_file_range() will only try to copy a file across
-> > > > filesystems if the two are of the same type").
-> > > >
-> > > > This behavior was slightly different before 5.3 AFAICR (was it?) ("until
-> > > > then, copy_file_range() refused to copy between files that were not
-> > > > located on the same filesystem.").  If that's the case, I'd specify the
-> > > > difference, or more probably split the error into two, one before 5.3,
-> > > > and one since 5.12.
-> > > >
-> > >
-> > > True.
-> > >
-> > > > >
-> > > > > I think you need to drop the (Linux range) altogether.
-> > > >
-> > > > I'll keep the range.  Users of 5.3..5.11 might be surprised if the
-> > > > filesystems are different and they don't get an error, I think.
-> > > >
-> > > > I reworded it to follow other pages conventions:
-> > > >
-> > > > .BR EXDEV " (before Linux 5.3; or since Linux 5.12)"
-> > > >
-> > > > which renders as:
-> > > >
-> > > >         EXDEV (before Linux 5.3; or since Linux 5.12)
-> > > >                The files referred to by fd_in and fd_out are not on
-> > > >                the same mounted filesystem.
-> > > >
-> > >
-> > > drop 'mounted'
-> > >
-> > > >
-> > > > > What's missing here is the NFS cross server copy use case.
-> > > > > Maybe:
-> >
-> > At least for the SMB3 kernel server (ksmbd "cifsd") looks like they use splice.
-> > And for the user space CIFS/SMB3 server (like Samba) they have a configurable
-> > plug in library interface ("Samba VFS modules") that would allow you
-> > to implement
-> > cross filesystem copy optimally for your version of Linux and plug
-> > this into Samba
-> > with little work on your part.
-> >
-> > > >
-> > > > Again, this wasn't true before 5.3, right?
-> > > >
-> > >
-> > > Right.
-> > > Actually, v5.3 provides the vfs capabilities for filesystems to support
-> > > cross fs copy. I am not sure if NFS already implements cross fs copy in
-> > > v5.3 and not sure about cifs. Need to get input from nfs/cis developers
-> > > or dig in the release notes for server-side copy.
-> >
-> > The SMB3 protocol has multiple ways to do "server side copy" (copy
-> > offload to the server), some of which would apply to your example.
-> > The case of "reflink" in many cases would be most efficient, and is supported
-> > by the Linux client (see MS-SMB2 protocol specification section 3.3.5.15.18) but
-> > is supported by fewer server file systems, so probably more important
-> > to focus on
-> > the other mechanisms which are server side copy rather than clone.  The most
-> > popular way, supported by most servers, is  "CopyChunk" - 100s of
-> > millions of systems
-> > support this (if not more) - see MS-SMB2 protocol specification
-> > section 2.2.31.1 and
-> > 3.3.5.15.16 - there are various cases where two different SMB3 mounts
-> > on the same
-> > client could handle cross mount server side copy.
-> >
-> > There are other mechanisms supported by fewer servers SMB3 ODX/T10 style copy
-> > offload (Windows and some others see e.g. Gordon at Nexenta's presentation
-> > https://www.slideshare.net/gordonross/smb3-offload-data-transfer-odx)
-> > but still popular for virtualization workloads.  For this it could be
-> > even more common
-> > for those to be different mounts on the client.  The Linux client does
-> > not support
-> > the SMB3 ODX/T10 offload yet but it would be good to add support for it.
-> > There is a nice description of its additional benefits at
-> > https://docs.microsoft.com/en-us/windows-hardware/drivers/storage/offloaded-data-transfer
-> >
-> > But - yes SMB3 on Linux can have cross mount file copy today, which is
-> > far more efficient
->
-> Can have? or does have?
-> IIUC, server-side copy ability exists for "same cifs fs" for a long time and
-> since v5.3, it is available for "same cifs connection", which is not exactly
-> the same as "same cifs fs" but also not really different for most people.
-> Can you elaborate about  that?
-> Just assume the server can do anything. What can the Linux client do
-> since v5.3 or later?
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+>=20
+>   include/linux/pagemap.h
+>=20
+> between commits:
+>=20
+>   13aecd8259dc ("mm: Implement readahead_control pageset expansion")
+>   9a28f7e68602 ("netfs: Rename unlock_page_fscache() and wait_on_page_fsc=
+ache()")
+>=20
+> from the fscache tree and commits:
+>=20
+>   cd669a9cbd89 ("mm/filemap: add mapping_seek_hole_data")
+>   34c37da5f411 ("mm/filemap: pass a sleep state to put_and_wait_on_page_l=
+ocked")
+>=20
+> from the akpm-current tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc include/linux/pagemap.h
+> index a88ccc9ab0b1,20225b067583..000000000000
+> --- a/include/linux/pagemap.h
+> +++ b/include/linux/pagemap.h
+> @@@ -682,22 -681,7 +682,21 @@@ static inline int wait_on_page_locked_k
+>   	return wait_on_page_bit_killable(compound_head(page), PG_locked);
+>   }
+>  =20
+>  +/**
+>  + * wait_on_page_private_2 - Wait for PG_private_2 to be cleared on a pa=
+ge
+>  + * @page: The page
+>  + *
+>  + * Wait for the PG_private_2 page bit to be removed from a page.  This =
+is, for
+>  + * example, used to handle a netfs page being written to a local disk c=
+ache,
+>  + * thereby allowing writes to the cache for the same page to be seriali=
+sed.
+>  + */
+>  +static inline void wait_on_page_private_2(struct page *page)
+>  +{
+>  +	if (PagePrivate2(page))
+>  +		wait_on_page_bit(compound_head(page), PG_private_2);
+>  +}
+>  +
+> - extern void put_and_wait_on_page_locked(struct page *page);
+> -=20
+> + int put_and_wait_on_page_locked(struct page *page, int state);
+>   void wait_on_page_writeback(struct page *page);
+>   extern void end_page_writeback(struct page *page);
+>   void wait_for_stable_page(struct page *page);
+> @@@ -772,11 -756,11 +771,13 @@@ int add_to_page_cache_lru(struct page *
+>   				pgoff_t index, gfp_t gfp_mask);
+>   extern void delete_from_page_cache(struct page *page);
+>   extern void __delete_from_page_cache(struct page *page, void *shadow);
+> - int replace_page_cache_page(struct page *old, struct page *new, gfp_t g=
+fp_mask);
+> + void replace_page_cache_page(struct page *old, struct page *new);
+>   void delete_from_page_cache_batch(struct address_space *mapping,
+>   				  struct pagevec *pvec);
+>  +void readahead_expand(struct readahead_control *ractl,
+>  +		      loff_t new_start, size_t new_len);
+> + loff_t mapping_seek_hole_data(struct address_space *, loff_t start, lof=
+f_t end,
+> + 		int whence);
+>  =20
+>   /*
+>    * Like add_to_page_cache_locked, but used to add newly allocated pages:
 
-Inside the SMB3 client (cifs.ko) we check that the file handles provided
-are for the same authenticated user to the same server, so
-e.g. you could mount //server/share on /mnt1 and //server/anothershare on /mnt2
-and do a copy_file_range from /mnt1/file1 to /mnt2/file2 even though these are
-different mounts.   The cifs client should allow additional cases of cross mount
-copy, but at least this helps for various common scenarios and is very widely
-supported on most servers as well.
+This is now a conflict between the fscache tree and Linus' tree.
 
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-Thanks,
+--Sig_/Jt8wmJbd/vd120kPu_VcB8R
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Steve
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA8GVIACgkQAVBC80lX
+0GxZYwf/bEUsErGa2YVe74mxg7z+Xm9GHNvIBb3GY0fCM+R9Vy/0J+3CORSKygaq
+mSw3TG1PKfrPSrQCI4+UxV8OhZrm/uqi07ix3fac1JQSwv+TnnoOcb2Ly0ztta4+
+1VKcO/wlGoHgWcX6f5iE1J0TK7J8XwE0FK+xh4e3RhI04oPiiNMbRdsyAfKsDvut
+B2ughBalvR6eDi84aTp9N0sfyiVpyWenIE9yIgOmq6p8K1aWhIGF8bjc1LXie9lR
+jQWLr+khYt2DW1s45fLz6FDF52JUhzGHTO7xX4R62FrVTOzS0ZsW0KYIeu3kQGIO
+aNrw79TSBS6sVTxzEJ4kJKCJZnx+jQ==
+=qw/J
+-----END PGP SIGNATURE-----
+
+--Sig_/Jt8wmJbd/vd120kPu_VcB8R--
