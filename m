@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABDF3273B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688053273B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhB1Rrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 12:47:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56578 "EHLO
+        id S231376AbhB1Ry5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 12:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhB1Rrn (ORCPT
+        with ESMTP id S231295AbhB1Ryy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 12:47:43 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E34C06174A;
-        Sun, 28 Feb 2021 09:47:03 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id c10so12650655ilo.8;
-        Sun, 28 Feb 2021 09:47:03 -0800 (PST)
+        Sun, 28 Feb 2021 12:54:54 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF98FC06174A;
+        Sun, 28 Feb 2021 09:54:13 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id a23so200791pga.8;
+        Sun, 28 Feb 2021 09:54:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I6OXSfkU2qK5xePiGbnM2gczF9Z8FwxWE7VO3mRICM8=;
-        b=sl6QcBrQU9mYzEYJD9qnsQp3q5UrEqLuGzoDh4EAEbUTvc2Rx8aFjyJNorSvpQq2s8
-         jqTnNKGchZPcv7AJc3ryfh3DgrLBuKVdpqVkkTMvSf8YOD3PtadVf2XyJjX09heyqiPl
-         G+9HKs9LsJsMDlsQXxhU0v1So/mQPKS7XvdXRiZ19zR/glvF2O0hY2dVA/842zIxuxds
-         dtc2cfxqm7Ag/CO6CP+MZkIly7i7jQ8El8wUjHyutHbAxQWq/wGq+X6Xh2qCU3NBYNeZ
-         RtblPAq1NkA0ShodBI7rObZxleZ1/hJ4WZQe/wKR9c/mOMarDWHpcyd/8tTBqBSnqhGq
-         d1kA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0KoH4BIRHrZnQv6fHrG8+mnofwMyjzrrxakEBRTgsLc=;
+        b=kPr1XgmxI4BpLFOhEnzsg6CE8HuVUVSNnbFhPDQXbY3ZHybwJysAC4vDUt37RoPf7x
+         qn4kn646da0/epMowC97GhtKmFHECXiiaisjkSVmmX+L39Ix2TWGoSDqQS2JC5A2paow
+         sMcKJVxWb1Z1NzFQnycrsg+/4YnHPgECc3Q3lZPgAQKoafxp1hXS+I5Kv2gpM/kGdbv3
+         iAXPO4IGArAS4Qt7EvlEwTQpDjFDDEq2tQQws2cPFL6iZ17RPlqVbk14XxH0yvLfj4MX
+         y3ZJl2+ibd2UE8Cgya4sJyCEiA+ah8ABuWnQ1g/cjLWt00qUX4+opjNrF+dHpQyHDL35
+         IaOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I6OXSfkU2qK5xePiGbnM2gczF9Z8FwxWE7VO3mRICM8=;
-        b=SzuhhSeiZzy2vxOXaFZKehlCoA+BN0Be3nz1zCKgTvjg21FmHjSZPQrXSVTuVN5/Lc
-         i74cD3fX4539upABadcwAcnmE3Dp/Ce8um4nj1QuiZFTK2IdPiUiY5I2mZc59DOuqsDn
-         oAPY5+iqgZEda70mVgzfBCpmPuCstOB8Z8fq7eOY9zJWRr9GnvKxd5scUf6CMkQq4yfj
-         D1GeYOFA2vdjin0AXEFvPU+y5cI6w4Itt3HSMnad0q1SyHr6w2jC43QpHyWf9BEFCjg7
-         3QpORKWRHSpcZagpwwL+MwD/7r1g6LHwpVuom4GngobewD8HPQH5r3IgW6C7LY+hpPrM
-         m69Q==
-X-Gm-Message-State: AOAM530e5Pg4dTsFooi6AmzCh4NTFPTRISqZJQeCZ30CzHA0r0SGF4Eb
-        gcBQoDFWoKqPAzr+kA2pNiBjRRTRirw0enqF//o=
-X-Google-Smtp-Source: ABdhPJz9GyuSHR8GJSrILgrqKMGNPAKwi4A/JxsF5OUmPJNe/ztFcAzA2oAc5m8lG1A1TCoQ8szZtvf3uOYQ8vx0p34=
-X-Received: by 2002:a05:6e02:138f:: with SMTP id d15mr10222075ilo.217.1614534422599;
- Sun, 28 Feb 2021 09:47:02 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0KoH4BIRHrZnQv6fHrG8+mnofwMyjzrrxakEBRTgsLc=;
+        b=EDGvPFHwxXDie3utNC/ycrxA4Gc8SZ4xy3Aw8DxbTl8sWpmamQEjeyV2+k8ejEPMCs
+         quqQjbLuWpM0YIeXbeeWbZF3BNtgPd0qO3rzjX+pF2rHK8A/5oncIUYTFG2BMW6yQdA+
+         Tmzs81EdGJUzWCjNfEmUFlAsNpgMvxE1B8MIBldQzX174I2kKkU2mXwPl6Z7CO95n9Cz
+         RYF2fMhZpvvnb4bU0bMv04N1TwxaacwMp4CDsoS2AYxDfhcuBD+zeYVpcj8C9f1DMKrr
+         lE+0GOKVxcKI3sAu5iBDQ6EjqvWgETwxNBqSo4ZwqLNOPGAMZqNkp6xch7oVr6uCIrzV
+         IoGg==
+X-Gm-Message-State: AOAM53184LBb9FEko4LZRfNo4C+3NAwOK1VxaJYvyRozYwvEDJ54tMSX
+        mxbSToC9jkNl1nAVbEl5kGQ=
+X-Google-Smtp-Source: ABdhPJz4NdvE2RgQaiimh2LzC/6ArXQpkSZlmSRVh+zBCj/M0cArHNJjo8+grPdrK+wvOVWJFTbd6w==
+X-Received: by 2002:a62:2c85:0:b029:1ed:39f4:ca0f with SMTP id s127-20020a622c850000b02901ed39f4ca0fmr12020452pfs.11.1614534853174;
+        Sun, 28 Feb 2021 09:54:13 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id n11sm13879027pgm.30.2021.02.28.09.54.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Feb 2021 09:54:12 -0800 (PST)
+Subject: Re: [PATCH net] net: dsa: tag_rtl4_a: fix egress tags
+To:     DENG Qingfang <dqfext@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linus Walleij <linus.walleij@linaro.org>
+References: <20210228170823.1488-1-dqfext@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <b5c863a0-b29a-80a7-a7af-f523346616a2@gmail.com>
+Date:   Sun, 28 Feb 2021 09:54:10 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
- <20210215104043.91251-20-alexandru.ardelean@analog.com> <d616ffac-9747-55f8-0478-dd747dba381a@metafoo.de>
-In-Reply-To: <d616ffac-9747-55f8-0478-dd747dba381a@metafoo.de>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Sun, 28 Feb 2021 19:46:51 +0200
-Message-ID: <CA+U=DsrhojhamxY6da7CSu79pkAnF=nHPk3H=xAbkZmtLozx2g@mail.gmail.com>
-Subject: Re: [PATCH v6 19/24] iio: buffer: introduce support for attaching
- more IIO buffers
-To:     Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        "Bogdan, Dragos" <dragos.bogdan@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210228170823.1488-1-dqfext@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 10:31 AM Lars-Peter Clausen <lars@metafoo.de> wrote:
->
-> On 2/15/21 11:40 AM, Alexandru Ardelean wrote:
-> >   static ssize_t iio_show_scan_index(struct device *dev,
-> >                                  struct device_attribute *attr,
-> >                                  char *buf)
-> > @@ -1451,11 +1465,13 @@ static void __iio_buffer_free_sysfs_and_mask(struct iio_buffer *buffer)
-> >       iio_free_chan_devattr_list(&buffer->buffer_attr_list);
-> >   }
-> >
-> > -int iio_buffer_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> > +int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev)
-> >   {
-> > [...]
-> > +error_unwind_sysfs_and_mask:
-> > +     for (; unwind_idx >= 0; unwind_idx--) {
-> > +             buffer = iio_dev_opaque->attached_buffers[unwind_idx];
-> > +             __iio_buffer_free_sysfs_and_mask(buffer);
-> > +     }
-> > +     kfree(iio_dev_opaque->attached_buffers);
-> > +     return ret;
-> >   }
-> >
-> > -void iio_buffer_free_sysfs_and_mask(struct iio_dev *indio_dev)
-> > +void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev)
-> >   {
-> > [...]
-> > +     for (i = iio_dev_opaque->attached_buffers_cnt - 1; i >= 0; i--) {
-> > +             buffer = iio_dev_opaque->attached_buffers[i];
-> > +             __iio_buffer_free_sysfs_and_mask(buffer);
-> > +     }
-> > +
-> > +     kfree(iio_dev_opaque->attached_buffers);
-> >   }
-> > [...]
-> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> > index 1d500ea246af..f7f785431106 100644
-> > --- a/drivers/iio/industrialio-core.c
-> > +++ b/drivers/iio/industrialio-core.c
-> > @@ -1583,7 +1583,7 @@ static void iio_dev_release(struct device *device)
-> >       iio_device_unregister_eventset(indio_dev);
-> >       iio_device_unregister_sysfs(indio_dev);
-> >
-> > -     iio_buffer_put(indio_dev->buffer);
-> > +     iio_buffers_put(indio_dev);
-> We do call kfree(iio_dev_opaque->attached_buffers) before we get here. I
-> think we need to keep the array around, otherwise we end of up with a
-> use after free.
->
 
-Good catch.
-Will send an update here.
+
+On 2/28/2021 9:08 AM, DENG Qingfang wrote:
+> Commit 86dd9868b878 has several issues, but was accepted too soon
+> before anyone could take a look.
+> 
+> - Double free. dsa_slave_xmit() will free the skb if the xmit function
+>   returns NULL, but the skb is already freed by eth_skb_pad(). Use
+>   __skb_put_padto() to avoid that.
+> - Unnecessary allocation. It has been done by DSA core since commit
+>   a3b0b6479700.
+> - A u16 pointer points to skb data. It should be __be16 for network
+>   byte order.
+> - Typo in comments. "numer" -> "number".
+> 
+> Fixes: 86dd9868b878 ("net: dsa: tag_rtl4_a: Support also egress tags")
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
