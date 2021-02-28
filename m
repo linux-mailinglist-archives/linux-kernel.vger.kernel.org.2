@@ -2,176 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F1B327361
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 17:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC2C327364
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 17:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhB1QxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 11:53:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhB1QxE (ORCPT
+        id S230491AbhB1Q4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 11:56:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54795 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230461AbhB1Q4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 11:53:04 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF022C06174A;
-        Sun, 28 Feb 2021 08:52:22 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id DEA3E12801EB;
-        Sun, 28 Feb 2021 08:52:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1614531140;
-        bh=n9OTMU0Air1mhCD7c3sXEYkbVbDiquxyJfskZV1x03o=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=D96GfLxnfAYdUZu2mwv4JjF9jBH4lJuPAoTYMmOkEyuwA8UC2yf9er2U+DMTGgPo3
-         yRyyd414k+1K9LJNYPjCW5w9cgK6nFS6SLJV6UYpQwOuwPi6EfOoVYa5TPfBZ+NHNG
-         ZWD9yd84ftBOm1fYHR1UXlXHIzhrNX4zImUjHw6c=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 1M97B2PiSC0s; Sun, 28 Feb 2021 08:52:20 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 8158112801E9;
-        Sun, 28 Feb 2021 08:52:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1614531140;
-        bh=n9OTMU0Air1mhCD7c3sXEYkbVbDiquxyJfskZV1x03o=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=D96GfLxnfAYdUZu2mwv4JjF9jBH4lJuPAoTYMmOkEyuwA8UC2yf9er2U+DMTGgPo3
-         yRyyd414k+1K9LJNYPjCW5w9cgK6nFS6SLJV6UYpQwOuwPi6EfOoVYa5TPfBZ+NHNG
-         ZWD9yd84ftBOm1fYHR1UXlXHIzhrNX4zImUjHw6c=
-Message-ID: <eadc15d02e4b01ed41de5bf0a8ea2594cfa288a8.camel@HansenPartnership.com>
-Subject: [GIT PULL] final round of SCSI updates for the 5.11+ merge window
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Sun, 28 Feb 2021 08:52:19 -0800
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Sun, 28 Feb 2021 11:56:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614531275;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xjLA4nLQuNboPUcqA+PfEQqcvf8BclIQy2K65Ac7xN0=;
+        b=ca4KkQvgW0XafssRoTxLahgvX+UwPQkIApeChpWY1KIKHSs5sIkE6zBl8i8wERQNPUXx12
+        03cSjGZjC9u6QpG7kpXPVAGdh4+bI0f6JJM9JUmEkB2L1sMAwj2bk+aD8dzTLkSZA5H/z5
+        nqZCOhx0kMrEfEid3K8CDkN4FlIQ1v0=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-475-vCwa8lU3O-ClYkqSM9-Ljw-1; Sun, 28 Feb 2021 11:54:32 -0500
+X-MC-Unique: vCwa8lU3O-ClYkqSM9-Ljw-1
+Received: by mail-qt1-f197.google.com with SMTP id d11so9353366qth.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 08:54:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=xjLA4nLQuNboPUcqA+PfEQqcvf8BclIQy2K65Ac7xN0=;
+        b=YqMwjHELJIxLrJAJXT6Z72uw7TMrqWsEeKrTDzsRrTfMpw/NNEQ9ooZ4qV0qH3Kjvn
+         bl0tHJsxx3I1AW3lu2Czx72thj05pGWu8i5fuel6yQgfNKnzOf5i4XdGxHpgZJHAkBqg
+         nY0roCFj2FJH9GSORFR3dH2hRaPJqYqiQSss1cI/4I61a/bEILcOpcGD131knvXF9Ll4
+         IvnUnD64gvwSEb0UZmGy79M6nPzdKPixT0+hr8tyJhxvnRoqFy+CtzZ8sGCj5JDWww4d
+         WscayvOUYNf7kTuMIGPk7k1TlLVJN0yppk9MQyLRccs6sdp+TSUUd224NvhEw4JJmgjn
+         Gw3Q==
+X-Gm-Message-State: AOAM533ZjWCftBcbimEnHH+hnXIwCQNaMBs4ugOOd6m5yqWU1KVZ4ta3
+        0UNf5Re3kobB7H49S1nKTy8OoYsWjn7zvB3kvCKChuhQaxDHjKsaPUKVhajLMFVxcoDgR7JhUqR
+        T4MelBE9og50gvSyjiA0p3PaL
+X-Received: by 2002:a37:a350:: with SMTP id m77mr10921307qke.146.1614531272442;
+        Sun, 28 Feb 2021 08:54:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw32NLOYnZg4CsaKO7EG+7dY3zL8r+1Y5vkqHr7/ySmieQHsLbh+nJyisNRbJY2ra4+NJlilA==
+X-Received: by 2002:a37:a350:: with SMTP id m77mr10921291qke.146.1614531272237;
+        Sun, 28 Feb 2021 08:54:32 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id q186sm10807279qka.56.2021.02.28.08.54.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Feb 2021 08:54:31 -0800 (PST)
+Subject: Re: [PATCH V3 XRT Alveo 03/18] fpga: xrt: xclbin file helper
+ functions
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-4-lizhih@xilinx.com>
+ <4628ef05-27d1-b92f-9126-27a1f810c608@redhat.com>
+ <3b73400c-cca1-60af-4eea-ed85de77a977@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <c79176af-8d0c-2300-3e4a-dfa604f10a62@redhat.com>
+Date:   Sun, 28 Feb 2021 08:54:29 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <3b73400c-cca1-60af-4eea-ed85de77a977@xilinx.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a few driver updates (iscsi, mpt3sas) that were still in the
-staging queue when the merge window opened (all committed on or before
-8 Feb) and some small bug fixes which came in during the merge window
-(all committed on 22 Feb).
 
-The patch is available here:
+On 2/26/21 1:23 PM, Lizhi Hou wrote:
+> Hi Tom,
+>
+>
+snip
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+>>
+>> I also do not see a pragma pack, usually this is set of 1 so the compiler does not shuffle elements, increase size etc.
+> This data structure is shared with other tools. And the structure is well defined with reasonable alignment. It is compatible with all compilers we have tested. So pragma pack is not necessary.
 
+You can not have possibly tested all the configurations since the kernel supports many arches and compilers.
 
-The short changelog of the bug fixes is:
+If the tested existing alignment is ok, pragma pack should be a noop on your tested configurations.
 
-Aleksandr Miloserdov (2):
-      scsi: target: core: Add cmd length set before cmd complete
-      scsi: target: core: Prevent underflow for service actions
+And help cover the untested configurations.
 
-Avri Altman (1):
-      scsi: ufs: Fix a duplicate dev quirk number
-
-Bart Van Assche (1):
-      scsi: sd: Fix Opal support
-
-Bhaskar Chowdhury (1):
-      scsi: aic79xx: Fix spelling of version
-
-Bodo Stroesser (2):
-      scsi: target: tcmu: Move some functions without code change
-      scsi: target: tcmu: Fix memory leak caused by wrong uio usage
-
-Chen Lin (1):
-      scsi: aic7xxx: Remove unused function pointer typedef ahc_bus_suspend/resume_t
-
-Don Brace (1):
-      scsi: hpsa: Correct dev cmds outstanding for retried cmds
-
-Johannes Thumshirn (1):
-      scsi: sd: sd_zbc: Don't pass GFP_NOIO to kvcalloc
-
-Randy Dunlap (1):
-      scsi: bnx2fc: Fix Kconfig warning & CNIC build errors
-
-
-
-The short changelog of the staging updates is:
-
-Arnd Bergmann (1):
-      scsi: pmcraid: Fix 'ioarcb' alignment warning
-
-Damien Le Moal (1):
-      scsi: sd: Warn if unsupported ZBC device is probed
-
-DooHyun Hwang (1):
-      scsi: ufs: Print the counter of each event history
-
-Jiapeng Chong (1):
-      scsi: qla2xxx: Simplify if statement
-
-Mike Christie (9):
-      scsi: iscsi: Drop session lock in iscsi_session_chkready()
-      scsi: qla4xxx: Use iscsi_is_session_online()
-      scsi: libiscsi: Reset max/exp cmdsn during recovery
-      scsi: iscsi_tcp: Fix shost can_queue initialization
-      scsi: libiscsi: Add helper to calculate max SCSI cmds per session
-      scsi: libiscsi: Fix iSCSI host workq destruction
-      scsi: libiscsi: Fix iscsi_task use after free()
-      scsi: libiscsi: Drop taskqueuelock
-      scsi: libiscsi: Fix iscsi_prep_scsi_cmd_pdu() error handling
-
-Sreekanth Reddy (2):
-      scsi: mpt3sas: Add support for shared host tagset for CPU hotplug
-      scsi: mpt3sas: Fix ReplyPostFree pool allocation
-
-Suganath Prabu S (2):
-      scsi: mpt3sas: Update driver version to 37.100.00.00
-      scsi: mpt3sas: Additional diagnostic buffer query interface
-
-Yang Li (2):
-      scsi: isci: Remove redundant initialization of variable 'status'
-      scsi: target: sbp: Remove unneeded semicolon
-
-
-
-And the diffstat:
-
- drivers/scsi/aic7xxx/aic79xx.h              |   2 +-
- drivers/scsi/aic7xxx/aic7xxx.h              |   2 -
- drivers/scsi/bnx2fc/Kconfig                 |   1 +
- drivers/scsi/bnx2i/bnx2i_iscsi.c            |   2 -
- drivers/scsi/hpsa.c                         |  51 +++-
- drivers/scsi/hpsa_cmd.h                     |   2 +-
- drivers/scsi/isci/request.c                 |   8 +-
- drivers/scsi/iscsi_tcp.c                    |   9 +-
- drivers/scsi/libiscsi.c                     | 348 ++++++++++++++++++----------
- drivers/scsi/libiscsi_tcp.c                 |  86 ++++---
- drivers/scsi/mpt3sas/mpt3sas_base.c         |  58 +++--
- drivers/scsi/mpt3sas/mpt3sas_base.h         |  52 ++++-
- drivers/scsi/mpt3sas/mpt3sas_ctl.c          |  67 +++++-
- drivers/scsi/mpt3sas/mpt3sas_ctl.h          |  22 ++
- drivers/scsi/mpt3sas/mpt3sas_scsih.c        |  44 +++-
- drivers/scsi/mpt3sas/mpt3sas_trigger_diag.c |  38 ++-
- drivers/scsi/pmcraid.h                      |   6 +-
- drivers/scsi/qla2xxx/qla_target.c           |   3 +-
- drivers/scsi/qla4xxx/ql4_os.c               |   2 +-
- drivers/scsi/scsi_transport_iscsi.c         |   3 -
- drivers/scsi/sd.c                           |  14 +-
- drivers/scsi/sd_zbc.c                       |   6 +-
- drivers/scsi/ufs/ufshcd.c                   |   6 +-
- drivers/scsi/ufs/ufshcd.h                   |   2 +-
- drivers/target/sbp/sbp_target.c             |   2 +-
- drivers/target/target_core_pr.c             |  15 +-
- drivers/target/target_core_transport.c      |  15 +-
- drivers/target/target_core_user.c           | 189 ++++++++-------
- include/scsi/libiscsi.h                     |   6 +-
- include/target/target_core_backend.h        |   1 +
- 30 files changed, 746 insertions(+), 316 deletions(-)
-
-James
-
+Tom
 
