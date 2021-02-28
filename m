@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C68132737B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C302132737D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 18:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhB1RDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 12:03:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
+        id S230222AbhB1REM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 12:04:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhB1RD3 (ORCPT
+        with ESMTP id S229982AbhB1REC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 12:03:29 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1AAC061786
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:02:48 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id mj10so3678115ejb.5
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:02:48 -0800 (PST)
+        Sun, 28 Feb 2021 12:04:02 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A05C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:03:21 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id g5so23815008ejt.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 09:03:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=QgOCkcgeAgiod2TNl5RGQObT24easnWriNhRy8GyJbg=;
-        b=VhQD52vmyovKz0JQ126z9wBO+Vtuae7QWObZEMLMzuQiRaijiGyQddqGPNdSj4t6ca
-         OaseJZjLGaNSy7aoXl+/p14B4u2N34mypQmzwAjVcq8qVcfx2L6txhdxWy1xTyp3lKVi
-         2plxvk5f8osLw9CFzvfGsR8nVEX+HEUZQ4NoaRPIv9w/P4EHTwHAHCy3ql1VNtl5jfg+
-         jII6hgA88bjtlOAITS7nrDw77ybpf/+fL6nbA9ZAsSXj4lguC+V8UTjoWdMmHiollZQ3
-         Kl3hj+GhJK8n60R3ut1gABwC/VJ26ttwoqy4OT9etFvx/sp4vM1q5kj8LdNXqSGolJV2
-         d/EQ==
+        bh=7YUkIDahw7q5sGV9rCrNMX4FzoCaiw+1r02YFIypIQM=;
+        b=H78eikpl8j98214OsgKn3iahzs2L7hObYlWWutvuzZZglIfdn9s/0f/yVJaJm9dMh8
+         GQIN3+f/QYSjOdXYiO8JZxlftF9prODkSNhQq0VZaQMoVjTJEpC5eMUZVFBnIz3WzAfP
+         qWmkgMNw+GnBSldmBlVr/S4Vjdxnbx7CqMA52NBUUrHL1HNQQiEt+Xjzt7JXXlmhPQeg
+         hltM8V4gNuCfGoBeys0tGZjgSana6XA7bhJeQiD8thlFNTQOssM8uv5zApG/fRtjVyTt
+         ZnViyImysmY+1DIDOXGIqrTMC5CZTGkdcb0u7NoBLQnDo3984/Q1NYnZ/gq+Ocsu8Q9W
+         SUjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=QgOCkcgeAgiod2TNl5RGQObT24easnWriNhRy8GyJbg=;
-        b=ujzVKqcSvLv5r5x5iVKWdIUKohilG5/hVAzEUkUJujTd2C8S0yPkcs6geJ+OzsA25e
-         p24VUd+qXwcIhQp0595FBhVnmtftpCO6qH0zcUcPL6MLx+Vg4QDFcwizhF4luaZsUGBO
-         LQHsjJZH6jj/MqXjyKHEdnnOzgOAt+dt4aTtVahJG7/2klI8aiOUAa23spck8vTH7LBC
-         V42JDpM4M8RttAqv5NlXlfboQVsqEMePSDxjE2sE4nOPW1TxgkqJLjHSEO96X5HiaHLe
-         X2iXGMsyn3dVk/b1By0GiHWv1oPtqcOvQwFL4DAqfrA0CTLE5u6pjStaBmu7DVclyqhB
-         J8Yw==
-X-Gm-Message-State: AOAM5333GhjRSLhdFcBu0zJ2kGbdOi8c2425FmXYzxg/u9fD76VRD4Zl
-        Wy1SOW+OIcFTsBF061BaOA==
-X-Google-Smtp-Source: ABdhPJwTmeKT4geR56zDVDGPKRSfLDfio1KKeo+5hhL8aZPl+5IOBacYdMataNAxnV5Wk0N2gpXduA==
-X-Received: by 2002:a17:907:91d6:: with SMTP id h22mr11990126ejz.380.1614531766976;
-        Sun, 28 Feb 2021 09:02:46 -0800 (PST)
+        bh=7YUkIDahw7q5sGV9rCrNMX4FzoCaiw+1r02YFIypIQM=;
+        b=ijIFAXwoRg8X+rSIfpDByIwIUbhBTaly2Rgz1XiFJkCdnqKYPySiPf0Npue2H3LXDP
+         e/84ZarMF6S7/+KbXK8HdCXPp+QPo+L3LHrB+kvzYsv0m/aryHd/zC7gtGahcNjhet5+
+         1fCM2SwcyGpiRbFpmJbpLiR1uLkKm7bLaqnIoECUXMflC4iHehG1rkE7ALW9nrYTf802
+         n5Lce9GUzV/wjgCVdxQYm5AUeiZEgYXAbx1cpaA32PUACo94Pzg7FZTg5eHm9B03iJwk
+         2iza6HNYEqncqr2a/tCPUsfBh4I6heSWKdPsxvlKGOk4t6SbXunNDYJLUVV0Q98JdwCS
+         4ozA==
+X-Gm-Message-State: AOAM531lInSj06KHD4B5/CuLznXJ3TzlfEa7OgAHEYosoUpSiFi5EYOl
+        9l69n31ge0wRIMm0pU9kiA==
+X-Google-Smtp-Source: ABdhPJyNKf/EmJbf9V8e3V3Ivwq9rpgYm0XyFYYgwkUEhUxpTDr/SCoVJ9d7fjh2H1ya5nJLlS0VTw==
+X-Received: by 2002:a17:907:1b1f:: with SMTP id mp31mr12142090ejc.348.1614531800545;
+        Sun, 28 Feb 2021 09:03:20 -0800 (PST)
 Received: from localhost.localdomain ([46.53.249.223])
-        by smtp.gmail.com with ESMTPSA id h2sm8659742ejk.32.2021.02.28.09.02.46
+        by smtp.gmail.com with ESMTPSA id t6sm6539494edq.48.2021.02.28.09.03.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 09:02:46 -0800 (PST)
-Date:   Sun, 28 Feb 2021 20:02:45 +0300
+        Sun, 28 Feb 2021 09:03:20 -0800 (PST)
+Date:   Sun, 28 Feb 2021 20:03:18 +0300
 From:   Alexey Dobriyan <adobriyan@gmail.com>
 To:     torvalds@linux-foundation.org
 Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        tglx@linutronix.de
-Subject: [PATCH 07/11] pragma once: convert kernel/time/timeconst.bc
-Message-ID: <YDvMtV07DfRKuw4I@localhost.localdomain>
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com
+Subject: [PATCH 08/11] pragma once: convert scripts/atomic/
+Message-ID: <YDvM1vGPArSgUMPC@localhost.localdomain>
 References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -64,46 +64,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From e428633ff0df5fe8501aaf785c6961fc766344b2 Mon Sep 17 00:00:00 2001
+From f10fe79897fa9600f144c76bc5df52dba28b7a66 Mon Sep 17 00:00:00 2001
 From: Alexey Dobriyan <adobriyan@gmail.com>
-Date: Tue, 9 Feb 2021 00:31:23 +0300
-Subject: [PATCH 07/11] pragma once: convert kernel/time/timeconst.bc
+Date: Tue, 9 Feb 2021 01:37:55 +0300
+Subject: [PATCH 08/11] pragma once: convert scripts/atomic/
 
-Generate include/generated/timeconst.h without include guard.
+Generate atomic headers without include guards.
 
 Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 ---
- kernel/time/timeconst.bc | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ include/asm-generic/atomic-instrumented.h |  9 ++-------
+ include/asm-generic/atomic-long.h         |  9 ++-------
+ include/linux/atomic-arch-fallback.h      |  9 ++-------
+ include/linux/atomic-fallback.h           |  9 ++-------
+ scripts/atomic/gen-atomic-fallback.sh     | 10 +---------
+ scripts/atomic/gen-atomic-instrumented.sh | 10 +---------
+ scripts/atomic/gen-atomic-long.sh         |  7 +------
+ 7 files changed, 11 insertions(+), 52 deletions(-)
 
-diff --git a/kernel/time/timeconst.bc b/kernel/time/timeconst.bc
-index 7ed0e0fb5831..42b3a542e5f5 100644
---- a/kernel/time/timeconst.bc
-+++ b/kernel/time/timeconst.bc
-@@ -41,12 +41,9 @@ define fmuls(b,n,d) {
+diff --git a/include/asm-generic/atomic-instrumented.h b/include/asm-generic/atomic-instrumented.h
+index 888b6cfeed91..7c50dc944da4 100644
+--- a/include/asm-generic/atomic-instrumented.h
++++ b/include/asm-generic/atomic-instrumented.h
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-
++#pragma once
+ // Generated by scripts/atomic/gen-atomic-instrumented.sh
+ // DO NOT MODIFY THIS FILE DIRECTLY
+ 
+@@ -14,9 +14,6 @@
+  * arch_ variants (i.e. arch_atomic_read()/arch_atomic_cmpxchg()) to avoid
+  * double instrumentation.
+  */
+-#ifndef _ASM_GENERIC_ATOMIC_INSTRUMENTED_H
+-#define _ASM_GENERIC_ATOMIC_INSTRUMENTED_H
+-
+ #include <linux/build_bug.h>
+ #include <linux/compiler.h>
+ #include <linux/instrumented.h>
+@@ -1828,6 +1825,4 @@ atomic64_dec_if_positive(atomic64_t *v)
+ 	instrument_atomic_write(__ai_ptr, 2 * sizeof(*__ai_ptr)); \
+ 	arch_cmpxchg_double_local(__ai_ptr, __VA_ARGS__); \
+ })
+-
+-#endif /* _ASM_GENERIC_ATOMIC_INSTRUMENTED_H */
+-// 4bec382e44520f4d8267e42620054db26a659ea3
++// d4532f98463d7403bde1d3199c19ef660be362a4
+diff --git a/include/asm-generic/atomic-long.h b/include/asm-generic/atomic-long.h
+index 073cf40f431b..99627cd42f32 100644
+--- a/include/asm-generic/atomic-long.h
++++ b/include/asm-generic/atomic-long.h
+@@ -1,11 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+-
++#pragma once
+ // Generated by scripts/atomic/gen-atomic-long.sh
+ // DO NOT MODIFY THIS FILE DIRECTLY
+-
+-#ifndef _ASM_GENERIC_ATOMIC_LONG_H
+-#define _ASM_GENERIC_ATOMIC_LONG_H
+-
+ #include <linux/compiler.h>
+ #include <asm/types.h>
+ 
+@@ -1010,5 +1006,4 @@ atomic_long_dec_if_positive(atomic_long_t *v)
  }
  
- define timeconst(hz) {
-+	print "#pragma once\n"
- 	print "/* Automatically generated by kernel/time/timeconst.bc */\n"
- 	print "/* Time conversion constants for HZ == ", hz, " */\n"
--	print "\n"
+ #endif /* CONFIG_64BIT */
+-#endif /* _ASM_GENERIC_ATOMIC_LONG_H */
+-// a624200981f552b2c6be4f32fe44da8289f30d87
++// d6f8dde6d86814728f0671cfc505c9a3361a70a0
+diff --git a/include/linux/atomic-arch-fallback.h b/include/linux/atomic-arch-fallback.h
+index a3dba31df01e..477c53f3a4d6 100644
+--- a/include/linux/atomic-arch-fallback.h
++++ b/include/linux/atomic-arch-fallback.h
+@@ -1,11 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
 -
--	print "#ifndef KERNEL_TIMECONST_H\n"
--	print "#define KERNEL_TIMECONST_H\n\n"
++#pragma once
+ // Generated by scripts/atomic/gen-atomic-fallback.sh
+ // DO NOT MODIFY THIS FILE DIRECTLY
+-
+-#ifndef _LINUX_ATOMIC_FALLBACK_H
+-#define _LINUX_ATOMIC_FALLBACK_H
+-
+ #include <linux/compiler.h>
  
- 	print "#include <linux/param.h>\n"
- 	print "#include <linux/types.h>\n\n"
-@@ -106,9 +103,6 @@ define timeconst(hz) {
- 		print "#define HZ_TO_NSEC_DEN\t\t", hz/cd, "\n"
- 		print "#define NSEC_TO_HZ_NUM\t\t", hz/cd, "\n"
- 		print "#define NSEC_TO_HZ_DEN\t\t", 1000000000/cd, "\n"
--		print "\n"
+ #ifndef arch_xchg_relaxed
+@@ -2357,5 +2353,4 @@ arch_atomic64_dec_if_positive(atomic64_t *v)
+ #define arch_atomic64_dec_if_positive arch_atomic64_dec_if_positive
+ #endif
+ 
+-#endif /* _LINUX_ATOMIC_FALLBACK_H */
+-// cca554917d7ea73d5e3e7397dd70c484cad9b2c4
++// 97eae5341271dde782071fb73ff76f4b7bfa4808
+diff --git a/include/linux/atomic-fallback.h b/include/linux/atomic-fallback.h
+index 2a3f55d98be9..eecc9ee88af6 100644
+--- a/include/linux/atomic-fallback.h
++++ b/include/linux/atomic-fallback.h
+@@ -1,11 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
 -
--		print "#endif /* KERNEL_TIMECONST_H */\n"
- 	}
- 	halt
- }
++#pragma once
+ // Generated by scripts/atomic/gen-atomic-fallback.sh
+ // DO NOT MODIFY THIS FILE DIRECTLY
+-
+-#ifndef _LINUX_ATOMIC_FALLBACK_H
+-#define _LINUX_ATOMIC_FALLBACK_H
+-
+ #include <linux/compiler.h>
+ 
+ #ifndef xchg_relaxed
+@@ -2591,5 +2587,4 @@ atomic64_dec_if_positive(atomic64_t *v)
+ #define atomic64_dec_if_positive atomic64_dec_if_positive
+ #endif
+ 
+-#endif /* _LINUX_ATOMIC_FALLBACK_H */
+-// d78e6c293c661c15188f0ec05bce45188c8d5892
++// a697a2a982652cdb954bc317199caba6ae5c3ed9
+diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
+index 317a6cec76e1..27a63ae3a458 100755
+--- a/scripts/atomic/gen-atomic-fallback.sh
++++ b/scripts/atomic/gen-atomic-fallback.sh
+@@ -223,13 +223,9 @@ gen_try_cmpxchg_fallbacks()
+ 
+ cat << EOF
+ // SPDX-License-Identifier: GPL-2.0
+-
++#pragma once
+ // Generated by $0
+ // DO NOT MODIFY THIS FILE DIRECTLY
+-
+-#ifndef _LINUX_ATOMIC_FALLBACK_H
+-#define _LINUX_ATOMIC_FALLBACK_H
+-
+ #include <linux/compiler.h>
+ 
+ EOF
+@@ -254,7 +250,3 @@ EOF
+ grep '^[a-z]' "$1" | while read name meta args; do
+ 	gen_proto "${meta}" "${name}" "${ARCH}" "atomic64" "s64" ${args}
+ done
+-
+-cat <<EOF
+-#endif /* _LINUX_ATOMIC_FALLBACK_H */
+-EOF
+diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
+index 5766ffcec7c5..b00f5ed4d62c 100755
+--- a/scripts/atomic/gen-atomic-instrumented.sh
++++ b/scripts/atomic/gen-atomic-instrumented.sh
+@@ -154,7 +154,7 @@ gen_optional_xchg()
+ 
+ cat << EOF
+ // SPDX-License-Identifier: GPL-2.0
+-
++#pragma once
+ // Generated by $0
+ // DO NOT MODIFY THIS FILE DIRECTLY
+ 
+@@ -169,9 +169,6 @@ cat << EOF
+  * arch_ variants (i.e. arch_atomic_read()/arch_atomic_cmpxchg()) to avoid
+  * double instrumentation.
+  */
+-#ifndef _ASM_GENERIC_ATOMIC_INSTRUMENTED_H
+-#define _ASM_GENERIC_ATOMIC_INSTRUMENTED_H
+-
+ #include <linux/build_bug.h>
+ #include <linux/compiler.h>
+ #include <linux/instrumented.h>
+@@ -202,8 +199,3 @@ gen_xchg "cmpxchg_double" "2 * "
+ printf "\n\n"
+ 
+ gen_xchg "cmpxchg_double_local" "2 * "
+-
+-cat <<EOF
+-
+-#endif /* _ASM_GENERIC_ATOMIC_INSTRUMENTED_H */
+-EOF
+diff --git a/scripts/atomic/gen-atomic-long.sh b/scripts/atomic/gen-atomic-long.sh
+index e318d3f92e53..4a707ba62048 100755
+--- a/scripts/atomic/gen-atomic-long.sh
++++ b/scripts/atomic/gen-atomic-long.sh
+@@ -57,13 +57,9 @@ EOF
+ 
+ cat << EOF
+ // SPDX-License-Identifier: GPL-2.0
+-
++#pragma once
+ // Generated by $0
+ // DO NOT MODIFY THIS FILE DIRECTLY
+-
+-#ifndef _ASM_GENERIC_ATOMIC_LONG_H
+-#define _ASM_GENERIC_ATOMIC_LONG_H
+-
+ #include <linux/compiler.h>
+ #include <asm/types.h>
+ 
+@@ -98,5 +94,4 @@ done
+ 
+ cat <<EOF
+ #endif /* CONFIG_64BIT */
+-#endif /* _ASM_GENERIC_ATOMIC_LONG_H */
+ EOF
 -- 
 2.29.2
 
