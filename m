@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7691E32727D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 14:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F1F327281
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 14:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhB1No0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 08:44:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34778 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229715AbhB1NoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 08:44:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0EC38AB7D;
-        Sun, 28 Feb 2021 13:43:43 +0000 (UTC)
-Date:   Sun, 28 Feb 2021 14:43:40 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] mm: Make alloc_contig_range handle in-use hugetlb
- pages
-Message-ID: <20210228134340.GA3292@localhost.localdomain>
-References: <20210222135137.25717-1-osalvador@suse.de>
- <20210222135137.25717-3-osalvador@suse.de>
- <YDi1gSdDXErJ+SHK@dhcp22.suse.cz>
- <20210226102424.GA3557@linux>
- <YDjtnWxYoysUtSKs@dhcp22.suse.cz>
+        id S230148AbhB1NyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 08:54:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhB1Nx7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 08:53:59 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9993EC06174A;
+        Sun, 28 Feb 2021 05:53:18 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id l22so1583878wme.1;
+        Sun, 28 Feb 2021 05:53:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2oIwWi1iuHOKuAMOebM+Y52Z/7RvFaXsTIQjnr0jMfc=;
+        b=f6JS53aD784G4/zqHlNnWLi/AhS7N1WfHEPj6MFEBizaq1id2Ihrx4pZad4Xi5i+Qa
+         m7Mkqm9vr88yG4nCQ4CF/ezPnLsoE+umnRyhCMM/tk9dU4IMwYYv4RCdJ/ASeBQbqbN9
+         6sCW6EqIPGUD/YJ1SofXnFl5jNIvlFz1B9YBD6bEdUFZ/dClFbUTXVr43YJv1F/en6dx
+         vWkj08Bm7HkmvQoHJlja4UGOpEom0IKK23Sys0FJb2qFWmwaODWEDqfhORpB97E0kx0d
+         Zyg2smBG3TNjAUkcMX7mxbsZ5WGb2eoQehAuMJ3KpzA/tKWDrrwgg/kaMrsHv2aTGoLP
+         YSYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2oIwWi1iuHOKuAMOebM+Y52Z/7RvFaXsTIQjnr0jMfc=;
+        b=PThQw5oMCzw+rjWDW58Wg1R4qOIqwcvThEhPLr+8+/mc972rc8y7LoZf8ouciOjobu
+         7S86AnhQ/pvWIl5OGs6yIAY6o9dIRRLIVWFiGRK+7hDCdKLDHz1u2PhUccCoeokLmbEm
+         UFL87/QH202DXYVsanTS5jS2krtQ8F8qYNYS9XQJs6JhC7I842TRG5GvOXwVSEcQYAR6
+         cmr+mmFgsc0eqO7NaXaThqKnB3BltB/SvLLuMUViwbYYk7LYOcsgsSTpbZb0fNy6twD3
+         ZiYM9QuFS2yeMdAL7k3ccpJVmZnUjMwSQ2BQabKTSg3hOwbwM/goZKZshGb8zfcVehJX
+         GIlw==
+X-Gm-Message-State: AOAM533BnCtQB4M0+hqlvNdtoHqrcyRAp8b6HW8LjDyUdS6WXIWNnhND
+        s06hBCXkFBPjriOjgnazlj4=
+X-Google-Smtp-Source: ABdhPJwX+o3U/8mqXWSknRmCalM3SkJ8jvecMDcfOyeuydwyyb4SilOgO52z4DqpRMunAZtQ6TsuLg==
+X-Received: by 2002:a05:600c:4eca:: with SMTP id g10mr11602506wmq.149.1614520397160;
+        Sun, 28 Feb 2021 05:53:17 -0800 (PST)
+Received: from localhost ([168.61.80.221])
+        by smtp.gmail.com with ESMTPSA id z188sm12220803wme.32.2021.02.28.05.53.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Feb 2021 05:53:16 -0800 (PST)
+From:   =?UTF-8?q?Antti=20J=C3=A4rvinen?= <antti.jarvinen@gmail.com>
+To:     helgaas@kernel.org
+Cc:     alex.williamson@redhat.com, antti.jarvinen@gmail.com,
+        bhelgaas@google.com, kishon@ti.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, m-karicheri2@ti.com
+Subject: [PATCH v2] PCI: quirk for preventing bus reset on TI C667X
+Date:   Sun, 28 Feb 2021 13:53:11 +0000
+Message-Id: <20210228135311.668-1-antti.jarvinen@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210217211817.GA914074@bjorn-Precision-5520>
+References: <20210217211817.GA914074@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDjtnWxYoysUtSKs@dhcp22.suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 01:46:21PM +0100, Michal Hocko wrote:
-> Well, I will leave it to others. I do not feel strongly about this but
-> to me it makes the code harder to think about because the situation is
-> unstable and any of those condition can change as they are evaluated. So
-> an explicit checks makes the code harder in the end. I would simply got
-> with 
-> 	if (isolate_huge_page(head, list) || !alloc_and_dissolve_huge_page())
-> 		ret = true;
-> 
-> if either of the conditional needs a retry then it should be done
-> internally. Like alloc_and_dissolve_huge_page already does to stabilize
-> the PageFreed flag. An early bail out on non-free hugetlb page would
-> also better be done inside alloc_and_dissolve_huge_page.
+Some TI keystone C667X devices do no support bus/hot reset. Its PCIESS
+automatically disables LTSSM when secondary bus reset is received and
+device stops working. Prevent bus reset by adding quirk_no_bus_reset to
+the device. With this change device can be assigned to VMs with VFIO,
+but it will leak state between VMs.
 
-The retry could be done internally in alloc_and_dissolve_huge_page in
-case someoen grabbed the page from under us, but calling
-isolate_huge_page from there seemed a bit odd to me, that is why I
-placed the logic in the outter function.
-It looks more logic to me, but of course, that is just my taste.
+Reference https://e2e.ti.com/support/processors/f/791/t/954382
 
-I do not think it makes the code that hard to follow, but I will leave
-it to the others.
-If there is a consensus that a simplistic version is prefered, I do not
-have a problem to go with that.
+Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
+---
+ drivers/pci/quirks.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Mike, what is your take on this?
-
-Thanks
-
-
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 653660e3ba9e..d9201ad1ca39 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3578,6 +3578,16 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
+  */
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
+ 
++/*
++ * Some TI keystone C667X devices do no support bus/hot reset.
++ * Its PCIESS automatically disables LTSSM when secondary bus reset is
++ * received and device stops working. Prevent bus reset by adding
++ * quirk_no_bus_reset to the device. With this change device can be
++ * assigned to VMs with VFIO, but it will leak state between VMs.
++ * Reference https://e2e.ti.com/support/processors/f/791/t/954382
++ */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
++
+ static void quirk_no_pm_reset(struct pci_dev *dev)
+ {
+ 	/*
 -- 
-Oscar Salvador
-SUSE L3
+2.17.1
+
