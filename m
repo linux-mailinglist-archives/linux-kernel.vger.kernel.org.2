@@ -2,450 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C454932751D
+	by mail.lfdr.de (Postfix) with ESMTP id 5356332751C
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 00:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhB1XJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 18:09:28 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:42158 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbhB1XJG (ORCPT
+        id S231328AbhB1XJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 18:09:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231263AbhB1XJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 18:09:06 -0500
-Date:   Mon, 1 Mar 2021 02:08:11 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
-        <linux-mips@linux-mips.org>, Paul Cercueil <paul@crapouillou.net>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        <iamjoonsoo.kim@lge.com>, <riel@surriel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>
-Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations with
- kernel_end
-Message-ID: <20210228230811.wdae7oaaf3mbpgwl@mobilestation>
-References: <20201217201214.3414100-1-guro@fb.com>
- <20201217201214.3414100-2-guro@fb.com>
- <23fc1ef9-7342-8bc2-d184-d898107c52b2@gmail.com>
- <20210228090041.GO1447004@kernel.org>
- <8cbafe95-0f8c-a9b7-2dc9-cded846622fd@gmail.com>
+        Sun, 28 Feb 2021 18:09:00 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55720C06178A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 15:08:19 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id e6so10339246pgk.5
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 15:08:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=SmQMsrGoUKJ4zXu9YtAmV2nQB1dfM6MYK666mtQb/K8=;
+        b=g31OoGZGFUnX4krXGaFWn4eV6UTBvSMWM0CrGCtI49f6Ex4gcUMZ8xq0CDBbHm1uFI
+         AOkvFmL6mRZWcAkGsFqkkeH+aJUZiZE7zCcn1OW7C4KxqLd9PYFYKctKTJPFsZqLBV8z
+         o6gtVbS4+ZKAegoYu1c5YP+NeAl8frowCxDCF8jPc8ZM2cR4OOizrVpqhZ6C5US4THVn
+         nL4nNpu1Vo7F6glp1NrK1QzwX9r1fQ2ejROUwN60Hxf99iggFGQSGVPbx+3lW57tTNiC
+         iKmUjgk1rkXR6sywWZNX2WZbgdP2JfwXOx/O5W6hPe/SXdbQS1IlhUS5dZNdFg5xZzO7
+         YQfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SmQMsrGoUKJ4zXu9YtAmV2nQB1dfM6MYK666mtQb/K8=;
+        b=ILsgKW7SCnjiLTuIJxRk+/0VdM971S4xikJwUTGRmROnxf6DGLcwjdIvS67bOJHJCo
+         KmApMpGicXbgLNvFxllMaR1LVl1tXgpSo2yPxyuu24c8X0ggIr+rHOeoCRG9f0dIhUSy
+         SPjpuqvGNNj7T30YZS0o+KOqRdQSO2mgOAEQa1mxFlOspxWPIMy6ddKOivB6tTQtfjU0
+         Lrfl5tf6TJQ/dvcOQbFNMc0TZvJfVKmQ2poejVHzn1H9IjHN5Ew1ijSnKhu4iw9FpEDo
+         SDDvmRUmnmotjJ+sxtuYLMZvRS4PkYnci+bfROXlYiWk/pBPe8F4EpExSJRT2AHQBLmC
+         WvPQ==
+X-Gm-Message-State: AOAM53368UK3P5u1DxC33nsDn+jvCshusVvZUm/J7R8O7n7cfdXApMaR
+        Ftr8xRdgUSJASraHVLVu8yeMFA==
+X-Google-Smtp-Source: ABdhPJxJtumVB71k4TqXBUAdw3zeznGsRyBEmpMItWv0L4FRLCHdd9/yi9a0nPVuJVUBmbgyz4PwXw==
+X-Received: by 2002:aa7:90c5:0:b029:1e3:5e84:4a7c with SMTP id k5-20020aa790c50000b02901e35e844a7cmr12133417pfk.71.1614553698815;
+        Sun, 28 Feb 2021 15:08:18 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id t2sm14656086pfg.152.2021.02.28.15.08.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Feb 2021 15:08:18 -0800 (PST)
+Subject: Re: possible deadlock in io_poll_double_wake (2)
+To:     syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <000000000000e61a7605bc5ac540@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <900e27f3-6503-ed03-4c58-ccc946df7a6a@kernel.dk>
+Date:   Sun, 28 Feb 2021 16:08:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <8cbafe95-0f8c-a9b7-2dc9-cded846622fd@gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <000000000000e61a7605bc5ac540@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
-What you've got here seems a more complicated problem than it
-could originally look like. Please, see my comments below.
-
-(Note I've discarded some of the email logs, which of no interest
-to the discovered problem. Please also note that I haven't got any
-Broadcom hardware to test out a solution suggested below.)
-
-On Sun, Feb 28, 2021 at 10:19:51AM -0800, Florian Fainelli wrote:
-> Hi Mike,
+On 2/27/21 5:42 PM, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> On 2/28/2021 1:00 AM, Mike Rapoport wrote:
-> > Hi Florian,
-> > 
-> > On Sat, Feb 27, 2021 at 08:18:47PM -0800, Florian Fainelli wrote:
-> >>
-
-> >> [...]
-
-> >>
-> >> Hi Roman, Thomas and other linux-mips folks,
-> >>
-> >> Kamal and myself have been unable to boot v5.11 on MIPS since this
-> >> commit, reverting it makes our MIPS platforms boot successfully. We do
-> >> not see a warning like this one in the commit message, instead what
-> >> happens appear to be a corrupted Device Tree which prevents the parsing
-> >> of the "rdb" node and leading to the interrupt controllers not being
-> >> registered, and the system eventually not booting.
-> >>
-> >> The Device Tree is built-into the kernel image and resides at
-> >> arch/mips/boot/dts/brcm/bcm97435svmb.dts.
-> >>
-> >> Do you have any idea what could be wrong with MIPS specifically here?
-
-Most likely the problem you've discovered has been there for quite
-some time. The patch you are referring to just caused it to be
-triggered by extending the early allocation range. See before that
-patch was accepted the early memory allocations had been performed
-in the range:
-[kernel_end, RAM_END].
-The patch changed that, so the early allocations are done within
-[RAM_START + PAGE_SIZE, RAM_END].
-
-In normal situations it's safe to do that as long as all the critical
-memory regions (including the memory residing a space below the
-kernel) have been reserved. But as soon as a memory with some critical
-structures haven't been reserved, the kernel may allocate it to be used
-for instance for early initializations with obviously unpredictable but
-most of the times unpleasant consequences.
-
-> > 
-> > Apparently there is a memblock allocation in one of the functions called
-> > from arch_mem_init() between plat_mem_setup() and
-> > early_init_fdt_reserve_self().
-
-Mike, alas according to the log provided by Florian that's not the reason
-of the problem. Please, see my considerations below.
-
-> [...]
+> HEAD commit:    5695e516 Merge tag 'io_uring-worker.v3-2021-02-25' of git:..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=114e3866d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8c76dad0946df1f3
+> dashboard link: https://syzkaller.appspot.com/bug?extid=28abd693db9e92c160d8
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122ed9b6d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d5a292d00000
 > 
-> [    0.000000] Linux version 5.11.0-g5695e5161974 (florian@localhost)
-> (mipsel-linux-gcc (GCC) 8.3.0, GNU ld (GNU Binutils) 2.32) #84 SMP Sun
-> Feb 28 10:01:50 PST 2021
-> [    0.000000] CPU0 revision is: 00025b00 (Broadcom BMIPS5200)
-> [    0.000000] FPU revision is: 00130001
-
-> [    0.000000] memblock_add: [0x00000000-0x0fffffff]
-> early_init_dt_scan_memory+0x160/0x1e0
-> [    0.000000] memblock_add: [0x20000000-0x4fffffff]
-> early_init_dt_scan_memory+0x160/0x1e0
-> [    0.000000] memblock_add: [0x90000000-0xcfffffff]
-> early_init_dt_scan_memory+0x160/0x1e0
-
-Here the memory has been added to the memblock allocator.
-
-> [    0.000000] MIPS: machine is Broadcom BCM97435SVMB
-> [    0.000000] earlycon: ns16550a0 at MMIO32 0x10406b00 (options '')
-> [    0.000000] printk: bootconsole [ns16550a0] enabled
-
-> [    0.000000] memblock_reserve: [0x00aa7600-0x00aaa0a0]
-> setup_arch+0x128/0x69c
-
-Here the fdt memory has been reserved. (Note it's built into the
-kernel.)
-
-> [    0.000000] memblock_reserve: [0x00010000-0x018313cf]
-> setup_arch+0x1f8/0x69c
-
-Here the kernel itself together with built-in dtb have been reserved.
-So far so good.
-
-> [    0.000000] Initrd not found or empty - disabling initrd
-
-> [    0.000000] memblock_alloc_try_nid: 10913 bytes align=0x40 nid=-1
-> from=0x00000000 max_addr=0x00000000
-> early_init_dt_alloc_memory_arch+0x40/0x84
-> [    0.000000] memblock_reserve: [0x00001000-0x00003aa0]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 32680 bytes align=0x4 nid=-1
-> from=0x00000000 max_addr=0x00000000
-> early_init_dt_alloc_memory_arch+0x40/0x84
-> [    0.000000] memblock_reserve: [0x00003aa4-0x0000ba4b]
-> memblock_alloc_range_nid+0xf8/0x198
-
-The log above most likely belongs to the call-chain:
-setup_arch()
-+-> arch_mem_init()
-    +-> device_tree_init() - BMIPS specific method
-        +-> unflatten_and_copy_device_tree()
-
-So to speak here we've copied the fdt from the original space
-[0x00aa7600-0x00aaa0a0] into [0x00001000-0x00003aa0] and unflattened
-it to [0x00003aa4-0x0000ba4b].
-
-The problem is that a bit later the next call-chain is performed:
-setup_arch()
-+-> plat_smp_setup()
-    +-> mp_ops->smp_setup(); - registered by prom_init()->register_bmips_smp_ops();
-        +-> if (!board_ebase_setup)
-                 board_ebase_setup = &bmips_ebase_setup;
-
-So at the moment of the CPU traps initialization the bmips_ebase_setup()
-method is called. What trap_init() does isn't compatible with the
-allocation performed by the unflatten_and_copy_device_tree() method.
-See the next comment.
-
-> [    0.000000] memblock_alloc_try_nid: 25 bytes align=0x4 nid=-1
-> from=0x00000000 max_addr=0x00000000
-> early_init_dt_alloc_memory_arch+0x40/0x84
-> [    0.000000] memblock_reserve: [0x0000ba4c-0x0000ba64]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_reserve: [0x0096a000-0x00969fff]
-> setup_arch+0x3fc/0x69c
-> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
-> [    0.000000] memblock_reserve: [0x0000ba80-0x0000ba9f]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
-> [    0.000000] memblock_reserve: [0x0000bb00-0x0000bb1f]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 setup_arch+0x4e0/0x69c
-> [    0.000000] memblock_reserve: [0x0000bb80-0x0000bb9f]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] Primary instruction cache 32kB, VIPT, 4-way, linesize 64
-> bytes.
-> [    0.000000] Primary data cache 32kB, 4-way, VIPT, no aliases,
-> linesize 32 bytes
-> [    0.000000] MIPS secondary cache 512kB, 8-way, linesize 128 bytes.
-> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
-> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
-> [    0.000000] memblock_reserve: [0x0000c000-0x0000cfff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
-> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
-> [    0.000000] memblock_reserve: [0x0000d000-0x0000dfff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
-> from=0x00000000 max_addr=0xffffffff fixrange_init+0x90/0xf4
-> [    0.000000] memblock_reserve: [0x0000e000-0x0000efff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] Zone ranges:
-> [    0.000000]   Normal   [mem 0x0000000000000000-0x000000000fffffff]
-> [    0.000000]   HighMem  [mem 0x0000000010000000-0x00000000cfffffff]
-> [    0.000000] Movable zone start for each node
-> [    0.000000] Early memory node ranges
-> [    0.000000]   node   0: [mem 0x0000000000000000-0x000000000fffffff]
-> [    0.000000]   node   0: [mem 0x0000000020000000-0x000000004fffffff]
-> [    0.000000]   node   0: [mem 0x0000000090000000-0x00000000cfffffff]
-> [    0.000000] Initmem setup node 0 [mem
-> 0x0000000000000000-0x00000000cfffffff]
-> [    0.000000] memblock_alloc_try_nid: 27262976 bytes align=0x80 nid=0
-> from=0x00000000 max_addr=0x00000000
-> alloc_node_mem_map.constprop.135+0x6c/0xc8
-> [    0.000000] memblock_reserve: [0x01831400-0x032313ff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 32 bytes align=0x80 nid=0
-> from=0x00000000 max_addr=0x00000000 setup_usemap+0x64/0x98
-> [    0.000000] memblock_reserve: [0x0000bc00-0x0000bc1f]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 384 bytes align=0x80 nid=0
-> from=0x00000000 max_addr=0x00000000 setup_usemap+0x64/0x98
-> [    0.000000] memblock_reserve: [0x0000bc80-0x0000bdff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] MEMBLOCK configuration:
-> [    0.000000]  memory size = 0x80000000 reserved size = 0x0322f032
-> [    0.000000]  memory.cnt  = 0x3
-> [    0.000000]  memory[0x0]     [0x00000000-0x0fffffff], 0x10000000
-> bytes flags: 0x0
-> [    0.000000]  memory[0x1]     [0x20000000-0x4fffffff], 0x30000000
-> bytes flags: 0x0
-> [    0.000000]  memory[0x2]     [0x90000000-0xcfffffff], 0x40000000
-> bytes flags: 0x0
-> [    0.000000]  reserved.cnt  = 0xa
-> [    0.000000]  reserved[0x0]   [0x00001000-0x00003aa0], 0x00002aa1
-> bytes flags: 0x0
-> [    0.000000]  reserved[0x1]   [0x00003aa4-0x0000ba64], 0x00007fc1
-> bytes flags: 0x0
-> [    0.000000]  reserved[0x2]   [0x0000ba80-0x0000ba9f], 0x00000020
-> bytes flags: 0x0
-> [    0.000000]  reserved[0x3]   [0x0000bb00-0x0000bb1f], 0x00000020
-> bytes flags: 0x0
-> [    0.000000]  reserved[0x4]   [0x0000bb80-0x0000bb9f], 0x00000020
-> bytes flags: 0x0
-> [    0.000000]  reserved[0x5]   [0x0000bc00-0x0000bc1f], 0x00000020
-> bytes flags: 0x0
-> [    0.000000]  reserved[0x6]   [0x0000bc80-0x0000bdff], 0x00000180
-> bytes flags: 0x0
-> [    0.000000]  reserved[0x7]   [0x0000c000-0x0000efff], 0x00003000
-> bytes flags: 0x0
-> [    0.000000]  reserved[0x8]   [0x00010000-0x018313cf], 0x018213d0
-> bytes flags: 0x0
-> [    0.000000]  reserved[0x9]   [0x01831400-0x032313ff], 0x01a00000
-> bytes flags: 0x0
-> [    0.000000] memblock_alloc_try_nid: 30 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 start_kernel+0x12c/0x654
-> [    0.000000] memblock_reserve: [0x0000be00-0x0000be1d]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 30 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 start_kernel+0x150/0x654
-> [    0.000000] memblock_reserve: [0x0000be80-0x0000be9d]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x1000 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_embed_first_chunk+0x3b0/0x884
-> [    0.000000] memblock_reserve: [0x0000f000-0x0000ffff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 4096 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_embed_first_chunk+0x5a4/0x884
-> [    0.000000] memblock_reserve: [0x03231400-0x032323ff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 294912 bytes align=0x1000 nid=-1
-> from=0x01000000 max_addr=0x00000000 pcpu_dfl_fc_alloc+0x24/0x30
-> [    0.000000] memblock_reserve: [0x03233000-0x0327afff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_free: [0x03245000-0x03244fff]
-> pcpu_embed_first_chunk+0x7a0/0x884
-> [    0.000000] memblock_free: [0x03257000-0x03256fff]
-> pcpu_embed_first_chunk+0x7a0/0x884
-> [    0.000000] memblock_free: [0x03269000-0x03268fff]
-> pcpu_embed_first_chunk+0x7a0/0x884
-> [    0.000000] memblock_free: [0x0327b000-0x0327afff]
-> pcpu_embed_first_chunk+0x7a0/0x884
-> [    0.000000] percpu: Embedded 18 pages/cpu s50704 r0 d23024 u73728
-> [    0.000000] memblock_alloc_try_nid: 4 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x178/0x6ec
-> [    0.000000] memblock_reserve: [0x0000bf00-0x0000bf03]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 4 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x1a8/0x6ec
-> [    0.000000] memblock_reserve: [0x0000bf80-0x0000bf83]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 16 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x1dc/0x6ec
-> [    0.000000] memblock_reserve: [0x03232400-0x0323240f]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 16 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x20c/0x6ec
-> [    0.000000] memblock_reserve: [0x03232480-0x0323248f]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 128 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_setup_first_chunk+0x558/0x6ec
-> [    0.000000] memblock_reserve: [0x03232500-0x0323257f]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 92 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x8c/0x294
-> [    0.000000] memblock_reserve: [0x03232580-0x032325db]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 768 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0xe0/0x294
-> [    0.000000] memblock_reserve: [0x03232600-0x032328ff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 772 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x124/0x294
-> [    0.000000] memblock_reserve: [0x03232900-0x03232c03]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_alloc_try_nid: 192 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 pcpu_alloc_first_chunk+0x158/0x294
-> [    0.000000] memblock_reserve: [0x03232c80-0x03232d3f]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] memblock_free: [0x0000f000-0x0000ffff]
-> pcpu_embed_first_chunk+0x838/0x884
-> [    0.000000] memblock_free: [0x03231400-0x032323ff]
-> pcpu_embed_first_chunk+0x850/0x884
-> [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 523776
-> [    0.000000] Kernel command line: console=ttyS0,115200 earlycon
-> [    0.000000] memblock_alloc_try_nid: 131072 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 alloc_large_system_hash+0x1f8/0x33c
-> [    0.000000] memblock_reserve: [0x0327b000-0x0329afff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] Dentry cache hash table entries: 32768 (order: 5, 131072
-> bytes, linear)
-> [    0.000000] memblock_alloc_try_nid: 65536 bytes align=0x80 nid=-1
-> from=0x00000000 max_addr=0x00000000 alloc_large_system_hash+0x1f8/0x33c
-> [    0.000000] memblock_reserve: [0x0329b000-0x032aafff]
-> memblock_alloc_range_nid+0xf8/0x198
-> [    0.000000] Inode-cache hash table entries: 16384 (order: 4, 65536
-> bytes, linear)
-
-> [    0.000000] memblock_reserve: [0x00000000-0x000003ff]
-> trap_init+0x70/0x4e8
-
-Most likely someplace here the corruption has happened. The log above
-has just reserved a memory for NMI/reset vectors:
-arch/mips/kernel/traps.c: trap_init(void): Line 2373.
-
-But then the board_ebase_setup() pointer is dereferenced and called,
-which has been initialized with bmips_ebase_setup() earlier and which
-overwrites the ebase variable with: 0x80001000 as this is
-CPU_BMIPS5000 CPU. So any further calls of the functions like
-set_handler()/set_except_vector()/set_vi_srs_handler()/etc may cause a
-corruption of the memory above 0x80001000, which as we have discovered
-belongs to fdt and unflattened device tree.
-
-> [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
-> [    0.000000] Memory: 2045268K/2097152K available (8226K kernel code,
-> 1070K rwdata, 1336K rodata, 13808K init, 260K bss, 51884K reserved, 0K
-> cma-reserved, 1835008K highmem)
-> [    0.000000] SLUB: HWalign=128, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
-> [    0.000000] rcu: Hierarchical RCU implementation.
-> [    0.000000] rcu:     RCU event tracing is enabled.
-> [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay
-> is 25 jiffies.
-> [    0.000000] NR_IRQS: 256
-
-> [    0.000000] OF: Bad cell count for /rdb
-> [    0.000000] irq_bcm7038_l1: failed to remap intc L1 registers
-> [    0.000000] OF: of_irq_init: children remain, but no parents
-
-So here is the first time we have got the consequence of the corruption
-popped up. Luckily it's just the "Bad cells count" error. We could have
-got much less obvious log here up to getting a crash at some place
-further...
-
-> [    0.000000] random: get_random_bytes called from
-> start_kernel+0x444/0x654 with crng_init=0
-> [    0.000000] sched_clock: 32 bits at 250 Hz, resolution 4000000ns,
-> wraps every 8589934590000000ns
-
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com
 > 
-> and with your patch applied which unfortunately did not work we have the
-> following:
->
-> [...]
-
-So a patch like this shall workaround the corruption:
-
---- a/arch/mips/bmips/setup.c
-+++ b/arch/mips/bmips/setup.c
-@@ -174,6 +174,8 @@ void __init plat_mem_setup(void)
- 
- 	__dt_setup_arch(dtb);
- 
-+	memblock_reserve(0x0, 0x1000 + 0x100*64);
-+
- 	for (q = bmips_quirk_list; q->quirk_fn; q++) {
- 		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
- 					     q->compatible)) {
-
-But the main question is how to fix the problem in general. At least
-for Broadcom CPUs the reservation needs to be performed before
-device_tree_init() is called, since the later is the very first
-method which starts allocating from memblock. So the best candidate is
-to use plat_mem_setup() for reservation right after the memory is
-added to the memblock allocator by means of the __dt_setup_arch()
-function invocation. In addition, we need take into account the amount
-of memory each type of the Broadcom CPU needs for the exception
-vectors. So a function like this could be used to reserve the
-exception vectors memory:
-
-static void bmips_ebase_reserve(void)
-{
-	phys_addr_t base, size = VECTORSPACING*64;
-
-	switch (current_cpu_type()) {
-	case CPU_BMIPS4350:
-		return;
-	case CPU_BMIPS3300:        
-	case CPU_BMIPS4380:
-		base = 0x0400;
-		break;
-	case CPU_BMIPS5000:
-		base = 0x1000;
-		break;
-	default:
-		return;
-	}
-
-	memblock_reserve(base, size);
-}
-
-Though I am not sure it's correct. At least on P5600 the vector spacing
-is configurable.
-
-Anyway all of that concerns the Broadcom CPUs. But the same problem we
-can experience for some other platforms which developers weren't
-careful enough in reserving all the critical memory sections in the
-platform code. Especially after the introduced by Roman patch has been
-merged into the kernel.
-
--Sergey
-
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.11.0-syzkaller #0 Not tainted
+> --------------------------------------------
+> swapper/1/0 is trying to acquire lock:
+> ffff88801b2b1130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+> ffff88801b2b1130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4960
 > 
-> [...]
-> -- 
-> Florian
+> but task is already holding lock:
+> ffff88801b2b3130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+> 
+> other info that might help us debug this:
+>  Possible unsafe locking scenario:
+> 
+>        CPU0
+>        ----
+>   lock(&runtime->sleep);
+>   lock(&runtime->sleep);
+> 
+>  *** DEADLOCK ***
+> 
+>  May be due to missing lock nesting notation
+> 
+> 2 locks held by swapper/1/0:
+>  #0: ffff888147474908 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
+>  #1: ffff88801b2b3130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+> 
+> stack backtrace:
+> CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.11.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  <IRQ>
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0xfa/0x151 lib/dump_stack.c:120
+>  print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
+>  check_deadlock kernel/locking/lockdep.c:2872 [inline]
+>  validate_chain kernel/locking/lockdep.c:3661 [inline]
+>  __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
+>  lock_acquire kernel/locking/lockdep.c:5510 [inline]
+>  lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
+>  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+>  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+>  spin_lock include/linux/spinlock.h:354 [inline]
+>  io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4960
+>  __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
+>  __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
+>  snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
+>  snd_pcm_update_hw_ptr0+0xa75/0x1a50 sound/core/pcm_lib.c:464
+>  snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
+>  dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:378
+>  __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+>  __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1583
+>  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
+>  __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
+>  invoke_softirq kernel/softirq.c:221 [inline]
+>  __irq_exit_rcu kernel/softirq.c:422 [inline]
+>  irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
+>  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+>  </IRQ>
+>  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
+> RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
+> RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:70 [inline]
+> RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:137 [inline]
+> RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
+> RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:516
+> Code: dd 38 6e f8 84 db 75 ac e8 54 32 6e f8 e8 0f 1c 74 f8 e9 0c 00 00 00 e8 45 32 6e f8 0f 00 2d 4e 4a c5 00 e8 39 32 6e f8 fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 14 3a 6e f8 48 85 db
+> RSP: 0018:ffffc90000d47d18 EFLAGS: 00000293
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff8880115c3780 RSI: ffffffff89052537 RDI: 0000000000000000
+> RBP: ffff888141127064 R08: 0000000000000001 R09: 0000000000000001
+> R10: ffffffff81794168 R11: 0000000000000000 R12: 0000000000000001
+> R13: ffff888141127000 R14: ffff888141127064 R15: ffff888143331804
+>  acpi_idle_enter+0x361/0x500 drivers/acpi/processor_idle.c:647
+>  cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
+>  cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
+>  call_cpuidle kernel/sched/idle.c:158 [inline]
+>  cpuidle_idle_call kernel/sched/idle.c:239 [inline]
+>  do_idle+0x3e1/0x590 kernel/sched/idle.c:300
+>  cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:397
+>  start_secondary+0x274/0x350 arch/x86/kernel/smpboot.c:272
+>  secondary_startup_64_no_verify+0xb0/0xbb
+
+This looks very odd, only thing I can think of is someone doing
+poll_wait() twice with different entries but for the same
+waitqueue head.
+
+#syz test: git://git.kernel.dk/linux-block syzbot-test
+
+-- 
+Jens Axboe
+
