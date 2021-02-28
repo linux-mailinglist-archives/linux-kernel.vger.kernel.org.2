@@ -2,31 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7D4327188
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 09:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE4632718B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 09:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhB1IOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 03:14:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43836 "EHLO mx2.suse.de"
+        id S230421AbhB1IP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 03:15:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43930 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230075AbhB1IOT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 03:14:19 -0500
+        id S230075AbhB1IPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 03:15:16 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F07BAAB8C;
-        Sun, 28 Feb 2021 08:12:54 +0000 (UTC)
-Date:   Sun, 28 Feb 2021 09:12:54 +0100
-Message-ID: <s5h8s78liex.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 5E203AB8C;
+        Sun, 28 Feb 2021 08:14:34 +0000 (UTC)
+Date:   Sun, 28 Feb 2021 09:14:34 +0100
+Message-ID: <s5h7dmslic5.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Wai Yew CHAY <wychay@ctl.creative.com>,
-        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: ctxfi: cthw20k2: fix mask on conf to allow 4 bits
-In-Reply-To: <20210227001527.1077484-1-colin.king@canonical.com>
-References: <20210227001527.1077484-1-colin.king@canonical.com>
+To:     chris.chiu@canonical.com
+Cc:     tiwai@suse.com, kailang@realtek.com, jhp@endlessos.org,
+        kai.heng.feng@canonical.com, hui.wang@canonical.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ALSA: hda/realtek: Enable headset mic of Acer SWIFT with ALC256
+In-Reply-To: <20210226010440.8474-1-chris.chiu@canonical.com>
+References: <20210226010440.8474-1-chris.chiu@canonical.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -36,27 +34,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 27 Feb 2021 01:15:27 +0100,
-Colin King wrote:
+On Fri, 26 Feb 2021 02:04:40 +0100,
+chris.chiu@canonical.com wrote:
 > 
-> From: Colin Ian King <colin.king@canonical.com>
+> From: Chris Chiu <chris.chiu@canonical.com>
 > 
-> Currently the mask operation on variable conf is just 3 bits so
-> the switch statement case value of 8 is unreachable dead code.
-> The function daio_mgr_dao_init can be passed a 4 bit value,
-> function dao_rsc_init calls it with conf set to:
+> The Acer SWIFT Swift SF314-54/55 laptops with ALC256 cannot detect
+> both the headset mic and the internal mic. Introduce new fixup
+> to enable the jack sense and the headset mic. However, the internal
+> mic actually connects to Intel SST audio. It still needs Intel SST
+> support to make internal mic capture work.
 > 
->      conf = (desc->msr & 0x7) | (desc->passthru << 3);
-> 
-> so clearly when desc->passthru is set to 1 then conf can be
-> at least 8.
-> 
-> Fix this by changing the mask to 0xf.
-> 
-> Fixes: 8cc72361481f ("ALSA: SB X-Fi driver merge")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+> ---
+>   v1 -> v2: remove unnecessary aamix fixup
 
-Applied, thanks.
+Applied now.  Thanks.
 
 
 Takashi
