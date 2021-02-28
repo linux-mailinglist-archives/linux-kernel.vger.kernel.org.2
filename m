@@ -2,45 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11605326FBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 01:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9E8326FC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Feb 2021 01:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhB1AUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Feb 2021 19:20:25 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:59690 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbhB1AUW (ORCPT
+        id S230131AbhB1AnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Feb 2021 19:43:01 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:48982 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhB1Am6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Feb 2021 19:20:22 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 96D2A23F62;
-        Sat, 27 Feb 2021 19:19:35 -0500 (EST)
-Date:   Sun, 28 Feb 2021 11:19:31 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Jens Axboe <axboe@kernel.dk>
-cc:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] ide/falconide: Fix module unload
-In-Reply-To: <5d7fd7bb-1bb8-a21c-61d8-4d1046f92ca8@kernel.dk>
-Message-ID: <d92db64-cfb8-9640-35a4-4f864dfc99a2@telegraphics.com.au>
-References: <63369c9b96673442a4bd653fe92acda99172123a.1605847196.git.fthain@telegraphics.com.au> <alpine.LNX.2.23.453.2101031017290.12@nippy.intranet> <5d7fd7bb-1bb8-a21c-61d8-4d1046f92ca8@kernel.dk>
+        Sat, 27 Feb 2021 19:42:58 -0500
+Received: by mail-io1-f70.google.com with SMTP id c4so10139842ioq.15
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Feb 2021 16:42:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ZMFHeVk3qc3eqVvSthoB8UArQPRh/MTttEjlGjDvi7E=;
+        b=L5Y0BUwodK0jan3OezyS0ZspSOvEhfb6tDmNqRSYliHV7Wk9YYKyMfWk2DLnhTBg94
+         ILRk55ViGyxiXRZHRQYvjz1aHKShfLJWmiLLXrf8NMKCz1OIwWhSO/hxLPYCwSpwT/Ox
+         ypGRfCgbsrK2c4FZ2RswctDJW7QidXfyBfJGR3IlZaBCZ5Zp45a1+UFkMqDnoIKULSpE
+         atowHfo5Bl9RIGXybL0Wc475zRa4XQs3WOIt75i5u8uNRsW13urdM6BlkL802GilO8im
+         2syio9TNsRF3dViYZFEuL060IkblRUoWAhj5v7WpiB3Go9LelGjeWqXd/5sevgOPy6zZ
+         p4hQ==
+X-Gm-Message-State: AOAM531PYllk/TZm5sPoypfq9ISlFg5I0kGcLWYNhWSCaPFUcD+zE7UR
+        +9LdB8iIzxLu3L4zjcJt5QKyQvTvI4w9IQWjhK9heMca5YDE
+X-Google-Smtp-Source: ABdhPJxTo/dXbbYL/RZATQHTsECnxEFW2ArecBbAy7rc8d01adi/iiWYhWsvqLvqIDrH9vFHm8yK1cVpPVMZpwLvmvRsoZ+VbJ8W
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Received: by 2002:a05:6638:22c5:: with SMTP id j5mr9640461jat.89.1614472936820;
+ Sat, 27 Feb 2021 16:42:16 -0800 (PST)
+Date:   Sat, 27 Feb 2021 16:42:16 -0800
+In-Reply-To: <00000000000037bd5305b06a8988@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e61a7605bc5ac540@google.com>
+Subject: Re: possible deadlock in io_poll_double_wake (2)
+From:   syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 3 Jan 2021, Jens Axboe wrote:
+syzbot has found a reproducer for the following issue on:
 
-> > 
-> > This patch was sent in September and subsequently resent in November. 
-> > I've since learned that the maintainer has been ill. What's the best 
-> > way forward for fixes like this?
-> 
-> I can queue it up.
-> 
+HEAD commit:    5695e516 Merge tag 'io_uring-worker.v3-2021-02-25' of git:..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=114e3866d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8c76dad0946df1f3
+dashboard link: https://syzkaller.appspot.com/bug?extid=28abd693db9e92c160d8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122ed9b6d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d5a292d00000
 
-That would be great.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com
+
+============================================
+WARNING: possible recursive locking detected
+5.11.0-syzkaller #0 Not tainted
+--------------------------------------------
+swapper/1/0 is trying to acquire lock:
+ffff88801b2b1130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff88801b2b1130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4960
+
+but task is already holding lock:
+ffff88801b2b3130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&runtime->sleep);
+  lock(&runtime->sleep);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+2 locks held by swapper/1/0:
+ #0: ffff888147474908 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
+ #1: ffff88801b2b3130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+
+stack backtrace:
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0xfa/0x151 lib/dump_stack.c:120
+ print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
+ check_deadlock kernel/locking/lockdep.c:2872 [inline]
+ validate_chain kernel/locking/lockdep.c:3661 [inline]
+ __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4960
+ __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
+ __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
+ snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
+ snd_pcm_update_hw_ptr0+0xa75/0x1a50 sound/core/pcm_lib.c:464
+ snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
+ dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:378
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1583
+ hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
+ invoke_softirq kernel/softirq.c:221 [inline]
+ __irq_exit_rcu kernel/softirq.c:422 [inline]
+ irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
+RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
+RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:70 [inline]
+RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:137 [inline]
+RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
+RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:516
+Code: dd 38 6e f8 84 db 75 ac e8 54 32 6e f8 e8 0f 1c 74 f8 e9 0c 00 00 00 e8 45 32 6e f8 0f 00 2d 4e 4a c5 00 e8 39 32 6e f8 fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 14 3a 6e f8 48 85 db
+RSP: 0018:ffffc90000d47d18 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff8880115c3780 RSI: ffffffff89052537 RDI: 0000000000000000
+RBP: ffff888141127064 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff81794168 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff888141127000 R14: ffff888141127064 R15: ffff888143331804
+ acpi_idle_enter+0x361/0x500 drivers/acpi/processor_idle.c:647
+ cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
+ cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
+ call_cpuidle kernel/sched/idle.c:158 [inline]
+ cpuidle_idle_call kernel/sched/idle.c:239 [inline]
+ do_idle+0x3e1/0x590 kernel/sched/idle.c:300
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:397
+ start_secondary+0x274/0x350 arch/x86/kernel/smpboot.c:272
+ secondary_startup_64_no_verify+0xb0/0xbb
+
