@@ -2,59 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA6C32A026
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C566232A025
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575397AbhCBD4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:01 -0500
-Received: from gate.crashing.org ([63.228.1.57]:59311 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343967AbhCAWih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:38:37 -0500
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 121MVAHn003883;
-        Mon, 1 Mar 2021 16:31:10 -0600
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 121MV9DG003882;
-        Mon, 1 Mar 2021 16:31:09 -0600
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 1 Mar 2021 16:31:09 -0600
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 01/15] powerpc/uaccess: Remove __get_user_allowed() and unsafe_op_wrap()
-Message-ID: <20210301223108.GE29191@gate.crashing.org>
-References: <cover.1614275314.git.christophe.leroy@csgroup.eu> <e0538c71167bd90224a8727fea9ed5b75612e2d7.1614275314.git.christophe.leroy@csgroup.eu> <87im6ao7ld.fsf@dja-thinkpad.axtens.net>
-Mime-Version: 1.0
+        id S1575389AbhCBDz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:55:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245370AbhCAWeu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 17:34:50 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006E1C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 14:34:07 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id m6so12510455pfk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:34:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/AwKDtv+GHa7MHunk/c29uxwQVds8fgP8tOf9dSrqJA=;
+        b=rEWXvFMYmBv6dncujhbwJ+VzGxtQNkur08Sj/C2v8MwzMmAzcIHW9PminN8h4aktnS
+         4OR+f6sa6+84Ad3Mch/48AwghE8o82uh3M/TuO+51/JGLAvuK9d8kAngISagiMzrAkJL
+         AWhcLzIngiasFXpQmULKnogHY1Z0Px6DkplZlLhqEg8ey7MQtXqvIxRl0gQOtVqY7oE5
+         vOadraRURss1IYLQ1k3yzbuKK8cgs5pgDnp8lpY0UBechIhhC/oqG9pv+NpSsYByIUFb
+         d6Den2mTKfnPXFzC4p1lRSGcesiLpSJR1sn48Wny4YV4NgHNKHTrQJ2fSMFHysZ8UjeE
+         OZQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/AwKDtv+GHa7MHunk/c29uxwQVds8fgP8tOf9dSrqJA=;
+        b=RhPnHMy1TiVCdZABm2YCQYqUyXyOBU7pldTKuVHoNFpxR/RdXEh/WTWjcpOD/xGkeM
+         YQT/ZKqihVv6dZ2qRiT8Y/U2v+Ybir/nifHM81mb3im0J3iIKMDtE8ldQm+PiwWJhTUD
+         IvzVQBGdZh3UUNgDfJ1AWRuneL9/+XyT5EahERq0PfZ5HitJ0hTeHFnqXOx9ZFJep1tM
+         J7w7YyTz97M5gbM/uZvK9xSl87mFDIIS39d84Vxhr95OpplFzaDZc0feaukE3JDH2cMO
+         kQiLcrfCq6raFJYowtRbsRfTcxvLIXrGEjkwcL/josQkIRLm1jM0WrfPa74p7Y1WPlIV
+         +zKQ==
+X-Gm-Message-State: AOAM530KVKzukWbs0iiY3eKRvSNIqEOWvyO7Pi8BhHnz/8uSnSG+7kf3
+        v/kuRD1Lni/EDwT6/VaSSyg51A==
+X-Google-Smtp-Source: ABdhPJyAPnkIsb6b/0CFbgCmrG8poAEIKGGC2AqntUJXHhhCLrC0LVGAJHlM0XihZb79Ms0NM6OGYw==
+X-Received: by 2002:a63:6dc3:: with SMTP id i186mr8303678pgc.314.1614638047291;
+        Mon, 01 Mar 2021 14:34:07 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
+        by smtp.gmail.com with ESMTPSA id 63sm4128729pfg.187.2021.03.01.14.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 14:34:06 -0800 (PST)
+Date:   Mon, 1 Mar 2021 14:34:00 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu@linux.intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation
+ for Arch LBR
+Message-ID: <YD1r2G1UQjVXkUk5@google.com>
+References: <20210203135714.318356-1-like.xu@linux.intel.com>
+ <20210203135714.318356-2-like.xu@linux.intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87im6ao7ld.fsf@dja-thinkpad.axtens.net>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <20210203135714.318356-2-like.xu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 09:02:54AM +1100, Daniel Axtens wrote:
-> Checkpatch does have one check that is relevant:
-> 
-> CHECK: Macro argument reuse 'p' - possible side-effects?
-> #36: FILE: arch/powerpc/include/asm/uaccess.h:482:
-> +#define unsafe_get_user(x, p, e) do {					\
-> +	if (unlikely(__get_user_nocheck((x), (p), sizeof(*(p)), false)))\
-> +		goto e;							\
-> +} while (0)
+On Wed, Feb 03, 2021, Like Xu wrote:
+> @@ -348,10 +352,26 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
+>  	return true;
+>  }
+>  
+> +/*
+> + * Check if the requested depth values is supported
+> + * based on the bits [0:7] of the guest cpuid.1c.eax.
+> + */
+> +static bool arch_lbr_depth_is_valid(struct kvm_vcpu *vcpu, u64 depth)
+> +{
+> +	struct kvm_cpuid_entry2 *best;
+> +
+> +	best = kvm_find_cpuid_entry(vcpu, 0x1c, 0);
+> +	if (depth && best)
 
-sizeof (of something other than a VLA) does not evaluate its operand.
-The checkpatch warning is incorrect (well, it does say "possible" --
-it just didn't find a possible problem here).
+> +		return (best->eax & 0xff) & (1ULL << (depth / 8 - 1));
 
-You can write
-  bla = sizeof *p++;
-and p is *not* incremented.
+I believe this will genereate undefined behavior if depth > 64.  Or if depth < 8.
+And I believe this check also needs to enforce that depth is a multiple of 8.
+
+   For each bit n set in this field, the IA32_LBR_DEPTH.DEPTH value 8*(n+1) is
+   supported.
+
+Thus it's impossible for 0-7, 9-15, etc... to be legal depths.
 
 
-Segher
+> +
+> +	return false;
+> +}
+> +
+
