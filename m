@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0DA3298B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A2F3297DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346420AbhCAXrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:47:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
+        id S238451AbhCAWza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:55:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239155AbhCASGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:06:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABCD965084;
-        Mon,  1 Mar 2021 17:29:06 +0000 (UTC)
+        id S234777AbhCARtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:49:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52565650E8;
+        Mon,  1 Mar 2021 16:59:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619747;
-        bh=kMryugSAitGT+mUC9SjbCvQXq1N8L83kLgmmbMJwOh4=;
+        s=korg; t=1614617997;
+        bh=J9cM09gvd/wJSivpw0k1h17JnyO7s1lC+nTQ8BBlnv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fw1yDuqmyGJnBC7Yw/Z2SScDrZkLabUZ5y2Ir3zrg+XghZuOtP0GhJanf7p5UNfso
-         cTDwv4xftPFOWWTAuueJfMMgiSKX1fKkWArmDw0Hd6zzPQcnXKgyRs20L7GoLAS+Ys
-         tVdmVahqhdWmMMcGAGnnYVSWqQFQwDZttVhG9bCk=
+        b=mfqD/9TY/kfokKiaDT5swWjjRBeUGAd4ywEnkoTZGqsRecxwaN16sqqJDzzIuOls7
+         zRhQFgIHV+h3tnjqyhB11ypnpSFfiH5vFO0/MfJJ2GbR8dLed+nxQmylob9NML72KZ
+         Fct6Y3auepuMuYaP+NSvELMj0BIauR8x/xgXL3cQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David P. Reed" <dpreed@deepplum.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 567/663] x86/virt: Eat faults on VMXOFF in reboot flows
-Date:   Mon,  1 Mar 2021 17:13:35 +0100
-Message-Id: <20210301161209.928914204@linuxfoundation.org>
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.4 272/340] crypto: sun4i-ss - IV register does not work on A10 and A13
+Date:   Mon,  1 Mar 2021 17:13:36 +0100
+Message-Id: <20210301161101.674019433@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,64 +39,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-commit aec511ad153556640fb1de38bfe00c69464f997f upstream.
+commit b756f1c8fc9d84e3f546d7ffe056c5352f4aab05 upstream.
 
-Silently ignore all faults on VMXOFF in the reboot flows as such faults
-are all but guaranteed to be due to the CPU not being in VMX root.
-Because (a) VMXOFF may be executed in NMI context, e.g. after VMXOFF but
-before CR4.VMXE is cleared, (b) there's no way to query the CPU's VMX
-state without faulting, and (c) the whole point is to get out of VMX
-root, eating faults is the simplest way to achieve the desired behaior.
+Allwinner A10 and A13 SoC have a version of the SS which produce
+invalid IV in IVx register.
 
-Technically, VMXOFF can fault (or fail) for other reasons, but all other
-fault and failure scenarios are mode related, i.e. the kernel would have
-to magically end up in RM, V86, compat mode, at CPL>0, or running with
-the SMI Transfer Monitor active.  The kernel is beyond hosed if any of
-those scenarios are encountered; trying to do something fancy in the
-error path to handle them cleanly is pointless.
-
-Fixes: 1e9931146c74 ("x86: asm/virtext.h: add cpu_vmxoff() inline function")
-Reported-by: David P. Reed <dpreed@deepplum.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20201231002702.2223707-2-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Instead of adding a variant for those, let's convert SS to produce IV
+directly from data.
+Fixes: 6298e948215f2 ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/virtext.h |   17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/crypto/sunxi-ss/sun4i-ss-cipher.c |   34 ++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
---- a/arch/x86/include/asm/virtext.h
-+++ b/arch/x86/include/asm/virtext.h
-@@ -30,15 +30,22 @@ static inline int cpu_has_vmx(void)
- }
+--- a/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
++++ b/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
+@@ -20,6 +20,7 @@ static int noinline_for_stack sun4i_ss_o
+ 	unsigned int ivsize = crypto_skcipher_ivsize(tfm);
+ 	struct sun4i_cipher_req_ctx *ctx = skcipher_request_ctx(areq);
+ 	u32 mode = ctx->mode;
++	void *backup_iv = NULL;
+ 	/* when activating SS, the default FIFO space is SS_RX_DEFAULT(32) */
+ 	u32 rx_cnt = SS_RX_DEFAULT;
+ 	u32 tx_cnt = 0;
+@@ -44,6 +45,13 @@ static int noinline_for_stack sun4i_ss_o
+ 		return -EINVAL;
+ 	}
  
++	if (areq->iv && ivsize > 0 && mode & SS_DECRYPTION) {
++		backup_iv = kzalloc(ivsize, GFP_KERNEL);
++		if (!backup_iv)
++			return -ENOMEM;
++		scatterwalk_map_and_copy(backup_iv, areq->src, areq->cryptlen - ivsize, ivsize, 0);
++	}
++
+ 	spin_lock_irqsave(&ss->slock, flags);
  
--/** Disable VMX on the current CPU
-+/**
-+ * cpu_vmxoff() - Disable VMX on the current CPU
-  *
-- * vmxoff causes a undefined-opcode exception if vmxon was not run
-- * on the CPU previously. Only call this function if you know VMX
-- * is enabled.
-+ * Disable VMX and clear CR4.VMXE (even if VMXOFF faults)
-+ *
-+ * Note, VMXOFF causes a #UD if the CPU is !post-VMXON, but it's impossible to
-+ * atomically track post-VMXON state, e.g. this may be called in NMI context.
-+ * Eat all faults as all other faults on VMXOFF faults are mode related, i.e.
-+ * faults are guaranteed to be due to the !post-VMXON check unless the CPU is
-+ * magically in RM, VM86, compat mode, or at CPL>0.
-  */
- static inline void cpu_vmxoff(void)
- {
--	asm volatile ("vmxoff");
-+	asm_volatile_goto("1: vmxoff\n\t"
-+			  _ASM_EXTABLE(1b, %l[fault]) :::: fault);
-+fault:
- 	cr4_clear_bits(X86_CR4_VMXE);
- }
+ 	for (i = 0; i < op->keylen; i += 4)
+@@ -117,9 +125,12 @@ static int noinline_for_stack sun4i_ss_o
+ 	} while (oleft);
+ 
+ 	if (areq->iv) {
+-		for (i = 0; i < 4 && i < ivsize / 4; i++) {
+-			v = readl(ss->base + SS_IV0 + i * 4);
+-			*(u32 *)(areq->iv + i * 4) = v;
++		if (mode & SS_DECRYPTION) {
++			memcpy(areq->iv, backup_iv, ivsize);
++			kfree_sensitive(backup_iv);
++		} else {
++			scatterwalk_map_and_copy(areq->iv, areq->dst, areq->cryptlen - ivsize,
++						 ivsize, 0);
+ 		}
+ 	}
+ 
+@@ -176,6 +187,7 @@ static int sun4i_ss_cipher_poll(struct s
+ 	unsigned int ileft = areq->cryptlen;
+ 	unsigned int oleft = areq->cryptlen;
+ 	unsigned int todo;
++	void *backup_iv = NULL;
+ 	struct sg_mapping_iter mi, mo;
+ 	unsigned long pi = 0, po = 0; /* progress for in and out */
+ 	bool miter_err;
+@@ -219,6 +231,13 @@ static int sun4i_ss_cipher_poll(struct s
+ 	if (need_fallback)
+ 		return sun4i_ss_cipher_poll_fallback(areq);
+ 
++	if (areq->iv && ivsize > 0 && mode & SS_DECRYPTION) {
++		backup_iv = kzalloc(ivsize, GFP_KERNEL);
++		if (!backup_iv)
++			return -ENOMEM;
++		scatterwalk_map_and_copy(backup_iv, areq->src, areq->cryptlen - ivsize, ivsize, 0);
++	}
++
+ 	spin_lock_irqsave(&ss->slock, flags);
+ 
+ 	for (i = 0; i < op->keylen; i += 4)
+@@ -347,9 +366,12 @@ static int sun4i_ss_cipher_poll(struct s
+ 		sg_miter_stop(&mo);
+ 	}
+ 	if (areq->iv) {
+-		for (i = 0; i < 4 && i < ivsize / 4; i++) {
+-			v = readl(ss->base + SS_IV0 + i * 4);
+-			*(u32 *)(areq->iv + i * 4) = v;
++		if (mode & SS_DECRYPTION) {
++			memcpy(areq->iv, backup_iv, ivsize);
++			kfree_sensitive(backup_iv);
++		} else {
++			scatterwalk_map_and_copy(areq->iv, areq->dst, areq->cryptlen - ivsize,
++						 ivsize, 0);
+ 		}
+ 	}
  
 
 
