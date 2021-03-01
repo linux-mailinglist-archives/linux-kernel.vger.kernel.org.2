@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D767E329B27
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF65329A29
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378656AbhCBBHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:07:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36704 "EHLO mail.kernel.org"
+        id S1377079AbhCBApf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:45:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240827AbhCATES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:04:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 104EA65212;
-        Mon,  1 Mar 2021 17:22:23 +0000 (UTC)
+        id S240358AbhCASit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:38:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E162E65217;
+        Mon,  1 Mar 2021 17:22:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619344;
-        bh=19yHZoK3HBP0lkuxRqJoUuivNNBKkBGfXJo4NM9PD30=;
+        s=korg; t=1614619355;
+        bh=SRNzP4HGPgMV6/7wRONNUED1bePiWeKW+ltwGaIohxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vFTWVbL8s/q8S3tBh1LU//4JeldBehfwxB1iu+U1vj2XK0SJeEdBohRFlcjW9DykA
-         OGaSMFE5T0Jw/4RJFip3vgPWX33T61pVwzxo+NsfQAAXZR9qryNMIj/fK9IVTFZLWV
-         3dhntPu/scbl1zwvg33xABBqbGKtgje6GX/PZUGk=
+        b=Q79BLe1NUz2jNVymgc5lo7YXpoP1u1QKj/OM+/fVz2o8lThfnBl9rrg1nVgLb7RsC
+         7j8gppIdCcTHgGlwIB2F2+jaeavO8YokNtiJQdrFEjFMAfeSUVcb5rjadOAOvB3Edu
+         PnKbnjMrAayGcRyvDJVIEPxz0cyeG8YFw5+nUhK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        patches@armlinux.org.uk, Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 5.10 393/663] ARM: 9065/1: OABI compat: fix build when EPOLL is not enabled
-Date:   Mon,  1 Mar 2021 17:10:41 +0100
-Message-Id: <20210301161201.308823251@linuxfoundation.org>
+        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 394/663] misc: eeprom_93xx46: Fix module alias to enable module autoprobe
+Date:   Mon,  1 Mar 2021 17:10:42 +0100
+Message-Id: <20210301161201.359195478@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -44,69 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Aswath Govindraju <a-govindraju@ti.com>
 
-[ Upstream commit fd749fe4bcb00ad80d9eece709f804bb4ac6bf1e ]
+[ Upstream commit 13613a2246bf531f5fc04e8e62e8f21a3d39bf1c ]
 
-When CONFIG_EPOLL is not set/enabled, sys_oabi-compat.c has build
-errors. Fix these by surrounding them with ifdef CONFIG_EPOLL/endif
-and providing stubs for the "EPOLL is not set" case.
+Fix module autoprobe by correcting module alias to match the string from
+/sys/class/.../spi1.0/modalias content.
 
-../arch/arm/kernel/sys_oabi-compat.c: In function 'sys_oabi_epoll_ctl':
-../arch/arm/kernel/sys_oabi-compat.c:257:6: error: implicit declaration of function 'ep_op_has_event' [-Werror=implicit-function-declaration]
-  257 |  if (ep_op_has_event(op) &&
-      |      ^~~~~~~~~~~~~~~
-../arch/arm/kernel/sys_oabi-compat.c:264:9: error: implicit declaration of function 'do_epoll_ctl'; did you mean 'sys_epoll_ctl'? [-Werror=implicit-function-declaration]
-  264 |  return do_epoll_ctl(epfd, op, fd, &kernel, false);
-      |         ^~~~~~~~~~~~
-
-Fixes: c281634c8652 ("ARM: compat: remove KERNEL_DS usage in sys_oabi_epoll_ctl()")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com> # from an lkp .config file
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Nicolas Pitre <nico@fluxnic.net>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: patches@armlinux.org.uk
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Fixes: 06b4501e88ad ("misc/eeprom: add driver for microwire 93xx46 EEPROMs")
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Link: https://lore.kernel.org/r/20210107163957.28664-2-a-govindraju@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/sys_oabi-compat.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/misc/eeprom/eeprom_93xx46.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/kernel/sys_oabi-compat.c b/arch/arm/kernel/sys_oabi-compat.c
-index 0203e545bbc8d..075a2e0ed2c15 100644
---- a/arch/arm/kernel/sys_oabi-compat.c
-+++ b/arch/arm/kernel/sys_oabi-compat.c
-@@ -248,6 +248,7 @@ struct oabi_epoll_event {
- 	__u64 data;
- } __attribute__ ((packed,aligned(4)));
- 
-+#ifdef CONFIG_EPOLL
- asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
- 				   struct oabi_epoll_event __user *event)
- {
-@@ -298,6 +299,20 @@ asmlinkage long sys_oabi_epoll_wait(int epfd,
- 	kfree(kbuf);
- 	return err ? -EFAULT : ret;
- }
-+#else
-+asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
-+				   struct oabi_epoll_event __user *event)
-+{
-+	return -EINVAL;
-+}
-+
-+asmlinkage long sys_oabi_epoll_wait(int epfd,
-+				    struct oabi_epoll_event __user *events,
-+				    int maxevents, int timeout)
-+{
-+	return -EINVAL;
-+}
-+#endif
- 
- struct oabi_sembuf {
- 	unsigned short	sem_num;
+diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
+index 7c45f82b43027..206d920dc92fc 100644
+--- a/drivers/misc/eeprom/eeprom_93xx46.c
++++ b/drivers/misc/eeprom/eeprom_93xx46.c
+@@ -511,4 +511,4 @@ module_spi_driver(eeprom_93xx46_driver);
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Driver for 93xx46 EEPROMs");
+ MODULE_AUTHOR("Anatolij Gustschin <agust@denx.de>");
+-MODULE_ALIAS("spi:93xx46");
++MODULE_ALIAS("spi:eeprom-93xx46");
 -- 
 2.27.0
 
