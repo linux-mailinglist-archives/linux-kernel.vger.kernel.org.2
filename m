@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D024E32811B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6E432811E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236432AbhCAOkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:40:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25533 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235441AbhCAOkE (ORCPT
+        id S236461AbhCAOlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:41:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234639AbhCAOlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:40:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614609517;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tN0JoqBuTFws3QXTxQXFTe91qQ1qRs8yOegCJEJPLIM=;
-        b=aZPsh2c+87mbVgDcIE8BhbV1cyo4h8BA4FurNN18rRlsYPeDkuxcKK0dH3eN1TE7vkskS3
-        +vWFrlxoz9vS5+YfuqwwnAHsnWRKkhb6j8LOVHnoio1dNeu1XExcwL0pIBzVvOP5LOOAlX
-        jYrrKUxn87U2hMH/eyxGfdkwrPNG/aU=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-A8Nd7GixOg6TJ1aXBOcapg-1; Mon, 01 Mar 2021 09:38:35 -0500
-X-MC-Unique: A8Nd7GixOg6TJ1aXBOcapg-1
-Received: by mail-pl1-f199.google.com with SMTP id t14so9285420plr.15
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:38:35 -0800 (PST)
+        Mon, 1 Mar 2021 09:41:22 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A2AC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:40:41 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id hs11so28646588ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:40:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JVVBUJ75xHBEk5qyQn3Xf4S3QyZMI9CdpTctwGu75EM=;
+        b=j9ASSF6odpol7YQ+cwgBHF4thZQTO17O6g4YkepShvXcYU+YwwCGbE97nEk0Wya1zD
+         hxnTIT03M2iUIzRNcjm6FdHYOhwU0M8PO+YY9oUBDltEZNGWoGM/jUAQUnhFZ5eLO5VF
+         gMgYl+Qmqbo6gxE0kS1Rjozao27JrR5nCStWUyIfZz60+cL7r4T4oBE3ZKnNPYdXaiAE
+         VqhUPuKtbewug89zDLb4feHmgFGnfUWx2EGyYogJeZ/ojIXbl4wPkcf5Kpn1r7CTNM0v
+         qI3lUaoLrdBTFkU4zU7VNofXwhl3VqZhivDmAR5K0Pb5iQWbMJlUJd3hy4oRplfoRpn6
+         YTDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tN0JoqBuTFws3QXTxQXFTe91qQ1qRs8yOegCJEJPLIM=;
-        b=eE0Q1s0jzFfFST53BpJ6Ir1drPcZ8BxPDyStGbCkeyCz7TnTgwQNvj/934GUzz4ir6
-         bNBrrVFAzfBrtOv8jVcWmcAY8m4TOMPR7jbkCpFxluYkx74dbMrJ0PtY17Kk6u6JKRrk
-         OOftQG8K/v06YKWg0zk4/fzhD2qO++UjCYiuo1FdduCAOJ7ySQ62aWUWs9oOVJjMYX2r
-         5phY1OquI+cK5363d3u38RG94WMx7REiEna4HvRsqv2l/K/FLF1GCQNjHzQMyEMkQbLN
-         IfHTJtpKVi7k1Hg8JO22X3JRF9w7SaFKQRDHmszXkHegdMu8aemC875QmkFcxX3OCVKE
-         +s9A==
-X-Gm-Message-State: AOAM531TFaCj36tB5PCekYnlV6abBvsh/p620jDGjo0xTSOJf8Tmy21o
-        slUHlOXAoaSElc58BOvn8TE0fM1L1RvgMRo+fXG2taN4MV5NHAmR1bom1s0Xc4Oa3Yr3bvL/VCF
-        G5ZD/R5iX5ks9HkYfyxe2b61zFxXeCMKY0TiOOmLy
-X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr17938869pjr.234.1614609514930;
-        Mon, 01 Mar 2021 06:38:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzGK6rtQxDI96aRba38Wa782xikLN30F9jqdHgPqp09r4zd107U4ws7V5mPzZDW6ZcAO36WzP0ctzOD39uOnUY=
-X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr17938853pjr.234.1614609514768;
- Mon, 01 Mar 2021 06:38:34 -0800 (PST)
+        bh=JVVBUJ75xHBEk5qyQn3Xf4S3QyZMI9CdpTctwGu75EM=;
+        b=g4oSF3mSqG/mBC09VPr2IyiKbrioHFtx5wn3IQpGKkGn0mkGz0v/ufUE3L2+oYhguu
+         vLUE9t1Q+RX63EsvY1+y/0mvFvDdOnHIZoOtGBErbGR5GDo/4RQYSkv5zyYXwebZHHeM
+         5WzIgxDDjQNuru842eDmdQeIjN65Niy9dV+cDgrLz574ICacLgkA3McHxZH531SbcZC8
+         EQTducSVNxeVvoB+au3wsVxD+yzJaarFdujO+EExr0O/uhAA1zLCS+6cjYkw8+Q3x87s
+         67bItYvPockqsILxuQw/D592UaLveqE07R9444539ILLrwscZxTOApGaJcPdWm3rw7Zl
+         YbLw==
+X-Gm-Message-State: AOAM530Uu1mbzqWqLh+S4LxHDbapPetmuI1LDh4nlm8GLKAEo8hLXQ00
+        IJE7vyL8AvnAsBpqCTOObnw+pgLFhFg2UQ4gr+cA3z7/wRf2
+X-Google-Smtp-Source: ABdhPJzg507CF+cb05KnYkYY9ytVN+T13YzJcNieXsLvtKP8j4OTzaetWoeVWgVjKqarwzmRTir/LlIJP6mW7/9Nxi8=
+X-Received: by 2002:a17:906:3b84:: with SMTP id u4mr16070980ejf.431.1614609640223;
+ Mon, 01 Mar 2021 06:40:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20210226193225.47129-1-andriy.shevchenko@linux.intel.com> <20210226193225.47129-4-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210226193225.47129-4-andriy.shevchenko@linux.intel.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 1 Mar 2021 15:38:23 +0100
-Message-ID: <CAO-hwJLWbsj4kDkn3TKdEW0mDv6XdafQEaheCCC0Nyq3=YaOYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] HID: i2c-hid: acpi: Drop redundant ACPI_PTR()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Kosina <jikos@kernel.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <202102100211.hNoYGjub-lkp@intel.com> <CAHC9VhRidm6WXr9T+dGG_hZjeS+cKaVkMic_cNJMG-CRqyoSVA@mail.gmail.com>
+ <20210301060822.GA21746@shbuild999.sh.intel.com>
+In-Reply-To: <20210301060822.GA21746@shbuild999.sh.intel.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 1 Mar 2021 09:40:29 -0500
+Message-ID: <CAHC9VhT9Mzocw3w6JfHbvqm4=7wWodbrdAA4BoOU2VqGHavZBQ@mail.gmail.com>
+Subject: Re: [linux-next:master 5983/6048] h8300-linux-ld: section .data VMA
+ overlaps section __kcrctab VMA
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     lkp <lkp@intel.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Feb 26, 2021 at 8:34 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Mon, Mar 1, 2021 at 1:08 AM Feng Tang <feng.tang@intel.com> wrote:
 >
-> The driver depends on ACPI, ACPI_PTR() resolution is always the same.
-> Otherwise a compiler may produce a warning.
+> Hi Paul,
 >
-> That said, the rule of thumb either ugly ifdeffery with ACPI_PTR or
-> none should be used in a driver.
+> On Wed, Feb 10, 2021 at 02:21:41AM +0800, Paul Moore wrote:
+> > On Tue, Feb 9, 2021 at 1:09 PM kernel test robot <lkp@intel.com> wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> > > head:   59fa6a163ffabc1bf25c5e0e33899e268a96d3cc
+> > > commit: 77d8143a5290b38e3331f61f55c0b682699884bc [5983/6048] Merge remote-tracking branch 'selinux/next'
+> > > config: h8300-randconfig-r005-20210209 (attached as .config)
+> > > compiler: h8300-linux-gcc (GCC) 9.3.0
+> > > reproduce (this is a W=1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=77d8143a5290b38e3331f61f55c0b682699884bc
+> > >         git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> > >         git fetch --no-tags linux-next master
+> > >         git checkout 77d8143a5290b38e3331f61f55c0b682699884bc
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=h8300
+> > >
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > > All errors (new ones prefixed by >>):
+> > >
+> > >    h8300-linux-ld: section .init.text LMA [0000000000430360,00000000004479a1] overlaps section .data LMA [000000000041868c,00000000004489eb]
+> > > >> h8300-linux-ld: section .data VMA [0000000000400000,000000000043035f] overlaps section __kcrctab VMA [00000000003fdd74,000000000040007b]
+> > > >> h8300-linux-ld: section __kcrctab_gpl VMA [000000000040007c,00000000004025a7] overlaps section .data VMA [0000000000400000,000000000043035f]
+> > >    h8300-linux-ld: arch/h8300/kernel/entry.o: in function `resume_kernel':
+> > >    (.text+0x29a): undefined reference to `TI_PRE_COUNT'
+> >
+> > This really doesn't look like something caused by SELinux ...
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> No, this is not related with SELinux, sorry for the false alarm.
 
-Thanks a lot for the series. This indeed cleans things up.
+Thanks for confirming this and providing an explanation of the root cause.
 
-For the series:
-Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-
-Jiri, I wonder where we want to land this one. This is not strictly
-bug fixes, but we could definitively sneak this one in 5.12-rc1.
-Well, I should probably run the series on an acpi laptop here before
-merging, but I'd like to know if delaying to 5.13 is OK or if we need
-this in 5.12.
-
-Cheers,
-Benjamin
-
-> ---
-> v2: no changes
->  drivers/hid/i2c-hid/i2c-hid-acpi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/hid/i2c-hid/i2c-hid-acpi.c b/drivers/hid/i2c-hid/i2c-hid-acpi.c
-> index a4810f199d59..a6f0257a26de 100644
-> --- a/drivers/hid/i2c-hid/i2c-hid-acpi.c
-> +++ b/drivers/hid/i2c-hid/i2c-hid-acpi.c
-> @@ -126,7 +126,7 @@ static struct i2c_driver i2c_hid_acpi_driver = {
->                 .name   = "i2c_hid_acpi",
->                 .pm     = &i2c_hid_core_pm,
->                 .probe_type = PROBE_PREFER_ASYNCHRONOUS,
-> -               .acpi_match_table = ACPI_PTR(i2c_hid_acpi_match),
-> +               .acpi_match_table = i2c_hid_acpi_match,
->         },
->
->         .probe_new      = i2c_hid_acpi_probe,
-> --
-> 2.30.0
->
-
+-- 
+paul moore
+www.paul-moore.com
