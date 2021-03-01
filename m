@@ -2,114 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADDD3293EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E138B3293B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238768AbhCAVmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:42:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236769AbhCARSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:18:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1F5864F8F;
-        Mon,  1 Mar 2021 16:47:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617228;
-        bh=gRIT0VF9fiR/03qrO6Qr37uVPBAtkSGVbL9WsCTeM3c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b+vBbocXZMUopPl7NmY8Keh8v1EVySB9MDA9y4JlgfONHq/qeNktFuSae5ajqNL3d
-         0wf45OaEistfq7Ei2aK6rf1IFxNOdHZB27DPTngOECOUeJHvS4lpnQOjz6GyfKPxXH
-         m22zsL/OATyQEdDAiOEo5Qha/Ejp5k8yFI/JOOQQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+5d6e4af21385f5cfc56a@syzkaller.appspotmail.com,
-        Takeshi Misawa <jeliantsurux@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 247/247] net: qrtr: Fix memory leak in qrtr_tun_open
-Date:   Mon,  1 Mar 2021 17:14:27 +0100
-Message-Id: <20210301161043.797217519@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
-References: <20210301161031.684018251@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S244225AbhCAVc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:32:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235320AbhCARTA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:19:00 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C49C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:18:03 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id hs11so29648077ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:18:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vv6t5g8xmRQrU3t4nwEI1adaYgpKEkMqFy3Pe4ng6DE=;
+        b=LG5630hxJ/RU1Vhwdq9zzm9Y94EvZi4itREzN4F+bHXi9ZMDLn5fk/NhUoOeDQ92Yd
+         RaaVkDDZrgitJ1gYmrJY2fzvTGU7Yce18FWzKGE3qN7xR6jbrM075E9XrvWw6uxbcugF
+         tOuTJAs4Cdn9QeZeeWqMo+NCDRdTcnAy4OpLY8JEZBNV+vBRxgxIdxxbVB+/NyeSOkAK
+         dqR4Tysj/lpoLQFDfgLSJX5NO7k4WclYROWTo7zIW2vc9YNr81iWx4/QiQF5yzt8iErt
+         uvMQz0b5eomR+5ZominYN7ZcTEn8/+v9o7CVF6au5HruHQC0wkWXdZoGyqpQOefiwUI9
+         2Frg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vv6t5g8xmRQrU3t4nwEI1adaYgpKEkMqFy3Pe4ng6DE=;
+        b=hFuit7mLros+Ck7WIZcKa9WR6U0+VlxgT2wsytDRtb4gnwI2af45i/HMIaScmkqm98
+         JowbQVR68ak53pXy97Z622sMrymf+o6i0sa3Xad8evzepcFeMV0PMubSixzy+Lm/HuhI
+         Lvm3CIN4Xxub7mFqkjDb+yihntVJcTsL6d/LhgJPXE7RCeAPMVOBSv3W+HDY0RkvwaUZ
+         tONf5NLUF4Vmrv18VcHodxkzkE3d9bY7+NlZxGgTmHi7S9TaqNWSyJyO6vToMcBc6V9A
+         S6MTSTbjUnWAXPPqamjrN2ASBEDqwwxYjCU8jYKATH//Cr2mxE7BkSPcXFLGAVAi5bF/
+         SK3A==
+X-Gm-Message-State: AOAM530kt61OECLRgThZDlyPWy6UEvtdBP0BJ223HEv6FGRiPMaRUlpY
+        DBZLjC/4Z05n0xuljMQ+YoZqgG4c9oG9uIJpxOo=
+X-Google-Smtp-Source: ABdhPJx31N4JWJjQv43bkttTGqAs8q4uS7GeLxKU4ia9HhxWJv7MDghBLNRkrkoxDyZL1rgsGhbvTg6XleVLGNjVwe8=
+X-Received: by 2002:a17:907:2bf6:: with SMTP id gv54mr17343031ejc.514.1614619082651;
+ Mon, 01 Mar 2021 09:18:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210226021254.3980-1-shy828301@gmail.com> <YDijjovHAer2tiL5@dhcp22.suse.cz>
+ <CAHbLzkoLC-gGZA1GvDZjgTnVFzCTQnLMd4JWzZ6Ge_q63YhWKQ@mail.gmail.com>
+ <CAHbLzkrgtbR1o3pTSh_hqPhrkugXBnB4uwdHh+uK6Ndp-u_fEw@mail.gmail.com> <YDzdB7RtLex+8VkA@dhcp22.suse.cz>
+In-Reply-To: <YDzdB7RtLex+8VkA@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 1 Mar 2021 09:17:50 -0800
+Message-ID: <CAHbLzkrpLOf4kwKNNetYwFBcmci8VNf7ULQifei-iqivAB1ipQ@mail.gmail.com>
+Subject: Re: [PATCH] doc: memcontrol: add description for oom_kill
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takeshi Misawa <jeliantsurux@gmail.com>
+On Mon, Mar 1, 2021 at 4:24 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 26-02-21 11:19:51, Yang Shi wrote:
+> > On Fri, Feb 26, 2021 at 8:42 AM Yang Shi <shy828301@gmail.com> wrote:
+> > >
+> > > On Thu, Feb 25, 2021 at 11:30 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Thu 25-02-21 18:12:54, Yang Shi wrote:
+> > > > > When debugging an oom issue, I found the oom_kill counter of memcg is
+> > > > > confusing.  At the first glance without checking document, I thought it
+> > > > > just counts for memcg oom, but it turns out it counts both global and
+> > > > > memcg oom.
+> > > >
+> > > > Yes, this is the case indeed. The point of the counter was to count oom
+> > > > victims from the memcg rather than matching that to the source of the
+> > > > oom. Rememeber that this could have been a memcg oom up in the
+> > > > hierarchy as well. Counting victims on the oom origin could be equally
+> > >
+> > > Yes, it is updated hierarchically on v2, but not on v1. I'm supposed
+> > > this is because v1 may work in non-hierarchcal mode? If this is the
+> > > only reason we may be able to remove this to get aligned with v2 since
+> > > non-hierarchal mode is no longer supported.
+> >
+> > BTW, having the counter recorded hierarchically may help out one of
+> > our usecases. We want to monitor the oom_kill for some services, but
+> > systemd would wipe out the cgroup if the service is oom killed then
+> > restart the service from scratch (it means create a brand new cgroup
+> > with the same name). So this systemd behavior makes the counter
+> > useless if it is not recorded hierarchically.
+>
+> Just to make sure I understand correctly. You have a setup where memcg
+> for a service has a hard limit configured and it is destroyed when oom
+> happens inside that memcg. A new instance is created at the same place
+> of the hierarchy with a new memcg. Your problem is that the oom killed
+> memcg will not be recorded in its parent oom event and the information
+> will get lost with the torn down memcg. Correct?
 
-commit fc0494ead6398609c49afa37bc949b61c5c16b91 upstream.
+Yes. But global oom instead of memcg oom.
 
-If qrtr_endpoint_register() failed, tun is leaked.
-Fix this, by freeing tun in error path.
+>
+> If yes then how do you tell which of the child cgroup was killed from
+> the parent counter? Or is there only a single child?
 
-syzbot report:
-BUG: memory leak
-unreferenced object 0xffff88811848d680 (size 64):
-  comm "syz-executor684", pid 10171, jiffies 4294951561 (age 26.070s)
-  hex dump (first 32 bytes):
-    80 dd 0a 84 ff ff ff ff 00 00 00 00 00 00 00 00  ................
-    90 d6 48 18 81 88 ff ff 90 d6 48 18 81 88 ff ff  ..H.......H.....
-  backtrace:
-    [<0000000018992a50>] kmalloc include/linux/slab.h:552 [inline]
-    [<0000000018992a50>] kzalloc include/linux/slab.h:682 [inline]
-    [<0000000018992a50>] qrtr_tun_open+0x22/0x90 net/qrtr/tun.c:35
-    [<0000000003a453ef>] misc_open+0x19c/0x1e0 drivers/char/misc.c:141
-    [<00000000dec38ac8>] chrdev_open+0x10d/0x340 fs/char_dev.c:414
-    [<0000000079094996>] do_dentry_open+0x1e6/0x620 fs/open.c:817
-    [<000000004096d290>] do_open fs/namei.c:3252 [inline]
-    [<000000004096d290>] path_openat+0x74a/0x1b00 fs/namei.c:3369
-    [<00000000b8e64241>] do_filp_open+0xa0/0x190 fs/namei.c:3396
-    [<00000000a3299422>] do_sys_openat2+0xed/0x230 fs/open.c:1172
-    [<000000002c1bdcef>] do_sys_open fs/open.c:1188 [inline]
-    [<000000002c1bdcef>] __do_sys_openat fs/open.c:1204 [inline]
-    [<000000002c1bdcef>] __se_sys_openat fs/open.c:1199 [inline]
-    [<000000002c1bdcef>] __x64_sys_openat+0x7f/0xe0 fs/open.c:1199
-    [<00000000f3a5728f>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000004b38b7ec>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Not only a single child, but our case is that oom-killed child
+consumes 90% memory, then global oom would kill it. This definitely
+doesn't prevent from accounting oom from other children, but we don't
+have to have a very accurate counter and in our case we can tell 99%
+oom kill happens with that specific memcg.
 
-Fixes: 28fb4e59a47d ("net: qrtr: Expose tunneling endpoint to user space")
-Reported-by: syzbot+5d6e4af21385f5cfc56a@syzkaller.appspotmail.com
-Signed-off-by: Takeshi Misawa <jeliantsurux@gmail.com>
-Link: https://lore.kernel.org/r/20210221234427.GA2140@DESKTOP
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/qrtr/tun.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> Anyway, cgroup v2 will offer the hierarchical behavior. Do you have any
+> strong reasons that you cannot use v2?
 
---- a/net/qrtr/tun.c
-+++ b/net/qrtr/tun.c
-@@ -31,6 +31,7 @@ static int qrtr_tun_send(struct qrtr_end
- static int qrtr_tun_open(struct inode *inode, struct file *filp)
- {
- 	struct qrtr_tun *tun;
-+	int ret;
- 
- 	tun = kzalloc(sizeof(*tun), GFP_KERNEL);
- 	if (!tun)
-@@ -43,7 +44,16 @@ static int qrtr_tun_open(struct inode *i
- 
- 	filp->private_data = tun;
- 
--	return qrtr_endpoint_register(&tun->ep, QRTR_EP_NID_AUTO);
-+	ret = qrtr_endpoint_register(&tun->ep, QRTR_EP_NID_AUTO);
-+	if (ret)
-+		goto out;
-+
-+	return 0;
-+
-+out:
-+	filp->private_data = NULL;
-+	kfree(tun);
-+	return ret;
- }
- 
- static ssize_t qrtr_tun_read_iter(struct kiocb *iocb, struct iov_iter *to)
+I do prefer to migrate to cgroup v2 personally. But it incurs
+significant work for orchestration tools, infrastructure
+configuration, monitoring tools, etc which are out of my control.
 
-
+> --
+> Michal Hocko
+> SUSE Labs
