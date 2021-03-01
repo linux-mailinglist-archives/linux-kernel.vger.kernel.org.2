@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F51A329B8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D2F329C19
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348929AbhCBB0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:26:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
+        id S1349010AbhCBBsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:48:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238135AbhCATKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:10:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F8C564EE4;
-        Mon,  1 Mar 2021 17:48:21 +0000 (UTC)
+        id S241550AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:24:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EE2364F49;
+        Mon,  1 Mar 2021 17:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620902;
-        bh=0oap/+ijZsF1n2auixCW2Pmf6yNFKORAdrdltrdpo3c=;
+        s=korg; t=1614618853;
+        bh=IfeKqYHzE5ijcL9CnrsNpblBJMSXNUjvaOu3zxi3lIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ubn71B/YzfM1e4ixXQmm1+HRu3n9eOhgCpvR7ImuvXbVHElge3QInTeyraVZptTof
-         +e9Ec3mf1xjuTya43VfwZ88IbhmbzZENtLJB6WGaYRc+N+/gDa+ahZPZ3R2VnmAzXv
-         zscbgswtLqtVIko/5uYMZgn2f/LVh9jF17o0uUBY=
+        b=Jcx++tmblDDPSbZ67kBjRwV4mmyb4ZfAJVX65MY/LjV2xSN14jC4/UH6TbRXpM/p1
+         vqHR4bG5hV7zrOWBJOErHXnF1XPhKJUVZ+Q7db72KQFtiAdXs6uPWNT5v6Rz72LoVN
+         aJlTk7tbGN4qhlo8vjc7R5Q46xia8kH1i+yeCAvk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 321/775] clk: renesas: r8a779a0: Fix parent of CBFUSA clock
-Date:   Mon,  1 Mar 2021 17:08:09 +0100
-Message-Id: <20210301161217.477904436@linuxfoundation.org>
+        stable@vger.kernel.org, Minwoo Im <minwoo.im.dev@gmail.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 242/663] nvme-multipath: set nr_zones for zoned namespaces
+Date:   Mon,  1 Mar 2021 17:08:10 +0100
+Message-Id: <20210301161153.795097040@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Keith Busch <kbusch@kernel.org>
 
-[ Upstream commit 80d3e07ec509c5098d44e4f1416cc9f133fd436f ]
+[ Upstream commit 73a1a2298f3e9df24cea7a9aab412ba9470f6159 ]
 
-According to Figure 8.1.1 ("Block Diagram of CPG (R-Car V3U-AD)") in the
-R-Car V3U Series User's Manual Rev. 0.5, the parent of the CBFUSA clock
-is EXTAL.
+The bio based drivers only require the request_queue's nr_zones is set,
+so set this field in the head if the namespace path is zoned.
 
-Fixes: 17bcc8035d2d19fc ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Link: https://lore.kernel.org/r/20201019120614.22149-3-geert+renesas@glider.be
+Fixes: 240e6ee272c07 ("nvme: support for zoned namespaces")
+Reported-by: Minwoo Im <minwoo.im.dev@gmail.com>
+Cc: Damien Le Moal <damien.lemoal@wdc.com>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/renesas/r8a779a0-cpg-mssr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/multipath.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/clk/renesas/r8a779a0-cpg-mssr.c b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-index 9ccefc36b7ca8..7b2c640c3de0c 100644
---- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-+++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-@@ -136,7 +136,7 @@ static const struct cpg_core_clk r8a779a0_core_clks[] __initconst = {
- 	DEF_FIXED("icu",	R8A779A0_CLK_ICU,	CLK_PLL5_DIV4,	2, 1),
- 	DEF_FIXED("icud2",	R8A779A0_CLK_ICUD2,	CLK_PLL5_DIV4,	4, 1),
- 	DEF_FIXED("vcbus",	R8A779A0_CLK_VCBUS,	CLK_PLL5_DIV4,	1, 1),
--	DEF_FIXED("cbfusa",	R8A779A0_CLK_CBFUSA,	CLK_MAIN,	2, 1),
-+	DEF_FIXED("cbfusa",	R8A779A0_CLK_CBFUSA,	CLK_EXTAL,	2, 1),
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index 292e535a385d4..e812a0d0fdb3d 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -676,6 +676,10 @@ void nvme_mpath_add_disk(struct nvme_ns *ns, struct nvme_id_ns *id)
+ 	if (blk_queue_stable_writes(ns->queue) && ns->head->disk)
+ 		blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES,
+ 				   ns->head->disk->queue);
++#ifdef CONFIG_BLK_DEV_ZONED
++	if (blk_queue_is_zoned(ns->queue) && ns->head->disk)
++		ns->head->disk->queue->nr_zones = ns->queue->nr_zones;
++#endif
+ }
  
- 	DEF_DIV6P1("mso",	R8A779A0_CLK_MSO,	CLK_PLL5_DIV4,	0x87c),
- 	DEF_DIV6P1("canfd",	R8A779A0_CLK_CANFD,	CLK_PLL5_DIV4,	0x878),
+ void nvme_mpath_remove_disk(struct nvme_ns_head *head)
 -- 
 2.27.0
 
