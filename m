@@ -2,210 +2,490 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B907C329B04
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39622329B13
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378447AbhCBBGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:06:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240823AbhCATBN (ORCPT
+        id S1378571AbhCBBGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:06:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35099 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240630AbhCATCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:01:13 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56D1C061794
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 11:00:26 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id EF20C806B7;
-        Tue,  2 Mar 2021 08:00:23 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1614625223;
-        bh=WKHtECatzQfael+AQiWWuyJ3y/+f6zcgUcKeJWW2cbs=;
-        h=From:To:Cc:Subject:Date;
-        b=Wo7VoMveQJ7/MPyoV4CRwpv1OuAB39p1lx4AwAw+nKDQ4VbT2KbLBSRL80mBxWXOn
-         aSmL0WvO5PFYuATYVz7YNm+UagzQUd9PNl8MPQA2t0j8uKUa5KKd9ChTAhWT/v9kTk
-         v+mIKSLvBTW0DbQMwv3fiP4jjlJpojMeiOrsR/7Td1ux9WJ2B6dDCVn41J+LZLY2gi
-         qZjNo0EoH3MBIUYr7SaLjo/Mo1DTQ/C9eO+3ml5UgTYzRYiZqrE6UVN+e6nXezuVxK
-         f8js148C43ddT1uJeFmBCWcScVLHh/JdUVHepw0/O0+IsQZy/TJPC2bhwmgUlC/i0F
-         bSAL02iQ3uxpg==
-Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B603d39c70000>; Tue, 02 Mar 2021 08:00:23 +1300
-Received: from evann-dl.ws.atlnz.lc (evann-dl.ws.atlnz.lc [10.33.23.31])
-        by smtp (Postfix) with ESMTP id 586FF13EECD;
-        Tue,  2 Mar 2021 08:00:34 +1300 (NZDT)
-Received: by evann-dl.ws.atlnz.lc (Postfix, from userid 1780)
-        id B33201A4EB7; Tue,  2 Mar 2021 08:00:23 +1300 (NZDT)
-From:   Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-Subject: [PATCH v2 1/1] xfrm: Use actual socket sk instead of skb socket for xfrm_output_resume
-Date:   Tue,  2 Mar 2021 08:00:04 +1300
-Message-Id: <20210301190004.9586-1-evan.nimmo@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.27.0
+        Mon, 1 Mar 2021 14:02:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614625271;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qHdW/eIbIVKy8AipWSRDBE14YFP+txlHOwaoAbjXsdc=;
+        b=C3X/UiVwDT77BMtGzgC0p9o+jC4CZ8Iq/eFeYT3tF+2oRTmP1VqRflwqWIvwvdmYZSl/mY
+        9uoypOTlyjfhhi9Kf1Tk54EVB7ARMYuCl8CwMxqto075XvNBQOXnv8wFWXY/DkOTu6lpUc
+        D8jyigRyy7X+Zol4RndYv9pHMGKpWBM=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-82peCqkIMpqvAhYQtHlzGA-1; Mon, 01 Mar 2021 14:01:09 -0500
+X-MC-Unique: 82peCqkIMpqvAhYQtHlzGA-1
+Received: by mail-qv1-f69.google.com with SMTP id dz17so4323735qvb.14
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 11:01:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=qHdW/eIbIVKy8AipWSRDBE14YFP+txlHOwaoAbjXsdc=;
+        b=pRSI64nJYmwWwVB7i2Wh07JHLK3srb1ZHLoK/Q2ZlIwkHAOcMT5eB+xeXvYoE46e8L
+         7Jy+En9u0351TsfbxWrjzQQkAUTG5F2IRpw9cwsQcNiWleLhChUATlPfI7VKCyom7Hs4
+         ojlIQTOQoVq1EQBcuREC04yzPMv37sULkEG2S74kGxCYYfJ79oDhNJdWjWY8SxqA2gad
+         e7ED3oCccKUiFkuZ6ulKREzPHy+u1q0V6XbhS4VX+qTmyWkeBs898ERteuLaNwdHWsAq
+         YjZK++60MFhrp4XljfhRUX7R/iifBnIzQZSYRrWHfQqh8OYpGePppDInspuAHvj2nPXg
+         uELw==
+X-Gm-Message-State: AOAM530RLZS+oHmtnWtPwsyzsabdFRZtdzrrefOUZLf1ZtqJzhz37ntD
+        eVUs4q4YI6rTQwg31qUaxGbe/yQVnnj6Ycx5ugmotiIA0AcKnit19Ek3k14ZTJu+YRZEd/I9nT0
+        mawwZMTI5bT6agVVdGzqHyU4x
+X-Received: by 2002:ac8:5c8f:: with SMTP id r15mr14503085qta.65.1614625268746;
+        Mon, 01 Mar 2021 11:01:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwYVKhGhgQLgVRmGb+q26ZqGt6+H78ZkrUqcAJYXd5Yn6H1UlLDZP5q+/49ejk09OMy+fVhJg==
+X-Received: by 2002:ac8:5c8f:: with SMTP id r15mr14503036qta.65.1614625268385;
+        Mon, 01 Mar 2021 11:01:08 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id g89sm6560239qtd.75.2021.03.01.11.01.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 11:01:08 -0800 (PST)
+Subject: Re: [PATCH V3 XRT Alveo 10/18] fpga: xrt: VSEC platform driver
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
+        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-11-lizhih@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <c574bbef-0165-22dd-f567-0be9f9819676@redhat.com>
+Date:   Mon, 1 Mar 2021 11:01:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=7ZN4cI0QAAAA:8 a=tm9BhY98yDMkBz91zHIA:9 a=Dl0WHwQvj8hGZljrFLtM:22
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+In-Reply-To: <20210218064019.29189-11-lizhih@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A situation can occur where the interface bound to the sk is different
-to the interface bound to the sk attached to the skb. The interface
-bound to the sk is the correct one however this information is lost insid=
-e
-xfrm_output2 and instead the sk on the skb is used in xfrm_output_resume
-instead. This assumes that the sk bound interface and the bound interface
-attached to the sk within the skb are the same which can lead to lookup
-failures inside ip_route_me_harder resulting in the packet being dropped.
 
-We have an l2tp v3 tunnel with ipsec protection. The tunnel is in the
-global VRF however we have an encapsulated dot1q tunnel interface that
-is within a different VRF. We also have a mangle rule that marks the=20
-packets causing them to be processed inside ip_route_me_harder.
+On 2/17/21 10:40 PM, Lizhi Hou wrote:
+> Add VSEC driver. VSEC is a hardware function discovered by walking
+> PCI Express configure space. A platform device node will be created
+> for it. VSEC provides board logic UUID and few offset of other hardware
+> functions.
+Is this vsec walking infra or is a general find a list of mmio regions that need to be mapped in and do the mapping in as a set of platform drivers ?
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
+> ---
+>  drivers/fpga/xrt/lib/xleaf/vsec.c | 359 ++++++++++++++++++++++++++++++
+>  1 file changed, 359 insertions(+)
+>  create mode 100644 drivers/fpga/xrt/lib/xleaf/vsec.c
+>
+> diff --git a/drivers/fpga/xrt/lib/xleaf/vsec.c b/drivers/fpga/xrt/lib/xleaf/vsec.c
+> new file mode 100644
+> index 000000000000..8e5cb22522ec
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/xleaf/vsec.c
+> @@ -0,0 +1,359 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo FPGA VSEC Driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
+> + */
+> +
+> +#include <linux/platform_device.h>
+> +#include "metadata.h"
+> +#include "xleaf.h"
+> +
+> +#define XRT_VSEC "xrt_vsec"
+> +
+> +#define VSEC_TYPE_UUID		0x50
+> +#define VSEC_TYPE_FLASH		0x51
+> +#define VSEC_TYPE_PLATINFO	0x52
+> +#define VSEC_TYPE_MAILBOX	0x53
+> +#define VSEC_TYPE_END		0xff
+Type of devices, this list can not grow much.
+> +
+> +#define VSEC_UUID_LEN		16
+> +
+> +struct xrt_vsec_header {
+> +	u32		format;
+> +	u32		length;
+> +	u32		entry_sz;
+> +	u32		rsvd;
+> +} __packed;
+> +
+> +#define head_rd(g, r)			\
+> +	ioread32((void *)(g)->base + offsetof(struct xrt_vsec_header, r))
+> +
+> +#define GET_BAR(entry)	(((entry)->bar_rev >> 4) & 0xf)
+> +#define GET_BAR_OFF(_entry)				\
+> +	({ typeof(_entry) entry = (_entry);		\
+> +	 ((entry)->off_lo | ((u64)(entry)->off_hi << 16)); })
 
-Prior to commit 31c70d5956fc ("l2tp: keep original skb ownership") this
-worked fine as the sk attached to the skb was changed from the dot1q
-encapsulated interface to the sk for the tunnel which meant the interface
-bound to the sk and the interface bound to the skb were identical.
-Commit 46d6c5ae953c ("netfilter: use actual socket sk rather than skb sk
-when routing harder") fixed some of these issues however a similar
-problem existed in the xfrm code.
+A 48 bit value stored in xrt_md_endpoint.bar_off (long)
 
-Fixes: 31c70d5956fc ("l2tp: keep original skb ownership")
+bar_off should be u64 
 
-Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-Reviewed-by: Steffen Klassert <steffen.klassert@secunet.com>
----
-changes in v2:
-- Added proper fixes field for backporting
+> +#define GET_REV(entry)	((entry)->bar_rev & 0xf)
+> +
+I prefer functions over macros.
+> +struct xrt_vsec_entry {
+> +	u8		type;
+> +	u8		bar_rev;
+> +	u16		off_lo;
+> +	u32		off_hi;
+> +	u8		ver_type;
+> +	u8		minor;
+> +	u8		major;
+> +	u8		rsvd0;
+> +	u32		rsvd1;
+> +} __packed;
+> +
+> +#define read_entry(g, i, e)					\
+> +	do {							\
+> +		u32 *p = (u32 *)((g)->base +			\
+> +			sizeof(struct xrt_vsec_header) +	\
+> +			(i) * sizeof(struct xrt_vsec_entry));	\
+> +		u32 off;					\
+> +		for (off = 0;					\
+> +		    off < sizeof(struct xrt_vsec_entry) / 4;	\
+> +		    off++)					\
+> +			*((u32 *)(e) + off) = ioread32(p + off);\
+> +	} while (0)
+This could be a static inline func.
+> +
+> +struct vsec_device {
+> +	u8		type;
+> +	char		*ep_name;
+> +	ulong		size;
+> +	char		*regmap;
+> +};
+> +
+> +static struct vsec_device vsec_devs[] = {
+> +	{
+> +		.type = VSEC_TYPE_UUID,
+> +		.ep_name = XRT_MD_NODE_BLP_ROM,
+> +		.size = VSEC_UUID_LEN,
+> +		.regmap = "vsec-uuid",
+> +	},
+> +	{
+> +		.type = VSEC_TYPE_FLASH,
+> +		.ep_name = XRT_MD_NODE_FLASH_VSEC,
+> +		.size = 4096,
+> +		.regmap = "vsec-flash",
+> +	},
+> +	{
+> +		.type = VSEC_TYPE_PLATINFO,
+> +		.ep_name = XRT_MD_NODE_PLAT_INFO,
+> +		.size = 4,
+> +		.regmap = "vsec-platinfo",
+> +	},
+> +	{
+> +		.type = VSEC_TYPE_MAILBOX,
+> +		.ep_name = XRT_MD_NODE_MAILBOX_VSEC,
+> +		.size = 48,
+> +		.regmap = "vsec-mbx",
+> +	},
+This is a static list, how would a new type be added to this ?
+> +};
+> +
+> +struct xrt_vsec {
+> +	struct platform_device	*pdev;
+> +	void			*base;
+> +	ulong			length;
+> +
+> +	char			*metadata;
+> +	char			uuid[VSEC_UUID_LEN];
+> +};
+> +
+> +static char *type2epname(u32 type)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(vsec_devs); i++) {
+> +		if (vsec_devs[i].type == type)
+> +			return (vsec_devs[i].ep_name);
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static ulong type2size(u32 type)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(vsec_devs); i++) {
+> +		if (vsec_devs[i].type == type)
+> +			return (vsec_devs[i].size);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static char *type2regmap(u32 type)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(vsec_devs); i++) {
+> +		if (vsec_devs[i].type == type)
+> +			return (vsec_devs[i].regmap);
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static int xrt_vsec_add_node(struct xrt_vsec *vsec,
+> +			     void *md_blob, struct xrt_vsec_entry *p_entry)
+> +{
+> +	struct xrt_md_endpoint ep;
+> +	char regmap_ver[64];
+> +	int ret;
+> +
+> +	if (!type2epname(p_entry->type))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * VSEC may have more than 1 mailbox instance for the card
+> +	 * which has more than 1 physical function.
+> +	 * This is not supported for now. Assuming only one mailbox
+> +	 */
 
- include/net/xfrm.h     |  2 +-
- net/ipv4/ah4.c         |  2 +-
- net/ipv4/esp4.c        |  2 +-
- net/ipv6/ah6.c         |  2 +-
- net/ipv6/esp6.c        |  2 +-
- net/xfrm/xfrm_output.c | 10 +++++-----
- 6 files changed, 10 insertions(+), 10 deletions(-)
+are multiple uuid types allowed ?
 
-diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-index b2a06f10b62c..bfbc7810df94 100644
---- a/include/net/xfrm.h
-+++ b/include/net/xfrm.h
-@@ -1557,7 +1557,7 @@ int xfrm_trans_queue_net(struct net *net, struct sk=
-_buff *skb,
- int xfrm_trans_queue(struct sk_buff *skb,
- 		     int (*finish)(struct net *, struct sock *,
- 				   struct sk_buff *));
--int xfrm_output_resume(struct sk_buff *skb, int err);
-+int xfrm_output_resume(struct sock *sk, struct sk_buff *skb, int err);
- int xfrm_output(struct sock *sk, struct sk_buff *skb);
-=20
- #if IS_ENABLED(CONFIG_NET_PKTGEN)
-diff --git a/net/ipv4/ah4.c b/net/ipv4/ah4.c
-index d99e1be94019..36ed85bf2ad5 100644
---- a/net/ipv4/ah4.c
-+++ b/net/ipv4/ah4.c
-@@ -141,7 +141,7 @@ static void ah_output_done(struct crypto_async_reques=
-t *base, int err)
- 	}
-=20
- 	kfree(AH_SKB_CB(skb)->tmp);
--	xfrm_output_resume(skb, err);
-+	xfrm_output_resume(skb->sk, skb, err);
- }
-=20
- static int ah_output(struct xfrm_state *x, struct sk_buff *skb)
-diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
-index a3271ec3e162..4b834bbf95e0 100644
---- a/net/ipv4/esp4.c
-+++ b/net/ipv4/esp4.c
-@@ -279,7 +279,7 @@ static void esp_output_done(struct crypto_async_reque=
-st *base, int err)
- 		    x->encap && x->encap->encap_type =3D=3D TCP_ENCAP_ESPINTCP)
- 			esp_output_tail_tcp(x, skb);
- 		else
--			xfrm_output_resume(skb, err);
-+			xfrm_output_resume(skb->sk, skb, err);
- 	}
- }
-=20
-diff --git a/net/ipv6/ah6.c b/net/ipv6/ah6.c
-index 440080da805b..080ee7f44c64 100644
---- a/net/ipv6/ah6.c
-+++ b/net/ipv6/ah6.c
-@@ -316,7 +316,7 @@ static void ah6_output_done(struct crypto_async_reque=
-st *base, int err)
- 	}
-=20
- 	kfree(AH_SKB_CB(skb)->tmp);
--	xfrm_output_resume(skb, err);
-+	xfrm_output_resume(skb->sk, skb, err);
- }
-=20
- static int ah6_output(struct xfrm_state *x, struct sk_buff *skb)
-diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
-index 153ad103ba74..727d791ed5e6 100644
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -314,7 +314,7 @@ static void esp_output_done(struct crypto_async_reque=
-st *base, int err)
- 		    x->encap && x->encap->encap_type =3D=3D TCP_ENCAP_ESPINTCP)
- 			esp_output_tail_tcp(x, skb);
- 		else
--			xfrm_output_resume(skb, err);
-+			xfrm_output_resume(skb->sk, skb, err);
- 	}
- }
-=20
-diff --git a/net/xfrm/xfrm_output.c b/net/xfrm/xfrm_output.c
-index a7ab19353313..b81ca117dac7 100644
---- a/net/xfrm/xfrm_output.c
-+++ b/net/xfrm/xfrm_output.c
-@@ -503,22 +503,22 @@ static int xfrm_output_one(struct sk_buff *skb, int=
- err)
- 	return err;
- }
-=20
--int xfrm_output_resume(struct sk_buff *skb, int err)
-+int xfrm_output_resume(struct sock *sk, struct sk_buff *skb, int err)
- {
- 	struct net *net =3D xs_net(skb_dst(skb)->xfrm);
-=20
- 	while (likely((err =3D xfrm_output_one(skb, err)) =3D=3D 0)) {
- 		nf_reset_ct(skb);
-=20
--		err =3D skb_dst(skb)->ops->local_out(net, skb->sk, skb);
-+		err =3D skb_dst(skb)->ops->local_out(net, sk, skb);
- 		if (unlikely(err !=3D 1))
- 			goto out;
-=20
- 		if (!skb_dst(skb)->xfrm)
--			return dst_output(net, skb->sk, skb);
-+			return dst_output(net, sk, skb);
-=20
- 		err =3D nf_hook(skb_dst(skb)->ops->family,
--			      NF_INET_POST_ROUTING, net, skb->sk, skb,
-+			      NF_INET_POST_ROUTING, net, sk, skb,
- 			      NULL, skb_dst(skb)->dev, xfrm_output2);
- 		if (unlikely(err !=3D 1))
- 			goto out;
-@@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(xfrm_output_resume);
-=20
- static int xfrm_output2(struct net *net, struct sock *sk, struct sk_buff=
- *skb)
- {
--	return xfrm_output_resume(skb, 1);
-+	return xfrm_output_resume(sk, skb, 1);
- }
-=20
- static int xfrm_output_gso(struct net *net, struct sock *sk, struct sk_b=
-uff *skb)
---=20
-2.27.0
+this says assume 1, but logic will recreate 1+
+
+can you check if a mbx ep exists before creating ?
+
+> +
+> +	snprintf(regmap_ver, sizeof(regmap_ver) - 1, "%d-%d.%d.%d",
+> +		 p_entry->ver_type, p_entry->major, p_entry->minor,
+> +		 GET_REV(p_entry));
+> +	ep.ep_name = type2epname(p_entry->type);
+> +	ep.bar = GET_BAR(p_entry);
+> +	ep.bar_off = GET_BAR_OFF(p_entry);
+here is the bar_off type overlow
+> +	ep.size = type2size(p_entry->type);
+> +	ep.regmap = type2regmap(p_entry->type);
+> +	ep.regmap_ver = regmap_ver;
+> +	ret = xrt_md_add_endpoint(DEV(vsec->pdev), vsec->metadata, &ep);
+> +	if (ret) {
+> +		xrt_err(vsec->pdev, "add ep failed, ret %d", ret);
+> +		goto failed;
+> +	}
+> +
+> +failed:
+> +	return ret;
+> +}
+> +
+> +static int xrt_vsec_create_metadata(struct xrt_vsec *vsec)
+> +{
+> +	struct xrt_vsec_entry entry;
+> +	int i, ret;
+> +
+> +	ret = xrt_md_create(&vsec->pdev->dev, &vsec->metadata);
+> +	if (ret) {
+> +		xrt_err(vsec->pdev, "create metadata failed");
+> +		return ret;
+> +	}
+> +
+> +	for (i = 0; i * sizeof(entry) < vsec->length -
+> +	    sizeof(struct xrt_vsec_header); i++) {
+> +		read_entry(vsec, i, &entry);
+> +		xrt_vsec_add_node(vsec, vsec->metadata, &entry);
+This can fail.
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int xrt_vsec_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
+> +{
+> +	int ret = 0;
+> +
+> +	switch (cmd) {
+> +	case XRT_XLEAF_EVENT:
+> +		/* Does not handle any event. */
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		xrt_err(pdev, "should never been called");
+> +		break;
+> +	}
+This function looks like a noop.  Is anything going to be added to this later ?
+> +
+> +	return ret;
+> +}
+> +
+> +static int xrt_vsec_mapio(struct xrt_vsec *vsec)
+> +{
+> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(vsec->pdev);
+> +	const u32 *bar;
+> +	const u64 *bar_off;
+> +	struct resource *res = NULL;
+> +	ulong addr;
+> +	int ret;
+> +
+> +	if (!pdata || xrt_md_size(DEV(vsec->pdev), pdata->xsp_dtb) == XRT_MD_INVALID_LENGTH) {
+> +		xrt_err(vsec->pdev, "empty metadata");
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = xrt_md_get_prop(DEV(vsec->pdev), pdata->xsp_dtb, XRT_MD_NODE_VSEC,
+> +			      NULL, XRT_MD_PROP_BAR_IDX, (const void **)&bar, NULL);
+> +	if (ret) {
+> +		xrt_err(vsec->pdev, "failed to get bar idx, ret %d", ret);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = xrt_md_get_prop(DEV(vsec->pdev), pdata->xsp_dtb, XRT_MD_NODE_VSEC,
+> +			      NULL, XRT_MD_PROP_OFFSET, (const void **)&bar_off, NULL);
+> +	if (ret) {
+> +		xrt_err(vsec->pdev, "failed to get bar off, ret %d", ret);
+> +		return -EINVAL;
+> +	}
+> +
+> +	xrt_info(vsec->pdev, "Map vsec at bar %d, offset 0x%llx",
+> +		 be32_to_cpu(*bar), be64_to_cpu(*bar_off));
+> +
+> +	xleaf_get_barres(vsec->pdev, &res, be32_to_cpu(*bar));
+> +	if (!res) {
+> +		xrt_err(vsec->pdev, "failed to get bar addr");
+> +		return -EINVAL;
+> +	}
+> +
+> +	addr = res->start + (ulong)be64_to_cpu(*bar_off);
+review this type, addr is ulong and bar_off is not.
+> +
+> +	vsec->base = ioremap(addr, sizeof(struct xrt_vsec_header));
+> +	if (!vsec->base) {
+> +		xrt_err(vsec->pdev, "Map header failed");
+> +		return -EIO;
+> +	}
+
+why the double call on ioremap ?
+
+just do the last one.
+
+> +
+> +	vsec->length = head_rd(vsec, length);
+> +	iounmap(vsec->base);
+> +	vsec->base = ioremap(addr, vsec->length);
+> +	if (!vsec->base) {
+> +		xrt_err(vsec->pdev, "map failed");
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int xrt_vsec_remove(struct platform_device *pdev)
+> +{
+> +	struct xrt_vsec	*vsec;
+> +
+> +	vsec = platform_get_drvdata(pdev);
+> +
+> +	if (vsec->base) {
+> +		iounmap(vsec->base);
+> +		vsec->base = NULL;
+> +	}
+> +
+> +	vfree(vsec->metadata);
+> +
+> +	return 0;
+> +}
+> +
+> +static int xrt_vsec_probe(struct platform_device *pdev)
+> +{
+> +	struct xrt_vsec	*vsec;
+> +	int			ret = 0;
+> +
+> +	vsec = devm_kzalloc(&pdev->dev, sizeof(*vsec), GFP_KERNEL);
+> +	if (!vsec)
+> +		return -ENOMEM;
+> +
+> +	vsec->pdev = pdev;
+> +	platform_set_drvdata(pdev, vsec);
+> +
+> +	ret = xrt_vsec_mapio(vsec);
+> +	if (ret)
+> +		goto failed;
+> +
+> +	ret = xrt_vsec_create_metadata(vsec);
+> +	if (ret) {
+> +		xrt_err(pdev, "create metadata failed, ret %d", ret);
+> +		goto failed;
+> +	}
+> +	ret = xleaf_create_group(pdev, vsec->metadata);
+> +	if (ret < 0)
+> +		xrt_err(pdev, "create group failed, ret %d", ret);
+> +	else
+> +		ret = 0;
+
+why is it just
+
+if (ret)
+
+  fail ?
+
+Tom
+
+> +
+> +failed:
+> +	if (ret)
+> +		xrt_vsec_remove(pdev);
+> +
+> +	return ret;
+> +}
+> +
+> +static struct xrt_subdev_endpoints xrt_vsec_endpoints[] = {
+> +	{
+> +		.xse_names = (struct xrt_subdev_ep_names []){
+> +			{ .ep_name = XRT_MD_NODE_VSEC },
+> +			{ NULL },
+> +		},
+> +		.xse_min_ep = 1,
+> +	},
+> +	{ 0 },
+> +};
+> +
+> +static struct xrt_subdev_drvdata xrt_vsec_data = {
+> +	.xsd_dev_ops = {
+> +		.xsd_ioctl = xrt_vsec_ioctl,
+> +	},
+> +};
+> +
+> +static const struct platform_device_id xrt_vsec_table[] = {
+> +	{ XRT_VSEC, (kernel_ulong_t)&xrt_vsec_data },
+> +	{ },
+> +};
+> +
+> +static struct platform_driver xrt_vsec_driver = {
+> +	.driver = {
+> +		.name = XRT_VSEC,
+> +	},
+> +	.probe = xrt_vsec_probe,
+> +	.remove = xrt_vsec_remove,
+> +	.id_table = xrt_vsec_table,
+> +};
+> +
+> +void vsec_leaf_init_fini(bool init)
+> +{
+> +	if (init)
+> +		xleaf_register_driver(XRT_SUBDEV_VSEC, &xrt_vsec_driver, xrt_vsec_endpoints);
+> +	else
+> +		xleaf_unregister_driver(XRT_SUBDEV_VSEC);
+> +}
 
