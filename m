@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCF2327EA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C198327EAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235215AbhCAMxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:53:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235117AbhCAMxl (ORCPT
+        id S235165AbhCAM42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:56:28 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:37869 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235018AbhCAM4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:53:41 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8D1C061788;
-        Mon,  1 Mar 2021 04:53:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WHvAFmzATjJkj3eS14Y2bRQ/0MK15ayQjxuRPOoXwkY=; b=Wf9g5fLQ/GJNx0hUGWiUcR688m
-        SFottxWwv97wHRMcSWiZYT2E+sxl0o7LEq0E6RXd7FEuOPhQLfcASAJJ9LOurSnogDOi6PXOMY/J9
-        6GRlzO+MVjNi3kD8VIvE9bJQ9KZCHhZhEsM7NbBu3xnmPbyjT4wxZc6BD3GP4KLHB1kG58wf8V3z+
-        sFKLW2Ah/tdGwCaIYWTA1OO5gUNtnViM8vZHoTgdySFMKvBr8B4RZSZ00Skfe8qUbor6TpUQe7+tW
-        b9OQ6zcvUGHYDX7AWw+lpPcAwhemkr/wF2oCE7T/Ot5jO0ktilYag94DmVM+raOCLVllIw+32HZi+
-        VtQJEceg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lGi2P-00FiwK-BV; Mon, 01 Mar 2021 12:52:41 +0000
-Date:   Mon, 1 Mar 2021 12:52:37 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs: Return -EFAULT if copy_to_user() fails
-Message-ID: <20210301125237.GQ2723601@casper.infradead.org>
-References: <1614597960-32681-1-git-send-email-wangqing@vivo.com>
+        Mon, 1 Mar 2021 07:56:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1614603385; x=1646139385;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:mime-version:content-transfer-encoding:subject;
+  bh=wK8ye9wSCEUGAmX244Av5oW0fUbFzEYhZofRNgtpZiw=;
+  b=mMHud9pcYVDu2ELyJ9eKh0sT4maPpVnTFL3+pyohKG7b/UtaF8y9fMqs
+   U+lAPmKBffu62aj4lUjkZSRukKtGMF5V/KArk9Av6pScet2JVVsBf9YYg
+   eYLzmXrmtQAeiBebYiw7ljHtoui1AQOpHrrgemSrBygGwBazmjoxKHLpN
+   k=;
+X-IronPort-AV: E=Sophos;i="5.81,215,1610409600"; 
+   d="scan'208";a="89524518"
+Subject: Re: [PATCH v2] KVM: x86: allow compiling out the Xen hypercall interface
+Thread-Topic: [PATCH v2] KVM: x86: allow compiling out the Xen hypercall interface
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 01 Mar 2021 12:55:48 +0000
+Received: from EX13MTAUEE002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-456ef9c9.us-west-2.amazon.com (Postfix) with ESMTPS id 34548C036B;
+        Mon,  1 Mar 2021 12:55:47 +0000 (UTC)
+Received: from EX13D08UEE001.ant.amazon.com (10.43.62.126) by
+ EX13MTAUEE002.ant.amazon.com (10.43.62.24) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 1 Mar 2021 12:55:46 +0000
+Received: from EX13D08UEE001.ant.amazon.com (10.43.62.126) by
+ EX13D08UEE001.ant.amazon.com (10.43.62.126) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 1 Mar 2021 12:55:46 +0000
+Received: from EX13D08UEE001.ant.amazon.com ([10.43.62.126]) by
+ EX13D08UEE001.ant.amazon.com ([10.43.62.126]) with mapi id 15.00.1497.010;
+ Mon, 1 Mar 2021 12:55:46 +0000
+From:   "Woodhouse, David" <dwmw@amazon.co.uk>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>
+CC:     "hch@lst.de" <hch@lst.de>
+Thread-Index: AQHXDDaztgP1a9Ed90euQ0LGk1p4HapvG/WA
+Date:   Mon, 1 Mar 2021 12:55:46 +0000
+Message-ID: <49138fc5ae02d6009af3adcdb49f5cce05c3bfd9.camel@amazon.co.uk>
+References: <20210226115744.170536-1-pbonzini@redhat.com>
+In-Reply-To: <20210226115744.170536-1-pbonzini@redhat.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.162.104]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E8E879A9FC923D48B4B33D6D0ABB3468@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614597960-32681-1-git-send-email-wangqing@vivo.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 07:26:00PM +0800, Wang Qing wrote:
-> The copy_to_user() function returns the number of bytes remaining to be
-> copied, but we want to return -EFAULT if the copy doesn't complete.
-
-... which is done by the only caller.
-
-        if (set_fd_set(n, inp, fds.res_in) ||
-            set_fd_set(n, outp, fds.res_out) ||
-            set_fd_set(n, exp, fds.res_ex))
-                ret = -EFAULT;
+T24gRnJpLCAyMDIxLTAyLTI2IGF0IDA2OjU3IC0wNTAwLCBQYW9sbyBCb256aW5pIHdyb3RlOg0K
+PiArICAgICAgIGRlcGVuZHMgb24gS1ZNICYmIElBMzJfRkVBVF9DVEwNCg0KSG0sIHdoeSBJQTMy
+X0ZFQVRfQ1RMPw0KCgoKQW1hem9uIERldmVsb3BtZW50IENlbnRyZSAoTG9uZG9uKSBMdGQuIFJl
+Z2lzdGVyZWQgaW4gRW5nbGFuZCBhbmQgV2FsZXMgd2l0aCByZWdpc3RyYXRpb24gbnVtYmVyIDA0
+NTQzMjMyIHdpdGggaXRzIHJlZ2lzdGVyZWQgb2ZmaWNlIGF0IDEgUHJpbmNpcGFsIFBsYWNlLCBX
+b3JzaGlwIFN0cmVldCwgTG9uZG9uIEVDMkEgMkZBLCBVbml0ZWQgS2luZ2RvbS4KCgo=
 
