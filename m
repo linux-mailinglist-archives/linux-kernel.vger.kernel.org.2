@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6935328423
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 17:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D925F32838A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 17:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhCAQ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 11:29:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56668 "EHLO mail.kernel.org"
+        id S235360AbhCAQVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 11:21:24 -0500
+Received: from mga07.intel.com ([134.134.136.100]:17862 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237782AbhCAQTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:19:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 128EF64EC6;
-        Mon,  1 Mar 2021 16:17:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615441;
-        bh=Hc8cfZJobrvmoHBcoKA99i3ClTETgaNWGl5sSOTrFn4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v3boa8WCztJLZupDK7+eEtnjFtFHVUfIR3UWmV/lnkoWntOaXUCSBt9COzO1lPvNf
-         HfMmRGbmAdlr3tYD+wE9MxAzy51y+oLo0hJEg1/kVtRCC3qQiipiMleGryNeQZP97u
-         NRBct+O4o5qtoPaAv+4nEQj84R8riECMLnyx0AHs=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 31/93] btrfs: clarify error returns values in __load_free_space_cache
-Date:   Mon,  1 Mar 2021 17:12:43 +0100
-Message-Id: <20210301161008.443983234@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
-References: <20210301161006.881950696@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S237711AbhCAQQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:16:46 -0500
+IronPort-SDR: t4fjTksnBDKJ1ph33VmwF5Ksx3wyOS7H69HTCVyfmHOky8IVEpOFDOSJFoTzofUCinLz3ScikL
+ G24GWIL4WYoQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="250563396"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="250563396"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 08:14:41 -0800
+IronPort-SDR: HzQaJm9eeK4W/urB5M8RAw/tPfIcmkMZr1w2Q6JtbPibE7PInLIL5HnGyj6Hs+PPcWD3bz/mV7
+ fAwWikIHtdlg==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="366755699"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 08:14:40 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lGlBt-009BNW-LW; Mon, 01 Mar 2021 18:14:37 +0200
+Date:   Mon, 1 Mar 2021 18:14:37 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] HID: i2c-hid: acpi: Drop redundant ACPI_PTR()
+Message-ID: <YD0S7U9CKHf5rKr6@smile.fi.intel.com>
+References: <20210226193225.47129-1-andriy.shevchenko@linux.intel.com>
+ <20210226193225.47129-4-andriy.shevchenko@linux.intel.com>
+ <CAO-hwJLWbsj4kDkn3TKdEW0mDv6XdafQEaheCCC0Nyq3=YaOYQ@mail.gmail.com>
+ <nycvar.YFH.7.76.2103011633490.12405@cbobk.fhfr.pm>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <nycvar.YFH.7.76.2103011633490.12405@cbobk.fhfr.pm>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+On Mon, Mar 01, 2021 at 04:34:41PM +0100, Jiri Kosina wrote:
+> On Mon, 1 Mar 2021, Benjamin Tissoires wrote:
+> > On Fri, Feb 26, 2021 at 8:34 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > The driver depends on ACPI, ACPI_PTR() resolution is always the same.
+> > > Otherwise a compiler may produce a warning.
+> > >
+> > > That said, the rule of thumb either ugly ifdeffery with ACPI_PTR or
+> > > none should be used in a driver.
+> > >
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > 
+> > Thanks a lot for the series. This indeed cleans things up.
+> 
+> Indeed, thanks.
+> 
+> > For the series:
+> > Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> > 
+> > Jiri, I wonder where we want to land this one. This is not strictly
+> > bug fixes, but we could definitively sneak this one in 5.12-rc1.
+> > Well, I should probably run the series on an acpi laptop here before
+> > merging, but I'd like to know if delaying to 5.13 is OK or if we need
+> > this in 5.12.
+> 
+> I'd like to do it the standard way and have it bake in for-next to see if 
+> it really doesn't break anything, so unless there are convicing arguments 
+> for 5.12-rcX, I'd rathre queue this for 5.13.
 
-[ Upstream commit 3cc64e7ebfb0d7faaba2438334c43466955a96e8 ]
+For the record, I'm not in hurry with this, up to you how to proceed.
+Thanks!
 
-Return value in __load_free_space_cache is not properly set after
-(unlikely) memory allocation failures and 0 is returned instead.
-This is not a problem for the caller load_free_space_cache because only
-value 1 is considered as 'cache loaded' but for clarity it's better
-to set the errors accordingly.
-
-Fixes: a67509c30079 ("Btrfs: add a io_ctl struct and helpers for dealing with the space cache")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/free-space-cache.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 05b1b0f99f0bc..55d8020afc583 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -754,8 +754,10 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
- 	while (num_entries) {
- 		e = kmem_cache_zalloc(btrfs_free_space_cachep,
- 				      GFP_NOFS);
--		if (!e)
-+		if (!e) {
-+			ret = -ENOMEM;
- 			goto free_cache;
-+		}
- 
- 		ret = io_ctl_read_entry(&io_ctl, e, &type);
- 		if (ret) {
-@@ -764,6 +766,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
- 		}
- 
- 		if (!e->bytes) {
-+			ret = -1;
- 			kmem_cache_free(btrfs_free_space_cachep, e);
- 			goto free_cache;
- 		}
-@@ -783,6 +786,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
- 			num_bitmaps--;
- 			e->bitmap = kzalloc(PAGE_CACHE_SIZE, GFP_NOFS);
- 			if (!e->bitmap) {
-+				ret = -ENOMEM;
- 				kmem_cache_free(
- 					btrfs_free_space_cachep, e);
- 				goto free_cache;
 -- 
-2.27.0
-
+With Best Regards,
+Andy Shevchenko
 
 
