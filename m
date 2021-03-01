@@ -2,60 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C3732A017
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1721B32A018
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575280AbhCBDy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:54:59 -0500
-Received: from ms.lwn.net ([45.79.88.28]:44576 "EHLO ms.lwn.net"
+        id S1575290AbhCBDzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:55:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240332AbhCAWUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:20:14 -0500
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 36A142C4;
-        Mon,  1 Mar 2021 22:19:27 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 36A142C4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1614637167; bh=yk5dLYEDSZ0+FebCJm2RFjHCAGMhe2RLIW1IZ5ZFlA4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=IbC7ZCPfglaeMNzv8ma7xX+0QjoQgqeubxgu/jNWq3AvoS9s+81x5TR2zEPmQluhr
-         p2QOY+Hgwhtz3nERQWqYXrUNOxdLPz51geZMrZux2afewRTFM29tNgZrO3oy1Mgw3d
-         J5HYagzIpPV3Wk5AM32D+uCxbiSIrJXrIhkiGptLSonH84QBKPbkLcjgwaa7FIYuxU
-         A9DMougUbOgESdYyY3A1s2GUUnqXr1lRfWgBCbyHANgmKxS0Fj3MthyqiRlTBisL01
-         9o/vgQN7wGlTbxoPCLcpZyRrOn2vcK7LLXzGTcLFTmAqKyYCEeuwC2H3zXrVSEcmBu
-         8W3t55ayleQLg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Kees Cook <keescook@chromium.org>, linux-doc@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] Documentation: Replace more lkml.org links with lore
-In-Reply-To: <20210210234005.2236201-1-keescook@chromium.org>
-References: <20210210234005.2236201-1-keescook@chromium.org>
-Date:   Mon, 01 Mar 2021 15:19:26 -0700
-Message-ID: <87r1ky1pqp.fsf@meer.lwn.net>
+        id S235339AbhCAWU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 17:20:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 86E8F60230;
+        Mon,  1 Mar 2021 22:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614637207;
+        bh=fAvLSvqpTEpF8L6VPRAzijM97phhPE8xSRVV06LZwVY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=oML8aMIUMUG3hZfw5eBscTVLM91IUCxmp01rwzV/Rkh4e76JguG41LzOqm7V6JLcB
+         v8cmDUY+1V8p58SYA/3nOr0LfiC4M8FMiGmdMWSmpi55FY4Up2715ykWknJrBM0GJo
+         HegfLrZT5kGh2aHq0Zt18MQNaCqF7X088zhDsgGp6Sool3K0f2BjT/H8zmSSPeHLer
+         5hCU6+HgTkn2KbA/++vUd24GVGEeLhXunAd6w1mEVKmnjkudog+rVR0JECiHdoBKAn
+         J5/G4QpwGH4cNudFdKwhv/pWmjpZVswAAtyH3IrHZ8NcQZk2JRY7wOpTAbGETZ7t1C
+         hGjg0JsmPwB3Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 77E8160C26;
+        Mon,  1 Mar 2021 22:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] docs: networking: bonding.rst Fix a typo in bonding.rst
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161463720748.4566.6951106912840108619.git-patchwork-notify@kernel.org>
+Date:   Mon, 01 Mar 2021 22:20:07 +0000
+References: <20210301122823.1447948-1-standby24x7@gmail.com>
+In-Reply-To: <20210301122823.1447948-1-standby24x7@gmail.com>
+To:     Masanari Iida <standby24x7@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kees Cook <keescook@chromium.org> writes:
+Hello:
 
-> As started by commit 05a5f51ca566 ("Documentation: Replace lkml.org
-> links with lore"), replace a few more scattered lkml.org links with
-> lore to better use a single source that's more likely to stay available
-> long-term.
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Mon,  1 Mar 2021 21:28:23 +0900 you wrote:
+> This patch fixes a spelling typo in bonding.rst.
+> 
+> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
 > ---
->  CREDITS                        | 2 +-
->  tools/scripts/Makefile.include | 3 ++-
->  2 files changed, 3 insertions(+), 2 deletions(-)
+>  Documentation/networking/bonding.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I've (rather belatedly) applied this, thanks.
+Here is the summary with links:
+  - docs: networking: bonding.rst Fix a typo in bonding.rst
+    https://git.kernel.org/netdev/net/c/2353db75c3db
 
-jon
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
