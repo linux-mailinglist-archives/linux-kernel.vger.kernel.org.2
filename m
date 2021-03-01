@@ -2,223 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E3032814D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A955A328154
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236522AbhCAOsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:48:54 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:42893 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236576AbhCAOsd (ORCPT
+        id S236593AbhCAOut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:50:49 -0500
+Received: from conuserg-07.nifty.com ([210.131.2.74]:32759 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235225AbhCAOur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:48:33 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id 15E3FA135C;
-        Mon,  1 Mar 2021 15:47:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=uUEmvvMwB04Y
-        mwuBJMzs1a30v08X3G2vkQsG3+XEfIg=; b=z2ppUMBLGZwtmGcANjI+jX4PnwbM
-        0srq7ES/S9p8Kbxts0xyo35ToA5BffV7XPI1ALf8cV0MDBkRmpkdvJmg8HoacwkM
-        ESG6ELOdIR3xafWJy/ikS/N73jbX+sFtY+Bi56Evtc93zXhKA1dHdxXPoDTHPHJm
-        C7ytXoWVPLIfwC2QA86NxwOu27AN/HizhLZXQVrHLI6AEvxGx/HN1oXviFI6B0HX
-        4/k0esw4XlwNfvmvkPBiXH0zSoUhFKIn71Xwsxto5ToXcePPndWFcmUEo4g57/rw
-        7fQ0u2ujGUBWlVgUPQHKdrfllOyUJ3fopWoiMFPAXlCUrsnddkxI0N6exQ==
-Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages
- for the PCM device
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
- <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
- <s5hsg5gjutg.wl-tiwai@suse.de>
- <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
- <s5h35xfj8yz.wl-tiwai@suse.de>
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <85bbc067-e7ec-903a-1518-5aab01577655@opensynergy.com>
-Date:   Mon, 1 Mar 2021 15:47:46 +0100
+        Mon, 1 Mar 2021 09:50:47 -0500
+Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 121EmRrL009779;
+        Mon, 1 Mar 2021 23:48:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 121EmRrL009779
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614610108;
+        bh=S7MHxBqH9XXYFURSiKpT+jR1eciuVgT78h0Cv/IdHZk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=A4+5vhX89DYFXlfmV1XFu7PyJEOrn6BiDUZY0zWnUjInd+ENDyS8ISCE/nbFuGPuB
+         lsGLmjXp003wxIfdB9st4ExIq5yeS5+0lFZoGo2ejTncRlQWEnNsl3gK/8fBkjilbv
+         z3d1r1GM0ffIIFY1/MSx9oPCc5J20IyF+0GsjJ0zDbnaHFlGZ3o56GDs7Tyi85qSP+
+         qPt+0B3aDGtJLeCraj0++NCB+7w2SN1HZjXuXn7FA7NmanW8c3gBCYWaebi2NjNkPN
+         rZvnJokrFsYNU37xSO+9FpXY6kRyezQ5oL17Xp1VYC90LhVHkzNNYWjYCG9QsMwmqJ
+         lVxuCBcYoWbKQ==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [PATCH 1/2] mips: syscalls: switch to generic syscalltbl.sh
+Date:   Mon,  1 Mar 2021 23:48:24 +0900
+Message-Id: <20210301144825.357922-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <s5h35xfj8yz.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.03.2021 14:32, Takashi Iwai wrote:
-> On Mon, 01 Mar 2021 10:25:05 +0100,
-> Anton Yakovlev wrote:
->>
->> On 28.02.2021 12:27, Takashi Iwai wrote:
->>> On Sat, 27 Feb 2021 09:59:52 +0100,
->>> Anton Yakovlev wrote:
->>>> +/**
->>>> + * virtsnd_pcm_event() - Handle the PCM device event notification.
->>>> + * @snd: VirtIO sound device.
->>>> + * @event: VirtIO sound event.
->>>> + *
->>>> + * Context: Interrupt context.
->>>
->>> OK, then nonatomic PCM flag is invalid...
->>
->> Well, no. Here, events are kind of independent entities. PCM-related
->> events are just a special case of more generic events, which can carry
->> any kind of notification/payload. (And at the moment, only XRUN
->> notification is supported for PCM substreams.) So it has nothing to do
->> with the atomicity of the PCM device itself.
-> 
-> OK, thanks.
-> 
-> Basically the only question is how snd_pcm_period_elapsed() is called.
-> And I see that it's called inside queue->lock, and this already
-> invalidates the nonatomic PCM mode.  So the code needs the fix: either
-> fix this locking (and the context is guaranteed not to be an irq
-> context), or change to the normal PCM mode without nonatomic flag.
-> Both would bring some side-effect, and we need further changes, I
-> suppose...
+Many architectures duplicate similar shell scripts.
 
-Ok, I understood the problem. Well, I would say the nonatomic PCM mode
-is more important option, since in this mode we can guarantee the
-correct operation of the device. And if you say, that we need to get rid
-of irq context here, then probably workqueue for calling
-snd_pcm_period_elapsed() should be fine (of course, it should be shared
-between all available substreams).
+This commit converts mips to use scripts/syscalltbl.sh. This also
+unifies syscall_table_32_o32.h and syscall_table_64_o32.h into
+syscall_table_o32.h.
 
+The offset parameters are unneeded here; __SYSCALL(nr, entry) is defined
+as 'PTR entry', so the parameter 'nr' is not used in the first place.
 
->>>> +/**
->>>> + * virtsnd_pcm_sg_num() - Count the number of sg-elements required to represent
->>>> + *                        vmalloc'ed buffer.
->>>> + * @data: Pointer to vmalloc'ed buffer.
->>>> + * @length: Buffer size.
->>>> + *
->>>> + * Context: Any context.
->>>> + * Return: Number of physically contiguous parts in the @data.
->>>> + */
->>>> +static int virtsnd_pcm_sg_num(u8 *data, unsigned int length)
->>>> +{
->>>> +     phys_addr_t sg_address;
->>>> +     unsigned int sg_length;
->>>> +     int num = 0;
->>>> +
->>>> +     while (length) {
->>>> +             struct page *pg = vmalloc_to_page(data);
->>>> +             phys_addr_t pg_address = page_to_phys(pg);
->>>> +             size_t pg_length;
->>>> +
->>>> +             pg_length = PAGE_SIZE - offset_in_page(data);
->>>> +             if (pg_length > length)
->>>> +                     pg_length = length;
->>>> +
->>>> +             if (!num || sg_address + sg_length != pg_address) {
->>>> +                     sg_address = pg_address;
->>>> +                     sg_length = pg_length;
->>>> +                     num++;
->>>> +             } else {
->>>> +                     sg_length += pg_length;
->>>> +             }
->>>> +
->>>> +             data += pg_length;
->>>> +             length -= pg_length;
->>>> +     }
->>>> +
->>>> +     return num;
->>>> +}
->>>> +
->>>> +/**
->>>> + * virtsnd_pcm_sg_from() - Build sg-list from vmalloc'ed buffer.
->>>> + * @sgs: Preallocated sg-list to populate.
->>>> + * @nsgs: The maximum number of elements in the @sgs.
->>>> + * @data: Pointer to vmalloc'ed buffer.
->>>> + * @length: Buffer size.
->>>> + *
->>>> + * Splits the buffer into physically contiguous parts and makes an sg-list of
->>>> + * such parts.
->>>> + *
->>>> + * Context: Any context.
->>>> + */
->>>> +static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
->>>> +                             unsigned int length)
->>>> +{
->>>> +     int idx = -1;
->>>> +
->>>> +     while (length) {
->>>> +             struct page *pg = vmalloc_to_page(data);
->>>> +             size_t pg_length;
->>>> +
->>>> +             pg_length = PAGE_SIZE - offset_in_page(data);
->>>> +             if (pg_length > length)
->>>> +                     pg_length = length;
->>>> +
->>>> +             if (idx == -1 ||
->>>> +                 sg_phys(&sgs[idx]) + sgs[idx].length != page_to_phys(pg)) {
->>>> +                     if (idx + 1 == nsgs)
->>>> +                             break;
->>>> +                     sg_set_page(&sgs[++idx], pg, pg_length,
->>>> +                                 offset_in_page(data));
->>>> +             } else {
->>>> +                     sgs[idx].length += pg_length;
->>>> +             }
->>>> +
->>>> +             data += pg_length;
->>>> +             length -= pg_length;
->>>> +     }
->>>> +
->>>> +     sg_mark_end(&sgs[idx]);
->>>> +}
->>>
->>> Hmm, I thought there can be already a handy helper to convert vmalloc
->>> to sglist, but apparently not.  It should have been trivial to get the
->>> page list from vmalloc, e.g.
->>>
->>> int vmalloc_to_page_list(void *p, struct page **page_ret)
->>> {
->>>           struct vmap_area *va;
->>>
->>>           va = find_vmap_area((unsigned long)p);
->>>           if (!va)
->>>                   return 0;
->>>           *page_ret = va->vm->pages;
->>>           return va->vm->nr_pages;
->>> }
->>>
->>> Then you can set up the sg list in a single call from the given page
->>> list.
->>>
->>> But it's just a cleanup, and let's mark it as a room for
->>> improvements.
->>
->> Yeah, we can take a look into some kind of optimizations here. But I
->> suspect, the overall code will look similar. It is not enough just to
->> get a list of pages, you also need to build a list of physically
->> contiguous regions from it.
-> 
-> I believe the standard helper does it.  But it's for sg_table, hence
-> the plain scatterlist needs to be extracted from there, but most of
-> complex things are in the standard code.
-> 
-> But it's merely an optimization and something for future.
+With this commit, syscall tables and generated files are straight
+mapped,  which makes things easier to understand.
 
-I quickly checked it. I think it's hardly possible to do anything here.
-These functions to deal with vmalloced areas are not exported. And,
-according to comments, require some proper locking on top of that. At
-least, it does not look like a trivial things.
+  syscall_n32.tbl  -->  syscall_table_n32.h
+  syscall_n64.tbl  -->  syscall_table_n64.h
+  syscall_o32.tbl  -->  syscall_table_o32.h
 
+Then, the abi parameters are also unneeded.
 
-> 
-> Takashi
-> 
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
+ arch/mips/include/asm/Kbuild            |  7 +++--
+ arch/mips/kernel/scall32-o32.S          |  4 +--
+ arch/mips/kernel/scall64-n32.S          |  3 +--
+ arch/mips/kernel/scall64-n64.S          |  3 +--
+ arch/mips/kernel/scall64-o32.S          |  4 +--
+ arch/mips/kernel/syscalls/Makefile      | 31 ++++++---------------
+ arch/mips/kernel/syscalls/syscalltbl.sh | 36 -------------------------
+ 7 files changed, 17 insertions(+), 71 deletions(-)
+ delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
+
+diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
+index 8f6fe69674b7..dee172716581 100644
+--- a/arch/mips/include/asm/Kbuild
++++ b/arch/mips/include/asm/Kbuild
+@@ -1,9 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # MIPS headers
+-generated-y += syscall_table_32_o32.h
+-generated-y += syscall_table_64_n32.h
+-generated-y += syscall_table_64_n64.h
+-generated-y += syscall_table_64_o32.h
++generated-y += syscall_table_n32.h
++generated-y += syscall_table_n64.h
++generated-y += syscall_table_o32.h
+ generated-y += unistd_nr_n32.h
+ generated-y += unistd_nr_n64.h
+ generated-y += unistd_nr_o32.h
+diff --git a/arch/mips/kernel/scall32-o32.S b/arch/mips/kernel/scall32-o32.S
+index b449b68662a9..84e8624e83a2 100644
+--- a/arch/mips/kernel/scall32-o32.S
++++ b/arch/mips/kernel/scall32-o32.S
+@@ -217,9 +217,9 @@ einval: li	v0, -ENOSYS
+ #define sys_sched_getaffinity	mipsmt_sys_sched_getaffinity
+ #endif /* CONFIG_MIPS_MT_FPAFF */
+ 
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, native)
+ #define __SYSCALL(nr, entry) 	PTR entry
+ 	.align	2
+ 	.type	sys_call_table, @object
+ EXPORT(sys_call_table)
+-#include <asm/syscall_table_32_o32.h>
+-#undef __SYSCALL
++#include <asm/syscall_table_o32.h>
+diff --git a/arch/mips/kernel/scall64-n32.S b/arch/mips/kernel/scall64-n32.S
+index 35d8c86b160e..f650c55a17dc 100644
+--- a/arch/mips/kernel/scall64-n32.S
++++ b/arch/mips/kernel/scall64-n32.S
+@@ -104,5 +104,4 @@ not_n32_scall:
+ #define __SYSCALL(nr, entry)	PTR entry
+ 	.type	sysn32_call_table, @object
+ EXPORT(sysn32_call_table)
+-#include <asm/syscall_table_64_n32.h>
+-#undef __SYSCALL
++#include <asm/syscall_table_n32.h>
+diff --git a/arch/mips/kernel/scall64-n64.S b/arch/mips/kernel/scall64-n64.S
+index 5e9c497ce099..5d7bfc65e4d0 100644
+--- a/arch/mips/kernel/scall64-n64.S
++++ b/arch/mips/kernel/scall64-n64.S
+@@ -113,5 +113,4 @@ illegal_syscall:
+ 	.align	3
+ 	.type	sys_call_table, @object
+ EXPORT(sys_call_table)
+-#include <asm/syscall_table_64_n64.h>
+-#undef __SYSCALL
++#include <asm/syscall_table_n64.h>
+diff --git a/arch/mips/kernel/scall64-o32.S b/arch/mips/kernel/scall64-o32.S
+index 50c9a57e0d3a..cedc8bd88804 100644
+--- a/arch/mips/kernel/scall64-o32.S
++++ b/arch/mips/kernel/scall64-o32.S
+@@ -213,9 +213,9 @@ einval: li	v0, -ENOSYS
+ 	jr	ra
+ 	END(sys32_syscall)
+ 
++#define __SYSCALL_WITH_COMPAT(nr, native, compat)	__SYSCALL(nr, compat)
+ #define __SYSCALL(nr, entry)	PTR entry
+ 	.align	3
+ 	.type	sys32_call_table,@object
+ EXPORT(sys32_call_table)
+-#include <asm/syscall_table_64_o32.h>
+-#undef __SYSCALL
++#include <asm/syscall_table_o32.h>
+diff --git a/arch/mips/kernel/syscalls/Makefile b/arch/mips/kernel/syscalls/Makefile
+index 51f8b805f2ed..2bbea47caf7e 100644
+--- a/arch/mips/kernel/syscalls/Makefile
++++ b/arch/mips/kernel/syscalls/Makefile
+@@ -10,7 +10,7 @@ syscalln64 := $(src)/syscall_n64.tbl
+ syscallo32 := $(src)/syscall_o32.tbl
+ syshdr := $(srctree)/$(src)/syscallhdr.sh
+ sysnr := $(srctree)/$(src)/syscallnr.sh
+-systbl := $(srctree)/$(src)/syscalltbl.sh
++systbl := $(srctree)/scripts/syscalltbl.sh
+ 
+ quiet_cmd_syshdr = SYSHDR  $@
+       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
+@@ -25,10 +25,7 @@ quiet_cmd_sysnr = SYSNR   $@
+ 		  '$(sysnr_offset_$(basetarget))'
+ 
+ quiet_cmd_systbl = SYSTBL  $@
+-      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
+-		   '$(systbl_abis_$(basetarget))'		\
+-		   '$(systbl_abi_$(basetarget))'		\
+-		   '$(systbl_offset_$(basetarget))'
++      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
+ 
+ syshdr_offset_unistd_n32 := __NR_Linux
+ $(uapi)/unistd_n32.h: $(syscalln32) $(syshdr) FORCE
+@@ -57,33 +54,21 @@ sysnr_offset_unistd_nr_o32 := 4000
+ $(kapi)/unistd_nr_o32.h: $(syscallo32) $(sysnr) FORCE
+ 	$(call if_changed,sysnr)
+ 
+-systbl_abi_syscall_table_32_o32 := 32_o32
+-systbl_offset_syscall_table_32_o32 := 4000
+-$(kapi)/syscall_table_32_o32.h: $(syscallo32) $(systbl) FORCE
++$(kapi)/syscall_table_n32.h: $(syscalln32) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+-systbl_abi_syscall_table_64_n32 := 64_n32
+-systbl_offset_syscall_table_64_n32 := 6000
+-$(kapi)/syscall_table_64_n32.h: $(syscalln32) $(systbl) FORCE
++$(kapi)/syscall_table_n64.h: $(syscalln64) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+-systbl_abi_syscall_table_64_n64 := 64_n64
+-systbl_offset_syscall_table_64_n64 := 5000
+-$(kapi)/syscall_table_64_n64.h: $(syscalln64) $(systbl) FORCE
+-	$(call if_changed,systbl)
+-
+-systbl_abi_syscall_table_64_o32 := 64_o32
+-systbl_offset_syscall_table_64_o32 := 4000
+-$(kapi)/syscall_table_64_o32.h: $(syscallo32) $(systbl) FORCE
++$(kapi)/syscall_table_o32.h: $(syscallo32) $(systbl) FORCE
+ 	$(call if_changed,systbl)
+ 
+ uapisyshdr-y		+= unistd_n32.h			\
+ 			   unistd_n64.h			\
+ 			   unistd_o32.h
+-kapisyshdr-y		+= syscall_table_32_o32.h	\
+-			   syscall_table_64_n32.h	\
+-			   syscall_table_64_n64.h	\
+-			   syscall_table_64_o32.h	\
++kapisyshdr-y		+= syscall_table_n32.h		\
++			   syscall_table_n64.h		\
++			   syscall_table_o32.h		\
+ 			   unistd_nr_n32.h		\
+ 			   unistd_nr_n64.h		\
+ 			   unistd_nr_o32.h
+diff --git a/arch/mips/kernel/syscalls/syscalltbl.sh b/arch/mips/kernel/syscalls/syscalltbl.sh
+deleted file mode 100644
+index 1e2570740c20..000000000000
+--- a/arch/mips/kernel/syscalls/syscalltbl.sh
++++ /dev/null
+@@ -1,36 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-in="$1"
+-out="$2"
+-my_abis=`echo "($3)" | tr ',' '|'`
+-my_abi="$4"
+-offset="$5"
+-
+-emit() {
+-	t_nxt="$1"
+-	t_nr="$2"
+-	t_entry="$3"
+-
+-	while [ $t_nxt -lt $t_nr ]; do
+-		printf "__SYSCALL(%s,sys_ni_syscall)\n" "${t_nxt}"
+-		t_nxt=$((t_nxt+1))
+-	done
+-	printf "__SYSCALL(%s,%s)\n" "${t_nxt}" "${t_entry}"
+-}
+-
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+-	nxt=0
+-	if [ -z "$offset" ]; then
+-		offset=0
+-	fi
+-
+-	while read nr abi name entry compat ; do
+-		if [ "$my_abi" = "64_o32" ] && [ ! -z "$compat" ]; then
+-			emit $((nxt+offset)) $((nr+offset)) $compat
+-		else
+-			emit $((nxt+offset)) $((nr+offset)) $entry
+-		fi
+-		nxt=$((nr+1))
+-	done
+-) > "$out"
 -- 
-Anton Yakovlev
-Senior Software Engineer
-
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
+2.27.0
 
