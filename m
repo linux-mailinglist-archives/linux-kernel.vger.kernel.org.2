@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA245329806
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2873298B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344162AbhCAXJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:09:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49648 "EHLO mail.kernel.org"
+        id S1346393AbhCAXqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:46:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237954AbhCAR4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:56:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC8EA64F4A;
-        Mon,  1 Mar 2021 17:14:34 +0000 (UTC)
+        id S234234AbhCASI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:08:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6E7C64F56;
+        Mon,  1 Mar 2021 17:49:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618875;
-        bh=dLhgrHfjxi1ErbFdmYw0lXiVq25TUtBHfAnko04EZfU=;
+        s=korg; t=1614620979;
+        bh=oFvtRJ6XI/H3L4BODR1F8GGrS7JiyuCCfqcE4h/dDPI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r6tFjCJjrFzH0O+n+E4cEbAv2c+73i9opQ8c9nOWpvZTl1OOT9f2wCmHvPD/jTaWX
-         mwis2CqrHQO6V8LYyVVFq7IitKBEex/X2cFF0zE2j0e00/+anpu+Z229diSGR/IsRV
-         bbr/aTGZad/aSj4zDGucp+ObIXtc0dwdEQxkOMMw=
+        b=xYoKVEcKuQdzKSLpweISLTZRN02ojfDeMBxE85h8lUuoTLFZJ4Dm4Pfx7jzlgXM/u
+         lXuu61ucZV7aFuwZm+0NESaDnGMZoYHCA9vrX2KsCx9RaceIcllXBrMHPS3COwhgcc
+         Nf3Fcogh0HpxQmjtp5mpjh9r6HVoFkIgf5o+vsJA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        stable@vger.kernel.org, Arthur Demchenkov <spinal.by@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>, Tony Lindgren <tony@atomide.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 249/663] fs/jfs: fix potential integer overflow on shift of a int
-Date:   Mon,  1 Mar 2021 17:08:17 +0100
-Message-Id: <20210301161154.142576632@linuxfoundation.org>
+Subject: [PATCH 5.11 332/775] power: supply: cpcap-charger: Fix missing power_supply_put()
+Date:   Mon,  1 Mar 2021 17:08:20 +0100
+Message-Id: <20210301161218.025655607@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit 4208c398aae4c2290864ba15c3dab7111f32bec1 ]
+[ Upstream commit 4bff91bb3231882b530af794c92ac3a5fe199481 ]
 
-The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
-arithmetic and then assigned to a signed 64 bit integer. In the case where
-l2nb is 32 or more this can lead to an overflow.  Avoid this by shifting
-the value 1LL instead.
+Fix missing power_supply_put().
 
-Addresses-Coverity: ("Uninitentional integer overflow")
-Fixes: b40c2e665cd5 ("fs/jfs: TRIM support for JFS Filesystem")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: Arthur Demchenkov <spinal.by@gmail.com>
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Fixes: 5688ea049233 ("power: supply: cpcap-charger: Allow changing constant charge voltage")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_dmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/supply/cpcap-charger.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index 7dfcab2a2da68..aedad59f8a458 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -1656,7 +1656,7 @@ s64 dbDiscardAG(struct inode *ip, int agno, s64 minlen)
- 		} else if (rc == -ENOSPC) {
- 			/* search for next smaller log2 block */
- 			l2nb = BLKSTOL2(nblocks) - 1;
--			nblocks = 1 << l2nb;
-+			nblocks = 1LL << l2nb;
- 		} else {
- 			/* Trim any already allocated blocks */
- 			jfs_error(bmp->db_ipbmap->i_sb, "-EIO\n");
+diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/supply/cpcap-charger.c
+index 804ac7f84c301..2c5f2246c6eaa 100644
+--- a/drivers/power/supply/cpcap-charger.c
++++ b/drivers/power/supply/cpcap-charger.c
+@@ -302,6 +302,7 @@ cpcap_charger_get_bat_const_charge_voltage(struct cpcap_charger_ddata *ddata)
+ 		if (!error)
+ 			voltage = prop.intval;
+ 	}
++	power_supply_put(battery);
+ 
+ 	return voltage;
+ }
 -- 
 2.27.0
 
