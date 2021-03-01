@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CCC329B69
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B89A329C48
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348654AbhCBBYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:24:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37334 "EHLO mail.kernel.org"
+        id S1380438AbhCBBvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:51:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241252AbhCATIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:08:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 988F0650B0;
-        Mon,  1 Mar 2021 17:37:26 +0000 (UTC)
+        id S241717AbhCAT24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:28:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0F19652C6;
+        Mon,  1 Mar 2021 17:37:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620247;
-        bh=tRdfwBMOc4cllLlSrfAP+6oTIivb4Ku1XyOMJyNdTeY=;
+        s=korg; t=1614620257;
+        bh=I378LHQLmI1Vw9vlFkHr7vQGsYoUL8h16QV4zVZM88s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MiuCF85vvbEuaXzX8gqSvrkIc1SaIVrFFVBq1XiSLBkODy+4ODh6Av/xLmJsz0Vl6
-         Hbp5liM1Nwl8nczZE78zQXLrRDkHHNjgC08qcsmwFS3H5HMLUq4IDqSfjl+xsOtLeG
-         XRYfqm1dCsnEyHEpPPC0P4VdoHdX9QlMb8Pp/ie4=
+        b=jsdTzJ93L87Ji+5TaQJb1nJXs+S1hcvknFaT+DkaUwThE4YwvsTWBZbfwtXudgQxp
+         Y7U9uYrvRaEe4qKNqIzhObvRZc87slSbvi/8NlMt4rBPq2Zt3Sp2WUE3YZWIoesBZ7
+         3SP1m1yreE3hi1oebo8OpIfTcRlvOU1KhE+RVrfA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 084/775] ARM: at91: use proper asm syntax in pm_suspend
-Date:   Mon,  1 Mar 2021 17:04:12 +0100
-Message-Id: <20210301161205.831496163@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 087/775] ath11k: fix a locking bug in ath11k_mac_op_start()
+Date:   Mon,  1 Mar 2021 17:04:15 +0100
+Message-Id: <20210301161205.981251608@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,46 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit d30337da8677cd73cb19444436b311c13e57356f ]
+[ Upstream commit c202e2ebe1dc454ad54fd0018c023ec553d47284 ]
 
-Compiling with the clang integrated assembler warns about
-a recently added instruction:
+This error path leads to a Smatch warning:
 
-<instantiation>:14:13: error: unknown token in expression
- ldr tmp1, =#0x00020010UL
-arch/arm/mach-at91/pm_suspend.S:542:2: note: while in macro instantiation
- at91_plla_enable
+	drivers/net/wireless/ath/ath11k/mac.c:4269 ath11k_mac_op_start()
+	error: double unlocked '&ar->conf_mutex' (orig line 4251)
 
-Remove the extra '#' character that is not used for the 'ldr'
-instruction when doing an indirect load of a constant.
+We're not holding the lock when we do the "goto err;" so it leads to a
+double unlock.  The fix is to hold the lock for a little longer.
 
-Fixes: 4fd36e458392 ("ARM: at91: pm: add plla disable/enable support for sam9x60")
-Tested-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Link: https://lore.kernel.org/r/20210204160129.2249394-1-arnd@kernel.org'
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: c83c500b55b6 ("ath11k: enable idle power save mode")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+[kvalo@codeaurora.org: move also rcu_assign_pointer() call]
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/YBk4GoeE+yc0wlJH@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-at91/pm_suspend.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath11k/mac.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
-index 0184de05c1be1..b683c2caa40b9 100644
---- a/arch/arm/mach-at91/pm_suspend.S
-+++ b/arch/arm/mach-at91/pm_suspend.S
-@@ -442,7 +442,7 @@ ENDPROC(at91_backup_mode)
- 	str	tmp1, [pmc, #AT91_PMC_PLL_UPDT]
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index c1608f64ea95d..7d799fe6fbd89 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -4248,11 +4248,6 @@ static int ath11k_mac_op_start(struct ieee80211_hw *hw)
+ 	/* Configure the hash seed for hash based reo dest ring selection */
+ 	ath11k_wmi_pdev_lro_cfg(ar, ar->pdev->pdev_id);
  
- 	/* step 2. */
--	ldr	tmp1, =#AT91_PMC_PLL_ACR_DEFAULT_PLLA
-+	ldr	tmp1, =AT91_PMC_PLL_ACR_DEFAULT_PLLA
- 	str	tmp1, [pmc, #AT91_PMC_PLL_ACR]
+-	mutex_unlock(&ar->conf_mutex);
+-
+-	rcu_assign_pointer(ab->pdevs_active[ar->pdev_idx],
+-			   &ab->pdevs[ar->pdev_idx]);
+-
+ 	/* allow device to enter IMPS */
+ 	if (ab->hw_params.idle_ps) {
+ 		ret = ath11k_wmi_pdev_set_param(ar, WMI_PDEV_PARAM_IDLE_PS_CONFIG,
+@@ -4262,6 +4257,12 @@ static int ath11k_mac_op_start(struct ieee80211_hw *hw)
+ 			goto err;
+ 		}
+ 	}
++
++	mutex_unlock(&ar->conf_mutex);
++
++	rcu_assign_pointer(ab->pdevs_active[ar->pdev_idx],
++			   &ab->pdevs[ar->pdev_idx]);
++
+ 	return 0;
  
- 	/* step 3. */
+ err:
 -- 
 2.27.0
 
