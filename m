@@ -2,89 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA9032795E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48016327960
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhCAIga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:36:30 -0500
-Received: from mga05.intel.com ([192.55.52.43]:57185 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233110AbhCAIfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:35:13 -0500
-IronPort-SDR: 1er/7xRjkrEnUDQQiHHKvNBI3cS0DgoTKD54XCl3PzckuQ/aR1/XGgXlUyQfDnEsdUMkc8eEjl
- 2NkrwxeJE8Rw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="271393088"
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="271393088"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 00:33:18 -0800
-IronPort-SDR: 6BGOXUAqgvhmNQ0d5WoXKH1fHuucsPeWDsGuuDGiAro/r0Ui5Wfdhev1FTGEYN5967UVVhiIPX
- pQbo8oImVPRQ==
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="366632610"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 00:33:12 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 3C2DF202DD;
-        Mon,  1 Mar 2021 10:33:08 +0200 (EET)
-Date:   Mon, 1 Mar 2021 10:33:08 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        mchehab@kernel.org, hverkuil@xs4all.nl
-Subject: Re: [PATCH 2/2] media: v4l2-async: Safely unregister an
- non-registered async subdev
-Message-ID: <20210301083308.GS3@paasikivi.fi.intel.com>
-References: <20210226224938.18166-1-laurent.pinchart@ideasonboard.com>
- <20210226224938.18166-2-laurent.pinchart@ideasonboard.com>
+        id S233226AbhCAIhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233065AbhCAIfV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 03:35:21 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64EBC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 00:34:40 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id hs11so26644560ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 00:34:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lDAufuhpzrV03TMTLpI4rsJPdAs1FZA19H3Gjjzj/H8=;
+        b=hYd7SO61L3RSn8PhZEs9fr4+k0HyH5eQIyPA4fNHipymNkx7Cbq9/DYvGJwNXMhgCS
+         EzwIwbAP1UdNG5AzP5UvleA3yOTwvEwiOUEHiXPRfX7oYM7l7dqQ6CmPzqkceHbNO9uc
+         oAaKm3WYacHhtJpVMHvF2FVysEwB/nmVqdLPY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lDAufuhpzrV03TMTLpI4rsJPdAs1FZA19H3Gjjzj/H8=;
+        b=WAA5OyO4YAbSQVSK6npavIxr132ROwlD8jqnhEhnh096F2PfEwZqXZLarKass97DTj
+         svQaORUtxgId8SIIryqMrb4bjyP1tkfTa9r7sPfPkfqHPC6LR5fCgbhgg1AbGU652K8E
+         tu5lqzPQo3HMzOYxUC16SL+7X4F1QiXj+c8/mvosNx+CkmreT/fqy8xzgzVYLjTWMOqT
+         6wLyTqPngWyj/AEwMVbgxH/mJLZZrbkYr4MXuRFYYecqVevK8KsrsMPb6wg3jJifQ0qr
+         UAVNjSB+DDwSeM7WV6R9uY57yCzrmAnxYQiEHjFTVhE+DbpweaWlNFGqH4wu9AgCjx8x
+         geHw==
+X-Gm-Message-State: AOAM532qgSneioRqlyTPum0Zrut+RqsaKwAlJzZ8yU49kHi6dTcM6Afm
+        xiMxInemJGjIObq15qAzsFbEFA==
+X-Google-Smtp-Source: ABdhPJzyoWxnbcRLJyYqJf+BkrEk3Qke/unRo+Xvj2PJgrlnj5tnNDmHWXtHesVzhkIklMC0YVQ5+g==
+X-Received: by 2002:a17:906:35cf:: with SMTP id p15mr5227601ejb.379.1614587679738;
+        Mon, 01 Mar 2021 00:34:39 -0800 (PST)
+Received: from [192.168.1.149] ([80.208.71.141])
+        by smtp.gmail.com with ESMTPSA id p25sm13926890eds.55.2021.03.01.00.34.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 00:34:39 -0800 (PST)
+Subject: Re: [PATCH 0/2] add ripple counter dt binding and driver
+To:     Guenter Roeck <linux@roeck-us.net>, Arnd Bergmann <arnd@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
+References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
+ <CAK8P3a2=nZ3bbeguXjbFrhz0nWeUOcLM7mRudhPDrcb+jZ4VvQ@mail.gmail.com>
+ <e5fd7ce3-3ba6-e5de-1cbc-fa31bd46942c@rasmusvillemoes.dk>
+ <2208f466-e509-6bbe-0358-34effb965610@roeck-us.net>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <285d739a-b343-c411-5461-0fe1f44177a5@rasmusvillemoes.dk>
+Date:   Mon, 1 Mar 2021 09:34:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226224938.18166-2-laurent.pinchart@ideasonboard.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <2208f466-e509-6bbe-0358-34effb965610@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On Sat, Feb 27, 2021 at 12:49:38AM +0200, Laurent Pinchart wrote:
-> From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+On 26/02/2021 20.53, Guenter Roeck wrote:
+> On 2/26/21 8:35 AM, Rasmus Villemoes wrote:
+>> On 26/02/2021 15.35, Arnd Bergmann wrote:
+>>> On Fri, Feb 26, 2021 at 3:14 PM Rasmus Villemoes
+>>> <linux@rasmusvillemoes.dk> wrote:
+>>>
+>>>>
+>>>> So I'm thinking that the proper way to handle this is to be able to
+>>>> represent that ripple counter as a clock consumer in DT and have a
+>>>> driver do the clk_prepare_enable(), even if that driver doesn't and
+>>>> can't do anything else. But I'm certainly open to other suggestions.
+>>>
+>>> How about adding support for the optional clock to the gpio_wdt driver,
+>>> would that work?
+>>
+>> I think it would _work_ (all I need is some piece of code doing the
+>> clock_prepare_enable(), and until now we've just stashed that in some
+>> otherwise unrelated out-of-tree driver, but we're trying to get rid of
+>> that one), but the watchdog chip isn't really the consumer of the clock
+>> signal, so in-so-far as DT is supposed to describe the hardware, I don't
+>> think it's appropriate.
+>>
+>> OTOH, one could argue that the watchdog chip and the ripple counter
+>> together constitute the watchdog circuit.
+>>
+>> Cc += watchdog maintainers. Context: I have a gpio-wdt which can
+>> unfortunately effectively be disabled by disabling a clock output, and
+>> that happens automatically unless the clock has a consumer in DT. But
+>> the actual consumer is not the gpio-wdt.
+>> Please see
+>> https://lore.kernel.org/lkml/20210226141411.2517368-1-linux@rasmusvillemoes.dk/
+>> for the original thread.
+>>
 > 
-> Make the V4L2 async framework a bit more robust by allowing to
-> unregister a non-registered async subdev. Otherwise the
-> v4l2_async_cleanup() will attempt to delete the async subdev from the
-> subdev_list with the corresponding list_head not initialized.
-> 
-> Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Sorry, I am missing something. If the watchdog is controlled by the clock,
+> it is a consumer of that clock.
 
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+But that's just it, the watchdog chip is _not_ a consumer of the clock -
+I don't think I've ever seen a gpio_wdt that is not internally clocked,
+but even if they exist, that's not the case for this board.
 
-IMO this can be merged through another tree once the first patch is agreed
-on. Cc Hans and Mauro, too.
+ What else does "consumer" mean ? And why
+> not just add optional clock support to the gpio_wdt driver ?
 
-> ---
->  drivers/media/v4l2-core/v4l2-async.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
-> index 37cc0263b273..2347b7ac54d4 100644
-> --- a/drivers/media/v4l2-core/v4l2-async.c
-> +++ b/drivers/media/v4l2-core/v4l2-async.c
-> @@ -750,6 +750,9 @@ EXPORT_SYMBOL(v4l2_async_register_subdev);
->  
->  void v4l2_async_unregister_subdev(struct v4l2_subdev *sd)
->  {
-> +	if (list_is_null(&sd->async_list))
-> +		return;
-> +
->  	mutex_lock(&list_lock);
->  
->  	__v4l2_async_notifier_unregister(sd->subdev_notifier);
+Because, the consumer is a piece of electronics sitting _between_ the
+watchdog chip's reset output and the SOCs reset pin, namely the ripple
+counter that implements a 64 ms delay from the watchdog fires till the
+actual reset. (The watchdog's reset is also routed directly to an
+interrupt; so software gets a 64 ms warning that a hard reset is imminent).
 
--- 
-Kind regards,
-
-Sakari Ailus
+Rasmus
