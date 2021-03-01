@@ -2,91 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A301329AD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00386329A05
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378049AbhCBBDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:03:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
+        id S1348201AbhCBAmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:42:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240643AbhCASzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:55:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9F95652A5;
-        Mon,  1 Mar 2021 17:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620028;
-        bh=+yxJtEY7CGCwsBtOtYkh4AHkeN5E+gqZX7oxIomWLao=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eXTXEG9UAl2su55guN7cn64BnwTboButcI3RuLrbvILo5ZcgvgPlgG6Ebocq4kXmw
-         +CUkb75/HGmAnp0vd4yOM5IbBRwckHUwD2UySsOp+eY55I6SWBUtaIinrHXJCsSJBH
-         JJr9zDk683pQY9uWaxBfgsIO+JR73uMVl2adAMBg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 659/663] wireguard: selftests: test multiple parallel streams
-Date:   Mon,  1 Mar 2021 17:15:07 +0100
-Message-Id: <20210301161214.461225577@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S240156AbhCASg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:36:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70A9964E83;
+        Mon,  1 Mar 2021 17:35:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614620125;
+        bh=21ajb7RL24sMUQlOTeS5tC0PZRuFySmPWuPvKCCEiqs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LrWMdDUaBd2/wZVxXY+25zmlBBaAGP5mlFmV5XFGa4qGXiBuhOSKkz3SBxkrER9q7
+         JvEVgqrE2oFAbSNODVg7WU/CvXcR2ee2dl99HrYL4yfy5Dd/Ww+kK/A7s6QvCuwcot
+         2+WZ8nrqj5HChHx6EERixfkhC6EZ3PSChb/4FRcVTJT7B/lJjnr7IQohsE22/CdB9X
+         rkKkg25WJB57MMT83Ga2ctzwQXLej3ET1ODt+l9IfyjYDRiJ2rtg663RN9zVE1yjlF
+         jFoPQk+1ZZ32uKfzCFQE4iw2n+cdxLeNXPB08LnnvDpUXs3jiMvJFvvpX/sJyb132d
+         +eSdyDf2/0HDg==
+Date:   Mon, 1 Mar 2021 09:35:25 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 12/11] pragma once: scripted treewide conversion
+Message-ID: <20210301173525.GF7272@magnolia>
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+ <YDvO2kmidKZaK26j@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDvO2kmidKZaK26j@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason A. Donenfeld <Jason@zx2c4.com>
+On Sun, Feb 28, 2021 at 08:11:54PM +0300, Alexey Dobriyan wrote:
+> [  Bcc a lot of lists so that people understand what's this is all         ]
+> [  about without creating uber-cc-thread.                                  ]
+> [  Apologies if I missed your subsystem                                    ]
+> [  Please see [PATCH 11/11: pragma once: conversion script (in Python 2)]  ]
+> 
+> Hi, Linus.
+> 
+> Please run the script below from top-level directory, it will convert
+> most kernel headers to #pragma once directive advancing them into
+> 21-st century.
+> 
+> The advantages are:
+> 
+> * less LOC
+> 
+> 	18087 files changed, 18878 insertions(+), 99804 deletions(-)
+> 	= -81 kLOC (give or take)
+> 
+> * less mental tax on developers forced to name things which aren't even
+>   real code
 
-commit d5a49aa6c3e264a93a7d08485d66e346be0969dd upstream.
+I don't find include guards to be much of a mental tax, but it sure
+would be nice to see exactly what the changes would look like...
 
-In order to test ndo_start_xmit being called in parallel, explicitly add
-separate tests, which should all run on different cores. This should
-help tease out bugs associated with queueing up packets from different
-cores in parallel. Currently, it hasn't found those types of bugs, but
-given future planned work, this is a useful regression to avoid.
+> * less junk in preprocessor hashtables and editors/IDEs autocompletion
+>   lists
+> 
+> There are two bit exceptions: UAPI headers and ACPICA.
+> Given ubiquity of #pragma once, I personally think even these subsystems
+> should be converted in the future.
+> 
+> Compile tested on alpha, arc, arm, arm64, h8300, ia64, m68k, microblaze,
+> mips, nios2, parisc, powerpc, riscv, s390, sh, sparc, um-i386, um-x86_64,
+> i386, x86_64, xtensa (allnoconfig, all defconfigs, allmodconfig with or
+> without SMP/DEBUG_KERNEL + misc stuff).
+> 
+> Not compile tested on csky, hexagon, nds32, openrisc. 
+> 
+> Love,
+> 	Alexey
+> 
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> 
+> 
+> 
+> #!/bin/sh -x
+> find . -type f -name '*.h' -print	|\
+> LC_ALL=C sort				|\
+> sed -e 's#^./##g'			|\
+> xargs ./scripts/pragma-once.py
 
-Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- tools/testing/selftests/wireguard/netns.sh |   15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+...because I can't find this script in upstream git, so I can't really
+tell for myself what the changes to xfs would look like.  The thing I
+need to know is, what will changes to fs/xfs/libxfs/ look like when we
+port that to userspace?
 
---- a/tools/testing/selftests/wireguard/netns.sh
-+++ b/tools/testing/selftests/wireguard/netns.sh
-@@ -39,7 +39,7 @@ ip0() { pretty 0 "ip $*"; ip -n $netns0
- ip1() { pretty 1 "ip $*"; ip -n $netns1 "$@"; }
- ip2() { pretty 2 "ip $*"; ip -n $netns2 "$@"; }
- sleep() { read -t "$1" -N 1 || true; }
--waitiperf() { pretty "${1//*-}" "wait for iperf:5201 pid $2"; while [[ $(ss -N "$1" -tlpH 'sport = 5201') != *\"iperf3\",pid=$2,fd=* ]]; do sleep 0.1; done; }
-+waitiperf() { pretty "${1//*-}" "wait for iperf:${3:-5201} pid $2"; while [[ $(ss -N "$1" -tlpH "sport = ${3:-5201}") != *\"iperf3\",pid=$2,fd=* ]]; do sleep 0.1; done; }
- waitncatudp() { pretty "${1//*-}" "wait for udp:1111 pid $2"; while [[ $(ss -N "$1" -ulpH 'sport = 1111') != *\"ncat\",pid=$2,fd=* ]]; do sleep 0.1; done; }
- waitiface() { pretty "${1//*-}" "wait for $2 to come up"; ip netns exec "$1" bash -c "while [[ \$(< \"/sys/class/net/$2/operstate\") != up ]]; do read -t .1 -N 0 || true; done;"; }
- 
-@@ -141,6 +141,19 @@ tests() {
- 	n2 iperf3 -s -1 -B fd00::2 &
- 	waitiperf $netns2 $!
- 	n1 iperf3 -Z -t 3 -b 0 -u -c fd00::2
-+
-+	# TCP over IPv4, in parallel
-+	for max in 4 5 50; do
-+		local pids=( )
-+		for ((i=0; i < max; ++i)) do
-+			n2 iperf3 -p $(( 5200 + i )) -s -1 -B 192.168.241.2 &
-+			pids+=( $! ); waitiperf $netns2 $! $(( 5200 + i ))
-+		done
-+		for ((i=0; i < max; ++i)) do
-+			n1 iperf3 -Z -t 3 -p $(( 5200 + i )) -c 192.168.241.2 &
-+		done
-+		wait "${pids[@]}"
-+	done
- }
- 
- [[ $(ip1 link show dev wg0) =~ mtu\ ([0-9]+) ]] && orig_mtu="${BASH_REMATCH[1]}"
+Does this introduce any minimum compiler version requirements?
 
+--D
 
+> 
+> find . -type d -name 'uapi' | xargs git checkout -f
+> git checkout -f arch/alpha/include/asm/cmpxchg.h
+> git checkout -f arch/arm/mach-imx/hardware.h
+> git checkout -f arch/arm/mach-ixp4xx/include/mach/hardware.h
+> git checkout -f arch/arm/mach-sa1100/include/mach/hardware.h
+> git checkout -f arch/mips/include/asm/mips-cps.h
+> git checkout -f arch/x86/boot/boot.h
+> git checkout -f arch/x86/boot/ctype.h
+> git checkout -f arch/x86/include/asm/cpufeatures.h
+> git checkout -f arch/x86/include/asm/disabled-features.h
+> git checkout -f arch/x86/include/asm/required-features.h
+> git checkout -f arch/x86/include/asm/vmxfeatures.h
+> git checkout -f arch/x86/include/asm/vvar.h
+> git checkout -f drivers/acpi/acpica/
+> git checkout -f drivers/gpu/drm/amd/pm/inc/vega10_ppsmc.h
+> git checkout -f drivers/gpu/drm/amd/pm/powerplay/ppsmc.h
+> git checkout -f drivers/input/misc/yealink.h
+> git checkout -f drivers/media/usb/dvb-usb-v2/mxl111sf-demod.h
+> git checkout -f drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.h
+> git checkout -f drivers/pcmcia/yenta_socket.h
+> git checkout -f drivers/staging/rtl8723bs/include/hal_com_h2c.h
+> git checkout -f include/linux/acpi.h
+> git checkout -f include/linux/bitops.h
+> git checkout -f include/linux/compiler_types.h
+> git checkout -f include/linux/device.h
+> git checkout -f include/linux/kbuild.h
+> git checkout -f include/linux/libfdt_env.h
+> git checkout -f include/linux/local_lock.h
+> git checkout -f include/linux/spinlock.h
+> git checkout -f include/linux/spinlock_api_smp.h
+> git checkout -f include/linux/spinlock_types.h
+> git checkout -f include/linux/tracepoint.h
+> git checkout -f mm/gup_test.h
+> git checkout -f net/batman-adv/main.h
+> git checkout -f scripts/dtc/
+> git checkout -f tools/include/linux/bitops.h
+> git checkout -f tools/include/linux/compiler.h
+> git checkout -f tools/testing/selftests/clone3/clone3_selftests.h
+> git checkout -f tools/testing/selftests/futex/include/atomic.h
+> git checkout -f tools/testing/selftests/futex/include/futextest.h
+> git checkout -f tools/testing/selftests/futex/include/logging.h
+> git checkout -f tools/testing/selftests/kselftest.h
+> git checkout -f tools/testing/selftests/kselftest_harness.h
+> git checkout -f tools/testing/selftests/pidfd/pidfd.h
+> git checkout -f tools/testing/selftests/x86/helpers.h
