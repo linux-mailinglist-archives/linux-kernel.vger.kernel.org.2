@@ -2,39 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64533329F6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 736FC329F69
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573943AbhCBD20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:28:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51428 "EHLO mail.kernel.org"
+        id S1573927AbhCBD2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:28:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239303AbhCAUdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238936AbhCAUdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 15:33:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19032601FC;
-        Mon,  1 Mar 2021 18:45:15 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C51664FE7;
+        Mon,  1 Mar 2021 16:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614624315;
-        bh=P7QchQAjJ3z7UxYFKNiqMsqZ58g7MJPBzv8ewmFn9ig=;
+        s=korg; t=1614617887;
+        bh=QsTUp8bQsQpd8ulOBfV2MbPHQmo7AQ+qGIkRfCUfRSk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xba9RCpXkNpDLudtXj7JznX0LK1WOzqs2Nk73C8uPuqbZNWqMyLP383rLE3y3/L5l
-         fqbj4qnPUc5KVrNawQT56WMMYIo7DwLCDo3tkcu4WWDYX+aLV/ye8cuMxeQCpvc3e1
-         oAfVwIFxLTKW6VNzsc8ywcpMLKsmSi8PoVm3kKY8=
+        b=ddzsywtyvLKzSV47oDZoh/rues7NnzQe/FJ+0CgboS1IvbyQcSJlJAO8u5tDqwR7w
+         dNk3YZIKaW6oRvogQVq8i9FeaDeaLE036pNuWNsA/STqLlXaiofCMJHNKVurRRLgXk
+         MyzGhdFeLQnhPZhVnNRhDdzQ0L2fVCuzhFE53Z5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <nakamura.shun@fujitsu.com>, linux-arm-kernel@lists.infradead.org,
-        linuxarm@openeuler.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 178/340] perf vendor events arm64: Fix Ampere eMag event typo
-Date:   Mon,  1 Mar 2021 17:12:02 +0100
-Message-Id: <20210301161057.070778296@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Ruehl <chris.ruehl@gtsys.com.hk>,
+        Douglas Anderson <dianders@chromium.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 202/340] phy: rockchip-emmc: emmc_phy_init() always return 0
+Date:   Mon,  1 Mar 2021 17:12:26 +0100
+Message-Id: <20210301161058.248227924@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -46,43 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Garry <john.garry@huawei.com>
+From: Chris Ruehl <chris.ruehl@gtsys.com.hk>
 
-[ Upstream commit 2bf797be81fa808f05f1a7a65916619132256a27 ]
+[ Upstream commit 39961bd6b70e5a5d7c4b5483ad8e1db6b5765c60 ]
 
-The "briefdescription" for event 0x35 has a typo - fix it.
+rockchip_emmc_phy_init() return variable is not set with the error value
+if clk_get() failed. 'emmcclk' is optional, thus use clk_get_optional()
+and if the return value != NULL make error processing and set the
+return code accordingly.
 
-Fixes: d35c595bf005 ("perf vendor events arm64: Revise core JSON events for eMAG")
-Signed-off-by: John Garry <john.garry@huawei.com>
-Acked-by: Will Deacon <will@kernel.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Nakamura, Shunsuke/中村 俊介 <nakamura.shun@fujitsu.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linuxarm@openeuler.org
-Link: https://lore.kernel.org/r/1611835236-34696-2-git-send-email-john.garry@huawei.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: 52c0624a10cce phy: rockchip-emmc: Set phyctrl_frqsel based on card clock
+Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20201210080454.17379-1-chris.ruehl@gtsys.com.hk
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/phy/rockchip/phy-rockchip-emmc.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json b/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
-index df9201434cb6a..b0a10a219b50d 100644
---- a/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
-+++ b/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
-@@ -114,7 +114,7 @@
-         "PublicDescription": "Level 2 access to instruciton TLB that caused a page table walk. This event counts on any instruciton access which causes L2I_TLB_REFILL to count",
-         "EventCode": "0x35",
-         "EventName": "L2I_TLB_ACCESS",
--        "BriefDescription": "L2D TLB access"
-+        "BriefDescription": "L2I TLB access"
-     },
-     {
-         "PublicDescription": "Branch target buffer misprediction",
+diff --git a/drivers/phy/rockchip/phy-rockchip-emmc.c b/drivers/phy/rockchip/phy-rockchip-emmc.c
+index 2dc19ddd120f5..a005fc58bbf02 100644
+--- a/drivers/phy/rockchip/phy-rockchip-emmc.c
++++ b/drivers/phy/rockchip/phy-rockchip-emmc.c
+@@ -240,15 +240,17 @@ static int rockchip_emmc_phy_init(struct phy *phy)
+ 	 * - SDHCI driver to get the PHY
+ 	 * - SDHCI driver to init the PHY
+ 	 *
+-	 * The clock is optional, so upon any error we just set to NULL.
++	 * The clock is optional, using clk_get_optional() to get the clock
++	 * and do error processing if the return value != NULL
+ 	 *
+ 	 * NOTE: we don't do anything special for EPROBE_DEFER here.  Given the
+ 	 * above expected use case, EPROBE_DEFER isn't sensible to expect, so
+ 	 * it's just like any other error.
+ 	 */
+-	rk_phy->emmcclk = clk_get(&phy->dev, "emmcclk");
++	rk_phy->emmcclk = clk_get_optional(&phy->dev, "emmcclk");
+ 	if (IS_ERR(rk_phy->emmcclk)) {
+-		dev_dbg(&phy->dev, "Error getting emmcclk: %d\n", ret);
++		ret = PTR_ERR(rk_phy->emmcclk);
++		dev_err(&phy->dev, "Error getting emmcclk: %d\n", ret);
+ 		rk_phy->emmcclk = NULL;
+ 	}
+ 
 -- 
 2.27.0
 
