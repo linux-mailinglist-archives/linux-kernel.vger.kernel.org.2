@@ -2,114 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC363298C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFE73299B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346517AbhCAXsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:48:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60784 "EHLO mail.kernel.org"
+        id S1348105AbhCBA2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238721AbhCASJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:09:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFF3D6529B;
-        Mon,  1 Mar 2021 17:33:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620009;
-        bh=gRIT0VF9fiR/03qrO6Qr37uVPBAtkSGVbL9WsCTeM3c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IF006vK5ZASQpNaPsSn6uZJS2PmS+LxOhMluNeY7O5xpX9T8/5nPh2Vn63ATorH+8
-         Ax8FQG3SShuu8KPL/feisOd/ozTgtvTxA/ZnIpQ//XPYSNAvsm0Y3iWb1pJVmYn1tT
-         myUEzjrxF64eKcQkD6XzHt9uQr4teRRFZLaeHM0I=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+5d6e4af21385f5cfc56a@syzkaller.appspotmail.com,
-        Takeshi Misawa <jeliantsurux@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 662/663] net: qrtr: Fix memory leak in qrtr_tun_open
-Date:   Mon,  1 Mar 2021 17:15:10 +0100
-Message-Id: <20210301161214.607704812@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S234847AbhCAS3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:29:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00B6B651A7;
+        Mon,  1 Mar 2021 17:12:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614618737;
+        bh=si2eQjMtWG04yWgbRVI1ZmXrgQt/Qz7SnMI2Vx2sclo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TRyUOqnIYoOkLEdIZXY6n+mfmvhH+iTo7CrtOF+ZcPgwnX1jIvD1pwfrsHDCaKBDd
+         OzJ1rhzg8FQ/vdEqpe/n2x4ds1AhZvm9EXB/2XBN3Ldbeh/3u/W0r/LQs6Oe/ab2DJ
+         lwKzntubGHiOHtFnx6jxDuJIlUSZ1BjKFfkV6wpTCxFgjs07SrD9BLrLvbwcm0UULL
+         LVNtjOEINjvQcZiEzwMBv7Jr3ARAZP0IP1i1HhqayUARKPX4FKRafpfRkSktwDalDG
+         0Pcwxhl/F2zAfhel0RzcLc+ZirGdOYBtKNhP+ghxV2S4jdebTeA+fFgmSD9QV0D9Dl
+         JkShhsckrG5aQ==
+Date:   Mon, 1 Mar 2021 17:11:11 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Kuldeep Singh <kuldeep.singh@nxp.com>
+Cc:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ashish Kumar <ashish.kumar@nxp.com>, Han Xu <han.xu@nxp.com>
+Subject: Re: [EXT] Re: [PATCH 2/3] spi: spi-nxp-fspi: Add driver support for
+ imx8dxl
+Message-ID: <20210301171111.GE4628@sirena.org.uk>
+References: <20210301103230.1816168-1-kuldeep.singh@nxp.com>
+ <20210301103230.1816168-3-kuldeep.singh@nxp.com>
+ <20210301132539.GB4628@sirena.org.uk>
+ <DB6PR0402MB2758C61D8320CD0A88DC3B38E09A9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6Vw0j8UKbyX0bfpA"
+Content-Disposition: inline
+In-Reply-To: <DB6PR0402MB2758C61D8320CD0A88DC3B38E09A9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+X-Cookie: Body by Nautilus, Brain by Mattel.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takeshi Misawa <jeliantsurux@gmail.com>
 
-commit fc0494ead6398609c49afa37bc949b61c5c16b91 upstream.
+--6Vw0j8UKbyX0bfpA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If qrtr_endpoint_register() failed, tun is leaked.
-Fix this, by freeing tun in error path.
+On Mon, Mar 01, 2021 at 04:39:18PM +0000, Kuldeep Singh wrote:
 
-syzbot report:
-BUG: memory leak
-unreferenced object 0xffff88811848d680 (size 64):
-  comm "syz-executor684", pid 10171, jiffies 4294951561 (age 26.070s)
-  hex dump (first 32 bytes):
-    80 dd 0a 84 ff ff ff ff 00 00 00 00 00 00 00 00  ................
-    90 d6 48 18 81 88 ff ff 90 d6 48 18 81 88 ff ff  ..H.......H.....
-  backtrace:
-    [<0000000018992a50>] kmalloc include/linux/slab.h:552 [inline]
-    [<0000000018992a50>] kzalloc include/linux/slab.h:682 [inline]
-    [<0000000018992a50>] qrtr_tun_open+0x22/0x90 net/qrtr/tun.c:35
-    [<0000000003a453ef>] misc_open+0x19c/0x1e0 drivers/char/misc.c:141
-    [<00000000dec38ac8>] chrdev_open+0x10d/0x340 fs/char_dev.c:414
-    [<0000000079094996>] do_dentry_open+0x1e6/0x620 fs/open.c:817
-    [<000000004096d290>] do_open fs/namei.c:3252 [inline]
-    [<000000004096d290>] path_openat+0x74a/0x1b00 fs/namei.c:3369
-    [<00000000b8e64241>] do_filp_open+0xa0/0x190 fs/namei.c:3396
-    [<00000000a3299422>] do_sys_openat2+0xed/0x230 fs/open.c:1172
-    [<000000002c1bdcef>] do_sys_open fs/open.c:1188 [inline]
-    [<000000002c1bdcef>] __do_sys_openat fs/open.c:1204 [inline]
-    [<000000002c1bdcef>] __se_sys_openat fs/open.c:1199 [inline]
-    [<000000002c1bdcef>] __x64_sys_openat+0x7f/0xe0 fs/open.c:1199
-    [<00000000f3a5728f>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000004b38b7ec>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > That's a DT binding YAML conversion patch, why would there be a
+> > dependency on it?
 
-Fixes: 28fb4e59a47d ("net: qrtr: Expose tunneling endpoint to user space")
-Reported-by: syzbot+5d6e4af21385f5cfc56a@syzkaller.appspotmail.com
-Signed-off-by: Takeshi Misawa <jeliantsurux@gmail.com>
-Link: https://lore.kernel.org/r/20210221234427.GA2140@DESKTOP
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/qrtr/tun.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+> I have converted bindings to yaml version in the patch and also added imx8dxl compatible along-with the conversion. Please see the difference in compatible entries from txt to yaml conversion[1].
+> Kindly let me know do I need to submit different patch for adding new compatible or ok to include in the conversion patch itself?
 
---- a/net/qrtr/tun.c
-+++ b/net/qrtr/tun.c
-@@ -31,6 +31,7 @@ static int qrtr_tun_send(struct qrtr_end
- static int qrtr_tun_open(struct inode *inode, struct file *filp)
- {
- 	struct qrtr_tun *tun;
-+	int ret;
- 
- 	tun = kzalloc(sizeof(*tun), GFP_KERNEL);
- 	if (!tun)
-@@ -43,7 +44,16 @@ static int qrtr_tun_open(struct inode *i
- 
- 	filp->private_data = tun;
- 
--	return qrtr_endpoint_register(&tun->ep, QRTR_EP_NID_AUTO);
-+	ret = qrtr_endpoint_register(&tun->ep, QRTR_EP_NID_AUTO);
-+	if (ret)
-+		goto out;
-+
-+	return 0;
-+
-+out:
-+	filp->private_data = NULL;
-+	kfree(tun);
-+	return ret;
- }
- 
- static ssize_t qrtr_tun_read_iter(struct kiocb *iocb, struct iov_iter *to)
+Your YAML binding conversion should have been a standalone patch only
+doing that conversion, the new compatible should have been split out and
+gone first - each patch should only do one thing as covered in
+submitting-patches.rst.  As things stand the changelog for the
+conversion is misleading since it doesn't mention the new compatible.
 
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
 
+--6Vw0j8UKbyX0bfpA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA9IC4ACgkQJNaLcl1U
+h9BVzgf/fcNTSGu3TmIuLXEmc8xKQhoS/wyKHEbL3A4BQsrfb4t1xIeNIF06Juba
+05R5g6zAnzjPtXVNQ33pNJIrGJVfDWHk0wiWfp5T5pDVvk22/Whyz7+N5xa40dMN
+omTFCyCKUC1DrvzMkZssOjmAQGTlXpId0N3yUx0WOVWnvgHj9y7fRA9LCGK9Dlve
+yMKQZctAOAdh6W/hBDZvANC4qeoRQh3O4iUSoPo4ht6v7oDQoeTp+Dp32yclpdhP
+9OpqLIi0fYuX1KaDl/9eVG/buR4NJPVWxKIE4jOd165hLdzf8chjUr2OZFDNBGA4
+frXAJ2nZtoVXBFgdAP4fgfNtr6FChw==
+=WlwW
+-----END PGP SIGNATURE-----
+
+--6Vw0j8UKbyX0bfpA--
