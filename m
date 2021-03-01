@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DDB32980B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD29329850
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344955AbhCAXKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:10:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49650 "EHLO mail.kernel.org"
+        id S1345486AbhCAXZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:25:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237824AbhCAR4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:56:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2566665074;
-        Mon,  1 Mar 2021 17:24:56 +0000 (UTC)
+        id S238192AbhCASBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:01:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E569765225;
+        Mon,  1 Mar 2021 17:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619497;
-        bh=i8GrjKi5S2CmDKUeGWQRsVZoGcpllGlvwHk/OpVVssM=;
+        s=korg; t=1614619505;
+        bh=x6oOG4uQjxB4tnF00oE/GWfkgnAvj0lEbZHOtaMH5dw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lxLiucbfGfIt41nCXhnIOZxRmXBeaQx8lMBTf11Q2+Kdeo1D6rh5u0TYJWPGNzK11
-         Q8zrVbhWT2QSQlDc+lRJ/ix5SmrU/WMhnk7o1gMrThvB/WIts/npt96IYo+m5YB0Do
-         Yi7rID/k24xQnDec1s4w0VNDhwvg0UZtDJ9i7XPk=
+        b=0Up5dU9oY89gzhgMxdfVf53w8XpC0lXhKxQLF2Yq3NLBIRaYNBc7EAC46bWTKFD4Z
+         Mn0Pv+VmjBxjIj1UYA2yrBCy9svfuH1hja8wrk7/KIR8E5MliH7KB6KfSbTZ35g+Mf
+         +es81fWbTygHxcLROq62Rs9m9PO/5pvFEQ0t3zTY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 475/663] scsi: sd: sd_zbc: Dont pass GFP_NOIO to kvcalloc
-Date:   Mon,  1 Mar 2021 17:12:03 +0100
-Message-Id: <20210301161205.360740951@linuxfoundation.org>
+        stable@vger.kernel.org, chriscjsus@yahoo.com,
+        Jens Axboe <axboe@kernel.dk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 478/663] scsi: sd: Fix Opal support
+Date:   Mon,  1 Mar 2021 17:12:06 +0100
+Message-Id: <20210301161205.508690843@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,66 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 9acced3f58ad24407c1f9ebf53a8892c1e24cdb5 ]
+commit aaf15f8c6de932861f1fce6aeec6a89ac0e354b6 upstream.
 
-Dan reported we're passing in GFP_NOIO to kvmalloc() which will then
-fallback to doing kmalloc() instead of an optional vmalloc() if the size
-exceeds kmalloc()s limits. This will break with drives that have zone
-numbers exceeding PAGE_SIZE/sizeof(u32).
+The SCSI core has been modified recently such that it only processes PM
+requests if rpm_status != RPM_ACTIVE. Since some Opal requests are
+submitted while rpm_status != RPM_ACTIVE, set flag RQF_PM for Opal
+requests.
 
-Instead of passing in GFP_NOIO, enter an implicit GFP_NOIO allocation
-scope.
+See also https://bugzilla.kernel.org/show_bug.cgi?id=211227.
 
-Link: https://lore.kernel.org/r/YCuvSfKw4qEQBr/t@mwanda
-Link: https://lore.kernel.org/r/5a6345e2989fd06c049ac4e4627f6acb492c15b8.1613569821.git.johannes.thumshirn@wdc.com
-Fixes: 5795eb443060: ("scsi: sd_zbc: emulate ZONE_APPEND commands")
-Cc: Damien Le Moal <Damien.LeMoal@wdc.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+[mkp: updated sha for PM patch]
+
+Link: https://lore.kernel.org/r/20210222021042.3534-1-bvanassche@acm.org
+Fixes: d80210f25ff0 ("sd: add support for TCG OPAL self encrypting disks")
+Fixes: e6044f714b25 ("scsi: core: Only process PM requests if rpm_status != RPM_ACTIVE")
+Cc: chriscjsus@yahoo.com
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: stable@vger.kernel.org
+Reported-by: chriscjsus@yahoo.com
+Tested-by: chriscjsus@yahoo.com
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/sd_zbc.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/scsi/sd.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/sd_zbc.c b/drivers/scsi/sd_zbc.c
-index cf07b7f935790..87a7274e4632b 100644
---- a/drivers/scsi/sd_zbc.c
-+++ b/drivers/scsi/sd_zbc.c
-@@ -688,6 +688,7 @@ int sd_zbc_revalidate_zones(struct scsi_disk *sdkp)
- 	unsigned int nr_zones = sdkp->rev_nr_zones;
- 	u32 max_append;
- 	int ret = 0;
-+	unsigned int flags;
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -709,9 +709,9 @@ static int sd_sec_submit(void *data, u16
+ 	put_unaligned_be16(spsp, &cdb[2]);
+ 	put_unaligned_be32(len, &cdb[6]);
  
- 	/*
- 	 * For all zoned disks, initialize zone append emulation data if not
-@@ -720,16 +721,19 @@ int sd_zbc_revalidate_zones(struct scsi_disk *sdkp)
- 	    disk->queue->nr_zones == nr_zones)
- 		goto unlock;
- 
-+	flags = memalloc_noio_save();
- 	sdkp->zone_blocks = zone_blocks;
- 	sdkp->nr_zones = nr_zones;
--	sdkp->rev_wp_offset = kvcalloc(nr_zones, sizeof(u32), GFP_NOIO);
-+	sdkp->rev_wp_offset = kvcalloc(nr_zones, sizeof(u32), GFP_KERNEL);
- 	if (!sdkp->rev_wp_offset) {
- 		ret = -ENOMEM;
-+		memalloc_noio_restore(flags);
- 		goto unlock;
- 	}
- 
- 	ret = blk_revalidate_disk_zones(disk, sd_zbc_revalidate_zones_cb);
- 
-+	memalloc_noio_restore(flags);
- 	kvfree(sdkp->rev_wp_offset);
- 	sdkp->rev_wp_offset = NULL;
- 
--- 
-2.27.0
-
+-	ret = scsi_execute_req(sdev, cdb,
+-			send ? DMA_TO_DEVICE : DMA_FROM_DEVICE,
+-			buffer, len, NULL, SD_TIMEOUT, sdkp->max_retries, NULL);
++	ret = scsi_execute(sdev, cdb, send ? DMA_TO_DEVICE : DMA_FROM_DEVICE,
++		buffer, len, NULL, NULL, SD_TIMEOUT, sdkp->max_retries, 0,
++		RQF_PM, NULL);
+ 	return ret <= 0 ? ret : -EIO;
+ }
+ #endif /* CONFIG_BLK_SED_OPAL */
 
 
