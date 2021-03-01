@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D81328549
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 17:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066CC32845B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 17:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235311AbhCAQw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 11:52:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57260 "EHLO mail.kernel.org"
+        id S233706AbhCAQdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 11:33:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235503AbhCAQVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:21:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7973764EEF;
-        Mon,  1 Mar 2021 16:18:44 +0000 (UTC)
+        id S237785AbhCAQTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:19:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB20864EBD;
+        Mon,  1 Mar 2021 16:17:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615525;
-        bh=pHxPrlLkpEe6QqNK97i8KU4fsdrIu4fensom1O6PuaU=;
+        s=korg; t=1614615444;
+        bh=1eKXSA8cIktsJfyE3Kpkyn6RZoMoY3oiWUaaLnrMJAE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w5TjsqVSDl5ljG8668uCyVn1+QbT6ZUn6mjIrisHcPhfPlfU2JDZUhAcnv2xss7bo
-         g7qmEVn6l7SApkhkb7QgSxProapGGbAV8tzZpxBieyqKpzRcazEVSl17bGK79ROi9x
-         um7WHCXrVkWNXVKle4mF1DQEC/cETb6Pj/MGq1FY=
+        b=BXa105ju/zHP3JVxFdHrYojEoR2mtnXXmDsRasgB6LW/TooOLiQno8luPtFP2csMI
+         Nzsqn83/02yyLXWH4TEQZ3GLQz5EztlEnVLho0CAuDp90O7G7jSelCDPhhX/prAeCJ
+         Or3dTn/f6yZdceIDUvCzkw8etDcaVyOEMjkATdps=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Till=20D=C3=B6rges?= <doerges@pre-sense.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 30/93] media: uvcvideo: Accept invalid bFormatIndex and bFrameIndex values
-Date:   Mon,  1 Mar 2021 17:12:42 +0100
-Message-Id: <20210301161008.393239605@linuxfoundation.org>
+Subject: [PATCH 4.4 32/93] fs/jfs: fix potential integer overflow on shift of a int
+Date:   Mon,  1 Mar 2021 17:12:44 +0100
+Message-Id: <20210301161008.496882817@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
 References: <20210301161006.881950696@linuxfoundation.org>
@@ -42,77 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit dc9455ffae02d7b7fb51ba1e007fffcb9dc5d890 ]
+[ Upstream commit 4208c398aae4c2290864ba15c3dab7111f32bec1 ]
 
-The Renkforce RF AC4K 300 Action Cam 4K reports invalid bFormatIndex and
-bFrameIndex values when negotiating the video probe and commit controls.
-The UVC descriptors report a single supported format and frame size,
-with bFormatIndex and bFrameIndex both equal to 2, but the video probe
-and commit controls report bFormatIndex and bFrameIndex set to 1.
+The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
+arithmetic and then assigned to a signed 64 bit integer. In the case where
+l2nb is 32 or more this can lead to an overflow.  Avoid this by shifting
+the value 1LL instead.
 
-The device otherwise operates correctly, but the driver rejects the
-values and fails the format try operation. Fix it by ignoring the
-invalid indices, and assuming that the format and frame requested by the
-driver are accepted by the device.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210767
-
-Fixes: 8a652a17e3c0 ("media: uvcvideo: Ensure all probed info is returned to v4l2")
-Reported-by: Till Dörges <doerges@pre-sense.de>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Addresses-Coverity: ("Uninitentional integer overflow")
+Fixes: b40c2e665cd5 ("fs/jfs: TRIM support for JFS Filesystem")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ fs/jfs/jfs_dmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index a0a544628053d..154f5bd45940e 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -243,7 +243,9 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
- 		goto done;
- 
- 	/* After the probe, update fmt with the values returned from
--	 * negotiation with the device.
-+	 * negotiation with the device. Some devices return invalid bFormatIndex
-+	 * and bFrameIndex values, in which case we can only assume they have
-+	 * accepted the requested format as-is.
- 	 */
- 	for (i = 0; i < stream->nformats; ++i) {
- 		if (probe->bFormatIndex == stream->format[i].index) {
-@@ -252,11 +254,10 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
- 		}
- 	}
- 
--	if (i == stream->nformats) {
--		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFormatIndex %u\n",
-+	if (i == stream->nformats)
-+		uvc_trace(UVC_TRACE_FORMAT,
-+			  "Unknown bFormatIndex %u, using default\n",
- 			  probe->bFormatIndex);
--		return -EINVAL;
--	}
- 
- 	for (i = 0; i < format->nframes; ++i) {
- 		if (probe->bFrameIndex == format->frame[i].bFrameIndex) {
-@@ -265,11 +266,10 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
- 		}
- 	}
- 
--	if (i == format->nframes) {
--		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFrameIndex %u\n",
-+	if (i == format->nframes)
-+		uvc_trace(UVC_TRACE_FORMAT,
-+			  "Unknown bFrameIndex %u, using default\n",
- 			  probe->bFrameIndex);
--		return -EINVAL;
--	}
- 
- 	fmt->fmt.pix.width = frame->wWidth;
- 	fmt->fmt.pix.height = frame->wHeight;
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index 2d514c7affc2a..9ff510a489cb1 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -1669,7 +1669,7 @@ s64 dbDiscardAG(struct inode *ip, int agno, s64 minlen)
+ 		} else if (rc == -ENOSPC) {
+ 			/* search for next smaller log2 block */
+ 			l2nb = BLKSTOL2(nblocks) - 1;
+-			nblocks = 1 << l2nb;
++			nblocks = 1LL << l2nb;
+ 		} else {
+ 			/* Trim any already allocated blocks */
+ 			jfs_error(bmp->db_ipbmap->i_sb, "-EIO\n");
 -- 
 2.27.0
 
