@@ -2,189 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B2732769E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 05:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8462B3276A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 05:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhCAERB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 23:17:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233061AbhCAEQq (ORCPT
+        id S233217AbhCAETI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 23:19:08 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:34186 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233192AbhCAESs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 23:16:46 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 392DDC06174A;
-        Sun, 28 Feb 2021 20:16:06 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id w6so11150146qti.6;
-        Sun, 28 Feb 2021 20:16:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=26Q3tkzW5s8d+3ZDpjxr2Cr0H8veyHSn5hQXX2z5lpY=;
-        b=Ou5r9TnQ1HePvn63miY+uu2uE+dsuTHzc50zMmQn4dDsOD3uRMAGSnTECopyuWXY4p
-         y0pZIvu5FKD4ArOdtTn7fK80gYZdnLaIWlnPzkJXgVoSY73NW8vVu5vpm4OaQDv01Ec3
-         0+8Am+RRSk+7ZOW6Ji7g8BjufUANbtAesOgWn5Z+zVdItbsZBNeb1fjixtI/WMiNOteC
-         QUMN1Gx1Oq0HkQ6uB2VPm5BCbmWmRH4T3vhM/NXEspJaluCG6h1+azrtKoxkWeBfi9c+
-         zcbYbHGvxVeY63BqwVRS0hUi7fLCTqv1cOopPo+EDnl9c77ptSRgVbTFp2i+S8DON+q9
-         yTmw==
+        Sun, 28 Feb 2021 23:18:48 -0500
+Received: by mail-io1-f70.google.com with SMTP id c3so12267765ioa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 20:18:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=26Q3tkzW5s8d+3ZDpjxr2Cr0H8veyHSn5hQXX2z5lpY=;
-        b=kW4VvJwsU7WdwogKHkgxukPDQE6TcJmk0/n5Pm4etnPpnLzjshh8BEArmJdwno1Hlm
-         QtUmKf8cUCvnoeQq4wnnnGD9QBZZwVGGD5bq33Od+HsfVIYNFnpYW14eRvMNxHygEti7
-         Lgd0/Q/mlJMe/lTuTr2oKjAEYa1bWopKMZz3sF2Yq3Wl/bFvca/vIpX4M5UVPsK+ivRm
-         LM+IVSABn0EvLW13v9VjS7wR/CJYdxWjWqgYry2SfDZSLEMcYYmk7Pj2msnSHvJHZsu6
-         RRCZ2bimcTPThzZyUsxSwK/dC2nfGWFanE0Mv6u6TJErzs7h3MZfGBdYzVFE9QKl/zdx
-         Priw==
-X-Gm-Message-State: AOAM531LPZJc09BLw5nrDaISzVzJYLLI7AB/FPn1/mRsm3vIXp6mB4L6
-        fE8be+piF5eW8/5Lhw6ZoWA=
-X-Google-Smtp-Source: ABdhPJyDIvug2dnpTFHRyy/XuW/fjUfm+oRFSW6QvOwx96J210FFKx4xO5bFlCHgJLaSOzYljj2fdw==
-X-Received: by 2002:a05:622a:183:: with SMTP id s3mr11902355qtw.223.1614572165055;
-        Sun, 28 Feb 2021 20:16:05 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:1d59:a36:514:a21])
-        by smtp.googlemail.com with ESMTPSA id l24sm10310057qtj.50.2021.02.28.20.16.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 20:16:04 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Tong Zhang <ztong0001@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] can: c_can: move runtime PM enable/disable to c_can_platform
-Date:   Sun, 28 Feb 2021 23:15:48 -0500
-Message-Id: <20210301041550.795500-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=jGKJbsKWjLY3t1hbI1ad50n8UJWkfbpUJMTA9ScYOdQ=;
+        b=gFry7BCRRdPnivT2TIjzd23O0wcOBYSSOJhs9BV2B3vBgnatL3Tmu86mFTS54uneBo
+         isdhqrFkyG+uwi2Y0ehagEkydtMEkra2Q0j1GtLOZwnQVOqDD+K+IBXx17IY0p0vlzWW
+         JcpXllNQJ8xEP7DM3tjFsiO7g36mzku0f3H8/nIz4lq9fWJ/pb5QqSztiZtGWwd/EtK0
+         d/EG2adpKv5wgKg+WEz0sP69wWmcK3Dx726ua0xmm06bl5R6f/kgmqAb6mZg2cI4t7La
+         q/ujMVcgZZruuIaYtMSvN5cp7KE7QEYM4zyfIahgimw9O9wAKF8nYsU55GfFkgoN980Z
+         McEA==
+X-Gm-Message-State: AOAM533DNzT50jyGAylM05LfAQwyi4WnJ6Uk2oR6GUTWAjCg70XtKWBU
+        AB1ZRY7pcZ8Sj1jRUS1gnkzZgCXamYAuisgalg+toWqLoubi
+X-Google-Smtp-Source: ABdhPJzbk8yenPVEBjFaBJk9pDoAFImYrHa/idi0KSfzfWf6UKO7jBNh+JRxEb49CaamNQVuL53ajeITSuIp65gIbde/9LZWZiut
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6602:14c6:: with SMTP id b6mr12459382iow.104.1614572287239;
+ Sun, 28 Feb 2021 20:18:07 -0800 (PST)
+Date:   Sun, 28 Feb 2021 20:18:07 -0800
+In-Reply-To: <900e27f3-6503-ed03-4c58-ccc946df7a6a@kernel.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a52fb105bc71e7b8@google.com>
+Subject: Re: possible deadlock in io_poll_double_wake (2)
+From:   syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently doing modprobe c_can_pci will make kernel complain
-"Unbalanced pm_runtime_enable!", this is caused by pm_runtime_enable()
-called before pm is initialized in register_candev() and doing so will
-also cause it to enable twice.
-This fix is similar to 227619c3ff7c, move those pm_enable/disable code to
-c_can_platform.
+Hello,
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/net/can/c_can/c_can.c          | 26 ++------------------------
- drivers/net/can/c_can/c_can_platform.c |  6 +++++-
- 2 files changed, 7 insertions(+), 25 deletions(-)
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+possible deadlock in io_poll_double_wake
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index ef474bae47a1..04f783b3d9d3 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -212,18 +212,6 @@ static const struct can_bittiming_const c_can_bittiming_const = {
- 	.brp_inc = 1,
- };
- 
--static inline void c_can_pm_runtime_enable(const struct c_can_priv *priv)
--{
--	if (priv->device)
--		pm_runtime_enable(priv->device);
--}
--
--static inline void c_can_pm_runtime_disable(const struct c_can_priv *priv)
--{
--	if (priv->device)
--		pm_runtime_disable(priv->device);
--}
--
- static inline void c_can_pm_runtime_get_sync(const struct c_can_priv *priv)
- {
- 	if (priv->device)
-@@ -1335,7 +1323,6 @@ static const struct net_device_ops c_can_netdev_ops = {
- 
- int register_c_can_dev(struct net_device *dev)
- {
--	struct c_can_priv *priv = netdev_priv(dev);
- 	int err;
- 
- 	/* Deactivate pins to prevent DRA7 DCAN IP from being
-@@ -1345,28 +1332,19 @@ int register_c_can_dev(struct net_device *dev)
- 	 */
- 	pinctrl_pm_select_sleep_state(dev->dev.parent);
- 
--	c_can_pm_runtime_enable(priv);
--
- 	dev->flags |= IFF_ECHO;	/* we support local echo */
- 	dev->netdev_ops = &c_can_netdev_ops;
- 
- 	err = register_candev(dev);
--	if (err)
--		c_can_pm_runtime_disable(priv);
--	else
--		devm_can_led_init(dev);
--
-+	if (!err)
-+	  devm_can_led_init(dev);
- 	return err;
- }
- EXPORT_SYMBOL_GPL(register_c_can_dev);
- 
- void unregister_c_can_dev(struct net_device *dev)
- {
--	struct c_can_priv *priv = netdev_priv(dev);
--
- 	unregister_candev(dev);
--
--	c_can_pm_runtime_disable(priv);
- }
- EXPORT_SYMBOL_GPL(unregister_c_can_dev);
- 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index 05f425ceb53a..47b251b1607c 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -29,6 +29,7 @@
- #include <linux/list.h>
- #include <linux/io.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/clk.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-@@ -386,6 +387,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, dev);
- 	SET_NETDEV_DEV(dev, &pdev->dev);
- 
-+	pm_runtime_enable(priv->device);
- 	ret = register_c_can_dev(dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
-@@ -398,6 +400,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	return 0;
- 
- exit_free_device:
-+	pm_runtime_disable(priv->device);
- 	free_c_can_dev(dev);
- exit:
- 	dev_err(&pdev->dev, "probe failed\n");
-@@ -408,9 +411,10 @@ static int c_can_plat_probe(struct platform_device *pdev)
- static int c_can_plat_remove(struct platform_device *pdev)
- {
- 	struct net_device *dev = platform_get_drvdata(pdev);
-+	struct c_can_priv *priv = netdev_priv(dev);
- 
- 	unregister_c_can_dev(dev);
--
-+	pm_runtime_disable(priv->device);
- 	free_c_can_dev(dev);
- 
- 	return 0;
--- 
-2.25.1
+============================================
+WARNING: possible recursive locking detected
+5.11.0-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor.0/10241 is trying to acquire lock:
+ffff888012e09130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+ffff888012e09130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4921
+
+but task is already holding lock:
+ffff888013b00130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&runtime->sleep);
+  lock(&runtime->sleep);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+4 locks held by syz-executor.0/10241:
+ #0: ffff88801b1ce128 (&ctx->uring_lock){+.+.}-{3:3}, at: __do_sys_io_uring_enter+0x1155/0x22b0 fs/io_uring.c:9139
+ #1: ffffffff8b574460 (rcu_read_lock){....}-{1:2}, at: file_ctx security/apparmor/include/file.h:33 [inline]
+ #1: ffffffff8b574460 (rcu_read_lock){....}-{1:2}, at: aa_file_perm+0x119/0x1100 security/apparmor/file.c:607
+ #2: ffff888020842108 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
+ #3: ffff888013b00130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+
+stack backtrace:
+CPU: 1 PID: 10241 Comm: syz-executor.0 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0xfa/0x151 lib/dump_stack.c:120
+ print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
+ check_deadlock kernel/locking/lockdep.c:2872 [inline]
+ validate_chain kernel/locking/lockdep.c:3661 [inline]
+ __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
+ __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+ _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+ spin_lock include/linux/spinlock.h:354 [inline]
+ io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4921
+ __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
+ __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
+ snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
+ snd_pcm_update_hw_ptr0+0xa75/0x1a50 sound/core/pcm_lib.c:464
+ snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
+ dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:378
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1583
+ hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:226 [inline]
+ __irq_exit_rcu kernel/softirq.c:420 [inline]
+ irq_exit_rcu+0x134/0x200 kernel/softirq.c:432
+ sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1100
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:635
+RIP: 0010:lock_acquire+0x1e4/0x730 kernel/locking/lockdep.c:5478
+Code: 07 b8 ff ff ff ff 65 0f c1 05 e8 b3 a8 7e 83 f8 01 0f 85 d9 03 00 00 48 83 7c 24 08 00 74 01 fb 48 b8 00 00 00 00 00 fc ff df <48> 01 c3 48 c7 03 00 00 00 00 48 c7 43 08 00 00 00 00 48 8b 84 24
+RSP: 0018:ffffc9000b0e7468 EFLAGS: 00000206
+RAX: dffffc0000000000 RBX: 1ffff9200161ce8f RCX: 00000000013c4b5b
+RDX: 1ffff110030b54a9 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8f0a77a7
+R10: fffffbfff1e14ef4 R11: 0000000000000000 R12: 0000000000000002
+R13: ffffffff8b574460 R14: 0000000000000000 R15: 0000000000000000
+ rcu_lock_acquire include/linux/rcupdate.h:267 [inline]
+ rcu_read_lock include/linux/rcupdate.h:656 [inline]
+ aa_file_perm+0x14d/0x1100 security/apparmor/file.c:609
+ common_file_perm security/apparmor/lsm.c:466 [inline]
+ apparmor_file_permission+0x163/0x4e0 security/apparmor/lsm.c:480
+ security_file_permission+0x56/0x560 security/security.c:1456
+ rw_verify_area+0x115/0x350 fs/read_write.c:400
+ io_read+0x267/0xaf0 fs/io_uring.c:3235
+ io_issue_sqe+0x2e1/0x59d0 fs/io_uring.c:5937
+ __io_queue_sqe+0x18c/0xc40 fs/io_uring.c:6204
+ io_queue_sqe+0x60d/0xf60 fs/io_uring.c:6257
+ io_submit_sqe fs/io_uring.c:6421 [inline]
+ io_submit_sqes+0x519a/0x6320 fs/io_uring.c:6535
+ __do_sys_io_uring_enter+0x1161/0x22b0 fs/io_uring.c:9140
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x465ef9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd5184e3188 EFLAGS: 00000246 ORIG_RAX: 00000000000001aa
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465ef9
+RDX: 0000000000000000 RSI: 0000000000002039 RDI: 0000000000000004
+RBP: 00000000004bcd1c R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 0000000000a9fb1f R14: 00007fd5184e3300 R15: 0000000000022000
+
+
+Tested on:
+
+commit:         d5c6caec io_uring: test patch for double wake syzbot issue
+git tree:       git://git.kernel.dk/linux-block syzbot-test
+console output: https://syzkaller.appspot.com/x/log.txt?x=133f4f82d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e348dbdef26bb725
+dashboard link: https://syzkaller.appspot.com/bug?extid=28abd693db9e92c160d8
+compiler:       
 
