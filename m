@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996013299CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DD432990E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376561AbhCBA31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:29:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47666 "EHLO mail.kernel.org"
+        id S1347153AbhCAXwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:52:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239937AbhCASbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:31:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D6D764F38;
-        Mon,  1 Mar 2021 17:40:05 +0000 (UTC)
+        id S239628AbhCASSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:18:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA966652EC;
+        Mon,  1 Mar 2021 17:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620406;
-        bh=TOlxSGGkEhs9SmZQvemrGPJ+SGT+fe0WY6biY6ueGMg=;
+        s=korg; t=1614620436;
+        bh=hF0Z2ImeDhMsG9CfI2pxm99ZtROhX7KaIIFYm6QhRvA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LYXAuTvQ4AVjh1Jxes14m4u7VeXBcypYzZbIhShY6giOywGiewQF0Fg1Sbrgp0DA1
-         8CRAL0PjhdMRwBU1MdIWBg1OKrv+zPjU5ghQ6vKbSaotqMqy8iugH7KapiwBd2A4Pz
-         YE6FfRxzJ5Uv/00dThp9MFxkOY4kQAq4DqbCPt2E=
+        b=LnyMl0+aST7nniv+vTqrqCbB8MRfTbsJt9aOnjZIyMDAYo82TuV6jHUMFCX28ARwJ
+         o00WSePfMxtHp4SPy7+aKO9k6Z1Q+QcpYlk/d5Bg3awso6wSVpWbQ3yT+fisecZgMk
+         uJqhEtxt8sx1ffZt2T6ooMkZOHKW9qrqRbaCx+EQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Tom Lendacky <thomas.lendacky@amd.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 134/775] net: amd-xgbe: Reset the PHY rx data path when mailbox command timeout
-Date:   Mon,  1 Mar 2021 17:05:02 +0100
-Message-Id: <20210301161208.287458496@linuxfoundation.org>
+Subject: [PATCH 5.11 135/775] net: amd-xgbe: Fix NETDEV WATCHDOG transmit queue timeout warning
+Date:   Mon,  1 Mar 2021 17:05:03 +0100
+Message-Id: <20210301161208.338334968@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -44,14 +44,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit 30b7edc82ec82578f4f5e6706766f0a9535617d3 ]
+[ Upstream commit 186edbb510bd60e748f93975989ccba25ee99c50 ]
 
-Sometimes mailbox commands timeout when the RX data path becomes
-unresponsive. This prevents the submission of new mailbox commands to DXIO.
-This patch identifies the timeout and resets the RX data path so that the
-next message can be submitted properly.
+The current driver calls netif_carrier_off() late in the link tear down
+which can result in a netdev watchdog timeout.
 
-Fixes: 549b32af9f7c ("amd-xgbe: Simplify mailbox interface rate change code")
+Calling netif_carrier_off() immediately after netif_tx_stop_all_queues()
+avoids the warning.
+
+ ------------[ cut here ]------------
+ NETDEV WATCHDOG: enp3s0f2 (amd-xgbe): transmit queue 0 timed out
+ WARNING: CPU: 3 PID: 0 at net/sched/sch_generic.c:461 dev_watchdog+0x20d/0x220
+ Modules linked in: amd_xgbe(E)  amd-xgbe 0000:03:00.2 enp3s0f2: Link is Down
+ CPU: 3 PID: 0 Comm: swapper/3 Tainted: G            E
+ Hardware name: AMD Bilby-RV2/Bilby-RV2, BIOS RBB1202A 10/18/2019
+ RIP: 0010:dev_watchdog+0x20d/0x220
+ Code: 00 49 63 4e e0 eb 92 4c 89 e7 c6 05 c6 e2 c1 00 01 e8 e7 ce fc ff 89 d9 48
+ RSP: 0018:ffff90cfc28c3e88 EFLAGS: 00010286
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000006
+ RDX: 0000000000000007 RSI: 0000000000000086 RDI: ffff90cfc28d63c0
+ RBP: ffff90cfb977845c R08: 0000000000000050 R09: 0000000000196018
+ R10: ffff90cfc28c3ef8 R11: 0000000000000000 R12: ffff90cfb9778000
+ R13: 0000000000000003 R14: ffff90cfb9778480 R15: 0000000000000010
+ FS:  0000000000000000(0000) GS:ffff90cfc28c0000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007f240ff2d9d0 CR3: 00000001e3e0a000 CR4: 00000000003406e0
+ Call Trace:
+  <IRQ>
+  ? pfifo_fast_reset+0x100/0x100
+  call_timer_fn+0x2b/0x130
+  run_timer_softirq+0x3e8/0x440
+  ? enqueue_hrtimer+0x39/0x90
+
+Fixes: e722ec82374b ("amd-xgbe: Update the BelFuse quirk to support SGMII")
 Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
 Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
 Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
@@ -59,108 +84,34 @@ Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amd/xgbe/xgbe-common.h | 14 +++++++++++
- drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c | 28 ++++++++++++++++++++-
- 2 files changed, 41 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/amd/xgbe/xgbe-drv.c  | 1 +
+ drivers/net/ethernet/amd/xgbe/xgbe-mdio.c | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-common.h b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
-index b40d4377cc71d..b2cd3bdba9f89 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-common.h
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
-@@ -1279,10 +1279,18 @@
- #define MDIO_PMA_10GBR_FECCTRL		0x00ab
- #endif
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
+index 2709a2db56577..395eb0b526802 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
+@@ -1368,6 +1368,7 @@ static void xgbe_stop(struct xgbe_prv_data *pdata)
+ 		return;
  
-+#ifndef MDIO_PMA_RX_CTRL1
-+#define MDIO_PMA_RX_CTRL1		0x8051
-+#endif
-+
- #ifndef MDIO_PCS_DIG_CTRL
- #define MDIO_PCS_DIG_CTRL		0x8000
- #endif
+ 	netif_tx_stop_all_queues(netdev);
++	netif_carrier_off(pdata->netdev);
  
-+#ifndef MDIO_PCS_DIGITAL_STAT
-+#define MDIO_PCS_DIGITAL_STAT		0x8010
-+#endif
-+
- #ifndef MDIO_AN_XNP
- #define MDIO_AN_XNP			0x0016
- #endif
-@@ -1358,6 +1366,8 @@
- #define XGBE_KR_TRAINING_ENABLE		BIT(1)
+ 	xgbe_stop_timers(pdata);
+ 	flush_workqueue(pdata->dev_workqueue);
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
+index 93ef5a30cb8d9..19ee4db0156d6 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
+@@ -1396,7 +1396,6 @@ static void xgbe_phy_stop(struct xgbe_prv_data *pdata)
+ 	pdata->phy_if.phy_impl.stop(pdata);
  
- #define XGBE_PCS_CL37_BP		BIT(12)
-+#define XGBE_PCS_PSEQ_STATE_MASK	0x1c
-+#define XGBE_PCS_PSEQ_STATE_POWER_GOOD	0x10
+ 	pdata->phy.link = 0;
+-	netif_carrier_off(pdata->netdev);
  
- #define XGBE_AN_CL37_INT_CMPLT		BIT(0)
- #define XGBE_AN_CL37_INT_MASK		0x01
-@@ -1375,6 +1385,10 @@
- #define XGBE_PMA_CDR_TRACK_EN_OFF	0x00
- #define XGBE_PMA_CDR_TRACK_EN_ON	0x01
- 
-+#define XGBE_PMA_RX_RST_0_MASK		BIT(4)
-+#define XGBE_PMA_RX_RST_0_RESET_ON	0x10
-+#define XGBE_PMA_RX_RST_0_RESET_OFF	0x00
-+
- /* Bit setting and getting macros
-  *  The get macro will extract the current bit field value from within
-  *  the variable
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-index 859ded0c06b05..087948085ae19 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-@@ -1953,6 +1953,27 @@ static void xgbe_phy_set_redrv_mode(struct xgbe_prv_data *pdata)
- 	xgbe_phy_put_comm_ownership(pdata);
+ 	xgbe_phy_adjust_link(pdata);
  }
- 
-+static void xgbe_phy_rx_reset(struct xgbe_prv_data *pdata)
-+{
-+	int reg;
-+
-+	reg = XMDIO_READ_BITS(pdata, MDIO_MMD_PCS, MDIO_PCS_DIGITAL_STAT,
-+			      XGBE_PCS_PSEQ_STATE_MASK);
-+	if (reg == XGBE_PCS_PSEQ_STATE_POWER_GOOD) {
-+		/* Mailbox command timed out, reset of RX block is required.
-+		 * This can be done by asseting the reset bit and wait for
-+		 * its compeletion.
-+		 */
-+		XMDIO_WRITE_BITS(pdata, MDIO_MMD_PMAPMD, MDIO_PMA_RX_CTRL1,
-+				 XGBE_PMA_RX_RST_0_MASK, XGBE_PMA_RX_RST_0_RESET_ON);
-+		ndelay(20);
-+		XMDIO_WRITE_BITS(pdata, MDIO_MMD_PMAPMD, MDIO_PMA_RX_CTRL1,
-+				 XGBE_PMA_RX_RST_0_MASK, XGBE_PMA_RX_RST_0_RESET_OFF);
-+		usleep_range(40, 50);
-+		netif_err(pdata, link, pdata->netdev, "firmware mailbox reset performed\n");
-+	}
-+}
-+
- static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
- 					unsigned int cmd, unsigned int sub_cmd)
- {
-@@ -1960,9 +1981,11 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
- 	unsigned int wait;
- 
- 	/* Log if a previous command did not complete */
--	if (XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS))
-+	if (XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS)) {
- 		netif_dbg(pdata, link, pdata->netdev,
- 			  "firmware mailbox not ready for command\n");
-+		xgbe_phy_rx_reset(pdata);
-+	}
- 
- 	/* Construct the command */
- 	XP_SET_BITS(s0, XP_DRIVER_SCRATCH_0, COMMAND, cmd);
-@@ -1984,6 +2007,9 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
- 
- 	netif_dbg(pdata, link, pdata->netdev,
- 		  "firmware mailbox command did not complete\n");
-+
-+	/* Reset on error */
-+	xgbe_phy_rx_reset(pdata);
- }
- 
- static void xgbe_phy_rrc(struct xgbe_prv_data *pdata)
 -- 
 2.27.0
 
