@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808CE3299EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053DC329943
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345248AbhCBAju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:39:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44972 "EHLO mail.kernel.org"
+        id S1344365AbhCBAC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:02:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234833AbhCASdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:33:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC92865090;
-        Mon,  1 Mar 2021 17:32:01 +0000 (UTC)
+        id S239749AbhCASUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:20:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A50F865096;
+        Mon,  1 Mar 2021 17:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619922;
-        bh=mmLEWm9/Uv+UU8Nw93WgttKPyP8rae+RYS5MLgLdluk=;
+        s=korg; t=1614619925;
+        bh=IxLL7SEP8glw3sRQqtQ4DjUZlS6FwlZMJbJaPoo1dJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W8q5GZ8AgGnXJ3mQnSI8Rcb2u/g7gL82aTQ+eg7Edobzy1tAmrbQ+DFg1TIZSuFPr
-         wSmk5Br/a2u1npXVICOjO/bpzTbepgsE72lY/LS84VYZ1vIDlCEsdFRghuoOlc3alN
-         h+vGPCzcmMlx3toGYoE8o41Mg3CbLYRpDc+5sXnk=
+        b=CCKB1XqRjZaKVzu+FnpwuLA2Cc9SkV7gDRHNrwfUSxXQ/TpqVRUtAyJGz0AHyWKSt
+         jrFr/VmaY8FlndJmdEtGWju90UD4Z7G8889kTy0I+1TrVbAU6MQrL290S8d+1BipDY
+         tlnILKzNSveC6qJoesY7mAFff8LuuZ8VqZjhMlL0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.10 630/663] irqchip/loongson-pch-msi: Use bitmap_zalloc() to allocate bitmap
-Date:   Mon,  1 Mar 2021 17:14:38 +0100
-Message-Id: <20210301161213.024738231@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 5.10 631/663] f2fs: fix out-of-repair __setattr_copy()
+Date:   Mon,  1 Mar 2021 17:14:39 +0100
+Message-Id: <20210301161213.075531406@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,34 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhuacai@loongson.cn>
+From: Chao Yu <yuchao0@huawei.com>
 
-commit c1f664d2400e73d5ca0fcd067fa5847d2c789c11 upstream.
+commit 2562515f0ad7342bde6456602c491b64c63fe950 upstream.
 
-Currently we use bitmap_alloc() to allocate msi bitmap which should be
-initialized with zero. This is obviously wrong but it works because msi
-can fallback to legacy interrupt mode. So use bitmap_zalloc() instead.
+__setattr_copy() was copied from setattr_copy() in fs/attr.c, there is
+two missing patches doesn't cover this inner function, fix it.
 
-Fixes: 632dcc2c75ef6de3272aa ("irqchip: Add Loongson PCH MSI controller")
+Commit 7fa294c8991c ("userns: Allow chown and setgid preservation")
+Commit 23adbe12ef7d ("fs,userns: Change inode_capable to capable_wrt_inode_uidgid")
+
+Fixes: fbfa2cc58d53 ("f2fs: add file operations")
 Cc: stable@vger.kernel.org
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210209071051.2078435-1-chenhuacai@loongson.cn
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/irqchip/irq-loongson-pch-msi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/file.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/irqchip/irq-loongson-pch-msi.c
-+++ b/drivers/irqchip/irq-loongson-pch-msi.c
-@@ -225,7 +225,7 @@ static int pch_msi_init(struct device_no
- 		goto err_priv;
- 	}
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -851,7 +851,8 @@ static void __setattr_copy(struct inode
+ 	if (ia_valid & ATTR_MODE) {
+ 		umode_t mode = attr->ia_mode;
  
--	priv->msi_map = bitmap_alloc(priv->num_irqs, GFP_KERNEL);
-+	priv->msi_map = bitmap_zalloc(priv->num_irqs, GFP_KERNEL);
- 	if (!priv->msi_map) {
- 		ret = -ENOMEM;
- 		goto err_priv;
+-		if (!in_group_p(inode->i_gid) && !capable(CAP_FSETID))
++		if (!in_group_p(inode->i_gid) &&
++			!capable_wrt_inode_uidgid(inode, CAP_FSETID))
+ 			mode &= ~S_ISGID;
+ 		set_acl_inode(inode, mode);
+ 	}
 
 
