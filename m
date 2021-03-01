@@ -2,104 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C57A32826B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3F6328267
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237040AbhCAPZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 10:25:49 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52222 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237064AbhCAPZf (ORCPT
+        id S237182AbhCAPZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 10:25:03 -0500
+Received: from mx1.opensynergy.com ([217.66.60.4]:20371 "EHLO
+        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236505AbhCAPYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 10:25:35 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 121FNvvn092689;
-        Mon, 1 Mar 2021 09:23:57 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614612237;
-        bh=RrsqEvry1fSgLfAcyynxOYub9w000fRlB5AlPwq0Eh0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=pCOIcC2U5PbNvmUoXfAMKmHAd9FPTRkBKwoqKOqbFJzp4p33THFXrNcuxeLtzx6sr
-         vzbAS3c6/vTPF2XxHqN9GtAd0f4hho25/MoTkMrvZ7HX/U0UTlqGGpCZ2hXWXiLRaZ
-         Sr09x84ddBbcjLv50MiatX/7Wre6dAPkgqbcaorM=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 121FNv1e097262
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 1 Mar 2021 09:23:57 -0600
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 1 Mar
- 2021 09:23:56 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 1 Mar 2021 09:23:56 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 121FNunj077985;
-        Mon, 1 Mar 2021 09:23:56 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        <devicetree@vger.kernel.org>, Tero Kristo <kristo@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] arm64: dts: ti: k3-j721e-main: Update the speed modes supported and their itap delay values for MMCSD subsystems
-Date:   Mon, 1 Mar 2021 09:23:55 -0600
-Message-ID: <161461221897.7789.9478370543564524622.b4-ty@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210225132736.26429-1-a-govindraju@ti.com>
-References: <20210225132736.26429-1-a-govindraju@ti.com>
+        Mon, 1 Mar 2021 10:24:50 -0500
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
+        by mx1.opensynergy.com (Proxmox) with ESMTP id 30669A1359;
+        Mon,  1 Mar 2021 16:24:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:from:from:in-reply-to:message-id:mime-version:references
+        :reply-to:subject:subject:to:to; s=srmailgate02; bh=JTcGEEoX41cX
+        WPArQghalzIihhiyHylco6+sqThvEyQ=; b=vMfnkx2jrMZV5YZ82LDH7lWhSTh/
+        k8IVM+DlYX6C9/Ql9tfyo4VIuaYlLZL6m034GaIegoOlORbF8tejizJGKON4ZmnW
+        DnzAEgNGSAqFkawIM4O6rJdaNYOgjpIZKKZAuMtkWi6naLCixtDYx5lE3lnUB+nS
+        LXtOuL+4/wREB/v+27Qj5HxViU4fh05JID2iN2GMVzp5sD5DA4mgn7wmOG5rrbex
+        MR8UNwePJ8bZEpfqbsy6uabrmxEnya9tZz1hyuD5/tPI9arHDQjzgMGAa6MOFyv5
+        rKHVfgB9H1qgR+Zo2jKUqbGfS6fGTfTjDuDB6A+8Lf157osMENVU+FlqAA==
+Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages
+ for the PCM device
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+ <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
+ <s5hsg5gjutg.wl-tiwai@suse.de>
+ <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
+ <s5h35xfj8yz.wl-tiwai@suse.de>
+ <85bbc067-e7ec-903a-1518-5aab01577655@opensynergy.com>
+ <s5ho8g2j532.wl-tiwai@suse.de>
+From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Message-ID: <b9c93040-52d5-7445-cb1c-c223b4fd59fb@opensynergy.com>
+Date:   Mon, 1 Mar 2021 16:24:00 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <s5ho8g2j532.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 18:57:36 +0530, Aswath Govindraju wrote:
-> According to latest errata of J721e [1], HS400 mode is not supported
-> in MMCSD0 subsystem (i2024) and SDR104 mode is not supported in MMCSD1/2
-> subsystems (i2090). Therefore, replace mmc-hs400-1_8v with mmc-hs200-1_8v
-> in MMCSD0 subsystem and add a sdhci mask to disable SDR104 speed mode.
+On 01.03.2021 15:56, Takashi Iwai wrote:
+> On Mon, 01 Mar 2021 15:47:46 +0100,
+> Anton Yakovlev wrote:
+>>
+>> On 01.03.2021 14:32, Takashi Iwai wrote:
+>>> On Mon, 01 Mar 2021 10:25:05 +0100,
+>>> Anton Yakovlev wrote:
+>>>>
+>>>> On 28.02.2021 12:27, Takashi Iwai wrote:
+>>>>> On Sat, 27 Feb 2021 09:59:52 +0100,
+>>>>> Anton Yakovlev wrote:
+>>>>>> +/**
+>>>>>> + * virtsnd_pcm_event() - Handle the PCM device event notification.
+>>>>>> + * @snd: VirtIO sound device.
+>>>>>> + * @event: VirtIO sound event.
+>>>>>> + *
+>>>>>> + * Context: Interrupt context.
+>>>>>
+>>>>> OK, then nonatomic PCM flag is invalid...
+>>>>
+>>>> Well, no. Here, events are kind of independent entities. PCM-related
+>>>> events are just a special case of more generic events, which can carry
+>>>> any kind of notification/payload. (And at the moment, only XRUN
+>>>> notification is supported for PCM substreams.) So it has nothing to do
+>>>> with the atomicity of the PCM device itself.
+>>>
+>>> OK, thanks.
+>>>
+>>> Basically the only question is how snd_pcm_period_elapsed() is called.
+>>> And I see that it's called inside queue->lock, and this already
+>>> invalidates the nonatomic PCM mode.  So the code needs the fix: either
+>>> fix this locking (and the context is guaranteed not to be an irq
+>>> context), or change to the normal PCM mode without nonatomic flag.
+>>> Both would bring some side-effect, and we need further changes, I
+>>> suppose...
+>>
+>> Ok, I understood the problem. Well, I would say the nonatomic PCM mode
+>> is more important option, since in this mode we can guarantee the
+>> correct operation of the device.
 > 
-> Also, update the itap delay values for all the MMCSD subsystems according
-> the latest J721e data sheet[2]
+> Which operation (except for the resume) in the trigger and the pointer
+> callbacks need the action that need to sleep?  I thought the sync with
+> the command queue is done in the sync_stop.  And most of others seem
+> already taking the spinlock in themselves, so the non-atomic operation
+> has little merit for them.
+
+All three commands from the beginning of that switch in trigger op:
+ops->trigger(START)
+ops->trigger(PAUSE_RELEASE)
+ops->trigger(RESUME)
+
+They all result in
+virtsnd_ctl_msg_send_sync(VIRTIO_SND_R_PCM_START)
+
+And that command must be sync, i.e. we need to wait/sleep until device
+sent response. There are two major reasons for that: we need to be sure,
+that substream has been actually started (i.e. device said OK). And we
+need to take into account the virtualization overhead as well. Since
+substream starting on device side may take some time, we can not
+return from the trigger op until it actually happened. In atomic mode
+all these nuances are lost, and it may lead to incorrect application
+behavior.
+
+
+>> And if you say, that we need to get rid
+>> of irq context here, then probably workqueue for calling
+>> snd_pcm_period_elapsed() should be fine (of course, it should be shared
+>> between all available substreams).
 > 
-> [...]
+> That would work, but it's of course just papering over it :)
+> 
+> 
+>>>>>> +/**
+>>>>>> + * virtsnd_pcm_sg_num() - Count the number of sg-elements required to represent
+>>>>>> + *                        vmalloc'ed buffer.
+>>>>>> + * @data: Pointer to vmalloc'ed buffer.
+>>>>>> + * @length: Buffer size.
+>>>>>> + *
+>>>>>> + * Context: Any context.
+>>>>>> + * Return: Number of physically contiguous parts in the @data.
+>>>>>> + */
+>>>>>> +static int virtsnd_pcm_sg_num(u8 *data, unsigned int length)
+>>>>>> +{
+>>>>>> +     phys_addr_t sg_address;
+>>>>>> +     unsigned int sg_length;
+>>>>>> +     int num = 0;
+>>>>>> +
+>>>>>> +     while (length) {
+>>>>>> +             struct page *pg = vmalloc_to_page(data);
+>>>>>> +             phys_addr_t pg_address = page_to_phys(pg);
+>>>>>> +             size_t pg_length;
+>>>>>> +
+>>>>>> +             pg_length = PAGE_SIZE - offset_in_page(data);
+>>>>>> +             if (pg_length > length)
+>>>>>> +                     pg_length = length;
+>>>>>> +
+>>>>>> +             if (!num || sg_address + sg_length != pg_address) {
+>>>>>> +                     sg_address = pg_address;
+>>>>>> +                     sg_length = pg_length;
+>>>>>> +                     num++;
+>>>>>> +             } else {
+>>>>>> +                     sg_length += pg_length;
+>>>>>> +             }
+>>>>>> +
+>>>>>> +             data += pg_length;
+>>>>>> +             length -= pg_length;
+>>>>>> +     }
+>>>>>> +
+>>>>>> +     return num;
+>>>>>> +}
+>>>>>> +
+>>>>>> +/**
+>>>>>> + * virtsnd_pcm_sg_from() - Build sg-list from vmalloc'ed buffer.
+>>>>>> + * @sgs: Preallocated sg-list to populate.
+>>>>>> + * @nsgs: The maximum number of elements in the @sgs.
+>>>>>> + * @data: Pointer to vmalloc'ed buffer.
+>>>>>> + * @length: Buffer size.
+>>>>>> + *
+>>>>>> + * Splits the buffer into physically contiguous parts and makes an sg-list of
+>>>>>> + * such parts.
+>>>>>> + *
+>>>>>> + * Context: Any context.
+>>>>>> + */
+>>>>>> +static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
+>>>>>> +                             unsigned int length)
+>>>>>> +{
+>>>>>> +     int idx = -1;
+>>>>>> +
+>>>>>> +     while (length) {
+>>>>>> +             struct page *pg = vmalloc_to_page(data);
+>>>>>> +             size_t pg_length;
+>>>>>> +
+>>>>>> +             pg_length = PAGE_SIZE - offset_in_page(data);
+>>>>>> +             if (pg_length > length)
+>>>>>> +                     pg_length = length;
+>>>>>> +
+>>>>>> +             if (idx == -1 ||
+>>>>>> +                 sg_phys(&sgs[idx]) + sgs[idx].length != page_to_phys(pg)) {
+>>>>>> +                     if (idx + 1 == nsgs)
+>>>>>> +                             break;
+>>>>>> +                     sg_set_page(&sgs[++idx], pg, pg_length,
+>>>>>> +                                 offset_in_page(data));
+>>>>>> +             } else {
+>>>>>> +                     sgs[idx].length += pg_length;
+>>>>>> +             }
+>>>>>> +
+>>>>>> +             data += pg_length;
+>>>>>> +             length -= pg_length;
+>>>>>> +     }
+>>>>>> +
+>>>>>> +     sg_mark_end(&sgs[idx]);
+>>>>>> +}
+>>>>>
+>>>>> Hmm, I thought there can be already a handy helper to convert vmalloc
+>>>>> to sglist, but apparently not.  It should have been trivial to get the
+>>>>> page list from vmalloc, e.g.
+>>>>>
+>>>>> int vmalloc_to_page_list(void *p, struct page **page_ret)
+>>>>> {
+>>>>>            struct vmap_area *va;
+>>>>>
+>>>>>            va = find_vmap_area((unsigned long)p);
+>>>>>            if (!va)
+>>>>>                    return 0;
+>>>>>            *page_ret = va->vm->pages;
+>>>>>            return va->vm->nr_pages;
+>>>>> }
+>>>>>
+>>>>> Then you can set up the sg list in a single call from the given page
+>>>>> list.
+>>>>>
+>>>>> But it's just a cleanup, and let's mark it as a room for
+>>>>> improvements.
+>>>>
+>>>> Yeah, we can take a look into some kind of optimizations here. But I
+>>>> suspect, the overall code will look similar. It is not enough just to
+>>>> get a list of pages, you also need to build a list of physically
+>>>> contiguous regions from it.
+>>>
+>>> I believe the standard helper does it.  But it's for sg_table, hence
+>>> the plain scatterlist needs to be extracted from there, but most of
+>>> complex things are in the standard code.
+>>>
+>>> But it's merely an optimization and something for future.
+>>
+>> I quickly checked it. I think it's hardly possible to do anything here.
+>> These functions to deal with vmalloced areas are not exported. And,
+>> according to comments, require some proper locking on top of that. At
+>> least, it does not look like a trivial things.
+> 
+> Sure, it needs a function exposed from vmalloc.c.  But I don't think
+> the locking is the problem as find_vmap_area() already takes care of
+> it, and we don't release the vmalloced pages while invoking this
+> function.  Of course I might overlook something, but my point is that
+> this kind of work should be rather in the core (or at least most of
+> the important steps in the code should be in the core code).
 
-Hi Aswath Govindraju,
-
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
-
-[1/1] arm64: dts: ti: k3-j721e-main: Update the speed modes supported and their itap delay values for MMCSD subsystems
-      commit: 9e3faed4dc176d06dc2bed5f16a33085af10fb1c
+Then it's definitely some work for future. :)
 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+> 
+> Takashi
+> 
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Anton Yakovlev
+Senior Software Engineer
+
+OpenSynergy GmbH
+Rotherstr. 20, 10245 Berlin
 
