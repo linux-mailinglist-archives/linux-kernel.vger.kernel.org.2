@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0B8329C10
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B17D329C34
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345949AbhCBBrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:47:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46134 "EHLO mail.kernel.org"
+        id S1380292AbhCBBuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:50:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241551AbhCATYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:24:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 882ED6509B;
-        Mon,  1 Mar 2021 17:33:20 +0000 (UTC)
+        id S241568AbhCAT1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:27:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45CFD6512C;
+        Mon,  1 Mar 2021 17:03:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620001;
-        bh=3kdEAUwMrV96dLyB5h7f1gwsz1KI6KtBnglQONXkQq4=;
+        s=korg; t=1614618214;
+        bh=e4JZdb3fl5VVpZUqoLdtd7eDM1bvXmbGKuUuvrQIfpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P53O0/V6d2cWDU6wuyx7LyPgTQ1Nm5Kam+ryrrYWh/M7Hh/E2YDT2TsNPse7wWYNC
-         Alf1GE1kCshKlDP5sv+AzI4RfhsdRtc2TIHCODqOHkX7oUQrO13hWB94OJXWQDTW0q
-         JJpcGGhDZTT7r/BpvSfItrPyIo4EnxdTXjAFBmGk=
+        b=wpGHt115zmOINs9Yqun4+PJsJp25zD0h+Ri777M/ReSUEws7/rMMmlcsSn1s5conb
+         UuWMqj2iahwrVgs4d3CnduGORMeMj9mKRhuPTvmMMEoSgFfkYgfr3d7KCeXBKRfgH/
+         hEEn3ZOA6/Bhu7Nj/x4VAajgh9nC21qWHcXp1hPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.10 628/663] um: mm: check more comprehensively for stub changes
+        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Harald Welte <laforge@gnumonks.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 332/340] gtp: use icmp_ndo_send helper
 Date:   Mon,  1 Mar 2021 17:14:36 +0100
-Message-Id: <20210301161212.922181446@linuxfoundation.org>
+Message-Id: <20210301161104.638015236@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,71 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Jason A. Donenfeld <Jason@zx2c4.com>
 
-commit 47da29763ec9a153b9b685bff9db659e4e09e494 upstream.
+commit e0fce6f945a26d4e953a147fe7ca11410322c9fe upstream.
 
-If userspace tries to change the stub, we need to kill it,
-because otherwise it can escape the virtual machine. In a
-few cases the stub checks weren't good, e.g. if userspace
-just tries to
+Because gtp is calling icmp from network device context, it should use
+the ndo helper so that the rate limiting applies correctly.
 
-	mmap(0x100000 - 0x1000, 0x3000, ...)
-
-it could succeed to get a new private/anonymous mapping
-replacing the stubs. Fix this by checking everywhere, and
-checking for _overlap_, not just direct changes.
-
-Cc: stable@vger.kernel.org
-Fixes: 3963333fe676 ("uml: cover stubs with a VMA")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Cc: Harald Welte <laforge@gnumonks.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/um/kernel/tlb.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/net/gtp.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/um/kernel/tlb.c
-+++ b/arch/um/kernel/tlb.c
-@@ -125,6 +125,9 @@ static int add_mmap(unsigned long virt,
- 	struct host_vm_op *last;
- 	int fd = -1, ret = 0;
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -546,8 +546,8 @@ static int gtp_build_skb_ip4(struct sk_b
+ 	    mtu < ntohs(iph->tot_len)) {
+ 		netdev_dbg(dev, "packet too big, fragmentation needed\n");
+ 		memset(IPCB(skb), 0, sizeof(*IPCB(skb)));
+-		icmp_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
+-			  htonl(mtu));
++		icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
++			      htonl(mtu));
+ 		goto err_rt;
+ 	}
  
-+	if (virt + len > STUB_START && virt < STUB_END)
-+		return -EINVAL;
-+
- 	if (hvc->userspace)
- 		fd = phys_mapping(phys, &offset);
- 	else
-@@ -162,7 +165,7 @@ static int add_munmap(unsigned long addr
- 	struct host_vm_op *last;
- 	int ret = 0;
- 
--	if ((addr >= STUB_START) && (addr < STUB_END))
-+	if (addr + len > STUB_START && addr < STUB_END)
- 		return -EINVAL;
- 
- 	if (hvc->index != 0) {
-@@ -192,6 +195,9 @@ static int add_mprotect(unsigned long ad
- 	struct host_vm_op *last;
- 	int ret = 0;
- 
-+	if (addr + len > STUB_START && addr < STUB_END)
-+		return -EINVAL;
-+
- 	if (hvc->index != 0) {
- 		last = &hvc->ops[hvc->index - 1];
- 		if ((last->type == MPROTECT) &&
-@@ -472,6 +478,10 @@ void flush_tlb_page(struct vm_area_struc
- 	struct mm_id *mm_id;
- 
- 	address &= PAGE_MASK;
-+
-+	if (address >= STUB_START && address < STUB_END)
-+		goto kill;
-+
- 	pgd = pgd_offset(mm, address);
- 	if (!pgd_present(*pgd))
- 		goto kill;
 
 
