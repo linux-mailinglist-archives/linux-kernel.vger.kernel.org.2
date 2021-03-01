@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D0332A031
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6CD32A02A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575486AbhCBD4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
+        id S1575429AbhCBD4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:56:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344253AbhCAWwS (ORCPT
+        with ESMTP id S240254AbhCAWp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:52:18 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DF0C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 14:51:37 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id x62so5654132oix.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:51:37 -0800 (PST)
+        Mon, 1 Mar 2021 17:45:58 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D58C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 14:44:05 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id n4so6692927qvl.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:44:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lod5AV9stobf9YNREve+YsqCj5E/GdBeQLdaIwH06w8=;
-        b=J+1SzQlP7bzH6srtUJ5VsXzAJWbsJC91YMbGucsxFWtvOoqjiUQJuvFiOKPPGAFbZn
-         uBGKb2TP1MBkakw/ZKMPRyJkNQwAYQHx5IaBzczl+N4CdBPVv2HgVh+WLOvUWGXMTwUQ
-         7T997WUnCUbqgoyxLmeMmGEH//xMy3QoEfirU=
+        bh=AzzIj5aXFsgrkphFlIHeCI3vQXWdAnZoI6CShbhF4Vo=;
+        b=Itin81SJQEhNJ7dXF6KO+tiNUxKJEzvX+O6McEL/dyKDNhpHQ/fuA1LkfIefVMVNi/
+         ODqe3iKylQgrFGzuM2rvf+jtYzStxuQnaYL1ZOe8sGAwLG9ePX7yzwlNEndT1XwP/eyL
+         cRIAVI6Ni4Ot21KmYjvQc/1L51r6WBjHCjgfc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lod5AV9stobf9YNREve+YsqCj5E/GdBeQLdaIwH06w8=;
-        b=hzO0sjbgw+aMds3IZtuASNOluHBzlA7ZJ/pCuvapuEwgZKYa2XF50jdh7fIiA8XCNk
-         Gkk6IyAoNUHoSe0njpI3zlpBZ0Av+DuvW/hqvfcWWR7m2KrAbTLJAyoeNzTbnup8HBvk
-         t/0iYGeUXG8DOhkRZHo970HvskBTtfZTXEOuMLkCNkVZdDSF166CCCA6qLbi5lnKEwYD
-         Kb2e43J+54vuHGeW+cUIksAlpHp+7uMLgU5UHFvRsOULt94pycFpRvJdZOGCdB32SvA/
-         YgO6gvJSr1c54Nx5WrYv3PDEZZJAUDgE+ZyMJ4XOG94KjtRNIabwNDQSdf2X+1oWECzc
-         ECNw==
-X-Gm-Message-State: AOAM531fBuQ1A/iYJHRYKDliqx4tC4q7IsShKBZUQ03sqTCoMgzYqIjy
-        aEnvc9zCHpfFJR1Ug6th3+uFF2L+ro69JQ==
-X-Google-Smtp-Source: ABdhPJxR/N9QRFza/hE7ZgJAUMOrvTzQQbavv0bgqCHoNQuQSFz6foo9vvmH9vhN52UFYzGnIU46+g==
-X-Received: by 2002:aca:5c07:: with SMTP id q7mr1030953oib.90.1614639097032;
-        Mon, 01 Mar 2021 14:51:37 -0800 (PST)
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com. [209.85.210.50])
-        by smtp.gmail.com with ESMTPSA id h15sm4089595otq.13.2021.03.01.14.51.36
+        bh=AzzIj5aXFsgrkphFlIHeCI3vQXWdAnZoI6CShbhF4Vo=;
+        b=eHY8zdPIASbCwRGSGcfXS7Jz42IBxk8QPorIjBf+TPt/kjdN6p2I+VlgKFUPJg7g2y
+         9ZQYo9XNeXhmMAoVckVwQuw0YEcRbEszgVqMQSiqad+N5TJ5MSzIvMMXoqErr63RsNg2
+         Af+qQOdDCpi3fOq3U5DFcRgW2UD6xfHgAHQqfanPrNr0dpjQi1213lrSWt9xHBvJhSzK
+         BA9/BppO0yEbfg1rlS5/w/oC/o9WlEcjb6EqW0l5MwmljTzAMXQ7j1basKy2hZq1DHxm
+         /FKrpb6BcmrGY23/Wq9PNOM4QyHF+bF5+b0d2jol6r66FBxEsw93HbJilhv5EKxL+pGq
+         Aigw==
+X-Gm-Message-State: AOAM530D+q9tD8g6+f489LSPC91Q1daFA3+DSLqt/AKKdzeK49/5KXIp
+        KWvwXTyT7oL9hTRmzkfqoCPDhEVcwRAvNA==
+X-Google-Smtp-Source: ABdhPJwhFKfErV0DxZRfjYE0BIzwIZaBASJvWsEmvg0rZ4W7tigEqcx7PZBhaOcg4ZhZbyH1RcGd0w==
+X-Received: by 2002:a0c:90ae:: with SMTP id p43mr1082900qvp.47.1614638644982;
+        Mon, 01 Mar 2021 14:44:04 -0800 (PST)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id v2sm348449qkp.119.2021.03.01.14.44.03
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 14:51:36 -0800 (PST)
-Received: by mail-ot1-f50.google.com with SMTP id g8so14509914otk.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:51:36 -0800 (PST)
-X-Received: by 2002:a25:ab54:: with SMTP id u78mr27378505ybi.276.1614638632804;
- Mon, 01 Mar 2021 14:43:52 -0800 (PST)
+        Mon, 01 Mar 2021 14:44:04 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id x19so18702125ybe.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:44:03 -0800 (PST)
+X-Received: by 2002:a25:cf88:: with SMTP id f130mr26716305ybg.476.1614638643440;
+ Mon, 01 Mar 2021 14:44:03 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1614624041.git.saiprakash.ranjan@codeaurora.org> <defd34e2a8744fc93404abdaad2d429fa3f69850.1614624041.git.saiprakash.ranjan@codeaurora.org>
-In-Reply-To: <defd34e2a8744fc93404abdaad2d429fa3f69850.1614624041.git.saiprakash.ranjan@codeaurora.org>
+References: <cover.1614624041.git.saiprakash.ranjan@codeaurora.org> <0b165b2608eed1a61240539f4b812bd80b6ad1bd.1614624041.git.saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <0b165b2608eed1a61240539f4b812bd80b6ad1bd.1614624041.git.saiprakash.ranjan@codeaurora.org>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 1 Mar 2021 14:43:41 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XCi_+yW6DPeUYmtjMhn-qpjMiB0E4_Qkz6d_e6G-CoVA@mail.gmail.com>
-Message-ID: <CAD=FV=XCi_+yW6DPeUYmtjMhn-qpjMiB0E4_Qkz6d_e6G-CoVA@mail.gmail.com>
-Subject: Re: [PATCHv2 3/4] coresight: etm4x: Add support to exclude kernel
+Date:   Mon, 1 Mar 2021 14:43:52 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VJ-+c-8Bi+=YeTshgOBC64rzM4T-40qtybw7qZtt0vhA@mail.gmail.com>
+Message-ID: <CAD=FV=VJ-+c-8Bi+=YeTshgOBC64rzM4T-40qtybw7qZtt0vhA@mail.gmail.com>
+Subject: Re: [PATCHv2 4/4] coresight: etm3x: Add support to exclude kernel
  mode tracing
 To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
@@ -91,34 +91,33 @@ On Mon, Mar 1, 2021 at 11:05 AM Sai Prakash Ranjan
 > kernel mode(NS EL1) tracing for security concerns and support only
 > userspace(NS EL0) tracing. Perf subsystem interface uses the newly
 > introduced kernel config CONFIG_EXCLUDE_KERNEL_PMU_TRACE to exclude
-> kernel mode tracing, but there is an additional interface via sysfs
-> for ETMs which also needs to be handled to exclude kernel
+> kernel mode tracing, but there is an additional interface
+> via sysfs for ETMs which also needs to be handled to exclude kernel
 > mode tracing. So we use this same generic kernel config to handle
 > the sysfs mode of tracing. This config is disabled by default and
 > would not affect the current configuration which has both kernel and
 > userspace tracing enabled by default.
 >
-> Tested-by: Denis Nikitin <denik@chromium.org>
 > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 > ---
->  drivers/hwtracing/coresight/coresight-etm4x-core.c  | 6 +++++-
->  drivers/hwtracing/coresight/coresight-etm4x-sysfs.c | 6 ++++++
->  2 files changed, 11 insertions(+), 1 deletion(-)
-
-Not that I'm an expert in the perf subsystem, but the concern I had
-with v1 is now addressed.  FWIW this seems fine to me now.
+>  drivers/hwtracing/coresight/coresight-etm3x-core.c  | 3 +++
+>  drivers/hwtracing/coresight/coresight-etm3x-sysfs.c | 6 ++++++
+>  2 files changed, 9 insertions(+)
 
 Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
 
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> @@ -296,6 +296,12 @@ static ssize_t mode_store(struct device *dev,
->         if (kstrtoul(buf, 16, &val))
->                 return -EINVAL;
+> diff --git a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
+> index e8c7649f123e..f522fc2e01b3 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
+> @@ -116,6 +116,12 @@ static ssize_t mode_store(struct device *dev,
+>         if (ret)
+>                 return ret;
 >
 > +       if (IS_ENABLED(CONFIG_EXCLUDE_KERNEL_PMU_TRACE) && (!(val & ETM_MODE_EXCL_KERN))) {
 > +               dev_warn(dev,
 > +                       "Kernel mode tracing is not allowed, check your kernel config\n");
 
-slight nit that I think your string needs to be indented by 1 space.  ;-)
+Same nit as in patch #3 that the above string should be indented by 1
+more space.
