@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E23232849A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 17:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC35B328559
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 17:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234761AbhCAQi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 11:38:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57258 "EHLO mail.kernel.org"
+        id S235946AbhCAQxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 11:53:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237731AbhCAQTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:19:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 978DD64EAE;
-        Mon,  1 Mar 2021 16:17:12 +0000 (UTC)
+        id S235511AbhCAQV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:21:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4020464EF4;
+        Mon,  1 Mar 2021 16:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615433;
-        bh=GuFZUTlsmQ05FkrB4261N8Wq4tDh1IRG/jfj/9sL4lQ=;
+        s=korg; t=1614615527;
+        bh=FjDngh74X+U3M/nHRDotPT07tm0Eav9e8hfaO3dXWp8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TXf1qedYMLswg99NFCwJlf2mxooppShBSvbKs3sOTSUF3KyX7ryEL5nuJg9ks4R0N
-         Uk8/K/xIM+OCClmiIy7oSX16RIOMYCjG/vSiXADGawRdpQzwgxtJhy1jOMYZypW/Lo
-         cK5bMoIf8uxlpmKSDhBndMQIG0G8OwE79ljdll2Q=
+        b=Zy7kMhUE8x+GguSPxhm8bdgSDDSnEaBURBDofA89HR00P9YXEGSy3TZ4G0i1OLffX
+         UXFy24ZxHbW4Cznl3xMbZnigxEtObDApRe5plA8nJcLQt28NxlcRx+l9AC0GBi2QXG
+         HXwZGXTz5LTCD1xeZYbWLaWd/vVRxbD57RXjf3fQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christopher William Snowhill <chris@kode54.net>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Jialin Zhang <zhangjialin11@huawei.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 09/93] Bluetooth: Fix initializing response id after clearing struct
-Date:   Mon,  1 Mar 2021 17:12:21 +0100
-Message-Id: <20210301161007.359944148@linuxfoundation.org>
+Subject: [PATCH 4.4 21/93] drm/gma500: Fix error return code in psb_driver_load()
+Date:   Mon,  1 Mar 2021 17:12:33 +0100
+Message-Id: <20210301161007.941771359@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
 References: <20210301161006.881950696@linuxfoundation.org>
@@ -41,37 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christopher William Snowhill <chris@kode54.net>
+From: Jialin Zhang <zhangjialin11@huawei.com>
 
-[ Upstream commit a5687c644015a097304a2e47476c0ecab2065734 ]
+[ Upstream commit 6926872ae24452d4f2176a3ba2dee659497de2c4 ]
 
-Looks like this was missed when patching the source to clear the structures
-throughout, causing this one instance to clear the struct after the response
-id is assigned.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: eddb7732119d ("Bluetooth: A2MP: Fix not initializing all members")
-Signed-off-by: Christopher William Snowhill <chris@kode54.net>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 5c49fd3aa0ab ("gma500: Add the core DRM files and headers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jialin Zhang <zhangjialin11@huawei.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201130020216.1906141-1-zhangjialin11@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/a2mp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/gma500/psb_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/bluetooth/a2mp.c b/net/bluetooth/a2mp.c
-index 8f918155685db..242ef2abd0911 100644
---- a/net/bluetooth/a2mp.c
-+++ b/net/bluetooth/a2mp.c
-@@ -388,9 +388,9 @@ static int a2mp_getampassoc_req(struct amp_mgr *mgr, struct sk_buff *skb,
- 	hdev = hci_dev_get(req->id);
- 	if (!hdev || hdev->amp_type == AMP_TYPE_BREDR || tmp) {
- 		struct a2mp_amp_assoc_rsp rsp;
--		rsp.id = req->id;
+diff --git a/drivers/gpu/drm/gma500/psb_drv.c b/drivers/gpu/drm/gma500/psb_drv.c
+index db98ab5cde3d8..15a909efe0c70 100644
+--- a/drivers/gpu/drm/gma500/psb_drv.c
++++ b/drivers/gpu/drm/gma500/psb_drv.c
+@@ -325,6 +325,8 @@ static int psb_driver_load(struct drm_device *dev, unsigned long flags)
+ 	if (ret)
+ 		goto out_err;
  
- 		memset(&rsp, 0, sizeof(rsp));
-+		rsp.id = req->id;
- 
- 		if (tmp) {
- 			rsp.status = A2MP_STATUS_COLLISION_OCCURED;
++	ret = -ENOMEM;
++
+ 	dev_priv->mmu = psb_mmu_driver_init(dev, 1, 0, 0);
+ 	if (!dev_priv->mmu)
+ 		goto out_err;
 -- 
 2.27.0
 
