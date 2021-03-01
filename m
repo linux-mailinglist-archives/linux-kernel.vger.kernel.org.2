@@ -2,41 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B811F328403
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 17:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6935328423
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 17:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232856AbhCAQ2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 11:28:32 -0500
+        id S230084AbhCAQ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 11:29:18 -0500
 Received: from mail.kernel.org ([198.145.29.99]:56668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237747AbhCAQSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:18:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A36964E54;
-        Mon,  1 Mar 2021 16:16:53 +0000 (UTC)
+        id S237782AbhCAQTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:19:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 128EF64EC6;
+        Mon,  1 Mar 2021 16:17:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615414;
-        bh=MHKz4ZfKfa6/GOuM1K95FrexJoKp56iRc1lVGLiCp44=;
+        s=korg; t=1614615441;
+        bh=Hc8cfZJobrvmoHBcoKA99i3ClTETgaNWGl5sSOTrFn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jPEqX3uY/DJXOWyiOUbVkhCli6DNGW9oYMaKrY52EHfJwYuuxoI7FX5y/6hMm/Zuh
-         GmVZJzo8iZLG3FnHVXQ3LbokEmzWavoKzc1aN/Oux1pfj0bvQI/ogcst61cnC4w4Bz
-         OxyOu707lXHrjCarZmkc7S5A+zfk5h+MFtJHYKxQ=
+        b=v3boa8WCztJLZupDK7+eEtnjFtFHVUfIR3UWmV/lnkoWntOaXUCSBt9COzO1lPvNf
+         HfMmRGbmAdlr3tYD+wE9MxAzy51y+oLo0hJEg1/kVtRCC3qQiipiMleGryNeQZP97u
+         NRBct+O4o5qtoPaAv+4nEQj84R8riECMLnyx0AHs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 20/93] fbdev: aty: SPARC64 requires FB_ATY_CT
-Date:   Mon,  1 Mar 2021 17:12:32 +0100
-Message-Id: <20210301161007.892764932@linuxfoundation.org>
+Subject: [PATCH 4.4 31/93] btrfs: clarify error returns values in __load_free_space_cache
+Date:   Mon,  1 Mar 2021 17:12:43 +0100
+Message-Id: <20210301161008.443983234@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
 References: <20210301161006.881950696@linuxfoundation.org>
@@ -48,60 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit c6c90c70db4d9a0989111d6b994d545659410f7a ]
+[ Upstream commit 3cc64e7ebfb0d7faaba2438334c43466955a96e8 ]
 
-It looks like SPARC64 requires FB_ATY_CT to build without errors,
-so have FB_ATY select FB_ATY_CT if both SPARC64 and PCI are enabled
-instead of using "default y if SPARC64 && PCI", which is not strong
-enough to prevent build errors.
+Return value in __load_free_space_cache is not properly set after
+(unlikely) memory allocation failures and 0 is returned instead.
+This is not a problem for the caller load_free_space_cache because only
+value 1 is considered as 'cache loaded' but for clarity it's better
+to set the errors accordingly.
 
-As it currently is, FB_ATY_CT can be disabled, resulting in build
-errors:
-
-ERROR: modpost: "aty_postdividers" [drivers/video/fbdev/aty/atyfb.ko] undefined!
-ERROR: modpost: "aty_ld_pll_ct" [drivers/video/fbdev/aty/atyfb.ko] undefined!
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: sparclinux@vger.kernel.org
-Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-fbdev@vger.kernel.org
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201127031752.10371-1-rdunlap@infradead.org
+Fixes: a67509c30079 ("Btrfs: add a io_ctl struct and helpers for dealing with the space cache")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/free-space-cache.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-index 6873be0344486..e24e77e31529e 100644
---- a/drivers/video/fbdev/Kconfig
-+++ b/drivers/video/fbdev/Kconfig
-@@ -1397,6 +1397,7 @@ config FB_ATY
- 	select FB_CFB_IMAGEBLIT
- 	select FB_BACKLIGHT if FB_ATY_BACKLIGHT
- 	select FB_MACMODES if PPC
-+	select FB_ATY_CT if SPARC64 && PCI
- 	help
- 	  This driver supports graphics boards with the ATI Mach64 chips.
- 	  Say Y if you have such a graphics board.
-@@ -1407,7 +1408,6 @@ config FB_ATY
- config FB_ATY_CT
- 	bool "Mach64 CT/VT/GT/LT (incl. 3D RAGE) support"
- 	depends on PCI && FB_ATY
--	default y if SPARC64 && PCI
- 	help
- 	  Say Y here to support use of ATI's 64-bit Rage boards (or other
- 	  boards based on the Mach64 CT, VT, GT, and LT chipsets) as a
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 05b1b0f99f0bc..55d8020afc583 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -754,8 +754,10 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 	while (num_entries) {
+ 		e = kmem_cache_zalloc(btrfs_free_space_cachep,
+ 				      GFP_NOFS);
+-		if (!e)
++		if (!e) {
++			ret = -ENOMEM;
+ 			goto free_cache;
++		}
+ 
+ 		ret = io_ctl_read_entry(&io_ctl, e, &type);
+ 		if (ret) {
+@@ -764,6 +766,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 		}
+ 
+ 		if (!e->bytes) {
++			ret = -1;
+ 			kmem_cache_free(btrfs_free_space_cachep, e);
+ 			goto free_cache;
+ 		}
+@@ -783,6 +786,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 			num_bitmaps--;
+ 			e->bitmap = kzalloc(PAGE_CACHE_SIZE, GFP_NOFS);
+ 			if (!e->bitmap) {
++				ret = -ENOMEM;
+ 				kmem_cache_free(
+ 					btrfs_free_space_cachep, e);
+ 				goto free_cache;
 -- 
 2.27.0
 
