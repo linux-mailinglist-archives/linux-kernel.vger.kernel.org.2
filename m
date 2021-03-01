@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13716329BDB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAB1329C5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379732AbhCBBar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:30:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43892 "EHLO mail.kernel.org"
+        id S1380588AbhCBByA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:54:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238052AbhCATS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:18:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3F2464FC1;
-        Mon,  1 Mar 2021 17:41:19 +0000 (UTC)
+        id S241890AbhCAT3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:29:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F81A650AE;
+        Mon,  1 Mar 2021 17:41:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620480;
-        bh=C9nDMAepVi/ImqOHB1r7htZmS/IPyFyG3eY1JBWB1D0=;
+        s=korg; t=1614620485;
+        bh=bhdfHS0IHfkfSb4GNG/JLrlDz5NatEXgHt5X353Lgqk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OYcqvb+ywqaM9PZddSMaqtroZPDjVbNDdZ9ke1c5SsJ2If3N4Zo7Wgs+Kz8P2uXke
-         uRik5VgfJRQ1Ds1V67XJRW+Lb6Pc+uHA9rHxjJCnzqUQz1IEthsioznBgZK5YKIyqH
-         p++TYynvQLgA0YBVnT56P962VjjC8CrmtsRSenVE=
+        b=JtnUfp42ML2mOZXz4oqiVZLCkxfCvFI55hXbe9btARaRsA4CNbBF9ny2nE584ACkS
+         mC7TXJ2fludXKS9DR0W9W2hPzLeVqV8OPZgNXeWotHjCY2B4EuGXTVqpBGD6xm3AeF
+         v1XHPUP5wPbQC9k+5SvhxyPXI7CTQs9RwOy9brPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 139/775] net: enetc: fix destroyed phylink dereference during unbind
-Date:   Mon,  1 Mar 2021 17:05:07 +0100
-Message-Id: <20210301161208.539518732@linuxfoundation.org>
+Subject: [PATCH 5.11 141/775] arm64: dts: broadcom: bcm4908: use proper NAND binding
+Date:   Mon,  1 Mar 2021 17:05:09 +0100
+Message-Id: <20210301161208.622439830@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,62 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-[ Upstream commit 3af409ca278d4a8d50e91f9f7c4c33b175645cf3 ]
+[ Upstream commit 56098be85d19cd56b59d7b3854ea035cc8cb9e95 ]
 
-The following call path suggests that calling unregister_netdev on an
-interface that is up will first bring it down.
+BCM4908 has controller that needs different IRQ handling just like the
+BCM63138. Describe it properly.
 
-enetc_pf_remove
--> unregister_netdev
-   -> unregister_netdevice_queue
-      -> unregister_netdevice_many
-         -> dev_close_many
-            -> __dev_close_many
-               -> enetc_close
-                  -> enetc_stop
-                     -> phylink_stop
+On Linux this change fixes:
+brcmstb_nand ff801800.nand: timeout waiting for command 0x9
+brcmstb_nand ff801800.nand: intfc status d0000000
 
-However, enetc first destroys the phylink instance, then calls
-unregister_netdev. This is already dissimilar to the setup (and error
-path teardown path) from enetc_pf_probe, but more than that, it is buggy
-because it is invalid to call phylink_stop after phylink_destroy.
-
-So let's first unregister the netdev (and let the .ndo_stop events
-consume themselves), then destroy the phylink instance, then free the
-netdev.
-
-Fixes: 71b77a7a27a3 ("enetc: Migrate to PHYLINK and PCS_LYNX")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc_pf.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-index 3eb5f1375bd4c..515c5b29d7aab 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -1157,14 +1157,15 @@ static void enetc_pf_remove(struct pci_dev *pdev)
- 	struct enetc_ndev_priv *priv;
- 
- 	priv = netdev_priv(si->ndev);
--	enetc_phylink_destroy(priv);
--	enetc_mdiobus_destroy(pf);
- 
- 	if (pf->num_vfs)
- 		enetc_sriov_configure(pdev, 0);
- 
- 	unregister_netdev(si->ndev);
- 
-+	enetc_phylink_destroy(priv);
-+	enetc_mdiobus_destroy(pf);
-+
- 	enetc_free_msix(priv);
- 
- 	enetc_free_si_resources(priv);
+diff --git a/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi b/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
+index f873dc44ce9ca..55d9b56ac749d 100644
+--- a/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
++++ b/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
+@@ -164,7 +164,7 @@
+ 		nand@1800 {
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			compatible = "brcm,brcmnand-v7.1", "brcm,brcmnand";
++			compatible = "brcm,nand-bcm63138", "brcm,brcmnand-v7.1", "brcm,brcmnand";
+ 			reg = <0x1800 0x600>, <0x2000 0x10>;
+ 			reg-names = "nand", "nand-int-base";
+ 			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
 -- 
 2.27.0
 
