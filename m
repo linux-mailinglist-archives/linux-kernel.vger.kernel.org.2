@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43152329970
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC4B329945
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344676AbhCBAQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:16:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41440 "EHLO mail.kernel.org"
+        id S1347620AbhCBACj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:02:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234766AbhCASXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:23:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67BCB64F88;
-        Mon,  1 Mar 2021 17:08:47 +0000 (UTC)
+        id S239743AbhCASUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:20:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F03A4650C5;
+        Mon,  1 Mar 2021 17:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618528;
-        bh=DnEXBEgLSQq0dS3zHxsf4TgSIOOsvwY5gs3HOpsBycs=;
+        s=korg; t=1614620616;
+        bh=wrH2oNQ2/u2XBaacYgNQwNV63cesyj4WCnlAqNNpDvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jD8+1k4sbZmjRyPd7cM0fTZK7ATpe5PycIyCUELEhulDMEn/cGVI52p42c8NY9Qwe
-         K7PzbWe0UMGahD1hk5BiBX7aWKUhnMtAfUqwvYRsLW+mG9Ru/36c295dZFxyUhpP+A
-         N1zyiae/gL36iMGriP4o1KwrszUWzPTE/JvPEe6k=
+        b=Bx01/ng2OoYFquAeVx4j3hVvZr1agKbN+KchL1oF0ma4CYuk+DCyVgSzWvukV6z3j
+         UXXDRIpoks0NWag29Y3Hw/UYTcs+R9nhZtcPgej7KldDN7rvdYaEWDP1zjAsGEEhVu
+         YGZAgr1Ty4jMT2Jy4koW/EnZw+H8RwjHBSE90sEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 119/663] selftests: mptcp: fix ACKRX debug message
-Date:   Mon,  1 Mar 2021 17:06:07 +0100
-Message-Id: <20210301161147.630883478@linuxfoundation.org>
+Subject: [PATCH 5.11 200/775] media: vsp1: Fix an error handling path in the probe function
+Date:   Mon,  1 Mar 2021 17:06:08 +0100
+Message-Id: <20210301161211.525428211@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthieu Baerts <matthieu.baerts@tessares.net>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit f384221a381751508f390b36d0e51bd5a7beb627 ]
+[ Upstream commit 7113469dafc2d545fa4fa9bc649c31dc27db492e ]
 
-Info from received MPCapable SYN were printed instead of the ones from
-received MPCapable 3rd ACK.
+A previous 'rcar_fcp_get()' call must be undone in the error handling path,
+as already done in the remove function.
 
-Fixes: fed61c4b584c ("selftests: mptcp: make 2nd net namespace use tcp syn cookies unconditionally")
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 94fcdf829793 ("[media] v4l: vsp1: Add FCP support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/mptcp/mptcp_connect.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/vsp1/vsp1_drv.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/mptcp/mptcp_connect.sh b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-index 2cfd87d94db89..e927df83efb91 100755
---- a/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-+++ b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-@@ -493,7 +493,7 @@ do_transfer()
- 		echo "${listener_ns} SYNRX: ${cl_proto} -> ${srv_proto}: expect ${expect_synrx}, got ${stat_synrx_now_l}"
- 	fi
- 	if [ $expect_ackrx -ne $stat_ackrx_now_l ] ;then
--		echo "${listener_ns} ACKRX: ${cl_proto} -> ${srv_proto}: expect ${expect_synrx}, got ${stat_synrx_now_l}"
-+		echo "${listener_ns} ACKRX: ${cl_proto} -> ${srv_proto}: expect ${expect_ackrx}, got ${stat_ackrx_now_l} "
- 	fi
+diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
+index dc62533cf32ce..aa66e4f5f3f34 100644
+--- a/drivers/media/platform/vsp1/vsp1_drv.c
++++ b/drivers/media/platform/vsp1/vsp1_drv.c
+@@ -882,8 +882,10 @@ static int vsp1_probe(struct platform_device *pdev)
+ 	}
  
- 	if [ $retc -eq 0 ] && [ $rets -eq 0 ];then
+ done:
+-	if (ret)
++	if (ret) {
+ 		pm_runtime_disable(&pdev->dev);
++		rcar_fcp_put(vsp1->fcp);
++	}
+ 
+ 	return ret;
+ }
 -- 
 2.27.0
 
