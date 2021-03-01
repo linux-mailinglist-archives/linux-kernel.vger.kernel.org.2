@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AE1329A65
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE752329AEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377556AbhCBArr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:47:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54534 "EHLO mail.kernel.org"
+        id S1378276AbhCBBFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:05:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240255AbhCASpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:45:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29DDA6530D;
-        Mon,  1 Mar 2021 17:42:39 +0000 (UTC)
+        id S235871AbhCAS65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:58:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EB3B64F89;
+        Mon,  1 Mar 2021 17:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620560;
-        bh=dgWkJBRcXmlasYdpr6OICrMX8AOjg3N83L5+6TgI04I=;
+        s=korg; t=1614618530;
+        bh=Clq7V85fDlR6zkKLnia8E2GU8guNjCersNRh4+xRA1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FvHOMZe7SdQ0C4QfhYVWTdfnZKWLPMwgLSh1oZ/UiAt8uX6FcxwiNh/0k8uCAhYa8
-         hFRlkwcnIukO+A6CizjzzhTgn4g/geC7zxGYTOaRAlqGoOeTG86yofJ5iXPDNDU+Qa
-         tNJI86qBvZpXMhTRICAK6O/NPXovTft8a7xIESEw=
+        b=vg5iihjbm/++sGBwZfwTC5QaJy8MyLMJr8Nsc1UYgl6IQfLFfdh1Dek6uwPkXb+iW
+         IN+ExT78SfAJfFneIO09q95LZM4KqWIfmg3E7HF+OilyD+HieGRX/eKxgqwVdm+nMU
+         EpxDepLfowES6201QJ43P/ulL/IBm8emNNNw10SA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Arjun Roy <arjunroy@google.com>, Wei Wang <weiwan@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 196/775] media: imx: Fix csc/scaler unregister
-Date:   Mon,  1 Mar 2021 17:06:04 +0100
-Message-Id: <20210301161211.329855459@linuxfoundation.org>
+Subject: [PATCH 5.10 120/663] tcp: fix SO_RCVLOWAT related hangs under mem pressure
+Date:   Mon,  1 Mar 2021 17:06:08 +0100
+Message-Id: <20210301161147.679996148@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ezequiel Garcia <ezequiel@collabora.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 89b14485caa4b7b2eaf70be0064f0978e68ebeee ]
+[ Upstream commit f969dc5a885736842c3511ecdea240fbb02d25d9 ]
 
-The csc/scaler device private struct is released by
-ipu_csc_scaler_video_device_release(), which can be called
-by video_unregister_device() if there are no users
-of the underlying struct video device.
+While commit 24adbc1676af ("tcp: fix SO_RCVLOWAT hangs with fat skbs")
+fixed an issue vs too small sk_rcvbuf for given sk_rcvlowat constraint,
+it missed to address issue caused by memory pressure.
 
-Therefore, the mutex can't be held when calling
-video_unregister_device() as its memory may be freed
-by it, leading to a kernel oops.
+1) If we are under memory pressure and socket receive queue is empty.
+First incoming packet is allowed to be queued, after commit
+76dfa6082032 ("tcp: allow one skb to be received per socket under memory pressure")
 
-Fortunately, the fix is quite simple as no locking
-is needed when calling video_unregister_device(): v4l2-core
-already has its own internal locking, and the structures
-are also properly refcounted.
+But we do not send EPOLLIN yet, in case tcp_data_ready() sees sk_rcvlowat
+is bigger than skb length.
 
-Fixes: a8ef0488cc59 ("media: imx: add csc/scaler mem2mem device")
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+2) Then, when next packet comes, it is dropped, and we directly
+call sk->sk_data_ready().
+
+3) If application is using poll(), tcp_poll() will then use
+tcp_stream_is_readable() and decide the socket receive queue is
+not yet filled, so nothing will happen.
+
+Even when sender retransmits packets, phases 2) & 3) repeat
+and flow is effectively frozen, until memory pressure is off.
+
+Fix is to consider tcp_under_memory_pressure() to take care
+of global memory pressure or memcg pressure.
+
+Fixes: 24adbc1676af ("tcp: fix SO_RCVLOWAT hangs with fat skbs")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Arjun Roy <arjunroy@google.com>
+Suggested-by: Wei Wang <weiwan@google.com>
+Reviewed-by: Wei Wang <weiwan@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/imx/imx-media-csc-scaler.c | 4 ----
- 1 file changed, 4 deletions(-)
+ include/net/tcp.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/imx/imx-media-csc-scaler.c b/drivers/staging/media/imx/imx-media-csc-scaler.c
-index fab1155a5958c..63a0204502a8b 100644
---- a/drivers/staging/media/imx/imx-media-csc-scaler.c
-+++ b/drivers/staging/media/imx/imx-media-csc-scaler.c
-@@ -869,11 +869,7 @@ void imx_media_csc_scaler_device_unregister(struct imx_media_video_dev *vdev)
- 	struct ipu_csc_scaler_priv *priv = vdev_to_priv(vdev);
- 	struct video_device *vfd = priv->vdev.vfd;
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index fe9747ee70a6f..7d66c61d22c7d 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -1424,8 +1424,13 @@ void tcp_cleanup_rbuf(struct sock *sk, int copied);
+  */
+ static inline bool tcp_rmem_pressure(const struct sock *sk)
+ {
+-	int rcvbuf = READ_ONCE(sk->sk_rcvbuf);
+-	int threshold = rcvbuf - (rcvbuf >> 3);
++	int rcvbuf, threshold;
++
++	if (tcp_under_memory_pressure(sk))
++		return true;
++
++	rcvbuf = READ_ONCE(sk->sk_rcvbuf);
++	threshold = rcvbuf - (rcvbuf >> 3);
  
--	mutex_lock(&priv->mutex);
--
- 	video_unregister_device(vfd);
--
--	mutex_unlock(&priv->mutex);
+ 	return atomic_read(&sk->sk_rmem_alloc) > threshold;
  }
- 
- struct imx_media_video_dev *
 -- 
 2.27.0
 
