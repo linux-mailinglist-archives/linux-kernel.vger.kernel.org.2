@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE16F3298F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 245C4329996
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346942AbhCAXvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35644 "EHLO mail.kernel.org"
+        id S238937AbhCBA0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:26:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239332AbhCASOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:14:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F79E64DBD;
-        Mon,  1 Mar 2021 17:10:35 +0000 (UTC)
+        id S239873AbhCAS0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:26:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51E5465324;
+        Mon,  1 Mar 2021 17:44:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618635;
-        bh=jlN6g22lrXypVtavH1lj1OLAcBEFVpU31LB8cTkyxIE=;
+        s=korg; t=1614620682;
+        bh=AMAovv1m707oJ1y9ptFW2suwX9WU19RRVpElkic2UbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L50reW+2f/nBgTnM8Devn2RUeens/buxuZr0BduP7nOOMLvIICVZ5x2ml0Wh2Djrf
-         xDCmmzJEVp5r8P5ZVM4yJidNznScZNvW0JKOwXZJ9YFYKT0GNfLXAv69MoR/qiQnkV
-         TPvKeb7ctOHDgBhBr04YVf3LEwnEC8bnhboQh7jw=
+        b=ynDc5Vv6J6W6G7Dr/s2atbfqYX561HK6ZnHoPBm3Qc/3tsgvKOdGhdsqlExaO6BrS
+         NCqqPDemEPcxlMwR1j7rJCLz7M8gUw0iAzmweH9iJsgLht94UKQynvyh/gK1QCH3RC
+         wUo40Zs1Iqa/l6xudZs5M0jF284z0yGuJrwW55Q0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 159/663] media: ipu3-cio2: Build only for x86
-Date:   Mon,  1 Mar 2021 17:06:47 +0100
-Message-Id: <20210301161149.638859783@linuxfoundation.org>
+Subject: [PATCH 5.11 242/775] mtd: parser: imagetag: fix error codes in bcm963xx_parse_imagetag_partitions()
+Date:   Mon,  1 Mar 2021 17:06:50 +0100
+Message-Id: <20210301161213.593420279@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 3ef5e42d281ea108f4ccdca186de4ce20a346326 ]
+[ Upstream commit 12ba8f8ce29fdd277f3100052eddc1afd2f5ea3f ]
 
-According to the original code in the driver it was never assumed to work
-with big page sizes: unsigned short type followed by PAGE_SHIFT and
-PAGE_MASK which may be different on non-x86 architectures.
+If the kstrtouint() calls fail, then this should return a negative
+error code but it currently returns success.
 
-Recently LKP found an issue on non-x86 architectures due to above
-mentioned limitations. Since Sakari acknowledges that it's not really
-useful to be able to compile this elsewhere, mark it x86 only.
-
-Fixes: a31d19f88932 ("media: ipu3: allow building it with COMPILE_TEST on non-x86 archs")
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: dd84cb022b31 ("mtd: bcm63xxpart: move imagetag parsing to its own parser")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/YBKFtNaFHGYBj+u4@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/intel/ipu3/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/parsers/parser_imagetag.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/pci/intel/ipu3/Kconfig b/drivers/media/pci/intel/ipu3/Kconfig
-index 82d7f17e6a024..7a805201034b7 100644
---- a/drivers/media/pci/intel/ipu3/Kconfig
-+++ b/drivers/media/pci/intel/ipu3/Kconfig
-@@ -2,7 +2,8 @@
- config VIDEO_IPU3_CIO2
- 	tristate "Intel ipu3-cio2 driver"
- 	depends on VIDEO_V4L2 && PCI
--	depends on (X86 && ACPI) || COMPILE_TEST
-+	depends on ACPI || COMPILE_TEST
-+	depends on X86
- 	select MEDIA_CONTROLLER
- 	select VIDEO_V4L2_SUBDEV_API
- 	select V4L2_FWNODE
+diff --git a/drivers/mtd/parsers/parser_imagetag.c b/drivers/mtd/parsers/parser_imagetag.c
+index d69607b482272..fab0949aabba1 100644
+--- a/drivers/mtd/parsers/parser_imagetag.c
++++ b/drivers/mtd/parsers/parser_imagetag.c
+@@ -83,6 +83,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
+ 			pr_err("invalid rootfs address: %*ph\n",
+ 				(int)sizeof(buf->flash_image_start),
+ 				buf->flash_image_start);
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
+@@ -92,6 +93,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
+ 			pr_err("invalid kernel address: %*ph\n",
+ 				(int)sizeof(buf->kernel_address),
+ 				buf->kernel_address);
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
+@@ -100,6 +102,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
+ 			pr_err("invalid kernel length: %*ph\n",
+ 				(int)sizeof(buf->kernel_length),
+ 				buf->kernel_length);
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
+@@ -108,6 +111,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
+ 			pr_err("invalid total length: %*ph\n",
+ 				(int)sizeof(buf->total_length),
+ 				buf->total_length);
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
 -- 
 2.27.0
 
