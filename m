@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D78EE328629
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F603285F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236958AbhCARFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:05:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56666 "EHLO mail.kernel.org"
+        id S236678AbhCARCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:02:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237509AbhCAQWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:22:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC85964E41;
-        Mon,  1 Mar 2021 16:18:57 +0000 (UTC)
+        id S237648AbhCAQWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:22:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA73864EFD;
+        Mon,  1 Mar 2021 16:19:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615538;
-        bh=ymdq+xzvkAsE44SwFhAffqL61NBddWlAT9+XphAUN6I=;
+        s=korg; t=1614615563;
+        bh=M34w/zap8absiL+D+1BoyhxGswPSwaINYkePrI6viOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P6t40P9h+H4fHwYoSCZ3KaBjbb1xpMlN7xgEMHOXZLavMJBashHCFi+NXtJVVia7+
-         bDfE5k9tq8Pu3GM5DgOgO1jIVAIbcXxSGC5bRgaHS6hb0A0XSDajP5FbZmWXPJUB8n
-         ovvqrk6AHPAxMY1eSgG+LF8xkEdrhKaVe4uVVySs=
+        b=D2JTX07vASjYmFNwNaQiQmR8VGk64yAQY4FIhzRtAPsPnLPMqw2Zs+4luru19NaqI
+         UU2D5qZd6r64VWKUfp6bP1zI/tAzpbYiFFBUMaRMOdECgTXjhatk2G4YjJ5s4ftfGc
+         DaONZGGICIEVs228lGEK7/p1cG9ehGl+Cgx5G4/U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ludvig Norgren Guldhag <ludvigng@gmail.com>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.4 66/93] Input: i8042 - add ASUS Zenbook Flip to noselftest list
-Date:   Mon,  1 Mar 2021 17:13:18 +0100
-Message-Id: <20210301161010.142060384@linuxfoundation.org>
+        syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com,
+        Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Subject: [PATCH 4.4 74/93] drivers/misc/vmw_vmci: restrict too big queue size in qp_host_alloc_queue
+Date:   Mon,  1 Mar 2021 17:13:26 +0100
+Message-Id: <20210301161010.527998582@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
 References: <20210301161006.881950696@linuxfoundation.org>
@@ -41,41 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+From: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
 
-commit b5d6e7ab7fe7d186878142e9fc1a05e4c3b65eb9 upstream.
+commit 2fd10bcf0310b9525b2af9e1f7aa9ddd87c3772e upstream.
 
-After commit 77b425399f6d ("Input: i8042 - use chassis info to skip
-selftest on Asus laptops"), all modern Asus laptops have the i8042
-selftest disabled. It has done by using chassys type "10" (laptop).
+syzbot found WARNING in qp_broker_alloc[1] in qp_host_alloc_queue()
+when num_pages is 0x100001, giving queue_size + queue_page_size
+bigger than KMALLOC_MAX_SIZE for kzalloc(), resulting order >= MAX_ORDER
+condition.
 
-The Asus Zenbook Flip suffers from similar suspend/resume issues, but
-it _sometimes_ work and sometimes it doesn't. Setting noselftest makes
-it work reliably. In this case, we need to add chassis type "31"
-(convertible) in order to avoid selftest in this device.
+queue_size + queue_page_size=0x8000d8, where KMALLOC_MAX_SIZE=0x400000.
 
-Reported-by: Ludvig Norgren Guldhag <ludvigng@gmail.com>
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-Link: https://lore.kernel.org/r/20210219164638.761-1-mpdesouza@suse.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+[1]
+Call Trace:
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x40/0x130 mm/slab_common.c:837
+ kmalloc_order_trace+0x15/0x70 mm/slab_common.c:853
+ kmalloc_large include/linux/slab.h:481 [inline]
+ __kmalloc+0x257/0x330 mm/slub.c:3959
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ qp_host_alloc_queue drivers/misc/vmw_vmci/vmci_queue_pair.c:540 [inline]
+ qp_broker_create drivers/misc/vmw_vmci/vmci_queue_pair.c:1351 [inline]
+ qp_broker_alloc+0x936/0x2740 drivers/misc/vmw_vmci/vmci_queue_pair.c:1739
+
+Reported-by: syzbot+15ec7391f3d6a1a7cc7d@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+Link: https://lore.kernel.org/r/20210209102612.2112247-1-snovitoll@gmail.com
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/misc/vmw_vmci/vmci_queue_pair.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -579,6 +579,10 @@ static const struct dmi_system_id i8042_
- 			DMI_MATCH(DMI_SYS_VENDOR, "Sony Corporation"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "VGN-CS"),
- 		},
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
-+		},
- 	},
- 	{ }
- };
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -639,6 +639,9 @@ static struct vmci_queue *qp_host_alloc_
+ 
+ 	queue_page_size = num_pages * sizeof(*queue->kernel_if->u.h.page);
+ 
++	if (queue_size + queue_page_size > KMALLOC_MAX_SIZE)
++		return NULL;
++
+ 	queue = kzalloc(queue_size + queue_page_size, GFP_KERNEL);
+ 	if (queue) {
+ 		queue->q_header = NULL;
 
 
