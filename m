@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D65329875
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7CE329855
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345839AbhCAXdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:33:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58286 "EHLO mail.kernel.org"
+        id S1345575AbhCAX0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:26:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239088AbhCASFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:05:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 686F4651D4;
-        Mon,  1 Mar 2021 17:17:31 +0000 (UTC)
+        id S238960AbhCASCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:02:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9945E651D5;
+        Mon,  1 Mar 2021 17:17:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619051;
-        bh=pItgVztPsWOLbhu1XQT65dKNDo2XiajdX3r/DX5pCk0=;
+        s=korg; t=1614619061;
+        bh=U/IgthPYfK2vQ3LO/QcjtFLaKIoHRiltgLmmsYS5/Cw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mT3HilH90EHo6oGl79kNoH8IDZ48bh2xbgShimNC2Bkg3nPRRxsRUgGUCrxvlSQz3
-         Uj67XF9el9HT425QJOluBlComvy6Ph+uwsx9s/wpi/tE51wuu198LgOGUYAv+JuRiA
-         GkPQNNP3TN+GQLfeHIinPVrhTLCn7co0dbe3WRek=
+        b=jlcapZTe3D0KFswzhKUaZWSeteljt6sLQRV0UNOFU2CL3WBOEATh/x9/hn13Hsa4F
+         0UF59v+1Jp6A416Io2YO8sPJSFcqnIXn3cxU1Hp7cxpKu0yJEJ961HXpZIPtcKbswH
+         1ZhawHBpqC1AuAVGVA0/5H0BrSz+MEzjJ1DLhR1Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 314/663] regulator: core: Avoid debugfs: Directory ... already present! error
-Date:   Mon,  1 Mar 2021 17:09:22 +0100
-Message-Id: <20210301161157.381011644@linuxfoundation.org>
+Subject: [PATCH 5.10 317/663] auxdisplay: ht16k33: Fix refresh rate handling
+Date:   Mon,  1 Mar 2021 17:09:25 +0100
+Message-Id: <20210301161157.535023324@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,68 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit dbe954d8f1635f949a1d9a5d6e6fb749ae022b47 ]
+[ Upstream commit e89b0a426721a8ca5971bc8d70aa5ea35c020f90 ]
 
-Sometimes regulator_get() gets called twice for the same supply on the
-same device. This may happen e.g. when a framework / library is used
-which uses the regulator; and the driver itself also needs to enable
-the regulator in some cases where the framework will not enable it.
+Drop the call to msecs_to_jiffies(), as "HZ / fbdev->refresh_rate" is
+already the number of jiffies to wait.
 
-Commit ff268b56ce8c ("regulator: core: Don't spew backtraces on
-duplicate sysfs") already takes care of the backtrace which would
-trigger when creating a duplicate consumer symlink under
-/sys/class/regulator/regulator.%d in this scenario.
-
-Commit c33d442328f5 ("debugfs: make error message a bit more verbose")
-causes a new error to get logged in this scenario:
-
-[   26.938425] debugfs: Directory 'wm5102-codec-MICVDD' with parent 'spi-WM510204:00-MICVDD' already present!
-
-There is no _nowarn variant of debugfs_create_dir(), but we can detect
-and avoid this problem by checking the return value of the earlier
-sysfs_create_link_nowarn() call.
-
-Add a check for the earlier sysfs_create_link_nowarn() failing with
--EEXIST and skip the debugfs_create_dir() call in that case, avoiding
-this error getting logged.
-
-Fixes: c33d442328f5 ("debugfs: make error message a bit more verbose")
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/20210122183250.370571-1-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/auxdisplay/ht16k33.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 35098dbd32a3c..7b3de8b0b1caf 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1617,7 +1617,7 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
- 					  const char *supply_name)
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index d951d54b26f52..d8602843e8a53 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -117,8 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
  {
- 	struct regulator *regulator;
--	int err;
-+	int err = 0;
+ 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
  
- 	if (dev) {
- 		char buf[REG_STR_SIZE];
-@@ -1663,8 +1663,8 @@ static struct regulator *create_regulator(struct regulator_dev *rdev,
- 		}
- 	}
+-	schedule_delayed_work(&fbdev->work,
+-			      msecs_to_jiffies(HZ / fbdev->refresh_rate));
++	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
+ }
  
--	regulator->debugfs = debugfs_create_dir(supply_name,
--						rdev->debugfs);
-+	if (err != -EEXIST)
-+		regulator->debugfs = debugfs_create_dir(supply_name, rdev->debugfs);
- 	if (!regulator->debugfs) {
- 		rdev_dbg(rdev, "Failed to create debugfs directory\n");
- 	} else {
+ /*
 -- 
 2.27.0
 
