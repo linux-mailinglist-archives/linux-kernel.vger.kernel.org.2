@@ -2,246 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C97FC327AD4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBE4327AD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbhCAJby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:31:54 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:56269 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233892AbhCAJbw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:31:52 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UPy7CVs_1614591065;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UPy7CVs_1614591065)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Mar 2021 17:31:06 +0800
-Subject: Re: [PATCH] PATCH Documentation translations:translate
- sound/hd-audio/controls to chinese
-To:     hjh <huangjianghui@uniontech.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Harry Wei <harryxiyou@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210301030349.37275-1-huangjianghui@uniontech.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <e752113b-a7b8-cc9a-326a-2939afa14823@linux.alibaba.com>
-Date:   Mon, 1 Mar 2021 17:31:04 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S233977AbhCAJcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:32:18 -0500
+Received: from mail-mw2nam10on2057.outbound.protection.outlook.com ([40.107.94.57]:57832
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233893AbhCAJcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 04:32:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D4aHAk4SHVAHxSE1+rDlQ827xBzVbhzB6tUOcYNPo38I2cQZTQvsvIruC1HYE/I6Ne4f9HnEVoVAsPhgR8wLUVArWxqj9zMo7JRzdEX1/ib/vYF2DLUCuvvG0vustZ3s9PMV7IBTsx8tHt+OTfwUrwIcUAJ182Lvq4SsdHJu+oWmyf51aH2ZnQEPxbQBhVKrLE/TCEuu0xxI1lOSsMu8ypD3lDwOn8Y1peegh/aAPvebsIPz0VJtfaXY1ZRc+cqY3WOZ/haEIWzwt0KKny2Oirt6pHjTqWajPEKQVv8mm4jH1pu8e9FbykWfXiJHpGgg+N10ZxByaMEOLMaC8l16rg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bBKAieqS7ZIBNP2iVN6L6/u2dboXIroELkQ/hTsh+zo=;
+ b=A4Y/m5OP8D/uGEBj4zqs9F+XG2k2jqECAAy3Jx+kLbTbD5Nvsm8FXJbtFP2Yyi/Kp37+bmB71OrhaHLMVnMt90LglOXAHKT3RCAxbglnsimuUxUEWpn3d5WmND9FxyQeGrvxiFYdtENtb4AGS6Hi1VPLx9Muka4iP4XP3KXCV0EOnaouInLz+aC84UFC6SiYxfdXDUaiejORgQh59Y4/FST9xLwTN5B9z/dPjHDowcw0DXhc5mrfo8E/i3rVFiOTLQYdvVuU/8JLMTEQaEOA6Ufq9F5x4n9rCHd1/eO1fyHkgeDkpVerYxkF4vuV+FXbaAcHuRTLaVbTYY66YOgZCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bBKAieqS7ZIBNP2iVN6L6/u2dboXIroELkQ/hTsh+zo=;
+ b=ki0RXHJSMri9WFlmuHF8f/v8XMJhsfg/Pkd7ZGrGVCzG2x6CCXGREUjlhA01+TDDCI0qHK9025o03J4B26VmPH6n+wR94y704oBuXEVqCcvVFK+Cdk56VoPmySAN31/5Yq2Prpi/YAe3LE2REFyXgiXiXlDHOxHMeCUkGd7HABU=
+Received: from CY4PR20CA0028.namprd20.prod.outlook.com (2603:10b6:903:cb::14)
+ by DM6PR02MB6779.namprd02.prod.outlook.com (2603:10b6:5:216::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Mon, 1 Mar
+ 2021 09:31:22 +0000
+Received: from CY1NAM02FT057.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:cb:cafe::a8) by CY4PR20CA0028.outlook.office365.com
+ (2603:10b6:903:cb::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend
+ Transport; Mon, 1 Mar 2021 09:31:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ CY1NAM02FT057.mail.protection.outlook.com (10.152.75.110) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3890.19 via Frontend Transport; Mon, 1 Mar 2021 09:31:22 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 1 Mar 2021 01:31:21 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 1 Mar 2021 01:31:21 -0800
+Envelope-to: lakshmi.sai.krishna.potthuri@xilinx.com,
+ michal.simek@xilinx.com,
+ linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linus.walleij@linaro.org
+Received: from [172.30.17.109] (port=41886)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1lGetd-0003XG-L4; Mon, 01 Mar 2021 01:31:21 -0800
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+References: <63d610ba-5f63-2be1-6215-f44bd88d94d2@xilinx.com>
+ <CACRpkdZEYqPU6Zr+a6fivZiz-hKx6-KVdYVR7j--y+k2KXZaPw@mail.gmail.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Subject: Re: DT overlay applied via pinctrl description
+Message-ID: <45cea3bb-6e5d-4005-ef2a-67b08772e0d7@xilinx.com>
+Date:   Mon, 1 Mar 2021 10:31:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210301030349.37275-1-huangjianghui@uniontech.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CACRpkdZEYqPU6Zr+a6fivZiz-hKx6-KVdYVR7j--y+k2KXZaPw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 244bddb8-af2f-41bd-2538-08d8dc94c6da
+X-MS-TrafficTypeDiagnostic: DM6PR02MB6779:
+X-Microsoft-Antispam-PRVS: <DM6PR02MB67796382D0EA03247323641AC69A9@DM6PR02MB6779.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PckH0JCXXmXdSLrFYBjHx8rOSt45jx9/2x5AcbsQ4wpk/tm0J9k3EtCi+DqhekEOaBaEpxW9XnVx538S4i9KmkOROEsQZfObrxKMPZ7RubcRWDoPTchizKTzlfZAI326ATy7lJbSJUfl/w59l+/MszaDb74ZiF8lSPIb5C22lzWh5UKKe6G2FtAOTL7k/PC3BAX0bub/1cP2V3DVx1anhlF5f29rKUT+0fbKb+p/DXhmFZP0VqYvgVQiuV5Ea5PK42LJc5PGFGLZYsj/j9DsFY4EVqyAgegV7rsMhGEDijWpx9jsCtXd8D9uyijIyokD69dNopxc/ZGhGDCCFnL/fMaKxRfIjdpmuR9cVjtCjdxv2TbPGVBPdNzwtQJrA/Ia+BzyXPR1Hzf58clYTwi5MTB4x+K7S5nrh1rPEtbLhGjTgpJIWjbRyt/goc0YrRgk3Hbyzz7adiutpVqLRSbXNI9HDli+JI8fKDzziLvtc1W/gMEZR4QceaAIr5hLfwYK47Tc+/IGzHYSrPg9lgmH5bT3zg94HUhfsyof6VP5DFGnsccL5hHR7++VrFgVoYGvDpxSZOI64aTj4+uuLYOz7yULicMcrdmKmQkPnoDzIjZ2GQKttPuG1Lqr3csK7x31D6v5pozLdLfDqvG9rFlK3cDMmcFzC220qfdrHY7SmWmgnrLhquuEr+cOhCQTSE14dsKgsnTZ2tlIE/dD3KKzGg==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(396003)(39850400004)(36840700001)(46966006)(70586007)(47076005)(70206006)(110136005)(8936002)(54906003)(316002)(36860700001)(82310400003)(36906005)(4326008)(9786002)(2906002)(8676002)(107886003)(53546011)(7636003)(356005)(83380400001)(31696002)(36756003)(31686004)(44832011)(82740400003)(478600001)(2616005)(186003)(336012)(26005)(5660300002)(426003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2021 09:31:22.1761
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 244bddb8-af2f-41bd-2538-08d8dc94c6da
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT057.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB6779
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
-
-在 2021/3/1 上午11:03, hjh 写道:
-> Signed-off-by: hjh <huangjianghui@uniontech.com>
-> ---
->  Documentation/translations/zh_CN/index.rst    |   1 +
->  .../zh_CN/sound/hd-audio/controls.rst         | 109 ++++++++++++++++++
->  .../zh_CN/sound/hd-audio/index.rst            |  17 +++
->  .../translations/zh_CN/sound/index.rst        |  26 +++++
->  4 files changed, 153 insertions(+)
->  create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/controls.rst
->  create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/index.rst
->  create mode 100644 Documentation/translations/zh_CN/sound/index.rst
+On 3/1/21 10:19 AM, Linus Walleij wrote:
+> On Tue, Feb 16, 2021 at 4:35 PM Michal Simek <michal.simek@xilinx.com> wrote:
 > 
-> diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
-> index be6f11176200..2767dacfe86d 100644
-> --- a/Documentation/translations/zh_CN/index.rst
-> +++ b/Documentation/translations/zh_CN/index.rst
-> @@ -20,6 +20,7 @@
->     process/index
->     filesystems/index
->     arm64/index
-> +   sound/index
->  
->  目录和表格
->  ----------
-> diff --git a/Documentation/translations/zh_CN/sound/hd-audio/controls.rst b/Documentation/translations/zh_CN/sound/hd-audio/controls.rst
-> new file mode 100644
-> index 000000000000..662bacc5a45f
-> --- /dev/null
-> +++ b/Documentation/translations/zh_CN/sound/hd-audio/controls.rst
-> @@ -0,0 +1,109 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +Chinese translated version of Documentation/sound/hd-audio/controls.rst
-> +
-> +If you have any comment or update to the content, please contact the
-> +original document maintainer directly.  However, if you have a problem
-> +communicating in English you can also ask the Chinese maintainer for
-> +help.  Contact the Chinese maintainer if this translation is outdated
-> +or if there is a problem with the translation.
-
-with the disclaimer file, this info could be removed.
-
-> +
-> +Chinese maintainer: Huang Jianghui <huangjianghui@uniontech.com>
-
-We call us translator，译者。
-
-Others looks fine for me.
-
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
-
-Thanks
-Alex
-
-> +---------------------------------------------------------------------
-> +.. include:: ../../disclaimer-zh_CN.rst
-> +以下为正文
-> +---------------------------------------------------------------------
-> +======================================
-> +高清音频编解码器特定混音器控件
-> +======================================
-> +
-> +
-> +此文件解释特定于编解码器的混音器控件.
-> +
-> +瑞昱编解码器
-> +------------
-> +
-> +声道模式
-> +  这是一个用于更改环绕声道设置的枚举控件,仅在环绕声道打开时显示出现。
-> +  它给出要使用的通道数:"2ch","4ch","6ch"，和"8ch"。根据配置，这还控
-> +  制多I/O插孔的插孔重分配。
-> +
-> +自动静音模式
-> +  这是一个枚举控件，用于更改耳机和线路输出插孔的自动静音行为。如果内
-> +  置扬声器、耳机和/或线路输出插孔在机器上可用，则显示该控件。当只有
-> +  耳机或者线路输出的时候，它给出”禁用“和”启用“状态。当启用后，插孔插
-> +  入后扬声器会自动静音。
-> +
-> +  当耳机和线路输出插孔都存在时，它给出”禁用“、”仅扬声器“和”线路输出+扬
-> +  声器“。当”仅扬声器“被选择，插入耳机或者线路输出插孔可使扬声器静音，
-> +  但不会使线路输出静音。当线路输出+扬声器被选择，插入耳机插孔会同时使扬
-> +  声器和线路输出静音。
-> +
-> +
-> +矽玛特编解码器
-> +--------------
-> +
-> +模拟环回
-> +   此控件启用/禁用模拟环回电路。只有在编解码器提示中将”lookback“设置为真
-> +   时才会出现(见HD-Audio.txt)。请注意，在某些编解码器上，模拟环回和正常
-> +   PCM播放是独占的,即当此选项打开时，您将听不到任何PCM流。
-> +
-> +交换中置/低频
-> +   交换中置和低频通道顺序，通常情况下，左侧对应中置，右侧对应低频,启动此
-> +   项后，左边低频，右边中置。
-> +
-> +耳机作为线路输出
-> +   当此控制开启时，将耳机视为线路输出插孔。也就是说，耳机不会自动静音其他
-> +   线路输出，没有耳机放大器被设置到引脚上。
-> +
-> +麦克风插口模式、线路插孔模式等
-> +   这些枚举控制输入插孔引脚的方向和偏置。根据插孔类型，它可以设置为”麦克风
-> +   输入“和”线路输入“以确定输入偏置,或者当引脚是环绕声道的多I/O插孔时，它
-> +   可以设置为”线路输出“。
-> +
-> +
-> +威盛编解码器
-> +------------
-> +
-> +智能5.1
-> +   一个枚举控件，用于为环绕输出重新分配多个I/O插孔的任务。当它打开时，相应
-> +   的输入插孔（通常是线路输入和麦克风输入）被切换为环绕和中央低频输出插孔。
-> +
-> +独立耳机
-> +   启用此枚举控制时，耳机输出从单个流（第三个PCM，如hw:0,2）而不是主流路由。
-> +   如果耳机DAC与侧边或中央低频通道DAC共享，则DAC将自动切换到耳机。
-> +
-> +环回混合
-> +   一个用于确定是否启动了模拟环回路由的枚举控件。当它启用后，模拟环回路由到
-> +   前置通道。同样，耳机与扬声器输出也采用相同的路径。作为一个副作用，当设置
-> +   此模式后，单个音量控制将不再适用于耳机和扬声器，因为只有一个DAC连接到混
-> +   音器小部件。
-> +
-> +动态电源控制
-> +   此控件决定是否启动每个插孔的动态电源控制检测。启用时，根据插孔的插入情况
-> +   动态更改组件的电源状态（D0/D3）以节省电量消耗。但是，如果您的系统没有提
-> +   供正确的插孔检测，这将无法工作;在这种情况下，请关闭此控件。
-> +
-> +插孔检测
-> +   此控件仅为VT1708编解码器提供，它不会为每个插孔插拔提供适当的未请求事件。
-> +   当此控件打开，驱动将轮询插孔检测，以便耳机自动静音可以工作，而关闭此控
-> +   件将降低功耗。
-> +
-> +
-> +科胜讯编解码器
-> +--------------
-> +
-> +自动静音模式
-> +   见瑞昱解码器
-> +
-> +
-> +
-> +模拟编解码器
-> +------------
-> +
-> +通道模式
-> +   这是一个用于更改环绕声道设置的枚举控件,仅在环绕声道可用时显示。它提供了能
-> +   被使用的通道数:”2ch“、”4ch“和”6ch“。根据配置，这还控制多I/O插孔的插孔重
-> +   分配。
-> +
-> +独立耳机
-> +   启动此枚举控制后，耳机输出从单个流（第三个PCM，如hw:0,2）而不是主流路由。
-> diff --git a/Documentation/translations/zh_CN/sound/hd-audio/index.rst b/Documentation/translations/zh_CN/sound/hd-audio/index.rst
-> new file mode 100644
-> index 000000000000..c287aad51066
-> --- /dev/null
-> +++ b/Documentation/translations/zh_CN/sound/hd-audio/index.rst
-> @@ -0,0 +1,17 @@
-> +.. include:: ../../disclaimer-zh_CN.rst
-> +
-> +:Original: :doc:`../../../../sound/hd-audio/index`
-> +:Translator: Huang Jianghui <huangjianghui@uniontech.com>
-> +
-> +
-> +高清音频
-> +========
-> +
-> +.. toctree::
-> +   :maxdepth: 2
-> +
-> +   notes
-> +   models
-> +   controls
-> +   dp-mst
-> +   realtek-pc-beep
-> diff --git a/Documentation/translations/zh_CN/sound/index.rst b/Documentation/translations/zh_CN/sound/index.rst
-> new file mode 100644
-> index 000000000000..42d86b361e42
-> --- /dev/null
-> +++ b/Documentation/translations/zh_CN/sound/index.rst
-> @@ -0,0 +1,26 @@
-> +.. include:: ../disclaimer-zh_CN.rst
-> +
-> +:Original: :doc:`../../../sound/index`
-> +:Translator: Huang Jianghui <huangjianghui@uniontech.com>
-> +
-> +
-> +====================
-> +Linux 声音子系统文档
-> +====================
-> +
-> +.. toctree::
-> +   :maxdepth: 2
-> +
-> +   kernel-api/index
-> +   designs/index
-> +   soc/index
-> +   alsa-configuration
-> +   hd-audio/index
-> +   cards/index
-> +
-> +.. only::  subproject and html
-> +
-> +   Indices
-> +   =======
-> +
-> +   * :ref:`genindex`
+>> I have a question about expectations when pinctrl setting is applied. In
+>> DTS all nodes are described in the order available in DT.
+>>
+>> uart-default {
+>>         mux {
+>>                 ...
+>>         };
+>>
+>>         conf {
+>>                 ...
+>>         };
+>> };
+>>
+>> I don't know if this standard description or not. I definitely see other
+>> pinctrl drivers which are using different structure.
+>>
+>> Anyway when overlay is applied the order has changed to
+>> uart-default {
+>>         conf {
+>>                 ...
+>>         };
+>>
+>>         mux {
+>>                 ...
+>>         };
+>> };
+>>
+>> which is causing issue because pin is configured first via conf node
+>> before it is requested via mux. This is something what firmware is
+>> checking and error out.
 > 
+> As Frank says the DT ordering has no semantic meaning, it is essentially
+> a functional language, describes object relations not sequences.
+> 
+> The Linux kernel applies the mux and conf in that order because of how
+> the code is implemented (this order also makes a lot of sense for the
+> hardware). I would recommend to trace the execution of an overlay
+> being applied and try to find the reason conf goes before mux and fix
+> the bug there. I think it is a bug in how pinctrl handles DT overlays.
+
+Does this mean that you prefer to fix how dt overlay applying instead of
+fixing code to apply mux configs first before conf one?
+
+Something like this? (just c&p patch below)
+
+Thanks,
+Michal
+
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index 7d3370289938..cf56ee5d7e02 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -1258,13 +1258,35 @@ static int pinctrl_commit_state(struct pinctrl
+*p, struct pinctrl_state *state)
+
+        p->state = NULL;
+
+-       /* Apply all the settings for the new state */
++       /* Apply all the settings for the new state - pinmux first */
+        list_for_each_entry(setting, &state->settings, node) {
+                switch (setting->type) {
+                case PIN_MAP_TYPE_MUX_GROUP:
+                        ret = pinmux_enable_setting(setting);
+                        break;
+                case PIN_MAP_TYPE_CONFIGS_PIN:
++               case PIN_MAP_TYPE_CONFIGS_GROUP:
++                       break;
++               default:
++                       ret = -EINVAL;
++                       break;
++               }
++
++               if (ret < 0) {
++                       goto unapply_new_state;
++               }
++
++               /* Do not link hogs (circular dependency) */
++               if (p != setting->pctldev->p)
++                       pinctrl_link_add(setting->pctldev, p->dev);
++       }
++
++       /* Apply all the settings for the new state - pinconf after */
++       list_for_each_entry(setting, &state->settings, node) {
++               switch (setting->type) {
++               case PIN_MAP_TYPE_MUX_GROUP:
++                       break;
++               case PIN_MAP_TYPE_CONFIGS_PIN:
+                case PIN_MAP_TYPE_CONFIGS_GROUP:
+                        ret = pinconf_apply_setting(setting);
+                        break;
+
+
