@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA29329BFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B769329C35
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241316AbhCBBqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:46:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46158 "EHLO mail.kernel.org"
+        id S1380300AbhCBBuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:50:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241419AbhCATVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:21:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAE72652A0;
-        Mon,  1 Mar 2021 17:33:01 +0000 (UTC)
+        id S241627AbhCAT2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:28:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74F46652A1;
+        Mon,  1 Mar 2021 17:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619982;
-        bh=3qneO/z9THsDdEXwgnlEi5B1dAn4pxPOp7KHZyxBoUA=;
+        s=korg; t=1614619984;
+        bh=aWTIFM4NeP3t/+9+xymvdY5JiY10QtUC0TL3TErd+j4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pROfhjyd+6YrYJ0TM6hSWT5GtCWLsaTURcBjqfFgeD86ruuUIfRbmpIRHn0bipktf
-         cipNDdMAHINdPpY5mix6Y+r9F5hmLIPQuBTjgtOXRFmBgnPVvUsreaSFgewhtNsG8d
-         GKYr4GHLCjBsj2PycwFru4WWk2ZL/t6X23BqXzLU=
+        b=RYC2NDLdLAw5km8EQ0+n8699TQASHMW26KdO/4QqQ0Aiv47TdBLGIRFjh7t9ikaUp
+         6+cRBZ3em5sa1dnt+2mnRh11GCSFKO2zar5SN23VY/ZkunGd8vWwWHiE1MOFaLsKJo
+         IwcBYi1Lre8UL+sVi4TXVFoDzmxB8TtN2PUcg7Pg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
         Ming-Hung Tsai <mtsai@redhat.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 650/663] dm era: Verify the data block size hasnt changed
-Date:   Mon,  1 Mar 2021 17:14:58 +0100
-Message-Id: <20210301161214.012483279@linuxfoundation.org>
+Subject: [PATCH 5.10 651/663] dm era: Fix bitset memory leaks
+Date:   Mon,  1 Mar 2021 17:14:59 +0100
+Message-Id: <20210301161214.064019804@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,11 +42,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikos Tsironis <ntsironis@arrikto.com>
 
-commit c8e846ff93d5eaa5384f6f325a1687ac5921aade upstream.
+commit 904e6b266619c2da5c58b5dce14ae30629e39645 upstream.
 
-dm-era doesn't support changing the data block size of existing devices,
-so check explicitly that the requested block size for a new target
-matches the one stored in the metadata.
+Deallocate the memory allocated for the in-core bitsets when destroying
+the target and in error paths.
 
 Fixes: eec40579d84873 ("dm: add era target")
 Cc: stable@vger.kernel.org # v3.15+
@@ -55,34 +54,44 @@ Reviewed-by: Ming-Hung Tsai <mtsai@redhat.com>
 Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-era-target.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/md/dm-era-target.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
 --- a/drivers/md/dm-era-target.c
 +++ b/drivers/md/dm-era-target.c
-@@ -564,6 +564,15 @@ static int open_metadata(struct era_meta
+@@ -47,6 +47,7 @@ struct writeset {
+ static void writeset_free(struct writeset *ws)
+ {
+ 	vfree(ws->bits);
++	ws->bits = NULL;
+ }
+ 
+ static int setup_on_disk_bitset(struct dm_disk_bitset *info,
+@@ -811,6 +812,8 @@ static struct era_metadata *metadata_ope
+ 
+ static void metadata_close(struct era_metadata *md)
+ {
++	writeset_free(&md->writesets[0]);
++	writeset_free(&md->writesets[1]);
+ 	destroy_persistent_data_objects(md);
+ 	kfree(md);
+ }
+@@ -848,6 +851,7 @@ static int metadata_resize(struct era_me
+ 	r = writeset_alloc(&md->writesets[1], *new_size);
+ 	if (r) {
+ 		DMERR("%s: writeset_alloc failed for writeset 1", __func__);
++		writeset_free(&md->writesets[0]);
+ 		return r;
  	}
  
- 	disk = dm_block_data(sblock);
-+
-+	/* Verify the data block size hasn't changed */
-+	if (le32_to_cpu(disk->data_block_size) != md->block_size) {
-+		DMERR("changing the data block size (from %u to %llu) is not supported",
-+		      le32_to_cpu(disk->data_block_size), md->block_size);
-+		r = -EINVAL;
-+		goto bad;
-+	}
-+
- 	r = dm_tm_open_with_sm(md->bm, SUPERBLOCK_LOCATION,
- 			       disk->metadata_space_map_root,
- 			       sizeof(disk->metadata_space_map_root),
-@@ -575,7 +584,6 @@ static int open_metadata(struct era_meta
- 
- 	setup_infos(md);
- 
--	md->block_size = le32_to_cpu(disk->data_block_size);
- 	md->nr_blocks = le32_to_cpu(disk->nr_blocks);
- 	md->current_era = le32_to_cpu(disk->current_era);
+@@ -858,6 +862,8 @@ static int metadata_resize(struct era_me
+ 			    &value, &md->era_array_root);
+ 	if (r) {
+ 		DMERR("%s: dm_array_resize failed", __func__);
++		writeset_free(&md->writesets[0]);
++		writeset_free(&md->writesets[1]);
+ 		return r;
+ 	}
  
 
 
