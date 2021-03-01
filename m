@@ -2,119 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBABD327F91
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68901327F92
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235779AbhCANcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:32:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36486 "EHLO mail.kernel.org"
+        id S235811AbhCANd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:33:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38926 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235730AbhCANcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:32:17 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF77864D9F;
-        Mon,  1 Mar 2021 13:31:36 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lGie6-00GPaX-Od; Mon, 01 Mar 2021 13:31:34 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Mar 2021 13:31:34 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: Aw: Re:  [PATCH 09/13] PCI: mediatek: Advertise lack of MSI
- handling
-In-Reply-To: <trinity-9fa6d24e-f9de-4741-bf44-86f6197b174d-1614600961297@3c-app-gmx-bap67>
-References: <20210225151023.3642391-1-maz@kernel.org>
- <20210225151023.3642391-10-maz@kernel.org>
- <trinity-b7e2cf18-f0e6-4d88-8a80-de6758b5a91f-1614595396771@3c-app-gmx-bap67>
- <b7721e2ff751cc9565a662cb713819e3@kernel.org>
- <trinity-9fa6d24e-f9de-4741-bf44-86f6197b174d-1614600961297@3c-app-gmx-bap67>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <5afd1d656299d87c43bdf31b8ced2d5f@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: frank-w@public-files.de, lorenzo.pieralisi@arm.com, bhelgaas@google.com, treding@nvidia.com, tglx@linutronix.de, robh@kernel.org, will@kernel.org, kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com, ryder.lee@mediatek.com, marek.vasut+renesas@gmail.com, yoshihiro.shimoda.uh@renesas.com, michal.simek@xilinx.com, paul.walmsley@sifive.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org, linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-renesas-soc@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        id S235776AbhCANcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:32:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A073DAB8C;
+        Mon,  1 Mar 2021 13:32:04 +0000 (UTC)
+Date:   Mon, 01 Mar 2021 14:32:04 +0100
+Message-ID: <s5h35xfj8yz.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Cc:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages for the PCM device
+In-Reply-To: <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+        <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
+        <s5hsg5gjutg.wl-tiwai@suse.de>
+        <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Frank,
-
->> > i guess it's a bug in ath10k driver or my r64 board (it is a v1.1
->> > which has missing capacitors on tx lines).
->> 
->> No, this definitely looks like a bug in the MTK PCIe driver,
->> where the mutex is either not properly initialised, corrupted,
->> or the wrong pointer is passed.
+On Mon, 01 Mar 2021 10:25:05 +0100,
+Anton Yakovlev wrote:
 > 
-> but why does it happen only with the ath10k-card and not the mt7612 in
-> same slot?
-
-Does mt7612 use MSI? What we have here is a bogus mutex in the
-MTK PCIe driver, and the only way not to get there would be
-to avoid using MSIs.
-
+> On 28.02.2021 12:27, Takashi Iwai wrote:
+> > On Sat, 27 Feb 2021 09:59:52 +0100,
+> > Anton Yakovlev wrote:
+> >> +/**
+> >> + * virtsnd_pcm_event() - Handle the PCM device event notification.
+> >> + * @snd: VirtIO sound device.
+> >> + * @event: VirtIO sound event.
+> >> + *
+> >> + * Context: Interrupt context.
+> >
+> > OK, then nonatomic PCM flag is invalid...
 > 
->> This r64 machine is supposed to have working MSIs, right?
-> 
-> imho mt7622 have working MSI
-> 
->> Do you get the same issue without this series?
-> 
-> tested 5.11.0 [1] without this series (but with your/thomas' patch
-> from discussion about my old patch) and got same trace. so this series
-> does not break anything here.
+> Well, no. Here, events are kind of independent entities. PCM-related
+> events are just a special case of more generic events, which can carry
+> any kind of notification/payload. (And at the moment, only XRUN
+> notification is supported for PCM substreams.) So it has nothing to do
+> with the atomicity of the PCM device itself.
 
-Can you retest without any additional patch on top of 5.11?
-These two patches only affect platforms that do *not* have MSIs at all.
+OK, thanks.
 
+Basically the only question is how snd_pcm_period_elapsed() is called.
+And I see that it's called inside queue->lock, and this already
+invalidates the nonatomic PCM mode.  So the code needs the fix: either
+fix this locking (and the context is guaranteed not to be an irq
+context), or change to the normal PCM mode without nonatomic flag.
+Both would bring some side-effect, and we need further changes, I
+suppose...
+
+
+> >> +/**
+> >> + * virtsnd_pcm_sg_num() - Count the number of sg-elements required to represent
+> >> + *                        vmalloc'ed buffer.
+> >> + * @data: Pointer to vmalloc'ed buffer.
+> >> + * @length: Buffer size.
+> >> + *
+> >> + * Context: Any context.
+> >> + * Return: Number of physically contiguous parts in the @data.
+> >> + */
+> >> +static int virtsnd_pcm_sg_num(u8 *data, unsigned int length)
+> >> +{
+> >> +     phys_addr_t sg_address;
+> >> +     unsigned int sg_length;
+> >> +     int num = 0;
+> >> +
+> >> +     while (length) {
+> >> +             struct page *pg = vmalloc_to_page(data);
+> >> +             phys_addr_t pg_address = page_to_phys(pg);
+> >> +             size_t pg_length;
+> >> +
+> >> +             pg_length = PAGE_SIZE - offset_in_page(data);
+> >> +             if (pg_length > length)
+> >> +                     pg_length = length;
+> >> +
+> >> +             if (!num || sg_address + sg_length != pg_address) {
+> >> +                     sg_address = pg_address;
+> >> +                     sg_length = pg_length;
+> >> +                     num++;
+> >> +             } else {
+> >> +                     sg_length += pg_length;
+> >> +             }
+> >> +
+> >> +             data += pg_length;
+> >> +             length -= pg_length;
+> >> +     }
+> >> +
+> >> +     return num;
+> >> +}
+> >> +
+> >> +/**
+> >> + * virtsnd_pcm_sg_from() - Build sg-list from vmalloc'ed buffer.
+> >> + * @sgs: Preallocated sg-list to populate.
+> >> + * @nsgs: The maximum number of elements in the @sgs.
+> >> + * @data: Pointer to vmalloc'ed buffer.
+> >> + * @length: Buffer size.
+> >> + *
+> >> + * Splits the buffer into physically contiguous parts and makes an sg-list of
+> >> + * such parts.
+> >> + *
+> >> + * Context: Any context.
+> >> + */
+> >> +static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
+> >> +                             unsigned int length)
+> >> +{
+> >> +     int idx = -1;
+> >> +
+> >> +     while (length) {
+> >> +             struct page *pg = vmalloc_to_page(data);
+> >> +             size_t pg_length;
+> >> +
+> >> +             pg_length = PAGE_SIZE - offset_in_page(data);
+> >> +             if (pg_length > length)
+> >> +                     pg_length = length;
+> >> +
+> >> +             if (idx == -1 ||
+> >> +                 sg_phys(&sgs[idx]) + sgs[idx].length != page_to_phys(pg)) {
+> >> +                     if (idx + 1 == nsgs)
+> >> +                             break;
+> >> +                     sg_set_page(&sgs[++idx], pg, pg_length,
+> >> +                                 offset_in_page(data));
+> >> +             } else {
+> >> +                     sgs[idx].length += pg_length;
+> >> +             }
+> >> +
+> >> +             data += pg_length;
+> >> +             length -= pg_length;
+> >> +     }
+> >> +
+> >> +     sg_mark_end(&sgs[idx]);
+> >> +}
+> >
+> > Hmm, I thought there can be already a handy helper to convert vmalloc
+> > to sglist, but apparently not.  It should have been trivial to get the
+> > page list from vmalloc, e.g.
+> >
+> > int vmalloc_to_page_list(void *p, struct page **page_ret)
+> > {
+> >          struct vmap_area *va;
+> >
+> >          va = find_vmap_area((unsigned long)p);
+> >          if (!va)
+> >                  return 0;
+> >          *page_ret = va->vm->pages;
+> >          return va->vm->nr_pages;
+> > }
+> >
+> > Then you can set up the sg list in a single call from the given page
+> > list.
+> >
+> > But it's just a cleanup, and let's mark it as a room for
+> > improvements.
 > 
->> > Tried with an mt7612e, this seems to work without any errors.
->> >
->> > so for mt7622/mt7623
->> >
->> > Tested-by: Frank Wunderlich <frank-w@public-files.de>
->> 
->> We definitely need to understand the above.
-> 
-> there is a hardware-bug which may cause this...afair i saw this with
-> the card in r64 with earlier Kernel-versions where other cards work
-> (like the mt7612e).
+> Yeah, we can take a look into some kind of optimizations here. But I
+> suspect, the overall code will look similar. It is not enough just to
+> get a list of pages, you also need to build a list of physically
+> contiguous regions from it.
 
-I don't think a HW bug affecting PCI would cause what we are seeing
-here, unless it results in memory corruption.
+I believe the standard helper does it.  But it's for sg_table, hence
+the plain scatterlist needs to be extracted from there, but most of
+complex things are in the standard code.
 
-Thanks,
+But it's merely an optimization and something for future.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+
+Takashi
