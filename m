@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0DA327DAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C414327DB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbhCALy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 06:54:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
+        id S234925AbhCALzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 06:55:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbhCALvg (ORCPT
+        with ESMTP id S234342AbhCALvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 06:51:36 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02CDC061356;
-        Mon,  1 Mar 2021 03:50:28 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id v9so7213075lfa.1;
-        Mon, 01 Mar 2021 03:50:28 -0800 (PST)
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA3DC06121D;
+        Mon,  1 Mar 2021 03:50:31 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id f1so25026036lfu.3;
+        Mon, 01 Mar 2021 03:50:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QcE+g+g7mExT314EzRI5jC4aCY5l0a1ys6s5hUq2MwM=;
-        b=Yp2JyZjYmI/daDo/mX5UOoQxVnnl2YixWYLv+a8V2Kzk60ROjp0ILUnJkLXbmk+thL
-         3fVp6lam5ylo8Xb8ltWl9XAa1okftI2v59fei8b+9ybrS/mrFqzXPFJjhiE0IpCdZTrW
-         y+69DnJuCSjvh5MbU70toE01zJCf0fM3mJquPv9Rh8NvhMZ4wDD/yOcZojVXK7zZxvmz
-         gSXIGmyy0t7OZgppt4DinuXjUbHvCWJZN4LC59xr+O7zqiONtGkVLgsou6+7o3sL4aQJ
-         h6aK8Y6n5mZOefHqt+QUFqlBmVwbIVDFDWhkq3U/nKv4jipK86uw87QNWHfD5okorqW6
-         L58w==
+        bh=FU3j+Yt9GOZUp/owCA8DjVj1xEHIaeTECTvQ0R9OrLU=;
+        b=VALCemYR51ioQCbxWYoXkchKSMfpJwzMDT1RN7uSrtE7wPvD1D1lIM/1rvS75D+Uo1
+         +e13w7+Pq0lB5CLuM4G28FFu2JtJre9i4T2z+Bjhk5eyDewZq+bJS9UH6FMO5pcFTZYT
+         wO5eSTAjtZfbSigRwfkGBA8pDvCrPJctPoF6d8vpsO0kXpTB4GEToPrZYrI49X7tMBqP
+         p/XvkVQCbsmvmISw5hbC+8jlWC/vHcYK+35OP5MKj/+8oLue8t2a4xqAjOOCbbG7oE43
+         xORK5+izY+V5byp1BuuCs/Ws42dWOdG4xVu1lgANdnPajt+RSJagLFsPCaqxBe9HhoO9
+         zbOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=QcE+g+g7mExT314EzRI5jC4aCY5l0a1ys6s5hUq2MwM=;
-        b=i1GNuCmAHUmg5lZvYXqILjUtORRuDsAgNU/hV34UOOw9krsPUxog0N2whjfgEfcXMk
-         s/uMdoxgRm53YoPWdCJ0JEz0nR7iSu8mkuNqxZHwaDd+6pSlXDInk0x6xPCXNAhO8Qn5
-         CWvC84IqAjC9d9iLU2brUUSXOSIizQ9Tsc7nnNZXD8MjmrJPAtmNblBkt7qa5J25KEvE
-         kFfpeHUj8FgLs7gxN2Kd49mX+fF8I6uH7LaysS9lgNIoAAlP1J7ZzylRcpn1Y2X4auwx
-         46F7821fxTffJZjyMChHqn/KORryqJxDdiCC4FyMvyUHJFjDCyFxI8WFzud+I1ExLc2E
-         yC9g==
-X-Gm-Message-State: AOAM530j9+lVPYy6mQG5ZalyGGeMm0+QejQqmfmcWSj3gqTMzkVqCxRs
-        Pa1GxP5Ko/gcoOJpwkg7Yno=
-X-Google-Smtp-Source: ABdhPJw2Mb/eFZcxsY+8huTbGYWv916iF17UqBxLrcZs4cZqi1b0uQLVHgIRFLze956o6Qf94+Sl9g==
-X-Received: by 2002:a05:6512:203a:: with SMTP id s26mr9572800lfs.535.1614599427398;
-        Mon, 01 Mar 2021 03:50:27 -0800 (PST)
+        bh=FU3j+Yt9GOZUp/owCA8DjVj1xEHIaeTECTvQ0R9OrLU=;
+        b=Y7mLVmz9zXr6odY9cNEonST+jyw+nOiaJYFelBVes7tbg+3CUgYqQ/P1iXkPG0Spqu
+         yhPIurL5PIZgKVjYQIgpbQ8Ne0QqyCEBQ2hEokYBxVtqpe3Kg98eSPo/LsJUVzKHKP1W
+         ZG2wXoTjYaDFp/Pxii1qKLf5kxa/7w0Cq7DxQbhwd66T59wTUTxbjRbDaJOFFicbn1qy
+         QoDwZpxy6zCsUiBvL2GMy0CL4/KMtFRR6GHa3+qqByynp3/4VsfgylRsZ3aaZoc0rJ0M
+         LsbarAjXWb/v3rOcSiMjGwz0jnVz3IPX4jqoc/uQGWBhOM1VUmc0n4kYNenBe/wjc3Qo
+         QxVQ==
+X-Gm-Message-State: AOAM530Gw+NwwGssO9M7S8/3zORrX4nP9wxRObR3F0mls3mpwtLTugHw
+        WHW04iAdhSJSk75+/e+m8Xs=
+X-Google-Smtp-Source: ABdhPJwosJC9Ij9odXOpLDCtX35Hr86P3DVu4j0ngN7hxJ61oc7BJm7CvH+xkLtRAnf8FqWUYOPhGg==
+X-Received: by 2002:ac2:5617:: with SMTP id v23mr6071463lfd.123.1614599430449;
+        Mon, 01 Mar 2021 03:50:30 -0800 (PST)
 Received: from localhost (crossness-hoof.volia.net. [93.72.107.198])
-        by smtp.gmail.com with ESMTPSA id m1sm2431356ljg.111.2021.03.01.03.50.26
+        by smtp.gmail.com with ESMTPSA id x74sm2134485lff.137.2021.03.01.03.50.29
         (version=TLS1_2 cipher=AES128-SHA bits=128/128);
-        Mon, 01 Mar 2021 03:50:26 -0800 (PST)
+        Mon, 01 Mar 2021 03:50:29 -0800 (PST)
 From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
 To:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: [PATCH v2 3/5] usb: gadget: f_uac2: validate input parameters
-Date:   Mon,  1 Mar 2021 13:49:33 +0200
-Message-Id: <1614599375-8803-4-git-send-email-ruslan.bilovol@gmail.com>
+Subject: [PATCH v2 4/5] usb: gadget: f_uac1: validate input parameters
+Date:   Mon,  1 Mar 2021 13:49:34 +0200
+Message-Id: <1614599375-8803-5-git-send-email-ruslan.bilovol@gmail.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1614599375-8803-1-git-send-email-ruslan.bilovol@gmail.com>
 References: <1614599375-8803-1-git-send-email-ruslan.bilovol@gmail.com>
@@ -62,13 +62,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently user can configure UAC2 function with
-parameters that violate UAC2 spec or are not supported
-by UAC2 gadget implementation.
+Currently user can configure UAC1 function with
+parameters that violate UAC1 spec or are not supported
+by UAC1 gadget implementation.
 
 This can lead to incorrect behavior if such gadget
 is connected to the host - like enumeration failure
-or other issues depending on host's UAC2 driver
+or other issues depending on host's UAC1 driver
 implementation, bringing user to a long hours
 of debugging the issue.
 
@@ -77,38 +77,50 @@ an error if they are not valid.
 
 Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 ---
- drivers/usb/gadget/function/f_uac2.c | 39 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/function/f_uac1.c | 43 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/drivers/usb/gadget/function/f_uac2.c b/drivers/usb/gadget/function/f_uac2.c
-index c62cccb..f868e38 100644
---- a/drivers/usb/gadget/function/f_uac2.c
-+++ b/drivers/usb/gadget/function/f_uac2.c
-@@ -14,6 +14,9 @@
+diff --git a/drivers/usb/gadget/function/f_uac1.c b/drivers/usb/gadget/function/f_uac1.c
+index 560382e..e65f474 100644
+--- a/drivers/usb/gadget/function/f_uac1.c
++++ b/drivers/usb/gadget/function/f_uac1.c
+@@ -19,6 +19,9 @@
  #include "u_audio.h"
- #include "u_uac2.h"
+ #include "u_uac1.h"
  
-+/* UAC2 spec: 4.1 Audio Channel Cluster Descriptor */
-+#define UAC2_CHANNEL_MASK 0x07FFFFFF
++/* UAC1 spec: 3.7.2.3 Audio Channel Cluster Format */
++#define UAC1_CHANNEL_MASK 0x0FFF
 +
- /*
-  * The driver implements a simple UAC_2 topology.
-  * USB-OUT -> IT_1 -> OT_3 -> ALSA_Capture
-@@ -604,6 +607,36 @@ static void setup_descriptor(struct f_uac2_opts *opts)
- 	hs_audio_desc[i] = NULL;
+ struct f_uac1 {
+ 	struct g_audio g_audio;
+ 	u8 ac_intf, as_in_intf, as_out_intf;
+@@ -30,6 +33,11 @@ static inline struct f_uac1 *func_to_uac1(struct usb_function *f)
+ 	return container_of(f, struct f_uac1, g_audio.func);
  }
  
-+static int afunc_validate_opts(struct g_audio *agdev, struct device *dev)
++static inline struct f_uac1_opts *g_audio_to_uac1_opts(struct g_audio *audio)
 +{
-+	struct f_uac2_opts *opts = g_audio_to_uac2_opts(agdev);
++	return container_of(audio->func.fi, struct f_uac1_opts, func_inst);
++}
++
+ /*
+  * DESCRIPTORS ... most are static, but strings and full
+  * configuration descriptors are built on demand.
+@@ -505,11 +513,42 @@ static void f_audio_disable(struct usb_function *f)
+ 
+ /*-------------------------------------------------------------------------*/
+ 
++static int f_audio_validate_opts(struct g_audio *audio, struct device *dev)
++{
++	struct f_uac1_opts *opts = g_audio_to_uac1_opts(audio);
 +
 +	if (!opts->p_chmask && !opts->c_chmask) {
 +		dev_err(dev, "Error: no playback and capture channels\n");
 +		return -EINVAL;
-+	} else if (opts->p_chmask & ~UAC2_CHANNEL_MASK) {
++	} else if (opts->p_chmask & ~UAC1_CHANNEL_MASK) {
 +		dev_err(dev, "Error: unsupported playback channels mask\n");
 +		return -EINVAL;
-+	} else if (opts->c_chmask & ~UAC2_CHANNEL_MASK) {
++	} else if (opts->c_chmask & ~UAC1_CHANNEL_MASK) {
 +		dev_err(dev, "Error: unsupported capture channels mask\n");
 +		return -EINVAL;
 +	} else if ((opts->p_ssize < 1) || (opts->p_ssize > 4)) {
@@ -128,25 +140,26 @@ index c62cccb..f868e38 100644
 +	return 0;
 +}
 +
- static int
- afunc_bind(struct usb_configuration *cfg, struct usb_function *fn)
+ /* audio function driver setup/binding */
+ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
  {
-@@ -612,11 +645,13 @@ static void setup_descriptor(struct f_uac2_opts *opts)
- 	struct usb_composite_dev *cdev = cfg->cdev;
- 	struct usb_gadget *gadget = cdev->gadget;
- 	struct device *dev = &gadget->dev;
--	struct f_uac2_opts *uac2_opts;
-+	struct f_uac2_opts *uac2_opts = g_audio_to_uac2_opts(agdev);
- 	struct usb_string *us;
- 	int ret;
+ 	struct usb_composite_dev	*cdev = c->cdev;
+ 	struct usb_gadget		*gadget = cdev->gadget;
++	struct device			*dev = &gadget->dev;
+ 	struct f_uac1			*uac1 = func_to_uac1(f);
+ 	struct g_audio			*audio = func_to_g_audio(f);
+ 	struct f_uac1_opts		*audio_opts;
+@@ -519,6 +558,10 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
+ 	int				rate;
+ 	int				status;
  
--	uac2_opts = container_of(fn->fi, struct f_uac2_opts, func_inst);
-+	ret = afunc_validate_opts(agdev, dev);
-+	if (ret)
-+		return ret;
++	status = f_audio_validate_opts(audio, dev);
++	if (status)
++		return status;
++
+ 	audio_opts = container_of(f->fi, struct f_uac1_opts, func_inst);
  
- 	us = usb_gstrings_attach(cdev, fn_strings, ARRAY_SIZE(strings_fn));
- 	if (IS_ERR(us))
+ 	us = usb_gstrings_attach(cdev, uac1_strings, ARRAY_SIZE(strings_uac1));
 -- 
 1.9.1
 
