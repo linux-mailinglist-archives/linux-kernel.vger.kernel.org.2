@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB91329958
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EDA3299D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347699AbhCBALV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:11:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40750 "EHLO mail.kernel.org"
+        id S1376634AbhCBA3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239764AbhCASWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:22:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 534046508C;
-        Mon,  1 Mar 2021 17:29:31 +0000 (UTC)
+        id S239958AbhCASbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:31:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B676C6526A;
+        Mon,  1 Mar 2021 17:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619772;
-        bh=pR2Wf12ndzZyMM682FQWwGSa7r86gB75fsD0D2tWh2Y=;
+        s=korg; t=1614619783;
+        bh=7jYcNy/gDiWlqXFLyGzQD2g11vvddoSFrlrfF1S8OvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lnwPc+7rlYAi9cGeq/QHmSzsdVwZkBg0USjeb3jOQDQ2BJDPQd/KPx9Zi4nQ46mtc
-         QLixNyNjHo8ZshHmzyaM3j/WQeiqqJCeTAQ+Lk84OKFqzGQMxkzSzttl9YWXyFgQEe
-         oQRaMYNQH3pHvxvMIkVDxd6Pal36oPMEL1BPEFFc=
+        b=o+hGs0bBCoD23Mcsy0+73I4ms6rGKYLtJSCRMsK6kC6spAnRDrHb8wDO0a2A4CZ5p
+         ZKGqVpTgZuCQ1mUoF7rts1KyWH2968YkWjChJv1G25ph2C7Z2/KcRVewOj2F/zeCoH
+         MxzOTLAPKEd44J1zTrvx2Jbbh/Gh9ED6xvGXFOyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 5.10 575/663] entry: Explicitly flush pending rcuog wakeup before last rescheduling point
-Date:   Mon,  1 Mar 2021 17:13:43 +0100
-Message-Id: <20210301161210.304558118@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.10 579/663] iommu/arm-smmu-qcom: Fix mask extraction for bootloader programmed SMRs
+Date:   Mon,  1 Mar 2021 17:13:47 +0100
+Message-Id: <20210301161210.508999094@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,71 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: Isaac J. Manjarres <isaacm@codeaurora.org>
 
-commit 47b8ff194c1fd73d58dc339b597d466fe48c8958 upstream.
+commit dead723e6f049e9fb6b05e5b93456982798ea961 upstream.
 
-Following the idle loop model, cleanly check for pending rcuog wakeup
-before the last rescheduling point on resuming to user mode. This
-way we can avoid to do it from rcu_user_enter() with the last resort
-self-IPI hack that enforces rescheduling.
+When extracting the mask for a SMR that was programmed by the
+bootloader, the SMR's valid bit is also extracted and is treated
+as part of the mask, which is not correct. Consider the scenario
+where an SMMU master whose context is determined by a bootloader
+programmed SMR is removed (omitting parts of device/driver core):
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+->iommu_release_device()
+ -> arm_smmu_release_device()
+  -> arm_smmu_master_free_smes()
+   -> arm_smmu_free_sme() /* Assume that the SME is now free */
+   -> arm_smmu_write_sme()
+    -> arm_smmu_write_smr() /* Construct SMR value using mask and SID */
+
+Since the valid bit was considered as part of the mask, the SMR will
+be programmed as valid.
+
+Fix the SMR mask extraction step for bootloader programmed SMRs
+by masking out the valid bit when we know that we're already
+working with a valid SMR.
+
+Fixes: 07a7f2caaa5a ("iommu/arm-smmu-qcom: Read back stream mappings")
+Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
 Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20210131230548.32970-5-frederic@kernel.org
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/r/1611611545-19055-1-git-send-email-isaacm@codeaurora.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/entry/common.c |    7 +++++++
- kernel/rcu/tree.c     |   12 +++++++-----
- 2 files changed, 14 insertions(+), 5 deletions(-)
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -174,6 +174,10 @@ static unsigned long exit_to_user_mode_l
- 		 * enabled above.
- 		 */
- 		local_irq_disable_exit_to_user();
-+
-+		/* Check if any of the above work has queued a deferred wakeup */
-+		rcu_nocb_flush_deferred_wakeup();
-+
- 		ti_work = READ_ONCE(current_thread_info()->flags);
- 	}
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -65,6 +65,8 @@ static int qcom_smmu_cfg_probe(struct ar
+ 		smr = arm_smmu_gr0_read(smmu, ARM_SMMU_GR0_SMR(i));
  
-@@ -187,6 +191,9 @@ static void exit_to_user_mode_prepare(st
- 
- 	lockdep_assert_irqs_disabled();
- 
-+	/* Flush pending rcuog wakeup before the last need_resched() check */
-+	rcu_nocb_flush_deferred_wakeup();
-+
- 	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
- 		ti_work = exit_to_user_mode_loop(regs, ti_work);
- 
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -699,13 +699,15 @@ noinstr void rcu_user_enter(void)
- 	lockdep_assert_irqs_disabled();
- 
- 	/*
--	 * We may be past the last rescheduling opportunity in the entry code.
--	 * Trigger a self IPI that will fire and reschedule once we resume to
--	 * user/guest mode.
-+	 * Other than generic entry implementation, we may be past the last
-+	 * rescheduling opportunity in the entry code. Trigger a self IPI
-+	 * that will fire and reschedule once we resume in user/guest mode.
- 	 */
- 	instrumentation_begin();
--	if (do_nocb_deferred_wakeup(rdp) && need_resched())
--		irq_work_queue(this_cpu_ptr(&late_wakeup_work));
-+	if (!IS_ENABLED(CONFIG_GENERIC_ENTRY) || (current->flags & PF_VCPU)) {
-+		if (do_nocb_deferred_wakeup(rdp) && need_resched())
-+			irq_work_queue(this_cpu_ptr(&late_wakeup_work));
-+	}
- 	instrumentation_end();
- 
- 	rcu_eqs_enter(true);
+ 		if (FIELD_GET(ARM_SMMU_SMR_VALID, smr)) {
++			/* Ignore valid bit for SMR mask extraction. */
++			smr &= ~ARM_SMMU_SMR_VALID;
+ 			smmu->smrs[i].id = FIELD_GET(ARM_SMMU_SMR_ID, smr);
+ 			smmu->smrs[i].mask = FIELD_GET(ARM_SMMU_SMR_MASK, smr);
+ 			smmu->smrs[i].valid = true;
 
 
