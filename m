@@ -2,61 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB233329FF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 697CC329FF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574977AbhCBDwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:52:12 -0500
-Received: from ms.lwn.net ([45.79.88.28]:42658 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235811AbhCAVwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:52:45 -0500
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id BC63E2B8;
-        Mon,  1 Mar 2021 21:51:45 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BC63E2B8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1614635505; bh=7QCiNeV/LGx+Kezp++PV+sgJR5/h7g4Lbc34vL/8M5s=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=gZ/Kt8NN2Vb1oGoXs3Q0bIixByIlGIlihtkjAUgBcXVLQ2Ewl5HbDG1rWY/CNHhkQ
-         FLLNJdBvha8CxdZCDXVcs8VCqar3+8YZH3SKmMWAvsv4UmajSQpGuCTxRz8SkHpvFa
-         JO5G/CiECqKGJkwHMWuGdywEt6lMURtKiwVDqk5b7igOaozdRwUqEbXct+5DcdZkP4
-         zr7Tn0ZdnlJtXqAZYToGUjZwqYFEX9UYz4eDhuHfI2a6EUDrbINCwIhKksNjikXjTx
-         8+ISYgkWcR7POvqPkg71rsmb53fUcRyzlZYO25r29rkhcP+6TlQB8o552yKZCQgOQM
-         icLzFJs8ptgQg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [RFC v3] scripts: kernel-doc: fix typedef support for
- struct/union parsing
-In-Reply-To: <20210225145033.11431-1-yashsri421@gmail.com>
-References: <CAKXUXMzHPnM=ie06ZGuFXyJ7RcRjYomjyASbp3ND9-Mb2Es+2w@mail.gmail.com>
- <20210225145033.11431-1-yashsri421@gmail.com>
-Date:   Mon, 01 Mar 2021 14:51:44 -0700
-Message-ID: <87pn0i35lb.fsf@meer.lwn.net>
+        id S1574986AbhCBDwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:52:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244578AbhCAVxc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 16:53:32 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058A2C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 13:52:51 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lGqTA-0003uP-Ul; Mon, 01 Mar 2021 22:52:48 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lGqTA-0000yM-Aq; Mon, 01 Mar 2021 22:52:48 +0100
+Date:   Mon, 1 Mar 2021 22:52:48 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <20210301215248.ekclgxc7dq6asdz5@pengutronix.de>
+References: <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+ <X9uYqGboZg5DuEtf@workstation.tuxnet>
+ <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
+ <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
+ <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
+ <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
+ <YBRyG0vv3gRzygSB@workstation.tuxnet>
+ <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
+ <CAGngYiV5GGJvHTwG7k6mv76uR1RLnHOJoO8+d2ofiZAQi3K0BA@mail.gmail.com>
+ <YBg5MlvJQ0N2u+j6@workstation.tuxnet>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gj4wfq3selp6pd7x"
+Content-Disposition: inline
+In-Reply-To: <YBg5MlvJQ0N2u+j6@workstation.tuxnet>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aditya Srivastava <yashsri421@gmail.com> writes:
 
-> Currently, there are ~1290 occurrences in 447 files in the kernel tree
-> 'typedef struct/union' syntax for defining some struct/union. However,
-> kernel-doc currently does not support that syntax. Of the ~1290
-> occurrences, there are four occurrences in ./include/linux/zstd.h with
-> typedef struct/union syntax and a preceding kernel-doc; all other
-> occurrences have no preceding kernel-doc.
->
-> Add support for parsing struct/union following this syntax.
->
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+--gj4wfq3selp6pd7x
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks.
+Hello,
 
-jon
+On Mon, Feb 01, 2021 at 06:24:02PM +0100, Clemens Gruber wrote:
+> Hi Sven, Thierry, Uwe,
+>=20
+> On Fri, Jan 29, 2021 at 05:16:51PM -0500, Sven Van Asbroeck wrote:
+> > Hi Clemens,
+> >=20
+> > On Fri, Jan 29, 2021 at 4:24 PM Sven Van Asbroeck <thesven73@gmail.com>=
+ wrote:
+> > >
+> > > LEN_ON =3D 409, LED_OFF =3D 1228 and
+> > > LED_ON =3D 419, LED_OFF =3D 1238
+> > > produce the same result. you can't see the difference between the two
+> > > when scoping the channel. there are probably more ways to do this,
+> > > some might surprise us. It's a tricky chip.
+> >=20
+> > Please ignore this example, it's bogus. In my defence, it's a Friday
+> > afternoon here :)
+>=20
+> Happens to the best of us :)
+>=20
+> >=20
+> > But consider the following: imagine the bootloader has enabled a few
+> > pwm channels, and the driver's .probe() has left them on/unchanged.
+> > Then the user enables another pwm channel, and tries to change the
+> > period/prescaler. How would pca9685_may_change_prescaler() know
+> > if changing the prescaler is allowed?
+> >=20
+> > And the following: imagine the bootloader has enabled a few
+> > pwm channels, and the driver's .probe() has left them on/unchanged.
+> > After .probe(), the runtime_pm will immediately put the chip to sleep,
+> > because it's unaware that some channels are alive.
+>=20
+> (We could read out the state in .probe. If a pwm is already enabled by
+> the bootloader, then the user can't change the period. Also, the chip
+> would not be put to sleep.
+>=20
+> The user then can export channels and see if they are enabled. If he
+> wants to change the period, he needs to find the one enabled by the
+> bootloader and change the period there, before he requests more.
+> If the bootloader enabled more than one, then he has to disable all but
+> one to change the period.
+>=20
+> Or did I miss something?)
+>=20
+> >=20
+> > I'm sure I'm overlooking a few complications here. probe not changing
+> > the existing configuration, will add a lot of complexity to the driver.
+> > I'm not saying this is necessarily bad, just a tradeoff. Or, a manageme=
+nt
+> > decision.
+>=20
+> But I agree that it is simpler if we keep the resets in probe. It would
+> also avoid a potentially breaking change for users that do not reset
+> their pca9685 chips in their bootloader code.
+
+I would prefer to drop the reset. If the bootloader left with an invalid
+state, this is active for sure until the PWM driver is loaded. If you
+don't reset, the time is extended (usually) until the consumer comes
+along and corrects the setting. So the downside of not resetting is
+quite limited, but if you disable the PWM in .probe() the effect can be
+worse. And consistency dictates to not reset.
+
+> Removing the resets could then be left as something to discuss further
+> in the future and something that belongs in a separate patch series?
+
+That would be fine for me, too.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--gj4wfq3selp6pd7x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmA9YiwACgkQwfwUeK3K
+7AlgXwgAnzhuKRCBTL0mE5C8Cm2uGnKevigkpVEBf8j4eBCtBhp4/q5+3Gk6B1U+
+8ejxoyhnYh29dsZH5xHY/ud28aV1u3F6IP7TDRc/crSxR2JDWTa+2EqDnEI6/k9G
+eLdd1zwGJ/kM7A55JKz/fsIFy5ttO2m6Chno76A7btGGGxfPzsSMktszIiM8Q06z
+adB13RWo5H8eHIfnEox/2/s7KYDpHpRXAJEwKVXjezIsw6QqYEosV8L0u+LxGPSy
+0EA+J1lrMfmb+Z1wqIy+orgCV6UIbseTqfauisL/JKuNf0iPa7mA2fpwuxJRM53D
+G8bHpMRHJjDqnnEBe4739grlLK+Xvw==
+=fR4v
+-----END PGP SIGNATURE-----
+
+--gj4wfq3selp6pd7x--
