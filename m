@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75F9329C24
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1338329C03
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380180AbhCBBtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:49:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48616 "EHLO mail.kernel.org"
+        id S1345812AbhCBBqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:46:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241526AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:26:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B683365276;
-        Mon,  1 Mar 2021 17:30:16 +0000 (UTC)
+        id S241409AbhCATVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:21:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72151651FE;
+        Mon,  1 Mar 2021 17:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619817;
-        bh=HWH2mT8EBuU3SvawlmtLYIXl5D5rjbZ2+5FmiCq8ADQ=;
+        s=korg; t=1614619820;
+        bh=PX0rVoXaMNn/kgd+GCuXKMTMZ33NL8AfcbZNsNsG9oI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wDBJXoQ5KRdVzbkbeS9bw+I5D+Ap1FYd8a0lQ/hrG4aqP303rsRuMtX32BVC8EVjt
-         d8wItkz+jARpjwn9A2ESXRXOrkJ+LKQlFRE7ewrB1aAcdbyR84SOJT2mtPQkZ5hgwD
-         3sCVVsf1OpGo2qB8OgcasiUAFpa40kAV3G0i4Prw=
+        b=PB8FHBsW6dEkOlohni1/SbT6zZ0wTOsH1P9WuIlx1jktUyydrgO7iBNgddo+xWmWV
+         hFG0SOGcgnNq40Eg3F299dsdfH3qcoTELsZzy708+guQAoySFMldzzdvvO5mcHGUng
+         Eu9sp5bgg9BxFRy7TmA2VHoaKXK0y5HC5MAn/GPs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Georgi Bakalski <georgi.bakalski@gmail.com>,
+        Sean Young <sean@mess.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 562/663] media: i2c: max9286: fix access to unallocated memory
-Date:   Mon,  1 Mar 2021 17:13:30 +0100
-Message-Id: <20210301161209.670371555@linuxfoundation.org>
+Subject: [PATCH 5.10 563/663] media: ir_toy: add another IR Droid device
+Date:   Mon,  1 Mar 2021 17:13:31 +0100
+Message-Id: <20210301161209.717370316@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,37 +41,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+From: Sean Young <sean@mess.org>
 
-commit e88ccf09e79cf33cac40316ba69c820d9eebc82b upstream.
+commit 4487e0215560392bd11c9de08d60824d72c89cd9 upstream.
 
-The asd allocated with v4l2_async_notifier_add_fwnode_subdev() must be
-of size max9286_asd, otherwise access to max9286_asd->source will go to
-unallocated memory.
+This device is also supported.
 
-Fixes: 86d37bf31af6 ("media: i2c: max9286: Allocate v4l2_async_subdev dynamically")
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: stable@vger.kernel.org # v5.10+
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Tested-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: stable@vger.kernel.org
+Tested-by: Georgi Bakalski <georgi.bakalski@gmail.com>
+Reported-by: Georgi Bakalski <georgi.bakalski@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/i2c/max9286.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/rc/ir_toy.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/media/i2c/max9286.c
-+++ b/drivers/media/i2c/max9286.c
-@@ -580,7 +580,7 @@ static int max9286_v4l2_notifier_registe
+--- a/drivers/media/rc/ir_toy.c
++++ b/drivers/media/rc/ir_toy.c
+@@ -491,6 +491,7 @@ static void irtoy_disconnect(struct usb_
  
- 		asd = v4l2_async_notifier_add_fwnode_subdev(&priv->notifier,
- 							    source->fwnode,
--							    sizeof(*asd));
-+							    sizeof(struct max9286_asd));
- 		if (IS_ERR(asd)) {
- 			dev_err(dev, "Failed to add subdev for source %u: %ld",
- 				i, PTR_ERR(asd));
+ static const struct usb_device_id irtoy_table[] = {
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x04d8, 0xfd08, USB_CLASS_CDC_DATA) },
++	{ USB_DEVICE_INTERFACE_CLASS(0x04d8, 0xf58b, USB_CLASS_CDC_DATA) },
+ 	{ }
+ };
+ 
 
 
