@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAB1329C5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AF7329B5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380588AbhCBByA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:54:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48604 "EHLO mail.kernel.org"
+        id S1345678AbhCBBXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:23:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241890AbhCAT3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F81A650AE;
-        Mon,  1 Mar 2021 17:41:25 +0000 (UTC)
+        id S237739AbhCATGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:06:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A3C26516F;
+        Mon,  1 Mar 2021 17:07:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620485;
-        bh=bhdfHS0IHfkfSb4GNG/JLrlDz5NatEXgHt5X353Lgqk=;
+        s=korg; t=1614618453;
+        bh=mL09YJig77HNu0qIaVI95NMHTCeHIlURYFfYIByCyUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JtnUfp42ML2mOZXz4oqiVZLCkxfCvFI55hXbe9btARaRsA4CNbBF9ny2nE584ACkS
-         mC7TXJ2fludXKS9DR0W9W2hPzLeVqV8OPZgNXeWotHjCY2B4EuGXTVqpBGD6xm3AeF
-         v1XHPUP5wPbQC9k+5SvhxyPXI7CTQs9RwOy9brPA=
+        b=KZ06XFVWhdvMofsqnWaGEm/jbdnr9Is0mWSxgRXWXj1xTTAfK3fVFPjvOcVT1wLqU
+         wPrbKtMVGG09aiXqvTZ/ejsDFbTdrK90rRaAVSefq8FNKJrN7HqBij4dbL+MAedTGf
+         oFLfTHwqq3Udo+D15AJ+iWbEv7z06L7ImoqZ+H5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 141/775] arm64: dts: broadcom: bcm4908: use proper NAND binding
-Date:   Mon,  1 Mar 2021 17:05:09 +0100
-Message-Id: <20210301161208.622439830@linuxfoundation.org>
+Subject: [PATCH 5.10 065/663] usb: dwc2: Make "trimming xfer length" a debug message
+Date:   Mon,  1 Mar 2021 17:05:13 +0100
+Message-Id: <20210301161144.949178697@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 56098be85d19cd56b59d7b3854ea035cc8cb9e95 ]
+[ Upstream commit 1a9e38cabd80356ffb98c2c88fec528ea9644fd5 ]
 
-BCM4908 has controller that needs different IRQ handling just like the
-BCM63138. Describe it properly.
+With some USB network adapters, such as DM96xx, the following message
+is seen for each maximum size receive packet.
 
-On Linux this change fixes:
-brcmstb_nand ff801800.nand: timeout waiting for command 0x9
-brcmstb_nand ff801800.nand: intfc status d0000000
+dwc2 ff540000.usb: dwc2_update_urb_state(): trimming xfer length
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+This happens because the packet size requested by the driver is 1522
+bytes, wMaxPacketSize is 64, the dwc2 driver configures the chip to
+receive 24*64 = 1536 bytes, and the chip does indeed send more than
+1522 bytes of data. Since the event does not indicate an error condition,
+the message is just noise. Demote it to debug level.
+
+Fixes: 7359d482eb4d3 ("staging: HCD files for the DWC2 driver")
+Tested-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Link: https://lore.kernel.org/r/20210113112052.17063-4-nsaenzjulienne@suse.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi | 2 +-
+ drivers/usb/dwc2/hcd_intr.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi b/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
-index f873dc44ce9ca..55d9b56ac749d 100644
---- a/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
-+++ b/arch/arm64/boot/dts/broadcom/bcm4908/bcm4908.dtsi
-@@ -164,7 +164,7 @@
- 		nand@1800 {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
--			compatible = "brcm,brcmnand-v7.1", "brcm,brcmnand";
-+			compatible = "brcm,nand-bcm63138", "brcm,brcmnand-v7.1", "brcm,brcmnand";
- 			reg = <0x1800 0x600>, <0x2000 0x10>;
- 			reg-names = "nand", "nand-int-base";
- 			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/drivers/usb/dwc2/hcd_intr.c b/drivers/usb/dwc2/hcd_intr.c
+index 12819e019e13c..d5f4ec1b73b15 100644
+--- a/drivers/usb/dwc2/hcd_intr.c
++++ b/drivers/usb/dwc2/hcd_intr.c
+@@ -500,7 +500,7 @@ static int dwc2_update_urb_state(struct dwc2_hsotg *hsotg,
+ 						      &short_read);
+ 
+ 	if (urb->actual_length + xfer_length > urb->length) {
+-		dev_warn(hsotg->dev, "%s(): trimming xfer length\n", __func__);
++		dev_dbg(hsotg->dev, "%s(): trimming xfer length\n", __func__);
+ 		xfer_length = urb->length - urb->actual_length;
+ 	}
+ 
 -- 
 2.27.0
 
