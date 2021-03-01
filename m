@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1251E3299C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C373298C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376476AbhCBA3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:29:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44816 "EHLO mail.kernel.org"
+        id S1346529AbhCAXtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:49:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239410AbhCAS3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA9864FC0;
-        Mon,  1 Mar 2021 17:41:05 +0000 (UTC)
+        id S239057AbhCASJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:09:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1F8F64F3E;
+        Mon,  1 Mar 2021 17:05:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620466;
-        bh=WFhLke/mMFwdpNRneuTRhMm2ax9AsNEYxH8qoLqz1KY=;
+        s=korg; t=1614618357;
+        bh=JxfD2xSjmuUV9FC76sMH0DWAc9vUOhn/rSQ2t0OJ/V8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=feSsGH4W3YSf5rZ2pqradJKmlNPNm8HIBcz1CLfdM95noBbVfeUJGmHOtpCl04qX/
-         eilW7ibOcw9GapehqeAN28Ib7fMA1IeOYcz0E70cN5d9hynFipDinbP9cm5mcfFbPN
-         KIE4fzfk953/hVmjxjLIfXBjict1Wo7CbPxglX2E=
+        b=E9y56WaWt5tlVyDhEhJz5U2gL1M8kn3aLxGfWygU3hEZLDhiZRfrmRR9YqVlc1YNA
+         BuhYRO1M6JOFQOvV1FcAoPg4iGjgvUGedo6PezM0ndJlVBRcbAUtSmv5Y8KmF9tgG2
+         nxBAQpNO7UXoN8kJnNmElINiZgEV+6eZTzWqZyQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 136/775] net: amd-xgbe: Reset link when the link never comes back
-Date:   Mon,  1 Mar 2021 17:05:04 +0100
-Message-Id: <20210301161208.388867446@linuxfoundation.org>
+Subject: [PATCH 5.10 057/663] soc: ti: pm33xx: Fix some resource leak in the error handling paths of the probe function
+Date:   Mon,  1 Mar 2021 17:05:05 +0100
+Message-Id: <20210301161144.578332479@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,64 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 84fe68eb67f9499309cffd97c1ba269de125ff14 ]
+[ Upstream commit 17ad4662595ea0c4fd7496b664523ef632e63349 ]
 
-Normally, auto negotiation and reconnect should be automatically done by
-the hardware. But there seems to be an issue where auto negotiation has
-to be restarted manually. This happens because of link training and so
-even though still connected to the partner the link never "comes back".
-This needs an auto-negotiation restart.
+'am33xx_pm_rtc_setup()' allocates some resources that must be freed on the
+error. Commit 2152fbbd47c0 ("soc: ti: pm33xx: Simplify RTC usage to prepare
+to drop platform data") has introduced the use of these resources but has
+only updated the remove function.
 
-Also, a change in xgbe-mdio is needed to get ethtool to recognize the
-link down and get the link change message. This change is only
-required in a backplane connection mode.
+Fix the error handling path of the probe function now.
 
-Fixes: abf0a1c2b26a ("amd-xgbe: Add support for SFP+ modules")
-Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
-Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
-Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2152fbbd47c0 ("soc: ti: pm33xx: Simplify RTC usage to prepare to drop platform data")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amd/xgbe/xgbe-mdio.c   | 2 +-
- drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c | 8 ++++++++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ drivers/soc/ti/pm33xx.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
-index 19ee4db0156d6..4e97b48695220 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
-@@ -1345,7 +1345,7 @@ static void xgbe_phy_status(struct xgbe_prv_data *pdata)
- 							     &an_restart);
- 	if (an_restart) {
- 		xgbe_phy_config_aneg(pdata);
--		return;
-+		goto adjust_link;
- 	}
+diff --git a/drivers/soc/ti/pm33xx.c b/drivers/soc/ti/pm33xx.c
+index d2f5e7001a93c..dc21aa855a458 100644
+--- a/drivers/soc/ti/pm33xx.c
++++ b/drivers/soc/ti/pm33xx.c
+@@ -536,7 +536,7 @@ static int am33xx_pm_probe(struct platform_device *pdev)
  
- 	if (pdata->phy.link) {
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-index 087948085ae19..d3f72faecd1da 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-@@ -2610,6 +2610,14 @@ static int xgbe_phy_link_status(struct xgbe_prv_data *pdata, int *an_restart)
- 	if (reg & MDIO_STAT1_LSTATUS)
- 		return 1;
+ 	ret = am33xx_push_sram_idle();
+ 	if (ret)
+-		goto err_free_sram;
++		goto err_unsetup_rtc;
  
-+	if (pdata->phy.autoneg == AUTONEG_ENABLE &&
-+	    phy_data->port_mode == XGBE_PORT_MODE_BACKPLANE) {
-+		if (!test_bit(XGBE_LINK_INIT, &pdata->dev_state)) {
-+			netif_carrier_off(pdata->netdev);
-+			*an_restart = 1;
-+		}
-+	}
-+
- 	/* No link, attempt a receiver reset cycle */
- 	if (phy_data->rrc_count++ > XGBE_RRC_FREQUENCY) {
- 		phy_data->rrc_count = 0;
+ 	am33xx_pm_set_ipc_ops();
+ 
+@@ -566,6 +566,9 @@ static int am33xx_pm_probe(struct platform_device *pdev)
+ 
+ err_put_wkup_m3_ipc:
+ 	wkup_m3_ipc_put(m3_ipc);
++err_unsetup_rtc:
++	iounmap(rtc_base_virt);
++	clk_put(rtc_fck);
+ err_free_sram:
+ 	am33xx_pm_free_sram();
+ 	pm33xx_dev = NULL;
 -- 
 2.27.0
 
