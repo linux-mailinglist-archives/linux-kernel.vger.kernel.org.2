@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C0D32932A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D39632932E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237310AbhCAVEn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Mar 2021 16:04:43 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:24839 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237568AbhCARMZ (ORCPT
+        id S239073AbhCAVGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:06:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237658AbhCARM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:12:25 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-272-GvFi4ZV3PGyydurjz5eoxA-1; Mon, 01 Mar 2021 17:10:39 +0000
-X-MC-Unique: GvFi4ZV3PGyydurjz5eoxA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 1 Mar 2021 17:10:39 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 1 Mar 2021 17:10:39 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Masahiro Yamada' <masahiroy@kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Christian Zigotzky <chzigotzky@xenosoft.de>
-CC:     Sasha Levin <sashal@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] kbuild: Fix <linux/version.h> for empty SUBLEVEL or
- PATCHLEVEL again
-Thread-Topic: [PATCH] kbuild: Fix <linux/version.h> for empty SUBLEVEL or
- PATCHLEVEL again
-Thread-Index: AQHXDRQhwqNXEZip6k6FhC5f09+yOapvX7Rg
-Date:   Mon, 1 Mar 2021 17:10:39 +0000
-Message-ID: <43d9bcb59bdc4ac7aa42de1be78fa339@AcuMS.aculab.com>
-References: <20210227142023.63480-1-masahiroy@kernel.org>
-In-Reply-To: <20210227142023.63480-1-masahiroy@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 1 Mar 2021 12:12:58 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43324C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:10:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tjW7UgwNvhAB6c+CxM0TgH3E/t+orZ9IpzUrq+oUHuk=; b=d817ea8DdcyjF1Ms0vm4tG30S7
+        Njl0UIbfVny9x2ckhx90bzXas056RIuK4skUznHM4aVPINN2yDrvMHCTWL6qxGoXhxBpUKdR3jhsi
+        Z/7BZnnPU3MqituD0C3SWo75teptezEh6mghCXidUVxcp+jTJzEvnLIQGTOqctQg9RS9G1/E9TOFa
+        HUkEqf8wt7NT410YbIx7sl2aCX2qnojxpEax88/NuaxveNWQiZeMt/DmwxOlnFWMVVVJh8gu/lrCt
+        3YaRYMGMKB33ItMgKDsJnUUSvrjOzGo9MqPYZUatuk4irkCWFvmV0QD1OHJ9k+nu7mVNka5vDtD+5
+        oTJczHYw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lGm4J-0006pR-HL; Mon, 01 Mar 2021 17:10:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 21F343003E1;
+        Mon,  1 Mar 2021 18:10:48 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 02524201A7D18; Mon,  1 Mar 2021 18:10:47 +0100 (CET)
+Date:   Mon, 1 Mar 2021 18:10:47 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nadav Amit <namit@vmware.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v6 1/9] smp: Run functions concurrently in
+ smp_call_function_many_cond()
+Message-ID: <YD0gF9VuqKyVUgVS@hirez.programming.kicks-ass.net>
+References: <20210220231712.2475218-1-namit@vmware.com>
+ <20210220231712.2475218-2-namit@vmware.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210220231712.2475218-2-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada
-> Sent: 27 February 2021 14:20
-> 
-> Commit 9b82f13e7ef3 ("kbuild: clamp SUBLEVEL to 255") breaks the build
-> if SUBLEVEL or PATCHLEVEL is empty.
-> 
-> Commit 78d3bb4483ba ("kbuild: Fix <linux/version.h> for empty SUBLEVEL
-> or PATCHLEVEL") fixed the issue by prepending a zero.
-> 
-> This time, we cannot take the same approach because we have C code:
-> 
->   #define LINUX_VERSION_PATCHLEVEL $(PATCHLEVEL)
->   #define LINUX_VERSION_SUBLEVEL $(SUBLEVEL)
-> 
-> Replace empty SUBLEVEL or PATCHLEVEL with a zero.
+On Sat, Feb 20, 2021 at 03:17:04PM -0800, Nadav Amit wrote:
+> +		/*
+> +		 * Choose the most efficient way to send an IPI. Note that the
+> +		 * number of CPUs might be zero due to concurrent changes to the
+> +		 * provided mask.
+> +		 */
+> +		if (nr_cpus == 1)
+> +			arch_send_call_function_single_ipi(last_cpu);
+> +		else if (likely(nr_cpus > 1))
+> +			arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
 
-You could do:
+I just ran into conflicts with another patch set, and noticed that the
+above should probably be:
 
-#define LINUX_VERSION_PATCHLEVEL ($(PATCHLEVEL) + 0)
+		if (nr_cpus == 1)
+			send_call_function_single_ipi(last_cpu);
+		else if (likely(nr_cpus > 1))
+			arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
 
-	David
+Which will avoid the IPI when @last_cpu is idle.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
