@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393B6329D2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 940CA329CE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443171AbhCBCTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:19:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55184 "EHLO mail.kernel.org"
+        id S1442538AbhCBCOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:14:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239032AbhCATpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:45:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 296D464ECE;
-        Mon,  1 Mar 2021 17:20:45 +0000 (UTC)
+        id S240664AbhCATlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:41:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A33C564F8E;
+        Mon,  1 Mar 2021 17:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619246;
-        bh=ykBWz7q0gITa4YdkXIaartll+ZiXUZtKqQYRY9e6u6c=;
+        s=korg; t=1614619255;
+        bh=r8JDvbqKeyBjuyGPr1KBtseZo0036tHjEt4LSOYMGxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cyzXohqRuMDwjHn4szwTb+52AxVdkGCDV8onIYeZyaUSuyft+XSplwnJM0nLOyshI
-         3UI16ssALjo6kiF46YlLyPtj5DmdkT+59BzPXPSUlA7PuMe35US6qkaLSKTegkqrL5
-         AtZySBwPhIod31lL2tO/RZr22tJdMh5H6s3QoT5Q=
+        b=ols7xBWVH9pJcRB6bNe+8wdXgd43xwFxEClU8zRNa/3H1MfYsA1dt0996UST6FkzH
+         cfVMToedAaDYU8blGMUkjl2hxcdPiosMnnDTODlgwQLjRsleQesrzBzANhvbqbQSS6
+         34qODmFHam2fA7epgyBnKmOTgZeK4kQ3UD8bSpLI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 385/663] perf intel-pt: Fix missing CYC processing in PSB
-Date:   Mon,  1 Mar 2021 17:10:33 +0100
-Message-Id: <20210301161200.914126983@linuxfoundation.org>
+Subject: [PATCH 5.10 387/663] perf intel-pt: Fix IPC with CYC threshold
+Date:   Mon,  1 Mar 2021 17:10:35 +0100
+Message-Id: <20210301161201.014484601@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,37 +43,147 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit 03fb0f859b45d1eb05c984ab4bd3bef67e45ede2 ]
+[ Upstream commit 6af4b60033e0ce0332fcdf256c965ad41942821a ]
 
-Add missing CYC packet processing when walking through PSB+. This
-improves the accuracy of timestamps that follow PSB+, until the next
-MTC.
+The code assumed every CYC-eligible packet has a CYC packet, which is not
+the case when CYC thresholds are used. Fix by checking if a CYC packet is
+actually present in that case.
 
-Fixes: 3d49807870f08 ("perf tools: Add new Intel PT packet definitions")
+Fixes: 5b1dc0fd1da06 ("perf intel-pt: Add support for samples to contain IPC ratio")
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
-Link: https://lore.kernel.org/r/20210205175350.23817-2-adrian.hunter@intel.com
+Link: https://lore.kernel.org/r/20210205175350.23817-4-adrian.hunter@intel.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/intel-pt-decoder/intel-pt-decoder.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../util/intel-pt-decoder/intel-pt-decoder.c  | 27 +++++++++++++++++++
+ .../util/intel-pt-decoder/intel-pt-decoder.h  |  1 +
+ tools/perf/util/intel-pt.c                    | 13 +++++++++
+ 3 files changed, 41 insertions(+)
 
 diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-index 697513f351549..91cba05827369 100644
+index ef29f6b25e60a..197eb58a39cb7 100644
 --- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
 +++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
-@@ -1761,6 +1761,9 @@ static int intel_pt_walk_psbend(struct intel_pt_decoder *decoder)
- 			break;
+@@ -24,6 +24,13 @@
+ #include "intel-pt-decoder.h"
+ #include "intel-pt-log.h"
  
- 		case INTEL_PT_CYC:
-+			intel_pt_calc_cyc_timestamp(decoder);
-+			break;
++#define BITULL(x) (1ULL << (x))
 +
- 		case INTEL_PT_VMCS:
- 		case INTEL_PT_MNT:
- 		case INTEL_PT_PAD:
++/* IA32_RTIT_CTL MSR bits */
++#define INTEL_PT_CYC_ENABLE		BITULL(1)
++#define INTEL_PT_CYC_THRESHOLD		(BITULL(22) | BITULL(21) | BITULL(20) | BITULL(19))
++#define INTEL_PT_CYC_THRESHOLD_SHIFT	19
++
+ #define INTEL_PT_BLK_SIZE 1024
+ 
+ #define BIT63 (((uint64_t)1 << 63))
+@@ -167,6 +174,8 @@ struct intel_pt_decoder {
+ 	uint64_t sample_tot_cyc_cnt;
+ 	uint64_t base_cyc_cnt;
+ 	uint64_t cyc_cnt_timestamp;
++	uint64_t ctl;
++	uint64_t cyc_threshold;
+ 	double tsc_to_cyc;
+ 	bool continuous_period;
+ 	bool overflow;
+@@ -204,6 +213,14 @@ static uint64_t intel_pt_lower_power_of_2(uint64_t x)
+ 	return x << i;
+ }
+ 
++static uint64_t intel_pt_cyc_threshold(uint64_t ctl)
++{
++	if (!(ctl & INTEL_PT_CYC_ENABLE))
++		return 0;
++
++	return (ctl & INTEL_PT_CYC_THRESHOLD) >> INTEL_PT_CYC_THRESHOLD_SHIFT;
++}
++
+ static void intel_pt_setup_period(struct intel_pt_decoder *decoder)
+ {
+ 	if (decoder->period_type == INTEL_PT_PERIOD_TICKS) {
+@@ -245,12 +262,15 @@ struct intel_pt_decoder *intel_pt_decoder_new(struct intel_pt_params *params)
+ 
+ 	decoder->flags              = params->flags;
+ 
++	decoder->ctl                = params->ctl;
+ 	decoder->period             = params->period;
+ 	decoder->period_type        = params->period_type;
+ 
+ 	decoder->max_non_turbo_ratio    = params->max_non_turbo_ratio;
+ 	decoder->max_non_turbo_ratio_fp = params->max_non_turbo_ratio;
+ 
++	decoder->cyc_threshold = intel_pt_cyc_threshold(decoder->ctl);
++
+ 	intel_pt_setup_period(decoder);
+ 
+ 	decoder->mtc_shift = params->mtc_period;
+@@ -2017,6 +2037,7 @@ static int intel_pt_hop_trace(struct intel_pt_decoder *decoder, bool *no_tip, in
+ 
+ static int intel_pt_walk_trace(struct intel_pt_decoder *decoder)
+ {
++	int last_packet_type = INTEL_PT_PAD;
+ 	bool no_tip = false;
+ 	int err;
+ 
+@@ -2025,6 +2046,12 @@ static int intel_pt_walk_trace(struct intel_pt_decoder *decoder)
+ 		if (err)
+ 			return err;
+ next:
++		if (decoder->cyc_threshold) {
++			if (decoder->sample_cyc && last_packet_type != INTEL_PT_CYC)
++				decoder->sample_cyc = false;
++			last_packet_type = decoder->packet.type;
++		}
++
+ 		if (decoder->hop) {
+ 			switch (intel_pt_hop_trace(decoder, &no_tip, &err)) {
+ 			case HOP_IGNORE:
+diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
+index b52937b03c8c8..48adaa78acfc2 100644
+--- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
++++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
+@@ -244,6 +244,7 @@ struct intel_pt_params {
+ 	void *data;
+ 	bool return_compression;
+ 	bool branch_enable;
++	uint64_t ctl;
+ 	uint64_t period;
+ 	enum intel_pt_period_type period_type;
+ 	unsigned max_non_turbo_ratio;
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index 710ce798a2686..dc023b8c6003a 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -893,6 +893,18 @@ static bool intel_pt_sampling_mode(struct intel_pt *pt)
+ 	return false;
+ }
+ 
++static u64 intel_pt_ctl(struct intel_pt *pt)
++{
++	struct evsel *evsel;
++	u64 config;
++
++	evlist__for_each_entry(pt->session->evlist, evsel) {
++		if (intel_pt_get_config(pt, &evsel->core.attr, &config))
++			return config;
++	}
++	return 0;
++}
++
+ static u64 intel_pt_ns_to_ticks(const struct intel_pt *pt, u64 ns)
+ {
+ 	u64 quot, rem;
+@@ -1026,6 +1038,7 @@ static struct intel_pt_queue *intel_pt_alloc_queue(struct intel_pt *pt,
+ 	params.data = ptq;
+ 	params.return_compression = intel_pt_return_compression(pt);
+ 	params.branch_enable = intel_pt_branch_enable(pt);
++	params.ctl = intel_pt_ctl(pt);
+ 	params.max_non_turbo_ratio = pt->max_non_turbo_ratio;
+ 	params.mtc_period = intel_pt_mtc_period(pt);
+ 	params.tsc_ctc_ratio_n = pt->tsc_ctc_ratio_n;
 -- 
 2.27.0
 
