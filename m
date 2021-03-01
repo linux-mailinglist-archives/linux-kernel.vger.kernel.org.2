@@ -2,106 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D530332A034
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5337332A035
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575510AbhCBD43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:29 -0500
-Received: from mga07.intel.com ([134.134.136.100]:52009 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241841AbhCAW7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:59:20 -0500
-IronPort-SDR: IBfFtAt6njIT235hj8F62Gx16GCujXyz62MgZ/ThCFZ0BxS6raO2eTFkkGvUUaovHU/4se27DI
- 4UmHfG4WqTqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="250671443"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="250671443"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 14:57:57 -0800
-IronPort-SDR: tJve8x1cqIyj1Zp29MjKeC6e8QzZkBYQiEg5LY5/Q2mEq6QeMUgOU1orgYtb4aPV0pYaO/g7ns
- twgRDb4Xl6sA==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="368758360"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 14:57:57 -0800
-Date:   Mon, 1 Mar 2021 15:00:11 -0800
-From:   Jacob Pan <jacob.jun.pan@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        <iommu@lists.linux-foundation.org>, <zhangfei.gao@foxmail.com>,
-        <linux-mm@kvack.org>, jacob.jun.pan@intel.com
-Subject: Re: [PATCH v6 08/12] fork: Clear PASID for new mm
-Message-ID: <20210301150011.766e70a3@jacob-builder>
-In-Reply-To: <YDgh53AcQHT+T3L0@otcwcpicx3.sc.intel.com>
-References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
-        <1594684087-61184-9-git-send-email-fenghua.yu@intel.com>
-        <YDYoL/zZ9YaGgwSV@myrica>
-        <YDgh53AcQHT+T3L0@otcwcpicx3.sc.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1575518AbhCBD4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:56:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344872AbhCAXCv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 18:02:51 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D94DC061756;
+        Mon,  1 Mar 2021 15:02:08 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id v9so10450424lfa.1;
+        Mon, 01 Mar 2021 15:02:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3mPp40AUhbsnKl/pbYjlZ7ypcuT/iGIJ4xR8gm1e1pQ=;
+        b=UYqa36UZPmzn81Z+vlXZrf71q0aNgOFXH8hZPj7fG/RbxSVvhX+UqzaY4p3kRvaLhh
+         GJeU3sGpELzvgOYobxeNS8gGFV7SpFFJc4Le+O0ZXYfxqwDwduDuiydrNOUw5t4P9vcB
+         GD6hCcJKMqLMGz5/z7ideLnU3clBs7A6N8a7/X13yJEhUH8ggg4H4XeE4U2ZeMVV9if4
+         mvMX7V5Wf9jSr08hD+/GXZzRWetUOZvw0busAy0+ZfLmzutGuNc8e+8HPU9f5JScVmCw
+         bLAC/AgzK1h+fRSHnVd+y0coOsNzTSAP4l1VgKHbhmu/ntvgzeNqW/3zzbFVHIb7Ebni
+         KxxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3mPp40AUhbsnKl/pbYjlZ7ypcuT/iGIJ4xR8gm1e1pQ=;
+        b=C/82mpq54/wj3S63kwtzbUAeF4ZtILDbPoGBnRCFpQ58o61XplvDaMyTlTr35MvM5o
+         lKj/prUQf1AsjcEfjmROD+W2sJpeDrbo5p7pm4K/sROGT++kNO3y0Cz/vwbzXuc/WCfu
+         7Y/uNwghykQH30ptBUmOM9cbzMYHvo7r8tyv4bN6kiHyAFOK14fT1Gws63sNNXcUcddV
+         9k6lPGyvwPcDkA5aK6Lpo5UbfV2Uan/eVeJAW4UEcdAghz/eaQNrOsGoGZkqLPC/eL21
+         8mLNyMM4mScucurc4R8vA+u9BKgRgniWyM5sLVtXMd+jduT1CiyKQzI2+Eq8xJfbpVIt
+         2bjw==
+X-Gm-Message-State: AOAM532WzANJdXIE2JVg1npzUbv15elJg8qjpR8Vg7gj8ryJy2v83Ebx
+        HUJFawlNV6ryveM/KJ4wuuQ=
+X-Google-Smtp-Source: ABdhPJyxGuwO7i4pyWRbtBuyqIT6ZddzTc/BEGKMvQ0yrhDI0RdpOIGeiG/g8VYT4wutPvas8wfVAw==
+X-Received: by 2002:ac2:5ec1:: with SMTP id d1mr10292008lfq.48.1614639726988;
+        Mon, 01 Mar 2021 15:02:06 -0800 (PST)
+Received: from localhost.localdomain ([94.103.235.167])
+        by smtp.gmail.com with ESMTPSA id x27sm1152071lfn.95.2021.03.01.15.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 15:02:06 -0800 (PST)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     johan@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
+Subject: [PATCH] usb: serial: io_edgeport: fix memory leak in edge_startup
+Date:   Tue,  2 Mar 2021 02:01:52 +0300
+Message-Id: <20210301230152.527093-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fenghua,
+sysbot found memory leak in edge_startup().
+The problem was that when an error was received from the usb_submit_urb(),
+nothing was cleaned up.
 
-On Thu, 25 Feb 2021 22:17:11 +0000, Fenghua Yu <fenghua.yu@intel.com> wrote:
+Reported-by: syzbot+59f777bdcbdd7eea5305@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/usb/serial/io_edgeport.c | 26 ++++++++++++++++----------
+ 1 file changed, 16 insertions(+), 10 deletions(-)
 
-> Hi, Jean,
-> 
-> On Wed, Feb 24, 2021 at 11:19:27AM +0100, Jean-Philippe Brucker wrote:
-> > Hi Fenghua,
-> > 
-> > [Trimmed the Cc list]
-> > 
-> > On Mon, Jul 13, 2020 at 04:48:03PM -0700, Fenghua Yu wrote:  
-> > > When a new mm is created, its PASID should be cleared, i.e. the PASID
-> > > is initialized to its init state 0 on both ARM and X86.  
-> > 
-> > I just noticed this patch was dropped in v7, and am wondering whether we
-> > could still upstream it. Does x86 need a child with a new address space
-> > (!CLONE_VM) to inherit the PASID of the parent?  That doesn't make much
-> > sense with regard to IOMMU structures - same PASID indexing multiple
-> > PGDs?  
-> 
-> You are right: x86 should clear mm->pasid when a new mm is created.
-> This patch somehow is losted:(
-> 
-> > 
-> > Currently iommu_sva_alloc_pasid() assumes mm->pasid is always
-> > initialized to 0 and fails on forked tasks. I'm trying to figure out
-> > how to fix this. Could we clear the pasid on fork or does it break the
-> > x86 model?  
-> 
-> x86 calls ioasid_alloc() instead of iommu_sva_alloc_pasid(). So
-We should consolidate at some point, there is no need to store pasid in two
-places.
+diff --git a/drivers/usb/serial/io_edgeport.c b/drivers/usb/serial/io_edgeport.c
+index a493670c06e6..68401adcffde 100644
+--- a/drivers/usb/serial/io_edgeport.c
++++ b/drivers/usb/serial/io_edgeport.c
+@@ -3003,26 +3003,32 @@ static int edge_startup(struct usb_serial *serial)
+ 				response = -ENODEV;
+ 			}
+ 
+-			usb_free_urb(edge_serial->interrupt_read_urb);
+-			kfree(edge_serial->interrupt_in_buffer);
+-
+-			usb_free_urb(edge_serial->read_urb);
+-			kfree(edge_serial->bulk_in_buffer);
+-
+-			kfree(edge_serial);
+-
+-			return response;
++			goto error;
+ 		}
+ 
+ 		/* start interrupt read for this edgeport this interrupt will
+ 		 * continue as long as the edgeport is connected */
+ 		response = usb_submit_urb(edge_serial->interrupt_read_urb,
+ 								GFP_KERNEL);
+-		if (response)
++		if (response) {
+ 			dev_err(ddev, "%s - Error %d submitting control urb\n",
+ 				__func__, response);
++
++			goto error;
++		}
+ 	}
+ 	return response;
++
++error:
++	usb_free_urb(edge_serial->interrupt_read_urb);
++	kfree(edge_serial->interrupt_in_buffer);
++
++	usb_free_urb(edge_serial->read_urb);
++	kfree(edge_serial->bulk_in_buffer);
++
++	kfree(edge_serial);
++
++	return response;
+ }
+ 
+ 
+-- 
+2.25.1
 
-> functionality is not a problem without this patch on x86. But I think
-I feel the reason that x86 doesn't care is that mm->pasid is not used
-unless bind_mm is called. For the fork children even mm->pasid is non-zero,
-it has no effect since it is not loaded onto MSRs.
-Perhaps you could also add a check or WARN_ON(!mm->pasid) in load_pasid()?
-
-> we do need to have this patch in the kernel because PASID is per addr
-> space and two addr spaces shouldn't have the same PASID.
-> 
-Agreed.
-
-> Who will accept this patch?
-> 
-> Thanks.
-> 
-> -Fenghua
-
-
-Thanks,
-
-Jacob
