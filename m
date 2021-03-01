@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AAB329835
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DF123298AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345236AbhCAXTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:19:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54092 "EHLO mail.kernel.org"
+        id S237824AbhCAXod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:44:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234877AbhCASAT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:00:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7603364FDE;
-        Mon,  1 Mar 2021 17:50:55 +0000 (UTC)
+        id S239445AbhCASIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:08:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1768651CD;
+        Mon,  1 Mar 2021 17:17:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621056;
-        bh=U/IgthPYfK2vQ3LO/QcjtFLaKIoHRiltgLmmsYS5/Cw=;
+        s=korg; t=1614619031;
+        bh=oSmsppwOFSGJvRWs7tGyuh25TJzFvei7c3QfdnAwgs8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dQ2PpmgNDrXxV0dvpr+0V++X7ftU/m4bq17gEtOw8V24f3deN4ue4iRFtwhv8zWdB
-         qEI/aUVqLTDi6gscbQzqaSM+x4SzyWpA/QQ9Yx/XpJnPpqdvzAxAJuTobJeiILQOVW
-         tiXsABOq3OLNjB5TFSk7LtvPOWEKu89HOcoCzi60=
+        b=a384FDqDKooxXOXV4jWALg+mWlhW7/ATcnjNJsi+0+LhmBGWV7EaVXD08Aqt+FJ7a
+         XDFEDVKmHmj7W4AStQZPDze+HUmI8G/EPGsIZRG4fihapVgjp+iV8DspMSEOsUwScd
+         MqOul3lvNIxXsVH1tQjLTQygKPCrH6WFhxX9p+FI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
+        stable@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Ben Boeckel <mathstuf@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 378/775] auxdisplay: ht16k33: Fix refresh rate handling
-Date:   Mon,  1 Mar 2021 17:09:06 +0100
-Message-Id: <20210301161220.281578384@linuxfoundation.org>
+Subject: [PATCH 5.10 307/663] watch_queue: Drop references to /dev/watch_queue
+Date:   Mon,  1 Mar 2021 17:09:15 +0100
+Message-Id: <20210301161157.033977454@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +43,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-[ Upstream commit e89b0a426721a8ca5971bc8d70aa5ea35c020f90 ]
+[ Upstream commit 8fe62e0c0e2efa5437f3ee81b65d69e70a45ecd2 ]
 
-Drop the call to msecs_to_jiffies(), as "HZ / fbdev->refresh_rate" is
-already the number of jiffies to wait.
+The merged API doesn't use a watch_queue device, but instead relies on
+pipes, so let the documentation reflect that.
 
-Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Fixes: f7e47677e39a ("watch_queue: Add a key/keyring notification facility")
+Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Ben Boeckel <mathstuf@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/ht16k33.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ Documentation/security/keys/core.rst | 4 ++--
+ samples/Kconfig                      | 2 +-
+ samples/watch_queue/watch_test.c     | 2 +-
+ security/keys/Kconfig                | 8 ++++----
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index d951d54b26f52..d8602843e8a53 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -117,8 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
- {
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+diff --git a/Documentation/security/keys/core.rst b/Documentation/security/keys/core.rst
+index aa0081685ee11..b3ed5c581034c 100644
+--- a/Documentation/security/keys/core.rst
++++ b/Documentation/security/keys/core.rst
+@@ -1040,8 +1040,8 @@ The keyctl syscall functions are:
  
--	schedule_delayed_work(&fbdev->work,
--			      msecs_to_jiffies(HZ / fbdev->refresh_rate));
-+	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
- }
+      "key" is the ID of the key to be watched.
  
- /*
+-     "queue_fd" is a file descriptor referring to an open "/dev/watch_queue"
+-     which manages the buffer into which notifications will be delivered.
++     "queue_fd" is a file descriptor referring to an open pipe which
++     manages the buffer into which notifications will be delivered.
+ 
+      "filter" is either NULL to remove a watch or a filter specification to
+      indicate what events are required from the key.
+diff --git a/samples/Kconfig b/samples/Kconfig
+index 0ed6e4d71d87b..e76cdfc50e257 100644
+--- a/samples/Kconfig
++++ b/samples/Kconfig
+@@ -210,7 +210,7 @@ config SAMPLE_WATCHDOG
+ 	depends on CC_CAN_LINK
+ 
+ config SAMPLE_WATCH_QUEUE
+-	bool "Build example /dev/watch_queue notification consumer"
++	bool "Build example watch_queue notification API consumer"
+ 	depends on CC_CAN_LINK && HEADERS_INSTALL
+ 	help
+ 	  Build example userspace program to use the new mount_notify(),
+diff --git a/samples/watch_queue/watch_test.c b/samples/watch_queue/watch_test.c
+index 46e618a897fef..8c6cb57d5cfc5 100644
+--- a/samples/watch_queue/watch_test.c
++++ b/samples/watch_queue/watch_test.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/* Use /dev/watch_queue to watch for notifications.
++/* Use watch_queue API to watch for notifications.
+  *
+  * Copyright (C) 2020 Red Hat, Inc. All Rights Reserved.
+  * Written by David Howells (dhowells@redhat.com)
+diff --git a/security/keys/Kconfig b/security/keys/Kconfig
+index 83bc23409164a..c161642a84841 100644
+--- a/security/keys/Kconfig
++++ b/security/keys/Kconfig
+@@ -119,7 +119,7 @@ config KEY_NOTIFICATIONS
+ 	bool "Provide key/keyring change notifications"
+ 	depends on KEYS && WATCH_QUEUE
+ 	help
+-	  This option provides support for getting change notifications on keys
+-	  and keyrings on which the caller has View permission.  This makes use
+-	  of the /dev/watch_queue misc device to handle the notification
+-	  buffer and provides KEYCTL_WATCH_KEY to enable/disable watches.
++	  This option provides support for getting change notifications
++	  on keys and keyrings on which the caller has View permission.
++	  This makes use of pipes to handle the notification buffer and
++	  provides KEYCTL_WATCH_KEY to enable/disable watches.
 -- 
 2.27.0
 
