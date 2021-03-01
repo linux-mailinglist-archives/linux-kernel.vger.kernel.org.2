@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81506329AEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C361F329A8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378232AbhCBBFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:05:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60078 "EHLO mail.kernel.org"
+        id S239449AbhCBA5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:57:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53755 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240879AbhCAS6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:58:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3B0C651E5;
-        Mon,  1 Mar 2021 17:19:20 +0000 (UTC)
+        id S240629AbhCASsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:48:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECDBE64EEC;
+        Mon,  1 Mar 2021 17:20:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619161;
-        bh=5s9YUJUH5HJI4x8xi7gkB8koNYjb9xPbHWD5Sko/iTM=;
+        s=korg; t=1614619252;
+        bh=kezp2w331YsW77p3RaREjUBoNjsHTktzMUK4qRAYL6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zywr4EfocgE8UU0xjfhdzWUFBtJzzws9dJt5pBblfQtD49tarwrqs9VE0Gxia8mpB
-         1fzZY4S8RBCuYkSRhHvqHk4t8pEunc216A6Ki2FvMZRA94vj6Na5jDvYKuo5fPmAnr
-         zuJrJK8DR9wJX+JON52Mm3LtUwlUhKDaofRbnEYk=
+        b=kKpJpDyTFUPMZPilchtblPSQnsmu+izCIcJb1Fuhpj3CxWkyY+warxuW5uzK/GvE7
+         o79YxUGKD1S2/vA9WzFV9UYESdSAsJjaI7f4Hv2TpyCdGpozgpq2O+RYM4/iUD5wLP
+         Bhv8dDVAyVsniZYbBdgk0e011sd19492pG+qUvAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Michael Tretter <m.tretter@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 354/663] kunit: tool: fix unit test cleanup handling
-Date:   Mon,  1 Mar 2021 17:10:02 +0100
-Message-Id: <20210301161159.371942142@linuxfoundation.org>
+Subject: [PATCH 5.10 360/663] clk: divider: fix initialization with parent_hw
+Date:   Mon,  1 Mar 2021 17:10:08 +0100
+Message-Id: <20210301161159.662085310@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,55 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Latypov <dlatypov@google.com>
+From: Michael Tretter <m.tretter@pengutronix.de>
 
-[ Upstream commit cfd607e43da4a20753744f134e201310262b827a ]
+[ Upstream commit 0225daea08141b1dff681502d5af70b71e8b11ec ]
 
-* Stop leaking file objects.
-* Use self.addCleanup() to ensure we call cleanup functions even if
-setUp() fails.
-* use mock.patch.stopall instead of more error-prone manual approach
+If a driver registers a divider clock with a parent_hw instead of the
+parent_name, the parent_hw is ignored and the clock does not have a
+parent.
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Reviewed-by: David Gow <davidgow@google.com>
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
-Acked-by: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Fix this by initializing the parents the same way they are initialized
+for clock gates.
+
+Fixes: ff258817137a ("clk: divider: Add support for specifying parents via DT/pointers")
+Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
+Reviewed-by: Stephen Boyd <sboyd@kernel.org>
+Acked-by: Michal Simek <michal.simek@xilinx.com>
+Link: https://lore.kernel.org/r/20210121071659.1226489-3-m.tretter@pengutronix.de
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/kunit/kunit_tool_test.py | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/clk/clk-divider.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 497ab51bc1702..3fbe1acd531ae 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -288,19 +288,17 @@ class StrContains(str):
- class KUnitMainTest(unittest.TestCase):
- 	def setUp(self):
- 		path = get_absolute_path('test_data/test_is_test_passed-all_passed.log')
--		file = open(path)
--		all_passed_log = file.readlines()
--		self.print_patch = mock.patch('builtins.print')
--		self.print_mock = self.print_patch.start()
-+		with open(path) as file:
-+			all_passed_log = file.readlines()
-+
-+		self.print_mock = mock.patch('builtins.print').start()
-+		self.addCleanup(mock.patch.stopall)
-+
- 		self.linux_source_mock = mock.Mock()
- 		self.linux_source_mock.build_reconfig = mock.Mock(return_value=True)
- 		self.linux_source_mock.build_um_kernel = mock.Mock(return_value=True)
- 		self.linux_source_mock.run_kernel = mock.Mock(return_value=all_passed_log)
+diff --git a/drivers/clk/clk-divider.c b/drivers/clk/clk-divider.c
+index 8de12cb0c43d8..f32157cb40138 100644
+--- a/drivers/clk/clk-divider.c
++++ b/drivers/clk/clk-divider.c
+@@ -493,8 +493,13 @@ struct clk_hw *__clk_hw_register_divider(struct device *dev,
+ 	else
+ 		init.ops = &clk_divider_ops;
+ 	init.flags = flags;
+-	init.parent_names = (parent_name ? &parent_name: NULL);
+-	init.num_parents = (parent_name ? 1 : 0);
++	init.parent_names = parent_name ? &parent_name : NULL;
++	init.parent_hws = parent_hw ? &parent_hw : NULL;
++	init.parent_data = parent_data;
++	if (parent_name || parent_hw || parent_data)
++		init.num_parents = 1;
++	else
++		init.num_parents = 0;
  
--	def tearDown(self):
--		self.print_patch.stop()
--		pass
--
- 	def test_config_passes_args_pass(self):
- 		kunit.main(['config', '--build_dir=.kunit'], self.linux_source_mock)
- 		assert self.linux_source_mock.build_reconfig.call_count == 1
+ 	/* struct clk_divider assignments */
+ 	div->reg = reg;
 -- 
 2.27.0
 
