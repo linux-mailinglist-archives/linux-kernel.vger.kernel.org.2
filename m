@@ -2,154 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697CC329FF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B031329FFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574986AbhCBDwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:52:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244578AbhCAVxc (ORCPT
+        id S1575045AbhCBDwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:52:40 -0500
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:45561 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239834AbhCAVyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:53:32 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058A2C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 13:52:51 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lGqTA-0003uP-Ul; Mon, 01 Mar 2021 22:52:48 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lGqTA-0000yM-Aq; Mon, 01 Mar 2021 22:52:48 +0100
-Date:   Mon, 1 Mar 2021 22:52:48 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
-Message-ID: <20210301215248.ekclgxc7dq6asdz5@pengutronix.de>
-References: <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
- <X9uYqGboZg5DuEtf@workstation.tuxnet>
- <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
- <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
- <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
- <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
- <YBRyG0vv3gRzygSB@workstation.tuxnet>
- <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
- <CAGngYiV5GGJvHTwG7k6mv76uR1RLnHOJoO8+d2ofiZAQi3K0BA@mail.gmail.com>
- <YBg5MlvJQ0N2u+j6@workstation.tuxnet>
+        Mon, 1 Mar 2021 16:54:55 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 078F02F2;
+        Mon,  1 Mar 2021 16:53:38 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 01 Mar 2021 16:53:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=XU9CqDB6xAf1yegfOzpc7jhni9
+        2NjMhWGXbUDgnQlcM=; b=JCqDbcKtQB74nsiv9Of4z5iYrHyiiisn+dMkU5e0XT
+        wDSqhTshQrMWIfmhJufVsVi4F6NAYvoQrq0FEArepEaVQ3/KYTUSpf7dEAWEhIxP
+        bUtJssM+MdI+3DLchcSd6wlvPmWJKwlowyQckc/eA1EJxyYu3IjaU+uDapdvyR4F
+        plOtEeXa2Tay2DEPhXRZ6q8pE6nxN9UOqxbE1eE6J/Jn/8J6h5CmRBPT5jxPoZrL
+        d05ITNCg2T50F9m6Zw5bD5NkAvtE+BTnNKX+1LolaCtSpW/mpJHqKyuOsgvRHjl3
+        dYipNNc5equKjd4yMIKIwYlcfI0GOEaJ0R1j/Mvncb6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=XU9CqDB6xAf1yegfO
+        zpc7jhni92NjMhWGXbUDgnQlcM=; b=sQqj/wuvyQuYlQW880Wp4a4A4u1KnHP21
+        xtxMKR4CnPrwQsmaZ1yQL23DZnVql1S0xbpjLVuPzo34WkhhBbBRSMobQP6eyPz3
+        lOo50PMqAxGSDA/OtqRBrp5Inx6SqFWza1QmYgOADcN2GB73kdhiggcRE4LazigO
+        nIfKwbKzEDO85K1ywvfzLhwwwGXn9P+pNApolPIJwA8pMPNWX7dQnV5V8ba6Mts6
+        Zayh7CJCybzA7kU8J2zX7d47PvvE+bwIannZgM5b5ilq4EsWxWVCKRsFWr+I+PX2
+        ljPAibPlVcm9CcvDIbYMLKtLzUGk23xqan7wRo8bzhgkKivFZ0GLQ==
+X-ME-Sender: <xms:YmI9YGwYTdBlfffr2oTgB3m-t0H6lOPCP8X_vM2emiOpP0ZGk9AFOw>
+    <xme:YmI9YGhjecGOoo3OlhoLHT9iXX2uvdYI84czfQJbpjXqOEOhrsM_xXNRX3hfWuWjy
+    sNI-3t8Si2boX_grQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrleekgdduheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeghihhllhhirghm
+    ucffuhhrrghnugcuoeifihhllhdoghhithesughrnhgurdhmvgeqnecuggftrfgrthhtvg
+    hrnhepffehieekueeileeufeeuteegveeugeejfeelhfevkefhhfdvtddvjedufeekfeeu
+    necukfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
+X-ME-Proxy: <xmx:YmI9YDWwiQVbjt0BzrIviYN4mIM1OmHWgLk2eZDupaNvSvquU8LEdQ>
+    <xmx:YmI9YA2uyoXn1trgEqrpZcX_xgkaruHe6uPKiW2JIbejccR-PDCKeQ>
+    <xmx:YmI9YBFpO6JjynZ4AAeNPHPlBCmwrtCSvhHHlLJlvr5mWaEiyjkiXQ>
+    <xmx:YmI9YJDTgSVbP62A5-omgIv-HoV-0Byl7XRzyQqIG9c9ViVaOoLd2g>
+Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CCEF5240054;
+        Mon,  1 Mar 2021 16:53:37 -0500 (EST)
+From:   William Durand <will+git@drnd.me>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/9] rx_ts_record struct cleanups
+Date:   Mon,  1 Mar 2021 21:53:25 +0000
+Message-Id: <20210301215335.767-1-will+git@drnd.me>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gj4wfq3selp6pd7x"
-Content-Disposition: inline
-In-Reply-To: <YBg5MlvJQ0N2u+j6@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset fixes the checkpatch issues related to the `rx_ts_record`
+struct defined in `rtl8192e/rtl819x_TS.h` (avoid camelcase). The last
+patch reformats the struct a bit to be more consistent with structures
+defined in other header files.
 
---gj4wfq3selp6pd7x
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+William Durand (9):
+  staging: rtl8192e: rename TsCommonInfo to ts_common_info in rx_ts_record struct
+  staging: rtl8192e: rename RxIndicateSeq to rx_indicate_seq in rx_ts_record struct
+  staging: rtl8192e: rename RxTimeoutIndicateSeq to rx_timeout_indicate_seq in rx_ts_record struct
+  staging: rtl8192e: rename RxPendingPktList to rx_pending_pkt_list in rx_ts_record struct
+  staging: rtl8192e: rename RxPktPendingTimer to rx_pkt_pending_timer in rx_ts_record struct
+  staging: rtl8192e: rename RxAdmittedBARecord to rx_admitted_ba_record in rx_ts_record struct
+  staging: rtl8192e: rename RxLastSeqNum to rx_last_seq_num in rx_ts_record struct
+  staging: rtl8192e: rename RxLastFragNum to rx_last_frag_num in rx_ts_record struct
+  staging: rtl8192e: reformat rx_ts_record struct
 
-Hello,
+ drivers/staging/rtl8192e/rtl819x_BAProc.c | 12 ++--
+ drivers/staging/rtl8192e/rtl819x_TS.h     | 18 +++---
+ drivers/staging/rtl8192e/rtl819x_TSProc.c | 58 +++++++++---------
+ drivers/staging/rtl8192e/rtllib_rx.c      | 74 +++++++++++------------
+ 4 files changed, 81 insertions(+), 81 deletions(-)
 
-On Mon, Feb 01, 2021 at 06:24:02PM +0100, Clemens Gruber wrote:
-> Hi Sven, Thierry, Uwe,
->=20
-> On Fri, Jan 29, 2021 at 05:16:51PM -0500, Sven Van Asbroeck wrote:
-> > Hi Clemens,
-> >=20
-> > On Fri, Jan 29, 2021 at 4:24 PM Sven Van Asbroeck <thesven73@gmail.com>=
- wrote:
-> > >
-> > > LEN_ON =3D 409, LED_OFF =3D 1228 and
-> > > LED_ON =3D 419, LED_OFF =3D 1238
-> > > produce the same result. you can't see the difference between the two
-> > > when scoping the channel. there are probably more ways to do this,
-> > > some might surprise us. It's a tricky chip.
-> >=20
-> > Please ignore this example, it's bogus. In my defence, it's a Friday
-> > afternoon here :)
->=20
-> Happens to the best of us :)
->=20
-> >=20
-> > But consider the following: imagine the bootloader has enabled a few
-> > pwm channels, and the driver's .probe() has left them on/unchanged.
-> > Then the user enables another pwm channel, and tries to change the
-> > period/prescaler. How would pca9685_may_change_prescaler() know
-> > if changing the prescaler is allowed?
-> >=20
-> > And the following: imagine the bootloader has enabled a few
-> > pwm channels, and the driver's .probe() has left them on/unchanged.
-> > After .probe(), the runtime_pm will immediately put the chip to sleep,
-> > because it's unaware that some channels are alive.
->=20
-> (We could read out the state in .probe. If a pwm is already enabled by
-> the bootloader, then the user can't change the period. Also, the chip
-> would not be put to sleep.
->=20
-> The user then can export channels and see if they are enabled. If he
-> wants to change the period, he needs to find the one enabled by the
-> bootloader and change the period there, before he requests more.
-> If the bootloader enabled more than one, then he has to disable all but
-> one to change the period.
->=20
-> Or did I miss something?)
->=20
-> >=20
-> > I'm sure I'm overlooking a few complications here. probe not changing
-> > the existing configuration, will add a lot of complexity to the driver.
-> > I'm not saying this is necessarily bad, just a tradeoff. Or, a manageme=
-nt
-> > decision.
->=20
-> But I agree that it is simpler if we keep the resets in probe. It would
-> also avoid a potentially breaking change for users that do not reset
-> their pca9685 chips in their bootloader code.
+--
+2.30.1
 
-I would prefer to drop the reset. If the bootloader left with an invalid
-state, this is active for sure until the PWM driver is loaded. If you
-don't reset, the time is extended (usually) until the consumer comes
-along and corrects the setting. So the downside of not resetting is
-quite limited, but if you disable the PWM in .probe() the effect can be
-worse. And consistency dictates to not reset.
-
-> Removing the resets could then be left as something to discuss further
-> in the future and something that belongs in a separate patch series?
-
-That would be fine for me, too.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---gj4wfq3selp6pd7x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmA9YiwACgkQwfwUeK3K
-7AlgXwgAnzhuKRCBTL0mE5C8Cm2uGnKevigkpVEBf8j4eBCtBhp4/q5+3Gk6B1U+
-8ejxoyhnYh29dsZH5xHY/ud28aV1u3F6IP7TDRc/crSxR2JDWTa+2EqDnEI6/k9G
-eLdd1zwGJ/kM7A55JKz/fsIFy5ttO2m6Chno76A7btGGGxfPzsSMktszIiM8Q06z
-adB13RWo5H8eHIfnEox/2/s7KYDpHpRXAJEwKVXjezIsw6QqYEosV8L0u+LxGPSy
-0EA+J1lrMfmb+Z1wqIy+orgCV6UIbseTqfauisL/JKuNf0iPa7mA2fpwuxJRM53D
-G8bHpMRHJjDqnnEBe4739grlLK+Xvw==
-=fR4v
------END PGP SIGNATURE-----
-
---gj4wfq3selp6pd7x--
