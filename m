@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F557328E5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 759E1328E64
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241754AbhCAT3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:29:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54178 "EHLO mail.kernel.org"
+        id S241852AbhCAT31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:29:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235798AbhCAQwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:52:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE32864F24;
-        Mon,  1 Mar 2021 16:33:54 +0000 (UTC)
+        id S235886AbhCAQxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:53:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CA4C64F2A;
+        Mon,  1 Mar 2021 16:34:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616435;
-        bh=Pji7FA7BcGREQtuJz9VCMROmp0X//GpurmGRsIPkta0=;
+        s=korg; t=1614616444;
+        bh=5oJ9OcNrhehl8lgzcVyFOvexjBD3iI5kfTY5IL/5IwI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o/ESqH4iOaEggMp8iArri41sSg9dABD9rm/s3DYlwf+R9IWt/yymxsQpSKtMtJgGi
-         a4HPmRnKVsjk1e8Z7oh0zc2YWTF4aiBChs6Hjr1vXJZDTLQhCIwTxQNplrVimw6Ejk
-         9u/BV6bns7+hkEx4E0ZzPj/GUoWAewGCyO2po2B0=
+        b=U5sXUltBUqB3kp7K1RI79zoKuUsPD6TAiRf5Q5CgoJEMm/sAvEZB6+sc8yp1OYmGs
+         x6cLZ86Eb6M3jdfjbXw47CoXwMmP5rmRAyZVkH+vUB7+sm7lstJGCbipCWvgFCITRJ
+         QoaohphIwN/OlJj8if+piZcoRn5LH0uGEfRnmavs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Subject: [PATCH 4.14 150/176] watchdog: mei_wdt: request stop on unregister
-Date:   Mon,  1 Mar 2021 17:13:43 +0100
-Message-Id: <20210301161028.458647231@linuxfoundation.org>
+        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
+        Zi Yan <ziy@nvidia.com>, Davidlohr Bueso <dbueso@suse.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 153/176] hugetlb: fix copy_huge_page_from_user contig page struct assumption
+Date:   Mon,  1 Mar 2021 17:13:46 +0100
+Message-Id: <20210301161028.612633188@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -42,43 +46,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Usyskin <alexander.usyskin@intel.com>
+From: Mike Kravetz <mike.kravetz@oracle.com>
 
-commit 740c0a57b8f1e36301218bf549f3c9cc833a60be upstream.
+commit 3272cfc2525b3a2810a59312d7a1e6f04a0ca3ef upstream.
 
-The MEI bus has a special behavior on suspend it destroys
-all the attached devices, this is due to the fact that also
-firmware context is not persistent across power flows.
+page structs are not guaranteed to be contiguous for gigantic pages.  The
+routine copy_huge_page_from_user can encounter gigantic pages, yet it
+assumes page structs are contiguous when copying pages from user space.
 
-If watchdog on MEI bus is ticking before suspending the firmware
-times out and reports that the OS is missing watchdog tick.
-Send the stop command to the firmware on watchdog unregistered
-to eliminate the false event on suspend.
-This does not make the things worse from the user-space perspective
-as a user-space should re-open watchdog device after
-suspending before this patch.
+Since page structs for the target gigantic page are not contiguous, the
+data copied from user space could overwrite other pages not associated
+with the gigantic page and cause data corruption.
 
+Non-contiguous page structs are generally not an issue.  However, they can
+exist with a specific kernel configuration and hotplug operations.  For
+example: Configure the kernel with CONFIG_SPARSEMEM and
+!CONFIG_SPARSEMEM_VMEMMAP.  Then, hotplug add memory for the area where
+the gigantic page will be allocated.
+
+Link: https://lkml.kernel.org/r/20210217184926.33567-2-mike.kravetz@oracle.com
+Fixes: 8fb5debc5fcd ("userfaultfd: hugetlbfs: add hugetlb_mcopy_atomic_pte for userfaultfd support")
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Davidlohr Bueso <dbueso@suse.de>
+Cc: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Joao Martins <joao.m.martins@oracle.com>
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210124114938.373885-1-tomas.winkler@intel.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/watchdog/mei_wdt.c |    1 +
- 1 file changed, 1 insertion(+)
+ mm/memory.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/drivers/watchdog/mei_wdt.c
-+++ b/drivers/watchdog/mei_wdt.c
-@@ -390,6 +390,7 @@ static int mei_wdt_register(struct mei_w
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4793,17 +4793,19 @@ long copy_huge_page_from_user(struct pag
+ 	void *page_kaddr;
+ 	unsigned long i, rc = 0;
+ 	unsigned long ret_val = pages_per_huge_page * PAGE_SIZE;
++	struct page *subpage = dst_page;
  
- 	watchdog_set_drvdata(&wdt->wdd, wdt);
- 	watchdog_stop_on_reboot(&wdt->wdd);
-+	watchdog_stop_on_unregister(&wdt->wdd);
+-	for (i = 0; i < pages_per_huge_page; i++) {
++	for (i = 0; i < pages_per_huge_page;
++	     i++, subpage = mem_map_next(subpage, dst_page, i)) {
+ 		if (allow_pagefault)
+-			page_kaddr = kmap(dst_page + i);
++			page_kaddr = kmap(subpage);
+ 		else
+-			page_kaddr = kmap_atomic(dst_page + i);
++			page_kaddr = kmap_atomic(subpage);
+ 		rc = copy_from_user(page_kaddr,
+ 				(const void __user *)(src + i * PAGE_SIZE),
+ 				PAGE_SIZE);
+ 		if (allow_pagefault)
+-			kunmap(dst_page + i);
++			kunmap(subpage);
+ 		else
+ 			kunmap_atomic(page_kaddr);
  
- 	ret = watchdog_register_device(&wdt->wdd);
- 	if (ret) {
 
 
