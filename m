@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC193299C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 444343299AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376500AbhCBA3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:29:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45030 "EHLO mail.kernel.org"
+        id S1348049AbhCBA2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238055AbhCAS33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24E9E651CE;
-        Mon,  1 Mar 2021 17:17:15 +0000 (UTC)
+        id S240084AbhCAS2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:28:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 651EC651D2;
+        Mon,  1 Mar 2021 17:17:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619036;
-        bh=lSdULm81FyBmnlMVHd6n13mpjxnyYNdySW6NJ6C8cpE=;
+        s=korg; t=1614619046;
+        bh=ejA7acHAep666Ou8MJ1bctxFZB+1Srj5Z9Ie2pTZnvk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bUaEODkD1EFtWruzWdFqzDk4jazVZENaRRfT/3G9Hf3aVlcpE5essG0LmhSOwxW5P
-         FySciJH70ZzaYUMdC+Weas2EdGOwssFSR5xuVo1KTIETHOhXwItSkZknLZ1eWCcRmD
-         KiUfzKFPNUo+TIat02q4cvcl4LvrmpLBbEM0wNbU=
+        b=Xr+qY0l4GPYh82NW5umjEGupeqCtoy7fQrJm2mHFeBS6B0hCs31ItPvoAuHZLWPP/
+         Z8v+rGW8jbLgim10tHob5l3wgsQthU00TdcdRT6X7aAylcteXo27i9zP3G5v0utlBi
+         hhEcGYaMQfGRafYLTmaXcHXWeU7podSyiCXpJSaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 309/663] regulator: s5m8767: Fix reference count leak
-Date:   Mon,  1 Mar 2021 17:09:17 +0100
-Message-Id: <20210301161157.132939231@linuxfoundation.org>
+Subject: [PATCH 5.10 312/663] power: supply: axp20x_usb_power: Init work before enabling IRQs
+Date:   Mon,  1 Mar 2021 17:09:20 +0100
+Message-Id: <20210301161157.278695667@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,43 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Samuel Holland <samuel@sholland.org>
 
-[ Upstream commit dea6dd2ba63f8c8532addb8f32daf7b89a368a42 ]
+[ Upstream commit b5e8642ed95ff6ecc20cc6038fe831affa9d098c ]
 
-Call of_node_put() to drop references of regulators_np and reg_np before
-returning error code.
+The IRQ handler calls mod_delayed_work() on power->vbus_detect. However,
+that work item is not initialized until after the IRQs are enabled. If
+an IRQ is already pending when the driver is probed, the driver calls
+mod_delayed_work() on an uninitialized work item, which causes an oops.
 
-Fixes: 9ae5cc75ceaa ("regulator: s5m8767: Pass descriptor instead of GPIO number")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20210121032756.49501-1-bianpan2016@163.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: bcfb7ae3f50b ("power: supply: axp20x_usb_power: Only poll while offline")
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/s5m8767.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/power/supply/axp20x_usb_power.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/s5m8767.c b/drivers/regulator/s5m8767.c
-index 3fa472127e9a1..48dd95b3ff45a 100644
---- a/drivers/regulator/s5m8767.c
-+++ b/drivers/regulator/s5m8767.c
-@@ -573,10 +573,13 @@ static int s5m8767_pmic_dt_parse_pdata(struct platform_device *pdev,
- 			"s5m8767,pmic-ext-control",
- 			GPIOD_OUT_HIGH | GPIOD_FLAGS_BIT_NONEXCLUSIVE,
- 			"s5m8767");
--		if (PTR_ERR(rdata->ext_control_gpiod) == -ENOENT)
-+		if (PTR_ERR(rdata->ext_control_gpiod) == -ENOENT) {
- 			rdata->ext_control_gpiod = NULL;
--		else if (IS_ERR(rdata->ext_control_gpiod))
-+		} else if (IS_ERR(rdata->ext_control_gpiod)) {
-+			of_node_put(reg_np);
-+			of_node_put(regulators_np);
- 			return PTR_ERR(rdata->ext_control_gpiod);
-+		}
+diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
+index 0eaa86c52874a..25e288388edad 100644
+--- a/drivers/power/supply/axp20x_usb_power.c
++++ b/drivers/power/supply/axp20x_usb_power.c
+@@ -593,6 +593,7 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
+ 	power->axp20x_id = axp_data->axp20x_id;
+ 	power->regmap = axp20x->regmap;
+ 	power->num_irqs = axp_data->num_irq_names;
++	INIT_DELAYED_WORK(&power->vbus_detect, axp20x_usb_power_poll_vbus);
  
- 		rdata->id = i;
- 		rdata->initdata = of_get_regulator_init_data(
+ 	if (power->axp20x_id == AXP202_ID) {
+ 		/* Enable vbus valid checking */
+@@ -645,7 +646,6 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	INIT_DELAYED_WORK(&power->vbus_detect, axp20x_usb_power_poll_vbus);
+ 	if (axp20x_usb_vbus_needs_polling(power))
+ 		queue_delayed_work(system_wq, &power->vbus_detect, 0);
+ 
 -- 
 2.27.0
 
