@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40FE329AB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C0E329B14
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345576AbhCBBBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:01:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58148 "EHLO mail.kernel.org"
+        id S1378579AbhCBBG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:06:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240262AbhCASwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:52:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A46165020;
-        Mon,  1 Mar 2021 17:11:30 +0000 (UTC)
+        id S241002AbhCATDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:03:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93D7D65334;
+        Mon,  1 Mar 2021 17:45:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618690;
-        bh=PWJ54Uk4uGUCkuj+jIZEmnf9py+5Bl4YScHXZfJPdP8=;
+        s=korg; t=1614620741;
+        bh=fTP304i9ax/AbNYsUn+Nye1KCND9LW/UqsX0IHRsYmQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=13f9qeQbE/Y+kTFyTWMW8+xB5LRT+3fQfE2co1kaF1OdvqNIgLZN4voX7HdeE9hDw
-         NkqFcj10nd8QnesZzLCpEH1QMR7PW+RzgfMdK3KCsshPNs198huJp3fmq/Ah9dAz8U
-         dPnvlKKe9L+ojKVZgVcRs23XQHqUJVWfHdfVIFlc=
+        b=PXcfacm1BBIXEc3rh4wdW9uKpYgFPP9VCyZa5ZXgvJVdxdfCYKHtdYbrQLfOEgY73
+         47gE7sj3KFsmTcyVsCfuF9Ldka/waJBCRLPgyUFKv0i9xaJm0yi8OwmbSZVCnhOhqE
+         a8aEU83RHEJ5wVpbzbNLC2s0lpo+5R42Yzy2Zs50=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 181/663] drm/tegra: Fix reference leak when pm_runtime_get_sync() fails
+Subject: [PATCH 5.11 261/775] ASoC: Intel: sof_sdw: add missing TGL_HDMI quirk for Dell SKU 0A5E
 Date:   Mon,  1 Mar 2021 17:07:09 +0100
-Message-Id: <20210301161150.730567406@linuxfoundation.org>
+Message-Id: <20210301161214.535166914@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,112 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit dcdfe2712b68f1e9dbf4f1a96ad59b80e5cc0ef7 ]
+[ Upstream commit f12bbc50f3b14c9b8ed902c6d1da980dd5addcce ]
 
-The PM reference count is not expected to be incremented on return in
-these Tegra functions.
+We missed adding the TGL_HDMI quirk which is very much needed to
+expose the 4 display pipelines and will be required on TGL topologies.
 
-However, pm_runtime_get_sync() will increment the PM reference count
-even on failure. Forgetting to put the reference again will result in
-a leak.
-
-Replace it with pm_runtime_resume_and_get() to keep the usage counter
-balanced.
-
-Fixes: fd67e9c6ed5a ("drm/tegra: Do not implement runtime PM")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Fixes: 9ad9bc59dde10 ('ASoC: Intel: sof_sdw: set proper flags for Dell TGL-H SKU 0A5E')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20210204203312.27112-3-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/dc.c   | 2 +-
- drivers/gpu/drm/tegra/dsi.c  | 2 +-
- drivers/gpu/drm/tegra/hdmi.c | 2 +-
- drivers/gpu/drm/tegra/hub.c  | 2 +-
- drivers/gpu/drm/tegra/sor.c  | 2 +-
- drivers/gpu/drm/tegra/vic.c  | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/sof_sdw.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index 424ad60b4f388..b2c8c68b7e261 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -2184,7 +2184,7 @@ static int tegra_dc_runtime_resume(struct host1x_client *client)
- 	struct device *dev = client->dev;
- 	int err;
- 
--	err = pm_runtime_get_sync(dev);
-+	err = pm_runtime_resume_and_get(dev);
- 	if (err < 0) {
- 		dev_err(dev, "failed to get runtime PM: %d\n", err);
- 		return err;
-diff --git a/drivers/gpu/drm/tegra/dsi.c b/drivers/gpu/drm/tegra/dsi.c
-index 5691ef1b0e586..f46d377f0c304 100644
---- a/drivers/gpu/drm/tegra/dsi.c
-+++ b/drivers/gpu/drm/tegra/dsi.c
-@@ -1111,7 +1111,7 @@ static int tegra_dsi_runtime_resume(struct host1x_client *client)
- 	struct device *dev = client->dev;
- 	int err;
- 
--	err = pm_runtime_get_sync(dev);
-+	err = pm_runtime_resume_and_get(dev);
- 	if (err < 0) {
- 		dev_err(dev, "failed to get runtime PM: %d\n", err);
- 		return err;
-diff --git a/drivers/gpu/drm/tegra/hdmi.c b/drivers/gpu/drm/tegra/hdmi.c
-index d09a24931c87c..e5d2a40260288 100644
---- a/drivers/gpu/drm/tegra/hdmi.c
-+++ b/drivers/gpu/drm/tegra/hdmi.c
-@@ -1510,7 +1510,7 @@ static int tegra_hdmi_runtime_resume(struct host1x_client *client)
- 	struct device *dev = client->dev;
- 	int err;
- 
--	err = pm_runtime_get_sync(dev);
-+	err = pm_runtime_resume_and_get(dev);
- 	if (err < 0) {
- 		dev_err(dev, "failed to get runtime PM: %d\n", err);
- 		return err;
-diff --git a/drivers/gpu/drm/tegra/hub.c b/drivers/gpu/drm/tegra/hub.c
-index 22a03f7ffdc12..5ce771cba1335 100644
---- a/drivers/gpu/drm/tegra/hub.c
-+++ b/drivers/gpu/drm/tegra/hub.c
-@@ -789,7 +789,7 @@ static int tegra_display_hub_runtime_resume(struct host1x_client *client)
- 	unsigned int i;
- 	int err;
- 
--	err = pm_runtime_get_sync(dev);
-+	err = pm_runtime_resume_and_get(dev);
- 	if (err < 0) {
- 		dev_err(dev, "failed to get runtime PM: %d\n", err);
- 		return err;
-diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
-index cc2aa2308a515..f02a035dda453 100644
---- a/drivers/gpu/drm/tegra/sor.c
-+++ b/drivers/gpu/drm/tegra/sor.c
-@@ -3218,7 +3218,7 @@ static int tegra_sor_runtime_resume(struct host1x_client *client)
- 	struct device *dev = client->dev;
- 	int err;
- 
--	err = pm_runtime_get_sync(dev);
-+	err = pm_runtime_resume_and_get(dev);
- 	if (err < 0) {
- 		dev_err(dev, "failed to get runtime PM: %d\n", err);
- 		return err;
-diff --git a/drivers/gpu/drm/tegra/vic.c b/drivers/gpu/drm/tegra/vic.c
-index ade56b860cf9d..b77f726303d89 100644
---- a/drivers/gpu/drm/tegra/vic.c
-+++ b/drivers/gpu/drm/tegra/vic.c
-@@ -314,7 +314,7 @@ static int vic_open_channel(struct tegra_drm_client *client,
- 	struct vic *vic = to_vic(client);
- 	int err;
- 
--	err = pm_runtime_get_sync(vic->dev);
-+	err = pm_runtime_resume_and_get(vic->dev);
- 	if (err < 0)
- 		return err;
- 
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index 6d0d6ef711e0f..29b6bba3d4257 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -73,7 +73,8 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A5E")
+ 		},
+-		.driver_data = (void *)(SOF_RT711_JD_SRC_JD2 |
++		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
++					SOF_RT711_JD_SRC_JD2 |
+ 					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
 -- 
 2.27.0
 
