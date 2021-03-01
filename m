@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24724328E07
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A379E328E0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241373AbhCATWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:22:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51730 "EHLO mail.kernel.org"
+        id S241472AbhCATW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:22:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235459AbhCAQvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:51:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 738F564FBE;
-        Mon,  1 Mar 2021 16:33:46 +0000 (UTC)
+        id S235558AbhCAQwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:52:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC1964F13;
+        Mon,  1 Mar 2021 16:33:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616427;
-        bh=d4FduEAJdMaDDRP243VE1K2XEo86U7X0COC90qEgY3s=;
+        s=korg; t=1614616438;
+        bh=TZYeEesn++qS4uS8yVkk7nZSXzXcbE9PBrkBxofhgkM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PuotPaD03p5mWY+VMf6d9+IUM261feROrmuy/3B7ieQI76nwTGfAewGdAHNw0RzQT
-         Oa/9wlo+bEw9yTFeDNJ10/z2ZJ7bd/po3wfYqBYyXbPukvCv2RdmKy197FRV9UJK8p
-         mXy8JKmskLXbYkMwBaR3zkz3av7PuQbp+aj3oXO0=
+        b=NuCV333NmL3oahM+mGbaqA0q0ON+htnFraolW12MizuCn/p0AzZUCYR0de1ZCwKmh
+         N4S0TZEEfYU4XGz+1FqQ4/O2pKQUwGT8HF6vZQVZm9dW9tzAjvqZ631RJfXli7VS9m
+         JIy1Z65c8jQiDdUzTozlbihAo4t92ecvpZfLviiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        "David P. Reed" <dpreed@deepplum.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.14 147/176] x86/reboot: Force all cpus to exit VMX root if VMX is supported
-Date:   Mon,  1 Mar 2021 17:13:40 +0100
-Message-Id: <20210301161028.316960077@linuxfoundation.org>
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH 4.14 151/176] mtd: spi-nor: hisi-sfc: Put child node np on error path
+Date:   Mon,  1 Mar 2021 17:13:44 +0100
+Message-Id: <20210301161028.509261881@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -40,70 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Pan Bian <bianpan2016@163.com>
 
-commit ed72736183c45a413a8d6974dd04be90f514cb6b upstream.
+commit fe6653460ee7a7dbe0cd5fd322992af862ce5ab0 upstream.
 
-Force all CPUs to do VMXOFF (via NMI shootdown) during an emergency
-reboot if VMX is _supported_, as VMX being off on the current CPU does
-not prevent other CPUs from being in VMX root (post-VMXON).  This fixes
-a bug where a crash/panic reboot could leave other CPUs in VMX root and
-prevent them from being woken via INIT-SIPI-SIPI in the new kernel.
+Put the child node np when it fails to get or register device.
 
-Fixes: d176720d34c7 ("x86: disable VMX on all CPUs on reboot")
+Fixes: e523f11141bd ("mtd: spi-nor: add hisilicon spi-nor flash controller driver")
 Cc: stable@vger.kernel.org
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: David P. Reed <dpreed@deepplum.com>
-[sean: reworked changelog and further tweaked comment]
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20201231002702.2223707-3-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+[ta: Add Fixes tag and Cc stable]
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Link: https://lore.kernel.org/r/20210121091847.85362-1-bianpan2016@163.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/reboot.c |   29 ++++++++++-------------------
- 1 file changed, 10 insertions(+), 19 deletions(-)
+ drivers/mtd/spi-nor/hisi-sfc.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -538,29 +538,20 @@ static void emergency_vmx_disable_all(vo
- 	local_irq_disable();
+--- a/drivers/mtd/spi-nor/hisi-sfc.c
++++ b/drivers/mtd/spi-nor/hisi-sfc.c
+@@ -408,8 +408,10 @@ static int hisi_spi_nor_register_all(str
  
- 	/*
--	 * We need to disable VMX on all CPUs before rebooting, otherwise
--	 * we risk hanging up the machine, because the CPU ignore INIT
--	 * signals when VMX is enabled.
-+	 * Disable VMX on all CPUs before rebooting, otherwise we risk hanging
-+	 * the machine, because the CPU blocks INIT when it's in VMX root.
- 	 *
--	 * We can't take any locks and we may be on an inconsistent
--	 * state, so we use NMIs as IPIs to tell the other CPUs to disable
--	 * VMX and halt.
-+	 * We can't take any locks and we may be on an inconsistent state, so
-+	 * use NMIs as IPIs to tell the other CPUs to exit VMX root and halt.
- 	 *
--	 * For safety, we will avoid running the nmi_shootdown_cpus()
--	 * stuff unnecessarily, but we don't have a way to check
--	 * if other CPUs have VMX enabled. So we will call it only if the
--	 * CPU we are running on has VMX enabled.
--	 *
--	 * We will miss cases where VMX is not enabled on all CPUs. This
--	 * shouldn't do much harm because KVM always enable VMX on all
--	 * CPUs anyway. But we can miss it on the small window where KVM
--	 * is still enabling VMX.
-+	 * Do the NMI shootdown even if VMX if off on _this_ CPU, as that
-+	 * doesn't prevent a different CPU from being in VMX root operation.
- 	 */
--	if (cpu_has_vmx() && cpu_vmx_enabled()) {
--		/* Disable VMX on this CPU. */
--		cpu_vmxoff();
-+	if (cpu_has_vmx()) {
-+		/* Safely force _this_ CPU out of VMX root operation. */
-+		__cpu_emergency_vmxoff();
+ 	for_each_available_child_of_node(dev->of_node, np) {
+ 		ret = hisi_spi_nor_register(np, host);
+-		if (ret)
++		if (ret) {
++			of_node_put(np);
+ 			goto fail;
++		}
  
--		/* Halt and disable VMX on the other CPUs */
-+		/* Halt and exit VMX root operation on the other CPUs. */
- 		nmi_shootdown_cpus(vmxoff_nmi);
- 
- 	}
+ 		if (host->num_chip == HIFMC_MAX_CHIP_NUM) {
+ 			dev_warn(dev, "Flash device number exceeds the maximum chipselect number\n");
 
 
