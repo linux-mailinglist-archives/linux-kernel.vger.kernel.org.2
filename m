@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1214329D37
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFC4329CDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:39:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443215AbhCBCTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:19:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55190 "EHLO mail.kernel.org"
+        id S1442494AbhCBCNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:13:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241112AbhCATpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:45:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8D0865204;
-        Mon,  1 Mar 2021 17:21:38 +0000 (UTC)
+        id S241582AbhCATlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:41:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2B1864F3F;
+        Mon,  1 Mar 2021 16:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619299;
-        bh=llfHeX/lNNBCEFyniCGYerQoTFVk9xscOn4YWtWXBjY=;
+        s=korg; t=1614616695;
+        bh=O+54Ghu6CkT+tXV463F6bpG264g3au42ATy7yamvYKc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i1f5qZEgrRZxLgA4qSBcMmY3pUz0jh9MgIRHMgz5VzElgrrlxtGuxbW/Mtt8r2ST3
-         ZIul2/d8guJKGq0fzxqe9IyaxZAKQOGeTwkD3lgOIZn5iSzqH94O7JEDmJFB4zrsa0
-         BJGJ+QoNJLGyjQtJxBjCuXWw1KfZobIWRHQwFw5c=
+        b=Q7JEVwT4pzQVYiO8/aUaMgvv61EWPAxA7DfIPzXY1RB8vKM+sto2QjdhoSDfc5OIO
+         T3eQaNyyS3xMDwnY6fjXStw80JOm3PDobF6Eh5MHFCLaUpwxe38vZ4Co0F5YmsSUk8
+         8y/VHDi+dO8xJiOjkHKz3039ZTbcBBbYDGhGldlk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vishnu Dasa <vdasa@vmware.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 405/663] VMCI: Use set_page_dirty_lock() when unregistering guest memory
+Subject: [PATCH 4.19 033/247] arm64: dts: exynos: correct PMIC interrupt trigger level on TM2
 Date:   Mon,  1 Mar 2021 17:10:53 +0100
-Message-Id: <20210301161201.906766670@linuxfoundation.org>
+Message-Id: <20210301161033.300573608@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
+References: <20210301161031.684018251@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jorgen Hansen <jhansen@vmware.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 5a16c535409f8dcb7568e20737309e3027ae3e49 ]
+[ Upstream commit e98e2367dfb4b6d7a80c8ce795c644124eff5f36 ]
 
-When the VMCI host support releases guest memory in the case where
-the VM was killed, the pinned guest pages aren't locked. Use
-set_page_dirty_lock() instead of set_page_dirty().
+The Samsung PMIC datasheets describe the interrupt line as active low
+with a requirement of acknowledge from the CPU.  Without specifying the
+interrupt type in Devicetree, kernel might apply some fixed
+configuration, not necessarily working for this hardware.
 
-Testing done: Killed VM while having an active VMCI based vSocket
-connection and observed warning from ext4. With this fix, no
-warning was observed. Ran various vSocket tests without issues.
-
-Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
-Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
-Signed-off-by: Jorgen Hansen <jhansen@vmware.com>
-Link: https://lore.kernel.org/r/1611160360-30299-1-git-send-email-jhansen@vmware.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 01e5d2352152 ("arm64: dts: exynos: Add dts file for Exynos5433-based TM2 board")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Link: https://lore.kernel.org/r/20201210212903.216728-7-krzk@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/vmw_vmci/vmci_queue_pair.c | 2 +-
+ arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-index c49065887e8f5..df6b19c4c49b5 100644
---- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
-+++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-@@ -630,7 +630,7 @@ static void qp_release_pages(struct page **pages,
+diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
+index a1e3194b74837..d64f97d97c350 100644
+--- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
+@@ -378,7 +378,7 @@
+ 	s2mps13-pmic@66 {
+ 		compatible = "samsung,s2mps13-pmic";
+ 		interrupt-parent = <&gpa0>;
+-		interrupts = <7 IRQ_TYPE_NONE>;
++		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+ 		reg = <0x66>;
+ 		samsung,s2mps11-wrstbi-ground;
  
- 	for (i = 0; i < num_pages; i++) {
- 		if (dirty)
--			set_page_dirty(pages[i]);
-+			set_page_dirty_lock(pages[i]);
- 
- 		put_page(pages[i]);
- 		pages[i] = NULL;
 -- 
 2.27.0
 
