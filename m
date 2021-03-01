@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0473A329B6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D146329C4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348663AbhCBBYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:24:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39034 "EHLO mail.kernel.org"
+        id S1380480AbhCBBwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:52:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241258AbhCATIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:08:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 858A36508D;
-        Mon,  1 Mar 2021 17:35:36 +0000 (UTC)
+        id S241842AbhCAT30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:29:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31F2365091;
+        Mon,  1 Mar 2021 17:35:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620137;
-        bh=6b2QrOX9/gzCzQU5EEARQydUnihWYReaU693DwVrVIA=;
+        s=korg; t=1614620139;
+        bh=Ov1FRcWzGzo0rgYRc4DCloup+hqr9XQwv0SX7hOO8aQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GR0mKqLcEe4CtlH/k3GiA+X299pu6+i8I03mPiACeW+jsib7Ht2OPdWPj+4SfNzmJ
-         lVKacNfllOSlKuHzwWiUi02Yr/E1Ysj2+oNmXT40aR3jQUiiNV4FygLYeMhPraJcag
-         FazwqRBWSzFxGo4bbmO58Mlb3v9+2RhgYTTCV1aE=
+        b=OOOYRXGvbd3Uokw6BObPMwNdIAWK0pN31NEbu/c0F/DmvemjUTsttq7T7SAeVl1bz
+         zDme115KyMlex4sbFxuUScxOQb/qNdz7zOooRjAGXNJYYljTwM0cEkaigbdpHWMKQ1
+         b9l7M7Bivjh/dZEG7iCpxDftqlDVMibK01KbbruM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 044/775] bpf: Avoid warning when re-casting __bpf_call_base into __bpf_call_base_args
-Date:   Mon,  1 Mar 2021 17:03:32 +0100
-Message-Id: <20210301161203.901192270@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 045/775] firmware: arm_scmi: Fix call site of scmi_notification_exit
+Date:   Mon,  1 Mar 2021 17:03:33 +0100
+Message-Id: <20210301161203.950832539@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,38 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Cristian Marussi <cristian.marussi@arm.com>
 
-[ Upstream commit 6943c2b05bf09fd5c5729f7d7d803bf3f126cb9a ]
+[ Upstream commit a90b6543bf062d65292b2c76f1630507d1c9d8ec ]
 
-BPF interpreter uses extra input argument, so re-casts __bpf_call_base into
-__bpf_call_base_args. Avoid compiler warning about incompatible function
-prototypes by casting to void * first.
+Call scmi_notification_exit() only when SCMI platform driver instance has
+been really successfully removed.
 
-Fixes: 1ea47e01ad6e ("bpf: add support for bpf_call to interpreter")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210112075520.4103414-3-andrii@kernel.org
+Link: https://lore.kernel.org/r/20210112191326.29091-1-cristian.marussi@arm.com
+Fixes: 6b8a69131dc63 ("firmware: arm_scmi: Enable notification core")
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+[sudeep.holla: Move the call outside the list mutex locking]
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/filter.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/arm_scmi/driver.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 29c27656165b2..5edf2b6608812 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -886,7 +886,7 @@ void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
- u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
- #define __bpf_call_base_args \
- 	((u64 (*)(u64, u64, u64, u64, u64, const struct bpf_insn *)) \
--	 __bpf_call_base)
-+	 (void *)__bpf_call_base)
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 5392e1fc6b4ef..cacdf1589b101 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -848,8 +848,6 @@ static int scmi_remove(struct platform_device *pdev)
+ 	struct scmi_info *info = platform_get_drvdata(pdev);
+ 	struct idr *idr = &info->tx_idr;
  
- struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog);
- void bpf_jit_compile(struct bpf_prog *prog);
+-	scmi_notification_exit(&info->handle);
+-
+ 	mutex_lock(&scmi_list_mutex);
+ 	if (info->users)
+ 		ret = -EBUSY;
+@@ -860,6 +858,8 @@ static int scmi_remove(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	scmi_notification_exit(&info->handle);
++
+ 	/* Safe to free channels since no more users */
+ 	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
+ 	idr_destroy(&info->tx_idr);
 -- 
 2.27.0
 
