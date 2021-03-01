@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513DC329ABB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7F6329A1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348396AbhCBBCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:02:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58458 "EHLO mail.kernel.org"
+        id S1376986AbhCBApF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:45:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240556AbhCASwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:52:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F0856514D;
-        Mon,  1 Mar 2021 17:05:06 +0000 (UTC)
+        id S240475AbhCASjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5A3B65153;
+        Mon,  1 Mar 2021 17:05:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618307;
-        bh=+QuLCwKDigyR8DRPzWSgylu/jC0CIKB6vD14f8zmqXk=;
+        s=korg; t=1614618315;
+        bh=VL1A42evJs1EpeSn83gtZEc2je3YuV5/qah8GRmUoSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v5ZnDF4LMtVZPnqosPvVVoFGfiRP3Chn4j82oZI3yWUmVqovkgGwDGeTAD/22PTjy
-         r1N50fJRC/UDfEQ52lx/aWaA3vfkLBIzu5uWSOnDppFpohgaooJD+/vuHcgD52Xdn8
-         sZ8xA73Pn404a/hTWHH5oQeqvF2Up+4KF9Hz+cRc=
+        b=vr5HKQA0WIxcBiIntA+EOLQk1sZwMzHdgEqFck2DlsQ4rpyHZIDXfk/zV12iU16U2
+         /aI+wVwW8Kl6S9OX6cci7ZOTS/32eAQluxHZ8Txyom7BR5OTpZ2sHbjh+j25e9KN0j
+         o2hX5AYHls1jtmEzrhd3NFHzDxyq63eyJIgCOdoU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 040/663] net: stmmac: dwmac-meson8b: fix enabling the timing-adjustment clock
-Date:   Mon,  1 Mar 2021 17:04:48 +0100
-Message-Id: <20210301161143.766488599@linuxfoundation.org>
+Subject: [PATCH 5.10 043/663] firmware: arm_scmi: Fix call site of scmi_notification_exit
+Date:   Mon,  1 Mar 2021 17:04:51 +0100
+Message-Id: <20210301161143.907692879@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,42 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Cristian Marussi <cristian.marussi@arm.com>
 
-[ Upstream commit 025822884a4fd2d0af51dcf77ddc494e60c5ff63 ]
+[ Upstream commit a90b6543bf062d65292b2c76f1630507d1c9d8ec ]
 
-The timing-adjustment clock only has to be enabled when a) there is a
-2ns RX delay configured using device-tree and b) the phy-mode indicates
-that the RX delay should be enabled.
+Call scmi_notification_exit() only when SCMI platform driver instance has
+been really successfully removed.
 
-Only enable the RX delay if both are true, instead of (by accident) also
-enabling it when there's the 2ns RX delay configured but the phy-mode
-incicates that the RX delay is not used.
-
-Fixes: 9308c47640d515 ("net: stmmac: dwmac-meson8b: add support for the RX delay configuration")
-Reported-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lore.kernel.org/r/20210112191326.29091-1-cristian.marussi@arm.com
+Fixes: 6b8a69131dc63 ("firmware: arm_scmi: Enable notification core")
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+[sudeep.holla: Move the call outside the list mutex locking]
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/arm_scmi/driver.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-index 9ddadae8e4c51..752658ec7beeb 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-@@ -301,7 +301,7 @@ static int meson8b_init_prg_eth(struct meson8b_dwmac *dwmac)
- 		return -EINVAL;
- 	};
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 3dfd8b6a0ebf7..6b2ce3f28f7b9 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -847,8 +847,6 @@ static int scmi_remove(struct platform_device *pdev)
+ 	struct scmi_info *info = platform_get_drvdata(pdev);
+ 	struct idr *idr = &info->tx_idr;
  
--	if (rx_dly_config & PRG_ETH0_ADJ_ENABLE) {
-+	if (delay_config & PRG_ETH0_ADJ_ENABLE) {
- 		if (!dwmac->timing_adj_clk) {
- 			dev_err(dwmac->dev,
- 				"The timing-adjustment clock is mandatory for the RX delay re-timing\n");
+-	scmi_notification_exit(&info->handle);
+-
+ 	mutex_lock(&scmi_list_mutex);
+ 	if (info->users)
+ 		ret = -EBUSY;
+@@ -859,6 +857,8 @@ static int scmi_remove(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	scmi_notification_exit(&info->handle);
++
+ 	/* Safe to free channels since no more users */
+ 	ret = idr_for_each(idr, info->desc->ops->chan_free, idr);
+ 	idr_destroy(&info->tx_idr);
 -- 
 2.27.0
 
