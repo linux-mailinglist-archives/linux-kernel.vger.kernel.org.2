@@ -2,41 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B4F329C1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84245329BC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380104AbhCBBsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:48:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46136 "EHLO mail.kernel.org"
+        id S1379570AbhCBB3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:29:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241545AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:24:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 209C565021;
-        Mon,  1 Mar 2021 17:12:07 +0000 (UTC)
+        id S241342AbhCATRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:17:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48760650D0;
+        Mon,  1 Mar 2021 17:44:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618728;
-        bh=wrH2oNQ2/u2XBaacYgNQwNV63cesyj4WCnlAqNNpDvY=;
+        s=korg; t=1614620693;
+        bh=17aJ5TrXXHfPXWOcJMojWK2MnujmW9g7AlH+zI7JqiA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P0FkuPlIH22cTyMLMJrxGRJUqDGmctyssXZK7bQUBO7E4muXvk2e1rT8zBwv/0+Ws
-         TLbFxTNccNyMjUSPNX6RQY5XZndS9konEg++6ZJgYYqjkZa6OyBvKm+uu52Ya9Pr7+
-         nBe/L+BRWudA3S1lzDbQ30GH99TOPhs85Afjht3E=
+        b=oGrHJZqB+30k0Uh5rPMqhz9FsZ3eQLtddo2u7jAiI/HuUt9ZiSxWJqo1ibuWX5Te3
+         K64GOEwvM9WwdpCN5NZfJ/KwUuYXUcmXK43XbJ11NjORx3b4nwJO3jy784OL9ekUXh
+         CEsBdbf5GwjXre3fnkropmin9JOw8Ix2QCyUJQmM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 165/663] media: vsp1: Fix an error handling path in the probe function
-Date:   Mon,  1 Mar 2021 17:06:53 +0100
-Message-Id: <20210301161149.943637584@linuxfoundation.org>
+        stable@vger.kernel.org, Biwen Li <biwen.li@nxp.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 246/775] irqchip/ls-extirq: add IRQCHIP_SKIP_SET_WAKE to the irqchip flags
+Date:   Mon,  1 Mar 2021 17:06:54 +0100
+Message-Id: <20210301161213.783757393@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Biwen Li <biwen.li@nxp.com>
 
-[ Upstream commit 7113469dafc2d545fa4fa9bc649c31dc27db492e ]
+[ Upstream commit c60767421e102dfd1f4d99ad0cc7f8ba24461eb8 ]
 
-A previous 'rcar_fcp_get()' call must be undone in the error handling path,
-as already done in the remove function.
+The ls-extirq driver doesn't implement the irq_set_wake()
+callback, while being wake-up capable. This results in
+ugly behaviours across suspend/resume cycles.
 
-Fixes: 94fcdf829793 ("[media] v4l: vsp1: Add FCP support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Advertise this by adding IRQCHIP_SKIP_SET_WAKE to
+the irqchip flags
+
+Fixes: b16a1caf4686 ("irqchip/ls-extirq: Add LS1043A, LS1088A external interrupt support")
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210129095034.33821-1-biwen.li@oss.nxp.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/vsp1/vsp1_drv.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/irqchip/irq-ls-extirq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
-index dc62533cf32ce..aa66e4f5f3f34 100644
---- a/drivers/media/platform/vsp1/vsp1_drv.c
-+++ b/drivers/media/platform/vsp1/vsp1_drv.c
-@@ -882,8 +882,10 @@ static int vsp1_probe(struct platform_device *pdev)
- 	}
+diff --git a/drivers/irqchip/irq-ls-extirq.c b/drivers/irqchip/irq-ls-extirq.c
+index f94f974a87645..853b3972dbe78 100644
+--- a/drivers/irqchip/irq-ls-extirq.c
++++ b/drivers/irqchip/irq-ls-extirq.c
+@@ -64,7 +64,7 @@ static struct irq_chip ls_extirq_chip = {
+ 	.irq_set_type		= ls_extirq_set_type,
+ 	.irq_retrigger		= irq_chip_retrigger_hierarchy,
+ 	.irq_set_affinity	= irq_chip_set_affinity_parent,
+-	.flags                  = IRQCHIP_SET_TYPE_MASKED,
++	.flags                  = IRQCHIP_SET_TYPE_MASKED | IRQCHIP_SKIP_SET_WAKE,
+ };
  
- done:
--	if (ret)
-+	if (ret) {
- 		pm_runtime_disable(&pdev->dev);
-+		rcar_fcp_put(vsp1->fcp);
-+	}
- 
- 	return ret;
- }
+ static int
 -- 
 2.27.0
 
