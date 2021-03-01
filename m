@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAEB329EAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C491329F7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445872AbhCBDCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:02:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41296 "EHLO mail.kernel.org"
+        id S1573991AbhCBD2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:28:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243115AbhCAUQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:16:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25D3F653D7;
-        Mon,  1 Mar 2021 18:02:37 +0000 (UTC)
+        id S242417AbhCAUeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:34:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F13864DDC;
+        Mon,  1 Mar 2021 18:53:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621758;
-        bh=8OHyZyUzFVh/ELW1UiG+7dTWtN9HwcthoW9RT05Iy2A=;
+        s=korg; t=1614624834;
+        bh=InolBhvpbKOG51nSw5E0Kjkk0+8+4jOIrt0OSwTch3A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FKP+mI5P6Fs14x1VbpuCLwlQgoAPZXOZ0XeXYYcMeSMBXjq6aea+FToCubS0PpLRW
-         tccuSNGwyHlAv8We2GPuL+ti9C36+3BhvOO0VuxRpLKP+6VYRLBHVOQlPLscnW4Mzf
-         4NYX0F5QhwN7vjgQKAZvaeSL5wGDu5hT3mzFuZUQ=
+        b=Pd7AfuDo1tFpB7ZfxkVNs01oI4BWbIRBkaTCuZ4MIAR5gALMR9dTr6seIrGWKjWIn
+         Zf61DpX9+DcrlsOqygIlQwaYj4syI5mlQZIWAhwH2XWnf+D2JcgEiaGqYa/8jiCMYb
+         I91RIB0sQ8rcrhsCQ9At3aA3rdGl3q/LzjiqQc44=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.11 626/775] ASoC: siu: Fix build error by a wrong const prefix
-Date:   Mon,  1 Mar 2021 17:13:14 +0100
-Message-Id: <20210301161232.332669085@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Michael Labriola <michael.d.labriola@gmail.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Paul Moore <paul@paul-moore.com>
+Subject: [PATCH 5.11 627/775] selinux: fix inconsistency between inode_getxattr and inode_listsecurity
+Date:   Mon,  1 Mar 2021 17:13:15 +0100
+Message-Id: <20210301161232.383285261@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -39,52 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Amir Goldstein <amir73il@gmail.com>
 
-commit ae07f5c7c5e9ebca5b9d6471bb4b99a9da5c6d88 upstream.
+commit a9ffe682c58aaff643764547f5420e978b6e0830 upstream.
 
-A const prefix was put wrongly in the middle at the code refactoring
-commit 932eaf7c7904 ("ASoC: sh: siu_pcm: remove snd_pcm_ops"), which
-leads to a build error as:
-  sound/soc/sh/siu_pcm.c:546:8: error: expected '{' before 'const'
+When inode has no listxattr op of its own (e.g. squashfs) vfs_listxattr
+calls the LSM inode_listsecurity hooks to list the xattrs that LSMs will
+intercept in inode_getxattr hooks.
 
-Also, another inconsistency is that the declaration of siu_component
-misses the const prefix.
+When selinux LSM is installed but not initialized, it will list the
+security.selinux xattr in inode_listsecurity, but will not intercept it
+in inode_getxattr.  This results in -ENODATA for a getxattr call for an
+xattr returned by listxattr.
 
-This patch corrects both failures.
+This situation was manifested as overlayfs failure to copy up lower
+files from squashfs when selinux is built-in but not initialized,
+because ovl_copy_xattr() iterates the lower inode xattrs by
+vfs_listxattr() and vfs_getxattr().
 
-Fixes: 932eaf7c7904 ("ASoC: sh: siu_pcm: remove snd_pcm_ops")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20210126154702.3974-1-tiwai@suse.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Match the logic of inode_listsecurity to that of inode_getxattr and
+do not list the security.selinux xattr if selinux is not initialized.
+
+Reported-by: Michael Labriola <michael.d.labriola@gmail.com>
+Tested-by: Michael Labriola <michael.d.labriola@gmail.com>
+Link: https://lore.kernel.org/linux-unionfs/2nv9d47zt7.fsf@aldarion.sourceruckus.org/
+Fixes: c8e222616c7e ("selinux: allow reading labels before policy is loaded")
+Cc: stable@vger.kernel.org#v5.9+
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/soc/sh/siu.h     |    2 +-
- sound/soc/sh/siu_pcm.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ security/selinux/hooks.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/sound/soc/sh/siu.h
-+++ b/sound/soc/sh/siu.h
-@@ -169,7 +169,7 @@ static inline u32 siu_read32(u32 __iomem
- #define SIU_BRGBSEL	(0x108 / sizeof(u32))
- #define SIU_BRRB	(0x10c / sizeof(u32))
- 
--extern struct snd_soc_component_driver siu_component;
-+extern const struct snd_soc_component_driver siu_component;
- extern struct siu_info *siu_i2s_data;
- 
- int siu_init_port(int port, struct siu_port **port_info, struct snd_card *card);
---- a/sound/soc/sh/siu_pcm.c
-+++ b/sound/soc/sh/siu_pcm.c
-@@ -543,7 +543,7 @@ static void siu_pcm_free(struct snd_soc_
- 	dev_dbg(pcm->card->dev, "%s\n", __func__);
- }
- 
--struct const snd_soc_component_driver siu_component = {
-+const struct snd_soc_component_driver siu_component = {
- 	.name		= DRV_NAME,
- 	.open		= siu_pcm_open,
- 	.close		= siu_pcm_close,
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -3413,6 +3413,10 @@ static int selinux_inode_setsecurity(str
+ static int selinux_inode_listsecurity(struct inode *inode, char *buffer, size_t buffer_size)
+ {
+ 	const int len = sizeof(XATTR_NAME_SELINUX);
++
++	if (!selinux_initialized(&selinux_state))
++		return 0;
++
+ 	if (buffer && len <= buffer_size)
+ 		memcpy(buffer, XATTR_NAME_SELINUX, len);
+ 	return len;
 
 
