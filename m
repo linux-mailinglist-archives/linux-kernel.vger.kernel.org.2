@@ -2,355 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A40D329FD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB51329FDA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574710AbhCBDtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:49:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237993AbhCAVfE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:35:04 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AF9C061756;
-        Mon,  1 Mar 2021 13:34:23 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id h10so7310950otm.1;
-        Mon, 01 Mar 2021 13:34:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HhG4rx0c+91LEIH+qR6RUNaHVNddgYArf242XPm3m3I=;
-        b=TLPlCvv7mipFOgDdtuQYva3KVH/7Nyr7w5kNK0kqoF62qjVBG2oYj9l42gJkPUgSCg
-         QZvX/gxXVXjEATlE1XdZn0rRcNBDF4SDqpbbf7UqgwAdeHxKsWtreNyF+5V3A2WUWxpc
-         q9yUx0GTuuRbwgz7WfMDDtN3ZGmGhs3H6y2cu9pPgr6TK6GrQ0Sb3VjGMfB349z078kn
-         sBUCghaYrk1edGmiRBKUNhchjd/285xwUmcsP+Qup6gPZkB4uhmpHkLvPDBSCdtjh4sF
-         j4KLG+bvmPykP7N3TPAjZ7oJdR0w2jZhJscEML34odvoO+oV/8oYDn71fwHZpcyYtdcz
-         Xjnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HhG4rx0c+91LEIH+qR6RUNaHVNddgYArf242XPm3m3I=;
-        b=FpwAecnfdd366Gm40rw94u49FdXqbv4pVOZFxqo/i2vb6y95HTK9B2vjzTHSVUexve
-         ETBvD0jkBIVc9czhBHxf78Dw+gN9ocOKMz2vcdo+M4yK9xKv0Bl4JRGETEHsnNLl4kth
-         ZuSw5iZt1KqXNNJXy4kbw3zE1nMXtEatfyrpFvGGuTXsYyAYO9sCej+z5bgE7dKByg12
-         zHdXQY/nEs0edCpbRsA8bZugf4e30hFqgXYtf1lKjpeCyiTsz/Su8ezYsJoUopQcM3MO
-         TFwLsATmIjkmddlc6N0pq10oBDkNy4LZ4u82aRkLGT+XOWbvfzecnws7emYgb3BYfRBd
-         +IRg==
-X-Gm-Message-State: AOAM531EWyH5kiarmpZrSXcpQPIthYzmt/GbpUoZdcYomqkHf+062SuO
-        CKNumhfB8JA+O5SXlpHI8m8iufHWnWH7aVE8+LYYMw9JWRi/xwkE
-X-Google-Smtp-Source: ABdhPJyydZtffSv5+Wnv+dZFJc+0pWvWdVBBAHhFflSlXJ0QmxYPBVWgWsjiAjNpGuURs4rjqTKR28eWoDIKLZ1ik+E=
-X-Received: by 2002:a9d:6012:: with SMTP id h18mr15104225otj.336.1614634462595;
- Mon, 01 Mar 2021 13:34:22 -0800 (PST)
+        id S1574730AbhCBDtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:49:22 -0500
+Received: from mout.gmx.net ([212.227.15.19]:38787 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237163AbhCAVgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 16:36:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614634478;
+        bh=eBbcE4/VN3KrGiyr/gi3blaQM63oqz38xBAshLMrfeA=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=O89NNRwfLAEovgTRVXQWB8MPi1o0B/OiCuEF5zxhAvtSUh9Xn5roz6bZdzXSUBQmn
+         lufXrE6dQpUbqT6HndegBZDd/OJ5Z6K0ykW5oNqkdsc5KZjj3JmE3+Ed4OGVy4EzPC
+         mPYSf7BJWMaxuV6X5OkQNC5eqT9hcOnUjhyakjlw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.147.178]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MHoRA-1l36fQ0Ruw-00ExJY; Mon, 01
+ Mar 2021 22:34:38 +0100
+Subject: Re: hppa64-linux-ld: kernel/rcu/refscale.o(.init.text+0x228): cannot
+ reach schedule_timeout_uninterruptible
+To:     paulmck@kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        linux-parisc <linux-parisc@vger.kernel.org>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+References: <202102281205.3F9aEA0G-lkp@intel.com>
+ <20210228050526.GD2696@paulmck-ThinkPad-P72>
+ <d14b90db-4052-544a-9743-748c653f3ad7@gmx.de>
+ <20210228223302.GE2696@paulmck-ThinkPad-P72>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <f2534985-89f3-1d00-0b72-13cd208d5201@gmx.de>
+Date:   Mon, 1 Mar 2021 22:34:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <002f01d70eba$d1b365a0$751a30e0$@Freyberger.de>
-In-Reply-To: <002f01d70eba$d1b365a0$751a30e0$@Freyberger.de>
-From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Date:   Mon, 1 Mar 2021 23:34:09 +0200
-Message-ID: <CAB=otbQLO451REYQg3ZAR+bwAFaX5VFfz9_fVGvY3yGGxEWsaA@mail.gmail.com>
-Subject: Re: [PATCH 0/8] USB Audio Gadget part 2: Feedback endpoint,
- Volume/Mute support
-To:     Johannes Freyberger <Johannes@freyberger.de>
-Cc:     Felipe Balbi <balbi@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Glenn Schmottlach <gschmottlach@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux USB <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210228223302.GE2696@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:LjH39XiikZPMckRhK0W6YNt0B+eiUEH8a7goMBOE9/63uI9NJO4
+ INiIed7vDXA5/RFkg4xIbTXmPnd8V+MaNp1PkEaSOped/oYQ2+6nM5VQo0SV7Et0mBKpjXG
+ hgYiF+kemqPRWCcyV0t19uzqUaP7RzRA4qNtjLvXFWuZCCS4efI9M+voS/E0TSY9h7MFK+2
+ 7vQuecN1KF6K8+g4Bt+4A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:60ViuUQzcvo=:LIRAUZgx7o3w0JRNzk19aG
+ 1Hda09xr3UNI9aqXinmP+H+qg2X+JNA+8CRtOp9F/w7YNHWnfrcC50oV9ocf+HlG8X0EmN/4w
+ rT44P2UfmkdgjzPcIfPqyYRRW2ZaTreXsrjXpM1QHQUS7khmoRTRalY2G76ndUtCU+0ODopUT
+ 22v2zJuCWHShM12/wwkxsXzIOkUJHh89RSFFLn2G3ykctFcucF7z2kckN2zDzE/Vu+qcexlOg
+ t2tudHVRM+xkDuupWYtR4O9ZiOR58lwRJDPfRybJsorKTfbwc18xTyt7go/f/+XNng76oldTY
+ It6Lna3Pkvaw/XDXsS24sd4dHkKJ4ZaXOUhoU5g1f69otYqpREVD96j+hIjub1FFVvxZCS9yy
+ /pUPMLK//qTrjGaW9DgxLxR0U9wZTORxHzD3fB7eYh7+U7gfXSDeuQ3jdc77DO1xGvTrCm/Wf
+ GTEKtRnPSLP8gHAqUsYl0I8DGREINYqXUuUs48NDzVcbV1AQQRIrB+EtjqrzYc260TgJHfIxw
+ p4Ui55+dxR6j06hdhZD5QLI6eYKA0RzCr4PbCT/D4rtz/IlHxEs8TRb9RydC1WCeQCwakcvBk
+ mFWQRcWbjSFLtMadYYJ0JzqFYAflZg+bdqMMDh7X7zYGS+VHcV2vYYksqSATxHtDpJve1lDWG
+ +7wQjINRJm+5N8mAwgPEKKGCg8keYyHNMX9hW/FTi8hfaf7zmH4HiqJ6QsfFg8CxIDn5BJhWe
+ 9JM4WyfSmEiWwgsin/qOhD/JOE8giISBNoRnUWKDn1Cud7SHi8xCNCpLy5QCenXnRfKhRHcDC
+ L6O4VDDOT9ofjld70DRu0uzD+p2B5RONyGfozskCTtAHMh94jT1QwFVFN0JUwwuc2LqLQ+Dm2
+ SUdO1YTLuJ+S4MAC6sLQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johannes,
+On 2/28/21 11:33 PM, Paul E. McKenney wrote:
+> On Sun, Feb 28, 2021 at 09:51:35PM +0100, Helge Deller wrote:
+>> Adding parisc-parisc mailing list...
+>>
+>> On 2/28/21 6:05 AM, Paul E. McKenney wrote:
+>>> On Sun, Feb 28, 2021 at 12:08:08PM +0800, kernel test robot wrote:
+>>>> Hi Paul,
+>>>>
+>>>> First bad commit (maybe != root cause):
+>>>>
+>>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>>> head:   5695e51619745d4fe3ec2506a2f0cd982c5e27a4
+>>>> commit: 1fbeb3a8c4de29433a8d230ee600b13d369b6c0f refperf: Rename refperf.c to refscale.c and change internal names
+>>>> date:   8 months ago
+>>>> config: parisc-randconfig-s031-20210228 (attached as .config)
+>>>> compiler: hppa64-linux-gcc (GCC) 9.3.0
+>>>> reproduce:
+>>>>           wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>>           chmod +x ~/bin/make.cross
+>>>>           # apt-get install sparse
+>>>>           # sparse version: v0.6.3-241-geaceeafa-dirty
+>>>>           # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1fbeb3a8c4de29433a8d230ee600b13d369b6c0f
+>>>>           git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>>           git fetch --no-tags linus master
+>>>>           git checkout 1fbeb3a8c4de29433a8d230ee600b13d369b6c0f
+>>>>           # save the attached .config to linux build tree
+>>>>           COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=parisc
+>>>>
+>>>> If you fix the issue, kindly add following tag as appropriate
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>
+>>>> All errors (new ones prefixed by >>):
+>>>
+>>> I must confess that I have no idea what I can do about these errors.
+>>>
+>>> Did the kernel maybe grow larger than can be handled by the PA-RISC
+>>> toolchain?
+>>
+>> No, I assume it's because the function calls from the .init section are
+>> located too far away from the other code. Reason is probably because
+>> huge pages are selected and thus I tried to pack the init section so that
+>> it can get discarded after bootup.
+>>
+>> I'll look into it now...
 
-On Mon, Mar 1, 2021 at 6:49 PM Johannes Freyberger
-<Johannes@freyberger.de> wrote:
->
-> Hi Ruslan,
->
-> thanks for all your efforts to make the USB Audio Gadget work in Win10 using
-> UAC2. Meanwhile I managed to apply and compile your previous modifications
-> and now my Raspberry PI shows up in the Windows Device Manager as a valid
-> UAC2 audio device. Unfortunately it still doesn't work to transfer any audio
-> as it seems the audio endpoints or the topology is not working.
+I think the only way to fix this in a clean way is to
+enable CONFIG_MLONGCALLS, which lets gcc use -mlong-calls compiler
+option and thus creates far calls.
 
-Are you testing my previous version of the patches on some older kernel?
+The problem is, that those calls are far more less performant, which one
+usually don't want to use in production kernels.
+In addition, typical Linux distribution kernels have most
+drivers built as modules and as such don't need this option.
 
-Just for records - these two patch sets (part 1 and part 2) are based on Greg's
-usb-next branch (commit b5a12546e779d4f5586f58e60e0ef5070a833a64 which
-is based on v5.11-rc5 tag). I retested them today with a BBB board and it works
-fine under Win 10. Also I rebased these two patchsets today against latest
-Greg's usb-next branch which is now Linus's v5.12-rc1 tag and again it works
-fine under Win10 - both Volume/Mute controls and audio streaming.
+One way I can think of to work around that issue is, that if Kconfig detects
+that we build a test robot kernel, simply to enable this option.
+That way the test robot still builds everything.
 
-These patches have been tested previously on Raspberry PI 4 running v5.9
-and v5.10 stable kernels. The only issues I've seen were because of
-Raspberry's DWC2 DMA issue in the driver that I described in this cover letter.
-However if you disable volume/mute controls, it won't affect you.
+Is there a way to detect at compile/build time if the kernel
+is configured/built by the test robot? Is there maybe some config option
+or environment variable set which could be used?
 
-> I checked it
-> with some tools and found one providing some information on the USB part
-> (it's called UVCview.exe and is part of the Windows Driver Kit). Here's the
-> output which I hope can give some hints on the problems still existing in
-> this driver:
+Maybe someone has another/better idea as well?
 
-From the output below I see UAC2 descriptors are completely screwed up
-(or UVCview.exe doesn't show them correctly). Windows is very strict to
-the descriptors and doesn't allow devices to start in case of any issues.
-So if it appears as a valid UAC2 device in Device Manager, most likely
-UVCview.exe doesn't decode UAC2 descriptors well.
+Helge
 
-Could you please also apply these patches to the latest kernel (v5.12-rc1)
-and test?
 
-Thanks,
-Ruslan
+>>>>      hppa64-linux-ld: init/main.o(.init.text+0xdd8): cannot reach rest_init
+>>>>      init/main.o: in function `arch_call_rest_init':
+>>>>      (.init.text+0xdd8): relocation truncated to fit: R_PARISC_PCREL22F against symbol `rest_init' defined in .ref.text section in init/main.o
+>>>>      hppa64-linux-ld: init/main.o(.init.text+0x13d8): cannot reach build_all_zonelists
+>>>>      init/main.o: in function `start_kernel':
+>>>>      (.init.text+0x13d8): relocation truncated to fit: R_PARISC_PCREL22F against symbol `build_all_zonelists' defined in .ref.text section in mm/page_alloc.o
+>>>>      hppa64-linux-ld: init/main.o(.init.text+0x176c): cannot reach profile_init
+>>>>      (.init.text+0x176c): relocation truncated to fit: R_PARISC_PCREL22F against symbol `profile_init' defined in .ref.text section in kernel/profile.o
+>>>>      hppa64-linux-ld: init/main.o(.init.text+0x1ac0): cannot reach wait_for_completion
+>>>>      init/main.o: in function `kernel_init_freeable':
+>>>>      (.init.text+0x1ac0): relocation truncated to fit: R_PARISC_PCREL22F against symbol `wait_for_completion' defined in .sched.text section in kernel/sched/completion.o
+>>>>      hppa64-linux-ld: init/main.o(.ref.text+0x1c): cannot reach rcu_scheduler_starting
+>>>>      init/main.o: in function `rest_init':
+>>>>      (.ref.text+0x1c): relocation truncated to fit: R_PARISC_PCREL22F against symbol `rcu_scheduler_starting' defined in .init.text section in kernel/rcu/srcutiny.o
+>>>>      hppa64-linux-ld: init/main.o(.ref.text+0x17c): cannot reach unknown
+>>>>      init/main.o: in function `kernel_init':
+>>>>      (.ref.text+0x17c): relocation truncated to fit: R_PARISC_PCREL22F against `kernel_init_freeable'
+>>>>      hppa64-linux-ld: arch/parisc/mm/init.o(.ref.text+0x78): cannot reach unknown
+>>>>      arch/parisc/mm/init.o: in function `free_initmem':
+>>>>      (.ref.text+0x78): relocation truncated to fit: R_PARISC_PCREL22F against `map_pages'
+>>>>      hppa64-linux-ld: arch/parisc/mm/init.o(.ref.text+0xa0): cannot reach unknown
+>>>>      (.ref.text+0xa0): relocation truncated to fit: R_PARISC_PCREL22F against `map_pages'
+>>>>      hppa64-linux-ld: arch/parisc/mm/init.o(.ref.text+0xc4): cannot reach unknown
+>>>>      (.ref.text+0xc4): relocation truncated to fit: R_PARISC_PCREL22F against `map_pages'
+>>>>      hppa64-linux-ld: kernel/printk/printk.o(.init.text+0x768): cannot reach _raw_spin_lock
+>>>>      kernel/printk/printk.o: in function `setup_log_buf':
+>>>>      (.init.text+0x768): relocation truncated to fit: R_PARISC_PCREL22F against symbol `_raw_spin_lock' defined in .spinlock.text section in kernel/locking/spinlock.o
+>>>>      hppa64-linux-ld: kernel/printk/printk.o(.init.text+0x7c4): cannot reach _raw_spin_unlock
+>>>>      (.init.text+0x7c4): additional relocation overflows omitted from the output
+>>>>      hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0x228): cannot reach mutex_lock
+>>>>      hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0x440): cannot reach mutex_unlock
+>>>>      hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0x7a0): cannot reach mutex_lock
+>>>>      hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0x878): cannot reach mutex_unlock
+>>>>      hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0xad4): cannot reach mutex_lock
+>>>>      hppa64-linux-ld: kernel/cgroup/cgroup.o(.init.text+0xafc): cannot reach mutex_unlock
+>>>>      hppa64-linux-ld: kernel/resource.o(.init.text+0x32c): cannot reach _raw_write_lock
+>>>>      hppa64-linux-ld: kernel/resource.o(.init.text+0x4f8): cannot reach _raw_write_unlock
+>>>>      hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0x90): cannot reach mutex_lock
+>>>>      hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0xc4): cannot reach mutex_unlock
+>>>>      hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0x1b8): cannot reach mutex_lock
+>>>>      hppa64-linux-ld: kernel/time/clocksource.o(.init.text+0x208): cannot reach mutex_unlock
+>>>>      hppa64-linux-ld: kernel/workqueue.o(.init.text+0xa8): cannot reach mutex_lock
+>>>>      hppa64-linux-ld: kernel/workqueue.o(.init.text+0x128): cannot reach mutex_unlock
+>>>>      hppa64-linux-ld: kernel/workqueue.o(.init.text+0x354): cannot reach mutex_lock
+>>>>      hppa64-linux-ld: kernel/workqueue.o(.init.text+0x388): cannot reach mutex_unlock
+>>>>      hppa64-linux-ld: kernel/user.o(.init.text+0x80): cannot reach _raw_spin_lock_irq
+>>>>      hppa64-linux-ld: kernel/user.o(.init.text+0xb8): cannot reach _raw_spin_unlock_irq
+>>>>>> hppa64-linux-ld: kernel/rcu/refscale.o(.init.text+0x228): cannot reach schedule_timeout_uninterruptible
+>>>>      hppa64-linux-ld: kernel/time/timekeeping.o(.init.text+0x228): cannot reach _raw_spin_lock_irqsave
+>>>>      hppa64-linux-ld: kernel/time/timekeeping.o(.init.text+0x320): cannot reach _raw_spin_unlock_irqrestore
+>>>>      hppa64-linux-ld: kernel/time/sched_clock.o(.init.text+0x170): cannot reach __muldi3
+>>>>      hppa64-linux-ld: kernel/time/sched_clock.o(.init.text+0x214): cannot reach __udivdi3
+>>>>      hppa64-linux-ld: kernel/time/sched_clock.o(.init.text+0x240): cannot reach __udivdi3
+>>>>      hppa64-linux-ld: arch/parisc/kernel/cache.o(.init.text+0x2d4): cannot reach __muldi3
+>>>>      hppa64-linux-ld: arch/parisc/kernel/cache.o(.init.text+0x2ec): cannot reach __udivdi3
+>>>>      hppa64-linux-ld: arch/parisc/kernel/cache.o(.init.text+0x3d4): cannot reach __muldi3
+>>>>      hppa64-linux-ld: arch/parisc/kernel/cache.o(.init.text+0x3ec): cannot reach __udivdi3
+>>>>      hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x3c): cannot reach _raw_spin_lock_irqsave
+>>>>      hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0xe8): cannot reach _raw_spin_unlock_irqrestore
+>>>>      hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x170): cannot reach _raw_spin_lock_irqsave
+>>>>      hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x288): cannot reach _raw_spin_unlock_irqrestore
+>>>>      hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x30c): cannot reach _raw_spin_lock_irqsave
+>>>>      hppa64-linux-ld: arch/parisc/kernel/firmware.o(.init.text+0x3d8): cannot reach _raw_spin_unlock_irqrestore
+>>>>
+>>>> ---
+>>>> 0-DAY CI Kernel Test Service, Intel Corporation
+>>>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>>>
+>>>
+>>>
+>>
 
->
->           ---===>Device Information<===---
-> English product name: "Linux USB Audio Gadget"
->
-> ConnectionStatus:
-> Current Config Value:              0x01  -> Device Bus Speed: High
-> Device Address:                    0x0F
-> Open Pipes:                           0
-> *!*ERROR:  No open pipes!
->
->           ===>Device Descriptor<===
-> bLength:                           0x12
-> bDescriptorType:                   0x01
-> bcdUSB:                          0x0200
-> bDeviceClass:                      0xEF  -> This is a Multi-interface
-> Function Code Device
-> bDeviceSubClass:                   0x02  -> This is the Common Class Sub
-> Class
-> bDeviceProtocol:                   0x01  -> This is the Interface
-> Association Descriptor protocol
-> bMaxPacketSize0:                   0x40 = (64) Bytes
-> idVendor:                        0x1D6B = The Linux Foundation
-> idProduct:                       0x0101
-> bcdDevice:                       0x0510
-> iManufacturer:                     0x01
->      English (United States)  "Linux 5.10.17-v7l-R3LAY_TEST+ with
-> fe980000.usb"
-> iProduct:                          0x02
->      English (United States)  "Linux USB Audio Gadget"
-> iSerialNumber:                     0x00
-> bNumConfigurations:                0x01
->
->           ===>Configuration Descriptor<===
-> bLength:                           0x09
-> bDescriptorType:                   0x02
-> wTotalLength:                    0x00E2  -> Validated
-> bNumInterfaces:                    0x03
-> bConfigurationValue:               0x01
-> iConfiguration:                    0x00
-> bmAttributes:                      0xC0  -> Bus Powered
-> MaxPower:                          0x01 =   2 mA
->
->           ===>IAD Descriptor<===
-> bLength:                           0x08
-> bDescriptorType:                   0x0B
-> bFirstInterface:                   0x00
-> bInterfaceCount:                   0x03
-> bFunctionClass:                    0x01  -> Audio Interface Class
-> bFunctionSubClass:                 0x00
-> *!*CAUTION:    This appears to be an invalid bFunctionSubClass
-> bFunctionProtocol:                 0x20
-> iFunction:                         0x04
->      English (United States)  "R3lay PI"
->
->           ===>Interface Descriptor<===
-> bLength:                           0x09
-> bDescriptorType:                   0x04
-> bInterfaceNumber:                  0x00
-> bAlternateSetting:                 0x00
-> bNumEndpoints:                     0x00
-> bInterfaceClass:                   0x01  -> Audio Interface Class
-> bInterfaceSubClass:                0x01  -> Audio Control Interface SubClass
-> bInterfaceProtocol:                0x20
-> CAUTION:  This may be an invalid bInterfaceProtocol
-> iInterface:                        0x05
->      English (United States)  "Topology Control"
->
->           ===>Audio Control Interface Header Descriptor<===
-> bLength:                           0x09
-> bDescriptorType:                   0x24
-> bDescriptorSubtype:                0x01
-> bcdADC:                          0x0200
-> wTotalLength:                    0x5308
-> bInCollection:                     0x00
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x08
-> bDescriptorType:                   0x24
-> 08 24 0A 06 01 01 00 06
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x08
-> bDescriptorType:                   0x24
-> 08 24 0A 05 01 01 00 07
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x11
-> bDescriptorType:                   0x24
-> 11 24 02 01 01 01 00 05 02 03 00 00 00 00 03 00
-> 08
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x11
-> bDescriptorType:                   0x24
-> 11 24 02 02 00 02 00 06 02 03 00 00 00 00 03 00
-> 09
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x0C
-> bDescriptorType:                   0x24
-> 0C 24 03 04 01 01 00 02 06 03 00 0A
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x0C
-> bDescriptorType:                   0x24
-> 0C 24 03 03 00 03 00 01 05 03 00 0B
->
->           ===>Interface Descriptor<===
-> bLength:                           0x09
-> bDescriptorType:                   0x04
-> bInterfaceNumber:                  0x01
-> bAlternateSetting:                 0x00
-> bNumEndpoints:                     0x00
-> bInterfaceClass:                   0x01  -> Audio Interface Class
-> bInterfaceSubClass:                0x02  -> Audio Streaming Interface
-> SubClass
-> bInterfaceProtocol:                0x20
-> CAUTION:  This may be an invalid bInterfaceProtocol
-> iInterface:                        0x0C
->      English (United States)  "Playback Inactive"
->
->           ===>Interface Descriptor<===
-> bLength:                           0x09
-> bDescriptorType:                   0x04
-> bInterfaceNumber:                  0x01
-> bAlternateSetting:                 0x01
-> bNumEndpoints:                     0x02
-> bInterfaceClass:                   0x01  -> Audio Interface Class
-> bInterfaceSubClass:                0x02  -> Audio Streaming Interface
-> SubClass
-> bInterfaceProtocol:                0x20
-> CAUTION:  This may be an invalid bInterfaceProtocol
-> iInterface:                        0x0D
->      English (United States)  "Playback Active"
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x10
-> bDescriptorType:                   0x24
-> 10 24 01 01 00 01 01 00 00 00 02 03 00 00 00 00
->
->           ===>Audio Streaming Format Type Descriptor<===
-> bLength:                           0x06
-> bDescriptorType:                   0x24
-> bDescriptorSubtype:                0x02
-> bFormatType:                       0x01
-> bNrChannels:                       0x02
-> bSubframeSize:                     0x10
-> bBitResolution:                    0x07
-> bSamFreqType:                      0x05
-> tSamFreq[1]:                   0x380501 (3671297 Hz)
-> tSamFreq[2]:                   0x080401 (525313 Hz)
-> tSamFreq[3]:                   0x000125 (293 Hz)
-> tSamFreq[4]:                   0x000000 (0 Hz)
-> tSamFreq[5]:                   0x050700 (329472 Hz)
->
->           ===>Endpoint Descriptor<===
-> bLength:                           0x07
-> bDescriptorType:                   0x05
-> bEndpointAddress:                  0x01  -> Direction: OUT - EndpointID: 1
-> bmAttributes:                      0x05  -> Isochronous Transfer Type
->                    Synchronization Type = Asynchronous
-> Bulk Transfer Type
-> wMaxPacketSize:                  0x0138 = 1 transactions per microframe,
-> 0x138 max bytes
-> bInterval:                         0x04
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x08
-> bDescriptorType:                   0x25
-> 08 25 01 00 00 00 00 00
->
->           ===>Endpoint Descriptor<===
-> bLength:                           0x07
-> bDescriptorType:                   0x05
-> bEndpointAddress:                  0x81  -> Direction: IN - EndpointID: 1
-> bmAttributes:                      0x11  -> Isochronous Transfer Type
->                    Synchronization Type = No Synchronization
-> Bulk Transfer Type
-> wMaxPacketSize:                  0x0004 = 1 transactions per microframe,
-> 0x04 max bytes
-> bInterval:                         0x04
->
->           ===>Interface Descriptor<===
-> bLength:                           0x09
-> bDescriptorType:                   0x04
-> bInterfaceNumber:                  0x02
-> bAlternateSetting:                 0x00
-> bNumEndpoints:                     0x00
-> bInterfaceClass:                   0x01  -> Audio Interface Class
-> bInterfaceSubClass:                0x02  -> Audio Streaming Interface
-> SubClass
-> bInterfaceProtocol:                0x20
-> CAUTION:  This may be an invalid bInterfaceProtocol
-> iInterface:                        0x0E
->      English (United States)  "Capture Inactive"
->
->           ===>Interface Descriptor<===
-> bLength:                           0x09
-> bDescriptorType:                   0x04
-> bInterfaceNumber:                  0x02
-> bAlternateSetting:                 0x01
-> bNumEndpoints:                     0x01
-> bInterfaceClass:                   0x01  -> Audio Interface Class
-> bInterfaceSubClass:                0x02  -> Audio Streaming Interface
-> SubClass
-> bInterfaceProtocol:                0x20
-> CAUTION:  This may be an invalid bInterfaceProtocol
-> iInterface:                        0x0F
->      English (United States)  "Capture Active"
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x10
-> bDescriptorType:                   0x24
-> 10 24 01 04 00 01 01 00 00 00 02 03 00 00 00 00
->
->           ===>Audio Streaming Format Type Descriptor<===
-> bLength:                           0x06
-> bDescriptorType:                   0x24
-> bDescriptorSubtype:                0x02
-> bFormatType:                       0x01
-> bNrChannels:                       0x02
-> bSubframeSize:                     0x10
-> bBitResolution:                    0x07
-> bSamFreqType:                      0x05
-> tSamFreq[1]:                   0xC40582 (12846466 Hz)
-> tSamFreq[2]:                   0x080400 (525312 Hz)
-> tSamFreq[3]:                   0x000125 (293 Hz)
-> tSamFreq[4]:                   0x000000 (0 Hz)
-> tSamFreq[5]:                   0x000000 (0 Hz)
->
->           ===>Endpoint Descriptor<===
-> bLength:                           0x07
-> bDescriptorType:                   0x05
-> bEndpointAddress:                  0x82  -> Direction: IN - EndpointID: 2
-> bmAttributes:                      0x05  -> Isochronous Transfer Type
->                    Synchronization Type = Asynchronous
-> Bulk Transfer Type
-> wMaxPacketSize:                  0x00C4 = 1 transactions per microframe,
-> 0xC4 max bytes
-> bInterval:                         0x04
->
->           ===>Descriptor Hex Dump<===
-> bLength:                           0x08
-> bDescriptorType:                   0x25
-> 08 25 01 00 00 00 00 00
->
