@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A093297FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:33:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44FB83298BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245086AbhCAXHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:07:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49712 "EHLO mail.kernel.org"
+        id S1346499AbhCAXsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:48:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237418AbhCARyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:54:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC93D65202;
-        Mon,  1 Mar 2021 17:21:35 +0000 (UTC)
+        id S238828AbhCASJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:09:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BBF765210;
+        Mon,  1 Mar 2021 17:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619296;
-        bh=8UDkSKJlDrC4FnP4WTHr4ryIuize/DgRuwd7VjbSmLE=;
+        s=korg; t=1614619329;
+        bh=a4msSb0TMRoTeTWoGHvLNmkLmL172eHiFrYy/xo0/O4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KR9SuKfcbmDeXP3iOToPKhDXjUeRbgEaUq9R4AosZqgJkk8w00c3kfc0gXmk4/jYR
-         r/aTHlcFDWL9hbcUHyazZdDyR3Sj65u8rPSXYvSEmGWPyVLU8oXBZcf3oyX35HcOzc
-         6HN0laoyjrwQ3WzkBNOyeNGIIEGXKnry68GrvUXo=
+        b=SzKELfIEZyO8lEWuUKGkkDPfyK/sTUErWJ/kwsTB6v8oZACyw7BUu9FOyR8FNDDc3
+         GwkvYYdhep8Ffv8lLC9XRu/wwhiYt/8/ItZ9+ac61bFwGhzuI9SJNT0jUg2H23txgK
+         iJhkqFcp0Yq13B6uzuZV0BWmuiV+AXQlSm46/4h0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        stable@vger.kernel.org, Keqian Zhu <zhukeqian1@huawei.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 404/663] PCI: xilinx-cpm: Fix reference count leak on error path
-Date:   Mon,  1 Mar 2021 17:10:52 +0100
-Message-Id: <20210301161201.857764552@linuxfoundation.org>
+Subject: [PATCH 5.10 415/663] vfio/iommu_type1: Fix some sanity checks in detach group
+Date:   Mon,  1 Mar 2021 17:11:03 +0100
+Message-Id: <20210301161202.406080057@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,33 +40,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Keqian Zhu <zhukeqian1@huawei.com>
 
-[ Upstream commit ae191d2e513ae5274224777ae67018a584074a28 ]
+[ Upstream commit 4a19f37a3dd3f29997735e61b25ddad24b8abe73 ]
 
-Also drop the reference count of the node on error path.
+vfio_sanity_check_pfn_list() is used to check whether pfn_list and
+notifier are empty when remove the external domain, so it makes a
+wrong assumption that only external domain will use the pinning
+interface.
 
-Link: https://lore.kernel.org/r/20210120143745.699-1-bianpan2016@163.com
-Fixes: 508f610648b9 ("PCI: xilinx-cpm: Add Versal CPM Root Port driver")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Now we apply the pfn_list check when a vfio_dma is removed and apply
+the notifier check when all domains are removed.
+
+Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-xilinx-cpm.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/vfio/vfio_iommu_type1.c | 31 ++++++++-----------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-xilinx-cpm.c b/drivers/pci/controller/pcie-xilinx-cpm.c
-index f92e0152e65e3..67937facd90cd 100644
---- a/drivers/pci/controller/pcie-xilinx-cpm.c
-+++ b/drivers/pci/controller/pcie-xilinx-cpm.c
-@@ -404,6 +404,7 @@ static int xilinx_cpm_pcie_init_irq_domain(struct xilinx_cpm_pcie_port *port)
- 	return 0;
- out:
- 	xilinx_cpm_free_irq_domains(port);
-+	of_node_put(pcie_intc_node);
- 	dev_err(dev, "Failed to allocate IRQ domains\n");
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index a08b2cb4ec66e..c12fc0d190627 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -957,6 +957,7 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
  
- 	return -ENOMEM;
+ static void vfio_remove_dma(struct vfio_iommu *iommu, struct vfio_dma *dma)
+ {
++	WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list));
+ 	vfio_unmap_unpin(iommu, dma, true);
+ 	vfio_unlink_dma(iommu, dma);
+ 	put_task_struct(dma->task);
+@@ -2250,23 +2251,6 @@ static void vfio_iommu_unmap_unpin_reaccount(struct vfio_iommu *iommu)
+ 	}
+ }
+ 
+-static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
+-{
+-	struct rb_node *n;
+-
+-	n = rb_first(&iommu->dma_list);
+-	for (; n; n = rb_next(n)) {
+-		struct vfio_dma *dma;
+-
+-		dma = rb_entry(n, struct vfio_dma, node);
+-
+-		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
+-			break;
+-	}
+-	/* mdev vendor driver must unregister notifier */
+-	WARN_ON(iommu->notifier.head);
+-}
+-
+ /*
+  * Called when a domain is removed in detach. It is possible that
+  * the removed domain decided the iova aperture window. Modify the
+@@ -2366,10 +2350,10 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+ 			kfree(group);
+ 
+ 			if (list_empty(&iommu->external_domain->group_list)) {
+-				vfio_sanity_check_pfn_list(iommu);
+-
+-				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
++				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu)) {
++					WARN_ON(iommu->notifier.head);
+ 					vfio_iommu_unmap_unpin_all(iommu);
++				}
+ 
+ 				kfree(iommu->external_domain);
+ 				iommu->external_domain = NULL;
+@@ -2403,10 +2387,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+ 		 */
+ 		if (list_empty(&domain->group_list)) {
+ 			if (list_is_singular(&iommu->domain_list)) {
+-				if (!iommu->external_domain)
++				if (!iommu->external_domain) {
++					WARN_ON(iommu->notifier.head);
+ 					vfio_iommu_unmap_unpin_all(iommu);
+-				else
++				} else {
+ 					vfio_iommu_unmap_unpin_reaccount(iommu);
++				}
+ 			}
+ 			iommu_domain_free(domain->domain);
+ 			list_del(&domain->next);
+@@ -2490,7 +2476,6 @@ static void vfio_iommu_type1_release(void *iommu_data)
+ 
+ 	if (iommu->external_domain) {
+ 		vfio_release_domain(iommu->external_domain, true);
+-		vfio_sanity_check_pfn_list(iommu);
+ 		kfree(iommu->external_domain);
+ 	}
+ 
 -- 
 2.27.0
 
