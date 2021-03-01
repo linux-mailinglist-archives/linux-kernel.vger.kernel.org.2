@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFE73299B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C539329979
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348105AbhCBA2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:28:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43162 "EHLO mail.kernel.org"
+        id S245241AbhCBATm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:19:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234847AbhCAS3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00B6B651A7;
-        Mon,  1 Mar 2021 17:12:16 +0000 (UTC)
+        id S238512AbhCASXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:23:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A498C6501E;
+        Mon,  1 Mar 2021 17:12:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614618737;
-        bh=si2eQjMtWG04yWgbRVI1ZmXrgQt/Qz7SnMI2Vx2sclo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TRyUOqnIYoOkLEdIZXY6n+mfmvhH+iTo7CrtOF+ZcPgwnX1jIvD1pwfrsHDCaKBDd
-         OzJ1rhzg8FQ/vdEqpe/n2x4ds1AhZvm9EXB/2XBN3Ldbeh/3u/W0r/LQs6Oe/ab2DJ
-         lwKzntubGHiOHtFnx6jxDuJIlUSZ1BjKFfkV6wpTCxFgjs07SrD9BLrLvbwcm0UULL
-         LVNtjOEINjvQcZiEzwMBv7Jr3ARAZP0IP1i1HhqayUARKPX4FKRafpfRkSktwDalDG
-         0Pcwxhl/F2zAfhel0RzcLc+ZirGdOYBtKNhP+ghxV2S4jdebTeA+fFgmSD9QV0D9Dl
-         JkShhsckrG5aQ==
-Date:   Mon, 1 Mar 2021 17:11:11 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>
-Cc:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ashish Kumar <ashish.kumar@nxp.com>, Han Xu <han.xu@nxp.com>
-Subject: Re: [EXT] Re: [PATCH 2/3] spi: spi-nxp-fspi: Add driver support for
- imx8dxl
-Message-ID: <20210301171111.GE4628@sirena.org.uk>
-References: <20210301103230.1816168-1-kuldeep.singh@nxp.com>
- <20210301103230.1816168-3-kuldeep.singh@nxp.com>
- <20210301132539.GB4628@sirena.org.uk>
- <DB6PR0402MB2758C61D8320CD0A88DC3B38E09A9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+        s=k20201202; t=1614618743;
+        bh=7oft8byjZEvDx0jfepFsMduaQb1utc8hp7/rStQeiso=;
+        h=Date:From:To:Subject:From;
+        b=tUoyFTal3LblOuFLcsEjs1D2/Ef3sgjmo17HEwqo+UsnINhYRool/V5//z5JTJ42w
+         TijnP37QZoDS5C8DIUYHHNxH2WSLPr8dm0avsagjqCDm+sEznLIBMHDsi+g0VpehDX
+         4wiVJriJrGSX4HEMk1vR0rGL0O/GS9UGZ9IluAywDZXus4yNaVurNQIYObm2jW34z2
+         rFYYfbbgsaAwfEe6ekL94FsESr+R2LC3DuX8JvVlr1S2HcUt5/O1Fhc1NHldPOYTtM
+         K22fkKDcPjo/GYGbQG4m99ZBkqrTKcSDybKBzcH1fVevhHg4NJ6YcuLzjDwVMiMEQ2
+         l/eU65yypUrdA==
+Received: by pali.im (Postfix)
+        id 382F8A32; Mon,  1 Mar 2021 18:12:21 +0100 (CET)
+Date:   Mon, 1 Mar 2021 18:12:21 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: RFC: sysfs node for Secondary PCI bus reset (PCIe Hot Reset)
+Message-ID: <20210301171221.3d42a55i7h5ubqsb@pali>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6Vw0j8UKbyX0bfpA"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB2758C61D8320CD0A88DC3B38E09A9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
-X-Cookie: Body by Nautilus, Brain by Mattel.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
---6Vw0j8UKbyX0bfpA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+PCIe card can be reset via in-band Hot Reset signal which can be
+triggered by PCIe bridge via Secondary Bus Reset bit in PCI config
+space.
 
-On Mon, Mar 01, 2021 at 04:39:18PM +0000, Kuldeep Singh wrote:
+Kernel already exports sysfs node "reset" for triggering Functional
+Reset of particular function of PCI device. But in some cases Functional
+Reset is not enough and Hot Reset is required.
 
-> > That's a DT binding YAML conversion patch, why would there be a
-> > dependency on it?
+Following RFC patch exports sysfs node "reset_bus" for PCI bridges which
+triggers Secondary Bus Reset and therefore for PCIe bridges it resets
+connected PCIe card.
 
-> I have converted bindings to yaml version in the patch and also added imx8dxl compatible along-with the conversion. Please see the difference in compatible entries from txt to yaml conversion[1].
-> Kindly let me know do I need to submit different patch for adding new compatible or ok to include in the conversion patch itself?
+What do you think about it?
 
-Your YAML binding conversion should have been a standalone patch only
-doing that conversion, the new compatible should have been split out and
-gone first - each patch should only do one thing as covered in
-submitting-patches.rst.  As things stand the changelog for the
-conversion is misleading since it doesn't mention the new compatible.
+Currently there is userspace script which can trigger PCIe Hot Reset by
+modifying PCI config space from userspace:
 
-Please fix your mail client to word wrap within paragraphs at something
-substantially less than 80 columns.  Doing this makes your messages much
-easier to read and reply to.
+https://alexforencich.com/wiki/en/pcie/hot-reset-linux
 
---6Vw0j8UKbyX0bfpA
-Content-Type: application/pgp-signature; name="signature.asc"
+But because kernel already provides way how to trigger Functional Reset
+it could provide also way how to trigger PCIe Hot Reset.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA9IC4ACgkQJNaLcl1U
-h9BVzgf/fcNTSGu3TmIuLXEmc8xKQhoS/wyKHEbL3A4BQsrfb4t1xIeNIF06Juba
-05R5g6zAnzjPtXVNQ33pNJIrGJVfDWHk0wiWfp5T5pDVvk22/Whyz7+N5xa40dMN
-omTFCyCKUC1DrvzMkZssOjmAQGTlXpId0N3yUx0WOVWnvgHj9y7fRA9LCGK9Dlve
-yMKQZctAOAdh6W/hBDZvANC4qeoRQh3O4iUSoPo4ht6v7oDQoeTp+Dp32yclpdhP
-9OpqLIi0fYuX1KaDl/9eVG/buR4NJPVWxKIE4jOd165hLdzf8chjUr2OZFDNBGA4
-frXAJ2nZtoVXBFgdAP4fgfNtr6FChw==
-=WlwW
------END PGP SIGNATURE-----
-
---6Vw0j8UKbyX0bfpA--
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index 50fcb62d59b5..f5e11c589498 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -1321,6 +1321,30 @@ static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
+ 
+ static DEVICE_ATTR(reset, 0200, NULL, reset_store);
+ 
++static ssize_t reset_bus_store(struct device *dev, struct device_attribute *attr,
++			       const char *buf, size_t count)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	unsigned long val;
++	ssize_t result = kstrtoul(buf, 0, &val);
++
++	if (result < 0)
++		return result;
++
++	if (val != 1)
++		return -EINVAL;
++
++	pm_runtime_get_sync(dev);
++	result = pci_bridge_secondary_bus_reset(pdev);
++	pm_runtime_put(dev);
++	if (result < 0)
++		return result;
++
++	return count;
++}
++
++static DEVICE_ATTR(reset_bus, 0200, NULL, reset_bus_store);
++
+ static int pci_create_capabilities_sysfs(struct pci_dev *dev)
+ {
+ 	int retval;
+@@ -1332,8 +1356,15 @@ static int pci_create_capabilities_sysfs(struct pci_dev *dev)
+ 		if (retval)
+ 			goto error;
+ 	}
++	if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) {
++		retval = device_create_file(&dev->dev, &dev_attr_reset_bus);
++		if (retval)
++			goto error_reset_bus;
++	}
+ 	return 0;
+ 
++error_reset_bus:
++	device_remove_file(&dev->dev, &dev_attr_reset);
+ error:
+ 	pcie_vpd_remove_sysfs_dev_files(dev);
+ 	return retval;
+@@ -1414,6 +1445,8 @@ static void pci_remove_capabilities_sysfs(struct pci_dev *dev)
+ 		device_remove_file(&dev->dev, &dev_attr_reset);
+ 		dev->reset_fn = 0;
+ 	}
++	if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE)
++		device_remove_file(&dev->dev, &dev_attr_reset_bus);
+ }
+ 
+ /**
