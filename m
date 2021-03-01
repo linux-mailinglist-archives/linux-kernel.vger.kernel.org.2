@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AFF3299E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE06F32997A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242670AbhCBAio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:38:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48304 "EHLO mail.kernel.org"
+        id S245615AbhCBAUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:20:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239895AbhCASeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:34:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E133A64E40;
-        Mon,  1 Mar 2021 17:46:53 +0000 (UTC)
+        id S239294AbhCASXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:23:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8780B60233;
+        Mon,  1 Mar 2021 17:46:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620814;
-        bh=gx6ArT8z1dtDmgjyo/+W9ohGd7qPzbRXiqWkynK9y4k=;
+        s=korg; t=1614620820;
+        bh=y1vVb6H2Ynlpe7HVnGQZ/pRkRfbcw3+MNvs+pxOPqIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LLtMkGqqQj06fOv3bq/Uwu4VKyp/pvcU/UtbELwddR+SiUjhdaUmjCsGXZD5DmtGu
-         UlQedCY2RLLHryKBdWuTbkYfAM4Id85cHycWVAaXfOUfH2MzP9xJPAq5rATdmrBCOJ
-         9hMs9Cz0y0qSlW8jCEH/kGon6Uu70kzyITNhrCAA=
+        b=sxU1sNETab7nDZWpl9nu8v+spM3ak4JLYN3ADMgDAvtniEabPNQ/N4WKXB4Wmb6NZ
+         4OiaC3QtL9xsFwjXYvE0eCqq/KgtlAPX2NPLBkSckX6H/QrEPbm5pMEnjAf7CrWuHa
+         6r4xF8NSkwltr78D6CSM94fGV06CyEGKPKAwPIVk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 289/775] nvmet: set status to 0 in case for invalid nsid
-Date:   Mon,  1 Mar 2021 17:07:37 +0100
-Message-Id: <20210301161215.902346017@linuxfoundation.org>
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 291/775] ima: Free IMA measurement buffer on error
+Date:   Mon,  1 Mar 2021 17:07:39 +0100
+Message-Id: <20210301161216.000818797@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,32 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-[ Upstream commit 40244ad36bcfb796a6bb9e95bdcbf8ddf3134509 ]
+[ Upstream commit 6d14c6517885fa68524238787420511b87d671df ]
 
-For unallocated namespace in nvmet_execute_identify_ns() don't set the
-status to NVME_SC_INVALID_NS, set it to zero.
+IMA allocates kernel virtual memory to carry forward the measurement
+list, from the current kernel to the next kernel on kexec system call,
+in ima_add_kexec_buffer() function.  In error code paths this memory
+is not freed resulting in memory leak.
 
-Fixes: bffcd507780e ("nvmet: set right status on error in id-ns handler")
-Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Free the memory allocated for the IMA measurement list in
+the error code paths in ima_add_kexec_buffer() function.
+
+Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/target/admin-cmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/integrity/ima/ima_kexec.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/target/admin-cmd.c b/drivers/nvme/target/admin-cmd.c
-index de6aaa4c96e53..1827d8d8f3b00 100644
---- a/drivers/nvme/target/admin-cmd.c
-+++ b/drivers/nvme/target/admin-cmd.c
-@@ -487,7 +487,7 @@ static void nvmet_execute_identify_ns(struct nvmet_req *req)
- 	/* return an all zeroed buffer if we can't find an active namespace */
- 	req->ns = nvmet_find_namespace(ctrl, req->cmd->identify.nsid);
- 	if (!req->ns) {
--		status = NVME_SC_INVALID_NS;
-+		status = 0;
- 		goto done;
+diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
+index 121de3e04af23..206ddcaa5c67a 100644
+--- a/security/integrity/ima/ima_kexec.c
++++ b/security/integrity/ima/ima_kexec.c
+@@ -119,6 +119,7 @@ void ima_add_kexec_buffer(struct kimage *image)
+ 	ret = kexec_add_buffer(&kbuf);
+ 	if (ret) {
+ 		pr_err("Error passing over kexec measurement buffer.\n");
++		vfree(kexec_buffer);
+ 		return;
  	}
  
 -- 
