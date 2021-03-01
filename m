@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A9A328F07
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCB9328F15
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239109AbhCATmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:42:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54000 "EHLO mail.kernel.org"
+        id S241821AbhCATm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:42:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236396AbhCAQyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:54:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4476E64F55;
-        Mon,  1 Mar 2021 16:34:41 +0000 (UTC)
+        id S232387AbhCAQys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:54:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39D1564FC8;
+        Mon,  1 Mar 2021 16:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616481;
-        bh=2k/Y97RHT7hk5wZrN5m6S4YgDsSzrKa+SR+h13LXQ50=;
+        s=korg; t=1614616510;
+        bh=zmOEjISHg1VmeqkfzGiNVGFtl/fkgNBrLD5d/zOl8Dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EsVd3q1nNOJq+b2UAZy0vCcTTG9WCpGtepXMwVIgQbvUDu0T0AkCu80LQ7+6STu9T
-         dUXlduxbFMM3IrMJia773JwOYpkl75YdsrvwU+Z4zAfVI2UCJcHqYb9CpufrJXczZT
-         3ZcEXJDuTAjnHWh4mG105enxuznyKpXJqEcmvA68=
+        b=meoOxbGfHStxsiFoAHKg0d+yv3OnwFwzhRaL0hn7GouTCFsRCdqDXxx8MPr05wEAL
+         BgDtth38iKqx2etEygdbUn3A58eTCSZ3UYL3kqigVmCeaNK3O4OxNNXGUUbzU1IYOI
+         VHOUdTHY0YtzO4oV1zBM5YZ7k6EYpFl8XPfW2N3U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Kiselev <bigunclemax@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 4.14 159/176] gpio: pcf857x: Fix missing first interrupt
-Date:   Mon,  1 Mar 2021 17:13:52 +0100
-Message-Id: <20210301161028.923542505@linuxfoundation.org>
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: [PATCH 4.14 160/176] printk: fix deadlock when kernel panic
+Date:   Mon,  1 Mar 2021 17:13:53 +0100
+Message-Id: <20210301161028.973979578@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -39,45 +40,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Kiselev <bigunclemax@gmail.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-commit a8002a35935aaefcd6a42ad3289f62bab947f2ca upstream.
+commit 8a8109f303e25a27f92c1d8edd67d7cbbc60a4eb upstream.
 
-If no n_latch value will be provided at driver probe then all pins will
-be used as an input:
+printk_safe_flush_on_panic() caused the following deadlock on our
+server:
 
-    gpio->out = ~n_latch;
+CPU0:                                         CPU1:
+panic                                         rcu_dump_cpu_stacks
+  kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
+    register_nmi_handler(crash_nmi_callback)      printk_safe_flush
+                                                    __printk_safe_flush
+                                                      raw_spin_lock_irqsave(&read_lock)
+    // send NMI to other processors
+    apic_send_IPI_allbutself(NMI_VECTOR)
+                                                        // NMI interrupt, dead loop
+                                                        crash_nmi_callback
+  printk_safe_flush_on_panic
+    printk_safe_flush
+      __printk_safe_flush
+        // deadlock
+        raw_spin_lock_irqsave(&read_lock)
 
-In that case initial state for all pins is "one":
+DEADLOCK: read_lock is taken on CPU1 and will never get released.
 
-    gpio->status = gpio->out;
+It happens when panic() stops a CPU by NMI while it has been in
+the middle of printk_safe_flush().
 
-So if pcf857x IRQ happens with change pin value from "zero" to "one"
-then we miss it, because of "one" from IRQ and "one" from initial state
-leaves corresponding pin unchanged:
-change = (gpio->status ^ status) & gpio->irq_enabled;
+Handle the lock the same way as logbuf_lock. The printk_safe buffers
+are flushed only when both locks can be safely taken. It can avoid
+the deadlock _in this particular case_ at expense of losing contents
+of printk_safe buffers.
 
-The right solution will be to read actual state at driver probe.
+Note: It would actually be safe to re-init the locks when all CPUs were
+      stopped by NMI. But it would require passing this information
+      from arch-specific code. It is not worth the complexity.
+      Especially because logbuf_lock and printk_safe buffers have been
+      obsoleted by the lockless ring buffer.
 
-Cc: stable@vger.kernel.org
-Fixes: 6e20a0a429bd ("gpio: pcf857x: enable gpio_to_irq() support")
-Signed-off-by: Maxim Kiselev <bigunclemax@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Fixes: cf9b1106c81c ("printk/nmi: flush NMI messages on the system panic")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Cc: <stable@vger.kernel.org>
+Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20210210034823.64867-1-songmuchun@bytedance.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpio-pcf857x.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/printk/printk_safe.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/drivers/gpio/gpio-pcf857x.c
-+++ b/drivers/gpio/gpio-pcf857x.c
-@@ -357,7 +357,7 @@ static int pcf857x_probe(struct i2c_clie
- 	 * reset state.  Otherwise it flags pins to be driven low.
- 	 */
- 	gpio->out = ~n_latch;
--	gpio->status = gpio->out;
-+	gpio->status = gpio->read(gpio->client);
+--- a/kernel/printk/printk_safe.c
++++ b/kernel/printk/printk_safe.c
+@@ -56,6 +56,8 @@ struct printk_safe_seq_buf {
+ static DEFINE_PER_CPU(struct printk_safe_seq_buf, safe_print_seq);
+ static DEFINE_PER_CPU(int, printk_context);
  
- 	status = devm_gpiochip_add_data(&client->dev, &gpio->chip, gpio);
- 	if (status < 0)
++static DEFINE_RAW_SPINLOCK(safe_read_lock);
++
+ #ifdef CONFIG_PRINTK_NMI
+ static DEFINE_PER_CPU(struct printk_safe_seq_buf, nmi_print_seq);
+ #endif
+@@ -194,8 +196,6 @@ static void report_message_lost(struct p
+  */
+ static void __printk_safe_flush(struct irq_work *work)
+ {
+-	static raw_spinlock_t read_lock =
+-		__RAW_SPIN_LOCK_INITIALIZER(read_lock);
+ 	struct printk_safe_seq_buf *s =
+ 		container_of(work, struct printk_safe_seq_buf, work);
+ 	unsigned long flags;
+@@ -209,7 +209,7 @@ static void __printk_safe_flush(struct i
+ 	 * different CPUs. This is especially important when printing
+ 	 * a backtrace.
+ 	 */
+-	raw_spin_lock_irqsave(&read_lock, flags);
++	raw_spin_lock_irqsave(&safe_read_lock, flags);
+ 
+ 	i = 0;
+ more:
+@@ -246,7 +246,7 @@ more:
+ 
+ out:
+ 	report_message_lost(s);
+-	raw_spin_unlock_irqrestore(&read_lock, flags);
++	raw_spin_unlock_irqrestore(&safe_read_lock, flags);
+ }
+ 
+ /**
+@@ -292,6 +292,14 @@ void printk_safe_flush_on_panic(void)
+ 		raw_spin_lock_init(&logbuf_lock);
+ 	}
+ 
++	if (raw_spin_is_locked(&safe_read_lock)) {
++		if (num_online_cpus() > 1)
++			return;
++
++		debug_locks_off();
++		raw_spin_lock_init(&safe_read_lock);
++	}
++
+ 	printk_safe_flush();
+ }
+ 
 
 
