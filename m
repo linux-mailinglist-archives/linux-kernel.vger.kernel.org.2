@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1FE328780
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB023287DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:30:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238301AbhCARYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:24:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59972 "EHLO mail.kernel.org"
+        id S237073AbhCAR3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:29:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234383AbhCAQ0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:26:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E729A64F4A;
-        Mon,  1 Mar 2021 16:21:52 +0000 (UTC)
+        id S234560AbhCAQ1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:27:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7347F64EE8;
+        Mon,  1 Mar 2021 16:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615713;
-        bh=mrU0jcKrb7TALDN/P6iAXgazLGXjWh9OU6ExnpesbI8=;
+        s=korg; t=1614615745;
+        bh=RcZkAJo1EQTUcTRtboUzY6uUjKe1l2olosoCrIhAthM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w7xAYjm8lXvSlecOwGBlRMpOxwMu6CWaawGYCVKRd1f/I/uSt/uh+aIA9MCshBi/Z
-         3CNHQv8CaGZ55jrAnJufj6asN3+Kwa6i/MdYVszojWneLIx2n2Kn2u6sIRLrcgEeQR
-         aMxJK43AA6iv7wqUo0qenA6PCFTa9cDpH2AodTtE=
+        b=V5zumwUpRlaogU9HxuSDwSKTGsfSqKcbSlu/doZPS6L/zwXSsBqPBLxDI5X4/TJAC
+         3cOJhYCLHc8i1TlyC2JmCqIv/F4AbL2JzIlZJSeFBqkqL9FOlqfVLuQqz/lMw6uysB
+         AAhIPA7N7FKJuurVs3DI7YSbblGo92267S6yZ4TI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 032/134] MIPS: c-r4k: Fix section mismatch for loongson2_sc_init
-Date:   Mon,  1 Mar 2021 17:12:13 +0100
-Message-Id: <20210301161015.160167753@linuxfoundation.org>
+Subject: [PATCH 4.9 045/134] crypto: ecdh_helper - Ensure len >= secret.len in decode_key()
+Date:   Mon,  1 Mar 2021 17:12:26 +0100
+Message-Id: <20210301161015.798285492@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -42,43 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 
-[ Upstream commit c58734eee6a2151ba033c0dcb31902c89e310374 ]
+[ Upstream commit a53ab94eb6850c3657392e2d2ce9b38c387a2633 ]
 
-When building with clang, the following section mismatch warning occurs:
+The length ('len' parameter) passed to crypto_ecdh_decode_key() is never
+checked against the length encoded in the passed buffer ('buf'
+parameter). This could lead to an out-of-bounds access when the passed
+length is less than the encoded length.
 
-WARNING: modpost: vmlinux.o(.text+0x24490): Section mismatch in
-reference from the function r4k_cache_init() to the function
-.init.text:loongson2_sc_init()
+Add a check to prevent that.
 
-This should have been fixed with commit ad4fddef5f23 ("mips: fix Section
-mismatch in reference") but it was missed. Remove the improper __init
-annotation like that commit did.
-
-Fixes: 078a55fc824c ("MIPS: Delete __cpuinit/__CPUINIT usage from MIPS code")
-Link: https://github.com/ClangBuiltLinux/linux/issues/787
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: 3c4b23901a0c7 ("crypto: ecdh - Add ECDH software support")
+Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/mm/c-r4k.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ crypto/ecdh_helper.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index cb877f86f5fc9..b9dea4ce290c1 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -1630,7 +1630,7 @@ static int probe_scache(void)
- 	return 1;
- }
+diff --git a/crypto/ecdh_helper.c b/crypto/ecdh_helper.c
+index 3cd8a2414e60e..de43ffb538405 100644
+--- a/crypto/ecdh_helper.c
++++ b/crypto/ecdh_helper.c
+@@ -71,6 +71,9 @@ int crypto_ecdh_decode_key(const char *buf, unsigned int len,
+ 	if (secret.type != CRYPTO_KPP_SECRET_TYPE_ECDH)
+ 		return -EINVAL;
  
--static void __init loongson2_sc_init(void)
-+static void loongson2_sc_init(void)
- {
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 
++	if (unlikely(len < secret.len))
++		return -EINVAL;
++
+ 	ptr = ecdh_unpack_data(&params->curve_id, ptr, sizeof(params->curve_id));
+ 	ptr = ecdh_unpack_data(&params->key_size, ptr, sizeof(params->key_size));
+ 	if (secret.len != crypto_ecdh_key_len(params))
 -- 
 2.27.0
 
