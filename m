@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8E93293A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 553C53293F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237016AbhCAVbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:31:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36604 "EHLO mail.kernel.org"
+        id S244361AbhCAVnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:43:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238035AbhCARS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:18:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EC9C64EBE;
-        Mon,  1 Mar 2021 16:46:44 +0000 (UTC)
+        id S237030AbhCARSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:18:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B99E6504D;
+        Mon,  1 Mar 2021 16:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617205;
-        bh=GoN/ez8d53JBJoTOnaBAX2eFBXESWRbKo7b1nIeshwA=;
+        s=korg; t=1614617231;
+        bh=1aUp4WnQ0d6xW1Xx1eaYpX3/zb8vkFgrgPhQ4ud/oec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z4WpotnvuNlDy+I2ufMpzAKKc0qcrCejZ2RBHimQvFqFYrWP4TKmYBq6ARRbBNXqM
-         a7jpVsUoPo19sw+KNQM8L1Ye2KJ3FIF+T2H3iKhGA1t0UwBZ3Ttf58eC/SxkwbYYLA
-         YKQjfqxCOSP7wDcEZnWvPWotPiPXQFzNJQQ8PENk=
+        b=SPF+549TIhCJiUedaiCbULyFeac/LK2drlV/umBJL7ubVQL0TFnY4WbfwWJY/lBDm
+         1BjQhSxA4H0DHaL580jQb19WcGjCNOtD25nYTldxdiCrOT4tR41UuszXBAGOZzaQ0R
+         ZqFBsFGbnBJBcugrYP6IagjiupN7NB9g+IIflEvE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Coly Li <colyli@suse.com>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 222/247] libnvdimm/dimm: Avoid race between probe and available_slots_show()
-Date:   Mon,  1 Mar 2021 17:14:02 +0100
-Message-Id: <20210301161042.551402638@linuxfoundation.org>
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH 4.19 223/247] arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
+Date:   Mon,  1 Mar 2021 17:14:03 +0100
+Message-Id: <20210301161042.603544161@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -43,98 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-commit 7018c897c2f243d4b5f1b94bc6b4831a7eab80fb upstream
+commit c0b15c25d25171db4b70cc0b7dbc1130ee94017d upstream.
 
-Richard reports that the following test:
+The erratum 1024718 affects Cortex-A55 r0p0 to r2p0. However
+we apply the work around for r0p0 - r1p0. Unfortunately this
+won't be fixed for the future revisions for the CPU. Thus
+extend the work around for all versions of A55, to cover
+for r2p0 and any future revisions.
 
-(while true; do
-     cat /sys/bus/nd/devices/nmem*/available_slots 2>&1 > /dev/null
- done) &
-
-while true; do
-     for i in $(seq 0 4); do
-         echo nmem$i > /sys/bus/nd/drivers/nvdimm/bind
-     done
-     for i in $(seq 0 4); do
-         echo nmem$i > /sys/bus/nd/drivers/nvdimm/unbind
-     done
- done
-
-...fails with a crash signature like:
-
-    divide error: 0000 [#1] SMP KASAN PTI
-    RIP: 0010:nd_label_nfree+0x134/0x1a0 [libnvdimm]
-    [..]
-    Call Trace:
-     available_slots_show+0x4e/0x120 [libnvdimm]
-     dev_attr_show+0x42/0x80
-     ? memset+0x20/0x40
-     sysfs_kf_seq_show+0x218/0x410
-
-The root cause is that available_slots_show() consults driver-data, but
-fails to synchronize against device-unbind setting up a TOCTOU race to
-access uninitialized memory.
-
-Validate driver-data under the device-lock.
-
-Fixes: 4d88a97aa9e8 ("libnvdimm, nvdimm: dimm driver and base libnvdimm device-driver infrastructure")
-Cc: <stable@vger.kernel.org>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: Coly Li <colyli@suse.com>
-Reported-by: Richard Palethorpe <rpalethorpe@suse.com>
-Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-[sudip: use device_lock()]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: stable@vger.kernel.org
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Link: https://lore.kernel.org/r/20210203230057.3961239-1-suzuki.poulose@arm.com
+[will: Update Kconfig help text]
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/nvdimm/dimm_devs.c |   18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
 
---- a/drivers/nvdimm/dimm_devs.c
-+++ b/drivers/nvdimm/dimm_devs.c
-@@ -359,16 +359,16 @@ static ssize_t state_show(struct device
- }
- static DEVICE_ATTR_RO(state);
+---
+ arch/arm64/Kconfig             |    2 +-
+ arch/arm64/kernel/cpufeature.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -473,7 +473,7 @@ config ARM64_ERRATUM_1024718
+ 	help
+ 	  This option adds work around for Arm Cortex-A55 Erratum 1024718.
  
--static ssize_t available_slots_show(struct device *dev,
--		struct device_attribute *attr, char *buf)
-+static ssize_t __available_slots_show(struct nvdimm_drvdata *ndd, char *buf)
- {
--	struct nvdimm_drvdata *ndd = dev_get_drvdata(dev);
-+	struct device *dev;
- 	ssize_t rc;
- 	u32 nfree;
- 
- 	if (!ndd)
- 		return -ENXIO;
- 
-+	dev = ndd->dev;
- 	nvdimm_bus_lock(dev);
- 	nfree = nd_label_nfree(ndd);
- 	if (nfree - 1 > nfree) {
-@@ -380,6 +380,18 @@ static ssize_t available_slots_show(stru
- 	nvdimm_bus_unlock(dev);
- 	return rc;
- }
-+
-+static ssize_t available_slots_show(struct device *dev,
-+				    struct device_attribute *attr, char *buf)
-+{
-+	ssize_t rc;
-+
-+	device_lock(dev);
-+	rc = __available_slots_show(dev_get_drvdata(dev), buf);
-+	device_unlock(dev);
-+
-+	return rc;
-+}
- static DEVICE_ATTR_RO(available_slots);
- 
- static struct attribute *nvdimm_attributes[] = {
+-	  Affected Cortex-A55 cores (r0p0, r0p1, r1p0) could cause incorrect
++	  Affected Cortex-A55 cores (all revisions) could cause incorrect
+ 	  update of the hardware dirty bit when the DBM/AP bits are updated
+ 	  without a break-before-make. The work around is to disable the usage
+ 	  of hardware DBM locally on the affected cores. CPUs not affected by
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1012,7 +1012,7 @@ static bool cpu_has_broken_dbm(void)
+ 	/* List of CPUs which have broken DBM support. */
+ 	static const struct midr_range cpus[] = {
+ #ifdef CONFIG_ARM64_ERRATUM_1024718
+-		MIDR_RANGE(MIDR_CORTEX_A55, 0, 0, 1, 0),  // A55 r0p0 -r1p0
++		MIDR_ALL_VERSIONS(MIDR_CORTEX_A55),
+ #endif
+ 		{},
+ 	};
 
 
