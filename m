@@ -2,55 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2616327D56
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6CF327D55
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhCALcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 06:32:15 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:56024 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233665AbhCALbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233724AbhCALbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 06:31:52 -0500
+Received: from mail-wr1-f46.google.com ([209.85.221.46]:44994 "EHLO
+        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233139AbhCALbW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 06:31:22 -0500
-Received: by ajax-webmail-mail-app2 (Coremail) ; Mon, 1 Mar 2021 19:30:07
- +0800 (GMT+08:00)
-X-Originating-IP: [10.192.85.18]
-Date:   Mon, 1 Mar 2021 19:30:07 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc:     kjlu@umn.edu, "Peter Huewe" <peterhuewe@gmx.de>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] tpm: Add missing check in tpm_inf_recv
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-In-Reply-To: <YDy4d5qO8MrNwImx@kernel.org>
-References: <20210228093230.5676-1-dinghao.liu@zju.edu.cn>
- <YDy4d5qO8MrNwImx@kernel.org>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Received: by mail-wr1-f46.google.com with SMTP id h98so15723197wrh.11;
+        Mon, 01 Mar 2021 03:31:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vXj7x4CsI1/ey+iX/WpHh2TTcMnZ292OM9XRomWQN1o=;
+        b=DA4+1s9nJx8gaJyPgZiZku/HgxdyKAx7wH4bl3WW6R4MV2D9XSr4pyt0wwm9bBfYqU
+         yED54gZ5IaumVZ8QbD5BrpABaGn1fKWBAzwAFGZolcLLJLC6c6XR/gpqrbqjissF/mir
+         H9bmSgmgV7PGEeHZQBvdYVEX0Yy0NzeftAAVrHy/kn4SxpwfRGbTL2E5Kk/Tokjdb5GO
+         +bPiLEhHhW9Ahtr1m+X4KeVTqBucZx2Rpst3+ycjwU8kuf27dkxLRZecFfvPezSHMsLc
+         B7kvE6zu/KlVLdzH+xucXYUF7sPy0fId96Q/VvtFb+VzSpEaNE7hSB45dgV8Vw57bQEB
+         I6rw==
+X-Gm-Message-State: AOAM530alKX92eaJx098kkxLnRf8oYDDBp7n6qhoEcqJCAyqW2WpJ8pJ
+        WJSSPqhlMp/3HpE9i5SEsDw=
+X-Google-Smtp-Source: ABdhPJwahJbPnhnXn2peV5WB7aBo9hQMqR0UIhFLvGNtx9+clHYlxfR+/hBaT/+Vm7GmeNeMhQ4G0A==
+X-Received: by 2002:a5d:4649:: with SMTP id j9mr15905002wrs.259.1614598236370;
+        Mon, 01 Mar 2021 03:30:36 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id f2sm22244752wrq.34.2021.03.01.03.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 03:30:35 -0800 (PST)
+Date:   Mon, 1 Mar 2021 11:30:34 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        daniel.lezcano@linaro.org, arnd@arndb.de,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH v2 00/10] Refactor arch specific Hyper-V code
+Message-ID: <20210301113034.hqbrzoap7pz7qmqj@liuwe-devbox-debian-v2>
+References: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-Message-ID: <27a86b26.a0d3c.177ed8d77e0.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: by_KCgDnrvA_0DxgiMXbAQ--.63402W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgkLBlZdtSjhUQAAsg
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgomcXVvdDtKYXJra28gU2Fra2luZW4mcXVvdDsgJmx0O2phcmtrb0BrZXJuZWwub3JnJmd0O+WG
-memBk++8mgo+IE9uIFN1biwgRmViIDI4LCAyMDIxIGF0IDA1OjMyOjMwUE0gKzA4MDAsIERpbmdo
-YW8gTGl1IHdyb3RlOgo+ID4gVGhlIHVzZSBvZiB3YWl0KCkgaW4gdHBtX2luZl9yZWN2KCkgaXMg
-YWxtb3N0IHRoZSBzYW1lLiBJdCdzIG9kZCB0aGF0Cj4gPiB3ZSBvbmx5IGNoZWNrIHRoZSByZXR1
-cm4gdmFsdWUgYW5kIHRlcm1pbmF0ZSBleGVjdXRpb24gZmxvdyBvZiBvbmUgY2FsbC4KPiA+IAo+
-ID4gU2lnbmVkLW9mZi1ieTogRGluZ2hhbyBMaXUgPGRpbmdoYW8ubGl1QHpqdS5lZHUuY24+Cj4g
-Cj4gSXMgdGhlIHVuY2hlY2tlZCByZXR1cm4gdmFsdWUgb2Ygd2FpdCgpIHRoZSBwcm9ibGVtPyBJ
-IGRvbid0IHNlZSB0aGUKPiBmdW5jdGlvbiBldmVuIG1lbnRpb25lZCBpbiB0aGUgZGVzY3JpcHRp
-b24uCj4gCgpZZXMuIFRoaXMgaXNzdWUgaXMgcmVwb3J0ZWQgYnkgbXkgc3RhdGljIGFuYWx5c2lz
-IHRvb2wuIEkgdGhpbmsgd2UKc2hvdWxkIHRyZWF0IHdhaXQoKSBlcXVhbGx5IGluIHRoaXMgZnVu
-Y3Rpb24gKGNoZWNrIHRoZSByZXR1cm4gdmFsdWUKYW5kIHJldHVybiBhbiBlcnJvciBjb2RlIG9u
-IGZhaWx1cmUpLiAKClJlZ2FyZHMsCkRpbmdoYW8K
+On Sun, Feb 28, 2021 at 05:15:22PM -0800, Michael Kelley wrote:
+> To support Linux guests on Hyper-V on multiple architectures, the original
+> approach factored out all differences between Hyper-V on x86/x64 and
+> Hyper-V on ARM64 into functions or #defines under arch/x86 and
+> arch/arm64. Some of these differences are truly related to the
+> architecture, but others are more properly treated as Linux OS
+> differences or just quirks in Hyper-V. Feedback from Arnd Bergmann[1]
+> recommended that differences other than architecture should be
+> incorporated into the architecture independent Hyper-V code. Each
+> difference can be handled with conditions specific to the difference
+> instead of tying it to the broader x86/x64 vs. ARM64. This approach
+> reduces the amount of code under arch/x86 and arch/arm64 and keeps
+> the non-architectural differences localized and more easily understood.
+> 
+> This patch set implements the new approach by changing the interface
+> between the architecture independent code and the architecture dependent
+> code for x86/x64. The patches move code from arch/x86 to the
+> architecture independent Hyper-V code whenever possible, and add
+> architecture independent support needed by other architectures like
+> ARM64.  No functionality is changed for x86/x64.  A subsequent patch
+> set will provide the Hyper-V support code under arch/arm64.
+> 
+> This patch set results in an increase in lines of code (though some
+> of the increase is additional comments).  But the lines needed under
+> arch/arm64 in the upcoming patch set is significantly reduced, resulting
+> in a net decrease of about 125 lines.
+> 
+> [1] https://lore.kernel.org/lkml/CAK8P3a1hDBVembCd+6=ENUWYFz=72JBTFMrKYZ2aFd+_Q04F+g@mail.gmail.com/
+
+This series looks good to me.
+
+Given this series touches mostly Hyper-V code. I will be taking this it
+via hyperv-next once the last two patches are reviewed.
+
+Wei.
