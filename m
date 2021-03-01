@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CA432971C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 284D732974F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245254AbhCAWdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:33:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57778 "EHLO mail.kernel.org"
+        id S245734AbhCAWgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:36:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234721AbhCARfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:35:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1C3B64FBD;
-        Mon,  1 Mar 2021 16:54:45 +0000 (UTC)
+        id S237962AbhCARhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:37:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5664F650B6;
+        Mon,  1 Mar 2021 16:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617686;
-        bh=Vjnctk6S4GYutQmBNqnhu9wrmphTz/IkNeRIwF/Yddo=;
+        s=korg; t=1614617705;
+        bh=8oIaCdeeOp8C/1uiNY5GvQzH5HbXCtKYlxuUkDyQWYw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DqQu++GnbJpUqud1htKQ3Vyaz8Y3GC/ehmdIC5KVTm1Z99vFf6xF/U9qKuF/VBJQx
-         iTAsC/870gTrs9vhF3NmklkPm2wJfb2Z8biOcAmadud6qrRGoHYqUdGr6barl2Fjf6
-         owuVNNCa584lTGcdy9VBA9N9hGCw6yYoeu3STAm0=
+        b=fpOWBVoGctNl8C18CGhDRxzUU0KAz1/Pe8elPXZ8eNUh9/uUrO/C8ENe9j3/1DLYq
+         p5Qk+jhDkOh+04FLrQc2uUlppNHzXXnKue2lWDJE3BbBsAsOSZOewfocY80u1xmF9Q
+         cvkwmzn2DpAuPvQSzA7LHV8KyzoQjPc09+uwzXis=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
+        stable@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 159/340] auxdisplay: ht16k33: Fix refresh rate handling
-Date:   Mon,  1 Mar 2021 17:11:43 +0100
-Message-Id: <20210301161056.144311765@linuxfoundation.org>
+Subject: [PATCH 5.4 128/340] clk: meson: clk-pll: make "ret" a signed integer
+Date:   Mon,  1 Mar 2021 17:11:12 +0100
+Message-Id: <20210301161054.600090785@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -40,35 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit e89b0a426721a8ca5971bc8d70aa5ea35c020f90 ]
+[ Upstream commit 9e717285f0bd591d716fa0e7418f2cdaf756dd25 ]
 
-Drop the call to msecs_to_jiffies(), as "HZ / fbdev->refresh_rate" is
-already the number of jiffies to wait.
+The error codes returned by meson_clk_get_pll_settings() are all
+negative. Make "ret" a signed integer in meson_clk_pll_set_rate() to
+make it match with the clk_ops.set_rate API as well as the data type
+returned by meson_clk_get_pll_settings().
 
-Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Fixes: 8eed1db1adec6a ("clk: meson: pll: update driver for the g12a")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20201226121556.975418-3-martin.blumenstingl@googlemail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/ht16k33.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/clk/meson/clk-pll.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index a2fcde582e2a1..33b887b389061 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -117,8 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
+index fb0bc8c0ad4d4..a92f44fa5a24e 100644
+--- a/drivers/clk/meson/clk-pll.c
++++ b/drivers/clk/meson/clk-pll.c
+@@ -363,8 +363,9 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
  {
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+ 	struct clk_regmap *clk = to_clk_regmap(hw);
+ 	struct meson_clk_pll_data *pll = meson_clk_pll_data(clk);
+-	unsigned int enabled, m, n, frac = 0, ret;
++	unsigned int enabled, m, n, frac = 0;
+ 	unsigned long old_rate;
++	int ret;
  
--	schedule_delayed_work(&fbdev->work,
--			      msecs_to_jiffies(HZ / fbdev->refresh_rate));
-+	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
- }
- 
- /*
+ 	if (parent_rate == 0 || rate == 0)
+ 		return -EINVAL;
 -- 
 2.27.0
 
