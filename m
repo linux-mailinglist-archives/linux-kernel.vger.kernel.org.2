@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2BA329D09
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:41:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CA1329CD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442863AbhCBCQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:16:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55204 "EHLO mail.kernel.org"
+        id S1442426AbhCBCNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:13:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242208AbhCAToE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C252264EBA;
-        Mon,  1 Mar 2021 17:08:14 +0000 (UTC)
+        id S241733AbhCATix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:38:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6709264F79;
+        Mon,  1 Mar 2021 17:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618495;
-        bh=eAjSvhkBBZluCsTXUPyqDx6Pspy1webdMF923ZsT4VY=;
+        s=korg; t=1614618498;
+        bh=76/f1FgCqP/TlZTPTZwz27QNoIFMNmoY2dv8gBN71nU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SZWDTKk8BIxpelnS4hhUcxG7wSecDDMauTPD4T51Ch7jJevjLr5J9Bg219W48EWGN
-         HfcIIHPjVa/shXBP3Xn+6NPZrz+xDKPSdwnepJjtnfCXVsNi7fW8xLxEAlOQqI4AMM
-         O9wBRcFemgk9Hj2id3uB8xZHUAZarvYtbJSOgj5c=
+        b=zxpkqP2xuzCHbb/0eB7bmfIJ6p4nIbIPH4nXM7l2RwMjdDnDdZzMoB4lM5QPj+rOg
+         PtGNdfXnl2nZRsvuIEmEh60YwDe/zaojq1qI9g+GDpGY3K3uiqdkCyerRqj4Ow4Xta
+         RVDEc5YpPXA1c5xB4Ep1wHwhgXJyYgl+PML/rsYw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Moshe Shemesh <moshe@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 108/663] net/mlx5: Disable devlink reload for multi port slave device
-Date:   Mon,  1 Mar 2021 17:05:56 +0100
-Message-Id: <20210301161147.081144442@linuxfoundation.org>
+Subject: [PATCH 5.10 109/663] net/mlx5: Disallow RoCE on multi port slave device
+Date:   Mon,  1 Mar 2021 17:05:57 +0100
+Message-Id: <20210301161147.130865623@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,37 +43,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shay Drory <shayd@nvidia.com>
 
-[ Upstream commit d89ddaae1766f8fe571ea6eb63ec098ff556f1dd ]
+[ Upstream commit c70f8597fcc1399ef6d5b5ce648a31d887d5dba2 ]
 
-Devlink reload can't be allowed on a multi port slave device, because
-reload of slave device doesn't take effect.
+In dual port mode, setting roce enabled/disable for the slave device
+have no effect. e.g.: the slave device roce status remain unchanged.
+Therefore disable it and add an error message.
+Enable or disable roce of the master device affect both master and slave
+devices.
 
-The right flow is to disable devlink reload for multi port slave
-device. Hence, disabling it in mlx5_core probing.
-
-Fixes: 4383cfcc65e7 ("net/mlx5: Add devlink reload")
+Fixes: cc9defcbb8fa ("net/mlx5: Handle "enable_roce" devlink param")
 Signed-off-by: Shay Drory <shayd@nvidia.com>
 Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index e455a2f31f070..8246b6285d5a4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1380,7 +1380,8 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 		dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code %d\n", err);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+index a28f95df2901d..7ffc94c4979b2 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+@@ -282,6 +282,10 @@ static int mlx5_devlink_enable_roce_validate(struct devlink *devlink, u32 id,
+ 		NL_SET_ERR_MSG_MOD(extack, "Device doesn't support RoCE");
+ 		return -EOPNOTSUPP;
+ 	}
++	if (mlx5_core_is_mp_slave(dev)) {
++		NL_SET_ERR_MSG_MOD(extack, "Multi port slave device can't configure RoCE");
++		return -EOPNOTSUPP;
++	}
  
- 	pci_save_state(pdev);
--	devlink_reload_enable(devlink);
-+	if (!mlx5_core_is_mp_slave(dev))
-+		devlink_reload_enable(devlink);
  	return 0;
- 
- err_load_one:
+ }
 -- 
 2.27.0
 
