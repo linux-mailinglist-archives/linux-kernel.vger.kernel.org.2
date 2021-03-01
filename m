@@ -2,110 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE22329899
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C1932989D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346216AbhCAXiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:38:51 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39960 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239286AbhCASIN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:08:13 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121I5Hmn082609;
-        Mon, 1 Mar 2021 13:07:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=F1hb+n5s2fmqDT5sJBOPJKoW/36d26E/grmNy+XIC2c=;
- b=UkVvL9VR6hetjnTkSAbt130igvHuDmro56EoCFzGF/vHfCsIZX3EvT88rqNlUNc7pvF0
- QSHLRxB4PgSSQgNj7QS7WZUv1Vzjmt1+XtqiKlzauFEBaGT6qJlYlPGPfFwYQL5WA+TD
- RdXVWXIajDfrzQ8oKYovdGmCF1U1eV2pbyXy/nH3eBsgjxbqcKoejEwbdqURusg6ipUL
- nVXtSR25eg5z1x4q9ObLjrTILrjMRLFj0nZ9HYGxXwldBGhaA1VVDpNeN2Md3SCuyew5
- 1ZSrP8LHGaA1Jnf5httnN+GG66FsPAtJpJZ9hFl+MBwcunmeQ0jr1zR87rjDmgPIEpiQ BA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37106dbjac-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 13:07:33 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 121I5JPf082782;
-        Mon, 1 Mar 2021 13:07:33 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37106dbja3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 13:07:32 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 121I21hZ027540;
-        Mon, 1 Mar 2021 18:07:32 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma03dal.us.ibm.com with ESMTP id 37103vttew-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 18:07:32 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 121I7Sel43516378
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Mar 2021 18:07:28 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A479FBE05B;
-        Mon,  1 Mar 2021 18:07:28 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 653FBBE04F;
-        Mon,  1 Mar 2021 18:07:27 +0000 (GMT)
-Received: from [9.65.212.95] (unknown [9.65.212.95])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Mar 2021 18:07:27 +0000 (GMT)
-Subject: Re: [PATCH] s390: cio: Return -EFAULT if copy_to_user() fails
-To:     Heiko Carstens <hca@linux.ibm.com>, Wang Qing <wangqing@vivo.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1614600093-13992-1-git-send-email-wangqing@vivo.com>
- <YDzob/k70ix1g0s+@osiris>
-From:   Eric Farman <farman@linux.ibm.com>
-Message-ID: <e7edc20c-49d7-9297-7d0e-01f8a55c9c37@linux.ibm.com>
-Date:   Mon, 1 Mar 2021 13:07:26 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S1346262AbhCAXkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:40:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46240 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239339AbhCASIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:08:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614622064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qp4HJtwIT4bWIf+9Fj02wgzG00aspAv7NDE1H9XsKw8=;
+        b=aH1+7x/WqqqBgwoXsxJWiMMfixqBzqQo+CHJ0FMCUdP0kn8yxVawZhEsqiOr+QSi7cVRUm
+        cH6dvttkUBHzyuxGaLPn0bQ3ilhyaCz7ZY6y77iScN5BUKhqdowr9f4TAygKPghH0VyeHu
+        hCUXGbUSrWDF6mn/T5TxstesPyTwCSg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E550DAE3C;
+        Mon,  1 Mar 2021 18:07:43 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 19:07:41 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Thomas Meyer <thomas@m3y3r.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
+        linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kgdb-bugreport@lists.sourceforge.net
+Subject: Re: [PATCH next v3 12/15] printk: introduce a kmsg_dump iterator
+Message-ID: <YD0tbVV+hZOFvWyB@alley>
+References: <20210225202438.28985-1-john.ogness@linutronix.de>
+ <20210225202438.28985-13-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YDzob/k70ix1g0s+@osiris>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-01_12:2021-03-01,2021-03-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- suspectscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 clxscore=1011 bulkscore=0 mlxscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103010146
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225202438.28985-13-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/1/21 8:13 AM, Heiko Carstens wrote:
-> On Mon, Mar 01, 2021 at 08:01:33PM +0800, Wang Qing wrote:
->> The copy_to_user() function returns the number of bytes remaining to be
->> copied, but we want to return -EFAULT if the copy doesn't complete.
->>
->> Signed-off-by: Wang Qing <wangqing@vivo.com>
->> ---
->>   drivers/s390/cio/vfio_ccw_ops.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
+On Thu 2021-02-25 21:24:35, John Ogness wrote:
+> Rather than storing the iterator information in the registered
+> kmsg_dumper structure, create a separate iterator structure. The
+> kmsg_dump_iter structure can reside on the stack of the caller, thus
+> allowing lockless use of the kmsg_dump functions.
 > 
-> Applied, thanks!
+> This change also means that the kmsg_dumper dump() callback no
+> longer needs to pass in the kmsg_dumper as an argument. If
+> kmsg_dumpers want to access the kernel logs, they can use the new
+> iterator.
 > 
+> Update the kmsg_dumper callback prototype. Update code that accesses
+> the kernel logs using the kmsg_dumper structure to use the new
+> kmsg_dump_iter structure. For kmsg_dumpers, this also means adding a
+> call to kmsg_dump_rewind() to initialize the iterator.
+> 
+> All this is in preparation for removal of @logbuf_lock.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> ---
+>  arch/powerpc/kernel/nvram_64.c             | 14 +++---
+>  arch/powerpc/platforms/powernv/opal-kmsg.c |  3 +-
+>  arch/powerpc/xmon/xmon.c                   |  6 +--
+>  arch/um/kernel/kmsg_dump.c                 |  8 +--
+>  drivers/hv/vmbus_drv.c                     |  7 +--
+>  drivers/mtd/mtdoops.c                      |  8 +--
+>  fs/pstore/platform.c                       |  8 +--
+>  include/linux/kmsg_dump.h                  | 38 ++++++++-------
+>  kernel/debug/kdb/kdb_main.c                | 10 ++--
+>  kernel/printk/printk.c                     | 57 ++++++++++------------
+>  10 files changed, 81 insertions(+), 78 deletions(-)
+> 
+> diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
+> index 532f22637783..5a64b24a91c2 100644
+> --- a/arch/powerpc/kernel/nvram_64.c
+> +++ b/arch/powerpc/kernel/nvram_64.c
+> @@ -72,8 +72,7 @@ static const char *nvram_os_partitions[] = {
+>  	NULL
+>  };
+>  
+> -static void oops_to_nvram(struct kmsg_dumper *dumper,
+> -			  enum kmsg_dump_reason reason);
+> +static void oops_to_nvram(enum kmsg_dump_reason reason);
+>  
+>  static struct kmsg_dumper nvram_kmsg_dumper = {
+>  	.dump = oops_to_nvram
+> @@ -642,11 +641,11 @@ void __init nvram_init_oops_partition(int rtas_partition_exists)
+>   * that we think will compress sufficiently to fit in the lnx,oops-log
+>   * partition.  If that's too much, go back and capture uncompressed text.
+>   */
+> -static void oops_to_nvram(struct kmsg_dumper *dumper,
+> -			  enum kmsg_dump_reason reason)
+> +static void oops_to_nvram(enum kmsg_dump_reason reason)
+>  {
+>  	struct oops_log_info *oops_hdr = (struct oops_log_info *)oops_buf;
+>  	static unsigned int oops_count = 0;
+> +	static struct kmsg_dump_iter iter;
+>  	static bool panicking = false;
+>  	static DEFINE_SPINLOCK(lock);
+>  	unsigned long flags;
+> @@ -681,13 +680,14 @@ static void oops_to_nvram(struct kmsg_dumper *dumper,
+>  		return;
+>  
+>  	if (big_oops_buf) {
+> -		kmsg_dump_get_buffer(dumper, false,
+> +		kmsg_dump_rewind(&iter);
 
-There's a third copy_to_user() call in this same routine, that deserves 
-the same treatment. I'll get that fixup applied.
+It would be nice to get rid of the kmsg_dump_rewind(&iter) calls
+in all callers.
 
-Thanks,
-Eric
+A solution might be to create the following in include/linux/kmsg_dump.h
+
+#define KMSG_DUMP_ITER_INIT(iter) {	\
+	.cur_seq = 0,			\
+	.next_seq = U64_MAX,		\
+	}
+
+#define DEFINE_KMSG_DUMP_ITER(iter)	\
+	struct kmsg_dump_iter iter = KMSG_DUMP_ITER_INIT(iter)
+
+Then we could do the following at the beginning of both
+kmsg_dump_get_buffer() and kmsg_dump_get_line():
+
+	u64 clear_seq = latched_seq_read_nolock(&clear_seq);
+
+	if (iter->cur_seq < clear_seq)
+		cur_seq = clear_seq;
+
+
+I am not completely sure about next_seq:
+
+   + kmsg_dump_get_buffer() will set it for the next call anyway.
+     It reads the blocks of messages from the newest.
+
+   + kmsg_dump_get_line() wants to read the entire buffer anyway.
+     But there is a small risk of an infinite loop when new messages
+     are printed when dumping each line.
+
+It might be better to avoid the infinite loop. We could do the following:
+
+static void check_and_set_iter(struct kmsg_dump_iter)
+{
+	if (iter->cur_seq == 0 && iter->next_seq == U64_MAX) {
+		kmsg_dump_rewind(iter);
+}
+
+and call this at the beginning of both kmsg_dump_get_buffer()
+and kmsg_dump_get_line()
+
+What do you think?
+
+Note that I do not resist on it. But it might make the API easier to
+use from my POV.
+
+Otherwise the patch looks good to me.
+
+Best Regards,
+Petr
