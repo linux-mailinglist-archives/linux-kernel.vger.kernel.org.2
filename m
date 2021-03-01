@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0A73298E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A82A3299A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346795AbhCAXu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:50:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34234 "EHLO mail.kernel.org"
+        id S1345115AbhCBA2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239367AbhCASL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:11:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22DC864F7C;
-        Mon,  1 Mar 2021 17:08:30 +0000 (UTC)
+        id S240018AbhCAS2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:28:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CF5A64F83;
+        Mon,  1 Mar 2021 17:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618511;
-        bh=sgpoTDeMHXbQua+lS2BnMkLkTPRZ47VR4rlXPMeXSvI=;
+        s=korg; t=1614618519;
+        bh=L7p/SJuqMOLpDTpk//F1Ir2PUrbX1sMFbr0oiolO5BI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hxQxxg1cpmAX4kVmZRyr0PeUtxyVR92HmiHZ/mTN+MvJC/yh7LY2ZVxlG8cipMlJB
-         XScgaLg0XijaRqvbQWOUJ+E6kYbi/Ko5z3OsX2WIgkBsSdw5k5Bd28ednW5mERT9NT
-         ZU/KDpTOLwKffF3WYMb7wQhczwRqMHwtlKkWBNKM=
+        b=yYdpNufHwS1AStWqeP7Z13JsLD6f3i+WdNMTT1hjq2+39r5EzArccsylB8k4dawso
+         HO+dMDzt9cr/oXrpRG3iEKqupX0LgZ6mwJz1kPUDNx5OfXM2y87r9Kf+zFcmkVFAcL
+         Kz/P/WCOZc7E3HyByA9bSV1USqZlAt84GdnAgvyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org,
+        syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 114/663] mac80211: fix potential overflow when multiplying to u32 integers
-Date:   Mon,  1 Mar 2021 17:06:02 +0100
-Message-Id: <20210301161147.381865950@linuxfoundation.org>
+Subject: [PATCH 5.10 116/663] bpf: Fix an unitialized value in bpf_iter
+Date:   Mon,  1 Mar 2021 17:06:04 +0100
+Message-Id: <20210301161147.482445215@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,37 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit 6194f7e6473be78acdc5d03edd116944bdbb2c4e ]
+[ Upstream commit 17d8beda277a36203585943e70c7909b60775fd5 ]
 
-The multiplication of the u32 variables tx_time and estimated_retx is
-performed using a 32 bit multiplication and the result is stored in
-a u64 result. This has a potential u32 overflow issue, so avoid this
-by casting tx_time to a u64 to force a 64 bit multiply.
+Commit 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
+cached btf_id in struct bpf_iter_target_info so later on
+if it can be checked cheaply compared to checking registered names.
 
-Addresses-Coverity: ("Unintentional integer overflow")
-Fixes: 050ac52cbe1f ("mac80211: code for on-demand Hybrid Wireless Mesh Protocol")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210205175352.208841-1-colin.king@canonical.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+syzbot found a bug that uninitialized value may occur to
+bpf_iter_target_info->btf_id. This is because we allocated
+bpf_iter_target_info structure with kmalloc and never initialized
+field btf_id afterwards. This uninitialized btf_id is typically
+compared to a u32 bpf program func proto btf_id, and the chance
+of being equal is extremely slim.
+
+This patch fixed the issue by using kzalloc which will also
+prevent future likely instances due to adding new fields.
+
+Fixes: 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
+Reported-by: syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20210212005926.2875002-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mesh_hwmp.c | 2 +-
+ kernel/bpf/bpf_iter.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/mesh_hwmp.c b/net/mac80211/mesh_hwmp.c
-index 313eee12410ec..3db514c4c63ab 100644
---- a/net/mac80211/mesh_hwmp.c
-+++ b/net/mac80211/mesh_hwmp.c
-@@ -356,7 +356,7 @@ u32 airtime_link_metric_get(struct ieee80211_local *local,
- 	 */
- 	tx_time = (device_constant + 10 * test_frame_len / rate);
- 	estimated_retx = ((1 << (2 * ARITH_SHIFT)) / (s_unit - err));
--	result = (tx_time * estimated_retx) >> (2 * ARITH_SHIFT);
-+	result = ((u64)tx_time * estimated_retx) >> (2 * ARITH_SHIFT);
- 	return (u32)result;
- }
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 8f10e30ea0b08..e8957e911de31 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -273,7 +273,7 @@ int bpf_iter_reg_target(const struct bpf_iter_reg *reg_info)
+ {
+ 	struct bpf_iter_target_info *tinfo;
+ 
+-	tinfo = kmalloc(sizeof(*tinfo), GFP_KERNEL);
++	tinfo = kzalloc(sizeof(*tinfo), GFP_KERNEL);
+ 	if (!tinfo)
+ 		return -ENOMEM;
  
 -- 
 2.27.0
