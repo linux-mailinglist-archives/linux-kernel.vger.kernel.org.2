@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B4932992B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193C1329984
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238302AbhCAX6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:58:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39426 "EHLO mail.kernel.org"
+        id S1347909AbhCBAVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:21:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238483AbhCASTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:19:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAEE2651EA;
-        Mon,  1 Mar 2021 17:19:31 +0000 (UTC)
+        id S238920AbhCASZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:25:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7087F651EC;
+        Mon,  1 Mar 2021 17:19:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619172;
-        bh=tZbi8YwY+uE93scbvSaEFJhbMFKnrIymQU5w0/aaGIQ=;
+        s=korg; t=1614619178;
+        bh=eRYC3mriO5mjAAwQT5BjUCe9yzdjSZHJfTukFJR/yk4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tGA+2EHb4c14NRvK/8MUM2N8TGmea9nakVToXUCGgmQDZgoklWrP4+vILrCUlLRv4
-         0/Sr6vyIKMdvKsqV+ioR0JXw6sftTb+tvxrX3DiDyWPJz6bNjtnD8Q8jCaHU21Kd+7
-         UMCXYU5uIySy3UHfsoo+sN0B4HGDhOuh+tx9wW3k=
+        b=ngcPNO7vaweg0fxknHYAg/ZtNxc7TK06uMdnS2Hk+Hq2pdMqpGyHaPP4K30NAV7JS
+         Na/+XC2WRFGSdqJU1KswuQxyQzvM7aIra/CFBDmKEWcQKUro6k42GQeAk2gWbRXpmd
+         uf30ZUUwKk24LpWQjFkqvhG2kvb3w07tL+Nh1tgc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 329/663] mmc: owl-mmc: Fix a resource leak in an error handling path and in the remove function
-Date:   Mon,  1 Mar 2021 17:09:37 +0100
-Message-Id: <20210301161158.130834396@linuxfoundation.org>
+Subject: [PATCH 5.10 331/663] mmc: usdhi6rol0: Fix a resource leak in the error handling path of the probe
+Date:   Mon,  1 Mar 2021 17:09:39 +0100
+Message-Id: <20210301161158.227183725@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,68 +43,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 5d15cbf63515c6183d2ed7c9dd0586b4db23ffb1 ]
+[ Upstream commit 6052b3c370fb82dec28bcfff6d7ec0da84ac087a ]
 
-'dma_request_chan()' calls should be balanced by a corresponding
-'dma_release_channel()' call.
+A call to 'ausdhi6_dma_release()' to undo a previous call to
+'usdhi6_dma_request()' is missing in the error handling path of the probe
+function.
 
-Add the missing call both in the error handling path of the probe function
-and in the remove function.
+It is already present in the remove function.
 
-Fixes: ff65ffe46d28 ("mmc: Add Actions Semi Owl SoCs SD/MMC driver")
+Fixes: 75fa9ea6e3c0 ("mmc: add a driver for the Renesas usdhi6rol0 SD/SDIO host controller")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201209194202.54099-1-christophe.jaillet@wanadoo.fr
+Link: https://lore.kernel.org/r/20201217210922.165340-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/owl-mmc.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/mmc/host/usdhi6rol0.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/owl-mmc.c b/drivers/mmc/host/owl-mmc.c
-index ccf214a89eda9..3d4abf175b1d8 100644
---- a/drivers/mmc/host/owl-mmc.c
-+++ b/drivers/mmc/host/owl-mmc.c
-@@ -641,7 +641,7 @@ static int owl_mmc_probe(struct platform_device *pdev)
- 	owl_host->irq = platform_get_irq(pdev, 0);
- 	if (owl_host->irq < 0) {
- 		ret = -EINVAL;
--		goto err_free_host;
-+		goto err_release_channel;
- 	}
- 
- 	ret = devm_request_irq(&pdev->dev, owl_host->irq, owl_irq_handler,
-@@ -649,19 +649,21 @@ static int owl_mmc_probe(struct platform_device *pdev)
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to request irq %d\n",
- 			owl_host->irq);
--		goto err_free_host;
-+		goto err_release_channel;
- 	}
+diff --git a/drivers/mmc/host/usdhi6rol0.c b/drivers/mmc/host/usdhi6rol0.c
+index e2d5112d809dc..615f3d008af1e 100644
+--- a/drivers/mmc/host/usdhi6rol0.c
++++ b/drivers/mmc/host/usdhi6rol0.c
+@@ -1858,10 +1858,12 @@ static int usdhi6_probe(struct platform_device *pdev)
  
  	ret = mmc_add_host(mmc);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to add host\n");
--		goto err_free_host;
-+		goto err_release_channel;
- 	}
- 
- 	dev_dbg(&pdev->dev, "Owl MMC Controller Initialized\n");
+ 	if (ret < 0)
+-		goto e_clk_off;
++		goto e_release_dma;
  
  	return 0;
  
-+err_release_channel:
-+	dma_release_channel(owl_host->dma);
- err_free_host:
- 	mmc_free_host(mmc);
- 
-@@ -675,6 +677,7 @@ static int owl_mmc_remove(struct platform_device *pdev)
- 
- 	mmc_remove_host(mmc);
- 	disable_irq(owl_host->irq);
-+	dma_release_channel(owl_host->dma);
- 	mmc_free_host(mmc);
- 
- 	return 0;
++e_release_dma:
++	usdhi6_dma_release(host);
+ e_clk_off:
+ 	clk_disable_unprepare(host->clk);
+ e_free_mmc:
 -- 
 2.27.0
 
