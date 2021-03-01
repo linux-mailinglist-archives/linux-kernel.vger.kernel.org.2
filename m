@@ -2,122 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4716832973E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54332329741
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245595AbhCAWfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:35:50 -0500
-Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:40844 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238756AbhCARit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:38:49 -0500
-Received: from oxapps-35-162.iol.local ([10.101.8.208])
-        by smtp-17.iol.local with ESMTPA
-        id GmUdlsF91lChfGmUdl1Eu9; Mon, 01 Mar 2021 18:38:03 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1614620283; bh=FVbl+Y44UhVS7waCZVt+Dbv2JBd4H0UEoz219RNGc10=;
-        h=From;
-        b=ajJEZOhnsf3mDvtl5EakHn63FoaWkHONgswabXq710qILkIPbcxu43in2iTnHCpOz
-         jzolWfOyyMwMPjl98VTY9XU+dopibtTgwwL26aDu82yHIbGIcmYhyick8KRodhH08O
-         uDNe7bbNk2V0EyfGIGzbXg7FuNOXbKMiczYdmowgalfD2PA0QTe2i6MMxoC/R8fvkC
-         7C0flUW7+5+Kux3gxOXvhwooFTO9rkR2BiB8Gs3q/yjSB+fyMI/LY+cU+MNSOXsOVv
-         i4vRLCEfTyBhr5QtP+zhyVzoVjr3sFAzPX54FmQ7wrqyJHEYrKOmSQF0I930K80TWq
-         dSnAisaYhCH5Q==
-X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=603d267b cx=a_exe
- a=OCAZjQWm+uh9gf1btJle/A==:117 a=UPWQtH3J-JgA:10 a=IkcTkHD0fZMA:10
- a=_gZzKa99_6AA:10 a=bGNZPXyTAAAA:8 a=bAF_0_vCazFOC95qmekA:9 a=QEXdDO2ut3YA:10
- a=yL4RfsBhuEsimFDS2qtJ:22
-Date:   Mon, 1 Mar 2021 18:38:03 +0100 (CET)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Federico Vaga <federico.vaga@gmail.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Message-ID: <1729787135.578206.1614620283639@mail1.libero.it>
-In-Reply-To: <20210301113612.rvbjnqacqstseokm@pengutronix.de>
-References: <20210225215155.30509-1-dariobin@libero.it>
- <20210225215155.30509-4-dariobin@libero.it>
- <20210226084456.l2oztlesjzl6t2nm@pengutronix.de>
- <942251933.544595.1614508531322@mail1.libero.it>
- <20210301113612.rvbjnqacqstseokm@pengutronix.de>
-Subject: Re: [PATCH v2 3/6] can: c_can: fix control interface used by
- c_can_do_tx
+        id S245620AbhCAWgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232040AbhCARjp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:39:45 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B59C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:38:53 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lGmVP-0004Ij-Le; Mon, 01 Mar 2021 18:38:51 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lGmVO-0003C2-Ul; Mon, 01 Mar 2021 18:38:50 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Dominik Brodowski <linux@dominikbrodowski.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH] pcmcia: ds: Remove if with always false condition
+Date:   Mon,  1 Mar 2021 18:38:47 +0100
+Message-Id: <20210301173847.1679956-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev27
-X-Originating-IP: 87.20.116.197
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: NCOLpVhTJdj3Uf99jpm3M5t5Srhr1anV
-x-libjamv: p6zJ+EtlKqk=
-X-CMAE-Envelope: MS4xfIHSKXnQkT6jgfg1GlXLQRy6sMpwMADz3N6UBeMzYA6AbEM4vY8B67Fe4ur+HUzTHP5zYq/0KLrRV8ThasiZwOA5G1LLbi+4jBpPmiubftUDGx3IScRg
- 2ZC6EeMo3CDsCIwo7pmMwmLntrZDBB4xwlipRWqCZmjeP74d2I6Yfy0aVRJW7G2F2JgQPOHaf3QNBglOiDfQP6FSfe4wb315WLS+YWBhNvly6g9ku0uFSEqZ
- wKgYO9DShhGwdHClYUniRfOnqqCDjxV7XlzYGIe2JaMUeuNQsrk2pPul7ShFHzO9n/bHCC5UW9GOyxDenX2DRhK5fexk1EMFUxY0j7nZEl143VJp3nILU55Z
- MYo4MBiBXyQLQY4sy8a2ZkkvuOKfecFLGMegTNXNkAE69pV770MGYaHtakXD7b0re62sd5QPM/5fRPpeOR4YQXaylY2wExJmvr3/4dD/D1qlK+NO0afXgg+H
- UbUH29qOq8sMwJIE
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+pcmcia_device_remove() is only ever called by the driver core with
+dev->driver pointing to a valid driver. (And even if dev->driver was
+NULL, p_drv wouldn't be NULL as p_drv is assigned as follows:
 
-> Il 01/03/2021 12:36 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:
-> 
->  
-> On 28.02.2021 11:35:31, Dario Binacchi wrote:
-> > > On 25.02.2021 22:51:52, Dario Binacchi wrote:
-> > > > According to commit 640916db2bf7 ("can: c_can: Make it SMP safe") let RX use
-> > > > IF1 (i.e. IF_RX) and TX use IF2 (i.e. IF_TX).
-> > > 
-> > > Is this a fix?
-> > > 
-> > 
-> > I think that If I consider what is described in the 640916db2bf7
-> > commit, using the IF_RX interface in a tx routine is wrong.
-> 
-> Yes, IF_RX is used in c_can_do_tx(), but that's called from
-> c_can_poll(), which runs ins NAPI.
+	p_drv = to_pcmcia_drv(dev->driver);
 
-Yes, you are right. I was misled by the name of the function.
+and to_pcmcia_drv is a container_of operation on struct
+pcmcia_driver::drv which isn't the first member in struct
+pcmcia_driver.)
 
-> 
-> As far as I understand 640916db2bf7 ("can: c_can: Make it SMP safe")
-> fixes the race condition that c_can_poll() and c_can_start_xmit() both
-> access the same IF. See again the patch description:
-> 
-> | The hardware has two message control interfaces, but the code only uses the
-> | first one. So on SMP the following can be observed:
-> | 
-> | CPU0            CPU1
-> | rx_poll()
-> |   write IF1     xmit()
-> |                 write IF1
-> |   write IF1
-> 
-> It's not 100% accurate, as the race condition is not just
-> c_can_do_rx_poll() against the c_can_start_xmit(), but the whole
-> c_can_poll() against c_can_start_xmit().
-> 
-> If you think my analysis is correct, please update the patch and add a
-> comment to clarify why IF_RX is used instead of changing it to IF_TX.
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/pcmcia/ds.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-I agree with you, I'll do it.
+diff --git a/drivers/pcmcia/ds.c b/drivers/pcmcia/ds.c
+index 72114907c0e4..bb096a3b76aa 100644
+--- a/drivers/pcmcia/ds.c
++++ b/drivers/pcmcia/ds.c
+@@ -371,9 +371,6 @@ static int pcmcia_device_remove(struct device *dev)
+ 		pcmcia_card_remove(p_dev->socket, p_dev);
+ 
+ 	/* detach the "instance" */
+-	if (!p_drv)
+-		return 0;
+-
+ 	if (p_drv->remove)
+ 		p_drv->remove(p_dev);
+ 
+-- 
+2.30.0
 
-Thanks and regards,
-Dario
-
-> 
-> regards,
-> Marc
-> 
-> -- 
-> Pengutronix e.K.                 | Marc Kleine-Budde           |
-> Embedded Linux                   | https://www.pengutronix.de  |
-> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
