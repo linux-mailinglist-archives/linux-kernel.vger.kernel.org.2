@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0F3329A28
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB14329A33
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377068AbhCBApd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:45:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48288 "EHLO mail.kernel.org"
+        id S1377135AbhCBApt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:45:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240234AbhCASiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:38:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80B67651CB;
-        Mon,  1 Mar 2021 17:17:13 +0000 (UTC)
+        id S234540AbhCASjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D2A0651CF;
+        Mon,  1 Mar 2021 17:17:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619034;
-        bh=SMZ4a1qCWArT+1MvHgwtzig9SKaWxFlPM0oZmRtYb/w=;
+        s=korg; t=1614619042;
+        bh=lqRKLBvKAYvx4AkNz/AZ9rXkrR0NLQWErrsSkOTtLQM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NtPy0t3hBsnh/KyAE6m1LG0Bf/ntp8L6WUr6nmr1aYRoa95xuI2tEEK5rDgjmLQGh
-         K5ciioR5lH9a887jLbFxTwbTz9QF8TSdyEpbqxE2AaEvlthAr/8JNgbpivjv9Er+pf
-         9HGJiWmaK+xJtI9OHp7Io5ug+xbTHoX5CsnCUcPo=
+        b=IKmyjaL869kbfe2gFoDFdI5g5lIjbK4HvtWOPmb5/Psd8c9sHsCnZwEN6Dc6saV7G
+         ktjRVUJoNLounCepsx7Jogg+UqfgaJIDEoT63qc8O+/T0aQBGXCXygM7hKo9yiQTkS
+         7vYeN9++U3MQGXJcJ/QLLtOd4E2nZ8t8DJ7dRNGo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        David Howells <dhowells@redhat.com>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        David Woodhouse <dwmw2@infradead.org>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 308/663] certs: Fix blacklist flag type confusion
-Date:   Mon,  1 Mar 2021 17:09:16 +0100
-Message-Id: <20210301161157.082819082@linuxfoundation.org>
+Subject: [PATCH 5.10 311/663] regulator: s5m8767: Drop regulators OF node reference
+Date:   Mon,  1 Mar 2021 17:09:19 +0100
+Message-Id: <20210301161157.226137926@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,102 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 4993e1f9479a4161fd7d93e2b8b30b438f00cb0f ]
+[ Upstream commit a5872bd3398d0ff2ce4c77794bc7837899c69024 ]
 
-KEY_FLAG_KEEP is not meant to be passed to keyring_alloc() or key_alloc(),
-as these only take KEY_ALLOC_* flags.  KEY_FLAG_KEEP has the same value as
-KEY_ALLOC_BYPASS_RESTRICTION, but fortunately only key_create_or_update()
-uses it.  LSMs using the key_alloc hook don't check that flag.
+The device node reference obtained with of_get_child_by_name() should be
+dropped on error paths.
 
-KEY_FLAG_KEEP is then ignored but fortunately (again) the root user cannot
-write to the blacklist keyring, so it is not possible to remove a key/hash
-from it.
-
-Fix this by adding a KEY_ALLOC_SET_KEEP flag that tells key_alloc() to set
-KEY_FLAG_KEEP on the new key.  blacklist_init() can then, correctly, pass
-this to keyring_alloc().
-
-We can also use this in ima_mok_init() rather than setting the flag
-manually.
-
-Note that this doesn't fix an observable bug with the current
-implementation but it is required to allow addition of new hashes to the
-blacklist in the future without making it possible for them to be removed.
-
-Fixes: 734114f8782f ("KEYS: Add a system blacklist keyring")
-Reported-by: Mickaël Salaün <mic@linux.microsoft.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Mickaël Salaün <mic@linux.microsoft.com>
-cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Fixes: 26aec009f6b6 ("regulator: add device tree support for s5m8767")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20210121155914.48034-1-krzk@kernel.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- certs/blacklist.c                | 2 +-
- include/linux/key.h              | 1 +
- security/integrity/ima/ima_mok.c | 5 ++---
- security/keys/key.c              | 2 ++
- 4 files changed, 6 insertions(+), 4 deletions(-)
+ drivers/regulator/s5m8767.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/certs/blacklist.c b/certs/blacklist.c
-index 6514f9ebc943f..f1c434b04b5e4 100644
---- a/certs/blacklist.c
-+++ b/certs/blacklist.c
-@@ -162,7 +162,7 @@ static int __init blacklist_init(void)
- 			      KEY_USR_VIEW | KEY_USR_READ |
- 			      KEY_USR_SEARCH,
- 			      KEY_ALLOC_NOT_IN_QUOTA |
--			      KEY_FLAG_KEEP,
-+			      KEY_ALLOC_SET_KEEP,
- 			      NULL, NULL);
- 	if (IS_ERR(blacklist_keyring))
- 		panic("Can't allocate system blacklist keyring\n");
-diff --git a/include/linux/key.h b/include/linux/key.h
-index 0f2e24f13c2bd..eed3ce139a32e 100644
---- a/include/linux/key.h
-+++ b/include/linux/key.h
-@@ -289,6 +289,7 @@ extern struct key *key_alloc(struct key_type *type,
- #define KEY_ALLOC_BUILT_IN		0x0004	/* Key is built into kernel */
- #define KEY_ALLOC_BYPASS_RESTRICTION	0x0008	/* Override the check on restricted keyrings */
- #define KEY_ALLOC_UID_KEYRING		0x0010	/* allocating a user or user session keyring */
-+#define KEY_ALLOC_SET_KEEP		0x0020	/* Set the KEEP flag on the key/keyring */
+diff --git a/drivers/regulator/s5m8767.c b/drivers/regulator/s5m8767.c
+index 48dd95b3ff45a..7c111bbdc2afa 100644
+--- a/drivers/regulator/s5m8767.c
++++ b/drivers/regulator/s5m8767.c
+@@ -544,14 +544,18 @@ static int s5m8767_pmic_dt_parse_pdata(struct platform_device *pdev,
+ 	rdata = devm_kcalloc(&pdev->dev,
+ 			     pdata->num_regulators, sizeof(*rdata),
+ 			     GFP_KERNEL);
+-	if (!rdata)
++	if (!rdata) {
++		of_node_put(regulators_np);
+ 		return -ENOMEM;
++	}
  
- extern void key_revoke(struct key *key);
- extern void key_invalidate(struct key *key);
-diff --git a/security/integrity/ima/ima_mok.c b/security/integrity/ima/ima_mok.c
-index 36cadadbfba47..1e5c019161738 100644
---- a/security/integrity/ima/ima_mok.c
-+++ b/security/integrity/ima/ima_mok.c
-@@ -38,13 +38,12 @@ __init int ima_mok_init(void)
- 				(KEY_POS_ALL & ~KEY_POS_SETATTR) |
- 				KEY_USR_VIEW | KEY_USR_READ |
- 				KEY_USR_WRITE | KEY_USR_SEARCH,
--				KEY_ALLOC_NOT_IN_QUOTA,
-+				KEY_ALLOC_NOT_IN_QUOTA |
-+				KEY_ALLOC_SET_KEEP,
- 				restriction, NULL);
+ 	rmode = devm_kcalloc(&pdev->dev,
+ 			     pdata->num_regulators, sizeof(*rmode),
+ 			     GFP_KERNEL);
+-	if (!rmode)
++	if (!rmode) {
++		of_node_put(regulators_np);
+ 		return -ENOMEM;
++	}
  
- 	if (IS_ERR(ima_blacklist_keyring))
- 		panic("Can't allocate IMA blacklist keyring.");
--
--	set_bit(KEY_FLAG_KEEP, &ima_blacklist_keyring->flags);
- 	return 0;
- }
- device_initcall(ima_mok_init);
-diff --git a/security/keys/key.c b/security/keys/key.c
-index e282c6179b21d..151ff39b68030 100644
---- a/security/keys/key.c
-+++ b/security/keys/key.c
-@@ -303,6 +303,8 @@ struct key *key_alloc(struct key_type *type, const char *desc,
- 		key->flags |= 1 << KEY_FLAG_BUILTIN;
- 	if (flags & KEY_ALLOC_UID_KEYRING)
- 		key->flags |= 1 << KEY_FLAG_UID_KEYRING;
-+	if (flags & KEY_ALLOC_SET_KEEP)
-+		key->flags |= 1 << KEY_FLAG_KEEP;
- 
- #ifdef KEY_DEBUGGING
- 	key->magic = KEY_DEBUG_MAGIC;
+ 	pdata->regulators = rdata;
+ 	pdata->opmode = rmode;
 -- 
 2.27.0
 
