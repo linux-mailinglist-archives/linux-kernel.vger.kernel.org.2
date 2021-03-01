@@ -2,67 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEE0327B0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA30327B16
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234113AbhCAJqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:46:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49634 "EHLO mail.kernel.org"
+        id S234156AbhCAJrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:47:16 -0500
+Received: from mga02.intel.com ([134.134.136.20]:12503 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234081AbhCAJp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:45:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E17F64E40;
-        Mon,  1 Mar 2021 09:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614591888;
-        bh=Ue0k5j3MtCiB24FO15otD66DYpHCo6x1PQ/QgaqypX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cOvmDCvyoZjtWpfgZ1S06TNq9TnNMaEOJJk+eJDfwbl83wW1HYrfjPHQTa4oXfA0f
-         /DxDRDeuhIQNqf7VQkjdLU1AyzBgtxM2DuBovb5dqSPBA9ho/xQcNP8rRQHzAuasE4
-         oNsVLqet3qmdYB9oaVX+7F+Yxo6L3sVmEQY+jvxf5yKm+FRjmCqfBDIOkOlPX5vxwA
-         g69zYufBLnO9+6gTj/uJUvsZn+99/pX2o+SbCWQu30kuClOasPDhxOCeNAIYpq54y1
-         bphuVpP/gObFAYKQ0zgOowGall6rcjGzSOuEWct6KQw4R7V8bewEzSdML7WleEhlno
-         AIztfEf9R0t3Q==
-Date:   Mon, 1 Mar 2021 11:44:28 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tpm/ppi: Constify static struct attribute_group
-Message-ID: <YDy3fC3gP1ydzbY0@kernel.org>
-References: <20210204215427.49047-1-rikard.falkeborn@gmail.com>
- <YBynopNwhIhGBXv/@kernel.org>
- <YDlufJLcYN2bzNYV@rikard>
+        id S234098AbhCAJpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 04:45:35 -0500
+IronPort-SDR: 4aHkzBAZ90QBnoug1RXHfAhc5F3MJEfee9lPiWILbgoQVmjsh12ykU2yhkif4zuIMTHYViysgP
+ miTOhpihotZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="173542485"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="173542485"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 01:44:50 -0800
+IronPort-SDR: vv/HaewzW8y0a9P0kwoS8fi3pucSI3w4gfpVM8IndX3RJPOuLXVGkQr34tAcxl9I+DxgQUWSKE
+ B/NCJGymNs9A==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="599267325"
+Received: from jscomeax-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.139.76])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 01:44:46 -0800
+From:   Kai Huang <kai.huang@intel.com>
+To:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        Kai Huang <kai.huang@intel.com>
+Subject: [PATCH 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
+Date:   Mon,  1 Mar 2021 22:44:29 +1300
+Message-Id: <bbfc8c833a62e4b55220834320829df1e17aff41.1614590788.git.kai.huang@intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1614590788.git.kai.huang@intel.com>
+References: <cover.1614590788.git.kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDlufJLcYN2bzNYV@rikard>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 10:56:12PM +0100, Rikard Falkeborn wrote:
-> On Fri, Feb 05, 2021 at 04:04:18AM +0200, Jarkko Sakkinen wrote:
-> > On Thu, Feb 04, 2021 at 10:54:27PM +0100, Rikard Falkeborn wrote:
-> > > The only usage of ppi_attr_grp is to put its address in an array of
-> > > pointers to const struct attribute_group. Make it const to allow the
-> > > compiler to put it in read-only memory.
-> > > 
-> > > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> > 
-> > Thanks.
-> > 
-> > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > 
-> > /Jarkko
-> > 
-> 
-> Hi Jarkko,
-> I saw this was merged as commit
-> 90cba8d20f8b09d62a25f9864cb8e67722d76c3a, but in the commit, there was an
-> additional change where a call to dump_stack() was added in
-> drivers/char/tpm/tpm-chip.c, was this intentional?
- 
-No, thanks for reporting. I sent a fixup. Can you ack it?
+From: Sean Christopherson <seanjc@google.com>
 
-/Jarkko
+Add SGX1 and SGX2 feature flags, via CPUID.0x12.0x0.EAX, as scattered
+features, since adding a new leaf for only two bits would be wasteful.
+As part of virtualizing SGX, KVM will expose the SGX CPUID leafs to its
+guest, and to do so correctly needs to query hardware and kernel support
+for SGX1 and SGX2.
+
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Signed-off-by: Kai Huang <kai.huang@intel.com>
+---
+ arch/x86/include/asm/cpufeatures.h | 2 ++
+ arch/x86/kernel/cpu/cpuid-deps.c   | 2 ++
+ arch/x86/kernel/cpu/scattered.c    | 2 ++
+ 3 files changed, 6 insertions(+)
+
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index cc96e26d69f7..9502c445a3e9 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -290,6 +290,8 @@
+ #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in kernel entry SWAPGS path */
+ #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split lock */
+ #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
++#define X86_FEATURE_SGX1		(11*32+ 8) /* "" Basic SGX */
++#define X86_FEATURE_SGX2        	(11*32+ 9) /* SGX Enclave Dynamic Memory Management (EDMM) */
+ 
+ /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
+ #define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
+diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
+index d40f8e0a54ce..defda61f372d 100644
+--- a/arch/x86/kernel/cpu/cpuid-deps.c
++++ b/arch/x86/kernel/cpu/cpuid-deps.c
+@@ -73,6 +73,8 @@ static const struct cpuid_dep cpuid_deps[] = {
+ 	{ X86_FEATURE_ENQCMD,			X86_FEATURE_XSAVES    },
+ 	{ X86_FEATURE_PER_THREAD_MBA,		X86_FEATURE_MBA       },
+ 	{ X86_FEATURE_SGX_LC,			X86_FEATURE_SGX	      },
++	{ X86_FEATURE_SGX1,			X86_FEATURE_SGX       },
++	{ X86_FEATURE_SGX2,			X86_FEATURE_SGX1      },
+ 	{}
+ };
+ 
+diff --git a/arch/x86/kernel/cpu/scattered.c b/arch/x86/kernel/cpu/scattered.c
+index 972ec3bfa9c0..21d1f062895a 100644
+--- a/arch/x86/kernel/cpu/scattered.c
++++ b/arch/x86/kernel/cpu/scattered.c
+@@ -36,6 +36,8 @@ static const struct cpuid_bit cpuid_bits[] = {
+ 	{ X86_FEATURE_CDP_L2,		CPUID_ECX,  2, 0x00000010, 2 },
+ 	{ X86_FEATURE_MBA,		CPUID_EBX,  3, 0x00000010, 0 },
+ 	{ X86_FEATURE_PER_THREAD_MBA,	CPUID_ECX,  0, 0x00000010, 3 },
++	{ X86_FEATURE_SGX1,		CPUID_EAX,  0, 0x00000012, 0 },
++	{ X86_FEATURE_SGX2,		CPUID_EAX,  1, 0x00000012, 0 },
+ 	{ X86_FEATURE_HW_PSTATE,	CPUID_EDX,  7, 0x80000007, 0 },
+ 	{ X86_FEATURE_CPB,		CPUID_EDX,  9, 0x80000007, 0 },
+ 	{ X86_FEATURE_PROC_FEEDBACK,    CPUID_EDX, 11, 0x80000007, 0 },
+-- 
+2.29.2
+
