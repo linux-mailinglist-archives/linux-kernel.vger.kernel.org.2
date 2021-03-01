@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BABB328E10
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D877E328DF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241509AbhCATXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:23:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51732 "EHLO mail.kernel.org"
+        id S241388AbhCATU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:20:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235510AbhCAQvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:51:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B630E64FB7;
-        Mon,  1 Mar 2021 16:33:36 +0000 (UTC)
+        id S235025AbhCAQuz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:50:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED4C864FAD;
+        Mon,  1 Mar 2021 16:33:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616417;
-        bh=ORPCG6lNXDbkMXeS/l0DdB+Se3UxgSZObZMpSEonDEk=;
+        s=korg; t=1614616388;
+        bh=sZijZduDHgvjmQX1TGEQWciJQ5fMD1MYFCscr6yFwzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l4LjoGtMwWlqa99tWQpPfhExe0l6vZanr5SGPAD0ych+0Avs/4E85eSajrEo0E/1d
-         9CoWZcxxpBNnxeYEwROxmYs5JjBd5ZYBjbhefRVB7LDOEw2Z94I33unBWLuV06CJ8r
-         RZOqUw3En0WYaumIDNUQdCfP/48wSuJdVVncGGp0=
+        b=V1SXkuA7zqpZXqhO25ovpvQGM8KCv/njogTGcIzNrrMHb9JK6d0InNHrQBi36/kMH
+         NXAOA/ZXFsm293yUw0pL6IfKIszMzrG17lfAVI4quSchZ5/4B9ztrDvzbIxOwxsffN
+         NwodRr00O+TxbC+//tg8Peo0lWQ8bxTDepPX83rY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.14 127/176] Input: joydev - prevent potential read overflow in ioctl
-Date:   Mon,  1 Mar 2021 17:13:20 +0100
-Message-Id: <20210301161027.295902515@linuxfoundation.org>
+        stable@vger.kernel.org, PeiSen Hou <pshou@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 135/176] ALSA: hda/realtek: modify EAPD in the ALC886
+Date:   Mon,  1 Mar 2021 17:13:28 +0100
+Message-Id: <20210301161027.696245398@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -39,53 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: PeiSen Hou <pshou@realtek.com>
 
-commit 182d679b2298d62bf42bb14b12a8067b8e17b617 upstream.
+commit 4841b8e6318a7f0ae57c4e5ec09032ea057c97a8 upstream.
 
-The problem here is that "len" might be less than "joydev->nabs" so the
-loops which verfy abspam[i] and keypam[] might read beyond the buffer.
+Modify 0x20 index 7 bit 5 to 1, make the 0x15 EAPD the same as 0x14.
 
-Fixes: 999b874f4aa3 ("Input: joydev - validate axis/button maps before clobbering current ones")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YCyzR8WvFRw4HWw6@mwanda
-[dtor: additional check for len being even in joydev_handle_JSIOCSBTNMAP]
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: PeiSen Hou <pshou@realtek.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/e62c5058957f48d8b8953e97135ff108@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/joydev.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/input/joydev.c
-+++ b/drivers/input/joydev.c
-@@ -460,7 +460,7 @@ static int joydev_handle_JSIOCSAXMAP(str
- 	if (IS_ERR(abspam))
- 		return PTR_ERR(abspam);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1792,6 +1792,7 @@ enum {
+ 	ALC889_FIXUP_FRONT_HP_NO_PRESENCE,
+ 	ALC889_FIXUP_VAIO_TT,
+ 	ALC888_FIXUP_EEE1601,
++	ALC886_FIXUP_EAPD,
+ 	ALC882_FIXUP_EAPD,
+ 	ALC883_FIXUP_EAPD,
+ 	ALC883_FIXUP_ACER_EAPD,
+@@ -2100,6 +2101,15 @@ static const struct hda_fixup alc882_fix
+ 			{ }
+ 		}
+ 	},
++	[ALC886_FIXUP_EAPD] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			/* change to EAPD mode */
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x07 },
++			{ 0x20, AC_VERB_SET_PROC_COEF, 0x0068 },
++			{ }
++		}
++	},
+ 	[ALC882_FIXUP_EAPD] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -2340,6 +2350,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x106b, 0x4a00, "Macbook 5,2", ALC889_FIXUP_MBA11_VREF),
  
--	for (i = 0; i < joydev->nabs; i++) {
-+	for (i = 0; i < len && i < joydev->nabs; i++) {
- 		if (abspam[i] > ABS_MAX) {
- 			retval = -EINVAL;
- 			goto out;
-@@ -484,6 +484,9 @@ static int joydev_handle_JSIOCSBTNMAP(st
- 	int i;
- 	int retval = 0;
- 
-+	if (len % sizeof(*keypam))
-+		return -EINVAL;
-+
- 	len = min(len, sizeof(joydev->keypam));
- 
- 	/* Validate the map. */
-@@ -491,7 +494,7 @@ static int joydev_handle_JSIOCSBTNMAP(st
- 	if (IS_ERR(keypam))
- 		return PTR_ERR(keypam);
- 
--	for (i = 0; i < joydev->nkey; i++) {
-+	for (i = 0; i < (len / 2) && i < joydev->nkey; i++) {
- 		if (keypam[i] > KEY_MAX || keypam[i] < BTN_MISC) {
- 			retval = -EINVAL;
- 			goto out;
+ 	SND_PCI_QUIRK(0x1071, 0x8258, "Evesham Voyaeger", ALC882_FIXUP_EAPD),
++	SND_PCI_QUIRK(0x13fe, 0x1009, "Advantech MIT-W101", ALC886_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+ 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
 
 
