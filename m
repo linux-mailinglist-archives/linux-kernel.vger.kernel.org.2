@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEC8327867
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 08:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 199FC327898
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 08:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbhCAHmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 02:42:35 -0500
-Received: from foss.arm.com ([217.140.110.172]:52148 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232509AbhCAHma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 02:42:30 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9EFE71FB;
-        Sun, 28 Feb 2021 23:43:10 -0800 (PST)
-Received: from [10.163.67.14] (unknown [10.163.67.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0BD253F70D;
-        Sun, 28 Feb 2021 23:43:07 -0800 (PST)
-Subject: Re: [PATCH] mm: Generalize HUGETLB_PAGE_SIZE_VARIABLE
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-mm@kvack.org, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <1614577853-7452-1-git-send-email-anshuman.khandual@arm.com>
- <20210301062358.GA25761@lst.de>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <89f2d77c-f4bc-8f7b-a6b0-1c04e422fb77@arm.com>
-Date:   Mon, 1 Mar 2021 13:13:41 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232568AbhCAHuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 02:50:23 -0500
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:41857 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232513AbhCAHuR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 02:50:17 -0500
+Received: by mail-lf1-f48.google.com with SMTP id q25so3693639lfc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 23:51:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jCqi65u6jCFunOm12Oog107Pq4F7SYFu8w898Uy17Bs=;
+        b=Xt0ObsLcBKOEOldG8JOl0eFrt+FRR9A9Ej9d3e7pvAktt2XCF+iRfDvB0wND60GNnx
+         Ys8/oaOXuS47kc2c32mECNXLtlBF/kfpcrUi6ku38LvDkMSUPk5WZCdDDm4Y5afwySXO
+         RU2xfMPIX6TlLxBAHh+1TD5kusdQnkOSL4cUY7I/XW1R+b5c/GtVijjYldfev/p+m/5R
+         e+k68FBLV/sxKhAFWQq+r4/p9H90pqHG703P7rJoohM/k637sUT5tMSpZk29BBDZa3nS
+         1wmaQt2UwqwtJ7wOhgiNbrj48tp9uojh3EitAQx3AaQg4iBngQwd35wparNkdzca///Y
+         hSsw==
+X-Gm-Message-State: AOAM532NWq7/Bj5zfRgginvVgYU2eExT7deidJUlPtTQlK8ipxVzIrEE
+        Eln9Ej8GaGqKdFUZ+GNsFF61hFpx5av8UW854dWqz2ZK
+X-Google-Smtp-Source: ABdhPJzb7ZVFZOMfXn8Q98RXqNMjpp9NBUL669scf8ECsKSsAl0vwqi9C0PU2ZTyfvFhjoio1X5xcfMI1ws6QANUI4c=
+X-Received: by 2002:a05:6512:12c1:: with SMTP id p1mr9300470lfg.374.1614585061697;
+ Sun, 28 Feb 2021 23:51:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210301062358.GA25761@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210226221431.1985458-1-irogers@google.com>
+In-Reply-To: <20210226221431.1985458-1-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 1 Mar 2021 16:50:50 +0900
+Message-ID: <CAM9d7ci2GpSuj88qAphQxBSEvaOoQg=9r8ah5GjrdFojSQ-28w@mail.gmail.com>
+Subject: Re: [PATCH] perf trace: Ensure read cmdlines are null terminated.
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Ian,
 
+On Sat, Feb 27, 2021 at 7:14 AM Ian Rogers <irogers@google.com> wrote:
+>
+> Issue detected by address sanitizer.
+>
+> Fixes: cd4ceb63438e (perf util: Save pid-cmdline mapping into tracing header)
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-On 3/1/21 11:53 AM, Christoph Hellwig wrote:
-> On Mon, Mar 01, 2021 at 11:20:53AM +0530, Anshuman Khandual wrote:
->> HUGETLB_PAGE_SIZE_VARIABLE need not be defined for each individual
->> platform subscribing it. Instead just make it generic.
->>
->> Cc: Michael Ellerman <mpe@ellerman.id.au>
->> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->> Cc: Paul Mackerras <paulus@samba.org>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Cc: linux-ia64@vger.kernel.org
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> Suggested-by: Christoph Hellwig <hch@lst.de>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> This change was originally suggested in an earilier discussion. This
->> applies on v5.12-rc1 and has been build tested on all applicable
->> platforms i.e ia64 and powerpc.
->>
->> https://patchwork.kernel.org/project/linux-mm/patch/1613024531-19040-3-git-send-email-anshuman.khandual@arm.com/
->>
->>  arch/ia64/Kconfig    | 6 +-----
->>  arch/powerpc/Kconfig | 6 +-----
->>  mm/Kconfig           | 8 ++++++++
->>  3 files changed, 10 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
->> index 2ad7a8d29fcc..6b3e3f6c29ae 100644
->> --- a/arch/ia64/Kconfig
->> +++ b/arch/ia64/Kconfig
->> @@ -32,6 +32,7 @@ config IA64
->>  	select TTY
->>  	select HAVE_ARCH_TRACEHOOK
->>  	select HAVE_VIRT_CPU_ACCOUNTING
->> +	select HUGETLB_PAGE_SIZE_VARIABLE
-> 
-> doesn't this need a 'if HUGETLB_PAGE'
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-While making HUGETLB_PAGE_SIZE_VARIABLE a generic option, also made it
-dependent on HUGETLB_PAGE. Should not that gate HUGETLB_PAGE_SIZE_VARIABLE
-when HUGETLB_PAGE is not available irrespective of the select statement on
-the platforms ?
+Thanks,
+Namhyung
 
-> 
-> or did you verify that HUGETLB_PAGE_SIZE_VARIABLE checks are always
-> nested inside of HUGETLB_PAGE ones?
+> ---
+>  tools/perf/util/trace-event-read.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-event-read.c
+> index f507dff713c9..8a01af783310 100644
+> --- a/tools/perf/util/trace-event-read.c
+> +++ b/tools/perf/util/trace-event-read.c
+> @@ -361,6 +361,7 @@ static int read_saved_cmdline(struct tep_handle *pevent)
+>                 pr_debug("error reading saved cmdlines\n");
+>                 goto out;
+>         }
+> +       buf[ret] = '\0';
+>
+>         parse_saved_cmdline(pevent, buf, size);
+>         ret = 0;
+> --
+> 2.30.1.766.gb4fecdf3b7-goog
 >
