@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B4E328992
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1079E32897B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239275AbhCAR7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:59:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36262 "EHLO mail.kernel.org"
+        id S238862AbhCAR5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:57:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232477AbhCAQbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:31:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0040F64F31;
-        Mon,  1 Mar 2021 16:24:32 +0000 (UTC)
+        id S232615AbhCAQc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:32:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4700E64F2A;
+        Mon,  1 Mar 2021 16:24:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615873;
-        bh=4tHcDDE5TputrdUza2VcfJ8mXwCAL56WPeakKr3BHtc=;
+        s=korg; t=1614615881;
+        bh=KwR/KHnarhT5v692EJy/tbVDeKaLMW3ZT/qmPv2SVKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XKAhst+TAJbIDO/P13DQoLvV4BZp/jTOjGR5CyDlUe3g2JRDQM4g8d73aSxtxAhbK
-         UnkSJG2GpcTUHNUYCBs1rn7T+DpaCShq1j+RXKRb25soVZbhhYpoqUOkT/TK11aFyp
-         CattDayqtUS0Zoj4wJwRtzcFXhzpDJJRMn0XqfLY=
+        b=1wNFM9RHt8TJHH0xPrBOTkSAbSQ34Q+warv63rW6O/22AXQtSA05DxLcBRGln5qxr
+         SbGxQW/wLbWTHAxV3mUQAxs4+QQwtfJ3SkiNTV2RKy4+ZkLkAdKxNadL2Zy7sz3f3F
+         OPdMdVobUkYq33LTmdj09rHwK/4Wt+suOwQ+upbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.9 090/134] ACPI: configfs: add missing check after configfs_register_default_group()
-Date:   Mon,  1 Mar 2021 17:13:11 +0100
-Message-Id: <20210301161017.999041735@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.9 093/134] Input: joydev - prevent potential read overflow in ioctl
+Date:   Mon,  1 Mar 2021 17:13:14 +0100
+Message-Id: <20210301161018.153537269@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -41,53 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 67e40054de86aae520ddc2a072d7f6951812a14f upstream.
+commit 182d679b2298d62bf42bb14b12a8067b8e17b617 upstream.
 
-A list_add corruption is reported by Hulk Robot like this:
-==============
-list_add corruption.
-Call Trace:
-link_obj+0xc0/0x1c0
-link_group+0x21/0x140
-configfs_register_subsystem+0xdb/0x380
-acpi_configfs_init+0x25/0x1000 [acpi_configfs]
-do_one_initcall+0x149/0x820
-do_init_module+0x1ef/0x720
-load_module+0x35c8/0x4380
-__do_sys_finit_module+0x10d/0x1a0
-do_syscall_64+0x34/0x80
+The problem here is that "len" might be less than "joydev->nabs" so the
+loops which verfy abspam[i] and keypam[] might read beyond the buffer.
 
-It's because of the missing check after configfs_register_default_group,
-where configfs_unregister_subsystem should be called once failure.
-
-Fixes: 612bd01fc6e0 ("ACPI: add support for loading SSDTs via configfs")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Suggested-by: Hanjun Guo <guohanjun@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fixes: 999b874f4aa3 ("Input: joydev - validate axis/button maps before clobbering current ones")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YCyzR8WvFRw4HWw6@mwanda
+[dtor: additional check for len being even in joydev_handle_JSIOCSBTNMAP]
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/acpi_configfs.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/input/joydev.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/acpi/acpi_configfs.c
-+++ b/drivers/acpi/acpi_configfs.c
-@@ -251,7 +251,12 @@ static int __init acpi_configfs_init(voi
+--- a/drivers/input/joydev.c
++++ b/drivers/input/joydev.c
+@@ -448,7 +448,7 @@ static int joydev_handle_JSIOCSAXMAP(str
+ 	if (IS_ERR(abspam))
+ 		return PTR_ERR(abspam);
  
- 	acpi_table_group = configfs_register_default_group(root, "table",
- 							   &acpi_tables_type);
--	return PTR_ERR_OR_ZERO(acpi_table_group);
-+	if (IS_ERR(acpi_table_group)) {
-+		configfs_unregister_subsystem(&acpi_configfs);
-+		return PTR_ERR(acpi_table_group);
-+	}
+-	for (i = 0; i < joydev->nabs; i++) {
++	for (i = 0; i < len && i < joydev->nabs; i++) {
+ 		if (abspam[i] > ABS_MAX) {
+ 			retval = -EINVAL;
+ 			goto out;
+@@ -472,6 +472,9 @@ static int joydev_handle_JSIOCSBTNMAP(st
+ 	int i;
+ 	int retval = 0;
+ 
++	if (len % sizeof(*keypam))
++		return -EINVAL;
 +
-+	return 0;
- }
- module_init(acpi_configfs_init);
+ 	len = min(len, sizeof(joydev->keypam));
  
+ 	/* Validate the map. */
+@@ -479,7 +482,7 @@ static int joydev_handle_JSIOCSBTNMAP(st
+ 	if (IS_ERR(keypam))
+ 		return PTR_ERR(keypam);
+ 
+-	for (i = 0; i < joydev->nkey; i++) {
++	for (i = 0; i < (len / 2) && i < joydev->nkey; i++) {
+ 		if (keypam[i] > KEY_MAX || keypam[i] < BTN_MISC) {
+ 			retval = -EINVAL;
+ 			goto out;
 
 
