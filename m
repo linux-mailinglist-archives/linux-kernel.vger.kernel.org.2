@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6273298F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4159D3298E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346968AbhCAXvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60786 "EHLO mail.kernel.org"
+        id S1346835AbhCAXug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:50:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236131AbhCASNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:13:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FAE864F9A;
-        Mon,  1 Mar 2021 17:50:09 +0000 (UTC)
+        id S238623AbhCASN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:13:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87BCD64F7F;
+        Mon,  1 Mar 2021 17:50:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621010;
-        bh=zObVs7WjPNun3ujJeSX1WxJemE99x5DRaj5g4eV2zW0=;
+        s=korg; t=1614621029;
+        bh=HHOsTxaCsMZuxDYVrNXL9S/WqK7qnxf9AkAUkzwC77U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rN7eNOxcR/kkuXa9Wl9My+XTM0h8XMKn1dJDBIXZw/8ln2JOmjAniHymyJMZBXLdL
-         dLlItBJKa2nfBP8zodvF/NRcDKm6nxd03DIP0QGsNCF5QBGuYLgyboizp14ExtATDu
-         /p+Mmv+7CwL52Jy00fFjebmAgF70/e5zR+1Cwy0g=
+        b=CHJNrpkjd+KUHHoJ0yAhXnkLGqcIJiNXmkzsmAGriWXQ2yaGtKFm1pgx4u1n4e7xh
+         LaGmV5f2sfo0D+yWnucBguOLCRttQGqzWaUsvbN4sWNn89BNz2X8OgEmmdFKWS/E7V
+         0BT6YqNzlDU4oFFbN9tnz6p/BO766kGdpgUxKOh8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arthur Demchenkov <spinal.by@gmail.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>, Tony Lindgren <tony@atomide.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 333/775] power: supply: cpcap-battery: Fix missing power_supply_put()
-Date:   Mon,  1 Mar 2021 17:08:21 +0100
-Message-Id: <20210301161218.075010826@linuxfoundation.org>
+        stable@vger.kernel.org, Nicolas Boichat <drinkcat@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Quentin Perret <qperret@google.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 337/775] of/fdt: Make sure no-map does not remove already reserved regions
+Date:   Mon,  1 Mar 2021 17:08:25 +0100
+Message-Id: <20210301161218.275532095@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -43,53 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Nicolas Boichat <drinkcat@chromium.org>
 
-[ Upstream commit 97456a24acb41b74ab6910f40fb8f09b206fd3b5 ]
+[ Upstream commit 8a5a75e5e9e55de1cef5d83ca3589cb4899193ef ]
 
-Fix missing power_supply_put().
+If the device tree is incorrectly configured, and attempts to
+define a "no-map" reserved memory that overlaps with the kernel
+data/code, the kernel would crash quickly after boot, with no
+obvious clue about the nature of the issue.
 
-Cc: Arthur Demchenkov <spinal.by@gmail.com>
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Fixes: 8b0134cc14b9 ("power: supply: cpcap-battery: Fix handling of lowered charger voltage")
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+For example, this would happen if we have the kernel mapped at
+these addresses (from /proc/iomem):
+40000000-41ffffff : System RAM
+  40080000-40dfffff : Kernel code
+  40e00000-411fffff : reserved
+  41200000-413e0fff : Kernel data
+
+And we declare a no-map shared-dma-pool region at a fixed address
+within that range:
+mem_reserved: mem_region {
+	compatible = "shared-dma-pool";
+	reg = <0 0x40000000 0 0x01A00000>;
+	no-map;
+};
+
+To fix this, when removing memory regions at early boot (which is
+what "no-map" regions do), we need to make sure that the memory
+is not already reserved. If we do, __reserved_mem_reserve_reg
+will throw an error:
+[    0.000000] OF: fdt: Reserved memory: failed to reserve memory
+   for node 'mem_region': base 0x0000000040000000, size 26 MiB
+and the code that will try to use the region should also fail,
+later on.
+
+We do not do anything for non-"no-map" regions, as memblock
+explicitly allows reserved regions to overlap, and the commit
+that this fixes removed the check for that precise reason.
+
+[ qperret: fixed conflicts caused by the usage of memblock_mark_nomap ]
+
+Fixes: 094cb98179f19b7 ("of/fdt: memblock_reserve /memreserve/ regions in the case of partial overlap")
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Quentin Perret <qperret@google.com>
+Link: https://lore.kernel.org/r/20210115114544.1830068-3-qperret@google.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/cpcap-battery.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/of/fdt.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
-index 7a974b5bd9dd1..cebc5c8fda1b5 100644
---- a/drivers/power/supply/cpcap-battery.c
-+++ b/drivers/power/supply/cpcap-battery.c
-@@ -561,17 +561,21 @@ static int cpcap_battery_update_charger(struct cpcap_battery_ddata *ddata,
- 				POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE,
- 				&prop);
- 	if (error)
--		return error;
-+		goto out_put;
- 
- 	/* Allow charger const voltage lower than battery const voltage */
- 	if (const_charge_voltage > prop.intval)
--		return 0;
-+		goto out_put;
- 
- 	val.intval = const_charge_voltage;
- 
--	return power_supply_set_property(charger,
-+	error = power_supply_set_property(charger,
- 			POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE,
- 			&val);
-+out_put:
-+	power_supply_put(charger);
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index 427b534d60d2d..dcc1dd96911a9 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1146,8 +1146,16 @@ int __init __weak early_init_dt_mark_hotplug_memory_arch(u64 base, u64 size)
+ int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
+ 					phys_addr_t size, bool nomap)
+ {
+-	if (nomap)
++	if (nomap) {
++		/*
++		 * If the memory is already reserved (by another region), we
++		 * should not allow it to be marked nomap.
++		 */
++		if (memblock_is_region_reserved(base, size))
++			return -EBUSY;
 +
-+	return error;
+ 		return memblock_mark_nomap(base, size);
++	}
+ 	return memblock_reserve(base, size);
  }
  
- static int cpcap_battery_set_property(struct power_supply *psy,
 -- 
 2.27.0
 
