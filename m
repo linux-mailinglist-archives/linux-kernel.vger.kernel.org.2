@@ -2,194 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E749329440
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8E132941A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244131AbhCAVwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:52:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47524 "EHLO
+        id S244236AbhCAVrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:47:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238191AbhCARXn (ORCPT
+        with ESMTP id S238190AbhCARXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 12:23:43 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B45C06178B;
-        Mon,  1 Mar 2021 09:21:53 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id f33so17172507otf.11;
-        Mon, 01 Mar 2021 09:21:53 -0800 (PST)
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741FAC06178C
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:22:27 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id o11so10670281iob.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:22:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KREp6LQzb5haoUvJOG6o2G0DkqaHdaBQjLeQ8PnH12A=;
-        b=RDLcxj+GXiavErMB3ekUeewhpr8ylixLAZPsdQOOBX58z/fsTZAtbWv3e/U36bFchE
-         ey2dt7SiTbJ5/LJaGywpVx6xGI5B/FL8q9XuuQRP4kmAecFia5tG8iaujh9+/6RPuT20
-         6//NQ8Dsb/u9lUzag4QQ0fJAj4LY6KgSXsle1D0Fff9MHoIXj2jnrLmcxzCcDOhQ9c7t
-         Zp+8sLu5ZU6QC/jwalYdO+yH2QxbveXsn3HwSyCJZXWJgJ5nHfO31yvYHxrqdrIdKhHm
-         DxGDKnOCEGzIX8krrQbjNd6lcQuoFH1QLSIhNHt8Cm30nP26lDE6n85zFOL1adYOFmEG
-         OZHw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/EwKg80MLnuasfcujpzhyzwoNIEZZ7+pbJM40fdjDf4=;
+        b=H+MBoDAZ1daiKv5GTnXamavbgWErHeIXezrE7UJFZRZxdl13u1QUgfAIQussSTuVvP
+         lrj9EpVc2O4P+FOAZaTOqbPRa85h4l7I4YoZt87/OFu201mImTGbRwscmBT/X9kriTBf
+         6Ps/16BDLI1GcX9i9deN+UO5kZBjvrdZrV6wVj6nMtxAE1uESID9zZqD791h5iZhj9Vi
+         TGkjcfBga5ew0uRxsglrOyoY6p1q08/CTmktRYudgwpBgk+EEiqLSF8Xsizanp+W3oJL
+         HzI1gOSMOow2STNHe1hsVKdmpsw7RuiTP8nhQWOW1+73pjnrncN15C1hPMKG9Nyw0D1K
+         YV+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KREp6LQzb5haoUvJOG6o2G0DkqaHdaBQjLeQ8PnH12A=;
-        b=OaxxN7KR8U0PDp+XtPRQg7PfZ8JxDipdDIf2KX4OLpwX+kC61NPAVib8tU6Lahn0vw
-         dpKTL2beSwH3hWFlqXq8J0QczhdHhGPp9U2+5SnrJOSgwTig+A7lRssvjQHXwA7HFIlB
-         qurs1XCHcbNqMXZdqhw9IpQrdTEiCyywFOAu12b6pObWyxoMuyvccHnQwL3oFxuDAoIN
-         GSM+wf3WKsipjr267+VPyW481AhZc2DkI2SabSZQc5GQWdrEuxbewqgGYCHSafa6EvH9
-         eyyyst4ez/osYwpjdJYfbG6eYQ3HK476ZydY36yNB7Rl9UjIAcn4QycxF0Gi+l2HE1jD
-         xE7g==
-X-Gm-Message-State: AOAM531XyI6epV4/L0l5OHD4JPsbNEnOQu2w1nn2ixeZCo61H/yIfzDA
-        Q4U1Yda/4Mg4/ySneB0Fzug=
-X-Google-Smtp-Source: ABdhPJwRHDasN0khz1OlKgM8sICryHIbFc014s5ob0cMceWTFNJMR1pkpaxiTuihMAcxmoaqmdwfBg==
-X-Received: by 2002:a9d:53c5:: with SMTP id i5mr13934391oth.159.1614619313021;
-        Mon, 01 Mar 2021 09:21:53 -0800 (PST)
-Received: from ruiqi-desktop.lan (072-177-087-193.res.spectrum.com. [72.177.87.193])
-        by smtp.gmail.com with ESMTPSA id p66sm2055517oib.53.2021.03.01.09.21.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 09:21:52 -0800 (PST)
-From:   Frank Li <lznuaa@gmail.com>
-X-Google-Original-From: Frank Li <Frank.Li@nxp.com>
-To:     lznuaa@gmail.com, adrian.hunter@intel.com, riteshh@codeaurora.org,
-        asutoshd@codeaurora.org, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        haibo.chen@nxp.com
-Subject: [PATCH 1/1] mmc: cqhci: fix random crash when remove mmc module
-Date:   Mon,  1 Mar 2021 11:21:51 -0600
-Message-Id: <20210301172151.281814-1-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/EwKg80MLnuasfcujpzhyzwoNIEZZ7+pbJM40fdjDf4=;
+        b=lOwpLs7czEbZeWjG+JhgEFljIz7eIcP1CZwxwG5r4mvj4dfSZmPks9MIS/b24Z5XZz
+         e+mYuHXi7phB5XYbd/+h2bTU8DssjuZLd2pgjnka8rlBOrjdIy68Wecwpj/0zQf0r3DH
+         AjehkAgk/JZnSJtiR2NkwzKENja4ITctv3b+KJTk1LR7+FIXOmMlYNYKc9LpkISJU7pw
+         zoH6A6brzcevUFV1b1+95Bt81n6k31VbX8gvbWRcVZOfUaCATmNUmxZ3nzBeGHEhkOIt
+         7zXK8qPqhHiC2mv1R/BNMu/CT2V3T3cELn5TbYP06B3gMa7jSSXvBtkGmpDpl7Im1dmn
+         yAnw==
+X-Gm-Message-State: AOAM533+VW6HEdeL1M0kUC+8tC7vUlrtDVAndmNcz46f92g9v5ZR38ef
+        5frs0pZaQzN5mjWoW9MLH8+fZ+LM1LS5j+ydA8JOrg==
+X-Google-Smtp-Source: ABdhPJzSgM2cqzH+Bbpm+78dSY425PxfW5lfkpsdYLshi+9XCUS2e7mtwppj9kQEbTNSqmKHj8IgXZsLcnDanUNRPzU=
+X-Received: by 2002:a05:6602:2486:: with SMTP id g6mr14411979ioe.134.1614619346724;
+ Mon, 01 Mar 2021 09:22:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202102280728.9KxiUPjh-lkp@intel.com>
+In-Reply-To: <202102280728.9KxiUPjh-lkp@intel.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 1 Mar 2021 09:22:15 -0800
+Message-ID: <CANgfPd8K-SmOYjQgubn0NjtxmLXnyLafMTCQ6KppiWR7ZeOYig@mail.gmail.com>
+Subject: Re: arch/x86/kvm/mmu/tdp_mmu.c:533:9: sparse: sparse: cast removes
+ address space '__rcu' of expression
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Feiner <pfeiner@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ 6684.493350] Unable to handle kernel paging request at virtual address ffff800011c5b0f0
-[ 6684.498531] mmc0: card 0001 removed
-[ 6684.501556] Mem abort info:
-[ 6684.509681]   ESR = 0x96000047
-[ 6684.512786]   EC = 0x25: DABT (current EL), IL = 32 bits
-[ 6684.518394]   SET = 0, FnV = 0
-[ 6684.521707]   EA = 0, S1PTW = 0
-[ 6684.524998] Data abort info:
-[ 6684.528236]   ISV = 0, ISS = 0x00000047
-[ 6684.532986]   CM = 0, WnR = 1
-[ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000081b22000
-[ 6684.543923] [ffff800011c5b0f0] pgd=00000000bffff003, p4d=00000000bffff003, pud=00000000bfffe003, pmd=00000000900e1003, pte=0000000000000000
-[ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
-[ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cqhci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc caamalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexcan can_dev caam error [last unloaded: mmc_core]
-[ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5.10.9-01410-g3ba33182767b-dirty #10
-[ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
-[ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
+It looks like the __rcu tags aren't being propagated around to all the
+different references to PT memory. I'll look into what it would take
+to fix this. I don't believe these kernel test warnings indicate a
+correctness issue in the kernel, but propagating the __rcu annotations
+will be helpful for developers in the future.
 
-[ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-[ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
-^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.617085] lr : cqhci_request+0x314/0x4e8 [cqhci]
-[ 6684.626734] sp : ffff80001243b9f0
-[ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
-[ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
-[ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
-[ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
-[ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
-[ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
-[ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
-[ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
-[ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
-[ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
-[ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
-[ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
-[ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
-[ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
-[ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
-[ 6684.709854] Call trace:
-[ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
-[ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
-[ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
-[ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
-
-cqhci_request was called after cqhci_disable.
-
-cqhci_disable                                 cqhci_request
-{                                             {
-	dmam_free_coherent();  (1) free
-                                                  if(!cq_host->enable)
-                                                       return
-				         (2) pass check here
-	cq_host->enable = false;
-
-                                                  task_desc= get_desc(cq_host,tag);
-                                                             ^^^^ crash here
-                                         (3) access memory which is already free
-
-}                                             }
-
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- drivers/mmc/host/cqhci-core.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-index 93b0432bb601..36d292261e50 100644
---- a/drivers/mmc/host/cqhci-core.c
-+++ b/drivers/mmc/host/cqhci-core.c
-@@ -389,6 +389,7 @@ static void cqhci_off(struct mmc_host *mmc)
- static void cqhci_disable(struct mmc_host *mmc)
- {
- 	struct cqhci_host *cq_host = mmc->cqe_private;
-+	unsigned long flags;
- 
- 	if (!cq_host->enabled)
- 		return;
-@@ -397,6 +398,11 @@ static void cqhci_disable(struct mmc_host *mmc)
- 
- 	__cqhci_disable(cq_host);
- 
-+	/* need wait for cqhci_request finish before free memory */
-+	spin_lock_irqsave(&cq_host->lock, flags);
-+	cq_host->enabled = false;
-+	spin_unlock_irqrestore(&cq_host->lock, flags);
-+
- 	dmam_free_coherent(mmc_dev(mmc), cq_host->data_size,
- 			   cq_host->trans_desc_base,
- 			   cq_host->trans_desc_dma_base);
-@@ -408,7 +414,6 @@ static void cqhci_disable(struct mmc_host *mmc)
- 	cq_host->trans_desc_base = NULL;
- 	cq_host->desc_base = NULL;
- 
--	cq_host->enabled = false;
- }
- 
- static void cqhci_prep_task_desc(struct mmc_request *mrq,
-@@ -612,6 +617,13 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
- 			cq_host->ops->enable(mmc);
- 	}
- 
-+	spin_lock_irqsave(&cq_host->lock, flags);
-+	if (!cq_host->enabled) {
-+		pr_err("%s: cqhci: not enabled\n", mmc_hostname(mmc));
-+		err = -EINVAL;
-+		goto out_unlock;
-+	}
-+
- 	if (mrq->data) {
- 		cqhci_prep_task_desc(mrq, cq_host, tag);
- 
-@@ -619,14 +631,12 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
- 		if (err) {
- 			pr_err("%s: cqhci: failed to setup tx desc: %d\n",
- 			       mmc_hostname(mmc), err);
--			return err;
-+			goto out_unlock;
- 		}
- 	} else {
- 		cqhci_prep_dcmd_desc(mmc, mrq);
- 	}
- 
--	spin_lock_irqsave(&cq_host->lock, flags);
--
- 	if (cq_host->recovery_halt) {
- 		err = -EBUSY;
- 		goto out_unlock;
--- 
-2.25.1
-
+On Sat, Feb 27, 2021 at 3:48 PM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   5695e51619745d4fe3ec2506a2f0cd982c5e27a4
+> commit: 08f07c800e9d35b59d0c8346333f189160bd67d4 KVM: x86/mmu: Flush TLBs after zap in TDP MMU PF handler
+> date:   3 weeks ago
+> config: x86_64-randconfig-s022-20210228 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> reproduce:
+>         # apt-get install sparse
+>         # sparse version: v0.6.3-241-geaceeafa-dirty
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=08f07c800e9d35b59d0c8346333f189160bd67d4
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 08f07c800e9d35b59d0c8346333f189160bd67d4
+>         # save the attached .config to linux build tree
+>         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=x86_64
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+>
+> "sparse warnings: (new ones prefixed by >>)"
+>    arch/x86/kvm/mmu/tdp_mmu.c:459:49: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected unsigned long long [usertype] *pt @@     got unsigned long long [noderef] [usertype] __rcu * @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:459:49: sparse:     expected unsigned long long [usertype] *pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:459:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *
+>    arch/x86/kvm/mmu/tdp_mmu.c:291:9: sparse: sparse: context imbalance in 'tdp_mmu_link_page' - different lock contexts for basic block
+>    arch/x86/kvm/mmu/tdp_mmu.c:316:9: sparse: sparse: context imbalance in 'tdp_mmu_unlink_page' - different lock contexts for basic block
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected unsigned long long [usertype] *root_pt @@     got unsigned long long [noderef] [usertype] __rcu * @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     expected unsigned long long [usertype] *root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     got unsigned long long [noderef] [usertype] __rcu *
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:487:40: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [usertype] *root_pt @@     got unsigned long long [noderef] [usertype] __rcu * @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:487:40: sparse:     expected unsigned long long [usertype] *root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:487:40: sparse:     got unsigned long long [noderef] [usertype] __rcu *
+> >> arch/x86/kvm/mmu/tdp_mmu.c:533:9: sparse: sparse: cast removes address space '__rcu' of expression
+>    arch/x86/kvm/mmu/tdp_mmu.c:487:40: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [usertype] *root_pt @@     got unsigned long long [noderef] [usertype] __rcu * @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:487:40: sparse:     expected unsigned long long [usertype] *root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:487:40: sparse:     got unsigned long long [noderef] [usertype] __rcu *
+>    arch/x86/kvm/mmu/tdp_mmu.c:487:40: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected unsigned long long [usertype] *root_pt @@     got unsigned long long [noderef] [usertype] __rcu * @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:487:40: sparse:     expected unsigned long long [usertype] *root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:487:40: sparse:     got unsigned long long [noderef] [usertype] __rcu *
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected unsigned long long [usertype] *root_pt @@     got unsigned long long [noderef] [usertype] __rcu * @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     expected unsigned long long [usertype] *root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     got unsigned long long [noderef] [usertype] __rcu *
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected unsigned long long [usertype] *root_pt @@     got unsigned long long [noderef] [usertype] __rcu * @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     expected unsigned long long [usertype] *root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     got unsigned long long [noderef] [usertype] __rcu *
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected unsigned long long [usertype] *root_pt @@     got unsigned long long [noderef] [usertype] __rcu * @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     expected unsigned long long [usertype] *root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     got unsigned long long [noderef] [usertype] __rcu *
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected unsigned long long [usertype] *root_pt @@     got unsigned long long [noderef] [usertype] __rcu * @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     expected unsigned long long [usertype] *root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:654:51: sparse:     got unsigned long long [noderef] [usertype] __rcu *
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [usertype] *sptep @@     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt @@
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     expected unsigned long long [usertype] *sptep
+>    arch/x86/kvm/mmu/tdp_mmu.c:560:49: sparse:     got unsigned long long [noderef] [usertype] __rcu *[usertype] root_pt
+>
+> vim +/__rcu +533 arch/x86/kvm/mmu/tdp_mmu.c
+>
+>    509
+>    510  static inline bool tdp_mmu_zap_spte_atomic(struct kvm *kvm,
+>    511                                             struct tdp_iter *iter)
+>    512  {
+>    513          /*
+>    514           * Freeze the SPTE by setting it to a special,
+>    515           * non-present value. This will stop other threads from
+>    516           * immediately installing a present entry in its place
+>    517           * before the TLBs are flushed.
+>    518           */
+>    519          if (!tdp_mmu_set_spte_atomic(kvm, iter, REMOVED_SPTE))
+>    520                  return false;
+>    521
+>    522          kvm_flush_remote_tlbs_with_address(kvm, iter->gfn,
+>    523                                             KVM_PAGES_PER_HPAGE(iter->level));
+>    524
+>    525          /*
+>    526           * No other thread can overwrite the removed SPTE as they
+>    527           * must either wait on the MMU lock or use
+>    528           * tdp_mmu_set_spte_atomic which will not overrite the
+>    529           * special removed SPTE value. No bookkeeping is needed
+>    530           * here since the SPTE is going from non-present
+>    531           * to non-present.
+>    532           */
+>  > 533          WRITE_ONCE(*iter->sptep, 0);
+>    534
+>    535          return true;
+>    536  }
+>    537
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
