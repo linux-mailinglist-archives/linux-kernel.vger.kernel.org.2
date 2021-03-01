@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4B4329E99
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:30:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C80329E8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445718AbhCBDB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:01:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42266 "EHLO mail.kernel.org"
+        id S1445617AbhCBDBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:01:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236505AbhCAUNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:13:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 892CD6524D;
-        Mon,  1 Mar 2021 18:01:32 +0000 (UTC)
+        id S243005AbhCAUNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:13:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44FED652D4;
+        Mon,  1 Mar 2021 18:01:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621693;
-        bh=oihLs2AOUTlx62J++4LQN7xASD7nfmTw1EvwxZjZ4RY=;
+        s=korg; t=1614621695;
+        bh=dncZgWL8tHOt2jmvReuGmGPWJ5OUscCw7TzvDQUpXCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SOSqkwnXxqVLjbVaCcsNi+uE5I3zRUVHPjOLMk0fQXEIkN4qgRfl2Y0F8nHr1LN/i
-         e4ATFblk2ejh/eJ6GyZ14jZKpc+OwqVJ152kcJeZ5Gx6Xi5ZrCLmYXsG3ig9pTxSZz
-         6CITquafGIfILF+b+VOhxQ4c9ryBNJvs2tklSjnE=
+        b=C6rnwWZ2VPjwvGQkCeJel2zgomdTuP3nPNp9k+Iaiq96PLLd9OAGwzrrszbMeVzuS
+         XO4Rx4R0b5/gXyGNIRddaMfVrgGq9VIr4zdqdkRT86LthalzxEm7KfY77oxjokp4n0
+         BgvOZChBuDKl+di3Xo3BTI4P3KBYMHsHArnTfFxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Kai Krakow <kai@kaishome.de>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.11 610/775] bcache: Move journal work to new flush wq
-Date:   Mon,  1 Mar 2021 17:12:58 +0100
-Message-Id: <20210301161231.560558187@linuxfoundation.org>
+        stable@vger.kernel.org, Alvin Lee <alvin.lee2@amd.com>,
+        Jun Lei <Jun.Lei@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 611/775] Revert "drm/amd/display: Update NV1x SR latency values"
+Date:   Mon,  1 Mar 2021 17:12:59 +0100
+Message-Id: <20210301161231.602944616@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -39,98 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Krakow <kai@kaishome.de>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-commit afe78ab46f638ecdf80a35b122ffc92c20d9ae5d upstream.
+commit 910f1601addae3e430fc7d3cd589d7622c5df693 upstream.
 
-This is potentially long running and not latency sensitive, let's get
-it out of the way of other latency sensitive events.
+This reverts commit 4a3dea8932d3b1199680d2056dd91d31d94d70b7.
 
-As observed in the previous commit, the `system_wq` comes easily
-congested by bcache, and this fixes a few more stalls I was observing
-every once in a while.
+This causes blank screens for some users.
 
-Let's not make this `WQ_MEM_RECLAIM` as it showed to reduce performance
-of boot and file system operations in my tests. Also, without
-`WQ_MEM_RECLAIM`, I no longer see desktop stalls. This matches the
-previous behavior as `system_wq` also does no memory reclaim:
-
-> // workqueue.c:
-> system_wq = alloc_workqueue("events", 0, 0);
-
-Cc: Coly Li <colyli@suse.de>
-Cc: stable@vger.kernel.org # 5.4+
-Signed-off-by: Kai Krakow <kai@kaishome.de>
-Signed-off-by: Coly Li <colyli@suse.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1388
+Cc: Alvin Lee <alvin.lee2@amd.com>
+Cc: Jun Lei <Jun.Lei@amd.com>
+Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/bcache/bcache.h  |    1 +
- drivers/md/bcache/journal.c |    4 ++--
- drivers/md/bcache/super.c   |   16 ++++++++++++++++
- 3 files changed, 19 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/md/bcache/bcache.h
-+++ b/drivers/md/bcache/bcache.h
-@@ -1001,6 +1001,7 @@ void bch_write_bdev_super(struct cached_
- 
- extern struct workqueue_struct *bcache_wq;
- extern struct workqueue_struct *bch_journal_wq;
-+extern struct workqueue_struct *bch_flush_wq;
- extern struct mutex bch_register_lock;
- extern struct list_head bch_cache_sets;
- 
---- a/drivers/md/bcache/journal.c
-+++ b/drivers/md/bcache/journal.c
-@@ -932,8 +932,8 @@ atomic_t *bch_journal(struct cache_set *
- 		journal_try_write(c);
- 	} else if (!w->dirty) {
- 		w->dirty = true;
--		schedule_delayed_work(&c->journal.work,
--				      msecs_to_jiffies(c->journal_delay_ms));
-+		queue_delayed_work(bch_flush_wq, &c->journal.work,
-+				   msecs_to_jiffies(c->journal_delay_ms));
- 		spin_unlock(&c->journal.lock);
- 	} else {
- 		spin_unlock(&c->journal.lock);
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -49,6 +49,7 @@ static int bcache_major;
- static DEFINE_IDA(bcache_device_idx);
- static wait_queue_head_t unregister_wait;
- struct workqueue_struct *bcache_wq;
-+struct workqueue_struct *bch_flush_wq;
- struct workqueue_struct *bch_journal_wq;
- 
- 
-@@ -2821,6 +2822,8 @@ static void bcache_exit(void)
- 		destroy_workqueue(bcache_wq);
- 	if (bch_journal_wq)
- 		destroy_workqueue(bch_journal_wq);
-+	if (bch_flush_wq)
-+		destroy_workqueue(bch_flush_wq);
- 	bch_btree_exit();
- 
- 	if (bcache_major)
-@@ -2884,6 +2887,19 @@ static int __init bcache_init(void)
- 	if (!bcache_wq)
- 		goto err;
- 
-+	/*
-+	 * Let's not make this `WQ_MEM_RECLAIM` for the following reasons:
-+	 *
-+	 * 1. It used `system_wq` before which also does no memory reclaim.
-+	 * 2. With `WQ_MEM_RECLAIM` desktop stalls, increased boot times, and
-+	 *    reduced throughput can be observed.
-+	 *
-+	 * We still want to user our own queue to not congest the `system_wq`.
-+	 */
-+	bch_flush_wq = alloc_workqueue("bch_flush", 0, 0);
-+	if (!bch_flush_wq)
-+		goto err;
-+
- 	bch_journal_wq = alloc_workqueue("bch_journal", WQ_MEM_RECLAIM, 0);
- 	if (!bch_journal_wq)
- 		goto err;
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -408,8 +408,8 @@ static struct _vcs_dpi_soc_bounding_box_
+ 			},
+ 		},
+ 	.num_states = 5,
+-	.sr_exit_time_us = 11.6,
+-	.sr_enter_plus_exit_time_us = 13.9,
++	.sr_exit_time_us = 8.6,
++	.sr_enter_plus_exit_time_us = 10.9,
+ 	.urgent_latency_us = 4.0,
+ 	.urgent_latency_pixel_data_only_us = 4.0,
+ 	.urgent_latency_pixel_mixed_with_vm_data_us = 4.0,
 
 
