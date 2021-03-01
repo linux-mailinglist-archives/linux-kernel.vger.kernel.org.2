@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CB73299F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF98329905
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345321AbhCBAkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:40:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44684 "EHLO mail.kernel.org"
+        id S1347075AbhCAXvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:51:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239914AbhCASbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:31:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09A10651D6;
-        Mon,  1 Mar 2021 17:17:36 +0000 (UTC)
+        id S239508AbhCASRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:17:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A49CC65043;
+        Mon,  1 Mar 2021 17:17:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619057;
-        bh=KsBIlFCuWO/SvTLiZ3DNi4EKh+Q09SGZIg/htGUJeco=;
+        s=korg; t=1614619072;
+        bh=uh+GEYAxWCm4fYNH3X7nASMCRkC6hW8pPCfDbV0Tot4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IuM0KGzi8Xj/0+SpnQmUUfn3MTk3gV0TXJRRdGzJN2QmenmT9gjeiv+SdgX2IIhdc
-         GtBMjC2bhC+6ae+zBu2ECXgDqnQsqLaZ461Hrfsrr8DnyQAZmacOCSGo019gQh4C46
-         2zVc7PAbSYhqS4VOHeNXm03MYEzYv1bhwyCT5SBQ=
+        b=HIiGRrlpO7P9rk/3eo0BC7O9ka0wDSm/OXobHEcgJWOtKsgoS726oYavSmx1q/6jj
+         fKaVFNR2BsHjTyP6OgmiMKAuAtL9IJMFp483Dt55ncKTu0/TF1n4NfLWALBfa8ViWH
+         wKH+AvXUmkS/KIRa8ZZNFlhQ6KV8MBqAQfPcwNng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 316/663] watchdog: intel-mid_wdt: Postpone IRQ handler registration till SCU is ready
-Date:   Mon,  1 Mar 2021 17:09:24 +0100
-Message-Id: <20210301161157.482910335@linuxfoundation.org>
+Subject: [PATCH 5.10 321/663] scsi: lpfc: Fix ancient double free
+Date:   Mon,  1 Mar 2021 17:09:29 +0100
+Message-Id: <20210301161157.729734977@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,50 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit f285c9532b5bd3de7e37a6203318437cab79bd9a ]
+[ Upstream commit 0be310979e5e1272d4c5b557642df4da4ce7eba4 ]
 
-When SCU is not ready and CONFIG_DEBUG_SHIRQ=y we got deferred probe followed
-by fired test IRQ which immediately makes kernel panic. Fix this by delaying
-IRQ handler registration till SCU is ready.
+The "pmb" pointer is freed at the start of the function and then freed
+again in the error handling code.
 
-Fixes: 80ae679b8f86 ("watchdog: intel-mid_wdt: Convert to use new SCU IPC API")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Link: https://lore.kernel.org/r/YA6E8rO51hE56SVw@mwanda
+Fixes: 92d7f7b0cde3 ("[SCSI] lpfc: NPIV: add NPIV support on top of SLI-3")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/intel-mid_wdt.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/lpfc/lpfc_hbadisc.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/watchdog/intel-mid_wdt.c b/drivers/watchdog/intel-mid_wdt.c
-index 1ae03b64ef8bf..9b2173f765c8c 100644
---- a/drivers/watchdog/intel-mid_wdt.c
-+++ b/drivers/watchdog/intel-mid_wdt.c
-@@ -154,6 +154,10 @@ static int mid_wdt_probe(struct platform_device *pdev)
- 	watchdog_set_nowayout(wdt_dev, WATCHDOG_NOWAYOUT);
- 	watchdog_set_drvdata(wdt_dev, mid);
+diff --git a/drivers/scsi/lpfc/lpfc_hbadisc.c b/drivers/scsi/lpfc/lpfc_hbadisc.c
+index 9746d2f4fcfad..f4a672e549716 100644
+--- a/drivers/scsi/lpfc/lpfc_hbadisc.c
++++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
+@@ -1154,13 +1154,14 @@ lpfc_mbx_cmpl_local_config_link(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 	struct lpfc_vport *vport = pmb->vport;
+ 	LPFC_MBOXQ_t *sparam_mb;
+ 	struct lpfc_dmabuf *sparam_mp;
++	u16 status = pmb->u.mb.mbxStatus;
+ 	int rc;
  
-+	mid->scu = devm_intel_scu_ipc_dev_get(dev);
-+	if (!mid->scu)
-+		return -EPROBE_DEFER;
-+
- 	ret = devm_request_irq(dev, pdata->irq, mid_wdt_irq,
- 			       IRQF_SHARED | IRQF_NO_SUSPEND, "watchdog",
- 			       wdt_dev);
-@@ -162,10 +166,6 @@ static int mid_wdt_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	mid->scu = devm_intel_scu_ipc_dev_get(dev);
--	if (!mid->scu)
--		return -EPROBE_DEFER;
+-	if (pmb->u.mb.mbxStatus)
+-		goto out;
 -
- 	/*
- 	 * The firmware followed by U-Boot leaves the watchdog running
- 	 * with the default threshold which may vary. When we get here
+ 	mempool_free(pmb, phba->mbox_mem_pool);
+ 
++	if (status)
++		goto out;
++
+ 	/* don't perform discovery for SLI4 loopback diagnostic test */
+ 	if ((phba->sli_rev == LPFC_SLI_REV4) &&
+ 	    !(phba->hba_flag & HBA_FCOE_MODE) &&
+@@ -1223,12 +1224,10 @@ lpfc_mbx_cmpl_local_config_link(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 
+ out:
+ 	lpfc_printf_vlog(vport, KERN_ERR, LOG_TRACE_EVENT,
+-			 "0306 CONFIG_LINK mbxStatus error x%x "
+-			 "HBA state x%x\n",
+-			 pmb->u.mb.mbxStatus, vport->port_state);
+-sparam_out:
+-	mempool_free(pmb, phba->mbox_mem_pool);
++			 "0306 CONFIG_LINK mbxStatus error x%x HBA state x%x\n",
++			 status, vport->port_state);
+ 
++sparam_out:
+ 	lpfc_linkdown(phba);
+ 
+ 	lpfc_printf_vlog(vport, KERN_ERR, LOG_TRACE_EVENT,
 -- 
 2.27.0
 
