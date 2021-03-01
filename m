@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030FD3281E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166213281DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236939AbhCAPKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 10:10:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
+        id S236935AbhCAPKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 10:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236893AbhCAPIq (ORCPT
+        with ESMTP id S236882AbhCAPIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 10:08:46 -0500
 Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81EFDC061797
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 07:07:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6411C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 07:07:24 -0800 (PST)
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
         (Exim 4.94)
         (envelope-from <johannes@sipsolutions.net>)
-        id 1lGk8k-00AJOK-TL; Mon, 01 Mar 2021 16:07:18 +0100
+        id 1lGk8l-00AJOK-6N; Mon, 01 Mar 2021 16:07:19 +0100
 From:   Johannes Berg <johannes@sipsolutions.net>
 To:     linux-um@lists.infradead.org
 Cc:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
         Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH v2 6/8] um: irqs: allow invoking time-travel handler multiple times
-Date:   Mon,  1 Mar 2021 16:07:06 +0100
-Message-Id: <20210301160501.55ca8a7f5c73.I0344b4c8a7e79d8ac1645acad97371f202837777@changeid>
+Subject: [PATCH v2 7/8] um: add PCI over virtio emulation driver
+Date:   Mon,  1 Mar 2021 16:07:07 +0100
+Message-Id: <20210301160501.bafdfe225ce2.I21b27d26611ebecd8c918e20728e37b184d817bb@changeid>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210301150708.244970-1-johannes@sipsolutions.net>
 References: <20210301150708.244970-1-johannes@sipsolutions.net>
@@ -37,39 +37,1266 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-If we happen to get multiple messages while IRQS are already
-suspended, we still need to handle them, since otherwise the
-simulation blocks.
+To support testing of PCI/PCIe drivers in UML, add a PCI bus
+support driver. This driver uses virtio, which in UML is really
+just vhost-user, to talk to devices, and adds the devices to
+the virtual PCI bus in the system.
 
-Remove the "prevent nesting" part, time_travel_add_irq_event()
-will deal with being called multiple times just fine.
+Since virtio already allows DMA/bus mastering this really isn't
+all that hard, of course we need the logic_iomem infrastructure
+that was added by a previous patch.
+
+The protocol to talk to the device is has a few fairly simple
+messages for reading to/writing from config and IO spaces, and
+messages for the device to send the various interrupts (INT#,
+MSI/MSI-X and while suspended PME#).
+
+Note that currently no offical virtio device ID is assigned for
+this protocol, as a consequence this patch requires defining it
+in the Kconfig, with a default that makes the driver refuse to
+work at all.
+
+Finally, in order to add support for MSI/MSI-X interrupts, some
+small changes are needed in the UML IRQ code, it needs to have
+more interrupts, changing NR_IRQS from 64 to 128 if this driver
+is enabled, but not actually use them for anything so that the
+generic IRQ domain/MSI infrastructure can allocate IRQ numbers.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/kernel/irq.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+v2:
+ - fix memory leak
+---
+ arch/um/Kconfig                    |  13 +-
+ arch/um/drivers/Kconfig            |  20 +
+ arch/um/drivers/Makefile           |   1 +
+ arch/um/drivers/virt-pci.c         | 885 +++++++++++++++++++++++++++++
+ arch/um/include/asm/Kbuild         |   1 -
+ arch/um/include/asm/io.h           |   7 +
+ arch/um/include/asm/irq.h          |   8 +-
+ arch/um/include/asm/msi.h          |   1 +
+ arch/um/include/asm/pci.h          |  39 ++
+ arch/um/kernel/Makefile            |   1 +
+ arch/um/kernel/ioport.c            |  13 +
+ arch/um/kernel/irq.c               |   7 +-
+ include/uapi/linux/virtio_pcidev.h |  64 +++
+ 13 files changed, 1054 insertions(+), 6 deletions(-)
+ create mode 100644 arch/um/drivers/virt-pci.c
+ create mode 100644 arch/um/include/asm/msi.h
+ create mode 100644 arch/um/include/asm/pci.h
+ create mode 100644 arch/um/kernel/ioport.c
+ create mode 100644 include/uapi/linux/virtio_pcidev.h
 
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 20b0640e01b8..f64d774706e5 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -14,7 +14,7 @@ config UML
+ 	select HAVE_FUTEX_CMPXCHG if FUTEX
+ 	select HAVE_DEBUG_KMEMLEAK
+ 	select HAVE_DEBUG_BUGVERBOSE
+-	select NO_DMA
++	select NO_DMA if !UML_DMA_EMULATION
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_CPU_DEVICES
+ 	select HAVE_GCC_PLUGINS
+@@ -25,10 +25,21 @@ config MMU
+ 	bool
+ 	default y
+ 
++config UML_DMA_EMULATION
++	bool
++
+ config NO_IOMEM
+ 	bool "disable IOMEM" if EXPERT
++	depends on !INDIRECT_IOMEM
+ 	default y
+ 
++config UML_IOMEM_EMULATION
++	bool
++	select INDIRECT_IOMEM
++	select GENERIC_PCI_IOMAP
++	select GENERIC_IOMAP
++	select NO_GENERIC_PCI_IOPORT_MAP
++
+ config NO_IOPORT_MAP
+ 	def_bool y
+ 
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index 03ba34b61115..f145842c40b9 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -357,3 +357,23 @@ config UML_RTC
+ 	  rtcwake, especially in time-travel mode. This driver enables that
+ 	  by providing a fake RTC clock that causes a wakeup at the right
+ 	  time.
++
++config UML_PCI_OVER_VIRTIO
++	bool "Enable PCI over VIRTIO device simulation"
++	# in theory, just VIRTIO is enough, but that causes recursion
++	depends on VIRTIO_UML
++	select FORCE_PCI
++	select UML_IOMEM_EMULATION
++	select UML_DMA_EMULATION
++	select PCI_MSI
++	select PCI_MSI_IRQ_DOMAIN
++	select PCI_LOCKLESS_CONFIG
++
++config UML_PCI_OVER_VIRTIO_DEVICE_ID
++	int "set the virtio device ID for PCI emulation"
++	default -1
++	depends on UML_PCI_OVER_VIRTIO
++	help
++	  There's no official device ID assigned (yet), set the one you
++	  wish to use for experimentation here. The default of -1 is
++	  not valid and will cause the driver to fail at probe.
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index dcc64a02f81f..803666e85414 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -64,6 +64,7 @@ obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
+ obj-$(CONFIG_UML_RANDOM) += random.o
+ obj-$(CONFIG_VIRTIO_UML) += virtio_uml.o
+ obj-$(CONFIG_UML_RTC) += rtc.o
++obj-$(CONFIG_UML_PCI_OVER_VIRTIO) += virt-pci.o
+ 
+ # pcap_user.o must be added explicitly.
+ USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o pcap_user.o vde_user.o vector_user.o
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+new file mode 100644
+index 000000000000..dd85f36197aa
+--- /dev/null
++++ b/arch/um/drivers/virt-pci.c
+@@ -0,0 +1,885 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2020 Intel Corporation
++ * Author: Johannes Berg <johannes@sipsolutions.net>
++ */
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/virtio.h>
++#include <linux/virtio_config.h>
++#include <linux/logic_iomem.h>
++#include <linux/irqdomain.h>
++#include <linux/virtio_pcidev.h>
++#include <linux/delay.h>
++#include <linux/msi.h>
++#include <asm/unaligned.h>
++#include <irq_kern.h>
++
++#define MAX_DEVICES 8
++#define MAX_MSI_VECTORS 32
++#define CFG_SPACE_SIZE 4096
++
++/* for MSI-X we have a 32-bit payload */
++#define MAX_IRQ_MSG_SIZE (sizeof(struct virtio_pcidev_msg) + sizeof(u32))
++#define NUM_IRQ_MSGS	10
++
++#define HANDLE_NO_FREE(ptr) ((void *)((unsigned long)(ptr) | 1))
++#define HANDLE_IS_NO_FREE(ptr) ((unsigned long)(ptr) & 1)
++
++struct um_pci_device {
++	struct virtio_device *vdev;
++
++	/* for now just standard BARs */
++	u8 resptr[PCI_STD_NUM_BARS];
++
++	struct virtqueue *cmd_vq, *irq_vq;
++
++#define UM_PCI_STAT_WAITING	0
++	unsigned long status;
++
++	int irq;
++};
++
++struct um_pci_device_reg {
++	struct um_pci_device *dev;
++	void __iomem *iomem;
++};
++
++static struct pci_host_bridge *bridge;
++static DEFINE_MUTEX(um_pci_mtx);
++static struct um_pci_device_reg um_pci_devices[MAX_DEVICES];
++static struct fwnode_handle *um_pci_fwnode;
++static struct irq_domain *um_pci_inner_domain;
++static struct irq_domain *um_pci_msi_domain;
++static unsigned long um_pci_msi_used[BITS_TO_LONGS(MAX_MSI_VECTORS)];
++
++#define UM_VIRT_PCI_MAXDELAY 40000
++
++static int um_pci_send_cmd(struct um_pci_device *dev,
++			   struct virtio_pcidev_msg *cmd,
++			   unsigned int cmd_size,
++			   const void *extra, unsigned int extra_size,
++			   void *out, unsigned int out_size)
++{
++	struct scatterlist out_sg, extra_sg, in_sg;
++	struct scatterlist *sgs_list[] = {
++		[0] = &out_sg,
++		[1] = extra ? &extra_sg : &in_sg,
++		[2] = extra ? &in_sg : NULL,
++	};
++	int delay_count = 0;
++	int ret, len;
++	bool posted;
++
++	if (WARN_ON(cmd_size < sizeof(*cmd)))
++		return -EINVAL;
++
++	switch (cmd->op) {
++	case VIRTIO_PCIDEV_OP_CFG_WRITE:
++	case VIRTIO_PCIDEV_OP_MMIO_WRITE:
++	case VIRTIO_PCIDEV_OP_MMIO_MEMSET:
++		/* in PCI, writes are posted, so don't wait */
++		posted = !out;
++		WARN_ON(!posted);
++		break;
++	default:
++		posted = false;
++		break;
++	}
++
++	if (posted) {
++		u8 *ncmd = kmalloc(cmd_size + extra_size, GFP_ATOMIC);
++
++		if (ncmd) {
++			memcpy(ncmd, cmd, cmd_size);
++			if (extra)
++				memcpy(ncmd + cmd_size, extra, extra_size);
++			cmd = (void *)ncmd;
++			cmd_size += extra_size;
++			extra = NULL;
++			extra_size = 0;
++		} else {
++			/* try without allocating memory */
++			posted = false;
++		}
++	}
++
++	sg_init_one(&out_sg, cmd, cmd_size);
++	if (extra)
++		sg_init_one(&extra_sg, extra, extra_size);
++	if (out)
++		sg_init_one(&in_sg, out, out_size);
++
++	/* add to internal virtio queue */
++	ret = virtqueue_add_sgs(dev->cmd_vq, sgs_list,
++				extra ? 2 : 1,
++				out ? 1 : 0,
++				posted ? cmd : HANDLE_NO_FREE(cmd),
++				GFP_ATOMIC);
++	if (ret)
++		return ret;
++
++	if (posted) {
++		virtqueue_kick(dev->cmd_vq);
++		return 0;
++	}
++
++	/* kick and poll for getting a response on the queue */
++	set_bit(UM_PCI_STAT_WAITING, &dev->status);
++	virtqueue_kick(dev->cmd_vq);
++
++	while (1) {
++		void *completed = virtqueue_get_buf(dev->cmd_vq, &len);
++
++		if (completed == HANDLE_NO_FREE(cmd))
++			break;
++
++		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
++			      ++delay_count > UM_VIRT_PCI_MAXDELAY,
++			      "um virt-pci delay: %d", delay_count)) {
++			ret = -EIO;
++			break;
++		}
++		udelay(1);
++	}
++	clear_bit(UM_PCI_STAT_WAITING, &dev->status);
++
++	return ret;
++}
++
++static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
++					  int size)
++{
++	struct um_pci_device_reg *reg = priv;
++	struct um_pci_device *dev = reg->dev;
++	struct virtio_pcidev_msg hdr = {
++		.op = VIRTIO_PCIDEV_OP_CFG_READ,
++		.size = size,
++		.addr = offset,
++	};
++	/* maximum size - we may only use parts of it */
++	u8 data[8];
++
++	if (!dev)
++		return ~0ULL;
++
++	memset(data, 0xff, sizeof(data));
++
++	switch (size) {
++	case 1:
++	case 2:
++	case 4:
++#ifdef CONFIG_64BIT
++	case 8:
++#endif
++		break;
++	default:
++		WARN(1, "invalid config space read size %d\n", size);
++		return ~0ULL;
++	}
++
++	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0,
++			    data, sizeof(data)))
++		return ~0ULL;
++
++	switch (size) {
++	case 1:
++		return data[0];
++	case 2:
++		return le16_to_cpup((void *)data);
++	case 4:
++		return le32_to_cpup((void *)data);
++#ifdef CONFIG_64BIT
++	case 8:
++		return le64_to_cpup((void *)data);
++#endif
++	default:
++		return ~0ULL;
++	}
++}
++
++static void um_pci_cfgspace_write(void *priv, unsigned int offset, int size,
++				  unsigned long val)
++{
++	struct um_pci_device_reg *reg = priv;
++	struct um_pci_device *dev = reg->dev;
++	struct {
++		struct virtio_pcidev_msg hdr;
++		/* maximum size - we may only use parts of it */
++		u8 data[8];
++	} msg = {
++		.hdr = {
++			.op = VIRTIO_PCIDEV_OP_CFG_WRITE,
++			.size = size,
++			.addr = offset,
++		},
++	};
++
++	if (!dev)
++		return;
++
++	switch (size) {
++	case 1:
++		msg.data[0] = (u8)val;
++		break;
++	case 2:
++		put_unaligned_le16(val, (void *)msg.data);
++		break;
++	case 4:
++		put_unaligned_le32(val, (void *)msg.data);
++		break;
++#ifdef CONFIG_64BIT
++	case 8:
++		put_unaligned_le64(val, (void *)msg.data);
++		break;
++#endif
++	default:
++		WARN(1, "invalid config space write size %d\n", size);
++		return;
++	}
++
++	WARN_ON(um_pci_send_cmd(dev, &msg.hdr, sizeof(msg), NULL, 0, NULL, 0));
++}
++
++static const struct logic_iomem_ops um_pci_device_cfgspace_ops = {
++	.read = um_pci_cfgspace_read,
++	.write = um_pci_cfgspace_write,
++};
++
++static void um_pci_bar_copy_from(void *priv, void *buffer,
++				 unsigned int offset, int size)
++{
++	u8 *resptr = priv;
++	struct um_pci_device *dev = container_of(resptr - *resptr,
++						 struct um_pci_device,
++						 resptr[0]);
++	struct virtio_pcidev_msg hdr = {
++		.op = VIRTIO_PCIDEV_OP_MMIO_READ,
++		.bar = *resptr,
++		.size = size,
++		.addr = offset,
++	};
++
++	memset(buffer, 0xff, size);
++
++	um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, buffer, size);
++}
++
++static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
++				     int size)
++{
++	/* maximum size - we may only use parts of it */
++	u8 data[8];
++
++	switch (size) {
++	case 1:
++	case 2:
++	case 4:
++#ifdef CONFIG_64BIT
++	case 8:
++#endif
++		break;
++	default:
++		WARN(1, "invalid config space read size %d\n", size);
++		return ~0ULL;
++	}
++
++	um_pci_bar_copy_from(priv, data, offset, size);
++
++	switch (size) {
++	case 1:
++		return data[0];
++	case 2:
++		return le16_to_cpup((void *)data);
++	case 4:
++		return le32_to_cpup((void *)data);
++#ifdef CONFIG_64BIT
++	case 8:
++		return le64_to_cpup((void *)data);
++#endif
++	default:
++		return ~0ULL;
++	}
++}
++
++static void um_pci_bar_copy_to(void *priv, unsigned int offset,
++			       const void *buffer, int size)
++{
++	u8 *resptr = priv;
++	struct um_pci_device *dev = container_of(resptr - *resptr,
++						 struct um_pci_device,
++						 resptr[0]);
++	struct virtio_pcidev_msg hdr = {
++		.op = VIRTIO_PCIDEV_OP_MMIO_WRITE,
++		.bar = *resptr,
++		.size = size,
++		.addr = offset,
++	};
++
++	um_pci_send_cmd(dev, &hdr, sizeof(hdr), buffer, size, NULL, 0);
++}
++
++static void um_pci_bar_write(void *priv, unsigned int offset, int size,
++			     unsigned long val)
++{
++	/* maximum size - we may only use parts of it */
++	u8 data[8];
++
++	switch (size) {
++	case 1:
++		data[0] = (u8)val;
++		break;
++	case 2:
++		put_unaligned_le16(val, (void *)data);
++		break;
++	case 4:
++		put_unaligned_le32(val, (void *)data);
++		break;
++#ifdef CONFIG_64BIT
++	case 8:
++		put_unaligned_le64(val, (void *)data);
++		break;
++#endif
++	default:
++		WARN(1, "invalid config space write size %d\n", size);
++		return;
++	}
++
++	um_pci_bar_copy_to(priv, offset, data, size);
++}
++
++static void um_pci_bar_set(void *priv, unsigned int offset, u8 value, int size)
++{
++	u8 *resptr = priv;
++	struct um_pci_device *dev = container_of(resptr - *resptr,
++						 struct um_pci_device,
++						 resptr[0]);
++	struct {
++		struct virtio_pcidev_msg hdr;
++		u8 data;
++	} msg = {
++		.hdr = {
++			.op = VIRTIO_PCIDEV_OP_CFG_WRITE,
++			.bar = *resptr,
++			.size = size,
++			.addr = offset,
++		},
++		.data = value,
++	};
++
++	um_pci_send_cmd(dev, &msg.hdr, sizeof(msg), NULL, 0, NULL, 0);
++}
++
++static const struct logic_iomem_ops um_pci_device_bar_ops = {
++	.read = um_pci_bar_read,
++	.write = um_pci_bar_write,
++	.set = um_pci_bar_set,
++	.copy_from = um_pci_bar_copy_from,
++	.copy_to = um_pci_bar_copy_to,
++};
++
++static void __iomem *um_pci_map_bus(struct pci_bus *bus, unsigned int devfn,
++				    int where)
++{
++	struct um_pci_device_reg *dev;
++	unsigned int busn = bus->number;
++
++	if (busn > 0)
++		return NULL;
++
++	/* not allowing functions for now ... */
++	if (devfn % 8)
++		return NULL;
++
++	if (devfn / 8 >= ARRAY_SIZE(um_pci_devices))
++		return NULL;
++
++	dev = &um_pci_devices[devfn / 8];
++	if (!dev)
++		return NULL;
++
++	return (void __iomem *)((unsigned long)dev->iomem + where);
++}
++
++static struct pci_ops um_pci_ops = {
++	.map_bus = um_pci_map_bus,
++	.read = pci_generic_config_read,
++	.write = pci_generic_config_write,
++};
++
++static void um_pci_rescan(void)
++{
++	pci_lock_rescan_remove();
++	pci_rescan_bus(bridge->bus);
++	pci_unlock_rescan_remove();
++}
++
++static void um_pci_irq_vq_addbuf(struct virtqueue *vq, void *buf, bool kick)
++{
++	struct scatterlist sg[1];
++
++	sg_init_one(sg, buf, MAX_IRQ_MSG_SIZE);
++	if (virtqueue_add_inbuf(vq, sg, 1, buf, GFP_ATOMIC))
++		kfree(buf);
++	else if (kick)
++		virtqueue_kick(vq);
++}
++
++static void um_pci_handle_irq_message(struct virtqueue *vq,
++				      struct virtio_pcidev_msg *msg)
++{
++	struct virtio_device *vdev = vq->vdev;
++	struct um_pci_device *dev = vdev->priv;
++
++	/* we should properly chain interrupts, but on ARCH=um we don't care */
++
++	switch (msg->op) {
++	case VIRTIO_PCIDEV_OP_INT:
++		generic_handle_irq(dev->irq);
++		break;
++	case VIRTIO_PCIDEV_OP_MSI:
++		/* our MSI message is just the interrupt number */
++		if (msg->size == sizeof(u32))
++			generic_handle_irq(le32_to_cpup((void *)msg->data));
++		else
++			generic_handle_irq(le16_to_cpup((void *)msg->data));
++		break;
++	case VIRTIO_PCIDEV_OP_PME:
++		/* nothing to do - we already woke up due to the message */
++		break;
++	default:
++		dev_err(&vdev->dev, "unexpected virt-pci message %d\n", msg->op);
++		break;
++	}
++}
++
++static void um_pci_cmd_vq_cb(struct virtqueue *vq)
++{
++	struct virtio_device *vdev = vq->vdev;
++	struct um_pci_device *dev = vdev->priv;
++	void *cmd;
++	int len;
++
++	if (test_bit(UM_PCI_STAT_WAITING, &dev->status))
++		return;
++
++	while ((cmd = virtqueue_get_buf(vq, &len))) {
++		if (WARN_ON(HANDLE_IS_NO_FREE(cmd)))
++			continue;
++		kfree(cmd);
++	}
++}
++
++static void um_pci_irq_vq_cb(struct virtqueue *vq)
++{
++	struct virtio_pcidev_msg *msg;
++	int len;
++
++	while ((msg = virtqueue_get_buf(vq, &len))) {
++		if (len >= sizeof(*msg))
++			um_pci_handle_irq_message(vq, msg);
++
++		/* recycle the message buffer */
++		um_pci_irq_vq_addbuf(vq, msg, true);
++	}
++}
++
++static int um_pci_init_vqs(struct um_pci_device *dev)
++{
++	struct virtqueue *vqs[2];
++	static const char *const names[2] = { "cmd", "irq" };
++	vq_callback_t *cbs[2] = { um_pci_cmd_vq_cb, um_pci_irq_vq_cb };
++	int err, i;
++
++	err = virtio_find_vqs(dev->vdev, 2, vqs, cbs, names, NULL);
++	if (err)
++		return err;
++
++	dev->cmd_vq = vqs[0];
++	dev->irq_vq = vqs[1];
++
++	for (i = 0; i < NUM_IRQ_MSGS; i++) {
++		void *msg = kzalloc(MAX_IRQ_MSG_SIZE, GFP_KERNEL);
++
++		if (msg)
++			um_pci_irq_vq_addbuf(dev->irq_vq, msg, false);
++	}
++
++	virtqueue_kick(dev->irq_vq);
++
++	return 0;
++}
++
++static int um_pci_virtio_probe(struct virtio_device *vdev)
++{
++	struct um_pci_device *dev;
++	int i, free = -1;
++	int err = -ENOSPC;
++
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev)
++		return -ENOMEM;
++
++	dev->vdev = vdev;
++	vdev->priv = dev;
++
++	mutex_lock(&um_pci_mtx);
++	for (i = 0; i < MAX_DEVICES; i++) {
++		if (um_pci_devices[i].dev)
++			continue;
++		free = i;
++		break;
++	}
++
++	if (free < 0)
++		goto error;
++
++	err = um_pci_init_vqs(dev);
++	if (err)
++		goto error;
++
++	dev->irq = irq_alloc_desc(numa_node_id());
++	if (dev->irq < 0) {
++		err = dev->irq;
++		goto error;
++	}
++	um_pci_devices[free].dev = dev;
++	vdev->priv = dev;
++
++	mutex_unlock(&um_pci_mtx);
++
++	device_set_wakeup_enable(&vdev->dev, true);
++
++	um_pci_rescan();
++	return 0;
++error:
++	mutex_unlock(&um_pci_mtx);
++	kfree(dev);
++	return err;
++}
++
++static void um_pci_virtio_remove(struct virtio_device *vdev)
++{
++	struct um_pci_device *dev = vdev->priv;
++	int i;
++
++        /* Stop all virtqueues */
++        vdev->config->reset(vdev);
++        vdev->config->del_vqs(vdev);
++
++	device_set_wakeup_enable(&vdev->dev, false);
++
++	mutex_lock(&um_pci_mtx);
++	for (i = 0; i < MAX_DEVICES; i++) {
++		if (um_pci_devices[i].dev != dev)
++			continue;
++		um_pci_devices[i].dev = NULL;
++		irq_free_desc(dev->irq);
++	}
++	mutex_unlock(&um_pci_mtx);
++
++	um_pci_rescan();
++
++	kfree(dev);
++}
++
++static struct virtio_device_id id_table[] = {
++	{ CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID, VIRTIO_DEV_ANY_ID },
++	{ 0 },
++};
++MODULE_DEVICE_TABLE(virtio, id_table);
++
++static struct virtio_driver um_pci_virtio_driver = {
++	.driver.name = "virtio-pci",
++	.driver.owner = THIS_MODULE,
++	.id_table = id_table,
++	.probe = um_pci_virtio_probe,
++	.remove = um_pci_virtio_remove,
++};
++
++static struct resource virt_cfgspace_resource = {
++	.name = "PCI config space",
++	.start = 0xf0000000 - MAX_DEVICES * CFG_SPACE_SIZE,
++	.end = 0xf0000000 - 1,
++	.flags = IORESOURCE_MEM,
++};
++
++static long um_pci_map_cfgspace(unsigned long offset, size_t size,
++				const struct logic_iomem_ops **ops,
++				void **priv)
++{
++	if (WARN_ON(size > CFG_SPACE_SIZE || offset % CFG_SPACE_SIZE))
++		return -EINVAL;
++
++	if (offset / CFG_SPACE_SIZE < MAX_DEVICES) {
++		*ops = &um_pci_device_cfgspace_ops;
++		*priv = &um_pci_devices[offset / CFG_SPACE_SIZE];
++		return 0;
++	}
++
++	WARN(1, "cannot map offset 0x%lx/0x%zx\n", offset, size);
++	return -ENOENT;
++}
++
++static const struct logic_iomem_region_ops um_pci_cfgspace_ops = {
++	.map = um_pci_map_cfgspace,
++};
++
++static struct resource virt_iomem_resource = {
++	.name = "PCI iomem",
++	.start = 0xf0000000,
++	.end = 0xffffffff,
++	.flags = IORESOURCE_MEM,
++};
++
++struct um_pci_map_iomem_data {
++	unsigned long offset;
++	size_t size;
++	const struct logic_iomem_ops **ops;
++	void **priv;
++	long ret;
++};
++
++static int um_pci_map_iomem_walk(struct pci_dev *pdev, void *_data)
++{
++	struct um_pci_map_iomem_data *data = _data;
++	struct um_pci_device_reg *reg = &um_pci_devices[pdev->devfn / 8];
++	struct um_pci_device *dev;
++	int i;
++
++	if (!reg->dev)
++		return 0;
++
++	for (i = 0; i < ARRAY_SIZE(dev->resptr); i++) {
++		struct resource *r = &pdev->resource[i];
++
++		if ((r->flags & IORESOURCE_TYPE_BITS) != IORESOURCE_MEM)
++			continue;
++
++		/*
++		 * must be the whole or part of the resource,
++		 * not allowed to only overlap
++		 */
++		if (data->offset < r->start || data->offset > r->end)
++			continue;
++		if (data->offset + data->size - 1 > r->end)
++			continue;
++
++		dev = reg->dev;
++		*data->ops = &um_pci_device_bar_ops;
++		dev->resptr[i] = i;
++		*data->priv = &dev->resptr[i];
++		data->ret = data->offset - r->start;
++
++		/* no need to continue */
++		return 1;
++	}
++
++	return 0;
++}
++
++static long um_pci_map_iomem(unsigned long offset, size_t size,
++			     const struct logic_iomem_ops **ops,
++			     void **priv)
++{
++	struct um_pci_map_iomem_data data = {
++		/* we want the full address here */
++		.offset = offset + virt_iomem_resource.start,
++		.size = size,
++		.ops = ops,
++		.priv = priv,
++		.ret = -ENOENT,
++	};
++
++	pci_walk_bus(bridge->bus, um_pci_map_iomem_walk, &data);
++	return data.ret;
++}
++
++static const struct logic_iomem_region_ops um_pci_iomem_ops = {
++	.map = um_pci_map_iomem,
++};
++
++static void um_pci_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
++{
++	/*
++	 * This is a very low address and not actually valid 'physical' memory
++	 * in UML, so we can simply map MSI(-X) vectors to there, it cannot be
++	 * legitimately written to by the device in any other way.
++	 * We use the (virtual) IRQ number here as the message to simplify the
++	 * code that receives the message, where for now we simply trust the
++	 * device to send the correct message.
++	 */
++	msg->address_hi = 0;
++	msg->address_lo = 0xa0000;
++	msg->data = data->irq;
++}
++
++static struct irq_chip um_pci_msi_bottom_irq_chip = {
++	.name = "UM virtio MSI",
++	.irq_compose_msi_msg = um_pci_compose_msi_msg,
++};
++
++static int um_pci_inner_domain_alloc(struct irq_domain *domain,
++				     unsigned int virq, unsigned int nr_irqs,
++				     void *args)
++{
++	unsigned long bit;
++
++	WARN_ON(nr_irqs != 1);
++
++	mutex_lock(&um_pci_mtx);
++	bit = find_first_zero_bit(um_pci_msi_used, MAX_MSI_VECTORS);
++	if (bit >= MAX_MSI_VECTORS) {
++		mutex_unlock(&um_pci_mtx);
++		return -ENOSPC;
++	}
++
++	set_bit(bit, um_pci_msi_used);
++	mutex_unlock(&um_pci_mtx);
++
++	irq_domain_set_info(domain, virq, bit, &um_pci_msi_bottom_irq_chip,
++			    domain->host_data, handle_simple_irq,
++			    NULL, NULL);
++
++	return 0;
++}
++
++static void um_pci_inner_domain_free(struct irq_domain *domain,
++				     unsigned int virq, unsigned int nr_irqs)
++{
++	struct irq_data *d = irq_domain_get_irq_data(domain, virq);
++
++	mutex_lock(&um_pci_mtx);
++
++	if (!test_bit(d->hwirq, um_pci_msi_used))
++		pr_err("trying to free unused MSI#%lu\n", d->hwirq);
++	else
++		__clear_bit(d->hwirq, um_pci_msi_used);
++
++	mutex_unlock(&um_pci_mtx);
++}
++
++static const struct irq_domain_ops um_pci_inner_domain_ops = {
++	.alloc = um_pci_inner_domain_alloc,
++	.free = um_pci_inner_domain_free,
++};
++
++static struct irq_chip um_pci_msi_irq_chip = {
++	.name = "UM virtio PCIe MSI",
++	.irq_mask = pci_msi_mask_irq,
++	.irq_unmask = pci_msi_unmask_irq,
++};
++
++static struct msi_domain_info um_pci_msi_domain_info = {
++	.flags	= MSI_FLAG_USE_DEF_DOM_OPS |
++		  MSI_FLAG_USE_DEF_CHIP_OPS |
++		  MSI_FLAG_PCI_MSIX,
++	.chip	= &um_pci_msi_irq_chip,
++};
++
++static struct resource busn_resource = {
++	.name	= "PCI busn",
++	.start	= 0,
++	.end	= 0,
++	.flags	= IORESOURCE_BUS,
++};
++
++static int um_pci_map_irq(const struct pci_dev *pdev, u8 slot, u8 pin)
++{
++	struct um_pci_device_reg *reg = &um_pci_devices[pdev->devfn / 8];
++
++	if (WARN_ON(!reg->dev))
++		return -EINVAL;
++
++	/* Yes, we map all pins to the same IRQ ... doesn't matter for now. */
++	return reg->dev->irq;
++}
++
++void *pci_root_bus_fwnode(struct pci_bus *bus)
++{
++	return um_pci_fwnode;
++}
++
++int um_pci_init(void)
++{
++	int err, i;
++
++	WARN_ON(logic_iomem_add_region(&virt_cfgspace_resource,
++				       &um_pci_cfgspace_ops));
++	WARN_ON(logic_iomem_add_region(&virt_iomem_resource,
++				       &um_pci_iomem_ops));
++
++	if (WARN(CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID < 0,
++		 "No virtio device ID configured for PCI - no PCI support\n"))
++		return 0;
++
++	bridge = pci_alloc_host_bridge(0);
++	if (!bridge)
++		return -ENOMEM;
++
++	um_pci_fwnode = irq_domain_alloc_named_fwnode("um-pci");
++	if (!um_pci_fwnode) {
++		err = -ENOMEM;
++		goto free;
++	}
++
++	um_pci_inner_domain = __irq_domain_add(um_pci_fwnode, MAX_MSI_VECTORS,
++					       MAX_MSI_VECTORS, 0,
++					       &um_pci_inner_domain_ops, NULL);
++	if (!um_pci_inner_domain) {
++		err = -ENOMEM;
++		goto free;
++	}
++
++	um_pci_msi_domain = pci_msi_create_irq_domain(um_pci_fwnode,
++						      &um_pci_msi_domain_info,
++						      um_pci_inner_domain);
++	if (!um_pci_msi_domain) {
++		err = -ENOMEM;
++		goto free;
++	}
++
++	pci_add_resource(&bridge->windows, &virt_iomem_resource);
++	pci_add_resource(&bridge->windows, &busn_resource);
++	bridge->ops = &um_pci_ops;
++	bridge->map_irq = um_pci_map_irq;
++
++	for (i = 0; i < MAX_DEVICES; i++) {
++		resource_size_t start;
++
++		start = virt_cfgspace_resource.start + i * CFG_SPACE_SIZE;
++		um_pci_devices[i].iomem = ioremap(start, CFG_SPACE_SIZE);
++		if (WARN(!um_pci_devices[i].iomem, "failed to map %d\n", i)) {
++			err = -ENOMEM;
++			goto free;
++		}
++	}
++
++	err = pci_host_probe(bridge);
++	if (err)
++		goto free;
++
++	err = register_virtio_driver(&um_pci_virtio_driver);
++	if (err)
++		goto free;
++	return 0;
++free:
++	if (um_pci_inner_domain)
++		irq_domain_remove(um_pci_inner_domain);
++	if (um_pci_fwnode)
++		irq_domain_free_fwnode(um_pci_fwnode);
++	pci_free_resource_list(&bridge->windows);
++	pci_free_host_bridge(bridge);
++	return err;
++}
++module_init(um_pci_init);
++
++void um_pci_exit(void)
++{
++	unregister_virtio_driver(&um_pci_virtio_driver);
++	irq_domain_remove(um_pci_msi_domain);
++	irq_domain_remove(um_pci_inner_domain);
++	pci_free_resource_list(&bridge->windows);
++	pci_free_host_bridge(bridge);
++}
++module_exit(um_pci_exit);
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index 10b7228b3aee..0c31d19a7a9c 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -18,7 +18,6 @@ generic-y += mcs_spinlock.h
+ generic-y += mmiowb.h
+ generic-y += module.lds.h
+ generic-y += param.h
+-generic-y += pci.h
+ generic-y += percpu.h
+ generic-y += preempt.h
+ generic-y += softirq_stack.h
+diff --git a/arch/um/include/asm/io.h b/arch/um/include/asm/io.h
+index 6ce18d343997..9ea42cc746d9 100644
+--- a/arch/um/include/asm/io.h
++++ b/arch/um/include/asm/io.h
+@@ -3,16 +3,23 @@
+ #define _ASM_UM_IO_H
+ #include <linux/types.h>
+ 
++/* get emulated iomem (if desired) */
++#include <asm-generic/logic_io.h>
++
++#ifndef ioremap
+ #define ioremap ioremap
+ static inline void __iomem *ioremap(phys_addr_t offset, size_t size)
+ {
+ 	return NULL;
+ }
++#endif /* ioremap */
+ 
++#ifndef iounmap
+ #define iounmap iounmap
+ static inline void iounmap(void __iomem *addr)
+ {
+ }
++#endif /* iounmap */
+ 
+ #include <asm-generic/io.h>
+ 
+diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
+index 3f5d3e8228fc..e187c789369d 100644
+--- a/arch/um/include/asm/irq.h
++++ b/arch/um/include/asm/irq.h
+@@ -31,7 +31,13 @@
+ 
+ #endif
+ 
+-#define NR_IRQS			64
++#define UM_LAST_SIGNAL_IRQ	64
++/* If we have (simulated) PCI MSI, allow 64 more interrupt numbers for it */
++#ifdef CONFIG_PCI_MSI
++#define NR_IRQS			(UM_LAST_SIGNAL_IRQ + 64)
++#else
++#define NR_IRQS			UM_LAST_SIGNAL_IRQ
++#endif /* CONFIG_PCI_MSI */
+ 
+ #include <asm-generic/irq.h>
+ #endif
+diff --git a/arch/um/include/asm/msi.h b/arch/um/include/asm/msi.h
+new file mode 100644
+index 000000000000..c8c6c381f394
+--- /dev/null
++++ b/arch/um/include/asm/msi.h
+@@ -0,0 +1 @@
++#include <asm-generic/msi.h>
+diff --git a/arch/um/include/asm/pci.h b/arch/um/include/asm/pci.h
+new file mode 100644
+index 000000000000..da13fd5519ef
+--- /dev/null
++++ b/arch/um/include/asm/pci.h
+@@ -0,0 +1,39 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef __ASM_UM_PCI_H
++#define __ASM_UM_PCI_H
++#include <linux/types.h>
++#include <asm/io.h>
++
++#define PCIBIOS_MIN_IO		0
++#define PCIBIOS_MIN_MEM		0
++
++#define pcibios_assign_all_busses() 1
++
++extern int isa_dma_bridge_buggy;
++
++#ifdef CONFIG_PCI
++static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
++{
++	/* no legacy IRQs */
++	return -ENODEV;
++}
++#endif
++
++#ifdef CONFIG_PCI_DOMAINS
++static inline int pci_proc_domain(struct pci_bus *bus)
++{
++	/* always show the domain in /proc */
++	return 1;
++}
++#endif  /* CONFIG_PCI */
++
++#ifdef CONFIG_PCI_MSI_IRQ_DOMAIN
++/*
++ * This is a bit of an annoying hack, and it assumes we only have
++ * the virt-pci (if anything). Which is true, but still.
++ */
++void *pci_root_bus_fwnode(struct pci_bus *bus);
++#define pci_root_bus_fwnode	pci_root_bus_fwnode
++#endif
++
++#endif  /* __ASM_UM_PCI_H */
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 5aa882011e04..c1205f9ec17e 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -24,6 +24,7 @@ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+ obj-$(CONFIG_GCOV)	+= gmon_syms.o
+ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+ obj-$(CONFIG_STACKTRACE) += stacktrace.o
++obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
+ 
+ USER_OBJS := config.o
+ 
+diff --git a/arch/um/kernel/ioport.c b/arch/um/kernel/ioport.c
+new file mode 100644
+index 000000000000..7220615b3beb
+--- /dev/null
++++ b/arch/um/kernel/ioport.c
+@@ -0,0 +1,13 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2021 Intel Corporation
++ * Author: Johannes Berg <johannes@sipsolutions.net>
++ */
++#include <asm/iomap.h>
++#include <asm-generic/pci_iomap.h>
++
++void __iomem *__pci_ioport_map(struct pci_dev *dev, unsigned long port,
++			       unsigned int nr)
++{
++	return NULL;
++}
 diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index ccf5e4d27202..2ee0a368aa59 100644
+index 2ee0a368aa59..cb7c2ebf260c 100644
 --- a/arch/um/kernel/irq.c
 +++ b/arch/um/kernel/irq.c
-@@ -101,10 +101,12 @@ static bool irq_do_timetravel_handler(struct irq_entry *entry,
- 	if (!reg->timetravel_handler)
- 		return false;
+@@ -56,7 +56,7 @@ struct irq_entry {
  
--	/* prevent nesting - we'll get it again later when we SIGIO ourselves */
--	if (reg->pending_on_resume)
--		return true;
--
-+	/*
-+	 * Handle all messages - we might get multiple even while
-+	 * interrupts are already suspended, due to suspend order
-+	 * etc. Note that time_travel_add_irq_event() will not add
-+	 * an event twice, if it's pending already "first wins".
-+	 */
- 	reg->timetravel_handler(reg->irq, entry->fd, reg->id, &reg->event);
+ static DEFINE_SPINLOCK(irq_lock);
+ static LIST_HEAD(active_fds);
+-static DECLARE_BITMAP(irqs_allocated, NR_IRQS);
++static DECLARE_BITMAP(irqs_allocated, UM_LAST_SIGNAL_IRQ);
+ static bool irqs_suspended;
  
- 	if (!reg->event.pending)
+ static void irq_io_loop(struct irq_reg *irq, struct uml_pt_regs *regs)
+@@ -426,7 +426,8 @@ unsigned int do_IRQ(int irq, struct uml_pt_regs *regs)
+ 
+ void um_free_irq(int irq, void *dev)
+ {
+-	if (WARN(irq < 0 || irq > NR_IRQS, "freeing invalid irq %d", irq))
++	if (WARN(irq < 0 || irq > UM_LAST_SIGNAL_IRQ,
++		 "freeing invalid irq %d", irq))
+ 		return;
+ 
+ 	free_irq_by_irq_and_dev(irq, dev);
+@@ -655,7 +656,7 @@ void __init init_IRQ(void)
+ 
+ 	irq_set_chip_and_handler(TIMER_IRQ, &alarm_irq_type, handle_edge_irq);
+ 
+-	for (i = 1; i < NR_IRQS; i++)
++	for (i = 1; i < UM_LAST_SIGNAL_IRQ; i++)
+ 		irq_set_chip_and_handler(i, &normal_irq_type, handle_edge_irq);
+ 	/* Initialize EPOLL Loop */
+ 	os_setup_epoll();
+diff --git a/include/uapi/linux/virtio_pcidev.h b/include/uapi/linux/virtio_pcidev.h
+new file mode 100644
+index 000000000000..89daa88bcfef
+--- /dev/null
++++ b/include/uapi/linux/virtio_pcidev.h
+@@ -0,0 +1,64 @@
++/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause) */
++/*
++ * Copyright (C) 2021 Intel Corporation
++ * Author: Johannes Berg <johannes@sipsolutions.net>
++ */
++#ifndef _UAPI_LINUX_VIRTIO_PCIDEV_H
++#define _UAPI_LINUX_VIRTIO_PCIDEV_H
++#include <linux/types.h>
++
++/**
++ * enum virtio_pcidev_ops - virtual PCI device operations
++ * @VIRTIO_PCIDEV_OP_CFG_READ: read config space, size is 1, 2, 4 or 8;
++ *	the @data field should be filled in by the device (in little endian).
++ * @VIRTIO_PCIDEV_OP_CFG_WRITE: write config space, size is 1, 2, 4 or 8;
++ *	the @data field contains the data to write (in little endian).
++ * @VIRTIO_PCIDEV_OP_BAR_READ: read BAR mem/pio, size can be variable;
++ *	the @data field should be filled in by the device (in little endian).
++ * @VIRTIO_PCIDEV_OP_BAR_WRITE: write BAR mem/pio, size can be variable;
++ *	the @data field contains the data to write (in little endian).
++ * @VIRTIO_PCIDEV_OP_MMIO_MEMSET: memset MMIO, size is variable but
++ *	the @data field only has one byte (unlike @VIRTIO_PCIDEV_OP_MMIO_WRITE)
++ * @VIRTIO_PCIDEV_OP_INT: legacy INTx# pin interrupt, the addr field is 1-4 for
++ *	the number
++ * @VIRTIO_PCIDEV_OP_MSI: MSI(-X) interrupt, this message basically transports
++ *	the 16- or 32-bit write that would otherwise be done into memory,
++ *	analogous to the write messages (@VIRTIO_PCIDEV_OP_MMIO_WRITE) above
++ * @VIRTIO_PCIDEV_OP_PME: Dummy message whose content is ignored (and should be
++ *	all zeroes) to signal the PME# pin.
++ */
++enum virtio_pcidev_ops {
++	VIRTIO_PCIDEV_OP_RESERVED = 0,
++	VIRTIO_PCIDEV_OP_CFG_READ,
++	VIRTIO_PCIDEV_OP_CFG_WRITE,
++	VIRTIO_PCIDEV_OP_MMIO_READ,
++	VIRTIO_PCIDEV_OP_MMIO_WRITE,
++	VIRTIO_PCIDEV_OP_MMIO_MEMSET,
++	VIRTIO_PCIDEV_OP_INT,
++	VIRTIO_PCIDEV_OP_MSI,
++	VIRTIO_PCIDEV_OP_PME,
++};
++
++/**
++ * struct virtio_pcidev_msg - virtio PCI device operation
++ * @op: the operation to do
++ * @bar: the bar (only with BAR read/write messages)
++ * @reserved: reserved
++ * @size: the size of the read/write (in bytes)
++ * @addr: the address to read/write
++ * @data: the data, normally @size long, but just one byte for
++ *	%VIRTIO_PCIDEV_OP_MMIO_MEMSET
++ *
++ * Note: the fields are all in native (CPU) endian, however, the
++ * @data values will often be in little endian (see the ops above.)
++ */
++struct virtio_pcidev_msg {
++	__u8 op;
++	__u8 bar;
++	__u16 reserved;
++	__u32 size;
++	__u64 addr;
++	__u8 data[];
++};
++
++#endif /* _UAPI_LINUX_VIRTIO_PCIDEV_H */
 -- 
 2.26.2
 
