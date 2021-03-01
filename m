@@ -2,92 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9E2327ACD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC812327AD2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233949AbhCAJa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:30:27 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:55665 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233934AbhCAJaI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:30:08 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id 98005A1340;
-        Mon,  1 Mar 2021 10:29:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=AF2+aLbHpYk6
-        yxg/KMusF89bfRVX3X9/VCCjZ8mooHU=; b=njrad0q9gBYFdXuKLLKrdMQiJrmC
-        2BkUzmkCM+/7GTmtBRL4KEei2E9d4aTwbewItdx8ywzFTZ+Wq+o0YIf8ctZOxS6s
-        pWUn/fd83sGZ/mCG1K5YR5fADtw4ahaRbEnXVRkPL6sL2RWJlDxJ4xow1k7GxPEl
-        wsNo0I+0+kfO+5odG3fJVrIfyApV8XWZNWyz1D/U2mYX25e+aY8VQk5NmK18oKUf
-        AXuAStUtmc5vLAuHdldToU4L4wQobXvwR0KNh3CO0PUQIgSbPn1tUFY+nQuOALEY
-        zXBiH5ZcCoYx9U6bwN5/r1O8apbH0HBuDUG76grDuZ0I2zjZIrk1jMc/Zw==
-Subject: Re: [PATCH v6 6/9] ALSA: virtio: PCM substream operators
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
- <20210227085956.1700687-7-anton.yakovlev@opensynergy.com>
- <s5hr1l0juld.wl-tiwai@suse.de>
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <f8a4bbf5-3bee-f336-0efd-94410184fb2b@opensynergy.com>
-Date:   Mon, 1 Mar 2021 10:29:24 +0100
-MIME-Version: 1.0
-In-Reply-To: <s5hr1l0juld.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+        id S233959AbhCAJbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:31:50 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:43150 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233853AbhCAJbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 04:31:48 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app4 (Coremail) with SMTP id cS_KCgB3L2M6tDxgbI7lAQ--.4232S4;
+        Mon, 01 Mar 2021 17:30:38 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Hannes Reinecke <hare@suse.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: aic7xxx: aic79xx: Add missing check in ahd_handle_seqint
+Date:   Mon,  1 Mar 2021 17:30:29 +0800
+Message-Id: <20210301093029.27977-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgB3L2M6tDxgbI7lAQ--.4232S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7urWkXFW5uF4rur43tF48Xrb_yoW8try5pa
+        9ag397Ar4DCrsrtr4rW34vqF15G3W0ka43CFn3W3s2kFnxKas8uFy7Kr1rWF4kCr97Zr9I
+        g3ZIk3yfWF4UGrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkS1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcLBlZdtSjMQAAFsX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.02.2021 12:32, Takashi Iwai wrote:
-> On Sat, 27 Feb 2021 09:59:53 +0100,
-> Anton Yakovlev wrote:
->>
+ahd_lookup_scb() may return a null pointer and further lead to
+null pointer dereference in case DATA_OVERRUN. Fix this by adding
+a null check.
 
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/scsi/aic7xxx/aic79xx_core.c | 44 +++++++++++++++--------------
+ 1 file changed, 23 insertions(+), 21 deletions(-)
 
-[snip]
-
-
->> +static snd_pcm_uframes_t
->> +virtsnd_pcm_pointer(struct snd_pcm_substream *substream)
->> +{
->> +     struct virtio_pcm_substream *vss = snd_pcm_substream_chip(substream);
->> +     snd_pcm_uframes_t hw_ptr = SNDRV_PCM_POS_XRUN;
->> +     unsigned long flags;
->> +
->> +     spin_lock_irqsave(&vss->lock, flags);
->> +     if (!vss->xfer_xrun)
->> +             hw_ptr = bytes_to_frames(substream->runtime, vss->hw_ptr);
->> +     spin_unlock_irqrestore(&vss->lock, flags);
-> 
-> Oh, and if we drop nonatomc PCM, both trigger and pointer callbacks
-> are guaranteed to be called inside the spinlock, hence you can remove
-> *_irqsave() but just us spin_lock() in those two callbacks.
-
-As I understand, spin_lock_irqsave() disables only local interrupts. But
-what about other CPU cores?
-
-
-> 
-> thanks,
-> 
-> Takashi
-> 
-
+diff --git a/drivers/scsi/aic7xxx/aic79xx_core.c b/drivers/scsi/aic7xxx/aic79xx_core.c
+index 3e3100dbfda3..f990f7f48f49 100644
+--- a/drivers/scsi/aic7xxx/aic79xx_core.c
++++ b/drivers/scsi/aic7xxx/aic79xx_core.c
+@@ -2199,30 +2199,32 @@ ahd_handle_seqint(struct ahd_softc *ahd, u_int intstat)
+ 
+ 		scbindex = ahd_get_scbptr(ahd);
+ 		scb = ahd_lookup_scb(ahd, scbindex);
++		if (scb != NULL) {
+ #ifdef AHD_DEBUG
+-		lastphase = ahd_inb(ahd, LASTPHASE);
+-		if ((ahd_debug & AHD_SHOW_RECOVERY) != 0) {
+-			ahd_print_path(ahd, scb);
+-			printk("data overrun detected %s.  Tag == 0x%x.\n",
+-			       ahd_lookup_phase_entry(lastphase)->phasemsg,
+-			       SCB_GET_TAG(scb));
+-			ahd_print_path(ahd, scb);
+-			printk("%s seen Data Phase.  Length = %ld.  "
+-			       "NumSGs = %d.\n",
+-			       ahd_inb(ahd, SEQ_FLAGS) & DPHASE
+-			       ? "Have" : "Haven't",
+-			       ahd_get_transfer_length(scb), scb->sg_count);
+-			ahd_dump_sglist(scb);
+-		}
++			lastphase = ahd_inb(ahd, LASTPHASE);
++			if ((ahd_debug & AHD_SHOW_RECOVERY) != 0) {
++				ahd_print_path(ahd, scb);
++				printk("data overrun detected %s.  Tag == 0x%x.\n",
++					ahd_lookup_phase_entry(lastphase)->phasemsg,
++					SCB_GET_TAG(scb));
++				ahd_print_path(ahd, scb);
++				printk("%s seen Data Phase.  Length = %ld.  "
++					"NumSGs = %d.\n",
++					ahd_inb(ahd, SEQ_FLAGS) & DPHASE
++					? "Have" : "Haven't",
++					ahd_get_transfer_length(scb), scb->sg_count);
++				ahd_dump_sglist(scb);
++			}
+ #endif
+ 
+-		/*
+-		 * Set this and it will take effect when the
+-		 * target does a command complete.
+-		 */
+-		ahd_freeze_devq(ahd, scb);
+-		ahd_set_transaction_status(scb, CAM_DATA_RUN_ERR);
+-		ahd_freeze_scb(scb);
++			/*
++			* Set this and it will take effect when the
++			* target does a command complete.
++			*/
++			ahd_freeze_devq(ahd, scb);
++			ahd_set_transaction_status(scb, CAM_DATA_RUN_ERR);
++			ahd_freeze_scb(scb);
++		}
+ 		break;
+ 	}
+ 	case MKMSG_FAILED:
 -- 
-Anton Yakovlev
-Senior Software Engineer
-
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
+2.17.1
 
