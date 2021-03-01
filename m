@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498B5328044
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33844328045
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbhCAOHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        id S234959AbhCAOHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:07:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236183AbhCAOFo (ORCPT
+        with ESMTP id S236190AbhCAOFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:05:44 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FA1C0617AA
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:04:54 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id s23so11913910pji.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:04:54 -0800 (PST)
+        Mon, 1 Mar 2021 09:05:48 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF308C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:04:58 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id s7so2766137plg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:04:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=W6CTPWiokMKD0QHodMWlzIYXuYU5dBEexD0NQKteVJY=;
-        b=R6n/nJyPqGkNPVPIqWLA/c6o6GeT1y9qU/dtYAKc5DzioeWNiBkgHGLoaWTaibjt2E
-         TLqcZrrA26KBAMSZh04g1d/Q2yVfYiT9mvkSHQ6NZ2cowa++5JUOQcqz02UrCBRnRS1q
-         NBxVRu6aHEcW8iJPDFHP2J1fgUvGOj8Il2l8RIadPH+Q3RToL4HVjy0kkZeZI/5F1xNR
-         sT9qxpsmc9FdVm/Xcvi3tBxgpJIzuIBL+Ft7tI9+7M5+AzadEakn1t+U59o052uradaI
-         NnW3yBvccH+C04zVbHq4HlbXit0QY8yvRrYKR3gtfLaPLVAlR12CQK5+X6MWvQMzOfa7
-         OhGg==
+        bh=FPe92DhWr1+NZCjM3AdQ4yAKD5JsQ/87Bw6qvODxwc0=;
+        b=ZF77APlwP7tt7uOEMCjgo4kVtnA4y2uzNR5Visv+Y/UGiAXZ8qPUcuwZW/zaln/fOI
+         aqPnPYWWM4kOk58b4BRP18eM8HIJwFnUh9rGHv+FHjSlEg8UCbqHlErlLh+fceD9ZfPw
+         TlVVr4qmboVVb4W6JUOpYWRmpm5WF6Qk9oAmXnzvGs3OWCLho7t2TZD8PK9HKYqKZkpM
+         VrrlsRXfuDzKHwvTbxQ85xvKOIiTEK3dVTcKNt1oKfIj+5/siHLnwcvOU2FyzIF9GEz2
+         vlUCsOAJIRU9DChWqqAy4/0i/bPtG48ovtgRToblySuDl5xbwP51HAHoKZoeDLOnPZB/
+         KMBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=W6CTPWiokMKD0QHodMWlzIYXuYU5dBEexD0NQKteVJY=;
-        b=QYj4f8berLB63/PEoxe4JGcUhfVeE5wMIveSgzYg5OvC6Ka3PvscaB6buRHe6u+F9O
-         a24NCgvEEiZM5uxhNwX25iyH4Ev3FXZmg+7idnH7ZvmXIR+O38W+QBi6JJod8N4ieltK
-         urjHHRJVOSztkX34VbNJjUeaH+Xf3uIwwhpq+AUV0vEICEDO9o90llvjjX351GZ+JpZy
-         PRqz7/nb96ATtz1cRBslZBsTMfhbJlX2nu5ryQygZ7leXvD+lgAB4cA3UiX5wktr3i3V
-         NzUWRtnF61Jre4ghZRqoXk248iwqMSett8P5GVVHx8WZqfZivYCA3yESUVdlD8NN0dZq
-         Do6g==
-X-Gm-Message-State: AOAM532SIO7FF88a1cx8pOLcWoMlMkQfsKDgYODis8SuUyNFguh3dBK0
-        HXAoOu4OZlo8Zf2IjOTKTLw=
-X-Google-Smtp-Source: ABdhPJwAY3eTnNrCFf584hvJj3hyRNBoCpcSA8r0AufX9f9TleGTFU35ZXkU/Bq/GgZC2L6RO0oxNw==
-X-Received: by 2002:a17:902:7c0e:b029:e4:f26:1367 with SMTP id x14-20020a1709027c0eb02900e40f261367mr15869044pll.32.1614607494230;
-        Mon, 01 Mar 2021 06:04:54 -0800 (PST)
+        bh=FPe92DhWr1+NZCjM3AdQ4yAKD5JsQ/87Bw6qvODxwc0=;
+        b=hSF1lyll/H6nAf2GknBw6r2fn1bsaXXxzIEfBmeYppF9gn3jJo5wV7t8+0zTykZtUX
+         lnVO0c6U0FgPyHjMJE/RY1rBOh/5Xc8mW0DZuQeGu/oPIohwuxMzcF44Obhtq4ZZtsB5
+         zF38moY5q/ASun2nq5oZGGswBRXqo2A0c2X2g/BuyZHn/URaOy14VqnyNN+CSVzKlo5W
+         zDJg0uzHGxsTx9NPJPI0Ve9Hn2GE4boXUOw36ApNmUwJaJirvpFeWIRpxxvNw9IdtjYy
+         +DGm1Bd7Tsrm3+/d+C86E7+awzhtrlhxuOkxFPGRF5kiJodvxykMUi+HoGP+xzYMQflU
+         8rqg==
+X-Gm-Message-State: AOAM5316VIAkOpIu/Rx8EHcCmQ6UYSpQ3yb05CNbl3oUIDkS8xkcnmhM
+        Th1WWMpPI6k666kU7Y0lQuc=
+X-Google-Smtp-Source: ABdhPJwCmdn0SKuKDZxRQ0lAR8TbdxBzWLdzejxphbnMP4NkNPXlVGHTSTbOaLP6myvTMj7Dp7HgFA==
+X-Received: by 2002:a17:90a:74c6:: with SMTP id p6mr17246501pjl.134.1614607498496;
+        Mon, 01 Mar 2021 06:04:58 -0800 (PST)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id v26sm17357312pff.195.2021.03.01.06.04.50
+        by smtp.gmail.com with ESMTPSA id v26sm17357312pff.195.2021.03.01.06.04.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 06:04:53 -0800 (PST)
+        Mon, 01 Mar 2021 06:04:57 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -61,9 +61,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Ian Rogers <irogers@google.com>, Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH 10/11] perf test: Fix cpu map leaks in cpu_map_print test
-Date:   Mon,  1 Mar 2021 23:04:08 +0900
-Message-Id: <20210301140409.184570-11-namhyung@kernel.org>
+Subject: [PATCH 11/11] perf test: Fix cpu and thread map leaks in perf_time_to_tsc test
+Date:   Mon,  1 Mar 2021 23:04:09 +0900
+Message-Id: <20210301140409.184570-12-namhyung@kernel.org>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 In-Reply-To: <20210301140409.184570-1-namhyung@kernel.org>
 References: <20210301140409.184570-1-namhyung@kernel.org>
@@ -73,54 +73,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should be released after printing the map.
+It should release the maps at the end.
 
-  $ perf test -v 52
-  52: Print cpu map                              :
+  $ perf test -v 71
+  71: Convert perf time to TSC                   :
   --- start ---
-  test child forked, pid 172233
+  test child forked, pid 178744
+  mmap size 528384B
+  1st event perf time 59207256505278 tsc 13187166645142
+  rdtsc          time 59207256542151 tsc 13187166723020
+  2nd event perf time 59207256543749 tsc 13187166726393
 
   =================================================================
-  ==172233==ERROR: LeakSanitizer: detected memory leaks
+  ==178744==ERROR: LeakSanitizer: detected memory leaks
 
-  Direct leak of 156 byte(s) in 1 object(s) allocated from:
-    #0 0x7fc472518e8f in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
-    #1 0x55e63b378f7a in cpu_map__trim_new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:79
-    #2 0x55e63b37a05c in perf_cpu_map__new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:237
-    #3 0x55e63b056d16 in cpu_map_print tests/cpumap.c:102
-    #4 0x55e63b056d16 in test__cpu_map_print tests/cpumap.c:120
-    #5 0x55e63afff8fb in run_test tests/builtin-test.c:428
-    #6 0x55e63afff8fb in test_and_print tests/builtin-test.c:458
-    #7 0x55e63b001a53 in __cmd_test tests/builtin-test.c:679
-    #8 0x55e63b001a53 in cmd_test tests/builtin-test.c:825
-    #9 0x55e63b06dc44 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
-    #10 0x55e63aef7a88 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
-    #11 0x55e63aef7a88 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
-    #12 0x55e63aef7a88 in main /home/namhyung/project/linux/tools/perf/perf.c:539
-    #13 0x7fc47204ed09 in __libc_start_main ../csu/libc-start.c:308
-  ...
+  Direct leak of 40 byte(s) in 1 object(s) allocated from:
+    #0 0x7faf601f9e8f in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x55b620cfc00a in cpu_map__trim_new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:79
+    #2 0x55b620cfca2f in perf_cpu_map__read /home/namhyung/project/linux/tools/lib/perf/cpumap.c:149
+    #3 0x55b620cfd1ef in cpu_map__read_all_cpu_map /home/namhyung/project/linux/tools/lib/perf/cpumap.c:166
+    #4 0x55b620cfd1ef in perf_cpu_map__new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:181
+    #5 0x55b6209ef1b2 in test__perf_time_to_tsc tests/perf-time-to-tsc.c:73
+    #6 0x55b6209828fb in run_test tests/builtin-test.c:428
+    #7 0x55b6209828fb in test_and_print tests/builtin-test.c:458
+    #8 0x55b620984a53 in __cmd_test tests/builtin-test.c:679
+    #9 0x55b620984a53 in cmd_test tests/builtin-test.c:825
+    #10 0x55b6209f0cd4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
+    #11 0x55b62087aa88 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
+    #12 0x55b62087aa88 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
+    #13 0x55b62087aa88 in main /home/namhyung/project/linux/tools/perf/perf.c:539
+    #14 0x7faf5fd2fd09 in __libc_start_main ../csu/libc-start.c:308
 
-  SUMMARY: AddressSanitizer: 448 byte(s) leaked in 7 allocation(s).
+  SUMMARY: AddressSanitizer: 72 byte(s) leaked in 2 allocation(s).
   test child finished with 1
   ---- end ----
-  Print cpu map: FAILED!
+  Convert perf time to TSC: FAILED!
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/tests/cpumap.c | 2 ++
+ tools/perf/tests/perf-time-to-tsc.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
-index 29c793ac7d10..0472b110fe65 100644
---- a/tools/perf/tests/cpumap.c
-+++ b/tools/perf/tests/cpumap.c
-@@ -106,6 +106,8 @@ static int cpu_map_print(const char *str)
- 		return -1;
+diff --git a/tools/perf/tests/perf-time-to-tsc.c b/tools/perf/tests/perf-time-to-tsc.c
+index 7cff02664d0e..680c3cffb128 100644
+--- a/tools/perf/tests/perf-time-to-tsc.c
++++ b/tools/perf/tests/perf-time-to-tsc.c
+@@ -167,6 +167,8 @@ int test__perf_time_to_tsc(struct test *test __maybe_unused, int subtest __maybe
  
- 	cpu_map__snprint(map, buf, sizeof(buf));
-+	perf_cpu_map__put(map);
-+
- 	return !strcmp(buf, str);
+ out_err:
+ 	evlist__delete(evlist);
++	perf_cpu_map__put(cpus);
++	perf_thread_map__put(threads);
+ 	return err;
  }
  
 -- 
