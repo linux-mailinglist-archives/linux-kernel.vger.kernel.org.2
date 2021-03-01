@@ -2,156 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBDC329BA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58315329BBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379276AbhCBB1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241214AbhCATNG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:13:06 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCDDC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 11:09:58 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id z190so17714650qka.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 11:09:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i+xARtY+5W8Bn1AE04i/Ad5rFPbMh8nDWeTLAZo2lK0=;
-        b=Dmi55bD0YEnhSqHee72cnYtTysJPc/UwD5dR9ydldk6GNoQl1/DniyGpHgFg80docR
-         e1KdvcdDDqDdYhzqdjbwQC3WwGcI+gVUYGwEy/2ZHD9FDnWf38mhuSNKbYuja0dkYMwc
-         Dt1ZWtdL/AKMrYyS1KxGZHqiczC3VM3kJ6R+dzCrcHrTE05NQ5F/8yLtHGymvg1aq6BM
-         EXf4Kdm1R/J3x2USifUap32jpSxasFV9xs+YN9M/8OjxeDZd0alUdKogErFvkkhpAax4
-         4O0hiOHJwEitkpq+e0RPMg7fyDENlKa7NIV1yli4o3coe+gnJvv16u0eFWOoTS7x0HeU
-         rH1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i+xARtY+5W8Bn1AE04i/Ad5rFPbMh8nDWeTLAZo2lK0=;
-        b=sU+hBphzpvoUwKsIUPMx+VUQJIsZ2f3zhUuNPEpXW6lB6aJZOJX+4QJPLA9KamloxN
-         hhQNwKYAyCuQQ7iAnthiyDE0T6flPiKtUbZM3Fa3YPp1C1RNUoqsJC2uGbvimMD+wiKS
-         /rxCkPjeL/V7Zys1Nkveus7L3jNQR3ELUtOwXDFaYynB9tgL9FzFmIcqV3k9ZG98U3jH
-         FWdtd/LwhWoz8U4lZ47A1lr57RcA+5CnGsnQd+U2YWMTrjWMV3jzIev7DOKXNtCOX/zr
-         Wpe+NY9KussP2DSuqNls2e8B9xaDouOwH0xdyJhm0dTs1g/MtLRHtPzzqWcfQ89TDzzx
-         zPVA==
-X-Gm-Message-State: AOAM5330l+bUazVcbunboiUANo9AzsMZmIy6QKFUi1JX9VYaAfZl/fY3
-        /Wuz7tcsjShNnL00n4/SXciBZg==
-X-Google-Smtp-Source: ABdhPJzw9sBKATTH9+l4/FyjFyJ4xvsDXuoyNe+xu6pg1Fsl6HJWxo2SNSKnwbilZI0nWJ3JIsIPhA==
-X-Received: by 2002:a37:4a49:: with SMTP id x70mr15969541qka.118.1614625797396;
-        Mon, 01 Mar 2021 11:09:57 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:c0b0])
-        by smtp.gmail.com with ESMTPSA id 18sm3329057qkr.90.2021.03.01.11.09.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 11:09:56 -0800 (PST)
-Date:   Mon, 1 Mar 2021 14:09:55 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
+        id S1379492AbhCBB3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:29:07 -0500
+Received: from mga17.intel.com ([192.55.52.151]:64757 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241003AbhCATQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:16:23 -0500
+IronPort-SDR: GsTuTHm/5rWl3aL4agKeKtchqZauU35HTE88xwdsskHBeJaD8FYmrAvBWElWr1EGcAmyZsGoKI
+ 1rADKJnWZaiQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="166449034"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="166449034"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 11:12:48 -0800
+IronPort-SDR: IZHeAmha3J9FNGeaDMx1ISJgDn1JHd6fmIBKO6IXMHwxa3XdT+30OgfhOr/VVZJb8UIdH4/w7G
+ turhYFrDusDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="585603646"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by orsmga005.jf.intel.com with ESMTP; 01 Mar 2021 11:12:42 -0800
+Subject: Re: [PATCH v8 1/2] scsi: ufs: Enable power management for wlun
+To:     Asutosh Das <asutoshd@codeaurora.org>
+Cc:     cang@codeaurora.org, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Pedro Sousa <pedrom.sousa@synopsys.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>, bristot@redhat.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        alexander.h.duyck@linux.intel.com,
-        Chris Down <chris@chrisdown.name>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Peter Oskolkov <posk@google.com>, Jann Horn <jannh@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, daniel.vetter@ffwll.ch,
-        Waiman Long <longman@redhat.com>,
-        Michel Lespinasse <walken@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>, krisman@collabora.com,
-        esyr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
-        Marco Elver <elver@google.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        duanxiongchun@bytedance.com
-Subject: Re: [PATCH 2/5] mm: memcontrol: make page_memcg{_rcu} only
- applicable for non-kmem page
-Message-ID: <YD08A+fEp/4pw10I@cmpxchg.org>
-References: <20210301062227.59292-1-songmuchun@bytedance.com>
- <20210301062227.59292-3-songmuchun@bytedance.com>
- <CALvZod7sysj0+wrzLTXnwn7s_Gf-V2eFPJ6cLcoRmR0LdAFk0Q@mail.gmail.com>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>
+References: <cover.1614295674.git.asutoshd@codeaurora.org>
+ <c861385023f8592a63e3edf8119af89511741c9a.1614295674.git.asutoshd@codeaurora.org>
+ <e10cd03d-12cd-3d73-b9ed-a542e0b2b83c@intel.com>
+ <20210301181014.GF12147@stor-presley.qualcomm.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <3b085cd7-529f-51b8-6a2f-6aa397e1acd3@intel.com>
+Date:   Mon, 1 Mar 2021 21:12:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7sysj0+wrzLTXnwn7s_Gf-V2eFPJ6cLcoRmR0LdAFk0Q@mail.gmail.com>
+In-Reply-To: <20210301181014.GF12147@stor-presley.qualcomm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Muchun, can you please reduce the CC list to mm/memcg folks only for
-the next submission? I think probably 80% of the current recipients
-don't care ;-)
-
-On Mon, Mar 01, 2021 at 10:11:45AM -0800, Shakeel Butt wrote:
-> On Sun, Feb 28, 2021 at 10:25 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > We want to reuse the obj_cgroup APIs to reparent the kmem pages when
-> > the memcg offlined. If we do this, we should store an object cgroup
-> > pointer to page->memcg_data for the kmem pages.
-> >
-> > Finally, page->memcg_data can have 3 different meanings.
-> >
-> >   1) For the slab pages, page->memcg_data points to an object cgroups
-> >      vector.
-> >
-> >   2) For the kmem pages (exclude the slab pages), page->memcg_data
-> >      points to an object cgroup.
-> >
-> >   3) For the user pages (e.g. the LRU pages), page->memcg_data points
-> >      to a memory cgroup.
-> >
-> > Currently we always get the memcg associated with a page via page_memcg
-> > or page_memcg_rcu. page_memcg_check is special, it has to be used in
-> > cases when it's not known if a page has an associated memory cgroup
-> > pointer or an object cgroups vector. Because the page->memcg_data of
-> > the kmem page is not pointing to a memory cgroup in the later patch,
-> > the page_memcg and page_memcg_rcu cannot be applicable for the kmem
-> > pages. In this patch, we introduce page_memcg_kmem to get the memcg
-> > associated with the kmem pages. And make page_memcg and page_memcg_rcu
-> > no longer apply to the kmem pages.
-> >
-> > In the end, there are 4 helpers to get the memcg associated with a
-> > page. The usage is as follows.
-> >
-> >   1) Get the memory cgroup associated with a non-kmem page (e.g. the LRU
-> >      pages).
-> >
-> >      - page_memcg()
-> >      - page_memcg_rcu()
+On 1/03/21 8:10 pm, Asutosh Das wrote:
+> On Mon, Mar 01 2021 at 05:23 -0800, Adrian Hunter wrote:
+>> On 26/02/21 1:37 am, Asutosh Das wrote:
+>>> @@ -8901,43 +9125,14 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>>>              goto vendor_suspend;
+>>>      }
+>>
+>> The ufshcd_reset_and_restore() in ufshcd_resume() will also change the power
+>> mode of the UFS device to active.  Until the UFS device is also resumed and
+>> then suspended, it will not return to a low power mode.
+>>
+>>
+> Umm, sorry, I didn't understand this comment.
+> Say, the UFS device was reset in ufshcd_reset_and_restore() it'd be a hardware
+> reset and the UFS device would move to Powered On mode and then to Active power
+> mode, when it is ready to begin initialization. And from this state it should
+> move to all other legal states.
+> Before entering system suspend ufshcd_system_suspend(), the ufs device is
+> runtime resumed in ufshcd_suspend_prepare().
 > 
-> Can you rename these to page_memcg_lru[_rcu] to make them explicitly
-> for LRU pages?
+> Please can you explain a bit more on this issue that you see?
 
-The next patch removes page_memcg_kmem() again to replace it with
-page_objcg(). That should (luckily) remove the need for this
-distinction and keep page_memcg() simple and obvious.
+Say you runtime resume the host controller, and
+ufshcd_reset_and_restore() makes the UFS device active,
+but the UFS device is still runtime suspended.
 
-It would be better to not introduce page_memcg_kmem() in the first
-place in this patch, IMO.
+
+Example:
+
+Add a debugfs file to show the current power mode:
+
+diff --git a/drivers/scsi/ufs/ufs-debugfs.c b/drivers/scsi/ufs/ufs-debugfs.c
+index dee98dc72d29..700b88df0866 100644
+--- a/drivers/scsi/ufs/ufs-debugfs.c
++++ b/drivers/scsi/ufs/ufs-debugfs.c
+@@ -48,6 +48,7 @@ void ufs_debugfs_hba_init(struct ufs_hba *hba)
+ {
+        hba->debugfs_root = debugfs_create_dir(dev_name(hba->dev), ufs_debugfs_root);
+        debugfs_create_file("stats", 0400, hba->debugfs_root, hba, &ufs_debugfs_stats_fops);
++       debugfs_create_u32("curr_dev_pwr_mode", 0400, hba->debugfs_root, (u32 *)&hba->curr_dev_pwr_mode);
+ }
+
+ void ufs_debugfs_hba_exit(struct ufs_hba *hba)
+
+
+# grep -H . /sys/bus/pci/drivers/ufshcd/0000\:00\:12.5/rpm*
+/sys/bus/pci/drivers/ufshcd/0000:00:12.5/rpm_lvl:6
+/sys/bus/pci/drivers/ufshcd/0000:00:12.5/rpm_target_dev_state:DEEPSLEEP
+/sys/bus/pci/drivers/ufshcd/0000:00:12.5/rpm_target_link_state:OFF
+# cat /sys/kernel/debug/ufshcd/0000\:00\:12.5/curr_dev_pwr_mode
+4
+# echo on > /sys/devices/pci0000:00/0000:00:12.5/power/control
+# cat /sys/kernel/debug/ufshcd/0000\:00\:12.5/curr_dev_pwr_mode
+1
+# grep -H . /sys/bus/pci/drivers/ufshcd/0000\:00\:12.5/host*/target*/*/power/runtime_status
+/sys/bus/pci/drivers/ufshcd/0000:00:12.5/host1/target1:0:0/1:0:0:0/power/runtime_status:suspended
+/sys/bus/pci/drivers/ufshcd/0000:00:12.5/host1/target1:0:0/1:0:0:49456/power/runtime_status:suspended
+/sys/bus/pci/drivers/ufshcd/0000:00:12.5/host1/target1:0:0/1:0:0:49476/power/runtime_status:suspended
+/sys/bus/pci/drivers/ufshcd/0000:00:12.5/host1/target1:0:0/1:0:0:49488/power/runtime_status:suspended
+
+So UFS devices is runtime suspended and should in DeepSleep, but it is active.
