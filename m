@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D6A3299EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8181D32992E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345263AbhCBAj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:39:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48318 "EHLO mail.kernel.org"
+        id S239372AbhCBAA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:00:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239876AbhCASeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:34:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4836060200;
-        Mon,  1 Mar 2021 17:46:18 +0000 (UTC)
+        id S238910AbhCASSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:18:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7AC364E41;
+        Mon,  1 Mar 2021 17:13:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620778;
-        bh=Re+qalLPlqw9GmM+XvYZxgiSgrFuLrMIUItUAZvQM24=;
+        s=korg; t=1614618819;
+        bh=aWvViW4+SxrTgFsmLfBMk00PGA6+VgNrKW1+GheJL78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p8y1UjsFO9bDnN5V3iUZkwqSJn6NvS3xTsVOXBQ7SwPDk0K76ccddq89ZgvNkM0L9
-         zZp3giJqU6CfoHzmfh3akpd1fEgN3nJKYbHPry5+BwXOlpAM3KrBdrNu00DtY4bx6U
-         pGugATworlrKA9DV7scxav0ens2EZfG81keU7/08=
+        b=SP0wa5nBOPCTvxq/RZn9iMrIbg+997M9KpNJ8Qp7hI0g6BBagQGkS+w3AUDu1sBFb
+         oI3NqGWpnzu/dXLwdAsd3lBeKYqDeJ3M7wDm3l/z2NG+nzCywi+HKmOEdk+byA4W94
+         eJT6LYRg7xuJOrkvSL7YmpLbnAZZYjwLVziaxSj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 277/775] drm/vc4: hdmi: Compute the CEC clock divider from the clock rate
-Date:   Mon,  1 Mar 2021 17:07:25 +0100
-Message-Id: <20210301161215.318473079@linuxfoundation.org>
+Subject: [PATCH 5.10 198/663] ASoC: qcom: lpass-cpu: Remove bit clock state check
+Date:   Mon,  1 Mar 2021 17:07:26 +0100
+Message-Id: <20210301161151.578149169@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +42,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 
-[ Upstream commit 163a3ef681e5e9d5df558e855d86ccd4708d6200 ]
+[ Upstream commit 6c28377b7114d04cf82eedffe9dcc8fa66ecec48 ]
 
-The CEC clock divider needs to output a frequency of 40kHz from the HSM
-rate on the BCM2835. The driver used to have a fixed frequency for it,
-but that changed for the BCM2711 and we now need to compute it
-dynamically to maintain the proper rate.
+No need of BCLK state maintenance from driver side as
+clock_enable and clk_disable API's maintaing state counter.
 
-Fixes: cd4cb49dc5bb ("drm/vc4: hdmi: Adjust HSM clock rate depending on pixel rate")
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210111142309.193441-7-maxime@cerno.tech
-(cherry picked from commit f1ceb9d10043683b89e5e5e5848fb4e855295762)
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+One of the major issue was spotted when Headset jack inserted
+while playback continues, due to same PCM device node opens twice
+for playaback/capture and closes once for capture and playback continues.
+
+It can resolve the errors in such scenarios.
+
+Fixes: b1824968221c ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state")
+
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210127151824.8929-1-srivasam@codeaurora.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/qcom/lpass-cpu.c       | 22 ++++++++--------------
+ sound/soc/qcom/lpass-lpaif-reg.h |  3 ---
+ sound/soc/qcom/lpass.h           |  1 -
+ 3 files changed, 8 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index a9a6552bdae93..eff9014750e2d 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -1467,6 +1467,7 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
- {
- 	struct cec_connector_info conn_info;
- 	struct platform_device *pdev = vc4_hdmi->pdev;
-+	u16 clk_cnt;
- 	u32 value;
- 	int ret;
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 46bb24afeacf0..6815f32b67b40 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -286,16 +286,12 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
+ 				ret);
  
-@@ -1492,8 +1493,9 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
- 	 * divider: the hsm_clock rate and this divider setting will
- 	 * give a 40 kHz CEC clock.
- 	 */
-+	clk_cnt = clk_get_rate(vc4_hdmi->hsm_clock) / CEC_CLOCK_FREQ;
- 	value |= VC4_HDMI_CEC_ADDR_MASK |
--		 (4091 << VC4_HDMI_CEC_DIV_CLK_CNT_SHIFT);
-+		 (clk_cnt << VC4_HDMI_CEC_DIV_CLK_CNT_SHIFT);
- 	HDMI_WRITE(HDMI_CEC_CNTRL_1, value);
- 	ret = devm_request_threaded_irq(&pdev->dev, platform_get_irq(pdev, 0),
- 					vc4_cec_irq_handler,
+-		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_DISABLE) {
+-			ret = clk_enable(drvdata->mi2s_bit_clk[id]);
+-			if (ret) {
+-				dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
+-				clk_disable(drvdata->mi2s_osr_clk[id]);
+-				return ret;
+-			}
+-			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_ENABLE;
++		ret = clk_enable(drvdata->mi2s_bit_clk[id]);
++		if (ret) {
++			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
++			clk_disable(drvdata->mi2s_osr_clk[id]);
++			return ret;
+ 		}
+-
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+@@ -310,10 +306,9 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 		if (ret)
+ 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
+ 				ret);
+-		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_ENABLE) {
+-			clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+-			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_DISABLE;
+-		}
++
++		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
++
+ 		break;
+ 	}
+ 
+@@ -866,7 +861,6 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
+ 			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
+ 		}
+-		drvdata->bit_clk_state[dai_id] = LPAIF_BIT_CLK_DISABLE;
+ 	}
+ 
+ 	/* Allocation for i2sctl regmap fields */
+diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
+index baf72f124ea9b..2eb03ad9b7c74 100644
+--- a/sound/soc/qcom/lpass-lpaif-reg.h
++++ b/sound/soc/qcom/lpass-lpaif-reg.h
+@@ -60,9 +60,6 @@
+ #define LPAIF_I2SCTL_BITWIDTH_24	1
+ #define LPAIF_I2SCTL_BITWIDTH_32	2
+ 
+-#define LPAIF_BIT_CLK_DISABLE		0
+-#define LPAIF_BIT_CLK_ENABLE		1
+-
+ #define LPAIF_I2SCTL_RESET_STATE	0x003C0004
+ #define LPAIF_DMACTL_RESET_STATE	0x00200000
+ 
+diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
+index 868c1c8dbd455..1d926dd5f5900 100644
+--- a/sound/soc/qcom/lpass.h
++++ b/sound/soc/qcom/lpass.h
+@@ -68,7 +68,6 @@ struct lpass_data {
+ 	unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
+ 	unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
+ 	int hdmi_port_enable;
+-	int bit_clk_state[LPASS_MAX_MI2S_PORTS];
+ 
+ 	/* low-power audio interface (LPAIF) registers */
+ 	void __iomem *lpaif;
 -- 
 2.27.0
 
