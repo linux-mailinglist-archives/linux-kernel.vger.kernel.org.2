@@ -2,185 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E258F327CE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E63FA327CE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233634AbhCALJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 06:09:56 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:38881 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233390AbhCALJx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 06:09:53 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lGgQG-00084S-Rm; Mon, 01 Mar 2021 11:09:08 +0000
-Date:   Mon, 1 Mar 2021 12:09:07 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Hariharan Ananthakrishnan <hari@netflix.com>,
-        Keerti Lakshminarayan <keerti@netflix.com>,
-        Kyle Anderson <kylea@netflix.com>,
-        Linux Containers List <containers@lists.linux-foundation.org>,
-        stgraber@ubuntu.com, Andy Lutomirski <luto@amacapital.net>
-Subject: Re: seccomp: Delay filter activation
-Message-ID: <20210301110907.2qoxmiy55gpkgwnq@wittgenstein>
-References: <CAMp4zn9oEb6bJJLQWjSE1AFg6TqwkF3FOvFk2VSkKd+0Kj7TCg@mail.gmail.com>
+        id S231874AbhCALPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 06:15:54 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:54770 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231473AbhCALPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 06:15:51 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614597331; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=+MIq16Ym9wWPNOeiUqUDLShHL7b+FQRIUIsXH27WoAs=; b=DiQmDdgCqj8LwlMvJzUMCCf2OJtScGgSubH3aCLn6dfxbYRSAi2xAzCOwTA5NdG7fjVBOUxz
+ 3vUoDwUln8iK7qOsLZ93WpfjutTgaSZPOOtDJxlpBEUW5AqP3xRoGXrRVGoXf2VGG8k+zSvZ
+ BYn7O+MG69qAS3YS68Ac52J+ChM=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 603ccc8f8f0d5ba6c593a35f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 11:14:23
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 84147C433CA; Mon,  1 Mar 2021 11:14:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D52D2C433C6;
+        Mon,  1 Mar 2021 11:14:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D52D2C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, hemantk@codeaurora.org,
+        sricharan@codeaurora.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH v2] bus: mhi: core: Add unique qrtr node id support
+References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
+        <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
+        <20210226145245.GB70936@thinkpad>
+Date:   Mon, 01 Mar 2021 13:14:14 +0200
+In-Reply-To: <20210226145245.GB70936@thinkpad> (Manivannan Sadhasivam's
+        message of "Fri, 26 Feb 2021 20:22:45 +0530")
+Message-ID: <87k0qrceih.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMp4zn9oEb6bJJLQWjSE1AFg6TqwkF3FOvFk2VSkKd+0Kj7TCg@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 01:31:57AM -0800, Sargun Dhillon wrote:
-> We've run into a problem where attaching a filter can be quite messy
-> business because the filter itself intercepts sendmsg, and other
-> syscalls related to exfiltrating the listener FD. I believe that this
-> problem set has been brought up before, and although there are
-> "simpler" methods of exfiltrating the listener, like clone3 or
-> pidfd_getfd, but these are still less than ideal.
++ ath11k list
 
-(You really like sending patches and discussion points in the middle of
-the merge window. :D I think everyone's panicked about getting their PRs
-in shape so it's not unlikely that this sometimes gets lost on the list. :))
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
 
-It hasn't been a huge problem for us, especially since we added
-pidfd_getfd() this seemed like a straightforward problem to solve by
-selecting a fix fd number that is to be used for the listener. But I can
-see why it is annoying.
+> On Fri, Feb 26, 2021 at 04:12:49PM +0530, Gokul Sriram Palanisamy wrote:
+>> On platforms with two or more identical mhi
+>> devices, qmi service will run with identical
+>> qrtr-node-id. Because of this identical ID,
+>> host qrtr-lookup cannot register more than one
+>> qmi service with identical node ID. Ultimately,
+>> only one qmi service will be avilable for the
+>> underlying drivers to communicate with.
+>> 
+>> On QCN9000, it implements a unique qrtr-node-id
+>> and qmi instance ID using a unique instance ID
+>> written to a debug register from host driver
+>> soon after SBL is loaded.
+>> 
+>> This change generates a unique instance ID from
+>> PCIe domain number and bus number, writes to the
+>> given debug register just after SBL is loaded so
+>> that it is available for FW when the QMI service
+>> is spawned.
+>> 
+>> sample:
+>> root@OpenWrt:/# qrtr-lookup
+>>   Service Version Instance Node  Port
+>>        15       1        0    8     1 Test service
+>>        69       1        8    8     2 ATH10k WLAN firmware service
+>>        15       1        0   24     1 Test service
+>>        69       1       24   24     2 ATH10k WLAN firmware service
+>> 
+>> Here 8 and 24 on column 3 (QMI Instance ID)
+>> and 4 (QRTR Node ID) are the node IDs that
+>> is unique per mhi device.
+>> 
+>> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+>> ---
+>>  drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>> 
+>> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
+>> index c2546bf..5e5dad5 100644
+>> --- a/drivers/bus/mhi/core/boot.c
+>> +++ b/drivers/bus/mhi/core/boot.c
+>> @@ -16,8 +16,12 @@
+>>  #include <linux/random.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/wait.h>
+>> +#include <linux/pci.h>
+>>  #include "internal.h"
+>>  
+>> +#define QRTR_INSTANCE_MASK	0x000000FF
+>> +#define QRTR_INSTANCE_SHIFT	0
+>> +
+>>  /* Setup RDDM vector table for RDDM transfer and program RXVEC */
+>>  void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+>>  		      struct image_info *img_info)
+>> @@ -391,6 +395,9 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>>  	const struct firmware *firmware = NULL;
+>>  	struct image_info *image_info;
+>>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>> +	struct pci_dev *pci_dev = to_pci_dev(mhi_cntrl->cntrl_dev);
+>> +	struct pci_bus *bus = pci_dev->bus;
+>> +	uint32_t instance;
+>>  	const char *fw_name;
+>>  	void *buf;
+>>  	dma_addr_t dma_addr;
+>> @@ -466,6 +473,13 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>>  		return;
+>>  	}
+>>  
+>> +	instance = ((pci_domain_nr(bus) & 0xF) << 4) | (bus->number & 0xF);
+>> +	instance &= QRTR_INSTANCE_MASK;
+>> +
+>> +	mhi_write_reg_field(mhi_cntrl, mhi_cntrl->bhi,
+>> +			    BHI_ERRDBG2, QRTR_INSTANCE_MASK,
+>> +			    QRTR_INSTANCE_SHIFT, instance);
+>
+> You cannot not do this in MHI stack. Why can't you do this in the MHI controller
+> specific to QCN9000? And btw, is QCN9000 supported in mainline?
 
-> 
-> One of the ideas that's been talked about (I want to say back at LSS
-> NA) is the idea of "delayed activation". I was thinking that it might
-> be nice to have a mechanism to do delayed attach, either activated on
-> execve / fork, or an ioctl on the listenerfd to activate the filter
-> and have a flag like SECCOMP_FILTER_FLAG_NEW_LISTENER_INACTIVE, which
-> indicates that the listener should be setup, but not enforcing, and
-> another ioctl to activate it.
-> 
-> The later approach is preferred due to simplicity, but I can see a
-> situation where you could accidentally get into a state where the
-> filter is not being enforced. Additionally, this may have unforeseen
-> implications with CRIU.
+I'm not sure what QCN9000 means but I'm guessing it's QCN9074. We have
+initial QCN9074 support in ath11k but there are some issues still so
+it's not enabled by default (yet):
 
-(If you were to expose an ioctl() that allows userspace to query the
-notifer state then CRIU shouldn't have a problem restoring the notifier
-in the correct state. Right now it doesn't do anyting fancy about the
-notifier, it just restores the task with the filter. It just has to
-learn about the new feature and that's fine imho.)
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=4e80946197a83a6115e308334618449b77696d6a
 
-> 
-> I'm curious whether this is a problem others share, and whether any of
-> the aforementioned approaches seem reasonable.
+And I suspect we have this same qrtr issue with any ath11k PCI device,
+including QCA6390, so this is not a QCN9074 specific problem.
 
-So when I originally suggested the delayed activation I I had another
-related idea that I think I might have mentioned too: if we're already
-considering delaying filter activation I like to discuss the possibility
-of attaching a seccomp filter to a task.
+BTW Gokul, please always CC the ath11k list when submitting patches
+which are related to ath11k.
 
-Right now, if one task wants to attach to another task they need to
-recreate the whole seccomp filter and load it. That's not just pretty
-expensive but also only works if you have access to the rules that the
-filter was generated with. For container that's usually some sort of
-pseudo seccomp filter configuration language dumped into a config file
-from which it can be read.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-So right now the status quo is:
-
-struct sock_filter filter[] = {
-        BPF_STMT(BPF_LD|BPF_W|BPF_ABS, offsetof(struct seccomp_data, nr)),
-        BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, nr, 0, 1),
-        BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_USER_NOTIF), /* Get me a listener fd */
-        BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-};
-struct sock_fprog prog = {
-        .len = (unsigned short)ARRAY_SIZE(filter),
-        .filter = filter,
-};
-int fd = seccomp(SECCOMP_SET_MODE_FILTER, flags, &prog);
-
-and then the caller must send the fd to the manager or the manager uses
-pidfd_getfd().
-
-But, why not get a bit crazy^wcreative; especially since seccomp() is
-already a multiplexer. We introduce a new seccomp flag:
-
-#define SECCOMP_FILTER_DETACHED
-
-and a new seccomp command:
-
-#define SECCOMP_ATTACH_FILTER
-
-And now we could do something like:
-
-pid_t pid = fork();
-if (pid < 0)
-	return;
-
-if (pid == 0) {
-	// do stuff
-	BARRIER_WAKE_SETUP_DONE;
-
-	// do more unrelated stuff
-
-	BARRIER_WAIT_SECCOMP_FILTER;
-	execve(exec-something);
-} else {
-	
-	int fd_filter;
-
-	struct sock_filter filter[] = {
-	        BPF_STMT(BPF_LD|BPF_W|BPF_ABS, offsetof(struct seccomp_data, nr)),
-	        BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, nr, 0, 1),
-	        BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-	};
-	
-	struct sock_fprog prog = {
-	        .len = (unsigned short)ARRAY_SIZE(filter),
-	        .filter = filter,
-	};
-	
-	int fd_filter = seccomp(SECCOMP_SET_MODE_FILTER, SECCOMP_FILTER_DETACHED, &prog);
-
-	BARRIER_WAIT_SETUP_DONE;
-
-	int ret = seccomp(SECCOMP_ATTACH_FILTER, 0, INT_TO_PTR(fd_listener));
-
-	BARRIER_WAKE_SECCOMP_FILTER;
-}
-
-And now you have attached a filter to another task. This would be super
-elegant for a container manager. The container manager could also stash
-the filter fd and when attaching to a container the manager can send the
-attaching task the fd and the attaching task can do:
-
-int ret = seccomp(SECCOMP_ATTACH_FILTER, 0, INT_TO_PTR(fd_filter));
-
-too and would be attached to the same filter as the target task.
-
-And for the listener fd case a container manager could simply set
-SECCOMP_RET_USER_NOTIF as before
-
-	struct sock_filter filter[] = {
-	        BPF_STMT(BPF_LD|BPF_W|BPF_ABS, offsetof(struct seccomp_data, nr)),
-	        BPF_JUMP(BPF_JMP|BPF_JEQ|BPF_K, nr, 0, 1),
-		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_USER_NOTIF),
-	        BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-	};
-
-and now fd_filter simply functions as the notifier fd after
-seccomp(SECCOMP_ATTACH_FILTER) that's basically the fancy version of my
-delayed notifier activiation idea.
-
-I'm sure there's nastiness to figure out but I would love to see
-something like this.
-
-Christian
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
