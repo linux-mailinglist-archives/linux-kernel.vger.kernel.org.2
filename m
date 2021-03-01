@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B411232989C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA9932987B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346249AbhCAXjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:39:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58728 "EHLO mail.kernel.org"
+        id S1345939AbhCAXeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:34:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239333AbhCASIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:08:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDF7864D90;
-        Mon,  1 Mar 2021 17:47:32 +0000 (UTC)
+        id S239013AbhCASGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:06:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F9346502A;
+        Mon,  1 Mar 2021 17:13:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620853;
-        bh=w1Wx6w2p5ZsHyYYliSi+G2mly7QcmHB9pv3xuQDpgiE=;
+        s=korg; t=1614618816;
+        bh=chlXqqNxFUMkX9JphlrvzkPfsNDgmKNdMUUROlQ/fMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oaePdaFBt4bmEU6RTcN/12+oVkLYWxPEimyHYRkNY7F49suk2b4TrJjYHB+U5RupH
-         30mP+Ennz2fvWjMGaGvmj0qUy8hyr+npGG0djQ8bUIqz4p0x8TuvRZAX+I4EXcBUkg
-         ezBATEm+QaAcGFvShlhxrb+ZJmG2qYNjC2WG7aOY=
+        b=k4e9h15/yn0J4B2Sb/Ch5D35TOtCsc69UPFTQvi5OKxuAAtA+NPlW0tAFHDrOBAor
+         +GIjURp3MtiSIR6bpKuLrDp9ThWnhUXMkabGLwoFRFjRhyVJ676f8+mRlsWAHteGO3
+         GSshbhM0qDPNOvXzFcnT/Sey4gQ/JNDAr59gvi2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Dom Cobley <popcornmix@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 273/775] drm/vc4: hdmi: Move hdmi reset to bind
-Date:   Mon,  1 Mar 2021 17:07:21 +0100
-Message-Id: <20210301161215.124184191@linuxfoundation.org>
+Subject: [PATCH 5.10 197/663] f2fs: compress: fix potential deadlock
+Date:   Mon,  1 Mar 2021 17:07:25 +0100
+Message-Id: <20210301161151.527590889@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +40,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dom Cobley <popcornmix@gmail.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit 902dc5c19a8fecd3113dd41cc601b34557bdede9 ]
+[ Upstream commit 3afae09ffea5e08f523823be99a784675995d6bb ]
 
-The hdmi reset got moved to a later point in the commit 9045e91a476b
-("drm/vc4: hdmi: Add reset callback").
+generic/269 reports a hangtask issue, the root cause is ABBA deadlock
+described as below:
 
-However, the reset now occurs after vc4_hdmi_cec_init and so tramples
-the setup of registers like HDMI_CEC_CNTRL_1
+Thread A			Thread B
+- down_write(&sbi->gc_lock) -- A
+				- f2fs_write_data_pages
+				 - lock all pages in cluster -- B
+				 - f2fs_write_multi_pages
+				  - f2fs_write_raw_pages
+				   - f2fs_write_single_data_page
+				    - f2fs_balance_fs
+				     - down_write(&sbi->gc_lock) -- A
+- f2fs_gc
+ - do_garbage_collect
+  - ra_data_block
+   - pagecache_get_page -- B
 
-This only affects pi0-3 as on pi4 the cec registers are in a separate
-block
+To fix this, it needs to avoid calling f2fs_balance_fs() if there is
+still cluster pages been locked in context of cluster writeback, so
+instead, let's call f2fs_balance_fs() in the end of
+f2fs_write_raw_pages() when all cluster pages were unlocked.
 
-Fixes: 9045e91a476b ("drm/vc4: hdmi: Add reset callback")
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210111142309.193441-3-maxime@cerno.tech
-(cherry picked from commit 7155334f15f360f5c98391c5c7e12af4c13395c4)
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Fixes: 4c8ff7095bef ("f2fs: support data compression")
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/f2fs/compress.c |  5 ++++-
+ fs/f2fs/data.c     | 10 ++++++----
+ fs/f2fs/f2fs.h     |  2 +-
+ 3 files changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 2013f83ef50b6..ea50ecf985d1c 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -660,9 +660,6 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder)
- 		return;
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index c5fee4d7ea72f..d3f407ba64c9e 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -1393,7 +1393,7 @@ retry_write:
+ 
+ 		ret = f2fs_write_single_data_page(cc->rpages[i], &_submitted,
+ 						NULL, NULL, wbc, io_type,
+-						compr_blocks);
++						compr_blocks, false);
+ 		if (ret) {
+ 			if (ret == AOP_WRITEPAGE_ACTIVATE) {
+ 				unlock_page(cc->rpages[i]);
+@@ -1428,6 +1428,9 @@ retry_write:
+ 
+ 		*submitted += _submitted;
  	}
- 
--	if (vc4_hdmi->variant->reset)
--		vc4_hdmi->variant->reset(vc4_hdmi);
--
- 	if (vc4_hdmi->variant->phy_init)
- 		vc4_hdmi->variant->phy_init(vc4_hdmi, mode);
- 
-@@ -1743,6 +1740,9 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 	vc4_hdmi->disable_wifi_frequencies =
- 		of_property_read_bool(dev->of_node, "wifi-2.4ghz-coexistence");
- 
-+	if (vc4_hdmi->variant->reset)
-+		vc4_hdmi->variant->reset(vc4_hdmi);
 +
- 	pm_runtime_enable(dev);
++	f2fs_balance_fs(F2FS_M_SB(mapping), true);
++
+ 	return 0;
+ out_err:
+ 	for (++i; i < cc->cluster_size; i++) {
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index b29243ee1c3e5..4f326bce525f7 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -2757,7 +2757,8 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
+ 				sector_t *last_block,
+ 				struct writeback_control *wbc,
+ 				enum iostat_type io_type,
+-				int compr_blocks)
++				int compr_blocks,
++				bool allow_balance)
+ {
+ 	struct inode *inode = page->mapping->host;
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+@@ -2895,7 +2896,7 @@ out:
+ 	}
+ 	unlock_page(page);
+ 	if (!S_ISDIR(inode->i_mode) && !IS_NOQUOTA(inode) &&
+-					!F2FS_I(inode)->cp_task)
++			!F2FS_I(inode)->cp_task && allow_balance)
+ 		f2fs_balance_fs(sbi, need_balance_fs);
  
- 	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
+ 	if (unlikely(f2fs_cp_error(sbi))) {
+@@ -2942,7 +2943,7 @@ out:
+ #endif
+ 
+ 	return f2fs_write_single_data_page(page, NULL, NULL, NULL,
+-						wbc, FS_DATA_IO, 0);
++						wbc, FS_DATA_IO, 0, true);
+ }
+ 
+ /*
+@@ -3110,7 +3111,8 @@ continue_unlock:
+ 			}
+ #endif
+ 			ret = f2fs_write_single_data_page(page, &submitted,
+-					&bio, &last_block, wbc, io_type, 0);
++					&bio, &last_block, wbc, io_type,
++					0, true);
+ 			if (ret == AOP_WRITEPAGE_ACTIVATE)
+ 				unlock_page(page);
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 06e5a6053f3f9..699815e94bd30 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3507,7 +3507,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
+ 				struct bio **bio, sector_t *last_block,
+ 				struct writeback_control *wbc,
+ 				enum iostat_type io_type,
+-				int compr_blocks);
++				int compr_blocks, bool allow_balance);
+ void f2fs_invalidate_page(struct page *page, unsigned int offset,
+ 			unsigned int length);
+ int f2fs_release_page(struct page *page, gfp_t wait);
 -- 
 2.27.0
 
