@@ -2,35 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43472329AD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DAC329AFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378081AbhCBBDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:03:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59846 "EHLO mail.kernel.org"
+        id S1378404AbhCBBF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:05:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238112AbhCAS4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:56:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BD1D651F5;
-        Mon,  1 Mar 2021 17:19:59 +0000 (UTC)
+        id S240802AbhCATBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:01:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 722FF651F4;
+        Mon,  1 Mar 2021 17:20:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619199;
-        bh=ORluSZcnlpOLMcZTmsMboY6MswbuOCMKTiOq7fmiNR4=;
+        s=korg; t=1614619208;
+        bh=U0YhMBcJe6UFeDB8hA3gegGjlHGfwXl7GX4r0hE1ycc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hc6e58rpsq+9otd5NthuU0TLj9NNyRMFO+oL2tMl9fnMk6y/ONgc4WxzRrnjiYl9j
-         Gh7IdTGkmZEbk6dG37hvGj5NxVyL04ADyfaFTNX6etxtbmpb80g0suqWsSIIo0nydJ
-         5HC/h+aOufC3UztQE/oUOrqz6Xn6OLibCZJgx6qU=
+        b=il/Mmd1TxeBasTVlHNQJgNlEecEw/qHCN3YqjmloIRmMEf7k/NtY/f/2TOavP7O1u
+         bGW6UnL/uSLpBOuZkpRsI+cehnyPvNOiEJO8h2KojrgPqgM6DEzpgVzKFJ9IELuSVL
+         NyysaQ4uQvWWK0/MbTdExYMvyiYrnsARC9Gk/jOA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Huw Davies <huw@codeweavers.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Song Liu <songliubraving@fb.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 369/663] spi: dw: Avoid stack content exposure
-Date:   Mon,  1 Mar 2021 17:10:17 +0100
-Message-Id: <20210301161200.103107910@linuxfoundation.org>
+Subject: [PATCH 5.10 372/663] perf symbols: Fix return value when loading PE DSO
+Date:   Mon,  1 Mar 2021 17:10:20 +0100
+Message-Id: <20210301161200.256228519@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,61 +53,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Nicholas Fraser <nfraser@codeweavers.com>
 
-[ Upstream commit 386f771aad15dd535f2368b4adc9958c0160edd4 ]
+[ Upstream commit 77771a97011fa9146ccfaf2983a3a2885dc57b6f ]
 
-Since "data" is u32, &data is a "u32 *" type, which means pointer math
-will move in u32-sized steps. This was meant to be a byte offset, so
-cast &data to "char *" to aim the copy into the correct location.
+The first time dso__load() was called on a PE file it always returned -1
+error. This caused the first call to map__find_symbol() to always fail
+on a PE file so the first sample from each PE file always had symbol
+<unknown>. Subsequent samples succeed however because the DSO is already
+loaded.
 
-Seen with -Warray-bounds (and found by Coverity):
+This fixes dso__load() to return 0 when successfully loading a DSO with
+libbfd.
 
-In file included from ./include/linux/string.h:269,
-                 from ./arch/powerpc/include/asm/paca.h:15,
-                 from ./arch/powerpc/include/asm/current.h:13,
-                 from ./include/linux/mutex.h:14,
-                 from ./include/linux/notifier.h:14,
-                 from ./include/linux/clk.h:14,
-                 from drivers/spi/spi-dw-bt1.c:12:
-In function 'memcpy',
-    inlined from 'dw_spi_bt1_dirmap_copy_from_map' at drivers/spi/spi-dw-bt1.c:87:3:
-./include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset 4 is out of the bounds [0, 4] of object 'data' with type 'u32' {aka 'unsigned int'} [-Warray-bounds]
-   20 | #define __underlying_memcpy __builtin_memcpy
-      |                             ^
-./include/linux/fortify-string.h:191:9: note: in expansion of macro '__underlying_memcpy'
-  191 |  return __underlying_memcpy(p, q, size);
-      |         ^~~~~~~~~~~~~~~~~~~
-drivers/spi/spi-dw-bt1.c: In function 'dw_spi_bt1_dirmap_copy_from_map':
-drivers/spi/spi-dw-bt1.c:77:6: note: 'data' declared here
-   77 |  u32 data;
-      |      ^~~~
-
-Addresses-Coverity: CID 1497771 Out-of-bounds access
-Fixes: abf00907538e ("spi: dw: Add Baikal-T1 SPI Controller glue driver")
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
-Link: https://lore.kernel.org/r/20210211203714.1929862-1-keescook@chromium.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: eac9a4342e5447ca ("perf symbols: Try reading the symbol table with libbfd")
+Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Frank Ch. Eigler <fche@redhat.com>
+Cc: Huw Davies <huw@codeweavers.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kim Phillips <kim.phillips@amd.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Remi Bernon <rbernon@codeweavers.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Tommi Rantala <tommi.t.rantala@nokia.com>
+Cc: Ulrich Czekalla <uczekalla@codeweavers.com>
+Link: http://lore.kernel.org/lkml/1671b43b-09c3-1911-dbf8-7f030242fbf7@codeweavers.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw-bt1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/symbol.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-dw-bt1.c b/drivers/spi/spi-dw-bt1.c
-index c279b7891e3ac..bc9d5eab3c589 100644
---- a/drivers/spi/spi-dw-bt1.c
-+++ b/drivers/spi/spi-dw-bt1.c
-@@ -84,7 +84,7 @@ static void dw_spi_bt1_dirmap_copy_from_map(void *to, void __iomem *from, size_t
- 	if (shift) {
- 		chunk = min_t(size_t, 4 - shift, len);
- 		data = readl_relaxed(from - shift);
--		memcpy(to, &data + shift, chunk);
-+		memcpy(to, (char *)&data + shift, chunk);
- 		from += chunk;
- 		to += chunk;
- 		len -= chunk;
+diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+index da6036ba0cea4..4d569ad7db02d 100644
+--- a/tools/perf/util/symbol.c
++++ b/tools/perf/util/symbol.c
+@@ -1866,8 +1866,10 @@ int dso__load(struct dso *dso, struct map *map)
+ 		if (nsexit)
+ 			nsinfo__mountns_enter(dso->nsinfo, &nsc);
+ 
+-		if (bfdrc == 0)
++		if (bfdrc == 0) {
++			ret = 0;
+ 			break;
++		}
+ 
+ 		if (!is_reg || sirc < 0)
+ 			continue;
 -- 
 2.27.0
 
