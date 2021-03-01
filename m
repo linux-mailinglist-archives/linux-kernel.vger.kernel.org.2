@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F94328EE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F21328E63
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238339AbhCATkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:40:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54010 "EHLO mail.kernel.org"
+        id S241828AbhCAT3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:29:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236395AbhCAQyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:54:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 714CC64F4F;
-        Mon,  1 Mar 2021 16:34:38 +0000 (UTC)
+        id S235843AbhCAQxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:53:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A33764F27;
+        Mon,  1 Mar 2021 16:34:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616479;
-        bh=cG00EA4GqSE9VrsMiGmD1BFl2y/v11PU4dDaZHNRsrk=;
+        s=korg; t=1614616449;
+        bh=xyxK0sdbX3lht7i98gYeQ3dbCLpcnXc+TWLDD8MdZnc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xLGYhkkvUbx0cIBheqAOf05VNzx3VdJp6NFpOgDlUtvJlVcpPVbf8VDpuOdDwrxNH
-         TGhfTqs90lKgEfFLSx54xqwQZmKGcOha/pEJs8PYMNxqlC1f3hGUQbJVuqoRkqnllC
-         f9tU0YZ7mqhmQY9DoQDwLhTdQXRJyl/JTwKYOKe8=
+        b=PNaUHjweAEOux71b4N6i/TI3TjtmCILV+jUwP6/Q8wayPyTHjArzGzrKfLAG3GazC
+         kFCKvNz2FChpdYJu7NCqCcEHYSQImduutkLmCF0454cLlrIV71b44VJE52YJtkpi35
+         i8bjqtQ/MmZKSzC4IvtuJHZMGGiedDyCEaeT+7VQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "jeffrey.lin" <jeffrey.lin@rad-ic.com>,
+        stable@vger.kernel.org,
+        Ludvig Norgren Guldhag <ludvigng@gmail.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.14 125/176] Input: raydium_ts_i2c - do not send zero length
-Date:   Mon,  1 Mar 2021 17:13:18 +0100
-Message-Id: <20210301161027.194994290@linuxfoundation.org>
+Subject: [PATCH 4.14 128/176] Input: i8042 - add ASUS Zenbook Flip to noselftest list
+Date:   Mon,  1 Mar 2021 17:13:21 +0100
+Message-Id: <20210301161027.347399251@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -39,40 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jeffrey.lin <jeffrey.lin@rad-ic.com>
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-commit fafd320ae51b9c72d371585b2501f86640ea7b7d upstream.
+commit b5d6e7ab7fe7d186878142e9fc1a05e4c3b65eb9 upstream.
 
-Add default write command package to prevent i2c quirk error of zero
-data length as Raydium touch firmware update is executed.
+After commit 77b425399f6d ("Input: i8042 - use chassis info to skip
+selftest on Asus laptops"), all modern Asus laptops have the i8042
+selftest disabled. It has done by using chassys type "10" (laptop).
 
-Signed-off-by: jeffrey.lin <jeffrey.lin@rad-ic.com>
-Link: https://lore.kernel.org/r/1608031217-7247-1-git-send-email-jeffrey.lin@raydium.corp-partner.google.com
+The Asus Zenbook Flip suffers from similar suspend/resume issues, but
+it _sometimes_ work and sometimes it doesn't. Setting noselftest makes
+it work reliably. In this case, we need to add chassis type "31"
+(convertible) in order to avoid selftest in this device.
+
+Reported-by: Ludvig Norgren Guldhag <ludvigng@gmail.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Link: https://lore.kernel.org/r/20210219164638.761-1-mpdesouza@suse.com
 Cc: stable@vger.kernel.org
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/touchscreen/raydium_i2c_ts.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/input/serio/i8042-x86ia64io.h |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/input/touchscreen/raydium_i2c_ts.c
-+++ b/drivers/input/touchscreen/raydium_i2c_ts.c
-@@ -419,6 +419,7 @@ static int raydium_i2c_write_object(stru
- 				    enum raydium_bl_ack state)
- {
- 	int error;
-+	static const u8 cmd[] = { 0xFF, 0x39 };
- 
- 	error = raydium_i2c_send(client, RM_CMD_BOOT_WRT, data, len);
- 	if (error) {
-@@ -427,7 +428,7 @@ static int raydium_i2c_write_object(stru
- 		return error;
- 	}
- 
--	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, NULL, 0);
-+	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, cmd, sizeof(cmd));
- 	if (error) {
- 		dev_err(&client->dev, "Ack obj command failed: %d\n", error);
- 		return error;
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -592,6 +592,10 @@ static const struct dmi_system_id i8042_
+ 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 			DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /* Notebook */
+ 		},
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
++		},
+ 	},
+ 	{ }
+ };
 
 
