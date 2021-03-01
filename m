@@ -2,162 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63FA327CE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:16:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7C7327CF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhCALPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 06:15:54 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:54770 "EHLO z11.mailgun.us"
+        id S232197AbhCALR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 06:17:57 -0500
+Received: from mga01.intel.com ([192.55.52.88]:25326 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231473AbhCALPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 06:15:51 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614597331; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=+MIq16Ym9wWPNOeiUqUDLShHL7b+FQRIUIsXH27WoAs=; b=DiQmDdgCqj8LwlMvJzUMCCf2OJtScGgSubH3aCLn6dfxbYRSAi2xAzCOwTA5NdG7fjVBOUxz
- 3vUoDwUln8iK7qOsLZ93WpfjutTgaSZPOOtDJxlpBEUW5AqP3xRoGXrRVGoXf2VGG8k+zSvZ
- BYn7O+MG69qAS3YS68Ac52J+ChM=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 603ccc8f8f0d5ba6c593a35f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 11:14:23
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 84147C433CA; Mon,  1 Mar 2021 11:14:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D52D2C433C6;
-        Mon,  1 Mar 2021 11:14:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D52D2C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Gokul Sriram Palanisamy <gokulsri@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, hemantk@codeaurora.org,
-        sricharan@codeaurora.org, ath11k@lists.infradead.org
-Subject: Re: [PATCH v2] bus: mhi: core: Add unique qrtr node id support
-References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
-        <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
-        <20210226145245.GB70936@thinkpad>
-Date:   Mon, 01 Mar 2021 13:14:14 +0200
-In-Reply-To: <20210226145245.GB70936@thinkpad> (Manivannan Sadhasivam's
-        message of "Fri, 26 Feb 2021 20:22:45 +0530")
-Message-ID: <87k0qrceih.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232033AbhCALR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 06:17:56 -0500
+IronPort-SDR: zZIFKygTmlWuI2h6OpIkQSAKH4SzqQkKNGe+pOscLGWnPZ4npVQFjMo1TnTVgDV+amPYjrRZVX
+ NId7IOu18uTQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="206035612"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="206035612"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 03:16:10 -0800
+IronPort-SDR: 8kpapafSxW/FY0BkiQkWd6121dmlKLANMD+R/FV1oDkMtDB5q0QXboLWM8G24sUUOuZJTb930R
+ llG83deb8Eaw==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="406180903"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.226.70]) ([10.249.226.70])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 03:16:07 -0800
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Subject: Re: [PATCH v3 07/12] perf record: init data file at mmap buffer
+ object
+References: <7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com>
+ <ad205903-41a6-5041-f4f3-6f57d83cbd3a@linux.intel.com>
+ <20201120104942.GF94830@google.com>
+Organization: Intel Corporation
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Alexei Budankov <abudankov@huawei.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>
+Message-ID: <64b0859f-aad3-43fa-4e4c-81614d0c75e4@linux.intel.com>
+Date:   Mon, 1 Mar 2021 14:16:04 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201120104942.GF94830@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ ath11k list
+Hi,
 
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
+On 20.11.2020 13:49, Namhyung Kim wrote:
+> On Mon, Nov 16, 2020 at 03:19:41PM +0300, Alexey Budankov wrote:
 
-> On Fri, Feb 26, 2021 at 04:12:49PM +0530, Gokul Sriram Palanisamy wrote:
->> On platforms with two or more identical mhi
->> devices, qmi service will run with identical
->> qrtr-node-id. Because of this identical ID,
->> host qrtr-lookup cannot register more than one
->> qmi service with identical node ID. Ultimately,
->> only one qmi service will be avilable for the
->> underlying drivers to communicate with.
->> 
->> On QCN9000, it implements a unique qrtr-node-id
->> and qmi instance ID using a unique instance ID
->> written to a debug register from host driver
->> soon after SBL is loaded.
->> 
->> This change generates a unique instance ID from
->> PCIe domain number and bus number, writes to the
->> given debug register just after SBL is loaded so
->> that it is available for FW when the QMI service
->> is spawned.
->> 
->> sample:
->> root@OpenWrt:/# qrtr-lookup
->>   Service Version Instance Node  Port
->>        15       1        0    8     1 Test service
->>        69       1        8    8     2 ATH10k WLAN firmware service
->>        15       1        0   24     1 Test service
->>        69       1       24   24     2 ATH10k WLAN firmware service
->> 
->> Here 8 and 24 on column 3 (QMI Instance ID)
->> and 4 (QRTR Node ID) are the node IDs that
->> is unique per mhi device.
->> 
->> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
->> ---
->>  drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
->>  1 file changed, 14 insertions(+)
->> 
->> diff --git a/drivers/bus/mhi/core/boot.c b/drivers/bus/mhi/core/boot.c
->> index c2546bf..5e5dad5 100644
->> --- a/drivers/bus/mhi/core/boot.c
->> +++ b/drivers/bus/mhi/core/boot.c
->> @@ -16,8 +16,12 @@
->>  #include <linux/random.h>
->>  #include <linux/slab.h>
->>  #include <linux/wait.h>
->> +#include <linux/pci.h>
->>  #include "internal.h"
+<SNIP>
+
 >>  
->> +#define QRTR_INSTANCE_MASK	0x000000FF
->> +#define QRTR_INSTANCE_SHIFT	0
+>> @@ -1400,8 +1417,12 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
+>>  	/*
+>>  	 * Mark the round finished in case we wrote
+>>  	 * at least one event.
+>> +	 *
+>> +	 * No need for round events in directory mode,
+>> +	 * because per-cpu maps and files have data
+>> +	 * sorted by kernel.
+> 
+> But it's not just for single cpu since task can migrate so we need to
+> look at other cpu's data too.  Thus we use the ordered events queue
+> and round events help to determine when to flush the data.  Without
+> the round events, it'd consume huge amount of memory during report.
+> 
+> If we separate tracking records and process them first, we should be
+> able to process samples immediately without sorting them in the
+> ordered event queue.  This will save both cpu cycles and memory
+> footprint significantly IMHO.
+> 
+> Thanks,
+> Namhyung
+> 
+
+As far as I understand, to split tracing records (FORK/MMAP/COMM) into
+a separate file, we need to implement a runtime trace decoder on the
+perf-record side to recognize such tracing records coming from the kernel.
+Is that what you mean?
+
+IMHO this can be tricky to implement and adds some overhead that can lead
+to possible data loss. Do you have any other ideas how to optimize memory
+consumption on perf-report side without a runtime trace decoder?
+Maybe "round events" would somehow help in directory mode?
+
+BTW In our tool we use another approach: two-pass trace file loading. 
+The first loads tracing records, the second loads samples. 
+
+Thanks,
+Alexey
+
+> 
+>>  	 */
+>> -	if (bytes_written != rec->bytes_written)
+>> +	if (!record__threads_enabled(rec) && bytes_written != rec->bytes_written)
+>>  		rc = record__write(rec, NULL, &finished_round_event, sizeof(finished_round_event));
+>>  
+>>  	if (overwrite)
+>> @@ -1514,7 +1535,9 @@ static void record__init_features(struct record *rec)
+>>  	if (!rec->opts.use_clockid)
+>>  		perf_header__clear_feat(&session->header, HEADER_CLOCK_DATA);
+>>  
+>> -	perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
+>> +	if (!record__threads_enabled(rec))
+>> +		perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
 >> +
->>  /* Setup RDDM vector table for RDDM transfer and program RXVEC */
->>  void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
->>  		      struct image_info *img_info)
->> @@ -391,6 +395,9 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
->>  	const struct firmware *firmware = NULL;
->>  	struct image_info *image_info;
->>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->> +	struct pci_dev *pci_dev = to_pci_dev(mhi_cntrl->cntrl_dev);
->> +	struct pci_bus *bus = pci_dev->bus;
->> +	uint32_t instance;
->>  	const char *fw_name;
->>  	void *buf;
->>  	dma_addr_t dma_addr;
->> @@ -466,6 +473,13 @@ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl)
+>>  	if (!record__comp_enabled(rec))
+>>  		perf_header__clear_feat(&session->header, HEADER_COMPRESSED);
+>>  
+>> @@ -1525,15 +1548,21 @@ static void
+>>  record__finish_output(struct record *rec)
+>>  {
+>>  	struct perf_data *data = &rec->data;
+>> -	int fd = perf_data__fd(data);
+>> +	int i, fd = perf_data__fd(data);
+>>  
+>>  	if (data->is_pipe)
 >>  		return;
+>>  
+>>  	rec->session->header.data_size += rec->bytes_written;
+>>  	data->file.size = lseek(perf_data__fd(data), 0, SEEK_CUR);
+>> +	if (record__threads_enabled(rec)) {
+>> +		for (i = 0; i < data->dir.nr; i++)
+>> +			data->dir.files[i].size = lseek(data->dir.files[i].fd, 0, SEEK_CUR);
+>> +	}
+>>  
+>>  	if (!rec->no_buildid) {
+>> +		/* this will be recalculated during process_buildids() */
+>> +		rec->samples = 0;
+>>  		process_buildids(rec);
+>>  
+>>  		if (rec->buildid_all)
+>> @@ -2438,8 +2467,6 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+>>  		status = err;
+>>  
+>>  	record__synthesize(rec, true);
+>> -	/* this will be recalculated during process_buildids() */
+>> -	rec->samples = 0;
+>>  
+>>  	if (!err) {
+>>  		if (!rec->timestamp_filename) {
+>> @@ -3179,7 +3206,7 @@ int cmd_record(int argc, const char **argv)
+>>  
 >>  	}
 >>  
->> +	instance = ((pci_domain_nr(bus) & 0xF) << 4) | (bus->number & 0xF);
->> +	instance &= QRTR_INSTANCE_MASK;
->> +
->> +	mhi_write_reg_field(mhi_cntrl, mhi_cntrl->bhi,
->> +			    BHI_ERRDBG2, QRTR_INSTANCE_MASK,
->> +			    QRTR_INSTANCE_SHIFT, instance);
->
-> You cannot not do this in MHI stack. Why can't you do this in the MHI controller
-> specific to QCN9000? And btw, is QCN9000 supported in mainline?
-
-I'm not sure what QCN9000 means but I'm guessing it's QCN9074. We have
-initial QCN9074 support in ath11k but there are some issues still so
-it's not enabled by default (yet):
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=4e80946197a83a6115e308334618449b77696d6a
-
-And I suspect we have this same qrtr issue with any ath11k PCI device,
-including QCA6390, so this is not a QCN9074 specific problem.
-
-BTW Gokul, please always CC the ath11k list when submitting patches
-which are related to ath11k.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+>> -	if (rec->opts.kcore)
+>> +	if (rec->opts.kcore || record__threads_enabled(rec))
+>>  		rec->data.is_dir = true;
+>>  
+>>  	if (rec->opts.comp_level != 0) {
+>> diff --git a/tools/perf/util/record.h b/tools/perf/util/record.h
+>> index 266760ac9143..9c13a39cc58f 100644
+>> --- a/tools/perf/util/record.h
+>> +++ b/tools/perf/util/record.h
+>> @@ -74,6 +74,7 @@ struct record_opts {
+>>  	int	      ctl_fd;
+>>  	int	      ctl_fd_ack;
+>>  	bool	      ctl_fd_close;
+>> +	int	      threads_spec;
+>>  };
+>>  
+>>  extern const char * const *record_usage;
+>> -- 
+>> 2.24.1
+>>
