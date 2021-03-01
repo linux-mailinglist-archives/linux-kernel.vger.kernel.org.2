@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5D93287B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CD93287D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238467AbhCAR2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:28:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59992 "EHLO mail.kernel.org"
+        id S238544AbhCAR2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:28:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233907AbhCAQ0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:26:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC5C64EDF;
-        Mon,  1 Mar 2021 16:22:01 +0000 (UTC)
+        id S234546AbhCAQ06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:26:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4525764E12;
+        Mon,  1 Mar 2021 16:22:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615722;
-        bh=1pQvcjsLn1hyuWuG3IYWJqdnk198cx+QlxgmKMLq+pE=;
+        s=korg; t=1614615727;
+        bh=iPXy742P8sRdpLi3cQoN84MtFgXqylTY+KqIjcXKuNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a32xYpQRDMVwfmBQ+OxW+CJjpTwfQwukvTl3wCKYIoqW//71xb4D3OMjmMw0cwqZR
-         5IoqFMSF4GBanhDxbV96tIbTZDamgs30ZoW82R4NCUzw5jn77Wnl0ga7OzMP9nHJms
-         2njbXuL+P6sjSQRkdvswcehhjJ8h8MXK4inBC/pI=
+        b=wLDfInZwEVvHmx0Cp/lYxgFpgDSN3A25pgPx1vgrT1/6n6VRqheg6HoWbMRMkYhZP
+         +95VPCmRtaTnqBvgBC6g5twLPk4b+KiWDYalLO9/0/vXzW8jAxs/ofdP7u9dB7oebi
+         9onmbxpdE2GCjAr22vTiYfTBPCUU+lHiLvxYWkDg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shyam Prasad N <sprasad@microsoft.com>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 007/134] cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-Date:   Mon,  1 Mar 2021 17:11:48 +0100
-Message-Id: <20210301161013.942524168@linuxfoundation.org>
+        stable@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Subject: [PATCH 4.9 009/134] kdb: Make memory allocations more robust
+Date:   Mon,  1 Mar 2021 17:11:50 +0100
+Message-Id: <20210301161014.036724218@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -41,44 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shyam Prasad N <sprasad@microsoft.com>
+From: Sumit Garg <sumit.garg@linaro.org>
 
-[ Upstream commit a738c93fb1c17e386a09304b517b1c6b2a6a5a8b ]
+commit 93f7a6d818deef69d0ba652d46bae6fbabbf365c upstream.
 
-While debugging another issue today, Steve and I noticed that if a
-subdir for a file share is already mounted on the client, any new
-mount of any other subdir (or the file share root) of the same share
-results in sharing the cifs superblock, which e.g. can result in
-incorrect device name.
+Currently kdb uses in_interrupt() to determine whether its library
+code has been called from the kgdb trap handler or from a saner calling
+context such as driver init. This approach is broken because
+in_interrupt() alone isn't able to determine kgdb trap handler entry from
+normal task context. This can happen during normal use of basic features
+such as breakpoints and can also be trivially reproduced using:
+echo g > /proc/sysrq-trigger
 
-While setting prefix path for the root of a cifs_sb,
-CIFS_MOUNT_USE_PREFIX_PATH flag should also be set.
-Without it, prepath is not even considered in some places,
-and output of "mount" and various /proc/<>/*mount* related
-options can be missing part of the device name.
+We can improve this by adding check for in_dbg_master() instead which
+explicitly determines if we are running in debugger context.
 
-Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Link: https://lore.kernel.org/r/1611313556-4004-1-git-send-email-sumit.garg@linaro.org
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/connect.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/debug/kdb/kdb_private.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-index af78de9ef036c..8508dc8270593 100644
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -3488,6 +3488,7 @@ int cifs_setup_cifs_sb(struct smb_vol *pvolume_info,
- 		cifs_sb->prepath = kstrdup(pvolume_info->prepath, GFP_KERNEL);
- 		if (cifs_sb->prepath == NULL)
- 			return -ENOMEM;
-+		cifs_sb->mnt_cifs_flags |= CIFS_MOUNT_USE_PREFIX_PATH;
- 	}
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -234,7 +234,7 @@ extern struct task_struct *kdb_curr_task
+ #define	kdb_do_each_thread(g, p) do_each_thread(g, p)
+ #define	kdb_while_each_thread(g, p) while_each_thread(g, p)
  
- 	return 0;
--- 
-2.27.0
-
+-#define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
++#define GFP_KDB (in_dbg_master() ? GFP_ATOMIC : GFP_KERNEL)
+ 
+ extern void *debug_kmalloc(size_t size, gfp_t flags);
+ extern void debug_kfree(void *);
 
 
