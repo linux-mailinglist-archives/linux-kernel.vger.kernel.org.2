@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CC8329C88
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B159E329B4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380918AbhCBB4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:56:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50712 "EHLO mail.kernel.org"
+        id S240519AbhCBBWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:22:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241601AbhCATcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:32:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B651A65303;
-        Mon,  1 Mar 2021 17:41:47 +0000 (UTC)
+        id S241046AbhCATFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:05:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CDFF65305;
+        Mon,  1 Mar 2021 17:41:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620508;
-        bh=GwEJmiFERp6COY/bVv1LD7Jx8iMrIUfQCXRWYVeMC5k=;
+        s=korg; t=1614620511;
+        bh=HuvaGODZbp3hurLAhBmhqPUiJR9JIRrXi8xF1vFELTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IkDIOYcWnGrORmWNn+VnoX9/R0FNbK9mJ5YiEsmf3goqfURc7cTcqYlSPInpNpXfB
-         0ZnXQgOmTJ2oZHcAY9sfKof8Ju1bXwwPHG8atRuKkxTvdowJVaQlr9cNMZ1MUn6QjF
-         3s7w4ZXO/31mikkYL/dcuGi8vJWMEp+oh4Axo26A=
+        b=RFa6V3QX7Vq+ceXN6E/QLulyeILuinK8+CrNy+IkWmKmZml5dPwG0o2sBidNkn201
+         mYKd5c80azuidDFy1SVxJciegGoVmhReHEgqs6vqgPFqPX8cx8FsuJPWuOk0wmlIQo
+         F6hSJey4MENE01D3w1D0VZPTjI3+j98zyLlP5BQc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
+        <zhouyanjie@wanyeetech.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 179/775] crypto: arm64/aes-ce - really hide slower algos when faster ones are enabled
-Date:   Mon,  1 Mar 2021 17:05:47 +0100
-Message-Id: <20210301161210.475967803@linuxfoundation.org>
+Subject: [PATCH 5.11 180/775] hwrng: ingenic - Fix a resource leak in an error handling path
+Date:   Mon,  1 Mar 2021 17:05:48 +0100
+Message-Id: <20210301161210.526712977@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,47 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 15deb4333cd6d4e1e3216582e4c531ec40a6b060 ]
+[ Upstream commit c4ff41b93d1f10d1b8be258c31a0436c5769fc00 ]
 
-Commit 69b6f2e817e5b ("crypto: arm64/aes-neon - limit exposed routines if
-faster driver is enabled") intended to hide modes from the plain NEON
-driver that are also implemented by the faster bit sliced NEON one if
-both are enabled. However, the defined() CPP function does not detect
-if the bit sliced NEON driver is enabled as a module. So instead, let's
-use IS_ENABLED() here.
+In case of error, we should call 'clk_disable_unprepare()' to undo a
+previous 'clk_prepare_enable()' call, as already done in the remove
+function.
 
-Fixes: 69b6f2e817e5b ("crypto: arm64/aes-neon - limit exposed routines if ...")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Fixes: 406346d22278 ("hwrng: ingenic - Add hardware TRNG for Ingenic X1830")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Tested-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/crypto/aes-glue.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/char/hw_random/ingenic-trng.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/crypto/aes-glue.c b/arch/arm64/crypto/aes-glue.c
-index 34b8a89197be3..cafb5b96be0e6 100644
---- a/arch/arm64/crypto/aes-glue.c
-+++ b/arch/arm64/crypto/aes-glue.c
-@@ -55,7 +55,7 @@ MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 Crypto Extensions");
- #define aes_mac_update		neon_aes_mac_update
- MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 NEON");
- #endif
--#if defined(USE_V8_CRYPTO_EXTENSIONS) || !defined(CONFIG_CRYPTO_AES_ARM64_BS)
-+#if defined(USE_V8_CRYPTO_EXTENSIONS) || !IS_ENABLED(CONFIG_CRYPTO_AES_ARM64_BS)
- MODULE_ALIAS_CRYPTO("ecb(aes)");
- MODULE_ALIAS_CRYPTO("cbc(aes)");
- MODULE_ALIAS_CRYPTO("ctr(aes)");
-@@ -650,7 +650,7 @@ static int __maybe_unused xts_decrypt(struct skcipher_request *req)
+diff --git a/drivers/char/hw_random/ingenic-trng.c b/drivers/char/hw_random/ingenic-trng.c
+index 954a8411d67d2..0eb80f786f4dd 100644
+--- a/drivers/char/hw_random/ingenic-trng.c
++++ b/drivers/char/hw_random/ingenic-trng.c
+@@ -113,13 +113,17 @@ static int ingenic_trng_probe(struct platform_device *pdev)
+ 	ret = hwrng_register(&trng->rng);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register hwrng\n");
+-		return ret;
++		goto err_unprepare_clk;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, trng);
+ 
+ 	dev_info(&pdev->dev, "Ingenic DTRNG driver registered\n");
+ 	return 0;
++
++err_unprepare_clk:
++	clk_disable_unprepare(trng->clk);
++	return ret;
  }
  
- static struct skcipher_alg aes_algs[] = { {
--#if defined(USE_V8_CRYPTO_EXTENSIONS) || !defined(CONFIG_CRYPTO_AES_ARM64_BS)
-+#if defined(USE_V8_CRYPTO_EXTENSIONS) || !IS_ENABLED(CONFIG_CRYPTO_AES_ARM64_BS)
- 	.base = {
- 		.cra_name		= "__ecb(aes)",
- 		.cra_driver_name	= "__ecb-aes-" MODE,
+ static int ingenic_trng_remove(struct platform_device *pdev)
 -- 
 2.27.0
 
