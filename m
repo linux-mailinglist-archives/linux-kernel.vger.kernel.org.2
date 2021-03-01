@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E169329D8F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14F1329D9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242193AbhCBCeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:34:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55158 "EHLO mail.kernel.org"
+        id S1346113AbhCBCfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:35:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241825AbhCATrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:47:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55683652E7;
-        Mon,  1 Mar 2021 17:40:33 +0000 (UTC)
+        id S242038AbhCATug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:50:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4B40650EB;
+        Mon,  1 Mar 2021 17:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620433;
-        bh=CGGT42tboDqfsk1AL7bzSKuvQUA1wcuNQHGG7dOHCg8=;
+        s=korg; t=1614621126;
+        bh=QxjXbhNP57LQOetPQ+jwyb1j3SXYSCCkxsivE/8MZQM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y0QQ8vxhRPyfDc3W4sIbQO0EFCDkaL15VQHKMRWfkMWwIggV0X733C/+7wg/keqEx
-         Wb/+mylxL4hsCBtkq25zLwko0MWX4ghyYk7jhSppsfgr/WnvZu1LHTSvdpdvdf0id2
-         AKXCX4ZZdnXR2Jgm+MHzUhbKzjumdCU30STXUDLc=
+        b=rmC69G0vMKz5DT6ZBpy3E4tQEHXZtlo2ZehoXiKbj04qas8RVTt2wBBgz0jzfF9EQ
+         dollfQFotT/QRtoj69Jh8MLotgDnCHzcTYN/MGjHJQAeIztzyq+YTJsaKbrT92Kvgl
+         QldObGiGEC7dmB5hkrOx88Pwu1XmPoeWCACA23VY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        David Howells <dhowells@redhat.com>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        David Woodhouse <dwmw2@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 152/775] arm64: dts: mt8183: rename rdma fifo size
-Date:   Mon,  1 Mar 2021 17:05:20 +0100
-Message-Id: <20210301161209.162363850@linuxfoundation.org>
+Subject: [PATCH 5.11 363/775] certs: Fix blacklist flag type confusion
+Date:   Mon,  1 Mar 2021 17:08:51 +0100
+Message-Id: <20210301161219.562690501@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -43,46 +43,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 431368c2648b59e5485a1b5f1276a83d885fb44b ]
+[ Upstream commit 4993e1f9479a4161fd7d93e2b8b30b438f00cb0f ]
 
-property name must include only lowercase and '-'
+KEY_FLAG_KEEP is not meant to be passed to keyring_alloc() or key_alloc(),
+as these only take KEY_ALLOC_* flags.  KEY_FLAG_KEEP has the same value as
+KEY_ALLOC_BYPASS_RESTRICTION, but fortunately only key_create_or_update()
+uses it.  LSMs using the key_alloc hook don't check that flag.
 
-Fixes: 91f9c963ce79 ("arm64: dts: mt8183: Add display nodes for MT8183")
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Link: https://lore.kernel.org/r/20210128112314.1304160-2-hsinyi@chromium.org
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+KEY_FLAG_KEEP is then ignored but fortunately (again) the root user cannot
+write to the blacklist keyring, so it is not possible to remove a key/hash
+from it.
+
+Fix this by adding a KEY_ALLOC_SET_KEEP flag that tells key_alloc() to set
+KEY_FLAG_KEEP on the new key.  blacklist_init() can then, correctly, pass
+this to keyring_alloc().
+
+We can also use this in ima_mok_init() rather than setting the flag
+manually.
+
+Note that this doesn't fix an observable bug with the current
+implementation but it is required to allow addition of new hashes to the
+blacklist in the future without making it possible for them to be removed.
+
+Fixes: 734114f8782f ("KEYS: Add a system blacklist keyring")
+Reported-by: Mickaël Salaün <mic@linux.microsoft.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Mickaël Salaün <mic@linux.microsoft.com>
+cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ certs/blacklist.c                | 2 +-
+ include/linux/key.h              | 1 +
+ security/integrity/ima/ima_mok.c | 5 ++---
+ security/keys/key.c              | 2 ++
+ 4 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 5b782a4769e7e..6c84ccb709af6 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -1011,7 +1011,7 @@
- 			clocks = <&mmsys CLK_MM_DISP_RDMA0>;
- 			iommus = <&iommu M4U_PORT_DISP_RDMA0>;
- 			mediatek,larb = <&larb0>;
--			mediatek,rdma_fifo_size = <5120>;
-+			mediatek,rdma-fifo-size = <5120>;
- 			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xb000 0x1000>;
- 		};
+diff --git a/certs/blacklist.c b/certs/blacklist.c
+index 6514f9ebc943f..f1c434b04b5e4 100644
+--- a/certs/blacklist.c
++++ b/certs/blacklist.c
+@@ -162,7 +162,7 @@ static int __init blacklist_init(void)
+ 			      KEY_USR_VIEW | KEY_USR_READ |
+ 			      KEY_USR_SEARCH,
+ 			      KEY_ALLOC_NOT_IN_QUOTA |
+-			      KEY_FLAG_KEEP,
++			      KEY_ALLOC_SET_KEEP,
+ 			      NULL, NULL);
+ 	if (IS_ERR(blacklist_keyring))
+ 		panic("Can't allocate system blacklist keyring\n");
+diff --git a/include/linux/key.h b/include/linux/key.h
+index 0f2e24f13c2bd..eed3ce139a32e 100644
+--- a/include/linux/key.h
++++ b/include/linux/key.h
+@@ -289,6 +289,7 @@ extern struct key *key_alloc(struct key_type *type,
+ #define KEY_ALLOC_BUILT_IN		0x0004	/* Key is built into kernel */
+ #define KEY_ALLOC_BYPASS_RESTRICTION	0x0008	/* Override the check on restricted keyrings */
+ #define KEY_ALLOC_UID_KEYRING		0x0010	/* allocating a user or user session keyring */
++#define KEY_ALLOC_SET_KEEP		0x0020	/* Set the KEEP flag on the key/keyring */
  
-@@ -1023,7 +1023,7 @@
- 			clocks = <&mmsys CLK_MM_DISP_RDMA1>;
- 			iommus = <&iommu M4U_PORT_DISP_RDMA1>;
- 			mediatek,larb = <&larb0>;
--			mediatek,rdma_fifo_size = <2048>;
-+			mediatek,rdma-fifo-size = <2048>;
- 			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xc000 0x1000>;
- 		};
+ extern void key_revoke(struct key *key);
+ extern void key_invalidate(struct key *key);
+diff --git a/security/integrity/ima/ima_mok.c b/security/integrity/ima/ima_mok.c
+index 36cadadbfba47..1e5c019161738 100644
+--- a/security/integrity/ima/ima_mok.c
++++ b/security/integrity/ima/ima_mok.c
+@@ -38,13 +38,12 @@ __init int ima_mok_init(void)
+ 				(KEY_POS_ALL & ~KEY_POS_SETATTR) |
+ 				KEY_USR_VIEW | KEY_USR_READ |
+ 				KEY_USR_WRITE | KEY_USR_SEARCH,
+-				KEY_ALLOC_NOT_IN_QUOTA,
++				KEY_ALLOC_NOT_IN_QUOTA |
++				KEY_ALLOC_SET_KEEP,
+ 				restriction, NULL);
  
+ 	if (IS_ERR(ima_blacklist_keyring))
+ 		panic("Can't allocate IMA blacklist keyring.");
+-
+-	set_bit(KEY_FLAG_KEEP, &ima_blacklist_keyring->flags);
+ 	return 0;
+ }
+ device_initcall(ima_mok_init);
+diff --git a/security/keys/key.c b/security/keys/key.c
+index ebe752b137aa1..c45afdd1dfbb4 100644
+--- a/security/keys/key.c
++++ b/security/keys/key.c
+@@ -303,6 +303,8 @@ struct key *key_alloc(struct key_type *type, const char *desc,
+ 		key->flags |= 1 << KEY_FLAG_BUILTIN;
+ 	if (flags & KEY_ALLOC_UID_KEYRING)
+ 		key->flags |= 1 << KEY_FLAG_UID_KEYRING;
++	if (flags & KEY_ALLOC_SET_KEEP)
++		key->flags |= 1 << KEY_FLAG_KEEP;
+ 
+ #ifdef KEY_DEBUGGING
+ 	key->magic = KEY_DEBUG_MAGIC;
 -- 
 2.27.0
 
