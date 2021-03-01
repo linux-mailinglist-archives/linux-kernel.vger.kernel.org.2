@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C10329D2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669EC329CF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443147AbhCBCTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:19:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55188 "EHLO mail.kernel.org"
+        id S1442645AbhCBCO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:14:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240425AbhCATpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:45:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7BCB6521F;
-        Mon,  1 Mar 2021 17:23:07 +0000 (UTC)
+        id S241628AbhCATlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:41:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B0565220;
+        Mon,  1 Mar 2021 17:23:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619388;
-        bh=pl2Q7hvzPUKUqWDnY4IvMXgXiT4MrI8eYry386xtx6A=;
+        s=korg; t=1614619390;
+        bh=5TRILHPSNQSwrpi3C8zRzh0O7vUD3+hc0Itf3G1ZPko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kAN+/V3UfMC9y6aY7QcLX4oV8x8fkK8HlvbQ+9xylbDkV2upoBL/Naq6b5fD4I6mR
-         g9ffHkvSTxb3CFyjRjygLaRWN5cFdSBF7za8w2fc2+fVjrXVUfvu4c3T8zcqYgCTfZ
-         5v6pxYtEqs1US7VWja/Mr75ANeFAfSNOGAvlMorQ=
+        b=he1o/ZHXh7wi9qASLfoG15UHHi/ybeISp2S6L1r5ORWTiwGDns7cnJSxASA0ZabhI
+         lnzaiv9C9kndTFn8nv3Kc9CTgwTy+sleUSFTlOS8bPF4H8f6yWDZw4Y4b+mVL2NjR1
+         yeRd/fmtYkt5WtGQU7W5obSGre3uktZuBvoK+Lq4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
         Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 437/663] i40e: Fix addition of RX filters after enabling FW LLDP agent
-Date:   Mon,  1 Mar 2021 17:11:25 +0100
-Message-Id: <20210301161203.516685812@linuxfoundation.org>
+Subject: [PATCH 5.10 438/663] i40e: Fix VFs not created
+Date:   Mon,  1 Mar 2021 17:11:26 +0100
+Message-Id: <20210301161203.564850032@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -45,106 +42,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Palczewski <mateusz.palczewski@intel.com>
+From: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
 
-[ Upstream commit 28b1208e7a7fa3ddc9345b022bb93e53d9dcc28a ]
+[ Upstream commit dc8812626440fa6a27f1f3f654f6dc435e042e42 ]
 
-Fix addition of VLAN filter for PF after enabling FW LLDP agent.
-Changing LLDP Agent causes FW to re-initialize per NVM settings.
-Remove default PF filter and move "Enable/Disable" to currently used
-reset flag.
-Without this patch PF would try to add MAC VLAN filter with default
-switch filter present. This causes AQ error and sets promiscuous mode
-on.
+When creating VFs they were sometimes not getting resources.
+It was caused by not executing i40e_reset_all_vfs due to
+flag __I40E_VF_DISABLE being set on PF. Because of this
+IAVF was never able to finish setup sequence never
+getting reset indication from PF.
+Changed test_and_set_bit __I40E_VF_DISABLE in
+i40e_sync_filters_subtask to test_bit and removed clear_bit.
+This function should not set this bit it should only check
+if it hasn't been already set.
 
-Fixes: c65e78f87f81 ("i40e: Further implementation of LLDP")
-Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Reviewed-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Fixes: a7542b876075 ("i40e: check __I40E_VF_DISABLE bit in i40e_sync_filters_subtask")
+Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 16 +++++++++-------
- drivers/net/ethernet/intel/i40e/i40e_main.c    |  9 ++++-----
- 2 files changed, 13 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index 26ba1f3eb2d85..9e81f85ee2d8d 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -4878,7 +4878,7 @@ static int i40e_set_priv_flags(struct net_device *dev, u32 flags)
- 	enum i40e_admin_queue_err adq_err;
- 	struct i40e_vsi *vsi = np->vsi;
- 	struct i40e_pf *pf = vsi->back;
--	bool is_reset_needed;
-+	u32 reset_needed = 0;
- 	i40e_status status;
- 	u32 i, j;
- 
-@@ -4923,9 +4923,11 @@ static int i40e_set_priv_flags(struct net_device *dev, u32 flags)
- flags_complete:
- 	changed_flags = orig_flags ^ new_flags;
- 
--	is_reset_needed = !!(changed_flags & (I40E_FLAG_VEB_STATS_ENABLED |
--		I40E_FLAG_LEGACY_RX | I40E_FLAG_SOURCE_PRUNING_DISABLED |
--		I40E_FLAG_DISABLE_FW_LLDP));
-+	if (changed_flags & I40E_FLAG_DISABLE_FW_LLDP)
-+		reset_needed = I40E_PF_RESET_AND_REBUILD_FLAG;
-+	if (changed_flags & (I40E_FLAG_VEB_STATS_ENABLED |
-+	    I40E_FLAG_LEGACY_RX | I40E_FLAG_SOURCE_PRUNING_DISABLED))
-+		reset_needed = BIT(__I40E_PF_RESET_REQUESTED);
- 
- 	/* Before we finalize any flag changes, we need to perform some
- 	 * checks to ensure that the changes are supported and safe.
-@@ -5057,7 +5059,7 @@ flags_complete:
- 				case I40E_AQ_RC_EEXIST:
- 					dev_warn(&pf->pdev->dev,
- 						 "FW LLDP agent is already running\n");
--					is_reset_needed = false;
-+					reset_needed = 0;
- 					break;
- 				case I40E_AQ_RC_EPERM:
- 					dev_warn(&pf->pdev->dev,
-@@ -5086,8 +5088,8 @@ flags_complete:
- 	/* Issue reset to cause things to take effect, as additional bits
- 	 * are added we will need to create a mask of bits requiring reset
- 	 */
--	if (is_reset_needed)
--		i40e_do_reset(pf, BIT(__I40E_PF_RESET_REQUESTED), true);
-+	if (reset_needed)
-+		i40e_do_reset(pf, reset_needed, true);
- 
- 	return 0;
- }
 diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index bcfa6dcac29f7..b268adb3e1d44 100644
+index b268adb3e1d44..3ca5644785556 100644
 --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
 +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -8537,11 +8537,6 @@ void i40e_do_reset(struct i40e_pf *pf, u32 reset_flags, bool lock_acquired)
- 		dev_dbg(&pf->pdev->dev, "PFR requested\n");
- 		i40e_handle_reset_warning(pf, lock_acquired);
+@@ -2616,7 +2616,7 @@ static void i40e_sync_filters_subtask(struct i40e_pf *pf)
+ 		return;
+ 	if (!test_and_clear_bit(__I40E_MACVLAN_SYNC_PENDING, pf->state))
+ 		return;
+-	if (test_and_set_bit(__I40E_VF_DISABLE, pf->state)) {
++	if (test_bit(__I40E_VF_DISABLE, pf->state)) {
+ 		set_bit(__I40E_MACVLAN_SYNC_PENDING, pf->state);
+ 		return;
+ 	}
+@@ -2634,7 +2634,6 @@ static void i40e_sync_filters_subtask(struct i40e_pf *pf)
+ 			}
+ 		}
+ 	}
+-	clear_bit(__I40E_VF_DISABLE, pf->state);
+ }
  
--		dev_info(&pf->pdev->dev,
--			 pf->flags & I40E_FLAG_DISABLE_FW_LLDP ?
--			 "FW LLDP is disabled\n" :
--			 "FW LLDP is enabled\n");
--
- 	} else if (reset_flags & I40E_PF_RESET_AND_REBUILD_FLAG) {
- 		/* Request a PF Reset
- 		 *
-@@ -8549,6 +8544,10 @@ void i40e_do_reset(struct i40e_pf *pf, u32 reset_flags, bool lock_acquired)
- 		 */
- 		i40e_prep_for_reset(pf, lock_acquired);
- 		i40e_reset_and_rebuild(pf, true, lock_acquired);
-+		dev_info(&pf->pdev->dev,
-+			 pf->flags & I40E_FLAG_DISABLE_FW_LLDP ?
-+			 "FW LLDP is disabled\n" :
-+			 "FW LLDP is enabled\n");
- 
- 	} else if (reset_flags & BIT_ULL(__I40E_REINIT_REQUESTED)) {
- 		int v;
+ /**
 -- 
 2.27.0
 
