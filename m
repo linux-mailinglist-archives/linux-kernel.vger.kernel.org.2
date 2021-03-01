@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6543298C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4354732998A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346507AbhCAXsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:48:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58730 "EHLO mail.kernel.org"
+        id S1348015AbhCBAW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:22:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238505AbhCASJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:09:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDCD5651FC;
-        Mon,  1 Mar 2021 17:40:30 +0000 (UTC)
+        id S239859AbhCAS0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:26:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90DF4652EA;
+        Mon,  1 Mar 2021 17:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620431;
-        bh=UyxyDC5H4iCfK+QSXJyxUZ4eJ+IyEZFxGcFEYb9+TbE=;
+        s=korg; t=1614620442;
+        bh=q21wqGcKVLQxf7NsfwXZrs01TDvucU5bYi8SLKcX+kM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gkoD1rzevWrXZOGFT9tCf9kzmlhEQRYnivoS8+Pu1tY6KOH69jaaz77HUqzaSx8SB
-         ehd/Dq+bG5Wnb6Pyt74EcrmHuDj0UlCKbP8HSA3rC8nSUz4BqYo4oC7g2zzIAJs3/w
-         K2PhQjnJt7Jylhw+2UWJH2kFLdV5YMyzFuwV8BZs=
+        b=BF1LAaYsHCo8QmLr9AKhABgkthY//uATsk30/cSI6uYA7/lgQm3kPT3U6yvD7JbKv
+         fXJNbb0LHWiapPOLCFt15BCWJDaF/swBT0wUgOUhH4ALlVFgv2M08CgTbmcI5v5CB7
+         0crvHtAXv7D7kNFnpRoobYd/KooOZehViud/Rg8s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        stable@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 151/775] selftests/bpf: Dont exit on failed bpf_testmod unload
-Date:   Mon,  1 Mar 2021 17:05:19 +0100
-Message-Id: <20210301161209.112899047@linuxfoundation.org>
+Subject: [PATCH 5.11 154/775] arm64: dts: mt8183: Add missing power-domain for pwm0 node
+Date:   Mon,  1 Mar 2021 17:05:22 +0100
+Message-Id: <20210301161209.264539618@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,38 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-[ Upstream commit 86ce322d21eb032ed8fdd294d0fb095d2debb430 ]
+[ Upstream commit 2f99fb6e46b0e982bb6ab18b24a08fa318f740ea ]
 
-Fix bug in handling bpf_testmod unloading that will cause test_progs exiting
-prematurely if bpf_testmod unloading failed. This is especially problematic
-when running a subset of test_progs that doesn't require root permissions and
-doesn't rely on bpf_testmod, yet will fail immediately due to exit(1) in
-unload_bpf_testmod().
+The MT8183 display PWM device will not work until the associated
+power-domain is enabled. Add the power-domain reference to the node
+allows the display PWM driver to operate and the backlight turn on.
 
-Fixes: 9f7fa225894c ("selftests/bpf: Add bpf_testmod kernel module for testing")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210126065019.1268027-1-andrii@kernel.org
+Fixes: f15722c0fef0 ("arm64: dts: mt8183: Add pwm and backlight node")
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Link: https://lore.kernel.org/r/20210113215723.71966-1-enric.balletbo@collabora.com
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_progs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 213628ee721c1..6396932b97e29 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -390,7 +390,7 @@ static void unload_bpf_testmod(void)
- 			return;
- 		}
- 		fprintf(env.stderr, "Failed to unload bpf_testmod.ko from kernel: %d\n", -errno);
--		exit(1);
-+		return;
- 	}
- 	if (env.verbosity > VERBOSE_NONE)
- 		fprintf(stdout, "Successfully unloaded bpf_testmod.ko.\n");
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index 9c0073cfad452..64fbba76597c8 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -661,6 +661,7 @@
+ 			compatible = "mediatek,mt8183-disp-pwm";
+ 			reg = <0 0x1100e000 0 0x1000>;
+ 			interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_LOW>;
++			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+ 			#pwm-cells = <2>;
+ 			clocks = <&topckgen CLK_TOP_MUX_DISP_PWM>,
+ 					<&infracfg CLK_INFRA_DISP_PWM>;
 -- 
 2.27.0
 
