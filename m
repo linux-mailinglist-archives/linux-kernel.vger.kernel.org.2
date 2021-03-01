@@ -2,188 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436ED3294A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 23:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F633294B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 23:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245024AbhCAWJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:09:08 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:16241 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238448AbhCAR2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:28:05 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614619665; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=N0yPR1LTqutQsyaII3SXK9Z8MBYFKevcJKndMzoVQCk=; b=LxxScubkBwwSNZHOUVXGcgeR2JmqysJ4WybZAXS1ZWs2T0rMiKpcXu5VwK5SKggt66rfPeJV
- 2yLrh2QaBEpIWusDnVTAVVhps7/yJTvBmXQQTpxRzowan11ZSRYzuYShi/JqkhjWQ2wSCdCF
- 5sj1QRErITbwCbpXK2j7fuNnVzI=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 603d23f1fee96fcaf40c19da (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 17:27:13
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 48381C433C6; Mon,  1 Mar 2021 17:27:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.110] (unknown [49.204.182.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B8090C433C6;
-        Mon,  1 Mar 2021 17:27:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B8090C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH 06/13] arm64: dts: qcom: SC7280: Add rpmhcc clock
- controller node
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1613114930-1661-1-git-send-email-rnayak@codeaurora.org>
- <1613114930-1661-7-git-send-email-rnayak@codeaurora.org>
- <161406618557.1254594.15985584772106947706@swboyd.mtv.corp.google.com>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <f58070ee-ff00-f8c5-6459-782562e903e5@codeaurora.org>
-Date:   Mon, 1 Mar 2021 22:57:06 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S245200AbhCAWNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238092AbhCARap (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:30:45 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CAEC06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:29:55 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id c19so11733184pjq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:29:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dsBZmo7yHiiMQ5Fonyw4uCM2dBJFr4DMbpHeKPUN97w=;
+        b=VHmr5H/HHBNEIniUAlXBwTWXqsPNhR4dVZFxuWdraxH3/sVGt/Mk2LJ7gU2J7OhNbk
+         NbOtCF2MU+tUkoymahODmgPtSlN22JITLVnra7OdLWuX9irDfljX34IWWSt/8/VttCLR
+         DpNTezrcV2vDUhY+qsXGKwWCPCQMm60H1JtBUuPcqzYVkY6hhfF+o+7AARuuLooepwue
+         zQGYX4IyEpVFFvFgSkXKGJ5fTHUTiAuMATxrFec12zLski1GrFPa1PWB1zvp0XruULFP
+         hsuZeBiONLsCSASL3dJNYZ3G4inRDB4O8ebFsxfAbNxNFvwFq4mnD8ifwA2Gn3pDPP0m
+         8a/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dsBZmo7yHiiMQ5Fonyw4uCM2dBJFr4DMbpHeKPUN97w=;
+        b=gFkdTLZKTV9f2+djXDuwtLZ1xLy+kP8QgPmlUa+1wSgSW6xNVSXq73Fos9aGSPmdX6
+         JLG4As+WaENQaKAL0gpGSGC+QpBvlXE6un9YnB9MOthyvJa7+/OJWQA8kY9F6WMdaw1y
+         vpG6Eykn1Q8euhWjzFuwJpfPn8Agky/+OIwUp0CuXeebqFp0AIM/rWrIOwcryPk3ut60
+         SF3G5LPg2I+EfvrHNEG5hpaEq5f0ll0XKfQXi25chocr7wFC90nfc+htZRgUWDwFnXe6
+         w1/srIfaJ1kOPZg7kk7tn6gbhz07lajuHHXtzG5dxL0AFusbmQ1c5IdCylNegEmFkn7x
+         mWug==
+X-Gm-Message-State: AOAM5312GAr8OIuuzdxxKGSBJSAD4IiyBArwJYAxU6p/c8M/3D5/01Ux
+        OPKY4ZxeadidewjoOv8oVQLwQw==
+X-Google-Smtp-Source: ABdhPJxh/vRQVuNDLKJNR2CEhMj6qkhFIK/a7szLZE7YY41foVpV1i/0wP9iTRQYyLOibfWjazkjrQ==
+X-Received: by 2002:a17:90a:67ca:: with SMTP id g10mr18209260pjm.166.1614619794419;
+        Mon, 01 Mar 2021 09:29:54 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
+        by smtp.gmail.com with ESMTPSA id s16sm18604412pfs.39.2021.03.01.09.29.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 09:29:53 -0800 (PST)
+Date:   Mon, 1 Mar 2021 09:29:46 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH 03/25] x86/sgx: Wipe out EREMOVE from sgx_free_epc_page()
+Message-ID: <YD0kinxqJF1w+BZf@google.com>
+References: <cover.1614590788.git.kai.huang@intel.com>
+ <9c2c83ccc7324390bfb302bd327d9236b890c679.1614590788.git.kai.huang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <161406618557.1254594.15985584772106947706@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c2c83ccc7324390bfb302bd327d9236b890c679.1614590788.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Stephen,
+On Mon, Mar 01, 2021, Kai Huang wrote:
+> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+> index 7449ef33f081..a7dc86e87a09 100644
+> --- a/arch/x86/kernel/cpu/sgx/encl.c
+> +++ b/arch/x86/kernel/cpu/sgx/encl.c
+> @@ -381,6 +381,26 @@ const struct vm_operations_struct sgx_vm_ops = {
+>  	.access = sgx_vma_access,
+>  };
+>  
+> +static void sgx_encl_free_epc_page(struct sgx_epc_page *epc_page)
+> +{
+> +	int ret;
+> +
+> +	WARN_ON_ONCE(epc_page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
+> +
+> +	ret = __eremove(sgx_get_epc_virt_addr(epc_page));
+> +	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret)) {
 
-Thanks for the review.
+This can be ENCLS_WARN, especially if you're printing a separate error message
+about leaking the page.  That being said, I'm not sure a seperate error message
+is a good idea.  If other stuff gets dumped to the kernel log between the WARN
+and the pr_err_once(), it may not be clear to admins that the two events are
+directly connected.  It's even possible the prints could come from two different
+CPUs.
 
-On 2/23/2021 1:13 PM, Stephen Boyd wrote:
-> Quoting Rajendra Nayak (2021-02-11 23:28:43)
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 7848e88..10851e7 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -6,6 +6,7 @@
->>    */
->>   
->>   #include <dt-bindings/clock/qcom,gcc-sc7280.h>
->> +#include <dt-bindings/clock/qcom,rpmh.h>
->>   #include <dt-bindings/interrupt-controller/arm-gic.h>
->>   #include <dt-bindings/soc/qcom,rpmh-rsc.h>
->>   
->> @@ -29,6 +30,42 @@
->>                          clock-frequency = <32000>;
->>                          #clock-cells = <0>;
->>                  };
->> +
->> +               pcie_0_pipe_clk: pcie-0-pipe-clk {
->> +                       compatible = "fixed-clock";
->> +                       clock-frequency = <1000>;
->> +                       #clock-cells = <0>;
->> +               };
->> +
->> +               pcie_1_pipe_clk: pcie-1-pipe-clk {
->> +                       compatible = "fixed-clock";
->> +                       clock-frequency = <1000>;
->> +                       #clock-cells = <0>;
->> +               };
->> +
->> +               ufs_phy_rx_symbol_0_clk: ufs-phy-rx-symbol-0-clk {
->> +                       compatible = "fixed-clock";
->> +                       clock-frequency = <1000>;
->> +                       #clock-cells = <0>;
->> +               };
->> +
->> +               ufs_phy_rx_symbol_1_clk: ufs-phy-rx-symbol-1-clk {
->> +                       compatible = "fixed-clock";
->> +                       clock-frequency = <1000>;
->> +                       #clock-cells = <0>;
->> +               };
->> +
->> +               ufs_phy_tx_symbol_0_clk: ufs-phy-tx-symbol-0-clk {
->> +                       compatible = "fixed-clock";
->> +                       clock-frequency = <1000>;
->> +                       #clock-cells = <0>;
->> +               };
->> +
->> +               usb3_phy_wrapper_gcc_usb30_pipe_clk: usb3-phy-wrapper-gcc-usb30-pipe-clk {
->> +                       compatible = "fixed-clock";
->> +                       clock-frequency = <1000>;
->> +                       #clock-cells = <0>;
->> +               };
-> 
-> Shouldn't these come from the phys? Why are they being added here?
-> 
+Why not dump a short blurb in the WARN itself?  The error message can be thrown
+in a define if the line length is too obnoxious (it's ~109 chars if embedded
+directly).
 
-Once the phys are added, these could be replaced, that was the reason to 
-add them.
+#define EREMOVE_ERROR_MESSAGE \
+	"EREMOVE returned %d (0x%x).  EPC page leaked, reboot recommended."
 
->>          };
->>   
->>          reserved_memory: reserved-memory {
->> @@ -174,6 +211,17 @@
->>                  gcc: clock-controller@100000 {
->>                          compatible = "qcom,gcc-sc7280";
->>                          reg = <0 0x00100000 0 0x1f0000>;
->> +                       clocks = <&rpmhcc RPMH_CXO_CLK>,
->> +                                <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
->> +                                <&pcie_0_pipe_clk>, <&pcie_1_pipe_clk>,
->> +                                <&ufs_phy_rx_symbol_0_clk>, <&ufs_phy_rx_symbol_1_clk>,
->> +                                <&ufs_phy_tx_symbol_0_clk>,
->> +                                <&usb3_phy_wrapper_gcc_usb30_pipe_clk>;
-> 
-> If the phys aren't ready then <0> should work. Unless something goes
-> wrong?
->
+	if (WARN_ONCE(ret, EREMOVE_ERROR_MESSAGE, ret, ret))
 
-Nothing would go wrong if we add <0>, but wanted them to be replaced 
-once the support is added.
-
-
->> +                       clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
->> +                                     "pcie_0_pipe_clk", "pcie_1_pipe-clk",
->> +                                     "ufs_phy_rx_symbol_0_clk", "ufs_phy_rx_symbol_1_clk",
->> +                                     "ufs_phy_tx_symbol_0_clk",
->> +                                     "usb3_phy_wrapper_gcc_usb30_pipe_clk";
->>                          #clock-cells = <1>;
->>                          #reset-cells = <1>;
->>                          #power-domain-cells = <1>;
->> @@ -325,6 +373,13 @@
->>                                            <SLEEP_TCS   3>,
->>                                            <WAKE_TCS    3>,
->>                                            <CONTROL_TCS 1>;
->> +
->> +                       rpmhcc: qcom,rpmhcc {
-> 
-> rpmhcc: clock-controller {
-> 
-
-Will update in the next patch.
-
->> +                               compatible = "qcom,sc7280-rpmh-clk";
->> +                               clocks = <&xo_board>;
->> +                               clock-names = "xo";
->> +                               #clock-cells = <1>;
->> +                       };
->>                  };
->>          };
->>
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
-
---
+> +		/*
+> +		 * Give a message to remind EPC page is leaked, and requires
+> +		 * machine reboot to get leaked pages back. This can be improved
+> +		 * in the future by adding stats of leaked pages, etc.
+> +		 */
+> +		pr_err_once("EPC page is leaked. Require machine reboot to get leaked pages back.\n");
+> +		return;
+> +	}
+> +
+> +	sgx_free_epc_page(epc_page);
+> +}
+> +
+>  /**
+>   * sgx_encl_release - Destroy an enclave instance
+>   * @kref:	address of a kref inside &sgx_encl
