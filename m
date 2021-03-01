@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F02F329AF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FA8329A63
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378292AbhCBBFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:05:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34108 "EHLO mail.kernel.org"
+        id S1377539AbhCBArn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:47:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236011AbhCAS65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:58:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D54C6522B;
-        Mon,  1 Mar 2021 17:25:29 +0000 (UTC)
+        id S240246AbhCASpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:45:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25C3665075;
+        Mon,  1 Mar 2021 17:27:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619530;
-        bh=D2LVDaN8hZJpX1CeiMcPvE6wKFL2Bwh5v9y4bTsAd5A=;
+        s=korg; t=1614619642;
+        bh=rzzlgA06DFwBv2k7a5i12T7b1ITE6mNAKQbWJk7VTqk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K9yILuRbx1SBCj0zDu9W+uYwLxJ/iFhPtpQ4GAXx2mgDg8zFydUZFEP4qiylLwh8r
-         8v1XT7TwxYLMMUgkv0LQB2AnHdHoHHQWZJxt6tp4Mvjffun3ELV/Up5akAsO6LS1ZT
-         /aJ2ZAHAxSqfFBEC9RY1+DBd/K0dX3Z9bJENC10A=
+        b=Ozt0Sag34xMcwSHphoToCWK4xMvzofyyYJ373wN+FLnTQ/qUyv1YGjRDESC2SA2P/
+         RltQrObXkJ/1UJR/YzocA5JY0brB+AC6ktDKon+Ui3qCAzRo601wog8evXdr5hD63F
+         eARi3Vx4DV8nN59Jhi3paItHAaCp2RbMldG5//Vg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "jeffrey.lin" <jeffrey.lin@rad-ic.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.10 486/663] Input: raydium_ts_i2c - do not send zero length
-Date:   Mon,  1 Mar 2021 17:12:14 +0100
-Message-Id: <20210301161205.903689240@linuxfoundation.org>
+Subject: [PATCH 5.10 488/663] Input: joydev - prevent potential read overflow in ioctl
+Date:   Mon,  1 Mar 2021 17:12:16 +0100
+Message-Id: <20210301161205.994180942@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,40 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jeffrey.lin <jeffrey.lin@rad-ic.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit fafd320ae51b9c72d371585b2501f86640ea7b7d upstream.
+commit 182d679b2298d62bf42bb14b12a8067b8e17b617 upstream.
 
-Add default write command package to prevent i2c quirk error of zero
-data length as Raydium touch firmware update is executed.
+The problem here is that "len" might be less than "joydev->nabs" so the
+loops which verfy abspam[i] and keypam[] might read beyond the buffer.
 
-Signed-off-by: jeffrey.lin <jeffrey.lin@rad-ic.com>
-Link: https://lore.kernel.org/r/1608031217-7247-1-git-send-email-jeffrey.lin@raydium.corp-partner.google.com
+Fixes: 999b874f4aa3 ("Input: joydev - validate axis/button maps before clobbering current ones")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YCyzR8WvFRw4HWw6@mwanda
+[dtor: additional check for len being even in joydev_handle_JSIOCSBTNMAP]
 Cc: stable@vger.kernel.org
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/touchscreen/raydium_i2c_ts.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/input/joydev.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/input/touchscreen/raydium_i2c_ts.c
-+++ b/drivers/input/touchscreen/raydium_i2c_ts.c
-@@ -445,6 +445,7 @@ static int raydium_i2c_write_object(stru
- 				    enum raydium_bl_ack state)
- {
- 	int error;
-+	static const u8 cmd[] = { 0xFF, 0x39 };
+--- a/drivers/input/joydev.c
++++ b/drivers/input/joydev.c
+@@ -456,7 +456,7 @@ static int joydev_handle_JSIOCSAXMAP(str
+ 	if (IS_ERR(abspam))
+ 		return PTR_ERR(abspam);
  
- 	error = raydium_i2c_send(client, RM_CMD_BOOT_WRT, data, len);
- 	if (error) {
-@@ -453,7 +454,7 @@ static int raydium_i2c_write_object(stru
- 		return error;
- 	}
+-	for (i = 0; i < joydev->nabs; i++) {
++	for (i = 0; i < len && i < joydev->nabs; i++) {
+ 		if (abspam[i] > ABS_MAX) {
+ 			retval = -EINVAL;
+ 			goto out;
+@@ -480,6 +480,9 @@ static int joydev_handle_JSIOCSBTNMAP(st
+ 	int i;
+ 	int retval = 0;
  
--	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, NULL, 0);
-+	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, cmd, sizeof(cmd));
- 	if (error) {
- 		dev_err(&client->dev, "Ack obj command failed: %d\n", error);
- 		return error;
++	if (len % sizeof(*keypam))
++		return -EINVAL;
++
+ 	len = min(len, sizeof(joydev->keypam));
+ 
+ 	/* Validate the map. */
+@@ -487,7 +490,7 @@ static int joydev_handle_JSIOCSBTNMAP(st
+ 	if (IS_ERR(keypam))
+ 		return PTR_ERR(keypam);
+ 
+-	for (i = 0; i < joydev->nkey; i++) {
++	for (i = 0; i < (len / 2) && i < joydev->nkey; i++) {
+ 		if (keypam[i] > KEY_MAX || keypam[i] < BTN_MISC) {
+ 			retval = -EINVAL;
+ 			goto out;
 
 
