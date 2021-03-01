@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C338327750
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 06:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5593B32773C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 06:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbhCAF6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 00:58:55 -0500
-Received: from mga09.intel.com ([134.134.136.24]:38688 "EHLO mga09.intel.com"
+        id S233517AbhCAFvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 00:51:23 -0500
+Received: from foss.arm.com ([217.140.110.172]:51592 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231639AbhCAF6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 00:58:48 -0500
-IronPort-SDR: pQvcoh9IoeTCHbQSYbiSWgS5aLLwIfOK0k7oa0alVuzmyqa8813RePE/HeaaMh+y0T8In2Mv4U
- P1vfyvHz0rag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="186481464"
-X-IronPort-AV: E=Sophos;i="5.81,214,1610438400"; 
-   d="asc'?scan'208";a="186481464"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2021 21:56:54 -0800
-IronPort-SDR: 0e5BwTNgXfL2LVjlSP/ux6lnLjyplCJvL982EGCFNXANgH0XHrezRXu5Gr3rPSWDS9plgShfFW
- 9fbpa7OSX2VA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,214,1610438400"; 
-   d="asc'?scan'208";a="435291292"
-Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
-  by fmsmga002.fm.intel.com with ESMTP; 28 Feb 2021 21:56:16 -0800
-Date:   Mon, 1 Mar 2021 13:40:00 +0800
-From:   Zhenyu Wang <zhenyuw@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        jani.nikula@linux.intel.com, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: gnu: drm: i915: gvt: Fixed couple of spellings
- in the file gtt.c
-Message-ID: <20210301054000.GT1551@zhen-hp.sh.intel.com>
-Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20210222081838.30328-1-unixbhaskar@gmail.com>
- <c4d15313-78a6-a7c8-97c9-8291600f6264@infradead.org>
- <0a95e99c-57c0-cede-f9c7-9d76711596fd@infradead.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="GxcwvYAGnODwn7V8"
-Content-Disposition: inline
-In-Reply-To: <0a95e99c-57c0-cede-f9c7-9d76711596fd@infradead.org>
+        id S231952AbhCAFvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 00:51:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 780D21FB;
+        Sun, 28 Feb 2021 21:50:34 -0800 (PST)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.66.89])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DDFEC3F70D;
+        Sun, 28 Feb 2021 21:50:30 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, linux-ia64@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: Generalize HUGETLB_PAGE_SIZE_VARIABLE
+Date:   Mon,  1 Mar 2021 11:20:53 +0530
+Message-Id: <1614577853-7452-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+HUGETLB_PAGE_SIZE_VARIABLE need not be defined for each individual
+platform subscribing it. Instead just make it generic.
 
---GxcwvYAGnODwn7V8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: linux-ia64@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Suggested-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This change was originally suggested in an earilier discussion. This
+applies on v5.12-rc1 and has been build tested on all applicable
+platforms i.e ia64 and powerpc.
 
-On 2021.02.22 06:22:37 -0800, Randy Dunlap wrote:
-> On 2/22/21 6:21 AM, Randy Dunlap wrote:
-> > On 2/22/21 12:18 AM, Bhaskar Chowdhury wrote:
-> >>
-> >> s/negtive/negative/
-> >> s/possilbe/possible/
-> >>
-> >> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> >=20
-> > Acked-by: Randy Dunlap <rdunlap@infradead.org>
->=20
-> except the Subject has a typo in it.
-> s/gnu/gpu/
->
+https://patchwork.kernel.org/project/linux-mm/patch/1613024531-19040-3-git-send-email-anshuman.khandual@arm.com/
 
-And pls follow gvt subsys's subject line as drm/i915/gvt: xxx in future.
-I'll fix the title and queue this.
+ arch/ia64/Kconfig    | 6 +-----
+ arch/powerpc/Kconfig | 6 +-----
+ mm/Kconfig           | 8 ++++++++
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-Thanks!
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 2ad7a8d29fcc..6b3e3f6c29ae 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -32,6 +32,7 @@ config IA64
+ 	select TTY
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_VIRT_CPU_ACCOUNTING
++	select HUGETLB_PAGE_SIZE_VARIABLE
+ 	select VIRT_TO_BUS
+ 	select GENERIC_IRQ_PROBE
+ 	select GENERIC_PENDING_IRQ if SMP
+@@ -82,11 +83,6 @@ config STACKTRACE_SUPPORT
+ config GENERIC_LOCKBREAK
+ 	def_bool n
+ 
+-config HUGETLB_PAGE_SIZE_VARIABLE
+-	bool
+-	depends on HUGETLB_PAGE
+-	default y
+-
+ config GENERIC_CALIBRATE_DELAY
+ 	bool
+ 	default y
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 3778ad17f56a..b8565bed284f 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -232,6 +232,7 @@ config PPC
+ 	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
++	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64
+ 	select MMU_GATHER_RCU_TABLE_FREE
+ 	select MMU_GATHER_PAGE_SIZE
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+@@ -416,11 +417,6 @@ config HIGHMEM
+ 
+ source "kernel/Kconfig.hz"
+ 
+-config HUGETLB_PAGE_SIZE_VARIABLE
+-	bool
+-	depends on HUGETLB_PAGE && PPC_BOOK3S_64
+-	default y
+-
+ config MATH_EMULATION
+ 	bool "Math emulation"
+ 	depends on 4xx || PPC_8xx || PPC_MPC832x || BOOKE
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 24c045b24b95..e604a87862a4 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -274,6 +274,14 @@ config ARCH_ENABLE_HUGEPAGE_MIGRATION
+ config ARCH_ENABLE_THP_MIGRATION
+ 	bool
+ 
++config HUGETLB_PAGE_SIZE_VARIABLE
++	def_bool n
++	depends on HUGETLB_PAGE
++	help
++	  When there are multiple HugeTLB sizes available on a platform
++	  and pageblock_order could then be a dynamic value instead of
++	  standard HUGETLB_PAGE_ORDER.
++
+ config CONTIG_ALLOC
+ 	def_bool (MEMORY_ISOLATION && COMPACTION) || CMA
+ 
+-- 
+2.20.1
 
-> >> ---
-> >>  drivers/gpu/drm/i915/gvt/gtt.c | 4 ++--
-> >>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt=
-/gtt.c
-> >> index 897c007ea96a..dc5834bf4de2 100644
-> >> --- a/drivers/gpu/drm/i915/gvt/gtt.c
-> >> +++ b/drivers/gpu/drm/i915/gvt/gtt.c
-> >> @@ -1159,8 +1159,8 @@ static inline void ppgtt_generate_shadow_entry(s=
-truct intel_gvt_gtt_entry *se,
-> >>   * @vgpu: target vgpu
-> >>   * @entry: target pfn's gtt entry
-> >>   *
-> >> - * Return 1 if 2MB huge gtt shadowing is possilbe, 0 if miscondition,
-> >> - * negtive if found err.
-> >> + * Return 1 if 2MB huge gtt shadowing is possible, 0 if miscondition,
-> >> + * negative if found err.
-> >>   */
-> >>  static int is_2MB_gtt_possible(struct intel_vgpu *vgpu,
-> >>  	struct intel_gvt_gtt_entry *entry)
-> >> --
-> >=20
-> >=20
->=20
->=20
-> --=20
-> ~Randy
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> _______________________________________________
-> intel-gvt-dev mailing list
-> intel-gvt-dev@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
-
---GxcwvYAGnODwn7V8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYDx+MAAKCRCxBBozTXgY
-JxNLAJ9H8QRJ+FiCVfWFQbRijCYqCK83nACdEp+fCWBweP3cPc4NS/o5Bez6KZg=
-=qKgC
------END PGP SIGNATURE-----
-
---GxcwvYAGnODwn7V8--
