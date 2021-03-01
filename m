@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835B7329841
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230A3329862
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242114AbhCAXVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:21:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
+        id S1344012AbhCAXas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:30:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57188 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239223AbhCAR7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:59:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 536AC65172;
-        Mon,  1 Mar 2021 17:07:35 +0000 (UTC)
+        id S239023AbhCASEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:04:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EECCC65301;
+        Mon,  1 Mar 2021 17:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618455;
-        bh=k6vtMchoWGyWtWELp5BGWeV7s51JHBk/vSco0li3SZA=;
+        s=korg; t=1614620505;
+        bh=dUqNOjZytUkYA3sv5OGfmjwWjjwueeh/r84UL6Le+XM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gdilqj8KrRCvaGL6cvCfAFScjzSk1pz59SkKaOycPOOZMPFhiRHTDUh2fCDdrd62V
-         mv9GZYSg1n07llz/GNBWrHs4938hHgadpYMSuvU4RyUxvV0ciYptyeLVIak3Vvt2uc
-         1QaJWZMUDlP0Rh0RCq5uv4CqCuSGqEAfOhdBhCnw=
+        b=fYjlHl0zSWpxnTicBJur2jLTZbEaGw1kLfvcLxOcRB/JZZVupRqYJ0LE0jO7nRt2l
+         lXHFspjsg7/kBl4fdBppy25S6pmmcPQg4zqWe+3MnSqDRDC9T3I4MF/o7ioQjKdUsJ
+         Ianws0cYsk/9S6b29AOjU9oGRcxwn8ISTeqUmpLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
-        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com,
-        Marco Elver <elver@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 092/663] bpf_lru_list: Read double-checked variable once without lock
-Date:   Mon,  1 Mar 2021 17:05:40 +0100
-Message-Id: <20210301161146.281516490@linuxfoundation.org>
+Subject: [PATCH 5.11 178/775] crypto: sun4i-ss - fix kmap usage
+Date:   Mon,  1 Mar 2021 17:05:46 +0100
+Message-Id: <20210301161210.426254552@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,63 +40,252 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-[ Upstream commit 6df8fb83301d68ea0a0c0e1cbcc790fcc333ed12 ]
+[ Upstream commit 9bc3dd24e7dccd50757db743a3635ad5b0497e6e ]
 
-For double-checked locking in bpf_common_lru_push_free(), node->type is
-read outside the critical section and then re-checked under the lock.
-However, concurrent writes to node->type result in data races.
+With the recent kmap change, some tests which were conditional on
+CONFIG_DEBUG_HIGHMEM now are enabled by default.
+This permit to detect a problem in sun4i-ss usage of kmap.
 
-For example, the following concurrent access was observed by KCSAN:
+sun4i-ss uses two kmap via sg_miter (one for input, one for output), but
+using two kmap at the same time is hard:
+"the ordering has to be correct and with sg_miter that's probably hard to get
+right." (quoting Tlgx)
 
-  write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
-   __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
-   __local_list_flush            kernel/bpf/bpf_lru_list.c:298
-   ...
-  read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
-   bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
-   bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
-   ...
+So the easiest solution is to never have two sg_miter/kmap open at the same time.
+After each use of sg_miter, I store the current index, for being able to
+resume sg_miter to the right place.
 
-Fix the data races where node->type is read outside the critical section
-(for double-checked locking) by marking the access with READ_ONCE() as
-well as ensuring the variable is only accessed once.
-
-Fixes: 3a08c2fd7634 ("bpf: LRU List")
-Reported-by: syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com
-Reported-by: syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Link: https://lore.kernel.org/bpf/20210209112701.3341724-1-elver@google.com
+Fixes: 6298e948215f ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/bpf_lru_list.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ .../allwinner/sun4i-ss/sun4i-ss-cipher.c      | 109 +++++++++++-------
+ 1 file changed, 65 insertions(+), 44 deletions(-)
 
-diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-index 1b6b9349cb857..d99e89f113c43 100644
---- a/kernel/bpf/bpf_lru_list.c
-+++ b/kernel/bpf/bpf_lru_list.c
-@@ -502,13 +502,14 @@ struct bpf_lru_node *bpf_lru_pop_free(struct bpf_lru *lru, u32 hash)
- static void bpf_common_lru_push_free(struct bpf_lru *lru,
- 				     struct bpf_lru_node *node)
- {
-+	u8 node_type = READ_ONCE(node->type);
+diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+index 19f1aa577ed4d..1f8a38d131928 100644
+--- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
++++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+@@ -30,6 +30,8 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 	unsigned int ileft = areq->cryptlen;
+ 	unsigned int oleft = areq->cryptlen;
+ 	unsigned int todo;
++	unsigned long pi = 0, po = 0; /* progress for in and out */
++	bool miter_err;
+ 	struct sg_mapping_iter mi, mo;
+ 	unsigned int oi, oo; /* offset for in and out */
  	unsigned long flags;
+@@ -55,39 +57,51 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 	}
+ 	writel(mode, ss->base + SS_CTL);
  
--	if (WARN_ON_ONCE(node->type == BPF_LRU_LIST_T_FREE) ||
--	    WARN_ON_ONCE(node->type == BPF_LRU_LOCAL_LIST_T_FREE))
-+	if (WARN_ON_ONCE(node_type == BPF_LRU_LIST_T_FREE) ||
-+	    WARN_ON_ONCE(node_type == BPF_LRU_LOCAL_LIST_T_FREE))
- 		return;
+-	sg_miter_start(&mi, areq->src, sg_nents(areq->src),
+-		       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
+-	sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
+-		       SG_MITER_TO_SG | SG_MITER_ATOMIC);
+-	sg_miter_next(&mi);
+-	sg_miter_next(&mo);
+-	if (!mi.addr || !mo.addr) {
+-		dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
+-		err = -EINVAL;
+-		goto release_ss;
+-	}
  
--	if (node->type == BPF_LRU_LOCAL_LIST_T_PENDING) {
-+	if (node_type == BPF_LRU_LOCAL_LIST_T_PENDING) {
- 		struct bpf_lru_locallist *loc_l;
+ 	ileft = areq->cryptlen / 4;
+ 	oleft = areq->cryptlen / 4;
+ 	oi = 0;
+ 	oo = 0;
+ 	do {
+-		todo = min(rx_cnt, ileft);
+-		todo = min_t(size_t, todo, (mi.length - oi) / 4);
+-		if (todo) {
+-			ileft -= todo;
+-			writesl(ss->base + SS_RXFIFO, mi.addr + oi, todo);
+-			oi += todo * 4;
+-		}
+-		if (oi == mi.length) {
+-			sg_miter_next(&mi);
+-			oi = 0;
++		if (ileft) {
++			sg_miter_start(&mi, areq->src, sg_nents(areq->src),
++					SG_MITER_FROM_SG | SG_MITER_ATOMIC);
++			if (pi)
++				sg_miter_skip(&mi, pi);
++			miter_err = sg_miter_next(&mi);
++			if (!miter_err || !mi.addr) {
++				dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
++				err = -EINVAL;
++				goto release_ss;
++			}
++			todo = min(rx_cnt, ileft);
++			todo = min_t(size_t, todo, (mi.length - oi) / 4);
++			if (todo) {
++				ileft -= todo;
++				writesl(ss->base + SS_RXFIFO, mi.addr + oi, todo);
++				oi += todo * 4;
++			}
++			if (oi == mi.length) {
++				pi += mi.length;
++				oi = 0;
++			}
++			sg_miter_stop(&mi);
+ 		}
  
- 		loc_l = per_cpu_ptr(lru->common_lru.local_list, node->cpu);
+ 		spaces = readl(ss->base + SS_FCSR);
+ 		rx_cnt = SS_RXFIFO_SPACES(spaces);
+ 		tx_cnt = SS_TXFIFO_SPACES(spaces);
+ 
++		sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
++			       SG_MITER_TO_SG | SG_MITER_ATOMIC);
++		if (po)
++			sg_miter_skip(&mo, po);
++		miter_err = sg_miter_next(&mo);
++		if (!miter_err || !mo.addr) {
++			dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
++			err = -EINVAL;
++			goto release_ss;
++		}
+ 		todo = min(tx_cnt, oleft);
+ 		todo = min_t(size_t, todo, (mo.length - oo) / 4);
+ 		if (todo) {
+@@ -96,9 +110,10 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 			oo += todo * 4;
+ 		}
+ 		if (oo == mo.length) {
+-			sg_miter_next(&mo);
+ 			oo = 0;
++			po += mo.length;
+ 		}
++		sg_miter_stop(&mo);
+ 	} while (oleft);
+ 
+ 	if (areq->iv) {
+@@ -109,8 +124,6 @@ static int noinline_for_stack sun4i_ss_opti_poll(struct skcipher_request *areq)
+ 	}
+ 
+ release_ss:
+-	sg_miter_stop(&mi);
+-	sg_miter_stop(&mo);
+ 	writel(0, ss->base + SS_CTL);
+ 	spin_unlock_irqrestore(&ss->slock, flags);
+ 	return err;
+@@ -162,6 +175,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 	unsigned int oleft = areq->cryptlen;
+ 	unsigned int todo;
+ 	struct sg_mapping_iter mi, mo;
++	unsigned long pi = 0, po = 0; /* progress for in and out */
++	bool miter_err;
+ 	unsigned int oi, oo;	/* offset for in and out */
+ 	unsigned int ob = 0;	/* offset in buf */
+ 	unsigned int obo = 0;	/* offset in bufo*/
+@@ -215,17 +230,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 	}
+ 	writel(mode, ss->base + SS_CTL);
+ 
+-	sg_miter_start(&mi, areq->src, sg_nents(areq->src),
+-		       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
+-	sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
+-		       SG_MITER_TO_SG | SG_MITER_ATOMIC);
+-	sg_miter_next(&mi);
+-	sg_miter_next(&mo);
+-	if (!mi.addr || !mo.addr) {
+-		dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
+-		err = -EINVAL;
+-		goto release_ss;
+-	}
+ 	ileft = areq->cryptlen;
+ 	oleft = areq->cryptlen;
+ 	oi = 0;
+@@ -233,6 +237,16 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 
+ 	while (oleft) {
+ 		if (ileft) {
++			sg_miter_start(&mi, areq->src, sg_nents(areq->src),
++				       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
++			if (pi)
++				sg_miter_skip(&mi, pi);
++			miter_err = sg_miter_next(&mi);
++			if (!miter_err || !mi.addr) {
++				dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
++				err = -EINVAL;
++				goto release_ss;
++			}
+ 			/*
+ 			 * todo is the number of consecutive 4byte word that we
+ 			 * can read from current SG
+@@ -265,31 +279,38 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 				}
+ 			}
+ 			if (oi == mi.length) {
+-				sg_miter_next(&mi);
++				pi += mi.length;
+ 				oi = 0;
+ 			}
++			sg_miter_stop(&mi);
+ 		}
+ 
+ 		spaces = readl(ss->base + SS_FCSR);
+ 		rx_cnt = SS_RXFIFO_SPACES(spaces);
+ 		tx_cnt = SS_TXFIFO_SPACES(spaces);
+-		dev_dbg(ss->dev,
+-			"%x %u/%zu %u/%u cnt=%u %u/%zu %u/%u cnt=%u %u\n",
+-			mode,
+-			oi, mi.length, ileft, areq->cryptlen, rx_cnt,
+-			oo, mo.length, oleft, areq->cryptlen, tx_cnt, ob);
+ 
+ 		if (!tx_cnt)
+ 			continue;
++		sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
++			       SG_MITER_TO_SG | SG_MITER_ATOMIC);
++		if (po)
++			sg_miter_skip(&mo, po);
++		miter_err = sg_miter_next(&mo);
++		if (!miter_err || !mo.addr) {
++			dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
++			err = -EINVAL;
++			goto release_ss;
++		}
+ 		/* todo in 4bytes word */
+ 		todo = min(tx_cnt, oleft / 4);
+ 		todo = min_t(size_t, todo, (mo.length - oo) / 4);
++
+ 		if (todo) {
+ 			readsl(ss->base + SS_TXFIFO, mo.addr + oo, todo);
+ 			oleft -= todo * 4;
+ 			oo += todo * 4;
+ 			if (oo == mo.length) {
+-				sg_miter_next(&mo);
++				po += mo.length;
+ 				oo = 0;
+ 			}
+ 		} else {
+@@ -314,12 +335,14 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 				obo += todo;
+ 				oo += todo;
+ 				if (oo == mo.length) {
++					po += mo.length;
+ 					sg_miter_next(&mo);
+ 					oo = 0;
+ 				}
+ 			} while (obo < obl);
+ 			/* bufo must be fully used here */
+ 		}
++		sg_miter_stop(&mo);
+ 	}
+ 	if (areq->iv) {
+ 		for (i = 0; i < 4 && i < ivsize / 4; i++) {
+@@ -329,8 +352,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 	}
+ 
+ release_ss:
+-	sg_miter_stop(&mi);
+-	sg_miter_stop(&mo);
+ 	writel(0, ss->base + SS_CTL);
+ 	spin_unlock_irqrestore(&ss->slock, flags);
+ 
 -- 
 2.27.0
 
