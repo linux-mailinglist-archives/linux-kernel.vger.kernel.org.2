@@ -2,147 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B5F327648
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 04:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A4532764A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 04:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhCADCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 22:02:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbhCADCk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 22:02:40 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6534C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 19:01:59 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id i14so8501793pjz.4
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 19:01:59 -0800 (PST)
+        id S231921AbhCADDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 22:03:05 -0500
+Received: from mail-mw2nam10on2080.outbound.protection.outlook.com ([40.107.94.80]:43521
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231867AbhCADC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 22:02:57 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=frIXVpxsmUVsHkdhIKwC00ytDIeIiRIy1mKXTEFWa/b9DLgV55xP6QeMlr4lOxaVC4GOl0yar9oZOkN4XaCUig5MpglP0U2PgvxVR+4jGyEQ3nXRG3ZOAOX9rzvrqkM4hLsCuvMXt0uF8/Mrb+mgBUu6SFNa8KgBbY1NGyX4KqNwmf2BZcDzXorPXiwSshPslCngKTtpY1Rz16TBHeR97u9g9kj1C92YUVipDPB2sLrpzR3y+AfAZbyymPzxpVP0g6/SgvzWoU8ufNNzYfsFNK3+5FVY04OeT425rDv9LS450715kphMhmwBQ2YuFgK4x6x2aNUKTFoaxgdsfKj5zg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V9UrPx4Wh4OuJqMQDZMx4AxT8/SrDq781fGU6YE/XNk=;
+ b=OhQhm9K4gMbXZFBcPNhmVOgiAiQdUnMA4xvIMv9o1q6EIXZT7QLCDq+CrqgbevK0UisdEozJ+SVxjUeE6Sd7Vj4nBpZh6fKIAsNpk8eULTiZ6/xk7hREViG9rwm6mciIiGIxF6WLCISgUIEk9FWPKlLVFpZe/+eP4LPTHKSprN4mlkTt8Osn9GLNqaEi0r1oAI4NPOqR/8U2aCedmdHxHq378j/+EKhAkPZxUeingEtweg/OTV4j52/xlMNPJrnwhB+ivhNHjzfVyC/IPX2v5+FiRQY+9+u7Wowfs9z4A0W3VlSA7U/uxYTFiKqxLFFCHrZNZwwTJ+ijKtU6SZniOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GSiKByfZ5sqEV0qlOVhjWGxYdaWwaDIUdK2lORLzOS0=;
-        b=ScCVJ0YypEy9MWpAu9R+ZNlfSdfwEpgJAxQFP/l3D0VDMmjBCQ3vzrVPFWhT25prCj
-         QXpGyxHcSbNpVLiMISI/iCjxFsHc4dDIkA4EuVtGQmdynb1UUw3QA3C6177M7HJJpVdQ
-         2oHKGLvEm/skQ9iXU55IE9jzrKshZDXrVsz50f78kRmzg/lL+MFtIFxR1Ep2Tyick7TF
-         WFSl4S2UJPWN9MUz74NFEXEqpZNcJ8zRf4RchXpZ+64i22hXDYsJWA2BmFOuszbLCYWY
-         r/jwOV0+WCDa7Onk+WEWPlrFNUFBH60Ids0G9DKUKvkOOAbTk4gN2Ri1da1QBerJFzlI
-         dewg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GSiKByfZ5sqEV0qlOVhjWGxYdaWwaDIUdK2lORLzOS0=;
-        b=K3sIJ9GpUy69BIIh4OvipBMilX1/j3Al1mxtQWTfSla4bl095lgqqJFvZCjXUyLzBZ
-         C/F4FVV62ZldWaHdMlSSe1QkI+XjXiFlaMUFxFkPWP7Y+B1uDaRsecEm2VpI2JWPaN+M
-         qaYs/5YYRf8h/MpSPy2pB6Ipinohk4c47JKJgL0gPzveBrn8C/nHlyQX5/m0kXRcIVqJ
-         uu2pls6EWhrWpNU+H0woRW/+NHXnPr1PLx822TMaoV3g20O+L4gMFg7qXtKG/kvxFuSF
-         x1CRzwuOMBfx6nvkiEDYgEF2yhrh19GNcCJZLHAIxiWHc7lJ1xMSW2+AX/9URoUes7wS
-         oAKQ==
-X-Gm-Message-State: AOAM5327vSZIIs6CZwW4K2Ehp7gCDFweMzMuhxaO0vifV+MKN+ze9UQp
-        74o273KPfmxUtZJhIHfiQjKc/knkaOilgDxHpimkCA==
-X-Google-Smtp-Source: ABdhPJwEVjHQ1fPeJFLixQCWUSnlzdl/87wWdv9p8yk+ouhkV58sQu0KSI0Fa2jLhHCKNFak15hUdD0cupv16k+ZTO4=
-X-Received: by 2002:a17:902:e54e:b029:e3:9f84:db8e with SMTP id
- n14-20020a170902e54eb02900e39f84db8emr13640880plf.24.1614567719209; Sun, 28
- Feb 2021 19:01:59 -0800 (PST)
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V9UrPx4Wh4OuJqMQDZMx4AxT8/SrDq781fGU6YE/XNk=;
+ b=AXGtntmIn7lGCkM1mcepNnG4K89OGca/iz/+pVfZQV1tF6p2dCsYL0GToJB9BRolCkRW5eWE49m4snnWOW5KNc3Ukwihtq0ut172zdS7j9pjluzbTYt0gMA7R8l54aGzWUxYMJtgbeg9cjjxns4x7FPfGgfI/0oaO/2JSZSflb8=
+Authentication-Results: codewreck.org; dkim=none (message not signed)
+ header.d=none;codewreck.org; dmarc=none action=none
+ header.from=synaptics.com;
+Received: from BN3PR03MB2307.namprd03.prod.outlook.com
+ (2a01:111:e400:7bb1::16) by BN6PR03MB3217.namprd03.prod.outlook.com
+ (2603:10b6:405:3d::37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Mon, 1 Mar
+ 2021 03:02:08 +0000
+Received: from BN3PR03MB2307.namprd03.prod.outlook.com
+ ([fe80::246d:2f3d:93bf:ee56]) by BN3PR03MB2307.namprd03.prod.outlook.com
+ ([fe80::246d:2f3d:93bf:ee56%4]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
+ 03:02:08 +0000
+Date:   Mon, 1 Mar 2021 11:01:57 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: 9p: free what was emitted when read count is 0
+Message-ID: <20210301110157.19d9ad4e@xhacker.debian>
+In-Reply-To: <YDxWrB8AoxJOmScE@odin>
+References: <20210301103336.2e29da13@xhacker.debian>
+        <YDxWrB8AoxJOmScE@odin>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: BYAPR07CA0033.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::46) To BN3PR03MB2307.namprd03.prod.outlook.com
+ (2a01:111:e400:7bb1::16)
 MIME-Version: 1.0
-References: <FE7425D7-3006-4F31-AE41-07E4EB6D030F@contoso.com>
-In-Reply-To: <FE7425D7-3006-4F31-AE41-07E4EB6D030F@contoso.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 1 Mar 2021 11:01:23 +0800
-Message-ID: <CAMZfGtUY6z3g1_=mj8_LAWcxc_OKVfwPQq9vrdhdkjs=hyW5rQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v17 1/9] mm: memory_hotplug: factor out
- bootmem core functions to bootmem_info.c
-To:     "Bodeddula, Balasubramaniam" <bodeddub@amazon.com>
-Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "almasrymina@google.com" <almasrymina@google.com>,
-        "anshuman.khandual@arm.com" <anshuman.khandual@arm.com>,
-        "bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "linmiaohe@huawei.com" <linmiaohe@huawei.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
-        "mhocko@suse.com" <mhocko@suse.com>,
-        "mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
-        "oneukum@suse.com" <oneukum@suse.com>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "pawan.kumar.gupta@linux.intel.com" 
-        <pawan.kumar.gupta@linux.intel.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "song.bao.hua@hisilicon.com" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by BYAPR07CA0033.namprd07.prod.outlook.com (2603:10b6:a02:bc::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28 via Frontend Transport; Mon, 1 Mar 2021 03:02:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 034d86b4-f245-4d9e-85a1-08d8dc5e669d
+X-MS-TrafficTypeDiagnostic: BN6PR03MB3217:
+X-Microsoft-Antispam-PRVS: <BN6PR03MB321710C982B56620903C080AED9A9@BN6PR03MB3217.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dun0J07LarLT13nTxf7Q+SEqEPhAID/qkvM4g8YKZLZpTShmJWPG7VN6nH831FhuiHvBk6ahNL8IKSW27HpiJ365wYe1lapFLMDR0Wlpa8RyYxIg0vZGfDynupgBmqiJ2x2AZfcaoQOGxrV+rtVwLP0zegWIG3+2ligZEzbH9/hrrpFfzLywL51RwLDPWwz7hdl9a5I+BAvms8fGve2yCGKBg/ZDgvZFOwjckgIblg9WIjUGasDZbf7nSOw/AgxfKXpUT7uRtcMqtB2B50p5XP4YiuGXKp2MNjw1hlajnNfBKcfffDsoWOptr1P43iGKZwqegJagPdQ4IUNrp/8qCFFnsMjfvMdM+9rhVlCnqoES62C91DFKF8k1cfG/J9aG1r3KVYso3U9ytMHGpQEPoe6iHZZtR1HzCzbhIimH8Vu3qQlyD96E58jWvnyzjSS1kQvGqS0qIwtuquA2xGgdaZx0WzVjDbPtnc+ojraECDEwUJh1mvjT8iqGg0XrXCN0r67jsjaiQxek793ij+SNlQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN3PR03MB2307.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(39850400004)(136003)(366004)(6666004)(8676002)(1076003)(54906003)(66946007)(7696005)(26005)(8936002)(55016002)(83380400001)(2906002)(4326008)(186003)(66556008)(6506007)(478600001)(86362001)(6916009)(5660300002)(52116002)(316002)(956004)(66476007)(9686003)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?WjdfG8lOXamJWCwb7g94o8XTWQRfxAhysO9lwThr7937OdCvbXzzc7g7BXPa?=
+ =?us-ascii?Q?IX+BMzZLjtSfq+YpQPK0mrSXt1k3SKU2uwivUnlupwdQ6yRf3Cph64KsYzyv?=
+ =?us-ascii?Q?NA3GtJiis+jqx/3nsN+5C1T0Pur9UYIVbii6yqGH/ziT9o5ad7HHArtUHQSN?=
+ =?us-ascii?Q?89lRBg534B6iS20zQdffPq4J6IeqyDTvJ7GgDUGA7h1vJyyNsD25BBTJsjqz?=
+ =?us-ascii?Q?rx45woJKrPVWsCKzqV6TL0+16m66f6sItq2scbEmAQRx77Z6eYq4Ci/Ql4Az?=
+ =?us-ascii?Q?24FvGKX4GNf1eJO5BKOGU6A2+GME+99jOhdeboMhzuTgn3svocKoi8wPKtEu?=
+ =?us-ascii?Q?XZ+gxsf10s9QTOKlogVa1c+4SF6b5xHiN4VTdZSrfCWwzk2TdYlVQjHO0q5J?=
+ =?us-ascii?Q?ltWZyRyF7/HH1lzrvatBpZPg7dWoFZyXsanS7OxpGu5YE6TsEUF9XJojxNrj?=
+ =?us-ascii?Q?8TGP2OsXpc828/F5V4N1LuJE4PrZEgsmR2/4TJAyskv7OxIg1LxUoVfSuxdU?=
+ =?us-ascii?Q?81F/Jmq51wzqFcZ/73eQqRUXtRYn8selLPJqZTr05vk+cV1R4OY/3Xh6EciL?=
+ =?us-ascii?Q?9JX6ZuDQ7oGqoJ8Z/6fV03QfiNZGeZYBMcENLMyaB03p3exKUWJeUXYhWtRZ?=
+ =?us-ascii?Q?EAPOut61zDHZPSBAiLo1TTby/e30xxq82AknR7y/jrVi9fydm18bii3HVerY?=
+ =?us-ascii?Q?rpS/xJGX6VSoQWKpVG4p3xHC0z5hnIoBrpu9K+CoHuFTgZb0eotjYv4drnP9?=
+ =?us-ascii?Q?iEASZnFf788bqhf/wDnEl5mIClbq0OenGg0zUngXXwRRU4K/DqSWgIcE3L8w?=
+ =?us-ascii?Q?wzUgYs3GJE1NGarDzb03TFLWdJyeEmve/KEnHeNPlU5NA1JpfiJKCJxPmK1S?=
+ =?us-ascii?Q?vrgE6rn4gAepcEwOGYnEXj+RYfu/lDuPzIHPpebkXtIiGCTqyJRqUJURqWPW?=
+ =?us-ascii?Q?pIS32crKfA9xMh+MDSLr6ysrTyxlACQBlKW4mpc2GN37Qyq2KVYqmGLwIgDj?=
+ =?us-ascii?Q?7Gr8+ZQIhOMSfIa6Ta3kvDzQt3+S7PgzGOQ/xpIG4RbPmDo+WwCZD3KHhBUt?=
+ =?us-ascii?Q?wyYl35p1FcNnChkGYKWklb8OKU25nWdhcw/VBJDmvmSdSD0KsT22fbH5CCFR?=
+ =?us-ascii?Q?P/q9AxJJXfJ5d2UezYS8NknmWwMIhKQ1iBRAf1qoLi/1L/igtLd7i+b9uvaS?=
+ =?us-ascii?Q?pVpUHTWLBhG4Hm/XYl8L2czAibyGc3rZGxk12K3APVQLETh8JGFgHEjh2Hgz?=
+ =?us-ascii?Q?njH12vuEwn0drTOg1G6AKCgN2xLJxkYN/kWvg0tZyyw/SA7F8jtnGo2H0N/l?=
+ =?us-ascii?Q?kyDAVhQ5xSNe/z33CzCancWr?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 034d86b4-f245-4d9e-85a1-08d8dc5e669d
+X-MS-Exchange-CrossTenant-AuthSource: BN3PR03MB2307.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2021 03:02:08.0700
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 07a+QjQNoOuz8Gt7JFqRooLAYpLFqXt2oPJeCfaW5RwX2rXe+GujiX2AePz5G3UR3RCOHw1phDpXFH/7W+jgDw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR03MB3217
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 2:06 AM Bodeddula, Balasubramaniam
-<bodeddub@amazon.com> wrote:
->
-> Tested-by: bodeddub@amazon.com
+On Mon, 1 Mar 2021 11:51:24 +0900 Dominique Martinet wrote:
 
-Very thanks for your test.
 
->
->
->
-> We are interested in this patch and have tested an earlier version of thi=
-s patch on 5.11-rc4 kernel version. I did a functional validation of the ch=
-anges and saw that the total memory listed by free command increasing and m=
-ore memory was made available when memory was allocated in hugepages. 1G hu=
-gepages gave higher improvements compared to 2M, as expected. Is there a fo=
-rmal way to publish the results? I can do the same as required (I am new to=
- Linux Kernel patching process).
+> 
+> 
+> Jisheng Zhang wrote on Mon, Mar 01, 2021 at 10:33:36AM +0800:
+> > I met below warning when cating a small size(about 80bytes) txt file
+> > on 9pfs(msize=2097152 is passed to 9p mount option), the reason is we
+> > miss iov_iter_advance() if the read count is 0, so we didn't truncate
+> > the pipe, then iov_iter_pipe() thinks the pipe is full. Fix it by
+> > calling iov_iter_advance() on the iov_iter "to" even if read count is 0  
+> 
+> Hm, there are plenty of other error cases that don't call
+> iov_iter_advance() and shouldn't trigger this warning ; I'm not sure
+> just adding one particular call to this is a good solution.
 
-I don=E2=80=99t know if there is a formal way. But maybe you can share
-the test result directly through this thread. If someone knows
-this, please let me know. Thanks.
+Per my understanding of iov_iter, we need to call iov_iter_advance()
+even when the read out count is 0. I believe we can see this common style
+in other fs.
 
->
->
->
-> I have a few follow-up questions on this patch:
->
-> 1. What is the overall status of this patch? What is the ballpark timelin=
-e we are looking for this patch to be accepted.
+> 
+> 
+> How reproducible is this? From the description it should happen
 
-There is only one patch of this patchset that has no reviewed-by tag.
-I think it might be 5.13 in the best case But I don't have the right to
-decide.
+100%
 
->
-> 2. Why is this patch not working when memory is allocated as hugepages by=
- THP (transparent hugepages). THP uses AnonHugePages, doesn=E2=80=99t this =
-patch generalize for all =E2=80=98type=E2=80=99 of hugepages?
+> everytime you cat a small file? (I'm surprised cat uses sendfile, what
 
-Now it only supports HugeTLB pages. THP is a little different
-and complex compared to HugeTLB. I need to investigate THP
-in depth to determine the possible problems.
+it happened every time when catting a small file.
 
->
->
->
-> Please let me know if there are any additional tasks that I can help. Hap=
-py to help.
->
->
->
-> Thanks.
+> cat version? coreutils' doesn't seem to do that on their git)
+
+busybox cat
+
+> 
+> What kernel version do you get this on? Bonus points if you can confirm
+
+5.11 and the latest linus tree
+
+> this didn't use to happen, and full points for a bisect.
+> 
+> 
+> (cat on a small file is something I do all the time in my tests, I'd
+> like to be able to reproduce to understand the issue better as I'm not
+> familiar with that part of the code)
+
+Per my check, it can be 100% reproduced with busybox cat + "msize=2097152"
+mount option. NOTE: msize=2097152 isn't a magic number it can be other
+numbers which can ensure zerocopy code path is executed: p9_client_read_once
+->p9_client_zc_rpc()
+
+Thanks
