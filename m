@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90319329B67
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B05B5329C0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348638AbhCBBYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:24:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37266 "EHLO mail.kernel.org"
+        id S1345907AbhCBBqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:46:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241146AbhCATIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:08:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0330C65124;
-        Mon,  1 Mar 2021 17:03:11 +0000 (UTC)
+        id S241549AbhCATYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:24:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C56F65294;
+        Mon,  1 Mar 2021 17:32:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618192;
-        bh=gRIT0VF9fiR/03qrO6Qr37uVPBAtkSGVbL9WsCTeM3c=;
+        s=korg; t=1614619955;
+        bh=FpNthPz5la4GrDOoX0TtRo92q9tctirqf0PeYC8RFwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PBv0oeu2dcD6ZlBz0qXj2QciBTqUxJXev+73FBAC1X4hPLD1K1r/0lQkOGM0QWimi
-         iR1vACl3pOup6BZezLZDKIpQYMPeBxyFqXgfm36gk1GocpwpwWPObyBto3rL15cbo0
-         aBuKf8vhv2mWdhBpzZm2YunzdAi0OGqaysNfXjrw=
+        b=FcRd0Fx0x4TQSpIId9PeWq2cUHFRAgvPY+9mr2fp4gLaXZCx8fNywwre+ef+8cG61
+         ylL+tcfjQGtjFpeFIpOc8rWL+5ijWEjD2o117qIjbkjbMcVn4uPOpybDPB2bqANhQd
+         /Lf0XjV4AFstm4gq8d+gym7VSCA6hf1rBFXenKMc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+5d6e4af21385f5cfc56a@syzkaller.appspotmail.com,
-        Takeshi Misawa <jeliantsurux@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 340/340] net: qrtr: Fix memory leak in qrtr_tun_open
-Date:   Mon,  1 Mar 2021 17:14:44 +0100
-Message-Id: <20210301161105.029770076@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.10 641/663] dm: fix deadlock when swapping to encrypted device
+Date:   Mon,  1 Mar 2021 17:14:49 +0100
+Message-Id: <20210301161213.576300497@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
-References: <20210301161048.294656001@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,75 +39,201 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takeshi Misawa <jeliantsurux@gmail.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit fc0494ead6398609c49afa37bc949b61c5c16b91 upstream.
+commit a666e5c05e7c4aaabb2c5d58117b0946803d03d2 upstream.
 
-If qrtr_endpoint_register() failed, tun is leaked.
-Fix this, by freeing tun in error path.
+The system would deadlock when swapping to a dm-crypt device. The reason
+is that for each incoming write bio, dm-crypt allocates memory that holds
+encrypted data. These excessive allocations exhaust all the memory and the
+result is either deadlock or OOM trigger.
 
-syzbot report:
-BUG: memory leak
-unreferenced object 0xffff88811848d680 (size 64):
-  comm "syz-executor684", pid 10171, jiffies 4294951561 (age 26.070s)
-  hex dump (first 32 bytes):
-    80 dd 0a 84 ff ff ff ff 00 00 00 00 00 00 00 00  ................
-    90 d6 48 18 81 88 ff ff 90 d6 48 18 81 88 ff ff  ..H.......H.....
-  backtrace:
-    [<0000000018992a50>] kmalloc include/linux/slab.h:552 [inline]
-    [<0000000018992a50>] kzalloc include/linux/slab.h:682 [inline]
-    [<0000000018992a50>] qrtr_tun_open+0x22/0x90 net/qrtr/tun.c:35
-    [<0000000003a453ef>] misc_open+0x19c/0x1e0 drivers/char/misc.c:141
-    [<00000000dec38ac8>] chrdev_open+0x10d/0x340 fs/char_dev.c:414
-    [<0000000079094996>] do_dentry_open+0x1e6/0x620 fs/open.c:817
-    [<000000004096d290>] do_open fs/namei.c:3252 [inline]
-    [<000000004096d290>] path_openat+0x74a/0x1b00 fs/namei.c:3369
-    [<00000000b8e64241>] do_filp_open+0xa0/0x190 fs/namei.c:3396
-    [<00000000a3299422>] do_sys_openat2+0xed/0x230 fs/open.c:1172
-    [<000000002c1bdcef>] do_sys_open fs/open.c:1188 [inline]
-    [<000000002c1bdcef>] __do_sys_openat fs/open.c:1204 [inline]
-    [<000000002c1bdcef>] __se_sys_openat fs/open.c:1199 [inline]
-    [<000000002c1bdcef>] __x64_sys_openat+0x7f/0xe0 fs/open.c:1199
-    [<00000000f3a5728f>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000004b38b7ec>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+This patch limits the number of in-flight swap bios, so that the memory
+consumed by dm-crypt is limited. The limit is enforced if the target set
+the "limit_swap_bios" variable and if the bio has REQ_SWAP set.
 
-Fixes: 28fb4e59a47d ("net: qrtr: Expose tunneling endpoint to user space")
-Reported-by: syzbot+5d6e4af21385f5cfc56a@syzkaller.appspotmail.com
-Signed-off-by: Takeshi Misawa <jeliantsurux@gmail.com>
-Link: https://lore.kernel.org/r/20210221234427.GA2140@DESKTOP
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Non-swap bios are not affected becuase taking the semaphore would cause
+performance degradation.
+
+This is similar to request-based drivers - they will also block when the
+number of requests is over the limit.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/qrtr/tun.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ drivers/md/dm-core.h          |    4 ++
+ drivers/md/dm-crypt.c         |    1 
+ drivers/md/dm.c               |   60 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/device-mapper.h |    5 +++
+ 4 files changed, 70 insertions(+)
 
---- a/net/qrtr/tun.c
-+++ b/net/qrtr/tun.c
-@@ -31,6 +31,7 @@ static int qrtr_tun_send(struct qrtr_end
- static int qrtr_tun_open(struct inode *inode, struct file *filp)
- {
- 	struct qrtr_tun *tun;
-+	int ret;
+--- a/drivers/md/dm-core.h
++++ b/drivers/md/dm-core.h
+@@ -109,6 +109,10 @@ struct mapped_device {
  
- 	tun = kzalloc(sizeof(*tun), GFP_KERNEL);
- 	if (!tun)
-@@ -43,7 +44,16 @@ static int qrtr_tun_open(struct inode *i
+ 	struct block_device *bdev;
  
- 	filp->private_data = tun;
- 
--	return qrtr_endpoint_register(&tun->ep, QRTR_EP_NID_AUTO);
-+	ret = qrtr_endpoint_register(&tun->ep, QRTR_EP_NID_AUTO);
-+	if (ret)
-+		goto out;
++	int swap_bios;
++	struct semaphore swap_bios_semaphore;
++	struct mutex swap_bios_lock;
 +
-+	return 0;
+ 	struct dm_stats stats;
+ 
+ 	/* for blk-mq request-based DM support */
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -3324,6 +3324,7 @@ static int crypt_ctr(struct dm_target *t
+ 	wake_up_process(cc->write_thread);
+ 
+ 	ti->num_flush_bios = 1;
++	ti->limit_swap_bios = true;
+ 
+ 	return 0;
+ 
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -148,6 +148,16 @@ EXPORT_SYMBOL_GPL(dm_bio_get_target_bio_
+ #define DM_NUMA_NODE NUMA_NO_NODE
+ static int dm_numa_node = DM_NUMA_NODE;
+ 
++#define DEFAULT_SWAP_BIOS	(8 * 1048576 / PAGE_SIZE)
++static int swap_bios = DEFAULT_SWAP_BIOS;
++static int get_swap_bios(void)
++{
++	int latch = READ_ONCE(swap_bios);
++	if (unlikely(latch <= 0))
++		latch = DEFAULT_SWAP_BIOS;
++	return latch;
++}
 +
-+out:
-+	filp->private_data = NULL;
-+	kfree(tun);
-+	return ret;
+ /*
+  * For mempools pre-allocation at the table loading time.
+  */
+@@ -966,6 +976,11 @@ void disable_write_zeroes(struct mapped_
+ 	limits->max_write_zeroes_sectors = 0;
  }
  
- static ssize_t qrtr_tun_read_iter(struct kiocb *iocb, struct iov_iter *to)
++static bool swap_bios_limit(struct dm_target *ti, struct bio *bio)
++{
++	return unlikely((bio->bi_opf & REQ_SWAP) != 0) && unlikely(ti->limit_swap_bios);
++}
++
+ static void clone_endio(struct bio *bio)
+ {
+ 	blk_status_t error = bio->bi_status;
+@@ -1016,6 +1031,11 @@ static void clone_endio(struct bio *bio)
+ 		}
+ 	}
+ 
++	if (unlikely(swap_bios_limit(tio->ti, bio))) {
++		struct mapped_device *md = io->md;
++		up(&md->swap_bios_semaphore);
++	}
++
+ 	free_tio(tio);
+ 	dec_pending(io, error);
+ }
+@@ -1249,6 +1269,22 @@ void dm_accept_partial_bio(struct bio *b
+ }
+ EXPORT_SYMBOL_GPL(dm_accept_partial_bio);
+ 
++static noinline void __set_swap_bios_limit(struct mapped_device *md, int latch)
++{
++	mutex_lock(&md->swap_bios_lock);
++	while (latch < md->swap_bios) {
++		cond_resched();
++		down(&md->swap_bios_semaphore);
++		md->swap_bios--;
++	}
++	while (latch > md->swap_bios) {
++		cond_resched();
++		up(&md->swap_bios_semaphore);
++		md->swap_bios++;
++	}
++	mutex_unlock(&md->swap_bios_lock);
++}
++
+ static blk_qc_t __map_bio(struct dm_target_io *tio)
+ {
+ 	int r;
+@@ -1268,6 +1304,14 @@ static blk_qc_t __map_bio(struct dm_targ
+ 	atomic_inc(&io->io_count);
+ 	sector = clone->bi_iter.bi_sector;
+ 
++	if (unlikely(swap_bios_limit(ti, clone))) {
++		struct mapped_device *md = io->md;
++		int latch = get_swap_bios();
++		if (unlikely(latch != md->swap_bios))
++			__set_swap_bios_limit(md, latch);
++		down(&md->swap_bios_semaphore);
++	}
++
+ 	r = ti->type->map(ti, clone);
+ 	switch (r) {
+ 	case DM_MAPIO_SUBMITTED:
+@@ -1279,10 +1323,18 @@ static blk_qc_t __map_bio(struct dm_targ
+ 		ret = submit_bio_noacct(clone);
+ 		break;
+ 	case DM_MAPIO_KILL:
++		if (unlikely(swap_bios_limit(ti, clone))) {
++			struct mapped_device *md = io->md;
++			up(&md->swap_bios_semaphore);
++		}
+ 		free_tio(tio);
+ 		dec_pending(io, BLK_STS_IOERR);
+ 		break;
+ 	case DM_MAPIO_REQUEUE:
++		if (unlikely(swap_bios_limit(ti, clone))) {
++			struct mapped_device *md = io->md;
++			up(&md->swap_bios_semaphore);
++		}
+ 		free_tio(tio);
+ 		dec_pending(io, BLK_STS_DM_REQUEUE);
+ 		break;
+@@ -1756,6 +1808,7 @@ static void cleanup_mapped_device(struct
+ 	mutex_destroy(&md->suspend_lock);
+ 	mutex_destroy(&md->type_lock);
+ 	mutex_destroy(&md->table_devices_lock);
++	mutex_destroy(&md->swap_bios_lock);
+ 
+ 	dm_mq_cleanup_mapped_device(md);
+ }
+@@ -1823,6 +1876,10 @@ static struct mapped_device *alloc_dev(i
+ 	init_waitqueue_head(&md->eventq);
+ 	init_completion(&md->kobj_holder.completion);
+ 
++	md->swap_bios = get_swap_bios();
++	sema_init(&md->swap_bios_semaphore, md->swap_bios);
++	mutex_init(&md->swap_bios_lock);
++
+ 	md->disk->major = _major;
+ 	md->disk->first_minor = minor;
+ 	md->disk->fops = &dm_blk_dops;
+@@ -3119,6 +3176,9 @@ MODULE_PARM_DESC(reserved_bio_based_ios,
+ module_param(dm_numa_node, int, S_IRUGO | S_IWUSR);
+ MODULE_PARM_DESC(dm_numa_node, "NUMA node for DM device memory allocations");
+ 
++module_param(swap_bios, int, S_IRUGO | S_IWUSR);
++MODULE_PARM_DESC(swap_bios, "Maximum allowed inflight swap IOs");
++
+ MODULE_DESCRIPTION(DM_NAME " driver");
+ MODULE_AUTHOR("Joe Thornber <dm-devel@redhat.com>");
+ MODULE_LICENSE("GPL");
+--- a/include/linux/device-mapper.h
++++ b/include/linux/device-mapper.h
+@@ -325,6 +325,11 @@ struct dm_target {
+ 	 * whether or not its underlying devices have support.
+ 	 */
+ 	bool discards_supported:1;
++
++	/*
++	 * Set if we need to limit the number of in-flight bios when swapping.
++	 */
++	bool limit_swap_bios:1;
+ };
+ 
+ void *dm_per_bio_data(struct bio *bio, size_t data_size);
 
 
