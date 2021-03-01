@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F09328FA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DB9328FA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242532AbhCATxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:53:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59164 "EHLO mail.kernel.org"
+        id S236760AbhCATyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:54:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236266AbhCAQ6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236081AbhCAQ6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:58:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8277964F56;
-        Mon,  1 Mar 2021 16:36:45 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D0E64F5F;
+        Mon,  1 Mar 2021 16:36:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616606;
-        bh=3M0jd727EZrJt6Mej086pr9TOogq2S9wLhEjBjIHrG8=;
+        s=korg; t=1614616608;
+        bh=fCno+U9/xsZ7NAgFtgu8d8F1PqWFUUMKQwX3r/gl7kY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ni+s8z/si3hniV6Ri/QolCDLzCf0txrjpvublRGb1+YVWUadf7j7I6ReyIO4jGn8/
-         IVXP8gGxMWLk9TWsMWj3CynZIqpJn2kI+GJbPJ8ACYYknrl3pL9qSRRTkESENH8uDq
-         jFUpQRagEX0IWMLY8u96Cur3NPnfIK8PeUxYFMEI=
+        b=QfhljVtpORfhGDur5xsIRuRL3iGl1D+HOtASei4cbG7CtOGoK7xnjfy+hGLDwdH5t
+         YlB3l4AM0osg78jhf/6flmdODoCqT6M6gusU6BoczK5NgHhwtnL6IQyNzpFd2BvdIS
+         2iPPVAY/1c70hTbgXkS8jzkj/9RV8OiwtRdU3yE4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 025/247] Bluetooth: btqcomsmd: Fix a resource leak in error handling paths in the probe function
-Date:   Mon,  1 Mar 2021 17:10:45 +0100
-Message-Id: <20210301161032.926097781@linuxfoundation.org>
+Subject: [PATCH 4.19 034/247] arm64: dts: exynos: correct PMIC interrupt trigger level on Espresso
+Date:   Mon,  1 Mar 2021 17:10:54 +0100
+Message-Id: <20210301161033.350680829@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -41,80 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 9a39a927be01d89e53f04304ab99a8761e08910d ]
+[ Upstream commit 1fea2eb2f5bbd3fbbe2513d2386b5f6e6db17fd7 ]
 
-Some resource should be released in the error handling path of the probe
-function, as already done in the remove function.
+The Samsung PMIC datasheets describe the interrupt line as active low
+with a requirement of acknowledge from the CPU.  Without specifying the
+interrupt type in Devicetree, kernel might apply some fixed
+configuration, not necessarily working for this hardware.
 
-The remove function was fixed in commit 5052de8deff5 ("soc: qcom: smd:
-Transition client drivers from smd to rpmsg")
-
-Fixes: 1511cc750c3d ("Bluetooth: Introduce Qualcomm WCNSS SMD based HCI driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 9589f7721e16 ("arm64: dts: Add S2MPS15 PMIC node on exynos7-espresso")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20201210212903.216728-8-krzk@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btqcomsmd.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ arch/arm64/boot/dts/exynos/exynos7-espresso.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bluetooth/btqcomsmd.c b/drivers/bluetooth/btqcomsmd.c
-index 7df3eed1ef5e9..874172aa8e417 100644
---- a/drivers/bluetooth/btqcomsmd.c
-+++ b/drivers/bluetooth/btqcomsmd.c
-@@ -166,8 +166,10 @@ static int btqcomsmd_probe(struct platform_device *pdev)
- 
- 	btq->cmd_channel = qcom_wcnss_open_channel(wcnss, "APPS_RIVA_BT_CMD",
- 						   btqcomsmd_cmd_callback, btq);
--	if (IS_ERR(btq->cmd_channel))
--		return PTR_ERR(btq->cmd_channel);
-+	if (IS_ERR(btq->cmd_channel)) {
-+		ret = PTR_ERR(btq->cmd_channel);
-+		goto destroy_acl_channel;
-+	}
- 
- 	/* The local-bd-address property is usually injected by the
- 	 * bootloader which has access to the allocated BD address.
-@@ -179,8 +181,10 @@ static int btqcomsmd_probe(struct platform_device *pdev)
- 	}
- 
- 	hdev = hci_alloc_dev();
--	if (!hdev)
--		return -ENOMEM;
-+	if (!hdev) {
-+		ret = -ENOMEM;
-+		goto destroy_cmd_channel;
-+	}
- 
- 	hci_set_drvdata(hdev, btq);
- 	btq->hdev = hdev;
-@@ -194,14 +198,21 @@ static int btqcomsmd_probe(struct platform_device *pdev)
- 	hdev->set_bdaddr = qca_set_bdaddr_rome;
- 
- 	ret = hci_register_dev(hdev);
--	if (ret < 0) {
--		hci_free_dev(hdev);
--		return ret;
--	}
-+	if (ret < 0)
-+		goto hci_free_dev;
- 
- 	platform_set_drvdata(pdev, btq);
- 
- 	return 0;
-+
-+hci_free_dev:
-+	hci_free_dev(hdev);
-+destroy_cmd_channel:
-+	rpmsg_destroy_ept(btq->cmd_channel);
-+destroy_acl_channel:
-+	rpmsg_destroy_ept(btq->acl_channel);
-+
-+	return ret;
- }
- 
- static int btqcomsmd_remove(struct platform_device *pdev)
+diff --git a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+index d991eae5202f2..2ba62118ae906 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
++++ b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+@@ -85,7 +85,7 @@
+ 	s2mps15_pmic@66 {
+ 		compatible = "samsung,s2mps15-pmic";
+ 		reg = <0x66>;
+-		interrupts = <2 IRQ_TYPE_NONE>;
++		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-parent = <&gpa0>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pmic_irq>;
 -- 
 2.27.0
 
