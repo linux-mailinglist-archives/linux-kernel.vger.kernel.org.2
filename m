@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EEA328D2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 236A2328D10
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240951AbhCATHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:07:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50530 "EHLO mail.kernel.org"
+        id S240847AbhCATFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:05:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235174AbhCAQrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:47:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 470F464EF9;
-        Mon,  1 Mar 2021 16:31:43 +0000 (UTC)
+        id S235166AbhCAQqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:46:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DF3C64EFD;
+        Mon,  1 Mar 2021 16:31:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616303;
-        bh=hlE0JUM/23a4ivi3JNzk5JY06wuFXv1XhWy9kr18AuI=;
+        s=korg; t=1614616306;
+        bh=TNCV2/JdytHhhnw4jkc8LwFbnEVqVyk1xkPUj+PwxMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ORlsc93IABXU5+pfJYCto52e1zZi0DeDwbAK0j+1O0qjnPd+VoI/ZqyTcJ8XpaWGv
-         vQbQry9Es+8RteeoN4e5cnFB9y4ptFGYQyUjWovngJ/ujVEWqIlaH7NSyXxhXBL/JH
-         nVbBl3rPILB8tkXWQ2n03qFr10w9yia9HzJVNvy0=
+        b=VJknyhnm7b+a2X/AKrzJ9RoI//8zz3OKguAeDAL9aSU6nNUS5+RtFbwZPxenSVq8Q
+         dqqX4sVLniyGGZCF6wl2hdb0MireLX0nlZSqnFmuOoTc6MvNCmWnrWk4qUX7iyo6k7
+         nZ4v1dAQkNs8O9Qfy9SAGLWSaQJUCRpUXE0M+zMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon South <simon@simonsouth.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Vishnu Dasa <vdasa@vmware.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 105/176] pwm: rockchip: rockchip_pwm_probe(): Remove superfluous clk_unprepare()
-Date:   Mon,  1 Mar 2021 17:12:58 +0100
-Message-Id: <20210301161026.193989570@linuxfoundation.org>
+Subject: [PATCH 4.14 106/176] VMCI: Use set_page_dirty_lock() when unregistering guest memory
+Date:   Mon,  1 Mar 2021 17:12:59 +0100
+Message-Id: <20210301161026.244441922@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -40,40 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon South <simon@simonsouth.net>
+From: Jorgen Hansen <jhansen@vmware.com>
 
-[ Upstream commit d5d8d675865ccddfe4da26c85f22c55cec663bf2 ]
+[ Upstream commit 5a16c535409f8dcb7568e20737309e3027ae3e49 ]
 
-If rockchip_pwm_probe() fails to register a PWM device it calls
-clk_unprepare() for the device's PWM clock, without having first disabled
-the clock and before jumping to an error handler that also unprepares
-it. This is likely to produce warnings from the kernel about the clock
-being unprepared when it is still enabled, and then being unprepared when
-it has already been unprepared.
+When the VMCI host support releases guest memory in the case where
+the VM was killed, the pinned guest pages aren't locked. Use
+set_page_dirty_lock() instead of set_page_dirty().
 
-Prevent these warnings by removing this unnecessary call to
-clk_unprepare().
+Testing done: Killed VM while having an active VMCI based vSocket
+connection and observed warning from ext4. With this fix, no
+warning was observed. Ran various vSocket tests without issues.
 
-Fixes: 48cf973cae33 ("pwm: rockchip: Avoid glitches on already running PWMs")
-Signed-off-by: Simon South <simon@simonsouth.net>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
+Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
+Signed-off-by: Jorgen Hansen <jhansen@vmware.com>
+Link: https://lore.kernel.org/r/1611160360-30299-1-git-send-email-jhansen@vmware.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-rockchip.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/misc/vmw_vmci/vmci_queue_pair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
-index 4d99d468df09a..48bcc853d57a7 100644
---- a/drivers/pwm/pwm-rockchip.c
-+++ b/drivers/pwm/pwm-rockchip.c
-@@ -370,7 +370,6 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
+diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+index d6210bf92c1f2..e096aae5f6546 100644
+--- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
++++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
+@@ -732,7 +732,7 @@ static void qp_release_pages(struct page **pages,
  
- 	ret = pwmchip_add(&pc->chip);
- 	if (ret < 0) {
--		clk_unprepare(pc->clk);
- 		dev_err(&pdev->dev, "pwmchip_add() failed: %d\n", ret);
- 		goto err_pclk;
- 	}
+ 	for (i = 0; i < num_pages; i++) {
+ 		if (dirty)
+-			set_page_dirty(pages[i]);
++			set_page_dirty_lock(pages[i]);
+ 
+ 		put_page(pages[i]);
+ 		pages[i] = NULL;
 -- 
 2.27.0
 
