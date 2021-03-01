@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C75329EA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9509A329E92
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445847AbhCBDCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:02:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40996 "EHLO mail.kernel.org"
+        id S1445647AbhCBDBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:01:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236361AbhCAUQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:16:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AC1264FDE;
-        Mon,  1 Mar 2021 18:02:32 +0000 (UTC)
+        id S242995AbhCAUNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:13:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 397D665081;
+        Mon,  1 Mar 2021 18:01:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621753;
-        bh=3OCZHpCE0RGBPpGQbRCSuKdps0Gwoc/FedcVj0rIlrY=;
+        s=korg; t=1614621676;
+        bh=8tTmOVdS1/PkhguOWQ0gRjVoSUMEQ+s3z+eGgd/9ks8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dPZkZD6Z+jkmu4gHOTj7PL5LTSk+u5DMg34x912IQ+0E/AZKuGhi9XQgWY1KfmLis
-         6vELNjGVRKP2BDBhsJ+uxIZvGgPa9E5a7LbMGVRcUpO8mLhnx4h7rms2vPUTnF7oRQ
-         vA/vT6HurRyBC5R+Uc1iOm11iBCW1nvYaigBf77M=
+        b=T5atRPyZbAqUpi3qW6tLCgauemgS90RRxGVp9+uKLpOgmbzrRroPO0JJbw81AJkLp
+         JU5Zd1SjMRl+5bfIAfB8DiubHpB4LfN4IlOJluzhFwuyNOGwaQADTfXErkyT1ls8D+
+         aoHLWp1V9TuwygEZvGP1DQkaMBSjsAfUb7ag4o7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, PeiSen Hou <pshou@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.11 601/775] ALSA: hda/realtek: modify EAPD in the ALC886
-Date:   Mon,  1 Mar 2021 17:12:49 +0100
-Message-Id: <20210301161231.109349347@linuxfoundation.org>
+        stable@vger.kernel.org, YunQiang Su <syq@debian.org>,
+        Aurelien Jarno <aurelien@aurel32.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.11 604/775] MIPS: Support binutils configured with --enable-mips-fix-loongson3-llsc=yes
+Date:   Mon,  1 Mar 2021 17:12:52 +0100
+Message-Id: <20210301161231.259324980@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -39,54 +40,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: PeiSen Hou <pshou@realtek.com>
+From: Aurelien Jarno <aurelien@aurel32.net>
 
-commit 4841b8e6318a7f0ae57c4e5ec09032ea057c97a8 upstream.
+commit 5373ae67c3aad1ab306cc722b5a80b831eb4d4d1 upstream.
 
-Modify 0x20 index 7 bit 5 to 1, make the 0x15 EAPD the same as 0x14.
+>From version 2.35, binutils can be configured with
+--enable-mips-fix-loongson3-llsc=yes, which means it defaults to
+-mfix-loongson3-llsc. This breaks labels which might then point at the
+wrong instruction.
 
-Signed-off-by: PeiSen Hou <pshou@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/e62c5058957f48d8b8953e97135ff108@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+The workaround to explicitly pass -mno-fix-loongson3-llsc has been
+added in Linux version 5.1, but is only enabled when building a Loongson
+64 kernel. As vendors might use a common toolchain for building Loongson
+and non-Loongson kernels, just move that workaround to
+arch/mips/Makefile. At the same time update the comments to reflect the
+current status.
+
+Cc: stable@vger.kernel.org # 5.1+
+Cc: YunQiang Su <syq@debian.org>
+Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/mips/Makefile            |   19 +++++++++++++++++++
+ arch/mips/loongson64/Platform |   22 ----------------------
+ 2 files changed, 19 insertions(+), 22 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -1905,6 +1905,7 @@ enum {
- 	ALC889_FIXUP_FRONT_HP_NO_PRESENCE,
- 	ALC889_FIXUP_VAIO_TT,
- 	ALC888_FIXUP_EEE1601,
-+	ALC886_FIXUP_EAPD,
- 	ALC882_FIXUP_EAPD,
- 	ALC883_FIXUP_EAPD,
- 	ALC883_FIXUP_ACER_EAPD,
-@@ -2238,6 +2239,15 @@ static const struct hda_fixup alc882_fix
- 			{ }
- 		}
- 	},
-+	[ALC886_FIXUP_EAPD] = {
-+		.type = HDA_FIXUP_VERBS,
-+		.v.verbs = (const struct hda_verb[]) {
-+			/* change to EAPD mode */
-+			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x07 },
-+			{ 0x20, AC_VERB_SET_PROC_COEF, 0x0068 },
-+			{ }
-+		}
-+	},
- 	[ALC882_FIXUP_EAPD] = {
- 		.type = HDA_FIXUP_VERBS,
- 		.v.verbs = (const struct hda_verb[]) {
-@@ -2510,6 +2520,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x106b, 0x4a00, "Macbook 5,2", ALC889_FIXUP_MBA11_VREF),
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -136,6 +136,25 @@ cflags-$(CONFIG_SB1XXX_CORELIS)	+= $(cal
+ #
+ cflags-y += -fno-stack-check
  
- 	SND_PCI_QUIRK(0x1071, 0x8258, "Evesham Voyaeger", ALC882_FIXUP_EAPD),
-+	SND_PCI_QUIRK(0x13fe, 0x1009, "Advantech MIT-W101", ALC886_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
++# binutils from v2.35 when built with --enable-mips-fix-loongson3-llsc=yes,
++# supports an -mfix-loongson3-llsc flag which emits a sync prior to each ll
++# instruction to work around a CPU bug (see __SYNC_loongson3_war in asm/sync.h
++# for a description).
++#
++# We disable this in order to prevent the assembler meddling with the
++# instruction that labels refer to, ie. if we label an ll instruction:
++#
++# 1: ll v0, 0(a0)
++#
++# ...then with the assembler fix applied the label may actually point at a sync
++# instruction inserted by the assembler, and if we were using the label in an
++# exception table the table would no longer contain the address of the ll
++# instruction.
++#
++# Avoid this by explicitly disabling that assembler behaviour.
++#
++cflags-y += $(call as-option,-Wa$(comma)-mno-fix-loongson3-llsc,)
++
+ #
+ # CPU-dependent compiler/assembler options for optimization.
+ #
+--- a/arch/mips/loongson64/Platform
++++ b/arch/mips/loongson64/Platform
+@@ -6,28 +6,6 @@
+ cflags-$(CONFIG_CPU_LOONGSON64)	+= -Wa,--trap
+ 
+ #
+-# Some versions of binutils, not currently mainline as of 2019/02/04, support
+-# an -mfix-loongson3-llsc flag which emits a sync prior to each ll instruction
+-# to work around a CPU bug (see __SYNC_loongson3_war in asm/sync.h for a
+-# description).
+-#
+-# We disable this in order to prevent the assembler meddling with the
+-# instruction that labels refer to, ie. if we label an ll instruction:
+-#
+-# 1: ll v0, 0(a0)
+-#
+-# ...then with the assembler fix applied the label may actually point at a sync
+-# instruction inserted by the assembler, and if we were using the label in an
+-# exception table the table would no longer contain the address of the ll
+-# instruction.
+-#
+-# Avoid this by explicitly disabling that assembler behaviour. If upstream
+-# binutils does not merge support for the flag then we can revisit & remove
+-# this later - for now it ensures vendor toolchains don't cause problems.
+-#
+-cflags-$(CONFIG_CPU_LOONGSON64)	+= $(call as-option,-Wa$(comma)-mno-fix-loongson3-llsc,)
+-
+-#
+ # binutils from v2.25 on and gcc starting from v4.9.0 treat -march=loongson3a
+ # as MIPS64 R2; older versions as just R1.  This leaves the possibility open
+ # that GCC might generate R2 code for -march=loongson3a which then is rejected
 
 
