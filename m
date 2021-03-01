@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE7D328CA2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D53AC328CA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239985AbhCASzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:55:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46812 "EHLO mail.kernel.org"
+        id S239785AbhCAS4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:56:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234327AbhCAQo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:44:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CE2E64EBE;
-        Mon,  1 Mar 2021 16:30:42 +0000 (UTC)
+        id S233690AbhCAQoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:44:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B3464EEC;
+        Mon,  1 Mar 2021 16:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616243;
-        bh=anHdZ+5TFnxJjkiuQRD7+q94L3erT+9EZD58+1yvUSI=;
+        s=korg; t=1614616249;
+        bh=DkiN/wfTE9YkG0XOdDXkLLB354QagtYR9k9VQueZTNM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Km5qDC5p4emEtvpIMH27Zf4cbqzOh/ZpefF5Ld6BluTFrkEX7ym2av3JTe37oWBKP
-         0zLWl09NVOGU60qL6QDif2w2hVAFSEb27ZhdHgVbQS6Sc9xnaTO6XB+NHJOtZVwoBa
-         VRpFCXhKlVBKjUzpHuIiLXqbI1GboODR53JwJ6Fg=
+        b=CWN3dwCzNdWgc4Or1Fcmoj1s0L2jDGW//4PTMYcbOgHyLwELejK4Mu9EeXckB3Uhs
+         yBA7lXgiFH9e5Q/vkbVFtXARD+hLz0rhyJ0QAE3dLLQN7RTvhYRgryk5XYUT0ykQow
+         bhDHfIKwcN+JRw8oZUQs3la7sR3xQ5aTFYogsW8E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 083/176] spi: atmel: Put allocated master before return
-Date:   Mon,  1 Mar 2021 17:12:36 +0100
-Message-Id: <20210301161025.091670092@linuxfoundation.org>
+Subject: [PATCH 4.14 085/176] auxdisplay: ht16k33: Fix refresh rate handling
+Date:   Mon,  1 Mar 2021 17:12:38 +0100
+Message-Id: <20210301161025.194214948@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -41,37 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit 21ea2743f015dbacec1831bdc8afc848db9c2b8c ]
+[ Upstream commit e89b0a426721a8ca5971bc8d70aa5ea35c020f90 ]
 
-The allocated master is not released. Goto error handling label rather
-than directly return.
+Drop the call to msecs_to_jiffies(), as "HZ / fbdev->refresh_rate" is
+already the number of jiffies to wait.
 
-Fixes: 5e9af37e46bc ("spi: atmel: introduce probe deferring")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Fixes: 5e9af37e46bc ("spi: atmel: introduce probe deferring")
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20210120050025.25426-1-bianpan2016@163.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-atmel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/auxdisplay/ht16k33.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-atmel.c b/drivers/spi/spi-atmel.c
-index 7b739c449227f..6c9ce7b24aa0c 100644
---- a/drivers/spi/spi-atmel.c
-+++ b/drivers/spi/spi-atmel.c
-@@ -1582,7 +1582,7 @@ static int atmel_spi_probe(struct platform_device *pdev)
- 		if (ret == 0) {
- 			as->use_dma = true;
- 		} else if (ret == -EPROBE_DEFER) {
--			return ret;
-+			goto out_unmap_regs;
- 		}
- 	} else if (as->caps.has_pdc_support) {
- 		as->use_pdc = true;
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index a93ded300740d..eec69213dad4f 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -125,8 +125,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+ {
+ 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+ 
+-	schedule_delayed_work(&fbdev->work,
+-			      msecs_to_jiffies(HZ / fbdev->refresh_rate));
++	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
+ }
+ 
+ /*
 -- 
 2.27.0
 
