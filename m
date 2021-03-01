@@ -2,88 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D9632818D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D02D328192
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236667AbhCAO5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236717AbhCAO4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:56:22 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C138DC06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:55:41 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id p15so10817773ljc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:55:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tnpOO1HCMDXpZVJ4TRrGsHFf+M4ik5c2oeXAvl9URfQ=;
-        b=FtuktIcgFjkP+lffETe2dQRR3faqxThx7Z+FrZdfTNEpjy2/6i+IwQQbWERlk1QYDB
-         cGoAjzqc4grAlmEK4OMTydKLzH/YOZaHwJeB6/fv7VTqhI3rnmkw74olFgXvHhZd58Uo
-         7Ycqofp8NnLYI0Zg7o2jGUW+YaxMnjQWxO0G8D5Krx2St2mWlOTCvEwicGwbYEwGeLSo
-         kr9tnf2vSqke3OimzUbHMNpiudVKZK5w2xpozmOJWR3vOhfqclNiiIXeNI9mFBf1Y+pe
-         sFM7G/Fa0gN8m/8Ru5Hc12D00IiWQMPj5LF3CUoCOTn5e2tMT7OrRnwXJ1O+Me72g7Oq
-         Pmog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tnpOO1HCMDXpZVJ4TRrGsHFf+M4ik5c2oeXAvl9URfQ=;
-        b=JyAEjqPr3O2cU0GJnCZG8myLG4InosqhWHt9k2/28c41f3PjLKbM3MQNCby2pBkowr
-         SSre1m5BfVgZ7xfZhG/c9w5Cr1ji/q4ESY/FnKWskWMwufTmPYlcaqb//sqj7c+3SxAF
-         LoEoraun/dsaZf3Se8d3ZL7oVrYVvzK9dH7PZiUgHVTjuq4jDXfpwXNcdkzu6XGYOvU+
-         2ZWAMwVqiFMB5I46YimtzlayqbWGz6W8koslPRpvidFDiqhrPQBc0QIaVckils05znLb
-         w29xLpDaNDa256GOZZb8k5Wp88yR7JfUl1OhYxJM+oR0Qqp6u+AOZrpi7eh8f3V55ydS
-         niPw==
-X-Gm-Message-State: AOAM531Z1vReYZoCA8i82Fq1mf+gmiQ7rpf/mMQtIqrggYW18xnTHZRq
-        2qOJQdOzwsH1j8m3SpEvZbYIwr4Wkk/yUt0Q/LxTWw==
-X-Google-Smtp-Source: ABdhPJybRja+1CiW+Qxg0/bCEGHOEl3HR72OhOAPLa0QQOfFepT/r7JpGuivG2pp66Ua3QULP2Q8zfRzX1u/sJEvmJA=
-X-Received: by 2002:a2e:9754:: with SMTP id f20mr7184365ljj.200.1614610540264;
- Mon, 01 Mar 2021 06:55:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20210208222203.22335-1-info@metux.net> <20210208222203.22335-13-info@metux.net>
-In-Reply-To: <20210208222203.22335-13-info@metux.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 1 Mar 2021 15:55:29 +0100
-Message-ID: <CACRpkdZzceUex8no9V6R0oW-3dRhhPypF7HsJ=ggOphJLGixLA@mail.gmail.com>
-Subject: Re: [RFC PATCH 12/12] platform/x86/of: add support for PC Engines APU
- v2/3/4 boards
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S236726AbhCAO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:57:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43936 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236705AbhCAO4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:56:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 23B3BAE5C;
+        Mon,  1 Mar 2021 14:56:01 +0000 (UTC)
+Date:   Mon, 01 Mar 2021 15:56:01 +0100
+Message-ID: <s5ho8g2j532.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Cc:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages for the PCM device
+In-Reply-To: <85bbc067-e7ec-903a-1518-5aab01577655@opensynergy.com>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+        <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
+        <s5hsg5gjutg.wl-tiwai@suse.de>
+        <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
+        <s5h35xfj8yz.wl-tiwai@suse.de>
+        <85bbc067-e7ec-903a-1518-5aab01577655@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 11:22 PM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
+On Mon, 01 Mar 2021 15:47:46 +0100,
+Anton Yakovlev wrote:
+> 
+> On 01.03.2021 14:32, Takashi Iwai wrote:
+> > On Mon, 01 Mar 2021 10:25:05 +0100,
+> > Anton Yakovlev wrote:
+> >>
+> >> On 28.02.2021 12:27, Takashi Iwai wrote:
+> >>> On Sat, 27 Feb 2021 09:59:52 +0100,
+> >>> Anton Yakovlev wrote:
+> >>>> +/**
+> >>>> + * virtsnd_pcm_event() - Handle the PCM device event notification.
+> >>>> + * @snd: VirtIO sound device.
+> >>>> + * @event: VirtIO sound event.
+> >>>> + *
+> >>>> + * Context: Interrupt context.
+> >>>
+> >>> OK, then nonatomic PCM flag is invalid...
+> >>
+> >> Well, no. Here, events are kind of independent entities. PCM-related
+> >> events are just a special case of more generic events, which can carry
+> >> any kind of notification/payload. (And at the moment, only XRUN
+> >> notification is supported for PCM substreams.) So it has nothing to do
+> >> with the atomicity of the PCM device itself.
+> >
+> > OK, thanks.
+> >
+> > Basically the only question is how snd_pcm_period_elapsed() is called.
+> > And I see that it's called inside queue->lock, and this already
+> > invalidates the nonatomic PCM mode.  So the code needs the fix: either
+> > fix this locking (and the context is guaranteed not to be an irq
+> > context), or change to the normal PCM mode without nonatomic flag.
+> > Both would bring some side-effect, and we need further changes, I
+> > suppose...
+> 
+> Ok, I understood the problem. Well, I would say the nonatomic PCM mode
+> is more important option, since in this mode we can guarantee the
+> correct operation of the device.
 
-> +                gpio-regs = <
-> +                    AMD_FCH_GPIO_REG_GPIO57 // led1
-> +                    AMD_FCH_GPIO_REG_GPIO58 // led2
-> +                    AMD_FCH_GPIO_REG_GPIO59_DEVSLP1 // led3
-> +                    AMD_FCH_GPIO_REG_GPIO32_GE1 // modesw
-> +                    AMD_FCH_GPIO_REG_GPIO33_GE2 // simawap
-> +                    AMD_FCH_GPIO_REG_GPIO55_DEVSLP0 // mpcie2
-> +                    AMD_FCH_GPIO_REG_GPIO51 // mpcie3
-> +                >;
+Which operation (except for the resume) in the trigger and the pointer
+callbacks need the action that need to sleep?  I thought the sync with
+the command queue is done in the sync_stop.  And most of others seem
+already taking the spinlock in themselves, so the non-atomic operation
+has little merit for them.
 
-Please don't define registers in the DTS files. Determine the set of registers
-from the compatible string and put them in the driver. If that is not possible,
-the compatible string is not precise enough and needs to indicate properly
-which hardware this is.
+> And if you say, that we need to get rid
+> of irq context here, then probably workqueue for calling
+> snd_pcm_period_elapsed() should be fine (of course, it should be shared
+> between all available substreams).
 
-Yours,
-Linus Walleij
+That would work, but it's of course just papering over it :)
+
+
+> >>>> +/**
+> >>>> + * virtsnd_pcm_sg_num() - Count the number of sg-elements required to represent
+> >>>> + *                        vmalloc'ed buffer.
+> >>>> + * @data: Pointer to vmalloc'ed buffer.
+> >>>> + * @length: Buffer size.
+> >>>> + *
+> >>>> + * Context: Any context.
+> >>>> + * Return: Number of physically contiguous parts in the @data.
+> >>>> + */
+> >>>> +static int virtsnd_pcm_sg_num(u8 *data, unsigned int length)
+> >>>> +{
+> >>>> +     phys_addr_t sg_address;
+> >>>> +     unsigned int sg_length;
+> >>>> +     int num = 0;
+> >>>> +
+> >>>> +     while (length) {
+> >>>> +             struct page *pg = vmalloc_to_page(data);
+> >>>> +             phys_addr_t pg_address = page_to_phys(pg);
+> >>>> +             size_t pg_length;
+> >>>> +
+> >>>> +             pg_length = PAGE_SIZE - offset_in_page(data);
+> >>>> +             if (pg_length > length)
+> >>>> +                     pg_length = length;
+> >>>> +
+> >>>> +             if (!num || sg_address + sg_length != pg_address) {
+> >>>> +                     sg_address = pg_address;
+> >>>> +                     sg_length = pg_length;
+> >>>> +                     num++;
+> >>>> +             } else {
+> >>>> +                     sg_length += pg_length;
+> >>>> +             }
+> >>>> +
+> >>>> +             data += pg_length;
+> >>>> +             length -= pg_length;
+> >>>> +     }
+> >>>> +
+> >>>> +     return num;
+> >>>> +}
+> >>>> +
+> >>>> +/**
+> >>>> + * virtsnd_pcm_sg_from() - Build sg-list from vmalloc'ed buffer.
+> >>>> + * @sgs: Preallocated sg-list to populate.
+> >>>> + * @nsgs: The maximum number of elements in the @sgs.
+> >>>> + * @data: Pointer to vmalloc'ed buffer.
+> >>>> + * @length: Buffer size.
+> >>>> + *
+> >>>> + * Splits the buffer into physically contiguous parts and makes an sg-list of
+> >>>> + * such parts.
+> >>>> + *
+> >>>> + * Context: Any context.
+> >>>> + */
+> >>>> +static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
+> >>>> +                             unsigned int length)
+> >>>> +{
+> >>>> +     int idx = -1;
+> >>>> +
+> >>>> +     while (length) {
+> >>>> +             struct page *pg = vmalloc_to_page(data);
+> >>>> +             size_t pg_length;
+> >>>> +
+> >>>> +             pg_length = PAGE_SIZE - offset_in_page(data);
+> >>>> +             if (pg_length > length)
+> >>>> +                     pg_length = length;
+> >>>> +
+> >>>> +             if (idx == -1 ||
+> >>>> +                 sg_phys(&sgs[idx]) + sgs[idx].length != page_to_phys(pg)) {
+> >>>> +                     if (idx + 1 == nsgs)
+> >>>> +                             break;
+> >>>> +                     sg_set_page(&sgs[++idx], pg, pg_length,
+> >>>> +                                 offset_in_page(data));
+> >>>> +             } else {
+> >>>> +                     sgs[idx].length += pg_length;
+> >>>> +             }
+> >>>> +
+> >>>> +             data += pg_length;
+> >>>> +             length -= pg_length;
+> >>>> +     }
+> >>>> +
+> >>>> +     sg_mark_end(&sgs[idx]);
+> >>>> +}
+> >>>
+> >>> Hmm, I thought there can be already a handy helper to convert vmalloc
+> >>> to sglist, but apparently not.  It should have been trivial to get the
+> >>> page list from vmalloc, e.g.
+> >>>
+> >>> int vmalloc_to_page_list(void *p, struct page **page_ret)
+> >>> {
+> >>>           struct vmap_area *va;
+> >>>
+> >>>           va = find_vmap_area((unsigned long)p);
+> >>>           if (!va)
+> >>>                   return 0;
+> >>>           *page_ret = va->vm->pages;
+> >>>           return va->vm->nr_pages;
+> >>> }
+> >>>
+> >>> Then you can set up the sg list in a single call from the given page
+> >>> list.
+> >>>
+> >>> But it's just a cleanup, and let's mark it as a room for
+> >>> improvements.
+> >>
+> >> Yeah, we can take a look into some kind of optimizations here. But I
+> >> suspect, the overall code will look similar. It is not enough just to
+> >> get a list of pages, you also need to build a list of physically
+> >> contiguous regions from it.
+> >
+> > I believe the standard helper does it.  But it's for sg_table, hence
+> > the plain scatterlist needs to be extracted from there, but most of
+> > complex things are in the standard code.
+> >
+> > But it's merely an optimization and something for future.
+> 
+> I quickly checked it. I think it's hardly possible to do anything here.
+> These functions to deal with vmalloced areas are not exported. And,
+> according to comments, require some proper locking on top of that. At
+> least, it does not look like a trivial things.
+
+Sure, it needs a function exposed from vmalloc.c.  But I don't think
+the locking is the problem as find_vmap_area() already takes care of
+it, and we don't release the vmalloced pages while invoking this
+function.  Of course I might overlook something, but my point is that
+this kind of work should be rather in the core (or at least most of
+the important steps in the code should be in the core code).
+
+
+Takashi
