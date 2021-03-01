@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB5332987C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7633297ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238850AbhCAXfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:35:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57174 "EHLO mail.kernel.org"
+        id S1344748AbhCAXCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:02:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231744AbhCASGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:06:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76F416509F;
-        Mon,  1 Mar 2021 17:34:02 +0000 (UTC)
+        id S238968AbhCARvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:51:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B90650A2;
+        Mon,  1 Mar 2021 17:34:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620043;
-        bh=VASjeEJi0qWw/zRtese4yceTqBsdK7bRG7QiZA5eEA0=;
+        s=korg; t=1614620054;
+        bh=gsSBsaN2vV5sf5GBB8ILF0HW3IXBAhVe7GPY5Ie63t4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UgbMFUT3GVOOHz7//MIykUtpU/oBq8ee7jLUhxHbgAyv8DoMXGm6/HnFBy04lBPL1
-         FjsYWcHpViU4S2cjxdMQEJWsUD9yNgJiX4Z97T5AhGg/Zt0a4b6mv5uNlXp2EfeyKJ
-         jiGLUEzteUoJRQGJWdQfP0ImFJbBeCtZnYgKdd4Q=
+        b=oZxNxsdL1n3JI4+QInKafNe3zBHfkBvSQhVg3w/CHKjVoxIN1+kDGkX/9p2yRFLXo
+         acyUsT1rjGxzKnoPPOasGJoZpvemdOy8Xtuq+PcUso7P2YEo2t0DPNN8NmT0YJm0Yt
+         L+VZqD68lvE5Vj7rRw3CTrp+1IIH4S1rVgtPbrvs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>
-Subject: [PATCH 5.11 002/775] vdpa/mlx5: fix param validation in mlx5_vdpa_get_config()
-Date:   Mon,  1 Mar 2021 17:02:50 +0100
-Message-Id: <20210301161201.815806758@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 014/775] ALSA: usb-audio: Fix PCM buffer allocation in non-vmalloc mode
+Date:   Mon,  1 Mar 2021 17:03:02 +0100
+Message-Id: <20210301161202.415686082@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,37 +38,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit dcfde1635e764fd69cc756c7780d144e288608e9 upstream.
+commit fb3c293b82c31a9a68fbcf4e7a45fadd8a47ea2b upstream.
 
-It's legal to have 'offset + len' equal to
-sizeof(struct virtio_net_config), since 'ndev->config' is a
-'struct virtio_net_config', so we can safely copy its content under
-this condition.
+The commit f274baa49be6 ("ALSA: usb-audio: Allow non-vmalloc buffer
+for PCM buffers") introduced the mode to allocate coherent pages for
+PCM buffers, and it used bus->controller device as its DMA device.
+It turned out, however, that bus->sysdev is a more appropriate device
+to be used for DMA mapping in HCD code.
 
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Link: https://lore.kernel.org/r/20210208161741.104939-1-sgarzare@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Acked-by: Eli Cohen <elic@nvidia.com>
+This patch corrects the device reference accordingly.
+
+Note that, on most platforms, both point to the very same device,
+hence this patch doesn't change anything practically.  But on
+platforms like xhcd-plat hcd, the change becomes effective.
+
+Fixes: f274baa49be6 ("ALSA: usb-audio: Allow non-vmalloc buffer for PCM buffers")
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210205144559.29555-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vdpa/mlx5/net/mlx5_vnet.c |    2 +-
+ sound/usb/pcm.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -1820,7 +1820,7 @@ static void mlx5_vdpa_get_config(struct
- 	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
- 	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1558,7 +1558,7 @@ void snd_usb_preallocate_buffer(struct s
+ {
+ 	struct snd_pcm *pcm = subs->stream->pcm;
+ 	struct snd_pcm_substream *s = pcm->streams[subs->direction].substream;
+-	struct device *dev = subs->dev->bus->controller;
++	struct device *dev = subs->dev->bus->sysdev;
  
--	if (offset + len < sizeof(struct virtio_net_config))
-+	if (offset + len <= sizeof(struct virtio_net_config))
- 		memcpy(buf, (u8 *)&ndev->config + offset, len);
- }
- 
+ 	if (snd_usb_use_vmalloc)
+ 		snd_pcm_set_managed_buffer(s, SNDRV_DMA_TYPE_VMALLOC,
 
 
