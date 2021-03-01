@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEBC329AF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE76B329A1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378335AbhCBBF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:05:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
+        id S1376977AbhCBAoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:44:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233166AbhCAS6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:58:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D045664D5D;
-        Mon,  1 Mar 2021 17:26:43 +0000 (UTC)
+        id S240461AbhCASjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7346864EF9;
+        Mon,  1 Mar 2021 17:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619604;
-        bh=hCcmAs2PRbDTnVNOZNBB4hD3hhROgsAcI6qeae1n1Cc=;
+        s=korg; t=1614619607;
+        bh=6aa/DjmiPArBrbMt0OBDXHK2TocxmIqZ/+hLTnn5w9o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0AE57zBPcXlC8k7SlJ6GV74AwjpJ2G14crVKbew3oMir1QfaGENNNOH2YlNdT10uL
-         RlGBhOIL9eT5qxHVgGOcBIVKDXf+Ukgp0d4VAORmT8G0fY5h6a+wN+ZfCDeGdHc5fX
-         RgV8PNTU6979FkUYs9ICQL7zX1EZGxjsH/0UVqIw=
+        b=vaJXejt5opDafdOFnFpmbzkq4BBibaBr5/HhL8y/Khtq0NJTBINUyoEjiSqtq7PLf
+         LcRnWAOXEBvqq5NN7FifQ7D6OAjMBAO+cRKgXGMSROwX9sC0mDJFxFLdXHbRhkfHtG
+         ixo/7oqfWz0ka2v2ujc3GeAre6PUE+/JwoGkoTqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Bernstein <eric.bernstein@amd.com>,
+        stable@vger.kernel.org,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
         Bindu Ramamurthy <bindu.r@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 514/663] drm/amd/display: Remove Assert from dcn10_get_dig_frontend
-Date:   Mon,  1 Mar 2021 17:12:42 +0100
-Message-Id: <20210301161207.284575433@linuxfoundation.org>
+Subject: [PATCH 5.10 515/663] drm/amd/display: Add vupdate_no_lock interrupts for DCN2.1
+Date:   Mon,  1 Mar 2021 17:12:43 +0100
+Message-Id: <20210301161207.334489928@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,50 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Bernstein <eric.bernstein@amd.com>
+From: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
 
-commit 83e6667b675f101fb66659dfa72e45d08773d763 upstream.
+commit 688f97ed3f5e339c0c2c09d9ee7ff23d5807b0a7 upstream.
 
-[Why]
-In some cases, this function is called when DIG BE is not
-connected to DIG FE, in which case a value of zero isn't
-invalid and assert should not be hit.
+When run igt@kms_vrr in a device that uses DCN2.1 architecture, we
+noticed multiple failures. Furthermore, when we tested a VRR demo, we
+noticed a system hang where the mouse pointer still works, but the
+entire system freezes; in this case, we don't see any dmesg warning or
+failure messages kernel. This happens due to a lack of vupdate_no_lock
+interrupt, making the userspace wait eternally to get the event back.
+For fixing this issue, we need to add the vupdate_no_lock interrupt in
+the interrupt list.
 
-[How]
-Remove assert and handle ENGINE_ID_UNKNOWN result in calling
-function.
-
-Signed-off-by: Eric Bernstein <eric.bernstein@amd.com>
+Signed-off-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
 Acked-by: Bindu Ramamurthy <bindu.r@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_link_encoder.c |    1 -
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c        |    2 ++
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/irq/dcn21/irq_service_dcn21.c |   22 +++++++++++
+ 1 file changed, 22 insertions(+)
 
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_link_encoder.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_link_encoder.c
-@@ -480,7 +480,6 @@ unsigned int dcn10_get_dig_frontend(stru
- 		break;
- 	default:
- 		// invalid source select DIG
--		ASSERT(false);
- 		result = ENGINE_ID_UNKNOWN;
+--- a/drivers/gpu/drm/amd/display/dc/irq/dcn21/irq_service_dcn21.c
++++ b/drivers/gpu/drm/amd/display/dc/irq/dcn21/irq_service_dcn21.c
+@@ -168,6 +168,11 @@ static const struct irq_source_info_func
+ 	.ack = NULL
+ };
+ 
++static const struct irq_source_info_funcs vupdate_no_lock_irq_info_funcs = {
++	.set = NULL,
++	.ack = NULL
++};
++
+ #undef BASE_INNER
+ #define BASE_INNER(seg) DMU_BASE__INST0_SEG ## seg
+ 
+@@ -230,6 +235,17 @@ static const struct irq_source_info_func
+ 		.funcs = &vblank_irq_info_funcs\
  	}
  
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-@@ -526,6 +526,8 @@ void dcn30_init_hw(struct dc *dc)
- 
- 					fe = dc->links[i]->link_enc->funcs->get_dig_frontend(
- 										dc->links[i]->link_enc);
-+					if (fe == ENGINE_ID_UNKNOWN)
-+						continue;
- 
- 					for (j = 0; j < dc->res_pool->stream_enc_count; j++) {
- 						if (fe == dc->res_pool->stream_enc[j]->id) {
++/* vupdate_no_lock_int_entry maps to DC_IRQ_SOURCE_VUPDATEx, to match semantic
++ * of DCE's DC_IRQ_SOURCE_VUPDATEx.
++ */
++#define vupdate_no_lock_int_entry(reg_num)\
++	[DC_IRQ_SOURCE_VUPDATE1 + reg_num] = {\
++		IRQ_REG_ENTRY(OTG, reg_num,\
++			OTG_GLOBAL_SYNC_STATUS, VUPDATE_NO_LOCK_INT_EN,\
++			OTG_GLOBAL_SYNC_STATUS, VUPDATE_NO_LOCK_EVENT_CLEAR),\
++		.funcs = &vupdate_no_lock_irq_info_funcs\
++	}
++
+ #define vblank_int_entry(reg_num)\
+ 	[DC_IRQ_SOURCE_VBLANK1 + reg_num] = {\
+ 		IRQ_REG_ENTRY(OTG, reg_num,\
+@@ -338,6 +354,12 @@ irq_source_info_dcn21[DAL_IRQ_SOURCES_NU
+ 	vupdate_int_entry(3),
+ 	vupdate_int_entry(4),
+ 	vupdate_int_entry(5),
++	vupdate_no_lock_int_entry(0),
++	vupdate_no_lock_int_entry(1),
++	vupdate_no_lock_int_entry(2),
++	vupdate_no_lock_int_entry(3),
++	vupdate_no_lock_int_entry(4),
++	vupdate_no_lock_int_entry(5),
+ 	vblank_int_entry(0),
+ 	vblank_int_entry(1),
+ 	vblank_int_entry(2),
 
 
