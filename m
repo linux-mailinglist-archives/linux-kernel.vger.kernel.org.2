@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AECF328A7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11EB9328A59
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239619AbhCASR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:17:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42636 "EHLO mail.kernel.org"
+        id S233997AbhCASQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:16:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232297AbhCAQgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232156AbhCAQgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:36:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95FCF64F6F;
-        Mon,  1 Mar 2021 16:26:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D22D64F71;
+        Mon,  1 Mar 2021 16:26:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615970;
-        bh=jagVnOnzTh5hXI/onGJsEndRmb0CyYLnzLRvXyvzEmI=;
+        s=korg; t=1614615973;
+        bh=5p7IqPtrReJyFbU0donFcl0MxdLF+HiORrh/WDgwiK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ot55xGRvBnKOFAWFjT34sowPksR8eWqGu3PXA55Rac6hweyj11Ker3IHAzIyZmBFO
-         pbT/0IfkRO7hnqpILXImyitbBogoQDO6MgHhpZ54XWimjqT1kH0Zlnnhim7jFMwVg/
-         +YEyxjI1T/IPUoikfOyyROIBPEtnzATxVBDDoQGM=
+        b=hBz4Oxr6cA9UaHh7lsIp8H1ceo3g5yct9V3cPHmHr6j3H2/0XieOaFn6wlnhKLncT
+         Ix55C/RO+tzgy8kQiv6cdW1IwhEvcu0XEIa1BIhA6hM3MKvFlRUtFUrFT6Yyhk84Av
+         h0/yexDQFw04B81lxtt16txGhWKc5W/HyaA2S6nQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.9 124/134] dm era: Reinitialize bitset cache before digesting a new writeset
-Date:   Mon,  1 Mar 2021 17:13:45 +0100
-Message-Id: <20210301161019.689664472@linuxfoundation.org>
+Subject: [PATCH 4.9 125/134] dm era: only resize metadata in preresume
+Date:   Mon,  1 Mar 2021 17:13:46 +0100
+Message-Id: <20210301161019.739681109@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -41,41 +41,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nikos Tsironis <ntsironis@arrikto.com>
 
-commit 2524933307fd0036d5c32357c693c021ab09a0b0 upstream.
+commit cca2c6aebe86f68103a8615074b3578e854b5016 upstream.
 
-In case of devices with at most 64 blocks, the digestion of consecutive
-eras uses the writeset of the first era as the writeset of all eras to
-digest, leading to lost writes. That is, we lose the information about
-what blocks were written during the affected eras.
+Metadata resize shouldn't happen in the ctr. The ctr loads a temporary
+(inactive) table that will only become active upon resume. That is why
+resize should always be done in terms of resume. Otherwise a load (ctr)
+whose inactive table never becomes active will incorrectly resize the
+metadata.
 
-The digestion code uses a dm_disk_bitset object to access the archived
-writesets. This structure includes a one word (64-bit) cache to reduce
-the number of array lookups.
+Also, perform the resize directly in preresume, instead of using the
+worker to do it.
 
-This structure is initialized only once, in metadata_digest_start(),
-when we kick off digestion.
+The worker might run other metadata operations, e.g., it could start
+digestion, before resizing the metadata. These operations will end up
+using the old size.
 
-But, when we insert a new writeset into the writeset tree, before the
-digestion of the previous writeset is done, or equivalently when there
-are multiple writesets in the writeset tree to digest, then all these
-writesets are digested using the same cache and the cache is not
-re-initialized when moving from one writeset to the next.
+This could lead to errors, like:
 
-For devices with more than 64 blocks, i.e., the size of the cache, the
-cache is indirectly invalidated when we move to a next set of blocks, so
-we avoid the bug.
+  device-mapper: era: metadata_digest_transcribe_writeset: dm_array_set_value failed
+  device-mapper: era: process_old_eras: digest step failed, stopping digestion
 
-But for devices with at most 64 blocks we end up using the same cached
-data for digesting all archived writesets, i.e., the cache is loaded
-when digesting the first writeset and it never gets reloaded, until the
-digestion is done.
+The reason of the above error is that the worker started the digestion
+of the archived writeset using the old, larger size.
 
-As a result, the writeset of the first era to digest is used as the
-writeset of all the following archived eras, leading to lost writes.
-
-Fix this by reinitializing the dm_disk_bitset structure, and thus
-invalidating the cache, every time the digestion code starts digesting a
-new writeset.
+As a result, metadata_digest_transcribe_writeset tried to write beyond
+the end of the era array.
 
 Fixes: eec40579d84873 ("dm: add era target")
 Cc: stable@vger.kernel.org # v3.15+
@@ -83,36 +73,46 @@ Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
 Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-era-target.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/md/dm-era-target.c |   21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
 --- a/drivers/md/dm-era-target.c
 +++ b/drivers/md/dm-era-target.c
-@@ -757,6 +757,12 @@ static int metadata_digest_lookup_writes
- 	ws_unpack(&disk, &d->writeset);
- 	d->value = cpu_to_le32(key);
+@@ -1502,15 +1502,6 @@ static int era_ctr(struct dm_target *ti,
+ 	}
+ 	era->md = md;
  
-+	/*
-+	 * We initialise another bitset info to avoid any caching side effects
-+	 * with the previous one.
-+	 */
-+	dm_disk_bitset_init(md->tm, &d->info);
-+
- 	d->nr_bits = min(d->writeset.nr_bits, md->nr_blocks);
- 	d->current_bit = 0;
- 	d->step = metadata_digest_transcribe_writeset;
-@@ -770,12 +776,6 @@ static int metadata_digest_start(struct
- 		return 0;
- 
- 	memset(d, 0, sizeof(*d));
+-	era->nr_blocks = calc_nr_blocks(era);
 -
--	/*
--	 * We initialise another bitset info to avoid any caching side
--	 * effects with the previous one.
--	 */
--	dm_disk_bitset_init(md->tm, &d->info);
- 	d->step = metadata_digest_lookup_writeset;
+-	r = metadata_resize(era->md, &era->nr_blocks);
+-	if (r) {
+-		ti->error = "couldn't resize metadata";
+-		era_destroy(era);
+-		return -ENOMEM;
+-	}
+-
+ 	era->wq = alloc_ordered_workqueue("dm-" DM_MSG_PREFIX, WQ_MEM_RECLAIM);
+ 	if (!era->wq) {
+ 		ti->error = "could not create workqueue for metadata object";
+@@ -1588,9 +1579,17 @@ static int era_preresume(struct dm_targe
+ 	dm_block_t new_size = calc_nr_blocks(era);
  
- 	return 0;
+ 	if (era->nr_blocks != new_size) {
+-		r = in_worker1(era, metadata_resize, &new_size);
+-		if (r)
++		r = metadata_resize(era->md, &new_size);
++		if (r) {
++			DMERR("%s: metadata_resize failed", __func__);
++			return r;
++		}
++
++		r = metadata_commit(era->md);
++		if (r) {
++			DMERR("%s: metadata_commit failed", __func__);
+ 			return r;
++		}
+ 
+ 		era->nr_blocks = new_size;
+ 	}
 
 
