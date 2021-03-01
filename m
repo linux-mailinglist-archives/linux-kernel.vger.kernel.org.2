@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2BF329D12
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E42329D0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442936AbhCBCRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:17:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53652 "EHLO mail.kernel.org"
+        id S1442895AbhCBCQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:16:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242277AbhCAToU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB4C864FFA;
-        Mon,  1 Mar 2021 17:07:07 +0000 (UTC)
+        id S242262AbhCAToS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4E476530E;
+        Mon,  1 Mar 2021 17:42:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618428;
-        bh=nxb7H9kc46wHw88pBK02xc8xUguiYxOFbqNehu6OHrk=;
+        s=korg; t=1614620566;
+        bh=/lKOxMtG0S0yFvvTOIJuuC5LA/v9R6ZFqwpviflAANY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gIQjcNbAihdjuRJsVyrdHXWnCHft32mkdOZ8OY5gNxzOuUSY2xLvNWF0WyQ65KjGr
-         VxjiKOFveKIHG39mXte8tCNab5Q3yeDphEpF/2lUlsvVO28RtIIf0s9nte/y4el1ye
-         PZNQeYcR/EFDCVRE7KBb0KvWCg7fVIibWCdVtQjs=
+        b=NVHoSHTn0vuy/Sixvutu6rlwNzvLTLI9z1KCbt4rgwMSUGevgE6KPUDRd9Rge2IR4
+         FlfVb0zhkiyyeV2wR0J6njV3DDpznqc31jZBSnRr50uXXnPMPZPzR/Ec896fNE3//j
+         CWKMGfZnoiWfjEJZoOokzOiCGGZjiQVjydQa8K5s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Jialin Zhang <zhangjialin11@huawei.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 083/663] ath10k: Fix suspicious RCU usage warning in ath10k_wmi_tlv_parse_peer_stats_info()
-Date:   Mon,  1 Mar 2021 17:05:31 +0100
-Message-Id: <20210301161145.839231299@linuxfoundation.org>
+Subject: [PATCH 5.11 169/775] drm/gma500: Fix error return code in psb_driver_load()
+Date:   Mon,  1 Mar 2021 17:05:37 +0100
+Message-Id: <20210301161209.994756870@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,90 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand K Mistry <amistry@google.com>
+From: Jialin Zhang <zhangjialin11@huawei.com>
 
-[ Upstream commit 2615e3cdbd9c0e864f5906279c952a309871d225 ]
+[ Upstream commit 6926872ae24452d4f2176a3ba2dee659497de2c4 ]
 
-The ieee80211_find_sta_by_ifaddr call in
-ath10k_wmi_tlv_parse_peer_stats_info must be called while holding the
-RCU read lock. Otherwise, the following warning will be seen when RCU
-usage checking is enabled:
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-=============================
-WARNING: suspicious RCU usage
-5.10.3 #8 Tainted: G        W
------------------------------
-include/linux/rhashtable.h:594 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by ksoftirqd/1/16.
-
-stack backtrace:
-CPU: 1 PID: 16 Comm: ksoftirqd/1 Tainted: G        W         5.10.3 #8
-Hardware name: HP Grunt/Grunt, BIOS Google_Grunt.11031.104.0 09/05/2019
-Call Trace:
- dump_stack+0xab/0x115
- sta_info_hash_lookup+0x71/0x1e9 [mac80211]
- ? lock_is_held_type+0xe6/0x12f
- ? __kasan_kmalloc+0xfb/0x112
- ieee80211_find_sta_by_ifaddr+0x12/0x61 [mac80211]
- ath10k_wmi_tlv_parse_peer_stats_info+0xbd/0x10b [ath10k_core]
- ath10k_wmi_tlv_iter+0x8b/0x1a1 [ath10k_core]
- ? ath10k_wmi_tlv_iter+0x1a1/0x1a1 [ath10k_core]
- ath10k_wmi_tlv_event_peer_stats_info+0x103/0x13b [ath10k_core]
- ath10k_wmi_tlv_op_rx+0x722/0x80d [ath10k_core]
- ath10k_htc_rx_completion_handler+0x16e/0x1d7 [ath10k_core]
- ath10k_pci_process_rx_cb+0x116/0x22c [ath10k_pci]
- ? ath10k_htc_process_trailer+0x332/0x332 [ath10k_core]
- ? _raw_spin_unlock_irqrestore+0x34/0x61
- ? lockdep_hardirqs_on+0x8e/0x12e
- ath10k_ce_per_engine_service+0x55/0x74 [ath10k_core]
- ath10k_ce_per_engine_service_any+0x76/0x84 [ath10k_core]
- ath10k_pci_napi_poll+0x49/0x141 [ath10k_pci]
- net_rx_action+0x11a/0x347
- __do_softirq+0x2d3/0x539
- run_ksoftirqd+0x4b/0x86
- smpboot_thread_fn+0x1d0/0x2ab
- ? cpu_report_death+0x7f/0x7f
- kthread+0x189/0x191
- ? cpu_report_death+0x7f/0x7f
- ? kthread_blkcg+0x31/0x31
- ret_from_fork+0x22/0x30
-
-Fixes: 0f7cb26830a6e ("ath10k: add rx bitrate report for SDIO")
-Signed-off-by: Anand K Mistry <amistry@google.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210202134451.1.I0d2e83c42755671b7143504b62787fd06cd914ed@changeid
+Fixes: 5c49fd3aa0ab ("gma500: Add the core DRM files and headers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jialin Zhang <zhangjialin11@huawei.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201130020216.1906141-1-zhangjialin11@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/gma500/psb_drv.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 7b5834157fe51..e6135795719a1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -240,8 +240,10 @@ static int ath10k_wmi_tlv_parse_peer_stats_info(struct ath10k *ar, u16 tag, u16
- 		   __le32_to_cpu(stat->last_tx_rate_code),
- 		   __le32_to_cpu(stat->last_tx_bitrate_kbps));
+diff --git a/drivers/gpu/drm/gma500/psb_drv.c b/drivers/gpu/drm/gma500/psb_drv.c
+index cc2d59e8471da..134068f9328d5 100644
+--- a/drivers/gpu/drm/gma500/psb_drv.c
++++ b/drivers/gpu/drm/gma500/psb_drv.c
+@@ -312,6 +312,8 @@ static int psb_driver_load(struct drm_device *dev, unsigned long flags)
+ 	if (ret)
+ 		goto out_err;
  
-+	rcu_read_lock();
- 	sta = ieee80211_find_sta_by_ifaddr(ar->hw, stat->peer_macaddr.addr, NULL);
- 	if (!sta) {
-+		rcu_read_unlock();
- 		ath10k_warn(ar, "not found station for peer stats\n");
- 		return -EINVAL;
- 	}
-@@ -251,6 +253,7 @@ static int ath10k_wmi_tlv_parse_peer_stats_info(struct ath10k *ar, u16 tag, u16
- 	arsta->rx_bitrate_kbps = __le32_to_cpu(stat->last_rx_bitrate_kbps);
- 	arsta->tx_rate_code = __le32_to_cpu(stat->last_tx_rate_code);
- 	arsta->tx_bitrate_kbps = __le32_to_cpu(stat->last_tx_bitrate_kbps);
-+	rcu_read_unlock();
- 
- 	return 0;
- }
++	ret = -ENOMEM;
++
+ 	dev_priv->mmu = psb_mmu_driver_init(dev, 1, 0, 0);
+ 	if (!dev_priv->mmu)
+ 		goto out_err;
 -- 
 2.27.0
 
