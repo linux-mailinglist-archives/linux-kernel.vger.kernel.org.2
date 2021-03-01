@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA533299DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 551473299D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239335AbhCBAgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:36:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45240 "EHLO mail.kernel.org"
+        id S1376650AbhCBA3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237250AbhCASeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:34:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A91D64E45;
-        Mon,  1 Mar 2021 17:25:31 +0000 (UTC)
+        id S240070AbhCASdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:33:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9496E65236;
+        Mon,  1 Mar 2021 17:26:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619532;
-        bh=Q34y0yEZmx5mBnYYk9bd1GCyJQw+0GNIOVAdyn/H7Xk=;
+        s=korg; t=1614619568;
+        bh=1ncF2bo2J3lCbgnmqbH1Ngp51rq2b8KUERwAmNQp5qs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=htEObeh1/dU50/EN03aMT/syWne+/ZxhhH8GsAdERZMvDNoIMnZXrD9rcrQcpQXbQ
-         RJMk6tjo20Hk/vyEAfTONgp+rbjin9nj4zL7NvlYaD6evmjaJPgGAF7LVvWCL6Yse1
-         GSec5TLIE6I+/zM/3jGQDLGLHMzDLYADK7iWtngA=
+        b=DA/ahhduz2xJIw2OBI4ld2gsEYFdERoMnPkU+FNO2t/6Vdga8bqxcIdl04xiUswsQ
+         s4bZ+bv75tX1WgeusaEWcgOo77uQuf4atGmROxyaNR23fVBF68oLJ58G52xLvBgvsl
+         fgYe197TvkjXts6gNIbzvpp3PE1h2IQ0+ZEqb11A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Olivier=20Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.10 487/663] Input: xpad - add support for PowerA Enhanced Wired Controller for Xbox Series X|S
-Date:   Mon,  1 Mar 2021 17:12:15 +0100
-Message-Id: <20210301161205.953742953@linuxfoundation.org>
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 502/663] ALSA: hda/hdmi: Drop bogus check at closing a stream
+Date:   Mon,  1 Mar 2021 17:12:30 +0100
+Message-Id: <20210301161206.680783595@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,28 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olivier Crête <olivier.crete@ocrete.ca>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 42ffcd1dba1796bcda386eb6f260df9fc23c90af upstream.
+commit 056a3da5d07fc5d3ceacfa2cdf013c9d8df630bd upstream.
 
-Signed-off-by: Olivier Crête <olivier.crete@ocrete.ca>
-Link: https://lore.kernel.org/r/20210204005318.615647-1-olivier.crete@collabora.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Some users reported the kernel WARNING with stack traces from
+hdmi_pcm_close(), and it's the line checking the per_cvt->assigned
+flag.  This used to be a valid check in the past because the flag was
+turned on/off only at opening and closing a PCM stream.  Meanwhile,
+since the introduction of the silent-stream mode, this flag may be
+turned on/off at the monitor connection/disconnection time, which
+isn't always associated with the PCM open/close.  Hence this may lead
+to the inconsistent per_cvt->assigned flag at closing.
+
+As the check itself became almost useless and confuses users as if it
+were a serious problem, just drop the check.
+
+Fixes: b1a5039759cb ("ALSA: hda/hdmi: fix silent stream for first playback to DP")
+Cc: <stable@vger.kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210987
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20210211083139.29531-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/joystick/xpad.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_hdmi.c |    1 -
+ 1 file changed, 1 deletion(-)
 
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -305,6 +305,7 @@ static const struct xpad_device {
- 	{ 0x1bad, 0xfd00, "Razer Onza TE", 0, XTYPE_XBOX360 },
- 	{ 0x1bad, 0xfd01, "Razer Onza", 0, XTYPE_XBOX360 },
- 	{ 0x20d6, 0x2001, "BDA Xbox Series X Wired Controller", 0, XTYPE_XBOXONE },
-+	{ 0x20d6, 0x2009, "PowerA Enhanced Wired Controller for Xbox Series X|S", 0, XTYPE_XBOXONE },
- 	{ 0x20d6, 0x281f, "PowerA Wired Controller For Xbox 360", 0, XTYPE_XBOX360 },
- 	{ 0x2e24, 0x0652, "Hyperkin Duke X-Box One pad", 0, XTYPE_XBOXONE },
- 	{ 0x24c6, 0x5000, "Razer Atrox Arcade Stick", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2133,7 +2133,6 @@ static int hdmi_pcm_close(struct hda_pcm
+ 			goto unlock;
+ 		}
+ 		per_cvt = get_cvt(spec, cvt_idx);
+-		snd_BUG_ON(!per_cvt->assigned);
+ 		per_cvt->assigned = 0;
+ 		hinfo->nid = 0;
+ 
 
 
