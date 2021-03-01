@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855A4329ADC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E46329A2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378114AbhCBBEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:04:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58458 "EHLO mail.kernel.org"
+        id S1377095AbhCBApk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:45:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240704AbhCAS4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:56:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EC376511D;
-        Mon,  1 Mar 2021 17:15:59 +0000 (UTC)
+        id S240500AbhCASjQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E57C8650D9;
+        Mon,  1 Mar 2021 17:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618960;
-        bh=6QsqnqnjmOxLUlPsvlC6bQ7rf8487dlOe1i/yMnOgRE=;
+        s=korg; t=1614621069;
+        bh=B/LfwtTqX2+R9AW+xh4hApe83TEcFbVsWkmSnG9EKZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fg7mfgxM7e0O5t0ZZkUruPgoEApNIVjHkiv+3qAJboXoBujlCNrjhBOxm3KJcAmWU
-         9hpQASX2Esu87TsHc6H1uxlcn6vPlAU1gc7FphQxF1HL4+LZoRxT2906Xo9mxv6Tvm
-         66gvY1kUUQOpT5qZR/9et33/VSpl50Sux81+E+fw=
+        b=0giOTgp2OuOB02rm6z7hnYFXj05NBjCoJR4IYTjKJV3wfH7soG3NasfxQFnge+V0O
+         9Nh0vTWUkx/sykobsfw02Nfp0PrHrroy62TpyeuXOe9dST3okjVw6pISR5tBY+MmYz
+         zFvomvi0+c4tJ7hurS538rx5BGcmyksAFldYHwpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 280/663] mfd: bd9571mwv: Use devm_mfd_add_devices()
-Date:   Mon,  1 Mar 2021 17:08:48 +0100
-Message-Id: <20210301161155.672320447@linuxfoundation.org>
+Subject: [PATCH 5.11 365/775] spi: atmel: Put allocated master before return
+Date:   Mon,  1 Mar 2021 17:08:53 +0100
+Message-Id: <20210301161219.657407840@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit c58ad0f2b052b5675d6394e03713ee41e721b44c ]
+[ Upstream commit 21ea2743f015dbacec1831bdc8afc848db9c2b8c ]
 
-To remove mfd devices when unload this driver, should use
-devm_mfd_add_devices() instead.
+The allocated master is not released. Goto error handling label rather
+than directly return.
 
-Fixes: d3ea21272094 ("mfd: Add ROHM BD9571MWV-M MFD PMIC driver")
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: 5e9af37e46bc ("spi: atmel: introduce probe deferring")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Fixes: 5e9af37e46bc ("spi: atmel: introduce probe deferring")
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Link: https://lore.kernel.org/r/20210120050025.25426-1-bianpan2016@163.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/bd9571mwv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/spi/spi-atmel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/bd9571mwv.c b/drivers/mfd/bd9571mwv.c
-index fab3cdc27ed64..19d57a45134c6 100644
---- a/drivers/mfd/bd9571mwv.c
-+++ b/drivers/mfd/bd9571mwv.c
-@@ -185,9 +185,9 @@ static int bd9571mwv_probe(struct i2c_client *client,
- 		return ret;
- 	}
- 
--	ret = mfd_add_devices(bd->dev, PLATFORM_DEVID_AUTO, bd9571mwv_cells,
--			      ARRAY_SIZE(bd9571mwv_cells), NULL, 0,
--			      regmap_irq_get_domain(bd->irq_data));
-+	ret = devm_mfd_add_devices(bd->dev, PLATFORM_DEVID_AUTO,
-+				   bd9571mwv_cells, ARRAY_SIZE(bd9571mwv_cells),
-+				   NULL, 0, regmap_irq_get_domain(bd->irq_data));
- 	if (ret) {
- 		regmap_del_irq_chip(bd->irq, bd->irq_data);
- 		return ret;
+diff --git a/drivers/spi/spi-atmel.c b/drivers/spi/spi-atmel.c
+index 948396b382d73..f429436082afa 100644
+--- a/drivers/spi/spi-atmel.c
++++ b/drivers/spi/spi-atmel.c
+@@ -1590,7 +1590,7 @@ static int atmel_spi_probe(struct platform_device *pdev)
+ 		if (ret == 0) {
+ 			as->use_dma = true;
+ 		} else if (ret == -EPROBE_DEFER) {
+-			return ret;
++			goto out_unmap_regs;
+ 		}
+ 	} else if (as->caps.has_pdc_support) {
+ 		as->use_pdc = true;
 -- 
 2.27.0
 
