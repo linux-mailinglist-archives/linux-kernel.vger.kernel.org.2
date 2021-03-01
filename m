@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355B9329ADF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A33CA329A77
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378139AbhCBBEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:04:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58456 "EHLO mail.kernel.org"
+        id S1377684AbhCBAsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:48:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240680AbhCAS4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:56:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A7D264DF2;
-        Mon,  1 Mar 2021 17:20:28 +0000 (UTC)
+        id S240423AbhCASqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:46:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD2AC64E75;
+        Mon,  1 Mar 2021 17:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619229;
-        bh=7/FwgIobElowJh+/y5HG6ENvOdWVSMoxLt70R9kxUAo=;
+        s=korg; t=1614619238;
+        bh=K0pKmmVxcCGTB4GfbhJf6lyKdWb+XDq6Varbr1WL52A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iHXSc1pOwyZ6cBAxUEz7oGiLDZ9QzbtBB1STsgW3PNi9Pp9i85XciY8sQqqUzt7O3
-         x2YpJHgUD26nDCyB8W8Q2m7gL7iHwqAYkBm+TlEAaoiIguWOtAB99tL8Qur7ZXbghC
-         C2MtwQ0TRU/lBaKDHDAc0BwSyhtZiFmwVxGD1Mlg=
+        b=KuhG+D6AZ/64eiLVyc6DHSglbXyRke20brFs5CJC5zwQcTiPmLVwZ1DddtbV1sSta
+         1Ltw3XT/trTo5ed1QvCeUSA1v83jhf1y56CkjcOWajFP9KgYxTbEIAk1m/Kn55VZA5
+         lpSFNXluy6fyJdmd393S06/CnJrraaIOcofFmI5A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Lutz Pogrell <lutz.pogrell@cloud.ionos.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
         Jack Wang <jinpu.wang@cloud.ionos.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 379/663] RDMA/rtrs: Only allow addition of path to an already established session
-Date:   Mon,  1 Mar 2021 17:10:27 +0100
-Message-Id: <20210301161200.607905966@linuxfoundation.org>
+Subject: [PATCH 5.10 382/663] RDMA/rtrs-srv: Do not pass a valid pointer to PTR_ERR()
+Date:   Mon,  1 Mar 2021 17:10:30 +0100
+Message-Id: <20210301161200.760679780@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,167 +42,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+From: Jack Wang <jinpu.wang@cloud.ionos.com>
 
-[ Upstream commit 03e9b33a0fd677f554b03352646c13459bf60458 ]
+[ Upstream commit ed408529679737a9a7ad816c8de5d59ba104bb11 ]
 
-While adding a path from the client side to an already established
-session, it was possible to provide the destination IP to a different
-server. This is dangerous.
+smatch gives the warning:
 
-This commit adds an extra member to the rtrs_msg_conn_req structure, named
-first_conn; which is supposed to notify if the connection request is the
-first for that session or not.
+  drivers/infiniband/ulp/rtrs/rtrs-srv.c:1805 rtrs_rdma_connect() warn: passing zero to 'PTR_ERR'
 
-On the server side, if a session does not exist but the first_conn
-received inside the rtrs_msg_conn_req structure is 1, the connection
-request is failed. This signifies that the connection request is for an
-already existing session, and since the server did not find one, it is an
-wrong connection request.
+Which is trying to say smatch has shown that srv is not an error pointer
+and thus cannot be passed to PTR_ERR.
 
-Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Link: https://lore.kernel.org/r/20210212134525.103456-3-jinpu.wang@cloud.ionos.com
-Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Reviewed-by: Lutz Pogrell <lutz.pogrell@cloud.ionos.com>
+The solution is to move the list_add() down after full initilization of
+rtrs_srv. To avoid holding the srv_mutex too long, only hold it during the
+list operation as suggested by Leon.
+
+Fixes: 03e9b33a0fd6 ("RDMA/rtrs: Only allow addition of path to an already established session")
+Link: https://lore.kernel.org/r/20210216143807.65923-1-jinpu.wang@cloud.ionos.com
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c |  7 +++++++
- drivers/infiniband/ulp/rtrs/rtrs-clt.h |  1 +
- drivers/infiniband/ulp/rtrs/rtrs-pri.h |  4 +++-
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 21 +++++++++++++++------
- 4 files changed, 26 insertions(+), 7 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 6115db7ca2030..fc0e90915678a 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -31,6 +31,8 @@
-  */
- #define RTRS_RECONNECT_SEED 8
- 
-+#define FIRST_CONN 0x01
-+
- MODULE_DESCRIPTION("RDMA Transport Client");
- MODULE_LICENSE("GPL");
- 
-@@ -1674,6 +1676,7 @@ static int rtrs_rdma_route_resolved(struct rtrs_clt_con *con)
- 		.cid_num = cpu_to_le16(sess->s.con_num),
- 		.recon_cnt = cpu_to_le16(sess->s.recon_cnt),
- 	};
-+	msg.first_conn = sess->for_new_clt ? FIRST_CONN : 0;
- 	uuid_copy(&msg.sess_uuid, &sess->s.uuid);
- 	uuid_copy(&msg.paths_uuid, &clt->paths_uuid);
- 
-@@ -1759,6 +1762,8 @@ static int rtrs_rdma_conn_established(struct rtrs_clt_con *con,
- 		scnprintf(sess->hca_name, sizeof(sess->hca_name),
- 			  sess->s.dev->ib_dev->name);
- 		sess->s.src_addr = con->c.cm_id->route.addr.src_addr;
-+		/* set for_new_clt, to allow future reconnect on any path */
-+		sess->for_new_clt = 1;
- 	}
- 
- 	return 0;
-@@ -2682,6 +2687,8 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
- 			err = PTR_ERR(sess);
- 			goto close_all_sess;
- 		}
-+		if (!i)
-+			sess->for_new_clt = 1;
- 		list_add_tail_rcu(&sess->s.entry, &clt->paths_list);
- 
- 		err = init_sess(sess);
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-index 167acd3c90fcc..22da5d50c22c4 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-@@ -142,6 +142,7 @@ struct rtrs_clt_sess {
- 	int			max_send_sge;
- 	u32			flags;
- 	struct kobject		kobj;
-+	u8			for_new_clt;
- 	struct rtrs_clt_stats	*stats;
- 	/* cache hca_port and hca_name to display in sysfs */
- 	u8			hca_port;
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 32de7ad4a0764..2e1d2f7e372ac 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -188,7 +188,9 @@ struct rtrs_msg_conn_req {
- 	__le16		recon_cnt;
- 	uuid_t		sess_uuid;
- 	uuid_t		paths_uuid;
--	u8		reserved[12];
-+	u8		first_conn : 1;
-+	u8		reserved_bits : 7;
-+	u8		reserved[11];
- };
- 
- /**
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 75e1e89e09b38..332418245dce3 100644
+index 717304c49d0c3..f009a6907169c 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1350,7 +1350,8 @@ static void free_srv(struct rtrs_srv *srv)
- }
- 
- static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
--					   const uuid_t *paths_uuid)
-+					  const uuid_t *paths_uuid,
-+					  bool first_conn)
- {
- 	struct rtrs_srv *srv;
- 	int i;
-@@ -1363,12 +1364,20 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+@@ -1364,21 +1364,18 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
  			return srv;
  		}
  	}
-+	/*
-+	 * If this request is not the first connection request from the
-+	 * client for this session then fail and return error.
-+	 */
-+	if (!first_conn) {
-+		mutex_unlock(&ctx->srv_mutex);
-+		return ERR_PTR(-ENXIO);
-+	}
++	mutex_unlock(&ctx->srv_mutex);
+ 	/*
+ 	 * If this request is not the first connection request from the
+ 	 * client for this session then fail and return error.
+ 	 */
+-	if (!first_conn) {
+-		mutex_unlock(&ctx->srv_mutex);
++	if (!first_conn)
+ 		return ERR_PTR(-ENXIO);
+-	}
  
  	/* need to allocate a new srv */
  	srv = kzalloc(sizeof(*srv), GFP_KERNEL);
- 	if  (!srv) {
- 		mutex_unlock(&ctx->srv_mutex);
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 	}
+-	if  (!srv) {
+-		mutex_unlock(&ctx->srv_mutex);
++	if  (!srv)
+ 		return ERR_PTR(-ENOMEM);
+-	}
  
  	INIT_LIST_HEAD(&srv->paths_list);
-@@ -1403,7 +1412,7 @@ err_free_chunks:
+ 	mutex_init(&srv->paths_mutex);
+@@ -1388,8 +1385,6 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+ 	srv->ctx = ctx;
+ 	device_initialize(&srv->dev);
+ 	srv->dev.release = rtrs_srv_dev_release;
+-	list_add(&srv->ctx_list, &ctx->srv_list);
+-	mutex_unlock(&ctx->srv_mutex);
  
- err_free_srv:
- 	kfree(srv);
--	return NULL;
-+	return ERR_PTR(-ENOMEM);
- }
+ 	srv->chunks = kcalloc(srv->queue_depth, sizeof(*srv->chunks),
+ 			      GFP_KERNEL);
+@@ -1402,6 +1397,9 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
+ 			goto err_free_chunks;
+ 	}
+ 	refcount_set(&srv->refcount, 1);
++	mutex_lock(&ctx->srv_mutex);
++	list_add(&srv->ctx_list, &ctx->srv_list);
++	mutex_unlock(&ctx->srv_mutex);
  
- static void put_srv(struct rtrs_srv *srv)
-@@ -1804,13 +1813,13 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
- 		goto reject_w_econnreset;
+ 	return srv;
+ 
+@@ -1816,11 +1814,7 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
  	}
  	recon_cnt = le16_to_cpu(msg->recon_cnt);
--	srv = get_or_create_srv(ctx, &msg->paths_uuid);
-+	srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
- 	/*
- 	 * "refcount == 0" happens if a previous thread calls get_or_create_srv
- 	 * allocate srv, but chunks of srv are not allocated yet.
- 	 */
--	if (!srv || refcount_read(&srv->refcount) == 0) {
--		err = -ENOMEM;
-+	if (IS_ERR(srv) || refcount_read(&srv->refcount) == 0) {
-+		err = PTR_ERR(srv);
+ 	srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
+-	/*
+-	 * "refcount == 0" happens if a previous thread calls get_or_create_srv
+-	 * allocate srv, but chunks of srv are not allocated yet.
+-	 */
+-	if (IS_ERR(srv) || refcount_read(&srv->refcount) == 0) {
++	if (IS_ERR(srv)) {
+ 		err = PTR_ERR(srv);
  		goto reject_w_err;
  	}
- 	mutex_lock(&srv->paths_mutex);
 -- 
 2.27.0
 
