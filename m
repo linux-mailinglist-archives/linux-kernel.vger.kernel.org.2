@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4B4329840
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F2A329833
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345432AbhCAXUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:20:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52458 "EHLO mail.kernel.org"
+        id S1345200AbhCAXSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:18:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239222AbhCAR7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:59:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0BE6534D;
-        Mon,  1 Mar 2021 17:44:47 +0000 (UTC)
+        id S239253AbhCAR7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:59:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF89A65350;
+        Mon,  1 Mar 2021 17:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620688;
-        bh=PvLN8e7YTc6QoTIypQ2jxEJGTywRO8jPrjHFFs2U9zU=;
+        s=korg; t=1614620699;
+        bh=/27xXjn+BzMKfvVCFqecqZkHe/uF80iAWHeGTl+SgVs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qYDGOEFhSL6OToQ09rZBVC4e1bCgsqLKub4FlWqoz6Bgwm3o8XklT3ETCwsV7hbZg
-         5MlmycgfyPXmwvqr9wbV2uoPuqrcU95m24Y1esnVCiGuNjPN48bPXybqDx3QOH/vDb
-         SyeKRXoZbD1PeibzXRQl7LXOLmKDHAQJCIL0hYTg=
+        b=d0jWd+t1gRm5shASdZFgcGxKKf+0aLehb22jtn08N5nrJ8j7BPh7H3mY6Rts4j6MO
+         pdYOSE9A3fBf9LmIHfHHXDWQhPprdTlN7tTkgWQWfYsYs1Po+QlGQFvKiD6/A/wd14
+         xSG+8ls3ymWRu5KdcabLNYlKN7EmNT2OuQw+T+Sk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 244/775] crypto: talitos - Fix ctr(aes) on SEC1
-Date:   Mon,  1 Mar 2021 17:06:52 +0100
-Message-Id: <20210301161213.685759809@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 248/775] ata: ahci_brcm: Add back regulators management
+Date:   Mon,  1 Mar 2021 17:06:56 +0100
+Message-Id: <20210301161213.884369908@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,69 +39,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 43a942d27eaaf33bca560121cbe42f3637e92880 ]
+[ Upstream commit 10340f8d7b6dd54e616339c8ccb2f397133ebea0 ]
 
-While ctr(aes) requires the use of a special descriptor on SEC2 (see
-commit 70d355ccea89 ("crypto: talitos - fix ctr-aes-talitos")), that
-special descriptor doesn't work on SEC1, see commit e738c5f15562
-("powerpc/8xx: Add DT node for using the SEC engine of the MPC885").
+While reworking the resources management and departing from using
+ahci_platform_enable_resources() which did not allow a proper step
+separation like we need, we unfortunately lost the ability to control
+AHCI regulators. This broke some Broadcom STB systems that do expect
+regulators to be turned on to link up with attached hard drives.
 
-However, the common nonsnoop descriptor works properly on SEC1 for
-ctr(aes).
-
-Add a second template for ctr(aes) that will be registered
-only on SEC1.
-
-Fixes: 70d355ccea89 ("crypto: talitos - fix ctr-aes-talitos")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: c0cdf2ac4b5b ("ata: ahci_brcm: Fix AHCI resources management")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/talitos.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ drivers/ata/ahci_brcm.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index b656983c1ef4e..25c9f825b8b54 100644
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -2765,6 +2765,22 @@ static struct talitos_alg_template driver_algs[] = {
- 				     DESC_HDR_SEL0_AESU |
- 				     DESC_HDR_MODE0_AESU_CTR,
- 	},
-+	{	.type = CRYPTO_ALG_TYPE_SKCIPHER,
-+		.alg.skcipher = {
-+			.base.cra_name = "ctr(aes)",
-+			.base.cra_driver_name = "ctr-aes-talitos",
-+			.base.cra_blocksize = 1,
-+			.base.cra_flags = CRYPTO_ALG_ASYNC |
-+					  CRYPTO_ALG_ALLOCATES_MEMORY,
-+			.min_keysize = AES_MIN_KEY_SIZE,
-+			.max_keysize = AES_MAX_KEY_SIZE,
-+			.ivsize = AES_BLOCK_SIZE,
-+			.setkey = skcipher_aes_setkey,
-+		},
-+		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
-+				     DESC_HDR_SEL0_AESU |
-+				     DESC_HDR_MODE0_AESU_CTR,
-+	},
- 	{	.type = CRYPTO_ALG_TYPE_SKCIPHER,
- 		.alg.skcipher = {
- 			.base.cra_name = "ecb(des)",
-@@ -3182,6 +3198,12 @@ static struct talitos_crypto_alg *talitos_alg_alloc(struct device *dev,
- 			t_alg->algt.alg.skcipher.setkey ?: skcipher_setkey;
- 		t_alg->algt.alg.skcipher.encrypt = skcipher_encrypt;
- 		t_alg->algt.alg.skcipher.decrypt = skcipher_decrypt;
-+		if (!strcmp(alg->cra_name, "ctr(aes)") && !has_ftr_sec1(priv) &&
-+		    DESC_TYPE(t_alg->algt.desc_hdr_template) !=
-+		    DESC_TYPE(DESC_HDR_TYPE_AESU_CTR_NONSNOOP)) {
-+			devm_kfree(dev, t_alg);
-+			return ERR_PTR(-ENOTSUPP);
-+		}
- 		break;
- 	case CRYPTO_ALG_TYPE_AEAD:
- 		alg = &t_alg->algt.alg.aead.base;
+diff --git a/drivers/ata/ahci_brcm.c b/drivers/ata/ahci_brcm.c
+index 49f7acbfcf01e..5b32df5d33adc 100644
+--- a/drivers/ata/ahci_brcm.c
++++ b/drivers/ata/ahci_brcm.c
+@@ -377,6 +377,10 @@ static int __maybe_unused brcm_ahci_resume(struct device *dev)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = ahci_platform_enable_regulators(hpriv);
++	if (ret)
++		goto out_disable_clks;
++
+ 	brcm_sata_init(priv);
+ 	brcm_sata_phys_enable(priv);
+ 	brcm_sata_alpm_init(hpriv);
+@@ -406,6 +410,8 @@ out_disable_platform_phys:
+ 	ahci_platform_disable_phys(hpriv);
+ out_disable_phys:
+ 	brcm_sata_phys_disable(priv);
++	ahci_platform_disable_regulators(hpriv);
++out_disable_clks:
+ 	ahci_platform_disable_clks(hpriv);
+ 	return ret;
+ }
+@@ -490,6 +496,10 @@ static int brcm_ahci_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto out_reset;
+ 
++	ret = ahci_platform_enable_regulators(hpriv);
++	if (ret)
++		goto out_disable_clks;
++
+ 	/* Must be first so as to configure endianness including that
+ 	 * of the standard AHCI register space.
+ 	 */
+@@ -499,7 +509,7 @@ static int brcm_ahci_probe(struct platform_device *pdev)
+ 	priv->port_mask = brcm_ahci_get_portmask(hpriv, priv);
+ 	if (!priv->port_mask) {
+ 		ret = -ENODEV;
+-		goto out_disable_clks;
++		goto out_disable_regulators;
+ 	}
+ 
+ 	/* Must be done before ahci_platform_enable_phys() */
+@@ -524,6 +534,8 @@ out_disable_platform_phys:
+ 	ahci_platform_disable_phys(hpriv);
+ out_disable_phys:
+ 	brcm_sata_phys_disable(priv);
++out_disable_regulators:
++	ahci_platform_disable_regulators(hpriv);
+ out_disable_clks:
+ 	ahci_platform_disable_clks(hpriv);
+ out_reset:
 -- 
 2.27.0
 
