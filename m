@@ -2,92 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6BE3292DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AAB3292E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:57:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244025AbhCAUyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:54:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60456 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237154AbhCARKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:10:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614618565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H35nz79U3iTc666xWR8lPmhHegrvhs5FWA9WuA5DkEI=;
-        b=RqQ5wOe0/iOPbgkCB6+F3wjB6c0eOIYiAodwUelOlBKkvKla4T6I47dITleDs6+RLWIspc
-        Es21DW2KUJVlAfVhSegO/4+EAe2vuEUr39OyN6XxmJfp4q/GBF6Pnh5R6EkEnA3PcrwpfB
-        JyUEYKEYJ1KY7x0yNXuizUFDOpdNCiw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8FB08AE3C;
-        Mon,  1 Mar 2021 17:09:25 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 18:09:23 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Wei Li <liwei391@huawei.com>, linuxppc-dev@lists.ozlabs.org,
-        kgdb-bugreport@lists.sourceforge.net
-Subject: Re: [PATCH next v3 11/15] printk: kmsg_dumper: remove @active field
-Message-ID: <YD0fw0DErfsi2ibs@alley>
-References: <20210225202438.28985-1-john.ogness@linutronix.de>
- <20210225202438.28985-12-john.ogness@linutronix.de>
+        id S236688AbhCAUym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237228AbhCARKo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:10:44 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDCDC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:10:03 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id e2so15317212ilu.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:10:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bQgYIg4zhdvSpGnEowkoL04hHhHEJOWJMqg5awL7BDY=;
+        b=d9A/gfZarMTVNipXu9nwbk447hKb3TB5K+Ut7F6XcapVYXKyr73IAWrR0nixbPfKXp
+         7eQTdbFasIJg53ECMUhHPO+vF2BOIme5lNjjjzi9GzAFanlm/eF2n5YNa0fp2/ham944
+         6lhwukyxGDfNNj4E4w6WahKKQMMdWw5mq9a0v94Tjz8bONJti70oLnCwEkB3UAnWXWTh
+         FQ82texUehuhQv9PzOGwfNwBEVAM9wOIoagaXvV6MnmPcjKIJ7KttblCsrZdAU0KdGbX
+         XoL9sMUJupzCA6p4TZfoqj+LHWZZuQbu3F9NW6la/c5LzVGh1uNyd84r5q+JduCud3Hm
+         Mudw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bQgYIg4zhdvSpGnEowkoL04hHhHEJOWJMqg5awL7BDY=;
+        b=RJbw6jzhwVaDlX5DgpW0WXxkKg12sRCEzsoRstEu7heZqc4v4Q6hl18goX4trDZnvD
+         lJFCgcKez5V/K2yZkPUQsU5t4UQruPzdzogVa40ZLixQ77VSoKrF+uFmySMp8LxZxns3
+         kCk4NStpfqTtWtHcc4l9ioUrLaGBJ3beq9gvlExr4/Nb8PZ4KJ/FAdRGCcxE01qpBr5J
+         ZpITUHbeXgqG+zPSYsG8FtYEDd8jKrzBbCHOz4t8ujFt/WyaxMubJy1GPth+LdbsDRQQ
+         /B8BLeD7F5Hxz5hXhNHZyS1pjGeuOnBTzxkhHxHOnNnNelcnCccOBQRoNPHF9vx8i4MX
+         XNHg==
+X-Gm-Message-State: AOAM532qwlOpq0TlmqZpB5Ze3f9vZQGSV2pP7tBi21IkvkSoIDnnL2TG
+        zKI45Fit3nSJx2qMgumudkYErEA9r9vkJhia9RQDNw==
+X-Google-Smtp-Source: ABdhPJw6OunxtvxRUyqOdVO6ukZrzTJd6/hnwbS2wbieJGYzz/Nhxp74HGy1tQLd/1xxe5II7r9xGQIphFuu+pUhYXc=
+X-Received: by 2002:a92:6408:: with SMTP id y8mr13854048ilb.203.1614618602337;
+ Mon, 01 Mar 2021 09:10:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225202438.28985-12-john.ogness@linutronix.de>
+References: <20210301065916.11484-1-wangyanan55@huawei.com> <20210301065916.11484-7-wangyanan55@huawei.com>
+In-Reply-To: <20210301065916.11484-7-wangyanan55@huawei.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Mon, 1 Mar 2021 09:09:51 -0800
+Message-ID: <CANgfPd_edxLBBgdnXHiq-pr=6iVf_n8qxSYQeq9JZgK05DwDRQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 6/8] KVM: selftests: List all hugetlb src types
+ specified with page sizes
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     kvm <kvm@vger.kernel.org>, linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        wanghaibin.wang@huawei.com, yezengruan@huawei.com,
+        yuzenghui@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-02-25 21:24:34, John Ogness wrote:
-> All 6 kmsg_dumpers do not benefit from the @active flag:
-> 
->   (provide their own synchronization)
->   - arch/powerpc/kernel/nvram_64.c
->   - arch/um/kernel/kmsg_dump.c
->   - drivers/mtd/mtdoops.c
->   - fs/pstore/platform.c
-> 
->   (only dump on KMSG_DUMP_PANIC, which does not require
->   synchronization)
->   - arch/powerpc/platforms/powernv/opal-kmsg.c
->   - drivers/hv/vmbus_drv.c
-> 
-> The other 2 kmsg_dump users also do not rely on @active:
-> 
->   (hard-code @active to always be true)
->   - arch/powerpc/xmon/xmon.c
->   - kernel/debug/kdb/kdb_main.c
+On Sun, Feb 28, 2021 at 11:00 PM Yanan Wang <wangyanan55@huawei.com> wrote:
+>
+> With VM_MEM_SRC_ANONYMOUS_HUGETLB, we currently can only use system
+> default hugetlb pages to back the testing guest memory. In order to
+> add flexibility, now list all the known hugetlb backing src types with
+> different page sizes, so that we can specify use of hugetlb pages of the
+> exact granularity that we want. And as all the known hugetlb page sizes
+> are listed, it's appropriate for all architectures.
+>
+> Besides, the helper get_backing_src_pagesz() is added to get the
+> granularity of different backing src types(anonumous, thp, hugetlb).
+>
+> Suggested-by: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  .../testing/selftests/kvm/include/test_util.h | 19 ++++++-
+>  tools/testing/selftests/kvm/lib/kvm_util.c    |  2 +-
+>  tools/testing/selftests/kvm/lib/test_util.c   | 56 +++++++++++++++----
+>  3 files changed, 63 insertions(+), 14 deletions(-)
+>
+> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
+> index ef24c76ba89a..be5d08bcdca7 100644
+> --- a/tools/testing/selftests/kvm/include/test_util.h
+> +++ b/tools/testing/selftests/kvm/include/test_util.h
+> @@ -70,16 +70,31 @@ struct timespec timespec_div(struct timespec ts, int divisor);
+>  enum vm_mem_backing_src_type {
+>         VM_MEM_SRC_ANONYMOUS,
+>         VM_MEM_SRC_ANONYMOUS_THP,
+> -       VM_MEM_SRC_ANONYMOUS_HUGETLB,
 
-Great summary!
+I apologize I didn't catch this in v2, but it looks like this patch
+removes a default hugetlb size option. I could see this being
+intentional if we want to force developers to think about there being
+multiple page sizes, but it might also be nice for folks to have an
+option to use the system default hugepage size.
 
-> Therefore, @active can be removed.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Otherwise, this series looks good to me. Please feel free to add
+Reviewed-by: Ben Gardon <bgardon@google.com>.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_16KB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_64KB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_512KB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_1MB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_2MB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_8MB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_16MB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_32MB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_256MB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_512MB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_1GB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_2GB,
+> +       VM_MEM_SRC_ANONYMOUS_HUGETLB_16GB,
+> +       NUM_SRC_TYPES,
+>  };
+>
+>  struct vm_mem_backing_src_alias {
+>         const char *name;
+> -       enum vm_mem_backing_src_type type;
+> +       uint32_t flag;
+>  };
+>
+>  bool thp_configured(void);
+>  size_t get_trans_hugepagesz(void);
+> +const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i);
+> +size_t get_backing_src_pagesz(uint32_t i);
+>  void backing_src_help(void);
+>  enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name);
+>
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index cc22c4ab7d67..b91c8e3a7ee1 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -757,7 +757,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>         region->mmap_start = mmap(NULL, region->mmap_size,
+>                                   PROT_READ | PROT_WRITE,
+>                                   MAP_PRIVATE | MAP_ANONYMOUS
+> -                                 | (src_type == VM_MEM_SRC_ANONYMOUS_HUGETLB ? MAP_HUGETLB : 0),
+> +                                 | vm_mem_backing_src_alias(src_type)->flag,
+>                                   -1, 0);
+>         TEST_ASSERT(region->mmap_start != MAP_FAILED,
+>                     "test_malloc failed, mmap_start: %p errno: %i",
+> diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+> index f2d133f76c67..1f5e7241c80e 100644
+> --- a/tools/testing/selftests/kvm/lib/test_util.c
+> +++ b/tools/testing/selftests/kvm/lib/test_util.c
+> @@ -11,6 +11,7 @@
+>  #include <stdlib.h>
+>  #include <time.h>
+>  #include <sys/stat.h>
+> +#include <linux/mman.h>
+>  #include "linux/kernel.h"
+>
+>  #include "test_util.h"
+> @@ -112,12 +113,6 @@ void print_skip(const char *fmt, ...)
+>         puts(", skipping test");
+>  }
+>
+> -const struct vm_mem_backing_src_alias backing_src_aliases[] = {
+> -       {"anonymous", VM_MEM_SRC_ANONYMOUS,},
+> -       {"anonymous_thp", VM_MEM_SRC_ANONYMOUS_THP,},
+> -       {"anonymous_hugetlb", VM_MEM_SRC_ANONYMOUS_HUGETLB,},
+> -};
+> -
+>  bool thp_configured(void)
+>  {
+>         int ret;
+> @@ -153,22 +148,61 @@ size_t get_trans_hugepagesz(void)
+>         return size;
+>  }
+>
+> +const struct vm_mem_backing_src_alias *vm_mem_backing_src_alias(uint32_t i)
+> +{
+> +       static const struct vm_mem_backing_src_alias aliases[] = {
+> +               { "anonymous",               0                            },
+> +               { "anonymous_thp",           0                            },
+> +               { "anonymous_hugetlb_16kb",  MAP_HUGETLB | MAP_HUGE_16KB  },
+> +               { "anonymous_hugetlb_64kb",  MAP_HUGETLB | MAP_HUGE_64KB  },
+> +               { "anonymous_hugetlb_512kb", MAP_HUGETLB | MAP_HUGE_512KB },
+> +               { "anonymous_hugetlb_1mb",   MAP_HUGETLB | MAP_HUGE_1MB   },
+> +               { "anonymous_hugetlb_2mb",   MAP_HUGETLB | MAP_HUGE_2MB   },
+> +               { "anonymous_hugetlb_8mb",   MAP_HUGETLB | MAP_HUGE_8MB   },
+> +               { "anonymous_hugetlb_16mb",  MAP_HUGETLB | MAP_HUGE_16MB  },
+> +               { "anonymous_hugetlb_32mb",  MAP_HUGETLB | MAP_HUGE_32MB  },
+> +               { "anonymous_hugetlb_256mb", MAP_HUGETLB | MAP_HUGE_256MB },
+> +               { "anonymous_hugetlb_512mb", MAP_HUGETLB | MAP_HUGE_512MB },
+> +               { "anonymous_hugetlb_1gb",   MAP_HUGETLB | MAP_HUGE_1GB   },
+> +               { "anonymous_hugetlb_2gb",   MAP_HUGETLB | MAP_HUGE_2GB   },
+> +               { "anonymous_hugetlb_16gb",  MAP_HUGETLB | MAP_HUGE_16GB  },
+> +       };
+> +       _Static_assert(ARRAY_SIZE(aliases) == NUM_SRC_TYPES,
+> +                      "Missing new backing src types?");
+> +
+> +       TEST_ASSERT(i < NUM_SRC_TYPES, "Backing src type ID %d too big", i);
+> +
+> +       return &aliases[i];
+> +}
+> +
+> +size_t get_backing_src_pagesz(uint32_t i)
+> +{
+> +       uint32_t flag = vm_mem_backing_src_alias(i)->flag;
+> +
+> +       if (i == VM_MEM_SRC_ANONYMOUS)
+> +               return getpagesize();
+> +       if (i == VM_MEM_SRC_ANONYMOUS_THP)
+> +               return get_trans_hugepagesz();
+> +
+> +       return MAP_HUGE_PAGE_SIZE(flag);
+> +}
+> +
+>  void backing_src_help(void)
+>  {
+>         int i;
+>
+>         printf("Available backing src types:\n");
+> -       for (i = 0; i < ARRAY_SIZE(backing_src_aliases); i++)
+> -               printf("\t%s\n", backing_src_aliases[i].name);
+> +       for (i = 0; i < NUM_SRC_TYPES; i++)
+> +               printf("\t%s\n", vm_mem_backing_src_alias(i)->name);
+>  }
+>
+>  enum vm_mem_backing_src_type parse_backing_src_type(const char *type_name)
+>  {
+>         int i;
+>
+> -       for (i = 0; i < ARRAY_SIZE(backing_src_aliases); i++)
+> -               if (!strcmp(type_name, backing_src_aliases[i].name))
+> -                       return backing_src_aliases[i].type;
+> +       for (i = 0; i < NUM_SRC_TYPES; i++)
+> +               if (!strcmp(type_name, vm_mem_backing_src_alias(i)->name))
+> +                       return i;
+>
+>         backing_src_help();
+>         TEST_FAIL("Unknown backing src type: %s", type_name);
+> --
+> 2.23.0
+>
