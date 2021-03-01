@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A57329A68
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B93329ACD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377580AbhCBArw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:47:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54272 "EHLO mail.kernel.org"
+        id S1348545AbhCBBDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:03:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240140AbhCASoq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:44:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1705064FBE;
-        Mon,  1 Mar 2021 17:37:20 +0000 (UTC)
+        id S240791AbhCASx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:53:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D16A764FBB;
+        Mon,  1 Mar 2021 17:37:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620241;
-        bh=0hy/Litt/zTFvA1HJE9o6wOGall1zdTH4sHAIwi4Wjc=;
+        s=korg; t=1614620244;
+        bh=iMH4t2kCJ6eeGc1rC6GCEGke9jt0PK3W41XzbwufATU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iNxMUnB3icXFqbbwHXYsmEyumuqsk4yJisBtLUnXHBzmCrpUzerzoe/JbFbj/dcXD
-         QB8Te/Uci+kzlmDl7tEtUZ1g9OtRDyKFODuTMdNd8XSvxcau++yBVY0VYhA1UsFB9y
-         4DPPPfgxZfR6gFEdJLh7pu0HLx0iu4AY1sGxs7hA=
+        b=1QkE5n3UOi7sG/Dcve9I8GiwUXyJrNvwlWLpZYpDAx4Sb2JQj9S4RCswU5xJUyOOZ
+         FMa6P4XkLWCfdIxc2IKo2qvdiir0fS+7eR0g7TT6T7weRPnM3tUZjYfel6tpIttp3d
+         5w1euvoP9dopJFHl1gRuI5c/TjAw5tK9gb3zvf9A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jorge Ramirez-Ortiz <jorge@foundries.io>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 082/775] optee: simplify i2c access
-Date:   Mon,  1 Mar 2021 17:04:10 +0100
-Message-Id: <20210301161205.736587688@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 083/775] staging: wfx: fix possible panic with re-queued frames
+Date:   Mon,  1 Mar 2021 17:04:11 +0100
+Message-Id: <20210301161205.786784499@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,107 +40,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 
-[ Upstream commit 67bc809752796acb2641ca343cad5b45eef31d7c ]
+[ Upstream commit 26df933d9b83ea668304dc4ec641d52ea1fc4091 ]
 
-Storing a bogus i2c_client structure on the stack adds overhead and
-causes a compile-time warning:
+When the firmware rejects a frame (because station become asleep or
+disconnected), the frame is re-queued in mac80211. However, the
+re-queued frame was 8 bytes longer than the original one (the size of
+the ICV for the encryption). So, when mac80211 try to send this frame
+again, it is a little bigger than expected.
+If the frame is re-queued secveral time it end with a skb_over_panic
+because the skb buffer is not large enough.
 
-drivers/tee/optee/rpc.c:493:6: error: stack frame size of 1056 bytes in function 'optee_handle_rpc' [-Werror,-Wframe-larger-than=]
-void optee_handle_rpc(struct tee_context *ctx, struct optee_rpc_param *param,
+Note it only happens when device acts as an AP and encryption is
+enabled.
 
-Change the implementation of handle_rpc_func_cmd_i2c_transfer() to
-open-code the i2c_transfer() call, which makes it easier to read
-and avoids the warning.
+This patch more or less reverts the commit 049fde130419 ("staging: wfx:
+drop useless field from struct wfx_tx_priv").
 
-Fixes: c05210ab9757 ("drivers: optee: allow op-tee to access devices on the i2c bus")
-Tested-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+Fixes: 049fde130419 ("staging: wfx: drop useless field from struct wfx_tx_priv")
+Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+Link: https://lore.kernel.org/r/20210208135254.399964-1-Jerome.Pouiller@silabs.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tee/optee/rpc.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ drivers/staging/wfx/data_tx.c | 10 +++++++++-
+ drivers/staging/wfx/data_tx.h |  1 +
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
-index 1e3614e4798f0..6cbb3643c6c48 100644
---- a/drivers/tee/optee/rpc.c
-+++ b/drivers/tee/optee/rpc.c
-@@ -54,8 +54,9 @@ bad:
- static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
- 					     struct optee_msg_arg *arg)
+diff --git a/drivers/staging/wfx/data_tx.c b/drivers/staging/wfx/data_tx.c
+index 36b36ef39d053..77fb104efdec1 100644
+--- a/drivers/staging/wfx/data_tx.c
++++ b/drivers/staging/wfx/data_tx.c
+@@ -331,6 +331,7 @@ static int wfx_tx_inner(struct wfx_vif *wvif, struct ieee80211_sta *sta,
  {
--	struct i2c_client client = { 0 };
- 	struct tee_param *params;
-+	struct i2c_adapter *adapter;
-+	struct i2c_msg msg = { };
- 	size_t i;
- 	int ret = -EOPNOTSUPP;
- 	u8 attr[] = {
-@@ -85,48 +86,48 @@ static void handle_rpc_func_cmd_i2c_transfer(struct tee_context *ctx,
- 			goto bad;
+ 	struct hif_msg *hif_msg;
+ 	struct hif_req_tx *req;
++	struct wfx_tx_priv *tx_priv;
+ 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
+ 	struct ieee80211_key_conf *hw_key = tx_info->control.hw_key;
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+@@ -344,11 +345,14 @@ static int wfx_tx_inner(struct wfx_vif *wvif, struct ieee80211_sta *sta,
+ 
+ 	// From now tx_info->control is unusable
+ 	memset(tx_info->rate_driver_data, 0, sizeof(struct wfx_tx_priv));
++	// Fill tx_priv
++	tx_priv = (struct wfx_tx_priv *)tx_info->rate_driver_data;
++	tx_priv->icv_size = wfx_tx_get_icv_len(hw_key);
+ 
+ 	// Fill hif_msg
+ 	WARN(skb_headroom(skb) < wmsg_len, "not enough space in skb");
+ 	WARN(offset & 1, "attempt to transmit an unaligned frame");
+-	skb_put(skb, wfx_tx_get_icv_len(hw_key));
++	skb_put(skb, tx_priv->icv_size);
+ 	skb_push(skb, wmsg_len);
+ 	memset(skb->data, 0, wmsg_len);
+ 	hif_msg = (struct hif_msg *)skb->data;
+@@ -484,6 +488,7 @@ static void wfx_tx_fill_rates(struct wfx_dev *wdev,
+ 
+ void wfx_tx_confirm_cb(struct wfx_dev *wdev, const struct hif_cnf_tx *arg)
+ {
++	const struct wfx_tx_priv *tx_priv;
+ 	struct ieee80211_tx_info *tx_info;
+ 	struct wfx_vif *wvif;
+ 	struct sk_buff *skb;
+@@ -495,6 +500,7 @@ void wfx_tx_confirm_cb(struct wfx_dev *wdev, const struct hif_cnf_tx *arg)
+ 		return;
  	}
- 
--	client.adapter = i2c_get_adapter(params[0].u.value.b);
--	if (!client.adapter)
-+	adapter = i2c_get_adapter(params[0].u.value.b);
-+	if (!adapter)
- 		goto bad;
- 
- 	if (params[1].u.value.a & OPTEE_MSG_RPC_CMD_I2C_FLAGS_TEN_BIT) {
--		if (!i2c_check_functionality(client.adapter,
-+		if (!i2c_check_functionality(adapter,
- 					     I2C_FUNC_10BIT_ADDR)) {
--			i2c_put_adapter(client.adapter);
-+			i2c_put_adapter(adapter);
- 			goto bad;
- 		}
- 
--		client.flags = I2C_CLIENT_TEN;
-+		msg.flags = I2C_M_TEN;
- 	}
- 
--	client.addr = params[0].u.value.c;
--	snprintf(client.name, I2C_NAME_SIZE, "i2c%d", client.adapter->nr);
-+	msg.addr = params[0].u.value.c;
-+	msg.buf  = params[2].u.memref.shm->kaddr;
-+	msg.len  = params[2].u.memref.size;
- 
- 	switch (params[0].u.value.a) {
- 	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_RD:
--		ret = i2c_master_recv(&client, params[2].u.memref.shm->kaddr,
--				      params[2].u.memref.size);
-+		msg.flags |= I2C_M_RD;
- 		break;
- 	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER_WR:
--		ret = i2c_master_send(&client, params[2].u.memref.shm->kaddr,
--				      params[2].u.memref.size);
- 		break;
- 	default:
--		i2c_put_adapter(client.adapter);
-+		i2c_put_adapter(adapter);
- 		goto bad;
- 	}
- 
-+	ret = i2c_transfer(adapter, &msg, 1);
+ 	tx_info = IEEE80211_SKB_CB(skb);
++	tx_priv = wfx_skb_tx_priv(skb);
+ 	wvif = wdev_to_wvif(wdev, ((struct hif_msg *)skb->data)->interface);
+ 	WARN_ON(!wvif);
+ 	if (!wvif)
+@@ -503,6 +509,8 @@ void wfx_tx_confirm_cb(struct wfx_dev *wdev, const struct hif_cnf_tx *arg)
+ 	// Note that wfx_pending_get_pkt_us_delay() get data from tx_info
+ 	_trace_tx_stats(arg, skb, wfx_pending_get_pkt_us_delay(wdev, skb));
+ 	wfx_tx_fill_rates(wdev, tx_info, arg);
++	skb_trim(skb, skb->len - tx_priv->icv_size);
 +
- 	if (ret < 0) {
- 		arg->ret = TEEC_ERROR_COMMUNICATION;
- 	} else {
--		params[3].u.value.a = ret;
-+		params[3].u.value.a = msg.len;
- 		if (optee_to_msg_param(arg->params, arg->num_params, params))
- 			arg->ret = TEEC_ERROR_BAD_PARAMETERS;
- 		else
- 			arg->ret = TEEC_SUCCESS;
- 	}
+ 	// From now, you can touch to tx_info->status, but do not touch to
+ 	// tx_priv anymore
+ 	// FIXME: use ieee80211_tx_info_clear_status()
+diff --git a/drivers/staging/wfx/data_tx.h b/drivers/staging/wfx/data_tx.h
+index 46c9fff7a870e..401363d6b563a 100644
+--- a/drivers/staging/wfx/data_tx.h
++++ b/drivers/staging/wfx/data_tx.h
+@@ -35,6 +35,7 @@ struct tx_policy_cache {
  
--	i2c_put_adapter(client.adapter);
-+	i2c_put_adapter(adapter);
- 	kfree(params);
- 	return;
- bad:
+ struct wfx_tx_priv {
+ 	ktime_t xmit_timestamp;
++	unsigned char icv_size;
+ };
+ 
+ void wfx_tx_policy_init(struct wfx_vif *wvif);
 -- 
 2.27.0
 
