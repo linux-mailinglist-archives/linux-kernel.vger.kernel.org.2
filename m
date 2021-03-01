@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875B7329A53
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E4C329A6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377398AbhCBArJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:47:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51242 "EHLO mail.kernel.org"
+        id S1377616AbhCBAsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:48:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240188AbhCASmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:42:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91EEC651EB;
-        Mon,  1 Mar 2021 17:19:34 +0000 (UTC)
+        id S240194AbhCASm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:42:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47FFC651E3;
+        Mon,  1 Mar 2021 17:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619175;
-        bh=UoxtFuE9UUq9KB7qxaXV/6C1ls3EnmrdBcFKySKle28=;
+        s=korg; t=1614619127;
+        bh=Wm2GALO2Fyh0DRpskSKWE3uVZXNo8kd2apIAjpnjKU8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o8zPSn6xMTYAG58OP9rgN12HTEkm7QmLGgAC84FQ5aQMtB2ypRmknTd27+APyD9/v
-         X4/oEUjGufypvh1F+qdmw2zncW8pC1jfeO/T12PTAG+uxSm7oAOkhO0kmHHtRcrpxR
-         gKH6daBdHFj2V+9Rvk725qfguumGqVWgEd9/L9Hk=
+        b=YYvoyNFDd+ruSJXdj/ThHhjY6tyWdndtQGYOIav9bosHQFIsHe2PZ0mbxKhfUKq6d
+         e6q34jcMaAIgMgLyLXExwZZyOnMPpXuACdjm2JmK3R3xVpccH5IV2BQipTK8DDUdfo
+         rzGF3uRl+UuvDTOvrPZgBI6g4gdqR18jTqynDzts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Orson Zhai <orson.zhai@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, David Gow <davidgow@google.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 330/663] mmc: sdhci-sprd: Fix some resource leaks in the remove function
-Date:   Mon,  1 Mar 2021 17:09:38 +0100
-Message-Id: <20210301161158.176598423@linuxfoundation.org>
+Subject: [PATCH 5.10 342/663] rtc: zynqmp: depend on HAS_IOMEM
+Date:   Mon,  1 Mar 2021 17:09:50 +0100
+Message-Id: <20210301161158.775513532@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,49 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: David Gow <davidgow@google.com>
 
-[ Upstream commit c9c256a8b0dc09c305c409d6264cc016af2ba38d ]
+[ Upstream commit ddd0521549a975e6148732d6ca6b89ffa862c0e5 ]
 
-'sdhci_remove_host()' and 'sdhci_pltfm_free()' should be used in place of
-'mmc_remove_host()' and 'mmc_free_host()'.
+The Xilinx zynqmp RTC driver makes use of IOMEM functions like
+devm_platform_ioremap_resource(), which are only available if
+CONFIG_HAS_IOMEM is defined.
 
-This avoids some resource leaks, is more in line with the error handling
-path of the probe function, and is more consistent with other drivers.
+This causes the driver not to be enable under make ARCH=um allyesconfig,
+even though it won't build.
 
-Fixes: fb8bd90f83c4 ("mmc: sdhci-sprd: Add Spreadtrum's initial host controller")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Orson Zhai <orson.zhai@gmail.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/20201217204236.163446-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+By adding a dependency on HAS_IOMEM, the driver will not be enabled on
+architectures which don't support it.
+
+Fixes: 09ef18bcd5ac ("rtc: use devm_platform_ioremap_resource() to simplify code")
+Signed-off-by: David Gow <davidgow@google.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210127035146.1523286-1-davidgow@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-sprd.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/rtc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-index 58109c5b53e2e..19cbb6171b358 100644
---- a/drivers/mmc/host/sdhci-sprd.c
-+++ b/drivers/mmc/host/sdhci-sprd.c
-@@ -708,14 +708,14 @@ static int sdhci_sprd_remove(struct platform_device *pdev)
- {
- 	struct sdhci_host *host = platform_get_drvdata(pdev);
- 	struct sdhci_sprd_host *sprd_host = TO_SPRD_HOST(host);
--	struct mmc_host *mmc = host->mmc;
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index e59f78f99e8f1..33e4ecd6c6659 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -1297,7 +1297,7 @@ config RTC_DRV_OPAL
  
--	mmc_remove_host(mmc);
-+	sdhci_remove_host(host, 0);
-+
- 	clk_disable_unprepare(sprd_host->clk_sdio);
- 	clk_disable_unprepare(sprd_host->clk_enable);
- 	clk_disable_unprepare(sprd_host->clk_2x_enable);
- 
--	mmc_free_host(mmc);
-+	sdhci_pltfm_free(pdev);
- 
- 	return 0;
- }
+ config RTC_DRV_ZYNQMP
+ 	tristate "Xilinx Zynq Ultrascale+ MPSoC RTC"
+-	depends on OF
++	depends on OF && HAS_IOMEM
+ 	help
+ 	  If you say yes here you get support for the RTC controller found on
+ 	  Xilinx Zynq Ultrascale+ MPSoC.
 -- 
 2.27.0
 
