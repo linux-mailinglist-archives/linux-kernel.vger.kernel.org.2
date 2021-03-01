@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482EA329A22
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6467329A57
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377018AbhCBApP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:45:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49688 "EHLO mail.kernel.org"
+        id S1377438AbhCBArR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:47:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240493AbhCASjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:39:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC13D64FBF;
-        Mon,  1 Mar 2021 17:37:28 +0000 (UTC)
+        id S238489AbhCASoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:44:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F366652C7;
+        Mon,  1 Mar 2021 17:37:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620249;
-        bh=nxb7H9kc46wHw88pBK02xc8xUguiYxOFbqNehu6OHrk=;
+        s=korg; t=1614620265;
+        bh=5ZrOIY4yZQL1WcaoPKfS6xA/v55kJ1zlVriJgVHUTyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G/6PlnX89b7bRBSruWtGLA5Ut/Y7/TmD9LfhgUgNDfEZXrZbs38HZYXkKEs+mdny1
-         Rjnl57lienHcEHFp18Br7sFflTu7YG0H0PJJQ4dClXOVYmlgrQSTgRUorDOmQAKWcz
-         gd+wvlwANdY//z2e6nVbvSnFKAKibuuGnZU2kOVA=
+        b=luVvFd4kc0xLkohXZwr3HylEI74G9vt/yg/9m9IRz0kwFVjlVIEhiinSAVSf3VekG
+         nsSEd9qcMCnBQs79d8I6t/MKTFTk7/X9D/o+mhRxnn/Kw5Bjz7rpEaGOVSelb6buu+
+         LxfKlE9GElU/XGkUbgc+c2zF4zyyKUt39M80PnXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 085/775] ath10k: Fix suspicious RCU usage warning in ath10k_wmi_tlv_parse_peer_stats_info()
-Date:   Mon,  1 Mar 2021 17:04:13 +0100
-Message-Id: <20210301161205.881826781@linuxfoundation.org>
+Subject: [PATCH 5.11 090/775] iwlwifi: mvm: store PPAG enabled/disabled flag properly
+Date:   Mon,  1 Mar 2021 17:04:18 +0100
+Message-Id: <20210301161206.125709565@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,90 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand K Mistry <amistry@google.com>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit 2615e3cdbd9c0e864f5906279c952a309871d225 ]
+[ Upstream commit 551d793f65364c904921ac168d4b4028bb51be69 ]
 
-The ieee80211_find_sta_by_ifaddr call in
-ath10k_wmi_tlv_parse_peer_stats_info must be called while holding the
-RCU read lock. Otherwise, the following warning will be seen when RCU
-usage checking is enabled:
+When reading the PPAG table from ACPI, we should store everything in
+our fwrt structure, so it can be accessed later.  But we had a local
+ppag_table variable in the function and were erroneously storing the
+enabled/disabled flag in it instead of storing it in the fwrt.  Fix
+this by removing the local variable and storing everything directly in
+fwrt.
 
-=============================
-WARNING: suspicious RCU usage
-5.10.3 #8 Tainted: G        W
------------------------------
-include/linux/rhashtable.h:594 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by ksoftirqd/1/16.
-
-stack backtrace:
-CPU: 1 PID: 16 Comm: ksoftirqd/1 Tainted: G        W         5.10.3 #8
-Hardware name: HP Grunt/Grunt, BIOS Google_Grunt.11031.104.0 09/05/2019
-Call Trace:
- dump_stack+0xab/0x115
- sta_info_hash_lookup+0x71/0x1e9 [mac80211]
- ? lock_is_held_type+0xe6/0x12f
- ? __kasan_kmalloc+0xfb/0x112
- ieee80211_find_sta_by_ifaddr+0x12/0x61 [mac80211]
- ath10k_wmi_tlv_parse_peer_stats_info+0xbd/0x10b [ath10k_core]
- ath10k_wmi_tlv_iter+0x8b/0x1a1 [ath10k_core]
- ? ath10k_wmi_tlv_iter+0x1a1/0x1a1 [ath10k_core]
- ath10k_wmi_tlv_event_peer_stats_info+0x103/0x13b [ath10k_core]
- ath10k_wmi_tlv_op_rx+0x722/0x80d [ath10k_core]
- ath10k_htc_rx_completion_handler+0x16e/0x1d7 [ath10k_core]
- ath10k_pci_process_rx_cb+0x116/0x22c [ath10k_pci]
- ? ath10k_htc_process_trailer+0x332/0x332 [ath10k_core]
- ? _raw_spin_unlock_irqrestore+0x34/0x61
- ? lockdep_hardirqs_on+0x8e/0x12e
- ath10k_ce_per_engine_service+0x55/0x74 [ath10k_core]
- ath10k_ce_per_engine_service_any+0x76/0x84 [ath10k_core]
- ath10k_pci_napi_poll+0x49/0x141 [ath10k_pci]
- net_rx_action+0x11a/0x347
- __do_softirq+0x2d3/0x539
- run_ksoftirqd+0x4b/0x86
- smpboot_thread_fn+0x1d0/0x2ab
- ? cpu_report_death+0x7f/0x7f
- kthread+0x189/0x191
- ? cpu_report_death+0x7f/0x7f
- ? kthread_blkcg+0x31/0x31
- ret_from_fork+0x22/0x30
-
-Fixes: 0f7cb26830a6e ("ath10k: add rx bitrate report for SDIO")
-Signed-off-by: Anand K Mistry <amistry@google.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210202134451.1.I0d2e83c42755671b7143504b62787fd06cd914ed@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Fixes: f2134f66f40e ("iwlwifi: acpi: support ppag table command v2")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210210135352.889862e6d393.I8b894c1b2b3fe0ad2fb39bf438273ea47eb5afa4@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/mvm/fw.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 7b5834157fe51..e6135795719a1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -240,8 +240,10 @@ static int ath10k_wmi_tlv_parse_peer_stats_info(struct ath10k *ar, u16 tag, u16
- 		   __le32_to_cpu(stat->last_tx_rate_code),
- 		   __le32_to_cpu(stat->last_tx_bitrate_kbps));
- 
-+	rcu_read_lock();
- 	sta = ieee80211_find_sta_by_ifaddr(ar->hw, stat->peer_macaddr.addr, NULL);
- 	if (!sta) {
-+		rcu_read_unlock();
- 		ath10k_warn(ar, "not found station for peer stats\n");
- 		return -EINVAL;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+index 522d547f35d58..4d527409428d3 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+@@ -892,7 +892,6 @@ static int iwl_mvm_sar_geo_init(struct iwl_mvm *mvm)
+ static int iwl_mvm_get_ppag_table(struct iwl_mvm *mvm)
+ {
+ 	union acpi_object *wifi_pkg, *data, *enabled;
+-	union iwl_ppag_table_cmd ppag_table;
+ 	int i, j, ret, tbl_rev, num_sub_bands;
+ 	int idx = 2;
+ 	s8 *gain;
+@@ -946,8 +945,8 @@ read_table:
+ 		goto out_free;
  	}
-@@ -251,6 +253,7 @@ static int ath10k_wmi_tlv_parse_peer_stats_info(struct ath10k *ar, u16 tag, u16
- 	arsta->rx_bitrate_kbps = __le32_to_cpu(stat->last_rx_bitrate_kbps);
- 	arsta->tx_rate_code = __le32_to_cpu(stat->last_tx_rate_code);
- 	arsta->tx_bitrate_kbps = __le32_to_cpu(stat->last_tx_bitrate_kbps);
-+	rcu_read_unlock();
  
- 	return 0;
- }
+-	ppag_table.v1.enabled = cpu_to_le32(enabled->integer.value);
+-	if (!ppag_table.v1.enabled) {
++	mvm->fwrt.ppag_table.v1.enabled = cpu_to_le32(enabled->integer.value);
++	if (!mvm->fwrt.ppag_table.v1.enabled) {
+ 		ret = 0;
+ 		goto out_free;
+ 	}
+@@ -975,7 +974,7 @@ read_table:
+ 			    (j != 0 &&
+ 			     (gain[i * num_sub_bands + j] > ACPI_PPAG_MAX_HB ||
+ 			      gain[i * num_sub_bands + j] < ACPI_PPAG_MIN_HB))) {
+-				ppag_table.v1.enabled = cpu_to_le32(0);
++				mvm->fwrt.ppag_table.v1.enabled = cpu_to_le32(0);
+ 				ret = -EINVAL;
+ 				goto out_free;
+ 			}
 -- 
 2.27.0
 
