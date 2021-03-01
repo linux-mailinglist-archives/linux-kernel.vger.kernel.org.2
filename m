@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D957B329BD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CE4329BE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379706AbhCBBal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:30:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43774 "EHLO mail.kernel.org"
+        id S1379801AbhCBBb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:31:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241288AbhCATS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:18:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 179C564EC6;
-        Mon,  1 Mar 2021 16:38:34 +0000 (UTC)
+        id S240315AbhCATSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:18:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF8F965061;
+        Mon,  1 Mar 2021 17:23:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616715;
-        bh=OM5otCY188Tdzt1LZzQFuh8666Jfaz3kboPyyro1mVQ=;
+        s=korg; t=1614619413;
+        bh=AJ3uhTSzwnOtW4U7Q+pKwF4bb1pWRrBavSkm4MuTQRE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a8HXnER4bF/cD2vwlb5t4sq5+c+Pw0CdgZAaIFJXczfQg4pctOOBqr/vhMQ4hamfy
-         csE41F9HtRMmn1v4vCh+Pbx6qCj/f2K6/paucDlLOGvNgThrc5JyMFOK+55dHjHQTu
-         L4gbZGVD2IuNInu76QoXCMgBgKqF4fggfjFLKy+Y=
+        b=ZnS5nvr65AKG9u7dx8H5CXSDtmi73Fvagcwphk/0M+zG8dcVrvl1SCF1Tl3f+6ueK
+         KVuL0KP5zsLMFOQ2ZuOniLUTYInm6xH6tkSCmBT+uIuLKpzh1ly/1Z5cREia9aYBCz
+         HQjFCeeygx/n5EPU20WQqUciQT+EAo/I8KnfFcz8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dave Ertman <david.m.ertman@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 071/247] net: amd-xgbe: Fix network fluctuations when using 1G BELFUSE SFP
-Date:   Mon,  1 Mar 2021 17:11:31 +0100
-Message-Id: <20210301161035.161862212@linuxfoundation.org>
+Subject: [PATCH 5.10 445/663] ice: report correct max number of TCs
+Date:   Mon,  1 Mar 2021 17:11:33 +0100
+Message-Id: <20210301161203.917958397@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
-References: <20210301161031.684018251@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+From: Dave Ertman <david.m.ertman@intel.com>
 
-[ Upstream commit 9eab3fdb419916f66a72d1572f68d82cd9b3f963 ]
+[ Upstream commit 7dcf7aa01c7b9f18727cbe0f9cb4136f1c6cdcc2 ]
 
-Frequent link up/down events can happen when a Bel Fuse SFP part is
-connected to the amd-xgbe device. Try to avoid the frequent link
-issues by resetting the PHY as documented in Bel Fuse SFP datasheets.
+In the driver currently, we are reporting max number of TCs
+to the DCBNL callback as a kernel define set to 8.  This is
+preventing userspace applications performing DCBx to correctly
+down map the TCs from requested to actual values.
 
-Fixes: e722ec82374b ("amd-xgbe: Update the BelFuse quirk to support SGMII")
-Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
-Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
-Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Report the actual max TC value to userspace from the capability
+struct.
+
+Fixes: b94b013eb626 ("ice: Implement DCBNL support")
+Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/intel/ice/ice_dcb_nl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-index 1a617d6d2bf86..54753c8a6a9d7 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
-@@ -912,6 +912,9 @@ static bool xgbe_phy_belfuse_phy_quirks(struct xgbe_prv_data *pdata)
- 	if ((phy_id & 0xfffffff0) != 0x03625d10)
- 		return false;
+diff --git a/drivers/net/ethernet/intel/ice/ice_dcb_nl.c b/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
+index 87f91b750d59a..842d44b63480f 100644
+--- a/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
++++ b/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
+@@ -136,7 +136,7 @@ ice_dcbnl_getnumtcs(struct net_device *dev, int __always_unused tcid, u8 *num)
+ 	if (!test_bit(ICE_FLAG_DCB_CAPABLE, pf->flags))
+ 		return -EINVAL;
  
-+	/* Reset PHY - wait for self-clearing reset bit to clear */
-+	genphy_soft_reset(phy_data->phydev);
-+
- 	/* Disable RGMII mode */
- 	phy_write(phy_data->phydev, 0x18, 0x7007);
- 	reg = phy_read(phy_data->phydev, 0x18);
+-	*num = IEEE_8021QAZ_MAX_TCS;
++	*num = pf->hw.func_caps.common_cap.maxtc;
+ 	return 0;
+ }
+ 
 -- 
 2.27.0
 
