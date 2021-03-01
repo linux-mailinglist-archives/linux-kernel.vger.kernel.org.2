@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FD0329CF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E580329D21
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442653AbhCBCO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:14:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
+        id S1443062AbhCBCSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:18:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241624AbhCATlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:41:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D78E765025;
-        Mon,  1 Mar 2021 17:45:26 +0000 (UTC)
+        id S234732AbhCAToe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B76065333;
+        Mon,  1 Mar 2021 17:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620727;
-        bh=QpwIX1xUMmr1FvwGcPv2R43gieZWOzz1I6JKxSdpku4=;
+        s=korg; t=1614620732;
+        bh=oH5Pp1LqGFyLTprX5Ex1z/4ukUshR6UmE3FUtvYo8p0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RMpV2d/OsoPhQ6O4oStBoZpE6YRpdnLTkNlWtKUXj6ATpG1a6uyAlTocTxMHazPZ9
-         u/0LMi70w421P1NjWMeTZoybBTpCGccIUO5iWVNP7lM/Tf72kTUxvcE/6S1ru4eiFG
-         NiICtvC9kYIDS9VPt+yz7s6Nb4LSdbMQEnrHOMt4=
+        b=KurV7hTvPVvRSk7VFLubJncww5hdasmheVLQFzv54ch39HsKz+nYNtgQD1Ybxpcm5
+         34OnZiYOD4Icz0db0oF3C8KWKRqS/+cRFXK7rcSSSpkb4KRS+JNPqn+N+rUYmPIWsP
+         j5BMoMb9eDA6Y9XzuoAqPffmZq/lZaqKAra3SWEU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 257/775] KVM: nSVM: Dont strip hosts C-bit from guests CR3 when reading PDPTRs
-Date:   Mon,  1 Mar 2021 17:07:05 +0100
-Message-Id: <20210301161214.336930337@linuxfoundation.org>
+Subject: [PATCH 5.11 259/775] drm/mediatek: Fix aal size config
+Date:   Mon,  1 Mar 2021 17:07:07 +0100
+Message-Id: <20210301161214.434295092@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,51 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+[ Upstream commit 71dcadba34203d8dd35152e368720f977e9cdb81 ]
 
-[ Upstream commit 2732be90235347a3be4babdc9f88a1ea93970b0b ]
+The orginal setting is not correct, fix it to follow hardware data sheet.
+If keep this error setting, mt8173/mt8183 display ok
+but mt8192 display abnormal.
 
-Don't clear the SME C-bit when reading a guest PDPTR, as the GPA (CR3) is
-in the guest domain.
+Fixes: 0664d1392c26 ("drm/mediatek: Add AAL engine basic function")
 
-Barring a bizarre paravirtual use case, this is likely a benign bug.  SME
-is not emulated by KVM, loading SEV guest PDPTRs is doomed as KVM can't
-use the correct key to read guest memory, and setting guest MAXPHYADDR
-higher than the host, i.e. overlapping the C-bit, would cause faults in
-the guest.
-
-Note, for SEV guests, stripping the C-bit is technically aligned with CPU
-behavior, but for KVM it's the greater of two evils.  Because KVM doesn't
-have access to the guest's encryption key, ignoring the C-bit would at
-best result in KVM reading garbage.  By keeping the C-bit, KVM will
-fail its read (unless userspace creates a memslot with the C-bit set).
-The guest will still undoubtedly die, as KVM will use '0' for the PDPTR
-value, but that's preferable to interpreting encrypted data as a PDPTR.
-
-Fixes: d0ec49d4de90 ("kvm/x86/svm: Support Secure Memory Encryption within KVM")
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210204000117.3303214-3-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/svm/nested.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index db30670dd8c4a..8ded795a18151 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -58,7 +58,7 @@ static u64 nested_svm_get_tdp_pdptr(struct kvm_vcpu *vcpu, int index)
- 	u64 pdpte;
- 	int ret;
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+index 3064eac1a7507..7fcb717f256c9 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+@@ -180,7 +180,9 @@ static void mtk_aal_config(struct mtk_ddp_comp *comp, unsigned int w,
+ 			   unsigned int h, unsigned int vrefresh,
+ 			   unsigned int bpc, struct cmdq_pkt *cmdq_pkt)
+ {
+-	mtk_ddp_write(cmdq_pkt, h << 16 | w, comp, DISP_AAL_SIZE);
++	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(comp->dev);
++
++	mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs, DISP_AAL_SIZE);
+ }
  
--	ret = kvm_vcpu_read_guest_page(vcpu, gpa_to_gfn(__sme_clr(cr3)), &pdpte,
-+	ret = kvm_vcpu_read_guest_page(vcpu, gpa_to_gfn(cr3), &pdpte,
- 				       offset_in_page(cr3) + index * 8, 8);
- 	if (ret)
- 		return 0;
+ static void mtk_aal_start(struct mtk_ddp_comp *comp)
 -- 
 2.27.0
 
