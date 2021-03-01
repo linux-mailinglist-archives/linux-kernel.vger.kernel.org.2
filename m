@@ -2,73 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCCA32A00E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B30632A012
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575222AbhCBDyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
+        id S1575240AbhCBDyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:54:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238411AbhCAWNh (ORCPT
+        with ESMTP id S240762AbhCAWPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:13:37 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74782C061756;
-        Mon,  1 Mar 2021 14:12:57 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E53B42BA;
-        Mon,  1 Mar 2021 22:12:56 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E53B42BA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1614636777; bh=F9P99DsgHbCwVM4++wlvvEKHdYaFXK/MFSqiZkjVIgI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=FqNzZVXo1E1c1Akv+Scvt5b1NdTwqhm2qxEY5ITdxTi17Mu8Hokc1K4Z5lG4duGpE
-         RAikd6J121LippGoNZXicnPEcAdEn0GRa31cKZDit5WFMasNeW/F+OnqTogZYHTV/l
-         OdTa/Ii9IvlQ5hEu5//TWVXMNyfHETuTUbKMs3sFQjg+WH6kRx8ylRPXfxaevwrnTv
-         GeR8Klo0cxhrE9aI6xRbPu4sXXKVMCBA5uYowi8yuXb+AtjEyc+SnNFzw1Aq0Xs4lB
-         l9OZgXFs3r2pKkiOcEW6CvygmzRGnn72fjT8Rt+iuHDoCMbhBq0h7p6B2DufAw3NnN
-         lgkuaZH/SKOhg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Maen Suleiman <maen@marvell.com>, Lior Amsalem <alior@marvell.com>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Andrew Lunn <andrew@lunn.ch>, Nicolas Pitre <nico@fluxnic.net>,
-        Eric Miao <eric.y.miao@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] docs: arm: Improvements to Marvell SoC
- documentation
-In-Reply-To: <20210215220839.423709-1-lkundrak@v3.sk>
-References: <20210215220839.423709-1-lkundrak@v3.sk>
-Date:   Mon, 01 Mar 2021 15:12:56 -0700
-Message-ID: <87zgzm1q1j.fsf@meer.lwn.net>
+        Mon, 1 Mar 2021 17:15:46 -0500
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74C3C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 14:15:04 -0800 (PST)
+Received: by mail-vk1-xa2a.google.com with SMTP id e25so116677vkd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:15:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gzeVUaCzJnhJfJfVrJQ1TF93szrlaAkr3ouNQpEiPGQ=;
+        b=iV8VerKLHxfI3fxO3wdeHJyeAFeY6iYDcAkOh7S6Is4RQ0suh7ftzIGZTJJCYvJbIf
+         +JtGhMUAT0Lq8oVU4eN97qEm4Y+DoDdypKdSR4tZjBwAwhK2Pwh4t3FdYBElKccMgKPt
+         D3ZSrxxJ7c0MnVRn8Bz2lPvyg4O+x/eQfL+5JPfNoSwkqDPRKQ5JFQXHLsANfr2x8Jwu
+         dt624E1hbjFwKeCnzXIKYmmkG5VX9NTtFH6WVf873MTToVmwsPLFRnHtq8UQreRNqGTp
+         deXk+GQtQNmjFErjmcCaY9pceG1x/QVPNDBFFaSS4eSPfmeBtlHixAsm8A0ZlzKYgQ+v
+         CX0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gzeVUaCzJnhJfJfVrJQ1TF93szrlaAkr3ouNQpEiPGQ=;
+        b=fkOs+7qpF/rY7BG2/HqCc5dBFTuSXI2EIke+NPmv4pBtDXQ91XPe9Opk/INoSJrLfs
+         xaJh489vcBVQw4GcHIuKT1rGxPQUYKcNHrl3d7/tGfM6zHE2w/gZbVCKUmlzybHQ2HWq
+         ut+XWJ5mdGpx6Fq45TqUkheGEzJS7x+d63BL/MDecXVz2YhYyXlcGGstFPhJ8H5oApbo
+         rjsYjZLd+eSWG8Mryuoph22Vx6gHjTeqA9B+1/QEJT+NZadfQ+OOn6PB3Bzk3nczRx9x
+         LO9ofEH0hlpNexJmD1fkNV6+8m+GRmpVvF6FZenk6j/n6u/gr+TshCB6nkdK85BVso25
+         xFIw==
+X-Gm-Message-State: AOAM530DRP0pX4xELfzG4Kn4CEo7Sx6FWNCuD21Zp+V49zlFY3yLksMW
+        KNlN1nl9BwGPRtZ5xODHup9HXrWYTEwxz+GwaI1D2brdU4TeuQ==
+X-Google-Smtp-Source: ABdhPJxO8yLE94qvlCLptsBfnRA6LXGQt8YZbFLKfXCyW4qh9SiHQW1qOk2tTvfHpKdKTUgu7ipGow1NXr39T0UG9uU=
+X-Received: by 2002:a1f:4f44:: with SMTP id d65mr371633vkb.3.1614636902593;
+ Mon, 01 Mar 2021 14:15:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210301074027.GD12822@xsang-OptiPlex-9020>
+In-Reply-To: <20210301074027.GD12822@xsang-OptiPlex-9020>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 1 Mar 2021 14:14:51 -0800
+Message-ID: <CABCJKuc8H83b_8_Ccp+Cb7O9x5oEu6sPNq63sjGcAJcgiwy0bw@mail.gmail.com>
+Subject: Re: [x86, build] 6dafca9780: WARNING:at_arch/x86/kernel/ftrace.c:#ftrace_verify_code
+To:     kernel test robot <oliver.sang@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lubomir Rintel <lkundrak@v3.sk> writes:
-
-> Hi,
+On Sun, Feb 28, 2021 at 11:25 PM kernel test robot
+<oliver.sang@intel.com> wrote:
 >
-> please consider applying the patches chained to this message.
 >
-> The objective is to deal with the a large amount of dead links to
-> material that often comes handy in marvel.rst; and improve some details
-> along the way.
+> Greeting,
 >
-> Compared to v2, the patches "[PATCH v2 2/5] docs: arm: marvell: fix 38x
-> functional spec link" and "[PATCH v2 5/5] docs: arm: marvell: rename
-> marvel.rst to marvell.rst" have been removed, because analogous patches
-> have already been applied. Also, more dead links have been removed,
-> reducing the count of links removed in [PATCH v3 1/3] to one.
-> Detailed changelogs in individual patches.
+> FYI, we noticed the following commit (built with clang-13):
+>
+> commit: 6dafca97803309c3cb5148d449bfa711e41ddef2 ("x86, build: use objtool mcount")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
 
-I've applied parts 1 and 3; since there is evidently an archive link for
-the one killed in part 2, I left that out.
+Thanks for the report, I'm able to reproduce the warning.
 
-Thanks,
+> [    4.764496] ------------[ ftrace bug ]------------
+> [    4.764847] ftrace failed to modify
+> [    4.764852] do_sys_open (kbuild/src/consumer/fs/open.c:1186)
+> [    4.765483]  actual:   0f:1f:44:00:00
+> [    4.765784] Setting ftrace call site to call ftrace function
+> [    4.766193] ftrace record flags: 50000001
+> [    4.766490]  (1) R
+> [    4.766490]  expected tramp: ffffffff81037af0
+> [    4.766959] ------------[ cut here ]------------
 
-jon
+Basically, the problem is that ftrace_replace_code() expects to find
+ideal_nops[NOP_ATOMIC5] here, which in this case is 66:66:66:66:90,
+while objtool has replaced the __fentry__ call with 0f:1f:44:00:00.
+
+As ideal_nops changes depending on kernel config and hardware, when
+CC_USING_NOP_MCOUNT is defined we could either change
+ftrace_nop_replace() to always use P6_NOP5, or skip
+ftrace_verify_code() in ftrace_replace_code() for
+FTRACE_UPDATE_MAKE_CALL.
+
+Steven, Peter, any thoughts?
+
+Sami
