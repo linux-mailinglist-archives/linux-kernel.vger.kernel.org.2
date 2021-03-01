@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A2F3298AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6BF329866
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346332AbhCAXo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:44:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58158 "EHLO mail.kernel.org"
+        id S1345704AbhCAXcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:32:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239435AbhCASIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:08:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1716964F14;
-        Mon,  1 Mar 2021 17:31:48 +0000 (UTC)
+        id S239093AbhCASEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:04:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5109A65280;
+        Mon,  1 Mar 2021 17:30:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619908;
-        bh=u4SG6M3G1nmPeiSzVDW4d6z5jO1jgWECCeUY3HyZscE=;
+        s=korg; t=1614619842;
+        bh=a02BHoipJaZBMWe70pbAKAfj5F4ojfM8MiESvlAph2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wxmUe2GhN+qdMCHSRVnAT1Png6X1clBIwvm5u292JFXWyjIn8BGSwLmOBym1NMwjQ
-         8tm5d/ad+NsEm1PsHWnw4Akedi2AdLPHPffoeMsvkp8maNk7XcP2PNzO210cxkVPHt
-         kCL3J7VZAvi9+y8H1fJ8RSPPxGm3aukN6ge0ydKU=
+        b=XeV5xr98MavtFN+t/Sd/7Hcac3cFaDKdJCKzYJxjgo2kA5nwhmhAeaqediIRy/+tA
+         71aItwqR79UeutlWgkbdm4b3OwYafoqpfgA0o1IuD3E34ySEecTgwwarzocbrzMExC
+         36Zsq3V+zMVdRucEIBCAS0314JCnMtktz2OBozkY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
-        Xin Long <lucien.xin@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 594/663] seq_file: document how per-entry resources are managed.
-Date:   Mon,  1 Mar 2021 17:14:02 +0100
-Message-Id: <20210301161211.252031302@linuxfoundation.org>
+Subject: [PATCH 5.10 601/663] mm, compaction: make fast_isolate_freepages() stay within zone
+Date:   Mon,  1 Mar 2021 17:14:09 +0100
+Message-Id: <20210301161211.592909894@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -51,83 +46,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+From: Vlastimil Babka <vbabka@suse.cz>
 
-commit b3656d8227f4c45812c6b40815d8f4e446ed372a upstream.
+commit 6e2b7044c199229a3d20cefbd3184968238c4184 upstream.
 
-Patch series "Fix some seq_file users that were recently broken".
+Compaction always operates on pages from a single given zone when
+isolating both pages to migrate and freepages.  Pageblock boundaries are
+intersected with zone boundaries to be safe in case zone starts or ends in
+the middle of pageblock.  The use of pageblock_pfn_to_page() protects
+against non-contiguous pageblocks.
 
-A recent change to seq_file broke some users which were using seq_file
-in a non-"standard" way ...  though the "standard" isn't documented, so
-they can be excused.  The result is a possible leak - of memory in one
-case, of references to a 'transport' in the other.
+The functions fast_isolate_freepages() and fast_isolate_around() don't
+currently protect the fast freepage isolation thoroughly enough against
+these corner cases, and can result in freepage isolation operate outside
+of zone boundaries:
 
-These three patches:
- 1/ document and explain the problem
- 2/ fix the problem user in x86
- 3/ fix the problem user in net/sctp
+ - in fast_isolate_freepages() if we get a pfn from the first pageblock
+   of a zone that starts in the middle of that pageblock, 'highest' can
+   be a pfn outside of the zone.
 
-This patch (of 3):
+   If we fail to isolate anything in this function, we may then call
+   fast_isolate_around() on a pfn outside of the zone and there
+   effectively do a set_pageblock_skip(page_to_pfn(highest)) which may
+   currently hit a VM_BUG_ON() in some configurations
 
-Users of seq_file will sometimes find it convenient to take a resource,
-such as a lock or memory allocation, in the ->start or ->next operations.
-These are per-entry resources, distinct from per-session resources which
-are taken in ->start and released in ->stop.
+ - fast_isolate_around() checks only the zone end boundary and not
+   beginning, nor that the pageblock is contiguous (with
+   pageblock_pfn_to_page()) so it's possible that we end up calling
+   isolate_freepages_block() on a range of pfn's from two different
+   zones and end up e.g. isolating freepages under the wrong zone's
+   lock.
 
-The preferred management of these is release the resource on the
-subsequent call to ->next or ->stop.
+This patch should fix the above issues.
 
-However prior to Commit 1f4aace60b0e ("fs/seq_file.c: simplify seq_file
-iteration code and interface") it happened that ->show would always be
-called after ->start or ->next, and a few users chose to release the
-resource in ->show.
-
-This is no longer reliable.  Since the mentioned commit, ->next will
-always come after a successful ->show (to ensure m->index is updated
-correctly), so the original ordering cannot be maintained.
-
-This patch updates the documentation to clearly state the required
-behaviour.  Other patches will fix the few problematic users.
-
-[akpm@linux-foundation.org: fix typo, per Willy]
-
-Link: https://lkml.kernel.org/r/161248518659.21478.2484341937387294998.stgit@noble1
-Link: https://lkml.kernel.org/r/161248539020.21478.3147971477400875336.stgit@noble1
-Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
-Signed-off-by: NeilBrown <neilb@suse.de>
-Cc: Xin Long <lucien.xin@gmail.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Vlad Yasevich <vyasevich@gmail.com>
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>
+Link: https://lkml.kernel.org/r/20210217173300.6394-1-vbabka@suse.cz
+Fixes: 5a811889de10 ("mm, compaction: use free lists to quickly locate a migration target")
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Mike Rapoport <rppt@kernel.org>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- Documentation/filesystems/seq_file.rst |    6 ++++++
- 1 file changed, 6 insertions(+)
+ mm/compaction.c |   16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
---- a/Documentation/filesystems/seq_file.rst
-+++ b/Documentation/filesystems/seq_file.rst
-@@ -217,6 +217,12 @@ between the calls to start() and stop(),
- is a reasonable thing to do. The seq_file code will also avoid taking any
- other locks while the iterator is active.
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1248,7 +1248,7 @@ static void
+ fast_isolate_around(struct compact_control *cc, unsigned long pfn, unsigned long nr_isolated)
+ {
+ 	unsigned long start_pfn, end_pfn;
+-	struct page *page = pfn_to_page(pfn);
++	struct page *page;
  
-+The iterater value returned by start() or next() is guaranteed to be
-+passed to a subsequent next() or stop() call.  This allows resources
-+such as locks that were taken to be reliably released.  There is *no*
-+guarantee that the iterator will be passed to show(), though in practice
-+it often will be.
+ 	/* Do not search around if there are enough pages already */
+ 	if (cc->nr_freepages >= cc->nr_migratepages)
+@@ -1259,8 +1259,12 @@ fast_isolate_around(struct compact_contr
+ 		return;
+ 
+ 	/* Pageblock boundaries */
+-	start_pfn = pageblock_start_pfn(pfn);
+-	end_pfn = min(pageblock_end_pfn(pfn), zone_end_pfn(cc->zone)) - 1;
++	start_pfn = max(pageblock_start_pfn(pfn), cc->zone->zone_start_pfn);
++	end_pfn = min(pageblock_end_pfn(pfn), zone_end_pfn(cc->zone));
 +
++	page = pageblock_pfn_to_page(start_pfn, end_pfn, cc->zone);
++	if (!page)
++		return;
  
- Formatted output
- ================
+ 	/* Scan before */
+ 	if (start_pfn != pfn) {
+@@ -1362,7 +1366,8 @@ fast_isolate_freepages(struct compact_co
+ 			pfn = page_to_pfn(freepage);
+ 
+ 			if (pfn >= highest)
+-				highest = pageblock_start_pfn(pfn);
++				highest = max(pageblock_start_pfn(pfn),
++					      cc->zone->zone_start_pfn);
+ 
+ 			if (pfn >= low_pfn) {
+ 				cc->fast_search_fail = 0;
+@@ -1432,7 +1437,8 @@ fast_isolate_freepages(struct compact_co
+ 			} else {
+ 				if (cc->direct_compaction && pfn_valid(min_pfn)) {
+ 					page = pageblock_pfn_to_page(min_pfn,
+-						pageblock_end_pfn(min_pfn),
++						min(pageblock_end_pfn(min_pfn),
++						    zone_end_pfn(cc->zone)),
+ 						cc->zone);
+ 					cc->free_pfn = min_pfn;
+ 				}
 
 
