@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64A2329AC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D68FF329A45
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348487AbhCBBCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:02:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58456 "EHLO mail.kernel.org"
+        id S1377279AbhCBAqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:46:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240786AbhCASxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:53:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DEDB960241;
-        Mon,  1 Mar 2021 17:18:22 +0000 (UTC)
+        id S239856AbhCASlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:41:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA0E464FD5;
+        Mon,  1 Mar 2021 17:50:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619103;
-        bh=MlCNaozikj7dZsiSVfzXOoHx/DXdC6FL94fFywA+2wg=;
+        s=korg; t=1614621042;
+        bh=l4el9ZaN/0RBS//xc1d3IhpwfqxRyt1uNjFyJqmUeNY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xSF18KW71+rJfgD39tDWABqgIogd8cWJ4BNtoaUBn3xVhLXLZaDlJQvHHdhrQylcD
-         qb+r8o+Hx+R6mP2Kl2OdvzwnCgwV9++bAUU9J85KLRK5qP1RI4mcWxaHS6+jfdB/Ot
-         4wgj4bvxIAv4fWkBkKQrbM1z1RGHM2ldgFeVEqvM=
+        b=VfveZ5ykK8E6LhARtlJd24Bi0lU7ECqW9gBSl3Vtud8jN7Gm+R6+phd5GhX9d33g6
+         KKtyMvAzrgkKFKKj4iFbbKlfiTwGc5Uac5i7jPtimfhMREKbcyC4MaVNRl53WNCmVE
+         HVC0iF2/mXuUU4dgcq6Hjjj1yp6M+y3LbDludzmc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 292/663] RDMA/rtrs-clt: Refactor the failure cases in alloc_clt
-Date:   Mon,  1 Mar 2021 17:09:00 +0100
-Message-Id: <20210301161156.280535732@linuxfoundation.org>
+Subject: [PATCH 5.11 373/775] power: supply: axp20x_usb_power: Init work before enabling IRQs
+Date:   Mon,  1 Mar 2021 17:09:01 +0100
+Message-Id: <20210301161220.039307088@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,87 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+From: Samuel Holland <samuel@sholland.org>
 
-[ Upstream commit eab098246625e91c1cbd6e8f75b09e4c9c28a9fc ]
+[ Upstream commit b5e8642ed95ff6ecc20cc6038fe831affa9d098c ]
 
-Make all failure cases go to the common path to avoid duplicate code.
-And some issued existed before.
+The IRQ handler calls mod_delayed_work() on power->vbus_detect. However,
+that work item is not initialized until after the IRQs are enabled. If
+an IRQ is already pending when the driver is probed, the driver calls
+mod_delayed_work() on an uninitialized work item, which causes an oops.
 
-1. clt need to be freed to avoid memory leak.
-
-2. return ERR_PTR(-ENOMEM) if kobject_create_and_add fails, because
-   rtrs_clt_open checks the return value of by call "IS_ERR(clt)".
-
-Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
-Link: https://lore.kernel.org/r/20201217141915.56989-15-jinpu.wang@cloud.ionos.com
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: bcfb7ae3f50b ("power: supply: axp20x_usb_power: Only poll while offline")
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ drivers/power/supply/axp20x_usb_power.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 88397bf4b044b..6115db7ca2030 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2576,11 +2576,8 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
- 	clt->dev.class = rtrs_clt_dev_class;
- 	clt->dev.release = rtrs_clt_dev_release;
- 	err = dev_set_name(&clt->dev, "%s", sessname);
--	if (err) {
--		free_percpu(clt->pcpu_path);
--		kfree(clt);
--		return ERR_PTR(err);
--	}
-+	if (err)
-+		goto err;
- 	/*
- 	 * Suppress user space notification until
- 	 * sysfs files are created
-@@ -2588,29 +2585,31 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
- 	dev_set_uevent_suppress(&clt->dev, true);
- 	err = device_register(&clt->dev);
- 	if (err) {
--		free_percpu(clt->pcpu_path);
- 		put_device(&clt->dev);
--		return ERR_PTR(err);
-+		goto err;
+diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supply/axp20x_usb_power.c
+index 70b28b699a80c..8933ae26c3d69 100644
+--- a/drivers/power/supply/axp20x_usb_power.c
++++ b/drivers/power/supply/axp20x_usb_power.c
+@@ -593,6 +593,7 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
+ 	power->axp20x_id = axp_data->axp20x_id;
+ 	power->regmap = axp20x->regmap;
+ 	power->num_irqs = axp_data->num_irq_names;
++	INIT_DELAYED_WORK(&power->vbus_detect, axp20x_usb_power_poll_vbus);
+ 
+ 	if (power->axp20x_id == AXP202_ID) {
+ 		/* Enable vbus valid checking */
+@@ -645,7 +646,6 @@ static int axp20x_usb_power_probe(struct platform_device *pdev)
+ 		}
  	}
  
- 	clt->kobj_paths = kobject_create_and_add("paths", &clt->dev.kobj);
- 	if (!clt->kobj_paths) {
--		free_percpu(clt->pcpu_path);
--		device_unregister(&clt->dev);
--		return NULL;
-+		err = -ENOMEM;
-+		goto err_dev;
- 	}
- 	err = rtrs_clt_create_sysfs_root_files(clt);
- 	if (err) {
--		free_percpu(clt->pcpu_path);
- 		kobject_del(clt->kobj_paths);
- 		kobject_put(clt->kobj_paths);
--		device_unregister(&clt->dev);
--		return ERR_PTR(err);
-+		goto err_dev;
- 	}
- 	dev_set_uevent_suppress(&clt->dev, false);
- 	kobject_uevent(&clt->dev.kobj, KOBJ_ADD);
+-	INIT_DELAYED_WORK(&power->vbus_detect, axp20x_usb_power_poll_vbus);
+ 	if (axp20x_usb_vbus_needs_polling(power))
+ 		queue_delayed_work(system_power_efficient_wq, &power->vbus_detect, 0);
  
- 	return clt;
-+err_dev:
-+	device_unregister(&clt->dev);
-+err:
-+	free_percpu(clt->pcpu_path);
-+	kfree(clt);
-+	return ERR_PTR(err);
- }
- 
- static void wait_for_inflight_permits(struct rtrs_clt *clt)
 -- 
 2.27.0
 
