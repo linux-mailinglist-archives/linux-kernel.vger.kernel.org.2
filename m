@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B96328040
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 498B5328044
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232124AbhCAOGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
+        id S234845AbhCAOHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:07:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236182AbhCAOFo (ORCPT
+        with ESMTP id S236183AbhCAOFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 09:05:44 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD6AC0617A9
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:04:50 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id c19so11251690pjq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:04:50 -0800 (PST)
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FA1C0617AA
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:04:54 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id s23so11913910pji.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:04:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=zB8v0ibvHDb15iQ6LaSZi2hKdZTEPMivTYLL6oYfoTg=;
-        b=QtsnfwPgskqqLRgxRCQbpj1GAdZXqtacYnsaDFKlEoMuTsbcXMJzF7gK/1pROvZxxS
-         nIp1xMW1tFec7IaqtZmAtQymjzNgc3OPY6Fm7H1xPtgWDm1l+xxoOkzYLd09IIi9PqLQ
-         4EfG323lJfc3kWVNyv1tno1i1Ftj0+HGf2/7fotI01JC8TA3CcYXyBvYZ7I9OZGgGvUr
-         XzYjDoy2kwJCZTCIFZew7jfbyzxjqLiM/vSRiGj+41kA3dHHlF/CkwL8VcEWMa8jPuwM
-         OfzQNMYKK2pehhxjPwxg9GaxRNJxgQ1VLAE/8uiktaZ2cg0w3D/uiFizClV9fv0OBBvY
-         dTkw==
+        bh=W6CTPWiokMKD0QHodMWlzIYXuYU5dBEexD0NQKteVJY=;
+        b=R6n/nJyPqGkNPVPIqWLA/c6o6GeT1y9qU/dtYAKc5DzioeWNiBkgHGLoaWTaibjt2E
+         TLqcZrrA26KBAMSZh04g1d/Q2yVfYiT9mvkSHQ6NZ2cowa++5JUOQcqz02UrCBRnRS1q
+         NBxVRu6aHEcW8iJPDFHP2J1fgUvGOj8Il2l8RIadPH+Q3RToL4HVjy0kkZeZI/5F1xNR
+         sT9qxpsmc9FdVm/Xcvi3tBxgpJIzuIBL+Ft7tI9+7M5+AzadEakn1t+U59o052uradaI
+         NnW3yBvccH+C04zVbHq4HlbXit0QY8yvRrYKR3gtfLaPLVAlR12CQK5+X6MWvQMzOfa7
+         OhGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=zB8v0ibvHDb15iQ6LaSZi2hKdZTEPMivTYLL6oYfoTg=;
-        b=Xta5jSYGyZ4O+VJkodGH2QYYYsBu4xfix8hgbI6E1DQWOP0cQL3I99TctToVynDUvP
-         2M/gciNtWYfBYnUm41sf90FzwRXotML/WusfbZ53hhZn4hijGWx5sVAUpj+S02pWNu5a
-         d/VV/V1XwDd5YwZ0YSwy8nGGaYoWy8Up+FCeU+S73lTsKJzK54y/VOxe++x1CD3M6xA+
-         He0uahui2eBAmonx/MIz0hGek0EB6A7bKwG1HHfsiJCIolzMpwoQrHxRIGUdOTBaLduP
-         xEvLg2/NLXHj6lcmXbWvPO28qjszweSHHFy9jPQ61wKOKl0yx3sTRM7hlosTgiBHdUnD
-         sgMA==
-X-Gm-Message-State: AOAM533/QoS4cK6C4qrlTZKD2qo31QldLkqbQbxQ1SeE5KiKwGk3mn6B
-        j737NWy4jmrKD4A3zKYP8g4=
-X-Google-Smtp-Source: ABdhPJxKqhboZyDWmNmY0bb5+67L1paU4id6ybpXY2NRYxr9NqAKVTLATZUBIhXsWB5d0CH7zqjLkg==
-X-Received: by 2002:a17:902:c083:b029:e4:84c5:6ac8 with SMTP id j3-20020a170902c083b02900e484c56ac8mr11622017pld.71.1614607490379;
-        Mon, 01 Mar 2021 06:04:50 -0800 (PST)
+        bh=W6CTPWiokMKD0QHodMWlzIYXuYU5dBEexD0NQKteVJY=;
+        b=QYj4f8berLB63/PEoxe4JGcUhfVeE5wMIveSgzYg5OvC6Ka3PvscaB6buRHe6u+F9O
+         a24NCgvEEiZM5uxhNwX25iyH4Ev3FXZmg+7idnH7ZvmXIR+O38W+QBi6JJod8N4ieltK
+         urjHHRJVOSztkX34VbNJjUeaH+Xf3uIwwhpq+AUV0vEICEDO9o90llvjjX351GZ+JpZy
+         PRqz7/nb96ATtz1cRBslZBsTMfhbJlX2nu5ryQygZ7leXvD+lgAB4cA3UiX5wktr3i3V
+         NzUWRtnF61Jre4ghZRqoXk248iwqMSett8P5GVVHx8WZqfZivYCA3yESUVdlD8NN0dZq
+         Do6g==
+X-Gm-Message-State: AOAM532SIO7FF88a1cx8pOLcWoMlMkQfsKDgYODis8SuUyNFguh3dBK0
+        HXAoOu4OZlo8Zf2IjOTKTLw=
+X-Google-Smtp-Source: ABdhPJwAY3eTnNrCFf584hvJj3hyRNBoCpcSA8r0AufX9f9TleGTFU35ZXkU/Bq/GgZC2L6RO0oxNw==
+X-Received: by 2002:a17:902:7c0e:b029:e4:f26:1367 with SMTP id x14-20020a1709027c0eb02900e40f261367mr15869044pll.32.1614607494230;
+        Mon, 01 Mar 2021 06:04:54 -0800 (PST)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id v26sm17357312pff.195.2021.03.01.06.04.46
+        by smtp.gmail.com with ESMTPSA id v26sm17357312pff.195.2021.03.01.06.04.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 06:04:49 -0800 (PST)
+        Mon, 01 Mar 2021 06:04:53 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -61,9 +61,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Ian Rogers <irogers@google.com>, Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH 09/11] perf test: Fix a memory leak in thread_map_remove test
-Date:   Mon,  1 Mar 2021 23:04:07 +0900
-Message-Id: <20210301140409.184570-10-namhyung@kernel.org>
+Subject: [PATCH 10/11] perf test: Fix cpu map leaks in cpu_map_print test
+Date:   Mon,  1 Mar 2021 23:04:08 +0900
+Message-Id: <20210301140409.184570-11-namhyung@kernel.org>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 In-Reply-To: <20210301140409.184570-1-namhyung@kernel.org>
 References: <20210301140409.184570-1-namhyung@kernel.org>
@@ -73,63 +73,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The str should be freed after creating a thread map.  Also change the
-open-coded thread map deletion to a call to perf_thread_map__put().
+It should be released after printing the map.
 
-  $ perf test -v 44
-  44: Remove thread map                          :
+  $ perf test -v 52
+  52: Print cpu map                              :
   --- start ---
-  test child forked, pid 165536
-  2 threads: 165535, 165536
-  1 thread: 165536
-  0 thread:
+  test child forked, pid 172233
 
   =================================================================
-  ==165536==ERROR: LeakSanitizer: detected memory leaks
+  ==172233==ERROR: LeakSanitizer: detected memory leaks
 
-  Direct leak of 14 byte(s) in 1 object(s) allocated from:
-    #0 0x7f54453ffe8f in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
-    #1 0x7f5444f8c6a7 in __vasprintf_internal libio/vasprintf.c:71
+  Direct leak of 156 byte(s) in 1 object(s) allocated from:
+    #0 0x7fc472518e8f in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x55e63b378f7a in cpu_map__trim_new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:79
+    #2 0x55e63b37a05c in perf_cpu_map__new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:237
+    #3 0x55e63b056d16 in cpu_map_print tests/cpumap.c:102
+    #4 0x55e63b056d16 in test__cpu_map_print tests/cpumap.c:120
+    #5 0x55e63afff8fb in run_test tests/builtin-test.c:428
+    #6 0x55e63afff8fb in test_and_print tests/builtin-test.c:458
+    #7 0x55e63b001a53 in __cmd_test tests/builtin-test.c:679
+    #8 0x55e63b001a53 in cmd_test tests/builtin-test.c:825
+    #9 0x55e63b06dc44 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
+    #10 0x55e63aef7a88 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
+    #11 0x55e63aef7a88 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
+    #12 0x55e63aef7a88 in main /home/namhyung/project/linux/tools/perf/perf.c:539
+    #13 0x7fc47204ed09 in __libc_start_main ../csu/libc-start.c:308
+  ...
 
-  SUMMARY: AddressSanitizer: 14 byte(s) leaked in 1 allocation(s).
+  SUMMARY: AddressSanitizer: 448 byte(s) leaked in 7 allocation(s).
   test child finished with 1
   ---- end ----
-  Remove thread map: FAILED!
+  Print cpu map: FAILED!
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/tests/thread-map.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ tools/perf/tests/cpumap.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/perf/tests/thread-map.c b/tools/perf/tests/thread-map.c
-index 9e1cf11149ef..d1e208b4a571 100644
---- a/tools/perf/tests/thread-map.c
-+++ b/tools/perf/tests/thread-map.c
-@@ -110,12 +110,12 @@ int test__thread_map_remove(struct test *test __maybe_unused, int subtest __mayb
- {
- 	struct perf_thread_map *threads;
- 	char *str;
--	int i;
+diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
+index 29c793ac7d10..0472b110fe65 100644
+--- a/tools/perf/tests/cpumap.c
++++ b/tools/perf/tests/cpumap.c
+@@ -106,6 +106,8 @@ static int cpu_map_print(const char *str)
+ 		return -1;
  
- 	TEST_ASSERT_VAL("failed to allocate map string",
- 			asprintf(&str, "%d,%d", getpid(), getppid()) >= 0);
- 
- 	threads = thread_map__new_str(str, NULL, 0, false);
-+	free(str);
- 
- 	TEST_ASSERT_VAL("failed to allocate thread_map",
- 			threads);
-@@ -142,9 +142,6 @@ int test__thread_map_remove(struct test *test __maybe_unused, int subtest __mayb
- 	TEST_ASSERT_VAL("failed to not remove thread",
- 			thread_map__remove(threads, 0));
- 
--	for (i = 0; i < threads->nr; i++)
--		zfree(&threads->map[i].comm);
--
--	free(threads);
-+	perf_thread_map__put(threads);
- 	return 0;
+ 	cpu_map__snprint(map, buf, sizeof(buf));
++	perf_cpu_map__put(map);
++
+ 	return !strcmp(buf, str);
  }
+ 
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
