@@ -2,73 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820FB3278E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBCF3278E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbhCAIGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:06:13 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:27836 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232718AbhCAIF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:05:27 -0500
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app3 (Coremail) with SMTP id cC_KCgDnPSQFoDxgCuLgAQ--.21092S4;
-        Mon, 01 Mar 2021 16:04:25 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: gyro: mpu3050: Fix error handling in mpu3050_trigger_handler
-Date:   Mon,  1 Mar 2021 16:04:21 +0800
-Message-Id: <20210301080421.13436-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgDnPSQFoDxgCuLgAQ--.21092S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7JF13WF4kWr1xXFyxKr15Jwb_yoWfJrb_W3
-        4UZas7W34IvFnrCr42yayfXr9FyF95ur95Wrn2qF9IkFyxCas5WryUZrnxGr43Wr48CFy3
-        Wr1ruF1xCF43KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbc8Fc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
-        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcLBlZdtSjMQAABsT
+        id S232772AbhCAIIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:08:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232748AbhCAIHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 03:07:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4A1564E42;
+        Mon,  1 Mar 2021 08:07:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614586026;
+        bh=eYrKiRldcGd1/qq+sxHlcpmOrp2wd88rQgkH0JmzMWM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RvWeE1sPx0qe4txJaTyOiAnGuNX+mLLY4p8Do+UwiMsq18H8uw2VduUeZbCs29Yum
+         UDihHV0SreF2nc73wquBoDwBM9FuwwQOmcImPUk83qQCcw3JZA17EIFSwYL+rxLmai
+         HGZZ9+8pLgZyB1uNpKb1GCCsR50Orbvzp4SFlzuM=
+Date:   Mon, 1 Mar 2021 09:07:03 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ben Hutchings <ben@decadent.org.uk>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>, lwn@lwn.net,
+        jslaby@suse.cz
+Subject: Re: futex breakage in 4.9 stable branch
+Message-ID: <YDygp3WYafzcgt+s@kroah.com>
+References: <161408880177110@kroah.com>
+ <66826ac72356b00814f51487dd1008298e52ed9b.camel@decadent.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <66826ac72356b00814f51487dd1008298e52ed9b.camel@decadent.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is one regmap_bulk_read() call in mpu3050_trigger_handler
-that we have caught its return value bug lack further handling.
-Check and terminate the execution flow just like the other three
-regmap_bulk_read() calls in this function.
+On Mon, Mar 01, 2021 at 01:13:08AM +0100, Ben Hutchings wrote:
+> On Tue, 2021-02-23 at 15:00 +0100, Greg Kroah-Hartman wrote:
+> > I'm announcing the release of the 4.9.258 kernel.
+> > 
+> > All users of the 4.9 kernel series must upgrade.
+> > 
+> > The updated 4.9.y git tree can be found at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.9.y
+> > and can be browsed at the normal kernel.org git web browser:
+> >         
+> 
+> The backported futex fixes are still incomplete/broken in this version.
+> If I enable lockdep and run the futex self-tests (from 5.10):
+> 
+> - on 4.9.246, they pass with no lockdep output
+> - on 4.9.257 and 4.9.258, they pass but futex_requeue_pi trigers a
+>   lockdep splat
+> 
+> I have a local branch that essentially updates futex and rtmutex in
+> 4.9-stable to match 4.14-stable.  With this, the tests pass and lockdep
+> is happy.
+> 
+> Unfortunately, that branch has about another 60 commits.  Further, the
+> more we change futex in 4.9, the more difficult it is going to be to
+> update the 4.9-rt branch.  But I don't see any better option available
+> at the moment.
+> 
+> Thoughts?
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/iio/gyro/mpu3050-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+There were some posted futex fixes for 4.9 (and 4.4) on the stable list
+that I have not gotten to yet.
 
-diff --git a/drivers/iio/gyro/mpu3050-core.c b/drivers/iio/gyro/mpu3050-core.c
-index dfa31a23500f..ac90be03332a 100644
---- a/drivers/iio/gyro/mpu3050-core.c
-+++ b/drivers/iio/gyro/mpu3050-core.c
-@@ -551,6 +551,8 @@ static irqreturn_t mpu3050_trigger_handler(int irq, void *p)
- 					       MPU3050_FIFO_R,
- 					       &fifo_values[offset],
- 					       toread);
-+			if (ret)
-+				goto out_trigger_unlock;
- 
- 			dev_dbg(mpu3050->dev,
- 				"%04x %04x %04x %04x %04x\n",
--- 
-2.17.1
+Hopefully after these are merged (this week), these issues will be
+resolved.
 
+If not, then yes, they need to be fixed and any help you can provide
+would be appreciated.
+
+As for "difficulty", yes, it's rough, but the changes backported were
+required, for obvious reasons :(
+
+thanks,
+
+greg k-h
