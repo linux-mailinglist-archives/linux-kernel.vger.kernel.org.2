@@ -2,204 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512DF327697
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 05:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 601EB32769A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 05:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhCAEED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 23:04:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232422AbhCAEDG (ORCPT
+        id S232625AbhCAEI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 23:08:26 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13388 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232478AbhCAEIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 23:03:06 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E674C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 20:02:24 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3D318806B7;
-        Mon,  1 Mar 2021 17:02:22 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1614571342;
-        bh=dD5DUm3lkvPywW7I+tGGvYkLxO/6FVYZg31iMie/1ZU=;
-        h=From:To:Cc:Subject:Date;
-        b=nP3o7pvWDAVWP6s05P2cjscoP4va5D9EuuJo0dm6Psvei071aqaNshLlkzbtAYI+0
-         QV7nofBmPKl0H6NK0c4z1VvZdERWRSmR8dQjfR57X9cU9q05+tDwOXsPyh5Vcllmtr
-         FhL8PkPTBKBjzyqvgE7JNaPayJWKYmI+gFbUtjOQd+VK9S1oEMTKLWMxBOiNMj/fPt
-         j5KrDgiahV7aNEEI+oUmg9JKemv//GsaOIhg+ZIWJZr+zasB5d5zE5ryFmGyG4SQcq
-         gFTFNqY0iFYwm2mWdk+ZPNvSmXbA3mOaf4PUA5B3qZd18Te5lRC14Gu7k4laCLGevZ
-         eyp2duUkk5AKQ==
-Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B603c674e0000>; Mon, 01 Mar 2021 17:02:22 +1300
-Received: from evann-dl.ws.atlnz.lc (evann-dl.ws.atlnz.lc [10.33.23.31])
-        by smtp (Postfix) with ESMTP id 7DA0F13EF08;
-        Mon,  1 Mar 2021 17:02:32 +1300 (NZDT)
-Received: by evann-dl.ws.atlnz.lc (Postfix, from userid 1780)
-        id 06D9F1A4EB7; Mon,  1 Mar 2021 17:02:22 +1300 (NZDT)
-From:   Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
-Subject: [PATCH] xfrm: Use actual socket sk instead of skb socket for xfrm_output_resume
-Date:   Mon,  1 Mar 2021 17:02:08 +1300
-Message-Id: <20210301040208.20869-1-evan.nimmo@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.27.0
+        Sun, 28 Feb 2021 23:08:13 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Dpmrq0xQxz7rVY;
+        Mon,  1 Mar 2021 12:05:47 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 1 Mar 2021 12:07:22 +0800
+From:   Hui Tang <tanghui20@huawei.com>
+To:     <daniel.vetter@ffwll.ch>, <grandmaster@al2klimov.de>,
+        <dri-devel@lists.freedesktop.org>
+CC:     <linux-fbdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] video: fbdev: fix use of 'dma_map_single'
+Date:   Mon, 1 Mar 2021 12:05:09 +0800
+Message-ID: <1614571509-40078-1-git-send-email-tanghui20@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=Dt8K1BYc2ykxIEzuzgsA:9
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A situation can occur where the interface bound to the sk is different
-to the interface bound to the sk attached to the skb. The interface
-bound to the sk is the correct one however this information is lost insid=
-e
-xfrm_output2 and instead the sk on the skb is used in xfrm_output_resume
-instead. This assumes that the sk bound interface and the bound interface
-attached to the sk within the skb are the same which can lead to lookup
-failures inside ip_route_me_harder resulting in the packet being dropped.
+DMA_TO_DEVICE synchronisation must be done after the last modification
+of the memory region by the software and before it is handed off to
+the device.
 
-We have an l2tp v3 tunnel with ipsec protection. The tunnel is in the
-global VRF however we have an encapsulated dot1q tunnel interface that
-is within a different VRF. We also have a mangle rule that marks the=20
-packets causing them to be processed inside ip_route_me_harder.
-
-Prior to commit 31c70d5956fc ("l2tp: keep original skb ownership") this
-worked fine as the sk attached to the skb was changed from the dot1q
-encapsulated interface to the sk for the tunnel which meant the interface
-bound to the sk and the interface bound to the skb were identical.
-Commit 46d6c5ae953c ("netfilter: use actual socket sk rather than skb sk
-when routing harder") fixed some of these issues however a similar
-problem existed in the xfrm code.
-
-Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+Signed-off-by: Hui Tang <tanghui20@huawei.com>
 ---
- include/net/xfrm.h     |  2 +-
- net/ipv4/ah4.c         |  2 +-
- net/ipv4/esp4.c        |  2 +-
- net/ipv6/ah6.c         |  2 +-
- net/ipv6/esp6.c        |  2 +-
- net/xfrm/xfrm_output.c | 10 +++++-----
- 6 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/video/fbdev/grvga.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-index b2a06f10b62c..bfbc7810df94 100644
---- a/include/net/xfrm.h
-+++ b/include/net/xfrm.h
-@@ -1557,7 +1557,7 @@ int xfrm_trans_queue_net(struct net *net, struct sk=
-_buff *skb,
- int xfrm_trans_queue(struct sk_buff *skb,
- 		     int (*finish)(struct net *, struct sock *,
- 				   struct sk_buff *));
--int xfrm_output_resume(struct sk_buff *skb, int err);
-+int xfrm_output_resume(struct sock *sk, struct sk_buff *skb, int err);
- int xfrm_output(struct sock *sk, struct sk_buff *skb);
-=20
- #if IS_ENABLED(CONFIG_NET_PKTGEN)
-diff --git a/net/ipv4/ah4.c b/net/ipv4/ah4.c
-index d99e1be94019..36ed85bf2ad5 100644
---- a/net/ipv4/ah4.c
-+++ b/net/ipv4/ah4.c
-@@ -141,7 +141,7 @@ static void ah_output_done(struct crypto_async_reques=
-t *base, int err)
+diff --git a/drivers/video/fbdev/grvga.c b/drivers/video/fbdev/grvga.c
+index 24818b2..25ae9ef 100644
+--- a/drivers/video/fbdev/grvga.c
++++ b/drivers/video/fbdev/grvga.c
+@@ -435,6 +435,8 @@ static int grvga_probe(struct platform_device *dev)
+ 			retval = -ENOMEM;
+ 			goto dealloc_cmap;
+ 		}
++
++		memset((unsigned long *) virtual_start, 0, grvga_mem_size);
+ 	} else {	/* Allocate frambuffer memory */
+ 
+ 		unsigned long page;
+@@ -449,6 +451,7 @@ static int grvga_probe(struct platform_device *dev)
+ 			goto dealloc_cmap;
+ 		}
+ 
++		memset((unsigned long *) virtual_start, 0, grvga_mem_size);
+ 		physical_start = dma_map_single(&dev->dev, (void *)virtual_start, grvga_mem_size, DMA_TO_DEVICE);
+ 
+ 		/* Set page reserved so that mmap will work. This is necessary
+@@ -463,8 +466,6 @@ static int grvga_probe(struct platform_device *dev)
+ 		par->fb_alloced = 1;
  	}
-=20
- 	kfree(AH_SKB_CB(skb)->tmp);
--	xfrm_output_resume(skb, err);
-+	xfrm_output_resume(skb->sk, skb, err);
- }
-=20
- static int ah_output(struct xfrm_state *x, struct sk_buff *skb)
-diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
-index a3271ec3e162..4b834bbf95e0 100644
---- a/net/ipv4/esp4.c
-+++ b/net/ipv4/esp4.c
-@@ -279,7 +279,7 @@ static void esp_output_done(struct crypto_async_reque=
-st *base, int err)
- 		    x->encap && x->encap->encap_type =3D=3D TCP_ENCAP_ESPINTCP)
- 			esp_output_tail_tcp(x, skb);
- 		else
--			xfrm_output_resume(skb, err);
-+			xfrm_output_resume(skb->sk, skb, err);
- 	}
- }
-=20
-diff --git a/net/ipv6/ah6.c b/net/ipv6/ah6.c
-index 440080da805b..080ee7f44c64 100644
---- a/net/ipv6/ah6.c
-+++ b/net/ipv6/ah6.c
-@@ -316,7 +316,7 @@ static void ah6_output_done(struct crypto_async_reque=
-st *base, int err)
- 	}
-=20
- 	kfree(AH_SKB_CB(skb)->tmp);
--	xfrm_output_resume(skb, err);
-+	xfrm_output_resume(skb->sk, skb, err);
- }
-=20
- static int ah6_output(struct xfrm_state *x, struct sk_buff *skb)
-diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
-index 153ad103ba74..727d791ed5e6 100644
---- a/net/ipv6/esp6.c
-+++ b/net/ipv6/esp6.c
-@@ -314,7 +314,7 @@ static void esp_output_done(struct crypto_async_reque=
-st *base, int err)
- 		    x->encap && x->encap->encap_type =3D=3D TCP_ENCAP_ESPINTCP)
- 			esp_output_tail_tcp(x, skb);
- 		else
--			xfrm_output_resume(skb, err);
-+			xfrm_output_resume(skb->sk, skb, err);
- 	}
- }
-=20
-diff --git a/net/xfrm/xfrm_output.c b/net/xfrm/xfrm_output.c
-index a7ab19353313..b81ca117dac7 100644
---- a/net/xfrm/xfrm_output.c
-+++ b/net/xfrm/xfrm_output.c
-@@ -503,22 +503,22 @@ static int xfrm_output_one(struct sk_buff *skb, int=
- err)
- 	return err;
- }
-=20
--int xfrm_output_resume(struct sk_buff *skb, int err)
-+int xfrm_output_resume(struct sock *sk, struct sk_buff *skb, int err)
- {
- 	struct net *net =3D xs_net(skb_dst(skb)->xfrm);
-=20
- 	while (likely((err =3D xfrm_output_one(skb, err)) =3D=3D 0)) {
- 		nf_reset_ct(skb);
-=20
--		err =3D skb_dst(skb)->ops->local_out(net, skb->sk, skb);
-+		err =3D skb_dst(skb)->ops->local_out(net, sk, skb);
- 		if (unlikely(err !=3D 1))
- 			goto out;
-=20
- 		if (!skb_dst(skb)->xfrm)
--			return dst_output(net, skb->sk, skb);
-+			return dst_output(net, sk, skb);
-=20
- 		err =3D nf_hook(skb_dst(skb)->ops->family,
--			      NF_INET_POST_ROUTING, net, skb->sk, skb,
-+			      NF_INET_POST_ROUTING, net, sk, skb,
- 			      NULL, skb_dst(skb)->dev, xfrm_output2);
- 		if (unlikely(err !=3D 1))
- 			goto out;
-@@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(xfrm_output_resume);
-=20
- static int xfrm_output2(struct net *net, struct sock *sk, struct sk_buff=
- *skb)
- {
--	return xfrm_output_resume(skb, 1);
-+	return xfrm_output_resume(sk, skb, 1);
- }
-=20
- static int xfrm_output_gso(struct net *net, struct sock *sk, struct sk_b=
-uff *skb)
---=20
-2.27.0
+ 
+-	memset((unsigned long *) virtual_start, 0, grvga_mem_size);
+-
+ 	info->screen_base = (char __iomem *) virtual_start;
+ 	info->fix.smem_start = physical_start;
+ 	info->fix.smem_len   = grvga_mem_size;
+-- 
+2.8.1
 
