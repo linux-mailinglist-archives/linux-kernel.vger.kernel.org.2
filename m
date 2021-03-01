@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1515C328036
+	by mail.lfdr.de (Postfix) with ESMTP id 87790328037
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236153AbhCAOFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:05:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34034 "EHLO
+        id S236160AbhCAOFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:05:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236081AbhCAOFA (ORCPT
+        with ESMTP id S236081AbhCAOFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:05:00 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750E1C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:04:19 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id s16so9947694plr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:04:19 -0800 (PST)
+        Mon, 1 Mar 2021 09:05:03 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E26C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:04:23 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id p21so11625181pgl.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:04:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0Pd+BhkEAn267J0IOg+vBSRFkkfGLL/M1vewJ82sgQQ=;
-        b=RA46DUKn6KKFv7kP0DMB15i3N7xCh7ezQGVxEcxCPhF5madMh7NsDrnhP0LDEYPeCj
-         XQHjHJQ2IpRVJ9kO8FHDIXybLXxmWw0qU7oPS4UhcswTsO5EZHazaMgJh4uEPQ2BnWi8
-         ZJ4YR0F6BBWDMvuPLgYOIVKN6COqmihmM+hsW/gQ/3cyIvkhIDokvOGb4q3X+nPmHFqs
-         d+TXIP8TbBSMneL7KSdR+Nm0wZ7Y1qGD3/BmX1Rz68pHBynh2NfeUsdrVidDQ53FzAw8
-         xcXdJBrnUnMUQXS/j+LB5+MzQPYtrMdz4ypSUjImAgWZWUGNMm8erzlfbhqWSmn19aX7
-         DJ3A==
+        bh=609QGj3cXx8NoBV/I+BxsLMaYoFrfPy5EaQ+uT7sdyA=;
+        b=N8g9SoOHVIAMoMhg8eh1FndxDY+xpDPJYUlnDoXLENqpIZyPNvt51pmeVFv37ELwbB
+         OS8rGsPG+MKMhYoAwTrqsH+96CATSLBsLN1h4RdjLLzwOoCSEpqQLK6Cup7D70uTqTyP
+         UlnyZTQInrsHS2qbD+bDnvn1csJj4AlJdO0XYm5h9lvVnVjt9j+fR8eseSSpsN3wWK7H
+         smAEwMXDzVX8srhawWTng/xUdI6L8x53RwHwkrCBsUJUgFof7k9DHCyLcm6gxiS0pF+F
+         jcs6xKzQteBC71aUJpb7xkSJ4liza4A33VEuyrmkobI/3ZvfbVAgZAvYbXJcJFRxhJU4
+         e/Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=0Pd+BhkEAn267J0IOg+vBSRFkkfGLL/M1vewJ82sgQQ=;
-        b=X1qmKuM5sDgNJf2Ze9e/WsTw30GGgHWo2Gz1zLfI41w8/VdrtkU7+S18MNLGAdEsc6
-         0BoU9zLB69iNf9/WhWlIWWxBts4JaIKCTOoEwB7aySS2CBmkz4dDTnVKy6J6P5kS1nzY
-         WqNquGNn8LO15Hs1X0784pHW01TlseTWpm1u7jhsKHTRszSqKeVRNC4VpePtv4FUuaWZ
-         fcJk4+o/l+nLMqhncyQYJ7Gekt2jlBxl74IO7PlvWa1sFuy8WZMX0bxgvh/t+kOnHpcn
-         vTdg0/wxNjxBVR8IK+U0DYiRSHgCV6QYHzeKcePqieFPFVhSZef5c9QknjLt9it38zEQ
-         wWzw==
-X-Gm-Message-State: AOAM532B3tvPv+kgFWbdx1isUm34oGWeYIbNXq2Gp/ATpZQJJUQrJat3
-        hreMIVnwDCNdtI1t0bHJJPY=
-X-Google-Smtp-Source: ABdhPJwXrr93auOLewxzuVteAWyQb4Y5mSugMqi9lfzD3qErQ18oi2VnVOSidkVnKTlN3bB88zW/eA==
-X-Received: by 2002:a17:90b:1b52:: with SMTP id nv18mr18157687pjb.19.1614607459056;
-        Mon, 01 Mar 2021 06:04:19 -0800 (PST)
+        bh=609QGj3cXx8NoBV/I+BxsLMaYoFrfPy5EaQ+uT7sdyA=;
+        b=X0YNHQksM6A2SEKziRvpU06d4hRTmU7g2LYBPmzNFrg9MqZtoCXPMXiQqlSintv6be
+         3gOX1vlxjCX+JTR01ODBapxt5XfM6fhoXukRK33L3800/OaYoqgOSvnZrd/yZYJRcDDx
+         ro6zwicc+oegGi6G5RfAhv4V/JW1phAnR0CMTvmtkwVRdgwp7tcJj3342CJjvHaM3s5P
+         2SbGbNIXGQ/3CUXhDWHH6jlnix+44B/p1wFji7IH0kHppLYXf6boHixi4nxyIPRT5Adh
+         pBR6ciJFeDRG2ix6wJ4qkAvKoob97ElkaY+yq2OnG/YM1mWW/AydJ5Aa+b1nKgI+z03P
+         9aHA==
+X-Gm-Message-State: AOAM532djrEx+qm2L/WnxGC9g3ZcWHrvHj5vbrpcfq1BCeBq4FYEu7vs
+        BvGv3QnR4M87H/aMP6UZ6/c=
+X-Google-Smtp-Source: ABdhPJwNs70NBSWhbRKjQ9c/rlwzngQ61lGa/LFKHo1L+1njCG6z9jK2cSV2aIPuXgjqIpDwuvzWzg==
+X-Received: by 2002:a65:6205:: with SMTP id d5mr13853495pgv.40.1614607462997;
+        Mon, 01 Mar 2021 06:04:22 -0800 (PST)
 Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id v26sm17357312pff.195.2021.03.01.06.04.15
+        by smtp.gmail.com with ESMTPSA id v26sm17357312pff.195.2021.03.01.06.04.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 06:04:18 -0800 (PST)
+        Mon, 01 Mar 2021 06:04:22 -0800 (PST)
 Sender: Namhyung Kim <namhyung@gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -61,9 +61,9 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Andi Kleen <ak@linux.intel.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Ian Rogers <irogers@google.com>, Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH 01/11] perf test: Fix cpu and thread map leaks in basic mmap test
-Date:   Mon,  1 Mar 2021 23:03:59 +0900
-Message-Id: <20210301140409.184570-2-namhyung@kernel.org>
+Subject: [PATCH 02/11] perf test: Fix a memory leak in attr test
+Date:   Mon,  1 Mar 2021 23:04:00 +0900
+Message-Id: <20210301140409.184570-3-namhyung@kernel.org>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 In-Reply-To: <20210301140409.184570-1-namhyung@kernel.org>
 References: <20210301140409.184570-1-namhyung@kernel.org>
@@ -73,59 +73,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The evlist has the maps with its own refcounts so we don't need to set
-the pointers to NULL.  Otherwise following error was reported by Asan.
+The get_argv_exec_path() returns a dynamic memory so it should be
+freed after use.
 
-  # perf test -v 4
-   4: Read samples using the mmap interface      :
-  --- start ---
-  test child forked, pid 139782
-  mmap size 528384B
+  $ perf test -v 17
+  ...
+  ==141682==ERROR: LeakSanitizer: detected memory leaks
 
-  =================================================================
-  ==139782==ERROR: LeakSanitizer: detected memory leaks
+  Direct leak of 33 byte(s) in 1 object(s) allocated from:
+    #0 0x7f09107d2e8f in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x7f091035f6a7 in __vasprintf_internal libio/vasprintf.c:71
 
-  Direct leak of 40 byte(s) in 1 object(s) allocated from:
-    #0 0x7f1f76daee8f in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
-    #1 0x564ba21a0fea in cpu_map__trim_new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:79
-    #2 0x564ba21a1a0f in perf_cpu_map__read /home/namhyung/project/linux/tools/lib/perf/cpumap.c:149
-    #3 0x564ba21a21cf in cpu_map__read_all_cpu_map /home/namhyung/project/linux/tools/lib/perf/cpumap.c:166
-    #4 0x564ba21a21cf in perf_cpu_map__new /home/namhyung/project/linux/tools/lib/perf/cpumap.c:181
-    #5 0x564ba1e48298 in test__basic_mmap tests/mmap-basic.c:55
-    #6 0x564ba1e278fb in run_test tests/builtin-test.c:428
-    #7 0x564ba1e278fb in test_and_print tests/builtin-test.c:458
-    #8 0x564ba1e29a53 in __cmd_test tests/builtin-test.c:679
-    #9 0x564ba1e29a53 in cmd_test tests/builtin-test.c:825
-    #10 0x564ba1e95cb4 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
-    #11 0x564ba1d1fa88 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
-    #12 0x564ba1d1fa88 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
-    #13 0x564ba1d1fa88 in main /home/namhyung/project/linux/tools/perf/perf.c:539
-    #14 0x7f1f768e4d09 in __libc_start_main ../csu/libc-start.c:308
-
-    ...
-  test child finished with 1
-  ---- end ----
-  Read samples using the mmap interface: FAILED!
-  failed to open shell test directory: /home/namhyung/libexec/perf-core/tests/shell
+  SUMMARY: AddressSanitizer: 33 byte(s) leaked in 1 allocation(s).
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/tests/mmap-basic.c | 2 --
- 1 file changed, 2 deletions(-)
+ tools/perf/tests/attr.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/mmap-basic.c b/tools/perf/tests/mmap-basic.c
-index 57093aeacc6f..73ae8f7aa066 100644
---- a/tools/perf/tests/mmap-basic.c
-+++ b/tools/perf/tests/mmap-basic.c
-@@ -158,8 +158,6 @@ int test__basic_mmap(struct test *test __maybe_unused, int subtest __maybe_unuse
+diff --git a/tools/perf/tests/attr.c b/tools/perf/tests/attr.c
+index ec972e0892ab..dd39ce9b0277 100644
+--- a/tools/perf/tests/attr.c
++++ b/tools/perf/tests/attr.c
+@@ -182,14 +182,20 @@ int test__attr(struct test *test __maybe_unused, int subtest __maybe_unused)
+ 	struct stat st;
+ 	char path_perf[PATH_MAX];
+ 	char path_dir[PATH_MAX];
++	char *exec_path;
  
- out_delete_evlist:
- 	evlist__delete(evlist);
--	cpus	= NULL;
--	threads = NULL;
- out_free_cpus:
- 	perf_cpu_map__put(cpus);
- out_free_threads:
+ 	/* First try development tree tests. */
+ 	if (!lstat("./tests", &st))
+ 		return run_dir("./tests", "./perf");
+ 
++	exec_path = get_argv_exec_path();
++	if (exec_path == NULL)
++		return -1;
++
+ 	/* Then installed path. */
+-	snprintf(path_dir,  PATH_MAX, "%s/tests", get_argv_exec_path());
++	snprintf(path_dir,  PATH_MAX, "%s/tests", exec_path);
+ 	snprintf(path_perf, PATH_MAX, "%s/perf", BINDIR);
++	free(exec_path);
+ 
+ 	if (!lstat(path_dir, &st) &&
+ 	    !lstat(path_perf, &st))
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
