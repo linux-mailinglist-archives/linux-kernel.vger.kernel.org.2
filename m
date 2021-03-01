@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876493282AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859353282AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236826AbhCAPjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 10:39:33 -0500
-Received: from conuserg-11.nifty.com ([210.131.2.78]:28765 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237243AbhCAPil (ORCPT
+        id S236768AbhCAPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 10:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237260AbhCAPi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 10:38:41 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 121Fawh8014128;
-        Tue, 2 Mar 2021 00:37:00 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 121Fawh8014128
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614613021;
-        bh=8Gr/JremCpYS+TfYb7WtRAsLkqaxwfKZlwPLW4o1c2s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=239X3GjFgDmlNOHmUIF21VWORZspVOz904B89WhKpJTQ5N7MlhzvNWG0nXndamgI1
-         I5vE9b4yVpabSz3/ARJ9I7+zPeAcDfEXFLUxc7oGJOdyQJrPTEY7naX4VEs6UzDVDm
-         48D7iUDw5+7KSZQ0Iu3RXbXEXQVXrLF3YJX6s7Sjgt3ekn3E0/SrNs28cqOTXaojCk
-         Q1sgltfQ6jOjRPRsC1rj5EWbM0lHRtroptaU9mfHaKP5QDIJS16v50e8jesHU8n8GG
-         1oilXibjVQjZqATl8V65vcbLZLSDuZTkuVBlz1Q9Plkn+ie1sDKdSR00eqch+yXZpI
-         MCRXsKTS4rQ5A==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>
-Subject: [PATCH 3/3] xtensa: syscalls: switch to generic syscallhdr.sh
-Date:   Tue,  2 Mar 2021 00:36:56 +0900
-Message-Id: <20210301153656.363839-3-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210301153656.363839-1-masahiroy@kernel.org>
-References: <20210301153656.363839-1-masahiroy@kernel.org>
+        Mon, 1 Mar 2021 10:38:28 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A2CC061756;
+        Mon,  1 Mar 2021 07:37:45 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id d15so1386816wrv.5;
+        Mon, 01 Mar 2021 07:37:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2mjETDS/R3AcrHDxH+eBHTmfWCAT1YYDng8uSVTe0DQ=;
+        b=ZijXwVTP9y+09zH0zD9ZoS6JDGqj/lSjfXbcaqFGfzV9rSL6eZVDHZAW0kSlgtHg15
+         zwQQgWIduKj22O5riA3/wQKzgjWbCcsUTgJrGgdFo4tHxpYgKSErmSv7Bl3QFKUK1mNJ
+         yeevnPS0LmK/KCLrwuWm8JQQvVkkoN68zBP8yCEtzAY/avhw4l+9BZjmF+1gH3otdnip
+         uqovBZ4TOm4bb00bOgcxPTkYyd0DU/3PXoa34WBSE6jK72v0CO2OFhYe3IRbPaZmN4vI
+         Nhscr25Rfao5pxLgOBHh9AFUPv9oUNvWJI+/5wp7+rv2bcXH/Jjg7LOy18A2Lah7zHmS
+         vPHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2mjETDS/R3AcrHDxH+eBHTmfWCAT1YYDng8uSVTe0DQ=;
+        b=H7z4FaUVUN9ntiJ+h1J3nmmPuT4hYLK3jGESibYBczhDd8HFs2n9m2QIkuWGYLETQx
+         dmtbgXAeoJSWwxV3uJibrVnB5fm9uXRTjoFqgt+dI5oUqgdYXX0atu0XxlsKfbJ67kGN
+         oCuK5ZKV0zk5zdZFsmA0WzCamRQlN2LwMUsm9LTft/3AiDOvOS+Qw6RvWlKFul273FXU
+         Fw5/FJFOpQZN40VKLYQMWRRJVavHUW0K4gSYPZ0c1FtAlJgR7SyFxo6rM1g9DpfPRuE2
+         Y8xrTQ98pQdJZhbjtdQI2AxRDr40bSZxxF0JtMX8l2+m7P9HabS7B9XdV+bXzxiWFqxw
+         Xy/w==
+X-Gm-Message-State: AOAM531HjXPIHuyY1zQghrmlHQplWNOQOZ8kCE3iruX6x8U5tnuLnm6B
+        PbOLE/+WitII+ZeaTueOyEU=
+X-Google-Smtp-Source: ABdhPJwVOsqMcVd+MawWtsgwbNmlYQ/GlTYMnDc8ODM0H4y4vaQ4CERjuc4s6tjZRpm4/l1Xlb2hrw==
+X-Received: by 2002:a5d:424c:: with SMTP id s12mr15556026wrr.161.1614613064575;
+        Mon, 01 Mar 2021 07:37:44 -0800 (PST)
+Received: from ubuntudesktop (205.158.32.217.dyn.plus.net. [217.32.158.205])
+        by smtp.gmail.com with ESMTPSA id n1sm28452749wrx.45.2021.03.01.07.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 07:37:44 -0800 (PST)
+Date:   Mon, 1 Mar 2021 15:37:42 +0000
+From:   Lee <leegib@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192e: Fix possible buffer overflow in
+ _rtl92e_wx_set_scan
+Message-ID: <20210301153742.GA427438@ubuntudesktop>
+References: <20210226114829.316980-1-leegib@gmail.com>
+ <20210226134333.GA2087@kadam>
+ <20210226140526.GG2222@kadam>
+ <20210301132535.GR2087@kadam>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301132535.GR2087@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many architectures duplicate similar shell scripts.
 
-This commit converts xtensa to use scripts/syscallhdr.sh.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
 
- arch/xtensa/kernel/syscalls/Makefile      |  7 ++---
- arch/xtensa/kernel/syscalls/syscallhdr.sh | 36 -----------------------
- 2 files changed, 2 insertions(+), 41 deletions(-)
- delete mode 100644 arch/xtensa/kernel/syscalls/syscallhdr.sh
+> This check worked out pretty well.  It's probably 50% bugs?  Unfiltered
+> results below.  The trick of warning for "if (ststr(member, "->ssid")) "
+> and the memcpy length couldn't be verified turned out to be the best.
 
-diff --git a/arch/xtensa/kernel/syscalls/Makefile b/arch/xtensa/kernel/syscalls/Makefile
-index ad2492cb5568..6713c65a25e1 100644
---- a/arch/xtensa/kernel/syscalls/Makefile
-+++ b/arch/xtensa/kernel/syscalls/Makefile
-@@ -6,14 +6,11 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 	  $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
- 
- syscall := $(src)/syscall.tbl
--syshdr := $(srctree)/$(src)/syscallhdr.sh
-+syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
--		   '$(syshdr_abis_$(basetarget))'		\
--		   '$(syshdr_pfx_$(basetarget))'		\
--		   '$(syshdr_offset_$(basetarget))'
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr $< $@
- 
- quiet_cmd_systbl = SYSTBL  $@
-       cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
-diff --git a/arch/xtensa/kernel/syscalls/syscallhdr.sh b/arch/xtensa/kernel/syscalls/syscallhdr.sh
-deleted file mode 100644
-index eebfb8a8ace6..000000000000
---- a/arch/xtensa/kernel/syscalls/syscallhdr.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--prefix="$4"
--offset="$5"
--
--fileguard=_UAPI_ASM_XTENSA_`basename "$out" | sed \
--	-e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
--	-e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	printf "#ifndef %s\n" "${fileguard}"
--	printf "#define %s\n" "${fileguard}"
--	printf "\n"
--
--	nxt=0
--	while read nr abi name entry ; do
--		if [ -z "$offset" ]; then
--			printf "#define __NR_%s%s\t%s\n" \
--				"${prefix}" "${name}" "${nr}"
--		else
--			printf "#define __NR_%s%s\t(%s + %s)\n" \
--				"${prefix}" "${name}" "${offset}" "${nr}"
--		fi
--		nxt=$((nr+1))
--	done
--
--	printf "\n"
--	printf "#ifdef __KERNEL__\n"
--	printf "#define __NR_syscalls\t%s\n" "${nxt}"
--	printf "#endif\n"
--	printf "\n"
--	printf "#endif /* %s */\n" "${fileguard}"
--) > "$out"
--- 
-2.27.0
+That list looks great. I checked out 2 of those listed at random and 
+they look like valid bugs to me.
+
+> But there are quite a few real bugs as well.  If anyone wants to fix any
+> of these just claim a bug, and I won't send a patch for that warning.
+> :)  Lee, I think you mentioned that you had found a related buffer
+> overflow fix?  Did the check find it?
+
+
+I think I found 2 in these files:
+
+drivers/staging/rtl8712/rtl871x_cmd.c    
+drivers/staging/wfx/hif_tx.c
+
+Regards,
+Lee
 
