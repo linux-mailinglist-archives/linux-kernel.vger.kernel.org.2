@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BDB329A7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5AC329AC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377753AbhCBAsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:48:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54406 "EHLO mail.kernel.org"
+        id S1348513AbhCBBDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:03:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240235AbhCASrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:47:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CC6E651E1;
-        Mon,  1 Mar 2021 17:19:04 +0000 (UTC)
+        id S240287AbhCASyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:54:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AEBF651E4;
+        Mon,  1 Mar 2021 17:19:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619145;
-        bh=G35k/3Y5bu4uBoIbMYCF62ed79O++u7TuIrDL8JqkHk=;
+        s=korg; t=1614619155;
+        bh=+rdexHKoNPfsyKECI0BL03uN6HpGcLVNZGZK8R4xJLA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wAl5JA3A4wOZSM7tgdBg3GxSn66oZCmrtdVvcLDCnPgXLmVv+TEW++SLJJCJ1plgv
-         nMaqDnD1iAg0O8EXSykSX1MlB1Z4Zm+4izoQisTiTqoSyCIYk0khlyHGeUdDIAgwbq
-         +HFdHtxcD2cyjWTQ7EC+tYe8Bx4gmnXk6A2AQeAE=
+        b=nzN/DA3rO5BNm4lsyaQzMW9kdPryuMoczBc8STupHOOLm7mzEXTlq/2gofourdmGG
+         iVfQWI7euTUiBUp4b5mfYObb+i08eHdn4soX7ds5GvybwF3jY6TfF9vc9Syr0AE28v
+         F7mUrWcUPehSgM10392c+Bprkc50morO5VSvjLqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alain Volmat <alain.volmat@foss.st.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 348/663] spi: stm32: properly handle 0 byte transfer
-Date:   Mon,  1 Mar 2021 17:09:56 +0100
-Message-Id: <20210301161159.066648444@linuxfoundation.org>
+Subject: [PATCH 5.10 352/663] powerpc/8xx: Fix software emulation interrupt
+Date:   Mon,  1 Mar 2021 17:10:00 +0100
+Message-Id: <20210301161159.268302534@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,37 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alain Volmat <alain.volmat@foss.st.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 2269f5a8b1a7b38651d62676b98182828f29d11a ]
+[ Upstream commit 903178d0ce6bb30ef80a3604ab9ee2b57869fbc9 ]
 
-On 0 byte transfer request, return straight from the
-xfer function after finalizing the transfer.
+For unimplemented instructions or unimplemented SPRs, the 8xx triggers
+a "Software Emulation Exception" (0x1000). That interrupt doesn't set
+reason bits in SRR1 as the "Program Check Exception" does.
 
-Fixes: dcbe0d84dfa5 ("spi: add driver for STM32 SPI controller")
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
-Link: https://lore.kernel.org/r/1612551572-495-2-git-send-email-alain.volmat@foss.st.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Go through emulation_assist_interrupt() to set REASON_ILLEGAL.
+
+Fixes: fbbcc3bb139e ("powerpc/8xx: Remove SoftwareEmulation()")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/ad782af87a222efc79cfb06079b0fd23d4224eaf.1612515180.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-stm32.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/powerpc/kernel/head_8xx.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-stm32.c b/drivers/spi/spi-stm32.c
-index 6017209c6d2f7..6eeb39669a866 100644
---- a/drivers/spi/spi-stm32.c
-+++ b/drivers/spi/spi-stm32.c
-@@ -1677,6 +1677,10 @@ static int stm32_spi_transfer_one(struct spi_master *master,
- 	struct stm32_spi *spi = spi_master_get_devdata(master);
- 	int ret;
+diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
+index ee0bfebc375f2..ce5fd93499a74 100644
+--- a/arch/powerpc/kernel/head_8xx.S
++++ b/arch/powerpc/kernel/head_8xx.S
+@@ -175,7 +175,7 @@ SystemCall:
+ /* On the MPC8xx, this is a software emulation interrupt.  It occurs
+  * for all unimplemented and illegal instructions.
+  */
+-	EXCEPTION(0x1000, SoftEmu, program_check_exception, EXC_XFER_STD)
++	EXCEPTION(0x1000, SoftEmu, emulation_assist_interrupt, EXC_XFER_STD)
  
-+	/* Don't do anything on 0 bytes transfers */
-+	if (transfer->len == 0)
-+		return 0;
-+
- 	spi->tx_buf = transfer->tx_buf;
- 	spi->rx_buf = transfer->rx_buf;
- 	spi->tx_len = spi->tx_buf ? transfer->len : 0;
+ 	. = 0x1100
+ /*
 -- 
 2.27.0
 
