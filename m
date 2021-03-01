@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D82D3299B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B63932990D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348121AbhCBA2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:28:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43158 "EHLO mail.kernel.org"
+        id S1347145AbhCAXwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:52:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234882AbhCAS3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E3F46528D;
-        Mon,  1 Mar 2021 17:32:23 +0000 (UTC)
+        id S239535AbhCASRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:17:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00ADF65297;
+        Mon,  1 Mar 2021 17:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619944;
-        bh=xOWbgxp3vEq+RDS7HFsY+tPWOzL+E97JnpPwj0+LSvs=;
+        s=korg; t=1614619960;
+        bh=j8ys7z307S50VKU5JSF7BpWI2JhodAZvakT4EvTDegY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DLkXqo2UCuRfWxJvHcDStf+qiq7tQQ1TnrciBJ1ycKPaGQvitdCGKOK4CYAqS3ta/
-         Au4hrJlgK02bVP7cOCqSFgvwwGX7f/7QdP+aQ7dxpovzim6k9TmHaImcmkZEuXm9rP
-         C3yXH6qMvE30F+C70VlpcFeoxeL9OB81J4KblCMk=
+        b=GzpBmvO6ImbdSWoPD3pxnRgoKrJUcPlgEZx3XAu7qD0jR9K/xl3VjlbZ+ZzBHhNkq
+         D7/hvkXu6Lb86NIyWdtezBJrxcUQ7XHXK7e13dJ1qS4zWdTNJ/RCIuLgJ4t6rHHii7
+         avi0yndcqP6r1fh8xHtj+86+9lJjAAAbs6qfVav8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>
-Subject: [PATCH 5.10 638/663] gfs2: Dont skip dlm unlock if glock has an lvb
-Date:   Mon,  1 Mar 2021 17:14:46 +0100
-Message-Id: <20210301161213.422467223@linuxfoundation.org>
+        stable@vger.kernel.org, Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.10 643/663] dm table: fix DAX iterate_devices based device capability checks
+Date:   Mon,  1 Mar 2021 17:14:51 +0100
+Message-Id: <20210301161213.675063559@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,65 +39,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Jeffle Xu <jefflexu@linux.alibaba.com>
 
-commit 78178ca844f0eb88f21f31c7fde969384be4c901 upstream.
+commit 5b0fab508992c2e120971da658ce80027acbc405 upstream.
 
-Patch fb6791d100d1 was designed to allow gfs2 to unmount quicker by
-skipping the step where it tells dlm to unlock glocks in EX with lvbs.
-This was done because when gfs2 unmounts a file system, it destroys the
-dlm lockspace shortly after it destroys the glocks so it doesn't need to
-unlock them all: the unlock is implied when the lockspace is destroyed
-by dlm.
+Fix dm_table_supports_dax() and invert logic of both
+iterate_devices_callout_fn so that all devices' DAX capabilities are
+properly checked.
 
-However, that patch introduced a use-after-free in dlm: as part of its
-normal dlm_recoverd process, it can call ls_recovery to recover dead
-locks. In so doing, it can call recover_rsbs which calls recover_lvb for
-any mastered rsbs. Func recover_lvb runs through the list of lkbs queued
-to the given rsb (if the glock is cached but unlocked, it will still be
-queued to the lkb, but in NL--Unlocked--mode) and if it has an lvb,
-copies it to the rsb, thus trying to preserve the lkb. However, when
-gfs2 skips the dlm unlock step, it frees the glock and its lvb, which
-means dlm's function recover_lvb references the now freed lvb pointer,
-copying the freed lvb memory to the rsb.
-
-This patch changes the check in gdlm_put_lock so that it calls
-dlm_unlock for all glocks that contain an lvb pointer.
-
-Fixes: fb6791d100d1 ("GFS2: skip dlm_unlock calls in unmount")
-Cc: stable@vger.kernel.org # v3.8+
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Fixes: 545ed20e6df6 ("dm: add infrastructure for DAX support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/gfs2/lock_dlm.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/md/dm-table.c |   37 ++++++++++---------------------------
+ drivers/md/dm.c       |    2 +-
+ drivers/md/dm.h       |    2 +-
+ 3 files changed, 12 insertions(+), 29 deletions(-)
 
---- a/fs/gfs2/lock_dlm.c
-+++ b/fs/gfs2/lock_dlm.c
-@@ -284,7 +284,6 @@ static void gdlm_put_lock(struct gfs2_gl
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -827,24 +827,24 @@ void dm_table_set_type(struct dm_table *
+ EXPORT_SYMBOL_GPL(dm_table_set_type);
+ 
+ /* validate the dax capability of the target device span */
+-int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
++int device_not_dax_capable(struct dm_target *ti, struct dm_dev *dev,
+ 			sector_t start, sector_t len, void *data)
  {
- 	struct gfs2_sbd *sdp = gl->gl_name.ln_sbd;
- 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
--	int lvb_needs_unlock = 0;
- 	int error;
+ 	int blocksize = *(int *) data, id;
+ 	bool rc;
  
- 	if (gl->gl_lksb.sb_lkid == 0) {
-@@ -297,13 +296,10 @@ static void gdlm_put_lock(struct gfs2_gl
- 	gfs2_sbstats_inc(gl, GFS2_LKS_DCOUNT);
- 	gfs2_update_request_times(gl);
+ 	id = dax_read_lock();
+-	rc = dax_supported(dev->dax_dev, dev->bdev, blocksize, start, len);
++	rc = !dax_supported(dev->dax_dev, dev->bdev, blocksize, start, len);
+ 	dax_read_unlock(id);
  
--	/* don't want to skip dlm_unlock writing the lvb when lock is ex */
--
--	if (gl->gl_lksb.sb_lvbptr && (gl->gl_state == LM_ST_EXCLUSIVE))
--		lvb_needs_unlock = 1;
-+	/* don't want to skip dlm_unlock writing the lvb when lock has one */
+ 	return rc;
+ }
  
- 	if (test_bit(SDF_SKIP_DLM_UNLOCK, &sdp->sd_flags) &&
--	    !lvb_needs_unlock) {
-+	    !gl->gl_lksb.sb_lvbptr) {
- 		gfs2_glock_free(gl);
- 		return;
+ /* Check devices support synchronous DAX */
+-static int device_dax_synchronous(struct dm_target *ti, struct dm_dev *dev,
+-				  sector_t start, sector_t len, void *data)
++static int device_not_dax_synchronous_capable(struct dm_target *ti, struct dm_dev *dev,
++					      sector_t start, sector_t len, void *data)
+ {
+-	return dev->dax_dev && dax_synchronous(dev->dax_dev);
++	return !dev->dax_dev || !dax_synchronous(dev->dax_dev);
+ }
+ 
+ bool dm_table_supports_dax(struct dm_table *t,
+@@ -861,7 +861,7 @@ bool dm_table_supports_dax(struct dm_tab
+ 			return false;
+ 
+ 		if (!ti->type->iterate_devices ||
+-		    !ti->type->iterate_devices(ti, iterate_fn, blocksize))
++		    ti->type->iterate_devices(ti, iterate_fn, blocksize))
+ 			return false;
  	}
+ 
+@@ -932,7 +932,7 @@ static int dm_table_determine_type(struc
+ verify_bio_based:
+ 		/* We must use this table as bio-based */
+ 		t->type = DM_TYPE_BIO_BASED;
+-		if (dm_table_supports_dax(t, device_supports_dax, &page_size) ||
++		if (dm_table_supports_dax(t, device_not_dax_capable, &page_size) ||
+ 		    (list_empty(devices) && live_md_type == DM_TYPE_DAX_BIO_BASED)) {
+ 			t->type = DM_TYPE_DAX_BIO_BASED;
+ 		}
+@@ -1625,23 +1625,6 @@ static int device_dax_write_cache_enable
+ 	return false;
+ }
+ 
+-static int dm_table_supports_dax_write_cache(struct dm_table *t)
+-{
+-	struct dm_target *ti;
+-	unsigned i;
+-
+-	for (i = 0; i < dm_table_get_num_targets(t); i++) {
+-		ti = dm_table_get_target(t, i);
+-
+-		if (ti->type->iterate_devices &&
+-		    ti->type->iterate_devices(ti,
+-				device_dax_write_cache_enabled, NULL))
+-			return true;
+-	}
+-
+-	return false;
+-}
+-
+ static int device_is_rotational(struct dm_target *ti, struct dm_dev *dev,
+ 				sector_t start, sector_t len, void *data)
+ {
+@@ -1846,15 +1829,15 @@ void dm_table_set_restrictions(struct dm
+ 	}
+ 	blk_queue_write_cache(q, wc, fua);
+ 
+-	if (dm_table_supports_dax(t, device_supports_dax, &page_size)) {
++	if (dm_table_supports_dax(t, device_not_dax_capable, &page_size)) {
+ 		blk_queue_flag_set(QUEUE_FLAG_DAX, q);
+-		if (dm_table_supports_dax(t, device_dax_synchronous, NULL))
++		if (dm_table_supports_dax(t, device_not_dax_synchronous_capable, NULL))
+ 			set_dax_synchronous(t->md->dax_dev);
+ 	}
+ 	else
+ 		blk_queue_flag_clear(QUEUE_FLAG_DAX, q);
+ 
+-	if (dm_table_supports_dax_write_cache(t))
++	if (dm_table_any_dev_attr(t, device_dax_write_cache_enabled))
+ 		dax_write_cache(t->md->dax_dev, true);
+ 
+ 	/* Ensure that all underlying devices are non-rotational. */
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -1145,7 +1145,7 @@ static bool dm_dax_supported(struct dax_
+ 	if (!map)
+ 		goto out;
+ 
+-	ret = dm_table_supports_dax(map, device_supports_dax, &blocksize);
++	ret = dm_table_supports_dax(map, device_not_dax_capable, &blocksize);
+ 
+ out:
+ 	dm_put_live_table(md, srcu_idx);
+--- a/drivers/md/dm.h
++++ b/drivers/md/dm.h
+@@ -73,7 +73,7 @@ void dm_table_free_md_mempools(struct dm
+ struct dm_md_mempools *dm_table_get_md_mempools(struct dm_table *t);
+ bool dm_table_supports_dax(struct dm_table *t, iterate_devices_callout_fn fn,
+ 			   int *blocksize);
+-int device_supports_dax(struct dm_target *ti, struct dm_dev *dev,
++int device_not_dax_capable(struct dm_target *ti, struct dm_dev *dev,
+ 			   sector_t start, sector_t len, void *data);
+ 
+ void dm_lock_md_type(struct mapped_device *md);
 
 
