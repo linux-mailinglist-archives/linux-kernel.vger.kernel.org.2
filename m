@@ -2,37 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E3B32944D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C513293F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241695AbhCAVz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:55:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49424 "EHLO mail.kernel.org"
+        id S244032AbhCAVnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:43:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238353AbhCARYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:24:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1391465077;
-        Mon,  1 Mar 2021 16:49:54 +0000 (UTC)
+        id S237334AbhCARSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:18:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1556F65056;
+        Mon,  1 Mar 2021 16:47:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617395;
-        bh=tm5dzMweYDJXeK5saW+xlG+ayMHfzUnqxq9LQEYCF6I=;
+        s=korg; t=1614617250;
+        bh=STPFzSHHWTJjMcsWb2LqTYBn4U3MXowVAnweTf/CMvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XdkI4MZuf6fvRkn2WRvBBskeXzg/u9EbAcFvLsKDEq4SyjJbrbnh13vWl43rpKZxx
-         kVnWDdXwyQskiYh6I58u4OSEyBb0tJs5K3I+fdNXNQuodmORE7i6cyGkcuLxNnFfQs
-         P2mJ9YfRefJLURXvMaqK1Nv2VtBgltdeZr6f5GOg=
+        b=D4UqD4tBgaeqgsT92+INt3fZNv27OoU6JJT+so4Lq8xVut3yajfGN5WkNhwZn08Q0
+         +12Os2wpbk0Z4gIhh1WwPfS+2N5KEm4l7DLUXlocxPcBlw/6W0Z09Hs7qRMpiVFvak
+         5uUaRSWFmBZ7Ok7pEMKcLQpkjaghS5k01/YdEVnk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Carlo Carraro <colrack@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 058/340] bpf: Fix bpf_fib_lookup helper MTU check for SKB ctx
-Date:   Mon,  1 Mar 2021 17:10:02 +0100
-Message-Id: <20210301161051.174061587@linuxfoundation.org>
+        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
+        Xin Long <lucien.xin@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 220/247] x86: fix seq_file iteration for pat/memtype.c
+Date:   Mon,  1 Mar 2021 17:14:00 +0100
+Message-Id: <20210301161042.449644211@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
-References: <20210301161048.294656001@linuxfoundation.org>
+In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
+References: <20210301161031.684018251@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,86 +51,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: NeilBrown <neilb@suse.de>
 
-[ Upstream commit 2c0a10af688c02adcf127aad29e923e0056c6b69 ]
+commit 3d2fc4c082448e9c05792f9b2a11c1d5db408b85 upstream.
 
-BPF end-user on Cilium slack-channel (Carlo Carraro) wants to use
-bpf_fib_lookup for doing MTU-check, but *prior* to extending packet size,
-by adjusting fib_params 'tot_len' with the packet length plus the expected
-encap size. (Just like the bpf_check_mtu helper supports). He discovered
-that for SKB ctx the param->tot_len was not used, instead skb->len was used
-(via MTU check in is_skb_forwardable() that checks against netdev MTU).
+The memtype seq_file iterator allocates a buffer in the ->start and ->next
+functions and frees it in the ->show function.  The preferred handling for
+such resources is to free them in the subsequent ->next or ->stop function
+call.
 
-Fix this by using fib_params 'tot_len' for MTU check. If not provided (e.g.
-zero) then keep existing TC behaviour intact. Notice that 'tot_len' for MTU
-check is done like XDP code-path, which checks against FIB-dst MTU.
+Since Commit 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration
+code and interface") there is no guarantee that ->show will be called
+after ->next, so this function can now leak memory.
 
-V16:
-- Revert V13 optimization, 2nd lookup is against egress/resulting netdev
+So move the freeing of the buffer to ->next and ->stop.
 
-V13:
-- Only do ifindex lookup one time, calling dev_get_by_index_rcu().
-
-V10:
-- Use same method as XDP for 'tot_len' MTU check
-
-Fixes: 4c79579b44b1 ("bpf: Change bpf_fib_lookup to return lookup status")
-Reported-by: Carlo Carraro <colrack@gmail.com>
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/161287789444.790810.15247494756551413508.stgit@firesoul
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/161248539022.21478.13874455485854739066.stgit@noble1
+Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
+Signed-off-by: NeilBrown <neilb@suse.de>
+Cc: Xin Long <lucien.xin@gmail.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc: Neil Horman <nhorman@tuxdriver.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Vlad Yasevich <vyasevich@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/core/filter.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ arch/x86/mm/pat.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 2fa10fdcf6b1d..524f3364f8a05 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4880,6 +4880,7 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
+--- a/arch/x86/mm/pat.c
++++ b/arch/x86/mm/pat.c
+@@ -1131,12 +1131,14 @@ static void *memtype_seq_start(struct se
+ 
+ static void *memtype_seq_next(struct seq_file *seq, void *v, loff_t *pos)
  {
- 	struct net *net = dev_net(skb->dev);
- 	int rc = -EAFNOSUPPORT;
-+	bool check_mtu = false;
++	kfree(v);
+ 	++*pos;
+ 	return memtype_get_idx(*pos);
+ }
  
- 	if (plen < sizeof(*params))
- 		return -EINVAL;
-@@ -4887,22 +4888,28 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
- 	if (flags & ~(BPF_FIB_LOOKUP_DIRECT | BPF_FIB_LOOKUP_OUTPUT))
- 		return -EINVAL;
+ static void memtype_seq_stop(struct seq_file *seq, void *v)
+ {
++	kfree(v);
+ }
  
-+	if (params->tot_len)
-+		check_mtu = true;
-+
- 	switch (params->family) {
- #if IS_ENABLED(CONFIG_INET)
- 	case AF_INET:
--		rc = bpf_ipv4_fib_lookup(net, params, flags, false);
-+		rc = bpf_ipv4_fib_lookup(net, params, flags, check_mtu);
- 		break;
- #endif
- #if IS_ENABLED(CONFIG_IPV6)
- 	case AF_INET6:
--		rc = bpf_ipv6_fib_lookup(net, params, flags, false);
-+		rc = bpf_ipv6_fib_lookup(net, params, flags, check_mtu);
- 		break;
- #endif
- 	}
+ static int memtype_seq_show(struct seq_file *seq, void *v)
+@@ -1145,7 +1147,6 @@ static int memtype_seq_show(struct seq_f
  
--	if (!rc) {
-+	if (rc == BPF_FIB_LKUP_RET_SUCCESS && !check_mtu) {
- 		struct net_device *dev;
+ 	seq_printf(seq, "%s @ 0x%Lx-0x%Lx\n", cattr_name(print_entry->type),
+ 			print_entry->start, print_entry->end);
+-	kfree(print_entry);
  
-+		/* When tot_len isn't provided by user, check skb
-+		 * against MTU of FIB lookup resulting net_device
-+		 */
- 		dev = dev_get_by_index_rcu(net, params->ifindex);
- 		if (!is_skb_forwardable(dev, skb))
- 			rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;
--- 
-2.27.0
-
+ 	return 0;
+ }
 
 
