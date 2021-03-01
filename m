@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A543298D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 301003299A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346654AbhCAXtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:49:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60792 "EHLO mail.kernel.org"
+        id S1345165AbhCBA2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239324AbhCASLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:11:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2EA064F75;
-        Mon,  1 Mar 2021 17:06:12 +0000 (UTC)
+        id S240012AbhCAS2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:28:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69C47652DF;
+        Mon,  1 Mar 2021 17:38:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618373;
-        bh=8HJYzbhOhnJ4NwxNFsqk8vfoZ/rwwx6FCa0gY9oZzNw=;
+        s=korg; t=1614620339;
+        bh=zvTLB1t4hGgtLgCjpybJcQ+GyOAitxKZMc/lErqvMfE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B99YxxMXlzH5K/M2I8YPsC84xeOuxhST8GVnpOI7Jp1+t8A4o8P6ARU/tqkk8+dO+
-         iPYuXpiX4GleX+ixx2+WJZulEcUuYB+aEVThwViFdwiKIPWwvFAUwdWIgtz8t37I1h
-         btQ6Mq8vLdRatoeoFWSUz/Cc52klRmO5000YV3Zg=
+        b=eXLNzBSl1PyzyohSpETaiuDEPOKImFOwQ7POAM5EjQD62HvTt7gcoxtnapU4La9Za
+         oVO9nd5B7CpJNd3R13tRg+o556/EU8N8SmswztJsLH8LNl7f+dELTsxRJRPmnGSJZO
+         W+DWpc2vDo0nl4F4fC0xec9zd/qnfZqe9FQnItNw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        stable@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 034/663] arm64: dts: exynos: correct PMIC interrupt trigger level on Espresso
-Date:   Mon,  1 Mar 2021 17:04:42 +0100
-Message-Id: <20210301161143.483486211@linuxfoundation.org>
+Subject: [PATCH 5.11 118/775] libbpf: Ignore non function pointer member in struct_ops
+Date:   Mon,  1 Mar 2021 17:04:46 +0100
+Message-Id: <20210301161207.507679493@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +40,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Martin KaFai Lau <kafai@fb.com>
 
-[ Upstream commit 1fea2eb2f5bbd3fbbe2513d2386b5f6e6db17fd7 ]
+[ Upstream commit d2836dddc95d5dd82c7cb23726c97d8c9147f050 ]
 
-The Samsung PMIC datasheets describe the interrupt line as active low
-with a requirement of acknowledge from the CPU.  Without specifying the
-interrupt type in Devicetree, kernel might apply some fixed
-configuration, not necessarily working for this hardware.
+When libbpf initializes the kernel's struct_ops in
+"bpf_map__init_kern_struct_ops()", it enforces all
+pointer types must be a function pointer and rejects
+others.  It turns out to be too strict.  For example,
+when directly using "struct tcp_congestion_ops" from vmlinux.h,
+it has a "struct module *owner" member and it is set to NULL
+in a bpf_tcp_cc.o.
 
-Fixes: 9589f7721e16 ("arm64: dts: Add S2MPS15 PMIC node on exynos7-espresso")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20201210212903.216728-8-krzk@kernel.org
+Instead, it only needs to ensure the member is a function
+pointer if it has been set (relocated) to a bpf-prog.
+This patch moves the "btf_is_func_proto(kern_mtype)" check
+after the existing "if (!prog) { continue; }".  The original debug
+message in "if (!prog) { continue; }" is also removed since it is
+no longer valid.  Beside, there is a later debug message to tell
+which function pointer is set.
+
+The "btf_is_func_proto(mtype)" has already been guaranteed
+in "bpf_object__collect_st_ops_relos()" which has been run
+before "bpf_map__init_kern_struct_ops()".  Thus, this check
+is removed.
+
+v2:
+- Remove outdated debug message (Andrii)
+  Remove because there is a later debug message to tell
+  which function pointer is set.
+- Following mtype->type is no longer needed. Remove:
+  "skip_mods_and_typedefs(btf, mtype->type, &mtype_id)"
+- Do "if (!prog)" test before skip_mods_and_typedefs.
+
+Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210212021030.266932-1-kafai@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/exynos/exynos7-espresso.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
-index 92fecc539c6c7..358b7b6ea84f1 100644
---- a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
-+++ b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
-@@ -90,7 +90,7 @@
- 	s2mps15_pmic@66 {
- 		compatible = "samsung,s2mps15-pmic";
- 		reg = <0x66>;
--		interrupts = <2 IRQ_TYPE_NONE>;
-+		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-parent = <&gpa0>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pmic_irq>;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6ae748f6ea118..a0d4fc4de4027 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -883,24 +883,24 @@ static int bpf_map__init_kern_struct_ops(struct bpf_map *map,
+ 		if (btf_is_ptr(mtype)) {
+ 			struct bpf_program *prog;
+ 
+-			mtype = skip_mods_and_typedefs(btf, mtype->type, &mtype_id);
++			prog = st_ops->progs[i];
++			if (!prog)
++				continue;
++
+ 			kern_mtype = skip_mods_and_typedefs(kern_btf,
+ 							    kern_mtype->type,
+ 							    &kern_mtype_id);
+-			if (!btf_is_func_proto(mtype) ||
+-			    !btf_is_func_proto(kern_mtype)) {
+-				pr_warn("struct_ops init_kern %s: non func ptr %s is not supported\n",
++
++			/* mtype->type must be a func_proto which was
++			 * guaranteed in bpf_object__collect_st_ops_relos(),
++			 * so only check kern_mtype for func_proto here.
++			 */
++			if (!btf_is_func_proto(kern_mtype)) {
++				pr_warn("struct_ops init_kern %s: kernel member %s is not a func ptr\n",
+ 					map->name, mname);
+ 				return -ENOTSUP;
+ 			}
+ 
+-			prog = st_ops->progs[i];
+-			if (!prog) {
+-				pr_debug("struct_ops init_kern %s: func ptr %s is not set\n",
+-					 map->name, mname);
+-				continue;
+-			}
+-
+ 			prog->attach_btf_id = kern_type_id;
+ 			prog->expected_attach_type = kern_member_idx;
+ 
 -- 
 2.27.0
 
