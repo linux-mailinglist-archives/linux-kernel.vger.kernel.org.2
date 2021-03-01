@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8D6327F4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F27327F47
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235567AbhCANUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:20:31 -0500
-Received: from conuserg-08.nifty.com ([210.131.2.75]:37768 "EHLO
+        id S235548AbhCANSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:18:21 -0500
+Received: from conuserg-08.nifty.com ([210.131.2.75]:36802 "EHLO
         conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235627AbhCANSs (ORCPT
+        with ESMTP id S235519AbhCANSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:18:48 -0500
+        Mon, 1 Mar 2021 08:18:06 -0500
 Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 121DFe7R026106;
-        Mon, 1 Mar 2021 22:15:40 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 121DFe7R026106
+        by conuserg-08.nifty.com with ESMTP id 121DFe7S026106;
+        Mon, 1 Mar 2021 22:15:42 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 121DFe7S026106
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614604541;
-        bh=gJTB/sCnF9oKN0HSr5hqsCuTGabQiE8Oyz/pm90esf0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vvY5Pnss4Du15BODazwKNN7Q741N6EAzPW0CU/cwr0OifzXTJMmzdQDeNhK8wOj1+
-         HJVb01GXOPtlrXZQ6A1c1RioYFMO2QB7KnRVeJ5cTJlf5d0j11ZJBUUm+/0wwEunFh
-         uGtZnVvxz9IdY1l4IJafnGzbMmLKRKt1+VchY9z6LnGJGU58W275bWtcHNiqo7bQIZ
-         lpD3je8mR7eurBH8DwRVwf0ysD42A5N59o/F7DWMg15vx13EnYTYOigK0yDeyIARwN
-         cAOdmVnrn/UuwAvE0hwf6vwaHzFazqETQ7DpjllLz87m67SwTjwXqhqE9kmY2V6YzJ
-         98tXFjVpHa/gQ==
+        s=dec2015msa; t=1614604542;
+        bh=Uj/w33doMEPc1pk+Fe2UT0I8Ph5yO71n2VzPawTfuH4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oLunmKlxWrVYRqwHlVtF+9PRaBM7Nflc+1Ro6uB8xFH/Iq2TePVYJsJrGiaHYc3tC
+         9tEZuRSyjUPvB7F2GAkKVwfyYWrwrIf+eYkWC/KRV7HQ3rc5qYeAb3uqyhNk9GWubF
+         8eSskNyktTdEQzNh/IwCGcaLiVDTEM8KZKSO9pndOlCMZaj4HN9tGIsvgbxEVME9i3
+         2QFxHj/voDZ6LtNlODKOCJ3bVyfgCUVdo7QZDyKsQTsYqKWMhhjq1mt4WDSkTocSOZ
+         +By/EV7s82q2Q9uzUTOm5Pw84KOeg3sncvXvkq/7YuFjdp2Y338aB1mnMqZALqb8aQ
+         0Lf5/GSxbnNyg==
 X-Nifty-SrcIP: [126.26.90.165]
 From:   Masahiro Yamada <masahiroy@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -33,20 +33,16 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>
 Cc:     linux-kernel@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
         Brian Gerst <brgerst@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-um@lists.infradead.org
-Subject: [PATCH 0/7] x86: fix warnings and refactor syscall code
-Date:   Mon,  1 Mar 2021 22:15:25 +0900
-Message-Id: <20210301131533.64671-1-masahiroy@kernel.org>
+        Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: [PATCH 1/7] x86/syscalls: fix -Wmissing-prototypes warnings from COND_SYSCALL()
+Date:   Mon,  1 Mar 2021 22:15:26 +0900
+Message-Id: <20210301131533.64671-2-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210301131533.64671-1-masahiroy@kernel.org>
+References: <20210301131533.64671-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -54,38 +50,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Building kernel/sys_ni.c with W=1 emits tons of -Wmissing-prototypes
+warnings.
 
-This patch series makes a lot of cleanups.
-We can remove a lot of lines.
-The code diff is attractive.
+$ make W=1 kernel/sys_ni.o
+  [ snip ]
+  CC      kernel/sys_ni.o
+In file included from kernel/sys_ni.c:10:
+./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__x64_sys_io_setup' [-Wmissing-prototypes]
+   83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
+      |              ^~
+./arch/x86/include/asm/syscall_wrapper.h:100:2: note: in expansion of macro '__COND_SYSCALL'
+  100 |  __COND_SYSCALL(x64, sys_##name)
+      |  ^~~~~~~~~~~~~~
+./arch/x86/include/asm/syscall_wrapper.h:256:2: note: in expansion of macro '__X64_COND_SYSCALL'
+  256 |  __X64_COND_SYSCALL(name)     \
+      |  ^~~~~~~~~~~~~~~~~~
+kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
+   39 | COND_SYSCALL(io_setup);
+      | ^~~~~~~~~~~~
+./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous prototype for '__ia32_sys_io_setup' [-Wmissing-prototypes]
+   83 |  __weak long __##abi##_##name(const struct pt_regs *__unused) \
+      |              ^~
+./arch/x86/include/asm/syscall_wrapper.h:120:2: note: in expansion of macro '__COND_SYSCALL'
+  120 |  __COND_SYSCALL(ia32, sys_##name)
+      |  ^~~~~~~~~~~~~~
+./arch/x86/include/asm/syscall_wrapper.h:257:2: note: in expansion of macro '__IA32_COND_SYSCALL'
+  257 |  __IA32_COND_SYSCALL(name)
+      |  ^~~~~~~~~~~~~~~~~~~
+kernel/sys_ni.c:39:1: note: in expansion of macro 'COND_SYSCALL'
+   39 | COND_SYSCALL(io_setup);
+      | ^~~~~~~~~~~~
+  ...
 
+__SYS_STUB0() and __SYS_STUBx() defined a few lines above have forward
+declarations. Let's do likewise for __COND_SYSCALL() to fix the
+warnings.
 
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Tested-by: Mickaël Salaün <mic@linux.microsoft.com>
+---
 
-Masahiro Yamada (7):
-  x86/syscalls: fix -Wmissing-prototypes warnings from COND_SYSCALL()
-  x86/entry/x32: rename __x32_compat_sys_* to __x64_compat_sys_*
-  x86/syscalls: switch to generic syscalltbl.sh
-  x86/syscalls: stop filling syscall arrays with *_sys_ni_syscall
-  x86/unistd: define X32_NR_syscalls only for 64-bit kernel
-  x86/syscalls: use __NR_syscalls instead of __NR_syscall_max
-  x86/syscalls: switch to generic syscallhdr.sh
+ arch/x86/include/asm/syscall_wrapper.h | 1 +
+ 1 file changed, 1 insertion(+)
 
- arch/um/kernel/skas/syscall.c          |  2 +-
- arch/x86/entry/syscall_32.c            | 20 +++++------
- arch/x86/entry/syscall_64.c            | 17 +++-------
- arch/x86/entry/syscall_x32.c           | 35 ++++----------------
- arch/x86/entry/syscalls/Makefile       | 36 +++++++++++---------
- arch/x86/entry/syscalls/syscallhdr.sh  | 35 --------------------
- arch/x86/entry/syscalls/syscalltbl.sh  | 46 --------------------------
- arch/x86/include/asm/Kbuild            |  1 +
- arch/x86/include/asm/syscall_wrapper.h | 11 +++---
- arch/x86/include/asm/unistd.h          |  8 ++---
- arch/x86/um/sys_call_table_32.c        | 14 +++-----
- arch/x86/um/sys_call_table_64.c        | 15 ++-------
- 12 files changed, 61 insertions(+), 179 deletions(-)
- delete mode 100644 arch/x86/entry/syscalls/syscallhdr.sh
- delete mode 100644 arch/x86/entry/syscalls/syscalltbl.sh
-
+diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
+index a84333adeef2..80c08c7d5e72 100644
+--- a/arch/x86/include/asm/syscall_wrapper.h
++++ b/arch/x86/include/asm/syscall_wrapper.h
+@@ -80,6 +80,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
+ 	}
+ 
+ #define __COND_SYSCALL(abi, name)					\
++	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
+ 	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
+ 	{								\
+ 		return sys_ni_syscall();				\
 -- 
 2.27.0
 
