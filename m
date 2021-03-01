@@ -2,33 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74626329D1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A54329D6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443006AbhCBCRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:17:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55186 "EHLO mail.kernel.org"
+        id S240429AbhCBCcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:32:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237589AbhCATob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C470651DF;
-        Mon,  1 Mar 2021 17:18:59 +0000 (UTC)
+        id S241806AbhCATra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:47:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A8FA651E8;
+        Mon,  1 Mar 2021 17:19:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619140;
-        bh=+ZbRol78FT9g7t81/wKTuFrObdBVUN4AlGkqVNKLG+w=;
+        s=korg; t=1614619167;
+        bh=vmBJfQov9r+kOBWsOrfukGcLZjgVtA6JQZx4OWgTqvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oLGkWQA13wTiNWKtu/FF6y1lU847WU3swm7CxBCDQD9sRwGnR4gOxDIsf2hYGea+5
-         KaBsioh9IVaF7IbahNrDEF/AMul2Or+CbTuQHUYePKknodqrvkBRDF8MeckCTUkwcX
-         p0Ld7htCoZk0ts/nt03QBndPdzP8N54/KPzSyvhc=
+        b=wfABAUo5e7dKE4OAX2QsXeyzXG5w0LhWCp9pCCkHl+w4CJkahsIOm6HrmwfTrbWYR
+         GbfhCbXXXlFfrzE1Uk0KVEdnrXBKrhbasU6vfEE3RX6XgzDi35QTHlU38RpxHfCF2T
+         xipuR9/aiYaIWixhviNMZzcFpqF6kMCu1S2Jxuas=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Brian Starkey <brian.starkey@arm.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kselftest@vger.kernel.org,
+        John Stultz <john.stultz@linaro.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 346/663] RDMA/rxe: Fix coding error in rxe_rcv_mcast_pkt
-Date:   Mon,  1 Mar 2021 17:09:54 +0100
-Message-Id: <20210301161158.967266181@linuxfoundation.org>
+Subject: [PATCH 5.10 355/663] kselftests: dmabuf-heaps: Fix Makefiles inclusion of the kernels usr/include dir
+Date:   Mon,  1 Mar 2021 17:10:03 +0100
+Message-Id: <20210301161159.422940508@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,72 +50,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Pearson <rpearsonhpe@gmail.com>
+From: John Stultz <john.stultz@linaro.org>
 
-[ Upstream commit 8fc1b7027fc162738d5a85c82410e501a371a404 ]
+[ Upstream commit 64ba3d591c9d2be2a9c09e99b00732afe002ad0d ]
 
-rxe_rcv_mcast_pkt() in rxe_recv.c can leak SKBs in error path code. The
-loop over the QPs attached to a multicast group creates new cloned SKBs
-for all but the last QP in the list and passes the SKB and its clones to
-rxe_rcv_pkt() for further processing. Any QPs that do not pass some checks
-are skipped.  If the last QP in the list fails the tests the SKB is
-leaked.  This patch checks if the SKB for the last QP was used and if not
-frees it. Also removes a redundant loop invariant assignment.
+Copied in from somewhere else, the makefile was including
+the kerne's usr/include dir, which caused the asm/ioctl.h file
+to be used.
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Fixes: 71abf20b28ff ("RDMA/rxe: Handle skb_clone() failure in rxe_recv.c")
-Link: https://lore.kernel.org/r/20210128174752.16128-1-rpearson@hpe.com
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Unfortunately, that file has different values for _IOC_SIZEBITS
+and _IOC_WRITE than include/uapi/asm-generic/ioctl.h which then
+causes the _IOCW macros to give the wrong ioctl numbers,
+specifically for DMA_BUF_IOCTL_SYNC.
+
+This patch simply removes the extra include from the Makefile
+
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Brian Starkey <brian.starkey@arm.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-kselftest@vger.kernel.org
+Fixes: a8779927fd86c ("kselftests: Add dma-heap test")
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_recv.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ tools/testing/selftests/dmabuf-heaps/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index db0ee5c3962e4..cb69a125e2806 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -257,7 +257,6 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+diff --git a/tools/testing/selftests/dmabuf-heaps/Makefile b/tools/testing/selftests/dmabuf-heaps/Makefile
+index 607c2acd20829..604b43ece15f5 100644
+--- a/tools/testing/selftests/dmabuf-heaps/Makefile
++++ b/tools/testing/selftests/dmabuf-heaps/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-CFLAGS += -static -O3 -Wl,-no-as-needed -Wall -I../../../../usr/include
++CFLAGS += -static -O3 -Wl,-no-as-needed -Wall
  
- 	list_for_each_entry(mce, &mcg->qp_list, qp_list) {
- 		qp = mce->qp;
--		pkt = SKB_TO_PKT(skb);
- 
- 		/* validate qp for incoming packet */
- 		err = check_type_state(rxe, pkt, qp);
-@@ -269,12 +268,18 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 			continue;
- 
- 		/* for all but the last qp create a new clone of the
--		 * skb and pass to the qp.
-+		 * skb and pass to the qp. If an error occurs in the
-+		 * checks for the last qp in the list we need to
-+		 * free the skb since it hasn't been passed on to
-+		 * rxe_rcv_pkt() which would free it later.
- 		 */
--		if (mce->qp_list.next != &mcg->qp_list)
-+		if (mce->qp_list.next != &mcg->qp_list) {
- 			per_qp_skb = skb_clone(skb, GFP_ATOMIC);
--		else
-+		} else {
- 			per_qp_skb = skb;
-+			/* show we have consumed the skb */
-+			skb = NULL;
-+		}
- 
- 		if (unlikely(!per_qp_skb))
- 			continue;
-@@ -289,9 +294,8 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 
- 	rxe_drop_ref(mcg);	/* drop ref from rxe_pool_get_key. */
- 
--	return;
--
- err1:
-+	/* free skb if not consumed */
- 	kfree_skb(skb);
- }
+ TEST_GEN_PROGS = dmabuf-heap
  
 -- 
 2.27.0
