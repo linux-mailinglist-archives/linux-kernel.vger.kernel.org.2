@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35626329D44
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 562A6329CB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443326AbhCBCUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:20:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55190 "EHLO mail.kernel.org"
+        id S1349053AbhCBCLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:11:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242143AbhCATsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:48:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF8FB650F4;
-        Mon,  1 Mar 2021 17:01:47 +0000 (UTC)
+        id S238259AbhCATgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:36:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D9DB65100;
+        Mon,  1 Mar 2021 17:02:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618108;
-        bh=v9F3rPspb0CiLc1VvoNlM9/+8X8I7v7LA5L/pB1Kkr4=;
+        s=korg; t=1614618139;
+        bh=2hmxUZp++fvJcfD9h4dal3MJPP6bFdBSPHgO7clqvU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AElAfDyU4OtMLFspXrOfWHAilx5egRZEa2ZVbNGoLeDnw1WWk3mrtacxjQltS3LNT
-         pG0BkcHmEGbNNIWB7UZnaj0+1iNctzuOAKgPTpdsDb8zocVtGFrwDmzHwwhmoY0mMf
-         6OtX3mhmPabZmWnWC7tlIhgnBHb0t5XFjt4ngd/U=
+        b=eyq8AYlyBCAw/zZvYj+k0KPzHeZ+Bc454D+fOWPNqijVNuZ9wH4O1mS9F536zzbKO
+         tP/rBy8173VDgylwWC+P8QI5w40IUyVPxM8l2lpsqnb1jNM8KJfOkPNuSCWPChWwbX
+         TenjimPn7S7yoB/bjPiDf6lwzApA3hOEqVH4Dhfg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, He Zhe <zhe.he@windriver.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.4 292/340] arm64: uprobe: Return EOPNOTSUPP for AARCH32 instruction probing
-Date:   Mon,  1 Mar 2021 17:13:56 +0100
-Message-Id: <20210301161102.666907562@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 5.4 293/340] watchdog: qcom: Remove incorrect usage of QCOM_WDT_ENABLE_IRQ
+Date:   Mon,  1 Mar 2021 17:13:57 +0100
+Message-Id: <20210301161102.717016216@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -39,38 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: He Zhe <zhe.he@windriver.com>
+From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 
-commit d47422d953e258ad587b5edf2274eb95d08bdc7d upstream.
+commit a4f3407c41605d14f09e490045d0609990cd5d94 upstream.
 
-As stated in linux/errno.h, ENOTSUPP should never be seen by user programs.
-When we set up uprobe with 32-bit perf and arm64 kernel, we would see the
-following vague error without useful hint.
+As per register documentation, QCOM_WDT_ENABLE_IRQ which is BIT(1)
+of watchdog control register is wakeup interrupt enable bit and
+not related to bark interrupt at all, BIT(0) is used for that.
+So remove incorrect usage of this bit when supporting bark irq for
+pre-timeout notification. Currently with this bit set and bark
+interrupt specified, pre-timeout notification and/or watchdog
+reset/bite does not occur.
 
-The sys_perf_event_open() syscall returned with 524 (INTERNAL ERROR:
-strerror_r(524, [buf], 128)=22)
-
-Use EOPNOTSUPP instead to indicate such cases.
-
-Signed-off-by: He Zhe <zhe.he@windriver.com>
-Link: https://lore.kernel.org/r/20210223082535.48730-1-zhe.he@windriver.com
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 36375491a439 ("watchdog: qcom: support pre-timeout when the bark irq is available")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Link: https://lore.kernel.org/r/20210126150241.10009-1-saiprakash.ranjan@codeaurora.org
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/probes/uprobes.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/watchdog/qcom-wdt.c |   13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
---- a/arch/arm64/kernel/probes/uprobes.c
-+++ b/arch/arm64/kernel/probes/uprobes.c
-@@ -38,7 +38,7 @@ int arch_uprobe_analyze_insn(struct arch
+--- a/drivers/watchdog/qcom-wdt.c
++++ b/drivers/watchdog/qcom-wdt.c
+@@ -22,7 +22,6 @@ enum wdt_reg {
+ };
  
- 	/* TODO: Currently we do not support AARCH32 instruction probing */
- 	if (mm->context.flags & MMCF_AARCH32)
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 	else if (!IS_ALIGNED(addr, AARCH64_INSN_SIZE))
- 		return -EINVAL;
+ #define QCOM_WDT_ENABLE		BIT(0)
+-#define QCOM_WDT_ENABLE_IRQ	BIT(1)
+ 
+ static const u32 reg_offset_data_apcs_tmr[] = {
+ 	[WDT_RST] = 0x38,
+@@ -58,16 +57,6 @@ struct qcom_wdt *to_qcom_wdt(struct watc
+ 	return container_of(wdd, struct qcom_wdt, wdd);
+ }
+ 
+-static inline int qcom_get_enable(struct watchdog_device *wdd)
+-{
+-	int enable = QCOM_WDT_ENABLE;
+-
+-	if (wdd->pretimeout)
+-		enable |= QCOM_WDT_ENABLE_IRQ;
+-
+-	return enable;
+-}
+-
+ static irqreturn_t qcom_wdt_isr(int irq, void *arg)
+ {
+ 	struct watchdog_device *wdd = arg;
+@@ -86,7 +75,7 @@ static int qcom_wdt_start(struct watchdo
+ 	writel(1, wdt_addr(wdt, WDT_RST));
+ 	writel(bark * wdt->rate, wdt_addr(wdt, WDT_BARK_TIME));
+ 	writel(wdd->timeout * wdt->rate, wdt_addr(wdt, WDT_BITE_TIME));
+-	writel(qcom_get_enable(wdd), wdt_addr(wdt, WDT_EN));
++	writel(QCOM_WDT_ENABLE, wdt_addr(wdt, WDT_EN));
+ 	return 0;
+ }
  
 
 
