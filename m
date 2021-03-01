@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3692329BF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46642329C7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241178AbhCBBpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:45:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46146 "EHLO mail.kernel.org"
+        id S1380845AbhCBBz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:55:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237646AbhCATVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:21:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02D1C64FBC;
-        Mon,  1 Mar 2021 17:37:55 +0000 (UTC)
+        id S241662AbhCATcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:32:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 788CD652CC;
+        Mon,  1 Mar 2021 17:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620276;
-        bh=k6vtMchoWGyWtWELp5BGWeV7s51JHBk/vSco0li3SZA=;
+        s=korg; t=1614620282;
+        bh=xxHIthO+Tx85OMbCDOiBkQxt46n8uaKklXdfUTJUu7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qnvECTT9NR79RhsTo6enY9IYNvZf2pp8Yy4i9ylzHFaOw055BWm/aZOnAj6PnmfQ6
-         4GVSHcy2P2koSzAKp44b+/EonIaE3goCBxS9rEwBGIVW2/BPhISk3h3VtU75hR5dRv
-         J8dpaigX9TbMX8gZc5hlqFHVRm1t0QqXWFqFrTLU=
+        b=yD28q2yfEaE5VdkIrWjsMpIplUyo4+HhDwcGundjmoEFQGo28N92Eq21JpbkgRGf1
+         1ZS25BXb0rwj98v1ilz8qBhhVQWaxrixEs3nmbVj+Tmlgf4HHObqoLGo9wTyj+n7Hd
+         O3PCCWv/bFFsaPM8DNb+J0JjeI0JE3OBODZArz4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
-        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com,
-        Marco Elver <elver@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 094/775] bpf_lru_list: Read double-checked variable once without lock
-Date:   Mon,  1 Mar 2021 17:04:22 +0100
-Message-Id: <20210301161206.322948484@linuxfoundation.org>
+Subject: [PATCH 5.11 096/775] iwlwifi: pnvm: increment the pointer before checking the TLV
+Date:   Mon,  1 Mar 2021 17:04:24 +0100
+Message-Id: <20210301161206.421020721@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -44,63 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit 6df8fb83301d68ea0a0c0e1cbcc790fcc333ed12 ]
+[ Upstream commit ff11a8ee2d2d0f78514ac9b42fb50c525ca695c7 ]
 
-For double-checked locking in bpf_common_lru_push_free(), node->type is
-read outside the critical section and then re-checked under the lock.
-However, concurrent writes to node->type result in data races.
+If the SKU_ID doesn't match, we don't increment the pointer and keep
+checking the same TLV over and over again.
 
-For example, the following concurrent access was observed by KCSAN:
+We need to increment the pointer in all situtations, namely if the TLV
+is not a SKU_ID, if the SKU_ID matched or if the SKU_ID didn't match.
+So we can increment the pointer already before checking for these
+conditions to solve the problem.
 
-  write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
-   __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
-   __local_list_flush            kernel/bpf/bpf_lru_list.c:298
-   ...
-  read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
-   bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
-   bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
-   ...
-
-Fix the data races where node->type is read outside the critical section
-(for double-checked locking) by marking the access with READ_ONCE() as
-well as ensuring the variable is only accessed once.
-
-Fixes: 3a08c2fd7634 ("bpf: LRU List")
-Reported-by: syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com
-Reported-by: syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Link: https://lore.kernel.org/bpf/20210209112701.3341724-1-elver@google.com
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Fixes: 6972592850c0 ("iwlwifi: read and parse PNVM file")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210210172142.de94d366f3ff.I9a5a54906cf0f4ec8af981d6066bfd771152ffb9@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/bpf_lru_list.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/fw/pnvm.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-index 1b6b9349cb857..d99e89f113c43 100644
---- a/kernel/bpf/bpf_lru_list.c
-+++ b/kernel/bpf/bpf_lru_list.c
-@@ -502,13 +502,14 @@ struct bpf_lru_node *bpf_lru_pop_free(struct bpf_lru *lru, u32 hash)
- static void bpf_common_lru_push_free(struct bpf_lru *lru,
- 				     struct bpf_lru_node *node)
- {
-+	u8 node_type = READ_ONCE(node->type);
- 	unsigned long flags;
+diff --git a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
+index 1e16f83b402b8..37ce4fe136c5e 100644
+--- a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
+@@ -198,14 +198,14 @@ static int iwl_pnvm_parse(struct iwl_trans *trans, const u8 *data,
+ 				     le32_to_cpu(sku_id->data[1]),
+ 				     le32_to_cpu(sku_id->data[2]));
  
--	if (WARN_ON_ONCE(node->type == BPF_LRU_LIST_T_FREE) ||
--	    WARN_ON_ONCE(node->type == BPF_LRU_LOCAL_LIST_T_FREE))
-+	if (WARN_ON_ONCE(node_type == BPF_LRU_LIST_T_FREE) ||
-+	    WARN_ON_ONCE(node_type == BPF_LRU_LOCAL_LIST_T_FREE))
- 		return;
++			data += sizeof(*tlv) + ALIGN(tlv_len, 4);
++			len -= ALIGN(tlv_len, 4);
++
+ 			if (trans->sku_id[0] == le32_to_cpu(sku_id->data[0]) &&
+ 			    trans->sku_id[1] == le32_to_cpu(sku_id->data[1]) &&
+ 			    trans->sku_id[2] == le32_to_cpu(sku_id->data[2])) {
+ 				int ret;
  
--	if (node->type == BPF_LRU_LOCAL_LIST_T_PENDING) {
-+	if (node_type == BPF_LRU_LOCAL_LIST_T_PENDING) {
- 		struct bpf_lru_locallist *loc_l;
- 
- 		loc_l = per_cpu_ptr(lru->common_lru.local_list, node->cpu);
+-				data += sizeof(*tlv) + ALIGN(tlv_len, 4);
+-				len -= ALIGN(tlv_len, 4);
+-
+ 				ret = iwl_pnvm_handle_section(trans, data, len);
+ 				if (!ret)
+ 					return 0;
 -- 
 2.27.0
 
