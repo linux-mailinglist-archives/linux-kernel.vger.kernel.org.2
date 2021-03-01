@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA26B329D34
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1EA329CED
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443189AbhCBCT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:19:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55194 "EHLO mail.kernel.org"
+        id S1442600AbhCBCOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:14:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240452AbhCATpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:45:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7B4365030;
-        Mon,  1 Mar 2021 17:14:53 +0000 (UTC)
+        id S240907AbhCATlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:41:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 696E96503C;
+        Mon,  1 Mar 2021 17:15:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618894;
-        bh=THcye7fJji3pbGpNmY481FFDCt6rSaLVJjbuLCA3Bp4=;
+        s=korg; t=1614618908;
+        bh=Uu2eES8d8sqkst1FzlgcpQT9ilhdD7VqlzdY6hDFNCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nhBZGrCJmmILZoUy0vig/B8sTjXdowPJEz0Td+qT47vIKcuSxJK97SVvi49N3uDfz
-         3Ti869ZVbdnIBcAAJC2abd4t0xcwM9HQpLwowXstI1tQejwum+6fmhdN4zHh2OOZdg
-         7nUD5t319HqwS3IDjA4vyeCVvVrklUxEh+ylpCV4=
+        b=vhsWmB7LoBu/UkoA/imVJiO/XnV1IsDyNzn0x6/kzJ7Gte/J3mlerFHu3pSgM06Pn
+         DmDjfED/2XQ+Nh0lKf8pjt4+q308wzZD1USfxchwgZaLDrjFx7OMztByxgV81uzizs
+         UYy/25I/YEiUL0Xj1woVW/q1IrRnGoa8Jl9q/YY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 229/663] drm/vc4: hdmi: Move hdmi reset to bind
-Date:   Mon,  1 Mar 2021 17:07:57 +0100
-Message-Id: <20210301161153.136672182@linuxfoundation.org>
+Subject: [PATCH 5.10 231/663] drm/vc4: hdmi: Fix up CEC registers
+Date:   Mon,  1 Mar 2021 17:07:59 +0100
+Message-Id: <20210301161153.239033064@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -46,55 +46,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dom Cobley <popcornmix@gmail.com>
 
-[ Upstream commit 902dc5c19a8fecd3113dd41cc601b34557bdede9 ]
+[ Upstream commit 5a32bfd563e8b5766e57475c2c81c769e5a13f5d ]
 
-The hdmi reset got moved to a later point in the commit 9045e91a476b
-("drm/vc4: hdmi: Add reset callback").
+The commit 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout
+abstraction") forgot one CEC register, and made a copy and paste mistake
+for another one. Fix those mistakes.
 
-However, the reset now occurs after vc4_hdmi_cec_init and so tramples
-the setup of registers like HDMI_CEC_CNTRL_1
-
-This only affects pi0-3 as on pi4 the cec registers are in a separate
-block
-
-Fixes: 9045e91a476b ("drm/vc4: hdmi: Add reset callback")
+Fixes: 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout abstraction")
 Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 Signed-off-by: Dom Cobley <popcornmix@gmail.com>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210111142309.193441-3-maxime@cerno.tech
-(cherry picked from commit 7155334f15f360f5c98391c5c7e12af4c13395c4)
+Link: https://patchwork.freedesktop.org/patch/msgid/20210111142309.193441-5-maxime@cerno.tech
+(cherry picked from commit 303085bc11bb7aebeeaaf09213f99fd7aa539a34)
 Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi_regs.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index db06f52de9d91..1b2b5e3986ebd 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -661,9 +661,6 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder)
- 		return;
- 	}
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
+index 7c6b4818f2455..6c0dfbbe1a7ef 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
++++ b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
+@@ -29,6 +29,7 @@ enum vc4_hdmi_field {
+ 	HDMI_CEC_CPU_MASK_SET,
+ 	HDMI_CEC_CPU_MASK_STATUS,
+ 	HDMI_CEC_CPU_STATUS,
++	HDMI_CEC_CPU_SET,
  
--	if (vc4_hdmi->variant->reset)
--		vc4_hdmi->variant->reset(vc4_hdmi);
--
- 	if (vc4_hdmi->variant->phy_init)
- 		vc4_hdmi->variant->phy_init(vc4_hdmi, mode);
- 
-@@ -1744,6 +1741,9 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
- 	vc4_hdmi->disable_wifi_frequencies =
- 		of_property_read_bool(dev->of_node, "wifi-2.4ghz-coexistence");
- 
-+	if (vc4_hdmi->variant->reset)
-+		vc4_hdmi->variant->reset(vc4_hdmi);
-+
- 	pm_runtime_enable(dev);
- 
- 	drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
+ 	/*
+ 	 * Transmit data, first byte is low byte of the 32-bit reg.
+@@ -196,9 +197,10 @@ static const struct vc4_hdmi_register vc4_hdmi_fields[] = {
+ 	VC4_HDMI_REG(HDMI_TX_PHY_RESET_CTL, 0x02c0),
+ 	VC4_HDMI_REG(HDMI_TX_PHY_CTL_0, 0x02c4),
+ 	VC4_HDMI_REG(HDMI_CEC_CPU_STATUS, 0x0340),
++	VC4_HDMI_REG(HDMI_CEC_CPU_SET, 0x0344),
+ 	VC4_HDMI_REG(HDMI_CEC_CPU_CLEAR, 0x0348),
+ 	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_STATUS, 0x034c),
+-	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x034c),
++	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x0350),
+ 	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_CLEAR, 0x0354),
+ 	VC4_HDMI_REG(HDMI_RAM_PACKET_START, 0x0400),
+ };
 -- 
 2.27.0
 
