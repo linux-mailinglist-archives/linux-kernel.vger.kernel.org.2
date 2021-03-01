@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376C13290B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D2E329114
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242988AbhCAUNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:13:15 -0500
-Received: from mga12.intel.com ([192.55.52.136]:6616 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235899AbhCARDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:03:50 -0500
-IronPort-SDR: yPKU7TSqjEerrwT5C3zpICWzgw9NLZQiCi1hoG+KprQVDb+ZktPNebw9zvzer+v6wZFkRybzEN
- FC0T8+GdM/tg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="165766143"
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="165766143"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 09:02:42 -0800
-IronPort-SDR: KBXsf6wW2q1PykwlqySVb7L/LRvhRWUnnEeS+co9JHXlrTdT46/wlEEpfuorJsvRMV7E6a3imG
- sBkzuxd0AyFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="505334816"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Mar 2021 09:02:40 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lGlwO-0004eX-1Z; Mon, 01 Mar 2021 17:02:40 +0000
-Date:   Tue, 2 Mar 2021 01:02:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Aloka Dixit <alokad@codeaurora.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: drivers/net/wireless/ath/ath11k/mac.c:1892:7: warning: Uninitialized
- variable: ret
-Message-ID: <202103020120.4uzsVzW3-lkp@intel.com>
+        id S243218AbhCAUS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:18:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235495AbhCAREe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:04:34 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45136C061756;
+        Mon,  1 Mar 2021 09:03:53 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id w21so21712879edc.7;
+        Mon, 01 Mar 2021 09:03:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WGfH4B+NMgcssjR04f9HD8JP0KDy7y/KsXZ1Iko6tpA=;
+        b=vLmK5/fmzo7WQEGL/DdMmuxprzTa7cHozAkkiX6OD7pKqKZL+gQ/Tk6XXPK+//Erpj
+         q/qAoVERsSZ7GKRa/03ESr2BuZcKP3ntWnux2odEFkCikcWB5EkrbHq0IBcEgXb7BHNJ
+         GHPXMcCEyXo00d7QxZSoKCVd7ge7qG2gyNXH5qNKYNkDtu9q8zvm9/a2a3Nx9hHnVTk5
+         1QnnxC888CoBA2judbLCKphoiRevkSYjrdyw+1CccmAbfHOJqxsHERWS36pLxYHtoPv/
+         QWYAY2iNCa45i+A3NJBH53EZgVCJ0mwPO1Z+C5cX/FYaILIyYuChsz5LaMOs7LMJI/VM
+         TH5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WGfH4B+NMgcssjR04f9HD8JP0KDy7y/KsXZ1Iko6tpA=;
+        b=oAs6sNFZaZltNZH2znlOA6+0/Yr35C9FmbqISBpWwkZ+252YnLSJGLXNelIZZdcZo7
+         chX/cqGPN45VCEviRm1D3AFx4OEuGRH85rzikU5ji/mOVtWYTzSa+l9RJLG217tBwOsw
+         R59X1lpJya16egE2++/bSse9co6DrXMMvQctyyRIV0+M+5J/AsY/AkZjaSdo1kNAucBV
+         k9zJTql5/tGe5cp1LjGblApRK7zrH9cRod5wf1Jcm06h/AYxeQjfA0fKqtgE8Eouik7O
+         TLHb2x/CqQ9SIM+vjlX8SQXNMFCacVPue/Y33f8YtCIXUvInQFJBXDJhu+/A181laLIh
+         DURQ==
+X-Gm-Message-State: AOAM530KTG2DeJJxQzg3WUiL6PDxf8qqyQ+EiSxPz9Xv2wCJiAVdqX4r
+        kOSEEZjuZN43jmoDBC7eQE/ZY5coUtR9oYWy7DU=
+X-Google-Smtp-Source: ABdhPJwjMK2YmMZVxtwYS0vnpLCsHWIpxFUwagbiRLe6A85A7rELeGBG7xWVaTa50uPOt4jHO1YXRsQLbq8n6iEkXoo=
+X-Received: by 2002:aa7:cc03:: with SMTP id q3mr17670479edt.366.1614618231962;
+ Mon, 01 Mar 2021 09:03:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210217001322.2226796-1-shy828301@gmail.com> <CAHbLzkrEfeoofwJjncFDepcOxEKzqiAo8T7mowX2jJVCz5ikEA@mail.gmail.com>
+ <YD0Ct/tP4TSok0BI@cmpxchg.org>
+In-Reply-To: <YD0Ct/tP4TSok0BI@cmpxchg.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 1 Mar 2021 09:03:40 -0800
+Message-ID: <CAHbLzkqimWOMWkaNCMLjeXXdCkMRt8BuXuFTxyk3+tdPrajnHQ@mail.gmail.com>
+Subject: Re: [v8 PATCH 00/13] Make shrinker's nr_deferred memcg aware
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8
-commit: 047679e366b9842a9da3ab82dca26fcaad8020eb ath11k: FILS discovery and unsolicited broadcast probe response support
-date:   4 months ago
-compiler: or1k-linux-gcc (GCC) 9.3.0
+On Mon, Mar 1, 2021 at 7:05 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> Hello Yang,
+>
+> On Thu, Feb 25, 2021 at 09:00:16AM -0800, Yang Shi wrote:
+> > Hi Andrew,
+> >
+> > Just checking in whether this series is on your radar. The patch 1/13
+> > ~ patch 12/13 have been reviewed and acked. Vlastimil had had some
+> > comments on patch 13/13, I'm not sure if he is going to continue
+> > reviewing that one. I hope the last patch could get into the -mm tree
+> > along with the others so that it can get a broader test. What do you
+> > think about it?
+>
+> The merge window for 5.12 is/has been open, which is when maintainers
+> are busy getting everything from the previous development cycle ready
+> to send upstream. Usually, only fixes but no new features are picked
+> up during that time. If you don't hear back, try resending in a week.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Thanks, Johannes. Totally understand.
 
-
-"cppcheck warnings: (new ones prefixed by >>)"
->> drivers/net/wireless/ath/ath11k/mac.c:1892:7: warning: Uninitialized variable: ret [uninitvar]
-    if (!ret)
-         ^
-
-vim +1892 drivers/net/wireless/ath/ath11k/mac.c
-
-  1852	
-  1853	static int ath11k_mac_fils_discovery(struct ath11k_vif *arvif,
-  1854					     struct ieee80211_bss_conf *info)
-  1855	{
-  1856		struct ath11k *ar = arvif->ar;
-  1857		struct sk_buff *tmpl;
-  1858		int ret;
-  1859		u32 interval;
-  1860		bool unsol_bcast_probe_resp_enabled = false;
-  1861	
-  1862		if (info->fils_discovery.max_interval) {
-  1863			interval = info->fils_discovery.max_interval;
-  1864	
-  1865			tmpl = ieee80211_get_fils_discovery_tmpl(ar->hw, arvif->vif);
-  1866			if (tmpl)
-  1867				ret = ath11k_wmi_fils_discovery_tmpl(ar, arvif->vdev_id,
-  1868								     tmpl);
-  1869		} else if (info->unsol_bcast_probe_resp_interval) {
-  1870			unsol_bcast_probe_resp_enabled = 1;
-  1871			interval = info->unsol_bcast_probe_resp_interval;
-  1872	
-  1873			tmpl = ieee80211_get_unsol_bcast_probe_resp_tmpl(ar->hw,
-  1874									 arvif->vif);
-  1875			if (tmpl)
-  1876				ret = ath11k_wmi_probe_resp_tmpl(ar, arvif->vdev_id,
-  1877								 tmpl);
-  1878		} else { /* Disable */
-  1879			return ath11k_wmi_fils_discovery(ar, arvif->vdev_id, 0, false);
-  1880		}
-  1881	
-  1882		if (!tmpl) {
-  1883			ath11k_warn(ar->ab,
-  1884				    "mac vdev %i failed to retrieve %s template\n",
-  1885				    arvif->vdev_id, (unsol_bcast_probe_resp_enabled ?
-  1886				    "unsolicited broadcast probe response" :
-  1887				    "FILS discovery"));
-  1888			return -EPERM;
-  1889		}
-  1890		kfree_skb(tmpl);
-  1891	
-> 1892		if (!ret)
-  1893			ret = ath11k_wmi_fils_discovery(ar, arvif->vdev_id, interval,
-  1894							unsol_bcast_probe_resp_enabled);
-  1895	
-  1896		return ret;
-  1897	}
-  1898	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> That reminds me, I also have patches I need to resend :)
