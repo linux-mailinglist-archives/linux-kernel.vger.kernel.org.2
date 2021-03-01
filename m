@@ -2,65 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4B1329FFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6DA329FFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575059AbhCBDwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:52:49 -0500
-Received: from ms.lwn.net ([45.79.88.28]:42812 "EHLO ms.lwn.net"
+        id S1575068AbhCBDwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:52:51 -0500
+Received: from ms.lwn.net ([45.79.88.28]:43002 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238351AbhCAVyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:54:55 -0500
+        id S244006AbhCAV4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 16:56:34 -0500
 Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 7D4422C4;
-        Mon,  1 Mar 2021 21:53:41 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 7D4422C4
+        by ms.lwn.net (Postfix) with ESMTPSA id 49C362BA;
+        Mon,  1 Mar 2021 21:55:39 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 49C362BA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1614635621; bh=WDfz7/obBnIb/M5rsUr/TB5yXS8WrBNTeFUuidofv0g=;
+        t=1614635739; bh=OfriL43I/FwmwVb3uQPXnRG9xFY9LoznRzEmiYC8tMg=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jr4HsxUY6CHDbjHG6FYMz1lm9IWnsH7z34xdFPr0tu4dYcRexKrx2BlqJ6gY6Irya
-         rf5gn2w0At/EvR2iVqzRQwG3uQhCBuK1HKUd1zXorMwUXK+pUX3EapprlglXRNK47l
-         T4dfhO99JO7Kd7hb7mQrR5icOMRqg9SXtrXTD0EsktqtmhlkkLqLuGnmHZNVPZRb+r
-         REc+74PuVYv7fQ2tZYodP0LOJOojYZMLllV2Pq0GwEfrg1ZAQEUkgoz8fQmovYZpJS
-         cgNNb2G9lDGQ1m28kvWoMMpXKxCCYCLsLjg/NKXkDGmM0X79GPILjtIoCRhbbfu54z
-         hT8WsA1BnF1tg==
+        b=CvSPUUJVYgY/+qPdTaB3tx8lkVnHitIDeiZXaEGW5tURmiJTW2o1ty9M+Ogha9YYC
+         Ph+FMoW/Ly2s/MZ/dumH7UdnfPH4NZLd68YnjWDQKWHwFO0x+TmPEXJ+37IFtCUMgi
+         RSDkreur3ElAJdf3OS9L/ZfinmHwtFdRVrzEz6Qf0ui+kWDDGtcigMEZo8Z3eRR/mP
+         iqzC1KV/5AMpTHJsjgxTTa+TAfXglhinB9QkWEQi7TfErk9u4GGThgLMVKerPGu7Gs
+         UPTQx559heVG+A3cP0bAiKA4wm5CVVw7tcIFCw19ZE6GKimkyPCDmSCa2NhfPzrufH
+         T1X3Io/KCy5OQ==
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH] docs: driver-model: Remove obsolete device class
- documentation
-In-Reply-To: <20210225091124.686078-1-geert+renesas@glider.be>
-References: <20210225091124.686078-1-geert+renesas@glider.be>
-Date:   Mon, 01 Mar 2021 14:53:41 -0700
-Message-ID: <87lfb635i2.fsf@meer.lwn.net>
+To:     Flavio Suligoi <f.suligoi@asem.it>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-watchdog@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Flavio Suligoi <f.suligoi@asem.it>
+Subject: Re: [PATCH] docs: watchdog: fix obsolete include file reference in
+ pcwd
+In-Reply-To: <20210223111324.309285-1-f.suligoi@asem.it>
+References: <20210223111324.309285-1-f.suligoi@asem.it>
+Date:   Mon, 01 Mar 2021 14:55:38 -0700
+Message-ID: <87h7lu35et.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert+renesas@glider.be> writes:
+Flavio Suligoi <f.suligoi@asem.it> writes:
 
-> None of this is valid since v2.5.69.
+> The file linux/pcwd.h is not more present in the kernel
+> sources. Its information is now moved into the file:
 >
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> include/uapi/linux/watchdog.h
+>
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 > ---
-> I started updating the document, until I realized that all of the
-> typedefs, structures, functions, defines, and sysfs layout have been
-> renamed, changed, or removed.  So I think it's better (for an expert in
-> the field) to start from scratch.
-> ---
->  .../driver-api/driver-model/class.rst         | 149 ------------------
->  .../driver-api/driver-model/index.rst         |   1 -
->  2 files changed, 150 deletions(-)
->  delete mode 100644 Documentation/driver-api/driver-model/class.rst
+>  Documentation/watchdog/pcwd-watchdog.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yay for deleting old useless stuff.  Applied, thanks.
+Applied, thanks.
 
 jon
