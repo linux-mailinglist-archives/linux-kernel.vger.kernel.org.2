@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02903328949
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A77F328906
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:52:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239127AbhCARx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:53:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39700 "EHLO mail.kernel.org"
+        id S238810AbhCARsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:48:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232529AbhCAQcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:32:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 369F864F21;
-        Mon,  1 Mar 2021 16:24:16 +0000 (UTC)
+        id S231710AbhCAQaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:30:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A1B664F50;
+        Mon,  1 Mar 2021 16:23:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615856;
-        bh=dZDuYGpAecR4SZKdufLNZDrBQ7R3UW6Uz7HS7zGTTVE=;
+        s=korg; t=1614615828;
+        bh=1fbJrKp+jZiH4r4kB4gqbtf/daeGz47fYBJ1PM/YFUI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xp9ZLCbhs2M1BK1xg1yO9+g5cR4gA66id6MzaUyuoi1zF3MEdYwtCGuEfpxcVmZIY
-         fuwvg7FPqlWrC3ey3WlLX8Kb77ne7SjBanavcIcrhEELGjrf7Bt6Lp8C+euSxKed1w
-         rTl5IGxPA0KutC1U5q4LtGJJ9jfTwTDxep/UnwfQ=
+        b=oZ+vyF2CJ53GbHjLmzVML6tjU+bMIXI0u5nRmQNWoGkAdFvQw7+RFAn52rsmFS5g8
+         3/2hi+N7chZfFFyPUPayvT16Nx24j4CiYcAZfAeEhQ+Q60Xs6or3rpPq3cj3OAIaIF
+         iS+Nm4/n9zwj386UOdS4h5f8C0r2PTISa8SD+tfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 067/134] mfd: wm831x-auxadc: Prevent use after free in wm831x_auxadc_read_irq()
-Date:   Mon,  1 Mar 2021 17:12:48 +0100
-Message-Id: <20210301161016.852331865@linuxfoundation.org>
+Subject: [PATCH 4.9 075/134] misc: eeprom_93xx46: Add module alias to avoid breaking support for non device tree users
+Date:   Mon,  1 Mar 2021 17:12:56 +0100
+Message-Id: <20210301161017.252829723@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -41,41 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Aswath Govindraju <a-govindraju@ti.com>
 
-[ Upstream commit 26783d74cc6a440ee3ef9836a008a697981013d0 ]
+[ Upstream commit 4540b9fbd8ebb21bb3735796d300a1589ee5fbf2 ]
 
-The "req" struct is always added to the "wm831x->auxadc_pending" list,
-but it's only removed from the list on the success path.  If a failure
-occurs then the "req" struct is freed but it's still on the list,
-leading to a use after free.
+Module alias "spi:93xx46" is used by non device tree users like
+drivers/misc/eeprom/digsy_mtc_eeprom.c  and removing it will
+break support for them.
 
-Fixes: 78bb3688ea18 ("mfd: Support multiple active WM831x AUXADC conversions")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fix this by adding back the module alias "spi:93xx46".
+
+Fixes: 13613a2246bf ("misc: eeprom_93xx46: Fix module alias to enable module autoprobe")
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Link: https://lore.kernel.org/r/20210113051253.15061-1-a-govindraju@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/wm831x-auxadc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/misc/eeprom/eeprom_93xx46.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mfd/wm831x-auxadc.c b/drivers/mfd/wm831x-auxadc.c
-index fd789d2eb0f52..9f7ae1e1ebcd6 100644
---- a/drivers/mfd/wm831x-auxadc.c
-+++ b/drivers/mfd/wm831x-auxadc.c
-@@ -98,11 +98,10 @@ static int wm831x_auxadc_read_irq(struct wm831x *wm831x,
- 	wait_for_completion_timeout(&req->done, msecs_to_jiffies(500));
- 
- 	mutex_lock(&wm831x->auxadc_lock);
--
--	list_del(&req->list);
- 	ret = req->val;
- 
- out:
-+	list_del(&req->list);
- 	mutex_unlock(&wm831x->auxadc_lock);
- 
- 	kfree(req);
+diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
+index 275906b37eb89..d30deee1effda 100644
+--- a/drivers/misc/eeprom/eeprom_93xx46.c
++++ b/drivers/misc/eeprom/eeprom_93xx46.c
+@@ -532,4 +532,5 @@ module_spi_driver(eeprom_93xx46_driver);
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Driver for 93xx46 EEPROMs");
+ MODULE_AUTHOR("Anatolij Gustschin <agust@denx.de>");
++MODULE_ALIAS("spi:93xx46");
+ MODULE_ALIAS("spi:eeprom-93xx46");
 -- 
 2.27.0
 
