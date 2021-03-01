@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FED3329957
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF243299B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347682AbhCBALP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:11:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40754 "EHLO mail.kernel.org"
+        id S1348073AbhCBA23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239766AbhCASWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:22:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9385D65151;
-        Mon,  1 Mar 2021 17:05:17 +0000 (UTC)
+        id S234852AbhCAS3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:29:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 428E5650B3;
+        Mon,  1 Mar 2021 17:39:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618318;
-        bh=54DIiQEKusXaJ/QZQfjpta6y6yypWQih5bmhYPZ3d2w=;
+        s=korg; t=1614620363;
+        bh=Xi+lVabsYrHZBkh8p7HoHsOstLPyg4ZYJ4SjuvdVzLQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FonYkfICMvs/pUaIuuiarOtKW5jtQnbuJE2CaQEOQuAPiQthfTySFwJLXtfgowKVx
-         13BEuqGi5ZNPqt7dUF2RFBS5/g2QGo6NsuXgNNzMuz6Mgdv+l2wm9IcPCxOfbl2Tkt
-         F42SOm4I4okbOtNB7HnIDdayS1OOj2kuDjW+vR74=
+        b=B5xrrO/H/wlOSGlLzLtvGZPcQgT520scfvndEE3rshVU4cHqQBpHtwklJkvAa4JOz
+         6+KgLGIkD3NrN0oHdA59S4gfSS2LxMOll+nB7uvHJK4GjU/tBIuVHdr8wJoGOqTIT0
+         pViYqt5ifjqRYVzT1PSmMu089jjMcrDAsQ2JRHt8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 044/663] arm64: dts: allwinner: A64: properly connect USB PHY to port 0
-Date:   Mon,  1 Mar 2021 17:04:52 +0100
-Message-Id: <20210301161143.957126432@linuxfoundation.org>
+Subject: [PATCH 5.11 126/775] b43: N-PHY: Fix the update of coef for the PHY revision >= 3case
+Date:   Mon,  1 Mar 2021 17:04:54 +0100
+Message-Id: <20210301161207.903389535@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,82 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Przywara <andre.przywara@arm.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit cc72570747e43335f4933a24dd74d5653639176a ]
+[ Upstream commit 4773acf3d4b50768bf08e9e97a204819e9ea0895 ]
 
-In recent Allwinner SoCs the first USB host controller (HCI0) shares
-the first PHY with the MUSB controller. Probably to make this sharing
-work, we were avoiding to declare this in the DT. This has two
-shortcomings:
-- U-Boot (which uses the same .dts) cannot use this port in host mode
-  without a PHY linked, so we were loosing one USB port there.
-- It requires the MUSB driver to be enabled and loaded, although we
-  don't actually use it.
+The documentation for the PHY update [1] states:
 
-To avoid those issues, let's add this PHY link to the A64 .dtsi file.
-After all PHY port 0 *is* connected to HCI0, so we should describe
-it as this. Remove the part from the Pinebook DTS which already had
-this property.
+Loop 4 times with index i
 
-This makes it work in U-Boot, also improves compatiblity when no MUSB
-driver is loaded (for instance in distribution installers).
+    If PHY Revision >= 3
+        Copy table[i] to coef[i]
+    Otherwise
+        Set coef[i] to 0
 
-Fixes: dc03a047df1d ("arm64: allwinner: a64: add EHCI0/OHCI0 nodes to A64 DTSI")
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210113152630.28810-2-andre.przywara@arm.com
+the copy of the table to coef is currently implemented the wrong way
+around, table is being updated from uninitialized values in coeff.
+Fix this by swapping the assignment around.
+
+[1] https://bcm-v4.sipsolutions.net/802.11/PHY/N/RestoreCal/
+
+Fixes: 2f258b74d13c ("b43: N-PHY: implement restoring general configuration")
+Addresses-Coverity: ("Uninitialized scalar variable")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts | 4 ----
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi         | 4 ++++
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wireless/broadcom/b43/phy_n.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
-index 896f34fd9fc3a..d07cf05549c32 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
-@@ -126,8 +126,6 @@
- };
+diff --git a/drivers/net/wireless/broadcom/b43/phy_n.c b/drivers/net/wireless/broadcom/b43/phy_n.c
+index b669dff24b6e0..665b737fbb0d8 100644
+--- a/drivers/net/wireless/broadcom/b43/phy_n.c
++++ b/drivers/net/wireless/broadcom/b43/phy_n.c
+@@ -5311,7 +5311,7 @@ static void b43_nphy_restore_cal(struct b43_wldev *dev)
  
- &ehci0 {
--	phys = <&usbphy 0>;
--	phy-names = "usb";
- 	status = "okay";
- };
- 
-@@ -177,8 +175,6 @@
- };
- 
- &ohci0 {
--	phys = <&usbphy 0>;
--	phy-names = "usb";
- 	status = "okay";
- };
- 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index dc238814013cb..15f6408e73a27 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -593,6 +593,8 @@
- 				 <&ccu CLK_USB_OHCI0>;
- 			resets = <&ccu RST_BUS_OHCI0>,
- 				 <&ccu RST_BUS_EHCI0>;
-+			phys = <&usbphy 0>;
-+			phy-names = "usb";
- 			status = "disabled";
- 		};
- 
-@@ -603,6 +605,8 @@
- 			clocks = <&ccu CLK_BUS_OHCI0>,
- 				 <&ccu CLK_USB_OHCI0>;
- 			resets = <&ccu RST_BUS_OHCI0>;
-+			phys = <&usbphy 0>;
-+			phy-names = "usb";
- 			status = "disabled";
- 		};
- 
+ 	for (i = 0; i < 4; i++) {
+ 		if (dev->phy.rev >= 3)
+-			table[i] = coef[i];
++			coef[i] = table[i];
+ 		else
+ 			coef[i] = 0;
+ 	}
 -- 
 2.27.0
 
