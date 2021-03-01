@@ -2,201 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49E8328046
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C83B5328050
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236095AbhCAOHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:07:45 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:52753 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236206AbhCAOGK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:06:10 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=zhangliguang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UPzIpAQ_1614607517;
-Received: from localhost(mailfrom:zhangliguang@linux.alibaba.com fp:SMTPD_---0UPzIpAQ_1614607517)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Mar 2021 22:05:24 +0800
-From:   Liguang Zhang <zhangliguang@linux.alibaba.com>
-To:     Corey Minyard <minyard@acm.org>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        Liguang Zhang <zhangliguang@linux.alibaba.com>
-Subject: [PATCH] ipmi:ssif: make ssif_i2c_send() void
-Date:   Mon,  1 Mar 2021 22:05:15 +0800
-Message-Id: <20210301140515.18951-1-zhangliguang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        id S236124AbhCAOJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:09:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:58562 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236211AbhCAOGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:06:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B32381042;
+        Mon,  1 Mar 2021 06:05:27 -0800 (PST)
+Received: from [10.57.52.215] (unknown [10.57.52.215])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD1763F70D;
+        Mon,  1 Mar 2021 06:05:24 -0800 (PST)
+Subject: Re: [PATCH 0/7] Split Coresight decode by aux records
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210212144513.31765-1-james.clark@arm.com>
+ <20210224161319.GA3495326@xps15>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <c188d25f-971b-b643-320a-925ba1672cdb@arm.com>
+Date:   Mon, 1 Mar 2021 16:05:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210224161319.GA3495326@xps15>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function actually needs no return value. So remove the unneeded
-check and make it void.
 
-Signed-off-by: Liguang Zhang <zhangliguang@linux.alibaba.com>
----
- drivers/char/ipmi/ipmi_ssif.c | 81 +++++++++--------------------------
- 1 file changed, 20 insertions(+), 61 deletions(-)
+On 24/02/2021 18:13, Mathieu Poirier wrote:
+> Good day James,
+> 
+> I have received your patchset and added it to my queue.  On the flip side it
+> will be 3 to 4 weeks (from today) before I get a chance to look at it.  As such
+> I suggest you don't wait on me before addressing the issues found by Leo.
+> 
 
-diff --git a/drivers/char/ipmi/ipmi_ssif.c b/drivers/char/ipmi/ipmi_ssif.c
-index 0416b9c9d410..20d5af92966d 100644
---- a/drivers/char/ipmi/ipmi_ssif.c
-+++ b/drivers/char/ipmi/ipmi_ssif.c
-@@ -510,7 +510,7 @@ static int ipmi_ssif_thread(void *data)
- 	return 0;
- }
- 
--static int ssif_i2c_send(struct ssif_info *ssif_info,
-+static void ssif_i2c_send(struct ssif_info *ssif_info,
- 			ssif_i2c_done handler,
- 			int read_write, int command,
- 			unsigned char *data, unsigned int size)
-@@ -522,7 +522,6 @@ static int ssif_i2c_send(struct ssif_info *ssif_info,
- 	ssif_info->i2c_data = data;
- 	ssif_info->i2c_size = size;
- 	complete(&ssif_info->wake_thread);
--	return 0;
- }
- 
- 
-@@ -531,22 +530,12 @@ static void msg_done_handler(struct ssif_info *ssif_info, int result,
- 
- static void start_get(struct ssif_info *ssif_info)
- {
--	int rv;
--
- 	ssif_info->rtc_us_timer = 0;
- 	ssif_info->multi_pos = 0;
- 
--	rv = ssif_i2c_send(ssif_info, msg_done_handler, I2C_SMBUS_READ,
--			  SSIF_IPMI_RESPONSE,
--			  ssif_info->recv, I2C_SMBUS_BLOCK_DATA);
--	if (rv < 0) {
--		/* request failed, just return the error. */
--		if (ssif_info->ssif_debug & SSIF_DEBUG_MSG)
--			dev_dbg(&ssif_info->client->dev,
--				"Error from i2c_non_blocking_op(5)\n");
--
--		msg_done_handler(ssif_info, -EIO, NULL, 0);
--	}
-+	ssif_i2c_send(ssif_info, msg_done_handler, I2C_SMBUS_READ,
-+		  SSIF_IPMI_RESPONSE,
-+		  ssif_info->recv, I2C_SMBUS_BLOCK_DATA);
- }
- 
- static void retry_timeout(struct timer_list *t)
-@@ -620,7 +609,6 @@ static void msg_done_handler(struct ssif_info *ssif_info, int result,
- {
- 	struct ipmi_smi_msg *msg;
- 	unsigned long oflags, *flags;
--	int rv;
- 
- 	/*
- 	 * We are single-threaded here, so no need for a lock until we
-@@ -666,17 +654,10 @@ static void msg_done_handler(struct ssif_info *ssif_info, int result,
- 		ssif_info->multi_len = len;
- 		ssif_info->multi_pos = 1;
- 
--		rv = ssif_i2c_send(ssif_info, msg_done_handler, I2C_SMBUS_READ,
--				  SSIF_IPMI_MULTI_PART_RESPONSE_MIDDLE,
--				  ssif_info->recv, I2C_SMBUS_BLOCK_DATA);
--		if (rv < 0) {
--			if (ssif_info->ssif_debug & SSIF_DEBUG_MSG)
--				dev_dbg(&ssif_info->client->dev,
--					"Error from i2c_non_blocking_op(1)\n");
--
--			result = -EIO;
--		} else
--			return;
-+		ssif_i2c_send(ssif_info, msg_done_handler, I2C_SMBUS_READ,
-+			 SSIF_IPMI_MULTI_PART_RESPONSE_MIDDLE,
-+			 ssif_info->recv, I2C_SMBUS_BLOCK_DATA);
-+		return;
- 	} else if (ssif_info->multi_pos) {
- 		/* Middle of multi-part read.  Start the next transaction. */
- 		int i;
-@@ -738,19 +719,12 @@ static void msg_done_handler(struct ssif_info *ssif_info, int result,
- 
- 			ssif_info->multi_pos++;
- 
--			rv = ssif_i2c_send(ssif_info, msg_done_handler,
--					   I2C_SMBUS_READ,
--					   SSIF_IPMI_MULTI_PART_RESPONSE_MIDDLE,
--					   ssif_info->recv,
--					   I2C_SMBUS_BLOCK_DATA);
--			if (rv < 0) {
--				if (ssif_info->ssif_debug & SSIF_DEBUG_MSG)
--					dev_dbg(&ssif_info->client->dev,
--						"Error from ssif_i2c_send\n");
--
--				result = -EIO;
--			} else
--				return;
-+			ssif_i2c_send(ssif_info, msg_done_handler,
-+				  I2C_SMBUS_READ,
-+				  SSIF_IPMI_MULTI_PART_RESPONSE_MIDDLE,
-+				  ssif_info->recv,
-+				  I2C_SMBUS_BLOCK_DATA);
-+			return;
- 		}
- 	}
- 
-@@ -908,8 +882,6 @@ static void msg_done_handler(struct ssif_info *ssif_info, int result,
- static void msg_written_handler(struct ssif_info *ssif_info, int result,
- 				unsigned char *data, unsigned int len)
- {
--	int rv;
--
- 	/* We are single-threaded here, so no need for a lock. */
- 	if (result < 0) {
- 		ssif_info->retries_left--;
-@@ -972,18 +944,9 @@ static void msg_written_handler(struct ssif_info *ssif_info, int result,
- 			ssif_info->multi_data = NULL;
- 		}
- 
--		rv = ssif_i2c_send(ssif_info, msg_written_handler,
--				   I2C_SMBUS_WRITE, cmd,
--				   data_to_send, I2C_SMBUS_BLOCK_DATA);
--		if (rv < 0) {
--			/* request failed, just return the error. */
--			ssif_inc_stat(ssif_info, send_errors);
--
--			if (ssif_info->ssif_debug & SSIF_DEBUG_MSG)
--				dev_dbg(&ssif_info->client->dev,
--					"Error from i2c_non_blocking_op(3)\n");
--			msg_done_handler(ssif_info, -EIO, NULL, 0);
--		}
-+		ssif_i2c_send(ssif_info, msg_written_handler,
-+			  I2C_SMBUS_WRITE, cmd,
-+			  data_to_send, I2C_SMBUS_BLOCK_DATA);
- 	} else {
- 		/* Ready to request the result. */
- 		unsigned long oflags, *flags;
-@@ -1012,7 +975,6 @@ static void msg_written_handler(struct ssif_info *ssif_info, int result,
- 
- static int start_resend(struct ssif_info *ssif_info)
- {
--	int rv;
- 	int command;
- 
- 	ssif_info->got_alert = false;
-@@ -1034,12 +996,9 @@ static int start_resend(struct ssif_info *ssif_info)
- 		ssif_info->data[0] = ssif_info->data_len;
- 	}
- 
--	rv = ssif_i2c_send(ssif_info, msg_written_handler, I2C_SMBUS_WRITE,
--			  command, ssif_info->data, I2C_SMBUS_BLOCK_DATA);
--	if (rv && (ssif_info->ssif_debug & SSIF_DEBUG_MSG))
--		dev_dbg(&ssif_info->client->dev,
--			"Error from i2c_non_blocking_op(4)\n");
--	return rv;
-+	ssif_i2c_send(ssif_info, msg_written_handler, I2C_SMBUS_WRITE,
-+		   command, ssif_info->data, I2C_SMBUS_BLOCK_DATA);
-+	return 0;
- }
- 
- static int start_send(struct ssif_info *ssif_info,
--- 
-2.19.1.6.gb485710b
+Ok, thanks Mathieu. I found that it's only working in --per-thread mode by
+coincidence of my input file. So I would suggest to not look too thoroughly
+until I have submitted v2. It should also probably still be an RFC rather than PATCH.
 
+Thanks
+James
+
+> Thanks,
+> Mathieu
+> 
+> On Fri, Feb 12, 2021 at 04:45:06PM +0200, James Clark wrote:
+>> Hi All,
+>>
+>> Since my previous RFC, I've fixed --per-thread mode and solved
+>> most of the open questions. I've also changed --dump-raw-trace
+>> to use the same code path so it's also working now.
+>>
+>> I think the only open questions are:
+>>   * General approach
+>>   * If aux records need to be saved, or if they can be pulled
+>>     from elsewhere.
+>>
+>> I've also tested perf inject which is now working with troublesome
+>> files.
+>>
+>> Thanks
+>> James
+>>
+>> James Clark (7):
+>>   perf cs-etm: Split up etm queue setup function
+>>   perf cs-etm: Only search timestamp in current sample's queue.
+>>   perf cs-etm: Save aux records in each etm queue
+>>   perf cs-etm: don't process queues until cs_etm__flush_events
+>>   perf cs-etm: split decode by aux records.
+>>   perf cs-etm: Use existing decode code path for --dump-raw-trace
+>>   perf cs-etm: Suppress printing when resetting decoder
+>>
+>>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  10 +-
+>>  tools/perf/util/cs-etm.c                      | 300 ++++++++++--------
+>>  2 files changed, 168 insertions(+), 142 deletions(-)
+>>
+>> -- 
+>> 2.28.0
+>>
