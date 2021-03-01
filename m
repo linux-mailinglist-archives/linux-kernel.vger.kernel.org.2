@@ -2,145 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B71327656
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 04:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 356F0327663
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 04:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231945AbhCADLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 22:11:34 -0500
-Received: from mail-bn8nam12on2077.outbound.protection.outlook.com ([40.107.237.77]:60036
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231535AbhCADL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 22:11:27 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PaMAv3AYQcdHkPBlJxeKMb4RUuD3IAYy0DkLpkjVU3GCMmKx3oDaYw8D8US481Ml6e0fuSKJMLPlbEndZDg1tK2o9AS9J8XorfHDbs7LOg1dtM7GrCFwInKJisuF4MCoitGXDBB90ukAyODJh99CwyjgzWPv1sU8NupW/PYid8IPTWSBpyk2OSKcMHChKsvH+zIzDEOZ00ffPIF+FU82/L2qyC9W592zPfbDPJAyuLiaI+trCjLgmKrfd67igI2VCvxgE+H5IWEfdYsu7LzdI/Ls6NPXZgGCOIDuNHVJe1ybByzTn3/yy9hUCehzSHdC6tZ4YbvvKIVh6u55uhuDow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rh/0z7Rk9i0TyK0mbz9Q6LJt0Ntd1nftoJJKZ+PJgYU=;
- b=SuBocLj0/hWdyY11Lu6FF+FX8MjbIeCUCa6rQCadsx4g/Ee/P+IzkydJUeqy3x/JRX81yOmlEcKtblkrgNcTIIWRBXKW7gC6ZMSbPwGxJqXPFTJTf0PnoDdTTyeH3swYDWmDvYc+0+VEMIX5h+MEAzOjvNmTh3/jlRTDXsHW2t3ffZ2ZwaMssD1fiRy5CPB8G5G5f+Z2yww69KuQQrKKti/tk41fzC/B1dLH7ZifLCfZdrNRL4yfRF03Z41IevHIk+EU9IyL9nHo04xB8CajRHqJ/oyWIfvsQIS9t7dqUnTlr+bI7PWF+bSMGyEsvDRHqUUfqoa2azqGrlOgZxd+dQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rh/0z7Rk9i0TyK0mbz9Q6LJt0Ntd1nftoJJKZ+PJgYU=;
- b=I1SPJRF5sMSS/3MzULK5akxba/QprPw8T6a5a8xUk8h0HwGEbbC41vgMi69Y0AvRxFbaqABW6Wr0rQ6WIO4Jd0Fiu+Z9JdhEpwGWaPiiovBE9Se+O8KYCTrwJALeh2ELESZD+lc0XGvOrTkqEXfltQn134dCvaZo6hZ/PZko8ug=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from BN3PR03MB2307.namprd03.prod.outlook.com
- (2a01:111:e400:7bb1::16) by BN6PR03MB3217.namprd03.prod.outlook.com
- (2603:10b6:405:3d::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Mon, 1 Mar
- 2021 03:10:40 +0000
-Received: from BN3PR03MB2307.namprd03.prod.outlook.com
- ([fe80::246d:2f3d:93bf:ee56]) by BN3PR03MB2307.namprd03.prod.outlook.com
- ([fe80::246d:2f3d:93bf:ee56%4]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
- 03:10:39 +0000
-Date:   Mon, 1 Mar 2021 11:10:31 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] PCI: dwc: Fix MSI not work after resume
-Message-ID: <20210301111031.220a38b8@xhacker.debian>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: BY5PR17CA0059.namprd17.prod.outlook.com
- (2603:10b6:a03:167::36) To BN3PR03MB2307.namprd03.prod.outlook.com
- (2a01:111:e400:7bb1::16)
+        id S231956AbhCADR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 22:17:57 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13024 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231411AbhCADRz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 22:17:55 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DplkJ3SWWzMgGy;
+        Mon,  1 Mar 2021 11:15:04 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 1 Mar 2021
+ 11:17:07 +0800
+Subject: Re: [f2fs-dev] [PATCH][next] f2fs: Replace one-element array with
+ flexible-array member
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Chao Yu <chao@kernel.org>, <linux-hardening@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210224190313.GA144040@embeddedor>
+ <bee16b72-f2e2-b113-9785-7f760be867df@huawei.com>
+ <YDsjg1LqnkYIvvtB@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <c8f5daa3-ec01-c6ba-7823-04c3650b689a@huawei.com>
+Date:   Mon, 1 Mar 2021 11:17:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by BY5PR17CA0059.namprd17.prod.outlook.com (2603:10b6:a03:167::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Mon, 1 Mar 2021 03:10:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 05e71691-f9db-42a2-570c-08d8dc5f97b3
-X-MS-TrafficTypeDiagnostic: BN6PR03MB3217:
-X-Microsoft-Antispam-PRVS: <BN6PR03MB3217ECED3203D61770D045A4ED9A9@BN6PR03MB3217.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1468;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LyX4jQYJJcCGRbSGEeoepV4e+H8HXbFBaDIibF2bKeTLXQT3s6fzJXmL3ZAh7uDyRA705x5rBahuDaK/7JQ3whnFLM/gwOZ9e0lexkbMynkrhYVHxTUsvQTx+n1exmKEvglcjA7ZeIJgstuxDncMq6aZ9F+vL0YMp709oyk9OLjnGUkCGrtGw+oem60ZMKm7ZVaAKYdi8R6faxBX28em9miw6crM9d+tRSc06JvWnq/+QXbkqakVWspD0u58/c0my66ROkCYctmwsoKJarZaRaqzPttgK/lwi3b4Ouk0V0plDSt/eUYguJyqg2omOcFfcuDNjk1FaVCQHwYnDX2ankGxtAn8R4BubenCY1VXPxfUIjfnNUUwrtAk7o2OUJBPFcTW+2D2yQsTMtZoJ0jcyoS9GjADA+G/6dgcOFcDd9CWavthE2w25eYQb2hOctPykRJHkeIyL6fGEbQY+6cUQ4FKhhXd07IObZ69+43DF+UyvD1f+sIlurrtg+2xr6Nhv2S5U4HafJoeByEYILk/Sw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN3PR03MB2307.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(39850400004)(136003)(366004)(6666004)(8676002)(1076003)(66946007)(7696005)(26005)(8936002)(55016002)(83380400001)(2906002)(4326008)(186003)(66556008)(6506007)(478600001)(86362001)(110136005)(5660300002)(52116002)(316002)(956004)(66476007)(9686003)(16526019);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Ntyy10x9eIPIYlh5JFN7N/lel3H8sYZ/XRRTrDOWzNoqZ7mjjGBZfuR/8fEg?=
- =?us-ascii?Q?j6W+yontYaVWYqSCqAKWrzXPonV0H3iVGl18hyXC4bzcDH36pkATwMD/jqMk?=
- =?us-ascii?Q?9FRe/ArmJ7FCVLKyKWB38WB9UPatv7OIBzbXBNSa/BuhkfKnHXDBgdzA9aZB?=
- =?us-ascii?Q?NNVbzjf0B6cccLHYD7fElXWPjyIK9sUXSEXCWs7cH35q0FMu/bofQZ8+FZZh?=
- =?us-ascii?Q?onvmCBTCH+6nTynNs1HkLIEOeZGWYWd7aB8z5/UQO04mn34geMYP5mFkRkEP?=
- =?us-ascii?Q?KXA7rN+916eQVH2Beq58WvJF+TEsVP6pPK/xjeTboHapBtWqyvOGjZgJueBv?=
- =?us-ascii?Q?f+oKTBBWmHDJNvZhCIqBN1Zjnj/yCy2ncNVn3QkktIPr7vmQFm29iSiuMHa6?=
- =?us-ascii?Q?fqXd0gHj3bo8K/XEPX99GRXNpby19AcVVTnb6Da2eQqz09x33fDdS3VlqORw?=
- =?us-ascii?Q?6BCfA6q6P2TusQJvQLme/w34pP/YP+7uUfDgha2objv08DrE1dUf3diWX6mn?=
- =?us-ascii?Q?OKtpqMTkqmQc7Sn8nGZYpDzovmSvmgEkC27lQa6kZslNuoHxMXgY9Cg9s/Z9?=
- =?us-ascii?Q?F56uKLmcQFhsm7VyO88iX9MQWmFzr+018slf26EFiFjqUuw9DywuEK4B8ejO?=
- =?us-ascii?Q?1lPU4MUXLAzEWaBk/ZyA7GgRcryUOnhjgMLjMEu/mHWbsvZG7kqPEjOYjWKu?=
- =?us-ascii?Q?XSg+cb/ltCUpOeRq1qC11axME1rUF6qc1/Lfx8q3KVI9MCgzIGjaUtLFIRmn?=
- =?us-ascii?Q?Sw2oHGtE3gzs11fx1wRnjjVr3Yh6bNzL3f2eFH0kXjZ3xgJy7doB2dvC1OdE?=
- =?us-ascii?Q?zSEP9yz15Zl4S/8IpT1ANTexoltJrgsKyqxeuIZbYwPQ+E2GIsrCCul7393r?=
- =?us-ascii?Q?IZcoSCkhIDUktlkIV75D8bqtPWPgDlXda1PFtv73c7nPO6hQJfc+s7nwhf7u?=
- =?us-ascii?Q?tsEpwH3bTYN6BBi0v9LMmiUQHHxwQ24SEgVInc8fFh/BzDPs8efrqvuM5ijq?=
- =?us-ascii?Q?d2G8zLesnUX4kmyNi9FKV68+EfOmHJyb39UhWNdnUMRDg6GoDW00QJN8C2L7?=
- =?us-ascii?Q?jQDD9dFCvggktPP7gcXOLc9rLd4b8ilY8h4Pd/0UO+kPuaG0+WoxTcoZgiCS?=
- =?us-ascii?Q?7ARfCn9fCHWWjz3nqwrxWvy9Q2uAIa7SIlHztpytB5lPxIS9KWev00kNEaUg?=
- =?us-ascii?Q?6M+O5BT3ytevjl/mG7+fsdTwuxHNqRbXqq0pObNOVBzpqS+gq5zdot26zr7c?=
- =?us-ascii?Q?vNyUJLZKX+UUsOVkBj3QVjoc+IacEZ68g3ES1Pfw4bz1Wo2KY9gSA665psxD?=
- =?us-ascii?Q?S8n/vVNlZaUj6IU/4STD+nqJ?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05e71691-f9db-42a2-570c-08d8dc5f97b3
-X-MS-Exchange-CrossTenant-AuthSource: BN3PR03MB2307.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2021 03:10:39.9221
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZHm4ZUkw9FaQTqJwSGlmQGtTIhoL0m8yXvQZR4baox7z6oT9pMSu2Tns0gEe8bgpsPIUMcswMF78XPnDMa73qw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR03MB3217
+In-Reply-To: <YDsjg1LqnkYIvvtB@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After we move dw_pcie_msi_init() into core -- dw_pcie_host_init(), the
-MSI stops working after resume. Because dw_pcie_host_init() is only
-called once during probe. To fix this issue, we move dw_pcie_msi_init()
-to dw_pcie_setup_rc().
+On 2021/2/28 13:00, Jaegeuk Kim wrote:
+> On 02/25, Chao Yu wrote:
+>> Hello, Gustavo,
+>>
+>> On 2021/2/25 3:03, Gustavo A. R. Silva wrote:
+>>> There is a regular need in the kernel to provide a way to declare having
+>>> a dynamically sized set of trailing elements in a structure. Kernel code
+>>> should always use “flexible array members”[1] for these cases. The older
+>>> style of one-element or zero-length arrays should no longer be used[2].
+>>
+>> I proposal to do the similar cleanup, and I've no objection on doing this.
+>>
+>> https://lore.kernel.org/patchwork/patch/869440/
+>>
+>> Let's ask for Jaegeuk' opinion.
+> 
+> Merged, thanks.
+> This looks better reason than code readability. :)
 
-Fixes: 59fbab1ae40e ("PCI: dwc: Move dw_pcie_msi_init() into core")
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
-Since v1:
- - collect Reviewed-by tag
+Agreed.
 
- drivers/pci/controller/dwc/pcie-designware-host.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index 7e55b2b66182..e6c274f4485c 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -400,7 +400,6 @@ int dw_pcie_host_init(struct pcie_port *pp)
- 	}
- 
- 	dw_pcie_setup_rc(pp);
--	dw_pcie_msi_init(pp);
- 
- 	if (!dw_pcie_link_up(pci) && pci->ops && pci->ops->start_link) {
- 		ret = pci->ops->start_link(pci);
-@@ -551,6 +550,8 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
- 		}
- 	}
- 
-+	dw_pcie_msi_init(pp);
-+
- 	/* Setup RC BARs */
- 	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_0, 0x00000004);
- 	dw_pcie_writel_dbi(pci, PCI_BASE_ADDRESS_1, 0x00000000);
--- 
-2.30.1
+Thanks,
 
+> 
+>>
+>>>
+>>> Refactor the code according to the use of a flexible-array member in
+>>> struct f2fs_checkpoint, instead of a one-element arrays.
+>>>
+>>> Notice that a temporary pointer to void '*tmp_ptr' was used in order to
+>>> fix the following errors when using a flexible array instead of a one
+>>> element array in struct f2fs_checkpoint:
+>>>
+>>>     CC [M]  fs/f2fs/dir.o
+>>> In file included from fs/f2fs/dir.c:13:
+>>> fs/f2fs/f2fs.h: In function ‘__bitmap_ptr’:
+>>> fs/f2fs/f2fs.h:2227:40: error: invalid use of flexible array member
+>>>    2227 |   return &ckpt->sit_nat_version_bitmap + offset + sizeof(__le32);
+>>>         |                                        ^
+>>> fs/f2fs/f2fs.h:2227:49: error: invalid use of flexible array member
+>>>    2227 |   return &ckpt->sit_nat_version_bitmap + offset + sizeof(__le32);
+>>>         |                                                 ^
+>>> fs/f2fs/f2fs.h:2238:40: error: invalid use of flexible array member
+>>>    2238 |   return &ckpt->sit_nat_version_bitmap + offset;
+>>>         |                                        ^
+>>> make[2]: *** [scripts/Makefile.build:287: fs/f2fs/dir.o] Error 1
+>>> make[1]: *** [scripts/Makefile.build:530: fs/f2fs] Error 2
+>>> make: *** [Makefile:1819: fs] Error 2
+>>>
+>>> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+>>> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+>>>
+>>> Link: https://github.com/KSPP/linux/issues/79
+>>> Build-tested-by: kernel test robot <lkp@intel.com>
+>>> Link: https://lore.kernel.org/lkml/603647e4.DeEFbl4eqljuwAUe%25lkp@intel.com/
+>>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>>> ---
+>>>    fs/f2fs/f2fs.h          | 5 +++--
+>>>    include/linux/f2fs_fs.h | 2 +-
+>>>    2 files changed, 4 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>> index e2d302ae3a46..3f5cb097c30f 100644
+>>> --- a/fs/f2fs/f2fs.h
+>>> +++ b/fs/f2fs/f2fs.h
+>>> @@ -2215,6 +2215,7 @@ static inline block_t __cp_payload(struct f2fs_sb_info *sbi)
+>>>    static inline void *__bitmap_ptr(struct f2fs_sb_info *sbi, int flag)
+>>>    {
+>>>    	struct f2fs_checkpoint *ckpt = F2FS_CKPT(sbi);
+>>> +	void *tmp_ptr = &ckpt->sit_nat_version_bitmap;
+>>>    	int offset;
+>>>    	if (is_set_ckpt_flags(sbi, CP_LARGE_NAT_BITMAP_FLAG)) {
+>>> @@ -2224,7 +2225,7 @@ static inline void *__bitmap_ptr(struct f2fs_sb_info *sbi, int flag)
+>>>    		 * if large_nat_bitmap feature is enabled, leave checksum
+>>>    		 * protection for all nat/sit bitmaps.
+>>>    		 */
+>>> -		return &ckpt->sit_nat_version_bitmap + offset + sizeof(__le32);
+>>> +		return tmp_ptr + offset + sizeof(__le32);
+>>>    	}
+>>>    	if (__cp_payload(sbi) > 0) {
+>>> @@ -2235,7 +2236,7 @@ static inline void *__bitmap_ptr(struct f2fs_sb_info *sbi, int flag)
+>>>    	} else {
+>>>    		offset = (flag == NAT_BITMAP) ?
+>>>    			le32_to_cpu(ckpt->sit_ver_bitmap_bytesize) : 0;
+>>> -		return &ckpt->sit_nat_version_bitmap + offset;
+>>> +		return tmp_ptr + offset;
+>>>    	}
+>>>    }
+>>> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+>>> index c6cc0a566ef5..5487a80617a3 100644
+>>> --- a/include/linux/f2fs_fs.h
+>>> +++ b/include/linux/f2fs_fs.h
+>>> @@ -168,7 +168,7 @@ struct f2fs_checkpoint {
+>>>    	unsigned char alloc_type[MAX_ACTIVE_LOGS];
+>>>    	/* SIT and NAT version bitmap */
+>>> -	unsigned char sit_nat_version_bitmap[1];
+>>> +	unsigned char sit_nat_version_bitmap[];
+>>>    } __packed;
+>>>    #define CP_CHKSUM_OFFSET	4092	/* default chksum offset in checkpoint */
+>>>
+> .
+> 
