@@ -2,95 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27BB832980C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:35:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0C5329812
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344972AbhCAXKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:10:08 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:7825 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237394AbhCAR4Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:56:25 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603d2a9c0000>; Mon, 01 Mar 2021 09:55:40 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
- 2021 17:55:39 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.174)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Mon, 1 Mar 2021 17:55:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gq5/Aa31g5kt2YrPszx4fYmjT3z1EaqecW0lWf5oKFCAH6BdSz/GckPjhnlVCvOOxGe0g4K0oAEpl+HCOCLEtajndB6mj6lqnwtkclIjrbToUoK39U/O+JaVqAgQJHrivVa/63I9tQFCvbn2J8sskPkPM3gYsDK1nhBP1VfVXW49tyWB6cOQ2+UFLoKIzkSRM9fvAXWNV3EKN4XZrFjEvZ5FCwHzHOntccrlXyalCuqEih7gLU8ZRZiwI7LuOcUiXK0e5b6dMyvzXYZ1iRx6uNyOv5LMj+DOvvFrnVetUQkC0gH9cX6ic9sXK3dVhcuHpg93cxKHYwqLn5EZmnGz6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HnWRX+OYDEO7XRGehbhkx6JxEmsVgiIlf9ZRUjrMprI=;
- b=gLFQj/mGUDRQK3R1J4Ie4pZmbpMBB2QQGihq9ZssHDiFFTiBqugRHYoccG/vLf1rouMZ2C/y9DVNjDQZW83Yw1Mmnr6NMAFN75ujJXXCwsf/wtDwge3Tr13Hu8e8RG9gnV9aByOKY1UZrYDq+HqMV+CSniTLAk5F9QzR3D+CGTMZW8qRIvTg/pjse8YKSLo08wg3LkUaXx7JfpUc6oBechTFfcnvUxD03SPduR3bl3D+QD8LcSkfKbhl9B1QbKqQ09FJPp7yGacPFYJmhxDCfghLBK+SAFHp6TQz30lCKDw3nDtJf8+Poudh6cQfaiqZfd04JF1nXsF5EQ1b/BerWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2938.namprd12.prod.outlook.com (2603:10b6:5:18a::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Mon, 1 Mar
- 2021 17:55:37 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3890.026; Mon, 1 Mar 2021
- 17:55:37 +0000
-Date:   Mon, 1 Mar 2021 13:55:36 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alistair Popple <apopple@nvidia.com>
-CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
-        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <jhubbard@nvidia.com>,
-        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <hch@infradead.org>,
-        <daniel@ffwll.ch>
-Subject: Re: [PATCH v3 6/8] mm: Selftests for exclusive device memory
-Message-ID: <20210301175536.GS4247@nvidia.com>
-References: <20210226071832.31547-1-apopple@nvidia.com>
- <20210226071832.31547-7-apopple@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210226071832.31547-7-apopple@nvidia.com>
-X-ClientProxiedBy: BL0PR02CA0028.namprd02.prod.outlook.com
- (2603:10b6:207:3c::41) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1345078AbhCAXLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:11:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40984 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235318AbhCAR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:56:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 97D26ADDD;
+        Mon,  1 Mar 2021 17:56:03 +0000 (UTC)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v2] nvme-tcp: Check if request has started before processing it
+Date:   Mon,  1 Mar 2021 18:56:01 +0100
+Message-Id: <20210301175601.116405-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0028.namprd02.prod.outlook.com (2603:10b6:207:3c::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23 via Frontend Transport; Mon, 1 Mar 2021 17:55:37 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lGmlc-0033xa-5o; Mon, 01 Mar 2021 13:55:36 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614621340; bh=HnWRX+OYDEO7XRGehbhkx6JxEmsVgiIlf9ZRUjrMprI=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=glH/tfCjqdWSvS1nUuJwx0KoWQYmEHO3KS6fliYdzhHK9SZsmiq7yAfW1J56x6btI
-         yLZS+iwAjodkBTVhvM4gshWySxl0Ur6MIFxLYXNPs6LzQUzCNhHDPw0Qf6gWaefXGy
-         8DiYNahB3AyTmfq41hNyRjrZa/ul/KUcgE0U6FGEzNtDVoqR5fv+Ls/KhkwnkAeELr
-         Q8+iWub7LLgFiQHDJvGavvRE4S3dJclWWOWgLnfZx5PqeKQE01e9j9nD1VL2MktFQe
-         DV1oqUpPOw6AwyQwit7ISiWa7M/HPhSthxDPTUTtN7lJrlHq/qEnlvVUbKQgqiFeGE
-         4w79P2+3Begng==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 06:18:30PM +1100, Alistair Popple wrote:
-> Adds some selftests for exclusive device memory.
-> 
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> ---
->  lib/test_hmm.c                         | 124 ++++++++++++++
->  lib/test_hmm_uapi.h                    |   2 +
->  tools/testing/selftests/vm/hmm-tests.c | 219 +++++++++++++++++++++++++
->  3 files changed, 345 insertions(+)
+blk_mq_tag_to_rq() always returns a request if the tag id is in a
+valid range [0...max_tags). If the target replies with a tag for which
+we don't have a request but it's not started, the host will likely
+corrupt data or simply crash.
 
-Please get Ralph to review this, otherwise:
+Add an additional check if the a request has been started if not
+reset the connection.
 
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+This addition check will not protected against an invalid tag which
+maps to a request which has been started. There is nothing we can do
+about this. Though it will at a least protect from crashing the host,
+which generally thought to be the right thing to do.
 
-Jason
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+
+The patch is against nmve-5.12.
+
+I noted that nvme_tcp_process_nvme_cqe() returns EINVAL
+where as the rest uses ENOENT. Looks a bit odd to me.
+
+I've tested this with blktests.
+
+v2:
+  - moved the check into a helper to avoid code duplication
+  - use nvme_reset_ctrl if request has not been started
+  - added nvme_tcp_recv_ddgst() callsite
+
+ drivers/nvme/host/tcp.c | 56 +++++++++++++++++++++++------------------
+ 1 file changed, 31 insertions(+), 25 deletions(-)
+
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 69f59d2c5799..af6f725b842b 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -479,19 +479,38 @@ static void nvme_tcp_error_recovery(struct nvme_ctrl *ctrl)
+ 	queue_work(nvme_reset_wq, &to_tcp_ctrl(ctrl)->err_work);
+ }
+ 
+-static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
+-		struct nvme_completion *cqe)
++static bool nvme_tcp_tag_to_rq(struct nvme_tcp_queue *queue,
++			__u16 command_id, struct request **req)
+ {
+ 	struct request *rq;
+ 
+-	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), cqe->command_id);
++	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), command_id);
+ 	if (!rq) {
+ 		dev_err(queue->ctrl->ctrl.device,
+ 			"queue %d tag 0x%x not found\n",
+-			nvme_tcp_queue_id(queue), cqe->command_id);
++			nvme_tcp_queue_id(queue), command_id);
+ 		nvme_tcp_error_recovery(&queue->ctrl->ctrl);
+-		return -EINVAL;
++		return false;
+ 	}
++	if (!blk_mq_request_started(rq)) {
++		dev_err(queue->ctrl->ctrl.device,
++			"queue %d received invalid tag\n",
++			nvme_tcp_queue_id(queue));
++		nvme_reset_ctrl(&queue->ctrl->ctrl);
++		return false;
++	}
++
++	*req = rq;
++	return true;
++}
++
++static int nvme_tcp_process_nvme_cqe(struct nvme_tcp_queue *queue,
++		struct nvme_completion *cqe)
++{
++	struct request *rq;
++
++	if (!nvme_tcp_tag_to_rq(queue, cqe->command_id, &rq))
++		return -EINVAL;
+ 
+ 	if (!nvme_try_complete_req(rq, cqe->status, cqe->result))
+ 		nvme_complete_rq(rq);
+@@ -505,13 +524,8 @@ static int nvme_tcp_handle_c2h_data(struct nvme_tcp_queue *queue,
+ {
+ 	struct request *rq;
+ 
+-	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
+-	if (!rq) {
+-		dev_err(queue->ctrl->ctrl.device,
+-			"queue %d tag %#x not found\n",
+-			nvme_tcp_queue_id(queue), pdu->command_id);
++	if (!nvme_tcp_tag_to_rq(queue, pdu->command_id, &rq))
+ 		return -ENOENT;
+-	}
+ 
+ 	if (!blk_rq_payload_bytes(rq)) {
+ 		dev_err(queue->ctrl->ctrl.device,
+@@ -609,13 +623,8 @@ static int nvme_tcp_handle_r2t(struct nvme_tcp_queue *queue,
+ 	struct request *rq;
+ 	int ret;
+ 
+-	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
+-	if (!rq) {
+-		dev_err(queue->ctrl->ctrl.device,
+-			"queue %d tag %#x not found\n",
+-			nvme_tcp_queue_id(queue), pdu->command_id);
++	if (!nvme_tcp_tag_to_rq(queue, pdu->command_id, &rq))
+ 		return -ENOENT;
+-	}
+ 	req = blk_mq_rq_to_pdu(rq);
+ 
+ 	ret = nvme_tcp_setup_h2c_data_pdu(req, pdu);
+@@ -695,13 +704,8 @@ static int nvme_tcp_recv_data(struct nvme_tcp_queue *queue, struct sk_buff *skb,
+ 	struct nvme_tcp_request *req;
+ 	struct request *rq;
+ 
+-	rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
+-	if (!rq) {
+-		dev_err(queue->ctrl->ctrl.device,
+-			"queue %d tag %#x not found\n",
+-			nvme_tcp_queue_id(queue), pdu->command_id);
++	if (!nvme_tcp_tag_to_rq(queue, pdu->command_id, &rq))
+ 		return -ENOENT;
+-	}
+ 	req = blk_mq_rq_to_pdu(rq);
+ 
+ 	while (true) {
+@@ -794,8 +798,10 @@ static int nvme_tcp_recv_ddgst(struct nvme_tcp_queue *queue,
+ 	}
+ 
+ 	if (pdu->hdr.flags & NVME_TCP_F_DATA_SUCCESS) {
+-		struct request *rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue),
+-						pdu->command_id);
++		struct request *rq;
++
++		if (!nvme_tcp_tag_to_rq(queue, pdu->command_id, &rq))
++			return -EINVAL;
+ 
+ 		nvme_tcp_end_request(rq, NVME_SC_SUCCESS);
+ 		queue->nr_cqe++;
+-- 
+2.29.2
+
