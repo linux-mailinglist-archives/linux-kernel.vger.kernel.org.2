@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA09329713
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9AC329719
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235978AbhCAWcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:32:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57816 "EHLO mail.kernel.org"
+        id S244874AbhCAWdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:33:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238649AbhCAReh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:34:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2320364FAF;
-        Mon,  1 Mar 2021 16:53:47 +0000 (UTC)
+        id S238703AbhCARe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:34:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31C3064F27;
+        Mon,  1 Mar 2021 16:53:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617628;
-        bh=lvSioZrPufv+YkzjPxIoyPnZScM3P1pmgR+sextaszY=;
+        s=korg; t=1614617637;
+        bh=Q5XdgNep47JEsceKkl7baZ3vtOIl5EOt07DWSJTxB1s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QvCkBDWVmfbCZ7Z6UTr6Il8DpoYOMrS9gtir/0XgYl/yCQlDHDK+4VvPFkG1i8ftx
-         8XFQ9H6ARCoge7CoHiU/JiRuQOm40SZFGy553qx9W8iX7KKldil3qVI4sEKU3fcjtd
-         6EoH4PWZBeJdtxRsKPlYpptoaqY760cN1b+HfMdw=
+        b=rvYlkaJ+4MGjakEE+fUfYQW/WsmGH6MBlSXWGFpyX8P9NwORCfLoh4k6OpN5Hkcvy
+         FZFQOQHm8wgWK2evsvrNT0z0Crk4YPr/GXn0rxUE5fayWBd4D6IBN4wTiz9wB0Msqf
+         D2chZ3qoAZG+FOtvW8wLTz4hssBRhTSFuZ+pL2es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 141/340] dmaengine: owl-dma: Fix a resource leak in the remove function
-Date:   Mon,  1 Mar 2021 17:11:25 +0100
-Message-Id: <20210301161055.262289433@linuxfoundation.org>
+        stable@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, KarimAllah Ahmed <karahmed@amazon.de>,
+        Quentin Perret <qperret@google.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 144/340] fdt: Properly handle "no-map" field in the memory region
+Date:   Mon,  1 Mar 2021 17:11:28 +0100
+Message-Id: <20210301161055.404647962@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -40,36 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: KarimAllah Ahmed <karahmed@amazon.de>
 
-[ Upstream commit 1f0a16f04113f9f0ab0c8e6d3abe661edab549e6 ]
+[ Upstream commit 86588296acbfb1591e92ba60221e95677ecadb43 ]
 
-A 'dma_pool_destroy()' call is missing in the remove function.
-Add it.
+Mark the memory region with NOMAP flag instead of completely removing it
+from the memory blocks. That makes the FDT handling consistent with the EFI
+memory map handling.
 
-This call is already made in the error handling path of the probe function.
-
-Fixes: 47e20577c24d ("dmaengine: Add Actions Semi Owl family S900 DMA driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201212162535.95727-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: KarimAllah Ahmed <karahmed@amazon.de>
+Signed-off-by: Quentin Perret <qperret@google.com>
+Link: https://lore.kernel.org/r/20210115114544.1830068-2-qperret@google.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/owl-dma.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/of/fdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
-index af20e9a790a2a..bb9c361e224bc 100644
---- a/drivers/dma/owl-dma.c
-+++ b/drivers/dma/owl-dma.c
-@@ -1201,6 +1201,7 @@ static int owl_dma_remove(struct platform_device *pdev)
- 	owl_dma_free(od);
- 
- 	clk_disable_unprepare(od->clk);
-+	dma_pool_destroy(od->lli_pool);
- 
- 	return 0;
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index 223d617ecfe17..036af904e0cfa 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1154,7 +1154,7 @@ int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
+ 					phys_addr_t size, bool nomap)
+ {
+ 	if (nomap)
+-		return memblock_remove(base, size);
++		return memblock_mark_nomap(base, size);
+ 	return memblock_reserve(base, size);
  }
+ 
 -- 
 2.27.0
 
