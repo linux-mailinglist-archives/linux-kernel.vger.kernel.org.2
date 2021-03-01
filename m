@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E427C329BFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388F6329C75
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241356AbhCBBqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:46:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
+        id S1380781AbhCBBze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:55:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241417AbhCATVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:21:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 509AA6503B;
-        Mon,  1 Mar 2021 17:15:54 +0000 (UTC)
+        id S241948AbhCATaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:30:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE62465011;
+        Mon,  1 Mar 2021 17:49:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618954;
-        bh=4VMJuXLZYF6F6IUFnR/0lFgQ5BVHVgFfI5Mo/jnu8nI=;
+        s=korg; t=1614620957;
+        bh=tHg2+MikqaDYNqnDZ5PJAXhsh+XyAi4vbJvxI0/c9EI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NVjM/1NUmxa7R2zfDAEORd4aG9KV1pifBSGkLwRmUoiWf2g4EShGH0tflmCNaVpzS
-         rJrms3NZzzsPdgbBAtfgpmaH+W1+Gt49vzi12ue5tQdvm9ut4BL/NVpH6h0HR+PAvB
-         vTbUJvJQkKw1vF2DqrGrYHWiRDMBLwHK5irWdHUM=
+        b=XZYXywb2pragNNGwOGNxHdHoBt/ZK1E2NgColKQE9YdostYvQmihoHBm9Ak9a6yWO
+         N2Sc02qkuzNh1oIjNIZRUEiXP6j+pdeNVPOguwZBmCnWzuLN/5AB9WW+jG+jFBiaUK
+         JCuK5r0EkgF5bgqu8C9ppQlBO/iPQr8rMNcKdU/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 261/663] clk: meson: clk-pll: make "ret" a signed integer
-Date:   Mon,  1 Mar 2021 17:08:29 +0100
-Message-Id: <20210301161154.729388255@linuxfoundation.org>
+Subject: [PATCH 5.11 342/775] RDMA/rtrs-srv: Jump to dereg_mr label if allocate iu fails
+Date:   Mon,  1 Mar 2021 17:08:30 +0100
+Message-Id: <20210301161218.521252985@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-[ Upstream commit 9e717285f0bd591d716fa0e7418f2cdaf756dd25 ]
+[ Upstream commit f77c4839ee8f4612dcb6601602329096030bd813 ]
 
-The error codes returned by meson_clk_get_pll_settings() are all
-negative. Make "ret" a signed integer in meson_clk_pll_set_rate() to
-make it match with the clk_ops.set_rate API as well as the data type
-returned by meson_clk_get_pll_settings().
+The rtrs_iu_free is called in rtrs_iu_alloc if memory is limited, so we
+don't need to free the same iu again.
 
-Fixes: 8eed1db1adec6a ("clk: meson: pll: update driver for the g12a")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20201226121556.975418-3-martin.blumenstingl@googlemail.com
+Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+Link: https://lore.kernel.org/r/20201217141915.56989-7-jinpu.wang@cloud.ionos.com
+Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Reviewed-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/meson/clk-pll.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index 9404609b5ebfa..5b932976483fd 100644
---- a/drivers/clk/meson/clk-pll.c
-+++ b/drivers/clk/meson/clk-pll.c
-@@ -365,8 +365,9 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- {
- 	struct clk_regmap *clk = to_clk_regmap(hw);
- 	struct meson_clk_pll_data *pll = meson_clk_pll_data(clk);
--	unsigned int enabled, m, n, frac = 0, ret;
-+	unsigned int enabled, m, n, frac = 0;
- 	unsigned long old_rate;
-+	int ret;
- 
- 	if (parent_rate == 0 || rate == 0)
- 		return -EINVAL;
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 341661f42add0..92a216ddd9fd3 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -651,7 +651,7 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
+ 			if (!srv_mr->iu) {
+ 				err = -ENOMEM;
+ 				rtrs_err(ss, "rtrs_iu_alloc(), err: %d\n", err);
+-				goto free_iu;
++				goto dereg_mr;
+ 			}
+ 		}
+ 		/* Eventually dma addr for each chunk can be cached */
+@@ -667,7 +667,6 @@ err:
+ 			srv_mr = &sess->mrs[mri];
+ 			sgt = &srv_mr->sgt;
+ 			mr = srv_mr->mr;
+-free_iu:
+ 			rtrs_iu_free(srv_mr->iu, sess->s.dev->ib_dev, 1);
+ dereg_mr:
+ 			ib_dereg_mr(mr);
 -- 
 2.27.0
 
