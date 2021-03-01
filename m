@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584F73299DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F62329964
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234899AbhCBAdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:33:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45028 "EHLO mail.kernel.org"
+        id S1347872AbhCBAMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:12:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240100AbhCASdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:33:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A11FE64F90;
-        Mon,  1 Mar 2021 17:14:21 +0000 (UTC)
+        id S239770AbhCASWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:22:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3FBD64F06;
+        Mon,  1 Mar 2021 17:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618862;
-        bh=v7YajkXsSnf4/6yAXnpU/OS2a1HUNhEqLmCYNCnVszY=;
+        s=korg; t=1614620917;
+        bh=bIc0N4zkEpzsYuYllFhHuEhyHmNPdVnmw5J1qvhdeWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j2UoA52pXOteqAPXNqoUvUzMbvaU1o+Y/pjG0JfFnQyacALVePa8ZvihmQSL2CnF2
-         Vvz6kvOLR9Q24jhC+RPMkvkb+usgW+ogvwrE2RdgedEErSXEGxKCm7o8Zy39IkAG4f
-         r6gE4OgM6GQkATBvhMfoAhzMj/+uSC6KmyKFq66c=
+        b=VO0mtLfvENyS7jmsf5ZcOOz0TwB0q7FKn8PP8eceD18c4oLPlFWh/CLLs8dMqw0qI
+         LZAQ1uWiReqyhvPXJO+1mwX7Cfro/Mn9G8XxdC6+m7gRjpH1DUi9FjZ2czzp3KJb0i
+         A2A+AbFptxLEhpT/xW0cJKHgx2OLyqTxkqGXV3Qk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <bard.liao@intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 245/663] ASoC: SOF: sof-pci-dev: add missing Up-Extreme quirk
-Date:   Mon,  1 Mar 2021 17:08:13 +0100
-Message-Id: <20210301161153.940281730@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 326/775] dmaengine: owl-dma: Fix a resource leak in the remove function
+Date:   Mon,  1 Mar 2021 17:08:14 +0100
+Message-Id: <20210301161217.729343289@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit bd8036eb15263a720b8f846861c180b27d050a09 ]
+[ Upstream commit 1f0a16f04113f9f0ab0c8e6d3abe661edab549e6 ]
 
-The UpExtreme board supports the community key and was missed in
-previous contributions. Add it to make sure the open firmware is
-picked by default without needing a symlink on the target.
+A 'dma_pool_destroy()' call is missing in the remove function.
+Add it.
 
-Fixes: 46207ca24545 ('ASoC: SOF: pci: change the default firmware path when the community key is used')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Bard Liao <bard.liao@intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20210208231853.58761-1-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This call is already made in the error handling path of the probe function.
+
+Fixes: 47e20577c24d ("dmaengine: Add Actions Semi Owl family S900 DMA driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201212162535.95727-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/sof-pci-dev.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/dma/owl-dma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index 8f62e3487dc18..75657a25dbc05 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -65,6 +65,13 @@ static const struct dmi_system_id community_key_platforms[] = {
- 			DMI_MATCH(DMI_BOARD_NAME, "UP-APL01"),
- 		}
- 	},
-+	{
-+		.ident = "Up Extreme",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "AAEON"),
-+			DMI_MATCH(DMI_BOARD_NAME, "UP-WHL01"),
-+		}
-+	},
- 	{
- 		.ident = "Google Chromebooks",
- 		.matches = {
+diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
+index 9fede32641e9e..04202d75f4eed 100644
+--- a/drivers/dma/owl-dma.c
++++ b/drivers/dma/owl-dma.c
+@@ -1245,6 +1245,7 @@ static int owl_dma_remove(struct platform_device *pdev)
+ 	owl_dma_free(od);
+ 
+ 	clk_disable_unprepare(od->clk);
++	dma_pool_destroy(od->lli_pool);
+ 
+ 	return 0;
+ }
 -- 
 2.27.0
 
