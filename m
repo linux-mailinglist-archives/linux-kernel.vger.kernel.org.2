@@ -2,167 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F5C327C06
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D81E327C04
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbhCAKZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:25:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233475AbhCAKXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:23:02 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA220C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 02:22:17 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id v15so15519791wrx.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:22:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n67NnnL0Ol15mU1Rsw9KIVhUj530csvN7yeEP5UJgNs=;
-        b=riBdydpLJl/cY0BbxUTkDqQixZM6WyYXjDSaHFJmKP7rnk9qlBs1WtTjW3Z/TgL0LD
-         Ck3sloHTW/MdgNs+1MK0y35HKtGSDAKmFbz/eCmhj2Xatt8xGGAipebOHfh2vtgTOG6F
-         vwbnnXP2BfIwkxnuiO6VWHjSZKNXD889CatTfH9FSlHb8zqCMl/CQLSUe2CzdpHiOIuC
-         gzz9O1wjR0j0gonKYELx2EhSko5J6zEiDruF/lBOgAVpJuXfbYAF0PHfo1+1+39zaIuU
-         eF2ASSu1kTr1sfH3OiU5TDYXOQmv+cjE25gwMTllAUyYJzFYDAurTO93gRhOKyd2wbhz
-         jq7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n67NnnL0Ol15mU1Rsw9KIVhUj530csvN7yeEP5UJgNs=;
-        b=QCgBsXcs4jFU4Saot44CI7nJJQvbDVvkNnR0tdU9mcw6SKUOtZJsa0QZlFt7Irh6GB
-         IF8FQz855Q0AvJikjezOXid4t2ZOOyy8Bc0yZe2F15wR5scCybd/ot3hAuTLxRp/4QFt
-         FQM7OFjZ79iWN7qmUNWrp7u3ojxdrFk0oS4ROTNm8zd1ea60t1LP1R+zGjlJF3pOY7q5
-         G56k9RIskd72dPUxl+5AgpFqFekBwTPpHPamCS+2C+zYHS17GvOkqisHkUsAOWYs3yWh
-         jY4xBU0Lp3VJBD6ga2vEi9Ge5u0CcmqX2dkYxl21gjerktDyAr7qvj9toTjsp+qkTyd+
-         /YDg==
-X-Gm-Message-State: AOAM533WR57CWSR3F7bW61c1IfE6u8Jhr1ixf3Q3INQJyYz14bTn9Aoz
-        aGQfheM9Bhi4QzGR8Va1vDCorg==
-X-Google-Smtp-Source: ABdhPJygXANWXMuz6ByUsQNjFLNc/MDZAmooj4TUgPHyytUoAGgfD0PKf93m4df6tqTx/kj5YsuGsQ==
-X-Received: by 2002:a5d:4904:: with SMTP id x4mr16005949wrq.69.1614594136625;
-        Mon, 01 Mar 2021 02:22:16 -0800 (PST)
-Received: from [192.168.0.4] (hst-221-20.medicom.bg. [84.238.221.20])
-        by smtp.googlemail.com with ESMTPSA id l22sm25362695wrb.4.2021.03.01.02.22.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 02:22:16 -0800 (PST)
-Subject: Re: [PATCH] media: venus: use contig vb2 ops
-To:     Tomasz Figa <tfiga@chromium.org>,
-        Alexandre Courbot <acourbot@chromium.org>
-Cc:     Fritz Koenig <frkoenig@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        id S234106AbhCAKZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:25:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232598AbhCAKXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:23:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C50DE64E13;
+        Mon,  1 Mar 2021 10:22:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614594150;
+        bh=cXpAgN4LikCvbKoWKcp8iBPz7XpWuUo9aOcmE7Nu8Ps=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E2oUweW1E1knpm3/rH0BBQEGcc5mipD7kWYJOFPI7F5JCyW9+zVLQrrbZLHQu2VB2
+         B7Pd6M8wqL2IR70lVqSL9Bdpyz+yJO798HbX6G/4QX+DDSFvXzaVlUCzMx0yhz2dy7
+         4zOFwzwCvruIO5kbi8S5xCDZszIrHyuT3h5rPK1o=
+Date:   Mon, 1 Mar 2021 11:22:27 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-References: <20201214125703.866998-1-acourbot@chromium.org>
- <5319c101-f4a4-9c99-b15d-4999366f7a63@linaro.org>
- <CAAFQd5AQ8VHiRYkzkd5ZJBPT5_5WO0tyQrwqBEfnMVKYiTugTA@mail.gmail.com>
- <b5d35bbd-ae50-7a09-9edf-ca23d1a4b168@linaro.org>
- <bc42c936d7a67609b9dc4212b5a34b0d761676ed.camel@ndufresne.ca>
- <CAAFQd5BQv2vu_FSxJjVZLpgcuFi1WHVem_O-0x-vkG1KZJi0eA@mail.gmail.com>
- <CAAFQd5BAT2Xe+_swAe+hMqm_cQVbWJUzkH3dS+8-QHknV=KTjw@mail.gmail.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <b62575fd-7aac-57fe-b6f7-cf1e94f909f2@linaro.org>
-Date:   Mon, 1 Mar 2021 12:22:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+Subject: Re: [PATCH v1 01/12] gna: add driver module
+Message-ID: <YDzAY8j6R87BFFI/@kroah.com>
+References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
+ <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
+ <CAHp75Vep0Fm1k_7gJcozk4t316QmUgt5Qe3PauwDg=py5VnHfQ@mail.gmail.com>
+ <85ft1fjhws.fsf@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAFQd5BAT2Xe+_swAe+hMqm_cQVbWJUzkH3dS+8-QHknV=KTjw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85ft1fjhws.fsf@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/1/21 11:23 AM, Tomasz Figa wrote:
-> Hi Alex, Stanimir,
+On Mon, Mar 01, 2021 at 11:18:59AM +0100, Maciej Kwapulinski wrote:
 > 
-> On Wed, Dec 16, 2020 at 12:15 PM Tomasz Figa <tfiga@chromium.org> wrote:
->>
->> On Wed, Dec 16, 2020 at 4:21 AM Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
->>>
->>> Le mardi 15 décembre 2020 à 15:54 +0200, Stanimir Varbanov a écrit :
->>>> Hi Tomasz,
->>>>
->>>> On 12/15/20 1:47 PM, Tomasz Figa wrote:
->>>>> On Tue, Dec 15, 2020 at 8:16 PM Stanimir Varbanov
->>>>> <stanimir.varbanov@linaro.org> wrote:
->>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> Cc: Robin
->>>>>>
->>>>>> On 12/14/20 2:57 PM, Alexandre Courbot wrote:
->>>>>>> This driver uses the SG vb2 ops, but effectively only ever accesses the
->>>>>>> first entry of the SG table, indicating that it expects a flat layout.
->>>>>>> Switch it to use the contiguous ops to make sure this expected invariant
->>>>>>
->>>>>> Under what circumstances the sg table will has nents > 1? I came down to
->>>>>> [1] but not sure I got it right.
->>>>>>
->>>>>> I'm afraid that for systems with low amount of system memory and when
->>>>>> the memory become fragmented, the driver will not work. That's why I
->>>>>> started with sg allocator.
->>>>>
->>>>> It is exactly the opposite. The vb2-dma-contig allocator is "contig"
->>>>> in terms of the DMA (aka IOVA) address space. In other words, it
->>>>> guarantees that having one DMA address and length fully describes the
->>>>
->>>> Ahh, I missed that part. Looks like I misunderstood videobu2 contig
->>>> allocator.
->>>
->>> I'm learning everyday too, but I'm surprised I don't see a call to
->>> vb2_dma_contig_set_max_seg_size() in this driver (I could also just have missed
->>> a patch when overlooking this thread) ?
->>>
->>> The reason I'm asking, doc says it should be called by driver supporting IOMMU,
->>> which seems to be the case for such drivers (MFC, exynos4-is, exynos-gsc, mtk-
->>> mdp, s5p-g2d, hantro, rkvdec, zoran, ti-vpe, ..). I posting it, worst case it's
->>> all covered and we are good, otherwise perhaps a downstream patch didn't make it
->>> ?
->>>
->>> /**
->>>  * vb2_dma_contig_set_max_seg_size() - configure DMA max segment size
->>>  * @dev:        device for configuring DMA parameters
->>>  * @size:       size of DMA max segment size to set
->>>  *
->>>  * To allow mapping the scatter-list into a single chunk in the DMA
->>>  * address space, the device is required to have the DMA max segment
->>>  * size parameter set to a value larger than the buffer size. Otherwise,
->>>  * the DMA-mapping subsystem will split the mapping into max segment
->>>  * size chunks. This function sets the DMA max segment size
->>>  * parameter to let DMA-mapping map a buffer as a single chunk in DMA
->>>  * address space.
->>>  * This code assumes that the DMA-mapping subsystem will merge all
->>>  * scatterlist segments if this is really possible (for example when
->>>  * an IOMMU is available and enabled).
->>>  * Ideally, this parameter should be set by the generic bus code, but it
->>>  * is left with the default 64KiB value due to historical litmiations in
->>>  * other subsystems (like limited USB host drivers) and there no good
->>>  * place to set it to the proper value.
->>>  * This function should be called from the drivers, which are known to
->>>  * operate on platforms with IOMMU and provide access to shared buffers
->>>  * (either USERPTR or DMABUF). This should be done before initializing
->>>  * videobuf2 queue.
->>>  */
->>
->> It does call dma_set_max_seg_size() directly:
->> https://elixir.bootlin.com/linux/latest/source/drivers/media/platform/qcom/venus/core.c#L230
->>
->> Actually, why do we even need a vb2 helper for this?
->>
+> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
 > 
-> What's the plan for this patch?
+> > On Tue, Feb 16, 2021 at 6:11 PM Maciej Kwapulinski
+> > <maciej.kwapulinski@linux.intel.com> wrote:
+> >>
+> ....
+> >> +static int __init gna_drv_init(void)
+> >> +{
+> >> +       int ret;
+> >> +
+> >> +       mutex_init(&gna_drv_priv.lock);
+> >> +
+> >> +       gna_class = class_create(THIS_MODULE, "gna");
+> >> +       if (IS_ERR(gna_class)) {
+> >> +               pr_err("class device create failed\n");
+> >> +               return PTR_ERR(gna_class);
+> >> +       }
+> >> +       gna_class->devnode = gna_devnode;
+> >> +
+> >> +       ret = pci_register_driver(&gna_driver);
+> >
+> > Is it possible to decouple a PCI glue driver from the class as many
+> > other existing examples are doing?
+> >
+> 
+> I see many pci drivers (including staging) that do have it glued though.
+> 
+> Examples are:
+> 1. "static int __init kp2000_pcie_init(void)" (commit on May 20 09:34:11
+> 2019)
+> 2. "static int __init hl_init(void)" (commit on Mon Feb 18 09:46:43 2019)
+> 
+> Please give me more details.
 
-It will be part of v5.12.
+Never use a staging driver for any type of example, _EXECPT_ for a bad
+one.  There's a reason the code is in staging and not in the "real" part
+of the kernel.
 
--- 
-regards,
-Stan
+thanks,
+
+greg k-h
