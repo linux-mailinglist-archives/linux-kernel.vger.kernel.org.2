@@ -2,84 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BBE3280B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC3E3280BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhCAOY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:24:29 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:25715 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233250AbhCAOXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:23:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614608564; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=kxpjN5BLsS6IrOHRTrvVRXRLxpfeOvCv7+DYloD1HU8=; b=KUPKOrGN1zlIoy42hC97sA3qPAQk/ZTu3AGqXqgiGoQe134071D3VAtzYbvKN6v4bA9zKUaS
- JSbELZ6lHxxRw4YDBVDh4j/2mv6WdeSYTHgWNX4wCdEp77w89W4C+KIl0Pj3PERvg4IGsWOM
- mwpwHrMsX/RCwttjUqs5JKBEvcI=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 603cf8ac12935cdcee66e112 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 14:22:36
- GMT
-Sender: jshriram=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7026AC43462; Mon,  1 Mar 2021 14:22:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from th-lint-009.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jshriram)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BBB15C433C6;
-        Mon,  1 Mar 2021 14:22:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BBB15C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jshriram@codeaurora.org
-From:   Jeevan Shriram <jshriram@codeaurora.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Jeevan Shriram <jshriram@codeaurora.org>,
-        linux-kernel@vger.kernel.org, tsoni@codeaurora.org
-Subject: [PATCH] scripts: Fix incremental build header re-generation
-Date:   Mon,  1 Mar 2021 06:22:20 -0800
-Message-Id: <1614608540-1025-1-git-send-email-jshriram@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S234507AbhCAO0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:26:18 -0500
+Received: from conuserg-07.nifty.com ([210.131.2.74]:53069 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233285AbhCAOYf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:24:35 -0500
+Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 121ENDK1023474;
+        Mon, 1 Mar 2021 23:23:14 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 121ENDK1023474
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614608594;
+        bh=pwN6B0avyTtmWYmIHo/2BdqiXttVnbVWwKhtfhmAs8c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fmg7lN5IHbTOPN1je/VSAEc1PWIKjDwGdQ8YnMZLaRPUqfdWtLwAKmZ0jt7gUGwgn
+         BhSfQgMZJarp/dJWXo6u/EmHoKZd7W4taZJtnaAZgxBFPrFYE/vj1UoS3Jpns7F3zP
+         RjmDeMKKoZRKCRxAZX6jwyOwCpvziUfuBW8S0Q3rgml+mqwEJy34tt0AklIWTOVmii
+         BT8ZnS9MOgxK9HvvQh7vvsnTKjJ+vjrAc5BpUcc5bp1SI8Eqm88SQ3fYaQwr8JVorb
+         felSuLvPvE1opBY558QMqji/PILXKhcVlvrCR2tToCXMT4g8w9lc9ZqfOX2q211afz
+         zkLkP8fL2Dr6w==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Michal Simek <monstr@monstr.eu>
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/2] microblaze: syscalls: switch to generic syscalltbl.sh
+Date:   Mon,  1 Mar 2021 23:23:02 +0900
+Message-Id: <20210301142303.343727-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-compile.h and autoconf.h are ignored when checking headers sha as they
-are always re-generated for every kernel compilation. However,
-these two headers are packaged into kheaders tar. During incremental
-compilation of kernel, kheaders tar file is always generated and re-packaged
-irrespective of the changes in headers.
+Many architectures duplicate similar shell scripts.
 
-Change-Id: I7a64faebb81df44c32230b0fea1d6df09d7ce66f
-Signed-off-by: Jeevan Shriram <jshriram@codeaurora.org>
+This commit converts microblaze to use scripts/syscalltbl.sh.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- kernel/gen_kheaders.sh | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/gen_kheaders.sh b/kernel/gen_kheaders.sh
-index c1510f0..5499f72 100755
---- a/kernel/gen_kheaders.sh
-+++ b/kernel/gen_kheaders.sh
-@@ -51,8 +51,7 @@ this_file_md5="$(ls -l $sfile | md5sum | cut -d ' ' -f1)"
- if [ -f $tarfile ]; then tarfile_md5="$(md5sum $tarfile | cut -d ' ' -f1)"; fi
- if [ -f kernel/kheaders.md5 ] &&
- 	[ "$(head -n 1 kernel/kheaders.md5)" = "$headers_md5" ] &&
--	[ "$(head -n 2 kernel/kheaders.md5 | tail -n 1)" = "$this_file_md5" ] &&
--	[ "$(tail -n 1 kernel/kheaders.md5)" = "$tarfile_md5" ]; then
-+	[ "$(head -n 2 kernel/kheaders.md5 | tail -n 1)" = "$this_file_md5" ]; then
- 		exit
- fi
+ arch/microblaze/kernel/syscall_table.S        |  3 +-
+ arch/microblaze/kernel/syscalls/Makefile      |  7 ++--
+ arch/microblaze/kernel/syscalls/syscalltbl.sh | 32 -------------------
+ 3 files changed, 3 insertions(+), 39 deletions(-)
+ delete mode 100644 arch/microblaze/kernel/syscalls/syscalltbl.sh
+
+diff --git a/arch/microblaze/kernel/syscall_table.S b/arch/microblaze/kernel/syscall_table.S
+index ce006646f741..3bc60a2b159e 100644
+--- a/arch/microblaze/kernel/syscall_table.S
++++ b/arch/microblaze/kernel/syscall_table.S
+@@ -1,6 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
  
+-#define __SYSCALL(nr, entry, nargs) .long entry
++#define __SYSCALL(nr, entry) .long entry
+ ENTRY(sys_call_table)
+ #include <asm/syscall_table.h>
+-#undef __SYSCALL
+diff --git a/arch/microblaze/kernel/syscalls/Makefile b/arch/microblaze/kernel/syscalls/Makefile
+index 285aaba832d9..ad2492cb5568 100644
+--- a/arch/microblaze/kernel/syscalls/Makefile
++++ b/arch/microblaze/kernel/syscalls/Makefile
+@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
+ 
+ syscall := $(src)/syscall.tbl
+ syshdr := $(srctree)/$(src)/syscallhdr.sh
+-systbl := $(srctree)/$(src)/syscalltbl.sh
++systbl := $(srctree)/scripts/syscalltbl.sh
+ 
+ quiet_cmd_syshdr = SYSHDR  $@
+       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
+@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+ 		   '$(syshdr_offset_$(basetarget))'
+ 
+ quiet_cmd_systbl = SYSTBL  $@
+-      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
+-		   '$(systbl_abis_$(basetarget))'		\
+-		   '$(systbl_abi_$(basetarget))'		\
+-		   '$(systbl_offset_$(basetarget))'
++      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
+ 
+ $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+ 	$(call if_changed,syshdr)
+diff --git a/arch/microblaze/kernel/syscalls/syscalltbl.sh b/arch/microblaze/kernel/syscalls/syscalltbl.sh
+deleted file mode 100644
+index 85d78d9309ad..000000000000
+--- a/arch/microblaze/kernel/syscalls/syscalltbl.sh
++++ /dev/null
+@@ -1,32 +0,0 @@
+-#!/bin/sh
+-# SPDX-License-Identifier: GPL-2.0
+-
+-in="$1"
+-out="$2"
+-my_abis=`echo "($3)" | tr ',' '|'`
+-my_abi="$4"
+-offset="$5"
+-
+-emit() {
+-	t_nxt="$1"
+-	t_nr="$2"
+-	t_entry="$3"
+-
+-	while [ $t_nxt -lt $t_nr ]; do
+-		printf "__SYSCALL(%s, sys_ni_syscall, )\n" "${t_nxt}"
+-		t_nxt=$((t_nxt+1))
+-	done
+-	printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
+-}
+-
+-grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+-	nxt=0
+-	if [ -z "$offset" ]; then
+-		offset=0
+-	fi
+-
+-	while read nr abi name entry ; do
+-		emit $((nxt+offset)) $((nr+offset)) $entry
+-		nxt=$((nr+1))
+-	done
+-) > "$out"
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.27.0
 
