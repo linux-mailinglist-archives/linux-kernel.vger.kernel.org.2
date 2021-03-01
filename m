@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D77329D06
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C06329D27
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442838AbhCBCQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:16:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55186 "EHLO mail.kernel.org"
+        id S1443114AbhCBCSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:18:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242202AbhCAToD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B54565285;
-        Mon,  1 Mar 2021 17:30:58 +0000 (UTC)
+        id S235973AbhCATor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 750A0650FD;
+        Mon,  1 Mar 2021 17:02:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619858;
-        bh=JUnO/GnhXr0F5Kh2N1zUw2QEMreqFEMEf1hOYK+S6yU=;
+        s=korg; t=1614618125;
+        bh=mDNce7JorKvDfVda5uTF6y2n3mrETWCjGAl4Rk/5v2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fgVxRGLoTVQkV4RHZ6TgjX9zzeFE8sz90c80tw0RQp4oSsPYU5NmRggH65GYE87mQ
-         LbCRY1RH9L3UBNmPX0kYlbeIVNrmpgYtRZC7hdOPPD9oFy4O3+BTSmjqonkxLCMKUl
-         RgOwNAjZd0uhyyS1Ddn28jkmyzha14Vz5fUHzNew=
+        b=dANfAeBGM8OHtDRmzRsYoFUEd+osdDX6VjVq4zl5IvMoyrS2as95d1zd0vjG7dnzA
+         TtB6KPv9cjS/xu2e53Mds9/0JDRraaGVh8kzoKEDREpQxBxXfCaLgLLX7JmS367BJl
+         oI8CaGIMEsLJPEEnu6NftqrsPrPpz4MsJ1a2Z3BY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shirley Her <shirley.her@bayhubtech.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 606/663] mmc: sdhci-pci-o2micro: Bug fix for SDR104 HW tuning failure
-Date:   Mon,  1 Mar 2021 17:14:14 +0100
-Message-Id: <20210301161211.834553281@linuxfoundation.org>
+        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.4 315/340] virtio/s390: implement virtio-ccw revision 2 correctly
+Date:   Mon,  1 Mar 2021 17:14:19 +0100
+Message-Id: <20210301161103.793008004@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,71 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shirley Her <shirley.her@bayhubtech.com>
+From: Cornelia Huck <cohuck@redhat.com>
 
-commit 1ad9f88014ae1d5abccb6fe930bc4c5c311bdc05 upstream.
+commit 182f709c5cff683e6732d04c78e328de0532284f upstream.
 
-Force chip enter L0 power state during SDR104 HW tuning to avoid tuning failure
+CCW_CMD_READ_STATUS was introduced with revision 2 of virtio-ccw,
+and drivers should only rely on it being implemented when they
+negotiated at least that revision with the device.
 
-Signed-off-by: Shirley Her <shirley.her@bayhubtech.com>
-Link: https://lore.kernel.org/r/20210206014051.3418-1-shirley.her@bayhubtech.com
-Fixes: 7b7d897e8898 ("mmc: sdhci-pci-o2micro: Add HW tuning for SDR104 mode")
+However, virtio_ccw_get_status() issued READ_STATUS for any
+device operating at least at revision 1. If the device accepts
+READ_STATUS regardless of the negotiated revision (which some
+implementations like QEMU do, even though the spec currently does
+not allow it), everything works as intended. While a device
+rejecting the command should also be handled gracefully, we will
+not be able to see any changes the device makes to the status,
+such as setting NEEDS_RESET or setting the status to zero after
+a completed reset.
+
+We negotiated the revision to at most 1, as we never bumped the
+maximum revision; let's do that now and properly send READ_STATUS
+only if we are operating at least at revision 2.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 7d3ce5ab9430 ("virtio/s390: support READ_STATUS command for virtio-ccw")
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+Signed-off-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210216110645.1087321-1-cohuck@redhat.com
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/sdhci-pci-o2micro.c |   20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/s390/virtio/virtio_ccw.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/mmc/host/sdhci-pci-o2micro.c
-+++ b/drivers/mmc/host/sdhci-pci-o2micro.c
-@@ -33,6 +33,8 @@
- #define O2_SD_ADMA2		0xE7
- #define O2_SD_INF_MOD		0xF1
- #define O2_SD_MISC_CTRL4	0xFC
-+#define O2_SD_MISC_CTRL		0x1C0
-+#define O2_SD_PWR_FORCE_L0	0x0002
- #define O2_SD_TUNING_CTRL	0x300
- #define O2_SD_PLL_SETTING	0x304
- #define O2_SD_MISC_SETTING	0x308
-@@ -300,6 +302,8 @@ static int sdhci_o2_execute_tuning(struc
- {
- 	struct sdhci_host *host = mmc_priv(mmc);
- 	int current_bus_width = 0;
-+	u32 scratch32 = 0;
-+	u16 scratch = 0;
+--- a/drivers/s390/virtio/virtio_ccw.c
++++ b/drivers/s390/virtio/virtio_ccw.c
+@@ -117,7 +117,7 @@ struct virtio_rev_info {
+ };
  
- 	/*
- 	 * This handler only implements the eMMC tuning that is specific to
-@@ -312,6 +316,17 @@ static int sdhci_o2_execute_tuning(struc
- 	if (WARN_ON((opcode != MMC_SEND_TUNING_BLOCK_HS200) &&
- 			(opcode != MMC_SEND_TUNING_BLOCK)))
- 		return -EINVAL;
-+
-+	/* Force power mode enter L0 */
-+	scratch = sdhci_readw(host, O2_SD_MISC_CTRL);
-+	scratch |= O2_SD_PWR_FORCE_L0;
-+	sdhci_writew(host, scratch, O2_SD_MISC_CTRL);
-+
-+	/* wait DLL lock, timeout value 5ms */
-+	if (readx_poll_timeout(sdhci_o2_pll_dll_wdt_control, host,
-+		scratch32, (scratch32 & O2_DLL_LOCK_STATUS), 1, 5000))
-+		pr_warn("%s: DLL can't lock in 5ms after force L0 during tuning.\n",
-+				mmc_hostname(host->mmc));
- 	/*
- 	 * Judge the tuning reason, whether caused by dll shift
- 	 * If cause by dll shift, should call sdhci_o2_dll_recovery
-@@ -344,6 +359,11 @@ static int sdhci_o2_execute_tuning(struc
- 		sdhci_set_bus_width(host, current_bus_width);
- 	}
+ /* the highest virtio-ccw revision we support */
+-#define VIRTIO_CCW_REV_MAX 1
++#define VIRTIO_CCW_REV_MAX 2
  
-+	/* Cancel force power mode enter L0 */
-+	scratch = sdhci_readw(host, O2_SD_MISC_CTRL);
-+	scratch &= ~(O2_SD_PWR_FORCE_L0);
-+	sdhci_writew(host, scratch, O2_SD_MISC_CTRL);
-+
- 	sdhci_reset(host, SDHCI_RESET_CMD);
- 	sdhci_reset(host, SDHCI_RESET_DATA);
+ struct virtio_ccw_vq_info {
+ 	struct virtqueue *vq;
+@@ -952,7 +952,7 @@ static u8 virtio_ccw_get_status(struct v
+ 	u8 old_status = vcdev->dma_area->status;
+ 	struct ccw1 *ccw;
  
+-	if (vcdev->revision < 1)
++	if (vcdev->revision < 2)
+ 		return vcdev->dma_area->status;
+ 
+ 	ccw = ccw_device_dma_zalloc(vcdev->cdev, sizeof(*ccw));
 
 
