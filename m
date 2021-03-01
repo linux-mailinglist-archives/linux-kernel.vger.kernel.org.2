@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B4A329AE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A70C329AC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378206AbhCBBEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:04:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60074 "EHLO mail.kernel.org"
+        id S1348470AbhCBBCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:02:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240874AbhCAS6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:58:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76AB665230;
-        Mon,  1 Mar 2021 17:25:40 +0000 (UTC)
+        id S240788AbhCASxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:53:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9FA965070;
+        Mon,  1 Mar 2021 17:24:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619541;
-        bh=6Qt7bc1XiiKQkMxU983laqr81IMBNcvK3yhrLGA/O/k=;
+        s=korg; t=1614619481;
+        bh=+8QnMk+wgWntcWTyAxSAU9OB9UEPRHFT1tGT6P7kRGQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QtVCQd+nGeqJ9rnPSXqB6/L3VxkhSvTPy/jdZm1Xz1IlsjvPSgD3GWdjeJ1b3mWzW
-         fIwtNCW22voBsXEdIkYmJUGvPNajM3qxBLAyw3tJc3VK4F7B7G7CvODvS3243rn6G3
-         NGDWQJ9mhZWIvLCKdYWXC7xbnmo7fWmuN1kLkKVc=
+        b=ouc43GOeIi2q49yjlII4togx1Qar8r5gzrlQdALm0gGsdbYdl7t2sS6LDoj3tK/9d
+         lWkU2vCJLSeiY2THA1+hOib4TxYp1Cr0eUtZ6UdraPnBTgd3KkjFTWTc2YStRAVpRQ
+         BsCV0z1XACvElErPJ8A1R1UULeU+tgNlhgZ21+6w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wonhyuk Yang <vvghjk1234@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
+        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, Qian Cai <cai@lca.pw>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 461/663] mm/compaction: fix misbehaviors of fast_find_migrateblock()
-Date:   Mon,  1 Mar 2021 17:11:49 +0100
-Message-Id: <20210301161204.683558693@linuxfoundation.org>
+Subject: [PATCH 5.10 470/663] mm: fix memory_failure() handling of dax-namespace metadata
+Date:   Mon,  1 Mar 2021 17:11:58 +0100
+Message-Id: <20210301161205.113920603@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,111 +45,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wonhyuk Yang <vvghjk1234@gmail.com>
+From: Dan Williams <dan.j.williams@intel.com>
 
-[ Upstream commit 15d28d0d11609c7a4f217b3d85e26456d9beb134 ]
+[ Upstream commit 34dc45be4563f344d59ba0428416d0d265aa4f4d ]
 
-In the fast_find_migrateblock(), it iterates ocer the freelist to find the
-proper pageblock.  But there are some misbehaviors.
+Given 'struct dev_pagemap' spans both data pages and metadata pages be
+careful to consult the altmap if present to delineate metadata.  In fact
+the pfn_first() helper already identifies the first valid data pfn, so
+export that helper for other code paths via pgmap_pfn_valid().
 
-First, if the page we found is equal to cc->migrate_pfn, it is considered
-that we didn't find a suitable pageblock.  Secondly, if the loop was
-terminated because order is less than PAGE_ALLOC_COSTLY_ORDER, it could be
-considered that we found a suitable one.  Thirdly, if the skip bit is set
-on the page block and we goto continue, it doesn't check nr_scanned.
-Fourthly, if the page block's skip bit is set, it checks that page block
-is the last of list, which is unnecessary.
+Other usage of get_dev_pagemap() are not a concern because those are
+operating on known data pfns having been looked up by get_user_pages().
+I.e.  metadata pfns are never user mapped.
 
-Link: https://lkml.kernel.org/r/20210128130411.6125-1-vvghjk1234@gmail.com
-Fixes: 70b44595eafe9 ("mm, compaction: use free lists to quickly locate a migration source")
-Signed-off-by: Wonhyuk Yang <vvghjk1234@gmail.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Mel Gorman <mgorman@techsingularity.net>
+Link: https://lkml.kernel.org/r/161058501758.1840162.4239831989762604527.stgit@dwillia2-desk3.amr.corp.intel.com
+Fixes: 6100e34b2526 ("mm, memory_failure: Teach memory_failure() about dev_pagemap pages")
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Reported-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Qian Cai <cai@lca.pw>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/compaction.c | 27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
+ include/linux/memremap.h |  6 ++++++
+ mm/memory-failure.c      |  6 ++++++
+ mm/memremap.c            | 15 +++++++++++++++
+ 3 files changed, 27 insertions(+)
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 0846d4ffa3387..21dcae9d7df3c 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1662,6 +1662,7 @@ static unsigned long fast_find_migrateblock(struct compact_control *cc)
- 	unsigned long pfn = cc->migrate_pfn;
- 	unsigned long high_pfn;
- 	int order;
-+	bool found_block = false;
+diff --git a/include/linux/memremap.h b/include/linux/memremap.h
+index 79c49e7f5c304..f5b464daeeca5 100644
+--- a/include/linux/memremap.h
++++ b/include/linux/memremap.h
+@@ -137,6 +137,7 @@ void *devm_memremap_pages(struct device *dev, struct dev_pagemap *pgmap);
+ void devm_memunmap_pages(struct device *dev, struct dev_pagemap *pgmap);
+ struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
+ 		struct dev_pagemap *pgmap);
++bool pgmap_pfn_valid(struct dev_pagemap *pgmap, unsigned long pfn);
  
- 	/* Skip hints are relied on to avoid repeats on the fast search */
- 	if (cc->ignore_skip_hint)
-@@ -1704,7 +1705,7 @@ static unsigned long fast_find_migrateblock(struct compact_control *cc)
- 	high_pfn = pageblock_start_pfn(cc->migrate_pfn + distance);
- 
- 	for (order = cc->order - 1;
--	     order >= PAGE_ALLOC_COSTLY_ORDER && pfn == cc->migrate_pfn && nr_scanned < limit;
-+	     order >= PAGE_ALLOC_COSTLY_ORDER && !found_block && nr_scanned < limit;
- 	     order--) {
- 		struct free_area *area = &cc->zone->free_area[order];
- 		struct list_head *freelist;
-@@ -1719,7 +1720,11 @@ static unsigned long fast_find_migrateblock(struct compact_control *cc)
- 		list_for_each_entry(freepage, freelist, lru) {
- 			unsigned long free_pfn;
- 
--			nr_scanned++;
-+			if (nr_scanned++ >= limit) {
-+				move_freelist_tail(freelist, freepage);
-+				break;
-+			}
-+
- 			free_pfn = page_to_pfn(freepage);
- 			if (free_pfn < high_pfn) {
- 				/*
-@@ -1728,12 +1733,8 @@ static unsigned long fast_find_migrateblock(struct compact_control *cc)
- 				 * the list assumes an entry is deleted, not
- 				 * reordered.
- 				 */
--				if (get_pageblock_skip(freepage)) {
--					if (list_is_last(freelist, &freepage->lru))
--						break;
--
-+				if (get_pageblock_skip(freepage))
- 					continue;
--				}
- 
- 				/* Reorder to so a future search skips recent pages */
- 				move_freelist_tail(freelist, freepage);
-@@ -1741,15 +1742,10 @@ static unsigned long fast_find_migrateblock(struct compact_control *cc)
- 				update_fast_start_pfn(cc, free_pfn);
- 				pfn = pageblock_start_pfn(free_pfn);
- 				cc->fast_search_fail = 0;
-+				found_block = true;
- 				set_pageblock_skip(freepage);
- 				break;
- 			}
--
--			if (nr_scanned >= limit) {
--				cc->fast_search_fail++;
--				move_freelist_tail(freelist, freepage);
--				break;
--			}
- 		}
- 		spin_unlock_irqrestore(&cc->zone->lock, flags);
- 	}
-@@ -1760,9 +1756,10 @@ static unsigned long fast_find_migrateblock(struct compact_control *cc)
- 	 * If fast scanning failed then use a cached entry for a page block
- 	 * that had free pages as the basis for starting a linear scan.
- 	 */
--	if (pfn == cc->migrate_pfn)
-+	if (!found_block) {
-+		cc->fast_search_fail++;
- 		pfn = reinit_migrate_pfn(cc);
--
-+	}
- 	return pfn;
+ unsigned long vmem_altmap_offset(struct vmem_altmap *altmap);
+ void vmem_altmap_free(struct vmem_altmap *altmap, unsigned long nr_pfns);
+@@ -165,6 +166,11 @@ static inline struct dev_pagemap *get_dev_pagemap(unsigned long pfn,
+ 	return NULL;
  }
  
++static inline bool pgmap_pfn_valid(struct dev_pagemap *pgmap, unsigned long pfn)
++{
++	return false;
++}
++
+ static inline unsigned long vmem_altmap_offset(struct vmem_altmap *altmap)
+ {
+ 	return 0;
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index fd653c9953cfd..570a20b425613 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1237,6 +1237,12 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+ 		 */
+ 		put_page(page);
+ 
++	/* device metadata space is not recoverable */
++	if (!pgmap_pfn_valid(pgmap, pfn)) {
++		rc = -ENXIO;
++		goto out;
++	}
++
+ 	/*
+ 	 * Prevent the inode from being freed while we are interrogating
+ 	 * the address_space, typically this would be handled by
+diff --git a/mm/memremap.c b/mm/memremap.c
+index 16b2fb482da11..2455bac895066 100644
+--- a/mm/memremap.c
++++ b/mm/memremap.c
+@@ -80,6 +80,21 @@ static unsigned long pfn_first(struct dev_pagemap *pgmap, int range_id)
+ 	return pfn + vmem_altmap_offset(pgmap_altmap(pgmap));
+ }
+ 
++bool pgmap_pfn_valid(struct dev_pagemap *pgmap, unsigned long pfn)
++{
++	int i;
++
++	for (i = 0; i < pgmap->nr_range; i++) {
++		struct range *range = &pgmap->ranges[i];
++
++		if (pfn >= PHYS_PFN(range->start) &&
++		    pfn <= PHYS_PFN(range->end))
++			return pfn >= pfn_first(pgmap, i);
++	}
++
++	return false;
++}
++
+ static unsigned long pfn_end(struct dev_pagemap *pgmap, int range_id)
+ {
+ 	const struct range *range = &pgmap->ranges[range_id];
 -- 
 2.27.0
 
