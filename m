@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3753298D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6428232997D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346662AbhCAXtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:49:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60784 "EHLO mail.kernel.org"
+        id S1344858AbhCBAU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:20:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239314AbhCASLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:11:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E522065002;
-        Mon,  1 Mar 2021 17:09:11 +0000 (UTC)
+        id S239602AbhCASYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:24:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 441EF65348;
+        Mon,  1 Mar 2021 17:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618552;
-        bh=3TSOCWSbxMbv+ZLvWWzVp+G1pgJtUN/C9RJnkdffBhg=;
+        s=korg; t=1614620671;
+        bh=aX5hJxqw5n5ej0Fl9vYIFNNP+8dvW9NKJkz4v5qLVkE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p/ZmKozy9lLjGPNtSnTKEJKPvsEPBt79ZLJiLQINg1dOCt9KpKhGVQG8HI3zKd5g3
-         uVJOKFkdkJbny0k7XiyPd/p31DE1Vs60KGXtKRPdlE7aw9TWUEj7NygL8p3VoEP1pY
-         4yoTuok/IOj/TwOaSZquKM5NOliANAmbgEokBBjE=
+        b=PIb9zeA0m4mGKqXbHvIuwUiRcXQ7DBtycDvZWym2AiVbkc2E/yfrsEOK5/RH0uhuP
+         dIZyxoQqzkFOrr7M/h8fC7g2vRwJqZHkbRbkG2uw0cMN8DheV+ob9oj+eOF7BQ2ZAR
+         VRiBNVITHkKCS57RrNMO23KpcRPE/wrUNrG69tcY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Mimi Zohar <zohar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 127/663] net: dsa: felix: perform teardown in reverse order of setup
+Subject: [PATCH 5.11 207/775] evm: Fix memleak in init_desc
 Date:   Mon,  1 Mar 2021 17:06:15 +0100
-Message-Id: <20210301161148.028960679@linuxfoundation.org>
+Message-Id: <20210301161211.870180855@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit d19741b0f54487cf3a11307900f8633935cd2849 ]
+[ Upstream commit ccf11dbaa07b328fa469415c362d33459c140a37 ]
 
-In general it is desirable that cleanup is the reverse process of setup.
-In this case I am not seeing any particular issue, but with the
-introduction of devlink-sb for felix, a non-obvious decision had to be
-made as to where to put its cleanup method. When there's a convention in
-place, that decision becomes obvious.
+tmp_tfm is allocated, but not freed on subsequent kmalloc failure, which
+leads to a memory leak.  Free tmp_tfm.
 
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: d46eb3699502b ("evm: crypto hash replaced by shash")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+[zohar@linux.ibm.com: formatted/reworded patch description]
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/ocelot/felix.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ security/integrity/evm/evm_crypto.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/dsa/ocelot/felix.c b/drivers/net/dsa/ocelot/felix.c
-index 89d7c9b231863..7e506a1d8b2ff 100644
---- a/drivers/net/dsa/ocelot/felix.c
-+++ b/drivers/net/dsa/ocelot/felix.c
-@@ -635,14 +635,14 @@ static void felix_teardown(struct dsa_switch *ds)
- 	struct felix *felix = ocelot_to_felix(ocelot);
- 	int port;
+diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+index 168c3b78ac47b..a6dd47eb086da 100644
+--- a/security/integrity/evm/evm_crypto.c
++++ b/security/integrity/evm/evm_crypto.c
+@@ -73,7 +73,7 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
+ {
+ 	long rc;
+ 	const char *algo;
+-	struct crypto_shash **tfm, *tmp_tfm;
++	struct crypto_shash **tfm, *tmp_tfm = NULL;
+ 	struct shash_desc *desc;
  
--	if (felix->info->mdio_bus_free)
--		felix->info->mdio_bus_free(ocelot);
-+	ocelot_deinit_timestamp(ocelot);
-+	ocelot_deinit(ocelot);
+ 	if (type == EVM_XATTR_HMAC) {
+@@ -118,13 +118,16 @@ unlock:
+ alloc:
+ 	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(*tfm),
+ 			GFP_KERNEL);
+-	if (!desc)
++	if (!desc) {
++		crypto_free_shash(tmp_tfm);
+ 		return ERR_PTR(-ENOMEM);
++	}
  
- 	for (port = 0; port < ocelot->num_phys_ports; port++)
- 		ocelot_deinit_port(ocelot, port);
--	ocelot_deinit_timestamp(ocelot);
--	/* stop workqueue thread */
--	ocelot_deinit(ocelot);
-+
-+	if (felix->info->mdio_bus_free)
-+		felix->info->mdio_bus_free(ocelot);
- }
+ 	desc->tfm = *tfm;
  
- static int felix_hwtstamp_get(struct dsa_switch *ds, int port,
+ 	rc = crypto_shash_init(desc);
+ 	if (rc) {
++		crypto_free_shash(tmp_tfm);
+ 		kfree(desc);
+ 		return ERR_PTR(rc);
+ 	}
 -- 
 2.27.0
 
