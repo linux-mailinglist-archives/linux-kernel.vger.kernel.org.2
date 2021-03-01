@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0889C329B28
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEBC329AF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378664AbhCBBHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:07:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36726 "EHLO mail.kernel.org"
+        id S1378335AbhCBBF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:05:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236825AbhCATEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:04:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9013265242;
-        Mon,  1 Mar 2021 17:26:32 +0000 (UTC)
+        id S233166AbhCAS6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:58:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D045664D5D;
+        Mon,  1 Mar 2021 17:26:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619593;
-        bh=Ot42q7Y638tuh+QNwlF33dG+EhFDcDtlt1XeUKnPln8=;
+        s=korg; t=1614619604;
+        bh=hCcmAs2PRbDTnVNOZNBB4hD3hhROgsAcI6qeae1n1Cc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0rxvM2wjOTFoZd6nX622+RW/EdCvC07AzIPzFd6h3i5iANe2JMNvt+8K+pdMsirC1
-         lewNNd+cc6dPjYaC5Zo3miuHHuMJKDH8H5bGDOdR2ov8P4Je3W5uSRxxQ0TvY2pd/V
-         8e4M13wNKyjvTo4bvCHm+xTsX0is+FPUfWCl+3zk=
+        b=0AE57zBPcXlC8k7SlJ6GV74AwjpJ2G14crVKbew3oMir1QfaGENNNOH2YlNdT10uL
+         RlGBhOIL9eT5qxHVgGOcBIVKDXf+Ukgp0d4VAORmT8G0fY5h6a+wN+ZfCDeGdHc5fX
+         RgV8PNTU6979FkUYs9ICQL7zX1EZGxjsH/0UVqIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Kai Krakow <kai@kaishome.de>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 510/663] bcache: Give btree_io_wq correct semantics again
-Date:   Mon,  1 Mar 2021 17:12:38 +0100
-Message-Id: <20210301161207.081389842@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Bernstein <eric.bernstein@amd.com>,
+        Bindu Ramamurthy <bindu.r@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.10 514/663] drm/amd/display: Remove Assert from dcn10_get_dig_frontend
+Date:   Mon,  1 Mar 2021 17:12:42 +0100
+Message-Id: <20210301161207.284575433@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,38 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Krakow <kai@kaishome.de>
+From: Eric Bernstein <eric.bernstein@amd.com>
 
-commit d797bd9897e3559eb48d68368550d637d32e468c upstream.
+commit 83e6667b675f101fb66659dfa72e45d08773d763 upstream.
 
-Before killing `btree_io_wq`, the queue was allocated using
-`create_singlethread_workqueue()` which has `WQ_MEM_RECLAIM`. After
-killing it, it no longer had this property but `system_wq` is not
-single threaded.
+[Why]
+In some cases, this function is called when DIG BE is not
+connected to DIG FE, in which case a value of zero isn't
+invalid and assert should not be hit.
 
-Let's combine both worlds and make it multi threaded but able to
-reclaim memory.
+[How]
+Remove assert and handle ENGINE_ID_UNKNOWN result in calling
+function.
 
-Cc: Coly Li <colyli@suse.de>
-Cc: stable@vger.kernel.org # 5.4+
-Signed-off-by: Kai Krakow <kai@kaishome.de>
-Signed-off-by: Coly Li <colyli@suse.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Eric Bernstein <eric.bernstein@amd.com>
+Acked-by: Bindu Ramamurthy <bindu.r@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/bcache/btree.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_link_encoder.c |    1 -
+ drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c        |    2 ++
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/md/bcache/btree.c
-+++ b/drivers/md/bcache/btree.c
-@@ -2775,7 +2775,7 @@ void bch_btree_exit(void)
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_link_encoder.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_link_encoder.c
+@@ -480,7 +480,6 @@ unsigned int dcn10_get_dig_frontend(stru
+ 		break;
+ 	default:
+ 		// invalid source select DIG
+-		ASSERT(false);
+ 		result = ENGINE_ID_UNKNOWN;
+ 	}
  
- int __init bch_btree_init(void)
- {
--	btree_io_wq = create_singlethread_workqueue("bch_btree_io");
-+	btree_io_wq = alloc_workqueue("bch_btree_io", WQ_MEM_RECLAIM, 0);
- 	if (!btree_io_wq)
- 		return -ENOMEM;
+--- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
+@@ -526,6 +526,8 @@ void dcn30_init_hw(struct dc *dc)
  
+ 					fe = dc->links[i]->link_enc->funcs->get_dig_frontend(
+ 										dc->links[i]->link_enc);
++					if (fe == ENGINE_ID_UNKNOWN)
++						continue;
+ 
+ 					for (j = 0; j < dc->res_pool->stream_enc_count; j++) {
+ 						if (fe == dc->res_pool->stream_enc[j]->id) {
 
 
