@@ -2,375 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B9D327AAC
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7FB327AAD
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233864AbhCAJYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:24:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233853AbhCAJY2 (ORCPT
+        id S233863AbhCAJZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:25:15 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:57950 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233851AbhCAJY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:24:28 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB9CC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 01:23:48 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id l12so19672708edt.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 01:23:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2dy7/E8HSGfJiqqdxi761X4q+2hMNs1FHArXFkc+7Lk=;
-        b=Hvzar0bi8ZtMKWVof9tAX71NYajdUzeaQEycJkNH1QL2OuHhPvk/W9qwEQCgpIAohM
-         Gr3o8LEoLnXYUW8+acvNLlOZfQuJQHIHlLEgOFrB8BUDF0HEaeiwfWFagCNIZWYVvqyJ
-         +XkhRhxG2VcBA74LtU8QhBcpltTJuZPOxIPA4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2dy7/E8HSGfJiqqdxi761X4q+2hMNs1FHArXFkc+7Lk=;
-        b=piqO+IDqlReIzsRIjqhq6lqAn6LiDSLeDAHExj6UExSeQCmgbIVkZR64bGmmiLaUeO
-         RHdua8A2R0v84cBCdpC2kqjS6gnPzU4asI865gkS8ZAiEsKGuCD9xIPj6v46CFfTCc2K
-         TmvWzYwEHRQURaz4dbWlKFjcrySiXH0tOvnnvJw06LZAT1H2C6l8aTDjgeyRKwVk8OWU
-         7kx9ob+p5f24x15AFJ7bK96dCX1pq38Hq7uBvx2Z5EehkR1h3La6RKNMoQ2D9K2CVTIB
-         qGMBC++xgUzewhfoUdDUv87yyPK9MW+Uhp6Ak5geJCAwfcbeAMeDS3/rDKrpI//R3bwK
-         xJ+A==
-X-Gm-Message-State: AOAM5330NB9B36c2qxwnfHA5JJ1h5dYTM3C9Cetn35aTdfA5dfPwSdlz
-        j0YcpxN3wLo1SVBip88fKe7sIHbmxEhDug==
-X-Google-Smtp-Source: ABdhPJw9hh7y2BLqm2d90q5aBbpQpjXEjhC86ZyG0JROvWSqFAM7HeTQ+nALvQbqSjKQG9fxIm5T8w==
-X-Received: by 2002:a05:6402:3590:: with SMTP id y16mr15557125edc.21.1614590626357;
-        Mon, 01 Mar 2021 01:23:46 -0800 (PST)
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
-        by smtp.gmail.com with ESMTPSA id x17sm14298226edq.42.2021.03.01.01.23.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 01:23:45 -0800 (PST)
-Received: by mail-wr1-f41.google.com with SMTP id h98so15280422wrh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 01:23:45 -0800 (PST)
-X-Received: by 2002:adf:e412:: with SMTP id g18mr15968814wrm.159.1614590625114;
- Mon, 01 Mar 2021 01:23:45 -0800 (PST)
+        Mon, 1 Mar 2021 04:24:26 -0500
+Date:   Mon, 01 Mar 2021 09:23:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614590622;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TyCZTs3sre9q7t2ZI2u8x3i0Hy5BK764FyCyb3epFFg=;
+        b=wXYb42w7/7ipdf4HAPiVSFJ1J0n9MLOo4F3AZQ75tfpAmpxvxx3XeehgtDd7b2MdxsLxpe
+        9yfc7TckUQ9t1XHInql40YovE9kEHYUKT39CuMKgTRPAmyjcqKUmzOPJ6rwu7r7kaoCoAb
+        KnLGMu9nceYRuJuea8bQkV39N/qxsPGTDzHjR2MjKc2i/g3TEbDkHpaEyUXLNPWpjvxtOt
+        vrZouY20TkL2D/jX3MLAaojoboYrT0nebmcaoQ1ePlaC+bEQ/Lu+gPjCTOcAlMlTgmoPjx
+        ePXot2scqzWP4vrvVMyev4Z9l2S0sbYbcd7rqcS2nA5Ae1AoL8ttVQITKC9WUA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614590622;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TyCZTs3sre9q7t2ZI2u8x3i0Hy5BK764FyCyb3epFFg=;
+        b=Hgm9wwaIKlEM0hwVIvA1WgX+F3OtVoVu2k8QAiUMJ6mmdi7D2eWaGY6gTzeBs9AvAzSkU5
+        rR8mZ2G6uBn5f8DA==
+From:   "tip-bot2 for Anna-Maria Behnsen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] hrtimer: Update softirq_expires_next correctly
+ after __hrtimer_get_next_event()
+Cc:     Mikael Beckius <mikael.beckius@windriver.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Anna-Maria Behnsen" <anna-maria@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210223160240.27518-1-anna-maria@linutronix.de>
+References: <20210223160240.27518-1-anna-maria@linutronix.de>
 MIME-Version: 1.0
-References: <20201214125703.866998-1-acourbot@chromium.org>
- <5319c101-f4a4-9c99-b15d-4999366f7a63@linaro.org> <CAAFQd5AQ8VHiRYkzkd5ZJBPT5_5WO0tyQrwqBEfnMVKYiTugTA@mail.gmail.com>
- <b5d35bbd-ae50-7a09-9edf-ca23d1a4b168@linaro.org> <bc42c936d7a67609b9dc4212b5a34b0d761676ed.camel@ndufresne.ca>
- <CAAFQd5BQv2vu_FSxJjVZLpgcuFi1WHVem_O-0x-vkG1KZJi0eA@mail.gmail.com>
-In-Reply-To: <CAAFQd5BQv2vu_FSxJjVZLpgcuFi1WHVem_O-0x-vkG1KZJi0eA@mail.gmail.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Mon, 1 Mar 2021 18:23:33 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5BAT2Xe+_swAe+hMqm_cQVbWJUzkH3dS+8-QHknV=KTjw@mail.gmail.com>
-Message-ID: <CAAFQd5BAT2Xe+_swAe+hMqm_cQVbWJUzkH3dS+8-QHknV=KTjw@mail.gmail.com>
-Subject: Re: [PATCH] media: venus: use contig vb2 ops
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Fritz Koenig <frkoenig@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <161459062183.20312.15294625634005777969.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex, Stanimir,
+The following commit has been merged into the timers/urgent branch of tip:
 
-On Wed, Dec 16, 2020 at 12:15 PM Tomasz Figa <tfiga@chromium.org> wrote:
->
-> On Wed, Dec 16, 2020 at 4:21 AM Nicolas Dufresne <nicolas@ndufresne.ca> w=
-rote:
-> >
-> > Le mardi 15 d=C3=A9cembre 2020 =C3=A0 15:54 +0200, Stanimir Varbanov a =
-=C3=A9crit :
-> > > Hi Tomasz,
-> > >
-> > > On 12/15/20 1:47 PM, Tomasz Figa wrote:
-> > > > On Tue, Dec 15, 2020 at 8:16 PM Stanimir Varbanov
-> > > > <stanimir.varbanov@linaro.org> wrote:
-> > > > >
-> > > > > Hi,
-> > > > >
-> > > > > Cc: Robin
-> > > > >
-> > > > > On 12/14/20 2:57 PM, Alexandre Courbot wrote:
-> > > > > > This driver uses the SG vb2 ops, but effectively only ever acce=
-sses the
-> > > > > > first entry of the SG table, indicating that it expects a flat =
-layout.
-> > > > > > Switch it to use the contiguous ops to make sure this expected =
-invariant
-> > > > >
-> > > > > Under what circumstances the sg table will has nents > 1? I came =
-down to
-> > > > > [1] but not sure I got it right.
-> > > > >
-> > > > > I'm afraid that for systems with low amount of system memory and =
-when
-> > > > > the memory become fragmented, the driver will not work. That's wh=
-y I
-> > > > > started with sg allocator.
-> > > >
-> > > > It is exactly the opposite. The vb2-dma-contig allocator is "contig=
-"
-> > > > in terms of the DMA (aka IOVA) address space. In other words, it
-> > > > guarantees that having one DMA address and length fully describes t=
-he
-> > >
-> > > Ahh, I missed that part. Looks like I misunderstood videobu2 contig
-> > > allocator.
-> >
-> > I'm learning everyday too, but I'm surprised I don't see a call to
-> > vb2_dma_contig_set_max_seg_size() in this driver (I could also just hav=
-e missed
-> > a patch when overlooking this thread) ?
-> >
-> > The reason I'm asking, doc says it should be called by driver supportin=
-g IOMMU,
-> > which seems to be the case for such drivers (MFC, exynos4-is, exynos-gs=
-c, mtk-
-> > mdp, s5p-g2d, hantro, rkvdec, zoran, ti-vpe, ..). I posting it, worst c=
-ase it's
-> > all covered and we are good, otherwise perhaps a downstream patch didn'=
-t make it
-> > ?
-> >
-> > /**
-> >  * vb2_dma_contig_set_max_seg_size() - configure DMA max segment size
-> >  * @dev:        device for configuring DMA parameters
-> >  * @size:       size of DMA max segment size to set
-> >  *
-> >  * To allow mapping the scatter-list into a single chunk in the DMA
-> >  * address space, the device is required to have the DMA max segment
-> >  * size parameter set to a value larger than the buffer size. Otherwise=
-,
-> >  * the DMA-mapping subsystem will split the mapping into max segment
-> >  * size chunks. This function sets the DMA max segment size
-> >  * parameter to let DMA-mapping map a buffer as a single chunk in DMA
-> >  * address space.
-> >  * This code assumes that the DMA-mapping subsystem will merge all
-> >  * scatterlist segments if this is really possible (for example when
-> >  * an IOMMU is available and enabled).
-> >  * Ideally, this parameter should be set by the generic bus code, but i=
-t
-> >  * is left with the default 64KiB value due to historical litmiations i=
-n
-> >  * other subsystems (like limited USB host drivers) and there no good
-> >  * place to set it to the proper value.
-> >  * This function should be called from the drivers, which are known to
-> >  * operate on platforms with IOMMU and provide access to shared buffers
-> >  * (either USERPTR or DMABUF). This should be done before initializing
-> >  * videobuf2 queue.
-> >  */
->
-> It does call dma_set_max_seg_size() directly:
-> https://elixir.bootlin.com/linux/latest/source/drivers/media/platform/qco=
-m/venus/core.c#L230
->
-> Actually, why do we even need a vb2 helper for this?
->
+Commit-ID:     05f7fcc675f50001a30b8938c05d11ca9f599f8c
+Gitweb:        https://git.kernel.org/tip/05f7fcc675f50001a30b8938c05d11ca9f599f8c
+Author:        Anna-Maria Behnsen <anna-maria@linutronix.de>
+AuthorDate:    Tue, 23 Feb 2021 17:02:40 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 01 Mar 2021 10:17:56 +01:00
 
-What's the plan for this patch?
+hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
 
-Best regards,
-Tomasz
+hrtimer_force_reprogram() and hrtimer_interrupt() invokes
+__hrtimer_get_next_event() to find the earliest expiry time of hrtimer
+bases. __hrtimer_get_next_event() does not update
+cpu_base::[softirq_]_expires_next to preserve reprogramming logic. That
+needs to be done at the callsites.
 
-> >
-> > regards,
-> > Nicolas
-> >
-> > >
-> > > > buffer. This seems to be the requirement of the hardware/firmware
-> > > > handled by the venus driver. If the device is behind an IOMMU, whic=
-h
-> > > > is the case for the SoCs in question, the underlying DMA ops will
-> > > > actually allocate a discontiguous set of pages, so it has nothing t=
-o
-> > > > do to system memory amount or fragmentation. If for some reason the
-> > > > IOMMU can't be used, there is no way around, the memory needs to be
-> > > > contiguous because of the hardware/firmware/driver expectation.
-> > > >
-> > > > On the other hand, the vb2-dma-sg allocator doesn't have any
-> > > > continuity guarantees for the DMA, or any other, address space. The
-> > > > current code works fine, because it calls dma_map_sg() on the whole
-> > > > set of pages and that ends up mapping it contiguously in the IOVA
-> > > > space, but that's just an implementation detail, not an API guarant=
-ee.
-> > >
-> > > It was good to know. Thanks for the explanation.
-> > >
-> > > >
-> > > > Best regards,
-> > > > Tomasz
-> > > >
-> > > > >
-> > > > > [1]
-> > > > > https://elixir.bootlin.com/linux/v5.10.1/source/drivers/iommu/dma=
--iommu.c#L782
-> > > > >
-> > > > > > is always enforced. Since the device is supposed to be behind a=
-n IOMMU
-> > > > > > this should have little to none practical consequences beyond m=
-aking the
-> > > > > > driver not rely on a particular behavior of the SG implementati=
-on.
-> > > > > >
-> > > > > > Reported-by: Tomasz Figa <tfiga@chromium.org>
-> > > > > > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
-> > > > > > ---
-> > > > > > Hi everyone,
-> > > > > >
-> > > > > > It probably doesn't hurt to fix this issue before some actual i=
-ssue
-> > > > > > happens.
-> > > > > > I have tested this patch on Chrome OS and playback was just as =
-fine as
-> > > > > > with
-> > > > > > the SG ops.
-> > > > > >
-> > > > > >  drivers/media/platform/Kconfig              | 2 +-
-> > > > > >  drivers/media/platform/qcom/venus/helpers.c | 9 ++-------
-> > > > > >  drivers/media/platform/qcom/venus/vdec.c    | 6 +++---
-> > > > > >  drivers/media/platform/qcom/venus/venc.c    | 6 +++---
-> > > > > >  4 files changed, 9 insertions(+), 14 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/media/platform/Kconfig
-> > > > > > b/drivers/media/platform/Kconfig
-> > > > > > index 35a18d388f3f..d9d7954111f2 100644
-> > > > > > --- a/drivers/media/platform/Kconfig
-> > > > > > +++ b/drivers/media/platform/Kconfig
-> > > > > > @@ -533,7 +533,7 @@ config VIDEO_QCOM_VENUS
-> > > > > >       depends on INTERCONNECT || !INTERCONNECT
-> > > > > >       select QCOM_MDT_LOADER if ARCH_QCOM
-> > > > > >       select QCOM_SCM if ARCH_QCOM
-> > > > > > -     select VIDEOBUF2_DMA_SG
-> > > > > > +     select VIDEOBUF2_DMA_CONTIG
-> > > > > >       select V4L2_MEM2MEM_DEV
-> > > > > >       help
-> > > > > >         This is a V4L2 driver for Qualcomm Venus video accelera=
-tor
-> > > > > > diff --git a/drivers/media/platform/qcom/venus/helpers.c
-> > > > > > b/drivers/media/platform/qcom/venus/helpers.c
-> > > > > > index 50439eb1ffea..859d260f002b 100644
-> > > > > > --- a/drivers/media/platform/qcom/venus/helpers.c
-> > > > > > +++ b/drivers/media/platform/qcom/venus/helpers.c
-> > > > > > @@ -7,7 +7,7 @@
-> > > > > >  #include <linux/mutex.h>
-> > > > > >  #include <linux/slab.h>
-> > > > > >  #include <linux/kernel.h>
-> > > > > > -#include <media/videobuf2-dma-sg.h>
-> > > > > > +#include <media/videobuf2-dma-contig.h>
-> > > > > >  #include <media/v4l2-mem2mem.h>
-> > > > > >  #include <asm/div64.h>
-> > > > > >
-> > > > > > @@ -1284,14 +1284,9 @@ int venus_helper_vb2_buf_init(struct vb2=
-_buffer
-> > > > > > *vb)
-> > > > > >       struct venus_inst *inst =3D vb2_get_drv_priv(vb->vb2_queu=
-e);
-> > > > > >       struct vb2_v4l2_buffer *vbuf =3D to_vb2_v4l2_buffer(vb);
-> > > > > >       struct venus_buffer *buf =3D to_venus_buffer(vbuf);
-> > > > > > -     struct sg_table *sgt;
-> > > > > > -
-> > > > > > -     sgt =3D vb2_dma_sg_plane_desc(vb, 0);
-> > > > > > -     if (!sgt)
-> > > > > > -             return -EFAULT;
-> > > > > >
-> > > > > >       buf->size =3D vb2_plane_size(vb, 0);
-> > > > > > -     buf->dma_addr =3D sg_dma_address(sgt->sgl);
-> > > > >
-> > > > > Can we do it:
-> > > > >
-> > > > >         if (WARN_ON(sgt->nents > 1))
-> > > > >                 return -EFAULT;
-> > > > >
-> > > > > I understand that logically using dma-sg when the flat layout is
-> > > > > expected by the hardware is wrong, but I haven't seen issues unti=
-l now.
-> > > > >
-> > > > > > +     buf->dma_addr =3D vb2_dma_contig_plane_dma_addr(vb, 0);
-> > > > > >
-> > > > > >       if (vb->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
-> > > > > >               list_add_tail(&buf->reg_list, &inst->registeredbu=
-fs);
-> > > > > > diff --git a/drivers/media/platform/qcom/venus/vdec.c
-> > > > > > b/drivers/media/platform/qcom/venus/vdec.c
-> > > > > > index 8488411204c3..3fb277c81aca 100644
-> > > > > > --- a/drivers/media/platform/qcom/venus/vdec.c
-> > > > > > +++ b/drivers/media/platform/qcom/venus/vdec.c
-> > > > > > @@ -13,7 +13,7 @@
-> > > > > >  #include <media/v4l2-event.h>
-> > > > > >  #include <media/v4l2-ctrls.h>
-> > > > > >  #include <media/v4l2-mem2mem.h>
-> > > > > > -#include <media/videobuf2-dma-sg.h>
-> > > > > > +#include <media/videobuf2-dma-contig.h>
-> > > > > >
-> > > > > >  #include "hfi_venus_io.h"
-> > > > > >  #include "hfi_parser.h"
-> > > > > > @@ -1461,7 +1461,7 @@ static int m2m_queue_init(void *priv, str=
-uct
-> > > > > > vb2_queue *src_vq,
-> > > > > >       src_vq->io_modes =3D VB2_MMAP | VB2_DMABUF;
-> > > > > >       src_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> > > > > >       src_vq->ops =3D &vdec_vb2_ops;
-> > > > > > -     src_vq->mem_ops =3D &vb2_dma_sg_memops;
-> > > > > > +     src_vq->mem_ops =3D &vb2_dma_contig_memops;
-> > > > > >       src_vq->drv_priv =3D inst;
-> > > > > >       src_vq->buf_struct_size =3D sizeof(struct venus_buffer);
-> > > > > >       src_vq->allow_zero_bytesused =3D 1;
-> > > > > > @@ -1475,7 +1475,7 @@ static int m2m_queue_init(void *priv, str=
-uct
-> > > > > > vb2_queue *src_vq,
-> > > > > >       dst_vq->io_modes =3D VB2_MMAP | VB2_DMABUF;
-> > > > > >       dst_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> > > > > >       dst_vq->ops =3D &vdec_vb2_ops;
-> > > > > > -     dst_vq->mem_ops =3D &vb2_dma_sg_memops;
-> > > > > > +     dst_vq->mem_ops =3D &vb2_dma_contig_memops;
-> > > > > >       dst_vq->drv_priv =3D inst;
-> > > > > >       dst_vq->buf_struct_size =3D sizeof(struct venus_buffer);
-> > > > > >       dst_vq->allow_zero_bytesused =3D 1;
-> > > > > > diff --git a/drivers/media/platform/qcom/venus/venc.c
-> > > > > > b/drivers/media/platform/qcom/venus/venc.c
-> > > > > > index 1c61602c5de1..a09550cd1dba 100644
-> > > > > > --- a/drivers/media/platform/qcom/venus/venc.c
-> > > > > > +++ b/drivers/media/platform/qcom/venus/venc.c
-> > > > > > @@ -10,7 +10,7 @@
-> > > > > >  #include <linux/pm_runtime.h>
-> > > > > >  #include <linux/slab.h>
-> > > > > >  #include <media/v4l2-mem2mem.h>
-> > > > > > -#include <media/videobuf2-dma-sg.h>
-> > > > > > +#include <media/videobuf2-dma-contig.h>
-> > > > > >  #include <media/v4l2-ioctl.h>
-> > > > > >  #include <media/v4l2-event.h>
-> > > > > >  #include <media/v4l2-ctrls.h>
-> > > > > > @@ -1001,7 +1001,7 @@ static int m2m_queue_init(void *priv, str=
-uct
-> > > > > > vb2_queue *src_vq,
-> > > > > >       src_vq->io_modes =3D VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
-> > > > > >       src_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> > > > > >       src_vq->ops =3D &venc_vb2_ops;
-> > > > > > -     src_vq->mem_ops =3D &vb2_dma_sg_memops;
-> > > > > > +     src_vq->mem_ops =3D &vb2_dma_contig_memops;
-> > > > > >       src_vq->drv_priv =3D inst;
-> > > > > >       src_vq->buf_struct_size =3D sizeof(struct venus_buffer);
-> > > > > >       src_vq->allow_zero_bytesused =3D 1;
-> > > > > > @@ -1017,7 +1017,7 @@ static int m2m_queue_init(void *priv, str=
-uct
-> > > > > > vb2_queue *src_vq,
-> > > > > >       dst_vq->io_modes =3D VB2_MMAP | VB2_USERPTR | VB2_DMABUF;
-> > > > > >       dst_vq->timestamp_flags =3D V4L2_BUF_FLAG_TIMESTAMP_COPY;
-> > > > > >       dst_vq->ops =3D &venc_vb2_ops;
-> > > > > > -     dst_vq->mem_ops =3D &vb2_dma_sg_memops;
-> > > > > > +     dst_vq->mem_ops =3D &vb2_dma_contig_memops;
-> > > > > >       dst_vq->drv_priv =3D inst;
-> > > > > >       dst_vq->buf_struct_size =3D sizeof(struct venus_buffer);
-> > > > > >       dst_vq->allow_zero_bytesused =3D 1;
-> > > > > >
-> > > > >
-> > > > > --
-> > > > > regards,
-> > > > > Stan
-> > >
-> >
-> >
+hrtimer_force_reprogram() updates cpu_base::softirq_expires_next only when
+the first expiring timer is a softirq timer and the soft interrupt is not
+activated. That's wrong because cpu_base::softirq_expires_next is left
+stale when the first expiring timer of all bases is a timer which expires
+in hard interrupt context. hrtimer_interrupt() does never update
+cpu_base::softirq_expires_next which is wrong too.
+
+That becomes a problem when clock_settime() sets CLOCK_REALTIME forward and
+the first soft expiring timer is in the CLOCK_REALTIME_SOFT base. Setting
+CLOCK_REALTIME forward moves the clock MONOTONIC based expiry time of that
+timer before the stale cpu_base::softirq_expires_next.
+
+cpu_base::softirq_expires_next is cached to make the check for raising the
+soft interrupt fast. In the above case the soft interrupt won't be raised
+until clock monotonic reaches the stale cpu_base::softirq_expires_next
+value. That's incorrect, but what's worse it that if the softirq timer
+becomes the first expiring timer of all clock bases after the hard expiry
+timer has been handled the reprogramming of the clockevent from
+hrtimer_interrupt() will result in an interrupt storm. That happens because
+the reprogramming does not use cpu_base::softirq_expires_next, it uses
+__hrtimer_get_next_event() which returns the actual expiry time. Once clock
+MONOTONIC reaches cpu_base::softirq_expires_next the soft interrupt is
+raised and the storm subsides.
+
+Change the logic in hrtimer_force_reprogram() to evaluate the soft and hard
+bases seperately, update softirq_expires_next and handle the case when a
+soft expiring timer is the first of all bases by comparing the expiry times
+and updating the required cpu base fields. Split this functionality into a
+separate function to be able to use it in hrtimer_interrupt() as well
+without copy paste.
+
+Fixes: da70160462e ("hrtimer: Implement support for softirq based hrtimers")
+Reported-by: Mikael Beckius <mikael.beckius@windriver.com>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Tested-by: Mikael Beckius <mikael.beckius@windriver.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210223160240.27518-1-anna-maria@linutronix.de
+
+---
+ kernel/time/hrtimer.c | 60 +++++++++++++++++++++++++++---------------
+ 1 file changed, 39 insertions(+), 21 deletions(-)
+
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 743c852..788b9d1 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -546,8 +546,11 @@ static ktime_t __hrtimer_next_event_base(struct hrtimer_cpu_base *cpu_base,
+ }
+ 
+ /*
+- * Recomputes cpu_base::*next_timer and returns the earliest expires_next but
+- * does not set cpu_base::*expires_next, that is done by hrtimer_reprogram.
++ * Recomputes cpu_base::*next_timer and returns the earliest expires_next
++ * but does not set cpu_base::*expires_next, that is done by
++ * hrtimer[_force]_reprogram and hrtimer_interrupt only. When updating
++ * cpu_base::*expires_next right away, reprogramming logic would no longer
++ * work.
+  *
+  * When a softirq is pending, we can ignore the HRTIMER_ACTIVE_SOFT bases,
+  * those timers will get run whenever the softirq gets handled, at the end of
+@@ -588,6 +591,37 @@ __hrtimer_get_next_event(struct hrtimer_cpu_base *cpu_base, unsigned int active_
+ 	return expires_next;
+ }
+ 
++static ktime_t hrtimer_update_next_event(struct hrtimer_cpu_base *cpu_base)
++{
++	ktime_t expires_next, soft = KTIME_MAX;
++
++	/*
++	 * If the soft interrupt has already been activated, ignore the
++	 * soft bases. They will be handled in the already raised soft
++	 * interrupt.
++	 */
++	if (!cpu_base->softirq_activated) {
++		soft = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_SOFT);
++		/*
++		 * Update the soft expiry time. clock_settime() might have
++		 * affected it.
++		 */
++		cpu_base->softirq_expires_next = soft;
++	}
++
++	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_HARD);
++	/*
++	 * If a softirq timer is expiring first, update cpu_base->next_timer
++	 * and program the hardware with the soft expiry time.
++	 */
++	if (expires_next > soft) {
++		cpu_base->next_timer = cpu_base->softirq_next_timer;
++		expires_next = soft;
++	}
++
++	return expires_next;
++}
++
+ static inline ktime_t hrtimer_update_base(struct hrtimer_cpu_base *base)
+ {
+ 	ktime_t *offs_real = &base->clock_base[HRTIMER_BASE_REALTIME].offset;
+@@ -628,23 +662,7 @@ hrtimer_force_reprogram(struct hrtimer_cpu_base *cpu_base, int skip_equal)
+ {
+ 	ktime_t expires_next;
+ 
+-	/*
+-	 * Find the current next expiration time.
+-	 */
+-	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
+-
+-	if (cpu_base->next_timer && cpu_base->next_timer->is_soft) {
+-		/*
+-		 * When the softirq is activated, hrtimer has to be
+-		 * programmed with the first hard hrtimer because soft
+-		 * timer interrupt could occur too late.
+-		 */
+-		if (cpu_base->softirq_activated)
+-			expires_next = __hrtimer_get_next_event(cpu_base,
+-								HRTIMER_ACTIVE_HARD);
+-		else
+-			cpu_base->softirq_expires_next = expires_next;
+-	}
++	expires_next = hrtimer_update_next_event(cpu_base);
+ 
+ 	if (skip_equal && expires_next == cpu_base->expires_next)
+ 		return;
+@@ -1644,8 +1662,8 @@ retry:
+ 
+ 	__hrtimer_run_queues(cpu_base, now, flags, HRTIMER_ACTIVE_HARD);
+ 
+-	/* Reevaluate the clock bases for the next expiry */
+-	expires_next = __hrtimer_get_next_event(cpu_base, HRTIMER_ACTIVE_ALL);
++	/* Reevaluate the clock bases for the [soft] next expiry */
++	expires_next = hrtimer_update_next_event(cpu_base);
+ 	/*
+ 	 * Store the new expiry value so the migration code can verify
+ 	 * against it.
