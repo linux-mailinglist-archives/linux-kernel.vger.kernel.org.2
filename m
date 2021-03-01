@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72889329BA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AC16329BAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379326AbhCBB1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:27:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43884 "EHLO mail.kernel.org"
+        id S1379367AbhCBB2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:28:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241233AbhCATPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:15:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDE2E601FF;
-        Mon,  1 Mar 2021 17:46:20 +0000 (UTC)
+        id S241267AbhCATP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:15:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D34DB64DD0;
+        Mon,  1 Mar 2021 17:46:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620781;
-        bh=N8XkJcekxhM2YUAzpa4OqIzptpZ0fPjKbI48L1UAiSw=;
+        s=korg; t=1614620803;
+        bh=dndZKJjYtARRKhaUfQar40ecfJDvNDi1MP0H8Ml87K0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fu11lI0A6mtysIftim8o30fG02fq+83xQXwsLmz6VLa7ZcMC4ab/eGyvKzACYThhZ
-         imP2Np3blU4opeBaJ+2ifWxFjNXqBDT5Z+CAwOj1+iG3M/vInIKA/TnSAwdnZOLs6P
-         5Jo7J7+hOILJfju8u3UEEVJtL0vDNMOJlBkY+YQU=
+        b=Giz53ynvjfLcp0NjsO0fDfOuC4Q8i4GTU5954ZXzuifeiuyOW/zt1v/0AjpIPaY0O
+         vSR1g4uMonZKqPuHR5AZhAprpsL98B0/BBE4ltM0Eea/x/sxSmPmL1F2UiIt7NVdXT
+         T9hwRagnEmbsLXsrGKn++RQP/YEYIEkzu7ej2zuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 278/775] drm/vc4: hdmi: Update the CEC clock divider on HSM rate change
-Date:   Mon,  1 Mar 2021 17:07:26 +0100
-Message-Id: <20210301161215.367149168@linuxfoundation.org>
+        Narayan Ayalasomayajula <Narayan.Ayalasomayajula@wdc.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 285/775] nvmet-tcp: fix receive data digest calculation for multiple h2cdata PDUs
+Date:   Mon,  1 Mar 2021 17:07:33 +0100
+Message-Id: <20210301161215.712431474@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -43,103 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit 47fa9a80270e20a0c4ddaffca1f144d22cc59620 ]
+[ Upstream commit fda871c0ba5d2eed2cd1c881573168129da70058 ]
 
-As part of the enable sequence we might change the HSM clock rate if the
-pixel rate is different than the one we were already dealing with.
+When a host sends multiple h2cdata PDUs for a single command, we
+should verify the data digest calculation per PDU and not
+per command.
 
-On the BCM2835 however, the CEC clock derives from the HSM clock so any
-rate change will need to be reflected in the CEC clock divider to output
-40kHz.
-
-Fixes: cd4cb49dc5bb ("drm/vc4: hdmi: Adjust HSM clock rate depending on pixel rate")
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210111142309.193441-8-maxime@cerno.tech
-(cherry picked from commit a9dd0b9a5c3e11c79e6ff9c7fdf07c471732dcb6)
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Fixes: 872d26a391da ("nvmet-tcp: add NVMe over TCP target driver")
+Reported-by: Narayan Ayalasomayajula <Narayan.Ayalasomayajula@wdc.com>
+Tested-by: Narayan Ayalasomayajula <Narayan.Ayalasomayajula@wdc.com>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 39 +++++++++++++++++++++++++---------
- 1 file changed, 29 insertions(+), 10 deletions(-)
+ drivers/nvme/target/tcp.c | 31 ++++++++++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index eff9014750e2d..a9f494590c578 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -119,6 +119,27 @@ static void vc5_hdmi_reset(struct vc4_hdmi *vc4_hdmi)
- 		   HDMI_READ(HDMI_CLOCK_STOP) | VC4_DVP_HT_CLOCK_STOP_PIXEL);
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index aacf06f0b4312..577ce7d403ae9 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -379,7 +379,7 @@ err:
+ 	return NVME_SC_INTERNAL;
  }
  
-+#ifdef CONFIG_DRM_VC4_HDMI_CEC
-+static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi)
-+{
-+	u16 clk_cnt;
-+	u32 value;
-+
-+	value = HDMI_READ(HDMI_CEC_CNTRL_1);
-+	value &= ~VC4_HDMI_CEC_DIV_CLK_CNT_MASK;
-+
-+	/*
-+	 * Set the clock divider: the hsm_clock rate and this divider
-+	 * setting will give a 40 kHz CEC clock.
-+	 */
-+	clk_cnt = clk_get_rate(vc4_hdmi->hsm_clock) / CEC_CLOCK_FREQ;
-+	value |= clk_cnt << VC4_HDMI_CEC_DIV_CLK_CNT_SHIFT;
-+	HDMI_WRITE(HDMI_CEC_CNTRL_1, value);
-+}
-+#else
-+static void vc4_hdmi_cec_update_clk_div(struct vc4_hdmi *vc4_hdmi) {}
-+#endif
-+
- static enum drm_connector_status
- vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+-static void nvmet_tcp_ddgst(struct ahash_request *hash,
++static void nvmet_tcp_send_ddgst(struct ahash_request *hash,
+ 		struct nvmet_tcp_cmd *cmd)
  {
-@@ -651,6 +672,8 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder)
- 		return;
+ 	ahash_request_set_crypt(hash, cmd->req.sg,
+@@ -387,6 +387,23 @@ static void nvmet_tcp_ddgst(struct ahash_request *hash,
+ 	crypto_ahash_digest(hash);
+ }
+ 
++static void nvmet_tcp_recv_ddgst(struct ahash_request *hash,
++		struct nvmet_tcp_cmd *cmd)
++{
++	struct scatterlist sg;
++	struct kvec *iov;
++	int i;
++
++	crypto_ahash_init(hash);
++	for (i = 0, iov = cmd->iov; i < cmd->nr_mapped; i++, iov++) {
++		sg_init_one(&sg, iov->iov_base, iov->iov_len);
++		ahash_request_set_crypt(hash, &sg, NULL, iov->iov_len);
++		crypto_ahash_update(hash);
++	}
++	ahash_request_set_crypt(hash, NULL, (void *)&cmd->exp_ddgst, 0);
++	crypto_ahash_final(hash);
++}
++
+ static void nvmet_setup_c2h_data_pdu(struct nvmet_tcp_cmd *cmd)
+ {
+ 	struct nvme_tcp_data_pdu *pdu = cmd->data_pdu;
+@@ -411,7 +428,7 @@ static void nvmet_setup_c2h_data_pdu(struct nvmet_tcp_cmd *cmd)
+ 
+ 	if (queue->data_digest) {
+ 		pdu->hdr.flags |= NVME_TCP_F_DDGST;
+-		nvmet_tcp_ddgst(queue->snd_hash, cmd);
++		nvmet_tcp_send_ddgst(queue->snd_hash, cmd);
  	}
  
-+	vc4_hdmi_cec_update_clk_div(vc4_hdmi);
-+
- 	/*
- 	 * FIXME: When the pixel freq is 594MHz (4k60), this needs to be setup
- 	 * at 300MHz.
-@@ -1467,7 +1490,6 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
+ 	if (cmd->queue->hdr_digest) {
+@@ -1060,7 +1077,7 @@ static void nvmet_tcp_prep_recv_ddgst(struct nvmet_tcp_cmd *cmd)
  {
- 	struct cec_connector_info conn_info;
- 	struct platform_device *pdev = vc4_hdmi->pdev;
--	u16 clk_cnt;
- 	u32 value;
- 	int ret;
+ 	struct nvmet_tcp_queue *queue = cmd->queue;
  
-@@ -1486,17 +1508,14 @@ static int vc4_hdmi_cec_init(struct vc4_hdmi *vc4_hdmi)
- 	cec_s_conn_info(vc4_hdmi->cec_adap, &conn_info);
+-	nvmet_tcp_ddgst(queue->rcv_hash, cmd);
++	nvmet_tcp_recv_ddgst(queue->rcv_hash, cmd);
+ 	queue->offset = 0;
+ 	queue->left = NVME_TCP_DIGEST_LENGTH;
+ 	queue->rcv_state = NVMET_TCP_RECV_DDGST;
+@@ -1081,14 +1098,14 @@ static int nvmet_tcp_try_recv_data(struct nvmet_tcp_queue *queue)
+ 		cmd->rbytes_done += ret;
+ 	}
  
- 	HDMI_WRITE(HDMI_CEC_CPU_MASK_SET, 0xffffffff);
-+
- 	value = HDMI_READ(HDMI_CEC_CNTRL_1);
--	value &= ~VC4_HDMI_CEC_DIV_CLK_CNT_MASK;
--	/*
--	 * Set the logical address to Unregistered and set the clock
--	 * divider: the hsm_clock rate and this divider setting will
--	 * give a 40 kHz CEC clock.
--	 */
--	clk_cnt = clk_get_rate(vc4_hdmi->hsm_clock) / CEC_CLOCK_FREQ;
--	value |= VC4_HDMI_CEC_ADDR_MASK |
--		 (clk_cnt << VC4_HDMI_CEC_DIV_CLK_CNT_SHIFT);
-+	/* Set the logical address to Unregistered */
-+	value |= VC4_HDMI_CEC_ADDR_MASK;
- 	HDMI_WRITE(HDMI_CEC_CNTRL_1, value);
-+
-+	vc4_hdmi_cec_update_clk_div(vc4_hdmi);
-+
- 	ret = devm_request_threaded_irq(&pdev->dev, platform_get_irq(pdev, 0),
- 					vc4_cec_irq_handler,
- 					vc4_cec_irq_handler_thread, 0,
++	if (queue->data_digest) {
++		nvmet_tcp_prep_recv_ddgst(cmd);
++		return 0;
++	}
+ 	nvmet_tcp_unmap_pdu_iovec(cmd);
+ 
+ 	if (!(cmd->flags & NVMET_TCP_F_INIT_FAILED) &&
+ 	    cmd->rbytes_done == cmd->req.transfer_len) {
+-		if (queue->data_digest) {
+-			nvmet_tcp_prep_recv_ddgst(cmd);
+-			return 0;
+-		}
+ 		cmd->req.execute(&cmd->req);
+ 	}
+ 
 -- 
 2.27.0
 
