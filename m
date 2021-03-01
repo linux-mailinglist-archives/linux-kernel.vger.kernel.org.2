@@ -2,110 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C66327C20
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBCB327C24
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234320AbhCAK3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:29:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
+        id S234429AbhCAK3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:29:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234394AbhCAK3J (ORCPT
+        with ESMTP id S234417AbhCAK3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:29:09 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086AEC06174A;
-        Mon,  1 Mar 2021 02:28:29 -0800 (PST)
-Date:   Mon, 01 Mar 2021 10:28:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614594507;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yBEutZAcaqNmgkIlf5JXEYggQE0NqRGs7D3iN5T9Kok=;
-        b=Wys15cimkMu3s3W7ZMCYduex0fuS4WsCewfB+SxICxnL17kh04z2Ei55eDiQ/8w77i5OOf
-        3P70RJ4S6DdCbd3rX8JMynNCN637lxRc7z1SV6m5ge3tgvZjQLW5pmoQipGyprYAS56yCF
-        /5DjmaW6RDxGsL7e6FTpnu6nimK57i8sGOyDpyIM59uRSZ+mKE9GyZRdF8XRo4RjQOIMNs
-        yiZHMZ8y0RBdboo/pMbBOL0OioQvQ8AH/Vfzod1yTdKzvPruSYDJmFDjQn1q94xZfmawDi
-        Fi9XQQGAhh7kYpUuU1jryx1WRW8YZkhYfiUfNQE+CTn5sIYiyS4WVA1QMZFPow==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614594507;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yBEutZAcaqNmgkIlf5JXEYggQE0NqRGs7D3iN5T9Kok=;
-        b=xcmfhSmHKGWL/oR5q+cjaisJOCBS/czHpuzT2y82Nh6Yx+nnbm80WuTWBNt4SjR25HxzdX
-        lbnfiZ2mJ+cefICg==
-From:   "tip-bot2 for Justin Ernst" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/uv: Fix indentation warning in
- Documentation/ABI/testing/sysfs-firmware-sgi_uv
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        Borislav Petkov <bp@suse.de>,
-        Mike Travis <mike.travis@hpe.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210219182852.385297-1-justin.ernst@hpe.com>
-References: <20210219182852.385297-1-justin.ernst@hpe.com>
+        Mon, 1 Mar 2021 05:29:23 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D99C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 02:28:30 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id y22-20020a1c4b160000b029010b2094f5deso2720492wma.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:28:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=fEoK6sj6Vx64waeuaFZ7WzuyFiOIkvvvkXXAhuHJ6n0=;
+        b=CInzuD9yHUVVP/8k0kdY+Ubp/d8ztYs2RdGpZXm/Pov3aldb+lHMFxv+ESoM7LlBKr
+         bDf1GmA541rYTR7nYa21exMDiAbImp0KPPpLF5o/W3/faYxlIBTSvU89DPvH8kFsuEj4
+         caTrnXyj4Ju4lGk9y4Hzl5dpwR5izYha4XeLmVa0SWBR9RhU+SyMjM1wn6PW31IgIgZY
+         yVAoxrbskT/FMRHpyLLmacnTZkmCEUr089CoI9+SwvfI8WF4ssYWPSYzdSjNpsK6KAti
+         d2Ku44Ce3yXJ0yXSQQkMzDHLUoHVJZapYN6xgunsSVdHMLL/TaZVw5n2w9fQA72LbJiD
+         2vag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=fEoK6sj6Vx64waeuaFZ7WzuyFiOIkvvvkXXAhuHJ6n0=;
+        b=X8mafvyMIx0iHrmowzAbHFQlgs5rF++JxshooZCMzcQkGslKKRK6Wp3Kmz69xIM52z
+         t9Wmn++odwmm4ELWQJno36qdm8owEck6IX8al9Tr3a9+yOoxidf90YMKZ7jb/oO2dQ4q
+         dLPF4ldZDjewWvKr0uyrC5l9Nw6jQUPvQG+8EhpNvvmC794sTxI8dyq7mMreZg7O7ErJ
+         nqiVm5ksyj+aP4jBfIyrfydQ8qw/bRC8D3MIzjFT7B6rCkCvVatMwepF2pK0OTf4m3EU
+         bQxMTUQ7KjK0WriysgoghjjTy6E9tjTYAfrWRwaq0T5z9Zo5FBkDz/neTT7YVom/lI2m
+         xEoA==
+X-Gm-Message-State: AOAM533eVRKMZVo0irW5YZ3lC0FJieT+WY+LX0m504kMu/YKq/C1rlZ4
+        3pj38mFoSDWA3cw60CEUiekLUQ==
+X-Google-Smtp-Source: ABdhPJzL/2dtfbTMhhuvxXFnJKC6c5bht+hdeQ08HlMI2CLPQiH+mxyTR+jtNBSYV/UdicarWzgLJw==
+X-Received: by 2002:a7b:cb58:: with SMTP id v24mr15225989wmj.182.1614594509069;
+        Mon, 01 Mar 2021 02:28:29 -0800 (PST)
+Received: from dell ([91.110.221.155])
+        by smtp.gmail.com with ESMTPSA id o9sm22331888wmc.8.2021.03.01.02.28.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 02:28:28 -0800 (PST)
+Date:   Mon, 1 Mar 2021 10:28:26 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [GIT PULL] Immutable branch between MFD, PWM and RTC due for the
+ v5.13 merge window
+Message-ID: <20210301102826.GK641347@dell>
+References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Message-ID: <161459450674.20312.3909036140649624505.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/platform branch of tip:
+Enjoy!
 
-Commit-ID:     2430915f8291212f2bd2155176b817c34a18a2b1
-Gitweb:        https://git.kernel.org/tip/2430915f8291212f2bd2155176b817c34a18a2b1
-Author:        Justin Ernst <justin.ernst@hpe.com>
-AuthorDate:    Fri, 19 Feb 2021 12:28:52 -06:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 01 Mar 2021 11:14:25 +01:00
+The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
 
-x86/platform/uv: Fix indentation warning in Documentation/ABI/testing/sysfs-firmware-sgi_uv
+  Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
 
-Commit
+are available in the Git repository at:
 
-  c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-pwm-rtc-v5.13
 
-misplaced the first line of a codeblock section, causing the reported
-warning message:
+for you to fetch changes up to 80629611215d1c5d52ed3cf723fd6d24a5872504:
 
-  Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected indentation.
+  MAINTAINERS: Add entry for Netronix embedded controller (2021-03-01 10:26:17 +0000)
 
-Move the misplaced line below the required blank line to remove the
-warning message.
+----------------------------------------------------------------
+Immutable branch between MFD, PWM and RTC due for the v5.13 merge window
 
-Fixes: c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Mike Travis <mike.travis@hpe.com>
-Link: https://lkml.kernel.org/r/20210219182852.385297-1-justin.ernst@hpe.com
----
- Documentation/ABI/testing/sysfs-firmware-sgi_uv | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+----------------------------------------------------------------
+Jonathan Neuschäfer (6):
+      dt-bindings: Add vendor prefix for Netronix, Inc.
+      dt-bindings: mfd: Add binding for Netronix embedded controller
+      mfd: Add base driver for Netronix embedded controller
+      pwm: ntxec: Add driver for PWM function in Netronix EC
+      rtc: New driver for RTC in Netronix embedded controller
+      MAINTAINERS: Add entry for Netronix embedded controller
 
-diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-index 637c668..12ed843 100644
---- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-+++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-@@ -39,8 +39,8 @@ Description:
- 
- 		The uv_type entry contains the hub revision number.
- 		This value can be used to identify the UV system version::
--			"0.*" = Hubless UV ('*' is subtype)
- 
-+			"0.*" = Hubless UV ('*' is subtype)
- 			"3.0" = UV2
- 			"5.0" = UV3
- 			"7.0" = UV4
+ .../devicetree/bindings/mfd/netronix,ntxec.yaml    |  76 +++++++
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ MAINTAINERS                                        |   9 +
+ drivers/mfd/Kconfig                                |  11 +
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/ntxec.c                                | 221 +++++++++++++++++++++
+ drivers/pwm/Kconfig                                |   8 +
+ drivers/pwm/Makefile                               |   1 +
+ drivers/pwm/pwm-ntxec.c                            | 184 +++++++++++++++++
+ drivers/rtc/Kconfig                                |   8 +
+ drivers/rtc/Makefile                               |   1 +
+ drivers/rtc/rtc-ntxec.c                            | 145 ++++++++++++++
+ include/linux/mfd/ntxec.h                          |  37 ++++
+ 13 files changed, 704 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+ create mode 100644 drivers/mfd/ntxec.c
+ create mode 100644 drivers/pwm/pwm-ntxec.c
+ create mode 100644 drivers/rtc/rtc-ntxec.c
+ create mode 100644 include/linux/mfd/ntxec.h
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
