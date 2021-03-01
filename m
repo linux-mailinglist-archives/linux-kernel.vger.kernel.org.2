@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D10327615
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 03:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D86DC32760D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 03:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhCACVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 21:21:15 -0500
-Received: from spam01.hygon.cn ([110.188.70.11]:54254 "EHLO spam2.hygon.cn"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231364AbhCACVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 21:21:12 -0500
-Received: from MK-DB.hygon.cn ([172.23.18.60])
-        by spam2.hygon.cn with ESMTP id 1212GjpF002954;
-        Mon, 1 Mar 2021 10:16:45 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from cncheex01.Hygon.cn ([172.23.18.10])
-        by MK-DB.hygon.cn with ESMTP id 1212Gf8n020388;
-        Mon, 1 Mar 2021 10:16:41 +0800 (GMT-8)
-        (envelope-from puwen@hygon.cn)
-Received: from cncheex01.Hygon.cn (172.23.18.10) by cncheex01.Hygon.cn
- (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Mon, 1 Mar 2021
- 10:16:26 +0800
-Received: from cncheex01.Hygon.cn ([172.23.18.10]) by cncheex01.Hygon.cn
- ([172.23.18.10]) with mapi id 15.01.1466.003; Mon, 1 Mar 2021 10:16:26 +0800
-From:   Wen Pu <puwen@hygon.cn>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "victording@google.com" <victording@google.com>,
-        "kim.phillips@amd.com" <kim.phillips@amd.com>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>
-Subject: Re: [RFC PATCH] powercap: Add Hygon Fam18h RAPL support
-Thread-Topic: [RFC PATCH] powercap: Add Hygon Fam18h RAPL support
-Thread-Index: AQHXC3ZtcHkxrsdXYk+yZ96EVY24VKptM5qAgACxH4A=
-Date:   Mon, 1 Mar 2021 02:16:26 +0000
-Message-ID: <6543a335-e84c-29ea-e20b-c56bdd60d1c6@hygon.cn>
-References: <20210225130129.21512-1-puwen@hygon.cn>
- <0a8f11cfbc761767b7a994f724af3dac124184c9.camel@linux.intel.com>
-In-Reply-To: <0a8f11cfbc761767b7a994f724af3dac124184c9.camel@linux.intel.com>
+        id S231794AbhCACRu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 28 Feb 2021 21:17:50 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2853 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231735AbhCACRq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 21:17:46 -0500
+Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DpkNH0z2rz140Vj;
+        Mon,  1 Mar 2021 10:14:23 +0800 (CST)
+Received: from DGGEML509-MBX.china.huawei.com ([169.254.1.252]) by
+ dggeml405-hub.china.huawei.com ([10.3.17.49]) with mapi id 14.03.0509.000;
+ Mon, 1 Mar 2021 10:16:55 +0800
+From:   "chenjun (AM)" <chenjun102@huawei.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+CC:     "Xiangrui (Euler)" <rui.xiang@huawei.com>
+Subject: [Reoprt] Some compile warning on ppc dts
+Thread-Topic: [Reoprt] Some compile warning on ppc dts
+Thread-Index: AdcOQPNGmFy3U3BrTyOQctVQlk5NMQ==
+Date:   Mon, 1 Mar 2021 02:16:55 +0000
+Message-ID: <CE1E7D7EFA066443B6454A6A5063B50220CCBBE4@dggeml509-mbx.china.huawei.com>
 Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [172.23.18.44]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EEBAD4DD581A50478C89BF8CEE857CF8@Hygon.cn>
-Content-Transfer-Encoding: base64
+x-originating-ip: [10.174.178.53]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-MAIL: spam2.hygon.cn 1212GjpF002954
-X-DNSRBL: 
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMjAyMS8yLzI4IDIzOjQyLCBTcmluaXZhcyBQYW5kcnV2YWRhIHdyb3RlOg0KPiBPbiBUaHUs
-IDIwMjEtMDItMjUgYXQgMjE6MDEgKzA4MDAsIFB1IFdlbiB3cm90ZToNCj4+IEVuYWJsZSBIeWdv
-biBGYW0xOGggUkFQTCBzdXBwb3J0IGZvciB0aGUgcG93ZXIgY2FwcGluZyBmcmFtZXdvcmsuDQo+
-Pg0KPiBJZiB0aGlzIHBhdGNoIGlzIHRlc3RlZCBhbmQgd29ya3Mgb24gdGhpcyBwcm9jZXNzb3Is
-IG5vdCBzdXJlIHdoeSB0aGlzDQo+IGlzIFJGQz8NCg0KVGhpcyBwYXRjaCBpcyB0ZXN0ZWQgYW5k
-IHdvcmtzIG9uIEh5Z29uIHByb2Nlc3Nvci4gVGhlICdSRkMnIGlzIGF1dG9tYXRlZA0KZ2VuZXJh
-dGVkIGJ5IG15IHNjcmlwdCA7KQ0KDQpUaGFua3MsDQpQdSBXZW4NCg0KPiBUaGFua3MsDQo+IFNy
-aW5pdmFzDQo+IA0KPj4gU2lnbmVkLW9mZi1ieTogUHUgV2VuIDxwdXdlbkBoeWdvbi5jbj4NCj4+
-IC0tLQ0KPj4gIGRyaXZlcnMvcG93ZXJjYXAvaW50ZWxfcmFwbF9jb21tb24uYyB8IDEgKw0KPj4g
-IGRyaXZlcnMvcG93ZXJjYXAvaW50ZWxfcmFwbF9tc3IuYyAgICB8IDEgKw0KPj4gIDIgZmlsZXMg
-Y2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcG93
-ZXJjYXAvaW50ZWxfcmFwbF9jb21tb24uYw0KPj4gYi9kcml2ZXJzL3Bvd2VyY2FwL2ludGVsX3Jh
-cGxfY29tbW9uLmMNCj4+IGluZGV4IGZkZGEyYTczNzE4Ni4uNzNjZjY4YWY5NzcwIDEwMDY0NA0K
-Pj4gLS0tIGEvZHJpdmVycy9wb3dlcmNhcC9pbnRlbF9yYXBsX2NvbW1vbi5jDQo+PiArKysgYi9k
-cml2ZXJzL3Bvd2VyY2FwL2ludGVsX3JhcGxfY29tbW9uLmMNCj4+IEBAIC0xMDY5LDYgKzEwNjks
-NyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHg4Nl9jcHVfaWQgcmFwbF9pZHNbXQ0KPj4gX19pbml0
-Y29uc3QgPSB7DQo+PiAgDQo+PiAgCVg4Nl9NQVRDSF9WRU5ET1JfRkFNKEFNRCwgMHgxNywgJnJh
-cGxfZGVmYXVsdHNfYW1kKSwNCj4+ICAJWDg2X01BVENIX1ZFTkRPUl9GQU0oQU1ELCAweDE5LCAm
-cmFwbF9kZWZhdWx0c19hbWQpLA0KPj4gKwlYODZfTUFUQ0hfVkVORE9SX0ZBTShIWUdPTiwgMHgx
-OCwgJnJhcGxfZGVmYXVsdHNfYW1kKSwNCj4+ICAJe30NCj4+ICB9Ow0KPj4gIE1PRFVMRV9ERVZJ
-Q0VfVEFCTEUoeDg2Y3B1LCByYXBsX2lkcyk7DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wb3dl
-cmNhcC9pbnRlbF9yYXBsX21zci5jDQo+PiBiL2RyaXZlcnMvcG93ZXJjYXAvaW50ZWxfcmFwbF9t
-c3IuYw0KPj4gaW5kZXggNzgyMTNkNGI1YjE2Li5jYzNiMjI4ODFiZmUgMTAwNjQ0DQo+PiAtLS0g
-YS9kcml2ZXJzL3Bvd2VyY2FwL2ludGVsX3JhcGxfbXNyLmMNCj4+ICsrKyBiL2RyaXZlcnMvcG93
-ZXJjYXAvaW50ZWxfcmFwbF9tc3IuYw0KPj4gQEAgLTE1MCw2ICsxNTAsNyBAQCBzdGF0aWMgaW50
-IHJhcGxfbXNyX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4+ICpwZGV2KQ0KPj4gIAlj
-YXNlIFg4Nl9WRU5ET1JfSU5URUw6DQo+PiAgCQlyYXBsX21zcl9wcml2ID0gJnJhcGxfbXNyX3By
-aXZfaW50ZWw7DQo+PiAgCQlicmVhazsNCj4+ICsJY2FzZSBYODZfVkVORE9SX0hZR09OOg0KPj4g
-IAljYXNlIFg4Nl9WRU5ET1JfQU1EOg0KPj4gIAkJcmFwbF9tc3JfcHJpdiA9ICZyYXBsX21zcl9w
-cml2X2FtZDsNCj4+ICAJCWJyZWFrOw0KPg==
+Hi
+
+After run the following commands
+make distclean
+make allmodconfig ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu-
+make oldconfig ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu-
+make -j64 ARCH=powerpc CROSS_COMPILE=powerpc64-linux-gnu-
+
+I get some warning:
+arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): 
+/pci@f0000d00: missing ranges for PCI bridg
+e (or not a bridge)
+arch/powerpc/boot/dts/o2dnt2.dtb: Warning (pci_device_bus_num): Failed 
+prerequisite 'pci_bridge'
+arch/powerpc/boot/dts/mpc5200b.dtsi:182.18-186.5: Warning 
+(spi_bus_bridge): /soc5200@f0000000/psc@2000: node name f
+or SPI buses should be 'spi'
+   also defined at arch/powerpc/boot/dts/o2d.dtsi:32.12-43.5
+arch/powerpc/boot/dts/o2dnt2.dtb: Warning (spi_bus_reg): Failed 
+prerequisite 'spi_bus_bridge'
+..
+
+For the problem about "node name for SPI buses should be 'spi'":
+Rename the psc@2000 to spi@2000 in arch/powerpc/boot/dts/o2d.dtsi can 
+fix it.
+diff --git a/arch/powerpc/boot/dts/o2d.dtsi b/arch/powerpc/boot/dts/o2d.dtsi
+index 6661955a2be4..cd3dc70cd72e 100644
+--- a/arch/powerpc/boot/dts/o2d.dtsi
++++ b/arch/powerpc/boot/dts/o2d.dtsi
+@@ -29,7 +29,7 @@ rtc@800 {
+  >------>------->-------status = "disabled";
+  >------>-------};
+-
+->------>-------psc@2000 {>----->-------// PSC1
++>------>-------spi@2000 {>----->-------// PSC1
+  >------>------->-------compatible = 
+"fsl,mpc5200b-psc-spi","fsl,mpc5200-psc-spi";
+  >------>------->-------#address-cells = <1>;
+  >------>------->-------#size-cells = <0>;
+---
+
+For the problem about "missing ranges for PCI bridge (or not a bridge)":
+Ranges should be add in arch/powerpc/boot/dts/mpc5200b.dtsi.
+ >-------pci: pci@f0000d00 {
+ >------->-------#interrupt-cells = <1>;
+ >------->-------#size-cells = <2>;
+ >------->-------#address-cells = <3>;
+ >------->-------device_type = "pci";
+ >------->-------compatible = "fsl,mpc5200b-pci","fsl,mpc5200-pci";
+ >------->-------reg = <0xf0000d00 0x100>;
+ >------->-------// interrupt-map-mask = need to add
+ >------->-------// interrupt-map = need to add
+ >------->-------clock-frequency = <0>; // From boot loader
+ >------->-------interrupts = <2 8 0 2 9 0 2 10 0>;
+ >------->-------bus-range = <0 0>;
+ >------->-------// ranges = need to add
+ >-------};
+I think the ranges should be add by someone who knows the mpc5200 better.
+
+Can anyone fix this?
+
+-- 
+Regards
+Chen Jun
