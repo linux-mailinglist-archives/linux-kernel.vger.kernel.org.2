@@ -2,78 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A63329FC0
+	by mail.lfdr.de (Postfix) with ESMTP id C5E27329FC1
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574497AbhCBDrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:47:00 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60144 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235710AbhCAVQy (ORCPT
+        id S1574506AbhCBDrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243413AbhCAVRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:16:54 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id AABA21C0B8B; Mon,  1 Mar 2021 22:16:10 +0100 (CET)
-Date:   Mon, 1 Mar 2021 22:16:09 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/93] 4.4.259-rc1 review
-Message-ID: <20210301211609.GB1284@amd>
-References: <20210301161006.881950696@linuxfoundation.org>
+        Mon, 1 Mar 2021 16:17:17 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DC2C061756;
+        Mon,  1 Mar 2021 13:16:37 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 0FF272BA;
+        Mon,  1 Mar 2021 21:16:37 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0FF272BA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614633397; bh=BOWU4MDyFiQdWXRrrAYTjnx7MFERL9dM25+L03zaDSs=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=G9TjIVOv72Tjp95UywWF5oB5lRoL8UHnQo73OhMdPx8WBlss0uCCU6OU2ZQkByZ08
+         Sy/BqyVSeGYFnXMSy13M1cI5+WmmIU4AorsePF99JGl9i7HfXSLe7FVSoLLZg+neBU
+         2lbL65P+aWC8KBz6qJBglL6XfzTxyAI930oXQEiUQFFLC219nmgLFVwvQOGP828gul
+         o9jISFsa/s98nm1aT3z+qZiobga/wUzhVKtqpEpxfoTPYzpvpFMFsXi4iHQMX6ijcF
+         Q9QChpB0FX+TwynXD+mQF7v4knQpWAP38Y/uREOiv3wIKo7zpmrXKwULUHZEzVBfYG
+         DiwUK78oEEAUg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     hjh <huangjianghui@uniontech.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Harry Wei <harryxiyou@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PATCH Documentation translations:translate
+ sound/hd-audio/controls to chinese
+In-Reply-To: <20210301122019.80234-1-huangjianghui@uniontech.com>
+References: <20210301122019.80234-1-huangjianghui@uniontech.com>
+Date:   Mon, 01 Mar 2021 14:16:36 -0700
+Message-ID: <8735xe4lsb.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="dc+cDN39EJAMEtIO"
-Content-Disposition: inline
-In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+hjh <huangjianghui@uniontech.com> writes:
 
---dc+cDN39EJAMEtIO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Signed-off-by: hjh <huangjianghui@uniontech.com>
+> ---
+>  Documentation/translations/zh_CN/index.rst    |   1 +
+>  .../zh_CN/sound/hd-audio/controls.rst         | 102 ++++++++++++++++++
+>  .../zh_CN/sound/hd-audio/index.rst            |  17 +++
+>  .../translations/zh_CN/sound/index.rst        |  26 +++++
+>  4 files changed, 146 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/contr=
+ols.rst
+>  create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/index=
+.rst
+>  create mode 100644 Documentation/translations/zh_CN/sound/index.rst
 
-Hi!
+So you have sent me two versions of this in the last 24 hours with no
+indication of what has changed or why I should prefer one over the
+other.  Always include that information (under the "---" line) when you
+send updated versions.
 
-> This is the start of the stable review cycle for the 4.4.259 release.
-> There are 93 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-> Responses should be made by Wed, 03 Mar 2021 16:09:49 +0000.
-> Anything received after that time might be too late.
+It looks like you got a Reviewed-by tag from Alex on the other version,
+but that doesn't appear here; why?
 
-CIP testing did not find any problems here:
+[...]
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y
+> diff --git a/Documentation/translations/zh_CN/sound/hd-audio/index.rst b/=
+Documentation/translations/zh_CN/sound/hd-audio/index.rst
+> new file mode 100644
+> index 000000000000..c287aad51066
+> --- /dev/null
+> +++ b/Documentation/translations/zh_CN/sound/hd-audio/index.rst
+> @@ -0,0 +1,17 @@
+> +.. include:: ../../disclaimer-zh_CN.rst
+> +
+> +:Original: :doc:`../../../../sound/hd-audio/index`
+> +:Translator: Huang Jianghui <huangjianghui@uniontech.com>
+> +
+> +
+> +=E9=AB=98=E6=B8=85=E9=9F=B3=E9=A2=91
+> +=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +.. toctree::
+> +   :maxdepth: 2
+> +
+> +   notes
+> +   models
+> +   controls
+> +   dp-mst
+> +   realtek-pc-beep
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+So you list a bunch of files here, but most of them are not added in
+your patch.  That will, of course, break the docs build.
 
-Best regards,
-								Pavel
+> diff --git a/Documentation/translations/zh_CN/sound/index.rst b/Documenta=
+tion/translations/zh_CN/sound/index.rst
+> new file mode 100644
+> index 000000000000..42d86b361e42
+> --- /dev/null
+> +++ b/Documentation/translations/zh_CN/sound/index.rst
+> @@ -0,0 +1,26 @@
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Similarly, including the index.rst file at this level is good, but...
 
---dc+cDN39EJAMEtIO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> +.. include:: ../disclaimer-zh_CN.rst
+> +
+> +:Original: :doc:`../../../sound/index`
+> +:Translator: Huang Jianghui <huangjianghui@uniontech.com>
+> +
+> +
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +Linux =E5=A3=B0=E9=9F=B3=E5=AD=90=E7=B3=BB=E7=BB=9F=E6=96=87=E6=A1=A3
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +.. toctree::
+> +   :maxdepth: 2
+> +
+> +   kernel-api/index
+> +   designs/index
+> +   soc/index
+> +   alsa-configuration
+> +   hd-audio/index
+> +   cards/index
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+What are all of these files?
 
-iEYEARECAAYFAmA9WZkACgkQMOfwapXb+vJIdgCgr6/DALJPXWllL31h7/1241FV
-X+EAn3R2whfW0t16uEYEd0GGqyKVr5i6
-=qCm0
------END PGP SIGNATURE-----
+Please fix these issues and make sure that the docs build runs correctly
+before resubmitting.
 
---dc+cDN39EJAMEtIO--
+Thanks,
+
+jon
