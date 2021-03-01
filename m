@@ -2,60 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61198327E36
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:23:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96701327E39
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhCAMXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:23:17 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:39520 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234008AbhCAMXG (ORCPT
+        id S234111AbhCAMYY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Mar 2021 07:24:24 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:26053 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232363AbhCAMYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:23:06 -0500
-X-UUID: e04229979be24e64a497ae8d3c2e0ca5-20210301
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=gs/svU8lhJHXw6APVwlc6cCBq2DNAv6aE+F+Aj/pGlQ=;
-        b=JdHO5bevxhGPTCgkH57o2TT1mzqvC3ogHkIr2jTrAHQ0wCMoZs8UxhbVbve1JVfX4q0Pd5axby01PIasKMWbbLWYIdwfcQLKDDxxLs8mCbDRvemb6NM48CjaX+LNnlFGZ4PLIcfOQFHx7cJzrWRJJw0UiaMVfRgJnUshd0LDA6M=;
-X-UUID: e04229979be24e64a497ae8d3c2e0ca5-20210301
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1503276849; Mon, 01 Mar 2021 20:22:13 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
- 2021 20:22:01 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 1 Mar 2021 20:22:01 +0800
-Message-ID: <1614601321.16737.5.camel@mhfsdcap03>
-Subject: Re: [PATCH] i2c: mediatek: Get device clock-stretch time via dts
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
-Date:   Mon, 1 Mar 2021 20:22:01 +0800
-In-Reply-To: <1612348525-13364-1-git-send-email-qii.wang@mediatek.com>
-References: <1612348525-13364-1-git-send-email-qii.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 1 Mar 2021 07:24:17 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-452-WOGKyZHtPzWtnZOLOtgx3A-1; Mon, 01 Mar 2021 07:23:22 -0500
+X-MC-Unique: WOGKyZHtPzWtnZOLOtgx3A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D1EC801965;
+        Mon,  1 Mar 2021 12:23:20 +0000 (UTC)
+Received: from krava.cust.in.nbox.cz (unknown [10.40.192.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DDEB05C1C4;
+        Mon,  1 Mar 2021 12:23:16 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH] perf tools: Fix event's pmu name parsing
+Date:   Mon,  1 Mar 2021 13:23:15 +0100
+Message-Id: <20210301122315.63471-1-jolsa@kernel.org>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 7A2577D5E8F4CF0FD35F7C75FCE434CDC2524106DFD176D68BD41856E5BE214F2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQpPbiBXZWQsIDIwMjEtMDItMDMgYXQgMTg6MzUgKzA4MDAsIHFpaS53YW5nQG1lZGlhdGVr
-LmNvbSB3cm90ZToNCj4gRnJvbTogUWlpIFdhbmcgPHFpaS53YW5nQG1lZGlhdGVrLmNvbT4NCj4g
-DQo+IHRTVSxTVEEvdEhELFNUQS90U1UsU1RPUCBtYXliZSBvdXQgb2Ygc3BlYyBkdWUgdG8gZGV2
-aWNlDQo+IGNsb2NrLXN0cmV0Y2hpbmcgb3IgY2lyY3VpdCBsb3NzLCB3ZSBjb3VsZCBnZXQgZGV2
-aWNlDQo+IGNsb2NrLXN0cmV0Y2ggdGltZSBmcm9tIGR0cyB0byBhZGp1c3QgdGhlc2UgcGFyYW1l
-dGVycw0KPiB0byBtZWV0IHRoZSBzcGVjIHZpYSBFWFRfQ09ORiByZWdpc3Rlci4NCj4gDQo+IFNp
-Z25lZC1vZmYtYnk6IFFpaSBXYW5nIDxxaWkud2FuZ0BtZWRpYXRlay5jb20+DQo+IC0tLQ0KDQpD
-YW4gaXQgbWVyZ2UgaW50byA1LjEyPyBvciBkbyBJIG5lZWQgdG8gcmVzZW5kIHRoZSBwYXRjaD8N
-Cg0KVGhhbmtzLA0KCVFpaQ0K
+Jin Yao reported parser error for software event:
+
+  # perf stat -e software/r1a/ -a -- sleep 1
+  event syntax error: 'software/r1a/'
+                       \___ parser error
+
+This happens after commit 8c3b1ba0e7ea, where new
+software-gt-awake-time event's non-pmu-event-style
+makes event parser conflict with software pmu.
+
+If we allow PE_PMU_EVENT_PRE to be parsed as pmu name,
+we fix the conflict and the following character '/' for
+pmu or '-' for non-pmu-event-style event allows parser
+to decide what even is specified.
+
+Cc: Chris Wilson <chris@chris-wilson.co.uk>
+Fixes: 8c3b1ba0e7ea ("drm/i915/gt: Track the overall awake/busy time") # 1
+Reported-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/perf/util/parse-events.y | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index d5b6aff82f21..d57ac86ce7ca 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -89,6 +89,7 @@ static void inc_group_count(struct list_head *list,
+ %type <str> PE_EVENT_NAME
+ %type <str> PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
+ %type <str> PE_DRV_CFG_TERM
++%type <str> event_pmu_name
+ %destructor { free ($$); } <str>
+ %type <term> event_term
+ %destructor { parse_events_term__delete ($$); } <term>
+@@ -272,8 +273,11 @@ event_def: event_pmu |
+ 	   event_legacy_raw sep_dc |
+ 	   event_bpf_file
+ 
++event_pmu_name:
++PE_NAME | PE_PMU_EVENT_PRE
++
+ event_pmu:
+-PE_NAME opt_pmu_config
++event_pmu_name opt_pmu_config
+ {
+ 	struct parse_events_state *parse_state = _parse_state;
+ 	struct parse_events_error *error = parse_state->error;
+-- 
+2.29.2
 
