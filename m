@@ -2,37 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBFB329D11
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D77329D06
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442927AbhCBCRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:17:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55168 "EHLO mail.kernel.org"
+        id S1442838AbhCBCQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:16:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242276AbhCAToU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B3256527A;
-        Mon,  1 Mar 2021 17:30:27 +0000 (UTC)
+        id S242202AbhCAToD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B54565285;
+        Mon,  1 Mar 2021 17:30:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619828;
-        bh=6ZG1h8/E58QE122skVhk7QY/kCnUvBA44crw1IfV8hk=;
+        s=korg; t=1614619858;
+        bh=JUnO/GnhXr0F5Kh2N1zUw2QEMreqFEMEf1hOYK+S6yU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1S8Io6E9Ytr0way8aZG4Ywj2wNE+saWICoUYxKVjVEjFn9y9bvJbJdlSTb1S8wRCD
-         PAqSc7xvqegtUSMLMzKLyiSqXQOWEGTXk2TufdsttYrdSeivcU2pj2rJnL+sy1zqLV
-         ZpGRgt1RAfzldOCnGoMbS1fn3CHjtHknZWwvdrrY=
+        b=fgVxRGLoTVQkV4RHZ6TgjX9zzeFE8sz90c80tw0RQp4oSsPYU5NmRggH65GYE87mQ
+         LbCRY1RH9L3UBNmPX0kYlbeIVNrmpgYtRZC7hdOPPD9oFy4O3+BTSmjqonkxLCMKUl
+         RgOwNAjZd0uhyyS1Ddn28jkmyzha14Vz5fUHzNew=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 596/663] mm: memcontrol: fix swap undercounting in cgroup2
-Date:   Mon,  1 Mar 2021 17:14:04 +0100
-Message-Id: <20210301161211.352295920@linuxfoundation.org>
+        stable@vger.kernel.org, Shirley Her <shirley.her@bayhubtech.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.10 606/663] mmc: sdhci-pci-o2micro: Bug fix for SDR104 HW tuning failure
+Date:   Mon,  1 Mar 2021 17:14:14 +0100
+Message-Id: <20210301161211.834553281@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -44,79 +39,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Shirley Her <shirley.her@bayhubtech.com>
 
-commit cae3af62b33aa931427a0f211e04347b22180b36 upstream.
+commit 1ad9f88014ae1d5abccb6fe930bc4c5c311bdc05 upstream.
 
-When pages are swapped in, the VM may retain the swap copy to avoid
-repeated writes in the future.  It's also retained if shared pages are
-faulted back in some processes, but not in others.  During that time we
-have an in-memory copy of the page, as well as an on-swap copy.  Cgroup1
-and cgroup2 handle these overlapping lifetimes slightly differently due to
-the nature of how they account memory and swap:
+Force chip enter L0 power state during SDR104 HW tuning to avoid tuning failure
 
-Cgroup1 has a unified memory+swap counter that tracks a data page
-regardless whether it's in-core or swapped out.  On swapin, we transfer
-the charge from the swap entry to the newly allocated swapcache page, even
-though the swap entry might stick around for a while.  That's why we have
-a mem_cgroup_uncharge_swap() call inside mem_cgroup_charge().
-
-Cgroup2 tracks memory and swap as separate, independent resources and thus
-has split memory and swap counters.  On swapin, we charge the newly
-allocated swapcache page as memory, while the swap slot in turn must
-remain charged to the swap counter as long as its allocated too.
-
-The cgroup2 logic was broken by commit 2d1c498072de ("mm: memcontrol: make
-swap tracking an integral part of memory control"), because it
-accidentally removed the do_memsw_account() check in the branch inside
-mem_cgroup_uncharge() that was supposed to tell the difference between the
-charge transfer in cgroup1 and the separate counters in cgroup2.
-
-As a result, cgroup2 currently undercounts retained swap to varying
-degrees: swap slots are cached up to 50% of the configured limit or total
-available swap space; partially faulted back shared pages are only limited
-by physical capacity.  This in turn allows cgroups to significantly
-overconsume their alloted swap space.
-
-Add the do_memsw_account() check back to fix this problem.
-
-Link: https://lkml.kernel.org/r/20210217153237.92484-1-songmuchun@bytedance.com
-Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: <stable@vger.kernel.org>	[5.8+]
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Shirley Her <shirley.her@bayhubtech.com>
+Link: https://lore.kernel.org/r/20210206014051.3418-1-shirley.her@bayhubtech.com
+Fixes: 7b7d897e8898 ("mmc: sdhci-pci-o2micro: Add HW tuning for SDR104 mode")
+Cc: stable@vger.kernel.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/memcontrol.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/mmc/host/sdhci-pci-o2micro.c |   20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6808,7 +6808,19 @@ int mem_cgroup_charge(struct page *page,
- 	memcg_check_events(memcg, page);
- 	local_irq_enable();
+--- a/drivers/mmc/host/sdhci-pci-o2micro.c
++++ b/drivers/mmc/host/sdhci-pci-o2micro.c
+@@ -33,6 +33,8 @@
+ #define O2_SD_ADMA2		0xE7
+ #define O2_SD_INF_MOD		0xF1
+ #define O2_SD_MISC_CTRL4	0xFC
++#define O2_SD_MISC_CTRL		0x1C0
++#define O2_SD_PWR_FORCE_L0	0x0002
+ #define O2_SD_TUNING_CTRL	0x300
+ #define O2_SD_PLL_SETTING	0x304
+ #define O2_SD_MISC_SETTING	0x308
+@@ -300,6 +302,8 @@ static int sdhci_o2_execute_tuning(struc
+ {
+ 	struct sdhci_host *host = mmc_priv(mmc);
+ 	int current_bus_width = 0;
++	u32 scratch32 = 0;
++	u16 scratch = 0;
  
--	if (PageSwapCache(page)) {
-+	/*
-+	 * Cgroup1's unified memory+swap counter has been charged with the
-+	 * new swapcache page, finish the transfer by uncharging the swap
-+	 * slot. The swap slot would also get uncharged when it dies, but
-+	 * it can stick around indefinitely and we'd count the page twice
-+	 * the entire time.
-+	 *
-+	 * Cgroup2 has separate resource counters for memory and swap,
-+	 * so this is a non-issue here. Memory and swap charge lifetimes
-+	 * correspond 1:1 to page and swap slot lifetimes: we charge the
-+	 * page to memory here, and uncharge swap when the slot is freed.
-+	 */
-+	if (do_memsw_account() && PageSwapCache(page)) {
- 		swp_entry_t entry = { .val = page_private(page) };
- 		/*
- 		 * The swap entry might not get freed for a long time,
+ 	/*
+ 	 * This handler only implements the eMMC tuning that is specific to
+@@ -312,6 +316,17 @@ static int sdhci_o2_execute_tuning(struc
+ 	if (WARN_ON((opcode != MMC_SEND_TUNING_BLOCK_HS200) &&
+ 			(opcode != MMC_SEND_TUNING_BLOCK)))
+ 		return -EINVAL;
++
++	/* Force power mode enter L0 */
++	scratch = sdhci_readw(host, O2_SD_MISC_CTRL);
++	scratch |= O2_SD_PWR_FORCE_L0;
++	sdhci_writew(host, scratch, O2_SD_MISC_CTRL);
++
++	/* wait DLL lock, timeout value 5ms */
++	if (readx_poll_timeout(sdhci_o2_pll_dll_wdt_control, host,
++		scratch32, (scratch32 & O2_DLL_LOCK_STATUS), 1, 5000))
++		pr_warn("%s: DLL can't lock in 5ms after force L0 during tuning.\n",
++				mmc_hostname(host->mmc));
+ 	/*
+ 	 * Judge the tuning reason, whether caused by dll shift
+ 	 * If cause by dll shift, should call sdhci_o2_dll_recovery
+@@ -344,6 +359,11 @@ static int sdhci_o2_execute_tuning(struc
+ 		sdhci_set_bus_width(host, current_bus_width);
+ 	}
+ 
++	/* Cancel force power mode enter L0 */
++	scratch = sdhci_readw(host, O2_SD_MISC_CTRL);
++	scratch &= ~(O2_SD_PWR_FORCE_L0);
++	sdhci_writew(host, scratch, O2_SD_MISC_CTRL);
++
+ 	sdhci_reset(host, SDHCI_RESET_CMD);
+ 	sdhci_reset(host, SDHCI_RESET_DATA);
+ 
 
 
