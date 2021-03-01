@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579F6329F40
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60B7329F6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573569AbhCBDXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
+        id S1573935AbhCBD2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:28:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240270AbhCAU31 (ORCPT
+        with ESMTP id S239567AbhCAUdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:29:27 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B77C061756;
-        Mon,  1 Mar 2021 12:28:33 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DqBfj1GqDz9sS8;
-        Tue,  2 Mar 2021 07:28:18 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614630510;
-        bh=Oxcz/AiTnTe3p9R0RWzEjM8EoFiTDOqBpGDLtAtM8xY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Xbe0K+QUdLjmPknNhhfKQFOQFHI4bY/aFu9TrK0QjovVjlh0LmAm1qei5U17WW9pv
-         CF/Ng2DDe/l6Y+MyzuDi4Py5gtw/4rJ5T2srNCHk0z4kJkc45IH0hfgrSWxjDkjdSe
-         Jx3lIrucL7NGQpVU/tSR/vusignItYbdtSTCfdT97L2/oaj+mKfUDnZSt0Mgv/l/o0
-         admpZ8vwZOTWwsTdyCDBOf+yNhxTzJ/Pq/+fGeTneit9HxbARyUc4Ij0cK2GDuTFLO
-         4z2KVa7e354HC1xU/82VbMRqPSS+VF0yfWEoy2mxU/JGxEsdt9Kz7JINLrylDeBO7h
-         qthhRGw2gqoaw==
-Date:   Tue, 2 Mar 2021 07:28:17 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the tip tree
-Message-ID: <20210302072817.15e64685@canb.auug.org.au>
+        Mon, 1 Mar 2021 15:33:50 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34664C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 12:33:10 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id m11so20229995lji.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 12:33:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QUAIpvEkTlSXH3WpLcUzPSeK+taFsATzFW6uBRGm5Zo=;
+        b=r9I1mk8ry9Qaofll5knF/RLPp3sNzGH6X9W0ow0yHchZVd9TyWunN6es1so1AaorDy
+         CH0Q8WNk08fBPnOkQLqgrSjoKyzDHNPvxVo3NwAyGY4UNvEVf1/+qUZH/UXPdp2x6yXt
+         HeybVa4BH8vntonQ4wH0E1P7tjcDeXgzPmuhLEPHAqQQjfPZviyYTw8y7OKWVULIVqGy
+         XxgP/649J19AVvuWO1KLxpNtZzf6NKQk/LE1CC7Db1z/KeAiC1TueGU4IHyZEwj+j3KO
+         UDwThgdYvCi0MHgkRu1Te7lM1p2SEoi9Y/ASM3/aleHCWaEUJtIUFivb80XWdCTRFTcQ
+         NBSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QUAIpvEkTlSXH3WpLcUzPSeK+taFsATzFW6uBRGm5Zo=;
+        b=q67nskulLjs0sKN1OFgzgdsXbLMIa/4srVQzxlwpMzNosIlYxism2+GVODUNhQZfrY
+         +ra6bJF6WbmZBQtF4Rh8hkVcd5g9T+uqRUcVzP6htxVDV3sAU55MYsoe+3nR+Nfo6w4U
+         XoQqfkIFQ1pM3gTf/7+gye5eLCQS8yNPlnQ4vQxiNVQklRdhHCy5b7e8fYA0+7DDHRfl
+         Vh6z9TpJmK+HwQsvOiMwMKpyW5YoIWMgQ2B8Chrfl+EgRepeeh1zRvS+Hmjc4wP+mVIi
+         G3hkb659jbud+6qTlID6TN0t/ecWhQkDtdHlPjaLAS5r9s9Tpv1yDakUW7G1eht11oiH
+         RHnQ==
+X-Gm-Message-State: AOAM532wC8BrTVVBBh62iypVXTKEPKGhql7CzC6wizwJK8lDuS1xw/As
+        PRdvdXj+BvlWvYHmFxI5L2CVxr6EvSQtbZ0ePJRKWQ==
+X-Google-Smtp-Source: ABdhPJweFvJ+LUXwqlJDYWW1Fn8lDlfe4M+n4J5Dmozp+belyfrpQ2uuwRv/yZDlpNcl3/LYsxhlvZV+EJ9CqZgBu60=
+X-Received: by 2002:a2e:8ec6:: with SMTP id e6mr10243435ljl.257.1614630788746;
+ Mon, 01 Mar 2021 12:33:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hG9pS+kvQw=7BFWSND/nel_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201217140933.1133969-1-robert.foss@linaro.org> <CAG3jFyuzjbPsMBOOgc2DBBT92H7FPBNdJLKWHF8+7K10LujMbw@mail.gmail.com>
+In-Reply-To: <CAG3jFyuzjbPsMBOOgc2DBBT92H7FPBNdJLKWHF8+7K10LujMbw@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Mon, 1 Mar 2021 12:32:57 -0800
+Message-ID: <CALAqxLXwvP0-FTSajHnLSc9fDRuQifQQwJKo-71jFVSX4SfRhw@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/bridge: lt9611: Fix handling of 4k panels
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Anibal Limon <anibal.limon@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Peter Collingbourne <pcc@google.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hG9pS+kvQw=7BFWSND/nel_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 21, 2021 at 1:50 AM Robert Foss <robert.foss@linaro.org> wrote:
+> +Sam Ravnborg
+>
+> I think this patch is ready to get pulled into the drm-misc tree.
+>
+> On Thu, 17 Dec 2020 at 15:09, Robert Foss <robert.foss@linaro.org> wrote:
+> >
+> > 4k requires two dsi pipes, so don't report MODE_OK when only a
+> > single pipe is configured. But rather report MODE_PANEL to
+> > signal that requirements of the panel are not being met.
 
-Hi all,
+Hey All, I just wanted to follow up on this patch as it seems like it
+missed 5.12 ?
 
-In commit
+Just wanted to make sure it didn't slip through the cracks.
 
-  05f7fcc675f5 ("hrtimer: Update softirq_expires_next correctly after __hrt=
-imer_get_next_event()")
-
-Fixes tag
-
-  Fixes: da70160462e ("hrtimer: Implement support for softirq based hrtimer=
-s")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 5da70160462e ("hrtimer: Implement support for softirq based hrtimers=
-")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/hG9pS+kvQw=7BFWSND/nel_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA9TmEACgkQAVBC80lX
-0GygdQf/TrhMvPbHX5cg6aR0dAIhqXbQsbeXJcI5X6tYtSC2k5hpROusXIX/ad5U
-NkUaojGE73AxDZc4Pc76aUgsMr2lrq10/OsPpQlGO58zJ2b3JfC0vPqHqUGntWo9
-YvI1sXUlO2CRWb2leNJDQLLmb37WQOMvNPumt4LvfUoSs13qPNn7nNMi6q8X1RnC
-kQT8ExvwGRLa8cqXdwRND7ybG1wbxx6UdCYuNwWHd/0Ri4J4+re/s0msrSPnK34i
-LZEBThPMpbXvrFgJvCZ2XKfymZSuUDUw93/WbIERdvqn8XqE7yPxgHoqeUEaaW2A
-SG/qYBlWXVAnCSbnNOwGbe4wl4XG7A==
-=HA85
------END PGP SIGNATURE-----
-
---Sig_/hG9pS+kvQw=7BFWSND/nel_--
+thanks
+-john
