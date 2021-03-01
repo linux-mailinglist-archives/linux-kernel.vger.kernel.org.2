@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66EC7328D1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B1C328D24
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235354AbhCATFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:05:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48198 "EHLO mail.kernel.org"
+        id S235619AbhCATG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:06:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231927AbhCAQqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234447AbhCAQqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:46:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EAE864F9F;
-        Mon,  1 Mar 2021 16:31:54 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6604B64F53;
+        Mon,  1 Mar 2021 16:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616315;
-        bh=yrzP0N1e4x1dGBTdvhsv7KloXvWY4tFMTUwV5iFgD0Y=;
+        s=korg; t=1614616318;
+        bh=w37fyoTaeSn1bb3gZCPDDsaHDUjxDFNLDpdUo1M6RvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kWC3YgMMI+KeFuFV5FihkRTeZ0JPZWFA5PF9bdCTKI71ik5sKx4VSAQHJg/ckv77k
-         fdVpj0p7nhC96C/3as6qWuekya2KfNAWignD9DGeeO6aFCIC1sHLA4hjWAgBY9zpHl
-         8k4biHC7iuqB1Gw4c11AkyGT7gzz5da74/m/vgyc=
+        b=2Oa8j65YVgKuZrF6ZhjEdURi0yQncJkDI7I/U1Fxm+vT8//zJLSx2ssNTaWbchuTL
+         0bQwPFicGwYOJE3Bvu2FhlvhnOqddqdf6HhrTAhVZNGWaNnGWfVS1rKOywt6SeiSFk
+         fooqPo93KOD/QPLg5Ym++eK+l8TmYGXGQqU5OQuk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Artem Blagodarenko <artem.blagodarenko@gmail.com>,
-        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 109/176] ext4: fix potential htree index checksum corruption
-Date:   Mon,  1 Mar 2021 17:13:02 +0100
-Message-Id: <20210301161026.395280646@linuxfoundation.org>
+        stable@vger.kernel.org, Slawomir Laba <slawomirx.laba@intel.com>,
+        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 110/176] i40e: Fix flow for IPv6 next header (extension header)
+Date:   Mon,  1 Mar 2021 17:13:03 +0100
+Message-Id: <20210301161026.445190156@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -40,53 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Slawomir Laba <slawomirx.laba@intel.com>
 
-[ Upstream commit b5776e7524afbd4569978ff790864755c438bba7 ]
+[ Upstream commit 92c6058024e87087cf1b99b0389d67c0a886360e ]
 
-In the case where we need to do an interior node split, and
-immediately afterwards, we are unable to allocate a new directory leaf
-block due to ENOSPC, the directory index checksum's will not be filled
-in correctly (and indeed, will not be correctly journalled).
+When a packet contains an IPv6 header with next header which is
+an extension header and not a protocol one, the kernel function
+skb_transport_header called with such sk_buff will return a
+pointer to the extension header and not to the TCP one.
 
-This looks like a bug that was introduced when we added largedir
-support.  The original code doesn't make any sense (and should have
-been caught in code review), but it was hidden because most of the
-time, the index node checksum will be set by do_split().  But if
-do_split bails out due to ENOSPC, then ext4_handle_dirty_dx_node()
-won't get called, and so the directory index checksum field will not
-get set, leading to:
+The above explained call caused a problem with packet processing
+for skb with encapsulation for tunnel with I40E_TX_CTX_EXT_IP_IPV6.
+The extension header was not skipped at all.
 
-EXT4-fs error (device sdb): dx_probe:858: inode #6635543: block 4022: comm nfsd: Directory index failed checksum
+The ipv6_skip_exthdr function does check if next header of the IPV6
+header is an extension header and doesn't modify the l4_proto pointer
+if it points to a protocol header value so its safe to omit the
+comparison of exthdr and l4.hdr pointers. The ipv6_skip_exthdr can
+return value -1. This means that the skipping process failed
+and there is something wrong with the packet so it will be dropped.
 
-Google-Bug-Id: 176345532
-Fixes: e08ac99fa2a2 ("ext4: add largedir feature")
-Cc: Artem Blagodarenko <artem.blagodarenko@gmail.com>
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: a3fd9d8876a5 ("i40e/i40evf: Handle IPv6 extension headers in checksum offload")
+Signed-off-by: Slawomir Laba <slawomirx.laba@intel.com>
+Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index a4301fa4719ff..eff27e9de775f 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2293,11 +2293,10 @@ again:
- 						   (frame - 1)->bh);
- 			if (err)
- 				goto journal_error;
--			if (restart) {
--				err = ext4_handle_dirty_dx_node(handle, dir,
--							   frame->bh);
-+			err = ext4_handle_dirty_dx_node(handle, dir,
-+							frame->bh);
-+			if (err)
- 				goto journal_error;
--			}
- 		} else {
- 			struct dx_root *dxroot;
- 			memcpy((char *) entries2, (char *) entries,
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+index 542c00b1c823f..d79a2c8175c4c 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -2829,13 +2829,16 @@ static int i40e_tx_enable_csum(struct sk_buff *skb, u32 *tx_flags,
+ 
+ 			l4_proto = ip.v4->protocol;
+ 		} else if (*tx_flags & I40E_TX_FLAGS_IPV6) {
++			int ret;
++
+ 			tunnel |= I40E_TX_CTX_EXT_IP_IPV6;
+ 
+ 			exthdr = ip.hdr + sizeof(*ip.v6);
+ 			l4_proto = ip.v6->nexthdr;
+-			if (l4.hdr != exthdr)
+-				ipv6_skip_exthdr(skb, exthdr - skb->data,
+-						 &l4_proto, &frag_off);
++			ret = ipv6_skip_exthdr(skb, exthdr - skb->data,
++					       &l4_proto, &frag_off);
++			if (ret < 0)
++				return -1;
+ 		}
+ 
+ 		/* define outer transport */
 -- 
 2.27.0
 
