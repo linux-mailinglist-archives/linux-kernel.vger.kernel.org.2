@@ -2,33 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A17F329961
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF54329992
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347817AbhCBAMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:12:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
+        id S1376397AbhCBAX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:23:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239782AbhCASXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:23:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88DF764EBE;
-        Mon,  1 Mar 2021 17:20:40 +0000 (UTC)
+        id S239853AbhCAS0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:26:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 194C564F8D;
+        Mon,  1 Mar 2021 17:20:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619241;
-        bh=eehc2PSi7rAwMI1saIfUbgojscN4kYGZBmXr4spBp6Q=;
+        s=korg; t=1614619243;
+        bh=NCB5zbz4nRNClltVQZVP2+8tDvrk2KA9cju5UkaOzIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H9bPHTAvUC+iXJcuvmx4/QCX+E4G616UOI4shC2V1pqEC2Z1eFYbWexLBRLakhRtP
-         qinwjkkHc3P2QdahxgW0A8YDdSbvK+WE1miH6y8jvhk2rcZO68UVWTinqVS4y8nV8C
-         xo5VYzzPl5SXl9RitfyH37NZg9wBX4AAwyb5IpPk=
+        b=nzwaAfloGFswJKYtR44N6F1Eeu/mlwup7rSe86HtwKyyMkKRiQgOJYiddN5Q8aLTy
+         j+UfYVTWMtoNaP22ulu2b+rTZ31hKAQsvc4JMxwrzdU9X2Xzbhr/8gJW/DMGnk5eVI
+         yacwjkohq6bpYWeecILrd7ic5wZEiINa9qR2tJGY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Yang Jihong <yangjihong1@huawei.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, zhangjinhao2@huawei.com,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 383/663] Input: sur40 - fix an error code in sur40_probe()
-Date:   Mon,  1 Mar 2021 17:10:31 +0100
-Message-Id: <20210301161200.812294207@linuxfoundation.org>
+Subject: [PATCH 5.10 384/663] perf record: Fix continue profiling after draining the buffer
+Date:   Mon,  1 Mar 2021 17:10:32 +0100
+Message-Id: <20210301161200.862676963@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,34 +47,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Yang Jihong <yangjihong1@huawei.com>
 
-[ Upstream commit b0b7d2815839024e5181bd2572f5d8d4f65363b3 ]
+[ Upstream commit e16c2ce7c5ed5de881066c1fd10ba5c09af69559 ]
 
-If v4l2_ctrl_handler_setup() fails then probe() should return an error
-code instead of returning success.
+Commit da231338ec9c0987 ("perf record: Use an eventfd to wakeup when
+done") uses eventfd() to solve a rare race where the setting and
+checking of 'done' which add done_fd to pollfd.  When draining buffer,
+revents of done_fd is 0 and evlist__filter_pollfd function returns a
+non-zero value.  As a result, perf record does not stop profiling.
 
-Fixes: cee1e3e2ef39 ("media: add video control handlers using V4L2 control framework")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YBKFkbATXa5fA3xj@mwanda
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+The following simple scenarios can trigger this condition:
+
+  # sleep 10 &
+  # perf record -p $!
+
+After the sleep process exits, perf record should stop profiling and exit.
+However, perf record keeps running.
+
+If pollfd revents contains only POLLERR or POLLHUP, perf record
+indicates that buffer is draining and need to stop profiling.  Use
+fdarray_flag__nonfilterable() to set done eventfd to nonfilterable
+objects, so that evlist__filter_pollfd() does not filter and check done
+eventfd.
+
+Fixes: da231338ec9c0987 ("perf record: Use an eventfd to wakeup when done")
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Tested-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: zhangjinhao2@huawei.com
+Link: http://lore.kernel.org/lkml/20210205065001.23252-1-yangjihong1@huawei.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/sur40.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/builtin-record.c | 2 +-
+ tools/perf/util/evlist.c    | 8 ++++++++
+ tools/perf/util/evlist.h    | 4 ++++
+ 3 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/sur40.c b/drivers/input/touchscreen/sur40.c
-index 620cdd7d214a6..12f2562b0141b 100644
---- a/drivers/input/touchscreen/sur40.c
-+++ b/drivers/input/touchscreen/sur40.c
-@@ -787,6 +787,7 @@ static int sur40_probe(struct usb_interface *interface,
- 		dev_err(&interface->dev,
- 			"Unable to register video controls.");
- 		v4l2_ctrl_handler_free(&sur40->hdl);
-+		error = sur40->hdl.error;
- 		goto err_unreg_v4l2;
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index adf311d15d3d2..e5c938d538ee5 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -1666,7 +1666,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		status = -1;
+ 		goto out_delete_session;
  	}
+-	err = evlist__add_pollfd(rec->evlist, done_fd);
++	err = evlist__add_wakeup_eventfd(rec->evlist, done_fd);
+ 	if (err < 0) {
+ 		pr_err("Failed to add wakeup eventfd to poll list\n");
+ 		status = err;
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 8bdf3d2c907cb..98ae432470cdd 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -508,6 +508,14 @@ int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask)
+ 	return perf_evlist__filter_pollfd(&evlist->core, revents_and_mask);
+ }
  
++#ifdef HAVE_EVENTFD_SUPPORT
++int evlist__add_wakeup_eventfd(struct evlist *evlist, int fd)
++{
++	return perf_evlist__add_pollfd(&evlist->core, fd, NULL, POLLIN,
++				       fdarray_flag__nonfilterable);
++}
++#endif
++
+ int evlist__poll(struct evlist *evlist, int timeout)
+ {
+ 	return perf_evlist__poll(&evlist->core, timeout);
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index e1a450322bc5b..9298fce53ea31 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -160,6 +160,10 @@ perf_evlist__find_tracepoint_by_name(struct evlist *evlist,
+ int evlist__add_pollfd(struct evlist *evlist, int fd);
+ int evlist__filter_pollfd(struct evlist *evlist, short revents_and_mask);
+ 
++#ifdef HAVE_EVENTFD_SUPPORT
++int evlist__add_wakeup_eventfd(struct evlist *evlist, int fd);
++#endif
++
+ int evlist__poll(struct evlist *evlist, int timeout);
+ 
+ struct evsel *perf_evlist__id2evsel(struct evlist *evlist, u64 id);
 -- 
 2.27.0
 
