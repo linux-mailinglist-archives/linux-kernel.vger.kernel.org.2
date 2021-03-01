@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D558327C63
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FD4327C68
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234582AbhCAKkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:40:18 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:40515 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234531AbhCAKhP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:37:15 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121AVgYH020544;
-        Mon, 1 Mar 2021 11:36:16 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=i63qanHvq06PqbvkfcT0nX7SZDJtNaIWa9wC1GqN/1g=;
- b=UTWhfdYTlpHgopZiO+LUtNP+V5RR/XNoWjs1q7hmvdyeNqAyDzRdYj7JkCZRIoZW811C
- xPWbHraa2tqB+Zen4IeVTL0iGQxHMhwPZE8DBW6I980t4IJjwDfB4I0VaJPh7/54CMWg
- BwxxWaXujlhXGRVENLNRkTDk+xbUdviNH6qVZA1MN5nEcMoLB/vm2/uFTD3qmfdCJp5i
- FWRX49w3xB2WHO84IfQaQ2c7JULqQ/AvpRI9s3d8Rn9va99vY5e1vAXaxogAb3tnmZ/u
- dxuGr9IXIfdGwIQNNMDN8EX3DCh6iDHCZUxzZtuW6D4SmsCH/PWX+tubbvAJ6KEjNP9r Bg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36yfc3k9tv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 11:36:16 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1AEB3100034;
-        Mon,  1 Mar 2021 11:36:16 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 07CFA227E04;
-        Mon,  1 Mar 2021 11:36:16 +0100 (CET)
-Received: from [10.211.4.172] (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 1 Mar
- 2021 11:36:14 +0100
-Subject: Re: [PATCH v2 2/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
-To:     Martin Devera <devik@eaxlabs.cz>, <linux-kernel@vger.kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <linux-serial@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Le Ray <erwan.leray@st.com>
-References: <CAL_JsqK8+M=Vg0PiDXP2f1LrEp4hSVea6piAASMGu1H=pxme6Q@mail.gmail.com>
- <20210227164157.30971-1-devik@eaxlabs.cz>
- <20210227164157.30971-2-devik@eaxlabs.cz>
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Message-ID: <fecd3c15-7796-7c12-6aaa-d77c7407980d@foss.st.com>
-Date:   Mon, 1 Mar 2021 11:36:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234477AbhCAKlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:41:16 -0500
+Received: from mga01.intel.com ([192.55.52.88]:30058 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234606AbhCAKib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:38:31 -0500
+IronPort-SDR: fk5kOmRKRTwaBC8fX2U9bnclwt99r/R6N4t4xtSg0vzdA8CMfPhEWHiiZ0xpOEFI6caU2HXe/8
+ gIRXtCXetDYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="206026612"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="206026612"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 02:36:45 -0800
+IronPort-SDR: 4Ic0AvbGoMFVDN83zbyg91KXTaFhUAvBKkobvKwwrg7oQiljIpGcNd6CJEfKGDbrFwIzwODY76
+ oEWe3tq34KOw==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="383003039"
+Received: from gna-dev.igk.intel.com (HELO localhost) ([10.102.80.34])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 02:36:43 -0800
+References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com> <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com> <CAHp75Vep0Fm1k_7gJcozk4t316QmUgt5Qe3PauwDg=py5VnHfQ@mail.gmail.com> <85ft1fjhws.fsf@linux.intel.com> <YDzAY8j6R87BFFI/@kroah.com>
+User-agent: mu4e 1.4.13; emacs 26.3
+From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+Subject: Re: [PATCH v1 01/12] gna: add driver module
+In-reply-to: <YDzAY8j6R87BFFI/@kroah.com>
+Date:   Mon, 01 Mar 2021 11:36:40 +0100
+Message-ID: <85czwjjh3b.fsf@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210227164157.30971-2-devik@eaxlabs.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-01_05:2021-02-26,2021-03-01 signatures=0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 
-On 2/27/21 5:41 PM, Martin Devera wrote:
-> Add new rx-tx-swap property to allow for RX & TX pin swapping.
-> 
-> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
-> ---
->  Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> index 8631678283f9..45f2a19997da 100644
-> --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> @@ -40,6 +40,10 @@ properties:
->  
->    uart-has-rtscts: true
->  
-> +  rx-tx-swap:
-> +    type: boolean
-> +    maxItems: 1
-> +
+> On Mon, Mar 01, 2021 at 11:18:59AM +0100, Maciej Kwapulinski wrote:
+>> 
+>> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+>> 
+>> > On Tue, Feb 16, 2021 at 6:11 PM Maciej Kwapulinski
+>> > <maciej.kwapulinski@linux.intel.com> wrote:
+>> >>
+>> ....
+>> >> +static int __init gna_drv_init(void)
+>> >> +{
+>> >> +       int ret;
+>> >> +
+>> >> +       mutex_init(&gna_drv_priv.lock);
+>> >> +
+>> >> +       gna_class = class_create(THIS_MODULE, "gna");
+>> >> +       if (IS_ERR(gna_class)) {
+>> >> +               pr_err("class device create failed\n");
+>> >> +               return PTR_ERR(gna_class);
+>> >> +       }
+>> >> +       gna_class->devnode = gna_devnode;
+>> >> +
+>> >> +       ret = pci_register_driver(&gna_driver);
+>> >
+>> > Is it possible to decouple a PCI glue driver from the class as many
+>> > other existing examples are doing?
+>> >
+>> 
+>> I see many pci drivers (including staging) that do have it glued though.
+>> 
+>> Examples are:
+>> 1. "static int __init kp2000_pcie_init(void)" (commit on May 20 09:34:11
+>> 2019)
+>> 2. "static int __init hl_init(void)" (commit on Mon Feb 18 09:46:43 2019)
+>> 
+>> Please give me more details.
+>
+> Never use a staging driver for any type of example, _EXECPT_ for a bad
+> one.  There's a reason the code is in staging and not in the "real" part
+> of the kernel.
 
-Hi Martin,
+ok.
 
-This could be restricted to st,stm32f7-uart and st,stm32h7-uart
-compatibles. This option isn't available on stm32f4 (e.g. st,stm32-uart
-compatible)
-
-Thanks for your patch,
-Best Regards,
-Fabrice
-
->    dmas:
->      minItems: 1
->      maxItems: 2
-> 
+another one (1) is not staging..
