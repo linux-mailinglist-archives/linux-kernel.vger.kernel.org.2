@@ -2,56 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77F0327E08
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A37327E10
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbhCAMPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:15:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233429AbhCAMOr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:14:47 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1734FC061788;
-        Mon,  1 Mar 2021 04:14:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I5VnGAaPxZ0y2ywJ0sQMfHrbJRwx3BFwKw9Ug1bzDd8=; b=PCA1Ce/XsJA09ZivVvyVlxo0RN
-        RYEsoAuPxwIKJ2Xnvvy2vKMxwuN2vtSd+mp/xx83U9BAke+uHJdhWmUmDRSAPAPnF1xGgW9y4AhAy
-        33GWt/MxYyfQoCkJzIiUon76k9ARKbyvxfHjaMQ/tgfVoDQzDESvIWtTp8blGEUepP1IB9qVsRxdx
-        1YhRK0E7QT14vtzqyyHh0VfZd84Nay7uCBEpNBmvn8TbXlqk1v0p+d30/M/xgbGgn+OYm2hbM51gP
-        YKAiZmFwPbRxmm1Ah63LHnZ8wsL35lQ51sOCw5s39QqR5xZ3cugRTaQV8iEfEMUELJqntdRwFaw6u
-        1zkSRBvw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lGhQk-00Fgq1-Pw; Mon, 01 Mar 2021 12:13:51 +0000
-Date:   Mon, 1 Mar 2021 12:13:42 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Pintu Kumar <pintu@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, jaewon31.kim@samsung.com,
-        yuzhao@google.com, shakeelb@google.com, guro@fb.com,
-        mchehab+huawei@kernel.org, xi.fengfei@h3c.com,
-        lokeshgidra@google.com, hannes@cmpxchg.org, nigupta@nvidia.com,
-        famzheng@amazon.com, andrew.a.klychkov@gmail.com,
-        bigeasy@linutronix.de, ping.ping@gmail.com, vbabka@suse.cz,
-        yzaikin@google.com, keescook@chromium.org, mcgrof@kernel.org,
-        corbet@lwn.net, pintu.ping@gmail.com
-Subject: Re: [PATCH] mm: introduce clear all vm events counters
-Message-ID: <20210301121342.GP2723601@casper.infradead.org>
-References: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
+        id S233730AbhCAMPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:15:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40020 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232836AbhCAMPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 07:15:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614600903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KsLZ5Y4Ek3DADqn5FApSaLdnl0AlNSLh5qu8paQS2MA=;
+        b=h51r4GoWiVVRKIf3kAFyA2IuXEPrk/XF/HNpzik1F6Zr3+5QYBzL5XY5rKVapq8i4wk3eb
+        A9sEJX6VS1HLEnqxhXYzDIWFgafBF170CMwAXOHUPITdULmCIw6QM8isThOY/K7qkqhR4h
+        9XpzD5LMZMqJwGnvcnZhtusom/LyST8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3FB38AC24;
+        Mon,  1 Mar 2021 12:15:03 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 13:15:02 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] doc: memcontrol: add description for oom_kill
+Message-ID: <YDzaxi91fTg1ww6H@dhcp22.suse.cz>
+References: <20210226021254.3980-1-shy828301@gmail.com>
+ <YDijjovHAer2tiL5@dhcp22.suse.cz>
+ <CAHbLzkoLC-gGZA1GvDZjgTnVFzCTQnLMd4JWzZ6Ge_q63YhWKQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
+In-Reply-To: <CAHbLzkoLC-gGZA1GvDZjgTnVFzCTQnLMd4JWzZ6Ge_q63YhWKQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 04:19:26PM +0530, Pintu Kumar wrote:
-> +EXPORT_SYMBOL_GPL(clear_all_vm_events);
+On Fri 26-02-21 08:42:29, Yang Shi wrote:
+> On Thu, Feb 25, 2021 at 11:30 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 25-02-21 18:12:54, Yang Shi wrote:
+> > > When debugging an oom issue, I found the oom_kill counter of memcg is
+> > > confusing.  At the first glance without checking document, I thought it
+> > > just counts for memcg oom, but it turns out it counts both global and
+> > > memcg oom.
+> >
+> > Yes, this is the case indeed. The point of the counter was to count oom
+> > victims from the memcg rather than matching that to the source of the
+> > oom. Rememeber that this could have been a memcg oom up in the
+> > hierarchy as well. Counting victims on the oom origin could be equally
+> 
+> Yes, it is updated hierarchically on v2, but not on v1. I'm supposed
+> this is because v1 may work in non-hierarchcal mode? If this is the
+> only reason we may be able to remove this to get aligned with v2 since
+> non-hierarchal mode is no longer supported.
 
-What module uses this function?
+I believe the reson is that v1 can have tasks in the intermediate
+(non-leaf) memcgs. So you wouldn't have a way to tell whether the oom
+kill has happened in such a memcg or somewhere down the hierarchy.
+-- 
+Michal Hocko
+SUSE Labs
