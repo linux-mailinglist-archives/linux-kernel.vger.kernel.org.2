@@ -2,42 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7FB1329A55
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39940329ABF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377416AbhCBArN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:47:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53406 "EHLO mail.kernel.org"
+        id S1348430AbhCBBCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:02:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240203AbhCASmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:42:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C1A864FF3;
-        Mon,  1 Mar 2021 17:08:01 +0000 (UTC)
+        id S240757AbhCASxf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:53:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6593C64E37;
+        Mon,  1 Mar 2021 17:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618482;
-        bh=B8xcsFFER3jXb57qBy0FUCVsaG1FopeY8Mu47l7l6dg=;
+        s=korg; t=1614620409;
+        bh=AwRMq8hAuayLStMl4v/RjeswXlHt1RvjxA9ggyQLsB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SCnU1DdtRqbNSZmu4p6CzB8Ug2Hk5KBIlk5jMkIyQgCIeVweHIAqE1/lrZWGfI1yC
-         H3wLr0oWPKt/yPVstK3LdzaBF5sO1VT2fLrCTuU3zM6l7W+66U/jegQ0lqeKDYvzIN
-         d6sciIPgTxg3ac+5eJJ9+XutaoWyQ20sOQUqkG+8=
+        b=y4MxcZrno+bJixMnLe1xxW8Mu8niffZSLnuk2v11fz5H+GiFAxpzEdEnX6hRZW/d4
+         pohPze5np6XuAX6yW1wZfueBDYPTaYB1pG+BzvprjgAhxB4pEQa+xXibBLa4iPusPl
+         Y9Fl64W7kGVBqAxhFxPjhZq+kjilp6rTTb2ngkpI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Erwan Le Ray <erwan.leray@foss.st.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 062/663] ARM: dts: Configure missing thermal interrupt for 4430
-Date:   Mon,  1 Mar 2021 17:05:10 +0100
-Message-Id: <20210301161144.806287163@linuxfoundation.org>
+Subject: [PATCH 5.11 143/775] serial: stm32: fix DMA initialization error handling
+Date:   Mon,  1 Mar 2021 17:05:11 +0100
+Message-Id: <20210301161208.720071635@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,50 +39,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Erwan Le Ray <erwan.leray@foss.st.com>
 
-[ Upstream commit 44f416879a442600b006ef7dec3a6dc98bcf59c6 ]
+[ Upstream commit e7997f7ff7f8154d477f6f976698d868a2ac3934 ]
 
-We have gpio_86 wired internally to the bandgap thermal shutdown
-interrupt on 4430 like we have it on 4460 according to the TRM.
-This can be found easily by searching for TSHUT.
+DMA initialization error handling is not properly implemented in the
+driver.
+Fix DMA initialization error handling by:
+- moving TX DMA descriptor request error handling in a new dedicated
+fallback_err label
+- adding error handling to TX DMA descriptor submission
+- adding error handling to RX DMA descriptor submission
 
-For some reason the thermal shutdown interrupt was never added
-for 4430, let's add it. I believe this is needed for the thermal
-shutdown interrupt handler ti_bandgap_tshut_irq_handler() to call
-orderly_poweroff().
+This patch depends on '24832ca3ee85 ("tty: serial: stm32-usart: Remove set
+but unused 'cookie' variables")' which unfortunately doesn't include a
+"Fixes" tag.
 
-Fixes: aa9bb4bb8878 ("arm: dts: add omap4430 thermal data")
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Eduardo Valentin <edubezval@gmail.com>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Cc: Sebastian Reichel <sre@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Fixes: 3489187204eb ("serial: stm32: adding dma support")
+Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+Link: https://lore.kernel.org/r/20210106162203.28854-2-erwan.leray@foss.st.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap443x.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/tty/serial/stm32-usart.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/omap443x.dtsi b/arch/arm/boot/dts/omap443x.dtsi
-index cb309743de5da..dd8ef58cbaed4 100644
---- a/arch/arm/boot/dts/omap443x.dtsi
-+++ b/arch/arm/boot/dts/omap443x.dtsi
-@@ -33,10 +33,12 @@
- 	};
+diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+index f4de32d3f2afe..6248304a001f4 100644
+--- a/drivers/tty/serial/stm32-usart.c
++++ b/drivers/tty/serial/stm32-usart.c
+@@ -383,17 +383,18 @@ static void stm32_transmit_chars_dma(struct uart_port *port)
+ 					   DMA_MEM_TO_DEV,
+ 					   DMA_PREP_INTERRUPT);
  
- 	ocp {
-+		/* 4430 has only gpio_86 tshut and no talert interrupt */
- 		bandgap: bandgap@4a002260 {
- 			reg = <0x4a002260 0x4
- 			       0x4a00232C 0x4>;
- 			compatible = "ti,omap4430-bandgap";
-+			gpios = <&gpio3 22 GPIO_ACTIVE_HIGH>;
+-	if (!desc) {
+-		for (i = count; i > 0; i--)
+-			stm32_transmit_chars_pio(port);
+-		return;
+-	}
++	if (!desc)
++		goto fallback_err;
  
- 			#thermal-sensor-cells = <0>;
- 		};
+ 	desc->callback = stm32_tx_dma_complete;
+ 	desc->callback_param = port;
+ 
+ 	/* Push current DMA TX transaction in the pending queue */
+-	dmaengine_submit(desc);
++	if (dma_submit_error(dmaengine_submit(desc))) {
++		/* dma no yet started, safe to free resources */
++		dmaengine_terminate_async(stm32port->tx_ch);
++		goto fallback_err;
++	}
+ 
+ 	/* Issue pending DMA TX requests */
+ 	dma_async_issue_pending(stm32port->tx_ch);
+@@ -402,6 +403,11 @@ static void stm32_transmit_chars_dma(struct uart_port *port)
+ 
+ 	xmit->tail = (xmit->tail + count) & (UART_XMIT_SIZE - 1);
+ 	port->icount.tx += count;
++	return;
++
++fallback_err:
++	for (i = count; i > 0; i--)
++		stm32_transmit_chars_pio(port);
+ }
+ 
+ static void stm32_transmit_chars(struct uart_port *port)
+@@ -1130,7 +1136,11 @@ static int stm32_of_dma_rx_probe(struct stm32_port *stm32port,
+ 	desc->callback_param = NULL;
+ 
+ 	/* Push current DMA transaction in the pending queue */
+-	dmaengine_submit(desc);
++	ret = dma_submit_error(dmaengine_submit(desc));
++	if (ret) {
++		dmaengine_terminate_sync(stm32port->rx_ch);
++		goto config_err;
++	}
+ 
+ 	/* Issue pending DMA requests */
+ 	dma_async_issue_pending(stm32port->rx_ch);
 -- 
 2.27.0
 
