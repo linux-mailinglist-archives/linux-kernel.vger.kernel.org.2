@@ -2,93 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227473279AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733D13279F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbhCAIpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:45:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233319AbhCAIpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:45:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4773A64DEF;
-        Mon,  1 Mar 2021 08:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614588269;
-        bh=yI9vk7/j1WOYnOHUSAxSo33Gf4b9ogltKOcygaxgC/A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AwU+infUiSF+eRxYlr3iF3Nhty9BbOR3OFHSqz0/Xw9d9LTaxrngHHfGWJvirKuJH
-         KWq6z5dhctFSfAJL1Pmfmq/zNSwv57U2iFnfAfAmq9K+VNBKbKc/XX2KBZN9NNuW06
-         fqthBzcLxzrCoHozjj/iAJnjCizyJJwk3ATIhIwRgV7f0WBj9MZHeYVtUk0GOlKIAL
-         9fmoq3Lsup02yWimweaIH5dzNx1PhE8s88zWWjvvcwlLZHoNYlwXoXEKesGRp6fxWl
-         uvGeYPRacjNptGp8pHpyEJn9ymAyzWYDkuBP9t/rTS4K4QvOhfbjeRG6szB9R/jwS4
-         0aVel+tqYRxUQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lGeAY-00017E-1A; Mon, 01 Mar 2021 09:44:46 +0100
-Date:   Mon, 1 Mar 2021 09:44:46 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzbot+d27b4c8adbbff70fbfde@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/2] gpio: fix NULL-deref-on-deregistration regression
-Message-ID: <YDypfjoBpHsd+dCo@hovoldconsulting.com>
-References: <20210226145246.1171-1-johan@kernel.org>
- <20210226145246.1171-2-johan@kernel.org>
- <CAGETcx-4Q+SkdLO-rXE-zt2kdz=J1cnrPjv07mt0KRtCPa_OGg@mail.gmail.com>
+        id S233665AbhCAIto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:49:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37368 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233504AbhCAIqq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 03:46:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614588315;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NDfpZiBORFcwJhka5rTFwKHAeoR+PqV6dRvqqfDZlpQ=;
+        b=V2fexq1q0y0AAX1ax+qaeRktwXEdGF7+ISKSo+vzDORYsCDQezMC2BMNKBrjozogVXXYRv
+        Y3yQOooHNeN3FejAZo3DEQuVdecMS8/SZRsuddWypivmPhLwbpbfEbbh6T7H2w+ioVoTHo
+        5tkWcDO3sZumADuWwITOFf6TqJ/SY9g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-FA3ltOZ9O9SOY20SxFpyvw-1; Mon, 01 Mar 2021 03:45:11 -0500
+X-MC-Unique: FA3ltOZ9O9SOY20SxFpyvw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC507107ACE3;
+        Mon,  1 Mar 2021 08:45:09 +0000 (UTC)
+Received: from [10.36.114.87] (ovpn-114-87.ams2.redhat.com [10.36.114.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5188A60657;
+        Mon,  1 Mar 2021 08:45:08 +0000 (UTC)
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>, VlastimilBabkavbabka@suse.cz,
+        pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
+References: <20210209133854.17399-1-osalvador@suse.de>
+ <20210209133854.17399-7-osalvador@suse.de>
+ <dc044ae2-efce-0639-87de-3a3167c07a06@redhat.com>
+ <20210226120451.GA3661@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v2 6/7] x86/Kconfig: Introduce
+ ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+Message-ID: <de1e2213-7dea-da52-607b-d4d718a3e04e@redhat.com>
+Date:   Mon, 1 Mar 2021 09:45:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx-4Q+SkdLO-rXE-zt2kdz=J1cnrPjv07mt0KRtCPa_OGg@mail.gmail.com>
+In-Reply-To: <20210226120451.GA3661@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 01:54:12PM -0800, Saravana Kannan wrote:
-> On Fri, Feb 26, 2021 at 6:55 AM Johan Hovold <johan@kernel.org> wrote:
-> >
-> > Fix a NULL-pointer deference when deregistering the gpio character
-> > device that was introduced by the recent stub-driver hack. When the new
-> > "driver" is unbound as part of deregistration, driver core clears the
-> > driver-data pointer which is used to retrieve the struct gpio_device in
-> > its release callback.
-> >
-> > Fix this by using container_of() in the release callback as should have
-> > been done all along.
-> >
-> > Fixes: 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default")
-> > Cc: Saravana Kannan <saravanak@google.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Reported-by: syzbot+d27b4c8adbbff70fbfde@syzkaller.appspotmail.com
-> > Signed-off-by: Johan Hovold <johan@kernel.org>
-> > ---
-> >  drivers/gpio/gpiolib.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> > index adf55db080d8..e1016bc8cf14 100644
-> > --- a/drivers/gpio/gpiolib.c
-> > +++ b/drivers/gpio/gpiolib.c
-> > @@ -474,7 +474,7 @@ EXPORT_SYMBOL_GPL(gpiochip_line_is_valid);
-> >
-> >  static void gpiodevice_release(struct device *dev)
-> >  {
-> > -       struct gpio_device *gdev = dev_get_drvdata(dev);
-> > +       struct gpio_device *gdev = container_of(dev, struct gpio_device, dev);
+On 26.02.21 13:04, Oscar Salvador wrote:
+> On Thu, Feb 25, 2021 at 07:29:07PM +0100, David Hildenbrand wrote:
+>> On 09.02.21 14:38, Oscar Salvador wrote:
+>>> Enable x86_64 platform to use the MHP_MEMMAP_ON_MEMORY feature.
+>>>
+>>> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+>>> ---
+>>>    arch/x86/Kconfig | 4 ++++
+>>>    1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>>> index 72663de8b04c..81046b7adb10 100644
+>>> --- a/arch/x86/Kconfig
+>>> +++ b/arch/x86/Kconfig
+>>> @@ -2440,6 +2440,10 @@ config ARCH_ENABLE_MEMORY_HOTREMOVE
+>>>    	def_bool y
+>>>    	depends on MEMORY_HOTPLUG
+>>> +config ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+>>> +	def_bool y
+>>> +	depends on X86_64 && MEMORY_HOTPLUG && SPARSEMEM_VMEMMAP_ENABLE
+>>
+>> It depends on SPARSEMEM_VMEMMAP, no?
+>>
+>> I think we could have
+>>
+>> SPARSEMEM_VMEMMAP_ENABLE=y
+>> and
+>> SPARSEMEM_VMEMMAP=n
+>>
+>> on manually tuned configs.
 > 
-> Can you also delete the dev_set_drvdata() in
-> gpiochip_add_data_with_key() if the drvdata is not used
-> elsewhere anymore? I skimmed the code and it doesn't look like it, but
-> I could be wrong.
+> I do not think this can happen:
+> 
+> from mm/Kconfig:
+> 
+> config SPARSEMEM_VMEMMAP_ENABLE
+>          bool
+> 
+> config SPARSEMEM_VMEMMAP
+>          bool "Sparse Memory virtual memmap"
+>          depends on SPARSEMEM && SPARSEMEM_VMEMMAP_ENABLE
+>          default y
+>          help
+>            SPARSEMEM_VMEMMAP uses a virtually mapped memmap to optimise
+>            pfn_to_page and page_to_pfn operations.  This is the most
+>            efficient option when sufficient kernel resources are available
+> 
+> and from arch/x86/Kconfig:
+> 
+> config ARCH_SPARSEMEM_ENABLE
+>          def_bool y
+>          depends on X86_64 || NUMA || X86_32 || X86_32_NON_STANDARD
+>          select SPARSEMEM_STATIC if X86_32
+>          select SPARSEMEM_VMEMMAP_ENABLE if X86_64
+> 
+> 
+> So, if I read this correctly, for SPARSEMEM_VMEMMAP to be true,
+> SPARSEMEM_VMEMMAP_ENABLE needs to be true as well.
+> 
+> Am I missing something?
 
-Yeah, I considered it but didn't want to risk introducing any new
-regressions just to clean up a redundant store.
+Take your config and set
+	X86_5LEVEL=n
+(because it enforces SPARSEMEM_VMEMMAP)
+and
+	SPARSEMEM_VMEMMAP=n
 
-But looking at it again today, I agree that it looks like it isn't used
-anywhere else. I'll send a v2. Thanks.
+When compiling, you'll end up with a config like
+	CONFIG_SPARSEMEM_VMEMMAP_ENABLE=y
+	# CONFIG_SPARSEMEM_VMEMMAP is not set
 
-Johan
+Yet, with your patch you would get
+
+ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE=y
+
+And it would not get fenced off in the code, right?
+
+
+I think you either have to check (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP)) 
+in addition in your code, or enforce it differently. Like
+
+
+config MHP_MEMMAP_ON_MEMORY
+	depends on SPARSEMEM_VMEMMAP && ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+	bool
+
+
+Then you can simplify the arch Kconfig settings, removing the sparesemem 
+dependency there.
+
+-- 
+Thanks,
+
+David / dhildenb
+
