@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34C53287E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A615328635
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238110AbhCARan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:30:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60812 "EHLO mail.kernel.org"
+        id S237006AbhCARGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:06:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234569AbhCAQ1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:27:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 568A164EE9;
-        Mon,  1 Mar 2021 16:22:27 +0000 (UTC)
+        id S237710AbhCAQXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:23:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2E2B64DEF;
+        Mon,  1 Mar 2021 16:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615748;
-        bh=1eKXSA8cIktsJfyE3Kpkyn6RZoMoY3oiWUaaLnrMJAE=;
+        s=korg; t=1614615619;
+        bh=5i2lCax6czG2ocFzZsNJZgjcVHuikDxVICLg+eZ7UQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gXgFmXRMqY5vLtJt8lSBOkvHi7+JVIZ1YMQOwSeGXvVFbxUtbdbhIkBJgo5L81Itl
-         Pal0NsmgX90cvBDlmBTGJskCZa3ZVo/Fo8lxVrxSx6GaASIWShytH87RLpkZUcZw3P
-         Qf7tqcvuRBHAaRYJz02ebUWTGyREl9Wmz3hFyrv0=
+        b=WeukUWWeObaF/VnNl6EwhLmtowBpwvv0pOugiKFPIpL7lkV1eZTndvSZATzitXJXa
+         Z07kuQv4N2A/OH2JhXdyidzh4EeMeTS06nYmun/UH3RBVBLLZxSylBeX2fikUx9CX7
+         WqFVeFpF3QYwlmiW/4BhTBUxnDWb8DrpXEaD0Vi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 046/134] fs/jfs: fix potential integer overflow on shift of a int
-Date:   Mon,  1 Mar 2021 17:12:27 +0100
-Message-Id: <20210301161015.848258857@linuxfoundation.org>
+Subject: [PATCH 4.4 54/93] misc: eeprom_93xx46: Add module alias to avoid breaking support for non device tree users
+Date:   Mon,  1 Mar 2021 17:13:06 +0100
+Message-Id: <20210301161009.553552058@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
-References: <20210301161013.585393984@linuxfoundation.org>
+In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
+References: <20210301161006.881950696@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Aswath Govindraju <a-govindraju@ti.com>
 
-[ Upstream commit 4208c398aae4c2290864ba15c3dab7111f32bec1 ]
+[ Upstream commit 4540b9fbd8ebb21bb3735796d300a1589ee5fbf2 ]
 
-The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
-arithmetic and then assigned to a signed 64 bit integer. In the case where
-l2nb is 32 or more this can lead to an overflow.  Avoid this by shifting
-the value 1LL instead.
+Module alias "spi:93xx46" is used by non device tree users like
+drivers/misc/eeprom/digsy_mtc_eeprom.c  and removing it will
+break support for them.
 
-Addresses-Coverity: ("Uninitentional integer overflow")
-Fixes: b40c2e665cd5 ("fs/jfs: TRIM support for JFS Filesystem")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Fix this by adding back the module alias "spi:93xx46".
+
+Fixes: 13613a2246bf ("misc: eeprom_93xx46: Fix module alias to enable module autoprobe")
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Link: https://lore.kernel.org/r/20210113051253.15061-1-a-govindraju@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_dmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/eeprom/eeprom_93xx46.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index 2d514c7affc2a..9ff510a489cb1 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -1669,7 +1669,7 @@ s64 dbDiscardAG(struct inode *ip, int agno, s64 minlen)
- 		} else if (rc == -ENOSPC) {
- 			/* search for next smaller log2 block */
- 			l2nb = BLKSTOL2(nblocks) - 1;
--			nblocks = 1 << l2nb;
-+			nblocks = 1LL << l2nb;
- 		} else {
- 			/* Trim any already allocated blocks */
- 			jfs_error(bmp->db_ipbmap->i_sb, "-EIO\n");
+diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
+index 15c7e3574bcb2..22c1f06728a9c 100644
+--- a/drivers/misc/eeprom/eeprom_93xx46.c
++++ b/drivers/misc/eeprom/eeprom_93xx46.c
+@@ -380,4 +380,5 @@ module_spi_driver(eeprom_93xx46_driver);
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Driver for 93xx46 EEPROMs");
+ MODULE_AUTHOR("Anatolij Gustschin <agust@denx.de>");
++MODULE_ALIAS("spi:93xx46");
+ MODULE_ALIAS("spi:eeprom-93xx46");
 -- 
 2.27.0
 
