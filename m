@@ -2,126 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1EE32978D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94ADF3297C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343969AbhCAWig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
+        id S1344349AbhCAWx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:53:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234734AbhCARrM (ORCPT
+        with ESMTP id S238518AbhCARtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:47:12 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3693C06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:46:26 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id m6so12015471pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:46:26 -0800 (PST)
+        Mon, 1 Mar 2021 12:49:36 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D8DC0617A9
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:47:52 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id d2so27118pjs.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:47:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d6E6zqEbjqh+dwazTT0oLku5dnRE/qNGLB3SDKN9dOw=;
-        b=V3umcLnJr+393bucClK75f1l/HHDLkirK5dzlN9sgGKsRZMDmC6Me94xVCuoN4NqNp
-         qcTL3MjWoKS5pDN7p6Efq6YHyYdSOutxT01s6V1iHqoxv3fl3DBPZ1yhDBuXs3TuxpIq
-         x44r9Aw4XSYNCd/1ff8nPZOpl4BSU001+B8uUpS3H9hKKPntWDWv/vQlCMRTQYDxtHqr
-         1Qgx4hpd6s4+llVp9TFvA6VrVfN8/d6BUhmnB1NLcGkvxMKa7r22sonNJUtVo9JNbzeo
-         SMzTkVuFMlExynASWBJI4bPMPzEpV+Lhcx5au3cj1WGYQSO418KYkVnrAwqbmnuURQLo
-         dT7A==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k3Lzi2uN/Y9F/XcvNTQPp0C3tT032B+1lln6fkGmxQM=;
+        b=W6Y3xeLEBEydaudB2OKXdlRNkLkCmUgOSSaspm8H1hRvaOqBKzWqjGHnGL8h21eDor
+         1+nzgqgsPmXt6thWpsj1DvCRf2Fvb2KINTGcPzZM1KApedY2Dxed/XS3byNczNPrDRNk
+         UTFi2KeqBDJGV7iauQ0xLPRQWYFCRZu2dAomE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d6E6zqEbjqh+dwazTT0oLku5dnRE/qNGLB3SDKN9dOw=;
-        b=Mp30ooGWAibWQOY7dfMmuJVZsE7KIB5LO9yqJoUZgQkPT5F11anWTXVWKVr2hFvtyE
-         nen+bD0MhciKeAyobKVWGkKkHEJ8w3iWIUoYmBcxxpE/nidpOhoEMxYHHrs6uB+2wlVf
-         /oKRaILTppyBUGxNcTBab3aI9BS8lyT4wGWmD67u2AmV9Y2gj3JgPpe3cec3h8MlOrZy
-         Uu2vSbBe+xwvaatucFhDhbZFRTox7HL8bieavIdA6DE367VAtDZCNu8ctjwmK13xaOJ+
-         6CmkeeBUYf6ocAbVJG6J6DR5rD0Jz583crtdkpGau3JdwzLCuLgzQsh+L435p1jI/8qK
-         WtgA==
-X-Gm-Message-State: AOAM532GU5lDyISFboliRkcpeFWZV/XvM3OYfuTkcLmjoZ9RcovntILL
-        fi9gAi2Vd/P7+vdod3qrOv7Ltg==
-X-Google-Smtp-Source: ABdhPJxwUl3cOs7feycakrWn32IxbWrdJjJSqGzoDLlyubX5TOmfjlzvs4DgizGVyGqux61oa7xILw==
-X-Received: by 2002:a62:7797:0:b029:1ed:7b10:84c2 with SMTP id s145-20020a6277970000b02901ed7b1084c2mr15949057pfc.47.1614620786279;
-        Mon, 01 Mar 2021 09:46:26 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
-        by smtp.gmail.com with ESMTPSA id b1sm19387523pfp.145.2021.03.01.09.46.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k3Lzi2uN/Y9F/XcvNTQPp0C3tT032B+1lln6fkGmxQM=;
+        b=Vz+0mIsaZRghtESvPvNepOqRHTInsMB+5aJjQAqFK/d7QB0xBflA+ce3h0e27NkQdb
+         lGQRfmljTmNHVMefAlIYPzhZx3KEF1wss7k7T2j3y/ycu9YS0hR0MoheOrgkJWjKe87I
+         Qn5ELa7AxijvieYJuY05wEz4f4TXtZo33zrlyatQorD9SB1ODbQLHqj6vXV2loWV9i1I
+         th0OiZUn2qdtFSuySA7Wd99e/HPN3PE6Jwb578DcBGJ7RA6YDGqFGv50sOgAFZ3HDJW/
+         IDdJLq3jmrRJrgd4Z3r3GvI+Kg2jLTqxiaLaZjeUVJ1foR16+KghwYKu5BzeNT9cQcPy
+         eIoA==
+X-Gm-Message-State: AOAM530isBHivaM6mVhQDx08xrEKb7z8QciMFiEgQuTbDPgqgDvLexna
+        WCk9GjR7uEQtXEDGhO3hhs1kiA==
+X-Google-Smtp-Source: ABdhPJzwFouF0rR1bCQLTwJzasePHVhOOCTepYinWvJ45raB0eARzkIWO56P0a8cra6XYVFiUl4zdw==
+X-Received: by 2002:a17:902:bd0a:b029:e0:612:ad38 with SMTP id p10-20020a170902bd0ab02900e00612ad38mr17389147pls.30.1614620872137;
+        Mon, 01 Mar 2021 09:47:52 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3c20:df33:e36:93df])
+        by smtp.gmail.com with ESMTPSA id y202sm19071325pfb.153.2021.03.01.09.47.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 09:46:25 -0800 (PST)
-Date:   Mon, 1 Mar 2021 09:46:19 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH v2] KVM: nVMX: Sync L2 guest CET states between L1/L2
-Message-ID: <YD0oa99pgXqlS07h@google.com>
-References: <20210225030951.17099-1-weijiang.yang@intel.com>
- <20210225030951.17099-2-weijiang.yang@intel.com>
+        Mon, 01 Mar 2021 09:47:51 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baoquan He <bhe@redhat.com>, Dave Young <dyoung@redhat.com>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Jessica Yu <jeyu@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vivek Goyal <vgoyal@redhat.com>
+Subject: [PATCH 0/7] Add build ID to stacktraces
+Date:   Mon,  1 Mar 2021 09:47:42 -0800
+Message-Id: <20210301174749.1269154-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225030951.17099-2-weijiang.yang@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Vitaly
+This series adds the kernel's build ID to the stacktrace header printed
+in oops messages, warnings, etc. and the build ID for any module that
+appears in the stacktrace after the module name. The goal is to make the
+stacktrace more self-contained and descriptive by including the relevant
+build IDs in the kernel logs when something goes wrong. This can be used
+by post processing tools like script/decode_stacktrace.sh and kernel
+developers to easily locate the debug info associated with a kernel
+crash and line up what line and file things started falling apart at.
 
-On Thu, Feb 25, 2021, Yang Weijiang wrote:
-> These fields are rarely updated by L1 QEMU/KVM, sync them when L1 is trying to
-> read/write them and after they're changed. If CET guest entry-load bit is not
-> set by L1 guest, migrate them to L2 manaully.
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> 
-> change in v2:
->  - Per Sean's review feedback, change CET guest states as rarely-updated fields.
->    And also migrate L1's CET states to L2 if the entry-load bit is not set.
->  - Opportunistically removed one blank line.
-> ---
->  arch/x86/kvm/cpuid.c      |  1 -
->  arch/x86/kvm/vmx/nested.c | 29 +++++++++++++++++++++++++++++
->  arch/x86/kvm/vmx/vmx.h    |  3 +++
->  3 files changed, 32 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 46087bca9418..afc97122c05c 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -143,7 +143,6 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
->  		}
->  		vcpu->arch.guest_supported_xss =
->  			(((u64)best->edx << 32) | best->ecx) & supported_xss;
-> -
->  	} else {
->  		vcpu->arch.guest_supported_xss = 0;
->  	}
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 9728efd529a1..1703b8874fad 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -2516,6 +2516,12 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
->  	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
->  
->  	set_cr4_guest_host_mask(vmx);
-> +
-> +	if (kvm_cet_supported()) {
+This also includes a patch to make the buildid.c file use more const
+arguments and consolidate logic into buildid.c from kdump. These are
+left to the end as they were mostly cleanup patches. I don't know who
+exactly maintains this so I guess Andrew is the best option to merge all
+this code.
 
-This needs to be conditioned on CET coming from vmcs12, it's on the loading of
-host state on VM-Exit that is unconditional (if CET is supported).
+Here's an example lkdtm stacktrace
 
-	if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
-	    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+ WARNING: CPU: 4 PID: 3255 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARNING+0x28/0x30 [lkdtm] (ed5019fdf5e53be37cb1ba7899292d7e143b259e)
+ Modules linked in: lkdtm rfcomm algif_hash algif_skcipher af_alg xt_cgroup uinput xt_MASQUERADE
+ CPU: 4 PID: 3255 Comm: bash Not tainted 5.11 #3 aa23f7a1231c229de205662d5a9e0d4c580f19a1
+ Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
+ pstate: 00400009 (nzcv daif +PAN -UAO -TCO BTYPE=--)
+ pc : lkdtm_WARNING+0x28/0x30 [lkdtm] (ed5019fdf5e53be37cb1ba7899292d7e143b259e)
+ lr : lkdtm_do_action+0x24/0x40 [lkdtm] (ed5019fdf5e53be37cb1ba7899292d7e143b259e)
+ sp : ffffffc0134fbca0
+ x29: ffffffc0134fbca0 x28: ffffff92d53ba240
+ x27: 0000000000000000 x26: 0000000000000000
+ x25: 0000000000000000 x24: ffffffe3622352c0
+ x23: 0000000000000020 x22: ffffffe362233366
+ x21: ffffffe3622352e0 x20: ffffffc0134fbde0
+ x19: 0000000000000008 x18: 0000000000000000
+ x17: ffffff929b6536fc x16: 0000000000000000
+ x15: 0000000000000000 x14: 0000000000000012
+ x13: ffffffe380ed892c x12: ffffffe381d05068
+ x11: 0000000000000000 x10: 0000000000000000
+ x9 : 0000000000000001 x8 : ffffffe362237000
+ x7 : aaaaaaaaaaaaaaaa x6 : 0000000000000000
+ x5 : 0000000000000000 x4 : 0000000000000001
+ x3 : 0000000000000008 x2 : ffffff93fef25a70
+ x1 : ffffff93fef15788 x0 : ffffffe3622352e0
+ Call trace:
+  lkdtm_WARNING+0x28/0x30 [lkdtm] (ed5019fdf5e53be37cb1ba7899292d7e143b259e)
+  direct_entry+0x16c/0x1b4 [lkdtm] (ed5019fdf5e53be37cb1ba7899292d7e143b259e)
+  full_proxy_write+0x74/0xa4
+  vfs_write+0xec/0x2e8
+  ksys_write+0x84/0xf0
+  __arm64_sys_write+0x24/0x30
+  el0_svc_common+0xf4/0x1c0
+  do_el0_svc_compat+0x28/0x3c
+  el0_svc_compat+0x10/0x1c
+  el0_sync_compat_handler+0xa8/0xcc
+  el0_sync_compat+0x178/0x180
+ ---[ end trace 3d95032303e59e68 ]---
 
-I also assume these should be guarded by one of the eVMCS fields, though a quick
-search of the public docs didn't provide a hit on the CET fields.
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Evan Green <evgreen@chromium.org>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Jessica Yu <jeyu@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: <kexec@lists.infradead.org>
+Cc: <linux-doc@vger.kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Vivek Goyal <vgoyal@redhat.com>
 
-Vitaly, any idea if these will be GUEST_GRP2 or something else?
+Stephen Boyd (7):
+  buildid: Add method to get running kernel's build ID
+  dump_stack: Add vmlinux build ID to stack traces
+  buildid: Add API to parse build ID out of buffer
+  module: Parse and stash build ID on insertion
+  printk: Make %pS and friends print module build ID
+  buildid: Mark some arguments const
+  kdump: Use vmlinux_build_id() to simplify
 
-> +		vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
-> +		vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
-> +		vmcs_writel(GUEST_INTR_SSP_TABLE, vmcs12->guest_ssp_tbl);
-> +	}
->  }
+ Documentation/core-api/printk-formats.rst |  6 ++
+ include/linux/buildid.h                   |  4 +
+ include/linux/kallsyms.h                  |  6 +-
+ include/linux/module.h                    |  6 +-
+ kernel/crash_core.c                       | 46 ++----------
+ kernel/kallsyms.c                         | 45 ++++++++----
+ kernel/module.c                           | 24 +++++-
+ lib/buildid.c                             | 89 +++++++++++++++++++----
+ lib/dump_stack.c                          |  5 +-
+ 9 files changed, 157 insertions(+), 74 deletions(-)
+
+
+base-commit: fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8
+-- 
+https://chromeos.dev
+
