@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C92329D47
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74626329D1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234826AbhCBCZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:25:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57754 "EHLO mail.kernel.org"
+        id S1443006AbhCBCRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:17:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232419AbhCATsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:48:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADB6465050;
-        Mon,  1 Mar 2021 17:18:36 +0000 (UTC)
+        id S237589AbhCATob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C470651DF;
+        Mon,  1 Mar 2021 17:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619117;
-        bh=udoE2E4B/51s1NXDi4Y40FhUjDcDqmyoBRM4HMfIym8=;
+        s=korg; t=1614619140;
+        bh=+ZbRol78FT9g7t81/wKTuFrObdBVUN4AlGkqVNKLG+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LCBiDxAlelHvib58Qr0XCqup0dKmxms14E7QMoQ2SmELj0lQztQtjoWW7VpGAKbGJ
-         vsb+AmD7WiV/LIv1lNDB03j7fzHkKtBMx7atqosX6EvxCYCDaFNL+nNHPk8iy6CGgo
-         VXg95dPzqUcQ0np/kFFY/02uPYKDh9IWQhRDxl+E=
+        b=oLGkWQA13wTiNWKtu/FF6y1lU847WU3swm7CxBCDQD9sRwGnR4gOxDIsf2hYGea+5
+         KaBsioh9IVaF7IbahNrDEF/AMul2Or+CbTuQHUYePKknodqrvkBRDF8MeckCTUkwcX
+         p0Ld7htCoZk0ts/nt03QBndPdzP8N54/KPzSyvhc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Yong Wu <yong.wu@mediatek.com>, Will Deacon <will@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 338/663] iommu: Properly pass gfp_t in _iommu_map() to avoid atomic sleeping
-Date:   Mon,  1 Mar 2021 17:09:46 +0100
-Message-Id: <20210301161158.572015280@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 346/663] RDMA/rxe: Fix coding error in rxe_rcv_mcast_pkt
+Date:   Mon,  1 Mar 2021 17:09:54 +0100
+Message-Id: <20210301161158.967266181@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,59 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Bob Pearson <rpearsonhpe@gmail.com>
 
-[ Upstream commit b8437a3ef8c485903d05d1f261328aaf0c0a6cc2 ]
+[ Upstream commit 8fc1b7027fc162738d5a85c82410e501a371a404 ]
 
-Sleeping while atomic = bad.  Let's fix an obvious typo to try to avoid it.
+rxe_rcv_mcast_pkt() in rxe_recv.c can leak SKBs in error path code. The
+loop over the QPs attached to a multicast group creates new cloned SKBs
+for all but the last QP in the list and passes the SKB and its clones to
+rxe_rcv_pkt() for further processing. Any QPs that do not pass some checks
+are skipped.  If the last QP in the list fails the tests the SKB is
+leaked.  This patch checks if the SKB for the last QP was used and if not
+frees it. Also removes a redundant loop invariant assignment.
 
-The warning that was seen (on a downstream kernel with the problematic
-patch backported):
-
- BUG: sleeping function called from invalid context at mm/page_alloc.c:4726
- in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 9, name: ksoftirqd/0
- CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.4.93-12508-gc10c93e28e39 #1
- Call trace:
-  dump_backtrace+0x0/0x154
-  show_stack+0x20/0x2c
-  dump_stack+0xa0/0xfc
-  ___might_sleep+0x11c/0x12c
-  __might_sleep+0x50/0x84
-  __alloc_pages_nodemask+0xf8/0x2bc
-  __arm_lpae_alloc_pages+0x48/0x1b4
-  __arm_lpae_map+0x124/0x274
-  __arm_lpae_map+0x1cc/0x274
-  arm_lpae_map+0x140/0x170
-  arm_smmu_map+0x78/0xbc
-  __iommu_map+0xd4/0x210
-  _iommu_map+0x4c/0x84
-  iommu_map_atomic+0x44/0x58
-  __iommu_dma_map+0x8c/0xc4
-  iommu_dma_map_page+0xac/0xf0
-
-Fixes: d8c1df02ac7f ("iommu: Move iotlb_sync_map out from __iommu_map")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Yong Wu <yong.wu@mediatek.com>
-Acked-by: Will Deacon <will@kernel.org>
-Link: https://lore.kernel.org/r/20210201170611.1.I64a7b62579287d668d7c89e105dcedf45d641063@changeid
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Fixes: 71abf20b28ff ("RDMA/rxe: Handle skb_clone() failure in rxe_recv.c")
+Link: https://lore.kernel.org/r/20210128174752.16128-1-rpearson@hpe.com
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_recv.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index a25a85a0bba5b..0d9adce6d812f 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -2424,7 +2424,7 @@ static int _iommu_map(struct iommu_domain *domain, unsigned long iova,
- 	const struct iommu_ops *ops = domain->ops;
- 	int ret;
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index db0ee5c3962e4..cb69a125e2806 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -257,7 +257,6 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
  
--	ret = __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
-+	ret = __iommu_map(domain, iova, paddr, size, prot, gfp);
- 	if (ret == 0 && ops->iotlb_sync_map)
- 		ops->iotlb_sync_map(domain);
+ 	list_for_each_entry(mce, &mcg->qp_list, qp_list) {
+ 		qp = mce->qp;
+-		pkt = SKB_TO_PKT(skb);
+ 
+ 		/* validate qp for incoming packet */
+ 		err = check_type_state(rxe, pkt, qp);
+@@ -269,12 +268,18 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+ 			continue;
+ 
+ 		/* for all but the last qp create a new clone of the
+-		 * skb and pass to the qp.
++		 * skb and pass to the qp. If an error occurs in the
++		 * checks for the last qp in the list we need to
++		 * free the skb since it hasn't been passed on to
++		 * rxe_rcv_pkt() which would free it later.
+ 		 */
+-		if (mce->qp_list.next != &mcg->qp_list)
++		if (mce->qp_list.next != &mcg->qp_list) {
+ 			per_qp_skb = skb_clone(skb, GFP_ATOMIC);
+-		else
++		} else {
+ 			per_qp_skb = skb;
++			/* show we have consumed the skb */
++			skb = NULL;
++		}
+ 
+ 		if (unlikely(!per_qp_skb))
+ 			continue;
+@@ -289,9 +294,8 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+ 
+ 	rxe_drop_ref(mcg);	/* drop ref from rxe_pool_get_key. */
+ 
+-	return;
+-
+ err1:
++	/* free skb if not consumed */
+ 	kfree_skb(skb);
+ }
  
 -- 
 2.27.0
