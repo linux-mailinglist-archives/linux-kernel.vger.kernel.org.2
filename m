@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE78A32971D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78CA432971C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245267AbhCAWdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:33:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58228 "EHLO mail.kernel.org"
+        id S245254AbhCAWdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:33:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232847AbhCARfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:35:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F5F264FB6;
-        Mon,  1 Mar 2021 16:54:19 +0000 (UTC)
+        id S234721AbhCARfN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:35:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1C3B64FBD;
+        Mon,  1 Mar 2021 16:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617660;
-        bh=ATnTuk9UMyv/ldTfadnANYnaU2kqXy6VFluMSyIsI1Y=;
+        s=korg; t=1614617686;
+        bh=Vjnctk6S4GYutQmBNqnhu9wrmphTz/IkNeRIwF/Yddo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1bEBZUttWOnLG5Vjmx4SGxAAvqvagjsRhma3ekkQw8AfZ8FRYfEOREXSHtssRG9M2
-         TWWKtNF7zpq6cULj2TWZWVytUM8H30vQeR97d6tGwzkkhZZJTCql9rBSUjVk7RdLFu
-         LWyZQ/NksFwoBwqQaFGNoTDrdqxOm7I0QnXWDj0A=
+        b=DqQu++GnbJpUqud1htKQ3Vyaz8Y3GC/ehmdIC5KVTm1Z99vFf6xF/U9qKuF/VBJQx
+         iTAsC/870gTrs9vhF3NmklkPm2wJfb2Z8biOcAmadud6qrRGoHYqUdGr6barl2Fjf6
+         owuVNNCa584lTGcdy9VBA9N9hGCw6yYoeu3STAm0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 151/340] clk: sunxi-ng: h6: Fix clock divider range on some clocks
-Date:   Mon,  1 Mar 2021 17:11:35 +0100
-Message-Id: <20210301161055.749231181@linuxfoundation.org>
+Subject: [PATCH 5.4 159/340] auxdisplay: ht16k33: Fix refresh rate handling
+Date:   Mon,  1 Mar 2021 17:11:43 +0100
+Message-Id: <20210301161056.144311765@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -41,65 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Przywara <andre.przywara@arm.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 
-[ Upstream commit 04ef679591c76571a9e7d5ca48316cc86fa0ef12 ]
+[ Upstream commit e89b0a426721a8ca5971bc8d70aa5ea35c020f90 ]
 
-While comparing clocks between the H6 and H616, some of the M factor
-ranges were found to be wrong: the manual says they are only covering
-two bits [1:0], but our code had "5" in the number-of-bits field.
+Drop the call to msecs_to_jiffies(), as "HZ / fbdev->refresh_rate" is
+already the number of jiffies to wait.
 
-By writing 0xff into that register in U-Boot and via FEL, it could be
-confirmed that bits [4:2] are indeed masked off, so the manual is right.
-
-Change to number of bits in the affected clock's description.
-
-Fixes: 524353ea480b ("clk: sunxi-ng: add support for the Allwinner H6 CCU")
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210118000912.28116-1-andre.przywara@arm.com
+Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/sunxi-ng/ccu-sun50i-h6.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/auxdisplay/ht16k33.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
-index 183dd350cce95..2f00f1b7b9c00 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-h6.c
-@@ -228,7 +228,7 @@ static const char * const psi_ahb1_ahb2_parents[] = { "osc24M", "osc32k",
- static SUNXI_CCU_MP_WITH_MUX(psi_ahb1_ahb2_clk, "psi-ahb1-ahb2",
- 			     psi_ahb1_ahb2_parents,
- 			     0x510,
--			     0, 5,	/* M */
-+			     0, 2,	/* M */
- 			     8, 2,	/* P */
- 			     24, 2,	/* mux */
- 			     0);
-@@ -237,19 +237,19 @@ static const char * const ahb3_apb1_apb2_parents[] = { "osc24M", "osc32k",
- 						       "psi-ahb1-ahb2",
- 						       "pll-periph0" };
- static SUNXI_CCU_MP_WITH_MUX(ahb3_clk, "ahb3", ahb3_apb1_apb2_parents, 0x51c,
--			     0, 5,	/* M */
-+			     0, 2,	/* M */
- 			     8, 2,	/* P */
- 			     24, 2,	/* mux */
- 			     0);
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index a2fcde582e2a1..33b887b389061 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -117,8 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+ {
+ 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
  
- static SUNXI_CCU_MP_WITH_MUX(apb1_clk, "apb1", ahb3_apb1_apb2_parents, 0x520,
--			     0, 5,	/* M */
-+			     0, 2,	/* M */
- 			     8, 2,	/* P */
- 			     24, 2,	/* mux */
- 			     0);
+-	schedule_delayed_work(&fbdev->work,
+-			      msecs_to_jiffies(HZ / fbdev->refresh_rate));
++	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
+ }
  
- static SUNXI_CCU_MP_WITH_MUX(apb2_clk, "apb2", ahb3_apb1_apb2_parents, 0x524,
--			     0, 5,	/* M */
-+			     0, 2,	/* M */
- 			     8, 2,	/* P */
- 			     24, 2,	/* mux */
- 			     0);
+ /*
 -- 
 2.27.0
 
