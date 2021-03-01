@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B12E3299E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:28:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440D03299F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345214AbhCBAj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:39:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45194 "EHLO mail.kernel.org"
+        id S1345336AbhCBAkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:40:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239134AbhCASdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:33:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B51C652FA;
-        Mon,  1 Mar 2021 17:41:03 +0000 (UTC)
+        id S239915AbhCASbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:31:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA6EE652FC;
+        Mon,  1 Mar 2021 17:41:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620464;
-        bh=p+L4q5ZOnepdIhERvdIVda9tfwSRZlN3UAXzIG+O5DQ=;
+        s=korg; t=1614620472;
+        bh=WByou/aDB0FXbiuLuZKDk4F5KwCaITLr2hXUKqyHEGk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fOtLfeGeOz2H9Jy4f9uhyMKr+Q0tYHrwo42ZHQWDbOjIJaIGX2MXHiAWEm7BWYIYG
-         17Iwtoxg/A4q3USagm4rb7IDLNMeDJWAc5hXWC4Wm18Xg8jN/pb/XQ8zCsOma7RRP8
-         /ypd+fljxqkIzkZv3NbIJor2CvAbUvzYo/KQscnw=
+        b=duXq19kLfNxRrKkQN6LB/UyTcir8mfr6rmOtTC9mXU3VGyzQqZ5JLKH1YCZ/Or9pt
+         IG0MXexkMVQhUjlcTFQ8+TIzIjzDLOEctDHJ/GBloFxVYMtfNKy6U85QGpMyFlreJq
+         W5uhcMv7RBHaUlRQV7TmA+fy9UrrnTm7rOaIr1mM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Raed Salem <raeds@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org, Dany Madden <drt@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 162/775] net/mlx5e: Enable striding RQ for Connect-X IPsec capable devices
-Date:   Mon,  1 Mar 2021 17:05:30 +0100
-Message-Id: <20210301161209.645962633@linuxfoundation.org>
+Subject: [PATCH 5.11 164/775] ibmvnic: change IBMVNIC_MAX_IND_DESCS to 16
+Date:   Mon,  1 Mar 2021 17:05:32 +0100
+Message-Id: <20210301161209.744906740@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,109 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Raed Salem <raeds@nvidia.com>
+From: Dany Madden <drt@linux.ibm.com>
 
-[ Upstream commit e4484d9df5000a18916e0bbcee50828eac8e293e ]
+[ Upstream commit a6f2fe5f108c11ff8023d07f9c00cc3c9c3203b8 ]
 
-This limitation was inherited by previous Innova (FPGA) IPsec
-implementation, it uses its private set of RQ handlers which does
-not support striding rq, for Connect-X this is no longer true.
+The supported indirect subcrq entries on Power8 is 16. Power9
+supports 128. Redefined this value to 16 to minimize the driver from
+having to reset when migrating between Power9 and Power8. In our rx/tx
+performance testing, we found no performance difference between 16 and
+128 at this time.
 
-Fix by keeping this limitation only for Innova IPsec supporting devices,
-as otherwise this limitation effectively wrongly blocks striding RQs for
-all future Connect-X devices for all flows even if IPsec offload is not
-used.
-
-Fixes: 2d64663cd559 ("net/mlx5: IPsec: Add HW crypto offload support")
-Signed-off-by: Raed Salem <raeds@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: f019fb6392e5 ("ibmvnic: Introduce indirect subordinate Command Response Queue buffer")
+Signed-off-by: Dany Madden <drt@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c    | 5 +++--
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c      | 4 ++--
- drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.h | 2 ++
- 4 files changed, 8 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 5fb0ab71d79ce..3edc826cc6bbe 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -65,6 +65,7 @@
- #include "en/devlink.h"
- #include "lib/mlx5.h"
- #include "en/ptp.h"
-+#include "fpga/ipsec.h"
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.h b/drivers/net/ethernet/ibm/ibmvnic.h
+index 3cccbba703658..72fea3b1c87d9 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.h
++++ b/drivers/net/ethernet/ibm/ibmvnic.h
+@@ -31,7 +31,7 @@
+ #define IBMVNIC_BUFFS_PER_POOL	100
+ #define IBMVNIC_MAX_QUEUES	16
+ #define IBMVNIC_MAX_QUEUE_SZ   4096
+-#define IBMVNIC_MAX_IND_DESCS  128
++#define IBMVNIC_MAX_IND_DESCS  16
+ #define IBMVNIC_IND_ARR_SZ	(IBMVNIC_MAX_IND_DESCS * 32)
  
- bool mlx5e_check_fragmented_striding_rq_cap(struct mlx5_core_dev *mdev)
- {
-@@ -106,7 +107,7 @@ bool mlx5e_striding_rq_possible(struct mlx5_core_dev *mdev,
- 	if (!mlx5e_check_fragmented_striding_rq_cap(mdev))
- 		return false;
- 
--	if (MLX5_IPSEC_DEV(mdev))
-+	if (mlx5_fpga_is_ipsec_device(mdev))
- 		return false;
- 
- 	if (params->xdp_prog) {
-@@ -2069,7 +2070,7 @@ static void mlx5e_build_rq_frags_info(struct mlx5_core_dev *mdev,
- 	int i;
- 
- #ifdef CONFIG_MLX5_EN_IPSEC
--	if (MLX5_IPSEC_DEV(mdev))
-+	if (mlx5_fpga_is_ipsec_device(mdev))
- 		byte_count += MLX5E_METADATA_ETHER_LEN;
- #endif
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index ca4b55839a8a7..4864deed9dc94 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1795,8 +1795,8 @@ int mlx5e_rq_set_handlers(struct mlx5e_rq *rq, struct mlx5e_params *params, bool
- 
- 		rq->handle_rx_cqe = priv->profile->rx_handlers->handle_rx_cqe_mpwqe;
- #ifdef CONFIG_MLX5_EN_IPSEC
--		if (MLX5_IPSEC_DEV(mdev)) {
--			netdev_err(netdev, "MPWQE RQ with IPSec offload not supported\n");
-+		if (mlx5_fpga_is_ipsec_device(mdev)) {
-+			netdev_err(netdev, "MPWQE RQ with Innova IPSec offload not supported\n");
- 			return -EINVAL;
- 		}
- #endif
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-index cc67366495b09..22bee49902327 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-@@ -124,7 +124,7 @@ struct mlx5_fpga_ipsec {
- 	struct ida halloc;
- };
- 
--static bool mlx5_fpga_is_ipsec_device(struct mlx5_core_dev *mdev)
-+bool mlx5_fpga_is_ipsec_device(struct mlx5_core_dev *mdev)
- {
- 	if (!mdev->fpga || !MLX5_CAP_GEN(mdev, fpga))
- 		return false;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.h b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.h
-index db88eb4c49e34..8931b55844773 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.h
-@@ -43,6 +43,7 @@ u32 mlx5_fpga_ipsec_device_caps(struct mlx5_core_dev *mdev);
- const struct mlx5_flow_cmds *
- mlx5_fs_cmd_get_default_ipsec_fpga_cmds(enum fs_flow_table_type type);
- void mlx5_fpga_ipsec_build_fs_cmds(void);
-+bool mlx5_fpga_is_ipsec_device(struct mlx5_core_dev *mdev);
- #else
- static inline
- const struct mlx5_accel_ipsec_ops *mlx5_fpga_ipsec_ops(struct mlx5_core_dev *mdev)
-@@ -55,6 +56,7 @@ mlx5_fs_cmd_get_default_ipsec_fpga_cmds(enum fs_flow_table_type type)
- }
- 
- static inline void mlx5_fpga_ipsec_build_fs_cmds(void) {};
-+static inline bool mlx5_fpga_is_ipsec_device(struct mlx5_core_dev *mdev) { return false; }
- 
- #endif /* CONFIG_MLX5_FPGA_IPSEC */
- #endif	/* __MLX5_FPGA_IPSEC_H__ */
+ #define IBMVNIC_TSO_BUF_SZ	65536
 -- 
 2.27.0
 
