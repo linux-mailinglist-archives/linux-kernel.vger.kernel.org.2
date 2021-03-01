@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A41C327FF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBC4327FF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235927AbhCANsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:48:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235917AbhCANs3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:48:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C49CD64DBA;
-        Mon,  1 Mar 2021 13:47:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614606468;
-        bh=/CSTthiMwxi8nZQN4nYoEUucKpPH+FiRQ1OvJb1RD2E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NbdJ8IMAyGRddRdseDH76pvVnTM7oymXMnGyv5E5n89fLgXG+umWik9lLFlsGzT3M
-         0sNFAMUYKV4kO6Wqe/9+qRMdTfN6ch6m6Uc0cJV4tDor4Nn8WoqzhB2q55wnb7O6th
-         zwP3gtWRARS4HSLIRsc6y8IfnWezpXmgvLJO/GZfM0XGf5z2zSky1lfew/jpYlzhx8
-         H8HnpjQTsHftXrXUVLSXdiTUDD4twH00Wb/iPOg+rILlRfwT2eEKUxIeic/lxnP9al
-         9VqtHLCGcumPwUE8woNpsFKyLT+v54cbjkz+HeLtnQulmwMv4eTgUpTGDZab9c4qOC
-         O8qbDT3dEFKdQ==
-Date:   Mon, 1 Mar 2021 14:47:41 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] media: add a subsystem profile documentation
-Message-ID: <20210301144741.11a5751b@coco.lan>
-In-Reply-To: <e757851a-91a1-225b-fa6e-3c7d44a6cc5c@xs4all.nl>
-References: <7ac41052a64ae3cfceaa9d08a82afc9dcf2392c5.1614599129.git.mchehab+huawei@kernel.org>
-        <e757851a-91a1-225b-fa6e-3c7d44a6cc5c@xs4all.nl>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S235787AbhCANtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:49:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235863AbhCANtN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:49:13 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AD3C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 05:48:32 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id v9so7798654lfa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 05:48:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1XxnsnD47JKwwzGZCRygJC5rmwVQbcDtLhj0NRbACBk=;
+        b=SBYWmYkHVZKAaY1CaKLuWcA62BwxXp1ERoTymt9w1HAJnwjEcHfsweZe9qU+vcFWD0
+         phKtOGWVlDw2hcLKabf6nv/5mBGRZ36uDEbcxjurZgz4dS1mPX13DgTlUsFCmO7Yk9Y5
+         7LV2WdsvhptVzRBiPkrF+aoQTmGRwxkXgwlwC6OH23zn5VaXXiQ2FXaTlIhdtFY8XXw7
+         5bKsTN4nKLe4XPKMBtzTzuK5BoEvz3M2k72iW1HmEORr8juIDpnQOowIP0XafFk3O2ZU
+         0h9JQzmaU2TSDAwG8oIdDJ4rfKTwGc/A7uoUUiobhTrAscjVclbh5z7xSnH2GcD5NeGa
+         WqLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1XxnsnD47JKwwzGZCRygJC5rmwVQbcDtLhj0NRbACBk=;
+        b=i4kCeopdJ6jPLH3Y4c5KMjStXBpy5eh88HP6qsjc91djQU7RYeNE/xShZi2gLBaesS
+         5kX+LtG64tb5UNq1xT4OleQj3Wx6LGiBL50jR0GhGFNKumZy+J8V2FRZGiH5cK5Iuj9n
+         HnjZF9NNYHVGevl3gXKqwgVwtMzfJZHga9x32604kpb6Ln+pAPyXoR9POQG5a3M/aBQf
+         D0x+wo2hq+FqCOkpihlKkbQ+R0vPkhsT7MA8YsDYLzkTJR4VmTQ3T36r0PReEhlF6PEb
+         2FrZmHuL0Pbifyqc9iqM6z1U0HDmjJxsu97EwkxrEeVK7b3JaF7laGkw6QBgen6FK8nb
+         lvog==
+X-Gm-Message-State: AOAM531fbF8bksW2U5duchEGixWX6fwQ+maprpb6AxazDEeK25QOZFMY
+        dSYtyyPN5b5KAeRydLykF/f4i+7qnz0CP009Dtkyxw==
+X-Google-Smtp-Source: ABdhPJxqEwKf/aYTRS+Gakp2bC1USy0S59/HkZ86584bpS3ARce7vdjl4b7lsBqmr2Fy3RgiLFfKCKmdbWy+WpHzgsE=
+X-Received: by 2002:a19:6b13:: with SMTP id d19mr9387864lfa.291.1614606511341;
+ Mon, 01 Mar 2021 05:48:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210224061205.23270-1-dqfext@gmail.com>
+In-Reply-To: <20210224061205.23270-1-dqfext@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 1 Mar 2021 14:48:20 +0100
+Message-ID: <CACRpkdZykWgxM7Ge40gpMBaVUoa7WqJrOugrvSpm2Lc52hHC8w@mail.gmail.com>
+Subject: Re: [RFC net-next] net: dsa: rtl8366rb: support bridge offloading
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 1 Mar 2021 13:27:39 +0100
-Hans Verkuil <hverkuil@xs4all.nl> escreveu:
+On Wed, Feb 24, 2021 at 7:12 AM DENG Qingfang <dqfext@gmail.com> wrote:
 
-> Hi Mauro,
-> 
+> Use port isolation registers to configure bridge offloading.
+> Remove the VLAN init, as we have proper CPU tag and bridge offloading
+> support now.
+>
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> ---
+> This is not tested, as I don't have a RTL8366RB board. And I think there
+> is potential race condition in port_bridge_{join,leave}.
 
-Thanks for your review. I'm addressing the points on a v5.
+Compilation failed for me like this:
 
-Yet, there's one that, IMHO, we should elaborate more, if we add it to the
-doc:
+../drivers/net/dsa/rtl8366rb.c:1573:23: error: initialization of 'void
+(*)(struct dsa_switch *, int,  struct net_device *)' from incompatible
+pointer type 'int (*)(struct dsa_switch *, int,  struct net_device *)'
+[-Werror=incompatible-pointer-types]
+ 1573 |  .port_bridge_leave = rtl8366rb_port_bridge_leave,
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/net/dsa/rtl8366rb.c:1573:23: note: (near initialization for
+'rtl8366rb_switch_ops.port_bridge_leave')
 
-> > +Provided that your patch is at https://patchwork.linuxtv.org, it should
-> > +be sooner or later handled, so you don't need to re-submit a patch.
-> > +
-> > +Except for bug fixes, we don't usually add new patches to the development
-> > +tree between -rc6 and the next -rc1.
-> > +
-> > +Please notice that the media subsystem is a high traffic one, so it
-> > +could take a while for us to be able to review your patches. Feel free
-> > +to ping if you don't get a feedback in a couple of weeks or to ask
-> > +other developers to publicly add Reviewed-by and, more importantly,
-> > +Tested-by tags.  
-> 
-> What I have noticed is that sometimes important bug fixes are missed due
-> to the high traffic volume. I would like to see something along the lines of:
-> 
-> "If important bug fixes are not reviewed or picked up within a week of posting,
-> then do not hesitate to ping."
+I fixed it like this:
 
-I see your point, but "important" is relative ;-) I mean, a bug
-is almost always important for the one reporting it. It doesn't
-necessarily means that such bug is visible by others or if the
-subsystem's core has a serious bug.
+diff --git a/drivers/net/dsa/rtl8366rb.c b/drivers/net/dsa/rtl8366rb.c
+index e7abf846350d..0719fadadc3d 100644
+--- a/drivers/net/dsa/rtl8366rb.c
++++ b/drivers/net/dsa/rtl8366rb.c
+@@ -1161,7 +1161,7 @@ rtl8366rb_port_bridge_join(struct dsa_switch
+*ds, int port,
+                                  0, port_bitmap << 1);
+ }
 
-IMO, if we add a paragraph like that, we should better explain what
-"important" means.
+-static int
++static void
+ rtl8366rb_port_bridge_leave(struct dsa_switch *ds, int port,
+                            struct net_device *bridge)
+ {
+@@ -1176,14 +1176,17 @@ rtl8366rb_port_bridge_leave(struct dsa_switch
+*ds, int port,
+                        continue;
+                ret = regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(i),
+                                         BIT(port + 1), 0);
+-               if (ret)
+-                       return ret;
++               if (ret) {
++                       dev_err(smi->dev, "failed to leave port %d
+from bridge\n",
++                               port);
++                       return;
++               }
 
-Thanks,
-Mauro
+                port_bitmap |= BIT(i);
+        }
+
+-       return regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(port),
+-                                 port_bitmap << 1, 0);
++       regmap_update_bits(smi->map, RTL8366RB_PORT_ISO(port),
++                          port_bitmap << 1, 0);
+ }
+
+After this it works like a charm.
+
+> -       ret = rtl8366_init_vlan(smi);
+> -       if (ret)
+> -               return ret;
+
+I suppose we can delete that confused VLAN set-up after this.
+
+> -       ds->configure_vlan_while_not_filtering = false;
+
+This is default true not IIUC so we should be good!
+
+With my minor changes:
+Tested-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
