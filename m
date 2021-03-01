@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1931E329B09
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2CE329A5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378489AbhCBBGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:06:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34102 "EHLO mail.kernel.org"
+        id S1377482AbhCBAr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:47:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240836AbhCATBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:01:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5606465060;
-        Mon,  1 Mar 2021 17:23:27 +0000 (UTC)
+        id S236319AbhCASoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:44:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C05D64F40;
+        Mon,  1 Mar 2021 16:38:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619407;
-        bh=8SHH06qCYKkTODRXIYuyLJaQQAs1q9MZMNiaMMhVXcQ=;
+        s=korg; t=1614616727;
+        bh=1XfFHkKc5MZ1jdYHZqmhtLbMCNrVvwi3dBdETPH5AB4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KX7blFqvSOzlDXB70iFQ7rPvYevfByX9GKOY5upnE9H0QCUj/G5zj17Pqx7jxZEbY
-         rV/rw1foNw+ECBznTllUAfKmCCa3ehRz9N/GR8Q3ZfEk1wn3fkHAL4RMaViZ3l3qK5
-         WB0n3flvZrCDFYPN+0zuws7eT+70/f54DZ46V1LI=
+        b=Z/h3xkT3c9f+HKhoVlLaadm741294T6/zcGG3rX4W34r3MXAuUtujtqapH7l/16pT
+         NcjnKjGwRVSKwCPS43UMm1s/IJ55hJ1wZz9uMf1OzjRQ/2d8PdN+QKZ9n7i5wc0nFo
+         syeKqcyXRxu+y1YbEVR2pw8wI2kei02xeQK/QgcE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff LaBundy <jeff@labundy.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 443/663] pwm: iqs620a: Fix overflow and optimize calculations
-Date:   Mon,  1 Mar 2021 17:11:31 +0100
-Message-Id: <20210301161203.817772234@linuxfoundation.org>
+Subject: [PATCH 4.19 075/247] gma500: clean up error handling in init
+Date:   Mon,  1 Mar 2021 17:11:35 +0100
+Message-Id: <20210301161035.359611963@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
+References: <20210301161031.684018251@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,62 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 72d6b2459dbd539c1369149e501fdc3dc8ddef16 ]
+[ Upstream commit 15ccc39b3aab667c6fa131206f01f31bfbccdf6a ]
 
-If state->duty_cycle is 0x100000000000000, the previous calculation of
-duty_scale overflows and yields a duty cycle ratio of 0% instead of
-100%. Fix this by clamping the requested duty cycle to the maximal
-possible duty cycle first. This way it is possible to use a native
-integer division instead of a (depending on the architecture) more
-expensive 64bit division.
+The main problem with this error handling was that it didn't clean up if
+i2c_add_numbered_adapter() failed.  This code is pretty old, and doesn't
+match with today's checkpatch.pl standards so I took the opportunity to
+tidy it up a bit.  I changed the NULL comparison, and removed the
+WARNING message if kzalloc() fails and updated the label names.
 
-With this change in place duty_scale cannot be bigger than 256 which
-allows to simplify the calculation of duty_val.
-
-Fixes: 6f0841a8197b ("pwm: Add support for Azoteq IQS620A PWM generator")
-Tested-by: Jeff LaBundy <jeff@labundy.com>
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Fixes: 1b082ccf5901 ("gma500: Add Oaktrail support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/X8ikkAqZfnDO2lu6@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-iqs620a.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/pwm/pwm-iqs620a.c b/drivers/pwm/pwm-iqs620a.c
-index 7d33e36464360..3e967a12458c6 100644
---- a/drivers/pwm/pwm-iqs620a.c
-+++ b/drivers/pwm/pwm-iqs620a.c
-@@ -46,7 +46,8 @@ static int iqs620_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- {
- 	struct iqs620_pwm_private *iqs620_pwm;
- 	struct iqs62x_core *iqs62x;
--	u64 duty_scale;
-+	unsigned int duty_cycle;
-+	unsigned int duty_scale;
- 	int ret;
+diff --git a/drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c b/drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c
+index e281070611480..fc9a34ed58bd1 100644
+--- a/drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c
++++ b/drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c
+@@ -279,11 +279,8 @@ int oaktrail_hdmi_i2c_init(struct pci_dev *dev)
+ 	hdmi_dev = pci_get_drvdata(dev);
  
- 	if (state->polarity != PWM_POLARITY_NORMAL)
-@@ -70,7 +71,8 @@ static int iqs620_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	 * For lower duty cycles (e.g. 0), the PWM output is simply disabled to
- 	 * allow an external pull-down resistor to hold the GPIO3/LTX pin low.
- 	 */
--	duty_scale = div_u64(state->duty_cycle * 256, IQS620_PWM_PERIOD_NS);
-+	duty_cycle = min_t(u64, state->duty_cycle, IQS620_PWM_PERIOD_NS);
-+	duty_scale = duty_cycle * 256 / IQS620_PWM_PERIOD_NS;
+ 	i2c_dev = kzalloc(sizeof(struct hdmi_i2c_dev), GFP_KERNEL);
+-	if (i2c_dev == NULL) {
+-		DRM_ERROR("Can't allocate interface\n");
+-		ret = -ENOMEM;
+-		goto exit;
+-	}
++	if (!i2c_dev)
++		return -ENOMEM;
  
- 	mutex_lock(&iqs620_pwm->lock);
- 
-@@ -82,7 +84,7 @@ static int iqs620_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	i2c_dev->adap = &oaktrail_hdmi_i2c_adapter;
+ 	i2c_dev->status = I2C_STAT_INIT;
+@@ -300,16 +297,23 @@ int oaktrail_hdmi_i2c_init(struct pci_dev *dev)
+ 			  oaktrail_hdmi_i2c_adapter.name, hdmi_dev);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to request IRQ for I2C controller\n");
+-		goto err;
++		goto free_dev;
  	}
  
- 	if (duty_scale) {
--		u8 duty_val = min_t(u64, duty_scale - 1, 0xff);
-+		u8 duty_val = duty_scale - 1;
+ 	/* Adapter registration */
+ 	ret = i2c_add_numbered_adapter(&oaktrail_hdmi_i2c_adapter);
+-	return ret;
++	if (ret) {
++		DRM_ERROR("Failed to add I2C adapter\n");
++		goto free_irq;
++	}
  
- 		ret = regmap_write(iqs62x->regmap, IQS620_PWM_DUTY_CYCLE,
- 				   duty_val);
+-err:
++	return 0;
++
++free_irq:
++	free_irq(dev->irq, hdmi_dev);
++free_dev:
+ 	kfree(i2c_dev);
+-exit:
++
+ 	return ret;
+ }
+ 
 -- 
 2.27.0
 
