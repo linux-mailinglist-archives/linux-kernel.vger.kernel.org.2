@@ -2,59 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C7D3277D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1443277D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbhCAGw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 01:52:29 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:48546 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229882AbhCAGul (ORCPT
+        id S232201AbhCAGxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 01:53:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232147AbhCAGwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 01:50:41 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UPvx7n0_1614581389;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPvx7n0_1614581389)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Mar 2021 14:49:57 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     harry.wentland@amd.com
-Cc:     sunpeng.li@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
-Date:   Mon,  1 Mar 2021 14:49:47 +0800
-Message-Id: <1614581387-14843-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 1 Mar 2021 01:52:04 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F06C061788
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 22:51:24 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id u12so10846002pjr.2
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 22:51:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aqYwd+HQ765ezIeB0Bc/wTGpv0fipfbf8xfki7p6edQ=;
+        b=Y631LNIj8XPs2GZZlzOu/pCAPkeV03yi0tSc90ZFqdWNq4MwxG2RTvBVvVI7L1qhLr
+         DvAwJrrisVMtoRu9qYW0NODodR7cn0ldGEeIt5YpsHOyzJvEQ/Oig/cK4ucYwkVN9row
+         ase1SDeTqqe3UZ5a66nc1bl9NZeZNErYMsQbajplFOmEw+rEFNg1uHE9Kh1kMofQOZWs
+         E0L4wOnNiDQmCcYKoaB4apAqviTyz95oO3XfPlUhMeApoWbiasUEybs3nAoS/eYGD/KB
+         qA4ZK7bL8Vf9mWEIlM1kwRveM0x9KHA6EW2B8gbovP2pjL73L5vTnmbRRQYfzfXcK7TK
+         gnOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aqYwd+HQ765ezIeB0Bc/wTGpv0fipfbf8xfki7p6edQ=;
+        b=RQSXxI30IbgKtrw3bUyjtasEvZNsuevcZ8cfmh+6NAed0Pa8xCIsdFhG8V83iHW8xY
+         mFLYCZ0S9f5S428j+xmKryDqOhosNoO0U5xG0V/TkUBanTfIKl9+M7hK9agWYSXL4ENC
+         kS+wSfR99tWVA1/uNWrRlcYHrris5W+QRAmpiiSNVefABnUr0yq34a8/BvTbhbPOaNs0
+         VJVe2h143RjzfdK9dmcUiOgqang+p8LFB8igXc8uvYqYIR03NzfECsXmjAUfl3TC2ahS
+         RD2Hxxw5CMa63Bx9lEgznAb6lOrTl16E8GRFTpUNNsNWHOmJ98QgUyfEQgyhYruIh610
+         AaaQ==
+X-Gm-Message-State: AOAM533fqMCa07uVGQXZgNI/jhWGXH5usz4R76Ozb8OCy4acIIUSZKW7
+        8JZk0gw7+4jRgAk4PMjnKokuJg==
+X-Google-Smtp-Source: ABdhPJyyeDkeZLl+9Bb9rZkhCqorIxui0T4q6log1k/2GJaVJJkHpEqq2xxfCVbgDiTyFMHDKRdJNg==
+X-Received: by 2002:a17:902:ce8d:b029:e4:bc38:c4 with SMTP id f13-20020a170902ce8db02900e4bc3800c4mr1231327plg.48.1614581483871;
+        Sun, 28 Feb 2021 22:51:23 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id x23sm16104211pff.133.2021.02.28.22.51.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Feb 2021 22:51:23 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Ben Segall <bsegall@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-pm@vger.kernel.org,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V5 0/2] cpufreq: cppc: Add support for frequency invariance
+Date:   Mon,  1 Mar 2021 12:21:16 +0530
+Message-Id: <cover.1614580695.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+Hello,
 
-./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c:298:33-38:
-WARNING: conversion to bool not needed here.
+CPPC cpufreq driver is used for ARM servers and this patch series tries
+to provide counter-based frequency invariance support for them in the
+absence for architecture specific counters (like AMUs).
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is tested by:
+- /me with some hacks on Hikey, as I didn't have access to the right
+  hardware.
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
-index 3398540..fbefbba 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
-@@ -295,7 +295,7 @@ bool dpp3_program_gamcor_lut(
- 	cm_helper_program_gamcor_xfer_func(dpp_base->ctx, params, &gam_regs);
- 
- 	dpp3_program_gammcor_lut(dpp_base, params->rgb_resulted, params->hw_points_num,
--			next_mode == LUT_RAM_A ? true:false);
-+				 next_mode == LUT_RAM_A);
- 
- 	//select Gamma LUT to use for next frame
- 	REG_UPDATE(CM_GAMCOR_CONTROL, CM_GAMCOR_SELECT, next_mode == LUT_RAM_A ? 0:1);
+- Vincent Guittot on ThunderX2, only initial testing done.
+
+- Ionela Voinescu on Juno R2, though she tested a previous version of
+  this.
+
+
+This is based of 5.12-rc1.
+
+Changes since V4:
+- Move some code to policy specific initialization for cppc driver.
+- Initialize kthread specific stuff only once in cppc driver.
+- Added a kerneldoc comment in cppc driver and improved changelog as
+  well.
+
+Changes since V3:
+- rebuild_sched_domains_energy() stuff moved from arm64 to drivers/base.
+- Added Reviewed/Tested-by Ionela for the first patch.
+- Remove unused max_freq field from structure in cppc driver.
+- s/cppc_f_i/cppc_freq_inv.
+- Fix an per-cpu access, there was a bug in earlier version.
+- Create a single kthread which can run on any CPU and takes care of
+  work from all the CPUs.
+- Do the whole FIE thing under a new CONFIG option for cppc driver.
+- Few minor improvements.
+
+Changes since V2:
+- Not sending as an RFC anymore.
+- Several renames, reordering of code in 1/2 based on Ionela's comments.
+- Several rebase changes for 2/2.
+- The freq_scale calculations are optimized a bit.
+- Better overall commenting and commit logs.
+
+Changes since V1:
+- The interface for setting the callbacks is improved, so different
+  parts looking to provide their callbacks don't need to think about
+  each other.
+
+- Moved to per-cpu storage for storing the callback related data, AMU
+  counters have higher priority with this.
+
+--
+viresh
+
+Viresh Kumar (2):
+  topology: Allow multiple entities to provide sched_freq_tick()
+    callback
+  cpufreq: CPPC: Add support for frequency invariance
+
+ arch/arm64/include/asm/topology.h |  10 +-
+ arch/arm64/kernel/topology.c      | 105 +++++--------
+ drivers/base/arch_topology.c      |  85 ++++++++++-
+ drivers/cpufreq/Kconfig.arm       |   9 ++
+ drivers/cpufreq/cppc_cpufreq.c    | 244 ++++++++++++++++++++++++++++--
+ include/linux/arch_topology.h     |  15 +-
+ kernel/sched/core.c               |   1 +
+ 7 files changed, 377 insertions(+), 92 deletions(-)
+
+
+base-commit: fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8
 -- 
-1.8.3.1
+2.25.0.rc1.19.g042ed3e048af
 
