@@ -2,112 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B232A327C5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBAFA327C66
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234556AbhCAKjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:39:33 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:48273 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233287AbhCAKgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:36:39 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DpxVj596vz9tx3x;
-        Mon,  1 Mar 2021 11:35:41 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 3uLz0sfECZb6; Mon,  1 Mar 2021 11:35:41 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DpxVj4CNbz9tx3v;
-        Mon,  1 Mar 2021 11:35:41 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B6EA78B795;
-        Mon,  1 Mar 2021 11:35:46 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id EfdrfbCBUR78; Mon,  1 Mar 2021 11:35:46 +0100 (CET)
-Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5FB748B75B;
-        Mon,  1 Mar 2021 11:35:46 +0100 (CET)
-Subject: Re: [PATCH] crypto: sun8i-ce: rename kfree() to kfree_sensitive()
-To:     Yang Li <yang.lee@linux.alibaba.com>, clabbe.montjoie@gmail.com
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <1614594641-35606-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <4f448ec8-3694-b918-30eb-641d473c85ff@csgroup.eu>
-Date:   Mon, 1 Mar 2021 11:35:41 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234615AbhCAKkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:40:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21626 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234517AbhCAKho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:37:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614594971;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5J9Aaz6tdGKZ4rbCMsw46yp8g7/dLSF9lej7J4+mUio=;
+        b=hNMSJli1BZMPg3WFMDQhNmVqvwJ5Ul3W19WXMNXugm/ZB/OuCxzHOSpt5HIOWVT+NI2xb1
+        0UaOXIfYXhQPCtp17k8XeaRTBEyBZmWUF7ojmcHSrD+iYPaNVcaFWHANDi0x6+9MVroQ8L
+        ZSeSK6zZWTyvDPLkcAoFUDGMCJXi2tM=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-111-QJ6oBs7GO72ddMkT7SK-ug-1; Mon, 01 Mar 2021 05:36:09 -0500
+X-MC-Unique: QJ6oBs7GO72ddMkT7SK-ug-1
+Received: by mail-yb1-f197.google.com with SMTP id j4so18479678ybt.23
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:36:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5J9Aaz6tdGKZ4rbCMsw46yp8g7/dLSF9lej7J4+mUio=;
+        b=nx0Sn//2r993rc2/ZoSitmGRyxJ7ZIZmNUVL+kuxPminAWtD+ZE9tn0EYlBAaM8Mw9
+         inntMP1n00ULxMQWePPDPuPXCwOFzX2zR3M/tZiBDOluz4RPiaxkE9hDJ/28XyPjUKGF
+         q9yhZVpNaW7JDxkZRaq5B+Shmvw6dCFjymKDA+Rm6f7StMgc1AJ8gIEG/s3a+lL4Ao7k
+         wkBoKXHJTpvO0HqpBbMWzPJOCopAk6JZn7+FRKmLgEt1woAfjuwc+yT0yVmOJO9MmhSG
+         oudhW4yHQy26fKUnv6u1Sqz0FCsZpMKzTuhs1/BsxtgA3JYM+LkP7f6GGXs/jkvD8BsG
+         hkSg==
+X-Gm-Message-State: AOAM530MHVIAhAk1OVcgkz7wao9UReh+En/MQwRxCzIG9NjUyKG2sObb
+        PGM4K1nX7mt+rTcEt7HXaI7xsi3tpxmnNeCCQMZCRXqR+lF8kVPeMWlEemfmDuNiu8GTnjiw5Ws
+        n9wphov3bm9yIm+5A8p5201xPaWzgAhczPsFmEOY/
+X-Received: by 2002:a25:ac4e:: with SMTP id r14mr22127569ybd.340.1614594969008;
+        Mon, 01 Mar 2021 02:36:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwTiwFPpSMH6Tx4ERPceIRnjCT+n6pBqch5IMLSwU9aZ0EuMrlChYo+ypHOVN8J9Hp9JSxKC+ZV19ND3wmJQF8=
+X-Received: by 2002:a25:ac4e:: with SMTP id r14mr22127541ybd.340.1614594968699;
+ Mon, 01 Mar 2021 02:36:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1614594641-35606-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia>
+ <20210223223652.GD6000@sequoia> <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
+ <CAHC9VhSaU-3_fs83kEA5bxBf9xMsE29B_O5nXFpROk4=y9kgXw@mail.gmail.com>
+ <CAFqZXNu8s5edDbSZuSutetTsy58i08vPuP2h-n9=kT34HcPc4w@mail.gmail.com> <CAHC9VhSCs17LEW=QZ2WLeD3-GVzv2RpUJaw7qQNSFWgfEWjkbg@mail.gmail.com>
+In-Reply-To: <CAHC9VhSCs17LEW=QZ2WLeD3-GVzv2RpUJaw7qQNSFWgfEWjkbg@mail.gmail.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Mon, 1 Mar 2021 11:35:56 +0100
+Message-ID: <CAFqZXNufVGD0Sf-K3dKFmJyDOKGPg5jdJ_FPbQz__T8jAHhgYw@mail.gmail.com>
+Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Feb 28, 2021 at 8:21 PM Paul Moore <paul@paul-moore.com> wrote:
+> On Fri, Feb 26, 2021 at 6:12 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > On Fri, Feb 26, 2021 at 2:07 AM Paul Moore <paul@paul-moore.com> wrote:
+> > > On Wed, Feb 24, 2021 at 4:35 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > > > After the switch to RCU, we now have:
+> > > > 1. Start live conversion of new entries.
+> > > > 2. Convert existing entries.
+> > > > 3. RCU-assign the new policy pointer to selinux_state.
+> > > > [!!! Now actually both old and new sidtab may be referenced by
+> > > > readers, since there is no synchronization barrier previously provided
+> > > > by the write lock.]
+> > > > 4. Wait for synchronize_rcu() to return.
+> > > > 5. Now only the new sidtab is visible to readers, so the old one can
+> > > > be destroyed.
+> > > >
+> > > > So the race can happen between 3. and 5., if one thread already sees
+> > > > the new sidtab and adds a new entry there, and a second thread still
+> > > > has the reference to the old sidtab and also tires to add a new entry;
+> > > > live-converting to the new sidtab, which it doesn't expect to change
+> > > > by itself. Unfortunately I failed to realize this when reviewing the
+> > > > patch :/
+> > >
+> > > It is possible I'm not fully understanding the problem and/or missing
+> > > an important detail - it is rather tricky code, and RCU can be very
+> > > hard to reason at times - but I think we may be able to solve this
+> > > with some lock fixes inside sidtab_context_to_sid().  Let me try to
+> > > explain to see if we are on the same page here ...
+> > >
+> > > The problem is when we have two (or more) threads trying to
+> > > add/convert the same context into a sid; the task with new_sidtab is
+> > > looking to add a new sidtab entry, while the task with old_sidtab is
+> > > looking to convert an entry in old_sidtab into a new entry in
+> > > new_sidtab.  Boom.
+> > >
+> > > Looking at the code in sidtab_context_to_sid(), when we have two
+> > > sidtabs that are currently active (old_sidtab->convert pointer is
+> > > valid) and a task with old_sidtab attempts to add a new entry to both
+> > > sidtabs it first adds it to the old sidtab then it also adds it to the
+> > > new sidtab.  I believe the problem is that in this case while the task
+> > > grabs the old_sidtab->lock, it never grabs the new_sidtab->lock which
+> > > allows it to race with tasks that already see only new_sidtab.  I
+> > > think adding code to sidtab_context_to_sid() which grabs the
+> > > new_sidtab->lock when adding entries to the new_sidtab *should* solve
+> > > the problem.
+> > >
+> > > Did I miss something important? ;)
+> >
+> > Sadly, yes :) Consider this scenario (assuming we fix the locking at
+> > sidtab level):
+> >
+> > If it happens that a new SID (x) is added via the new sidtab and then
+> > another one (y) via the old sidtab, to avoid clash of SIDs, we would
+> > need to leave a "hole" in the old sidtab for SID x. And this will
+> > cause trouble if the thread that has just added SID y, then tries to
+> > translate the context string corresponding to SID x (without re-taking
+> > the RCU read lock and refreshing the policy pointer). Even if we
+> > handle skipping the "holes" in the old sidtab safely, the translation
+> > would then end up adding a duplicate SID entry for the context already
+> > represented by SID x - which is not a state we want to end up in.
+>
+> Ah, yes, you're right.  I was only thinking about the problem of
+> adding an entry to the old sidtab, and not the (much more likely case)
+> of an entry being added to the new sidtab.  Bummer.
+>
+> Thinking aloud for a moment - what if we simply refused to add new
+> sidtab entries if the task's sidtab pointer is "old"?  Common sense
+> would tell us that this scenario should be very rare at present, and I
+> believe the testing mentioned in this thread adds some weight to that
+> claim.  After all, this only affects tasks which entered into their
+> RCU protected session prior to the policy load RCU sync *AND* are
+> attempting to add a new entry to the sidtab.  That *has* to be a
+> really low percentage, especially on a system that has been up and
+> running for some time.  My gut feeling is this should be safe as well;
+> all of the calling code should have the necessary error handling in
+> place as there are plenty of reasons why we could normally fail to add
+> an entry to the sidtab; memory allocation failures being the most
+> obvious failure point I would suspect.  This obvious downside to such
+> an approach is that those operations which do meet this criteria would
+> fail - and we should likely emit an error in this case - but is this
+> failure really worse than any other transient kernel failure,
 
+No, I don't like this approach at all. Before the sidtab refactor, it
+had been done exactly this way - ENOMEM was returned while the sidtab
+was "frozen" (i.e. while the existing entries were being converted).
+And this was a real nuisance because things would fail randomly during
+policy reload. And it's not just unimportant explicit userspace
+actions that can fail. Any kind of transition can lead to a new SID
+being created and you'd get things like execve(), mkdir(), ... return
+-ENOMEM sometimes. (With a low probability, but still...)
 
-Le 01/03/2021 à 11:30, Yang Li a écrit :
-> Rename kfree() to kfree_sensitive() to  make the intention of the API
-> more explicit.
+I wouldn't compare it to a memory allocation failure, which normally
+starts happening only when the system becomes overloaded. Here the
+user would *awlays* have some probability of getting this error, and
+they couldn't do anything about it.
 
-As far as I understand, you are not renaming kfree() to kfree_sensitive().
+> and is
+> attempting to mitigate this failure worth abandoning the RCU approach
+> for the sidtab?
 
-You are making a change to use kfree_sensitive() instead of using kfree().
+Perhaps it wasn't clear from what I wrote, but I certainly don't want
+to abandon it completely. Just to revert to a safe state until we
+figure out how to do the RCU policy reload safely. The solution with
+two-way conversion seems doable, it's just not a quick and easy fix.
 
-Christophe
+--
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
-> 
-> fixed the following coccicheck:
-> ./drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c:30:16-17: WARNING
-> opportunity for kfree_sensitive/kvfree_sensitive (memset at line 29)
-> ./drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c:42:16-17: WARNING
-> opportunity for kfree_sensitive/kvfree_sensitive (memset at line 41)
-> ./drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c:161:8-9: WARNING
-> opportunity for kfree_sensitive/kvfree_sensitive (memset at line 109)
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->   drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-> index cfde9ee..8259d52 100644
-> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
-> @@ -27,7 +27,7 @@ void sun8i_ce_prng_exit(struct crypto_tfm *tfm)
->   	struct sun8i_ce_rng_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
->   
->   	memzero_explicit(ctx->seed, ctx->slen);
-> -	kfree(ctx->seed);
-> +	kfree_sensitive(ctx->seed);
->   	ctx->seed = NULL;
->   	ctx->slen = 0;
->   }
-> @@ -39,7 +39,7 @@ int sun8i_ce_prng_seed(struct crypto_rng *tfm, const u8 *seed,
->   
->   	if (ctx->seed && ctx->slen != slen) {
->   		memzero_explicit(ctx->seed, ctx->slen);
-> -		kfree(ctx->seed);
-> +		kfree_sensitive(ctx->seed);
->   		ctx->slen = 0;
->   		ctx->seed = NULL;
->   	}
-> @@ -158,7 +158,7 @@ int sun8i_ce_prng_generate(struct crypto_rng *tfm, const u8 *src,
->   	}
->   	memzero_explicit(d, todo);
->   err_iv:
-> -	kfree(d);
-> +	kfree_sensitive(d);
->   err_mem:
->   	return err;
->   }
-> 
