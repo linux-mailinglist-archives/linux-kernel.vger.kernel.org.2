@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA02329C74
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D18329C15
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380773AbhCBBzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:55:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48632 "EHLO mail.kernel.org"
+        id S1348976AbhCBBrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:47:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241950AbhCATaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:30:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6E0564E09;
-        Mon,  1 Mar 2021 17:25:26 +0000 (UTC)
+        id S238096AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:24:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 100326500B;
+        Mon,  1 Mar 2021 17:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619527;
-        bh=SAfqGVoDVV7vGzd+ShP/ahMF4bUwHmopoaMbIMk9GZ4=;
+        s=korg; t=1614619615;
+        bh=vA3gJPn7S6dmA2TAtjIIkC3rHBGWeEv8HoqfLQelgR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e2GXdPojdwu8CEQyT7q4ijCNqiMWSrfCBiuL3Sq9VmkQzAfLzxc9nTznhkiXQcEJr
-         HjTMrZRZDAnte9G7gMSy9k18BRDw4B0gasjyiYLCw0r2tidC5doj2CsR0xqIV9xeFt
-         Fl5FsThBjPWdmuIMjD8uFTl8pniDeapVI/wFqXmw=
+        b=SNftXimTA5XbWI4OpgWO3RUpj7GujEt4DXkYf6+Anuwbm+oMub0HVPmy/+okfopl9
+         P2kUCAVyMZKeTfBmDowoWISfufs9ut6gKy0h0LyBgzijPhjEPRhXBKsukESu7RFhTD
+         5OIRWr1SSRLQkQRXTYz8griSpdOH+v/8xlvfu/is=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 5.10 485/663] HID: wacom: Ignore attempts to overwrite the touch_max value from HID
-Date:   Mon,  1 Mar 2021 17:12:13 +0100
-Message-Id: <20210301161205.855240073@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Lech Perczak <lech.perczak@gmail.com>
+Subject: [PATCH 5.10 491/663] USB: serial: option: update interface mapping for ZTE P685M
+Date:   Mon,  1 Mar 2021 17:12:19 +0100
+Message-Id: <20210301161206.139213430@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,67 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <killertofu@gmail.com>
+From: Lech Perczak <lech.perczak@gmail.com>
 
-commit 88f38846bfb1a452a3d47e38aeab20a4ceb74294 upstream.
+commit 6420a569504e212d618d4a4736e2c59ed80a8478 upstream.
 
-The `wacom_feature_mapping` function is careful to only set the the
-touch_max value a single time, but this care does not extend to the
-`wacom_wac_finger_event` function. In particular, if a device sends
-multiple HID_DG_CONTACTMAX items in a single feature report, the
-driver will end up retaining the value of last item.
+This patch prepares for qmi_wwan driver support for the device.
+Previously "option" driver mapped itself to interfaces 0 and 3 (matching
+ff/ff/ff), while interface 3 is in fact a QMI port.
+Interfaces 1 and 2 (matching ff/00/00) expose AT commands,
+and weren't supported previously at all.
+Without this patch, a possible conflict would exist if device ID was
+added to qmi_wwan driver for interface 3.
 
-The HID descriptor for the Cintiq Companion 2 does exactly this. It
-incorrectly sets a "Report Count" of 2, which will cause the driver
-to process two HID_DG_CONTACTCOUNT items. The first item has the actual
-count, while the second item should have been declared as a constant
-zero. The constant zero is the value the driver ends up using, however,
-since it is the last HID_DG_CONTACTCOUNT in the report.
+Update and simplify device ID to match interfaces 0-2 directly,
+to expose QCDM (0), PCUI (1), and modem (2) ports and avoid conflict
+with QMI (3), and ADB (4).
 
-    Report ID (16),
-    Usage (Contact Count Maximum),  ; Contact count maximum (55h, static value)
-    Report Count (2),
-    Logical Maximum (10),
-    Feature (Variable),
+The modem is used inside ZTE MF283+ router and carriers identify it as
+such.
+Interface mapping is:
+0: QCDM, 1: AT (PCUI), 2: AT (Modem), 3: QMI, 4: ADB
 
-To address this, we add a check that the touch_max is not already set
-within the `wacom_wac_finger_event` function that processes the
-HID_DG_TOUCHMAX item. We emit a warning if the value is set and ignore
-the updated value.
+T:  Bus=02 Lev=02 Prnt=02 Port=05 Cnt=01 Dev#=  3 Spd=480  MxCh= 0
+D:  Ver= 2.01 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=19d2 ProdID=1275 Rev=f0.00
+S:  Manufacturer=ZTE,Incorporated
+S:  Product=ZTE Technologies MSM
+S:  SerialNumber=P685M510ZTED0000CP&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&0
+C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
+I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
+E:  Ad=87(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 4 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=42 Prot=01 Driver=(none)
+E:  Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
-This could potentially cause problems if there is a tablet which has
-a similar issue but requires the last item to be used. This is unlikely,
-however, since it would have to have a different non-zero value for
-HID_DG_CONTACTMAX earlier in the same report, which makes no sense
-except in the case of a firmware bug. Note that cases where the
-HID_DG_CONTACTMAX items are in different reports is already handled
-(and similarly ignored) by `wacom_feature_mapping` as mentioned above.
-
-Link: https://github.com/linuxwacom/input-wacom/issues/223
-Fixes: 184eccd40389 ("HID: wacom: generic: read HID_DG_CONTACTMAX from any feature report")
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-CC: stable@vger.kernel.org
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Cc: Johan Hovold <johan@kernel.org>
+Cc: Bjørn Mork <bjorn@mork.no>
+Signed-off-by: Lech Perczak <lech.perczak@gmail.com>
+Link: https://lore.kernel.org/r/20210207005443.12936-1-lech.perczak@gmail.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/wacom_wac.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/usb/serial/option.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -2600,7 +2600,12 @@ static void wacom_wac_finger_event(struc
- 		wacom_wac->is_invalid_bt_frame = !value;
- 		return;
- 	case HID_DG_CONTACTMAX:
--		features->touch_max = value;
-+		if (!features->touch_max) {
-+			features->touch_max = value;
-+		} else {
-+			hid_warn(hdev, "%s: ignoring attempt to overwrite non-zero touch_max "
-+				 "%d -> %d\n", __func__, features->touch_max, value);
-+		}
- 		return;
- 	}
- 
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1569,7 +1569,8 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1272, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1273, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1274, 0xff, 0xff, 0xff) },
+-	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1275, 0xff, 0xff, 0xff) },
++	{ USB_DEVICE(ZTE_VENDOR_ID, 0x1275),	/* ZTE P685M */
++	  .driver_info = RSVD(3) | RSVD(4) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1276, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1277, 0xff, 0xff, 0xff) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(ZTE_VENDOR_ID, 0x1278, 0xff, 0xff, 0xff) },
 
 
