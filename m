@@ -2,101 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCCD0327A25
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782D3327A45
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhCAI4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:56:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233782AbhCAIxv (ORCPT
+        id S233607AbhCAI7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:59:18 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:59331 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233614AbhCAIz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:53:51 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA020C061756;
-        Mon,  1 Mar 2021 00:53:10 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id q23so18461925lji.8;
-        Mon, 01 Mar 2021 00:53:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:organization:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=z9Lv4jcdbi26OM1Ui5humilwQXIlpCe/CsQxpgRss4E=;
-        b=QC+865VGhYqY1nnmUzvCf/Uf+JOswGXtj8VVmchliFJccyBBoqlHHhmAeJ+TU7PIzO
-         pUT6E//Vkmz8lpo2Li/nkdpZSWwny9axmj80kAEpfAu3zfB0Wqvga02OqhvEKrM9dad3
-         k7UsUYLba/zlRA3MBFzIhsNXw1HsnR+vNSy+3DVuof6ibSEmRxy675rQrcfg/PoXZs+8
-         ujWmvSlODrs2pkZLQwI0ZWbFCJJRm6d/Jo1U04ACXqLuPzh7MClDz4BmEH0CbF2R1cIu
-         zKrZQrQ7F2juFCftheYDsmfhKsIGY7wTVdchBsxgQkloMYbf+vwqzYp44Pn1Dtx0YNJr
-         OiEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=z9Lv4jcdbi26OM1Ui5humilwQXIlpCe/CsQxpgRss4E=;
-        b=pepha1odFc8YM1C27k3a/wFCsKUej/RGrjU3L9uOE87QjDvD4M5Er+RPxnmbQkii6A
-         pShlrbUaN4MxdwAnbXAjqEnNqBcHGACXxrArIalpMAOWnfXPk7JDo5B6KYIKyR65LvWP
-         y5WiUrc/kOgpAQd5GeMJx3cswp57IwaZeRCTaxv0Ti+DF/Hn3zZNftU5wfAzaJW06mFu
-         PiB+7dlJjA2aHrXVIxqSd2BD2SGR6D60qWKiVlv+DC0YsmGFOnSFDF/2oGQuvs5YYOmt
-         ujrQBmDB4/GIVG+kvIhOz3soGcRVgxMTH55nLi80vSk5hcijsGCiQ6GenIoHnGk/CEju
-         6ZKg==
-X-Gm-Message-State: AOAM5300CEgLv6iNctwmKfshNFhMMBHbUvtsb3JIpDBcd0oG0QfjLnZA
-        owfRMenkewNoOEph9ROS3F9ks1wbp/IQFQ==
-X-Google-Smtp-Source: ABdhPJx0eXK0MSbaQC1xYYp0mgHSbB6Rdq3s2XdJWGMyxV/dHaoOcNLjmsdRiBzUER9n8n+0P4DaXA==
-X-Received: by 2002:a2e:8159:: with SMTP id t25mr8753996ljg.84.1614588787470;
-        Mon, 01 Mar 2021 00:53:07 -0800 (PST)
-Received: from [192.168.1.100] ([31.173.83.37])
-        by smtp.gmail.com with ESMTPSA id u13sm1328368ljl.107.2021.03.01.00.53.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 00:53:07 -0800 (PST)
-Subject: Re: [PATCH] arch: mips: sibyte: Return -EFAULT if copy_to_user()
- fails
-To:     Wang Qing <wangqing@vivo.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1614580437-19660-1-git-send-email-wangqing@vivo.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <3a7d2007-b7d2-e428-406c-a6804bff6df0@gmail.com>
-Date:   Mon, 1 Mar 2021 11:53:01 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 1 Mar 2021 03:55:27 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 9C836580221;
+        Mon,  1 Mar 2021 03:54:37 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 01 Mar 2021 03:54:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=2wvNQI
+        WBpBOZWpWbefbd33FSrA5QpP7DmdH/BxqyZQE=; b=nve+oeJBo2TDkIH/qMAahu
+        QSly78fe6d9N7PH1CzszhHH2vdxjGw6EMkIII9WJPhanmPpuqpfVgI4/Uz7iyxpY
+        rXTffOVZxkqTkN4GXLR4n81li451mocOmn7QtkRsUMziY6GTfcyDrLt2NnzKqDgq
+        qMHzxvMT6ew+4T5kJ75BuH2M5HfiiI8cGoeoSt4JpL/aoRXHwcFsrpHgnSdsQMm0
+        dgXHPnIm4bM08GzxZSPLtoiCqhW8NXKVuylAz72q7iRVQXp2JRSVl50sXT8vCxI+
+        kxkBBH8/99L3pqnYt3RxRQHlDJHkhIcN4dIRx7lMBDex/CerNPsThav6vyRuXP0Q
+        ==
+X-ME-Sender: <xms:zKs8YEHC2wXN5ZRCbSeNIye4UN6JQO1z2li1bV3he1BqaphSJAQM3w>
+    <xme:zKs8YBkRKQIsyVh6mJnVXVKCUeOCpDcWmuuxl7ejRme_0Rd1dJsiuf_XdDKTO9wbU
+    11mHpMvdh65GIU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrleejgdduvdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
+    teenucfkphepkeegrddvvdelrdduheefrdeggeenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
+X-ME-Proxy: <xmx:zKs8YJKqjwOdEj7Dkkg0t1GLl1U5eypDAPZTgZ38TADIZ0P_9GFWOg>
+    <xmx:zKs8YKbVAYHma4UbKk2rfNR-kpoz1Or260y8OgWIF6qQGnJ-Rkw2qg>
+    <xmx:zKs8YDa7VlXZg-bRpWaaC26PewimtSJXzDiA4YM6qsS01YKQWoEsQw>
+    <xmx:zas8YEiuDtDMWLYQMX3IpUOQXDef9IY3KhjhRdDkFgFtok12_yinhg>
+Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7403B24005E;
+        Mon,  1 Mar 2021 03:54:36 -0500 (EST)
+Date:   Mon, 1 Mar 2021 10:54:32 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, vgupta@synopsys.com,
+        linux-snps-arc@lists.infradead.org, jiri@nvidia.com,
+        idosch@nvidia.com, netdev@vger.kernel.org, Jason@zx2c4.com,
+        mchehab@kernel.org
+Subject: Re: [PATCH 10/11] pragma once: delete few backslashes
+Message-ID: <YDyryN/GOj9JXFm+@shredder.lan>
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain>
+ <YDvNSg9OPv7JqfRS@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <1614580437-19660-1-git-send-email-wangqing@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDvNSg9OPv7JqfRS@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 01.03.2021 9:33, Wang Qing wrote:
-
-> The copy_to_user() function returns the number of bytes remaining to be
-> copied, but we want to return -EFAULT if the copy doesn't complete.
-
-    Then 'err' is hardly a good name for that variable. :-)
-
+On Sun, Feb 28, 2021 at 08:05:14PM +0300, Alexey Dobriyan wrote:
+> From 251ca5673886b5bb0a42004944290b9d2b267a4a Mon Sep 17 00:00:00 2001
+> From: Alexey Dobriyan <adobriyan@gmail.com>
+> Date: Fri, 19 Feb 2021 13:37:24 +0300
+> Subject: [PATCH 10/11] pragma once: delete few backslashes
 > 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
-> ---
->   arch/mips/sibyte/common/sb_tbprof.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Some macros contain one backslash too many and end up being the last
+> macro in a header file. When #pragma once conversion script truncates
+> the last #endif and whitespace before it, such backslash triggers
+> a warning about "OMG file ends up in a backslash-newline".
 > 
-> diff --git a/arch/mips/sibyte/common/sb_tbprof.c b/arch/mips/sibyte/common/sb_tbprof.c
-> index f80d7a7..eac125f
-> --- a/arch/mips/sibyte/common/sb_tbprof.c
-> +++ b/arch/mips/sibyte/common/sb_tbprof.c
-> @@ -465,7 +465,7 @@ static ssize_t sbprof_tb_read(struct file *filp, char *buf,
->   		if (err) {
->   			*offp = cur_off + cur_count - err;
->   			mutex_unlock(&sbp.lock);
-> -			return err;
-> +			return -EFAULT;
->   		}
->   		pr_debug(DEVNAME ": read from sample %d, %d bytes\n",
->   			 cur_sample, cur_count);
+> Needless to say I don't want to handle another case in my script,
+> so delete useless backslashes instead.
+> 
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 
-MBR, Sergei
+For mlxsw:
+
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Tested-by: Ido Schimmel <idosch@nvidia.com>
+
+Thanks
