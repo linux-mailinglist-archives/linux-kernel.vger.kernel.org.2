@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84FC3298C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D172329963
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346556AbhCAXtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:49:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58728 "EHLO mail.kernel.org"
+        id S1347854AbhCBAMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:12:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239126AbhCASJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:09:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 862A764F5F;
-        Mon,  1 Mar 2021 17:49:41 +0000 (UTC)
+        id S239762AbhCASWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:22:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53E5A64DE0;
+        Mon,  1 Mar 2021 17:15:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620982;
-        bh=f6XiO+rjKURiODyXIrwbLuCa/meTOdqUQrT5FFv+Hps=;
+        s=korg; t=1614618929;
+        bh=Z0u2ZE80aTAxZJFJUHS/kTl5bAwFKVZycqe2LEnItuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u6bhrA5roEKeOFZdP938grjFKtexbb8oFtr//ZYFsDF+ekbAXlZuQM4vzv/FfWhxC
-         WxuS/t5vErr8kjr4pgoOPSZwD+in6OX9stHTLYtxMIqSp5PUsjFN6/3yc3aWa7KkLQ
-         AfXDcXpaxM/55xoOGIueD4as50wnRk9XJUMBtAls=
+        b=uCEywrno7VH6to0vsAO9CrEELhkz2TaWDfm3OZLG5pUWe+sTaPRuVNAsIKcTVaaS0
+         6PjK+Dk3elR4ypZBR9+Xpl9YBkpPJxzx8B3TNfpN/KBROivBtMs1bxTWlNvvaY+cd2
+         iYYqVS2X7BI37cwpU1f8xL5FxXQMTYe09/j/W5zQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinijia Kambham <srinija.kambham@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 350/775] dmaengine: idxd: set DMA channel to be private
+        stable@vger.kernel.org, Pratyush Yadav <p.yadav@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 270/663] spi: cadence-quadspi: Abort read if dummy cycles required are too many
 Date:   Mon,  1 Mar 2021 17:08:38 +0100
-Message-Id: <20210301161218.918694337@linuxfoundation.org>
+Message-Id: <20210301161155.177133646@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Jiang <dave.jiang@intel.com>
+From: Pratyush Yadav <p.yadav@ti.com>
 
-[ Upstream commit c06e424be5f5184468c5f761c0d2cf1ed0a4e0fc ]
+[ Upstream commit ceeda328edeeeeac7579e9dbf0610785a3b83d39 ]
 
-Add DMA_PRIVATE attribute flag to idxd DMA channels. The dedicated WQs are
-expected to be used by a single client and not shared. While doing NTB
-testing this mistake was discovered, which prevented ntb_transport from
-requesting DSA wqs as DMA channels via dma_request_channel().
+The controller can only support up to 31 dummy cycles. If the command
+requires more it falls back to using 31. This command is likely to fail
+because the correct number of cycles are not waited upon. Rather than
+silently issuing an incorrect command, fail loudly so the caller can get
+a chance to find out the command can't be supported by the controller.
 
-Reported-by: Srinijia Kambham <srinija.kambham@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Tested-by: Srinijia Kambham <srinija.kambham@intel.com>
-Fixes: 8f47d1a5e545 ("dmaengine: idxd: connect idxd to dmaengine subsystem")
-Link: https://lore.kernel.org/r/161074758743.2184057.3388557138816350980.stgit@djiang5-desk3.ch.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller")
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+Link: https://lore.kernel.org/r/20201222184425.7028-3-p.yadav@ti.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/idxd/dma.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-cadence-quadspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/idxd/dma.c b/drivers/dma/idxd/dma.c
-index 71fd6e4c42cd7..a15e50126434e 100644
---- a/drivers/dma/idxd/dma.c
-+++ b/drivers/dma/idxd/dma.c
-@@ -165,6 +165,7 @@ int idxd_register_dma_device(struct idxd_device *idxd)
- 	INIT_LIST_HEAD(&dma->channels);
- 	dma->dev = &idxd->pdev->dev;
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index ba7d40c2922f7..826b01f346246 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -461,7 +461,7 @@ static int cqspi_read_setup(struct cqspi_flash_pdata *f_pdata,
+ 	/* Setup dummy clock cycles */
+ 	dummy_clk = op->dummy.nbytes * 8;
+ 	if (dummy_clk > CQSPI_DUMMY_CLKS_MAX)
+-		dummy_clk = CQSPI_DUMMY_CLKS_MAX;
++		return -EOPNOTSUPP;
  
-+	dma_cap_set(DMA_PRIVATE, dma->cap_mask);
- 	dma_cap_set(DMA_COMPLETION_NO_ORDER, dma->cap_mask);
- 	dma->device_release = idxd_dma_release;
- 
+ 	if (dummy_clk)
+ 		reg |= (dummy_clk & CQSPI_REG_RD_INSTR_DUMMY_MASK)
 -- 
 2.27.0
 
