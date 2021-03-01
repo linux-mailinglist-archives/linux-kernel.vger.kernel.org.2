@@ -2,57 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A6F32A007
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F23332A008
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575163AbhCBDxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:53:51 -0500
-Received: from angie.orcam.me.uk ([157.25.102.26]:37176 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241169AbhCAWCk (ORCPT
+        id S1575171AbhCBDxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244863AbhCAWDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:02:40 -0500
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 81D0992009C; Mon,  1 Mar 2021 23:01:49 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 7B02892009B;
-        Mon,  1 Mar 2021 23:01:49 +0100 (CET)
-Date:   Mon, 1 Mar 2021 23:01:49 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-cc:     Wang Qing <wangqing@vivo.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch: mips: sibyte: Return -EFAULT if copy_to_user()
- fails
-In-Reply-To: <3a7d2007-b7d2-e428-406c-a6804bff6df0@gmail.com>
-Message-ID: <alpine.DEB.2.21.2103012254030.19637@angie.orcam.me.uk>
-References: <1614580437-19660-1-git-send-email-wangqing@vivo.com> <3a7d2007-b7d2-e428-406c-a6804bff6df0@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 1 Mar 2021 17:03:39 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076BBC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 14:02:59 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id q20so12445083pfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:02:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=qZ//7UGmglUFd9a+K6I+xp+r8KSLdySqRo4lIorwHRQ=;
+        b=RKt8VDYlVD/hDSLtRtLJB9q7LoGnpuo2sk84bcxbEoSf84NYm/Dj+wlcOat9vUyLvU
+         BpOmRFVA1VNz3TirVy4M4WxwSHOGpHtTr154/1k39CfTegA7vbagTk7V2RuRa6ZDJPip
+         u+VdXHk43FdYsOZLjNk09aa0nZMlFXUv3z6cM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=qZ//7UGmglUFd9a+K6I+xp+r8KSLdySqRo4lIorwHRQ=;
+        b=WW9jW7Tz+DIwe4IWC575W5/WgCgDmOVIy0voZnrIonSYPclTCy2lUycyKWWHeCb8Kl
+         EvXLrhkIYTIf8joIEv7RC2N41p0HTrtYU33rB8c82FywX84o0HiVefJ8kRg87cXTvg5m
+         iAWly2WoLlkxdnuBJPAYIQ2Wn4jfff1c/FYjily9QOzfjEFHlJmMT9ATCXr+Pr7rVlGw
+         j03h7T5UaJKb7ithE+Q2c7Y1kWNgsqnWmeKe8zNrKHgRXPzMMzerRwg8SENQcGscPqEs
+         wXYvp5ebkT54cVv2JkvL30sKe+E4nuUgNaQ1AKF+jk21pzkeky7YFLY+ZHeYQDjDM762
+         cSFA==
+X-Gm-Message-State: AOAM5310nqQNrucUXDwYOlyuq5UIOquzzyr/rzUX7aaUOojhRAwUPqAV
+        O5wk/DpW0KsEimOewtpPCCMGNVDSWl5FVwgx
+X-Google-Smtp-Source: ABdhPJwmq0kilOi0JQKkj25v/mVFtfXKLg24Abgr69OrIZbj+HE+w4Zv7SxblC5O8Gv+agxEKcqrxA==
+X-Received: by 2002:a62:5a45:0:b029:1e5:4c81:c59 with SMTP id o66-20020a625a450000b02901e54c810c59mr430011pfb.51.1614636178553;
+        Mon, 01 Mar 2021 14:02:58 -0800 (PST)
+Received: from localhost (2001-44b8-1113-6700-b18e-89be-e1b2-4959.static.ipv6.internode.on.net. [2001:44b8:1113:6700:b18e:89be:e1b2:4959])
+        by smtp.gmail.com with ESMTPSA id 16sm5601501pfx.45.2021.03.01.14.02.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 14:02:57 -0800 (PST)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 01/15] powerpc/uaccess: Remove __get_user_allowed() and unsafe_op_wrap()
+In-Reply-To: <e0538c71167bd90224a8727fea9ed5b75612e2d7.1614275314.git.christophe.leroy@csgroup.eu>
+References: <cover.1614275314.git.christophe.leroy@csgroup.eu> <e0538c71167bd90224a8727fea9ed5b75612e2d7.1614275314.git.christophe.leroy@csgroup.eu>
+Date:   Tue, 02 Mar 2021 09:02:54 +1100
+Message-ID: <87im6ao7ld.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021, Sergei Shtylyov wrote:
 
-> > The copy_to_user() function returns the number of bytes remaining to be
-> > copied, but we want to return -EFAULT if the copy doesn't complete.
-> 
->    Then 'err' is hardly a good name for that variable. :-)
 
- Something like `left' might be better, especially as it's the sole use.  
-Also it's been like this from the beginning, so:
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-Fixes: bb9b813bb665 ("[MIPS] Sibyte: Fix ZBbus profiler")
+> Those two macros have only one user which is unsafe_get_user().
+>
+> Put everything in one place and remove them.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/include/asm/uaccess.h | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+> index 78e2a3990eab..8cbf3e3874f1 100644
+> --- a/arch/powerpc/include/asm/uaccess.h
+> +++ b/arch/powerpc/include/asm/uaccess.h
+> @@ -53,9 +53,6 @@ static inline bool __access_ok(unsigned long addr, unsigned long size)
+>  #define __put_user(x, ptr) \
+>  	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
+>  
+> -#define __get_user_allowed(x, ptr) \
+> -	__get_user_nocheck((x), (ptr), sizeof(*(ptr)), false)
+> -
+>  #define __get_user_inatomic(x, ptr) \
+>  	__get_user_nosleep((x), (ptr), sizeof(*(ptr)))
+>  #define __put_user_inatomic(x, ptr) \
+> @@ -482,8 +479,11 @@ user_write_access_begin(const void __user *ptr, size_t len)
+>  #define user_write_access_begin	user_write_access_begin
+>  #define user_write_access_end		prevent_current_write_to_user
+>  
+> -#define unsafe_op_wrap(op, err) do { if (unlikely(op)) goto err; } while (0)
+> -#define unsafe_get_user(x, p, e) unsafe_op_wrap(__get_user_allowed(x, p), e)
+> +#define unsafe_get_user(x, p, e) do {					\
+> +	if (unlikely(__get_user_nocheck((x), (p), sizeof(*(p)), false)))\
+> +		goto e;							\
+> +} while (0)
+> +
 
-or maybe:
+This seems correct to me.
 
-Fixes: d619f38fdacb ("[MIPS] Add bcm1480 ZBus trace support, fix wait related bugs")
+Checkpatch does have one check that is relevant:
 
-(since the file was renamed from a different name with the latter commit) 
-would I think be helpful for backports too.  It looks like potentially 
-quite a nasty bug to me if someone actually uses this piece (I haven't).
+CHECK: Macro argument reuse 'p' - possible side-effects?
+#36: FILE: arch/powerpc/include/asm/uaccess.h:482:
++#define unsafe_get_user(x, p, e) do {					\
++	if (unlikely(__get_user_nocheck((x), (p), sizeof(*(p)), false)))\
++		goto e;							\
++} while (0)
 
-  Maciej
+Given that we are already creating a new block, should we do something
+like this (completely untested):
+
+#define unsafe_get_user(x, p, e) do {					\
+        __typeof__(p) __p = (p);
+	if (unlikely(__get_user_nocheck((x), (__p), sizeof(*(__p)), false)))\
+		goto e;							\
+} while (0)
+
+Kind regards,
+Daniel
+
+>  #define unsafe_put_user(x, p, e) \
+>  	__unsafe_put_user_goto((__typeof__(*(p)))(x), (p), sizeof(*(p)), e)
+>  
+> -- 
+> 2.25.0
