@@ -2,40 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F52329BCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4D3329C11
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379614AbhCBBaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:30:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43774 "EHLO mail.kernel.org"
+        id S1345957AbhCBBrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:47:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241339AbhCATRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:17:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34EF365068;
-        Mon,  1 Mar 2021 17:24:38 +0000 (UTC)
+        id S241543AbhCATYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:24:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABBE86522D;
+        Mon,  1 Mar 2021 17:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619478;
-        bh=0eGqftxQxzienYajeGk+Xp7ikPeduQ7Mfd2qzY0bKJo=;
+        s=korg; t=1614619508;
+        bh=dRqYkkpCfAiBvV5PDEq7PP4ebJVbf39xCH+ILegs6vw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fh7PLi60OXAT5O9noaPbLCpBsbo9koVi/TiPYwFPKCJ4fhEJBHmyTiIKWDvPiPbmc
-         rZiA/tHBjI7FsjjSxukoKgBRo/xYIiaQI5gGZubvvVU9RDvTf+jzVyWSL3VMeoUdQb
-         PZHlhCk5xQQXMayPWQLwzAOUdrdcSdAP9T2/0MpE=
+        b=r8/ZB/Ld32OH4FMhuYhF+CC321mhyqgTuYIj0JHqhWM+21YXodSb8VIZxvahBPPlU
+         xrhEQA+Q7fa0e2RHy2i6XFHlWk+TtocJ1kZSFu1VTau9G3xP9soM5T2jAOZLULD6pO
+         kofjahpQ2LS8daeNgADaLz2HS9kqW2tmuMgcCMpQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Xu Yu <xuyu@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 469/663] mm,thp,shmem: make khugepaged obey tmpfs mount flags
-Date:   Mon,  1 Mar 2021 17:11:57 +0100
-Message-Id: <20210301161205.065557554@linuxfoundation.org>
+        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 479/663] blk-settings: align max_sectors on "logical_block_size" boundary
+Date:   Mon,  1 Mar 2021 17:12:07 +0100
+Message-Id: <20210301161205.558266154@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -47,97 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rik van Riel <riel@surriel.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit cd89fb06509903f942a0ffe97ffa63034671ed0c ]
+commit 97f433c3601a24d3513d06f575a389a2ca4e11e4 upstream.
 
-Currently if thp enabled=[madvise], mounting a tmpfs filesystem with
-huge=always and mmapping files from that tmpfs does not result in
-khugepaged collapsing those mappings, despite the mount flag indicating
-that it should.
+We get I/O errors when we run md-raid1 on the top of dm-integrity on the
+top of ramdisk.
+device-mapper: integrity: Bio not aligned on 8 sectors: 0xff00, 0xff
+device-mapper: integrity: Bio not aligned on 8 sectors: 0xff00, 0xff
+device-mapper: integrity: Bio not aligned on 8 sectors: 0xffff, 0x1
+device-mapper: integrity: Bio not aligned on 8 sectors: 0xffff, 0x1
+device-mapper: integrity: Bio not aligned on 8 sectors: 0x8048, 0xff
+device-mapper: integrity: Bio not aligned on 8 sectors: 0x8147, 0xff
+device-mapper: integrity: Bio not aligned on 8 sectors: 0x8246, 0xff
+device-mapper: integrity: Bio not aligned on 8 sectors: 0x8345, 0xbb
 
-Fix that by breaking up the blocks of tests in hugepage_vma_check a little
-bit, and testing things in the correct order.
+The ramdisk device has logical_block_size 512 and max_sectors 255. The
+dm-integrity device uses logical_block_size 4096 and it doesn't affect the
+"max_sectors" value - thus, it inherits 255 from the ramdisk. So, we have
+a device with max_sectors not aligned on logical_block_size.
 
-Link: https://lkml.kernel.org/r/20201124194925.623931-4-riel@surriel.com
-Fixes: c2231020ea7b ("mm: thp: register mm for khugepaged when merging vma for shmem")
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Xu Yu <xuyu@linux.alibaba.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The md-raid device sees that the underlying leg has max_sectors 255 and it
+will split the bios on 255-sector boundary, making the bios unaligned on
+logical_block_size.
+
+In order to fix the bug, we round down max_sectors to logical_block_size.
+
+Cc: stable@vger.kernel.org
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/khugepaged.h |  2 ++
- mm/khugepaged.c            | 22 ++++++++++++++++------
- 2 files changed, 18 insertions(+), 6 deletions(-)
+ block/blk-settings.c |   12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/include/linux/khugepaged.h b/include/linux/khugepaged.h
-index c941b73773216..2fcc01891b474 100644
---- a/include/linux/khugepaged.h
-+++ b/include/linux/khugepaged.h
-@@ -3,6 +3,7 @@
- #define _LINUX_KHUGEPAGED_H
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -468,6 +468,14 @@ void blk_queue_io_opt(struct request_que
+ }
+ EXPORT_SYMBOL(blk_queue_io_opt);
  
- #include <linux/sched/coredump.h> /* MMF_VM_HUGEPAGE */
-+#include <linux/shmem_fs.h>
- 
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-@@ -57,6 +58,7 @@ static inline int khugepaged_enter(struct vm_area_struct *vma,
- {
- 	if (!test_bit(MMF_VM_HUGEPAGE, &vma->vm_mm->flags))
- 		if ((khugepaged_always() ||
-+		     (shmem_file(vma->vm_file) && shmem_huge_enabled(vma)) ||
- 		     (khugepaged_req_madv() && (vm_flags & VM_HUGEPAGE))) &&
- 		    !(vm_flags & VM_NOHUGEPAGE) &&
- 		    !test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 4e3dff13eb70c..abab394c42062 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -440,18 +440,28 @@ static inline int khugepaged_test_exit(struct mm_struct *mm)
- static bool hugepage_vma_check(struct vm_area_struct *vma,
- 			       unsigned long vm_flags)
- {
--	if ((!(vm_flags & VM_HUGEPAGE) && !khugepaged_always()) ||
--	    (vm_flags & VM_NOHUGEPAGE) ||
-+	/* Explicitly disabled through madvise. */
-+	if ((vm_flags & VM_NOHUGEPAGE) ||
- 	    test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
- 		return false;
- 
--	if (shmem_file(vma->vm_file) ||
--	    (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) &&
--	     vma->vm_file &&
--	     (vm_flags & VM_DENYWRITE))) {
-+	/* Enabled via shmem mount options or sysfs settings. */
-+	if (shmem_file(vma->vm_file) && shmem_huge_enabled(vma)) {
- 		return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
- 				HPAGE_PMD_NR);
++static unsigned int blk_round_down_sectors(unsigned int sectors, unsigned int lbs)
++{
++	sectors = round_down(sectors, lbs >> SECTOR_SHIFT);
++	if (sectors < PAGE_SIZE >> SECTOR_SHIFT)
++		sectors = PAGE_SIZE >> SECTOR_SHIFT;
++	return sectors;
++}
++
+ /**
+  * blk_stack_limits - adjust queue_limits for stacked devices
+  * @t:	the stacking driver limits (top device)
+@@ -594,6 +602,10 @@ int blk_stack_limits(struct queue_limits
+ 		ret = -1;
  	}
+ 
++	t->max_sectors = blk_round_down_sectors(t->max_sectors, t->logical_block_size);
++	t->max_hw_sectors = blk_round_down_sectors(t->max_hw_sectors, t->logical_block_size);
++	t->max_dev_sectors = blk_round_down_sectors(t->max_dev_sectors, t->logical_block_size);
 +
-+	/* THP settings require madvise. */
-+	if (!(vm_flags & VM_HUGEPAGE) && !khugepaged_always())
-+		return false;
-+
-+	/* Read-only file mappings need to be aligned for THP to work. */
-+	if (IS_ENABLED(CONFIG_READ_ONLY_THP_FOR_FS) && vma->vm_file &&
-+	    (vm_flags & VM_DENYWRITE)) {
-+		return IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
-+				HPAGE_PMD_NR);
-+	}
-+
- 	if (!vma->anon_vma || vma->vm_ops)
- 		return false;
- 	if (vma_is_temporary_stack(vma))
--- 
-2.27.0
-
+ 	/* Discard alignment and granularity */
+ 	if (b->discard_granularity) {
+ 		alignment = queue_limit_discard_alignment(b, start);
 
 
