@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFFD329AE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03BA329A1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378222AbhCBBEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:04:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
+        id S1376959AbhCBAou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:44:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240877AbhCAS6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:58:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D88A3650B1;
-        Mon,  1 Mar 2021 17:40:02 +0000 (UTC)
+        id S240359AbhCASit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:38:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D4C1652D7;
+        Mon,  1 Mar 2021 17:38:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620403;
-        bh=DnB/h2aGJA4XsG1hB8hTJDeohe6ytuxM9noihFOxJgs=;
+        s=korg; t=1614620315;
+        bh=LUdE3yDlXGBAS/McQ6G5goaqrB3PWmfyJ6OI6V0lgtM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aPv6cyj9AnuhqrCaSNqEOjQAf/jCfQ0KJgn9fQQY89HoeBRZ5in6HAEKcoVKIbKZm
-         Wlk5qw5cwpsFWA253x2/hBSyczZspSLBfgUhQO/ypj+MSyrKkdEhtLfjMzPCTrOM2V
-         5GQj6rZ5K6o1GJRA/ReMvy/qgxKrWJXM+aqhG6JE=
+        b=qftPv/uapLFMgd28Y5TO6hhccFMNQ55Hn6xKBxrRw8+tC3hgM7x7uct4pG162BKx9
+         wIDzWBggMF8CLLgMFX8hxMxLBVNE/Nrbka1fG3f3MPKqcu/wAfBYg3P3XhrzCWtepn
+         ybidc9Xaayvw5qTumwPIr7B2waERtQ8IySf2vpuI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
+        stable@vger.kernel.org,
+        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
         Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 100/775] bnxt_en: reverse order of TX disable and carrier off
-Date:   Mon,  1 Mar 2021 17:04:28 +0100
-Message-Id: <20210301161206.606726644@linuxfoundation.org>
+Subject: [PATCH 5.11 101/775] bnxt_en: Fix devlink infos stored fw.psid version format.
+Date:   Mon,  1 Mar 2021 17:04:29 +0100
+Message-Id: <20210301161206.648409644@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,40 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Edwin Peer <edwin.peer@broadcom.com>
+From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
 
-[ Upstream commit 132e0b65dc2b8bfa9721bfce834191f24fd1d7ed ]
+[ Upstream commit db28b6c77f4050f62599267a886b61fbd6504633 ]
 
-A TX queue can potentially immediately timeout after it is stopped
-and the last TX timestamp on that queue was more than 5 seconds ago with
-carrier still up.  Prevent these intermittent false TX timeouts
-by bringing down carrier first before calling netif_tx_disable().
+The running fw.psid version is in decimal format but the stored
+fw.psid is in hex format.  This can mislead the user to reset the
+NIC to activate the stored version to become the running version.
 
-Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
-Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
+Fix it to display the stored fw.psid in decimal format.
+
+Fixes: 1388875b3916 ("bnxt_en: Add stored FW version info to devlink info_get cb.")
+Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
 Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index d10e4f85dd11a..1c96b7ba24f28 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -8856,9 +8856,10 @@ void bnxt_tx_disable(struct bnxt *bp)
- 			txr->dev_state = BNXT_DEV_STATE_CLOSING;
- 		}
- 	}
-+	/* Drop carrier first to prevent TX timeout */
-+	netif_carrier_off(bp->dev);
- 	/* Stop all TX queues */
- 	netif_tx_disable(bp->dev);
--	netif_carrier_off(bp->dev);
- }
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+index 6b7b69ed62db0..a9bcf887d2fbe 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
+@@ -472,8 +472,8 @@ static int bnxt_dl_info_get(struct devlink *dl, struct devlink_info_req *req,
+ 	if (BNXT_PF(bp) && !bnxt_hwrm_get_nvm_cfg_ver(bp, &nvm_cfg_ver)) {
+ 		u32 ver = nvm_cfg_ver.vu32;
  
- void bnxt_tx_enable(struct bnxt *bp)
+-		sprintf(buf, "%X.%X.%X", (ver >> 16) & 0xF, (ver >> 8) & 0xF,
+-			ver & 0xF);
++		sprintf(buf, "%d.%d.%d", (ver >> 16) & 0xf, (ver >> 8) & 0xf,
++			ver & 0xf);
+ 		rc = bnxt_dl_info_put(bp, req, BNXT_VERSION_STORED,
+ 				      DEVLINK_INFO_VERSION_GENERIC_FW_PSID,
+ 				      buf);
 -- 
 2.27.0
 
