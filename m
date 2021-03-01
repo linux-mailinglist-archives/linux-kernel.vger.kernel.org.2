@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E056329CAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE994329D13
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241948AbhCBCKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:10:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49570 "EHLO mail.kernel.org"
+        id S1442944AbhCBCRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:17:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241597AbhCATcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:32:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B532264F3C;
-        Mon,  1 Mar 2021 16:38:43 +0000 (UTC)
+        id S242271AbhCAToU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 700A465238;
+        Mon,  1 Mar 2021 17:25:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616724;
-        bh=K51Q5I3uWK4AFHrP79hvEVI3dCpSYpD0n9ZIFvf+Z5k=;
+        s=korg; t=1614619549;
+        bh=ub7hz0E+xEEE+/wRhthdhsTYdvKkVv6V5OhBMQYaaeM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fCL1NenqIifREI5toNAaQbhd+GvsXt5wgGTgCD5xQGtogY/9N4oAYjop1FmF0KZMm
-         9ah1uP6lcbD8N7dhKl9RaRLH06Thm3ftDpVzZtcTH7I0TT1E8jCr9OFFyXpx45pWHa
-         noqpgNvgmozoE+lDbzAeFj2SCyWTViX2rvuP1Iro=
+        b=KMsoo9N7zoMWuZQV1e0YPFXcibcjw/hOtvVfYg3Sp7GmgwPGbSzev2xLoC0cOP1ee
+         SGnSoKJkWv0lZfbEzhCEKZ+uVdFfkQNiksIF6+QASNqVrftOQd2g98fxFlvKxbJQLz
+         plriUZ2OGuwvA4Ro3UAA5lcThFvjWP9GRqA9AqIc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Jialin Zhang <zhangjialin11@huawei.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org, Babu Moger <babu.moger@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 074/247] drm/gma500: Fix error return code in psb_driver_load()
-Date:   Mon,  1 Mar 2021 17:11:34 +0100
-Message-Id: <20210301161035.309422072@linuxfoundation.org>
+Subject: [PATCH 5.10 464/663] KVM: SVM: Intercept INVPCID when its disabled to inject #UD
+Date:   Mon,  1 Mar 2021 17:11:52 +0100
+Message-Id: <20210301161204.818021439@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
-References: <20210301161031.684018251@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jialin Zhang <zhangjialin11@huawei.com>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 6926872ae24452d4f2176a3ba2dee659497de2c4 ]
+[ Upstream commit 0a8ed2eaac102c746d8d114f2787f06cb3e55dfb ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+Intercept INVPCID if it's disabled in the guest, even when using NPT,
+as KVM needs to inject #UD in this case.
 
-Fixes: 5c49fd3aa0ab ("gma500: Add the core DRM files and headers")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jialin Zhang <zhangjialin11@huawei.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201130020216.1906141-1-zhangjialin11@huawei.com
+Fixes: 4407a797e941 ("KVM: SVM: Enable INVPCID feature on AMD")
+Cc: Babu Moger <babu.moger@amd.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210212003411.1102677-2-seanjc@google.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/psb_drv.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/svm/svm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/psb_drv.c b/drivers/gpu/drm/gma500/psb_drv.c
-index ac32ab5aa0027..2fa3c7fc4b6d5 100644
---- a/drivers/gpu/drm/gma500/psb_drv.c
-+++ b/drivers/gpu/drm/gma500/psb_drv.c
-@@ -316,6 +316,8 @@ static int psb_driver_load(struct drm_device *dev, unsigned long flags)
- 	if (ret)
- 		goto out_err;
- 
-+	ret = -ENOMEM;
-+
- 	dev_priv->mmu = psb_mmu_driver_init(dev, 1, 0, 0);
- 	if (!dev_priv->mmu)
- 		goto out_err;
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index f4ae3871e412a..76ab1ee0784ae 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1092,12 +1092,12 @@ static u64 svm_write_l1_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
+ static void svm_check_invpcid(struct vcpu_svm *svm)
+ {
+ 	/*
+-	 * Intercept INVPCID instruction only if shadow page table is
+-	 * enabled. Interception is not required with nested page table
+-	 * enabled.
++	 * Intercept INVPCID if shadow paging is enabled to sync/free shadow
++	 * roots, or if INVPCID is disabled in the guest to inject #UD.
+ 	 */
+ 	if (kvm_cpu_cap_has(X86_FEATURE_INVPCID)) {
+-		if (!npt_enabled)
++		if (!npt_enabled ||
++		    !guest_cpuid_has(&svm->vcpu, X86_FEATURE_INVPCID))
+ 			svm_set_intercept(svm, INTERCEPT_INVPCID);
+ 		else
+ 			svm_clr_intercept(svm, INTERCEPT_INVPCID);
 -- 
 2.27.0
 
