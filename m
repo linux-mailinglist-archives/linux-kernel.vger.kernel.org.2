@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA679329AAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6AD2329A3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345514AbhCBBBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:01:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57866 "EHLO mail.kernel.org"
+        id S1377193AbhCBAqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:46:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240506AbhCASvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:51:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F16A6521D;
-        Mon,  1 Mar 2021 17:23:02 +0000 (UTC)
+        id S232127AbhCASjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFC7C64F9B;
+        Mon,  1 Mar 2021 17:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619382;
-        bh=BaMT1W2QKF/Ej5o8voNVnRg3XEAvWOyRn/mZhTTy/9g=;
+        s=korg; t=1614619399;
+        bh=1f96oeQVM/BiIMAVZWokvRhoLmRmkBWfKByRvH20G1I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GXFr7hbJHcnMEDHJXamUeftKFnI1yRLx1vEsrgx9NakUI+h4cqreEhO7HMyKrs1rw
-         biZA5hzdgb0vF4Zy5H4x997Jmkpse8I7erH6g931cemv7ynz1umgdxN32NWePBERPd
-         fQha7JWMnwaTMNXWg0Yl4C00Eke6Nfn5MjfSik+w=
+        b=Q082dRmC5ONsB+1c1OqgIBdqoZ5jkGnogn9OHvgwvIkKCbNKKj1zn1vQMIN9PIVTr
+         7MFcUpLIyikyEhtX/WNex+G4T86Bhb4539QAHI0Z2D3HyG726JnI5ermrS41h2zpNQ
+         lT302MuVFcZatM0igvuYjhIZZ5iudo3WaceOk3sA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Andrzej=20Sawu=C5=82a?= <andrzej.sawula@intel.com>,
+        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
         Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Jaroslaw Gawin <jaroslawx.gawin@intel.com>,
         Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 435/663] i40e: Add zero-initialization of AQ command structures
-Date:   Mon,  1 Mar 2021 17:11:23 +0100
-Message-Id: <20210301161203.414581837@linuxfoundation.org>
+Subject: [PATCH 5.10 441/663] i40e: Fix add TC filter for IPv6
+Date:   Mon,  1 Mar 2021 17:11:29 +0100
+Message-Id: <20210301161203.717398943@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -47,55 +46,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Mateusz Palczewski <mateusz.palczewski@intel.com>
 
-[ Upstream commit d2c788f739b6f68090e968a2ee31b543701e795f ]
+[ Upstream commit 61c1e0eb8375def7c891bfe857bb795a57090526 ]
 
-Zero-initialize AQ command data structures to comply with
-API specifications.
+Fix insufficient distinction between IPv4 and IPv6 addresses
+when creating a filter.
+IPv4 and IPv6 are kept in the same memory area. If IPv6 is added,
+then it's caught by IPv4 check, which leads to err -95.
 
 Fixes: 2f4b411a3d67 ("i40e: Enable cloud filters via tc-flower")
-Fixes: f4492db16df8 ("i40e: Add NPAR BW get and set functions")
-Signed-off-by: Andrzej Sawuła <andrzej.sawula@intel.com>
+Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
 Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Reviewed-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Reviewed-by: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
 Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 1db482d310c2d..9b1251a710c09 100644
+index 3ca5644785556..59971f62e6268 100644
 --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
 +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -7667,6 +7667,8 @@ int i40e_add_del_cloud_filter(struct i40e_vsi *vsi,
- 	if (filter->flags >= ARRAY_SIZE(flag_table))
- 		return I40E_ERR_CONFIG;
+@@ -7731,7 +7731,8 @@ int i40e_add_del_cloud_filter_big_buf(struct i40e_vsi *vsi,
+ 		return -EOPNOTSUPP;
  
-+	memset(&cld_filter, 0, sizeof(cld_filter));
-+
- 	/* copy element needed to add cloud filter from filter */
- 	i40e_set_cld_element(filter, &cld_filter);
- 
-@@ -7734,6 +7736,8 @@ int i40e_add_del_cloud_filter_big_buf(struct i40e_vsi *vsi,
+ 	/* adding filter using src_port/src_ip is not supported at this stage */
+-	if (filter->src_port || filter->src_ipv4 ||
++	if (filter->src_port ||
++	    (filter->src_ipv4 && filter->n_proto != ETH_P_IPV6) ||
  	    !ipv6_addr_any(&filter->ip.v6.src_ip6))
  		return -EOPNOTSUPP;
  
-+	memset(&cld_filter, 0, sizeof(cld_filter));
-+
- 	/* copy element needed to add cloud filter from filter */
- 	i40e_set_cld_element(filter, &cld_filter.element);
+@@ -7760,7 +7761,7 @@ int i40e_add_del_cloud_filter_big_buf(struct i40e_vsi *vsi,
+ 			cpu_to_le16(I40E_AQC_ADD_CLOUD_FILTER_MAC_VLAN_PORT);
+ 		}
  
-@@ -11709,6 +11713,8 @@ i40e_status i40e_set_partition_bw_setting(struct i40e_pf *pf)
- 	struct i40e_aqc_configure_partition_bw_data bw_data;
- 	i40e_status status;
- 
-+	memset(&bw_data, 0, sizeof(bw_data));
-+
- 	/* Set the valid bit for this PF */
- 	bw_data.pf_valid_bits = cpu_to_le16(BIT(pf->hw.pf_id));
- 	bw_data.max_bw[pf->hw.pf_id] = pf->max_bw & I40E_ALT_BW_VALUE_MASK;
+-	} else if (filter->dst_ipv4 ||
++	} else if ((filter->dst_ipv4 && filter->n_proto != ETH_P_IPV6) ||
+ 		   !ipv6_addr_any(&filter->ip.v6.dst_ip6)) {
+ 		cld_filter.element.flags =
+ 				cpu_to_le16(I40E_AQC_ADD_CLOUD_FILTER_IP_PORT);
 -- 
 2.27.0
 
