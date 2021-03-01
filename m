@@ -2,44 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0CA329937
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC313299B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344209AbhCBACB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:02:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39424 "EHLO mail.kernel.org"
+        id S1348137AbhCBA2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239257AbhCASU0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:20:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6EA865307;
-        Mon,  1 Mar 2021 17:42:34 +0000 (UTC)
+        id S237336AbhCAS3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:29:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 965C86516E;
+        Mon,  1 Mar 2021 17:07:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620555;
-        bh=K+OjDIPYCbxWk0EUBLNudxD/OFd+ePHa1hMiMN+nUjs=;
+        s=korg; t=1614618442;
+        bh=B5o9eqEoHlVw5Q5yYrkhzoHE1HtIGIczbX5/KkGP3mY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EUDWYybSwo2C4X0Jivqmz73eoiOY9FSvGITzikmcpnwZE1rX08O3Q4X9LfhM0hX+t
-         x/7Rc8T0F7+nE8d1ypV00vsMMjsVYFGrYk26YlKPav5R6KmHWLu+I9BXGiqdfWF27H
-         bbJxEmVoDqVeNsA1q5MAAT3fPz/e6Khn7LFdwxEw=
+        b=lnepkytTWei44D1sxsaBnVxct3GKNyzZMsbcTYtTJ/1GurAx6g++HIe4kqMVuVLsG
+         80r5+xQOWUyjeonHeR3L6YHNPvQr7c9ckOLkyh20XXxrVot2Kk2iRATo6CAqMprypr
+         VuQoAQzYbLFNucJ3cr85E0/VCN0yTsq6IoG+w+zY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 168/775] fbdev: aty: SPARC64 requires FB_ATY_CT
+Subject: [PATCH 5.10 088/663] iwlwifi: mvm: store PPAG enabled/disabled flag properly
 Date:   Mon,  1 Mar 2021 17:05:36 +0100
-Message-Id: <20210301161209.944252582@linuxfoundation.org>
+Message-Id: <20210301161146.084413262@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,60 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit c6c90c70db4d9a0989111d6b994d545659410f7a ]
+[ Upstream commit 551d793f65364c904921ac168d4b4028bb51be69 ]
 
-It looks like SPARC64 requires FB_ATY_CT to build without errors,
-so have FB_ATY select FB_ATY_CT if both SPARC64 and PCI are enabled
-instead of using "default y if SPARC64 && PCI", which is not strong
-enough to prevent build errors.
+When reading the PPAG table from ACPI, we should store everything in
+our fwrt structure, so it can be accessed later.  But we had a local
+ppag_table variable in the function and were erroneously storing the
+enabled/disabled flag in it instead of storing it in the fwrt.  Fix
+this by removing the local variable and storing everything directly in
+fwrt.
 
-As it currently is, FB_ATY_CT can be disabled, resulting in build
-errors:
-
-ERROR: modpost: "aty_postdividers" [drivers/video/fbdev/aty/atyfb.ko] undefined!
-ERROR: modpost: "aty_ld_pll_ct" [drivers/video/fbdev/aty/atyfb.ko] undefined!
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: sparclinux@vger.kernel.org
-Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-fbdev@vger.kernel.org
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201127031752.10371-1-rdunlap@infradead.org
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Fixes: f2134f66f40e ("iwlwifi: acpi: support ppag table command v2")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210210135352.889862e6d393.I8b894c1b2b3fe0ad2fb39bf438273ea47eb5afa4@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/fw.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-index cfb7f5612ef0f..4f02db65dedec 100644
---- a/drivers/video/fbdev/Kconfig
-+++ b/drivers/video/fbdev/Kconfig
-@@ -1269,6 +1269,7 @@ config FB_ATY
- 	select FB_CFB_IMAGEBLIT
- 	select FB_BACKLIGHT if FB_ATY_BACKLIGHT
- 	select FB_MACMODES if PPC
-+	select FB_ATY_CT if SPARC64 && PCI
- 	help
- 	  This driver supports graphics boards with the ATI Mach64 chips.
- 	  Say Y if you have such a graphics board.
-@@ -1279,7 +1280,6 @@ config FB_ATY
- config FB_ATY_CT
- 	bool "Mach64 CT/VT/GT/LT (incl. 3D RAGE) support"
- 	depends on PCI && FB_ATY
--	default y if SPARC64 && PCI
- 	help
- 	  Say Y here to support use of ATI's 64-bit Rage boards (or other
- 	  boards based on the Mach64 CT, VT, GT, and LT chipsets) as a
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+index c351c91a9ec96..2d2fe45603c8b 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+@@ -929,7 +929,6 @@ static int iwl_mvm_sar_geo_init(struct iwl_mvm *mvm)
+ static int iwl_mvm_get_ppag_table(struct iwl_mvm *mvm)
+ {
+ 	union acpi_object *wifi_pkg, *data, *enabled;
+-	union iwl_ppag_table_cmd ppag_table;
+ 	int i, j, ret, tbl_rev, num_sub_bands;
+ 	int idx = 2;
+ 	s8 *gain;
+@@ -983,8 +982,8 @@ read_table:
+ 		goto out_free;
+ 	}
+ 
+-	ppag_table.v1.enabled = cpu_to_le32(enabled->integer.value);
+-	if (!ppag_table.v1.enabled) {
++	mvm->fwrt.ppag_table.v1.enabled = cpu_to_le32(enabled->integer.value);
++	if (!mvm->fwrt.ppag_table.v1.enabled) {
+ 		ret = 0;
+ 		goto out_free;
+ 	}
+@@ -1012,7 +1011,7 @@ read_table:
+ 			    (j != 0 &&
+ 			     (gain[i * num_sub_bands + j] > ACPI_PPAG_MAX_HB ||
+ 			      gain[i * num_sub_bands + j] < ACPI_PPAG_MIN_HB))) {
+-				ppag_table.v1.enabled = cpu_to_le32(0);
++				mvm->fwrt.ppag_table.v1.enabled = cpu_to_le32(0);
+ 				ret = -EINVAL;
+ 				goto out_free;
+ 			}
 -- 
 2.27.0
 
