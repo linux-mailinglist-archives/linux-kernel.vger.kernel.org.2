@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04310329A41
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFD3329A59
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377254AbhCBAqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:46:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51246 "EHLO mail.kernel.org"
+        id S1377456AbhCBArV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:47:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236845AbhCASjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:39:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A140265004;
-        Mon,  1 Mar 2021 17:09:14 +0000 (UTC)
+        id S239847AbhCASoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:44:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5F9464E66;
+        Mon,  1 Mar 2021 17:08:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618555;
-        bh=EbGvPKEonl1pIs0mpQhSYMEsajxJXlBdjh798VJ8bfI=;
+        s=korg; t=1614618487;
+        bh=jDaYfxJXqUarLEOWHPucA2FtOxFv6RBPytXGRBjyKvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KGddnxkb6jGEy0g2LJ1C2GD4POtmMBi/TwLMjQXtehEHNRRsaCr/6TslBbcMwjzku
-         FkgMlmpvTKxcDPyO7tB9UVnifSpI300HN4EP5JzIz4Kf4YxxOFKPOfcvIxnqndXJZr
-         lr9FA74RfX5PTsHupNn+HnDLbDaFfb8BpIq2Z5+s=
+        b=nc7ExkNzQzaXvEMXrhAvVJY8tG21YQlUiGYDVjKIOjoOC1YxPKOK0i5eBJzGM3gzM
+         Flo/E1t6MAbCNAly5G0D4ZVSdh3s9oTHivUnucOpq6Gz8wVZcQjfJMcIEk6FC7OVyU
+         FQjiX+AEPY0+WoAIF9Y+Gq/kTOfjm3nxOysLZsY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Shay Drory <shayd@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 099/663] bnxt_en: Fix devlink infos stored fw.psid version format.
-Date:   Mon,  1 Mar 2021 17:05:47 +0100
-Message-Id: <20210301161146.626646736@linuxfoundation.org>
+Subject: [PATCH 5.10 105/663] net/mlx5: Fix health error state handling
+Date:   Mon,  1 Mar 2021 17:05:53 +0100
+Message-Id: <20210301161146.932110499@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,40 +41,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+From: Shay Drory <shayd@nvidia.com>
 
-[ Upstream commit db28b6c77f4050f62599267a886b61fbd6504633 ]
+[ Upstream commit 51d138c2610a236c1ed0059d034ee4c74f452b86 ]
 
-The running fw.psid version is in decimal format but the stored
-fw.psid is in hex format.  This can mislead the user to reset the
-NIC to activate the stored version to become the running version.
+Currently, when we discover a fatal error, we are queueing a work that
+will wait for a lock in order to enter the device to error state.
+Meanwhile, FW commands are still being processed, and gets timeouts.
+This can block the driver for few minutes before the work will manage
+to get the lock and enter to error state.
 
-Fix it to display the stored fw.psid in decimal format.
+Setting the device to error state before queueing health work, in order
+to avoid FW commands being processed while the work is waiting for the
+lock.
 
-Fixes: 1388875b3916 ("bnxt_en: Add stored FW version info to devlink info_get cb.")
-Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c1d4d2e92ad6 ("net/mlx5: Avoid calling sleeping function by the health poll thread")
+Signed-off-by: Shay Drory <shayd@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/health.c  | 22 ++++++++++++-------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-index 184b6d0513b2a..8b0e916afe6b1 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_devlink.c
-@@ -474,8 +474,8 @@ static int bnxt_dl_info_get(struct devlink *dl, struct devlink_info_req *req,
- 	if (BNXT_PF(bp) && !bnxt_hwrm_get_nvm_cfg_ver(bp, &nvm_cfg_ver)) {
- 		u32 ver = nvm_cfg_ver.vu32;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+index 54523bed16cd3..0c32c485eb588 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+@@ -190,6 +190,16 @@ static bool reset_fw_if_needed(struct mlx5_core_dev *dev)
+ 	return true;
+ }
  
--		sprintf(buf, "%X.%X.%X", (ver >> 16) & 0xF, (ver >> 8) & 0xF,
--			ver & 0xF);
-+		sprintf(buf, "%d.%d.%d", (ver >> 16) & 0xf, (ver >> 8) & 0xf,
-+			ver & 0xf);
- 		rc = bnxt_dl_info_put(bp, req, BNXT_VERSION_STORED,
- 				      DEVLINK_INFO_VERSION_GENERIC_FW_PSID,
- 				      buf);
++static void enter_error_state(struct mlx5_core_dev *dev, bool force)
++{
++	if (mlx5_health_check_fatal_sensors(dev) || force) { /* protected state setting */
++		dev->state = MLX5_DEVICE_STATE_INTERNAL_ERROR;
++		mlx5_cmd_flush(dev);
++	}
++
++	mlx5_notifier_call_chain(dev->priv.events, MLX5_DEV_EVENT_SYS_ERROR, (void *)1);
++}
++
+ void mlx5_enter_error_state(struct mlx5_core_dev *dev, bool force)
+ {
+ 	bool err_detected = false;
+@@ -208,12 +218,7 @@ void mlx5_enter_error_state(struct mlx5_core_dev *dev, bool force)
+ 		goto unlock;
+ 	}
+ 
+-	if (mlx5_health_check_fatal_sensors(dev) || force) { /* protected state setting */
+-		dev->state = MLX5_DEVICE_STATE_INTERNAL_ERROR;
+-		mlx5_cmd_flush(dev);
+-	}
+-
+-	mlx5_notifier_call_chain(dev->priv.events, MLX5_DEV_EVENT_SYS_ERROR, (void *)1);
++	enter_error_state(dev, force);
+ unlock:
+ 	mutex_unlock(&dev->intf_state_mutex);
+ }
+@@ -613,7 +618,7 @@ static void mlx5_fw_fatal_reporter_err_work(struct work_struct *work)
+ 	priv = container_of(health, struct mlx5_priv, health);
+ 	dev = container_of(priv, struct mlx5_core_dev, priv);
+ 
+-	mlx5_enter_error_state(dev, false);
++	enter_error_state(dev, false);
+ 	if (IS_ERR_OR_NULL(health->fw_fatal_reporter)) {
+ 		if (mlx5_health_try_recover(dev))
+ 			mlx5_core_err(dev, "health recovery failed\n");
+@@ -707,8 +712,9 @@ static void poll_health(struct timer_list *t)
+ 		mlx5_core_err(dev, "Fatal error %u detected\n", fatal_error);
+ 		dev->priv.health.fatal_error = fatal_error;
+ 		print_health_info(dev);
++		dev->state = MLX5_DEVICE_STATE_INTERNAL_ERROR;
+ 		mlx5_trigger_health_work(dev);
+-		goto out;
++		return;
+ 	}
+ 
+ 	count = ioread32be(health->health_counter);
 -- 
 2.27.0
 
