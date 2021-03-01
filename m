@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48016327960
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4F7327961
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233226AbhCAIhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:37:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
+        id S233249AbhCAIhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:37:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233065AbhCAIfV (ORCPT
+        with ESMTP id S233224AbhCAIg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:35:21 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64EBC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 00:34:40 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id hs11so26644560ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 00:34:40 -0800 (PST)
+        Mon, 1 Mar 2021 03:36:28 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF841C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 00:35:47 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id d5so13968300iln.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 00:35:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lDAufuhpzrV03TMTLpI4rsJPdAs1FZA19H3Gjjzj/H8=;
-        b=hYd7SO61L3RSn8PhZEs9fr4+k0HyH5eQIyPA4fNHipymNkx7Cbq9/DYvGJwNXMhgCS
-         EzwIwbAP1UdNG5AzP5UvleA3yOTwvEwiOUEHiXPRfX7oYM7l7dqQ6CmPzqkceHbNO9uc
-         oAaKm3WYacHhtJpVMHvF2FVysEwB/nmVqdLPY=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
+        bh=KKv852sVQnXnUt2Mn3kIZ+FZlQyet/KaJu64VXBEcbo=;
+        b=UNdB/3zhBNjCr68E1K+BVi7Zrvu3owUaJf0wsfp+YxTtspFbGixTZFX3Av7RcaGaSx
+         XEg1rg7pIjMh+4gbkODbCWznRL1TKzjtyrAIb2cHZHtHCntMGeNp7OBbSU8LiK+DHjqh
+         M/q//6gulayybuVu7iwL0KmmbWAKfd6G/dJiyyAZPQb9h+slioqhk8PNz70uF8codw2N
+         HDTTJ5Sg/2TgK6o4/6VW+cXEywbD3JMnoh/rTmOk5Dn3mNwnSbl4ZDo4CH2ZQEWhNUb3
+         +ALQpY8v2eflpXhhuoqdSFFl6hfa0y+WdQDQvp6neAVjwNGeprsNHh4krTw106/iutS1
+         Hl9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lDAufuhpzrV03TMTLpI4rsJPdAs1FZA19H3Gjjzj/H8=;
-        b=WAA5OyO4YAbSQVSK6npavIxr132ROwlD8jqnhEhnh096F2PfEwZqXZLarKass97DTj
-         svQaORUtxgId8SIIryqMrb4bjyP1tkfTa9r7sPfPkfqHPC6LR5fCgbhgg1AbGU652K8E
-         tu5lqzPQo3HMzOYxUC16SL+7X4F1QiXj+c8/mvosNx+CkmreT/fqy8xzgzVYLjTWMOqT
-         6wLyTqPngWyj/AEwMVbgxH/mJLZZrbkYr4MXuRFYYecqVevK8KsrsMPb6wg3jJifQ0qr
-         UAVNjSB+DDwSeM7WV6R9uY57yCzrmAnxYQiEHjFTVhE+DbpweaWlNFGqH4wu9AgCjx8x
-         geHw==
-X-Gm-Message-State: AOAM532qgSneioRqlyTPum0Zrut+RqsaKwAlJzZ8yU49kHi6dTcM6Afm
-        xiMxInemJGjIObq15qAzsFbEFA==
-X-Google-Smtp-Source: ABdhPJzyoWxnbcRLJyYqJf+BkrEk3Qke/unRo+Xvj2PJgrlnj5tnNDmHWXtHesVzhkIklMC0YVQ5+g==
-X-Received: by 2002:a17:906:35cf:: with SMTP id p15mr5227601ejb.379.1614587679738;
-        Mon, 01 Mar 2021 00:34:39 -0800 (PST)
-Received: from [192.168.1.149] ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id p25sm13926890eds.55.2021.03.01.00.34.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 00:34:39 -0800 (PST)
-Subject: Re: [PATCH 0/2] add ripple counter dt binding and driver
-To:     Guenter Roeck <linux@roeck-us.net>, Arnd Bergmann <arnd@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
-References: <20210226141411.2517368-1-linux@rasmusvillemoes.dk>
- <CAK8P3a2=nZ3bbeguXjbFrhz0nWeUOcLM7mRudhPDrcb+jZ4VvQ@mail.gmail.com>
- <e5fd7ce3-3ba6-e5de-1cbc-fa31bd46942c@rasmusvillemoes.dk>
- <2208f466-e509-6bbe-0358-34effb965610@roeck-us.net>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <285d739a-b343-c411-5461-0fe1f44177a5@rasmusvillemoes.dk>
-Date:   Mon, 1 Mar 2021 09:34:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=KKv852sVQnXnUt2Mn3kIZ+FZlQyet/KaJu64VXBEcbo=;
+        b=c3LGeGDaNBgTqZo+/xoQjGVPj1/ILE0je0Y0AYEITpsN1lsiY+hV9Dp+DSDiN103cQ
+         c2/YY5P442xTuHUR0PAr4DxT5SCE/K8M4ZKT6yiNa6WlYvdByUx7AWlMv0xXdoYAnYRY
+         QywBdQVmwiRGHvD2tDJxDtC4bPHQDAdU5MyAal+7qHGvbBPnXGnCBtuy+wom26EjpBQD
+         R9IZhdbxhzUO0Bkjur3kfl4fUsgVcJmrrcBy7ZXCAG8CgVqPrMz6ddKaEpDO8K3AcD+e
+         gjLBMkoZ7mVvqEurmJZs4hSPPv/emR1j+tHCwafEjyktxHLj1y+8r4OP+VMpBL1jsTTN
+         w6KA==
+X-Gm-Message-State: AOAM533xaU5Wk9N9aGhLA3IPl5P/o+UnDFmqRVZxzueKt7O5Pq7DO5Mz
+        2jobWYUiZvBKEG8JShHh0hICzhmKZ1hCrlxmuKpmN+NBAlQkEg==
+X-Google-Smtp-Source: ABdhPJwMfWHmrTRiuExVu8hzeMFZ+HbkJE7aUw+9GyD+4KqJnFiIRcXWaICnsorbmPRhZhapT+EEQMZ6/QYztM4P2Fo=
+X-Received: by 2002:a92:c7c2:: with SMTP id g2mr12538301ilk.209.1614587747399;
+ Mon, 01 Mar 2021 00:35:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2208f466-e509-6bbe-0358-34effb965610@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 1 Mar 2021 09:35:11 +0100
+Message-ID: <CA+icZUUjVnBjC4AJTT9LYS4J+QbuQZUVj5XdW+iPmjxxuODVmA@mail.gmail.com>
+Subject: Linux 5.12-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/02/2021 20.53, Guenter Roeck wrote:
-> On 2/26/21 8:35 AM, Rasmus Villemoes wrote:
->> On 26/02/2021 15.35, Arnd Bergmann wrote:
->>> On Fri, Feb 26, 2021 at 3:14 PM Rasmus Villemoes
->>> <linux@rasmusvillemoes.dk> wrote:
->>>
->>>>
->>>> So I'm thinking that the proper way to handle this is to be able to
->>>> represent that ripple counter as a clock consumer in DT and have a
->>>> driver do the clk_prepare_enable(), even if that driver doesn't and
->>>> can't do anything else. But I'm certainly open to other suggestions.
->>>
->>> How about adding support for the optional clock to the gpio_wdt driver,
->>> would that work?
->>
->> I think it would _work_ (all I need is some piece of code doing the
->> clock_prepare_enable(), and until now we've just stashed that in some
->> otherwise unrelated out-of-tree driver, but we're trying to get rid of
->> that one), but the watchdog chip isn't really the consumer of the clock
->> signal, so in-so-far as DT is supposed to describe the hardware, I don't
->> think it's appropriate.
->>
->> OTOH, one could argue that the watchdog chip and the ripple counter
->> together constitute the watchdog circuit.
->>
->> Cc += watchdog maintainers. Context: I have a gpio-wdt which can
->> unfortunately effectively be disabled by disabling a clock output, and
->> that happens automatically unless the clock has a consumer in DT. But
->> the actual consumer is not the gpio-wdt.
->> Please see
->> https://lore.kernel.org/lkml/20210226141411.2517368-1-linux@rasmusvillemoes.dk/
->> for the original thread.
->>
-> 
-> Sorry, I am missing something. If the watchdog is controlled by the clock,
-> it is a consumer of that clock.
+[ Please CC me I am not subscribed to LKML ]
+[ Original post see [0] ]
 
-But that's just it, the watchdog chip is _not_ a consumer of the clock -
-I don't think I've ever seen a gpio_wdt that is not internally clocked,
-but even if they exist, that's not the case for this board.
+Hi Linus,
 
- What else does "consumer" mean ? And why
-> not just add optional clock support to the gpio_wdt driver ?
+Thanks for Linux v5.12-rc1 and all involved people.
 
-Because, the consumer is a piece of electronics sitting _between_ the
-watchdog chip's reset output and the SOCs reset pin, namely the ripple
-counter that implements a 64 ms delay from the watchdog fires till the
-actual reset. (The watchdog's reset is also routed directly to an
-interrupt; so software gets a 64 ms warning that a hard reset is imminent).
+[ Delayed merge-window ]
 
-Rasmus
+I wondered why there was approx. for 6 days no commits and got an
+answer from an LWN posting "5.12 Merge window delayed".
+Unsure, if there was a posting to LKML?
+
+Anyway, if you are not able to make your work someone else should jump
+in like Greg did once.
+When Stephen could not do his work someone else jumped in and did the
+Linux-next work.
+
+There should be a clear communication and alternative workflow in such
+situation.
+Why not post such delays on <kernel.org> (if this is the official website)?
+
+[ News - Clang-LTO ]
+
+Always I read your "RC" announcement and would like to see some
+pointers to interesting new stuff.
+( I know "interesting" is very POV. )
+
+Thanks for pointing to the several clean-ups in Linux v5.12-rc1.
+
+As someone active on ClangBuiltLinux - we have now Clang-LTO support
+for arm64 and x86-64.
+
+Some issues I have seen and reported:
+
+[ Issues - iwlwifi / iwldwm ]
+
+I know of a call-trace for users of iwldwm device.
+You will need "iwlwifi: avoid crash on unsupported debug collection"
+patch (see [2]).
+
+[ Issues -usb / xhci ]
+
+I reported xhci-resets every 10min in "[xhci] usb 4-1: reset
+SuperSpeed Gen 1 USB device number 2 using xhci_hcd" thread (see [3]).
+No response, yet.
+
+Some ideas and feedback from me, myself and I.
+
+Have more fun!
+
+Regards,
+- Sedat -
+
+[0] https://marc.info/?l=linux-kernel&m=161455865730695&w=2
+[1] https://lwn.net/Articles/846406/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers.git/
+[3] https://marc.info/?t=161417912800001&r=1&w=2
