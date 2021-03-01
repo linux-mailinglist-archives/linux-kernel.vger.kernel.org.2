@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BDC329A2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C356329B03
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377111AbhCBApn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:45:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49690 "EHLO mail.kernel.org"
+        id S1378439AbhCBBGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:06:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237242AbhCASjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:39:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1061865317;
-        Mon,  1 Mar 2021 17:43:13 +0000 (UTC)
+        id S240815AbhCATBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:01:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D25A65189;
+        Mon,  1 Mar 2021 17:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620594;
-        bh=FVRZRs7L0MYkZQXb5ndpLTCAop6OHrOHH7V751OH+uE=;
+        s=korg; t=1614618630;
+        bh=hF0Z2ImeDhMsG9CfI2pxm99ZtROhX7KaIIFYm6QhRvA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rpbJ12+isBlslEBT8CLme7xLVlT5lduiHjkqAEk63+UqlBoclcgF8Yei5A1aS9eJ1
-         ZRvzec+UWn80xlRdo+nmIWduXQeRfcOdpquwf8ps2+uxRZ3dI2biDBTjZ6JuWIU+NQ
-         ntyCIZanXuc28Go7ME7WTOS4AzVFw/3DKVbX5O/I=
+        b=GS0Re8PFqU2E6NVlix8KheM2rXl7C7Kkr9KCKrYLO2+VOTJnau8+fwN04sFu0CeiE
+         2FrHOucTyPV1uO/WIvG5IccefR/Caxk0oHLEZuBB2c/zL6xWcYBXpLMBklBkuJ5868
+         KMAFu0C4iiPuz6/cnS+QjIfOWrGj7ZmOLCmivkI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xuewen Yan <xuewen.yan@unisoc.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 210/775] sched/fair: Avoid stale CPU util_est value for schedutil in task dequeue
-Date:   Mon,  1 Mar 2021 17:06:18 +0100
-Message-Id: <20210301161212.021149239@linuxfoundation.org>
+Subject: [PATCH 5.10 131/663] net: amd-xgbe: Fix NETDEV WATCHDOG transmit queue timeout warning
+Date:   Mon,  1 Mar 2021 17:06:19 +0100
+Message-Id: <20210301161148.231188202@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,152 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuewen Yan <xuewen.yan@unisoc.com>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit 8c1f560c1ea3f19e22ba356f62680d9d449c9ec2 ]
+[ Upstream commit 186edbb510bd60e748f93975989ccba25ee99c50 ]
 
-CPU (root cfs_rq) estimated utilization (util_est) is currently used in
-dequeue_task_fair() to drive frequency selection before it is updated.
+The current driver calls netif_carrier_off() late in the link tear down
+which can result in a netdev watchdog timeout.
 
-with:
+Calling netif_carrier_off() immediately after netif_tx_stop_all_queues()
+avoids the warning.
 
-CPU_util        : rq->cfs.avg.util_avg
-CPU_util_est    : rq->cfs.avg.util_est
-CPU_utilization : max(CPU_util, CPU_util_est)
-task_util       : p->se.avg.util_avg
-task_util_est   : p->se.avg.util_est
+ ------------[ cut here ]------------
+ NETDEV WATCHDOG: enp3s0f2 (amd-xgbe): transmit queue 0 timed out
+ WARNING: CPU: 3 PID: 0 at net/sched/sch_generic.c:461 dev_watchdog+0x20d/0x220
+ Modules linked in: amd_xgbe(E)  amd-xgbe 0000:03:00.2 enp3s0f2: Link is Down
+ CPU: 3 PID: 0 Comm: swapper/3 Tainted: G            E
+ Hardware name: AMD Bilby-RV2/Bilby-RV2, BIOS RBB1202A 10/18/2019
+ RIP: 0010:dev_watchdog+0x20d/0x220
+ Code: 00 49 63 4e e0 eb 92 4c 89 e7 c6 05 c6 e2 c1 00 01 e8 e7 ce fc ff 89 d9 48
+ RSP: 0018:ffff90cfc28c3e88 EFLAGS: 00010286
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000006
+ RDX: 0000000000000007 RSI: 0000000000000086 RDI: ffff90cfc28d63c0
+ RBP: ffff90cfb977845c R08: 0000000000000050 R09: 0000000000196018
+ R10: ffff90cfc28c3ef8 R11: 0000000000000000 R12: ffff90cfb9778000
+ R13: 0000000000000003 R14: ffff90cfb9778480 R15: 0000000000000010
+ FS:  0000000000000000(0000) GS:ffff90cfc28c0000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007f240ff2d9d0 CR3: 00000001e3e0a000 CR4: 00000000003406e0
+ Call Trace:
+  <IRQ>
+  ? pfifo_fast_reset+0x100/0x100
+  call_timer_fn+0x2b/0x130
+  run_timer_softirq+0x3e8/0x440
+  ? enqueue_hrtimer+0x39/0x90
 
-dequeue_task_fair():
-
-    /* (1) CPU_util and task_util update + inform schedutil about
-           CPU_utilization changes */
-    for_each_sched_entity() /* 2 loops */
-        (dequeue_entity() ->) update_load_avg() -> cfs_rq_util_change()
-         -> cpufreq_update_util() ->...-> sugov_update_[shared\|single]
-         -> sugov_get_util() -> cpu_util_cfs()
-
-    /* (2) CPU_util_est and task_util_est update */
-    util_est_dequeue()
-
-cpu_util_cfs() uses CPU_utilization which could lead to a false (too
-high) utilization value for schedutil in task ramp-down or ramp-up
-scenarios during task dequeue.
-
-To mitigate the issue split the util_est update (2) into:
-
- (A) CPU_util_est update in util_est_dequeue()
- (B) task_util_est update in util_est_update()
-
-Place (A) before (1) and keep (B) where (2) is. The latter is necessary
-since (B) relies on task_util update in (1).
-
-Fixes: 7f65ea42eb00 ("sched/fair: Add util_est on top of PELT")
-Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/1608283672-18240-1-git-send-email-xuewen.yan94@gmail.com
+Fixes: e722ec82374b ("amd-xgbe: Update the BelFuse quirk to support SGMII")
+Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/sched/fair.c | 43 ++++++++++++++++++++++++++++---------------
- 1 file changed, 28 insertions(+), 15 deletions(-)
+ drivers/net/ethernet/amd/xgbe/xgbe-drv.c  | 1 +
+ drivers/net/ethernet/amd/xgbe/xgbe-mdio.c | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 04a3ce20da671..6918adaf74150 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3943,6 +3943,22 @@ static inline void util_est_enqueue(struct cfs_rq *cfs_rq,
- 	trace_sched_util_est_cfs_tp(cfs_rq);
- }
- 
-+static inline void util_est_dequeue(struct cfs_rq *cfs_rq,
-+				    struct task_struct *p)
-+{
-+	unsigned int enqueued;
-+
-+	if (!sched_feat(UTIL_EST))
-+		return;
-+
-+	/* Update root cfs_rq's estimated utilization */
-+	enqueued  = cfs_rq->avg.util_est.enqueued;
-+	enqueued -= min_t(unsigned int, enqueued, _task_util_est(p));
-+	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, enqueued);
-+
-+	trace_sched_util_est_cfs_tp(cfs_rq);
-+}
-+
- /*
-  * Check if a (signed) value is within a specified (unsigned) margin,
-  * based on the observation that:
-@@ -3956,23 +3972,16 @@ static inline bool within_margin(int value, int margin)
- 	return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
- }
- 
--static void
--util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
-+static inline void util_est_update(struct cfs_rq *cfs_rq,
-+				   struct task_struct *p,
-+				   bool task_sleep)
- {
- 	long last_ewma_diff;
- 	struct util_est ue;
--	int cpu;
- 
- 	if (!sched_feat(UTIL_EST))
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
+index 2709a2db56577..395eb0b526802 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
+@@ -1368,6 +1368,7 @@ static void xgbe_stop(struct xgbe_prv_data *pdata)
  		return;
  
--	/* Update root cfs_rq's estimated utilization */
--	ue.enqueued  = cfs_rq->avg.util_est.enqueued;
--	ue.enqueued -= min_t(unsigned int, ue.enqueued, _task_util_est(p));
--	WRITE_ONCE(cfs_rq->avg.util_est.enqueued, ue.enqueued);
--
--	trace_sched_util_est_cfs_tp(cfs_rq);
--
- 	/*
- 	 * Skip update of task's estimated utilization when the task has not
- 	 * yet completed an activation, e.g. being migrated.
-@@ -4012,8 +4021,7 @@ util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p, bool task_sleep)
- 	 * To avoid overestimation of actual task utilization, skip updates if
- 	 * we cannot grant there is idle time in this CPU.
- 	 */
--	cpu = cpu_of(rq_of(cfs_rq));
--	if (task_util(p) > capacity_orig_of(cpu))
-+	if (task_util(p) > capacity_orig_of(cpu_of(rq_of(cfs_rq))))
- 		return;
+ 	netif_tx_stop_all_queues(netdev);
++	netif_carrier_off(pdata->netdev);
  
- 	/*
-@@ -4096,8 +4104,11 @@ static inline void
- util_est_enqueue(struct cfs_rq *cfs_rq, struct task_struct *p) {}
+ 	xgbe_stop_timers(pdata);
+ 	flush_workqueue(pdata->dev_workqueue);
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
+index 93ef5a30cb8d9..19ee4db0156d6 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
+@@ -1396,7 +1396,6 @@ static void xgbe_phy_stop(struct xgbe_prv_data *pdata)
+ 	pdata->phy_if.phy_impl.stop(pdata);
  
- static inline void
--util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p,
--		 bool task_sleep) {}
-+util_est_dequeue(struct cfs_rq *cfs_rq, struct task_struct *p) {}
-+
-+static inline void
-+util_est_update(struct cfs_rq *cfs_rq, struct task_struct *p,
-+		bool task_sleep) {}
- static inline void update_misfit_status(struct task_struct *p, struct rq *rq) {}
+ 	pdata->phy.link = 0;
+-	netif_carrier_off(pdata->netdev);
  
- #endif /* CONFIG_SMP */
-@@ -5609,6 +5620,8 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 	int idle_h_nr_running = task_has_idle_policy(p);
- 	bool was_sched_idle = sched_idle_rq(rq);
- 
-+	util_est_dequeue(&rq->cfs, p);
-+
- 	for_each_sched_entity(se) {
- 		cfs_rq = cfs_rq_of(se);
- 		dequeue_entity(cfs_rq, se, flags);
-@@ -5659,7 +5672,7 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
- 		rq->next_balance = jiffies;
- 
- dequeue_throttle:
--	util_est_dequeue(&rq->cfs, p, task_sleep);
-+	util_est_update(&rq->cfs, p, task_sleep);
- 	hrtick_update(rq);
+ 	xgbe_phy_adjust_link(pdata);
  }
- 
 -- 
 2.27.0
 
