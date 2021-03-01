@@ -2,98 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C432B329FBB
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA2A329FBA
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574453AbhCBDqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:46:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
+        id S1381024AbhCBDqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:46:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234078AbhCAVJr (ORCPT
+        with ESMTP id S235463AbhCAVJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:09:47 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E13C06178A;
-        Mon,  1 Mar 2021 13:09:02 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id p21so27759752lfu.11;
-        Mon, 01 Mar 2021 13:09:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RND9a8mDUQOYZaFLBcRyMzHxI6PVzRgVXmxJa2P7jiQ=;
-        b=m7bi2qaD3tTk3Q3CYW/irTFcbzzSdk6/Y3EN+Am97dpuN9qZ9rcAoalHJMBgjF2+Dh
-         SdNJbw5Qe07zsDx00GLE/21MfUiuLqqTAITVHy37prAMuQpq/Hoyret//bbVbV2aIwIf
-         9LtgWa30dwEmfOehnMIBBPPhv3Q31WxcJszPm5niBtcpXTWo5MfQLBvP4xFZvQmlmwFT
-         ETxuwsMrcSwcGrtcsqsAKqURfSjjpdm6Kut0LXUlMkyLT7/zr9ccWW8mWi+o7zpTTIWS
-         7fsWj1BUVOT1y7Tz0/BDMWaA0LDEzb5UMapLv4E55PUkjuLmxINxtfS1G9Mjn2tyy9so
-         7kww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RND9a8mDUQOYZaFLBcRyMzHxI6PVzRgVXmxJa2P7jiQ=;
-        b=nJfuj3NGMWB60gR2n+IOa2EyLYsP5lz+2mkxjtfrE6WI7BA2E5lGWijXcWsjh6LoOv
-         NvWU+pHQCNr9W4uVSYNpFJdOJMmhGCk1OrcYzOq2N3t9+vdUvn8DQ9CszE/LNMX+if8n
-         VtQrtOA002VO9EpGdDiTgMlPPYNN6ttcsPw2yDpG15B0uVA3gbcjfv5Ag9VbMR9+uJb7
-         o0LQFaG69tyQa62K9F2VImMzYHZ3YbFoHibauPSE09Y2N8XSzwcpwb3Oj7fcjlJkKrpF
-         F7j6FNwldzHm+xg+eSwvmsCXcTYiqwG2NWQiM8AS5kcIm7LE/WZr2a4aCsMeDI0pQ3bu
-         A7Pg==
-X-Gm-Message-State: AOAM5326TBygpr1kA0WZlelJzNu/h0d3/AXYtYK9f2k6CUeMZ0YR74pF
-        R/01qpVf+AzZCg0fZtpE1bI=
-X-Google-Smtp-Source: ABdhPJxPhVzOfx4HqFyxNGMBXwQ8vqAzu5SGYTtv64rsO+8zHlJl5gGs+d1atpjxpzRIBs46qskz8w==
-X-Received: by 2002:a19:8b41:: with SMTP id n62mr10493293lfd.380.1614632941148;
-        Mon, 01 Mar 2021 13:09:01 -0800 (PST)
-Received: from rikard (h-98-128-229-129.NA.cust.bahnhof.se. [98.128.229.129])
-        by smtp.gmail.com with ESMTPSA id a3sm1312086lfr.55.2021.03.01.13.08.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 13:09:00 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-X-Google-Original-From: Rikard Falkeborn <rikard.falkeborn>
-Date:   Mon, 1 Mar 2021 22:08:55 +0100
-To:     jarkko@kernel.org
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH] tpm: Remove unintentional dump_stack() call
-Message-ID: <YD1X553fpbyl7Kbw@rikard>
-References: <20210301094409.14380-1-jarkko@kernel.org>
+        Mon, 1 Mar 2021 16:09:43 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4321DC061788;
+        Mon,  1 Mar 2021 13:09:01 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 455662B8;
+        Mon,  1 Mar 2021 21:09:00 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 455662B8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614632940; bh=od1sDN7Zm/FSSJnE/q/cJkLnrEPDy/KT4dueDh8t/0c=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=olIOF2Sp6H7WQ+15LoJTSiFB4NP6f3Q4WQDJ37wdyGjxVnwLzDsW7S6tr8Tweu5bF
+         +rnh0IJe2TaJBPklX7YdUwxPqsvPYFtNYus3ZEx9EPmDtH+606iRqiWpU3oinukoMf
+         iVdFzrd2H5+eQ4N2fXqReRyuw0OEXeU3RWbEE3+dFUhjxLwVSqXaXGMHhWQ+FQyx91
+         UfcmMRAXjiQWMUhU6B7KMQMnq4geQfTN5/3mhl86N5zLBvcsfN8RNiBgkAcPGD/bj9
+         xAQd2bEcXtb+g4ZZTcWGGi98NIWZnjeRRrzamr+j6+dihQtFIgdQSAg+oCR6Z7EUqe
+         yaqj+xZ06FA0g==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH V2] docs: sphinx: Fix couple of spellings in the file
+ rstFlatTable.py
+In-Reply-To: <20210301201052.11067-1-unixbhaskar@gmail.com>
+References: <20210301201052.11067-1-unixbhaskar@gmail.com>
+Date:   Mon, 01 Mar 2021 14:08:59 -0700
+Message-ID: <877dmq4m50.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301094409.14380-1-jarkko@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 11:44:09AM +0200, jarkko@kernel.org wrote:
-> From: Jarkko Sakkinen <jarkko@kernel.org>
-> 
-> Somewhere along the line, probably during a rebase, an unintentional
-> dump_stack() got included. Revert this change.
-> 
-> Reported-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> Fixes: 90cba8d20f8b ("tpm/ppi: Constify static struct attribute_group")
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
->  drivers/char/tpm/tpm-chip.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index 19e23fcc6bc8..ddaeceb7e109 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -278,8 +278,6 @@ static void tpm_devs_release(struct device *dev)
->  {
->  	struct tpm_chip *chip = container_of(dev, struct tpm_chip, devs);
->  
-> -	dump_stack();
-> -
->  	/* release the master device reference */
->  	put_device(&chip->dev);
->  }
-> -- 
-> 2.30.1
-> 
+Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
 
-Acked-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> s/automaticly/automatically/
+> s/buidler/builder/
+>
+> ..and a sentence construction fix.
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Changes from V1:
+>  Incorporating Randy's observations ...i.e sentence construction
+>
+>  Documentation/sphinx/rstFlatTable.py | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+
+Applied, thanks.
+
+jon
