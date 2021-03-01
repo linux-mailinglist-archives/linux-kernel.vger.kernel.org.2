@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5D43282C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A540B3282C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237375AbhCAPqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 10:46:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
+        id S237382AbhCAPrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 10:47:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237075AbhCAPqO (ORCPT
+        with ESMTP id S236819AbhCAPq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 10:46:14 -0500
+        Mon, 1 Mar 2021 10:46:56 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 532AEC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 07:45:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFC4C061756;
+        Mon,  1 Mar 2021 07:46:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TSa8nsScEP0oQJAOUkZDicDP/piGiwm3u3sQvk/SQeI=; b=bCI0/hzskyfJ+m3pl398c373zv
-        T+QUahHIyJYVFlZ5EhYyfc85PdP1QyT8z+nYu+y8eCrcp1hdhacG1v6x5uXDSUgEcylWEHl43/czQ
-        BjnknzV0aadkSR0TSSOK/z5h5TS7JysYkqgRZXWVPZiVE3+naQ1hrL4hsZjGTG4xWjha6ax2qRYQ5
-        NJYouITN5s7r4/WmL//wIMFVHVkYOQ7kvkwZr8/ORsgrRyWmZwXTL3mSw4UILfuhuCkDqPwIvMnpN
-        kArq23T7wZQ0aDu9BHpMzHmrVmfjIda1S04lTuSVbNdQTHgdG3owRChrDkLVYGZ9J1PPVtJcoAwuW
-        tebOnF3A==;
+        bh=fGQP+mV2y92qkbpjMBXPSQ03FtN3LiZq6yfm+Qczok4=; b=eINfi8rePq0BOqcbnRkDRGaTUU
+        j/qrilFBjLOCeVw+dDK6ymE27NlfTD4qj5PiC9OpEr92WRQhvK5mhl7EptC4VPBADqYyJ1mXMTKWZ
+        uD7r9jykhVFHBsqVynWGVz581McsTNLQ+uvh9G6q5zpYKTulcgADr2pUFmQpLcVHECdoVk7fVZKDq
+        abk3z4yLDVmB5v1h+3UvRwB/nnF/QT3CirQbrsTFT5WpID+C1WeE6KYyEbWFpdyvIAdJjCTxvqFCH
+        H4ASfBxiccWVlcOowbbH4SA0XB89kiH0ckEJtrbNWWglMNnrcCMPhVHWdrVW5ByJo4+gjFEIZcCe2
+        qjFREMYg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lGkiy-00Fu9w-HT; Mon, 01 Mar 2021 15:44:50 +0000
+        id 1lGkjs-00FuI6-5F; Mon, 01 Mar 2021 15:45:49 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0C923301959;
-        Mon,  1 Mar 2021 16:44:43 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B8346301959;
+        Mon,  1 Mar 2021 16:45:39 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EB1EB2059E79F; Mon,  1 Mar 2021 16:44:42 +0100 (CET)
-Date:   Mon, 1 Mar 2021 16:44:42 +0100
+        id A9A3620C80E0E; Mon,  1 Mar 2021 16:45:39 +0100 (CET)
+Date:   Mon, 1 Mar 2021 16:45:39 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Subject: Re: [PATCH] sched/fair: Prefer idle CPU to cache affinity
-Message-ID: <YD0L6sba9RfXX+tM@hirez.programming.kicks-ass.net>
-References: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
- <ab046b9d5bcd29b2eb759cd999e2f578a683c673.camel@surriel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, mhocko@suse.com,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 3/3] kernel/smp: add more data to CSD lock debugging
+Message-ID: <YD0MI1Cye+YbOov3@hirez.programming.kicks-ass.net>
+References: <20210226112521.8641-1-jgross@suse.com>
+ <20210226112521.8641-4-jgross@suse.com>
+ <YDkkFBerBlW5uUBS@hirez.programming.kicks-ass.net>
+ <20210226181205.GZ2743@paulmck-ThinkPad-P72>
+ <YDlirwTWMmZ3g0ts@hirez.programming.kicks-ass.net>
+ <20210301000704.GF2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2JpPWwCpCiHiKfCh"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ab046b9d5bcd29b2eb759cd999e2f578a683c673.camel@surriel.com>
+In-Reply-To: <20210301000704.GF2696@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Feb 28, 2021 at 04:07:04PM -0800, Paul E. McKenney wrote:
+> On Fri, Feb 26, 2021 at 10:05:51PM +0100, Peter Zijlstra wrote:
+> > On Fri, Feb 26, 2021 at 10:12:05AM -0800, Paul E. McKenney wrote:
+> > > On Fri, Feb 26, 2021 at 05:38:44PM +0100, Peter Zijlstra wrote:
+> > > > 
+> > > > I hate all of this, but if this will finally catch the actual problem,
+> > > > we can then revert all this, so sure.
+> > > 
+> > > OK, I will bite...  What exactly do you hate about it?
+> > 
+> > It's ugly and messy. We're basically commiting a debug session. Normally
+> > gunk like this is done in private trees, then we find the problem and
+> > fix that and crap like this never sees the light of day.
+> 
+> Is your hatred due to the presence of debug code at all, or a belief that
+> this code is unlikely to be useful in any subsequent IPI-related bug hunt?
 
---2JpPWwCpCiHiKfCh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Feb 27, 2021 at 02:56:07PM -0500, Rik van Riel wrote:
-> On Fri, 2021-02-26 at 22:10 +0530, Srikar Dronamraju wrote:
-
-> > +	if (sched_feat(WA_WAKER) && tnr_busy < tllc_size)
-> > +		return this_cpu;
->=20
-> I wonder if we need to use a slightly lower threshold on
-> very large LLCs, both to account for the fact that the
-> select_idle_cpu code may not find the single idle CPU
-> among a dozen busy ones, or because on a system with
-> hyperthreading we may often be better off picking another
-> LLC for HT contention issues?
->=20
-> Maybe we could use "tnr_busy * 4 <
-> tllc_size * 3" or
-> something like that?
-
-How about:
-
-	tnr_busy < tllc_size / topology_max_smt_threads()
-
-?
-
---2JpPWwCpCiHiKfCh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEv3OU3/byMaA0LqWJdkfhpEvA5LoFAmA9C+oACgkQdkfhpEvA
-5Lr4sw/8CHIRe96iDw8Z0JJAEw3nZ7kn+aDNlrrJiZouqveXeylMFdp+7rh9cZ8b
-iJX23CwYvC5w/mY1qetiphLgZeY8kpERNrFZT6ZAaRfSXY2qU4U20sO2OybZhJtI
-BJuTmAmWifVBciQbvHW1a2r0GQHv61Y5ibu854DgbqRCFIr4zQh/onLSq5GUQ1+i
-o6rhtFu32TYR8cYXvNpp0XlP7GlWd0eDEz5aUKMpw1BUUQ6+UBNtKnbxCT8Fkn2H
-XYig+LvXUHmA5ambIJS2ZvZYTE8Ic4fK7ySKTePWD3Vj1/qc7PGRAvhm0xtRB5Me
-Hc7wLEDIyO6m5rwx2bM5JoNErRUp/Dt2RK/KXkSjDkGhtypcmzVkDnU3hNW4CUJU
-NxS3izeaWp5KPumnzqYYlsH5QKVFV0RdIV+yoPrYlPt6sz2A7uQUCuOmj6GgKhUB
-1JkE4WXzSkZhY+fzSCumCg2p/Dzt4+Bg2jNjFrygRSG/kFQSvLVr01LADVpE0+Bd
-qy/7GmSgVwXe9UDdVBfDNWSDXOM1Ht4XUe/mz53Bec1wF87hWj54LbZH4EIx4EV/
-0vIP22cFC428emRIEZdne0HcME4AkaCg+9DE8RCI2JpvA0LBPWTrdUsBBAh5zLuZ
-3qgNkN/Rnntpv8LiOad0jW4H5BaXn3D/niJzwBjE4X2q5WuYLlM=
-=4Aam
------END PGP SIGNATURE-----
-
---2JpPWwCpCiHiKfCh--
+The clutter, mostly I think. There's a lot of debug sprinkled about.
