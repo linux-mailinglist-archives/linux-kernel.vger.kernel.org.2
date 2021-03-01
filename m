@@ -2,80 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0594329FB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FAF329FB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243349AbhCBDps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:45:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
+        id S243431AbhCBDqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:46:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244039AbhCAUyV (ORCPT
+        with ESMTP id S243684AbhCAU4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:54:21 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DD3C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 12:53:41 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id x20so19515161oie.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 12:53:41 -0800 (PST)
+        Mon, 1 Mar 2021 15:56:47 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986C0C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 12:56:03 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id f6so6823628edd.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 12:56:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=E+w0HAJylkgq3bPjmsNmLQYaODZeNQostL0eaoslM0E=;
-        b=nG1cyFoOya0gLfDU17JGUVlLtP7ziwoWqYEXcgHf7KJBnFebdR6zeVan7zaHINkps0
-         KafE7lYrUUx47bDa91ImCZbW0vkqS5A0T6dNldh78YZZ1PEUH8f4ny+uCVIRZCeS/6hp
-         vbGAuZo7eqv03BlMTqPZQlRLGRcQ8GsNgtYbHUOyaiJK4G+yaTm+HlxI4dbCiyxcXQYM
-         yFdoTvdPuEL4KhEu2H7mGX1MCYZ8OtkLn6XWcPyaWRhER1s6kYGHemRhClPVREhCrG5t
-         9xM/HmB+DYdtzv9FPiGKgzkJfd+c02dlNh1E2C6AOyIYnoQjr/5CZdO2tYdA0iF2BE5w
-         G0iA==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uf7JqQFHPCXtVt6OE3ndJLn8tz0ITkjzN5ljfjxdIhk=;
+        b=LsUxVPo7UlbfyojprFB1jf/rKDEY5l1bLqSBqTvGf9XMx0WBQVwMKTlkmnc8L2SxOQ
+         CQVHrea9eSOecxf54/iF/vdL/K8FbOVPW9KBl4US9kraCLKPGcb8Zy87mpx2ALTioUUi
+         I3u0SK3g+sKzDaob/ol6gZFxAQylheAV+/IIn35GbikR2zQgDwQWXktUXD9ULoL+PzQx
+         pr97W32SC56CXIMupsYveBfr4YnEHV3ekVFIoIK0dIk72+g1vb0gS6NvBqVEpVagMIPu
+         0o2DeAiSUb4YzXlIswECNdeyiZKT86n3F+CjMKrQnKtykVj6ngmicpeLHNZKdX23vnF5
+         orlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=E+w0HAJylkgq3bPjmsNmLQYaODZeNQostL0eaoslM0E=;
-        b=cnggOizNZZkldErZ3aYUJ6Pf91a2yAPqdk9L2ESVWhG814yfPjClKNEqGSTvf8Odyd
-         yMUM+X1qo3uyTYyEbMMukAw/NjHkSElCSV8mAj5HlHNlqIatSaf7fr235B4UHjFzyt2h
-         dvtnseBbYwV2Ejtvt/1JpNVQdMVApouwBU4QlLSVyFtsmwJbeB/Jp3eFwM44V9qy95GJ
-         W31x6ysWuGradLgDLOosDkcTc8U/ikQ3iLEAn77VTiw4gPtKhuvTZlyxSZnwtxK52/H8
-         oeha48b6oc2xHTf+fZluRzPqRyWeGyLI9G9e172rM4JtEyukZfD0qAwtPS6JQAEdmVhK
-         vc/g==
-X-Gm-Message-State: AOAM530S8d2ZAWHXwlazcnjzlcnuekP2sqycJZPJqIlaN28VPvRUlEAi
-        f4Gv56C8FhXSRzf0ELCSWZy0HZzCFAU=
-X-Google-Smtp-Source: ABdhPJyBRtDJc+DINRoicRMHJSEYwSvw4iqujDc3L6cFHcuEm/oifvNHUJw25DE0ws6yBypLlD84JA==
-X-Received: by 2002:aca:ad0d:: with SMTP id w13mr684782oie.170.1614632020715;
-        Mon, 01 Mar 2021 12:53:40 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k18sm4016979ots.24.2021.03.01.12.53.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 01 Mar 2021 12:53:40 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 1 Mar 2021 12:53:38 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Linux 5.12-rc1
-Message-ID: <20210301205338.GA74835@roeck-us.net>
-References: <CAHk-=wjUzNbTuRCAv80vyD1dXEEaefdpRi23J+suSaognBoV8A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uf7JqQFHPCXtVt6OE3ndJLn8tz0ITkjzN5ljfjxdIhk=;
+        b=WHNN3D0G3JrNiUI/NSr+kOvYEyCObgLq016gJ/JOZoszde6zMCSeLNKQl6em1L0J6r
+         SQJI1Bhx4mQ5Tj7oDjJIMJpqvm5AEfmRcX2Hs2Ji1Trz9EvddtPQSaWvEDfWR89K6GdF
+         SkiWLF/gPaMphzJNJ6CTKoA/tnJTK/mfzPG/+affdmw6K2GMZofx9P1p+JJc6496eFNX
+         YLMKukcNPIZyEON/dGDdT6ILg3JcEvqxkcTyVfqbxu//OaGLiILi6g1ApXkFZAkmbey4
+         PBuUn5vxDzaVc1oBh+qB1V/9h3l40KPk5oQwogaiBW3hA3337RZ2P2gN057T+9ReWbMJ
+         7qqQ==
+X-Gm-Message-State: AOAM5333becWyyhdUhA/CrUhKo6ustwiR6xnYEyNbFZxJXAzlUAmxlT/
+        aRTPX9zrLjLpZzk5PxbHPlkKGydbEhiGVf54+P0kOA==
+X-Google-Smtp-Source: ABdhPJxBwKnueL85Spjb8OhqRdQvSAhEOhjHLo+ym/acf8R+C2DQPXIFH/M6CoSbCOsavo9bD3fi05mLAmEjhXAU4gc=
+X-Received: by 2002:a05:6402:3585:: with SMTP id y5mr17766218edc.97.1614632162323;
+ Mon, 01 Mar 2021 12:56:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjUzNbTuRCAv80vyD1dXEEaefdpRi23J+suSaognBoV8A@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+ <20210226190454.GD7272@magnolia> <CAPcyv4iJiYsM5FQdpMvCi24aCi7RqUnnxC6sM0umFqiN+Q59cg@mail.gmail.com>
+ <20210226205126.GX4662@dread.disaster.area> <CAPcyv4iDefA3Y0wUW=p080SYAsM_2TPJba-V-sxdK_BeJMkmsw@mail.gmail.com>
+ <20210226212748.GY4662@dread.disaster.area> <CAPcyv4jryJ32R5vOwwEdoU3V8C0B7zu_pCt=7f6A3Gk-9h6Dfg@mail.gmail.com>
+ <20210227223611.GZ4662@dread.disaster.area> <CAPcyv4h7XA3Jorcy_J+t9scw0A4KdT2WEwAhE-Nbjc=C2qmkMw@mail.gmail.com>
+ <20210228223846.GA4662@dread.disaster.area>
+In-Reply-To: <20210228223846.GA4662@dread.disaster.area>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 1 Mar 2021 12:55:53 -0800
+Message-ID: <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
+Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 04:29:34PM -0800, Linus Torvalds wrote:
-> So two weeks have passed since the 5.11 release, and so - like
-> clockwork - the merge window for 5.12 has closed, and 5.12-rc1 is out
-> there for your perusal.
-> 
+On Sun, Feb 28, 2021 at 2:39 PM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Sat, Feb 27, 2021 at 03:40:24PM -0800, Dan Williams wrote:
+> > On Sat, Feb 27, 2021 at 2:36 PM Dave Chinner <david@fromorbit.com> wrote:
+> > > On Fri, Feb 26, 2021 at 02:41:34PM -0800, Dan Williams wrote:
+> > > > On Fri, Feb 26, 2021 at 1:28 PM Dave Chinner <david@fromorbit.com> wrote:
+> > > > > On Fri, Feb 26, 2021 at 12:59:53PM -0800, Dan Williams wrote:
+> > > it points to, check if it points to the PMEM that is being removed,
+> > > grab the page it points to, map that to the relevant struct page,
+> > > run collect_procs() on that page, then kill the user processes that
+> > > map that page.
+> > >
+> > > So why can't we walk the ptescheck the physical pages that they
+> > > map to and if they map to a pmem page we go poison that
+> > > page and that kills any user process that maps it.
+> > >
+> > > i.e. I can't see how unexpected pmem device unplug is any different
+> > > to an MCE delivering a hwpoison event to a DAX mapped page.
+> >
+> > I guess the tradeoff is walking a long list of inodes vs walking a
+> > large array of pages.
+>
+> Not really. You're assuming all a filesystem has to do is invalidate
+> everything if a device goes away, and that's not true. Finding if an
+> inode has a mapping that spans a specific device in a multi-device
+> filesystem can be a lot more complex than that. Just walking inodes
+> is easy - determining whihc inodes need invalidation is the hard
+> part.
 
-Basic test results look pretty good.
+That inode-to-device level of specificity is not needed for the same
+reason that drop_caches does not need to be specific. If the wrong
+page is unmapped a re-fault will bring it back, and re-fault will fail
+for the pages that are successfully removed.
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 435 pass: 435 fail: 0
+> That's where ->corrupt_range() comes in - the filesystem is already
+> set up to do reverse mapping from physical range to inode(s)
+> offsets...
 
-Guenter
+Sure, but what is the need to get to that level of specificity with
+the filesystem for something that should rarely happen in the course
+of normal operation outside of a mistake?
+
+>
+> > There's likely always more pages than inodes, but perhaps it's more
+> > efficient to walk the 'struct page' array than sb->s_inodes?
+>
+> I really don't see you seem to be telling us that invalidation is an
+> either/or choice. There's more ways to convert physical block
+> address -> inode file offset and mapping index than brute force
+> inode cache walks....
+
+Yes, but I was trying to map it to an existing mechanism and the
+internals of drop_pagecache_sb() are, in coarse terms, close to what
+needs to happen here.
+
+>
+> .....
+>
+> > > IOWs, what needs to happen at this point is very filesystem
+> > > specific. Assuming that "device unplug == filesystem dead" is not
+> > > correct, nor is specifying a generic action that assumes the
+> > > filesystem is dead because a device it is using went away.
+> >
+> > Ok, I think I set this discussion in the wrong direction implying any
+> > mapping of this action to a "filesystem dead" event. It's just a "zap
+> > all ptes" event and upper layers recover from there.
+>
+> Yes, that's exactly what ->corrupt_range() is intended for. It
+> allows the filesystem to lock out access to the bad range
+> and then recover the data. Or metadata, if that's where the bad
+> range lands. If that recovery fails, it can then report a data
+> loss/filesystem shutdown event to userspace and kill user procs that
+> span the bad range...
+>
+> FWIW, is this notification going to occur before or after the device
+> has been physically unplugged?
+
+Before. This will be operations that happen in the pmem driver
+->remove() callback.
+
+> i.e. what do we do about the
+> time-of-unplug-to-time-of-invalidation window where userspace can
+> still attempt to access the missing pmem though the
+> not-yet-invalidated ptes? It may not be likely that people just yank
+> pmem nvdimms out of machines, but with NVMe persistent memory
+> spaces, there's every chance that someone pulls the wrong device...
+
+The physical removal aspect is only theoretical today. While the pmem
+driver has a ->remove() path that's purely a software unbind
+operation. That said the vulnerability window today is if a process
+acquires a dax mapping, the pmem device hosting that filesystem goes
+through an unbind / bind cycle, and then a new filesystem is created /
+mounted. That old pte may be able to access data that is outside its
+intended protection domain.
+
+Going forward, for buses like CXL, there will be a managed physical
+remove operation via PCIE native hotplug. The flow there is that the
+PCIE hotplug driver will notify the OS of a pending removal, trigger
+->remove() on the pmem driver, and then notify the technician (slot
+status LED) that the card is safe to pull.
