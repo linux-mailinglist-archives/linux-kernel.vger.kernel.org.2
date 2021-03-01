@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FE3329A10
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E758329ACC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348296AbhCBAns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:43:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
+        id S1348537AbhCBBDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:03:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240360AbhCASit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:38:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 037BE64FAB;
-        Mon,  1 Mar 2021 17:34:24 +0000 (UTC)
+        id S236742AbhCASyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:54:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F16D650A5;
+        Mon,  1 Mar 2021 17:34:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620065;
-        bh=csma62ucd/N2Z7+ni/Ibcnfb/n5NZO5kSEDmfrmXfoI=;
+        s=korg; t=1614620096;
+        bh=1GfRdhj7jWDgfq6pmdHMfsCIR4d51gaglmodvJ2pnng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jMGtvzCdQBSVXWLAeqtVUHrg4/TeIuHbOFI+F/LojusDoqyH6tNuL5YTJO7bfSjA2
-         U42OcMJ9s40f2iK4wCZ3gNmS231o2/+1XNyMIwtFYePo3bD8Pxowsext5Jmnrjujpa
-         B4QbwGP5yQC0H8erj650ilX7t1sqz5zkK7t3vJxY=
+        b=zM99sPkIstHZdXgTZ6OiK3W7YK1MNhp9UjfgcupTI6ypwlGYe1Mk6G7fnjOzmMobR
+         AI/Tk2tiOFmRm0ISBfZiTPXE3De4mncFwqUsJs0qKUEr4XbSWT0N+zFT8CWdzJHJON
+         GwDsYsVAMs9Y2A2oW6Q0BWhHwpf+oXdajYnORTMM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>, Theodore Tso <tytso@mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 5.11 018/775] random: fix the RNDRESEEDCRNG ioctl
-Date:   Mon,  1 Mar 2021 17:03:06 +0100
-Message-Id: <20210301161202.616954884@linuxfoundation.org>
+        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 028/775] arm64: dts: renesas: beacon: Fix audio-1.8V pin enable
+Date:   Mon,  1 Mar 2021 17:03:16 +0100
+Message-Id: <20210301161203.111903669@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,38 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Adam Ford <aford173@gmail.com>
 
-commit 11a0b5e0ec8c13bef06f7414f9e914506140d5cb upstream.
+[ Upstream commit 5a5da0b758b327b727c5392d7f11e046e113a195 ]
 
-The RNDRESEEDCRNG ioctl reseeds the primary_crng from itself, which
-doesn't make sense.  Reseed it from the input_pool instead.
+The fact the audio worked at all was a coincidence because the wrong
+gpio enable was used.  Use the correct GPIO pin to ensure its operation.
 
-Fixes: d848e5f8e1eb ("random: add new ioctl RNDRESEEDCRNG")
-Cc: stable@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Theodore Ts'o <tytso@mit.edu>
-Reviewed-by: Jann Horn <jannh@google.com>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Link: https://lore.kernel.org/r/20210112192818.69921-1-ebiggers@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: a1d8a344f1ca ("arm64: dts: renesas: Introduce r8a774a1-beacon-rzg2m-kit")
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Link: https://lore.kernel.org/r/20201213183759.223246-6-aford173@gmail.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/random.c |    2 +-
+ arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1972,7 +1972,7 @@ static long random_ioctl(struct file *f,
- 			return -EPERM;
- 		if (crng_init < 2)
- 			return -ENODATA;
--		crng_reseed(&primary_crng, NULL);
-+		crng_reseed(&primary_crng, &input_pool);
- 		crng_global_init_time = jiffies - 1;
- 		return 0;
- 	default:
+diff --git a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+index e66b5b36e4894..759734b7715bd 100644
+--- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
++++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+@@ -150,7 +150,7 @@
+ 		regulator-name = "audio-1.8V";
+ 		regulator-min-microvolt = <1800000>;
+ 		regulator-max-microvolt = <1800000>;
+-		gpio = <&gpio_exp2 7 GPIO_ACTIVE_HIGH>;
++		gpio = <&gpio_exp4 1 GPIO_ACTIVE_HIGH>;
+ 		enable-active-high;
+ 	};
+ 
+-- 
+2.27.0
+
 
 
