@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30916329CBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCF9329D3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349106AbhCBCLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:11:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50858 "EHLO mail.kernel.org"
+        id S1443278AbhCBCUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:20:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235798AbhCATgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:36:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B233650FF;
-        Mon,  1 Mar 2021 17:02:07 +0000 (UTC)
+        id S241819AbhCATrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:47:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37573650FE;
+        Mon,  1 Mar 2021 17:02:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618127;
-        bh=/GNukFuwCRa0uUC0gEumB/aw0yyP/dXMPMVsIshgH3w=;
+        s=korg; t=1614618133;
+        bh=F3uOmjDRirqlt+F07n7sLAB9NP0IpsyjcYsORllsl2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N75IpE6YggtJxqrWEMM2vMUEHvPVb5K0N5EGjFiFjm6+stH6vLpH/xGdw6Ca76veC
-         Bz8NErqn82BN84CUiTed5b3LOoPm+vmgmm0+UVbXsBFJVA7mHEzEEFqsTtkLz4G1H2
-         98Z0wQpbmgfRC7FAfH0zvvPq1lu9CaNHxz8v3kAo=
+        b=OC4JUTxuPbt2toWFIWnF3+/ozAb1ubfcpK8/LkGjQrIhCjhrZ20uBzopP4IKMq60c
+         aMjCCdTpIUr5wKA66vnI1MvO2vP0Vb++5yKcy2YdU4sqWiGWLSG6LNkBB1UNE0yWIK
+         E+p4Lgv2j4vdCGs9NhNrltRRrAfS7z9+zSnCRVYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.4 316/340] um: mm: check more comprehensively for stub changes
-Date:   Mon,  1 Mar 2021 17:14:20 +0100
-Message-Id: <20210301161103.841774870@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 318/340] sparc32: fix a user-triggerable oops in clear_user()
+Date:   Mon,  1 Mar 2021 17:14:22 +0100
+Message-Id: <20210301161103.942326025@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -39,71 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit 47da29763ec9a153b9b685bff9db659e4e09e494 upstream.
+commit 7780918b36489f0b2f9a3749d7be00c2ceaec513 upstream.
 
-If userspace tries to change the stub, we need to kill it,
-because otherwise it can escape the virtual machine. In a
-few cases the stub checks weren't good, e.g. if userspace
-just tries to
+Back in 2.1.29 the clear_user() guts (__bzero()) had been merged
+with memset().  Unfortunately, while all exception handlers had been
+copied, one of the exception table entries got lost.  As the result,
+clear_user() starting at 128*n bytes before the end of page and
+spanning between 8 and 127 bytes into the next page would oops when
+the second page is unmapped.  It's trivial to reproduce - all
+it takes is
 
-	mmap(0x100000 - 0x1000, 0x3000, ...)
+main()
+{
+	int fd = open("/dev/zero", O_RDONLY);
+	char *p = mmap(NULL, 16384, PROT_READ|PROT_WRITE,
+			MAP_PRIVATE|MAP_ANON, -1, 0);
+	munmap(p + 8192, 8192);
+	read(fd, p + 8192 - 128, 192);
+}
 
-it could succeed to get a new private/anonymous mapping
-replacing the stubs. Fix this by checking everywhere, and
-checking for _overlap_, not just direct changes.
+which had been oopsing since March 1997.  Says something about
+the quality of test coverage... ;-/  And while today sparc32 port
+is nearly dead, back in '97 it had been very much alive; in fact,
+sparc64 had only been in mainline for 3 months by that point...
 
-Cc: stable@vger.kernel.org
-Fixes: 3963333fe676 ("uml: cover stubs with a VMA")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Cc: stable@kernel.org
+Fixes: v2.1.29
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/um/kernel/tlb.c |   12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ arch/sparc/lib/memset.S |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/um/kernel/tlb.c
-+++ b/arch/um/kernel/tlb.c
-@@ -126,6 +126,9 @@ static int add_mmap(unsigned long virt,
- 	struct host_vm_op *last;
- 	int fd = -1, ret = 0;
+--- a/arch/sparc/lib/memset.S
++++ b/arch/sparc/lib/memset.S
+@@ -142,6 +142,7 @@ __bzero:
+ 	ZERO_LAST_BLOCKS(%o0, 0x48, %g2)
+ 	ZERO_LAST_BLOCKS(%o0, 0x08, %g2)
+ 13:
++	EXT(12b, 13b, 21f)
+ 	be	8f
+ 	 andcc	%o1, 4, %g0
  
-+	if (virt + len > STUB_START && virt < STUB_END)
-+		return -EINVAL;
-+
- 	if (hvc->userspace)
- 		fd = phys_mapping(phys, &offset);
- 	else
-@@ -163,7 +166,7 @@ static int add_munmap(unsigned long addr
- 	struct host_vm_op *last;
- 	int ret = 0;
- 
--	if ((addr >= STUB_START) && (addr < STUB_END))
-+	if (addr + len > STUB_START && addr < STUB_END)
- 		return -EINVAL;
- 
- 	if (hvc->index != 0) {
-@@ -193,6 +196,9 @@ static int add_mprotect(unsigned long ad
- 	struct host_vm_op *last;
- 	int ret = 0;
- 
-+	if (addr + len > STUB_START && addr < STUB_END)
-+		return -EINVAL;
-+
- 	if (hvc->index != 0) {
- 		last = &hvc->ops[hvc->index - 1];
- 		if ((last->type == MPROTECT) &&
-@@ -433,6 +439,10 @@ void flush_tlb_page(struct vm_area_struc
- 	struct mm_id *mm_id;
- 
- 	address &= PAGE_MASK;
-+
-+	if (address >= STUB_START && address < STUB_END)
-+		goto kill;
-+
- 	pgd = pgd_offset(mm, address);
- 	if (!pgd_present(*pgd))
- 		goto kill;
 
 
