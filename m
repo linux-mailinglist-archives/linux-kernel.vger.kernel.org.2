@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678A73299D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A39263298D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376626AbhCBA3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:29:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47668 "EHLO mail.kernel.org"
+        id S1346703AbhCAXuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:50:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239940AbhCASbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:31:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DA1865219;
-        Mon,  1 Mar 2021 17:22:42 +0000 (UTC)
+        id S239355AbhCASLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:11:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 852B96505A;
+        Mon,  1 Mar 2021 17:22:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619363;
-        bh=0CKkUiDriWAC0w6++OGrKVmH23JaGJ3QDThEO9jZUO0=;
+        s=korg; t=1614619369;
+        bh=SJqU0TZ8Afa3m2csUA70f/J8HZUD0M9F9MqfyYzU4jE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=On45CnfrgCgvg0O6a4Csgqem4GuV3Q8QxXUXZl9ofXEwYu1CTYtyUV/ZPxlOxpcL8
-         tdin4d4FuGQLlJ4AIIWVrXmARe056eJKObse/hVIW5kSA+y4x8fMNzEOdZ2oPF/hIO
-         9LXyvpgrTf7fy0CvfUw8Ca7a/xtLW3NgEGOfaNkI=
+        b=zB3cvoXhvOd8talo+kpO//L/gLF7Krl/zlVLjn6EdM/J8IdJgYKzNPIvgiTW68WUv
+         kwSZhzEEHBMuJiHhPrt439eaV2NaWPNbD8HxkhSThGqEnokHFRXsl/TlFbPXKsfke7
+         x4rQyYc7F7y9OdexWto0Puaiz/sBWxoYMt8R4eog=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 397/663] misc: eeprom_93xx46: Add module alias to avoid breaking support for non device tree users
-Date:   Mon,  1 Mar 2021 17:10:45 +0100
-Message-Id: <20210301161201.509903055@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 399/663] soundwire: debugfs: use controller id instead of link_id
+Date:   Mon,  1 Mar 2021 17:10:47 +0100
+Message-Id: <20210301161201.609666062@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,35 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aswath Govindraju <a-govindraju@ti.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 4540b9fbd8ebb21bb3735796d300a1589ee5fbf2 ]
+[ Upstream commit 6d5e7af1f6f5924de5dd1ebe97675c2363100878 ]
 
-Module alias "spi:93xx46" is used by non device tree users like
-drivers/misc/eeprom/digsy_mtc_eeprom.c  and removing it will
-break support for them.
+link_id can be zero and if we have multiple controller instances
+in a system like Qualcomm debugfs will end-up with duplicate namespace
+resulting in incorrect debugfs entries.
 
-Fix this by adding back the module alias "spi:93xx46".
+Using id should give a unique debugfs directory entry and should fix below
+warning too.
+"debugfs: Directory 'master-0' with parent 'soundwire' already present!"
 
-Fixes: 13613a2246bf ("misc: eeprom_93xx46: Fix module alias to enable module autoprobe")
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-Link: https://lore.kernel.org/r/20210113051253.15061-1-a-govindraju@ti.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bf03473d5bcc ("soundwire: add debugfs support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210115162559.20869-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/eeprom/eeprom_93xx46.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/soundwire/debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index 206d920dc92fc..d92c4d2c521a3 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -511,4 +511,5 @@ module_spi_driver(eeprom_93xx46_driver);
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Driver for 93xx46 EEPROMs");
- MODULE_AUTHOR("Anatolij Gustschin <agust@denx.de>");
-+MODULE_ALIAS("spi:93xx46");
- MODULE_ALIAS("spi:eeprom-93xx46");
+diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
+index b6cad0d59b7b9..5f9efa42bb25b 100644
+--- a/drivers/soundwire/debugfs.c
++++ b/drivers/soundwire/debugfs.c
+@@ -19,7 +19,7 @@ void sdw_bus_debugfs_init(struct sdw_bus *bus)
+ 		return;
+ 
+ 	/* create the debugfs master-N */
+-	snprintf(name, sizeof(name), "master-%d", bus->link_id);
++	snprintf(name, sizeof(name), "master-%d", bus->id);
+ 	bus->debugfs = debugfs_create_dir(name, sdw_debugfs_root);
+ }
+ 
 -- 
 2.27.0
 
