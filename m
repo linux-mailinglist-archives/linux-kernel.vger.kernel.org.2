@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BD0329A86
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B750F329B25
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377807AbhCBAsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:48:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55414 "EHLO mail.kernel.org"
+        id S1378638AbhCBBHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:07:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240467AbhCASrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:47:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B3064EE6;
-        Mon,  1 Mar 2021 17:13:19 +0000 (UTC)
+        id S240829AbhCATEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:04:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 076FB64F19;
+        Mon,  1 Mar 2021 17:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618800;
-        bh=Zx9LDLiJDNi9Yp+SxQtDzp5TmEwpvydW9I5sVx36m6A=;
+        s=korg; t=1614620938;
+        bh=+IA0ZHPuzJBaqRZ9zOCHZV/2j0Z4VkXmvnvo/PPdHEk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dQ0/WQm78xw6Lz+7hwpJjvbtheOnbBLQPMnmm4lt8mxJM/tWD6PGU3oRvy7PHOYrl
-         7IraSDeVgx7f1gbxH65GC8l0NfIxzlij7KnJ/xswqPByU0CPDjRzuER10Rxb3QSitL
-         xi6zN5MC7n7clTvRjY9d4IvTnBedIzbtVed+hRp4=
+        b=lOm+zfKeAF5M634WoBb6gO4RNygFBTIzxVZKCwO6UuKNzmnZ+uCOi3j3GO7SKjCCV
+         0ADrHkqlHwZk7BZJg9BI1Ft4+s3CkNUW3P5mNN/Ju/QAWQp+khR2yNM4G+o4R//UMq
+         rlV0R8RNuBSC3lCdaVkbkIeEX5yvumZWJIRj50fU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 221/663] locking/lockdep: Avoid unmatched unlock
-Date:   Mon,  1 Mar 2021 17:07:49 +0100
-Message-Id: <20210301161152.730348458@linuxfoundation.org>
+Subject: [PATCH 5.11 304/775] Input: imx_keypad - add dependency on HAS_IOMEM
+Date:   Mon,  1 Mar 2021 17:07:52 +0100
+Message-Id: <20210301161216.641677153@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit 7f82e631d236cafd28518b998c6d4d8dc2ef68f6 ]
+[ Upstream commit f5cace4b93d736cef348211ae0814cabdd26d86a ]
 
-Commit f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI"
-inversions") overlooked that print_usage_bug() releases the graph_lock
-and called it without the graph lock held.
+devm_platform_ioremap_resource() depends on CONFIG_HAS_IOMEM, so let's add
+it to the dependencies when COMPILE_TEST is enabled.
 
-Fixes: f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI" inversions")
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lkml.kernel.org/r/YBfkuyIfB1+VRxXP@hirez.programming.kicks-ass.net
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: c8834032ffe2 ("Input: imx_keypad - add COMPILE_TEST support")
+Link: https://lore.kernel.org/r/X9llpA3w1zlZCHXU@google.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/lockdep.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/input/keyboard/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index bdaf4829098c0..780012eb2f3fe 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -3707,7 +3707,7 @@ static void
- print_usage_bug(struct task_struct *curr, struct held_lock *this,
- 		enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
- {
--	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-+	if (!debug_locks_off() || debug_locks_silent)
- 		return;
+diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfig
+index 2b321c17054ad..94eab82086b27 100644
+--- a/drivers/input/keyboard/Kconfig
++++ b/drivers/input/keyboard/Kconfig
+@@ -446,7 +446,7 @@ config KEYBOARD_MPR121
  
- 	pr_warn("\n");
-@@ -3748,6 +3748,7 @@ valid_state(struct task_struct *curr, struct held_lock *this,
- 	    enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
- {
- 	if (unlikely(hlock_class(this)->usage_mask & (1 << bad_bit))) {
-+		graph_unlock();
- 		print_usage_bug(curr, this, bad_bit, new_bit);
- 		return 0;
- 	}
+ config KEYBOARD_SNVS_PWRKEY
+ 	tristate "IMX SNVS Power Key Driver"
+-	depends on ARCH_MXC || COMPILE_TEST
++	depends on ARCH_MXC || (COMPILE_TEST && HAS_IOMEM)
+ 	depends on OF
+ 	help
+ 	  This is the snvs powerkey driver for the Freescale i.MX application
 -- 
 2.27.0
 
