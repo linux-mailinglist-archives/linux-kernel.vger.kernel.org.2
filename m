@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC8032998B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8FD32994C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376293AbhCBAWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:22:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
+        id S245427AbhCBAJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:09:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239855AbhCAS0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:26:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A76C65141;
-        Mon,  1 Mar 2021 17:04:24 +0000 (UTC)
+        id S239755AbhCASUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:20:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC37E652F0;
+        Mon,  1 Mar 2021 17:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618265;
-        bh=LVJYJzYCHt8LMM75mc3z4G7uDAWBdRJ5QNQtzGSA9Sk=;
+        s=korg; t=1614620395;
+        bh=QaNgJiOkigIibnNgNVhZ1DM46i6nsIWKmFiVKhSXCac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ggPQPCUC79NgBtf5BpO4MAirhA+zgbA/CIXvCPPwt1pxBSOJ0z/BmvQX7/hQn46+V
-         iX5WGKfZKfuYS+1R1mUhX5jLF0X9MiIhG1psaK+se0tHTXO8mEMVT2fKeMRRZNAr5V
-         45YUHu2u/7z1SY5Gvm63Swq3u7Q24HfDa3p6x68c=
+        b=Eq4uQx1JliWcpr3ygMxPaMEpa2v+GTzTYoq1iVOKaD8gHOSSJz2rDq9IfmOHOSVY0
+         Pxq7JsAG0VmQhhdZeeV5EJU1ZuPyPtlwZ+OaOzAYPsiF2lRG7MR/eYXiPBIEzx1bDM
+         /cfoFtO3v1MiKzvASuAfPIPHx5692K8RHocH+VBk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christopher William Snowhill <chris@kode54.net>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 024/663] Bluetooth: Fix initializing response id after clearing struct
-Date:   Mon,  1 Mar 2021 17:04:32 +0100
-Message-Id: <20210301161142.990040724@linuxfoundation.org>
+Subject: [PATCH 5.11 107/775] net/mlx5e: Change interrupt moderation channel params also when channels are closed
+Date:   Mon,  1 Mar 2021 17:04:35 +0100
+Message-Id: <20210301161206.949619302@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christopher William Snowhill <chris@kode54.net>
+From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-[ Upstream commit a5687c644015a097304a2e47476c0ecab2065734 ]
+[ Upstream commit 65ba8594a238c20e458b3d2d39d91067cbffd0b1 ]
 
-Looks like this was missed when patching the source to clear the structures
-throughout, causing this one instance to clear the struct after the response
-id is assigned.
+struct mlx5e_params contains fields ({rx,tx}_cq_moderation) that depend
+on two things: whether DIM is enabled and the state of a private flag
+(MLX5E_PFLAG_{RX,TX}_CQE_BASED_MODER). Whenever the DIM state changes,
+mlx5e_reset_{rx,tx}_moderation is called to update the fields, however,
+only if the channels are open. The flow where the channels are closed
+misses the required update of the fields. This commit moves the calls of
+mlx5e_reset_{rx,tx}_moderation, so that they run in both flows.
 
-Fixes: eddb7732119d ("Bluetooth: A2MP: Fix not initializing all members")
-Signed-off-by: Christopher William Snowhill <chris@kode54.net>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: ebeaf084ad5c ("net/mlx5e: Properly set default values when disabling adaptive moderation")
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/a2mp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 29 +++++++++----------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
 
-diff --git a/net/bluetooth/a2mp.c b/net/bluetooth/a2mp.c
-index da7fd7c8c2dc0..cc26e4c047ad0 100644
---- a/net/bluetooth/a2mp.c
-+++ b/net/bluetooth/a2mp.c
-@@ -381,9 +381,9 @@ static int a2mp_getampassoc_req(struct amp_mgr *mgr, struct sk_buff *skb,
- 	hdev = hci_dev_get(req->id);
- 	if (!hdev || hdev->amp_type == AMP_TYPE_BREDR || tmp) {
- 		struct a2mp_amp_assoc_rsp rsp;
--		rsp.id = req->id;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index d7ff5fa45cb7d..8612c388db7d3 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -597,24 +597,9 @@ int mlx5e_ethtool_set_coalesce(struct mlx5e_priv *priv,
+ 	tx_moder->pkts    = coal->tx_max_coalesced_frames;
+ 	new_channels.params.tx_dim_enabled = !!coal->use_adaptive_tx_coalesce;
  
- 		memset(&rsp, 0, sizeof(rsp));
-+		rsp.id = req->id;
+-	if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
+-		priv->channels.params = new_channels.params;
+-		goto out;
+-	}
+-	/* we are opened */
+-
+ 	reset_rx = !!coal->use_adaptive_rx_coalesce != priv->channels.params.rx_dim_enabled;
+ 	reset_tx = !!coal->use_adaptive_tx_coalesce != priv->channels.params.tx_dim_enabled;
  
- 		if (tmp) {
- 			rsp.status = A2MP_STATUS_COLLISION_OCCURED;
+-	if (!reset_rx && !reset_tx) {
+-		if (!coal->use_adaptive_rx_coalesce)
+-			mlx5e_set_priv_channels_rx_coalesce(priv, coal);
+-		if (!coal->use_adaptive_tx_coalesce)
+-			mlx5e_set_priv_channels_tx_coalesce(priv, coal);
+-		priv->channels.params = new_channels.params;
+-		goto out;
+-	}
+-
+ 	if (reset_rx) {
+ 		u8 mode = MLX5E_GET_PFLAG(&new_channels.params,
+ 					  MLX5E_PFLAG_RX_CQE_BASED_MODER);
+@@ -628,6 +613,20 @@ int mlx5e_ethtool_set_coalesce(struct mlx5e_priv *priv,
+ 		mlx5e_reset_tx_moderation(&new_channels.params, mode);
+ 	}
+ 
++	if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
++		priv->channels.params = new_channels.params;
++		goto out;
++	}
++
++	if (!reset_rx && !reset_tx) {
++		if (!coal->use_adaptive_rx_coalesce)
++			mlx5e_set_priv_channels_rx_coalesce(priv, coal);
++		if (!coal->use_adaptive_tx_coalesce)
++			mlx5e_set_priv_channels_tx_coalesce(priv, coal);
++		priv->channels.params = new_channels.params;
++		goto out;
++	}
++
+ 	err = mlx5e_safe_switch_channels(priv, &new_channels, NULL, NULL);
+ 
+ out:
 -- 
 2.27.0
 
