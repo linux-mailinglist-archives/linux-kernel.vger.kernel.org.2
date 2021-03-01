@@ -2,150 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D67329E0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:09:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4643329E0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444633AbhCBCn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:43:27 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:58698 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236756AbhCAUA7 (ORCPT
+        id S1444598AbhCBCnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:43:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241330AbhCAUAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:00:59 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 121Jx3gc065931;
-        Mon, 1 Mar 2021 13:59:03 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614628743;
-        bh=yX235py4lsuHYQMcBJoeKHKBddzzWHzzpOa88S2YOFY=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Qqt0k53Ops3keeBuyEYUyQ7/E8yKZYchtWByDqwMq2JkEysHbybtATheSue+/zbvK
-         ba09VY3XnMF8lb8mrZ33zzA4yBB9OOtfqt2CfKgIJXb+hDg1o0G9gwPDlqDoUBtXs2
-         qmNht0OLCplw07XqJLNP3zwsi/xnkUzOEOG3UZvQ=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 121Jx2iv038592
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 1 Mar 2021 13:59:03 -0600
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 1 Mar
- 2021 13:59:02 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 1 Mar 2021 13:59:02 -0600
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 121JwpIM058503;
-        Mon, 1 Mar 2021 13:59:00 -0600
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH 3/3] arm64: dts: ti: k3-j7200-som-p0: Add nodes for OSPI0
-Date:   Tue, 2 Mar 2021 01:28:50 +0530
-Message-ID: <20210301195850.31868-4-p.yadav@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210301195850.31868-1-p.yadav@ti.com>
-References: <20210301195850.31868-1-p.yadav@ti.com>
+        Mon, 1 Mar 2021 15:00:15 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684C1C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 11:59:04 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id z13so19137913iox.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 11:59:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QP0lfpyl4j3iabI8oLYVZHEGp/CCtjlP1LZcsB8l3xs=;
+        b=Tawe4UwJvceLRDwdA9DCQtkns6tyom6mHo1CkksI3vxWKthOSXJHOZheMcnBX7wyxh
+         MwGBSIfN6fhtnqhCXaBKKw3z9wboBJwaF/SNyLGUEyDd5Nzf4DlTAZ2qeVOgTtEP5AKY
+         xuv3SoKD553fL0R3sWZkmN3DWkh4XTm5dxzfDmvP5zipDtOhYs/iNmVCb9Q2t8ZQYJN6
+         5XErONSn8/XG7fdSrDZHC67XWQusyW+17OVw2CXb1o6ulDHCT/anSByPKoSUt6j8iqTu
+         cif3fmsEinYzos+u9ujtwIg3lMggdTSa17j4klc8aqztF6Y5ExQx6GZGODJktBHs2Qe0
+         Nalg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QP0lfpyl4j3iabI8oLYVZHEGp/CCtjlP1LZcsB8l3xs=;
+        b=RdGOx0VNi17urDlXFfnhP2gp6MnZQlTh/opw0QStwAt96w6DkXgefkPSqlTmmu05Zd
+         u79RPPZBB9C/faxpXUjV++5OCtDoT5RpHHy0yi3ehXrivA//IFFUZLBF6A4ymgEohczZ
+         OTtie7zOZqy6BRDgxt4hwbj/CXtzGFUA/zF6z+AFXRNmLQSi4E5a5ef4jpQ0Bbqe2IKZ
+         TLzGFcb4Pq4F6TfGL373zobKVy1ssz7FTgIwC3UyRSHzooFwHORHQAgJAKdgO+T7jOlz
+         wVuRKnunaAzCj1vWAyZaebW4gK76gFejNCCWQ0oL/r6eeQued42CSw+Z8I7/8r114Iqp
+         3XvA==
+X-Gm-Message-State: AOAM533aoAt9ZJXc+jIMZPu7+TuH82r56Wu0JqipYFMHIWSaEsHf4xtU
+        2tU4J4ndqLJHjGr9kizRF4hWjg==
+X-Google-Smtp-Source: ABdhPJyOVQgRghJvvC/kWUutrk7mLxzGCyEOp4HgXW8D81m6u5kNVFTrWT9v29xnD/H+nIyKuP5sEQ==
+X-Received: by 2002:a02:93e9:: with SMTP id z96mr17707053jah.73.1614628743734;
+        Mon, 01 Mar 2021 11:59:03 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:c02f:2525:d61c:5fca])
+        by smtp.gmail.com with ESMTPSA id q4sm10469668iob.52.2021.03.01.11.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 11:59:03 -0800 (PST)
+Date:   Mon, 1 Mar 2021 12:58:58 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
+        alex.shi@linux.alibaba.com, vbabka@suse.cz, guro@fb.com,
+        hannes@cmpxchg.org, hughd@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mhocko@kernel.org, vdavydov.dev@gmail.com
+Subject: Re: [PATCH v2 3/3] mm: use PF_ONLY_HEAD for PG_active and
+ PG_unevictable
+Message-ID: <YD1HgmERg3/LuApe@google.com>
+References: <20210224084807.2179942-1-yuzhao@google.com>
+ <20210226091718.2927291-1-yuzhao@google.com>
+ <20210226091718.2927291-4-yuzhao@google.com>
+ <20210226121314.GB2723601@casper.infradead.org>
+ <20210301115007.mgw5vthgjoibnjf4@box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301115007.mgw5vthgjoibnjf4@box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TI J7200 has the Cadence OSPI controller for interfacing with OSPI
-flashes. Add its node to allow using SPI flashes.
+On Mon, Mar 01, 2021 at 02:50:07PM +0300, Kirill A. Shutemov wrote:
+> On Fri, Feb 26, 2021 at 12:13:14PM +0000, Matthew Wilcox wrote:
+> > On Fri, Feb 26, 2021 at 02:17:18AM -0700, Yu Zhao wrote:
+> > > All places but one test, set or clear PG_active and PG_unevictable on
+> > > small or head pages. Use compound_head() explicitly for that singleton
+> > > so the rest can rid of redundant compound_head().
+> > 
+> > How do you know it's only one place?  I really wish you'd work with me
+> > on folios.  They make the compiler prove that it's not a tail page.
+> 
+> +1 to this.
+> 
+> The problem with compound_head() is systemic and ad-hoc solution to few
+> page flags will only complicate the picture.
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 17 +++++++++
- arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi   | 36 +++++++++++++++++++
- 2 files changed, 53 insertions(+)
+Well, I call it an incremental improvement, and how exactly does it
+complicate the picture?
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-index 359e3e8a8cd0..5408ec815d58 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
-@@ -269,6 +269,23 @@ hbmc: hyperbus@47034000 {
- 			#size-cells = <1>;
- 			mux-controls = <&hbmc_mux 0>;
- 		};
-+
-+		ospi0: spi@47040000 {
-+			compatible = "ti,am654-ospi";
-+			reg = <0x0 0x47040000 0x0 0x100>,
-+			      <0x5 0x00000000 0x1 0x0000000>;
-+			interrupts = <GIC_SPI 840 IRQ_TYPE_LEVEL_HIGH>;
-+			cdns,fifo-depth = <256>;
-+			cdns,fifo-width = <4>;
-+			cdns,trigger-address = <0x0>;
-+			clocks = <&k3_clks 103 0>;
-+			assigned-clocks = <&k3_clks 103 0>;
-+			assigned-clock-parents = <&k3_clks 103 2>;
-+			assigned-clock-rates = <166666666>;
-+			power-domains = <&k3_pds 103 TI_SCI_PD_EXCLUSIVE>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+		};
- 	};
- 
- 	tscadc0: tscadc@40200000 {
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-index a988e2ab2ba1..effecf852139 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
-@@ -100,6 +100,22 @@ J721E_WKUP_IOPAD(0x24, PIN_INPUT, 1) /* (A8) MCU_OSPI0_D6.MCU_HYPERBUS0_DQ6 */
- 			J721E_WKUP_IOPAD(0x28, PIN_INPUT, 1) /* (A7) MCU_OSPI0_D7.MCU_HYPERBUS0_DQ7 */
- 		>;
- 	};
-+
-+	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins-default {
-+		pinctrl-single,pins = <
-+			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_OSPI0_CLK */
-+			J721E_WKUP_IOPAD(0x002c, PIN_OUTPUT, 0) /* MCU_OSPI0_CSn0 */
-+			J721E_WKUP_IOPAD(0x000c, PIN_INPUT, 0)  /* MCU_OSPI0_D0 */
-+			J721E_WKUP_IOPAD(0x0010, PIN_INPUT, 0)  /* MCU_OSPI0_D1 */
-+			J721E_WKUP_IOPAD(0x0014, PIN_INPUT, 0)  /* MCU_OSPI0_D2 */
-+			J721E_WKUP_IOPAD(0x0018, PIN_INPUT, 0)  /* MCU_OSPI0_D3 */
-+			J721E_WKUP_IOPAD(0x001c, PIN_INPUT, 0)  /* MCU_OSPI0_D4 */
-+			J721E_WKUP_IOPAD(0x0020, PIN_INPUT, 0)  /* MCU_OSPI0_D5 */
-+			J721E_WKUP_IOPAD(0x0024, PIN_INPUT, 0)  /* MCU_OSPI0_D6 */
-+			J721E_WKUP_IOPAD(0x0028, PIN_INPUT, 0)  /* MCU_OSPI0_D7 */
-+			J721E_WKUP_IOPAD(0x0008, PIN_INPUT_PULLDOWN, 0)  /* MCU_OSPI0_DQS */
-+		>;
-+	};
- };
- 
- &main_pmx0 {
-@@ -235,3 +251,23 @@ exp_som: gpio@21 {
- 				  "GPIO_LIN_EN", "CAN_STB";
- 	};
- };
-+
-+&ospi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
-+
-+	flash@0{
-+		compatible = "jedec,spi-nor";
-+		reg = <0x0>;
-+		spi-tx-bus-width = <8>;
-+		spi-rx-bus-width = <8>;
-+		spi-max-frequency = <25000000>;
-+		cdns,tshsl-ns = <60>;
-+		cdns,tsd2d-ns = <60>;
-+		cdns,tchsh-ns = <60>;
-+		cdns,tslch-ns = <60>;
-+		cdns,read-delay = <4>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+	};
-+};
--- 
-2.30.0
-
+I see your point: you prefer a complete replacement. But my point is
+not about the preference; it's about presenting an option: I'm not
+saying we have to go with this series; I'm saying if you don't want
+to wait, here is something quick but not perfect.
