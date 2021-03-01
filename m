@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669EC329CF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5512E329CF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442645AbhCBCO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:14:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53016 "EHLO mail.kernel.org"
+        id S1442661AbhCBCPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:15:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241628AbhCATlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:41:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B0565220;
-        Mon,  1 Mar 2021 17:23:10 +0000 (UTC)
+        id S241800AbhCATmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:42:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B04E265059;
+        Mon,  1 Mar 2021 17:23:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619390;
-        bh=5TRILHPSNQSwrpi3C8zRzh0O7vUD3+hc0Itf3G1ZPko=;
+        s=korg; t=1614619402;
+        bh=EO+8u2DxYYrNicYfK2R+0Q76c4AZJtVdWi3S8dv55iE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=he1o/ZHXh7wi9qASLfoG15UHHi/ybeISp2S6L1r5ORWTiwGDns7cnJSxASA0ZabhI
-         lnzaiv9C9kndTFn8nv3Kc9CTgwTy+sleUSFTlOS8bPF4H8f6yWDZw4Y4b+mVL2NjR1
-         yeRd/fmtYkt5WtGQU7W5obSGre3uktZuBvoK+Lq4=
+        b=RHSZOMveUo5LPXCkMXR6a8sjXULca0G+Fypb0pMwiAqbIY+iPpSXOhJ/6BNTGwsyR
+         C7GducSIDEqgsB2fpQtqaun07hC1pRqxfZT5xyy4IO6zQSa9MemrQY/uBZeolBlMqn
+         4M4z164MkfVcWGFZEK9ANWsENdWCyFuwq0BmvqaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 438/663] i40e: Fix VFs not created
-Date:   Mon,  1 Mar 2021 17:11:26 +0100
-Message-Id: <20210301161203.564850032@linuxfoundation.org>
+Subject: [PATCH 5.10 442/663] octeontx2-af: Fix an off by one in rvu_dbg_qsize_write()
+Date:   Mon,  1 Mar 2021 17:11:30 +0100
+Message-Id: <20210301161203.768226053@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,50 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit dc8812626440fa6a27f1f3f654f6dc435e042e42 ]
+[ Upstream commit 3a2eb515d1367c0f667b76089a6e727279c688b8 ]
 
-When creating VFs they were sometimes not getting resources.
-It was caused by not executing i40e_reset_all_vfs due to
-flag __I40E_VF_DISABLE being set on PF. Because of this
-IAVF was never able to finish setup sequence never
-getting reset indication from PF.
-Changed test_and_set_bit __I40E_VF_DISABLE in
-i40e_sync_filters_subtask to test_bit and removed clear_bit.
-This function should not set this bit it should only check
-if it hasn't been already set.
+This code does not allocate enough memory for the NUL terminator so it
+ends up putting it one character beyond the end of the buffer.
 
-Fixes: a7542b876075 ("i40e: check __I40E_VF_DISABLE bit in i40e_sync_filters_subtask")
-Signed-off-by: Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 8756828a8148 ("octeontx2-af: Add NPA aura and pool contexts to debugfs")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index b268adb3e1d44..3ca5644785556 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -2616,7 +2616,7 @@ static void i40e_sync_filters_subtask(struct i40e_pf *pf)
- 		return;
- 	if (!test_and_clear_bit(__I40E_MACVLAN_SYNC_PENDING, pf->state))
- 		return;
--	if (test_and_set_bit(__I40E_VF_DISABLE, pf->state)) {
-+	if (test_bit(__I40E_VF_DISABLE, pf->state)) {
- 		set_bit(__I40E_MACVLAN_SYNC_PENDING, pf->state);
- 		return;
- 	}
-@@ -2634,7 +2634,6 @@ static void i40e_sync_filters_subtask(struct i40e_pf *pf)
- 			}
- 		}
- 	}
--	clear_bit(__I40E_VF_DISABLE, pf->state);
- }
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+index 77adad4adb1bc..809f50ab0432e 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+@@ -332,7 +332,7 @@ static ssize_t rvu_dbg_qsize_write(struct file *filp,
+ 	u16 pcifunc;
+ 	int ret, lf;
  
- /**
+-	cmd_buf = memdup_user(buffer, count);
++	cmd_buf = memdup_user(buffer, count + 1);
+ 	if (IS_ERR(cmd_buf))
+ 		return -ENOMEM;
+ 
 -- 
 2.27.0
 
