@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564E4328C49
+	by mail.lfdr.de (Postfix) with ESMTP id C8413328C4A
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240613AbhCASsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:48:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46814 "EHLO mail.kernel.org"
+        id S240641AbhCASsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:48:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235132AbhCAQnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235153AbhCAQnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:43:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1B9064F45;
-        Mon,  1 Mar 2021 16:29:49 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C254364F47;
+        Mon,  1 Mar 2021 16:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616190;
-        bh=n51F1MoN36qtB0JkCbdX+vfS5gpEkfHxqyNDS/heVHE=;
+        s=korg; t=1614616193;
+        bh=I+/Qt8wNvswLieb34kwTLegTpmM9jm2d6FVTDqfsMpo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1mh0kIVTvUV4XVcOmruWXqM7HJJSKNG/DNq9APcPyujSAMNk7SmE6gur/PuYS0O5W
-         BQwrui5RB1GLxRn/2dTkjyhbQ2Ref6LlNOcqFH/2cfcLUg1LUHH6yjLr5PERSe23EA
-         MeEk9jXz3vRuucDlD27Z3GpTwLDAFkR+zOVwcWYE=
+        b=U6YpS5OSNnlOzjdp4+R2Rr+BzJFXh0gI4dmyUV5nE3US7NRSAgYZ+hC+espJsWDZq
+         yxxppoziy2B37+EIm6nfJtoGZxoYnW88wBMdLSgYzRRclkW5feZ1RQcDq5HmTkeLSw
+         Kjiz7JjtCwNxI4MgD3r4kd73r8UqchYlQNh2cp9Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 035/176] mac80211: fix potential overflow when multiplying to u32 integers
-Date:   Mon,  1 Mar 2021 17:11:48 +0100
-Message-Id: <20210301161022.721373161@linuxfoundation.org>
+Subject: [PATCH 4.14 036/176] b43: N-PHY: Fix the update of coef for the PHY revision >= 3case
+Date:   Mon,  1 Mar 2021 17:11:49 +0100
+Message-Id: <20210301161022.775861097@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -42,36 +43,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 6194f7e6473be78acdc5d03edd116944bdbb2c4e ]
+[ Upstream commit 4773acf3d4b50768bf08e9e97a204819e9ea0895 ]
 
-The multiplication of the u32 variables tx_time and estimated_retx is
-performed using a 32 bit multiplication and the result is stored in
-a u64 result. This has a potential u32 overflow issue, so avoid this
-by casting tx_time to a u64 to force a 64 bit multiply.
+The documentation for the PHY update [1] states:
 
-Addresses-Coverity: ("Unintentional integer overflow")
-Fixes: 050ac52cbe1f ("mac80211: code for on-demand Hybrid Wireless Mesh Protocol")
+Loop 4 times with index i
+
+    If PHY Revision >= 3
+        Copy table[i] to coef[i]
+    Otherwise
+        Set coef[i] to 0
+
+the copy of the table to coef is currently implemented the wrong way
+around, table is being updated from uninitialized values in coeff.
+Fix this by swapping the assignment around.
+
+[1] https://bcm-v4.sipsolutions.net/802.11/PHY/N/RestoreCal/
+
+Fixes: 2f258b74d13c ("b43: N-PHY: implement restoring general configuration")
+Addresses-Coverity: ("Uninitialized scalar variable")
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210205175352.208841-1-colin.king@canonical.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mesh_hwmp.c | 2 +-
+ drivers/net/wireless/broadcom/b43/phy_n.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/mesh_hwmp.c b/net/mac80211/mesh_hwmp.c
-index fe65701fe95cc..f57232bcd4057 100644
---- a/net/mac80211/mesh_hwmp.c
-+++ b/net/mac80211/mesh_hwmp.c
-@@ -355,7 +355,7 @@ static u32 airtime_link_metric_get(struct ieee80211_local *local,
- 	 */
- 	tx_time = (device_constant + 10 * test_frame_len / rate);
- 	estimated_retx = ((1 << (2 * ARITH_SHIFT)) / (s_unit - err));
--	result = (tx_time * estimated_retx) >> (2 * ARITH_SHIFT);
-+	result = ((u64)tx_time * estimated_retx) >> (2 * ARITH_SHIFT);
- 	return (u32)result;
- }
+diff --git a/drivers/net/wireless/broadcom/b43/phy_n.c b/drivers/net/wireless/broadcom/b43/phy_n.c
+index a5557d70689f4..d1afa74aa144b 100644
+--- a/drivers/net/wireless/broadcom/b43/phy_n.c
++++ b/drivers/net/wireless/broadcom/b43/phy_n.c
+@@ -5320,7 +5320,7 @@ static void b43_nphy_restore_cal(struct b43_wldev *dev)
  
+ 	for (i = 0; i < 4; i++) {
+ 		if (dev->phy.rev >= 3)
+-			table[i] = coef[i];
++			coef[i] = table[i];
+ 		else
+ 			coef[i] = 0;
+ 	}
 -- 
 2.27.0
 
