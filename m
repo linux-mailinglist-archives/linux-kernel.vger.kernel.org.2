@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB415329A20
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCC7329AC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377010AbhCBApO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:45:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51242 "EHLO mail.kernel.org"
+        id S1348462AbhCBBCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:02:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240490AbhCASjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:39:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9568D65032;
-        Mon,  1 Mar 2021 17:18:13 +0000 (UTC)
+        id S240458AbhCASxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:53:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6A48650D5;
+        Mon,  1 Mar 2021 17:51:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619094;
-        bh=x18AH+143zRmXxCQ8KCJrmLRxdhILfhcwkfJ3C4yT1g=;
+        s=korg; t=1614621061;
+        bh=uP7mQNgwM7Rbwp/Ix+ydTucyo811l6od4IsmZCIrln8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LYQn95giqLEBTy0w5mK3ccKgC/tBh5dMraZZEoOf29DHf0xnFYp8xjdwF523hV2qy
-         HfdIBlUhQ72qAGXLJ9uVAHB9NzYIy5/V3he2nF4oSCjVpBWF+BgH2PzZgB7pvRZE03
-         iuq/hrZqZ3x8NvbY5lUeJjW1ecy8n827XQhXMKbU=
+        b=No28HAgVWr4HxUzt+UilebUWaJg/1eZBpLgJtmxSDpKXPCzNF62S+k9IUwD+dNO3K
+         kdUc6YDrDFFR4gZUEbNCiw3aJdcR/g0F1yp0HdX8qH9sNt88UxL8GWEi0fSaqdv4W+
+         IYTGqb1ctNLcxoVZHxx/9G8O5cevJ3GdHAIAPLXE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 299/663] clocksource/drivers/mxs_timer: Add missing semicolon when DEBUG is defined
-Date:   Mon,  1 Mar 2021 17:09:07 +0100
-Message-Id: <20210301161156.626679123@linuxfoundation.org>
+Subject: [PATCH 5.11 380/775] objtool: Fix error handling for STD/CLD warnings
+Date:   Mon,  1 Mar 2021 17:09:08 +0100
+Message-Id: <20210301161220.382803906@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 7da390694afbaed8e0f05717a541dfaf1077ba51 ]
+[ Upstream commit 6f567c9300a5ebd7b18c26dda1c8d6ffbdd0debd ]
 
-When DEBUG is defined this error occurs
+Actually return an error (and display a backtrace, if requested) for
+directional bit warnings.
 
-drivers/clocksource/mxs_timer.c:138:1: error:
-  expected ‘;’ before ‘}’ token
-
-The preceding statement needs a semicolon.
-Replace pr_info() with pr_debug() and remove the unneeded ifdef.
-
-Fixes: eb8703e2ef7c ("clockevents/drivers/mxs: Migrate to new 'set-state' interface")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210118211955.763609-1-trix@redhat.com
+Fixes: 2f0f9e9ad7b3 ("objtool: Add Direction Flag validation")
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lore.kernel.org/r/dc70f2adbc72f09526f7cab5b6feb8bf7f6c5ad4.1611263461.git.jpoimboe@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/mxs_timer.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ tools/objtool/check.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clocksource/mxs_timer.c b/drivers/clocksource/mxs_timer.c
-index bc96a4cbf26c6..e52e12d27d2aa 100644
---- a/drivers/clocksource/mxs_timer.c
-+++ b/drivers/clocksource/mxs_timer.c
-@@ -131,10 +131,7 @@ static void mxs_irq_clear(char *state)
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 4bd30315eb62b..2e154f00ccec2 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2592,15 +2592,19 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 			break;
  
- 	/* Clear pending interrupt */
- 	timrot_irq_acknowledge();
--
--#ifdef DEBUG
--	pr_info("%s: changing mode to %s\n", __func__, state)
--#endif /* DEBUG */
-+	pr_debug("%s: changing mode to %s\n", __func__, state);
- }
+ 		case INSN_STD:
+-			if (state.df)
++			if (state.df) {
+ 				WARN_FUNC("recursive STD", sec, insn->offset);
++				return 1;
++			}
  
- static int mxs_shutdown(struct clock_event_device *evt)
+ 			state.df = true;
+ 			break;
+ 
+ 		case INSN_CLD:
+-			if (!state.df && func)
++			if (!state.df && func) {
+ 				WARN_FUNC("redundant CLD", sec, insn->offset);
++				return 1;
++			}
+ 
+ 			state.df = false;
+ 			break;
 -- 
 2.27.0
 
