@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CF1329C07
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 675E7329C8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345840AbhCBBql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:46:41 -0500
-Received: from mga04.intel.com ([192.55.52.120]:41210 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236332AbhCATWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:22:33 -0500
-IronPort-SDR: 7R0A/rd9L2LsHIfJEcAuf/cBCNtEpe0Db0HAeVS1q1ixvQKD/ICvrzSGma17WUkZFhQM+ReA0f
- npnAsxiyY6DQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="184133972"
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="184133972"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 11:19:29 -0800
-IronPort-SDR: arpXN5RRLSPAWd7Ewkk+EhwhjGceiKoQQv9gwC8a/X5MwhfJoyKI9NwYxVPOue0QH+fpzyROyC
- a3AGBNWtfjMA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="427031988"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.76])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Mar 2021 11:19:27 -0800
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH] scsi: ufs: Fix incorrect ufshcd_state after ufshcd_reset_and_restore()
-Date:   Mon,  1 Mar 2021 21:19:40 +0200
-Message-Id: <20210301191940.15247-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S1380944AbhCBB4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:56:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241720AbhCATdR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:33:17 -0500
+X-Greylist: delayed 415 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 01 Mar 2021 11:32:37 PST
+Received: from mail.itouring.de (mail.itouring.de [IPv6:2a01:4f8:a0:4463::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EFBC06178A;
+        Mon,  1 Mar 2021 11:32:37 -0800 (PST)
+Received: from tux.applied-asynchrony.com (p5b07e8e5.dip0.t-ipconnect.de [91.7.232.229])
+        by mail.itouring.de (Postfix) with ESMTPSA id CC97E11DD5E;
+        Mon,  1 Mar 2021 20:24:39 +0100 (CET)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id 31D37F0161B;
+        Mon,  1 Mar 2021 20:24:39 +0100 (CET)
+Subject: Re: [PATCH 5.10 000/663] 5.10.20-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210301161141.760350206@linuxfoundation.org>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <07d44f9a-4789-3f7a-20af-67a05b93e15e@applied-asynchrony.com>
+Date:   Mon, 1 Mar 2021 20:24:39 +0100
+MIME-Version: 1.0
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If ufshcd_probe_hba() fails it sets ufshcd_state to UFSHCD_STATE_ERROR,
-however, if it is called again, as it is within a loop in
-ufshcd_reset_and_restore(), and succeeds, then it will not set the state
-back to UFSHCD_STATE_OPERATIONAL unless the state was
-UFSHCD_STATE_RESET.
+On 2021-03-01 17:04, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.20 release.
 
-That can result in the state being UFSHCD_STATE_ERROR even though
-ufshcd_reset_and_restore() is successful and returns zero.
+Since this is a big update I gave it a try on my two older SandyBridge
+server/desktop systems and a Lenovo AMD Ryzen7 laptop.
+Good news: all three still humming along nicely.
 
-Fix by initializing the state to UFSHCD_STATE_RESET in the start of each
-loop in ufshcd_reset_and_restore().  If there is an error,
-ufshcd_reset_and_restore() will change the state to UFSHCD_STATE_ERROR,
-otherwise ufshcd_probe_hba() will have set the state appropriately.
+Thanks!
 
-Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler and other error recovery paths")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/scsi/ufs/ufshcd.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 77161750c9fb..91a403afe038 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -7031,6 +7031,8 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba)
- 	spin_unlock_irqrestore(hba->host->host_lock, flags);
- 
- 	do {
-+		hba->ufshcd_state = UFSHCD_STATE_RESET;
-+
- 		/* Reset the attached device */
- 		ufshcd_device_reset(hba);
- 
--- 
-2.17.1
-
+-h
