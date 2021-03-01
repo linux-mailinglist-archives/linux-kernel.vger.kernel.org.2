@@ -2,136 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58315329BBE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A23329BA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:16:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379492AbhCBB3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:29:07 -0500
-Received: from mga17.intel.com ([192.55.52.151]:64757 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241003AbhCATQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:16:23 -0500
-IronPort-SDR: GsTuTHm/5rWl3aL4agKeKtchqZauU35HTE88xwdsskHBeJaD8FYmrAvBWElWr1EGcAmyZsGoKI
- 1rADKJnWZaiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="166449034"
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="166449034"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 11:12:48 -0800
-IronPort-SDR: IZHeAmha3J9FNGeaDMx1ISJgDn1JHd6fmIBKO6IXMHwxa3XdT+30OgfhOr/VVZJb8UIdH4/w7G
- turhYFrDusDQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="585603646"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by orsmga005.jf.intel.com with ESMTP; 01 Mar 2021 11:12:42 -0800
-Subject: Re: [PATCH v8 1/2] scsi: ufs: Enable power management for wlun
-To:     Asutosh Das <asutoshd@codeaurora.org>
-Cc:     cang@codeaurora.org, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Pedro Sousa <pedrom.sousa@synopsys.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1614295674.git.asutoshd@codeaurora.org>
- <c861385023f8592a63e3edf8119af89511741c9a.1614295674.git.asutoshd@codeaurora.org>
- <e10cd03d-12cd-3d73-b9ed-a542e0b2b83c@intel.com>
- <20210301181014.GF12147@stor-presley.qualcomm.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <3b085cd7-529f-51b8-6a2f-6aa397e1acd3@intel.com>
-Date:   Mon, 1 Mar 2021 21:12:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1379310AbhCBB1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:27:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241097AbhCATOz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:14:55 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAABFC061756;
+        Mon,  1 Mar 2021 11:14:11 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id p8so3976588ejb.10;
+        Mon, 01 Mar 2021 11:14:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PGzwacio6TQrd2no8NECottCDjSUp0tClCQWQdwKG74=;
+        b=ULEV4U7dUr9cMk3ljViSiN0B+MScMY+lpVKpNDWFFwdWPT7rROgmvh9uILKxpTTfOf
+         T64tiIeh0ggqw4wlaBppjluM74PGVj+VsMInWA3lc7ifB/tYk8Zp3K7wIgfmj5cH0dsM
+         DtJ5hw7gEvqFCDqd7vJT1ICRFpkDZRUllN3D2ZA/sqlKu9rQp1QjJUQ0DOH+zCn4mP6A
+         vUWLoNUKaWYwDTBgXTOI7GZCOascIPRvKazNrZ+lxdCiCDpFhop5HnBzvzUd0u8+mzmt
+         +LqyizrthJjicesEsgfMcMF0n9MGKH3Hy/EN33ZH29KsEZDmD6SGa7/7YsPk8psr5YlA
+         AOzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PGzwacio6TQrd2no8NECottCDjSUp0tClCQWQdwKG74=;
+        b=BrokVXQcoslghCOMd1yAUzk2ggnyHNIzRbyevASpcqZ8uRmEuI50RxXwqzjeEpMV/u
+         svDbEsP9CFw4T3zmFC0dqWtCowFToQ6o3lrMsg33sTUm/4Sd9tKt+rZPIP2kPn1LxA0p
+         c6Rsl01XpT8UZ9QmYov20ZsFXnVZ1RFLeSzdjJQCffjRFex0i0ehwElsnkkqXo4H7UFN
+         yEzHpZdW/u6y016h/pKRLMJcZUb82142hyVho2X6v1UkAkS5Tcccc5gAIDdx4H6r4UCQ
+         7AjQ6yGl8S1+c2B/LaTFjxpMfHiEOIzfxQWSD40sX0JaYtVzcukr2MPyIcbCuXjwGinU
+         AtBQ==
+X-Gm-Message-State: AOAM530u0C2XVF8PeTTrhvtfOlYbqIxHeDucMKyxqfvXCc5arEcBDR45
+        f/qQpVEMSniMszhX4n5uqHWUskf20oZxKw==
+X-Google-Smtp-Source: ABdhPJx2Pdbhkl0LZlGPDjYRE2NP858HrQEYx40BX8D/F80jlyyOVD8rYQCyShrnta9OU/M3CHYynQ==
+X-Received: by 2002:a17:906:8a65:: with SMTP id hy5mr11547802ejc.250.1614626050198;
+        Mon, 01 Mar 2021 11:14:10 -0800 (PST)
+Received: from anparri.mshome.net (host-79-55-37-174.retail.telecomitalia.it. [79.55.37.174])
+        by smtp.gmail.com with ESMTPSA id e18sm14549093eji.111.2021.03.01.11.14.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 11:14:09 -0800 (PST)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
+        mikelley@microsoft.com,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Subject: [PATCH] Drivers: hv: vmbus: Drop error message when 'No request id available'
+Date:   Mon,  1 Mar 2021 20:13:48 +0100
+Message-Id: <20210301191348.196485-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210301181014.GF12147@stor-presley.qualcomm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/03/21 8:10 pm, Asutosh Das wrote:
-> On Mon, Mar 01 2021 at 05:23 -0800, Adrian Hunter wrote:
->> On 26/02/21 1:37 am, Asutosh Das wrote:
->>> @@ -8901,43 +9125,14 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->>>              goto vendor_suspend;
->>>      }
->>
->> The ufshcd_reset_and_restore() in ufshcd_resume() will also change the power
->> mode of the UFS device to active.  Until the UFS device is also resumed and
->> then suspended, it will not return to a low power mode.
->>
->>
-> Umm, sorry, I didn't understand this comment.
-> Say, the UFS device was reset in ufshcd_reset_and_restore() it'd be a hardware
-> reset and the UFS device would move to Powered On mode and then to Active power
-> mode, when it is ready to begin initialization. And from this state it should
-> move to all other legal states.
-> Before entering system suspend ufshcd_system_suspend(), the ufs device is
-> runtime resumed in ufshcd_suspend_prepare().
-> 
-> Please can you explain a bit more on this issue that you see?
+Running out of request IDs on a channel essentially produces the same
+effect as running out of space in the ring buffer, in that -EAGAIN is
+returned.  The error message in hv_ringbuffer_write() should either be
+dropped (since we don't output a message when the ring buffer is full)
+or be made conditional/debug-only.
 
-Say you runtime resume the host controller, and
-ufshcd_reset_and_restore() makes the UFS device active,
-but the UFS device is still runtime suspended.
+Suggested-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Fixes: e8b7db38449ac ("Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus hardening")
+---
+ drivers/hv/ring_buffer.c | 1 -
+ 1 file changed, 1 deletion(-)
 
+diff --git a/drivers/hv/ring_buffer.c b/drivers/hv/ring_buffer.c
+index 35833d4d1a1dc..ecd82ebfd5bc4 100644
+--- a/drivers/hv/ring_buffer.c
++++ b/drivers/hv/ring_buffer.c
+@@ -313,7 +313,6 @@ int hv_ringbuffer_write(struct vmbus_channel *channel,
+ 		rqst_id = vmbus_next_request_id(&channel->requestor, requestid);
+ 		if (rqst_id == VMBUS_RQST_ERROR) {
+ 			spin_unlock_irqrestore(&outring_info->ring_lock, flags);
+-			pr_err("No request id available\n");
+ 			return -EAGAIN;
+ 		}
+ 	}
+-- 
+2.25.1
 
-Example:
-
-Add a debugfs file to show the current power mode:
-
-diff --git a/drivers/scsi/ufs/ufs-debugfs.c b/drivers/scsi/ufs/ufs-debugfs.c
-index dee98dc72d29..700b88df0866 100644
---- a/drivers/scsi/ufs/ufs-debugfs.c
-+++ b/drivers/scsi/ufs/ufs-debugfs.c
-@@ -48,6 +48,7 @@ void ufs_debugfs_hba_init(struct ufs_hba *hba)
- {
-        hba->debugfs_root = debugfs_create_dir(dev_name(hba->dev), ufs_debugfs_root);
-        debugfs_create_file("stats", 0400, hba->debugfs_root, hba, &ufs_debugfs_stats_fops);
-+       debugfs_create_u32("curr_dev_pwr_mode", 0400, hba->debugfs_root, (u32 *)&hba->curr_dev_pwr_mode);
- }
-
- void ufs_debugfs_hba_exit(struct ufs_hba *hba)
-
-
-# grep -H . /sys/bus/pci/drivers/ufshcd/0000\:00\:12.5/rpm*
-/sys/bus/pci/drivers/ufshcd/0000:00:12.5/rpm_lvl:6
-/sys/bus/pci/drivers/ufshcd/0000:00:12.5/rpm_target_dev_state:DEEPSLEEP
-/sys/bus/pci/drivers/ufshcd/0000:00:12.5/rpm_target_link_state:OFF
-# cat /sys/kernel/debug/ufshcd/0000\:00\:12.5/curr_dev_pwr_mode
-4
-# echo on > /sys/devices/pci0000:00/0000:00:12.5/power/control
-# cat /sys/kernel/debug/ufshcd/0000\:00\:12.5/curr_dev_pwr_mode
-1
-# grep -H . /sys/bus/pci/drivers/ufshcd/0000\:00\:12.5/host*/target*/*/power/runtime_status
-/sys/bus/pci/drivers/ufshcd/0000:00:12.5/host1/target1:0:0/1:0:0:0/power/runtime_status:suspended
-/sys/bus/pci/drivers/ufshcd/0000:00:12.5/host1/target1:0:0/1:0:0:49456/power/runtime_status:suspended
-/sys/bus/pci/drivers/ufshcd/0000:00:12.5/host1/target1:0:0/1:0:0:49476/power/runtime_status:suspended
-/sys/bus/pci/drivers/ufshcd/0000:00:12.5/host1/target1:0:0/1:0:0:49488/power/runtime_status:suspended
-
-So UFS devices is runtime suspended and should in DeepSleep, but it is active.
