@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF0F328D35
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66EC7328D1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241053AbhCATHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:07:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50532 "EHLO mail.kernel.org"
+        id S235354AbhCATFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:05:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235261AbhCAQrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:47:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF6CF64E68;
-        Mon,  1 Mar 2021 16:31:51 +0000 (UTC)
+        id S231927AbhCAQqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:46:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EAE864F9F;
+        Mon,  1 Mar 2021 16:31:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616312;
-        bh=iRkAtZne3DbaehCo6gRHRnt87bPtYKLGOYt5u8xOlxQ=;
+        s=korg; t=1614616315;
+        bh=yrzP0N1e4x1dGBTdvhsv7KloXvWY4tFMTUwV5iFgD0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UcI/MfrQMpnEONPT/wGL9mpgrz+M+TY/Vzp5i4M9Tf0v8Xmx7Dm+LKCN3jkGkzg5O
-         s0+RaTqT24h3pjTDohcPk1KQ8i7jFN4CfCBgCavA1h1aTXXytAp1KA/Dp+itCXX/EV
-         aFS6EuLQvze4JP0FD/5FacGXma0tHjTusdWH2Yxg=
+        b=kWC3YgMMI+KeFuFV5FihkRTeZ0JPZWFA5PF9bdCTKI71ik5sKx4VSAQHJg/ckv77k
+         fdVpj0p7nhC96C/3as6qWuekya2KfNAWignD9DGeeO6aFCIC1sHLA4hjWAgBY9zpHl
+         8k4biHC7iuqB1Gw4c11AkyGT7gzz5da74/m/vgyc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 108/176] drm/msm/dsi: Correct io_start for MSM8994 (20nm PHY)
-Date:   Mon,  1 Mar 2021 17:13:01 +0100
-Message-Id: <20210301161026.344911233@linuxfoundation.org>
+        Artem Blagodarenko <artem.blagodarenko@gmail.com>,
+        Theodore Tso <tytso@mit.edu>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 109/176] ext4: fix potential htree index checksum corruption
+Date:   Mon,  1 Mar 2021 17:13:02 +0100
+Message-Id: <20210301161026.395280646@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -41,35 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konrad Dybcio <konrad.dybcio@somainline.org>
+From: Theodore Ts'o <tytso@mit.edu>
 
-[ Upstream commit 33a7808ce1aea6e2edc1af25db25928137940c02 ]
+[ Upstream commit b5776e7524afbd4569978ff790864755c438bba7 ]
 
-The previous registers were *almost* correct, but instead of
-PHYs, they were pointing at DSI PLLs, resulting in the PHY id
-autodetection failing miserably.
+In the case where we need to do an interior node split, and
+immediately afterwards, we are unable to allocate a new directory leaf
+block due to ENOSPC, the directory index checksum's will not be filled
+in correctly (and indeed, will not be correctly journalled).
 
-Fixes: dcefc117cc19 ("drm/msm/dsi: Add support for msm8x94")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+This looks like a bug that was introduced when we added largedir
+support.  The original code doesn't make any sense (and should have
+been caught in code review), but it was hidden because most of the
+time, the index node checksum will be set by do_split().  But if
+do_split bails out due to ENOSPC, then ext4_handle_dirty_dx_node()
+won't get called, and so the directory index checksum field will not
+get set, leading to:
+
+EXT4-fs error (device sdb): dx_probe:858: inode #6635543: block 4022: comm nfsd: Directory index failed checksum
+
+Google-Bug-Id: 176345532
+Fixes: e08ac99fa2a2 ("ext4: add largedir feature")
+Cc: Artem Blagodarenko <artem.blagodarenko@gmail.com>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/namei.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c
-index 1ca6c69516f57..4c037d855b272 100644
---- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c
-+++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_20nm.c
-@@ -147,7 +147,7 @@ const struct msm_dsi_phy_cfg dsi_phy_20nm_cfgs = {
- 		.disable = dsi_20nm_phy_disable,
- 		.init = msm_dsi_phy_init_common,
- 	},
--	.io_start = { 0xfd998300, 0xfd9a0300 },
-+	.io_start = { 0xfd998500, 0xfd9a0500 },
- 	.num_dsi_phy = 2,
- };
- 
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index a4301fa4719ff..eff27e9de775f 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2293,11 +2293,10 @@ again:
+ 						   (frame - 1)->bh);
+ 			if (err)
+ 				goto journal_error;
+-			if (restart) {
+-				err = ext4_handle_dirty_dx_node(handle, dir,
+-							   frame->bh);
++			err = ext4_handle_dirty_dx_node(handle, dir,
++							frame->bh);
++			if (err)
+ 				goto journal_error;
+-			}
+ 		} else {
+ 			struct dx_root *dxroot;
+ 			memcpy((char *) entries2, (char *) entries,
 -- 
 2.27.0
 
