@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E60F329EE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EF9329EF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242550AbhCBDP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:15:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47596 "EHLO mail.kernel.org"
+        id S243213AbhCBDR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:17:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242944AbhCAUVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242958AbhCAUVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 15:21:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AA06653EE;
-        Mon,  1 Mar 2021 18:04:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F438653F6;
+        Mon,  1 Mar 2021 18:04:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621850;
-        bh=eCjytbrzNgFTMozE8yJrwlEMCfqMOUqtSTSS+MWopow=;
+        s=korg; t=1614621879;
+        bh=IYvwauLhh6MJU5Pj26oRPbgJM2dGDpsGWnlPDeTXntU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qiIk30xjhLYuAup+D7xZJApVnQR87zngkwETOG4yx4tp64mIdgwflrYA9Qch3iQvR
-         uZgA3bpt717m+qNKMoCPPaJcBpfwLqDaMvrCzGPu6wTplayjg6zm9NcPmszEJbwcGM
-         GmKBb/eDzhUClVE0fDYG+FgZKlXxcui1rXn1SKEg=
+        b=mMfpDTxVXAIsQWDXNPtwX7FQrAg5j3UgZ50AGo0UxvZ4VspQoRJ/qFaSR9OFriPez
+         3WrdEDunBU/OqYg2wN4O1/8N15RPV9pAha1rJ6s5Rise+M3bPshhJ46EDx5Gs7WhfA
+         63K9l+1/PjFkVlmPSTcT6j9g4Gv3QmxWGOG7SNzI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank Wunderlich <frank-w@public-files.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH 5.11 659/775] dts64: mt7622: fix slow sd card access
-Date:   Mon,  1 Mar 2021 17:13:47 +0100
-Message-Id: <20210301161233.947174106@linuxfoundation.org>
+        stable@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>
+Subject: [PATCH 5.11 660/775] arm64: dts: agilex: fix phy interface bit shift for gmac1 and gmac2
+Date:   Mon,  1 Mar 2021 17:13:48 +0100
+Message-Id: <20210301161233.996424922@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -39,33 +38,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+From: Dinh Nguyen <dinguyen@kernel.org>
 
-commit dc2e76175417e69c41d927dba75a966399f18354 upstream.
+commit b7ff3a447d100c999d9848353ef8a4046831d893 upstream.
 
-Fix extreme slow speed (200MB takes ~20 min) on writing sdcard on
-bananapi-r64 by adding reset-control for mmc1 like it's done for mmc0/emmc.
+The shift for the phy_intf_sel bit in the system manager for gmac1 and
+gmac2 should be 0.
 
-Fixes: 2c002a3049f7 ("arm64: dts: mt7622: add mmc related device nodes")
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+Fixes: 2f804ba7aa9ee ("arm64: dts: agilex: Add SysMgr to Ethernet nodes")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210113180919.49523-1-linux@fw-web.de
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/mediatek/mt7622.dtsi |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/boot/dts/intel/socfpga_agilex.dtsi |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-@@ -698,6 +698,8 @@
- 		clocks = <&pericfg CLK_PERI_MSDC30_1_PD>,
- 			 <&topckgen CLK_TOP_AXI_SEL>;
- 		clock-names = "source", "hclk";
-+		resets = <&pericfg MT7622_PERI_MSDC1_SW_RST>;
-+		reset-names = "hrst";
- 		status = "disabled";
- 	};
- 
+--- a/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi
++++ b/arch/arm64/boot/dts/intel/socfpga_agilex.dtsi
+@@ -166,7 +166,7 @@
+ 			rx-fifo-depth = <16384>;
+ 			snps,multicast-filter-bins = <256>;
+ 			iommus = <&smmu 2>;
+-			altr,sysmgr-syscon = <&sysmgr 0x48 8>;
++			altr,sysmgr-syscon = <&sysmgr 0x48 0>;
+ 			clocks = <&clkmgr AGILEX_EMAC1_CLK>, <&clkmgr AGILEX_EMAC_PTP_CLK>;
+ 			clock-names = "stmmaceth", "ptp_ref";
+ 			status = "disabled";
+@@ -184,7 +184,7 @@
+ 			rx-fifo-depth = <16384>;
+ 			snps,multicast-filter-bins = <256>;
+ 			iommus = <&smmu 3>;
+-			altr,sysmgr-syscon = <&sysmgr 0x4c 16>;
++			altr,sysmgr-syscon = <&sysmgr 0x4c 0>;
+ 			clocks = <&clkmgr AGILEX_EMAC2_CLK>, <&clkmgr AGILEX_EMAC_PTP_CLK>;
+ 			clock-names = "stmmaceth", "ptp_ref";
+ 			status = "disabled";
 
 
