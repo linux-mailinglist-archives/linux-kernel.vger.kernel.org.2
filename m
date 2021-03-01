@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C862E329D20
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA340329CC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443053AbhCBCSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:18:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55190 "EHLO mail.kernel.org"
+        id S1442303AbhCBCMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:12:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239402AbhCATob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C144F64D8F;
-        Mon,  1 Mar 2021 17:47:15 +0000 (UTC)
+        id S238342AbhCAThT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:37:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9CAF64EE1;
+        Mon,  1 Mar 2021 17:13:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620836;
-        bh=9LmnSJgiIbo5m6GyjhYCc5cowMtDDxea9vISoySCzrw=;
+        s=korg; t=1614618789;
+        bh=oH5Pp1LqGFyLTprX5Ex1z/4ukUshR6UmE3FUtvYo8p0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qjz1Lsi7+FJbXKI7stYEJ867rfJOLc5SV6+swm/jTq+rfZN0jliY3W2O34w4TWva3
-         LEaYx6Ntfqza8rXWsouWikour3V6tE1sXL1041eaOrEdm8FKk7mWiMoLZS8XFjqPRR
-         dpjzUtm0QqeZkzu8fpX5Psw1uE0f+odDfXjgtDcI=
+        b=Ap48byCf0QQ7nEsIjao26PxjMyLIjzXl663utJfI8JNqoTwd6U5obWq1q1tC40iqN
+         EeuLczofb4DlQ2Xmspvgm8GcSv+ksZ0jfkJA4yd8RvbruxmukAvbMoOSO1+R+KsmUf
+         yrbbsiRTxqJM1ETcHFrXeP73dCEEQHvWa6HmSfiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 296/775] ubifs: Fix memleak in ubifs_init_authentication
-Date:   Mon,  1 Mar 2021 17:07:44 +0100
-Message-Id: <20210301161216.251117154@linuxfoundation.org>
+Subject: [PATCH 5.10 217/663] drm/mediatek: Fix aal size config
+Date:   Mon,  1 Mar 2021 17:07:45 +0100
+Message-Id: <20210301161152.529130643@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+[ Upstream commit 71dcadba34203d8dd35152e368720f977e9cdb81 ]
 
-[ Upstream commit 11b8ab3836454a2600e396f34731e491b661f9d5 ]
+The orginal setting is not correct, fix it to follow hardware data sheet.
+If keep this error setting, mt8173/mt8183 display ok
+but mt8192 display abnormal.
 
-When crypto_shash_digestsize() fails, c->hmac_tfm
-has not been freed before returning, which leads
-to memleak.
+Fixes: 0664d1392c26 ("drm/mediatek: Add AAL engine basic function")
 
-Fixes: 49525e5eecca5 ("ubifs: Add helper functions for authentication support")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/auth.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-index 51a7c8c2c3f0a..e564d5ff87816 100644
---- a/fs/ubifs/auth.c
-+++ b/fs/ubifs/auth.c
-@@ -327,7 +327,7 @@ int ubifs_init_authentication(struct ubifs_info *c)
- 		ubifs_err(c, "hmac %s is bigger than maximum allowed hmac size (%d > %d)",
- 			  hmac_name, c->hmac_desc_len, UBIFS_HMAC_ARR_SZ);
- 		err = -EINVAL;
--		goto out_free_hash;
-+		goto out_free_hmac;
- 	}
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+index 3064eac1a7507..7fcb717f256c9 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+@@ -180,7 +180,9 @@ static void mtk_aal_config(struct mtk_ddp_comp *comp, unsigned int w,
+ 			   unsigned int h, unsigned int vrefresh,
+ 			   unsigned int bpc, struct cmdq_pkt *cmdq_pkt)
+ {
+-	mtk_ddp_write(cmdq_pkt, h << 16 | w, comp, DISP_AAL_SIZE);
++	struct mtk_ddp_comp_dev *priv = dev_get_drvdata(comp->dev);
++
++	mtk_ddp_write(cmdq_pkt, w << 16 | h, &priv->cmdq_reg, priv->regs, DISP_AAL_SIZE);
+ }
  
- 	err = crypto_shash_setkey(c->hmac_tfm, ukp->data, ukp->datalen);
+ static void mtk_aal_start(struct mtk_ddp_comp *comp)
 -- 
 2.27.0
 
