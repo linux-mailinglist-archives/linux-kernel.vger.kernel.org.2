@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECBF329B8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6323329C87
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348921AbhCBB0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:26:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
+        id S1380910AbhCBB4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:56:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239556AbhCATKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:10:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D87F365198;
-        Mon,  1 Mar 2021 17:11:19 +0000 (UTC)
+        id S241602AbhCATcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:32:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 685D765196;
+        Mon,  1 Mar 2021 17:11:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618680;
-        bh=Xdp7RkbAmR5eSRDTFJg/JPFqPfFBtL/+DLixpAY9Mpg=;
+        s=korg; t=1614618686;
+        bh=z48XpFlYBWyux+J2/a5onXBUtrHRr7RYVt6Yo8P6K/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MDdJ5UTBm/BSzpuZv7CTPI6acKvr5D7erU2v+8viXa5noKMSZNiYEAwxl5sfLHFNJ
-         qCa5lAPGbFbnFOVZW0MVTmRBh8SeT8xPw0Xa7HbnrZa14JG3CbYKlrItPv8iAwegZc
-         9sFz7QSqpjYiL7ywyI0mBa0+V/e/P3UuqGVnByJo=
+        b=rz/OPMCfKoBvMhkJhPEOhUczgZU119xTkcqE0JcqjZRBO9hE4B9s+UXw/PYnFn13y
+         VcKwS5nFZ6NHnabXfnsxvtVjKdIgRlz7sWfDfQIejS/gefmfBEjv+1GjjLwRdRuakA
+         6FzSCEbHyDsb4/wqIR7R8ZEy7x7fwIddBcBI3XcI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 178/663] media: ti-vpe: cal: fix write to unallocated memory
-Date:   Mon,  1 Mar 2021 17:07:06 +0100
-Message-Id: <20210301161150.593841931@linuxfoundation.org>
+Subject: [PATCH 5.10 180/663] MIPS: Compare __SYNC_loongson3_war against 0
+Date:   Mon,  1 Mar 2021 17:07:08 +0100
+Message-Id: <20210301161150.680837474@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,45 +42,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 5a402af5e19f215689e8bf3cc244c21d94eba3c4 ]
+[ Upstream commit 8790ccf8daf1a8c53b6cb8ce0c9a109274bd3fa8 ]
 
-The asd allocated with v4l2_async_notifier_add_fwnode_subdev() must be
-of size cal_v4l2_async_subdev, otherwise access to
-cal_v4l2_async_subdev->phy will go to unallocated memory.
+When building with clang when CONFIG_CPU_LOONGSON3_WORKAROUNDS is
+enabled:
 
-Fixes: 8fcb7576ad19 ("media: ti-vpe: cal: Allow multiple contexts per subdev notifier")
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+ In file included from lib/errseq.c:4:
+ In file included from ./include/linux/atomic.h:7:
+ ./arch/mips/include/asm/atomic.h:52:1: warning: converting the result of
+ '<<' to a boolean always evaluates to true
+ [-Wtautological-constant-compare]
+ ATOMIC_OPS(atomic64, s64)
+ ^
+ ./arch/mips/include/asm/atomic.h:40:9: note: expanded from macro
+ 'ATOMIC_OPS'
+         return cmpxchg(&v->counter, o, n);
+                ^
+ ./arch/mips/include/asm/cmpxchg.h:194:7: note: expanded from macro
+ 'cmpxchg'
+         if (!__SYNC_loongson3_war)
+              ^
+ ./arch/mips/include/asm/sync.h:147:34: note: expanded from macro
+ '__SYNC_loongson3_war'
+ # define __SYNC_loongson3_war   (1 << 31)
+                                    ^
+
+While it is not wrong that the result of this shift is always true in a
+boolean context, it is not a problem here. Regardless, the warning is
+really noisy so rather than making the shift a boolean implicitly, use
+it in an equality comparison so the shift is used as an integer value.
+
+Fixes: 4d1dbfe6cbec ("MIPS: atomic: Emit Loongson3 sync workarounds within asm")
+Fixes: a91f2a1dba44 ("MIPS: cmpxchg: Omit redundant barriers for Loongson3")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/ti-vpe/cal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/mips/include/asm/atomic.h  | 2 +-
+ arch/mips/include/asm/cmpxchg.h | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/platform/ti-vpe/cal.c b/drivers/media/platform/ti-vpe/cal.c
-index 59a0266b1f399..2eef245c31a17 100644
---- a/drivers/media/platform/ti-vpe/cal.c
-+++ b/drivers/media/platform/ti-vpe/cal.c
-@@ -406,7 +406,7 @@ static irqreturn_t cal_irq(int irq_cal, void *data)
-  */
- 
- struct cal_v4l2_async_subdev {
--	struct v4l2_async_subdev asd;
-+	struct v4l2_async_subdev asd; /* Must be first */
- 	struct cal_camerarx *phy;
- };
- 
-@@ -472,7 +472,7 @@ static int cal_async_notifier_register(struct cal_dev *cal)
- 		fwnode = of_fwnode_handle(phy->sensor_node);
- 		asd = v4l2_async_notifier_add_fwnode_subdev(&cal->notifier,
- 							    fwnode,
--							    sizeof(*asd));
-+							    sizeof(*casd));
- 		if (IS_ERR(asd)) {
- 			phy_err(phy, "Failed to add subdev to notifier\n");
- 			ret = PTR_ERR(asd);
+diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
+index f904084fcb1fd..27ad767915390 100644
+--- a/arch/mips/include/asm/atomic.h
++++ b/arch/mips/include/asm/atomic.h
+@@ -248,7 +248,7 @@ static __inline__ int pfx##_sub_if_positive(type i, pfx##_t * v)	\
+ 	 * bltz that can branch	to code outside of the LL/SC loop. As	\
+ 	 * such, we don't need to emit another barrier here.		\
+ 	 */								\
+-	if (!__SYNC_loongson3_war)					\
++	if (__SYNC_loongson3_war == 0)					\
+ 		smp_mb__after_atomic();					\
+ 									\
+ 	return result;							\
+diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
+index 5b0b3a6777ea5..ed8f3f3c4304a 100644
+--- a/arch/mips/include/asm/cmpxchg.h
++++ b/arch/mips/include/asm/cmpxchg.h
+@@ -99,7 +99,7 @@ unsigned long __xchg(volatile void *ptr, unsigned long x, int size)
+ 	 * contains a completion barrier prior to the LL, so we don't	\
+ 	 * need to emit an extra one here.				\
+ 	 */								\
+-	if (!__SYNC_loongson3_war)					\
++	if (__SYNC_loongson3_war == 0)					\
+ 		smp_mb__before_llsc();					\
+ 									\
+ 	__res = (__typeof__(*(ptr)))					\
+@@ -191,7 +191,7 @@ unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+ 	 * contains a completion barrier prior to the LL, so we don't	\
+ 	 * need to emit an extra one here.				\
+ 	 */								\
+-	if (!__SYNC_loongson3_war)					\
++	if (__SYNC_loongson3_war == 0)					\
+ 		smp_mb__before_llsc();					\
+ 									\
+ 	__res = cmpxchg_local((ptr), (old), (new));			\
+@@ -201,7 +201,7 @@ unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+ 	 * contains a completion barrier after the SC, so we don't	\
+ 	 * need to emit an extra one here.				\
+ 	 */								\
+-	if (!__SYNC_loongson3_war)					\
++	if (__SYNC_loongson3_war == 0)					\
+ 		smp_llsc_mb();						\
+ 									\
+ 	__res;								\
 -- 
 2.27.0
 
