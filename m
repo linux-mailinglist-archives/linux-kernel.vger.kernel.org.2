@@ -2,93 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859353282AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F92C3282B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236768AbhCAPiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 10:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        id S237354AbhCAPlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 10:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237260AbhCAPi2 (ORCPT
+        with ESMTP id S237137AbhCAPlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 10:38:28 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A2CC061756;
-        Mon,  1 Mar 2021 07:37:45 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id d15so1386816wrv.5;
-        Mon, 01 Mar 2021 07:37:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2mjETDS/R3AcrHDxH+eBHTmfWCAT1YYDng8uSVTe0DQ=;
-        b=ZijXwVTP9y+09zH0zD9ZoS6JDGqj/lSjfXbcaqFGfzV9rSL6eZVDHZAW0kSlgtHg15
-         zwQQgWIduKj22O5riA3/wQKzgjWbCcsUTgJrGgdFo4tHxpYgKSErmSv7Bl3QFKUK1mNJ
-         yeevnPS0LmK/KCLrwuWm8JQQvVkkoN68zBP8yCEtzAY/avhw4l+9BZjmF+1gH3otdnip
-         uqovBZ4TOm4bb00bOgcxPTkYyd0DU/3PXoa34WBSE6jK72v0CO2OFhYe3IRbPaZmN4vI
-         Nhscr25Rfao5pxLgOBHh9AFUPv9oUNvWJI+/5wp7+rv2bcXH/Jjg7LOy18A2Lah7zHmS
-         vPHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2mjETDS/R3AcrHDxH+eBHTmfWCAT1YYDng8uSVTe0DQ=;
-        b=H7z4FaUVUN9ntiJ+h1J3nmmPuT4hYLK3jGESibYBczhDd8HFs2n9m2QIkuWGYLETQx
-         dmtbgXAeoJSWwxV3uJibrVnB5fm9uXRTjoFqgt+dI5oUqgdYXX0atu0XxlsKfbJ67kGN
-         oCuK5ZKV0zk5zdZFsmA0WzCamRQlN2LwMUsm9LTft/3AiDOvOS+Qw6RvWlKFul273FXU
-         Fw5/FJFOpQZN40VKLYQMWRRJVavHUW0K4gSYPZ0c1FtAlJgR7SyFxo6rM1g9DpfPRuE2
-         Y8xrTQ98pQdJZhbjtdQI2AxRDr40bSZxxF0JtMX8l2+m7P9HabS7B9XdV+bXzxiWFqxw
-         Xy/w==
-X-Gm-Message-State: AOAM531HjXPIHuyY1zQghrmlHQplWNOQOZ8kCE3iruX6x8U5tnuLnm6B
-        PbOLE/+WitII+ZeaTueOyEU=
-X-Google-Smtp-Source: ABdhPJwVOsqMcVd+MawWtsgwbNmlYQ/GlTYMnDc8ODM0H4y4vaQ4CERjuc4s6tjZRpm4/l1Xlb2hrw==
-X-Received: by 2002:a5d:424c:: with SMTP id s12mr15556026wrr.161.1614613064575;
-        Mon, 01 Mar 2021 07:37:44 -0800 (PST)
-Received: from ubuntudesktop (205.158.32.217.dyn.plus.net. [217.32.158.205])
-        by smtp.gmail.com with ESMTPSA id n1sm28452749wrx.45.2021.03.01.07.37.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 07:37:44 -0800 (PST)
-Date:   Mon, 1 Mar 2021 15:37:42 +0000
-From:   Lee <leegib@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8192e: Fix possible buffer overflow in
- _rtl92e_wx_set_scan
-Message-ID: <20210301153742.GA427438@ubuntudesktop>
-References: <20210226114829.316980-1-leegib@gmail.com>
- <20210226134333.GA2087@kadam>
- <20210226140526.GG2222@kadam>
- <20210301132535.GR2087@kadam>
+        Mon, 1 Mar 2021 10:41:40 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BD8C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 07:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6bCu91Y9Ljglob4huEndBp2bwsvB8cz8ka4XeKdQ8WI=; b=t9CW+70yCH5q8TdbYhSqTX8bAk
+        7AXoGWU+vVTccSlMkxbNyxJZAzxkdmNjuWAExsbsKOfGoYCWc2fRAhqpy3D03gWbnPczY5Wa2dWXQ
+        ZC8z69Id2K3+rw5eIn7it/bIwT1cUSy4O4VhKs4BtaUZ8kPn4Aqhb+7Qqe3z7q9+sM383os3+W7F2
+        F1Xw8oHf+5x+7mdDB685OEyePFL5DKWLK7YdiCnNchs+xGadDfi5hDK9opAeZDMK6l+m4PXYhbYlw
+        051Za9kop2nyvJ4IOpBxAbgsTPBAuuLO+tXxpONP4vQv/p9DO+VHACWrUb37NWWCUVrbNUOtHcmD/
+        0pRR2/tw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lGkex-00052a-OJ; Mon, 01 Mar 2021 15:40:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8BE8B3003E1;
+        Mon,  1 Mar 2021 16:40:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 702A120849103; Mon,  1 Mar 2021 16:40:33 +0100 (CET)
+Date:   Mon, 1 Mar 2021 16:40:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: Re: [PATCH] sched/fair: Prefer idle CPU to cache affinity
+Message-ID: <YD0K8Sal4KbxWD23@hirez.programming.kicks-ass.net>
+References: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210301132535.GR2087@kadam>
+In-Reply-To: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 26, 2021 at 10:10:29PM +0530, Srikar Dronamraju wrote:
+> +static int prefer_idler_llc(int this_cpu, int prev_cpu, int sync)
+> +{
+> +	struct sched_domain_shared *tsds, *psds;
+> +	int pnr_busy, pllc_size, tnr_busy, tllc_size, diff;
+> +
+> +	tsds = rcu_dereference(per_cpu(sd_llc_shared, this_cpu));
+> +	tnr_busy = atomic_read(&tsds->nr_busy_cpus);
+> +	tllc_size = per_cpu(sd_llc_size, this_cpu);
+> +
+> +	psds = rcu_dereference(per_cpu(sd_llc_shared, prev_cpu));
+> +	pnr_busy = atomic_read(&psds->nr_busy_cpus);
+> +	pllc_size = per_cpu(sd_llc_size, prev_cpu);
+> +
 
-
-
-> This check worked out pretty well.  It's probably 50% bugs?  Unfiltered
-> results below.  The trick of warning for "if (ststr(member, "->ssid")) "
-> and the memcpy length couldn't be verified turned out to be the best.
-
-That list looks great. I checked out 2 of those listed at random and 
-they look like valid bugs to me.
-
-> But there are quite a few real bugs as well.  If anyone wants to fix any
-> of these just claim a bug, and I won't send a patch for that warning.
-> :)  Lee, I think you mentioned that you had found a related buffer
-> overflow fix?  Did the check find it?
-
-
-I think I found 2 in these files:
-
-drivers/staging/rtl8712/rtl871x_cmd.c    
-drivers/staging/wfx/hif_tx.c
-
-Regards,
-Lee
-
+nr_busy_cpus is NO_HZ_COMMON So this code that consumes it should be
+too.
