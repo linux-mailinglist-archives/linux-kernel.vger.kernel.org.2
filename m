@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E00AB328088
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:19:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8ECA328095
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhCAOSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:18:38 -0500
-Received: from conuserg-07.nifty.com ([210.131.2.74]:45885 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbhCAOSg (ORCPT
+        id S233037AbhCAOU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:20:59 -0500
+Received: from conuserg-10.nifty.com ([210.131.2.77]:43816 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233005AbhCAOU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:18:36 -0500
+        Mon, 1 Mar 2021 09:20:27 -0500
 Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 121EGTih018081;
-        Mon, 1 Mar 2021 23:16:30 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 121EGTih018081
+        by conuserg-10.nifty.com with ESMTP id 121EIV2v001499;
+        Mon, 1 Mar 2021 23:18:31 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 121EIV2v001499
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614608190;
-        bh=HRRTgCVyecLcmD9jfAl7QtntVmTpZmoZbzcASzKbhH0=;
+        s=dec2015msa; t=1614608311;
+        bh=havbgPvxshsn+072GB8NK8K1m7iwCxNAcFrkfBfXWY4=;
         h=From:To:Cc:Subject:Date:From;
-        b=c7xEdx7MKM56ptneWNCXdcXAWcIqHT2Y0EVyoyoNNygojt/ZyQkMICrsXxsFKyOuc
-         7fUegyDIHhMRH1iBFy+WfzXlAQnYTNTlzH2YC3lnSIiZdXBLel98/ks1F28CHO63Zz
-         xffmeC3q0ewJRXzVocV9Jy6g8TU4iceiKBvB3+r2s9vqihBx1Ig75mQZfjhRY3L5wj
-         nlubfwN/7sfh/hgyFzsNtI/9xYU09etPgo5nJdwGBDNBIglPLek7j4a0/mWOrXbfcB
-         vtjX/AAQS4Bgq9wBe1ceB1ysW5RzOy+0/jnB/suTqvpKy9Ot24x87Fv1Ojpj7++HNL
-         PuF6I7Oxilrbw==
+        b=gDMQoaqK0DpoCOlBJz3CeCbbs7qMtYiGR3BH+sIllGTjNPpTNQPU7O0JPkYaOKCKI
+         h097H7ytbWOC9irOc/65jUT97YOFrNudUenwkqOnmESr29YdjrdHXwDzXLBTua7SaP
+         QDBbyx0dykj68ILUgmt12v3EUC+ldjV1Um1gQAyDdmI9fdlEl+OEBiIFY+HqCPRKgZ
+         l2w1ofl79JK1md/mL6PM80bf40L7N4aRjtZTcMKY6HXnqwjcV1vVvUuXwfol9XKvVz
+         a1TJlyuAS9KLdOl/tGkBZPWVfEFfdWp0TDvLQQJA5YQFG2BCJWNYPJAJDGWmmF8+cx
+         ApACa1QbAZzFw==
 X-Nifty-SrcIP: [126.26.90.165]
 From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     patches@arm.linux.org.uk
+To:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-api@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] ARM: syscalls: switch to generic syscallhdr.sh
-Date:   Mon,  1 Mar 2021 23:16:26 +0900
-Message-Id: <20210301141626.341847-1-masahiroy@kernel.org>
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 1/2] alpha: syscalls: switch to generic syscalltbl.sh
+Date:   Mon,  1 Mar 2021 23:18:25 +0900
+Message-Id: <20210301141827.342315-1-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -45,132 +46,96 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Many architectures duplicate similar shell scripts.
 
-This commit converts ARM to use scripts/syscallhdr.sh, and also
-collects OABI/OEBI syscalls into unistd-eabi.h/unistd-oabi.h,
-removing unistd-common.h.
+This commit converts alpha to use scripts/syscalltbl.sh.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
 
- arch/arm/include/uapi/asm/Kbuild   |  1 -
- arch/arm/include/uapi/asm/unistd.h |  1 -
- arch/arm/tools/Makefile            | 17 +++++-----------
- arch/arm/tools/syscallhdr.sh       | 31 ------------------------------
- 4 files changed, 5 insertions(+), 45 deletions(-)
- delete mode 100644 arch/arm/tools/syscallhdr.sh
+ arch/alpha/kernel/syscalls/Makefile      |  7 ++----
+ arch/alpha/kernel/syscalls/syscalltbl.sh | 32 ------------------------
+ arch/alpha/kernel/systbls.S              |  3 +--
+ 3 files changed, 3 insertions(+), 39 deletions(-)
+ delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
 
-diff --git a/arch/arm/include/uapi/asm/Kbuild b/arch/arm/include/uapi/asm/Kbuild
-index ce8573157774..63748af8bc9d 100644
---- a/arch/arm/include/uapi/asm/Kbuild
-+++ b/arch/arm/include/uapi/asm/Kbuild
-@@ -1,6 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
+diff --git a/arch/alpha/kernel/syscalls/Makefile b/arch/alpha/kernel/syscalls/Makefile
+index 285aaba832d9..ad2492cb5568 100644
+--- a/arch/alpha/kernel/syscalls/Makefile
++++ b/arch/alpha/kernel/syscalls/Makefile
+@@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
  
--generated-y += unistd-common.h
- generated-y += unistd-oabi.h
- generated-y += unistd-eabi.h
- generic-y += kvm_para.h
-diff --git a/arch/arm/include/uapi/asm/unistd.h b/arch/arm/include/uapi/asm/unistd.h
-index 93ecf8aa4fe5..ae7749e15726 100644
---- a/arch/arm/include/uapi/asm/unistd.h
-+++ b/arch/arm/include/uapi/asm/unistd.h
-@@ -24,7 +24,6 @@
- #include <asm/unistd-oabi.h>
- #endif
- 
--#include <asm/unistd-common.h>
- #define __NR_sync_file_range2		__NR_arm_sync_file_range
- 
- /*
-diff --git a/arch/arm/tools/Makefile b/arch/arm/tools/Makefile
-index d8be90f2bb41..87de1f63f649 100644
---- a/arch/arm/tools/Makefile
-+++ b/arch/arm/tools/Makefile
-@@ -8,7 +8,7 @@
- gen := arch/$(ARCH)/include/generated
- kapi := $(gen)/asm
- uapi := $(gen)/uapi/asm
--syshdr := $(srctree)/$(src)/syscallhdr.sh
-+syshdr := $(srctree)/scripts/syscallhdr.sh
- sysnr := $(srctree)/$(src)/syscallnr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
  syscall := $(src)/syscall.tbl
-@@ -17,7 +17,6 @@ gen-y := $(gen)/calls-oabi.S
- gen-y += $(gen)/calls-eabi.S
- kapi-hdrs-y := $(kapi)/unistd-nr.h
- kapi-hdrs-y += $(kapi)/mach-types.h
--uapi-hdrs-y := $(uapi)/unistd-common.h
- uapi-hdrs-y += $(uapi)/unistd-oabi.h
- uapi-hdrs-y += $(uapi)/unistd-eabi.h
- 
-@@ -41,10 +40,8 @@ $(kapi)/mach-types.h: $(src)/gen-mach-types $(src)/mach-types FORCE
- 	$(call if_changed,gen_mach)
+ syshdr := $(srctree)/$(src)/syscallhdr.sh
+-systbl := $(srctree)/$(src)/syscalltbl.sh
++systbl := $(srctree)/scripts/syscalltbl.sh
  
  quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@' \
--		   '$(syshdr_abi_$(basetarget))' \
--		   '$(syshdr_pfx_$(basetarget))' \
--		   '__NR_SYSCALL_BASE'
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --abis $(abis) \
-+		   --offset __NR_SYSCALL_BASE $< $@
+       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
+@@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+ 		   '$(syshdr_offset_$(basetarget))'
  
  quiet_cmd_systbl = SYSTBL  $@
-       cmd_systbl = $(CONFIG_SHELL) $(systbl) --abis $(abis) $< $@
-@@ -53,15 +50,11 @@ quiet_cmd_sysnr  = SYSNR   $@
-       cmd_sysnr  = $(CONFIG_SHELL) '$(sysnr)' '$<' '$@' \
- 		   '$(syshdr_abi_$(basetarget))'
+-      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'	\
+-		   '$(systbl_abis_$(basetarget))'		\
+-		   '$(systbl_abi_$(basetarget))'		\
+-		   '$(systbl_offset_$(basetarget))'
++      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
  
--syshdr_abi_unistd-common := common
--$(uapi)/unistd-common.h: $(syscall) $(syshdr) FORCE
--	$(call if_changed,syshdr)
--
--syshdr_abi_unistd-oabi := oabi
-+$(uapi)/unistd-oabi.h: abis := common,oabi
- $(uapi)/unistd-oabi.h: $(syscall) $(syshdr) FORCE
+ $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
  	$(call if_changed,syshdr)
- 
--syshdr_abi_unistd-eabi := eabi
-+$(uapi)/unistd-eabi.h: abis := common,eabi
- $(uapi)/unistd-eabi.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
-diff --git a/arch/arm/tools/syscallhdr.sh b/arch/arm/tools/syscallhdr.sh
+diff --git a/arch/alpha/kernel/syscalls/syscalltbl.sh b/arch/alpha/kernel/syscalls/syscalltbl.sh
 deleted file mode 100644
-index 6b2f25cdd721..000000000000
---- a/arch/arm/tools/syscallhdr.sh
+index 85d78d9309ad..000000000000
+--- a/arch/alpha/kernel/syscalls/syscalltbl.sh
 +++ /dev/null
-@@ -1,31 +0,0 @@
+@@ -1,32 +0,0 @@
 -#!/bin/sh
 -# SPDX-License-Identifier: GPL-2.0
 -
 -in="$1"
 -out="$2"
 -my_abis=`echo "($3)" | tr ',' '|'`
--prefix="$4"
+-my_abi="$4"
 -offset="$5"
 -
--fileguard=_ASM_ARM_`basename "$out" | sed \
--    -e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
--    -e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
--if echo $out | grep -q uapi; then
--    fileguard="_UAPI$fileguard"
--fi
+-emit() {
+-	t_nxt="$1"
+-	t_nr="$2"
+-	t_entry="$3"
+-
+-	while [ $t_nxt -lt $t_nr ]; do
+-		printf "__SYSCALL(%s, sys_ni_syscall, )\n" "${t_nxt}"
+-		t_nxt=$((t_nxt+1))
+-	done
+-	printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
+-}
+-
 -grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--    echo "#ifndef ${fileguard}"
--    echo "#define ${fileguard} 1"
--    echo ""
--
--    while read nr abi name entry ; do
+-	nxt=0
 -	if [ -z "$offset" ]; then
--	    echo "#define __NR_${prefix}${name} $nr"
--	else
--	    echo "#define __NR_${prefix}${name} ($offset + $nr)"
--        fi
--    done
+-		offset=0
+-	fi
 -
--    echo ""
--    echo "#endif /* ${fileguard} */"
+-	while read nr abi name entry ; do
+-		emit $((nxt+offset)) $((nr+offset)) $entry
+-		nxt=$((nr+1))
+-	done
 -) > "$out"
+diff --git a/arch/alpha/kernel/systbls.S b/arch/alpha/kernel/systbls.S
+index 9704f22ed5e3..68f3e4f329eb 100644
+--- a/arch/alpha/kernel/systbls.S
++++ b/arch/alpha/kernel/systbls.S
+@@ -7,10 +7,9 @@
+ 
+ #include <asm/unistd.h>
+ 
+-#define __SYSCALL(nr, entry, nargs) .quad entry
++#define __SYSCALL(nr, entry) .quad entry
+ 	.data
+ 	.align 3
+ 	.globl sys_call_table
+ sys_call_table:
+ #include <asm/syscall_table.h>
+-#undef __SYSCALL
 -- 
 2.27.0
 
