@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A79F53286B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B01328621
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237795AbhCARNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:13:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237909AbhCAQX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:23:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 364F564F33;
-        Mon,  1 Mar 2021 16:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615635;
-        bh=xfs2OrtPDAspQ/+PAs+u1SLlVQpuFufeLzjotLNYK50=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aTTPK4Kt+HaHLhHwJtDJHur5p8IBl0ASiSy1CwZLYTS7A9XGOtJNudFdx6MSqvReX
-         /kumXo8gQ8tSHgf8unxJ8SWYh2otms8RZTWz6dflolIEC71zzMVpJmRoMRnEMd+OmZ
-         NT4IDkXnPPHa0wIKGqi4iyRV97Jn5birpj7bMNEU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.4 93/93] dm era: Update in-core bitset after committing the metadata
-Date:   Mon,  1 Mar 2021 17:13:45 +0100
-Message-Id: <20210301161011.439945404@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
-References: <20210301161006.881950696@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S236712AbhCARE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237348AbhCAQWJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:22:09 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94171C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 08:21:27 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id b15so11609725pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 08:21:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jC2WGY5IvJY5a5GaOcvwnDc85miRJPUWJYADM2oq/Vk=;
+        b=RSfR2jcli1GleHaRZ8Ny/9wJRvHkoiPuBTy1nY6AzKOBtnWAcufVR2eThF7uMxrbd4
+         SvCGy1dGOjeYf1HhmCoDZ/EvKnYgXPaJYPk09YdEcK5qALeK9p9zLRJPHI4NGz4qN8ms
+         iIQhskrnUrHIIPW4aFVFr73y6frsAPhkGyu/lEl+uSA7r9o3/c7VpFCC1UT9ZLDhRlmL
+         yz95t6qu75srosy1wuCKPV6h/87XbLBQIYmx3PT02V5jXdJkEhnWYrEAtgDp9gWo2xPv
+         rHE2an4zDaVV6jHhu4JXXCUykswbc7dAHz52xBG5cIT0iIKVoLves2rKVfJ3107CpL7K
+         /ELw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jC2WGY5IvJY5a5GaOcvwnDc85miRJPUWJYADM2oq/Vk=;
+        b=D4SC1SMyVcxg+NlKL6RGY/WXmFDGoQ4onVSkOHtClqlsBPQRX1hxvuYdbdCZ6zkuwl
+         IihBdTA+3AMN9huEmkbW03CP2FGPmPcJ7nG7tRju6eK3/viyVhjzxtepA6j89Olj+pb2
+         sBnzAAs2PeUUPeTvT2Uq1JL+mqdG4c3Qhpitm4awIS7oW5bifl8ZYsgkgzxUY9p/re9P
+         Lkg3Ce4sTVCnPLY2QMmMDsnLrw3poNNaEYOWt5Q8AIwtYqea15itNewQJMPGSMtwdj1b
+         pd4e07JMABHdAVWsaQe+yKpegbhXkoliX/GtK5f6C6kF7IZ4fQEklmllc+Z4m1zFGGLs
+         7oUg==
+X-Gm-Message-State: AOAM533dRfQqsV6ARtJMfC/HFNaPVMWxN/ZnhrEDGHrhW0qi8UpMEkxQ
+        O0d3Nv+w+xf9POI6gGYVDLcavw==
+X-Google-Smtp-Source: ABdhPJzDK3rT//fSp8J4fsSDT5s0A4TeJiUbKdNYMYyEOict+tnCU+C6QCR6dpG7EgSBrxC7OgBIEg==
+X-Received: by 2002:a17:902:c582:b029:e4:c16d:b5eb with SMTP id p2-20020a170902c582b02900e4c16db5ebmr1867568plx.6.1614615686845;
+        Mon, 01 Mar 2021 08:21:26 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
+        by smtp.gmail.com with ESMTPSA id z22sm18134271pfa.41.2021.03.01.08.21.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 08:21:26 -0800 (PST)
+Date:   Mon, 1 Mar 2021 08:21:19 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH 05/25] x86/sgx: Introduce virtual EPC for use by KVM
+ guests
+Message-ID: <YD0Uf1LS4jDlXGLo@google.com>
+References: <cover.1614590788.git.kai.huang@intel.com>
+ <aade4006c3474175f97ec149a969eb02f1720a89.1614590788.git.kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aade4006c3474175f97ec149a969eb02f1720a89.1614590788.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikos Tsironis <ntsironis@arrikto.com>
+On Mon, Mar 01, 2021, Kai Huang wrote:
+> +	/*
+> +	 * SECS pages are "pinned" by child pages, an unpinned once all
 
-commit 2099b145d77c1d53f5711f029c37cc537897cee6 upstream.
+s/an/and
 
-In case of a system crash, dm-era might fail to mark blocks as written
-in its metadata, although the corresponding writes to these blocks were
-passed down to the origin device and completed successfully.
-
-Consider the following sequence of events:
-
-1. We write to a block that has not been yet written in the current era
-2. era_map() checks the in-core bitmap for the current era and sees
-   that the block is not marked as written.
-3. The write is deferred for submission after the metadata have been
-   updated and committed.
-4. The worker thread processes the deferred write
-   (process_deferred_bios()) and marks the block as written in the
-   in-core bitmap, **before** committing the metadata.
-5. The worker thread starts committing the metadata.
-6. We do more writes that map to the same block as the write of step (1)
-7. era_map() checks the in-core bitmap and sees that the block is marked
-   as written, **although the metadata have not been committed yet**.
-8. These writes are passed down to the origin device immediately and the
-   device reports them as completed.
-9. The system crashes, e.g., power failure, before the commit from step
-   (5) finishes.
-
-When the system recovers and we query the dm-era target for the list of
-written blocks it doesn't report the aforementioned block as written,
-although the writes of step (6) completed successfully.
-
-The issue is that era_map() decides whether to defer or not a write
-based on non committed information. The root cause of the bug is that we
-update the in-core bitmap, **before** committing the metadata.
-
-Fix this by updating the in-core bitmap **after** successfully
-committing the metadata.
-
-Fixes: eec40579d84873 ("dm: add era target")
-Cc: stable@vger.kernel.org # v3.15+
-Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/md/dm-era-target.c |   25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
-
---- a/drivers/md/dm-era-target.c
-+++ b/drivers/md/dm-era-target.c
-@@ -134,7 +134,7 @@ static int writeset_test_and_set(struct
- {
- 	int r;
- 
--	if (!test_and_set_bit(block, ws->bits)) {
-+	if (!test_bit(block, ws->bits)) {
- 		r = dm_bitset_set_bit(info, ws->md.root, block, &ws->md.root);
- 		if (r) {
- 			/* FIXME: fail mode */
-@@ -1242,8 +1242,10 @@ static void process_deferred_bios(struct
- 	int r;
- 	struct bio_list deferred_bios, marked_bios;
- 	struct bio *bio;
-+	struct blk_plug plug;
- 	bool commit_needed = false;
- 	bool failed = false;
-+	struct writeset *ws = era->md->current_writeset;
- 
- 	bio_list_init(&deferred_bios);
- 	bio_list_init(&marked_bios);
-@@ -1253,9 +1255,11 @@ static void process_deferred_bios(struct
- 	bio_list_init(&era->deferred_bios);
- 	spin_unlock(&era->deferred_lock);
- 
-+	if (bio_list_empty(&deferred_bios))
-+		return;
-+
- 	while ((bio = bio_list_pop(&deferred_bios))) {
--		r = writeset_test_and_set(&era->md->bitset_info,
--					  era->md->current_writeset,
-+		r = writeset_test_and_set(&era->md->bitset_info, ws,
- 					  get_block(era, bio));
- 		if (r < 0) {
- 			/*
-@@ -1263,7 +1267,6 @@ static void process_deferred_bios(struct
- 			 * FIXME: finish.
- 			 */
- 			failed = true;
--
- 		} else if (r == 0)
- 			commit_needed = true;
- 
-@@ -1279,9 +1282,19 @@ static void process_deferred_bios(struct
- 	if (failed)
- 		while ((bio = bio_list_pop(&marked_bios)))
- 			bio_io_error(bio);
--	else
--		while ((bio = bio_list_pop(&marked_bios)))
-+	else {
-+		blk_start_plug(&plug);
-+		while ((bio = bio_list_pop(&marked_bios))) {
-+			/*
-+			 * Only update the in-core writeset if the on-disk one
-+			 * was updated too.
-+			 */
-+			if (commit_needed)
-+				set_bit(get_block(era, bio), ws->bits);
- 			generic_make_request(bio);
-+		}
-+		blk_finish_plug(&plug);
-+	}
- }
- 
- static void process_rpc_calls(struct era *era)
-
-
+> +	 * children have been EREMOVE'd.  A child page in this instance
+> +	 * may have pinned an SECS page encountered in an earlier release(),
+> +	 * creating a zombie.  Since some children were EREMOVE'd above,
+> +	 * try to EREMOVE all zombies in the hopes that one was unpinned.
+> +	 */
+> +	mutex_lock(&zombie_secs_pages_lock);
+> +	list_for_each_entry_safe(epc_page, tmp, &zombie_secs_pages, list) {
+> +		/*
+> +		 * Speculatively remove the page from the list of zombies,
+> +		 * if the page is successfully EREMOVE it will be added to
+> +		 * the list of free pages.  If EREMOVE fails, throw the page
+> +		 * on the local list, which will be spliced on at the end.
+> +		 */
+> +		list_del(&epc_page->list);
+> +
+> +		if (sgx_vepc_free_page(epc_page))
+> +			list_add_tail(&epc_page->list, &secs_pages);
+> +	}
+> +
+> +	if (!list_empty(&secs_pages))
+> +		list_splice_tail(&secs_pages, &zombie_secs_pages);
+> +	mutex_unlock(&zombie_secs_pages_lock);
+> +
+> +	kfree(vepc);
+> +
+> +	return 0;
+> +}
