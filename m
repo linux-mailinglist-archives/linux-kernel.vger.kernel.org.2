@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F054329C80
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0077C329BBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380865AbhCBB4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:56:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50858 "EHLO mail.kernel.org"
+        id S1379473AbhCBB2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:28:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241655AbhCATc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:32:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 271A76527E;
-        Mon,  1 Mar 2021 17:30:46 +0000 (UTC)
+        id S241281AbhCATPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:15:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D2B564FE8;
+        Mon,  1 Mar 2021 17:01:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619847;
-        bh=trFxcuYKqMouF32lxS+/KuRd3gv9PdsV/7cUNEYyQKc=;
+        s=korg; t=1614618102;
+        bh=l928y19gtzyetZKDVmTkOY7/iHJ4TheR2FLIIY9dR3M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FLdYFW7J/xvDq7nax2lb75WSPAcfbaVjAg0QWmyxcDhiccXbIUG7im0Cv6Ekv/sTN
-         UTo9gKNcsDAjfvvHa2l2nXHiDiKeP4sVccv6FYzFpUcTw2rBaN8+hRYjW9/VG0yA/y
-         bv6uhvoakoWppch4fv86/qodnXOKw4A3LwupHDl4=
+        b=OENPns7U+AeIKiB4ju+lo3Tk8542pJE2vqGQ3Wuoe7aq783YcCZyonPEu7O+muzQh
+         qdO3vkhVgKXj3tcJGmdu+OKzeXlCaBvampH+CE6AgYOcxyawZxO9fI6XaY13pdSsrt
+         JoMpEVzUyoVNMZcZrXRiOvjQdwqAQxb+a1St/seI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 5.10 603/663] nvmem: qcom-spmi-sdam: Fix uninitialized pdev pointer
-Date:   Mon,  1 Mar 2021 17:14:11 +0100
-Message-Id: <20210301161211.690337025@linuxfoundation.org>
+        stable@vger.kernel.org, Frank Li <Frank.Li@nxp.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 5.4 308/340] mmc: sdhci-esdhc-imx: fix kernel panic when remove module
+Date:   Mon,  1 Mar 2021 17:14:12 +0100
+Message-Id: <20210301161103.442563152@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+From: Frank Li <Frank.Li@nxp.com>
 
-commit e2057ee29973b9741d43d3f475a6b02fb46a0e61 upstream.
+commit a56f44138a2c57047f1ea94ea121af31c595132b upstream.
 
-"sdam->pdev" is uninitialized and it is used to print error logs.
-Fix it. Since device pointer can be used from sdam_config, use it
-directly thereby removing pdev pointer.
+In sdhci_esdhc_imx_remove() the SDHCI_INT_STATUS in read. Under some
+circumstances, this may be done while the device is runtime suspended,
+triggering the below splat.
 
-Fixes: 40ce9798794f ("nvmem: add QTI SDAM driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Subbaraman Narayanamurthy <subbaram@codeaurora.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210205100853.32372-3-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix the problem by adding a pm_runtime_get_sync(), before reading the
+register, which will turn on clocks etc making the device accessible again.
+
+[ 1811.323148] mmc1: card aaaa removed
+[ 1811.347483] Internal error: synchronous external abort: 96000210 [#1] PREEMPT SMP
+[ 1811.354988] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cqhci mmc_block mmc_core [last unloaded: mmc_core]
+[ 1811.365726] CPU: 0 PID: 3464 Comm: rmmod Not tainted 5.10.1-sd-99871-g53835a2e8186 #5
+[ 1811.373559] Hardware name: Freescale i.MX8DXL EVK (DT)
+[ 1811.378705] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+[ 1811.384723] pc : sdhci_esdhc_imx_remove+0x28/0x15c [sdhci_esdhc_imx]
+[ 1811.391090] lr : platform_drv_remove+0x2c/0x50
+[ 1811.395536] sp : ffff800012c7bcb0
+[ 1811.398855] x29: ffff800012c7bcb0 x28: ffff00002c72b900
+[ 1811.404181] x27: 0000000000000000 x26: 0000000000000000
+[ 1811.409497] x25: 0000000000000000 x24: 0000000000000000
+[ 1811.414814] x23: ffff0000042b3890 x22: ffff800009127120
+[ 1811.420131] x21: ffff00002c4c9580 x20: ffff0000042d0810
+[ 1811.425456] x19: ffff0000042d0800 x18: 0000000000000020
+[ 1811.430773] x17: 0000000000000000 x16: 0000000000000000
+[ 1811.436089] x15: 0000000000000004 x14: ffff000004019c10
+[ 1811.441406] x13: 0000000000000000 x12: 0000000000000020
+[ 1811.446723] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f
+[ 1811.452040] x9 : fefefeff6364626d x8 : 7f7f7f7f7f7f7f7f
+[ 1811.457356] x7 : 78725e6473607372 x6 : 0000000080808080
+[ 1811.462673] x5 : 0000000000000000 x4 : 0000000000000000
+[ 1811.467990] x3 : ffff800011ac1cb0 x2 : 0000000000000000
+[ 1811.473307] x1 : ffff8000091214d4 x0 : ffff8000133a0030
+[ 1811.478624] Call trace:
+[ 1811.481081]  sdhci_esdhc_imx_remove+0x28/0x15c [sdhci_esdhc_imx]
+[ 1811.487098]  platform_drv_remove+0x2c/0x50
+[ 1811.491198]  __device_release_driver+0x188/0x230
+[ 1811.495818]  driver_detach+0xc0/0x14c
+[ 1811.499487]  bus_remove_driver+0x5c/0xb0
+[ 1811.503413]  driver_unregister+0x30/0x60
+[ 1811.507341]  platform_driver_unregister+0x14/0x20
+[ 1811.512048]  sdhci_esdhc_imx_driver_exit+0x1c/0x3a8 [sdhci_esdhc_imx]
+[ 1811.518495]  __arm64_sys_delete_module+0x19c/0x230
+[ 1811.523291]  el0_svc_common.constprop.0+0x78/0x1a0
+[ 1811.528086]  do_el0_svc+0x24/0x90
+[ 1811.531405]  el0_svc+0x14/0x20
+[ 1811.534461]  el0_sync_handler+0x1a4/0x1b0
+[ 1811.538474]  el0_sync+0x174/0x180
+[ 1811.541801] Code: a9025bf5 f9403e95 f9400ea0 9100c000 (b9400000)
+[ 1811.547902] ---[ end trace 3fb1a3bd48ff7be5 ]---
+
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Cc: stable@vger.kernel.org # v4.0+
+Link: https://lore.kernel.org/r/20210210181933.29263-1-Frank.Li@nxp.com
+[Ulf: Clarified the commit message a bit]
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvmem/qcom-spmi-sdam.c |    7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/mmc/host/sdhci-esdhc-imx.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/nvmem/qcom-spmi-sdam.c
-+++ b/drivers/nvmem/qcom-spmi-sdam.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Copyright (c) 2017, 2020 The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2017, 2020-2021, The Linux Foundation. All rights reserved.
-  */
+--- a/drivers/mmc/host/sdhci-esdhc-imx.c
++++ b/drivers/mmc/host/sdhci-esdhc-imx.c
+@@ -1589,9 +1589,10 @@ static int sdhci_esdhc_imx_remove(struct
+ 	struct sdhci_host *host = platform_get_drvdata(pdev);
+ 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+ 	struct pltfm_imx_data *imx_data = sdhci_pltfm_priv(pltfm_host);
+-	int dead = (readl(host->ioaddr + SDHCI_INT_STATUS) == 0xffffffff);
++	int dead;
  
- #include <linux/device.h>
-@@ -18,7 +18,6 @@
- #define SDAM_PBS_TRIG_CLR		0xE6
+ 	pm_runtime_get_sync(&pdev->dev);
++	dead = (readl(host->ioaddr + SDHCI_INT_STATUS) == 0xffffffff);
+ 	pm_runtime_disable(&pdev->dev);
+ 	pm_runtime_put_noidle(&pdev->dev);
  
- struct sdam_chip {
--	struct platform_device		*pdev;
- 	struct regmap			*regmap;
- 	struct nvmem_config		sdam_config;
- 	unsigned int			base;
-@@ -65,7 +64,7 @@ static int sdam_read(void *priv, unsigne
- 				size_t bytes)
- {
- 	struct sdam_chip *sdam = priv;
--	struct device *dev = &sdam->pdev->dev;
-+	struct device *dev = sdam->sdam_config.dev;
- 	int rc;
- 
- 	if (!sdam_is_valid(sdam, offset, bytes)) {
-@@ -86,7 +85,7 @@ static int sdam_write(void *priv, unsign
- 				size_t bytes)
- {
- 	struct sdam_chip *sdam = priv;
--	struct device *dev = &sdam->pdev->dev;
-+	struct device *dev = sdam->sdam_config.dev;
- 	int rc;
- 
- 	if (!sdam_is_valid(sdam, offset, bytes)) {
 
 
