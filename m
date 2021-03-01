@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0CD328B21
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6B43289F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240127AbhCAS25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:28:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41870 "EHLO mail.kernel.org"
+        id S239338AbhCASI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:08:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234899AbhCAQin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:38:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 126A364F80;
-        Mon,  1 Mar 2021 16:27:56 +0000 (UTC)
+        id S234234AbhCAQeh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:34:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE47D64F5B;
+        Mon,  1 Mar 2021 16:25:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616077;
-        bh=v09YhnJe0SV1OZwOgL5tiLtvEWPmDAuGA0d9WAXjo1g=;
+        s=korg; t=1614615915;
+        bh=RYgpU82FcmexzorS27ZfWaTxqTvBxmO4f0dSeum8iaI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cj7ZXMdJDFThCpCubR4hifUFNWESkbcolcj22/ZdXOLntpn6rBox7tUVmy2r2XlJi
-         b3d8BbWN0phjwY9TfLBkQV27yJKOMyekNKbqEP8QeyxNLqsQy7IaOnLW4Bgf79MEex
-         MqCajqQUSind/IOCLXVjIFpSCCwTTZUtQJI1pRuI=
+        b=La3dgRfxz34KzYqWq3ruLtoEtA4lhZ/m4AQai0zmvEB6kvo+mMjxtK029i+d873jH
+         iAemhJJSV46xunScX59TD1+zLcWNAu2DOtQxcyciL6aOA5LRup6v7MnyypEC5u00EU
+         A9ztoU/iFxZei3UcMYeAp/wQC+AW5gmgVoP0QINg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Boris ARZUR <boris@konbu.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Kan Liang <kan.liang@intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 026/176] usb: dwc2: Abort transaction after errors with unknown reason
-Date:   Mon,  1 Mar 2021 17:11:39 +0100
-Message-Id: <20210301161022.276198219@linuxfoundation.org>
+Subject: [PATCH 4.9 065/134] perf tools: Fix DSO filtering when not finding a map for a sampled address
+Date:   Mon,  1 Mar 2021 17:12:46 +0100
+Message-Id: <20210301161016.749402633@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
-References: <20210301161020.931630716@linuxfoundation.org>
+In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
+References: <20210301161013.585393984@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,82 +47,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-[ Upstream commit f74b68c61cbc4b2245022fcce038509333d63f6f ]
+[ Upstream commit c69bf11ad3d30b6bf01cfa538ddff1a59467c734 ]
 
-In some situations, the following error messages are reported.
+When we lookup an address and don't find a map we should filter that
+sample if the user specified a list of --dso entries to filter on, fix
+it.
 
-dwc2 ff540000.usb: dwc2_hc_chhltd_intr_dma: Channel 1 - ChHltd set, but reason is unknown
-dwc2 ff540000.usb: hcint 0x00000002, intsts 0x04000021
+Before:
 
-This is sometimes followed by:
+  $ perf script
+             sleep 274800  2843.556162:          1 cycles:u:  ffffffffbb26bff4 [unknown] ([unknown])
+             sleep 274800  2843.556168:          1 cycles:u:  ffffffffbb2b047d [unknown] ([unknown])
+             sleep 274800  2843.556171:          1 cycles:u:  ffffffffbb2706b2 [unknown] ([unknown])
+             sleep 274800  2843.556174:          6 cycles:u:  ffffffffbb2b0267 [unknown] ([unknown])
+             sleep 274800  2843.556176:         59 cycles:u:  ffffffffbb2b03b1 [unknown] ([unknown])
+             sleep 274800  2843.556180:        691 cycles:u:  ffffffffbb26bff4 [unknown] ([unknown])
+             sleep 274800  2843.556189:       9160 cycles:u:      7fa9550eeaa3 __GI___tunables_init+0xf3 (/usr/lib64/ld-2.32.so)
+             sleep 274800  2843.556312:      86937 cycles:u:      7fa9550e157b _dl_lookup_symbol_x+0x4b (/usr/lib64/ld-2.32.so)
+  $
 
-dwc2 ff540000.usb: dwc2_update_urb_state_abn(): trimming xfer length
+So we have some samples we somehow didn't find in a map for, if we now
+do:
 
-and then:
+  $ perf report --stdio --dso /usr/lib64/ld-2.32.so
+  # dso: /usr/lib64/ld-2.32.so
+  #
+  # Total Lost Samples: 0
+  #
+  # Samples: 8  of event 'cycles:u'
+  # Event count (approx.): 96856
+  #
+  # Overhead  Command  Symbol
+  # ........  .......  ........................
+  #
+      89.76%  sleep    [.] _dl_lookup_symbol_x
+       9.46%  sleep    [.] __GI___tunables_init
+       0.71%  sleep    [k] 0xffffffffbb26bff4
+       0.06%  sleep    [k] 0xffffffffbb2b03b1
+       0.01%  sleep    [k] 0xffffffffbb2b0267
+       0.00%  sleep    [k] 0xffffffffbb2706b2
+       0.00%  sleep    [k] 0xffffffffbb2b047d
+  $
 
-WARNING: CPU: 0 PID: 0 at kernel/v4.19/drivers/usb/dwc2/hcd.c:2913
-			dwc2_assign_and_init_hc+0x98c/0x990
+After this patch we get the right output with just entries for the DSOs
+specified in --dso:
 
-The warning suggests that an odd buffer address is to be used for DMA.
+  $ perf report --stdio --dso /usr/lib64/ld-2.32.so
+  # dso: /usr/lib64/ld-2.32.so
+  #
+  # Total Lost Samples: 0
+  #
+  # Samples: 8  of event 'cycles:u'
+  # Event count (approx.): 96856
+  #
+  # Overhead  Command  Symbol
+  # ........  .......  ........................
+  #
+      89.76%  sleep    [.] _dl_lookup_symbol_x
+       9.46%  sleep    [.] __GI___tunables_init
+  $
+  #
 
-After an error is observed, the receive buffer may be full
-(urb->actual_length >= urb->length). However, the urb is still left in
-the queue unless three errors were observed in a row. When it is queued
-again, the dwc2 hcd code translates this into a 1-block transfer.
-If urb->actual_length (ie the total expected receive length) is not
-DMA-aligned, the buffer pointer programmed into the chip will be
-unaligned. This results in the observed warning.
-
-To solve the problem, abort input transactions after an error with
-unknown cause if the entire packet was already received. This may be
-a bit drastic, but we don't really know why the transfer was aborted
-even though the entire packet was received. Aborting the transfer in
-this situation is less risky than accepting a potentially corrupted
-packet.
-
-With this patch in place, the 'ChHltd set' and 'trimming xfer length'
-messages are still observed, but there are no more transfer attempts
-with odd buffer addresses.
-
-Fixes: 151d0cbdbe860 ("usb: dwc2: make the scheduler handle excessive NAKs better")
-Cc: Boris ARZUR <boris@konbu.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Tested-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Link: https://lore.kernel.org/r/20210113112052.17063-3-nsaenzjulienne@suse.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 96415e4d3f5fdf9c ("perf symbols: Avoid unnecessary symbol loading when dso list is specified")
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jin Yao <yao.jin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Kan Liang <kan.liang@intel.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/20210128131209.GD775562@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc2/hcd_intr.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ tools/perf/util/event.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/usb/dwc2/hcd_intr.c b/drivers/usb/dwc2/hcd_intr.c
-index 74be06354b5b6..10459ad19bcc2 100644
---- a/drivers/usb/dwc2/hcd_intr.c
-+++ b/drivers/usb/dwc2/hcd_intr.c
-@@ -1939,6 +1939,18 @@ error:
- 		qtd->error_count++;
- 		dwc2_update_urb_state_abn(hsotg, chan, chnum, qtd->urb,
- 					  qtd, DWC2_HC_XFER_XACT_ERR);
-+		/*
-+		 * We can get here after a completed transaction
-+		 * (urb->actual_length >= urb->length) which was not reported
-+		 * as completed. If that is the case, and we do not abort
-+		 * the transfer, a transfer of size 0 will be enqueued
-+		 * subsequently. If urb->actual_length is not DMA-aligned,
-+		 * the buffer will then point to an unaligned address, and
-+		 * the resulting behavior is undefined. Bail out in that
-+		 * situation.
-+		 */
-+		if (qtd->urb->actual_length >= qtd->urb->length)
-+			qtd->error_count = 3;
- 		dwc2_hcd_save_data_toggle(hsotg, chan, chnum, qtd);
- 		dwc2_halt_channel(hsotg, chan, qtd, DWC2_HC_XFER_XACT_ERR);
+diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
+index 659c41004322d..5742adf4d5e89 100644
+--- a/tools/perf/util/event.c
++++ b/tools/perf/util/event.c
+@@ -1370,6 +1370,8 @@ int machine__resolve(struct machine *machine, struct addr_location *al,
+ 		}
+ 
+ 		al->sym = map__find_symbol(al->map, al->addr);
++	} else if (symbol_conf.dso_list) {
++		al->filtered |= (1 << HIST_FILTER__DSO);
  	}
+ 
+ 	if (symbol_conf.sym_list &&
 -- 
 2.27.0
 
