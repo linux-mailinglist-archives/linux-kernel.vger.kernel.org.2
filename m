@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB714327BCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CE7327BD0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhCAKRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:17:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232578AbhCAKQw (ORCPT
+        id S233401AbhCAKR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:17:57 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58268 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232575AbhCAKQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:16:52 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01816C06174A;
-        Mon,  1 Mar 2021 02:16:11 -0800 (PST)
-Date:   Mon, 01 Mar 2021 10:16:08 -0000
+        Mon, 1 Mar 2021 05:16:57 -0500
+Date:   Mon, 01 Mar 2021 10:16:10 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614593769;
+        s=2020; t=1614593771;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=J0XQJbSpre/Yyi1s+ii91sER73lWBRJ1YQUJomumI50=;
-        b=BjLbF2Jx64mg8XJ0lrdhJaOEuP9fC4xpL/wM3ZPNNLZ75i5ZGbIMd7zcwP9Hp+ao/ul1pF
-        oCl+wbyDDiFIFNUY6VkvQ5kVTEmjs1he/K0juQfxKGiP8P8q0g87n8cbb9s+f7o2Rwap5p
-        Qfam3900EdzMCclj6CTWCRRTDIwxYYmPjA6uBRCY8fBAs/hCdoDInh0m7RYSMwpSUA7ici
-        n6wj265Ki65FLCDjcNaelqYFeFT32BNfPmFsPbfX+ENgVXhckM4sQS8bM2AtBAUKIG/O0b
-        W/6ptBmhB3k109yE5S/NxyeQQ0uOjN5V1AeI6UkQVuxDagq/hx3BGUGiZ4WEEw==
+        bh=khmLqBQcfQpD6uOJLI+2Kp9m2Osw5dxjB0EGqQ7nwik=;
+        b=4g9F335ndLxvi2qv86MF31ni/fshKyRfssBgrso0+mNNVSmJd3fWDp6d6qN2RF9jL8znbr
+        X4UbRSRujmTtjO8od+uozBWF2uJ7eLM5mYPJ+pMGz2ymZi/X1hBvHUiL9jrbr24eKOEZva
+        jnbs6wh+4JDWw8gHFMTpMHy8WPvA6zHQ8Tov9ldb4dQjaQSXWuXivAsP1cmC1/x927jc7d
+        xbhOQumJCGhkkUXBtTr1L/p4uiv8w9t+xdbXgINmLLTcjBmFWyq+dckFQF6cdNJDxHbo4t
+        jyzcnVum2gjb6dciKlwkimM7MsyWcyUt3Rf4g4BSRwEtfEfXT8QGdQkn0gZlow==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614593769;
+        s=2020e; t=1614593771;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=J0XQJbSpre/Yyi1s+ii91sER73lWBRJ1YQUJomumI50=;
-        b=+5fjfb2ONEFHQGKQxeVdIvsAVnffYrp9R/zjtUL2wQyRjKh3qe33P5YLQJtjDI7gd1z5gx
-        w71TR3eJiMGiGtBg==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=khmLqBQcfQpD6uOJLI+2Kp9m2Osw5dxjB0EGqQ7nwik=;
+        b=Oew2ReWNYZpKxegV4S1xmgaNUkCzhxsicnguMGmp14yP84M0ARS29Dj9plJO/iFKUAE7cN
+        I/FN5drijFep1kBA==
+From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] static_call: Fix the module key fixup
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+Subject: [tip: perf/urgent] perf/core: Flush PMU internal buffers for per-CPU events
+Cc:     Gabriel Marin <gmx@google.com>, Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210225220351.GE4746@worktop.programming.kicks-ass.net>
-References: <20210225220351.GE4746@worktop.programming.kicks-ass.net>
+In-Reply-To: <20201130193842.10569-1-kan.liang@linux.intel.com>
+References: <20201130193842.10569-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <161459376868.20312.9858096297457613530.tip-bot2@tip-bot2>
+Message-ID: <161459377075.20312.13323336986510437328.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,55 +57,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     8b97c027dfe4ba195be08fd0e18f716005763b8a
-Gitweb:        https://git.kernel.org/tip/8b97c027dfe4ba195be08fd0e18f716005763b8a
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 25 Feb 2021 23:03:51 +01:00
+Commit-ID:     e748d3716e0e581401630d36d3ef0fc8fa8f830d
+Gitweb:        https://git.kernel.org/tip/e748d3716e0e581401630d36d3ef0fc8fa8f830d
+Author:        Kan Liang <kan.liang@linux.intel.com>
+AuthorDate:    Mon, 30 Nov 2020 11:38:40 -08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 01 Mar 2021 11:02:10 +01:00
+CommitterDate: Mon, 01 Mar 2021 11:02:18 +01:00
 
-static_call: Fix the module key fixup
+perf/core: Flush PMU internal buffers for per-CPU events
 
-Provided the target address of a R_X86_64_PC32 relocation is aligned,
-the low two bits should be invariant between the relative and absolute
-value.
+Sometimes the PMU internal buffers have to be flushed for per-CPU events
+during a context switch, e.g., large PEBS. Otherwise, the perf tool may
+report samples in locations that do not belong to the process where the
+samples are processed in, because PEBS does not tag samples with PID/TID.
 
-Turns out the address is not aligned and things go sideways, ensure we
-transfer the bits in the absolute form when fixing up the key address.
+The current code only flush the buffers for a per-task event. It doesn't
+check a per-CPU event.
 
-Fixes: 73f44fe19d35 ("static_call: Allow module use without exposing static_call_key")
-Reported-by: Steven Rostedt <rostedt@goodmis.org>
+Add a new event state flag, PERF_ATTACH_SCHED_CB, to indicate that the
+PMU internal buffers have to be flushed for this event during a context
+switch.
+
+Add sched_cb_entry and perf_sched_cb_usages back to track the PMU/cpuctx
+which is required to be flushed.
+
+Only need to invoke the sched_task() for per-CPU events in this patch.
+The per-task events have been handled in perf_event_context_sched_in/out
+already.
+
+Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
+Reported-by: Gabriel Marin <gmx@google.com>
+Originally-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Link: https://lkml.kernel.org/r/20210225220351.GE4746@worktop.programming.kicks-ass.net
+Link: https://lkml.kernel.org/r/20201130193842.10569-1-kan.liang@linux.intel.com
 ---
- kernel/static_call.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ include/linux/perf_event.h |  2 ++-
+ kernel/events/core.c       | 42 +++++++++++++++++++++++++++++++++----
+ 2 files changed, 40 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 6906c6e..ae82529 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -349,7 +349,8 @@ static int static_call_add_module(struct module *mod)
- 	struct static_call_site *site;
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index fab42cf..3f7f89e 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -606,6 +606,7 @@ struct swevent_hlist {
+ #define PERF_ATTACH_TASK	0x04
+ #define PERF_ATTACH_TASK_DATA	0x08
+ #define PERF_ATTACH_ITRACE	0x10
++#define PERF_ATTACH_SCHED_CB	0x20
  
- 	for (site = start; site != stop; site++) {
--		unsigned long addr = (unsigned long)static_call_key(site);
-+		unsigned long s_key = (long)site->key + (long)&site->key;
-+		unsigned long addr = s_key & ~STATIC_CALL_SITE_FLAGS;
- 		unsigned long key;
+ struct perf_cgroup;
+ struct perf_buffer;
+@@ -872,6 +873,7 @@ struct perf_cpu_context {
+ 	struct list_head		cgrp_cpuctx_entry;
+ #endif
  
- 		/*
-@@ -373,8 +374,8 @@ static int static_call_add_module(struct module *mod)
- 			return -EINVAL;
- 		}
++	struct list_head		sched_cb_entry;
+ 	int				sched_cb_usage;
  
--		site->key = (key - (long)&site->key) |
--			    (site->key & STATIC_CALL_SITE_FLAGS);
-+		key |= s_key & STATIC_CALL_SITE_FLAGS;
-+		site->key = key - (long)&site->key;
+ 	int				online;
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 0aeca5f..03db40f 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -386,6 +386,7 @@ static DEFINE_MUTEX(perf_sched_mutex);
+ static atomic_t perf_sched_count;
+ 
+ static DEFINE_PER_CPU(atomic_t, perf_cgroup_events);
++static DEFINE_PER_CPU(int, perf_sched_cb_usages);
+ static DEFINE_PER_CPU(struct pmu_event_list, pmu_sb_events);
+ 
+ static atomic_t nr_mmap_events __read_mostly;
+@@ -3461,11 +3462,16 @@ unlock:
  	}
+ }
  
- 	return __static_call_init(mod, start, stop);
++static DEFINE_PER_CPU(struct list_head, sched_cb_list);
++
+ void perf_sched_cb_dec(struct pmu *pmu)
+ {
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	--cpuctx->sched_cb_usage;
++	this_cpu_dec(perf_sched_cb_usages);
++
++	if (!--cpuctx->sched_cb_usage)
++		list_del(&cpuctx->sched_cb_entry);
+ }
+ 
+ 
+@@ -3473,7 +3479,10 @@ void perf_sched_cb_inc(struct pmu *pmu)
+ {
+ 	struct perf_cpu_context *cpuctx = this_cpu_ptr(pmu->pmu_cpu_context);
+ 
+-	cpuctx->sched_cb_usage++;
++	if (!cpuctx->sched_cb_usage++)
++		list_add(&cpuctx->sched_cb_entry, this_cpu_ptr(&sched_cb_list));
++
++	this_cpu_inc(perf_sched_cb_usages);
+ }
+ 
+ /*
+@@ -3502,6 +3511,24 @@ static void __perf_pmu_sched_task(struct perf_cpu_context *cpuctx, bool sched_in
+ 	perf_ctx_unlock(cpuctx, cpuctx->task_ctx);
+ }
+ 
++static void perf_pmu_sched_task(struct task_struct *prev,
++				struct task_struct *next,
++				bool sched_in)
++{
++	struct perf_cpu_context *cpuctx;
++
++	if (prev == next)
++		return;
++
++	list_for_each_entry(cpuctx, this_cpu_ptr(&sched_cb_list), sched_cb_entry) {
++		/* will be handled in perf_event_context_sched_in/out */
++		if (cpuctx->task_ctx)
++			continue;
++
++		__perf_pmu_sched_task(cpuctx, sched_in);
++	}
++}
++
+ static void perf_event_switch(struct task_struct *task,
+ 			      struct task_struct *next_prev, bool sched_in);
+ 
+@@ -3524,6 +3551,9 @@ void __perf_event_task_sched_out(struct task_struct *task,
+ {
+ 	int ctxn;
+ 
++	if (__this_cpu_read(perf_sched_cb_usages))
++		perf_pmu_sched_task(task, next, false);
++
+ 	if (atomic_read(&nr_switch_events))
+ 		perf_event_switch(task, next, false);
+ 
+@@ -3832,6 +3862,9 @@ void __perf_event_task_sched_in(struct task_struct *prev,
+ 
+ 	if (atomic_read(&nr_switch_events))
+ 		perf_event_switch(task, prev, true);
++
++	if (__this_cpu_read(perf_sched_cb_usages))
++		perf_pmu_sched_task(prev, task, true);
+ }
+ 
+ static u64 perf_calculate_period(struct perf_event *event, u64 nsec, u64 count)
+@@ -4656,7 +4689,7 @@ static void unaccount_event(struct perf_event *event)
+ 	if (event->parent)
+ 		return;
+ 
+-	if (event->attach_state & PERF_ATTACH_TASK)
++	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
+ 		dec = true;
+ 	if (event->attr.mmap || event->attr.mmap_data)
+ 		atomic_dec(&nr_mmap_events);
+@@ -11175,7 +11208,7 @@ static void account_event(struct perf_event *event)
+ 	if (event->parent)
+ 		return;
+ 
+-	if (event->attach_state & PERF_ATTACH_TASK)
++	if (event->attach_state & (PERF_ATTACH_TASK | PERF_ATTACH_SCHED_CB))
+ 		inc = true;
+ 	if (event->attr.mmap || event->attr.mmap_data)
+ 		atomic_inc(&nr_mmap_events);
+@@ -12972,6 +13005,7 @@ static void __init perf_event_init_all_cpus(void)
+ #ifdef CONFIG_CGROUP_PERF
+ 		INIT_LIST_HEAD(&per_cpu(cgrp_cpuctx_list, cpu));
+ #endif
++		INIT_LIST_HEAD(&per_cpu(sched_cb_list, cpu));
+ 	}
+ }
+ 
