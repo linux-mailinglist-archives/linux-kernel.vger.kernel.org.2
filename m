@@ -2,196 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47A53275B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 02:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6862B3275BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 02:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhCABMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 20:12:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbhCABMJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 20:12:09 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBD4C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 17:11:28 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id i4-20020a17090a7184b02900bfb60fbc6bso1569523pjk.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 17:11:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=lt0oVa4TTqOxC4dz7vJKEQu8Xc7A+35tptwF7QqK3/k=;
-        b=m0FkE2krnamYFeX1Pti0Fl1Ein+4gSp9e9e/va840QQyrijFm1iLewX6PGXF9ibg8n
-         s3GMnM4wODiOLo9FGyv8WP7YT9ws4Nz/G4WLQek+pg9mpQmaHCH7hRoPFQmI6rZI9AR2
-         XGdnUYLaSS2E8CeGEeAoxUG9Q5dAGN1ID+Kx2mRbGr2HMlvLZez5AEqF7TOB9MoUbmZu
-         BK6iZm6XLsCcCkDH1nRsy6uWEewKtVpFd/zXtYvEhc7RgDRoNXv/MGp5/9CXfMSuHTTf
-         UMU8sEdAsEdkjekgqoyNXscD00gPQ36O1F03EZic5KRdL7TYgxbgLTwpBCP/6+tUObFu
-         PlTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=lt0oVa4TTqOxC4dz7vJKEQu8Xc7A+35tptwF7QqK3/k=;
-        b=kh+kVQ91V88YB5k8MTw+rWLDjzQftMFootByaWZE/wuUAPHIohJ2UJ8eHYu/8guZ2y
-         MbOXKUO7mUVe0qrtEhAkcUSxCaH4nvn7EYC1tClFZ7G3lj/UnKu9yPFJ7dfSNVE0UW2q
-         /wAD229gZ1P2e32E03P31UpyrQkyIKCzxhNAfXyo6DHhu+GF/vUTUA5V/R+z1zmAKzSv
-         8lXWFhegfc5hkWvjcec8wZL/Bdoh5K4wKbhOsBMFmvyYrB4Rsq7KYs0v/xii+Dqvjn44
-         cdBQsiEhVGlpmAKL/dktATImrHbmTjA9uRFTCiKO1DvEnAo2yFhq5vyXbEQ7iKBm0rNf
-         2SCg==
-X-Gm-Message-State: AOAM530LmC8mf6naIgAbTG6J/twXjc9nWiUrPNP4jDndt60TZJttxH2H
-        Y/wrcYaebO+aXB4ds1AO98E=
-X-Google-Smtp-Source: ABdhPJzRbhBimuqvZNSXpcezQzmyQzJVRzPgweHg3FMIK4k3Dxf5yo6rME5JvUFz6xZ8Qyts9jDNTg==
-X-Received: by 2002:a17:90a:16d7:: with SMTP id y23mr15152020pje.227.1614561088230;
-        Sun, 28 Feb 2021 17:11:28 -0800 (PST)
-Received: from localhost (58-6-239-121.tpgi.com.au. [58.6.239.121])
-        by smtp.gmail.com with ESMTPSA id c15sm14911942pfj.170.2021.02.28.17.11.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 17:11:27 -0800 (PST)
-Date:   Mon, 01 Mar 2021 11:11:22 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH] [RFC] arm64: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-To:     Arnd Bergmann <arnd@kernel.org>, Fangrui Song <maskray@google.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Scull <ascull@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, Nicolas Pitre <nico@fluxnic.net>
-References: <20210225112122.2198845-1-arnd@kernel.org>
-        <20210226211323.arkvjnr4hifxapqu@google.com>
-        <CAK8P3a2bLKe3js4SKeZoGp8B51+rpW6G3KvpbJ5=y83sxHSu6g@mail.gmail.com>
-In-Reply-To: <CAK8P3a2bLKe3js4SKeZoGp8B51+rpW6G3KvpbJ5=y83sxHSu6g@mail.gmail.com>
+        id S231591AbhCABN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 20:13:58 -0500
+Received: from mga03.intel.com ([134.134.136.65]:25851 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231352AbhCABN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 20:13:56 -0500
+IronPort-SDR: gJfO6sHnuTYrrf1zz7jjmLng5rSrZ/TWgE0o43I4c9QPXt3qvKjaB/PMRygBZiUXhOVZrlHdQb
+ o1hlNx/0E6lg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="186379113"
+X-IronPort-AV: E=Sophos;i="5.81,214,1610438400"; 
+   d="scan'208";a="186379113"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2021 17:12:07 -0800
+IronPort-SDR: Bdt63Ro/qcWnXbCR5I+U2cpDjnySuBRDp6eLvYNlqOR4GrA2OgxV3b2LoSrLnYI70vbWOt7mZW
+ 2WAxVN6ZDJLA==
+X-IronPort-AV: E=Sophos;i="5.81,214,1610438400"; 
+   d="scan'208";a="366541623"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2021 17:12:04 -0800
+Subject: Re: [drm/i915/gt] 8c3b1ba0e7:
+ perf-sanity-tests.Parse_event_definition_strings.fail
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Liang, Kan" <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>,
+        "Yi, Ammy" <ammy.yi@intel.com>
+References: <20210224074841.GD6114@xsang-OptiPlex-9020>
+ <cabd8692-07ca-13c8-efb5-e088b4547f80@linux.intel.com>
+ <YDenRVGzh5Dv1pC2@krava> <YDfph8b9p8sSk1AF@krava> <YDfxgfi5DBDMFgwu@krava>
+ <YDf0fP8XmnTrkIT8@krava>
+ <d416a908-6a54-5e4c-e377-dc9d2b778941@linux.intel.com>
+ <YDodJb4CXDT8VemG@krava> <YDtjgCcP9mLBcu/y@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <d2a9769e-0632-0cfd-99e5-ab6ff2a54e46@linux.intel.com>
+Date:   Mon, 1 Mar 2021 09:12:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Message-Id: <1614559739.p25z5x88wl.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YDtjgCcP9mLBcu/y@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Arnd Bergmann's message of February 27, 2021 7:49 pm:
-> On Fri, Feb 26, 2021 at 10:13 PM 'Fangrui Song' via Clang Built Linux
-> <clang-built-linux@googlegroups.com> wrote:
+Hi Jiri,
+
+On 2/28/2021 5:33 PM, Jiri Olsa wrote:
+> On Sat, Feb 27, 2021 at 11:21:25AM +0100, Jiri Olsa wrote:
+>> On Fri, Feb 26, 2021 at 08:41:26AM +0800, Jin, Yao wrote:
 >>
->> For folks who are interested in --gc-sections on metadata sections,
->> I want to bring you awareness of the implication of __start_/__stop_ sym=
-bols and C identifier name sections.
->> You can see https://github.com/ClangBuiltLinux/linux/issues/1307 for a s=
-ummary.
->> (Its linked blog article has some examples.)
+>> SNIP
 >>
->> In the kernel linker scripts, most C identifier name sections begin with=
- double-underscore __.
->> Some are surrounded by `KEEP(...)`, some are not.
+>>>> +				SET_SYMBOL(prefix, PMU_EVENT_SYMBOL);
+>>>>    				len++;
+>>>>    			}
+>>>>    		}
+>>>>    	}
+>>>> +
+>>>> +	/* unlikely, but still.. */
+>>>> +	if (!len)
+>>>> +		goto err;
+>>>> +	perf_pmu_events_list_num = len;
+>>>> +
+>>>>    	qsort(perf_pmu_events_list, len,
+>>>>    		sizeof(struct perf_pmu_event_symbol), comp_pmu);
+>>>>
+>>>
+>>> Thanks so much for the patch! It works with my tests.
+>>>
+>>> # ./perf test 6
+>>>   6: Parse event definition strings                                  : Ok
+>>>
+>>> # ./perf stat -e software/r1a/ -a -- sleep 1
+>>>
+>>>   Performance counter stats for 'system wide':
+>>>
+>>>     <not supported>      software/r1a/
+>>>
+>>>         1.000940433 seconds time elapsed
+>>>
+>>> In theory, do we also need to check suffix as well? I think returning
+>>> PMU_EVENT_SYMBOL_SUFFIX may also confuse the parser. But yes, we don't have
+>>> this case now.
 >>
->> * A `KEEP` keyword has GC root semantics and makes ld --gc-sections inef=
-fectful.
->> * Without `KEEP`, __start_/__stop_ references from a live input section
->>    can unnecessarily retain all the associated C identifier name input
->>    sections. The new ld.lld option `-z start-stop-gc` can defeat this ru=
-le.
->>
->> As an example, a __start___jump_table reference from a live section
->> causes all `__jump_table` input section to be retained, even if you
->> change `KEEP(__jump_table)` to `(__jump_table)`.
->> (If you change the symbol name from `__start_${section}` to something
->> else (e.g. `__start${section}`), the rule will not apply.)
->=20
-> I suspect the __start_* symbols are cargo-culted by many developers
-> copying stuff around between kernel linker scripts, that's certainly how =
-I
-> approach making changes to it normally without a deeper understanding
-> of how the linker actually works or what the different bits of syntax mea=
-n
-> there.
->=20
-> I see the original vmlinux.lds linker script showed up in linux-2.1.23, a=
-nd
-> it contained
->=20
-> +  . =3D ALIGN(16);               /* Exception table */
-> +  __start___ex_table =3D .;
-> +  __ex_table : { *(__ex_table) }
-> +  __stop___ex_table =3D .;
+>> yep, let's wait for use case ;-) you can't have suffix
+>> without prefix, and that's the one failing, so I think
+>> we are fine
+> 
+> actualy this one seems to work as well, could you plz check
+> 
+> thanks,
+> jirka
+> 
+> 
+> ---
+> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+> index d5b6aff82f21..d57ac86ce7ca 100644
+> --- a/tools/perf/util/parse-events.y
+> +++ b/tools/perf/util/parse-events.y
+> @@ -89,6 +89,7 @@ static void inc_group_count(struct list_head *list,
+>   %type <str> PE_EVENT_NAME
+>   %type <str> PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
+>   %type <str> PE_DRV_CFG_TERM
+> +%type <str> event_pmu_name
+>   %destructor { free ($$); } <str>
+>   %type <term> event_term
+>   %destructor { parse_events_term__delete ($$); } <term>
+> @@ -272,8 +273,11 @@ event_def: event_pmu |
+>   	   event_legacy_raw sep_dc |
+>   	   event_bpf_file
+>   
+> +event_pmu_name:
+> +PE_NAME | PE_PMU_EVENT_PRE
 > +
-> +  __start___ksymtab =3D .;       /* Kernel symbol table */
-> +  __ksymtab : { *(__ksymtab) }
-> +  __stop___ksymtab =3D .;
->=20
-> originally for arch/sparc, and shortly afterwards for i386. The magic
-> __ex_table section was first used in linux-2.1.7 without a linker
-> script. It's probably a good idea to try cleaning these up by using
-> non-magic start/stop symbols for all sections, and relying on KEEP()
-> instead where needed.
->=20
->> There are a lot of KEEP usage. Perhaps some can be dropped to facilitate
->> ld --gc-sections.
->=20
-> I see a lot of these were added by Nick Piggin (added to Cc) in this comm=
-it:
->=20
-> commit 266ff2a8f51f02b429a987d87634697eb0d01d6a
-> Author: Nicholas Piggin <npiggin@gmail.com>
-> Date:   Wed May 9 22:59:58 2018 +1000
->=20
->     kbuild: Fix asm-generic/vmlinux.lds.h for LD_DEAD_CODE_DATA_ELIMINATI=
-ON
->=20
->     KEEP more tables, and add the function/data section wildcard to more
->     section selections.
->=20
->     This is a little ad-hoc at the moment, but kernel code should be move=
-d
->     to consistently use .text..x (note: double dots) for explicit section=
-s
->     and all references to it in the linker script can be made with
->     TEXT_MAIN, and similarly for other sections.
->=20
->     For now, let's see if major architectures move to enabling this optio=
-n
->     then we can do some refactoring passes. Otherwise if it remains unuse=
-d
->     or superseded by LTO, this may not be required.
->=20
->     Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->     Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
->=20
-> which apparently was intentionally cautious.
->=20
-> Unlike what Nick expected in his submission, I now think the annotations
-> will be needed for LTO just like they are for --gc-sections.
+>   event_pmu:
+> -PE_NAME opt_pmu_config
+> +event_pmu_name opt_pmu_config
+>   {
+>   	struct parse_events_state *parse_state = _parse_state;
+>   	struct parse_events_error *error = parse_state->error;
+> 
 
-Yeah I wasn't sure exactly what LTO looks like or how it would work.
-I thought perhaps LTO might be able to find dead code with circular /=20
-back references, we could put references from the code back to these=20
-tables or something so they would be kept without KEEP. I don't know, I=20
-was handwaving!
+This fix looks good.
 
-I managed to get powerpc (and IIRC x86?) working with gc sections with
-those KEEP annotations, but effectiveness of course is far worse than=20
-what Nicolas was able to achieve with all his techniques and tricks.
+[root@p-tglr02 perf]# ./perf list | grep i915/software-gt-awake-time/
+   i915/software-gt-awake-time/                       [Kernel PMU event]
 
-But yes unless there is some other mechanism to handle these tables,=20
-then KEEP probably has to stay. I suggest this wants a very explicit and=20
-systematic way to handle it (maybe with some toolchain support) rather=20
-than trying to just remove things case by case and see what breaks.
+[root@p-tglr02 perf]# ./perf test 6
+  6: Parse event definition strings                                  : Ok
 
-I don't know if Nicolas is still been working on his shrinking patches
-recenty but he probably knows more than anyone about this stuff.
+[root@p-tglr02 perf]# ./perf stat -e software/r1a/ -a -- sleep 1
 
-Thanks,
-Nick
+  Performance counter stats for 'system wide':
 
+    <not supported>      software/r1a/
+
+        1.001379319 seconds time elapsed
+
+Thanks
+Jin Yao
