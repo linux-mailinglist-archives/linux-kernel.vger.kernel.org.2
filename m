@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17AC329A60
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1F6329AAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377514AbhCBArf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:47:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54450 "EHLO mail.kernel.org"
+        id S1345467AbhCBBBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:01:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239449AbhCASo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:44:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D850A64F1E;
-        Mon,  1 Mar 2021 17:49:08 +0000 (UTC)
+        id S240401AbhCASvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:51:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E0E265040;
+        Mon,  1 Mar 2021 17:14:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620949;
-        bh=6QsqnqnjmOxLUlPsvlC6bQ7rf8487dlOe1i/yMnOgRE=;
+        s=korg; t=1614618886;
+        bh=fh5/Uoyct62QSNSQXk+ZNuM05QgM0prEHQc1bbcyCbU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zl5/4VyMm3UvG/9AoGKoxbkqqKXLXtmtsyqlNtgFwal2dE2GXt2Xn+ZP+H3apQ4d7
-         lZHF93hHOaVdSZr921Y3gwXnsGxKwL6o/r4UYXZojVIQxsbJFIGbm7SqImHzYVtnw8
-         sZgqniiSArZbem0hyAafcar/fu8/a10hSg0cCQxY=
+        b=hMyoHMyybCHHFWoDgqFtFl/V22mZpT7iv/1yC9s4iVntjlYpTLlfVgJNYSScXaTZt
+         fb6kVXTyJhTVxGjzFXj58yrNLk45T1omvbo83EkS1owUOA1Zx6dIAwECSiJOiZvTWf
+         qKM3z1hTQJs9q6SHHI4ilfxUBPMIzUGPgQco7fww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 331/775] mfd: bd9571mwv: Use devm_mfd_add_devices()
-Date:   Mon,  1 Mar 2021 17:08:19 +0100
-Message-Id: <20210301161217.977358913@linuxfoundation.org>
+Subject: [PATCH 5.10 253/663] ubifs: Fix error return code in alloc_wbufs()
+Date:   Mon,  1 Mar 2021 17:08:21 +0100
+Message-Id: <20210301161154.344134066@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,41 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Wang ShaoBo <bobo.shaobowang@huawei.com>
 
-[ Upstream commit c58ad0f2b052b5675d6394e03713ee41e721b44c ]
+[ Upstream commit 42119dbe571eb419dae99b81dd20fa42f47464e1 ]
 
-To remove mfd devices when unload this driver, should use
-devm_mfd_add_devices() instead.
+Fix to return PTR_ERR() error code from the error handling case instead
+fo 0 in function alloc_wbufs(), as done elsewhere in this function.
 
-Fixes: d3ea21272094 ("mfd: Add ROHM BD9571MWV-M MFD PMIC driver")
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: 6a98bc4614de ("ubifs: Add authentication nodes to journal")
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/bd9571mwv.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/ubifs/super.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/bd9571mwv.c b/drivers/mfd/bd9571mwv.c
-index fab3cdc27ed64..19d57a45134c6 100644
---- a/drivers/mfd/bd9571mwv.c
-+++ b/drivers/mfd/bd9571mwv.c
-@@ -185,9 +185,9 @@ static int bd9571mwv_probe(struct i2c_client *client,
- 		return ret;
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index cb3acfb7dd1fc..dacbb999ae34d 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -838,8 +838,10 @@ static int alloc_wbufs(struct ubifs_info *c)
+ 		c->jheads[i].wbuf.jhead = i;
+ 		c->jheads[i].grouped = 1;
+ 		c->jheads[i].log_hash = ubifs_hash_get_desc(c);
+-		if (IS_ERR(c->jheads[i].log_hash))
++		if (IS_ERR(c->jheads[i].log_hash)) {
++			err = PTR_ERR(c->jheads[i].log_hash);
+ 			goto out;
++		}
  	}
  
--	ret = mfd_add_devices(bd->dev, PLATFORM_DEVID_AUTO, bd9571mwv_cells,
--			      ARRAY_SIZE(bd9571mwv_cells), NULL, 0,
--			      regmap_irq_get_domain(bd->irq_data));
-+	ret = devm_mfd_add_devices(bd->dev, PLATFORM_DEVID_AUTO,
-+				   bd9571mwv_cells, ARRAY_SIZE(bd9571mwv_cells),
-+				   NULL, 0, regmap_irq_get_domain(bd->irq_data));
- 	if (ret) {
- 		regmap_del_irq_chip(bd->irq, bd->irq_data);
- 		return ret;
+ 	/*
 -- 
 2.27.0
 
