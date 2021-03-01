@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C566232A025
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF43932A029
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575389AbhCBDz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:55:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245370AbhCAWeu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:34:50 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006E1C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 14:34:07 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id m6so12510455pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:34:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/AwKDtv+GHa7MHunk/c29uxwQVds8fgP8tOf9dSrqJA=;
-        b=rEWXvFMYmBv6dncujhbwJ+VzGxtQNkur08Sj/C2v8MwzMmAzcIHW9PminN8h4aktnS
-         4OR+f6sa6+84Ad3Mch/48AwghE8o82uh3M/TuO+51/JGLAvuK9d8kAngISagiMzrAkJL
-         AWhcLzIngiasFXpQmULKnogHY1Z0Px6DkplZlLhqEg8ey7MQtXqvIxRl0gQOtVqY7oE5
-         vOadraRURss1IYLQ1k3yzbuKK8cgs5pgDnp8lpY0UBechIhhC/oqG9pv+NpSsYByIUFb
-         d6Den2mTKfnPXFzC4p1lRSGcesiLpSJR1sn48Wny4YV4NgHNKHTrQJ2fSMFHysZ8UjeE
-         OZQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/AwKDtv+GHa7MHunk/c29uxwQVds8fgP8tOf9dSrqJA=;
-        b=RhPnHMy1TiVCdZABm2YCQYqUyXyOBU7pldTKuVHoNFpxR/RdXEh/WTWjcpOD/xGkeM
-         YQT/ZKqihVv6dZ2qRiT8Y/U2v+Ybir/nifHM81mb3im0J3iIKMDtE8ldQm+PiwWJhTUD
-         IvzVQBGdZh3UUNgDfJ1AWRuneL9/+XyT5EahERq0PfZ5HitJ0hTeHFnqXOx9ZFJep1tM
-         J7w7YyTz97M5gbM/uZvK9xSl87mFDIIS39d84Vxhr95OpplFzaDZc0feaukE3JDH2cMO
-         kQiLcrfCq6raFJYowtRbsRfTcxvLIXrGEjkwcL/josQkIRLm1jM0WrfPa74p7Y1WPlIV
-         +zKQ==
-X-Gm-Message-State: AOAM530KVKzukWbs0iiY3eKRvSNIqEOWvyO7Pi8BhHnz/8uSnSG+7kf3
-        v/kuRD1Lni/EDwT6/VaSSyg51A==
-X-Google-Smtp-Source: ABdhPJyAPnkIsb6b/0CFbgCmrG8poAEIKGGC2AqntUJXHhhCLrC0LVGAJHlM0XihZb79Ms0NM6OGYw==
-X-Received: by 2002:a63:6dc3:: with SMTP id i186mr8303678pgc.314.1614638047291;
-        Mon, 01 Mar 2021 14:34:07 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
-        by smtp.gmail.com with ESMTPSA id 63sm4128729pfg.187.2021.03.01.14.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 14:34:06 -0800 (PST)
-Date:   Mon, 1 Mar 2021 14:34:00 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        id S1575421AbhCBD4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:56:07 -0500
+Received: from ms9.eaxlabs.cz ([147.135.177.209]:38660 "EHLO ms9.eaxlabs.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233254AbhCAWlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 17:41:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=kFsI78mY/ZRsnqmIBcnHXfh7nTVcK0J3fpNvfJ5QymU=;
+        b=FB6mU5YXCt5R4qgHXWiXGdw2IAjfsEkKwNHCKp8N+JrrsZKpQT34V8BhtNqd/cbpVZ/TzXpYvmACGINyRgpUokHqf6loTYJsHN4FMO0RZzcxxyNAB1x2EGaeoOQHlFQmoUUXoVBxqHHPZW6Sh6gL/oPmGUEqSto3uCN9LaZWOng=;
+Received: from [82.99.129.6] (helo=[10.76.6.112])
+        by ms9.eaxlabs.cz with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <devik@eaxlabs.cz>)
+        id 1lGrDH-0006uv-Ol; Mon, 01 Mar 2021 23:40:29 +0100
+Subject: Re: [PATCH v2 1/2] tty/serial: Add rx-tx-swap OF option to
+ stm32-usart
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] KVM: vmx/pmu: Add MSR_ARCH_LBR_DEPTH emulation
- for Arch LBR
-Message-ID: <YD1r2G1UQjVXkUk5@google.com>
-References: <20210203135714.318356-1-like.xu@linux.intel.com>
- <20210203135714.318356-2-like.xu@linux.intel.com>
+Cc:     devicetree@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-serial@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Le Ray <erwan.leray@st.com>
+References: <CAL_JsqK8+M=Vg0PiDXP2f1LrEp4hSVea6piAASMGu1H=pxme6Q@mail.gmail.com>
+ <20210227164157.30971-1-devik@eaxlabs.cz>
+ <439a0d7a-cc0e-764b-7ed8-668b5a85f4a7@foss.st.com>
+From:   Martin DEVERA <devik@eaxlabs.cz>
+Message-ID: <fbdce86c-a17f-7626-51e4-9e48ea25001e@eaxlabs.cz>
+Date:   Mon, 1 Mar 2021 23:40:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203135714.318356-2-like.xu@linux.intel.com>
+In-Reply-To: <439a0d7a-cc0e-764b-7ed8-668b5a85f4a7@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021, Like Xu wrote:
-> @@ -348,10 +352,26 @@ static bool intel_pmu_handle_lbr_msrs_access(struct kvm_vcpu *vcpu,
->  	return true;
->  }
->  
-> +/*
-> + * Check if the requested depth values is supported
-> + * based on the bits [0:7] of the guest cpuid.1c.eax.
-> + */
-> +static bool arch_lbr_depth_is_valid(struct kvm_vcpu *vcpu, u64 depth)
-> +{
-> +	struct kvm_cpuid_entry2 *best;
-> +
-> +	best = kvm_find_cpuid_entry(vcpu, 0x1c, 0);
-> +	if (depth && best)
+On 3/1/21 11:28 AM, Fabrice Gasnier wrote:
+> On 2/27/21 5:41 PM, Martin Devera wrote:
+>> STM32 F7/H7 usarts supports RX & TX pin swapping.
+>> Add option to turn it on.
+>> Tested on STM32MP157.
+>>
+>> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
+>> ---
+>>   drivers/tty/serial/stm32-usart.c | 3 ++-
+>>   drivers/tty/serial/stm32-usart.h | 1 +
+>>   2 files changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+>> index b3675cf25a69..3650c8798061 100644
+>> --- a/drivers/tty/serial/stm32-usart.c
+>> +++ b/drivers/tty/serial/stm32-usart.c
+>> @@ -758,7 +758,7 @@ static void stm32_usart_set_termios(struct uart_port *port,
+>>   	cr1 = USART_CR1_TE | USART_CR1_RE;
+>>   	if (stm32_port->fifoen)
+>>   		cr1 |= USART_CR1_FIFOEN;
+>> -	cr2 = 0;
+>> +	cr2 = stm32_port->swap ? USART_CR2_SWAP : 0;
+> Hi Martin,
+>
+> Same could be done in the startup routine, that enables the port for
+> reception (as described in Documentation/driver-api/serial/driver.rst)
+Hello Fabrice,
 
-> +		return (best->eax & 0xff) & (1ULL << (depth / 8 - 1));
+I already incorporated all your comments but I'm struggling with the one 
+above.
+The code must be in stm32_usart_set_termios too, because CR2 is modified.
+What is the reason to have it in startup() ?
+Is it because USART can be started without calling set_termios at all ? Like
+to reuse bootloader's last settings ?
 
-I believe this will genereate undefined behavior if depth > 64.  Or if depth < 8.
-And I believe this check also needs to enforce that depth is a multiple of 8.
-
-   For each bit n set in this field, the IA32_LBR_DEPTH.DEPTH value 8*(n+1) is
-   supported.
-
-Thus it's impossible for 0-7, 9-15, etc... to be legal depths.
-
-
-> +
-> +	return false;
-> +}
-> +
+Thanks, Martin
 
