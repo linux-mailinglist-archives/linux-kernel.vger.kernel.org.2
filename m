@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF095329C81
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8042329C61
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380874AbhCBB4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:56:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50866 "EHLO mail.kernel.org"
+        id S1380628AbhCBByL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:54:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241661AbhCATc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:32:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B3F64FDC;
-        Mon,  1 Mar 2021 17:44:06 +0000 (UTC)
+        id S237506AbhCAT3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:29:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BF5F64F87;
+        Mon,  1 Mar 2021 17:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620647;
-        bh=PKy+BTdVpY5bdXj1vnnfybhkRjj+pobNfcSHDw8vm/E=;
+        s=korg; t=1614618547;
+        bh=saPavgP26WaM+RiUm/fefwRdh33qL16DznqsERggCMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZUgyLxJsorZcsmSpV4bxpc+GZ49EeprlbXDkwEXW7Vep7BpWoqb7XH2JycdkHgIRT
-         dzwcYxZIprV3KTEGHKsHX5oc8lu15TCSCcFZU0Sw4Pcr5A4fiFlRJAJQkHX/Ci0afT
-         p0u5pZEnTFAVaEH/28DBSc5XrH55m7rvZ14DpW90=
+        b=eUy1zwD430Esal0QR3Yc9FgajZa5kxKbNk/QRUZ7SSJIPMPtlS9TB927dWMnqOGVO
+         1NBtT2BJ4uxGcFwGQFuoKJQBz5QffJP9WKtq6ukb2/R+r9gGQLWfUasrKFJPJsqgFu
+         kPq4+uMnHs5YMfe/1+nGavsk9OCgVwbEHT1sJ9fg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 201/775] media: em28xx: Fix use-after-free in em28xx_alloc_urbs
-Date:   Mon,  1 Mar 2021 17:06:09 +0100
-Message-Id: <20210301161211.573274180@linuxfoundation.org>
+Subject: [PATCH 5.10 125/663] ibmvnic: add memory barrier to protect long term buffer
+Date:   Mon,  1 Mar 2021 17:06:13 +0100
+Message-Id: <20210301161147.924261157@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Lijun Pan <ljp@linux.ibm.com>
 
-[ Upstream commit a26efd1961a18b91ae4cd2e433adbcf865b40fa3 ]
+[ Upstream commit 42557dab78edc8235aba5b441f2eb35f725a0ede ]
 
-When kzalloc() fails, em28xx_uninit_usb_xfer() will free
-usb_bufs->buf and set it to NULL. Thus the later access
-to usb_bufs->buf[i] will lead to null pointer dereference.
-Also the kfree(usb_bufs->buf) after that is redundant.
+dma_rmb() barrier is added to load the long term buffer before copying
+it to socket buffer; and dma_wmb() barrier is added to update the
+long term buffer before it being accessed by VIOS (virtual i/o server).
 
-Fixes: d571b592c6206 ("media: em28xx: don't use coherent buffer for DMA transfers")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 032c5e82847a ("Driver for IBM System i/p VNIC protocol")
+Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
+Acked-by: Thomas Falcon <tlfalcon@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/em28xx/em28xx-core.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
-index e6088b5d1b805..3daa64bb1e1d9 100644
---- a/drivers/media/usb/em28xx/em28xx-core.c
-+++ b/drivers/media/usb/em28xx/em28xx-core.c
-@@ -956,14 +956,10 @@ int em28xx_alloc_urbs(struct em28xx *dev, enum em28xx_mode mode, int xfer_bulk,
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index d789c3cb7f87b..d6cd131625525 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -1592,6 +1592,9 @@ static netdev_tx_t ibmvnic_xmit(struct sk_buff *skb, struct net_device *netdev)
+ 		skb_copy_from_linear_data(skb, dst, skb->len);
+ 	}
  
- 		usb_bufs->buf[i] = kzalloc(sb_size, GFP_KERNEL);
- 		if (!usb_bufs->buf[i]) {
--			em28xx_uninit_usb_xfer(dev, mode);
--
- 			for (i--; i >= 0; i--)
- 				kfree(usb_bufs->buf[i]);
++	/* post changes to long_term_buff *dst before VIOS accessing it */
++	dma_wmb();
++
+ 	tx_pool->consumer_index =
+ 	    (tx_pool->consumer_index + 1) % tx_pool->num_buffers;
  
--			kfree(usb_bufs->buf);
--			usb_bufs->buf = NULL;
--
-+			em28xx_uninit_usb_xfer(dev, mode);
- 			return -ENOMEM;
- 		}
+@@ -2432,6 +2435,8 @@ restart_poll:
+ 		offset = be16_to_cpu(next->rx_comp.off_frame_data);
+ 		flags = next->rx_comp.flags;
+ 		skb = rx_buff->skb;
++		/* load long_term_buff before copying to skb */
++		dma_rmb();
+ 		skb_copy_to_linear_data(skb, rx_buff->data + offset,
+ 					length);
  
 -- 
 2.27.0
