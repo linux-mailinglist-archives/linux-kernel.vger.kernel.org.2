@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54383329D40
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79583329CC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443294AbhCBCUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:20:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55194 "EHLO mail.kernel.org"
+        id S1349151AbhCBCMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:12:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241984AbhCATrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:47:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B11E7652ED;
-        Mon,  1 Mar 2021 17:40:38 +0000 (UTC)
+        id S236214AbhCATgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:36:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 099BB65161;
+        Mon,  1 Mar 2021 17:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620439;
-        bh=upkvygANhd7LnKlElC1xMoQRghquoEqjzuhIA4mkoOQ=;
+        s=korg; t=1614618400;
+        bh=sCzjkdrr6Y45yA0JMQmtMSyd+YvWcVn5SQKCQctTfxE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k0C7OFhn2YJ40aRQLrcSbACjdEgdX9wjWTQF7OmtAwCQSmu+6qCYIJmxujJ3UDktx
-         13DSvdkbYyYo7YebnGgrLI70o+RL4IzYstitIW0YyRn3mlTL6ytBMdvzRf+PQPCzK1
-         ebhqELuYq8jbV0ZVvRNr5x/y5vRg8F5yqfIEC7D0=
+        b=EW5K/xRDypQ0xYRvNaLp4Fg0YhdwD4RDYGPkeavdIldtrth9u+EjJsaPin+b2zP+o
+         Gj7cBTjM3HAx/P9imL98NG4grFfeTlg0gnx13yxU8t2m/7bEoU1ohRvlDDVat80fE9
+         0Bv2bJut3o/K4Py5BVUBDQ+/gCLnG/pdSJKMOBBg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        stable@vger.kernel.org, Jupeng Zhong <zhongjupeng@yulong.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 153/775] arm64: dts: mt8183: refine gamma compatible name
-Date:   Mon,  1 Mar 2021 17:05:21 +0100
-Message-Id: <20210301161209.213378190@linuxfoundation.org>
+Subject: [PATCH 5.10 074/663] Bluetooth: btusb: Fix memory leak in btusb_mtk_wmt_recv
+Date:   Mon,  1 Mar 2021 17:05:22 +0100
+Message-Id: <20210301161145.395535693@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+From: Jupeng Zhong <zhongjupeng@yulong.com>
 
-[ Upstream commit 9a2cb5eba7ad4fa7ccb3a4aa754f5263111e8f96 ]
+[ Upstream commit de71a6cb4bf24d8993b9ca90d1ddb131b60251a1 ]
 
-mt8183 gamma is different with mt8173
-remove mt8173 compatible name for mt8183 gamma
+In btusb_mtk_wmt_recv if skb_clone fails, the alocated skb should be
+released.
 
-Fixes: 91f9c963ce79 ("arm64: dts: mt8183: Add display nodes for MT8183")
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Link: https://lore.kernel.org/r/20210128112314.1304160-3-hsinyi@chromium.org
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Omit the labels “err_out” and “err_free_skb” in this function
+implementation so that the desired exception handling code
+would be directly specified in the affected if branches.
+
+Fixes: a1c49c434e15 ("btusb: Add protocol support for MediaTek MT7668U USB devices")
+Signed-off-by: Jupeng Zhong <zhongjupeng@yulong.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/bluetooth/btusb.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 6c84ccb709af6..9c0073cfad452 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -1055,8 +1055,7 @@
- 		};
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 1c942869baacc..2953b96b3ceda 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2827,7 +2827,7 @@ static void btusb_mtk_wmt_recv(struct urb *urb)
+ 		skb = bt_skb_alloc(HCI_WMT_MAX_EVENT_SIZE, GFP_ATOMIC);
+ 		if (!skb) {
+ 			hdev->stat.err_rx++;
+-			goto err_out;
++			return;
+ 		}
  
- 		gamma0: gamma@14011000 {
--			compatible = "mediatek,mt8183-disp-gamma",
--				     "mediatek,mt8173-disp-gamma";
-+			compatible = "mediatek,mt8183-disp-gamma";
- 			reg = <0 0x14011000 0 0x1000>;
- 			interrupts = <GIC_SPI 234 IRQ_TYPE_LEVEL_LOW>;
- 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
+ 		hci_skb_pkt_type(skb) = HCI_EVENT_PKT;
+@@ -2845,13 +2845,18 @@ static void btusb_mtk_wmt_recv(struct urb *urb)
+ 		 */
+ 		if (test_bit(BTUSB_TX_WAIT_VND_EVT, &data->flags)) {
+ 			data->evt_skb = skb_clone(skb, GFP_ATOMIC);
+-			if (!data->evt_skb)
+-				goto err_out;
++			if (!data->evt_skb) {
++				kfree_skb(skb);
++				return;
++			}
+ 		}
+ 
+ 		err = hci_recv_frame(hdev, skb);
+-		if (err < 0)
+-			goto err_free_skb;
++		if (err < 0) {
++			kfree_skb(data->evt_skb);
++			data->evt_skb = NULL;
++			return;
++		}
+ 
+ 		if (test_and_clear_bit(BTUSB_TX_WAIT_VND_EVT,
+ 				       &data->flags)) {
+@@ -2860,11 +2865,6 @@ static void btusb_mtk_wmt_recv(struct urb *urb)
+ 			wake_up_bit(&data->flags,
+ 				    BTUSB_TX_WAIT_VND_EVT);
+ 		}
+-err_out:
+-		return;
+-err_free_skb:
+-		kfree_skb(data->evt_skb);
+-		data->evt_skb = NULL;
+ 		return;
+ 	} else if (urb->status == -ENOENT) {
+ 		/* Avoid suspend failed when usb_kill_urb */
 -- 
 2.27.0
 
