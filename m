@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7636132980E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02052329868
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345006AbhCAXKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:10:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49710 "EHLO mail.kernel.org"
+        id S1345750AbhCAXdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:33:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238873AbhCAR4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:56:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA8CD65292;
-        Mon,  1 Mar 2021 17:32:20 +0000 (UTC)
+        id S239034AbhCASEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:04:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 981AA6529D;
+        Mon,  1 Mar 2021 17:32:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619941;
-        bh=TFqIPdUDjPW5xQIl2D2AAy/slzU2IEd+9FSUAXhCuK8=;
+        s=korg; t=1614619974;
+        bh=SOAigHL47hsULGlPPzpozP3UHX5sHtQj1aRe3XJC67U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o2bEX8YEC21KcWjxG3NRsoaovAE82mPH/a2hwrrZgvSfdvW+d9iRlsYvMoqvXaF2M
-         ONmdZNtswjewkRUf7EIfk0o8PTSc2alVdxC/iglJsWLgMJi3W7pB+DKUFFM7oc6t5l
-         O9SejuzjZ4/8M/If9RaxbApgSR0UHGjYy0BsfKo8=
+        b=Ch1BqvjAXVkeL9OmbmJ4kZxqA5R1XWa6Y5OT33BZpLsP5lr9byAaS4CHkWHhuM4Pv
+         aPEh9fA2bzEbHuFaPhXGTOup7Xs/zhG7nzrXOpucvdKg5CYktFKSV4kU5AGNS7r20b
+         KOAtDhazM/8DiUYkBpGJQ02X5sGit9dAtSqVcRnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>
-Subject: [PATCH 5.10 637/663] gfs2: fix glock confusion in function signal_our_withdraw
-Date:   Mon,  1 Mar 2021 17:14:45 +0100
-Message-Id: <20210301161213.372258109@linuxfoundation.org>
+        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.10 648/663] dm era: Recover committed writeset after crash
+Date:   Mon,  1 Mar 2021 17:14:56 +0100
+Message-Id: <20210301161213.906695372@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -38,75 +39,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Nikos Tsironis <ntsironis@arrikto.com>
 
-commit f5f02fde9f52b2d769c1c2ddfd3d9c4a1fe739a7 upstream.
+commit de89afc1e40fdfa5f8b666e5d07c43d21a1d3be0 upstream.
 
-If go_free is defined, function signal_our_withdraw is supposed to
-synchronize on the GLF_FREEING flag of the inode glock, but it
-accidentally does that on the live glock. Fix that and disambiguate
-the glock variables.
+Following a system crash, dm-era fails to recover the committed writeset
+for the current era, leading to lost writes. That is, we lose the
+information about what blocks were written during the affected era.
 
-Fixes: 601ef0d52e96 ("gfs2: Force withdraw to replay journals and wait for it to finish")
-Cc: stable@vger.kernel.org # v5.7+
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+dm-era assumes that the writeset of the current era is archived when the
+device is suspended. So, when resuming the device, it just moves on to
+the next era, ignoring the committed writeset.
+
+This assumption holds when the device is properly shut down. But, when
+the system crashes, the code that suspends the target never runs, so the
+writeset for the current era is not archived.
+
+There are three issues that cause the committed writeset to get lost:
+
+1. dm-era doesn't load the committed writeset when opening the metadata
+2. The code that resizes the metadata wipes the information about the
+   committed writeset (assuming it was loaded at step 1)
+3. era_preresume() starts a new era, without taking into account that
+   the current era might not have been archived, due to a system crash.
+
+To fix this:
+
+1. Load the committed writeset when opening the metadata
+2. Fix the code that resizes the metadata to make sure it doesn't wipe
+   the loaded writeset
+3. Fix era_preresume() to check for a loaded writeset and archive it,
+   before starting a new era.
+
+Fixes: eec40579d84873 ("dm: add era target")
+Cc: stable@vger.kernel.org # v3.15+
+Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/gfs2/util.c |   16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/md/dm-era-target.c |   17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
---- a/fs/gfs2/util.c
-+++ b/fs/gfs2/util.c
-@@ -93,9 +93,10 @@ out_unlock:
- 
- static void signal_our_withdraw(struct gfs2_sbd *sdp)
+--- a/drivers/md/dm-era-target.c
++++ b/drivers/md/dm-era-target.c
+@@ -71,8 +71,6 @@ static size_t bitset_size(unsigned nr_bi
+  */
+ static int writeset_alloc(struct writeset *ws, dm_block_t nr_blocks)
  {
--	struct gfs2_glock *gl = sdp->sd_live_gh.gh_gl;
-+	struct gfs2_glock *live_gl = sdp->sd_live_gh.gh_gl;
- 	struct inode *inode = sdp->sd_jdesc->jd_inode;
- 	struct gfs2_inode *ip = GFS2_I(inode);
-+	struct gfs2_glock *i_gl = ip->i_gl;
- 	u64 no_formal_ino = ip->i_no_formal_ino;
- 	int ret = 0;
- 	int tries;
-@@ -141,7 +142,8 @@ static void signal_our_withdraw(struct g
- 		atomic_set(&sdp->sd_freeze_state, SFS_FROZEN);
- 		thaw_super(sdp->sd_vfs);
- 	} else {
--		wait_on_bit(&gl->gl_flags, GLF_DEMOTE, TASK_UNINTERRUPTIBLE);
-+		wait_on_bit(&i_gl->gl_flags, GLF_DEMOTE,
-+			    TASK_UNINTERRUPTIBLE);
+-	ws->md.nr_bits = nr_blocks;
+-	ws->md.root = INVALID_WRITESET_ROOT;
+ 	ws->bits = vzalloc(bitset_size(nr_blocks));
+ 	if (!ws->bits) {
+ 		DMERR("%s: couldn't allocate in memory bitset", __func__);
+@@ -85,12 +83,14 @@ static int writeset_alloc(struct writese
+ /*
+  * Wipes the in-core bitset, and creates a new on disk bitset.
+  */
+-static int writeset_init(struct dm_disk_bitset *info, struct writeset *ws)
++static int writeset_init(struct dm_disk_bitset *info, struct writeset *ws,
++			 dm_block_t nr_blocks)
+ {
+ 	int r;
+ 
+-	memset(ws->bits, 0, bitset_size(ws->md.nr_bits));
++	memset(ws->bits, 0, bitset_size(nr_blocks));
+ 
++	ws->md.nr_bits = nr_blocks;
+ 	r = setup_on_disk_bitset(info, ws->md.nr_bits, &ws->md.root);
+ 	if (r) {
+ 		DMERR("%s: setup_on_disk_bitset failed", __func__);
+@@ -579,6 +579,7 @@ static int open_metadata(struct era_meta
+ 	md->nr_blocks = le32_to_cpu(disk->nr_blocks);
+ 	md->current_era = le32_to_cpu(disk->current_era);
+ 
++	ws_unpack(&disk->current_writeset, &md->current_writeset->md);
+ 	md->writeset_tree_root = le64_to_cpu(disk->writeset_tree_root);
+ 	md->era_array_root = le64_to_cpu(disk->era_array_root);
+ 	md->metadata_snap = le64_to_cpu(disk->metadata_snap);
+@@ -870,7 +871,6 @@ static int metadata_era_archive(struct e
  	}
  
- 	/*
-@@ -161,15 +163,15 @@ static void signal_our_withdraw(struct g
- 	 * on other nodes to be successful, otherwise we remain the owner of
- 	 * the glock as far as dlm is concerned.
- 	 */
--	if (gl->gl_ops->go_free) {
--		set_bit(GLF_FREEING, &gl->gl_flags);
--		wait_on_bit(&gl->gl_flags, GLF_FREEING, TASK_UNINTERRUPTIBLE);
-+	if (i_gl->gl_ops->go_free) {
-+		set_bit(GLF_FREEING, &i_gl->gl_flags);
-+		wait_on_bit(&i_gl->gl_flags, GLF_FREEING, TASK_UNINTERRUPTIBLE);
+ 	ws_pack(&md->current_writeset->md, &value);
+-	md->current_writeset->md.root = INVALID_WRITESET_ROOT;
+ 
+ 	keys[0] = md->current_era;
+ 	__dm_bless_for_disk(&value);
+@@ -882,6 +882,7 @@ static int metadata_era_archive(struct e
+ 		return r;
  	}
  
- 	/*
- 	 * Dequeue the "live" glock, but keep a reference so it's never freed.
- 	 */
--	gfs2_glock_hold(gl);
-+	gfs2_glock_hold(live_gl);
- 	gfs2_glock_dq_wait(&sdp->sd_live_gh);
- 	/*
- 	 * We enqueue the "live" glock in EX so that all other nodes
-@@ -208,7 +210,7 @@ static void signal_our_withdraw(struct g
- 		gfs2_glock_nq(&sdp->sd_live_gh);
- 	}
++	md->current_writeset->md.root = INVALID_WRITESET_ROOT;
+ 	md->archived_writesets = true;
  
--	gfs2_glock_queue_put(gl); /* drop the extra reference we acquired */
-+	gfs2_glock_queue_put(live_gl); /* drop extra reference we acquired */
- 	clear_bit(SDF_WITHDRAW_RECOVERY, &sdp->sd_flags);
+ 	return 0;
+@@ -898,7 +899,7 @@ static int metadata_new_era(struct era_m
+ 	int r;
+ 	struct writeset *new_writeset = next_writeset(md);
  
- 	/*
+-	r = writeset_init(&md->bitset_info, new_writeset);
++	r = writeset_init(&md->bitset_info, new_writeset, md->nr_blocks);
+ 	if (r) {
+ 		DMERR("%s: writeset_init failed", __func__);
+ 		return r;
+@@ -951,7 +952,7 @@ static int metadata_commit(struct era_me
+ 	int r;
+ 	struct dm_block *sblock;
+ 
+-	if (md->current_writeset->md.root != SUPERBLOCK_LOCATION) {
++	if (md->current_writeset->md.root != INVALID_WRITESET_ROOT) {
+ 		r = dm_bitset_flush(&md->bitset_info, md->current_writeset->md.root,
+ 				    &md->current_writeset->md.root);
+ 		if (r) {
+@@ -1565,7 +1566,7 @@ static int era_preresume(struct dm_targe
+ 
+ 	start_worker(era);
+ 
+-	r = in_worker0(era, metadata_new_era);
++	r = in_worker0(era, metadata_era_rollover);
+ 	if (r) {
+ 		DMERR("%s: metadata_era_rollover failed", __func__);
+ 		return r;
 
 
