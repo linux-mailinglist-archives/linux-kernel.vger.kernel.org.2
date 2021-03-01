@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56613329BF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5CB329C69
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240900AbhCBBpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:45:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46138 "EHLO mail.kernel.org"
+        id S1380678AbhCBByi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:54:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241412AbhCATVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:21:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D75E16508B;
-        Mon,  1 Mar 2021 17:29:22 +0000 (UTC)
+        id S234958AbhCATaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:30:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30B4965262;
+        Mon,  1 Mar 2021 17:29:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619763;
-        bh=f3TkFY0KQpzexNS5dp8NrxNlByYqCA9zqKe+seOjUJs=;
+        s=korg; t=1614619774;
+        bh=ipIGFaa63ZOOz2A8qn1nXeE4C3+/9waKTFS9Vm+dzPc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EBA/Tyeb9Nx4BA4TAUkHLb1XeQpWAHa9HraDvB8Bl677ofBqBptnhWic4aCnUksv4
-         T1NUGfx+fTKc2vxDsPnS2CJbj6+n8tdmHMvUkpQEcs/ryhpNDuwrjir4NtMjImCEOi
-         KWDruNYMtYEmzDK9fowJuglRBFB1H/GwiCNh4tsw=
+        b=qjOIcs2JZv+4qIJGorLABFISnj4xAawrjc1e+ux9oF+IVGWm7jZyjFIy9NiKMxGWY
+         jjZIE+L15HAxgxsN0bfr3myDMd2c5rsXMBoTOUbHbzKxmjRrEqKB/Nt5lq+2nRQrPq
+         XwZOxwywmyBCrDbnfHMk/xKHyh3Aorp5EjZK0+MQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
         Frederic Weisbecker <frederic@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 5.10 573/663] rcu/nocb: Perform deferred wake up before last idles need_resched() check
-Date:   Mon,  1 Mar 2021 17:13:41 +0100
-Message-Id: <20210301161210.216696443@linuxfoundation.org>
+Subject: [PATCH 5.10 576/663] entry/kvm: Explicitly flush pending rcuog wakeup before last rescheduling point
+Date:   Mon,  1 Mar 2021 17:13:44 +0100
+Message-Id: <20210301161210.352518905@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,88 +42,145 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-commit 43789ef3f7d61aa7bed0cb2764e588fc990c30ef upstream.
+commit 4ae7dc97f726ea95c58ac58af71cc034ad22d7de upstream.
 
-Entering RCU idle mode may cause a deferred wake up of an RCU NOCB_GP
-kthread (rcuog) to be serviced.
+Following the idle loop model, cleanly check for pending rcuog wakeup
+before the last rescheduling point upon resuming to guest mode. This
+way we can avoid to do it from rcu_user_enter() with the last resort
+self-IPI hack that enforces rescheduling.
 
-Usually a local wake up happening while running the idle task is handled
-in one of the need_resched() checks carefully placed within the idle
-loop that can break to the scheduler.
-
-Unfortunately the call to rcu_idle_enter() is already beyond the last
-generic need_resched() check and we may halt the CPU with a resched
-request unhandled, leaving the task hanging.
-
-Fix this with splitting the rcuog wakeup handling from rcu_idle_enter()
-and place it before the last generic need_resched() check in the idle
-loop. It is then assumed that no call to call_rcu() will be performed
-after that in the idle loop until the CPU is put in low power mode.
-
-Fixes: 96d3fd0d315a (rcu: Break call_rcu() deadlock involving scheduler and perf)
-Reported-by: Paul E. McKenney <paulmck@kernel.org>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20210131230548.32970-3-frederic@kernel.org
+Link: https://lkml.kernel.org/r/20210131230548.32970-6-frederic@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/rcupdate.h |    2 ++
- kernel/rcu/tree.c        |    3 ---
- kernel/rcu/tree_plugin.h |    5 +++++
- kernel/sched/idle.c      |    1 +
- 4 files changed, 8 insertions(+), 3 deletions(-)
+ arch/x86/kvm/x86.c        |    1 +
+ include/linux/entry-kvm.h |   14 ++++++++++++++
+ kernel/rcu/tree.c         |   44 ++++++++++++++++++++++++++++++++++----------
+ kernel/rcu/tree_plugin.h  |    1 +
+ 4 files changed, 50 insertions(+), 10 deletions(-)
 
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -110,8 +110,10 @@ static inline void rcu_user_exit(void) {
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -1776,6 +1776,7 @@ EXPORT_SYMBOL_GPL(kvm_emulate_wrmsr);
  
- #ifdef CONFIG_RCU_NOCB_CPU
- void rcu_init_nohz(void);
-+void rcu_nocb_flush_deferred_wakeup(void);
- #else /* #ifdef CONFIG_RCU_NOCB_CPU */
- static inline void rcu_init_nohz(void) { }
-+static inline void rcu_nocb_flush_deferred_wakeup(void) { }
- #endif /* #else #ifdef CONFIG_RCU_NOCB_CPU */
+ bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
+ {
++	xfer_to_guest_mode_prepare();
+ 	return vcpu->mode == EXITING_GUEST_MODE || kvm_request_pending(vcpu) ||
+ 		xfer_to_guest_mode_work_pending();
+ }
+--- a/include/linux/entry-kvm.h
++++ b/include/linux/entry-kvm.h
+@@ -47,6 +47,20 @@ static inline int arch_xfer_to_guest_mod
+ int xfer_to_guest_mode_handle_work(struct kvm_vcpu *vcpu);
  
  /**
++ * xfer_to_guest_mode_prepare - Perform last minute preparation work that
++ *				need to be handled while IRQs are disabled
++ *				upon entering to guest.
++ *
++ * Has to be invoked with interrupts disabled before the last call
++ * to xfer_to_guest_mode_work_pending().
++ */
++static inline void xfer_to_guest_mode_prepare(void)
++{
++	lockdep_assert_irqs_disabled();
++	rcu_nocb_flush_deferred_wakeup();
++}
++
++/**
+  * __xfer_to_guest_mode_work_pending - Check if work is pending
+  *
+  * Returns: True if work pending, False otherwise.
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -663,10 +663,7 @@ static noinstr void rcu_eqs_enter(bool u
+@@ -670,9 +670,10 @@ EXPORT_SYMBOL_GPL(rcu_idle_enter);
+ 
+ #ifdef CONFIG_NO_HZ_FULL
+ 
++#if !defined(CONFIG_GENERIC_ENTRY) || !defined(CONFIG_KVM_XFER_TO_GUEST_WORK)
+ /*
+  * An empty function that will trigger a reschedule on
+- * IRQ tail once IRQs get re-enabled on userspace resume.
++ * IRQ tail once IRQs get re-enabled on userspace/guest resume.
   */
- void rcu_idle_enter(void)
+ static void late_wakeup_func(struct irq_work *work)
+ {
+@@ -681,6 +682,37 @@ static void late_wakeup_func(struct irq_
+ static DEFINE_PER_CPU(struct irq_work, late_wakeup_work) =
+ 	IRQ_WORK_INIT(late_wakeup_func);
+ 
++/*
++ * If either:
++ *
++ * 1) the task is about to enter in guest mode and $ARCH doesn't support KVM generic work
++ * 2) the task is about to enter in user mode and $ARCH doesn't support generic entry.
++ *
++ * In these cases the late RCU wake ups aren't supported in the resched loops and our
++ * last resort is to fire a local irq_work that will trigger a reschedule once IRQs
++ * get re-enabled again.
++ */
++noinstr static void rcu_irq_work_resched(void)
++{
++	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
++
++	if (IS_ENABLED(CONFIG_GENERIC_ENTRY) && !(current->flags & PF_VCPU))
++		return;
++
++	if (IS_ENABLED(CONFIG_KVM_XFER_TO_GUEST_WORK) && (current->flags & PF_VCPU))
++		return;
++
++	instrumentation_begin();
++	if (do_nocb_deferred_wakeup(rdp) && need_resched()) {
++		irq_work_queue(this_cpu_ptr(&late_wakeup_work));
++	}
++	instrumentation_end();
++}
++
++#else
++static inline void rcu_irq_work_resched(void) { }
++#endif
++
+ /**
+  * rcu_user_enter - inform RCU that we are resuming userspace.
+  *
+@@ -694,8 +726,6 @@ static DEFINE_PER_CPU(struct irq_work, l
+  */
+ noinstr void rcu_user_enter(void)
  {
 -	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
 -
  	lockdep_assert_irqs_disabled();
--	do_nocb_deferred_wakeup(rdp);
- 	rcu_eqs_enter(false);
+ 
+ 	/*
+@@ -703,13 +733,7 @@ noinstr void rcu_user_enter(void)
+ 	 * rescheduling opportunity in the entry code. Trigger a self IPI
+ 	 * that will fire and reschedule once we resume in user/guest mode.
+ 	 */
+-	instrumentation_begin();
+-	if (!IS_ENABLED(CONFIG_GENERIC_ENTRY) || (current->flags & PF_VCPU)) {
+-		if (do_nocb_deferred_wakeup(rdp) && need_resched())
+-			irq_work_queue(this_cpu_ptr(&late_wakeup_work));
+-	}
+-	instrumentation_end();
+-
++	rcu_irq_work_resched();
+ 	rcu_eqs_enter(true);
  }
- EXPORT_SYMBOL_GPL(rcu_idle_enter);
+ 
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -2187,6 +2187,11 @@ static void do_nocb_deferred_wakeup(stru
- 		do_nocb_deferred_wakeup_common(rdp);
+@@ -2197,6 +2197,7 @@ void rcu_nocb_flush_deferred_wakeup(void
+ {
+ 	do_nocb_deferred_wakeup(this_cpu_ptr(&rcu_data));
  }
++EXPORT_SYMBOL_GPL(rcu_nocb_flush_deferred_wakeup);
  
-+void rcu_nocb_flush_deferred_wakeup(void)
-+{
-+	do_nocb_deferred_wakeup(this_cpu_ptr(&rcu_data));
-+}
-+
  void __init rcu_init_nohz(void)
  {
- 	int cpu;
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -285,6 +285,7 @@ static void do_idle(void)
- 		}
- 
- 		arch_cpu_idle_enter();
-+		rcu_nocb_flush_deferred_wakeup();
- 
- 		/*
- 		 * In poll mode we reenable interrupts and spin. Also if we
 
 
