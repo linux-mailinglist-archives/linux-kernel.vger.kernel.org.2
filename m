@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1B8329E7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E8A329E82
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445477AbhCBC7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:59:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40994 "EHLO mail.kernel.org"
+        id S1445504AbhCBC7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:59:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39925 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239590AbhCAULP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:11:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C824653C2;
-        Mon,  1 Mar 2021 18:00:46 +0000 (UTC)
+        id S242757AbhCAUMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:12:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E567A64FB2;
+        Mon,  1 Mar 2021 18:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621647;
-        bh=Srp7eACj6nViiSgYscfWjdEKWP/1BY+vFIdStxKvZzk=;
+        s=korg; t=1614621668;
+        bh=sAIUE+D5y3VgxGQk7PQ5FFAUm5H9InRT/eqTH1+O7lo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g/qAftBGFC2FO+spHb7vAWSAR9Ydg/SU5l72yhwBmWZjYQqVsVeB2v0EgDwx7TJv7
-         X2p2raQZy8eJVnSyEIfgfY/gunUdvlh1qF9lLj+jJ+5IH+2n7x6Bu6AD39ZBnmQPXX
-         WTbssZxG87ghUgxBvGg6C5A4LwEtq8pCBif37o4s=
+        b=SFdJCx9M9h3gPBHkwD/qybaEIVMAG+2p67BZOwBMYjCA4kpTFWYbkXuylMWSq02Sp
+         bRPmlIdQFVx0br9ispDM1xOTnVN7efi2y0jA4xAcH3nPazSZAiS2rEfGR8rYVwLETN
+         T3JHVDZfT32reHsfZOlc62L79bGg5BbUuuUsr1Yw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.11 591/775] USB: serial: mos7720: fix error code in mos7720_write()
-Date:   Mon,  1 Mar 2021 17:12:39 +0100
-Message-Id: <20210301161230.637126173@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.11 593/775] ALSA: usb-audio: Correct document for snd_usb_endpoint_free_all()
+Date:   Mon,  1 Mar 2021 17:12:41 +0100
+Message-Id: <20210301161230.736650628@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -39,35 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit fea7372cbc40869876df0f045e367f6f97a1666c upstream.
+commit 036f90dd92bb0aac66fdeec8386401dd396c6079 upstream.
 
-This code should return -ENOMEM if the kmalloc() fails but instead
-it returns success.
+The kerndoc comment for the new function snd_usb_endpoint_free_all()
+had a typo wrt the argument name.  Fix it.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 0f64478cbc7a ("USB: add USB serial mos7720 driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 00272c61827e ("ALSA: usb-audio: Avoid unnecessary interface re-setup")
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210205082837.6327-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/mos7720.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/usb/endpoint.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -1092,8 +1092,10 @@ static int mos7720_write(struct tty_stru
- 	if (urb->transfer_buffer == NULL) {
- 		urb->transfer_buffer = kmalloc(URB_TRANSFER_BUFFER_SIZE,
- 					       GFP_ATOMIC);
--		if (!urb->transfer_buffer)
-+		if (!urb->transfer_buffer) {
-+			bytes_sent = -ENOMEM;
- 			goto exit;
-+		}
- 	}
- 	transfer_size = min(count, URB_TRANSFER_BUFFER_SIZE);
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -1451,7 +1451,7 @@ void snd_usb_endpoint_release(struct snd
  
+ /**
+  * snd_usb_endpoint_free_all: Free the resources of an snd_usb_endpoint
+- * @card: The chip
++ * @chip: The chip
+  *
+  * This free all endpoints and those resources
+  */
 
 
