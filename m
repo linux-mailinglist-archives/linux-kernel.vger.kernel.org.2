@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A38329878
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D2B3298BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345890AbhCAXeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:34:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58730 "EHLO mail.kernel.org"
+        id S1346481AbhCAXsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:48:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238808AbhCASGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:06:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B83765289;
-        Mon,  1 Mar 2021 17:31:06 +0000 (UTC)
+        id S235774AbhCASJC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:09:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F6FD650F8;
+        Mon,  1 Mar 2021 17:02:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619866;
-        bh=FMTIAskHSirGDsjErX5ojXmmcW4YtK36HKWLoeg+Y6g=;
+        s=korg; t=1614618131;
+        bh=LUt5P+JBIjCzJO7ku5Pah5arrFAox8QUWMS/SnKQ4m4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AqDkCmU8bV53gBRSff0HIagHvserhKIOTn6yaOAMmeREL+sTvGTOW/SeyZexqHW0S
-         tS8PnJFUd8zU4lQzF3W+VlmXIxHglSBiOSqPK0Op4o1EF5vqMS9Fg0tegk0WL2265P
-         hNGlSiRD7EaJf4Tp/6K5lGHXFX7qZi3G8DFlBOHI=
+        b=EhDMZrcJRX3gM86ugnIKbuxVnkj/kNQ9cVBY0sNtArPJa6J/MZhi7vQt1j+zyT6ZT
+         ByHXdXwPbJsESVUWkEsB/iKly1O1xv2mri/7BAFU7qukBbThytKBBuRO9kwtlTjD/3
+         Pxf3u0kJqbw65b0ZTIZ8qt5Rd6pcJeLejbTF5Idw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 609/663] powerpc/32s: Add missing call to kuep_lock on syscall entry
-Date:   Mon,  1 Mar 2021 17:14:17 +0100
-Message-Id: <20210301161211.978994505@linuxfoundation.org>
+        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 5.4 317/340] f2fs: fix out-of-repair __setattr_copy()
+Date:   Mon,  1 Mar 2021 17:14:21 +0100
+Message-Id: <20210301161103.893066616@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Chao Yu <yuchao0@huawei.com>
 
-commit 57fdfbce89137ae85cd5cef48be168040a47dd13 upstream.
+commit 2562515f0ad7342bde6456602c491b64c63fe950 upstream.
 
-Userspace Execution protection and fast syscall entry were implemented
-independently from each other and were both merged in kernel 5.2,
-leading to syscall entry missing userspace execution protection.
+__setattr_copy() was copied from setattr_copy() in fs/attr.c, there is
+two missing patches doesn't cover this inner function, fix it.
 
-On syscall entry, execution of user space memory must be
-locked in the same way as on exception entry.
+Commit 7fa294c8991c ("userns: Allow chown and setgid preservation")
+Commit 23adbe12ef7d ("fs,userns: Change inode_capable to capable_wrt_inode_uidgid")
 
-Fixes: b86fb88855ea ("powerpc/32: implement fast entry for syscalls on non BOOKE")
+Fixes: fbfa2cc58d53 ("f2fs: add file operations")
 Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/c65e105b63aaf74f91a14f845bc77192350b84a6.1612796617.git.christophe.leroy@csgroup.eu
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/entry_32.S |    3 +++
- 1 file changed, 3 insertions(+)
+ fs/f2fs/file.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -347,6 +347,9 @@ trace_syscall_entry_irq_off:
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -765,7 +765,8 @@ static void __setattr_copy(struct inode
+ 	if (ia_valid & ATTR_MODE) {
+ 		umode_t mode = attr->ia_mode;
  
- 	.globl	transfer_to_syscall
- transfer_to_syscall:
-+#ifdef CONFIG_PPC_BOOK3S_32
-+	kuep_lock r11, r12
-+#endif
- #ifdef CONFIG_TRACE_IRQFLAGS
- 	andi.	r12,r9,MSR_EE
- 	beq-	trace_syscall_entry_irq_off
+-		if (!in_group_p(inode->i_gid) && !capable(CAP_FSETID))
++		if (!in_group_p(inode->i_gid) &&
++			!capable_wrt_inode_uidgid(inode, CAP_FSETID))
+ 			mode &= ~S_ISGID;
+ 		set_acl_inode(inode, mode);
+ 	}
 
 
