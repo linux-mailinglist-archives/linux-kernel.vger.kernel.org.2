@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC313299B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 982E03298E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348137AbhCBA2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:28:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43156 "EHLO mail.kernel.org"
+        id S1346827AbhCAXue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:50:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237336AbhCAS3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 965C86516E;
-        Mon,  1 Mar 2021 17:07:21 +0000 (UTC)
+        id S238932AbhCASNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:13:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BAF965169;
+        Mon,  1 Mar 2021 17:07:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618442;
-        bh=B5o9eqEoHlVw5Q5yYrkhzoHE1HtIGIczbX5/KkGP3mY=;
+        s=korg; t=1614618444;
+        bh=D4S7w++o0Usmeis1y1raiZKLuOPzXfWE5tlI2VKIF0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lnepkytTWei44D1sxsaBnVxct3GKNyzZMsbcTYtTJ/1GurAx6g++HIe4kqMVuVLsG
-         80r5+xQOWUyjeonHeR3L6YHNPvQr7c9ckOLkyh20XXxrVot2Kk2iRATo6CAqMprypr
-         VuQoAQzYbLFNucJ3cr85E0/VCN0yTsq6IoG+w+zY=
+        b=J1R8iQYAudBWY9WikZnNSZEa+Zlxjdh4yZI8A89V037z1yh1bWxHiH7rrtHsG1jxk
+         QM+8/OideHiyTOxoGmMnrKTe0MTD4DNX1LytOLJ0UdLb5PUI+VBQmOJw0Zeh3eGYAI
+         sZTvBrQGe8BuvOy+kSGi3tWi0BKAX8RTC1BPhwn0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 088/663] iwlwifi: mvm: store PPAG enabled/disabled flag properly
-Date:   Mon,  1 Mar 2021 17:05:36 +0100
-Message-Id: <20210301161146.084413262@linuxfoundation.org>
+Subject: [PATCH 5.10 089/663] iwlwifi: mvm: send stored PPAG command instead of local
+Date:   Mon,  1 Mar 2021 17:05:37 +0100
+Message-Id: <20210301161146.129458344@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,57 +41,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit 551d793f65364c904921ac168d4b4028bb51be69 ]
+[ Upstream commit 659844d391826bfc5c8b4d9a06869ed51d859c76 ]
 
-When reading the PPAG table from ACPI, we should store everything in
-our fwrt structure, so it can be accessed later.  But we had a local
-ppag_table variable in the function and were erroneously storing the
-enabled/disabled flag in it instead of storing it in the fwrt.  Fix
-this by removing the local variable and storing everything directly in
-fwrt.
+Some change conflicts apparently cause a confusion between a local
+variable being used to send the PPAG command and the introduction of a
+union for this command.  Most parts of the local command were never
+copied from the stored data, so the FW was getting garbage in the
+tables instead of getting valid values.
+
+Fix this by completely removing the local and using only the union
+that we have stored in fwrt.
 
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Fixes: f2134f66f40e ("iwlwifi: acpi: support ppag table command v2")
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210210135352.889862e6d393.I8b894c1b2b3fe0ad2fb39bf438273ea47eb5afa4@changeid
+Link: https://lore.kernel.org/r/iwlwifi.20210210135352.d090e0301023.I7d57f4d7da9a3297734c51cf988199323c76916d@changeid
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/fw.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/fw.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
-index c351c91a9ec96..2d2fe45603c8b 100644
+index 2d2fe45603c8b..34a44300a15eb 100644
 --- a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
 +++ b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
-@@ -929,7 +929,6 @@ static int iwl_mvm_sar_geo_init(struct iwl_mvm *mvm)
- static int iwl_mvm_get_ppag_table(struct iwl_mvm *mvm)
+@@ -1027,7 +1027,6 @@ int iwl_mvm_ppag_send_cmd(struct iwl_mvm *mvm)
  {
- 	union acpi_object *wifi_pkg, *data, *enabled;
+ 	u8 cmd_ver;
+ 	int i, j, ret, num_sub_bands, cmd_size;
 -	union iwl_ppag_table_cmd ppag_table;
- 	int i, j, ret, tbl_rev, num_sub_bands;
- 	int idx = 2;
  	s8 *gain;
-@@ -983,8 +982,8 @@ read_table:
- 		goto out_free;
+ 
+ 	if (!fw_has_capa(&mvm->fw->ucode_capa, IWL_UCODE_TLV_CAPA_SET_PPAG)) {
+@@ -1040,15 +1039,13 @@ int iwl_mvm_ppag_send_cmd(struct iwl_mvm *mvm)
+ 		return 0;
  	}
  
--	ppag_table.v1.enabled = cpu_to_le32(enabled->integer.value);
--	if (!ppag_table.v1.enabled) {
-+	mvm->fwrt.ppag_table.v1.enabled = cpu_to_le32(enabled->integer.value);
-+	if (!mvm->fwrt.ppag_table.v1.enabled) {
- 		ret = 0;
- 		goto out_free;
- 	}
-@@ -1012,7 +1011,7 @@ read_table:
- 			    (j != 0 &&
- 			     (gain[i * num_sub_bands + j] > ACPI_PPAG_MAX_HB ||
- 			      gain[i * num_sub_bands + j] < ACPI_PPAG_MIN_HB))) {
--				ppag_table.v1.enabled = cpu_to_le32(0);
-+				mvm->fwrt.ppag_table.v1.enabled = cpu_to_le32(0);
- 				ret = -EINVAL;
- 				goto out_free;
- 			}
+-	ppag_table.v1.enabled = mvm->fwrt.ppag_table.v1.enabled;
+-
+ 	cmd_ver = iwl_fw_lookup_cmd_ver(mvm->fw, PHY_OPS_GROUP,
+ 					PER_PLATFORM_ANT_GAIN_CMD,
+ 					IWL_FW_CMD_VER_UNKNOWN);
+ 	if (cmd_ver == 1) {
+ 		num_sub_bands = IWL_NUM_SUB_BANDS;
+ 		gain = mvm->fwrt.ppag_table.v1.gain[0];
+-		cmd_size = sizeof(ppag_table.v1);
++		cmd_size = sizeof(mvm->fwrt.ppag_table.v1);
+ 		if (mvm->fwrt.ppag_ver == 2) {
+ 			IWL_DEBUG_RADIO(mvm,
+ 					"PPAG table is v2 but FW supports v1, sending truncated table\n");
+@@ -1056,7 +1053,7 @@ int iwl_mvm_ppag_send_cmd(struct iwl_mvm *mvm)
+ 	} else if (cmd_ver == 2) {
+ 		num_sub_bands = IWL_NUM_SUB_BANDS_V2;
+ 		gain = mvm->fwrt.ppag_table.v2.gain[0];
+-		cmd_size = sizeof(ppag_table.v2);
++		cmd_size = sizeof(mvm->fwrt.ppag_table.v2);
+ 		if (mvm->fwrt.ppag_ver == 1) {
+ 			IWL_DEBUG_RADIO(mvm,
+ 					"PPAG table is v1 but FW supports v2, sending padded table\n");
+@@ -1076,7 +1073,7 @@ int iwl_mvm_ppag_send_cmd(struct iwl_mvm *mvm)
+ 	IWL_DEBUG_RADIO(mvm, "Sending PER_PLATFORM_ANT_GAIN_CMD\n");
+ 	ret = iwl_mvm_send_cmd_pdu(mvm, WIDE_ID(PHY_OPS_GROUP,
+ 						PER_PLATFORM_ANT_GAIN_CMD),
+-				   0, cmd_size, &ppag_table);
++				   0, cmd_size, &mvm->fwrt.ppag_table);
+ 	if (ret < 0)
+ 		IWL_ERR(mvm, "failed to send PER_PLATFORM_ANT_GAIN_CMD (%d)\n",
+ 			ret);
 -- 
 2.27.0
 
