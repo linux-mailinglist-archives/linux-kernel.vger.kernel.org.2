@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1858B328DA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A1A328DEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241204AbhCATPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:15:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50414 "EHLO mail.kernel.org"
+        id S241358AbhCATT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:19:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235737AbhCAQtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:49:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 416B864FA7;
-        Mon,  1 Mar 2021 16:32:42 +0000 (UTC)
+        id S234760AbhCAQud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:50:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 199C764FB2;
+        Mon,  1 Mar 2021 16:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616362;
-        bh=DgqKiG/n/IJH1MO7fR/EdeOjLPKqGSUBFjVSdjx9L00=;
+        s=korg; t=1614616385;
+        bh=T4eDTuUNcl4kQT5GlHxEDlXCFaJyIbZ96v5P2hj2U7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HLR6ZUuzKBGKGe2CCPELisudMtMm0nROSQHvi96EfPpRhpoIp8pEf1mGTMtHX5TDG
-         VA6dFb1AQp6Ly6292lDjs7N1FAHqgnTeld9NfOFwwcT5Z3pyFSAeGZXxdMvDmbyyO3
-         2NY67PIHmNiTGUw2EdiX6b/tmuyJFxxmkzMUy0ss=
+        b=vX3bXrC550AkXXZcx4Rfp9byAlzpjZ0XT82bptl7FQg7a/FlFCQr5NE6LCBAN/GAF
+         w+Sw8xF6HK5cyxHpwmA0ghzETfJHEO+yw1hOpS8a04xmqNbENrgIjinZEvacNGnLp6
+         surtyq/Gcfmt5TsjwFOvsnwvycsA9HTpzQGa/xEQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gerecke <jason.gerecke@wacom.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 4.14 124/176] HID: wacom: Ignore attempts to overwrite the touch_max value from HID
-Date:   Mon,  1 Mar 2021 17:13:17 +0100
-Message-Id: <20210301161027.152540319@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Olivier=20Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.14 126/176] Input: xpad - add support for PowerA Enhanced Wired Controller for Xbox Series X|S
+Date:   Mon,  1 Mar 2021 17:13:19 +0100
+Message-Id: <20210301161027.244244932@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -39,67 +40,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gerecke <killertofu@gmail.com>
+From: Olivier Crête <olivier.crete@ocrete.ca>
 
-commit 88f38846bfb1a452a3d47e38aeab20a4ceb74294 upstream.
+commit 42ffcd1dba1796bcda386eb6f260df9fc23c90af upstream.
 
-The `wacom_feature_mapping` function is careful to only set the the
-touch_max value a single time, but this care does not extend to the
-`wacom_wac_finger_event` function. In particular, if a device sends
-multiple HID_DG_CONTACTMAX items in a single feature report, the
-driver will end up retaining the value of last item.
-
-The HID descriptor for the Cintiq Companion 2 does exactly this. It
-incorrectly sets a "Report Count" of 2, which will cause the driver
-to process two HID_DG_CONTACTCOUNT items. The first item has the actual
-count, while the second item should have been declared as a constant
-zero. The constant zero is the value the driver ends up using, however,
-since it is the last HID_DG_CONTACTCOUNT in the report.
-
-    Report ID (16),
-    Usage (Contact Count Maximum),  ; Contact count maximum (55h, static value)
-    Report Count (2),
-    Logical Maximum (10),
-    Feature (Variable),
-
-To address this, we add a check that the touch_max is not already set
-within the `wacom_wac_finger_event` function that processes the
-HID_DG_TOUCHMAX item. We emit a warning if the value is set and ignore
-the updated value.
-
-This could potentially cause problems if there is a tablet which has
-a similar issue but requires the last item to be used. This is unlikely,
-however, since it would have to have a different non-zero value for
-HID_DG_CONTACTMAX earlier in the same report, which makes no sense
-except in the case of a firmware bug. Note that cases where the
-HID_DG_CONTACTMAX items are in different reports is already handled
-(and similarly ignored) by `wacom_feature_mapping` as mentioned above.
-
-Link: https://github.com/linuxwacom/input-wacom/issues/223
-Fixes: 184eccd40389 ("HID: wacom: generic: read HID_DG_CONTACTMAX from any feature report")
-Signed-off-by: Jason Gerecke <jason.gerecke@wacom.com>
-CC: stable@vger.kernel.org
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Olivier Crête <olivier.crete@ocrete.ca>
+Link: https://lore.kernel.org/r/20210204005318.615647-1-olivier.crete@collabora.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hid/wacom_wac.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/input/joystick/xpad.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/hid/wacom_wac.c
-+++ b/drivers/hid/wacom_wac.c
-@@ -2452,7 +2452,12 @@ static void wacom_wac_finger_event(struc
- 		wacom_wac->hid_data.tipswitch = value;
- 		break;
- 	case HID_DG_CONTACTMAX:
--		features->touch_max = value;
-+		if (!features->touch_max) {
-+			features->touch_max = value;
-+		} else {
-+			hid_warn(hdev, "%s: ignoring attempt to overwrite non-zero touch_max "
-+				 "%d -> %d\n", __func__, features->touch_max, value);
-+		}
- 		return;
- 	}
- 
+--- a/drivers/input/joystick/xpad.c
++++ b/drivers/input/joystick/xpad.c
+@@ -322,6 +322,7 @@ static const struct xpad_device {
+ 	{ 0x1bad, 0xfd00, "Razer Onza TE", 0, XTYPE_XBOX360 },
+ 	{ 0x1bad, 0xfd01, "Razer Onza", 0, XTYPE_XBOX360 },
+ 	{ 0x20d6, 0x2001, "BDA Xbox Series X Wired Controller", 0, XTYPE_XBOXONE },
++	{ 0x20d6, 0x2009, "PowerA Enhanced Wired Controller for Xbox Series X|S", 0, XTYPE_XBOXONE },
+ 	{ 0x20d6, 0x281f, "PowerA Wired Controller For Xbox 360", 0, XTYPE_XBOX360 },
+ 	{ 0x2e24, 0x0652, "Hyperkin Duke X-Box One pad", 0, XTYPE_XBOXONE },
+ 	{ 0x24c6, 0x5000, "Razer Atrox Arcade Stick", MAP_TRIGGERS_TO_BUTTONS, XTYPE_XBOX360 },
 
 
