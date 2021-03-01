@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67088328772
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EFE3287C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:30:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238218AbhCARX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:23:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59986 "EHLO mail.kernel.org"
+        id S238519AbhCAR2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:28:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234122AbhCAQZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:25:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FB8964EBA;
-        Mon,  1 Mar 2021 16:21:32 +0000 (UTC)
+        id S234530AbhCAQ04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:26:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEEFC64EDE;
+        Mon,  1 Mar 2021 16:21:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615693;
-        bh=zc8/ytEETcvvL6h2KmF8MxukwAdL0Q2MmX0tJSJc/dg=;
+        s=korg; t=1614615696;
+        bh=BAZTcyNR0ah3RKQxrFNX57aT/FoDscx82hwvIndlBj8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wSGRqTx6bm6OBPy0gONx1HqgJVRDQqLP7xTzo32/MYdu4nKb2QjuG65ujPYuPD2Ct
-         owx8ayOvh8/vaTRdrsp83BcCVCjgZIJD+tqjJxYfefydY6546q5kjmTUgqEFNy4j6a
-         uhUEbzhPqPFsPYC5x1zsXc88NWsd+D0vmTIu3pjQ=
+        b=L/4pOGeld3erqbXVKavDNHQNXKA2zlSYYxyweA+vD8iWc9Z3WXkKrOV9VIeSnes7f
+         WTc0m781loZ9HXJ/FoT4yaxsPdWuEWDOMqFs/8y28HpJ6IITuvHG2sHQU5tVmAr1BN
+         K8DwbM9lmXwsQYTexgQ6Nw9MncdGy/fmmZhb3ils=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juergen Gross <jgross@suse.com>,
-        Jan Beulich <jbeulich@suse.com>, Paul Durrant <paul@xen.org>,
-        Wei Liu <wl@xen.org>, "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 026/134] xen/netback: fix spurious event detection for common event case
-Date:   Mon,  1 Mar 2021 17:12:07 +0100
-Message-Id: <20210301161014.857741370@linuxfoundation.org>
+Subject: [PATCH 4.9 027/134] mac80211: fix potential overflow when multiplying to u32 integers
+Date:   Mon,  1 Mar 2021 17:12:08 +0100
+Message-Id: <20210301161014.913564170@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -41,54 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit a3daf3d39132b405781be8d9ede0c449b244b64e ]
+[ Upstream commit 6194f7e6473be78acdc5d03edd116944bdbb2c4e ]
 
-In case of a common event for rx and tx queue the event should be
-regarded to be spurious if no rx and no tx requests are pending.
+The multiplication of the u32 variables tx_time and estimated_retx is
+performed using a 32 bit multiplication and the result is stored in
+a u64 result. This has a potential u32 overflow issue, so avoid this
+by casting tx_time to a u64 to force a 64 bit multiply.
 
-Unfortunately the condition for testing that is wrong causing to
-decide a event being spurious if no rx OR no tx requests are
-pending.
-
-Fix that plus using local variables for rx/tx pending indicators in
-order to split function calls and if condition.
-
-Fixes: 23025393dbeb3b ("xen/netback: use lateeoi irq binding")
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Paul Durrant <paul@xen.org>
-Reviewed-by: Wei Liu <wl@xen.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Addresses-Coverity: ("Unintentional integer overflow")
+Fixes: 050ac52cbe1f ("mac80211: code for on-demand Hybrid Wireless Mesh Protocol")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210205175352.208841-1-colin.king@canonical.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netback/interface.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ net/mac80211/mesh_hwmp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/xen-netback/interface.c b/drivers/net/xen-netback/interface.c
-index e61073c751428..d9d06dc689edc 100644
---- a/drivers/net/xen-netback/interface.c
-+++ b/drivers/net/xen-netback/interface.c
-@@ -161,13 +161,15 @@ irqreturn_t xenvif_interrupt(int irq, void *dev_id)
- {
- 	struct xenvif_queue *queue = dev_id;
- 	int old;
-+	bool has_rx, has_tx;
+diff --git a/net/mac80211/mesh_hwmp.c b/net/mac80211/mesh_hwmp.c
+index 2fbd100b9e73d..a8b837d0498a4 100644
+--- a/net/mac80211/mesh_hwmp.c
++++ b/net/mac80211/mesh_hwmp.c
+@@ -355,7 +355,7 @@ static u32 airtime_link_metric_get(struct ieee80211_local *local,
+ 	 */
+ 	tx_time = (device_constant + 10 * test_frame_len / rate);
+ 	estimated_retx = ((1 << (2 * ARITH_SHIFT)) / (s_unit - err));
+-	result = (tx_time * estimated_retx) >> (2 * ARITH_SHIFT);
++	result = ((u64)tx_time * estimated_retx) >> (2 * ARITH_SHIFT);
+ 	return (u32)result;
+ }
  
- 	old = atomic_fetch_or(NETBK_COMMON_EOI, &queue->eoi_pending);
- 	WARN(old, "Interrupt while EOI pending\n");
- 
--	/* Use bitwise or as we need to call both functions. */
--	if ((!xenvif_handle_tx_interrupt(queue) |
--	     !xenvif_handle_rx_interrupt(queue))) {
-+	has_tx = xenvif_handle_tx_interrupt(queue);
-+	has_rx = xenvif_handle_rx_interrupt(queue);
-+
-+	if (!has_rx && !has_tx) {
- 		atomic_andnot(NETBK_COMMON_EOI, &queue->eoi_pending);
- 		xen_irq_lateeoi(irq, XEN_EOI_FLAG_SPURIOUS);
- 	}
 -- 
 2.27.0
 
