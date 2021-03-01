@@ -2,34 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959BC3288C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E843288F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238944AbhCARn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:43:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36330 "EHLO mail.kernel.org"
+        id S238709AbhCARre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:47:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231601AbhCAQ3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:29:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE67A64D5D;
-        Mon,  1 Mar 2021 16:24:07 +0000 (UTC)
+        id S231700AbhCAQaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:30:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 445F9601FC;
+        Mon,  1 Mar 2021 16:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615848;
-        bh=J2nIfrD3db1/7iXaVU/sUapjNUPujru+1n5e7ZjXAFE=;
+        s=korg; t=1614615851;
+        bh=jkeBrFo3ytL1w4k2gpPM27L2Rp+PzUve5ynQNjgpbyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kvb/42jisSAAB8422iRut0aH6JngjipG/JKFCTgvsnLcltB3DTOfwQS9EOtzmXeJH
-         qoi8qkX+9gfIlqpQCjon9Jh8onqRTNAcvDr8x+fCJtIlEwelIpk9SN4fLPq/8dnwNO
-         AjefW3esitJSVlTWfqKwMmNUzfE9V9oG10BW/HNo=
+        b=WqxgW/TSLaT3wOULS6KuJFfwkc4SQDxqhUkDrPVWcRYhnaT3i9KiEAD9Fc6X79K1k
+         OdfSy677xt+tKNe+5BDmMJJ8+U9ib8zBOUR+r4U6WYzywJzpIQfuuWx15IVnemkUAI
+         Nu4j3iuZ9wiJoJMgaeZpuFiuG0OSt7EDtOYG0lWI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 082/134] net/mlx4_core: Add missed mlx4_free_cmd_mailbox()
-Date:   Mon,  1 Mar 2021 17:13:03 +0100
-Message-Id: <20210301161017.611349899@linuxfoundation.org>
+Subject: [PATCH 4.9 083/134] ocfs2: fix a use after free on error
+Date:   Mon,  1 Mar 2021 17:13:04 +0100
+Message-Id: <20210301161017.653437372@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -41,37 +47,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 8eb65fda4a6dbd59cd5de24b106a10b6ee0d2176 ]
+[ Upstream commit c57d117f2b2f2a19b570c36f2819ef8d8210af20 ]
 
-mlx4_do_mirror_rule() forgets to call mlx4_free_cmd_mailbox() to
-free the memory region allocated by mlx4_alloc_cmd_mailbox() before
-an exit.
-Add the missed call to fix it.
+The error handling in this function frees "reg" but it is still on the
+"o2hb_all_regions" list so it will lead to a use after freew.  Joseph Qi
+points out that we need to clear the bit in the "o2hb_region_bitmap" as
+well
 
-Fixes: 78efed275117 ("net/mlx4_core: Support mirroring VF DMFS rules on both ports")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Link: https://lore.kernel.org/r/20210221143559.390277-1-hslester96@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lkml.kernel.org/r/YBk4M6HUG8jB/jc7@mwanda
+Fixes: 1cf257f51191 ("ocfs2: fix memory leak")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/resource_tracker.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ocfs2/cluster/heartbeat.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-index 7d1e8ab956e64..ab046bffed150 100644
---- a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-@@ -4948,6 +4948,7 @@ static int mlx4_do_mirror_rule(struct mlx4_dev *dev, struct res_fs_rule *fs_rule
+diff --git a/fs/ocfs2/cluster/heartbeat.c b/fs/ocfs2/cluster/heartbeat.c
+index 5e8709aa1e7ec..89c71d32dc05b 100644
+--- a/fs/ocfs2/cluster/heartbeat.c
++++ b/fs/ocfs2/cluster/heartbeat.c
+@@ -2155,7 +2155,7 @@ static struct config_item *o2hb_heartbeat_group_make_item(struct config_group *g
+ 			o2hb_nego_timeout_handler,
+ 			reg, NULL, &reg->hr_handler_list);
+ 	if (ret)
+-		goto free;
++		goto remove_item;
  
- 	if (!fs_rule->mirr_mbox) {
- 		mlx4_err(dev, "rule mirroring mailbox is null\n");
-+		mlx4_free_cmd_mailbox(dev, mailbox);
- 		return -EINVAL;
- 	}
- 	memcpy(mailbox->buf, fs_rule->mirr_mbox, fs_rule->mirr_mbox_size);
+ 	ret = o2net_register_handler(O2HB_NEGO_APPROVE_MSG, reg->hr_key,
+ 			sizeof(struct o2hb_nego_msg),
+@@ -2174,6 +2174,12 @@ static struct config_item *o2hb_heartbeat_group_make_item(struct config_group *g
+ 
+ unregister_handler:
+ 	o2net_unregister_handler_list(&reg->hr_handler_list);
++remove_item:
++	spin_lock(&o2hb_live_lock);
++	list_del(&reg->hr_all_item);
++	if (o2hb_global_heartbeat_active())
++		clear_bit(reg->hr_region_num, o2hb_region_bitmap);
++	spin_unlock(&o2hb_live_lock);
+ free:
+ 	kfree(reg);
+ 	return ERR_PTR(ret);
 -- 
 2.27.0
 
