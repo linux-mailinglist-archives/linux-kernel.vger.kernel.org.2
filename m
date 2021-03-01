@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84738329C95
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A0F329C39
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441872AbhCBB5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:57:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50722 "EHLO mail.kernel.org"
+        id S1380334AbhCBBuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:50:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242076AbhCATfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:35:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FD3F64EE7;
-        Mon,  1 Mar 2021 17:13:27 +0000 (UTC)
+        id S241709AbhCAT2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:28:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5672764F16;
+        Mon,  1 Mar 2021 17:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618808;
-        bh=YH0HHJxTO3JKvY10XdVCF98QJ/N+9tGj7lBuxQBAdBA=;
+        s=korg; t=1614620943;
+        bh=gMSNn9tMPspDTuCyI1ctQlZGGgm3lYEuGaVKkrylgYM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sIuxzbDYHXifkLJkJ1Bny7tChshrw7lZGQt3PewJl7Ll8/lFQro6TI3TGSdL6LzVw
-         rxm6Hjh408e414XHkplQASVzQblA8vGXt5y6clFbYvctJypoR+FeRkgsOtzSdsHsN7
-         vct4E9jNBlT0vxo8qZ2grs+JFS85K7ANr7hkRvv4=
+        b=n7MocY0EZGhqntbEdp7+9wBmtRJtA8Gc2pyD98JQgCa7P+soWgQrE4yFkIPnx2RnZ
+         w5N3aD13nKzlzdJKTl4vsxwluEUTU1p90n/qfW4SqJRrNUbg4RHFSWr62rGxMJd6js
+         gzmOeXjXz7M9MPuUfRADggDkTAWObhjPhs8t1+kM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jairaj Arava <jairaj.arava@intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
-        Shuming Fan <shumingf@realtek.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Sebastian Reichel <sre@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 223/663] ASoC: rt5682: Fix panic in rt5682_jack_detect_handler happening during system shutdown
-Date:   Mon,  1 Mar 2021 17:07:51 +0100
-Message-Id: <20210301161152.832340405@linuxfoundation.org>
+Subject: [PATCH 5.11 306/775] HSI: Fix PM usage counter unbalance in ssi_hw_init
+Date:   Mon,  1 Mar 2021 17:07:54 +0100
+Message-Id: <20210301161216.743812788@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 45a2702ce10993eda7a5b12690294782d565519c ]
+[ Upstream commit aa57e77b3d28f0df07149d88c47bc0f3aa77330b ]
 
-During Coldboot stress tests, system encountered the following panic.
-Panic logs depicts rt5682_i2c_shutdown() happened first and then later
-jack detect handler workqueue function triggered.
-This situation causes panic as rt5682_i2c_shutdown() resets codec.
-Fix this panic by cancelling all jack detection delayed work.
+pm_runtime_get_sync will increment pm usage counter
+even it failed. Forgetting to putting operation will
+result in reference leak here. We fix it by replacing
+it with pm_runtime_resume_and_get to keep usage counter
+balanced.
 
-Panic log:
-[   20.936124] sof_pci_shutdown
-[   20.940248] snd_sof_device_shutdown
-[   20.945023] snd_sof_shutdown
-[   21.126849] rt5682_i2c_shutdown
-[   21.286053] rt5682_jack_detect_handler
-[   21.291235] BUG: kernel NULL pointer dereference, address: 000000000000037c
-[   21.299302] #PF: supervisor read access in kernel mode
-[   21.305254] #PF: error_code(0x0000) - not-present page
-[   21.311218] PGD 0 P4D 0
-[   21.314155] Oops: 0000 [#1] PREEMPT SMP NOPTI
-[   21.319206] CPU: 2 PID: 123 Comm: kworker/2:3 Tainted: G     U            5.4.68 #10
-[   21.333687] ACPI: Preparing to enter system sleep state S5
-[   21.337669] Workqueue: events_power_efficient rt5682_jack_detect_handler [snd_soc_rt5682]
-[   21.337671] RIP: 0010:rt5682_jack_detect_handler+0x6c/0x279 [snd_soc_rt5682]
-
-Fixes: a50067d4f3c1d ('ASoC: rt5682: split i2c driver into separate module')
-Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
-Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
-Reviewed-by: Shuming Fan <shumingf@realtek.com>
-Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20210205171428.2344210-1-ranjani.sridharan@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: b209e047bc743 ("HSI: Introduce OMAP SSI driver")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Sebastian Reichel <sre@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5682-i2c.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/hsi/controllers/omap_ssi_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-index 6b4e0eb30c89a..7e652843c57d9 100644
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -268,6 +268,9 @@ static void rt5682_i2c_shutdown(struct i2c_client *client)
- {
- 	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
+diff --git a/drivers/hsi/controllers/omap_ssi_core.c b/drivers/hsi/controllers/omap_ssi_core.c
+index 7596dc1646484..44a3f5660c109 100644
+--- a/drivers/hsi/controllers/omap_ssi_core.c
++++ b/drivers/hsi/controllers/omap_ssi_core.c
+@@ -424,7 +424,7 @@ static int ssi_hw_init(struct hsi_controller *ssi)
+ 	struct omap_ssi_controller *omap_ssi = hsi_controller_drvdata(ssi);
+ 	int err;
  
-+	cancel_delayed_work_sync(&rt5682->jack_detect_work);
-+	cancel_delayed_work_sync(&rt5682->jd_check_work);
-+
- 	rt5682_reset(rt5682);
- }
- 
+-	err = pm_runtime_get_sync(ssi->device.parent);
++	err = pm_runtime_resume_and_get(ssi->device.parent);
+ 	if (err < 0) {
+ 		dev_err(&ssi->device, "runtime PM failed %d\n", err);
+ 		return err;
 -- 
 2.27.0
 
