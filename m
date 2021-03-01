@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA47632980D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E92A329854
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344989AbhCAXKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:10:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
+        id S1345559AbhCAX0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:26:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238885AbhCAR4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:56:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 175DC651BE;
-        Mon,  1 Mar 2021 17:16:30 +0000 (UTC)
+        id S238966AbhCASCr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:02:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E39E261606;
+        Mon,  1 Mar 2021 17:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618991;
-        bh=5UtkB0hfuNcGPwTNrIIbvWCh2WvtincObJJA2qpiekk=;
+        s=korg; t=1614619091;
+        bh=8ysRydVB+Fvs7XeczcltzEX7NERG7ew4ks+DPrt78Jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cVsxicgMr9x9gtF1R6CSX+XS/R2qL2TfrG1Ag3vN4NhDMlVCIHbzQhRUo9IpiSqv9
-         jsUZSMuxbVZ8m+JlIb9OFf2TdT3aGDC0r6k/hkNqfr5BDpTxvEVFD2D4hzGlsP0A6t
-         WAd9PInzoBVeh/otn+1jPnmGiH+yMcYwuey8F8II=
+        b=pIqoRImQMp2RcrJGbkVqRloZ6C2JO1UDf+tfMtKmoV+0XqWE4N5bN9nmzb+NyF894
+         1O3PFL0ztx4mCdcsuoLJTi99W39fIqOPIULy/LU4tcOWJXCw6ZtgVvRZw7gaDchWqB
+         NtyTnJpkcVUaGy+Im4herulY9+dWkT4ZV4nGsWNw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 291/663] RDMA/rtrs-srv: Fix missing wr_cqe
-Date:   Mon,  1 Mar 2021 17:08:59 +0100
-Message-Id: <20210301161156.230614501@linuxfoundation.org>
+Subject: [PATCH 5.10 298/663] clocksource/drivers/ixp4xx: Select TIMER_OF when needed
+Date:   Mon,  1 Mar 2021 17:09:06 +0100
+Message-Id: <20210301161156.578140381@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,68 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 8537f2de6519945890a2b0f3739b23f32b5c0a89 ]
+[ Upstream commit 7a3b8758bd6e45f7b671723b5c9fa2b69d0787ae ]
 
-We had a few places wr_cqe is not set, which could lead to NULL pointer
-deref or GPF in error case.
+Compile-testing the ixp4xx timer with CONFIG_OF enabled but
+CONFIG_TIMER_OF disabled leads to a harmless warning:
 
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Link: https://lore.kernel.org/r/20201217141915.56989-14-jinpu.wang@cloud.ionos.com
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+arm-linux-gnueabi-ld: warning: orphan section `__timer_of_table' from `drivers/clocksource/timer-ixp4xx.o' being placed in section `__timer_of_table'
+
+Move the select statement from the platform code into the driver
+so it always gets enabled in configurations that rely on it.
+
+Fixes: 40df14cc5cc0 ("clocksource/drivers/ixp4xx: Add OF initialization support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210103135955.3808976-1-arnd@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm/mach-ixp4xx/Kconfig | 1 -
+ drivers/clocksource/Kconfig  | 1 +
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index cc47a039e67d3..aac710764b44f 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -277,6 +277,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 		WARN_ON_ONCE(rkey != wr->rkey);
+diff --git a/arch/arm/mach-ixp4xx/Kconfig b/arch/arm/mach-ixp4xx/Kconfig
+index f7211b57b1e78..165c184801e19 100644
+--- a/arch/arm/mach-ixp4xx/Kconfig
++++ b/arch/arm/mach-ixp4xx/Kconfig
+@@ -13,7 +13,6 @@ config MACH_IXP4XX_OF
+ 	select I2C
+ 	select I2C_IOP3XX
+ 	select PCI
+-	select TIMER_OF
+ 	select USE_OF
+ 	help
+ 	  Say 'Y' here to support Device Tree-based IXP4xx platforms.
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index 2be849bb794ac..39f4d88662002 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -79,6 +79,7 @@ config IXP4XX_TIMER
+ 	bool "Intel XScale IXP4xx timer driver" if COMPILE_TEST
+ 	depends on HAS_IOMEM
+ 	select CLKSRC_MMIO
++	select TIMER_OF if OF
+ 	help
+ 	  Enables support for the Intel XScale IXP4xx SoC timer.
  
- 	wr->wr.opcode = IB_WR_RDMA_WRITE;
-+	wr->wr.wr_cqe   = &io_comp_cqe;
- 	wr->wr.ex.imm_data = 0;
- 	wr->wr.send_flags  = 0;
- 
-@@ -304,6 +305,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 		inv_wr.sg_list = NULL;
- 		inv_wr.num_sge = 0;
- 		inv_wr.opcode = IB_WR_SEND_WITH_INV;
-+		inv_wr.wr_cqe   = &io_comp_cqe;
- 		inv_wr.send_flags = 0;
- 		inv_wr.ex.invalidate_rkey = rkey;
- 	}
-@@ -314,6 +316,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
- 
- 		srv_mr = &sess->mrs[id->msg_id];
- 		rwr.wr.opcode = IB_WR_REG_MR;
-+		rwr.wr.wr_cqe = &local_reg_cqe;
- 		rwr.wr.num_sge = 0;
- 		rwr.mr = srv_mr->mr;
- 		rwr.wr.send_flags = 0;
-@@ -389,6 +392,7 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
- 
- 		if (need_inval) {
- 			if (likely(sg_cnt)) {
-+				inv_wr.wr_cqe   = &io_comp_cqe;
- 				inv_wr.sg_list = NULL;
- 				inv_wr.num_sge = 0;
- 				inv_wr.opcode = IB_WR_SEND_WITH_INV;
-@@ -431,6 +435,7 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
- 		srv_mr = &sess->mrs[id->msg_id];
- 		rwr.wr.next = &imm_wr;
- 		rwr.wr.opcode = IB_WR_REG_MR;
-+		rwr.wr.wr_cqe = &local_reg_cqe;
- 		rwr.wr.num_sge = 0;
- 		rwr.wr.send_flags = 0;
- 		rwr.mr = srv_mr->mr;
 -- 
 2.27.0
 
