@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14405328E51
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48953328E5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241612AbhCAT1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:27:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54004 "EHLO mail.kernel.org"
+        id S241683AbhCAT2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:28:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235787AbhCAQwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234277AbhCAQwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:52:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD49B64FB9;
-        Mon,  1 Mar 2021 16:33:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCEB964FBA;
+        Mon,  1 Mar 2021 16:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616411;
-        bh=u+g6P6/HtGJuv2yuZVh3nWSYKt+M1mt7AsT+z8U+J2c=;
+        s=korg; t=1614616414;
+        bh=O8Gqjsbhd75BsRBdHjaAHplyOlUkIv09b2+X0LIhqvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ITE08g0gKR0NPJK9eJjuC3OdNzGiyNyThIpkDnzHrlyuj8BB8YmPOASumvjDpuNna
-         3hmsL40QD/4tEj43jL7DKPCHHYaf5F5YHqPOMi6LoQKcibcby9+mewwyCyWF5QPCMT
-         fhghK6bVltc5ho6aEhohm7vEZ6mWlo3hZa5J62U4=
+        b=ohLHOfHsGOmibBOUIu5olYb8GASRpCahe4xEUt0bpHmH+ALv1E+nJ5ZrdXLUBsk3B
+         B8WbKoDSA1z07hflxGeCfO7+0py7Fr0iOQd6lEpg5vn0c2YcB8F4Ms+myDwcpfKFtl
+         0gbxtn6JMwRVo5q1jHYjlu/uOTO2R9bSk2ohtgzw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 4.14 143/176] crypto: sun4i-ss - handle BigEndian for cipher
-Date:   Mon,  1 Mar 2021 17:13:36 +0100
-Message-Id: <20210301161028.115691736@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 4.14 144/176] seccomp: Add missing return in non-void function
+Date:   Mon,  1 Mar 2021 17:13:37 +0100
+Message-Id: <20210301161028.168827367@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -39,57 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 5ab6177fa02df15cd8a02a1f1fb361d2d5d8b946 upstream.
+commit 04b38d012556199ba4c31195940160e0c44c64f0 upstream.
 
-Ciphers produce invalid results on BE.
-Key and IV need to be written in LE.
+We don't actually care about the value, since the kernel will panic
+before that; but a value should nonetheless be returned, otherwise the
+compiler will complain.
 
-Fixes: 6298e948215f2 ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 8112c4f140fa ("seccomp: remove 2-phase API")
+Cc: stable@vger.kernel.org # 4.7+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210111172839.640914-1-paul@crapouillou.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/sunxi-ss/sun4i-ss-cipher.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ kernel/seccomp.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
-+++ b/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
-@@ -63,13 +63,13 @@ static int sun4i_ss_opti_poll(struct skc
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -775,6 +775,8 @@ static int __seccomp_filter(int this_sys
+ 			    const bool recheck_after_trace)
+ {
+ 	BUG();
++
++	return -1;
+ }
+ #endif
  
- 	spin_lock_irqsave(&ss->slock, flags);
- 
--	for (i = 0; i < op->keylen; i += 4)
--		writel(*(op->key + i / 4), ss->base + SS_KEY0 + i);
-+	for (i = 0; i < op->keylen / 4; i++)
-+		writesl(ss->base + SS_KEY0 + i * 4, &op->key[i], 1);
- 
- 	if (areq->iv) {
- 		for (i = 0; i < 4 && i < ivsize / 4; i++) {
- 			v = *(u32 *)(areq->iv + i * 4);
--			writel(v, ss->base + SS_IV0 + i * 4);
-+			writesl(ss->base + SS_IV0 + i * 4, &v, 1);
- 		}
- 	}
- 	writel(mode, ss->base + SS_CTL);
-@@ -223,13 +223,13 @@ static int sun4i_ss_cipher_poll(struct s
- 
- 	spin_lock_irqsave(&ss->slock, flags);
- 
--	for (i = 0; i < op->keylen; i += 4)
--		writel(*(op->key + i / 4), ss->base + SS_KEY0 + i);
-+	for (i = 0; i < op->keylen / 4; i++)
-+		writesl(ss->base + SS_KEY0 + i * 4, &op->key[i], 1);
- 
- 	if (areq->iv) {
- 		for (i = 0; i < 4 && i < ivsize / 4; i++) {
- 			v = *(u32 *)(areq->iv + i * 4);
--			writel(v, ss->base + SS_IV0 + i * 4);
-+			writesl(ss->base + SS_IV0 + i * 4, &v, 1);
- 		}
- 	}
- 	writel(mode, ss->base + SS_CTL);
 
 
