@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7F8329CBE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C18E329CD0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349132AbhCBCLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:11:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50716 "EHLO mail.kernel.org"
+        id S1442394AbhCBCM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:12:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236405AbhCATgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:36:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9B6F64FB1;
-        Mon,  1 Mar 2021 17:35:11 +0000 (UTC)
+        id S241729AbhCATix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:38:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BA5764F2D;
+        Mon,  1 Mar 2021 17:36:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620112;
-        bh=5QN8dPS99J8vScfccjiCNh2+4q/kkB0CYkYT9Qj73pI=;
+        s=korg; t=1614620208;
+        bh=BRSrORX3B255pBExqd20wvacI4pVR1x9yirxtiNZmNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mGzJp5DZk0DjVldpHxK9AtT1gGmT6SaS0VvbKj1LRHAXFsGol7yLOP5UDUYLxSZsY
-         7CcrzHYMov3obDxU0VfomOX4AT5ofzS79TSfL9sAU/THmLOK1tXsX06BP9/6eQK7JJ
-         4mEk4ab6ZTQOCoArs7Qjrv5CvLzA8O1FKCaHaGPU=
+        b=vLY9zY+Oy67zUS46hXtfAfzazCWoOh884e3tRIEj0jdafIUvOFi2z3CMFJknwYyDE
+         B5N9+Jje2Sn0DMZ8JCDXrgrki2+ZEv3hMhmpLtcrbq4qWqiMmyBop4pUucvaDlPKID
+         CveySwIXgyAS9eauAzdu4FvSd4mGQtRuAqe2uVdE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
+        stable@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Phil Elwell <phil@raspberrypi.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 033/775] ARM: dts: exynos: correct PMIC interrupt trigger level on Arndale Octa
-Date:   Mon,  1 Mar 2021 17:03:21 +0100
-Message-Id: <20210301161203.356025703@linuxfoundation.org>
+Subject: [PATCH 5.11 039/775] staging: vchiq: Fix bulk userdata handling
+Date:   Mon,  1 Mar 2021 17:03:27 +0100
+Message-Id: <20210301161203.651513220@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,36 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Phil Elwell <phil@raspberrypi.com>
 
-[ Upstream commit 1ac8893c4fa3d4a34915dc5cdab568a39db5086c ]
+[ Upstream commit 96ae327678eceabf455b11a88ba14ad540d4b046 ]
 
-The Samsung PMIC datasheets describe the interrupt line as active low
-with a requirement of acknowledge from the CPU.  The falling edge
-interrupt will mostly work but it's not correct.
+The addition of the local 'userdata' pointer to
+vchiq_irq_queue_bulk_tx_rx omitted the case where neither BLOCKING nor
+WAITING modes are used, in which case the value provided by the
+caller is not returned to them as expected, but instead it is replaced
+with a NULL. This lack of a suitable context may cause the application
+to crash or otherwise malfunction.
 
-Fixes: 1fed2252713e ("ARM: dts: fix pinctrl for s2mps11-irq on exynos5420-arndale-octa")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Link: https://lore.kernel.org/r/20201210212903.216728-5-krzk@kernel.org
+Fixes: 4184da4f316a ("staging: vchiq: fix __user annotations")
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+Link: https://lore.kernel.org/r/20210105162030.1415213-2-phil@raspberrypi.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos5420-arndale-octa.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos5420-arndale-octa.dts b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-index bf457d0c02ebd..1aad4859c5f14 100644
---- a/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-+++ b/arch/arm/boot/dts/exynos5420-arndale-octa.dts
-@@ -349,7 +349,7 @@
- 		reg = <0x66>;
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index f500a70438056..2a8883673ba11 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -958,7 +958,7 @@ static int vchiq_irq_queue_bulk_tx_rx(struct vchiq_instance *instance,
+ 	struct vchiq_service *service;
+ 	struct bulk_waiter_node *waiter = NULL;
+ 	bool found = false;
+-	void *userdata = NULL;
++	void *userdata;
+ 	int status = 0;
+ 	int ret;
  
- 		interrupt-parent = <&gpx3>;
--		interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
-+		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&s2mps11_irq>;
+@@ -997,6 +997,8 @@ static int vchiq_irq_queue_bulk_tx_rx(struct vchiq_instance *instance,
+ 			"found bulk_waiter %pK for pid %d", waiter,
+ 			current->pid);
+ 		userdata = &waiter->bulk_waiter;
++	} else {
++		userdata = args->userdata;
+ 	}
  
+ 	/*
 -- 
 2.27.0
 
