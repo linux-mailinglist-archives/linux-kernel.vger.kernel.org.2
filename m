@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5E0329810
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA45329861
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345041AbhCAXKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:10:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52456 "EHLO mail.kernel.org"
+        id S243219AbhCAXam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:30:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232065AbhCAR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:56:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0872864F37;
-        Mon,  1 Mar 2021 17:39:00 +0000 (UTC)
+        id S239047AbhCASEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:04:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 051966514F;
+        Mon,  1 Mar 2021 17:05:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620341;
-        bh=CQDQaW6sR1J8//DimOziRTnwFc3cHOZkM+i1HTow/Ro=;
+        s=korg; t=1614618312;
+        bh=knLjTX156/NfT82qImq3VmnlLP/sb7rvTwiGTaR3u7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aVlZEnVojZOcA43TpOpVbEQJJaktWynTQCCyYe+EF3/eeRRyytZ+caduySf8EUqpl
-         eDpfLRbN8pqYoeZ4e13mZluPJCHZ2ksNBurv5tMh2CrpAsS29lgSD5+iGPXxPM2H5y
-         SABrBT3JYOP52R059vC+ndVUcjBHkmZEhc3LZMmQ=
+        b=ZJxXQNlddtxwGpiQT2ectIr0YNW2amigANOovqc40uO5YcWJ1trWvXXf7fef/AE8h
+         ZtlYdOcZPhBVcMdWSnmVMMtyy8A6xePSoWSVl9aXUyOgNffBLA7zixszopv6XEisIX
+         /UKOyo9F1n1GW6HXFp3Ji3j1bdPGPhLGjfzM7yDM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com,
-        Yonghong Song <yhs@fb.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 119/775] bpf: Fix an unitialized value in bpf_iter
-Date:   Mon,  1 Mar 2021 17:04:47 +0100
-Message-Id: <20210301161207.557673427@linuxfoundation.org>
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 042/663] bpf: Avoid warning when re-casting __bpf_call_base into __bpf_call_base_args
+Date:   Mon,  1 Mar 2021 17:04:50 +0100
+Message-Id: <20210301161143.857962150@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 17d8beda277a36203585943e70c7909b60775fd5 ]
+[ Upstream commit 6943c2b05bf09fd5c5729f7d7d803bf3f126cb9a ]
 
-Commit 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
-cached btf_id in struct bpf_iter_target_info so later on
-if it can be checked cheaply compared to checking registered names.
+BPF interpreter uses extra input argument, so re-casts __bpf_call_base into
+__bpf_call_base_args. Avoid compiler warning about incompatible function
+prototypes by casting to void * first.
 
-syzbot found a bug that uninitialized value may occur to
-bpf_iter_target_info->btf_id. This is because we allocated
-bpf_iter_target_info structure with kmalloc and never initialized
-field btf_id afterwards. This uninitialized btf_id is typically
-compared to a u32 bpf program func proto btf_id, and the chance
-of being equal is extremely slim.
-
-This patch fixed the issue by using kzalloc which will also
-prevent future likely instances due to adding new fields.
-
-Fixes: 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
-Reported-by: syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com
-Signed-off-by: Yonghong Song <yhs@fb.com>
+Fixes: 1ea47e01ad6e ("bpf: add support for bpf_call to interpreter")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20210212005926.2875002-1-yhs@fb.com
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210112075520.4103414-3-andrii@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/bpf_iter.c | 2 +-
+ include/linux/filter.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-index 5454161407f1f..a0d9eade9c804 100644
---- a/kernel/bpf/bpf_iter.c
-+++ b/kernel/bpf/bpf_iter.c
-@@ -287,7 +287,7 @@ int bpf_iter_reg_target(const struct bpf_iter_reg *reg_info)
- {
- 	struct bpf_iter_target_info *tinfo;
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 1b62397bd1247..e2ffa02f9067a 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -886,7 +886,7 @@ void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
+ u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+ #define __bpf_call_base_args \
+ 	((u64 (*)(u64, u64, u64, u64, u64, const struct bpf_insn *)) \
+-	 __bpf_call_base)
++	 (void *)__bpf_call_base)
  
--	tinfo = kmalloc(sizeof(*tinfo), GFP_KERNEL);
-+	tinfo = kzalloc(sizeof(*tinfo), GFP_KERNEL);
- 	if (!tinfo)
- 		return -ENOMEM;
- 
+ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog);
+ void bpf_jit_compile(struct bpf_prog *prog);
 -- 
 2.27.0
 
