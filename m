@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF2432A060
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF8232A05D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243493AbhCBER1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:17:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33052 "EHLO mail.kernel.org"
+        id S240508AbhCBEQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:16:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346237AbhCAXjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:39:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B50600CD;
-        Mon,  1 Mar 2021 23:38:34 +0000 (UTC)
+        id S1346226AbhCAXi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 18:38:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E87AF60200;
+        Mon,  1 Mar 2021 23:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614641915;
-        bh=crMSjT8phIUU1gQ1onZ/Yp6euqoj8W2K4uvkW3zWsI8=;
+        s=k20201202; t=1614641898;
+        bh=Yv06/zKfXgjPnrwxD0Y8kUsnC9VsgPBi5XguS6VqNNc=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=BvSp6hND4OePcVaNRzgMsmBwZExTtVoJvxcDBVE6XiQcewW0sAmT9NYIYb9pIRZvW
-         9vdUrttaN3GDMd7A0JzAG87pr3c+AgIY5YUO8B3Mms3JdSKy6FlBvhpgejn5ikRzvV
-         HQlm8g3TVDXerFs3q2/2tlWIeKXC0Xtr1yi7htqJ6pTEbeylBTcr6NDzDElKtx832y
-         +r7GdZRqHLMnaQReJ0nAGGrGByVplZ7YP37Ql0wIvvaotzgfVB7gwxDABZ3KDLOLNh
-         zqoOar0Emxya0oUuepQmIoZvTEkhqqibeAbf+RT+cCX1h4R2K3hFr3iWZyCIfyn/Wl
-         29ssBqCdkIpSg==
+        b=H/txClNl8pRWKV3A8KbJsrmLpi6klSikmoNajWQ35Z8OmCq1wB1uqiTBIro6At+Og
+         nPetTcs5km88bFbFO9U3NLz0j+dc7J4BvNMFGUFttdPU4erx3018Aqajo1eEqvVUvg
+         rgWfPHIYVS59TRBE5RFOqohcAtsQ5gIbYA/YDwueedzQGIDtYJIia55VjLO8NsZhZn
+         0rXPTg1k/TR1ZU1fM76eGynv6BFkTdUK5aBvd2sn3VrTwboaEezzOtE5gP9HFoflNs
+         3jqNasvg3YxDDzfq0HgWyuh4cnPgLjZ3AhPI5uZBK6fngMnHzgDRqipSRdWBuVGNA5
+         FkM4YDanAvtXQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Adrien Grassein <adrien.grassein@gmail.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
+To:     Robin Gong <yibin.gong@nxp.com>,
+        Schrempf Frieder <frieder.schrempf@kontron.de>,
         Liam Girdwood <lgirdwood@gmail.com>
-In-Reply-To: <20210216060128.126938-1-axel.lin@ingics.com>
-References: <20210216060128.126938-1-axel.lin@ingics.com>
-Subject: Re: [PATCH] regulator: pf8x00: Use regulator_map_voltage_ascend for pf8x00_buck7_ops
-Message-Id: <161464183214.31485.8914564217194445331.b4-ty@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Axel Lin <axel.lin@ingics.com>, stable@vger.kernel.org
+In-Reply-To: <20210222115229.166620-1-frieder.schrempf@kontron.de>
+References: <20210222115229.166620-1-frieder.schrempf@kontron.de>
+Subject: Re: [PATCH v2] regulator: pca9450: Clear PRESET_EN bit to fix BUCK1/2/3 voltage setting
+Message-Id: <161464183215.31485.14810671512981409540.b4-ty@kernel.org>
 Date:   Mon, 01 Mar 2021 23:37:12 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -41,9 +42,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 14:01:28 +0800, Axel Lin wrote:
-> The voltages in pf8x00_sw7_voltages are in ascendant order, so use
-> regulator_map_voltage_ascend.
+On Mon, 22 Feb 2021 12:52:20 +0100, Schrempf Frieder wrote:
+> The driver uses the DVS registers PCA9450_REG_BUCKxOUT_DVS0 to set the
+> voltage for the buck regulators 1, 2 and 3. This has no effect as the
+> PRESET_EN bit is set by default and therefore the preset values are used
+> instead, which are set to 850 mV.
+> 
+> To fix this we clear the PRESET_EN bit at time of initialization.
 
 Applied to
 
@@ -51,8 +56,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: pf8x00: Use regulator_map_voltage_ascend for pf8x00_buck7_ops
-      commit: 6930ab7ac03c1be5d1944473cbf327c9d4d14ce4
+[1/1] regulator: pca9450: Clear PRESET_EN bit to fix BUCK1/2/3 voltage setting
+      commit: 66f9f2d5d94f374605d829b9e690e8cdc9d0d05d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
