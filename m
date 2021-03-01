@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28C73280C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6913B3280C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:28:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236308AbhCAO13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:27:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233426AbhCAOZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:25:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D6EF64DBA;
-        Mon,  1 Mar 2021 14:25:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614608706;
-        bh=2AyFT3heWDrYjZIporM3KVA1yPzZkMjN8fqrhXFySwQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZPfkRP43sq484RRM+wcWVfF5jTryvoZZSK29XOmIBWptTnqGA0j4aad+zoqEt9cbJ
-         M0IvKPdX1h6+qaO/yVN1MY8+bhyuWhAEaDxtcdkvO2QpizLbRkSMyUMVatfyFoKKiv
-         W3TkjmO8e1WlcGIndcjfRizGlXpQ1W5i9iWgoD0YiCsArHvqcShIHLOTmTmdhFckZe
-         innJJVBiWGzBR8dgwTStyeV9jOrl+ZP02WPNW3gKgoZzdBGtx3jJvsUUT5ZIljPCks
-         xFCAmHeewqv3yxZzt2WKmSc2F/7+gw9qMkjLPhfjgxTu6AALygYW99O71z69Mb9rFQ
-         mrSHeZ7JTTopA==
-Date:   Mon, 1 Mar 2021 14:23:59 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] qcom: spmi-regulator: Add support for ULT LV_P50 and ULT
- P300
-Message-ID: <20210301142359.GA20302@sirena.org.uk>
-References: <20210225213514.117031-1-konrad.dybcio@somainline.org>
+        id S236317AbhCAO2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:28:12 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:49794 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236068AbhCAO0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:26:55 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 121EP2YT110234;
+        Mon, 1 Mar 2021 08:25:02 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614608702;
+        bh=oomUxLH+BoZYl0+zIicGqRwhTquC7dxS8FZ/fvZJv80=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=LBgvK+zPza2jFNTOwYEXpK0w5it4GGRj/1K2J3GSn34cob3spjW3/zLEcReNn/1Ln
+         HUmBcHKfXr0IjzZjOYveU3PopmR/cj0x2Tkb1d+vmD2b2o+Ot35oQwX+c6DhnskEur
+         0prq0cwZuy5yi/nBZy+46/T5+kuOuaGEnsWHEhic=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 121EP2K1083926
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 1 Mar 2021 08:25:02 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 1 Mar
+ 2021 08:25:02 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 1 Mar 2021 08:25:02 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 121EP15j095857;
+        Mon, 1 Mar 2021 08:25:01 -0600
+Date:   Mon, 1 Mar 2021 08:25:01 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: ti: k3-am64-main: Add GPIO DT nodes
+Message-ID: <20210301142501.7fj6jdlpv4nqznlh@pulverize>
+References: <20210301061908.22460-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210225213514.117031-1-konrad.dybcio@somainline.org>
-X-Cookie: I will not forget you.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210301061908.22460-1-a-govindraju@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11:49-20210301, Aswath Govindraju wrote:
+> Add device tree nodes for GPIO modules and interrupt controller in main
+> domain.
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+> 
+> This patch depends on,
+> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439039
 
---/9DWx/yDrRhgMJTb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> 
+> 
+>  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 45 ++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+> 
 
-On Thu, Feb 25, 2021 at 10:35:13PM +0100, Konrad Dybcio wrote:
-> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.or=
-g>
->=20
-> The ULT LV_P50 shares the same configuration as the other ULT LV_Pxxx
-> and the ULT P300 shares the same as the other ULT Pxxx.
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+Please add MCU GPIO instance[1] as well. We may not use it in the evm, in
+which case disable it, but squash the domains into a single patch.
 
---/9DWx/yDrRhgMJTb
-Content-Type: application/pgp-signature; name="signature.asc"
+[1] https://www.ti.com/lit/pdf/spruim2
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA8+P4ACgkQJNaLcl1U
-h9D/awf9Es7wlrQZ4YCq1/go52seFRhb18M1iMcnmyVLxFtFyQYWuvKBkX8p8ugD
-E3G2z6vK5oswpVnkZfhzldKvOHU9CLwGrry7R0SE6kLdZFq+6+Rq3rN03OEqnGTc
-OsMiSyH3JOcCphbDUoPbs0wOKta/RF0H9s5uIa1Huub1lC/FRM0TW5fI66zb2+c6
-bRClqz8wcVuWtfklG/qYeqA/CXcNjE1yk8rwa7Vwj8/s9h99x2jkOIozgNGSupy1
-bgd5RhanlgWW1BUfMIoRlxncxDLA6BM/NJJu/8M2DQnNSXN/7R4ltcveUpUCcE2m
-zQAF6pDlwjCEbt1wIgdUEVuj8uMvuw==
-=X8Go
------END PGP SIGNATURE-----
-
---/9DWx/yDrRhgMJTb--
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
