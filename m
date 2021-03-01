@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B972D329044
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4D832909B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242788AbhCAUD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:03:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59162 "EHLO mail.kernel.org"
+        id S242751AbhCAULL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:11:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235205AbhCAQ7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:59:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3487C64FEA;
-        Mon,  1 Mar 2021 16:37:51 +0000 (UTC)
+        id S235915AbhCARCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:02:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44CB064F74;
+        Mon,  1 Mar 2021 16:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616671;
-        bh=G+gJdW0zCwsUHqPseCQTPkJVeus4P3sRHtcHXk4VfyU=;
+        s=korg; t=1614616674;
+        bh=qNyvTpgP2qBw/FEkZPhQTJ62tjrNOIOFhITedfrZER8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oNFMh4bza8d/0J7snVVP5dW1QLqaSBJ68X9ShOwsSfq5tt2ivYOSSLjqE05SR+y12
-         30GpP+rRwREDOrRJY5N1RvoRYk1gmgk3C3Bza5nG7LmkUST+mgsszutK4ueTM0ij4O
-         SY8pIqIYao472MILKv72ZifV4pZSn5SEQ28DM09w=
+        b=Lw5JmbXgFpVerU6YLWiX6zzI4ViOhc42pAFsH8E/ew66tqIP0HNQ4oIgeAa9r/GAy
+         9yOWD55yx7Jxz41CaxzMHEb//8VFqvNGU1x5VOJ1G+c2KC3r7x2zR76qw2BLmhYuzW
+         AcWu75fYye+QfBpxIPGA7VWxDWNRzREUACxnQ5K0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 054/247] ARM: s3c: fix fiq for clang IAS
-Date:   Mon,  1 Mar 2021 17:11:14 +0100
-Message-Id: <20210301161034.320324601@linuxfoundation.org>
+        stable@vger.kernel.org, Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
+        Vernon Mauery <vernon.mauery@linux.intel.com>,
+        John Wang <wangzhiqiang.bj@bytedance.com>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 055/247] soc: aspeed: snoop: Add clock control logic
+Date:   Mon,  1 Mar 2021 17:11:15 +0100
+Message-Id: <20210301161034.369309830@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -43,91 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
 
-[ Upstream commit 7f9942c61fa60eda7cc8e42f04bd25b7d175876e ]
+[ Upstream commit 3f94cf15583be554df7aaa651b8ff8e1b68fbe51 ]
 
-Building with the clang integrated assembler produces a couple of
-errors for the s3c24xx fiq support:
+If LPC SNOOP driver is registered ahead of lpc-ctrl module, LPC
+SNOOP block will be enabled without heart beating of LCLK until
+lpc-ctrl enables the LCLK. This issue causes improper handling on
+host interrupts when the host sends interrupt in that time frame.
+Then kernel eventually forcibly disables the interrupt with
+dumping stack and printing a 'nobody cared this irq' message out.
 
-  arch/arm/mach-s3c/irq-s3c24xx-fiq.S:52:2: error: instruction 'subne' can not set flags, but 's' suffix specified
-    subnes pc, lr, #4 @@ return, still have work to do
+To prevent this issue, all LPC sub-nodes should enable LCLK
+individually so this patch adds clock control logic into the LPC
+SNOOP driver.
 
-  arch/arm/mach-s3c/irq-s3c24xx-fiq.S:64:1: error: invalid symbol redefinition
-    s3c24xx_spi_fiq_txrx:
-
-There are apparently two problems: one with extraneous or duplicate
-labels, and one with old-style opcode mnemonics. Stefan Agner has
-previously fixed other problems like this, but missed this particular
-file.
-
-Fixes: bec0806cfec6 ("spi_s3c24xx: add FIQ pseudo-DMA support")
-Cc: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://lore.kernel.org/r/20210204162416.3030114-1-arnd@kernel.org
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
+Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
+Signed-off-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Link: https://lore.kernel.org/r/20201208091748.1920-1-wangzhiqiang.bj@bytedance.com
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-s3c24xx-fiq.S | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/misc/aspeed-lpc-snoop.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/spi/spi-s3c24xx-fiq.S b/drivers/spi/spi-s3c24xx-fiq.S
-index 059f2dc1fda2d..1565c792da079 100644
---- a/drivers/spi/spi-s3c24xx-fiq.S
-+++ b/drivers/spi/spi-s3c24xx-fiq.S
-@@ -36,7 +36,6 @@
- 	@ and an offset to the irq acknowledgment word
+diff --git a/drivers/misc/aspeed-lpc-snoop.c b/drivers/misc/aspeed-lpc-snoop.c
+index c10be21a1663d..b4a776bf44bc5 100644
+--- a/drivers/misc/aspeed-lpc-snoop.c
++++ b/drivers/misc/aspeed-lpc-snoop.c
+@@ -15,6 +15,7 @@
+  */
  
- ENTRY(s3c24xx_spi_fiq_rx)
--s3c24xx_spi_fix_rx:
- 	.word	fiq_rx_end - fiq_rx_start
- 	.word	fiq_rx_irq_ack - fiq_rx_start
- fiq_rx_start:
-@@ -50,7 +49,7 @@ fiq_rx_start:
- 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
+ #include <linux/bitops.h>
++#include <linux/clk.h>
+ #include <linux/interrupt.h>
+ #include <linux/fs.h>
+ #include <linux/kfifo.h>
+@@ -71,6 +72,7 @@ struct aspeed_lpc_snoop_channel {
+ struct aspeed_lpc_snoop {
+ 	struct regmap		*regmap;
+ 	int			irq;
++	struct clk		*clk;
+ 	struct aspeed_lpc_snoop_channel chan[NUM_SNOOP_CHANNELS];
+ };
  
- 	subs	fiq_rcount, fiq_rcount, #1
--	subnes	pc, lr, #4		@@ return, still have work to do
-+	subsne	pc, lr, #4		@@ return, still have work to do
+@@ -286,22 +288,42 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
  
- 	@@ set IRQ controller so that next op will trigger IRQ
- 	mov	fiq_rtmp, #0
-@@ -62,7 +61,6 @@ fiq_rx_irq_ack:
- fiq_rx_end:
++	lpc_snoop->clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(lpc_snoop->clk)) {
++		rc = PTR_ERR(lpc_snoop->clk);
++		if (rc != -EPROBE_DEFER)
++			dev_err(dev, "couldn't get clock\n");
++		return rc;
++	}
++	rc = clk_prepare_enable(lpc_snoop->clk);
++	if (rc) {
++		dev_err(dev, "couldn't enable clock\n");
++		return rc;
++	}
++
+ 	rc = aspeed_lpc_snoop_config_irq(lpc_snoop, pdev);
+ 	if (rc)
+-		return rc;
++		goto err;
  
- ENTRY(s3c24xx_spi_fiq_txrx)
--s3c24xx_spi_fiq_txrx:
- 	.word	fiq_txrx_end - fiq_txrx_start
- 	.word	fiq_txrx_irq_ack - fiq_txrx_start
- fiq_txrx_start:
-@@ -77,7 +75,7 @@ fiq_txrx_start:
- 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
+ 	rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 0, port);
+ 	if (rc)
+-		return rc;
++		goto err;
  
- 	subs	fiq_rcount, fiq_rcount, #1
--	subnes	pc, lr, #4		@@ return, still have work to do
-+	subsne	pc, lr, #4		@@ return, still have work to do
+ 	/* Configuration of 2nd snoop channel port is optional */
+ 	if (of_property_read_u32_index(dev->of_node, "snoop-ports",
+ 				       1, &port) == 0) {
+ 		rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 1, port);
+-		if (rc)
++		if (rc) {
+ 			aspeed_lpc_disable_snoop(lpc_snoop, 0);
++			goto err;
++		}
+ 	}
  
- 	mov	fiq_rtmp, #0
- 	str	fiq_rtmp, [ fiq_rirq, # S3C2410_INTMOD  - S3C24XX_VA_IRQ ]
-@@ -89,7 +87,6 @@ fiq_txrx_irq_ack:
- fiq_txrx_end:
++	return 0;
++
++err:
++	clk_disable_unprepare(lpc_snoop->clk);
++
+ 	return rc;
+ }
  
- ENTRY(s3c24xx_spi_fiq_tx)
--s3c24xx_spi_fix_tx:
- 	.word	fiq_tx_end - fiq_tx_start
- 	.word	fiq_tx_irq_ack - fiq_tx_start
- fiq_tx_start:
-@@ -102,7 +99,7 @@ fiq_tx_start:
- 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
+@@ -313,6 +335,8 @@ static int aspeed_lpc_snoop_remove(struct platform_device *pdev)
+ 	aspeed_lpc_disable_snoop(lpc_snoop, 0);
+ 	aspeed_lpc_disable_snoop(lpc_snoop, 1);
  
- 	subs	fiq_rcount, fiq_rcount, #1
--	subnes	pc, lr, #4		@@ return, still have work to do
-+	subsne	pc, lr, #4		@@ return, still have work to do
++	clk_disable_unprepare(lpc_snoop->clk);
++
+ 	return 0;
+ }
  
- 	mov	fiq_rtmp, #0
- 	str	fiq_rtmp, [ fiq_rirq, # S3C2410_INTMOD  - S3C24XX_VA_IRQ ]
 -- 
 2.27.0
 
