@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCF9329D3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71892329CAA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443278AbhCBCUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:20:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55168 "EHLO mail.kernel.org"
+        id S241719AbhCBCKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:10:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241819AbhCATrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:47:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37573650FE;
-        Mon,  1 Mar 2021 17:02:13 +0000 (UTC)
+        id S242092AbhCATfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:35:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F41F26528E;
+        Mon,  1 Mar 2021 17:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618133;
-        bh=F3uOmjDRirqlt+F07n7sLAB9NP0IpsyjcYsORllsl2A=;
+        s=korg; t=1614619894;
+        bh=TH1FbZt92s+UcTZJK66IxQhicJvP3lj3ntXyCPqj3kk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OC4JUTxuPbt2toWFIWnF3+/ozAb1ubfcpK8/LkGjQrIhCjhrZ20uBzopP4IKMq60c
-         aMjCCdTpIUr5wKA66vnI1MvO2vP0Vb++5yKcy2YdU4sqWiGWLSG6LNkBB1UNE0yWIK
-         E+p4Lgv2j4vdCGs9NhNrltRRrAfS7z9+zSnCRVYk=
+        b=LFm86x7sfIT43Cw6CoCEwX7TglcAo0X+h+scWLJKAGjjGgzVocw09sN3VIP8jy1nP
+         +TgXawbitmyhqB5WeN9LH1N5cKoyUJVCRW6S6yi8BBnpWHzxASu43EgLxnKPoXb2ZQ
+         bXEHKV4AgW4D06fUSYbgw93ZYQ+3Xe4vaSkYiUOY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 318/340] sparc32: fix a user-triggerable oops in clear_user()
-Date:   Mon,  1 Mar 2021 17:14:22 +0100
-Message-Id: <20210301161103.942326025@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+da4fe66aaadd3c2e2d1c@syzkaller.appspotmail.com,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Namjae Jeon <namjae.jeon@samsung.com>
+Subject: [PATCH 5.10 618/663] exfat: fix shift-out-of-bounds in exfat_fill_super()
+Date:   Mon,  1 Mar 2021 17:14:26 +0100
+Message-Id: <20210301161212.419641486@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
-References: <20210301161048.294656001@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +42,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Namjae Jeon <namjae.jeon@samsung.com>
 
-commit 7780918b36489f0b2f9a3749d7be00c2ceaec513 upstream.
+commit 78c276f5495aa53a8beebb627e5bf6a54f0af34f upstream.
 
-Back in 2.1.29 the clear_user() guts (__bzero()) had been merged
-with memset().  Unfortunately, while all exception handlers had been
-copied, one of the exception table entries got lost.  As the result,
-clear_user() starting at 128*n bytes before the end of page and
-spanning between 8 and 127 bytes into the next page would oops when
-the second page is unmapped.  It's trivial to reproduce - all
-it takes is
+syzbot reported a warning which could cause shift-out-of-bounds issue.
 
-main()
-{
-	int fd = open("/dev/zero", O_RDONLY);
-	char *p = mmap(NULL, 16384, PROT_READ|PROT_WRITE,
-			MAP_PRIVATE|MAP_ANON, -1, 0);
-	munmap(p + 8192, 8192);
-	read(fd, p + 8192 - 128, 192);
-}
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x183/0x22e lib/dump_stack.c:120
+ ubsan_epilogue lib/ubsan.c:148 [inline]
+ __ubsan_handle_shift_out_of_bounds+0x432/0x4d0 lib/ubsan.c:395
+ exfat_read_boot_sector fs/exfat/super.c:471 [inline]
+ __exfat_fill_super fs/exfat/super.c:556 [inline]
+ exfat_fill_super+0x2acb/0x2d00 fs/exfat/super.c:624
+ get_tree_bdev+0x406/0x630 fs/super.c:1291
+ vfs_get_tree+0x86/0x270 fs/super.c:1496
+ do_new_mount fs/namespace.c:2881 [inline]
+ path_mount+0x1937/0x2c50 fs/namespace.c:3211
+ do_mount fs/namespace.c:3224 [inline]
+ __do_sys_mount fs/namespace.c:3432 [inline]
+ __se_sys_mount+0x2f9/0x3b0 fs/namespace.c:3409
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-which had been oopsing since March 1997.  Says something about
-the quality of test coverage... ;-/  And while today sparc32 port
-is nearly dead, back in '97 it had been very much alive; in fact,
-sparc64 had only been in mainline for 3 months by that point...
+exfat specification describe sect_per_clus_bits field of boot sector
+could be at most 25 - sect_size_bits and at least 0. And sect_size_bits
+can also affect this calculation, It also needs validation.
+This patch add validation for sect_per_clus_bits and sect_size_bits
+field of boot sector.
 
-Cc: stable@kernel.org
-Fixes: v2.1.29
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 719c1e182916 ("exfat: add super block operations")
+Cc: stable@vger.kernel.org # v5.9+
+Reported-by: syzbot+da4fe66aaadd3c2e2d1c@syzkaller.appspotmail.com
+Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Namjae Jeon <namjae.jeon@samsung.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/sparc/lib/memset.S |    1 +
- 1 file changed, 1 insertion(+)
+ fs/exfat/exfat_raw.h |    4 ++++
+ fs/exfat/super.c     |   31 ++++++++++++++++++++++++++-----
+ 2 files changed, 30 insertions(+), 5 deletions(-)
 
---- a/arch/sparc/lib/memset.S
-+++ b/arch/sparc/lib/memset.S
-@@ -142,6 +142,7 @@ __bzero:
- 	ZERO_LAST_BLOCKS(%o0, 0x48, %g2)
- 	ZERO_LAST_BLOCKS(%o0, 0x08, %g2)
- 13:
-+	EXT(12b, 13b, 21f)
- 	be	8f
- 	 andcc	%o1, 4, %g0
+--- a/fs/exfat/exfat_raw.h
++++ b/fs/exfat/exfat_raw.h
+@@ -77,6 +77,10 @@
  
+ #define EXFAT_FILE_NAME_LEN		15
+ 
++#define EXFAT_MIN_SECT_SIZE_BITS		9
++#define EXFAT_MAX_SECT_SIZE_BITS		12
++#define EXFAT_MAX_SECT_PER_CLUS_BITS(x)		(25 - (x)->sect_size_bits)
++
+ /* EXFAT: Main and Backup Boot Sector (512 bytes) */
+ struct boot_sector {
+ 	__u8	jmp_boot[BOOTSEC_JUMP_BOOT_LEN];
+--- a/fs/exfat/super.c
++++ b/fs/exfat/super.c
+@@ -381,8 +381,7 @@ static int exfat_calibrate_blocksize(str
+ {
+ 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
+ 
+-	if (!is_power_of_2(logical_sect) ||
+-	    logical_sect < 512 || logical_sect > 4096) {
++	if (!is_power_of_2(logical_sect)) {
+ 		exfat_err(sb, "bogus logical sector size %u", logical_sect);
+ 		return -EIO;
+ 	}
+@@ -451,6 +450,25 @@ static int exfat_read_boot_sector(struct
+ 		return -EINVAL;
+ 	}
+ 
++	/*
++	 * sect_size_bits could be at least 9 and at most 12.
++	 */
++	if (p_boot->sect_size_bits < EXFAT_MIN_SECT_SIZE_BITS ||
++	    p_boot->sect_size_bits > EXFAT_MAX_SECT_SIZE_BITS) {
++		exfat_err(sb, "bogus sector size bits : %u\n",
++				p_boot->sect_size_bits);
++		return -EINVAL;
++	}
++
++	/*
++	 * sect_per_clus_bits could be at least 0 and at most 25 - sect_size_bits.
++	 */
++	if (p_boot->sect_per_clus_bits > EXFAT_MAX_SECT_PER_CLUS_BITS(p_boot)) {
++		exfat_err(sb, "bogus sectors bits per cluster : %u\n",
++				p_boot->sect_per_clus_bits);
++		return -EINVAL;
++	}
++
+ 	sbi->sect_per_clus = 1 << p_boot->sect_per_clus_bits;
+ 	sbi->sect_per_clus_bits = p_boot->sect_per_clus_bits;
+ 	sbi->cluster_size_bits = p_boot->sect_per_clus_bits +
+@@ -477,16 +495,19 @@ static int exfat_read_boot_sector(struct
+ 	sbi->used_clusters = EXFAT_CLUSTERS_UNTRACKED;
+ 
+ 	/* check consistencies */
+-	if (sbi->num_FAT_sectors << p_boot->sect_size_bits <
+-	    sbi->num_clusters * 4) {
++	if ((u64)sbi->num_FAT_sectors << p_boot->sect_size_bits <
++	    (u64)sbi->num_clusters * 4) {
+ 		exfat_err(sb, "bogus fat length");
+ 		return -EINVAL;
+ 	}
++
+ 	if (sbi->data_start_sector <
+-	    sbi->FAT1_start_sector + sbi->num_FAT_sectors * p_boot->num_fats) {
++	    (u64)sbi->FAT1_start_sector +
++	    (u64)sbi->num_FAT_sectors * p_boot->num_fats) {
+ 		exfat_err(sb, "bogus data start sector");
+ 		return -EINVAL;
+ 	}
++
+ 	if (sbi->vol_flags & VOLUME_DIRTY)
+ 		exfat_warn(sb, "Volume was not properly unmounted. Some data may be corrupt. Please run fsck.");
+ 	if (sbi->vol_flags & MEDIA_FAILURE)
 
 
