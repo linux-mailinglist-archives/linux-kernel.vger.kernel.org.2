@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA45329861
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8009D329825
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243219AbhCAXam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:30:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
+        id S1345175AbhCAXMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:12:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239047AbhCASEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:04:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 051966514F;
-        Mon,  1 Mar 2021 17:05:11 +0000 (UTC)
+        id S239142AbhCAR6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:58:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39A9764DDF;
+        Mon,  1 Mar 2021 17:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618312;
-        bh=knLjTX156/NfT82qImq3VmnlLP/sb7rvTwiGTaR3u7w=;
+        s=korg; t=1614618323;
+        bh=3VYUcoViFPnf+4FXGF+rYTvwNJdrsI5fzYOj7PRVt0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZJxXQNlddtxwGpiQT2ectIr0YNW2amigANOovqc40uO5YcWJ1trWvXXf7fef/AE8h
-         ZtlYdOcZPhBVcMdWSnmVMMtyy8A6xePSoWSVl9aXUyOgNffBLA7zixszopv6XEisIX
-         /UKOyo9F1n1GW6HXFp3Ji3j1bdPGPhLGjfzM7yDM=
+        b=bXWgNISe8ygtFvNB2Lz7torUAZ4HbrQZqcO7x0tiGU3Yix1xu4Tk/x1Wj9OHcsFiH
+         m6UaLrJeioRndcB+enN0GmAWDohi0XcJSnI+XCKCslSP/spJTJicXrF9Kz84imJGTw
+         hkLP5xcJRfw7MvtJ9RMeHYNycHkWijdRXrFFwqrM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 042/663] bpf: Avoid warning when re-casting __bpf_call_base into __bpf_call_base_args
-Date:   Mon,  1 Mar 2021 17:04:50 +0100
-Message-Id: <20210301161143.857962150@linuxfoundation.org>
+        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 046/663] arm64: dts: allwinner: Drop non-removable from SoPine/LTS SD card
+Date:   Mon,  1 Mar 2021 17:04:54 +0100
+Message-Id: <20210301161144.060193205@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,38 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andrii@kernel.org>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit 6943c2b05bf09fd5c5729f7d7d803bf3f126cb9a ]
+[ Upstream commit 941432d007689f3774646e41a1439228b6c6ee0e ]
 
-BPF interpreter uses extra input argument, so re-casts __bpf_call_base into
-__bpf_call_base_args. Avoid compiler warning about incompatible function
-prototypes by casting to void * first.
+The SD card on the SoPine SoM module is somewhat concealed, so was
+originally defined as "non-removable".
+However there is a working card-detect pin (tested on two different
+SoM versions), and in certain SoM base boards it might be actually
+accessible at runtime.
+Also the Pine64-LTS shares the SoPine base .dtsi, so inherited the
+non-removable flag, even though the SD card slot is perfectly accessible
+and usable there. (It turns out that just *my* board has a broken card
+detect switch, so I originally thought CD wouldn't work on the LTS.)
 
-Fixes: 1ea47e01ad6e ("bpf: add support for bpf_call to interpreter")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210112075520.4103414-3-andrii@kernel.org
+Drop the "non-removable" flag to describe the SD card slot properly.
+
+Fixes: c3904a269891 ("arm64: allwinner: a64: add DTSI file for SoPine SoM")
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210113152630.28810-5-andre.przywara@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/filter.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 1b62397bd1247..e2ffa02f9067a 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -886,7 +886,7 @@ void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
- u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
- #define __bpf_call_base_args \
- 	((u64 (*)(u64, u64, u64, u64, u64, const struct bpf_insn *)) \
--	 __bpf_call_base)
-+	 (void *)__bpf_call_base)
- 
- struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog);
- void bpf_jit_compile(struct bpf_prog *prog);
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
+index c48692b06e1fa..3402cec87035b 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
+@@ -32,7 +32,6 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&mmc0_pins>;
+ 	vmmc-supply = <&reg_dcdc1>;
+-	non-removable;
+ 	disable-wp;
+ 	bus-width = <4>;
+ 	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>; /* PF6 */
 -- 
 2.27.0
 
