@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B49328C6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41655328C77
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:54:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235971AbhCASv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:51:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46972 "EHLO mail.kernel.org"
+        id S240603AbhCASwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:52:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235301AbhCAQnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:43:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61B3464F46;
-        Mon,  1 Mar 2021 16:30:01 +0000 (UTC)
+        id S235300AbhCAQnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:43:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 588DF64F4A;
+        Mon,  1 Mar 2021 16:30:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616201;
-        bh=fKDD0BSkgLr84muZmQPowt+pExksggudOcHRFRzsKhU=;
+        s=korg; t=1614616204;
+        bh=b3oRAKSxoYIMcb3tTe7J/dQcxTsgWB3yNv0wQQXamek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sfKKBpmpE/uL0wVuD4T2zbxNKYrsKQ/g3HqT2T8cJqKktr3o58m00gP47AguRghnT
-         CCchEnE4BmPVYv/xx9f91KxREIESG1mM6+U0hjdqpNC94vgeFWNqDQoIS0qsWKFQDT
-         gzP8ObAT5dvuFDqVUCPcMQNEyZE5kf9Y1DoMEsAo=
+        b=hbppT7iE8BUYspxKBZQHvPPTTBgva1juHWpJkUYdDZfyqWwccxwP6Wt7eZ744/euo
+         Ej6dqdjiFQTKb6HNVwiOABAlUply7Fj2ANiSTmE5CqV+xikkqTLOeffK2r0msoT27o
+         iB9xFdLeSihn5Y0V9e9g3VjuhicbOak+sNScyJYo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pratyush Yadav <p.yadav@ti.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 070/176] spi: cadence-quadspi: Abort read if dummy cycles required are too many
-Date:   Mon,  1 Mar 2021 17:12:23 +0100
-Message-Id: <20210301161024.440493720@linuxfoundation.org>
+Subject: [PATCH 4.14 071/176] HID: core: detect and skip invalid inputs to snto32()
+Date:   Mon,  1 Mar 2021 17:12:24 +0100
+Message-Id: <20210301161024.488925964@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -40,38 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pratyush Yadav <p.yadav@ti.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit ceeda328edeeeeac7579e9dbf0610785a3b83d39 ]
+[ Upstream commit a0312af1f94d13800e63a7d0a66e563582e39aec ]
 
-The controller can only support up to 31 dummy cycles. If the command
-requires more it falls back to using 31. This command is likely to fail
-because the correct number of cycles are not waited upon. Rather than
-silently issuing an incorrect command, fail loudly so the caller can get
-a chance to find out the command can't be supported by the controller.
+Prevent invalid (0, 0) inputs to hid-core's snto32() function.
 
-Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller")
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-Link: https://lore.kernel.org/r/20201222184425.7028-3-p.yadav@ti.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Maybe it is just the dummy device here that is causing this, but
+there are hundreds of calls to snto32(0, 0). Having n (bits count)
+of 0 is causing the current UBSAN trap with a shift value of
+0xffffffff (-1, or n - 1 in this function).
+
+Either of the value to shift being 0 or the bits count being 0 can be
+handled by just returning 0 to the caller, avoiding the following
+complex shift + OR operations:
+
+	return value & (1 << (n - 1)) ? value | (~0U << n) : value;
+
+Fixes: dde5845a529f ("[PATCH] Generic HID layer - code split")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: linux-input@vger.kernel.org
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/spi-nor/cadence-quadspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index ff4edf4bb23c5..e58923d25f4a5 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -465,7 +465,7 @@ static int cqspi_indirect_read_setup(struct spi_nor *nor,
- 	/* Setup dummy clock cycles */
- 	dummy_clk = nor->read_dummy;
- 	if (dummy_clk > CQSPI_DUMMY_CLKS_MAX)
--		dummy_clk = CQSPI_DUMMY_CLKS_MAX;
-+		return -EOPNOTSUPP;
+diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+index fe4e889af0090..71ee1267d2efc 100644
+--- a/drivers/hid/hid-core.c
++++ b/drivers/hid/hid-core.c
+@@ -1129,6 +1129,9 @@ EXPORT_SYMBOL_GPL(hid_open_report);
  
- 	if (dummy_clk / 8) {
- 		reg |= (1 << CQSPI_REG_RD_INSTR_MODE_EN_LSB);
+ static s32 snto32(__u32 value, unsigned n)
+ {
++	if (!value || !n)
++		return 0;
++
+ 	switch (n) {
+ 	case 8:  return ((__s8)value);
+ 	case 16: return ((__s16)value);
 -- 
 2.27.0
 
