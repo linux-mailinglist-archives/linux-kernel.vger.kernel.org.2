@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C356329B03
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506AC329A0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378439AbhCBBGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:06:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34078 "EHLO mail.kernel.org"
+        id S1348279AbhCBAn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:43:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240815AbhCATBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:01:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D25A65189;
-        Mon,  1 Mar 2021 17:10:30 +0000 (UTC)
+        id S240299AbhCASij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:38:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5826E65314;
+        Mon,  1 Mar 2021 17:43:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618630;
-        bh=hF0Z2ImeDhMsG9CfI2pxm99ZtROhX7KaIIFYm6QhRvA=;
+        s=korg; t=1614620602;
+        bh=RbsRnAjVjKH2hfuolaRNlatMWXPRUnHLsvtlKr+1y5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GS0Re8PFqU2E6NVlix8KheM2rXl7C7Kkr9KCKrYLO2+VOTJnau8+fwN04sFu0CeiE
-         2FrHOucTyPV1uO/WIvG5IccefR/Caxk0oHLEZuBB2c/zL6xWcYBXpLMBklBkuJ5868
-         KMAFu0C4iiPuz6/cnS+QjIfOWrGj7ZmOLCmivkI0=
+        b=HIcQ9jTP6UAmvxAm5taob34eAyhnqq0nsOhBFhqpzs96wAoZfcE1FDbb5r9ZkkEqr
+         IbsjOoA710YIOXCSntmTmijFD48v/+T3TKho5r1CqIb5OID/3LN+voGdGkJed3kn9S
+         EKwPzVoD3AEwTL0dXHKuic2oCdhXYOwZGvyu/v1g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        =?UTF-8?q?S=C3=A9bastien=20Szymanski?= 
+        <sebastien.szymanski@armadeus.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 131/663] net: amd-xgbe: Fix NETDEV WATCHDOG transmit queue timeout warning
-Date:   Mon,  1 Mar 2021 17:06:19 +0100
-Message-Id: <20210301161148.231188202@linuxfoundation.org>
+Subject: [PATCH 5.11 213/775] media: imx7: csi: Fix pad link validation
+Date:   Mon,  1 Mar 2021 17:06:21 +0100
+Message-Id: <20210301161212.159635054@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,76 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+From: Rui Miguel Silva <rmfrfs@gmail.com>
 
-[ Upstream commit 186edbb510bd60e748f93975989ccba25ee99c50 ]
+[ Upstream commit f5ffb81f51376eb5a12e8c4cb4871426c65bb2af ]
 
-The current driver calls netif_carrier_off() late in the link tear down
-which can result in a netdev watchdog timeout.
+We can not make the assumption that the bound subdev is always a CSI
+mux, in i.MX6UL/i.MX6ULL that is not the case. So, just get the entity
+selected by source directly upstream from the CSI.
 
-Calling netif_carrier_off() immediately after netif_tx_stop_all_queues()
-avoids the warning.
-
- ------------[ cut here ]------------
- NETDEV WATCHDOG: enp3s0f2 (amd-xgbe): transmit queue 0 timed out
- WARNING: CPU: 3 PID: 0 at net/sched/sch_generic.c:461 dev_watchdog+0x20d/0x220
- Modules linked in: amd_xgbe(E)  amd-xgbe 0000:03:00.2 enp3s0f2: Link is Down
- CPU: 3 PID: 0 Comm: swapper/3 Tainted: G            E
- Hardware name: AMD Bilby-RV2/Bilby-RV2, BIOS RBB1202A 10/18/2019
- RIP: 0010:dev_watchdog+0x20d/0x220
- Code: 00 49 63 4e e0 eb 92 4c 89 e7 c6 05 c6 e2 c1 00 01 e8 e7 ce fc ff 89 d9 48
- RSP: 0018:ffff90cfc28c3e88 EFLAGS: 00010286
- RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000006
- RDX: 0000000000000007 RSI: 0000000000000086 RDI: ffff90cfc28d63c0
- RBP: ffff90cfb977845c R08: 0000000000000050 R09: 0000000000196018
- R10: ffff90cfc28c3ef8 R11: 0000000000000000 R12: ffff90cfb9778000
- R13: 0000000000000003 R14: ffff90cfb9778480 R15: 0000000000000010
- FS:  0000000000000000(0000) GS:ffff90cfc28c0000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00007f240ff2d9d0 CR3: 00000001e3e0a000 CR4: 00000000003406e0
- Call Trace:
-  <IRQ>
-  ? pfifo_fast_reset+0x100/0x100
-  call_timer_fn+0x2b/0x130
-  run_timer_softirq+0x3e8/0x440
-  ? enqueue_hrtimer+0x39/0x90
-
-Fixes: e722ec82374b ("amd-xgbe: Update the BelFuse quirk to support SGMII")
-Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
-Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
-Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 86e02d07871c ("media: imx5/6/7: csi: Mark a bound video mux as a CSI mux")
+Reported-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Rui Miguel Silva <rmfrfs@gmail.com>
+Tested-by: Fabio Estevam <festevam@gmail.com>
+Tested-by: Sébastien Szymanski <sebastien.szymanski@armadeus.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/amd/xgbe/xgbe-drv.c  | 1 +
- drivers/net/ethernet/amd/xgbe/xgbe-mdio.c | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/imx/imx7-media-csi.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
-index 2709a2db56577..395eb0b526802 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
-@@ -1368,6 +1368,7 @@ static void xgbe_stop(struct xgbe_prv_data *pdata)
- 		return;
+diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/media/imx/imx7-media-csi.c
+index 31e36168f9d0f..ac52b1daf9914 100644
+--- a/drivers/staging/media/imx/imx7-media-csi.c
++++ b/drivers/staging/media/imx/imx7-media-csi.c
+@@ -499,6 +499,7 @@ static int imx7_csi_pad_link_validate(struct v4l2_subdev *sd,
+ 				      struct v4l2_subdev_format *sink_fmt)
+ {
+ 	struct imx7_csi *csi = v4l2_get_subdevdata(sd);
++	struct media_entity *src;
+ 	struct media_pad *pad;
+ 	int ret;
  
- 	netif_tx_stop_all_queues(netdev);
-+	netif_carrier_off(pdata->netdev);
+@@ -509,11 +510,21 @@ static int imx7_csi_pad_link_validate(struct v4l2_subdev *sd,
+ 	if (!csi->src_sd)
+ 		return -EPIPE;
  
- 	xgbe_stop_timers(pdata);
- 	flush_workqueue(pdata->dev_workqueue);
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
-index 93ef5a30cb8d9..19ee4db0156d6 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
-@@ -1396,7 +1396,6 @@ static void xgbe_phy_stop(struct xgbe_prv_data *pdata)
- 	pdata->phy_if.phy_impl.stop(pdata);
++	src = &csi->src_sd->entity;
++
++	/*
++	 * if the source is neither a CSI MUX or CSI-2 get the one directly
++	 * upstream from this CSI
++	 */
++	if (src->function != MEDIA_ENT_F_VID_IF_BRIDGE &&
++	    src->function != MEDIA_ENT_F_VID_MUX)
++		src = &csi->sd.entity;
++
+ 	/*
+-	 * find the entity that is selected by the CSI mux. This is needed
++	 * find the entity that is selected by the source. This is needed
+ 	 * to distinguish between a parallel or CSI-2 pipeline.
+ 	 */
+-	pad = imx_media_pipeline_pad(&csi->src_sd->entity, 0, 0, true);
++	pad = imx_media_pipeline_pad(src, 0, 0, true);
+ 	if (!pad)
+ 		return -ENODEV;
  
- 	pdata->phy.link = 0;
--	netif_carrier_off(pdata->netdev);
- 
- 	xgbe_phy_adjust_link(pdata);
- }
 -- 
 2.27.0
 
