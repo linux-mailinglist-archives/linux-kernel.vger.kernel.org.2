@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883F13299FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E49329B19
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346315AbhCBAle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:41:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47666 "EHLO mail.kernel.org"
+        id S1378614AbhCBBHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:07:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240105AbhCASgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:36:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FF3A6512D;
-        Mon,  1 Mar 2021 17:03:31 +0000 (UTC)
+        id S241026AbhCATES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:04:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B31564F17;
+        Mon,  1 Mar 2021 17:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618212;
-        bh=XV0NsOXfBF0eT4o4Oa5omXoF2xgw2/JN+GcIo4o49Kk=;
+        s=korg; t=1614619919;
+        bh=QJonwg5BcvZP9VOiOe7Gm9M20uKvxKPdChySZbfXY4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZqhzOKv8cFOde/vhcKR6kcp0qG0SQG7nScIgKI8m8F3wPfhyDby1GUxjT8RJ0LXjs
-         duQmpVdxWdCQCaPHgulzohDLljARqVPAuo19OdL/L/NAs3XqGnPiwSF+llta3BxFi9
-         r8xklZ8Wxuv0EmdBxYsG//UQgnCWq/bO7jmmRdRM=
+        b=Sj9UK5fQ6acRFRduv3t/rRiiMVcSBfbaAsbnKvse/mvktpQO0+xMjZCGlmaf70tA9
+         p4kWzS1n2Vp1XCbByZKW+8FDEjFnRAT6K5wjk62RbyqjifLpK6A2cmzZWrPGM+oPgd
+         1wc5+b9k17O5FBr5h5cQYb91M4ISE/iB5QJeJnTY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 331/340] icmp: introduce helper for natd source address in network device context
-Date:   Mon,  1 Mar 2021 17:14:35 +0100
-Message-Id: <20210301161104.585035055@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.10 629/663] um: defer killing userspace on page table update failures
+Date:   Mon,  1 Mar 2021 17:14:37 +0100
+Message-Id: <20210301161212.973056030@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
-References: <20210301161048.294656001@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,139 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason A. Donenfeld <Jason@zx2c4.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 0b41713b606694257b90d61ba7e2712d8457648b upstream.
+commit a7d48886cacf8b426e0079bca9639d2657cf2d38 upstream.
 
-This introduces a helper function to be called only by network drivers
-that wraps calls to icmp[v6]_send in a conntrack transformation, in case
-NAT has been used. We don't want to pollute the non-driver path, though,
-so we introduce this as a helper to be called by places that actually
-make use of this, as suggested by Florian.
+In some cases we can get to fix_range_common() with mmap_sem held,
+and in others we get there without it being held. For example, we
+get there with it held from sys_mprotect(), and without it held
+from fork_handler().
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: Florian Westphal <fw@strlen.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Avoid any issues in this and simply defer killing the task until
+it runs the next time. Do it on the mm so that another task that
+shares the same mm can't continue running afterwards.
+
+Cc: stable@vger.kernel.org
+Fixes: 468f65976a8d ("um: Fix hung task in fix_range_common()")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/icmpv6.h |    6 ++++++
- include/net/icmp.h     |    6 ++++++
- net/ipv4/icmp.c        |   33 +++++++++++++++++++++++++++++++++
- net/ipv6/ip6_icmp.c    |   34 ++++++++++++++++++++++++++++++++++
- 4 files changed, 79 insertions(+)
+ arch/um/include/shared/skas/mm_id.h |    1 +
+ arch/um/kernel/tlb.c                |    7 +++----
+ arch/um/os-Linux/skas/process.c     |    4 ++++
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
---- a/include/linux/icmpv6.h
-+++ b/include/linux/icmpv6.h
-@@ -31,6 +31,12 @@ static inline void icmpv6_send(struct sk
- }
+--- a/arch/um/include/shared/skas/mm_id.h
++++ b/arch/um/include/shared/skas/mm_id.h
+@@ -12,6 +12,7 @@ struct mm_id {
+ 		int pid;
+ 	} u;
+ 	unsigned long stack;
++	int kill;
+ };
+ 
  #endif
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -352,12 +352,11 @@ void fix_range_common(struct mm_struct *
  
-+#if IS_ENABLED(CONFIG_NF_NAT)
-+void icmpv6_ndo_send(struct sk_buff *skb_in, u8 type, u8 code, __u32 info);
-+#else
-+#define icmpv6_ndo_send icmpv6_send
-+#endif
+ 	/* This is not an else because ret is modified above */
+ 	if (ret) {
++		struct mm_id *mm_idp = &current->mm->context.id;
 +
- extern int				icmpv6_init(void);
- extern int				icmpv6_err_convert(u8 type, u8 code,
- 							   int *err);
---- a/include/net/icmp.h
-+++ b/include/net/icmp.h
-@@ -43,6 +43,12 @@ static inline void icmp_send(struct sk_b
- 	__icmp_send(skb_in, type, code, info, &IPCB(skb_in)->opt);
+ 		printk(KERN_ERR "fix_range_common: failed, killing current "
+ 		       "process: %d\n", task_tgid_vnr(current));
+-		/* We are under mmap_lock, release it such that current can terminate */
+-		mmap_write_unlock(current->mm);
+-		force_sig(SIGKILL);
+-		do_signal(&current->thread.regs);
++		mm_idp->kill = 1;
+ 	}
  }
  
-+#if IS_ENABLED(CONFIG_NF_NAT)
-+void icmp_ndo_send(struct sk_buff *skb_in, int type, int code, __be32 info);
-+#else
-+#define icmp_ndo_send icmp_send
-+#endif
-+
- int icmp_rcv(struct sk_buff *skb);
- int icmp_err(struct sk_buff *skb, u32 info);
- int icmp_init(void);
---- a/net/ipv4/icmp.c
-+++ b/net/ipv4/icmp.c
-@@ -750,6 +750,39 @@ out:;
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -249,6 +249,7 @@ static int userspace_tramp(void *stack)
  }
- EXPORT_SYMBOL(__icmp_send);
  
-+#if IS_ENABLED(CONFIG_NF_NAT)
-+#include <net/netfilter/nf_conntrack.h>
-+void icmp_ndo_send(struct sk_buff *skb_in, int type, int code, __be32 info)
-+{
-+	struct sk_buff *cloned_skb = NULL;
-+	enum ip_conntrack_info ctinfo;
-+	struct nf_conn *ct;
-+	__be32 orig_ip;
-+
-+	ct = nf_ct_get(skb_in, &ctinfo);
-+	if (!ct || !(ct->status & IPS_SRC_NAT)) {
-+		icmp_send(skb_in, type, code, info);
-+		return;
-+	}
-+
-+	if (skb_shared(skb_in))
-+		skb_in = cloned_skb = skb_clone(skb_in, GFP_ATOMIC);
-+
-+	if (unlikely(!skb_in || skb_network_header(skb_in) < skb_in->head ||
-+	    (skb_network_header(skb_in) + sizeof(struct iphdr)) >
-+	    skb_tail_pointer(skb_in) || skb_ensure_writable(skb_in,
-+	    skb_network_offset(skb_in) + sizeof(struct iphdr))))
-+		goto out;
-+
-+	orig_ip = ip_hdr(skb_in)->saddr;
-+	ip_hdr(skb_in)->saddr = ct->tuplehash[0].tuple.src.u3.ip;
-+	icmp_send(skb_in, type, code, info);
-+	ip_hdr(skb_in)->saddr = orig_ip;
-+out:
-+	consume_skb(cloned_skb);
-+}
-+EXPORT_SYMBOL(icmp_ndo_send);
-+#endif
+ int userspace_pid[NR_CPUS];
++int kill_userspace_mm[NR_CPUS];
  
- static void icmp_socket_deliver(struct sk_buff *skb, u32 info)
+ /**
+  * start_userspace() - prepare a new userspace process
+@@ -342,6 +343,8 @@ void userspace(struct uml_pt_regs *regs,
+ 	interrupt_end();
+ 
+ 	while (1) {
++		if (kill_userspace_mm[0])
++			fatal_sigsegv();
+ 
+ 		/*
+ 		 * This can legitimately fail if the process loads a
+@@ -650,4 +653,5 @@ void reboot_skas(void)
+ void __switch_mm(struct mm_id *mm_idp)
  {
---- a/net/ipv6/ip6_icmp.c
-+++ b/net/ipv6/ip6_icmp.c
-@@ -45,4 +45,38 @@ out:
- 	rcu_read_unlock();
+ 	userspace_pid[0] = mm_idp->u.pid;
++	kill_userspace_mm[0] = mm_idp->kill;
  }
- EXPORT_SYMBOL(icmpv6_send);
-+
-+#if IS_ENABLED(CONFIG_NF_NAT)
-+#include <net/netfilter/nf_conntrack.h>
-+void icmpv6_ndo_send(struct sk_buff *skb_in, u8 type, u8 code, __u32 info)
-+{
-+	struct sk_buff *cloned_skb = NULL;
-+	enum ip_conntrack_info ctinfo;
-+	struct in6_addr orig_ip;
-+	struct nf_conn *ct;
-+
-+	ct = nf_ct_get(skb_in, &ctinfo);
-+	if (!ct || !(ct->status & IPS_SRC_NAT)) {
-+		icmpv6_send(skb_in, type, code, info);
-+		return;
-+	}
-+
-+	if (skb_shared(skb_in))
-+		skb_in = cloned_skb = skb_clone(skb_in, GFP_ATOMIC);
-+
-+	if (unlikely(!skb_in || skb_network_header(skb_in) < skb_in->head ||
-+	    (skb_network_header(skb_in) + sizeof(struct ipv6hdr)) >
-+	    skb_tail_pointer(skb_in) || skb_ensure_writable(skb_in,
-+	    skb_network_offset(skb_in) + sizeof(struct ipv6hdr))))
-+		goto out;
-+
-+	orig_ip = ipv6_hdr(skb_in)->saddr;
-+	ipv6_hdr(skb_in)->saddr = ct->tuplehash[0].tuple.src.u3.in6;
-+	icmpv6_send(skb_in, type, code, info);
-+	ipv6_hdr(skb_in)->saddr = orig_ip;
-+out:
-+	consume_skb(cloned_skb);
-+}
-+EXPORT_SYMBOL(icmpv6_ndo_send);
-+#endif
- #endif
 
 
