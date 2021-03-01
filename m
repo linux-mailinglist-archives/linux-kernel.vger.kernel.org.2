@@ -2,39 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE8B329ACF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A301329AD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348561AbhCBBDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:03:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58012 "EHLO mail.kernel.org"
+        id S1378049AbhCBBDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:03:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240534AbhCASxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:53:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94A84652A9;
-        Mon,  1 Mar 2021 17:33:39 +0000 (UTC)
+        id S240643AbhCASzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:55:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9F95652A5;
+        Mon,  1 Mar 2021 17:33:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620020;
-        bh=rVirLZ6Q6Gw2u0mCRf+mUOcCzhIT6+EVNhEEYFkWRxo=;
+        s=korg; t=1614620028;
+        bh=+yxJtEY7CGCwsBtOtYkh4AHkeN5E+gqZX7oxIomWLao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gfO8vzg3XveCU2wbrhk21RM7P7S3QmG0NeBWYENLXQkZdqe7zP3fGLPPfhf7PMiVi
-         eqKHVDNIvYW1PzupNsJUT8Yx8dSNFmrhswlcP0N6TnjpOnbvHAWpnhYgv/4sZQZUyM
-         chmZWUufArCZIHX8kTP/TVdKcguy5MFM30wGQiPI=
+        b=eXTXEG9UAl2su55guN7cn64BnwTboButcI3RuLrbvILo5ZcgvgPlgG6Ebocq4kXmw
+         +CUkb75/HGmAnp0vd4yOM5IbBRwckHUwD2UySsOp+eY55I6SWBUtaIinrHXJCsSJBH
+         JJr9zDk683pQY9uWaxBfgsIO+JR73uMVl2adAMBg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 656/663] kgdb: fix to kill breakpoints on initmem after boot
-Date:   Mon,  1 Mar 2021 17:15:04 +0100
-Message-Id: <20210301161214.311877714@linuxfoundation.org>
+        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 659/663] wireguard: selftests: test multiple parallel streams
+Date:   Mon,  1 Mar 2021 17:15:07 +0100
+Message-Id: <20210301161214.461225577@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -46,82 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumit Garg <sumit.garg@linaro.org>
+From: Jason A. Donenfeld <Jason@zx2c4.com>
 
-commit d54ce6158e354f5358a547b96299ecd7f3725393 upstream.
+commit d5a49aa6c3e264a93a7d08485d66e346be0969dd upstream.
 
-Currently breakpoints in kernel .init.text section are not handled
-correctly while allowing to remove them even after corresponding pages
-have been freed.
+In order to test ndo_start_xmit being called in parallel, explicitly add
+separate tests, which should all run on different cores. This should
+help tease out bugs associated with queueing up packets from different
+cores in parallel. Currently, it hasn't found those types of bugs, but
+given future planned work, this is a useful regression to avoid.
 
-Fix it via killing .init.text section breakpoints just prior to initmem
-pages being freed.
-
-Doug: "HW breakpoints aren't handled by this patch but it's probably
-not such a big deal".
-
-Link: https://lkml.kernel.org/r/20210224081652.587785-1-sumit.garg@linaro.org
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Suggested-by: Doug Anderson <dianders@chromium.org>
-Acked-by: Doug Anderson <dianders@chromium.org>
-Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
-Tested-by: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Jason Wessel <jason.wessel@windriver.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/kgdb.h      |    2 ++
- init/main.c               |    1 +
- kernel/debug/debug_core.c |   11 +++++++++++
- 3 files changed, 14 insertions(+)
+ tools/testing/selftests/wireguard/netns.sh |   15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
---- a/include/linux/kgdb.h
-+++ b/include/linux/kgdb.h
-@@ -360,9 +360,11 @@ extern atomic_t			kgdb_active;
- extern bool dbg_is_early;
- extern void __init dbg_late_init(void);
- extern void kgdb_panic(const char *msg);
-+extern void kgdb_free_init_mem(void);
- #else /* ! CONFIG_KGDB */
- #define in_dbg_master() (0)
- #define dbg_late_init()
- static inline void kgdb_panic(const char *msg) {}
-+static inline void kgdb_free_init_mem(void) { }
- #endif /* ! CONFIG_KGDB */
- #endif /* _KGDB_H_ */
---- a/init/main.c
-+++ b/init/main.c
-@@ -1417,6 +1417,7 @@ static int __ref kernel_init(void *unuse
- 	async_synchronize_full();
- 	kprobe_free_init_mem();
- 	ftrace_free_init_mem();
-+	kgdb_free_init_mem();
- 	free_initmem();
- 	mark_readonly();
+--- a/tools/testing/selftests/wireguard/netns.sh
++++ b/tools/testing/selftests/wireguard/netns.sh
+@@ -39,7 +39,7 @@ ip0() { pretty 0 "ip $*"; ip -n $netns0
+ ip1() { pretty 1 "ip $*"; ip -n $netns1 "$@"; }
+ ip2() { pretty 2 "ip $*"; ip -n $netns2 "$@"; }
+ sleep() { read -t "$1" -N 1 || true; }
+-waitiperf() { pretty "${1//*-}" "wait for iperf:5201 pid $2"; while [[ $(ss -N "$1" -tlpH 'sport = 5201') != *\"iperf3\",pid=$2,fd=* ]]; do sleep 0.1; done; }
++waitiperf() { pretty "${1//*-}" "wait for iperf:${3:-5201} pid $2"; while [[ $(ss -N "$1" -tlpH "sport = ${3:-5201}") != *\"iperf3\",pid=$2,fd=* ]]; do sleep 0.1; done; }
+ waitncatudp() { pretty "${1//*-}" "wait for udp:1111 pid $2"; while [[ $(ss -N "$1" -ulpH 'sport = 1111') != *\"ncat\",pid=$2,fd=* ]]; do sleep 0.1; done; }
+ waitiface() { pretty "${1//*-}" "wait for $2 to come up"; ip netns exec "$1" bash -c "while [[ \$(< \"/sys/class/net/$2/operstate\") != up ]]; do read -t .1 -N 0 || true; done;"; }
  
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -456,6 +456,17 @@ setundefined:
- 	return 0;
+@@ -141,6 +141,19 @@ tests() {
+ 	n2 iperf3 -s -1 -B fd00::2 &
+ 	waitiperf $netns2 $!
+ 	n1 iperf3 -Z -t 3 -b 0 -u -c fd00::2
++
++	# TCP over IPv4, in parallel
++	for max in 4 5 50; do
++		local pids=( )
++		for ((i=0; i < max; ++i)) do
++			n2 iperf3 -p $(( 5200 + i )) -s -1 -B 192.168.241.2 &
++			pids+=( $! ); waitiperf $netns2 $! $(( 5200 + i ))
++		done
++		for ((i=0; i < max; ++i)) do
++			n1 iperf3 -Z -t 3 -p $(( 5200 + i )) -c 192.168.241.2 &
++		done
++		wait "${pids[@]}"
++	done
  }
  
-+void kgdb_free_init_mem(void)
-+{
-+	int i;
-+
-+	/* Clear init memory breakpoints. */
-+	for (i = 0; i < KGDB_MAX_BREAKPOINTS; i++) {
-+		if (init_section_contains((void *)kgdb_break[i].bpt_addr, 0))
-+			kgdb_break[i].state = BP_UNDEFINED;
-+	}
-+}
-+
- #ifdef CONFIG_KGDB_KDB
- void kdb_dump_stack_on_cpu(int cpu)
- {
+ [[ $(ip1 link show dev wg0) =~ mtu\ ([0-9]+) ]] && orig_mtu="${BASH_REMATCH[1]}"
 
 
