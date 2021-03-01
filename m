@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B338329995
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBC43298CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238756AbhCBAZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:25:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41718 "EHLO mail.kernel.org"
+        id S1346630AbhCAXtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:49:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239797AbhCAS0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:26:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94F3765078;
-        Mon,  1 Mar 2021 17:24:59 +0000 (UTC)
+        id S239354AbhCASK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:10:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CEB765223;
+        Mon,  1 Mar 2021 17:25:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619500;
-        bh=FZOzLDnc0voZtmM8LXUXUcQ6qeT2twj6bkInUddrU7k=;
+        s=korg; t=1614619502;
+        bh=AHhoX47dbvZrZ2Lzc7SWqJMv5zbkyEt9uqEW0+OYD6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KRa0BHK2STRbzZNzzTo5se7uCNwLdyDlvk6SUafcEg505VtpfGo16sk1u0PW7yPLC
-         V8LR7+5Zh8EfxnVDdsPdffXyAj5pfgByNgB+uyi/JSPRu1PWxkkG3pkCu/G3SJ7WWZ
-         AoN/clc1rZvQcFsyo6GudCX/jTCJilz4E5fwAJdA=
+        b=h+m8qVM6ub9C5UcVwDSYmEKoD7CmshSiQ/QsJ3dVfnYO6GkArcMR66sXZMc9qjgqQ
+         kYouTPhJrlbNq3oW5fK1869GGIM+SjT/IfKOC9D+SnKROHjIUelLG4innZ6WOXNBD8
+         XpzOmVfGKwZ4NsodQfatkViAhCA38U7u+/za3NUs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Tom Seewald <tseewald@gmail.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Minwoo Im <minwoo.im.dev@gmail.com>,
+        stable@vger.kernel.org, Michael Schmitz <schmitzmic@gmail.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Finn Thain <fthain@telegraphics.com.au>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 476/663] block: reopen the device in blkdev_reread_part
-Date:   Mon,  1 Mar 2021 17:12:04 +0100
-Message-Id: <20210301161205.410762084@linuxfoundation.org>
+Subject: [PATCH 5.10 477/663] ide/falconide: Fix module unload
+Date:   Mon,  1 Mar 2021 17:12:05 +0100
+Message-Id: <20210301161205.461006134@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,76 +42,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit 4601b4b130de2329fe06df80ed5d77265f2058e5 ]
+[ Upstream commit 07f1dc8cc85bbfb2f9270f25060c4755f4509f45 ]
 
-Historically the BLKRRPART ioctls called into the now defunct ->revalidate
-method, which caused the sd driver to check if any media is present.
-When the ->revalidate method was removed this revalidation was lost,
-leading to lots of I/O errors when using the eject command.  Fix this by
-reopening the device to rescan the partitions, and thus calling the
-revalidation logic in the sd driver.
+Unloading the falconide module results in a crash:
 
-Fixes: 471bd0af544b ("sd: use bdev_check_media_change")
-Reported--by: Tom Seewald <tseewald@gmail.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Tested-by: Tom Seewald <tseewald@gmail.com>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Reviewed-by: Minwoo Im <minwoo.im.dev@gmail.com>
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+Oops: 00000000
+Modules linked in: falconide(-)
+PC: [<002930b2>] ide_host_remove+0x2e/0x1d2
+SR: 2000  SP: 00b49e28  a2: 009b0f90
+d0: 00000000    d1: 009b0f90    d2: 00000000    d3: 00b48000
+d4: 003cef32    d5: 00299188    a0: 0086d000    a1: 0086d000
+Process rmmod (pid: 322, task=009b0f90)
+Frame format=7 eff addr=00000000 ssw=0505 faddr=00000000
+wb 1 stat/addr/data: 0000 00000000 00000000
+wb 2 stat/addr/data: 0000 00000000 00000000
+wb 3 stat/addr/data: 0000 00000000 00018da9
+push data: 00000000 00000000 00000000 00000000
+Stack from 00b49e90:
+        004c456a 0027f176 0027cb0a 0027cb9e 00000000 0086d00a 2187d3f0 0027f0e0
+        00b49ebc 2187d1f6 00000000 00b49ec8 002811e8 0086d000 00b49ef0 0028024c
+        0086d00a 002800d6 00279a1a 00000001 00000001 0086d00a 2187d3f0 00279a58
+        00b49f1c 002802e0 0086d00a 2187d3f0 004c456a 0086d00a ef96af74 00000000
+        2187d3f0 002805d2 800de064 00b49f44 0027f088 2187d3f0 00ac1cf4 2187d3f0
+        004c43be 2187d3f0 00000000 2187d3f0 800b66a8 00b49f5c 00280776 2187d3f0
+Call Trace: [<0027f176>] __device_driver_unlock+0x0/0x48
+ [<0027cb0a>] device_links_busy+0x0/0x94
+ [<0027cb9e>] device_links_unbind_consumers+0x0/0x130
+ [<0027f0e0>] __device_driver_lock+0x0/0x5a
+ [<2187d1f6>] falconide_remove+0x12/0x18 [falconide]
+ [<002811e8>] platform_drv_remove+0x1c/0x28
+ [<0028024c>] device_release_driver_internal+0x176/0x17c
+ [<002800d6>] device_release_driver_internal+0x0/0x17c
+ [<00279a1a>] get_device+0x0/0x22
+ [<00279a58>] put_device+0x0/0x18
+ [<002802e0>] driver_detach+0x56/0x82
+ [<002805d2>] driver_remove_file+0x0/0x24
+ [<0027f088>] bus_remove_driver+0x4c/0xa4
+ [<00280776>] driver_unregister+0x28/0x5a
+ [<00281a00>] platform_driver_unregister+0x12/0x18
+ [<2187d2a0>] ide_falcon_driver_exit+0x10/0x16 [falconide]
+ [<000764f0>] sys_delete_module+0x110/0x1f2
+ [<000e83ea>] sys_rename+0x1a/0x1e
+ [<00002e0c>] syscall+0x8/0xc
+ [<00188004>] ext4_multi_mount_protect+0x35a/0x3ce
+Code: 0029 9188 4bf9 0027 aa1c 283c 003c ef32 <265c> 4a8b 6700 00b8 2043 2028 000c 0280 00ff ff00 6600 0176 40c0 7202 b2b9 004c
+Disabling lock debugging due to kernel taint
+
+This happens because the driver_data pointer is uninitialized.
+Add the missing platform_set_drvdata() call. For clarity, use the
+matching platform_get_drvdata() as well.
+
+Cc: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Fixes: 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/ioctl.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ drivers/ide/falconide.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/block/ioctl.c b/block/ioctl.c
-index 3fbc382eb926d..3be4d0e2a96c3 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -90,20 +90,27 @@ static int compat_blkpg_ioctl(struct block_device *bdev,
- }
- #endif
+diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
+index dbeb2605e5f6e..607c44bc50f1b 100644
+--- a/drivers/ide/falconide.c
++++ b/drivers/ide/falconide.c
+@@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
+ 	if (rc)
+ 		goto err_free;
  
--static int blkdev_reread_part(struct block_device *bdev)
-+static int blkdev_reread_part(struct block_device *bdev, fmode_t mode)
++	platform_set_drvdata(pdev, host);
+ 	return 0;
+ err_free:
+ 	ide_host_free(host);
+@@ -176,7 +177,7 @@ err:
+ 
+ static int falconide_remove(struct platform_device *pdev)
  {
--	int ret;
-+	struct block_device *tmp;
+-	struct ide_host *host = dev_get_drvdata(&pdev->dev);
++	struct ide_host *host = platform_get_drvdata(pdev);
  
- 	if (!disk_part_scan_enabled(bdev->bd_disk) || bdev_is_partition(bdev))
- 		return -EINVAL;
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EACCES;
+ 	ide_host_remove(host);
  
--	mutex_lock(&bdev->bd_mutex);
--	ret = bdev_disk_changed(bdev, false);
--	mutex_unlock(&bdev->bd_mutex);
-+	/*
-+	 * Reopen the device to revalidate the driver state and force a
-+	 * partition rescan.
-+	 */
-+	mode &= ~FMODE_EXCL;
-+	set_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
- 
--	return ret;
-+	tmp = blkdev_get_by_dev(bdev->bd_dev, mode, NULL);
-+	if (IS_ERR(tmp))
-+		return PTR_ERR(tmp);
-+	blkdev_put(tmp, mode);
-+	return 0;
- }
- 
- static int blk_ioctl_discard(struct block_device *bdev, fmode_t mode,
-@@ -549,7 +556,7 @@ static int blkdev_common_ioctl(struct block_device *bdev, fmode_t mode,
- 		bdev->bd_bdi->ra_pages = (arg * 512) / PAGE_SIZE;
- 		return 0;
- 	case BLKRRPART:
--		return blkdev_reread_part(bdev);
-+		return blkdev_reread_part(bdev, mode);
- 	case BLKTRACESTART:
- 	case BLKTRACESTOP:
- 	case BLKTRACETEARDOWN:
 -- 
 2.27.0
 
