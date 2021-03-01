@@ -2,164 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031BC3282E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4F33282E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:58:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237441AbhCAP4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 10:56:00 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:47656 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237135AbhCAPzx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 10:55:53 -0500
-Received: by mail-io1-f70.google.com with SMTP id o4so13601874ioh.14
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 07:55:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=xJN3FVoUqXq7d6uuH16ejE/uBWtpJ9QdmwrYOd/l9Zo=;
-        b=SMm+BRp3eqKiwVTR3flDbvd2lLjUNiplV0nC6fKItNPh1fXYfVaCjx64owCFqkfKjH
-         9+lVJ+CveQCxE6nSgMBua+j90j6hJMuZyv/UcQg4155Rh5JdUVS2Y2jyfK4TvGANByYo
-         GfNXqb6xC2TGtcKuRAiUp8az5jEGGrySBjrLWBVaJY1V88glaGrZ0y+54Ri2nHiHCMov
-         onM/Z+VjbORjZR+7GVzMX0AzNzfXA5MZcEJs2QlzlWOj0CvwPrIoSBo5piO+8TNnYbJt
-         V7W8W7JIzhPJkCQTmSiFTYGDLjFG/4FbiuXwAJrGX3tmzUB3KwMIMw60pHhvZZlJTcuo
-         Th2A==
-X-Gm-Message-State: AOAM533bTl1gjUlFfLl+2EcIkYlgVu4v9fSWrOUzAC+gCOy2hAVo6nxU
-        lUu9e0YZepzWY0hYHwkMFE10TRkAbi+lhiro+w7c4aN89Yx9
-X-Google-Smtp-Source: ABdhPJx73Vkeb1VSKSpT1UU2iZtTjzJOSza135caDxdLdq2oytD2nPiEE3izIhJJsZwhJBkP9bZCHdopc6Pk4Q6mjZkcK7zaynK2
+        id S237482AbhCAP5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 10:57:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33604 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237445AbhCAP5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 10:57:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614614222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jEMLd+8QwG0qM6Ywh0J3rChAMkV49Kqjdwq8Zo3TTnc=;
+        b=YWq5yRLYt45aCcw4QbD8nB6AbXIPl6KxmjoPhKZDaMcdVnvqBxwDAQgddKSz/LD5VqWYvi
+        MICsxh1rObrONr37HbMxKUjrsC4BzAWovbHGGdIkbXY5y2H36PKpA6RMda8D35iD+AszTs
+        N3lSjtmaOyTCu08PpwblQwl+37TTT1k=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 91E3AAFFB;
+        Mon,  1 Mar 2021 15:57:02 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 16:57:01 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        syzbot <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Mina Almasry <almasrymina@google.com>
+Subject: Re: possible deadlock in sk_clone_lock
+Message-ID: <YD0OzXTmYm8M58Vo@dhcp22.suse.cz>
+References: <000000000000f1c03b05bc43aadc@google.com>
+ <CALvZod4vGj0P6WKncdKpGaVEb1Ui_fyHm+-hbCJTmbvo43CJ=A@mail.gmail.com>
+ <7b7c4f41-b72e-840f-278a-320b9d97f887@oracle.com>
+ <CALvZod5qODDSxqHqQ=_1roYVGVVvEvP3FnYMnAPQZgvUjxotsw@mail.gmail.com>
+ <YDzaAWK41K4gD35V@dhcp22.suse.cz>
+ <CALvZod4DqOkrJG+7dki=VfzHD1z9jD3XhObpk887zKy=kEk1tA@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:aa92:: with SMTP id u18mr4581402jai.119.1614614107465;
- Mon, 01 Mar 2021 07:55:07 -0800 (PST)
-Date:   Mon, 01 Mar 2021 07:55:07 -0800
-In-Reply-To: <4c4caf8a-47e6-f112-f307-94fe0a622ff5@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000053300505bc7ba4c1@google.com>
-Subject: Re: possible deadlock in io_poll_double_wake (2)
-From:   syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod4DqOkrJG+7dki=VfzHD1z9jD3XhObpk887zKy=kEk1tA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon 01-03-21 07:10:11, Shakeel Butt wrote:
+> On Mon, Mar 1, 2021 at 4:12 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Fri 26-02-21 16:00:30, Shakeel Butt wrote:
+> > > On Fri, Feb 26, 2021 at 3:14 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> > > >
+> > > > Cc: Michal
+> > > >
+> > > > On 2/26/21 2:44 PM, Shakeel Butt wrote:
+> > > > > On Fri, Feb 26, 2021 at 2:09 PM syzbot
+> > > > > <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com> wrote:
+> > > > <snip>
+> > > > >> other info that might help us debug this:
+> > > > >>
+> > > > >>  Possible interrupt unsafe locking scenario:
+> > > > >>
+> > > > >>        CPU0                    CPU1
+> > > > >>        ----                    ----
+> > > > >>   lock(hugetlb_lock);
+> > > > >>                                local_irq_disable();
+> > > > >>                                lock(slock-AF_INET);
+> > > > >>                                lock(hugetlb_lock);
+> > > > >>   <Interrupt>
+> > > > >>     lock(slock-AF_INET);
+> > > > >>
+> > > > >>  *** DEADLOCK ***
+> > > > >
+> > > > > This has been reproduced on 4.19 stable kernel as well [1] and there
+> > > > > is a reproducer as well.
+> > > > >
+> > > > > It seems like sendmsg(MSG_ZEROCOPY) from a buffer backed by hugetlb. I
+> > > > > wonder if we just need to make hugetlb_lock softirq-safe.
+> > > > >
+> > > > > [1] https://syzkaller.appspot.com/bug?extid=6383ce4b0b8ec575ad93
+> > > >
+> > > > Thanks Shakeel,
+> > > >
+> > > > Commit c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in non-task
+> > > > context") attempted to address this issue.  It uses a work queue to
+> > > > acquire hugetlb_lock if the caller is !in_task().
+> > > >
+> > > > In another recent thread, there was the suggestion to change the
+> > > > !in_task to in_atomic.
+> > > >
+> > > > I need to do some research on the subtle differences between in_task,
+> > > > in_atomic, etc.  TBH, I 'thought' !in_task would prevent the issue
+> > > > reported here.  But, that obviously is not the case.
+> > >
+> > > I think the freeing is happening in the process context in this report
+> > > but it is creating the lock chain from softirq-safe slock to
+> > > irq-unsafe hugetlb_lock. So, two solutions I can think of are: (1)
+> > > always defer the freeing of hugetlb pages to a work queue or (2) make
+> > > hugetlb_lock softirq-safe.
+> >
+> > There is __do_softirq so this should be in the soft IRQ context no?
+> > Is this really reproducible with kernels which have c77c0a8ac4c5
+> > applied?
+> 
+> Yes this is softirq context and syzbot has reproduced this on
+> linux-next 20210224.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-possible deadlock in io_poll_double_wake
+Then how come this can ever be a problem? in_task() should exclude soft
+irq context unless I am mistaken.
+ 
+> > Btw. making hugetlb lock irq safe has been already discussed and it
+> > seems to be much harder than expected as some heavy operations are done
+> > under the lock. This is really bad.
+> 
+> What about just softirq-safe i.e. spin_[un]lock_bh()? Will it still be that bad?
 
-============================================
-WARNING: possible recursive locking detected
-5.11.0-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.3/8853 is trying to acquire lock:
-ffff88802cfbd130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
-ffff88802cfbd130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4921
+This would be a similar problem to the irq variant. It would just result
+in soft irq being delayed potentially.
 
-but task is already holding lock:
-ffff888018ac2130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+> > Postponing the whole freeing
+> > operation into a worker context is certainly possible but I would
+> > consider it rather unfortunate. We would have to add some sync mechanism
+> > to wait for hugetlb pages in flight to prevent from external
+> > observability to the userspace. E.g. when shrinking the pool.
+> 
+> I think in practice recycling of hugetlb pages is a rare event, so we
+> might get away without the sync mechanism. How about start postponing
+> the freeing without sync mechanism and add it later if there are any
+> user reports complaining?
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&runtime->sleep);
-  lock(&runtime->sleep);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-5 locks held by syz-executor.3/8853:
- #0: ffffffff8b63e390 (dup_mmap_sem){.+.+}-{0:0}, at: dup_mmap kernel/fork.c:479 [inline]
- #0: ffffffff8b63e390 (dup_mmap_sem){.+.+}-{0:0}, at: dup_mm+0x108/0x1380 kernel/fork.c:1360
- #1: ffff8880249cb958 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_write_lock_killable include/linux/mmap_lock.h:87 [inline]
- #1: ffff8880249cb958 (&mm->mmap_lock#2){++++}-{3:3}, at: dup_mmap kernel/fork.c:480 [inline]
- #1: ffff8880249cb958 (&mm->mmap_lock#2){++++}-{3:3}, at: dup_mm+0x12e/0x1380 kernel/fork.c:1360
- #2: ffff88802b225558 (&mm->mmap_lock/1){+.+.}-{3:3}, at: mmap_write_lock_nested include/linux/mmap_lock.h:78 [inline]
- #2: ffff88802b225558 (&mm->mmap_lock/1){+.+.}-{3:3}, at: dup_mmap kernel/fork.c:489 [inline]
- #2: ffff88802b225558 (&mm->mmap_lock/1){+.+.}-{3:3}, at: dup_mm+0x18a/0x1380 kernel/fork.c:1360
- #3: ffff888020f6c908 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
- #4: ffff888018ac2130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
-
-stack backtrace:
-CPU: 1 PID: 8853 Comm: syz-executor.3 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
- check_deadlock kernel/locking/lockdep.c:2872 [inline]
- validate_chain kernel/locking/lockdep.c:3661 [inline]
- __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
- lock_acquire kernel/locking/lockdep.c:5510 [inline]
- lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4921
- __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
- __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
- snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
- snd_pcm_update_hw_ptr0+0xa75/0x1a50 sound/core/pcm_lib.c:464
- snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
- dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:378
- __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
- __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1583
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:226 [inline]
- __irq_exit_rcu kernel/softirq.c:420 [inline]
- irq_exit_rcu+0x134/0x200 kernel/softirq.c:432
- sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1100
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:635
-RIP: 0010:__sanitizer_cov_trace_const_cmp8+0x0/0x70 kernel/kcov.c:290
-Code: fe 72 22 44 89 c6 48 83 c2 01 48 89 4c 38 f0 48 c7 44 38 e0 05 00 00 00 48 89 74 38 e8 4e 89 54 c8 20 48 89 10 c3 0f 1f 40 00 <49> 89 f8 bf 03 00 00 00 4c 8b 14 24 48 89 f1 65 48 8b 34 25 00 f0
-RSP: 0018:ffffc90001a6f808 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: ffffc90001a6fa00 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000004 R08: 0000000000000000 R09: ffff888022c75ea3
-R10: ffffed100458ebd4 R11: 0000000000000000 R12: ffff88802b225800
-R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
- copy_pte_range mm/memory.c:1018 [inline]
- copy_pmd_range mm/memory.c:1070 [inline]
- copy_pud_range mm/memory.c:1107 [inline]
- copy_p4d_range mm/memory.c:1131 [inline]
- copy_page_range+0x127f/0x3fb0 mm/memory.c:1204
- dup_mmap kernel/fork.c:594 [inline]
- dup_mm+0x9ed/0x1380 kernel/fork.c:1360
- copy_mm kernel/fork.c:1416 [inline]
- copy_process+0x2a4c/0x6fd0 kernel/fork.c:2097
- kernel_clone+0xe7/0xab0 kernel/fork.c:2462
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2579
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4644eb
-Code: ed 0f 85 60 01 00 00 64 4c 8b 0c 25 10 00 00 00 45 31 c0 4d 8d 91 d0 02 00 00 31 d2 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 89 00 00 00 41 89 c5 85 c0 0f 85 90 00 00
-RSP: 002b:0000000000a9fd50 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004644eb
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
-RBP: 0000000000000001 R08: 0000000000000000 R09: 00000000026a7400
-R10: 00000000026a76d0 R11: 0000000000000246 R12: 0000000000000001
-R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000a9fe40
-
-
-Tested on:
-
-commit:         d5c6caec io_uring: test patch for double wake syzbot issue
-git tree:       git://git.kernel.dk/linux-block syzbot-test
-console output: https://syzkaller.appspot.com/x/log.txt?x=15129782d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e348dbdef26bb725
-dashboard link: https://syzkaller.appspot.com/bug?extid=28abd693db9e92c160d8
-compiler:       
-
+I think this should be a last resort. Maybe we can come up with
+something better. E.g. break down the hugetlb_lock and use something
+different for expensive operations.
+-- 
+Michal Hocko
+SUSE Labs
