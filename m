@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB0B32990A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB91329958
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347119AbhCAXv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38298 "EHLO mail.kernel.org"
+        id S1347699AbhCBALV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:11:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40750 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239537AbhCASRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:17:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FC9765087;
-        Mon,  1 Mar 2021 17:29:17 +0000 (UTC)
+        id S239764AbhCASWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:22:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 534046508C;
+        Mon,  1 Mar 2021 17:29:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619757;
-        bh=Ay7LvsN60U63eyW3sPZ+yn0lEvttYJbCbYWSuXBoOjE=;
+        s=korg; t=1614619772;
+        bh=pR2Wf12ndzZyMM682FQWwGSa7r86gB75fsD0D2tWh2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xZVkAO5F0QhwJoCia0oay84n7EGC7L/hew7USIjAHZcKS5KKLp3i9czzS27m6kXEg
-         n6O5+t8nJDcE3fYfQQbw4CLANexQ958SlI1g6BgAqx3ZFM+4Wmjnv3+HJeXz0qTnSO
-         TGZczfpK/NV87gNj5bhillFtYIAHX+yjDH5xUArY=
+        b=lnwPc+7rlYAi9cGeq/QHmSzsdVwZkBg0USjeb3jOQDQ2BJDPQd/KPx9Zi4nQ46mtc
+         QLixNyNjHo8ZshHmzyaM3j/WQeiqqJCeTAQ+Lk84OKFqzGQMxkzSzttl9YWXyFgQEe
+         oQRaMYNQH3pHvxvMIkVDxd6Pal36oPMEL1BPEFFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Fabiano Rosas <farosas@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 571/663] powerpc/prom: Fix "ibm,arch-vec-5-platform-support" scan
-Date:   Mon,  1 Mar 2021 17:13:39 +0100
-Message-Id: <20210301161210.119619708@linuxfoundation.org>
+        stable@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH 5.10 575/663] entry: Explicitly flush pending rcuog wakeup before last rescheduling point
+Date:   Mon,  1 Mar 2021 17:13:43 +0100
+Message-Id: <20210301161210.304558118@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,56 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-commit ed5b00a05c2ae95b59adc3442f45944ec632e794 upstream.
+commit 47b8ff194c1fd73d58dc339b597d466fe48c8958 upstream.
 
-The "ibm,arch-vec-5-platform-support" property is a list of pairs of
-bytes representing the options and values supported by the platform
-firmware. At boot time, Linux scans this list and activates the
-available features it recognizes : Radix and XIVE.
+Following the idle loop model, cleanly check for pending rcuog wakeup
+before the last rescheduling point on resuming to user mode. This
+way we can avoid to do it from rcu_user_enter() with the last resort
+self-IPI hack that enforces rescheduling.
 
-A recent change modified the number of entries to loop on and 8 bytes,
-4 pairs of { options, values } entries are always scanned. This is
-fine on KVM but not on PowerVM which can advertises less. As a
-consequence on this platform, Linux reads extra entries pointing to
-random data, interprets these as available features and tries to
-activate them, leading to a firmware crash in
-ibm,client-architecture-support.
-
-Fix that by using the property length of "ibm,arch-vec-5-platform-support".
-
-Fixes: ab91239942a9 ("powerpc/prom: Remove VLA in prom_check_platform_support()")
-Cc: stable@vger.kernel.org # v4.20+
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210122075029.797013-1-clg@kaod.org
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20210131230548.32970-5-frederic@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/prom_init.c |   12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ kernel/entry/common.c |    7 +++++++
+ kernel/rcu/tree.c     |   12 +++++++-----
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
---- a/arch/powerpc/kernel/prom_init.c
-+++ b/arch/powerpc/kernel/prom_init.c
-@@ -1330,14 +1330,10 @@ static void __init prom_check_platform_s
- 		if (prop_len > sizeof(vec))
- 			prom_printf("WARNING: ibm,arch-vec-5-platform-support longer than expected (len: %d)\n",
- 				    prop_len);
--		prom_getprop(prom.chosen, "ibm,arch-vec-5-platform-support",
--			     &vec, sizeof(vec));
--		for (i = 0; i < sizeof(vec); i += 2) {
--			prom_debug("%d: index = 0x%x val = 0x%x\n", i / 2
--								  , vec[i]
--								  , vec[i + 1]);
--			prom_parse_platform_support(vec[i], vec[i + 1],
--						    &supported);
-+		prom_getprop(prom.chosen, "ibm,arch-vec-5-platform-support", &vec, sizeof(vec));
-+		for (i = 0; i < prop_len; i += 2) {
-+			prom_debug("%d: index = 0x%x val = 0x%x\n", i / 2, vec[i], vec[i + 1]);
-+			prom_parse_platform_support(vec[i], vec[i + 1], &supported);
- 		}
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -174,6 +174,10 @@ static unsigned long exit_to_user_mode_l
+ 		 * enabled above.
+ 		 */
+ 		local_irq_disable_exit_to_user();
++
++		/* Check if any of the above work has queued a deferred wakeup */
++		rcu_nocb_flush_deferred_wakeup();
++
+ 		ti_work = READ_ONCE(current_thread_info()->flags);
  	}
  
+@@ -187,6 +191,9 @@ static void exit_to_user_mode_prepare(st
+ 
+ 	lockdep_assert_irqs_disabled();
+ 
++	/* Flush pending rcuog wakeup before the last need_resched() check */
++	rcu_nocb_flush_deferred_wakeup();
++
+ 	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
+ 		ti_work = exit_to_user_mode_loop(regs, ti_work);
+ 
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -699,13 +699,15 @@ noinstr void rcu_user_enter(void)
+ 	lockdep_assert_irqs_disabled();
+ 
+ 	/*
+-	 * We may be past the last rescheduling opportunity in the entry code.
+-	 * Trigger a self IPI that will fire and reschedule once we resume to
+-	 * user/guest mode.
++	 * Other than generic entry implementation, we may be past the last
++	 * rescheduling opportunity in the entry code. Trigger a self IPI
++	 * that will fire and reschedule once we resume in user/guest mode.
+ 	 */
+ 	instrumentation_begin();
+-	if (do_nocb_deferred_wakeup(rdp) && need_resched())
+-		irq_work_queue(this_cpu_ptr(&late_wakeup_work));
++	if (!IS_ENABLED(CONFIG_GENERIC_ENTRY) || (current->flags & PF_VCPU)) {
++		if (do_nocb_deferred_wakeup(rdp) && need_resched())
++			irq_work_queue(this_cpu_ptr(&late_wakeup_work));
++	}
+ 	instrumentation_end();
+ 
+ 	rcu_eqs_enter(true);
 
 
