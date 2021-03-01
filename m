@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BAD3297EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4EB3297E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344711AbhCAXCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:02:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46486 "EHLO mail.kernel.org"
+        id S1344677AbhCAXBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:01:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238941AbhCARvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:51:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C9F964F5C;
-        Mon,  1 Mar 2021 17:00:40 +0000 (UTC)
+        id S238950AbhCARvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:51:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AD4764FE1;
+        Mon,  1 Mar 2021 17:00:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618041;
-        bh=AILuiiJz2E4g9lh2Umst2pD5abNWxIQz3SJ8yvZQKfU=;
+        s=korg; t=1614618047;
+        bh=CVFtk/G+YCxx7uq3QsEWlaBTR4iacFPY5+Atwc1wH2U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ackiTZLC1YvNLbRj0pIBPtpb259ek5eyNGO+E8pV6FhJckEQfSfwetWzLuXWvWqmF
-         I3DlLfFSXjFBQZX8/M5jC6B6mAQscKIVN1tgfECWwPBK6Utw+aVNv7CzBsqEE50TXm
-         M9A6byZmF6w6RasxypiKwoYfHcQPrn/RWVT8wDZI=
+        b=cA1jsiDx9uTDOukN27xWDGu727+qHEj2aCi7Wag0tryfmU8AledJ06x6DlwvaMfQs
+         4/MdoqWo4Np3xE2TESFM4YCux6OmMaeot4Cv9HVY8HTXhASMAMUFQ7UoUPy9JelU7T
+         MxkOIBka7PdTT6gIufrXJ7MT//7lDEX/z2TabMtU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Fabiano Rosas <farosas@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 286/340] powerpc/prom: Fix "ibm,arch-vec-5-platform-support" scan
-Date:   Mon,  1 Mar 2021 17:13:50 +0100
-Message-Id: <20210301161102.365968218@linuxfoundation.org>
+        stable@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH 5.4 287/340] rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers
+Date:   Mon,  1 Mar 2021 17:13:51 +0100
+Message-Id: <20210301161102.412420489@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -41,56 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cédric Le Goater <clg@kaod.org>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-commit ed5b00a05c2ae95b59adc3442f45944ec632e794 upstream.
+commit 54b7429efffc99e845ba9381bee3244f012a06c2 upstream.
 
-The "ibm,arch-vec-5-platform-support" property is a list of pairs of
-bytes representing the options and values supported by the platform
-firmware. At boot time, Linux scans this list and activates the
-available features it recognizes : Radix and XIVE.
+Deferred wakeup of rcuog kthreads upon RCU idle mode entry is going to
+be handled differently whether initiated by idle, user or guest. Prepare
+with pulling that control up to rcu_eqs_enter() callers.
 
-A recent change modified the number of entries to loop on and 8 bytes,
-4 pairs of { options, values } entries are always scanned. This is
-fine on KVM but not on PowerVM which can advertises less. As a
-consequence on this platform, Linux reads extra entries pointing to
-random data, interprets these as available features and tries to
-activate them, leading to a firmware crash in
-ibm,client-architecture-support.
-
-Fix that by using the property length of "ibm,arch-vec-5-platform-support".
-
-Fixes: ab91239942a9 ("powerpc/prom: Remove VLA in prom_check_platform_support()")
-Cc: stable@vger.kernel.org # v4.20+
-Signed-off-by: Cédric Le Goater <clg@kaod.org>
-Reviewed-by: Fabiano Rosas <farosas@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210122075029.797013-1-clg@kaod.org
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20210131230548.32970-2-frederic@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/kernel/prom_init.c |   12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ kernel/rcu/tree.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/kernel/prom_init.c
-+++ b/arch/powerpc/kernel/prom_init.c
-@@ -1305,14 +1305,10 @@ static void __init prom_check_platform_s
- 		if (prop_len > sizeof(vec))
- 			prom_printf("WARNING: ibm,arch-vec-5-platform-support longer than expected (len: %d)\n",
- 				    prop_len);
--		prom_getprop(prom.chosen, "ibm,arch-vec-5-platform-support",
--			     &vec, sizeof(vec));
--		for (i = 0; i < sizeof(vec); i += 2) {
--			prom_debug("%d: index = 0x%x val = 0x%x\n", i / 2
--								  , vec[i]
--								  , vec[i + 1]);
--			prom_parse_platform_support(vec[i], vec[i + 1],
--						    &supported);
-+		prom_getprop(prom.chosen, "ibm,arch-vec-5-platform-support", &vec, sizeof(vec));
-+		for (i = 0; i < prop_len; i += 2) {
-+			prom_debug("%d: index = 0x%x val = 0x%x\n", i / 2, vec[i], vec[i + 1]);
-+			prom_parse_platform_support(vec[i], vec[i + 1], &supported);
- 		}
- 	}
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -579,7 +579,6 @@ static void rcu_eqs_enter(bool user)
+ 	trace_rcu_dyntick(TPS("Start"), rdp->dynticks_nesting, 0, atomic_read(&rdp->dynticks));
+ 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !user && !is_idle_task(current));
+ 	rdp = this_cpu_ptr(&rcu_data);
+-	do_nocb_deferred_wakeup(rdp);
+ 	rcu_prepare_for_idle();
+ 	rcu_preempt_deferred_qs(current);
+ 	WRITE_ONCE(rdp->dynticks_nesting, 0); /* Avoid irq-access tearing. */
+@@ -600,7 +599,10 @@ static void rcu_eqs_enter(bool user)
+  */
+ void rcu_idle_enter(void)
+ {
++	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
++
+ 	lockdep_assert_irqs_disabled();
++	do_nocb_deferred_wakeup(rdp);
+ 	rcu_eqs_enter(false);
+ }
  
+@@ -618,7 +620,14 @@ void rcu_idle_enter(void)
+  */
+ void rcu_user_enter(void)
+ {
++	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
++
+ 	lockdep_assert_irqs_disabled();
++
++	instrumentation_begin();
++	do_nocb_deferred_wakeup(rdp);
++	instrumentation_end();
++
+ 	rcu_eqs_enter(true);
+ }
+ #endif /* CONFIG_NO_HZ_FULL */
 
 
