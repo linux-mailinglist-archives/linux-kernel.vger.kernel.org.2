@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A263298B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A64DA32983B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346385AbhCAXqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:46:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59384 "EHLO mail.kernel.org"
+        id S1345344AbhCAXTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:19:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234167AbhCASI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:08:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBFCA64F15;
-        Mon,  1 Mar 2021 17:49:27 +0000 (UTC)
+        id S233567AbhCASAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:00:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31F5065035;
+        Mon,  1 Mar 2021 17:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620968;
-        bh=PQXUObPHYbOUtVOA8cLHfSlOLlr6g2svlv4ZfR9liq4=;
+        s=korg; t=1614618934;
+        bh=rWMttxqD0R1N6zVlzXIQCCnyd6NX787FomR6lI2B5BU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e09ZuJqK6ZIOEoPwN9o0gsk2ECb3lUqv0ReUOxagwir0TUeQRXovi72g8k0OJMbd0
-         ZT58E09H18bT18NnMkz2xFDlQMePyneDbE3MH+hxhO+3niXxuK8z7Vp98cAYnnGMaY
-         HDrk+4XJv8pK93JeKxSq7Lc7aKG13/hhMEQwTmgA=
+        b=M1nKVPFGJ4ZzE6SsW3ce8olR7FJwncIjUGHYCw14XVJ3HkVALNpmMARQ9nyVFSuI8
+         /J7z8RWWyjuPloxPF9rWoUJ/o2VJUJCMOu42VTIbw7eEqSW9Kurh9a8GCJxrJcA67v
+         QsZBlkhJUxd54mZgsCwJVN5lTcmzOUG9L21mmpmw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 346/775] RDMA/rtrs-srv: Init wr_cnt as 1
-Date:   Mon,  1 Mar 2021 17:08:34 +0100
-Message-Id: <20210301161218.720662441@linuxfoundation.org>
+Subject: [PATCH 5.10 272/663] clk: renesas: r8a779a0: Remove non-existent S2 clock
+Date:   Mon,  1 Mar 2021 17:08:40 +0100
+Message-Id: <20210301161155.275013408@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit 6f5d1b3016d650f351e65c645a5eee5394547dd0 ]
+[ Upstream commit 5b30be15ca262d9cb2c36b173bb488e8d1952ea0 ]
 
-Fix up wr_avail accounting. if wr_cnt is 0, then we do SIGNAL for first
-wr, in completion we add queue_depth back, which is not right in the
-sense of tracking for available wr.
+The S2 internal core clock does not exist on R-Car V3U. Remove it.
 
-So fix it by init wr_cnt to 1.
-
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Link: https://lore.kernel.org/r/20201217141915.56989-19-jinpu.wang@cloud.ionos.com
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 17bcc8035d2d19fc ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Tested-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Link: https://lore.kernel.org/r/20201019120614.22149-2-geert+renesas@glider.be
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/renesas/r8a779a0-cpg-mssr.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index f59731c5a96a3..d017ede304b76 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1604,7 +1604,7 @@ static int create_con(struct rtrs_srv_sess *sess,
- 	con->c.cm_id = cm_id;
- 	con->c.sess = &sess->s;
- 	con->c.cid = cid;
--	atomic_set(&con->wr_cnt, 0);
-+	atomic_set(&con->wr_cnt, 1);
- 
- 	if (con->c.cid == 0) {
- 		/*
+diff --git a/drivers/clk/renesas/r8a779a0-cpg-mssr.c b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+index 046d79416b7d0..48c260f09b2d7 100644
+--- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
++++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+@@ -69,7 +69,6 @@ enum clk_ids {
+ 	CLK_PLL5_DIV2,
+ 	CLK_PLL5_DIV4,
+ 	CLK_S1,
+-	CLK_S2,
+ 	CLK_S3,
+ 	CLK_SDSRC,
+ 	CLK_RPCSRC,
 -- 
 2.27.0
 
