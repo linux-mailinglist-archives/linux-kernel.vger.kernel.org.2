@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7383E328019
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F77328023
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235993AbhCAN4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:56:25 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:25168 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235941AbhCAN4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:56:12 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614606953; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=5chAGnRHCOOOUrB3J0BqyQXRH/pOl11LjS7ONh8V23k=;
- b=M3GpvyDhj0+zhOag0Qbx7gHLstff+XtfntPjhqjCKs2HH4qiiyek6QDgWs//fFYyfnxfUbJP
- Xbj1uHjIqt6lqTx9JKZj+MY+ux3RXTbXiM4IH3yXPFvZBRQUGbsQMzGePQbV+z/PzorxbO6w
- 6scriq3BiaLhdiWH7akZTq6kb8Q=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 603cf26475e4458f08af570b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 13:55:48
- GMT
-Sender: pintu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E555BC43461; Mon,  1 Mar 2021 13:55:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pintu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43ABDC433C6;
-        Mon,  1 Mar 2021 13:55:47 +0000 (UTC)
+        id S236130AbhCAN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:58:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236122AbhCAN6q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:58:46 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D39C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 05:58:05 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id v13so4375996edw.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 05:58:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nKuWC3rVV9sra+4DDgdLnle85IT4vlB1n7DPoNwpayo=;
+        b=STgKjcbbPqlcVj+Yg1do/AfuQIj/wmBwy56Kj0C4VQoXnZHFAiF79BD5kiIcPWzgDB
+         /ZXT0GpsZgkfB8E5WMMZcT285MlbPXod+cZrK1EXjwzKrhy35bATHm0CPmObm0oq2iwE
+         oEI+69fCBlum8d1WP/UXUJFU4vArguEIHlK4IC8nudxpjtvVAcAyL0j06R8Zfiu+2jag
+         SuVppZD1+mT0+pC3MHTdWLPRlXomrKYGro0wq7F2vycFK/G5nxbDhmwfPKJpv0RT4Ihn
+         5eUckBWRXm8wdtgsfsoDYYpwSvGKOLFIDSToQdvRq+F7T+vF6H2YKs+tBmUrTssHgTFq
+         mByg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nKuWC3rVV9sra+4DDgdLnle85IT4vlB1n7DPoNwpayo=;
+        b=OVv48Ote3LINxMSoijMmbuHvP8vQb0CWCTY5yPLH/Gdq0XAngOzitbPCSl70dEH+s9
+         H1MKwNbX82mvVRhxN5hx7PKb/O7aCWEQDApCG6Bgc1GDxuaUveqnjZLHLROWvE8fvDKt
+         Ppt4qe4pLdmpmG4x5B3GhVjyFGf91MUryYbaYh0C49Jt6dOGNTpOBskmF/sBbI64Xhx6
+         3ebU1yu0qWDgTaAe5CzpSWjDXYkNelYtfBsf6unLsndWSrbdEMKGQa6lDXMjKUNhrf04
+         iDE+aUDivbYcUF28wMmkLpEBJn/NG/bKq2GjwRRVOhaPTBAmA4reMZON/xy7jm9IGVLy
+         fosw==
+X-Gm-Message-State: AOAM530ZNU1xiipyNoTKf2NpadRMt7HrdmpW1PDsHuwNQgBAZM5/F2LF
+        rAhYrVBafJ5tVdmdRsDaj3Cd7X7438Tc1lTZg15pFw==
+X-Google-Smtp-Source: ABdhPJwYJDxPiEv3ADUo2gt/NLH8qTuwvXhaLRKLrw+7IP/68NCdtzYiQfFshSLhg0rbOrVB84ornicr77iSkLSXmE0=
+X-Received: by 2002:a05:6402:35c8:: with SMTP id z8mr3291764edc.341.1614607083797;
+ Mon, 01 Mar 2021 05:58:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Mar 2021 19:25:47 +0530
-From:   pintu@codeaurora.org
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, jaewon31.kim@samsung.com,
-        yuzhao@google.com, shakeelb@google.com, guro@fb.com,
-        mchehab+huawei@kernel.org, xi.fengfei@h3c.com,
-        lokeshgidra@google.com, hannes@cmpxchg.org, nigupta@nvidia.com,
-        famzheng@amazon.com, andrew.a.klychkov@gmail.com,
-        bigeasy@linutronix.de, ping.ping@gmail.com, vbabka@suse.cz,
-        yzaikin@google.com, keescook@chromium.org, mcgrof@kernel.org,
-        corbet@lwn.net, pintu.ping@gmail.com
-Subject: Re: [PATCH] mm: introduce clear all vm events counters
-In-Reply-To: <20210301121342.GP2723601@casper.infradead.org>
-References: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
- <20210301121342.GP2723601@casper.infradead.org>
-Message-ID: <38eb8e74f10a9ca0b7e390223edb9b91@codeaurora.org>
-X-Sender: pintu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <1614069358-50943-1-git-send-email-yang.lee@linux.alibaba.com>
+ <YDTsWR/kXhd96ICI@smile.fi.intel.com> <YDe8/2toCGEH2Mf1@smile.fi.intel.com>
+In-Reply-To: <YDe8/2toCGEH2Mf1@smile.fi.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 1 Mar 2021 14:57:53 +0100
+Message-ID: <CAMpxmJV5go-fHR2RWWdyi5a6ONeXrhC5c958oNZNzszt2aGN9A@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: acpi: Add missing IRQF_ONESHOT
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-01 17:43, Matthew Wilcox wrote:
-> On Mon, Mar 01, 2021 at 04:19:26PM +0530, Pintu Kumar wrote:
->> +EXPORT_SYMBOL_GPL(clear_all_vm_events);
-> 
-> What module uses this function?
+On Thu, Feb 25, 2021 at 4:07 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Feb 23, 2021 at 01:51:53PM +0200, Andy Shevchenko wrote:
+> > On Tue, Feb 23, 2021 at 04:35:58PM +0800, Yang Li wrote:
+> > > fixed the following coccicheck:
+> > > ./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
+> > > primary handler requested without IRQF_ONESHOT
+> > >
+> > > Make sure threaded IRQs without a primary handler are always request
+> > > with IRQF_ONESHOT
+> >
+> > Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> Bart, I guess I will collect this in my branch and send you a PR.
+> I have more fixes to that file anyway.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
-oh sorry, I will remove the EXPORT
-Thanks for the review.
-
-
-Regards,
-Pintu
+Fine with me!
