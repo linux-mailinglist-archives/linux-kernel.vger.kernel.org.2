@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1417329199
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 877D43291A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243366AbhCAU2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:28:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37784 "EHLO mail.kernel.org"
+        id S243460AbhCAU3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:29:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237036AbhCARGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:06:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E249964FFF;
-        Mon,  1 Mar 2021 16:40:03 +0000 (UTC)
+        id S237044AbhCARGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:06:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6752465000;
+        Mon,  1 Mar 2021 16:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616804;
-        bh=gEwa+3ufdeE1cgHbyYT7OOyBi4lHyDbSWa9ThJ/Is5M=;
+        s=korg; t=1614616813;
+        bh=iEzlWiDVCDmXK1kDIwCMsZwebwDMRax9g9SekWE5yQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UMaDK01c+xu89QGMXk4QZbzbcX0/bUbP6sfG3lfPOcjO6PZdfO+jOBFSrD3n3k+s6
-         XiJ/unSJpOaPGz3MkS2Myqd1M09Cv6OQfRrT9MLeyEp4yk80wStb0j0SS8xkEjejKW
-         TV8bg3nMUG+fVj1OKXfqsRr4PxxzvkHCMv8VXO+I=
+        b=dXE2TKoJ6qSztMTtottdVMR5Dx76rvkhrlMC6wmg3HlhGWaA4q00sTWb5tlHdmLS+
+         5EYrab0QbNs3g3e4fWtuDMulu/n3NyOUf1oDxweDFICVZARgXW9zay7yQvH2MXMcjM
+         LmNUupcqtBSgOH3EFQ7a+eiBQXvUoWt4FAAD3s/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 102/247] crypto: ecdh_helper - Ensure len >= secret.len in decode_key()
-Date:   Mon,  1 Mar 2021 17:12:02 +0100
-Message-Id: <20210301161036.673785950@linuxfoundation.org>
+Subject: [PATCH 4.19 105/247] fs/jfs: fix potential integer overflow on shift of a int
+Date:   Mon,  1 Mar 2021 17:12:05 +0100
+Message-Id: <20210301161036.812542682@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -41,39 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit a53ab94eb6850c3657392e2d2ce9b38c387a2633 ]
+[ Upstream commit 4208c398aae4c2290864ba15c3dab7111f32bec1 ]
 
-The length ('len' parameter) passed to crypto_ecdh_decode_key() is never
-checked against the length encoded in the passed buffer ('buf'
-parameter). This could lead to an out-of-bounds access when the passed
-length is less than the encoded length.
+The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
+arithmetic and then assigned to a signed 64 bit integer. In the case where
+l2nb is 32 or more this can lead to an overflow.  Avoid this by shifting
+the value 1LL instead.
 
-Add a check to prevent that.
-
-Fixes: 3c4b23901a0c7 ("crypto: ecdh - Add ECDH software support")
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Addresses-Coverity: ("Uninitentional integer overflow")
+Fixes: b40c2e665cd5 ("fs/jfs: TRIM support for JFS Filesystem")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/ecdh_helper.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/jfs/jfs_dmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/crypto/ecdh_helper.c b/crypto/ecdh_helper.c
-index d3af8e8b0b5e4..25711de445848 100644
---- a/crypto/ecdh_helper.c
-+++ b/crypto/ecdh_helper.c
-@@ -71,6 +71,9 @@ int crypto_ecdh_decode_key(const char *buf, unsigned int len,
- 	if (secret.type != CRYPTO_KPP_SECRET_TYPE_ECDH)
- 		return -EINVAL;
- 
-+	if (unlikely(len < secret.len))
-+		return -EINVAL;
-+
- 	ptr = ecdh_unpack_data(&params->curve_id, ptr, sizeof(params->curve_id));
- 	ptr = ecdh_unpack_data(&params->key_size, ptr, sizeof(params->key_size));
- 	if (secret.len != crypto_ecdh_key_len(params))
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index 49263e220dbcf..687b07b9b4f62 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -1669,7 +1669,7 @@ s64 dbDiscardAG(struct inode *ip, int agno, s64 minlen)
+ 		} else if (rc == -ENOSPC) {
+ 			/* search for next smaller log2 block */
+ 			l2nb = BLKSTOL2(nblocks) - 1;
+-			nblocks = 1 << l2nb;
++			nblocks = 1LL << l2nb;
+ 		} else {
+ 			/* Trim any already allocated blocks */
+ 			jfs_error(bmp->db_ipbmap->i_sb, "-EIO\n");
 -- 
 2.27.0
 
