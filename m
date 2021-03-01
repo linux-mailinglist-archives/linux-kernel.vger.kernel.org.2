@@ -2,47 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78443329C37
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7810C329C4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380318AbhCBBuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:50:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48600 "EHLO mail.kernel.org"
+        id S1380462AbhCBBva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:51:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241699AbhCAT2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:28:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B897464FAA;
-        Mon,  1 Mar 2021 17:31:50 +0000 (UTC)
+        id S241847AbhCAT31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:29:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F152F64FE6;
+        Mon,  1 Mar 2021 17:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619911;
-        bh=HQWsocddKk1rTCs1lKREmOb4su48pda2Hq3NdtSRDGE=;
+        s=korg; t=1614618078;
+        bh=EP4oZj3kW/2Ml7JpJzN8pbUf8lXxjfZ55o/PU8s51sI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p05psF7n/R4ftyEubOW2uA8yNerbRxPPmeDJwFhajCPKY84kYc/5eAY8/C1UVuKli
-         IzbliTr25p42+W7EhKpcJrsBgUAfXcrlOUVEVE8gr8hKSAPWL4uX7kluENt91Y5zJa
-         kUX/EWzhCIUUW0cU8BkZO4t41YhQOsYlhcKE+eOc=
+        b=mtWOu7Cqhsf2VZ7UUgU2h/j00AzsCKFXML+Q+JJIsgr5LVjM6lU5+U+LUSUqiy6XK
+         EQl5Lr2CP/NoBZ6fHVUZ83+BMvCC7f9pKfigwPQCuwwTRD1ZWXZlzp7kWrjaR1sF5A
+         ZHKzV/nXqVBByxz0u2GPM/zCusUMKTOKxIWCRvRc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
-        Xin Long <lucien.xin@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlad Yasevich <vyasevich@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 595/663] x86: fix seq_file iteration for pat/memtype.c
-Date:   Mon,  1 Mar 2021 17:14:03 +0100
-Message-Id: <20210301161211.302148296@linuxfoundation.org>
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 300/340] fs/affs: release old buffer head on error path
+Date:   Mon,  1 Mar 2021 17:14:04 +0100
+Message-Id: <20210301161103.048938006@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,68 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+From: Pan Bian <bianpan2016@163.com>
 
-commit 3d2fc4c082448e9c05792f9b2a11c1d5db408b85 upstream.
+commit 70779b897395b330ba5a47bed84f94178da599f9 upstream.
 
-The memtype seq_file iterator allocates a buffer in the ->start and ->next
-functions and frees it in the ->show function.  The preferred handling for
-such resources is to free them in the subsequent ->next or ->stop function
-call.
+The reference count of the old buffer head should be decremented on path
+that fails to get the new buffer head.
 
-Since Commit 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration
-code and interface") there is no guarantee that ->show will be called
-after ->next, so this function can now leak memory.
-
-So move the freeing of the buffer to ->next and ->stop.
-
-Link: https://lkml.kernel.org/r/161248539022.21478.13874455485854739066.stgit@noble1
-Fixes: 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
-Signed-off-by: NeilBrown <neilb@suse.de>
-Cc: Xin Long <lucien.xin@gmail.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Vlad Yasevich <vyasevich@gmail.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 6b4657667ba0 ("fs/affs: add rename exchange")
+CC: stable@vger.kernel.org # 4.14+
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/mm/pat/memtype.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/affs/namei.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/mm/pat/memtype.c
-+++ b/arch/x86/mm/pat/memtype.c
-@@ -1164,12 +1164,14 @@ static void *memtype_seq_start(struct se
+--- a/fs/affs/namei.c
++++ b/fs/affs/namei.c
+@@ -460,8 +460,10 @@ affs_xrename(struct inode *old_dir, stru
+ 		return -EIO;
  
- static void *memtype_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- {
-+	kfree(v);
- 	++*pos;
- 	return memtype_get_idx(*pos);
- }
+ 	bh_new = affs_bread(sb, d_inode(new_dentry)->i_ino);
+-	if (!bh_new)
++	if (!bh_new) {
++		affs_brelse(bh_old);
+ 		return -EIO;
++	}
  
- static void memtype_seq_stop(struct seq_file *seq, void *v)
- {
-+	kfree(v);
- }
- 
- static int memtype_seq_show(struct seq_file *seq, void *v)
-@@ -1181,8 +1183,6 @@ static int memtype_seq_show(struct seq_f
- 			entry_print->end,
- 			cattr_name(entry_print->type));
- 
--	kfree(entry_print);
--
- 	return 0;
- }
- 
+ 	/* Remove old header from its parent directory. */
+ 	affs_lock_dir(old_dir);
 
 
