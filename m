@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A379E328E0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC07C328E24
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:26:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241472AbhCATW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:22:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50620 "EHLO mail.kernel.org"
+        id S241213AbhCATYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:24:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235558AbhCAQwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235568AbhCAQwB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:52:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCC1964F13;
-        Mon,  1 Mar 2021 16:33:57 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1E0864F21;
+        Mon,  1 Mar 2021 16:34:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616438;
-        bh=TZYeEesn++qS4uS8yVkk7nZSXzXcbE9PBrkBxofhgkM=;
+        s=korg; t=1614616441;
+        bh=HM4BFj6wIR8XDr2/FrrC8w6xG1Dq6cbRDbrSFPY97JQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NuCV333NmL3oahM+mGbaqA0q0ON+htnFraolW12MizuCn/p0AzZUCYR0de1ZCwKmh
-         N4S0TZEEfYU4XGz+1FqQ4/O2pKQUwGT8HF6vZQVZm9dW9tzAjvqZ631RJfXli7VS9m
-         JIy1Z65c8jQiDdUzTozlbihAo4t92ecvpZfLviiQ=
+        b=j4g0avcG+Gph6L/v9/YNtmdJPuvuP/NDygLvJik41OhWq987qcg5QKNtpN6+KeQTv
+         jEDOzhSEStxxdwINxr1Ka31bsCX3nhzvRSkKIgzCzm97AR3Kggwz24vmi0dV7zXALr
+         CraOVk/wKpUx63+JrLc9LgrbAMjhzrWcDzXq2VZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH 4.14 151/176] mtd: spi-nor: hisi-sfc: Put child node np on error path
-Date:   Mon,  1 Mar 2021 17:13:44 +0100
-Message-Id: <20210301161028.509261881@linuxfoundation.org>
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.14 152/176] fs/affs: release old buffer head on error path
+Date:   Mon,  1 Mar 2021 17:13:45 +0100
+Message-Id: <20210301161028.560652899@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -41,34 +41,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pan Bian <bianpan2016@163.com>
 
-commit fe6653460ee7a7dbe0cd5fd322992af862ce5ab0 upstream.
+commit 70779b897395b330ba5a47bed84f94178da599f9 upstream.
 
-Put the child node np when it fails to get or register device.
+The reference count of the old buffer head should be decremented on path
+that fails to get the new buffer head.
 
-Fixes: e523f11141bd ("mtd: spi-nor: add hisilicon spi-nor flash controller driver")
-Cc: stable@vger.kernel.org
+Fixes: 6b4657667ba0 ("fs/affs: add rename exchange")
+CC: stable@vger.kernel.org # 4.14+
 Signed-off-by: Pan Bian <bianpan2016@163.com>
-[ta: Add Fixes tag and Cc stable]
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20210121091847.85362-1-bianpan2016@163.com
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mtd/spi-nor/hisi-sfc.c |    4 +++-
+ fs/affs/namei.c |    4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/mtd/spi-nor/hisi-sfc.c
-+++ b/drivers/mtd/spi-nor/hisi-sfc.c
-@@ -408,8 +408,10 @@ static int hisi_spi_nor_register_all(str
+--- a/fs/affs/namei.c
++++ b/fs/affs/namei.c
+@@ -461,8 +461,10 @@ affs_xrename(struct inode *old_dir, stru
+ 		return -EIO;
  
- 	for_each_available_child_of_node(dev->of_node, np) {
- 		ret = hisi_spi_nor_register(np, host);
--		if (ret)
-+		if (ret) {
-+			of_node_put(np);
- 			goto fail;
-+		}
+ 	bh_new = affs_bread(sb, d_inode(new_dentry)->i_ino);
+-	if (!bh_new)
++	if (!bh_new) {
++		affs_brelse(bh_old);
+ 		return -EIO;
++	}
  
- 		if (host->num_chip == HIFMC_MAX_CHIP_NUM) {
- 			dev_warn(dev, "Flash device number exceeds the maximum chipselect number\n");
+ 	/* Remove old header from its parent directory. */
+ 	affs_lock_dir(old_dir);
 
 
