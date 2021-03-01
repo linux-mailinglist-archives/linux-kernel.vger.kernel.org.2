@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE139329B16
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47845329AAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378596AbhCBBHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:07:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34118 "EHLO mail.kernel.org"
+        id S1345530AbhCBBBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:01:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240931AbhCATBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:01:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1DAA651D3;
-        Mon,  1 Mar 2021 17:17:28 +0000 (UTC)
+        id S240505AbhCASvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:51:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5289B651D9;
+        Mon,  1 Mar 2021 17:17:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619049;
-        bh=2NVndUT7dS67kVUETNfHqFdwMr3cq1s8T/7KdfD5vl0=;
+        s=korg; t=1614619063;
+        bh=uP7mQNgwM7Rbwp/Ix+ydTucyo811l6od4IsmZCIrln8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w8/WPb/SraOtCuU0ZkgjVuhIodqnd5/hTO9wCKiH6PdWKzMlvWFM9383Id4AMUXXb
-         od5XS65VQ9v9hzg4sAjLgGZnmvp+5u72sFBIkwqzG38dOhPaGiqCTQKhHbxItuMe5f
-         4F2YpK3VEXpAXDCe381QapciYKnl1ikI1wmOTej0=
+        b=IPNYyNspdgriYo5/WQXLeZ60Zb8tbyf+f3x/8+i3I7QQmncBDJOZVXRXVAcVaFlVF
+         gHwF6Nhyx6Jt2pi5+eZ1VRRN9wFeq+w8dle4Rwh+VWw26X/QUNnvy29eWOxqmxcrlT
+         ztgU/N1SBBasHAdhVzY5xWpzB8ogTVJfF4uQSGtQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 313/663] power: supply: smb347-charger: Fix interrupt usage if interrupt is unavailable
-Date:   Mon,  1 Mar 2021 17:09:21 +0100
-Message-Id: <20210301161157.329350288@linuxfoundation.org>
+Subject: [PATCH 5.10 318/663] objtool: Fix error handling for STD/CLD warnings
+Date:   Mon,  1 Mar 2021 17:09:26 +0100
+Message-Id: <20210301161157.586030420@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,85 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 6996312642d2dad3070c3d276c7621f35e721f30 ]
+[ Upstream commit 6f567c9300a5ebd7b18c26dda1c8d6ffbdd0debd ]
 
-The IRQ=0 could be a valid interrupt number in kernel because interrupt
-numbers are virtual in a modern kernel. Hence fix the interrupt usage in
-a case if interrupt is unavailable by not overriding the interrupt number
-which is used by the driver.
+Actually return an error (and display a backtrace, if requested) for
+directional bit warnings.
 
-Note that currently Nexus 7 is the only know device which uses SMB347
-kernel diver and it has a properly working interrupt, hence this patch
-doesn't fix any real problems, it's a minor cleanup/improvement.
-
-Fixes: 99298de5df92 ("power: supply: smb347-charger: Replace mutex with IRQ disable/enable")
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: 2f0f9e9ad7b3 ("objtool: Add Direction Flag validation")
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lore.kernel.org/r/dc70f2adbc72f09526f7cab5b6feb8bf7f6c5ad4.1611263461.git.jpoimboe@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/smb347-charger.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ tools/objtool/check.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply/smb347-charger.c
-index d3bf35ed12cee..8cfbd8d6b4786 100644
---- a/drivers/power/supply/smb347-charger.c
-+++ b/drivers/power/supply/smb347-charger.c
-@@ -137,6 +137,7 @@
-  * @mains_online: is AC/DC input connected
-  * @usb_online: is USB input connected
-  * @charging_enabled: is charging enabled
-+ * @irq_unsupported: is interrupt unsupported by SMB hardware
-  * @max_charge_current: maximum current (in uA) the battery can be charged
-  * @max_charge_voltage: maximum voltage (in uV) the battery can be charged
-  * @pre_charge_current: current (in uA) to use in pre-charging phase
-@@ -193,6 +194,7 @@ struct smb347_charger {
- 	bool			mains_online;
- 	bool			usb_online;
- 	bool			charging_enabled;
-+	bool			irq_unsupported;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 4bd30315eb62b..2e154f00ccec2 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2592,15 +2592,19 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 			break;
  
- 	unsigned int		max_charge_current;
- 	unsigned int		max_charge_voltage;
-@@ -862,6 +864,9 @@ static int smb347_irq_set(struct smb347_charger *smb, bool enable)
- {
- 	int ret;
+ 		case INSN_STD:
+-			if (state.df)
++			if (state.df) {
+ 				WARN_FUNC("recursive STD", sec, insn->offset);
++				return 1;
++			}
  
-+	if (smb->irq_unsupported)
-+		return 0;
-+
- 	ret = smb347_set_writable(smb, true);
- 	if (ret < 0)
- 		return ret;
-@@ -923,8 +928,6 @@ static int smb347_irq_init(struct smb347_charger *smb,
- 	ret = regmap_update_bits(smb->regmap, CFG_STAT,
- 				 CFG_STAT_ACTIVE_HIGH | CFG_STAT_DISABLED,
- 				 CFG_STAT_DISABLED);
--	if (ret < 0)
--		client->irq = 0;
+ 			state.df = true;
+ 			break;
  
- 	smb347_set_writable(smb, false);
+ 		case INSN_CLD:
+-			if (!state.df && func)
++			if (!state.df && func) {
+ 				WARN_FUNC("redundant CLD", sec, insn->offset);
++				return 1;
++			}
  
-@@ -1345,6 +1348,7 @@ static int smb347_probe(struct i2c_client *client,
- 		if (ret < 0) {
- 			dev_warn(dev, "failed to initialize IRQ: %d\n", ret);
- 			dev_warn(dev, "disabling IRQ support\n");
-+			smb->irq_unsupported = true;
- 		} else {
- 			smb347_irq_enable(smb);
- 		}
-@@ -1357,8 +1361,8 @@ static int smb347_remove(struct i2c_client *client)
- {
- 	struct smb347_charger *smb = i2c_get_clientdata(client);
- 
--	if (client->irq)
--		smb347_irq_disable(smb);
-+	smb347_irq_disable(smb);
-+
- 	return 0;
- }
- 
+ 			state.df = false;
+ 			break;
 -- 
 2.27.0
 
