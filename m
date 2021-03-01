@@ -2,1131 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D5A327F66
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B94327F6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235646AbhCANY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:24:29 -0500
-Received: from mga18.intel.com ([134.134.136.126]:4073 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235577AbhCANYJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:24:09 -0500
-IronPort-SDR: Q3IvjkHEd0GYgv3IH+Def/zCfczyemQYaFHx/G6fguPfLnMHyJG+KbY+UH52O5FgcLAYwq8YhE
- QPv5sZCL+TjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="174094049"
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="174094049"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 05:23:21 -0800
-IronPort-SDR: nLstYPW9NnyO6DOBUUdLArm9JkqDMehtASrq1rDqk/7PMiJsioFoIDPxGmyZlOTjwAMbpMnaGm
- niTM9BQ0qgyA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="585492068"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by orsmga005.jf.intel.com with ESMTP; 01 Mar 2021 05:23:14 -0800
-Subject: Re: [PATCH v8 1/2] scsi: ufs: Enable power management for wlun
-To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Pedro Sousa <pedrom.sousa@synopsys.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1614295674.git.asutoshd@codeaurora.org>
- <c861385023f8592a63e3edf8119af89511741c9a.1614295674.git.asutoshd@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <e10cd03d-12cd-3d73-b9ed-a542e0b2b83c@intel.com>
-Date:   Mon, 1 Mar 2021 15:23:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S235648AbhCAN0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:26:40 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:52806 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235308AbhCAN0h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:26:37 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 121DPARF002901;
+        Mon, 1 Mar 2021 13:25:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=q7/DxS6XCuyFssRYAyHrDYOSIKYzpgT+V4jSY+ttJhQ=;
+ b=kw73IITWzXVvJjM3fOmhrQSYn8R84OzYQVjKFNETHEz/MOmXgUXp3QmEq4ZMK04nByFO
+ 2XEvAxM6U+J8JouPN4sFs7E1Vg20DKVMTS05GzZKv8vMicS/gCBU732DKHFxYzNlFljM
+ LbGiw3iS7i+ietutSuK4mN2PzbmjkBUsxPx7Ucb9yYczP2/qLyvNzbHbBRTr6peNxHfC
+ pUZCinIUPGSIkVb9Jo2WOjhqDx1C/XM8IcBoTvgbqghYYFnuhDJwHMJDjU9gMNo7apMw
+ FI1cZTTW/5K7PpN6UE/s7lm/UQtF/BIGkxLvVCTlAaFHV4EUzsQIzlYNwhKWv5JM0OpK 4g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 36ybkb3w90-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Mar 2021 13:25:48 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 121DKSSS134798;
+        Mon, 1 Mar 2021 13:25:46 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 36yyuqh9t9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Mar 2021 13:25:46 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 121DPjwu021006;
+        Mon, 1 Mar 2021 13:25:45 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 01 Mar 2021 05:25:44 -0800
+Date:   Mon, 1 Mar 2021 16:25:35 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Lee Gibson <leegib@gmail.com>
+Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192e: Fix possible buffer overflow in
+ _rtl92e_wx_set_scan
+Message-ID: <20210301132535.GR2087@kadam>
+References: <20210226114829.316980-1-leegib@gmail.com>
+ <20210226134333.GA2087@kadam>
+ <20210226140526.GG2222@kadam>
 MIME-Version: 1.0
-In-Reply-To: <c861385023f8592a63e3edf8119af89511741c9a.1614295674.git.asutoshd@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226140526.GG2222@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9909 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103010110
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9909 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
+ suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 mlxlogscore=999 adultscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103010111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
-A couple of minor things, but also a potential issue with when link state
-transitions are done.  Please see comments below.
-
-On 26/02/21 1:37 am, Asutosh Das wrote:
-> During runtime-suspend of ufs host, the scsi devices are
-> already suspended and so are the queues associated with them.
-> But the ufs host sends SSU to wlun during its runtime-suspend.
-> During the process blk_queue_enter checks if the queue is not in
-> suspended state. If so, it waits for the queue to resume, and never
-> comes out of it.
-> The commit
-> (d55d15a33: scsi: block: Do not accept any requests while suspended)
-> adds the check if the queue is in suspended state in blk_queue_enter().
+On Fri, Feb 26, 2021 at 05:05:26PM +0300, Dan Carpenter wrote:
+> Here is a v2 of my check.  I've changed it to mark all "->ssid" and
+> everything in "(struct ieee80211_network)" as protected.  I'm just
+> playing around with it at this point to explore what works best.  It's
+> impossible to know until after some results come back.
 > 
-> Call trace:
->  __switch_to+0x174/0x2c4
->  __schedule+0x478/0x764
->  schedule+0x9c/0xe0
->  blk_queue_enter+0x158/0x228
->  blk_mq_alloc_request+0x40/0xa4
->  blk_get_request+0x2c/0x70
->  __scsi_execute+0x60/0x1c4
->  ufshcd_set_dev_pwr_mode+0x124/0x1e4
->  ufshcd_suspend+0x208/0x83c
->  ufshcd_runtime_suspend+0x40/0x154
->  ufshcd_pltfrm_runtime_suspend+0x14/0x20
->  pm_generic_runtime_suspend+0x28/0x3c
->  __rpm_callback+0x80/0x2a4
->  rpm_suspend+0x308/0x614
->  rpm_idle+0x158/0x228
->  pm_runtime_work+0x84/0xac
->  process_one_work+0x1f0/0x470
->  worker_thread+0x26c/0x4c8
->  kthread+0x13c/0x320
->  ret_from_fork+0x10/0x18
-> 
-> Fix this by registering ufs device wlun as a scsi driver and
-> registering it for block runtime-pm. Also make this as a
-> supplier for all other luns. That way, this device wlun
-> suspends after all the consumers and resumes after
-> hba resumes.
-> 
-> Co-developed-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-> ---
->  drivers/scsi/ufs/cdns-pltfrm.c     |   2 +
->  drivers/scsi/ufs/tc-dwc-g210-pci.c |   2 +
->  drivers/scsi/ufs/ufs-exynos.c      |   2 +
->  drivers/scsi/ufs/ufs-hisi.c        |   2 +
->  drivers/scsi/ufs/ufs-mediatek.c    |   2 +
->  drivers/scsi/ufs/ufs-qcom.c        |   2 +
->  drivers/scsi/ufs/ufshcd-pci.c      |  26 +-
->  drivers/scsi/ufs/ufshcd.c          | 540 ++++++++++++++++++++++++++++++-------
->  drivers/scsi/ufs/ufshcd.h          |   7 +
->  include/trace/events/ufs.h         |  20 ++
->  10 files changed, 483 insertions(+), 122 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/cdns-pltfrm.c b/drivers/scsi/ufs/cdns-pltfrm.c
-> index 149391f..3e70c23 100644
-> --- a/drivers/scsi/ufs/cdns-pltfrm.c
-> +++ b/drivers/scsi/ufs/cdns-pltfrm.c
-> @@ -319,6 +319,8 @@ static const struct dev_pm_ops cdns_ufs_dev_pm_ops = {
->  	.runtime_suspend = ufshcd_pltfrm_runtime_suspend,
->  	.runtime_resume  = ufshcd_pltfrm_runtime_resume,
->  	.runtime_idle    = ufshcd_pltfrm_runtime_idle,
-> +	.prepare	 = ufshcd_suspend_prepare,
-> +	.complete	= ufshcd_resume_complete,
->  };
->  
->  static struct platform_driver cdns_ufs_pltfrm_driver = {
-> diff --git a/drivers/scsi/ufs/tc-dwc-g210-pci.c b/drivers/scsi/ufs/tc-dwc-g210-pci.c
-> index 67a6a61..b01db12 100644
-> --- a/drivers/scsi/ufs/tc-dwc-g210-pci.c
-> +++ b/drivers/scsi/ufs/tc-dwc-g210-pci.c
-> @@ -148,6 +148,8 @@ static const struct dev_pm_ops tc_dwc_g210_pci_pm_ops = {
->  	.runtime_suspend = tc_dwc_g210_pci_runtime_suspend,
->  	.runtime_resume  = tc_dwc_g210_pci_runtime_resume,
->  	.runtime_idle    = tc_dwc_g210_pci_runtime_idle,
-> +	.prepare	 = ufshcd_suspend_prepare,
-> +	.complete	= ufshcd_resume_complete,
->  };
->  
->  static const struct pci_device_id tc_dwc_g210_pci_tbl[] = {
-> diff --git a/drivers/scsi/ufs/ufs-exynos.c b/drivers/scsi/ufs/ufs-exynos.c
-> index 267943a1..45c0b02 100644
-> --- a/drivers/scsi/ufs/ufs-exynos.c
-> +++ b/drivers/scsi/ufs/ufs-exynos.c
-> @@ -1268,6 +1268,8 @@ static const struct dev_pm_ops exynos_ufs_pm_ops = {
->  	.runtime_suspend = ufshcd_pltfrm_runtime_suspend,
->  	.runtime_resume  = ufshcd_pltfrm_runtime_resume,
->  	.runtime_idle    = ufshcd_pltfrm_runtime_idle,
-> +	.prepare	 = ufshcd_suspend_prepare,
-> +	.complete	= ufshcd_resume_complete,
->  };
->  
->  static struct platform_driver exynos_ufs_pltform = {
-> diff --git a/drivers/scsi/ufs/ufs-hisi.c b/drivers/scsi/ufs/ufs-hisi.c
-> index 0aa5813..d463b44 100644
-> --- a/drivers/scsi/ufs/ufs-hisi.c
-> +++ b/drivers/scsi/ufs/ufs-hisi.c
-> @@ -574,6 +574,8 @@ static const struct dev_pm_ops ufs_hisi_pm_ops = {
->  	.runtime_suspend = ufshcd_pltfrm_runtime_suspend,
->  	.runtime_resume  = ufshcd_pltfrm_runtime_resume,
->  	.runtime_idle    = ufshcd_pltfrm_runtime_idle,
-> +	.prepare	 = ufshcd_suspend_prepare,
-> +	.complete	= ufshcd_resume_complete,
->  };
->  
->  static struct platform_driver ufs_hisi_pltform = {
-> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-> index c55202b..df1eabb 100644
-> --- a/drivers/scsi/ufs/ufs-mediatek.c
-> +++ b/drivers/scsi/ufs/ufs-mediatek.c
-> @@ -1097,6 +1097,8 @@ static const struct dev_pm_ops ufs_mtk_pm_ops = {
->  	.runtime_suspend = ufshcd_pltfrm_runtime_suspend,
->  	.runtime_resume  = ufshcd_pltfrm_runtime_resume,
->  	.runtime_idle    = ufshcd_pltfrm_runtime_idle,
-> +	.prepare	 = ufshcd_suspend_prepare,
-> +	.complete	= ufshcd_resume_complete,
->  };
->  
->  static struct platform_driver ufs_mtk_pltform = {
-> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-> index f97d7b0..9aa098a 100644
-> --- a/drivers/scsi/ufs/ufs-qcom.c
-> +++ b/drivers/scsi/ufs/ufs-qcom.c
-> @@ -1546,6 +1546,8 @@ static const struct dev_pm_ops ufs_qcom_pm_ops = {
->  	.runtime_suspend = ufshcd_pltfrm_runtime_suspend,
->  	.runtime_resume  = ufshcd_pltfrm_runtime_resume,
->  	.runtime_idle    = ufshcd_pltfrm_runtime_idle,
-> +	.prepare	 = ufshcd_suspend_prepare,
-> +	.complete	= ufshcd_resume_complete,
->  };
->  
->  static struct platform_driver ufs_qcom_pltform = {
-> diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
-> index fadd566..fef1ee4 100644
-> --- a/drivers/scsi/ufs/ufshcd-pci.c
-> +++ b/drivers/scsi/ufs/ufshcd-pci.c
-> @@ -247,29 +247,6 @@ static int ufshcd_pci_resume(struct device *dev)
->  	return ufshcd_system_resume(dev_get_drvdata(dev));
->  }
->  
-> -/**
-> - * ufshcd_pci_poweroff - suspend-to-disk poweroff function
-> - * @dev: pointer to PCI device handle
-> - *
-> - * Returns 0 if successful
-> - * Returns non-zero otherwise
-> - */
-> -static int ufshcd_pci_poweroff(struct device *dev)
-> -{
-> -	struct ufs_hba *hba = dev_get_drvdata(dev);
-> -	int spm_lvl = hba->spm_lvl;
-> -	int ret;
-> -
-> -	/*
-> -	 * For poweroff we need to set the UFS device to PowerDown mode.
-> -	 * Force spm_lvl to ensure that.
-> -	 */
-> -	hba->spm_lvl = 5;
-> -	ret = ufshcd_system_suspend(hba);
-> -	hba->spm_lvl = spm_lvl;
-> -	return ret;
-> -}
-> -
->  #endif /* !CONFIG_PM_SLEEP */
->  
->  #ifdef CONFIG_PM
-> @@ -370,8 +347,9 @@ static const struct dev_pm_ops ufshcd_pci_pm_ops = {
->  	.resume		= ufshcd_pci_resume,
->  	.freeze		= ufshcd_pci_suspend,
->  	.thaw		= ufshcd_pci_resume,
-> -	.poweroff	= ufshcd_pci_poweroff,
->  	.restore	= ufshcd_pci_resume,
 
-Can use SET_SYSTEM_SLEEP_PM_OPS(ufshcd_pci_suspend, ufshcd_pci_resume) for
-the ones above.
+[ Added linux-wireless to the CC list.  Here was the original check I
+  wrote on Friday. https://lore.kernel.org/lkml/20210226140526.GG2222@kadam/ ]
 
-> +	.prepare	 = ufshcd_suspend_prepare,
-> +	.complete	= ufshcd_resume_complete,
->  #endif
->  	SET_RUNTIME_PM_OPS(ufshcd_pci_runtime_suspend,
->  			   ufshcd_pci_runtime_resume,
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 45624c7..0e8e76a 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -16,6 +16,7 @@
->  #include <linux/bitfield.h>
->  #include <linux/blk-pm.h>
->  #include <linux/blkdev.h>
-> +#include <scsi/scsi_driver.h>
->  #include "ufshcd.h"
->  #include "ufs_quirks.h"
->  #include "unipro.h"
-> @@ -78,6 +79,8 @@
->  /* Polling time to wait for fDeviceInit */
->  #define FDEVICEINIT_COMPL_TIMEOUT 1500 /* millisecs */
->  
-> +#define wlun_dev_to_hba(dv) shost_priv(to_scsi_device(dv)->host)
-> +
->  #define ufshcd_toggle_vreg(_dev, _vreg, _on)				\
->  	({                                                              \
->  		int _ret;                                               \
-> @@ -1556,7 +1559,7 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
->  	if (value == hba->clk_scaling.is_enabled)
->  		goto out;
->  
-> -	pm_runtime_get_sync(hba->dev);
-> +	scsi_autopm_get_device(hba->sdev_ufs_device);
->  	ufshcd_hold(hba, false);
->  
->  	hba->clk_scaling.is_enabled = value;
-> @@ -1572,7 +1575,7 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
->  	}
->  
->  	ufshcd_release(hba);
-> -	pm_runtime_put_sync(hba->dev);
-> +	scsi_autopm_put_device(hba->sdev_ufs_device);
->  out:
->  	up(&hba->host_sem);
->  	return err ? err : count;
-> @@ -2572,6 +2575,17 @@ static inline u16 ufshcd_upiu_wlun_to_scsi_wlun(u8 upiu_wlun_id)
->  	return (upiu_wlun_id & ~UFS_UPIU_WLUN_ID) | SCSI_W_LUN_BASE;
->  }
->  
-> +static inline bool is_rpmb_wlun(struct scsi_device *sdev)
-> +{
-> +	return (sdev->lun == ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_RPMB_WLUN));
-> +}
-> +
-> +static inline bool is_device_wlun(struct scsi_device *sdev)
-> +{
-> +	return (sdev->lun ==
-> +		ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_UFS_DEVICE_WLUN));
-> +}
-> +
->  static void ufshcd_init_lrb(struct ufs_hba *hba, struct ufshcd_lrb *lrb, int i)
->  {
->  	struct utp_transfer_cmd_desc *cmd_descp = hba->ucdl_base_addr;
-> @@ -4808,6 +4822,41 @@ static inline void ufshcd_get_lu_power_on_wp_status(struct ufs_hba *hba,
->  }
->  
->  /**
-> + * ufshcd_setup_links - associate link b/w device wlun and other luns
-> + * @sdev: pointer to SCSI device
-> + * @hba: pointer to ufs hba
-> + */
-> +static void ufshcd_setup_links(struct ufs_hba *hba, struct scsi_device *sdev)
-> +{
-> +	struct device_link *link;
-> +
-> +	/*
-> +	 * device wlun is the supplier & rest of the luns are consumers
-> +	 * This ensures that device wlun suspends after all other luns.
-> +	 */
-> +	if (hba->sdev_ufs_device) {
-> +		link = device_link_add(&sdev->sdev_gendev,
-> +				       &hba->sdev_ufs_device->sdev_gendev,
-> +				       DL_FLAG_PM_RUNTIME);
-> +		if (!link) {
-> +			dev_err(&sdev->sdev_gendev, "Failed establishing link - %s\n",
-> +				dev_name(&hba->sdev_ufs_device->sdev_gendev));
-> +			return;
-> +		}
-> +		hba->luns_avail--;
-> +		/* Ignore REPORT_LUN wlun probing */
-> +		if (hba->luns_avail != 1)
-> +			return;
-> +
-> +		pm_runtime_put_noidle(&hba->sdev_ufs_device->sdev_gendev);
-> +		pm_runtime_mark_last_busy(&hba->sdev_ufs_device->sdev_gendev);
-> +	} else {
-> +		/* device wlun is probed */
-> +		hba->luns_avail--;
-> +	}
-> +}
-> +
-> +/**
->   * ufshcd_slave_alloc - handle initial SCSI device configurations
->   * @sdev: pointer to SCSI device
->   *
-> @@ -4838,6 +4887,8 @@ static int ufshcd_slave_alloc(struct scsi_device *sdev)
->  
->  	ufshcd_get_lu_power_on_wp_status(hba, sdev);
->  
-> +	ufshcd_setup_links(hba, sdev);
-> +
->  	return 0;
->  }
->  
-> @@ -4985,15 +5036,9 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
->  			 * UFS device needs urgent BKOPs.
->  			 */
->  			if (!hba->pm_op_in_progress &&
-> -			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr) &&
-> -			    schedule_work(&hba->eeh_work)) {
-> -				/*
-> -				 * Prevent suspend once eeh_work is scheduled
-> -				 * to avoid deadlock between ufshcd_suspend
-> -				 * and exception event handler.
-> -				 */
-> -				pm_runtime_get_noresume(hba->dev);
-> -			}
-> +			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr))
-> +				/* Flushed in suspend */
-> +				schedule_work(&hba->eeh_work);
->  			break;
->  		case UPIU_TRANSACTION_REJECT_UPIU:
->  			/* TODO: handle Reject UPIU Response */
-> @@ -5589,8 +5634,8 @@ static void ufshcd_rpm_dev_flush_recheck_work(struct work_struct *work)
->  	 * after a certain delay to recheck the threshold by next runtime
->  	 * suspend.
->  	 */
-> -	pm_runtime_get_sync(hba->dev);
-> -	pm_runtime_put_sync(hba->dev);
-> +	scsi_autopm_get_device(hba->sdev_ufs_device);
-> +	scsi_autopm_put_device(hba->sdev_ufs_device);
->  }
->  
->  /**
-> @@ -5607,7 +5652,6 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
->  	u32 status = 0;
->  	hba = container_of(work, struct ufs_hba, eeh_work);
->  
-> -	pm_runtime_get_sync(hba->dev);
->  	ufshcd_scsi_block_requests(hba);
->  	err = ufshcd_get_ee_status(hba, &status);
->  	if (err) {
-> @@ -5623,14 +5667,6 @@ static void ufshcd_exception_event_handler(struct work_struct *work)
->  
->  out:
->  	ufshcd_scsi_unblock_requests(hba);
-> -	/*
-> -	 * pm_runtime_get_noresume is called while scheduling
-> -	 * eeh_work to avoid suspend racing with exception work.
-> -	 * Hence decrement usage counter using pm_runtime_put_noidle
-> -	 * to allow suspend on completion of exception event handler.
-> -	 */
-> -	pm_runtime_put_noidle(hba->dev);
-> -	pm_runtime_put(hba->dev);
->  	return;
->  }
->  
-> @@ -7210,8 +7246,7 @@ static inline void ufshcd_blk_pm_runtime_init(struct scsi_device *sdev)
->  	scsi_autopm_get_device(sdev);
->  	blk_pm_runtime_init(sdev->request_queue, &sdev->sdev_gendev);
->  	if (sdev->rpm_autosuspend)
-> -		pm_runtime_set_autosuspend_delay(&sdev->sdev_gendev,
-> -						 RPM_AUTOSUSPEND_DELAY_MS);
-> +		pm_runtime_set_autosuspend_delay(&sdev->sdev_gendev, 0);
->  	scsi_autopm_put_device(sdev);
->  }
->  
-> @@ -7254,6 +7289,15 @@ static int ufshcd_scsi_add_wlus(struct ufs_hba *hba)
->  		goto out;
->  	}
->  	ufshcd_blk_pm_runtime_init(hba->sdev_ufs_device);
-> +	/*
-> +	 * A pm_runtime_put_sync is invoked when this device enables blk_pm_runtime
-> +	 * & would suspend the device-wlun upon timer expiry.
-> +	 * But suspending device wlun _may_ put the ufs device in the pre-defined
-> +	 * low power mode (SSU <rpm_lvl>). Probing of other luns may fail then.
-> +	 * Don't allow this suspend until all the luns have been probed.
-> +	 * See pm_runtime_mark_last_busy in ufshcd_setup_links.
-> +	 */
-> +	pm_runtime_get_noresume(&hba->sdev_ufs_device->sdev_gendev);
->  	scsi_device_put(hba->sdev_ufs_device);
->  
->  	hba->sdev_rpmb = __scsi_add_device(hba->host, 0, 0,
-> @@ -7417,6 +7461,9 @@ static int ufs_get_device_desc(struct ufs_hba *hba)
->  		goto out;
->  	}
->  
-> +	hba->luns_avail = desc_buf[DEVICE_DESC_PARAM_NUM_LU] +
-> +		desc_buf[DEVICE_DESC_PARAM_NUM_WLU];
-> +
->  	ufs_fixup_device_setup(hba);
->  
->  	ufshcd_wb_probe(hba, desc_buf);
-> @@ -7892,6 +7939,7 @@ static int ufshcd_probe_hba(struct ufs_hba *hba, bool async)
->  	ufshcd_set_ufs_dev_active(hba);
->  	ufshcd_force_reset_auto_bkops(hba);
->  	hba->wlun_dev_clr_ua = true;
-> +	hba->wlun_rpmb_clr_ua = true;
->  
->  	/* Gear up to HS gear if supported */
->  	if (hba->max_pwr_info.is_valid) {
-> @@ -7964,6 +8012,7 @@ static void ufshcd_async_scan(void *data, async_cookie_t cookie)
->  		pm_runtime_put_sync(hba->dev);
->  		ufshcd_hba_exit(hba);
->  	}
-> +	hba->init_done = true;
->  }
->  
->  static const struct attribute_group *ufshcd_driver_groups[] = {
-> @@ -8475,7 +8524,8 @@ static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
->  	 * handling context.
->  	 */
->  	hba->host->eh_noresume = 1;
-> -	ufshcd_clear_ua_wluns(hba);
-> +	if (hba->wlun_dev_clr_ua)
-> +		ufshcd_clear_ua_wlun(hba, UFS_UPIU_UFS_DEVICE_WLUN);
->  
->  	cmd[4] = pwr_mode << 4;
->  
-> @@ -8650,31 +8700,20 @@ static void ufshcd_hba_vreg_set_hpm(struct ufs_hba *hba)
->  		ufshcd_setup_hba_vreg(hba, true);
->  }
->  
-> -/**
-> - * ufshcd_suspend - helper function for suspend operations
-> - * @hba: per adapter instance
-> - * @pm_op: desired low power operation type
-> - *
-> - * This function will try to put the UFS device and link into low power
-> - * mode based on the "rpm_lvl" (Runtime PM level) or "spm_lvl"
-> - * (System PM level).
-> - *
-> - * If this function is called during shutdown, it will make sure that
-> - * both UFS device and UFS link is powered off.
-> - *
-> - * NOTE: UFS device & link must be active before we enter in this function.
-> - *
-> - * Returns 0 for success and non-zero for failure
-> - */
-> -static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
-> +static int __ufshcd_wl_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  {
->  	int ret = 0;
-> -	int check_for_bkops;
->  	enum ufs_pm_level pm_lvl;
->  	enum ufs_dev_pwr_mode req_dev_pwr_mode;
->  	enum uic_link_state req_link_state;
->  
-> -	hba->pm_op_in_progress = 1;
-> +	/*
-> +	 * Is invoked when the device wlun is added to sysfs
-> +	 * But by then hba->sdev_ufs_device may not be initialized.
-> +	 */
-> +	if (!hba->init_done)
-> +		return 0;
-> +	hba->pm_op_in_progress = true;
->  	if (!ufshcd_is_shutdown_pm(pm_op)) {
->  		pm_lvl = ufshcd_is_runtime_pm(pm_op) ?
->  			 hba->rpm_lvl : hba->spm_lvl;
-> @@ -8690,24 +8729,23 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	 * just gate the clocks.
->  	 */
->  	ufshcd_hold(hba, false);
-> -	hba->clk_gating.is_suspended = true;
->  
->  	if (ufshcd_is_clkscaling_supported(hba))
->  		ufshcd_clk_scaling_suspend(hba, true);
->  
->  	if (req_dev_pwr_mode == UFS_ACTIVE_PWR_MODE &&
->  			req_link_state == UIC_LINK_ACTIVE_STATE) {
-> -		goto disable_clks;
-> +		goto enable_scaling;
->  	}
->  
->  	if ((req_dev_pwr_mode == hba->curr_dev_pwr_mode) &&
->  	    (req_link_state == hba->uic_link_state))
-> -		goto enable_gating;
-> +		goto enable_scaling;
->  
->  	/* UFS device & link must be active before we enter in this function */
->  	if (!ufshcd_is_ufs_dev_active(hba) || !ufshcd_is_link_active(hba)) {
->  		ret = -EINVAL;
-> -		goto enable_gating;
-> +		goto enable_scaling;
->  	}
->  
->  	if (ufshcd_is_runtime_pm(pm_op)) {
-> @@ -8719,7 +8757,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  			 */
->  			ret = ufshcd_urgent_bkops(hba);
->  			if (ret)
-> -				goto enable_gating;
-> +				goto enable_scaling;
->  		} else {
->  			/* make sure that auto bkops is disabled */
->  			ufshcd_disable_auto_bkops(hba);
-> @@ -8746,10 +8784,213 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  
->  		if (!hba->dev_info.b_rpm_dev_flush_capable) {
->  			ret = ufshcd_set_dev_pwr_mode(hba, req_dev_pwr_mode);
-> -			if (ret)
-> -				goto enable_gating;
-> +			if (!ret)
-> +				goto out;
->  		}
->  	}
-> +enable_scaling:
-> +	if (ufshcd_is_clkscaling_supported(hba))
-> +		ufshcd_clk_scaling_suspend(hba, false);
-> +
-> +	hba->dev_info.b_rpm_dev_flush_capable = false;
-> +out:
-> +	if (hba->dev_info.b_rpm_dev_flush_capable) {
-> +		schedule_delayed_work(&hba->rpm_dev_flush_recheck_work,
-> +			msecs_to_jiffies(RPM_DEV_FLUSH_RECHECK_WORK_DELAY_MS));
-> +	}
-> +	if (ret)
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_WL_SUSP_ERR, (u32)ret);
-> +	ufshcd_release(hba);
-> +	hba->pm_op_in_progress = false;
-> +	return ret;
-> +}
-> +
-> +static int __ufshcd_wl_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
-> +{
-> +	int ret = 0;
-> +
-> +	if (!hba->init_done)
-> +		return 0;
-> +
-> +	hba->pm_op_in_progress = true;
-> +	ufshcd_hold(hba, false);
-> +	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
-> +		/* The device is in DeepSleep but hba was not suspended */
-> +		ret = ufshcd_reset_and_restore(hba);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
-> +	if (!ufshcd_is_ufs_dev_active(hba)) {
-> +		ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
-> +	if (ufshcd_keep_autobkops_enabled_except_suspend(hba))
-> +		ufshcd_enable_auto_bkops(hba);
-> +	else
-> +		/*
-> +		 * If BKOPs operations are urgently needed at this moment then
-> +		 * keep auto-bkops enabled or else disable it.
-> +		 */
-> +		ufshcd_urgent_bkops(hba);
-> +
-> +	if (hba->clk_scaling.is_allowed)
-> +		ufshcd_resume_clkscaling(hba);
-> +
-> +	if (hba->dev_info.b_rpm_dev_flush_capable) {
-> +		hba->dev_info.b_rpm_dev_flush_capable = false;
-> +		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
-> +	}
-> +
-> +out:
-> +	if (ret)
-> +		ufshcd_update_evt_hist(hba, UFS_EVT_WL_RES_ERR, (u32)ret);
-> +	ufshcd_release(hba);
-> +	hba->pm_op_in_progress = false;
-> +	return ret;
-> +}
-> +
-> +static int ufshcd_wl_runtime_suspend(struct device *dev)
-> +{
-> +	struct scsi_device *sdev = to_scsi_device(dev);
-> +	struct ufs_hba *hba;
-> +	int ret;
-> +	ktime_t start = ktime_get();
-> +
-> +	hba = shost_priv(sdev->host);
-> +
-> +	ret = __ufshcd_wl_suspend(hba, UFS_RUNTIME_PM);
-> +	if (ret)
-> +		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__, ret);
-> +
-> +	trace_ufshcd_wl_runtime_suspend(dev_name(dev), ret,
-> +		ktime_to_us(ktime_sub(ktime_get(), start)),
-> +		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> +
-> +	return ret;
-> +}
-> +
-> +static int ufshcd_wl_runtime_resume(struct device *dev)
-> +{
-> +	struct scsi_device *sdev = to_scsi_device(dev);
-> +	struct ufs_hba *hba;
-> +	int ret = 0;
-> +	ktime_t start = ktime_get();
-> +
-> +	hba = shost_priv(sdev->host);
-> +
-> +	ret = __ufshcd_wl_resume(hba, UFS_RUNTIME_PM);
-> +	if (ret)
-> +		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__, ret);
-> +
-> +	trace_ufshcd_wl_runtime_resume(dev_name(dev), ret,
-> +		ktime_to_us(ktime_sub(ktime_get(), start)),
-> +		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> +
-> +	return ret;
-> +}
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +static int ufshcd_wl_suspend(struct device *dev)
-> +{
-> +	struct scsi_device *sdev = to_scsi_device(dev);
-> +	struct ufs_hba *hba;
-> +	int ret;
-> +	ktime_t start = ktime_get();
-> +
-> +	hba = shost_priv(sdev->host);
-> +	ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
-> +	if (ret)
-> +		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  ret);
-> +
-> +	trace_ufshcd_wl_suspend(dev_name(dev), ret,
-> +		ktime_to_us(ktime_sub(ktime_get(), start)),
-> +		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> +
-> +	return ret;
-> +}
-> +
-> +static int ufshcd_wl_resume(struct device *dev)
-> +{
-> +	struct scsi_device *sdev = to_scsi_device(dev);
-> +	struct ufs_hba *hba;
-> +	int ret = 0;
-> +	ktime_t start = ktime_get();
-> +
-> +	if (pm_runtime_suspended(dev))
-> +		return 0;
-> +	hba = shost_priv(sdev->host);
-> +
-> +	ret = __ufshcd_wl_resume(hba, UFS_SYSTEM_PM);
-> +	if (ret)
-> +		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__, ret);
-> +
-> +	trace_ufshcd_wl_resume(dev_name(dev), ret,
-> +		ktime_to_us(ktime_sub(ktime_get(), start)),
-> +		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> +
-> +	return ret;
-> +}
-> +#endif
-> +
-> +static void ufshcd_wl_shutdown(struct device *dev)
-> +{
-> +	struct scsi_device *sdev = to_scsi_device(dev);
-> +	struct ufs_hba *hba;
-> +
-> +	hba = shost_priv(sdev->host);
-> +	/* Turn on everything while shutting down */
-> +	scsi_autopm_get_device(sdev);
-> +	scsi_device_quiesce(sdev);
-> +	shost_for_each_device(sdev, hba->host) {
-> +		if (sdev == hba->sdev_ufs_device)
-> +			continue;
-> +		scsi_device_quiesce(sdev);
-> +	}
-> +	__ufshcd_wl_suspend(hba, UFS_SHUTDOWN_PM);
-> +}
-> +
-> +/**
-> + * ufshcd_suspend - helper function for suspend operations
-> + * @hba: per adapter instance
-> + * @pm_op: desired low power operation type
-> + *
-> + * This function will try to put the UFS link into low power
-> + * mode based on the "rpm_lvl" (Runtime PM level) or "spm_lvl"
-> + * (System PM level).
-> + *
-> + * If this function is called during shutdown, it will make sure that
-> + * link is powered off.
-> + *
-> + * Returns 0 for success and non-zero for failure
-> + */
-> +static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
-> +{
-> +	int ret = 0;
-> +	int check_for_bkops;
-> +	enum ufs_pm_level pm_lvl;
-> +	enum ufs_dev_pwr_mode req_dev_pwr_mode;
-> +	enum uic_link_state req_link_state;
-> +
-> +	hba->pm_op_in_progress = 1;
-> +	if (!ufshcd_is_shutdown_pm(pm_op)) {
-> +		pm_lvl = ufshcd_is_runtime_pm(pm_op) ?
-> +			 hba->rpm_lvl : hba->spm_lvl;
-> +		req_dev_pwr_mode = ufs_get_pm_lvl_to_dev_pwr_mode(pm_lvl);
-> +		req_link_state = ufs_get_pm_lvl_to_link_pwr_state(pm_lvl);
-> +	} else {
-> +		req_dev_pwr_mode = UFS_POWERDOWN_PWR_MODE;
-> +		req_link_state = UIC_LINK_OFF_STATE;
-> +	}
-> +
-> +	/*
-> +	 * If we can't transition into any of the low power modes
-> +	 * just gate the clocks.
-> +	 */
-> +	ufshcd_hold(hba, false);
-> +	hba->clk_gating.is_suspended = true;
->  
->  	/*
->  	 * In the case of DeepSleep, the device is expected to remain powered
-> @@ -8758,9 +8999,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	check_for_bkops = !ufshcd_is_ufs_dev_deepsleep(hba);
->  	ret = ufshcd_link_state_transition(hba, req_link_state, check_for_bkops);
->  	if (ret)
-> -		goto set_dev_active;
-> +		goto enable_gating;
->  
-> -disable_clks:
->  	/*
->  	 * Call vendor specific suspend callback. As these callbacks may access
->  	 * vendor specific host controller register space call them before the
-> @@ -8790,7 +9030,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	goto out;
->  
->  set_link_active:
-> -	ufshcd_vreg_set_hpm(hba);
->  	/*
->  	 * Device hardware reset is required to exit DeepSleep. Also, for
->  	 * DeepSleep, the link is off so host reset and restore will be done
-> @@ -8804,28 +9043,15 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  		ufshcd_set_link_active(hba);
->  	else if (ufshcd_is_link_off(hba))
->  		ufshcd_host_reset_and_restore(hba);
-> -set_dev_active:
->  	/* Can also get here needing to exit DeepSleep */
->  	if (ufshcd_is_ufs_dev_deepsleep(hba)) {
->  		ufshcd_device_reset(hba);
->  		ufshcd_host_reset_and_restore(hba);
->  	}
-> -	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
-> -		ufshcd_disable_auto_bkops(hba);
->  enable_gating:
-> -	if (ufshcd_is_clkscaling_supported(hba))
-> -		ufshcd_clk_scaling_suspend(hba, false);
-> -
->  	hba->clk_gating.is_suspended = false;
-> -	hba->dev_info.b_rpm_dev_flush_capable = false;
-> -	ufshcd_clear_ua_wluns(hba);
->  	ufshcd_release(hba);
->  out:
-> -	if (hba->dev_info.b_rpm_dev_flush_capable) {
-> -		schedule_delayed_work(&hba->rpm_dev_flush_recheck_work,
-> -			msecs_to_jiffies(RPM_DEV_FLUSH_RECHECK_WORK_DELAY_MS));
-> -	}
-> -
->  	hba->pm_op_in_progress = 0;
->  
->  	if (ret)
-> @@ -8846,10 +9072,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  {
->  	int ret;
-> -	enum uic_link_state old_link_state;
->  
->  	hba->pm_op_in_progress = 1;
-> -	old_link_state = hba->uic_link_state;
->  
->  	ufshcd_hba_vreg_set_hpm(hba);
->  	ret = ufshcd_vreg_set_hpm(hba);
-> @@ -8901,43 +9125,14 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  			goto vendor_suspend;
->  	}
+This check worked out pretty well.  It's probably 50% bugs?  Unfiltered
+results below.  The trick of warning for "if (ststr(member, "->ssid")) "
+and the memcpy length couldn't be verified turned out to be the best.
 
-The ufshcd_reset_and_restore() in ufshcd_resume() will also change the power
-mode of the UFS device to active.  Until the UFS device is also resumed and
-then suspended, it will not return to a low power mode.
+Protecting ieee80211_network didn't find anything.
 
-It looks like the link state transations should also be moved to
-__ufshcd_wl_suspend / resume ?
+Sometimes we're copying from an existing (presumably verified) config
+to another config so the ->ssid_len is valid.  An example of that is:
 
->  
-> -	if (!ufshcd_is_ufs_dev_active(hba)) {
-> -		ret = ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE);
-> -		if (ret)
-> -			goto set_old_link_state;
-> -	}
-> -
-> -	if (ufshcd_keep_autobkops_enabled_except_suspend(hba))
-> -		ufshcd_enable_auto_bkops(hba);
-> -	else
-> -		/*
-> -		 * If BKOPs operations are urgently needed at this moment then
-> -		 * keep auto-bkops enabled or else disable it.
-> -		 */
-> -		ufshcd_urgent_bkops(hba);
-> -
-> -	hba->clk_gating.is_suspended = false;
-> -
-> -	if (ufshcd_is_clkscaling_supported(hba))
-> -		ufshcd_clk_scaling_suspend(hba, false);
-> -
->  	/* Enable Auto-Hibernate if configured */
->  	ufshcd_auto_hibern8_enable(hba);
->  
-> -	if (hba->dev_info.b_rpm_dev_flush_capable) {
-> -		hba->dev_info.b_rpm_dev_flush_capable = false;
-> -		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
-> -	}
-> -
-> -	ufshcd_clear_ua_wluns(hba);
-> -
->  	/* Schedule clock gating in case of no access to UFS device yet */
->  	ufshcd_release(hba);
->  
->  	goto out;
->  
-> -set_old_link_state:
-> -	ufshcd_link_state_transition(hba, old_link_state, 0);
->  vendor_suspend:
->  	ufshcd_vops_suspend(hba, pm_op);
->  disable_irq_and_vops_clks:
-> @@ -9477,15 +9672,164 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
->  }
->  EXPORT_SYMBOL_GPL(ufshcd_init);
->  
-> +void ufshcd_resume_complete(struct device *dev)
-> +{
-> +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> +
-> +	pm_runtime_put_noidle(&hba->sdev_ufs_device->sdev_gendev);
-> +}
-> +EXPORT_SYMBOL_GPL(ufshcd_resume_complete);
-> +
-> +int ufshcd_suspend_prepare(struct device *dev)
-> +{
-> +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> +
-> +	/*
-> +	 * SCSI assumes that runtime-pm and system-pm for scsi drivers
-> +	 * are same. And it doesn't wake up the device for system-suspend
-> +	 * if it's runtime suspended. But ufs doesn't follow that.
-> +	 * The rpm-lvl and spm-lvl can be different in ufs.
-> +	 * Force it to honor system-suspend.
-> +	 */
-> +	scsi_autopm_get_device(hba->sdev_ufs_device);
-> +	/* Refer ufshcd_resume_complete() */
-> +	pm_runtime_get_noresume(&hba->sdev_ufs_device->sdev_gendev);
-> +	scsi_autopm_put_device(hba->sdev_ufs_device);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(ufshcd_suspend_prepare);
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +static int ufshcd_wl_poweroff(struct device *dev)
-> +{
-> +	ufshcd_wl_shutdown(dev);
-> +	return 0;
-> +}
-> +#endif
-> +
-> +static int ufshcd_wl_probe(struct device *dev)
-> +{
-> +	return is_device_wlun(to_scsi_device(dev)) ? 0 : -ENODEV;
-> +}
-> +
-> +static int ufshcd_wl_remove(struct device *dev)
-> +{
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops ufshcd_wl_pm_ops = {
-> +#ifdef CONFIG_PM_SLEEP
-> +	.suspend = ufshcd_wl_suspend,
-> +	.resume = ufshcd_wl_resume,
-> +	.freeze = ufshcd_wl_suspend,
-> +	.thaw = ufshcd_wl_resume,
-> +	.poweroff = ufshcd_wl_poweroff,
-> +	.restore = ufshcd_wl_resume,
-> +#endif
-> +	SET_RUNTIME_PM_OPS(ufshcd_wl_runtime_suspend, ufshcd_wl_runtime_resume, NULL)
-> +};
-> +
-> +/**
-> + * ufs_dev_wlun_template - describes ufs device wlun
-> + * ufs-device wlun - used to send pm commands
-> + * All luns are consumers of ufs-device wlun.
-> + *
-> + * Currently, no sd driver is present for wluns.
-> + * Hence the no specific pm operations are performed.
-> + * With ufs design, SSU should be sent to ufs-device wlun.
-> + * Hence register a scsi driver for ufs wluns only.
-> + */
-> +static struct scsi_driver ufs_dev_wlun_template = {
-> +	.gendrv = {
-> +		.name = "ufs_device_wlun",
-> +		.owner = THIS_MODULE,
-> +		.probe = ufshcd_wl_probe,
-> +		.remove = ufshcd_wl_remove,
-> +		.pm = &ufshcd_wl_pm_ops,
-> +		.shutdown = ufshcd_wl_shutdown,
-> +	},
-> +};
-> +
-> +static int ufshcd_rpmb_probe(struct device *dev)
-> +{
-> +	return is_rpmb_wlun(to_scsi_device(dev)) ? 0 : -ENODEV;
-> +}
-> +
-> +static inline int ufshcd_clear_rpmb_uac(struct ufs_hba *hba)
-> +{
-> +	int ret = 0;
-> +
-> +	if (!hba->wlun_rpmb_clr_ua)
-> +		return 0;
-> +	ret = ufshcd_clear_ua_wlun(hba, UFS_UPIU_RPMB_WLUN);
-> +	if (!ret)
-> +		hba->wlun_rpmb_clr_ua = 0;
-> +	return ret;
-> +}
-> +
-> +static int ufshcd_rpmb_runtime_resume(struct device *dev)
-> +{
-> +	struct ufs_hba *hba = wlun_dev_to_hba(dev);
-> +
-> +	if (hba->sdev_rpmb)
-> +		return ufshcd_clear_rpmb_uac(hba);
-> +	return 0;
-> +}
-> +
-> +static int ufshcd_rpmb_resume(struct device *dev)
-> +{
-> +	struct ufs_hba *hba = wlun_dev_to_hba(dev);
-> +
-> +	if (hba->sdev_rpmb && !pm_runtime_suspended(dev))
-> +		return ufshcd_clear_rpmb_uac(hba);
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops ufs_rpmb_pm_ops = {
-> +	SET_RUNTIME_PM_OPS(NULL, ufshcd_rpmb_runtime_resume, NULL)
-> +	SET_SYSTEM_SLEEP_PM_OPS(NULL, ufshcd_rpmb_resume)
-> +};
-> +
-> +/**
-> + * Describes the ufs rpmb wlun.
-> + * Used only to send uac.
-> + */
-> +static struct scsi_driver ufs_rpmb_wlun_template = {
-> +	.gendrv = {
-> +		.name = "ufs_rpmb_wlun",
-> +		.owner = THIS_MODULE,
-> +		.probe = ufshcd_rpmb_probe,
-> +		.pm = &ufs_rpmb_pm_ops,
-> +	},
-> +};
-> +
->  static int __init ufshcd_core_init(void)
->  {
-> +	int ret;
-> +
->  	ufs_debugfs_init();
-> +
-> +	ret = scsi_register_driver(&ufs_dev_wlun_template.gendrv);
-> +	if (ret) {
-> +		pr_err("Register device wlun driver failed: %d\n",
-> +			ret);
+drivers/staging/rtl8192e/rtllib_softmac.c:1685 rtllib_softmac_new_net() protected struct member '(struct rtllib_network)->ssid' overflow: rl='0-255'
 
-The driver_register has some error messages, so I am not sure we need this
-message.
+drivers/staging/rtl8192e/rtllib_softmac.c
+  1674                          /* Save the essid so that if it is hidden, it is
+  1675                           * replaced with the essid provided by the user.
+  1676                           */
+  1677                          if (!ssidbroad) {
+  1678                                  memcpy(tmp_ssid, ieee->current_network.ssid,
+  1679                                         ieee->current_network.ssid_len);
+  1680                                  tmp_ssid_len = ieee->current_network.ssid_len;
+                                        ^^^^^^^^^^^^
+We can assume the existing ssid_len is valid
 
-> +		return ret;
-> +	}
-> +
-> +	ret = scsi_register_driver(&ufs_rpmb_wlun_template.gendrv);
-> +	if (ret) {
-> +		pr_err("Register rpmb wlun driver failed: %d\n",
-> +			ret);
+  1681                          }
+  1682                          memcpy(&ieee->current_network, net,
+  1683                                  sizeof(ieee->current_network));
+  1684                          if (!ssidbroad) {
+  1685                                  memcpy(ieee->current_network.ssid, tmp_ssid,
+  1686                                         tmp_ssid_len);
+                                               ^^^^^^^^^^^^
+so this memcpy() won't overflow.  It's easy enough for a human reviewer
+to make this sort of assumption, but Smatch can't.
 
-Ditto the message, but also need to unregister &ufs_dev_wlun_template.gendrv
+  1687                                  ieee->current_network.ssid_len = tmp_ssid_len;
+  1688                          }
 
-> +		return ret;
-> +	}
->  	return 0;
->  }
->  
->  static void __exit ufshcd_core_exit(void)
->  {
->  	ufs_debugfs_exit();
-> +	scsi_unregister_driver(&ufs_dev_wlun_template.gendrv);
-> +	scsi_unregister_driver(&ufs_rpmb_wlun_template.gendrv);
->  }
->  
->  module_init(ufshcd_core_init);
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index ee61f82..e246ec3 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -72,6 +72,8 @@ enum ufs_event_type {
->  	UFS_EVT_LINK_STARTUP_FAIL,
->  	UFS_EVT_RESUME_ERR,
->  	UFS_EVT_SUSPEND_ERR,
-> +	UFS_EVT_WL_SUSP_ERR,
-> +	UFS_EVT_WL_RES_ERR,
->  
->  	/* abnormal events */
->  	UFS_EVT_DEV_RESET,
-> @@ -804,6 +806,7 @@ struct ufs_hba {
->  	struct list_head clk_list_head;
->  
->  	bool wlun_dev_clr_ua;
-> +	bool wlun_rpmb_clr_ua;
->  
->  	/* Number of requests aborts */
->  	int req_abort_count;
-> @@ -841,6 +844,8 @@ struct ufs_hba {
->  #ifdef CONFIG_DEBUG_FS
->  	struct dentry *debugfs_root;
->  #endif
-> +	bool init_done;
-> +	u32 luns_avail;
->  };
->  
->  /* Returns true if clocks can be gated. Otherwise false */
-> @@ -1100,6 +1105,8 @@ int ufshcd_exec_raw_upiu_cmd(struct ufs_hba *hba,
->  			     enum query_opcode desc_op);
->  
->  int ufshcd_wb_ctrl(struct ufs_hba *hba, bool enable);
-> +int ufshcd_suspend_prepare(struct device *dev);
-> +void ufshcd_resume_complete(struct device *dev);
->  
->  /* Wrapper functions for safely calling variant operations */
->  static inline const char *ufshcd_get_var_name(struct ufs_hba *hba)
-> diff --git a/include/trace/events/ufs.h b/include/trace/events/ufs.h
-> index e151477..d9d233b 100644
-> --- a/include/trace/events/ufs.h
-> +++ b/include/trace/events/ufs.h
-> @@ -246,6 +246,26 @@ DEFINE_EVENT(ufshcd_template, ufshcd_init,
->  		      int dev_state, int link_state),
->  	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
->  
-> +DEFINE_EVENT(ufshcd_template, ufshcd_wl_suspend,
-> +	     TP_PROTO(const char *dev_name, int err, s64 usecs,
-> +		      int dev_state, int link_state),
-> +	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
-> +
-> +DEFINE_EVENT(ufshcd_template, ufshcd_wl_resume,
-> +	     TP_PROTO(const char *dev_name, int err, s64 usecs,
-> +		      int dev_state, int link_state),
-> +	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
-> +
-> +DEFINE_EVENT(ufshcd_template, ufshcd_wl_runtime_suspend,
-> +	     TP_PROTO(const char *dev_name, int err, s64 usecs,
-> +		      int dev_state, int link_state),
-> +	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
-> +
-> +DEFINE_EVENT(ufshcd_template, ufshcd_wl_runtime_resume,
-> +	     TP_PROTO(const char *dev_name, int err, s64 usecs,
-> +		      int dev_state, int link_state),
-> +	     TP_ARGS(dev_name, err, usecs, dev_state, link_state));
-> +
->  TRACE_EVENT(ufshcd_command,
->  	TP_PROTO(const char *dev_name, enum ufs_trace_str_t str_t,
->  		 unsigned int tag, u32 doorbell, int transfer_len, u32 intr,
-> 
+All the code outside of drivers/ seems correct.  They're mostly similar
+examples of copying the ssid from one valid existing config to another.
+The other places are using nla attrs like this:
+
+net/wireless/nl80211.c
+ 14399          if (info->attrs[NL80211_ATTR_SSID]) {
+ 14400                  params.ssid.ssid_len = nla_len(info->attrs[NL80211_ATTR_SSID]);
+ 14401                  if (params.ssid.ssid_len == 0)
+ 14402                          return -EINVAL;
+ 14403                  memcpy(params.ssid.ssid,
+ 14404                         nla_data(info->attrs[NL80211_ATTR_SSID]),
+ 14405                         params.ssid.ssid_len);
+ 14406          }
+
+
+Smatch doesn't parse nla attributes correctly.  They're capped using
+the nl80211_policy[] array:
+
+net/wireless/nl80211.c
+   528          [NL80211_ATTR_SSID] = { .type = NLA_BINARY,
+   529                                  .len = IEEE80211_MAX_SSID_LEN },
+
+But there are quite a few real bugs as well.  If anyone wants to fix any
+of these just claim a bug, and I won't send a patch for that warning.
+:)  Lee, I think you mentioned that you had found a related buffer
+overflow fix?  Did the check find it?
+
+regards,
+dan carpenter
+
+drivers/staging/rtl8192u/r8192U_wx.c:335 r8192_wx_set_scan() protected struct member '(struct ieee80211_network)->ssid' overflow: rl='1-255'
+drivers/staging/rtl8192e/rtllib_softmac.c:1685 rtllib_softmac_new_net() protected struct member '(struct rtllib_network)->ssid' overflow: rl='0-255'
+drivers/staging/rtl8192e/rtl8192e/rtl_wx.c:412 _rtl92e_wx_set_scan() protected struct member '(struct rtllib_network)->ssid' overflow: rl='1-255'
+drivers/staging/rtl8188eu/core/rtw_ap.c:795 rtw_check_beacon_data() protected struct member '(struct ndis_802_11_ssid)->ssid' overflow: rl='1-255'
+drivers/staging/rtl8188eu/os_dep/ioctl_linux.c:1138 rtw_wx_set_scan() protected struct member '(struct ndis_802_11_ssid)->ssid' overflow: rl='1-127'
+drivers/net/wireless/ath/wcn36xx/smd.c:1571 wcn36xx_smd_set_bss_params() protected struct member '(struct wcn36xx_hal_mac_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ath/ath11k/wmi.c:2148 ath11k_wmi_send_scan_start_cmd() protected struct member '(struct wmi_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ath/wil6210/cfg80211.c:2100 wil_cfg80211_change_beacon() protected struct member '(struct wil6210_vif)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ath/ath10k/wow.c:198 ath10k_wmi_pno_check() protected struct member '(struct wmi_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:2029 ath10k_wmi_tlv_op_gen_start_scan() protected struct member '(struct wmi_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ath/ath10k/wmi-tlv.c:3929 ath10k_wmi_tlv_op_gen_config_pno_start() protected struct member '(struct wmi_ssid)->ssid' overflow: rl='0-u32max'
+drivers/net/wireless/ath/ath6kl/wmi.c:1884 ath6kl_wmi_connect_cmd() protected struct member '(struct wmi_connect_cmd)->ssid' overflow: rl='s32min-(-1),1-s32max'
+drivers/net/wireless/ath/ath6kl/cfg80211.c:932 ath6kl_set_probed_ssids() protected struct member '(struct cfg80211_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ath/ath6kl/cfg80211.c:971 ath6kl_set_probed_ssids() protected struct member '(struct cfg80211_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ath/ath6kl/cfg80211.c:1631 ath6kl_cfg80211_join_ibss() protected struct member '(struct ath6kl_vif)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ath/ath6kl/cfg80211.c:2809 ath6kl_start_ap() protected struct member '(struct ath6kl_vif)->ssid' overflow: rl='0-65531'
+drivers/net/wireless/ath/ath6kl/cfg80211.c:2892 ath6kl_start_ap() protected struct member '(struct wmi_connect_cmd)->ssid' overflow: rl='0-65531'
+drivers/net/wireless/st/cw1200/sta.c:1293 cw1200_do_join() protected struct member '(struct wsm_join)->ssid' overflow: rl='0-255'
+drivers/net/wireless/st/cw1200/sta.c:2334 cw1200_start_ap() protected struct member '(struct wsm_start)->ssid' overflow: rl='0-255'
+drivers/net/wireless/quantenna/qtnfmac/event.c:573 qtnf_event_handle_external_auth() protected struct member '(struct cfg80211_ssid)->ssid' overflow: rl='1-255'
+drivers/net/wireless/marvell/mwifiex/uap_cmd.c:506 mwifiex_uap_bss_param_prepare() protected struct member '(struct host_cmd_tlv_ssid)->ssid' overflow: rl='1-u32max'
+drivers/net/wireless/marvell/mwifiex/join.c:428 mwifiex_cmd_802_11_associate() protected struct member '(struct mwifiex_ie_types_ssid_param_set)->ssid' overflow: rl='0-u16max'
+drivers/net/wireless/marvell/mwifiex/scan.c:933 mwifiex_config_scan() protected struct member '(struct mwifiex_ie_types_wildcard_ssid_params)->ssid' overflow: rl='0-255'
+drivers/net/wireless/marvell/mwifiex/scan.c:2383 mwifiex_cmd_802_11_bg_scan_config() protected struct member '(struct mwifiex_ie_types_wildcard_ssid_params)->ssid' overflow: rl='0-255'
+drivers/net/wireless/marvell/mwifiex/cfg80211.c:1999 mwifiex_cfg80211_start_ap() protected struct member '(struct mwifiex_802_11_ssid)->ssid' overflow: rl='1-65531'
+drivers/net/wireless/marvell/libertas/cfg.c:176 lbs_add_ssid_tlv() protected struct member '(struct mrvl_ie_ssid_param_set)->ssid' overflow: rl='s32min-s32max'
+drivers/net/wireless/marvell/libertas/cfg.c:1767 lbs_ibss_join_existing() protected struct member '(struct adhoc_bssdesc)->ssid' overflow: rl='0-255'
+drivers/net/wireless/marvell/libertas/cfg.c:1878 lbs_ibss_start_new() protected struct member '(struct cmd_ds_802_11_ad_hoc_start)->ssid' overflow: rl='0-255'
+drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:3708 brcmf_wowl_nd_results() protected struct member '(struct cfg80211_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/intel/iwlwifi/mvm/d3.c:1932 iwl_mvm_query_netdetect_reasons() protected struct member '(struct cfg80211_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/intel/iwlwifi/mvm/scan.c:486 iwl_scan_build_ssids() protected struct member '(struct iwl_ssid_ie)->ssid' overflow: rl='1-255'
+drivers/net/wireless/intel/iwlwifi/mvm/scan.c:500 iwl_scan_build_ssids() protected struct member '(struct iwl_ssid_ie)->ssid' overflow: rl='0-255'
+drivers/net/wireless/intel/iwlwifi/dvm/scan.c:721 iwlagn_request_scan() protected struct member '(struct iwl_ssid_ie)->ssid' overflow: rl='0-255'
+drivers/net/wireless/intel/ipw2x00/ipw2200.c:5870 ipw_adhoc_create() protected struct member '(struct libipw_network)->ssid' overflow: rl='0-255'
+drivers/net/wireless/intel/iwlegacy/3945-mac.c:2573 il3945_request_scan() protected struct member '(struct il_ssid_ie)->ssid' overflow: rl='1-255'
+drivers/net/wireless/intel/iwlegacy/4965-mac.c:919 il4965_request_scan() protected struct member '(struct il_ssid_ie)->ssid' overflow: rl='1-255'
+drivers/net/wireless/ti/wlcore/scan.c:351 wlcore_scan() protected struct member '(struct wl1271_scan)->ssid' overflow: rl='1-255'
+drivers/net/wireless/ti/wlcore/scan.c:410 wlcore_scan_sched_scan_ssid_list() protected struct member '(struct wl1271_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ti/wlcore/scan.c:425 wlcore_scan_sched_scan_ssid_list() protected struct member '(struct wl1271_ssid)->ssid' overflow: rl='1-255'
+drivers/net/wireless/ti/wl18xx/scan.c:94 wl18xx_scan_send() protected struct member '(struct wl18xx_cmd_scan_params)->ssid' overflow: rl='0-255'
+drivers/net/wireless/ti/wl1251/cmd.c:459 wl1251_cmd_scan() protected struct member '(struct wl1251_scan_parameters)->ssid' overflow: rl='0-255'
+drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c:1338 mt76_connac_mcu_hw_scan() protected struct member '(struct mt76_connac_mcu_scan_ssid)->ssid' overflow: rl='1-255'
+drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c:1445 mt76_connac_mcu_sched_scan_req() protected struct member '(struct mt76_connac_mcu_scan_ssid)->ssid' overflow: rl='0-255'
+drivers/net/wireless/mediatek/mt76/mt76_connac_mcu.c:1452 mt76_connac_mcu_sched_scan_req() protected struct member '(struct mt76_connac_mcu_scan_match)->ssid' overflow: rl='0-255'
+net/wireless/nl80211.c:3890 nl80211_set_interface() protected struct member '(struct wireless_dev)->ssid' overflow: rl='0-255'
+net/wireless/nl80211.c:4001 nl80211_new_interface() protected struct member '(struct wireless_dev)->ssid' overflow: rl='0-255'
+net/wireless/nl80211.c:5503 nl80211_start_ap() protected struct member '(struct wireless_dev)->ssid' overflow: rl='0-255'
+net/wireless/nl80211.c:8382 nl80211_trigger_scan() protected struct member '(struct cfg80211_ssid)->ssid' overflow: rl='0-65527'
+net/wireless/nl80211.c:8836 nl80211_parse_sched_scan() protected struct member '(struct cfg80211_ssid)->ssid' overflow: rl='0-65527'
+net/wireless/nl80211.c:8874 nl80211_parse_sched_scan() protected struct member '(struct cfg80211_ssid)->ssid' overflow: rl='0-65531'
+net/wireless/nl80211.c:14403 nl80211_external_auth() protected struct member '(struct cfg80211_ssid)->ssid' overflow: rl='1-255'
+net/wireless/ibss.c:151 __cfg80211_join_ibss() protected struct member '(struct wireless_dev)->ssid' overflow: rl='0-255'
+net/wireless/ibss.c:424 cfg80211_ibss_wext_siwessid() protected struct member '(struct wireless_dev)->ssid' overflow: rl='0-u16max'
+net/wireless/mesh.c:212 __cfg80211_join_mesh() protected struct member '(struct wireless_dev)->ssid' overflow: rl='1-255'
+net/mac80211/ibss.c:330 __ieee80211_sta_join_ibss() protected struct member '(struct ieee80211_bss_conf)->ssid' overflow: rl='0-255'
+net/mac80211/ibss.c:1833 ieee80211_ibss_join() protected struct member '(struct ieee80211_if_ibss)->ssid' overflow: rl='0-255'
+net/mac80211/cfg.c:1132 ieee80211_start_ap() protected struct member '(struct ieee80211_bss_conf)->ssid' overflow: rl='1-65531'
 
