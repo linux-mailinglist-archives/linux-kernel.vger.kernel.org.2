@@ -2,31 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6A43289E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D31A328A83
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239243AbhCASHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:07:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36924 "EHLO mail.kernel.org"
+        id S239652AbhCASST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:18:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234146AbhCAQeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:34:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1FF964F65;
-        Mon,  1 Mar 2021 16:25:49 +0000 (UTC)
+        id S232800AbhCAQgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:36:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20D2C64E6B;
+        Mon,  1 Mar 2021 16:26:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615950;
-        bh=lvZBpWBWlaiMbmx7JZOtkfo25nShx4+/xJUUs9mwPO4=;
+        s=korg; t=1614615981;
+        bh=tJHUttpc1OBNchC98vG0su6aGYE8cWN7gyrCOJ6d7cw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DFrzK3K1GYeoMlIHfWJwd+l0YRxB4+cgqjP8kspF+9ZOJ3aDm7duREUFcYHnReZdO
-         RyrlJONicLOQbM1oekHSioOBpVH8jOUAnAPxb9UFa2euEeKU17TtQYWXNRqNC4xYHJ
-         iyjxlPwFcCZgQwoY0kMwi1Vd0oxjKls9QxSByT9o=
+        b=gA4kB9ruFB/otQbx/lpgIyhYAHmTvGhQfY9B6O3cc+JBclQSXlWs/VsZVpSzBdhLb
+         cZNV86rAR+t7rtMTuqJpEJxCHlMqULrhaG5CoE6POFb3xi7e82yoanfegt4w3nYhQI
+         m605AX0YN8GVxjSsTRGNyOTBv+vpfwK9S0TSuTvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Subject: [PATCH 4.9 100/134] usb: dwc3: gadget: Fix dep->interval for fullspeed interrupt
-Date:   Mon,  1 Mar 2021 17:13:21 +0100
-Message-Id: <20210301161018.485157042@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: [PATCH 4.9 101/134] KEYS: trusted: Fix migratable=1 failing
+Date:   Mon,  1 Mar 2021 17:13:22 +0100
+Message-Id: <20210301161018.534372689@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -38,41 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Jarkko Sakkinen <jarkko@kernel.org>
 
-commit 4b049f55ed95cd889bcdb3034fd75e1f01852b38 upstream.
+commit 8da7520c80468c48f981f0b81fc1be6599e3b0ad upstream.
 
-The dep->interval captures the number of frames/microframes per interval
-from bInterval. Fullspeed interrupt endpoint bInterval is the number of
-frames per interval and not 2^(bInterval - 1). So fix it here. This
-change is only for debugging purpose and should not affect the interrupt
-endpoint operation.
+Consider the following transcript:
 
-Fixes: 72246da40f37 ("usb: Introduce DesignWare USB3 DRD Driver")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/1263b563dedc4ab8b0fb854fba06ce4bc56bd495.1612820995.git.Thinh.Nguyen@synopsys.com
+$ keyctl add trusted kmk "new 32 blobauth=helloworld keyhandle=80000000 migratable=1" @u
+add_key: Invalid argument
+
+The documentation has the following description:
+
+  migratable=   0|1 indicating permission to reseal to new PCR values,
+                default 1 (resealing allowed)
+
+The consequence is that "migratable=1" should succeed. Fix this by
+allowing this condition to pass instead of return -EINVAL.
+
+[*] Documentation/security/keys/trusted-encrypted.rst
+
+Cc: stable@vger.kernel.org
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: Mimi Zohar <zohar@linux.ibm.com>
+Cc: David Howells <dhowells@redhat.com>
+Fixes: d00a1c72f7f4 ("keys: add new trusted key-type")
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/gadget.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ security/keys/trusted.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -538,8 +538,13 @@ static int dwc3_gadget_set_ep_config(str
- 		if (dwc->gadget.speed == USB_SPEED_FULL)
- 			bInterval_m1 = 0;
- 
-+		if (usb_endpoint_type(desc) == USB_ENDPOINT_XFER_INT &&
-+		    dwc->gadget.speed == USB_SPEED_FULL)
-+			dep->interval = desc->bInterval;
-+		else
-+			dep->interval = 1 << (desc->bInterval - 1);
-+
- 		params.param1 |= DWC3_DEPCFG_BINTERVAL_M1(bInterval_m1);
--		dep->interval = 1 << (desc->bInterval - 1);
- 	}
- 
- 	return dwc3_send_gadget_ep_cmd(dep, DWC3_DEPCMD_SETEPCONFIG, &params);
+--- a/security/keys/trusted.c
++++ b/security/keys/trusted.c
+@@ -797,7 +797,7 @@ static int getoptions(char *c, struct tr
+ 		case Opt_migratable:
+ 			if (*args[0].from == '0')
+ 				pay->migratable = 0;
+-			else
++			else if (*args[0].from != '1')
+ 				return -EINVAL;
+ 			break;
+ 		case Opt_pcrlock:
 
 
