@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1298328E9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A5E328F0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241992AbhCATeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:34:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53996 "EHLO mail.kernel.org"
+        id S241757AbhCATmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:42:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236373AbhCAQyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236374AbhCAQyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:54:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A86B164F37;
-        Mon,  1 Mar 2021 16:34:29 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ECA364F34;
+        Mon,  1 Mar 2021 16:34:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616470;
-        bh=hLQdPGdyDSLs7frkDv+7h/8So63/0xPN9wOeDrnkm0A=;
+        s=korg; t=1614616473;
+        bh=SX3EOBCeJevdCtPePCQk5W4ZEfX4kYlYbSOA1dk95e4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jRb0pBlRdkzrItw+fKrsIbGdHdbs4wtSnrD/CcrWy+qILPsJf0ECj5pKraw19CHnD
-         86lJYKZhVpykoXUVun7KFXBYot7CvL7BV8ZsI5POtnKHCwz8de9bOBoK+aYeb2n0Uu
-         0JRM0HlHF0KLOCoVpGwSd+An23QRTAGJS0tewN7g=
+        b=vUsz9ajd1gKX7rUdLB6nzAzXkIP98ir10LDXAWh/FHfw9SrCbpZJHFj/3v+nprYp5
+         7FQN6zkW/vZfmgX0P9bCjZhKpdmbDaHGrdleBGc4fahH71Am7YXxiHPkSl4oFBxl3y
+         ojTWIk+un/V5ykWn4VXWFz7sCwNiaPnM45wnaYyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 132/176] USB: serial: mos7720: fix error code in mos7720_write()
-Date:   Mon,  1 Mar 2021 17:13:25 +0100
-Message-Id: <20210301161027.542684196@linuxfoundation.org>
+        stable@vger.kernel.org, Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Subject: [PATCH 4.14 133/176] usb: dwc3: gadget: Fix setting of DEPCFG.bInterval_m1
+Date:   Mon,  1 Mar 2021 17:13:26 +0100
+Message-Id: <20210301161027.597048345@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -39,35 +38,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-commit fea7372cbc40869876df0f045e367f6f97a1666c upstream.
+commit a1679af85b2ae35a2b78ad04c18bb069c37330cc upstream.
 
-This code should return -ENOMEM if the kmalloc() fails but instead
-it returns success.
+Valid range for DEPCFG.bInterval_m1 is from 0 to 13, and it must be set
+to 0 when the controller operates in full-speed. See the programming
+guide for DEPCFG command section 3.2.2.1 (v3.30a).
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 0f64478cbc7a ("USB: add USB serial mos7720 driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: 72246da40f37 ("usb: Introduce DesignWare USB3 DRD Driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Link: https://lore.kernel.org/r/3f57026f993c0ce71498dbb06e49b3a47c4d0265.1612820995.git.Thinh.Nguyen@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/mos7720.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/dwc3/gadget.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -1252,8 +1252,10 @@ static int mos7720_write(struct tty_stru
- 	if (urb->transfer_buffer == NULL) {
- 		urb->transfer_buffer = kmalloc(URB_TRANSFER_BUFFER_SIZE,
- 					       GFP_ATOMIC);
--		if (!urb->transfer_buffer)
-+		if (!urb->transfer_buffer) {
-+			bytes_sent = -ENOMEM;
- 			goto exit;
-+		}
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -606,7 +606,17 @@ static int dwc3_gadget_set_ep_config(str
+ 		params.param0 |= DWC3_DEPCFG_FIFO_NUMBER(dep->number >> 1);
+ 
+ 	if (desc->bInterval) {
+-		params.param1 |= DWC3_DEPCFG_BINTERVAL_M1(desc->bInterval - 1);
++		u8 bInterval_m1;
++
++		/*
++		 * Valid range for DEPCFG.bInterval_m1 is from 0 to 13, and it
++		 * must be set to 0 when the controller operates in full-speed.
++		 */
++		bInterval_m1 = min_t(u8, desc->bInterval - 1, 13);
++		if (dwc->gadget.speed == USB_SPEED_FULL)
++			bInterval_m1 = 0;
++
++		params.param1 |= DWC3_DEPCFG_BINTERVAL_M1(bInterval_m1);
+ 		dep->interval = 1 << (desc->bInterval - 1);
  	}
- 	transfer_size = min(count, URB_TRANSFER_BUFFER_SIZE);
  
 
 
