@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00430329CC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C92329D47
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349160AbhCBCMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:12:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50724 "EHLO mail.kernel.org"
+        id S234826AbhCBCZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:25:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233421AbhCATf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:35:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 853C765047;
-        Mon,  1 Mar 2021 17:18:25 +0000 (UTC)
+        id S232419AbhCATsi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:48:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADB6465050;
+        Mon,  1 Mar 2021 17:18:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619106;
-        bh=Q1Gt/h04qLVfGsVVVe+VRIucfDa5xdIzWfKEKP87pjI=;
+        s=korg; t=1614619117;
+        bh=udoE2E4B/51s1NXDi4Y40FhUjDcDqmyoBRM4HMfIym8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cy2gXMwOLXSgjaJ04kOIwrIEasgSpsLFGDBHIjJaoZjuZD0r20tbfw+frVpua8qGB
-         pmzUhCXqMj2m7/adJvDb9wR/wMwg4K8BdQKsCretH12BUrd+/5z5V6dgmR1Y3/3H7t
-         YxXqAuj4EgNzYA458MPSa6Dybi5Q4OpUsi7phOKU=
+        b=LCBiDxAlelHvib58Qr0XCqup0dKmxms14E7QMoQ2SmELj0lQztQtjoWW7VpGAKbGJ
+         vsb+AmD7WiV/LIv1lNDB03j7fzHkKtBMx7atqosX6EvxCYCDaFNL+nNHPk8iy6CGgo
+         VXg95dPzqUcQ0np/kFFY/02uPYKDh9IWQhRDxl+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 326/663] powerpc/47x: Disable 256k page size
-Date:   Mon,  1 Mar 2021 17:09:34 +0100
-Message-Id: <20210301161157.980094995@linuxfoundation.org>
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Yong Wu <yong.wu@mediatek.com>, Will Deacon <will@kernel.org>,
+        Joerg Roedel <jroedel@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 338/663] iommu: Properly pass gfp_t in _iommu_map() to avoid atomic sleeping
+Date:   Mon,  1 Mar 2021 17:09:46 +0100
+Message-Id: <20210301161158.572015280@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,38 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit 910a0cb6d259736a0c86e795d4c2f42af8d0d775 ]
+[ Upstream commit b8437a3ef8c485903d05d1f261328aaf0c0a6cc2 ]
 
-PPC47x_TLBE_SIZE isn't defined for 256k pages, leading to a build
-break if 256k pages is selected.
+Sleeping while atomic = bad.  Let's fix an obvious typo to try to avoid it.
 
-So change the kconfig so that 256k pages can't be selected for 47x.
+The warning that was seen (on a downstream kernel with the problematic
+patch backported):
 
-Fixes: e7f75ad01d59 ("powerpc/47x: Base ppc476 support")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[mpe: Expand change log to mention build break]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/2fed79b1154c872194f98bac4422c23918325e61.1611128938.git.christophe.leroy@csgroup.eu
+ BUG: sleeping function called from invalid context at mm/page_alloc.c:4726
+ in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 9, name: ksoftirqd/0
+ CPU: 0 PID: 9 Comm: ksoftirqd/0 Not tainted 5.4.93-12508-gc10c93e28e39 #1
+ Call trace:
+  dump_backtrace+0x0/0x154
+  show_stack+0x20/0x2c
+  dump_stack+0xa0/0xfc
+  ___might_sleep+0x11c/0x12c
+  __might_sleep+0x50/0x84
+  __alloc_pages_nodemask+0xf8/0x2bc
+  __arm_lpae_alloc_pages+0x48/0x1b4
+  __arm_lpae_map+0x124/0x274
+  __arm_lpae_map+0x1cc/0x274
+  arm_lpae_map+0x140/0x170
+  arm_smmu_map+0x78/0xbc
+  __iommu_map+0xd4/0x210
+  _iommu_map+0x4c/0x84
+  iommu_map_atomic+0x44/0x58
+  __iommu_dma_map+0x8c/0xc4
+  iommu_dma_map_page+0xac/0xf0
+
+Fixes: d8c1df02ac7f ("iommu: Move iotlb_sync_map out from __iommu_map")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Yong Wu <yong.wu@mediatek.com>
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210201170611.1.I64a7b62579287d668d7c89e105dcedf45d641063@changeid
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/Kconfig | 2 +-
+ drivers/iommu/iommu.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 5181872f94523..31ed8083571ff 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -761,7 +761,7 @@ config PPC_64K_PAGES
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index a25a85a0bba5b..0d9adce6d812f 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -2424,7 +2424,7 @@ static int _iommu_map(struct iommu_domain *domain, unsigned long iova,
+ 	const struct iommu_ops *ops = domain->ops;
+ 	int ret;
  
- config PPC_256K_PAGES
- 	bool "256k page size"
--	depends on 44x && !STDBINUTILS
-+	depends on 44x && !STDBINUTILS && !PPC_47x
- 	help
- 	  Make the page size 256k.
+-	ret = __iommu_map(domain, iova, paddr, size, prot, GFP_KERNEL);
++	ret = __iommu_map(domain, iova, paddr, size, prot, gfp);
+ 	if (ret == 0 && ops->iotlb_sync_map)
+ 		ops->iotlb_sync_map(domain);
  
 -- 
 2.27.0
