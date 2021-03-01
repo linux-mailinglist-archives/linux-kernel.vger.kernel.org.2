@@ -2,33 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B366C329C26
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBA9329BFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380197AbhCBBtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:49:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48622 "EHLO mail.kernel.org"
+        id S241281AbhCBBqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:46:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241531AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:26:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BF7B652B8;
-        Mon,  1 Mar 2021 17:36:14 +0000 (UTC)
+        id S240910AbhCATVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:21:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5582C652C1;
+        Mon,  1 Mar 2021 17:36:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620175;
-        bh=ODIyvMs48heoT53hwRo7ih7S59GYjxq6fhnZTgiJ8Ok=;
+        s=korg; t=1614620197;
+        bh=B8xcsFFER3jXb57qBy0FUCVsaG1FopeY8Mu47l7l6dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DKUCcBazjolL5/LhZaZNib3nBS/POr++rUwy9+P9NvVv9JOvg8qP4wFonWf0+iONd
-         fAJ3pZ3cjoe30Aac5ihkXcflif8W5fXZVLPbNy2+RQX5ElV1G4v3gLZ1Wa5HCm7cXi
-         61IDJm8KaUGmATNPugQbZn7LmaIlxSEBOYXYFp+c=
+        b=IyuIZuhGs9VF+OwU4JJx6MU2mNqe0y3+2EQx9ivQDonrwF1IGbQ8KS4cmYPuzC+90
+         Bm/HXJ/5cFVY/9XJczmzJeVevsrTVaYKZr7Ao00ywF6JbY5j3aCCEQ6B4/4XuCzCRB
+         iK1JjLVVF4Lzx0REjRKbBPZsMl49+B32PpGmv+XU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Foss <robert.foss@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Carl Philipp Klemm <philipp@uvos.xyz>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 057/775] arm64: dts: qcom: sdm845-db845c: Fix reset-pin of ov8856 node
-Date:   Mon,  1 Mar 2021 17:03:45 +0100
-Message-Id: <20210301161204.523093690@linuxfoundation.org>
+Subject: [PATCH 5.11 064/775] ARM: dts: Configure missing thermal interrupt for 4430
+Date:   Mon,  1 Mar 2021 17:03:52 +0100
+Message-Id: <20210301161204.845189077@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,43 +46,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Foss <robert.foss@linaro.org>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit d4863ef399a29cae3001b3fedfd2864e651055ba ]
+[ Upstream commit 44f416879a442600b006ef7dec3a6dc98bcf59c6 ]
 
-Switch reset pin of ov8856 node from GPIO_ACTIVE_HIGH to GPIO_ACTIVE_LOW,
-this issue prevented the ov8856 from probing properly as it did not respon
-to I2C messages.
+We have gpio_86 wired internally to the bandgap thermal shutdown
+interrupt on 4430 like we have it on 4460 according to the TRM.
+This can be found easily by searching for TSHUT.
 
-Fixes: d4919a44564b ("arm64: dts: qcom: sdm845-db845c: Add ov8856 & ov7251
-camera nodes")
+For some reason the thermal shutdown interrupt was never added
+for 4430, let's add it. I believe this is needed for the thermal
+shutdown interrupt handler ti_bandgap_tshut_irq_handler() to call
+orderly_poweroff().
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
-Link: https://lore.kernel.org/r/20201221100955.148584-1-robert.foss@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: aa9bb4bb8878 ("arm: dts: add omap4430 thermal data")
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: Eduardo Valentin <edubezval@gmail.com>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc: Sebastian Reichel <sre@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/omap443x.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index c0b93813ea9ac..c4ac6f5dc008d 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -1114,11 +1114,11 @@
- 		reg = <0x10>;
+diff --git a/arch/arm/boot/dts/omap443x.dtsi b/arch/arm/boot/dts/omap443x.dtsi
+index cb309743de5da..dd8ef58cbaed4 100644
+--- a/arch/arm/boot/dts/omap443x.dtsi
++++ b/arch/arm/boot/dts/omap443x.dtsi
+@@ -33,10 +33,12 @@
+ 	};
  
- 		// CAM0_RST_N
--		reset-gpios = <&tlmm 9 0>;
-+		reset-gpios = <&tlmm 9 GPIO_ACTIVE_LOW>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&cam0_default>;
- 		gpios = <&tlmm 13 0>,
--			<&tlmm 9 0>;
-+			<&tlmm 9 GPIO_ACTIVE_LOW>;
+ 	ocp {
++		/* 4430 has only gpio_86 tshut and no talert interrupt */
+ 		bandgap: bandgap@4a002260 {
+ 			reg = <0x4a002260 0x4
+ 			       0x4a00232C 0x4>;
+ 			compatible = "ti,omap4430-bandgap";
++			gpios = <&gpio3 22 GPIO_ACTIVE_HIGH>;
  
- 		clocks = <&clock_camcc CAM_CC_MCLK0_CLK>;
- 		clock-names = "xvclk";
+ 			#thermal-sensor-cells = <0>;
+ 		};
 -- 
 2.27.0
 
