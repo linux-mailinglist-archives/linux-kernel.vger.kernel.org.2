@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9509A329E92
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5681C329F6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445647AbhCBDBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:01:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42014 "EHLO mail.kernel.org"
+        id S1573959AbhCBD2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:28:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242995AbhCAUNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:13:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 397D665081;
-        Mon,  1 Mar 2021 18:01:16 +0000 (UTC)
+        id S240296AbhCAUdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:33:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA49860240;
+        Mon,  1 Mar 2021 18:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621676;
-        bh=8tTmOVdS1/PkhguOWQ0gRjVoSUMEQ+s3z+eGgd/9ks8=;
+        s=korg; t=1614624321;
+        bh=0EByw8XFbx99sPrjyyssPQod9xfPKCY02JICQmsyRxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T5atRPyZbAqUpi3qW6tLCgauemgS90RRxGVp9+uKLpOgmbzrRroPO0JJbw81AJkLp
-         JU5Zd1SjMRl+5bfIAfB8DiubHpB4LfN4IlOJluzhFwuyNOGwaQADTfXErkyT1ls8D+
-         aoHLWp1V9TuwygEZvGP1DQkaMBSjsAfUb7ag4o7Q=
+        b=U5RRxyUEJf8SDzmBaUz95UcpV49VHGTO1iQBnGix9nzgqwlTkMaM35w0I3q/kmlAd
+         0RGF0TRwoAqz7GA8ebIkzh9dkCKGjsOgfQ6b1VE4TkSbpiOCCmmor+vyVibClvypEE
+         Cx8KsRbYGpvZFvI5l69nPZCVkVtOidBjP01xADL0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YunQiang Su <syq@debian.org>,
-        Aurelien Jarno <aurelien@aurel32.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.11 604/775] MIPS: Support binutils configured with --enable-mips-fix-loongson3-llsc=yes
+        stable@vger.kernel.org,
+        Michael Labriola <michael.d.labriola@gmail.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Paul Moore <paul@paul-moore.com>
+Subject: [PATCH 5.10 524/663] selinux: fix inconsistency between inode_getxattr and inode_listsecurity
 Date:   Mon,  1 Mar 2021 17:12:52 +0100
-Message-Id: <20210301161231.259324980@linuxfoundation.org>
+Message-Id: <20210301161207.767857253@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,90 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aurelien Jarno <aurelien@aurel32.net>
+From: Amir Goldstein <amir73il@gmail.com>
 
-commit 5373ae67c3aad1ab306cc722b5a80b831eb4d4d1 upstream.
+commit a9ffe682c58aaff643764547f5420e978b6e0830 upstream.
 
->From version 2.35, binutils can be configured with
---enable-mips-fix-loongson3-llsc=yes, which means it defaults to
--mfix-loongson3-llsc. This breaks labels which might then point at the
-wrong instruction.
+When inode has no listxattr op of its own (e.g. squashfs) vfs_listxattr
+calls the LSM inode_listsecurity hooks to list the xattrs that LSMs will
+intercept in inode_getxattr hooks.
 
-The workaround to explicitly pass -mno-fix-loongson3-llsc has been
-added in Linux version 5.1, but is only enabled when building a Loongson
-64 kernel. As vendors might use a common toolchain for building Loongson
-and non-Loongson kernels, just move that workaround to
-arch/mips/Makefile. At the same time update the comments to reflect the
-current status.
+When selinux LSM is installed but not initialized, it will list the
+security.selinux xattr in inode_listsecurity, but will not intercept it
+in inode_getxattr.  This results in -ENODATA for a getxattr call for an
+xattr returned by listxattr.
 
-Cc: stable@vger.kernel.org # 5.1+
-Cc: YunQiang Su <syq@debian.org>
-Signed-off-by: Aurelien Jarno <aurelien@aurel32.net>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+This situation was manifested as overlayfs failure to copy up lower
+files from squashfs when selinux is built-in but not initialized,
+because ovl_copy_xattr() iterates the lower inode xattrs by
+vfs_listxattr() and vfs_getxattr().
+
+Match the logic of inode_listsecurity to that of inode_getxattr and
+do not list the security.selinux xattr if selinux is not initialized.
+
+Reported-by: Michael Labriola <michael.d.labriola@gmail.com>
+Tested-by: Michael Labriola <michael.d.labriola@gmail.com>
+Link: https://lore.kernel.org/linux-unionfs/2nv9d47zt7.fsf@aldarion.sourceruckus.org/
+Fixes: c8e222616c7e ("selinux: allow reading labels before policy is loaded")
+Cc: stable@vger.kernel.org#v5.9+
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/Makefile            |   19 +++++++++++++++++++
- arch/mips/loongson64/Platform |   22 ----------------------
- 2 files changed, 19 insertions(+), 22 deletions(-)
+ security/selinux/hooks.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -136,6 +136,25 @@ cflags-$(CONFIG_SB1XXX_CORELIS)	+= $(cal
- #
- cflags-y += -fno-stack-check
- 
-+# binutils from v2.35 when built with --enable-mips-fix-loongson3-llsc=yes,
-+# supports an -mfix-loongson3-llsc flag which emits a sync prior to each ll
-+# instruction to work around a CPU bug (see __SYNC_loongson3_war in asm/sync.h
-+# for a description).
-+#
-+# We disable this in order to prevent the assembler meddling with the
-+# instruction that labels refer to, ie. if we label an ll instruction:
-+#
-+# 1: ll v0, 0(a0)
-+#
-+# ...then with the assembler fix applied the label may actually point at a sync
-+# instruction inserted by the assembler, and if we were using the label in an
-+# exception table the table would no longer contain the address of the ll
-+# instruction.
-+#
-+# Avoid this by explicitly disabling that assembler behaviour.
-+#
-+cflags-y += $(call as-option,-Wa$(comma)-mno-fix-loongson3-llsc,)
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -3414,6 +3414,10 @@ static int selinux_inode_setsecurity(str
+ static int selinux_inode_listsecurity(struct inode *inode, char *buffer, size_t buffer_size)
+ {
+ 	const int len = sizeof(XATTR_NAME_SELINUX);
 +
- #
- # CPU-dependent compiler/assembler options for optimization.
- #
---- a/arch/mips/loongson64/Platform
-+++ b/arch/mips/loongson64/Platform
-@@ -6,28 +6,6 @@
- cflags-$(CONFIG_CPU_LOONGSON64)	+= -Wa,--trap
- 
- #
--# Some versions of binutils, not currently mainline as of 2019/02/04, support
--# an -mfix-loongson3-llsc flag which emits a sync prior to each ll instruction
--# to work around a CPU bug (see __SYNC_loongson3_war in asm/sync.h for a
--# description).
--#
--# We disable this in order to prevent the assembler meddling with the
--# instruction that labels refer to, ie. if we label an ll instruction:
--#
--# 1: ll v0, 0(a0)
--#
--# ...then with the assembler fix applied the label may actually point at a sync
--# instruction inserted by the assembler, and if we were using the label in an
--# exception table the table would no longer contain the address of the ll
--# instruction.
--#
--# Avoid this by explicitly disabling that assembler behaviour. If upstream
--# binutils does not merge support for the flag then we can revisit & remove
--# this later - for now it ensures vendor toolchains don't cause problems.
--#
--cflags-$(CONFIG_CPU_LOONGSON64)	+= $(call as-option,-Wa$(comma)-mno-fix-loongson3-llsc,)
--
--#
- # binutils from v2.25 on and gcc starting from v4.9.0 treat -march=loongson3a
- # as MIPS64 R2; older versions as just R1.  This leaves the possibility open
- # that GCC might generate R2 code for -march=loongson3a which then is rejected
++	if (!selinux_initialized(&selinux_state))
++		return 0;
++
+ 	if (buffer && len <= buffer_size)
+ 		memcpy(buffer, XATTR_NAME_SELINUX, len);
+ 	return len;
 
 
