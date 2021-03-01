@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A6D32985B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F611329826
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345677AbhCAX1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:27:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54156 "EHLO mail.kernel.org"
+        id S232065AbhCAXNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:13:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234860AbhCASDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:03:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADB356511E;
-        Mon,  1 Mar 2021 17:02:52 +0000 (UTC)
+        id S239173AbhCAR6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:58:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDF5D65123;
+        Mon,  1 Mar 2021 17:03:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618173;
-        bh=452moKIc6TwuzRdS9Pe3ofv+4LHyBGggXPdSMhgEIeI=;
+        s=korg; t=1614618181;
+        bh=ReAI+yvQjUFRAHcvPHSDQ9i9cEinuwq+ddTXc2KFHtM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cxbmSInmsHsj3vXPtvhpoviSI0IOyRMAYo+gWB0u+JFWnH5rCt4iR585FPRqzo0yz
-         gR3t/YTsCmRubHLrgYBt5rYwv8GlNYISSfJbWRUgRI4oZ4F2g7vP2FONXV/Lg8vLhi
-         1Vch0KjJPTXz2Q7pMsgNHcqd7E7cQUBmS/alOUCU=
+        b=IeUa2xeiqHKHZxXD1rehhyk+Mu5mij/byrS21OLVEHa5fpTOlBm0UEybn8j0wsdQ3
+         IMfT3XPWh038nIMFd0dmR3LCIVA/CY7pFM8ITDjJSIovXDmPMGqNxt+uFqBrjyZoqq
+         9/2ABClag5Kqmmwtu57kMKyhgodBVyJcIwTuIUxs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Shannon Nelson <shannon.nelson@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 333/340] sunvnet: use icmp_ndo_send helper
-Date:   Mon,  1 Mar 2021 17:14:37 +0100
-Message-Id: <20210301161104.682465910@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 336/340] ipv6: silence compilation warning for non-IPV6 builds
+Date:   Mon,  1 Mar 2021 17:14:40 +0100
+Message-Id: <20210301161104.828046373@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -40,56 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason A. Donenfeld <Jason@zx2c4.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 67c9a7e1e3ac491b5df018803639addc36f154ba upstream.
+commit 1faba27f11c8da244e793546a1b35a9b1da8208e upstream.
 
-Because sunvnet is calling icmp from network device context, it should use
-the ndo helper so that the rate limiting applies correctly. While we're
-at it, doing the additional route lookup before calling icmp_ndo_send is
-superfluous, since this is the job of the icmp code in the first place.
+The W=1 compilation of allmodconfig generates the following warning:
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Cc: Shannon Nelson <shannon.nelson@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+net/ipv6/icmp.c:448:6: warning: no previous prototype for 'icmp6_send' [-Wmissing-prototypes]
+  448 | void icmp6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info,
+      |      ^~~~~~~~~~
+
+Fix it by providing function declaration for builds with ipv6 as a module.
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/sun/sunvnet_common.c |   23 ++++-------------------
- 1 file changed, 4 insertions(+), 19 deletions(-)
+ include/linux/icmpv6.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/sun/sunvnet_common.c
-+++ b/drivers/net/ethernet/sun/sunvnet_common.c
-@@ -1353,27 +1353,12 @@ sunvnet_start_xmit_common(struct sk_buff
- 		if (vio_version_after_eq(&port->vio, 1, 3))
- 			localmtu -= VLAN_HLEN;
+--- a/include/linux/icmpv6.h
++++ b/include/linux/icmpv6.h
+@@ -16,9 +16,9 @@ static inline struct icmp6hdr *icmp6_hdr
  
--		if (skb->protocol == htons(ETH_P_IP)) {
--			struct flowi4 fl4;
--			struct rtable *rt = NULL;
--
--			memset(&fl4, 0, sizeof(fl4));
--			fl4.flowi4_oif = dev->ifindex;
--			fl4.flowi4_tos = RT_TOS(ip_hdr(skb)->tos);
--			fl4.daddr = ip_hdr(skb)->daddr;
--			fl4.saddr = ip_hdr(skb)->saddr;
--
--			rt = ip_route_output_key(dev_net(dev), &fl4);
--			if (!IS_ERR(rt)) {
--				skb_dst_set(skb, &rt->dst);
--				icmp_send(skb, ICMP_DEST_UNREACH,
--					  ICMP_FRAG_NEEDED,
--					  htonl(localmtu));
--			}
--		}
-+		if (skb->protocol == htons(ETH_P_IP))
-+			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
-+				      htonl(localmtu));
- #if IS_ENABLED(CONFIG_IPV6)
- 		else if (skb->protocol == htons(ETH_P_IPV6))
--			icmpv6_send(skb, ICMPV6_PKT_TOOBIG, 0, localmtu);
-+			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, localmtu);
- #endif
- 		goto out_dropped;
- 	}
+ typedef void ip6_icmp_send_t(struct sk_buff *skb, u8 type, u8 code, __u32 info,
+ 			     const struct in6_addr *force_saddr);
+-#if IS_BUILTIN(CONFIG_IPV6)
+ void icmp6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info,
+ 		const struct in6_addr *force_saddr);
++#if IS_BUILTIN(CONFIG_IPV6)
+ static inline void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
+ {
+ 	icmp6_send(skb, type, code, info, NULL);
 
 
