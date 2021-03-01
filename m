@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A96E329BD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0686F329C12
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379689AbhCBBaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:30:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43896 "EHLO mail.kernel.org"
+        id S1345965AbhCBBrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:47:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235741AbhCATSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:18:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28E846513C;
-        Mon,  1 Mar 2021 17:04:02 +0000 (UTC)
+        id S241564AbhCATYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:24:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CF7865140;
+        Mon,  1 Mar 2021 17:04:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618243;
-        bh=z7JC8WeZFxaFafJMbuKLoy+E+4Izp5TX4+kINhvjqME=;
+        s=korg; t=1614618263;
+        bh=LhAKqvRNZIEa6tvIdsO+Nze2lhA7qS1Si39VQfZn+rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w4qwNxCE+lnQHLNNSAqcHgfRfZbZqmce0TavMonTB5oHSAyw9CmglShnD8bYSYxKs
-         t1QDCLdEHZnSo0KFvZSRAl1pIeZli9/0dfROYFKO1aDAJCU8bd9UEj+T2SyE/V+wT7
-         cbM31iI/m8ZQiUOonvAvm5lp1YCUgPT6l12Ru4EQ=
+        b=2IK/4mZIa2KAd81NxEDAuB4/RtAcEki3p+3VmxhBdtuzakbhnwcgNmtSmygcCAypS
+         80BPCdXunBYCQsKX95U3xdZa3/dG7RyzxYq00aYPWliAyW56dc1b/CYvuM5h7krZv+
+         qMscltuQiTVASVDEmNWg07NEfcz/XmfEWJytAwZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 017/663] ALSA: pcm: Call sync_stop at disconnection
-Date:   Mon,  1 Mar 2021 17:04:25 +0100
-Message-Id: <20210301161142.639904365@linuxfoundation.org>
+        stable@vger.kernel.org, Claire Chang <tientzu@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 023/663] Bluetooth: hci_uart: Fix a race for write_work scheduling
+Date:   Mon,  1 Mar 2021 17:04:31 +0100
+Message-Id: <20210301161142.940546452@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -38,132 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Claire Chang <tientzu@chromium.org>
 
-commit 29bb274e94974669acb5186a75538f20df1508b6 upstream.
+[ Upstream commit afe0b1c86458f121b085271e4f3034017a90d4a3 ]
 
-The PCM core should perform the sync for the pending stop operations
-at disconnection.  Otherwise it may lead to unexpected access.
+In hci_uart_write_work, there is a loop/goto checking the value of
+HCI_UART_TX_WAKEUP. If HCI_UART_TX_WAKEUP is set again, it keeps trying
+hci_uart_dequeue; otherwise, it clears HCI_UART_SENDING and returns.
 
-Currently the old user of sync_stop, USB-audio driver, has its own
-sync, so this isn't needed, but it's better to guarantee the sync in
-the PCM core level.
+In hci_uart_tx_wakeup, if HCI_UART_SENDING is already set, it sets
+HCI_UART_TX_WAKEUP, skips schedule_work and assumes the running/pending
+hci_uart_write_work worker will do hci_uart_dequeue properly.
 
-This patch adds the missing sync_stop call at PCM disconnection
-callback.  It also assures the IRQ sync if it's specified in the
-card.  snd_pcm_sync_stop() is slightly modified to be called also for
-any PCM substream object now.
+However, if the HCI_UART_SENDING check in hci_uart_tx_wakeup is done after
+the loop breaks, but before HCI_UART_SENDING is cleared in
+hci_uart_write_work, the schedule_work is skipped incorrectly.
 
-Fixes: 1e850beea278 ("ALSA: pcm: Add the support for sync-stop operation")
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210206203656.15959-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this race by changing the order of HCI_UART_SENDING and
+HCI_UART_TX_WAKEUP modification.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: 82f5169bf3d3 ("Bluetooth: hci_uart: add serdev driver support library")
+Signed-off-by: Claire Chang <tientzu@chromium.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/init.c       |    4 ++++
- sound/core/pcm.c        |    4 ++++
- sound/core/pcm_local.h  |    1 +
- sound/core/pcm_native.c |   16 ++++++++--------
- 4 files changed, 17 insertions(+), 8 deletions(-)
+ drivers/bluetooth/hci_ldisc.c  | 7 +++----
+ drivers/bluetooth/hci_serdev.c | 4 ++--
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -14,6 +14,7 @@
- #include <linux/ctype.h>
- #include <linux/pm.h>
- #include <linux/completion.h>
-+#include <linux/interrupt.h>
+diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
+index f83d67eafc9f0..8be4d807d1370 100644
+--- a/drivers/bluetooth/hci_ldisc.c
++++ b/drivers/bluetooth/hci_ldisc.c
+@@ -127,10 +127,9 @@ int hci_uart_tx_wakeup(struct hci_uart *hu)
+ 	if (!test_bit(HCI_UART_PROTO_READY, &hu->flags))
+ 		goto no_schedule;
  
- #include <sound/core.h>
- #include <sound/control.h>
-@@ -418,6 +419,9 @@ int snd_card_disconnect(struct snd_card
- 	/* notify all devices that we are disconnected */
- 	snd_device_disconnect_all(card);
+-	if (test_and_set_bit(HCI_UART_SENDING, &hu->tx_state)) {
+-		set_bit(HCI_UART_TX_WAKEUP, &hu->tx_state);
++	set_bit(HCI_UART_TX_WAKEUP, &hu->tx_state);
++	if (test_and_set_bit(HCI_UART_SENDING, &hu->tx_state))
+ 		goto no_schedule;
+-	}
  
-+	if (card->sync_irq > 0)
-+		synchronize_irq(card->sync_irq);
-+
- 	snd_info_card_disconnect(card);
- 	if (card->registered) {
- 		device_del(&card->card_dev);
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -1111,6 +1111,10 @@ static int snd_pcm_dev_disconnect(struct
+ 	BT_DBG("");
+ 
+@@ -174,10 +173,10 @@ restart:
+ 		kfree_skb(skb);
+ 	}
+ 
++	clear_bit(HCI_UART_SENDING, &hu->tx_state);
+ 	if (test_bit(HCI_UART_TX_WAKEUP, &hu->tx_state))
+ 		goto restart;
+ 
+-	clear_bit(HCI_UART_SENDING, &hu->tx_state);
+ 	wake_up_bit(&hu->tx_state, HCI_UART_SENDING);
+ }
+ 
+diff --git a/drivers/bluetooth/hci_serdev.c b/drivers/bluetooth/hci_serdev.c
+index ef96ad06fa54e..9e03402ef1b37 100644
+--- a/drivers/bluetooth/hci_serdev.c
++++ b/drivers/bluetooth/hci_serdev.c
+@@ -83,9 +83,9 @@ static void hci_uart_write_work(struct work_struct *work)
+ 			hci_uart_tx_complete(hu, hci_skb_pkt_type(skb));
+ 			kfree_skb(skb);
  		}
- 	}
+-	} while (test_bit(HCI_UART_TX_WAKEUP, &hu->tx_state));
  
-+	for (cidx = 0; cidx < 2; cidx++)
-+		for (substream = pcm->streams[cidx].substream; substream; substream = substream->next)
-+			snd_pcm_sync_stop(substream, false);
-+
- 	pcm_call_notify(pcm, n_disconnect);
- 	for (cidx = 0; cidx < 2; cidx++) {
- 		snd_unregister_device(&pcm->streams[cidx].dev);
---- a/sound/core/pcm_local.h
-+++ b/sound/core/pcm_local.h
-@@ -63,6 +63,7 @@ static inline void snd_pcm_timer_done(st
- 
- void __snd_pcm_xrun(struct snd_pcm_substream *substream);
- void snd_pcm_group_init(struct snd_pcm_group *group);
-+void snd_pcm_sync_stop(struct snd_pcm_substream *substream, bool sync_irq);
- 
- #ifdef CONFIG_SND_DMA_SGBUF
- struct page *snd_pcm_sgbuf_ops_page(struct snd_pcm_substream *substream,
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -583,13 +583,13 @@ static inline void snd_pcm_timer_notify(
- #endif
+-	clear_bit(HCI_UART_SENDING, &hu->tx_state);
++		clear_bit(HCI_UART_SENDING, &hu->tx_state);
++	} while (test_bit(HCI_UART_TX_WAKEUP, &hu->tx_state));
  }
  
--static void snd_pcm_sync_stop(struct snd_pcm_substream *substream)
-+void snd_pcm_sync_stop(struct snd_pcm_substream *substream, bool sync_irq)
- {
--	if (substream->runtime->stop_operating) {
-+	if (substream->runtime && substream->runtime->stop_operating) {
- 		substream->runtime->stop_operating = false;
--		if (substream->ops->sync_stop)
-+		if (substream->ops && substream->ops->sync_stop)
- 			substream->ops->sync_stop(substream);
--		else if (substream->pcm->card->sync_irq > 0)
-+		else if (sync_irq && substream->pcm->card->sync_irq > 0)
- 			synchronize_irq(substream->pcm->card->sync_irq);
- 	}
- }
-@@ -686,7 +686,7 @@ static int snd_pcm_hw_params(struct snd_
- 		if (atomic_read(&substream->mmap_count))
- 			return -EBADFD;
- 
--	snd_pcm_sync_stop(substream);
-+	snd_pcm_sync_stop(substream, true);
- 
- 	params->rmask = ~0U;
- 	err = snd_pcm_hw_refine(substream, params);
-@@ -809,7 +809,7 @@ static int do_hw_free(struct snd_pcm_sub
- {
- 	int result = 0;
- 
--	snd_pcm_sync_stop(substream);
-+	snd_pcm_sync_stop(substream, true);
- 	if (substream->ops->hw_free)
- 		result = substream->ops->hw_free(substream);
- 	if (substream->managed_buffer_alloc)
-@@ -1736,7 +1736,7 @@ static void snd_pcm_post_resume(struct s
- 	snd_pcm_trigger_tstamp(substream);
- 	runtime->status->state = runtime->status->suspended_state;
- 	snd_pcm_timer_notify(substream, SNDRV_TIMER_EVENT_MRESUME);
--	snd_pcm_sync_stop(substream);
-+	snd_pcm_sync_stop(substream, true);
- }
- 
- static const struct action_ops snd_pcm_action_resume = {
-@@ -1866,7 +1866,7 @@ static int snd_pcm_do_prepare(struct snd
- 			      snd_pcm_state_t state)
- {
- 	int err;
--	snd_pcm_sync_stop(substream);
-+	snd_pcm_sync_stop(substream, true);
- 	err = substream->ops->prepare(substream);
- 	if (err < 0)
- 		return err;
+ /* ------- Interface to HCI layer ------ */
+-- 
+2.27.0
+
 
 
