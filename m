@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CC8329A98
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E930329AD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239994AbhCBA5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:57:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53936 "EHLO mail.kernel.org"
+        id S1348594AbhCBBDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:03:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240677AbhCAStB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:49:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F1FE65183;
-        Mon,  1 Mar 2021 17:10:11 +0000 (UTC)
+        id S240648AbhCASzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:55:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B9BC600EF;
+        Mon,  1 Mar 2021 17:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618611;
-        bh=/NtNWIfCG7WbH3eGSRavY1hWp44cMgcLivxb71kLvWg=;
+        s=korg; t=1614620765;
+        bh=u9t6BL1p0f8PS6MYJW+YcVCkee3Z1XBfa82xIIMJofg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iEhPNIbc8hNI6NkkWUmNr3qy+PNCR2Z5MR3Lh3AGxsWihlE2Vu+N6WBoPZnHgKtyV
-         r7VNHnMrpCuQnCIT8sat7sbrdzSxjlPiX59UsR8fZaE1Z4OJOFij4Q1nhI1VsT/m4p
-         ALVSOaJlqRqS7yf30uN0B+DPx23ask2M4ktClQmo=
+        b=sSa3qnIWkusH/FDgqMpdc+zdw8yHQp0P4uG9asEldS3WuxafCogwMnIdRNA50CUG0
+         F2XHuUYBeAlMmFA44ceGNHd7TDOh9PD/FUouahpHa9eg+fN4oWrO0lMAfeK91AFP3m
+         ribMI7t0S8qDC6bog5oRushHHi2nYLOcifeeh/uo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 150/663] drm: rcar-du: Fix PM reference leak in rcar_cmm_enable()
-Date:   Mon,  1 Mar 2021 17:06:38 +0100
-Message-Id: <20210301161149.196797056@linuxfoundation.org>
+Subject: [PATCH 5.11 231/775] media: pxa_camera: declare variable when DEBUG is defined
+Date:   Mon,  1 Mar 2021 17:06:39 +0100
+Message-Id: <20210301161213.045839683@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 136ce7684bc1ff4a088812f600c63daca50b32c2 ]
+[ Upstream commit 031b9212eeee365443aaef013360ea6cded7b2c4 ]
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in a reference leak here.
+When DEBUG is defined this error occurs
 
-A new function pm_runtime_resume_and_get is introduced in [0] to keep
-usage counter balanced. So We fix the reference leak by replacing it
-with new funtion.
+drivers/media/platform/pxa_camera.c:1410:7: error:
+  ‘i’ undeclared (first use in this function)
+  for (i = 0; i < vb->num_planes; i++)
+       ^
+The variable 'i' is missing, so declare it.
 
-[0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
-
-Fixes: e08e934d6c28 ("drm: rcar-du: Add support for CMM")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Acked-by: Jacopo Mondi <jacopo@jmondi.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Fixes: 6f28435d1c15 ("[media] media: platform: pxa_camera: trivial move of functions")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rcar-du/rcar_cmm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/pxa_camera.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/rcar-du/rcar_cmm.c b/drivers/gpu/drm/rcar-du/rcar_cmm.c
-index c578095b09a53..382d53f8a22e8 100644
---- a/drivers/gpu/drm/rcar-du/rcar_cmm.c
-+++ b/drivers/gpu/drm/rcar-du/rcar_cmm.c
-@@ -122,7 +122,7 @@ int rcar_cmm_enable(struct platform_device *pdev)
- {
- 	int ret;
+diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
+index b664ce7558a1a..75fad9689c901 100644
+--- a/drivers/media/platform/pxa_camera.c
++++ b/drivers/media/platform/pxa_camera.c
+@@ -1386,6 +1386,9 @@ static int pxac_vb2_prepare(struct vb2_buffer *vb)
+ 	struct pxa_camera_dev *pcdev = vb2_get_drv_priv(vb->vb2_queue);
+ 	struct pxa_buffer *buf = vb2_to_pxa_buffer(vb);
+ 	int ret = 0;
++#ifdef DEBUG
++	int i;
++#endif
  
--	ret = pm_runtime_get_sync(&pdev->dev);
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret < 0)
- 		return ret;
- 
+ 	switch (pcdev->channels) {
+ 	case 1:
 -- 
 2.27.0
 
