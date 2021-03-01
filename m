@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED479327D5A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF72F327D5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbhCALd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 06:33:57 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:53924 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233813AbhCALdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 06:33:13 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 6FEFA205CD;
-        Mon,  1 Mar 2021 12:32:31 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id Y3xAkyP2FXpN; Mon,  1 Mar 2021 12:32:31 +0100 (CET)
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S233931AbhCALe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 06:34:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233878AbhCALdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 06:33:46 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943DCC061756;
+        Mon,  1 Mar 2021 03:33:06 -0800 (PST)
+Received: from zn.tnic (p200300ec2f03de00f5cdc1114f0af8a0.dip0.t-ipconnect.de [IPv6:2003:ec:2f03:de00:f5cd:c111:4f0a:f8a0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 0DBB12052E;
-        Mon,  1 Mar 2021 12:32:31 +0100 (CET)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 1 Mar 2021 12:32:30 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 1 Mar 2021
- 12:32:30 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 6F3C93180428; Mon,  1 Mar 2021 12:32:30 +0100 (CET)
-Date:   Mon, 1 Mar 2021 12:32:30 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <kuba@kernel.org>, <fw@strlen.de>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] xfrm: Fix incorrect types in assignment
-Message-ID: <20210301113230.GC2966489@gauss3.secunet.de>
-References: <1613791103-127057-1-git-send-email-yang.lee@linux.alibaba.com>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DA7131EC01E0;
+        Mon,  1 Mar 2021 12:33:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614598385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Ex2jBIPC6CpQMVpuVkJ1Y5sqWWNvI9IoAzUaBJ9gOg=;
+        b=TjwtdaW+7gUkCNoK21mKvXWP6HlwRe63ik5k5y7tlq6Y/+4mDuiRbe8uywxAePqGLfbb0F
+        AjhsVQCACH0LlLNeTu68pwMqXfXUrLTXj9fUWa/OGPCf5XwJbTX8DQApnlwyF74NjeoiD0
+        WKNcncbvhwAB2XgTGrBHnXAx+sPUBAc=
+Date:   Mon, 1 Mar 2021 12:32:57 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
+Message-ID: <20210301113257.GD6699@zn.tnic>
+References: <cover.1614590788.git.kai.huang@intel.com>
+ <bbfc8c833a62e4b55220834320829df1e17aff41.1614590788.git.kai.huang@intel.com>
+ <20210301100037.GA6699@zn.tnic>
+ <3fce1dd2abd42597bde7ae9496bde7b9596b2797.camel@intel.com>
+ <20210301103043.GB6699@zn.tnic>
+ <7603ef673997b6674f785d333a4f263c749d2cf3.camel@intel.com>
+ <20210301105346.GC6699@zn.tnic>
+ <e509c6c1e3644861edafb18e4045b813f9f344b3.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1613791103-127057-1-git-send-email-yang.lee@linux.alibaba.com>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e509c6c1e3644861edafb18e4045b813f9f344b3.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 11:18:23AM +0800, Yang Li wrote:
-> Fix the following sparse warnings:
-> net/xfrm/xfrm_policy.c:1303:22: warning: incorrect type in assignment
-> (different address spaces)
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+On Tue, Mar 02, 2021 at 12:28:27AM +1300, Kai Huang wrote:
+> I think some script can utilize /proc/cpuinfo. For instance, admin can have
+> automation tool/script to deploy enclave (with sgx2) apps, and that script can check
+> whether platform supports sgx2 or not, before it can deploy those enclave apps. Or
+> enclave author may just want to check /proc/cpuinfo to know whether the machine can
+> be used for testing sgx2 enclave or not.
 
-Please add a proper 'Fixes' tag so that it can be backported into
-the stable trees.
+This doesn't sound like a concrete use of this. So you can hide it
+initially with "" until you guys have a use case. Exposing it later is
+always easy vs exposing it now and then not being able to change it
+anymore.
 
-Thanks!
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
