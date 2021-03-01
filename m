@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA07329C49
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0D5329BD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380446AbhCBBvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:51:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49714 "EHLO mail.kernel.org"
+        id S1379681AbhCBBa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:30:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241752AbhCAT3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B67A1651BF;
-        Mon,  1 Mar 2021 17:16:37 +0000 (UTC)
+        id S235739AbhCATSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:18:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C79B64F0B;
+        Mon,  1 Mar 2021 17:49:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618998;
-        bh=Rh+Y3qbRoDXJ60BNGZS75Fm1ObrDfLuiNCMDohEsR+s=;
+        s=korg; t=1614620963;
+        bh=Uu+wM+IxSlmm5kvzOMfD+rK5HK1u72PRHotX9AJEzvQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EC5/SDZo2rxyv29c2eqSlABdkZ0xqVuui8NwhCESmQFpGOrftWQWjqeFTeEhwMtng
-         m4DVGLUKAE0h/WPX/zUW+B3KlQByV6Kepkfw0JgT1UH6lJlxowrjsCCcw+M9glb6Tt
-         6sEz9Uln6j3apKcpZ4bhw4MEX5jaNu5b/wtzshsw=
+        b=e+bCFMgANPOkuLU3cNcMyFEAEJZJd3yZCOg0utManbHllO8dmu3yyVzoEHyb1SwTT
+         XP+X7YBWfUVrvtzlNPDdIWPfanIZw3cA/Yx+1fb2DYbvKe9XTy2EQsnEyEmUNyqA4b
+         cOj8q2QlpJffhtQD+KfMxOfy9wICToWz7rKoyqB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 264/663] regulator: qcom-rpmh-regulator: add pm8009-1 chip revision
+Subject: [PATCH 5.11 344/775] RDMA/rtrs-srv: Fix missing wr_cqe
 Date:   Mon,  1 Mar 2021 17:08:32 +0100
-Message-Id: <20210301161154.876964311@linuxfoundation.org>
+Message-Id: <20210301161218.621690507@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,77 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Jack Wang <jinpu.wang@cloud.ionos.com>
 
-[ Upstream commit 951384cabc5dfb09251d440dbc26058eba86f97e ]
+[ Upstream commit 8537f2de6519945890a2b0f3739b23f32b5c0a89 ]
 
-PM8009 has special revision (P=1), which is to be used for sm8250
-platform. The major difference is the S2 regulator which supplies 0.95 V
-instead of 2.848V. Declare regulators data to be used for this chip
-revision. The datasheet calls the chip just pm8009-1, so use the same
-name.
+We had a few places wr_cqe is not set, which could lead to NULL pointer
+deref or GPF in error case.
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Fixes: 06369bcc15a1 ("regulator: qcom-rpmh: Add support for SM8150")
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20201231122348.637917-4-dmitry.baryshkov@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
+Link: https://lore.kernel.org/r/20201217141915.56989-14-jinpu.wang@cloud.ionos.com
+Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/qcom-rpmh-regulator.c | 26 +++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
-index a22c4b5f64f7e..ba838c4cf2b8b 100644
---- a/drivers/regulator/qcom-rpmh-regulator.c
-+++ b/drivers/regulator/qcom-rpmh-regulator.c
-@@ -732,6 +732,15 @@ static const struct rpmh_vreg_hw_data pmic5_hfsmps515 = {
- 	.of_map_mode = rpmh_regulator_pmic4_smps_of_map_mode,
- };
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 92a216ddd9fd3..f59731c5a96a3 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -267,6 +267,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
+ 		WARN_ON_ONCE(rkey != wr->rkey);
  
-+static const struct rpmh_vreg_hw_data pmic5_hfsmps515_1 = {
-+	.regulator_type = VRM,
-+	.ops = &rpmh_regulator_vrm_ops,
-+	.voltage_range = REGULATOR_LINEAR_RANGE(900000, 0, 4, 16000),
-+	.n_voltages = 5,
-+	.pmic_mode_map = pmic_mode_map_pmic5_smps,
-+	.of_map_mode = rpmh_regulator_pmic4_smps_of_map_mode,
-+};
-+
- static const struct rpmh_vreg_hw_data pmic5_bob = {
- 	.regulator_type = VRM,
- 	.ops = &rpmh_regulator_vrm_bypass_ops,
-@@ -878,6 +887,19 @@ static const struct rpmh_vreg_init_data pm8009_vreg_data[] = {
- 	{},
- };
+ 	wr->wr.opcode = IB_WR_RDMA_WRITE;
++	wr->wr.wr_cqe   = &io_comp_cqe;
+ 	wr->wr.ex.imm_data = 0;
+ 	wr->wr.send_flags  = 0;
  
-+static const struct rpmh_vreg_init_data pm8009_1_vreg_data[] = {
-+	RPMH_VREG("smps1",  "smp%s1",  &pmic5_hfsmps510, "vdd-s1"),
-+	RPMH_VREG("smps2",  "smp%s2",  &pmic5_hfsmps515_1, "vdd-s2"),
-+	RPMH_VREG("ldo1",   "ldo%s1",  &pmic5_nldo,      "vdd-l1"),
-+	RPMH_VREG("ldo2",   "ldo%s2",  &pmic5_nldo,      "vdd-l2"),
-+	RPMH_VREG("ldo3",   "ldo%s3",  &pmic5_nldo,      "vdd-l3"),
-+	RPMH_VREG("ldo4",   "ldo%s4",  &pmic5_nldo,      "vdd-l4"),
-+	RPMH_VREG("ldo5",   "ldo%s5",  &pmic5_pldo,      "vdd-l5-l6"),
-+	RPMH_VREG("ldo6",   "ldo%s6",  &pmic5_pldo,      "vdd-l5-l6"),
-+	RPMH_VREG("ldo7",   "ldo%s6",  &pmic5_pldo_lv,   "vdd-l7"),
-+	{},
-+};
-+
- static const struct rpmh_vreg_init_data pm6150_vreg_data[] = {
- 	RPMH_VREG("smps1",  "smp%s1",  &pmic5_ftsmps510, "vdd-s1"),
- 	RPMH_VREG("smps2",  "smp%s2",  &pmic5_ftsmps510, "vdd-s2"),
-@@ -976,6 +998,10 @@ static const struct of_device_id __maybe_unused rpmh_regulator_match_table[] = {
- 		.compatible = "qcom,pm8009-rpmh-regulators",
- 		.data = pm8009_vreg_data,
- 	},
-+	{
-+		.compatible = "qcom,pm8009-1-rpmh-regulators",
-+		.data = pm8009_1_vreg_data,
-+	},
- 	{
- 		.compatible = "qcom,pm8150-rpmh-regulators",
- 		.data = pm8150_vreg_data,
+@@ -294,6 +295,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
+ 		inv_wr.sg_list = NULL;
+ 		inv_wr.num_sge = 0;
+ 		inv_wr.opcode = IB_WR_SEND_WITH_INV;
++		inv_wr.wr_cqe   = &io_comp_cqe;
+ 		inv_wr.send_flags = 0;
+ 		inv_wr.ex.invalidate_rkey = rkey;
+ 	}
+@@ -304,6 +306,7 @@ static int rdma_write_sg(struct rtrs_srv_op *id)
+ 
+ 		srv_mr = &sess->mrs[id->msg_id];
+ 		rwr.wr.opcode = IB_WR_REG_MR;
++		rwr.wr.wr_cqe = &local_reg_cqe;
+ 		rwr.wr.num_sge = 0;
+ 		rwr.mr = srv_mr->mr;
+ 		rwr.wr.send_flags = 0;
+@@ -379,6 +382,7 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
+ 
+ 		if (need_inval) {
+ 			if (likely(sg_cnt)) {
++				inv_wr.wr_cqe   = &io_comp_cqe;
+ 				inv_wr.sg_list = NULL;
+ 				inv_wr.num_sge = 0;
+ 				inv_wr.opcode = IB_WR_SEND_WITH_INV;
+@@ -421,6 +425,7 @@ static int send_io_resp_imm(struct rtrs_srv_con *con, struct rtrs_srv_op *id,
+ 		srv_mr = &sess->mrs[id->msg_id];
+ 		rwr.wr.next = &imm_wr;
+ 		rwr.wr.opcode = IB_WR_REG_MR;
++		rwr.wr.wr_cqe = &local_reg_cqe;
+ 		rwr.wr.num_sge = 0;
+ 		rwr.wr.send_flags = 0;
+ 		rwr.mr = srv_mr->mr;
 -- 
 2.27.0
 
