@@ -2,139 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82DE327FB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF16B327FBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235877AbhCANjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:39:00 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12974 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235814AbhCANi6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:38:58 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121DXoNa152652;
-        Mon, 1 Mar 2021 08:37:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=Hp7lJ1n0zWGSbHrNoQ8FxBZVbyeKMOkZBpIQglBzsGc=;
- b=DYdCfCRjTwlc3pbMxiU30n/Odm5ETyLjKmhY/ZQWQuOh/JbYuCRbqwLHt96IBiQ/4gca
- I2vn1tqecN0FYYDwA5VAySTckT9GjRyRzC6WJvLiYEqFMk/91Lcj4kU+9cwjh4+ftxHE
- JafCvSUZjkmrR/PoEgvLsh5OOTlKfYEucywAoVBIvE8kE2KsCdW5cqr8mKfpPiPFWkt0
- +MiH6ehBn0N+K0ZVXeY44Xln8/sM3uKLgOx/iI4xDg75D4OTGViR5p/odV54jyUFWxG2
- +zTKjQDnCOPEiTyug3Day7Ifj9T0tmoNf37JLOz4H/FKOdPC7F85SQz4TA/6m4JG5tmV LA== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3710tk14ju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 08:37:28 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 121DXE8M004548;
-        Mon, 1 Mar 2021 13:37:26 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 36yj530wdg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 13:37:26 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 121DbOYw33096190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Mar 2021 13:37:24 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 29998AE053;
-        Mon,  1 Mar 2021 13:37:24 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E6AAAE057;
-        Mon,  1 Mar 2021 13:37:21 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon,  1 Mar 2021 13:37:21 +0000 (GMT)
-Date:   Mon, 1 Mar 2021 19:07:20 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Subject: Re: [PATCH] sched/fair: Prefer idle CPU to cache affinity
-Message-ID: <20210301133720.GI2028034@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
- <ab046b9d5bcd29b2eb759cd999e2f578a683c673.camel@surriel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <ab046b9d5bcd29b2eb759cd999e2f578a683c673.camel@surriel.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-01_08:2021-03-01,2021-03-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 suspectscore=0 phishscore=0 spamscore=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999 mlxscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103010113
+        id S235853AbhCANjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:39:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42178 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235814AbhCANjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:39:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 260CEAB8C;
+        Mon,  1 Mar 2021 13:38:36 +0000 (UTC)
+Date:   Mon, 01 Mar 2021 14:38:36 +0100
+Message-ID: <s5hzgznhu3n.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Cc:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 9/9] ALSA: virtio: introduce device suspend/resume support
+In-Reply-To: <54854cb9-99c3-4c05-3b43-f41d89a29aec@opensynergy.com>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+        <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
+        <s5hpn0kjt31.wl-tiwai@suse.de>
+        <54854cb9-99c3-4c05-3b43-f41d89a29aec@opensynergy.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Rik van Riel <riel@surriel.com> [2021-02-27 14:56:07]:
-
-> > In the current situation where waker and previous CPUs are busy, but
-> > only one of its LLC has an idle CPU, Scheduler may end up picking a
-> > LLC
-> > with no idle CPUs. To mitigate this, add a new step between 1 and 2
-> > where Scheduler compares idle CPUs in waker and previous LLCs and
-> > picks
-> > the appropriate one.
+On Mon, 01 Mar 2021 11:03:04 +0100,
+Anton Yakovlev wrote:
 > 
-> I like that idea a lot. That could also solve some of the
-
-Thanks.
-
-> issues sometimes observed on multi-node x86 systems, and
-> probably on the newer AMD chips with several LLCs on chip.
+> On 28.02.2021 13:05, Takashi Iwai wrote:
+> > On Sat, 27 Feb 2021 09:59:56 +0100,
+> > Anton Yakovlev wrote:
+> >>
+> >> All running PCM substreams are stopped on device suspend and restarted
+> >> on device resume.
+> >>
+> >> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+> >> ---
+> >>   sound/virtio/virtio_card.c    | 56 +++++++++++++++++++++++++++++++++++
+> >>   sound/virtio/virtio_pcm.c     |  1 +
+> >>   sound/virtio/virtio_pcm_ops.c | 41 ++++++++++++++++++++-----
+> >>   3 files changed, 90 insertions(+), 8 deletions(-)
+> >>
+> >> diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
+> >> index 59455a562018..c7ae8801991d 100644
+> >> --- a/sound/virtio/virtio_card.c
+> >> +++ b/sound/virtio/virtio_card.c
+> >> @@ -323,6 +323,58 @@ static void virtsnd_remove(struct virtio_device *vdev)
+> >>        kfree(snd->event_msgs);
+> >>   }
+> >>
+> >> +#ifdef CONFIG_PM_SLEEP
+> >> +/**
+> >> + * virtsnd_freeze() - Suspend device.
+> >> + * @vdev: VirtIO parent device.
+> >> + *
+> >> + * Context: Any context.
+> >> + * Return: 0 on success, -errno on failure.
+> >> + */
+> >> +static int virtsnd_freeze(struct virtio_device *vdev)
+> >> +{
+> >> +     struct virtio_snd *snd = vdev->priv;
+> >> +
+> >> +     virtsnd_ctl_msg_cancel_all(snd);
+> >> +
+> >> +     vdev->config->del_vqs(vdev);
+> >> +     vdev->config->reset(vdev);
+> >> +
+> >> +     kfree(snd->event_msgs);
+> >> +
+> >> +     /*
+> >> +      * If the virtsnd_restore() fails before re-allocating events, then we
+> >> +      * get a dangling pointer here.
+> >> +      */
+> >> +     snd->event_msgs = NULL;
+> >> +
+> >> +     return 0;
+> >
+> > I suppose some cancel of inflight works is needed?
+> > Ditto for the device removal, too.
 > 
+> It's not necessary here, since the device is reset and all of this are
+> happened automatically.
 
-Okay.
+Hrm, but the reset call itself might conflict with the inflight reset
+work?  I haven't see any work canceling or flushing, so...
 
-> > +	if (sched_feat(WA_WAKER) && tnr_busy < tllc_size)
-> > +		return this_cpu;
+> But in the device remove it makes sense also to
+> disable events before calling snd_card_free(), since the device is still
+> able to send notifications at that moment. Thanks!
 > 
-> I wonder if we need to use a slightly lower threshold on
-> very large LLCs, both to account for the fact that the
-> select_idle_cpu code may not find the single idle CPU
-> among a dozen busy ones, or because on a system with
-> hyperthreading we may often be better off picking another
-> LLC for HT contention issues?
-
 > 
-> Maybe we could use "tnr_busy * 4 <
-> tllc_size * 3" or
-> something like that?
+> >> --- a/sound/virtio/virtio_pcm.c
+> >> +++ b/sound/virtio/virtio_pcm.c
+> >> @@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+> >>                SNDRV_PCM_INFO_BATCH |
+> >>                SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> >>                SNDRV_PCM_INFO_INTERLEAVED |
+> >> +             SNDRV_PCM_INFO_RESUME |
+> >>                SNDRV_PCM_INFO_PAUSE;
+> >
+> > Actually you don't need to set SNDRV_PCM_INFO_RESUME.
+> > This flag means that the driver supports the full resume procedure,
+> > which isn't often the case; with this, the driver is supposed to
+> > resume the stream exactly from the suspended position.
 > 
-> That way we will only try to find the last 5 idle
-> CPUs
-> in a 22 CPU LLC if the other LLC also has fewer than 6
-> idle cores.
+> If I understood you right, that's exactly how resume is implemented now
+> in the driver. Although we fully restart substream on the device side,
+> from an application point of view it is resumed exactly at the same
+> position.
 > 
-> That might increase our chances of finding an idle CPU
-> with SIS_PROP enabled, and might allow WA_WAKER to be
-> true by default.
+> 
+> > Most drivers don't set this but implement only the suspend-stop
+> > action.  Then the application (or the sound backend) will re-setup the
+> > stream and restart accordingly.
+> 
+> And an application must be aware of such possible situation? Since I
+> have no doubt in alsa-lib, but I don't think that for example tinyalsa
+> can handle this right.
 
-Agree we need to be conservative esp if we want to make WA_WAKER on by
-default. I would still like to hear from other people if they think its ok
-to enable it by default. I wonder if enabling it by default can cause some
-load imbalances leading to more active load balance down the line.  I
-haven't benchmarked with WA_WAKER enabled.
+Tiny ALSA should work, too.  Actually there are only few drivers that
+have the full PCM resume.  The majority of drivers are without the
+resume support (including a large one like HD-audio).
 
-Thanks Rik for your inputs.
+And, with the resume implementation, I'm worried by the style like:
 
--- 
-Thanks and Regards
-Srikar Dronamraju
+> >> @@ -309,6 +318,21 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+> >>        int rc;
+> >>
+> >>        switch (command) {
+> >> +     case SNDRV_PCM_TRIGGER_RESUME: {
+> >> +             /*
+> >> +              * We restart the substream by executing the standard command
+> >> +              * sequence.
+> >> +              */
+> >> +             rc = virtsnd_pcm_hw_params(substream, NULL);
+> >> +             if (rc)
+> >> +                     return rc;
+> >> +
+> >> +             rc = virtsnd_pcm_prepare(substream);
+> >> +             if (rc)
+> >> +                     return rc;
+
+... and this is rather what the core code should do, and it's exactly
+the same procedure that would be done without RESUME flag.
+
+
+Takashi
