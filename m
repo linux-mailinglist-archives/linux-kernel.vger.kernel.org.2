@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB070329A11
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36642329AFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348304AbhCBAnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:43:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
+        id S1378388AbhCBBFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:05:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240355AbhCASit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:38:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 316AB651B4;
-        Mon,  1 Mar 2021 17:12:44 +0000 (UTC)
+        id S240669AbhCATAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:00:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C242160201;
+        Mon,  1 Mar 2021 17:46:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618765;
-        bh=GvD+pCt/CIV3sJKGMWi1Duu9EOg35dH4ZvSVMHmzIDk=;
+        s=korg; t=1614620817;
+        bh=DoCdYEO5mmFpPMXA/qWydiSJ+ms6DE8UUWBij8etc7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Izc7h/n2S4UYxQaPygvdP+VvUyZu4FavEZys9EWBeZhmKUtxUDmR0N1K7TVsp5cz7
-         9cd3ZGEVX/v/J+WEknZKQDR0j/mxJEAdZqy1Z9IhpKk+9nPg7nPkni+FZsEX3b/2Vh
-         n7bHg7eO1Qx83PN6Hm2Goc0jWIZKBjMexmMAGFmk=
+        b=q+lY7ln1FzLYiI4gWm0sUc1zowej6GcGGm5MXbVMLkf8f2TJ/D4EROu6PKvlDiYk9
+         I/IhzyAUjXSMC5JQsB5i0R7aZsH/mbCwBIrNMp+hgocevLN7k+b9ApckelXLGbsV3l
+         0P0WUOyYrY9EOIlQ6Q0peXNjQSCckuXHxWHhrxNA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 209/663] ASoC: codecs: add missing max_register in regmap config
-Date:   Mon,  1 Mar 2021 17:07:37 +0100
-Message-Id: <20210301161152.128557363@linuxfoundation.org>
+Subject: [PATCH 5.11 290/775] ASoC: SOF: sof-pci-dev: add missing Up-Extreme quirk
+Date:   Mon,  1 Mar 2021 17:07:38 +0100
+Message-Id: <20210301161215.952342076@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit e8820dbddbcad7e91daacf7d42a49d1d04a4e489 ]
+[ Upstream commit bd8036eb15263a720b8f846861c180b27d050a09 ]
 
-For some reason setting max_register was missed from regmap_config.
-Without this cat /sys/kernel/debug/regmap/sdw:0:217:2010:0:1/range
-actually throws below Warning.
+The UpExtreme board supports the community key and was missed in
+previous contributions. Add it to make sure the open firmware is
+picked by default without needing a symlink on the target.
 
-WARNING: CPU: 7 PID: 540 at drivers/base/regmap/regmap-debugfs.c:160
- regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
-...
-Call trace:
- regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
- regmap_reg_ranges_read_file+0xc0/0x2e0
- full_proxy_read+0x64/0x98
- vfs_read+0xa8/0x1e0
- ksys_read+0x6c/0x100
- __arm64_sys_read+0x1c/0x28
- el0_svc_common.constprop.3+0x6c/0x190
- do_el0_svc+0x24/0x90
- el0_svc+0x14/0x20
- el0_sync_handler+0x90/0xb8
- el0_sync+0x158/0x180
-...
-
-Fixes: a0aab9e1404a ("ASoC: codecs: add wsa881x amplifier support")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210201161429.28060-1-srinivas.kandagatla@linaro.org
+Fixes: 46207ca24545 ('ASoC: SOF: pci: change the default firmware path when the community key is used')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20210208231853.58761-1-pierre-louis.bossart@linux.intel.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wsa881x.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sof/sof-pci-dev.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
-index 4530b74f5921b..db87e07b11c94 100644
---- a/sound/soc/codecs/wsa881x.c
-+++ b/sound/soc/codecs/wsa881x.c
-@@ -640,6 +640,7 @@ static struct regmap_config wsa881x_regmap_config = {
- 	.val_bits = 8,
- 	.cache_type = REGCACHE_RBTREE,
- 	.reg_defaults = wsa881x_defaults,
-+	.max_register = WSA881X_SPKR_STATUS3,
- 	.num_reg_defaults = ARRAY_SIZE(wsa881x_defaults),
- 	.volatile_reg = wsa881x_volatile_register,
- 	.readable_reg = wsa881x_readable_register,
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 215711ac74509..9adf50b20a735 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -65,6 +65,13 @@ static const struct dmi_system_id community_key_platforms[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "UP-APL01"),
+ 		}
+ 	},
++	{
++		.ident = "Up Extreme",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "AAEON"),
++			DMI_MATCH(DMI_BOARD_NAME, "UP-WHL01"),
++		}
++	},
+ 	{
+ 		.ident = "Google Chromebooks",
+ 		.matches = {
 -- 
 2.27.0
 
