@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714E4328D46
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BE2328D5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241108AbhCATIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:08:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50642 "EHLO mail.kernel.org"
+        id S241271AbhCATIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:08:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235280AbhCAQra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:47:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C652064FA0;
-        Mon,  1 Mar 2021 16:32:05 +0000 (UTC)
+        id S235335AbhCAQsL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:48:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF08464FA3;
+        Mon,  1 Mar 2021 16:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616326;
-        bh=DNsNJhRVm6UC89UhRP1anUjHNomOEFNusblbO2r/SnI=;
+        s=korg; t=1614616329;
+        bh=shdOffGbNcwDrE90NJrKi5H9M1zJr7LYWtZVqp622vE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LOGnuFpMcRJEXhtBYR2h9Aqt+JGP1Nce1MrmahCslHMS1CmmnrshwtEGZynvwsKPZ
-         SuD9mXI4/lFSM9A/2Oj5wuYxbCI2ZInF0yrodlPV5wq/vynmSPmYEF0wahNoxHFvWL
-         S/RTFsmi93jiqspnx4MY+z9AKnl7nyUVJwPELNcA=
+        b=C1ecyA8MTwb4A4MStL8ZQ7+AgnV35Q5vLR5o++wwX1eVKkS6j80Se0vSHoKFJ0TzZ
+         K2o//jpMyAuUQYW8pzpmzc6vxkUA67zep5TMSR4GHWqNAssnih1m6TwXiGGVsrTldT
+         LGl0RBWOpZPsiqWsfiLYfSY3TKmtGdMTlJguLcn8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 112/176] Take mmap lock in cacheflush syscall
-Date:   Mon,  1 Mar 2021 17:13:05 +0100
-Message-Id: <20210301161026.547135165@linuxfoundation.org>
+Subject: [PATCH 4.14 113/176] net/mlx4_core: Add missed mlx4_free_cmd_mailbox()
+Date:   Mon,  1 Mar 2021 17:13:06 +0100
+Message-Id: <20210301161026.588401203@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -40,59 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jann Horn <jannh@google.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit c26958cb5a0d9053d1358258827638773f3d36ed ]
+[ Upstream commit 8eb65fda4a6dbd59cd5de24b106a10b6ee0d2176 ]
 
-We need to take the mmap lock around find_vma() and subsequent use of the
-VMA. Otherwise, we can race with concurrent operations like munmap(), which
-can lead to use-after-free accesses to freed VMAs.
+mlx4_do_mirror_rule() forgets to call mlx4_free_cmd_mailbox() to
+free the memory region allocated by mlx4_alloc_cmd_mailbox() before
+an exit.
+Add the missed call to fix it.
 
-Fixes: 1000197d8013 ("nios2: System calls handling")
-Signed-off-by: Jann Horn <jannh@google.com>
-Signed-off-by: Ley Foon Tan <ley.foon.tan@intel.com>
+Fixes: 78efed275117 ("net/mlx4_core: Support mirroring VF DMFS rules on both ports")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Link: https://lore.kernel.org/r/20210221143559.390277-1-hslester96@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/nios2/kernel/sys_nios2.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/resource_tracker.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/nios2/kernel/sys_nios2.c b/arch/nios2/kernel/sys_nios2.c
-index cd390ec4f88bf..b1ca856999521 100644
---- a/arch/nios2/kernel/sys_nios2.c
-+++ b/arch/nios2/kernel/sys_nios2.c
-@@ -22,6 +22,7 @@ asmlinkage int sys_cacheflush(unsigned long addr, unsigned long len,
- 				unsigned int op)
- {
- 	struct vm_area_struct *vma;
-+	struct mm_struct *mm = current->mm;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+index 66e8054a8966d..ebff014f3218c 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
++++ b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+@@ -4988,6 +4988,7 @@ static int mlx4_do_mirror_rule(struct mlx4_dev *dev, struct res_fs_rule *fs_rule
  
- 	if (len == 0)
- 		return 0;
-@@ -34,16 +35,22 @@ asmlinkage int sys_cacheflush(unsigned long addr, unsigned long len,
- 	if (addr + len < addr)
- 		return -EFAULT;
- 
-+	if (mmap_read_lock_killable(mm))
-+		return -EINTR;
-+
- 	/*
- 	 * Verify that the specified address region actually belongs
- 	 * to this process.
- 	 */
--	vma = find_vma(current->mm, addr);
--	if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end)
-+	vma = find_vma(mm, addr);
-+	if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end) {
-+		mmap_read_unlock(mm);
- 		return -EFAULT;
-+	}
- 
- 	flush_cache_range(vma, addr, addr + len);
- 
-+	mmap_read_unlock(mm);
- 	return 0;
- }
- 
+ 	if (!fs_rule->mirr_mbox) {
+ 		mlx4_err(dev, "rule mirroring mailbox is null\n");
++		mlx4_free_cmd_mailbox(dev, mailbox);
+ 		return -EINVAL;
+ 	}
+ 	memcpy(mailbox->buf, fs_rule->mirr_mbox, fs_rule->mirr_mbox_size);
 -- 
 2.27.0
 
