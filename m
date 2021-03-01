@@ -2,84 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAF0327C57
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B232A327C5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbhCAKiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbhCAKd5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:33:57 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272B7C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 02:33:17 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id f12so11733121wrx.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:33:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kbnph1EgCCLH/ZUBf6ushQsd4tna/Kgc6Gzslj73xqg=;
-        b=cWDsnU98vH2ApOyNibkem6GKZR0VtBIlcN4tmz85vBXntQid5CblUXICB76TEgzcES
-         d+fyDncdu8sc6MymQZlxr8vcIH6eI5ZX5Uib+Zzr6mDzOAe9nd8PqZw18RTAor/XZ9Zu
-         gqsAtMsoXn30hMQ6OuFcxRpXiaKsHsGzMee/joslOXBjiSyj+aB7uiagcZvJsExcShDj
-         qgZw/5KbH55INzEp27bOFfcAAOaNksH7YkZvVj+s21dyuDZPgy2xUCUIqRNMyo25DaZO
-         FopsJ9vujmuvKlf22rR9aJ/2UCqjNkbfiupCaskxdexUsVkn3NbBXK6uPaD7JUW7+AfC
-         sUGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kbnph1EgCCLH/ZUBf6ushQsd4tna/Kgc6Gzslj73xqg=;
-        b=h9ZMvnts0bP3ow5AN5KdZChVwzu9PajYGgwcqnkgA+Axo5GsB97n7oo60a+2pK1K7D
-         9MCnbpjRGookvItmVzW55pKOUh7HGywCxvzHzj7uJZA+xgj1ZNAU5ojv2tH13mhEv/oF
-         YxdeQUUdZcnxRQWDTRTXcb7mcGBjnguxIgSwbSnEI3/ubTWprO0kPOUmbeF8iig9q7SZ
-         9GeMzUOkgHTNkhewIcb6i6BqidYw5GczH8eS9sy4oFTcl22EuMIcSW6iprdwkeSGXZyI
-         PAVWQcbe6VyU/+0ZEmR+nWz/tBcNbDveT2cJZgyOcMKOBcwbnE5/lU9ZKkGoKxXqkOHr
-         H1nw==
-X-Gm-Message-State: AOAM533WcbQ2J86/8QjFAW2CafRNcu5KL/RIVy/iknx9bax7lNNvGSrn
-        5Z0maasfnCRd6TZisZdGFWSAfQ==
-X-Google-Smtp-Source: ABdhPJx7TX1Vb/WAmbpLxMUAg8GrEv61MnwbIOHCHBzra1kdALsnpwqHAJlbUCRrFUsXPjgxOwpWBg==
-X-Received: by 2002:adf:f90d:: with SMTP id b13mr16901223wrr.198.1614594795951;
-        Mon, 01 Mar 2021 02:33:15 -0800 (PST)
-Received: from dell.default ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id m3sm8033651wmc.48.2021.03.01.02.33.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 02:33:15 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org, robh+dt@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        andreas@kemnade.info, devicetree@vger.kernel.org
-Subject: [PATCH 1/1] dt-bindings: mfd: ricoh,rn5t618: Trivial: Fix spelling mistake of 'additionally'
-Date:   Mon,  1 Mar 2021 10:33:09 +0000
-Message-Id: <20210301103309.2404426-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        id S234556AbhCAKjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:39:33 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:48273 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233287AbhCAKgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:36:39 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DpxVj596vz9tx3x;
+        Mon,  1 Mar 2021 11:35:41 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 3uLz0sfECZb6; Mon,  1 Mar 2021 11:35:41 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DpxVj4CNbz9tx3v;
+        Mon,  1 Mar 2021 11:35:41 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B6EA78B795;
+        Mon,  1 Mar 2021 11:35:46 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id EfdrfbCBUR78; Mon,  1 Mar 2021 11:35:46 +0100 (CET)
+Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5FB748B75B;
+        Mon,  1 Mar 2021 11:35:46 +0100 (CET)
+Subject: Re: [PATCH] crypto: sun8i-ce: rename kfree() to kfree_sensitive()
+To:     Yang Li <yang.lee@linux.alibaba.com>, clabbe.montjoie@gmail.com
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <1614594641-35606-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <4f448ec8-3694-b918-30eb-641d473c85ff@csgroup.eu>
+Date:   Mon, 1 Mar 2021 11:35:41 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <1614594641-35606-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-index d70e85a09c84e..032a7fb0b4a71 100644
---- a/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-+++ b/Documentation/devicetree/bindings/mfd/ricoh,rn5t618.yaml
-@@ -15,7 +15,7 @@ description: |
-   GPIOs, and a watchdog timer. It can be controlled through an I2C interface.
-   The RN5T618/RC5T619 provides additionally a Li-ion battery charger,
-   fuel gauge, and an ADC.
--  The RC5T619 additionnally includes USB charger detection and an RTC.
-+  The RC5T619 additionally includes USB charger detection and an RTC.
- 
- allOf:
-   - if:
--- 
-2.27.0
 
+Le 01/03/2021 à 11:30, Yang Li a écrit :
+> Rename kfree() to kfree_sensitive() to  make the intention of the API
+> more explicit.
+
+As far as I understand, you are not renaming kfree() to kfree_sensitive().
+
+You are making a change to use kfree_sensitive() instead of using kfree().
+
+Christophe
+
+> 
+> fixed the following coccicheck:
+> ./drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c:30:16-17: WARNING
+> opportunity for kfree_sensitive/kvfree_sensitive (memset at line 29)
+> ./drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c:42:16-17: WARNING
+> opportunity for kfree_sensitive/kvfree_sensitive (memset at line 41)
+> ./drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c:161:8-9: WARNING
+> opportunity for kfree_sensitive/kvfree_sensitive (memset at line 109)
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>   drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+> index cfde9ee..8259d52 100644
+> --- a/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+> +++ b/drivers/crypto/allwinner/sun8i-ce/sun8i-ce-prng.c
+> @@ -27,7 +27,7 @@ void sun8i_ce_prng_exit(struct crypto_tfm *tfm)
+>   	struct sun8i_ce_rng_tfm_ctx *ctx = crypto_tfm_ctx(tfm);
+>   
+>   	memzero_explicit(ctx->seed, ctx->slen);
+> -	kfree(ctx->seed);
+> +	kfree_sensitive(ctx->seed);
+>   	ctx->seed = NULL;
+>   	ctx->slen = 0;
+>   }
+> @@ -39,7 +39,7 @@ int sun8i_ce_prng_seed(struct crypto_rng *tfm, const u8 *seed,
+>   
+>   	if (ctx->seed && ctx->slen != slen) {
+>   		memzero_explicit(ctx->seed, ctx->slen);
+> -		kfree(ctx->seed);
+> +		kfree_sensitive(ctx->seed);
+>   		ctx->slen = 0;
+>   		ctx->seed = NULL;
+>   	}
+> @@ -158,7 +158,7 @@ int sun8i_ce_prng_generate(struct crypto_rng *tfm, const u8 *src,
+>   	}
+>   	memzero_explicit(d, todo);
+>   err_iv:
+> -	kfree(d);
+> +	kfree_sensitive(d);
+>   err_mem:
+>   	return err;
+>   }
+> 
