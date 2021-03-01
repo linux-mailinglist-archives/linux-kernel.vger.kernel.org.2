@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4354732998A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4310329935
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:10:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348015AbhCBAW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:22:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43162 "EHLO mail.kernel.org"
+        id S1344081AbhCBABi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:01:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239859AbhCAS0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:26:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90DF4652EA;
-        Mon,  1 Mar 2021 17:40:41 +0000 (UTC)
+        id S239720AbhCASUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:20:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F7D0652F2;
+        Mon,  1 Mar 2021 17:40:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620442;
-        bh=q21wqGcKVLQxf7NsfwXZrs01TDvucU5bYi8SLKcX+kM=;
+        s=korg; t=1614620444;
+        bh=h6jUsFJJ1RBZFyvapg3nN4xQ9VYVyw8sqkLkyNG/WuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BF1LAaYsHCo8QmLr9AKhABgkthY//uATsk30/cSI6uYA7/lgQm3kPT3U6yvD7JbKv
-         fXJNbb0LHWiapPOLCFt15BCWJDaF/swBT0wUgOUhH4ALlVFgv2M08CgTbmcI5v5CB7
-         0crvHtAXv7D7kNFnpRoobYd/KooOZehViud/Rg8s=
+        b=idWROGTCMm4sXxyg9K4kQeFrBQNInCQ7ZZytZ2FlvrsIj+QqmZfXxrX0PP9W6GfjF
+         E1U/QOYMbuNm54MtKswyyIzssgvNCb7YgjZNz+71LfAbgXSMCwB9iY+kfJvBlPjd4U
+         DIaracI8pgXI6KNem3u5uSkkcUqFQP4Xsibu4xjk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 154/775] arm64: dts: mt8183: Add missing power-domain for pwm0 node
-Date:   Mon,  1 Mar 2021 17:05:22 +0100
-Message-Id: <20210301161209.264539618@linuxfoundation.org>
+Subject: [PATCH 5.11 155/775] net: sfp: add workaround for Realtek RTL8672 and RTL9601C chips
+Date:   Mon,  1 Mar 2021 17:05:23 +0100
+Message-Id: <20210301161209.313095665@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,36 +41,215 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 2f99fb6e46b0e982bb6ab18b24a08fa318f740ea ]
+[ Upstream commit 426c6cbc409cbda9ab1a9dbf15d3c2ef947eb8c1 ]
 
-The MT8183 display PWM device will not work until the associated
-power-domain is enabled. Add the power-domain reference to the node
-allows the display PWM driver to operate and the backlight turn on.
+The workaround for VSOL V2801F brand based GPON SFP modules added in commit
+0d035bed2a4a ("net: sfp: VSOL V2801F / CarlitoxxPro CPGOS03-0490 v2.0
+workaround") works only for IDs added explicitly to the list. Since there
+are rebranded modules where OEM vendors put different strings into the
+vendor name field, we cannot base workaround on IDs only.
 
-Fixes: f15722c0fef0 ("arm64: dts: mt8183: Add pwm and backlight node")
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Link: https://lore.kernel.org/r/20210113215723.71966-1-enric.balletbo@collabora.com
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Moreover the issue which the above mentioned commit tried to work around is
+generic not only to VSOL based modules, but rather to all GPON modules
+based on Realtek RTL8672 and RTL9601C chips.
+
+These include at least the following GPON modules:
+* V-SOL V2801F
+* C-Data FD511GX-RM0
+* OPTON GP801R
+* BAUDCOM BD-1234-SFM
+* CPGOS03-0490 v2.0
+* Ubiquiti U-Fiber Instant
+* EXOT EGS1
+
+These Realtek chips have broken EEPROM emulator which for N-byte read
+operation returns just the first byte of EEPROM data, followed by N-1
+zeros.
+
+Introduce a new function, sfp_id_needs_byte_io(), which detects SFP modules
+with broken EEPROM emulator based on N-1 zeros and switch to 1 byte EEPROM
+reading operation.
+
+Function sfp_i2c_read() now always uses single byte reading when it is
+required and when function sfp_hwmon_probe() detects single byte access,
+it disables registration of hwmon device, because in this case we cannot
+reliably and atomically read 2 bytes as is required by the standard for
+retrieving values from diagnostic area.
+
+(These Realtek chips are broken in a way that violates SFP standards for
+diagnostic interface. Kernel in this case simply cannot do anything less
+of skipping registration of the hwmon interface.)
+
+This patch fixes reading of EEPROM content from SFP modules based on
+Realtek RTL8672 and RTL9601C chips. Diagnostic interface of EEPROM stays
+broken and cannot be fixed.
+
+Fixes: 0d035bed2a4a ("net: sfp: VSOL V2801F / CarlitoxxPro CPGOS03-0490 v2.0 workaround")
+Co-developed-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/phy/sfp.c | 100 ++++++++++++++++++++++++++++--------------
+ 1 file changed, 67 insertions(+), 33 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 9c0073cfad452..64fbba76597c8 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -661,6 +661,7 @@
- 			compatible = "mediatek,mt8183-disp-pwm";
- 			reg = <0 0x1100e000 0 0x1000>;
- 			interrupts = <GIC_SPI 128 IRQ_TYPE_LEVEL_LOW>;
-+			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
- 			#pwm-cells = <2>;
- 			clocks = <&topckgen CLK_TOP_MUX_DISP_PWM>,
- 					<&infracfg CLK_INFRA_DISP_PWM>;
+diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
+index 91d74c1a920ab..f2b5e467a8001 100644
+--- a/drivers/net/phy/sfp.c
++++ b/drivers/net/phy/sfp.c
+@@ -336,19 +336,11 @@ static int sfp_i2c_read(struct sfp *sfp, bool a2, u8 dev_addr, void *buf,
+ 			size_t len)
+ {
+ 	struct i2c_msg msgs[2];
+-	size_t block_size;
++	u8 bus_addr = a2 ? 0x51 : 0x50;
++	size_t block_size = sfp->i2c_block_size;
+ 	size_t this_len;
+-	u8 bus_addr;
+ 	int ret;
+ 
+-	if (a2) {
+-		block_size = 16;
+-		bus_addr = 0x51;
+-	} else {
+-		block_size = sfp->i2c_block_size;
+-		bus_addr = 0x50;
+-	}
+-
+ 	msgs[0].addr = bus_addr;
+ 	msgs[0].flags = 0;
+ 	msgs[0].len = 1;
+@@ -1282,6 +1274,20 @@ static void sfp_hwmon_probe(struct work_struct *work)
+ 	struct sfp *sfp = container_of(work, struct sfp, hwmon_probe.work);
+ 	int err, i;
+ 
++	/* hwmon interface needs to access 16bit registers in atomic way to
++	 * guarantee coherency of the diagnostic monitoring data. If it is not
++	 * possible to guarantee coherency because EEPROM is broken in such way
++	 * that does not support atomic 16bit read operation then we have to
++	 * skip registration of hwmon device.
++	 */
++	if (sfp->i2c_block_size < 2) {
++		dev_info(sfp->dev,
++			 "skipping hwmon device registration due to broken EEPROM\n");
++		dev_info(sfp->dev,
++			 "diagnostic EEPROM area cannot be read atomically to guarantee data coherency\n");
++		return;
++	}
++
+ 	err = sfp_read(sfp, true, 0, &sfp->diag, sizeof(sfp->diag));
+ 	if (err < 0) {
+ 		if (sfp->hwmon_tries--) {
+@@ -1642,26 +1648,30 @@ static int sfp_sm_mod_hpower(struct sfp *sfp, bool enable)
+ 	return 0;
+ }
+ 
+-/* Some modules (Nokia 3FE46541AA) lock up if byte 0x51 is read as a
+- * single read. Switch back to reading 16 byte blocks unless we have
+- * a CarlitoxxPro module (rebranded VSOL V2801F). Even more annoyingly,
+- * some VSOL V2801F have the vendor name changed to OEM.
++/* GPON modules based on Realtek RTL8672 and RTL9601C chips (e.g. V-SOL
++ * V2801F, CarlitoxxPro CPGOS03-0490, Ubiquiti U-Fiber Instant, ...) do
++ * not support multibyte reads from the EEPROM. Each multi-byte read
++ * operation returns just one byte of EEPROM followed by zeros. There is
++ * no way to identify which modules are using Realtek RTL8672 and RTL9601C
++ * chips. Moreover every OEM of V-SOL V2801F module puts its own vendor
++ * name and vendor id into EEPROM, so there is even no way to detect if
++ * module is V-SOL V2801F. Therefore check for those zeros in the read
++ * data and then based on check switch to reading EEPROM to one byte
++ * at a time.
+  */
+-static int sfp_quirk_i2c_block_size(const struct sfp_eeprom_base *base)
++static bool sfp_id_needs_byte_io(struct sfp *sfp, void *buf, size_t len)
+ {
+-	if (!memcmp(base->vendor_name, "VSOL            ", 16))
+-		return 1;
+-	if (!memcmp(base->vendor_name, "OEM             ", 16) &&
+-	    !memcmp(base->vendor_pn,   "V2801F          ", 16))
+-		return 1;
++	size_t i, block_size = sfp->i2c_block_size;
+ 
+-	/* Some modules can't cope with long reads */
+-	return 16;
+-}
++	/* Already using byte IO */
++	if (block_size == 1)
++		return false;
+ 
+-static void sfp_quirks_base(struct sfp *sfp, const struct sfp_eeprom_base *base)
+-{
+-	sfp->i2c_block_size = sfp_quirk_i2c_block_size(base);
++	for (i = 1; i < len; i += block_size) {
++		if (memchr_inv(buf + i, '\0', min(block_size - 1, len - i)))
++			return false;
++	}
++	return true;
+ }
+ 
+ static int sfp_cotsworks_fixup_check(struct sfp *sfp, struct sfp_eeprom_id *id)
+@@ -1705,11 +1715,11 @@ static int sfp_sm_mod_probe(struct sfp *sfp, bool report)
+ 	u8 check;
+ 	int ret;
+ 
+-	/* Some modules (CarlitoxxPro CPGOS03-0490) do not support multibyte
+-	 * reads from the EEPROM, so start by reading the base identifying
+-	 * information one byte at a time.
++	/* Some SFP modules and also some Linux I2C drivers do not like reads
++	 * longer than 16 bytes, so read the EEPROM in chunks of 16 bytes at
++	 * a time.
+ 	 */
+-	sfp->i2c_block_size = 1;
++	sfp->i2c_block_size = 16;
+ 
+ 	ret = sfp_read(sfp, false, 0, &id.base, sizeof(id.base));
+ 	if (ret < 0) {
+@@ -1723,6 +1733,33 @@ static int sfp_sm_mod_probe(struct sfp *sfp, bool report)
+ 		return -EAGAIN;
+ 	}
+ 
++	/* Some SFP modules (e.g. Nokia 3FE46541AA) lock up if read from
++	 * address 0x51 is just one byte at a time. Also SFF-8472 requires
++	 * that EEPROM supports atomic 16bit read operation for diagnostic
++	 * fields, so do not switch to one byte reading at a time unless it
++	 * is really required and we have no other option.
++	 */
++	if (sfp_id_needs_byte_io(sfp, &id.base, sizeof(id.base))) {
++		dev_info(sfp->dev,
++			 "Detected broken RTL8672/RTL9601C emulated EEPROM\n");
++		dev_info(sfp->dev,
++			 "Switching to reading EEPROM to one byte at a time\n");
++		sfp->i2c_block_size = 1;
++
++		ret = sfp_read(sfp, false, 0, &id.base, sizeof(id.base));
++		if (ret < 0) {
++			if (report)
++				dev_err(sfp->dev, "failed to read EEPROM: %d\n",
++					ret);
++			return -EAGAIN;
++		}
++
++		if (ret != sizeof(id.base)) {
++			dev_err(sfp->dev, "EEPROM short read: %d\n", ret);
++			return -EAGAIN;
++		}
++	}
++
+ 	/* Cotsworks do not seem to update the checksums when they
+ 	 * do the final programming with the final module part number,
+ 	 * serial number and date code.
+@@ -1757,9 +1794,6 @@ static int sfp_sm_mod_probe(struct sfp *sfp, bool report)
+ 		}
+ 	}
+ 
+-	/* Apply any early module-specific quirks */
+-	sfp_quirks_base(sfp, &id.base);
+-
+ 	ret = sfp_read(sfp, false, SFP_CC_BASE + 1, &id.ext, sizeof(id.ext));
+ 	if (ret < 0) {
+ 		if (report)
 -- 
 2.27.0
 
