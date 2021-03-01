@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB583298DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E730C32997C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346744AbhCAXuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:50:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60786 "EHLO mail.kernel.org"
+        id S1344163AbhCBAUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:20:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239328AbhCASLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:11:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71AA460249;
-        Mon,  1 Mar 2021 17:39:06 +0000 (UTC)
+        id S239579AbhCASXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:23:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30120652E4;
+        Mon,  1 Mar 2021 17:39:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620347;
-        bh=4VybER3IavOMA4seHo5f6Doje/QSZTxs3TFThHrhSh4=;
+        s=korg; t=1614620352;
+        bh=DnEXBEgLSQq0dS3zHxsf4TgSIOOsvwY5gs3HOpsBycs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u3JQUMoz1BC0AozXQTSqIL9ECyM9J566fmphQr0gH0TI0HuwzLBjlSJOZC8Zk3Piy
-         GqXtkaZ/fbvV8mqNyCalFpeQ1FQ2JcNL/0Z4iwBL/mVWRPrGY63FminmUfsPOYXVi1
-         iVq3xGCn/mdTwfMlMJqrb79jkC4OPLHLy792Dxik=
+        b=rYqwhIT4Wwb3RmWs7QMuGVAiOsRrbNG5BEwYNybFR69CKXWN5t6TJrK0dvBhBIp/S
+         iH++P2YJg/AgmDQvLNdTGM03gw//6ESm6IlTxeByfLGtWI4BSAm7NvHbj9R5PHn6A6
+         Ag20X+Q+OEkfcXihU5rwr5A2Rr2Sm1sEvCBrvmXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Junichi Nomura <junichi.nomura@nec.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        stable@vger.kernel.org,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 120/775] bpf, devmap: Use GFP_KERNEL for xdp bulk queue allocation
-Date:   Mon,  1 Mar 2021 17:04:48 +0100
-Message-Id: <20210301161207.608693157@linuxfoundation.org>
+Subject: [PATCH 5.11 122/775] selftests: mptcp: fix ACKRX debug message
+Date:   Mon,  1 Mar 2021 17:04:50 +0100
+Message-Id: <20210301161207.700705117@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,46 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jun'ichi Nomura <junichi.nomura@nec.com>
+From: Matthieu Baerts <matthieu.baerts@tessares.net>
 
-[ Upstream commit 7d4553b69fb335496c597c31590e982485ebe071 ]
+[ Upstream commit f384221a381751508f390b36d0e51bd5a7beb627 ]
 
-The devmap bulk queue is allocated with GFP_ATOMIC and the allocation
-may fail if there is no available space in existing percpu pool.
+Info from received MPCapable SYN were printed instead of the ones from
+received MPCapable 3rd ACK.
 
-Since commit 75ccae62cb8d42 ("xdp: Move devmap bulk queue into struct net_device")
-moved the bulk queue allocation to NETDEV_REGISTER callback, whose context
-is allowed to sleep, use GFP_KERNEL instead of GFP_ATOMIC to let percpu
-allocator extend the pool when needed and avoid possible failure of netdev
-registration.
-
-As the required alignment is natural, we can simply use alloc_percpu().
-
-Fixes: 75ccae62cb8d42 ("xdp: Move devmap bulk queue into struct net_device")
-Signed-off-by: Jun'ichi Nomura <junichi.nomura@nec.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-Link: https://lore.kernel.org/bpf/20210209082451.GA44021@jeru.linux.bs1.fc.nec.co.jp
+Fixes: fed61c4b584c ("selftests: mptcp: make 2nd net namespace use tcp syn cookies unconditionally")
+Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/devmap.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ tools/testing/selftests/net/mptcp/mptcp_connect.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index f6e9c68afdd42..85d9d1b72a33a 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -802,9 +802,7 @@ static int dev_map_notification(struct notifier_block *notifier,
- 			break;
+diff --git a/tools/testing/selftests/net/mptcp/mptcp_connect.sh b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
+index 2cfd87d94db89..e927df83efb91 100755
+--- a/tools/testing/selftests/net/mptcp/mptcp_connect.sh
++++ b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
+@@ -493,7 +493,7 @@ do_transfer()
+ 		echo "${listener_ns} SYNRX: ${cl_proto} -> ${srv_proto}: expect ${expect_synrx}, got ${stat_synrx_now_l}"
+ 	fi
+ 	if [ $expect_ackrx -ne $stat_ackrx_now_l ] ;then
+-		echo "${listener_ns} ACKRX: ${cl_proto} -> ${srv_proto}: expect ${expect_synrx}, got ${stat_synrx_now_l}"
++		echo "${listener_ns} ACKRX: ${cl_proto} -> ${srv_proto}: expect ${expect_ackrx}, got ${stat_ackrx_now_l} "
+ 	fi
  
- 		/* will be freed in free_netdev() */
--		netdev->xdp_bulkq =
--			__alloc_percpu_gfp(sizeof(struct xdp_dev_bulk_queue),
--					   sizeof(void *), GFP_ATOMIC);
-+		netdev->xdp_bulkq = alloc_percpu(struct xdp_dev_bulk_queue);
- 		if (!netdev->xdp_bulkq)
- 			return NOTIFY_BAD;
- 
+ 	if [ $retc -eq 0 ] && [ $rets -eq 0 ];then
 -- 
 2.27.0
 
