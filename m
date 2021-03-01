@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21714329C1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332AA329BF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380121AbhCBBs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:48:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
+        id S240776AbhCBBoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:44:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241553AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:24:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F14D26521E;
-        Mon,  1 Mar 2021 17:23:15 +0000 (UTC)
+        id S237977AbhCATVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:21:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A50E64E89;
+        Mon,  1 Mar 2021 16:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619396;
-        bh=dfiwfjdih95kPmNueKLfJksMl9tfBhr/oXqsr+opQjM=;
+        s=korg; t=1614616707;
+        bh=98jUuO5EMRRRwpjDpF/0kba61Dl4ZHvka5ovo3+mnbI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G7UOk467exbUHH83sLFxcuqIcKKQ/obtXExXjQmxaXNtTlFUbWcbKRPx1ozXpKes3
-         J5YiABYUWdL+jqs1gNO5XvMpuik3fTxJFNRV/CO/S/dZkHaa04V6dQ96qxRAvmcuOX
-         9CUtNfIr7fF/pl/jgE/emCDUOOiRj8GH1NRFHj38=
+        b=2kuYialBkPeqeYVZuTQs7d1jXp9x038L2raWxvJbmN56kMbuoQiBiEoZlke6ocqGn
+         /giJoq539A89ycuBOlDFMOcC1FrSn+aDucNk3n8FaelgYHdWgdoPld06Qn5pCBS7Jw
+         TzRmAdYQk/k0xl5uxei7SB7RrrPZj3INCVl7SmwE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andreas Oetken <andreas.oetken@siemens.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
+        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 440/663] nios2: fixed broken sys_clone syscall
+Subject: [PATCH 4.19 068/247] net: amd-xgbe: Reset the PHY rx data path when mailbox command timeout
 Date:   Mon,  1 Mar 2021 17:11:28 +0100
-Message-Id: <20210301161203.666460554@linuxfoundation.org>
+Message-Id: <20210301161035.008512545@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
+References: <20210301161031.684018251@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +42,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Oetken <andreas.oetken@siemens.com>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit 9abcfcb20320e8f693e89d86573b58e6289931cb ]
+[ Upstream commit 30b7edc82ec82578f4f5e6706766f0a9535617d3 ]
 
-The tls pointer must be pushed on the stack prior to calling nios2_clone
-as it is the 5th function argument. Prior handling of the tls pointer was
-done inside former called function copy_thread_tls using the r8 register
-from the current_pt_regs directly. This was a bad design and resulted in
-the current bug introduced in 04bd52fb.
+Sometimes mailbox commands timeout when the RX data path becomes
+unresponsive. This prevents the submission of new mailbox commands to DXIO.
+This patch identifies the timeout and resets the RX data path so that the
+next message can be submitted properly.
 
-Fixes: 04bd52fb ("nios2: enable HAVE_COPY_THREAD_TLS, switch to kernel_clone_args")
-Signed-off-by: Andreas Oetken <andreas.oetken@siemens.com>
-Signed-off-by: Ley Foon Tan <ley.foon.tan@intel.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Fixes: 549b32af9f7c ("amd-xgbe: Simplify mailbox interface rate change code")
+Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/nios2/kernel/entry.S | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/amd/xgbe/xgbe-common.h | 14 +++++++++++
+ drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c | 28 ++++++++++++++++++++-
+ 2 files changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/arch/nios2/kernel/entry.S b/arch/nios2/kernel/entry.S
-index da8442450e460..0794cd7803dfe 100644
---- a/arch/nios2/kernel/entry.S
-+++ b/arch/nios2/kernel/entry.S
-@@ -389,7 +389,10 @@ ENTRY(ret_from_interrupt)
-  */
- ENTRY(sys_clone)
- 	SAVE_SWITCH_STACK
-+	subi    sp, sp, 4 /* make space for tls pointer */
-+	stw     r8, 0(sp) /* pass tls pointer (r8) via stack (5th argument) */
- 	call	nios2_clone
-+	addi    sp, sp, 4
- 	RESTORE_SWITCH_STACK
- 	ret
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-common.h b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
+index b40d4377cc71d..b2cd3bdba9f89 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-common.h
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
+@@ -1279,10 +1279,18 @@
+ #define MDIO_PMA_10GBR_FECCTRL		0x00ab
+ #endif
  
++#ifndef MDIO_PMA_RX_CTRL1
++#define MDIO_PMA_RX_CTRL1		0x8051
++#endif
++
+ #ifndef MDIO_PCS_DIG_CTRL
+ #define MDIO_PCS_DIG_CTRL		0x8000
+ #endif
+ 
++#ifndef MDIO_PCS_DIGITAL_STAT
++#define MDIO_PCS_DIGITAL_STAT		0x8010
++#endif
++
+ #ifndef MDIO_AN_XNP
+ #define MDIO_AN_XNP			0x0016
+ #endif
+@@ -1358,6 +1366,8 @@
+ #define XGBE_KR_TRAINING_ENABLE		BIT(1)
+ 
+ #define XGBE_PCS_CL37_BP		BIT(12)
++#define XGBE_PCS_PSEQ_STATE_MASK	0x1c
++#define XGBE_PCS_PSEQ_STATE_POWER_GOOD	0x10
+ 
+ #define XGBE_AN_CL37_INT_CMPLT		BIT(0)
+ #define XGBE_AN_CL37_INT_MASK		0x01
+@@ -1375,6 +1385,10 @@
+ #define XGBE_PMA_CDR_TRACK_EN_OFF	0x00
+ #define XGBE_PMA_CDR_TRACK_EN_ON	0x01
+ 
++#define XGBE_PMA_RX_RST_0_MASK		BIT(4)
++#define XGBE_PMA_RX_RST_0_RESET_ON	0x10
++#define XGBE_PMA_RX_RST_0_RESET_OFF	0x00
++
+ /* Bit setting and getting macros
+  *  The get macro will extract the current bit field value from within
+  *  the variable
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+index 3ceb4f95ca7ca..828d12bf523fe 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+@@ -1942,6 +1942,27 @@ static void xgbe_phy_set_redrv_mode(struct xgbe_prv_data *pdata)
+ 	xgbe_phy_put_comm_ownership(pdata);
+ }
+ 
++static void xgbe_phy_rx_reset(struct xgbe_prv_data *pdata)
++{
++	int reg;
++
++	reg = XMDIO_READ_BITS(pdata, MDIO_MMD_PCS, MDIO_PCS_DIGITAL_STAT,
++			      XGBE_PCS_PSEQ_STATE_MASK);
++	if (reg == XGBE_PCS_PSEQ_STATE_POWER_GOOD) {
++		/* Mailbox command timed out, reset of RX block is required.
++		 * This can be done by asseting the reset bit and wait for
++		 * its compeletion.
++		 */
++		XMDIO_WRITE_BITS(pdata, MDIO_MMD_PMAPMD, MDIO_PMA_RX_CTRL1,
++				 XGBE_PMA_RX_RST_0_MASK, XGBE_PMA_RX_RST_0_RESET_ON);
++		ndelay(20);
++		XMDIO_WRITE_BITS(pdata, MDIO_MMD_PMAPMD, MDIO_PMA_RX_CTRL1,
++				 XGBE_PMA_RX_RST_0_MASK, XGBE_PMA_RX_RST_0_RESET_OFF);
++		usleep_range(40, 50);
++		netif_err(pdata, link, pdata->netdev, "firmware mailbox reset performed\n");
++	}
++}
++
+ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 					unsigned int cmd, unsigned int sub_cmd)
+ {
+@@ -1949,9 +1970,11 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 	unsigned int wait;
+ 
+ 	/* Log if a previous command did not complete */
+-	if (XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS))
++	if (XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS)) {
+ 		netif_dbg(pdata, link, pdata->netdev,
+ 			  "firmware mailbox not ready for command\n");
++		xgbe_phy_rx_reset(pdata);
++	}
+ 
+ 	/* Construct the command */
+ 	XP_SET_BITS(s0, XP_DRIVER_SCRATCH_0, COMMAND, cmd);
+@@ -1973,6 +1996,9 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 
+ 	netif_dbg(pdata, link, pdata->netdev,
+ 		  "firmware mailbox command did not complete\n");
++
++	/* Reset on error */
++	xgbe_phy_rx_reset(pdata);
+ }
+ 
+ static void xgbe_phy_rrc(struct xgbe_prv_data *pdata)
 -- 
 2.27.0
 
