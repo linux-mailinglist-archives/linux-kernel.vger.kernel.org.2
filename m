@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C438E3299A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FED3329957
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345055AbhCBA1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:27:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43162 "EHLO mail.kernel.org"
+        id S1347682AbhCBALP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:11:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240006AbhCAS2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:28:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F781650AD;
-        Mon,  1 Mar 2021 17:39:14 +0000 (UTC)
+        id S239766AbhCASWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:22:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9385D65151;
+        Mon,  1 Mar 2021 17:05:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620355;
-        bh=W0oZqIwJv6gjpUQrHiC3w9wbrXYkCuhkY7788ApI77I=;
+        s=korg; t=1614618318;
+        bh=54DIiQEKusXaJ/QZQfjpta6y6yypWQih5bmhYPZ3d2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Aqi7vRB6RFWMLT5IgiXHvwoOP+pwcHcUnCGvIDPCcyF9E7yqwinmeMGPE0VDy9X/t
-         PoNT51HvyCaM7ScggCCfMCPUyqZev1l3ZmPS8rN1Vv6mOgUNaxVOIPz9LbMOXxV/Qn
-         7gT1VlnCpF9QZEm/bRsUWczDcAM93I41WQ218Bx4=
+        b=FonYkfICMvs/pUaIuuiarOtKW5jtQnbuJE2CaQEOQuAPiQthfTySFwJLXtfgowKVx
+         13BEuqGi5ZNPqt7dUF2RFBS5/g2QGo6NsuXgNNzMuz6Mgdv+l2wm9IcPCxOfbl2Tkt
+         F42SOm4I4okbOtNB7HnIDdayS1OOj2kuDjW+vR74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Arjun Roy <arjunroy@google.com>, Wei Wang <weiwan@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 123/775] tcp: fix SO_RCVLOWAT related hangs under mem pressure
-Date:   Mon,  1 Mar 2021 17:04:51 +0100
-Message-Id: <20210301161207.750462425@linuxfoundation.org>
+Subject: [PATCH 5.10 044/663] arm64: dts: allwinner: A64: properly connect USB PHY to port 0
+Date:   Mon,  1 Mar 2021 17:04:52 +0100
+Message-Id: <20210301161143.957126432@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit f969dc5a885736842c3511ecdea240fbb02d25d9 ]
+[ Upstream commit cc72570747e43335f4933a24dd74d5653639176a ]
 
-While commit 24adbc1676af ("tcp: fix SO_RCVLOWAT hangs with fat skbs")
-fixed an issue vs too small sk_rcvbuf for given sk_rcvlowat constraint,
-it missed to address issue caused by memory pressure.
+In recent Allwinner SoCs the first USB host controller (HCI0) shares
+the first PHY with the MUSB controller. Probably to make this sharing
+work, we were avoiding to declare this in the DT. This has two
+shortcomings:
+- U-Boot (which uses the same .dts) cannot use this port in host mode
+  without a PHY linked, so we were loosing one USB port there.
+- It requires the MUSB driver to be enabled and loaded, although we
+  don't actually use it.
 
-1) If we are under memory pressure and socket receive queue is empty.
-First incoming packet is allowed to be queued, after commit
-76dfa6082032 ("tcp: allow one skb to be received per socket under memory pressure")
+To avoid those issues, let's add this PHY link to the A64 .dtsi file.
+After all PHY port 0 *is* connected to HCI0, so we should describe
+it as this. Remove the part from the Pinebook DTS which already had
+this property.
 
-But we do not send EPOLLIN yet, in case tcp_data_ready() sees sk_rcvlowat
-is bigger than skb length.
+This makes it work in U-Boot, also improves compatiblity when no MUSB
+driver is loaded (for instance in distribution installers).
 
-2) Then, when next packet comes, it is dropped, and we directly
-call sk->sk_data_ready().
-
-3) If application is using poll(), tcp_poll() will then use
-tcp_stream_is_readable() and decide the socket receive queue is
-not yet filled, so nothing will happen.
-
-Even when sender retransmits packets, phases 2) & 3) repeat
-and flow is effectively frozen, until memory pressure is off.
-
-Fix is to consider tcp_under_memory_pressure() to take care
-of global memory pressure or memcg pressure.
-
-Fixes: 24adbc1676af ("tcp: fix SO_RCVLOWAT hangs with fat skbs")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Arjun Roy <arjunroy@google.com>
-Suggested-by: Wei Wang <weiwan@google.com>
-Reviewed-by: Wei Wang <weiwan@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: dc03a047df1d ("arm64: allwinner: a64: add EHCI0/OHCI0 nodes to A64 DTSI")
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210113152630.28810-2-andre.przywara@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/tcp.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts | 4 ----
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi         | 4 ++++
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 25bbada379c46..244208f6f6c2a 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -1431,8 +1431,13 @@ void tcp_cleanup_rbuf(struct sock *sk, int copied);
-  */
- static inline bool tcp_rmem_pressure(const struct sock *sk)
- {
--	int rcvbuf = READ_ONCE(sk->sk_rcvbuf);
--	int threshold = rcvbuf - (rcvbuf >> 3);
-+	int rcvbuf, threshold;
-+
-+	if (tcp_under_memory_pressure(sk))
-+		return true;
-+
-+	rcvbuf = READ_ONCE(sk->sk_rcvbuf);
-+	threshold = rcvbuf - (rcvbuf >> 3);
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+index 896f34fd9fc3a..d07cf05549c32 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+@@ -126,8 +126,6 @@
+ };
  
- 	return atomic_read(&sk->sk_rmem_alloc) > threshold;
- }
+ &ehci0 {
+-	phys = <&usbphy 0>;
+-	phy-names = "usb";
+ 	status = "okay";
+ };
+ 
+@@ -177,8 +175,6 @@
+ };
+ 
+ &ohci0 {
+-	phys = <&usbphy 0>;
+-	phy-names = "usb";
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index dc238814013cb..15f6408e73a27 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -593,6 +593,8 @@
+ 				 <&ccu CLK_USB_OHCI0>;
+ 			resets = <&ccu RST_BUS_OHCI0>,
+ 				 <&ccu RST_BUS_EHCI0>;
++			phys = <&usbphy 0>;
++			phy-names = "usb";
+ 			status = "disabled";
+ 		};
+ 
+@@ -603,6 +605,8 @@
+ 			clocks = <&ccu CLK_BUS_OHCI0>,
+ 				 <&ccu CLK_USB_OHCI0>;
+ 			resets = <&ccu RST_BUS_OHCI0>;
++			phys = <&usbphy 0>;
++			phy-names = "usb";
+ 			status = "disabled";
+ 		};
+ 
 -- 
 2.27.0
 
