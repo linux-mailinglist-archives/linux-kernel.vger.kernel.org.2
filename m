@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95148329A06
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 462FC329B2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348209AbhCBAmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:42:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48310 "EHLO mail.kernel.org"
+        id S1378718AbhCBBHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:07:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239342AbhCASgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:36:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00FEC651C6;
-        Mon,  1 Mar 2021 17:16:56 +0000 (UTC)
+        id S240796AbhCATEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:04:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C95F650D8;
+        Mon,  1 Mar 2021 17:51:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619017;
-        bh=NdCFkdvZLeEVBZ4O6yzfbT8iqIrnqWdQiyzqYrD+Lso=;
+        s=korg; t=1614621066;
+        bh=9TAtc3AALJ+x24LXjdljtfOseMQZUmjCax3PlP1uWbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u6zlvNKTLs8EQtsK8RKFl4AlSZgWJjVB5X/Ak4N1Ubfarp9+tfqZrgstnRxpuusCn
-         4DcPpA8W0efh7sf/QgIFuICS33pzqkRLd07CWHLcXXW5Mx6XYntfTeLHPcHS40XTFt
-         tsnWhln8wRWsjPx89gx6FejNGR1zOr5c608/pwWM=
+        b=luqxqEHrIs7XlZ5kqPJVoBqorTgHqQ4fRK41OzFCpNS4npk60lxc/Zj+eALBj27cs
+         VAGjwf0HgR1KPwpa5DSqtG1i2GIXPzwTNiVweW/tnxpeRo8rFT2cgVncU+5lX1Xf9H
+         gR9QQdoj9OPLGNC9NyvFWloY64XoTaaoAStNNTPw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 302/663] IB/mlx5: Add mutex destroy call to cap_mask_mutex mutex
+Subject: [PATCH 5.11 382/775] objtool: Fix ".cold" section suffix check for newer versions of GCC
 Date:   Mon,  1 Mar 2021 17:09:10 +0100
-Message-Id: <20210301161156.776202371@linuxfoundation.org>
+Message-Id: <20210301161220.483179850@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit ab40530a2e0a7aca9a5187824c4fb072f3916e85 ]
+[ Upstream commit 34ca59e109bdf69704c33b8eeffaa4c9f71076e5 ]
 
-mutex_destroy() call for device's cap_mask_mutex mutex is missing, let's
-add it to annotate destruction.
+With my version of GCC 9.3.1 the ".cold" subfunctions no longer have a
+numbered suffix, so the trailing period is no longer there.
 
-Fixes: e126ba97dba9 ("mlx5: Add driver for Mellanox Connect-IB adapters")
-Link: https://lore.kernel.org/r/20210113121703.559778-4-leon@kernel.org
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Presumably this doesn't yet trigger a user-visible bug since most of the
+subfunction detection logic is duplicated.   I only found it when
+testing vmlinux.o validation.
+
+Fixes: 54262aa28301 ("objtool: Fix sibling call detection")
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lore.kernel.org/r/ca0b5a57f08a2fbb48538dd915cc253b5edabb40.1611263461.git.jpoimboe@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/main.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ tools/objtool/check.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index e317d7d6d5c0d..f67165f80ece5 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3921,7 +3921,7 @@ static void mlx5_ib_stage_init_cleanup(struct mlx5_ib_dev *dev)
- 	mlx5_ib_cleanup_multiport_master(dev);
- 	WARN_ON(!xa_empty(&dev->odp_mkeys));
- 	cleanup_srcu_struct(&dev->odp_srcu);
--
-+	mutex_destroy(&dev->cap_mask_mutex);
- 	WARN_ON(!xa_empty(&dev->sig_mrs));
- 	WARN_ON(!bitmap_empty(dev->dm.memic_alloc_pages, MLX5_MAX_MEMIC_PAGES));
- }
-@@ -3972,6 +3972,10 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
- 	dev->ib_dev.dev.parent		= mdev->device;
- 	dev->ib_dev.lag_flags		= RDMA_LAG_FLAGS_HASH_ALL_SLAVES;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 48e22e3c6f186..dc24aac08edd6 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -850,8 +850,8 @@ static int add_jump_destinations(struct objtool_file *file)
+ 			 * case where the parent function's only reference to a
+ 			 * subfunction is through a jump table.
+ 			 */
+-			if (!strstr(insn->func->name, ".cold.") &&
+-			    strstr(insn->jump_dest->func->name, ".cold.")) {
++			if (!strstr(insn->func->name, ".cold") &&
++			    strstr(insn->jump_dest->func->name, ".cold")) {
+ 				insn->func->cfunc = insn->jump_dest->func;
+ 				insn->jump_dest->func->pfunc = insn->func;
  
-+	err = init_srcu_struct(&dev->odp_srcu);
-+	if (err)
-+		goto err_mp;
-+
- 	mutex_init(&dev->cap_mask_mutex);
- 	INIT_LIST_HEAD(&dev->qp_list);
- 	spin_lock_init(&dev->reset_flow_resource_lock);
-@@ -3981,11 +3985,6 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
- 
- 	spin_lock_init(&dev->dm.lock);
- 	dev->dm.dev = mdev;
--
--	err = init_srcu_struct(&dev->odp_srcu);
--	if (err)
--		goto err_mp;
--
- 	return 0;
- 
- err_mp:
 -- 
 2.27.0
 
