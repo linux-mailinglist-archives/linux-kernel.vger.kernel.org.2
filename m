@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C491329F7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0E5329EC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573991AbhCBD2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:28:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51902 "EHLO mail.kernel.org"
+        id S1446011AbhCBDDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:03:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242417AbhCAUeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:34:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F13864DDC;
-        Mon,  1 Mar 2021 18:53:53 +0000 (UTC)
+        id S243214AbhCAUSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:18:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4137D65319;
+        Mon,  1 Mar 2021 18:03:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614624834;
-        bh=InolBhvpbKOG51nSw5E0Kjkk0+8+4jOIrt0OSwTch3A=;
+        s=korg; t=1614621818;
+        bh=7huvN+C20SkmZILgftz3wqApWdpSaE+GDlgsLyMY1P8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pd7AfuDo1tFpB7ZfxkVNs01oI4BWbIRBkaTCuZ4MIAR5gALMR9dTr6seIrGWKjWIn
-         Zf61DpX9+DcrlsOqygIlQwaYj4syI5mlQZIWAhwH2XWnf+D2JcgEiaGqYa/8jiCMYb
-         I91RIB0sQ8rcrhsCQ9At3aA3rdGl3q/LzjiqQc44=
+        b=lTqHDf++S7tbglSsaxdcC2p8u0/DxwZRRL+cp2VF2351Jmiu0Y8wtQXwJgnh5i3KH
+         2K64HtkkOhK+MnfZp92Se4Pn1EvQX0LYs4AFwaFJLIV2AQyyZvD8MZ50refOw4Opi+
+         gJCgLaTaouMR3PVGUooX2qJ9m+6TXN8qyLnvGR9E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Labriola <michael.d.labriola@gmail.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.11 627/775] selinux: fix inconsistency between inode_getxattr and inode_listsecurity
-Date:   Mon,  1 Mar 2021 17:13:15 +0100
-Message-Id: <20210301161232.383285261@linuxfoundation.org>
+        stable@vger.kernel.org, Huang Jianan <huangjianan@oppo.com>,
+        Chao Yu <yuchao0@huawei.com>, Gao Xiang <hsiangkao@redhat.com>
+Subject: [PATCH 5.11 628/775] erofs: initialized fields can only be observed after bit is set
+Date:   Mon,  1 Mar 2021 17:13:16 +0100
+Message-Id: <20210301161232.432812782@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,52 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Goldstein <amir73il@gmail.com>
+From: Gao Xiang <hsiangkao@redhat.com>
 
-commit a9ffe682c58aaff643764547f5420e978b6e0830 upstream.
+commit ce063129181312f8781a047a50be439c5859747b upstream.
 
-When inode has no listxattr op of its own (e.g. squashfs) vfs_listxattr
-calls the LSM inode_listsecurity hooks to list the xattrs that LSMs will
-intercept in inode_getxattr hooks.
+Currently, although set_bit() & test_bit() pairs are used as a fast-
+path for initialized configurations. However, these atomic ops are
+actually relaxed forms. Instead, load-acquire & store-release form is
+needed to make sure uninitialized fields won't be observed in advance
+here (yet no such corresponding bitops so use full barriers instead.)
 
-When selinux LSM is installed but not initialized, it will list the
-security.selinux xattr in inode_listsecurity, but will not intercept it
-in inode_getxattr.  This results in -ENODATA for a getxattr call for an
-xattr returned by listxattr.
-
-This situation was manifested as overlayfs failure to copy up lower
-files from squashfs when selinux is built-in but not initialized,
-because ovl_copy_xattr() iterates the lower inode xattrs by
-vfs_listxattr() and vfs_getxattr().
-
-Match the logic of inode_listsecurity to that of inode_getxattr and
-do not list the security.selinux xattr if selinux is not initialized.
-
-Reported-by: Michael Labriola <michael.d.labriola@gmail.com>
-Tested-by: Michael Labriola <michael.d.labriola@gmail.com>
-Link: https://lore.kernel.org/linux-unionfs/2nv9d47zt7.fsf@aldarion.sourceruckus.org/
-Fixes: c8e222616c7e ("selinux: allow reading labels before policy is loaded")
-Cc: stable@vger.kernel.org#v5.9+
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Link: https://lore.kernel.org/r/20210209130618.15838-1-hsiangkao@aol.com
+Fixes: 62dc45979f3f ("staging: erofs: fix race of initializing xattrs of a inode at the same time")
+Fixes: 152a333a5895 ("staging: erofs: add compacted compression indexes support")
+Cc: <stable@vger.kernel.org> # 5.3+
+Reported-by: Huang Jianan <huangjianan@oppo.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/selinux/hooks.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ fs/erofs/xattr.c |   10 +++++++++-
+ fs/erofs/zmap.c  |   10 +++++++++-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -3413,6 +3413,10 @@ static int selinux_inode_setsecurity(str
- static int selinux_inode_listsecurity(struct inode *inode, char *buffer, size_t buffer_size)
- {
- 	const int len = sizeof(XATTR_NAME_SELINUX);
-+
-+	if (!selinux_initialized(&selinux_state))
-+		return 0;
-+
- 	if (buffer && len <= buffer_size)
- 		memcpy(buffer, XATTR_NAME_SELINUX, len);
- 	return len;
+--- a/fs/erofs/xattr.c
++++ b/fs/erofs/xattr.c
+@@ -48,8 +48,14 @@ static int init_inode_xattrs(struct inod
+ 	int ret = 0;
+ 
+ 	/* the most case is that xattrs of this inode are initialized. */
+-	if (test_bit(EROFS_I_EA_INITED_BIT, &vi->flags))
++	if (test_bit(EROFS_I_EA_INITED_BIT, &vi->flags)) {
++		/*
++		 * paired with smp_mb() at the end of the function to ensure
++		 * fields will only be observed after the bit is set.
++		 */
++		smp_mb();
+ 		return 0;
++	}
+ 
+ 	if (wait_on_bit_lock(&vi->flags, EROFS_I_BL_XATTR_BIT, TASK_KILLABLE))
+ 		return -ERESTARTSYS;
+@@ -137,6 +143,8 @@ static int init_inode_xattrs(struct inod
+ 	}
+ 	xattr_iter_end(&it, atomic_map);
+ 
++	/* paired with smp_mb() at the beginning of the function. */
++	smp_mb();
+ 	set_bit(EROFS_I_EA_INITED_BIT, &vi->flags);
+ 
+ out_unlock:
+--- a/fs/erofs/zmap.c
++++ b/fs/erofs/zmap.c
+@@ -36,8 +36,14 @@ static int z_erofs_fill_inode_lazy(struc
+ 	void *kaddr;
+ 	struct z_erofs_map_header *h;
+ 
+-	if (test_bit(EROFS_I_Z_INITED_BIT, &vi->flags))
++	if (test_bit(EROFS_I_Z_INITED_BIT, &vi->flags)) {
++		/*
++		 * paired with smp_mb() at the end of the function to ensure
++		 * fields will only be observed after the bit is set.
++		 */
++		smp_mb();
+ 		return 0;
++	}
+ 
+ 	if (wait_on_bit_lock(&vi->flags, EROFS_I_BL_Z_BIT, TASK_KILLABLE))
+ 		return -ERESTARTSYS;
+@@ -83,6 +89,8 @@ static int z_erofs_fill_inode_lazy(struc
+ 
+ 	vi->z_physical_clusterbits[1] = vi->z_logical_clusterbits +
+ 					((h->h_clusterbits >> 5) & 7);
++	/* paired with smp_mb() at the beginning of the function */
++	smp_mb();
+ 	set_bit(EROFS_I_Z_INITED_BIT, &vi->flags);
+ unmap_done:
+ 	kunmap_atomic(kaddr);
 
 
