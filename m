@@ -2,215 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E587328993
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF0E3289FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239292AbhCAR7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:59:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:33520 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232932AbhCAQdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:33:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 231561042;
-        Mon,  1 Mar 2021 08:32:17 -0800 (PST)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 220633F73C;
-        Mon,  1 Mar 2021 08:32:14 -0800 (PST)
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Subject: Re: [PATCH v4 04/19] kvm: arm64: nvhe: Save the SPE context early
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, mathieu.poirier@linaro.org,
-        mike.leach@linaro.org, anshuman.khandual@arm.com,
-        leo.yan@linaro.org, stable@vger.kernel.org,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20210225193543.2920532-1-suzuki.poulose@arm.com>
- <20210225193543.2920532-5-suzuki.poulose@arm.com>
-Message-ID: <efc29f9b-22a9-06c5-9ba0-49cb0d9053b3@arm.com>
-Date:   Mon, 1 Mar 2021 16:32:23 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231820AbhCASJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:09:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24686 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234470AbhCAQfU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:35:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614616416;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NXTK4ZGu5+ooGvAa6Xkt4bycI9XBagy87L8rBkPbpi0=;
+        b=bjTm1iIR41eLLkpiqibx2W1a6vgCpCfbVTnT1shKaRTuUI/tqlhaXr+m9VCzzg7CUdD5CT
+        Ng1o8vTif+BxNp7ANidI3GGW2ZhghVsHh++byS+6JkRtxNxAUJWROX+eVathtlYyV0oqK0
+        xUSq9ZmVQ5x2wq/7CrB1pjzaJSo7bqs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-6CB_kVIDPUWcSs8JuT5UhQ-1; Mon, 01 Mar 2021 11:33:31 -0500
+X-MC-Unique: 6CB_kVIDPUWcSs8JuT5UhQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9104780196C;
+        Mon,  1 Mar 2021 16:33:30 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-182.rdu2.redhat.com [10.10.115.182])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 67022620DE;
+        Mon,  1 Mar 2021 16:33:25 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id F035822054F; Mon,  1 Mar 2021 11:33:24 -0500 (EST)
+Date:   Mon, 1 Mar 2021 11:33:24 -0500
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Subject: Re: [RFC PATCH] fuse: Clear SGID bit when setting mode in setacl
+Message-ID: <20210301163324.GC186178@redhat.com>
+References: <20210226183357.28467-1-lhenriques@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210225193543.2920532-5-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226183357.28467-1-lhenriques@suse.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Suzuki,
+On Fri, Feb 26, 2021 at 06:33:57PM +0000, Luis Henriques wrote:
+> Setting file permissions with POSIX ACLs (setxattr) isn't clearing the
+> setgid bit.  This seems to be CVE-2016-7097, detected by running fstest
+> generic/375 in virtiofs.  Unfortunately, when the fix for this CVE landed
+> in the kernel with commit 073931017b49 ("posix_acl: Clear SGID bit when
+> setting file permissions"), FUSE didn't had ACLs support yet.
 
-On 2/25/21 7:35 PM, Suzuki K Poulose wrote:
-> The nvhe hyp saves the SPE context, flushing any unwritten
+Hi Luis,
 
-Perhaps that can be reworded to "The nVHE world switch code saves [..]".
+Interesting. I did not know that "chmod" can lead to clearing of SGID
+as well. Recently we implemented FUSE_HANDLE_KILLPRIV_V2 flag which
+means that file server is responsible for clearing of SUID/SGID/caps
+as per following rules.
 
-Also, according to my understanding of "context", that means saving *all* the
-related registers. But KVM saves only *one* register, PMSCR_EL1. I think stating
-that KVM disables sampling and drains the buffer would be more accurate.
+    - caps are always cleared on chown/write/truncate
+    - suid is always cleared on chown, while for truncate/write it is cleared
+      only if caller does not have CAP_FSETID.
+    - sgid is always cleared on chown, while for truncate/write it is cleared
+      only if caller does not have CAP_FSETID as well as file has group execute
+      permission.
 
-> data before we switch to the guest. But this operation is
-> performed way too late, because :
->   - The ownership of the SPE is transferred to EL2. i.e,
+And we don't have anything about "chmod" in this list. Well, I will test
+this and come back to this little later.
 
-I think the Arm ARM defines only the ownership of the SPE *buffer* (buffer owning
-regime), not the ownership of SPE as a whole.
+I see following comment in fuse_set_acl().
 
->     using EL2 translations. (MDCR_EL2_E2PB == 0)
+                /*
+                 * Fuse userspace is responsible for updating access
+                 * permissions in the inode, if needed. fuse_setxattr
+                 * invalidates the inode attributes, which will force
+                 * them to be refreshed the next time they are used,
+                 * and it also updates i_ctime.
+                 */
 
-I think "EL2 translations" is bit too vague, EL2 stage 1 translation would be more
-precise, since we're talking only about the nVHE case.
+So looks like that original code has been written with intent that
+file server is responsible for updating inode permissions. I am
+assuming this will include clearing of S_ISGID if needed.
 
->   - The guest Stage1 is loaded.
->
-> Thus the flush could use the host EL1 virtual address,
-> but use the EL2 translations instead. Fix this by
+But question is, does file server has enough information to be able
+to handle proper clearing of S_ISGID info. IIUC, file server will need
+two pieces of information atleast.
 
-It's not *could*, it's *will*. The SPE buffer will use the buffer pointer
-programmed by the host at EL1, but will attempt to translate it using EL2 stage 1
-translation, where it's (probably) not mapped.
+- gid of the caller.
+- Whether caller has CAP_FSETID or not.
 
-> and before we change the ownership to EL2.
+I think we have first piece of information but not the second one. May
+be we need to send this in fuse_setxattr_in->flags. And file server
+can drop CAP_FSETID while doing setxattr().
 
-Same comment about ownership.
+What about "gid" info. We don't change to caller's uid/gid while doing
+setxattr(). So host might not clear S_ISGID or clear it when it should
+not. I am wondering that can we switch to caller's uid/gid in setxattr(),
+atleast while setting acls.
 
-> The restore path is doing the right thing.
->
-> Fixes: 014c4c77aad7 ("KVM: arm64: Improve debug register save/restore flow")
-> Cc: stable@vger.kernel.org
-> Cc: Christoffer Dall <christoffer.dall@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexandru Elisei <alexandru.elisei@arm.com>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Thanks
+Vivek
+
+> 
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
 > ---
-> New patch.
-> ---
->  arch/arm64/include/asm/kvm_hyp.h   |  5 +++++
->  arch/arm64/kvm/hyp/nvhe/debug-sr.c | 12 ++++++++++--
->  arch/arm64/kvm/hyp/nvhe/switch.c   | 12 +++++++++++-
->  3 files changed, 26 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
-> index c0450828378b..385bd7dd3d39 100644
-> --- a/arch/arm64/include/asm/kvm_hyp.h
-> +++ b/arch/arm64/include/asm/kvm_hyp.h
-> @@ -83,6 +83,11 @@ void sysreg_restore_guest_state_vhe(struct kvm_cpu_context *ctxt);
->  void __debug_switch_to_guest(struct kvm_vcpu *vcpu);
->  void __debug_switch_to_host(struct kvm_vcpu *vcpu);
->  
-> +#ifdef __KVM_NVHE_HYPERVISOR__
-> +void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu);
-> +void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu);
-> +#endif
-> +
->  void __fpsimd_save_state(struct user_fpsimd_state *fp_regs);
->  void __fpsimd_restore_state(struct user_fpsimd_state *fp_regs);
->  
-> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-> index 91a711aa8382..f401724f12ef 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-> @@ -58,16 +58,24 @@ static void __debug_restore_spe(u64 pmscr_el1)
->  	write_sysreg_s(pmscr_el1, SYS_PMSCR_EL1);
->  }
->  
-> -void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
-> +void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu)
+>  fs/fuse/acl.c | 29 ++++++++++++++++++++++++++---
+>  1 file changed, 26 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
+> index f529075a2ce8..1b273277c1c9 100644
+> --- a/fs/fuse/acl.c
+> +++ b/fs/fuse/acl.c
+> @@ -54,7 +54,9 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
 >  {
->  	/* Disable and flush SPE data generation */
->  	__debug_save_spe(&vcpu->arch.host_debug_state.pmscr_el1);
-> +}
+>  	struct fuse_conn *fc = get_fuse_conn(inode);
+>  	const char *name;
+> +	umode_t mode = inode->i_mode;
+>  	int ret;
+> +	bool update_mode = false;
+>  
+>  	if (fuse_is_bad(inode))
+>  		return -EIO;
+> @@ -62,11 +64,18 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+>  	if (!fc->posix_acl || fc->no_setxattr)
+>  		return -EOPNOTSUPP;
+>  
+> -	if (type == ACL_TYPE_ACCESS)
+> +	if (type == ACL_TYPE_ACCESS) {
+>  		name = XATTR_NAME_POSIX_ACL_ACCESS;
+> -	else if (type == ACL_TYPE_DEFAULT)
+> +		if (acl) {
+> +			ret = posix_acl_update_mode(inode, &mode, &acl);
+> +			if (ret)
+> +				return ret;
+> +			if (inode->i_mode != mode)
+> +				update_mode = true;
+> +		}
+> +	} else if (type == ACL_TYPE_DEFAULT) {
+>  		name = XATTR_NAME_POSIX_ACL_DEFAULT;
+> -	else
+> +	} else
+>  		return -EINVAL;
+>  
+>  	if (acl) {
+> @@ -98,6 +107,20 @@ int fuse_set_acl(struct inode *inode, struct posix_acl *acl, int type)
+>  	} else {
+>  		ret = fuse_removexattr(inode, name);
+>  	}
+> +	if (!ret && update_mode) {
+> +		struct dentry *entry;
+> +		struct iattr attr;
 > +
-> +void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
-> +{
->  	__debug_switch_to_guest_common(vcpu);
->  }
+> +		entry = d_find_alias(inode);
+> +		if (entry) {
+> +			memset(&attr, 0, sizeof(attr));
+> +			attr.ia_valid = ATTR_MODE | ATTR_CTIME;
+> +			attr.ia_mode = mode;
+> +			attr.ia_ctime = current_time(inode);
+> +			ret = fuse_do_setattr(entry, &attr, NULL);
+> +			dput(entry);
+> +		}
+> +	}
+>  	forget_all_cached_acls(inode);
+>  	fuse_invalidate_attr(inode);
 >  
-> -void __debug_switch_to_host(struct kvm_vcpu *vcpu)
-> +void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu)
->  {
->  	__debug_restore_spe(vcpu->arch.host_debug_state.pmscr_el1);
-> +}
-> +
-> +void __debug_switch_to_host(struct kvm_vcpu *vcpu)
-> +{
->  	__debug_switch_to_host_common(vcpu);
->  }
->  
-> diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
-> index f3d0e9eca56c..10eed66136a0 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/switch.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/switch.c
-> @@ -192,6 +192,15 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
->  	pmu_switch_needed = __pmu_switch_to_guest(host_ctxt);
->  
->  	__sysreg_save_state_nvhe(host_ctxt);
-> +	/*
-> +	 * For nVHE, we must save and disable any SPE
-> +	 * buffers, as the translation regime is going
-
-I'm not sure what "save and disable any SPE buffers" means. The code definitely
-doesn't save anything related to the SPE buffer. Maybe you're trying to say that
-it must drain the buffer contents to memory? Also, SPE has only *one* buffer.
-
-> +	 * to be loaded with that of the guest. And we must
-> +	 * save host context for SPE, before we change the
-> +	 * ownership to EL2 (via MDCR_EL2_E2PB == 0)  and before
-
-Same comments about "save host context for SPE" (from what I understand that
-"context" means, KVM doesn't do that) and ownership (SPE doesn't have an
-ownership, the SPE buffer has an owning translation regime).
-
-> +	 * we load guest Stage1.
-> +	 */
-> +	__debug_save_host_buffers_nvhe(vcpu);
->  
->  	__adjust_pc(vcpu);
->  
-> @@ -234,11 +243,12 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
->  	if (vcpu->arch.flags & KVM_ARM64_FP_ENABLED)
->  		__fpsimd_save_fpexc32(vcpu);
->  
-> +	__debug_switch_to_host(vcpu);
->  	/*
->  	 * This must come after restoring the host sysregs, since a non-VHE
->  	 * system may enable SPE here and make use of the TTBRs.
->  	 */
-> -	__debug_switch_to_host(vcpu);
-> +	__debug_restore_host_buffers_nvhe(vcpu);
->  
->  	if (pmu_switch_needed)
->  		__pmu_switch_to_host(host_ctxt);
-
-The patch looks correct to me. There are several things that are wrong with the
-way KVM drains the SPE buffer in __debug_switch_to_guest():
-
-1. The buffer is drained after the guest's stage 1 is loaded in
-__sysreg_restore_state_nvhe() -> __sysreg_restore_el1_state().
-
-2. The buffer is drained after HCR_EL2.VM is set in __activate_traps() ->
-___activate_traps(), which means that the buffer would have use the guest's stage
-1 + host's stage 2 for address translation if not 3 below.
-
-3. And finally, the buffer is drained after MDCR_EL2.E2PB is set to 0b00 in
-__activate_traps() -> __activate_traps_common() (vcpu->arch.mdcr_el2 is computed
-in kvm_arch_vcpu_ioctl_run() -> kvm_arm_setup_debug() before __kvm_vcpu_run(),
-which means that the buffer will end up using the EL2 stage 1 translation because
-of the ISB after sampling is disabled.
-
-Your fix looks correct to me, we drain the buffer and disable event sampling
-before we start restoring any of the state associated with the guest, and we
-re-enable profiling after we restore all the host's state relevant for profiling.
-
-Thanks,
-
-Alex
+> 
 
