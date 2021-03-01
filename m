@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4695327D8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A1E327D8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234134AbhCALuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 06:50:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57599 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234169AbhCALt1 (ORCPT
+        id S234093AbhCALua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 06:50:30 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:39590 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234175AbhCALty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 06:49:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614599281;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=uKNEfvMGS8/7Pghwx2da+Euw6cfO6beInGssap82mg4=;
-        b=SXybfIZY7x6vsHMfs30oXMs7sjO/CabF2xPOgVGWCxaEil94WAeQa0u6xN64k3zfqBoHAF
-        aIWWAjBMD7bdCTEUjlsJvL1H7PAveMpTp/rSafl4J3ceryTbeXXFSbalU8t0tynB71ImRm
-        z9W+tDlOPj/8moo8CreSI2LTPHKCkvA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-94CxkQcQOqyDT_d_dbCfNw-1; Mon, 01 Mar 2021 06:47:58 -0500
-X-MC-Unique: 94CxkQcQOqyDT_d_dbCfNw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 801AB107ACFB;
-        Mon,  1 Mar 2021 11:47:56 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-87.ams2.redhat.com [10.36.114.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E855310013C1;
-        Mon,  1 Mar 2021 11:47:49 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        kernel test robot <lkp@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH v1] microblaze: tag highmem_setup() with __meminit
-Date:   Mon,  1 Mar 2021 12:47:49 +0100
-Message-Id: <20210301114749.47914-1-david@redhat.com>
+        Mon, 1 Mar 2021 06:49:54 -0500
+Received: by mail-io1-f72.google.com with SMTP id x6so2252623ioj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 03:49:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=DwARR0f16pytt1tCFzY3s3chbtjz6oz+ioNdZQ7XKbE=;
+        b=SRceP7rAbynvp6/0a66vVF2PRZIxUYn58EYH885quj7tkIDFiok4PhG3ZoXLbZxBEv
+         1Ux9G8VIFn5UqIYcGRppX1I+9eUVFOv1Qn07ZPAa5BWN3IbsDaf6NRAeVph/ZvRKPCnh
+         SfruWEj0/ApVAru2QV5ZqJMQZa470jAV343s/BjSz8qEwh+iu64H5nhjMJElhYN0DX38
+         wdSgbjeUgQQFnwULsmXqKxuYTuaN+XxZFOP1aZyzRulYKBx+HL1jrxa1/tCHAXTq4p84
+         f1P2GdWKY0X+omAGSQhVKkph4hGcxTr3fsh4Z9WxNH0Q4aicJq36vANiA4NRzJ8bI89o
+         yY3g==
+X-Gm-Message-State: AOAM532MeSU5uSoQzRvpYbjljyCisPpg4UB2tgx5F5aAUDgSqlbF/zX5
+        apVFMP0PZ6IzmYak7U9f6F0LfKxmI47kf7+Wy/GTSHDklCx9
+X-Google-Smtp-Source: ABdhPJxhD0zPY5Uhs0jKXVz/djbISrGEHK64CWufRALhFr638FsvoBeCA3iDrAmzXrTKoANokDPVKYR/wFXDWPFV2Ltp5x5IG7JS
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Received: by 2002:a92:6a0b:: with SMTP id f11mr12229147ilc.290.1614599353665;
+ Mon, 01 Mar 2021 03:49:13 -0800 (PST)
+Date:   Mon, 01 Mar 2021 03:49:13 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ee0e3005bc783400@google.com>
+Subject: KMSAN: uninit-value in dgram_sendmsg
+From:   syzbot <syzbot+a209a964d48b219587cc@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, glider@google.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit a0cd7a7c4bc0 ("mm: simplify free_highmem_page() and
-free_reserved_page()") the kernel test robot complains about a warning:
+Hello,
 
-WARNING: modpost: vmlinux.o(.text.unlikely+0x23ac): Section mismatch in
-  reference from the function highmem_setup() to the function
-  .meminit.text:memblock_is_reserved()
+syzbot found the following issue on:
 
-This has been broken ever since microblaze added highmem support,
-because memblock_is_reserved() was already tagged with "__init" back then -
-most probably the function always got inlined, so we never stumbled over
-it.
+HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=13b86466d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c8e3b38ca92283e
+dashboard link: https://syzkaller.appspot.com/bug?extid=a209a964d48b219587cc
+compiler:       Debian clang version 11.0.1-2
+userspace arch: i386
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 2f2f371f8907 ("microblaze: Highmem support")
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Simek <monstr@monstr.eu>
-Cc: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Arvind Sankar <nivedita@alum.mit.edu>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a209a964d48b219587cc@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in ieee802154_addr_from_sa include/net/ieee802154_netdev.h:174 [inline]
+BUG: KMSAN: uninit-value in dgram_sendmsg+0x14cb/0x15c0 net/ieee802154/socket.c:660
+CPU: 0 PID: 14314 Comm: syz-executor.3 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+ ieee802154_addr_from_sa include/net/ieee802154_netdev.h:174 [inline]
+ dgram_sendmsg+0x14cb/0x15c0 net/ieee802154/socket.c:660
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg net/socket.c:672 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2345
+ ___sys_sendmsg net/socket.c:2399 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2432
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fcc549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55c65fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000380
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Local variable ----address.i@__sys_sendmsg created at:
+ ___sys_sendmsg net/socket.c:2389 [inline]
+ __sys_sendmsg+0x30e/0x830 net/socket.c:2432
+ ___sys_sendmsg net/socket.c:2389 [inline]
+ __sys_sendmsg+0x30e/0x830 net/socket.c:2432
+=====================================================
+
+
 ---
- arch/microblaze/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
-index 181e48782e6c..05cf1fb3f5ff 100644
---- a/arch/microblaze/mm/init.c
-+++ b/arch/microblaze/mm/init.c
-@@ -52,7 +52,7 @@ static void __init highmem_init(void)
- 	pkmap_page_table = virt_to_kpte(PKMAP_BASE);
- }
- 
--static void highmem_setup(void)
-+static void __meminit highmem_setup(void)
- {
- 	unsigned long pfn;
- 
--- 
-2.29.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
