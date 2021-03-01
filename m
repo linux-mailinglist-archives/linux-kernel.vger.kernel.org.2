@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409EF329981
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7823299BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344999AbhCBAVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:21:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41521 "EHLO mail.kernel.org"
+        id S1376443AbhCBA26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239633AbhCASYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:24:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE3E265101;
-        Mon,  1 Mar 2021 17:02:15 +0000 (UTC)
+        id S238533AbhCASaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:30:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AFEA6510C;
+        Mon,  1 Mar 2021 17:02:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618136;
-        bh=vAoKC/oQSeRRYOHmfGbX1pUThqpyunmz1aqUmqw9eds=;
+        s=korg; t=1614618141;
+        bh=krOif0RFESdBzp724x/Pm0sQZg0ogvMbP8tQb3fCVwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TbbRJkwWeNKEOBeIoRcT7WZINlmqtrpJIy+Elxt5+EDkvKkVpT6xxsUY5wOpszCae
-         yJhO4ihA9Yp4FW3bfFuoarE2BXxQS+AQu1EGv/liyuCHXWF4fx06WFIvT+OR2dLpHm
-         TRjk6YSZVmFD+adPKZKiuhhFQjX9tLRPhPsvhTt4=
+        b=vEBzWoggN8U1me8tYv1tM8N3/OhlgJSAzPFfkCw1H7nE5sf+GMrupw6oH2zl/Bpou
+         wtk/UTUpztNGzoX6NDGWeeaqyzzs/jQ+JWTMqnEX2uU3HU93e3mtMN4IHJLlrR/D4n
+         aTiFU7gw66cwc0CEOKXDbUxWfI6ggvDcUJVCp4D8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Masahisa Kojima <masahisa.kojima@linaro.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 319/340] spi: spi-synquacer: fix set_cs handling
-Date:   Mon,  1 Mar 2021 17:14:23 +0100
-Message-Id: <20210301161103.992369522@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 5.4 320/340] gfs2: Dont skip dlm unlock if glock has an lvb
+Date:   Mon,  1 Mar 2021 17:14:24 +0100
+Message-Id: <20210301161104.044328729@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -41,36 +39,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahisa Kojima <masahisa.kojima@linaro.org>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit 1c9f1750f0305bf605ff22686fc0ac89c06deb28 upstream.
+commit 78178ca844f0eb88f21f31c7fde969384be4c901 upstream.
 
-When the slave chip select is deasserted, DMSTOP bit
-must be set.
+Patch fb6791d100d1 was designed to allow gfs2 to unmount quicker by
+skipping the step where it tells dlm to unlock glocks in EX with lvbs.
+This was done because when gfs2 unmounts a file system, it destroys the
+dlm lockspace shortly after it destroys the glocks so it doesn't need to
+unlock them all: the unlock is implied when the lockspace is destroyed
+by dlm.
 
-Fixes: b0823ee35cf9 ("spi: Add spi driver for Socionext SynQuacer platform")
-Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
-Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210201073109.9036-1-jassisinghbrar@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+However, that patch introduced a use-after-free in dlm: as part of its
+normal dlm_recoverd process, it can call ls_recovery to recover dead
+locks. In so doing, it can call recover_rsbs which calls recover_lvb for
+any mastered rsbs. Func recover_lvb runs through the list of lkbs queued
+to the given rsb (if the glock is cached but unlocked, it will still be
+queued to the lkb, but in NL--Unlocked--mode) and if it has an lvb,
+copies it to the rsb, thus trying to preserve the lkb. However, when
+gfs2 skips the dlm unlock step, it frees the glock and its lvb, which
+means dlm's function recover_lvb references the now freed lvb pointer,
+copying the freed lvb memory to the rsb.
+
+This patch changes the check in gdlm_put_lock so that it calls
+dlm_unlock for all glocks that contain an lvb pointer.
+
+Fixes: fb6791d100d1 ("GFS2: skip dlm_unlock calls in unmount")
+Cc: stable@vger.kernel.org # v3.8+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-synquacer.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ fs/gfs2/lock_dlm.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/drivers/spi/spi-synquacer.c
-+++ b/drivers/spi/spi-synquacer.c
-@@ -490,6 +490,10 @@ static void synquacer_spi_set_cs(struct
- 	val &= ~(SYNQUACER_HSSPI_DMPSEL_CS_MASK <<
- 		 SYNQUACER_HSSPI_DMPSEL_CS_SHIFT);
- 	val |= spi->chip_select << SYNQUACER_HSSPI_DMPSEL_CS_SHIFT;
-+
-+	if (!enable)
-+		val |= SYNQUACER_HSSPI_DMSTOP_STOP;
-+
- 	writel(val, sspi->regs + SYNQUACER_HSSPI_REG_DMSTART);
- }
+--- a/fs/gfs2/lock_dlm.c
++++ b/fs/gfs2/lock_dlm.c
+@@ -280,7 +280,6 @@ static void gdlm_put_lock(struct gfs2_gl
+ {
+ 	struct gfs2_sbd *sdp = gl->gl_name.ln_sbd;
+ 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
+-	int lvb_needs_unlock = 0;
+ 	int error;
  
+ 	if (gl->gl_lksb.sb_lkid == 0) {
+@@ -293,13 +292,10 @@ static void gdlm_put_lock(struct gfs2_gl
+ 	gfs2_sbstats_inc(gl, GFS2_LKS_DCOUNT);
+ 	gfs2_update_request_times(gl);
+ 
+-	/* don't want to skip dlm_unlock writing the lvb when lock is ex */
+-
+-	if (gl->gl_lksb.sb_lvbptr && (gl->gl_state == LM_ST_EXCLUSIVE))
+-		lvb_needs_unlock = 1;
++	/* don't want to skip dlm_unlock writing the lvb when lock has one */
+ 
+ 	if (test_bit(SDF_SKIP_DLM_UNLOCK, &sdp->sd_flags) &&
+-	    !lvb_needs_unlock) {
++	    !gl->gl_lksb.sb_lvbptr) {
+ 		gfs2_glock_free(gl);
+ 		return;
+ 	}
 
 
