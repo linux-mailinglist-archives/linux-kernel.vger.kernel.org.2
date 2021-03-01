@@ -2,157 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733D13279F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3BB3279E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:49:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233665AbhCAIto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:49:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37368 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233504AbhCAIqq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:46:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614588315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NDfpZiBORFcwJhka5rTFwKHAeoR+PqV6dRvqqfDZlpQ=;
-        b=V2fexq1q0y0AAX1ax+qaeRktwXEdGF7+ISKSo+vzDORYsCDQezMC2BMNKBrjozogVXXYRv
-        Y3yQOooHNeN3FejAZo3DEQuVdecMS8/SZRsuddWypivmPhLwbpbfEbbh6T7H2w+ioVoTHo
-        5tkWcDO3sZumADuWwITOFf6TqJ/SY9g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-FA3ltOZ9O9SOY20SxFpyvw-1; Mon, 01 Mar 2021 03:45:11 -0500
-X-MC-Unique: FA3ltOZ9O9SOY20SxFpyvw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S233539AbhCAIrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:47:37 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:46615 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233445AbhCAIqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 03:46:14 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614588348; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Cey4WVl7LtaCP6MJNq4HJn9FVmHktZGEEAE5nLQ/M8A=;
+ b=msX9yDzfT02Z7rRyMhfib8r0n4Lfa3NDw3tpSA9FRrZUFzG0yF4s9bqq5UL0pU/8RCNDLCuH
+ TQ6kcwh03FGvP6rlM3yFBjXaAHmMCLFkXpGs3Np83hqJyNY0eYiIxxrCoCK/tjNRFtw6TPBq
+ iqDShotS/dqqEkX4YVu7zPQGdl0=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 603ca9997aa94c52e7f31704 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 08:45:13
+ GMT
+Sender: kgunda=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C8F33C43463; Mon,  1 Mar 2021 08:45:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC507107ACE3;
-        Mon,  1 Mar 2021 08:45:09 +0000 (UTC)
-Received: from [10.36.114.87] (ovpn-114-87.ams2.redhat.com [10.36.114.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5188A60657;
-        Mon,  1 Mar 2021 08:45:08 +0000 (UTC)
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>, VlastimilBabkavbabka@suse.cz,
-        pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
-References: <20210209133854.17399-1-osalvador@suse.de>
- <20210209133854.17399-7-osalvador@suse.de>
- <dc044ae2-efce-0639-87de-3a3167c07a06@redhat.com>
- <20210226120451.GA3661@localhost.localdomain>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v2 6/7] x86/Kconfig: Introduce
- ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
-Message-ID: <de1e2213-7dea-da52-607b-d4d718a3e04e@redhat.com>
-Date:   Mon, 1 Mar 2021 09:45:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        (Authenticated sender: kgunda)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA03EC43462;
+        Mon,  1 Mar 2021 08:45:12 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210226120451.GA3661@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Mar 2021 14:15:12 +0530
+From:   kgunda@codeaurora.org
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
+        lee.jones@linaro.org, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, jacek.anaszewski@gmail.com,
+        pavel@ucw.cz, robh+dt@kernel.org, mark.rutland@arm.com,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH V2 2/2] backlight: qcom-wled: Correct the sync_toggle
+ sequence
+In-Reply-To: <20210226172601.aknj2d4hghkkqjol@maple.lan>
+References: <1614341544-5306-1-git-send-email-kgunda@codeaurora.org>
+ <1614341544-5306-3-git-send-email-kgunda@codeaurora.org>
+ <20210226172601.aknj2d4hghkkqjol@maple.lan>
+Message-ID: <0cca377c2a7648c5f1606e38ba1b7d4d@codeaurora.org>
+X-Sender: kgunda@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.02.21 13:04, Oscar Salvador wrote:
-> On Thu, Feb 25, 2021 at 07:29:07PM +0100, David Hildenbrand wrote:
->> On 09.02.21 14:38, Oscar Salvador wrote:
->>> Enable x86_64 platform to use the MHP_MEMMAP_ON_MEMORY feature.
->>>
->>> Signed-off-by: Oscar Salvador <osalvador@suse.de>
->>> ---
->>>    arch/x86/Kconfig | 4 ++++
->>>    1 file changed, 4 insertions(+)
->>>
->>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->>> index 72663de8b04c..81046b7adb10 100644
->>> --- a/arch/x86/Kconfig
->>> +++ b/arch/x86/Kconfig
->>> @@ -2440,6 +2440,10 @@ config ARCH_ENABLE_MEMORY_HOTREMOVE
->>>    	def_bool y
->>>    	depends on MEMORY_HOTPLUG
->>> +config ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
->>> +	def_bool y
->>> +	depends on X86_64 && MEMORY_HOTPLUG && SPARSEMEM_VMEMMAP_ENABLE
->>
->> It depends on SPARSEMEM_VMEMMAP, no?
->>
->> I think we could have
->>
->> SPARSEMEM_VMEMMAP_ENABLE=y
->> and
->> SPARSEMEM_VMEMMAP=n
->>
->> on manually tuned configs.
+On 2021-02-26 22:56, Daniel Thompson wrote:
+> On Fri, Feb 26, 2021 at 05:42:24PM +0530, Kiran Gunda wrote:
+>> As per the current implementation, after FSC (Full Scale Current)
+>> and brightness update the sync bits are transitioned from 1 to 0.
 > 
-> I do not think this can happen:
+> This still seems to incorrectly describe the current behaviour.
 > 
-> from mm/Kconfig:
+> Surely in most cases (i.e. every time except the first) the value of 
+> the
+> sync bit is 0 when the function is called and we get both a 0 to 1
+> and then a 1 to 0 transition.
 > 
-> config SPARSEMEM_VMEMMAP_ENABLE
->          bool
-> 
-> config SPARSEMEM_VMEMMAP
->          bool "Sparse Memory virtual memmap"
->          depends on SPARSEMEM && SPARSEMEM_VMEMMAP_ENABLE
->          default y
->          help
->            SPARSEMEM_VMEMMAP uses a virtually mapped memmap to optimise
->            pfn_to_page and page_to_pfn operations.  This is the most
->            efficient option when sufficient kernel resources are available
-> 
-> and from arch/x86/Kconfig:
-> 
-> config ARCH_SPARSEMEM_ENABLE
->          def_bool y
->          depends on X86_64 || NUMA || X86_32 || X86_32_NON_STANDARD
->          select SPARSEMEM_STATIC if X86_32
->          select SPARSEMEM_VMEMMAP_ENABLE if X86_64
+> That is why I recommended set-then-clear terminology to describe the
+> current behaviour. It is concise and correct.
 > 
 > 
-> So, if I read this correctly, for SPARSEMEM_VMEMMAP to be true,
-> SPARSEMEM_VMEMMAP_ENABLE needs to be true as well.
+> Daniel.
 > 
-> Am I missing something?
+> 
+> 
+Okay. Actually I have mentioned the "clear-and-set" in explaining the 
+fix.
+Let me modify the same terminology in explaining the problem case also.
 
-Take your config and set
-	X86_5LEVEL=n
-(because it enforces SPARSEMEM_VMEMMAP)
-and
-	SPARSEMEM_VMEMMAP=n
-
-When compiling, you'll end up with a config like
-	CONFIG_SPARSEMEM_VMEMMAP_ENABLE=y
-	# CONFIG_SPARSEMEM_VMEMMAP is not set
-
-Yet, with your patch you would get
-
-ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE=y
-
-And it would not get fenced off in the code, right?
-
-
-I think you either have to check (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP)) 
-in addition in your code, or enforce it differently. Like
-
-
-config MHP_MEMMAP_ON_MEMORY
-	depends on SPARSEMEM_VMEMMAP && ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
-	bool
-
-
-Then you can simplify the arch Kconfig settings, removing the sparesemem 
-dependency there.
-
--- 
-Thanks,
-
-David / dhildenb
-
+>> But, the FSC and brightness sync takes place during a 0 to 1
+>> transition of the sync bits. So the hardware team recommends a
+>> clear-then-set approach in order to guarantee such a transition
+>> regardless of the previous register state.
+>> 
+>> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+>> ---
+>>  drivers/video/backlight/qcom-wled.c | 12 ++++++------
+>>  1 file changed, 6 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/drivers/video/backlight/qcom-wled.c 
+>> b/drivers/video/backlight/qcom-wled.c
+>> index aef52b9..19f83ac 100644
+>> --- a/drivers/video/backlight/qcom-wled.c
+>> +++ b/drivers/video/backlight/qcom-wled.c
+>> @@ -337,13 +337,13 @@ static int wled3_sync_toggle(struct wled *wled)
+>> 
+>>  	rc = regmap_update_bits(wled->regmap,
+>>  				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+>> -				mask, mask);
+>> +				mask, WLED3_SINK_REG_SYNC_CLEAR);
+>>  	if (rc < 0)
+>>  		return rc;
+>> 
+>>  	rc = regmap_update_bits(wled->regmap,
+>>  				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+>> -				mask, WLED3_SINK_REG_SYNC_CLEAR);
+>> +				mask, mask);
+>> 
+>>  	return rc;
+>>  }
+>> @@ -353,17 +353,17 @@ static int wled5_mod_sync_toggle(struct wled 
+>> *wled)
+>>  	int rc;
+>>  	u8 val;
+>> 
+>> -	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
+>> -					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
+>>  	rc = regmap_update_bits(wled->regmap,
+>>  				wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
+>> -				WLED5_SINK_REG_SYNC_MASK, val);
+>> +				WLED5_SINK_REG_SYNC_MASK, 0);
+>>  	if (rc < 0)
+>>  		return rc;
+>> 
+>> +	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
+>> +					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
+>>  	return regmap_update_bits(wled->regmap,
+>>  				  wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
+>> -				  WLED5_SINK_REG_SYNC_MASK, 0);
+>> +				  WLED5_SINK_REG_SYNC_MASK, val);
+>>  }
+>> 
+>>  static int wled_ovp_fault_status(struct wled *wled, bool *fault_set)
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>>  a Linux Foundation Collaborative Project
+>> 
