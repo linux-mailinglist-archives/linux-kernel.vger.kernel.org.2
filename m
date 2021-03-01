@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE06F32997A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281523299CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245615AbhCBAUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:20:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39686 "EHLO mail.kernel.org"
+        id S1376552AbhCBA3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239294AbhCASXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:23:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8780B60233;
-        Mon,  1 Mar 2021 17:46:59 +0000 (UTC)
+        id S239935AbhCASbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:31:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC08C64ED0;
+        Mon,  1 Mar 2021 17:13:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620820;
-        bh=y1vVb6H2Ynlpe7HVnGQZ/pRkRfbcw3+MNvs+pxOPqIE=;
+        s=korg; t=1614618781;
+        bh=3iIJNzO6x3OdNw8BEJ8RqIZMa45rJQd9ITWVvn2rOHI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sxU1sNETab7nDZWpl9nu8v+spM3ak4JLYN3ADMgDAvtniEabPNQ/N4WKXB4Wmb6NZ
-         4OiaC3QtL9xsFwjXYvE0eCqq/KgtlAPX2NPLBkSckX6H/QrEPbm5pMEnjAf7CrWuHa
-         6r4xF8NSkwltr78D6CSM94fGV06CyEGKPKAwPIVk=
+        b=Ssq6ObaBE+s5fwIPZrDty1N+zvOjatfkw/S26JtsYoQdLO8/e44qZ9d39MgyTPqXd
+         h/bId19/+eg/oAG0OaS2iyK3ie46pMvgTnxSujVbfLJInEexow1qt7WXXb1slsH51P
+         yZF04MtFVsTJr221w7Rw8+TkfmRYasX9HBAZ6Tyc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 291/775] ima: Free IMA measurement buffer on error
-Date:   Mon,  1 Mar 2021 17:07:39 +0100
-Message-Id: <20210301161216.000818797@linuxfoundation.org>
+Subject: [PATCH 5.10 214/663] ASoC: qcom: Fix typo error in HDMI regmap config callbacks
+Date:   Mon,  1 Mar 2021 17:07:42 +0100
+Message-Id: <20210301161152.378011315@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 
-[ Upstream commit 6d14c6517885fa68524238787420511b87d671df ]
+[ Upstream commit e681b1a6d706b4e54c3847bb822531b4660234f3 ]
 
-IMA allocates kernel virtual memory to carry forward the measurement
-list, from the current kernel to the next kernel on kexec system call,
-in ima_add_kexec_buffer() function.  In error code paths this memory
-is not freed resulting in memory leak.
+Had a typo in lpass platform driver that resulted in crash
+during suspend/resume with an HDMI dongle connected.
 
-Free the memory allocated for the IMA measurement list in
-the error code paths in ima_add_kexec_buffer() function.
+The regmap read/write/volatile regesters validation callbacks in lpass-cpu
+were using MI2S rdma_channels count instead of hdmi_rdma_channels.
 
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+This typo error causing to read registers from the regmap beyond the length
+of the mapping created by ioremap().
+
+This fix avoids the need for reducing number hdmi_rdma_channels,
+which is done in
+commit 7dfe20ee92f6 ("ASoC: qcom: Fix number of HDMI RDMA channels on sc7180").
+So reverting the same.
+
+Fixes: 7cb37b7bd0d3c ("ASoC: qcom: Add support for lpass hdmi driver")
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Link: https://lore.kernel.org/r/20210202062727.22469-1-srivasam@codeaurora.org
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Tested-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/ima/ima_kexec.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/qcom/lpass-cpu.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
-index 121de3e04af23..206ddcaa5c67a 100644
---- a/security/integrity/ima/ima_kexec.c
-+++ b/security/integrity/ima/ima_kexec.c
-@@ -119,6 +119,7 @@ void ima_add_kexec_buffer(struct kimage *image)
- 	ret = kexec_add_buffer(&kbuf);
- 	if (ret) {
- 		pr_err("Error passing over kexec measurement buffer.\n");
-+		vfree(kexec_buffer);
- 		return;
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index 6815f32b67b40..a33dbd6de8a06 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -594,7 +594,7 @@ static bool lpass_hdmi_regmap_writeable(struct device *dev, unsigned int reg)
+ 			return true;
  	}
  
+-	for (i = 0; i < v->rdma_channels; ++i) {
++	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
+ 		if (reg == LPAIF_HDMI_RDMACTL_REG(v, i))
+ 			return true;
+ 		if (reg == LPAIF_HDMI_RDMABASE_REG(v, i))
+@@ -640,7 +640,7 @@ static bool lpass_hdmi_regmap_readable(struct device *dev, unsigned int reg)
+ 	if (reg == LPASS_HDMITX_APP_IRQSTAT_REG(v))
+ 		return true;
+ 
+-	for (i = 0; i < v->rdma_channels; ++i) {
++	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
+ 		if (reg == LPAIF_HDMI_RDMACTL_REG(v, i))
+ 			return true;
+ 		if (reg == LPAIF_HDMI_RDMABASE_REG(v, i))
+@@ -667,7 +667,7 @@ static bool lpass_hdmi_regmap_volatile(struct device *dev, unsigned int reg)
+ 	if (reg == LPASS_HDMI_TX_LEGACY_ADDR(v))
+ 		return true;
+ 
+-	for (i = 0; i < v->rdma_channels; ++i) {
++	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
+ 		if (reg == LPAIF_HDMI_RDMACURR_REG(v, i))
+ 			return true;
+ 	}
+@@ -817,7 +817,7 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 		}
+ 
+ 		lpass_hdmi_regmap_config.max_register = LPAIF_HDMI_RDMAPER_REG(variant,
+-					variant->hdmi_rdma_channels);
++					variant->hdmi_rdma_channels - 1);
+ 		drvdata->hdmiif_map = devm_regmap_init_mmio(dev, drvdata->hdmiif,
+ 					&lpass_hdmi_regmap_config);
+ 		if (IS_ERR(drvdata->hdmiif_map)) {
 -- 
 2.27.0
 
