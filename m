@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB24329C28
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5E7329B7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380214AbhCBBtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:49:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48632 "EHLO mail.kernel.org"
+        id S1348795AbhCBBZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:25:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241535AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:26:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35748652D5;
-        Mon,  1 Mar 2021 17:38:26 +0000 (UTC)
+        id S238073AbhCATKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:10:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E18764FBD;
+        Mon,  1 Mar 2021 17:37:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620306;
-        bh=P+8iDqsVqhEpxgRJHtOxliIYjrl8ulY/Fx+XDMTY+NA=;
+        s=korg; t=1614620238;
+        bh=/7pT0kEh99FHUtwTb6He+rcjg5tNt++0dodBOJTVDCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O0LhKV45NtkxvOHFDfpYkPGAXKsCsVk4svjfxH7yo04Crc/0GWNaR+vO54Z22NiR/
-         ByXSfbiv2tapGlGdffhClDCq/t6wCMOayO7GVGICf67MSpXeZtImQa7EFCzntkhRXw
-         4y90ev9orDRMLkxX8/e8ooqofcGuDqPRLl2mFduw=
+        b=TDYTceftLdd0LxEjfgYP/pt55Hzggw6OJvcoG4ivZ63vzNgwt1KvBJY1UiPzu4dhC
+         safTX9mE+AWKX+/CL6RfrpbD+yYIF82giXCdQPVS4Vc+I91j841j/JU3NytIg7cbA5
+         w2MVOQBTDUpN+dFqdbu66cBPt95+A2qD+CFe2SoU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 075/775] opp: Correct debug message in _opp_add_static_v2()
-Date:   Mon,  1 Mar 2021 17:04:03 +0100
-Message-Id: <20210301161205.384112948@linuxfoundation.org>
+Subject: [PATCH 5.11 081/775] ARM: s3c: fix fiq for clang IAS
+Date:   Mon,  1 Mar 2021 17:04:09 +0100
+Message-Id: <20210301161205.687206714@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -43,46 +43,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit d7b9d9b31a3e55dcc9b5c289abfafe31efa5b5c4 ]
+[ Upstream commit 7f9942c61fa60eda7cc8e42f04bd25b7d175876e ]
 
-The debug message always prints rate=0 instead of a proper value, fix it.
+Building with the clang integrated assembler produces a couple of
+errors for the s3c24xx fiq support:
 
-Fixes: 6c591eec67cb ("OPP: Add helpers for reading the binding properties")
-Tested-by: Peter Geis <pgwipeout@gmail.com>
-Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-Tested-by: Matt Merhar <mattmerhar@protonmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-[ Viresh: Added Fixes tag ]
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+  arch/arm/mach-s3c/irq-s3c24xx-fiq.S:52:2: error: instruction 'subne' can not set flags, but 's' suffix specified
+    subnes pc, lr, #4 @@ return, still have work to do
+
+  arch/arm/mach-s3c/irq-s3c24xx-fiq.S:64:1: error: invalid symbol redefinition
+    s3c24xx_spi_fiq_txrx:
+
+There are apparently two problems: one with extraneous or duplicate
+labels, and one with old-style opcode mnemonics. Stefan Agner has
+previously fixed other problems like this, but missed this particular
+file.
+
+Fixes: bec0806cfec6 ("spi_s3c24xx: add FIQ pseudo-DMA support")
+Cc: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Link: https://lore.kernel.org/r/20210204162416.3030114-1-arnd@kernel.org
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/opp/of.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/mach-s3c/irq-s3c24xx-fiq.S | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index 03cb387236c4c..d0c0336be39b4 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -755,7 +755,6 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
- 		struct device *dev, struct device_node *np)
- {
- 	struct dev_pm_opp *new_opp;
--	u64 rate = 0;
- 	u32 val;
- 	int ret;
- 	bool rate_not_available = false;
-@@ -772,7 +771,8 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
+diff --git a/arch/arm/mach-s3c/irq-s3c24xx-fiq.S b/arch/arm/mach-s3c/irq-s3c24xx-fiq.S
+index b54cbd0122413..5d238d9a798e1 100644
+--- a/arch/arm/mach-s3c/irq-s3c24xx-fiq.S
++++ b/arch/arm/mach-s3c/irq-s3c24xx-fiq.S
+@@ -35,7 +35,6 @@
+ 	@ and an offset to the irq acknowledgment word
  
- 	/* Check if the OPP supports hardware's hierarchy of versions or not */
- 	if (!_opp_is_supported(dev, opp_table, np)) {
--		dev_dbg(dev, "OPP not supported by hardware: %llu\n", rate);
-+		dev_dbg(dev, "OPP not supported by hardware: %lu\n",
-+			new_opp->rate);
- 		goto free_opp;
- 	}
+ ENTRY(s3c24xx_spi_fiq_rx)
+-s3c24xx_spi_fix_rx:
+ 	.word	fiq_rx_end - fiq_rx_start
+ 	.word	fiq_rx_irq_ack - fiq_rx_start
+ fiq_rx_start:
+@@ -49,7 +48,7 @@ fiq_rx_start:
+ 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
  
+ 	subs	fiq_rcount, fiq_rcount, #1
+-	subnes	pc, lr, #4		@@ return, still have work to do
++	subsne	pc, lr, #4		@@ return, still have work to do
+ 
+ 	@@ set IRQ controller so that next op will trigger IRQ
+ 	mov	fiq_rtmp, #0
+@@ -61,7 +60,6 @@ fiq_rx_irq_ack:
+ fiq_rx_end:
+ 
+ ENTRY(s3c24xx_spi_fiq_txrx)
+-s3c24xx_spi_fiq_txrx:
+ 	.word	fiq_txrx_end - fiq_txrx_start
+ 	.word	fiq_txrx_irq_ack - fiq_txrx_start
+ fiq_txrx_start:
+@@ -76,7 +74,7 @@ fiq_txrx_start:
+ 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
+ 
+ 	subs	fiq_rcount, fiq_rcount, #1
+-	subnes	pc, lr, #4		@@ return, still have work to do
++	subsne	pc, lr, #4		@@ return, still have work to do
+ 
+ 	mov	fiq_rtmp, #0
+ 	str	fiq_rtmp, [ fiq_rirq, # S3C2410_INTMOD  - S3C24XX_VA_IRQ ]
+@@ -88,7 +86,6 @@ fiq_txrx_irq_ack:
+ fiq_txrx_end:
+ 
+ ENTRY(s3c24xx_spi_fiq_tx)
+-s3c24xx_spi_fix_tx:
+ 	.word	fiq_tx_end - fiq_tx_start
+ 	.word	fiq_tx_irq_ack - fiq_tx_start
+ fiq_tx_start:
+@@ -101,7 +98,7 @@ fiq_tx_start:
+ 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
+ 
+ 	subs	fiq_rcount, fiq_rcount, #1
+-	subnes	pc, lr, #4		@@ return, still have work to do
++	subsne	pc, lr, #4		@@ return, still have work to do
+ 
+ 	mov	fiq_rtmp, #0
+ 	str	fiq_rtmp, [ fiq_rirq, # S3C2410_INTMOD  - S3C24XX_VA_IRQ ]
 -- 
 2.27.0
 
