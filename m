@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 096EB3299B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE4A3298DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348113AbhCBA2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:28:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43164 "EHLO mail.kernel.org"
+        id S1346753AbhCAXuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:50:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234878AbhCAS3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 830D364FD3;
-        Mon,  1 Mar 2021 17:50:17 +0000 (UTC)
+        id S239396AbhCASMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:12:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17E3D64FD7;
+        Mon,  1 Mar 2021 17:50:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621018;
-        bh=oSmsppwOFSGJvRWs7tGyuh25TJzFvei7c3QfdnAwgs8=;
+        s=korg; t=1614621039;
+        bh=lSdULm81FyBmnlMVHd6n13mpjxnyYNdySW6NJ6C8cpE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pZ1dZBzoMm+nMgE19eXlFFC/Lqg4zA4TYrGUa57drueAXOb5AR4y4xhZBeVabjPjO
-         phZD9hWHfYhj2mgdkI1/nR9hw5ULDsJz5ou1q3jGrKuuZ6jST4SnwfxeOtiyWq8+VB
-         48kza63VEQjY8MM25ONW8qnhLcYwPTdXqGPbT+Qs=
+        b=QBydaRA3mrGLe3Y1PdG+7+RGb7H5B3eZGuz5r7i/4SX5Moyurrml+HT/Q07BC1hvp
+         Pge+NYm/ANFcOkUkHO1EhUEYBWdcmdBmpsLeaAlJwK0l7EHJjz5IWtlhZKhO83Ybjn
+         KPZCqILxQEym+bgFRJsP/zzzDvACrfydyqAl2T7A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ben Boeckel <mathstuf@gmail.com>,
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 362/775] watch_queue: Drop references to /dev/watch_queue
-Date:   Mon,  1 Mar 2021 17:08:50 +0100
-Message-Id: <20210301161219.515059996@linuxfoundation.org>
+Subject: [PATCH 5.11 364/775] regulator: s5m8767: Fix reference count leak
+Date:   Mon,  1 Mar 2021 17:08:52 +0100
+Message-Id: <20210301161219.605493649@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -43,81 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit 8fe62e0c0e2efa5437f3ee81b65d69e70a45ecd2 ]
+[ Upstream commit dea6dd2ba63f8c8532addb8f32daf7b89a368a42 ]
 
-The merged API doesn't use a watch_queue device, but instead relies on
-pipes, so let the documentation reflect that.
+Call of_node_put() to drop references of regulators_np and reg_np before
+returning error code.
 
-Fixes: f7e47677e39a ("watch_queue: Add a key/keyring notification facility")
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Ben Boeckel <mathstuf@gmail.com>
+Fixes: 9ae5cc75ceaa ("regulator: s5m8767: Pass descriptor instead of GPIO number")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20210121032756.49501-1-bianpan2016@163.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/security/keys/core.rst | 4 ++--
- samples/Kconfig                      | 2 +-
- samples/watch_queue/watch_test.c     | 2 +-
- security/keys/Kconfig                | 8 ++++----
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/regulator/s5m8767.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/security/keys/core.rst b/Documentation/security/keys/core.rst
-index aa0081685ee11..b3ed5c581034c 100644
---- a/Documentation/security/keys/core.rst
-+++ b/Documentation/security/keys/core.rst
-@@ -1040,8 +1040,8 @@ The keyctl syscall functions are:
+diff --git a/drivers/regulator/s5m8767.c b/drivers/regulator/s5m8767.c
+index 3fa472127e9a1..48dd95b3ff45a 100644
+--- a/drivers/regulator/s5m8767.c
++++ b/drivers/regulator/s5m8767.c
+@@ -573,10 +573,13 @@ static int s5m8767_pmic_dt_parse_pdata(struct platform_device *pdev,
+ 			"s5m8767,pmic-ext-control",
+ 			GPIOD_OUT_HIGH | GPIOD_FLAGS_BIT_NONEXCLUSIVE,
+ 			"s5m8767");
+-		if (PTR_ERR(rdata->ext_control_gpiod) == -ENOENT)
++		if (PTR_ERR(rdata->ext_control_gpiod) == -ENOENT) {
+ 			rdata->ext_control_gpiod = NULL;
+-		else if (IS_ERR(rdata->ext_control_gpiod))
++		} else if (IS_ERR(rdata->ext_control_gpiod)) {
++			of_node_put(reg_np);
++			of_node_put(regulators_np);
+ 			return PTR_ERR(rdata->ext_control_gpiod);
++		}
  
-      "key" is the ID of the key to be watched.
- 
--     "queue_fd" is a file descriptor referring to an open "/dev/watch_queue"
--     which manages the buffer into which notifications will be delivered.
-+     "queue_fd" is a file descriptor referring to an open pipe which
-+     manages the buffer into which notifications will be delivered.
- 
-      "filter" is either NULL to remove a watch or a filter specification to
-      indicate what events are required from the key.
-diff --git a/samples/Kconfig b/samples/Kconfig
-index 0ed6e4d71d87b..e76cdfc50e257 100644
---- a/samples/Kconfig
-+++ b/samples/Kconfig
-@@ -210,7 +210,7 @@ config SAMPLE_WATCHDOG
- 	depends on CC_CAN_LINK
- 
- config SAMPLE_WATCH_QUEUE
--	bool "Build example /dev/watch_queue notification consumer"
-+	bool "Build example watch_queue notification API consumer"
- 	depends on CC_CAN_LINK && HEADERS_INSTALL
- 	help
- 	  Build example userspace program to use the new mount_notify(),
-diff --git a/samples/watch_queue/watch_test.c b/samples/watch_queue/watch_test.c
-index 46e618a897fef..8c6cb57d5cfc5 100644
---- a/samples/watch_queue/watch_test.c
-+++ b/samples/watch_queue/watch_test.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--/* Use /dev/watch_queue to watch for notifications.
-+/* Use watch_queue API to watch for notifications.
-  *
-  * Copyright (C) 2020 Red Hat, Inc. All Rights Reserved.
-  * Written by David Howells (dhowells@redhat.com)
-diff --git a/security/keys/Kconfig b/security/keys/Kconfig
-index 83bc23409164a..c161642a84841 100644
---- a/security/keys/Kconfig
-+++ b/security/keys/Kconfig
-@@ -119,7 +119,7 @@ config KEY_NOTIFICATIONS
- 	bool "Provide key/keyring change notifications"
- 	depends on KEYS && WATCH_QUEUE
- 	help
--	  This option provides support for getting change notifications on keys
--	  and keyrings on which the caller has View permission.  This makes use
--	  of the /dev/watch_queue misc device to handle the notification
--	  buffer and provides KEYCTL_WATCH_KEY to enable/disable watches.
-+	  This option provides support for getting change notifications
-+	  on keys and keyrings on which the caller has View permission.
-+	  This makes use of pipes to handle the notification buffer and
-+	  provides KEYCTL_WATCH_KEY to enable/disable watches.
+ 		rdata->id = i;
+ 		rdata->initdata = of_get_regulator_init_data(
 -- 
 2.27.0
 
