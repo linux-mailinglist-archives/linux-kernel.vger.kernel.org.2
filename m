@@ -2,46 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FF432A064
+	by mail.lfdr.de (Postfix) with ESMTP id 52F8332A063
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244350AbhCBERx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:17:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33192 "EHLO mail.kernel.org"
+        id S244208AbhCBERj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:17:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346258AbhCAXkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:40:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E55F6146B;
-        Mon,  1 Mar 2021 23:39:08 +0000 (UTC)
+        id S1346256AbhCAXkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 18:40:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 498E460240;
+        Mon,  1 Mar 2021 23:39:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614641949;
-        bh=FC5E0jgM2oYDDQU3j98r7awtXgaJzsC9gg9QAlFAKC8=;
+        s=k20201202; t=1614641943;
+        bh=11tc3XCd4ttATWcpDw1lCPmytuMBwWlibLxpQSnMXC4=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ge/cQFMMzNZ8kEJ0nCBHlFyfI4rzjL2b8N5jGL5BpTA8jXuBqFqNgQQpRhhNYGwGq
-         bUnqFurDNzQFkgb0UDk4R7yex3dETJDiPrY2ftRv8nGc5Cu/H3eWZ2vVF8aNNgPWuc
-         meTwGEMNlRALGaEdKlzO7J0BCQt/irAzh/Ae0/Il1qcMmMuV9C+pege+buXLNUgar5
-         cfco/rKBuz7jM+/5FGoBRM+KDPzmWM7tb/9cXBL5LVo0ONdfrPOd79PcM9nXbrdOOe
-         wvYmeHaSjTAYQhTw3/ISwovbx+1S04PJIs/2rbS3+isWqtTmDbw/dVEuN0JWbzYjDA
-         FZ6/3JAPi7iWQ==
+        b=GcmFDVy/XO0MF3h2k+3kRlAYVcIjZhsNdcaOD1aAC0d++PaSK8FIatnNxc2asVRH1
+         KVsQlpwfgQC7AlTMuhmxCj7cTSJoNagR8eincqRB258X1vTWmc20y6Eh/orJRkm7BT
+         tU2yWjneoN24CCcSFhLKsMydQrYBj6sTAcBzf0b/KJF6ASjwClDudoGWvn0Vj3poy0
+         6ZXZMQ6zZlSh72LdObtMK5FSbcyPwvtKbI2KEvz4wuV1FTyi4R0EvjU6qiBGIevc9a
+         leyq4vLdyN2PesuaeeJoc3P+1qvqxF1y43zQjNvycpgY/ewF1s9mrBeeGrxO4V/T1O
+         aMP/TBHCfCuPg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>
+To:     Heiko Stuebner <heiko@sntech.de>, Arnd Bergmann <arnd@kernel.org>
 Cc:     linux-rockchip@lists.infradead.org,
-        Alexander Kochetkov <al.kochet@gmail.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
         Jon Lin <jon.lin@rock-chips.com>,
-        Chris Ruehl <chris.ruehl@gtsys.com.hk>,
-        Johan Jonker <jbx6244@gmail.com>, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-spi@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vincent Pelletier <plr.vincent@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210225125541.1808719-1-arnd@kernel.org>
-References: <20210225125541.1808719-1-arnd@kernel.org>
-Subject: Re: [PATCH] spi: rockchip: avoid objtool warning
-Message-Id: <161464187231.31555.17379793263807156995.b4-ty@kernel.org>
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <20210226140109.3477093-1-arnd@kernel.org>
+References: <20210226140109.3477093-1-arnd@kernel.org>
+Subject: Re: [PATCH] [v2] spi: rockchip: avoid objtool warning
+Message-Id: <161464187231.31555.9991392584243139110.b4-ty@kernel.org>
 Date:   Mon, 01 Mar 2021 23:37:52 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -50,14 +47,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 13:55:34 +0100, Arnd Bergmann wrote:
+On Fri, 26 Feb 2021 15:00:48 +0100, Arnd Bergmann wrote:
 > Building this file with clang leads to a an unreachable code path
 > causing a warning from objtool:
 > 
 > drivers/spi/spi-rockchip.o: warning: objtool: rockchip_spi_transfer_one()+0x2e0: sibling call from callable instruction with modified stack frame
 > 
-> Use BUG() instead of unreachable() to avoid the undefined behavior
-> if it does happen.
+> Change the unreachable() into an error return that can be
+> handled if it ever happens, rather than silently crashing
+> the kernel.
 
 Applied to
 
