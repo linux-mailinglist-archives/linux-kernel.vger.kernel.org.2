@@ -2,72 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3517327F16
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C91C327F21
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235414AbhCANLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:11:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235453AbhCANJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:09:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59EBE64E2E;
-        Mon,  1 Mar 2021 13:09:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614604157;
-        bh=T+hhysKQC9LROCAdI8japk0NWNbd5NQFRpUTk664/YE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jHe+pYngJUi587avuPg2AS3QqWdziewtFu613R/rXvkpUZnWMMp0hsQlGEFW6nWOB
-         NGnwCydGH5wnBavXxlP7GvMlY5aZZwFojo1LM4x/4pEqLZ7dQnVc2CP4iKqHtSAZLX
-         S6qoEVLrSqBBpFf4VqDRDymQ5b3BtJ6AoUkIxnOo=
-Date:   Mon, 1 Mar 2021 14:09:15 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     zbr@ioremap.net, rikard.falkeborn@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] w1: ds2708 and ds2781 use the new API kobj_to_dev()
-Message-ID: <YDzne3KtnGJD1J0E@kroah.com>
-References: <1614603535-24046-1-git-send-email-tiantao6@hisilicon.com>
+        id S235481AbhCANMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:12:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235441AbhCANMd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:12:33 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22889C06178C
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 05:11:53 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id s23so11799165pji.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 05:11:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b3ExXcrTKtaMKYTLWvaQqay72x46/EzChsHCCF6qzCU=;
+        b=b7sA/vRm3WrAy3bA3s72thm96GXP3C0iIoAmX4jN9pYjQl0r5bYZemIFYL1D7mdLPO
+         k05WugUa2MpwiovRwKnXYw4IXWJmkcQtuwHQ/n9CHO9ejxb6r6s7bbP7QUQESrItpO6Y
+         oyASWNdvVq3nIil5HSbzF+yQNjV7M2E6+Zv6V9Do8DL85lR7GZjBGXJHSj4kMR7XP30W
+         6ZqC3zCcKih4QsFHFmeZhdxJPKCHXgVP2uYCmSsqmlCaof0V+65bGCJI0/jFIuztXHeX
+         1z5ZoImHLP572W4obDz3LssDrMtgDektzGkLh7qZzjB5sfi0F8K8IF2pz3T7yqOWX9YJ
+         YkQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=b3ExXcrTKtaMKYTLWvaQqay72x46/EzChsHCCF6qzCU=;
+        b=sX9ewYmdGlJiCu5SxvUyQqqt/z+C9axM4Jjf1xCLctDCkUSKvBDSvOLH05TA0LgpoW
+         KW3jLR0xyFGPJEcOINJZwczuWRYI+x23ojH8zwvXvniQsZ6gjb/iRe4UTp3Ngh4ailEw
+         mdWEoX+upKIJKkqo/lIu5UpghjRm8Pkmsuq+VuYuOMar9xONQ9cenFMQqI84VpZJ5jRD
+         c2RjKgTzWqoxVQPgo9odmTOmM67QPOZj/8TVrBvh4izWn6SXptU1QZBZ5i5PplzInuiZ
+         u2x+bxZ7ZrB6LN/c1RBjPI2O7n9kc2xi2IPsIGaSy43/sd8ZMLl8JVesqk0Kiu1+c25T
+         Jahw==
+X-Gm-Message-State: AOAM530gbdd3qy5h8gdAhHvsvQ8CSscl9/vCIBCWyE2iLm1BOxERQJrO
+        UygRMJxfoIn1BcD08rrdkZXOaBvPQeE+ircn
+X-Google-Smtp-Source: ABdhPJzEwXoFW5aHXjckvLnyESk7reRavQszrdC8mYNQ9CxHGgFAhrl6FUGikFWhCrRy8h0bxbZLBg==
+X-Received: by 2002:a17:90a:1a59:: with SMTP id 25mr16193091pjl.54.1614604312435;
+        Mon, 01 Mar 2021 05:11:52 -0800 (PST)
+Received: from localhost.localdomain ([110.226.35.200])
+        by smtp.gmail.com with ESMTPSA id b3sm13964523pjg.41.2021.03.01.05.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 05:11:51 -0800 (PST)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com,
+        jejb@linux.ibm.com
+Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
+        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
+        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
+        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
+        erpalmer@us.ibm.com, a.fatoum@pengutronix.de,
+        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v9 0/4] Introduce TEE based Trusted Keys support
+Date:   Mon,  1 Mar 2021 18:41:23 +0530
+Message-Id: <20210301131127.793707-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614603535-24046-1-git-send-email-tiantao6@hisilicon.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 08:58:55PM +0800, Tian Tao wrote:
-> fix the below warnning:
-> /drivers/w1/slaves/w1_ds2780.c:93:60-61: WARNING opportunity for
-> kobj_to_dev()
+Add support for TEE based trusted keys where TEE provides the functionality
+to seal and unseal trusted keys using hardware unique key. Also, this is
+an alternative in case platform doesn't possess a TPM device.
 
-What creates that warning?
+This patch-set has been tested with OP-TEE based early TA which is already
+merged in upstream [1].
 
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/w1/slaves/w1_ds2780.c | 3 ++-
->  drivers/w1/slaves/w1_ds2781.c | 2 +-
->  2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/w1/slaves/w1_ds2780.c b/drivers/w1/slaves/w1_ds2780.c
-> index c281fe5..3cde1bb 100644
-> --- a/drivers/w1/slaves/w1_ds2780.c
-> +++ b/drivers/w1/slaves/w1_ds2780.c
-> @@ -90,7 +90,8 @@ static ssize_t w1_slave_read(struct file *filp, struct kobject *kobj,
->  			     struct bin_attribute *bin_attr, char *buf,
->  			     loff_t off, size_t count)
->  {
-> -	struct device *dev = container_of(kobj, struct device, kobj);
-> +	struct device *dev = kobj_to_dev(kobj);
-> +
+[1] https://github.com/OP-TEE/optee_os/commit/f86ab8e7e0de869dfa25ca05a37ee070d7e5b86b
 
-Why the extra line here, but not in the other chunk?
+Changes in v9:
+1. Rebased to latest tpmdd/master.
+2. Defined pr_fmt() and removed redundant tags.
+3. Patch #2: incorporated misc. comments.
+4. Patch #3: incorporated doc changes from Elaine and misc. comments
+   from Randy.
+5. Patch #4: reverted to separate maintainer entry as per request from
+   Jarkko.
+6. Added Jarkko's Tested-by: tag on patch #2.
 
-Consistancy is key :)
+Changes in v8:
+1. Added static calls support instead of indirect calls.
+2. Documented trusted keys source module parameter.
+3. Refined patch #1 commit message discription.
+4. Addressed misc. comments on patch #2.
+5. Added myself as Trusted Keys co-maintainer instead.
+6. Rebased to latest tpmdd master.
 
-Please fix up.
+Changes in v7:
+1. Added a trusted.source module parameter in order to enforce user's
+   choice in case a particular platform posses both TPM and TEE.
+2. Refine commit description for patch #1.
 
-thanks,
+Changes in v6:
+1. Revert back to dynamic detection of trust source.
+2. Drop author mention from trusted_core.c and trusted_tpm1.c files.
+3. Rebased to latest tpmdd/master.
 
-greg k-h
+Changes in v5:
+1. Drop dynamic detection of trust source and use compile time flags
+   instead.
+2. Rename trusted_common.c -> trusted_core.c.
+3. Rename callback: cleanup() -> exit().
+4. Drop "tk" acronym.
+5. Other misc. comments.
+6. Added review tags for patch #3 and #4.
+
+Changes in v4:
+1. Pushed independent TEE features separately:
+  - Part of recent TEE PR: https://lkml.org/lkml/2020/5/4/1062
+2. Updated trusted-encrypted doc with TEE as a new trust source.
+3. Rebased onto latest tpmdd/master.
+
+Changes in v3:
+1. Update patch #2 to support registration of multiple kernel pages.
+2. Incoporate dependency patch #4 in this patch-set:
+   https://patchwork.kernel.org/patch/11091435/
+
+Changes in v2:
+1. Add reviewed-by tags for patch #1 and #2.
+2. Incorporate comments from Jens for patch #3.
+3. Switch to use generic trusted keys framework.
+
+Sumit Garg (4):
+  KEYS: trusted: Add generic trusted keys framework
+  KEYS: trusted: Introduce TEE based Trusted Keys
+  doc: trusted-encrypted: updates with TEE as a new trust source
+  MAINTAINERS: Add entry for TEE based Trusted Keys
+
+ .../admin-guide/kernel-parameters.txt         |  12 +
+ .../security/keys/trusted-encrypted.rst       | 171 ++++++--
+ MAINTAINERS                                   |   8 +
+ include/keys/trusted-type.h                   |  53 +++
+ include/keys/trusted_tee.h                    |  16 +
+ include/keys/trusted_tpm.h                    |  29 +-
+ security/keys/trusted-keys/Makefile           |   2 +
+ security/keys/trusted-keys/trusted_core.c     | 358 +++++++++++++++++
+ security/keys/trusted-keys/trusted_tee.c      | 317 +++++++++++++++
+ security/keys/trusted-keys/trusted_tpm1.c     | 366 ++++--------------
+ 10 files changed, 981 insertions(+), 351 deletions(-)
+ create mode 100644 include/keys/trusted_tee.h
+ create mode 100644 security/keys/trusted-keys/trusted_core.c
+ create mode 100644 security/keys/trusted-keys/trusted_tee.c
+
+-- 
+2.25.1
+
