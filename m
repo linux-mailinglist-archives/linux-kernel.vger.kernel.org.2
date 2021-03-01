@@ -2,118 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9CA329FE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC16B329FE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574821AbhCBDu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:50:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47208 "EHLO
+        id S1574855AbhCBDvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:51:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243675AbhCAVkz (ORCPT
+        with ESMTP id S239604AbhCAVmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:40:55 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBDCC0611BE
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 13:34:59 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id a17so21322784ljq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 13:34:59 -0800 (PST)
+        Mon, 1 Mar 2021 16:42:44 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A27DC061A2E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 13:35:02 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id p1so18215524edy.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 13:35:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XvDP25u8oTuXv7zpQhtX2lv8UkIEZbcpsAj2zW682xU=;
-        b=N14mrZ/qed2HPpFdjxuq6Z/O4ojGjw0oxx0Y4oW+HGi73n/SRisLcpzLhx7jy+daQt
-         22xXELqTquWTdwTUw76P2X4D4PxBuY8OQzcme1CySohzf3Od0rD28irXTDqYta601xox
-         teTSIzZhHQ4JOlYenv2Q9JLtnTYtahPizI9oo=
+        bh=S5eQqZgOuAzrBI1ZGPeaiXwFuA8MI7ck2ex1o4+Zhi4=;
+        b=GsgUGnSh6XCM33kX1YqttSd0KUcHsr80+hSKtWCibszAfGFuVyoxIXC+cudRfZnEyL
+         jFH0+RPqUvsQwAvjT5XJwBt5pQuHcaGCA/Feko97ZuD1PMjrJ8hMLEHi1SchA998kROw
+         UxPATs7C/17JV7vMmPWCU0/Cq8DeK9RmormTicDEINXX6EXW8+Qep3kfC331ztEFSzZ8
+         bw9+S7FYGY4+AkXPXKG2NEE4JfhXF3kMVFhfWhSrSe352obZ3SIJ8AsGdgXReUr/NbEz
+         WxFs1esX13EoIG/CvJs1unIoGIX7b4I9BK7Xd42Qj0vnCaDuJwD4PX0OJKgCRqq4oI6R
+         hnoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XvDP25u8oTuXv7zpQhtX2lv8UkIEZbcpsAj2zW682xU=;
-        b=FldP30Tf12OHQZHnK+9zS6OjgiITmdMglp5hBQe1+yX3ZZ366i4ZHZFSyA3krPRDzX
-         NujGHhSZFLOJqlBfjn17VimR5CVIY60Q6t4Ndv/KraiEEKL9eN9fO58TDbbrHYmlI/Xp
-         m92WvQK2fRJvZhovp6l0O2Zh3BqGiyIj863ROlXnUeeEHuV6C+moUBJP9kRHKrZ4kGjX
-         Vl7DMy5tCbq/ynyUw+UXdAXvcVhpO4mpD1yP62wnaEmo9Ucl4wkbN4mGWkxyQffs+eTc
-         0U1Bi+M0OwDrfC7EMtBwfs/90VTlUVzLZrIe5cgLSXQ9mr/DRrWTfpJ7sGLRy3lBN1h5
-         1cxg==
-X-Gm-Message-State: AOAM531BBaUE9aWAfMoVnw2wPPzbqJV2WsJYrVT0qtclKQyZtttyzbIm
-        72+FB7r40QT1/mqRu4yUW/gK7exW03o5Hw==
-X-Google-Smtp-Source: ABdhPJy0jdc1UZmCQY72clmiYkSD4LgX0s1v1wPk9XLzPPF/lrScIpwEfMpdfv1w37o3Kkb7HpggGg==
-X-Received: by 2002:a2e:9118:: with SMTP id m24mr10324237ljg.415.1614634497812;
-        Mon, 01 Mar 2021 13:34:57 -0800 (PST)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id k9sm2581069ljg.59.2021.03.01.13.34.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 13:34:57 -0800 (PST)
-Received: by mail-lj1-f177.google.com with SMTP id e2so14126173ljo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 13:34:56 -0800 (PST)
-X-Received: by 2002:a2e:864d:: with SMTP id i13mr7426349ljj.48.1614634496518;
- Mon, 01 Mar 2021 13:34:56 -0800 (PST)
+        bh=S5eQqZgOuAzrBI1ZGPeaiXwFuA8MI7ck2ex1o4+Zhi4=;
+        b=KAHVbqphJ29OF1Vcgw8idfvQrkamaPb5rPILfI35EYHBAoiGWgkZe2rUuaZz5mcwy/
+         2qWvkcu5Rjhet4YhBG4qNoCGO+y3g0U8avBI7qukq85hApBIYijQ3ai6sK+S4RgS6jXg
+         4RBdi9QJ5xTem7iya9ENB4ZnUVrLkmWaKFk4pvtfs8C8J6KSjlmS3N/RI5mB35rQCX2e
+         oVvSZGwR4hPgmwbX9xYD4eimwQk/ViYazGduOuJqzTwHkh/X0MxiFGZFktbGEhR2B+qY
+         xl1vRaO8hSzp1k0h821Nz5W6Ameornb963LOFuppuNMSh2fbDeTAZSK7y/AOpRPJYnHK
+         WShQ==
+X-Gm-Message-State: AOAM533Q6KJWvWq0zxbg1RNRHarIy/GTsHJvs7yt/gk3+FK9xVoAkn7A
+        0jNrA7/yqQGzzghSB9yEVmtYONRzWH2Ht1G2itTEC9OLfB0=
+X-Google-Smtp-Source: ABdhPJwE9duJauuJj63Z2mtoHxQXFJwkwdtiBTnboqNDobSDSZ5Ru3/ng679otfZJBNziIAzFv6Zba+Xj6ySXe7YUC0=
+X-Received: by 2002:a05:6402:10ce:: with SMTP id p14mr18013748edu.348.1614634501187;
+ Mon, 01 Mar 2021 13:35:01 -0800 (PST)
 MIME-Version: 1.0
-References: <CA+icZUUjVnBjC4AJTT9LYS4J+QbuQZUVj5XdW+iPmjxxuODVmA@mail.gmail.com>
-In-Reply-To: <CA+icZUUjVnBjC4AJTT9LYS4J+QbuQZUVj5XdW+iPmjxxuODVmA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 1 Mar 2021 13:34:40 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wivYUWarZQNObmi7ZbO5rz1SPD1YmTJhne-8E352Ab=eg@mail.gmail.com>
-Message-ID: <CAHk-=wivYUWarZQNObmi7ZbO5rz1SPD1YmTJhne-8E352Ab=eg@mail.gmail.com>
-Subject: Re: Linux 5.12-rc1
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210226002030.653855-1-ruansy.fnst@fujitsu.com>
+ <OSBPR01MB2920899F1D71E7B054A04E39F49D9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
+ <20210226190454.GD7272@magnolia> <CAPcyv4iJiYsM5FQdpMvCi24aCi7RqUnnxC6sM0umFqiN+Q59cg@mail.gmail.com>
+ <556921a1-456c-c24d-6d47-e8b15c1d9972@fujitsu.com>
+In-Reply-To: <556921a1-456c-c24d-6d47-e8b15c1d9972@fujitsu.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 1 Mar 2021 13:34:52 -0800
+Message-ID: <CAPcyv4g3ZwbdLFx8bqMcNvXyrob8y6sBXXu=xPTmTY0VSk5HCw@mail.gmail.com>
+Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
+To:     Yasunori Goto <y-goto@fujitsu.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "jack@suse.cz" <jack@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
+        "david@fromorbit.com" <david@fromorbit.com>,
+        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
+        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
+        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 12:35 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+On Sun, Feb 28, 2021 at 11:27 PM Yasunori Goto <y-goto@fujitsu.com> wrote:
 >
-> I wondered why there was approx. for 6 days no commits and got an
-> answer from an LWN posting "5.12 Merge window delayed".
-> Unsure, if there was a posting to LKML?
+> Hello, Dan-san,
+>
+> On 2021/02/27 4:24, Dan Williams wrote:
+> > On Fri, Feb 26, 2021 at 11:05 AM Darrick J. Wong <djwong@kernel.org> wrote:
+> >>
+> >> On Fri, Feb 26, 2021 at 09:45:45AM +0000, ruansy.fnst@fujitsu.com wrote:
+> >>> Hi, guys
+> >>>
+> >>> Beside this patchset, I'd like to confirm something about the
+> >>> "EXPERIMENTAL" tag for dax in XFS.
+> >>>
+> >>> In XFS, the "EXPERIMENTAL" tag, which is reported in waring message
+> >>> when we mount a pmem device with dax option, has been existed for a
+> >>> while.  It's a bit annoying when using fsdax feature.  So, my initial
+> >>> intention was to remove this tag.  And I started to find out and solve
+> >>> the problems which prevent it from being removed.
+> >>>
+> >>> As is talked before, there are 3 main problems.  The first one is "dax
+> >>> semantics", which has been resolved.  The rest two are "RMAP for
+> >>> fsdax" and "support dax reflink for filesystem", which I have been
+> >>> working on.
+> >>
+> >> <nod>
+> >>
+> >>> So, what I want to confirm is: does it means that we can remove the
+> >>> "EXPERIMENTAL" tag when the rest two problem are solved?
+> >>
+> >> Yes.  I'd keep the experimental tag for a cycle or two to make sure that
+> >> nothing new pops up, but otherwise the two patchsets you've sent close
+> >> those two big remaining gaps.  Thank you for working on this!
+> >>
+> >>> Or maybe there are other important problems need to be fixed before
+> >>> removing it?  If there are, could you please show me that?
+> >>
+> >> That remains to be seen through QA/validation, but I think that's it.
+> >>
+> >> Granted, I still have to read through the two patchsets...
+> >
+> > I've been meaning to circle back here as well.
+> >
+> > My immediate concern is the issue Jason recently highlighted [1] with
+> > respect to invalidating all dax mappings when / if the device is
+> > ripped out from underneath the fs. I don't think that will collide
+> > with Ruan's implementation, but it does need new communication from
+> > driver to fs about removal events.
+> >
+> > [1]: http://lore.kernel.org/r/CAPcyv4i+PZhYZiePf2PaH0dT5jDfkmkDX-3usQy1fAhf6LPyfw@mail.gmail.com
+> >
+>
+> I'm not sure why there is a race condition between unbinding operation
+> and accessing mmaped file on filesystem dax yet.
+>
+> May be silly question, but could you tell me why the "unbinding"
+> operation of the namespace which is mounted by filesystem dax must be
+> allowed?
 
-There was no posting to lkml because lkml doesn't take html emails,
-and I only had mobile data (and not even that for the first 24 hours
-or so - even cell towers were down).
+The unbind operation is used to switch the mode of a namespace between
+fsdax and devdax. There is no way to fail unbind. At most it can be
+delayed for a short while to perform cleanup, but it can't be blocked
+indefinitely. There is the option to specify 'suppress_bind_attrs' to
+the driver to preclude software triggered device removal, but that
+would disable mode changes for the device.
 
-I did send updates to several top-level maintainers and to the
-users@kernel.org mailing list, so a lot of people knew about it, but
-they in turn probably only ended up mentioning it on a need-to-know
-basis. As you mention, LWN did have a mention of it, but you'd have to
-find it.
+> If "unbinding" is rejected when the filesystem is mounted with dax
+> enabled, what is inconvenience?
 
-In normal times I would have just taken a laptop to the nearest
-Starbucks and worked that way, but not in the pandemic. Plus the local
-highway was actually shut down for three days because of downed trees
-on the road (this was not a Texas-style electricity generation problem
-- it was literally thousands of trees falling all over. We had one
-miss our house by a couple of meters).
+It would be interesting (read difficult) to introduce the concept of
+dynamic 'suppress_bind_attrs'. Today the decision is static at driver
+registration time, not in response to how the device is being used.
 
-Two weeks later, and the roadways are still littered with trees and
-tons of branches everywhere you drive.
+I think global invalidation of all inodes that might be affected by a
+dax-capable device being ripped away from the filesystem is sufficient
+and avoids per-fs enabling, but I'm willing to be convinced that
+->corrupted_range() is the proper vehicle for this.
 
-And I didn't have a generator because our local power lines are
-actually buried, and we very seldom lose electricity. But when all the
-feeder lines are down because trees fell over, and it takes a week
-first for the tree crews to clear the roads and then the electric
-crews to replace literally miles of electric cable, it doesn't really
-help all that much that the local lines are buried and all in good
-working order ;)
+>
+> I can imagine if a device like usb memory stick is removed surprisingly,
+> kernel/filesystem need to reject writeback at the time, and discard page
+> cache. Then, I can understand that unbinding operation is essential for
+> such case.
 
-> Anyway, if you are not able to make your work someone else should jump
-> in like Greg did once.
+For usb the system is protected by the fact that all future block-i/o
+submissions to the old block-device will fail, and a new usb-device
+being plugged in will get a new block-device. I.e. the old security
+model is invalidated / all holes are closed by blk_cleanup_queue().
 
-It was an option, it didn't seem worth it.
+> But I don't know why PMEM device/namespace allows unbinding operation
+> like surprising removal event.
 
-And part of _that_ was that it looked like "ok, a couple of days", and
-then it just kept being "one more day" for several days.
+DAX hands direct mappings to physical pages, if the security model
+fronting those physical pages changes the mappings attained via the
+old security model need to be invalidated. blk_cleanup_queue() does
+not invalidate DAX mappings.
 
-A lot of people lost power for just a day or two.
-
-The area I live in probably wasn't a huge priority, because it's
-somewhat sparsely populated, and nice and wooded.
-
-Which is really nice most of the time. It's not quite so nice when you
-can hear the trees keep falling around you, and you know you have a
-few really big ones right next to the house.. ;^p
-
-                    Linus
+The practical value of fixing that hole is small given that physical
+unplug is not implemented for NVDIMMs today, but the get_user_pages()
+path can be optimized if this invalidation is implemented, and future
+hotplug-capable NVDIMM buses like CXL will need this.
