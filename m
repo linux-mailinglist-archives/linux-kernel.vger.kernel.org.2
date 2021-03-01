@@ -2,136 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAF8329B10
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B907C329B04
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378548AbhCBBGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:06:50 -0500
-Received: from mga06.intel.com ([134.134.136.31]:49056 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240917AbhCATCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:02:52 -0500
-IronPort-SDR: axrsqrwfkdrYjsEv1idMQ0CmWiThvor90tKf8zDA4+WyhyFJPDtMdSyUUG9ym0iRo/9cQGxnu5
- qK327PXb+tdw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="247977008"
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="247977008"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 10:59:59 -0800
-IronPort-SDR: 9AtqZ+/g/XE8E5dnue//mblk5Mu7epGgq4velIrovp2wXLot6ybGW9lDf86j8bdDia0L/yp4JC
- sAgAshYwQz/w==
-X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="444403546"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.116.218]) ([10.212.116.218])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 10:59:56 -0800
-Subject: Re: [PATCH v21 08/26] x86/mm: Introduce _PAGE_COW
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-9-yu-cheng.yu@intel.com>
- <20210301155234.GF6699@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <5d98a4f7-5882-2e6e-7b76-295b73c17152@intel.com>
-Date:   Mon, 1 Mar 2021 10:59:44 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1378447AbhCBBGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:06:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240823AbhCATBN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:01:13 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56D1C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 11:00:26 -0800 (PST)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id EF20C806B7;
+        Tue,  2 Mar 2021 08:00:23 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1614625223;
+        bh=WKHtECatzQfael+AQiWWuyJ3y/+f6zcgUcKeJWW2cbs=;
+        h=From:To:Cc:Subject:Date;
+        b=Wo7VoMveQJ7/MPyoV4CRwpv1OuAB39p1lx4AwAw+nKDQ4VbT2KbLBSRL80mBxWXOn
+         aSmL0WvO5PFYuATYVz7YNm+UagzQUd9PNl8MPQA2t0j8uKUa5KKd9ChTAhWT/v9kTk
+         v+mIKSLvBTW0DbQMwv3fiP4jjlJpojMeiOrsR/7Td1ux9WJ2B6dDCVn41J+LZLY2gi
+         qZjNo0EoH3MBIUYr7SaLjo/Mo1DTQ/C9eO+3ml5UgTYzRYiZqrE6UVN+e6nXezuVxK
+         f8js148C43ddT1uJeFmBCWcScVLHh/JdUVHepw0/O0+IsQZy/TJPC2bhwmgUlC/i0F
+         bSAL02iQ3uxpg==
+Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B603d39c70000>; Tue, 02 Mar 2021 08:00:23 +1300
+Received: from evann-dl.ws.atlnz.lc (evann-dl.ws.atlnz.lc [10.33.23.31])
+        by smtp (Postfix) with ESMTP id 586FF13EECD;
+        Tue,  2 Mar 2021 08:00:34 +1300 (NZDT)
+Received: by evann-dl.ws.atlnz.lc (Postfix, from userid 1780)
+        id B33201A4EB7; Tue,  2 Mar 2021 08:00:23 +1300 (NZDT)
+From:   Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+Subject: [PATCH v2 1/1] xfrm: Use actual socket sk instead of skb socket for xfrm_output_resume
+Date:   Tue,  2 Mar 2021 08:00:04 +1300
+Message-Id: <20210301190004.9586-1-evan.nimmo@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210301155234.GF6699@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=C7uXNjH+ c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=7ZN4cI0QAAAA:8 a=tm9BhY98yDMkBz91zHIA:9 a=Dl0WHwQvj8hGZljrFLtM:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/2021 7:52 AM, Borislav Petkov wrote:
-> On Wed, Feb 17, 2021 at 02:27:12PM -0800, Yu-cheng Yu wrote:
->> @@ -182,7 +206,7 @@ static inline int pud_young(pud_t pud)
->>   
->>   static inline int pte_write(pte_t pte)
->>   {
->> -	return pte_flags(pte) & _PAGE_RW;
-> 
-> Put here a comment along the lines of:
-> 
-> 	/*
-> 	 * Shadow stack pages are always writable - but not by normal
-> 	 * instructions but only by shadow stack operations. Therefore, the
-> 	 * W=0, D=1 test.
-> 	 */
-> 
-> to make it clear what this means.
-> 
->> +	return (pte_flags(pte) & _PAGE_RW) || pte_shstk(pte);
->>   }
->>   
->>   static inline int pte_huge(pte_t pte)
->> @@ -314,6 +338,24 @@ static inline pte_t pte_clear_flags(pte_t pte, pteval_t clear)
->>   	return native_make_pte(v & ~clear);
->>   }
->>   
->> +static inline pte_t pte_make_cow(pte_t pte)
-> 
-> pte_mkcow like the rest of the "pte_mkX" functions.
-> 
-> And below too, for the other newly added pXd_make_* helpers.
-> 
-> 
->>   static inline pmd_t pmd_mkdirty(pmd_t pmd)
->>   {
->> -	return pmd_set_flags(pmd, _PAGE_DIRTY | _PAGE_SOFT_DIRTY);
->> +	pmdval_t dirty = _PAGE_DIRTY;
->> +
->> +	/* Avoid creating (HW)Dirty=1, Write=0 PMDs */
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK) && !(pmd_flags(pmd) & _PAGE_RW))
-> 
-> 						      !(pmd_write(pmd))
-> 
->> +		dirty = _PAGE_COW;
->> +
->> +	return pmd_set_flags(pmd, dirty | _PAGE_SOFT_DIRTY);
->> +}
-> 
-> ...
-> 
->>   static inline pud_t pud_mkdirty(pud_t pud)
->>   {
->> -	return pud_set_flags(pud, _PAGE_DIRTY | _PAGE_SOFT_DIRTY);
->> +	pudval_t dirty = _PAGE_DIRTY;
->> +
->> +	/* Avoid creating (HW)Dirty=1, Write=0 PUDs */
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK) && !(pud_flags(pud) & _PAGE_RW))
-> 
-> 						      !(pud_write(pud))
-> 
-> 
+A situation can occur where the interface bound to the sk is different
+to the interface bound to the sk attached to the skb. The interface
+bound to the sk is the correct one however this information is lost insid=
+e
+xfrm_output2 and instead the sk on the skb is used in xfrm_output_resume
+instead. This assumes that the sk bound interface and the bound interface
+attached to the sk within the skb are the same which can lead to lookup
+failures inside ip_route_me_harder resulting in the packet being dropped.
 
-I will update.  Thanks!
+We have an l2tp v3 tunnel with ipsec protection. The tunnel is in the
+global VRF however we have an encapsulated dot1q tunnel interface that
+is within a different VRF. We also have a mangle rule that marks the=20
+packets causing them to be processed inside ip_route_me_harder.
 
---
-Yu-cheng
+Prior to commit 31c70d5956fc ("l2tp: keep original skb ownership") this
+worked fine as the sk attached to the skb was changed from the dot1q
+encapsulated interface to the sk for the tunnel which meant the interface
+bound to the sk and the interface bound to the skb were identical.
+Commit 46d6c5ae953c ("netfilter: use actual socket sk rather than skb sk
+when routing harder") fixed some of these issues however a similar
+problem existed in the xfrm code.
+
+Fixes: 31c70d5956fc ("l2tp: keep original skb ownership")
+
+Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
+Reviewed-by: Steffen Klassert <steffen.klassert@secunet.com>
+---
+changes in v2:
+- Added proper fixes field for backporting
+
+ include/net/xfrm.h     |  2 +-
+ net/ipv4/ah4.c         |  2 +-
+ net/ipv4/esp4.c        |  2 +-
+ net/ipv6/ah6.c         |  2 +-
+ net/ipv6/esp6.c        |  2 +-
+ net/xfrm/xfrm_output.c | 10 +++++-----
+ 6 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+index b2a06f10b62c..bfbc7810df94 100644
+--- a/include/net/xfrm.h
++++ b/include/net/xfrm.h
+@@ -1557,7 +1557,7 @@ int xfrm_trans_queue_net(struct net *net, struct sk=
+_buff *skb,
+ int xfrm_trans_queue(struct sk_buff *skb,
+ 		     int (*finish)(struct net *, struct sock *,
+ 				   struct sk_buff *));
+-int xfrm_output_resume(struct sk_buff *skb, int err);
++int xfrm_output_resume(struct sock *sk, struct sk_buff *skb, int err);
+ int xfrm_output(struct sock *sk, struct sk_buff *skb);
+=20
+ #if IS_ENABLED(CONFIG_NET_PKTGEN)
+diff --git a/net/ipv4/ah4.c b/net/ipv4/ah4.c
+index d99e1be94019..36ed85bf2ad5 100644
+--- a/net/ipv4/ah4.c
++++ b/net/ipv4/ah4.c
+@@ -141,7 +141,7 @@ static void ah_output_done(struct crypto_async_reques=
+t *base, int err)
+ 	}
+=20
+ 	kfree(AH_SKB_CB(skb)->tmp);
+-	xfrm_output_resume(skb, err);
++	xfrm_output_resume(skb->sk, skb, err);
+ }
+=20
+ static int ah_output(struct xfrm_state *x, struct sk_buff *skb)
+diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
+index a3271ec3e162..4b834bbf95e0 100644
+--- a/net/ipv4/esp4.c
++++ b/net/ipv4/esp4.c
+@@ -279,7 +279,7 @@ static void esp_output_done(struct crypto_async_reque=
+st *base, int err)
+ 		    x->encap && x->encap->encap_type =3D=3D TCP_ENCAP_ESPINTCP)
+ 			esp_output_tail_tcp(x, skb);
+ 		else
+-			xfrm_output_resume(skb, err);
++			xfrm_output_resume(skb->sk, skb, err);
+ 	}
+ }
+=20
+diff --git a/net/ipv6/ah6.c b/net/ipv6/ah6.c
+index 440080da805b..080ee7f44c64 100644
+--- a/net/ipv6/ah6.c
++++ b/net/ipv6/ah6.c
+@@ -316,7 +316,7 @@ static void ah6_output_done(struct crypto_async_reque=
+st *base, int err)
+ 	}
+=20
+ 	kfree(AH_SKB_CB(skb)->tmp);
+-	xfrm_output_resume(skb, err);
++	xfrm_output_resume(skb->sk, skb, err);
+ }
+=20
+ static int ah6_output(struct xfrm_state *x, struct sk_buff *skb)
+diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
+index 153ad103ba74..727d791ed5e6 100644
+--- a/net/ipv6/esp6.c
++++ b/net/ipv6/esp6.c
+@@ -314,7 +314,7 @@ static void esp_output_done(struct crypto_async_reque=
+st *base, int err)
+ 		    x->encap && x->encap->encap_type =3D=3D TCP_ENCAP_ESPINTCP)
+ 			esp_output_tail_tcp(x, skb);
+ 		else
+-			xfrm_output_resume(skb, err);
++			xfrm_output_resume(skb->sk, skb, err);
+ 	}
+ }
+=20
+diff --git a/net/xfrm/xfrm_output.c b/net/xfrm/xfrm_output.c
+index a7ab19353313..b81ca117dac7 100644
+--- a/net/xfrm/xfrm_output.c
++++ b/net/xfrm/xfrm_output.c
+@@ -503,22 +503,22 @@ static int xfrm_output_one(struct sk_buff *skb, int=
+ err)
+ 	return err;
+ }
+=20
+-int xfrm_output_resume(struct sk_buff *skb, int err)
++int xfrm_output_resume(struct sock *sk, struct sk_buff *skb, int err)
+ {
+ 	struct net *net =3D xs_net(skb_dst(skb)->xfrm);
+=20
+ 	while (likely((err =3D xfrm_output_one(skb, err)) =3D=3D 0)) {
+ 		nf_reset_ct(skb);
+=20
+-		err =3D skb_dst(skb)->ops->local_out(net, skb->sk, skb);
++		err =3D skb_dst(skb)->ops->local_out(net, sk, skb);
+ 		if (unlikely(err !=3D 1))
+ 			goto out;
+=20
+ 		if (!skb_dst(skb)->xfrm)
+-			return dst_output(net, skb->sk, skb);
++			return dst_output(net, sk, skb);
+=20
+ 		err =3D nf_hook(skb_dst(skb)->ops->family,
+-			      NF_INET_POST_ROUTING, net, skb->sk, skb,
++			      NF_INET_POST_ROUTING, net, sk, skb,
+ 			      NULL, skb_dst(skb)->dev, xfrm_output2);
+ 		if (unlikely(err !=3D 1))
+ 			goto out;
+@@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(xfrm_output_resume);
+=20
+ static int xfrm_output2(struct net *net, struct sock *sk, struct sk_buff=
+ *skb)
+ {
+-	return xfrm_output_resume(skb, 1);
++	return xfrm_output_resume(sk, skb, 1);
+ }
+=20
+ static int xfrm_output_gso(struct net *net, struct sock *sk, struct sk_b=
+uff *skb)
+--=20
+2.27.0
+
