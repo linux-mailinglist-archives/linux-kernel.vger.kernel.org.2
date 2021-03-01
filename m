@@ -2,121 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6513329155
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD95E328FB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239394AbhCAUX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:23:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237019AbhCARGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:06:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F39265006;
-        Mon,  1 Mar 2021 16:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616810;
-        bh=mVXHPPGSoVJWCQHkgdeHFEyC1wUa0+k1TnjiwN4hG9s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ia8zzCDFijebdNm0Vc/TqooKF/BhQG3vdz4Ul5KzB9tedrjzTLIbMQH/u3nXcOgrW
-         5FD8bKHe9mX8yFnCFwnT3oIw3M4zkDAU16Lsz2QfEE0f93oSlFEwLGr/v6yEDG/11r
-         lXcfdv7YtmOXGRrym/YEcnCWmGeAAgQXKFgtytjk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 104/247] ima: Free IMA measurement buffer after kexec syscall
-Date:   Mon,  1 Mar 2021 17:12:04 +0100
-Message-Id: <20210301161036.762777874@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
-References: <20210301161031.684018251@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S241325AbhCAT4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:56:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236524AbhCAQ6M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:58:12 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C836C061756;
+        Mon,  1 Mar 2021 08:57:30 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id q20so11898288pfu.8;
+        Mon, 01 Mar 2021 08:57:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PGGKabR50vKKIaiOMZrIQ/8/zi9WOZxscxD/HgJ2FSw=;
+        b=dw0XSkA3Z+NBejWmUiOq/LwQvIbHDJI3MZU6nib/cdN1f7VOU0Auq3/qylxA2WjcZj
+         SJlKSju4TMMRY2mCBAlzWHtG+2ERYMggx2lYDtCIj3Hr2B5YvUbrgAm0DHEhvhUte7/N
+         j+B/nY5rSwr2HBBoddiaDl3voyORKi2LZzZyXgdyUJ3XnAYWONM3ZJy3LXMJ+dRLTJ3O
+         W/mHjWzuqzGChFkDBg+1VsfUwycrDozak7Zz/+3bJmjheonr+WAgboHanYiqIh1C4+yc
+         iyG4BeGQBqK/ktAMswNq84CROsG/pMJtYn1pZvvNoela2bEomnxPA2EgBFgLCzSDag0S
+         SbzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PGGKabR50vKKIaiOMZrIQ/8/zi9WOZxscxD/HgJ2FSw=;
+        b=ZVUfcj5T1exhWTCvyGA4YlHQVyGvy6Qq2K+4132CjYYU5livsvWHIrCXrkVDSLWOtU
+         MNGUdLyfEpGzMJ7BKyN7GN1XG3Nwa7+0WfDWKSR+ADkKPZYntsiR7U3LyC1jtXSXFNd5
+         RwP1TRyq7nhawj6LCnobsK1N+tUhauGtfjk/g/3/ZY1b3E94o9CoEFBvpg37ENC7xeK1
+         0F8+RM5iEZadXQzDJ4OjhcL2mlQgVP1eAZ2k6M4ghjZ3IEr2izIrS4ROl5V1J+fSPA6y
+         ov0ik+FQp+7YKBwNBHke6D9tbvoQOhzo6QzaO0os5eU0r1a7hcWVQODogLwBvCKSSwe0
+         1l3A==
+X-Gm-Message-State: AOAM530lBuZ+mfIgSt+N3+LcR33NJQv+oK8Nm72rcIvRB35UFrpGH4C4
+        wdTbk51WABMycCcMpVomv/g+VeCuiRVuwfqHD0w=
+X-Google-Smtp-Source: ABdhPJyDvlGKkuDCnUm4ipNLihPj8NDR+SBnD3ZJNC8vg9fJMDtWAQvJ5J7OURUWiChGadMVkh4+1FqQRNjx9QQOcgg=
+X-Received: by 2002:a65:5ac9:: with SMTP id d9mr14437498pgt.74.1614617850155;
+ Mon, 01 Mar 2021 08:57:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210301090519.26192-1-johan@kernel.org> <CAMpxmJXfyM89vfFDQfvOU+CX5EQSp_n_UrbEYC5MP0T-0phc-Q@mail.gmail.com>
+In-Reply-To: <CAMpxmJXfyM89vfFDQfvOU+CX5EQSp_n_UrbEYC5MP0T-0phc-Q@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 1 Mar 2021 18:57:14 +0200
+Message-ID: <CAHp75Vc2NN59qxQ_5W4Uz_N6Nsrz=oKCCGUhizg1BpQuNHfmVg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] gpio: regression fixes
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+On Mon, Mar 1, 2021 at 11:13 AM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+> On Mon, Mar 1, 2021 at 10:05 AM Johan Hovold <johan@kernel.org> wrote:
+> >
+> > Here's a fix for a regression in 5.12 due to the new stub-driver hack,
+> > and a fix for potential list corruption due to missing locking which has
+> > been there since the introduction of the character-device interface in
+> > 4.6.
+> >
+> > Johan
+> >
+> > Changes in v2
+> >  - drop the corresponding drv_set_drvdata() which is no longer needed
+> >    after patch 1/2
+> >  - add Saravanas's reviewed-by tag to patch 2/2
+> >
+> >
+> > Johan Hovold (2):
+> >   gpio: fix NULL-deref-on-deregistration regression
+> >   gpio: fix gpio-device list corruption
+> >
+> >  drivers/gpio/gpiolib.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
 
-[ Upstream commit f31e3386a4e92ba6eda7328cb508462956c94c64 ]
+> Patches applied, thanks!
 
-IMA allocates kernel virtual memory to carry forward the measurement
-list, from the current kernel to the next kernel on kexec system call,
-in ima_add_kexec_buffer() function.  This buffer is not freed before
-completing the kexec system call resulting in memory leak.
+Ooops, you are fast!
+Anyway, I have tested with gpio-aggregator (w/o this series it
+sparkles with all possible bugs).
+Tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Add ima_buffer field in "struct kimage" to store the virtual address
-of the buffer allocated for the IMA measurement list.
-Free the memory allocated for the IMA measurement list in
-kimage_file_post_load_cleanup() function.
-
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/linux/kexec.h              | 5 +++++
- kernel/kexec_file.c                | 5 +++++
- security/integrity/ima/ima_kexec.c | 2 ++
- 3 files changed, 12 insertions(+)
-
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 9e4e638fb5051..fe9f6f2dd811d 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -260,6 +260,11 @@ struct kimage {
- 	/* Information for loading purgatory */
- 	struct purgatory_info purgatory_info;
- #endif
-+
-+#ifdef CONFIG_IMA_KEXEC
-+	/* Virtual address of IMA measurement buffer for kexec syscall */
-+	void *ima_buffer;
-+#endif
- };
- 
- /* kexec interface functions */
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index c6a3b6851372c..2fbdb78d66c80 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -168,6 +168,11 @@ void kimage_file_post_load_cleanup(struct kimage *image)
- 	vfree(pi->sechdrs);
- 	pi->sechdrs = NULL;
- 
-+#ifdef CONFIG_IMA_KEXEC
-+	vfree(image->ima_buffer);
-+	image->ima_buffer = NULL;
-+#endif /* CONFIG_IMA_KEXEC */
-+
- 	/* See if architecture has anything to cleanup post load */
- 	arch_kimage_file_post_load_cleanup(image);
- 
-diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
-index 9f8449dea5b69..6a10d4d8b6e1d 100644
---- a/security/integrity/ima/ima_kexec.c
-+++ b/security/integrity/ima/ima_kexec.c
-@@ -134,6 +134,8 @@ void ima_add_kexec_buffer(struct kimage *image)
- 		return;
- 	}
- 
-+	image->ima_buffer = kexec_buffer;
-+
- 	pr_debug("kexec measurement buffer for the loaded kernel at 0x%lx.\n",
- 		 kbuf.mem);
- }
 -- 
-2.27.0
-
-
-
+With Best Regards,
+Andy Shevchenko
