@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC02032991A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:03:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CB73299F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:29:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347259AbhCAXwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:52:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
+        id S1345321AbhCBAkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:40:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233006AbhCASSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:18:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A9AF651D1;
-        Mon,  1 Mar 2021 17:17:33 +0000 (UTC)
+        id S239914AbhCASbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:31:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09A10651D6;
+        Mon,  1 Mar 2021 17:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619054;
-        bh=WoD5ce5uh/pym10JLGNNgMoW+LvIveEE/HyLPg4+iB8=;
+        s=korg; t=1614619057;
+        bh=KsBIlFCuWO/SvTLiZ3DNi4EKh+Q09SGZIg/htGUJeco=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZMItPLIGEjJseGkZ9PYWkODeCyiaod4RWhZOXej4iN9AghbEvsX/xohsKKljTTFFt
-         DXj/3c8PDr9iR+VumEI2vi0aIL7/BaI8aRPVBFkVubvUg3XkvOoQWZtVTcviYmve+/
-         2xBizjuvkMWZXbc8xsSEBPg/0o6FnlGcN2LVR+ZI=
+        b=IuM0KGzi8Xj/0+SpnQmUUfn3MTk3gV0TXJRRdGzJN2QmenmT9gjeiv+SdgX2IIhdc
+         GtBMjC2bhC+6ae+zBu2ECXgDqnQsqLaZ461Hrfsrr8DnyQAZmacOCSGo019gQh4C46
+         2zVc7PAbSYhqS4VOHeNXm03MYEzYv1bhwyCT5SBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 315/663] isofs: release buffer head before return
-Date:   Mon,  1 Mar 2021 17:09:23 +0100
-Message-Id: <20210301161157.432977715@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 316/663] watchdog: intel-mid_wdt: Postpone IRQ handler registration till SCU is ready
+Date:   Mon,  1 Mar 2021 17:09:24 +0100
+Message-Id: <20210301161157.482910335@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,47 +43,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 0a6dc67a6aa45f19bd4ff89b4f468fc50c4b8daa ]
+[ Upstream commit f285c9532b5bd3de7e37a6203318437cab79bd9a ]
 
-Release the buffer_head before returning error code in
-do_isofs_readdir() and isofs_find_entry().
+When SCU is not ready and CONFIG_DEBUG_SHIRQ=y we got deferred probe followed
+by fired test IRQ which immediately makes kernel panic. Fix this by delaying
+IRQ handler registration till SCU is ready.
 
-Fixes: 2deb1acc653c ("isofs: fix access to unallocated memory when reading corrupted filesystem")
-Link: https://lore.kernel.org/r/20210118120455.118955-1-bianpan2016@163.com
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Fixes: 80ae679b8f86 ("watchdog: intel-mid_wdt: Convert to use new SCU IPC API")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/isofs/dir.c   | 1 +
- fs/isofs/namei.c | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/watchdog/intel-mid_wdt.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/isofs/dir.c b/fs/isofs/dir.c
-index f0fe641893a5e..b9e6a7ec78be4 100644
---- a/fs/isofs/dir.c
-+++ b/fs/isofs/dir.c
-@@ -152,6 +152,7 @@ static int do_isofs_readdir(struct inode *inode, struct file *file,
- 			printk(KERN_NOTICE "iso9660: Corrupted directory entry"
- 			       " in block %lu of inode %lu\n", block,
- 			       inode->i_ino);
-+			brelse(bh);
- 			return -EIO;
- 		}
+diff --git a/drivers/watchdog/intel-mid_wdt.c b/drivers/watchdog/intel-mid_wdt.c
+index 1ae03b64ef8bf..9b2173f765c8c 100644
+--- a/drivers/watchdog/intel-mid_wdt.c
++++ b/drivers/watchdog/intel-mid_wdt.c
+@@ -154,6 +154,10 @@ static int mid_wdt_probe(struct platform_device *pdev)
+ 	watchdog_set_nowayout(wdt_dev, WATCHDOG_NOWAYOUT);
+ 	watchdog_set_drvdata(wdt_dev, mid);
  
-diff --git a/fs/isofs/namei.c b/fs/isofs/namei.c
-index 402769881c32b..58f80e1b3ac0d 100644
---- a/fs/isofs/namei.c
-+++ b/fs/isofs/namei.c
-@@ -102,6 +102,7 @@ isofs_find_entry(struct inode *dir, struct dentry *dentry,
- 			printk(KERN_NOTICE "iso9660: Corrupted directory entry"
- 			       " in block %lu of inode %lu\n", block,
- 			       dir->i_ino);
-+			brelse(bh);
- 			return 0;
- 		}
++	mid->scu = devm_intel_scu_ipc_dev_get(dev);
++	if (!mid->scu)
++		return -EPROBE_DEFER;
++
+ 	ret = devm_request_irq(dev, pdata->irq, mid_wdt_irq,
+ 			       IRQF_SHARED | IRQF_NO_SUSPEND, "watchdog",
+ 			       wdt_dev);
+@@ -162,10 +166,6 @@ static int mid_wdt_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
+-	mid->scu = devm_intel_scu_ipc_dev_get(dev);
+-	if (!mid->scu)
+-		return -EPROBE_DEFER;
+-
+ 	/*
+ 	 * The firmware followed by U-Boot leaves the watchdog running
+ 	 * with the default threshold which may vary. When we get here
 -- 
 2.27.0
 
