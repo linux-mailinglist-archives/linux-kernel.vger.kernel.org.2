@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBA7329AB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A916F329B07
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348379AbhCBBCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:02:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58438 "EHLO mail.kernel.org"
+        id S1378472AbhCBBGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:06:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240570AbhCASwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:52:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E01664F41;
-        Mon,  1 Mar 2021 16:38:49 +0000 (UTC)
+        id S240830AbhCATBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:01:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B6F465067;
+        Mon,  1 Mar 2021 17:23:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616729;
-        bh=fmbSu24eqr+lHWwTXRM8r1N6uGDrLtYgM8NhiwJxrnE=;
+        s=korg; t=1614619425;
+        bh=LCLt2oOtDTkL6juqEAPn7kIHF7nvbMjBpK8BIEeSXEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RcCz6BN+HmApZRhzSE+k6BZni5vR/dcB6fiJGWK+AQqNypE7EBwXN8FHPITAPVtX9
-         m7wt06kfitMR7IcNZIYdqN+z1UpPF7SZLiPQmT9ZgFbk7DUXoZDgymrOu7PIMFoSr2
-         LK+MmqQ17WaFWh5VOZ1Xzm+Txwkmhm4a69OegQKA=
+        b=Z6cC1SNTWLAZ0v76df6DqHMogxyfl27jGt0MH0mBiAKLyu+ONVU2uz4VCmEAXD/+y
+         lKAc8tHMqqM64DYNR/Tg6fhXEyOWT+epnlJ5CODW/iBkA7EHJIKwtkA8LsIatYZgv1
+         w0+KHthrdvyzUXV3XaieWzQV15pHn96/tfQPFeVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 076/247] crypto: sun4i-ss - fix kmap usage
-Date:   Mon,  1 Mar 2021 17:11:36 +0100
-Message-Id: <20210301161035.410969195@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, Song@vger.kernel.org
+Subject: [PATCH 5.10 449/663] net: stmmac: fix CBS idleslope and sendslope calculation
+Date:   Mon,  1 Mar 2021 17:11:37 +0100
+Message-Id: <20210301161204.110500603@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
-References: <20210301161031.684018251@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,252 +41,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Song, Yoong Siang <yoong.siang.song@intel.com>
 
-[ Upstream commit 9bc3dd24e7dccd50757db743a3635ad5b0497e6e ]
+[ Upstream commit 24877687b375f2c476ffb726ea915fc85df09e3d ]
 
-With the recent kmap change, some tests which were conditional on
-CONFIG_DEBUG_HIGHMEM now are enabled by default.
-This permit to detect a problem in sun4i-ss usage of kmap.
+When link speed is not 100 Mbps, port transmit rate and speed divider
+are set to 8 and 1000000 respectively. These values are incorrect for
+CBS idleslope and sendslope HW values calculation if the link speed is
+not 1 Gbps.
 
-sun4i-ss uses two kmap via sg_miter (one for input, one for output), but
-using two kmap at the same time is hard:
-"the ordering has to be correct and with sg_miter that's probably hard to get
-right." (quoting Tlgx)
+This patch adds switch statement to set the values of port transmit rate
+and speed divider for 10 Gbps, 5 Gbps, 2.5 Gbps, 1 Gbps, and 100 Mbps.
+Note that CBS is not supported at 10 Mbps.
 
-So the easiest solution is to never have two sg_miter/kmap open at the same time.
-After each use of sg_miter, I store the current index, for being able to
-resume sg_miter to the right place.
-
-Fixes: 6298e948215f ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: bc41a6689b30 ("net: stmmac: tc: Remove the speed dependency")
+Fixes: 1f705bc61aee ("net: stmmac: Add support for CBS QDISC")
+Signed-off-by: Song, Yoong Siang <yoong.siang.song@intel.com>
+Link: https://lore.kernel.org/r/1613655653-11755-1-git-send-email-yoong.siang.song@intel.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/sunxi-ss/sun4i-ss-cipher.c | 109 +++++++++++++---------
- 1 file changed, 65 insertions(+), 44 deletions(-)
+ .../net/ethernet/stmicro/stmmac/stmmac_tc.c   | 30 ++++++++++++++++---
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c b/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
-index 22e4918579254..178096e4e77da 100644
---- a/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
-+++ b/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
-@@ -34,6 +34,8 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
- 	unsigned int ileft = areq->cryptlen;
- 	unsigned int oleft = areq->cryptlen;
- 	unsigned int todo;
-+	unsigned long pi = 0, po = 0; /* progress for in and out */
-+	bool miter_err;
- 	struct sg_mapping_iter mi, mo;
- 	unsigned int oi, oo; /* offset for in and out */
- 	unsigned long flags;
-@@ -64,39 +66,51 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
- 	}
- 	writel(mode, ss->base + SS_CTL);
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index 6088071cb1923..40dc14d1415f3 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -322,6 +322,32 @@ static int tc_setup_cbs(struct stmmac_priv *priv,
+ 	if (!priv->dma_cap.av)
+ 		return -EOPNOTSUPP;
  
--	sg_miter_start(&mi, areq->src, sg_nents(areq->src),
--		       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
--	sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
--		       SG_MITER_TO_SG | SG_MITER_ATOMIC);
--	sg_miter_next(&mi);
--	sg_miter_next(&mo);
--	if (!mi.addr || !mo.addr) {
--		dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
--		err = -EINVAL;
--		goto release_ss;
--	}
- 
- 	ileft = areq->cryptlen / 4;
- 	oleft = areq->cryptlen / 4;
- 	oi = 0;
- 	oo = 0;
- 	do {
--		todo = min(rx_cnt, ileft);
--		todo = min_t(size_t, todo, (mi.length - oi) / 4);
--		if (todo) {
--			ileft -= todo;
--			writesl(ss->base + SS_RXFIFO, mi.addr + oi, todo);
--			oi += todo * 4;
--		}
--		if (oi == mi.length) {
--			sg_miter_next(&mi);
--			oi = 0;
-+		if (ileft) {
-+			sg_miter_start(&mi, areq->src, sg_nents(areq->src),
-+					SG_MITER_FROM_SG | SG_MITER_ATOMIC);
-+			if (pi)
-+				sg_miter_skip(&mi, pi);
-+			miter_err = sg_miter_next(&mi);
-+			if (!miter_err || !mi.addr) {
-+				dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
-+				err = -EINVAL;
-+				goto release_ss;
-+			}
-+			todo = min(rx_cnt, ileft);
-+			todo = min_t(size_t, todo, (mi.length - oi) / 4);
-+			if (todo) {
-+				ileft -= todo;
-+				writesl(ss->base + SS_RXFIFO, mi.addr + oi, todo);
-+				oi += todo * 4;
-+			}
-+			if (oi == mi.length) {
-+				pi += mi.length;
-+				oi = 0;
-+			}
-+			sg_miter_stop(&mi);
- 		}
- 
- 		spaces = readl(ss->base + SS_FCSR);
- 		rx_cnt = SS_RXFIFO_SPACES(spaces);
- 		tx_cnt = SS_TXFIFO_SPACES(spaces);
- 
-+		sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
-+			       SG_MITER_TO_SG | SG_MITER_ATOMIC);
-+		if (po)
-+			sg_miter_skip(&mo, po);
-+		miter_err = sg_miter_next(&mo);
-+		if (!miter_err || !mo.addr) {
-+			dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
-+			err = -EINVAL;
-+			goto release_ss;
-+		}
- 		todo = min(tx_cnt, oleft);
- 		todo = min_t(size_t, todo, (mo.length - oo) / 4);
- 		if (todo) {
-@@ -105,9 +119,10 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
- 			oo += todo * 4;
- 		}
- 		if (oo == mo.length) {
--			sg_miter_next(&mo);
- 			oo = 0;
-+			po += mo.length;
- 		}
-+		sg_miter_stop(&mo);
- 	} while (oleft);
- 
- 	if (areq->iv) {
-@@ -118,8 +133,6 @@ static int sun4i_ss_opti_poll(struct skcipher_request *areq)
- 	}
- 
- release_ss:
--	sg_miter_stop(&mi);
--	sg_miter_stop(&mo);
- 	writel(0, ss->base + SS_CTL);
- 	spin_unlock_irqrestore(&ss->slock, flags);
- 	return err;
-@@ -148,6 +161,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 	unsigned int oleft = areq->cryptlen;
- 	unsigned int todo;
- 	struct sg_mapping_iter mi, mo;
-+	unsigned long pi = 0, po = 0; /* progress for in and out */
-+	bool miter_err;
- 	unsigned int oi, oo;	/* offset for in and out */
- 	char buf[4 * SS_RX_MAX];/* buffer for linearize SG src */
- 	char bufo[4 * SS_TX_MAX]; /* buffer for linearize SG dst */
-@@ -200,17 +215,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 	}
- 	writel(mode, ss->base + SS_CTL);
- 
--	sg_miter_start(&mi, areq->src, sg_nents(areq->src),
--		       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
--	sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
--		       SG_MITER_TO_SG | SG_MITER_ATOMIC);
--	sg_miter_next(&mi);
--	sg_miter_next(&mo);
--	if (!mi.addr || !mo.addr) {
--		dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
--		err = -EINVAL;
--		goto release_ss;
--	}
- 	ileft = areq->cryptlen;
- 	oleft = areq->cryptlen;
- 	oi = 0;
-@@ -218,6 +222,16 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 
- 	while (oleft) {
- 		if (ileft) {
-+			sg_miter_start(&mi, areq->src, sg_nents(areq->src),
-+				       SG_MITER_FROM_SG | SG_MITER_ATOMIC);
-+			if (pi)
-+				sg_miter_skip(&mi, pi);
-+			miter_err = sg_miter_next(&mi);
-+			if (!miter_err || !mi.addr) {
-+				dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
-+				err = -EINVAL;
-+				goto release_ss;
-+			}
- 			/*
- 			 * todo is the number of consecutive 4byte word that we
- 			 * can read from current SG
-@@ -250,31 +264,38 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 				}
- 			}
- 			if (oi == mi.length) {
--				sg_miter_next(&mi);
-+				pi += mi.length;
- 				oi = 0;
- 			}
-+			sg_miter_stop(&mi);
- 		}
- 
- 		spaces = readl(ss->base + SS_FCSR);
- 		rx_cnt = SS_RXFIFO_SPACES(spaces);
- 		tx_cnt = SS_TXFIFO_SPACES(spaces);
--		dev_dbg(ss->dev,
--			"%x %u/%zu %u/%u cnt=%u %u/%zu %u/%u cnt=%u %u\n",
--			mode,
--			oi, mi.length, ileft, areq->cryptlen, rx_cnt,
--			oo, mo.length, oleft, areq->cryptlen, tx_cnt, ob);
- 
- 		if (!tx_cnt)
- 			continue;
-+		sg_miter_start(&mo, areq->dst, sg_nents(areq->dst),
-+			       SG_MITER_TO_SG | SG_MITER_ATOMIC);
-+		if (po)
-+			sg_miter_skip(&mo, po);
-+		miter_err = sg_miter_next(&mo);
-+		if (!miter_err || !mo.addr) {
-+			dev_err_ratelimited(ss->dev, "ERROR: sg_miter return null\n");
-+			err = -EINVAL;
-+			goto release_ss;
-+		}
- 		/* todo in 4bytes word */
- 		todo = min(tx_cnt, oleft / 4);
- 		todo = min_t(size_t, todo, (mo.length - oo) / 4);
++	/* Port Transmit Rate and Speed Divider */
++	switch (priv->speed) {
++	case SPEED_10000:
++		ptr = 32;
++		speed_div = 10000000;
++		break;
++	case SPEED_5000:
++		ptr = 32;
++		speed_div = 5000000;
++		break;
++	case SPEED_2500:
++		ptr = 8;
++		speed_div = 2500000;
++		break;
++	case SPEED_1000:
++		ptr = 8;
++		speed_div = 1000000;
++		break;
++	case SPEED_100:
++		ptr = 4;
++		speed_div = 100000;
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
 +
- 		if (todo) {
- 			readsl(ss->base + SS_TXFIFO, mo.addr + oo, todo);
- 			oleft -= todo * 4;
- 			oo += todo * 4;
- 			if (oo == mo.length) {
--				sg_miter_next(&mo);
-+				po += mo.length;
- 				oo = 0;
- 			}
- 		} else {
-@@ -299,12 +320,14 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 				obo += todo;
- 				oo += todo;
- 				if (oo == mo.length) {
-+					po += mo.length;
- 					sg_miter_next(&mo);
- 					oo = 0;
- 				}
- 			} while (obo < obl);
- 			/* bufo must be fully used here */
- 		}
-+		sg_miter_stop(&mo);
- 	}
- 	if (areq->iv) {
- 		for (i = 0; i < 4 && i < ivsize / 4; i++) {
-@@ -314,8 +337,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+ 	mode_to_use = priv->plat->tx_queues_cfg[queue].mode_to_use;
+ 	if (mode_to_use == MTL_QUEUE_DCB && qopt->enable) {
+ 		ret = stmmac_dma_qmode(priv, priv->ioaddr, queue, MTL_QUEUE_AVB);
+@@ -338,10 +364,6 @@ static int tc_setup_cbs(struct stmmac_priv *priv,
+ 		priv->plat->tx_queues_cfg[queue].mode_to_use = MTL_QUEUE_DCB;
  	}
  
- release_ss:
--	sg_miter_stop(&mi);
--	sg_miter_stop(&mo);
- 	writel(0, ss->base + SS_CTL);
- 	spin_unlock_irqrestore(&ss->slock, flags);
- 
+-	/* Port Transmit Rate and Speed Divider */
+-	ptr = (priv->speed == SPEED_100) ? 4 : 8;
+-	speed_div = (priv->speed == SPEED_100) ? 100000 : 1000000;
+-
+ 	/* Final adjustments for HW */
+ 	value = div_s64(qopt->idleslope * 1024ll * ptr, speed_div);
+ 	priv->plat->tx_queues_cfg[queue].idle_slope = value & GENMASK(31, 0);
 -- 
 2.27.0
 
