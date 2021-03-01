@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4120232896B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7429632894A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbhCAR4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:56:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36724 "EHLO mail.kernel.org"
+        id S239151AbhCARxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:53:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232488AbhCAQbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232455AbhCAQbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:31:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 383A664F13;
-        Mon,  1 Mar 2021 16:24:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6B2464F2D;
+        Mon,  1 Mar 2021 16:24:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615870;
-        bh=cPo0bxb8Pj75YqA0YV5F7dowFfJORzEb1glQ1glBmpc=;
+        s=korg; t=1614615876;
+        bh=cG00EA4GqSE9VrsMiGmD1BFl2y/v11PU4dDaZHNRsrk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HveJpbqNPVhw75TYw9dAtFJCH9gKnIETiIjDKRUY8BFtCyhJgkuz2DsZI3HHJYpmo
-         DdCv/XJS+YUuERbJG92RPbOSwMBRPLennCWxbuMd73OEEs1cFYeWZHi0Ytl91a6+Qt
-         gfmhf508RYRkQAB1Hm5ZmbrC66rRViwWZx+Wk3DI=
+        b=hBIalSKO3u4B0eQr0+E2xjHShWxc4dB18/MbM4sFNW3RTaxBJ3tRMhjgDLP0qBhI7
+         GgsYpoasiEeXXhpLRO7p8b1lm4W7Uux20mhsZbBHx7mKJ0QmpcoebdwEN1A9STPgfB
+         NaZNE8MRUGxRTghM3hS+P+B6gbEeSr2LWd53DooE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.9 089/134] blk-settings: align max_sectors on "logical_block_size" boundary
-Date:   Mon,  1 Mar 2021 17:13:10 +0100
-Message-Id: <20210301161017.944696131@linuxfoundation.org>
+        stable@vger.kernel.org, "jeffrey.lin" <jeffrey.lin@rad-ic.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.9 091/134] Input: raydium_ts_i2c - do not send zero length
+Date:   Mon,  1 Mar 2021 17:13:12 +0100
+Message-Id: <20210301161018.050351880@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -40,68 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: jeffrey.lin <jeffrey.lin@rad-ic.com>
 
-commit 97f433c3601a24d3513d06f575a389a2ca4e11e4 upstream.
+commit fafd320ae51b9c72d371585b2501f86640ea7b7d upstream.
 
-We get I/O errors when we run md-raid1 on the top of dm-integrity on the
-top of ramdisk.
-device-mapper: integrity: Bio not aligned on 8 sectors: 0xff00, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0xff00, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0xffff, 0x1
-device-mapper: integrity: Bio not aligned on 8 sectors: 0xffff, 0x1
-device-mapper: integrity: Bio not aligned on 8 sectors: 0x8048, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0x8147, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0x8246, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0x8345, 0xbb
+Add default write command package to prevent i2c quirk error of zero
+data length as Raydium touch firmware update is executed.
 
-The ramdisk device has logical_block_size 512 and max_sectors 255. The
-dm-integrity device uses logical_block_size 4096 and it doesn't affect the
-"max_sectors" value - thus, it inherits 255 from the ramdisk. So, we have
-a device with max_sectors not aligned on logical_block_size.
-
-The md-raid device sees that the underlying leg has max_sectors 255 and it
-will split the bios on 255-sector boundary, making the bios unaligned on
-logical_block_size.
-
-In order to fix the bug, we round down max_sectors to logical_block_size.
-
+Signed-off-by: jeffrey.lin <jeffrey.lin@rad-ic.com>
+Link: https://lore.kernel.org/r/1608031217-7247-1-git-send-email-jeffrey.lin@raydium.corp-partner.google.com
 Cc: stable@vger.kernel.org
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-settings.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/input/touchscreen/raydium_i2c_ts.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -494,6 +494,14 @@ void blk_queue_stack_limits(struct reque
- }
- EXPORT_SYMBOL(blk_queue_stack_limits);
+--- a/drivers/input/touchscreen/raydium_i2c_ts.c
++++ b/drivers/input/touchscreen/raydium_i2c_ts.c
+@@ -419,6 +419,7 @@ static int raydium_i2c_write_object(stru
+ 				    enum raydium_bl_ack state)
+ {
+ 	int error;
++	static const u8 cmd[] = { 0xFF, 0x39 };
  
-+static unsigned int blk_round_down_sectors(unsigned int sectors, unsigned int lbs)
-+{
-+	sectors = round_down(sectors, lbs >> SECTOR_SHIFT);
-+	if (sectors < PAGE_SIZE >> SECTOR_SHIFT)
-+		sectors = PAGE_SIZE >> SECTOR_SHIFT;
-+	return sectors;
-+}
-+
- /**
-  * blk_stack_limits - adjust queue_limits for stacked devices
-  * @t:	the stacking driver limits (top device)
-@@ -606,6 +614,10 @@ int blk_stack_limits(struct queue_limits
- 		ret = -1;
+ 	error = raydium_i2c_send(client, RM_CMD_BOOT_WRT, data, len);
+ 	if (error) {
+@@ -427,7 +428,7 @@ static int raydium_i2c_write_object(stru
+ 		return error;
  	}
  
-+	t->max_sectors = blk_round_down_sectors(t->max_sectors, t->logical_block_size);
-+	t->max_hw_sectors = blk_round_down_sectors(t->max_hw_sectors, t->logical_block_size);
-+	t->max_dev_sectors = blk_round_down_sectors(t->max_dev_sectors, t->logical_block_size);
-+
- 	/* Discard alignment and granularity */
- 	if (b->discard_granularity) {
- 		alignment = queue_limit_discard_alignment(b, start);
+-	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, NULL, 0);
++	error = raydium_i2c_send(client, RM_CMD_BOOT_ACK, cmd, sizeof(cmd));
+ 	if (error) {
+ 		dev_err(&client->dev, "Ack obj command failed: %d\n", error);
+ 		return error;
 
 
