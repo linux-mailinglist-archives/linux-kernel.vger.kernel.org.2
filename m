@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DCF329B71
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B4F329C1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348703AbhCBBYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:24:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39680 "EHLO mail.kernel.org"
+        id S1380104AbhCBBsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:48:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241280AbhCATJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:09:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A100651A1;
-        Mon,  1 Mar 2021 17:11:59 +0000 (UTC)
+        id S241545AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:24:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 209C565021;
+        Mon,  1 Mar 2021 17:12:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618720;
-        bh=Pk9sI8KEEXP6HELEYhD7kTM9rjp13VdcAeXmrm1UWr4=;
+        s=korg; t=1614618728;
+        bh=wrH2oNQ2/u2XBaacYgNQwNV63cesyj4WCnlAqNNpDvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tlva/tvrWz+Cf5CcFCEpHYul0aboVs+7DDSI+1knaMuBcJ0PARybJ5Y0w7GkdDqqc
-         hyMMe800thtucH3R7on+Aicc3isCDrzgTo/hVvEeYN2jJAxQGTxEucfi2PEEzV23pr
-         x8TW8/CVpDC+pkbDOrjT4rd8oDZo5Gofn7zhRwFs=
+        b=P0FkuPlIH22cTyMLMJrxGRJUqDGmctyssXZK7bQUBO7E4muXvk2e1rT8zBwv/0+Ws
+         TLbFxTNccNyMjUSPNX6RQY5XZndS9konEg++6ZJgYYqjkZa6OyBvKm+uu52Ya9Pr7+
+         nBe/L+BRWudA3S1lzDbQ30GH99TOPhs85Afjht3E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Robert Foss <robert.foss@linaro.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 164/663] media: camss: missing error code in msm_video_register()
-Date:   Mon,  1 Mar 2021 17:06:52 +0100
-Message-Id: <20210301161149.892611332@linuxfoundation.org>
+Subject: [PATCH 5.10 165/663] media: vsp1: Fix an error handling path in the probe function
+Date:   Mon,  1 Mar 2021 17:06:53 +0100
+Message-Id: <20210301161149.943637584@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,34 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 9c67ed2ab299123872be14a3dc2ea44ce7e4538b ]
+[ Upstream commit 7113469dafc2d545fa4fa9bc649c31dc27db492e ]
 
-This error path returns success but it should return -EINVAL.
+A previous 'rcar_fcp_get()' call must be undone in the error handling path,
+as already done in the remove function.
 
-Fixes: cba3819d1e93 ("media: camss: Format configuration per hardware version")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Fixes: 94fcdf829793 ("[media] v4l: vsp1: Add FCP support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/camss/camss-video.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/platform/vsp1/vsp1_drv.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-video.c b/drivers/media/platform/qcom/camss/camss-video.c
-index 114c3ae4a4abb..15965e63cb619 100644
---- a/drivers/media/platform/qcom/camss/camss-video.c
-+++ b/drivers/media/platform/qcom/camss/camss-video.c
-@@ -979,6 +979,7 @@ int msm_video_register(struct camss_video *video, struct v4l2_device *v4l2_dev,
- 			video->nformats = ARRAY_SIZE(formats_rdi_8x96);
- 		}
- 	} else {
-+		ret = -EINVAL;
- 		goto error_video_register;
+diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
+index dc62533cf32ce..aa66e4f5f3f34 100644
+--- a/drivers/media/platform/vsp1/vsp1_drv.c
++++ b/drivers/media/platform/vsp1/vsp1_drv.c
+@@ -882,8 +882,10 @@ static int vsp1_probe(struct platform_device *pdev)
  	}
  
+ done:
+-	if (ret)
++	if (ret) {
+ 		pm_runtime_disable(&pdev->dev);
++		rcar_fcp_put(vsp1->fcp);
++	}
+ 
+ 	return ret;
+ }
 -- 
 2.27.0
 
