@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6551329B12
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA679329AAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378563AbhCBBGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:06:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34070 "EHLO mail.kernel.org"
+        id S1345514AbhCBBBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:01:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240921AbhCATCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:02:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 135FF64DE7;
-        Mon,  1 Mar 2021 17:24:18 +0000 (UTC)
+        id S240506AbhCASvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:51:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F16A6521D;
+        Mon,  1 Mar 2021 17:23:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619459;
-        bh=xl51XW3imt5RYp4XOdMTgV5zmO6HMGyRFP/a/9rDIYQ=;
+        s=korg; t=1614619382;
+        bh=BaMT1W2QKF/Ej5o8voNVnRg3XEAvWOyRn/mZhTTy/9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yEChQ7uXxGnZ+/ORv3FBL/onCcEFGfAPXFOd5TpKUnzbH/Fpc1FumD56rk+FwNSKr
-         TE0hwjPMJwf82fVQWS4516Gsqgpu9X/SZmtCAYrGBcHLUHX4cscOx2C0JIpFnb7yym
-         jTSfZLyHw0Humd2D9ZhgW+EFkofzfQaq9184lnKQ=
+        b=GXFr7hbJHcnMEDHJXamUeftKFnI1yRLx1vEsrgx9NakUI+h4cqreEhO7HMyKrs1rw
+         biZA5hzdgb0vF4Zy5H4x997Jmkpse8I7erH6g931cemv7ynz1umgdxN32NWePBERPd
+         fQha7JWMnwaTMNXWg0Yl4C00Eke6Nfn5MjfSik+w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Andrzej=20Sawu=C5=82a?= <andrzej.sawula@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 432/663] PCI: pci-bridge-emul: Fix array overruns, improve safety
-Date:   Mon,  1 Mar 2021 17:11:20 +0100
-Message-Id: <20210301161203.263655361@linuxfoundation.org>
+Subject: [PATCH 5.10 435/663] i40e: Add zero-initialization of AQ command structures
+Date:   Mon,  1 Mar 2021 17:11:23 +0100
+Message-Id: <20210301161203.414581837@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,71 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Mateusz Palczewski <mateusz.palczewski@intel.com>
 
-[ Upstream commit f8ee579d53aca887d93f5f411462f25c085a5106 ]
+[ Upstream commit d2c788f739b6f68090e968a2ee31b543701e795f ]
 
-We allow up to PCI_EXP_SLTSTA2 registers to be accessed, but the
-pcie_cap_regs_behavior[] array only covers up to PCI_EXP_RTSTA.  Expand
-this array to avoid walking off the end of it.
+Zero-initialize AQ command data structures to comply with
+API specifications.
 
-Do the same for pci_regs_behavior for consistency[], and add a
-BUILD_BUG_ON() to also check the bridge->conf structure size.
-
-Fixes: 23a5fba4d941 ("PCI: Introduce PCI bridge emulated config space common logic")
-Link: https://lore.kernel.org/r/E1l6z9W-0006Re-MQ@rmk-PC.armlinux.org.uk
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Pali Rohár <pali@kernel.org>
+Fixes: 2f4b411a3d67 ("i40e: Enable cloud filters via tc-flower")
+Fixes: f4492db16df8 ("i40e: Add NPAR BW get and set functions")
+Signed-off-by: Andrzej Sawuła <andrzej.sawula@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Reviewed-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci-bridge-emul.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/pci/pci-bridge-emul.c b/drivers/pci/pci-bridge-emul.c
-index 139869d50eb26..fdaf86a888b73 100644
---- a/drivers/pci/pci-bridge-emul.c
-+++ b/drivers/pci/pci-bridge-emul.c
-@@ -21,8 +21,9 @@
- #include "pci-bridge-emul.h"
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 1db482d310c2d..9b1251a710c09 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -7667,6 +7667,8 @@ int i40e_add_del_cloud_filter(struct i40e_vsi *vsi,
+ 	if (filter->flags >= ARRAY_SIZE(flag_table))
+ 		return I40E_ERR_CONFIG;
  
- #define PCI_BRIDGE_CONF_END	PCI_STD_HEADER_SIZEOF
-+#define PCI_CAP_PCIE_SIZEOF	(PCI_EXP_SLTSTA2 + 2)
- #define PCI_CAP_PCIE_START	PCI_BRIDGE_CONF_END
--#define PCI_CAP_PCIE_END	(PCI_CAP_PCIE_START + PCI_EXP_SLTSTA2 + 2)
-+#define PCI_CAP_PCIE_END	(PCI_CAP_PCIE_START + PCI_CAP_PCIE_SIZEOF)
- 
- /**
-  * struct pci_bridge_reg_behavior - register bits behaviors
-@@ -46,7 +47,8 @@ struct pci_bridge_reg_behavior {
- 	u32 w1c;
- };
- 
--static const struct pci_bridge_reg_behavior pci_regs_behavior[] = {
-+static const
-+struct pci_bridge_reg_behavior pci_regs_behavior[PCI_STD_HEADER_SIZEOF / 4] = {
- 	[PCI_VENDOR_ID / 4] = { .ro = ~0 },
- 	[PCI_COMMAND / 4] = {
- 		.rw = (PCI_COMMAND_IO | PCI_COMMAND_MEMORY |
-@@ -164,7 +166,8 @@ static const struct pci_bridge_reg_behavior pci_regs_behavior[] = {
- 	},
- };
- 
--static const struct pci_bridge_reg_behavior pcie_cap_regs_behavior[] = {
-+static const
-+struct pci_bridge_reg_behavior pcie_cap_regs_behavior[PCI_CAP_PCIE_SIZEOF / 4] = {
- 	[PCI_CAP_LIST_ID / 4] = {
- 		/*
- 		 * Capability ID, Next Capability Pointer and
-@@ -260,6 +263,8 @@ static const struct pci_bridge_reg_behavior pcie_cap_regs_behavior[] = {
- int pci_bridge_emul_init(struct pci_bridge_emul *bridge,
- 			 unsigned int flags)
- {
-+	BUILD_BUG_ON(sizeof(bridge->conf) != PCI_BRIDGE_CONF_END);
++	memset(&cld_filter, 0, sizeof(cld_filter));
 +
- 	bridge->conf.class_revision |= cpu_to_le32(PCI_CLASS_BRIDGE_PCI << 16);
- 	bridge->conf.header_type = PCI_HEADER_TYPE_BRIDGE;
- 	bridge->conf.cache_line_size = 0x10;
+ 	/* copy element needed to add cloud filter from filter */
+ 	i40e_set_cld_element(filter, &cld_filter);
+ 
+@@ -7734,6 +7736,8 @@ int i40e_add_del_cloud_filter_big_buf(struct i40e_vsi *vsi,
+ 	    !ipv6_addr_any(&filter->ip.v6.src_ip6))
+ 		return -EOPNOTSUPP;
+ 
++	memset(&cld_filter, 0, sizeof(cld_filter));
++
+ 	/* copy element needed to add cloud filter from filter */
+ 	i40e_set_cld_element(filter, &cld_filter.element);
+ 
+@@ -11709,6 +11713,8 @@ i40e_status i40e_set_partition_bw_setting(struct i40e_pf *pf)
+ 	struct i40e_aqc_configure_partition_bw_data bw_data;
+ 	i40e_status status;
+ 
++	memset(&bw_data, 0, sizeof(bw_data));
++
+ 	/* Set the valid bit for this PF */
+ 	bw_data.pf_valid_bits = cpu_to_le16(BIT(pf->hw.pf_id));
+ 	bw_data.max_bw[pf->hw.pf_id] = pf->max_bw & I40E_ALT_BW_VALUE_MASK;
 -- 
 2.27.0
 
