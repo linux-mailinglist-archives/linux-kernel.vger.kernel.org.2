@@ -2,246 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83B8329BDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33462329BEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379742AbhCBBbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:31:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48572 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235768AbhCATSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:18:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614626287; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S238653AbhCBBmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:42:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28276 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241386AbhCATVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:21:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614626366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=3j/0D9ZA7ezAtEP4Nk3+f0xENC++ECPVLz2dgRTsCxI=;
-        b=r1srcnqfeZUiQ0xnlWVjFCTUVG4ZpnVmnB2gjAkhAjdEf+FPeRl4xZQT9zSl80nS50IY95
-        liuwzkMBhoLK+WLikoku4/ZC03NEOaYPwZNXl5lEwsH0pwlAkM7n1NPNJGpOvDKMBGpFKP
-        e8FDvOHsUgwj7WG4qSh5WrEHX0yApmM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 010B4AF35;
-        Mon,  1 Mar 2021 19:18:07 +0000 (UTC)
-Subject: Re: [PATCH v1] xen: ACPI: Get rid of ACPICA message printing
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        Konrad Wilk <konrad.wilk@oracle.com>
-References: <1709720.Zl72FGBfpD@kreacher>
- <eaeba4a0-7bb9-7b17-9ba6-49921f6e834c@oracle.com>
- <CAJZ5v0jr5Mxs9NYBz1ot8O+6dKYbfAo=cJqSVAOnrFEqUNwuTA@mail.gmail.com>
- <7c313ae8-6f3a-1281-a88a-1393e54f26a1@oracle.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <afc7b1af-4d12-fb06-9212-b828f4426073@suse.com>
-Date:   Mon, 1 Mar 2021 20:18:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=DDkyV6tz+MJgp4h3wX2T3IUSZ6ae6unSWV8DQVGZ72E=;
+        b=KXEWLGxjdKRznKUy5kMJh6vIUA1O1n8wOkxMfaMGDgH/WHDwS+kXr4BhUFmoVeHbChRCJ/
+        yCQkDmNSKZ1rQ2BbPooPauk02btVauEIE0bPkE5PWwnm0f8vFbZ5+e7mr5yAvJbNMrUb4Z
+        wlxSIAd/C6ygbdzNrBuLMUyzPbaAJyw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-571-31VzmOtGPde7jHlvKBD1Xw-1; Mon, 01 Mar 2021 14:19:24 -0500
+X-MC-Unique: 31VzmOtGPde7jHlvKBD1Xw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1976585B664;
+        Mon,  1 Mar 2021 19:19:23 +0000 (UTC)
+Received: from krava (unknown [10.40.192.173])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 50CD819D6C;
+        Mon,  1 Mar 2021 19:19:21 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 20:19:20 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH] perf stat: improve readability of shadow stats
+Message-ID: <YD0+OAH9Ytii3b3V@krava>
+References: <20210301172402.6794-1-changbin.du@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <7c313ae8-6f3a-1281-a88a-1393e54f26a1@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Y6WqBR9s8HPASVufSY807FC9ROBrepWk0"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210301172402.6794-1-changbin.du@gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Y6WqBR9s8HPASVufSY807FC9ROBrepWk0
-Content-Type: multipart/mixed; boundary="IMu2UHGcUE6GoRXxvT3hkijSEV94m109Z";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- Linux ACPI <linux-acpi@vger.kernel.org>, LKML
- <linux-kernel@vger.kernel.org>, Stefano Stabellini <sstabellini@kernel.org>,
- xen-devel@lists.xenproject.org, Konrad Wilk <konrad.wilk@oracle.com>
-Message-ID: <afc7b1af-4d12-fb06-9212-b828f4426073@suse.com>
-Subject: Re: [PATCH v1] xen: ACPI: Get rid of ACPICA message printing
-References: <1709720.Zl72FGBfpD@kreacher>
- <eaeba4a0-7bb9-7b17-9ba6-49921f6e834c@oracle.com>
- <CAJZ5v0jr5Mxs9NYBz1ot8O+6dKYbfAo=cJqSVAOnrFEqUNwuTA@mail.gmail.com>
- <7c313ae8-6f3a-1281-a88a-1393e54f26a1@oracle.com>
-In-Reply-To: <7c313ae8-6f3a-1281-a88a-1393e54f26a1@oracle.com>
+On Tue, Mar 02, 2021 at 01:24:02AM +0800, Changbin Du wrote:
+> This does follow two changes:
+>   1) Select appropriate unit between K/M/G.
+>   2) Use 'cpu-sec' instead of 'sec' to state this is not the wall-time.
+> 
+> $ sudo ./perf stat -a -- sleep 1
+> 
+> Before: Unit 'M' is selected even the number is very small.
+>  Performance counter stats for 'system wide':
+> 
+>           4,003.06 msec cpu-clock                 #    3.998 CPUs utilized
+>             16,179      context-switches          #    0.004 M/sec
+>                161      cpu-migrations            #    0.040 K/sec
+>              4,699      page-faults               #    0.001 M/sec
+>      6,135,801,925      cycles                    #    1.533 GHz                      (83.21%)
+>      5,783,308,491      stalled-cycles-frontend   #   94.26% frontend cycles idle     (83.21%)
+>      4,543,694,050      stalled-cycles-backend    #   74.05% backend cycles idle      (66.49%)
+>      4,720,130,587      instructions              #    0.77  insn per cycle
+>                                                   #    1.23  stalled cycles per insn  (83.28%)
+>        753,848,078      branches                  #  188.318 M/sec                    (83.61%)
+>         37,457,747      branch-misses             #    4.97% of all branches          (83.48%)
+> 
+>        1.001283725 seconds time elapsed
+> 
+> After:
+> $ sudo ./perf stat -a -- sleep 2
+> 
+>  Performance counter stats for 'system wide':
+> 
+>           8,003.20 msec cpu-clock                 #    3.998 CPUs utilized
+>              9,768      context-switches          #    1.221 K/cpu-sec
+>                164      cpu-migrations            #   20.492  /cpu-sec
 
---IMu2UHGcUE6GoRXxvT3hkijSEV94m109Z
-Content-Type: multipart/mixed;
- boundary="------------2E3C1A1D1E83919451AF1165"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------2E3C1A1D1E83919451AF1165
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 01.03.21 17:16, Boris Ostrovsky wrote:
->=20
-> On 3/1/21 9:11 AM, Rafael J. Wysocki wrote:
->> On Sun, Feb 28, 2021 at 2:49 AM Boris Ostrovsky
->> <boris.ostrovsky@oracle.com> wrote:
->>>
->>> On 2/24/21 1:47 PM, Rafael J. Wysocki wrote:
->>>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>>>
->>>> The ACPI_DEBUG_PRINT() macro is used in a few places in
->>>> xen-acpi-cpuhotplug.c and xen-acpi-memhotplug.c for printing debug
->>>> messages, but that is questionable, because that macro belongs to
->>>> ACPICA and it should not be used elsewhere.  In addition,
->>>> ACPI_DEBUG_PRINT() requires special enabling to allow it to actually=
-
->>>> print the message and the _COMPONENT symbol generally needed for
->>>> that is not defined in any of the files in question.
->>>>
->>>> For this reason, replace all of the ACPI_DEBUG_PRINT() instances in
->>>> the Xen code with acpi_handle_debug() (with the additional benefit
->>>> that the source object can be identified more easily after this
->>>> change) and drop the ACPI_MODULE_NAME() definitions that are only
->>>> used by the ACPICA message printing macros from that code.
->>>>
->>>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->>>> ---
->>>>   drivers/xen/xen-acpi-cpuhotplug.c |   12 +++++-------
->>>>   drivers/xen/xen-acpi-memhotplug.c |   16 +++++++---------
->>>
->>> As I was building with this patch I (re-)discovered that since 2013 i=
-t depends on BROKEN (commit 76fc253723add). Despite commit message there =
-saying that it's a temporary patch it seems to me by now that it's more t=
-han that.
->>>
->>>
->>> And clearly noone tried to build these files since at least 2015 beca=
-use memhotplug file doesn't compile due to commit cfafae940381207.
->>>
->>>
->>> While this is easily fixable the question is whether we want to keep =
-these files. Obviously noone cares about this functionality.
->> Well, I would be for dropping them.
->>
->> Do you want me to send a patch to do that?
->=20
->=20
-> Yes, if you don't mind (but let's give this a few days for people to ha=
-ve a chance to comment).
-
-I'm fine with removing those files.
+should you remove also the leading '/' in ' /cpu-sec' ?
 
 
-Juergen
+SNIP
 
---------------2E3C1A1D1E83919451AF1165
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+> @@ -1270,18 +1271,14 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+>  		generic_metric(config, evsel->metric_expr, evsel->metric_events, NULL,
+>  				evsel->name, evsel->metric_name, NULL, 1, cpu, out, st);
+>  	} else if (runtime_stat_n(st, STAT_NSECS, cpu, &rsd) != 0) {
+> -		char unit = 'M';
+> +		char unit = ' ';
+>  		char unit_buf[10];
+>  
+>  		total = runtime_stat_avg(st, STAT_NSECS, cpu, &rsd);
+> -
+>  		if (total)
+> -			ratio = 1000.0 * avg / total;
+> -		if (ratio < 0.001) {
+> -			ratio *= 1000;
+> -			unit = 'K';
+> -		}
+> -		snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
+> +			ratio = convert_unit_double(1000000000.0 * avg / total, &unit);
+> +
+> +		snprintf(unit_buf, sizeof(unit_buf), "%c/cpu-sec", unit);
+>  		print_metric(config, ctxp, NULL, "%8.3f", unit_buf, ratio);
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+hum this will change -x output that people parse, so I don't think we can do that
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+>  	} else if (perf_stat_evsel__is(evsel, SMI_NUM)) {
+>  		print_smi_cost(config, cpu, out, st, &rsd);
+> diff --git a/tools/perf/util/units.c b/tools/perf/util/units.c
+> index a46762aec4c9..ac13b5ecde31 100644
+> --- a/tools/perf/util/units.c
+> +++ b/tools/perf/util/units.c
+> @@ -55,6 +55,28 @@ unsigned long convert_unit(unsigned long value, char *unit)
+>  	return value;
+>  }
+>  
+> +double convert_unit_double(double value, char *unit)
+> +{
+> +	*unit = ' ';
+> +
+> +	if (value > 1000.0) {
+> +		value /= 1000.0;
+> +		*unit = 'K';
+> +	}
+> +
+> +	if (value > 1000.0) {
+> +		value /= 1000.0;
+> +		*unit = 'M';
+> +	}
+> +
+> +	if (value > 1000.0) {
+> +		value /= 1000.0;
+> +		*unit = 'G';
+> +	}
+> +
+> +	return value;
+> +}
 
---------------2E3C1A1D1E83919451AF1165--
+we have convert_unit function just above doing the same only with
+unsigned long.. let's have one base function with double values and
+another one casting the result to unsigned long
 
---IMu2UHGcUE6GoRXxvT3hkijSEV94m109Z--
+jirka
 
---Y6WqBR9s8HPASVufSY807FC9ROBrepWk0
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmA9Pe4FAwAAAAAACgkQsN6d1ii/Ey/X
-Xwf/T5pILtrP2Vss5K6gmbbQFUxpMalP1uWUEX87zmFAKMOaiivPnoqmUw6FAyS88slClsPNlwOf
-kXPGM2fx4EbVWbinGHHm8LZlWQZLKVeJSGbieq+mKSnbnq5XIkksC1VHjfD8D3/tEmSSvSVfuYuo
-PYja1K2LFCdQtAtzi0VXqqUTttDNLiJT6oTtsiJHvAoE1CXTdBiVZju0UrTLKIVbJpxccooRgVCR
-/XT3SBsWrnb15J1JyApNIMtJ/P36In17JunTv8U7UcOjC1liH94XvXOQsrO+XzxJNFSW1Dz2Q3Mm
-zSXwdlv1I9IYl414ZVdzJ2U+UAxW1zv/TmEusYJtbQ==
-=baql
------END PGP SIGNATURE-----
-
---Y6WqBR9s8HPASVufSY807FC9ROBrepWk0--
