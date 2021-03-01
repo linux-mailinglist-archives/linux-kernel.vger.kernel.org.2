@@ -2,131 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5593B32773C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 06:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FA6327740
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 06:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233517AbhCAFvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 00:51:23 -0500
-Received: from foss.arm.com ([217.140.110.172]:51592 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231952AbhCAFvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 00:51:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 780D21FB;
-        Sun, 28 Feb 2021 21:50:34 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.66.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DDFEC3F70D;
-        Sun, 28 Feb 2021 21:50:30 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>, linux-ia64@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: Generalize HUGETLB_PAGE_SIZE_VARIABLE
-Date:   Mon,  1 Mar 2021 11:20:53 +0530
-Message-Id: <1614577853-7452-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S233538AbhCAFxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 00:53:08 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58288 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233529AbhCAFxB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 00:53:01 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1215pKbr036747;
+        Sun, 28 Feb 2021 23:51:20 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1614577880;
+        bh=zanABnCcdYpSsd+wDgXsLLBA8XK5GasqyOMnr/TKm+g=;
+        h=From:To:CC:Subject:Date;
+        b=H7aoR7Q1wDUI2wHR4clvKhKMyVycW5c6YPqK7ufXmBZ7l0nuIGUjIBAt4zeZ2ynzN
+         mXBfmBd7wnL1TUKfJ1Krq0hnP7W33T7NzfdJjh0SV5DOrofdjaFOD3Bve3sP3ZXdrk
+         R5er0EK/UdRf68L9cwgQPPEOJJm4DkXPWsvt9SwQ=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1215pK2a027587
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 28 Feb 2021 23:51:20 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 28
+ Feb 2021 23:51:20 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Sun, 28 Feb 2021 23:51:20 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1215pCDM115264;
+        Sun, 28 Feb 2021 23:51:13 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/2] AM64:  Add USB support
+Date:   Mon, 1 Mar 2021 11:21:07 +0530
+Message-ID: <20210301055109.17626-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HUGETLB_PAGE_SIZE_VARIABLE need not be defined for each individual
-platform subscribing it. Instead just make it generic.
+The following series of patches, add USB support for AM64.
 
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: linux-ia64@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Suggested-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This change was originally suggested in an earilier discussion. This
-applies on v5.12-rc1 and has been build tested on all applicable
-platforms i.e ia64 and powerpc.
+This series of patches depends on,
+https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=439039
 
-https://patchwork.kernel.org/project/linux-mm/patch/1613024531-19040-3-git-send-email-anshuman.khandual@arm.com/
+Aswath Govindraju (2):
+  arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
+  arm64: dts: ti: k3-am642-evm: Add USB support
 
- arch/ia64/Kconfig    | 6 +-----
- arch/powerpc/Kconfig | 6 +-----
- mm/Kconfig           | 8 ++++++++
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 30 ++++++++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts  | 18 ++++++++++++++
+ 2 files changed, 48 insertions(+)
 
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index 2ad7a8d29fcc..6b3e3f6c29ae 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -32,6 +32,7 @@ config IA64
- 	select TTY
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_VIRT_CPU_ACCOUNTING
-+	select HUGETLB_PAGE_SIZE_VARIABLE
- 	select VIRT_TO_BUS
- 	select GENERIC_IRQ_PROBE
- 	select GENERIC_PENDING_IRQ if SMP
-@@ -82,11 +83,6 @@ config STACKTRACE_SUPPORT
- config GENERIC_LOCKBREAK
- 	def_bool n
- 
--config HUGETLB_PAGE_SIZE_VARIABLE
--	bool
--	depends on HUGETLB_PAGE
--	default y
--
- config GENERIC_CALIBRATE_DELAY
- 	bool
- 	default y
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 3778ad17f56a..b8565bed284f 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -232,6 +232,7 @@ config PPC
- 	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
- 	select HAVE_PERF_REGS
- 	select HAVE_PERF_USER_STACK_DUMP
-+	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64
- 	select MMU_GATHER_RCU_TABLE_FREE
- 	select MMU_GATHER_PAGE_SIZE
- 	select HAVE_REGS_AND_STACK_ACCESS_API
-@@ -416,11 +417,6 @@ config HIGHMEM
- 
- source "kernel/Kconfig.hz"
- 
--config HUGETLB_PAGE_SIZE_VARIABLE
--	bool
--	depends on HUGETLB_PAGE && PPC_BOOK3S_64
--	default y
--
- config MATH_EMULATION
- 	bool "Math emulation"
- 	depends on 4xx || PPC_8xx || PPC_MPC832x || BOOKE
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 24c045b24b95..e604a87862a4 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -274,6 +274,14 @@ config ARCH_ENABLE_HUGEPAGE_MIGRATION
- config ARCH_ENABLE_THP_MIGRATION
- 	bool
- 
-+config HUGETLB_PAGE_SIZE_VARIABLE
-+	def_bool n
-+	depends on HUGETLB_PAGE
-+	help
-+	  When there are multiple HugeTLB sizes available on a platform
-+	  and pageblock_order could then be a dynamic value instead of
-+	  standard HUGETLB_PAGE_ORDER.
-+
- config CONTIG_ALLOC
- 	def_bool (MEMORY_ISOLATION && COMPACTION) || CMA
- 
 -- 
-2.20.1
+2.17.1
 
