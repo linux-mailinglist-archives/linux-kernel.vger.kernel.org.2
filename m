@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0781A32A01A
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3DB32A01B
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575307AbhCBDzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:55:23 -0500
-Received: from ms.lwn.net ([45.79.88.28]:44642 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238227AbhCAWVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:21:44 -0500
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 2EDFD2B8;
-        Mon,  1 Mar 2021 22:20:19 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2EDFD2B8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1614637219; bh=6kRXwwaxFEtPBa+C5CSasyDpYyVF5qD9hdXkfVgVeXI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=HFhIv/ZvlhGFAT/a30UXqSg9wUcPZasMSutNqiCS6J06QYRRNvlzsQuHK+bdEtnGG
-         /d8q4wYAWlGCiO+T2R9DCQAWbyPQvYpCSwc/EA/epIYecotE/zfLjEOFQtfSW6UcUM
-         e3RNsQhdxMrZhGXo4+z5rS8NsQMGbbKKjQvrrJ9c4HFM53xuZR4RMp+eDOMqPZ2wVX
-         VjuUae5KG1YpYtsrhqQgdSMglx62qGjQsJKJvyZ/3/tGx8lTQ2RUSnYkGg3fCw5nV0
-         zCry3YVpCp417qtegcv1hKsmoEz+0acu/3T8U9ytg6vL+nJqg6HNt2oE+UTpLLTZLs
-         OORMeC6oW8Wdg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrey Vagin <avagin@openvz.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH] Documentation: ioctl: add entry for nsfs.h
-In-Reply-To: <20210210182248.18101-1-rdunlap@infradead.org>
-References: <20210210182248.18101-1-rdunlap@infradead.org>
-Date:   Mon, 01 Mar 2021 15:20:18 -0700
-Message-ID: <87mtvm1pp9.fsf@meer.lwn.net>
+        id S1575315AbhCBDzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:55:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238255AbhCAWV6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 17:21:58 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A8BC06178A;
+        Mon,  1 Mar 2021 14:20:25 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id jx13so538432pjb.1;
+        Mon, 01 Mar 2021 14:20:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QyhqjTlxoSSk41wiXpwJuRRVyS45yKpxp8nVn0TLNOw=;
+        b=U5TEeez0jTqEyQE/yN/t/KYGeiA+pvW14Lw600tClHo48aYvvvWYa68LDKv+ywtxRf
+         nuKhm7BmYvKNe1lO1ANXa9SWPQa3TEoLxbHIeYCDwg1VYiFEICnPybWkt6nqHL2FPwWf
+         +XrmFZ/txFotxtmUGLxm6UZpUhkmyyTYqHeoN6BMnpAtXaeXEn2zgOKAy76r0RpB9qff
+         CkikOEDe49/8DMXumqhtXWfMdHlJzMO+pQoK7z96s1jXiiXFb6tXYhozx031rDTrSlRX
+         WuuG5Kc/N3ONRZuTAWKecQZbdbqAx5hG/zMO/l1mfBmA9My6gY0phUR34QClicJDC2Hr
+         0F8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QyhqjTlxoSSk41wiXpwJuRRVyS45yKpxp8nVn0TLNOw=;
+        b=Q8qrARwnMYJ4iVmrOleR7/Ozktz6EIcPubr84ChD41QdyXW8fG1Ay7PxwYKFIpFC8Q
+         9a2mal+C+HFl5auyO5XpdVtaP2n3bi47yiGvha1LK5S6eZq5wqpdBSR32PZwSiUgKjT7
+         CJWK/ZwLIqPd8AGlJUCgPfKb0jO9Aw1v8XCZUolLQWGdpUYJY31TXZZfwUyErFhPJwXA
+         bvuvQtxA3mXTYmHOX+niMNV7fzMRqLFcqEkRh99XbG91cz1hV+aJiQ41vXGvpASUMTlg
+         CsWruhilhV+R1CRgLMoIzyqCsLJLrK3WgXw/BY4nF9DuDl5Xi3A7LkhLLK9nohaKJKx+
+         ApqA==
+X-Gm-Message-State: AOAM532+tn+u2BlEQinf12ih4aPE+LY8mTfHNMBhv5Gf1DBtPqgsTbnJ
+        EAClSxt7ta+DiKQg8y2Cv57UR+ZyPkg=
+X-Google-Smtp-Source: ABdhPJzBGBWVLOegGgD/wbmxmMaVCyxdBA2Sic6cMlt3fgbtbwEQx21C3bElubsX4c8TAWz/ZltUvA==
+X-Received: by 2002:a17:90a:7141:: with SMTP id g1mr1030654pjs.150.1614637225015;
+        Mon, 01 Mar 2021 14:20:25 -0800 (PST)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id iq6sm431103pjb.31.2021.03.01.14.20.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 14:20:24 -0800 (PST)
+Subject: Re: [PATCH 5.4 000/338] 5.4.102-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210301194420.658523615@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <ef02a144-343a-dbbf-a650-a90d179e74ad@gmail.com>
+Date:   Mon, 1 Mar 2021 14:20:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210301194420.658523615@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+On 3/1/21 11:47 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.102 release.
+> There are 338 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 03 Mar 2021 19:43:25 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.102-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-> All userspace ioctls major/magic number should be documented in
-> Documentation/userspace-api/ioctl/ioctl-number.rst, so add
-> the entry for <linux/nsfs.h>.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andrey Vagin <avagin@openvz.org>
-> Cc: Serge Hallyn <serge@hallyn.com>
-> Cc: Eric W. Biederman <ebiederm@xmission.com>
-> Cc: linux-doc@vger.kernel.org
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> ---
-> Feel free to modify the patch as needed.
->
-> Probably don't need to backport:
-> # Fixes: 6786741dbf99 ("nsfs: add ioctl to get an owning user namespace for ns file descriptor")
->
->  Documentation/userspace-api/ioctl/ioctl-number.rst |    1 +
->  1 file changed, 1 insertion(+)
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-Applied (rather belatedly, sorry).
-
-Thanks,
-
-jon
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
