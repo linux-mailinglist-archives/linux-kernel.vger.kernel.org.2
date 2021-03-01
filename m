@@ -2,120 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545DC32A045
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C66E32A053
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575578AbhCBD4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238786AbhCAXff (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:35:35 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFA9C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 15:34:54 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id s187so20674223ybs.22
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 15:34:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=/CErj8RpVVoLVT/AMv5UhNgXiL8bX9p5U/O6jqR0oIg=;
-        b=jlgqdriXCepIUKWi8oM3E/zf3xX6lAZMKJKPTnfCdG1esCJciLVCGf0TTxsCJCDth/
-         wdHyUM5E2M5XSWpWYapjgqHF8YAAuvwIsr3Yecx09rbxM56EKTChsPxgxHUHx+KKadnO
-         +fiYkX6t39IB5NamBGinCmRnCuNc7mu3XABPeM49yaT3EQVFvdCSb5zZrJJHSVb+40IT
-         UEQPFqBQdWgsvVqEFoEh3WpvATrBcRbmqPRwdEVaeeAMumD/6qLzooHDy1ixGvs1PNki
-         5gi3damaPxjIQDwrqdkhEMQfSoiSIAPZw6czp7+ortg7rFZDl9JvuOv/YOGwb3Sdw5XD
-         PH1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=/CErj8RpVVoLVT/AMv5UhNgXiL8bX9p5U/O6jqR0oIg=;
-        b=S/uQ9bSNW/SiOajV5GdUPpNbYgzE7WU3qiwbIrObxCYa8WWbm5AUJCiMa6d9cgpnjq
-         C23uUrqy6zkMUFM8zMo6XSLPGeiuI3amrKnX9XK9VeF1JjYnClkjcHxeg8Y4Rebo/YJr
-         ozqRfSx0xxoLclnQeSGF/e5k3kKYLVjKouOa1Mxg6dXSB09WujKwHJ85kcLL7B/QO3fx
-         EkLIWrtlOGpXitzHe0awcUfjOKF6j1WDdo2+6sUuI9sC3VuWcaZDY2nxXEYikRGUY6+9
-         H/yhm0hcvdknepr6HflzCaOzMf/LU2Mt+M1VJse2iNA6GwrpYtsN6fEcVl+ELUDHH5VT
-         XNyg==
-X-Gm-Message-State: AOAM532WNnD/I1KNUYnep7S1d+wEIIOxLZi0rQ9Ub+PiW5LaTCGpkBw7
-        GnJ5swypwsunB9YCgp05bMZjlo4X
-X-Google-Smtp-Source: ABdhPJy7DmJJLxzAaprTLhrI6WsLc6+UVyKt6lNx0gH2ejo+h/PATP5OpOaCxvExhQK9vC3cYw7XUBzt
-Sender: "lzye via sendgmr" <lzye@lzye2.c.googlers.com>
-X-Received: from lzye2.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:6713])
- (user=lzye job=sendgmr) by 2002:a25:b682:: with SMTP id s2mr24490648ybj.407.1614641693868;
- Mon, 01 Mar 2021 15:34:53 -0800 (PST)
-Date:   Mon,  1 Mar 2021 23:34:50 +0000
-Message-Id: <20210301233450.1647082-1-lzye@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] [v3] Input: Add "Share" button to Microsoft Xbox One controller.
-From:   Chris Ye <lzye@google.com>
-To:     "=?UTF-8?q?=C5=81ukasz=20Patron?=" <priv.luk@gmail.com>,
-        Benjamin Valentin <benpicco@googlemail.com>,
-        Chris Ye <lzye@google.com>, Lee Jones <lee.jones@linaro.org>,
-        "=?UTF-8?q?Olivier=20Cr=C3=AAte?=" <olivier.crete@ocrete.ca>,
-        Sanjay Govind <sanjay.govind9@gmail.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trivial@kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        id S239314AbhCBEOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:14:19 -0500
+Received: from mga18.intel.com ([134.134.136.126]:12463 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344579AbhCAXgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 18:36:53 -0500
+IronPort-SDR: BVFMOM+vfQug8wJPM0U6Zg2/vQGGCe5WFMU8ZZlhUbAGHxR0AD28uF97PXt8ss1bfspPIsEMFe
+ cPco1gyg5XVw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="174260598"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="174260598"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 15:36:08 -0800
+IronPort-SDR: 9o608PooB6gsHbCugDp7hlpWTR7tVRsTPAvpH2PPaShmR42wnGFu+roZUSpP+SULUESulJiZTK
+ g7/JhF8tvYDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="595591135"
+Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Mar 2021 15:36:07 -0800
+Received: from kbuild by 16660e54978b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lGs58-0004nF-QG; Mon, 01 Mar 2021 23:36:06 +0000
+Date:   Tue, 02 Mar 2021 07:35:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 8b97c027dfe4ba195be08fd0e18f716005763b8a
+Message-ID: <603d7a34.cuNwNV4TsCJ1tzxi%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "Share" button input capability and input event mapping for
-Microsoft Xbox One controller.
-Fixed Microsoft Xbox One controller share button not working under USB
-connection.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git locking/urgent
+branch HEAD: 8b97c027dfe4ba195be08fd0e18f716005763b8a  static_call: Fix the module key fixup
 
-Signed-off-by: Chris Ye <lzye@google.com>
+elapsed time: 722m
+
+configs tested: 95
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                          moxart_defconfig
+m68k                            q40_defconfig
+powerpc                      katmai_defconfig
+alpha                               defconfig
+ia64                             alldefconfig
+powerpc                      makalu_defconfig
+powerpc                      chrp32_defconfig
+i386                             allyesconfig
+mips                        jmr3927_defconfig
+arc                        nsim_700_defconfig
+arm                         nhk8815_defconfig
+arm                            zeus_defconfig
+mips                     cu1830-neo_defconfig
+sh                          rsk7269_defconfig
+mips                         mpc30x_defconfig
+arm                       versatile_defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sh                        apsh4ad0a_defconfig
+powerpc                 canyonlands_defconfig
+sh                     sh7710voipgw_defconfig
+mips                 decstation_r4k_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20210228
+i386                 randconfig-a005-20210228
+i386                 randconfig-a004-20210228
+i386                 randconfig-a003-20210228
+i386                 randconfig-a001-20210228
+i386                 randconfig-a002-20210228
+x86_64               randconfig-a013-20210301
+x86_64               randconfig-a016-20210301
+x86_64               randconfig-a015-20210301
+x86_64               randconfig-a014-20210301
+x86_64               randconfig-a012-20210301
+x86_64               randconfig-a011-20210301
+i386                 randconfig-a016-20210301
+i386                 randconfig-a012-20210301
+i386                 randconfig-a014-20210301
+i386                 randconfig-a013-20210301
+i386                 randconfig-a011-20210301
+i386                 randconfig-a015-20210301
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210301
+x86_64               randconfig-a001-20210301
+x86_64               randconfig-a004-20210301
+x86_64               randconfig-a002-20210301
+x86_64               randconfig-a005-20210301
+x86_64               randconfig-a003-20210301
+
 ---
- drivers/input/joystick/xpad.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-index 9f0d07dcbf06..b51c0e381cc9 100644
---- a/drivers/input/joystick/xpad.c
-+++ b/drivers/input/joystick/xpad.c
-@@ -79,6 +79,7 @@
- #define MAP_DPAD_TO_BUTTONS		(1 << 0)
- #define MAP_TRIGGERS_TO_BUTTONS		(1 << 1)
- #define MAP_STICKS_TO_NULL		(1 << 2)
-+#define MAP_SHARE_BUTTON		(1 << 3)
- #define DANCEPAD_MAP_CONFIG	(MAP_DPAD_TO_BUTTONS |			\
- 				MAP_TRIGGERS_TO_BUTTONS | MAP_STICKS_TO_NULL)
- 
-@@ -130,6 +131,7 @@ static const struct xpad_device {
- 	{ 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0, XTYPE_XBOXONE },
- 	{ 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0, XTYPE_XBOXONE },
- 	{ 0x045e, 0x0719, "Xbox 360 Wireless Receiver", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
-+	{ 0x045e, 0x0b12, "Microsoft Xbox One X pad", MAP_SHARE_BUTTON, XTYPE_XBOXONE },
- 	{ 0x046d, 0xc21d, "Logitech Gamepad F310", 0, XTYPE_XBOX360 },
- 	{ 0x046d, 0xc21e, "Logitech Gamepad F510", 0, XTYPE_XBOX360 },
- 	{ 0x046d, 0xc21f, "Logitech Gamepad F710", 0, XTYPE_XBOX360 },
-@@ -862,6 +864,8 @@ static void xpadone_process_packet(struct usb_xpad *xpad, u16 cmd, unsigned char
- 	/* menu/view buttons */
- 	input_report_key(dev, BTN_START,  data[4] & 0x04);
- 	input_report_key(dev, BTN_SELECT, data[4] & 0x08);
-+	if (xpad->mapping & MAP_SHARE_BUTTON)
-+		input_report_key(dev, KEY_RECORD, data[22] & 0x01);
- 
- 	/* buttons A,B,X,Y */
- 	input_report_key(dev, BTN_A,	data[4] & 0x10);
-@@ -1669,9 +1673,11 @@ static int xpad_init_input(struct usb_xpad *xpad)
- 
- 	/* set up model-specific ones */
- 	if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype == XTYPE_XBOX360W ||
--	    xpad->xtype == XTYPE_XBOXONE) {
-+		xpad->xtype == XTYPE_XBOXONE) {
- 		for (i = 0; xpad360_btn[i] >= 0; i++)
- 			input_set_capability(input_dev, EV_KEY, xpad360_btn[i]);
-+		if (xpad->mapping & MAP_SHARE_BUTTON)
-+			input_set_capability(input_dev, EV_KEY, KEY_RECORD);
- 	} else {
- 		for (i = 0; xpad_btn[i] >= 0; i++)
- 			input_set_capability(input_dev, EV_KEY, xpad_btn[i]);
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
