@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450B63298EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD70329989
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:23:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346894AbhCAXvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34278 "EHLO mail.kernel.org"
+        id S1347995AbhCBAWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:22:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239320AbhCASOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:14:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DA576508A;
-        Mon,  1 Mar 2021 17:29:45 +0000 (UTC)
+        id S239857AbhCAS0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:26:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9695264F1B;
+        Mon,  1 Mar 2021 17:31:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619786;
-        bh=2vyHBnX6YcabTICcKqGF/9Jh0f4R8QeEyCeAD/U3Uyg=;
+        s=korg; t=1614619914;
+        bh=Pv9NNrYFiFCPxUMNwvBOzdGcfEdBNLjqcJM0rtlmYlc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vE/VDWv0NoEq2m77Td4vOCanaOUpSY9MjNppWoiMTSIP9Y6gscTnoGBw8tacwH8VX
-         taBGyQOm/qzjjoZk4a5FK4nmFY1Sv/asw4XZxlftBU7+rVjeTerI0vkSpqWRq100RQ
-         t+xd8k+B/SZmJrVDhfrJWnO5iaCNueNe/rtgVdnA=
+        b=IqfJELTVySwIurCzbH32SNmziGy5+d/hodwCmlU4tdkjSVkJt5ZfyIji+Vez8J0K6
+         TAx7/ktg0LnmEazS27cfCChH3/3N3+TyfOwyocc0jX+gpVZ/k2cfIBhRgDPAH+cwd1
+         fBW0anrfXFZanbDciofM/tW0oMHi9ss77xptXtAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, qiuguorui1 <qiuguorui1@huawei.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.10 580/663] arm64: kexec_file: fix memory leakage in create_dtb() when fdt_open_into() fails
-Date:   Mon,  1 Mar 2021 17:13:48 +0100
-Message-Id: <20210301161210.559104400@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 5.10 586/663] watchdog: mei_wdt: request stop on unregister
+Date:   Mon,  1 Mar 2021 17:13:54 +0100
+Message-Id: <20210301161210.854341817@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,36 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: qiuguorui1 <qiuguorui1@huawei.com>
+From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-commit 656d1d58d8e0958d372db86c24f0b2ea36f50888 upstream.
+commit 740c0a57b8f1e36301218bf549f3c9cc833a60be upstream.
 
-in function create_dtb(), if fdt_open_into() fails, we need to vfree
-buf before return.
+The MEI bus has a special behavior on suspend it destroys
+all the attached devices, this is due to the fact that also
+firmware context is not persistent across power flows.
 
-Fixes: 52b2a8af7436 ("arm64: kexec_file: load initrd and device-tree")
-Cc: stable@vger.kernel.org # v5.0
-Signed-off-by: qiuguorui1 <qiuguorui1@huawei.com>
-Link: https://lore.kernel.org/r/20210218125900.6810-1-qiuguorui1@huawei.com
-Signed-off-by: Will Deacon <will@kernel.org>
+If watchdog on MEI bus is ticking before suspending the firmware
+times out and reports that the OS is missing watchdog tick.
+Send the stop command to the firmware on watchdog unregistered
+to eliminate the false event on suspend.
+This does not make the things worse from the user-space perspective
+as a user-space should re-open watchdog device after
+suspending before this patch.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20210124114938.373885-1-tomas.winkler@intel.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/machine_kexec_file.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/watchdog/mei_wdt.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm64/kernel/machine_kexec_file.c
-+++ b/arch/arm64/kernel/machine_kexec_file.c
-@@ -182,8 +182,10 @@ static int create_dtb(struct kimage *ima
+--- a/drivers/watchdog/mei_wdt.c
++++ b/drivers/watchdog/mei_wdt.c
+@@ -382,6 +382,7 @@ static int mei_wdt_register(struct mei_w
  
- 		/* duplicate a device tree blob */
- 		ret = fdt_open_into(initial_boot_params, buf, buf_size);
--		if (ret)
-+		if (ret) {
-+			vfree(buf);
- 			return -EINVAL;
-+		}
+ 	watchdog_set_drvdata(&wdt->wdd, wdt);
+ 	watchdog_stop_on_reboot(&wdt->wdd);
++	watchdog_stop_on_unregister(&wdt->wdd);
  
- 		ret = setup_dtb(image, initrd_load_addr, initrd_len,
- 				cmdline, buf);
+ 	ret = watchdog_register_device(&wdt->wdd);
+ 	if (ret)
 
 
