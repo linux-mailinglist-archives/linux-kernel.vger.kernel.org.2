@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5B132A00C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6961D32A00D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575205AbhCBDyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:54:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59208 "EHLO mail.kernel.org"
+        id S1575213AbhCBDyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:54:21 -0500
+Received: from ms.lwn.net ([45.79.88.28]:43942 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237022AbhCAWKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:10:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05F5A60231;
-        Mon,  1 Mar 2021 22:09:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614636589;
-        bh=2EyZztf+czU2hOx+uTf8aKFtuzHaAtkh8pbrMOtqHck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mq7gqc1WOBkF1FtIqgG1YAlQZa5UaGLoY9snM5Goqellv1liOk0NYJp3i4rEasgll
-         q2bKfgpm0HkPkJPJJBLKJETtqoneVefXgQ+L3H+uXK9Kb6waOOc42FkJIvXK/we7TL
-         HKzs+tnaxCh/1ha/7XVLLLPN9qjJajw0dZF3RYw+YzVSdMek4MfjNNdawmXiAgsg8n
-         /AX89Gdef1a0Gi8grxW1kx+XnMZX4oQMN0rPSxqq/fwkEMFNWJRIpUNRrWsSy4eVbN
-         nVoDnuBwCs6spIVnC8SNm2W2cb8fJKt+1jdqAOxwFdcgnqbE31XhVQyalDhAWPBnbY
-         79NudbDItP2lw==
-Date:   Mon, 1 Mar 2021 14:09:47 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph =?iso-8859-1?Q?B=F6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: expose needs_key in procfs
-Message-ID: <YD1mK8HseZpiCWDU@gmail.com>
-References: <20210301165917.2576180-1-christoph.boehmwalder@linbit.com>
- <YD02vJhFkFiARX0q@gmail.com>
- <e82c30b0-e96f-d5cd-f7a3-d97f4e049b83@linbit.com>
+        id S241138AbhCAWLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 17:11:00 -0500
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 16C612B8;
+        Mon,  1 Mar 2021 22:10:12 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 16C612B8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614636612; bh=yhsYKg3F5vkp/usJaFgj0dWVeFOB/mpQy0OCAd71Tgo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=bvhkFH5K06yNqBm5tI/4edwuNLKytFnv6A46tgnAlweahPILj5nZT+MYcsc5kjuFv
+         AcKC5Xasv0xk4KDp60lZodN7ht5Y3rDggJXyF3hHiD43ZRRmuKnUTnvUziupUOAUuP
+         kFZ4jmKfbuEwQjgiBKXxeOVQ4aWjZPKApkSuztfuta5M8CohSZDktwBIrL5a5QIcmb
+         W9+8RkPZPlAMXfdNdr2IIagVE9lHOHCEmcz9zi4SrRb4+423xme3fcP6I2bieG9kf9
+         +JXXLf8zg2w4UdVDwJ9KLl9QKjhxYNVrfYDIpjUkyY3s4WW+BVj1cz1DHUD2OUqW/+
+         YGG1XLwoeAhAw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Documentation/submitting-patches: Extend commit message
+ layout description
+In-Reply-To: <20210215141949.GB21734@zn.tnic>
+References: <20201217183756.GE23634@zn.tnic> <20210215141949.GB21734@zn.tnic>
+Date:   Mon, 01 Mar 2021 15:10:11 -0700
+Message-ID: <874khu34qk.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e82c30b0-e96f-d5cd-f7a3-d97f4e049b83@linbit.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 09:51:56PM +0100, Christoph Böhmwalder wrote:
-> > Do you have a specific use case in mind for this information?  Normally, users
-> > should already know which algorithm they want to use (or set of algorithms they
-> > might want to use).
-> 
-> I have a pretty specific use case in mind, yes. For DRBD, we use crypto
-> algorithms for peer authentication and for the online-verify mechanism (to
-> verify data integrity). The peer authentication algos require a shared
-> secret (HMAC), while the verify algorithms are just hash functions without
-> keys (we don't configure a shared secret here, so these must explicitly be
-> "keyless").
-> 
-> Now, we also have a solution which sits on top of DRBD (LINSTOR), which
-> resides purely in userspace. We recently implemented a feature where LINSTOR
-> automatically chooses the "best" verify algorithm for all nodes in a
-> cluster. It does this by parsing /proc/crypto and prioritizing accordingly.
-> The problem is that /proc/crypto currently doesn't contain information about
-> whether or not an algorithm requires a key – i.e. whether or not it is
-> suitable for DRBD's online-verify mechanism.
-> 
-> See this commit for some context:
-> https://github.com/LINBIT/drbd/commit/34ee32e6922994c8e9390859e1790ca
+Borislav Petkov <bp@alien8.de> writes:
 
-Shouldn't you know ahead of time which algorithm you are using (or set of
-algorithms which you might use), and not be parsing /proc/crypto and choosing
-some random one (which might be a non-cryptographic algorithm like CRC-32, or
-something known to be insecure like MD5)?
+> From: Borislav Petkov <bp@suse.de>
+> Subject: [PATCH] Documentation/submitting-patches: Extend commit message layout description
+>
+> Add more blurb about the level of detail that should be contained in a
+> patch's commit message. Extend and make more explicit what text should
+> be added under the --- line. Extend examples and split into more easily
+> palatable paragraphs.
+>
+> This has been partially carved out from a tip subsystem handbook
+> patchset by Thomas Gleixner:
+>
+>   https://lkml.kernel.org/r/20181107171010.421878737@linutronix.de
+>
+> and incorporates follow-on comments.
+>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>
+> /me sends the next generic topic blurb.
+>
+>  Documentation/process/submitting-patches.rst | 89 ++++++++++++--------
+>  1 file changed, 56 insertions(+), 33 deletions(-)
 
-Using the algorithm attributes in /proc/crypto only really makes sense if the
-decision of which algorithm to use is punted to a higher level and the program
-just needs to be able to pass through *any* algorithm available in Linux -- like
-how 'cryptsetup' works.  But it's preferable to avoid that sort of design, as it
-invites users to start depending on weird or insecure things.
+Applied, with one tweak:
 
-> > 
-> > Also, what about algorithms such as blake2b-256 which optionally take a key (as
-> > indicated by CRYPTO_ALG_OPTIONAL_KEY being set)?  So it's not really "yes" or
-> > "no"; there is a third state as well.
-> 
-> Correct me if I'm missing something, but crypto_shash_alg_needs_key reads:
-> 
-> static inline bool crypto_shash_alg_needs_key(struct shash_alg *alg)
-> {
-> 	return crypto_shash_alg_has_setkey(alg) &&
-> 		!(alg->base.cra_flags & CRYPTO_ALG_OPTIONAL_KEY);
-> }
-> 
-> So this already accounts for optional keys. It just returns "no" for an
-> optional key, which seems like reasonable behavior to me (it doesn't *need*
-> a key after all).
-> 
-> Another option would be to make it "yes/no/optional". I'm not sure if that's
-> more desirable for most people.
-> 
+> +If there are four patches in a patch series the individual patches may
+> +be numbered like this: 1/4, 2/4, 3/4, 4/4. This assures that developers
+> +understand the order in which the patches should be applied and that
+> +they have reviewed or applied all of the patches in the patch series.
+>  
+>  A couple of example Subjects::
+>  
+>      Subject: [PATCH 2/5] ext2: improve scalability of bitmap searching
+>      Subject: [PATCH v2 01/27] x86: fix eflags tracking
+> +    Subject: [PATCH v2] sub/sys: Condensed patch summary
+> +    Subject: [PATCH v2 M/N] sub/sys: Condensed patch summary
 
-BLAKE2 does need a key if it is being used as a keyed hash algorithm.  So it
-depends on the user, not the algorithm per se.
+It's no longer "a couple" so I made this "Here are some good example
+Subjects".
 
-- Eric
+Thanks,
+
+jon
