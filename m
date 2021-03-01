@@ -2,64 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F37327AB6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B64C4327ABD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbhCAJ1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:27:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44222 "EHLO mail.kernel.org"
+        id S233915AbhCAJ3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:29:48 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:39964 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhCAJ1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:27:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F39164E45;
-        Mon,  1 Mar 2021 09:26:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614590813;
-        bh=VHgTRak+sl2GIrklguql/soqsfocI2iCaJWV3c8IHHk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rGWMCEHvjKg+rR1m2mrP0pGyK+uM8DfH1ppCkDe+10csVsmBcl7bTgq8USCqzE3JJ
-         n/OUqPeNZS3ZPs4O3urTjunt9CXRgwZMZxPDIKhjDrv8OA5UrYY5slDEyT4p5o9/J6
-         547SMOJkYMjI4x+w4ZS3ulgWOmZID0JQvMrTD74o=
-Date:   Mon, 1 Mar 2021 10:26:51 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] driver core: Switch to using the new API kobj_to_dev()
-Message-ID: <YDyzW9l0HbYKS79V@kroah.com>
-References: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
+        id S233861AbhCAJ3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 04:29:45 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614590960; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=s7t0/4jzbs7RJXuMvu1UkUefI1l0Bhq3QL5gw1WsNsY=; b=rehcTnz1wVzM+UUWJI8GO5WcbUjmiNoCT9PL0WLiHUuB749W0tzLEzH3Y8KsK9ELL71kPvzJ
+ aIWTJZaYlUSHXoIxRQ8U5siRyejySTA9Vpy8euIEHLOKkqSQaxtmVshcj1vuN0qxWeBZz8Jc
+ HahW+R+E0pw8EFHU8PqgiLWg7m4=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 603cb3d6007a80f0f4e2a11f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 09:28:54
+ GMT
+Sender: kgunda=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 69350C43465; Mon,  1 Mar 2021 09:28:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from kgunda-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kgunda)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 67A1CC433CA;
+        Mon,  1 Mar 2021 09:28:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 67A1CC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kgunda@codeaurora.org
+From:   Kiran Gunda <kgunda@codeaurora.org>
+To:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
+        lee.jones@linaro.org, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, daniel.thompson@linaro.org,
+        jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
+        mark.rutland@arm.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        Kiran Gunda <kgunda@codeaurora.org>
+Subject: [PATCH V3 0/2] Fix WLED FSC Sync and brightness Sync settings
+Date:   Mon,  1 Mar 2021 14:58:34 +0530
+Message-Id: <1614590916-27070-1-git-send-email-kgunda@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 05:13:24PM +0800, Yang Li wrote:
-> fixed the following coccicheck:
-> ./include/linux/device.h:590:46-47: WARNING opportunity for
-> kobj_to_dev()
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  include/linux/device.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index ba66073..31d7137 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -587,7 +587,7 @@ struct device_link {
->  
->  static inline struct device *kobj_to_dev(struct kobject *kobj)
->  {
-> -	return container_of(kobj, struct device, kobj);
-> +	return kobj_to_dev(kobj);
->  }
+This patch series has the following two WLED fixes
+ 1. As per the current implementation, for WLED5, after
+    the FSC (Full Scale Current) update the driver is incorrectly
+    toggling the MOD_SYNC register instead of toggling the SYNC register.
+    The patch 1/2 fixes this by toggling the SYNC register after
+    FSC update.
 
-Did you test this change?  Please do so...
+ 2. Currently, the sync bits are transitioned from set-then-clear
+    after FSC and brightness update. As per hardware team recommendation
+    the FSC and brightness sync takes place from clear-then-set transition
+    of the sync bits. The patch 2/2 fies this issue.
 
-{sigh}
 
-greg k-h
+Changes from V2:
+  1. Added Daniel's "Reviewed-by" tag for patch 1/2.
+  2. Updated the patch 2/2 description with "set" and "clear"
+     terminology instead of "1" and "0".
+  3. Updated the cover letter with "set" and "clear" terminology
+     instead of "1" and "0".
+
+Changes from V1:
+   1. Updated the cover letter.
+   2. Updated the description of the patches as per Daniel's suggestion.
+
+
+Kiran Gunda (2):
+  backlight: qcom-wled: Fix FSC update issue for WLED5
+  backlight: qcom-wled: Correct the sync_toggle sequence
+
+ drivers/video/backlight/qcom-wled.c | 37 +++++++++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 12 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+ a Linux Foundation Collaborative Project
+
