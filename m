@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90121329D3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8850C329CD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443252AbhCBCUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:20:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55154 "EHLO mail.kernel.org"
+        id S1442410AbhCBCNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:13:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241721AbhCATq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:46:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CFCC652E1;
-        Mon,  1 Mar 2021 17:39:25 +0000 (UTC)
+        id S241735AbhCATix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:38:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 501206515C;
+        Mon,  1 Mar 2021 17:05:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620366;
-        bh=NgyCZmuYOTuc8kjm1KjUZenqnDmxnQHGJ2KI7vihzrc=;
+        s=korg; t=1614618348;
+        bh=f9pXglcwnjOnwPKby6RWGzMmgytNP6MOjK/rl95E5J4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pm6rIgf73onMmD0kxykEcoCy1gF4nCw+WKADrPGXmG3G/Pwq5Gj9pN5lgp7UzoEUf
-         O/H7LFR0Q7lalOLCPXoTtJevqzNXmeZubZzD5TrSFPEyVmi/Hz69zEo6JSkIogCnh3
-         59p26BoCKr2nEW2vc2WQXqM9PcuiLb2Vlh7mVgl0=
+        b=EDcjJWcIuBf1dMFA3T4XR/7rBT8mFIDGfqTGJguMJwrge66laEr5a4Issmo6GUWAp
+         dR3w+NESQiY/tULyyYOGJ19B9YKLu4qAX9IwtWLD96yYAyOmhY1WZCUJXmH2myurXS
+         d3P2hEzf3XuNaY4AnT8X/tHsKLiBgnJCkp/bPHus=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 127/775] bpf: Clear subreg_def for global function return values
-Date:   Mon,  1 Mar 2021 17:04:55 +0100
-Message-Id: <20210301161207.953525968@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Jack Pham <jackp@codeaurora.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>, Ferry Toth <fntoth@gmail.com>,
+        Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH 5.10 054/663] usb: gadget: u_audio: Free requests only after callback
+Date:   Mon,  1 Mar 2021 17:05:02 +0100
+Message-Id: <20210301161144.439581242@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Leoshkevich <iii@linux.ibm.com>
+From: Jack Pham <jackp@codeaurora.org>
 
-[ Upstream commit 45159b27637b0fef6d5ddb86fc7c46b13c77960f ]
+[ Upstream commit 7de8681be2cde9f6953d3be1fa6ce05f9fe6e637 ]
 
-test_global_func4 fails on s390 as reported by Yauheni in [1].
+As per the kernel doc for usb_ep_dequeue(), it states that "this
+routine is asynchronous, that is, it may return before the completion
+routine runs". And indeed since v5.0 the dwc3 gadget driver updated
+its behavior to place dequeued requests on to a cancelled list to be
+given back later after the endpoint is stopped.
 
-The immediate problem is that the zext code includes the instruction,
-whose result needs to be zero-extended, into the zero-extension
-patchlet, and if this instruction happens to be a branch, then its
-delta is not adjusted. As a result, the verifier rejects the program
-later.
+The free_ep() was incorrectly assuming that a request was ready to
+be freed after calling dequeue which results in a use-after-free
+in dwc3 when it traverses its cancelled list. Fix this by moving
+the usb_ep_free_request() call to the callback itself in case the
+ep is disabled.
 
-However, according to [2], as far as the verifier's algorithm is
-concerned and as specified by the insn_no_def() function, branching
-insns do not define anything. This includes call insns, even though
-one might argue that they define %r0.
-
-This means that the real problem is that zero extension kicks in at
-all. This happens because clear_caller_saved_regs() sets BPF_REG_0's
-subreg_def after global function calls. This can be fixed in many
-ways; this patch mimics what helper function call handling already
-does.
-
-  [1] https://lore.kernel.org/bpf/20200903140542.156624-1-yauheni.kaliuta@redhat.com/
-  [2] https://lore.kernel.org/bpf/CAADnVQ+2RPKcftZw8d+B1UwB35cpBhpF5u3OocNh90D9pETPwg@mail.gmail.com/
-
-Fixes: 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
-Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210212040408.90109-1-iii@linux.ibm.com
+Fixes: eb9fecb9e69b0 ("usb: gadget: f_uac2: split out audio core")
+Reported-and-tested-by: Ferry Toth <fntoth@gmail.com>
+Reviewed-and-tested-by: Peter Chen <peter.chen@nxp.com>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20210118084642.322510-2-jbrunet@baylibre.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/function/u_audio.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 20babdd06278f..33683eafea90e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4834,8 +4834,9 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 					subprog);
- 			clear_caller_saved_regs(env, caller->regs);
+diff --git a/drivers/usb/gadget/function/u_audio.c b/drivers/usb/gadget/function/u_audio.c
+index e6d32c5367812..908e49dafd620 100644
+--- a/drivers/usb/gadget/function/u_audio.c
++++ b/drivers/usb/gadget/function/u_audio.c
+@@ -89,7 +89,12 @@ static void u_audio_iso_complete(struct usb_ep *ep, struct usb_request *req)
+ 	struct snd_uac_chip *uac = prm->uac;
  
--			/* All global functions return SCALAR_VALUE */
-+			/* All global functions return a 64-bit SCALAR_VALUE */
- 			mark_reg_unknown(env, caller->regs, BPF_REG_0);
-+			caller->regs[BPF_REG_0].subreg_def = DEF_NOT_SUBREG;
+ 	/* i/f shutting down */
+-	if (!prm->ep_enabled || req->status == -ESHUTDOWN)
++	if (!prm->ep_enabled) {
++		usb_ep_free_request(ep, req);
++		return;
++	}
++
++	if (req->status == -ESHUTDOWN)
+ 		return;
  
- 			/* continue with next insn after call */
- 			return 0;
+ 	/*
+@@ -336,8 +341,14 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
+ 
+ 	for (i = 0; i < params->req_number; i++) {
+ 		if (prm->ureq[i].req) {
+-			usb_ep_dequeue(ep, prm->ureq[i].req);
+-			usb_ep_free_request(ep, prm->ureq[i].req);
++			if (usb_ep_dequeue(ep, prm->ureq[i].req))
++				usb_ep_free_request(ep, prm->ureq[i].req);
++			/*
++			 * If usb_ep_dequeue() cannot successfully dequeue the
++			 * request, the request will be freed by the completion
++			 * callback.
++			 */
++
+ 			prm->ureq[i].req = NULL;
+ 		}
+ 	}
 -- 
 2.27.0
 
