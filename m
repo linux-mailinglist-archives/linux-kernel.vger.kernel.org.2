@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10F1329B56
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E991B329C20
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241002AbhCBBXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:23:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36704 "EHLO mail.kernel.org"
+        id S1380146AbhCBBsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:48:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240940AbhCATGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:06:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00AD264FC7;
-        Mon,  1 Mar 2021 17:41:55 +0000 (UTC)
+        id S235045AbhCAT0l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:26:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 963BF65006;
+        Mon,  1 Mar 2021 17:09:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620516;
-        bh=pS34TkYCUhqusG4quIH+86zgW4CnuXHIWqW5z5hklIM=;
+        s=korg; t=1614618566;
+        bh=RsxIiG5MEdXPhq0Kn0zDOwy1CiIYJXFtWCmklzWmEZY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lB8GTcNWgY7Hgu/ge3lruv1L/tJEOYph51BCgIa3adaVgnTWbxZD8mGZ3uADGQWqY
-         IaEMBUVhMHrd9uAE4sJPSJzEpqCXnejZXAVf8souCdbYf0YrSq56QYmXIzI5HFEXi0
-         tMgJtfJLYvWY5PjIgpNHwTNMKb76k/jmDKm4027M=
+        b=L4/X/FRh++CU0JyIMFK/po5nSgPGc4OuUG8KIbKPgsyU0QgVl2K6gasRXDg/0DAmU
+         VEwIdavNjp1re/HOx/WkbHuvPEB+EBgoxj5zI6n0bKZ24dqjIxwepZ+A9his42+wga
+         jIQHKMg7rwiJDJdx1i5MqaPpWzMIewJuD1AdZ5/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 182/775] ASoC: fsl_aud2htx: select SND_SOC_IMX_PCM_DMA
-Date:   Mon,  1 Mar 2021 17:05:50 +0100
-Message-Id: <20210301161210.623876193@linuxfoundation.org>
+Subject: [PATCH 5.10 103/663] net/mlx5e: Dont change interrupt moderation params when DIM is enabled
+Date:   Mon,  1 Mar 2021 17:05:51 +0100
+Message-Id: <20210301161146.830770638@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-[ Upstream commit a1f31cc4e98e1833f53fd2c6e9a218d6b86f5388 ]
+[ Upstream commit 019f93bc4ba3a0dcb77f448ee77fc4c9c1b89565 ]
 
-The newly added driver requires DMA support and fails to build
-when that is disabled:
+When mlx5e_ethtool_set_coalesce doesn't change DIM state
+(enabled/disabled), it calls mlx5e_set_priv_channels_coalesce
+unconditionally, which in turn invokes a firmware command to set
+interrupt moderation parameters. It shouldn't happen while DIM manages
+those parameters dynamically (it might even be happening at the same
+time).
 
-aarch64-linux-ld: sound/soc/fsl/fsl_aud2htx.o: in function `fsl_aud2htx_probe':
-fsl_aud2htx.c:(.text+0x3e0): undefined reference to `imx_pcm_dma_init'
+This patch fixes it by splitting mlx5e_set_priv_channels_coalesce into
+two functions (for RX and TX) and calling them only when DIM is disabled
+(for RX and TX respectively).
 
-Fixes: 8a24c834c053 ("ASoC: fsl_aud2htx: Add aud2htx module driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/20210103135327.3630973-1-arnd@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: cb3c7fd4f839 ("net/mlx5e: Support adaptive RX coalescing")
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c   | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 84db0b7b9d593..d7f30036d4343 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -108,6 +108,7 @@ config SND_SOC_FSL_XCVR
- config SND_SOC_FSL_AUD2HTX
- 	tristate "AUDIO TO HDMI TX module support"
- 	depends on ARCH_MXC || COMPILE_TEST
-+	select SND_SOC_IMX_PCM_DMA if SND_IMX_SOC != n
- 	help
- 	  Say Y if you want to add AUDIO TO HDMI TX support for NXP.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index e596f050c4316..eab058ef6e9ff 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -522,7 +522,7 @@ static int mlx5e_get_coalesce(struct net_device *netdev,
+ #define MLX5E_MAX_COAL_FRAMES		MLX5_MAX_CQ_COUNT
  
+ static void
+-mlx5e_set_priv_channels_coalesce(struct mlx5e_priv *priv, struct ethtool_coalesce *coal)
++mlx5e_set_priv_channels_tx_coalesce(struct mlx5e_priv *priv, struct ethtool_coalesce *coal)
+ {
+ 	struct mlx5_core_dev *mdev = priv->mdev;
+ 	int tc;
+@@ -537,6 +537,17 @@ mlx5e_set_priv_channels_coalesce(struct mlx5e_priv *priv, struct ethtool_coalesc
+ 						coal->tx_coalesce_usecs,
+ 						coal->tx_max_coalesced_frames);
+ 		}
++	}
++}
++
++static void
++mlx5e_set_priv_channels_rx_coalesce(struct mlx5e_priv *priv, struct ethtool_coalesce *coal)
++{
++	struct mlx5_core_dev *mdev = priv->mdev;
++	int i;
++
++	for (i = 0; i < priv->channels.num; ++i) {
++		struct mlx5e_channel *c = priv->channels.c[i];
+ 
+ 		mlx5_core_modify_cq_moderation(mdev, &c->rq.cq.mcq,
+ 					       coal->rx_coalesce_usecs,
+@@ -593,7 +604,10 @@ int mlx5e_ethtool_set_coalesce(struct mlx5e_priv *priv,
+ 	reset_tx = !!coal->use_adaptive_tx_coalesce != priv->channels.params.tx_dim_enabled;
+ 
+ 	if (!reset_rx && !reset_tx) {
+-		mlx5e_set_priv_channels_coalesce(priv, coal);
++		if (!coal->use_adaptive_rx_coalesce)
++			mlx5e_set_priv_channels_rx_coalesce(priv, coal);
++		if (!coal->use_adaptive_tx_coalesce)
++			mlx5e_set_priv_channels_tx_coalesce(priv, coal);
+ 		priv->channels.params = new_channels.params;
+ 		goto out;
+ 	}
 -- 
 2.27.0
 
