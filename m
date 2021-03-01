@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A7F3294EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 23:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6469F3294EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 23:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244911AbhCAW2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:28:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54066 "EHLO mail.kernel.org"
+        id S245023AbhCAW2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:28:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238590AbhCARd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:33:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4B4A650AA;
-        Mon,  1 Mar 2021 16:53:36 +0000 (UTC)
+        id S238642AbhCARed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:34:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C27864F21;
+        Mon,  1 Mar 2021 16:53:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617617;
-        bh=3EYC4st7fnHoR7eoJDSRsTw3mw0tHoNDtfzZQhscUg8=;
+        s=korg; t=1614617623;
+        bh=dvmcmVf2PZuVwXBCE39QN5DI7PNZ3bJ8Gw3h4Xw51rU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RI9uOwA3tY3A3DlL2UHpSuMujsvuj9qKGjMqX5wQiUE7NWlEnYCkQgtfl/lq3EXbP
-         15fa1PxZLjiSswIZy7mL9BRkxMkawixdOuaIZX8/gYksiFVIYfGcPd630MSY07nqxy
-         VVOdvKWDOIFRi+r2jS46dOFWTGRtOBb3eNkuYFzY=
+        b=uIU3eLUxF5lMjH19yXcU5KrZVgfn1cPLzUVCCkyl46zgCG8AAIwFSm3O0ooQZxyeY
+         2W3hPL6xl5qL9hQmyPsbAwfaj0E/le1OHygcAC8xpOzk1T7CkuqJqAdwLt+QjHn9Vg
+         2/zJpdKklpJumRCHQJ50Z9naVSlt2Sn0/LFN2xWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 129/340] clk: meson: clk-pll: propagate the error from meson_clk_pll_set_rate()
-Date:   Mon,  1 Mar 2021 17:11:13 +0100
-Message-Id: <20210301161054.652302064@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 139/340] dmaengine: fsldma: Fix a resource leak in the remove function
+Date:   Mon,  1 Mar 2021 17:11:23 +0100
+Message-Id: <20210301161055.159143776@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -41,45 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ccdc1f0836f8e37b558a424f1e491f929b2e7ede ]
+[ Upstream commit cbc0ad004c03ad7971726a5db3ec84dba3dcb857 ]
 
-Popagate the error code from meson_clk_pll_set_rate() when the PLL does
-not lock with the new settings.
+A 'irq_dispose_mapping()' call is missing in the remove function.
+Add it.
 
-Fixes: 722825dcd54b2e ("clk: meson: migrate plls clocks to clk_regmap")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20201226121556.975418-4-martin.blumenstingl@googlemail.com
+This is needed to undo the 'irq_of_parse_and_map() call from the probe
+function and already part of the error handling path of the probe function.
+
+It was added in the probe function only in commit d3f620b2c4fe ("fsldma:
+simplify IRQ probing and handling")
+
+Fixes: 77cd62e8082b ("fsldma: allow Freescale Elo DMA driver to be compiled as a module")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201212160516.92515-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/meson/clk-pll.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/dma/fsldma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index a92f44fa5a24e..e8df254f8085b 100644
---- a/drivers/clk/meson/clk-pll.c
-+++ b/drivers/clk/meson/clk-pll.c
-@@ -392,7 +392,8 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 	if (!enabled)
- 		return 0;
- 
--	if (meson_clk_pll_enable(hw)) {
-+	ret = meson_clk_pll_enable(hw);
-+	if (ret) {
- 		pr_warn("%s: pll did not lock, trying to restore old rate %lu\n",
- 			__func__, old_rate);
- 		/*
-@@ -404,7 +405,7 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 		meson_clk_pll_set_rate(hw, old_rate, parent_rate);
+diff --git a/drivers/dma/fsldma.c b/drivers/dma/fsldma.c
+index ad72b3f42ffa0..996f1d7623d69 100644
+--- a/drivers/dma/fsldma.c
++++ b/drivers/dma/fsldma.c
+@@ -1314,6 +1314,7 @@ static int fsldma_of_remove(struct platform_device *op)
+ 		if (fdev->chan[i])
+ 			fsl_dma_chan_remove(fdev->chan[i]);
  	}
++	irq_dispose_mapping(fdev->irq);
  
--	return 0;
-+	return ret;
- }
- 
- /*
+ 	iounmap(fdev->regs);
+ 	kfree(fdev);
 -- 
 2.27.0
 
