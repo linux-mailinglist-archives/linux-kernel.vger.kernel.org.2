@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB7E327BD2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 606CA327BD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233209AbhCAKSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:18:23 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58290 "EHLO
+        id S232578AbhCAKT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:19:59 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58324 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232585AbhCAKQ7 (ORCPT
+        with ESMTP id S232597AbhCAKRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:16:59 -0500
-Date:   Mon, 01 Mar 2021 10:16:16 -0000
+        Mon, 1 Mar 2021 05:17:00 -0500
+Date:   Mon, 01 Mar 2021 10:16:17 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614593776;
+        s=2020; t=1614593778;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nj6PioAslSykKWd8ZPvmEGlcXDdfiGHUb/x4ungTxwM=;
-        b=0LAfyK3G87SejY/r6fquUCMWu4HP8Nfe+NI1wkdmKx/vnCo31DnWefEOqhbUSCOvQmZbQh
-        zaviy2WJCrstChp9caHR5CLFwifZIgf5uokSHEHpGUN1xwvYP5jSazJdy+ei4FC6NcHwUu
-        45PK5Dh7dyKxErbUhytEDniDcBZt0hM9DnZ3qCuxT4O3k85a5fUTNeVjPHTeMjfi3H3pEz
-        cjtJALAVr/Ar0ePjrjZKVwA52y8a+ssS972HuOf6dg1hzIvF+r7vsk852G+1EB0SG8E+Nl
-        V04gXhU++gC8yG2QbQItQOkrET0AADTj4aoAJeKfwJWhmLF/HjT+xjjrfNkI7A==
+        bh=KMrXWNyrqFlsBGFgNmfCWTvreIv3xAEl2vTQkeBNekE=;
+        b=wH1vRmpKHcMs+2G8YYKF9Xz+wrMiLTAwmDWI92R5SrGVAVorNp3yDW+UZO43ZrOH5YLuaf
+        lIwfHd4TGBpAOOSyumkD6cCRnw5b34X+76PUfJj5XomLN/72TbgDs+qeiHdITBW5LPwbi3
+        rQudBL90AefjRJOkM9TzdppBqQ5x1+RQvFhhh8V620zI/dixqM6LZjSf1eaEkea+uCLyu+
+        N8vCpbRoOGWDNzJkfjYLMFtMu+3qt2dMChyFdzdjpgeP27gxUPfFfdDSrzyRoLn/Yu3Ul5
+        t66onROt70Jk3GdYied2QEqctvVe1WqwqYtxg6AoSc6D166EZLGPCAJK4uNXig==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614593776;
+        s=2020e; t=1614593778;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nj6PioAslSykKWd8ZPvmEGlcXDdfiGHUb/x4ungTxwM=;
-        b=my9MXwW4hjonwFUKEqwGXWSHlfS9aQ74+5pMKyfKVA8WcOoqsm4aLsAakg3iK1UCWC5v8i
-        beKcc0STdqoV+3AA==
+        bh=KMrXWNyrqFlsBGFgNmfCWTvreIv3xAEl2vTQkeBNekE=;
+        b=1vHKcX6SSL5+NjTXRsIetq5+MFK3M/fNDy1ylPoUIJd1jjHiE+A+Mir/Q3e54g6+fHLTWy
+        4llgORIbN7TpVgCA==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched: Simplify set_affinity_pending refcounts
+Subject: [tip: sched/urgent] sched: Collate affine_move_task() stoppers
 Cc:     stable@kernel.org, "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210224131355.724130207@infradead.org>
-References: <20210224131355.724130207@infradead.org>
+In-Reply-To: <20210224131355.500108964@infradead.org>
+References: <20210224131355.500108964@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161459377628.20312.17557474951313290119.tip-bot2@tip-bot2>
+Message-ID: <161459377735.20312.8945439217409912206.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,127 +58,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     a4c2579076dc6951709a8e425df8369ab6eb2f24
-Gitweb:        https://git.kernel.org/tip/a4c2579076dc6951709a8e425df8369ab6eb2f24
+Commit-ID:     dbf983c0a5c37da2d476564792bd84e0e8f067fc
+Gitweb:        https://git.kernel.org/tip/dbf983c0a5c37da2d476564792bd84e0e8f067fc
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 24 Feb 2021 11:42:08 +01:00
+AuthorDate:    Wed, 24 Feb 2021 11:15:23 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 01 Mar 2021 11:02:15 +01:00
+CommitterDate: Mon, 01 Mar 2021 11:02:14 +01:00
 
-sched: Simplify set_affinity_pending refcounts
+sched: Collate affine_move_task() stoppers
 
-Now that we have set_affinity_pending::stop_pending to indicate if a
-stopper is in progress, and we have the guarantee that if that stopper
-exists, it will (eventually) complete our @pending we can simplify the
-refcount scheme by no longer counting the stopper thread.
+The SCA_MIGRATE_ENABLE and task_running() cases are almost identical,
+collapse them to avoid further duplication.
 
 Fixes: 6d337eab041d ("sched: Fix migrate_disable() vs set_cpus_allowed_ptr()")
 Cc: stable@kernel.org
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210224131355.724130207@infradead.org
+Link: https://lkml.kernel.org/r/20210224131355.500108964@infradead.org
 ---
- kernel/sched/core.c | 32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+ kernel/sched/core.c | 23 ++++++++---------------
+ 1 file changed, 8 insertions(+), 15 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 4e4d100..9819121 100644
+index 088e8f4..84b657f 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1862,6 +1862,10 @@ struct migration_arg {
- 	struct set_affinity_pending	*pending;
- };
+@@ -2239,30 +2239,23 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 		return -EINVAL;
+ 	}
  
-+/*
-+ * @refs: number of wait_for_completion()
-+ * @stop_pending: is @stop_work in use
-+ */
- struct set_affinity_pending {
- 	refcount_t		refs;
- 	unsigned int		stop_pending;
-@@ -1997,10 +2001,6 @@ out:
- 	if (complete)
- 		complete_all(&pending->done);
- 
--	/* For pending->{arg,stop_work} */
--	if (pending && refcount_dec_and_test(&pending->refs))
--		wake_up_var(&pending->refs);
+-	if (flags & SCA_MIGRATE_ENABLE) {
 -
- 	return 0;
- }
- 
-@@ -2199,12 +2199,16 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			push_task = get_task_struct(p);
- 		}
- 
-+		/*
-+		 * If there are pending waiters, but no pending stop_work,
-+		 * then complete now.
-+		 */
- 		pending = p->migration_pending;
--		if (pending) {
--			refcount_inc(&pending->refs);
-+		if (pending && !pending->stop_pending) {
- 			p->migration_pending = NULL;
- 			complete = true;
- 		}
-+
- 		task_rq_unlock(rq, p, rf);
- 
- 		if (push_task) {
-@@ -2213,7 +2217,7 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		}
- 
- 		if (complete)
--			goto do_complete;
-+			complete_all(&pending->done);
- 
- 		return 0;
- 	}
-@@ -2264,9 +2268,9 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 		if (!stop_pending)
- 			pending->stop_pending = true;
- 
 -		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
- 		if (flags & SCA_MIGRATE_ENABLE)
- 			p->migration_flags &= ~MDF_PUSH;
+-		p->migration_flags &= ~MDF_PUSH;
+-		task_rq_unlock(rq, p, rf);
+-
+-		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+-				    &pending->arg, &pending->stop_work);
+-
+-		return 0;
+-	}
+-
+ 	if (task_running(rq, p) || p->state == TASK_WAKING) {
+ 		/*
+-		 * Lessen races (and headaches) by delegating
+-		 * is_migration_disabled(p) checks to the stopper, which will
+-		 * run on the same CPU as said p.
++		 * MIGRATE_ENABLE gets here because 'p == current', but for
++		 * anything else we cannot do is_migration_disabled(), punt
++		 * and have the stopper function handle it all race-free.
+ 		 */
 +
+ 		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
++		if (flags & SCA_MIGRATE_ENABLE)
++			p->migration_flags &= ~MDF_PUSH;
  		task_rq_unlock(rq, p, rf);
  
- 		if (!stop_pending) {
-@@ -2282,12 +2286,13 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
- 			if (task_on_rq_queued(p))
- 				rq = move_queued_task(rq, rf, p, dest_cpu);
+ 		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+ 				    &pending->arg, &pending->stop_work);
  
--			p->migration_pending = NULL;
--			complete = true;
-+			if (!pending->stop_pending) {
-+				p->migration_pending = NULL;
-+				complete = true;
-+			}
- 		}
- 		task_rq_unlock(rq, p, rf);
++		if (flags & SCA_MIGRATE_ENABLE)
++			return 0;
+ 	} else {
  
--do_complete:
- 		if (complete)
- 			complete_all(&pending->done);
- 	}
-@@ -2295,7 +2300,7 @@ do_complete:
- 	wait_for_completion(&pending->done);
- 
- 	if (refcount_dec_and_test(&pending->refs))
--		wake_up_var(&pending->refs);
-+		wake_up_var(&pending->refs); /* No UaF, just an address */
- 
- 	/*
- 	 * Block the original owner of &pending until all subsequent callers
-@@ -2303,6 +2308,9 @@ do_complete:
- 	 */
- 	wait_var_event(&my_pending.refs, !refcount_read(&my_pending.refs));
- 
-+	/* ARGH */
-+	WARN_ON_ONCE(my_pending.stop_pending);
-+
- 	return 0;
- }
- 
+ 		if (!is_migration_disabled(p)) {
