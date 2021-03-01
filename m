@@ -2,89 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9200A327E62
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:31:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E959327E6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235007AbhCAMaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:30:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
+        id S235067AbhCAMeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235024AbhCAM3K (ORCPT
+        with ESMTP id S233848AbhCAMed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:29:10 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED18AC061756;
-        Mon,  1 Mar 2021 04:28:29 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d11so9760072plo.8;
-        Mon, 01 Mar 2021 04:28:29 -0800 (PST)
+        Mon, 1 Mar 2021 07:34:33 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F404C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 04:33:51 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id z190so16226311qka.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 04:33:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=SHD+dmI20QNVD+k93HgaG/ZSc57gPdyWhsIQt888bU0=;
-        b=QJe6otU7oFnzfVYfABFV+zT6K06uP2ouY1FwkhDAs5fQMTlX7zESkdd42368+uS1+4
-         mtGFqiqx2WvwaGDq5RzpIRY4m/cMk0PVqPaOlSJJNqy6QZlimSUgtqbU4bGuJKmbEPy1
-         SFsZLkTtYQXo2tMo1tkI03ODfqR9bheAguaWTjk8kegf7nSzeQfvZnMd735ZPpla6APW
-         ep/CcIo7DwOzHvbSKkw8RWHcyOoADegjU0SlyB1Ih6sXO6fi9fM76yGCW35+nxYkNzK9
-         GWIu7f+9XVREmMYy2vceexTD2zy97Fz8HNqyxWqxexeobxzftX3mE2WaoR2Z9m8yg40B
-         /oQg==
+        bh=kNu918oErMOK+ZGxgvFeLQGP1yknfMSewznhGUJQBFs=;
+        b=VvGLOj9mEQ1BkXE2JPFemNS+xpSRwHHh8x9QEiIgNzXqqSa0B0wsrtIu/0bcNy7ZgN
+         tpqvaJeLEPORXUeLhCqRnDPjEAvEWn7YxS8OCS6TmbMDLU6jBO6UojItP54hh4i5nluc
+         3/RvShyesg2ZKeZ3qUQrhK414B9n4565NTQnf77zWtIiGk6T3alwSpN3z1+SsvXFITuP
+         UrlCTks6uHIeux/hTV4M5V0v5VyJLE+yct/P7lMtS0sGCMcpnzP4SZ08wYe+cgjNhLer
+         hqCEN2ygtyr6Hot/4yqng2nLDY4E48md5ZYM2lvJvBsqewrCUR02pIOeNg2XLnoH9Fy8
+         EIsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=SHD+dmI20QNVD+k93HgaG/ZSc57gPdyWhsIQt888bU0=;
-        b=hQF+8oAD2AQ7s7W7hICdNGWDeZCmvFkRMWmMWbQYpv30zdoD9gzFoZGFW3kzokIkoT
-         YaXPlpfTuCNrgLG97SEi26DHb6mfYogJa9v2o0L4LiNQg0SP5uuTECcfooTi9pOM36qM
-         oO+fcpOkfYp2dXnq+pUrcIg4zmKPp8veGg5wtzT4d8nwhR55SBqAzO//ZuzHk7TrEd+U
-         jbXN2ef4w4HJIVrl2dkDAXPsO14KnOoOq081e67EnT+3xnaaXt3oF/ZLbYAD4MoonSFS
-         6a9uzFe1Jj7Kl/QvpV4pRUEiC8MLX4Xbc/+fBHCWiSnj2zcehcD9xD1D0GoJgEBEyUL4
-         ydyQ==
-X-Gm-Message-State: AOAM530ZmemdmGXAoS0vGwcZmRN17enqn4jG8aVISCK/QY0SAzqY81lL
-        z2cxuC3OzgfWh/geieAaDL4=
-X-Google-Smtp-Source: ABdhPJzEQ8vlTy7OvFbOoISMzQcbDLc2PAFRsaKgCo/GhaYQXKaVwcVjQJr8Ni3FbCn5P+ogokdJEQ==
-X-Received: by 2002:a17:902:b08b:b029:e4:deb:69a9 with SMTP id p11-20020a170902b08bb02900e40deb69a9mr14919133plr.35.1614601709598;
-        Mon, 01 Mar 2021 04:28:29 -0800 (PST)
-Received: from masabert (oki-109-236-4-100.jptransit.net. [109.236.4.100])
-        by smtp.gmail.com with ESMTPSA id a23sm17813748pfl.29.2021.03.01.04.28.28
+        bh=kNu918oErMOK+ZGxgvFeLQGP1yknfMSewznhGUJQBFs=;
+        b=n+2gFeboDThg4Rkbr4icPz1bbWFVD7UHyJMQn5XJbtgmS7Zn1Q+y1cQCkAETdeUdZw
+         mVgohYqDD3hTxrGF3jvRxQ6ea0YPjygdclIcrp4dHmZuxoyX9wJfY1pTOgkpb4B2UYtF
+         T6Hg5Tvag9XXV/7y7BNiMlh8MFYnrxrYqThYQlVdphAll9VcRZ+OmxwcidFLBCzBxBaS
+         d2ii6YT9H6+HgMAWdyn4VAD1ot9PxYcPV/7pbrYmlMapKQ5PHkcv7ndisV4th9KD4Hh2
+         kE+Q/1vSnD85reieq2/rab9FSxAMTmWqv+L/BNWiMoCoYU2xpOD4qElgcSHz49EQRZsw
+         CJRg==
+X-Gm-Message-State: AOAM531lmpQ9MvHXU1u38D4yXnqLaE9Lk/HNbJp2bxrB8qe8GBMR7bBC
+        gCIjo70PKlzc8tUDT9Tlj+kSL6Uq0V1zAA==
+X-Google-Smtp-Source: ABdhPJyud7fvSZ6NFT9eJT7Fk5WNfoynHgfkW4z30YMik11aQWSL1aw8JZ21iaMV0VSZ/oT+DZV27w==
+X-Received: by 2002:a37:9d53:: with SMTP id g80mr14401055qke.499.1614602030426;
+        Mon, 01 Mar 2021 04:33:50 -0800 (PST)
+Received: from localhost.localdomain ([138.199.13.198])
+        by smtp.gmail.com with ESMTPSA id k4sm8091055qte.59.2021.03.01.04.33.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 04:28:29 -0800 (PST)
-Received: by masabert (Postfix, from userid 1000)
-        id 57870236050B; Mon,  1 Mar 2021 21:28:27 +0900 (JST)
-From:   Masanari Iida <standby24x7@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        corbet@lwn.net, linux-doc@vger.kernel.org,
+        Mon, 01 Mar 2021 04:33:49 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     akpm@linux-foundation.org, gustavo@embeddedor.com,
         linux-kernel@vger.kernel.org
-Cc:     Masanari Iida <standby24x7@gmail.com>
-Subject: [PATCH] docs: networking: bonding.rst Fix a typo in bonding.rst
-Date:   Mon,  1 Mar 2021 21:28:23 +0900
-Message-Id: <20210301122823.1447948-1-standby24x7@gmail.com>
-X-Mailer: git-send-email 2.25.0
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] lib: Fix a typo in the file bch.c
+Date:   Mon,  1 Mar 2021 18:01:29 +0530
+Message-Id: <20210301123129.18754-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes a spelling typo in bonding.rst.
 
-Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+s/buid/build/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- Documentation/networking/bonding.rst | 2 +-
+ lib/bch.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
-index 5f690f0ad0e4..62f2aab8eaec 100644
---- a/Documentation/networking/bonding.rst
-+++ b/Documentation/networking/bonding.rst
-@@ -1988,7 +1988,7 @@ netif_carrier.
- If use_carrier is 0, then the MII monitor will first query the
- device's (via ioctl) MII registers and check the link state.  If that
- request fails (not just that it returns carrier down), then the MII
--monitor will make an ethtool ETHOOL_GLINK request to attempt to obtain
-+monitor will make an ethtool ETHTOOL_GLINK request to attempt to obtain
- the same information.  If both methods fail (i.e., the driver either
- does not support or had some error in processing both the MII register
- and ethtool requests), then the MII monitor will assume the link is
--- 
-2.25.0
+diff --git a/lib/bch.c b/lib/bch.c
+index 7c031ee8b93b..c8095f30f254 100644
+--- a/lib/bch.c
++++ b/lib/bch.c
+@@ -584,7 +584,7 @@ static int find_affine4_roots(struct bch_control *bch, unsigned int a,
+ 	k = a_log(bch, a);
+ 	rows[0] = c;
+
+-	/* buid linear system to solve X^4+aX^2+bX+c = 0 */
++	/* build linear system to solve X^4+aX^2+bX+c = 0 */
+ 	for (i = 0; i < m; i++) {
+ 		rows[i+1] = bch->a_pow_tab[4*i]^
+ 			(a ? bch->a_pow_tab[mod_s(bch, k)] : 0)^
+--
+2.26.2
 
