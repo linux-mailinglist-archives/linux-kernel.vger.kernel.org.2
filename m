@@ -2,82 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CC5329FF4
+	by mail.lfdr.de (Postfix) with ESMTP id EB233329FF5
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574969AbhCBDwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:52:10 -0500
-Received: from mout.gmx.net ([212.227.17.21]:56533 "EHLO mout.gmx.net"
+        id S1574977AbhCBDwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:52:12 -0500
+Received: from ms.lwn.net ([45.79.88.28]:42658 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244758AbhCAVtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:49:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1614635257;
-        bh=zVBUFtB0XtjblJmNjnmM9zPfSHxzFzcx47GazfY4lCs=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=K3qP7lBlbIxtPiyoA9XsWkp/BmZ0qYxL9h5wTaFTHFazh1hHJaoBazJwsrwigX42S
-         6H9pcaIUJqLwF+P9V8+HS6dLvbPeHSHRY0hvVLxlhm969EXH+dwf8Sl1JB4gBQcPW3
-         tkc4MKgFxacoSBDzyTzOCL3Z/1fi55A/UmFrkZIM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.134]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mq2jC-1ldVwg3Tgg-00n6Zy; Mon, 01
- Mar 2021 22:47:36 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-doc@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: kvm: Fix a typo ("althought")
-Date:   Mon,  1 Mar 2021 22:47:21 +0100
-Message-Id: <20210301214722.2310911-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.30.1
+        id S235811AbhCAVwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 16:52:45 -0500
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id BC63E2B8;
+        Mon,  1 Mar 2021 21:51:45 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BC63E2B8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614635505; bh=7QCiNeV/LGx+Kezp++PV+sgJR5/h7g4Lbc34vL/8M5s=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=gZ/Kt8NN2Vb1oGoXs3Q0bIixByIlGIlihtkjAUgBcXVLQ2Ewl5HbDG1rWY/CNHhkQ
+         FLLNJdBvha8CxdZCDXVcs8VCqar3+8YZH3SKmMWAvsv4UmajSQpGuCTxRz8SkHpvFa
+         JO5G/CiECqKGJkwHMWuGdywEt6lMURtKiwVDqk5b7igOaozdRwUqEbXct+5DcdZkP4
+         zr7Tn0ZdnlJtXqAZYToGUjZwqYFEX9UYz4eDhuHfI2a6EUDrbINCwIhKksNjikXjTx
+         8+ISYgkWcR7POvqPkg71rsmb53fUcRyzlZYO25r29rkhcP+6TlQB8o552yKZCQgOQM
+         icLzFJs8ptgQg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [RFC v3] scripts: kernel-doc: fix typedef support for
+ struct/union parsing
+In-Reply-To: <20210225145033.11431-1-yashsri421@gmail.com>
+References: <CAKXUXMzHPnM=ie06ZGuFXyJ7RcRjYomjyASbp3ND9-Mb2Es+2w@mail.gmail.com>
+ <20210225145033.11431-1-yashsri421@gmail.com>
+Date:   Mon, 01 Mar 2021 14:51:44 -0700
+Message-ID: <87pn0i35lb.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CTe05Txa0fPqrncPyK6o5poGV4/BtQtlMFSSGCyT/OugiTbOCbh
- 3NZYAXQHyNJXS55FNFx/wjmhy1mlerNfAyoM0gXWrMpAhWKe7qJsQ8J5Buz+pT8BLcRyvat
- COANMF/m46XMhZSfasCOq+V+XBUXdc5tm4BaGFwq+84HA75nhH0DZGL0Ws0Vy7f8TMff0yn
- TB/Aw3Q9Vcjw++OGw4p0w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gUfQ4K6LBMI=:g+cu8vMnkgzt7iERrau4n5
- Uzu8J1C5DNojCKpw8gMQ7Ci/ZmiE3ji9FZduOOZmNf6TUpCqVjbqjKMH7z5f3UkA2AZvFM/WM
- jgzjMpWBVG4pzPuRUgSEB3XU/ourAI5wKFz5udaOFtj3tX4dPayKlIxA1i0LUlI5zaVHLxx+v
- t3zLIipzs1X6/jjgvdeWEnz9iGSyV+JMdGPWY9/k9lTwHmAfr3Xm02A8NC8Kd5r485UtWbrSd
- DBKi0cE/HN9549g+v5rZx2kHrLU2XtzxGvvPqSSRSUrTKrFm+tuOUyOpQ5jiAYhHmHZnMZBAS
- Tyd6+2o651tJEo4ClGo69L2r3KyKMB9ys/Rl9iMTZjbBxvoYsmTE01n9XVCb/45QJCAclKV83
- B6ygez7ESh0LqZGwS5PWIJ5DN+3+VTXqH8n4GYisJqp6JWj7oIPUNq7T/vyv3SejQbNpGitMP
- 2LZhP/DAoMc0yxnt5loZsLqAc+Uq5v3PhrpYHqyUKCH3mOv/GLADfavrQyK0bNZElKmkpaKKe
- GqJRJDywIA5PtKemlAdkDJFA0k70csgNosf/oIy5DumILtYLxyaycmo/T9koQ901RwYdmium/
- 7numv9IgphhAw5AmseCsH7mZz4S6Ct2NKARvruckcPEnAjgMa5owtpySvE3KqCeGNjC8otxZG
- FeyPMXeFD98HgSuZxaUKGhmqmq0oX25O0izJBq22eQHmNKzpUEQj523sWtuSZHgHoiacMAVHu
- k+iwwe8cNuyZhsubYAxQ+ZPNmhiKRSdHyz9XS8Cgi9WA49KFWbHnwrzNARmMvagklzr1GPW+H
- Deo6mU8TN2oDIVLIvKqxMV2Ke5V+kvk9vYfiZfNi9jYoVKgit1lqV6GNYsQNULOdXVMZKe7lW
- f/+1Na6efeE5g0d4659A==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- Documentation/virt/kvm/api.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Aditya Srivastava <yashsri421@gmail.com> writes:
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.r=
-st
-index aed52b0fc16ec..3617a64e81fe2 100644
-=2D-- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -55,7 +55,7 @@ not cause harm to the host, their actual behavior is not=
- guaranteed by
- the API.  See "General description" for details on the ioctl usage
- model that is supported by KVM.
+> Currently, there are ~1290 occurrences in 447 files in the kernel tree
+> 'typedef struct/union' syntax for defining some struct/union. However,
+> kernel-doc currently does not support that syntax. Of the ~1290
+> occurrences, there are four occurrences in ./include/linux/zstd.h with
+> typedef struct/union syntax and a preceding kernel-doc; all other
+> occurrences have no preceding kernel-doc.
+>
+> Add support for parsing struct/union following this syntax.
+>
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
--It is important to note that althought VM ioctls may only be issued from
-+It is important to note that although VM ioctls may only be issued from
- the process that created the VM, a VM's lifecycle is associated with its
- file descriptor, not its creator (process).  In other words, the VM and
- its resources, *including the associated address space*, are not freed
-=2D-
-2.30.1
+Applied, thanks.
 
+jon
