@@ -2,190 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2E8327E3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45233327E42
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234943AbhCAM0S convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Mar 2021 07:26:18 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:49247 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232916AbhCAM0O (ORCPT
+        id S234971AbhCAM13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:27:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234960AbhCAM1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:26:14 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385--EyhXwv5MAS-t8o7KyKhCw-1; Mon, 01 Mar 2021 07:25:18 -0500
-X-MC-Unique: -EyhXwv5MAS-t8o7KyKhCw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F0221020C20;
-        Mon,  1 Mar 2021 12:25:16 +0000 (UTC)
-Received: from krava.cust.in.nbox.cz (unknown [10.40.192.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 21B905C1C4;
-        Mon,  1 Mar 2021 12:25:13 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     John Garry <john.garry@huawei.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 2/2] perf daemon: Allow test for non root user
-Date:   Mon,  1 Mar 2021 13:25:10 +0100
-Message-Id: <20210301122510.64402-2-jolsa@kernel.org>
-In-Reply-To: <20210301122510.64402-1-jolsa@kernel.org>
-References: <20210301122510.64402-1-jolsa@kernel.org>
+        Mon, 1 Mar 2021 07:27:11 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70DCC06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 04:26:29 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id k66so14294613wmf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 04:26:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KD4LJEezSXanY/+fxbjEzv3Osh9WD8nOyZFOgjBB36g=;
+        b=CZxnxPb0K7GR6Qvt6NmYIQPiHxDX8dy8RkmKGIsYbrfrN4XPehp1iWIkNTYS7mVowK
+         QDrM4D4Szb5W8I+1q8i6iI9DxbdpG1qXMzE5HJYTH/NssW/3qdADiDKsrBP1SKkUTmB1
+         g16xudG8XLlbJQ0EfEiDot43bw2aNPTV0sE57jZyG/lSyEIu65LMtUCPhA8TjjKxFGD+
+         5rrZn7lz/0BsyoNl8tS0TSFDbSh4l1ZvpRmFw0XwxTdHDWbLgleGzLbPZAjBoUMCQ1jI
+         RN6PEQvC6fc470XRrvAHDJDPueFYFRwgdMi99o6+B2mClkvg/d2SBJrJbVeBsO6GI/fx
+         n/Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KD4LJEezSXanY/+fxbjEzv3Osh9WD8nOyZFOgjBB36g=;
+        b=XRjglSkpxKHWiZKG5uWCJKciyD7mD37u8VtCg1YtEt6Qv3zkPPYfV3kJ4vjpmItXCL
+         9UHGntC5iUr4osxnX8iOKQ/tP5yGt2y0VFd0IdM58W3bLHQU1fx5jemiJ90lHFBy1Rvy
+         s0Bq8As1y+PWpb2rRwKdu8KU2hArF3sb+zzkd2IFqy+LEVREjg6mEYEG3VgqrNO8aOPD
+         +srxzW79MkFjnP5FNnjJBL1rVA19RpOekan1SnvY0fBZ1f6QbUUACxiV0cc2MTslsRsm
+         K75SahZ+4McTOLPCa770Dg/2vBTeOn6uUYxleoIzALAZojT57QoxrVhF7/wX3UrMnZG1
+         Fv4w==
+X-Gm-Message-State: AOAM531H0jafJtIk211IqMZ/Ce+xlkOL80p7CD/X9KSyz5hseF2hprug
+        mBuYHPk3STVuLAFDlpfKsy6aWw==
+X-Google-Smtp-Source: ABdhPJz8OhS4Q1P+hcYUzb4xUlgBO73g43l7Pd9vB1016kMqXRu1eWhWzuo+f525VTvWifU9/715fQ==
+X-Received: by 2002:a05:600c:21c9:: with SMTP id x9mr10711107wmj.135.1614601588566;
+        Mon, 01 Mar 2021 04:26:28 -0800 (PST)
+Received: from google.com ([2a00:79e0:d:210:3854:8f6d:e288:2080])
+        by smtp.gmail.com with ESMTPSA id r18sm25578444wro.7.2021.03.01.04.26.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 04:26:28 -0800 (PST)
+Date:   Mon, 1 Mar 2021 12:26:26 +0000
+From:   Alessio Balsini <balsini@android.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Alessio Balsini <balsini@android.com>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Peng Tao <bergwolf@gmail.com>,
+        Stefano Duo <duostefano93@gmail.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>,
+        kernel-team <kernel-team@android.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND V12 2/8] fuse: 32-bit user space ioctl compat for
+ fuse device
+Message-ID: <YDzdcnS1JJWboFYN@google.com>
+References: <20210125153057.3623715-1-balsini@android.com>
+ <20210125153057.3623715-3-balsini@android.com>
+ <CAJfpegviqcgtE4qRHZFy6xdL6Re7gs30TV1epkn7cvUu3A4hqw@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpegviqcgtE4qRHZFy6xdL6Re7gs30TV1epkn7cvUu3A4hqw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John reported that the daemon test is not working for
-non root user. Changing the tests configurations so
-it's allowed to run under normal user.
+On Wed, Feb 17, 2021 at 11:21:04AM +0100, Miklos Szeredi wrote:
+> On Mon, Jan 25, 2021 at 4:31 PM Alessio Balsini <balsini@android.com> wrote:
+> >
+> > With a 64-bit kernel build the FUSE device cannot handle ioctl requests
+> > coming from 32-bit user space.
+> > This is due to the ioctl command translation that generates different
+> > command identifiers that thus cannot be used for direct comparisons
+> > without proper manipulation.
+> >
+> > Explicitly extract type and number from the ioctl command to enable
+> > 32-bit user space compatibility on 64-bit kernel builds.
+> >
+> > Signed-off-by: Alessio Balsini <balsini@android.com>
+> > ---
+> >  fs/fuse/dev.c             | 29 ++++++++++++++++++-----------
+> >  include/uapi/linux/fuse.h |  3 ++-
+> >  2 files changed, 20 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
+> > index 588f8d1240aa..ff9f3b83f879 100644
+> > --- a/fs/fuse/dev.c
+> > +++ b/fs/fuse/dev.c
+> > @@ -2233,37 +2233,44 @@ static int fuse_device_clone(struct fuse_conn *fc, struct file *new)
+> >  static long fuse_dev_ioctl(struct file *file, unsigned int cmd,
+> >                            unsigned long arg)
+> >  {
+> > -       int err = -ENOTTY;
+> > +       int res;
+> > +       int oldfd;
+> > +       struct fuse_dev *fud = NULL;
+> >
+> > -       if (cmd == FUSE_DEV_IOC_CLONE) {
+> > -               int oldfd;
+> > +       if (_IOC_TYPE(cmd) != FUSE_DEV_IOC_MAGIC)
+> > +               return -EINVAL;
+> 
+> Why change ENOTTY to EINVAL?
+> 
+> Thanks,
+> MIklos
 
-Fixes: 2291bb915b55 ("perf tests: Add daemon 'list' command test")
-Reported-by: John Garry <john.garry@huawei.com>
-Tested-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/tests/shell/daemon.sh | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+For the magic number mismatch I was thinking that EINVAL would have been
+more appropriate, meaning: "this ioctl is definitely something this file
+doesn't support".  ENOTTY, could be more specific to the subset of
+ioctls supported by the file, so I kept this in the default case of the
+switch.
+After counting the use of ENOTTY vs EINVAL for these _IOC_TYPE checks,
+EINVALs were less than half ENOTTYs, so I'm totally fine with switching
+back to ENOTTY in V13.
 
-diff --git a/tools/perf/tests/shell/daemon.sh b/tools/perf/tests/shell/daemon.sh
-index e5b824dd08d9..5ad3ca8d681b 100755
---- a/tools/perf/tests/shell/daemon.sh
-+++ b/tools/perf/tests/shell/daemon.sh
-@@ -140,10 +140,10 @@ test_list()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e task-clock
-+run = -e task-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -159,14 +159,14 @@ EOF
- 	# check 1st session
- 	# pid:size:-e cpu-clock:base/size:base/size/output:base/size/control:base/size/ack:0
- 	local line=`perf daemon --config ${config} -x: | head -2 | tail -1`
--	check_line_other "${line}" size "-e cpu-clock" ${base}/session-size \
-+	check_line_other "${line}" size "-e cpu-clock -m 1 sleep 10" ${base}/session-size \
- 			 ${base}/session-size/output ${base}/session-size/control \
- 			 ${base}/session-size/ack "0"
- 
- 	# check 2nd session
- 	# pid:time:-e task-clock:base/time:base/time/output:base/time/control:base/time/ack:0
- 	local line=`perf daemon --config ${config} -x: | head -3 | tail -1`
--	check_line_other "${line}" time "-e task-clock" ${base}/session-time \
-+	check_line_other "${line}" time "-e task-clock -m 1 sleep 10" ${base}/session-time \
- 			 ${base}/session-time/output ${base}/session-time/control \
- 			 ${base}/session-time/ack "0"
- 
-@@ -190,10 +190,10 @@ test_reconfig()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e task-clock
-+run = -e task-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -204,7 +204,7 @@ EOF
- 	# check 2nd session
- 	# pid:time:-e task-clock:base/time:base/time/output:base/time/control:base/time/ack:0
- 	local line=`perf daemon --config ${config} -x: | head -3 | tail -1`
--	check_line_other "${line}" time "-e task-clock" ${base}/session-time \
-+	check_line_other "${line}" time "-e task-clock -m 1 sleep 10" ${base}/session-time \
- 			 ${base}/session-time/output ${base}/session-time/control ${base}/session-time/ack "0"
- 	local pid=`echo "${line}" | awk 'BEGIN { FS = ":" } ; { print $1 }'`
- 
-@@ -215,10 +215,10 @@ EOF
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- EOF
- 
- 	# TEST 1 - change config
-@@ -238,7 +238,7 @@ EOF
- 	# check reconfigured 2nd session
- 	# pid:time:-e task-clock:base/time:base/time/output:base/time/control:base/time/ack:0
- 	local line=`perf daemon --config ${config} -x: | head -3 | tail -1`
--	check_line_other "${line}" time "-e cpu-clock" ${base}/session-time \
-+	check_line_other "${line}" time "-e cpu-clock -m 1 sleep 10" ${base}/session-time \
- 			 ${base}/session-time/output ${base}/session-time/control ${base}/session-time/ack "0"
- 
- 	# TEST 2 - empty config
-@@ -309,10 +309,10 @@ test_stop()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e task-clock
-+run = -e task-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -361,7 +361,7 @@ test_signal()
- base=BASE
- 
- [session-test]
--run = -e cpu-clock --switch-output
-+run = -e cpu-clock --switch-output -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -400,10 +400,10 @@ test_ping()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- 
- [session-time]
--run = -e task-clock
-+run = -e task-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
-@@ -439,7 +439,7 @@ test_lock()
- base=BASE
- 
- [session-size]
--run = -e cpu-clock
-+run = -e cpu-clock -m 1 sleep 10
- EOF
- 
- 	sed -i -e "s|BASE|${base}|" ${config}
--- 
-2.29.2
-
+Thanks!
+Alessio
