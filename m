@@ -2,56 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC108327915
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0E4327918
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhCAIV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:21:57 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:36187 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232849AbhCAIVz (ORCPT
+        id S232920AbhCAIXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:23:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232860AbhCAIXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:21:55 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UPvxPBj_1614586871;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPvxPBj_1614586871)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Mar 2021 16:21:12 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     kbusch@kernel.org
-Cc:     axboe@fb.com, hch@lst.de, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] lightnvm: Switch to using the new API kobj_to_dev()
-Date:   Mon,  1 Mar 2021 16:21:09 +0800
-Message-Id: <1614586869-1479-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 1 Mar 2021 03:23:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87C1C06174A;
+        Mon,  1 Mar 2021 00:22:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=bMPJOhHJpWZ3kqtoodBrXg1OQ6T3aYVqfcZl+yljkhk=; b=seHcwHQLfI/dHDq7R7BujUX7Ti
+        LYEDLwE/pzAWgLFY4dfF2z/u6IUBmGD9Av0T7Wjrovpkj/l2w0jCR44M2KDJRDRCNPhcQkmErhEXj
+        e7FcOolKSDUmucZmwv1nnfpL64kJSnoXwyp33POJH3unEJoz4Ybk8ROBizIn7lr2SD+OPn4XNJW2z
+        anoOabPdZ17AUErbQRzUsghKjE7mBWMNoX/H6ut3YY3//ZsI57gK/83fYgISl4CnCb97S38Z0Czmq
+        Y2T2F9wapKqZWHd8AMW262DxOzeLEgE4NggwBxNRgxH0J+A8RYDzXuh3JsBgS2y/4inBtb9iSy2cB
+        cmY49w7g==;
+Received: from [2001:4bb8:19b:e4b7:cdf9:733f:4874:8eb4] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lGdp6-00FTKX-5D; Mon, 01 Mar 2021 08:22:40 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kirti Wankhede <kwankhede@nvidia.com>, linux-mm@kvack.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: remap_vmalloc_range clenaups
+Date:   Mon,  1 Mar 2021 09:22:33 +0100
+Message-Id: <20210301082235.932968-1-hch@lst.de>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed the following coccicheck:
-./drivers/nvme/host/lightnvm.c:1243:60-61: WARNING opportunity for
-kobj_to_dev()
+Hi Andrew,
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/nvme/host/lightnvm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/nvme/host/lightnvm.c b/drivers/nvme/host/lightnvm.c
-index b705988..e3240d1 100644
---- a/drivers/nvme/host/lightnvm.c
-+++ b/drivers/nvme/host/lightnvm.c
-@@ -1240,7 +1240,7 @@ static ssize_t nvm_dev_attr_show_20(struct device *dev,
- static umode_t nvm_dev_attrs_visible(struct kobject *kobj,
- 				     struct attribute *attr, int index)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	struct gendisk *disk = dev_to_disk(dev);
- 	struct nvme_ns *ns = disk->private_data;
- 	struct nvm_dev *ndev = ns->ndev;
--- 
-1.8.3.1
-
+this series removes an open coded instance of remap_vmalloc_range and
+removes the unused remap_vmalloc_range_partial export.
