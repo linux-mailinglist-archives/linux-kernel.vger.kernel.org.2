@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59061329AAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB2C329AEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345499AbhCBBBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:01:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57720 "EHLO mail.kernel.org"
+        id S1378242AbhCBBFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:05:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240399AbhCASvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:51:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 599C76501B;
-        Mon,  1 Mar 2021 17:12:05 +0000 (UTC)
+        id S240875AbhCAS6d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:58:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4BD764E42;
+        Mon,  1 Mar 2021 17:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618725;
-        bh=dDrGlAYOEdD7F0y/JYY+1YNb0RaD7VHOvOfpdjXa1YM=;
+        s=korg; t=1614618832;
+        bh=DgXBzD0pnX4AZSQ8QpruE4tz0rb4NsK0xkIGpzJP8VQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QM5himF2RRd0mjczww1qeIdbG9PHkeMeW7M+CXT4F8Qox+n33zzCCrndtE0Zddcu9
-         LQ0Fm6fHe5OxLAr0QugIWmLQGKrLjtfXxgRat3IUAhAGnJB3nFWIBHPI3/ghBy1B0E
-         MQyC+vhikLFJUEqlypBlrO2EQegLzvVq1nTKT1x4=
+        b=x5wO6IHwKW5dxftycH9gakQt+/mIxnM8DN5SNl67uhkpjPx7VVD3gpcxVOCAgluCn
+         /EiUEoOfOhy2Xj3gxos+UBZTixT7DYExxQM4TGV2C6+y20j6UM/RexlHPJtayeYPHH
+         LF7n/jSiTJOZa5UolV1zphOyjxIpD+fd1eLC8l2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 192/663] media: cx25821: Fix a bug when reallocating some dma memory
-Date:   Mon,  1 Mar 2021 17:07:20 +0100
-Message-Id: <20210301161151.277603049@linuxfoundation.org>
+Subject: [PATCH 5.10 193/663] media: mtk-vcodec: fix argument used when DEBUG is defined
+Date:   Mon,  1 Mar 2021 17:07:21 +0100
+Message-Id: <20210301161151.328196708@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,44 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit b2de3643c5024fc4fd128ba7767c7fb8b714bea7 ]
+[ Upstream commit a04e187d231086a1313fd635ac42bdbc997137ad ]
 
-This function looks like a realloc.
+When DEBUG is defined this error occurs
 
-However, if 'risc->cpu != NULL', the memory will be freed, but never
-reallocated with the bigger 'size'.
-Explicitly set 'risc->cpu' to NULL, so that the reallocation is
-correctly performed a few lines below.
+drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c:306:41:
+  error: ‘i’ undeclared (first use in this function)
+  mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[VENC_SYS]);
 
-[hverkuil: NULL != risc->cpu -> risc->cpu]
+Reviewing the old line
 
-Fixes: 5ede94c70553 ("[media] cx25821: remove bogus btcx_risc dependency)
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+	mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[i]);
+
+All the i's need to be changed to VENC_SYS.
+Fix a similar error for VENC_LT_SYS.
+
+Fixes: 0dc4b3286125 ("media: mtk-vcodec: venc: support SCP firmware")
+Signed-off-by: Tom Rix <trix@redhat.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/cx25821/cx25821-core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/pci/cx25821/cx25821-core.c b/drivers/media/pci/cx25821/cx25821-core.c
-index 55018d9e439fb..285047b32c44a 100644
---- a/drivers/media/pci/cx25821/cx25821-core.c
-+++ b/drivers/media/pci/cx25821/cx25821-core.c
-@@ -976,8 +976,10 @@ int cx25821_riscmem_alloc(struct pci_dev *pci,
- 	__le32 *cpu;
- 	dma_addr_t dma = 0;
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+index 3be8a04c4c679..219c2c5b78efc 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+@@ -310,7 +310,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+ 		ret = PTR_ERR((__force void *)dev->reg_base[VENC_SYS]);
+ 		goto err_res;
+ 	}
+-	mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[VENC_SYS]);
++	mtk_v4l2_debug(2, "reg[%d] base=0x%p", VENC_SYS, dev->reg_base[VENC_SYS]);
  
--	if (NULL != risc->cpu && risc->size < size)
-+	if (risc->cpu && risc->size < size) {
- 		pci_free_consistent(pci, risc->size, risc->cpu, risc->dma);
-+		risc->cpu = NULL;
-+	}
- 	if (NULL == risc->cpu) {
- 		cpu = pci_zalloc_consistent(pci, size, &dma);
- 		if (NULL == cpu)
+ 	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+ 	if (res == NULL) {
+@@ -339,7 +339,7 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+ 			ret = PTR_ERR((__force void *)dev->reg_base[VENC_LT_SYS]);
+ 			goto err_res;
+ 		}
+-		mtk_v4l2_debug(2, "reg[%d] base=0x%p", i, dev->reg_base[VENC_LT_SYS]);
++		mtk_v4l2_debug(2, "reg[%d] base=0x%p", VENC_LT_SYS, dev->reg_base[VENC_LT_SYS]);
+ 
+ 		dev->enc_lt_irq = platform_get_irq(pdev, 1);
+ 		irq_set_status_flags(dev->enc_lt_irq, IRQ_NOAUTOEN);
 -- 
 2.27.0
 
