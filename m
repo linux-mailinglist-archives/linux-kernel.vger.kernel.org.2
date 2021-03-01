@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308C13298A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C8132987E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346314AbhCAXna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:43:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58186 "EHLO mail.kernel.org"
+        id S1345979AbhCAXg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:36:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239443AbhCASIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:08:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C86AB65104;
-        Mon,  1 Mar 2021 17:14:56 +0000 (UTC)
+        id S239005AbhCASGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:06:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D6B2651C1;
+        Mon,  1 Mar 2021 17:16:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618897;
-        bh=7jTk6X3nESlHt2daZxwA5T/oEbwBTmja9BtwEuC7MiQ=;
+        s=korg; t=1614619000;
+        bh=Svf5BILYAtUMthJrbY0LePRpllH1fup+lK7StA/jaEo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lLkrgS+I6kpSb7tWf1XxSjHHkQaiOwHPL9bIxyTZXHykYraFQ1Pnf9DzYtlUIrPLj
-         XKtuZFpd2WNu00qJj+3pY1t2wCvsK1NgnYyLVsUxZA/yjVkcMuH5F5bvTa3Zu3Reia
-         zbkxH1Vytxc0LnBk+MRwLDwFi+vwszyTt80iW+8Q=
+        b=plnnaows/bfywNrlM4WKTwtZhZlUyT7g1uVYuuNaRISMEIc0yDPRfK8+QMIC5p5SA
+         JdKvyZ5nrSChq8pg/BvwCsUfX5xQoH41g4U6khEvIByX8sroP6Z8aDthftxpPYw1pG
+         yBCPkPt8Xd+MOQ4f6NBUrkt+lE7Ca7iBLElTfgSY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 256/663] drm/amdgpu/display: remove hdcp_srm sysfs on device removal
-Date:   Mon,  1 Mar 2021 17:08:24 +0100
-Message-Id: <20210301161154.491191139@linuxfoundation.org>
+Subject: [PATCH 5.10 265/663] arm64: dts: qcom: qrb5165-rb5: fix pm8009 regulators
+Date:   Mon,  1 Mar 2021 17:08:33 +0100
+Message-Id: <20210301161154.923965926@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,69 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nirmoy Das <nirmoy.das@amd.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit e96b1b2974989c6a25507b527843ede7594efc85 ]
+[ Upstream commit c3da02421230639bf6ee5462b70b58f5b7f3b7c6 ]
 
-Fixes: 9037246bb2da5 ("drm/amd/display: Add sysfs interface for set/get srm")
+Fix pm8009 compatibility string to reference pm8009 revision specific to
+sm8250 platform. Also add S2 regulator to be used for qca639x.
 
-Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Fixes: b1d2674e6121 ("arm64: dts: qcom: Add basic devicetree support for QRB5165 RB5")
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Link: https://lore.kernel.org/r/20201231122348.637917-5-dmitry.baryshkov@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c      | 2 +-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c | 3 ++-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.h | 2 +-
- 3 files changed, 4 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index fdca76fc598c0..bffaefaf5a292 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -1096,7 +1096,7 @@ static void amdgpu_dm_fini(struct amdgpu_device *adev)
+diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+index 1528a865f1f8e..949fee6949e61 100644
+--- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
++++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+@@ -114,7 +114,7 @@
  
- #ifdef CONFIG_DRM_AMD_DC_HDCP
- 	if (adev->dm.hdcp_workqueue) {
--		hdcp_destroy(adev->dm.hdcp_workqueue);
-+		hdcp_destroy(&adev->dev->kobj, adev->dm.hdcp_workqueue);
- 		adev->dm.hdcp_workqueue = NULL;
- 	}
+ &apps_rsc {
+ 	pm8009-rpmh-regulators {
+-		compatible = "qcom,pm8009-rpmh-regulators";
++		compatible = "qcom,pm8009-1-rpmh-regulators";
+ 		qcom,pmic-id = "f";
  
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c
-index c2cd184f0bbd4..79de68ac03f20 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.c
-@@ -376,7 +376,7 @@ static void event_cpirq(struct work_struct *work)
- }
+ 		vdd-s1-supply = <&vph_pwr>;
+@@ -123,6 +123,13 @@
+ 		vdd-l5-l6-supply = <&vreg_bob>;
+ 		vdd-l7-supply = <&vreg_s4a_1p8>;
  
- 
--void hdcp_destroy(struct hdcp_workqueue *hdcp_work)
-+void hdcp_destroy(struct kobject *kobj, struct hdcp_workqueue *hdcp_work)
- {
- 	int i = 0;
- 
-@@ -385,6 +385,7 @@ void hdcp_destroy(struct hdcp_workqueue *hdcp_work)
- 		cancel_delayed_work_sync(&hdcp_work[i].watchdog_timer_dwork);
- 	}
- 
-+	sysfs_remove_bin_file(kobj, &hdcp_work[0].attr);
- 	kfree(hdcp_work->srm);
- 	kfree(hdcp_work->srm_temp);
- 	kfree(hdcp_work);
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.h
-index 5159b3a5e5b03..09294ff122fea 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_hdcp.h
-@@ -69,7 +69,7 @@ void hdcp_update_display(struct hdcp_workqueue *hdcp_work,
- 
- void hdcp_reset_display(struct hdcp_workqueue *work, unsigned int link_index);
- void hdcp_handle_cpirq(struct hdcp_workqueue *work, unsigned int link_index);
--void hdcp_destroy(struct hdcp_workqueue *work);
-+void hdcp_destroy(struct kobject *kobj, struct hdcp_workqueue *work);
- 
- struct hdcp_workqueue *hdcp_create_workqueue(struct amdgpu_device *adev, struct cp_psp *cp_psp, struct dc *dc);
- 
++		vreg_s2f_0p95: smps2 {
++			regulator-name = "vreg_s2f_0p95";
++			regulator-min-microvolt = <900000>;
++			regulator-max-microvolt = <952000>;
++			regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
++		};
++
+ 		vreg_l1f_1p1: ldo1 {
+ 			regulator-name = "vreg_l1f_1p1";
+ 			regulator-min-microvolt = <1104000>;
 -- 
 2.27.0
 
