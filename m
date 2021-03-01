@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD84D32994E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FEE32998F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344447AbhCBAJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:09:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40746 "EHLO mail.kernel.org"
+        id S1376345AbhCBAXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:23:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239748AbhCASUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:20:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E65CB64F5A;
-        Mon,  1 Mar 2021 17:49:57 +0000 (UTC)
+        id S239868AbhCAS0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:26:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BBA865037;
+        Mon,  1 Mar 2021 17:15:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620998;
-        bh=8R6TkjQKC76pOxc0cW2ZLJKlKZRHS1/sEo4BexC3XTo=;
+        s=korg; t=1614618945;
+        bh=n76WpIQrSPLMyoQURjtMF9uXbNBqhKxkm5PtyBVfulQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hQtkdskcRmnSEjWgJ3qzcmAy8its37fvS5x7sQ4h7/5KmuETJea3c6rwVxS4bODmM
-         yplPtL1uZ6L3SIsiPyKLnC561ookGd+LkknSudX8AiKzHJgq2pYHW6XgMHO/AAaRAt
-         tPIUmTd2cDGmWsyNx8E1lnzAJkww7sG36BKNaJbo=
+        b=ppxW0qy5wsdokql5oaVxfqBRrKT9Au/k1BNx635qj43s2FhN9M7vjt7UPpJqhuJm/
+         EKBEMXOcjL4CfYz/zUia0WK/h/3Bvf6BlaOLy7NeldAfFLyZ7NzQzb3FArJV8hLSXU
+         eitItsS1/Y2Xr14szvYZSDGymZmeEG9S7UlBX2Wc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 356/775] RDMA/mlx5: Use the correct obj_id upon DEVX TIR creation
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 276/663] dmaengine: fsldma: Fix a resource leak in the remove function
 Date:   Mon,  1 Mar 2021 17:08:44 +0100
-Message-Id: <20210301161219.210715463@linuxfoundation.org>
+Message-Id: <20210301161155.477554008@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yishai Hadas <yishaih@nvidia.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 8798e4ad0abe0ba1221928a46561981c510be0c6 ]
+[ Upstream commit cbc0ad004c03ad7971726a5db3ec84dba3dcb857 ]
 
-Use the correct obj_id upon DEVX TIR creation by strictly taking the tirn
-24 bits and not the general obj_id which is 32 bits.
+A 'irq_dispose_mapping()' call is missing in the remove function.
+Add it.
 
-Fixes: 7efce3691d33 ("IB/mlx5: Add obj create and destroy functionality")
-Link: https://lore.kernel.org/r/20201230130121.180350-2-leon@kernel.org
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+This is needed to undo the 'irq_of_parse_and_map() call from the probe
+function and already part of the error handling path of the probe function.
+
+It was added in the probe function only in commit d3f620b2c4fe ("fsldma:
+simplify IRQ probing and handling")
+
+Fixes: 77cd62e8082b ("fsldma: allow Freescale Elo DMA driver to be compiled as a module")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201212160516.92515-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/devx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/dma/fsldma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 819c142857d65..ff8e17d7f7ca8 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -1064,7 +1064,9 @@ static void devx_obj_build_destroy_cmd(void *in, void *out, void *din,
- 		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_RQT);
- 		break;
- 	case MLX5_CMD_OP_CREATE_TIR:
--		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_TIR);
-+		*obj_id = MLX5_GET(create_tir_out, out, tirn);
-+		MLX5_SET(destroy_tir_in, din, opcode, MLX5_CMD_OP_DESTROY_TIR);
-+		MLX5_SET(destroy_tir_in, din, tirn, *obj_id);
- 		break;
- 	case MLX5_CMD_OP_CREATE_TIS:
- 		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_TIS);
+diff --git a/drivers/dma/fsldma.c b/drivers/dma/fsldma.c
+index 0feb323bae1e3..554f70a0c18c0 100644
+--- a/drivers/dma/fsldma.c
++++ b/drivers/dma/fsldma.c
+@@ -1314,6 +1314,7 @@ static int fsldma_of_remove(struct platform_device *op)
+ 		if (fdev->chan[i])
+ 			fsl_dma_chan_remove(fdev->chan[i]);
+ 	}
++	irq_dispose_mapping(fdev->irq);
+ 
+ 	iounmap(fdev->regs);
+ 	kfree(fdev);
 -- 
 2.27.0
 
