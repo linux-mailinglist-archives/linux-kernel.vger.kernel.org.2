@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DD9329B24
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E59329B30
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378629AbhCBBHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:07:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37334 "EHLO mail.kernel.org"
+        id S1378727AbhCBBHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:07:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240952AbhCATEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:04:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8E306524F;
-        Mon,  1 Mar 2021 17:28:00 +0000 (UTC)
+        id S240741AbhCATEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:04:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F80A6525A;
+        Mon,  1 Mar 2021 17:28:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619681;
-        bh=sTMTOH1a9bWdZBA7rXXjxIeWPEp360MpiNzx+8H/OqI=;
+        s=korg; t=1614619708;
+        bh=ogeGSJNwL8+DSWNr9GhxyHuVp3d6gkV2TUb/LbJuDts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PK5vGPJVFysXUVSGaOrGxNVJ+PmkDfmc56LprJY2AJ1U1il9BsOrXD/dg/DLQC2r0
-         3JrOdtjd3ZzHPOY8fjQaqM7BzGIVcHWUVmtj8WvR1j+etyCCeWx5HllncG2QCj7b9c
-         TiZnCIiwbIIrTPUFRfWPbYywLq0RTwsi3HIagT10=
+        b=ND38a90PT9UrpNq8OtG70mKg3gFcm0MyW7LnY0+TJhoA43qHdUYrR/U0Do6h9hsDm
+         +5KEaSH9NrLwMyx3o6s1cDVspmqz0iZ6edjRmSiXAP7WFO5iDJ1+1PRNH1yx7Jwzat
+         9Jg4Hxmut0eq2g6N+LcJZHleKvs7ebxUdNoz/yZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.10 542/663] crypto: arm64/sha - add missing module aliases
-Date:   Mon,  1 Mar 2021 17:13:10 +0100
-Message-Id: <20210301161208.685449268@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.10 551/663] seccomp: Add missing return in non-void function
+Date:   Mon,  1 Mar 2021 17:13:19 +0100
+Message-Id: <20210301161209.134240995@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,77 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 0df07d8117c3576f1603b05b84089742a118d10a upstream.
+commit 04b38d012556199ba4c31195940160e0c44c64f0 upstream.
 
-The accelerated, instruction based implementations of SHA1, SHA2 and
-SHA3 are autoloaded based on CPU capabilities, given that the code is
-modest in size, and widely used, which means that resolving the algo
-name, loading all compatible modules and picking the one with the
-highest priority is taken to be suboptimal.
+We don't actually care about the value, since the kernel will panic
+before that; but a value should nonetheless be returned, otherwise the
+compiler will complain.
 
-However, if these algorithms are requested before this CPU feature
-based matching and autoloading occurs, these modules are not even
-considered, and we end up with suboptimal performance.
-
-So add the missing module aliases for the various SHA implementations.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 8112c4f140fa ("seccomp: remove 2-phase API")
+Cc: stable@vger.kernel.org # 4.7+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20210111172839.640914-1-paul@crapouillou.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/crypto/sha1-ce-glue.c   |    1 +
- arch/arm64/crypto/sha2-ce-glue.c   |    2 ++
- arch/arm64/crypto/sha3-ce-glue.c   |    4 ++++
- arch/arm64/crypto/sha512-ce-glue.c |    2 ++
- 4 files changed, 9 insertions(+)
+ kernel/seccomp.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arm64/crypto/sha1-ce-glue.c
-+++ b/arch/arm64/crypto/sha1-ce-glue.c
-@@ -19,6 +19,7 @@
- MODULE_DESCRIPTION("SHA1 secure hash using ARMv8 Crypto Extensions");
- MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
- MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS_CRYPTO("sha1");
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1050,6 +1050,8 @@ static int __seccomp_filter(int this_sys
+ 			    const bool recheck_after_trace)
+ {
+ 	BUG();
++
++	return -1;
+ }
+ #endif
  
- struct sha1_ce_state {
- 	struct sha1_state	sst;
---- a/arch/arm64/crypto/sha2-ce-glue.c
-+++ b/arch/arm64/crypto/sha2-ce-glue.c
-@@ -19,6 +19,8 @@
- MODULE_DESCRIPTION("SHA-224/SHA-256 secure hash using ARMv8 Crypto Extensions");
- MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
- MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS_CRYPTO("sha224");
-+MODULE_ALIAS_CRYPTO("sha256");
- 
- struct sha256_ce_state {
- 	struct sha256_state	sst;
---- a/arch/arm64/crypto/sha3-ce-glue.c
-+++ b/arch/arm64/crypto/sha3-ce-glue.c
-@@ -23,6 +23,10 @@
- MODULE_DESCRIPTION("SHA3 secure hash using ARMv8 Crypto Extensions");
- MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
- MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS_CRYPTO("sha3-224");
-+MODULE_ALIAS_CRYPTO("sha3-256");
-+MODULE_ALIAS_CRYPTO("sha3-384");
-+MODULE_ALIAS_CRYPTO("sha3-512");
- 
- asmlinkage void sha3_ce_transform(u64 *st, const u8 *data, int blocks,
- 				  int md_len);
---- a/arch/arm64/crypto/sha512-ce-glue.c
-+++ b/arch/arm64/crypto/sha512-ce-glue.c
-@@ -23,6 +23,8 @@
- MODULE_DESCRIPTION("SHA-384/SHA-512 secure hash using ARMv8 Crypto Extensions");
- MODULE_AUTHOR("Ard Biesheuvel <ard.biesheuvel@linaro.org>");
- MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS_CRYPTO("sha384");
-+MODULE_ALIAS_CRYPTO("sha512");
- 
- asmlinkage void sha512_ce_transform(struct sha512_state *sst, u8 const *src,
- 				    int blocks);
 
 
