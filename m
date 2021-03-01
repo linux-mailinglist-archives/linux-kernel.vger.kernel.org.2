@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1EA329CED
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E29329D1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442600AbhCBCOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:14:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53008 "EHLO mail.kernel.org"
+        id S1442998AbhCBCRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:17:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240907AbhCATlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:41:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 696E96503C;
-        Mon,  1 Mar 2021 17:15:07 +0000 (UTC)
+        id S242314AbhCATo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAE4764F44;
+        Mon,  1 Mar 2021 17:14:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618908;
-        bh=Uu2eES8d8sqkst1FzlgcpQT9ilhdD7VqlzdY6hDFNCY=;
+        s=korg; t=1614618848;
+        bh=dndZKJjYtARRKhaUfQar40ecfJDvNDi1MP0H8Ml87K0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vhsWmB7LoBu/UkoA/imVJiO/XnV1IsDyNzn0x6/kzJ7Gte/J3mlerFHu3pSgM06Pn
-         DmDjfED/2XQ+Nh0lKf8pjt4+q308wzZD1USfxchwgZaLDrjFx7OMztByxgV81uzizs
-         UYy/25I/YEiUL0Xj1woVW/q1IrRnGoa8Jl9q/YY0=
+        b=0n0JkgfNWTz45e0NpueMpUmgEBIwAXM8iVDcrye2g7+pd3VuGnRpqeNuJjjTDmvaP
+         2LIGA4IRZD9HtEj2KnY4XnVsKjcxsuS0Gfvpo9v/m7r1x6X6+Gy3OpZ6SfG0mTkGc7
+         vjqZSHgpc2sy9K5XJPiC1i/h77avrXqhGIjPIMrM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Dom Cobley <popcornmix@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 231/663] drm/vc4: hdmi: Fix up CEC registers
-Date:   Mon,  1 Mar 2021 17:07:59 +0100
-Message-Id: <20210301161153.239033064@linuxfoundation.org>
+        Narayan Ayalasomayajula <Narayan.Ayalasomayajula@wdc.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 240/663] nvmet-tcp: fix receive data digest calculation for multiple h2cdata PDUs
+Date:   Mon,  1 Mar 2021 17:08:08 +0100
+Message-Id: <20210301161153.694443923@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -44,52 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dom Cobley <popcornmix@gmail.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit 5a32bfd563e8b5766e57475c2c81c769e5a13f5d ]
+[ Upstream commit fda871c0ba5d2eed2cd1c881573168129da70058 ]
 
-The commit 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout
-abstraction") forgot one CEC register, and made a copy and paste mistake
-for another one. Fix those mistakes.
+When a host sends multiple h2cdata PDUs for a single command, we
+should verify the data digest calculation per PDU and not
+per command.
 
-Fixes: 311e305fdb4e ("drm/vc4: hdmi: Implement a register layout abstraction")
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Tested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210111142309.193441-5-maxime@cerno.tech
-(cherry picked from commit 303085bc11bb7aebeeaaf09213f99fd7aa539a34)
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Fixes: 872d26a391da ("nvmet-tcp: add NVMe over TCP target driver")
+Reported-by: Narayan Ayalasomayajula <Narayan.Ayalasomayajula@wdc.com>
+Tested-by: Narayan Ayalasomayajula <Narayan.Ayalasomayajula@wdc.com>
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi_regs.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/nvme/target/tcp.c | 31 ++++++++++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-index 7c6b4818f2455..6c0dfbbe1a7ef 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi_regs.h
-@@ -29,6 +29,7 @@ enum vc4_hdmi_field {
- 	HDMI_CEC_CPU_MASK_SET,
- 	HDMI_CEC_CPU_MASK_STATUS,
- 	HDMI_CEC_CPU_STATUS,
-+	HDMI_CEC_CPU_SET,
+diff --git a/drivers/nvme/target/tcp.c b/drivers/nvme/target/tcp.c
+index aacf06f0b4312..577ce7d403ae9 100644
+--- a/drivers/nvme/target/tcp.c
++++ b/drivers/nvme/target/tcp.c
+@@ -379,7 +379,7 @@ err:
+ 	return NVME_SC_INTERNAL;
+ }
  
- 	/*
- 	 * Transmit data, first byte is low byte of the 32-bit reg.
-@@ -196,9 +197,10 @@ static const struct vc4_hdmi_register vc4_hdmi_fields[] = {
- 	VC4_HDMI_REG(HDMI_TX_PHY_RESET_CTL, 0x02c0),
- 	VC4_HDMI_REG(HDMI_TX_PHY_CTL_0, 0x02c4),
- 	VC4_HDMI_REG(HDMI_CEC_CPU_STATUS, 0x0340),
-+	VC4_HDMI_REG(HDMI_CEC_CPU_SET, 0x0344),
- 	VC4_HDMI_REG(HDMI_CEC_CPU_CLEAR, 0x0348),
- 	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_STATUS, 0x034c),
--	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x034c),
-+	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_SET, 0x0350),
- 	VC4_HDMI_REG(HDMI_CEC_CPU_MASK_CLEAR, 0x0354),
- 	VC4_HDMI_REG(HDMI_RAM_PACKET_START, 0x0400),
- };
+-static void nvmet_tcp_ddgst(struct ahash_request *hash,
++static void nvmet_tcp_send_ddgst(struct ahash_request *hash,
+ 		struct nvmet_tcp_cmd *cmd)
+ {
+ 	ahash_request_set_crypt(hash, cmd->req.sg,
+@@ -387,6 +387,23 @@ static void nvmet_tcp_ddgst(struct ahash_request *hash,
+ 	crypto_ahash_digest(hash);
+ }
+ 
++static void nvmet_tcp_recv_ddgst(struct ahash_request *hash,
++		struct nvmet_tcp_cmd *cmd)
++{
++	struct scatterlist sg;
++	struct kvec *iov;
++	int i;
++
++	crypto_ahash_init(hash);
++	for (i = 0, iov = cmd->iov; i < cmd->nr_mapped; i++, iov++) {
++		sg_init_one(&sg, iov->iov_base, iov->iov_len);
++		ahash_request_set_crypt(hash, &sg, NULL, iov->iov_len);
++		crypto_ahash_update(hash);
++	}
++	ahash_request_set_crypt(hash, NULL, (void *)&cmd->exp_ddgst, 0);
++	crypto_ahash_final(hash);
++}
++
+ static void nvmet_setup_c2h_data_pdu(struct nvmet_tcp_cmd *cmd)
+ {
+ 	struct nvme_tcp_data_pdu *pdu = cmd->data_pdu;
+@@ -411,7 +428,7 @@ static void nvmet_setup_c2h_data_pdu(struct nvmet_tcp_cmd *cmd)
+ 
+ 	if (queue->data_digest) {
+ 		pdu->hdr.flags |= NVME_TCP_F_DDGST;
+-		nvmet_tcp_ddgst(queue->snd_hash, cmd);
++		nvmet_tcp_send_ddgst(queue->snd_hash, cmd);
+ 	}
+ 
+ 	if (cmd->queue->hdr_digest) {
+@@ -1060,7 +1077,7 @@ static void nvmet_tcp_prep_recv_ddgst(struct nvmet_tcp_cmd *cmd)
+ {
+ 	struct nvmet_tcp_queue *queue = cmd->queue;
+ 
+-	nvmet_tcp_ddgst(queue->rcv_hash, cmd);
++	nvmet_tcp_recv_ddgst(queue->rcv_hash, cmd);
+ 	queue->offset = 0;
+ 	queue->left = NVME_TCP_DIGEST_LENGTH;
+ 	queue->rcv_state = NVMET_TCP_RECV_DDGST;
+@@ -1081,14 +1098,14 @@ static int nvmet_tcp_try_recv_data(struct nvmet_tcp_queue *queue)
+ 		cmd->rbytes_done += ret;
+ 	}
+ 
++	if (queue->data_digest) {
++		nvmet_tcp_prep_recv_ddgst(cmd);
++		return 0;
++	}
+ 	nvmet_tcp_unmap_pdu_iovec(cmd);
+ 
+ 	if (!(cmd->flags & NVMET_TCP_F_INIT_FAILED) &&
+ 	    cmd->rbytes_done == cmd->req.transfer_len) {
+-		if (queue->data_digest) {
+-			nvmet_tcp_prep_recv_ddgst(cmd);
+-			return 0;
+-		}
+ 		cmd->req.execute(&cmd->req);
+ 	}
+ 
 -- 
 2.27.0
 
