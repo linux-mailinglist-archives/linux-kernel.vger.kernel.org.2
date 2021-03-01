@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D241F329B8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D3B329C56
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348913AbhCBB03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:26:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39784 "EHLO mail.kernel.org"
+        id S1380548AbhCBBxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:53:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235235AbhCATJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:09:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E556530C;
-        Mon,  1 Mar 2021 17:42:20 +0000 (UTC)
+        id S241872AbhCAT3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:29:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 739DC650B9;
+        Mon,  1 Mar 2021 17:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620541;
-        bh=7wUmMVJ0RbdIwCGphAS4ZZkkYvMw+d3aBUfmuLZDRNE=;
+        s=korg; t=1614620544;
+        bh=ngi3Q45PoehC+knzpLbiwwDtrtBnqEd3LxD8aPMfeUc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SzkXei3Lj8OdBw8t2tWT5Zc/YesIhWBjew31yNM+8IiFCa6fnhVpsiI/FZgR49O9i
-         yvEaJR046PqWLKRrzDwPdLfzIscXgijMNS6A/pSO0tJoJ4SXF+JifVwGhXGgtluio+
-         pfih0NgdSm/E/IDDNL0zf8VGBf6tSB1MkVtPZYgU=
+        b=V6pkgUC6b5vllE7LgRh8vxUC7Z671hXSNZ9BPblI4NFsdRycE8sBvLUEUfGoojWsr
+         GRX7rv6/6fy5JGERBkpl4QzzHPh8NxvgDrjPYxpN2FoufQB8OJTc1cFLV/y7E02r1F
+         VFCGCEMziBbykQbDcOO9WvvKjnEWhQtpCm2FU940=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 190/775] MIPS: lantiq: Explicitly compare LTQ_EBU_PCC_ISTAT against 0
-Date:   Mon,  1 Mar 2021 17:05:58 +0100
-Message-Id: <20210301161211.012773558@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Chia-I Wu <olvaffe@gmail.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 191/775] drm/virtio: make sure context is created in gem open
+Date:   Mon,  1 Mar 2021 17:05:59 +0100
+Message-Id: <20210301161211.066715475@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,53 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Chia-I Wu <olvaffe@gmail.com>
 
-[ Upstream commit c6f2a9e17b9bef7677caddb1626c2402f3e9d2bd ]
+[ Upstream commit 8aeef9d4f48917ce85710949b079548974b4a638 ]
 
-When building xway_defconfig with clang:
+The context might still be missing when DRM_IOCTL_PRIME_FD_TO_HANDLE is
+the first ioctl on the drm_file.
 
-arch/mips/lantiq/irq.c:305:48: error: use of logical '&&' with constant
-operand [-Werror,-Wconstant-logical-operand]
-        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
-                                                      ^ ~~~~~~~~~~~~~~~~~
-arch/mips/lantiq/irq.c:305:48: note: use '&' for a bitwise operation
-        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
-                                                      ^~
-                                                      &
-arch/mips/lantiq/irq.c:305:48: note: remove constant to silence this
-warning
-        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
-                                                     ~^~~~~~~~~~~~~~~~~~~~
-1 error generated.
-
-Explicitly compare the constant LTQ_EBU_PCC_ISTAT against 0 to fix the
-warning. Additionally, remove the unnecessary parentheses as this is a
-simple conditional statement and shorthand '== 0' to '!'.
-
-Fixes: 3645da0276ae ("OF: MIPS: lantiq: implement irq_domain support")
-Link: https://github.com/ClangBuiltLinux/linux/issues/807
-Reported-by: Dmitry Golovin <dima@golovin.in>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: 72b48ae800da ("drm/virtio: enqueue virtio_gpu_create_context after the first 3D ioctl")
+Cc: Gurchetan Singh <gurchetansingh@chromium.org>
+Cc: Gerd Hoffmann <kraxel@redhat.com>
+Signed-off-by: Chia-I Wu <olvaffe@gmail.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/20210107210726.269584-1-olvaffe@gmail.com
+Reviewed-by: Gurchetan Singh <gurchetansingh@chromium.org>
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/lantiq/irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/virtio/virtgpu_gem.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
-index df8eed3875f6d..43c2f271e6ab4 100644
---- a/arch/mips/lantiq/irq.c
-+++ b/arch/mips/lantiq/irq.c
-@@ -302,7 +302,7 @@ static void ltq_hw_irq_handler(struct irq_desc *desc)
- 	generic_handle_irq(irq_linear_revmap(ltq_domain, hwirq));
+diff --git a/drivers/gpu/drm/virtio/virtgpu_gem.c b/drivers/gpu/drm/virtio/virtgpu_gem.c
+index c30c75ee83fce..8502400b2f9c9 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_gem.c
++++ b/drivers/gpu/drm/virtio/virtgpu_gem.c
+@@ -39,9 +39,6 @@ static int virtio_gpu_gem_create(struct drm_file *file,
+ 	int ret;
+ 	u32 handle;
  
- 	/* if this is a EBU irq, we need to ack it or get a deadlock */
--	if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
-+	if (irq == LTQ_ICU_EBU_IRQ && !module && LTQ_EBU_PCC_ISTAT != 0)
- 		ltq_ebu_w32(ltq_ebu_r32(LTQ_EBU_PCC_ISTAT) | 0x10,
- 			LTQ_EBU_PCC_ISTAT);
- }
+-	if (vgdev->has_virgl_3d)
+-		virtio_gpu_create_context(dev, file);
+-
+ 	ret = virtio_gpu_object_create(vgdev, params, &obj, NULL);
+ 	if (ret < 0)
+ 		return ret;
+@@ -119,6 +116,11 @@ int virtio_gpu_gem_object_open(struct drm_gem_object *obj,
+ 	if (!vgdev->has_virgl_3d)
+ 		goto out_notify;
+ 
++	/* the context might still be missing when the first ioctl is
++	 * DRM_IOCTL_MODE_CREATE_DUMB or DRM_IOCTL_PRIME_FD_TO_HANDLE
++	 */
++	virtio_gpu_create_context(obj->dev, file);
++
+ 	objs = virtio_gpu_array_alloc(1);
+ 	if (!objs)
+ 		return -ENOMEM;
 -- 
 2.27.0
 
