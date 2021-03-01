@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77333299BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0CF3299A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376427AbhCBA2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:28:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45240 "EHLO mail.kernel.org"
+        id S1345132AbhCBA2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239429AbhCAS3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9235C6521C;
-        Mon,  1 Mar 2021 17:22:59 +0000 (UTC)
+        id S240013AbhCAS2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:28:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06F0664F98;
+        Mon,  1 Mar 2021 17:23:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619380;
-        bh=SF688/TwXZl7ZnFOdgoz9+PTn59/GiB/KHpjoofSmNA=;
+        s=korg; t=1614619385;
+        bh=EDo52cRFM/T0AsGXpARceRrKlJCWVWawT+Cp8Z2v+t8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kghIVmvKLLboVMqEnjiDMvV+j+pumeL0kvT4KYFpiAJSXjlGVJA5RxLpIVlwI6hr/
-         foawxLUpJ3Y3UJcea/kNaM0UpGM2fd+v2zqct2Lq/wzFuy0xX6tsP5OIcwIxN7+kSK
-         Qp/mFPO9Dw0llW3HhcTSzoFkdlonNz9/YwUvQfPk=
+        b=M/KpJlXWyQxD+Mzxy4lvjp4zHF/EHQXmRE451ng3Q3lVYH7iT1al/eZpchnSkkfhr
+         sGyd+qo2susfWaAbQ5pFzAwbPpylZL3HqMcv7HAALK3lZRlr5GvTTkFmneH+Cm+M7R
+         inlTPWDrsDn4Jh19gWBWSD1VkQgCZ9q0l79PeTj4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Slawomir Laba <slawomirx.laba@intel.com>,
-        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
+        stable@vger.kernel.org,
+        Dawid Lukwinski <dawid.lukwinski@intel.com>,
+        Mateusz Palczewski <mateusz.palczewski@intel.com>,
         Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
         Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 434/663] i40e: Fix flow for IPv6 next header (extension header)
-Date:   Mon,  1 Mar 2021 17:11:22 +0100
-Message-Id: <20210301161203.364616103@linuxfoundation.org>
+Subject: [PATCH 5.10 436/663] i40e: Fix overwriting flow control settings during driver loading
+Date:   Mon,  1 Mar 2021 17:11:24 +0100
+Message-Id: <20210301161203.466611749@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,61 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Slawomir Laba <slawomirx.laba@intel.com>
+From: Mateusz Palczewski <mateusz.palczewski@intel.com>
 
-[ Upstream commit 92c6058024e87087cf1b99b0389d67c0a886360e ]
+[ Upstream commit 4cdb9f80dcd46aab3c0020b4a6920c22735c5d6e ]
 
-When a packet contains an IPv6 header with next header which is
-an extension header and not a protocol one, the kernel function
-skb_transport_header called with such sk_buff will return a
-pointer to the extension header and not to the TCP one.
+During driver loading flow control settings were written to FW
+using a variable which was always zero, since it was being set
+only by ethtool. This behavior has been corrected and driver
+no longer overwrites the default FW/NVM settings.
 
-The above explained call caused a problem with packet processing
-for skb with encapsulation for tunnel with I40E_TX_CTX_EXT_IP_IPV6.
-The extension header was not skipped at all.
-
-The ipv6_skip_exthdr function does check if next header of the IPV6
-header is an extension header and doesn't modify the l4_proto pointer
-if it points to a protocol header value so its safe to omit the
-comparison of exthdr and l4.hdr pointers. The ipv6_skip_exthdr can
-return value -1. This means that the skipping process failed
-and there is something wrong with the packet so it will be dropped.
-
-Fixes: a3fd9d8876a5 ("i40e/i40evf: Handle IPv6 extension headers in checksum offload")
-Signed-off-by: Slawomir Laba <slawomirx.laba@intel.com>
-Signed-off-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
+Fixes: 373149fc99a0 ("i40e: Decrease the scope of rtnl lock")
+Signed-off-by: Dawid Lukwinski <dawid.lukwinski@intel.com>
+Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
 Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
 Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_txrx.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 27 ---------------------
+ 1 file changed, 27 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index 3f5825fa67c99..38dec49ac64d2 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -3102,13 +3102,16 @@ static int i40e_tx_enable_csum(struct sk_buff *skb, u32 *tx_flags,
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+index 9b1251a710c09..bcfa6dcac29f7 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+@@ -10005,7 +10005,6 @@ static void i40e_rebuild(struct i40e_pf *pf, bool reinit, bool lock_acquired)
+ 	int old_recovery_mode_bit = test_bit(__I40E_RECOVERY_MODE, pf->state);
+ 	struct i40e_vsi *vsi = pf->vsi[pf->lan_vsi];
+ 	struct i40e_hw *hw = &pf->hw;
+-	u8 set_fc_aq_fail = 0;
+ 	i40e_status ret;
+ 	u32 val;
+ 	int v;
+@@ -10131,13 +10130,6 @@ static void i40e_rebuild(struct i40e_pf *pf, bool reinit, bool lock_acquired)
+ 			 i40e_stat_str(&pf->hw, ret),
+ 			 i40e_aq_str(&pf->hw, pf->hw.aq.asq_last_status));
  
- 			l4_proto = ip.v4->protocol;
- 		} else if (*tx_flags & I40E_TX_FLAGS_IPV6) {
-+			int ret;
-+
- 			tunnel |= I40E_TX_CTX_EXT_IP_IPV6;
+-	/* make sure our flow control settings are restored */
+-	ret = i40e_set_fc(&pf->hw, &set_fc_aq_fail, true);
+-	if (ret)
+-		dev_dbg(&pf->pdev->dev, "setting flow control: ret = %s last_status = %s\n",
+-			i40e_stat_str(&pf->hw, ret),
+-			i40e_aq_str(&pf->hw, pf->hw.aq.asq_last_status));
+-
+ 	/* Rebuild the VSIs and VEBs that existed before reset.
+ 	 * They are still in our local switch element arrays, so only
+ 	 * need to rebuild the switch model in the HW.
+@@ -14720,7 +14712,6 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	int err;
+ 	u32 val;
+ 	u32 i;
+-	u8 set_fc_aq_fail;
  
- 			exthdr = ip.hdr + sizeof(*ip.v6);
- 			l4_proto = ip.v6->nexthdr;
--			if (l4.hdr != exthdr)
--				ipv6_skip_exthdr(skb, exthdr - skb->data,
--						 &l4_proto, &frag_off);
-+			ret = ipv6_skip_exthdr(skb, exthdr - skb->data,
-+					       &l4_proto, &frag_off);
-+			if (ret < 0)
-+				return -1;
- 		}
+ 	err = pci_enable_device_mem(pdev);
+ 	if (err)
+@@ -15054,24 +15045,6 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
+ 	INIT_LIST_HEAD(&pf->vsi[pf->lan_vsi]->ch_list);
  
- 		/* define outer transport */
+-	/* Make sure flow control is set according to current settings */
+-	err = i40e_set_fc(hw, &set_fc_aq_fail, true);
+-	if (set_fc_aq_fail & I40E_SET_FC_AQ_FAIL_GET)
+-		dev_dbg(&pf->pdev->dev,
+-			"Set fc with err %s aq_err %s on get_phy_cap\n",
+-			i40e_stat_str(hw, err),
+-			i40e_aq_str(hw, hw->aq.asq_last_status));
+-	if (set_fc_aq_fail & I40E_SET_FC_AQ_FAIL_SET)
+-		dev_dbg(&pf->pdev->dev,
+-			"Set fc with err %s aq_err %s on set_phy_config\n",
+-			i40e_stat_str(hw, err),
+-			i40e_aq_str(hw, hw->aq.asq_last_status));
+-	if (set_fc_aq_fail & I40E_SET_FC_AQ_FAIL_UPDATE)
+-		dev_dbg(&pf->pdev->dev,
+-			"Set fc with err %s aq_err %s on get_link_info\n",
+-			i40e_stat_str(hw, err),
+-			i40e_aq_str(hw, hw->aq.asq_last_status));
+-
+ 	/* if FDIR VSI was set up, start it now */
+ 	for (i = 0; i < pf->num_alloc_vsi; i++) {
+ 		if (pf->vsi[i] && pf->vsi[i]->type == I40E_VSI_FDIR) {
 -- 
 2.27.0
 
