@@ -2,124 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC3632936F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3619D32933C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244386AbhCAVTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:19:06 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:50064 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237196AbhCARO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:14:29 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614618824; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=BfVrcOWVRzGvz+Dbm8uCXcC2vuzUg8HrSEaSSdN8Zi8=; b=xUPRGPAU6G74MyukepyygHSSeLJ9GTHJcXKtbLrniQduAHcNvC3FwlRAkUmiC0/48iUgRdS0
- HIR3W6yZqWElWmv/GTa7ToSj1lPSwZdC2Eg3YaXnZwACT+XLqRe/bYM4+BPZ56kNaVWnppgH
- F0k0aDZfOC+ct8BsgU5YJx71kds=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 603d1db6832f19b9ef925435 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 17:00:38
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 954D6C43465; Mon,  1 Mar 2021 17:00:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.110] (unknown [49.204.182.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4055C433CA;
-        Mon,  1 Mar 2021 17:00:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4055C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-Subject: Re: [PATCH] clk: qcom: gcc-sc7180: Use floor ops for the correct
- sdcc1 clk
-To:     Douglas Anderson <dianders@chromium.org>, sboyd@kernel.org
-Cc:     vbadigan@codeaurora.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210224095013.1.I2e2ba4978cfca06520dfb5d757768f9c42140f7c@changeid>
-From:   Taniya Das <tdas@codeaurora.org>
-Message-ID: <3b972d6d-15df-ddf6-c57f-9e1ad08564db@codeaurora.org>
-Date:   Mon, 1 Mar 2021 22:30:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S244028AbhCAVIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:08:35 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:12062 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237797AbhCARNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:13:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1614618799; x=1646154799;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=GNe5qxOScaDRkau7kWsGzTtDQtpnbj9n+i9KnLZKnoc=;
+  b=R65GkzK5mBHzUo1swoF/VU3PC9DpB/YdVCN4U46lcWV+doPdxUw+3ApV
+   upoER0/ccG6CjPGrlO6kC3JuRSKoKwAoPNkrOeN7ugTarAVwDbDSC0ci5
+   lX+98ki5xCLfa9gs+ISF2fnQPWHlVXG7ejBY94lE8OIr9hTYLHEDkKlEg
+   H910XAyiEQ2YDlK7ft1vZ0JmPPAu5uA0a7EsLZ5YSCZkAEGXkovZfJ51m
+   uBebuelOVBmnrJadGBn5iLNTxJ9dOm0KuisEQzBMaFho5vAE1/XFi9g9Q
+   lg2d8BjnLzzHYI/7N/kVffaSVoDSt7K9d58s/87R2Xm/DxPQtFuUxJIm5
+   w==;
+IronPort-SDR: b1QKTRCL3OutM/khAUSHwQaIZo1GLML5eG0GIeYcLd6sZjl5QEn4lmJem+pA6p0jehOadPGDZD
+ kJo832DwQhMdCQKpFfF8SAnscOqbhjFNxIovjQlYKDXaiyycRCP+T6RtpjhAprVp/0w9GrQCqe
+ JOqX5DcXNDDeHWBw7VQq3RPirpORyhT67Xf6hM/RxsGLbaikatudmZ/gLiT+MXKzed0iQZrMsQ
+ 0OVoXF/CITxhBFcAA+PAq8jiEDWwvaFcMuNjqcG8Q841PCmo4J1X5TrEz3542EroMsv7qOoYUT
+ VFo=
+X-IronPort-AV: E=Sophos;i="5.81,215,1610434800"; 
+   d="scan'208";a="111511668"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Mar 2021 10:09:46 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 1 Mar 2021 10:09:41 -0700
+Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 1 Mar 2021 10:09:38 -0700
+From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
+Subject: [PATCH v2 2/7] ASoC: mchp-i2s-mcc: Add compatible for SAMA7G5
+Date:   Mon, 1 Mar 2021 19:09:00 +0200
+Message-ID: <20210301170905.835091-3-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
+References: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20210224095013.1.I2e2ba4978cfca06520dfb5d757768f9c42140f7c@changeid>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Taniya Das <tdas@codeaurora.org>
+Microchip's new SAMA7G5 includes an updated I2S-MCC compatible with the
+previous version found on SAM9X60. The new controller includes 8 (4 * 2)
+input and output data pins for up to 8 channels for I2S and Left-Justified
+formats.
 
-On 2/24/2021 11:20 PM, Douglas Anderson wrote:
-> While picking commit a8cd989e1a57 ("mmc: sdhci-msm: Warn about
-> overclocking SD/MMC") back to my tree I was surprised that it was
-> reporting warnings.  I thought I fixed those!  Looking closer at the
-> fix, I see that I totally bungled it (or at least I halfway bungled
-> it).  The SD card clock got fixed (and that was the one I was really
-> focused on fixing), but I totally adjusted the wrong clock for eMMC.
-> Sigh.  Let's fix my dumb mistake.
-> 
-> Now both SD and eMMC have floor for the "apps" clock.
-> 
-> This doesn't matter a lot for the final clock rate for HS400 eMMC but
-> could matter if someone happens to put some slower eMMC on a sc7180.
-> We also transition through some of these lower rates sometimes and
-> having them wrong could cause problems during these transitions.
-> These were the messages I was seeing at boot:
->    mmc1: Card appears overclocked; req 52000000 Hz, actual 100000000 Hz
->    mmc1: Card appears overclocked; req 52000000 Hz, actual 100000000 Hz
->    mmc1: Card appears overclocked; req 104000000 Hz, actual 192000000 Hz
-> 
-> Fixes: 6d37a8d19283 ("clk: qcom: gcc-sc7180: Use floor ops for sdcc clks")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
->   drivers/clk/qcom/gcc-sc7180.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
-> index c5c2e93bda8e..5cacd20a31b3 100644
-> --- a/drivers/clk/qcom/gcc-sc7180.c
-> +++ b/drivers/clk/qcom/gcc-sc7180.c
-> @@ -620,7 +620,7 @@ static struct clk_rcg2 gcc_sdcc1_apps_clk_src = {
->   		.name = "gcc_sdcc1_apps_clk_src",
->   		.parent_data = gcc_parent_data_1,
->   		.num_parents = 5,
-> -		.ops = &clk_rcg2_ops,
-> +		.ops = &clk_rcg2_floor_ops,
->   	},
->   };
->   
-> @@ -642,7 +642,7 @@ static struct clk_rcg2 gcc_sdcc1_ice_core_clk_src = {
->   		.name = "gcc_sdcc1_ice_core_clk_src",
->   		.parent_data = gcc_parent_data_0,
->   		.num_parents = 4,
-> -		.ops = &clk_rcg2_floor_ops,
-> +		.ops = &clk_rcg2_ops,
->   	},
->   };
->   
-> 
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
 
+Changes in v2:
+- none
+
+ sound/soc/atmel/Kconfig        | 3 +++
+ sound/soc/atmel/mchp-i2s-mcc.c | 3 +++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 9fe9471f4514..ec04e3386bc0 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -127,10 +127,13 @@ config SND_MCHP_SOC_I2S_MCC
+ 	  Say Y or M if you want to add support for I2S Multi-Channel ASoC
+ 	  driver on the following Microchip platforms:
+ 	  - sam9x60
++	  - sama7g5
+ 
+ 	  The I2SMCC complies with the Inter-IC Sound (I2S) bus specification
+ 	  and supports a Time Division Multiplexed (TDM) interface with
+ 	  external multi-channel audio codecs.
++	  Starting with sama7g5, I2S and Left-Justified multi-channel is
++	  supported by using multiple data pins, output and input, without TDM.
+ 
+ config SND_MCHP_SOC_SPDIFTX
+ 	tristate "Microchip ASoC driver for boards using S/PDIF TX"
+diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
+index 6d5ae18f8b38..0ee01383e307 100644
+--- a/sound/soc/atmel/mchp-i2s-mcc.c
++++ b/sound/soc/atmel/mchp-i2s-mcc.c
+@@ -873,6 +873,9 @@ static const struct of_device_id mchp_i2s_mcc_dt_ids[] = {
+ 	{
+ 		.compatible = "microchip,sam9x60-i2smcc",
+ 	},
++	{
++		.compatible = "microchip,sama7g5-i2smcc",
++	},
+ 	{ /* sentinel */ }
+ };
+ MODULE_DEVICE_TABLE(of, mchp_i2s_mcc_dt_ids);
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation.
+2.27.0
 
---
