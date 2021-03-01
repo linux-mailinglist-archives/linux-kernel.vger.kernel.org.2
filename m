@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ED3328093
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:21:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA0432808C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbhCAOUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:20:50 -0500
-Received: from conuserg-10.nifty.com ([210.131.2.77]:43817 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232807AbhCAOU1 (ORCPT
+        id S232944AbhCAOTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232859AbhCAOTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:20:27 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 121EIV2w001499;
-        Mon, 1 Mar 2021 23:18:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 121EIV2w001499
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614608312;
-        bh=MRDY3m7FSYvIVH7g+UnaFVtNBGflmbqDWnEbFhc8iEw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MM+uFTHmSj7tF1rJE2+VuzlTVS5y1Gf4k7lhguRjr9L6aSqVgZekWbk+FoHFPtDdo
-         iTJVgeKvRRE3/sh13iNOfHOZ0+/WfX4BxG/j0KwIRvVLZLG0lPYfknJOKDXmRqCQvv
-         vZJ1uPqIiLc10RgdHaJNcAaMbKJ2Anfo+CFr+8n26oNuliYO7xdgmn0xp/IPYAXO7v
-         jcjFZUcDp8OieDSGIdcWDq204P7Qk3+nx+lNqZ4STauLrBLt0vhFB42R6Y9ojIOgE8
-         9CvAOXgRQm3En+Tr+JIcUOY+LXJOlU+HoDiaXH//j0jSixxd12BIkHg6x95Dl9WJo/
-         GgvwkeuYcoqXQ==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>
-Subject: [PATCH 2/2] alpha: syscalls: switch to generic syscallhdr.sh
-Date:   Mon,  1 Mar 2021 23:18:26 +0900
-Message-Id: <20210301141827.342315-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210301141827.342315-1-masahiroy@kernel.org>
-References: <20210301141827.342315-1-masahiroy@kernel.org>
+        Mon, 1 Mar 2021 09:19:30 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FA6C061788;
+        Mon,  1 Mar 2021 06:18:49 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id t9so11283782pjl.5;
+        Mon, 01 Mar 2021 06:18:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jUIzc8lLj6XtpqYO1T593FEkkF9TDkHoYUvicZfI4x8=;
+        b=ZW3F+maDDVfnxE40uemxanV3G4QX+qksbtBzGTQJEVG3UPr7E5xrwXrtde4YoWFKWj
+         5mSAfP87zS+UdeY3I9Kqhcti567vr5W98/03VppM+TvPaKLvochQgz+5/WP8WgH44slf
+         t7gMYjiuhbhhZfdQJSvhdADL0c1GpXIlUaCgQ7QOK9scdrc4m6H0x4GRi+f3EooqnHhg
+         2mMACY6ngLwXvuaqBwNNIgDbN1ciKidtII4fDWQ99PYy071mafcJQAtaHNgoCYAarkML
+         Aj+tBUfc8YFloBHpcQ68H7g2qf+8Nhpg3pqh1VFNd9MxRvx5ID1savNXzJe1/i6woEPV
+         ogAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jUIzc8lLj6XtpqYO1T593FEkkF9TDkHoYUvicZfI4x8=;
+        b=Y8TLFBwV04RvKY+YgNFAoKcMh7KK2h9uoE0AM/XWj8U8vAzVWzi5IqX4wGK6VvnsWR
+         2lesJIqT4xMjFPM6M8uJFwk/OyfFiqAw2RS4aIj5MVRotEhmN63hztz/KLdweJZj9dNE
+         W/sBdxcx1mV8tLqIrMFjkW+mZbBF4nmb7DnKReysN71oqDwfPjgPwr3AwWF2HJniw/7H
+         PjdAzGcBOlpc/YgXc7EOj+ogaInkXJ2vUIGGjY7Ozwg9Ozc7LsvkXAkYUdSrU7Iwmb1G
+         80W7VSEjqK41IR4SOfbUHXgl3pxAGs85Q8I+lYbuNBpdStpSj1uXEx5NuQFGnNY8JcRb
+         HcIQ==
+X-Gm-Message-State: AOAM530pH6Ep2vbbw1SFmMc2q7Y4HNt25XPRQH6GDkMBytnpPBS2mtTl
+        jFwfW3xC3BuHvPmkmEYRP2greAaDuWDMdCE3atA=
+X-Google-Smtp-Source: ABdhPJxOYJQGoQstIsoxRKgXUfDaM33A9TLXKTAz2EIlvhTNMh2lQmh4ng0OLtoC+ZjOfe6rmEnBiAvSWn+y2xOD5L4=
+X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr18431790pjx.181.1614608329327;
+ Mon, 01 Mar 2021 06:18:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210228012643.69944-1-ronald@innovation.ch> <20210228012643.69944-4-ronald@innovation.ch>
+In-Reply-To: <20210228012643.69944-4-ronald@innovation.ch>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 1 Mar 2021 16:18:32 +0200
+Message-ID: <CAHp75Vfd6wZwg9HWJoEwvzAAZR=8K2zDWbz4FZfbbrJBvZS4yQ@mail.gmail.com>
+Subject: Re: [PATCH 3/5] HID: core: Export some report item parsing functions.
+To:     =?UTF-8?Q?Ronald_Tschal=C3=A4r?= <ronald@innovation.ch>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many architectures duplicate similar shell scripts.
+On Sun, Feb 28, 2021 at 3:30 AM Ronald Tschal=C3=A4r <ronald@innovation.ch>=
+ wrote:
+>
+> These are useful to drivers that need to scan or parse reports
+> themselves.
 
-This commit converts alpha to use scripts/syscallhdr.sh.
+...
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+> -       while ((start =3D fetch_item(start, end, &item)) !=3D NULL)
+> +       while ((start =3D hid_fetch_item(start, end, &item)) !=3D NULL)
+>                 dispatch_type[item.type](parser, &item);
 
- arch/alpha/kernel/syscalls/Makefile      |  7 ++---
- arch/alpha/kernel/syscalls/syscallhdr.sh | 36 ------------------------
- 2 files changed, 2 insertions(+), 41 deletions(-)
- delete mode 100644 arch/alpha/kernel/syscalls/syscallhdr.sh
+> -       while ((next =3D fetch_item(start, end, &item)) !=3D NULL) {
+> +       while ((next =3D hid_fetch_item(start, end, &item)) !=3D NULL) {
+>                 start =3D next;
 
-diff --git a/arch/alpha/kernel/syscalls/Makefile b/arch/alpha/kernel/syscalls/Makefile
-index ad2492cb5568..6713c65a25e1 100644
---- a/arch/alpha/kernel/syscalls/Makefile
-+++ b/arch/alpha/kernel/syscalls/Makefile
-@@ -6,14 +6,11 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 	  $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
- 
- syscall := $(src)/syscall.tbl
--syshdr := $(srctree)/$(src)/syscallhdr.sh
-+syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
--		   '$(syshdr_abis_$(basetarget))'		\
--		   '$(syshdr_pfx_$(basetarget))'		\
--		   '$(syshdr_offset_$(basetarget))'
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr $< $@
- 
- quiet_cmd_systbl = SYSTBL  $@
-       cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
-diff --git a/arch/alpha/kernel/syscalls/syscallhdr.sh b/arch/alpha/kernel/syscalls/syscallhdr.sh
-deleted file mode 100644
-index 1780e861492a..000000000000
---- a/arch/alpha/kernel/syscalls/syscallhdr.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--prefix="$4"
--offset="$5"
--
--fileguard=_UAPI_ASM_ALPHA_`basename "$out" | sed \
--	-e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
--	-e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	printf "#ifndef %s\n" "${fileguard}"
--	printf "#define %s\n" "${fileguard}"
--	printf "\n"
--
--	nxt=0
--	while read nr abi name entry ; do
--		if [ -z "$offset" ]; then
--			printf "#define __NR_%s%s\t%s\n" \
--				"${prefix}" "${name}" "${nr}"
--		else
--			printf "#define __NR_%s%s\t(%s + %s)\n" \
--				"${prefix}" "${name}" "${offset}" "${nr}"
--		fi
--		nxt=$((nr+1))
--	done
--
--	printf "\n"
--	printf "#ifdef __KERNEL__\n"
--	printf "#define __NR_syscalls\t%s\n" "${nxt}"
--	printf "#endif\n"
--	printf "\n"
--	printf "#endif /* %s */\n" "${fileguard}"
--) > "$out"
--- 
-2.27.0
+I don't see the full picture, but perhaps you may also introduce
+for_each_hid_item() or so.
 
+--=20
+With Best Regards,
+Andy Shevchenko
