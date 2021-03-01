@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB94D328D81
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CF4328D65
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241136AbhCATMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:12:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50416 "EHLO mail.kernel.org"
+        id S234694AbhCATKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:10:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234795AbhCAQrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235233AbhCAQrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:47:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6658664F96;
-        Mon,  1 Mar 2021 16:31:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45EE964F9C;
+        Mon,  1 Mar 2021 16:31:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616284;
-        bh=jSK36YXfI3ibonePXke76vCetrsnv9SDA/VOnw0VIMY=;
+        s=korg; t=1614616286;
+        bh=tEhdxp0bf97jK5Xbg7ROvByaEMNGg7BVNmSgnPjs+8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LrPPBxh55A1cUyfi8KoCigPL0OgR3R7JwUiYdo5XgnF43v0hHk/BDIgG56weEGFJG
-         SVvseWhvWOpu1ErraXgE0lurFN3msPpcYeWqwB5JwcbDaCIQT60vJETVtTSL48ElL5
-         CzN1pAAVPkkIg0XlpiFxkB9AOxfkzfrLzADLbz9s=
+        b=eGmnMCfny0V5h7kqxBEkh7VLGDM3NjjQbNBdcwcajA6VwB0E1J3ZSr5AJNfBKUIqT
+         niq2wxsuRdyDPh+x/qkM7l0x+XAX/pPODDJOFh38TSu32S4nn83m2B4TkiCmWgBDnO
+         ol5f4jtJBRaK6S/K7PvLJG4TbAv9FcgBw9NminSM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 068/176] clk: meson: clk-pll: fix initializing the old rate (fallback) for a PLL
-Date:   Mon,  1 Mar 2021 17:12:21 +0100
-Message-Id: <20210301161024.340235318@linuxfoundation.org>
+        syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 069/176] quota: Fix memory leak when handling corrupted quota file
+Date:   Mon,  1 Mar 2021 17:12:22 +0100
+Message-Id: <20210301161024.389854942@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -41,36 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 2f290b7c67adf6459a17a4c978102af35cd62e4a ]
+[ Upstream commit a4db1072e1a3bd7a8d9c356e1902b13ac5deb8ef ]
 
-The "rate" parameter in meson_clk_pll_set_rate() contains the new rate.
-Retrieve the old rate with clk_hw_get_rate() so we don't inifinitely try
-to switch from the new rate to the same rate again.
+When checking corrupted quota file we can bail out and leak allocated
+info structure. Properly free info structure on error return.
 
-Fixes: 7a29a869434e8b ("clk: meson: Add support for Meson clock controller")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20201226121556.975418-2-martin.blumenstingl@googlemail.com
+Reported-by: syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com
+Fixes: 11c514a99bb9 ("quota: Sanity-check quota file headers on load")
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/meson/clk-pll.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/quota/quota_v2.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index 01341553f50b7..80ce8ea1ff16a 100644
---- a/drivers/clk/meson/clk-pll.c
-+++ b/drivers/clk/meson/clk-pll.c
-@@ -178,7 +178,7 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 	if (parent_rate == 0 || rate == 0)
- 		return -EINVAL;
- 
--	old_rate = rate;
-+	old_rate = clk_hw_get_rate(hw);
- 
- 	rate_set = meson_clk_get_pll_settings(pll, rate);
- 	if (!rate_set)
+diff --git a/fs/quota/quota_v2.c b/fs/quota/quota_v2.c
+index d99710270a373..addfaae8decfd 100644
+--- a/fs/quota/quota_v2.c
++++ b/fs/quota/quota_v2.c
+@@ -165,19 +165,24 @@ static int v2_read_file_info(struct super_block *sb, int type)
+ 		quota_error(sb, "Number of blocks too big for quota file size (%llu > %llu).",
+ 		    (loff_t)qinfo->dqi_blocks << qinfo->dqi_blocksize_bits,
+ 		    i_size_read(sb_dqopt(sb)->files[type]));
+-		goto out;
++		goto out_free;
+ 	}
+ 	if (qinfo->dqi_free_blk >= qinfo->dqi_blocks) {
+ 		quota_error(sb, "Free block number too big (%u >= %u).",
+ 			    qinfo->dqi_free_blk, qinfo->dqi_blocks);
+-		goto out;
++		goto out_free;
+ 	}
+ 	if (qinfo->dqi_free_entry >= qinfo->dqi_blocks) {
+ 		quota_error(sb, "Block with free entry too big (%u >= %u).",
+ 			    qinfo->dqi_free_entry, qinfo->dqi_blocks);
+-		goto out;
++		goto out_free;
+ 	}
+ 	ret = 0;
++out_free:
++	if (ret) {
++		kfree(info->dqi_priv);
++		info->dqi_priv = NULL;
++	}
+ out:
+ 	up_read(&dqopt->dqio_sem);
+ 	return ret;
 -- 
 2.27.0
 
