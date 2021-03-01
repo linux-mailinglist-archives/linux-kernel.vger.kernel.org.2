@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97195329AD2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C813299FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348586AbhCBBDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:03:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57862 "EHLO mail.kernel.org"
+        id S1347353AbhCBAlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:41:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236013AbhCAS4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:56:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B733765082;
-        Mon,  1 Mar 2021 17:29:25 +0000 (UTC)
+        id S240109AbhCASgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:36:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD019650F1;
+        Mon,  1 Mar 2021 17:00:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619766;
-        bh=eCjytbrzNgFTMozE8yJrwlEMCfqMOUqtSTSS+MWopow=;
+        s=korg; t=1614618059;
+        bh=UUXgxDay4hebN8voDxmb3sKyYbiChEgdwOuhSR/bO1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x6t0ZDERoMgaKZ+Ct4prRLiyqH3i98SV1pP9rhNLdvg4cKL+Uq6kHijkmfjpYYSPB
-         0hYZaCizIwBqjiCLBq1mDwKRue+wxptPAdN3lLxsY16Vf3NWAjkxuwQ3jP0gLpCJes
-         A+AROz4+HU6/bwbtcWG+Hp1oHwTPpSGA0wdKUwPQ=
+        b=Ur2Vi7OeQV/BoCYfzsVTffp4D8Pfd3aWVnuSMdVKzo+4eNvaj11OJIFh8IXPOIjGO
+         XVFUk4uOBDy4vytG52akHSnBLYMO/3seydtSmAx7NRjxFLQaVbRuuLgtAwmnxgh/ik
+         RB5D9HriWwv4Uy3tbnXkl4ymctvub1/8NZPGD27g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank Wunderlich <frank-w@public-files.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH 5.10 556/663] dts64: mt7622: fix slow sd card access
-Date:   Mon,  1 Mar 2021 17:13:24 +0100
-Message-Id: <20210301161209.381793399@linuxfoundation.org>
+        stable@vger.kernel.org, stable@ger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: [PATCH 5.4 262/340] tpm_tis: Fix check_locality for correct locality acquisition
+Date:   Mon,  1 Mar 2021 17:13:26 +0100
+Message-Id: <20210301161101.188955558@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
 
-commit dc2e76175417e69c41d927dba75a966399f18354 upstream.
+commit 3d9ae54af1d02a7c0edc55c77d7df2b921e58a87 upstream.
 
-Fix extreme slow speed (200MB takes ~20 min) on writing sdcard on
-bananapi-r64 by adding reset-control for mmc1 like it's done for mmc0/emmc.
+The TPM TIS specification says the TPM signals the acquisition of locality
+when the TMP_ACCESS_REQUEST_USE bit goes to one *and* the
+TPM_ACCESS_REQUEST_USE bit goes to zero.  Currently we only check the
+former not the latter, so check both.  Adding the check on
+TPM_ACCESS_REQUEST_USE should fix the case where the locality is
+re-requested before the TPM has released it.  In this case the locality may
+get released briefly before it is reacquired, which causes all sorts of
+problems. However, with the added check, TPM_ACCESS_REQUEST_USE should
+remain 1 until the second request for the locality is granted.
 
-Fixes: 2c002a3049f7 ("arm64: dts: mt7622: add mmc related device nodes")
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210113180919.49523-1-linux@fw-web.de
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: stable@ger.kernel.org
+Fixes: 27084efee0c3 ("[PATCH] tpm: driver for next generation TPM chips")
+Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/mediatek/mt7622.dtsi |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/char/tpm/tpm_tis_core.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-@@ -698,6 +698,8 @@
- 		clocks = <&pericfg CLK_PERI_MSDC30_1_PD>,
- 			 <&topckgen CLK_TOP_AXI_SEL>;
- 		clock-names = "source", "hclk";
-+		resets = <&pericfg MT7622_PERI_MSDC1_SW_RST>;
-+		reset-names = "hrst";
- 		status = "disabled";
- 	};
+--- a/drivers/char/tpm/tpm_tis_core.c
++++ b/drivers/char/tpm/tpm_tis_core.c
+@@ -125,7 +125,8 @@ static bool check_locality(struct tpm_ch
+ 	if (rc < 0)
+ 		return false;
  
+-	if ((access & (TPM_ACCESS_ACTIVE_LOCALITY | TPM_ACCESS_VALID)) ==
++	if ((access & (TPM_ACCESS_ACTIVE_LOCALITY | TPM_ACCESS_VALID
++		       | TPM_ACCESS_REQUEST_USE)) ==
+ 	    (TPM_ACCESS_ACTIVE_LOCALITY | TPM_ACCESS_VALID)) {
+ 		priv->locality = l;
+ 		return true;
 
 
