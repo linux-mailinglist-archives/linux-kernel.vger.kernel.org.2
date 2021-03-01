@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2471A329C62
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3352C329B4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380636AbhCBBy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:54:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49354 "EHLO mail.kernel.org"
+        id S240395AbhCBBVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:21:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241935AbhCAT3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07D5D6523F;
-        Mon,  1 Mar 2021 17:26:12 +0000 (UTC)
+        id S235075AbhCATFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:05:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8744565076;
+        Mon,  1 Mar 2021 17:26:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619573;
-        bh=rEMFEs4meQcHSpuNcflRtLxgpxQkIL2cAepKw1jjmw8=;
+        s=korg; t=1614619587;
+        bh=kwpSODCNP7X5Esi1YjWE+Dyk8Hhx6JIUfZ0ISy5aygU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vj5CI0iwLVA6qHaWMnd3tZkh3ijAMTl38uBGI2yOb6o2Mlr+WQXGMxj68fU+J/XUe
-         HALrcMQolOsOCzkUWtKocng/swKkwIWnaw0fLKUwQnGGm6Sjg4ll7Y/WJHKmUape49
-         WKuSaP1/s14ft9+8UXF0c6hdE3X6s8T1RzS1bXLY=
+        b=uciMaEs/FFeGFmD4TjY+51l1zhoN1m7NBtnvOYm7nxqahefQY9M3GR6VBoe/vu5Up
+         lfNTBAOdxd/jHHJcONiA2+3+LT6LatsKgF1yrSQ4/gF9HEExQ7IK0/j66VVimNG6z2
+         NC21Ay+EmeDYUF2FPTAbE+Hi/Q1rps3IzYeAQAO8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 504/663] ALSA: hda/realtek: Quirk for HP Spectre x360 14 amp setup
-Date:   Mon,  1 Mar 2021 17:12:32 +0100
-Message-Id: <20210301161206.778614737@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kevin Hao <haokexin@gmail.com>
+Subject: [PATCH 5.10 508/663] Revert "MIPS: Octeon: Remove special handling of CONFIG_MIPS_ELF_APPENDED_DTB=y"
+Date:   Mon,  1 Mar 2021 17:12:36 +0100
+Message-Id: <20210301161206.975792107@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -38,92 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Kevin Hao <haokexin@gmail.com>
 
-commit c3bb2b521944ffbbc8c24b849f81977a9915fb5e upstream.
+commit fe82de91af83a9212b6c704b1ce6cf6d129a108b upstream.
 
-HP Spectre x360 14 model (PCI SSID 103c:87f7) seems requiring a unique
-setup for its external amp: the GPIO0 needs to be toggled on and off
-shortly at each device initialization via runtime PM.
+This reverts commit d9df9fb901d25b941ab2cfb5b570d91fb2abf7a3.
 
-This patch implements that workaround as well as the model option
-string, so that users with other devices may try the same workaround
-more easily.
+For the OCTEON boards, it need to patch the built-in DTB before using
+it. Previously it judges if it is a built-in DTB by checking
+fw_passed_dtb. But after commit 37e5c69ffd41 ("MIPS: head.S: Init
+fw_passed_dtb to builtin DTB", the fw_passed_dtb is initialized even
+when using built-in DTB. This causes the OCTEON boards boot broken due
+to an unpatched built-in DTB is used. Revert the commit d9df9fb901d2 to
+restore the codes before the fw_passed_dtb is used and then fix this
+issue.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210633
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210215082540.4520-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixed: 37e5c69ffd41 ("MIPS: head.S: Init fw_passed_dtb to builtin DTB")
+Cc: stable@vger.kernel.org
+Suggested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Kevin Hao <haokexin@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ arch/mips/cavium-octeon/setup.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4291,6 +4291,28 @@ static void alc280_fixup_hp_gpio4(struct
- 	}
- }
+--- a/arch/mips/cavium-octeon/setup.c
++++ b/arch/mips/cavium-octeon/setup.c
+@@ -1158,12 +1158,15 @@ void __init device_tree_init(void)
+ 	bool do_prune;
+ 	bool fill_mac;
  
-+/* HP Spectre x360 14 model needs a unique workaround for enabling the amp;
-+ * it needs to toggle the GPIO0 once on and off at each time (bko#210633)
-+ */
-+static void alc245_fixup_hp_x360_amp(struct hda_codec *codec,
-+				     const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		spec->gpio_mask |= 0x01;
-+		spec->gpio_dir |= 0x01;
-+		break;
-+	case HDA_FIXUP_ACT_INIT:
-+		/* need to toggle GPIO to enable the amp */
-+		alc_update_gpio_data(codec, 0x01, true);
-+		msleep(100);
-+		alc_update_gpio_data(codec, 0x01, false);
-+		break;
-+	}
-+}
-+
- static void alc_update_coef_led(struct hda_codec *codec,
- 				struct alc_coef_led *led,
- 				bool polarity, bool on)
-@@ -6277,6 +6299,7 @@ enum {
- 	ALC280_FIXUP_HP_DOCK_PINS,
- 	ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED,
- 	ALC280_FIXUP_HP_9480M,
-+	ALC245_FIXUP_HP_X360_AMP,
- 	ALC288_FIXUP_DELL_HEADSET_MODE,
- 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC288_FIXUP_DELL_XPS_13,
-@@ -6982,6 +7005,10 @@ static const struct hda_fixup alc269_fix
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc280_fixup_hp_9480m,
- 	},
-+	[ALC245_FIXUP_HP_X360_AMP] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc245_fixup_hp_x360_amp,
-+	},
- 	[ALC288_FIXUP_DELL_HEADSET_MODE] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_headset_mode_dell_alc288,
-@@ -7996,6 +8023,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x103f, "ASUS TX300", ALC282_FIXUP_ASUS_TX300),
- 	SND_PCI_QUIRK(0x1043, 0x106d, "Asus K53BE", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
-@@ -8368,6 +8396,7 @@ static const struct hda_model_fixup alc2
- 	{.id = ALC298_FIXUP_SAMSUNG_HEADPHONE_VERY_QUIET, .name = "alc298-samsung-headphone"},
- 	{.id = ALC255_FIXUP_XIAOMI_HEADSET_MIC, .name = "alc255-xiaomi-headset"},
- 	{.id = ALC274_FIXUP_HP_MIC, .name = "alc274-hp-mic-detect"},
-+	{.id = ALC245_FIXUP_HP_X360_AMP, .name = "alc245-hp-x360-amp"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
+-	if (fw_passed_dtb) {
+-		fdt = (void *)fw_passed_dtb;
++#ifdef CONFIG_MIPS_ELF_APPENDED_DTB
++	if (!fdt_check_header(&__appended_dtb)) {
++		fdt = &__appended_dtb;
+ 		do_prune = false;
+ 		fill_mac = true;
+ 		pr_info("Using appended Device Tree.\n");
+-	} else if (octeon_bootinfo->minor_version >= 3 && octeon_bootinfo->fdt_addr) {
++	} else
++#endif
++	if (octeon_bootinfo->minor_version >= 3 && octeon_bootinfo->fdt_addr) {
+ 		fdt = phys_to_virt(octeon_bootinfo->fdt_addr);
+ 		if (fdt_check_header(fdt))
+ 			panic("Corrupt Device Tree passed to kernel.");
 
 
