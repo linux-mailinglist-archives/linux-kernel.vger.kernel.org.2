@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE48329AA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A739329ACE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242398AbhCBA7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:59:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54122 "EHLO mail.kernel.org"
+        id S1348554AbhCBBDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:03:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240721AbhCAStM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:49:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F58165300;
-        Mon,  1 Mar 2021 17:41:36 +0000 (UTC)
+        id S240790AbhCASxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:53:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E63E652FF;
+        Mon,  1 Mar 2021 17:41:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620497;
-        bh=BW5mGC119FXLPFFVkb3IXnkqaO5dATNc8bTg9ePJh/0=;
+        s=korg; t=1614620500;
+        bh=+fWMW4hbZLQyi3W48S8xyXMDuZELvjioGHJ/K7T+Gto=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tjEkE7etxA/M4BuVta/s9sa1U0UYpnPAd7EcqUkAoAHYQEWcLNAW1z/VvCSXBR8Bt
-         uTlPwT8YARVBlymGowsU89K3UJ34rFyqcx7lvQQEDAkw3T6Nq/JtNqLfs3Ge97RuSY
-         kx0LilWBbuBeP7XFIKXmoSzwN1NCsRDIYSx1pZ9g=
+        b=Rr6bV4JxUoCppEUljrnKUiawYzu85ripJ6gauPyKJb51tIly1wRrO3QwqqW75wMFZ
+         SZ5tCvzxx7B3RnfW0bgCkGZigOOcHMWzksjlrCMgLuAwDa9gxcXG77UajS1DWJP0kO
+         BpNr2wnP1n5jApl3hrEPWjUeE09xTkQYeHBh+vg0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 175/775] drm/vc4: hdmi: Take into account the clock doubling flag in atomic_check
-Date:   Mon,  1 Mar 2021 17:05:43 +0100
-Message-Id: <20210301161210.277405327@linuxfoundation.org>
+Subject: [PATCH 5.11 176/775] drm/panel: s6e63m0: Support max-brightness
+Date:   Mon,  1 Mar 2021 17:05:44 +0100
+Message-Id: <20210301161210.327472163@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,42 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 320e84dc6111ecc1c957e2b186d4d2bafee6bde2 ]
+[ Upstream commit 1f20bf5921de420071fdb1d55cda7550ae137bcd ]
 
-Commit 63495f6b4aed ("drm/vc4: hdmi: Make sure our clock rate is within
-limits") was intended to compute the pixel rate to make sure we remain
-within the boundaries of what the hardware can provide.
+The "max-brightness" is a standard backlight property that
+we need to support for the Samsung GT-I8190 Golden because
+the display will go black if we crank up the brightness
+too high.
 
-However, unlike what mode_valid was checking for, we forgot to take
-into account the clock doubling flag that can be set for modes. Let's
-honor that flag if it's there.
+As the platform needs this ability to give picture this is
+a regression fix along with the addition of the property
+to the GT-I8190 device tree.
 
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reported-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Fixes: 63495f6b4aed ("drm/vc4: hdmi: Make sure our clock rate is within limits")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201215154243.540115-4-maxime@cerno.tech
+Cc: Stephan Gerhold <stephan@gerhold.net>
+Fixes: 9c3f0a0dd6a1 ("drm/panel: s6e63m0: Implement 28 backlight levels")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201214222210.238081-1-linus.walleij@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/panel/panel-samsung-s6e63m0.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 98cab0bbe92d8..2013f83ef50b6 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -790,6 +790,9 @@ static int vc4_hdmi_encoder_atomic_check(struct drm_encoder *encoder,
- 		pixel_rate = mode->clock * 1000;
- 	}
+diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c b/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c
+index bf6d704d4d272..603c5dfe87682 100644
+--- a/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c
++++ b/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c
+@@ -692,12 +692,12 @@ static const struct backlight_ops s6e63m0_backlight_ops = {
+ 	.update_status	= s6e63m0_set_brightness,
+ };
  
-+	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
-+		pixel_rate = pixel_rate * 2;
+-static int s6e63m0_backlight_register(struct s6e63m0 *ctx)
++static int s6e63m0_backlight_register(struct s6e63m0 *ctx, u32 max_brightness)
+ {
+ 	struct backlight_properties props = {
+ 		.type		= BACKLIGHT_RAW,
+-		.brightness	= MAX_BRIGHTNESS,
+-		.max_brightness = MAX_BRIGHTNESS
++		.brightness	= max_brightness,
++		.max_brightness = max_brightness,
+ 	};
+ 	struct device *dev = ctx->dev;
+ 	int ret = 0;
+@@ -719,6 +719,7 @@ int s6e63m0_probe(struct device *dev,
+ 		  bool dsi_mode)
+ {
+ 	struct s6e63m0 *ctx;
++	u32 max_brightness;
+ 	int ret;
+ 
+ 	ctx = devm_kzalloc(dev, sizeof(struct s6e63m0), GFP_KERNEL);
+@@ -734,6 +735,14 @@ int s6e63m0_probe(struct device *dev,
+ 	ctx->enabled = false;
+ 	ctx->prepared = false;
+ 
++	ret = device_property_read_u32(dev, "max-brightness", &max_brightness);
++	if (ret)
++		max_brightness = MAX_BRIGHTNESS;
++	if (max_brightness > MAX_BRIGHTNESS) {
++		dev_err(dev, "illegal max brightness specified\n");
++		max_brightness = MAX_BRIGHTNESS;
++	}
 +
- 	if (pixel_rate > vc4_hdmi->variant->max_pixel_clock)
- 		return -EINVAL;
+ 	ctx->supplies[0].supply = "vdd3";
+ 	ctx->supplies[1].supply = "vci";
+ 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ctx->supplies),
+@@ -753,7 +762,7 @@ int s6e63m0_probe(struct device *dev,
+ 		       dsi_mode ? DRM_MODE_CONNECTOR_DSI :
+ 		       DRM_MODE_CONNECTOR_DPI);
+ 
+-	ret = s6e63m0_backlight_register(ctx);
++	ret = s6e63m0_backlight_register(ctx, max_brightness);
+ 	if (ret < 0)
+ 		return ret;
  
 -- 
 2.27.0
