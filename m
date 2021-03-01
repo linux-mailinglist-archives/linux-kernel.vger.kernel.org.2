@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B31327743
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 06:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1600C327742
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 06:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbhCAFwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 00:52:24 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:58304 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231952AbhCAFwQ (ORCPT
+        id S233545AbhCAFxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 00:53:21 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:44100 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233537AbhCAFxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 00:52:16 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1215pSKR036765;
-        Sun, 28 Feb 2021 23:51:28 -0600
+        Mon, 1 Mar 2021 00:53:17 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1215pbTE124451;
+        Sun, 28 Feb 2021 23:51:37 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614577888;
-        bh=jUuJrezMry9hd404HvvG+ToYDksIljqwEy6ABO1jNp4=;
+        s=ti-com-17Q1; t=1614577897;
+        bh=aAdd/PT7Hg/xNFTuOL9lGkvT5sm4akibA3f8zqWdpDo=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=FJjdeBHF32Dw5EPJQSK36I8e1Y1zsBBAWHNjeE91PzsMhVaEcdBpOl6bElMwsQ0aj
-         ND+SkP8izqG5ZlVbXvmuWSuR3H9W/yn7B81fElFfcEeMQslIKE2xxh0JS3srGhNQkH
-         zY4wd19W+h3Vd4zjEs8pfi7nI+QEiMpihVTIwfTQ=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1215pSc9027674
+        b=cVrBz81jge+kC2wI0Dj2U9a6CM/dsjHPIrLxEZPhf0K7yWZto3OSqMGUIdtBRF+1p
+         gJ9n0fDe4V3nMZkuCI5Lck/AXgFQW487FvduKhDgQav//EgtWfknLxetj4TcM+U4el
+         geHqR+uGAbU+F/L80bCiF7FdvNG1ep7SVkSdKtNk=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1215pbIE074265
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 28 Feb 2021 23:51:28 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+        Sun, 28 Feb 2021 23:51:37 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 28
- Feb 2021 23:51:28 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2021 23:51:36 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sun, 28 Feb 2021 23:51:28 -0600
+ Frontend Transport; Sun, 28 Feb 2021 23:51:36 -0600
 Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1215pCDN115264;
-        Sun, 28 Feb 2021 23:51:22 -0600
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1215pCDO115264;
+        Sun, 28 Feb 2021 23:51:30 -0600
 From:   Aswath Govindraju <a-govindraju@ti.com>
 CC:     Vignesh Raghavendra <vigneshr@ti.com>,
         Lokesh Vutla <lokeshvutla@ti.com>,
@@ -46,9 +46,9 @@ CC:     Vignesh Raghavendra <vigneshr@ti.com>,
         Rob Herring <robh+dt@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/2] arm64: dts: ti: k3-am64-main: Add DT node for USB subsystem
-Date:   Mon, 1 Mar 2021 11:21:08 +0530
-Message-ID: <20210301055109.17626-2-a-govindraju@ti.com>
+Subject: [PATCH 2/2] arm64: dts: ti: k3-am642-evm: Add USB support
+Date:   Mon, 1 Mar 2021 11:21:09 +0530
+Message-ID: <20210301055109.17626-3-a-govindraju@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210301055109.17626-1-a-govindraju@ti.com>
 References: <20210301055109.17626-1-a-govindraju@ti.com>
@@ -60,53 +60,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT node for the single USB subsystem in main dtsi file.
+AM64 EVM board has a micro USB 2.0 AB connector and the USB0_VBUS is
+connected with a resistor divider in between. USB0_DRVVBUS pin is muxed
+between USB0_DRVVBUS and GPIO1_79 signals.
+
+Add the corresponding properties and set the pinmux mode for USB subsystem
+in the evm dts file.
 
 Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 Acked-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 30 ++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am642-evm.dts | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index 5f85950daef7..a36ebddf3a4c 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -402,4 +402,34 @@
- 		ti,otap-del-sel-ddr50 = <0x9>;
- 		ti,clkbuf-sel = <0x7>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+index 1f1787750fef..bfd849a29655 100644
+--- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
+@@ -133,6 +133,12 @@
+ 			AM64X_IOPAD(0x026c, PIN_INPUT_PULLUP, 0) /* (B19) I2C1_SDA */
+ 		>;
  	};
 +
-+	usbss0: cdns-usb@f900000{
-+		compatible = "ti,am64-usb", "ti,j721e-usb";
-+		reg = <0x00 0xf900000 0x00 0x100>;
-+		power-domains = <&k3_pds 161 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 161 9>, <&k3_clks 161 1>;
-+		clock-names = "ref", "lpm";
-+		assigned-clocks = <&k3_clks 161 9>; /* USB2_REFCLK */
-+		assigned-clock-parents = <&k3_clks 161 10>; /* HF0SC0 */
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+		usb0: usb@f400000{
-+			compatible = "cdns,usb3";
-+			reg = <0x00 0xf400000 0x00 0x10000>,
-+			      <0x00 0xf410000 0x00 0x10000>,
-+			      <0x00 0xf420000 0x00 0x10000>;
-+			reg-names = "otg",
-+				    "xhci",
-+				    "dev";
-+			interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_HIGH>, /* irq.0 */
-+				     <GIC_SPI 194 IRQ_TYPE_LEVEL_HIGH>, /* irq.6 */
-+				     <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>; /* otgirq */
-+			interrupt-names = "host",
-+					  "peripheral",
-+					  "otg";
-+			maximum-speed = "super-speed";
-+			dr_mode = "otg";
-+		};
++	main_usb0_pins_default: main-usb0-pins-default {
++		pinctrl-single,pins = <
++			AM64X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (E19) USB0_DRVVBUS */
++		>;
 +	};
  };
+ 
+ &main_uart0 {
+@@ -227,6 +233,18 @@
+ 	status = "disabled";
+ };
+ 
++&usbss0 {
++	ti,vbus-divider;
++	ti,usb2-only;
++};
++
++&usb0 {
++	dr_mode = "otg";
++	maximum-speed = "high-speed";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_usb0_pins_default>;
++};
++
+ &sdhci0 {
+ 	/* emmc */
+ 	bus-width = <8>;
 -- 
 2.17.1
 
