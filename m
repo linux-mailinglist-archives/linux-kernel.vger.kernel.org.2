@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D5A329CB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F264329D01
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349091AbhCBCLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:11:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50722 "EHLO mail.kernel.org"
+        id S1442795AbhCBCQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:16:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234826AbhCATgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:36:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93477650F3;
-        Mon,  1 Mar 2021 17:01:01 +0000 (UTC)
+        id S242167AbhCAToC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E57BC65085;
+        Mon,  1 Mar 2021 17:29:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618062;
-        bh=lJlcJo5vjrIG2dfiBblGpI5tolIwegM+Ah7c4SbmBTA=;
+        s=korg; t=1614619744;
+        bh=Ptg2P1wBUY7lTOmMuF6I6M1P+5OZgQIKIOZmTHAPdBs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uGVHfWezO5jn1WUAf85OZfeQX2q0xwwMhVfq4GUij1jklJ2cXlhkx5HtQ3QqfXI/w
-         4y0lZ55KdYsPewldEKRSoTo3WCfC6f6p9WdB9q+9WlDJneK1O3+40h9ZhN27x+pwj/
-         RkckaHw8DW1gbFPWKXW7rEbg1tU/wt7w6NMHbRI0=
+        b=oMAQgddJz6e4Z0ZfEFTX4CKjOqALO4UtdsaD9zbuZgdgFicZPFvKZtmGuFKSf4pko
+         r+iFr+3jDuQBL56en3MnTGr9mrtR6s+RpRthlaJHRwhFgutbvY8RFTg6tpwzJxxQxg
+         sjz96TCDjKGsgBFuKxMQzCW+GUqPtDvyTXKIoJcY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@ger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH 5.4 263/340] tpm_tis: Clean up locality release
-Date:   Mon,  1 Mar 2021 17:13:27 +0100
-Message-Id: <20210301161101.238940754@linuxfoundation.org>
+        stable@vger.kernel.org, Laz Lev <lazlev@web.de>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.10 566/663] media: smipcie: fix interrupt handling and IR timeout
+Date:   Mon,  1 Mar 2021 17:13:34 +0100
+Message-Id: <20210301161209.875296652@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
-References: <20210301161048.294656001@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,95 +40,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Sean Young <sean@mess.org>
 
-commit e42acf104d6e0bd7ccd2f09103d5be5e6d3c637c upstream.
+commit 6532923237b427ed30cc7b4486f6f1ccdee3c647 upstream.
 
-The current release locality code seems to be based on the
-misunderstanding that the TPM interrupts when a locality is released:
-it doesn't, only when the locality is acquired.
+After the first IR message, interrupts are no longer received. In addition,
+the code generates a timeout IR message of 10ms but sets the timeout value
+to 100ms, so no timeout was ever generated.
 
-Furthermore, there seems to be no point in waiting for the locality to
-be released.  All it does is penalize the last TPM user.  However, if
-there's no next TPM user, this is a pointless wait and if there is a
-next TPM user, they'll pay the penalty waiting for the new locality
-(or possibly not if it's the same as the old locality).
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=204317
 
-Fix the code by making release_locality as simple write to release
-with no waiting for completion.
-
-Cc: stable@ger.kernel.org
-Fixes: 33bafe90824b ("tpm_tis: verify locality released before returning from release_locality")
-Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Fixes: a49a7a4635de ("media: smipcie: add universal ir capability")
+Tested-by: Laz Lev <lazlev@web.de>
+Cc: stable@vger.kernel.org # v5.1+
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/char/tpm/tpm_tis_core.c |   47 ----------------------------------------
- 1 file changed, 1 insertion(+), 46 deletions(-)
+ drivers/media/pci/smipcie/smipcie-ir.c |   48 ++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 21 deletions(-)
 
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -135,58 +135,13 @@ static bool check_locality(struct tpm_ch
- 	return false;
- }
- 
--static bool locality_inactive(struct tpm_chip *chip, int l)
--{
--	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
--	int rc;
--	u8 access;
--
--	rc = tpm_tis_read8(priv, TPM_ACCESS(l), &access);
--	if (rc < 0)
--		return false;
--
--	if ((access & (TPM_ACCESS_VALID | TPM_ACCESS_ACTIVE_LOCALITY))
--	    == TPM_ACCESS_VALID)
--		return true;
--
--	return false;
--}
--
- static int release_locality(struct tpm_chip *chip, int l)
+--- a/drivers/media/pci/smipcie/smipcie-ir.c
++++ b/drivers/media/pci/smipcie/smipcie-ir.c
+@@ -60,38 +60,44 @@ static void smi_ir_decode(struct smi_rc
  {
- 	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
--	unsigned long stop, timeout;
--	long rc;
+ 	struct smi_dev *dev = ir->dev;
+ 	struct rc_dev *rc_dev = ir->rc_dev;
+-	u32 dwIRControl, dwIRData;
+-	u8 index, ucIRCount, readLoop;
++	u32 control, data;
++	u8 index, ir_count, read_loop;
  
- 	tpm_tis_write8(priv, TPM_ACCESS(l), TPM_ACCESS_ACTIVE_LOCALITY);
+-	dwIRControl = smi_read(IR_Init_Reg);
++	control = smi_read(IR_Init_Reg);
  
--	stop = jiffies + chip->timeout_a;
+-	if (dwIRControl & rbIRVld) {
+-		ucIRCount = (u8) smi_read(IR_Data_Cnt);
++	dev_dbg(&rc_dev->dev, "ircontrol: 0x%08x\n", control);
+ 
+-		readLoop = ucIRCount/4;
+-		if (ucIRCount % 4)
+-			readLoop += 1;
+-		for (index = 0; index < readLoop; index++) {
+-			dwIRData = smi_read(IR_DATA_BUFFER_BASE + (index * 4));
 -
--	if (chip->flags & TPM_CHIP_FLAG_IRQ) {
--again:
--		timeout = stop - jiffies;
--		if ((long)timeout <= 0)
--			return -1;
--
--		rc = wait_event_interruptible_timeout(priv->int_queue,
--						      (locality_inactive(chip, l)),
--						      timeout);
--
--		if (rc > 0)
--			return 0;
--
--		if (rc == -ERESTARTSYS && freezing(current)) {
--			clear_thread_flag(TIF_SIGPENDING);
--			goto again;
--		}
--	} else {
--		do {
--			if (locality_inactive(chip, l))
--				return 0;
--			tpm_msleep(TPM_TIMEOUT);
--		} while (time_before(jiffies, stop));
--	}
--	return -1;
-+	return 0;
+-			ir->irData[index*4 + 0] = (u8)(dwIRData);
+-			ir->irData[index*4 + 1] = (u8)(dwIRData >> 8);
+-			ir->irData[index*4 + 2] = (u8)(dwIRData >> 16);
+-			ir->irData[index*4 + 3] = (u8)(dwIRData >> 24);
++	if (control & rbIRVld) {
++		ir_count = (u8)smi_read(IR_Data_Cnt);
++
++		dev_dbg(&rc_dev->dev, "ircount %d\n", ir_count);
++
++		read_loop = ir_count / 4;
++		if (ir_count % 4)
++			read_loop += 1;
++		for (index = 0; index < read_loop; index++) {
++			data = smi_read(IR_DATA_BUFFER_BASE + (index * 4));
++			dev_dbg(&rc_dev->dev, "IRData 0x%08x\n", data);
++
++			ir->irData[index * 4 + 0] = (u8)(data);
++			ir->irData[index * 4 + 1] = (u8)(data >> 8);
++			ir->irData[index * 4 + 2] = (u8)(data >> 16);
++			ir->irData[index * 4 + 3] = (u8)(data >> 24);
+ 		}
+-		smi_raw_process(rc_dev, ir->irData, ucIRCount);
+-		smi_set(IR_Init_Reg, rbIRVld);
++		smi_raw_process(rc_dev, ir->irData, ir_count);
+ 	}
+ 
+-	if (dwIRControl & rbIRhighidle) {
++	if (control & rbIRhighidle) {
+ 		struct ir_raw_event rawir = {};
+ 
++		dev_dbg(&rc_dev->dev, "high idle\n");
++
+ 		rawir.pulse = 0;
+ 		rawir.duration = SMI_SAMPLE_PERIOD * SMI_SAMPLE_IDLEMIN;
+ 		ir_raw_event_store_with_filter(rc_dev, &rawir);
+-		smi_set(IR_Init_Reg, rbIRhighidle);
+ 	}
+ 
++	smi_set(IR_Init_Reg, rbIRVld);
+ 	ir_raw_event_handle(rc_dev);
  }
  
- static int request_locality(struct tpm_chip *chip, int l)
+@@ -150,7 +156,7 @@ int smi_ir_init(struct smi_dev *dev)
+ 	rc_dev->dev.parent = &dev->pci_dev->dev;
+ 
+ 	rc_dev->map_name = dev->info->rc_map;
+-	rc_dev->timeout = MS_TO_US(100);
++	rc_dev->timeout = SMI_SAMPLE_PERIOD * SMI_SAMPLE_IDLEMIN;
+ 	rc_dev->rx_resolution = SMI_SAMPLE_PERIOD;
+ 
+ 	ir->rc_dev = rc_dev;
+@@ -173,7 +179,7 @@ void smi_ir_exit(struct smi_dev *dev)
+ 	struct smi_rc *ir = &dev->ir;
+ 	struct rc_dev *rc_dev = ir->rc_dev;
+ 
+-	smi_ir_stop(ir);
+ 	rc_unregister_device(rc_dev);
++	smi_ir_stop(ir);
+ 	ir->rc_dev = NULL;
+ }
 
 
