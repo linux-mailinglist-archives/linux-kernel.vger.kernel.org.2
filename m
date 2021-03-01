@@ -2,125 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6C7329B49
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75259329B5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239023AbhCBBVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:21:23 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:25468 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240390AbhCATFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:05:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614625528; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Ba6OQaTorWDoty4vE97fErAm92Zsz5cMQKE02H+Mmlk=; b=K+ccLQol8RDL/ESvMzqK26gFg4a2yG5HSxlFjUhbevQ1W4VVswnECO8/CHngD4pjUX8uhM3E
- /kTUkAE+4qmgu6BNZASaIuh/tkNDjJ18PaV88GuiSa7n3ds1e7naVThOmPRvEU0yXJFV7Bco
- I5/aXA8XEfcZ9lT6561a9RPfhN4=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 603d3aee1d4da3b75d0a4387 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 19:05:18
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C110CC433CA; Mon,  1 Mar 2021 19:05:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6EC70C433C6;
-        Mon,  1 Mar 2021 19:05:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6EC70C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        Mattias Nissler <mnissler@chromium.org>,
-        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv2 4/4] coresight: etm3x: Add support to exclude kernel mode tracing
-Date:   Tue,  2 Mar 2021 00:34:18 +0530
-Message-Id: <0b165b2608eed1a61240539f4b812bd80b6ad1bd.1614624041.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <cover.1614624041.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1614624041.git.saiprakash.ranjan@codeaurora.org>
+        id S1345632AbhCBBX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:23:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240962AbhCATGf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:06:35 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C299C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 11:05:55 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id s7so7583863qkg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 11:05:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vltDR6nPmExSVgix/uycZqbK9vu4qx0KGQAFBNxtb08=;
+        b=dWjxltLxoMhu/cGdlWbJGFN82TRnUTSvcNFt8VbU0lJPhoQbyfb9qzf+Rlm36dRTfn
+         R4+hBO+2Df9oSjPSSLAn7AXckKPvLPAeUFHiE9/FQmI/a9jYcKrc9mPne65dElaL/dwH
+         zB0pReX7kaNRSciF9JwHZy0YqNsYCQHss6Nro4gmT0BBOtw4lurDzuMId5uiwx84/3d+
+         l8IbWc1Qrf7e+bxs2ZHmvHVVs4AA3Yj7fkx6LxNjewK/Yv1zDDHf71BAvOUZaobPg8j1
+         JMe/8fz2zB0TeGw+yvzzm+V8KWpgLOD5i7ZDNI9W3fZdYFr2fTpvwknrsDTsO+tAxKAE
+         1lpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vltDR6nPmExSVgix/uycZqbK9vu4qx0KGQAFBNxtb08=;
+        b=cV14soCHm5pUtmroQySHYe7MgVk/P4IuY+uaBV91xpftVLbCNHBErxeSuz44uJYHMB
+         ljmlJCNAP32Q6qQc/DP7K5/NidX1EUZQ4VltdmnfgbPZJNhfUGd3dRPD2SaSGiBeTxNa
+         Z9QGHKRkXJGY1e6iBSPcZ76jucgN4YkuxWzHEHB9Rq5+3QWJ/k5eXbGK3bgNJUHDiCJi
+         GpsdD7laFdl1X0pbBu6f2RmIdDGOxaFgRyQolBTD5WDKy5daM31uCAJDol4kH97b8iuZ
+         iWH9S9x358f+t60Hu9jxdeJS8YiB7sb7Aw4KPQJPJBVbmTigKM087XQv9PZ/0iYXw3Gv
+         3AiA==
+X-Gm-Message-State: AOAM530WEoHKnDgrdw43sjYKrvmKqgr/zXxKIMTuJs9F/HWQkfrWxj0B
+        lCMmiMYSOERc0FGAOZ4KIMVV7mFOzLz1y+Eqa43EZg==
+X-Google-Smtp-Source: ABdhPJxZwmErIHsA+M8yHabv+voWVmw4iPHqCRMdf3gsDRfgfugEd3e53Nvhbifj61z6HqleXEXvj6IgyDDs3xSZUj0=
+X-Received: by 2002:a37:4743:: with SMTP id u64mr9584887qka.350.1614625554022;
+ Mon, 01 Mar 2021 11:05:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <000000000000911d3905b459824c@google.com> <000000000000e56a2605b616b2d9@google.com>
+ <YD0UjWjQmYgY4Qgh@nuc10>
+In-Reply-To: <YD0UjWjQmYgY4Qgh@nuc10>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 1 Mar 2021 20:05:42 +0100
+Message-ID: <CACT4Y+YQzTkk=UPNH5g96e+yPYyaPBemmhqXz5oaWEvW9xb-rQ@mail.gmail.com>
+Subject: Re: memory leak in bpf
+To:     Rustam Kovhaev <rkovhaev@gmail.com>
+Cc:     syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>,
+        andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On production systems with ETMs enabled, it is preferred to exclude
-kernel mode(NS EL1) tracing for security concerns and support only
-userspace(NS EL0) tracing. Perf subsystem interface uses the newly
-introduced kernel config CONFIG_EXCLUDE_KERNEL_PMU_TRACE to exclude
-kernel mode tracing, but there is an additional interface
-via sysfs for ETMs which also needs to be handled to exclude kernel
-mode tracing. So we use this same generic kernel config to handle
-the sysfs mode of tracing. This config is disabled by default and
-would not affect the current configuration which has both kernel and
-userspace tracing enabled by default.
+On Mon, Mar 1, 2021 at 5:21 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+>
+> On Wed, Dec 09, 2020 at 10:58:10PM -0800, syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> >
+> > HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=11facf17500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159a9613500000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bf7123500000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
+> >
+> > Debian GNU/Linux 9 syzkaller ttyS0
+> > Warning: Permanently added '10.128.0.9' (ECDSA) to the list of known hosts.
+> > executing program
+> > executing program
+> > executing program
+> > BUG: memory leak
+> > unreferenced object 0xffff88810efccc80 (size 64):
+> >   comm "syz-executor334", pid 8460, jiffies 4294945724 (age 13.850s)
+> >   hex dump (first 32 bytes):
+> >     c0 cb 14 04 00 ea ff ff c0 c2 11 04 00 ea ff ff  ................
+> >     c0 56 3f 04 00 ea ff ff 40 18 38 04 00 ea ff ff  .V?.....@.8.....
+> >   backtrace:
+> >     [<0000000036ae98a7>] kmalloc_node include/linux/slab.h:575 [inline]
+> >     [<0000000036ae98a7>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
+> >     [<0000000036ae98a7>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
+> >     [<0000000036ae98a7>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
+> >     [<0000000036ae98a7>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
+> >     [<00000000d2cb93ae>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+> >     [<00000000d2cb93ae>] map_create kernel/bpf/syscall.c:825 [inline]
+> >     [<00000000d2cb93ae>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
+> >     [<000000008feaf393>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >     [<00000000e1f53cfd>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> >
+> >
+>
+> i am pretty sure that this one is a false positive
+> the problem with reproducer is that it does not terminate all of the
+> child processes that it spawns
+>
+> i confirmed that it is a false positive by tracing __fput() and
+> bpf_map_release(), i ran reproducer, got kmemleak report, then i
+> manually killed those running leftover processes from reproducer and
+> then both functions were executed and memory was freed
+>
+> i am marking this one as:
+> #syz invalid
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/hwtracing/coresight/coresight-etm3x-core.c  | 3 +++
- drivers/hwtracing/coresight/coresight-etm3x-sysfs.c | 6 ++++++
- 2 files changed, 9 insertions(+)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-index cf64ce73a741..d94f6b01ca09 100644
---- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
-@@ -195,6 +195,9 @@ void etm_set_default(struct etm_config *config)
- 	if (WARN_ON_ONCE(!config))
- 		return;
- 
-+	if (IS_ENABLED(CONFIG_EXCLUDE_KERNEL_PMU_TRACE))
-+		config->mode |= ETM_MODE_EXCL_KERN;
-+
- 	/*
- 	 * Taken verbatim from the TRM:
- 	 *
-diff --git a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
-index e8c7649f123e..f522fc2e01b3 100644
---- a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
-+++ b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
-@@ -116,6 +116,12 @@ static ssize_t mode_store(struct device *dev,
- 	if (ret)
- 		return ret;
- 
-+	if (IS_ENABLED(CONFIG_EXCLUDE_KERNEL_PMU_TRACE) && (!(val & ETM_MODE_EXCL_KERN))) {
-+		dev_warn(dev,
-+			"Kernel mode tracing is not allowed, check your kernel config\n");
-+		return -EACCES;
-+	}
-+
- 	spin_lock(&drvdata->spinlock);
- 	config->mode = val & ETM_MODE_ALL;
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Hi Rustam,
 
+Thanks for looking into this.
+
+I wonder how/where are these objects referenced? If they are not
+leaked and referenced somewhere, KMEMLEAK should not report them as
+leaks.
+So even if this is a false positive for BPF, this is a true positive
+bug and something to fix for KMEMLEAK ;)
+And syzbot will probably re-create this bug report soon as this still
+happens and is not a one-off thing.
