@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503E4329B78
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7C7329C3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348752AbhCBBZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:25:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39780 "EHLO mail.kernel.org"
+        id S1380379AbhCBBut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:50:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235206AbhCATJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:09:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B621860295;
-        Mon,  1 Mar 2021 17:47:07 +0000 (UTC)
+        id S241704AbhCAT2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:28:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40EA364D99;
+        Mon,  1 Mar 2021 17:47:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620828;
-        bh=M4x84luWfwm/6swUPohAceH5DyzGertTAyhoMTgAa/4=;
+        s=korg; t=1614620841;
+        bh=Q+bTeE3XrDdXjs5gx2nhKReqJz1aB39R9NdGzohYdo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UBRIU+d5NSd2APLo9xweJvMQqb84CyooZKkJ/IolLqfR299dM/BHd4M+RAfJMGGTB
-         EUM/qB6cTNLfAdnq+3lr6qNKHcmaAxlZKP1jDIsRwXblPqiYpky0UGmJBRYpoRSBAs
-         ioClYL9t91EoPa1FpxUSeLVuump2s1TJNzTxLbLk=
+        b=qci1FR8XrQMPOcdtIHqypn/srTPAwJ2SKl3zGP5olr0rVQ8jjHFTmS5bUQbaK9//h
+         0XYvjjrVDn6pk5eqn8Je/bUWRTm5f3JNzSiBiEBjmugZ0EDlcVv+sTH+lenmp+D+PR
+         RYZM3vPP6Sx4oc73aEfQEhPe7jTXLS83Ps/erbAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Hui Wang <hui.wang@canonical.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 267/775] ASoC: SOF: debug: Fix a potential issue on string buffer termination
-Date:   Mon,  1 Mar 2021 17:07:15 +0100
-Message-Id: <20210301161214.823968918@linuxfoundation.org>
+Subject: [PATCH 5.11 269/775] btrfs: fix double accounting of ordered extent for subpage case in btrfs_invalidapge
+Date:   Mon,  1 Mar 2021 17:07:17 +0100
+Message-Id: <20210301161214.923731286@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,38 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit 9037c3bde65d339017ef41d81cb58069ffc321d4 ]
+[ Upstream commit 951c80f83d61bd4b21794c8aba829c3c1a45c2d0 ]
 
-The function simple_write_to_buffer() doesn't add string termination
-at the end of buf, we need to handle it on our own. This change refers
-to the function tokenize_input() in debug.c and the function
-sof_dfsentry_trace_filter_write() in trace.c.
+Commit dbfdb6d1b369 ("Btrfs: Search for all ordered extents that could
+span across a page") make btrfs_invalidapage() to search all ordered
+extents.
 
-Fixes: 091c12e1f50c ("ASoC: SOF: debug: add new debugfs entries for IPC flood test")
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210208103857.75705-1-hui.wang@canonical.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+The offending code looks like this:
+
+  again:
+	  start = page_start;
+	  ordered = btrfs_lookup_ordered_range(inode, start, page_end - start + 1);
+	  if (ordred) {
+		  end = min(page_end,
+			    ordered->file_offset + ordered->num_bytes - 1);
+
+		  /* Do the cleanup */
+
+		  start = end + 1;
+		  if (start < page_end)
+			  goto again;
+	  }
+
+The behavior is indeed necessary for the incoming subpage support, but
+when it iterates through all the ordered extents, it also resets the
+search range @start.
+
+This means, for the following cases, we can double account the ordered
+extents, causing its bytes_left underflow:
+
+	Page offset
+	0		16K		32K
+	|<--- OE 1  --->|<--- OE 2 ---->|
+
+As the first iteration will find ordered extent (OE) 1, which doesn't
+cover the full page, thus after cleanup code, we need to retry again.
+But again label will reset start to page_start, and we got OE 1 again,
+which causes double accounting on OE 1, and cause OE 1's byte_left to
+underflow.
+
+This problem can only happen for subpage case, as for regular sectorsize
+== PAGE_SIZE case, we will always find a OE ends at or after page end,
+thus no way to trigger the problem.
+
+Move the again label after start = page_start.  There will be more
+comprehensive rework to convert the open coded loop to a proper while
+loop for subpage support.
+
+Fixes: dbfdb6d1b369 ("Btrfs: Search for all ordered extents that could span across a page")
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
-index 30213a1beaaa2..715a374b33cfb 100644
---- a/sound/soc/sof/debug.c
-+++ b/sound/soc/sof/debug.c
-@@ -352,7 +352,7 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
- 	char *string;
- 	int ret;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index a8e0a6b038d3e..ad34c5a09befc 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8186,8 +8186,9 @@ static void btrfs_invalidatepage(struct page *page, unsigned int offset,
  
--	string = kzalloc(count, GFP_KERNEL);
-+	string = kzalloc(count+1, GFP_KERNEL);
- 	if (!string)
- 		return -ENOMEM;
- 
+ 	if (!inode_evicting)
+ 		lock_extent_bits(tree, page_start, page_end, &cached_state);
+-again:
++
+ 	start = page_start;
++again:
+ 	ordered = btrfs_lookup_ordered_range(inode, start, page_end - start + 1);
+ 	if (ordered) {
+ 		found_ordered = true;
 -- 
 2.27.0
 
