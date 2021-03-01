@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F063298ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D82D3299B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346886AbhCAXvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34234 "EHLO mail.kernel.org"
+        id S1348121AbhCBA2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239291AbhCASOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:14:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6872A65125;
-        Mon,  1 Mar 2021 17:03:06 +0000 (UTC)
+        id S234882AbhCAS3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:29:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E3F46528D;
+        Mon,  1 Mar 2021 17:32:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618187;
-        bh=9LRu77Qa14saVp8Myqa9XX9jUSJL92s4Mb8pKr9mnww=;
+        s=korg; t=1614619944;
+        bh=xOWbgxp3vEq+RDS7HFsY+tPWOzL+E97JnpPwj0+LSvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G3LYrRBmvAKlqdEY2nNCYwWkouSdYjCG6OAEaXVHUH7Z3uV8JhrXQ8E3GfvtZLu3W
-         IODd4n5UXOXFueYK706nhrUcD1C3fYcHwv0NIq5f/jqNN5UIygL7P1pGNj6ys/R3ZA
-         EG4NkHkfKt3UJkBMl9ESzWBE4asNvS4kRbka0I+U=
+        b=DLkXqo2UCuRfWxJvHcDStf+qiq7tQQ1TnrciBJ1ycKPaGQvitdCGKOK4CYAqS3ta/
+         Au4hrJlgK02bVP7cOCqSFgvwwGX7f/7QdP+aQ7dxpovzim6k9TmHaImcmkZEuXm9rP
+         C3yXH6qMvE30F+C70VlpcFeoxeL9OB81J4KblCMk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+151e3e714d34ae4ce7e8@syzkaller.appspotmail.com,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 338/340] net: sched: fix police ext initialization
-Date:   Mon,  1 Mar 2021 17:14:42 +0100
-Message-Id: <20210301161104.928637408@linuxfoundation.org>
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: [PATCH 5.10 638/663] gfs2: Dont skip dlm unlock if glock has an lvb
+Date:   Mon,  1 Mar 2021 17:14:46 +0100
+Message-Id: <20210301161213.422467223@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
-References: <20210301161048.294656001@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,119 +39,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vlad Buslov <vladbu@nvidia.com>
+From: Bob Peterson <rpeterso@redhat.com>
 
-commit 396d7f23adf9e8c436dd81a69488b5b6a865acf8 upstream.
+commit 78178ca844f0eb88f21f31c7fde969384be4c901 upstream.
 
-When police action is created by cls API tcf_exts_validate() first
-conditional that calls tcf_action_init_1() directly, the action idr is not
-updated according to latest changes in action API that require caller to
-commit newly created action to idr with tcf_idr_insert_many(). This results
-such action not being accessible through act API and causes crash reported
-by syzbot:
+Patch fb6791d100d1 was designed to allow gfs2 to unmount quicker by
+skipping the step where it tells dlm to unlock glocks in EX with lvbs.
+This was done because when gfs2 unmounts a file system, it destroys the
+dlm lockspace shortly after it destroys the glocks so it doesn't need to
+unlock them all: the unlock is implied when the lockspace is destroyed
+by dlm.
 
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:71 [inline]
-BUG: KASAN: null-ptr-deref in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
-BUG: KASAN: null-ptr-deref in __tcf_idr_release net/sched/act_api.c:178 [inline]
-BUG: KASAN: null-ptr-deref in tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act_api.c:598
-Read of size 4 at addr 0000000000000010 by task kworker/u4:5/204
+However, that patch introduced a use-after-free in dlm: as part of its
+normal dlm_recoverd process, it can call ls_recovery to recover dead
+locks. In so doing, it can call recover_rsbs which calls recover_lvb for
+any mastered rsbs. Func recover_lvb runs through the list of lkbs queued
+to the given rsb (if the glock is cached but unlocked, it will still be
+queued to the lkb, but in NL--Unlocked--mode) and if it has an lvb,
+copies it to the rsb, thus trying to preserve the lkb. However, when
+gfs2 skips the dlm unlock step, it frees the glock and its lvb, which
+means dlm's function recover_lvb references the now freed lvb pointer,
+copying the freed lvb memory to the rsb.
 
-CPU: 0 PID: 204 Comm: kworker/u4:5 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- __kasan_report mm/kasan/report.c:400 [inline]
- kasan_report.cold+0x5f/0xd5 mm/kasan/report.c:413
- check_memory_region_inline mm/kasan/generic.c:179 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
- __tcf_idr_release net/sched/act_api.c:178 [inline]
- tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act_api.c:598
- tc_action_net_exit include/net/act_api.h:151 [inline]
- police_exit_net+0x168/0x360 net/sched/act_police.c:390
- ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
- cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:604
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 204 Comm: kworker/u4:5 Tainted: G    B             5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- panic+0x306/0x73d kernel/panic.c:231
- end_report+0x58/0x5e mm/kasan/report.c:100
- __kasan_report mm/kasan/report.c:403 [inline]
- kasan_report.cold+0x67/0xd5 mm/kasan/report.c:413
- check_memory_region_inline mm/kasan/generic.c:179 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
- instrument_atomic_read include/linux/instrumented.h:71 [inline]
- atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
- __tcf_idr_release net/sched/act_api.c:178 [inline]
- tcf_idrinfo_destroy+0x129/0x1d0 net/sched/act_api.c:598
- tc_action_net_exit include/net/act_api.h:151 [inline]
- police_exit_net+0x168/0x360 net/sched/act_police.c:390
- ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
- cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:604
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Kernel Offset: disabled
+This patch changes the check in gdlm_put_lock so that it calls
+dlm_unlock for all glocks that contain an lvb pointer.
 
-Fix the issue by calling tcf_idr_insert_many() after successful action
-initialization.
-
-Fixes: 0fedc63fadf0 ("net_sched: commit action insertions together")
-Reported-by: syzbot+151e3e714d34ae4ce7e8@syzkaller.appspotmail.com
-Signed-off-by: Vlad Buslov <vladbu@nvidia.com>
-Reviewed-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: fb6791d100d1 ("GFS2: skip dlm_unlock calls in unmount")
+Cc: stable@vger.kernel.org # v3.8+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/act_api.h |    1 +
- net/sched/act_api.c   |    2 +-
- net/sched/cls_api.c   |    1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+ fs/gfs2/lock_dlm.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
---- a/include/net/act_api.h
-+++ b/include/net/act_api.h
-@@ -156,6 +156,7 @@ int tcf_idr_search(struct tc_action_net
- int tcf_idr_create(struct tc_action_net *tn, u32 index, struct nlattr *est,
- 		   struct tc_action **a, const struct tc_action_ops *ops,
- 		   int bind, bool cpustats);
-+void tcf_idr_insert_many(struct tc_action *actions[]);
- void tcf_idr_cleanup(struct tc_action_net *tn, u32 index);
- int tcf_idr_check_alloc(struct tc_action_net *tn, u32 *index,
- 			struct tc_action **a, int bind);
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -823,7 +823,7 @@ static const struct nla_policy tcf_actio
- 	[TCA_ACT_OPTIONS]	= { .type = NLA_NESTED },
- };
- 
--static void tcf_idr_insert_many(struct tc_action *actions[])
-+void tcf_idr_insert_many(struct tc_action *actions[])
+--- a/fs/gfs2/lock_dlm.c
++++ b/fs/gfs2/lock_dlm.c
+@@ -284,7 +284,6 @@ static void gdlm_put_lock(struct gfs2_gl
  {
- 	int i;
+ 	struct gfs2_sbd *sdp = gl->gl_name.ln_sbd;
+ 	struct lm_lockstruct *ls = &sdp->sd_lockstruct;
+-	int lvb_needs_unlock = 0;
+ 	int error;
  
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -3026,6 +3026,7 @@ int tcf_exts_validate(struct net *net, s
- 			act->type = exts->type = TCA_OLD_COMPAT;
- 			exts->actions[0] = act;
- 			exts->nr_actions = 1;
-+			tcf_idr_insert_many(exts->actions);
- 		} else if (exts->action && tb[exts->action]) {
- 			int err;
+ 	if (gl->gl_lksb.sb_lkid == 0) {
+@@ -297,13 +296,10 @@ static void gdlm_put_lock(struct gfs2_gl
+ 	gfs2_sbstats_inc(gl, GFS2_LKS_DCOUNT);
+ 	gfs2_update_request_times(gl);
  
+-	/* don't want to skip dlm_unlock writing the lvb when lock is ex */
+-
+-	if (gl->gl_lksb.sb_lvbptr && (gl->gl_state == LM_ST_EXCLUSIVE))
+-		lvb_needs_unlock = 1;
++	/* don't want to skip dlm_unlock writing the lvb when lock has one */
+ 
+ 	if (test_bit(SDF_SKIP_DLM_UNLOCK, &sdp->sd_flags) &&
+-	    !lvb_needs_unlock) {
++	    !gl->gl_lksb.sb_lvbptr) {
+ 		gfs2_glock_free(gl);
+ 		return;
+ 	}
 
 
