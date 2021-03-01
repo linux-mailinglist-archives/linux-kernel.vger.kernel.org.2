@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B84329E89
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15BF329E8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445564AbhCBDAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:00:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40430 "EHLO mail.kernel.org"
+        id S1445599AbhCBDAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:00:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238630AbhCAUMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:12:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7200A6505C;
-        Mon,  1 Mar 2021 18:01:13 +0000 (UTC)
+        id S242996AbhCAUNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:13:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F3A665064;
+        Mon,  1 Mar 2021 18:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621674;
-        bh=0z3WB6fxxIRpXJVqt7kYMNPzomhDGaiSxTU+Sip1pak=;
+        s=korg; t=1614621687;
+        bh=JhKKzZh5fHuGPUx6ARCPBrDZFumwZCa9ZCy+Mc5lPZY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tFjXK6tzDyUd4Pl4KuTHpdgXfM6WyGEm7Y58pK9Y9wLSFrv//sELPUVlaWT2B9Gc6
-         7LONq77RrfIUmUs0SyZ97f974c4el2/MPm1HqJWwV19PvhtB6HmxmpJla3B1JJYkr/
-         yHZ9y9xpwOwwOegZUQDbYKk8sVTpF/HMgVYDacug=
+        b=R0dQQqlxq6fOFip6FRgzcClSsLwbQnXfUHijXZLscG0nEKAU9bse53j6WJeFkVy6w
+         NQ3neZlm/ZmOD3ao8Rb8e3wk2UabPDyUUx0jahzvTSL/k5+qizP851LVOEhFY5yR8x
+         6K+gnXuQVKYdqhOm1PWJJCMqqUO8xNS9NfNLG5jU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
-        <zhouyanjie@wanyeetech.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.11 603/775] MIPS: Ingenic: Disable HPTLB for D0 XBurst CPUs too
-Date:   Mon,  1 Mar 2021 17:12:51 +0100
-Message-Id: <20210301161231.207959296@linuxfoundation.org>
+        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
+        Kai Krakow <kai@kaishome.de>, Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.11 608/775] Revert "bcache: Kill btree_io_wq"
+Date:   Mon,  1 Mar 2021 17:12:56 +0100
+Message-Id: <20210301161231.459741021@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,52 +39,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Cercueil <paul@crapouillou.net>
+From: Kai Krakow <kai@kaishome.de>
 
-commit a5360958a3cd1d876aae1f504ae014658513e1af upstream.
+commit 9f233ffe02e5cef611100cd8c5bcf4de26ca7bef upstream.
 
-The JZ4760 has the HPTLB as well, but has a XBurst CPU with a D0 CPUID.
+This reverts commit 56b30770b27d54d68ad51eccc6d888282b568cee.
 
-Disable the HPTLB for all XBurst CPUs with a D0 CPUID. In the case where
-there is no HPTLB (e.g. for older SoCs), this won't have any side
-effect.
+With the btree using the `system_wq`, I seem to see a lot more desktop
+latency than I should.
 
-Fixes: b02efeb05699 ("MIPS: Ingenic: Disable abandoned HPTLB function.")
-Cc: <stable@vger.kernel.org> # 5.4
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Reviewed-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+After some more investigation, it looks like the original assumption
+of 56b3077 no longer is true, and bcache has a very high potential of
+congesting the `system_wq`. In turn, this introduces laggy desktop
+performance, IO stalls (at least with btrfs), and input events may be
+delayed.
+
+So let's revert this. It's important to note that the semantics of
+using `system_wq` previously mean that `btree_io_wq` should be created
+before and destroyed after other bcache wqs to keep the same
+assumptions.
+
+Cc: Coly Li <colyli@suse.de>
+Cc: stable@vger.kernel.org # 5.4+
+Signed-off-by: Kai Krakow <kai@kaishome.de>
+Signed-off-by: Coly Li <colyli@suse.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/kernel/cpu-probe.c |   15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/md/bcache/bcache.h |    2 ++
+ drivers/md/bcache/btree.c  |   21 +++++++++++++++++++--
+ drivers/md/bcache/super.c  |    4 ++++
+ 3 files changed, 25 insertions(+), 2 deletions(-)
 
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1830,16 +1830,17 @@ static inline void cpu_probe_ingenic(str
- 		 */
- 		case PRID_COMP_INGENIC_D0:
- 			c->isa_level &= ~MIPS_CPU_ISA_M32R2;
--			break;
-+			fallthrough;
+--- a/drivers/md/bcache/bcache.h
++++ b/drivers/md/bcache/bcache.h
+@@ -1042,5 +1042,7 @@ void bch_debug_exit(void);
+ void bch_debug_init(void);
+ void bch_request_exit(void);
+ int bch_request_init(void);
++void bch_btree_exit(void);
++int bch_btree_init(void);
  
- 		/*
- 		 * The config0 register in the XBurst CPUs with a processor ID of
--		 * PRID_COMP_INGENIC_D1 has an abandoned huge page tlb mode, this
--		 * mode is not compatible with the MIPS standard, it will cause
--		 * tlbmiss and into an infinite loop (line 21 in the tlb-funcs.S)
--		 * when starting the init process. After chip reset, the default
--		 * is HPTLB mode, Write 0xa9000000 to cp0 register 5 sel 4 to
--		 * switch back to VTLB mode to prevent getting stuck.
-+		 * PRID_COMP_INGENIC_D0 or PRID_COMP_INGENIC_D1 has an abandoned
-+		 * huge page tlb mode, this mode is not compatible with the MIPS
-+		 * standard, it will cause tlbmiss and into an infinite loop
-+		 * (line 21 in the tlb-funcs.S) when starting the init process.
-+		 * After chip reset, the default is HPTLB mode, Write 0xa9000000
-+		 * to cp0 register 5 sel 4 to switch back to VTLB mode to prevent
-+		 * getting stuck.
- 		 */
- 		case PRID_COMP_INGENIC_D1:
- 			write_c0_page_ctrl(XBURST_PAGECTRL_HPTLB_DIS);
+ #endif /* _BCACHE_H */
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -99,6 +99,8 @@
+ #define PTR_HASH(c, k)							\
+ 	(((k)->ptr[0] >> c->bucket_bits) | PTR_GEN(k, 0))
+ 
++static struct workqueue_struct *btree_io_wq;
++
+ #define insert_lock(s, b)	((b)->level <= (s)->lock)
+ 
+ 
+@@ -308,7 +310,7 @@ static void __btree_node_write_done(stru
+ 	btree_complete_write(b, w);
+ 
+ 	if (btree_node_dirty(b))
+-		schedule_delayed_work(&b->work, 30 * HZ);
++		queue_delayed_work(btree_io_wq, &b->work, 30 * HZ);
+ 
+ 	closure_return_with_destructor(cl, btree_node_write_unlock);
+ }
+@@ -481,7 +483,7 @@ static void bch_btree_leaf_dirty(struct
+ 	BUG_ON(!i->keys);
+ 
+ 	if (!btree_node_dirty(b))
+-		schedule_delayed_work(&b->work, 30 * HZ);
++		queue_delayed_work(btree_io_wq, &b->work, 30 * HZ);
+ 
+ 	set_btree_node_dirty(b);
+ 
+@@ -2764,3 +2766,18 @@ void bch_keybuf_init(struct keybuf *buf)
+ 	spin_lock_init(&buf->lock);
+ 	array_allocator_init(&buf->freelist);
+ }
++
++void bch_btree_exit(void)
++{
++	if (btree_io_wq)
++		destroy_workqueue(btree_io_wq);
++}
++
++int __init bch_btree_init(void)
++{
++	btree_io_wq = create_singlethread_workqueue("bch_btree_io");
++	if (!btree_io_wq)
++		return -ENOMEM;
++
++	return 0;
++}
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -2821,6 +2821,7 @@ static void bcache_exit(void)
+ 		destroy_workqueue(bcache_wq);
+ 	if (bch_journal_wq)
+ 		destroy_workqueue(bch_journal_wq);
++	bch_btree_exit();
+ 
+ 	if (bcache_major)
+ 		unregister_blkdev(bcache_major, "bcache");
+@@ -2876,6 +2877,9 @@ static int __init bcache_init(void)
+ 		return bcache_major;
+ 	}
+ 
++	if (bch_btree_init())
++		goto err;
++
+ 	bcache_wq = alloc_workqueue("bcache", WQ_MEM_RECLAIM, 0);
+ 	if (!bcache_wq)
+ 		goto err;
 
 
