@@ -2,96 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7402732810F
+	by mail.lfdr.de (Postfix) with ESMTP id E5E12328110
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236448AbhCAOgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:36:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        id S236460AbhCAOgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:36:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236432AbhCAOgN (ORCPT
+        with ESMTP id S236451AbhCAOga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:36:13 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0AEC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:35:33 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id n14so17955802iog.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:35:33 -0800 (PST)
+        Mon, 1 Mar 2021 09:36:30 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2E8C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:35:50 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id k13so16602678otn.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:35:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=IuZcaz9M6z7fv3fUG8LG+twPtI8fl3qJP/EQXIzCZw4=;
-        b=yQsjymsNwLT2CG2IWunNlaopYSRMClehdBGUknkNaNf5z03W1+ZFYJ4E7id34mwAw+
-         2BFyiuYdqVl0ChtVdqmRT+m/aLOqwmXpAZ+yGi2IW3xAoQf16Ioz/5e/379O+TTPESwc
-         StsatWEuJRkFvDyq+xOW5CXC4ehHuTQIs7Tip0kHjd8P14uUEB+j1Ti9jP6goTUrzIR/
-         XCtALelhW+s/HJAK8X9a6EabjCGXuC+106pfXXA2aKIrb54f3jYg3QGrslAHlIrEA3tN
-         pQg4ywX3UPNUb79vVZ8+IEIeWe6X8hMylrmmLwol6i36dG866TD3aNtFTEir0ttoL7cE
-         ebwg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xrKyDD+nXhsE7yBfgO1RnI90ZWxZNc5CQ2d/LEfCEVs=;
+        b=EvKeF2BSaUOR94etd2XM5SP+27aPZLUGZzs1KGL5ozp3QqIlhP9l7Uev0R/xnRUFLA
+         QCqoaDUwAxx2fiB/e3BeaGUpmzf2B2CH64Zogi5aPKi/HCOBOKN7NHV80dJ9+QZvYkBo
+         hiS7KCaxm0Ibdy1C5YhQONar+r2gQU4xiBQTDCYf1xQOsRx11a1uZU0h6LahmJfdyvDm
+         8tkVOiyNJK3KzZrGiJ/6yZg/6YtkPDmxJ3U/ECBkd5WSuCNBSOiCjweK3b6xoUK9kAWx
+         G+dFbejWGnWKFc54JG2G+Y/BQEbPBRoR50nwpCs+Si6MGiFNppqOTX7S0Y6ZQQKExgFv
+         RD9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IuZcaz9M6z7fv3fUG8LG+twPtI8fl3qJP/EQXIzCZw4=;
-        b=G8SNRkWWtndndgHv2OiE3SAVEUPHS9W7ZsehrUUj8/loHSpP0kr7Qbb0X0NPK08SEJ
-         Pm/SG4VqreTdhvvoSAF4XJaTC/1J1NOQKoZBWJJFxBl0KlfC983sgY4TJXV1n1tB4yg1
-         FvzI+VGC8Eyx+jfXApWZ+Xiz38xEtceMh9Mn0oWQXNTmKzrhA73G+G0wMm1nHnaHbjxl
-         7PgU227dac/ucxxcbgisQ8wGQEtRGZBHCXw9kv22Zc2gM8Dk8xeli6c/N50LxTOOq29q
-         cn7AbKWnI1OXD9xVrw6E/EXQIcZzBZxovcvzVfrliqq0qeZWukzRDRuTkIEyo+iK8iCf
-         ndtg==
-X-Gm-Message-State: AOAM532evqP6CekRtTuUfPAlNyy3+BnC+B3i0Hb+zwPD3RwxNa4oUNfj
-        UEV76D7kwx6sVtz1/d7IZH+yzA==
-X-Google-Smtp-Source: ABdhPJxjIcTTq6ER1Ytq5m0JLPzBdfmh63xdfGoCmGyrsdQYyndJ2s4wlknmyKhBX5lxpE6JcmgPQQ==
-X-Received: by 2002:a5d:8493:: with SMTP id t19mr14390109iom.28.1614609332755;
-        Mon, 01 Mar 2021 06:35:32 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id x3sm10437350iof.21.2021.03.01.06.35.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 06:35:32 -0800 (PST)
-Subject: Re: KASAN: null-ptr-deref Write in bdi_put
-To:     syzbot <syzbot+aded2f2ab94d81727898@syzkaller.appspotmail.com>,
-        aik@ozlabs.ru, akpm@linux-foundation.org, hch@lst.de,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mingo@kernel.org,
-        mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org,
-        syzkaller-bugs@googlegroups.com, will@kernel.org
-References: <00000000000030504905bc792423@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <86fb6e46-2796-3967-3578-5b80d70bef2f@kernel.dk>
-Date:   Mon, 1 Mar 2021 07:35:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xrKyDD+nXhsE7yBfgO1RnI90ZWxZNc5CQ2d/LEfCEVs=;
+        b=kibgezsXIfIkxLCYE/EFd6OtztUCAiOpDtVy2eJ1AWXEX64cxVxHPvkMceb3ruaCDF
+         DqdiWJvFVPfeYugnCE0uw02su79XVBLmk6jp5DnVVvlmY3DATAgy73wnY+sUIFOX+wTa
+         xinlQ90fkScFCPyIXlJ9lddTljBiiCX7H7wvRYOwq5F7mrjKQGL4XtOYkIPAVAPyPnw1
+         AXDDUBd1GQu5rcvLSY6325r9AXmeutJRDsgx/9jwOwBfEc5rckPq/2ZIORJjwr95q7Xv
+         Eu4SFakl9i9G56iDvHSS1m4c+JhYuVQqtJFYYXUmwQYIchYuxI2PhvIbh+u9gezces6F
+         mZZg==
+X-Gm-Message-State: AOAM531pfIxY4iJM3k61+p+NdcSpSzGCpnIYNdvC7X3u2HE0VhB2joMv
+        JQBEWXYWX/9mlkM63YFxivu2kPpAPBxV80HFlD6AZZB6fYM=
+X-Google-Smtp-Source: ABdhPJxTUWL8+rtDcjvKoi9N7CkFS4lsnhyMXNledGGmivopGZ1Ru6PuusyIpBfINyoQbWRK2lL6xZGgZPlgMLpFOIc=
+X-Received: by 2002:a05:6830:1352:: with SMTP id r18mr14233961otq.283.1614609350048;
+ Mon, 01 Mar 2021 06:35:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <00000000000030504905bc792423@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210225090610.242623-1-allen.lkml@gmail.com> <20210225090610.242623-2-allen.lkml@gmail.com>
+In-Reply-To: <20210225090610.242623-2-allen.lkml@gmail.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Mon, 1 Mar 2021 15:35:36 +0100
+Message-ID: <CAHUa44F5Ew6U80t7PPmV1J4KunXBm_izBxVrxg=x8azjBz0r9Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] optee: fix tee out of memory failure seen during
+ kexec reboot
+To:     Allen Pais <allen.lkml@gmail.com>
+Cc:     zajec5@gmail.com, bcm-kernel-feedback-list@broadcom.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        op-tee@lists.trustedfirmware.org,
+        Allen Pais <apais@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 5:56 AM, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 2d2f6f1b4799428d160c021dd652bc3e3593945e
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Thu Jan 7 18:36:40 2021 +0000
-> 
->     block: pre-initialize struct block_device in bdev_alloc_inode
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1424a5b6d00000
-> start commit:   71c061d2 Merge tag 'for-5.11-rc2-tag' of git://git.kernel...
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=33b7f56c5bf0f684
-> dashboard link: https://syzkaller.appspot.com/bug?extid=aded2f2ab94d81727898
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143f7fc0d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1089023f500000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+On Thu, Feb 25, 2021 at 10:06 AM Allen Pais <allen.lkml@gmail.com> wrote:
+>
+> From: Allen Pais <apais@linux.microsoft.com>
+>
+> The following out of memory errors are seen on kexec reboot
+> from the optee core.
+>
+> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
+>
+> tee_shm_release() is not invoked on dma shm buffer.
+>
+> Implement .shutdown() method to handle the release of the buffers
+> correctly.
+>
+> More info:
+> https://github.com/OP-TEE/optee_os/issues/3637
+>
+> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+> ---
+>  drivers/tee/optee/core.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 
-#syz fix: block: pre-initialize struct block_device in bdev_alloc_inode
+This looks good to me. Do you have a practical way of testing this on
+QEMU for instance?
 
+Thanks,
+Jens
 
--- 
-Jens Axboe
-
+>
+> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> index cf4718c6d35d..80e2774b5e2a 100644
+> --- a/drivers/tee/optee/core.c
+> +++ b/drivers/tee/optee/core.c
+> @@ -582,6 +582,13 @@ static optee_invoke_fn *get_invoke_func(struct device *dev)
+>         return ERR_PTR(-EINVAL);
+>  }
+>
+> +/* optee_remove - Device Removal Routine
+> + * @pdev: platform device information struct
+> + *
+> + * optee_remove is called by platform subsystem to alter the driver
+> + * that it should release the device
+> + */
+> +
+>  static int optee_remove(struct platform_device *pdev)
+>  {
+>         struct optee *optee = platform_get_drvdata(pdev);
+> @@ -612,6 +619,18 @@ static int optee_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> +/* optee_shutdown - Device Removal Routine
+> + * @pdev: platform device information struct
+> + *
+> + * platform_shutdown is called by the platform subsystem to alter
+> + * the driver that a shutdown/reboot(or kexec) is happening and
+> + * device must be disabled.
+> + */
+> +static void optee_shutdown(struct platform_device *pdev)
+> +{
+> +       optee_disable_shm_cache(platform_get_drvdata(pdev));
+> +}
+> +
+>  static int optee_probe(struct platform_device *pdev)
+>  {
+>         optee_invoke_fn *invoke_fn;
+> @@ -738,6 +757,7 @@ MODULE_DEVICE_TABLE(of, optee_dt_match);
+>  static struct platform_driver optee_driver = {
+>         .probe  = optee_probe,
+>         .remove = optee_remove,
+> +       .shutdown = optee_shutdown,
+>         .driver = {
+>                 .name = "optee",
+>                 .of_match_table = optee_dt_match,
+> --
+> 2.25.1
+>
