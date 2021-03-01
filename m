@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D1C327D58
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED479327D5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbhCALd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 06:33:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57874 "EHLO mail.kernel.org"
+        id S233862AbhCALd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 06:33:57 -0500
+Received: from a.mx.secunet.com ([62.96.220.36]:53924 "EHLO a.mx.secunet.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233754AbhCALbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 06:31:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9757C64E22;
-        Mon,  1 Mar 2021 11:30:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614598252;
-        bh=XJHueoW65vLj+4kVOT6u/yTzg+bSjpuQ9NtCeZkqWGc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EE4LqhTL0kSe1iVAk++5zkvFgXmp//BQRPuzNsxqY8miqRT2Q0wLWzHggHaaQZ4CR
-         9BW1BjOOfa5XTDzT+xyTN0j9uhXCWobMGzcRUNi4Jo6BcmlWbaa9+D3FC5KVC8un3N
-         yF0bTRD5neVc+YxhDpu5KDuAbR1BNqTsUTz+4dbw=
-Date:   Mon, 1 Mar 2021 12:30:49 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     huangshaobo <huangshaobo6@huawei.com>
-Cc:     linux@arm.linux.org.uk, mhiramat@kernel.org, tixy@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zengweilin@huawei.com, young.liuyang@huawei.com,
-        nixiaoming@huawei.com, chenzefeng2@huawei.com,
-        liucheng32@huawei.com, kepler.chenxin@huawei.com,
-        xiaoqian9@huawei.com
-Subject: Re: [PATCH 4.4.y] arm: kprobes: Allow to handle reentered kprobe on
- single-stepping
-Message-ID: <YDzQaT6zTUb43LFt@kroah.com>
-References: <20210227091701.23944-1-huangshaobo6@huawei.com>
+        id S233813AbhCALdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 06:33:13 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 6FEFA205CD;
+        Mon,  1 Mar 2021 12:32:31 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Y3xAkyP2FXpN; Mon,  1 Mar 2021 12:32:31 +0100 (CET)
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 0DBB12052E;
+        Mon,  1 Mar 2021 12:32:31 +0100 (CET)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 1 Mar 2021 12:32:30 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Mon, 1 Mar 2021
+ 12:32:30 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 6F3C93180428; Mon,  1 Mar 2021 12:32:30 +0100 (CET)
+Date:   Mon, 1 Mar 2021 12:32:30 +0100
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <fw@strlen.de>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] xfrm: Fix incorrect types in assignment
+Message-ID: <20210301113230.GC2966489@gauss3.secunet.de>
+References: <1613791103-127057-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210227091701.23944-1-huangshaobo6@huawei.com>
+In-Reply-To: <1613791103-127057-1-git-send-email-yang.lee@linux.alibaba.com>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 05:17:01PM +0800, huangshaobo wrote:
-> From: Masami Hiramatsu <mhiramat@kernel.org>
+On Sat, Feb 20, 2021 at 11:18:23AM +0800, Yang Li wrote:
+> Fix the following sparse warnings:
+> net/xfrm/xfrm_policy.c:1303:22: warning: incorrect type in assignment
+> (different address spaces)
 > 
-> commit f3fbd7ec62dec1528fb8044034e2885f2b257941 upstream
-> 
-> This is arm port of commit 6a5022a56ac3 ("kprobes/x86: Allow to
-> handle reentered kprobe on single-stepping")
-> 
-> Since the FIQ handlers can interrupt in the single stepping
-> (or preparing the single stepping, do_debug etc.), we should
-> consider a kprobe is hit in the NMI handler. Even in that
-> case, the kprobe is allowed to be reentered as same as the
-> kprobes hit in kprobe handlers
-> (KPROBE_HIT_ACTIVE or KPROBE_HIT_SSDONE).
-> 
-> The real issue will happen when a kprobe hit while another
-> reentered kprobe is processing (KPROBE_REENTER), because
-> we already consumed a saved-area for the previous kprobe.
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Jon Medhurst <tixy@linaro.org>
-> Fixes: 24ba613c9d6c ("ARM kprobes: core code")
-> Cc: stable@vger.kernel.org #v2.6.25~v4.11
-> Signed-off-by: huangshaobo <huangshaobo6@huawei.com>
-> ---
->  arch/arm/probes/kprobes/core.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-What about the 4.9.y tree as well?
+Please add a proper 'Fixes' tag so that it can be backported into
+the stable trees.
 
-thanks,
+Thanks!
 
-greg k-h
