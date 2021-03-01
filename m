@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D866329BB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2126329C59
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379420AbhCBB23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:28:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43886 "EHLO mail.kernel.org"
+        id S1380564AbhCBBxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:53:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241237AbhCATPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:15:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 291D264F39;
-        Mon,  1 Mar 2021 17:49:24 +0000 (UTC)
+        id S241870AbhCAT3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:29:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E65764F20;
+        Mon,  1 Mar 2021 17:49:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620965;
-        bh=7JixmZr1Y2v3lL6DOduul8NJZ0rJQcrELUzZzxYLTjs=;
+        s=korg; t=1614620971;
+        bh=FWst4qTI7kqgy8waaxo+7DukXkl9Ufpc+Jgga+lArHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HAiLmOeQPGOJFPaWaufIFuWIgEl13kq9ke8xVUyqDKeXLFS9r7Au7Zpx28xy8kA92
-         9aTxTZRMSEmCUlNb+fv3+90Ww6iIomKhu9MgCnTjjXat2eMb7QPhsJLyVUetU/DBa1
-         t9rPYE7Q976NHRo+0zSgbzocADZY6Exp8ekbhaLU=
+        b=Nb/XVG9IZNx/j4RllpjcS4wHii+dEICP47kgJu/PSv5zhkhnIa126H5sEqvOOYpKQ
+         DSDhsXSq/Mllc5z0KCcNeqUjQYjszMvPkBHpycZVURwshWiDZ/MYCsyNiFuQ7fareP
+         Sn2xdllKPsx7d8RVjEWbsgNyN7z54pH2KTBqyG2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 345/775] RDMA/rtrs-clt: Refactor the failure cases in alloc_clt
-Date:   Mon,  1 Mar 2021 17:08:33 +0100
-Message-Id: <20210301161218.671318912@linuxfoundation.org>
+Subject: [PATCH 5.11 347/775] RDMA/rtrs: Fix KASAN: stack-out-of-bounds bug
+Date:   Mon,  1 Mar 2021 17:08:35 +0100
+Message-Id: <20210301161218.769438367@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -43,87 +41,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+From: Jack Wang <jinpu.wang@cloud.ionos.com>
 
-[ Upstream commit eab098246625e91c1cbd6e8f75b09e4c9c28a9fc ]
+[ Upstream commit 7fbc3c373eefc291ff96d48496106c106b7f81c6 ]
 
-Make all failure cases go to the common path to avoid duplicate code.
-And some issued existed before.
+When KASAN is enabled, we notice warning below:
+[  483.436975] ==================================================================
+[  483.437234] BUG: KASAN: stack-out-of-bounds in _mlx5_ib_post_send+0x188a/0x2560 [mlx5_ib]
+[  483.437430] Read of size 4 at addr ffff88a195fd7d30 by task kworker/1:3/6954
 
-1. clt need to be freed to avoid memory leak.
+[  483.437731] CPU: 1 PID: 6954 Comm: kworker/1:3 Kdump: loaded Tainted: G           O      5.4.82-pserver #5.4.82-1+feature+linux+5.4.y+dbg+20201210.1532+987e7a6~deb10
+[  483.437976] Hardware name: Supermicro Super Server/X11DDW-L, BIOS 3.3 02/21/2020
+[  483.438168] Workqueue: rtrs_server_wq hb_work [rtrs_core]
+[  483.438323] Call Trace:
+[  483.438486]  dump_stack+0x96/0xe0
+[  483.438646]  ? _mlx5_ib_post_send+0x188a/0x2560 [mlx5_ib]
+[  483.438802]  print_address_description.constprop.6+0x1b/0x220
+[  483.438966]  ? _mlx5_ib_post_send+0x188a/0x2560 [mlx5_ib]
+[  483.439133]  ? _mlx5_ib_post_send+0x188a/0x2560 [mlx5_ib]
+[  483.439285]  __kasan_report.cold.9+0x1a/0x32
+[  483.439444]  ? _mlx5_ib_post_send+0x188a/0x2560 [mlx5_ib]
+[  483.439597]  kasan_report+0x10/0x20
+[  483.439752]  _mlx5_ib_post_send+0x188a/0x2560 [mlx5_ib]
+[  483.439910]  ? update_sd_lb_stats+0xfb1/0xfc0
+[  483.440073]  ? set_reg_wr+0x520/0x520 [mlx5_ib]
+[  483.440222]  ? update_group_capacity+0x340/0x340
+[  483.440377]  ? find_busiest_group+0x314/0x870
+[  483.440526]  ? update_sd_lb_stats+0xfc0/0xfc0
+[  483.440683]  ? __bitmap_and+0x6f/0x100
+[  483.440832]  ? __lock_acquire+0xa2/0x2150
+[  483.440979]  ? __lock_acquire+0xa2/0x2150
+[  483.441128]  ? __lock_acquire+0xa2/0x2150
+[  483.441279]  ? debug_lockdep_rcu_enabled+0x23/0x60
+[  483.441430]  ? lock_downgrade+0x390/0x390
+[  483.441582]  ? __lock_acquire+0xa2/0x2150
+[  483.441729]  ? __lock_acquire+0xa2/0x2150
+[  483.441876]  ? newidle_balance+0x425/0x8f0
+[  483.442024]  ? __lock_acquire+0xa2/0x2150
+[  483.442172]  ? debug_lockdep_rcu_enabled+0x23/0x60
+[  483.442330]  hb_work+0x15d/0x1d0 [rtrs_core]
+[  483.442479]  ? schedule_hb+0x50/0x50 [rtrs_core]
+[  483.442627]  ? lock_downgrade+0x390/0x390
+[  483.442781]  ? process_one_work+0x40d/0xa50
+[  483.442931]  process_one_work+0x4ee/0xa50
+[  483.443082]  ? pwq_dec_nr_in_flight+0x110/0x110
+[  483.443231]  ? do_raw_spin_lock+0x119/0x1d0
+[  483.443383]  worker_thread+0x65/0x5c0
+[  483.443532]  ? process_one_work+0xa50/0xa50
+[  483.451839]  kthread+0x1e2/0x200
+[  483.451983]  ? kthread_create_on_node+0xc0/0xc0
+[  483.452139]  ret_from_fork+0x3a/0x50
 
-2. return ERR_PTR(-ENOMEM) if kobject_create_and_add fails, because
-   rtrs_clt_open checks the return value of by call "IS_ERR(clt)".
+The problem is we use wrong type when send wr, hw driver expect the type
+of IB_WR_RDMA_WRITE_WITH_IMM wr should be ib_rdma_wr, and doing
+container_of to access member. The fix is simple use ib_rdma_wr instread
+of ib_send_wr.
 
-Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
-Link: https://lore.kernel.org/r/20201217141915.56989-15-jinpu.wang@cloud.ionos.com
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+Fixes: c0894b3ea69d ("RDMA/rtrs: core: lib functions shared between client and server modules")
+Link: https://lore.kernel.org/r/20201217141915.56989-20-jinpu.wang@cloud.ionos.com
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Reviewed-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index b3fb5fb93815f..172bf7f221ff0 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2570,11 +2570,8 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
- 	clt->dev.class = rtrs_clt_dev_class;
- 	clt->dev.release = rtrs_clt_dev_release;
- 	err = dev_set_name(&clt->dev, "%s", sessname);
--	if (err) {
--		free_percpu(clt->pcpu_path);
--		kfree(clt);
--		return ERR_PTR(err);
--	}
-+	if (err)
-+		goto err;
- 	/*
- 	 * Suppress user space notification until
- 	 * sysfs files are created
-@@ -2582,29 +2579,31 @@ static struct rtrs_clt *alloc_clt(const char *sessname, size_t paths_num,
- 	dev_set_uevent_suppress(&clt->dev, true);
- 	err = device_register(&clt->dev);
- 	if (err) {
--		free_percpu(clt->pcpu_path);
- 		put_device(&clt->dev);
--		return ERR_PTR(err);
-+		goto err;
- 	}
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+index df52427f17106..da4ff764dd3f0 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+@@ -182,16 +182,16 @@ int rtrs_post_rdma_write_imm_empty(struct rtrs_con *con, struct ib_cqe *cqe,
+ 				    u32 imm_data, enum ib_send_flags flags,
+ 				    struct ib_send_wr *head)
+ {
+-	struct ib_send_wr wr;
++	struct ib_rdma_wr wr;
  
- 	clt->kobj_paths = kobject_create_and_add("paths", &clt->dev.kobj);
- 	if (!clt->kobj_paths) {
--		free_percpu(clt->pcpu_path);
--		device_unregister(&clt->dev);
--		return NULL;
-+		err = -ENOMEM;
-+		goto err_dev;
- 	}
- 	err = rtrs_clt_create_sysfs_root_files(clt);
- 	if (err) {
--		free_percpu(clt->pcpu_path);
- 		kobject_del(clt->kobj_paths);
- 		kobject_put(clt->kobj_paths);
--		device_unregister(&clt->dev);
--		return ERR_PTR(err);
-+		goto err_dev;
- 	}
- 	dev_set_uevent_suppress(&clt->dev, false);
- 	kobject_uevent(&clt->dev.kobj, KOBJ_ADD);
+-	wr = (struct ib_send_wr) {
+-		.wr_cqe	= cqe,
+-		.send_flags	= flags,
+-		.opcode	= IB_WR_RDMA_WRITE_WITH_IMM,
+-		.ex.imm_data	= cpu_to_be32(imm_data),
++	wr = (struct ib_rdma_wr) {
++		.wr.wr_cqe	= cqe,
++		.wr.send_flags	= flags,
++		.wr.opcode	= IB_WR_RDMA_WRITE_WITH_IMM,
++		.wr.ex.imm_data	= cpu_to_be32(imm_data),
+ 	};
  
- 	return clt;
-+err_dev:
-+	device_unregister(&clt->dev);
-+err:
-+	free_percpu(clt->pcpu_path);
-+	kfree(clt);
-+	return ERR_PTR(err);
+-	return rtrs_post_send(con->qp, head, &wr);
++	return rtrs_post_send(con->qp, head, &wr.wr);
  }
+ EXPORT_SYMBOL_GPL(rtrs_post_rdma_write_imm_empty);
  
- static void wait_for_inflight_permits(struct rtrs_clt *clt)
 -- 
 2.27.0
 
