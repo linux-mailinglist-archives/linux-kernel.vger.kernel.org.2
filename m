@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B78FA3294DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 23:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A7F3294EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 23:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238264AbhCAWYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:24:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52730 "EHLO mail.kernel.org"
+        id S244911AbhCAW2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:28:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237814AbhCARcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:32:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BC08650A6;
-        Mon,  1 Mar 2021 16:53:13 +0000 (UTC)
+        id S238590AbhCARd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:33:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4B4A650AA;
+        Mon,  1 Mar 2021 16:53:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617594;
-        bh=i8tYIa9ZhnKfajnQA6wjvkZylooSF0imW1b+EyCvId8=;
+        s=korg; t=1614617617;
+        bh=3EYC4st7fnHoR7eoJDSRsTw3mw0tHoNDtfzZQhscUg8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QaHB3uTkaqGvasasxgqeOZz3yuTextM46OKbTBag012OFLNDuPZ29pp7GblkLpBU9
-         SHbMV3HUzOqvrjjPOsajExk5/RQm8DMo2DZtaIZsi+DoEV3J7XFDC+0uTOnMtsunHW
-         5qKmjDVXxsg+b7ZsfOISU+iNB3CPurJZN/10x9jE=
+        b=RI9uOwA3tY3A3DlL2UHpSuMujsvuj9qKGjMqX5wQiUE7NWlEnYCkQgtfl/lq3EXbP
+         15fa1PxZLjiSswIZy7mL9BRkxMkawixdOuaIZX8/gYksiFVIYfGcPd630MSY07nqxy
+         VVOdvKWDOIFRi+r2jS46dOFWTGRtOBb3eNkuYFzY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Jerome Brunet <jbrunet@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 127/340] clk: meson: clk-pll: fix initializing the old rate (fallback) for a PLL
-Date:   Mon,  1 Mar 2021 17:11:11 +0100
-Message-Id: <20210301161054.560380840@linuxfoundation.org>
+Subject: [PATCH 5.4 129/340] clk: meson: clk-pll: propagate the error from meson_clk_pll_set_rate()
+Date:   Mon,  1 Mar 2021 17:11:13 +0100
+Message-Id: <20210301161054.652302064@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -43,34 +43,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit 2f290b7c67adf6459a17a4c978102af35cd62e4a ]
+[ Upstream commit ccdc1f0836f8e37b558a424f1e491f929b2e7ede ]
 
-The "rate" parameter in meson_clk_pll_set_rate() contains the new rate.
-Retrieve the old rate with clk_hw_get_rate() so we don't inifinitely try
-to switch from the new rate to the same rate again.
+Popagate the error code from meson_clk_pll_set_rate() when the PLL does
+not lock with the new settings.
 
-Fixes: 7a29a869434e8b ("clk: meson: Add support for Meson clock controller")
+Fixes: 722825dcd54b2e ("clk: meson: migrate plls clocks to clk_regmap")
 Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20201226121556.975418-2-martin.blumenstingl@googlemail.com
+Link: https://lore.kernel.org/r/20201226121556.975418-4-martin.blumenstingl@googlemail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/meson/clk-pll.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/meson/clk-pll.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index 3a5853ca98c6c..fb0bc8c0ad4d4 100644
+index a92f44fa5a24e..e8df254f8085b 100644
 --- a/drivers/clk/meson/clk-pll.c
 +++ b/drivers/clk/meson/clk-pll.c
-@@ -369,7 +369,7 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 	if (parent_rate == 0 || rate == 0)
- 		return -EINVAL;
+@@ -392,7 +392,8 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	if (!enabled)
+ 		return 0;
  
--	old_rate = rate;
-+	old_rate = clk_hw_get_rate(hw);
+-	if (meson_clk_pll_enable(hw)) {
++	ret = meson_clk_pll_enable(hw);
++	if (ret) {
+ 		pr_warn("%s: pll did not lock, trying to restore old rate %lu\n",
+ 			__func__, old_rate);
+ 		/*
+@@ -404,7 +405,7 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
+ 		meson_clk_pll_set_rate(hw, old_rate, parent_rate);
+ 	}
  
- 	ret = meson_clk_get_pll_settings(rate, parent_rate, &m, &n, pll);
- 	if (ret)
+-	return 0;
++	return ret;
+ }
+ 
+ /*
 -- 
 2.27.0
 
