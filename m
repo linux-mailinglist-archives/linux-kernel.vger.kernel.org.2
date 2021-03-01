@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E211329AB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 277BB329A3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348364AbhCBBCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:02:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55414 "EHLO mail.kernel.org"
+        id S1377218AbhCBAqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:46:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240532AbhCASwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:52:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2B62652B7;
-        Mon,  1 Mar 2021 17:36:11 +0000 (UTC)
+        id S235567AbhCASjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1F10652D1;
+        Mon,  1 Mar 2021 17:38:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620172;
-        bh=f9pXglcwnjOnwPKby6RWGzMmgytNP6MOjK/rl95E5J4=;
+        s=korg; t=1614620298;
+        bh=YIcprNi1LbRWW8vDHUQc60XeHzo123EbjjMkdaYsGng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jhssAXBeh+qjNUl6aZYL2JCwiZ5r2bwx0phA4ZWK7lBKMxPoWqQGx4m9hSVtoYRKW
-         aonx8BRY7Crbwbej47LpyGAngy3a6nO4nj73NVeJ4YFYKgPZMFPeMKfK5mtH/QSf3v
-         9nQHDRH9cUnwhcK28vnMWUn8qg0T3VjECfaNi5kI=
+        b=qG+krTm+RalMy46/E46lt/wzPKji2hn0Bgvd91afU5gMy7EXTUmAx0hLywwfvu5dv
+         NczP58cYenuE4+h6ukuzIksQnkMRvl+u8GT8tWvpRY7z5L4av0wJghRVRxnOxovvnf
+         97EYC3HdkDKJ8c0bZMqkZGIoZX7tbV6YAEqhpGSI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Jack Pham <jackp@codeaurora.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>, Ferry Toth <fntoth@gmail.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 5.11 056/775] usb: gadget: u_audio: Free requests only after callback
-Date:   Mon,  1 Mar 2021 17:03:44 +0100
-Message-Id: <20210301161204.472801972@linuxfoundation.org>
+        stable@vger.kernel.org, Rosen Penev <rosenp@gmail.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 072/775] ARM: dts: armada388-helios4: assign pinctrl to LEDs
+Date:   Mon,  1 Mar 2021 17:04:00 +0100
+Message-Id: <20210301161205.240498820@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,70 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Pham <jackp@codeaurora.org>
+From: Rosen Penev <rosenp@gmail.com>
 
-[ Upstream commit 7de8681be2cde9f6953d3be1fa6ce05f9fe6e637 ]
+[ Upstream commit e011c9025a4691b5c734029577a920bd6c320994 ]
 
-As per the kernel doc for usb_ep_dequeue(), it states that "this
-routine is asynchronous, that is, it may return before the completion
-routine runs". And indeed since v5.0 the dwc3 gadget driver updated
-its behavior to place dequeued requests on to a cancelled list to be
-given back later after the endpoint is stopped.
+Split up the pins to match earlier definitions. Allows LEDs to flash
+properly.
 
-The free_ep() was incorrectly assuming that a request was ready to
-be freed after calling dequeue which results in a use-after-free
-in dwc3 when it traverses its cancelled list. Fix this by moving
-the usb_ep_free_request() call to the callback itself in case the
-ep is disabled.
+Fixes: ced8025b569e ("ARM: dts: armada388-helios4")
 
-Fixes: eb9fecb9e69b0 ("usb: gadget: f_uac2: split out audio core")
-Reported-and-tested-by: Ferry Toth <fntoth@gmail.com>
-Reviewed-and-tested-by: Peter Chen <peter.chen@nxp.com>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20210118084642.322510-2-jbrunet@baylibre.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Rosen Penev <rosenp@gmail.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/u_audio.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/armada-388-helios4.dts | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/u_audio.c b/drivers/usb/gadget/function/u_audio.c
-index e6d32c5367812..908e49dafd620 100644
---- a/drivers/usb/gadget/function/u_audio.c
-+++ b/drivers/usb/gadget/function/u_audio.c
-@@ -89,7 +89,12 @@ static void u_audio_iso_complete(struct usb_ep *ep, struct usb_request *req)
- 	struct snd_uac_chip *uac = prm->uac;
+diff --git a/arch/arm/boot/dts/armada-388-helios4.dts b/arch/arm/boot/dts/armada-388-helios4.dts
+index b3728de3bd3fa..5a6af7e83e445 100644
+--- a/arch/arm/boot/dts/armada-388-helios4.dts
++++ b/arch/arm/boot/dts/armada-388-helios4.dts
+@@ -70,6 +70,9 @@
  
- 	/* i/f shutting down */
--	if (!prm->ep_enabled || req->status == -ESHUTDOWN)
-+	if (!prm->ep_enabled) {
-+		usb_ep_free_request(ep, req);
-+		return;
-+	}
+ 	system-leds {
+ 		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&helios_system_led_pins>;
 +
-+	if (req->status == -ESHUTDOWN)
- 		return;
+ 		status-led {
+ 			label = "helios4:green:status";
+ 			gpios = <&gpio0 24 GPIO_ACTIVE_LOW>;
+@@ -86,6 +89,9 @@
  
- 	/*
-@@ -336,8 +341,14 @@ static inline void free_ep(struct uac_rtd_params *prm, struct usb_ep *ep)
- 
- 	for (i = 0; i < params->req_number; i++) {
- 		if (prm->ureq[i].req) {
--			usb_ep_dequeue(ep, prm->ureq[i].req);
--			usb_ep_free_request(ep, prm->ureq[i].req);
-+			if (usb_ep_dequeue(ep, prm->ureq[i].req))
-+				usb_ep_free_request(ep, prm->ureq[i].req);
-+			/*
-+			 * If usb_ep_dequeue() cannot successfully dequeue the
-+			 * request, the request will be freed by the completion
-+			 * callback.
-+			 */
+ 	io-leds {
+ 		compatible = "gpio-leds";
++		pinctrl-names = "default";
++		pinctrl-0 = <&helios_io_led_pins>;
 +
- 			prm->ureq[i].req = NULL;
- 		}
- 	}
+ 		sata1-led {
+ 			label = "helios4:green:ata1";
+ 			gpios = <&gpio1 17 GPIO_ACTIVE_LOW>;
+@@ -286,9 +292,12 @@
+ 						       "mpp39", "mpp40";
+ 					marvell,function = "sd0";
+ 				};
+-				helios_led_pins: helios-led-pins {
+-					marvell,pins = "mpp24", "mpp25",
+-						       "mpp49", "mpp50",
++				helios_system_led_pins: helios-system-led-pins {
++					marvell,pins = "mpp24", "mpp25";
++					marvell,function = "gpio";
++				};
++				helios_io_led_pins: helios-io-led-pins {
++					marvell,pins = "mpp49", "mpp50",
+ 						       "mpp52", "mpp53",
+ 						       "mpp54";
+ 					marvell,function = "gpio";
 -- 
 2.27.0
 
