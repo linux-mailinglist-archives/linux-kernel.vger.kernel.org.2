@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64843329CAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AA0329D45
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241864AbhCBCKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:10:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50942 "EHLO mail.kernel.org"
+        id S1443335AbhCBCUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:20:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242151AbhCATf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:35:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8505E65077;
-        Mon,  1 Mar 2021 17:27:00 +0000 (UTC)
+        id S242332AbhCATs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:48:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F051E6525D;
+        Mon,  1 Mar 2021 17:28:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619621;
-        bh=yGdYWvNuFZncbwZNiLQfD7jXjmOmiTOQhKTxlaNTqVg=;
+        s=korg; t=1614619716;
+        bh=7huvN+C20SkmZILgftz3wqApWdpSaE+GDlgsLyMY1P8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u/3mwueMXz72OVILAejUU90z/3gfJakavkVNzmjZOF70HOAvzE8IUk+f9zyub+5YR
-         /Uy5QnKjYWoIVFZvtF1R960hTTMieH/Rq49ELN1h7PU7bvSF+rBIT56FfWWcmXykct
-         U0BfBviSq7d/UvGaN1uALwN9kjGh74Ca3qeRG3tY=
+        b=c4j37if5YfXiap1N1b8rz4GyL+CJ4SCFG7PjnuSsbtk9m8j+GE6+hSMMROPHkgo6u
+         QlaEtTO9tAnCx1pVJEFrRB35OKKReR93Y6C7dtvzYiUGOWSubTvfuGtFXDic55IGSq
+         TmY3XomQgUcpe24h18HKnMm4ogivJD/UOKqDrGeg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>
-Subject: [PATCH 5.10 519/663] drm/modes: Switch to 64bit maths to avoid integer overflow
-Date:   Mon,  1 Mar 2021 17:12:47 +0100
-Message-Id: <20210301161207.522823064@linuxfoundation.org>
+        stable@vger.kernel.org, Huang Jianan <huangjianan@oppo.com>,
+        Chao Yu <yuchao0@huawei.com>, Gao Xiang <hsiangkao@redhat.com>
+Subject: [PATCH 5.10 525/663] erofs: initialized fields can only be observed after bit is set
+Date:   Mon,  1 Mar 2021 17:12:53 +0100
+Message-Id: <20210301161207.817582272@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,44 +39,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ville Syrjälä <ville.syrjala@linux.intel.com>
+From: Gao Xiang <hsiangkao@redhat.com>
 
-commit 5b34ab52401f0f1f191bcb83a182c83b506f4763 upstream.
+commit ce063129181312f8781a047a50be439c5859747b upstream.
 
-The new >8k CEA modes have dotclocks reaching 5.94 GHz, which
-means our clock*1000 will now overflow the 32bit unsigned
-integer. Switch to 64bit maths to avoid it.
+Currently, although set_bit() & test_bit() pairs are used as a fast-
+path for initialized configurations. However, these atomic ops are
+actually relaxed forms. Instead, load-acquire & store-release form is
+needed to make sure uninitialized fields won't be observed in advance
+here (yet no such corresponding bitops so use full barriers instead.)
 
-Cc: stable@vger.kernel.org
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201022194256.30978-1-ville.syrjala@linux.intel.com
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
+Link: https://lore.kernel.org/r/20210209130618.15838-1-hsiangkao@aol.com
+Fixes: 62dc45979f3f ("staging: erofs: fix race of initializing xattrs of a inode at the same time")
+Fixes: 152a333a5895 ("staging: erofs: add compacted compression indexes support")
+Cc: <stable@vger.kernel.org> # 5.3+
+Reported-by: Huang Jianan <huangjianan@oppo.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/drm_modes.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/erofs/xattr.c |   10 +++++++++-
+ fs/erofs/zmap.c  |   10 +++++++++-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/drm_modes.c
-+++ b/drivers/gpu/drm/drm_modes.c
-@@ -762,7 +762,7 @@ int drm_mode_vrefresh(const struct drm_d
- 	if (mode->htotal == 0 || mode->vtotal == 0)
+--- a/fs/erofs/xattr.c
++++ b/fs/erofs/xattr.c
+@@ -48,8 +48,14 @@ static int init_inode_xattrs(struct inod
+ 	int ret = 0;
+ 
+ 	/* the most case is that xattrs of this inode are initialized. */
+-	if (test_bit(EROFS_I_EA_INITED_BIT, &vi->flags))
++	if (test_bit(EROFS_I_EA_INITED_BIT, &vi->flags)) {
++		/*
++		 * paired with smp_mb() at the end of the function to ensure
++		 * fields will only be observed after the bit is set.
++		 */
++		smp_mb();
  		return 0;
++	}
  
--	num = mode->clock * 1000;
-+	num = mode->clock;
- 	den = mode->htotal * mode->vtotal;
+ 	if (wait_on_bit_lock(&vi->flags, EROFS_I_BL_XATTR_BIT, TASK_KILLABLE))
+ 		return -ERESTARTSYS;
+@@ -137,6 +143,8 @@ static int init_inode_xattrs(struct inod
+ 	}
+ 	xattr_iter_end(&it, atomic_map);
  
- 	if (mode->flags & DRM_MODE_FLAG_INTERLACE)
-@@ -772,7 +772,7 @@ int drm_mode_vrefresh(const struct drm_d
- 	if (mode->vscan > 1)
- 		den *= mode->vscan;
++	/* paired with smp_mb() at the beginning of the function. */
++	smp_mb();
+ 	set_bit(EROFS_I_EA_INITED_BIT, &vi->flags);
  
--	return DIV_ROUND_CLOSEST(num, den);
-+	return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(num, 1000), den);
- }
- EXPORT_SYMBOL(drm_mode_vrefresh);
+ out_unlock:
+--- a/fs/erofs/zmap.c
++++ b/fs/erofs/zmap.c
+@@ -36,8 +36,14 @@ static int z_erofs_fill_inode_lazy(struc
+ 	void *kaddr;
+ 	struct z_erofs_map_header *h;
  
+-	if (test_bit(EROFS_I_Z_INITED_BIT, &vi->flags))
++	if (test_bit(EROFS_I_Z_INITED_BIT, &vi->flags)) {
++		/*
++		 * paired with smp_mb() at the end of the function to ensure
++		 * fields will only be observed after the bit is set.
++		 */
++		smp_mb();
+ 		return 0;
++	}
+ 
+ 	if (wait_on_bit_lock(&vi->flags, EROFS_I_BL_Z_BIT, TASK_KILLABLE))
+ 		return -ERESTARTSYS;
+@@ -83,6 +89,8 @@ static int z_erofs_fill_inode_lazy(struc
+ 
+ 	vi->z_physical_clusterbits[1] = vi->z_logical_clusterbits +
+ 					((h->h_clusterbits >> 5) & 7);
++	/* paired with smp_mb() at the beginning of the function */
++	smp_mb();
+ 	set_bit(EROFS_I_Z_INITED_BIT, &vi->flags);
+ unmap_done:
+ 	kunmap_atomic(kaddr);
 
 
