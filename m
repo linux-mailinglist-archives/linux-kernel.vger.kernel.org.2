@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3558329742
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37C7329756
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245628AbhCAWgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:36:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235981AbhCARkg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:40:36 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01393C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:39:53 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id a23so2243928pga.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:39:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VIEVnYfBURNQaEk7q+gL1sk168GjsFz+wyAEY3Zaj6Y=;
-        b=LzapItJfq2azam+0YDJzUf2208kzzrWmIIkwteaTmAPiBPHksFPFpeeTUDkasfW7Fp
-         5g6NCG5TnFQ2USBk2DUEjDtPXjVLVGWp+V6QRzwwvgC3ScsUObjYYbd/uW0ODsOiXwou
-         YQ03goXSEkW3FTfGB8SBZvjHj2fqYZ4aXWmqz1Df91bJt3qOZG1z67w/IbqQkhM6Ame6
-         yPyIzm0byUxbjuPQi9Okr6PISi9IrFjzSJs3EsYj8C9AbyQrE5acErzEBs9SEw8Kz1M9
-         vZ5a5sgamoGr7yNoUBibH6sPUJeY02KShPQYSvDO0Omcf+gNYgSXp4K9fucd5yP0mup/
-         pfIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VIEVnYfBURNQaEk7q+gL1sk168GjsFz+wyAEY3Zaj6Y=;
-        b=LC8qSZ9CuJPuz6aqA9P9tPunXL2BWTqyvZoKNwxH18GkHGPRmN92Rm+rVM4EGAIWxF
-         x9UAVeFW9AoWLWjPGtthcq5rLrkGxXA0tmb3Evr5Zwd83XgdT3y80ehf1go5DDjHyNVo
-         2e7PXjPwkmemyOJvhTD4PJnXNciKi/gdM2bhYuBf/Wz4+w/jbC1V5duFBj4TYGT1I3yd
-         C7a+7EoSY9gFKuaEJtHlDGJVTjd88t6vco5PYT6NSKMVuILVnlLThfcVbY55bZPP7s+o
-         nilo4t7FWuv/nzy65MA4uji5k6a2SNhvy8awa33GEywbu1enMF/wCy8F0GqkUYTTCQyJ
-         D6cw==
-X-Gm-Message-State: AOAM531N/9C+41AqrI3EVja1UwhhdcGqVyaj8771pBvVuqNhkdYK6yeo
-        uiwIkvhYaWj7RVTp6pd0c/bISRvWgphcjw==
-X-Google-Smtp-Source: ABdhPJw47eR96CR8PofpQISJ7ZeuuR2MHmvxNh2DN/a0kX+iFy2LxhpWypfYtOqIiE84wmXqqEDwDw==
-X-Received: by 2002:a63:e911:: with SMTP id i17mr4202297pgh.255.1614620392312;
-        Mon, 01 Mar 2021 09:39:52 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
-        by smtp.gmail.com with ESMTPSA id z16sm16503070pgj.51.2021.03.01.09.39.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 09:39:51 -0800 (PST)
-Date:   Mon, 1 Mar 2021 09:39:45 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yang Weijiang <weijiang.yang@intel.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: nVMX: Set X86_CR4_CET in cr4_fixed1_bits if CET IBT
- is enabled
-Message-ID: <YD0m4cALoArLO4ek@google.com>
-References: <20210225030951.17099-1-weijiang.yang@intel.com>
+        id S1343519AbhCAWgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:36:47 -0500
+Received: from mga12.intel.com ([192.55.52.136]:11250 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238307AbhCARll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:41:41 -0500
+IronPort-SDR: m027y/G/cmgD9jA5mJ8R16FE3c5vPJuZJEnS/ZCTZ72Tct3kkgtQdhb2PO4zHKnthN2wJzZz+x
+ NU8HuCFcglIA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="165779912"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="165779912"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 09:39:55 -0800
+IronPort-SDR: WfJVKBudAbHcrsop2n5GL3NKGOXTewLJFqebUR4scZmcCp4/xUu/RPlzFBtFKVtPdnakDbqtok
+ nEdrZ8uYag9Q==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="444374574"
+Received: from jvarg12x-mobl.amr.corp.intel.com ([10.212.213.38])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 09:39:54 -0800
+Message-ID: <c6e98531b4f209aad6b655091ff5e9ddd305515f.camel@linux.intel.com>
+Subject: Re: [PATCH 2/5] iio: hid-sensor-als: Support change sensitivity in
+ illuminance too.
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Ronald =?ISO-8859-1?Q?Tschal=E4r?= <ronald@innovation.ch>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-iio@vger.kernel.org
+Date:   Mon, 01 Mar 2021 09:39:54 -0800
+In-Reply-To: <20210228144525.00000730@Huawei.com>
+References: <20210228012643.69944-1-ronald@innovation.ch>
+         <20210228012643.69944-3-ronald@innovation.ch>
+         <20210228144525.00000730@Huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225030951.17099-1-weijiang.yang@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021, Yang Weijiang wrote:
-> CET SHSTK and IBT are independently controlled by kernel, set X86_CR4_CET
-> bit in cr4_fixed1_bits if either of them is enabled so that nested guest
-> can enjoy the feature.
+On Sun, 2021-02-28 at 14:45 +0000, Jonathan Cameron wrote:
+> On Sat, 27 Feb 2021 17:26:40 -0800
+> Ronald Tschalär <ronald@innovation.ch> wrote:
 > 
-> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 1 +
->  1 file changed, 1 insertion(+)
+> > Recent MacBook Pro's specify the usage of the change sensitivity
+> > field
+> > as illuminance (with a change sensitivity modifier) rather than as
+> > light.
+> > 
+> > Signed-off-by: Ronald Tschalär <ronald@innovation.ch>
+> This looks fine to me though it the hid sensors spec never fails to
+> surprise
+> me in the different slight variants of the same thing that come up.
 > 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 5856c5b81084..e92134ee081c 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7258,6 +7258,7 @@ static void nested_vmx_cr_fixed1_bits_update(struct kvm_vcpu *vcpu)
->  	cr4_fixed1_update(X86_CR4_UMIP,       ecx, feature_bit(UMIP));
->  	cr4_fixed1_update(X86_CR4_LA57,       ecx, feature_bit(LA57));
->  	cr4_fixed1_update(X86_CR4_CET,	      ecx, feature_bit(SHSTK));
-> +	cr4_fixed1_update(X86_CR4_CET,	      edx, feature_bit(IBT));
+> Illuminance is at least fairly well defined, but who knows what for
+> the DATA_LIGHT
+> version takes?
 
-Ugh, what sadist put SHSTK and IBT in separate output registers.
+The current implementations are deploying using
+"HID_USAGE_SENSOR_LIGHT_ILLUM" usage id 0xD1 for input. So this is
+natural to use the same usage id for sensitivity. So patch looks good
+to me.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+But most implementation choose to use DATA_LIGHT for the sensitivity.
+probably referring to change in quantity of light without referring to
+area. There are no obvious units specified for DATA_LIGHT in the spec.
 
->  
->  #undef cr4_fixed1_update
->  }
-> -- 
-> 2.26.2
+Thanks,
+Srinivas
+
 > 
+> Anyhow, lets give time for Srinivas to sanity check this as he's much
+> more familiar
+> with that spec than I am.
+> 
+> Jonathan
+> 
+> > ---
+> >  drivers/iio/light/hid-sensor-als.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/drivers/iio/light/hid-sensor-als.c
+> > b/drivers/iio/light/hid-sensor-als.c
+> > index a21c827e4953d..849ee37dcd866 100644
+> > --- a/drivers/iio/light/hid-sensor-als.c
+> > +++ b/drivers/iio/light/hid-sensor-als.c
+> > @@ -252,6 +252,14 @@ static int als_parse_report(struct
+> > platform_device *pdev,
+> >  			HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSITIVITY_AB
+> > S |
+> >  			HID_USAGE_SENSOR_DATA_LIGHT,
+> >  			&st->common_attributes.sensitivity);
+> > +
+> > +		if (st->common_attributes.sensitivity.index < 0)
+> > +			sensor_hub_input_get_attribute_info(hsdev,
+> > +				HID_FEATURE_REPORT, usage_id,
+> > +				HID_USAGE_SENSOR_DATA_MOD_CHANGE_SENSIT
+> > IVITY_ABS |
+> > +				HID_USAGE_SENSOR_LIGHT_ILLUM,
+> > +				&st->common_attributes.sensitivity);
+> > +
+> >  		dev_dbg(&pdev->dev, "Sensitivity index:report %d:%d\n",
+> >  			st->common_attributes.sensitivity.index,
+> >  			st->common_attributes.sensitivity.report_id);
+
