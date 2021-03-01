@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBF0329977
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01157329949
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235754AbhCBARG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:17:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40746 "EHLO mail.kernel.org"
+        id S238081AbhCBAEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:04:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239493AbhCASXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:23:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48EB065152;
-        Mon,  1 Mar 2021 17:05:34 +0000 (UTC)
+        id S239757AbhCASUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:20:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 288A1652DC;
+        Mon,  1 Mar 2021 17:38:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618334;
-        bh=FRn/djkj2XzjQICjGk8g9A6VWLu7udUT0KMixWv6uRM=;
+        s=korg; t=1614620325;
+        bh=CRiuIbclouiUbaLTy6sw927wBmIUJmWe4DITZW1TZjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jGxB6KS/3tmQRUu8nV5RMjC0mKCoNeKJPXbkY7pfP/Q5VqF+B+VUHYm/1nahcxY8m
-         ROSVsY+tPcTEKRo35dgBBob0XQFxDXDAD8HmylwLenHjJCGtUKzN1YuuVPyHi/KqSh
-         WIu9ezHKL1RonekYKqROv/apoB1E3WbTedotTHl0=
+        b=QaFZ+lEULb14hirHPrGOAnzaze2YakYsCONPCZ2/qaXNtkZYhKKfuQKAqqsg9WlKq
+         K4Izh+/OO4BfqXZya2Yze1ZLjz2ggZj8UN3PuS+jIcyFUdVexCyy174aApH3u4X54f
+         ZHiFJFhpiOt0eOQyAV7hAmp+iNppnDWn0mKppx0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
+        stable@vger.kernel.org, Shay Drory <shayd@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 032/663] ARM: dts: exynos: correct PMIC interrupt trigger level on Odroid XU3 family
-Date:   Mon,  1 Mar 2021 17:04:40 +0100
-Message-Id: <20210301161143.385253404@linuxfoundation.org>
+Subject: [PATCH 5.11 113/775] net/mlx5: Disallow RoCE on lag device
+Date:   Mon,  1 Mar 2021 17:04:41 +0100
+Message-Id: <20210301161207.255767168@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Shay Drory <shayd@nvidia.com>
 
-[ Upstream commit 3e7d9a583a24f7582c6bc29a0d4d624feedbc2f9 ]
+[ Upstream commit 7ab91f2b03367f9d25dd807ebdfb0d67295e0e41 ]
 
-The Samsung PMIC datasheets describe the interrupt line as active low
-with a requirement of acknowledge from the CPU.  The falling edge
-interrupt will mostly work but it's not correct.
+In lag mode, setting roce enabled/disable of lag device have no effect.
+e.g.: bond device (roce/vf_lag) roce status remain unchanged.
+Therefore disable it and add an error message.
 
-Fixes: aac4e0615341 ("ARM: dts: odroidxu3: Enable wake alarm of S2MPS11 RTC")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Link: https://lore.kernel.org/r/20201210212903.216728-6-krzk@kernel.org
+Fixes: cc9defcbb8fa ("net/mlx5: Handle "enable_roce" devlink param")
+Signed-off-by: Shay Drory <shayd@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos5422-odroid-core.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-index b1cf9414ce17f..d51c1d8620a09 100644
---- a/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-+++ b/arch/arm/boot/dts/exynos5422-odroid-core.dtsi
-@@ -509,7 +509,7 @@
- 		samsung,s2mps11-acokb-ground;
- 
- 		interrupt-parent = <&gpx0>;
--		interrupts = <4 IRQ_TYPE_EDGE_FALLING>;
-+		interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&s2mps11_irq>;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+index 317ce6b80b23b..c7073193db140 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+@@ -273,8 +273,8 @@ static int mlx5_devlink_enable_roce_validate(struct devlink *devlink, u32 id,
+ 		NL_SET_ERR_MSG_MOD(extack, "Device doesn't support RoCE");
+ 		return -EOPNOTSUPP;
+ 	}
+-	if (mlx5_core_is_mp_slave(dev)) {
+-		NL_SET_ERR_MSG_MOD(extack, "Multi port slave device can't configure RoCE");
++	if (mlx5_core_is_mp_slave(dev) || mlx5_lag_is_active(dev)) {
++		NL_SET_ERR_MSG_MOD(extack, "Multi port slave/Lag device can't configure RoCE");
+ 		return -EOPNOTSUPP;
+ 	}
  
 -- 
 2.27.0
