@@ -2,231 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD015327924
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083E332792F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhCAIZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:25:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbhCAIZC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:25:02 -0500
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076E3C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 00:24:22 -0800 (PST)
-Received: by mail-vk1-xa2e.google.com with SMTP id g68so1835114vkb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 00:24:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UHCZlU+c9CUTU/gpQiF5hFVniv5vmhFaRF7G3ycFPv0=;
-        b=CnbCOR7VKbhXI0bk25JR9P+t9AMdFZgv5kR4d/sgiZ2aNaTvn1yx2XRktQCLSI/yRN
-         yjUIXW+HQYNDqhUGJnqbU4SFT2YjnqYkZb217Q1EUYQsxu0/fUifhQhjkdYYL+BLlVik
-         BeiCyw7t8Oeo4IBHpmza8ZR9jR9L5AleyPSiWMdYvV6OjCrWVulqpIDFkoH/su5i8OAz
-         NWP/AYWxTVOGUNS2bxgkBCEvnJ5tDL/cRt8zT/XFuOMKRdM4ZAUXtWDlta1hYsDbN8uS
-         VknrxoVykR0+3NImhaRpBG81OzfYZr9CafNb+fwWcYgmlPKHqa0l/B65Xc7gwmOQphhF
-         Ua4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UHCZlU+c9CUTU/gpQiF5hFVniv5vmhFaRF7G3ycFPv0=;
-        b=jYnSUNo6Pngpy7VZB+560KV863v/fENpwc7iZ8MAS+RTcp4q+XBOOiw3EILy0pCwP+
-         dbzXNNun31ou3GlW+L81qx1mHzG+BAHVF/tX/67Jt2k181UMg5e+IhLZM87FxK2aJVW5
-         xaYocZLJpeCwo3NKWjVPjeO/Bnce8w8F3PIcyTWcZkIQUr7A8jkYA8oUtkZ/a0cL8/aN
-         JQPXpPCA6upcU5aUcMMYmIZJ90jdlWbHaiNxpzfTE6yFCT8eYnS+ymA6ONCGGxmuwVod
-         usXOGaAam6qmyrIXKa5dr0WsTFtlbMttwyXUtJnnvoFmpOz5lUzyenH1qUuPDpWN1QeW
-         F/wA==
-X-Gm-Message-State: AOAM530oYpIQ89v+yqhAV2uDaK2W/1vb6fQ889AfWc09JJmuY1RF4ks9
-        YrDU0Mlj11Dk3SAfp7aQA+v4eU09rSaFbGNM6J6/XA==
-X-Google-Smtp-Source: ABdhPJzvoEAOhO13PrlIDICiW+zZStCDpACerIy2ridZD7d00uMib+hyu24W5F9akMcfLFPYmiz9D15G43dtz9jNKIQ=
-X-Received: by 2002:a1f:a68d:: with SMTP id p135mr7504410vke.6.1614587061060;
- Mon, 01 Mar 2021 00:24:21 -0800 (PST)
+        id S232923AbhCAI1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:27:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34492 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232621AbhCAI1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 03:27:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EE1CEAF57;
+        Mon,  1 Mar 2021 08:26:58 +0000 (UTC)
+To:     Tong Zhang <ztong0001@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210228044625.171151-1-ztong0001@gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH] drm/fb-helper: only unmap if buffer not null
+Message-ID: <da187130-8a73-8490-4c70-aed3055081bf@suse.de>
+Date:   Mon, 1 Mar 2021 09:26:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210217052239.13780-1-dh0421.hwang@samsung.com>
- <CGME20210217053521epcas1p2aa80cae5d52f30c8c8882f44abe8045c@epcas1p2.samsung.com>
- <20210217052239.13780-3-dh0421.hwang@samsung.com> <4035139d-7850-8460-f069-06fc61d13039@intel.com>
- <3e6525b5-9cd7-e632-800a-1066c5fa3581@intel.com> <000001d70509$54bf59b0$fe3e0d10$@samsung.com>
-In-Reply-To: <000001d70509$54bf59b0$fe3e0d10$@samsung.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 1 Mar 2021 09:23:44 +0100
-Message-ID: <CAPDyKFrgAanRYCe1QckWK8vxwV=rXV3KzTRynY_mkNaRkSrj+g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: core: Add no single read retries
-To:     DooHyun Hwang <dh0421.hwang@samsung.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Satya Tangirala <satyat@google.com>, ebiggers@google.com,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        grant.jung@samsung.com, jt77.jang@samsung.com,
-        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
-        sh043.lee@samsung.com, Chanwoo Lee <cw9316.lee@samsung.com>,
-        sh8267.baek@samsung.com, wkon.kim@samsung.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210228044625.171151-1-ztong0001@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="2gaxzLuaBxKNi8jonaw1h25DxRkGPJur0"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021 at 09:46, DooHyun Hwang <dh0421.hwang@samsung.com> wrote:
->
->
-> On 17/02/21 8:00 am, Adrian Hunter wrote:
-> >On 17/02/21 7:46 am, Adrian Hunter wrote:
-> >> On 17/02/21 7:22 am, DooHyun Hwang wrote:
-> >>> This makes to handle read errors faster by not retrying multiple
-> >>> block read(CMD18) errors with single block reads(CMD17).
-> >>>
-> >>> On some bad SD Cards that have problem with read operations, it is
-> >>> not helpful to retry multiple block read errors with several single
-> >>> block reads, and it is delayed to treat read operations as I/O error
-> >>> as much as retrying single block reads.
-> >>
-> >> If the issue is that it takes too long, then maybe it would be better
-> >> to get
-> >> mmc_blk_read_single() to give up after a certain amount of time.
-> >>
-> >
-> >So that a device property would not be needed I mean.  Then everyone would
-> >benefit.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--2gaxzLuaBxKNi8jonaw1h25DxRkGPJur0
+Content-Type: multipart/mixed; boundary="vk3q8Gd4T06b8hmS6a4wlgtSjvS4R02LM";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tong Zhang <ztong0001@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <da187130-8a73-8490-4c70-aed3055081bf@suse.de>
+Subject: Re: [PATCH] drm/fb-helper: only unmap if buffer not null
+References: <20210228044625.171151-1-ztong0001@gmail.com>
+In-Reply-To: <20210228044625.171151-1-ztong0001@gmail.com>
 
-Just wanted to confirm with Adrian's points, that we don't want a
-device property for this.
+--vk3q8Gd4T06b8hmS6a4wlgtSjvS4R02LM
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-In fact, the DT maintainers would reject it because it would be
-considered as a software configuration, which doesn't belong in DT.
+Hi
 
->
-> Thank you for reviewing this.
->
-> mmc_blk_read_single() takes a different time depending on the number of
-> sectors to read and the timeout value for each CMD.
->
-> I think it's difficult to set the criteria for "a certain amount of time"
-> you talked about.
-> And it's harder to proceed with any errors caused by giving up in
-> mmc_blk_read_single() than no retrying.
->
-> So, I would like to add a configurable property to skip the single block
-> read retrying because if multiple block read error occurs, single block
-> read retrying doesn't help for some bad SD cards.
+Am 28.02.21 um 05:46 schrieb Tong Zhang:
+> drm_fbdev_cleanup() can be called when fb_helper->buffer is null, hence=
 
-I certainly agree that falling back to single block reads is
-questionable, at least for some cases. Moreover, I am pretty sure it's
-not always the SD card that should be blamed, but a broken mmc host
-driver or broken HW/controller.
+> fb_helper->buffer should be checked before calling
+> drm_client_buffer_vunmap(). This buffer is also checked in
+> drm_client_framebuffer_delete(), so we should also do the same thing fo=
+r
+> drm_client_buffer_vunmap().
 
-That said, I assume that the main reason why we fall back to retry
-with single block reads, is to try to recover as much data as possible
-from a broken SD card. The intent is good, but to recover data from a
-broken card, we should also consider to move to a lower/legacy speed
-mode and to decrease the clock rate of the interface.
+I think a lot of drivers are affected by this problem; probably most of=20
+the ones that use the generic fbdev code. How did you produce the error?
 
-For the clock rate, we already have a debugfs node, allowing us to
-change the rate per mmc host. I suggest we add a few more debugfs
-nodes, allowing us to restrict the speed mode and to enable/disable
-single/multi block read.
+What I'm more concerned about is why the buffer is NULL. Was ther eno=20
+hotplug event? Do you have a display attached?
 
-If we can get these things in place to help with recovery, I wouldn't
-mind us changing the default behaviour to skip the single block read
-in the recovery path.
+Best regards
+Thomas
 
->
-> This is the log to check for this patch.
-> #0. time difference is about 2.37s for 8 sectors between with(#1) and without(#2)
->      single block read retrying
->      This is a test for just one CMD18.
->      When there are many I/O requests, it takes too long to handle the errors.
->
-> #1. retry multiple block read (8 sectors) error with single block reads
-> // It takes about 3.585671s for the I/O error.
-> // issue CMD23 (+ arg 0x8)
-> // issue CMD18 (+ arg 0x000320e0) and error occurs
-> <7>[  316.657115]  [5:   kworker/5:1H:  324] <mmc0: starting CMD23 arg 00000008 flags 00000015>
-> <7>[  316.657124]  [5:   kworker/5:1H:  324] mmc0: starting CMD18 arg 000320e0 flags 000000b5
-> <7>[  316.826302] I[0:      swapper/0:    0] mmc0: req done <CMD23>: 0: 00000000 00000000 00000000 00000000
-> <7>[  316.826327] I[0:      swapper/0:    0] mmc0: req done (CMD18): 0: 00000900 00000000 00000000 00000000
-> <7>[  316.826362] I[0:      swapper/0:    0] mmc0:     0 bytes transferred: -110
-> <7>[  316.826389] I[0:      swapper/0:    0] mmc0:     (CMD12): 0: 00000b00 00000000 00000000 00000000
-> <7>[  316.826516]  [0:   kworker/0:1H:  338] mmc0: starting CMD13 arg 00010000 flags 00000195
-> <7>[  316.826621] I[0:   kworker/0:1H:  338] mmc0: req done (CMD13): 0: 00000900 00000000 00000000 00000000
-> // retry CMD18 (+ arg 0x000320e0) and error occurs again. Same as above.
-> <7>[  316.829224]  [5:   kworker/5:1H:  324] <mmc0: starting CMD23 arg 00000008 flags 00000015>
-> <7>[  316.829237]  [5:   kworker/5:1H:  324] mmc0: starting CMD18 arg 000320e0 flags 000000b5
-> <7>[  316.999588] I[0:      swapper/0:    0] mmc0: req done <CMD23>: 0: 00000000 00000000 00000000 00000000
-> <7>[  316.999653] I[0:      swapper/0:    0] mmc0: req done (CMD18): 0: 00000900 00000000 00000000 00000000
-> <7>[  316.999725] I[0:      swapper/0:    0] mmc0:     0 bytes transferred: -110
-> <7>[  316.999789] I[0:      swapper/0:    0] mmc0:     (CMD12): 0: 00000b00 00000000 00000000 00000000
-> <7>[  317.000034]  [0:   kworker/0:1H:  338] mmc0: starting CMD13 arg 00010000 flags 00000195
-> <7>[  317.000370] I[0:   kworker/0:1H:  338] mmc0: req done (CMD13): 0: 00000900 00000000 00000000 00000000
-> // mmc_blk_reset() and it's completed
-> <7>[  317.000523]  [0:   kworker/0:1H:  338] mmc0: clock 0Hz busmode 2 powermode 0 cs 0 Vdd 0 width 1 timing 0
-> ...
-> // mmc_blk_read_single() : CMD17, CMD13 and CMD12 repeats 8 times (for retrying multiple block read with 8 sectors)
-> // CMD17 (+ arg 0x000320e0 ~ 0x000320e7) and timeout errors occur
-> // It takes about 1.351s
-> <7>[  317.200351]  [0:   kworker/0:1H:  338] mmc0: starting CMD17 arg 000320e0 flags 000000b5
-> <7>[  317.368748] I[0:      swapper/0:    0] mmc0: req done (CMD17): 0: 00000900 00000000 00000000 00000000
-> <7>[  317.368776] I[0:      swapper/0:    0] mmc0:     0 bytes transferred: -110
-> <7>[  317.368871]  [0:   kworker/0:1H:  338] mmc0: starting CMD13 arg 00010000 flags 00000195
-> <7>[  317.368932] I[0:   kworker/0:1H:  338] mmc0: sdhci: IRQ status 0x00000001
-> <7>[  317.368970] I[0:   kworker/0:1H:  338] mmc0: req done (CMD13): 0: 00000b00 00000000 00000000 00000000
-> <7>[  317.369020]  [0:   kworker/0:1H:  338] mmc0: starting CMD12 arg 00000000 flags 00000095
-> <7>[  317.369070] I[0:   kworker/0:1H:  338] mmc0: sdhci: IRQ status 0x00000001
-> <7>[  317.369108] I[0:   kworker/0:1H:  338] mmc0: req done (CMD12): 0: 00000b00 00000000 00000000 00000000
-> <7>[  317.369155]  [0:   kworker/0:1H:  338] mmc0: starting CMD13 arg 00010000 flags 00000195
-> <7>[  317.369204] I[0:   kworker/0:1H:  338] mmc0: sdhci: IRQ status 0x00000001
-> <7>[  317.369245] I[0:   kworker/0:1H:  338] mmc0: req done (CMD13): 0: 00000900 00000000 00000000 00000000
-> <3>[  317.369298]  [0:   kworker/0:1H:  338] print_req_error: I/O error, dev mmcblk0, sector 205024
-> <7>[  317.369342]  [0:   kworker/0:1H:  338] mmc0: starting CMD17 arg 000320e1 flags 000000b5
-> ...
-> <7>[  318.382668]  [0:   kworker/0:1H:  338] mmc0: starting CMD17 arg 000320e7 flags 000000b5
-> <3>[  318.551568]  [0:   kworker/0:1H:  338] print_req_error: I/O error, dev mmcblk0, sector 205031
-> // retry CMD18 (+ arg 0x000320e0) and error occurs again.
-> <7>[  318.551850]  [5:   kworker/5:1H:  324] <mmc0: starting CMD23 arg 00000008 flags 00000015>
-> <7>[  318.551867]  [5:   kworker/5:1H:  324] mmc0: starting CMD18 arg 000320e0 flags 000000b5
-> ...
-> // retry CMD18 (+ arg 0x000320e0) and error occurs again.
-> <7>[  318.721767]  [5:   kworker/5:1H:  324] mmc0: starting CMD18 arg 000320e0 flags 000000b5
-> // CMD17 (+ arg 0x000320e0 ~ 0x000320e7)
-> <7>[  318.891054]  [0:   kworker/0:1H:  338] mmc0: starting CMD17 arg 000320e0 flags 000000b5
-> ...
-> <7>[  320.073861]  [0:   kworker/0:1H:  338] mmc0: starting CMD17 arg 000320e7 flags 000000b5
-> // Return I/O error for read operation finally
-> <3>[  320.242786]  [0:   kworker/0:1H:  338] Buffer I/O error on dev mmcblk0, logical block 25628, async page read
->
-> #2. retry multiple block read (8 sectors) error without single block reads
-> // It takes about 1.205941s for the I/O error.
-> // issue CMD23 (+ arg 0x8)
-> // issue CMD18 (+ arg 0x000320e0) and error occurs
-> <7>[  126.467114]  [7:   kworker/7:2H: 8887] <mmc0: starting CMD23 arg 00000008 flags 00000015>
-> <7>[  126.467125]  [7:   kworker/7:2H: 8887] mmc0: starting CMD18 arg 000320e0 flags 000000b5
-> <7>[  126.636188] I[0:Measurement Wor: 9074] mmc0: req done <CMD23>: 0: 00000000 00000000 00000000 00000000
-> <7>[  126.636213] I[0:Measurement Wor: 9074] mmc0: req done (CMD18): 0: 00000900 00000000 00000000 00000000
-> <7>[  126.636241] I[0:Measurement Wor: 9074] mmc0:     0 bytes transferred: -110
-> <7>[  126.636265] I[0:Measurement Wor: 9074] mmc0:     (CMD12): 0: 00000b00 00000000 00000000 00000000
-> <7>[  126.636379]  [0:   kworker/0:1H:  336] mmc0: starting CMD13 arg 00010000 flags 00000195
-> <7>[  126.636495] I[0:   kworker/0:1H:  336] mmc0: req done (CMD13): 0: 00000900 00000000 00000000 00000000
-> // retry CMD18 (+ arg 0x000320e0) and error occurs again. Same as above.
-> <7>[  126.638284]  [7:   kworker/7:2H: 8887] <mmc0: starting CMD23 arg 00000008 flags 00000015>
-> <7>[  126.638298]  [7:   kworker/7:2H: 8887] mmc0: starting CMD18 arg 000320e0 flags 000000b5
-> // mmc_blk_reset() and it's completed
-> <7>[  126.807645]  [0:   kworker/0:1H:  336] mmc0: clock 0Hz busmode 2 powermode 0 cs 0 Vdd 0 width 1 timing 0
-> ...
-> // no mmc_blk_read_single() calling
-> // retry CMD18 (+ arg 0x000320e0) and error occurs again.
-> <7>[  126.993628]  [7:   kworker/7:2H: 8887] <mmc0: starting CMD23 arg 00000008 flags 00000015>
-> <7>[  126.993643]  [7:   kworker/7:2H: 8887] mmc0: starting CMD18 arg 000320e0 flags 000000b5
-> // retry CMD18 (+ arg 0x000320e0) and error occurs again.
-> <7>[  127.164836]  [7:   kworker/7:2H: 8887] <mmc0: starting CMD23 arg 00000008 flags 00000015>
-> <7>[  127.164848]  [7:   kworker/7:2H: 8887] mmc0: starting CMD18 arg 000320e0 flags 000000b5
-> ...
-> // Return I/O error for read operation finally
-> <3>[  127.673055] I[7:      swapper/7:    0] Buffer I/O error on dev mmcblk0, logical block 25628, async page read
->
 
-Kind regards
-Uffe
+>=20
+> [  199.128742] RIP: 0010:drm_client_buffer_vunmap+0xd/0x20
+> [  199.129031] Code: 43 18 48 8b 53 20 49 89 45 00 49 89 55 08 5b 44 89=
+ e0 41 5c 41 5d 41 5e 5d
+> c3 0f 1f 00 53 48 89 fb 48 8d 7f 10 e8 73 7d a1 ff <48> 8b 7b 10 48 8d =
+73 18 5b e9 75 53 fc ff 0
+> f 1f 44 00 00 48 b8 00
+> [  199.130041] RSP: 0018:ffff888103f3fc88 EFLAGS: 00010282
+> [  199.130329] RAX: 0000000000000001 RBX: 0000000000000000 RCX: fffffff=
+f8214d46d
+> [  199.130733] RDX: 1ffffffff079c6b9 RSI: 0000000000000246 RDI: fffffff=
+f83ce35c8
+> [  199.131119] RBP: ffff888103d25458 R08: 0000000000000001 R09: fffffbf=
+ff0791761
+> [  199.131505] R10: ffffffff83c8bb07 R11: fffffbfff0791760 R12: 0000000=
+000000000
+> [  199.131891] R13: ffff888103d25468 R14: ffff888103d25418 R15: ffff888=
+103f18120
+> [  199.132277] FS:  00007f36fdcbb6a0(0000) GS:ffff88815b400000(0000) kn=
+lGS:0000000000000000
+> [  199.132721] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  199.133033] CR2: 0000000000000010 CR3: 0000000103d26000 CR4: 0000000=
+0000006f0
+> [  199.133420] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
+000000000
+> [  199.133807] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
+000000400
+> [  199.134195] Call Trace:
+> [  199.134333]  drm_fbdev_cleanup+0x179/0x1a0
+> [  199.134562]  drm_fbdev_client_unregister+0x2b/0x40
+> [  199.134828]  drm_client_dev_unregister+0xa8/0x180
+> [  199.135088]  drm_dev_unregister+0x61/0x110
+> [  199.135315]  mgag200_pci_remove+0x38/0x52 [mgag200]
+> [  199.135586]  pci_device_remove+0x62/0xe0
+> [  199.135806]  device_release_driver_internal+0x148/0x270
+> [  199.136094]  driver_detach+0x76/0xe0
+> [  199.136294]  bus_remove_driver+0x7e/0x100
+> [  199.136521]  pci_unregister_driver+0x28/0xf0
+> [  199.136759]  __x64_sys_delete_module+0x268/0x300
+> [  199.137016]  ? __ia32_sys_delete_module+0x300/0x300
+> [  199.137285]  ? call_rcu+0x3e4/0x580
+> [  199.137481]  ? fpregs_assert_state_consistent+0x4d/0x60
+> [  199.137767]  ? exit_to_user_mode_prepare+0x2f/0x130
+> [  199.138037]  do_syscall_64+0x33/0x40
+> [  199.138237]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  199.138517] RIP: 0033:0x7f36fdc3dcf7
+>=20
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> ---
+>   drivers/gpu/drm/drm_fb_helper.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_h=
+elper.c
+> index b9a616737c0e..f6baa2046124 100644
+> --- a/drivers/gpu/drm/drm_fb_helper.c
+> +++ b/drivers/gpu/drm/drm_fb_helper.c
+> @@ -2048,7 +2048,7 @@ static void drm_fbdev_cleanup(struct drm_fb_helpe=
+r *fb_helper)
+>  =20
+>   	if (shadow)
+>   		vfree(shadow);
+> -	else
+> +	else if (fb_helper->buffer)
+>   		drm_client_buffer_vunmap(fb_helper->buffer);
+>  =20
+>   	drm_client_framebuffer_delete(fb_helper->buffer);
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--vk3q8Gd4T06b8hmS6a4wlgtSjvS4R02LM--
+
+--2gaxzLuaBxKNi8jonaw1h25DxRkGPJur0
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmA8pVEFAwAAAAAACgkQlh/E3EQov+Bf
+yA//bWkzWWVyyv4cxfhtRfNrC7GZd+DrKRIfSEB4ejyKzkn6PilvtdIQ92ZiI03jqbut/tYXXX3k
+Zy1YB/TQOsfZaCdG63IpN5HfCameZihKx0JyatfVTqjXnn8Z0iUsVu+zWl9mwC3ZGR+6AwBeJ2hT
+bgePBOMki+B45TwvAqdxmHkJbNe5edF929FBUpxguy1P6ZA7qJi3o1xJBZhKopsUsXO0oAPdS7/v
+6VdcG5m1k3O632mo481QL9k0wmD+xK6/tQDg3jT4ZpSa2J9ZcEkt38tr4IBEVfw0r5cLloPRYFh2
+CmLdQoUKypYqrjG1VTDVIlNagTeUW3x8Fn67KNedLU7Gl35lc8gl+Blu61bNEIIRPm7kjudk6PqW
+j7x2BZHiXeEFKtFqcUWPxCx1xz7LO+Q81w0vnsVimYTymg/Ffu4PubB4Ah/vfiKmG2sGeNDsQ/Tb
+rjjCcpQjXl/2Hou4c1NkORTU0vXr4n5gS20WebtQiNwxza4s0VYAiNAUv+YXkPelliOkk/JDNqSP
+DVcauz8eG4jHtWTyE1ynIgXx6FuE0TKyog3PDsiMhTdfyUAERboeIpdkts/QrpfkQuIeCBKCow+8
+omWbqYTm6SFBnHd1X5meAoNe65Ixe6BALbAIfoqLV8m2hIigmyHQ+RHEsV7hio1VGlUovpfuXRXE
+Szs=
+=ie+l
+-----END PGP SIGNATURE-----
+
+--2gaxzLuaBxKNi8jonaw1h25DxRkGPJur0--
