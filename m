@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05465329C51
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF095329C81
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380506AbhCBBxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:53:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48616 "EHLO mail.kernel.org"
+        id S1380874AbhCBB4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:56:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241865AbhCAT3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E3A165313;
-        Mon,  1 Mar 2021 17:43:05 +0000 (UTC)
+        id S241661AbhCATc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:32:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B3F64FDC;
+        Mon,  1 Mar 2021 17:44:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620586;
-        bh=+77gvzJD6GpuIUbEosPv9Y2DCi53ioJdAVnH6gciq0E=;
+        s=korg; t=1614620647;
+        bh=PKy+BTdVpY5bdXj1vnnfybhkRjj+pobNfcSHDw8vm/E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pPaOz9BOD/Rlt5zxyhPgzjuTYzp//6/kwrMKDUtqLH60NDig3Pr39fcqh+NmuoYIs
-         m1QpJhfpgygw0CsRq1IfMCr83QvYamy47XpcTtBjJSqBMcS9j1pycEbjsXsFjLU7cj
-         hE3d/LDWcs5jyNO0V23thRwc/oJ9WqtsLU50pOYg=
+        b=ZUgyLxJsorZcsmSpV4bxpc+GZ49EeprlbXDkwEXW7Vep7BpWoqb7XH2JycdkHgIRT
+         dzwcYxZIprV3KTEGHKsHX5oc8lu15TCSCcFZU0Sw4Pcr5A4fiFlRJAJQkHX/Ci0afT
+         p0u5pZEnTFAVaEH/28DBSc5XrH55m7rvZ14DpW90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Robert Foss <robert.foss@linaro.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 199/775] media: camss: missing error code in msm_video_register()
-Date:   Mon,  1 Mar 2021 17:06:07 +0100
-Message-Id: <20210301161211.477673041@linuxfoundation.org>
+Subject: [PATCH 5.11 201/775] media: em28xx: Fix use-after-free in em28xx_alloc_urbs
+Date:   Mon,  1 Mar 2021 17:06:09 +0100
+Message-Id: <20210301161211.573274180@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,33 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 9c67ed2ab299123872be14a3dc2ea44ce7e4538b ]
+[ Upstream commit a26efd1961a18b91ae4cd2e433adbcf865b40fa3 ]
 
-This error path returns success but it should return -EINVAL.
+When kzalloc() fails, em28xx_uninit_usb_xfer() will free
+usb_bufs->buf and set it to NULL. Thus the later access
+to usb_bufs->buf[i] will lead to null pointer dereference.
+Also the kfree(usb_bufs->buf) after that is redundant.
 
-Fixes: cba3819d1e93 ("media: camss: Format configuration per hardware version")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Fixes: d571b592c6206 ("media: em28xx: don't use coherent buffer for DMA transfers")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/camss/camss-video.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/usb/em28xx/em28xx-core.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-video.c b/drivers/media/platform/qcom/camss/camss-video.c
-index 2fa3214775d58..97cea7c4d7697 100644
---- a/drivers/media/platform/qcom/camss/camss-video.c
-+++ b/drivers/media/platform/qcom/camss/camss-video.c
-@@ -961,6 +961,7 @@ int msm_video_register(struct camss_video *video, struct v4l2_device *v4l2_dev,
- 			video->nformats = ARRAY_SIZE(formats_rdi_8x96);
+diff --git a/drivers/media/usb/em28xx/em28xx-core.c b/drivers/media/usb/em28xx/em28xx-core.c
+index e6088b5d1b805..3daa64bb1e1d9 100644
+--- a/drivers/media/usb/em28xx/em28xx-core.c
++++ b/drivers/media/usb/em28xx/em28xx-core.c
+@@ -956,14 +956,10 @@ int em28xx_alloc_urbs(struct em28xx *dev, enum em28xx_mode mode, int xfer_bulk,
+ 
+ 		usb_bufs->buf[i] = kzalloc(sb_size, GFP_KERNEL);
+ 		if (!usb_bufs->buf[i]) {
+-			em28xx_uninit_usb_xfer(dev, mode);
+-
+ 			for (i--; i >= 0; i--)
+ 				kfree(usb_bufs->buf[i]);
+ 
+-			kfree(usb_bufs->buf);
+-			usb_bufs->buf = NULL;
+-
++			em28xx_uninit_usb_xfer(dev, mode);
+ 			return -ENOMEM;
  		}
- 	} else {
-+		ret = -EINVAL;
- 		goto error_video_register;
- 	}
  
 -- 
 2.27.0
