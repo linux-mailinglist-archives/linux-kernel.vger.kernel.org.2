@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD2032801A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B56232801D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236001AbhCAN43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:56:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50826 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235974AbhCAN4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:56:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4EA45AC24;
-        Mon,  1 Mar 2021 13:55:31 +0000 (UTC)
-Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
- it
-To:     Daniel Wagner <dwagner@suse.de>, Keith Busch <kbusch@kernel.org>
-Cc:     Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210212210929.GA3851@redsun51.ssa.fujisawa.hgst.com>
- <ddf87227-1ad3-b8be-23ba-460433f70a85@grimberg.me>
- <73e4914e-f867-c899-954d-4b61ae2b4c33@suse.de>
- <20210215104020.yyithlo2hkxqvguj@beryllium.lan>
- <a2064070-b511-ba6d-bd64-0b3abc208356@grimberg.me>
- <20210226123534.4oovbzk4wrnfjp64@beryllium.lan>
- <9e209b12-3771-cdca-2c9d-50451061bd2a@suse.de>
- <20210226161355.GG31593@redsun51.ssa.fujisawa.hgst.com>
- <a42d6285-ff32-3e16-b2b1-808d29f2a743@suse.de>
- <20210226171901.GA3949@redsun51.ssa.fujisawa.hgst.com>
- <20210301132639.n3eowtvkms2n5mog@beryllium.lan>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <786dcef5-148d-ff34-590c-804b331ac519@suse.de>
-Date:   Mon, 1 Mar 2021 14:55:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S236034AbhCAN46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:56:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236012AbhCAN4i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:56:38 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF141C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 05:55:51 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id k12so10463188ljg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 05:55:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=stXRUtf48tQK6UO2n8d0RYjTXFbeNNDCHVc5TTol/Ds=;
+        b=LrJg7v9MEuhDbcU8DptvX614AcwiSZw+BaJfXe4+U3T1sAr/vkd9z3GBBN5Wn3VloL
+         UOBQ+Q6eiVtG1VUzQNsUxVlsMnhQ5AQEDJfCUPrgh95jaRVMSXzby8tkmCGHNWVxIZkW
+         NzhxycOetPrPJtjIv3WpuJLNBsgkw1DrCc4C1+hCbKD2bdg0irjOAIs1rBbvMmMumaeP
+         lPv8keN4UNWCvGJl0Kam4omVzR7AJXfz3/+AG/fsbXuBrPSFWt88mJmWEMFyB/0gb3lM
+         CAsfSLgxdEwRZ4JHkLjCEXCe5hvo1xr8lVrdTDFtLxWwKMVk3nZ23GmgnQ+4zpnumC82
+         LvCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=stXRUtf48tQK6UO2n8d0RYjTXFbeNNDCHVc5TTol/Ds=;
+        b=tGXcbGm2tXuwOuAqsZL0Kcfczb3iYEPWBEMXtep0sTqDm/RMN6CZ56SOl8gItLQpS+
+         xT2VazGi2PY86XnyPSsxtAtc/iv9m48qoULbtk4SKT0+F57okXmQPYecSrBWIJOo7Ugf
+         CDzKG7xYPmDqhdAQPiPUbkZ4rKrR82QKjyCxVoQJ9RFzamv1YclyPD3M4+IvswlmztXb
+         pQT4NfgH6+HiMMT44X4sd6qCeJ1KKSUe9yzSkTYtumY3uZySxnVre4ZfvAFlzKNqKvzM
+         26ZBCN3axh4TywrDQEhFrwOkjDNpEN/T2oxAFoynj1TOCFsiU3fhIfQMleuHYcVSZ+q7
+         qp/A==
+X-Gm-Message-State: AOAM533EvRFa5+gbwPCA3nn2CP+52JD/cuP+fbcE09sHYIbNTjwr+1sC
+        wwN+s37EwCrXr5GAEtkkxRmUMgMetHcP768yuaSouw==
+X-Google-Smtp-Source: ABdhPJzT/ayw9CfkAeeooMvh1lbA9Y9KRkTbDBq2rlF2ar+1DmME16cf9ehrk7GFqHq/20oDpIrMgO7ltnuLPZBpAVk=
+X-Received: by 2002:a2e:9041:: with SMTP id n1mr9312250ljg.273.1614606950308;
+ Mon, 01 Mar 2021 05:55:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210301132639.n3eowtvkms2n5mog@beryllium.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210224061205.23270-1-dqfext@gmail.com>
+In-Reply-To: <20210224061205.23270-1-dqfext@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 1 Mar 2021 14:55:39 +0100
+Message-ID: <CACRpkdZgwW=Zwehn+Bd7TkHq7WDVZ6VDbkXS5WKO0ACQAd2pcg@mail.gmail.com>
+Subject: Re: [RFC net-next] net: dsa: rtl8366rb: support bridge offloading
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 2:26 PM, Daniel Wagner wrote:
-> On Sat, Feb 27, 2021 at 02:19:01AM +0900, Keith Busch wrote:
->> Crashing is bad, silent data corruption is worse. Is there truly no
->> defense against that? If not, why should anyone rely on this?
-> 
-> If we receive an response for which we don't have a started request, we
-> know that something is wrong. Couldn't we in just reset the connection
-> in this case? We don't have to pretend nothing has happened and
-> continuing normally. This would avoid a host crash and would not create
-> (more) data corruption. Or I am just too naive?
-> 
-This is actually a sensible solution.
-Please send a patch for that.
+On Wed, Feb 24, 2021 at 7:12 AM DENG Qingfang <dqfext@gmail.com> wrote:
 
-Cheers,
+> +/* Port isolation registers */
+> +#define RTL8366RB_PORT_ISO_BASE                0x0F08
+> +#define RTL8366RB_PORT_ISO(pnum)       (RTL8366RB_PORT_ISO_BASE + (pnum))
+> +#define RTL8366RB_PORT_ISO_EN          BIT(0)
+> +#define RTL8366RB_PORT_ISO_PORTS_MASK  GENMASK(7, 1)
 
-Hannes
--- 
-Dr. Hannes Reinecke		           Kernel Storage Architect
-hare@suse.de			                  +49 911 74053 688
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
+BTW where did you find this register? It's not in any of my
+vendor driver code dumps.
+
+Curious!
+
+Yours,
+Linus Walleij
