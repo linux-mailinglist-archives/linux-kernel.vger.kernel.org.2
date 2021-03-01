@@ -2,658 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E17327CAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7940D327CB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232475AbhCAK52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:57:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232154AbhCAK5M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:57:12 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C9DC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 02:56:32 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id h4so11258410pgf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:56:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jw5LmImUC8l7Txkrx1wM5OJqIUErbDAc54T7jV46YDo=;
-        b=EhET5O7M1vC4O/GZEvdmzNustrnONPWEDVZTDGDxUb49IBJX2smYdiCrBOXOIVlXE/
-         +O80+81e3/un1FTIv7u3qyP9n/v2MRMdijIRH1Zb/s/OhxTXSKSk6bi1Kbp386+BpMGW
-         BuF/yDOhFSiYAgwPAAYIu/en3OVfTKtMplmv7418FC3IxkPYkJyMOdvfncESHtAcagQO
-         dks9FaMN654mX+7wS7n/d8kqfR2ir/6pO+m3Sk28WF56AG4wVPH/ujdQblf7Hp+GEDVz
-         JV5ZDOhKvVF7dN7GgK5hl716gf6L5ZpS6tp1pKK6fNMsjfwB8RLfWlJHZfDTlU7oIZ5N
-         Ikfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jw5LmImUC8l7Txkrx1wM5OJqIUErbDAc54T7jV46YDo=;
-        b=EY+7EjEL10fpyCqHsX9Ql3E5XUA6rIpQIgR79HpTRclINQkSsaFnCJ79vxkYy3C7Dl
-         /3x57kugEyWJMnezlkB1E7G9R9gCmJ9pjTc1QW23mYenCM6fSI2HbPySBtOqFJWq5yBZ
-         YQINLy1F/9hT+R8w48c3clRQ8yqHJDCa8y1fWrAHndgq1H8TjrMaKSEp6MzOpVv1dUQN
-         /5uVDRdEjqziuUCO2ErHddEwJa2VNSB9A2ZEsnrR6nyeVgGrswYg2xA2HJhOxcQmc3wv
-         LkSaaSUc5FyJkPPW/4cqelxWziPbbp6HnkbA35dWbMJiAUCnyqKFFhAzUhDuDyArFycb
-         NUdw==
-X-Gm-Message-State: AOAM532oIuV/cuEQ21S/b/sbbZrtdsyP6QJNTEJBJrC5UzjCfhRraHeh
-        xfWfPaXXuSDRNsikNqaB2NRgeQ2Rx6a1SbfEGY7FjQ==
-X-Google-Smtp-Source: ABdhPJyXX60+I9RVTTic6sWZfWka7K7/olkMuWP6hpsLjFNKYwN/8Jugmdo/WYo1OQv8LVbGBa9bNHBlh75gT++hdK8=
-X-Received: by 2002:a63:ee4b:: with SMTP id n11mr13443164pgk.265.1614596191331;
- Mon, 01 Mar 2021 02:56:31 -0800 (PST)
+        id S232101AbhCAK6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:58:20 -0500
+Received: from mail-eopbgr50074.outbound.protection.outlook.com ([40.107.5.74]:24962
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232596AbhCAK5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:57:49 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DUuRODIfqBzW0J1Dqd3WM8gvpMcy9TFOnaeHK7I5D0oeJS+cgSjfhIXtd6DKnZugkgcmHXj+SzHTByYoNmtGNIWsI43/itd2X2uvxYY8V6q8aW7cEl2RGkZ3ld9irSr4rSsViHG74TAQwt9KJX+Ux4Bi2mwAQn/Vh2fWsNc+upRcwSnbf0XI3wqA60fnBFZxDFAvGOHRAKPeJE1gOVdamvxmfvrPGxWau+sl6l11aOKtS2hNcSLuyCLdzhR0YsGg6K4sDfbQuhezARS2XLtXG24EskV9lFD2haeK2OErI8StNvwayY13bd3Kex/93X2vAhmFu6/AJxeVxsXAKf0uZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wUKc5d0TFZ2wa4EnRvMYQubEw7WgJ/36eYKg6dnqFnw=;
+ b=nE/EQBPqzVwZ0zDkBpUkpd3aHOKxv1HcBKADyJ2NgJ2ahmVf7SCEk8B69wNTaksQ1JSC5BdRKkrWVgI4fobvOf2ORqGEXpieDtoWt5ZdVeRKVroeS1DNaTk1NShLHqE2g4Bv8had47r0G9vmHjgxEzW2SEjRA4SxEawJRyn3PUn3j4LYBMbB3CYqlKFA6D8Y+2fgKl0tgNINDUCK+sd+oWrUxS836xed3NtenocTC23IsqZwNtzp8zLupIMnJl92Ane8weLr9/bTvpN4cU+iT+G8Qg6rWUtSLCar+L+SC+XIDTYTNG49qbArUtXva0jVLJuC9cuq3ZE4zS4aWL6EMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wUKc5d0TFZ2wa4EnRvMYQubEw7WgJ/36eYKg6dnqFnw=;
+ b=gehSEdTWLZ2H4Q0DlBSV5rfs/o9bQ/Fp60iZXAsyiTevYOCSG9lmip8vT4gMHm0b3vmGJHAqEc2fvsm3Z6rMU3GkeH5NrvN9oP8UCZ2HBWNSGQmRlZAjBTEDMWjNvfLudcbMHIe7fqQcU1x/FsWQqMZe2d9YtHn1jkPetETtidc=
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB7PR04MB5306.eurprd04.prod.outlook.com (2603:10a6:10:1f::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.33; Mon, 1 Mar
+ 2021 10:56:58 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::7d13:2d65:d6f7:b978]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::7d13:2d65:d6f7:b978%4]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
+ 10:56:58 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Robin van der Gracht <robin@protonic.nl>
+CC:     Andre Naujoks <nautsch2@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net v4 1/1] can: can_skb_set_owner(): fix ref counting if
+ socket was closed before setting skb ownership
+Thread-Topic: [PATCH net v4 1/1] can: can_skb_set_owner(): fix ref counting if
+ socket was closed before setting skb ownership
+Thread-Index: AQHXDCHTtD8a1IStAEOrE/v6wJPl7Kpu+jmA
+Date:   Mon, 1 Mar 2021 10:56:58 +0000
+Message-ID: <DB8PR04MB6795A03ADFAE983568087CB3E69A9@DB8PR04MB6795.eurprd04.prod.outlook.com>
+References: <20210226092456.27126-1-o.rempel@pengutronix.de>
+In-Reply-To: <20210226092456.27126-1-o.rempel@pengutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: pengutronix.de; dkim=none (message not signed)
+ header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 8b437b53-12fe-4485-e5ae-08d8dca0bc4b
+x-ms-traffictypediagnostic: DB7PR04MB5306:
+x-microsoft-antispam-prvs: <DB7PR04MB53064E2D3EDAC2872C792BFAE69A9@DB7PR04MB5306.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Yx9dcJUDbf5iwFi5OjkeIHlELfZYr37diMTMoeXx+0cNZ5VMSl02gBlUTSjSMd9GEM28pwBkOjKRENfHbBQEP+xdsCdkfxPDX6Y3V7hqEH5T290odslAfDKaO2hxYNULf4CSqATdnnpOZ4jAvGDKCHauNlpXsHLntf4jXzRuw86icxaMis1H1JXAW3Yv59xTiyeIykxQOm2SExUNQiuVTwQrDBBErhYL2PIs3kc5wFZXeuZrHwVyK6G1LF/LkBOdhvQgJ6wg0A9r+HebM/7+JbsS26SaS5pAXWAwZdGMEYJMCl7SBQ/skFNwK0duJdjfxw6cgPON+vOb6sQKSn5LMoeRp5MxCTCnDoGjAcKOmOAYHI6Xckp6cIsjgGYZhQtpgP/FutpnoI3HENI+rPXw/m2ybaZfQabbQaC7E0BbQp5CjDdQe4wRHxMtjItN4rJj7W6MUFitT//jgmWR03lnLmdpE2CE9+lvhHFN3645718Kh+4l/kpn4MDX9GOCAj+9xQMu6DsFhR925Ie9yxBrOQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(39860400002)(376002)(366004)(76116006)(316002)(186003)(8936002)(26005)(9686003)(4326008)(66446008)(71200400001)(66946007)(66476007)(6506007)(55016002)(7416002)(478600001)(33656002)(86362001)(52536014)(7696005)(5660300002)(2906002)(66556008)(110136005)(8676002)(54906003)(83380400001)(64756008)(45080400002)(53546011);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?RzJ0TERkOTRpbmFJRHZYcFY4WFFvYXVnQkNaMWxlZnc3MWRUQVNSeHd4TGQ0?=
+ =?utf-8?B?UGtGSXB0Y1NTVnBkckJmSU1TWkpXbWRQMlNCemtOUUY5aXlNcUZjS3k3VjRk?=
+ =?utf-8?B?ZElOYTlxdDZrVmMyalFOQmRPNWtWV2x5Z1hHYjhUeXdIMTR1UEZJakJOUGZ0?=
+ =?utf-8?B?WkI4MW91c20rU3A0REdKQnc3T1laNEZlOTVKaXJQekxKQXFoOTN3UmtlWGEz?=
+ =?utf-8?B?UFpwYTRWKzlVY21XTVpQamthRjFLbS9xY3BKS2NleDJlbmpEOFo4QXNVck5r?=
+ =?utf-8?B?akc3VUZRQk93MVBmdmZQOWYvZG5sRUtBT1ptUEhqSVdRbUU0Sm83Zm1RdEZL?=
+ =?utf-8?B?bE1LQXRIRHJaTGhmYyt6TUdZQ2pXZ09lbjB1VExvN0VvcUxMNGYrVmpNS01W?=
+ =?utf-8?B?TkdJZlpGREsxSmY5OWFBaTdlci8zaENpYUhsQ3lhM0wxK21tOHVsMkp5Yncr?=
+ =?utf-8?B?dktVb2hGd1FhcTB1c2JHT0VUYmZFL3YrV3Q2a0lXVUIvTnBMMmRkWVlLUjNL?=
+ =?utf-8?B?dUs5Zk9kalYrUENteWsrSk1uL25VUTNUejNmUW53d25SWDJZZU5qMDhYbmVX?=
+ =?utf-8?B?SktpNHNzWm9Wd3QxcVhHdjhjbGhsZGxUOXBEdndDQWwxM21TbGkxa09VYnJp?=
+ =?utf-8?B?cENQb1dFZ2twQXB6N0JST1pyUVpVZVRmM0k2Mzd5dlk0MEIrdHQ4VWNKaWkx?=
+ =?utf-8?B?NkhESUdiZGF6L00xbktvY3ozamFMNjVMTEZldzlQcXhOT2k3K2VRS3Q4akpT?=
+ =?utf-8?B?Qm9NMTA5RXZmVk42a0k1bmdxSHhaVGhNZjBiMi9jb3pWdEc3Znp6NFV2S2hF?=
+ =?utf-8?B?aHBJYU5DTG1hTWNvbmluTFlhemFPWjEya3dPNm44NnZIckU1TnREVEtTU0ZX?=
+ =?utf-8?B?SmJPS0o1Uzl5aHg1dDBtVVlJL3VZY1FBRFF4UUcvRWtkRzhVTURBWXQyV0RX?=
+ =?utf-8?B?elJ1K00ycXRJaCtpSjFuRjNDcFFTZlJqd0RyV0dyY1pPOUl2NEkxS0s0dVFp?=
+ =?utf-8?B?OXdZQXVpZWJJSzBGRTM1WHdUUmdacUZKSTRySjk2ek5DMVcycTFjanhnc01j?=
+ =?utf-8?B?bUFKYUd5UjhIYkxpTG9xNWkvRFZ6cTZvL3Zya3VQUnFkYzVIZ3dZbjgxNWhn?=
+ =?utf-8?B?TWhBN3RSZk1DM0FuaVZvUzJOWWpnS0ZYYUJIZnpucnZCdFFrUHJLNi9vSmJZ?=
+ =?utf-8?B?TGtiZXNhRFE5TTJDekVPMlV0clptR3o0ZEJyMFJRZkJiL29NVGFXNzZtbU9r?=
+ =?utf-8?B?TVlITTNsaHlpSVZ4OEdNVmdhUG5LMmhXZnBSTkdvU2k5cjdxRVpHOUU5M1Zk?=
+ =?utf-8?B?aE1pRDl1dWN2T2R1M2N0ZnY1MEEwNHJpN2hCdzAzVlpaZmZIRGRCTW5XbFN5?=
+ =?utf-8?B?d21Jc1VqdTRDem1ja1RKUkd5b21xOU1QZG1pNkZqcit6WjQ2L3VDcFVhdlAy?=
+ =?utf-8?B?eGRpajBOOGRQWmg5SG9iL3BsSllGY2taWWVLbncraFVzemVQV3ZEWkdHQzdi?=
+ =?utf-8?B?R0wwREJtZXZzakZHd3ltaFNTU0I1Q3JqT0RzNy9vdGQ1R2V5dzNRWjNmelE5?=
+ =?utf-8?B?R0VMR1B6T1NacXZ0b3p2bjBkOVZjaDBEWkxtNWYvU09RQmFCRHQ1d0dUSVll?=
+ =?utf-8?B?bnVoRWJEL3l6dmRYSG5QeUVHNGpTa1c2VldralpsQ1VkQ1RwUi9ObDFGVEdR?=
+ =?utf-8?B?QU53N1hLUXR4bEFTbEhHc25kWk1lOGJUZ0xqVm9abnF3ZzJvZnpSdjVZZGxV?=
+ =?utf-8?Q?/D2hmWccj1CgUBC3r4=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1613619715-28785-1-git-send-email-victor.liu@nxp.com>
- <1613619715-28785-6-git-send-email-victor.liu@nxp.com> <CAG3jFyufawQ=0UNgfbTgzkbqCYQ7LS-BMq7mXruX470iYBXMOw@mail.gmail.com>
- <1ea2261315c8e744ca60a66403c78a3c551d04fe.camel@nxp.com>
-In-Reply-To: <1ea2261315c8e744ca60a66403c78a3c551d04fe.camel@nxp.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 1 Mar 2021 11:56:19 +0100
-Message-ID: <CAG3jFyuNVdbqdjfOaRmKFVDS30RCdUVp6NURfa3osiaqu462pA@mail.gmail.com>
-Subject: Re: [PATCH v4 05/14] drm/bridge: imx: Add i.MX8qm/qxp pixel combiner support
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de,
-        Fabio Estevam <festevam@gmail.com>, linux-imx@nxp.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>, kishon@ti.com,
-        Vinod Koul <vkoul@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8b437b53-12fe-4485-e5ae-08d8dca0bc4b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2021 10:56:58.4306
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3UXXZdHCS0uZHoP+HQRVokuY+11n3ZJKnx8lwyo1QK+m26+Yk1dbG3WCSo9UNVUUqF8EThKDqDV7SHb7DFF9fQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5306
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 at 10:07, Liu Ying <victor.liu@nxp.com> wrote:
->
-> Hi Robert,
->
-> On Fri, 2021-02-26 at 14:07 +0100, Robert Foss wrote:
-> > Hey Liu,
-> >
-> > With the below nit straightened out, feel free to add my r-b.
-> >
-> > Reviewed-by: Robert Foss <robert.foss@linaro.org>
->
-> Thanks for reviewing this patch.
->
-> >
-> > On Thu, 18 Feb 2021 at 04:58, Liu Ying <victor.liu@nxp.com> wrote:
-> > > This patch adds a drm bridge driver for i.MX8qm/qxp pixel combiner.
-> > > The pixel combiner takes two output streams from a single display
-> > > controller and manipulates the two streams to support a number
-> > > of modes(bypass, pixel combine, YUV444 to YUV422, split_RGB) configured
-> > > as either one screen, two screens, or virtual screens.  The pixel
-> > > combiner is also responsible for generating some of the control signals
-> > > for the pixel link output channel.  For now, the driver only supports
-> > > the bypass mode.
-> > >
-> > > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > > ---
-> > > v3->v4:
-> > > * No change.
-> > >
-> > > v2->v3:
-> > > * No change.
-> > >
-> > > v1->v2:
-> > > * No change.
-> > >
-> > >  drivers/gpu/drm/bridge/Kconfig                     |   2 +
-> > >  drivers/gpu/drm/bridge/Makefile                    |   1 +
-> > >  drivers/gpu/drm/bridge/imx/Kconfig                 |   8 +
-> > >  drivers/gpu/drm/bridge/imx/Makefile                |   1 +
-> > >  .../gpu/drm/bridge/imx/imx8qxp-pixel-combiner.c    | 452 +++++++++++++++++++++
-> > >  5 files changed, 464 insertions(+)
-> > >  create mode 100644 drivers/gpu/drm/bridge/imx/Kconfig
-> > >  create mode 100644 drivers/gpu/drm/bridge/imx/Makefile
-> > >  create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-pixel-combiner.c
-> > >
-> > > diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-> > > index e4110d6c..84944e0 100644
-> > > --- a/drivers/gpu/drm/bridge/Kconfig
-> > > +++ b/drivers/gpu/drm/bridge/Kconfig
-> > > @@ -256,6 +256,8 @@ source "drivers/gpu/drm/bridge/adv7511/Kconfig"
-> > >
-> > >  source "drivers/gpu/drm/bridge/cadence/Kconfig"
-> > >
-> > > +source "drivers/gpu/drm/bridge/imx/Kconfig"
-> > > +
-> > >  source "drivers/gpu/drm/bridge/synopsys/Kconfig"
-> > >
-> > >  endmenu
-> > > diff --git a/drivers/gpu/drm/bridge/Makefile b/drivers/gpu/drm/bridge/Makefile
-> > > index 86e7acc..bc80cae 100644
-> > > --- a/drivers/gpu/drm/bridge/Makefile
-> > > +++ b/drivers/gpu/drm/bridge/Makefile
-> > > @@ -27,4 +27,5 @@ obj-$(CONFIG_DRM_NWL_MIPI_DSI) += nwl-dsi.o
-> > >
-> > >  obj-y += analogix/
-> > >  obj-y += cadence/
-> > > +obj-y += imx/
-> > >  obj-y += synopsys/
-> > > diff --git a/drivers/gpu/drm/bridge/imx/Kconfig b/drivers/gpu/drm/bridge/imx/Kconfig
-> > > new file mode 100644
-> > > index 00000000..f1c91b6
-> > > --- /dev/null
-> > > +++ b/drivers/gpu/drm/bridge/imx/Kconfig
-> > > @@ -0,0 +1,8 @@
-> > > +config DRM_IMX8QXP_PIXEL_COMBINER
-> > > +       tristate "Freescale i.MX8QM/QXP pixel combiner"
-> > > +       depends on OF
-> > > +       depends on COMMON_CLK
-> > > +       select DRM_KMS_HELPER
-> > > +       help
-> > > +         Choose this to enable pixel combiner found in
-> > > +         Freescale i.MX8qm/qxp processors.
-> > > diff --git a/drivers/gpu/drm/bridge/imx/Makefile b/drivers/gpu/drm/bridge/imx/Makefile
-> > > new file mode 100644
-> > > index 00000000..7d7c8d6
-> > > --- /dev/null
-> > > +++ b/drivers/gpu/drm/bridge/imx/Makefile
-> > > @@ -0,0 +1 @@
-> > > +obj-$(CONFIG_DRM_IMX8QXP_PIXEL_COMBINER) += imx8qxp-pixel-combiner.o
-> > > diff --git a/drivers/gpu/drm/bridge/imx/imx8qxp-pixel-combiner.c b/drivers/gpu/drm/bridge/imx/imx8qxp-pixel-combiner.c
-> > > new file mode 100644
-> > > index 00000000..cd5b1be
-> > > --- /dev/null
-> > > +++ b/drivers/gpu/drm/bridge/imx/imx8qxp-pixel-combiner.c
-> > > @@ -0,0 +1,452 @@
-> > > +// SPDX-License-Identifier: GPL-2.0+
-> > > +
-> > > +/*
-> > > + * Copyright 2020 NXP
-> > > + */
-> > > +
-> > > +#include <linux/bitfield.h>
-> > > +#include <linux/clk.h>
-> > > +#include <linux/delay.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/of.h>
-> > > +#include <linux/of_graph.h>
-> > > +#include <linux/platform_device.h>
-> > > +#include <linux/pm_runtime.h>
-> > > +
-> > > +#include <drm/drm_atomic_state_helper.h>
-> > > +#include <drm/drm_bridge.h>
-> > > +#include <drm/drm_print.h>
-> > > +
-> > > +#define PC_CTRL_REG                    0x0
-> > > +#define  PC_COMBINE_ENABLE             BIT(0)
-> > > +#define  PC_DISP_BYPASS(n)             BIT(1 + 21 * (n))
-> > > +#define  PC_DISP_HSYNC_POLARITY(n)     BIT(2 + 11 * (n))
-> > > +#define  PC_DISP_HSYNC_POLARITY_POS(n) DISP_HSYNC_POLARITY(n)
-> > > +#define  PC_DISP_VSYNC_POLARITY(n)     BIT(3 + 11 * (n))
-> > > +#define  PC_DISP_VSYNC_POLARITY_POS(n) DISP_VSYNC_POLARITY(n)
-> > > +#define  PC_DISP_DVALID_POLARITY(n)    BIT(4 + 11 * (n))
-> > > +#define  PC_DISP_DVALID_POLARITY_POS(n)        DISP_DVALID_POLARITY(n)
-> > > +#define  PC_VSYNC_MASK_ENABLE          BIT(5)
-> > > +#define  PC_SKIP_MODE                  BIT(6)
-> > > +#define  PC_SKIP_NUMBER_MASK           GENMASK(12, 7)
-> > > +#define  PC_SKIP_NUMBER(n)             FIELD_PREP(PC_SKIP_NUMBER_MASK, (n))
-> > > +#define  PC_DISP0_PIX_DATA_FORMAT_MASK GENMASK(18, 16)
-> > > +#define  PC_DISP0_PIX_DATA_FORMAT(fmt) \
-> > > +                               FIELD_PREP(PC_DISP0_PIX_DATA_FORMAT_MASK, (fmt))
-> > > +#define  PC_DISP1_PIX_DATA_FORMAT_MASK GENMASK(21, 19)
-> > > +#define  PC_DISP1_PIX_DATA_FORMAT(fmt) \
-> > > +                               FIELD_PREP(PC_DISP1_PIX_DATA_FORMAT_MASK, (fmt))
-> > > +
-> > > +#define PC_BUF_PARA_REG                        0x10
-> >
-> > This register is unused, keeping it in here to avoid future headaches
-> > seems like a good idea.
->
-> Yes, for now, this register is unused.
-> It will be used to set the below PC_BUF_ACTIVE_DEPTH field when
-> non-bypass modes are enabled, I think.
->
-> Though you said 'keeping it', you actually want me to drop it for now,
-> right?
-
-If there is a 2nd series coming which will enable non-bypass modes,
-then maybe add it in that series instead.
-
->
-> >
-> > > +#define  PC_BUF_ACTIVE_DEPTH_MASK      GENMASK(10, 0)
-> > > +#define  PC_BUF_ACTIVE_DEPTH(n)                FIELD_PREP(PC_BUF_ACTIVE_DEPTH_MASK, (n))
-> > > +
-> > > +#define PC_SW_RESET_REG                        0x20
-> > > +#define  PC_SW_RESET_N                 BIT(0)
-> > > +#define  PC_DISP_SW_RESET_N(n)         BIT(1 + (n))
-> > > +#define  PC_FULL_RESET_N               (PC_SW_RESET_N |                \
-> > > +                                        PC_DISP_SW_RESET_N(0) |        \
-> > > +                                        PC_DISP_SW_RESET_N(1))
-> > > +
-> > > +#define PC_REG_SET                     0x4
-> > > +#define PC_REG_CLR                     0x8
-> > > +
-> > > +#define DRIVER_NAME                    "imx8qxp-pixel-combiner"
-> > > +
-> > > +enum imx8qxp_pc_pix_data_format {
-> > > +       RGB,
-> > > +       YUV444,
-> > > +       YUV422,
-> > > +       SPLIT_RGB,
-> >
-> > YUV444, YUV422 & SPLIT_RGB are also unused, but if their values are
-> > compatible with the PC_DISP0_PIX_DATA_FORMAT macro I think keeping
-> > them around for future reference is a good idea.
->
-> Yes, YUV444, YUV422 & SPLIT_RGB are compatible with the
-> PC_DISP{0, 1}_PIX_DATA_FORMAT macros, so I'll keep them here.
->
-> Regards,
-> Liu Ying
->
-> >
-> > > +};
-> > > +
-> > > +struct imx8qxp_pc_channel {
-> > > +       struct drm_bridge bridge;
-> > > +       struct drm_bridge *next_bridge;
-> > > +       struct imx8qxp_pc *pc;
-> > > +       unsigned int stream_id;
-> > > +       bool is_available;
-> > > +};
-> > > +
-> > > +struct imx8qxp_pc {
-> > > +       struct device *dev;
-> > > +       struct imx8qxp_pc_channel ch[2];
-> > > +       struct clk *clk_apb;
-> > > +       void __iomem *base;
-> > > +};
-> > > +
-> > > +static inline u32 imx8qxp_pc_read(struct imx8qxp_pc *pc, unsigned int offset)
-> > > +{
-> > > +       return readl(pc->base + offset);
-> > > +}
-> > > +
-> > > +static inline void
-> > > +imx8qxp_pc_write(struct imx8qxp_pc *pc, unsigned int offset, u32 value)
-> > > +{
-> > > +       writel(value, pc->base + offset);
-> > > +}
-> > > +
-> > > +static inline void
-> > > +imx8qxp_pc_write_set(struct imx8qxp_pc *pc, unsigned int offset, u32 value)
-> > > +{
-> > > +       imx8qxp_pc_write(pc, offset + PC_REG_SET, value);
-> > > +}
-> > > +
-> > > +static inline void
-> > > +imx8qxp_pc_write_clr(struct imx8qxp_pc *pc, unsigned int offset, u32 value)
-> > > +{
-> > > +       imx8qxp_pc_write(pc, offset + PC_REG_CLR, value);
-> > > +}
-> > > +
-> > > +static enum drm_mode_status
-> > > +imx8qxp_pc_bridge_mode_valid(struct drm_bridge *bridge,
-> > > +                            const struct drm_display_info *info,
-> > > +                            const struct drm_display_mode *mode)
-> > > +{
-> > > +       if (mode->hdisplay > 2560)
-> > > +               return MODE_BAD_HVALUE;
-> > > +
-> > > +       return MODE_OK;
-> > > +}
-> > > +
-> > > +static int imx8qxp_pc_bridge_attach(struct drm_bridge *bridge,
-> > > +                                   enum drm_bridge_attach_flags flags)
-> > > +{
-> > > +       struct imx8qxp_pc_channel *ch = bridge->driver_private;
-> > > +       struct imx8qxp_pc *pc = ch->pc;
-> > > +
-> > > +       if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
-> > > +               DRM_DEV_ERROR(pc->dev,
-> > > +                             "do not support creating a drm_connector\n");
-> > > +               return -EINVAL;
-> > > +       }
-> > > +
-> > > +       if (!bridge->encoder) {
-> > > +               DRM_DEV_ERROR(pc->dev, "missing encoder\n");
-> > > +               return -ENODEV;
-> > > +       }
-> > > +
-> > > +       return drm_bridge_attach(bridge->encoder,
-> > > +                                ch->next_bridge, bridge,
-> > > +                                DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-> > > +}
-> > > +
-> > > +static void
-> > > +imx8qxp_pc_bridge_mode_set(struct drm_bridge *bridge,
-> > > +                          const struct drm_display_mode *mode,
-> > > +                          const struct drm_display_mode *adjusted_mode)
-> > > +{
-> > > +       struct imx8qxp_pc_channel *ch = bridge->driver_private;
-> > > +       struct imx8qxp_pc *pc = ch->pc;
-> > > +       u32 val;
-> > > +       int ret;
-> > > +
-> > > +       ret = pm_runtime_get_sync(pc->dev);
-> > > +       if (ret < 0)
-> > > +               DRM_DEV_ERROR(pc->dev,
-> > > +                             "failed to get runtime PM sync: %d\n", ret);
-> > > +
-> > > +       ret = clk_prepare_enable(pc->clk_apb);
-> > > +       if (ret)
-> > > +               DRM_DEV_ERROR(pc->dev, "%s: failed to enable apb clock: %d\n",
-> > > +                                                               __func__,  ret);
-> > > +
-> > > +       /* HSYNC to pixel link is active low. */
-> > > +       imx8qxp_pc_write_clr(pc, PC_CTRL_REG,
-> > > +                               PC_DISP_HSYNC_POLARITY(ch->stream_id));
-> > > +
-> > > +       /* VSYNC to pixel link is active low. */
-> > > +       imx8qxp_pc_write_clr(pc, PC_CTRL_REG,
-> > > +                               PC_DISP_VSYNC_POLARITY(ch->stream_id));
-> > > +
-> > > +       /* Data enable to pixel link is active high. */
-> > > +       imx8qxp_pc_write_set(pc, PC_CTRL_REG,
-> > > +                               PC_DISP_DVALID_POLARITY(ch->stream_id));
-> > > +
-> > > +       /* Mask the first frame output which may be incomplete. */
-> > > +       imx8qxp_pc_write_set(pc, PC_CTRL_REG, PC_VSYNC_MASK_ENABLE);
-> > > +
-> > > +       /* Only support RGB currently. */
-> > > +       val = imx8qxp_pc_read(pc, PC_CTRL_REG);
-> > > +       if (ch->stream_id == 0) {
-> > > +               val &= ~PC_DISP0_PIX_DATA_FORMAT_MASK;
-> > > +               val |= PC_DISP0_PIX_DATA_FORMAT(RGB);
-> > > +       } else {
-> > > +               val &= ~PC_DISP1_PIX_DATA_FORMAT_MASK;
-> > > +               val |= PC_DISP1_PIX_DATA_FORMAT(RGB);
-> > > +       }
-> > > +       imx8qxp_pc_write(pc, PC_CTRL_REG, val);
-> > > +
-> > > +       /* Only support bypass mode currently. */
-> > > +       imx8qxp_pc_write_set(pc, PC_CTRL_REG, PC_DISP_BYPASS(ch->stream_id));
-> > > +
-> > > +       clk_disable_unprepare(pc->clk_apb);
-> > > +}
-> > > +
-> > > +static void imx8qxp_pc_bridge_atomic_disable(struct drm_bridge *bridge,
-> > > +                               struct drm_bridge_state *old_bridge_state)
-> > > +{
-> > > +       struct imx8qxp_pc_channel *ch = bridge->driver_private;
-> > > +       struct imx8qxp_pc *pc = ch->pc;
-> > > +       int ret;
-> > > +
-> > > +       ret = pm_runtime_put(pc->dev);
-> > > +       if (ret < 0)
-> > > +               DRM_DEV_ERROR(pc->dev, "failed to put runtime PM: %d\n", ret);
-> > > +}
-> > > +
-> > > +static const u32 imx8qxp_pc_bus_output_fmts[] = {
-> > > +       MEDIA_BUS_FMT_RGB888_1X36_CPADLO,
-> > > +       MEDIA_BUS_FMT_RGB666_1X36_CPADLO,
-> > > +};
-> > > +
-> > > +static bool imx8qxp_pc_bus_output_fmt_supported(u32 fmt)
-> > > +{
-> > > +       int i;
-> > > +
-> > > +       for (i = 0; i < ARRAY_SIZE(imx8qxp_pc_bus_output_fmts); i++) {
-> > > +               if (imx8qxp_pc_bus_output_fmts[i] == fmt)
-> > > +                       return true;
-> > > +       }
-> > > +
-> > > +       return false;
-> > > +}
-> > > +
-> > > +static u32 *
-> > > +imx8qxp_pc_bridge_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
-> > > +                                       struct drm_bridge_state *bridge_state,
-> > > +                                       struct drm_crtc_state *crtc_state,
-> > > +                                       struct drm_connector_state *conn_state,
-> > > +                                       u32 output_fmt,
-> > > +                                       unsigned int *num_input_fmts)
-> > > +{
-> > > +       u32 *input_fmts;
-> > > +
-> > > +       if (!imx8qxp_pc_bus_output_fmt_supported(output_fmt))
-> > > +               return NULL;
-> > > +
-> > > +       *num_input_fmts = 1;
-> > > +
-> > > +       input_fmts = kmalloc(sizeof(*input_fmts), GFP_KERNEL);
-> > > +       if (!input_fmts)
-> > > +               return NULL;
-> > > +
-> > > +       switch (output_fmt) {
-> > > +       case MEDIA_BUS_FMT_RGB888_1X36_CPADLO:
-> > > +               input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X30_CPADLO;
-> > > +               break;
-> > > +       case MEDIA_BUS_FMT_RGB666_1X36_CPADLO:
-> > > +               input_fmts[0] = MEDIA_BUS_FMT_RGB666_1X30_CPADLO;
-> > > +               break;
-> > > +       default:
-> > > +               kfree(input_fmts);
-> > > +               input_fmts = NULL;
-> > > +               break;
-> > > +       }
-> > > +
-> > > +       return input_fmts;
-> > > +}
-> > > +
-> > > +static u32 *
-> > > +imx8qxp_pc_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
-> > > +                                       struct drm_bridge_state *bridge_state,
-> > > +                                       struct drm_crtc_state *crtc_state,
-> > > +                                       struct drm_connector_state *conn_state,
-> > > +                                       unsigned int *num_output_fmts)
-> > > +{
-> > > +       *num_output_fmts = ARRAY_SIZE(imx8qxp_pc_bus_output_fmts);
-> > > +       return kmemdup(imx8qxp_pc_bus_output_fmts,
-> > > +                       sizeof(imx8qxp_pc_bus_output_fmts), GFP_KERNEL);
-> > > +}
-> > > +
-> > > +static const struct drm_bridge_funcs imx8qxp_pc_bridge_funcs = {
-> > > +       .atomic_duplicate_state = drm_atomic_helper_bridge_duplicate_state,
-> > > +       .atomic_destroy_state   = drm_atomic_helper_bridge_destroy_state,
-> > > +       .atomic_reset           = drm_atomic_helper_bridge_reset,
-> > > +       .mode_valid             = imx8qxp_pc_bridge_mode_valid,
-> > > +       .attach                 = imx8qxp_pc_bridge_attach,
-> > > +       .mode_set               = imx8qxp_pc_bridge_mode_set,
-> > > +       .atomic_disable         = imx8qxp_pc_bridge_atomic_disable,
-> > > +       .atomic_get_input_bus_fmts =
-> > > +                               imx8qxp_pc_bridge_atomic_get_input_bus_fmts,
-> > > +       .atomic_get_output_bus_fmts =
-> > > +                               imx8qxp_pc_bridge_atomic_get_output_bus_fmts,
-> > > +};
-> > > +
-> > > +static int imx8qxp_pc_bridge_probe(struct platform_device *pdev)
-> > > +{
-> > > +       struct imx8qxp_pc *pc;
-> > > +       struct imx8qxp_pc_channel *ch;
-> > > +       struct device *dev = &pdev->dev;
-> > > +       struct device_node *np = dev->of_node;
-> > > +       struct device_node *child, *remote;
-> > > +       u32 i;
-> > > +       int ret;
-> > > +
-> > > +       pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
-> > > +       if (!pc)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       pc->base = devm_platform_ioremap_resource(pdev, 0);
-> > > +       if (IS_ERR(pc->base))
-> > > +               return PTR_ERR(pc->base);
-> > > +
-> > > +       pc->dev = dev;
-> > > +
-> > > +       pc->clk_apb = devm_clk_get(dev, "apb");
-> > > +       if (IS_ERR(pc->clk_apb)) {
-> > > +               ret = PTR_ERR(pc->clk_apb);
-> > > +               if (ret != -EPROBE_DEFER)
-> > > +                       DRM_DEV_ERROR(dev, "failed to get apb clock: %d\n",
-> > > +                                                                       ret);
-> > > +               return ret;
-> > > +       }
-> > > +
-> > > +       platform_set_drvdata(pdev, pc);
-> > > +       pm_runtime_enable(dev);
-> > > +
-> > > +       for_each_available_child_of_node(np, child) {
-> > > +               ret = of_property_read_u32(child, "reg", &i);
-> > > +               if (ret || i > 1) {
-> > > +                       ret = -EINVAL;
-> > > +                       DRM_DEV_ERROR(dev,
-> > > +                                     "invalid channel(%u) node address\n", i);
-> > > +                       goto free_child;
-> > > +               }
-> > > +
-> > > +               ch = &pc->ch[i];
-> > > +               ch->pc = pc;
-> > > +               ch->stream_id = i;
-> > > +
-> > > +               remote = of_graph_get_remote_node(child, 1, 0);
-> > > +               if (!remote) {
-> > > +                       ret = -ENODEV;
-> > > +                       DRM_DEV_ERROR(dev,
-> > > +                           "channel%u failed to get port1's remote node: %d\n",
-> > > +                                                                       i, ret);
-> > > +                       goto free_child;
-> > > +               }
-> > > +
-> > > +               ch->next_bridge = of_drm_find_bridge(remote);
-> > > +               if (!ch->next_bridge) {
-> > > +                       of_node_put(remote);
-> > > +                       ret = -EPROBE_DEFER;
-> > > +                       DRM_DEV_DEBUG_DRIVER(dev,
-> > > +                               "channel%u failed to find next bridge: %d\n",
-> > > +                                                                       i, ret);
-> > > +                       goto free_child;
-> > > +               }
-> > > +
-> > > +               of_node_put(remote);
-> > > +
-> > > +               ch->bridge.driver_private = ch;
-> > > +               ch->bridge.funcs = &imx8qxp_pc_bridge_funcs;
-> > > +               ch->bridge.of_node = child;
-> > > +               ch->is_available = true;
-> > > +
-> > > +               drm_bridge_add(&ch->bridge);
-> > > +       }
-> > > +
-> > > +       return 0;
-> > > +
-> > > +free_child:
-> > > +       of_node_put(child);
-> > > +
-> > > +       if (i == 1 && pc->ch[0].next_bridge)
-> > > +               drm_bridge_remove(&pc->ch[0].bridge);
-> > > +
-> > > +       pm_runtime_disable(dev);
-> > > +       return ret;
-> > > +}
-> > > +
-> > > +static int imx8qxp_pc_bridge_remove(struct platform_device *pdev)
-> > > +{
-> > > +       struct imx8qxp_pc *pc = platform_get_drvdata(pdev);
-> > > +       struct imx8qxp_pc_channel *ch;
-> > > +       int i;
-> > > +
-> > > +       for (i = 0; i < 2; i++) {
-> > > +               ch = &pc->ch[i];
-> > > +
-> > > +               if (!ch->is_available)
-> > > +                       continue;
-> > > +
-> > > +               drm_bridge_remove(&ch->bridge);
-> > > +               ch->is_available = false;
-> > > +       }
-> > > +
-> > > +       pm_runtime_disable(&pdev->dev);
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +static int __maybe_unused imx8qxp_pc_runtime_suspend(struct device *dev)
-> > > +{
-> > > +       struct platform_device *pdev = to_platform_device(dev);
-> > > +       struct imx8qxp_pc *pc = platform_get_drvdata(pdev);
-> > > +       int ret;
-> > > +
-> > > +       ret = clk_prepare_enable(pc->clk_apb);
-> > > +       if (ret)
-> > > +               DRM_DEV_ERROR(pc->dev, "%s: failed to enable apb clock: %d\n",
-> > > +                                                               __func__,  ret);
-> > > +
-> > > +       /* Disable pixel combiner by full reset. */
-> > > +       imx8qxp_pc_write_clr(pc, PC_SW_RESET_REG, PC_FULL_RESET_N);
-> > > +
-> > > +       clk_disable_unprepare(pc->clk_apb);
-> > > +
-> > > +       /* Ensure the reset takes effect. */
-> > > +       usleep_range(10, 20);
-> > > +
-> > > +       return ret;
-> > > +}
-> > > +
-> > > +static int __maybe_unused imx8qxp_pc_runtime_resume(struct device *dev)
-> > > +{
-> > > +       struct platform_device *pdev = to_platform_device(dev);
-> > > +       struct imx8qxp_pc *pc = platform_get_drvdata(pdev);
-> > > +       int ret;
-> > > +
-> > > +       ret = clk_prepare_enable(pc->clk_apb);
-> > > +       if (ret) {
-> > > +               DRM_DEV_ERROR(pc->dev, "%s: failed to enable apb clock: %d\n",
-> > > +                                                               __func__, ret);
-> > > +               return ret;
-> > > +       }
-> > > +
-> > > +       /* out of reset */
-> > > +       imx8qxp_pc_write_set(pc, PC_SW_RESET_REG, PC_FULL_RESET_N);
-> > > +
-> > > +       clk_disable_unprepare(pc->clk_apb);
-> > > +
-> > > +       return ret;
-> > > +}
-> > > +
-> > > +static const struct dev_pm_ops imx8qxp_pc_pm_ops = {
-> > > +       SET_RUNTIME_PM_OPS(imx8qxp_pc_runtime_suspend,
-> > > +                          imx8qxp_pc_runtime_resume, NULL)
-> > > +};
-> > > +
-> > > +static const struct of_device_id imx8qxp_pc_dt_ids[] = {
-> > > +       { .compatible = "fsl,imx8qm-pixel-combiner", },
-> > > +       { .compatible = "fsl,imx8qxp-pixel-combiner", },
-> > > +       { /* sentinel */ }
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, imx8qxp_pc_dt_ids);
-> > > +
-> > > +static struct platform_driver imx8qxp_pc_bridge_driver = {
-> > > +       .probe  = imx8qxp_pc_bridge_probe,
-> > > +       .remove = imx8qxp_pc_bridge_remove,
-> > > +       .driver = {
-> > > +               .pm = &imx8qxp_pc_pm_ops,
-> > > +               .name = DRIVER_NAME,
-> > > +               .of_match_table = imx8qxp_pc_dt_ids,
-> > > +       },
-> > > +};
-> > > +module_platform_driver(imx8qxp_pc_bridge_driver);
-> > > +
-> > > +MODULE_DESCRIPTION("i.MX8QM/QXP pixel combiner bridge driver");
-> > > +MODULE_AUTHOR("Liu Ying <victor.liu@nxp.com>");
-> > > +MODULE_LICENSE("GPL v2");
-> > > +MODULE_ALIAS("platform:" DRIVER_NAME);
-> > > --
-> > > 2.7.4
-> > >
->
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE9sZWtzaWogUmVtcGVsIDxv
+LnJlbXBlbEBwZW5ndXRyb25peC5kZT4NCj4gU2VudDogMjAyMeW5tDLmnIgyNuaXpSAxNzoyNQ0K
+PiBUbzogbWtsQHBlbmd1dHJvbml4LmRlOyBEYXZpZCBTLiBNaWxsZXIgPGRhdmVtQGRhdmVtbG9m
+dC5uZXQ+OyBKYWt1Yg0KPiBLaWNpbnNraSA8a3ViYUBrZXJuZWwub3JnPjsgT2xpdmVyIEhhcnRr
+b3BwIDxzb2NrZXRjYW5AaGFydGtvcHAubmV0PjsNCj4gUm9iaW4gdmFuIGRlciBHcmFjaHQgPHJv
+YmluQHByb3RvbmljLm5sPg0KPiBDYzogT2xla3NpaiBSZW1wZWwgPG8ucmVtcGVsQHBlbmd1dHJv
+bml4LmRlPjsgQW5kcmUgTmF1am9rcw0KPiA8bmF1dHNjaDJAZ21haWwuY29tPjsgRXJpYyBEdW1h
+emV0IDxlZHVtYXpldEBnb29nbGUuY29tPjsNCj4ga2VybmVsQHBlbmd1dHJvbml4LmRlOyBsaW51
+eC1jYW5Admdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOw0KPiBsaW51eC1r
+ZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFtQQVRDSCBuZXQgdjQgMS8xXSBjYW46
+IGNhbl9za2Jfc2V0X293bmVyKCk6IGZpeCByZWYgY291bnRpbmcgaWYgc29ja2V0DQo+IHdhcyBj
+bG9zZWQgYmVmb3JlIHNldHRpbmcgc2tiIG93bmVyc2hpcA0KPiANCj4gVGhlcmUgYXJlIHR3byBy
+ZWYgY291bnQgdmFyaWFibGVzIGNvbnRyb2xsaW5nIHRoZSBmcmVlKClpbmcgb2YgYSBzb2NrZXQ6
+DQo+IC0gc3RydWN0IHNvY2s6OnNrX3JlZmNudCAtIHdoaWNoIGlzIGNoYW5nZWQgYnkgc29ja19o
+b2xkKCkvc29ja19wdXQoKQ0KPiAtIHN0cnVjdCBzb2NrOjpza193bWVtX2FsbG9jIC0gd2hpY2gg
+YWNjb3VudHMgdGhlIG1lbW9yeSBhbGxvY2F0ZWQgYnkNCj4gICB0aGUgc2ticyBpbiB0aGUgc2Vu
+ZCBwYXRoLg0KPiANCj4gSW4gY2FzZSB0aGVyZSBhcmUgc3RpbGwgVFggc2ticyBvbiB0aGUgZmx5
+IGFuZCB0aGUgc29ja2V0KCkgaXMgY2xvc2VkLCB0aGUgc3RydWN0DQo+IHNvY2s6OnNrX3JlZmNu
+dCByZWFjaGVzIDAuIEluIHRoZSBUWC1wYXRoIHRoZSBDQU4gc3RhY2sgY2xvbmVzIGFuICJlY2hv
+IiBza2IsDQo+IGNhbGxzIHNvY2tfaG9sZCgpIG9uIHRoZSBvcmlnaW5hbCBzb2NrZXQgYW5kIHJl
+ZmVyZW5jZXMgaXQuIFRoaXMgcHJvZHVjZXMgdGhlDQo+IGZvbGxvd2luZyBiYWNrIHRyYWNlOg0K
+PiANCj4gfCBXQVJOSU5HOiBDUFU6IDAgUElEOiAyODAgYXQgbGliL3JlZmNvdW50LmM6MjUNCj4g
+fCByZWZjb3VudF93YXJuX3NhdHVyYXRlKzB4MTE0LzB4MTM0DQo+IHwgcmVmY291bnRfdDogYWRk
+aXRpb24gb24gMDsgdXNlLWFmdGVyLWZyZWUuDQo+IHwgTW9kdWxlcyBsaW5rZWQgaW46IGNvZGFf
+dnB1KEUpIHY0bDJfanBlZyhFKSB2aWRlb2J1ZjJfdm1hbGxvYyhFKQ0KPiBpbXhfdmRvYShFKQ0K
+PiB8IENQVTogMCBQSUQ6IDI4MCBDb21tOiB0ZXN0X2Nhbi5zaCBUYWludGVkOiBHICAgICAgICAg
+ICAgRQ0KPiA1LjExLjAtMDQ1NzctZ2Y4ZmY2NjAzYzYxNyAjMjAzDQo+IHwgSGFyZHdhcmUgbmFt
+ZTogRnJlZXNjYWxlIGkuTVg2IFF1YWQvRHVhbExpdGUgKERldmljZSBUcmVlKQ0KPiB8IEJhY2t0
+cmFjZToNCj4gfCBbPDgwYmFmZWE0Pl0gKGR1bXBfYmFja3RyYWNlKSBmcm9tIFs8ODBiYjAyODA+
+XSAoc2hvd19zdGFjaysweDIwLzB4MjQpDQo+IHwgcjc6MDAwMDAwMDAgcjY6NjAwZjAxMTMgcjU6
+MDAwMDAwMDAgcjQ6ODE0NDEyMjAgWzw4MGJiMDI2MD5dDQo+IHwgKHNob3dfc3RhY2spIGZyb20g
+Wzw4MGJiNTkzYz5dIChkdW1wX3N0YWNrKzB4YTAvMHhjOCkgWzw4MGJiNTg5Yz5dDQo+IHwgKGR1
+bXBfc3RhY2spIGZyb20gWzw4MDEyYjI2OD5dIChfX3dhcm4rMHhkNC8weDExNCkgcjk6MDAwMDAw
+MTkNCj4gfCByODo4MGY0YThjMiByNzo4M2U0MTUwYyByNjowMDAwMDAwMCByNTowMDAwMDAwOSBy
+NDo4MDUyOGY5MA0KPiB8IFs8ODAxMmIxOTQ+XSAoX193YXJuKSBmcm9tIFs8ODBiYjA5YzQ+XSAo
+d2Fybl9zbG93cGF0aF9mbXQrMHg4OC8weGM4KQ0KPiB8IHI5OjgzZjI2NDAwIHI4OjgwZjRhOGQx
+IHI3OjAwMDAwMDA5IHI2OjgwNTI4ZjkwIHI1OjAwMDAwMDE5DQo+IHwgcjQ6ODBmNGE4YzIgWzw4
+MGJiMDk0MD5dICh3YXJuX3Nsb3dwYXRoX2ZtdCkgZnJvbSBbPDgwNTI4ZjkwPl0NCj4gfCAocmVm
+Y291bnRfd2Fybl9zYXR1cmF0ZSsweDExNC8weDEzNCkgcjg6MDAwMDAwMDAgcjc6MDAwMDAwMDAN
+Cj4gfCByNjo4MmI0NDAwMCByNTo4MzRlNTYwMCByNDo4M2Y0ZDU0MCBbPDgwNTI4ZTdjPl0NCj4g
+fCAocmVmY291bnRfd2Fybl9zYXR1cmF0ZSkgZnJvbSBbPDgwNzlhNGM4Pl0NCj4gfCAoX19yZWZj
+b3VudF9hZGQuY29uc3Rwcm9wLjArMHg0Yy8weDUwKQ0KPiB8IFs8ODA3OWE0N2M+XSAoX19yZWZj
+b3VudF9hZGQuY29uc3Rwcm9wLjApIGZyb20gWzw4MDc5YTU3Yz5dDQo+IHwgKGNhbl9wdXRfZWNo
+b19za2IrMHhiMC8weDEzYykgWzw4MDc5YTRjYz5dIChjYW5fcHV0X2VjaG9fc2tiKSBmcm9tDQo+
+IHwgWzw4MDc5YmE5OD5dIChmbGV4Y2FuX3N0YXJ0X3htaXQrMHgxYzQvMHgyMzApIHI5OjAwMDAw
+MDEwIHI4OjgzZjQ4NjEwDQo+IHwgcjc6MGZkYzAwMDAgcjY6MGMwODAwMDAgcjU6ODJiNDQwMDAg
+cjQ6ODM0ZTU2MDAgWzw4MDc5YjhkND5dDQo+IHwgKGZsZXhjYW5fc3RhcnRfeG1pdCkgZnJvbSBb
+PDgwOTY5MDc4Pl0gKG5ldGRldl9zdGFydF94bWl0KzB4NDQvMHg3MCkNCj4gfCByOTo4MTRjMGJh
+MCByODo4MGM4NzkwYyByNzowMDAwMDAwMCByNjo4MzRlNTYwMCByNTo4MmI0NDAwMA0KPiB8IHI0
+OjgyYWIxZjAwIFs8ODA5NjkwMzQ+XSAobmV0ZGV2X3N0YXJ0X3htaXQpIGZyb20gWzw4MDk3MjVh
+ND5dDQo+IHwgKGRldl9oYXJkX3N0YXJ0X3htaXQrMHgxOWMvMHgzMTgpIHI5OjgxNGMwYmEwIHI4
+OjAwMDAwMDAwIHI3OjgyYWIxZjAwDQo+IHwgcjY6ODJiNDQwMDAgcjU6MDAwMDAwMDAgcjQ6ODM0
+ZTU2MDAgWzw4MDk3MjQwOD5dIChkZXZfaGFyZF9zdGFydF94bWl0KQ0KPiB8IGZyb20gWzw4MDlj
+NjU4ND5dIChzY2hfZGlyZWN0X3htaXQrMHhjYy8weDI2NCkgcjEwOjgzNGU1NjAwDQo+IHwgcjk6
+MDAwMDAwMDAgcjg6MDAwMDAwMDAgcjc6ODJiNDQwMDAgcjY6ODJhYjFmMDAgcjU6ODM0ZTU2MDAN
+Cj4gfCByNDo4M2YyNzQwMCBbPDgwOWM2NGI4Pl0gKHNjaF9kaXJlY3RfeG1pdCkgZnJvbSBbPDgw
+OWM2YzBjPl0NCj4gfCAoX19xZGlzY19ydW4rMHg0ZjAvMHg1MzQpDQo+IA0KPiBUbyBmaXggdGhp
+cyBwcm9ibGVtLCBvbmx5IHNldCBza2Igb3duZXJzaGlwIHRvIHNvY2tldHMgd2hpY2ggaGF2ZSBz
+dGlsbCBhIHJlZg0KPiBjb3VudCA+IDAuDQo+IA0KPiBDYzogT2xpdmVyIEhhcnRrb3BwIDxzb2Nr
+ZXRjYW5AaGFydGtvcHAubmV0Pg0KPiBDYzogQW5kcmUgTmF1am9rcyA8bmF1dHNjaDJAZ21haWwu
+Y29tPg0KPiBTdWdnZXN0ZWQtYnk6IEVyaWMgRHVtYXpldCA8ZWR1bWF6ZXRAZ29vZ2xlLmNvbT4N
+Cj4gRml4ZXM6IDBhZTg5YmViMjgzYSAoImNhbjogYWRkIGRlc3RydWN0b3IgZm9yIHNlbGYgZ2Vu
+ZXJhdGVkIHNrYnMiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBPbGVrc2lqIFJlbXBlbCA8by5yZW1wZWxA
+cGVuZ3V0cm9uaXguZGU+DQoNCkkgd2lsbCBnaXZlIG91dCBhIHRlc3QgcmVzdWx0IHRvbW9ycm93
+IHdoZW4gdGhlIGJvYXJkIGlzIGF2YWlsYWJsZS4g8J+Yig0KDQpCZXN0IFJlZ2FyZHMsDQpKb2Fr
+aW0gWmhhbmcNCj4gLS0tDQo+ICBpbmNsdWRlL2xpbnV4L2Nhbi9za2IuaCB8IDggKysrKysrLS0N
+Cj4gIDEgZmlsZSBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+IA0K
+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9jYW4vc2tiLmggYi9pbmNsdWRlL2xpbnV4L2Nh
+bi9za2IuaCBpbmRleA0KPiA2ODVmMzRjZmJhMjAuLmQ4MjAxOGNjMGQwYiAxMDA2NDQNCj4gLS0t
+IGEvaW5jbHVkZS9saW51eC9jYW4vc2tiLmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC9jYW4vc2ti
+LmgNCj4gQEAgLTY1LDggKzY1LDEyIEBAIHN0YXRpYyBpbmxpbmUgdm9pZCBjYW5fc2tiX3Jlc2Vy
+dmUoc3RydWN0IHNrX2J1ZmYgKnNrYikNCj4gDQo+ICBzdGF0aWMgaW5saW5lIHZvaWQgY2FuX3Nr
+Yl9zZXRfb3duZXIoc3RydWN0IHNrX2J1ZmYgKnNrYiwgc3RydWN0IHNvY2sgKnNrKSAgew0KPiAt
+CWlmIChzaykgew0KPiAtCQlzb2NrX2hvbGQoc2spOw0KPiArCS8qDQo+ICsJICogSWYgdGhlIHNv
+Y2tldCBoYXMgYWxyZWFkeSBiZWVuIGNsb3NlZCBieSB1c2VyIHNwYWNlLCB0aGUgcmVmY291bnQg
+bWF5DQo+ICsJICogYWxyZWFkeSBiZSAwIChhbmQgdGhlIHNvY2tldCB3aWxsIGJlIGZyZWVkIGFm
+dGVyIHRoZSBsYXN0IFRYIHNrYiBoYXMNCj4gKwkgKiBiZWVuIGZyZWVkKS4gU28gb25seSBpbmNy
+ZWFzZSBzb2NrZXQgcmVmY291bnQgaWYgdGhlIHJlZmNvdW50IGlzID4gMC4NCj4gKwkgKi8NCj4g
+KwlpZiAoc2sgJiYgcmVmY291bnRfaW5jX25vdF96ZXJvKCZzay0+c2tfcmVmY250KSkgew0KPiAg
+CQlza2ItPmRlc3RydWN0b3IgPSBzb2NrX2VmcmVlOw0KPiAgCQlza2ItPnNrID0gc2s7DQo+ICAJ
+fQ0KPiAtLQ0KPiAyLjI5LjINCg0K
