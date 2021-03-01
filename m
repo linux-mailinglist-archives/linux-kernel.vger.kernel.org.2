@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDC2328B5A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B91328B3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240090AbhCASdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:33:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41536 "EHLO mail.kernel.org"
+        id S239892AbhCASbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:31:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234021AbhCAQjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:39:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BCA764F87;
-        Mon,  1 Mar 2021 16:28:16 +0000 (UTC)
+        id S234883AbhCAQil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:38:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 118C064F81;
+        Mon,  1 Mar 2021 16:27:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616097;
-        bh=VzcM2zK0CXIH9uHqMj0F35NuxWY5WDsoXlYHg6auVLU=;
+        s=korg; t=1614616074;
+        bh=WZ9y26hqcfgFPJZRlWq0ClgPnV9Q7Ttvyjmwf0JIESI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iT1J/IORtXVOAo9Nn0yapmBdtlua8mmOxCbosQmJCD+ouRKctFhx7jAAHEo6yqb+f
-         e6AL4Q9OnXxFspSkcnUaS8q9kJe6oBk0FiedMo8stOxQdUDNva5R8JcUwoILtv+kNs
-         thzyjpkt7PaNIurrqJnmtCmjwcTd6KwZR2wDeR8o=
+        b=fQv6khDSoF9/XtS4FE3SoDsvJm3rSJtwlxxH4hy5Pn9RQwWDAercja4BO3B81moX+
+         Iv6mBxKr4XJ8rFSsfV2DB3++XBJBQy5tLmRTz2IkNm78a6pgQ8AGELwupNTtGqFVOQ
+         3XYVEgx5UgIuQixKCfL5A8qTTjYDDVJYdWx+6xPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sumit Garg <sumit.garg@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Subject: [PATCH 4.14 009/176] kdb: Make memory allocations more robust
-Date:   Mon,  1 Mar 2021 17:11:22 +0100
-Message-Id: <20210301161021.416348129@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 025/176] usb: dwc2: Do not update data length if it is 0 on inbound transfers
+Date:   Mon,  1 Mar 2021 17:11:38 +0100
+Message-Id: <20210301161022.223877718@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -39,40 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sumit Garg <sumit.garg@linaro.org>
+From: Guenter Roeck <linux@roeck-us.net>
 
-commit 93f7a6d818deef69d0ba652d46bae6fbabbf365c upstream.
+[ Upstream commit 415fa1c7305dedbb345e2cc8ac91769bc1c83f1a ]
 
-Currently kdb uses in_interrupt() to determine whether its library
-code has been called from the kgdb trap handler or from a saner calling
-context such as driver init. This approach is broken because
-in_interrupt() alone isn't able to determine kgdb trap handler entry from
-normal task context. This can happen during normal use of basic features
-such as breakpoints and can also be trivially reproduced using:
-echo g > /proc/sysrq-trigger
+The DWC2 documentation states that transfers with zero data length should
+set the number of packets to 1 and the transfer length to 0. This is not
+currently the case for inbound transfers: the transfer length is set to
+the maximum packet length. This can have adverse effects if the chip
+actually does transfer data as it is programmed to do. Follow chip
+documentation and keep the transfer length set to 0 in that situation.
 
-We can improve this by adding check for in_dbg_master() instead which
-explicitly determines if we are running in debugger context.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Link: https://lore.kernel.org/r/1611313556-4004-1-git-send-email-sumit.garg@linaro.org
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+Fixes: 56f5b1cff22a1 ("staging: Core files for the DWC2 driver")
+Tested-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Link: https://lore.kernel.org/r/20210113112052.17063-2-nsaenzjulienne@suse.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/debug/kdb/kdb_private.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/dwc2/hcd.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -233,7 +233,7 @@ extern struct task_struct *kdb_curr_task
- #define	kdb_do_each_thread(g, p) do_each_thread(g, p)
- #define	kdb_while_each_thread(g, p) while_each_thread(g, p)
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index e6f8825835b06..ef7f3b013fcba 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -1490,19 +1490,20 @@ static void dwc2_hc_start_transfer(struct dwc2_hsotg *hsotg,
+ 			if (num_packets > max_hc_pkt_count) {
+ 				num_packets = max_hc_pkt_count;
+ 				chan->xfer_len = num_packets * chan->max_packet;
++			} else if (chan->ep_is_in) {
++				/*
++				 * Always program an integral # of max packets
++				 * for IN transfers.
++				 * Note: This assumes that the input buffer is
++				 * aligned and sized accordingly.
++				 */
++				chan->xfer_len = num_packets * chan->max_packet;
+ 			}
+ 		} else {
+ 			/* Need 1 packet for transfer length of 0 */
+ 			num_packets = 1;
+ 		}
  
--#define GFP_KDB (in_interrupt() ? GFP_ATOMIC : GFP_KERNEL)
-+#define GFP_KDB (in_dbg_master() ? GFP_ATOMIC : GFP_KERNEL)
- 
- extern void *debug_kmalloc(size_t size, gfp_t flags);
- extern void debug_kfree(void *);
+-		if (chan->ep_is_in)
+-			/*
+-			 * Always program an integral # of max packets for IN
+-			 * transfers
+-			 */
+-			chan->xfer_len = num_packets * chan->max_packet;
+-
+ 		if (chan->ep_type == USB_ENDPOINT_XFER_INT ||
+ 		    chan->ep_type == USB_ENDPOINT_XFER_ISOC)
+ 			/*
+-- 
+2.27.0
+
 
 
