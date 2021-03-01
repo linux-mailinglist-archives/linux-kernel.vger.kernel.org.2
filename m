@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A82A3299A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E7A3298CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345115AbhCBA2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:28:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43158 "EHLO mail.kernel.org"
+        id S1346614AbhCAXti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:49:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240018AbhCAS2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:28:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CF5A64F83;
-        Mon,  1 Mar 2021 17:08:39 +0000 (UTC)
+        id S238893AbhCASJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:09:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3C6665310;
+        Mon,  1 Mar 2021 17:42:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618519;
-        bh=L7p/SJuqMOLpDTpk//F1Ir2PUrbX1sMFbr0oiolO5BI=;
+        s=korg; t=1614620563;
+        bh=STL845UrxJhNLm0e/zR40InxbvWZTFLt4lYcaQAfd+E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yYdpNufHwS1AStWqeP7Z13JsLD6f3i+WdNMTT1hjq2+39r5EzArccsylB8k4dawso
-         HO+dMDzt9cr/oXrpRG3iEKqupX0LgZ6mwJz1kPUDNx5OfXM2y87r9Kf+zFcmkVFAcL
-         Kz/P/WCOZc7E3HyByA9bSV1USqZlAt84GdnAgvyw=
+        b=IhJaVv6x91juXoTGpIBnA6PV1D0QxkHteFnid7VXTA1gmMgUS7pf2BX+O6Mb6IeRz
+         IOt8gQWUEvOneM7kxmd1ZRgwnYDOcC8RBnBIRYHzu9pazNaVPLw2KyipJ5E+bZz1xc
+         B7+rIkjGazwUifHvFG71mo814AhSzorVd3qcJJ0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 116/663] bpf: Fix an unitialized value in bpf_iter
-Date:   Mon,  1 Mar 2021 17:06:04 +0100
-Message-Id: <20210301161147.482445215@linuxfoundation.org>
+Subject: [PATCH 5.11 197/775] media: mtk-vcodec: fix error return code in vdec_vp9_decode()
+Date:   Mon,  1 Mar 2021 17:06:05 +0100
+Message-Id: <20210301161211.378776692@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit 17d8beda277a36203585943e70c7909b60775fd5 ]
+[ Upstream commit 4397efebf039be58e98c81a194a26100eba597bb ]
 
-Commit 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
-cached btf_id in struct bpf_iter_target_info so later on
-if it can be checked cheaply compared to checking registered names.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-syzbot found a bug that uninitialized value may occur to
-bpf_iter_target_info->btf_id. This is because we allocated
-bpf_iter_target_info structure with kmalloc and never initialized
-field btf_id afterwards. This uninitialized btf_id is typically
-compared to a u32 bpf program func proto btf_id, and the chance
-of being equal is extremely slim.
-
-This patch fixed the issue by using kzalloc which will also
-prevent future likely instances due to adding new fields.
-
-Fixes: 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
-Reported-by: syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20210212005926.2875002-1-yhs@fb.com
+Fixes: dea42fb79f4f ("media: mtk-vcodec: reset segment data then trig decoder")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/bpf_iter.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-index 8f10e30ea0b08..e8957e911de31 100644
---- a/kernel/bpf/bpf_iter.c
-+++ b/kernel/bpf/bpf_iter.c
-@@ -273,7 +273,7 @@ int bpf_iter_reg_target(const struct bpf_iter_reg *reg_info)
- {
- 	struct bpf_iter_target_info *tinfo;
+diff --git a/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c b/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c
+index 5ea153a685225..d9880210b2ab6 100644
+--- a/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c
++++ b/drivers/media/platform/mtk-vcodec/vdec/vdec_vp9_if.c
+@@ -890,7 +890,8 @@ static int vdec_vp9_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
+ 			memset(inst->seg_id_buf.va, 0, inst->seg_id_buf.size);
  
--	tinfo = kmalloc(sizeof(*tinfo), GFP_KERNEL);
-+	tinfo = kzalloc(sizeof(*tinfo), GFP_KERNEL);
- 	if (!tinfo)
- 		return -ENOMEM;
- 
+ 			if (vsi->show_frame & BIT(2)) {
+-				if (vpu_dec_start(&inst->vpu, NULL, 0)) {
++				ret = vpu_dec_start(&inst->vpu, NULL, 0);
++				if (ret) {
+ 					mtk_vcodec_err(inst, "vpu trig decoder failed");
+ 					goto DECODE_ERROR;
+ 				}
 -- 
 2.27.0
 
