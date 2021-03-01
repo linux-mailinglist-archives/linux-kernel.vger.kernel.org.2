@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201D2329A70
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AE1329A65
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377660AbhCBAsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:48:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53758 "EHLO mail.kernel.org"
+        id S1377556AbhCBArr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:47:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240382AbhCASqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:46:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F11A6530F;
-        Mon,  1 Mar 2021 17:42:37 +0000 (UTC)
+        id S240255AbhCASpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:45:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29DDA6530D;
+        Mon,  1 Mar 2021 17:42:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620558;
-        bh=NbpzCYMIvEbZs18qLNVRxseZKiihXVcW5iCjn6/ayIE=;
+        s=korg; t=1614620560;
+        bh=dgWkJBRcXmlasYdpr6OICrMX8AOjg3N83L5+6TgI04I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rus8od8MTp11tgnH8rqjP5ZfW6SP3sIMh/5RprMZ1XJekxv7+jQ9i1+JF5jHiTpx0
-         WrUCbCfRp1gBQd4qeTRpHrsbZHNwspsJUowEkK4TwzcdZr1G7rtmGZFnVm4Sqn1Yny
-         97tIh3Z04NpcCqJ/CnkS4Xx8unPXnF6yuXtWPFYE=
+        b=FvHOMZe7SdQ0C4QfhYVWTdfnZKWLPMwgLSh1oZ/UiAt8uX6FcxwiNh/0k8uCAhYa8
+         hFRlkwcnIukO+A6CizjzzhTgn4g/geC7zxGYTOaRAlqGoOeTG86yofJ5iXPDNDU+Qa
+         tNJI86qBvZpXMhTRICAK6O/NPXovTft8a7xIESEw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 195/775] media: imx: Unregister csc/scaler only if registered
-Date:   Mon,  1 Mar 2021 17:06:03 +0100
-Message-Id: <20210301161211.278407234@linuxfoundation.org>
+Subject: [PATCH 5.11 196/775] media: imx: Fix csc/scaler unregister
+Date:   Mon,  1 Mar 2021 17:06:04 +0100
+Message-Id: <20210301161211.329855459@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -44,15 +44,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ezequiel Garcia <ezequiel@collabora.com>
 
-[ Upstream commit bb2216548a2b13cf2942a058b475438a7a6bb028 ]
+[ Upstream commit 89b14485caa4b7b2eaf70be0064f0978e68ebeee ]
 
-The csc/scaler device pointer (imxmd->m2m_vdev) is assigned
-after the imx media device v4l2-async probe completes,
-therefore we need to check if the device is non-NULL
-before trying to unregister it.
+The csc/scaler device private struct is released by
+ipu_csc_scaler_video_device_release(), which can be called
+by video_unregister_device() if there are no users
+of the underlying struct video device.
 
-This can be the case if the non-completed imx media device
-is unbinded (or the driver is removed), leading to a kernel oops.
+Therefore, the mutex can't be held when calling
+video_unregister_device() as its memory may be freed
+by it, leading to a kernel oops.
+
+Fortunately, the fix is quite simple as no locking
+is needed when calling video_unregister_device(): v4l2-core
+already has its own internal locking, and the structures
+are also properly refcounted.
 
 Fixes: a8ef0488cc59 ("media: imx: add csc/scaler mem2mem device")
 Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
@@ -61,37 +67,25 @@ Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/imx/imx-media-dev.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/staging/media/imx/imx-media-csc-scaler.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/staging/media/imx/imx-media-dev.c b/drivers/staging/media/imx/imx-media-dev.c
-index 6d2205461e565..338b8bd0bb076 100644
---- a/drivers/staging/media/imx/imx-media-dev.c
-+++ b/drivers/staging/media/imx/imx-media-dev.c
-@@ -53,6 +53,7 @@ static int imx6_media_probe_complete(struct v4l2_async_notifier *notifier)
- 	imxmd->m2m_vdev = imx_media_csc_scaler_device_init(imxmd);
- 	if (IS_ERR(imxmd->m2m_vdev)) {
- 		ret = PTR_ERR(imxmd->m2m_vdev);
-+		imxmd->m2m_vdev = NULL;
- 		goto unlock;
- 	}
+diff --git a/drivers/staging/media/imx/imx-media-csc-scaler.c b/drivers/staging/media/imx/imx-media-csc-scaler.c
+index fab1155a5958c..63a0204502a8b 100644
+--- a/drivers/staging/media/imx/imx-media-csc-scaler.c
++++ b/drivers/staging/media/imx/imx-media-csc-scaler.c
+@@ -869,11 +869,7 @@ void imx_media_csc_scaler_device_unregister(struct imx_media_video_dev *vdev)
+ 	struct ipu_csc_scaler_priv *priv = vdev_to_priv(vdev);
+ 	struct video_device *vfd = priv->vdev.vfd;
  
-@@ -107,10 +108,14 @@ static int imx_media_remove(struct platform_device *pdev)
+-	mutex_lock(&priv->mutex);
+-
+ 	video_unregister_device(vfd);
+-
+-	mutex_unlock(&priv->mutex);
+ }
  
- 	v4l2_info(&imxmd->v4l2_dev, "Removing imx-media\n");
- 
-+	if (imxmd->m2m_vdev) {
-+		imx_media_csc_scaler_device_unregister(imxmd->m2m_vdev);
-+		imxmd->m2m_vdev = NULL;
-+	}
-+
- 	v4l2_async_notifier_unregister(&imxmd->notifier);
- 	imx_media_unregister_ipu_internal_subdevs(imxmd);
- 	v4l2_async_notifier_cleanup(&imxmd->notifier);
--	imx_media_csc_scaler_device_unregister(imxmd->m2m_vdev);
- 	media_device_unregister(&imxmd->md);
- 	v4l2_device_unregister(&imxmd->v4l2_dev);
- 	media_device_cleanup(&imxmd->md);
+ struct imx_media_video_dev *
 -- 
 2.27.0
 
