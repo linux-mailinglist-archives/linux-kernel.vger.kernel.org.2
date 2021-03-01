@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFD3329A59
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79548329AE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377456AbhCBArV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:47:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53878 "EHLO mail.kernel.org"
+        id S1378198AbhCBBEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:04:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239847AbhCASoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:44:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5F9464E66;
-        Mon,  1 Mar 2021 17:08:06 +0000 (UTC)
+        id S240873AbhCAS63 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:58:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E920F6530B;
+        Mon,  1 Mar 2021 17:42:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618487;
-        bh=jDaYfxJXqUarLEOWHPucA2FtOxFv6RBPytXGRBjyKvU=;
+        s=korg; t=1614620538;
+        bh=kYL59TMDy7KtDQHKtXK8Yp9KTX8l04Ti9THRjjCF9t4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nc7ExkNzQzaXvEMXrhAvVJY8tG21YQlUiGYDVjKIOjoOC1YxPKOK0i5eBJzGM3gzM
-         Flo/E1t6MAbCNAly5G0D4ZVSdh3s9oTHivUnucOpq6Gz8wVZcQjfJMcIEk6FC7OVyU
-         FQjiX+AEPY0+WoAIF9Y+Gq/kTOfjm3nxOysLZsY8=
+        b=evzOHv+VwTTqZNI2clZ5WCHqmc8KGPgSB9UGBM4Jug4lAw8A9Md+fft2uQrDl/QWY
+         UE/H8c0615K8+Bme3+4L1gyO8CoVLuVEUpkHmvfmtEu0tI2b2s3gGgQLF4M39MWIqx
+         mQBlY/yNGSe8Lp4uFkURSZrwEquzxEE5mPo6ZBxk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shay Drory <shayd@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 105/663] net/mlx5: Fix health error state handling
-Date:   Mon,  1 Mar 2021 17:05:53 +0100
-Message-Id: <20210301161146.932110499@linuxfoundation.org>
+Subject: [PATCH 5.11 189/775] MIPS: c-r4k: Fix section mismatch for loongson2_sc_init
+Date:   Mon,  1 Mar 2021 17:05:57 +0100
+Message-Id: <20210301161210.961939824@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,84 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shay Drory <shayd@nvidia.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 51d138c2610a236c1ed0059d034ee4c74f452b86 ]
+[ Upstream commit c58734eee6a2151ba033c0dcb31902c89e310374 ]
 
-Currently, when we discover a fatal error, we are queueing a work that
-will wait for a lock in order to enter the device to error state.
-Meanwhile, FW commands are still being processed, and gets timeouts.
-This can block the driver for few minutes before the work will manage
-to get the lock and enter to error state.
+When building with clang, the following section mismatch warning occurs:
 
-Setting the device to error state before queueing health work, in order
-to avoid FW commands being processed while the work is waiting for the
-lock.
+WARNING: modpost: vmlinux.o(.text+0x24490): Section mismatch in
+reference from the function r4k_cache_init() to the function
+.init.text:loongson2_sc_init()
 
-Fixes: c1d4d2e92ad6 ("net/mlx5: Avoid calling sleeping function by the health poll thread")
-Signed-off-by: Shay Drory <shayd@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+This should have been fixed with commit ad4fddef5f23 ("mips: fix Section
+mismatch in reference") but it was missed. Remove the improper __init
+annotation like that commit did.
+
+Fixes: 078a55fc824c ("MIPS: Delete __cpuinit/__CPUINIT usage from MIPS code")
+Link: https://github.com/ClangBuiltLinux/linux/issues/787
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/mellanox/mlx5/core/health.c  | 22 ++++++++++++-------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ arch/mips/mm/c-r4k.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-index 54523bed16cd3..0c32c485eb588 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-@@ -190,6 +190,16 @@ static bool reset_fw_if_needed(struct mlx5_core_dev *dev)
- 	return true;
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index 4f976d687ab00..f67297b3175fe 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -1593,7 +1593,7 @@ static int probe_scache(void)
+ 	return 1;
  }
  
-+static void enter_error_state(struct mlx5_core_dev *dev, bool force)
-+{
-+	if (mlx5_health_check_fatal_sensors(dev) || force) { /* protected state setting */
-+		dev->state = MLX5_DEVICE_STATE_INTERNAL_ERROR;
-+		mlx5_cmd_flush(dev);
-+	}
-+
-+	mlx5_notifier_call_chain(dev->priv.events, MLX5_DEV_EVENT_SYS_ERROR, (void *)1);
-+}
-+
- void mlx5_enter_error_state(struct mlx5_core_dev *dev, bool force)
+-static void __init loongson2_sc_init(void)
++static void loongson2_sc_init(void)
  {
- 	bool err_detected = false;
-@@ -208,12 +218,7 @@ void mlx5_enter_error_state(struct mlx5_core_dev *dev, bool force)
- 		goto unlock;
- 	}
+ 	struct cpuinfo_mips *c = &current_cpu_data;
  
--	if (mlx5_health_check_fatal_sensors(dev) || force) { /* protected state setting */
--		dev->state = MLX5_DEVICE_STATE_INTERNAL_ERROR;
--		mlx5_cmd_flush(dev);
--	}
--
--	mlx5_notifier_call_chain(dev->priv.events, MLX5_DEV_EVENT_SYS_ERROR, (void *)1);
-+	enter_error_state(dev, force);
- unlock:
- 	mutex_unlock(&dev->intf_state_mutex);
- }
-@@ -613,7 +618,7 @@ static void mlx5_fw_fatal_reporter_err_work(struct work_struct *work)
- 	priv = container_of(health, struct mlx5_priv, health);
- 	dev = container_of(priv, struct mlx5_core_dev, priv);
- 
--	mlx5_enter_error_state(dev, false);
-+	enter_error_state(dev, false);
- 	if (IS_ERR_OR_NULL(health->fw_fatal_reporter)) {
- 		if (mlx5_health_try_recover(dev))
- 			mlx5_core_err(dev, "health recovery failed\n");
-@@ -707,8 +712,9 @@ static void poll_health(struct timer_list *t)
- 		mlx5_core_err(dev, "Fatal error %u detected\n", fatal_error);
- 		dev->priv.health.fatal_error = fatal_error;
- 		print_health_info(dev);
-+		dev->state = MLX5_DEVICE_STATE_INTERNAL_ERROR;
- 		mlx5_trigger_health_work(dev);
--		goto out;
-+		return;
- 	}
- 
- 	count = ioread32be(health->health_counter);
 -- 
 2.27.0
 
