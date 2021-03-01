@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33CA329A77
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E51F329A03
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377684AbhCBAsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:48:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55112 "EHLO mail.kernel.org"
+        id S1348185AbhCBAmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:42:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240423AbhCASqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:46:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD2AC64E75;
-        Mon,  1 Mar 2021 17:20:37 +0000 (UTC)
+        id S240153AbhCASgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:36:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3E9664F92;
+        Mon,  1 Mar 2021 17:20:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619238;
-        bh=K0pKmmVxcCGTB4GfbhJf6lyKdWb+XDq6Varbr1WL52A=;
+        s=korg; t=1614619249;
+        bh=XD8VFxHfoZEaFY/3b+6BLe+5TYx9IDfxIZXxgQbNcuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KuhG+D6AZ/64eiLVyc6DHSglbXyRke20brFs5CJC5zwQcTiPmLVwZ1DddtbV1sSta
-         1Ltw3XT/trTo5ed1QvCeUSA1v83jhf1y56CkjcOWajFP9KgYxTbEIAk1m/Kn55VZA5
-         lpSFNXluy6fyJdmd393S06/CnJrraaIOcofFmI5A=
+        b=aYFX4Xy2Q4qg+47Iuo8nqB5gBvoHB6+Z1KgJ9RkW7LImo+LtI456tX7+clRJpw8Nq
+         79WY9k9fEvy3g1NIPxsqs0LmF4XzYK8ZApIA2ij8VKFBdZxbJf7I/hP9ySkSZdlIqy
+         l9kPV9y+3IL+rIyuoeANJ3ce5CiMg2YV4v7GAJZs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 382/663] RDMA/rtrs-srv: Do not pass a valid pointer to PTR_ERR()
-Date:   Mon,  1 Mar 2021 17:10:30 +0100
-Message-Id: <20210301161200.760679780@linuxfoundation.org>
+Subject: [PATCH 5.10 386/663] perf intel-pt: Fix premature IPC
+Date:   Mon,  1 Mar 2021 17:10:34 +0100
+Message-Id: <20210301161200.964502560@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,93 +41,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit ed408529679737a9a7ad816c8de5d59ba104bb11 ]
+[ Upstream commit 20aa39708a5999b7921b27482a756766272286ac ]
 
-smatch gives the warning:
+The code assumed a change in cycle count means accurate IPC. That is not
+correct, for example when sampling both branches and instructions, or at
+a FUP packet (which is not CYC-eligible) address. Fix by using an explicit
+flag to indicate when IPC can be sampled.
 
-  drivers/infiniband/ulp/rtrs/rtrs-srv.c:1805 rtrs_rdma_connect() warn: passing zero to 'PTR_ERR'
-
-Which is trying to say smatch has shown that srv is not an error pointer
-and thus cannot be passed to PTR_ERR.
-
-The solution is to move the list_add() down after full initilization of
-rtrs_srv. To avoid holding the srv_mutex too long, only hold it during the
-list operation as suggested by Leon.
-
-Fixes: 03e9b33a0fd6 ("RDMA/rtrs: Only allow addition of path to an already established session")
-Link: https://lore.kernel.org/r/20210216143807.65923-1-jinpu.wang@cloud.ionos.com
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 5b1dc0fd1da06 ("perf intel-pt: Add support for samples to contain IPC ratio")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: linux-kernel@vger.kernel.org
+Link: https://lore.kernel.org/r/20210205175350.23817-3-adrian.hunter@intel.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+ .../util/intel-pt-decoder/intel-pt-decoder.c     | 11 ++++++++++-
+ .../util/intel-pt-decoder/intel-pt-decoder.h     |  1 +
+ tools/perf/util/intel-pt.c                       | 16 ++++++----------
+ 3 files changed, 17 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 717304c49d0c3..f009a6907169c 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1364,21 +1364,18 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
- 			return srv;
+diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
+index 91cba05827369..ef29f6b25e60a 100644
+--- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
++++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.c
+@@ -2814,9 +2814,18 @@ const struct intel_pt_state *intel_pt_decode(struct intel_pt_decoder *decoder)
  		}
+ 		if (intel_pt_sample_time(decoder->pkt_state)) {
+ 			intel_pt_update_sample_time(decoder);
+-			if (decoder->sample_cyc)
++			if (decoder->sample_cyc) {
+ 				decoder->sample_tot_cyc_cnt = decoder->tot_cyc_cnt;
++				decoder->state.flags |= INTEL_PT_SAMPLE_IPC;
++				decoder->sample_cyc = false;
++			}
+ 		}
++		/*
++		 * When using only TSC/MTC to compute cycles, IPC can be
++		 * sampled as soon as the cycle count changes.
++		 */
++		if (!decoder->have_cyc)
++			decoder->state.flags |= INTEL_PT_SAMPLE_IPC;
  	}
-+	mutex_unlock(&ctx->srv_mutex);
+ 
+ 	decoder->state.timestamp = decoder->sample_timestamp;
+diff --git a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
+index 8645fc2654811..b52937b03c8c8 100644
+--- a/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
++++ b/tools/perf/util/intel-pt-decoder/intel-pt-decoder.h
+@@ -17,6 +17,7 @@
+ #define INTEL_PT_ABORT_TX	(1 << 1)
+ #define INTEL_PT_ASYNC		(1 << 2)
+ #define INTEL_PT_FUP_IP		(1 << 3)
++#define INTEL_PT_SAMPLE_IPC	(1 << 4)
+ 
+ enum intel_pt_sample_type {
+ 	INTEL_PT_BRANCH		= 1 << 0,
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index 3a0348caec7d6..710ce798a2686 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -1381,7 +1381,8 @@ static int intel_pt_synth_branch_sample(struct intel_pt_queue *ptq)
+ 		sample.branch_stack = (struct branch_stack *)&dummy_bs;
+ 	}
+ 
+-	sample.cyc_cnt = ptq->ipc_cyc_cnt - ptq->last_br_cyc_cnt;
++	if (ptq->state->flags & INTEL_PT_SAMPLE_IPC)
++		sample.cyc_cnt = ptq->ipc_cyc_cnt - ptq->last_br_cyc_cnt;
+ 	if (sample.cyc_cnt) {
+ 		sample.insn_cnt = ptq->ipc_insn_cnt - ptq->last_br_insn_cnt;
+ 		ptq->last_br_insn_cnt = ptq->ipc_insn_cnt;
+@@ -1431,7 +1432,8 @@ static int intel_pt_synth_instruction_sample(struct intel_pt_queue *ptq)
+ 	else
+ 		sample.period = ptq->state->tot_insn_cnt - ptq->last_insn_cnt;
+ 
+-	sample.cyc_cnt = ptq->ipc_cyc_cnt - ptq->last_in_cyc_cnt;
++	if (ptq->state->flags & INTEL_PT_SAMPLE_IPC)
++		sample.cyc_cnt = ptq->ipc_cyc_cnt - ptq->last_in_cyc_cnt;
+ 	if (sample.cyc_cnt) {
+ 		sample.insn_cnt = ptq->ipc_insn_cnt - ptq->last_in_insn_cnt;
+ 		ptq->last_in_insn_cnt = ptq->ipc_insn_cnt;
+@@ -1966,14 +1968,8 @@ static int intel_pt_sample(struct intel_pt_queue *ptq)
+ 
+ 	ptq->have_sample = false;
+ 
+-	if (ptq->state->tot_cyc_cnt > ptq->ipc_cyc_cnt) {
+-		/*
+-		 * Cycle count and instruction count only go together to create
+-		 * a valid IPC ratio when the cycle count changes.
+-		 */
+-		ptq->ipc_insn_cnt = ptq->state->tot_insn_cnt;
+-		ptq->ipc_cyc_cnt = ptq->state->tot_cyc_cnt;
+-	}
++	ptq->ipc_insn_cnt = ptq->state->tot_insn_cnt;
++	ptq->ipc_cyc_cnt = ptq->state->tot_cyc_cnt;
+ 
  	/*
- 	 * If this request is not the first connection request from the
- 	 * client for this session then fail and return error.
- 	 */
--	if (!first_conn) {
--		mutex_unlock(&ctx->srv_mutex);
-+	if (!first_conn)
- 		return ERR_PTR(-ENXIO);
--	}
- 
- 	/* need to allocate a new srv */
- 	srv = kzalloc(sizeof(*srv), GFP_KERNEL);
--	if  (!srv) {
--		mutex_unlock(&ctx->srv_mutex);
-+	if  (!srv)
- 		return ERR_PTR(-ENOMEM);
--	}
- 
- 	INIT_LIST_HEAD(&srv->paths_list);
- 	mutex_init(&srv->paths_mutex);
-@@ -1388,8 +1385,6 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
- 	srv->ctx = ctx;
- 	device_initialize(&srv->dev);
- 	srv->dev.release = rtrs_srv_dev_release;
--	list_add(&srv->ctx_list, &ctx->srv_list);
--	mutex_unlock(&ctx->srv_mutex);
- 
- 	srv->chunks = kcalloc(srv->queue_depth, sizeof(*srv->chunks),
- 			      GFP_KERNEL);
-@@ -1402,6 +1397,9 @@ static struct rtrs_srv *get_or_create_srv(struct rtrs_srv_ctx *ctx,
- 			goto err_free_chunks;
- 	}
- 	refcount_set(&srv->refcount, 1);
-+	mutex_lock(&ctx->srv_mutex);
-+	list_add(&srv->ctx_list, &ctx->srv_list);
-+	mutex_unlock(&ctx->srv_mutex);
- 
- 	return srv;
- 
-@@ -1816,11 +1814,7 @@ static int rtrs_rdma_connect(struct rdma_cm_id *cm_id,
- 	}
- 	recon_cnt = le16_to_cpu(msg->recon_cnt);
- 	srv = get_or_create_srv(ctx, &msg->paths_uuid, msg->first_conn);
--	/*
--	 * "refcount == 0" happens if a previous thread calls get_or_create_srv
--	 * allocate srv, but chunks of srv are not allocated yet.
--	 */
--	if (IS_ERR(srv) || refcount_read(&srv->refcount) == 0) {
-+	if (IS_ERR(srv)) {
- 		err = PTR_ERR(srv);
- 		goto reject_w_err;
- 	}
+ 	 * Do PEBS first to allow for the possibility that the PEBS timestamp
 -- 
 2.27.0
 
