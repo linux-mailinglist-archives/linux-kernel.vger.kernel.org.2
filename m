@@ -2,107 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D58327A5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61ADD327A5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233591AbhCAJFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:05:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51938 "EHLO
+        id S233678AbhCAJFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:05:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233580AbhCAI5D (ORCPT
+        with ESMTP id S233776AbhCAJA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:57:03 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7411EC06174A;
-        Mon,  1 Mar 2021 00:56:48 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id i14so9040904pjz.4;
-        Mon, 01 Mar 2021 00:56:48 -0800 (PST)
+        Mon, 1 Mar 2021 04:00:28 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A14CC06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 00:59:48 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id y12so5559297ljj.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 00:59:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NyhHfDZ8ugLt/niSCTVGjHEDOUQ793ajR15pUZRXsO8=;
-        b=iVIpCwlUVGPNSTb9erSd3i1a0ryWOOQGA/LBNSkz//6WIOrcQaEa+b/4MOJDhXnh+Q
-         wa92ig0JYpb2mXUChhQmcHyshuyqFCCbSgth2hmWca3NJ4W/m86q0KWnoi7gnOI0ADx+
-         JFT4SdLXJFSMTmvgpVtobNZDUyW+4n8ndLfuf5CqLaXLsJB26R3w3dwjFRkXvvyn2ipr
-         Bs3wKqOLCtst3S1kirVXLbdrOLuf9Df/xuYzIO12UtfqGSAWtQl8iiTnX5O2gYBzlhlE
-         haj5+QAWbXy1PQbW3e0sLBD5F/FBk/cQoyIysJW7c3AdgF5RQgEI1KsnrtnI0s/VcJor
-         s58g==
+        bh=AYs79IPnRt3qtzNnShKWZ7vyowWc2VUelHvdooVHnZg=;
+        b=kcf6kcitYZpg70CypoUp8KXILwBgfW62DpbNjWslqlp4qw62fI7tzmXjPZQCmQxMc8
+         y7E4AtX2Fmm4bNLcfXcEPW4KygtdDIAQoh7/Gppn2wuQW/GKYs0Umn4Wm46XccGHSmBe
+         jy7uA45XkN8GMGoDoJDciHZsVQhSFIR5XDAoh0rW972s2s04adtjid+35nHXnoln8MA8
+         FxCO26S/5xLKeLnx947E7nXZn0Rnap1zKbmn2OkkQ+VOi8uxBgu0gE1sSxomW3gthjJM
+         ufu7iyDDX3VZgWZtHNc17YGxcgin7Xk21+hnZeVkHrui+fqknKWQ+8YcQvAzXeWUB5vl
+         a9WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NyhHfDZ8ugLt/niSCTVGjHEDOUQ793ajR15pUZRXsO8=;
-        b=aAwKH9U8MorIl1JeDFOId3d/d9G5jrGGUkVhA/+jcE/8ZSf41zAnUuSIewdvVCTmjh
-         eT1xU6+x7TICsRMnjk4hpBGwu4uqezHEzVEPEdxKFXLPsOe0+l+ltcobMYnkPaVg742w
-         I+4WN9sSKflA9U3qc3tRDyKZiWdQEzV5rx4DcJG1trqOhJFgOQua7jMvNSaOQVLkPDEg
-         2p+6HoV1gPqh7/xX3lWOdSszelb+7hQMn1509V8EAFJydErVFZ0Ep9TzYfwexVkH/Dga
-         Pi823e/iMks2wiOf9SG61o6DqnoqvMurO2UzsFFpqiNoW+lMXYxIuxV30n58TsKWLMMP
-         KdNg==
-X-Gm-Message-State: AOAM533v5FQF5ByCnHNYSuzaKp1Iem4TJOz5EhZfxCXKNETnkns+bFZS
-        VgUQgFkYa2B+gkS6i67YjNJPTVJk7TdKIgmkyog=
-X-Google-Smtp-Source: ABdhPJxTYj9wSaK7rkwxgODcZzInbKdDoeTQkQgAHBSTP/ZNxcAMTf6qhafV0X1VXGAUF0LZ6I3HFefU8OxQkw+sq84=
-X-Received: by 2002:a17:90a:ea91:: with SMTP id h17mr11526609pjz.66.1614589008075;
- Mon, 01 Mar 2021 00:56:48 -0800 (PST)
+        bh=AYs79IPnRt3qtzNnShKWZ7vyowWc2VUelHvdooVHnZg=;
+        b=Oiyht6Sx9dFNfZGM7mgZDPRFi9rmfVk/qujc5WBcXL4p8rhilfFHKOB2MDzFgbS7zg
+         jpIYQ7uKqStLtUA4v1IpJH6AjsITIU8kEZkDzlEuBpPykdSgkZ/5j0jXeHhS4qB9x9pf
+         vC10ZsxxDZmPDywFxgpjI5Ya/+MwpugZ+EB29gBNbuN0PZ+BoqspCRbEFhUvNuQIihpZ
+         goqYUIT+yNlm/A2eXvMcy0e+imUW0wMrh6i4Aud66sbitOBdHj1xlnV1G0iD1DKFSCuw
+         W1lmnsEZoZzQuqhzbNQjWnuoAVF9gE72LntoohOBDx2HEVH6vetRb5R2P9SIQ+Ae1gjy
+         o2Kg==
+X-Gm-Message-State: AOAM532L2LjR9Ed6/AfEda8EsruRKBjOZDp65s0GO0XxYpS9WUVSlGwu
+        X7zlGwc6f2HhaFIdjDzGh2BvB9YNKQsDIiHWPMCgyg==
+X-Google-Smtp-Source: ABdhPJyj3pw+C0NXHPjoJdDWHXn0vLK/WBMS4zWE5j9GGEZHyMLzxq+OeogebxlDuBb2zgJuFq1OMvgpJB8dxst6o6c=
+X-Received: by 2002:a2e:9754:: with SMTP id f20mr6463797ljj.200.1614589186573;
+ Mon, 01 Mar 2021 00:59:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210216201813.60394-1-xie.he.0141@gmail.com> <YC4sB9OCl5mm3JAw@unreal>
- <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
- <YC5DVTHHd6OOs459@unreal> <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
- <YC7GHgYfGmL2wVRR@unreal> <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
- <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com>
- <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com>
- <906d8114f1965965749f1890680f2547@dev.tdt.de> <CAJht_EPBJhhdCBoon=WMuPBk-sxaeYOq3veOpAd2jq5kFqQHBg@mail.gmail.com>
- <e1750da4179aca52960703890e985af3@dev.tdt.de> <CAJht_ENP3Y98jgj1peGa3fGpQ-qPaF=1gtyYwMcawRFW_UCpeA@mail.gmail.com>
- <ff200b159ef358494a922a676cbef8a6@dev.tdt.de>
-In-Reply-To: <ff200b159ef358494a922a676cbef8a6@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Mon, 1 Mar 2021 00:56:37 -0800
-Message-ID: <CAJht_EMG27YU+Jxtb2qeq1nXwu8uV8FXQPr62OcNHsE7DozD1g@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+References: <20210211113309.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
+In-Reply-To: <20210211113309.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 1 Mar 2021 09:59:35 +0100
+Message-ID: <CACRpkdbQa3BZwgtp3=061cu+y+4qkMqtXQhXH_VuHB3KcLyDCA@mail.gmail.com>
+Subject: Re: [PATCH] drm/dsi: Add _NO_ to MIPI_DSI_* flags disabling features
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Xin Ji <xji@analogixsemi.com>,
+        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 10:56 PM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> >> Also, I have a hard time assessing if such a wrap is really
-> >> enforceable.
-> >
-> > Sorry. I don't understand what you mean. What "wrap" are you referring
-> > to?
->
-> I mean the change from only one hdlc<x> interface to both hdlc<x> and
-> hdlc<x>_x25.
->
-> I can't estimate how many users are out there and how their setup looks
-> like.
+On Thu, Feb 11, 2021 at 4:34 AM Nicolas Boichat <drinkcat@chromium.org> wrote:
 
-I'm also thinking about solving this issue by adding new APIs to the
-HDLC subsystem (hdlc_stop_queue / hdlc_wake_queue) for hardware
-drivers to call instead of netif_stop_queue / netif_wake_queue. This
-way we can preserve backward compatibility.
+> Many of the DSI flags have names opposite to their actual effects,
+> e.g. MIPI_DSI_MODE_EOT_PACKET means that EoT packets will actually
+> be disabled. Fix this by including _NO_ in the flag names, e.g.
+> MIPI_DSI_MODE_NO_EOT_PACKET.
 
-However I'm reluctant to change the code of all the hardware drivers
-because I'm afraid of introducing bugs, etc. When I look at the code
-of "wan/lmc/lmc_main.c", I feel I'm not able to make sure there are no
-bugs (related to stop_queue / wake_queue) after my change (and even
-before my change, actually). There are even serious style problems:
-the majority of its lines are indented by spaces.
+Unless someone like me interpreted it literally...
 
-So I don't want to mess with all the hardware drivers. Hardware driver
-developers (if they wish to properly support hdlc_x25) should do the
-change themselves. This is not a problem for me, because I use my own
-out-of-tree hardware driver. However if I add APIs with no user code
-in the kernel, other developers may think these APIs are not
-necessary.
+Like in these:
+
+>  drivers/gpu/drm/mcde/mcde_dsi.c                      | 2 +-
+>  drivers/gpu/drm/panel/panel-novatek-nt35510.c        | 2 +-
+>  drivers/gpu/drm/panel/panel-samsung-s6d16d0.c        | 2 +-
+>  drivers/gpu/drm/panel/panel-sony-acx424akp.c         | 2 +-
+
+> diff --git a/drivers/gpu/drm/mcde/mcde_dsi.c b/drivers/gpu/drm/mcde/mcde_dsi.c
+> index 2314c8122992..f4cdc3cfd7d0 100644
+> --- a/drivers/gpu/drm/mcde/mcde_dsi.c
+> +++ b/drivers/gpu/drm/mcde/mcde_dsi.c
+> @@ -760,7 +760,7 @@ static void mcde_dsi_start(struct mcde_dsi *d)
+>                 DSI_MCTL_MAIN_DATA_CTL_BTA_EN |
+>                 DSI_MCTL_MAIN_DATA_CTL_READ_EN |
+>                 DSI_MCTL_MAIN_DATA_CTL_REG_TE_EN;
+> -       if (d->mdsi->mode_flags & MIPI_DSI_MODE_EOT_PACKET)
+> +       if (d->mdsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
+>                 val |= DSI_MCTL_MAIN_DATA_CTL_HOST_EOT_GEN;
+
+If you read the code you can see that this is interpreted as inserting
+an EOT packet, so here you need to change the logic such:
+
+if (!d->mdsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
+    val |= DSI_MCTL_MAIN_DATA_CTL_HOST_EOT_GEN;
+
+This will make sure the host generates the EOT packet in HS mode
+*unless* the flag is set.
+
+(I checked the data sheet.)
+
+> diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35510.c b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
+> index b9a0e56f33e2..9d9334656803 100644
+> --- a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
+> +++ b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
+> @@ -899,7 +899,7 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
+>         dsi->hs_rate = 349440000;
+>         dsi->lp_rate = 9600000;
+>         dsi->mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS |
+> -               MIPI_DSI_MODE_EOT_PACKET;
+> +               MIPI_DSI_MODE_NO_EOT_PACKET;
+
+Here you should just delete the MIPI_DSI_MODE_EOT_PACKET
+flag because this was used with the MCDE driver which interpret the
+flag literally.
+
+> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c b/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
+> index 4aac0d1573dd..b04b9975e9b2 100644
+> --- a/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
+> +++ b/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
+> @@ -186,7 +186,7 @@ static int s6d16d0_probe(struct mipi_dsi_device *dsi)
+>          */
+>         dsi->mode_flags =
+>                 MIPI_DSI_CLOCK_NON_CONTINUOUS |
+> -               MIPI_DSI_MODE_EOT_PACKET;
+> +               MIPI_DSI_MODE_NO_EOT_PACKET;
+
+Same, just delete the flag.
+
+> --- a/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
+> +++ b/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
+> @@ -97,7 +97,7 @@ static int s6e63m0_dsi_probe(struct mipi_dsi_device *dsi)
+>         dsi->hs_rate = 349440000;
+>         dsi->lp_rate = 9600000;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
+> -               MIPI_DSI_MODE_EOT_PACKET |
+> +               MIPI_DSI_MODE_NO_EOT_PACKET |
+>                 MIPI_DSI_MODE_VIDEO_BURST;
+
+Same, just delete the flag.
+
+> diff --git a/drivers/gpu/drm/panel/panel-sony-acx424akp.c b/drivers/gpu/drm/panel/panel-sony-acx424akp.c
+> index 065efae213f5..6b706cbf2f9c 100644
+> --- a/drivers/gpu/drm/panel/panel-sony-acx424akp.c
+> +++ b/drivers/gpu/drm/panel/panel-sony-acx424akp.c
+> @@ -450,7 +450,7 @@ static int acx424akp_probe(struct mipi_dsi_device *dsi)
+>         else
+>                 dsi->mode_flags =
+>                         MIPI_DSI_CLOCK_NON_CONTINUOUS |
+> -                       MIPI_DSI_MODE_EOT_PACKET;
+> +                       MIPI_DSI_MODE_NO_EOT_PACKET;
+
+Same, just delete the flag.
+
+These are all just semantic bugs due to the ambiguity of the flags, it is
+possible to provide a Fixes: flag for each file using this flag the wrong way
+but I dunno if it's worth it.
+
+Yours,
+Linus Walleij
