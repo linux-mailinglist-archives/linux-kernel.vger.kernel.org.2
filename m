@@ -2,43 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A54329D6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D25F329D08
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240429AbhCBCcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:32:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55184 "EHLO mail.kernel.org"
+        id S1442855AbhCBCQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:16:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241806AbhCATra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:47:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A8FA651E8;
-        Mon,  1 Mar 2021 17:19:26 +0000 (UTC)
+        id S242198AbhCAToD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE08B651F3;
+        Mon,  1 Mar 2021 17:19:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619167;
-        bh=vmBJfQov9r+kOBWsOrfukGcLZjgVtA6JQZx4OWgTqvY=;
+        s=korg; t=1614619197;
+        bh=E6XF8j4WUmRONjQdlpbT/dDDBQ+Edu+yQgaaG+u4nL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wfABAUo5e7dKE4OAX2QsXeyzXG5w0LhWCp9pCCkHl+w4CJkahsIOm6HrmwfTrbWYR
-         GbfhCbXXXlFfrzE1Uk0KVEdnrXBKrhbasU6vfEE3RX6XgzDi35QTHlU38RpxHfCF2T
-         xipuR9/aiYaIWixhviNMZzcFpqF6kMCu1S2Jxuas=
+        b=XBZ6+8iTHWM1kLWyrqgEnHFatpirrf+0YTqhVfRA+LkqApuJJSmdhi9RwRJT3x7Jc
+         stnNYijzzO3my7mMsPc5X52UAL5FM+4AQjSVnwLmF4j+4Zt4PfNCDu3k7s2CRVhvds
+         KE+FVtBmFqKKbpkMOnfsvjTk//DVbsvqkTFwZfLk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kselftest@vger.kernel.org,
-        John Stultz <john.stultz@linaro.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 355/663] kselftests: dmabuf-heaps: Fix Makefiles inclusion of the kernels usr/include dir
-Date:   Mon,  1 Mar 2021 17:10:03 +0100
-Message-Id: <20210301161159.422940508@linuxfoundation.org>
+Subject: [PATCH 5.10 368/663] regulator: bd718x7, bd71828, Fix dvs voltage levels
+Date:   Mon,  1 Mar 2021 17:10:16 +0100
+Message-Id: <20210301161200.053279685@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -50,51 +42,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Stultz <john.stultz@linaro.org>
+From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 
-[ Upstream commit 64ba3d591c9d2be2a9c09e99b00732afe002ad0d ]
+[ Upstream commit c294554111a835598b557db789d9ad2379b512a2 ]
 
-Copied in from somewhere else, the makefile was including
-the kerne's usr/include dir, which caused the asm/ioctl.h file
-to be used.
+The ROHM BD718x7 and BD71828 drivers support setting HW state
+specific voltages from device-tree. This is used also by various
+in-tree DTS files.
 
-Unfortunately, that file has different values for _IOC_SIZEBITS
-and _IOC_WRITE than include/uapi/asm-generic/ioctl.h which then
-causes the _IOCW macros to give the wrong ioctl numbers,
-specifically for DMA_BUF_IOCTL_SYNC.
+These drivers do incorrectly try to compose bit-map using enum
+values. By a chance this works for first two valid levels having
+values 1 and 2 - but setting values for the rest of the levels
+do indicate capability of setting values for first levels as
+well. Luckily the regulators which support setting values for
+SUSPEND/LPSR do usually also support setting values for RUN
+and IDLE too - thus this has not been such a fatal issue.
 
-This patch simply removes the extra include from the Makefile
+Fix this by defining the old enum values as bits and fixing the
+parsing code. This allows keeping existing IC specific drivers
+intact and only slightly changing the rohm-regulator.c
 
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Brian Starkey <brian.starkey@arm.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-kselftest@vger.kernel.org
-Fixes: a8779927fd86c ("kselftests: Add dma-heap test")
-Signed-off-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Fixes: 21b72156ede8b ("regulator: bd718x7: Split driver to common and bd718x7 specific parts")
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Acked-by: Lee Jones <lee.jones@linaro.org>
+Link: https://lore.kernel.org/r/20210212080023.GA880728@localhost.localdomain
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/dmabuf-heaps/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/rohm-regulator.c |  9 ++++++---
+ include/linux/mfd/rohm-generic.h   | 14 ++++++--------
+ 2 files changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/tools/testing/selftests/dmabuf-heaps/Makefile b/tools/testing/selftests/dmabuf-heaps/Makefile
-index 607c2acd20829..604b43ece15f5 100644
---- a/tools/testing/selftests/dmabuf-heaps/Makefile
-+++ b/tools/testing/selftests/dmabuf-heaps/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--CFLAGS += -static -O3 -Wl,-no-as-needed -Wall -I../../../../usr/include
-+CFLAGS += -static -O3 -Wl,-no-as-needed -Wall
+diff --git a/drivers/regulator/rohm-regulator.c b/drivers/regulator/rohm-regulator.c
+index 399002383b28b..5c558b153d55e 100644
+--- a/drivers/regulator/rohm-regulator.c
++++ b/drivers/regulator/rohm-regulator.c
+@@ -52,9 +52,12 @@ int rohm_regulator_set_dvs_levels(const struct rohm_dvs_config *dvs,
+ 	char *prop;
+ 	unsigned int reg, mask, omask, oreg = desc->enable_reg;
  
- TEST_GEN_PROGS = dmabuf-heap
+-	for (i = 0; i < ROHM_DVS_LEVEL_MAX && !ret; i++) {
+-		if (dvs->level_map & (1 << i)) {
+-			switch (i + 1) {
++	for (i = 0; i < ROHM_DVS_LEVEL_VALID_AMOUNT && !ret; i++) {
++		int bit;
++
++		bit = BIT(i);
++		if (dvs->level_map & bit) {
++			switch (bit) {
+ 			case ROHM_DVS_LEVEL_RUN:
+ 				prop = "rohm,dvs-run-voltage";
+ 				reg = dvs->run_reg;
+diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
+index 4283b5b33e040..2b85b9deb03ae 100644
+--- a/include/linux/mfd/rohm-generic.h
++++ b/include/linux/mfd/rohm-generic.h
+@@ -20,14 +20,12 @@ struct rohm_regmap_dev {
+ 	struct regmap *regmap;
+ };
  
+-enum {
+-	ROHM_DVS_LEVEL_UNKNOWN,
+-	ROHM_DVS_LEVEL_RUN,
+-	ROHM_DVS_LEVEL_IDLE,
+-	ROHM_DVS_LEVEL_SUSPEND,
+-	ROHM_DVS_LEVEL_LPSR,
+-	ROHM_DVS_LEVEL_MAX = ROHM_DVS_LEVEL_LPSR,
+-};
++#define ROHM_DVS_LEVEL_RUN		BIT(0)
++#define ROHM_DVS_LEVEL_IDLE		BIT(1)
++#define ROHM_DVS_LEVEL_SUSPEND		BIT(2)
++#define ROHM_DVS_LEVEL_LPSR		BIT(3)
++#define ROHM_DVS_LEVEL_VALID_AMOUNT	4
++#define ROHM_DVS_LEVEL_UNKNOWN		0
+ 
+ /**
+  * struct rohm_dvs_config - dynamic voltage scaling register descriptions
 -- 
 2.27.0
 
