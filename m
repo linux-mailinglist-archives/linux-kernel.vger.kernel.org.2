@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F393298F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FE43299BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346926AbhCAXvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
+        id S1348161AbhCBA2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239326AbhCASOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:14:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01831652AD;
-        Mon,  1 Mar 2021 17:34:38 +0000 (UTC)
+        id S238495AbhCAS3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:29:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE502650A6;
+        Mon,  1 Mar 2021 17:34:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620079;
-        bh=WZ3X56eG9ykqM8LQZ8+a19QmUyU6Zls8kWGf0YuSpsk=;
+        s=korg; t=1614620093;
+        bh=gaW4vRaQTt+47THnGWySP+iKIOkMRWzopiQ1jQepuWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aMr9b3KuYFJ0fqy+F3N4pUcSaBGXMYbRJ5+N7LZmbujpvwyt5qQ/jtI16P9UxFAIE
-         SikeT5AwlS1R0s2hH68cgfNlxcmGk0HYdiomui377Fcl9ucrKbNNgyZjWqwJOOQ8Fq
-         n2e50hK/TL+jDLHGfY2uni+nwr2x5zWdw7pPq9MA=
+        b=heGlSwGE/2hMrinka52ECLnP4dnjg+NBdzy+jN9kORGqdcVtEfVpVEXXEGLFFyi6D
+         KP8EzW7zz+K8UF9wWojj35Rro21fbN4cKZ8459m0Ed6LlYlLubn4MKqiGjSv4p/KG8
+         bxP0DDU0kYMkl3m+FmgQB7a9e7oK6hxNSPak4XKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        Akeem G Abodunrin <akeem.g.abodunrin@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Diego Calleja <diegocg@gmail.com>
-Subject: [PATCH 5.11 022/775] drm/i915/gt: One more flush for Baytrail clear residuals
-Date:   Mon,  1 Mar 2021 17:03:10 +0100
-Message-Id: <20210301161202.807563627@linuxfoundation.org>
+        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 027/775] arm64: dts: renesas: beacon kit: Fix choppy Bluetooth Audio
+Date:   Mon,  1 Mar 2021 17:03:15 +0100
+Message-Id: <20210301161203.061434952@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,61 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Adam Ford <aford173@gmail.com>
 
-commit e627d5923cae93fa4188f4c4afba6486169a1337 upstream.
+[ Upstream commit db030c5a9658846a42fbed4d43a8b5f28a2d7ab7 ]
 
-CI reports that Baytail requires one more invalidate after CACHE_MODE
-for it to be happy.
+The Bluetooth chip is capable of operating at 4Mbps, but the
+max-speed setting was on the UART node instead of the Bluetooth
+node, so the chip didn't operate at the correct speed resulting
+in choppy audio.  Fix this by setting the max-speed in the proper
+node.
 
-Fixes: ace44e13e577 ("drm/i915/gt: Clear CACHE_MODE prior to clearing residuals")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Cc: Akeem G Abodunrin <akeem.g.abodunrin@intel.com>
-Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Reviewed-by: Akeem G Abodunrin <akeem.g.abodunrin@intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Diego Calleja <diegocg@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210119110802.22228-1-chris@chris-wilson.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: a1d8a344f1ca ("arm64: dts: renesas: Introduce r8a774a1-beacon-rzg2m-kit")
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Link: https://lore.kernel.org/r/20201213183759.223246-3-aford173@gmail.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/gt/gen7_renderclear.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/i915/gt/gen7_renderclear.c
-+++ b/drivers/gpu/drm/i915/gt/gen7_renderclear.c
-@@ -353,19 +353,21 @@ static void gen7_emit_pipeline_flush(str
+diff --git a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
+index 8ac167aa18f04..b93219a95afcd 100644
+--- a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
++++ b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
+@@ -89,7 +89,6 @@
+ 	pinctrl-names = "default";
+ 	uart-has-rtscts;
+ 	status = "okay";
+-	max-speed = <4000000>;
  
- static void gen7_emit_pipeline_invalidate(struct batch_chunk *batch)
- {
--	u32 *cs = batch_alloc_items(batch, 0, 8);
-+	u32 *cs = batch_alloc_items(batch, 0, 10);
+ 	bluetooth {
+ 		compatible = "brcm,bcm43438-bt";
+@@ -98,6 +97,7 @@
+ 		device-wakeup-gpios = <&pca9654 5 GPIO_ACTIVE_HIGH>;
+ 		clocks = <&osc_32k>;
+ 		clock-names = "extclk";
++		max-speed = <4000000>;
+ 	};
+ };
  
- 	/* ivb: Stall before STATE_CACHE_INVALIDATE */
--	*cs++ = GFX_OP_PIPE_CONTROL(4);
-+	*cs++ = GFX_OP_PIPE_CONTROL(5);
- 	*cs++ = PIPE_CONTROL_STALL_AT_SCOREBOARD |
- 		PIPE_CONTROL_CS_STALL;
- 	*cs++ = 0;
- 	*cs++ = 0;
-+	*cs++ = 0;
- 
--	*cs++ = GFX_OP_PIPE_CONTROL(4);
-+	*cs++ = GFX_OP_PIPE_CONTROL(5);
- 	*cs++ = PIPE_CONTROL_STATE_CACHE_INVALIDATE;
- 	*cs++ = 0;
- 	*cs++ = 0;
-+	*cs++ = 0;
- 
- 	batch_advance(batch, cs);
- }
-@@ -397,6 +399,7 @@ static void emit_batch(struct i915_vma *
- 	batch_add(&cmds, 0xffff0000);
- 	batch_add(&cmds, i915_mmio_reg_offset(CACHE_MODE_1));
- 	batch_add(&cmds, 0xffff0000 | PIXEL_SUBSPAN_COLLECT_OPT_DISABLE);
-+	gen7_emit_pipeline_invalidate(&cmds);
- 	gen7_emit_pipeline_flush(&cmds);
- 
- 	/* Switch to the media pipeline and our base address */
+-- 
+2.27.0
+
 
 
