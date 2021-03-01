@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01D7329EF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BAEB329EAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347368AbhCBDRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:17:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47580 "EHLO mail.kernel.org"
+        id S1445872AbhCBDCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:02:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242936AbhCAUVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:21:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B40D1653E7;
-        Mon,  1 Mar 2021 18:04:06 +0000 (UTC)
+        id S243115AbhCAUQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:16:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25D3F653D7;
+        Mon,  1 Mar 2021 18:02:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621847;
-        bh=1ky7nt3ngZjKLGd7nTnrpKypDmjz25a4MrDHr3oVSPo=;
+        s=korg; t=1614621758;
+        bh=8OHyZyUzFVh/ELW1UiG+7dTWtN9HwcthoW9RT05Iy2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UcUe0fQJTy3td3kn8KpMN1F8caMm/jiJHpTCJfUyb34MEwe12XVKS+oRehdQXcd1q
-         FZgByWCeEJz4RQDsVUWMxh3aJBMlsg9vGk9MVgz3gnJ1OAYonw2bf/pTE/Jb/tKcgE
-         2LJV9/Gqj9wgdUDghKxL/PEXweCAsExcjVlnZ76A=
+        b=FKP+mI5P6Fs14x1VbpuCLwlQgoAPZXOZ0XeXYYcMeSMBXjq6aea+FToCubS0PpLRW
+         tccuSNGwyHlAv8We2GPuL+ti9C36+3BhvOO0VuxRpLKP+6VYRLBHVOQlPLscnW4Mzf
+         4NYX0F5QhwN7vjgQKAZvaeSL5wGDu5hT3mzFuZUQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Daniel Stone <daniels@collabora.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: [PATCH 5.11 625/775] drm/rockchip: Require the YTR modifier for AFBC
-Date:   Mon,  1 Mar 2021 17:13:13 +0100
-Message-Id: <20210301161232.283267572@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.11 626/775] ASoC: siu: Fix build error by a wrong const prefix
+Date:   Mon,  1 Mar 2021 17:13:14 +0100
+Message-Id: <20210301161232.332669085@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,61 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 5f94e3571459abb626077aedb65d71264c2a58c0 upstream.
+commit ae07f5c7c5e9ebca5b9d6471bb4b99a9da5c6d88 upstream.
 
-The AFBC decoder used in the Rockchip VOP assumes the use of the
-YUV-like colourspace transform (YTR). YTR is lossless for RGB(A)
-buffers, which covers the RGBA8 and RGB565 formats supported in
-vop_convert_afbc_format. Use of YTR is signaled with the
-AFBC_FORMAT_MOD_YTR modifier, which prior to this commit was missing. As
-such, a producer would have to generate buffers that do not use YTR,
-which the VOP would erroneously decode as YTR, leading to severe visual
-corruption.
+A const prefix was put wrongly in the middle at the code refactoring
+commit 932eaf7c7904 ("ASoC: sh: siu_pcm: remove snd_pcm_ops"), which
+leads to a build error as:
+  sound/soc/sh/siu_pcm.c:546:8: error: expected '{' before 'const'
 
-The upstream AFBC support was developed against a captured frame, which
-failed to exercise modifier support. Prior to bring-up of AFBC in Mesa
-(in the Panfrost driver), no open userspace respected modifier
-reporting. As such, this change is not expected to affect broken
-userspaces.
+Also, another inconsistency is that the declaration of siu_component
+misses the const prefix.
 
-Tested on RK3399 with Panfrost and Weston.
+This patch corrects both failures.
 
-Fixes: 7707f7227f09 ("drm/rockchip: Add support for afbc")
-Cc: stable@vger.kernel.org
-Signed-off-by: Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Acked-by: Daniel Stone <daniels@collabora.com>
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200811202631.3603-1-alyssa.rosenzweig@collabora.com
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Fixes: 932eaf7c7904 ("ASoC: sh: siu_pcm: remove snd_pcm_ops")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20210126154702.3974-1-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/rockchip/rockchip_drm_vop.h |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/sh/siu.h     |    2 +-
+ sound/soc/sh/siu_pcm.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-+++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.h
-@@ -17,9 +17,20 @@
+--- a/sound/soc/sh/siu.h
++++ b/sound/soc/sh/siu.h
+@@ -169,7 +169,7 @@ static inline u32 siu_read32(u32 __iomem
+ #define SIU_BRGBSEL	(0x108 / sizeof(u32))
+ #define SIU_BRRB	(0x10c / sizeof(u32))
  
- #define NUM_YUV2YUV_COEFFICIENTS 12
+-extern struct snd_soc_component_driver siu_component;
++extern const struct snd_soc_component_driver siu_component;
+ extern struct siu_info *siu_i2s_data;
  
-+/* AFBC supports a number of configurable modes. Relevant to us is block size
-+ * (16x16 or 32x8), storage modifiers (SPARSE, SPLIT), and the YUV-like
-+ * colourspace transform (YTR). 16x16 SPARSE mode is always used. SPLIT mode
-+ * could be enabled via the hreg_block_split register, but is not currently
-+ * handled. The colourspace transform is implicitly always assumed by the
-+ * decoder, so consumers must use this transform as well.
-+ *
-+ * Failure to match modifiers will cause errors displaying AFBC buffers
-+ * produced by conformant AFBC producers, including Mesa.
-+ */
- #define ROCKCHIP_AFBC_MOD \
- 	DRM_FORMAT_MOD_ARM_AFBC( \
- 		AFBC_FORMAT_MOD_BLOCK_SIZE_16x16 | AFBC_FORMAT_MOD_SPARSE \
-+			| AFBC_FORMAT_MOD_YTR \
- 	)
+ int siu_init_port(int port, struct siu_port **port_info, struct snd_card *card);
+--- a/sound/soc/sh/siu_pcm.c
++++ b/sound/soc/sh/siu_pcm.c
+@@ -543,7 +543,7 @@ static void siu_pcm_free(struct snd_soc_
+ 	dev_dbg(pcm->card->dev, "%s\n", __func__);
+ }
  
- enum vop_data_format {
+-struct const snd_soc_component_driver siu_component = {
++const struct snd_soc_component_driver siu_component = {
+ 	.name		= DRV_NAME,
+ 	.open		= siu_pcm_open,
+ 	.close		= siu_pcm_close,
 
 
