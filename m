@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3F9329EDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B15329EE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238669AbhCBDLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:11:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45760 "EHLO mail.kernel.org"
+        id S242662AbhCBDQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:16:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242895AbhCAUVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:21:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C2F653EF;
-        Mon,  1 Mar 2021 18:04:22 +0000 (UTC)
+        id S242929AbhCAUVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:21:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BED3D64F4D;
+        Mon,  1 Mar 2021 18:04:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621863;
-        bh=rfjT8llz/QoNVZhhi58/+AphCSIH4G1rkQJTus+4BDU=;
+        s=korg; t=1614621866;
+        bh=L38SFZeTvskcp+RdHGxsVI9yUjtX5EJdHPnncN75XY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVgCrRS+jGk3FNef8Ui83rgiOfXf+0YfwLsN8lD2hBHIyw0tcE1jtH+wgTqG1xvsm
-         Zj6hrH4AtFv0nUP6nIc3fIgq4h5PLhVuxGnhql8fwnWRrAUO1e8KfGmbQlW25sG+Lw
-         kFE0gGBzAUg8dv2BGPUpGf7hV5FIXkoiLuoOzbmA=
+        b=MgQS8PXBF7gU7Kz1vQtUHeF+HmTDJ+s20lnEmJZbXkFZ369FJC65mwMRsn4PU4TKt
+         MxWDF9IF7zTwtzd/uZmRj9M1Z7vo4PGw9IhoXNUzEpr1jUI/Q8pq4ghcPdDTsN/Cw8
+         WzyG/By24Xd2hL11BGRM9fENJ8sXHwNYwuiJVmUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        "David P. Reed" <dpreed@deepplum.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.11 672/775] x86/reboot: Force all cpus to exit VMX root if VMX is supported
-Date:   Mon,  1 Mar 2021 17:14:00 +0100
-Message-Id: <20210301161234.589477202@linuxfoundation.org>
+        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@suse.de>, Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 5.11 673/775] x86/fault: Fix AMD erratum #91 errata fixup for user code
+Date:   Mon,  1 Mar 2021 17:14:01 +0100
+Message-Id: <20210301161234.639893701@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,71 +39,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Andy Lutomirski <luto@kernel.org>
 
-commit ed72736183c45a413a8d6974dd04be90f514cb6b upstream.
+commit 35f1c89b0cce247bf0213df243ed902989b1dcda upstream.
 
-Force all CPUs to do VMXOFF (via NMI shootdown) during an emergency
-reboot if VMX is _supported_, as VMX being off on the current CPU does
-not prevent other CPUs from being in VMX root (post-VMXON).  This fixes
-a bug where a crash/panic reboot could leave other CPUs in VMX root and
-prevent them from being woken via INIT-SIPI-SIPI in the new kernel.
+The recent rework of probe_kernel_address() and its conversion to
+get_kernel_nofault() inadvertently broke is_prefetch(). Before this
+change, probe_kernel_address() was used as a sloppy "read user or
+kernel memory" helper, but it doesn't do that any more. The new
+get_kernel_nofault() reads *kernel* memory only, which completely broke
+is_prefetch() for user access.
 
-Fixes: d176720d34c7 ("x86: disable VMX on all CPUs on reboot")
+Adjust the code to the correct accessor based on access mode. The
+manual address bounds check is no longer necessary, since the accessor
+helpers (get_user() / get_kernel_nofault()) do the right thing all by
+themselves. As a bonus, by using the correct accessor, the open-coded
+address bounds check is not needed anymore.
+
+ [ bp: Massage commit message. ]
+
+Fixes: eab0c6089b68 ("maccess: unify the probe kernel arch hooks")
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Cc: stable@vger.kernel.org
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: David P. Reed <dpreed@deepplum.com>
-[sean: reworked changelog and further tweaked comment]
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20201231002702.2223707-3-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Link: https://lkml.kernel.org/r/b91f7f92f3367d2d3a88eec3b09c6aab1b2dc8ef.1612924255.git.luto@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/reboot.c |   30 ++++++++++--------------------
- 1 file changed, 10 insertions(+), 20 deletions(-)
+ arch/x86/mm/fault.c |   27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -538,31 +538,21 @@ static void emergency_vmx_disable_all(vo
- 	local_irq_disable();
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -54,7 +54,7 @@ kmmio_fault(struct pt_regs *regs, unsign
+  * 32-bit mode:
+  *
+  *   Sometimes AMD Athlon/Opteron CPUs report invalid exceptions on prefetch.
+- *   Check that here and ignore it.
++ *   Check that here and ignore it.  This is AMD erratum #91.
+  *
+  * 64-bit mode:
+  *
+@@ -83,11 +83,7 @@ check_prefetch_opcode(struct pt_regs *re
+ #ifdef CONFIG_X86_64
+ 	case 0x40:
+ 		/*
+-		 * In AMD64 long mode 0x40..0x4F are valid REX prefixes
+-		 * Need to figure out under what instruction mode the
+-		 * instruction was issued. Could check the LDT for lm,
+-		 * but for now it's good enough to assume that long
+-		 * mode only uses well known segments or kernel.
++		 * In 64-bit mode 0x40..0x4F are valid REX prefixes
+ 		 */
+ 		return (!user_mode(regs) || user_64bit_mode(regs));
+ #endif
+@@ -127,20 +123,31 @@ is_prefetch(struct pt_regs *regs, unsign
+ 	instr = (void *)convert_ip_to_linear(current, regs);
+ 	max_instr = instr + 15;
  
- 	/*
--	 * We need to disable VMX on all CPUs before rebooting, otherwise
--	 * we risk hanging up the machine, because the CPU ignores INIT
--	 * signals when VMX is enabled.
-+	 * Disable VMX on all CPUs before rebooting, otherwise we risk hanging
-+	 * the machine, because the CPU blocks INIT when it's in VMX root.
- 	 *
--	 * We can't take any locks and we may be on an inconsistent
--	 * state, so we use NMIs as IPIs to tell the other CPUs to disable
--	 * VMX and halt.
-+	 * We can't take any locks and we may be on an inconsistent state, so
-+	 * use NMIs as IPIs to tell the other CPUs to exit VMX root and halt.
- 	 *
--	 * For safety, we will avoid running the nmi_shootdown_cpus()
--	 * stuff unnecessarily, but we don't have a way to check
--	 * if other CPUs have VMX enabled. So we will call it only if the
--	 * CPU we are running on has VMX enabled.
--	 *
--	 * We will miss cases where VMX is not enabled on all CPUs. This
--	 * shouldn't do much harm because KVM always enable VMX on all
--	 * CPUs anyway. But we can miss it on the small window where KVM
--	 * is still enabling VMX.
-+	 * Do the NMI shootdown even if VMX if off on _this_ CPU, as that
-+	 * doesn't prevent a different CPU from being in VMX root operation.
- 	 */
--	if (cpu_has_vmx() && cpu_vmx_enabled()) {
--		/* Disable VMX on this CPU. */
--		cpu_vmxoff();
-+	if (cpu_has_vmx()) {
-+		/* Safely force _this_ CPU out of VMX root operation. */
-+		__cpu_emergency_vmxoff();
+-	if (user_mode(regs) && instr >= (unsigned char *)TASK_SIZE_MAX)
+-		return 0;
++	/*
++	 * This code has historically always bailed out if IP points to a
++	 * not-present page (e.g. due to a race).  No one has ever
++	 * complained about this.
++	 */
++	pagefault_disable();
  
--		/* Halt and disable VMX on the other CPUs */
-+		/* Halt and exit VMX root operation on the other CPUs. */
- 		nmi_shootdown_cpus(vmxoff_nmi);
--
+ 	while (instr < max_instr) {
+ 		unsigned char opcode;
+ 
+-		if (get_kernel_nofault(opcode, instr))
+-			break;
++		if (user_mode(regs)) {
++			if (get_user(opcode, instr))
++				break;
++		} else {
++			if (get_kernel_nofault(opcode, instr))
++				break;
++		}
+ 
+ 		instr++;
+ 
+ 		if (!check_prefetch_opcode(regs, instr, opcode, &prefetch))
+ 			break;
  	}
++
++	pagefault_enable();
+ 	return prefetch;
  }
  
 
