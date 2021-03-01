@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96701327E39
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321C2327E3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbhCAMYY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Mar 2021 07:24:24 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:26053 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232363AbhCAMYR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:24:17 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-WOGKyZHtPzWtnZOLOtgx3A-1; Mon, 01 Mar 2021 07:23:22 -0500
-X-MC-Unique: WOGKyZHtPzWtnZOLOtgx3A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D1EC801965;
-        Mon,  1 Mar 2021 12:23:20 +0000 (UTC)
-Received: from krava.cust.in.nbox.cz (unknown [10.40.192.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DDEB05C1C4;
-        Mon,  1 Mar 2021 12:23:16 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH] perf tools: Fix event's pmu name parsing
-Date:   Mon,  1 Mar 2021 13:23:15 +0100
-Message-Id: <20210301122315.63471-1-jolsa@kernel.org>
+        id S234868AbhCAMZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:25:34 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44356 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233559AbhCAMZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 07:25:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614601485; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4e5MHeBWKUeRuWwrRN4F6v9QXnyfuUzg8gdWTjEdSqM=;
+        b=Fv+Mhst1p1X2WCTKlqJ9E0maHOvbj9R5gK7b5JimaCIkQTFmdYibMYSzgt1pTbuU6xo65u
+        LgdWWmvuZDMdP4UAU4UbjaWlfXNtFIeDklFRYjLOz7GZVsLWD74aI5ALutzCgF28FQxfMw
+        0LdXP4KRPF9ogyGljs12sUzVbfqOCV4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 23E67AE30;
+        Mon,  1 Mar 2021 12:24:45 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 13:24:39 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] doc: memcontrol: add description for oom_kill
+Message-ID: <YDzdB7RtLex+8VkA@dhcp22.suse.cz>
+References: <20210226021254.3980-1-shy828301@gmail.com>
+ <YDijjovHAer2tiL5@dhcp22.suse.cz>
+ <CAHbLzkoLC-gGZA1GvDZjgTnVFzCTQnLMd4JWzZ6Ge_q63YhWKQ@mail.gmail.com>
+ <CAHbLzkrgtbR1o3pTSh_hqPhrkugXBnB4uwdHh+uK6Ndp-u_fEw@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkrgtbR1o3pTSh_hqPhrkugXBnB4uwdHh+uK6Ndp-u_fEw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jin Yao reported parser error for software event:
+On Fri 26-02-21 11:19:51, Yang Shi wrote:
+> On Fri, Feb 26, 2021 at 8:42 AM Yang Shi <shy828301@gmail.com> wrote:
+> >
+> > On Thu, Feb 25, 2021 at 11:30 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Thu 25-02-21 18:12:54, Yang Shi wrote:
+> > > > When debugging an oom issue, I found the oom_kill counter of memcg is
+> > > > confusing.  At the first glance without checking document, I thought it
+> > > > just counts for memcg oom, but it turns out it counts both global and
+> > > > memcg oom.
+> > >
+> > > Yes, this is the case indeed. The point of the counter was to count oom
+> > > victims from the memcg rather than matching that to the source of the
+> > > oom. Rememeber that this could have been a memcg oom up in the
+> > > hierarchy as well. Counting victims on the oom origin could be equally
+> >
+> > Yes, it is updated hierarchically on v2, but not on v1. I'm supposed
+> > this is because v1 may work in non-hierarchcal mode? If this is the
+> > only reason we may be able to remove this to get aligned with v2 since
+> > non-hierarchal mode is no longer supported.
+> 
+> BTW, having the counter recorded hierarchically may help out one of
+> our usecases. We want to monitor the oom_kill for some services, but
+> systemd would wipe out the cgroup if the service is oom killed then
+> restart the service from scratch (it means create a brand new cgroup
+> with the same name). So this systemd behavior makes the counter
+> useless if it is not recorded hierarchically.
 
-  # perf stat -e software/r1a/ -a -- sleep 1
-  event syntax error: 'software/r1a/'
-                       \___ parser error
+Just to make sure I understand correctly. You have a setup where memcg
+for a service has a hard limit configured and it is destroyed when oom
+happens inside that memcg. A new instance is created at the same place
+of the hierarchy with a new memcg. Your problem is that the oom killed
+memcg will not be recorded in its parent oom event and the information
+will get lost with the torn down memcg. Correct?
 
-This happens after commit 8c3b1ba0e7ea, where new
-software-gt-awake-time event's non-pmu-event-style
-makes event parser conflict with software pmu.
+If yes then how do you tell which of the child cgroup was killed from
+the parent counter? Or is there only a single child?
 
-If we allow PE_PMU_EVENT_PRE to be parsed as pmu name,
-we fix the conflict and the following character '/' for
-pmu or '-' for non-pmu-event-style event allows parser
-to decide what even is specified.
-
-Cc: Chris Wilson <chris@chris-wilson.co.uk>
-Fixes: 8c3b1ba0e7ea ("drm/i915/gt: Track the overall awake/busy time") # 1
-Reported-by: Jin Yao <yao.jin@linux.intel.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/util/parse-events.y | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index d5b6aff82f21..d57ac86ce7ca 100644
---- a/tools/perf/util/parse-events.y
-+++ b/tools/perf/util/parse-events.y
-@@ -89,6 +89,7 @@ static void inc_group_count(struct list_head *list,
- %type <str> PE_EVENT_NAME
- %type <str> PE_PMU_EVENT_PRE PE_PMU_EVENT_SUF PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
- %type <str> PE_DRV_CFG_TERM
-+%type <str> event_pmu_name
- %destructor { free ($$); } <str>
- %type <term> event_term
- %destructor { parse_events_term__delete ($$); } <term>
-@@ -272,8 +273,11 @@ event_def: event_pmu |
- 	   event_legacy_raw sep_dc |
- 	   event_bpf_file
- 
-+event_pmu_name:
-+PE_NAME | PE_PMU_EVENT_PRE
-+
- event_pmu:
--PE_NAME opt_pmu_config
-+event_pmu_name opt_pmu_config
- {
- 	struct parse_events_state *parse_state = _parse_state;
- 	struct parse_events_error *error = parse_state->error;
+Anyway, cgroup v2 will offer the hierarchical behavior. Do you have any
+strong reasons that you cannot use v2?
 -- 
-2.29.2
-
+Michal Hocko
+SUSE Labs
