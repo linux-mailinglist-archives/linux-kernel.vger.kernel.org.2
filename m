@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 388F6329C75
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A51329BB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380781AbhCBBze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:55:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48626 "EHLO mail.kernel.org"
+        id S1379428AbhCBB2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:28:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241948AbhCATaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:30:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE62465011;
-        Mon,  1 Mar 2021 17:49:16 +0000 (UTC)
+        id S241178AbhCATPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:15:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAEEE651BC;
+        Mon,  1 Mar 2021 17:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620957;
-        bh=tHg2+MikqaDYNqnDZ5PJAXhsh+XyAi4vbJvxI0/c9EI=;
+        s=korg; t=1614618994;
+        bh=E/xjog0OVqxHXt7s9wNYEhmoWkH1qiyAUbY2IKVwaWQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XZYXywb2pragNNGwOGNxHdHoBt/ZK1E2NgColKQE9YdostYvQmihoHBm9Ak9a6yWO
-         N2Sc02qkuzNh1oIjNIZRUEiXP6j+pdeNVPOguwZBmCnWzuLN/5AB9WW+jG+jFBiaUK
-         JCuK5r0EkgF5bgqu8C9ppQlBO/iPQr8rMNcKdU/8=
+        b=1RxFW4RF1R/X74zqgaOOgPzHj3Ah8+Ezn5XO7kRJiqwUvLyGp0585VWFg5J2VavjS
+         hs6EEXGUCSKXZq6YukMnWmMWFRY8gI57NdDd8wrDtzLgY7Ks327NwLiAIerVhgMh1r
+         qJE6oWUqBNyMRZTypxH4R9psHkX+k/KMFnz32eMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Po-Hsu Lin <po-hsu.lin@canonical.com>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 342/775] RDMA/rtrs-srv: Jump to dereg_mr label if allocate iu fails
-Date:   Mon,  1 Mar 2021 17:08:30 +0100
-Message-Id: <20210301161218.521252985@linuxfoundation.org>
+Subject: [PATCH 5.10 263/663] selftests/powerpc: Make the test check in eeh-basic.sh posix compliant
+Date:   Mon,  1 Mar 2021 17:08:31 +0100
+Message-Id: <20210301161154.826745964@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+From: Po-Hsu Lin <po-hsu.lin@canonical.com>
 
-[ Upstream commit f77c4839ee8f4612dcb6601602329096030bd813 ]
+[ Upstream commit 3db380570af7052620ace20c29e244938610ca71 ]
 
-The rtrs_iu_free is called in rtrs_iu_alloc if memory is limited, so we
-don't need to free the same iu again.
+The == operand is a bash extension, thus this will fail on Ubuntu
+with:
+  ./eeh-basic.sh: 89: test: 2: unexpected operator
 
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Link: https://lore.kernel.org/r/20201217141915.56989-7-jinpu.wang@cloud.ionos.com
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Reviewed-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+As the /bin/sh on Ubuntu is pointed to DASH.
+
+Use -eq to fix this posix compatibility issue.
+
+Fixes: 996f9e0f93f162 ("selftests/powerpc: Fix eeh-basic.sh exit codes")
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+Reviewed-by: Frederic Barrat <fbarrat@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201228043459.14281-1-po-hsu.lin@canonical.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/testing/selftests/powerpc/eeh/eeh-basic.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 341661f42add0..92a216ddd9fd3 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -651,7 +651,7 @@ static int map_cont_bufs(struct rtrs_srv_sess *sess)
- 			if (!srv_mr->iu) {
- 				err = -ENOMEM;
- 				rtrs_err(ss, "rtrs_iu_alloc(), err: %d\n", err);
--				goto free_iu;
-+				goto dereg_mr;
- 			}
- 		}
- 		/* Eventually dma addr for each chunk can be cached */
-@@ -667,7 +667,6 @@ err:
- 			srv_mr = &sess->mrs[mri];
- 			sgt = &srv_mr->sgt;
- 			mr = srv_mr->mr;
--free_iu:
- 			rtrs_iu_free(srv_mr->iu, sess->s.dev->ib_dev, 1);
- dereg_mr:
- 			ib_dereg_mr(mr);
+diff --git a/tools/testing/selftests/powerpc/eeh/eeh-basic.sh b/tools/testing/selftests/powerpc/eeh/eeh-basic.sh
+index 0d783e1065c86..64779f073e177 100755
+--- a/tools/testing/selftests/powerpc/eeh/eeh-basic.sh
++++ b/tools/testing/selftests/powerpc/eeh/eeh-basic.sh
+@@ -86,5 +86,5 @@ echo "$failed devices failed to recover ($dev_count tested)"
+ lspci | diff -u $pre_lspci -
+ rm -f $pre_lspci
+ 
+-test "$failed" == 0
++test "$failed" -eq 0
+ exit $?
 -- 
 2.27.0
 
