@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C340329A3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D767E329B27
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:58:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377210AbhCBAqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:46:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51580 "EHLO mail.kernel.org"
+        id S1378656AbhCBBHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:07:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234718AbhCASjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:39:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACDE865057;
-        Mon,  1 Mar 2021 17:21:21 +0000 (UTC)
+        id S240827AbhCATES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:04:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 104EA65212;
+        Mon,  1 Mar 2021 17:22:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619282;
-        bh=SXwRkkWMscxW1zS486YfdL6JbMjdQZidxAyHEx17ZiQ=;
+        s=korg; t=1614619344;
+        bh=19yHZoK3HBP0lkuxRqJoUuivNNBKkBGfXJo4NM9PD30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OnO7uOZTP5ptn8dnPl80Tmkw/FpgcnxynBX8iGGoUF8rOvdfN9Ru14L+2eq9AQ6Wa
-         yl5Jw2UbMDsZn96qgNM46/7wZsP8ZT1rrHQYa0vh23pTpVZxXoP9XWCFb63c6gYGzC
-         bUVVufYToAcdi0zFJ00Uu/14ZznKEwniPg5RWh/g=
+        b=vFTWVbL8s/q8S3tBh1LU//4JeldBehfwxB1iu+U1vj2XK0SJeEdBohRFlcjW9DykA
+         OGaSMFE5T0Jw/4RJFip3vgPWX33T61pVwzxo+NsfQAAXZR9qryNMIj/fK9IVTFZLWV
+         3dhntPu/scbl1zwvg33xABBqbGKtgje6GX/PZUGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Lars Kotthoff <metalhead@metalhead.ws>,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 391/663] sparc: fix led.c driver when PROC_FS is not enabled
-Date:   Mon,  1 Mar 2021 17:10:39 +0100
-Message-Id: <20210301161201.209095372@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        patches@armlinux.org.uk, Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 5.10 393/663] ARM: 9065/1: OABI compat: fix build when EPOLL is not enabled
+Date:   Mon,  1 Mar 2021 17:10:41 +0100
+Message-Id: <20210301161201.308823251@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -46,50 +46,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit b3554aa2470b5db1222c31e08ec9c29ab33eabc7 ]
+[ Upstream commit fd749fe4bcb00ad80d9eece709f804bb4ac6bf1e ]
 
-Fix Sparc build when CONFIG_PROC_FS is not enabled.
+When CONFIG_EPOLL is not set/enabled, sys_oabi-compat.c has build
+errors. Fix these by surrounding them with ifdef CONFIG_EPOLL/endif
+and providing stubs for the "EPOLL is not set" case.
 
-Fixes this build error:
-arch/sparc/kernel/led.c:107:30: error: 'led_proc_ops' defined but not used [-Werror=unused-const-variable=]
-     107 | static const struct proc_ops led_proc_ops = {
-         |                              ^~~~~~~~~~~~
-   cc1: all warnings being treated as errors
+../arch/arm/kernel/sys_oabi-compat.c: In function 'sys_oabi_epoll_ctl':
+../arch/arm/kernel/sys_oabi-compat.c:257:6: error: implicit declaration of function 'ep_op_has_event' [-Werror=implicit-function-declaration]
+  257 |  if (ep_op_has_event(op) &&
+      |      ^~~~~~~~~~~~~~~
+../arch/arm/kernel/sys_oabi-compat.c:264:9: error: implicit declaration of function 'do_epoll_ctl'; did you mean 'sys_epoll_ctl'? [-Werror=implicit-function-declaration]
+  264 |  return do_epoll_ctl(epfd, op, fd, &kernel, false);
+      |         ^~~~~~~~~~~~
 
-Fixes: 97a32539b956 ("proc: convert everything to "struct proc_ops"")
-Reported-by: kernel test robot <lkp@intel.com>
+Fixes: c281634c8652 ("ARM: compat: remove KERNEL_DS usage in sys_oabi_epoll_ctl()")
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Lars Kotthoff <metalhead@metalhead.ws>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: sparclinux@vger.kernel.org
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: kernel test robot <lkp@intel.com> # from an lkp .config file
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: Nicolas Pitre <nico@fluxnic.net>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: patches@armlinux.org.uk
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sparc/kernel/led.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/kernel/sys_oabi-compat.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/sparc/kernel/led.c b/arch/sparc/kernel/led.c
-index bd48575172c32..3a66e62eb2a0e 100644
---- a/arch/sparc/kernel/led.c
-+++ b/arch/sparc/kernel/led.c
-@@ -50,6 +50,7 @@ static void led_blink(struct timer_list *unused)
- 	add_timer(&led_blink_timer);
- }
+diff --git a/arch/arm/kernel/sys_oabi-compat.c b/arch/arm/kernel/sys_oabi-compat.c
+index 0203e545bbc8d..075a2e0ed2c15 100644
+--- a/arch/arm/kernel/sys_oabi-compat.c
++++ b/arch/arm/kernel/sys_oabi-compat.c
+@@ -248,6 +248,7 @@ struct oabi_epoll_event {
+ 	__u64 data;
+ } __attribute__ ((packed,aligned(4)));
  
-+#ifdef CONFIG_PROC_FS
- static int led_proc_show(struct seq_file *m, void *v)
++#ifdef CONFIG_EPOLL
+ asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
+ 				   struct oabi_epoll_event __user *event)
  {
- 	if (get_auxio() & AUXIO_LED)
-@@ -111,6 +112,7 @@ static const struct proc_ops led_proc_ops = {
- 	.proc_release	= single_release,
- 	.proc_write	= led_proc_write,
- };
+@@ -298,6 +299,20 @@ asmlinkage long sys_oabi_epoll_wait(int epfd,
+ 	kfree(kbuf);
+ 	return err ? -EFAULT : ret;
+ }
++#else
++asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
++				   struct oabi_epoll_event __user *event)
++{
++	return -EINVAL;
++}
++
++asmlinkage long sys_oabi_epoll_wait(int epfd,
++				    struct oabi_epoll_event __user *events,
++				    int maxevents, int timeout)
++{
++	return -EINVAL;
++}
 +#endif
  
- static struct proc_dir_entry *led;
- 
+ struct oabi_sembuf {
+ 	unsigned short	sem_num;
 -- 
 2.27.0
 
