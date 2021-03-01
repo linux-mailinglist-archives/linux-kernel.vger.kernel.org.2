@@ -2,234 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C9532814C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3EF328149
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236587AbhCAOsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:48:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236570AbhCAOsG (ORCPT
+        id S236503AbhCAOrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:47:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236571AbhCAOrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:48:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614609993;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VJu+0xRzX8dW8f5MmX386uG53+FOz/FIJoLfVMtnB30=;
-        b=MqTOEhX20IYX9Qc2Pd7nI40sBB70zfs7n56YVDi3H3JZIOuBOZcrCDy2IGIIMVaDHufEu+
-        GElyeLuzrNbLjFhRDkfGT8RQncj8FaZ1Fd4TMLrbfCUYZVDWfQyCa9dpQA1Bs6y15irOA2
-        h0ERjjGcUlGj+uuMINDh7S1chmgG09Y=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-15-8bHuyDxGNn2GlbJlGF0eBQ-1; Mon, 01 Mar 2021 09:46:25 -0500
-X-MC-Unique: 8bHuyDxGNn2GlbJlGF0eBQ-1
-Received: by mail-pf1-f197.google.com with SMTP id o2so11352142pfd.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:46:23 -0800 (PST)
+        Mon, 1 Mar 2021 09:47:31 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77052C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:46:51 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id p1so16575074edy.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:46:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7q+mlCvX3/pDQmjawa4HxUYY1JkrjzmEirQ4/5j15Ow=;
+        b=eYmyUbYvOsfaji1DNZ/wsnitj6tXGIt1A0XlXJ/EkmN4vXQuV7P/MLpaf8TFJgSIjF
+         AJdgLPZs23pUS2QglxF2reAnV+IhaunF0e3z+YAp5e1fA3mokKrBcu0NnamJgGPepf6e
+         Wcbg8rK38kmNZHcmViT/lS71FYHJ0aph5Ce0/g7OwQGkZeKKUAAy8j8/MrW5sCa+SUlf
+         sw08eDaVK/g2UmhwBFRTJ9re5NQCTQcNWBvbIiaED3cs530jP7RQw0Z6KlGj+zhUiIfZ
+         /VY9L408ZiE5JOTLK6RxcT929/htE33GiRtx8vSCIg/z7O8MWfVXwbAOd4f3ZVumDb73
+         HR2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VJu+0xRzX8dW8f5MmX386uG53+FOz/FIJoLfVMtnB30=;
-        b=MDqjAlI/uvU2XZEceWRMh2ZKf3FPO6Bnd0u6TaGhaoDlnxtPa12ZZfKx+E2FGCI84j
-         JIek3gm6qtwLMKDIbp+XYA4ueE2QfjaN9jBNcP/hqgU+S7qrfzDE42aYwi1CKNDGJJux
-         /yEWd0WF6q6249WEpvwOmBUFfcxInnaqS3Yc8e5S95ZfvYz7AVZ/rjWPFjlfN7i7qFj1
-         AhP7Jfn5XeyksFxBiLNz/Q8UIyMHHoTWnKNTUMl8o2Kx3XsjtKdHiX9pBci0jk1ed4Rp
-         Gh1oW1x/5LtVcR+W2zqLSsGdmV7Hw6NeeKe1cXW2MMmWNNMqkrhcEvU0eQGi/C/9FH0u
-         gF+w==
-X-Gm-Message-State: AOAM5333qx7FpEyM5u2vbRGNd+wTvy888IYyqOIOQVtTg8KnmGRje7N3
-        lURKlju9Jiyyq0Eq1pJuVDTHG27hkOAoqvv4LCT/THKlh1pcOd5eHu24W2BLXcOaEX2V63/gHh1
-        W/di9fah/NuTgp9KnghjpTr+BCMQdby+QgMrxoJav
-X-Received: by 2002:a17:902:9b91:b029:e2:898c:d721 with SMTP id y17-20020a1709029b91b02900e2898cd721mr15973677plp.32.1614609982793;
-        Mon, 01 Mar 2021 06:46:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz5+3xi5NcVVVbw6DcEuEhe4KXXDIJAtP4PYSZb086wEngcQ2wTckwR/1SA/5V1nq9dE82agTVRGyXYhu/eLRU=
-X-Received: by 2002:a17:902:9b91:b029:e2:898c:d721 with SMTP id
- y17-20020a1709029b91b02900e2898cd721mr15973659plp.32.1614609982552; Mon, 01
- Mar 2021 06:46:22 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=7q+mlCvX3/pDQmjawa4HxUYY1JkrjzmEirQ4/5j15Ow=;
+        b=ge/2Lzphi8/GFoN4cdwP5B7D+Z64QhCXIHskHW4tl72t34vzHVD4up6Dsx2V8goCp4
+         wZsv4ZQr1qNkIeQVei7nGZDtMgyBboQ8bcXqYTWKRHXUG7mK8EF1UcKGKdtu1WlSG+lQ
+         1YggrVzCk3dlZNicsE+xq5fdrX8Nwri3OL1+Ymz/322VoMl9jFuox2TxlVw44E4OBQSi
+         KFQCQqFK9reeuzviO9sc21Z1D78lh7zPoQ4xReL/3N2M6ggJXFlGf6nsuiKBc/UwVhJC
+         rnzqrJqCal5Az5XXQroDot1+5f80x7aBoWl+Yr1TMHPbN2otEmxxUgA/tnyiwink22UM
+         x3EA==
+X-Gm-Message-State: AOAM532rmBs1k5CVg7WN2tSgY4LI0l9CsaIGu1JgNqr9Byp1tszz+oY+
+        V5CWLvhZMZbWj7+xByq4TQN8M8oy4mGJpGvUpQInkFU1oC3r
+X-Google-Smtp-Source: ABdhPJwIeOeT+ESgy3Q0A+x07kCtv9VqTcbaoIAVBOJ6NjHraW4vD/sXgxuNLPft3AQKHPHswIOQ9XIQyjoTzAz8Z54=
+X-Received: by 2002:aa7:db4f:: with SMTP id n15mr9452781edt.12.1614610010144;
+ Mon, 01 Mar 2021 06:46:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210123180334.3062995-1-lains@archlinux.org>
-In-Reply-To: <20210123180334.3062995-1-lains@archlinux.org>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 1 Mar 2021 15:46:11 +0100
-Message-ID: <CAO-hwJKdfAy9i28iFEKi5DWU0SPOopiEyjT_2HdpL7ahFhdGFg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] HID: logitech-dj: add support for the new lightspeed
- receiver iteration
-To:     =?UTF-8?Q?Filipe_La=C3=ADns?= <lains@archlinux.org>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Filipe_La=C3=ADns?= <lains@riseup.net>
+References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia>
+ <20210223223652.GD6000@sequoia> <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
+ <CAHC9VhSaU-3_fs83kEA5bxBf9xMsE29B_O5nXFpROk4=y9kgXw@mail.gmail.com>
+ <CAFqZXNu8s5edDbSZuSutetTsy58i08vPuP2h-n9=kT34HcPc4w@mail.gmail.com>
+ <CAHC9VhSCs17LEW=QZ2WLeD3-GVzv2RpUJaw7qQNSFWgfEWjkbg@mail.gmail.com> <CAFqZXNufVGD0Sf-K3dKFmJyDOKGPg5jdJ_FPbQz__T8jAHhgYw@mail.gmail.com>
+In-Reply-To: <CAFqZXNufVGD0Sf-K3dKFmJyDOKGPg5jdJ_FPbQz__T8jAHhgYw@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 1 Mar 2021 09:46:39 -0500
+Message-ID: <CAHC9VhQ_oS-uGxhWBOCf3QBLpKD2_0--9nFOqANL1ykfbaA3Jw@mail.gmail.com>
+Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 7:03 PM Filipe La=C3=ADns <lains@archlinux.org> wro=
-te:
->
-> From: Filipe La=C3=ADns <lains@riseup.net>
->
-> Tested with the G Pro X Superlight. libratbag sees the device, as
-> expected, and input events are passing trough.
->
-> https://github.com/libratbag/libratbag/pull/1122
->
-> The receiver has a quirk where the moused interface doesn't have a
-> report ID, I am not sure why, perhaps they forgot. All other interfaces
-> have report IDs so I am left scratching my head.
-> Since this driver doesn't have a quirk system, I simply implemented it
-> as a different receiver type, which is true, it just wouldn't be the
-> prefered approach :P
->
-> Signed-off-by: Filipe La=C3=ADns <lains@riseup.net>
-> ---
->  drivers/hid/hid-ids.h         |  1 +
->  drivers/hid/hid-logitech-dj.c | 49 +++++++++++++++++++++++++----------
->  2 files changed, 37 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-> index 4c5f23640f9c..8eac3c93fa38 100644
-> --- a/drivers/hid/hid-ids.h
-> +++ b/drivers/hid/hid-ids.h
-> @@ -803,6 +803,7 @@
->  #define USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1      0xc539
->  #define USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1_1    0xc53f
->  #define USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_POWERPLAY 0xc53a
-> +#define USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1_2    0xc547
->  #define USB_DEVICE_ID_SPACETRAVELLER   0xc623
->  #define USB_DEVICE_ID_SPACENAVIGATOR   0xc626
->  #define USB_DEVICE_ID_DINOVO_DESKTOP   0xc704
-> diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.=
-c
-> index 1401ee2067ca..6596c81947a8 100644
-> --- a/drivers/hid/hid-logitech-dj.c
-> +++ b/drivers/hid/hid-logitech-dj.c
-> @@ -114,6 +114,7 @@ enum recvr_type {
->         recvr_type_dj,
->         recvr_type_hidpp,
->         recvr_type_gaming_hidpp,
-> +       recvr_type_gaming_hidpp_missing_mse_report_id,  /* lightspeed rec=
-eiver missing the mouse report ID */
->         recvr_type_mouse_only,
->         recvr_type_27mhz,
->         recvr_type_bluetooth,
-> @@ -1360,6 +1361,7 @@ static int logi_dj_ll_parse(struct hid_device *hid)
->                 dbg_hid("%s: sending a mouse descriptor, reports_supporte=
-d: %llx\n",
->                         __func__, djdev->reports_supported);
->                 if (djdev->dj_receiver_dev->type =3D=3D recvr_type_gaming=
-_hidpp ||
-> +                   djdev->dj_receiver_dev->type =3D=3D recvr_type_gaming=
-_hidpp_missing_mse_report_id ||
->                     djdev->dj_receiver_dev->type =3D=3D recvr_type_mouse_=
-only)
->                         rdcat(rdesc, &rsize, mse_high_res_descriptor,
->                               sizeof(mse_high_res_descriptor));
-> @@ -1605,19 +1607,35 @@ static int logi_dj_raw_event(struct hid_device *h=
-dev,
->                         data[0] =3D data[1];
->                         data[1] =3D 0;
->                 }
-> -               /*
-> -                * Mouse-only receivers send unnumbered mouse data. The 2=
-7 MHz
-> -                * receiver uses 6 byte packets, the nano receiver 8 byte=
-s.
-> -                */
-> -               if (djrcv_dev->unnumbered_application =3D=3D HID_GD_MOUSE=
- &&
-> -                   size <=3D 8) {
-> -                       u8 mouse_report[9];
-> -
-> -                       /* Prepend report id */
-> -                       mouse_report[0] =3D REPORT_TYPE_MOUSE;
-> -                       memcpy(mouse_report + 1, data, size);
-> -                       logi_dj_recv_forward_input_report(hdev, mouse_rep=
-ort,
-> -                                                         size + 1);
-> +
-> +
-> +               if (djrcv_dev->unnumbered_application =3D=3D HID_GD_MOUSE=
-) {
-> +                       /*
-> +                        * Mouse-only receivers send unnumbered mouse dat=
-a. The 27 MHz
-> +                        * receiver uses 6 byte packets, the nano receive=
-r 8 bytes.
-> +                        */
-> +                       if (size <=3D 8) {
-> +                               u8 mouse_report[9];
+On Mon, Mar 1, 2021 at 5:36 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> On Sun, Feb 28, 2021 at 8:21 PM Paul Moore <paul@paul-moore.com> wrote:
+> > On Fri, Feb 26, 2021 at 6:12 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > > On Fri, Feb 26, 2021 at 2:07 AM Paul Moore <paul@paul-moore.com> wrote:
+> > > > On Wed, Feb 24, 2021 at 4:35 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
 
-Hmm, as stated above, the 27 MHz receiver already does the exact same thing=
-.
+...
 
-Can't we just bump the array size and check above to the following:
-
-if (size <=3D 16) {
-  u8 mouse_report[17];
-
-The property "djrcv_dev->unnumbered_application" is based on the
-report descriptor entirely, and they are just following the HID norm
-here. So I think this should be enough.
-
-Cheers,
-Benjamin
-
-> +
-> +                               /* Prepend report id */
-> +                               mouse_report[0] =3D REPORT_TYPE_MOUSE;
-> +                               memcpy(mouse_report + 1, data, size);
-> +                               logi_dj_recv_forward_input_report(hdev, m=
-ouse_report,
-> +                                                                 size + =
-1);
-> +
-> +                       /*
-> +                        * A variant of the ligtpseed receivers is missin=
-g the mouse
-> +                        * report ID.
-> +                        */
-> +                       } else if (djrcv_dev->type =3D=3D recvr_type_gami=
-ng_hidpp_missing_mse_report_id) {
-> +                               u8 mouse_report[17];
-> +
-> +                               /* Prepend report id */
-> +                               mouse_report[0] =3D REPORT_TYPE_MOUSE;
-> +                               memcpy(mouse_report + 1, data, size);
-> +                               logi_dj_recv_forward_input_report(hdev, m=
-ouse_report,
-> +                                                                 size + =
-1);
-> +                       }
->                 }
+> > Ah, yes, you're right.  I was only thinking about the problem of
+> > adding an entry to the old sidtab, and not the (much more likely case)
+> > of an entry being added to the new sidtab.  Bummer.
+> >
+> > Thinking aloud for a moment - what if we simply refused to add new
+> > sidtab entries if the task's sidtab pointer is "old"?  Common sense
+> > would tell us that this scenario should be very rare at present, and I
+> > believe the testing mentioned in this thread adds some weight to that
+> > claim.  After all, this only affects tasks which entered into their
+> > RCU protected session prior to the policy load RCU sync *AND* are
+> > attempting to add a new entry to the sidtab.  That *has* to be a
+> > really low percentage, especially on a system that has been up and
+> > running for some time.  My gut feeling is this should be safe as well;
+> > all of the calling code should have the necessary error handling in
+> > place as there are plenty of reasons why we could normally fail to add
+> > an entry to the sidtab; memory allocation failures being the most
+> > obvious failure point I would suspect.  This obvious downside to such
+> > an approach is that those operations which do meet this criteria would
+> > fail - and we should likely emit an error in this case - but is this
+> > failure really worse than any other transient kernel failure,
 >
->                 return false;
-> @@ -1688,6 +1706,7 @@ static int logi_dj_probe(struct hid_device *hdev,
->         case recvr_type_dj:             no_dj_interfaces =3D 3; break;
->         case recvr_type_hidpp:          no_dj_interfaces =3D 2; break;
->         case recvr_type_gaming_hidpp:   no_dj_interfaces =3D 3; break;
-> +       case recvr_type_gaming_hidpp_missing_mse_report_id: no_dj_interfa=
-ces =3D 3; break;
->         case recvr_type_mouse_only:     no_dj_interfaces =3D 2; break;
->         case recvr_type_27mhz:          no_dj_interfaces =3D 2; break;
->         case recvr_type_bluetooth:      no_dj_interfaces =3D 2; break;
-> @@ -1886,6 +1905,10 @@ static const struct hid_device_id logi_dj_receiver=
-s[] =3D {
->           HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
->                 USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1_1),
->          .driver_data =3D recvr_type_gaming_hidpp},
-> +       { /* Logitech lightspeed receiver (0xc547) */
-> +         HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
-> +               USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1_2),
-> +        .driver_data =3D recvr_type_gaming_hidpp_missing_mse_report_id},
->         { /* Logitech 27 MHz HID++ 1.0 receiver (0xc513) */
->           HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_MX3000_REC=
-EIVER),
->          .driver_data =3D recvr_type_27mhz},
-> --
-> 2.30.0
->
+> No, I don't like this approach at all. Before the sidtab refactor, it
+> had been done exactly this way ...
 
+I recognize I probably haven't made my feelings about reverts clear,
+or if I have, I haven't done so recently.  Let me fix that now: I
+*hate* them.  Further I hate reverts with a deep, passionate hatred
+that I reserve for very few things.  Maybe we have to revert this
+change, even though I *hate* reverts they do remain an option; you
+just need to be 99% sure you've exhausted all the other options first.
+
+> Perhaps it wasn't clear from what I wrote, but I certainly don't want
+> to abandon it completely. Just to revert to a safe state until we
+> figure out how to do the RCU policy reload safely. The solution with
+> two-way conversion seems doable, it's just not a quick and easy fix.
+
+I suggest pursuing this before the revert to see what it looks like
+and we can discuss it further during review.
+
+-- 
+paul moore
+www.paul-moore.com
