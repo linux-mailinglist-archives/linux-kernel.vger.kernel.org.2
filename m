@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D1C329C16
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8251329C1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348984AbhCBBrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:47:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46156 "EHLO mail.kernel.org"
+        id S1380096AbhCBBsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:48:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241554AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241555AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 14:24:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DD9564ED9;
-        Mon,  1 Mar 2021 17:13:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AE0164F18;
+        Mon,  1 Mar 2021 17:48:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618794;
-        bh=3XJNhc8dqDir7OJsr/oXPv22aujYCTxP9PbKfQ+J9Ho=;
+        s=korg; t=1614620935;
+        bh=TxXnBgku9RvRoSDFn99d3MEmBn7ZQvysst3NMhrVcBs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ViHeVRW5IeB0smeeb5kPFUbMkBuVLWDYt0cNfAYd0ICpFBBk2V3d0uEy/5kux9dXh
-         IsOV7udjJ2Wo5QK12qhX1pebpIERaXr4HWs3bT0JeLzsfM7//Qtzx3e99j/3Zqddbt
-         qAwtV+LUGrclYhkbjQe3H5nETe3ZapHRG7JBlnB8=
+        b=JgsJ/Snut6O5pYwdN9ZEj3BX00FxFWFpnCqOEFrWg3YWqjbxJLoHK+bvAPPYFQlr0
+         BU9FvW9+xzTzrvBAzb01VtVI3uA5FL629Wk+mRkB2qWuF07wG0D/etNz69fn/cIGRj
+         GIiOp2SwdXVLL4xpIHlNZ9y6nZRio51BNy4wdIRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Roy Im <roy.im.opensource@diasemi.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 219/663] ASoC: Intel: sof_sdw: add missing TGL_HDMI quirk for Dell SKU 0A5E
-Date:   Mon,  1 Mar 2021 17:07:47 +0100
-Message-Id: <20210301161152.630341912@linuxfoundation.org>
+Subject: [PATCH 5.11 303/775] Input: da7280 - protect OF match table with CONFIG_OF
+Date:   Mon,  1 Mar 2021 17:07:51 +0100
+Message-Id: <20210301161216.592109068@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit f12bbc50f3b14c9b8ed902c6d1da980dd5addcce ]
+[ Upstream commit 6d2ad82fece2f5adcafe77252614fcf7211dec28 ]
 
-We missed adding the TGL_HDMI quirk which is very much needed to
-expose the 4 display pipelines and will be required on TGL topologies.
+The OF match table is only used when OF is enabled.
 
-Fixes: 9ad9bc59dde10 ('ASoC: Intel: sof_sdw: set proper flags for Dell TGL-H SKU 0A5E')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Link: https://lore.kernel.org/r/20210204203312.27112-3-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: cd3f609823a5 ("Input: new da7280 haptic driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Acked-by: Roy Im <roy.im.opensource@diasemi.com>
+Link: https://lore.kernel.org/r/X9xRLVPt9eBi0CT6@google.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/sof_sdw.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/input/misc/da7280.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
-index a8d43c87cb5a2..3945cb61b95a0 100644
---- a/sound/soc/intel/boards/sof_sdw.c
-+++ b/sound/soc/intel/boards/sof_sdw.c
-@@ -63,7 +63,8 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
- 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A5E")
- 		},
--		.driver_data = (void *)(SOF_RT711_JD_SRC_JD2 |
-+		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
-+					SOF_RT711_JD_SRC_JD2 |
- 					SOF_RT715_DAI_ID_FIX |
- 					SOF_SDW_FOUR_SPK),
- 	},
+diff --git a/drivers/input/misc/da7280.c b/drivers/input/misc/da7280.c
+index 2f698a8c1d650..b08610d6e575e 100644
+--- a/drivers/input/misc/da7280.c
++++ b/drivers/input/misc/da7280.c
+@@ -1300,11 +1300,13 @@ static int __maybe_unused da7280_resume(struct device *dev)
+ 	return retval;
+ }
+ 
++#ifdef CONFIG_OF
+ static const struct of_device_id da7280_of_match[] = {
+ 	{ .compatible = "dlg,da7280", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, da7280_of_match);
++#endif
+ 
+ static const struct i2c_device_id da7280_i2c_id[] = {
+ 	{ "da7280", },
 -- 
 2.27.0
 
