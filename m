@@ -2,186 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CFD32999A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE833299C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241055AbhCBA04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:26:56 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:54898 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239776AbhCAS1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:27:17 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614623214; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=CVrOgUIAawHnEvCewO0kKDdh1FuzFvcgVnx0rAYY4I0=; b=WcI3s3SxWDu4MZPsXPw1vWReYamTiIKHz9gd9bAdh737xurfh1O/xk//bSj1X0i91MmP/dWi
- zdsyPRSQMaV8tE+iGv10cGr/CSijn3+uikdPn67PLRDu7l3cEIeVH4qTtxmpS708XTTYAECl
- e0+/AU+0pGwKIf0vTjRFHOwf4PU=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 603d31df9d2570c9fed12fd1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 18:26:39
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 25D57C43462; Mon,  1 Mar 2021 18:26:39 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51884C433C6;
-        Mon,  1 Mar 2021 18:26:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 51884C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     jhugo@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Gokul Sriram Palanisamy <gokulsri@codeaurora.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        hemantk@codeaurora.org, sricharan@codeaurora.org,
-        ath11k@lists.infradead.org
-Subject: Re: [PATCH v2] bus: mhi: core: Add unique qrtr node id support
-References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
-        <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
-        <20210226145245.GB70936@thinkpad> <87k0qrceih.fsf@tynnyri.adurom.net>
-        <10e511e8dfa8d393ec4c4765668fe229@codeaurora.org>
-Date:   Mon, 01 Mar 2021 20:26:34 +0200
-In-Reply-To: <10e511e8dfa8d393ec4c4765668fe229@codeaurora.org> (Bhaumik
-        Bhatt's message of "Mon, 01 Mar 2021 10:17:10 -0800")
-Message-ID: <87o8g291d1.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1376460AbhCBA3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:04 -0500
+Received: from mail-bn8nam11on2061.outbound.protection.outlook.com ([40.107.236.61]:29768
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239836AbhCASaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:30:16 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SwsbnCNyTiH0JEycYmBkJnSoYpyES8u8fTVEjOgbpxk67N/prRqar+lB1zFQTuA1Nt+owmO/mE5HyFnKUBHkXNq/CRYu0eWUW+gejD89/XAmD9FVjCPkvsNvee4dKKBfP7Cz0EJ6NibF/EnUR5qKdqvdgRAC48zYcT6XhOqpRzxowTal1XqK9bBuW0ehLJ+ZdBChgmqBWtsiFHkizCXW/SCjFHPCFu3FTU+1kmRioNOrs5jNpN9W+vUtQYiw/Gh8/5NUHMT1flQMB43MRraQssph3knFdxul4Gt1MvyJFgJhZM+Yg88A/K5o7rn7cTGscIGO3gfBRdZtWNTQ/Ome5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hkPR2+SGkTS4iWDS+EmJkl1SiQ5/MNsTSykXcvPuDOI=;
+ b=bt9KL6ECEF1Enl/bhEjfbw71PS0EjUKK/9RImliURZ5m7S7O+XF0mlSHdw4K1cCJcbnP5rA0OJmwN1zz1XktHyCHlpJDPY+a2mA7dB7/hkLg4JIM6LyL4GHgwlVJuXv8G4Mgx1q6USIQsmt/L4mVP3bO698JLB/6H3cCHGVhsmd2VgF0zue14FALZN7ob35/liwWGfpBvGgfY8brcx/4MASVWCaChKua1iaGTQZ0OJnsTtMWd0XL+hH196GnRDnd4lEBwW8kKN9z9Cc+ZsUS+IuhnWgs9U8RhlT6q8Q1bRnOWD1lgGSdLgo1SUf5n/rPTTl8h9qjNDrPiBmwH1jJYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hkPR2+SGkTS4iWDS+EmJkl1SiQ5/MNsTSykXcvPuDOI=;
+ b=CwdcZXkViBTZMD0kDl0jfht134cXNbAsvRX2JI3KGscnrd7btTR5wBig/OrMOv5yd29JQ5vm+j2SZ/Xxmw2uK1qxMeN2v8TecpKViUwN7Diftz/qlQ4ycgcVlvbSA7lTuwSpNRiElPXLGxr2wI2n/0T80AIWjD4ROBZ2MOhhU7I=
+Received: from SA9PR11CA0017.namprd11.prod.outlook.com (2603:10b6:806:6e::22)
+ by CH2PR02MB6679.namprd02.prod.outlook.com (2603:10b6:610:7a::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Mon, 1 Mar
+ 2021 18:29:18 +0000
+Received: from SN1NAM02FT055.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:6e:cafe::15) by SA9PR11CA0017.outlook.office365.com
+ (2603:10b6:806:6e::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.21 via Frontend
+ Transport; Mon, 1 Mar 2021 18:29:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT055.mail.protection.outlook.com (10.152.72.174) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3890.19 via Frontend Transport; Mon, 1 Mar 2021 18:29:18 +0000
+Received: from xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 1 Mar 2021 10:29:12 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 1 Mar 2021 10:29:12 -0800
+Envelope-to: michal.simek@xilinx.com,
+ sonal.santan@xilinx.com,
+ lizhi.hou@xilinx.com,
+ stefanos@xilinx.com,
+ maxz@xilinx.com,
+ robh@kernel.org,
+ trix@redhat.com,
+ devicetree@vger.kernel.org,
+ linux-fpga@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ mdf@kernel.org
+Received: from [10.17.2.60] (port=47618)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lizhi.hou@xilinx.com>)
+        id 1lGnI7-0002kP-Vn; Mon, 01 Mar 2021 10:29:12 -0800
+Subject: Re: [PATCH V3 XRT Alveo 00/18] XRT Alveo driver overview
+To:     Moritz Fischer <mdf@kernel.org>, Lizhi Hou <lizhi.hou@xilinx.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
+        <maxz@xilinx.com>, <sonal.santan@xilinx.com>,
+        <michal.simek@xilinx.com>, <stefanos@xilinx.com>,
+        <devicetree@vger.kernel.org>, <trix@redhat.com>, <robh@kernel.org>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <YDLF2Bi3oEhP6A7Q@archbook>
+From:   Lizhi Hou <lizhi.hou@xilinx.com>
+Message-ID: <f85b48e2-155a-c42c-9b47-5098421c554f@xilinx.com>
+Date:   Mon, 1 Mar 2021 10:29:11 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YDLF2Bi3oEhP6A7Q@archbook>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 26cb8096-2eb1-4951-80b3-08d8dcdfecdd
+X-MS-TrafficTypeDiagnostic: CH2PR02MB6679:
+X-MS-Exchange-MinimumUrlDomainAge: xilinx.github.io#0
+X-Microsoft-Antispam-PRVS: <CH2PR02MB6679988031034D6641145CEAA19A9@CH2PR02MB6679.namprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 77AA0qRjw7h06ZUaTfUzQJTJB0mzLuqPFTvhdmz+fVAqz6n2wYHO9xkdCufRO+4W7C7JSD3YHAPCjMQcUeJ3UVJBPMwL2EjspmojPVibf6pcnCend4EG9b6RysBCYm5bY7p0EaaVuoQkOTN3vR1mTUA0nQTVyr51VzZ4AWIBIxjdKdZLUPzCq4xJToqsGDeYZUAuUnwCDdXs0ffHH93rlje2MAjenlx4EajiF/o+AsxLmvkP08Ex0EPNPI039uZ67f60b9q0jd/9Bd90OjCf/hlEJ5l4ZdPDxQu3lVTm47xOftX2K49cRnYetmFllGa4SQGaD1MOcnPEC1UMd33eTBjGJvq/LwTWvX6f5hXj/dZXkx81GhY6sN5wV2J3I0nOazAWTlssjt1M9LHS1W5Nk8lpa8RyEVvbJKlFB3r2fPwA8Hwlmnz3+Cx7Mu+8F1qckJWVfV56bsi9dp/4H4qaerjiUcmOAY2+0lEsYuZJr6pxJZ4tYEZJgl0O3N0X56jgB7z/nPiQfpqUSYDkJf0vS8c9fEiTjkz4ig3x293/uY+XT/qePZm+aMXKyjORmIrVFqVMIwTSrpUSC0DFPX7EQp0KQGUZ+FJ+RApOHEBOpTy4WE5QIk5WZx51JPwOTFtwPVWrA3cm9sKLiWwcPzawRFmvplmqxF8Da2j7LGRBY4UQ7eWDQmKDQtLAYS5kajLoo+7alnGdauCPNWPv/i4MwUDpVRsQh7F3khx8o0alp2ubslai+RoZTAYVrbE2cqTs07XP0UYsHh3xqKVwwTVsvxjGrolza4nNMByzRyNibts=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(376002)(346002)(36840700001)(46966006)(26005)(47076005)(2906002)(8676002)(336012)(70206006)(426003)(31696002)(2616005)(70586007)(186003)(9786002)(30864003)(8936002)(44832011)(31686004)(36756003)(5660300002)(110136005)(478600001)(54906003)(966005)(83380400001)(316002)(36906005)(53546011)(4326008)(356005)(82310400003)(7636003)(36860700001)(82740400003)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2021 18:29:18.1872
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26cb8096-2eb1-4951-80b3-08d8dcdfecdd
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT055.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR02MB6679
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bhaumik Bhatt <bbhatt@codeaurora.org> writes:
+Hi Moritz,
 
-> On 2021-03-01 03:14 AM, Kalle Valo wrote:
->> + ath11k list
->>
->> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
->>
->>> On Fri, Feb 26, 2021 at 04:12:49PM +0530, Gokul Sriram Palanisamy
->>> wrote:
->>>> On platforms with two or more identical mhi
->>>> devices, qmi service will run with identical
->>>> qrtr-node-id. Because of this identical ID,
->>>> host qrtr-lookup cannot register more than one
->>>> qmi service with identical node ID. Ultimately,
->>>> only one qmi service will be avilable for the
->>>> underlying drivers to communicate with.
->>>>
->>>> On QCN9000, it implements a unique qrtr-node-id
->>>> and qmi instance ID using a unique instance ID
->>>> written to a debug register from host driver
->>>> soon after SBL is loaded.
->>>>
->>>> This change generates a unique instance ID from
->>>> PCIe domain number and bus number, writes to the
->>>> given debug register just after SBL is loaded so
->>>> that it is available for FW when the QMI service
->>>> is spawned.
->>>>
->>>> sample:
->>>> root@OpenWrt:/# qrtr-lookup
->>>>   Service Version Instance Node  Port
->>>>        15       1        0    8     1 Test service
->>>>        69       1        8    8     2 ATH10k WLAN firmware service
->>>>        15       1        0   24     1 Test service
->>>>        69       1       24   24     2 ATH10k WLAN firmware service
->>>>
->>>> Here 8 and 24 on column 3 (QMI Instance ID)
->>>> and 4 (QRTR Node ID) are the node IDs that
->>>> is unique per mhi device.
->>>>
->>>> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
->>>> ---
->>>>  drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
->>>>  1 file changed, 14 insertions(+)
->>>>
->>>> diff --git a/drivers/bus/mhi/core/boot.c
->>>> b/drivers/bus/mhi/core/boot.c
->>>> index c2546bf..5e5dad5 100644
->>>> --- a/drivers/bus/mhi/core/boot.c
->>>> +++ b/drivers/bus/mhi/core/boot.c
->>>> @@ -16,8 +16,12 @@
->>>>  #include <linux/random.h>
->>>>  #include <linux/slab.h>
->>>>  #include <linux/wait.h>
->>>> +#include <linux/pci.h>
->>>>  #include "internal.h"
->>>>
->>>> +#define QRTR_INSTANCE_MASK	0x000000FF
->>>> +#define QRTR_INSTANCE_SHIFT	0
->>>> +
->>>>  /* Setup RDDM vector table for RDDM transfer and program RXVEC */
->>>>  void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
->>>>  		      struct image_info *img_info)
->>>> @@ -391,6 +395,9 @@ void mhi_fw_load_handler(struct mhi_controller
->>>> *mhi_cntrl)
->>>>  	const struct firmware *firmware = NULL;
->>>>  	struct image_info *image_info;
->>>>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->>>> +	struct pci_dev *pci_dev = to_pci_dev(mhi_cntrl->cntrl_dev);
->>>> +	struct pci_bus *bus = pci_dev->bus;
->>>> +	uint32_t instance;
->>>>  	const char *fw_name;
->>>>  	void *buf;
->>>>  	dma_addr_t dma_addr;
->>>> @@ -466,6 +473,13 @@ void mhi_fw_load_handler(struct
->>>> mhi_controller *mhi_cntrl)
->>>>  		return;
->>>>  	}
->>>>
->>>> +	instance = ((pci_domain_nr(bus) & 0xF) << 4) | (bus->number & 0xF);
->>>> +	instance &= QRTR_INSTANCE_MASK;
->>>> +
->>>> +	mhi_write_reg_field(mhi_cntrl, mhi_cntrl->bhi,
->>>> +			    BHI_ERRDBG2, QRTR_INSTANCE_MASK,
->>>> +			    QRTR_INSTANCE_SHIFT, instance);
->>>
->>> You cannot not do this in MHI stack. Why can't you do this in the
->>> MHI controller
->>> specific to QCN9000? And btw, is QCN9000 supported in mainline?
->>
->> I'm not sure what QCN9000 means but I'm guessing it's QCN9074. We have
->> initial QCN9074 support in ath11k but there are some issues still so
->> it's not enabled by default (yet):
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=4e80946197a83a6115e308334618449b77696d6a
->>
->> And I suspect we have this same qrtr issue with any ath11k PCI device,
->> including QCA6390, so this is not a QCN9074 specific problem.
->>
->> BTW Gokul, please always CC the ath11k list when submitting patches
->> which are related to ath11k.
+
+On 02/21/2021 12:43 PM, Moritz Fischer wrote:
+> Lizhi,
 >
-> QRTR sits on top of MHI so shouldn't this be handled outside of MHI
-> after MHI is operational? We cannot allow PCI code in MHI core driver
-> but this can be handled pre or post MHI power-up in whatever way you
-> desire that does not have to directly involve MHI.
+> On Wed, Feb 17, 2021 at 10:40:01PM -0800, Lizhi Hou wrote:
+>> Hello,
+>>
+>> This is V3 of patch series which adds management physical function driver for Xilinx
+>> Alveo PCIe accelerator cards, https://www.xilinx.com/products/boards-and-kits/alveo.html
+>> This driver is part of Xilinx Runtime (XRT) open source stack.
+>>
+>> XILINX ALVEO PLATFORM ARCHITECTURE
+>>
+>> Alveo PCIe FPGA based platforms have a static *shell* partition and a partial
+>> re-configurable *user* partition. The shell partition is automatically loaded from
+>> flash when host is booted and PCIe is enumerated by BIOS. Shell cannot be changed
+>> till the next cold reboot. The shell exposes two PCIe physical functions:
+>>
+>> 1. management physical function
+>> 2. user physical function
+>>
+>> The patch series includes Documentation/xrt.rst which describes Alveo platform,
+>> XRT driver architecture and deployment model in more detail.
+>>
+>> Users compile their high level design in C/C++/OpenCL or RTL into FPGA image using
+>> Vitis https://www.xilinx.com/products/design-tools/vitis/vitis-platform.html
+>> tools. The compiled image is packaged as xclbin which contains partial bitstream
+>> for the user partition and necessary metadata. Users can dynamically swap the image
+>> running on the user partition in order to switch between different workloads by
+>> loading different xclbins.
+>>
+>> XRT DRIVERS FOR XILINX ALVEO
+>>
+>> XRT Linux kernel driver *xmgmt* binds to management physical function of Alveo
+>> platform. The modular driver framework is organized into several platform drivers
+>> which primarily handle the following functionality:
+>>
+>> 1.  Loading firmware container also called xsabin at driver attach time
+>> 2.  Loading of user compiled xclbin with FPGA Manager integration
+>> 3.  Clock scaling of image running on user partition
+>> 4.  In-band sensors: temp, voltage, power, etc.
+>> 5.  Device reset and rescan
+>>
+>> The platform drivers are packaged into *xrt-lib* helper module with well
+>> defined interfaces. The module provides a pseudo-bus implementation for the
+>> platform drivers. More details on the driver model can be found in
+>> Documentation/xrt.rst.
+>>
+>> User physical function driver is not included in this patch series.
+>>
+>> LIBFDT REQUIREMENT
+>>
+>> XRT driver infrastructure uses Device Tree as a metadata format to discover
+>> HW subsystems in the Alveo PCIe device. The Device Tree schema used by XRT
+>> is documented in Documentation/xrt.rst. Unlike previous V1 and V2 version
+>> of patch series, V3 version does not require export of libfdt symbols.
+>>
+>> TESTING AND VALIDATION
+>>
+>> xmgmt driver can be tested with full XRT open source stack which includes user
+>> space libraries, board utilities and (out of tree) first generation user physical
+>> function driver xocl. XRT open source runtime stack is available at
+>> https://github.com/Xilinx/XRT
+>>
+>> Complete documentation for XRT open source stack including sections on Alveo/XRT
+>> security and platform architecture can be found here:
+>>
+>> https://xilinx.github.io/XRT/master/html/index.html
+>> https://xilinx.github.io/XRT/master/html/security.html
+>> https://xilinx.github.io/XRT/master/html/platforms_partitions.html
+>>
+>> Changes since v2:
+>> - Streamlined the driver framework into *xleaf*, *group* and *xroot*
+>> - Updated documentation to show the driver model with examples
+>> - Addressed kernel test robot errors
+>> - Added a selftest for basic driver framework
+>> - Documented device tree schema
+>> - Removed need to export libfdt symbols
+>>
+>> Changes since v1:
+>> - Updated the driver to use fpga_region and fpga_bridge for FPGA
+>>    programming
+>> - Dropped platform drivers not related to PR programming to focus on XRT
+>>    core framework
+>> - Updated Documentation/fpga/xrt.rst with information on XRT core framework
+>> - Addressed checkpatch issues
+>> - Dropped xrt- prefix from some header files
+>>
+>> For reference V1 version of patch series can be found here:
+>>
+>> https://lore.kernel.org/lkml/20201217075046.28553-1-sonals@xilinx.com/
+>> https://lore.kernel.org/lkml/20201217075046.28553-2-sonals@xilinx.com/
+>> https://lore.kernel.org/lkml/20201217075046.28553-3-sonals@xilinx.com/
+>> https://lore.kernel.org/lkml/20201217075046.28553-4-sonals@xilinx.com/
+>> https://lore.kernel.org/lkml/20201217075046.28553-5-sonals@xilinx.com/
+>> https://lore.kernel.org/lkml/20201217075046.28553-6-sonals@xilinx.com/
+>> https://lore.kernel.org/lkml/20201217075046.28553-7-sonals@xilinx.com/
+>>
+>> Lizhi Hou (18):
+>>    Documentation: fpga: Add a document describing XRT Alveo drivers
+>>    fpga: xrt: driver metadata helper functions
+>>    fpga: xrt: xclbin file helper functions
+>>    fpga: xrt: xrt-lib platform driver manager
+>>    fpga: xrt: group platform driver
+>>    fpga: xrt: platform driver infrastructure
+>>    fpga: xrt: management physical function driver (root)
+>>    fpga: xrt: main platform driver for management function device
+>>    fpga: xrt: fpga-mgr and region implementation for xclbin download
+>>    fpga: xrt: VSEC platform driver
+>>    fpga: xrt: UCS platform driver
+>>    fpga: xrt: ICAP platform driver
+>>    fpga: xrt: devctl platform driver
+>>    fpga: xrt: clock platform driver
+>>    fpga: xrt: clock frequence counter platform driver
+>>    fpga: xrt: DDR calibration platform driver
+>>    fpga: xrt: partition isolation platform driver
+>>    fpga: xrt: Kconfig and Makefile updates for XRT drivers
+>>
+>>   Documentation/fpga/index.rst             |   1 +
+>>   Documentation/fpga/xrt.rst               | 842 ++++++++++++++++++++++
+>>   MAINTAINERS                              |  11 +
+>>   drivers/Makefile                         |   1 +
+>>   drivers/fpga/Kconfig                     |   2 +
+>>   drivers/fpga/Makefile                    |   4 +
+>>   drivers/fpga/xrt/Kconfig                 |   8 +
+>>   drivers/fpga/xrt/include/events.h        |  48 ++
+>>   drivers/fpga/xrt/include/group.h         |  27 +
+>>   drivers/fpga/xrt/include/metadata.h      | 229 ++++++
+>>   drivers/fpga/xrt/include/subdev_id.h     |  43 ++
+>>   drivers/fpga/xrt/include/xclbin-helper.h |  52 ++
+>>   drivers/fpga/xrt/include/xleaf.h         | 276 +++++++
+>>   drivers/fpga/xrt/include/xleaf/axigate.h |  25 +
+>>   drivers/fpga/xrt/include/xleaf/calib.h   |  30 +
+>>   drivers/fpga/xrt/include/xleaf/clkfreq.h |  23 +
+>>   drivers/fpga/xrt/include/xleaf/clock.h   |  31 +
+>>   drivers/fpga/xrt/include/xleaf/devctl.h  |  43 ++
+>>   drivers/fpga/xrt/include/xleaf/icap.h    |  29 +
+>>   drivers/fpga/xrt/include/xleaf/ucs.h     |  24 +
+>>   drivers/fpga/xrt/include/xmgmt-main.h    |  37 +
+>>   drivers/fpga/xrt/include/xroot.h         | 114 +++
+>>   drivers/fpga/xrt/lib/Kconfig             |  16 +
+>>   drivers/fpga/xrt/lib/Makefile            |  30 +
+>>   drivers/fpga/xrt/lib/cdev.c              | 231 ++++++
+>>   drivers/fpga/xrt/lib/group.c             | 265 +++++++
+>>   drivers/fpga/xrt/lib/main.c              | 274 +++++++
+>>   drivers/fpga/xrt/lib/main.h              |  17 +
+>>   drivers/fpga/xrt/lib/subdev.c            | 871 +++++++++++++++++++++++
+>>   drivers/fpga/xrt/lib/subdev_pool.h       |  53 ++
+>>   drivers/fpga/xrt/lib/xclbin.c            | 394 ++++++++++
+>>   drivers/fpga/xrt/lib/xleaf/axigate.c     | 298 ++++++++
+>>   drivers/fpga/xrt/lib/xleaf/calib.c       | 226 ++++++
+>>   drivers/fpga/xrt/lib/xleaf/clkfreq.c     | 221 ++++++
+>>   drivers/fpga/xrt/lib/xleaf/clock.c       | 648 +++++++++++++++++
+>>   drivers/fpga/xrt/lib/xleaf/devctl.c      | 206 ++++++
+>>   drivers/fpga/xrt/lib/xleaf/icap.c        | 317 +++++++++
+>>   drivers/fpga/xrt/lib/xleaf/ucs.c         | 235 ++++++
+>>   drivers/fpga/xrt/lib/xleaf/vsec.c        | 359 ++++++++++
+>>   drivers/fpga/xrt/lib/xroot.c             | 598 ++++++++++++++++
+>>   drivers/fpga/xrt/metadata/Kconfig        |  12 +
+>>   drivers/fpga/xrt/metadata/Makefile       |  16 +
+>>   drivers/fpga/xrt/metadata/metadata.c     | 524 ++++++++++++++
+>>   drivers/fpga/xrt/mgmt/Kconfig            |  15 +
+>>   drivers/fpga/xrt/mgmt/Makefile           |  19 +
+>>   drivers/fpga/xrt/mgmt/fmgr-drv.c         | 187 +++++
+>>   drivers/fpga/xrt/mgmt/fmgr.h             |  28 +
+>>   drivers/fpga/xrt/mgmt/main-impl.h        |  37 +
+>>   drivers/fpga/xrt/mgmt/main-region.c      | 471 ++++++++++++
+>>   drivers/fpga/xrt/mgmt/main.c             | 693 ++++++++++++++++++
+>>   drivers/fpga/xrt/mgmt/root.c             | 342 +++++++++
+>>   include/uapi/linux/xrt/xclbin.h          | 408 +++++++++++
+>>   include/uapi/linux/xrt/xmgmt-ioctl.h     |  46 ++
+>>   53 files changed, 9957 insertions(+)
+>>   create mode 100644 Documentation/fpga/xrt.rst
+>>   create mode 100644 drivers/fpga/xrt/Kconfig
+>>   create mode 100644 drivers/fpga/xrt/include/events.h
+>>   create mode 100644 drivers/fpga/xrt/include/group.h
+>>   create mode 100644 drivers/fpga/xrt/include/metadata.h
+>>   create mode 100644 drivers/fpga/xrt/include/subdev_id.h
+>>   create mode 100644 drivers/fpga/xrt/include/xclbin-helper.h
+>>   create mode 100644 drivers/fpga/xrt/include/xleaf.h
+>>   create mode 100644 drivers/fpga/xrt/include/xleaf/axigate.h
+>>   create mode 100644 drivers/fpga/xrt/include/xleaf/calib.h
+>>   create mode 100644 drivers/fpga/xrt/include/xleaf/clkfreq.h
+>>   create mode 100644 drivers/fpga/xrt/include/xleaf/clock.h
+>>   create mode 100644 drivers/fpga/xrt/include/xleaf/devctl.h
+>>   create mode 100644 drivers/fpga/xrt/include/xleaf/icap.h
+>>   create mode 100644 drivers/fpga/xrt/include/xleaf/ucs.h
+>>   create mode 100644 drivers/fpga/xrt/include/xmgmt-main.h
+>>   create mode 100644 drivers/fpga/xrt/include/xroot.h
+>>   create mode 100644 drivers/fpga/xrt/lib/Kconfig
+>>   create mode 100644 drivers/fpga/xrt/lib/Makefile
+>>   create mode 100644 drivers/fpga/xrt/lib/cdev.c
+>>   create mode 100644 drivers/fpga/xrt/lib/group.c
+>>   create mode 100644 drivers/fpga/xrt/lib/main.c
+>>   create mode 100644 drivers/fpga/xrt/lib/main.h
+>>   create mode 100644 drivers/fpga/xrt/lib/subdev.c
+>>   create mode 100644 drivers/fpga/xrt/lib/subdev_pool.h
+>>   create mode 100644 drivers/fpga/xrt/lib/xclbin.c
+>>   create mode 100644 drivers/fpga/xrt/lib/xleaf/axigate.c
+>>   create mode 100644 drivers/fpga/xrt/lib/xleaf/calib.c
+>>   create mode 100644 drivers/fpga/xrt/lib/xleaf/clkfreq.c
+>>   create mode 100644 drivers/fpga/xrt/lib/xleaf/clock.c
+>>   create mode 100644 drivers/fpga/xrt/lib/xleaf/devctl.c
+>>   create mode 100644 drivers/fpga/xrt/lib/xleaf/icap.c
+>>   create mode 100644 drivers/fpga/xrt/lib/xleaf/ucs.c
+>>   create mode 100644 drivers/fpga/xrt/lib/xleaf/vsec.c
+>>   create mode 100644 drivers/fpga/xrt/lib/xroot.c
+>>   create mode 100644 drivers/fpga/xrt/metadata/Kconfig
+>>   create mode 100644 drivers/fpga/xrt/metadata/Makefile
+>>   create mode 100644 drivers/fpga/xrt/metadata/metadata.c
+>>   create mode 100644 drivers/fpga/xrt/mgmt/Kconfig
+>>   create mode 100644 drivers/fpga/xrt/mgmt/Makefile
+>>   create mode 100644 drivers/fpga/xrt/mgmt/fmgr-drv.c
+>>   create mode 100644 drivers/fpga/xrt/mgmt/fmgr.h
+>>   create mode 100644 drivers/fpga/xrt/mgmt/main-impl.h
+>>   create mode 100644 drivers/fpga/xrt/mgmt/main-region.c
+>>   create mode 100644 drivers/fpga/xrt/mgmt/main.c
+>>   create mode 100644 drivers/fpga/xrt/mgmt/root.c
+>>   create mode 100644 include/uapi/linux/xrt/xclbin.h
+>>   create mode 100644 include/uapi/linux/xrt/xmgmt-ioctl.h
+>>
+>> --
+>> 2.18.4
+>>
+> Please fix the indents all across this patchset. Doesn't checkpatch with
+> --strict complain about this?
+checkpatch --strict did not complain. And we will fix this.
+>
+> Also more generally this looks like it should be a bus. Look at DFL for
+> reference.
+Tom asked the same question in 01/18 and Sonal replied. We may discuss 
+with that thread.
 
-Sure, makes sense. I was just replying to Mani's question about status
-of QCN9000 upstream support.
+Thanks,
+Lizhi
+>
+> - Moritz
 
-So should we handle this within ath11k, is that the right approach? I
-also suspect that for QCN9074 and QCA6390 we have to do this a bit
-differently, so it would be easier to handle the differences between
-devices (and firmware versions) inside ath11k.
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
