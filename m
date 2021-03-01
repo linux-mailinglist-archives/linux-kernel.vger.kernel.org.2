@@ -2,214 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 811BB329998
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CFD32999A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239605AbhCBA0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:26:33 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:34388 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232447AbhCAS0z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:26:55 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 121IF0Ys079912;
-        Mon, 1 Mar 2021 18:25:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=7jNlGF/n9d4vhsYUIpiaHJieRziKlkyZ11P/XdG2Xt0=;
- b=QP/ZLhTzjbUH2EERinH1hGpQj8Xmfcmn6N7+0+SDkJneVPdGrIS4QPBZ9R2HqdNk12Re
- vhkh5N1CevIn4lnaHcwCv5dUp4ozZrcV2y7mE7OvlfkUPp6Dol+4xjS+coDOrbkuC+Xq
- x3vhD+WMJNnV3UGkHJ54Qi4J0/vLuPmQWOSRxqoBHhMnQwsitIDthtKgdAQw5C9bi4hH
- J71sHC2tfS5gy5rarKOo2+Y+fSKcU4a39cJx0/f0v/w5A1rQbjjObDqJr1b9uoMzBgaD
- EUXPgtWYjirQCHjv+B/VGToaWzKNtykKyUMwN1q5h5TD7sVIcGuz0cMvckmuFmztEUZk 7Q== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 36ybkb50wh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Mar 2021 18:25:58 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 121IEuWR013465;
-        Mon, 1 Mar 2021 18:25:57 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-        by aserp3030.oracle.com with ESMTP id 36yynn3ju7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Mar 2021 18:25:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HLVW4CNDsPrWE8JFUAkbWW9R7E2s11pyFQVfizjAr0MzPLHyd7Cu1s3BDZ8KgMiQLBrY1pdhqEcHb0NIrA7HwqojkO/xWp6Xj53yo7iTFO8IS9RUXQl0YrviEP3g+YuoQY8UOClcNHJt4eg8KZTti3pD5B79XEfF2AYsaKgBrpkS+b4viuzQ2U0rBlRQaDzW423jgMjqfVh5cQejTnQ8GrrBxG4bp0ysJPs8No6htD8wqepVRwU60MAB2TkbOy8kypzzgiXaZRdj5b5R91E4mhX79yw0EpKSGQe8CV00U6/lbMzaoaqCiM4jwa4gPFs81J0ADGzmjWvKvmo4eNf+Vw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7jNlGF/n9d4vhsYUIpiaHJieRziKlkyZ11P/XdG2Xt0=;
- b=QLTMERXD2IcQ7sq04Ez8iR5vskKinbesCkqpN5bG8CkzAIOkIHWzaawnRo3tIYO4V2nvf9VgO/tQ6dAYy+aOUNrVgTQajvyVO9rwNdaIH4119m2DGgHuy9BW5j1dyOlNMJpFmVh3oNQRHbKkq9o0Q67yAKGOUsSx1QGZ/Hvjwt+xZaZ8wwQmDcVUb2YBxtmPdwx+CioF1xGUjdfX9XCTtHhzJ/U36anixhKb9/1MuJenSjTbghB/MC9qeLlMwII3zn+51WHuzm9Y0ogKFIhI5FjO0EQpO1C5rXgUNlMu7owweKfVKo85HwQEtsL0jI96ae2Ylx8XM7ip8WrM5Z6NsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7jNlGF/n9d4vhsYUIpiaHJieRziKlkyZ11P/XdG2Xt0=;
- b=Ip9nqaepBuHd6zzx7hSMODgtwrzqYuhNbkRF43RilTwcWhvbWNV85Lvo9rPthWrT/of2sQcwa9wFiUAmq1+acJ0LkzAx/UBSiiHlCratc+qBZIsYXYC9o2FO3NGOy8SmDhagaF3gLpucSkWkeodfcHcsQmeBmlAIukoki4CgvoQ=
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
- by SJ0PR10MB4765.namprd10.prod.outlook.com (2603:10b6:a03:2af::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Mon, 1 Mar
- 2021 18:25:55 +0000
-Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b]) by SJ0PR10MB4688.namprd10.prod.outlook.com
- ([fe80::6da8:6d28:b83:702b%4]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
- 18:25:55 +0000
-From:   Chuck Lever <chuck.lever@oracle.com>
-To:     Romain Perier <romain.perier@gmail.com>
-CC:     Kees Cook <keescook@chromium.org>,
-        "kernel-hardening@lists.openwall.com" 
-        <kernel-hardening@lists.openwall.com>,
-        Bruce Fields <bfields@fieldses.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 07/20] SUNRPC: Manual replacement of the deprecated
- strlcpy() with return values
-Thread-Topic: [PATCH 07/20] SUNRPC: Manual replacement of the deprecated
- strlcpy() with return values
-Thread-Index: AQHXCS01IFrfld7+ZU6LqewR1/d2LqpvfkYA
-Date:   Mon, 1 Mar 2021 18:25:55 +0000
-Message-ID: <34ECB5D0-6E9F-4FF0-A41D-C4DD4505EB5C@oracle.com>
-References: <20210222151231.22572-1-romain.perier@gmail.com>
- <20210222151231.22572-8-romain.perier@gmail.com>
-In-Reply-To: <20210222151231.22572-8-romain.perier@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [68.61.232.219]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ba8c06b1-d354-4afc-448e-08d8dcdf7403
-x-ms-traffictypediagnostic: SJ0PR10MB4765:
-x-ms-exchange-minimumurldomainage: kernel.org#8760
-x-microsoft-antispam-prvs: <SJ0PR10MB476527065E1D778DE2CCA6F8939A9@SJ0PR10MB4765.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:525;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: TIUPZW1dYUOmFGNrOBEa+dO3ciRwuwQldmB+dMbwvRMIwX0U4r7LErQKvZF+lZz06bH4+16Ak/l+L+M28Maf6cuviT8u1/VIuUmm4BngRFrW0X4rVvHvZxFYcEDXmgDAdl5OMToNxxcW/43gGwopSwNdaNbhN92ZZZ6AbMB5gJimFDPwBLbmzmVpWkDE9iEQaaeqCjujuvWLHm7Im2za1wkcYYqEr8NUEidmAQIJkxyasYUsrJJ7uOPKe8FO6VEPejphbvVjkj8HzoUEoZXnBR8SC95vjWksCUW6DW1NUhoSpe80OwvbsPiD8A+i/8Dkn7VS7/H3mWCCgVNe2Tq5urbkYFqncL7HQJVzKUk9IjjKyw0qSuDl4CyvwOLf0SByvfFVFU/BDtqxDe90Bjfk4Kb+5+5kt/tSZGqZQazTmrhULcrYsQDyg1gcXFbG+qX43PMC0FvBSWa9jUqvjtlTDgdjxxEZW5oILECKqUCCw3VK8fNqdTp8ckeIradJaN1fo8A0OyQktaWzUK56RCtvHoCJZ0ma0U7raYH1HqHyOLhCuRUVDJm8AMyoiNrVpGHfT7bMFEzDV97qxxbsr/AOl5o6l51HYQLurnx3ydZHSAcDOpf7y4WrW00ZJSFG8PZ4SRw8C3KXA5lp3c3HiTiIk5kg/QnIC1x/K+3viWp+96c=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(366004)(136003)(346002)(376002)(86362001)(36756003)(33656002)(4326008)(83380400001)(6916009)(5660300002)(91956017)(6512007)(66446008)(2616005)(66556008)(2906002)(71200400001)(53546011)(6506007)(8936002)(6486002)(44832011)(26005)(316002)(54906003)(186003)(478600001)(76116006)(966005)(66476007)(8676002)(64756008)(66946007)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XMjWviHVWvNeTtiG/UIGax98+LmkMoBxtDxYkODGlEXfxgPD2+crlzHUYVki?=
- =?us-ascii?Q?0UozrrDdpM8Mn1lJalG3QwBpduJCQlFTP5Ko/k+w2fYP0Y87/a5NFK98U+q8?=
- =?us-ascii?Q?in3fWPZvhHfNLLxgZoyip46CA8rg/47T3dlhJVpbn04p9MmyOClmW/Lyshe9?=
- =?us-ascii?Q?kE1PPC/RFZE2+kK8/jD/8z85GHK2sVdWCBjFKquzxeZq6qJQHUiBI0QZxMRP?=
- =?us-ascii?Q?7Q4gIRUM2ebofhkM9IY9wPLhyXbFHrWlZ+Q1wmZj8wMg3txQLFQ/WodjFcOd?=
- =?us-ascii?Q?b1Lxzb+7Oa/q96qx5K90zDi8uVfOi6OJPA2Bnfkz3xm1R6n+b8SRRsA5NgqW?=
- =?us-ascii?Q?GY9iaU5MehY6lMTFr8NMnoH0c+OCpMMFt/mjJceJIyQnRhuiEmaIlf6iL6gf?=
- =?us-ascii?Q?jfjreKMprUleplsgrDYpiRbYw1zfyWO51uu80itH++jOKLBsD5ucl85sGo73?=
- =?us-ascii?Q?nngbHiy4uZhbwtG70POcY76ZEl18VGWb1qMTsD1nQh64y8K6Lc+f7jK1ApoV?=
- =?us-ascii?Q?Yn+Qkq6/MpV2syvYpJNGQ7M3D4C4fRtVtKc7p7yKmoxXIrKLQ1g1CvAgYn0M?=
- =?us-ascii?Q?xeyKgQHR1FblvtLP1UT20RHTDWznubXkLF8sZxIEMyeotA8xe2q0Rbikf3ZR?=
- =?us-ascii?Q?AA+TOGczBqwDIv74wJuhw+2VpVhMvtlya3q4ih7fQ+xxF4Tgrzu/sLU2/TEg?=
- =?us-ascii?Q?T8KMcZLbsHya/XzJs4UxtT22rwbQIR+1yUr8tMzdjlW/+ucqbYW7IfTsxWwK?=
- =?us-ascii?Q?RcRn25fc2WmQyZEdhwBW+NUF9Ji6u5+aMOdy4VeFuDxmQryNTH9S1xdvt85z?=
- =?us-ascii?Q?ylLyzn0RCl03TpLxotPxO1DAaK9c7eJrNFGrxvtFzv6LnSaC51471EJXKQ1e?=
- =?us-ascii?Q?WMmbxDMgKCi9QF8XHzicv1BQIccNkYTbp8JeiMxat4YnueNvQQ8TZ2eW69cg?=
- =?us-ascii?Q?3wKs2APep42xwhCxLjMnoTT6Wd2QZxm/T5x6Pyc+SNqG3DcDgCBkUsAgB6oN?=
- =?us-ascii?Q?nZ3ylLdPZAImq/KiCyJKoRxo18T4As5rbVvmMi8NVHwDd0Tdef1LA6aDzIbo?=
- =?us-ascii?Q?Hiz+Vgtzn8pbx/yCG53xEOyrNOch9p/ck6E97wQBwG7LHOyTJKr+znnGz2o1?=
- =?us-ascii?Q?yHY9+UMHWUrEzg8QO31/ay72JICdJwDBHX8lWf9nFGLkVZ3mhXUIRiKQrb1Y?=
- =?us-ascii?Q?3u+YB3eREpnFJ/+BcDRLfZNjrbRqwpQli7AEVVlEf5afRKAb9YNM44lhLPkh?=
- =?us-ascii?Q?T6osqzC/x3YFl8OFI1RdmUDgSYV58rOSqt+xADu0YvqYL76I6XzedJurvg0q?=
- =?us-ascii?Q?YjtfnkjqLblofbKdAt81QMIA?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2690463AA5D9744398354A57918A1D26@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S241055AbhCBA04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:26:56 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:54898 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239776AbhCAS1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:27:17 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614623214; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=CVrOgUIAawHnEvCewO0kKDdh1FuzFvcgVnx0rAYY4I0=; b=WcI3s3SxWDu4MZPsXPw1vWReYamTiIKHz9gd9bAdh737xurfh1O/xk//bSj1X0i91MmP/dWi
+ zdsyPRSQMaV8tE+iGv10cGr/CSijn3+uikdPn67PLRDu7l3cEIeVH4qTtxmpS708XTTYAECl
+ e0+/AU+0pGwKIf0vTjRFHOwf4PU=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 603d31df9d2570c9fed12fd1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 18:26:39
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 25D57C43462; Mon,  1 Mar 2021 18:26:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51884C433C6;
+        Mon,  1 Mar 2021 18:26:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 51884C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     jhugo@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Gokul Sriram Palanisamy <gokulsri@codeaurora.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        hemantk@codeaurora.org, sricharan@codeaurora.org,
+        ath11k@lists.infradead.org
+Subject: Re: [PATCH v2] bus: mhi: core: Add unique qrtr node id support
+References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
+        <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
+        <20210226145245.GB70936@thinkpad> <87k0qrceih.fsf@tynnyri.adurom.net>
+        <10e511e8dfa8d393ec4c4765668fe229@codeaurora.org>
+Date:   Mon, 01 Mar 2021 20:26:34 +0200
+In-Reply-To: <10e511e8dfa8d393ec4c4765668fe229@codeaurora.org> (Bhaumik
+        Bhatt's message of "Mon, 01 Mar 2021 10:17:10 -0800")
+Message-ID: <87o8g291d1.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ba8c06b1-d354-4afc-448e-08d8dcdf7403
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2021 18:25:55.4088
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dL2L1oeu3n+xzhaRZe9i5YckeCxDaOuDXzXbFhj6feo9Cg1WaEOV6LotRue02P8RokjoURS3ajKPRBPdYw+cqg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4765
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9910 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
- bulkscore=0 suspectscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103010147
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9910 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
- suspectscore=0 phishscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1011 mlxlogscore=999 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103010147
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Bhaumik Bhatt <bbhatt@codeaurora.org> writes:
 
+> On 2021-03-01 03:14 AM, Kalle Valo wrote:
+>> + ath11k list
+>>
+>> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
+>>
+>>> On Fri, Feb 26, 2021 at 04:12:49PM +0530, Gokul Sriram Palanisamy
+>>> wrote:
+>>>> On platforms with two or more identical mhi
+>>>> devices, qmi service will run with identical
+>>>> qrtr-node-id. Because of this identical ID,
+>>>> host qrtr-lookup cannot register more than one
+>>>> qmi service with identical node ID. Ultimately,
+>>>> only one qmi service will be avilable for the
+>>>> underlying drivers to communicate with.
+>>>>
+>>>> On QCN9000, it implements a unique qrtr-node-id
+>>>> and qmi instance ID using a unique instance ID
+>>>> written to a debug register from host driver
+>>>> soon after SBL is loaded.
+>>>>
+>>>> This change generates a unique instance ID from
+>>>> PCIe domain number and bus number, writes to the
+>>>> given debug register just after SBL is loaded so
+>>>> that it is available for FW when the QMI service
+>>>> is spawned.
+>>>>
+>>>> sample:
+>>>> root@OpenWrt:/# qrtr-lookup
+>>>>   Service Version Instance Node  Port
+>>>>        15       1        0    8     1 Test service
+>>>>        69       1        8    8     2 ATH10k WLAN firmware service
+>>>>        15       1        0   24     1 Test service
+>>>>        69       1       24   24     2 ATH10k WLAN firmware service
+>>>>
+>>>> Here 8 and 24 on column 3 (QMI Instance ID)
+>>>> and 4 (QRTR Node ID) are the node IDs that
+>>>> is unique per mhi device.
+>>>>
+>>>> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+>>>> ---
+>>>>  drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
+>>>>  1 file changed, 14 insertions(+)
+>>>>
+>>>> diff --git a/drivers/bus/mhi/core/boot.c
+>>>> b/drivers/bus/mhi/core/boot.c
+>>>> index c2546bf..5e5dad5 100644
+>>>> --- a/drivers/bus/mhi/core/boot.c
+>>>> +++ b/drivers/bus/mhi/core/boot.c
+>>>> @@ -16,8 +16,12 @@
+>>>>  #include <linux/random.h>
+>>>>  #include <linux/slab.h>
+>>>>  #include <linux/wait.h>
+>>>> +#include <linux/pci.h>
+>>>>  #include "internal.h"
+>>>>
+>>>> +#define QRTR_INSTANCE_MASK	0x000000FF
+>>>> +#define QRTR_INSTANCE_SHIFT	0
+>>>> +
+>>>>  /* Setup RDDM vector table for RDDM transfer and program RXVEC */
+>>>>  void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+>>>>  		      struct image_info *img_info)
+>>>> @@ -391,6 +395,9 @@ void mhi_fw_load_handler(struct mhi_controller
+>>>> *mhi_cntrl)
+>>>>  	const struct firmware *firmware = NULL;
+>>>>  	struct image_info *image_info;
+>>>>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>>>> +	struct pci_dev *pci_dev = to_pci_dev(mhi_cntrl->cntrl_dev);
+>>>> +	struct pci_bus *bus = pci_dev->bus;
+>>>> +	uint32_t instance;
+>>>>  	const char *fw_name;
+>>>>  	void *buf;
+>>>>  	dma_addr_t dma_addr;
+>>>> @@ -466,6 +473,13 @@ void mhi_fw_load_handler(struct
+>>>> mhi_controller *mhi_cntrl)
+>>>>  		return;
+>>>>  	}
+>>>>
+>>>> +	instance = ((pci_domain_nr(bus) & 0xF) << 4) | (bus->number & 0xF);
+>>>> +	instance &= QRTR_INSTANCE_MASK;
+>>>> +
+>>>> +	mhi_write_reg_field(mhi_cntrl, mhi_cntrl->bhi,
+>>>> +			    BHI_ERRDBG2, QRTR_INSTANCE_MASK,
+>>>> +			    QRTR_INSTANCE_SHIFT, instance);
+>>>
+>>> You cannot not do this in MHI stack. Why can't you do this in the
+>>> MHI controller
+>>> specific to QCN9000? And btw, is QCN9000 supported in mainline?
+>>
+>> I'm not sure what QCN9000 means but I'm guessing it's QCN9074. We have
+>> initial QCN9074 support in ath11k but there are some issues still so
+>> it's not enabled by default (yet):
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=4e80946197a83a6115e308334618449b77696d6a
+>>
+>> And I suspect we have this same qrtr issue with any ath11k PCI device,
+>> including QCA6390, so this is not a QCN9074 specific problem.
+>>
+>> BTW Gokul, please always CC the ath11k list when submitting patches
+>> which are related to ath11k.
+>
+> QRTR sits on top of MHI so shouldn't this be handled outside of MHI
+> after MHI is operational? We cannot allow PCI code in MHI core driver
+> but this can be handled pre or post MHI power-up in whatever way you
+> desire that does not have to directly involve MHI.
 
-> On Feb 22, 2021, at 10:12 AM, Romain Perier <romain.perier@gmail.com> wro=
-te:
->=20
-> The strlcpy() reads the entire source buffer first, it is dangerous if
-> the source buffer lenght is unbounded or possibility non NULL-terminated.
-> It can lead to linear read overflows, crashes, etc...
->=20
-> As recommended in the deprecated interfaces [1], it should be replaced
-> by strscpy.
->=20
-> This commit replaces all calls to strlcpy that handle the return values
-> by the corresponding strscpy calls with new handling of the return
-> values (as it is quite different between the two functions).
->=20
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcp=
-y
->=20
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+Sure, makes sense. I was just replying to Mani's question about status
+of QCN9000 upstream support.
 
-Hi Romain-
+So should we handle this within ath11k, is that the right approach? I
+also suspect that for QCN9074 and QCA6390 we have to do this a bit
+differently, so it would be easier to handle the differences between
+devices (and firmware versions) inside ath11k.
 
-I assume you are waiting for a maintainer's Ack? IMHO Trond or Anna
-should provide it for changes to this particular source file.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-
-> ---
-> net/sunrpc/clnt.c |    6 +++++-
-> 1 file changed, 5 insertions(+), 1 deletion(-)
->=20
-> diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
-> index 612f0a641f4c..3c5c4ad8a808 100644
-> --- a/net/sunrpc/clnt.c
-> +++ b/net/sunrpc/clnt.c
-> @@ -282,7 +282,7 @@ static struct rpc_xprt *rpc_clnt_set_transport(struct=
- rpc_clnt *clnt,
->=20
-> static void rpc_clnt_set_nodename(struct rpc_clnt *clnt, const char *node=
-name)
-> {
-> -	clnt->cl_nodelen =3D strlcpy(clnt->cl_nodename,
-> +	clnt->cl_nodelen =3D strscpy(clnt->cl_nodename,
-> 			nodename, sizeof(clnt->cl_nodename));
-> }
->=20
-> @@ -422,6 +422,10 @@ static struct rpc_clnt * rpc_new_client(const struct=
- rpc_create_args *args,
-> 		nodename =3D utsname()->nodename;
-> 	/* save the nodename */
-> 	rpc_clnt_set_nodename(clnt, nodename);
-> +	if (clnt->cl_nodelen =3D=3D -E2BIG) {
-> +		err =3D -ENOMEM;
-> +		goto out_no_path;
-> +	}
->=20
-> 	err =3D rpc_client_register(clnt, args->authflavor, args->client_name);
-> 	if (err)
->=20
-
---
-Chuck Lever
-
-
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
