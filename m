@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC074329853
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C93D432987F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345539AbhCAX0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:26:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55006 "EHLO mail.kernel.org"
+        id S1345998AbhCAXhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:37:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239074AbhCASC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:02:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6488E65349;
-        Mon,  1 Mar 2021 17:44:28 +0000 (UTC)
+        id S239004AbhCASGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:06:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FC5F65188;
+        Mon,  1 Mar 2021 17:10:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620669;
-        bh=TLWxD7EFUh2V3do57RgboHDrwvdJab/sEilyXSsC2d4=;
+        s=korg; t=1614618604;
+        bh=TOlxSGGkEhs9SmZQvemrGPJ+SGT+fe0WY6biY6ueGMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cr25DT1QlcVNcWiA+DUT7kSyNYcWtwGufHdjlFOVa0SoyadpzLCIzg6wwoFJHgPn4
-         A7zwER3hNpeKcCvdGt+pF7pWevaxL78hMi8ZgI5JW5uD/VdqhWEWLB5Y3v/yKctVYI
-         ftaJqZ01YEmsgHnHl2SSiQIF1c0d4MzaiN2uSQvM=
+        b=o77t7uLyvAw0WXuEPNMPELFPBj7/D7JEPj1vCdaHA7nShb+mvcdymB+tEKAOm3pB3
+         OJFGfRNZ8+6QSjr5TRroTnhgS4z40fYmR+4/o3HWmMMJG4CNu4tfjynFc3XHEzSK3q
+         cqL2RkBLt/hfovbs6J9WGxI4OAdkjeXaoY9P/IUU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 206/775] ASoC: qcom: qdsp6: Move frontend AIFs to q6asm-dai
-Date:   Mon,  1 Mar 2021 17:06:14 +0100
-Message-Id: <20210301161211.820021920@linuxfoundation.org>
+Subject: [PATCH 5.10 130/663] net: amd-xgbe: Reset the PHY rx data path when mailbox command timeout
+Date:   Mon,  1 Mar 2021 17:06:18 +0100
+Message-Id: <20210301161148.183037207@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,120 +42,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit 6fd8d2d275f74baa7ac17b2656da1235f56dab99 ]
+[ Upstream commit 30b7edc82ec82578f4f5e6706766f0a9535617d3 ]
 
-At the moment it is necessary to set up the DAPM routes between
-front-end AIF<->DAI explicitly in the device tree, e.g. using
+Sometimes mailbox commands timeout when the RX data path becomes
+unresponsive. This prevents the submission of new mailbox commands to DXIO.
+This patch identifies the timeout and resets the RX data path so that the
+next message can be submitted properly.
 
-	audio-routing =
-		"MM_DL1", "MultiMedia1 Playback",
-		"MM_DL3", "MultiMedia3 Playback",
-		"MM_DL4", "MultiMedia4 Playback",
-		"MultiMedia2 Capture", "MM_UL2";
-
-This is prone to mistakes and (sadly) there is no clear error if one
-of these routes is missing. :(
-
-Actually, this should not be necessary because the ASoC core normally
-automatically links AIF<->DAI within snd_soc_dapm_link_dai_widgets().
-This is done using the "stname" parameter of SND_SOC_DAPM_AIF_IN/OUT.
-
-For SND_SOC_DAPM_AIF_IN("MM_DL1", "MultiMedia1 Playback", 0, 0, 0, 0),
-it should create the route from above: MM_DL1 <-> MultiMedia1 Playback.
-
-This does not work at the moment because the AIF widget (MM_DL1)
-and the DAI widget (MultiMedia1 Playback) belong to different
-DAPM contexts (q6routing / q6asm-dai).
-
-Fix this by declaring the AIF widgets in the same driver as the DAIs
-(q6asm-dai). Now the routes above are created automatically
-and no longer need to be specified in the device tree.
-
-This is also more consistent with the back-end AIFs which are already
-declared in q6afe-dais instead of q6routing. q6routing should only link
-the components together using mixers.
-
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Fixes: 2a9e92d371db ("ASoC: qdsp6: q6asm: Add q6asm dai driver")
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Link: https://lore.kernel.org/r/20201211203255.148246-1-stephan@gerhold.net
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 549b32af9f7c ("amd-xgbe: Simplify mailbox interface rate change code")
+Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 21 +++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6routing.c | 18 ------------------
- 2 files changed, 21 insertions(+), 18 deletions(-)
+ drivers/net/ethernet/amd/xgbe/xgbe-common.h | 14 +++++++++++
+ drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c | 28 ++++++++++++++++++++-
+ 2 files changed, 41 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index c9ac9c1d26c47..9766725c29166 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -1233,6 +1233,25 @@ static void q6asm_dai_pcm_free(struct snd_soc_component *component,
- 	}
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-common.h b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
+index b40d4377cc71d..b2cd3bdba9f89 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-common.h
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-common.h
+@@ -1279,10 +1279,18 @@
+ #define MDIO_PMA_10GBR_FECCTRL		0x00ab
+ #endif
+ 
++#ifndef MDIO_PMA_RX_CTRL1
++#define MDIO_PMA_RX_CTRL1		0x8051
++#endif
++
+ #ifndef MDIO_PCS_DIG_CTRL
+ #define MDIO_PCS_DIG_CTRL		0x8000
+ #endif
+ 
++#ifndef MDIO_PCS_DIGITAL_STAT
++#define MDIO_PCS_DIGITAL_STAT		0x8010
++#endif
++
+ #ifndef MDIO_AN_XNP
+ #define MDIO_AN_XNP			0x0016
+ #endif
+@@ -1358,6 +1366,8 @@
+ #define XGBE_KR_TRAINING_ENABLE		BIT(1)
+ 
+ #define XGBE_PCS_CL37_BP		BIT(12)
++#define XGBE_PCS_PSEQ_STATE_MASK	0x1c
++#define XGBE_PCS_PSEQ_STATE_POWER_GOOD	0x10
+ 
+ #define XGBE_AN_CL37_INT_CMPLT		BIT(0)
+ #define XGBE_AN_CL37_INT_MASK		0x01
+@@ -1375,6 +1385,10 @@
+ #define XGBE_PMA_CDR_TRACK_EN_OFF	0x00
+ #define XGBE_PMA_CDR_TRACK_EN_ON	0x01
+ 
++#define XGBE_PMA_RX_RST_0_MASK		BIT(4)
++#define XGBE_PMA_RX_RST_0_RESET_ON	0x10
++#define XGBE_PMA_RX_RST_0_RESET_OFF	0x00
++
+ /* Bit setting and getting macros
+  *  The get macro will extract the current bit field value from within
+  *  the variable
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+index 859ded0c06b05..087948085ae19 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+@@ -1953,6 +1953,27 @@ static void xgbe_phy_set_redrv_mode(struct xgbe_prv_data *pdata)
+ 	xgbe_phy_put_comm_ownership(pdata);
  }
  
-+static const struct snd_soc_dapm_widget q6asm_dapm_widgets[] = {
-+	SND_SOC_DAPM_AIF_IN("MM_DL1", "MultiMedia1 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL2", "MultiMedia2 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL3", "MultiMedia3 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL4", "MultiMedia4 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL5", "MultiMedia5 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL6", "MultiMedia6 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL7", "MultiMedia7 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("MM_DL8", "MultiMedia8 Playback", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("MM_UL1", "MultiMedia1 Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("MM_UL2", "MultiMedia2 Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("MM_UL3", "MultiMedia3 Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("MM_UL4", "MultiMedia4 Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("MM_UL5", "MultiMedia5 Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("MM_UL6", "MultiMedia6 Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("MM_UL7", "MultiMedia7 Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("MM_UL8", "MultiMedia8 Capture", 0, SND_SOC_NOPM, 0, 0),
-+};
++static void xgbe_phy_rx_reset(struct xgbe_prv_data *pdata)
++{
++	int reg;
 +
- static const struct snd_soc_component_driver q6asm_fe_dai_component = {
- 	.name		= DRV_NAME,
- 	.open		= q6asm_dai_open,
-@@ -1245,6 +1264,8 @@ static const struct snd_soc_component_driver q6asm_fe_dai_component = {
- 	.pcm_construct	= q6asm_dai_pcm_new,
- 	.pcm_destruct	= q6asm_dai_pcm_free,
- 	.compress_ops	= &q6asm_dai_compress_ops,
-+	.dapm_widgets	= q6asm_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(q6asm_dapm_widgets),
- };
++	reg = XMDIO_READ_BITS(pdata, MDIO_MMD_PCS, MDIO_PCS_DIGITAL_STAT,
++			      XGBE_PCS_PSEQ_STATE_MASK);
++	if (reg == XGBE_PCS_PSEQ_STATE_POWER_GOOD) {
++		/* Mailbox command timed out, reset of RX block is required.
++		 * This can be done by asseting the reset bit and wait for
++		 * its compeletion.
++		 */
++		XMDIO_WRITE_BITS(pdata, MDIO_MMD_PMAPMD, MDIO_PMA_RX_CTRL1,
++				 XGBE_PMA_RX_RST_0_MASK, XGBE_PMA_RX_RST_0_RESET_ON);
++		ndelay(20);
++		XMDIO_WRITE_BITS(pdata, MDIO_MMD_PMAPMD, MDIO_PMA_RX_CTRL1,
++				 XGBE_PMA_RX_RST_0_MASK, XGBE_PMA_RX_RST_0_RESET_OFF);
++		usleep_range(40, 50);
++		netif_err(pdata, link, pdata->netdev, "firmware mailbox reset performed\n");
++	}
++}
++
+ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 					unsigned int cmd, unsigned int sub_cmd)
+ {
+@@ -1960,9 +1981,11 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 	unsigned int wait;
  
- static struct snd_soc_dai_driver q6asm_fe_dais_template[] = {
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index 53185e26fea17..0a6b9433f6acf 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -713,24 +713,6 @@ static const struct snd_kcontrol_new mmul8_mixer_controls[] = {
- 	Q6ROUTING_TX_MIXERS(MSM_FRONTEND_DAI_MULTIMEDIA8) };
+ 	/* Log if a previous command did not complete */
+-	if (XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS))
++	if (XP_IOREAD_BITS(pdata, XP_DRIVER_INT_RO, STATUS)) {
+ 		netif_dbg(pdata, link, pdata->netdev,
+ 			  "firmware mailbox not ready for command\n");
++		xgbe_phy_rx_reset(pdata);
++	}
  
- static const struct snd_soc_dapm_widget msm_qdsp6_widgets[] = {
--	/* Frontend AIF */
--	SND_SOC_DAPM_AIF_IN("MM_DL1", "MultiMedia1 Playback", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("MM_DL2", "MultiMedia2 Playback", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("MM_DL3", "MultiMedia3 Playback", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("MM_DL4", "MultiMedia4 Playback", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("MM_DL5", "MultiMedia5 Playback", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("MM_DL6", "MultiMedia6 Playback", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("MM_DL7", "MultiMedia7 Playback", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_IN("MM_DL8", "MultiMedia8 Playback", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("MM_UL1", "MultiMedia1 Capture", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("MM_UL2", "MultiMedia2 Capture", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("MM_UL3", "MultiMedia3 Capture", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("MM_UL4", "MultiMedia4 Capture", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("MM_UL5", "MultiMedia5 Capture", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("MM_UL6", "MultiMedia6 Capture", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("MM_UL7", "MultiMedia7 Capture", 0, 0, 0, 0),
--	SND_SOC_DAPM_AIF_OUT("MM_UL8", "MultiMedia8 Capture", 0, 0, 0, 0),
--
- 	/* Mixer definitions */
- 	SND_SOC_DAPM_MIXER("HDMI Mixer", SND_SOC_NOPM, 0, 0,
- 			   hdmi_mixer_controls,
+ 	/* Construct the command */
+ 	XP_SET_BITS(s0, XP_DRIVER_SCRATCH_0, COMMAND, cmd);
+@@ -1984,6 +2007,9 @@ static void xgbe_phy_perform_ratechange(struct xgbe_prv_data *pdata,
+ 
+ 	netif_dbg(pdata, link, pdata->netdev,
+ 		  "firmware mailbox command did not complete\n");
++
++	/* Reset on error */
++	xgbe_phy_rx_reset(pdata);
+ }
+ 
+ static void xgbe_phy_rrc(struct xgbe_prv_data *pdata)
 -- 
 2.27.0
 
