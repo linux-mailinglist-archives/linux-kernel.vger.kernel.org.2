@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB6532878B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1FE328780
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238355AbhCARYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:24:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59970 "EHLO mail.kernel.org"
+        id S238301AbhCARYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:24:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234301AbhCAQ0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:26:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12F9564F48;
-        Mon,  1 Mar 2021 16:21:49 +0000 (UTC)
+        id S234383AbhCAQ0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:26:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E729A64F4A;
+        Mon,  1 Mar 2021 16:21:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615710;
-        bh=1XfFHkKc5MZ1jdYHZqmhtLbMCNrVvwi3dBdETPH5AB4=;
+        s=korg; t=1614615713;
+        bh=mrU0jcKrb7TALDN/P6iAXgazLGXjWh9OU6ExnpesbI8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ueOh8vvUTZbb8fbDiz0BVV4/CxsV7g/c1Q9zh1OJqcU1nRTt4R0IrDMY123ZvwjI9
-         NM+uVgdp9iSohw3IS/JGZLXWIYi3jPza4aQbFYIoJn9+nGXkftjQgQOTe6rvIHUPHR
-         whQxq+5N9pDRpdGVzEhOgpTrI30MuF98ZotqKCyY=
+        b=w7xAYjm8lXvSlecOwGBlRMpOxwMu6CWaawGYCVKRd1f/I/uSt/uh+aIA9MCshBi/Z
+         3CNHQv8CaGZ55jrAnJufj6asN3+Kwa6i/MdYVszojWneLIx2n2Kn2u6sIRLrcgEeQR
+         aMxJK43AA6iv7wqUo0qenA6PCFTa9cDpH2AodTtE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 031/134] gma500: clean up error handling in init
-Date:   Mon,  1 Mar 2021 17:12:12 +0100
-Message-Id: <20210301161015.111013255@linuxfoundation.org>
+Subject: [PATCH 4.9 032/134] MIPS: c-r4k: Fix section mismatch for loongson2_sc_init
+Date:   Mon,  1 Mar 2021 17:12:13 +0100
+Message-Id: <20210301161015.160167753@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -40,70 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 15ccc39b3aab667c6fa131206f01f31bfbccdf6a ]
+[ Upstream commit c58734eee6a2151ba033c0dcb31902c89e310374 ]
 
-The main problem with this error handling was that it didn't clean up if
-i2c_add_numbered_adapter() failed.  This code is pretty old, and doesn't
-match with today's checkpatch.pl standards so I took the opportunity to
-tidy it up a bit.  I changed the NULL comparison, and removed the
-WARNING message if kzalloc() fails and updated the label names.
+When building with clang, the following section mismatch warning occurs:
 
-Fixes: 1b082ccf5901 ("gma500: Add Oaktrail support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/X8ikkAqZfnDO2lu6@mwanda
+WARNING: modpost: vmlinux.o(.text+0x24490): Section mismatch in
+reference from the function r4k_cache_init() to the function
+.init.text:loongson2_sc_init()
+
+This should have been fixed with commit ad4fddef5f23 ("mips: fix Section
+mismatch in reference") but it was missed. Remove the improper __init
+annotation like that commit did.
+
+Fixes: 078a55fc824c ("MIPS: Delete __cpuinit/__CPUINIT usage from MIPS code")
+Link: https://github.com/ClangBuiltLinux/linux/issues/787
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ arch/mips/mm/c-r4k.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c b/drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c
-index e281070611480..fc9a34ed58bd1 100644
---- a/drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c
-+++ b/drivers/gpu/drm/gma500/oaktrail_hdmi_i2c.c
-@@ -279,11 +279,8 @@ int oaktrail_hdmi_i2c_init(struct pci_dev *dev)
- 	hdmi_dev = pci_get_drvdata(dev);
- 
- 	i2c_dev = kzalloc(sizeof(struct hdmi_i2c_dev), GFP_KERNEL);
--	if (i2c_dev == NULL) {
--		DRM_ERROR("Can't allocate interface\n");
--		ret = -ENOMEM;
--		goto exit;
--	}
-+	if (!i2c_dev)
-+		return -ENOMEM;
- 
- 	i2c_dev->adap = &oaktrail_hdmi_i2c_adapter;
- 	i2c_dev->status = I2C_STAT_INIT;
-@@ -300,16 +297,23 @@ int oaktrail_hdmi_i2c_init(struct pci_dev *dev)
- 			  oaktrail_hdmi_i2c_adapter.name, hdmi_dev);
- 	if (ret) {
- 		DRM_ERROR("Failed to request IRQ for I2C controller\n");
--		goto err;
-+		goto free_dev;
- 	}
- 
- 	/* Adapter registration */
- 	ret = i2c_add_numbered_adapter(&oaktrail_hdmi_i2c_adapter);
--	return ret;
-+	if (ret) {
-+		DRM_ERROR("Failed to add I2C adapter\n");
-+		goto free_irq;
-+	}
- 
--err:
-+	return 0;
-+
-+free_irq:
-+	free_irq(dev->irq, hdmi_dev);
-+free_dev:
- 	kfree(i2c_dev);
--exit:
-+
- 	return ret;
+diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
+index cb877f86f5fc9..b9dea4ce290c1 100644
+--- a/arch/mips/mm/c-r4k.c
++++ b/arch/mips/mm/c-r4k.c
+@@ -1630,7 +1630,7 @@ static int probe_scache(void)
+ 	return 1;
  }
+ 
+-static void __init loongson2_sc_init(void)
++static void loongson2_sc_init(void)
+ {
+ 	struct cpuinfo_mips *c = &current_cpu_data;
  
 -- 
 2.27.0
