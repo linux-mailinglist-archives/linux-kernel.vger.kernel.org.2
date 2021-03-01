@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F91329348
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858C7329345
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241798AbhCAVLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:11:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52648 "EHLO mail.kernel.org"
+        id S236515AbhCAVJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:09:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237852AbhCARNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237853AbhCARNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 12:13:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E26464E42;
-        Mon,  1 Mar 2021 16:43:50 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C06164E2E;
+        Mon,  1 Mar 2021 16:43:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617031;
-        bh=RsbPo0XyIseqr+G8QIRElmcAco+518rnGF0zBeON3Zs=;
+        s=korg; t=1614617034;
+        bh=Ad3t3gJMbelKe31Xn8J0XbY217y5kq+DcvNwY1HVpdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zJ5N+LUaxHUbF11jzIpGGv3PMbvWg+v3ex/54/uNbzFNIsNkBEGHaMffJnA8Zd2gO
-         ahqxetHDFED/n0dhvdUv8152c+mHXusta4PN/mUg7+O8/eB5crq1csQOIwfHA6tL96
-         3PcJDdWhKYmhmEZGUWMV/7EArRZbWol7wUhob9l8=
+        b=RxzJxWDY9Maa28xWRxHwppYzpY2HgBCWxdBcFDWCIX3D+n/4WDlmdqxkSzRhA4tna
+         5Dk/ksdHOJ5p1mISOCJZn4tPlTpAZpxLHS1bA92SPMMHkzwf/gPSc6IgoLg5V1NWER
+         YWDmhHYsyfkcrkercAAuv877dgojp4Pq69NPHU+w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.19 178/247] blk-settings: align max_sectors on "logical_block_size" boundary
-Date:   Mon,  1 Mar 2021 17:13:18 +0100
-Message-Id: <20210301161040.366245892@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Calvin Johnson <calvin.johnson@oss.nxp.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 4.19 179/247] ACPI: property: Fix fwnode string properties matching
+Date:   Mon,  1 Mar 2021 17:13:19 +0100
+Message-Id: <20210301161040.417266982@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -40,68 +43,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 97f433c3601a24d3513d06f575a389a2ca4e11e4 upstream.
+commit e1e6bd2995ac0e1ad0c2a2d906a06f59ce2ed293 upstream.
 
-We get I/O errors when we run md-raid1 on the top of dm-integrity on the
-top of ramdisk.
-device-mapper: integrity: Bio not aligned on 8 sectors: 0xff00, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0xff00, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0xffff, 0x1
-device-mapper: integrity: Bio not aligned on 8 sectors: 0xffff, 0x1
-device-mapper: integrity: Bio not aligned on 8 sectors: 0x8048, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0x8147, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0x8246, 0xff
-device-mapper: integrity: Bio not aligned on 8 sectors: 0x8345, 0xbb
+Property matching does not work for ACPI fwnodes if the value of the
+given property is not represented as a package in the _DSD package
+containing it.  For example, the "compatible" property in the _DSD
+below
 
-The ramdisk device has logical_block_size 512 and max_sectors 255. The
-dm-integrity device uses logical_block_size 4096 and it doesn't affect the
-"max_sectors" value - thus, it inherits 255 from the ramdisk. So, we have
-a device with max_sectors not aligned on logical_block_size.
+  Name (_DSD, Package () {
+    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
+    Package () {
+      Package () {"compatible", "ethernet-phy-ieee802.3-c45"}
+    }
+  })
 
-The md-raid device sees that the underlying leg has max_sectors 255 and it
-will split the bios on 255-sector boundary, making the bios unaligned on
-logical_block_size.
+will not be found by fwnode_property_match_string(), because the ACPI
+code handling device properties does not regard the single value as a
+"list" in that case.
 
-In order to fix the bug, we round down max_sectors to logical_block_size.
+Namely, fwnode_property_match_string() invoked to match a given
+string property value first calls fwnode_property_read_string_array()
+with the last two arguments equal to NULL and 0, respectively, in
+order to count the items in the value of the given property, with the
+assumption that this value may be an array.  For ACPI fwnodes, that
+operation is carried out by acpi_node_prop_read() which calls
+acpi_data_prop_read() for this purpose.  However, when the return
+(val) pointer is NULL, that function only looks for a property whose
+value is a package without checking the single-value case at all.
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+To fix that, make acpi_data_prop_read() check the single-value
+case if its return pointer argument is NULL and modify
+acpi_data_prop_read_single() handling that case to attempt to
+read the value of the property if the return pointer is NULL
+and return 1 if that succeeds.
+
+Fixes: 3708184afc77 ("device property: Move FW type specific functionality to FW specific files")
+Reported-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc: 4.13+ <stable@vger.kernel.org> # 4.13+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-settings.c |   12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/acpi/property.c |   44 +++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 33 insertions(+), 11 deletions(-)
 
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -513,6 +513,14 @@ void blk_queue_io_opt(struct request_que
- }
- EXPORT_SYMBOL(blk_queue_io_opt);
+--- a/drivers/acpi/property.c
++++ b/drivers/acpi/property.c
+@@ -720,9 +720,6 @@ static int acpi_data_prop_read_single(co
+ 	const union acpi_object *obj;
+ 	int ret;
  
-+static unsigned int blk_round_down_sectors(unsigned int sectors, unsigned int lbs)
-+{
-+	sectors = round_down(sectors, lbs >> SECTOR_SHIFT);
-+	if (sectors < PAGE_SIZE >> SECTOR_SHIFT)
-+		sectors = PAGE_SIZE >> SECTOR_SHIFT;
-+	return sectors;
-+}
+-	if (!val)
+-		return -EINVAL;
+-
+ 	if (proptype >= DEV_PROP_U8 && proptype <= DEV_PROP_U64) {
+ 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_INTEGER, &obj);
+ 		if (ret)
+@@ -732,28 +729,43 @@ static int acpi_data_prop_read_single(co
+ 		case DEV_PROP_U8:
+ 			if (obj->integer.value > U8_MAX)
+ 				return -EOVERFLOW;
+-			*(u8 *)val = obj->integer.value;
 +
- /**
-  * blk_queue_stack_limits - inherit underlying queue limits for stacked drivers
-  * @t:	the stacking driver (top)
-@@ -639,6 +647,10 @@ int blk_stack_limits(struct queue_limits
- 		ret = -1;
++			if (val)
++				*(u8 *)val = obj->integer.value;
++
+ 			break;
+ 		case DEV_PROP_U16:
+ 			if (obj->integer.value > U16_MAX)
+ 				return -EOVERFLOW;
+-			*(u16 *)val = obj->integer.value;
++
++			if (val)
++				*(u16 *)val = obj->integer.value;
++
+ 			break;
+ 		case DEV_PROP_U32:
+ 			if (obj->integer.value > U32_MAX)
+ 				return -EOVERFLOW;
+-			*(u32 *)val = obj->integer.value;
++
++			if (val)
++				*(u32 *)val = obj->integer.value;
++
+ 			break;
+ 		default:
+-			*(u64 *)val = obj->integer.value;
++			if (val)
++				*(u64 *)val = obj->integer.value;
++
+ 			break;
+ 		}
++
++		if (!val)
++			return 1;
+ 	} else if (proptype == DEV_PROP_STRING) {
+ 		ret = acpi_data_get_property(data, propname, ACPI_TYPE_STRING, &obj);
+ 		if (ret)
+ 			return ret;
+ 
+-		*(char **)val = obj->string.pointer;
++		if (val)
++			*(char **)val = obj->string.pointer;
+ 
+ 		return 1;
+ 	} else {
+@@ -767,7 +779,7 @@ int acpi_dev_prop_read_single(struct acp
+ {
+ 	int ret;
+ 
+-	if (!adev)
++	if (!adev || !val)
+ 		return -EINVAL;
+ 
+ 	ret = acpi_data_prop_read_single(&adev->data, propname, proptype, val);
+@@ -861,10 +873,20 @@ static int acpi_data_prop_read(const str
+ 	const union acpi_object *items;
+ 	int ret;
+ 
+-	if (val && nval == 1) {
++	if (nval == 1 || !val) {
+ 		ret = acpi_data_prop_read_single(data, propname, proptype, val);
+-		if (ret >= 0)
++		/*
++		 * The overflow error means that the property is there and it is
++		 * single-value, but its type does not match, so return.
++		 */
++		if (ret >= 0 || ret == -EOVERFLOW)
+ 			return ret;
++
++		/*
++		 * Reading this property as a single-value one failed, but its
++		 * value may still be represented as one-element array, so
++		 * continue.
++		 */
  	}
  
-+	t->max_sectors = blk_round_down_sectors(t->max_sectors, t->logical_block_size);
-+	t->max_hw_sectors = blk_round_down_sectors(t->max_hw_sectors, t->logical_block_size);
-+	t->max_dev_sectors = blk_round_down_sectors(t->max_dev_sectors, t->logical_block_size);
-+
- 	/* Discard alignment and granularity */
- 	if (b->discard_granularity) {
- 		alignment = queue_limit_discard_alignment(b, start);
+ 	ret = acpi_data_get_property_array(data, propname, ACPI_TYPE_ANY, &obj);
 
 
