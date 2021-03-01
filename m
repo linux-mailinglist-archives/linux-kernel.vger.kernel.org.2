@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F6B329D10
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8F0329D03
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442918AbhCBCQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:16:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55160 "EHLO mail.kernel.org"
+        id S1442814AbhCBCQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:16:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242265AbhCAToS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8318865299;
-        Mon,  1 Mar 2021 17:32:45 +0000 (UTC)
+        id S242193AbhCAToD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4FC46509C;
+        Mon,  1 Mar 2021 17:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619966;
-        bh=oP76Qz3NljqfPRGvR0YglTT+F7RxoB8GYhz+DtHEjAw=;
+        s=korg; t=1614620017;
+        bh=rrc5IzSMS3PkuhBOxZXgHn9g0RUZm0AlIwNm3ZP7jU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gC+dxl093aXW9s6fbQRw80xJzUBtSe2IiM/EwBNTSG2l2Kuj4ekmKqAIhniCOoxL7
-         WEd8rGpKRSVufuGhaD86WNWQrNvZUU4aRiaqR8WfU7m565IhlXb/aJZSDXX1m0liWx
-         61AllPCiXRge/Vjb2XIpqcgHxjhXu8s4MUGWinzc=
+        b=DMLVtGAKOQc+Sr6Qy59EZlgTEAUaPcy4nXLkhK5kjydOr5lZENqOO1AASZ1WCjFQe
+         9O51HUfbwoDpwgHqluic9RR18ya+S7G59ob6Vll4Qrt33xBrWdRQNxPOe7Uahg9UE1
+         DEWjpaZqcmFIkaueP2gTMG14/qurPV9CLN1biPvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 645/663] dm writecache: fix performance degradation in ssd mode
-Date:   Mon,  1 Mar 2021 17:14:53 +0100
-Message-Id: <20210301161213.764370775@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Mika Kahola <mika.kahola@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.10 655/663] drm/i915: Reject 446-480MHz HDMI clock on GLK
+Date:   Mon,  1 Mar 2021 17:15:03 +0100
+Message-Id: <20210301161214.261484293@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,34 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-commit cb728484a7710c202f02b96aa0962ce9b07aa5c2 upstream.
+commit 7a6c6243b44a439bda4bf099032be35ebcf53406 upstream.
 
-Fix a thinko in ssd_commit_superblock. region.count is in sectors, not
-bytes. This bug doesn't corrupt data, but it causes performance
-degradation.
+The BXT/GLK DPLL can't generate certain frequencies. We already
+reject the 233-240MHz range on both. But on GLK the DPLL max
+frequency was bumped from 300MHz to 594MHz, so now we get to
+also worry about the 446-480MHz range (double the original
+problem range). Reject any frequency within the higher
+problematic range as well.
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Fixes: dc8a01ae1dbd ("dm writecache: optimize superblock write")
-Cc: stable@vger.kernel.org # v5.7+
-Reported-by: J. Bruce Fields <bfields@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Cc: stable@vger.kernel.org
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3000
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210203093044.30532-1-ville.syrjala@linux.intel.com
+Reviewed-by: Mika Kahola <mika.kahola@intel.com>
+(cherry picked from commit 41751b3e5c1ac656a86f8d45a8891115281b729e)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-writecache.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/i915/display/intel_hdmi.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/md/dm-writecache.c
-+++ b/drivers/md/dm-writecache.c
-@@ -523,7 +523,7 @@ static void ssd_commit_superblock(struct
+--- a/drivers/gpu/drm/i915/display/intel_hdmi.c
++++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+@@ -2216,7 +2216,11 @@ hdmi_port_clock_valid(struct intel_hdmi
+ 					  has_hdmi_sink))
+ 		return MODE_CLOCK_HIGH;
  
- 	region.bdev = wc->ssd_dev->bdev;
- 	region.sector = 0;
--	region.count = PAGE_SIZE;
-+	region.count = PAGE_SIZE >> SECTOR_SHIFT;
+-	/* BXT DPLL can't generate 223-240 MHz */
++	/* GLK DPLL can't generate 446-480 MHz */
++	if (IS_GEMINILAKE(dev_priv) && clock > 446666 && clock < 480000)
++		return MODE_CLOCK_RANGE;
++
++	/* BXT/GLK DPLL can't generate 223-240 MHz */
+ 	if (IS_GEN9_LP(dev_priv) && clock > 223333 && clock < 240000)
+ 		return MODE_CLOCK_RANGE;
  
- 	if (unlikely(region.sector + region.count > wc->metadata_sectors))
- 		region.count = wc->metadata_sectors - region.sector;
 
 
