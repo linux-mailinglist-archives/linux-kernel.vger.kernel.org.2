@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE67F329C5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E427C329BFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380580AbhCBBx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:53:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48648 "EHLO mail.kernel.org"
+        id S241356AbhCBBqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:46:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241874AbhCAT3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EACA64FD4;
-        Mon,  1 Mar 2021 17:50:33 +0000 (UTC)
+        id S241417AbhCATVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:21:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 509AA6503B;
+        Mon,  1 Mar 2021 17:15:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621034;
-        bh=SR3jZyqv1cV5R8Tx3PhnQjTjlWlpbLWOaoVUK8u6gCs=;
+        s=korg; t=1614618954;
+        bh=4VMJuXLZYF6F6IUFnR/0lFgQ5BVHVgFfI5Mo/jnu8nI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Odtz9706Q76O91ls8KZo1jkkPamuIBY8JTb8jSMVQSHXzmY0P8zrE3xtEaSLb41O2
-         r06Vk3oLLJ165cXj97SF0vv+kbkSiTCpkWFRW+DzoVoqErnav2FHeK1MNq7F14oaqJ
-         Gg438mNl2XBPRUgWdNPadSaEnAoeVEuObvruvB3Y=
+        b=NVjM/1NUmxa7R2zfDAEORd4aG9KV1pifBSGkLwRmUoiWf2g4EShGH0tflmCNaVpzS
+         rJrms3NZzzsPdgbBAtfgpmaH+W1+Gt49vzi12ue5tQdvm9ut4BL/NVpH6h0HR+PAvB
+         vTbUJvJQkKw1vF2DqrGrYHWiRDMBLwHK5irWdHUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Lutz Pogrell <lutz.pogrell@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 339/775] RDMA/rtrs-srv: Release lock before call into close_sess
-Date:   Mon,  1 Mar 2021 17:08:27 +0100
-Message-Id: <20210301161218.372352851@linuxfoundation.org>
+Subject: [PATCH 5.10 261/663] clk: meson: clk-pll: make "ret" a signed integer
+Date:   Mon,  1 Mar 2021 17:08:29 +0100
+Message-Id: <20210301161154.729388255@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit 99f0c3807973359bba8f37d9198eea59fe38c32a ]
+[ Upstream commit 9e717285f0bd591d716fa0e7418f2cdaf756dd25 ]
 
-In this error case, we don't need hold mutex to call close_sess.
+The error codes returned by meson_clk_get_pll_settings() are all
+negative. Make "ret" a signed integer in meson_clk_pll_set_rate() to
+make it match with the clk_ops.set_rate API as well as the data type
+returned by meson_clk_get_pll_settings().
 
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Link: https://lore.kernel.org/r/20201217141915.56989-4-jinpu.wang@cloud.ionos.com
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Tested-by: Lutz Pogrell <lutz.pogrell@cloud.ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 8eed1db1adec6a ("clk: meson: pll: update driver for the g12a")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20201226121556.975418-3-martin.blumenstingl@googlemail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/meson/clk-pll.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index ed4628f032bb6..341661f42add0 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1863,8 +1863,8 @@ reject_w_econnreset:
- 	return rtrs_rdma_do_reject(cm_id, -ECONNRESET);
+diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
+index 9404609b5ebfa..5b932976483fd 100644
+--- a/drivers/clk/meson/clk-pll.c
++++ b/drivers/clk/meson/clk-pll.c
+@@ -365,8 +365,9 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
+ {
+ 	struct clk_regmap *clk = to_clk_regmap(hw);
+ 	struct meson_clk_pll_data *pll = meson_clk_pll_data(clk);
+-	unsigned int enabled, m, n, frac = 0, ret;
++	unsigned int enabled, m, n, frac = 0;
+ 	unsigned long old_rate;
++	int ret;
  
- close_and_return_err:
--	close_sess(sess);
- 	mutex_unlock(&srv->paths_mutex);
-+	close_sess(sess);
- 
- 	return err;
- }
+ 	if (parent_rate == 0 || rate == 0)
+ 		return -EINVAL;
 -- 
 2.27.0
 
