@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55362329A5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 673F6329A46
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377506AbhCBArd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:47:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54120 "EHLO mail.kernel.org"
+        id S1377287AbhCBAqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:46:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240086AbhCASok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:44:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E73564FD2;
-        Mon,  1 Mar 2021 17:45:56 +0000 (UTC)
+        id S240091AbhCASll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:41:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D370651A8;
+        Mon,  1 Mar 2021 17:12:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620757;
-        bh=F86b2V/C8EXOsNM2cXgkGjcucovl4qwPuHtGY4Zi8x8=;
+        s=korg; t=1614618745;
+        bh=NbpzCYMIvEbZs18qLNVRxseZKiihXVcW5iCjn6/ayIE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MtY8YfVPw4o5ytYGmB9OA4xeOHdqnBnCcDtYKc3rdQK9bryRhubVCZM/DnE/q+NWX
-         bnz+gQLYV6j02htWWP11BFHl29VvHzvwo9S8fVZMAaTusUzH747RTCpMMfkGHmFrNJ
-         yVWnt6wWAm+AYFG8A4QPDfh8aEPkr7l16C2pZkv0=
+        b=F51wULWvzx/ctbYmACRWxyjQ8qMYojIvnip9eVNMfB5D/xOI4lqNVg/t2tw7QYAUK
+         DVOKrZ83nDBO0W8XbzpTWDeWdXGx+H1h++oxGr8ejQ/H8ZBhxf0QbCW30HpU6dozib
+         x2ulwEhw7dyNCoCcumjrvFx11ij1/+Wl+wtKiLYQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 238/775] ASoC: qcom: lpass-cpu: Remove bit clock state check
-Date:   Mon,  1 Mar 2021 17:06:46 +0100
-Message-Id: <20210301161213.391650567@linuxfoundation.org>
+Subject: [PATCH 5.10 161/663] media: imx: Unregister csc/scaler only if registered
+Date:   Mon,  1 Mar 2021 17:06:49 +0100
+Message-Id: <20210301161149.740161178@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,106 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+From: Ezequiel Garcia <ezequiel@collabora.com>
 
-[ Upstream commit 6c28377b7114d04cf82eedffe9dcc8fa66ecec48 ]
+[ Upstream commit bb2216548a2b13cf2942a058b475438a7a6bb028 ]
 
-No need of BCLK state maintenance from driver side as
-clock_enable and clk_disable API's maintaing state counter.
+The csc/scaler device pointer (imxmd->m2m_vdev) is assigned
+after the imx media device v4l2-async probe completes,
+therefore we need to check if the device is non-NULL
+before trying to unregister it.
 
-One of the major issue was spotted when Headset jack inserted
-while playback continues, due to same PCM device node opens twice
-for playaback/capture and closes once for capture and playback continues.
+This can be the case if the non-completed imx media device
+is unbinded (or the driver is removed), leading to a kernel oops.
 
-It can resolve the errors in such scenarios.
-
-Fixes: b1824968221c ("ASoC: qcom: Fix enabling BCLK and LRCLK in LPAIF invalid state")
-
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210127151824.8929-1-srivasam@codeaurora.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: a8ef0488cc59 ("media: imx: add csc/scaler mem2mem device")
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/lpass-cpu.c       | 22 ++++++++--------------
- sound/soc/qcom/lpass-lpaif-reg.h |  3 ---
- sound/soc/qcom/lpass.h           |  1 -
- 3 files changed, 8 insertions(+), 18 deletions(-)
+ drivers/staging/media/imx/imx-media-dev.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 66b834312f330..73ca24c0a08b7 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -286,16 +286,12 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
- 
--		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_DISABLE) {
--			ret = clk_enable(drvdata->mi2s_bit_clk[id]);
--			if (ret) {
--				dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
--				clk_disable(drvdata->mi2s_osr_clk[id]);
--				return ret;
--			}
--			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_ENABLE;
-+		ret = clk_enable(drvdata->mi2s_bit_clk[id]);
-+		if (ret) {
-+			dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
-+			clk_disable(drvdata->mi2s_osr_clk[id]);
-+			return ret;
- 		}
--
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
-@@ -310,10 +306,9 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
- 		if (ret)
- 			dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
- 				ret);
--		if (drvdata->bit_clk_state[id] == LPAIF_BIT_CLK_ENABLE) {
--			clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
--			drvdata->bit_clk_state[id] = LPAIF_BIT_CLK_DISABLE;
--		}
-+
-+		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
-+
- 		break;
+diff --git a/drivers/staging/media/imx/imx-media-dev.c b/drivers/staging/media/imx/imx-media-dev.c
+index 6d2205461e565..338b8bd0bb076 100644
+--- a/drivers/staging/media/imx/imx-media-dev.c
++++ b/drivers/staging/media/imx/imx-media-dev.c
+@@ -53,6 +53,7 @@ static int imx6_media_probe_complete(struct v4l2_async_notifier *notifier)
+ 	imxmd->m2m_vdev = imx_media_csc_scaler_device_init(imxmd);
+ 	if (IS_ERR(imxmd->m2m_vdev)) {
+ 		ret = PTR_ERR(imxmd->m2m_vdev);
++		imxmd->m2m_vdev = NULL;
+ 		goto unlock;
  	}
  
-@@ -866,7 +861,6 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 				PTR_ERR(drvdata->mi2s_bit_clk[dai_id]));
- 			return PTR_ERR(drvdata->mi2s_bit_clk[dai_id]);
- 		}
--		drvdata->bit_clk_state[dai_id] = LPAIF_BIT_CLK_DISABLE;
- 	}
+@@ -107,10 +108,14 @@ static int imx_media_remove(struct platform_device *pdev)
  
- 	/* Allocation for i2sctl regmap fields */
-diff --git a/sound/soc/qcom/lpass-lpaif-reg.h b/sound/soc/qcom/lpass-lpaif-reg.h
-index baf72f124ea9b..2eb03ad9b7c74 100644
---- a/sound/soc/qcom/lpass-lpaif-reg.h
-+++ b/sound/soc/qcom/lpass-lpaif-reg.h
-@@ -60,9 +60,6 @@
- #define LPAIF_I2SCTL_BITWIDTH_24	1
- #define LPAIF_I2SCTL_BITWIDTH_32	2
+ 	v4l2_info(&imxmd->v4l2_dev, "Removing imx-media\n");
  
--#define LPAIF_BIT_CLK_DISABLE		0
--#define LPAIF_BIT_CLK_ENABLE		1
--
- #define LPAIF_I2SCTL_RESET_STATE	0x003C0004
- #define LPAIF_DMACTL_RESET_STATE	0x00200000
- 
-diff --git a/sound/soc/qcom/lpass.h b/sound/soc/qcom/lpass.h
-index 2d68af0da34d8..83b2e08ade060 100644
---- a/sound/soc/qcom/lpass.h
-+++ b/sound/soc/qcom/lpass.h
-@@ -68,7 +68,6 @@ struct lpass_data {
- 	unsigned int mi2s_playback_sd_mode[LPASS_MAX_MI2S_PORTS];
- 	unsigned int mi2s_capture_sd_mode[LPASS_MAX_MI2S_PORTS];
- 	int hdmi_port_enable;
--	int bit_clk_state[LPASS_MAX_MI2S_PORTS];
- 
- 	/* low-power audio interface (LPAIF) registers */
- 	void __iomem *lpaif;
++	if (imxmd->m2m_vdev) {
++		imx_media_csc_scaler_device_unregister(imxmd->m2m_vdev);
++		imxmd->m2m_vdev = NULL;
++	}
++
+ 	v4l2_async_notifier_unregister(&imxmd->notifier);
+ 	imx_media_unregister_ipu_internal_subdevs(imxmd);
+ 	v4l2_async_notifier_cleanup(&imxmd->notifier);
+-	imx_media_csc_scaler_device_unregister(imxmd->m2m_vdev);
+ 	media_device_unregister(&imxmd->md);
+ 	v4l2_device_unregister(&imxmd->v4l2_dev);
+ 	media_device_cleanup(&imxmd->md);
 -- 
 2.27.0
 
