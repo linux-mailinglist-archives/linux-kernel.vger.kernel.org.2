@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835043299C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F573299C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376484AbhCBA3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:29:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45194 "EHLO mail.kernel.org"
+        id S1376508AbhCBA3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239362AbhCAS3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAD846534C;
-        Mon,  1 Mar 2021 17:44:36 +0000 (UTC)
+        id S235375AbhCAS3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:29:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 719386535B;
+        Mon,  1 Mar 2021 17:45:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620677;
-        bh=54KiUnhgH/gu9nF7H3ne4ivMcs82IRwTkSTLS8uXcek=;
+        s=korg; t=1614620752;
+        bh=EnBmsuJYKSpZiuhUD6hO6qDSM8ZcOC22+RqBoIHyr/w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0SJNXE3yUqpwb2s9E4+ly8he7jvqWgrXPWvBn0gKIJAh0QVmuDB48BFWPFXXpTE8C
-         c+9TLYz9rUtNLu1GrRKp07qENZeGppn5A7FO/+uVTw0mymJdQNWN0J5vz7Y8o3z8mR
-         2HSsTkUgOt7I0tO5i3JO5bhvOowyLwq7qVoX/H/8=
+        b=Yz6RS4ONceO/Agy3vzq+c/n0NuNsqCCV6ud2uKc01RSHBWHs3iHPrYdVgWsrccKVR
+         Me6xKGgNYM6gcWvRy5iGUea0APKIcwbArIADPR6/4RkFmp6XdHSuiNg/A89oOAgBZ/
+         euhp4ImCrbFh8gczXsT2i3Vo/e5WG/ECLCPQ3WtQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Till=20D=C3=B6rges?= <doerges@pre-sense.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Daeho Jeong <daehojeong@google.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 232/775] media: uvcvideo: Accept invalid bFormatIndex and bFrameIndex values
-Date:   Mon,  1 Mar 2021 17:06:40 +0100
-Message-Id: <20210301161213.094236945@linuxfoundation.org>
+Subject: [PATCH 5.11 236/775] f2fs: fix null page reference in redirty_blocks
+Date:   Mon,  1 Mar 2021 17:06:44 +0100
+Message-Id: <20210301161213.291220418@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,77 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+From: Daeho Jeong <daehojeong@google.com>
 
-[ Upstream commit dc9455ffae02d7b7fb51ba1e007fffcb9dc5d890 ]
+[ Upstream commit df0736d70c4fa6ed711ba103b61880fe72bb4777 ]
 
-The Renkforce RF AC4K 300 Action Cam 4K reports invalid bFormatIndex and
-bFrameIndex values when negotiating the video probe and commit controls.
-The UVC descriptors report a single supported format and frame size,
-with bFormatIndex and bFrameIndex both equal to 2, but the video probe
-and commit controls report bFormatIndex and bFrameIndex set to 1.
+By Colin's static analysis, we found out there is a null page reference
+under low memory situation in redirty_blocks. I've made the page finding
+loop stop immediately and return an error not to cause further memory
+pressure when we run into a failure to find a page under low memory
+condition.
 
-The device otherwise operates correctly, but the driver rejects the
-values and fails the format try operation. Fix it by ignoring the
-invalid indices, and assuming that the format and frame requested by the
-driver are accepted by the device.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210767
-
-Fixes: 8a652a17e3c0 ("media: uvcvideo: Ensure all probed info is returned to v4l2")
-Reported-by: Till Dörges <doerges@pre-sense.de>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 5fdb322ff2c2 ("f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE")
+Reviewed-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/uvc/uvc_v4l2.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ fs/f2fs/file.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index fa06bfa174ad3..c7172b8952a96 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -248,7 +248,9 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
- 		goto done;
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index f585545277d77..cd62b0d3369ab 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -4043,8 +4043,10 @@ static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
  
- 	/* After the probe, update fmt with the values returned from
--	 * negotiation with the device.
-+	 * negotiation with the device. Some devices return invalid bFormatIndex
-+	 * and bFrameIndex values, in which case we can only assume they have
-+	 * accepted the requested format as-is.
- 	 */
- 	for (i = 0; i < stream->nformats; ++i) {
- 		if (probe->bFormatIndex == stream->format[i].index) {
-@@ -257,11 +259,10 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
- 		}
- 	}
- 
--	if (i == stream->nformats) {
--		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFormatIndex %u\n",
-+	if (i == stream->nformats)
-+		uvc_trace(UVC_TRACE_FORMAT,
-+			  "Unknown bFormatIndex %u, using default\n",
- 			  probe->bFormatIndex);
--		return -EINVAL;
--	}
- 
- 	for (i = 0; i < format->nframes; ++i) {
- 		if (probe->bFrameIndex == format->frame[i].bFrameIndex) {
-@@ -270,11 +271,10 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
- 		}
- 	}
- 
--	if (i == format->nframes) {
--		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFrameIndex %u\n",
-+	if (i == format->nframes)
-+		uvc_trace(UVC_TRACE_FORMAT,
-+			  "Unknown bFrameIndex %u, using default\n",
- 			  probe->bFrameIndex);
--		return -EINVAL;
--	}
- 
- 	fmt->fmt.pix.width = frame->wWidth;
- 	fmt->fmt.pix.height = frame->wHeight;
+ 	for (i = 0; i < page_len; i++, redirty_idx++) {
+ 		page = find_lock_page(mapping, redirty_idx);
+-		if (!page)
+-			ret = -ENOENT;
++		if (!page) {
++			ret = -ENOMEM;
++			break;
++		}
+ 		set_page_dirty(page);
+ 		f2fs_put_page(page, 1);
+ 		f2fs_put_page(page, 0);
 -- 
 2.27.0
 
