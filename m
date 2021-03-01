@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E1A329B94
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D42329B85
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379184AbhCBB0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:26:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39808 "EHLO mail.kernel.org"
+        id S1348865AbhCBBZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:25:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241127AbhCATMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:12:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2F88650A1;
-        Mon,  1 Mar 2021 17:33:55 +0000 (UTC)
+        id S238158AbhCATKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:10:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72F5C650A0;
+        Mon,  1 Mar 2021 17:33:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620036;
-        bh=FhAFLmwM6AvDOXjxWIIAupJmFYCg7bsnc/EYF2o4LeQ=;
+        s=korg; t=1614620023;
+        bh=ReAI+yvQjUFRAHcvPHSDQ9i9cEinuwq+ddTXc2KFHtM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1MUXC5bY3pDn0YwTJkV9zE6fOiKiKRJorgpWi+GyLv7zIAzshlBbZEqLtVagl/svW
-         7ge6Yk00GQdnNAa1K+nS6DXz8f6USiJTvTDU1ZIceJNnVYkkOUVu/HLd5C0s11Ynoo
-         XELnucP+tdzbERA/m7WdOrlMVCN8nV328nYK6cC8=
+        b=bnmFkgK0dwWeMuWKcVMSDmwz84OIyLo/y51DydLbezXvd9vNjkG6BCeka3xy93wDn
+         4oSznUUKiGd8trTwX5ia5JEe8x1wboBms9m6xqxyu6QvzNmvniOj/90cIK8kElaFk/
+         QcfTIx7oRRvzefeik123FnQci/wbiT5O6wNDrNC4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
-        Ming-Hung Tsai <mtsai@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.10 652/663] dm era: Use correct value size in equality function of writeset tree
-Date:   Mon,  1 Mar 2021 17:15:00 +0100
-Message-Id: <20210301161214.109025897@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 657/663] ipv6: silence compilation warning for non-IPV6 builds
+Date:   Mon,  1 Mar 2021 17:15:05 +0100
+Message-Id: <20210301161214.361245631@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,33 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikos Tsironis <ntsironis@arrikto.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 64f2d15afe7b336aafebdcd14cc835ecf856df4b upstream.
+commit 1faba27f11c8da244e793546a1b35a9b1da8208e upstream.
 
-Fix the writeset tree equality test function to use the right value size
-when comparing two btree values.
+The W=1 compilation of allmodconfig generates the following warning:
 
-Fixes: eec40579d84873 ("dm: add era target")
-Cc: stable@vger.kernel.org # v3.15+
-Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
-Reviewed-by: Ming-Hung Tsai <mtsai@redhat.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+net/ipv6/icmp.c:448:6: warning: no previous prototype for 'icmp6_send' [-Wmissing-prototypes]
+  448 | void icmp6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info,
+      |      ^~~~~~~~~~
+
+Fix it by providing function declaration for builds with ipv6 as a module.
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-era-target.c |    2 +-
+ include/linux/icmpv6.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/md/dm-era-target.c
-+++ b/drivers/md/dm-era-target.c
-@@ -389,7 +389,7 @@ static void ws_dec(void *context, const
+--- a/include/linux/icmpv6.h
++++ b/include/linux/icmpv6.h
+@@ -16,9 +16,9 @@ static inline struct icmp6hdr *icmp6_hdr
  
- static int ws_eq(void *context, const void *value1, const void *value2)
+ typedef void ip6_icmp_send_t(struct sk_buff *skb, u8 type, u8 code, __u32 info,
+ 			     const struct in6_addr *force_saddr);
+-#if IS_BUILTIN(CONFIG_IPV6)
+ void icmp6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info,
+ 		const struct in6_addr *force_saddr);
++#if IS_BUILTIN(CONFIG_IPV6)
+ static inline void icmpv6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info)
  {
--	return !memcmp(value1, value2, sizeof(struct writeset_metadata));
-+	return !memcmp(value1, value2, sizeof(struct writeset_disk));
- }
- 
- /*----------------------------------------------------------------*/
+ 	icmp6_send(skb, type, code, info, NULL);
 
 
