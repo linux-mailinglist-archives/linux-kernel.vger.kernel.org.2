@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A974329AF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A775F329AF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378300AbhCBBFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:05:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34118 "EHLO mail.kernel.org"
+        id S1378327AbhCBBFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:05:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238131AbhCAS7A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:59:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33C2964F70;
-        Mon,  1 Mar 2021 17:50:31 +0000 (UTC)
+        id S233279AbhCAS6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:58:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3346664F1C;
+        Mon,  1 Mar 2021 17:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621031;
-        bh=IBFhEGq0EohZL7u6t4zYYr4AUwiudrDjRvCGg72QCZ8=;
+        s=korg; t=1614620954;
+        bh=1F7ck/3wjoa4dDJPfgOwWSGvKCymVpt0yOBc9uqESIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NGUkO+e3osG9wDU0oZ7duNKVXxc4Bfmf3Op9BIiGrUdvwkJxxVB57U2lD5zTYhFZa
-         VOlUxcqz2flgYvL8HN3DxSyjD2yPM+RIZZDXLABY5VN7mpQrRf5PvWxphlKHQTuk9L
-         fwStOQ/DDBeIB+F3jxgZtNsxYVtw0MhF+PD3pZBw=
+        b=IsOreFzqrx5lk6rcbUB2Tcfk6u31I5KoBbC8hwDqgmuu1pmmTzh25JUdyNDS6Llyl
+         +PNxha6irotXs85iqkfU9dsodPnWICpTdcAWvK33H6YJekVWW9fefQad3OOkKE57Og
+         9kw3ZQHLFdscYoquRssnQlNQWlEtY84wI63DEyik=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 338/775] RDMA/rtrs: Extend ibtrs_cq_qp_create
-Date:   Mon,  1 Mar 2021 17:08:26 +0100
-Message-Id: <20210301161218.324709606@linuxfoundation.org>
+Subject: [PATCH 5.11 341/775] RDMA/rtrs-clt: Set mininum limit when create QP
+Date:   Mon,  1 Mar 2021 17:08:29 +0100
+Message-Id: <20210301161218.469484983@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -43,132 +43,86 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jack Wang <jinpu.wang@cloud.ionos.com>
 
-[ Upstream commit 7490fd1fe836ba3c7eda7a4b1cfd9e44389ffda5 ]
+[ Upstream commit f47e4e3e71724f625958b0059f6c8ac5d44d27ef ]
 
-rtrs does not have same limit for both max_send_wr and max_recv_wr,
-To allow client and server set different values, export in a separate
-parameter for rtrs_cq_qp_create.
+Currently rtrs when create_qp use a coarse numbers (bigger in general),
+which leads to hardware create more resources which only waste memory
+with no benefits.
 
-Also fix the type accordingly, u32 should be used instead of u16.
+- SERVICE con,
+For max_send_wr/max_recv_wr, it's 2 times SERVICE_CON_QUEUE_DEPTH + 2
 
-Fixes: c0894b3ea69d ("RDMA/rtrs: core: lib functions shared between client and server modules")
-Link: https://lore.kernel.org/r/20201217141915.56989-2-jinpu.wang@cloud.ionos.com
+- IO con
+For max_send_wr/max_recv_wr, it's sess->queue_depth * 3 + 1
+
+Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+Link: https://lore.kernel.org/r/20201217141915.56989-6-jinpu.wang@cloud.ionos.com
 Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
 Reviewed-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c |  4 ++--
- drivers/infiniband/ulp/rtrs/rtrs-pri.h |  5 +++--
- drivers/infiniband/ulp/rtrs/rtrs-srv.c |  5 +++--
- drivers/infiniband/ulp/rtrs/rtrs.c     | 14 ++++++++------
- 4 files changed, 16 insertions(+), 12 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 67f86c405a265..719254fc83a1c 100644
+index 719254fc83a1c..b3fb5fb93815f 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
 @@ -1511,7 +1511,7 @@ static void destroy_con(struct rtrs_clt_con *con)
  static int create_con_cq_qp(struct rtrs_clt_con *con)
  {
  	struct rtrs_clt_sess *sess = to_clt_sess(con->c.sess);
--	u16 wr_queue_size;
-+	u32 wr_queue_size;
+-	u32 wr_queue_size;
++	u32 max_send_wr, max_recv_wr, cq_size;
  	int err, cq_vector;
  	struct rtrs_msg_rkey_rsp *rsp;
  
-@@ -1573,7 +1573,7 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+@@ -1523,7 +1523,8 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 		 * + 2 for drain and heartbeat
+ 		 * in case qp gets into error state
+ 		 */
+-		wr_queue_size = SERVICE_CON_QUEUE_DEPTH * 3 + 2;
++		max_send_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
++		max_recv_wr = SERVICE_CON_QUEUE_DEPTH * 2 + 2;
+ 		/* We must be the first here */
+ 		if (WARN_ON(sess->s.dev))
+ 			return -EINVAL;
+@@ -1555,25 +1556,29 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
+ 
+ 		/* Shared between connections */
+ 		sess->s.dev_ref++;
+-		wr_queue_size =
++		max_send_wr =
+ 			min_t(int, sess->s.dev->ib_dev->attrs.max_qp_wr,
+ 			      /* QD * (REQ + RSP + FR REGS or INVS) + drain */
+ 			      sess->queue_depth * 3 + 1);
++		max_recv_wr =
++			min_t(int, sess->s.dev->ib_dev->attrs.max_qp_wr,
++			      sess->queue_depth * 3 + 1);
+ 	}
+ 	/* alloc iu to recv new rkey reply when server reports flags set */
+ 	if (sess->flags == RTRS_MSG_NEW_RKEY_F || con->c.cid == 0) {
+-		con->rsp_ius = rtrs_iu_alloc(wr_queue_size, sizeof(*rsp),
++		con->rsp_ius = rtrs_iu_alloc(max_recv_wr, sizeof(*rsp),
+ 					      GFP_KERNEL, sess->s.dev->ib_dev,
+ 					      DMA_FROM_DEVICE,
+ 					      rtrs_clt_rdma_done);
+ 		if (!con->rsp_ius)
+ 			return -ENOMEM;
+-		con->queue_size = wr_queue_size;
++		con->queue_size = max_recv_wr;
+ 	}
++	cq_size = max_send_wr + max_recv_wr;
  	cq_vector = con->cpu % sess->s.dev->ib_dev->num_comp_vectors;
  	err = rtrs_cq_qp_create(&sess->s, &con->c, sess->max_send_sge,
- 				 cq_vector, wr_queue_size, wr_queue_size,
--				 IB_POLL_SOFTIRQ);
-+				 wr_queue_size, IB_POLL_SOFTIRQ);
+-				 cq_vector, wr_queue_size, wr_queue_size,
+-				 wr_queue_size, IB_POLL_SOFTIRQ);
++				 cq_vector, cq_size, max_send_wr,
++				 max_recv_wr, IB_POLL_SOFTIRQ);
  	/*
  	 * In case of error we do not bother to clean previous allocations,
  	 * since destroy_con_cq_qp() must be called.
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 3f2918671dbed..d5621e6fad1b1 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -303,8 +303,9 @@ int rtrs_post_rdma_write_imm_empty(struct rtrs_con *con, struct ib_cqe *cqe,
- 				   struct ib_send_wr *head);
- 
- int rtrs_cq_qp_create(struct rtrs_sess *rtrs_sess, struct rtrs_con *con,
--		      u32 max_send_sge, int cq_vector, u16 cq_size,
--		      u16 wr_queue_size, enum ib_poll_context poll_ctx);
-+		      u32 max_send_sge, int cq_vector, int cq_size,
-+		      u32 max_send_wr, u32 max_recv_wr,
-+		      enum ib_poll_context poll_ctx);
- void rtrs_cq_qp_destroy(struct rtrs_con *con);
- 
- void rtrs_init_hb(struct rtrs_sess *sess, struct ib_cqe *cqe,
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index c42fd470c4eb4..ed4628f032bb6 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1586,7 +1586,7 @@ static int create_con(struct rtrs_srv_sess *sess,
- 	struct rtrs_sess *s = &sess->s;
- 	struct rtrs_srv_con *con;
- 
--	u16 cq_size, wr_queue_size;
-+	u32 cq_size, wr_queue_size;
- 	int err, cq_vector;
- 
- 	con = kzalloc(sizeof(*con), GFP_KERNEL);
-@@ -1630,7 +1630,8 @@ static int create_con(struct rtrs_srv_sess *sess,
- 
- 	/* TODO: SOFTIRQ can be faster, but be careful with softirq context */
- 	err = rtrs_cq_qp_create(&sess->s, &con->c, 1, cq_vector, cq_size,
--				 wr_queue_size, IB_POLL_WORKQUEUE);
-+				 wr_queue_size, wr_queue_size,
-+				 IB_POLL_WORKQUEUE);
- 	if (err) {
- 		rtrs_err(s, "rtrs_cq_qp_create(), err: %d\n", err);
- 		goto free_con;
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-index 2e3a849e0a77c..df52427f17106 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-@@ -231,14 +231,14 @@ static int create_cq(struct rtrs_con *con, int cq_vector, u16 cq_size,
- }
- 
- static int create_qp(struct rtrs_con *con, struct ib_pd *pd,
--		     u16 wr_queue_size, u32 max_sge)
-+		     u32 max_send_wr, u32 max_recv_wr, u32 max_sge)
- {
- 	struct ib_qp_init_attr init_attr = {NULL};
- 	struct rdma_cm_id *cm_id = con->cm_id;
- 	int ret;
- 
--	init_attr.cap.max_send_wr = wr_queue_size;
--	init_attr.cap.max_recv_wr = wr_queue_size;
-+	init_attr.cap.max_send_wr = max_send_wr;
-+	init_attr.cap.max_recv_wr = max_recv_wr;
- 	init_attr.cap.max_recv_sge = 1;
- 	init_attr.event_handler = qp_event_handler;
- 	init_attr.qp_context = con;
-@@ -260,8 +260,9 @@ static int create_qp(struct rtrs_con *con, struct ib_pd *pd,
- }
- 
- int rtrs_cq_qp_create(struct rtrs_sess *sess, struct rtrs_con *con,
--		       u32 max_send_sge, int cq_vector, u16 cq_size,
--		       u16 wr_queue_size, enum ib_poll_context poll_ctx)
-+		       u32 max_send_sge, int cq_vector, int cq_size,
-+		       u32 max_send_wr, u32 max_recv_wr,
-+		       enum ib_poll_context poll_ctx)
- {
- 	int err;
- 
-@@ -269,7 +270,8 @@ int rtrs_cq_qp_create(struct rtrs_sess *sess, struct rtrs_con *con,
- 	if (err)
- 		return err;
- 
--	err = create_qp(con, sess->dev->ib_pd, wr_queue_size, max_send_sge);
-+	err = create_qp(con, sess->dev->ib_pd, max_send_wr, max_recv_wr,
-+			max_send_sge);
- 	if (err) {
- 		ib_free_cq(con->cq);
- 		con->cq = NULL;
 -- 
 2.27.0
 
