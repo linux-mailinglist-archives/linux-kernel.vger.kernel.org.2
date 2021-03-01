@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74638327EBA
+	by mail.lfdr.de (Postfix) with ESMTP id EFDAC327EBB
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235256AbhCAM6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:58:48 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38008 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235203AbhCAM6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:58:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4C459AC24;
-        Mon,  1 Mar 2021 12:58:02 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 13:57:59 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] Make alloc_contig_range handle Hugetlb pages
-Message-ID: <20210301125754.GA4003@linux>
-References: <20210222135137.25717-1-osalvador@suse.de>
- <ff780dd6-f473-5476-fc1c-9f9bbcdb17c8@redhat.com>
+        id S235261AbhCAM64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:58:56 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13101 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235203AbhCAM6x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 07:58:53 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dq0d835Knz16F3Z;
+        Mon,  1 Mar 2021 20:56:28 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 1 Mar 2021 20:58:05 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <zbr@ioremap.net>, <rikard.falkeborn@gmail.com>,
+        <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH] w1: ds2708 and ds2781 use the new API kobj_to_dev()
+Date:   Mon, 1 Mar 2021 20:58:55 +0800
+Message-ID: <1614603535-24046-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ff780dd6-f473-5476-fc1c-9f9bbcdb17c8@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 01:43:00PM +0100, David Hildenbrand wrote:
-> Same experiment with ZONE_MOVABLE:
-> 
-> a) Free huge pages: all memory can get unplugged again.
-> 
-> b) Allocated/populated but idle huge pages: all memory can get unplugged
-> again.
-> 
-> c) Allocated/populated but all 512 huge pages are read/written in a loop:
-> all memory can get unplugged again, but I get a single
-> 
-> [  121.192345] alloc_contig_range: [180000, 188000) PFNs busy
-> 
-> Most probably because it happened to try migrating a huge page while it was
-> busy. As virtio-mem retries on ZONE_MOVABLE a couple of times, it can deal
-> with this temporary failure.
-> 
-> 
-> 
-> Last but not least, I did something extreme:
-> 
-> ]# cat /proc/meminfo
-> MemTotal:        5061568 kB
-> MemFree:          186560 kB
-> MemAvailable:     354524 kB
-> ...
-> HugePages_Total:    2048
-> HugePages_Free:     2048
-> HugePages_Rsvd:        0
-> HugePages_Surp:        0
-> 
-> 
-> Triggering unplug would require to dissolve+alloc - which now fails when
-> trying to allocate an additional ~512 huge pages (1G).
-> 
-> 
-> As expected, I can properly see memory unplug not fully succeeding. + I get
-> a fairly continuous stream of
-> 
-> [  226.611584] alloc_contig_range: [19f400, 19f800) PFNs busy
-> ...
-> 
-> But more importantly, the hugepage count remains stable, as configured by
-> the admin (me):
-> 
-> HugePages_Total:    2048
-> HugePages_Free:     2048
-> HugePages_Rsvd:        0
-> HugePages_Surp:        0
+fix the below warnning:
+/drivers/w1/slaves/w1_ds2780.c:93:60-61: WARNING opportunity for
+kobj_to_dev()
 
-Thanks for giving it a spin David, that is highly appreciated ;-)!
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/w1/slaves/w1_ds2780.c | 3 ++-
+ drivers/w1/slaves/w1_ds2781.c | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-I will add above information in next's version changelog if you do not mind,
-so the before-and-after can be seen clearly.
-
-I shall send v4 in the course of the next few days.
-
+diff --git a/drivers/w1/slaves/w1_ds2780.c b/drivers/w1/slaves/w1_ds2780.c
+index c281fe5..3cde1bb 100644
+--- a/drivers/w1/slaves/w1_ds2780.c
++++ b/drivers/w1/slaves/w1_ds2780.c
+@@ -90,7 +90,8 @@ static ssize_t w1_slave_read(struct file *filp, struct kobject *kobj,
+ 			     struct bin_attribute *bin_attr, char *buf,
+ 			     loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
++
+ 	return w1_ds2780_io(dev, buf, off, count, 0);
+ }
+ 
+diff --git a/drivers/w1/slaves/w1_ds2781.c b/drivers/w1/slaves/w1_ds2781.c
+index f0d393a..2cb7c02 100644
+--- a/drivers/w1/slaves/w1_ds2781.c
++++ b/drivers/w1/slaves/w1_ds2781.c
+@@ -87,7 +87,7 @@ static ssize_t w1_slave_read(struct file *filp, struct kobject *kobj,
+ 			     struct bin_attribute *bin_attr, char *buf,
+ 			     loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	return w1_ds2781_io(dev, buf, off, count, 0);
+ }
+ 
 -- 
-Oscar Salvador
-SUSE L3
+2.7.4
+
