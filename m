@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10325329089
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 662423290A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242983AbhCAUJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:09:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59376 "EHLO mail.kernel.org"
+        id S242748AbhCAUL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:11:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236494AbhCARBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:01:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2964564FEE;
-        Mon,  1 Mar 2021 16:38:00 +0000 (UTC)
+        id S236602AbhCARDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:03:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EF0F64FF1;
+        Mon,  1 Mar 2021 16:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616680;
-        bh=+/L8aNOLb2ES4scNhsww1KbLC81FhqZ0cGaHosdwsbU=;
+        s=korg; t=1614616683;
+        bh=MmA5/cvOe4luNvYIsf6akEnScLRR043/eVce8iYsp5w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KJ3g1T1WSdM3Ci6Y/Y5LAMhLatRUxqnryK6xvik+UDJUwboEd0glrk7SM1gJqnPom
-         3XD1q77oRevNqQHfeZjNVMu4G01IY8CkjB+I9GkYfEQ0DwON/hbdJAQ5BUZbv2QqP0
-         jcd/xTiTIVogwpX5nyvbpRVYETdHoaKOk5Y6xPx4=
+        b=iSGCdi/OzPSOZkxUzZOPzp9dB8YaPzolD2wAPwUnYNMLVTx9M5NckukXxdth/f/0F
+         OzwXmBk45YQ4jovVzDZWNpLW26SAHrEmZ9LRM6R40fw0rDtAyO+zw+A+uRjjRnsn9O
+         +qKRLjYnJHjsVDbjGWFmGVXw0xYhuDnpqCpIm7H4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 028/247] ARM: dts: exynos: correct PMIC interrupt trigger level on Monk
-Date:   Mon,  1 Mar 2021 17:10:48 +0100
-Message-Id: <20210301161033.074030331@linuxfoundation.org>
+Subject: [PATCH 4.19 029/247] ARM: dts: exynos: correct PMIC interrupt trigger level on Rinato
+Date:   Mon,  1 Mar 2021 17:10:49 +0100
+Message-Id: <20210301161033.124505766@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -41,26 +42,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 8528cda2b7c667e9cd173aef1a677c71b7d5a096 ]
+[ Upstream commit 437ae60947716bb479e2f32466f49445c0509b1e ]
 
 The Samsung PMIC datasheets describe the interrupt line as active low
 with a requirement of acknowledge from the CPU.  Without specifying the
 interrupt type in Devicetree, kernel might apply some fixed
 configuration, not necessarily working for this hardware.
 
-Fixes: e0cefb3f79d3 ("ARM: dts: add board dts file for Exynos3250-based Monk board")
+Fixes: faaf348ef468 ("ARM: dts: Add board dts file for exynos3250-rinato")
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20201210212903.216728-2-krzk@kernel.org
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Link: https://lore.kernel.org/r/20201210212903.216728-3-krzk@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos3250-monk.dts | 2 +-
+ arch/arm/boot/dts/exynos3250-rinato.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos3250-monk.dts b/arch/arm/boot/dts/exynos3250-monk.dts
-index 6ffedf4ed9f2b..d343dc13ceecd 100644
---- a/arch/arm/boot/dts/exynos3250-monk.dts
-+++ b/arch/arm/boot/dts/exynos3250-monk.dts
-@@ -188,7 +188,7 @@
+diff --git a/arch/arm/boot/dts/exynos3250-rinato.dts b/arch/arm/boot/dts/exynos3250-rinato.dts
+index 2a6b828c01b7c..29df4cfa9165f 100644
+--- a/arch/arm/boot/dts/exynos3250-rinato.dts
++++ b/arch/arm/boot/dts/exynos3250-rinato.dts
+@@ -253,7 +253,7 @@
  	s2mps14_pmic@66 {
  		compatible = "samsung,s2mps14-pmic";
  		interrupt-parent = <&gpx0>;
