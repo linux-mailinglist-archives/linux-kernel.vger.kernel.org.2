@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD89329BE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C70329C23
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379809AbhCBBbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:31:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43894 "EHLO mail.kernel.org"
+        id S1380171AbhCBBtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:49:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236036AbhCATSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:18:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B57A652A6;
-        Mon,  1 Mar 2021 17:33:15 +0000 (UTC)
+        id S241406AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:26:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17F9F6529C;
+        Mon,  1 Mar 2021 17:33:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619996;
-        bh=Qfn0aUat3ceZQ1ghd+EeB4wkAMI8sShpeAtkKyiVw5E=;
+        s=korg; t=1614619998;
+        bh=mDNce7JorKvDfVda5uTF6y2n3mrETWCjGAl4Rk/5v2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zRvY42uopWfRl3Ru+fwglD0A5MbRlQxnUXM3UhsI/PEzMeXgJc+hU7LpKCDMsPrS8
-         jTY5tGUxqsEdZdE3JCMdc/jjZ10z439/h+yaxYYmUX+BltPFPNZntI07vkTovw2A30
-         yyR3HmDAvXGwiNrRW7Wm70sAw90pa7/3Vn/D6VCs=
+        b=rEvH+i5opnELlHC4lL67rs5CbVbCIGHoONNwgZCsIEHbjS0jKM3+NZczNWuS/ON/G
+         rZIOQhANVQq7HjO7bJ+frq6a5NE5teTBPjPCv433jq9Ht2evU8GR3kLGYc9zKm6gYd
+         FmYVGy+5v0nnlBOfR3jLGVRz0bHWGVe91o2HH0FQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        stable@vger.kernel.org, Halil Pasic <pasic@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
         Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 5.10 626/663] s390/vtime: fix inline assembly clobber list
-Date:   Mon,  1 Mar 2021 17:14:34 +0100
-Message-Id: <20210301161212.823201417@linuxfoundation.org>
+Subject: [PATCH 5.10 627/663] virtio/s390: implement virtio-ccw revision 2 correctly
+Date:   Mon,  1 Mar 2021 17:14:35 +0100
+Message-Id: <20210301161212.872459775@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,38 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Cornelia Huck <cohuck@redhat.com>
 
-commit b29c5093820d333eef22f58cd04ec0d089059c39 upstream.
+commit 182f709c5cff683e6732d04c78e328de0532284f upstream.
 
-The stck/stckf instruction used within the inline assembly within
-do_account_vtime() changes the condition code. This is not reflected
-with the clobber list, and therefore might result in incorrect code
-generation.
+CCW_CMD_READ_STATUS was introduced with revision 2 of virtio-ccw,
+and drivers should only rely on it being implemented when they
+negotiated at least that revision with the device.
 
-It seems unlikely that the compiler could generate incorrect code
-considering the surrounding C code, but it must still be fixed.
+However, virtio_ccw_get_status() issued READ_STATUS for any
+device operating at least at revision 1. If the device accepts
+READ_STATUS regardless of the negotiated revision (which some
+implementations like QEMU do, even though the spec currently does
+not allow it), everything works as intended. While a device
+rejecting the command should also be handled gracefully, we will
+not be able to see any changes the device makes to the status,
+such as setting NEEDS_RESET or setting the status to zero after
+a completed reset.
 
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+We negotiated the revision to at most 1, as we never bumped the
+maximum revision; let's do that now and properly send READ_STATUS
+only if we are operating at least at revision 2.
+
+Cc: stable@vger.kernel.org
+Fixes: 7d3ce5ab9430 ("virtio/s390: support READ_STATUS command for virtio-ccw")
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+Signed-off-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Link: https://lore.kernel.org/r/20210216110645.1087321-1-cohuck@redhat.com
 Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kernel/vtime.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/s390/virtio/virtio_ccw.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/s390/kernel/vtime.c
-+++ b/arch/s390/kernel/vtime.c
-@@ -136,7 +136,8 @@ static int do_account_vtime(struct task_
- 		"	stck	%1"	/* Store current tod clock value */
- #endif
- 		: "=Q" (S390_lowcore.last_update_timer),
--		  "=Q" (S390_lowcore.last_update_clock));
-+		  "=Q" (S390_lowcore.last_update_clock)
-+		: : "cc");
- 	clock = S390_lowcore.last_update_clock - clock;
- 	timer -= S390_lowcore.last_update_timer;
+--- a/drivers/s390/virtio/virtio_ccw.c
++++ b/drivers/s390/virtio/virtio_ccw.c
+@@ -117,7 +117,7 @@ struct virtio_rev_info {
+ };
  
+ /* the highest virtio-ccw revision we support */
+-#define VIRTIO_CCW_REV_MAX 1
++#define VIRTIO_CCW_REV_MAX 2
+ 
+ struct virtio_ccw_vq_info {
+ 	struct virtqueue *vq;
+@@ -952,7 +952,7 @@ static u8 virtio_ccw_get_status(struct v
+ 	u8 old_status = vcdev->dma_area->status;
+ 	struct ccw1 *ccw;
+ 
+-	if (vcdev->revision < 1)
++	if (vcdev->revision < 2)
+ 		return vcdev->dma_area->status;
+ 
+ 	ccw = ccw_device_dma_zalloc(vcdev->cdev, sizeof(*ccw));
 
 
