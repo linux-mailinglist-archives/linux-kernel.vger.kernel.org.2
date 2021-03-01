@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4D832909B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 570EF329091
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242751AbhCAULL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:11:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33066 "EHLO mail.kernel.org"
+        id S239072AbhCAUKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:10:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235915AbhCARCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:02:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44CB064F74;
-        Mon,  1 Mar 2021 16:37:54 +0000 (UTC)
+        id S236489AbhCARBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:01:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3638964F73;
+        Mon,  1 Mar 2021 16:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616674;
-        bh=qNyvTpgP2qBw/FEkZPhQTJ62tjrNOIOFhITedfrZER8=;
+        s=korg; t=1614616677;
+        bh=2FxptM7cAiFt/0R+VBGHvu+JWMDHMGHF4B2JkXn4PiU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lw5JmbXgFpVerU6YLWiX6zzI4ViOhc42pAFsH8E/ew66tqIP0HNQ4oIgeAa9r/GAy
-         9yOWD55yx7Jxz41CaxzMHEb//8VFqvNGU1x5VOJ1G+c2KC3r7x2zR76qw2BLmhYuzW
-         AcWu75fYye+QfBpxIPGA7VWxDWNRzREUACxnQ5K0=
+        b=fDZs3O2sDWyCqrhZPcVFpAcmqVt/KS8FCZTNqzDOAA5n49lSW1ZcETPlmJ0sLf9ow
+         bAouZQPV3XQty+Me785vxT0f5SYdtbuIZlBiFTdiFlP88fMnQ+0X53b0nCU/En/Qpb
+         UlG1izQFhf3TdyomhgDJRdogBsHrXAnfZIKUax4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
-        Vernon Mauery <vernon.mauery@linux.intel.com>,
-        John Wang <wangzhiqiang.bj@bytedance.com>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 055/247] soc: aspeed: snoop: Add clock control logic
-Date:   Mon,  1 Mar 2021 17:11:15 +0100
-Message-Id: <20210301161034.369309830@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
+        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com,
+        Marco Elver <elver@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 056/247] bpf_lru_list: Read double-checked variable once without lock
+Date:   Mon,  1 Mar 2021 17:11:16 +0100
+Message-Id: <20210301161034.410135440@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -41,108 +44,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
+From: Marco Elver <elver@google.com>
 
-[ Upstream commit 3f94cf15583be554df7aaa651b8ff8e1b68fbe51 ]
+[ Upstream commit 6df8fb83301d68ea0a0c0e1cbcc790fcc333ed12 ]
 
-If LPC SNOOP driver is registered ahead of lpc-ctrl module, LPC
-SNOOP block will be enabled without heart beating of LCLK until
-lpc-ctrl enables the LCLK. This issue causes improper handling on
-host interrupts when the host sends interrupt in that time frame.
-Then kernel eventually forcibly disables the interrupt with
-dumping stack and printing a 'nobody cared this irq' message out.
+For double-checked locking in bpf_common_lru_push_free(), node->type is
+read outside the critical section and then re-checked under the lock.
+However, concurrent writes to node->type result in data races.
 
-To prevent this issue, all LPC sub-nodes should enable LCLK
-individually so this patch adds clock control logic into the LPC
-SNOOP driver.
+For example, the following concurrent access was observed by KCSAN:
 
-Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
-Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
-Signed-off-by: Vernon Mauery <vernon.mauery@linux.intel.com>
-Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Link: https://lore.kernel.org/r/20201208091748.1920-1-wangzhiqiang.bj@bytedance.com
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+  write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
+   __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
+   __local_list_flush            kernel/bpf/bpf_lru_list.c:298
+   ...
+  read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
+   bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
+   bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
+   ...
+
+Fix the data races where node->type is read outside the critical section
+(for double-checked locking) by marking the access with READ_ONCE() as
+well as ensuring the variable is only accessed once.
+
+Fixes: 3a08c2fd7634 ("bpf: LRU List")
+Reported-by: syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com
+Reported-by: syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20210209112701.3341724-1-elver@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/aspeed-lpc-snoop.c | 30 +++++++++++++++++++++++++++---
- 1 file changed, 27 insertions(+), 3 deletions(-)
+ kernel/bpf/bpf_lru_list.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/aspeed-lpc-snoop.c b/drivers/misc/aspeed-lpc-snoop.c
-index c10be21a1663d..b4a776bf44bc5 100644
---- a/drivers/misc/aspeed-lpc-snoop.c
-+++ b/drivers/misc/aspeed-lpc-snoop.c
-@@ -15,6 +15,7 @@
-  */
+diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
+index e6ef4401a1380..9b5eeff72fd37 100644
+--- a/kernel/bpf/bpf_lru_list.c
++++ b/kernel/bpf/bpf_lru_list.c
+@@ -505,13 +505,14 @@ struct bpf_lru_node *bpf_lru_pop_free(struct bpf_lru *lru, u32 hash)
+ static void bpf_common_lru_push_free(struct bpf_lru *lru,
+ 				     struct bpf_lru_node *node)
+ {
++	u8 node_type = READ_ONCE(node->type);
+ 	unsigned long flags;
  
- #include <linux/bitops.h>
-+#include <linux/clk.h>
- #include <linux/interrupt.h>
- #include <linux/fs.h>
- #include <linux/kfifo.h>
-@@ -71,6 +72,7 @@ struct aspeed_lpc_snoop_channel {
- struct aspeed_lpc_snoop {
- 	struct regmap		*regmap;
- 	int			irq;
-+	struct clk		*clk;
- 	struct aspeed_lpc_snoop_channel chan[NUM_SNOOP_CHANNELS];
- };
+-	if (WARN_ON_ONCE(node->type == BPF_LRU_LIST_T_FREE) ||
+-	    WARN_ON_ONCE(node->type == BPF_LRU_LOCAL_LIST_T_FREE))
++	if (WARN_ON_ONCE(node_type == BPF_LRU_LIST_T_FREE) ||
++	    WARN_ON_ONCE(node_type == BPF_LRU_LOCAL_LIST_T_FREE))
+ 		return;
  
-@@ -286,22 +288,42 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
+-	if (node->type == BPF_LRU_LOCAL_LIST_T_PENDING) {
++	if (node_type == BPF_LRU_LOCAL_LIST_T_PENDING) {
+ 		struct bpf_lru_locallist *loc_l;
  
-+	lpc_snoop->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(lpc_snoop->clk)) {
-+		rc = PTR_ERR(lpc_snoop->clk);
-+		if (rc != -EPROBE_DEFER)
-+			dev_err(dev, "couldn't get clock\n");
-+		return rc;
-+	}
-+	rc = clk_prepare_enable(lpc_snoop->clk);
-+	if (rc) {
-+		dev_err(dev, "couldn't enable clock\n");
-+		return rc;
-+	}
-+
- 	rc = aspeed_lpc_snoop_config_irq(lpc_snoop, pdev);
- 	if (rc)
--		return rc;
-+		goto err;
- 
- 	rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 0, port);
- 	if (rc)
--		return rc;
-+		goto err;
- 
- 	/* Configuration of 2nd snoop channel port is optional */
- 	if (of_property_read_u32_index(dev->of_node, "snoop-ports",
- 				       1, &port) == 0) {
- 		rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 1, port);
--		if (rc)
-+		if (rc) {
- 			aspeed_lpc_disable_snoop(lpc_snoop, 0);
-+			goto err;
-+		}
- 	}
- 
-+	return 0;
-+
-+err:
-+	clk_disable_unprepare(lpc_snoop->clk);
-+
- 	return rc;
- }
- 
-@@ -313,6 +335,8 @@ static int aspeed_lpc_snoop_remove(struct platform_device *pdev)
- 	aspeed_lpc_disable_snoop(lpc_snoop, 0);
- 	aspeed_lpc_disable_snoop(lpc_snoop, 1);
- 
-+	clk_disable_unprepare(lpc_snoop->clk);
-+
- 	return 0;
- }
- 
+ 		loc_l = per_cpu_ptr(lru->common_lru.local_list, node->cpu);
 -- 
 2.27.0
 
