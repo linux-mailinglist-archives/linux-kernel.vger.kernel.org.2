@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2EC329901
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678A73299D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347042AbhCAXvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34256 "EHLO mail.kernel.org"
+        id S1376626AbhCBA3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238964AbhCASRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:17:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2A4764F8F;
-        Mon,  1 Mar 2021 17:20:59 +0000 (UTC)
+        id S239940AbhCASbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:31:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DA1865219;
+        Mon,  1 Mar 2021 17:22:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619260;
-        bh=TEeS+X8+mLBD9qzmnxZPrl0wdf/OS/FZ/9ygfXnn1jo=;
+        s=korg; t=1614619363;
+        bh=0CKkUiDriWAC0w6++OGrKVmH23JaGJ3QDThEO9jZUO0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FNemam3owv6oAJ2CPN6Q901uu9qfaxCVzEHClcJofn9haiGex/unu6TsrmX1RH/sv
-         zrWL1ZIFxePD2AX0EGx/d1Z15cBzmHmmWsOhDdVoL58oihTJLq9Z9WeLfevJV099Ou
-         sMJwphSj80z/8fmFGU56N49u0Xl8CIcCc+c4KCIk=
+        b=On45CnfrgCgvg0O6a4Csgqem4GuV3Q8QxXUXZl9ofXEwYu1CTYtyUV/ZPxlOxpcL8
+         tdin4d4FuGQLlJ4AIIWVrXmARe056eJKObse/hVIW5kSA+y4x8fMNzEOdZ2oPF/hIO
+         9LXyvpgrTf7fy0CvfUw8Ca7a/xtLW3NgEGOfaNkI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 389/663] Input: elo - fix an error code in elo_connect()
-Date:   Mon,  1 Mar 2021 17:10:37 +0100
-Message-Id: <20210301161201.110863201@linuxfoundation.org>
+Subject: [PATCH 5.10 397/663] misc: eeprom_93xx46: Add module alias to avoid breaking support for non device tree users
+Date:   Mon,  1 Mar 2021 17:10:45 +0100
+Message-Id: <20210301161201.509903055@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,38 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Aswath Govindraju <a-govindraju@ti.com>
 
-[ Upstream commit 0958351e93fa0ac142f6dd8bd844441594f30a57 ]
+[ Upstream commit 4540b9fbd8ebb21bb3735796d300a1589ee5fbf2 ]
 
-If elo_setup_10() fails then this should return an error code instead
-of success.
+Module alias "spi:93xx46" is used by non device tree users like
+drivers/misc/eeprom/digsy_mtc_eeprom.c  and removing it will
+break support for them.
 
-Fixes: fae3006e4b42 ("Input: elo - add support for non-pressure-sensitive touchscreens")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/YBKFd5CvDu+jVmfW@mwanda
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fix this by adding back the module alias "spi:93xx46".
+
+Fixes: 13613a2246bf ("misc: eeprom_93xx46: Fix module alias to enable module autoprobe")
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Link: https://lore.kernel.org/r/20210113051253.15061-1-a-govindraju@ti.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/elo.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/misc/eeprom/eeprom_93xx46.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/input/touchscreen/elo.c b/drivers/input/touchscreen/elo.c
-index e0bacd34866ad..96173232e53fe 100644
---- a/drivers/input/touchscreen/elo.c
-+++ b/drivers/input/touchscreen/elo.c
-@@ -341,8 +341,10 @@ static int elo_connect(struct serio *serio, struct serio_driver *drv)
- 	switch (elo->id) {
- 
- 	case 0: /* 10-byte protocol */
--		if (elo_setup_10(elo))
-+		if (elo_setup_10(elo)) {
-+			err = -EIO;
- 			goto fail3;
-+		}
- 
- 		break;
- 
+diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
+index 206d920dc92fc..d92c4d2c521a3 100644
+--- a/drivers/misc/eeprom/eeprom_93xx46.c
++++ b/drivers/misc/eeprom/eeprom_93xx46.c
+@@ -511,4 +511,5 @@ module_spi_driver(eeprom_93xx46_driver);
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("Driver for 93xx46 EEPROMs");
+ MODULE_AUTHOR("Anatolij Gustschin <agust@denx.de>");
++MODULE_ALIAS("spi:93xx46");
+ MODULE_ALIAS("spi:eeprom-93xx46");
 -- 
 2.27.0
 
