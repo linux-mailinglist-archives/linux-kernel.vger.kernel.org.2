@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFA7329E8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FA7329DB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:05:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445589AbhCBDAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:00:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243018AbhCAUN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:13:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6540652B0;
-        Mon,  1 Mar 2021 18:01:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621704;
-        bh=hmR2cfOvkHnlt3Cg+y69VLZhqFEKTwIBrtpN9F+o8YQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QqibHKqMSfeWqO7Djzo5NXXL/yjBZGDXitU6JUrydbNpQWqW4yOFckxR+UIwiXd1G
-         5C+1N/eepbkzmZDig+n9zCw8Hc2YwHX51NyCBR6u88tl4jyPhQp5tmTCIrWZCJdsnQ
-         zZhneaxyF6QdeVujMfX+3GKbQYNFQglGmJWxwAZk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Bernstein <eric.bernstein@amd.com>,
-        Bindu Ramamurthy <bindu.r@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.11 613/775] drm/amd/display: Remove Assert from dcn10_get_dig_frontend
-Date:   Mon,  1 Mar 2021 17:13:01 +0100
-Message-Id: <20210301161231.696477061@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1443819AbhCBCg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241905AbhCATwk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:52:40 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3139C061794
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 11:49:27 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lGoXg-0000Jq-D8; Mon, 01 Mar 2021 20:49:20 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:6e66:a1a4:a449:44cd])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id A5B4E5EBAE7;
+        Mon,  1 Mar 2021 16:54:58 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 17:54:57 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Federico Vaga <federico.vaga@gmail.com>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] can: c_can: prepare to up the message objects
+ number
+Message-ID: <20210301165457.6lkridxj3l2q5dxi@pengutronix.de>
+References: <20210228103856.4089-1-dariobin@libero.it>
+ <20210228103856.4089-6-dariobin@libero.it>
+ <20210301113805.jylhc373sip7zmed@pengutronix.de>
+ <20210301130845.3s45ujmhkazscm6x@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="42iif5wve5v33cbd"
+Content-Disposition: inline
+In-Reply-To: <20210301130845.3s45ujmhkazscm6x@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Bernstein <eric.bernstein@amd.com>
 
-commit 83e6667b675f101fb66659dfa72e45d08773d763 upstream.
+--42iif5wve5v33cbd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[Why]
-In some cases, this function is called when DIG BE is not
-connected to DIG FE, in which case a value of zero isn't
-invalid and assert should not be hit.
+On 01.03.2021 14:08:45, Marc Kleine-Budde wrote:
+> On 01.03.2021 12:38:05, Marc Kleine-Budde wrote:
+> > On 28.02.2021 11:38:54, Dario Binacchi wrote:
+> > [...]
+> >=20
+> > > @@ -730,7 +728,7 @@ static void c_can_do_tx(struct net_device *dev)
+> > >  	while ((idx =3D ffs(pend))) {
+> > >  		idx--;
+> > >  		pend &=3D ~(1 << idx);
+> > > -		obj =3D idx + C_CAN_MSG_OBJ_TX_FIRST;
+> > > +		obj =3D idx + priv->msg_obj_tx_first;
+> > >  		c_can_inval_tx_object(dev, IF_TX, obj);
+> > >  		can_get_echo_skb(dev, idx, NULL);
+> > >  		bytes +=3D priv->dlc[idx];
+> > > @@ -740,7 +738,7 @@ static void c_can_do_tx(struct net_device *dev)
+> > >  	/* Clear the bits in the tx_active mask */
+> > >  	atomic_sub(clr, &priv->tx_active);
+> > > =20
+> > > -	if (clr & (1 << (C_CAN_MSG_OBJ_TX_NUM - 1)))
+> > > +	if (clr & (1 << (priv->msg_obj_tx_num - 1)))
+> >=20
+> > Do we need 1UL here, too?
+>=20
+> There are several more "1 <<" in the driver. As the right side of the
+> sift operation can be up to 32, I think you should replace all "1 <<"
+> with "1UL <<".
 
-[How]
-Remove assert and handle ENGINE_ID_UNKNOWN result in calling
-function.
+Even better use BIT() for setting single bits and GENMASK() to generate
+masks.
 
-Signed-off-by: Eric Bernstein <eric.bernstein@amd.com>
-Acked-by: Bindu Ramamurthy <bindu.r@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_link_encoder.c |    1 -
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c        |    2 ++
- 2 files changed, 2 insertions(+), 1 deletion(-)
+Marc
 
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_link_encoder.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_link_encoder.c
-@@ -480,7 +480,6 @@ unsigned int dcn10_get_dig_frontend(stru
- 		break;
- 	default:
- 		// invalid source select DIG
--		ASSERT(false);
- 		result = ENGINE_ID_UNKNOWN;
- 	}
- 
---- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hwseq.c
-@@ -539,6 +539,8 @@ void dcn30_init_hw(struct dc *dc)
- 
- 					fe = dc->links[i]->link_enc->funcs->get_dig_frontend(
- 										dc->links[i]->link_enc);
-+					if (fe == ENGINE_ID_UNKNOWN)
-+						continue;
- 
- 					for (j = 0; j < dc->res_pool->stream_enc_count; j++) {
- 						if (fe == dc->res_pool->stream_enc[j]->id) {
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
+--42iif5wve5v33cbd
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA9HF8ACgkQqclaivrt
+76mXuAf+LWBl0K1DaCS4PCPNSR7YiCK0n8V+vvwO4HIG2PzhfapX/CYoou7SaXE+
+DWLtU7cRIs/orzzrNmXbgHgiYuA0srKE3LRET+xoe2eW/sv+pIXoinxXzcAdlg6L
+1llcSv5idKY74bf2BzCnlHb9DNERu9Bqaejj3mvp/2l1zgOC0pauOIhGH5bfWAvm
+4ZLzi9P7Hr1/f0SygP8SmlMt48wce2YvXBOOj7yjoNYQPMdks53b7tbEqk+4ZTuP
+q55d7mBTSMvnkd97U06M50TBKSV+WJxAw0yRu1qgMMSN6FP5dnjEnRrCn29IM6yJ
+oRRsjPE22khC/Fn+qFru6TX6pUQE1A==
+=+GGQ
+-----END PGP SIGNATURE-----
+
+--42iif5wve5v33cbd--
