@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5E7329B7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51018329B55
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:11:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348795AbhCBBZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:25:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39810 "EHLO mail.kernel.org"
+        id S240917AbhCBBXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:23:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238073AbhCATKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:10:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E18764FBD;
-        Mon,  1 Mar 2021 17:37:17 +0000 (UTC)
+        id S240795AbhCATGe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:06:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAA1065144;
+        Mon,  1 Mar 2021 17:04:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620238;
-        bh=/7pT0kEh99FHUtwTb6He+rcjg5tNt++0dodBOJTVDCk=;
+        s=korg; t=1614618282;
+        bh=oM3VnJ6m/C9CkbW6odQsd7oV4wHBBxj5egG09vHfDXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TDYTceftLdd0LxEjfgYP/pt55Hzggw6OJvcoG4ivZ63vzNgwt1KvBJY1UiPzu4dhC
-         safTX9mE+AWKX+/CL6RfrpbD+yYIF82giXCdQPVS4Vc+I91j841j/JU3NytIg7cbA5
-         w2MVOQBTDUpN+dFqdbu66cBPt95+A2qD+CFe2SoU=
+        b=c7VujfUgf87cVyFPZePJdrLwLHoqOZx6YzwGzplVfRIehDoLKyf7R2iVOmYdNqYUV
+         Y0WjSVLqrEKwncDaV1KfM4VpnAK1qmNQLXfO+LwK1zMkJ94Pk0wL5BYHZImFOtYt5q
+         Bkg9/LTfLENr/Sg463g+1h8waBKpH5rEZvS1SwmU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 081/775] ARM: s3c: fix fiq for clang IAS
-Date:   Mon,  1 Mar 2021 17:04:09 +0100
-Message-Id: <20210301161205.687206714@linuxfoundation.org>
+        stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>, Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.10 003/663] debugfs: be more robust at handling improper input in debugfs_lookup()
+Date:   Mon,  1 Mar 2021 17:04:11 +0100
+Message-Id: <20210301161141.944974108@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,93 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[ Upstream commit 7f9942c61fa60eda7cc8e42f04bd25b7d175876e ]
+commit bc6de804d36b3709d54fa22bd128cbac91c11526 upstream.
 
-Building with the clang integrated assembler produces a couple of
-errors for the s3c24xx fiq support:
+debugfs_lookup() doesn't like it if it is passed an illegal name
+pointer, or if the filesystem isn't even initialized yet.  If either of
+these happen, it will crash the system, so fix it up by properly testing
+for valid input and that we are up and running before trying to find a
+file in the filesystem.
 
-  arch/arm/mach-s3c/irq-s3c24xx-fiq.S:52:2: error: instruction 'subne' can not set flags, but 's' suffix specified
-    subnes pc, lr, #4 @@ return, still have work to do
-
-  arch/arm/mach-s3c/irq-s3c24xx-fiq.S:64:1: error: invalid symbol redefinition
-    s3c24xx_spi_fiq_txrx:
-
-There are apparently two problems: one with extraneous or duplicate
-labels, and one with old-style opcode mnemonics. Stefan Agner has
-previously fixed other problems like this, but missed this particular
-file.
-
-Fixes: bec0806cfec6 ("spi_s3c24xx: add FIQ pseudo-DMA support")
-Cc: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://lore.kernel.org/r/20210204162416.3030114-1-arnd@kernel.org
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Reported-by: Michael Walle <michael@walle.cc>
+Tested-by: Michael Walle <michael@walle.cc>
+Tested-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210218100818.3622317-1-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/mach-s3c/irq-s3c24xx-fiq.S | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ fs/debugfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-s3c/irq-s3c24xx-fiq.S b/arch/arm/mach-s3c/irq-s3c24xx-fiq.S
-index b54cbd0122413..5d238d9a798e1 100644
---- a/arch/arm/mach-s3c/irq-s3c24xx-fiq.S
-+++ b/arch/arm/mach-s3c/irq-s3c24xx-fiq.S
-@@ -35,7 +35,6 @@
- 	@ and an offset to the irq acknowledgment word
+--- a/fs/debugfs/inode.c
++++ b/fs/debugfs/inode.c
+@@ -297,7 +297,7 @@ struct dentry *debugfs_lookup(const char
+ {
+ 	struct dentry *dentry;
  
- ENTRY(s3c24xx_spi_fiq_rx)
--s3c24xx_spi_fix_rx:
- 	.word	fiq_rx_end - fiq_rx_start
- 	.word	fiq_rx_irq_ack - fiq_rx_start
- fiq_rx_start:
-@@ -49,7 +48,7 @@ fiq_rx_start:
- 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
+-	if (IS_ERR(parent))
++	if (!debugfs_initialized() || IS_ERR_OR_NULL(name) || IS_ERR(parent))
+ 		return NULL;
  
- 	subs	fiq_rcount, fiq_rcount, #1
--	subnes	pc, lr, #4		@@ return, still have work to do
-+	subsne	pc, lr, #4		@@ return, still have work to do
- 
- 	@@ set IRQ controller so that next op will trigger IRQ
- 	mov	fiq_rtmp, #0
-@@ -61,7 +60,6 @@ fiq_rx_irq_ack:
- fiq_rx_end:
- 
- ENTRY(s3c24xx_spi_fiq_txrx)
--s3c24xx_spi_fiq_txrx:
- 	.word	fiq_txrx_end - fiq_txrx_start
- 	.word	fiq_txrx_irq_ack - fiq_txrx_start
- fiq_txrx_start:
-@@ -76,7 +74,7 @@ fiq_txrx_start:
- 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
- 
- 	subs	fiq_rcount, fiq_rcount, #1
--	subnes	pc, lr, #4		@@ return, still have work to do
-+	subsne	pc, lr, #4		@@ return, still have work to do
- 
- 	mov	fiq_rtmp, #0
- 	str	fiq_rtmp, [ fiq_rirq, # S3C2410_INTMOD  - S3C24XX_VA_IRQ ]
-@@ -88,7 +86,6 @@ fiq_txrx_irq_ack:
- fiq_txrx_end:
- 
- ENTRY(s3c24xx_spi_fiq_tx)
--s3c24xx_spi_fix_tx:
- 	.word	fiq_tx_end - fiq_tx_start
- 	.word	fiq_tx_irq_ack - fiq_tx_start
- fiq_tx_start:
-@@ -101,7 +98,7 @@ fiq_tx_start:
- 	strb	fiq_rtmp, [ fiq_rspi, # S3C2410_SPTDAT ]
- 
- 	subs	fiq_rcount, fiq_rcount, #1
--	subnes	pc, lr, #4		@@ return, still have work to do
-+	subsne	pc, lr, #4		@@ return, still have work to do
- 
- 	mov	fiq_rtmp, #0
- 	str	fiq_rtmp, [ fiq_rirq, # S3C2410_INTMOD  - S3C24XX_VA_IRQ ]
--- 
-2.27.0
-
+ 	if (!parent)
 
 
