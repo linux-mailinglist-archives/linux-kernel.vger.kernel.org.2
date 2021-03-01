@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E1D327BC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B49327BD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbhCAKRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:17:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbhCAKQy (ORCPT
+        id S233465AbhCAKSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:18:00 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:58274 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232276AbhCAKQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:16:54 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A14C061756;
-        Mon,  1 Mar 2021 02:16:12 -0800 (PST)
-Date:   Mon, 01 Mar 2021 10:16:10 -0000
+        Mon, 1 Mar 2021 05:16:59 -0500
+Date:   Mon, 01 Mar 2021 10:16:15 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614593771;
+        s=2020; t=1614593776;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jLlLRuAO9hY5yfzy69JdFcFS/cBaH61UJVjMiye7Liw=;
-        b=rcUYAgpUfkPvHvvdvY9NhARIU5NbqNy+BZzFL7Oo1Ru4t2/AagiTazz2lGXso+Nc6F5yLl
-        FU4rOONlcao8qMGfebG0TkxpwZoSTuTG8J055KToGFcTMRjWFxK0xDLCQEdot5sePGfO5C
-        siCK7bqwrpOvgFcXtHFa2AlnqiCMu3LxxrYIwjDzCY9MBNma6HigpXAs9S9qlHjl+bIJDi
-        OoRXJUZoUW+9JJCh73bOU8sgcfncLiGZ1SKUc+P652caMOMnyYM5x5Huydlttu+oCWI+Rc
-        La8YNlZ69hxIpCCFdI3eUnQoa7HB9jWSh88Gz8sQ85wtG82qk2CqseUlpXce9A==
+        bh=+hz1wJcLAYNHFJgzU3OU4jiBvPybuLQJlRGaQTUJ23g=;
+        b=uAOIvn1P7krq0205V1nX7suykKQS4Cln5SFE4hv6oNdXuy6DWUEmsYO7kbKhmN1UihoSTa
+        GuA7MDPr4/gDpcAXQa6RsoPTUhgol0wQdtp79XbpKyhwg7cznm7GWiCN7giVxXpeKqCQSm
+        PHlMiRWUtHWWpVCD521AedF+PCKG83csZfeyZPN0pThtSJduIpFAGJgdi8R7m++1G3VeXK
+        bcnV+HCLdbH30BxtK+XO6eBfYMSxoqifKDvi4FvidMCmiwUFc4jBSTSxI01WXap/soZ8uO
+        zlONX3xrpVbQHhXKaV9BBsz093a0a1VHSI/YHWT61LWjumyaPyRWR+H3jPslfA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614593771;
+        s=2020e; t=1614593776;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jLlLRuAO9hY5yfzy69JdFcFS/cBaH61UJVjMiye7Liw=;
-        b=U4Na7H87DNleX534w+/pdJu0Mv+Q1hKnLs9oUHqsdczSr3pmVnZO+dDtRjtsG6lWMl4Zsg
-        WZKD5wLTIjR+IqCw==
-From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+        bh=+hz1wJcLAYNHFJgzU3OU4jiBvPybuLQJlRGaQTUJ23g=;
+        b=m8rkJla7zB6AghKSbruGpjFvQQmT/E1maQ52Oo0BzfH+D02QllbGekzrjLcgpYI13Np8NG
+        CEQsu3bY6jxZFWCg==
+From:   "tip-bot2 for Mathieu Desnoyers" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf/x86/intel: Set PERF_ATTACH_SCHED_CB for large
- PEBS and LBR
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: sched/urgent] sched/membarrier: fix missing local execution of
+ ipi_sync_rq_state()
+Cc:     Nadav Amit <nadav.amit@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable@vger.kernel.org, #@tip-bot2.tec.linutronix.de,
+        5.4.x+@tip-bot2.tec.linutronix.de, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20201130193842.10569-2-kan.liang@linux.intel.com>
-References: <20201130193842.10569-2-kan.liang@linux.intel.com>
+In-Reply-To: <74F1E842-4A84-47BF-B6C2-5407DFDD4A4A@gmail.com>
+References: <74F1E842-4A84-47BF-B6C2-5407DFDD4A4A@gmail.com>
 MIME-Version: 1.0
-Message-ID: <161459377043.20312.676489427209789411.tip-bot2@tip-bot2>
+Message-ID: <161459377595.20312.5845647845735679377.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,58 +60,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     a8abc881981762631a22568d5e4b2c0ce4aeb15c
-Gitweb:        https://git.kernel.org/tip/a8abc881981762631a22568d5e4b2c0ce4aeb15c
-Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Mon, 30 Nov 2020 11:38:41 -08:00
+Commit-ID:     fba111913e51a934eaad85734254eab801343836
+Gitweb:        https://git.kernel.org/tip/fba111913e51a934eaad85734254eab801343836
+Author:        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+AuthorDate:    Wed, 17 Feb 2021 11:56:51 -05:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 01 Mar 2021 11:02:19 +01:00
+CommitterDate: Mon, 01 Mar 2021 11:02:15 +01:00
 
-perf/x86/intel: Set PERF_ATTACH_SCHED_CB for large PEBS and LBR
+sched/membarrier: fix missing local execution of ipi_sync_rq_state()
 
-To supply a PID/TID for large PEBS, it requires flushing the PEBS buffer
-in a context switch.
+The function sync_runqueues_membarrier_state() should copy the
+membarrier state from the @mm received as parameter to each runqueue
+currently running tasks using that mm.
 
-For normal LBRs, a context switch can flip the address space and LBR
-entries are not tagged with an identifier, we need to wipe the LBR, even
-for per-cpu events.
+However, the use of smp_call_function_many() skips the current runqueue,
+which is unintended. Replace by a call to on_each_cpu_mask().
 
-For LBR callstack, save/restore the stack is required during a context
-switch.
-
-Set PERF_ATTACH_SCHED_CB for the event with large PEBS & LBR.
-
-Fixes: 9c964efa4330 ("perf/x86/intel: Drain the PEBS buffer during context switches")
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Fixes: 227a4aadc75b ("sched/membarrier: Fix p->mm->membarrier_state racy load")
+Reported-by: Nadav Amit <nadav.amit@gmail.com>
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20201130193842.10569-2-kan.liang@linux.intel.com
+Cc: stable@vger.kernel.org # 5.4.x+
+Link: https://lore.kernel.org/r/74F1E842-4A84-47BF-B6C2-5407DFDD4A4A@gmail.com
 ---
- arch/x86/events/intel/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ kernel/sched/membarrier.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 5bac48d..7bbb5bb 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3662,8 +3662,10 @@ static int intel_pmu_hw_config(struct perf_event *event)
- 		if (!(event->attr.freq || (event->attr.wakeup_events && !event->attr.watermark))) {
- 			event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
- 			if (!(event->attr.sample_type &
--			      ~intel_pmu_large_pebs_flags(event)))
-+			      ~intel_pmu_large_pebs_flags(event))) {
- 				event->hw.flags |= PERF_X86_EVENT_LARGE_PEBS;
-+				event->attach_state |= PERF_ATTACH_SCHED_CB;
-+			}
- 		}
- 		if (x86_pmu.pebs_aliases)
- 			x86_pmu.pebs_aliases(event);
-@@ -3676,6 +3678,7 @@ static int intel_pmu_hw_config(struct perf_event *event)
- 		ret = intel_pmu_setup_lbr_filter(event);
- 		if (ret)
- 			return ret;
-+		event->attach_state |= PERF_ATTACH_SCHED_CB;
+diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+index acdae62..b5add64 100644
+--- a/kernel/sched/membarrier.c
++++ b/kernel/sched/membarrier.c
+@@ -471,9 +471,7 @@ static int sync_runqueues_membarrier_state(struct mm_struct *mm)
+ 	}
+ 	rcu_read_unlock();
  
- 		/*
- 		 * BTS is set up earlier in this path, so don't account twice
+-	preempt_disable();
+-	smp_call_function_many(tmpmask, ipi_sync_rq_state, mm, 1);
+-	preempt_enable();
++	on_each_cpu_mask(tmpmask, ipi_sync_rq_state, mm, true);
+ 
+ 	free_cpumask_var(tmpmask);
+ 	cpus_read_unlock();
