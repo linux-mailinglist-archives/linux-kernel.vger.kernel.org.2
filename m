@@ -2,131 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC74329FAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BEB329FB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243238AbhCBDpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:45:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243938AbhCAUxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:53:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2A8C61606;
-        Mon,  1 Mar 2021 20:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614630499;
-        bh=YoemYxX5fP7QqIIwm3B1ehuIMnFwkmcXLzB8TOLXBmk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=DonRjxkS9VoNpqJFm7EnJEa9sAYuYYVMZEgMiBMoIIjZTFDsU3D4VsZII40Yf6CIm
-         EVK0whgQft2ymSyACZkiPrdzL4xnxO39gW4nl3pOb4x3oU9+rAWRSn0neupGD3txSx
-         NjM+2Qs/mZC0grudpOTScJ6GVUtbz4GtPCEMzWHT2J6Hpl5asr+aECEm71RrtvswCA
-         mLn9KVL1VZmdWed1dYhD2ImQ1sPwmO8QhbR3rjIF1ZmLpb/JoKRPszD7LzMGVyCK4/
-         DOA58GXZDizgAU8W2Q8PGaNmasQB1WqnhCvTGkpxZ2dfdQreUfY4eohJL70VaQtY8R
-         BhpgTIEAqN8qw==
-Date:   Mon, 1 Mar 2021 14:28:17 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: RFC: sysfs node for Secondary PCI bus reset (PCIe Hot Reset)
-Message-ID: <20210301202817.GA201451@bjorn-Precision-5520>
+        id S243508AbhCBDqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:46:08 -0500
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:54010 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243851AbhCAU5y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:57:54 -0500
+X-Greylist: delayed 1419 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Mar 2021 15:57:54 EST
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lGpA6-0023AN-BQ; Mon, 01 Mar 2021 20:29:02 +0000
+Date:   Mon, 1 Mar 2021 20:29:02 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: #pragma once (was Re: incoming)
+Message-ID: <YD1OjvWcal+rPz+4@zeniv-ca.linux.org.uk>
+References: <YDlXWHkYntoO4fk0@localhost.localdomain>
+ <CAHk-=wjZJPqmPE_gzvzPtPsojxw-Xg8QTBCn+Oi-ca2s0818NA@mail.gmail.com>
+ <YDl9/QU8EsCOPyuf@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210301171221.3d42a55i7h5ubqsb@pali>
+In-Reply-To: <YDl9/QU8EsCOPyuf@localhost.localdomain>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Alex, reset expert]
+On Sat, Feb 27, 2021 at 02:02:21AM +0300, Alexey Dobriyan wrote:
 
-On Mon, Mar 01, 2021 at 06:12:21PM +0100, Pali Rohár wrote:
-> Hello!
+> There are rules and schemes about how to create guard macro.
 > 
-> PCIe card can be reset via in-band Hot Reset signal which can be
-> triggered by PCIe bridge via Secondary Bus Reset bit in PCI config
-> space.
+> Should it be prefixed by underscore?
+> Should it be prefixed by two underscores?
+> Should it be full path uppercased or just last path component?
+> Should the guard macro be lowercased?
+> Should it be changed when header is moved?
+> Should trailing #endif contain comment?
+> Should #define be just #define or "#define FOO 1"?
+
+Who cares?  To all of the above, really.
+
+> I've even seen advice (or an IDE doing that) that is should contain
+> timestamp of a header creation time to minimise collisions (implying
+> collisions could happen as could typos as could broken guards)
+
+Ever seen that in the tree?  Where, if so?
+
+> All this zoo of styles and made up mental work is completely avoided
+> by using #pragma once:
 > 
-> Kernel already exports sysfs node "reset" for triggering Functional
-> Reset of particular function of PCI device. But in some cases Functional
-> Reset is not enough and Hot Reset is required.
+> 	1) put #pragma once on the first line
+> 	
+> 		or
 > 
-> Following RFC patch exports sysfs node "reset_bus" for PCI bridges which
-> triggers Secondary Bus Reset and therefore for PCIe bridges it resets
-> connected PCIe card.
+> 	2) put #pragma once on the second line after SPDX banner
 > 
-> What do you think about it?
+> and that's it.
 > 
-> Currently there is userspace script which can trigger PCIe Hot Reset by
-> modifying PCI config space from userspace:
-> 
-> https://alexforencich.com/wiki/en/pcie/hot-reset-linux
-> 
-> But because kernel already provides way how to trigger Functional Reset
-> it could provide also way how to trigger PCIe Hot Reset.
-> 
-> 
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index 50fcb62d59b5..f5e11c589498 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -1321,6 +1321,30 @@ static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
->  
->  static DEVICE_ATTR(reset, 0200, NULL, reset_store);
->  
-> +static ssize_t reset_bus_store(struct device *dev, struct device_attribute *attr,
-> +			       const char *buf, size_t count)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	unsigned long val;
-> +	ssize_t result = kstrtoul(buf, 0, &val);
-> +
-> +	if (result < 0)
-> +		return result;
-> +
-> +	if (val != 1)
-> +		return -EINVAL;
-> +
-> +	pm_runtime_get_sync(dev);
-> +	result = pci_bridge_secondary_bus_reset(pdev);
-> +	pm_runtime_put(dev);
-> +	if (result < 0)
-> +		return result;
-> +
-> +	return count;
-> +}
-> +
-> +static DEVICE_ATTR(reset_bus, 0200, NULL, reset_bus_store);
-> +
->  static int pci_create_capabilities_sysfs(struct pci_dev *dev)
->  {
->  	int retval;
-> @@ -1332,8 +1356,15 @@ static int pci_create_capabilities_sysfs(struct pci_dev *dev)
->  		if (retval)
->  			goto error;
->  	}
-> +	if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE) {
-> +		retval = device_create_file(&dev->dev, &dev_attr_reset_bus);
-> +		if (retval)
-> +			goto error_reset_bus;
-> +	}
->  	return 0;
->  
-> +error_reset_bus:
-> +	device_remove_file(&dev->dev, &dev_attr_reset);
->  error:
->  	pcie_vpd_remove_sysfs_dev_files(dev);
->  	return retval;
-> @@ -1414,6 +1445,8 @@ static void pci_remove_capabilities_sysfs(struct pci_dev *dev)
->  		device_remove_file(&dev->dev, &dev_attr_reset);
->  		dev->reset_fn = 0;
->  	}
-> +	if (dev->hdr_type == PCI_HEADER_TYPE_BRIDGE)
-> +		device_remove_file(&dev->dev, &dev_attr_reset_bus);
->  }
->  
->  /**
+> No fuss, no filled up preprocessor hashtables, no implicit arguing
+> about styles.
+
+Care to provide some stats on the amount of those macros encountered
+on build, along with the total amount of defines parsed and hashed?
+It's noise.
+
+And what is "implicit arguing", BTW?  I'm yet to see any fights
+along those lines - you are the first one to bring that up, AFAICS.
+Maybe I'd simply been lucky until now, of course, but...
