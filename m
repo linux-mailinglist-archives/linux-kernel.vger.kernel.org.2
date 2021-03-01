@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E930329AD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9443329A23
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348594AbhCBBDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:03:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57718 "EHLO mail.kernel.org"
+        id S1377026AbhCBApT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:45:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240648AbhCASzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:55:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B9BC600EF;
-        Mon,  1 Mar 2021 17:46:05 +0000 (UTC)
+        id S240488AbhCASjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B35CC65359;
+        Mon,  1 Mar 2021 17:45:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620765;
-        bh=u9t6BL1p0f8PS6MYJW+YcVCkee3Z1XBfa82xIIMJofg=;
+        s=korg; t=1614620738;
+        bh=rdndl1Vt5USgrNlMSk+IVIUeMJ8QBwHNNPBzGlVWSKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sSa3qnIWkusH/FDgqMpdc+zdw8yHQp0P4uG9asEldS3WuxafCogwMnIdRNA50CUG0
-         F2XHuUYBeAlMmFA44ceGNHd7TDOh9PD/FUouahpHa9eg+fN4oWrO0lMAfeK91AFP3m
-         ribMI7t0S8qDC6bog5oRushHHi2nYLOcifeeh/uo=
+        b=GVLoXahBSkXy2wk/kzdyhd0wHII29gYqekH1dxCWMdqTDANgV8f13MHMHe/UhJSil
+         m+uh6Oa89GYLvkm6Yb/h3HJ7GpHpMvOFqW5AKhSvbTecb29YOljnYi+2wxKIAEzZkX
+         R5+g00N6EAYa6mxLewI2xgyX1i0ehm3FsvUkcLJI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Judy Hsiao <judyhsiao@google.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 231/775] media: pxa_camera: declare variable when DEBUG is defined
-Date:   Mon,  1 Mar 2021 17:06:39 +0100
-Message-Id: <20210301161213.045839683@linuxfoundation.org>
+Subject: [PATCH 5.11 234/775] ASoC: max98373: Fixes a typo in max98373_feedback_get
+Date:   Mon,  1 Mar 2021 17:06:42 +0100
+Message-Id: <20210301161213.192337858@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,41 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Judy Hsiao <judyhsiao@google.com>
 
-[ Upstream commit 031b9212eeee365443aaef013360ea6cded7b2c4 ]
+[ Upstream commit ded055eea679139f11bd808795d9697b430d1c7d ]
 
-When DEBUG is defined this error occurs
+The snd_soc_put_volsw in max98373_feedback_get is a typo, change it
+to snd_soc_get_volsw.
 
-drivers/media/platform/pxa_camera.c:1410:7: error:
-  ‘i’ undeclared (first use in this function)
-  for (i = 0; i < vb->num_planes; i++)
-       ^
-The variable 'i' is missing, so declare it.
-
-Fixes: 6f28435d1c15 ("[media] media: platform: pxa_camera: trivial move of functions")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 349dd23931d1 ("ASoC: max98373: don't access volatile registers in bias level off")
+Signed-off-by: Judy Hsiao <judyhsiao@google.com>
+Link: https://lore.kernel.org/r/20210127135620.1143942-1-judyhsiao@chromium.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/pxa_camera.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/max98373.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
-index b664ce7558a1a..75fad9689c901 100644
---- a/drivers/media/platform/pxa_camera.c
-+++ b/drivers/media/platform/pxa_camera.c
-@@ -1386,6 +1386,9 @@ static int pxac_vb2_prepare(struct vb2_buffer *vb)
- 	struct pxa_camera_dev *pcdev = vb2_get_drv_priv(vb->vb2_queue);
- 	struct pxa_buffer *buf = vb2_to_pxa_buffer(vb);
- 	int ret = 0;
-+#ifdef DEBUG
-+	int i;
-+#endif
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index 31d571d4fac1c..746c829312b87 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -190,7 +190,7 @@ static int max98373_feedback_get(struct snd_kcontrol *kcontrol,
+ 		}
+ 	}
  
- 	switch (pcdev->channels) {
- 	case 1:
+-	return snd_soc_put_volsw(kcontrol, ucontrol);
++	return snd_soc_get_volsw(kcontrol, ucontrol);
+ }
+ 
+ static const struct snd_kcontrol_new max98373_snd_controls[] = {
 -- 
 2.27.0
 
