@@ -2,69 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07228329FE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E5E329FEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574803AbhCBDum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:50:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242872AbhCAVkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:40:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C24C56023B;
-        Mon,  1 Mar 2021 21:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614634807;
-        bh=LBRKCRRhWBzq987fHGLcia886JXZVnorYEjMx4E3CP4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=oNkZBfC0d/uZwbC39vZscHtAtE8JeBmDAaPZfLc2fZRtBrUMvpf3FHyBNd+yJFA0b
-         0g2gKfi1TE+xzsdRqSR/cefEXOXseVeOAxOOXB3N+hO4XXmpXgecw2xqPOHxTM2h3x
-         dGpP1cz+mJgWO4gEJDYE0RlKQzONrXM98zev49e4zPpNgGTZB5ERQrwRs5iJUWlX0I
-         b/2bGe3THQNqrjtz1h3/96dXE+KGgYDUChL+yeuO6RRersJtqF9IKH0wbKemLmBkle
-         yYzwXeZHvg/9K3fPJH4MQgR/ySx6viY8mF20ER5P1k4oHDmysgIqnVYTgN8le9VGMZ
-         GzBfIYmXBcR5A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B25B860C26;
-        Mon,  1 Mar 2021 21:40:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1574892AbhCBDvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:51:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244176AbhCAVnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 16:43:10 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C84C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 13:41:20 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lGqI0-0002xf-66; Mon, 01 Mar 2021 22:41:16 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lGqHz-0000eG-FC; Mon, 01 Mar 2021 22:41:15 +0100
+Date:   Mon, 1 Mar 2021 22:41:15 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v5 1/7] pwm: pca9685: Switch to atomic API
+Message-ID: <20210301214115.xolncig676tgnxwn@pengutronix.de>
+References: <20201215212228.185517-1-clemens.gruber@pqgruber.com>
+ <CAGngYiWbQ2STTgh2OwJTqQ-niBDbbn+OdMkk7PMzYnrZWzSy9Q@mail.gmail.com>
+ <X9uL13GA1uDbLJiG@workstation.tuxnet>
+ <CAGngYiW7vcJjz36xsBYx5n7=j1_5sE5a1AGpqC3Jj+tw0+FAXQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] inetpeer: use div64_ul() and clamp_val() calculate
- inet_peer_threshold
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161463480772.18741.509649048962525834.git-patchwork-notify@kernel.org>
-Date:   Mon, 01 Mar 2021 21:40:07 +0000
-References: <20210301060548.46289-1-yejune.deng@gmail.com>
-In-Reply-To: <20210301060548.46289-1-yejune.deng@gmail.com>
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, eric.dumazet@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6kszh3ywon4ute5k"
+Content-Disposition: inline
+In-Reply-To: <CAGngYiW7vcJjz36xsBYx5n7=j1_5sE5a1AGpqC3Jj+tw0+FAXQ@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+--6kszh3ywon4ute5k
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon,  1 Mar 2021 14:05:48 +0800 you wrote:
-> In inet_initpeers(), struct inet_peer on IA32 uses 128 bytes in nowdays.
-> Get rid of the cascade and use div64_ul() and clamp_val() calculate that
-> will not need to be adjusted in the future as suggested by Eric Dumazet.
-> 
-> Suggested-by: Eric Dumazet <eric.dumazet@gmail.com>
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> 
-> [...]
+On Thu, Dec 17, 2020 at 12:10:10PM -0500, Sven Van Asbroeck wrote:
+> On Thu, Dec 17, 2020 at 11:48 AM Clemens Gruber
+> <clemens.gruber@pqgruber.com> wrote:
+> >
+> > I can initialize the values to 0 of course and check the file for other
+> > places with missing initializations.
+> >
+> > Or would it be better to check the return codes of regmap_read/write in
+> > such cases? I'm not sure.
+>=20
+> I think that checking the regmap_read/write return values is overkill
+> in this driver. These functions can't realistically fail, except if the i=
+2c
+> bus is bad, i.e. h/w failure or intermittency. And that's an externality
+> which I believe we can ignore.
+>=20
+> Maybe Thierry or Uwe have further insights here.
 
-Here is the summary with links:
-  - inetpeer: use div64_ul() and clamp_val() calculate inet_peer_threshold
-    https://git.kernel.org/netdev/net/c/8bd2a0552734
+I'm a fan of full checking, but I'm not sure what's Thierry's position
+on that.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+My reasoning is: If the bus is bad and a request to modify the PWM fails
+because of that, the PWM consumer probably wants to know.
 
+Best regards
+Uwe
 
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--6kszh3ywon4ute5k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmA9X3cACgkQwfwUeK3K
+7AlrWAf+IoY5j0pCSD2uxjSOPPsQw0d+qZHf9gkrbmxtz5QZLAAB3pUMv1M0tk+r
+XDR1LP0+paIQXGmhF+CN9aLc2yIxap9ClaV4EBRN5eYFFdCmrPKdTyjYB2bBSkE1
+1BahYAP+7ROrC3LIa0Dsi/ezq6ImEn1+mkcro28rW5YNHCLAqDzTx0ZybyYdtAJs
+t4N3md9wPyeJA4yC//K8ht9MnUu2vjCVMZL459C3H/Pu/RQCG1cDgNQVJhGv1auN
+sGhJ0PsIZc2pP8LkjqwLzTvNRgRQyni2ER5G8srycf7M58/sbajvzbt/yEBSDYXj
+EKcJocs9u3kDtRDA0Uxus2+o22lmMw==
+=TcHV
+-----END PGP SIGNATURE-----
+
+--6kszh3ywon4ute5k--
