@@ -2,170 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C18B327B80
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F93327B85
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhCAKFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:05:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhCAKD2 (ORCPT
+        id S232032AbhCAKGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:06:22 -0500
+Received: from mx1.opensynergy.com ([217.66.60.4]:17017 "EHLO
+        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231830AbhCAKD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:03:28 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A84C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 02:02:43 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id d11so15422222wrj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:02:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XZipS0r+2O0ULBwm6Jk3yIYPHelEH46+P8E8sbBaM9U=;
-        b=GinUznSYZfF+VzEGo0tJV8PZ9XUk9HjQzr8yHcQVhrjWHd/iSlafH+RzuMh3ru33X/
-         h1wy69UaUYiGTeedXN7yuV0KfkItl42fsYmy3J09hA7jc6zLThAWPsZtDtlmfAYK92VB
-         85zhAumdUGFPzf89n5FCVN7YKcuIIQjY05rmYfVeCuzWPINd9RDF1Lf7PtN1DI9JLyHQ
-         k87xgm0W8J/l6/Vty7+AYRyuEY2xEcO2WLDttvmnn18toZi5rmx3VCB26rUUKMkzKb8u
-         H5Ed6gF96cS44epBs267nIRdnq8blQq9jbam/LnyDOksDi9w1L87zpEfBt0jtPYkNtHz
-         D5IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XZipS0r+2O0ULBwm6Jk3yIYPHelEH46+P8E8sbBaM9U=;
-        b=lI0xmymZPeonGPofEmiBA1GzaLDlXoPwYE3OgLvobjxeHlbcGo/Q1NUy9Ps5nQsJdl
-         EfAjT5biRQVuEqfKvr4AG2IhnzHDsYvgU71NEDThGzIIDRC1qYbFuDlYh5P34TjGy9uR
-         YyuWwjB+dDJIzSYL08oVebiWXckrTz4U3ile9rD2NNWLr7UpJ98uvKSzvQUWieCKsHM7
-         hCLITHTaM/tEfnc56L776CR0sB5hch0fnOyo3XaGLbEESEzuo53Z//MCVzyV0dGxxnwv
-         VVxJs5dw493cBJHt25blH65Q9PFZaahElQ057F6DXvCHgr70qF3XGniCC7FOhPWNhv14
-         EMwA==
-X-Gm-Message-State: AOAM532qH0GxI7yycw45DOiNO7UyYJEqjICypO6xAnU8WjocSAfn9V/K
-        RHo/s443jzT/+4LDLXNuOaUNyA==
-X-Google-Smtp-Source: ABdhPJzcEOS66BToEGp2vmi7xT4nDMdmFn965xO54Gu11rFVHj40mQNIuRUKldTKzGK+jQljMZLWNA==
-X-Received: by 2002:a5d:4e0e:: with SMTP id p14mr15421982wrt.130.1614592962247;
-        Mon, 01 Mar 2021 02:02:42 -0800 (PST)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id m6sm24444120wrv.73.2021.03.01.02.02.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 02:02:41 -0800 (PST)
-Date:   Mon, 1 Mar 2021 10:02:39 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Kiran Gunda <kgunda@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
-        lee.jones@linaro.org, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, jacek.anaszewski@gmail.com,
-        pavel@ucw.cz, robh+dt@kernel.org, mark.rutland@arm.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH V3 2/2] backlight: qcom-wled: Correct the sync_toggle
- sequence
-Message-ID: <20210301100239.orbt7km6lgjwvzii@maple.lan>
-References: <1614590916-27070-1-git-send-email-kgunda@codeaurora.org>
- <1614590916-27070-3-git-send-email-kgunda@codeaurora.org>
+        Mon, 1 Mar 2021 05:03:58 -0500
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
+        by mx1.opensynergy.com (Proxmox) with ESMTP id 84EF2A1344;
+        Mon,  1 Mar 2021 11:03:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:from:from:in-reply-to:message-id:mime-version:references
+        :reply-to:subject:subject:to:to; s=srmailgate02; bh=TYThy1gXWt2N
+        GLWZE4+BNvfDquT8rOEI1kVicn0HVsg=; b=y+hHA5oyvhs9pArzHttMuyoKdxP1
+        Fwlbcir93mQ/6UUIuo+Ic+uw7QoZBRETjmBckBQT2dbKzSu1eTdQmrf8S6/mpmv7
+        mMEIknuE/CU/jezBM/VLDdDgSqiCggLP8iPwWnLfGBPLAlIg8vdsqEjjrqn8p9wY
+        yvZLGk+qhwhmzvATxARQSyAPebd142F+ve1d0HyZ+q09n4HzhZ/lRy/Lgwxj6wB/
+        aBwAkiW6/G3XqPE4DgEWh5V5dpfd5LA6IfwyJhUnHfwIKObPXChG5vsWdjBNNV1h
+        d7BogU8h562dy0T9lSWv6/M+agyifUWIv/XhelwNk/RYqwbsZ7QttVLNhg==
+Subject: Re: [PATCH v6 9/9] ALSA: virtio: introduce device suspend/resume
+ support
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
+References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
+ <20210227085956.1700687-10-anton.yakovlev@opensynergy.com>
+ <s5hpn0kjt31.wl-tiwai@suse.de>
+From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Message-ID: <54854cb9-99c3-4c05-3b43-f41d89a29aec@opensynergy.com>
+Date:   Mon, 1 Mar 2021 11:03:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614590916-27070-3-git-send-email-kgunda@codeaurora.org>
+In-Reply-To: <s5hpn0kjt31.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 02:58:36PM +0530, Kiran Gunda wrote:
-> As per the current implementation, after FSC (Full Scale Current)
-> and brightness update the sync bits are transitioned from set-then-clear.
-
-This does not makes sense since there are too many verbs. Set and clear
-are both verbs so in this context: "the code will set the bit and then
-the code will clear the bit".
-
-Either:
-
-s/transitioned from set-then-clear/set-then-cleared/.
-
-Or:
-
-s/transitioned from set-then-clear/using a set-then-clear approach/.
-
-> But, the FSC and brightness sync takes place during a clear-then-set
-> transition of the sync bits.
-
-Likewise this no longer makes sense and had also become misleading.
-Two changes of state, clear and then set, do not usually result in a
-single transition.
-
-Either:
-
-s/clear-then-set/0 to 1/
-
-Alternatively, if you want to stick exclusively to the set/clear
-terminology then replace the whole quoted section with:
-
-  But, the FSC and brightness sync takes place when the sync bits are
-  set (e.g. on a rising edge).
-
-
-> So the hardware team recommends a
-> clear-then-set approach in order to guarantee such a transition
-> regardless of the previous register state.
+On 28.02.2021 13:05, Takashi Iwai wrote:
+> On Sat, 27 Feb 2021 09:59:56 +0100,
+> Anton Yakovlev wrote:
+>>
+>> All running PCM substreams are stopped on device suspend and restarted
+>> on device resume.
+>>
+>> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+>> ---
+>>   sound/virtio/virtio_card.c    | 56 +++++++++++++++++++++++++++++++++++
+>>   sound/virtio/virtio_pcm.c     |  1 +
+>>   sound/virtio/virtio_pcm_ops.c | 41 ++++++++++++++++++++-----
+>>   3 files changed, 90 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
+>> index 59455a562018..c7ae8801991d 100644
+>> --- a/sound/virtio/virtio_card.c
+>> +++ b/sound/virtio/virtio_card.c
+>> @@ -323,6 +323,58 @@ static void virtsnd_remove(struct virtio_device *vdev)
+>>        kfree(snd->event_msgs);
+>>   }
+>>
+>> +#ifdef CONFIG_PM_SLEEP
+>> +/**
+>> + * virtsnd_freeze() - Suspend device.
+>> + * @vdev: VirtIO parent device.
+>> + *
+>> + * Context: Any context.
+>> + * Return: 0 on success, -errno on failure.
+>> + */
+>> +static int virtsnd_freeze(struct virtio_device *vdev)
+>> +{
+>> +     struct virtio_snd *snd = vdev->priv;
+>> +
+>> +     virtsnd_ctl_msg_cancel_all(snd);
+>> +
+>> +     vdev->config->del_vqs(vdev);
+>> +     vdev->config->reset(vdev);
+>> +
+>> +     kfree(snd->event_msgs);
+>> +
+>> +     /*
+>> +      * If the virtsnd_restore() fails before re-allocating events, then we
+>> +      * get a dangling pointer here.
+>> +      */
+>> +     snd->event_msgs = NULL;
+>> +
+>> +     return 0;
 > 
-> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+> I suppose some cancel of inflight works is needed?
+> Ditto for the device removal, too.
 
-With one of each of the changes proposed above:
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+It's not necessary here, since the device is reset and all of this are
+happened automatically. But in the device remove it makes sense also to
+disable events before calling snd_card_free(), since the device is still
+able to send notifications at that moment. Thanks!
 
 
-Daniel.
-
-
-> ---
->  drivers/video/backlight/qcom-wled.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>> --- a/sound/virtio/virtio_pcm.c
+>> +++ b/sound/virtio/virtio_pcm.c
+>> @@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
+>>                SNDRV_PCM_INFO_BATCH |
+>>                SNDRV_PCM_INFO_BLOCK_TRANSFER |
+>>                SNDRV_PCM_INFO_INTERLEAVED |
+>> +             SNDRV_PCM_INFO_RESUME |
+>>                SNDRV_PCM_INFO_PAUSE;
 > 
-> diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-> index aef52b9..19f83ac 100644
-> --- a/drivers/video/backlight/qcom-wled.c
-> +++ b/drivers/video/backlight/qcom-wled.c
-> @@ -337,13 +337,13 @@ static int wled3_sync_toggle(struct wled *wled)
->  
->  	rc = regmap_update_bits(wled->regmap,
->  				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
-> -				mask, mask);
-> +				mask, WLED3_SINK_REG_SYNC_CLEAR);
->  	if (rc < 0)
->  		return rc;
->  
->  	rc = regmap_update_bits(wled->regmap,
->  				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
-> -				mask, WLED3_SINK_REG_SYNC_CLEAR);
-> +				mask, mask);
->  
->  	return rc;
->  }
-> @@ -353,17 +353,17 @@ static int wled5_mod_sync_toggle(struct wled *wled)
->  	int rc;
->  	u8 val;
->  
-> -	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
-> -					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
->  	rc = regmap_update_bits(wled->regmap,
->  				wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
-> -				WLED5_SINK_REG_SYNC_MASK, val);
-> +				WLED5_SINK_REG_SYNC_MASK, 0);
->  	if (rc < 0)
->  		return rc;
->  
-> +	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
-> +					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
->  	return regmap_update_bits(wled->regmap,
->  				  wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
-> -				  WLED5_SINK_REG_SYNC_MASK, 0);
-> +				  WLED5_SINK_REG_SYNC_MASK, val);
->  }
->  
->  static int wled_ovp_fault_status(struct wled *wled, bool *fault_set)
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->  a Linux Foundation Collaborative Project
+> Actually you don't need to set SNDRV_PCM_INFO_RESUME.
+> This flag means that the driver supports the full resume procedure,
+> which isn't often the case; with this, the driver is supposed to
+> resume the stream exactly from the suspended position.
+
+If I understood you right, that's exactly how resume is implemented now
+in the driver. Although we fully restart substream on the device side,
+from an application point of view it is resumed exactly at the same
+position.
+
+
+> Most drivers don't set this but implement only the suspend-stop
+> action.  Then the application (or the sound backend) will re-setup the
+> stream and restart accordingly.
+
+And an application must be aware of such possible situation? Since I
+have no doubt in alsa-lib, but I don't think that for example tinyalsa
+can handle this right.
+
+
+>> @@ -309,6 +318,21 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
+>>        int rc;
+>>
+>>        switch (command) {
+>> +     case SNDRV_PCM_TRIGGER_RESUME: {
+>> +             /*
+>> +              * We restart the substream by executing the standard command
+>> +              * sequence.
+>> +              */
+>> +             rc = virtsnd_pcm_hw_params(substream, NULL);
+>> +             if (rc)
+>> +                     return rc;
+>> +
+>> +             rc = virtsnd_pcm_prepare(substream);
+>> +             if (rc)
+>> +                     return rc;
 > 
+> And this won't work at all unless nonatomic PCM ops.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+
+-- 
+Anton Yakovlev
+Senior Software Engineer
+
+OpenSynergy GmbH
+Rotherstr. 20, 10245 Berlin
+
