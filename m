@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6E432811E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E20432811F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236461AbhCAOlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
+        id S236482AbhCAOl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:41:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234639AbhCAOlW (ORCPT
+        with ESMTP id S234639AbhCAOly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:41:22 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A2AC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:40:41 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id hs11so28646588ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:40:41 -0800 (PST)
+        Mon, 1 Mar 2021 09:41:54 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55294C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:41:14 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id k12so10657089ljg.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:41:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JVVBUJ75xHBEk5qyQn3Xf4S3QyZMI9CdpTctwGu75EM=;
-        b=j9ASSF6odpol7YQ+cwgBHF4thZQTO17O6g4YkepShvXcYU+YwwCGbE97nEk0Wya1zD
-         hxnTIT03M2iUIzRNcjm6FdHYOhwU0M8PO+YY9oUBDltEZNGWoGM/jUAQUnhFZ5eLO5VF
-         gMgYl+Qmqbo6gxE0kS1Rjozao27JrR5nCStWUyIfZz60+cL7r4T4oBE3ZKnNPYdXaiAE
-         VqhUPuKtbewug89zDLb4feHmgFGnfUWx2EGyYogJeZ/ojIXbl4wPkcf5Kpn1r7CTNM0v
-         qI3lUaoLrdBTFkU4zU7VNofXwhl3VqZhivDmAR5K0Pb5iQWbMJlUJd3hy4oRplfoRpn6
-         YTDA==
+        bh=oQHOCamLVrBefwufRiy5HU/E3AUjzZBUCizdUCoqKsc=;
+        b=WIJFuYqpapaqFwvO9JFT6AAZi9S6uqxo754yC8msLiyL2gmrh8AIyddisgHDo530fx
+         cqjfdvCHPWku2SNqQG6OGQ3pqcvQOST2jCoEStnuSraVWNHp76TzmvdDi0anWN1c6CZ/
+         oKWn/JlHo+xeMAUJ459QRGzvs9Q2ZFhu7FUj3C40LbBZxn9ArzQ1YT8MkGxQprhgFP7A
+         Kt8SFMP/C93C1lg2M9+T3UWehs83MORFdp1VgA+zaPiyMIQC+TMxUFZKYOhF0yOVRUXT
+         xjTIe0kjPW9nyZYYgmVPPiBDygKbNf7HInMjTFQfxGdb5g0bLV7Nh01H2qigjDduyenS
+         Lzeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JVVBUJ75xHBEk5qyQn3Xf4S3QyZMI9CdpTctwGu75EM=;
-        b=g4oSF3mSqG/mBC09VPr2IyiKbrioHFtx5wn3IQpGKkGn0mkGz0v/ufUE3L2+oYhguu
-         vLUE9t1Q+RX63EsvY1+y/0mvFvDdOnHIZoOtGBErbGR5GDo/4RQYSkv5zyYXwebZHHeM
-         5WzIgxDDjQNuru842eDmdQeIjN65Niy9dV+cDgrLz574ICacLgkA3McHxZH531SbcZC8
-         EQTducSVNxeVvoB+au3wsVxD+yzJaarFdujO+EExr0O/uhAA1zLCS+6cjYkw8+Q3x87s
-         67bItYvPockqsILxuQw/D592UaLveqE07R9444539ILLrwscZxTOApGaJcPdWm3rw7Zl
-         YbLw==
-X-Gm-Message-State: AOAM530Uu1mbzqWqLh+S4LxHDbapPetmuI1LDh4nlm8GLKAEo8hLXQ00
-        IJE7vyL8AvnAsBpqCTOObnw+pgLFhFg2UQ4gr+cA3z7/wRf2
-X-Google-Smtp-Source: ABdhPJzg507CF+cb05KnYkYY9ytVN+T13YzJcNieXsLvtKP8j4OTzaetWoeVWgVjKqarwzmRTir/LlIJP6mW7/9Nxi8=
-X-Received: by 2002:a17:906:3b84:: with SMTP id u4mr16070980ejf.431.1614609640223;
- Mon, 01 Mar 2021 06:40:40 -0800 (PST)
+        bh=oQHOCamLVrBefwufRiy5HU/E3AUjzZBUCizdUCoqKsc=;
+        b=YspksPmJuVJT60xTlnZEpCC3uZXh5znE7QmF7nLJIuzl9vamaorctDkio6L1JhDI34
+         4tDDcV++L7BqPgCKqAQSndRqBeWtfEgH3GC9zjbo0yBgcUK5eRF2bmelq7CrZvnvfeT7
+         BqkKcsS+1aVwmmbCqu3r5RklWYNh4A240NCV3bNZMmfhxLvy/BwTX+fYwbhGCSdaAwpq
+         ehL5cKtbAKYx1hOnL6ijyo/eWvne9vK3iQQb1iqmckFBccJfQXG2r6TpTJNeeMnyaEH1
+         gGGEWNcyJKDSsQExIWApOv/6Q8Vv24d1NLErOKlXrKxCqOTz6aoYlTq+DUGJJsyuw+d6
+         jsOg==
+X-Gm-Message-State: AOAM532bI/Vp3Sr3J5wgRaafczZMauXUqECx213Hdr9pydgDfbCDaPTI
+        Rjoum2+PO7ccZHHHHq+HoiybzE7SJHupo0CifS0iAuT9vs4=
+X-Google-Smtp-Source: ABdhPJz+reTjyQve2V5YBMUITRz/pswBvIz/TpjH+zQKPEYyW2zJgDIAn7Ude42SHhV0tSGPR8WEeWLGAbRaMK4/Yew=
+X-Received: by 2002:a2e:9004:: with SMTP id h4mr6081568ljg.326.1614609672923;
+ Mon, 01 Mar 2021 06:41:12 -0800 (PST)
 MIME-Version: 1.0
-References: <202102100211.hNoYGjub-lkp@intel.com> <CAHC9VhRidm6WXr9T+dGG_hZjeS+cKaVkMic_cNJMG-CRqyoSVA@mail.gmail.com>
- <20210301060822.GA21746@shbuild999.sh.intel.com>
-In-Reply-To: <20210301060822.GA21746@shbuild999.sh.intel.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 1 Mar 2021 09:40:29 -0500
-Message-ID: <CAHC9VhT9Mzocw3w6JfHbvqm4=7wWodbrdAA4BoOU2VqGHavZBQ@mail.gmail.com>
-Subject: Re: [linux-next:master 5983/6048] h8300-linux-ld: section .data VMA
- overlaps section __kcrctab VMA
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     lkp <lkp@intel.com>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
+References: <YDvLYzsGu+l1pQ2y@localhost.localdomain> <YDvMOp41h6UlCKMP@localhost.localdomain>
+In-Reply-To: <YDvMOp41h6UlCKMP@localhost.localdomain>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 1 Mar 2021 15:41:01 +0100
+Message-ID: <CACRpkdYv+97S2D4pXqR9khccy2VD3bEB0GC8ou8TfmOjhZXTPA@mail.gmail.com>
+Subject: Re: [PATCH 04/11] pragma once: convert drivers/gpu/drm/pl111/pl111_nomadik.h
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 1:08 AM Feng Tang <feng.tang@intel.com> wrote:
->
-> Hi Paul,
->
-> On Wed, Feb 10, 2021 at 02:21:41AM +0800, Paul Moore wrote:
-> > On Tue, Feb 9, 2021 at 1:09 PM kernel test robot <lkp@intel.com> wrote:
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-> > > head:   59fa6a163ffabc1bf25c5e0e33899e268a96d3cc
-> > > commit: 77d8143a5290b38e3331f61f55c0b682699884bc [5983/6048] Merge remote-tracking branch 'selinux/next'
-> > > config: h8300-randconfig-r005-20210209 (attached as .config)
-> > > compiler: h8300-linux-gcc (GCC) 9.3.0
-> > > reproduce (this is a W=1 build):
-> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > >         chmod +x ~/bin/make.cross
-> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=77d8143a5290b38e3331f61f55c0b682699884bc
-> > >         git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> > >         git fetch --no-tags linux-next master
-> > >         git checkout 77d8143a5290b38e3331f61f55c0b682699884bc
-> > >         # save the attached .config to linux build tree
-> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=h8300
-> > >
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > >
-> > > All errors (new ones prefixed by >>):
-> > >
-> > >    h8300-linux-ld: section .init.text LMA [0000000000430360,00000000004479a1] overlaps section .data LMA [000000000041868c,00000000004489eb]
-> > > >> h8300-linux-ld: section .data VMA [0000000000400000,000000000043035f] overlaps section __kcrctab VMA [00000000003fdd74,000000000040007b]
-> > > >> h8300-linux-ld: section __kcrctab_gpl VMA [000000000040007c,00000000004025a7] overlaps section .data VMA [0000000000400000,000000000043035f]
-> > >    h8300-linux-ld: arch/h8300/kernel/entry.o: in function `resume_kernel':
-> > >    (.text+0x29a): undefined reference to `TI_PRE_COUNT'
-> >
-> > This really doesn't look like something caused by SELinux ...
->
-> No, this is not related with SELinux, sorry for the false alarm.
+On Sun, Feb 28, 2021 at 6:00 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
 
-Thanks for confirming this and providing an explanation of the root cause.
+> From fe8504a1a0b5352cbc676b933c3dbb79ae9f59c9 Mon Sep 17 00:00:00 2001
+> From: Alexey Dobriyan <adobriyan@gmail.com>
+> Date: Tue, 9 Feb 2021 16:50:24 +0300
+> Subject: [PATCH 04/11] pragma once: convert drivers/gpu/drm/pl111/pl111_nomadik.h
+>
+> This file has broken include guard, convert it manually.
+>
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
 
--- 
-paul moore
-www.paul-moore.com
+Yeah that's right, I wonder how this happened.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
