@@ -2,108 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4307332A013
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCB132A014
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575247AbhCBDym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:54:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244516AbhCAWQr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:16:47 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87259C061756;
-        Mon,  1 Mar 2021 14:16:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=zxZIlcc7PFkSOXfb8Azdcpif4NIGsuIagSgxJ7r+Dx0=; b=INpsQoCF19J5S1IqbMocDI7zho
-        DbkuSxFu6JX1zFwJYXpA3CAYN56R+uVcSOfzBGeIT1zBIaRJfNoL1+T59hKtSfbcFiKeVL2NE4PvP
-        iJ737y3mQso609/FgDStoFIHnZzo+dSbGnfGYjCPTJRmoKdUGRCxwRmMftQC1Lw4SpBTalZX2SgGU
-        aqXPq1lmkhgG8Vi86a7UmBdfiwfwxRhNY31P9nu1ow0Wjkh2wz29dwiKjeBwP2K45VGZcs3ic0yDQ
-        OFpb6nXGP4cw/njjSj+ZC6ZwnUsB6DKAbqlCKFp5zfF1jQlMocI8WoklflXnJQThFtqVAA1QG+Nhz
-        R8ahroeg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lGqpN-00GIQj-PG; Mon, 01 Mar 2021 22:16:01 +0000
-Date:   Mon, 1 Mar 2021 22:15:45 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 03/25] mm/vmstat: Add folio stat wrappers
-Message-ID: <20210301221545.GV2723601@casper.infradead.org>
-References: <20210128070404.1922318-1-willy@infradead.org>
- <20210128070404.1922318-4-willy@infradead.org>
- <FED22A41-FCD3-4777-9433-69990C145C7F@nvidia.com>
+        id S1575255AbhCBDyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:54:43 -0500
+Received: from ms.lwn.net ([45.79.88.28]:44396 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244899AbhCAWR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 17:17:56 -0500
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 31A402BA;
+        Mon,  1 Mar 2021 22:17:14 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 31A402BA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614637034; bh=XMDzNxNt6syqrf2sfO8/N05WszPdNC7VQGPu5pgkxaU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=lNSGRgYRbrmNIN/Hc5lllNz9LT3t95Cyzh0tQODmKTMwkw3GhAW4b2psCQBV/PFBR
+         ScJF+X9eOFVzgJXvOKlz+XXGNzk0SsMwQhFIo0SisgbONwaZ+6+6UXF49EnG0Dnnrt
+         33+7SA+3f6jIROsmiZFfLCrV+GbEMvJDWGJtismP7eZx8xg38msiSi1JTTfjQbWaZ+
+         VgWKKKxiV3+i+Lh1iGJ+vESBEyuBHIK2pcgKf5tp3QabK0VUacD8Fvo3KV5NFTmM4k
+         vyxbsSzjJ6z6sx9Ap0ERukvCGcj5csR8LLm1KLIUMNR5o3tkq4BqmS4SyB4TJAdfXj
+         LwcOBhPXkbXmQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     peterx@redhat.com, Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] docs: filesystem: Update smaps vm flag list to latest
+In-Reply-To: <20210212225533.12589-1-peterx@redhat.com>
+References: <20210212225533.12589-1-peterx@redhat.com>
+Date:   Mon, 01 Mar 2021 15:17:13 -0700
+Message-ID: <87v9aa1pue.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <FED22A41-FCD3-4777-9433-69990C145C7F@nvidia.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 04:17:39PM -0500, Zi Yan wrote:
-> On 28 Jan 2021, at 2:03, Matthew Wilcox (Oracle) wrote:
-> > Allow page counters to be more readily modified by callers which have
-> > a folio.  Name these wrappers with 'stat' instead of 'state' as requested
+Peter Xu <peterx@redhat.com> writes:
+
+> We've missed a few documentation when adding new VM_* flags.  Add the missing
+> pieces so they'll be in sync now.
 >
-> Shouldn’t we change the stats with folio_nr_pages(folio) here? And all
-> changes below. Otherwise one folio is always counted as a single page.
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  Documentation/filesystems/proc.rst | 5 +++++
+>  1 file changed, 5 insertions(+)
 
-That's a good point.  Looking through the changes in my current folio
-tree (which doesn't get as far as the thp tree did; ie doesn't yet allocate
-multi-page folios, so hasn't been tested with anything larger than a
-single page), the callers are ...
+So this patch doesn't apply; what version of the kernel did you generate
+it against?  Could you redo against current kernels, please?
 
-@@ -2698,3 +2698,3 @@ int clear_page_dirty_for_io(struct page *page)
--               if (TestClearPageDirty(page)) {
--                       dec_lruvec_page_state(page, NR_FILE_DIRTY);
--                       dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
-+               if (TestClearFolioDirty(folio)) {
-+                       dec_lruvec_folio_stat(folio, NR_FILE_DIRTY);
-+                       dec_zone_folio_stat(folio, NR_ZONE_WRITE_PENDING);
-@@ -2432,3 +2433,3 @@ void account_page_dirtied(struct page *page, struct addres
-s_space *mapping)
--               __inc_lruvec_page_state(page, NR_FILE_DIRTY);
--               __inc_zone_page_state(page, NR_ZONE_WRITE_PENDING);
--               __inc_node_page_state(page, NR_DIRTIED);
-+               __inc_lruvec_folio_stat(folio, NR_FILE_DIRTY);
-+               __inc_zone_folio_stat(folio, NR_ZONE_WRITE_PENDING);
-+               __inc_node_folio_stat(folio, NR_DIRTIED);
-@@ -891 +890 @@ noinline int __add_to_page_cache_locked(struct page *page,
--                       __inc_lruvec_page_state(page, NR_FILE_PAGES);
-+                       __inc_lruvec_folio_stat(folio, NR_FILE_PAGES);
-@@ -2759,2 +2759,2 @@ int test_clear_page_writeback(struct page *page)
--               dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
--               inc_node_page_state(page, NR_WRITTEN);
-+               dec_zone_folio_stat(folio, NR_ZONE_WRITE_PENDING);
-+               inc_node_folio_stat(folio, NR_WRITTEN);
+Thanks,
 
-I think it's clear from this that I haven't found all the places
-that I need to change yet ;-)
-
-Looking at the places I did change in the thp tree, there are changes
-like this:
-
-@@ -860,27 +864,30 @@ noinline int __add_to_page_cache_locked(struct page *page,
--               if (!huge)
--                       __inc_lruvec_page_state(page, NR_FILE_PAGES);
-+               if (!huge) {
-+                       __mod_lruvec_page_state(page, NR_FILE_PAGES, nr);
-+                       if (nr > 1)
-+                               __mod_node_page_state(page_pgdat(page),
-+                                               NR_FILE_THPS, nr);
-+               }
-
-... but I never did do some of the changes which the above changes imply
-are needed.  So the thp tree probably had all kinds of bad statistics
-that I never noticed.
-
-So ... at least some of the users are definitely going to want to
-cache the 'nr_pages' and use it multiple times, including calling
-__mod_node_folio_state(), but others should do what you suggested.
-Thanks!  I'll make that change.
+jon
