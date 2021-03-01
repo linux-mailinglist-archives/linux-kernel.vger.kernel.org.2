@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92DE1329925
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 426B13299F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347291AbhCAXwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:52:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39690 "EHLO mail.kernel.org"
+        id S1345351AbhCBAkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:40:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239568AbhCASTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:19:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D6865168;
-        Mon,  1 Mar 2021 17:06:59 +0000 (UTC)
+        id S239458AbhCASfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:35:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ED5965167;
+        Mon,  1 Mar 2021 17:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618420;
-        bh=iMH4t2kCJ6eeGc1rC6GCEGke9jt0PK3W41XzbwufATU=;
+        s=korg; t=1614618425;
+        bh=tRdfwBMOc4cllLlSrfAP+6oTIivb4Ku1XyOMJyNdTeY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n0Q7YoAbhYjbNhl9zveNjj88AZmy0MNibYMVYb8pGXGPrbVbphi/5JZjX+IC0bcwC
-         7ouR66voYOXlsYjqNVaEGaWGeQ7DSPMoDvUEq1I+fV8JuQfdhNMyDhGwgKqtmUW9Ba
-         xBiKOaHdV00N9orukSXeYao35fjt7GVeilxj7N20=
+        b=qKhWUPKLaoPHKr1dxO+/bMaRVw7PGPHiV37ufbVQjXmx3GK+TleIsM05nHlxfpPOI
+         xNMD/7vWdMuwx5gDFhzAMHGi5z+3UBe3reREnbhfBK9gNw/C9m5nMyJ2ujXERu3u6p
+         AYzk/Bl8k6Y0lmaLPzVod3xx0mTZPaGGsFC4NrhY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
-        <jerome.pouiller@silabs.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 081/663] staging: wfx: fix possible panic with re-queued frames
-Date:   Mon,  1 Mar 2021 17:05:29 +0100
-Message-Id: <20210301161145.743453254@linuxfoundation.org>
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 082/663] ARM: at91: use proper asm syntax in pm_suspend
+Date:   Mon,  1 Mar 2021 17:05:30 +0100
+Message-Id: <20210301161145.792622232@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,99 +42,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 26df933d9b83ea668304dc4ec641d52ea1fc4091 ]
+[ Upstream commit d30337da8677cd73cb19444436b311c13e57356f ]
 
-When the firmware rejects a frame (because station become asleep or
-disconnected), the frame is re-queued in mac80211. However, the
-re-queued frame was 8 bytes longer than the original one (the size of
-the ICV for the encryption). So, when mac80211 try to send this frame
-again, it is a little bigger than expected.
-If the frame is re-queued secveral time it end with a skb_over_panic
-because the skb buffer is not large enough.
+Compiling with the clang integrated assembler warns about
+a recently added instruction:
 
-Note it only happens when device acts as an AP and encryption is
-enabled.
+<instantiation>:14:13: error: unknown token in expression
+ ldr tmp1, =#0x00020010UL
+arch/arm/mach-at91/pm_suspend.S:542:2: note: while in macro instantiation
+ at91_plla_enable
 
-This patch more or less reverts the commit 049fde130419 ("staging: wfx:
-drop useless field from struct wfx_tx_priv").
+Remove the extra '#' character that is not used for the 'ldr'
+instruction when doing an indirect load of a constant.
 
-Fixes: 049fde130419 ("staging: wfx: drop useless field from struct wfx_tx_priv")
-Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
-Link: https://lore.kernel.org/r/20210208135254.399964-1-Jerome.Pouiller@silabs.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4fd36e458392 ("ARM: at91: pm: add plla disable/enable support for sam9x60")
+Tested-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/20210204160129.2249394-1-arnd@kernel.org'
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/wfx/data_tx.c | 10 +++++++++-
- drivers/staging/wfx/data_tx.h |  1 +
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ arch/arm/mach-at91/pm_suspend.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/wfx/data_tx.c b/drivers/staging/wfx/data_tx.c
-index 36b36ef39d053..77fb104efdec1 100644
---- a/drivers/staging/wfx/data_tx.c
-+++ b/drivers/staging/wfx/data_tx.c
-@@ -331,6 +331,7 @@ static int wfx_tx_inner(struct wfx_vif *wvif, struct ieee80211_sta *sta,
- {
- 	struct hif_msg *hif_msg;
- 	struct hif_req_tx *req;
-+	struct wfx_tx_priv *tx_priv;
- 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
- 	struct ieee80211_key_conf *hw_key = tx_info->control.hw_key;
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-@@ -344,11 +345,14 @@ static int wfx_tx_inner(struct wfx_vif *wvif, struct ieee80211_sta *sta,
+diff --git a/arch/arm/mach-at91/pm_suspend.S b/arch/arm/mach-at91/pm_suspend.S
+index 0184de05c1be1..b683c2caa40b9 100644
+--- a/arch/arm/mach-at91/pm_suspend.S
++++ b/arch/arm/mach-at91/pm_suspend.S
+@@ -442,7 +442,7 @@ ENDPROC(at91_backup_mode)
+ 	str	tmp1, [pmc, #AT91_PMC_PLL_UPDT]
  
- 	// From now tx_info->control is unusable
- 	memset(tx_info->rate_driver_data, 0, sizeof(struct wfx_tx_priv));
-+	// Fill tx_priv
-+	tx_priv = (struct wfx_tx_priv *)tx_info->rate_driver_data;
-+	tx_priv->icv_size = wfx_tx_get_icv_len(hw_key);
+ 	/* step 2. */
+-	ldr	tmp1, =#AT91_PMC_PLL_ACR_DEFAULT_PLLA
++	ldr	tmp1, =AT91_PMC_PLL_ACR_DEFAULT_PLLA
+ 	str	tmp1, [pmc, #AT91_PMC_PLL_ACR]
  
- 	// Fill hif_msg
- 	WARN(skb_headroom(skb) < wmsg_len, "not enough space in skb");
- 	WARN(offset & 1, "attempt to transmit an unaligned frame");
--	skb_put(skb, wfx_tx_get_icv_len(hw_key));
-+	skb_put(skb, tx_priv->icv_size);
- 	skb_push(skb, wmsg_len);
- 	memset(skb->data, 0, wmsg_len);
- 	hif_msg = (struct hif_msg *)skb->data;
-@@ -484,6 +488,7 @@ static void wfx_tx_fill_rates(struct wfx_dev *wdev,
- 
- void wfx_tx_confirm_cb(struct wfx_dev *wdev, const struct hif_cnf_tx *arg)
- {
-+	const struct wfx_tx_priv *tx_priv;
- 	struct ieee80211_tx_info *tx_info;
- 	struct wfx_vif *wvif;
- 	struct sk_buff *skb;
-@@ -495,6 +500,7 @@ void wfx_tx_confirm_cb(struct wfx_dev *wdev, const struct hif_cnf_tx *arg)
- 		return;
- 	}
- 	tx_info = IEEE80211_SKB_CB(skb);
-+	tx_priv = wfx_skb_tx_priv(skb);
- 	wvif = wdev_to_wvif(wdev, ((struct hif_msg *)skb->data)->interface);
- 	WARN_ON(!wvif);
- 	if (!wvif)
-@@ -503,6 +509,8 @@ void wfx_tx_confirm_cb(struct wfx_dev *wdev, const struct hif_cnf_tx *arg)
- 	// Note that wfx_pending_get_pkt_us_delay() get data from tx_info
- 	_trace_tx_stats(arg, skb, wfx_pending_get_pkt_us_delay(wdev, skb));
- 	wfx_tx_fill_rates(wdev, tx_info, arg);
-+	skb_trim(skb, skb->len - tx_priv->icv_size);
-+
- 	// From now, you can touch to tx_info->status, but do not touch to
- 	// tx_priv anymore
- 	// FIXME: use ieee80211_tx_info_clear_status()
-diff --git a/drivers/staging/wfx/data_tx.h b/drivers/staging/wfx/data_tx.h
-index 46c9fff7a870e..401363d6b563a 100644
---- a/drivers/staging/wfx/data_tx.h
-+++ b/drivers/staging/wfx/data_tx.h
-@@ -35,6 +35,7 @@ struct tx_policy_cache {
- 
- struct wfx_tx_priv {
- 	ktime_t xmit_timestamp;
-+	unsigned char icv_size;
- };
- 
- void wfx_tx_policy_init(struct wfx_vif *wvif);
+ 	/* step 3. */
 -- 
 2.27.0
 
