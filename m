@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5CA327A88
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 287E9327A8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbhCAJON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:14:13 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:57251 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233009AbhCAJOJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:14:09 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UPxZNk7_1614590005;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPxZNk7_1614590005)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Mar 2021 17:13:26 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] driver core: Switch to using the new API kobj_to_dev()
-Date:   Mon,  1 Mar 2021 17:13:24 +0800
-Message-Id: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S233816AbhCAJQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:16:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233805AbhCAJPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 04:15:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2388E64E01;
+        Mon,  1 Mar 2021 09:15:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614590115;
+        bh=Gxy6eb50XNaXKzNUP2NQegiVRKS+Z5pjHiovZxYsuz4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nVFbQJ+cWFQmBlgb2ZLBsWusafPjYu2XU3657soKOHm5jVWPRUzhk9AYG+fVgVMSU
+         q3yxJEOMwqOvlOnCFjFNQeUzMe7m48tmBdYFJPd/UBP3TkKsJfYuL6CxnJV6oiK2Km
+         QRr3Jushb3y+RHKOIhEXY/DCvf+SyZ2nLZYZXObahSt9+Ry9elZyvvC7BtZ/sEk3Kf
+         42gcj9xWJibmD2LseuRbrA6mu+H1WxWKsep9ERHO4uf9kQE3Weksjkfvp+42Dd1Hmo
+         +1nsI1Kwhv9dBusQZsfJ3V936/nuj/xZ/thZtxb7ckH1662CSaAJwin6DkdNItc5W1
+         M0dyGAna5gD8A==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lGeeK-0006w5-Hz; Mon, 01 Mar 2021 10:15:32 +0100
+Date:   Mon, 1 Mar 2021 10:15:32 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH] USB: serial: cp210x: add some more GE USB IDs
+Message-ID: <YDywtJBTmyR1vjFm@hovoldconsulting.com>
+References: <20210223164418.118135-1-sebastian.reichel@collabora.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210223164418.118135-1-sebastian.reichel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed the following coccicheck:
-./include/linux/device.h:590:46-47: WARNING opportunity for
-kobj_to_dev()
+On Tue, Feb 23, 2021 at 05:44:18PM +0100, Sebastian Reichel wrote:
+> GE CS1000 has some more custom USB IDs for CP2102N; add them
+> to the driver to have working auto-probing.
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- include/linux/device.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Now applied, thanks.
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index ba66073..31d7137 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -587,7 +587,7 @@ struct device_link {
- 
- static inline struct device *kobj_to_dev(struct kobject *kobj)
- {
--	return container_of(kobj, struct device, kobj);
-+	return kobj_to_dev(kobj);
- }
- 
- /**
--- 
-1.8.3.1
-
+Johan
