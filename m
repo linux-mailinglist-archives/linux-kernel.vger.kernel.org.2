@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538F0329C8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82786329B70
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380960AbhCBB4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:56:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50942 "EHLO mail.kernel.org"
+        id S1348695AbhCBBYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:24:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241719AbhCATdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:33:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8B6D651F0;
-        Mon,  1 Mar 2021 17:19:42 +0000 (UTC)
+        id S239241AbhCATJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:09:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85C6B651EF;
+        Mon,  1 Mar 2021 17:19:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619183;
-        bh=SmWF1GTFjtoXWvYcuXgW5oDTOC+jBNtHG89hVlaooMk=;
+        s=korg; t=1614619186;
+        bh=vtMF237ExkEVDQHFBUgK0YVl1AJ14GrnuqdTiQMfXV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sWICAuKcFS7ZED8YmPKwpzet7i59rigN4EVySIUKOs07PXpbXzdVmaRVShCC6K3/h
-         y9tmVgEErNulf2yyV+xzX7mamwhGVOrFIjwsL1tEhdfKGkry5psQEyd7O1LhCkh5lD
-         nwHj+eGHDfG7kDlenFvJKMz66tpYoP4n+ZmDWRAQ=
+        b=CLaN9qiP+XTVRNkiukEJgxz2LpZAcxDAuoUEPCr60YchZtk5497mK/7za4KD6+ivv
+         qyaR0sJct6vFQE/1Fp1boU08sZmJcXZDmmZIJDNsZL/2LhCDvnZqgBJdEXIRiFT0kA
+         gEko48ihJOZQ5BcLjD5hdPpXVhn/pNvSU9iazs9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 333/663] ARM: 9046/1: decompressor: Do not clear SCTLR.nTLSMD for ARMv7+ cores
-Date:   Mon,  1 Mar 2021 17:09:41 +0100
-Message-Id: <20210301161158.327754858@linuxfoundation.org>
+        stable@vger.kernel.org, Roja Rani Yarubandi <rojay@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 334/663] i2c: qcom-geni: Store DMA mapping data in geni_i2c_dev struct
+Date:   Mon,  1 Mar 2021 17:09:42 +0100
+Message-Id: <20210301161158.375076790@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,73 +40,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Murzin <vladimir.murzin@arm.com>
+From: Roja Rani Yarubandi <rojay@codeaurora.org>
 
-[ Upstream commit 2acb909750431030b65a0a2a17fd8afcbd813a84 ]
+[ Upstream commit 357ee8841d0b7bd822f25fc768afbc0c2ab7e47b ]
 
-It was observed that decompressor running on hardware implementing ARM v8.2
-Load/Store Multiple Atomicity and Ordering Control (LSMAOC), say, as guest,
-would stuck just after:
+Store DMA mapping data in geni_i2c_dev struct to enhance DMA mapping
+data scope. For example during shutdown callback to unmap DMA mapping,
+this stored DMA mapping data can be used to call geni_se_tx_dma_unprep
+and geni_se_rx_dma_unprep functions.
 
-Uncompressing Linux... done, booting the kernel.
+Add two helper functions geni_i2c_rx_msg_cleanup and
+geni_i2c_tx_msg_cleanup to unwrap the things after rx/tx FIFO/DMA
+transfers, so that the same can be used in geni_i2c_stop_xfer()
+function during shutdown callback.
 
-The reason is that it clears nTLSMD bit when disabling caches:
-
-  nTLSMD, bit [3]
-
-  When ARMv8.2-LSMAOC is implemented:
-
-    No Trap Load Multiple and Store Multiple to
-    Device-nGRE/Device-nGnRE/Device-nGnRnE memory.
-
-    0b0 All memory accesses by A32 and T32 Load Multiple and Store
-        Multiple at EL1 or EL0 that are marked at stage 1 as
-        Device-nGRE/Device-nGnRE/Device-nGnRnE memory are trapped and
-        generate a stage 1 Alignment fault.
-
-    0b1 All memory accesses by A32 and T32 Load Multiple and Store
-        Multiple at EL1 or EL0 that are marked at stage 1 as
-        Device-nGRE/Device-nGnRE/Device-nGnRnE memory are not trapped.
-
-  This bit is permitted to be cached in a TLB.
-
-  This field resets to 1.
-
-  Otherwise:
-
-  Reserved, RES1
-
-So as effect we start getting traps we are not quite ready for.
-
-Looking into history it seems that mask used for SCTLR clear came from
-the similar code for ARMv4, where bit[3] is the enable/disable bit for
-the write buffer. That not applicable to ARMv7 and onwards, so retire
-that bit from the masks.
-
-Fixes: 7d09e85448dfa78e3e58186c934449aaf6d49b50 ("[ARM] 4393/2: ARMv7: Add uncompressing code for the new CPU Id format")
-Signed-off-by: Vladimir Murzin <vladimir.murzin@arm.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/compressed/head.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-qcom-geni.c | 59 ++++++++++++++++++++++--------
+ 1 file changed, 43 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
-index 3a392983ac079..a0de09f994d88 100644
---- a/arch/arm/boot/compressed/head.S
-+++ b/arch/arm/boot/compressed/head.S
-@@ -1175,9 +1175,9 @@ __armv4_mmu_cache_off:
- __armv7_mmu_cache_off:
- 		mrc	p15, 0, r0, c1, c0
- #ifdef CONFIG_MMU
--		bic	r0, r0, #0x000d
-+		bic	r0, r0, #0x0005
- #else
--		bic	r0, r0, #0x000c
-+		bic	r0, r0, #0x0004
- #endif
- 		mcr	p15, 0, r0, c1, c0	@ turn MMU and cache off
- 		mov	r0, #0
+diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+index dce75b85253c1..4a6dd05d6dbf9 100644
+--- a/drivers/i2c/busses/i2c-qcom-geni.c
++++ b/drivers/i2c/busses/i2c-qcom-geni.c
+@@ -86,6 +86,9 @@ struct geni_i2c_dev {
+ 	u32 clk_freq_out;
+ 	const struct geni_i2c_clk_fld *clk_fld;
+ 	int suspended;
++	void *dma_buf;
++	size_t xfer_len;
++	dma_addr_t dma_addr;
+ };
+ 
+ struct geni_i2c_err_log {
+@@ -348,14 +351,39 @@ static void geni_i2c_tx_fsm_rst(struct geni_i2c_dev *gi2c)
+ 		dev_err(gi2c->se.dev, "Timeout resetting TX_FSM\n");
+ }
+ 
++static void geni_i2c_rx_msg_cleanup(struct geni_i2c_dev *gi2c,
++				     struct i2c_msg *cur)
++{
++	gi2c->cur_rd = 0;
++	if (gi2c->dma_buf) {
++		if (gi2c->err)
++			geni_i2c_rx_fsm_rst(gi2c);
++		geni_se_rx_dma_unprep(&gi2c->se, gi2c->dma_addr, gi2c->xfer_len);
++		i2c_put_dma_safe_msg_buf(gi2c->dma_buf, cur, !gi2c->err);
++	}
++}
++
++static void geni_i2c_tx_msg_cleanup(struct geni_i2c_dev *gi2c,
++				     struct i2c_msg *cur)
++{
++	gi2c->cur_wr = 0;
++	if (gi2c->dma_buf) {
++		if (gi2c->err)
++			geni_i2c_tx_fsm_rst(gi2c);
++		geni_se_tx_dma_unprep(&gi2c->se, gi2c->dma_addr, gi2c->xfer_len);
++		i2c_put_dma_safe_msg_buf(gi2c->dma_buf, cur, !gi2c->err);
++	}
++}
++
+ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ 				u32 m_param)
+ {
+-	dma_addr_t rx_dma;
++	dma_addr_t rx_dma = 0;
+ 	unsigned long time_left;
+ 	void *dma_buf = NULL;
+ 	struct geni_se *se = &gi2c->se;
+ 	size_t len = msg->len;
++	struct i2c_msg *cur;
+ 
+ 	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+ 		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+@@ -372,19 +400,18 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ 		geni_se_select_mode(se, GENI_SE_FIFO);
+ 		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+ 		dma_buf = NULL;
++	} else {
++		gi2c->xfer_len = len;
++		gi2c->dma_addr = rx_dma;
++		gi2c->dma_buf = dma_buf;
+ 	}
+ 
++	cur = gi2c->cur;
+ 	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+ 	if (!time_left)
+ 		geni_i2c_abort_xfer(gi2c);
+ 
+-	gi2c->cur_rd = 0;
+-	if (dma_buf) {
+-		if (gi2c->err)
+-			geni_i2c_rx_fsm_rst(gi2c);
+-		geni_se_rx_dma_unprep(se, rx_dma, len);
+-		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+-	}
++	geni_i2c_rx_msg_cleanup(gi2c, cur);
+ 
+ 	return gi2c->err;
+ }
+@@ -392,11 +419,12 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ 				u32 m_param)
+ {
+-	dma_addr_t tx_dma;
++	dma_addr_t tx_dma = 0;
+ 	unsigned long time_left;
+ 	void *dma_buf = NULL;
+ 	struct geni_se *se = &gi2c->se;
+ 	size_t len = msg->len;
++	struct i2c_msg *cur;
+ 
+ 	if (!of_machine_is_compatible("lenovo,yoga-c630"))
+ 		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
+@@ -413,22 +441,21 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+ 		geni_se_select_mode(se, GENI_SE_FIFO);
+ 		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
+ 		dma_buf = NULL;
++	} else {
++		gi2c->xfer_len = len;
++		gi2c->dma_addr = tx_dma;
++		gi2c->dma_buf = dma_buf;
+ 	}
+ 
+ 	if (!dma_buf) /* Get FIFO IRQ */
+ 		writel_relaxed(1, se->base + SE_GENI_TX_WATERMARK_REG);
+ 
++	cur = gi2c->cur;
+ 	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+ 	if (!time_left)
+ 		geni_i2c_abort_xfer(gi2c);
+ 
+-	gi2c->cur_wr = 0;
+-	if (dma_buf) {
+-		if (gi2c->err)
+-			geni_i2c_tx_fsm_rst(gi2c);
+-		geni_se_tx_dma_unprep(se, tx_dma, len);
+-		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
+-	}
++	geni_i2c_tx_msg_cleanup(gi2c, cur);
+ 
+ 	return gi2c->err;
+ }
 -- 
 2.27.0
 
