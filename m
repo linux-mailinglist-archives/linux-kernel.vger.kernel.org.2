@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284D732974F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC7E329723
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245734AbhCAWgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:36:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57962 "EHLO mail.kernel.org"
+        id S245358AbhCAWeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:34:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237962AbhCARhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:37:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5664F650B6;
-        Mon,  1 Mar 2021 16:55:05 +0000 (UTC)
+        id S234574AbhCARfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:35:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 314DF64FBE;
+        Mon,  1 Mar 2021 16:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617705;
-        bh=8oIaCdeeOp8C/1uiNY5GvQzH5HbXCtKYlxuUkDyQWYw=;
+        s=korg; t=1614617680;
+        bh=7sE2QsQb2alrBWYGwVYOZOr3z514IB/GSA/id+qoHck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fpOWBVoGctNl8C18CGhDRxzUU0KAz1/Pe8elPXZ8eNUh9/uUrO/C8ENe9j3/1DLYq
-         p5Qk+jhDkOh+04FLrQc2uUlppNHzXXnKue2lWDJE3BbBsAsOSZOewfocY80u1xmF9Q
-         cvkwmzn2DpAuPvQSzA7LHV8KyzoQjPc09+uwzXis=
+        b=S62YHhUoBRoRk/nHpUSYjY/goKRtOcoNlAnx9KqmwtnHaMJ1WFEvo9AhNmAWqVxd3
+         sWfP+GEBhYWMv1ggmmXIWO2/YpQhp2TUJpwS/ZvpWNdtsapb7vJGfMpgFfzuD0uD3b
+         pRDwsqaVpM7ucaq9/19Tce1U5eAjZuCfen1nLrcE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 128/340] clk: meson: clk-pll: make "ret" a signed integer
-Date:   Mon,  1 Mar 2021 17:11:12 +0100
-Message-Id: <20210301161054.600090785@linuxfoundation.org>
+        syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 131/340] quota: Fix memory leak when handling corrupted quota file
+Date:   Mon,  1 Mar 2021 17:11:15 +0100
+Message-Id: <20210301161054.754927057@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -41,39 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit 9e717285f0bd591d716fa0e7418f2cdaf756dd25 ]
+[ Upstream commit a4db1072e1a3bd7a8d9c356e1902b13ac5deb8ef ]
 
-The error codes returned by meson_clk_get_pll_settings() are all
-negative. Make "ret" a signed integer in meson_clk_pll_set_rate() to
-make it match with the clk_ops.set_rate API as well as the data type
-returned by meson_clk_get_pll_settings().
+When checking corrupted quota file we can bail out and leak allocated
+info structure. Properly free info structure on error return.
 
-Fixes: 8eed1db1adec6a ("clk: meson: pll: update driver for the g12a")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20201226121556.975418-3-martin.blumenstingl@googlemail.com
+Reported-by: syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com
+Fixes: 11c514a99bb9 ("quota: Sanity-check quota file headers on load")
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/meson/clk-pll.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/quota/quota_v2.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index fb0bc8c0ad4d4..a92f44fa5a24e 100644
---- a/drivers/clk/meson/clk-pll.c
-+++ b/drivers/clk/meson/clk-pll.c
-@@ -363,8 +363,9 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- {
- 	struct clk_regmap *clk = to_clk_regmap(hw);
- 	struct meson_clk_pll_data *pll = meson_clk_pll_data(clk);
--	unsigned int enabled, m, n, frac = 0, ret;
-+	unsigned int enabled, m, n, frac = 0;
- 	unsigned long old_rate;
-+	int ret;
- 
- 	if (parent_rate == 0 || rate == 0)
- 		return -EINVAL;
+diff --git a/fs/quota/quota_v2.c b/fs/quota/quota_v2.c
+index 36dce17b01016..56aedf4ba8864 100644
+--- a/fs/quota/quota_v2.c
++++ b/fs/quota/quota_v2.c
+@@ -166,19 +166,24 @@ static int v2_read_file_info(struct super_block *sb, int type)
+ 		quota_error(sb, "Number of blocks too big for quota file size (%llu > %llu).",
+ 		    (loff_t)qinfo->dqi_blocks << qinfo->dqi_blocksize_bits,
+ 		    i_size_read(sb_dqopt(sb)->files[type]));
+-		goto out;
++		goto out_free;
+ 	}
+ 	if (qinfo->dqi_free_blk >= qinfo->dqi_blocks) {
+ 		quota_error(sb, "Free block number too big (%u >= %u).",
+ 			    qinfo->dqi_free_blk, qinfo->dqi_blocks);
+-		goto out;
++		goto out_free;
+ 	}
+ 	if (qinfo->dqi_free_entry >= qinfo->dqi_blocks) {
+ 		quota_error(sb, "Block with free entry too big (%u >= %u).",
+ 			    qinfo->dqi_free_entry, qinfo->dqi_blocks);
+-		goto out;
++		goto out_free;
+ 	}
+ 	ret = 0;
++out_free:
++	if (ret) {
++		kfree(info->dqi_priv);
++		info->dqi_priv = NULL;
++	}
+ out:
+ 	up_read(&dqopt->dqio_sem);
+ 	return ret;
 -- 
 2.27.0
 
