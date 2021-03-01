@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE752329AEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF10329A34
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378276AbhCBBFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:05:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34110 "EHLO mail.kernel.org"
+        id S1377143AbhCBApv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:45:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235871AbhCAS65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:58:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EB3B64F89;
-        Mon,  1 Mar 2021 17:08:49 +0000 (UTC)
+        id S234556AbhCASj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A02A564FFB;
+        Mon,  1 Mar 2021 17:08:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618530;
-        bh=Clq7V85fDlR6zkKLnia8E2GU8guNjCersNRh4+xRA1o=;
+        s=korg; t=1614618536;
+        bh=6mYZ4RgTHW7sK5kJf72iEJkj6mnZPhTzIIYcC3GRuZc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vg5iihjbm/++sGBwZfwTC5QaJy8MyLMJr8Nsc1UYgl6IQfLFfdh1Dek6uwPkXb+iW
-         IN+ExT78SfAJfFneIO09q95LZM4KqWIfmg3E7HF+OilyD+HieGRX/eKxgqwVdm+nMU
-         EpxDepLfowES6201QJ43P/ulL/IBm8emNNNw10SA=
+        b=VoGImoqfLaNqH46MNrM6YIRERzpROm6/H7U6hYotgm0AK96n3spgHkvwQwVexcTKP
+         Ml9DofJafRXIQCuWvwMxYIB+IdLVPTTibqRDHE+/QZRkmHiEYZi8WZrR9D4hR3xMcN
+         ZhekHMskCSfNNO2JEZuExbfdPBQXxJ2ch2Avyl0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Arjun Roy <arjunroy@google.com>, Wei Wang <weiwan@google.com>,
+        stable@vger.kernel.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 120/663] tcp: fix SO_RCVLOWAT related hangs under mem pressure
-Date:   Mon,  1 Mar 2021 17:06:08 +0100
-Message-Id: <20210301161147.679996148@linuxfoundation.org>
+Subject: [PATCH 5.10 122/663] cxgb4/chtls/cxgbit: Keeping the max ofld immediate data size same in cxgb4 and ulds
+Date:   Mon,  1 Mar 2021 17:06:10 +0100
+Message-Id: <20210301161147.779906192@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,65 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Ayush Sawal <ayush.sawal@chelsio.com>
 
-[ Upstream commit f969dc5a885736842c3511ecdea240fbb02d25d9 ]
+[ Upstream commit 2355a6773a2cb0d2dce13432dde78497f1d6617b ]
 
-While commit 24adbc1676af ("tcp: fix SO_RCVLOWAT hangs with fat skbs")
-fixed an issue vs too small sk_rcvbuf for given sk_rcvlowat constraint,
-it missed to address issue caused by memory pressure.
+The Max imm data size in cxgb4 is not similar to the max imm data size
+in the chtls. This caused an mismatch in output of is_ofld_imm() of
+cxgb4 and chtls. So fixed this by keeping the max wreq size of imm data
+same in both chtls and cxgb4 as MAX_IMM_OFLD_TX_DATA_WR_LEN.
 
-1) If we are under memory pressure and socket receive queue is empty.
-First incoming packet is allowed to be queued, after commit
-76dfa6082032 ("tcp: allow one skb to be received per socket under memory pressure")
+As cxgb4's max imm. data value for ofld packets is changed to
+MAX_IMM_OFLD_TX_DATA_WR_LEN. Using the same in cxgbit also.
 
-But we do not send EPOLLIN yet, in case tcp_data_ready() sees sk_rcvlowat
-is bigger than skb length.
-
-2) Then, when next packet comes, it is dropped, and we directly
-call sk->sk_data_ready().
-
-3) If application is using poll(), tcp_poll() will then use
-tcp_stream_is_readable() and decide the socket receive queue is
-not yet filled, so nothing will happen.
-
-Even when sender retransmits packets, phases 2) & 3) repeat
-and flow is effectively frozen, until memory pressure is off.
-
-Fix is to consider tcp_under_memory_pressure() to take care
-of global memory pressure or memcg pressure.
-
-Fixes: 24adbc1676af ("tcp: fix SO_RCVLOWAT hangs with fat skbs")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: Arjun Roy <arjunroy@google.com>
-Suggested-by: Wei Wang <weiwan@google.com>
-Reviewed-by: Wei Wang <weiwan@google.com>
+Fixes: 36bedb3f2e5b8 ("crypto: chtls - Inline TLS record Tx")
+Signed-off-by: Ayush Sawal <ayush.sawal@chelsio.com>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/tcp.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h        |  3 +++
+ drivers/net/ethernet/chelsio/cxgb4/sge.c              | 11 ++++++++---
+ .../ethernet/chelsio/inline_crypto/chtls/chtls_cm.h   |  3 ---
+ drivers/target/iscsi/cxgbit/cxgbit_target.c           |  3 +--
+ 4 files changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index fe9747ee70a6f..7d66c61d22c7d 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -1424,8 +1424,13 @@ void tcp_cleanup_rbuf(struct sock *sk, int copied);
-  */
- static inline bool tcp_rmem_pressure(const struct sock *sk)
- {
--	int rcvbuf = READ_ONCE(sk->sk_rcvbuf);
--	int threshold = rcvbuf - (rcvbuf >> 3);
-+	int rcvbuf, threshold;
-+
-+	if (tcp_under_memory_pressure(sk))
-+		return true;
-+
-+	rcvbuf = READ_ONCE(sk->sk_rcvbuf);
-+	threshold = rcvbuf - (rcvbuf >> 3);
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
+index 1b49f2fa9b185..34546f5312eee 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_uld.h
+@@ -46,6 +46,9 @@
+ #define MAX_ULD_QSETS 16
+ #define MAX_ULD_NPORTS 4
  
- 	return atomic_read(&sk->sk_rmem_alloc) > threshold;
++/* ulp_mem_io + ulptx_idata + payload + padding */
++#define MAX_IMM_ULPTX_WR_LEN (32 + 8 + 256 + 8)
++
+ /* CPL message priority levels */
+ enum {
+ 	CPL_PRIORITY_DATA     = 0,  /* data messages */
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index 196652a114c5f..3334c9e2152ab 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -2842,17 +2842,22 @@ int t4_mgmt_tx(struct adapter *adap, struct sk_buff *skb)
+  *	@skb: the packet
+  *
+  *	Returns true if a packet can be sent as an offload WR with immediate
+- *	data.  We currently use the same limit as for Ethernet packets.
++ *	data.
++ *	FW_OFLD_TX_DATA_WR limits the payload to 255 bytes due to 8-bit field.
++ *      However, FW_ULPTX_WR commands have a 256 byte immediate only
++ *      payload limit.
+  */
+ static inline int is_ofld_imm(const struct sk_buff *skb)
+ {
+ 	struct work_request_hdr *req = (struct work_request_hdr *)skb->data;
+ 	unsigned long opcode = FW_WR_OP_G(ntohl(req->wr_hi));
+ 
+-	if (opcode == FW_CRYPTO_LOOKASIDE_WR)
++	if (unlikely(opcode == FW_ULPTX_WR))
++		return skb->len <= MAX_IMM_ULPTX_WR_LEN;
++	else if (opcode == FW_CRYPTO_LOOKASIDE_WR)
+ 		return skb->len <= SGE_MAX_WR_LEN;
+ 	else
+-		return skb->len <= MAX_IMM_TX_PKT_LEN;
++		return skb->len <= MAX_IMM_OFLD_TX_DATA_WR_LEN;
  }
+ 
+ /**
+diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.h b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.h
+index 47ba81e42f5d0..b1161bdeda4dc 100644
+--- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.h
++++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.h
+@@ -50,9 +50,6 @@
+ #define MIN_RCV_WND (24 * 1024U)
+ #define LOOPBACK(x)     (((x) & htonl(0xff000000)) == htonl(0x7f000000))
+ 
+-/* ulp_mem_io + ulptx_idata + payload + padding */
+-#define MAX_IMM_ULPTX_WR_LEN (32 + 8 + 256 + 8)
+-
+ /* for TX: a skb must have a headroom of at least TX_HEADER_LEN bytes */
+ #define TX_HEADER_LEN \
+ 	(sizeof(struct fw_ofld_tx_data_wr) + sizeof(struct sge_opaque_hdr))
+diff --git a/drivers/target/iscsi/cxgbit/cxgbit_target.c b/drivers/target/iscsi/cxgbit/cxgbit_target.c
+index 9b3eb2e8c92ad..b926e1d6c7b8e 100644
+--- a/drivers/target/iscsi/cxgbit/cxgbit_target.c
++++ b/drivers/target/iscsi/cxgbit/cxgbit_target.c
+@@ -86,8 +86,7 @@ static int cxgbit_is_ofld_imm(const struct sk_buff *skb)
+ 	if (likely(cxgbit_skcb_flags(skb) & SKCBF_TX_ISO))
+ 		length += sizeof(struct cpl_tx_data_iso);
+ 
+-#define MAX_IMM_TX_PKT_LEN	256
+-	return length <= MAX_IMM_TX_PKT_LEN;
++	return length <= MAX_IMM_OFLD_TX_DATA_WR_LEN;
+ }
+ 
+ /*
 -- 
 2.27.0
 
