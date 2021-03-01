@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9580329C91
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90790329B98
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441837AbhCBB5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:57:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50724 "EHLO mail.kernel.org"
+        id S1379218AbhCBB1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:27:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241605AbhCATcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:32:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FF4F651C0;
-        Mon,  1 Mar 2021 17:16:53 +0000 (UTC)
+        id S241110AbhCATMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:12:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58E5164FD8;
+        Mon,  1 Mar 2021 17:50:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619014;
-        bh=RV8g4zPGhyVksuOuGdwPcWVihQ7QmaeHewtOzMzPGZE=;
+        s=korg; t=1614621044;
+        bh=2NVndUT7dS67kVUETNfHqFdwMr3cq1s8T/7KdfD5vl0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1L3454vrPvgxpPQF3bJtFBDb+eZcMMRuGwcxTpB5ZZc0LPAqY6mlpSx0vBocmSPM9
-         mePMQP5cmpHomAh/HcGwBWvtev2AYgdnme70aXvMLsAFUxtobqcRgcrJjUZoQQRPjV
-         4HrtjGkdDkNoS2gHBsOxosPKD/mmlznwKzpUlWDs=
+        b=Py+NRbxylb5yM7HSeBo8mhowvQbGwGNCzT2hC8m2wG7bNu4hyEIpwG79R+DYbNY4q
+         f+WgWCM8TK7Cwg+CQuxBJFPxhnzUb5GsfQmKAaDPDCsIIvxXOwDVPBH7L2Ps4rpd2q
+         3Mss/AR9U0fh5glO7Osgsrz9OgjAvW28Q/EsCDts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 293/663] RDMA/rtrs-srv: Init wr_cnt as 1
-Date:   Mon,  1 Mar 2021 17:09:01 +0100
-Message-Id: <20210301161156.331476349@linuxfoundation.org>
+Subject: [PATCH 5.11 374/775] power: supply: smb347-charger: Fix interrupt usage if interrupt is unavailable
+Date:   Mon,  1 Mar 2021 17:09:02 +0100
+Message-Id: <20210301161220.087101911@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@cloud.ionos.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 6f5d1b3016d650f351e65c645a5eee5394547dd0 ]
+[ Upstream commit 6996312642d2dad3070c3d276c7621f35e721f30 ]
 
-Fix up wr_avail accounting. if wr_cnt is 0, then we do SIGNAL for first
-wr, in completion we add queue_depth back, which is not right in the
-sense of tracking for available wr.
+The IRQ=0 could be a valid interrupt number in kernel because interrupt
+numbers are virtual in a modern kernel. Hence fix the interrupt usage in
+a case if interrupt is unavailable by not overriding the interrupt number
+which is used by the driver.
 
-So fix it by init wr_cnt to 1.
+Note that currently Nexus 7 is the only know device which uses SMB347
+kernel diver and it has a properly working interrupt, hence this patch
+doesn't fix any real problems, it's a minor cleanup/improvement.
 
-Fixes: 9cb837480424 ("RDMA/rtrs: server: main functionality")
-Link: https://lore.kernel.org/r/20201217141915.56989-19-jinpu.wang@cloud.ionos.com
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 99298de5df92 ("power: supply: smb347-charger: Replace mutex with IRQ disable/enable")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/supply/smb347-charger.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index aac710764b44f..f3f4b640b0970 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -1620,7 +1620,7 @@ static int create_con(struct rtrs_srv_sess *sess,
- 	con->c.cm_id = cm_id;
- 	con->c.sess = &sess->s;
- 	con->c.cid = cid;
--	atomic_set(&con->wr_cnt, 0);
-+	atomic_set(&con->wr_cnt, 1);
+diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply/smb347-charger.c
+index d3bf35ed12cee..8cfbd8d6b4786 100644
+--- a/drivers/power/supply/smb347-charger.c
++++ b/drivers/power/supply/smb347-charger.c
+@@ -137,6 +137,7 @@
+  * @mains_online: is AC/DC input connected
+  * @usb_online: is USB input connected
+  * @charging_enabled: is charging enabled
++ * @irq_unsupported: is interrupt unsupported by SMB hardware
+  * @max_charge_current: maximum current (in uA) the battery can be charged
+  * @max_charge_voltage: maximum voltage (in uV) the battery can be charged
+  * @pre_charge_current: current (in uA) to use in pre-charging phase
+@@ -193,6 +194,7 @@ struct smb347_charger {
+ 	bool			mains_online;
+ 	bool			usb_online;
+ 	bool			charging_enabled;
++	bool			irq_unsupported;
  
- 	if (con->c.cid == 0) {
- 		/*
+ 	unsigned int		max_charge_current;
+ 	unsigned int		max_charge_voltage;
+@@ -862,6 +864,9 @@ static int smb347_irq_set(struct smb347_charger *smb, bool enable)
+ {
+ 	int ret;
+ 
++	if (smb->irq_unsupported)
++		return 0;
++
+ 	ret = smb347_set_writable(smb, true);
+ 	if (ret < 0)
+ 		return ret;
+@@ -923,8 +928,6 @@ static int smb347_irq_init(struct smb347_charger *smb,
+ 	ret = regmap_update_bits(smb->regmap, CFG_STAT,
+ 				 CFG_STAT_ACTIVE_HIGH | CFG_STAT_DISABLED,
+ 				 CFG_STAT_DISABLED);
+-	if (ret < 0)
+-		client->irq = 0;
+ 
+ 	smb347_set_writable(smb, false);
+ 
+@@ -1345,6 +1348,7 @@ static int smb347_probe(struct i2c_client *client,
+ 		if (ret < 0) {
+ 			dev_warn(dev, "failed to initialize IRQ: %d\n", ret);
+ 			dev_warn(dev, "disabling IRQ support\n");
++			smb->irq_unsupported = true;
+ 		} else {
+ 			smb347_irq_enable(smb);
+ 		}
+@@ -1357,8 +1361,8 @@ static int smb347_remove(struct i2c_client *client)
+ {
+ 	struct smb347_charger *smb = i2c_get_clientdata(client);
+ 
+-	if (client->irq)
+-		smb347_irq_disable(smb);
++	smb347_irq_disable(smb);
++
+ 	return 0;
+ }
+ 
 -- 
 2.27.0
 
