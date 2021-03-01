@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB481329B97
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D78BF329C8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379210AbhCBB1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:27:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39806 "EHLO mail.kernel.org"
+        id S1380952AbhCBB4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:56:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241118AbhCATMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:12:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23B5464F9D;
-        Mon,  1 Mar 2021 17:27:03 +0000 (UTC)
+        id S241681AbhCATdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:33:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D755464F12;
+        Mon,  1 Mar 2021 17:28:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619623;
-        bh=YBeNgjHwdwehRAPWF0hr1fKR/0eYhMnIqTNljsrgS0Y=;
+        s=korg; t=1614619733;
+        bh=6zMXgh+XFJzQ6CWYEERvnVhuU4zxjGkCbpqSM0+CbG8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VjWTrochrDGsxqf/bmJKJvZHK9Tmm2judJgfHY2bNLkldxy5kbOUfuQLlr0F78oe5
-         rrS4NwA/k1osm6wpl6yr3YAXFrQutlcL8QnFifHJO/1YbyTC5si/TEX/Qhh5DCrirx
-         jrRabsGTSH7Wj2OjSuUfme7JyaRYCUXPjX+T/NTA=
+        b=YWuBXScdcoRpKxZg+F43ytRA4pUwi65Z1mZsE2iZLqXEUHX70Yxh3tVCcjD4XVjct
+         vWN9iXj12CKqSRNfSSFlZYbTDS0yAai6qdRS2ZeOwZzTYszHyHXOkGISCnJcSq8Lyl
+         pSJE9ea55/C0dqW/XAPBZBLSIZLEvkod/gtmR0I8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Subject: [PATCH 5.10 520/663] drm/sched: Cancel and flush all outstanding jobs before finish.
-Date:   Mon,  1 Mar 2021 17:12:48 +0100
-Message-Id: <20210301161207.571795365@linuxfoundation.org>
+        stable@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Christopher Morgan <macromorgan@hotmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: [PATCH 5.10 521/663] drm/panel: kd35t133: allow using non-continuous dsi clock
+Date:   Mon,  1 Mar 2021 17:12:49 +0100
+Message-Id: <20210301161207.622350690@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,33 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
+From: Heiko Stuebner <heiko@sntech.de>
 
-commit e582951baabba3e278c97169d0acc1e09b24a72e upstream.
+commit d922d58fedcd98ba625e89b625a98e222b090b10 upstream.
 
-To avoid any possible use after free.
+The panel is able to work when dsi clock is non-continuous, thus
+the system power consumption can be reduced using such feature.
 
-Signed-off-by: Andrey Grodzovsky <andrey.grodzovsky@amd.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Link: https://patchwork.freedesktop.org/patch/414814/
-CC: stable@vger.kernel.org
-Signed-off-by: Christian König <christian.koenig@amd.com>
+Add MIPI_DSI_CLOCK_NON_CONTINUOUS to panel's mode_flags.
+
+Also the flag actually becomes necessary after
+commit c6d94e37bdbb ("drm/bridge/synopsys: dsi: add support for non-continuous HS clock")
+and without it the panel only emits stripes instead of output.
+
+Fixes: c6d94e37bdbb ("drm/bridge/synopsys: dsi: add support for non-continuous HS clock")
+Cc: stable@vger.kernel.org # 5.10+
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Tested-by: Ezequiel Garcia <ezequiel@collabora.com>
+Reviewed-by: Christopher Morgan <macromorgan@hotmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210206135020.1991820-1-heiko@sntech.de
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/scheduler/sched_main.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpu/drm/panel/panel-elida-kd35t133.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/scheduler/sched_main.c
-+++ b/drivers/gpu/drm/scheduler/sched_main.c
-@@ -890,6 +890,9 @@ void drm_sched_fini(struct drm_gpu_sched
- 	if (sched->thread)
- 		kthread_stop(sched->thread);
+--- a/drivers/gpu/drm/panel/panel-elida-kd35t133.c
++++ b/drivers/gpu/drm/panel/panel-elida-kd35t133.c
+@@ -265,7 +265,8 @@ static int kd35t133_probe(struct mipi_ds
+ 	dsi->lanes = 1;
+ 	dsi->format = MIPI_DSI_FMT_RGB888;
+ 	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
+-			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
++			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET |
++			  MIPI_DSI_CLOCK_NON_CONTINUOUS;
  
-+	/* Confirm no work left behind accessing device structures */
-+	cancel_delayed_work_sync(&sched->work_tdr);
-+
- 	sched->ready = false;
- }
- EXPORT_SYMBOL(drm_sched_fini);
+ 	drm_panel_init(&ctx->panel, &dsi->dev, &kd35t133_funcs,
+ 		       DRM_MODE_CONNECTOR_DSI);
 
 
