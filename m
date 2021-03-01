@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFF0329886
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2961332982C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346117AbhCAXiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:38:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58732 "EHLO mail.kernel.org"
+        id S238881AbhCAXRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:17:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239061AbhCASGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:06:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5523965092;
-        Mon,  1 Mar 2021 17:35:47 +0000 (UTC)
+        id S239172AbhCAR6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:58:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 346E9652BC;
+        Mon,  1 Mar 2021 17:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620147;
-        bh=3VYUcoViFPnf+4FXGF+rYTvwNJdrsI5fzYOj7PRVt0Q=;
+        s=korg; t=1614620180;
+        bh=lTYg9uYZ017PnZzvwFHZ4J0OykaGCo6ETK4twtwKWiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xV2MZBxAB0qmtLOZrIlLeCQa/HvmnoniYxPM3O9woga34n/HyjigYGsyf8Rvi3Nu/
-         AO+x68PsAhnNUOfqZBHdLfvMXcpKZACGDCcDpFUChXUiTKOnFkhtVGzck3w9X/Fy0I
-         6jIpK8QF5Z9szV/D7lMn5QxyP32/6hwS8BMpZteU=
+        b=O+N7SnhO4U0JaD1k7yn1yDhIJYSZxQjqJVQ/dOawBkIrfOOQXWF/pjGgTb4bdFhol
+         aCeWvaGTIo+cwXL9a/brTI4Nm8gw7sPV6CFftNlzSpeqGnP9IAnCm8iNPUzaYwmRbn
+         HLm0SBEsbVVMOpJ8Q1v/EnLKT+mrOUNwe96QRYyc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 048/775] arm64: dts: allwinner: Drop non-removable from SoPine/LTS SD card
-Date:   Mon,  1 Mar 2021 17:03:36 +0100
-Message-Id: <20210301161204.096448716@linuxfoundation.org>
+Subject: [PATCH 5.11 059/775] soc: ti: pm33xx: Fix some resource leak in the error handling paths of the probe function
+Date:   Mon,  1 Mar 2021 17:03:47 +0100
+Message-Id: <20210301161204.604631828@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,44 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Przywara <andre.przywara@arm.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 941432d007689f3774646e41a1439228b6c6ee0e ]
+[ Upstream commit 17ad4662595ea0c4fd7496b664523ef632e63349 ]
 
-The SD card on the SoPine SoM module is somewhat concealed, so was
-originally defined as "non-removable".
-However there is a working card-detect pin (tested on two different
-SoM versions), and in certain SoM base boards it might be actually
-accessible at runtime.
-Also the Pine64-LTS shares the SoPine base .dtsi, so inherited the
-non-removable flag, even though the SD card slot is perfectly accessible
-and usable there. (It turns out that just *my* board has a broken card
-detect switch, so I originally thought CD wouldn't work on the LTS.)
+'am33xx_pm_rtc_setup()' allocates some resources that must be freed on the
+error. Commit 2152fbbd47c0 ("soc: ti: pm33xx: Simplify RTC usage to prepare
+to drop platform data") has introduced the use of these resources but has
+only updated the remove function.
 
-Drop the "non-removable" flag to describe the SD card slot properly.
+Fix the error handling path of the probe function now.
 
-Fixes: c3904a269891 ("arm64: allwinner: a64: add DTSI file for SoPine SoM")
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210113152630.28810-5-andre.przywara@arm.com
+Fixes: 2152fbbd47c0 ("soc: ti: pm33xx: Simplify RTC usage to prepare to drop platform data")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/soc/ti/pm33xx.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
-index c48692b06e1fa..3402cec87035b 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
-@@ -32,7 +32,6 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&mmc0_pins>;
- 	vmmc-supply = <&reg_dcdc1>;
--	non-removable;
- 	disable-wp;
- 	bus-width = <4>;
- 	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>; /* PF6 */
+diff --git a/drivers/soc/ti/pm33xx.c b/drivers/soc/ti/pm33xx.c
+index 64f3e31055401..7bab4bbaf02dc 100644
+--- a/drivers/soc/ti/pm33xx.c
++++ b/drivers/soc/ti/pm33xx.c
+@@ -535,7 +535,7 @@ static int am33xx_pm_probe(struct platform_device *pdev)
+ 
+ 	ret = am33xx_push_sram_idle();
+ 	if (ret)
+-		goto err_free_sram;
++		goto err_unsetup_rtc;
+ 
+ 	am33xx_pm_set_ipc_ops();
+ 
+@@ -575,6 +575,9 @@ err_pm_runtime_put:
+ err_pm_runtime_disable:
+ 	pm_runtime_disable(dev);
+ 	wkup_m3_ipc_put(m3_ipc);
++err_unsetup_rtc:
++	iounmap(rtc_base_virt);
++	clk_put(rtc_fck);
+ err_free_sram:
+ 	am33xx_pm_free_sram();
+ 	pm33xx_dev = NULL;
 -- 
 2.27.0
 
