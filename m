@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C003292DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6BE3292DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243968AbhCAUx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:53:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237160AbhCARKS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:10:18 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFD8C061788;
-        Mon,  1 Mar 2021 09:09:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=tdr23ctYIjaSovyzCrlydLo8hJiZD6TcVuVzx8JMj0k=; b=MlIKc0va3pxSmyS1RSEDvO35fD
-        bQ8phkHe4gntkak3qfJfjxhYLX3d7PnQzdoCJG4iQHt549TayZ9h/g13m/zbR0/P/3rtWTK+BajOb
-        eWFx+NDDAjNdXxX4zKwkMk4FKLttPqzCNxcmDRTJwqpLeI6a186Aey4B10FyGmSHZGerP68k5EPQy
-        C1G8dAulciA1MMsrQ01pt9rrDsNZs/3SqmHuPiP2+dULEy6ag7i2BJE1mI4GWb3MJ+2N3Ot2IU4we
-        xDIhs133VVhaYCoOXRrul43eeFiHsh08SXZw9QRYqMiruV5qo0DgCxnD+hx8gfJtfUmQLefmuWzUJ
-        Y3Rmj/zQ==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lGm2y-0006Ie-At; Mon, 01 Mar 2021 17:09:28 +0000
-Subject: Re: [PATCH v4 1/2] platform/x86: dell-privacy: Add support for Dell
- hardware privacy
-To:     Perry Yuan <Perry.Yuan@dell.com>, pobrn@protonmail.com,
-        pierre-louis.bossart@linux.intel.com, oder_chiou@realtek.com,
-        perex@perex.cz, tiwai@suse.com, hdegoede@redhat.com,
-        mgross@linux.intel.com, Mario.Limonciello@dell.com
-Cc:     lgirdwood@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org
-References: <20210301093753.16300-1-Perry_Yuan@Dell.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6123db00-8a4e-ff1e-d4be-c3fa2558d379@infradead.org>
-Date:   Mon, 1 Mar 2021 09:09:22 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S244025AbhCAUyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:54:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60456 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237154AbhCARKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:10:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614618565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H35nz79U3iTc666xWR8lPmhHegrvhs5FWA9WuA5DkEI=;
+        b=RqQ5wOe0/iOPbgkCB6+F3wjB6c0eOIYiAodwUelOlBKkvKla4T6I47dITleDs6+RLWIspc
+        Es21DW2KUJVlAfVhSegO/4+EAe2vuEUr39OyN6XxmJfp4q/GBF6Pnh5R6EkEnA3PcrwpfB
+        JyUEYKEYJ1KY7x0yNXuizUFDOpdNCiw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8FB08AE3C;
+        Mon,  1 Mar 2021 17:09:25 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 18:09:23 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Alistair Popple <alistair@popple.id.au>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Wei Li <liwei391@huawei.com>, linuxppc-dev@lists.ozlabs.org,
+        kgdb-bugreport@lists.sourceforge.net
+Subject: Re: [PATCH next v3 11/15] printk: kmsg_dumper: remove @active field
+Message-ID: <YD0fw0DErfsi2ibs@alley>
+References: <20210225202438.28985-1-john.ogness@linutronix.de>
+ <20210225202438.28985-12-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210301093753.16300-1-Perry_Yuan@Dell.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225202438.28985-12-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 1:37 AM, Perry Yuan wrote:
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 91e6176cdfbd..e20f79389a39 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -491,6 +491,23 @@ config DELL_WMI_LED
->  	  This adds support for the Latitude 2100 and similar
->  	  notebooks that have an external LED.
->  
-> +config DELL_PRIVACY
-> +	tristate "Dell Hardware Privacy Support"
-> +	depends on ACPI
-> +	depends on ACPI_WMI
-> +	depends on INPUT
-> +	depends on DELL_LAPTOP
-> +	depends on LEDS_TRIGGER_AUDIO
-> +	select DELL_WMI
-> +	  help
+On Thu 2021-02-25 21:24:34, John Ogness wrote:
+> All 6 kmsg_dumpers do not benefit from the @active flag:
+> 
+>   (provide their own synchronization)
+>   - arch/powerpc/kernel/nvram_64.c
+>   - arch/um/kernel/kmsg_dump.c
+>   - drivers/mtd/mtdoops.c
+>   - fs/pstore/platform.c
+> 
+>   (only dump on KMSG_DUMP_PANIC, which does not require
+>   synchronization)
+>   - arch/powerpc/platforms/powernv/opal-kmsg.c
+>   - drivers/hv/vmbus_drv.c
+> 
+> The other 2 kmsg_dump users also do not rely on @active:
+> 
+>   (hard-code @active to always be true)
+>   - arch/powerpc/xmon/xmon.c
+>   - kernel/debug/kdb/kdb_main.c
 
-The "help" keyword should be indented only with one tab. Drop the 
-2 additional spaces for it.
+Great summary!
 
-> +	  This driver provides support for the "Dell Hardware Privacy" feature
-> +	  of Dell laptops.
-> +	  Support for a micmute and camera mute privacy will be provided as
-> +	  hardware button Ctrl+F4 and Ctrl+F9 hotkey.
-> +
-> +	  To compile this driver as a module, choose M here: the module will
-> +	  be called dell_privacy.
+> Therefore, @active can be removed.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
--- 
-~Randy
-
+Best Regards,
+Petr
