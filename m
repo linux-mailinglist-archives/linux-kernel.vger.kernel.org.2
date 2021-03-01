@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245C4329996
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A763299D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238937AbhCBA0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:26:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41720 "EHLO mail.kernel.org"
+        id S1376577AbhCBA3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239873AbhCAS0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:26:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51E5465324;
-        Mon,  1 Mar 2021 17:44:42 +0000 (UTC)
+        id S239947AbhCASbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:31:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB265651A5;
+        Mon,  1 Mar 2021 17:12:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620682;
-        bh=AMAovv1m707oJ1y9ptFW2suwX9WU19RRVpElkic2UbQ=;
+        s=korg; t=1614618734;
+        bh=szcTyCxuwgUNa++4Ndccoj2lfKzm/iCe/BfGwV47W4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ynDc5Vv6J6W6G7Dr/s2atbfqYX561HK6ZnHoPBm3Qc/3tsgvKOdGhdsqlExaO6BrS
-         NCqqPDemEPcxlMwR1j7rJCLz7M8gUw0iAzmweH9iJsgLht94UKQynvyh/gK1QCH3RC
-         wUo40Zs1Iqa/l6xudZs5M0jF284z0yGuJrwW55Q0=
+        b=uIOluibhXZQBq1v1qrnybQfuw8imR0YZ19qma4arBEWq1GgaZlwsGuBMjwk+ZECxY
+         e8xFVBx51F94rivSZfi4HZohN5+I1fKpguirV8u5iQG6kUP1+1aTdmxPKVDNPO3ejO
+         VqJbpQRACM3LAdYrddtDNqZZcjYXKbH/iM6HTzwc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 242/775] mtd: parser: imagetag: fix error codes in bcm963xx_parse_imagetag_partitions()
-Date:   Mon,  1 Mar 2021 17:06:50 +0100
-Message-Id: <20210301161213.593420279@linuxfoundation.org>
+Subject: [PATCH 5.10 167/663] media: media/pci: Fix memleak in empress_init
+Date:   Mon,  1 Mar 2021 17:06:55 +0100
+Message-Id: <20210301161150.043888185@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 12ba8f8ce29fdd277f3100052eddc1afd2f5ea3f ]
+[ Upstream commit 15d0c52241ecb1c9d802506bff6f5c3f7872c0df ]
 
-If the kstrtouint() calls fail, then this should return a negative
-error code but it currently returns success.
+When vb2_queue_init() fails, dev->empress_dev
+should be released just like other error handling
+paths.
 
-Fixes: dd84cb022b31 ("mtd: bcm63xxpart: move imagetag parsing to its own parser")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/YBKFtNaFHGYBj+u4@mwanda
+Fixes: 2ada815fc48bb ("[media] saa7134: convert to vb2")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/parsers/parser_imagetag.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/media/pci/saa7134/saa7134-empress.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/parsers/parser_imagetag.c b/drivers/mtd/parsers/parser_imagetag.c
-index d69607b482272..fab0949aabba1 100644
---- a/drivers/mtd/parsers/parser_imagetag.c
-+++ b/drivers/mtd/parsers/parser_imagetag.c
-@@ -83,6 +83,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
- 			pr_err("invalid rootfs address: %*ph\n",
- 				(int)sizeof(buf->flash_image_start),
- 				buf->flash_image_start);
-+			ret = -EINVAL;
- 			goto out;
- 		}
- 
-@@ -92,6 +93,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
- 			pr_err("invalid kernel address: %*ph\n",
- 				(int)sizeof(buf->kernel_address),
- 				buf->kernel_address);
-+			ret = -EINVAL;
- 			goto out;
- 		}
- 
-@@ -100,6 +102,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
- 			pr_err("invalid kernel length: %*ph\n",
- 				(int)sizeof(buf->kernel_length),
- 				buf->kernel_length);
-+			ret = -EINVAL;
- 			goto out;
- 		}
- 
-@@ -108,6 +111,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
- 			pr_err("invalid total length: %*ph\n",
- 				(int)sizeof(buf->total_length),
- 				buf->total_length);
-+			ret = -EINVAL;
- 			goto out;
- 		}
- 
+diff --git a/drivers/media/pci/saa7134/saa7134-empress.c b/drivers/media/pci/saa7134/saa7134-empress.c
+index 39e3c7f8c5b46..76a37fbd84587 100644
+--- a/drivers/media/pci/saa7134/saa7134-empress.c
++++ b/drivers/media/pci/saa7134/saa7134-empress.c
+@@ -282,8 +282,11 @@ static int empress_init(struct saa7134_dev *dev)
+ 	q->lock = &dev->lock;
+ 	q->dev = &dev->pci->dev;
+ 	err = vb2_queue_init(q);
+-	if (err)
++	if (err) {
++		video_device_release(dev->empress_dev);
++		dev->empress_dev = NULL;
+ 		return err;
++	}
+ 	dev->empress_dev->queue = q;
+ 	dev->empress_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+ 					V4L2_CAP_VIDEO_CAPTURE;
 -- 
 2.27.0
 
