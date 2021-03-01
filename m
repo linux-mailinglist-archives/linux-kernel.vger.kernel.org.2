@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE76B329A1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63990329A66
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376977AbhCBAoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:44:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
+        id S1377564AbhCBArt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:47:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240461AbhCASjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:39:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7346864EF9;
-        Mon,  1 Mar 2021 17:26:46 +0000 (UTC)
+        id S239699AbhCASoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:44:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE44165245;
+        Mon,  1 Mar 2021 17:27:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619607;
-        bh=6aa/DjmiPArBrbMt0OBDXHK2TocxmIqZ/+hLTnn5w9o=;
+        s=korg; t=1614619656;
+        bh=7xUrZFdMAtN2wsS3VAoBK781D+1J90NzztFq0SFnIKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vaJXejt5opDafdOFnFpmbzkq4BBibaBr5/HhL8y/Khtq0NJTBINUyoEjiSqtq7PLf
-         LcRnWAOXEBvqq5NN7FifQ7D6OAjMBAO+cRKgXGMSROwX9sC0mDJFxFLdXHbRhkfHtG
-         ixo/7oqfWz0ka2v2ujc3GeAre6PUE+/JwoGkoTqk=
+        b=o3h1eYhYmGTEMQc21THetr8vIqlUsU/X3smSOfNd8Yhsj/MiKTWw5bAJsZ6QoPggt
+         ncRdXA495vs8H9PhHm0l5NDnANNGyB3UCkD0Xv6UIk6icaUw892IKUWodzQkTaQvNN
+         BOdvNfO6j5DtXd0hj2cGPz0jP7qx4qEcX7ibvDj0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Bindu Ramamurthy <bindu.r@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 515/663] drm/amd/display: Add vupdate_no_lock interrupts for DCN2.1
-Date:   Mon,  1 Mar 2021 17:12:43 +0100
-Message-Id: <20210301161207.334489928@linuxfoundation.org>
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.10 534/663] btrfs: abort the transaction if we fail to inc ref in btrfs_copy_root
+Date:   Mon,  1 Mar 2021 17:13:02 +0100
+Message-Id: <20210301161208.272848308@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,72 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 688f97ed3f5e339c0c2c09d9ee7ff23d5807b0a7 upstream.
+commit 867ed321f90d06aaba84e2c91de51cd3038825ef upstream.
 
-When run igt@kms_vrr in a device that uses DCN2.1 architecture, we
-noticed multiple failures. Furthermore, when we tested a VRR demo, we
-noticed a system hang where the mouse pointer still works, but the
-entire system freezes; in this case, we don't see any dmesg warning or
-failure messages kernel. This happens due to a lack of vupdate_no_lock
-interrupt, making the userspace wait eternally to get the event back.
-For fixing this issue, we need to add the vupdate_no_lock interrupt in
-the interrupt list.
+While testing my error handling patches, I added a error injection site
+at btrfs_inc_extent_ref, to validate the error handling I added was
+doing the correct thing.  However I hit a pretty ugly corruption while
+doing this check, with the following error injection stack trace:
 
-Signed-off-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Acked-by: Bindu Ramamurthy <bindu.r@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Cc: stable@vger.kernel.org
+btrfs_inc_extent_ref
+  btrfs_copy_root
+    create_reloc_root
+      btrfs_init_reloc_root
+	btrfs_record_root_in_trans
+	  btrfs_start_transaction
+	    btrfs_update_inode
+	      btrfs_update_time
+		touch_atime
+		  file_accessed
+		    btrfs_file_mmap
+
+This is because we do not catch the error from btrfs_inc_extent_ref,
+which in practice would be ENOMEM, which means we lose the extent
+references for a root that has already been allocated and inserted,
+which is the problem.  Fix this by aborting the transaction if we fail
+to do the reference modification.
+
+CC: stable@vger.kernel.org # 4.4+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/irq/dcn21/irq_service_dcn21.c |   22 +++++++++++
- 1 file changed, 22 insertions(+)
+ fs/btrfs/ctree.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/gpu/drm/amd/display/dc/irq/dcn21/irq_service_dcn21.c
-+++ b/drivers/gpu/drm/amd/display/dc/irq/dcn21/irq_service_dcn21.c
-@@ -168,6 +168,11 @@ static const struct irq_source_info_func
- 	.ack = NULL
- };
- 
-+static const struct irq_source_info_funcs vupdate_no_lock_irq_info_funcs = {
-+	.set = NULL,
-+	.ack = NULL
-+};
-+
- #undef BASE_INNER
- #define BASE_INNER(seg) DMU_BASE__INST0_SEG ## seg
- 
-@@ -230,6 +235,17 @@ static const struct irq_source_info_func
- 		.funcs = &vblank_irq_info_funcs\
- 	}
- 
-+/* vupdate_no_lock_int_entry maps to DC_IRQ_SOURCE_VUPDATEx, to match semantic
-+ * of DCE's DC_IRQ_SOURCE_VUPDATEx.
-+ */
-+#define vupdate_no_lock_int_entry(reg_num)\
-+	[DC_IRQ_SOURCE_VUPDATE1 + reg_num] = {\
-+		IRQ_REG_ENTRY(OTG, reg_num,\
-+			OTG_GLOBAL_SYNC_STATUS, VUPDATE_NO_LOCK_INT_EN,\
-+			OTG_GLOBAL_SYNC_STATUS, VUPDATE_NO_LOCK_EVENT_CLEAR),\
-+		.funcs = &vupdate_no_lock_irq_info_funcs\
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -221,9 +221,10 @@ int btrfs_copy_root(struct btrfs_trans_h
+ 		ret = btrfs_inc_ref(trans, root, cow, 1);
+ 	else
+ 		ret = btrfs_inc_ref(trans, root, cow, 0);
+-
+-	if (ret)
++	if (ret) {
++		btrfs_abort_transaction(trans, ret);
+ 		return ret;
 +	}
-+
- #define vblank_int_entry(reg_num)\
- 	[DC_IRQ_SOURCE_VBLANK1 + reg_num] = {\
- 		IRQ_REG_ENTRY(OTG, reg_num,\
-@@ -338,6 +354,12 @@ irq_source_info_dcn21[DAL_IRQ_SOURCES_NU
- 	vupdate_int_entry(3),
- 	vupdate_int_entry(4),
- 	vupdate_int_entry(5),
-+	vupdate_no_lock_int_entry(0),
-+	vupdate_no_lock_int_entry(1),
-+	vupdate_no_lock_int_entry(2),
-+	vupdate_no_lock_int_entry(3),
-+	vupdate_no_lock_int_entry(4),
-+	vupdate_no_lock_int_entry(5),
- 	vblank_int_entry(0),
- 	vblank_int_entry(1),
- 	vblank_int_entry(2),
+ 
+ 	btrfs_mark_buffer_dirty(cow);
+ 	*cow_ret = cow;
 
 
