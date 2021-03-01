@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553C53293F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF16F3293B5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244361AbhCAVnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:43:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37346 "EHLO mail.kernel.org"
+        id S244313AbhCAVd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:33:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237030AbhCARSv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:18:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B99E6504D;
-        Mon,  1 Mar 2021 16:47:10 +0000 (UTC)
+        id S237347AbhCARSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:18:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77F7D65052;
+        Mon,  1 Mar 2021 16:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617231;
-        bh=1aUp4WnQ0d6xW1Xx1eaYpX3/zb8vkFgrgPhQ4ud/oec=;
+        s=korg; t=1614617234;
+        bh=7xC4iiMmZejp3ZwjMd4Sr6JX15PfpU1FJ+v4WJcqEw4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SPF+549TIhCJiUedaiCbULyFeac/LK2drlV/umBJL7ubVQL0TFnY4WbfwWJY/lBDm
-         1BjQhSxA4H0DHaL580jQb19WcGjCNOtD25nYTldxdiCrOT4tR41UuszXBAGOZzaQ0R
-         ZqFBsFGbnBJBcugrYP6IagjiupN7NB9g+IIflEvE=
+        b=J4mI2TtVVhd/VqiBN2DlUV1VPhVsZjPyNe+BFWhnMdmcd3ZAvV6BcCgG2MQv/puLS
+         ZjFHQ8jV+Z+K93nnNYHOT/RxBkDKAhTM9+MWQjAeGJ3Qj7Z8Cxmdg6aT8uiK22dSdU
+         BVZbyJ1mbnBnrlUiphc0ca6sgrWrdexalUExRR/4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH 4.19 223/247] arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
-Date:   Mon,  1 Mar 2021 17:14:03 +0100
-Message-Id: <20210301161042.603544161@linuxfoundation.org>
+        stable@vger.kernel.org, Marco Elver <elver@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Fangrui Song <maskray@google.com>, Jessica Yu <jeyu@kernel.org>
+Subject: [PATCH 4.19 224/247] module: Ignore _GLOBAL_OFFSET_TABLE_ when warning for undefined symbols
+Date:   Mon,  1 Mar 2021 17:14:04 +0100
+Message-Id: <20210301161042.653694736@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -42,53 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+From: Fangrui Song <maskray@google.com>
 
-commit c0b15c25d25171db4b70cc0b7dbc1130ee94017d upstream.
+commit ebfac7b778fac8b0e8e92ec91d0b055f046b4604 upstream.
 
-The erratum 1024718 affects Cortex-A55 r0p0 to r2p0. However
-we apply the work around for r0p0 - r1p0. Unfortunately this
-won't be fixed for the future revisions for the CPU. Thus
-extend the work around for all versions of A55, to cover
-for r2p0 and any future revisions.
+clang-12 -fno-pic (since
+https://github.com/llvm/llvm-project/commit/a084c0388e2a59b9556f2de0083333232da3f1d6)
+can emit `call __stack_chk_fail@PLT` instead of `call __stack_chk_fail`
+on x86.  The two forms should have identical behaviors on x86-64 but the
+former causes GNU as<2.37 to produce an unreferenced undefined symbol
+_GLOBAL_OFFSET_TABLE_.
 
-Cc: stable@vger.kernel.org
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20210203230057.3961239-1-suzuki.poulose@arm.com
-[will: Update Kconfig help text]
-Signed-off-by: Will Deacon <will@kernel.org>
+(On x86-32, there is an R_386_PC32 vs R_386_PLT32 difference but the
+linker behavior is identical as far as Linux kernel is concerned.)
+
+Simply ignore _GLOBAL_OFFSET_TABLE_ for now, like what
+scripts/mod/modpost.c:ignore_undef_symbol does. This also fixes the
+problem for gcc/clang -fpie and -fpic, which may emit `call foo@PLT` for
+external function calls on x86.
+
+Note: ld -z defs and dynamic loaders do not error for unreferenced
+undefined symbols so the module loader is reading too much.  If we ever
+need to ignore more symbols, the code should be refactored to ignore
+unreferenced symbols.
+
+Cc: <stable@vger.kernel.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1250
+Link: https://sourceware.org/bugzilla/show_bug.cgi?id=27178
+Reported-by: Marco Elver <elver@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Marco Elver <elver@google.com>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/arm64/Kconfig             |    2 +-
- arch/arm64/kernel/cpufeature.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/module.c |   21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -473,7 +473,7 @@ config ARM64_ERRATUM_1024718
- 	help
- 	  This option adds work around for Arm Cortex-A55 Erratum 1024718.
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2274,6 +2274,21 @@ static int verify_export_symbols(struct
+ 	return 0;
+ }
  
--	  Affected Cortex-A55 cores (r0p0, r0p1, r1p0) could cause incorrect
-+	  Affected Cortex-A55 cores (all revisions) could cause incorrect
- 	  update of the hardware dirty bit when the DBM/AP bits are updated
- 	  without a break-before-make. The work around is to disable the usage
- 	  of hardware DBM locally on the affected cores. CPUs not affected by
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1012,7 +1012,7 @@ static bool cpu_has_broken_dbm(void)
- 	/* List of CPUs which have broken DBM support. */
- 	static const struct midr_range cpus[] = {
- #ifdef CONFIG_ARM64_ERRATUM_1024718
--		MIDR_RANGE(MIDR_CORTEX_A55, 0, 0, 1, 0),  // A55 r0p0 -r1p0
-+		MIDR_ALL_VERSIONS(MIDR_CORTEX_A55),
- #endif
- 		{},
- 	};
++static bool ignore_undef_symbol(Elf_Half emachine, const char *name)
++{
++	/*
++	 * On x86, PIC code and Clang non-PIC code may have call foo@PLT. GNU as
++	 * before 2.37 produces an unreferenced _GLOBAL_OFFSET_TABLE_ on x86-64.
++	 * i386 has a similar problem but may not deserve a fix.
++	 *
++	 * If we ever have to ignore many symbols, consider refactoring the code to
++	 * only warn if referenced by a relocation.
++	 */
++	if (emachine == EM_386 || emachine == EM_X86_64)
++		return !strcmp(name, "_GLOBAL_OFFSET_TABLE_");
++	return false;
++}
++
+ /* Change all symbols so that st_value encodes the pointer directly. */
+ static int simplify_symbols(struct module *mod, const struct load_info *info)
+ {
+@@ -2319,8 +2334,10 @@ static int simplify_symbols(struct modul
+ 				break;
+ 			}
+ 
+-			/* Ok if weak.  */
+-			if (!ksym && ELF_ST_BIND(sym[i].st_info) == STB_WEAK)
++			/* Ok if weak or ignored.  */
++			if (!ksym &&
++			    (ELF_ST_BIND(sym[i].st_info) == STB_WEAK ||
++			     ignore_undef_symbol(info->hdr->e_machine, name)))
+ 				break;
+ 
+ 			ret = PTR_ERR(ksym) ?: -ENOENT;
 
 
