@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA51329BE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00403329B83
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379833AbhCBBbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:31:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43888 "EHLO mail.kernel.org"
+        id S1348848AbhCBBZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:25:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235765AbhCATSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:18:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F199764FA3;
-        Mon,  1 Mar 2021 17:26:40 +0000 (UTC)
+        id S241029AbhCATLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:11:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FA4B64F9C;
+        Mon,  1 Mar 2021 17:26:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619601;
-        bh=Y5B3CohJ0Xl3YkF/OrgFnybXvjnQMwMebfIgIUc7t1M=;
+        s=korg; t=1614619612;
+        bh=DWZ3pK/jmt/+ZAEw5AcDxxcpf5sJ42lwJvEL4f1PAYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EHk/Y0veaQrPRx5zfKQ09jLbFfWvdYa0usLlSdFStqud7QnhDT3X2Oi3Rh9NsaOia
-         LcVKPhcLfQT40mrIcqUQgCKrSkimwKwipQV+Q1wTDS6ktnA06WLqSLDJavZKN+YeQ5
-         eW3mP3O/xC0rNaVyRnSwOU/V6NjfU+S8TVkjiRao=
+        b=VYNd/lLF/Pxg10kYod8X1YTVEirVkaUKSxajC5lMt511NGGy0tLj3FaDE8dz969RT
+         NiKFG+gNmUNgc9ZJ3+kQZV6fJyimWbaurYqRDzRwG2vZpRl/WGC2g9p44cxRV3rYRB
+         c1+skfNUtb9WWZigCCStwpGs62MXS4j3AE+L5kek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Jan=20Kokem=C3=BCller?= <jan.kokemueller@gmail.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.10 513/663] drm/amd/display: Add FPU wrappers to dcn21_validate_bandwidth()
-Date:   Mon,  1 Mar 2021 17:12:41 +0100
-Message-Id: <20210301161207.233869709@linuxfoundation.org>
+Subject: [PATCH 5.10 517/663] drm/amdgpu: Set reference clock to 100Mhz on Renoir (v2)
+Date:   Mon,  1 Mar 2021 17:12:45 +0100
+Message-Id: <20210301161207.436130823@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,76 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kokemüller <jan.kokemueller@gmail.com>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-commit 41401ac67791810dd880345962339aa1bedd3c0d upstream.
+commit 6e80fb8ab04f6c4f377e2fd422bdd1855beb7371 upstream.
 
-dcn21_validate_bandwidth() calls functions that use floating point math.
-On my machine this sometimes results in simd exceptions when there are
-other FPU users such as KVM virtual machines running. The screen freezes
-completely in this case.
+Fixes the rlc reference clock used for GPU timestamps.
+Value is 100Mhz.  Confirmed with hardware team.
 
-Wrapping the function with DC_FP_START()/DC_FP_END() seems to solve the
-problem. This mirrors the approach used for dcn20_validate_bandwidth.
+v2: reword commit message.
 
-Tested on a AMD Ryzen 7 PRO 4750U (Renoir).
-
-Bug: https://bugzilla.kernel.org/show_bug.cgi?id=206987
-Signed-off-by: Jan Kokemüller <jan.kokemueller@gmail.com>
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1480
+Acked-by: Christian König <christian.koenig@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c |    2 -
- drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c |   20 ++++++++++++++++--
- 2 files changed, 19 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/soc15.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-@@ -3248,7 +3248,7 @@ restore_dml_state:
- bool dcn20_validate_bandwidth(struct dc *dc, struct dc_state *context,
- 		bool fast_validate)
+--- a/drivers/gpu/drm/amd/amdgpu/soc15.c
++++ b/drivers/gpu/drm/amd/amdgpu/soc15.c
+@@ -246,6 +246,8 @@ static u32 soc15_get_xclk(struct amdgpu_
  {
--	bool voltage_supported = false;
-+	bool voltage_supported;
- 	DC_FP_START();
- 	voltage_supported = dcn20_validate_bandwidth_fp(dc, context, fast_validate);
- 	DC_FP_END();
---- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
-@@ -1173,8 +1173,8 @@ void dcn21_calculate_wm(
- }
+ 	u32 reference_clock = adev->clock.spll.reference_freq;
  
++	if (adev->asic_type == CHIP_RENOIR)
++		return 10000;
+ 	if (adev->asic_type == CHIP_RAVEN)
+ 		return reference_clock / 4;
  
--bool dcn21_validate_bandwidth(struct dc *dc, struct dc_state *context,
--		bool fast_validate)
-+static noinline bool dcn21_validate_bandwidth_fp(struct dc *dc,
-+		struct dc_state *context, bool fast_validate)
- {
- 	bool out = false;
- 
-@@ -1227,6 +1227,22 @@ validate_out:
- 
- 	return out;
- }
-+
-+/*
-+ * Some of the functions further below use the FPU, so we need to wrap this
-+ * with DC_FP_START()/DC_FP_END(). Use the same approach as for
-+ * dcn20_validate_bandwidth in dcn20_resource.c.
-+ */
-+bool dcn21_validate_bandwidth(struct dc *dc, struct dc_state *context,
-+		bool fast_validate)
-+{
-+	bool voltage_supported;
-+	DC_FP_START();
-+	voltage_supported = dcn21_validate_bandwidth_fp(dc, context, fast_validate);
-+	DC_FP_END();
-+	return voltage_supported;
-+}
-+
- static void dcn21_destroy_resource_pool(struct resource_pool **pool)
- {
- 	struct dcn21_resource_pool *dcn21_pool = TO_DCN21_RES_POOL(*pool);
 
 
