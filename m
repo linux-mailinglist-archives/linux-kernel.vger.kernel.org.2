@@ -2,241 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4B9327E43
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7E3327E33
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbhCAM1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:27:36 -0500
-Received: from regular1.263xmail.com ([211.150.70.195]:35378 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234211AbhCAM1L (ORCPT
+        id S234918AbhCAMWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:22:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234386AbhCAMWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:27:11 -0500
-Received: from localhost (unknown [192.168.167.235])
-        by regular1.263xmail.com (Postfix) with ESMTP id 30E861BD6;
-        Mon,  1 Mar 2021 20:20:21 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [113.57.152.160])
-        by smtp.263.net (postfix) whith ESMTP id P19729T140185342957312S1614601220655660_;
-        Mon, 01 Mar 2021 20:20:21 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <9f48b6d643b24293182a46b5a0437d00>
-X-RL-SENDER: huangjianghui@uniontech.com
-X-SENDER: huangjianghui@uniontech.com
-X-LOGIN-NAME: huangjianghui@uniontech.com
-X-FST-TO: corbet@lwn.net
-X-SENDER-IP: 113.57.152.160
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   hjh <huangjianghui@uniontech.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Harry Wei <harryxiyou@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PATCH Documentation translations:translate sound/hd-audio/controls to chinese
-Date:   Mon,  1 Mar 2021 20:20:19 +0800
-Message-Id: <20210301122019.80234-1-huangjianghui@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 1 Mar 2021 07:22:25 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210C5C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 04:21:45 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id e10so15686920wro.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 04:21:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Gw7vh21OA2GN+c4vAdueJEzrkOpCd8FahG3FhqVfJSo=;
+        b=QbOaPeYXxavfvWwZm75sM0iJMXhJmsLHuf+hAYClzhVA+k+iWTuWFkSmQpQj4TWhTi
+         5jJ3v1RCIl0+4sZwAl6Bf3S5eMx133iTAwJjvmiA/wdo7WaBJQzCVKAw5v0r3yOnfkwj
+         z5mDwqKrhyEIBZH2s3WkV0KYfIXD/OCNLAQbyywDzOTqOTi3tU80m2iPq9Mv5URuoM9H
+         IaRpk8Hh2o107WFgw948pOoaDej0ZI40URY5EILj+OZzYHfeOsrFOR6dErzbsbgXeMCg
+         WNUKrV/BkQb9BgGKS5U2NwiYs+i96RrymY6EUGXEGS6Ful4HE/5aoyjHMfndVcn+K/NJ
+         fWyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Gw7vh21OA2GN+c4vAdueJEzrkOpCd8FahG3FhqVfJSo=;
+        b=AQ017+ZkTrlXNIq50m2jC5tWtKRTIvk3jYoRDvIP/vmKDdAGuJ9oUYoL7CAUN352lG
+         kjuUm04WZceyi/ZY/zOuQhMPPiQJup0bb3q/iLiTN9DMCfnGmyAmlHmQ1K9gobNjlvds
+         SIR6V4USL1cWxnW306bDg6i9MQaL5wbklvNbgHh3zF2Q2FqF3DzzxgzFhH0nv+MJkr6m
+         SSrnwwOfzzthtt1tQTCPw04R6ecablYBPAnP8TwhfahujRM7nm/wBWVpBLJH9zF/SPE1
+         1tOUD9m7OlJzn+M1SQjqhM3vafVfGIS25I0wEtMVvGng2ES99pXfO/7In4bP6sYz9jxr
+         r3Jg==
+X-Gm-Message-State: AOAM5303/byUy+tKX2vlueALq2BHUh9nCLY6ZySUwWmy1LegMx3D4f21
+        tyYIIeF2oNskEOqHg8H61kTwZg==
+X-Google-Smtp-Source: ABdhPJzS7WpgzqniNfjBwwdPG7kTr25w9/adiWOz65ygaVjjmtBJcd7QUoFMbNKuSB7q8BbAxrmEsQ==
+X-Received: by 2002:a05:6000:1545:: with SMTP id 5mr16505065wry.90.1614601303562;
+        Mon, 01 Mar 2021 04:21:43 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
+        by smtp.googlemail.com with ESMTPSA id g202sm3775569wme.20.2021.03.01.04.21.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 04:21:43 -0800 (PST)
+Subject: Re: [PATCH v2 07/10] clocksource/drivers/hyper-v: Handle vDSO
+ differences inline
+To:     Michael Kelley <mikelley@microsoft.com>, sthemmin@microsoft.com,
+        kys@microsoft.com, wei.liu@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, arnd@arndb.de,
+        linux-hyperv@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-arch@vger.kernel.org
+References: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
+ <1614561332-2523-8-git-send-email-mikelley@microsoft.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <42dc252a-b09a-afeb-6792-9b77669c16e9@linaro.org>
+Date:   Mon, 1 Mar 2021 13:21:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1614561332-2523-8-git-send-email-mikelley@microsoft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: hjh <huangjianghui@uniontech.com>
----
- Documentation/translations/zh_CN/index.rst    |   1 +
- .../zh_CN/sound/hd-audio/controls.rst         | 102 ++++++++++++++++++
- .../zh_CN/sound/hd-audio/index.rst            |  17 +++
- .../translations/zh_CN/sound/index.rst        |  26 +++++
- 4 files changed, 146 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/controls.rst
- create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/index.rst
- create mode 100644 Documentation/translations/zh_CN/sound/index.rst
+On 01/03/2021 02:15, Michael Kelley wrote:
+> While the driver for the Hyper-V Reference TSC and STIMERs is architecture
+> neutral, vDSO is implemented for x86/x64, but not for ARM64.  Current code
+> calls into utility functions under arch/x86 (and coming, under arch/arm64)
+> to handle the difference.
+> 
+> Change this approach to handle the difference inline based on whether
+> VDSO_CLOCK_MODE_HVCLOCK is present.  The new approach removes code under
+> arch/* since the difference is tied more to the specifics of the Linux
+> implementation than to the architecture.
+> 
+> No functional change.
 
-diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
-index be6f11176200..2767dacfe86d 100644
---- a/Documentation/translations/zh_CN/index.rst
-+++ b/Documentation/translations/zh_CN/index.rst
-@@ -20,6 +20,7 @@
-    process/index
-    filesystems/index
-    arm64/index
-+   sound/index
- 
- 目录和表格
- ----------
-diff --git a/Documentation/translations/zh_CN/sound/hd-audio/controls.rst b/Documentation/translations/zh_CN/sound/hd-audio/controls.rst
-new file mode 100644
-index 000000000000..54c028ab9a40
---- /dev/null
-+++ b/Documentation/translations/zh_CN/sound/hd-audio/controls.rst
-@@ -0,0 +1,102 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Chinese translator: Huang Jianghui <huangjianghui@uniontech.com>
-+---------------------------------------------------------------------
-+.. include:: ../../disclaimer-zh_CN.rst
-+以下为正文
-+---------------------------------------------------------------------
-+======================================
-+高清音频编解码器特定混音器控件
-+======================================
-+
-+
-+此文件解释特定于编解码器的混音器控件.
-+
-+瑞昱编解码器
-+------------
-+
-+声道模式
-+  这是一个用于更改环绕声道设置的枚举控件,仅在环绕声道打开时显示出现。
-+  它给出要使用的通道数:"2ch","4ch","6ch"，和"8ch"。根据配置，这还控
-+  制多I/O插孔的插孔重分配。
-+
-+自动静音模式
-+  这是一个枚举控件，用于更改耳机和线路输出插孔的自动静音行为。如果内
-+  置扬声器、耳机和/或线路输出插孔在机器上可用，则显示该控件。当只有
-+  耳机或者线路输出的时候，它给出”禁用“和”启用“状态。当启用后，插孔插
-+  入后扬声器会自动静音。
-+
-+  当耳机和线路输出插孔都存在时，它给出”禁用“、”仅扬声器“和”线路输出+扬
-+  声器“。当”仅扬声器“被选择，插入耳机或者线路输出插孔可使扬声器静音，
-+  但不会使线路输出静音。当线路输出+扬声器被选择，插入耳机插孔会同时使扬
-+  声器和线路输出静音。
-+
-+
-+矽玛特编解码器
-+--------------
-+
-+模拟环回
-+   此控件启用/禁用模拟环回电路。只有在编解码器提示中将”lookback“设置为真
-+   时才会出现(见HD-Audio.txt)。请注意，在某些编解码器上，模拟环回和正常
-+   PCM播放是独占的,即当此选项打开时，您将听不到任何PCM流。
-+
-+交换中置/低频
-+   交换中置和低频通道顺序，通常情况下，左侧对应中置，右侧对应低频,启动此
-+   项后，左边低频，右边中置。
-+
-+耳机作为线路输出
-+   当此控制开启时，将耳机视为线路输出插孔。也就是说，耳机不会自动静音其他
-+   线路输出，没有耳机放大器被设置到引脚上。
-+
-+麦克风插口模式、线路插孔模式等
-+   这些枚举控制输入插孔引脚的方向和偏置。根据插孔类型，它可以设置为”麦克风
-+   输入“和”线路输入“以确定输入偏置,或者当引脚是环绕声道的多I/O插孔时，它
-+   可以设置为”线路输出“。
-+
-+
-+威盛编解码器
-+------------
-+
-+智能5.1
-+   一个枚举控件，用于为环绕输出重新分配多个I/O插孔的任务。当它打开时，相应
-+   的输入插孔（通常是线路输入和麦克风输入）被切换为环绕和中央低频输出插孔。
-+
-+独立耳机
-+   启用此枚举控制时，耳机输出从单个流（第三个PCM，如hw:0,2）而不是主流路由。
-+   如果耳机DAC与侧边或中央低频通道DAC共享，则DAC将自动切换到耳机。
-+
-+环回混合
-+   一个用于确定是否启动了模拟环回路由的枚举控件。当它启用后，模拟环回路由到
-+   前置通道。同样，耳机与扬声器输出也采用相同的路径。作为一个副作用，当设置
-+   此模式后，单个音量控制将不再适用于耳机和扬声器，因为只有一个DAC连接到混
-+   音器小部件。
-+
-+动态电源控制
-+   此控件决定是否启动每个插孔的动态电源控制检测。启用时，根据插孔的插入情况
-+   动态更改组件的电源状态（D0/D3）以节省电量消耗。但是，如果您的系统没有提
-+   供正确的插孔检测，这将无法工作;在这种情况下，请关闭此控件。
-+
-+插孔检测
-+   此控件仅为VT1708编解码器提供，它不会为每个插孔插拔提供适当的未请求事件。
-+   当此控件打开，驱动将轮询插孔检测，以便耳机自动静音可以工作，而关闭此控
-+   件将降低功耗。
-+
-+
-+科胜讯编解码器
-+--------------
-+
-+自动静音模式
-+   见瑞昱解码器
-+
-+
-+
-+模拟编解码器
-+------------
-+
-+通道模式
-+   这是一个用于更改环绕声道设置的枚举控件,仅在环绕声道可用时显示。它提供了能
-+   被使用的通道数:”2ch“、”4ch“和”6ch“。根据配置，这还控制多I/O插孔的插孔重
-+   分配。
-+
-+独立耳机
-+   启动此枚举控制后，耳机输出从单个流（第三个PCM，如hw:0,2）而不是主流路由。
-diff --git a/Documentation/translations/zh_CN/sound/hd-audio/index.rst b/Documentation/translations/zh_CN/sound/hd-audio/index.rst
-new file mode 100644
-index 000000000000..c287aad51066
---- /dev/null
-+++ b/Documentation/translations/zh_CN/sound/hd-audio/index.rst
-@@ -0,0 +1,17 @@
-+.. include:: ../../disclaimer-zh_CN.rst
-+
-+:Original: :doc:`../../../../sound/hd-audio/index`
-+:Translator: Huang Jianghui <huangjianghui@uniontech.com>
-+
-+
-+高清音频
-+========
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   notes
-+   models
-+   controls
-+   dp-mst
-+   realtek-pc-beep
-diff --git a/Documentation/translations/zh_CN/sound/index.rst b/Documentation/translations/zh_CN/sound/index.rst
-new file mode 100644
-index 000000000000..42d86b361e42
---- /dev/null
-+++ b/Documentation/translations/zh_CN/sound/index.rst
-@@ -0,0 +1,26 @@
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :doc:`../../../sound/index`
-+:Translator: Huang Jianghui <huangjianghui@uniontech.com>
-+
-+
-+====================
-+Linux 声音子系统文档
-+====================
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   kernel-api/index
-+   designs/index
-+   soc/index
-+   alsa-configuration
-+   hd-audio/index
-+   cards/index
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
+A suggestion below
+
+
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  arch/x86/include/asm/mshyperv.h    |  4 ----
+>  drivers/clocksource/hyperv_timer.c | 10 ++++++++--
+>  2 files changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index c10dd1c..4f566db 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -27,10 +27,6 @@ static inline u64 hv_get_register(unsigned int reg)
+>  	return value;
+>  }
+>  
+> -#define hv_set_clocksource_vdso(val) \
+> -	((val).vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK)
+> -#define hv_enable_vdso_clocksource() \
+> -	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+>  #define hv_get_raw_timer() rdtsc_ordered()
+>  
+>  /*
+> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+> index c73c127..5e5e08aa 100644
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -372,7 +372,9 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
+>  
+>  static int hv_cs_enable(struct clocksource *cs)
+
+static __maybe_unused int hv_cs_enable(struct clocksource *cs)
+
+>  {
+> -	hv_enable_vdso_clocksource();
+> +#ifdef VDSO_CLOCKMODE_HVCLOCK
+> +	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
+> +#endif
+>  	return 0;
+>  }
+>  
+> @@ -385,6 +387,11 @@ static int hv_cs_enable(struct clocksource *cs)
+>  	.suspend= suspend_hv_clock_tsc,
+>  	.resume	= resume_hv_clock_tsc,
+>  	.enable = hv_cs_enable,
+> +#ifdef VDSO_CLOCKMODE_HVCLOCK
+> +	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
+> +#else
+> +	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
+> +#endif
+
+#ifdef VDSO_CLOCKMODE_HVCLOCK
+	.enable = hv_cs_enable,
+	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
+#else
+	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
+#endif
+
+
+
+>  };
+>  
+>  static u64 notrace read_hv_clock_msr(void)
+> @@ -442,7 +449,6 @@ static bool __init hv_init_tsc_clocksource(void)
+>  	tsc_msr = tsc_msr | 0x1 | (u64)phys_addr;
+>  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
+>  
+> -	hv_set_clocksource_vdso(hyperv_cs_tsc);
+>  	clocksource_register_hz(&hyperv_cs_tsc, NSEC_PER_SEC/100);
+>  
+>  	hv_sched_clock_offset = hv_read_reference_counter();
+> 
+
+
 -- 
-2.20.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
