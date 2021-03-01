@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E6C328C1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66FEF328C47
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235906AbhCASpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:45:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45654 "EHLO mail.kernel.org"
+        id S240558AbhCASsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:48:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234740AbhCAQmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:42:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C65EC64EE9;
-        Mon,  1 Mar 2021 16:29:23 +0000 (UTC)
+        id S235083AbhCAQnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:43:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F12464EED;
+        Mon,  1 Mar 2021 16:29:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616164;
-        bh=YWDS2KWFnwak+5TNRU0rdnSUjl8eATSGdQzhydjAzME=;
+        s=korg; t=1614616170;
+        bh=iTx3XB6XDAxQbf/VV9LMH5cUp36i7ylT2THMU9dESik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jVVx+1MHpNwVhCiqoR3ofRAIeOTjWbOx51Zk6olzVq1NtCaS1B3KCBjfR+kxyauJ0
-         UZ47EGv1e0HHXlws/KE1r2e5ipT7jCKP91fW8pxYmIm0XCqKyuNpmw/VouluPhWiny
-         cCPuTJoB+VsUTxGVL2jGjRvDYXqT/JOMuemfrsAM=
+        b=kkHiUyOCn5rrX6/AD6NJmvyGMbQaerB+SdCOIqwH8cGMywnYUPBNpgmGkDHns2hd7
+         zBxOqCLsh9dhw2YdxHIGJJx6Ba4XdEYcCbqordduSHsFksVOga8pfGto36Xb9cZEbq
+         seWScIpkcIBpanO1azMg2WvjvHQsRQrfIS9/BBXc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Till=20D=C3=B6rges?= <doerges@pre-sense.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 056/176] media: pxa_camera: declare variable when DEBUG is defined
-Date:   Mon,  1 Mar 2021 17:12:09 +0100
-Message-Id: <20210301161023.727184510@linuxfoundation.org>
+Subject: [PATCH 4.14 057/176] media: uvcvideo: Accept invalid bFormatIndex and bFrameIndex values
+Date:   Mon,  1 Mar 2021 17:12:10 +0100
+Message-Id: <20210301161023.778956270@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -41,41 +42,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-[ Upstream commit 031b9212eeee365443aaef013360ea6cded7b2c4 ]
+[ Upstream commit dc9455ffae02d7b7fb51ba1e007fffcb9dc5d890 ]
 
-When DEBUG is defined this error occurs
+The Renkforce RF AC4K 300 Action Cam 4K reports invalid bFormatIndex and
+bFrameIndex values when negotiating the video probe and commit controls.
+The UVC descriptors report a single supported format and frame size,
+with bFormatIndex and bFrameIndex both equal to 2, but the video probe
+and commit controls report bFormatIndex and bFrameIndex set to 1.
 
-drivers/media/platform/pxa_camera.c:1410:7: error:
-  ‘i’ undeclared (first use in this function)
-  for (i = 0; i < vb->num_planes; i++)
-       ^
-The variable 'i' is missing, so declare it.
+The device otherwise operates correctly, but the driver rejects the
+values and fails the format try operation. Fix it by ignoring the
+invalid indices, and assuming that the format and frame requested by the
+driver are accepted by the device.
 
-Fixes: 6f28435d1c15 ("[media] media: platform: pxa_camera: trivial move of functions")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=210767
+
+Fixes: 8a652a17e3c0 ("media: uvcvideo: Ensure all probed info is returned to v4l2")
+Reported-by: Till Dörges <doerges@pre-sense.de>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/pxa_camera.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/usb/uvc/uvc_v4l2.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
-index d270a23299cc7..18dce48a6828d 100644
---- a/drivers/media/platform/pxa_camera.c
-+++ b/drivers/media/platform/pxa_camera.c
-@@ -1450,6 +1450,9 @@ static int pxac_vb2_prepare(struct vb2_buffer *vb)
- 	struct pxa_camera_dev *pcdev = vb2_get_drv_priv(vb->vb2_queue);
- 	struct pxa_buffer *buf = vb2_to_pxa_buffer(vb);
- 	int ret = 0;
-+#ifdef DEBUG
-+	int i;
-+#endif
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index 644afd55c0f0f..08a3a8ad79d75 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -253,7 +253,9 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
+ 		goto done;
  
- 	switch (pcdev->channels) {
- 	case 1:
+ 	/* After the probe, update fmt with the values returned from
+-	 * negotiation with the device.
++	 * negotiation with the device. Some devices return invalid bFormatIndex
++	 * and bFrameIndex values, in which case we can only assume they have
++	 * accepted the requested format as-is.
+ 	 */
+ 	for (i = 0; i < stream->nformats; ++i) {
+ 		if (probe->bFormatIndex == stream->format[i].index) {
+@@ -262,11 +264,10 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
+ 		}
+ 	}
+ 
+-	if (i == stream->nformats) {
+-		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFormatIndex %u\n",
++	if (i == stream->nformats)
++		uvc_trace(UVC_TRACE_FORMAT,
++			  "Unknown bFormatIndex %u, using default\n",
+ 			  probe->bFormatIndex);
+-		return -EINVAL;
+-	}
+ 
+ 	for (i = 0; i < format->nframes; ++i) {
+ 		if (probe->bFrameIndex == format->frame[i].bFrameIndex) {
+@@ -275,11 +276,10 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
+ 		}
+ 	}
+ 
+-	if (i == format->nframes) {
+-		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFrameIndex %u\n",
++	if (i == format->nframes)
++		uvc_trace(UVC_TRACE_FORMAT,
++			  "Unknown bFrameIndex %u, using default\n",
+ 			  probe->bFrameIndex);
+-		return -EINVAL;
+-	}
+ 
+ 	fmt->fmt.pix.width = frame->wWidth;
+ 	fmt->fmt.pix.height = frame->wHeight;
 -- 
 2.27.0
 
