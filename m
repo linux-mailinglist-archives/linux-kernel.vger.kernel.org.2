@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07151329367
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C2D329375
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244219AbhCAVSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:18:21 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:12062 "EHLO
+        id S244522AbhCAVT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:19:26 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:32429 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbhCAROD (ORCPT
+        with ESMTP id S233180AbhCARQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:14:03 -0500
+        Mon, 1 Mar 2021 12:16:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1614618841; x=1646154841;
+  t=1614618961; x=1646154961;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=pxCQjssLoxZcatELQgwjllNaDYthflzhU0aVN0lbGBg=;
-  b=ARchCs96D1xdxYBM1b3zq3GuoyJtnW5Xff37ZpJl8wBj41XNkPLeE0qW
-   OPYx6wdnPfwBfcpQqF+zyuPhGpAo/c7zhvRjvL9upno1X8964pyeRyL+q
-   CC6e8HPmtobpmNV1m8KUs0pF2EXOkC9LXOpRlpB1r10lbCxtD4qjeyI3L
-   HzIE8sZaq6uj9g5MLPnukx95bW+wOoIAvMyI72+9nORuwjYvHQSpWl26x
-   K7CeOZeFDMvojd1k3BEZW2urvPvJcH0MDLGKDqadmDVbYHFcsVAFYUctT
-   tSgR8NN/7NiSlekHRvSm9pgFQRo3A5lFcFEjLg0woL08dZI38vqYi4Y+D
-   Q==;
-IronPort-SDR: yPPwN8AecrDgMrQElqI1xdlSNlqrA/CjJCNWt9DWdGllpwcTvelEooZyPhAR1R+YxnuDrZDIx9
- vj43uYQQ9J90j7i8vbwMlk4Ir05k6Xg05qMpAHGl4nZSAf5JIylXk9UrW0xkEWYfaN9P9LGfyf
- 2Hm0rjmKk+wVIiX+AlAOCHxXXl1P5lEdpIiRgjmhbJ33P89/bg/xakx2gnsCN46l7PkJm44NSA
- PCLLJRE40qhljv6H43wlsaP9Umcys5TB7tygf+ROCZyWyKvFMLff4JLLiWq4XA5CcProx9oa5C
- gbs=
+  bh=JAZW71oGr+uPsf05sRgZbONv7U3epY8nJsk/yvQb0aY=;
+  b=MK47i3J7DRIzlHog6SdxOcVJOOWeLDZHVmymNweL17ygHJdtNH4Di4Xf
+   RkkqBd7nSXrWsFpFsKZrfAqK0yASxTa1lAVYlFoLAvbW2tMxuAwdbEMFW
+   xNHlY0hen7Jy2zAP7ri2fJ8awSzrfrrxhv/1bAmT2vQeYqsUqO1qU+4/N
+   u4K6SyjkhyVZatvDBrFsZBDSZ7tDJljdrGlo1wm6y3XRwFafJ9maI18wM
+   Fx60v9OmoT11dro+GQldUcQcn6J6YJsI5G4Zgt1tjIzwxLdB4iUp2AhVj
+   SsQ/HyCQzuBOKJVOzCM5WVTpKWexnuUB/5Qp2+Ef+TEs0eVF0lHAF5r0v
+   A==;
+IronPort-SDR: OPDsas62esXmTkEDESjLiHXRHblwzIfU0ueGzYrZIw/dOcdPD2yx1XgAlDHFc2xTpHZsz43RJ3
+ 4yLsRplyaAbjqUvgsXWihaeNVctgWBHvQQQh4Lk+0hIzWXevUNmHs3VAUe6904MDuzz2lru7YM
+ 9+wYMXjSPg1Qfo0F1KclMNWMm7zQm/iq720ZtIagfmthg6Le49RxCYKyMD1ERJ0szF2H+4FovP
+ XxtY5Fz00L96swuHseNSjUh+fG3KQNciR9kHY4xB775oQBdvN9TnJ250SXMj7uW+ThTqjaa65S
+ 6Zo=
 X-IronPort-AV: E=Sophos;i="5.81,215,1610434800"; 
-   d="scan'208";a="111511710"
+   d="scan'208";a="111511738"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Mar 2021 10:09:49 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Mar 2021 10:09:54 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
  chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 1 Mar 2021 10:09:45 -0700
+ 15.1.1979.3; Mon, 1 Mar 2021 10:09:49 -0700
 Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 1 Mar 2021 10:09:42 -0700
+ 15.1.1979.3 via Frontend Transport; Mon, 1 Mar 2021 10:09:46 -0700
 From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 To:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
@@ -49,9 +49,9 @@ CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
         <perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
         <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
         "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
-Subject: [PATCH v2 3/7] ASoC: mchp-i2s-mcc: Add multi-channel support for I2S and LEFT_J formats
-Date:   Mon, 1 Mar 2021 19:09:01 +0200
-Message-ID: <20210301170905.835091-4-codrin.ciubotariu@microchip.com>
+Subject: [PATCH v2 4/7] dt-bindings: mchp,i2s-mcc: Add property to specify pin pair for TDM
+Date:   Mon, 1 Mar 2021 19:09:02 +0200
+Message-ID: <20210301170905.835091-5-codrin.ciubotariu@microchip.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
 References: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
@@ -62,117 +62,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The latest I2S-MCC available in SAMA7G5 supports multi-channel for I2S and
-Left-Justified formats. For this, the new version uses 8 (4 * 2) input and
-output pins, with each pin being responsible for 2 channels. This sums up
-to a total of 8 channels for synchronous capture and playback.
+SAMA7G5's I2S-MCC has 4 pairs of DIN/DOUT pins. Since TDM only uses a
+single pair of pins for synchronous capture and playback, the controller
+needs to be told which of the pair is connected. This can be mentioned
+using the new "microchip,tdm-data-pair" property. The property is optional,
+needed only if TDM is used, and if it's missing DIN/DOUT 0 pins will be
+used by default.
 
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
 
 Changes in v2:
-- none
+- changes are done to mchp-i2s-mcc.txt insted of mchp,i2s-mcc.yaml
 
- sound/soc/atmel/mchp-i2s-mcc.c | 38 ++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index 0ee01383e307..52d3f43148dc 100644
---- a/sound/soc/atmel/mchp-i2s-mcc.c
-+++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -16,6 +16,7 @@
- #include <linux/clk.h>
- #include <linux/mfd/syscon.h>
- #include <linux/lcm.h>
-+#include <linux/of_device.h>
+diff --git a/Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt b/Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt
+index 2180dbd9ea81..af8fe3e657df 100644
+--- a/Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt
++++ b/Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt
+@@ -19,7 +19,12 @@ Required properties:
+ Optional properties:
+ - pinctrl-0:      Should specify pin control groups used for this controller.
+ - princtrl-names: Should contain only one value - "default".
+-
++- microchip,tdm-data-pair: 8 bit value that represents the DIN/DOUT pair pins
++			   which are used to receive/send TDM data. It is optional
++			   and it is only needed if the controller uses the TDM
++			   mode. Not available for "microchip,sam9x60-i2smcc"
++			   compatible. If it's not present, the default value is 0,
++			   so the DIN/DOUT 0 pins are used.
  
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -225,6 +226,10 @@ static const struct regmap_config mchp_i2s_mcc_regmap_config = {
- 	.max_register = MCHP_I2SMCC_VERSION,
- };
- 
-+struct mchp_i2s_mcc_soc_data {
-+	unsigned int	data_pin_pair_num;
-+};
-+
- struct mchp_i2s_mcc_dev {
- 	struct wait_queue_head			wq_txrdy;
- 	struct wait_queue_head			wq_rxrdy;
-@@ -232,6 +237,7 @@ struct mchp_i2s_mcc_dev {
- 	struct regmap				*regmap;
- 	struct clk				*pclk;
- 	struct clk				*gclk;
-+	const struct mchp_i2s_mcc_soc_data	*soc;
- 	struct snd_dmaengine_dai_dma_data	playback;
- 	struct snd_dmaengine_dai_dma_data	capture;
- 	unsigned int				fmt;
-@@ -549,6 +555,17 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	if (dev->fmt & (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J)) {
-+		/* for I2S and LEFT_J one pin is needed for every 2 channels */
-+		if (channels > dev->soc->data_pin_pair_num * 2) {
-+			dev_err(dev->dev,
-+				"unsupported number of audio channels: %d\n",
-+				channels);
-+			return -EINVAL;
-+		}
-+
-+		/* enable for interleaved format */
-+		mrb |= MCHP_I2SMCC_MRB_CRAMODE_REGULAR;
-+
- 		switch (channels) {
- 		case 1:
- 			if (is_playback)
-@@ -558,6 +575,12 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
- 			break;
- 		case 2:
- 			break;
-+		case 4:
-+			mra |= MCHP_I2SMCC_MRA_WIRECFG_I2S_2_TDM_1;
-+			break;
-+		case 8:
-+			mra |= MCHP_I2SMCC_MRA_WIRECFG_I2S_4_TDM_2;
-+			break;
- 		default:
- 			dev_err(dev->dev, "unsupported number of audio channels\n");
- 			return -EINVAL;
-@@ -869,12 +892,22 @@ static const struct snd_soc_component_driver mchp_i2s_mcc_component = {
- };
- 
- #ifdef CONFIG_OF
-+static struct mchp_i2s_mcc_soc_data mchp_i2s_mcc_sam9x60 = {
-+	.data_pin_pair_num = 1,
-+};
-+
-+static struct mchp_i2s_mcc_soc_data mchp_i2s_mcc_sama7g5 = {
-+	.data_pin_pair_num = 4,
-+};
-+
- static const struct of_device_id mchp_i2s_mcc_dt_ids[] = {
- 	{
- 		.compatible = "microchip,sam9x60-i2smcc",
-+		.data = &mchp_i2s_mcc_sam9x60,
- 	},
- 	{
- 		.compatible = "microchip,sama7g5-i2smcc",
-+		.data = &mchp_i2s_mcc_sama7g5,
- 	},
- 	{ /* sentinel */ }
- };
-@@ -932,6 +965,11 @@ static int mchp_i2s_mcc_probe(struct platform_device *pdev)
- 		dev->gclk = NULL;
- 	}
- 
-+	dev->soc = of_device_get_match_data(&pdev->dev);
-+	if (!dev->soc) {
-+		dev_err(&pdev->dev, "failed to get soc data\n");
-+		return -ENODEV;
-+	}
- 	dev->dev = &pdev->dev;
- 	dev->regmap = regmap;
- 	platform_set_drvdata(pdev, dev);
+ (1) : Only the peripheral clock is required. The generated clock is optional
+       and should be set mostly when Master Mode is required.
 -- 
 2.27.0
 
