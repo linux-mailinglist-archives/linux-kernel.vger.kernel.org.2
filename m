@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AAE329447
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DE932945A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 23:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244791AbhCAVx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:53:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47642 "EHLO mx2.suse.de"
+        id S244733AbhCAV6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:58:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237838AbhCARYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:24:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614619438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YlRwdOzbL8RLSRzwItUwbMXUiIvnCooahFkWHhdiBtc=;
-        b=MWXMF20Pccl/hIQ2lCGRmBq7fMTaMeUrO+KuXsnVcTy+o9hQiUrLkZXo9F8qVhozNAa6m+
-        ZSkBPYoRNc2dSidzOllDOiVXOBtk6OpJbbgSStuS7IuDEpfALSHZ1fo7uc29pd4tKWMkBu
-        oQAjAHny3QfxG0FhboYVzxSWP5PgsWo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3B624B023;
-        Mon,  1 Mar 2021 17:23:58 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 18:23:57 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        syzbot <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>
-Subject: Re: possible deadlock in sk_clone_lock
-Message-ID: <YD0jLTciK0M7P+Hc@dhcp22.suse.cz>
-References: <000000000000f1c03b05bc43aadc@google.com>
- <CALvZod4vGj0P6WKncdKpGaVEb1Ui_fyHm+-hbCJTmbvo43CJ=A@mail.gmail.com>
- <7b7c4f41-b72e-840f-278a-320b9d97f887@oracle.com>
- <CALvZod5qODDSxqHqQ=_1roYVGVVvEvP3FnYMnAPQZgvUjxotsw@mail.gmail.com>
- <YDzaAWK41K4gD35V@dhcp22.suse.cz>
- <CALvZod4DqOkrJG+7dki=VfzHD1z9jD3XhObpk887zKy=kEk1tA@mail.gmail.com>
- <YD0OzXTmYm8M58Vo@dhcp22.suse.cz>
- <CALvZod789kHFAjWA8W7=r2=YxJ86uc4WhfgW1juN_YEMCApgqw@mail.gmail.com>
+        id S237688AbhCARYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:24:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F60164D5D;
+        Mon,  1 Mar 2021 16:49:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614617369;
+        bh=LXn/HhLw/xSGl+UXQ3xiX5d6o+4DDtOuYZXm6aMAy8g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dGnSg9eugAS4t6v7jJ6Qt4SHJAqUTgmS+yKGQhkNwUV8qzjAOA9zBF+A/9amTt0VQ
+         p64grbJIfg+uy7MMfM3tgvEAo+27PJhV5W6TTGVbNfR+EF36GQsuUa1bZsBRPNmzkK
+         AfJSAwbM3lQfZstvBUgO091KuWgfcI7E6AgMZRRc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 032/340] arm64: dts: allwinner: A64: Limit MMC2 bus frequency to 150 MHz
+Date:   Mon,  1 Mar 2021 17:09:36 +0100
+Message-Id: <20210301161049.892209716@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod789kHFAjWA8W7=r2=YxJ86uc4WhfgW1juN_YEMCApgqw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 01-03-21 08:39:22, Shakeel Butt wrote:
-> On Mon, Mar 1, 2021 at 7:57 AM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > Then how come this can ever be a problem? in_task() should exclude soft
-> > irq context unless I am mistaken.
-> >
-> 
-> If I take the following example of syzbot's deadlock scenario then
-> CPU1 is the one freeing the hugetlb pages. It is in the process
-> context but has disabled softirqs (see __tcp_close()).
-> 
->         CPU0                    CPU1
->         ----                    ----
->    lock(hugetlb_lock);
->                                 local_irq_disable();
->                                 lock(slock-AF_INET);
->                                 lock(hugetlb_lock);
->    <Interrupt>
->      lock(slock-AF_INET);
-> 
-> So, this deadlock scenario is very much possible.
+From: Andre Przywara <andre.przywara@arm.com>
 
-OK, I see the point now. I was focusing on the IRQ context and hugetlb
-side too much. We do not need to be freeing from there. All it takes is
-to get a dependency chain over a common lock held here. Thanks for
-bearing with me.
+[ Upstream commit 948c657cc45e8ce48cb533d4e2106145fa765759 ]
 
-Let's see whether we can make hugetlb_lock irq safe.
+In contrast to the H6 (and later) manuals, the A64 datasheet does not
+specify any limitations in the maximum possible frequency for eMMC
+controllers.
+However experimentation has found that a 150 MHz limit similar to other
+SoCs and also the MMC0 and MMC1 controllers on the A64 seems to exist
+for the MMC2 controller.
 
+Limit the frequency for the MMC2 controller to 150 MHz in the SoC .dtsi.
+The Pinebook seems to be the an odd exception, since it apparently seems
+to work with 200 MHz as well, so overwrite this in its board .dts file.
+
+Tested on a Pine64-LTS: 200 MHz HS-200 fails, 150 MHz HS-200 works.
+
+Fixes: 22be992faea7 ("arm64: allwinner: a64: Increase the MMC max frequency")
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210113152630.28810-7-andre.przywara@arm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts | 1 +
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi         | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+index b0f81802d334b..bb1de8217b86d 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+@@ -140,6 +140,7 @@
+ 	pinctrl-0 = <&mmc2_pins>, <&mmc2_ds_pin>;
+ 	vmmc-supply = <&reg_dcdc1>;
+ 	vqmmc-supply = <&reg_eldo1>;
++	max-frequency = <200000000>;
+ 	bus-width = <8>;
+ 	non-removable;
+ 	cap-mmc-hw-reset;
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index 4c85dfc811c80..cf9e3234afaf8 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -476,7 +476,7 @@
+ 			resets = <&ccu RST_BUS_MMC2>;
+ 			reset-names = "ahb";
+ 			interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
+-			max-frequency = <200000000>;
++			max-frequency = <150000000>;
+ 			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
 -- 
-Michal Hocko
-SUSE Labs
+2.27.0
+
+
+
