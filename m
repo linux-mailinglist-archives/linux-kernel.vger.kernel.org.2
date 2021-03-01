@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043FC329965
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 584F73299DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347880AbhCBAMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:12:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39702 "EHLO mail.kernel.org"
+        id S234899AbhCBAdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:33:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239767AbhCASWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:22:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFCDE64EF6;
-        Mon,  1 Mar 2021 17:48:25 +0000 (UTC)
+        id S240100AbhCASdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:33:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A11FE64F90;
+        Mon,  1 Mar 2021 17:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620906;
-        bh=NP3V9bJSxJVrUfD7ylki9PJtQgKbVi9XOmuaKyyls1w=;
+        s=korg; t=1614618862;
+        bh=v7YajkXsSnf4/6yAXnpU/OS2a1HUNhEqLmCYNCnVszY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nKEX7vmRh8olhYa17idf1rh3shz//aH2pmzeSctVb2QoAXDcgPQXSnDF5VKfMHL7t
-         TpM1/Fws9ORee7Jhv0DAehrGzKJ2WNfswu9STVNni4GZWDcbbQsiWKQb0qk2b2sLGi
-         iI1xfCk8E/RH9sm01ROHj+RlDT6hCgNlxTN8EokY=
+        b=j2UoA52pXOteqAPXNqoUvUzMbvaU1o+Y/pjG0JfFnQyacALVePa8ZvihmQSL2CnF2
+         Vvz6kvOLR9Q24jhC+RPMkvkb+usgW+ogvwrE2RdgedEErSXEGxKCm7o8Zy39IkAG4f
+         r6gE4OgM6GQkATBvhMfoAhzMj/+uSC6KmyKFq66c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>,
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <bard.liao@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 322/775] HID: core: detect and skip invalid inputs to snto32()
-Date:   Mon,  1 Mar 2021 17:08:10 +0100
-Message-Id: <20210301161217.528022693@linuxfoundation.org>
+Subject: [PATCH 5.10 245/663] ASoC: SOF: sof-pci-dev: add missing Up-Extreme quirk
+Date:   Mon,  1 Mar 2021 17:08:13 +0100
+Message-Id: <20210301161153.940281730@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,49 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit a0312af1f94d13800e63a7d0a66e563582e39aec ]
+[ Upstream commit bd8036eb15263a720b8f846861c180b27d050a09 ]
 
-Prevent invalid (0, 0) inputs to hid-core's snto32() function.
+The UpExtreme board supports the community key and was missed in
+previous contributions. Add it to make sure the open firmware is
+picked by default without needing a symlink on the target.
 
-Maybe it is just the dummy device here that is causing this, but
-there are hundreds of calls to snto32(0, 0). Having n (bits count)
-of 0 is causing the current UBSAN trap with a shift value of
-0xffffffff (-1, or n - 1 in this function).
-
-Either of the value to shift being 0 or the bits count being 0 can be
-handled by just returning 0 to the caller, avoiding the following
-complex shift + OR operations:
-
-	return value & (1 << (n - 1)) ? value | (~0U << n) : value;
-
-Fixes: dde5845a529f ("[PATCH] Generic HID layer - code split")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: linux-input@vger.kernel.org
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: 46207ca24545 ('ASoC: SOF: pci: change the default firmware path when the community key is used')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <bard.liao@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20210208231853.58761-1-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/sof/sof-pci-dev.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 8a8b2b982f83c..097cb1ee31268 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -1307,6 +1307,9 @@ EXPORT_SYMBOL_GPL(hid_open_report);
- 
- static s32 snto32(__u32 value, unsigned n)
- {
-+	if (!value || !n)
-+		return 0;
-+
- 	switch (n) {
- 	case 8:  return ((__s8)value);
- 	case 16: return ((__s16)value);
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index 8f62e3487dc18..75657a25dbc05 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -65,6 +65,13 @@ static const struct dmi_system_id community_key_platforms[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "UP-APL01"),
+ 		}
+ 	},
++	{
++		.ident = "Up Extreme",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "AAEON"),
++			DMI_MATCH(DMI_BOARD_NAME, "UP-WHL01"),
++		}
++	},
+ 	{
+ 		.ident = "Google Chromebooks",
+ 		.matches = {
 -- 
 2.27.0
 
