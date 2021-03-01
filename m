@@ -2,126 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE6D3280C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688FD3280B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236135AbhCAO0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:26:47 -0500
-Received: from conuserg-07.nifty.com ([210.131.2.74]:53489 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233288AbhCAOY5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:24:57 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 121ENDK2023474;
-        Mon, 1 Mar 2021 23:23:14 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 121ENDK2023474
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614608595;
-        bh=v1LU2PCdBqy4YpSG5lJbeC3fXaXvJT7vvzzxVFDnkqA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bpjtncd6h9lAaz0g0dbJ0mT/YSV5LPO8Hg1BtOTS7UbHaOf8cBSodRcsZoaWvRMUS
-         CY0p97lbSqYlzc1nzUxVVOa4CuVBNPvtBJXbCC0KebQDYZilzvqbRybf0XcDA6SWT5
-         c+tEulzSIWYIgHiYegwKx/TOORCFnx5ZZtxqjijfTiFqNg5WY6wMgFPzYfestjPjKD
-         5dTjozLT6W11Eb5v/F00WUSY4sWQBu6Sgh1bHT6XZoC2ntXuP5eZzxe6myUj66GIlf
-         36YLbPMvIaPHG6WOOiiw4jkevVDGhH5Ma8x64A/mOYsTGO80ruchmfaj16RUxTPngY
-         a0CnTAgVO+I0Q==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Michal Simek <monstr@monstr.eu>
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>
-Subject: [PATCH 2/2] microblaze: syscalls: switch to generic syscallhdr.sh
-Date:   Mon,  1 Mar 2021 23:23:03 +0900
-Message-Id: <20210301142303.343727-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210301142303.343727-1-masahiroy@kernel.org>
-References: <20210301142303.343727-1-masahiroy@kernel.org>
+        id S236064AbhCAOZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:25:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:58936 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233274AbhCAOYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:24:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 440931042;
+        Mon,  1 Mar 2021 06:23:33 -0800 (PST)
+Received: from e112269-lin.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C1183F70D;
+        Mon,  1 Mar 2021 06:23:30 -0800 (PST)
+From:   Steven Price <steven.price@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: [PATCH v9 0/6] MTE support for KVM guest
+Date:   Mon,  1 Mar 2021 14:23:09 +0000
+Message-Id: <20210301142315.30920-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many architectures duplicate similar shell scripts.
+This series adds support for using the Arm Memory Tagging Extensions
+(MTE) in a KVM guest.
 
-This commit converts microblaze to use scripts/syscallhdr.sh.
+This version is rebased on v5.12-rc1 and added a documentation patch,
+but is otherwise unchanged from the v8[1] posting.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Changes since v8[1]:
+ * Rebased on v5.12-rc1 (note new CAP number)
+ * New documentation patch
 
- arch/microblaze/kernel/syscalls/Makefile      |  7 ++--
- arch/microblaze/kernel/syscalls/syscallhdr.sh | 36 -------------------
- 2 files changed, 2 insertions(+), 41 deletions(-)
- delete mode 100644 arch/microblaze/kernel/syscalls/syscallhdr.sh
+[1] https://lore.kernel.org/r/20210205135803.48321-1-steven.price@arm.com/
 
-diff --git a/arch/microblaze/kernel/syscalls/Makefile b/arch/microblaze/kernel/syscalls/Makefile
-index ad2492cb5568..6713c65a25e1 100644
---- a/arch/microblaze/kernel/syscalls/Makefile
-+++ b/arch/microblaze/kernel/syscalls/Makefile
-@@ -6,14 +6,11 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 	  $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
- 
- syscall := $(src)/syscall.tbl
--syshdr := $(srctree)/$(src)/syscallhdr.sh
-+syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
--		   '$(syshdr_abis_$(basetarget))'		\
--		   '$(syshdr_pfx_$(basetarget))'		\
--		   '$(syshdr_offset_$(basetarget))'
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr $< $@
- 
- quiet_cmd_systbl = SYSTBL  $@
-       cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
-diff --git a/arch/microblaze/kernel/syscalls/syscallhdr.sh b/arch/microblaze/kernel/syscalls/syscallhdr.sh
-deleted file mode 100644
-index a914854f8d9f..000000000000
---- a/arch/microblaze/kernel/syscalls/syscallhdr.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--prefix="$4"
--offset="$5"
--
--fileguard=_UAPI_ASM_MICROBLAZE_`basename "$out" | sed \
--	-e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
--	-e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	printf "#ifndef %s\n" "${fileguard}"
--	printf "#define %s\n" "${fileguard}"
--	printf "\n"
--
--	nxt=0
--	while read nr abi name entry ; do
--		if [ -z "$offset" ]; then
--			printf "#define __NR_%s%s\t%s\n" \
--				"${prefix}" "${name}" "${nr}"
--		else
--			printf "#define __NR_%s%s\t(%s + %s)\n" \
--				"${prefix}" "${name}" "${offset}" "${nr}"
--		fi
--		nxt=$((nr+1))
--	done
--
--	printf "\n"
--	printf "#ifdef __KERNEL__\n"
--	printf "#define __NR_syscalls\t%s\n" "${nxt}"
--	printf "#endif\n"
--	printf "\n"
--	printf "#endif /* %s */\n" "${fileguard}"
--) > "$out"
+Steven Price (6):
+  arm64: mte: Sync tags for pages where PTE is untagged
+  arm64: kvm: Introduce MTE VM feature
+  arm64: kvm: Save/restore MTE registers
+  arm64: kvm: Expose KVM_ARM_CAP_MTE
+  KVM: arm64: ioctl to fetch/store tags in a guest
+  KVM: arm64: Document MTE capability and ioctl
+
+ Documentation/virt/kvm/api.rst             | 37 ++++++++++++
+ arch/arm64/include/asm/kvm_emulate.h       |  3 +
+ arch/arm64/include/asm/kvm_host.h          |  9 +++
+ arch/arm64/include/asm/kvm_mte.h           | 66 ++++++++++++++++++++++
+ arch/arm64/include/asm/pgtable.h           |  2 +-
+ arch/arm64/include/asm/sysreg.h            |  3 +-
+ arch/arm64/include/uapi/asm/kvm.h          | 13 +++++
+ arch/arm64/kernel/asm-offsets.c            |  3 +
+ arch/arm64/kernel/mte.c                    | 16 ++++--
+ arch/arm64/kvm/arm.c                       | 66 ++++++++++++++++++++++
+ arch/arm64/kvm/hyp/entry.S                 |  7 +++
+ arch/arm64/kvm/hyp/exception.c             |  3 +-
+ arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 21 +++++++
+ arch/arm64/kvm/mmu.c                       | 16 ++++++
+ arch/arm64/kvm/sys_regs.c                  | 28 +++++++--
+ include/uapi/linux/kvm.h                   |  2 +
+ 16 files changed, 283 insertions(+), 12 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_mte.h
+
 -- 
-2.27.0
+2.20.1
 
