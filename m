@@ -2,71 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EAC327E8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A38E327E91
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235130AbhCAMpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235043AbhCAMpw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:45:52 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA11C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 04:45:01 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d15e:6060:f6a9:3ce5])
-        by albert.telenet-ops.be with bizsmtp
-        id b0kz2400X0v3pQi060kzd9; Mon, 01 Mar 2021 13:45:00 +0100
-Received: from geert (helo=localhost)
-        by ramsan.of.borg with local-esmtp (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lGhv1-002yk9-Ao; Mon, 01 Mar 2021 13:44:59 +0100
-Date:   Mon, 1 Mar 2021 13:44:59 +0100 (CET)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        linuxppc-dev@lists.ozlabs.org, amd-gfx@lists.freedesktop.org
-Subject: Re: Build regressions/improvements in v5.12-rc1
-In-Reply-To: <20210301104316.2766484-1-geert@linux-m68k.org>
-Message-ID: <alpine.DEB.2.22.394.2103011342520.710098@ramsan.of.borg>
-References: <20210301104316.2766484-1-geert@linux-m68k.org>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S235143AbhCAMrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:47:19 -0500
+Received: from mail-mw2nam12on2091.outbound.protection.outlook.com ([40.107.244.91]:65057
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235018AbhCAMrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 07:47:14 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SH74+kRDxQUUmd1/r8AtMrhvdjHLXV6ArVrxCRA0l0fmqLhNaCqqV12/RB6KvjIO/K9hKoblYW+0W8xiUCc8hvZ8gW3ZobiBc/XHeFIOaZZjslQ2l8h0byrC7dzb2mXhrvVMScOF/HEIVwAYpNLSbxvPIMEvzCCawHGzYUwDXh714uNEoDLizsIInVij2CFEZNehZOS4WHMBlnn+D1agyIl1PFMh1tjE1lrZIyuRQJTmCUSTuQzDMBRng4x0AXv2SgrJsASdOTOHJrFV0BzVNPl7Pp/L3xWEwWvIuV0t++1FJrf2LRobY5f4I7IUFf6tuvEHV3A0BOjx/MRapibqtw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=guj5ZvMxk9PlGkADhiHwbUMQ51dQ3aBSm26frPeNQeU=;
+ b=MaRPfABuxuQUrtIf3o6W1fFbAmFRX7uuolgMvYaUgciXCpN48p9nrCAvnEhCTfqdoWMihz/ujMrmADph4qTYU9fSQ0OsQwNU32xcKOpqLvoFnkZ2GOxBQNNjGxVrsKgWNQqYsxa7gXJsX4Y4yZQyAKtn9OXbQym/YTKvm4FeRjcoUNPuVnc8rbFSbQfIu4QztPDqQKBshQz4giT/SVriK4YZX76H5BrAYQj0uD6q3t/upSOomJ97RKKhaVaOvdml7+NsMouCP1MAVHuwYNuubDdl/sVQaeyau4SvP9fUKbH6oczPLbQ9JMCwGr+OPoUgOic7SRputIsfd8Kmcz65Lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=guj5ZvMxk9PlGkADhiHwbUMQ51dQ3aBSm26frPeNQeU=;
+ b=VdL9Jmsje0iydCzot3Poysgmj6BzXWakEaH7h3broMCb8EKCXDUqqAZkd2WHMWLtUwt7Wxh6ldESEACYtbuMmGP3399XrDVJarUksbW0ZFKZg6HlB9ifilkLwc4VrtGkf3VQbp+du7KYZz5hHMIA6cujeW91TEvEQx8xbJyU2dE=
+Authentication-Results: os.amperecomputing.com; dkim=none (message not signed)
+ header.d=none;os.amperecomputing.com; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
+ MWHPR01MB2720.prod.exchangelabs.com (2603:10b6:300:fd::23) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3890.23; Mon, 1 Mar 2021 12:46:19 +0000
+Received: from MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::682c:4e20:b53d:e660]) by MW2PR0102MB3482.prod.exchangelabs.com
+ ([fe80::682c:4e20:b53d:e660%7]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
+ 12:46:19 +0000
+Subject: Re: [PATCH 2/4] mfd: simple-mfd-i2c: Adds Ampere's Altra SMpro
+ support
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
+        openbmc@lists.ozlabs.org,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+References: <20210225101854.13896-1-quan@os.amperecomputing.com>
+ <20210225101854.13896-3-quan@os.amperecomputing.com>
+ <20210226083114.GE641347@dell>
+From:   Quan Nguyen <quan@os.amperecomputing.com>
+Message-ID: <f4b00f4c-6e6c-810d-d16d-5d01ebf4d36d@os.amperecomputing.com>
+Date:   Mon, 1 Mar 2021 19:46:08 +0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
+In-Reply-To: <20210226083114.GE641347@dell>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [118.69.219.201]
+X-ClientProxiedBy: HK2PR02CA0168.apcprd02.prod.outlook.com
+ (2603:1096:201:1f::28) To MW2PR0102MB3482.prod.exchangelabs.com
+ (2603:10b6:302:c::32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.38.33.120] (118.69.219.201) by HK2PR02CA0168.apcprd02.prod.outlook.com (2603:1096:201:1f::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20 via Frontend Transport; Mon, 1 Mar 2021 12:46:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e3ce00d6-1599-41f5-248e-08d8dcb002d3
+X-MS-TrafficTypeDiagnostic: MWHPR01MB2720:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR01MB2720258E3EECFA95A223ED40F29A9@MWHPR01MB2720.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: V0KBaay5DVObAVOelw2zyXGUe5CcfvutSp2W3yTdZcyJRF6MVnvhXndOUs2LoKjw7/9InOZVmNk32BdicquYWYlRxH1whcbZKhxG6D+6Fcw15PKPJOrIYvX/jIt49Ral2OyLok8LcF67kIOephdWS1dt8asU2MCmPiE/RmF2Lp1FI6kN+B16YYMmw+Ue2A8Tw6QhlqbZkOpmCmng6Kyo23IEJgfhcTChiLpf9qtuvWWIaZXnZW/CBz1BCuCqb2TYfYiQYD8DKKMkjO/xUTdmk3Fy42RCuCbdJMabiO3Ot4/wI/P7KQiXlIqBO8rw9QculJNilV3HeNG/3MlO5oKNJ+E2E19Dr2nDWjYuVAwiJcqDnRou1himWob1AGld5/xRbKoE22J1VnBDxOMrI+cc9N74Oc1UvSm4BVJq96fQOpDRN8Ci19VIGzOdgDAcoBffZc2iEII9RTu9mn8IxZm2QxsqcsOlngSRkDSxSep9orbnAQn/H+nVWUODk4msEGEudJKbWgb+SjT40gcXoezGYcWqBbCuUqIQcahu0gEMCHzcifQkCz1YdeF1OOgDuG4CcT4Q0fnZmmveEHHHEz6+FoWPimla4rZJ7E/WgppWWn0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(366004)(396003)(376002)(346002)(136003)(83380400001)(16526019)(186003)(26005)(86362001)(31696002)(8676002)(8936002)(4326008)(6666004)(53546011)(107886003)(5660300002)(6486002)(478600001)(66946007)(66476007)(66556008)(956004)(7416002)(2616005)(54906003)(16576012)(316002)(31686004)(52116002)(2906002)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZHB1bmtZNm0wOUhLOTZpSS85dGs1c0F4azFjMk9aTWhaNUl4SVErWFAzTktq?=
+ =?utf-8?B?YVVOd3ordEI2YmJsMkwxdzBpaVY1aTJGeGxKWGpCcFNxTWdnUlFOVk5MUHFm?=
+ =?utf-8?B?SkJPYkl3YW5WeS9ySEpZMUJJUFJ5ejJtRHVPSk9jOHJiQTF6MlhEdmE3WXkw?=
+ =?utf-8?B?ZHRMLzV3Z1E5ZzlBVmJmdHpYS2JiNVVkNjFERVpKTkh5dHJoajAwODZZR1lI?=
+ =?utf-8?B?TnFZVDAzSTlKU2k5WlBPbjA4YlgzU1dxM3YrT00vZmxWVmpiWkpPQ3JZc1F0?=
+ =?utf-8?B?MVhIYnYwcHBiVWZKWTM1cWpmeDNndmF1WUl1MUFKVFRKcldZQ0RaazVRZXpa?=
+ =?utf-8?B?QmRBQ1lVL3Y3cjd4VlVzOHBsbHRpWVVNejFNK1JlbGQ0OWRHYjQ5aUVmTldE?=
+ =?utf-8?B?cTVhVkhkcERvUS9yL2ZRN1JNQmJKa2Joekk3MU5mL2FnV04vYlE5ZXp0ME0x?=
+ =?utf-8?B?c2RIS0RqdXlIZ3Q1bmI5WXZDQUxmYlh0dCtJcFUvWldDcGFBbi84aHh3YXlN?=
+ =?utf-8?B?L3ZEOFNKSHY0MTNYZ21NeWFicGF1OTV6dlZtU3FJRE9nR2Z1WHQ5a3craWk0?=
+ =?utf-8?B?cktSUDFFQUo1Yi9KeDJrOEpiUjhuWGVUZkdJQXFLcWtXYnRRNERXSWRBSW5I?=
+ =?utf-8?B?OXJPWmxUaXlFNjNpZG1wOTFvUElsc3BtQ1VyOC9ZNXFnRU5sa01iYkd6SDRQ?=
+ =?utf-8?B?VjdSM2YreHcxRVhvdklLNVFDVnpTbFdMSEMrN200SmJqQ2hWVWZaQmE5dlB5?=
+ =?utf-8?B?S08vVUx1YXQ5SnZPZy8vaEw5SzhCRTdQb3RMWUh4UC9NVCthcU53SGhUeTJJ?=
+ =?utf-8?B?VzlHU2hiaDhmL2V5SU1qUExsM0dJYlIwVE1Sa1BtelRJaEttV2kyckpJbTc5?=
+ =?utf-8?B?eTJJUE1GYTErSnlKOW9yejRRWlNFOEloMlNGbEpHc0ZCTVF6emdXdnR3aWFO?=
+ =?utf-8?B?a1JaSTB0WmdJc1hCaWZkZlRXb29kNnVWTE1EMVNhWXNrNEhydlBwSHNrcERs?=
+ =?utf-8?B?YUNMZ082cnFidWpReE0rQzQxODBCMFhleTZuK01oemN1dmgrT2tvT05HRFdI?=
+ =?utf-8?B?Y1FMVG56Z3pxMnIzZnpvUUxNbnU2WmNKcWZRc2V0aUkvNzJWWk9nV0k4WGU1?=
+ =?utf-8?B?WU1kbVBiRnJvTGt4MXNlRkdObUU0N2pXOW5SaklwNG1DRTVRRlFaaTV6NHJa?=
+ =?utf-8?B?UFdrNU8wUlRXaVBmdmRCY3lqcEpXN3BOMGFNQ0xLdzVvYmVPakZQcWRZelg0?=
+ =?utf-8?B?anRxVlJnTjAzOWpaKzl1SFcwQlRkMExZL2t6OGNkUm8zQUl1d3h5NGZMYm5p?=
+ =?utf-8?B?MG52VkorYzQrMzFxK3BjajU5VVgzZm9idk9GMGdPSmpQUzE2RnlJcG5vSWVI?=
+ =?utf-8?B?UFQ2Wm82eU9LMG5oQUdXQWw0K0dzVUlBZEh3K09YRjNscVpxdG94OVBuRjk4?=
+ =?utf-8?B?eEFPanU2OERFUmR4UXREOHlkRmdGRDgvODh3NGxPSmZDZ0s0QVBPMnVaTDR2?=
+ =?utf-8?B?VVpGcFJMRG9TQjhLRDRVb3pDZVFhMG52bmJyclFtaGZRMDg4MTVOZjR3RkxG?=
+ =?utf-8?B?VmtyYUtNUCtZVnJwc2I0WXpQYkZiVUFGQlBVN2d6STkzdm1zZ2wxZlVtZzFZ?=
+ =?utf-8?B?b2tPZHoyY1VpOWZ0Wm5PajZwRXNYeGM1Tkh2MTFONmUvdHpxdHNycGFFUFhO?=
+ =?utf-8?B?NktrWU9Sb3JYTnJnLzZHSGEwT2FKVkFKZkluVk5HQ0lHMkdqdGRWb0dxanM1?=
+ =?utf-8?Q?RklODXOBsyQbKsHPVnJYBTOd5dwV8zLJOWyJpK2?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3ce00d6-1599-41f5-248e-08d8dcb002d3
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2021 12:46:19.7299
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hiJ7K4wi5e/aqydDEKPRZrpRCQ6WGOF3ktq/w4qTf1GRqWihVEI3zJEI4wYt6tRiHKC3hdKqgsF+wpMapKW/KRnvFeO3epy/Y4BO69/McaI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR01MB2720
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021, Geert Uytterhoeven wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v5.12-rc1[1] compared to v5.11[2].
->
-> Summarized:
->  - build errors: +2/-0
+On 26/02/2021 15:31, Lee Jones wrote:
+> On Thu, 25 Feb 2021, Quan Nguyen wrote:
+> 
+>> Adds an MFD driver for SMpro found on the Mt.Jade hardware reference
+>> platform with Ampere's Altra processor family.
+>>
+>> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+>> ---
+>>   drivers/mfd/Kconfig          | 10 ++++++++++
+>>   drivers/mfd/simple-mfd-i2c.c | 15 +++++++++++++--
+>>   2 files changed, 23 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+>> index b74efa469e90..5414371bdea1 100644
+>> --- a/drivers/mfd/Kconfig
+>> +++ b/drivers/mfd/Kconfig
+>> @@ -77,6 +77,16 @@ config MFD_AS3711
+>>   	help
+>>   	  Support for the AS3711 PMIC from AMS
+>>   
+>> +config MFD_SMPRO
+>> +	tristate "Ampere Computing MFD SMpro core driver"
+>> +	select MFD_SIMPLE_MFD_I2C
+> 
+> Nice to see another user here.
+> 
+>> +	help
+>> +	  Say yes here to enable SMpro driver support for Ampere's Altra
+>> +	  processor family.
+>> +
+>> +	  Ampere's Altra SMpro exposes an I2C regmap interface that can
+>> +	  be accessed by child devices.
+>> +
+>>   config MFD_AS3722
+>>   	tristate "ams AS3722 Power Management IC"
+>>   	select MFD_CORE
+>> diff --git a/drivers/mfd/simple-mfd-i2c.c b/drivers/mfd/simple-mfd-i2c.c
+>> index 87f684cff9a1..0459a9fbd3f5 100644
+>> --- a/drivers/mfd/simple-mfd-i2c.c
+>> +++ b/drivers/mfd/simple-mfd-i2c.c
+>> @@ -21,14 +21,24 @@ static const struct regmap_config simple_regmap_config = {
+>>   	.val_bits = 8,
+>>   };
+>>   
+>> +static const struct regmap_config simple_word_regmap_config = {
+>> +	.reg_bits = 8,
+>> +	.val_bits = 16,
+>> +};
+>> +
+>>   static int simple_mfd_i2c_probe(struct i2c_client *i2c)
+>>   {
+>>   	const struct regmap_config *config;
+>>   	struct regmap *regmap;
+>>   
+>>   	config = device_get_match_data(&i2c->dev);
+>> -	if (!config)
+>> -		config = &simple_regmap_config;
+>> +	if (!config) {
+>> +		if (of_device_is_compatible(i2c->dev.of_node,
+>> +						"ampere,ac01-smpro"))
+> 
+> Could you use 'struct of_device_id's .data attribute instead please?
+> 
+Thank you, but I'm not sure if I got it right.
 
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8/ (all 192 configs)
-> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f40ddce88593482919761f74910f42f4b84c004b/ (all 192 configs)
->
->
-> *** ERRORS ***
->
-> 2 error regressions:
->  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'disable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 674:2
->  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'enable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 638:2
+Do you mean we could use .data attribute to get the expected 
+reg_bits/val_bits values and translate them to simple_word_regmap_config 
+without the need to match the compatible string ?
 
-powerpc-gcc4.9/ppc64_book3e_allmodconfig
+>> +			config = &simple_word_regmap_config;
+>> +		else
+>> +			config = &simple_regmap_config;
+>> +	}
+>>   
+>>   	regmap = devm_regmap_init_i2c(i2c, config);
+>>   	if (IS_ERR(regmap))
+>> @@ -39,6 +49,7 @@ static int simple_mfd_i2c_probe(struct i2c_client *i2c)
+>>   
+>>   static const struct of_device_id simple_mfd_i2c_of_match[] = {
+>>   	{ .compatible = "kontron,sl28cpld" },
+>> +	{ .compatible = "ampere,ac01-smpro" },
+>>   	{}
+>>   };
+>>   MODULE_DEVICE_TABLE(of, simple_mfd_i2c_of_match);
+> 
 
-This was fixed in v5.11-rc1, but reappeared in v5.12-rc1?
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
