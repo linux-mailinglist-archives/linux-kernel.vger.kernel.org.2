@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16EE23299B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952873299C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348081AbhCBA2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:28:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
+        id S1376468AbhCBA3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233289AbhCAS3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB7AD6504B;
-        Mon,  1 Mar 2021 17:18:38 +0000 (UTC)
+        id S239414AbhCASau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:30:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5E9B651DE;
+        Mon,  1 Mar 2021 17:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619119;
-        bh=JvszdDsHQo1uGsbB9x4l0ZwChrFdXWDTd/9GqBxIH84=;
+        s=korg; t=1614619150;
+        bh=za8EdQ/t5PSQ4vUBu+pQG1IXy1/URJZkNPyVRLTta5g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kNPzBV513IfqU2JtGxZuTQeAIaM+589JbNs0P2uRVnMBFraQlOYaJ5NpIH13+qAAu
-         HoImaNIuhCD/MgR2FVWeuOy5JGgdT5FAyXMKOlS7vgKqr8n1Ws7Xt9nmdFZ+tQf4gz
-         qE9WOUrpC642bDSHpmYBdBHh+/c74C318UQwwmK4=
+        b=JV02ABfyRD8vHGfBcIsmDt4sbtAjHB0WloIbLLgBUgu4J7ZclUXrUgRgKDRShYZe+
+         cZIPGkcY3pG5zbzF40ihJSoGRxy/8bR+DM0Ff5ZbH9BIVWFHlnI0y4MtC1wBSrWEE6
+         f37jZy+4mU4VTenfjt6MqWTUSj4fTbTSmejs0b74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 339/663] IB/mlx5: Return appropriate error code instead of ENOMEM
-Date:   Mon,  1 Mar 2021 17:09:47 +0100
-Message-Id: <20210301161158.622605122@linuxfoundation.org>
+Subject: [PATCH 5.10 350/663] mfd: wm831x-auxadc: Prevent use after free in wm831x_auxadc_read_irq()
+Date:   Mon,  1 Mar 2021 17:09:58 +0100
+Message-Id: <20210301161159.167329715@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,37 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit d286ac1d05210695c312b9018b3aa7c2048e9aca ]
+[ Upstream commit 26783d74cc6a440ee3ef9836a008a697981013d0 ]
 
-When mlx5_ib_stage_init_init() fails, return the error code related to
-failure instead of -ENOMEM.
+The "req" struct is always added to the "wm831x->auxadc_pending" list,
+but it's only removed from the list on the success path.  If a failure
+occurs then the "req" struct is freed but it's still on the list,
+leading to a use after free.
 
-Fixes: 16c1975f1032 ("IB/mlx5: Create profile infrastructure to add and remove stages")
-Link: https://lore.kernel.org/r/20210127150010.1876121-8-leon@kernel.org
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 78bb3688ea18 ("mfd: Support multiple active WM831x AUXADC conversions")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/main.c | 3 +--
+ drivers/mfd/wm831x-auxadc.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index f67165f80ece5..beec0d7c0d6e8 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3989,8 +3989,7 @@ static int mlx5_ib_stage_init_init(struct mlx5_ib_dev *dev)
+diff --git a/drivers/mfd/wm831x-auxadc.c b/drivers/mfd/wm831x-auxadc.c
+index 8a7cc0f86958b..65b98f3fbd929 100644
+--- a/drivers/mfd/wm831x-auxadc.c
++++ b/drivers/mfd/wm831x-auxadc.c
+@@ -93,11 +93,10 @@ static int wm831x_auxadc_read_irq(struct wm831x *wm831x,
+ 	wait_for_completion_timeout(&req->done, msecs_to_jiffies(500));
  
- err_mp:
- 	mlx5_ib_cleanup_multiport_master(dev);
+ 	mutex_lock(&wm831x->auxadc_lock);
 -
--	return -ENOMEM;
-+	return err;
- }
+-	list_del(&req->list);
+ 	ret = req->val;
  
- static int mlx5_ib_enable_driver(struct ib_device *dev)
+ out:
++	list_del(&req->list);
+ 	mutex_unlock(&wm831x->auxadc_lock);
+ 
+ 	kfree(req);
 -- 
 2.27.0
 
