@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36FC329980
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 015453299F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344969AbhCBAVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:21:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41718 "EHLO mail.kernel.org"
+        id S1345402AbhCBAlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:41:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239618AbhCASYC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:24:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09E9A64FB4;
-        Mon,  1 Mar 2021 17:34:57 +0000 (UTC)
+        id S239927AbhCASfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:35:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C272652D9;
+        Mon,  1 Mar 2021 17:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620098;
-        bh=uTkCLaSoFMBPnaEdZE9WVa+RHdpJ9Z5k+5s5gUQir4c=;
+        s=korg; t=1614620164;
+        bh=Tso+sIpP4nC2Y3S5iJFWWvzCblnqkY17ti4/wddj33c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H3n7uNJBThLN6RhwZdu4iSjiDZqKADtnatdtsiYjTppHkRUJA0t/GMob09rgN/Kwo
-         6Tu0pn2gESKtmB30IPmHiRIpPeQqTl+d+Kjoyo15GuhiWCuaVscylFt/sVJVMGgj6K
-         n3MiJoMkfESvn51s1mZiFGBklB99iPX5x5ovoDI8=
+        b=YkgnkQii38txjNzWXYcYpbwRaUGNH4QBReVXEm53P8k4LqZrY76RMzZ3EzV236w7n
+         HKdkM200/DE6pTIZnthHvj4gUwoZJihuiOmFw/6cY0e3deiWXV1G1QZ7N5aNy7IN3o
+         doZKYztHl4gV89HuTBxaimjA0E3O7LLmyzsv7Bzc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 029/775] ARM: dts: exynos: correct PMIC interrupt trigger level on Artik 5
-Date:   Mon,  1 Mar 2021 17:03:17 +0100
-Message-Id: <20210301161203.155410610@linuxfoundation.org>
+Subject: [PATCH 5.11 036/775] arm64: dts: exynos: correct PMIC interrupt trigger level on Espresso
+Date:   Mon,  1 Mar 2021 17:03:24 +0100
+Message-Id: <20210301161203.501206206@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,35 +41,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit cb31334687db31c691901269d65074a7ffaecb18 ]
+[ Upstream commit 1fea2eb2f5bbd3fbbe2513d2386b5f6e6db17fd7 ]
 
 The Samsung PMIC datasheets describe the interrupt line as active low
 with a requirement of acknowledge from the CPU.  Without specifying the
 interrupt type in Devicetree, kernel might apply some fixed
 configuration, not necessarily working for this hardware.
 
-Fixes: b004a34bd0ff ("ARM: dts: exynos: Add exynos3250-artik5 dtsi file for ARTIK5 module")
+Fixes: 9589f7721e16 ("arm64: dts: Add S2MPS15 PMIC node on exynos7-espresso")
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Link: https://lore.kernel.org/r/20201210212903.216728-1-krzk@kernel.org
+Link: https://lore.kernel.org/r/20201210212903.216728-8-krzk@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos3250-artik5.dtsi | 2 +-
+ arch/arm64/boot/dts/exynos/exynos7-espresso.dts | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos3250-artik5.dtsi b/arch/arm/boot/dts/exynos3250-artik5.dtsi
-index 04290ec4583a6..829c05b2c405f 100644
---- a/arch/arm/boot/dts/exynos3250-artik5.dtsi
-+++ b/arch/arm/boot/dts/exynos3250-artik5.dtsi
-@@ -79,7 +79,7 @@
+diff --git a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+index 695d4c1406466..125c03f351d97 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
++++ b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+@@ -90,7 +90,7 @@
  	pmic@66 {
- 		compatible = "samsung,s2mps14-pmic";
- 		interrupt-parent = <&gpx3>;
--		interrupts = <5 IRQ_TYPE_NONE>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&s2mps14_irq>;
+ 		compatible = "samsung,s2mps15-pmic";
  		reg = <0x66>;
+-		interrupts = <2 IRQ_TYPE_NONE>;
++		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+ 		interrupt-parent = <&gpa0>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pmic_irq>;
 -- 
 2.27.0
 
