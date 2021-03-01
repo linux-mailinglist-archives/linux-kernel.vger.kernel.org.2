@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59871329CD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B53329D38
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442461AbhCBCNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:13:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53014 "EHLO mail.kernel.org"
+        id S1443225AbhCBCTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:19:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241725AbhCATix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:38:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D701F6510A;
-        Mon,  1 Mar 2021 17:15:47 +0000 (UTC)
+        id S241087AbhCATpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:45:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2177564FC3;
+        Mon,  1 Mar 2021 17:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618948;
-        bh=0hKniYT9P+3ALacwHjD2nY0Eon86ck5jYVcMObYbxnw=;
+        s=korg; t=1614621012;
+        bh=9HZj4DqgkYupk2ScCOg7Cy1zlPCdRao4a+r6oGfzYpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0TfPER8aeWXW1HACC3x1q5SWI8gMb58f+z/YHcQiQyI70qumUK92Ez45lQzS80e/X
-         b2SlNK5BU+hCAuLzkzmGh0CyAHTBCmDA+6ugKSF+1UmhaCh8HWhXTck+HmIibRl3JD
-         5CzrpY54I6zsH3y2LfemnclV10lu0cKvjgkKvZbs=
+        b=fOrLsBZyVpSimZW6+E4p8eOpmm1ti5NuIjrXtNuTtajWDwMAFIwrxGeG0FuBmqDlb
+         s5zK9q1ci8VSj+NNysVhEMzCTu21PpJG5/Bo1w/jJX6GkEMySCzHPTe/wOBSVZoeNJ
+         JTUIUpGusLuEnnJKXO3u+D387hv9UUIzVIh/7H6c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 277/663] dmaengine: fsldma: Fix a resource leak in an error handling path of the probe function
-Date:   Mon,  1 Mar 2021 17:08:45 +0100
-Message-Id: <20210301161155.527601808@linuxfoundation.org>
+        stable@vger.kernel.org, Evan Benn <evanbenn@chromium.org>,
+        Brian Norris <briannorris@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 360/775] platform/chrome: cros_ec_proto: Add LID and BATTERY to default mask
+Date:   Mon,  1 Mar 2021 17:08:48 +0100
+Message-Id: <20210301161219.413358252@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Evan Benn <evanbenn@chromium.org>
 
-[ Upstream commit b202d4e82531a62a33a6b14d321dd2aad491578e ]
+[ Upstream commit 852405d8efcbca0e02f14592fb1d1dcd0d3fb508 ]
 
-In case of error, the previous 'fsl_dma_chan_probe()' calls must be undone
-by some 'fsl_dma_chan_remove()', as already done in the remove function.
+After 'platform/chrome: cros_ec_proto: Use EC_HOST_EVENT_MASK not BIT'
+some of the flags are not quite correct.
+LID_CLOSED is used to suspend the device, so it makes sense to ignore that.
+BATTERY events are also frequent and causing spurious wakes on elm/hana
+mt8173 devices.
 
-It was added in the remove function in commit 77cd62e8082b ("fsldma: allow
-Freescale Elo DMA driver to be compiled as a module")
-
-Fixes: d3f620b2c4fe ("fsldma: simplify IRQ probing and handling")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201212160614.92576-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: c214e564acb2 ("platform/chrome: cros_ec_proto: ignore unnecessary wakeups on old ECs")
+Signed-off-by: Evan Benn <evanbenn@chromium.org>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Link: https://lore.kernel.org/r/20201209220306.2.I3291bf83e4884c206b097ede34780e014fa3e265@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/fsldma.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/platform/chrome/cros_ec_proto.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma/fsldma.c b/drivers/dma/fsldma.c
-index 554f70a0c18c0..f8459cc5315df 100644
---- a/drivers/dma/fsldma.c
-+++ b/drivers/dma/fsldma.c
-@@ -1214,6 +1214,7 @@ static int fsldma_of_probe(struct platform_device *op)
- {
- 	struct fsldma_device *fdev;
- 	struct device_node *child;
-+	unsigned int i;
- 	int err;
- 
- 	fdev = kzalloc(sizeof(*fdev), GFP_KERNEL);
-@@ -1292,6 +1293,10 @@ static int fsldma_of_probe(struct platform_device *op)
- 	return 0;
- 
- out_free_fdev:
-+	for (i = 0; i < FSL_DMA_MAX_CHANS_PER_DEVICE; i++) {
-+		if (fdev->chan[i])
-+			fsl_dma_chan_remove(fdev->chan[i]);
-+	}
- 	irq_dispose_mapping(fdev->irq);
- 	iounmap(fdev->regs);
- out_free:
+diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
+index 3ad60190e11c6..aa7f7aa772971 100644
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -526,9 +526,11 @@ int cros_ec_query_all(struct cros_ec_device *ec_dev)
+ 		 * power), not wake up.
+ 		 */
+ 		ec_dev->host_event_wake_mask = U32_MAX &
+-			~(EC_HOST_EVENT_MASK(EC_HOST_EVENT_AC_DISCONNECTED) |
++			~(EC_HOST_EVENT_MASK(EC_HOST_EVENT_LID_CLOSED) |
++			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_AC_DISCONNECTED) |
+ 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY_LOW) |
+ 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY_CRITICAL) |
++			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY) |
+ 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_PD_MCU) |
+ 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY_STATUS));
+ 		/*
 -- 
 2.27.0
 
