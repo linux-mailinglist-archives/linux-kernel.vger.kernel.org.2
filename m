@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199D6329CFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C862E329D20
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442717AbhCBCPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:15:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55142 "EHLO mail.kernel.org"
+        id S1443053AbhCBCSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:18:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242155AbhCAToA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81855651AD;
-        Mon,  1 Mar 2021 17:12:42 +0000 (UTC)
+        id S239402AbhCATob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C144F64D8F;
+        Mon,  1 Mar 2021 17:47:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618763;
-        bh=korvbWkQKQGPsMDqI/km9sO28tKkbr2StM7kHzm05ak=;
+        s=korg; t=1614620836;
+        bh=9LmnSJgiIbo5m6GyjhYCc5cowMtDDxea9vISoySCzrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B9uD6H/kOovC2W8JPPijn5aYnfEgbA+/EVFSoK1lwn0W2JYo4iVeOXQ2xE6mt7t+4
-         m3nlOYkllw7C3woI2MGRdzNW2h0U0KDx/wNLSR9hqiYpl0FQPZHRxQDONxWHZl9Xtl
-         WqiVdFwrC4EjvF6GcDO1kuU8vWGBMOsGrhLJgBbo=
+        b=Qjz1Lsi7+FJbXKI7stYEJ867rfJOLc5SV6+swm/jTq+rfZN0jliY3W2O34w4TWva3
+         LEaYx6Ntfqza8rXWsouWikour3V6tE1sXL1041eaOrEdm8FKk7mWiMoLZS8XFjqPRR
+         dpjzUtm0QqeZkzu8fpX5Psw1uE0f+odDfXjgtDcI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 208/663] ASoC: cpcap: fix microphone timeslot mask
-Date:   Mon,  1 Mar 2021 17:07:36 +0100
-Message-Id: <20210301161152.078193080@linuxfoundation.org>
+Subject: [PATCH 5.11 296/775] ubifs: Fix memleak in ubifs_init_authentication
+Date:   Mon,  1 Mar 2021 17:07:44 +0100
+Message-Id: <20210301161216.251117154@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,63 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Reichel <sre@kernel.org>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit de5bfae2fd962a9da99f56382305ec7966a604b9 ]
+[ Upstream commit 11b8ab3836454a2600e396f34731e491b661f9d5 ]
 
-The correct mask is 0x1f8 (Bit 3-8), but due to missing BIT() 0xf (Bit
-0-3) was set instead. This means setting of CPCAP_BIT_MIC1_RX_TIMESLOT0
-(Bit 3) still worked (part of both masks). On the other hand the code
-does not properly clear the other MIC timeslot bits. I think this
-is not a problem, since they are probably initialized to 0 and not
-touched by the driver anywhere else. But the mask also contains some
-wrong bits, that will be cleared. Bit 0 (CPCAP_BIT_SMB_CDC) should be
-safe, since the driver enforces it to be 0 anyways.
+When crypto_shash_digestsize() fails, c->hmac_tfm
+has not been freed before returning, which leads
+to memleak.
 
-Bit 1-2 are CPCAP_BIT_FS_INV and CPCAP_BIT_CLK_INV. This means enabling
-audio recording forces the codec into SND_SOC_DAIFMT_NB_NF mode, which
-is obviously bad.
-
-The bug probably remained undetected, because there are not many use
-cases for routing microphone to the CPU on platforms using cpcap and
-user base is small. I do remember having some issues with bad sound
-quality when testing voice recording back when I wrote the driver.
-It probably was this bug.
-
-Fixes: f6cdf2d3445d ("ASoC: cpcap: new codec")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Sebastian Reichel <sre@kernel.org>
-Reviewed-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210123172945.3958622-1-sre@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 49525e5eecca5 ("ubifs: Add helper functions for authentication support")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cpcap.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ fs/ubifs/auth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/cpcap.c b/sound/soc/codecs/cpcap.c
-index f046987ee4cdb..c0425e3707d9c 100644
---- a/sound/soc/codecs/cpcap.c
-+++ b/sound/soc/codecs/cpcap.c
-@@ -1264,12 +1264,12 @@ static int cpcap_voice_hw_params(struct snd_pcm_substream *substream,
+diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
+index 51a7c8c2c3f0a..e564d5ff87816 100644
+--- a/fs/ubifs/auth.c
++++ b/fs/ubifs/auth.c
+@@ -327,7 +327,7 @@ int ubifs_init_authentication(struct ubifs_info *c)
+ 		ubifs_err(c, "hmac %s is bigger than maximum allowed hmac size (%d > %d)",
+ 			  hmac_name, c->hmac_desc_len, UBIFS_HMAC_ARR_SZ);
+ 		err = -EINVAL;
+-		goto out_free_hash;
++		goto out_free_hmac;
+ 	}
  
- 	if (direction == SNDRV_PCM_STREAM_CAPTURE) {
- 		mask = 0x0000;
--		mask |= CPCAP_BIT_MIC1_RX_TIMESLOT0;
--		mask |= CPCAP_BIT_MIC1_RX_TIMESLOT1;
--		mask |= CPCAP_BIT_MIC1_RX_TIMESLOT2;
--		mask |= CPCAP_BIT_MIC2_TIMESLOT0;
--		mask |= CPCAP_BIT_MIC2_TIMESLOT1;
--		mask |= CPCAP_BIT_MIC2_TIMESLOT2;
-+		mask |= BIT(CPCAP_BIT_MIC1_RX_TIMESLOT0);
-+		mask |= BIT(CPCAP_BIT_MIC1_RX_TIMESLOT1);
-+		mask |= BIT(CPCAP_BIT_MIC1_RX_TIMESLOT2);
-+		mask |= BIT(CPCAP_BIT_MIC2_TIMESLOT0);
-+		mask |= BIT(CPCAP_BIT_MIC2_TIMESLOT1);
-+		mask |= BIT(CPCAP_BIT_MIC2_TIMESLOT2);
- 		val = 0x0000;
- 		if (channels >= 2)
- 			val = BIT(CPCAP_BIT_MIC1_RX_TIMESLOT0);
+ 	err = crypto_shash_setkey(c->hmac_tfm, ukp->data, ukp->datalen);
 -- 
 2.27.0
 
