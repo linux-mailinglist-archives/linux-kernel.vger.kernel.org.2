@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E758329ACC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D69DE329A1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348537AbhCBBDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:03:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59846 "EHLO mail.kernel.org"
+        id S1376994AbhCBApJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:45:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236742AbhCASyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:54:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F16D650A5;
-        Mon,  1 Mar 2021 17:34:55 +0000 (UTC)
+        id S240484AbhCASjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B094264FFC;
+        Mon,  1 Mar 2021 17:35:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620096;
-        bh=1GfRdhj7jWDgfq6pmdHMfsCIR4d51gaglmodvJ2pnng=;
+        s=korg; t=1614620134;
+        bh=13BRCt59mG24dAjBi0+tf3OtJZc/bJXjFewxCEA3Xaw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zM99sPkIstHZdXgTZ6OiK3W7YK1MNhp9UjfgcupTI6ypwlGYe1Mk6G7fnjOzmMobR
-         AI/Tk2tiOFmRm0ISBfZiTPXE3De4mncFwqUsJs0qKUEr4XbSWT0N+zFT8CWdzJHJON
-         GwDsYsVAMs9Y2A2oW6Q0BWhHwpf+oXdajYnORTMM=
+        b=YLsxmQZAlOUpWSHOu+14GM3Bnv0DwpfprvhDX05sHOBMeHj4O+EnyNAvrNATY86dm
+         tHi2Wrx0G15yYY+6Duy7qDjq4ivSr1hAP81HimZyar7aY632OTX9CCEiDzuBwOd7BW
+         AZBIlgwtn6DYXFhsTJgGC5ZRgC9c+wFzmzjukIBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 028/775] arm64: dts: renesas: beacon: Fix audio-1.8V pin enable
-Date:   Mon,  1 Mar 2021 17:03:16 +0100
-Message-Id: <20210301161203.111903669@linuxfoundation.org>
+Subject: [PATCH 5.11 035/775] arm64: dts: exynos: correct PMIC interrupt trigger level on TM2
+Date:   Mon,  1 Mar 2021 17:03:23 +0100
+Message-Id: <20210301161203.451483318@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,34 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Ford <aford173@gmail.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 5a5da0b758b327b727c5392d7f11e046e113a195 ]
+[ Upstream commit e98e2367dfb4b6d7a80c8ce795c644124eff5f36 ]
 
-The fact the audio worked at all was a coincidence because the wrong
-gpio enable was used.  Use the correct GPIO pin to ensure its operation.
+The Samsung PMIC datasheets describe the interrupt line as active low
+with a requirement of acknowledge from the CPU.  Without specifying the
+interrupt type in Devicetree, kernel might apply some fixed
+configuration, not necessarily working for this hardware.
 
-Fixes: a1d8a344f1ca ("arm64: dts: renesas: Introduce r8a774a1-beacon-rzg2m-kit")
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Link: https://lore.kernel.org/r/20201213183759.223246-6-aford173@gmail.com
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 01e5d2352152 ("arm64: dts: exynos: Add dts file for Exynos5433-based TM2 board")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Link: https://lore.kernel.org/r/20201210212903.216728-7-krzk@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi | 2 +-
+ arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-index e66b5b36e4894..759734b7715bd 100644
---- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-+++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-@@ -150,7 +150,7 @@
- 		regulator-name = "audio-1.8V";
- 		regulator-min-microvolt = <1800000>;
- 		regulator-max-microvolt = <1800000>;
--		gpio = <&gpio_exp2 7 GPIO_ACTIVE_HIGH>;
-+		gpio = <&gpio_exp4 1 GPIO_ACTIVE_HIGH>;
- 		enable-active-high;
- 	};
+diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
+index 03486a8ffc67e..4c5106a0860d0 100644
+--- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
+@@ -388,7 +388,7 @@
+ 	pmic@66 {
+ 		compatible = "samsung,s2mps13-pmic";
+ 		interrupt-parent = <&gpa0>;
+-		interrupts = <7 IRQ_TYPE_NONE>;
++		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+ 		reg = <0x66>;
+ 		samsung,s2mps11-wrstbi-ground;
  
 -- 
 2.27.0
