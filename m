@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1573298F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC8032998B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346934AbhCAXvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35640 "EHLO mail.kernel.org"
+        id S1376293AbhCBAWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:22:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239295AbhCASOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:14:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47F6C652CF;
-        Mon,  1 Mar 2021 17:38:12 +0000 (UTC)
+        id S239855AbhCAS0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:26:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A76C65141;
+        Mon,  1 Mar 2021 17:04:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620292;
-        bh=utd6b4njfYgRu3bQP9RHnS797FBHRMDNy5xurfOzus0=;
+        s=korg; t=1614618265;
+        bh=LVJYJzYCHt8LMM75mc3z4G7uDAWBdRJ5QNQtzGSA9Sk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V26oIAJ20RW60ah3kdaDeEZyVdeKiJJm6Z5zEVBnNf0y6qDLPC3kkG0IiAJ00savt
-         8ZXv/7lnd8SWNJ+dxu5r6xi9+VpJwELJqlNphy4PIr4Je3s4t8G7P8GD4UsxV/znvy
-         q8IKoWhzPKQ75Rx2e3XgDCfUPzMYCQmwSjmFwV1M=
+        b=ggPQPCUC79NgBtf5BpO4MAirhA+zgbA/CIXvCPPwt1pxBSOJ0z/BmvQX7/hQn46+V
+         iX5WGKfZKfuYS+1R1mUhX5jLF0X9MiIhG1psaK+se0tHTXO8mEMVT2fKeMRRZNAr5V
+         45YUHu2u/7z1SY5Gvm63Swq3u7Q24HfDa3p6x68c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Abdul Haleem <abdhalee@in.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Christopher William Snowhill <chris@kode54.net>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 099/775] ibmvnic: Set to CLOSED state even on error
-Date:   Mon,  1 Mar 2021 17:04:27 +0100
-Message-Id: <20210301161206.559987211@linuxfoundation.org>
+Subject: [PATCH 5.10 024/663] Bluetooth: Fix initializing response id after clearing struct
+Date:   Mon,  1 Mar 2021 17:04:32 +0100
+Message-Id: <20210301161142.990040724@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Christopher William Snowhill <chris@kode54.net>
 
-[ Upstream commit d4083d3c00f60a09ad82e3bf17ff57fec69c8aa6 ]
+[ Upstream commit a5687c644015a097304a2e47476c0ecab2065734 ]
 
-If set_link_state() fails for any reason, we still cleanup the adapter
-state and cannot recover from a partial close anyway. So set the adapter
-to CLOSED state. That way if a new soft/hard reset is processed, the
-adapter will remain in the CLOSED state until the next ibmvnic_open().
+Looks like this was missed when patching the source to clear the structures
+throughout, causing this one instance to clear the struct after the response
+id is assigned.
 
-Fixes: 01d9bd792d16 ("ibmvnic: Reorganize device close")
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Reported-by: Abdul Haleem <abdhalee@in.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: eddb7732119d ("Bluetooth: A2MP: Fix not initializing all members")
+Signed-off-by: Christopher William Snowhill <chris@kode54.net>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ net/bluetooth/a2mp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index a536fdbf05e19..621be6d2da971 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -1353,10 +1353,8 @@ static int __ibmvnic_close(struct net_device *netdev)
+diff --git a/net/bluetooth/a2mp.c b/net/bluetooth/a2mp.c
+index da7fd7c8c2dc0..cc26e4c047ad0 100644
+--- a/net/bluetooth/a2mp.c
++++ b/net/bluetooth/a2mp.c
+@@ -381,9 +381,9 @@ static int a2mp_getampassoc_req(struct amp_mgr *mgr, struct sk_buff *skb,
+ 	hdev = hci_dev_get(req->id);
+ 	if (!hdev || hdev->amp_type == AMP_TYPE_BREDR || tmp) {
+ 		struct a2mp_amp_assoc_rsp rsp;
+-		rsp.id = req->id;
  
- 	adapter->state = VNIC_CLOSING;
- 	rc = set_link_state(adapter, IBMVNIC_LOGICAL_LNK_DN);
--	if (rc)
--		return rc;
- 	adapter->state = VNIC_CLOSED;
--	return 0;
-+	return rc;
- }
+ 		memset(&rsp, 0, sizeof(rsp));
++		rsp.id = req->id;
  
- static int ibmvnic_close(struct net_device *netdev)
+ 		if (tmp) {
+ 			rsp.status = A2MP_STATUS_COLLISION_OCCURED;
 -- 
 2.27.0
 
