@@ -2,204 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6DC327C7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F0E327C88
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234643AbhCAKoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:44:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234685AbhCAKoK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:44:10 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10187C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 02:43:18 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d15e:6060:f6a9:3ce5])
-        by baptiste.telenet-ops.be with bizsmtp
-        id ayjH2400B0v3pQi01yjHjZ; Mon, 01 Mar 2021 11:43:17 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lGg1E-002wqB-Rl
-        for linux-kernel@vger.kernel.org; Mon, 01 Mar 2021 11:43:16 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lGg1E-00BbhT-7S
-        for linux-kernel@vger.kernel.org; Mon, 01 Mar 2021 11:43:16 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.12-rc1
-Date:   Mon,  1 Mar 2021 11:43:16 +0100
-Message-Id: <20210301104316.2766484-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S234531AbhCAKqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:46:32 -0500
+Received: from mout.gmx.net ([212.227.17.20]:35973 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234671AbhCAKpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:45:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1614595396;
+        bh=3U6ft/tFjPbajRTHpMtsxkyeln1GHUnFs9tKVCL4wn4=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=lounEzaf4QP8hgD1g60pVYkIjry+whG5YO/kWMh6MJ3mYF1Gp5cfSrmCcg29h2yvG
+         BvJn/lwIf3vMmj/pgxm4Ob+zHU2OkNc8SLLPgLb1KQL5XOd6g+Tll+mnwFHMcSKvPg
+         fysr8OBqUFW7k6gdhUj5VPAxKKP+ZDi3SHtpL2zI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [217.61.155.40] ([217.61.155.40]) by web-mail.gmx.net
+ (3c-app-gmx-bap67.server.lan [172.19.172.67]) (via HTTP); Mon, 1 Mar 2021
+ 11:43:16 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <trinity-b7e2cf18-f0e6-4d88-8a80-de6758b5a91f-1614595396771@3c-app-gmx-bap67>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Aw: [PATCH 09/13] PCI: mediatek: Advertise lack of MSI handling
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 1 Mar 2021 11:43:16 +0100
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20210225151023.3642391-10-maz@kernel.org>
+References: <20210225151023.3642391-1-maz@kernel.org>
+ <20210225151023.3642391-10-maz@kernel.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:j861k7kpUL0MUYZFFLW+xzpYTQvAFo+nVqIutJIlj6BO2OJFcQg7P/7gkl57sGk667CmF
+ 3gFxH+9xglC2hdYPkVuGvoyIwX7NK7Z/Q5IeEPJrjGrpj2L+YtCTX5SpRHy1RFeX+3nfuAnmJQa0
+ PKNHGo6hq+lUF1JEU08QHR+yXp/G0CXOcvA+yTOZnw682knlZRcLMti0XyKEckoMrAVeKF+9EyDd
+ hG7/izq22IvB6GUosWtOFIlxC3QJE1+bBATvZPb7xaGFceQzf6CnZgBCzDxeQI7O28PtObeD7gB8
+ 6I=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:fSST4jC/Cuk=:rxBU1F/iol8XJ4ZzaI9eUc
+ /lUcepYYMTrwe0+SLaefhq+Q/f88wOXrKXiIo7tVepjzDjjBtbgbeFSi3Hi76E0Jqa3HazlrF
+ 27/OPneFO9NS+r9zIir/41mEfgXsvHvEGciCp8mlaArYHK7kyBwphu/SKmmheZr28JdkKkIw7
+ 67YZrzBjwbd8YqiwAdoPBBULXmAkL4PGYyrHAZvWLImEPcO0YF8/fSikZ5xMT1zIEmDYEpXaN
+ MnS6eKDDb27yIQiMy2GfxsbkOibK0LX2LkelPgwHL7UKIefHvIEP6Nr9BwrVxifRtkqLS6NWG
+ 4RA0IYjIxL50KIgamQGJHGyQyzu2XeLntYjVZd5ygwdanobTxQLqn+tRt9UqQLPelrAcTWiiq
+ 3fUOwVOIweT/PxXH04QIGTx3v8uDXhzpeYTdnhZhF10Jl8kG7T45milbh3nZl/z0Ly+ywGDh6
+ WZScu0ybzrotMdWe3q1eAGkbC11WLLEhtHAre6KD0/n0ziNFJ+ZKiJ31rjmakraLx0L86sx5I
+ fWGVh/dXztZ74u4z2sGbnWA47jX5Cldbgwe8+xMKoJj0XlzYVDTuAve9FnXYXcJemOqVLcbll
+ h9R2jJZ0+zvKE=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.12-rc1[1] compared to v5.11[2].
+tested full series on bananapi-r2 and r64
 
-Summarized:
-  - build errors: +2/-0
-  - build warnings: +117/-8
+r2 (with mt7615) looks good.
 
-Happy fixing! ;-)
+on r64 (with atheros card WLE900VX) i see this while loading ath10k driver=
+:
 
-Thanks to the linux-next team for providing the build service.
+[    6.525981] ath10k_pci 0000:01:00.0: enabling device (0000 -> 0002)
+[    6.537810] ath10k_pci 0000:01:00.0: enabling bus mastering
+[    6.543831] Unable to handle kernel paging request at virtual address f=
+fffff4
+013be2a80
+[    6.551890] Mem abort info:
+[    6.554744]   ESR =3D 0x96000044
+[    6.557870]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+[    6.563267]   SET =3D 0, FnV =3D 0
+[    6.566396]   EA =3D 0, S1PTW =3D 0
+[    6.569611] Data abort info:
+[    6.572501]   ISV =3D 0, ISS =3D 0x00000044
+[    6.576411]   CM =3D 0, WnR =3D 1
+[    6.579450] [ffffff4013be2a80] address between user and kernel address =
+ranges
+[    6.586659] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+[    6.592248] Modules linked in: ath10k_pci(+) ath10k_core ath mac80211 l=
+ibarc4
+ btmtkuart cfg80211 bluetooth ecdh_generic ecc rfkill libaes ip_tables x_t=
+ables
+[    6.606329] CPU: 1 PID: 114 Comm: systemd-udevd Not tainted 5.11.0-bpi-=
+r64-pc
+i #3
+[    6.613819] Hardware name: Bananapi BPI-R64 (DT)
+[    6.618439] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=3D--)
+[    6.624452] pc : queued_spin_lock_slowpath+0x1e8/0x31c
+[    6.629608] lr : queued_spin_lock_slowpath+0xac/0x31c
+[    6.634666] sp : ffffffc010f63550
+[    6.637982] x29: ffffffc010f63550 x28: 000000000000fc7e
+[    6.643306] x27: ffffffc010c67410 x26: 0000000000080000
+[    6.648629] x25: ffffffc010c67880 x24: ffffffc010f63810
+[    6.653950] x23: 0000000000000000 x22: ffffffc010ba8860
+[    6.659270] x21: ffffff803fdcc540 x20: ffffffc010a1c540
+[    6.664591] x19: ffffff80016a1708 x18: 0000000000000000
+[    6.669914] x17: 0000000000000000 x16: 0000000000000000
+[    6.675236] x15: 000000000000000a x14: 0000000000000092
+[    6.680560] x13: ffffff8006671004 x12: 0000000000000000
+[    6.685883] x11: 0101010101010101 x10: ffffff8001635568
+[    6.691206] x9 : 0000000000080000 x8 : ffffff8001635560
+[    6.696529] x7 : 0000000000000000 x6 : ffffff803fdcc540
+[    6.701849] x5 : 0000000000000002 x4 : 0000000000080000
+[    6.707170] x3 : ffffff80016a170a x2 : 000000000000016a
+[    6.712493] x1 : ffffff80031c6520 x0 : ffffffc010a1c560
+[    6.717818] Call trace:
+[    6.720276]  queued_spin_lock_slowpath+0x1e8/0x31c
+[    6.725086]  do_raw_spin_lock+0x2c/0x38
+[    6.728931]  _raw_spin_lock+0x24/0x34
+[    6.732606]  __mutex_lock.isra.0+0xc4/0x29c
+[    6.736799]  __mutex_lock_slowpath+0x14/0x20
+[    6.741078]  mutex_lock+0x28/0x34
+[    6.744402]  mtk_pcie_irq_domain_alloc+0x3c/0xd0
+[    6.749037]  irq_domain_alloc_irqs_hierarchy+0x50/0x54
+[    6.754187]  irq_domain_alloc_irqs_parent+0x18/0x2c
+[    6.759073]  msi_domain_alloc+0x8c/0x12c
+[    6.763007]  irq_domain_alloc_irqs_hierarchy+0x50/0x54
+[    6.768154]  __irq_domain_alloc_irqs+0x114/0x344
+[    6.772780]  __msi_domain_alloc_irqs+0x110/0x318
+[    6.777408]  msi_domain_alloc_irqs+0x1c/0x28
+[    6.781685]  pci_msi_setup_msi_irqs.isra.0+0x2c/0x44
+[    6.786662]  __pci_enable_msi_range+0x230/0x320
+[    6.791202]  pci_enable_msi+0x1c/0x30
+[    6.794874]  ath10k_pci_probe+0x480/0x748 [ath10k_pci]
+[    6.800058]  pci_device_probe+0xbc/0x14c
+[    6.804014]  really_probe+0x2a0/0x470
+[    6.807701]  driver_probe_device+0x12c/0x13c
+[    6.811981]  device_driver_attach+0x44/0x70
+[    6.816181]  __driver_attach+0x13c/0x140
+[    6.820126]  bus_for_each_dev+0x70/0xc0
+[    6.823971]  driver_attach+0x24/0x30
+[    6.827556]  bus_add_driver+0x1a4/0x1ec
+[    6.831401]  driver_register+0xb4/0xec
+[    6.835168]  __pci_register_driver+0x44/0x50
+[    6.839465]  ath10k_pci_init+0x28/0x1000 [ath10k_pci]
+[    6.844563]  do_one_initcall+0x6c/0x188
+[    6.848431]  do_init_module+0x5c/0x1e8
+[    6.852205]  load_module+0x1124/0x11c8
+[    6.855967]  __do_sys_finit_module+0xdc/0x100
+[    6.860335]  __arm64_sys_finit_module+0x1c/0x28
+[    6.864877]  el0_svc_common.constprop.0+0x124/0x198
+[    6.869766]  do_el0_svc+0x48/0x78
+[    6.873089]  el0_svc+0x14/0x20
+[    6.876158]  el0_sync_handler+0xcc/0x154
+[    6.880091]  el0_sync+0x174/0x180
+[    6.883425] Code: d37c0400 51000421 8b000280 f861dac1 (f8216806)
+[    6.889525] ---[ end trace 62498e1f489ea3ab ]---
 
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8/ (all 192 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f40ddce88593482919761f74910f42f4b84c004b/ (all 192 configs)
+i guess it's a bug in ath10k driver or my r64 board (it is a v1.1 which ha=
+s missing capacitors on tx lines).
+Tried with an mt7612e, this seems to work without any errors.
 
+so for mt7622/mt7623
 
-*** ERRORS ***
+Tested-by: Frank Wunderlich <frank-w@public-files.de>
 
-2 error regressions:
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'disable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 674:2
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'enable_kernel_vsx' [-Werror=implicit-function-declaration]:  => 638:2
-
-
-*** WARNINGS ***
-
-117 warning regressions:
-  + /kisskb/src/arch/m68k/include/asm/page_mm.h: warning: ordered comparison of pointer with null pointer [-Wextra]:  => 174:49
-  + /kisskb/src/arch/s390/boot/mem_detect.c: warning: 'detect_memory' uses dynamic stack allocation:  => 176:1
-  + /kisskb/src/drivers/clk/xilinx/xlnx_vcu.c: warning: (near initialization for 'parent_data[0]') [-Wmissing-braces]:  => 524:9
-  + /kisskb/src/drivers/clk/xilinx/xlnx_vcu.c: warning: missing braces around initializer [-Wmissing-braces]:  => 524:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: (near initialization for 'clock_table.DcfClocks') [-Wmissing-braces]:  => 880:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 880:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/dcn301_smu.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]:  => 198:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/dcn301_smu.c: warning: missing braces around initializer [-Wmissing-braces]:  => 198:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/vg_clk_mgr.c: warning: (near initialization for 'dummy_wms.WatermarkRow') [-Wmissing-braces]:  => 704:15
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/vg_clk_mgr.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]:  => 129:10, 116:11
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/vg_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 704:15, 116:11, 129:10
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]:  => 1802:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1802:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]:  => 1273:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1273:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]:  => 1223:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1223:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'dcn2_0_nv12_soc.clock_limits') [-Wmissing-braces]:  => 451:15
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: missing braces around initializer [-Wmissing-braces]:  => 451:15
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]:  => 258:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: missing braces around initializer [-Wmissing-braces]:  => 258:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_hwseq.c: warning: (near initialization for 'warmup_params.start_address') [-Wmissing-braces]:  => 264:9
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]:  => 264:9
-  + /kisskb/src/drivers/media/i2c/imx334.c: warning: (near initialization for 'msgs[0]') [-Wmissing-braces]:  => 288:9
-  + /kisskb/src/drivers/media/i2c/imx334.c: warning: missing braces around initializer [-Wmissing-braces]:  => 288:9
-  + /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation:  => 444:1
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]:  => 604:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]:  => 605:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: missing braces around initializer [-Wmissing-braces]:  => 604:9, 605:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'cntr_req.hdr') [-Wmissing-braces]:  => 878:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'cntr_rsp.hdr') [-Wmissing-braces]:  => 879:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'dis_req.hdr') [-Wmissing-braces]:  => 1198:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'dummy.packet') [-Wmissing-braces]:  => 974:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'free_req.hdr') [-Wmissing-braces]:  => 861:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'write_req.hdr') [-Wmissing-braces]:  => 1263:9, 972:9
-  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1263:9, 972:9, 878:9, 879:9, 1198:9, 861:9, 974:9
-  + /kisskb/src/drivers/net/ethernet/neterion/vxge/vxge-config.c: warning: 'vxge_hw_device_hw_info_get' uses dynamic stack allocation:  => 1092:1
-  + /kisskb/src/drivers/net/phy/phy_device.c: warning: 'mdio_bus_phy_resume' defined but not used [-Wunused-function]:  => 293:12
-  + /kisskb/src/drivers/net/phy/phy_device.c: warning: 'mdio_bus_phy_suspend' defined but not used [-Wunused-function]:  => 273:12
-  + /kisskb/src/drivers/net/wireless/ath/ath11k/qmi.c: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 5 has type 'dma_addr_t {aka unsigned int}' [-Wformat=]:  => 1690:8
-  + /kisskb/src/drivers/net/wireless/ath/ath11k/qmi.c: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 5 has type 'dma_addr_t' [-Wformat=]:  => 1689:4
-  + /kisskb/src/drivers/net/wireless/ath/ath11k/qmi.c: warning: format '%llx' expects argument of type 'long long unsigned int', but argument 5 has type 'dma_addr_t' {aka 'unsigned int'} [-Wformat=]:  => 1690:8
-  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_add_vlan_id' uses dynamic stack allocation:  => 317:1
-  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_del_vlan_id' uses dynamic stack allocation:  => 331:1
-  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_probe' uses dynamic stack allocation:  => 590:1
-  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_query_rgid' uses dynamic stack allocation:  => 216:1
-  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_register_dmb' uses dynamic stack allocation:  => 282:1
-  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_signal_ieq' uses dynamic stack allocation:  => 359:1
-  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_unregister_dmb' uses dynamic stack allocation:  => 303:1
-  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'query_info' uses dynamic stack allocation:  => 85:1
-  + /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation:  => 481:1
-  + /kisskb/src/drivers/target/iscsi/iscsi_target.c: warning: 'iscsit_send_datain' uses dynamic stack allocation:  => 2886:1
-  + /kisskb/src/fs/btrfs/ref-verify.c: warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]:  => 225:1, 221:1
-  + /kisskb/src/fs/nfs/super.c: warning: 'nfs_show_stats' uses dynamic stack allocation:  => 723:1
-  + /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2224 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 1311:1
-  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.10' uses dynamic stack allocation:  => 238:1
-  + /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.26' uses dynamic stack allocation:  => 3670:1
-  + /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_show_fdinfo' uses dynamic stack allocation:  => 1784:1
-  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_free_coherent' uses dynamic stack allocation:  => 1439:1
-  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_cpu' uses dynamic stack allocation:  => 1549:1
-  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_device' uses dynamic stack allocation:  => 1580:1
-  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_cpu' uses dynamic stack allocation:  => 1498:1
-  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_device' uses dynamic stack allocation:  => 1517:1
-  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_page' uses dynamic stack allocation:  => 1290:1
-  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_resource' uses dynamic stack allocation:  => 1480:1
-  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_sg' uses dynamic stack allocation:  => 1378:1
-  + /kisskb/src/kernel/events/core.c: warning: '___perf_sw_event' uses dynamic stack allocation:  => 9235:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_aux_event' uses dynamic stack allocation:  => 8422:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_bpf_output' uses dynamic stack allocation:  => 8719:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_cgroup_output' uses dynamic stack allocation:  => 7972:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_comm_output' uses dynamic stack allocation:  => 7750:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_ksymbol_output' uses dynamic stack allocation:  => 8630:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_mmap_output' uses dynamic stack allocation:  => 8128:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_namespaces_output' uses dynamic stack allocation:  => 7849:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_read_event' uses dynamic stack allocation:  => 7369:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_switch_output' uses dynamic stack allocation:  => 8514:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_task_output' uses dynamic stack allocation:  => 7656:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_text_poke_output' uses dynamic stack allocation:  => 8837:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_log_itrace_start' uses dynamic stack allocation:  => 8910:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_log_lost_samples' uses dynamic stack allocation:  => 8455:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_log_throttle' uses dynamic stack allocation:  => 8585:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_swevent_hrtimer' uses dynamic stack allocation:  => 10394:1
-  + /kisskb/src/kernel/events/core.c: warning: 'perf_tp_event' uses dynamic stack allocation:  => 9549:1
-  + /kisskb/src/kernel/rseq.c: warning: '__rseq_handle_notify_resume' uses dynamic stack allocation:  => 281:1
-  + /kisskb/src/kernel/rseq.c: warning: 'rseq_syscall' uses dynamic stack allocation:  => 300:1
-  + /kisskb/src/kernel/smp.c: warning: 'smp_call_function_single' uses dynamic stack allocation:  => 521:1
-  + /kisskb/src/lib/crypto/chacha20poly1305.c: warning: 'chacha20poly1305_crypt_sg_inplace' uses dynamic stack allocation:  => 331:1
-  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_all' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_partial.isra.29' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_none.isra.63' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_all.isra.49' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_partial.isra.41' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_all' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_partial.isra.17' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_zero.isra.9' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_all' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_partial' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_none' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_all' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_partial' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_all' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_partial' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_zero' uses dynamic stack allocation:  => 255:15
-  + /kisskb/src/mm/slub.c: warning: '___slab_alloc' uses dynamic stack allocation:  => 2768:1
-  + /kisskb/src/mm/slub.c: warning: '__slab_free' uses dynamic stack allocation:  => 3092:1
-  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.64' uses dynamic stack allocation:  => 2304:1
-  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.65' uses dynamic stack allocation:  => 2304:1
-  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.63' uses dynamic stack allocation:  => 2014:1
-  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.64' uses dynamic stack allocation:  => 2014:1
-  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.62' uses dynamic stack allocation:  => 2372:1
-  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.63' uses dynamic stack allocation:  => 2372:1
-  + /kisskb/src/mm/z3fold.c: warning: 'z3fold_reclaim_page.constprop' uses dynamic stack allocation:  => 1471:1
-  + /kisskb/src/net/bridge/br_netlink.c: warning: 'br_fill_linkxstats' uses dynamic stack allocation:  => 1753:1
-  + /kisskb/src/net/bridge/br_vlan.c: warning: 'br_vlan_fill_vids' uses dynamic stack allocation:  => 1672:1
-  + /kisskb/src/net/bridge/netfilter/ebtables.c: warning: 'compat_copy_everything_to_user' uses dynamic stack allocation:  => 1767:1
-  + arch/sparc/configs/sparc64_defconfig: warning: override: reassigning to symbol ATA:  => 237
-  + arch/sparc/configs/sparc64_defconfig: warning: override: reassigning to symbol HAPPYMEAL:  => 239
-
-8 warning improvements:
-  - /kisskb/src/arch/sparc/include/asm/cmpxchg_32.h: warning: value computed is not used [-Wunused-value]: 28:22 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: (near initialization for 'cmd.lock_hw') [-Wmissing-braces]: 36:8 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 36:8 => 
-  - /kisskb/src/drivers/net/ethernet/aurora/nb8800.h: warning: "TCR_DIE" redefined: 92 => 
-  - /kisskb/src/drivers/net/ethernet/freescale/fec_main.c: warning: unused variable 'pdata' [-Wunused-variable]: 1667:28 => 
-  - /kisskb/src/drivers/net/ethernet/freescale/fec_main.c: warning: unused variable 'val' [-Wunused-variable]: 948:6 => 
-  - /kisskb/src/drivers/rtc/rtc-rx6110.c: warning: 'rx6110_probe' defined but not used [-Wunused-function]: 314:12 => 
-  - warning: unmet direct dependencies detected for COMPAT_BINFMT_ELF: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+regards Frank
