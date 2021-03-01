@@ -2,136 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC94327A4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E9F327A54
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbhCAJBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:01:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233695AbhCAIzy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:55:54 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D27C0617AA;
-        Mon,  1 Mar 2021 00:55:14 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id e7so13969808ile.7;
-        Mon, 01 Mar 2021 00:55:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=DmAA6tgfdHxBBo/R7khg/z33Al26yV6cc7Ji0SRbkLw=;
-        b=cxuy6GKqqU9oceLGCbnAKaFy6dIvpyJH0aJLeaHt8i0h0BSeaWS4gT5xpYTGF01oBj
-         Gu7Kb8wwdLAc4Am5OIIz9CTJHt6CzrTYyx8+a0fzDHBHoVL8DRqqJ673UwzjCibvEb0b
-         KAHJVwx8WTA4CfDuO7ZrVqOkW226S87g0JDdYP0Xrq55MawryFekb1S8rRLt28+QR2/X
-         2itA/TJDrdhP/sv86bICIytKXaACmQSfvz0UnlJrMzNIT5gvV43Tgc0VenkzyAX+h8TN
-         HzeG+zGV0NQ6bcPUv+dYvsx1U3qsgGoLyoP2KhQxuUHPaNwGe6G9sLMAJ1wfiOyyCC1K
-         MLdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=DmAA6tgfdHxBBo/R7khg/z33Al26yV6cc7Ji0SRbkLw=;
-        b=DI7OQFgcNBAfQTVFab4VaCEU+A3rTzX1wCs7owRXAS7ftTUAyXxn0mJqt3WCF6ijYy
-         fU0euSpW0hB7fmiIYzz4TUdxUH/5rolxobXY4vOiBrLGgAjy+2yaif98jA4Q1SUKJWe1
-         g7NBqkJUzWkpFMFtRr//Fz6WvoM5JfGWSbSJC5CGgHGTLaqK/i3Wer1Ls7PBuKIGNjcu
-         RYTeAsThEcrNUr4bw5FnMt0qqGL41qK1Eblfa4EdL8dEVvEJxSDE53oN0IAJBZZb5n7G
-         D8mE48U+Ths93LGDhns6wS7rPMavqGWZ2F03ehJl7rO6+oQj1Ckhrs39l46OBstHO2CV
-         uDng==
-X-Gm-Message-State: AOAM531EYXO2ntFVBb+YJgsC92npiyhycfNVUnWmyE/j49eoGsE0hJGA
-        kvLbKqubxZaryjPMhmwSBcTMxPC/oICNzrQ1b9uKfUwm6NeI3g==
-X-Google-Smtp-Source: ABdhPJyOLb5Nc7qxuH3tSL6W3Cdglxdla7mYQ0/GlxfIBLrQyf5rdawAyfzHiCjD2ktnosiyTNuWYxGmdGqHRq6EFxE=
-X-Received: by 2002:a92:c7c2:: with SMTP id g2mr12575928ilk.209.1614588913968;
- Mon, 01 Mar 2021 00:55:13 -0800 (PST)
+        id S233811AbhCAJDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:03:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233709AbhCAI4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 03:56:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE27A6148E;
+        Mon,  1 Mar 2021 08:55:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614588932;
+        bh=1Lj3nNR9NY5QBEvwcUxtfqmYoLwL0qm3v3ID+sTuq6Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DJYAIlkCN4p0WxB/8R8oNXUUCM9KOLmVOPkojRWgZSjI6M8vPZWRfSYFN4zH64I7n
+         Ln1mUvO/5ETHCibW1oI8zbKrQhFMft9W8ZANJBLYhrexeH0r41u26Xk+Rbx7pdiWgM
+         /otkm6vIPfb7bpnZVlzVJR5CoK2K17RjUVUncAt2BiNwSzfMfT10330QaE+YCsAFa2
+         2vVtbI02rBqTSFJPmsKpO4IL1v0kXAZap0Xyx7XR1XzRVvECsT9VoZdnhwTUck8200
+         OgNVvySX+zRrLIQ+detvuyfYWcAsxlPmWh57tGI5XIVaXpwZco6jeq6hYLKnC3/IEe
+         K1O/GoXbssvgw==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lGeLG-0003sV-8A; Mon, 01 Mar 2021 09:55:50 +0100
+Date:   Mon, 1 Mar 2021 09:55:50 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Pho Tran <Pho.Tran@silabs.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Hung Nguyen <Hung.Nguyen@silabs.com>
+Subject: Re: [PATCH] USB: serial: cp210x: Make the CP210x driver work with
+ GPIOs of CP2108
+Message-ID: <YDysFn8RgBKV7iCV@hovoldconsulting.com>
+References: <5F0FCC57-86C5-4FF2-AE75-C2DDC748901A@silabs.com>
 MIME-Version: 1.0
-References: <CA+icZUWJyPTefHkGEgQtDO9TOM4CN_b2qPJGQVF7NE=Q=fGAEQ@mail.gmail.com>
- <CA+icZUUzBvmi9SvJ4Bh8ER_+Rkm9vv9FkKwoS8ofmRsko_fJhg@mail.gmail.com>
-In-Reply-To: <CA+icZUUzBvmi9SvJ4Bh8ER_+Rkm9vv9FkKwoS8ofmRsko_fJhg@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 1 Mar 2021 09:54:38 +0100
-Message-ID: <CA+icZUXCgW0bPcqNf+DSubBciQeBMbNX5zbjkMXinqRdkE1PfA@mail.gmail.com>
-Subject: Re: [xhci] usb 4-1: reset SuperSpeed Gen 1 USB device number 2 using xhci_hcd
-To:     Mathias Nyman <mathias.nyman@intel.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5F0FCC57-86C5-4FF2-AE75-C2DDC748901A@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 6:25 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Wed, Feb 24, 2021 at 2:44 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > Hi Mathias,
-> >
-> > I am here on Linux-v5.11-10201-gc03c21ba6f4e.
-> >
-> > I see a lot xhci-resets in my dmesg-log:
-> >
-> > root# LC_ALL=C dmesg -T | grep 'usb 4-1: reset SuperSpeed Gen 1 USB
-> > device number 2 using xhci_hcd' | wc -l
-> > 75
-> >
-> > This is what I have:
-> >
-> > root# lsusb -s 004:001
-> > Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-> >
-> > root# lsusb -s 004:002
-> > Bus 004 Device 002: ID 174c:55aa ASMedia Technology Inc. ASM1051E SATA
-> > 6Gb/s bridge, ASM1053E SATA 6Gb/s bridge, ASM1153 SATA 3Gb/s bridge,
-> > ASM1153E SATA 6Gb/s bridge
-> >
-> > My external USB 3.0 HDD contains the partition with my Debian-system
-> > and is attached to the above xhci bus/device.
-> >
-> > Can you enlighten what this means?
-> > Is this a known issue?
-> > Is there a fix around?
-> >
-> > BTW, in which Git tree is the xhci development happening?
-> > Can you point me to it?
-> >
-> > I am attaching my linux-config and full dmesg-log.
-> >
-> > Also I have attached outputs of:
-> >
-> > $ sudo lsusb -vvv -d 1d6b:0003
-> > $ sudo lsusb -vvv -d 174c:55aa
-> >
-> > If you need further information, please let me know.
-> >
-> > Thanks.
-> >
->
-> Looks like that xhci-reset happens here every 10min.
->
+On Mon, Mar 01, 2021 at 08:13:46AM +0000, Pho Tran wrote:
+> Similar to other CP210x devices, GPIO interfaces (gpiochip) should be supported for CP2108.
+> 
+> CP2108 has 4 serial interfaces but only 1 set of GPIO pins are shared to all of those interfaces.
+> So, just need to initialize GPIOs of CP2108 with only one interface (I use interface 0).
+> It means just only 1 gpiochip device file will be created for CP2108.
+> 
+> CP2108 has 16 GPIOs, So data types of several variables need to be is u16
+> instead of u8(in struct cp210x_serial_private). This doesn't affect other CP210x devices.
+> 
+> Because CP2108 has 16 GPIO pins, the parameter which is passed by cp210x functions
+> will be different from other CP210x devices. So need to check part number of the device to use correct data format  before sending commands to devices.
+> 
+> Like CP2104, CP2108 have GPIO pins with configurable options. Therefore, in cp2108_gpio_init() function,
+> Should be mask all pins which are not in GPIO mode.
 
-[ To Greg ]
+Please break commit message lines at 72 cols or so (and try to keep code
+< 80 cols).
 
-The problem still remains with Linux v5.12-rc1 (see [1]).
+There are still a few checkpatch.pl warnings on this one that look
+legitimate, please fix those up (e.g. spaces at start of lines).
 
-Yesterday, I ran some disk-health checks with smartctl and gsmartcontrol.
-All good.
+Also use the kernel u8 and u16 types instead of the c99 ones.
 
-For the first time I used badblocks from e2fsprogs Debian package:
-
-root# LC_ALL=C badblocks -v -p 1 -s /dev/sdc -o
-badblocks-v-p-1-s_dev-sdc_$(uname -r).txt
-Checking blocks 0 to 976762583
-Checking for bad blocks (read-only test): done
-Pass completed, 0 bad blocks found. (0/0/0 errors)
-
-Good, there is no file-system corruption or badblocks or even a hardware damage.
-
-Anyway, feedback is much appreciated.
-
-Thanks.
-
-Regards,
-- Sedat -
-
-[1] https://lore.kernel.org/lkml/CA+icZUUjVnBjC4AJTT9LYS4J+QbuQZUVj5XdW+iPmjxxuODVmA@mail.gmail.com/
+Johan
