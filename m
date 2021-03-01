@@ -2,165 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D2B3275E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 02:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3813275F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 02:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhCABoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 20:44:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhCABoD (ORCPT
+        id S231560AbhCABxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 20:53:46 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52098 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231522AbhCABxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 20:44:03 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239ACC06174A;
-        Sun, 28 Feb 2021 17:43:23 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id s7so4968466qkg.4;
-        Sun, 28 Feb 2021 17:43:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aRJxGDa+J6w/kx8AzlgOwBwW/kGWEGGndzPstBNruVg=;
-        b=eUqxoITuRO88v1pWT5sA1qBUfJlYWiVeQ4/LsJcucnDTR61Iq6mMPN3hTwt0Cumqps
-         ZDesTo3gwF6xYFMluPlKADHHZlhRcpmPyF0GGvxczEGBIz26simOXlXBPjy7ch+ZXfIS
-         cljfBrfjqzUhrltk2zY3PlwPUGJk6Wx78pSI9cETlOz4tm46mG8UF/99ezgZ/1molKdr
-         jZxzn5qwgA23OC+BuYHNqXRkHY748qmh11U0CsfYnWehmDjyWKjRvhwtCY1LQdoyLVFw
-         25g0Gix69SpNPm6isV2XvIO2H3swMXttmGNnL9aezPosvwWivtLdvB3+U9GTFc8Qr7QM
-         OV6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aRJxGDa+J6w/kx8AzlgOwBwW/kGWEGGndzPstBNruVg=;
-        b=BuIHu/exttmsL2q9jUisOhFqNqx51IHJJkMC3NXPEDJSfyZl4P9QoV6f65Dm/ioGWo
-         GhypeDtuvJ5Em0QsQRbTryWQaKLtnT9MUse1MNu0J+56K25Qwoo1hqqldrzZ8aW2yGQd
-         TinCGq82MGeNqTViZu/pqAcp3BE6tVULBwUfSTvf1WwZpu473vw/T9s72WtSo6I6+OMH
-         ZfYgSyfbNfFAODml5cJBJJAtu/+frBESdQf4+1gqB+/hDuqjL8PWruLg8a7o1j6FA3u+
-         ysoffGQiTL3d5udNjB0K2mwJd71aYAx82qvjb+qTAq+vDRaKvKCurbaf9StBvQbbRxiD
-         5LTQ==
-X-Gm-Message-State: AOAM5333xpacasIcgdtklHrvQjTMS4MJTXqzDG9UemaZge7Vb8lmYRgr
-        aCeSdoSK20MPU7pbabiH1POQjfhU50Ei11f9gOE=
-X-Google-Smtp-Source: ABdhPJwNnsqeCX0zu627oXAjvEgz30921B/QXoR5MeBCgyozRuFZ/i198WE2IyNfUxP+RoTR4meys9KYZOBpGTT5fC4=
-X-Received: by 2002:a37:9e56:: with SMTP id h83mr9223957qke.38.1614563002416;
- Sun, 28 Feb 2021 17:43:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20210226105746.29240-1-yejune.deng@gmail.com> <d16327f3-33c0-61c1-3adf-78f7edcbec6a@gmail.com>
-In-Reply-To: <d16327f3-33c0-61c1-3adf-78f7edcbec6a@gmail.com>
-From:   Yejune Deng <yejune.deng@gmail.com>
-Date:   Mon, 1 Mar 2021 09:43:10 +0800
-Message-ID: <CABWKuGU=sjmMer2rY3eQ2ttO+6SqeJ7K5T6oJrTUrsfOARx1MA@mail.gmail.com>
-Subject: Re: [PATCH] inetpeer: use else if instead of if to reduce judgment
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     David Miller <davem@davemloft.net>, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Sun, 28 Feb 2021 20:53:42 -0500
+X-UUID: 8e960fac560f456494d8b6cd1179dce6-20210301
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=lZn0loMDBlLQ+v3do751492I2dJdgs8xXjuL08g8siA=;
+        b=gq6r6V10aCF68AJenigWvFpZWPqzWNI94P+VCm9IH8Tm9VUZuXMp7869ymZ0QgXORF8RwPD2N4knVhGCh+71xOVxvDIGNaHp/DH1rcEJQb0aEnXNQ1PyC50LAbp6kS+eqrWe7exq58BrmA54zsUlhVXHW3SgubqJfJtewslQP7c=;
+X-UUID: 8e960fac560f456494d8b6cd1179dce6-20210301
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 75423923; Mon, 01 Mar 2021 09:52:57 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 1 Mar 2021 09:52:56 +0800
+Received: from [10.15.20.246] (10.15.20.246) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 1 Mar 2021 09:52:55 +0800
+Message-ID: <1614563278.1578.6.camel@mbjsdccf07>
+Subject: Re: [PATCH 2/2] dt-binding: mediatek: mt6779: update spi document
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
+        <wsd_upstream@mediatek.com>
+Date:   Mon, 1 Mar 2021 09:47:58 +0800
+In-Reply-To: <20210226170705.GB4518@sirena.org.uk>
+References: <20210226110109.30500-1-Mason.Zhang@mediatek.com>
+         <20210226170705.GB4518@sirena.org.uk>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks=EF=BC=8CI will adopt it and resubmit.
+RGVhciBNYXJrOg0KDQoJUGF0Y2ggMS8yIGlzIGluIHRoaXMgbGluazoNCglsa21sLm9yZy9sa21s
+LzIwMjEvMi8yNi8zMjUNCglJIHdpbGwgZW1haWwgeW91IGxhdGVyIGFib3V0IHBhdGNoIDEvMi4N
+CgkNCglUaGFuayB5b3UgZm9yIHlvdXIgc3VnZ2VzdGlvbiENCg0KVGhhbmtzDQpNYXNvbg0KLS0t
+LS0tLS0tLS0tLS0tLS0NCk9uIEZyaSwgMjAyMS0wMi0yNiBhdCAxNzowNyArMDAwMCwgTWFyayBC
+cm93biB3cm90ZToNCj4gT24gRnJpLCBGZWIgMjYsIDIwMjEgYXQgMDc6MDE6MTBQTSArMDgwMCwg
+TWFzb24gWmhhbmcgd3JvdGU6DQo+ID4gdGhpcyBwYXRjaCB1cGRhdGUgc3BpIGRvY3VtZW50IGZv
+ciBNVDY3NzkgU09DLg0KPiANCj4gSSdtIG1pc3NpbmcgcGF0Y2ggMS8yIGhlcmUsIHdoYXQncyB0
+aGUgc3Rvcnkgd2l0aCBkZXBlbmRlbmNpZXM/DQo+IA0KPiBQbGVhc2Ugc3VibWl0IHBhdGNoZXMg
+dXNpbmcgc3ViamVjdCBsaW5lcyByZWZsZWN0aW5nIHRoZSBzdHlsZSBmb3IgdGhlDQo+IHN1YnN5
+c3RlbSwgdGhpcyBtYWtlcyBpdCBlYXNpZXIgZm9yIHBlb3BsZSB0byBpZGVudGlmeSByZWxldmFu
+dCBwYXRjaGVzLg0KPiBMb29rIGF0IHdoYXQgZXhpc3RpbmcgY29tbWl0cyBpbiB0aGUgYXJlYSB5
+b3UncmUgY2hhbmdpbmcgYXJlIGRvaW5nIGFuZA0KPiBtYWtlIHN1cmUgeW91ciBzdWJqZWN0IGxp
+bmVzIHZpc3VhbGx5IHJlc2VtYmxlIHdoYXQgdGhleSdyZSBkb2luZy4NCj4gVGhlcmUncyBubyBu
+ZWVkIHRvIHJlc3VibWl0IHRvIGZpeCB0aGlzIGFsb25lLg0KDQo=
 
-On Fri, Feb 26, 2021 at 10:50 PM Eric Dumazet <eric.dumazet@gmail.com> wrot=
-e:
->
->
->
-> On 2/26/21 11:57 AM, Yejune Deng wrote:
-> > In inet_initpeers(), if si.totalram <=3D (8192*1024)/PAGE_SIZE, it will
-> > be judged three times. Use else if instead of if, it only needs to be
-> > judged once.
-> >
-> > Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> > ---
-> >  net/ipv4/inetpeer.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/net/ipv4/inetpeer.c b/net/ipv4/inetpeer.c
-> > index ff327a62c9ce..07cd1f8204b3 100644
-> > --- a/net/ipv4/inetpeer.c
-> > +++ b/net/ipv4/inetpeer.c
-> > @@ -81,12 +81,12 @@ void __init inet_initpeers(void)
-> >        * <kuznet@ms2.inr.ac.ru>.  I don't have any opinion about the va=
-lues
-> >        * myself.  --SAW
-> >        */
-> > -     if (si.totalram <=3D (32768*1024)/PAGE_SIZE)
-> > +     if (si.totalram <=3D (8192 * 1024) / PAGE_SIZE)
-> > +             inet_peer_threshold >>=3D 4; /* about 128KB */
-> > +     else if (si.totalram <=3D (16384 * 1024) / PAGE_SIZE)
-> > +             inet_peer_threshold >>=3D 2; /* about 512KB */
-> > +     else if (si.totalram <=3D (32768 * 1024) / PAGE_SIZE)
-> >               inet_peer_threshold >>=3D 1; /* max pool size about 1MB o=
-n IA32 */
->
->
-> If you really want to change this stuff, I would suggest updating comment=
-s,
-> because nowadays, struct inet_peer on IA32 uses 128 bytes.
->
-> So 32768 entries would consume 4 MB,
->    16384 entries would consume 2 MB
->
-> and 4096 entries would consume 512KB
->
-> Another idea would be to get rid of the cascade and use something that
-> will not need to be adjusted in the future.
->
-> diff --git a/net/ipv4/inetpeer.c b/net/ipv4/inetpeer.c
-> index ff327a62c9ce9b1794104c3c924f5f2b9820ac8b..d5f486bd8c35234f99b22842e=
-756a10531e070d6 100644
-> --- a/net/ipv4/inetpeer.c
-> +++ b/net/ipv4/inetpeer.c
-> @@ -65,7 +65,7 @@ EXPORT_SYMBOL_GPL(inet_peer_base_init);
->  #define PEER_MAX_GC 32
->
->  /* Exported for sysctl_net_ipv4.  */
-> -int inet_peer_threshold __read_mostly =3D 65536 + 128;   /* start to thr=
-ow entries more
-> +int inet_peer_threshold __read_mostly; /* start to throw entries more
->                                          * aggressively at this stage */
->  int inet_peer_minttl __read_mostly =3D 120 * HZ; /* TTL under high load:=
- 120 sec */
->  int inet_peer_maxttl __read_mostly =3D 10 * 60 * HZ;     /* usual time t=
-o live: 10 min */
-> @@ -73,20 +73,13 @@ int inet_peer_maxttl __read_mostly =3D 10 * 60 * HZ; =
- /* usual time to live: 10 min
->  /* Called from ip_output.c:ip_init  */
->  void __init inet_initpeers(void)
->  {
-> -       struct sysinfo si;
-> +       u64 nr_entries;
->
-> -       /* Use the straight interface to information about memory. */
-> -       si_meminfo(&si);
-> -       /* The values below were suggested by Alexey Kuznetsov
-> -        * <kuznet@ms2.inr.ac.ru>.  I don't have any opinion about the va=
-lues
-> -        * myself.  --SAW
-> -        */
-> -       if (si.totalram <=3D (32768*1024)/PAGE_SIZE)
-> -               inet_peer_threshold >>=3D 1; /* max pool size about 1MB o=
-n IA32 */
-> -       if (si.totalram <=3D (16384*1024)/PAGE_SIZE)
-> -               inet_peer_threshold >>=3D 1; /* about 512KB */
-> -       if (si.totalram <=3D (8192*1024)/PAGE_SIZE)
-> -               inet_peer_threshold >>=3D 2; /* about 128KB */
-> +       /* 1% of physical memory */
-> +       nr_entries =3D div64_ul((u64)totalram_pages() << PAGE_SHIFT,
-> +                             100 * L1_CACHE_ALIGN(sizeof(struct inet_pee=
-r)));
-> +
-> +       inet_peer_threshold =3D clamp_val(nr_entries, 4096, 65536 + 128);
->
->         peer_cachep =3D kmem_cache_create("inet_peer_cache",
->                         sizeof(struct inet_peer),
->
->
->
->
->
->
