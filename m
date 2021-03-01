@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB171329930
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE523299AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239557AbhCBAA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:00:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38298 "EHLO mail.kernel.org"
+        id S1348033AbhCBA2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239630AbhCASUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:20:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BC5964F60;
-        Mon,  1 Mar 2021 17:49:44 +0000 (UTC)
+        id S240035AbhCAS20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:28:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A787764F67;
+        Mon,  1 Mar 2021 17:49:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620984;
-        bh=uGeCvrXvkIZXwaJsRK/dnDpyIJ4WF/bDg3GeP8GaTNs=;
+        s=korg; t=1614620990;
+        bh=x18AH+143zRmXxCQ8KCJrmLRxdhILfhcwkfJ3C4yT1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CLJGy0yne74Yy1auE5CaU2+CCCi/i4ENF/qkXINJpIyFtbTORDRRe0zXUf+OpVhr6
-         rutCDWth+ABMRtcRzlM/5z6D+uEA7Qx1Sf8+kSgBc50s66V02C7ZWJXRifssvxG+R2
-         9JcZyXq6Z+mQKxf5hHM4NsZH0YBT/06vNMQUNGgw=
+        b=V0MFE2H+9CGfUGtYq9Orv0F80bH8djDBLtZPgK4pu5DIGI9oa4NWXR7lGCxBAXd8e
+         QbHSUyK0grat0SnRfZxea5yx4dn3IF7E84BZqEgxkfTUYdj7fVjILG7aSussrFMyFO
+         FIliwqJ8YjQmksadYklqsKI4X/wGQWWyDrkirjbg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 351/775] power: supply: fix sbs-charger build, needs REGMAP_I2C
-Date:   Mon,  1 Mar 2021 17:08:39 +0100
-Message-Id: <20210301161218.970838184@linuxfoundation.org>
+Subject: [PATCH 5.11 353/775] clocksource/drivers/mxs_timer: Add missing semicolon when DEBUG is defined
+Date:   Mon,  1 Mar 2021 17:08:41 +0100
+Message-Id: <20210301161219.067113208@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,50 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit a4bdea2004b28f47ab48ea99172eda8628f6fb44 ]
+[ Upstream commit 7da390694afbaed8e0f05717a541dfaf1077ba51 ]
 
-CHARGER_SBS should select REGMAP_I2C since it uses API(s) that are
-provided by that Kconfig symbol.
+When DEBUG is defined this error occurs
 
-Fixes these errors:
+drivers/clocksource/mxs_timer.c:138:1: error:
+  expected ‘;’ before ‘}’ token
 
-../drivers/power/supply/sbs-charger.c:149:21: error: variable ‘sbs_regmap’ has initializer but incomplete type
- static const struct regmap_config sbs_regmap = {
-../drivers/power/supply/sbs-charger.c:150:3: error: ‘const struct regmap_config’ has no member named ‘reg_bits’
-  .reg_bits = 8,
-../drivers/power/supply/sbs-charger.c:155:23: error: ‘REGMAP_ENDIAN_LITTLE’ undeclared here (not in a function)
-  .val_format_endian = REGMAP_ENDIAN_LITTLE, /* since based on SMBus */
-../drivers/power/supply/sbs-charger.c: In function ‘sbs_probe’:
-../drivers/power/supply/sbs-charger.c:183:17: error: implicit declaration of function ‘devm_regmap_init_i2c’; did you mean ‘devm_request_irq’? [-Werror=implicit-function-declaration]
-  chip->regmap = devm_regmap_init_i2c(client, &sbs_regmap);
-../drivers/power/supply/sbs-charger.c: At top level:
-../drivers/power/supply/sbs-charger.c:149:35: error: storage size of ‘sbs_regmap’ isn’t known
- static const struct regmap_config sbs_regmap = {
+The preceding statement needs a semicolon.
+Replace pr_info() with pr_debug() and remove the unneeded ifdef.
 
-Fixes: feb583e37f8a ("power: supply: add sbs-charger driver")
-Reported-by: Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Martin Mokrejs <mmokrejs@fold.natur.cuni.cz>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: eb8703e2ef7c ("clockevents/drivers/mxs: Migrate to new 'set-state' interface")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210118211955.763609-1-trix@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/clocksource/mxs_timer.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index eec646c568b7b..1699b9269a78e 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -229,6 +229,7 @@ config BATTERY_SBS
- config CHARGER_SBS
- 	tristate "SBS Compliant charger"
- 	depends on I2C
-+	select REGMAP_I2C
- 	help
- 	  Say Y to include support for SBS compliant battery chargers.
+diff --git a/drivers/clocksource/mxs_timer.c b/drivers/clocksource/mxs_timer.c
+index bc96a4cbf26c6..e52e12d27d2aa 100644
+--- a/drivers/clocksource/mxs_timer.c
++++ b/drivers/clocksource/mxs_timer.c
+@@ -131,10 +131,7 @@ static void mxs_irq_clear(char *state)
  
+ 	/* Clear pending interrupt */
+ 	timrot_irq_acknowledge();
+-
+-#ifdef DEBUG
+-	pr_info("%s: changing mode to %s\n", __func__, state)
+-#endif /* DEBUG */
++	pr_debug("%s: changing mode to %s\n", __func__, state);
+ }
+ 
+ static int mxs_shutdown(struct clock_event_device *evt)
 -- 
 2.27.0
 
