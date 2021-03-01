@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C18E329CD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA6D329D14
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442394AbhCBCM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:12:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53032 "EHLO mail.kernel.org"
+        id S1442953AbhCBCRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:17:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241729AbhCATix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:38:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BA5764F2D;
-        Mon,  1 Mar 2021 17:36:47 +0000 (UTC)
+        id S242293AbhCAToX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC4D364FF9;
+        Mon,  1 Mar 2021 17:35:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620208;
-        bh=BRSrORX3B255pBExqd20wvacI4pVR1x9yirxtiNZmNE=;
+        s=korg; t=1614620142;
+        bh=iLhmkhBZZ3ZZQxpBdmX5lIilipZXosQZXgZBVF9VSEM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vLY9zY+Oy67zUS46hXtfAfzazCWoOh884e3tRIEj0jdafIUvOFi2z3CMFJknwYyDE
-         B5N9+Jje2Sn0DMZ8JCDXrgrki2+ZEv3hMhmpLtcrbq4qWqiMmyBop4pUucvaDlPKID
-         CveySwIXgyAS9eauAzdu4FvSd4mGQtRuAqe2uVdE=
+        b=iUVF+7ANNWoW6LN4Vlg3lfz3kP7+S8/3wLQkFN38MLJ2umQJ6C/8iHom4z2Mj0PGl
+         mQZoP5HMcTOyMdLpoQY4vlHYBklLClsqBVVqChaS/YCu+Xug6i5bOrojDhFQRRdrv5
+         33Bxm/AeHwEb6m3t1fDj/AwDka54/qI0rrGsSGs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Phil Elwell <phil@raspberrypi.com>,
+        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 039/775] staging: vchiq: Fix bulk userdata handling
-Date:   Mon,  1 Mar 2021 17:03:27 +0100
-Message-Id: <20210301161203.651513220@linuxfoundation.org>
+Subject: [PATCH 5.11 046/775] arm64: dts: allwinner: A64: properly connect USB PHY to port 0
+Date:   Mon,  1 Mar 2021 17:03:34 +0100
+Message-Id: <20210301161204.000322060@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,50 +41,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Elwell <phil@raspberrypi.com>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit 96ae327678eceabf455b11a88ba14ad540d4b046 ]
+[ Upstream commit cc72570747e43335f4933a24dd74d5653639176a ]
 
-The addition of the local 'userdata' pointer to
-vchiq_irq_queue_bulk_tx_rx omitted the case where neither BLOCKING nor
-WAITING modes are used, in which case the value provided by the
-caller is not returned to them as expected, but instead it is replaced
-with a NULL. This lack of a suitable context may cause the application
-to crash or otherwise malfunction.
+In recent Allwinner SoCs the first USB host controller (HCI0) shares
+the first PHY with the MUSB controller. Probably to make this sharing
+work, we were avoiding to declare this in the DT. This has two
+shortcomings:
+- U-Boot (which uses the same .dts) cannot use this port in host mode
+  without a PHY linked, so we were loosing one USB port there.
+- It requires the MUSB driver to be enabled and loaded, although we
+  don't actually use it.
 
-Fixes: 4184da4f316a ("staging: vchiq: fix __user annotations")
-Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
-Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
-Link: https://lore.kernel.org/r/20210105162030.1415213-2-phil@raspberrypi.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To avoid those issues, let's add this PHY link to the A64 .dtsi file.
+After all PHY port 0 *is* connected to HCI0, so we should describe
+it as this. Remove the part from the Pinebook DTS which already had
+this property.
+
+This makes it work in U-Boot, also improves compatiblity when no MUSB
+driver is loaded (for instance in distribution installers).
+
+Fixes: dc03a047df1d ("arm64: allwinner: a64: add EHCI0/OHCI0 nodes to A64 DTSI")
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210113152630.28810-2-andre.przywara@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts | 4 ----
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi         | 4 ++++
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index f500a70438056..2a8883673ba11 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -958,7 +958,7 @@ static int vchiq_irq_queue_bulk_tx_rx(struct vchiq_instance *instance,
- 	struct vchiq_service *service;
- 	struct bulk_waiter_node *waiter = NULL;
- 	bool found = false;
--	void *userdata = NULL;
-+	void *userdata;
- 	int status = 0;
- 	int ret;
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+index 896f34fd9fc3a..d07cf05549c32 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
+@@ -126,8 +126,6 @@
+ };
  
-@@ -997,6 +997,8 @@ static int vchiq_irq_queue_bulk_tx_rx(struct vchiq_instance *instance,
- 			"found bulk_waiter %pK for pid %d", waiter,
- 			current->pid);
- 		userdata = &waiter->bulk_waiter;
-+	} else {
-+		userdata = args->userdata;
- 	}
+ &ehci0 {
+-	phys = <&usbphy 0>;
+-	phy-names = "usb";
+ 	status = "okay";
+ };
  
- 	/*
+@@ -177,8 +175,6 @@
+ };
+ 
+ &ohci0 {
+-	phys = <&usbphy 0>;
+-	phy-names = "usb";
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index 51cc30e84e261..19e9b8ca8432f 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -593,6 +593,8 @@
+ 				 <&ccu CLK_USB_OHCI0>;
+ 			resets = <&ccu RST_BUS_OHCI0>,
+ 				 <&ccu RST_BUS_EHCI0>;
++			phys = <&usbphy 0>;
++			phy-names = "usb";
+ 			status = "disabled";
+ 		};
+ 
+@@ -603,6 +605,8 @@
+ 			clocks = <&ccu CLK_BUS_OHCI0>,
+ 				 <&ccu CLK_USB_OHCI0>;
+ 			resets = <&ccu RST_BUS_OHCI0>;
++			phys = <&usbphy 0>;
++			phy-names = "usb";
+ 			status = "disabled";
+ 		};
+ 
 -- 
 2.27.0
 
