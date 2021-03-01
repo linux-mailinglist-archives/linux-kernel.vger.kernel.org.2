@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3207B329720
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B12832971F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245314AbhCAWdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:33:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58230 "EHLO mail.kernel.org"
+        id S245295AbhCAWda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:33:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236918AbhCARfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236958AbhCARfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 12:35:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59F6D64F24;
-        Mon,  1 Mar 2021 16:54:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EBDF64FB8;
+        Mon,  1 Mar 2021 16:54:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617657;
-        bh=TEaw49BOomwqJohOD4Zy3tOagWEnNXGwXCR/F901DY8=;
+        s=korg; t=1614617663;
+        bh=NdPjm/sp0kpByO+D4zxa+oJ6LkSr0cOqLLD3Cu9+Whw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VYjsST9Q2Gb/+RBqBpt7vsvbJi0iwtao3OedQw0WlpQiFqpPVvSAdcpLdqtFsGC59
-         k3A6jeFktULVLYfVteo6r2S1aUT/38Emfqirkdl90oCp2N+IgZdJvXQaQBSCXmclku
-         GccwK2Zw7NC7I81TXI4cj0lBFHNmagyir0OhTPOc=
+        b=CzfGWN/kt0uyedHwZ0fye51NBJOdoCz1jVy4a7/9gR87jylhRR1J9YL0mQ27NReQz
+         vkup0cyOgKY2TaDNmiqMkuFRgIoEoFpCGzn5Cda9x0gDcpKA74wjENT+o1FsWxA5G8
+         qGI8OKy/xNCGAmyVEgk/XKhQpZ0bFIqe3NjYsZJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 150/340] RDMA/mlx5: Use the correct obj_id upon DEVX TIR creation
-Date:   Mon,  1 Mar 2021 17:11:34 +0100
-Message-Id: <20210301161055.699548601@linuxfoundation.org>
+Subject: [PATCH 5.4 152/340] regulator: axp20x: Fix reference cout leak
+Date:   Mon,  1 Mar 2021 17:11:36 +0100
+Message-Id: <20210301161055.798658853@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -41,38 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yishai Hadas <yishaih@nvidia.com>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit 8798e4ad0abe0ba1221928a46561981c510be0c6 ]
+[ Upstream commit e78bf6be7edaacb39778f3a89416caddfc6c6d70 ]
 
-Use the correct obj_id upon DEVX TIR creation by strictly taking the tirn
-24 bits and not the general obj_id which is 32 bits.
+Decrements the reference count of device node and its child node.
 
-Fixes: 7efce3691d33 ("IB/mlx5: Add obj create and destroy functionality")
-Link: https://lore.kernel.org/r/20201230130121.180350-2-leon@kernel.org
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: dfe7a1b058bb ("regulator: AXP20x: Add support for regulators subsystem")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Link: https://lore.kernel.org/r/20210120123313.107640-1-bianpan2016@163.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/devx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/regulator/axp20x-regulator.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index fd75a9043bf15..4d6f25fdcc0ef 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -1118,7 +1118,9 @@ static void devx_obj_build_destroy_cmd(void *in, void *out, void *din,
- 		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_RQT);
- 		break;
- 	case MLX5_CMD_OP_CREATE_TIR:
--		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_TIR);
-+		*obj_id = MLX5_GET(create_tir_out, out, tirn);
-+		MLX5_SET(destroy_tir_in, din, opcode, MLX5_CMD_OP_DESTROY_TIR);
-+		MLX5_SET(destroy_tir_in, din, tirn, *obj_id);
- 		break;
- 	case MLX5_CMD_OP_CREATE_TIS:
- 		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_TIS);
+diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
+index aefc351bfed59..86a3c2dd05848 100644
+--- a/drivers/regulator/axp20x-regulator.c
++++ b/drivers/regulator/axp20x-regulator.c
+@@ -1072,7 +1072,7 @@ static int axp20x_set_dcdc_freq(struct platform_device *pdev, u32 dcdcfreq)
+ static int axp20x_regulator_parse_dt(struct platform_device *pdev)
+ {
+ 	struct device_node *np, *regulators;
+-	int ret;
++	int ret = 0;
+ 	u32 dcdcfreq = 0;
+ 
+ 	np = of_node_get(pdev->dev.parent->of_node);
+@@ -1087,13 +1087,12 @@ static int axp20x_regulator_parse_dt(struct platform_device *pdev)
+ 		ret = axp20x_set_dcdc_freq(pdev, dcdcfreq);
+ 		if (ret < 0) {
+ 			dev_err(&pdev->dev, "Error setting dcdc frequency: %d\n", ret);
+-			return ret;
+ 		}
+-
+ 		of_node_put(regulators);
+ 	}
+ 
+-	return 0;
++	of_node_put(np);
++	return ret;
+ }
+ 
+ static int axp20x_set_dcdc_workmode(struct regulator_dev *rdev, int id, u32 workmode)
 -- 
 2.27.0
 
