@@ -2,33 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC604329AF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05C12329A2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378353AbhCBBFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:05:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34124 "EHLO mail.kernel.org"
+        id S1377103AbhCBApl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:45:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235033AbhCAS7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:59:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 546A964FA5;
-        Mon,  1 Mar 2021 17:31:31 +0000 (UTC)
+        id S240502AbhCASjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 211356508F;
+        Mon,  1 Mar 2021 17:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619891;
-        bh=clNgsSlW6BodqZSmbhyAxuKEX+FLcS59BXvNc8EeZLU=;
+        s=korg; t=1614619916;
+        bh=xl/RzlTfeoa9gNbStTQWMWCscnIf9VS68Kbwwf9cTas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sMfK4OXVuT1nLCOUqQ8veVM3iOyD/gf0RkXJs8tnkwlaFA6hS2fQI66p+lkb3hBk4
-         TWB5VBzgsZRU9GWPxRX2HED3OPYFIamK6FtUz6XsvzSid1Imv5yY/4SronOJnrt6Q+
-         eLvCztsgLrTjxtaaoqqHY96LnTINFTbPO/OslCOE=
+        b=iTNS8qgg4lFLQBF9LYscK9oe8xnDBVhWhHfI9VCRst1IIZu0MIEOwzgKZ/HOMxGgR
+         unzlhj8zyTq8HFZnM8krZc888oDTGYUpSWVS/YAEbWWpIZrDHF6bHYbIPg8VCdjY+g
+         AFzouaTnMtOHn/MsyUqarxSlv5kPf1jTdictNE1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: [PATCH 5.10 617/663] printk: fix deadlock when kernel panic
-Date:   Mon,  1 Mar 2021 17:14:25 +0100
-Message-Id: <20210301161212.371954534@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Subject: [PATCH 5.10 620/663] kcmp: Support selection of SYS_kcmp without CHECKPOINT_RESTORE
+Date:   Mon,  1 Mar 2021 17:14:28 +0100
+Message-Id: <20210301161212.521569141@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,109 +49,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit 8a8109f303e25a27f92c1d8edd67d7cbbc60a4eb upstream.
+commit bfe3911a91047557eb0e620f95a370aee6a248c7 upstream.
 
-printk_safe_flush_on_panic() caused the following deadlock on our
-server:
+Userspace has discovered the functionality offered by SYS_kcmp and has
+started to depend upon it. In particular, Mesa uses SYS_kcmp for
+os_same_file_description() in order to identify when two fd (e.g. device
+or dmabuf) point to the same struct file. Since they depend on it for
+core functionality, lift SYS_kcmp out of the non-default
+CONFIG_CHECKPOINT_RESTORE into the selectable syscall category.
 
-CPU0:                                         CPU1:
-panic                                         rcu_dump_cpu_stacks
-  kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
-    register_nmi_handler(crash_nmi_callback)      printk_safe_flush
-                                                    __printk_safe_flush
-                                                      raw_spin_lock_irqsave(&read_lock)
-    // send NMI to other processors
-    apic_send_IPI_allbutself(NMI_VECTOR)
-                                                        // NMI interrupt, dead loop
-                                                        crash_nmi_callback
-  printk_safe_flush_on_panic
-    printk_safe_flush
-      __printk_safe_flush
-        // deadlock
-        raw_spin_lock_irqsave(&read_lock)
+Rasmus Villemoes also pointed out that systemd uses SYS_kcmp to
+deduplicate the per-service file descriptor store.
 
-DEADLOCK: read_lock is taken on CPU1 and will never get released.
+Note that some distributions such as Ubuntu are already enabling
+CHECKPOINT_RESTORE in their configs and so, by extension, SYS_kcmp.
 
-It happens when panic() stops a CPU by NMI while it has been in
-the middle of printk_safe_flush().
-
-Handle the lock the same way as logbuf_lock. The printk_safe buffers
-are flushed only when both locks can be safely taken. It can avoid
-the deadlock _in this particular case_ at expense of losing contents
-of printk_safe buffers.
-
-Note: It would actually be safe to re-init the locks when all CPUs were
-      stopped by NMI. But it would require passing this information
-      from arch-specific code. It is not worth the complexity.
-      Especially because logbuf_lock and printk_safe buffers have been
-      obsoleted by the lockless ring buffer.
-
-Fixes: cf9b1106c81c ("printk/nmi: flush NMI messages on the system panic")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Cc: <stable@vger.kernel.org>
-Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20210210034823.64867-1-songmuchun@bytedance.com
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Will Drewry <wad@chromium.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dave Airlie <airlied@gmail.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Lucas Stach <l.stach@pengutronix.de>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Cyrill Gorcunov <gorcunov@gmail.com>
+Cc: stable@vger.kernel.org
+Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch> # DRM depends on kcmp
+Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk> # systemd uses kcmp
+Reviewed-by: Cyrill Gorcunov <gorcunov@gmail.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210205220012.1983-1-chris@chris-wilson.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/printk/printk_safe.c |   16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/Kconfig                       |    3 +++
+ fs/eventpoll.c                                |    4 ++--
+ include/linux/eventpoll.h                     |    2 +-
+ init/Kconfig                                  |   11 +++++++++++
+ kernel/Makefile                               |    2 +-
+ tools/testing/selftests/seccomp/seccomp_bpf.c |    2 +-
+ 6 files changed, 19 insertions(+), 5 deletions(-)
 
---- a/kernel/printk/printk_safe.c
-+++ b/kernel/printk/printk_safe.c
-@@ -45,6 +45,8 @@ struct printk_safe_seq_buf {
- static DEFINE_PER_CPU(struct printk_safe_seq_buf, safe_print_seq);
- static DEFINE_PER_CPU(int, printk_context);
- 
-+static DEFINE_RAW_SPINLOCK(safe_read_lock);
-+
- #ifdef CONFIG_PRINTK_NMI
- static DEFINE_PER_CPU(struct printk_safe_seq_buf, nmi_print_seq);
- #endif
-@@ -180,8 +182,6 @@ static void report_message_lost(struct p
-  */
- static void __printk_safe_flush(struct irq_work *work)
- {
--	static raw_spinlock_t read_lock =
--		__RAW_SPIN_LOCK_INITIALIZER(read_lock);
- 	struct printk_safe_seq_buf *s =
- 		container_of(work, struct printk_safe_seq_buf, work);
- 	unsigned long flags;
-@@ -195,7 +195,7 @@ static void __printk_safe_flush(struct i
- 	 * different CPUs. This is especially important when printing
- 	 * a backtrace.
- 	 */
--	raw_spin_lock_irqsave(&read_lock, flags);
-+	raw_spin_lock_irqsave(&safe_read_lock, flags);
- 
- 	i = 0;
- more:
-@@ -232,7 +232,7 @@ more:
- 
- out:
- 	report_message_lost(s);
--	raw_spin_unlock_irqrestore(&read_lock, flags);
-+	raw_spin_unlock_irqrestore(&safe_read_lock, flags);
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -15,6 +15,9 @@ menuconfig DRM
+ 	select I2C_ALGOBIT
+ 	select DMA_SHARED_BUFFER
+ 	select SYNC_FILE
++# gallium uses SYS_kcmp for os_same_file_description() to de-duplicate
++# device and dmabuf fd. Let's make sure that is available for our userspace.
++	select KCMP
+ 	help
+ 	  Kernel-level support for the Direct Rendering Infrastructure (DRI)
+ 	  introduced in XFree86 4.0. If you say Y here, you need to select
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -1062,7 +1062,7 @@ static struct epitem *ep_find(struct eve
+ 	return epir;
  }
+ 
+-#ifdef CONFIG_CHECKPOINT_RESTORE
++#ifdef CONFIG_KCMP
+ static struct epitem *ep_find_tfd(struct eventpoll *ep, int tfd, unsigned long toff)
+ {
+ 	struct rb_node *rbp;
+@@ -1104,7 +1104,7 @@ struct file *get_epoll_tfile_raw_ptr(str
+ 
+ 	return file_raw;
+ }
+-#endif /* CONFIG_CHECKPOINT_RESTORE */
++#endif /* CONFIG_KCMP */
  
  /**
-@@ -278,6 +278,14 @@ void printk_safe_flush_on_panic(void)
- 		raw_spin_lock_init(&logbuf_lock);
- 	}
+  * Adds a new entry to the tail of the list in a lockless way, i.e.
+--- a/include/linux/eventpoll.h
++++ b/include/linux/eventpoll.h
+@@ -18,7 +18,7 @@ struct file;
  
-+	if (raw_spin_is_locked(&safe_read_lock)) {
-+		if (num_online_cpus() > 1)
-+			return;
+ #ifdef CONFIG_EPOLL
+ 
+-#ifdef CONFIG_CHECKPOINT_RESTORE
++#ifdef CONFIG_KCMP
+ struct file *get_epoll_tfile_raw_ptr(struct file *file, int tfd, unsigned long toff);
+ #endif
+ 
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1194,6 +1194,7 @@ endif # NAMESPACES
+ config CHECKPOINT_RESTORE
+ 	bool "Checkpoint/restore support"
+ 	select PROC_CHILDREN
++	select KCMP
+ 	default n
+ 	help
+ 	  Enables additional kernel features in a sake of checkpoint/restore.
+@@ -1737,6 +1738,16 @@ config ARCH_HAS_MEMBARRIER_CALLBACKS
+ config ARCH_HAS_MEMBARRIER_SYNC_CORE
+ 	bool
+ 
++config KCMP
++	bool "Enable kcmp() system call" if EXPERT
++	help
++	  Enable the kernel resource comparison system call. It provides
++	  user-space with the ability to compare two processes to see if they
++	  share a common resource, such as a file descriptor or even virtual
++	  memory space.
 +
-+		debug_locks_off();
-+		raw_spin_lock_init(&safe_read_lock);
-+	}
++	  If unsure, say N.
 +
- 	printk_safe_flush();
+ config RSEQ
+ 	bool "Enable rseq() system call" if EXPERT
+ 	default y
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -48,7 +48,7 @@ obj-y += livepatch/
+ obj-y += dma/
+ obj-y += entry/
+ 
+-obj-$(CONFIG_CHECKPOINT_RESTORE) += kcmp.o
++obj-$(CONFIG_KCMP) += kcmp.o
+ obj-$(CONFIG_FREEZER) += freezer.o
+ obj-$(CONFIG_PROFILING) += profile.o
+ obj-$(CONFIG_STACKTRACE) += stacktrace.o
+--- a/tools/testing/selftests/seccomp/seccomp_bpf.c
++++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+@@ -315,7 +315,7 @@ TEST(kcmp)
+ 	ret = __filecmp(getpid(), getpid(), 1, 1);
+ 	EXPECT_EQ(ret, 0);
+ 	if (ret != 0 && errno == ENOSYS)
+-		SKIP(return, "Kernel does not support kcmp() (missing CONFIG_CHECKPOINT_RESTORE?)");
++		SKIP(return, "Kernel does not support kcmp() (missing CONFIG_KCMP?)");
  }
  
+ TEST(mode_strict_support)
 
 
