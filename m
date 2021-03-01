@@ -2,99 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9B9327931
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3F3327938
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbhCAI2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:28:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46208 "EHLO
+        id S232989AbhCAI3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:29:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232907AbhCAI20 (ORCPT
+        with ESMTP id S232898AbhCAI3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:28:26 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12FEC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 00:27:43 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id z11so1689463plg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 00:27:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FuaSHSbWef+FCEtgT0N7vs/Xq7VSPd0Xi/zQSMAl+iI=;
-        b=MwBJd6nr/x0X6BNc1UOHSDERxXkElhOwwrOntWL5QhYeZPHWNnO7meE47FozC6o8tz
-         tY5bGK6qqRtrMFiMA6bgdlcHLGM9s0O7JUNr3xo3pfEqyoPCZJzn7Dae8INdsuKk9gGi
-         Q6+tOBfmC8WPNigIzUQ/HSSasJYxw5cT4BqEC8ib/sOkDdw97L1vBAUc1FHJmExZWqzY
-         l7Rnq9aPQvmFeOlIOUHLU5r5+DPBjsNCQgqxB9LD68+CexCBUCU5/XFKhIpz82P6Pv6G
-         6R9R2MMD6cJhz6UIGWY5ZTizw+WCBysd/PjagBqbzbs90LoFZY0q7cQj+9c7pRCAc9MO
-         sO0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FuaSHSbWef+FCEtgT0N7vs/Xq7VSPd0Xi/zQSMAl+iI=;
-        b=l+x1ytnjnqc/uKeAt2R2mauoGm5HuaeTqQDnBgo5rhj5IgUiHtN3d7yvpMVz2oPsdm
-         YHYKnj9qnJywA3H6Q5x9V5CSX/o7fWGCC7aJ4lA92JTHKFKY2mRBhMiq7NIl1rmwVwEM
-         jMMbz84PP8b5PFbUQIzJ0KcIQqj6moR47vQzRgAP+d7vaNezWV39dVgfExin6O1kDbjT
-         3O91EcE9F1//Bh9YQ4rP4NFGSDvdddscTSgSLwe8gk4N4WozVPTpJ70qTwdXOHGI1J12
-         X48Mx6TtI2Srcj/NaQrWwrXA04Nbq8Pa59y5YEdmenUCWj2K4msiWcXL/ae8+nAYMws8
-         QOvQ==
-X-Gm-Message-State: AOAM532vDWx6ftqGjgIKKyd0zir2Gby/FlD2tUTZmtAcIOOpdtYFjBnx
-        cN4NeFJHvtsljlApJZACv38=
-X-Google-Smtp-Source: ABdhPJyY+Ovv0TZ/11Y+CISKEO2tNjjqqEoFDYrm4JtdkRZ7FRMaqUUAYOGPtxqXIiteRdIP5v2R5Q==
-X-Received: by 2002:a17:90b:1c0e:: with SMTP id oc14mr16332167pjb.188.1614587263268;
-        Mon, 01 Mar 2021 00:27:43 -0800 (PST)
-Received: from localhost.localdomain ([111.207.172.18])
-        by smtp.gmail.com with ESMTPSA id m6sm2908343pff.197.2021.03.01.00.27.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 00:27:42 -0800 (PST)
-From:   zhaoxiao <long870912@gmail.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org
-Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH] KVM: x86: fix the space error for the pointer variables.
-Date:   Mon,  1 Mar 2021 16:27:35 +0800
-Message-Id: <20210301082735.17372-1-long870912@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 1 Mar 2021 03:29:01 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7BFC06174A;
+        Mon,  1 Mar 2021 00:28:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SLHlTyr7J4bDHB68FVUYkSlUgSwJhgwwD2i9uVB39uY=; b=uVn9nYvH4/M/8OLvG8WZEVQfCq
+        hBlKT6zXgY5YuhHzZxPgXGbisSXRCSaQWTTJN+dcVKLbhdt2dcascK+Es+bZuplCOAR6XYv3/HM4G
+        nzdBWK57VLtTZ+BT3ZNLFNghOxviSosPsXMZrN6Zkj2ZQOnlxZWNtgoCdAP2Yn7PlE+CL8f3co4Id
+        cd/6wC5Dujkq0m1aDBCVt+KVIBO9eBfGw3i9sXXm4sHlCgqGgbKsshfn+O81aAERgTMuJXcRfbeKF
+        A+ZMau+w9bTvecM2jrIkxlxUL7lPBQCC54Shq83LaiagCZyPGgSUXxATnX0FHVKF8r18ZJiaFhOgQ
+        15iTFYrg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lGduU-0006I4-HY; Mon, 01 Mar 2021 08:28:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A0F6F301959;
+        Mon,  1 Mar 2021 09:28:06 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8785025F2CD01; Mon,  1 Mar 2021 09:28:06 +0100 (CET)
+Date:   Mon, 1 Mar 2021 09:28:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     mingo@redhat.com, will@kernel.org, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] lockdep: add lockdep_assert_not_held()
+Message-ID: <YDyllv3zs+lWtgCV@hirez.programming.kicks-ass.net>
+References: <cover.1614355914.git.skhan@linuxfoundation.org>
+ <a40d18bba5a52662ac8fc556e1fce3752ea08472.1614355914.git.skhan@linuxfoundation.org>
+ <YDli+H48Ft3F6k9/@hirez.programming.kicks-ass.net>
+ <0ee409b7-b0d5-43c2-c247-b0482c392dea@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0ee409b7-b0d5-43c2-c247-b0482c392dea@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhaoxiao <zhaoxiao@uniontech.com>
+On Fri, Feb 26, 2021 at 02:16:12PM -0700, Shuah Khan wrote:
+> On 2/26/21 2:07 PM, Peter Zijlstra wrote:
+> > On Fri, Feb 26, 2021 at 10:52:13AM -0700, Shuah Khan wrote:
+> > > +		/* avoid false negative lockdep_assert_not_held()
+> > > +		 * and lockdep_assert_held()
+> > > +		 */
+> > 
+> > That's a coding style fail.
+> > 
+> 
+> Checkpatch didn't complain.
 
-The following pointer variables don't meet the kernel coding style,
-so fix the space error.
+  Documentation/CodingStyle
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- arch/x86/kvm/x86.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+(or whatever unreadable rst crap it is today :-( )
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3712bb5245eb..98849f3112d4 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5368,7 +5368,7 @@ static int kvm_add_msr_filter(struct kvm *kvm, struct kvm_msr_filter_range *user
- 	if (!bitmap_size || bitmap_size > KVM_MSR_FILTER_MAX_BITMAP_SIZE)
- 		return -EINVAL;
- 
--	bitmap = memdup_user((__user u8*)user_range->bitmap, bitmap_size);
-+	bitmap = memdup_user((__user u8 *)user_range->bitmap, bitmap_size);
- 	if (IS_ERR(bitmap))
- 		return PTR_ERR(bitmap);
- 
-@@ -10554,7 +10554,7 @@ void kvm_arch_sync_events(struct kvm *kvm)
-  * address, i.e. its accessibility is not guaranteed, and must be
-  * accessed via __copy_{to,from}_user().
-  */
--void __user * __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
-+void __user *__x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa,
- 				      u32 size)
- {
- 	int i, r;
--- 
-2.20.1
+and:
 
+  https://lkml.kernel.org/lkml/CA+55aFyQYJerovMsSoSKS7PessZBr4vNp-3QUUwhqk4A4_jcbg@mail.gmail.com/
+
+> What's your preference? Does the following work for you?
+> 
+> /*
+>  * avoid false negative lockdep_assert_not_held()
+>  * and lockdep_assert_held()
+>  */
+
+Yep (ideally even with a Capital and full stop).
