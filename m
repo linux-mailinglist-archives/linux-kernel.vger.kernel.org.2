@@ -2,76 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 889273275FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 03:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D28B3275FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 03:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhCACB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 21:01:59 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13098 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbhCACB5 (ORCPT
+        id S231645AbhCACHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 21:07:42 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:59491 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230437AbhCACHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 21:01:57 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dpk3C65zWz16Dpp;
-        Mon,  1 Mar 2021 09:59:35 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 1 Mar 2021
- 10:01:13 +0800
-Subject: Re: [f2fs-dev] [PATCH 2/3] f2fs: fix last_lblock check in
- check_swap_activate_fast
-To:     Huang Jianan <huangjianan@oppo.com>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-CC:     <linux-kernel@vger.kernel.org>, <zhangshiming@oppo.com>
-References: <20210227120231.136559-1-huangjianan@oppo.com>
- <20210227120231.136559-2-huangjianan@oppo.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <aa06822f-89eb-19ca-674b-929273bd3717@huawei.com>
-Date:   Mon, 1 Mar 2021 10:01:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Sun, 28 Feb 2021 21:07:40 -0500
+X-UUID: 290288d7fc084fa397ff6af7f637fb8c-20210301
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=iq6KbRmpHh0RlS6Vd/2SyyZnbYfXfE8UX2nKDApKuHk=;
+        b=gXad2h4N+Xf/Sml1Bkb9Xe+tm3wwNXwuxnxKw4NkhSTrqrL+XOl0/PEUoHp/SMdpI91c6g5YIG8PvhHCgyBQtGjnBWfqlZGO+kyxgY/M/x0DpByJpvnXsNYGkULa7Ti2ov+6pMhgKE+AUi0b72AO5Agr8flT2s25+TiSsL0di14=;
+X-UUID: 290288d7fc084fa397ff6af7f637fb8c-20210301
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <mason.zhang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1826180674; Mon, 01 Mar 2021 10:06:55 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 1 Mar 2021 10:06:54 +0800
+Received: from [10.15.20.246] (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 1 Mar 2021 10:06:53 +0800
+Message-ID: <1614564115.1578.8.camel@mbjsdccf07>
+Subject: Re: [PATCH 1/2] arm64: dts: mediatek: add MT6779 spi master dts node
+From:   Mason Zhang <mason.zhang@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <hanks.chen@mediatek.com>,
+        <wsd_upstream@mediatek.com>
+Date:   Mon, 1 Mar 2021 10:01:55 +0800
+In-Reply-To: <20210226105918.3057-1-Mason.Zhang@mediatek.com>
+References: <20210226105918.3057-1-Mason.Zhang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20210227120231.136559-2-huangjianan@oppo.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: ECC07B286A5E37B4595BB9229526A8B2527E20388219FC818C21766F690446BB2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/27 20:02, Huang Jianan via Linux-f2fs-devel wrote:
-> Because page_no < sis->max guarantees that the while loop break out
-> normally, the wrong check contidion here doesn't cause a problem.
-> 
-> Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> ---
->   fs/f2fs/data.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index a1498a1a345c..4dbc1cafc55d 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -3804,7 +3804,7 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
->   	last_lblock = bytes_to_blks(inode, i_size_read(inode));
->   	len = i_size_read(inode);
->   
-> -	while (cur_lblock <= last_lblock && cur_lblock < sis->max) {
-> +	while (cur_lblock + 1 <= last_lblock && cur_lblock < sis->max) {
+T24gRnJpLCAyMDIxLTAyLTI2IGF0IDE4OjU5ICswODAwLCBNYXNvbiBaaGFuZyB3cm90ZToNCj4g
+dGhpcyBwYXRjaCBhZGQgc3BpIG1hc3RlciBkdHMgbm9kZSBmb3IgbXQ2Nzc5IFNPQy4NCj4gDQo+
+IFNpZ25lZC1vZmYtYnk6IE1hc29uIFpoYW5nIDxNYXNvbi5aaGFuZ0BtZWRpYXRlay5jb20+DQo+
+IC0tLQ0KPiAgYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaSB8IDk2ICsr
+KysrKysrKysrKysrKysrKysrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDk2IGluc2VydGlvbnMo
+KykNCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210Njc3
+OS5kdHNpIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaQ0KPiBpbmRl
+eCAzNzBmMzA5ZDMyZGUuLmNhNzJlYjA5Y2ZmOSAxMDA2NDQNCj4gLS0tIGEvYXJjaC9hcm02NC9i
+b290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaQ0KPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRz
+L21lZGlhdGVrL210Njc3OS5kdHNpDQo+IEBAIC0yMTksNiArMjE5LDEwMiBAQA0KPiAgCQkJc3Rh
+dHVzID0gImRpc2FibGVkIjsNCj4gIAkJfTsNCj4gIA0KPiArCQlzcGkwOiBzcGkwQDExMDBhMDAw
+IHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAg
+ICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+
+Ow0KPiArCQkJcmVnID0gPDAgMHgxMTAwYTAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRz
+ID0gPEdJQ19TUEkgMTQzIElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gKwkJCWNsb2NrcyA9IDwm
+dG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCj4gKwkJCQk8JnRvcGNrZ2VuIENMS19U
+T1BfU1BJPiwNCj4gKwkJCQk8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEkwPjsNCj4gKwkJCWNs
+b2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsN
+Cj4gKw0KPiArCQlzcGkxOiBzcGkxQDExMDEwMDAwIHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVk
+aWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+
+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KPiArCQkJcmVnID0gPDAgMHgxMTAxMDAw
+MCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQ3IElSUV9UWVBFX0xF
+VkVMX0xPVyAwPjsNCj4gKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1
+X0QyPiwNCj4gKwkJCQk8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQk8JmluZnJhY2Zn
+X2FvIENMS19JTkZSQV9TUEkxPjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAi
+c2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGkyOiBzcGkyQDExMDEy
+MDAwIHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJ
+ICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0g
+PDA+Ow0KPiArCQkJcmVnID0gPDAgMHgxMTAxMjAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1
+cHRzID0gPEdJQ19TUEkgMTUyIElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gKwkJCWNsb2NrcyA9
+IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCj4gKwkJCQkgPCZ0b3Bja2dlbiBD
+TEtfVE9QX1NQST4sDQo+ICsJCQkJPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJMj47DQo+ICsJ
+CQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJ
+CX07DQo+ICsNCj4gKwkJc3BpMzogc3BpM0AxMTAxMzAwMCB7DQo+ICsJCQljb21wYXRpYmxlID0g
+Im1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGki
+Ow0KPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEw
+MTMwMDAgMCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MyBJUlFfVFlQ
+RV9MRVZFTF9MT1cgMD47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBM
+TF9ENV9EMj4sDQo+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KPiArCQkJCSA8Jmlu
+ZnJhY2ZnX2FvIENMS19JTkZSQV9TUEkzPjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1j
+bGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGk0OiBzcGk0
+QDExMDE4MDAwIHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+
+ICsJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2Vs
+ZWN0ID0gPDA+Ow0KPiArCQkJcmVnID0gPDAgMHgxMTAxODAwMCAwIDB4MTAwMD47DQo+ICsJCQlp
+bnRlcnJ1cHRzID0gPEdJQ19TUEkgMTU2IElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCj4gKwkJCWNs
+b2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwNCj4gKwkJCQkgPCZ0b3Bj
+a2dlbiBDTEtfVE9QX1NQST4sDQo+ICsJCQkJIDwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTQ+
+Ow0KPiArCQkJY2xvY2stbmFtZXMgPSAicGFyZW50LWNsayIsICJzZWwtY2xrIiwgInNwaS1jbGsi
+Ow0KPiArCQl9Ow0KPiArDQo+ICsJCXNwaTU6IHNwaTVAMTEwMTkwMDAgew0KPiArCQkJY29tcGF0
+aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3BpIiwNCj4gKwkJCQkgICAgICJtZWRpYXRlayxtdDY3
+NjUtc3BpIjsNCj4gKwkJCW1lZGlhdGVrLHBhZC1zZWxlY3QgPSA8MD47DQo+ICsJCQlyZWcgPSA8
+MCAweDExMDE5MDAwIDAgMHgxMDAwPjsNCj4gKwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNTcg
+SVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiArCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9Q
+X01BSU5QTExfRDVfRDI+LA0KPiArCQkJCTwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KPiArCQkJ
+CTwmaW5mcmFjZmdfYW8gQ0xLX0lORlJBX1NQSTU+Ow0KPiArCQkJY2xvY2stbmFtZXMgPSAicGFy
+ZW50LWNsayIsICJzZWwtY2xrIiwgInNwaS1jbGsiOw0KPiArCQl9Ow0KPiArDQo+ICsJCXNwaTY6
+IHNwaTZAMTEwMWQwMDAgew0KPiArCQkJY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3Nzktc3Bp
+IiwNCj4gKwkJCQkgICAgICJtZWRpYXRlayxtdDY3NjUtc3BpIjsNCj4gKwkJCW1lZGlhdGVrLHBh
+ZC1zZWxlY3QgPSA8MD47DQo+ICsJCQlyZWcgPSA8MCAweDExMDFkMDAwIDAgMHgxMDAwPjsNCj4g
+KwkJCWludGVycnVwdHMgPSA8R0lDX1NQSSAxNDQgSVJRX1RZUEVfTEVWRUxfTE9XIDA+Ow0KPiAr
+CQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiArCQkJCSA8
+JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFf
+U1BJNj47DQo+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3Bp
+LWNsayI7DQo+ICsJCX07DQo+ICsNCj4gKwkJc3BpNzogc3BpN0AxMTAxZTAwMCB7DQo+ICsJCQlj
+b21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVr
+LG10Njc2NS1zcGkiOw0KPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJl
+ZyA9IDwwIDB4MTEwMWUwMDAgMCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJ
+IDE0NSBJUlFfVFlQRV9MRVZFTF9MT1cgMD47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENM
+S19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0K
+PiArCQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEk3PjsNCj4gKwkJCWNsb2NrLW5hbWVz
+ID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiAg
+CQlhdWRpbzogY2xvY2stY29udHJvbGxlckAxMTIxMDAwMCB7DQo+ICAJCQljb21wYXRpYmxlID0g
+Im1lZGlhdGVrLG10Njc3OS1hdWRpbyIsICJzeXNjb24iOw0KPiAgCQkJcmVnID0gPDAgMHgxMTIx
+MDAwMCAwIDB4MTAwMD47DQoNCg==
 
-while (cur_lblock < last_lblock && cur_lblock < sis->max) {
-
-It's nitpick, if necessary, I guess Jaegeuk could help to change this
-while merging.
-
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-
-Thanks,
-
->   		struct f2fs_map_blocks map;
->   		pgoff_t next_pgofs;
->   
-> 
