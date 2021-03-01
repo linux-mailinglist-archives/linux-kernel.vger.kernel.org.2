@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C1132990B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B136329994
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347127AbhCAXwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:52:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38270 "EHLO mail.kernel.org"
+        id S236508AbhCBAYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:24:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239534AbhCASRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:17:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA1FF651A3;
-        Mon,  1 Mar 2021 17:11:43 +0000 (UTC)
+        id S239869AbhCAS0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:26:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B1EC64DF1;
+        Mon,  1 Mar 2021 17:46:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618704;
-        bh=/951M1uEq+FxX2OMX/prgfD6J6WheVGhjYktz+CcEzY=;
+        s=korg; t=1614620798;
+        bh=qS/DGxoW8XyHpTklI2QUa2QLcA8TgLWjoX4x1oTEIqk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bT1w4ISEigR25jrUGCkudIWgu465qhEHgXG1DWtbz+FpgxHgEOUBBbD0p4vPmCJYy
-         20dfHZkAsZuFID9fNqi+PkBUXmHRukhFX7vUmxfzDKZwDxL9v9gsgsLmkA8Jz/zwpk
-         Fe4UWyJjqmlSCS+T1q77PPLaXRDcNCfzA47N0iZw=
+        b=UTgnskPmL5EiSJq9nj0khniMyIGoAyNTUtLdqiEt2CthfBuf/GXyMO+EgwO6onStV
+         H0sqv/XvVNN5BsUzDFXt/U8/xQ512JREYCf7QXPSyYpJzuA0rP6gRYsqAJx/7YDeeg
+         YEZZZvdZmLrNHiP8sc4fTtb0WnzvQJMadRt43TO4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Mario Kleiner <mario.kleiner.de@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Jairaj Arava <jairaj.arava@intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 186/663] drm/amd/display: Fix HDMI deep color output for DCE 6-11.
+Subject: [PATCH 5.11 266/775] ASoC: rt5682: Fix panic in rt5682_jack_detect_handler happening during system shutdown
 Date:   Mon,  1 Mar 2021 17:07:14 +0100
-Message-Id: <20210301161150.982679182@linuxfoundation.org>
+Message-Id: <20210301161214.775083524@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,192 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mario Kleiner <mario.kleiner.de@gmail.com>
+From: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 
-[ Upstream commit efa18405baa55a864c61d2f3cc6fe4d363818eb3 ]
+[ Upstream commit 45a2702ce10993eda7a5b12690294782d565519c ]
 
-This fixes corrupted display output in HDMI deep color
-10/12 bpc mode at least as observed on AMD Mullins, DCE-8.3.
+During Coldboot stress tests, system encountered the following panic.
+Panic logs depicts rt5682_i2c_shutdown() happened first and then later
+jack detect handler workqueue function triggered.
+This situation causes panic as rt5682_i2c_shutdown() resets codec.
+Fix this panic by cancelling all jack detection delayed work.
 
-It will hopefully also provide fixes for other DCE's up to
-DCE-11, assuming those will need similar fixes, but i could
-not test that for HDMI due to lack of suitable hw, so viewer
-discretion is advised.
+Panic log:
+[   20.936124] sof_pci_shutdown
+[   20.940248] snd_sof_device_shutdown
+[   20.945023] snd_sof_shutdown
+[   21.126849] rt5682_i2c_shutdown
+[   21.286053] rt5682_jack_detect_handler
+[   21.291235] BUG: kernel NULL pointer dereference, address: 000000000000037c
+[   21.299302] #PF: supervisor read access in kernel mode
+[   21.305254] #PF: error_code(0x0000) - not-present page
+[   21.311218] PGD 0 P4D 0
+[   21.314155] Oops: 0000 [#1] PREEMPT SMP NOPTI
+[   21.319206] CPU: 2 PID: 123 Comm: kworker/2:3 Tainted: G     U            5.4.68 #10
+[   21.333687] ACPI: Preparing to enter system sleep state S5
+[   21.337669] Workqueue: events_power_efficient rt5682_jack_detect_handler [snd_soc_rt5682]
+[   21.337671] RIP: 0010:rt5682_jack_detect_handler+0x6c/0x279 [snd_soc_rt5682]
 
-dce110_stream_encoder_hdmi_set_stream_attribute() is used for
-HDMI setup on all DCE's and is missing color_depth assignment.
-
-dce110_program_pix_clk() is used for pixel clock setup on HDMI
-for DCE 6-11, and is missing color_depth assignment.
-
-Additionally some of the underlying Atombios specific encoder
-and pixelclock setup functions are missing code which is in
-the classic amdgpu kms modesetting path and the in the radeon
-kms driver for DCE6/DCE8.
-
-encoder_control_digx_v3() - Was missing setup code wrt. amdgpu
-and radeon kms classic drivers. Added here, but untested due to
-lack of suitable test hw.
-
-encoder_control_digx_v4() - Added missing setup code.
-Successfully tested on AMD mullins / DCE-8.3 with HDMI deep color
-output at 10 bpc and 12 bpc.
-
-Note that encoder_control_digx_v5() has proper setup code in place
-and is used, e.g., by DCE-11.2, but this code wasn't used for deep
-color setup due to the missing cntl.color_depth setup in the calling
-function for HDMI.
-
-set_pixel_clock_v5() - Missing setup code wrt. classic amdgpu/radeon
-kms. Added here, but untested due to lack of hw.
-
-set_pixel_clock_v6() - Missing setup code added. Successfully tested
-on AMD mullins DCE-8.3. This fixes corrupted display output at HDMI
-deep color output with 10 bpc or 12 bpc.
-
-Fixes: 4562236b3bc0 ("drm/amd/dc: Add dc display driver (v2)")
-
-Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Signed-off-by: Mario Kleiner <mario.kleiner.de@gmail.com>
-Cc: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: a50067d4f3c1d ('ASoC: rt5682: split i2c driver into separate module')
+Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
+Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+Reviewed-by: Shuming Fan <shumingf@realtek.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20210205171428.2344210-1-ranjani.sridharan@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/bios/command_table.c   | 61 +++++++++++++++++++
- .../drm/amd/display/dc/dce/dce_clock_source.c | 14 +++++
- .../amd/display/dc/dce/dce_stream_encoder.c   |  1 +
- 3 files changed, 76 insertions(+)
+ sound/soc/codecs/rt5682-i2c.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/bios/command_table.c b/drivers/gpu/drm/amd/display/dc/bios/command_table.c
-index 070459e3e4070..afc10b954ffa7 100644
---- a/drivers/gpu/drm/amd/display/dc/bios/command_table.c
-+++ b/drivers/gpu/drm/amd/display/dc/bios/command_table.c
-@@ -245,6 +245,23 @@ static enum bp_result encoder_control_digx_v3(
- 					cntl->enable_dp_audio);
- 	params.ucLaneNum = (uint8_t)(cntl->lanes_number);
+diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
+index 37d13120f5ba8..93c1603b42f10 100644
+--- a/sound/soc/codecs/rt5682-i2c.c
++++ b/sound/soc/codecs/rt5682-i2c.c
+@@ -273,6 +273,9 @@ static void rt5682_i2c_shutdown(struct i2c_client *client)
+ {
+ 	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
  
-+	switch (cntl->color_depth) {
-+	case COLOR_DEPTH_888:
-+		params.ucBitPerColor = PANEL_8BIT_PER_COLOR;
-+		break;
-+	case COLOR_DEPTH_101010:
-+		params.ucBitPerColor = PANEL_10BIT_PER_COLOR;
-+		break;
-+	case COLOR_DEPTH_121212:
-+		params.ucBitPerColor = PANEL_12BIT_PER_COLOR;
-+		break;
-+	case COLOR_DEPTH_161616:
-+		params.ucBitPerColor = PANEL_16BIT_PER_COLOR;
-+		break;
-+	default:
-+		break;
-+	}
++	cancel_delayed_work_sync(&rt5682->jack_detect_work);
++	cancel_delayed_work_sync(&rt5682->jd_check_work);
 +
- 	if (EXEC_BIOS_CMD_TABLE(DIGxEncoderControl, params))
- 		result = BP_RESULT_OK;
+ 	rt5682_reset(rt5682);
+ }
  
-@@ -274,6 +291,23 @@ static enum bp_result encoder_control_digx_v4(
- 					cntl->enable_dp_audio));
- 	params.ucLaneNum = (uint8_t)(cntl->lanes_number);
- 
-+	switch (cntl->color_depth) {
-+	case COLOR_DEPTH_888:
-+		params.ucBitPerColor = PANEL_8BIT_PER_COLOR;
-+		break;
-+	case COLOR_DEPTH_101010:
-+		params.ucBitPerColor = PANEL_10BIT_PER_COLOR;
-+		break;
-+	case COLOR_DEPTH_121212:
-+		params.ucBitPerColor = PANEL_12BIT_PER_COLOR;
-+		break;
-+	case COLOR_DEPTH_161616:
-+		params.ucBitPerColor = PANEL_16BIT_PER_COLOR;
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	if (EXEC_BIOS_CMD_TABLE(DIGxEncoderControl, params))
- 		result = BP_RESULT_OK;
- 
-@@ -1057,6 +1091,19 @@ static enum bp_result set_pixel_clock_v5(
- 		 * driver choose program it itself, i.e. here we program it
- 		 * to 888 by default.
- 		 */
-+		if (bp_params->signal_type == SIGNAL_TYPE_HDMI_TYPE_A)
-+			switch (bp_params->color_depth) {
-+			case TRANSMITTER_COLOR_DEPTH_30:
-+				/* yes this is correct, the atom define is wrong */
-+				clk.sPCLKInput.ucMiscInfo |= PIXEL_CLOCK_V5_MISC_HDMI_32BPP;
-+				break;
-+			case TRANSMITTER_COLOR_DEPTH_36:
-+				/* yes this is correct, the atom define is wrong */
-+				clk.sPCLKInput.ucMiscInfo |= PIXEL_CLOCK_V5_MISC_HDMI_30BPP;
-+				break;
-+			default:
-+				break;
-+			}
- 
- 		if (EXEC_BIOS_CMD_TABLE(SetPixelClock, clk))
- 			result = BP_RESULT_OK;
-@@ -1135,6 +1182,20 @@ static enum bp_result set_pixel_clock_v6(
- 		 * driver choose program it itself, i.e. here we pass required
- 		 * target rate that includes deep color.
- 		 */
-+		if (bp_params->signal_type == SIGNAL_TYPE_HDMI_TYPE_A)
-+			switch (bp_params->color_depth) {
-+			case TRANSMITTER_COLOR_DEPTH_30:
-+				clk.sPCLKInput.ucMiscInfo |= PIXEL_CLOCK_V6_MISC_HDMI_30BPP_V6;
-+				break;
-+			case TRANSMITTER_COLOR_DEPTH_36:
-+				clk.sPCLKInput.ucMiscInfo |= PIXEL_CLOCK_V6_MISC_HDMI_36BPP_V6;
-+				break;
-+			case TRANSMITTER_COLOR_DEPTH_48:
-+				clk.sPCLKInput.ucMiscInfo |= PIXEL_CLOCK_V6_MISC_HDMI_48BPP;
-+				break;
-+			default:
-+				break;
-+			}
- 
- 		if (EXEC_BIOS_CMD_TABLE(SetPixelClock, clk))
- 			result = BP_RESULT_OK;
-diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c b/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
-index 49ae5ff12da63..bae3a146b2cc2 100644
---- a/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce/dce_clock_source.c
-@@ -871,6 +871,20 @@ static bool dce110_program_pix_clk(
- 	bp_pc_params.flags.SET_EXTERNAL_REF_DIV_SRC =
- 					pll_settings->use_external_clk;
- 
-+	switch (pix_clk_params->color_depth) {
-+	case COLOR_DEPTH_101010:
-+		bp_pc_params.color_depth = TRANSMITTER_COLOR_DEPTH_30;
-+		break;
-+	case COLOR_DEPTH_121212:
-+		bp_pc_params.color_depth = TRANSMITTER_COLOR_DEPTH_36;
-+		break;
-+	case COLOR_DEPTH_161616:
-+		bp_pc_params.color_depth = TRANSMITTER_COLOR_DEPTH_48;
-+		break;
-+	default:
-+		break;
-+	}
-+
- 	if (clk_src->bios->funcs->set_pixel_clock(
- 			clk_src->bios, &bp_pc_params) != BP_RESULT_OK)
- 		return false;
-diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_stream_encoder.c b/drivers/gpu/drm/amd/display/dc/dce/dce_stream_encoder.c
-index 5054bb567b748..99ad475fc1ff5 100644
---- a/drivers/gpu/drm/amd/display/dc/dce/dce_stream_encoder.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce/dce_stream_encoder.c
-@@ -564,6 +564,7 @@ static void dce110_stream_encoder_hdmi_set_stream_attribute(
- 	cntl.enable_dp_audio = enable_audio;
- 	cntl.pixel_clock = actual_pix_clk_khz;
- 	cntl.lanes_number = LANE_COUNT_FOUR;
-+	cntl.color_depth = crtc_timing->display_color_depth;
- 
- 	if (enc110->base.bp->funcs->encoder_control(
- 			enc110->base.bp, &cntl) != BP_RESULT_OK)
 -- 
 2.27.0
 
