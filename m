@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6F4329A61
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BD0329A86
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377522AbhCBArg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:47:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54504 "EHLO mail.kernel.org"
+        id S1377807AbhCBAsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:48:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237099AbhCASpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:45:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D738164E12;
-        Mon,  1 Mar 2021 17:12:52 +0000 (UTC)
+        id S240467AbhCASrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:47:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79B3064EE6;
+        Mon,  1 Mar 2021 17:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618773;
-        bh=6l8EQL6pTGEDKoOy63AMW/PtpowgN3J+JPAKAnjR4c4=;
+        s=korg; t=1614618800;
+        bh=Zx9LDLiJDNi9Yp+SxQtDzp5TmEwpvydW9I5sVx36m6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wcgES/LA7VqafSne4VR1jnJ3Qj6/6RLyOhu/01U+T7pNvUgXnm1MC5+6y4z5Wgej8
-         zx5b6o23XtGxy+sl2Iv+0veoQesENu4IMkfuhOrC0PgzWUWlkZtse97D81bo7x9hA0
-         4g3EpB/oLiltSvNtucNBGU1teQdvixFK5OAA/JmU=
+        b=dQ0/WQm78xw6Lz+7hwpJjvbtheOnbBLQPMnmm4lt8mxJM/tWD6PGU3oRvy7PHOYrl
+         7IraSDeVgx7f1gbxH65GC8l0NfIxzlij7KnJ/xswqPByU0CPDjRzuER10Rxb3QSitL
+         xi6zN5MC7n7clTvRjY9d4IvTnBedIzbtVed+hRp4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Waiman Long <longman@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 212/663] drm/amdgpu: Prevent shift wrapping in amdgpu_read_mask()
-Date:   Mon,  1 Mar 2021 17:07:40 +0100
-Message-Id: <20210301161152.278660107@linuxfoundation.org>
+Subject: [PATCH 5.10 221/663] locking/lockdep: Avoid unmatched unlock
+Date:   Mon,  1 Mar 2021 17:07:49 +0100
+Message-Id: <20210301161152.730348458@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,46 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit c915ef890d5dc79f483e1ca3b3a5b5f1a170690c ]
+[ Upstream commit 7f82e631d236cafd28518b998c6d4d8dc2ef68f6 ]
 
-If the user passes a "level" value which is higher than 31 then that
-leads to shift wrapping.  The undefined behavior will lead to a
-syzkaller stack dump.
+Commit f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI"
+inversions") overlooked that print_usage_bug() releases the graph_lock
+and called it without the graph lock held.
 
-Fixes: 5632708f4452 ("drm/amd/powerplay: add dpm force multiple levels on cz/tonga/fiji/polaris (v2)")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI" inversions")
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Link: https://lkml.kernel.org/r/YBfkuyIfB1+VRxXP@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/pm/amdgpu_pm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/locking/lockdep.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-index 529816637c731..9f383b9041d28 100644
---- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-@@ -1070,7 +1070,7 @@ static ssize_t amdgpu_get_pp_dpm_sclk(struct device *dev,
- static ssize_t amdgpu_read_mask(const char *buf, size_t count, uint32_t *mask)
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index bdaf4829098c0..780012eb2f3fe 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -3707,7 +3707,7 @@ static void
+ print_usage_bug(struct task_struct *curr, struct held_lock *this,
+ 		enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
  {
- 	int ret;
--	long level;
-+	unsigned long level;
- 	char *sub_str = NULL;
- 	char *tmp;
- 	char buf_cpy[AMDGPU_MASK_BUF_MAX + 1];
-@@ -1086,8 +1086,8 @@ static ssize_t amdgpu_read_mask(const char *buf, size_t count, uint32_t *mask)
- 	while (tmp[0]) {
- 		sub_str = strsep(&tmp, delimiter);
- 		if (strlen(sub_str)) {
--			ret = kstrtol(sub_str, 0, &level);
--			if (ret)
-+			ret = kstrtoul(sub_str, 0, &level);
-+			if (ret || level > 31)
- 				return -EINVAL;
- 			*mask |= 1 << level;
- 		} else
+-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
++	if (!debug_locks_off() || debug_locks_silent)
+ 		return;
+ 
+ 	pr_warn("\n");
+@@ -3748,6 +3748,7 @@ valid_state(struct task_struct *curr, struct held_lock *this,
+ 	    enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
+ {
+ 	if (unlikely(hlock_class(this)->usage_mask & (1 << bad_bit))) {
++		graph_unlock();
+ 		print_usage_bug(curr, this, bad_bit, new_bit);
+ 		return 0;
+ 	}
 -- 
 2.27.0
 
