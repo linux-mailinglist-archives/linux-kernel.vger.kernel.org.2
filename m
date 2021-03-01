@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A80A329BE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FEE329C44
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379825AbhCBBbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:31:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43898 "EHLO mail.kernel.org"
+        id S1380404AbhCBBvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:51:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235779AbhCATSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:18:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC4AC651B1;
-        Mon,  1 Mar 2021 17:12:47 +0000 (UTC)
+        id S241714AbhCAT2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:28:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3496960230;
+        Mon,  1 Mar 2021 17:47:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618768;
-        bh=gbpTDs9dPGrfRvSfxK5g4DorA6fv3N4bKFCME0f10GQ=;
+        s=korg; t=1614620822;
+        bh=1uBovl6iDDXC7RYgWTFxw5dV4L4Y64Uw1kzEXWjIrOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gL43F+2vmKBzMTd4ph/KRXWdnI9dUTJ1ItnCOOILu0yvs36ZMY36EPzKDuRqxdbW1
-         NSYOfN7uTueUbiUcjF5mB3AtYhTJ+3553j5l/31L02P4KyYJu9qxtRSvUgjG9gGWP4
-         9tOtZ4vOOQqh0ocA2rau5Src0F3F1qN/VbdbJOV4=
+        b=NQndu2eejZrBYpfdnvg9tEZ81589ko6rWDpHIpc5qGHh/cuh7I+36w8/2Mxf8eSY0
+         jey4b74Yb2z321cY3F0S7DSW2LW0JWHsEaA5CoHwYwsO8SRoK+RnCDf03yOS9KYbqY
+         vBAAiLoltuyAKcNPGU4vhV9D3LJmlYo42X7PQVck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 210/663] mtd: parsers: afs: Fix freeing the part name memory in failure
-Date:   Mon,  1 Mar 2021 17:07:38 +0100
-Message-Id: <20210301161152.178092648@linuxfoundation.org>
+Subject: [PATCH 5.11 292/775] ima: Free IMA measurement buffer after kexec syscall
+Date:   Mon,  1 Mar 2021 17:07:40 +0100
+Message-Id: <20210301161216.047727071@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +43,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 
-[ Upstream commit 7b844cf445f0a7daa68be0ce71eb2c88d68b0c5d ]
+[ Upstream commit f31e3386a4e92ba6eda7328cb508462956c94c64 ]
 
-In the case of failure while parsing the partitions, the iterator should
-be pre decremented by one before starting to free the memory allocated
-by kstrdup(). Because in the failure case, kstrdup() will not succeed
-and thus no memory will be allocated for the current iteration.
+IMA allocates kernel virtual memory to carry forward the measurement
+list, from the current kernel to the next kernel on kexec system call,
+in ima_add_kexec_buffer() function.  This buffer is not freed before
+completing the kexec system call resulting in memory leak.
 
-Fixes: 1fca1f6abb38 ("mtd: afs: simplify partition parsing")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210104041137.113075-5-manivannan.sadhasivam@linaro.org
+Add ima_buffer field in "struct kimage" to store the virtual address
+of the buffer allocated for the IMA measurement list.
+Free the memory allocated for the IMA measurement list in
+kimage_file_post_load_cleanup() function.
+
+Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/parsers/afs.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ include/linux/kexec.h              | 5 +++++
+ kernel/kexec_file.c                | 5 +++++
+ security/integrity/ima/ima_kexec.c | 2 ++
+ 3 files changed, 12 insertions(+)
 
-diff --git a/drivers/mtd/parsers/afs.c b/drivers/mtd/parsers/afs.c
-index 980e332bdac48..26116694c821b 100644
---- a/drivers/mtd/parsers/afs.c
-+++ b/drivers/mtd/parsers/afs.c
-@@ -370,10 +370,8 @@ static int parse_afs_partitions(struct mtd_info *mtd,
- 	return i;
+diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+index 9e93bef529680..5f61389f5f361 100644
+--- a/include/linux/kexec.h
++++ b/include/linux/kexec.h
+@@ -300,6 +300,11 @@ struct kimage {
+ 	/* Information for loading purgatory */
+ 	struct purgatory_info purgatory_info;
+ #endif
++
++#ifdef CONFIG_IMA_KEXEC
++	/* Virtual address of IMA measurement buffer for kexec syscall */
++	void *ima_buffer;
++#endif
+ };
  
- out_free_parts:
--	while (i >= 0) {
-+	while (--i >= 0)
- 		kfree(parts[i].name);
--		i--;
--	}
- 	kfree(parts);
- 	*pparts = NULL;
- 	return ret;
+ /* kexec interface functions */
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index b02086d704923..5c3447cf7ad58 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -166,6 +166,11 @@ void kimage_file_post_load_cleanup(struct kimage *image)
+ 	vfree(pi->sechdrs);
+ 	pi->sechdrs = NULL;
+ 
++#ifdef CONFIG_IMA_KEXEC
++	vfree(image->ima_buffer);
++	image->ima_buffer = NULL;
++#endif /* CONFIG_IMA_KEXEC */
++
+ 	/* See if architecture has anything to cleanup post load */
+ 	arch_kimage_file_post_load_cleanup(image);
+ 
+diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
+index 206ddcaa5c67a..e29bea3dd4ccd 100644
+--- a/security/integrity/ima/ima_kexec.c
++++ b/security/integrity/ima/ima_kexec.c
+@@ -129,6 +129,8 @@ void ima_add_kexec_buffer(struct kimage *image)
+ 		return;
+ 	}
+ 
++	image->ima_buffer = kexec_buffer;
++
+ 	pr_debug("kexec measurement buffer for the loaded kernel at 0x%lx.\n",
+ 		 kbuf.mem);
+ }
 -- 
 2.27.0
 
