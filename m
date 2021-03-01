@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8253132975D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A76329762
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343576AbhCAWhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:37:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
+        id S1343617AbhCAWhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:37:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbhCARmb (ORCPT
+        with ESMTP id S238498AbhCARmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:42:31 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576A2C061793;
-        Mon,  1 Mar 2021 09:41:20 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id f10so14898596ilq.5;
-        Mon, 01 Mar 2021 09:41:20 -0800 (PST)
+        Mon, 1 Mar 2021 12:42:46 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925D3C061756;
+        Mon,  1 Mar 2021 09:41:51 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id e7so15423268ile.7;
+        Mon, 01 Mar 2021 09:41:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PK9P/x4rlWwKp8U0Y1+lsWOBIWdzWylx18MN8gEXG+Y=;
-        b=iTVzzQW3q+QUNfUqPkYPyze8bOLgG633MXpB8WKszgzkwamgPmnnOMGdGe8tFKUsZy
-         fE0iD89p7m56YdwLLOF1rVAzozEp92woh+8kmPJCPTvD7IWbIISBl51FeCsFbF3KM624
-         f7dbg2Iquj093E0wnuDGKQdMIbbmD3Qcxwb+EVn3CTJap0SiVmTzBIToF31CXdf7BwAL
-         nuJSAg7zxIOwttH7FK4HxwUGOdhgqSdrFnDMQfraCe/IrVWZacEViFyQjhT4+pfalEPH
-         schXy7ik6gTCjwiFGz13V6AxGQGjRr6W8WN3SgX7pw96WyZhwdHzoFicpDK++pGAYpo+
-         Kw3w==
+        bh=YRu6T4YCSQTuJhSWDKrymzoDkoEYPpwNaxC0bwqR6X8=;
+        b=k5QCiQEW6IU+Q0tM9RE5n6kSHfo0DgwlihhNRmzWoz43jroJz1yUl/QVs0q4Osf3Ek
+         C0iIUvJQtfKEeA8GQAuTrFakWg78CA9yCApyIXp2We0ebOGgn5ULK99LfUBu51AtvUZ3
+         H20t4z/tdRXolC5/gn90e1lE8I8xNsPuNXb/aak53DpQvELcP6HbqvLVgu5nXlpcivwb
+         pIIjH8xf5KJLpn0BiI+FtIiy+/iIgcUnHYvFpNS8Aka29gM0wHrnfFS9AsskA5ZoAd4v
+         WcjSBpUzx6SACOojgiGdbKjCmMumVxxVhsyxDEXoPVfpH6BbRcaDloTcJJoCtCLLmyLg
+         UMrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PK9P/x4rlWwKp8U0Y1+lsWOBIWdzWylx18MN8gEXG+Y=;
-        b=bEz+pgC5YuoBBd6tpcLjov8aUlU2F2I3Wj5flLI7w5qTwY1nSkwxUcSgCcGwrvTUSN
-         UZSHSefa2a9l5mzS3VC/jgzCb7C4N3z8+zpNrf+7NT4pa89C0kPy3k9edJO0m9FoK4Ll
-         0H8Nnx1k4RVyvm9Grxz9ba9LwzSVcPWAej3xzYrl8prULnSm9wiiHL4fDofHn/Dre7a+
-         4vj31BZRAgIspQ9E8912968tIOHHL5yxua9piVERXc6CEl4GSe4T5wRrYkolk5gN8gAr
-         0aii/HdkIlVrTW7K23oNoSihRGzOf9n609a7Uel95V7kKp7ZKX3ipfNW9ZYXYEOyQCPY
-         8NAg==
-X-Gm-Message-State: AOAM533d6LpQEAz3nDC29Wnj7PXEK493dbRW8VMqSWcLvn8ZeJPsGLnF
-        gMRAJYYl0r9vL6b0B36wCmsTgnzh25PpGsDlXtrmOSsINsjSdw==
-X-Google-Smtp-Source: ABdhPJwQpuBSEdtwZc1cnajR4HqkKFbAQZzE+BvYnjsPZEXXJyKaxb56YlueCkUJHQCco9W3WXljG9WUkdYc8RtHFtY=
-X-Received: by 2002:a92:cb49:: with SMTP id f9mr13490680ilq.0.1614620479623;
- Mon, 01 Mar 2021 09:41:19 -0800 (PST)
+        bh=YRu6T4YCSQTuJhSWDKrymzoDkoEYPpwNaxC0bwqR6X8=;
+        b=ZwbwqmctBFQBGi8NlJEK+jQOrDvl1Bo4k02fiQb9CBSBrTb8rybYzuCQMi/RS92hlv
+         s8DP0QejS0VYHZLBDe3gOVy2JDY7meDx0a3pf+LPEmZzTGMCTN8TRZWTmgKTjk3WM3wU
+         lUgU334u6lFiCdfPV7yJz1vrwwkWcEJ3xk1l0g1FBxcOkpFltfST7UCp2r5uOgNXrKdg
+         gGgIV1gUcQwGfQ+zfHR9crFN9DxnyKnrT+oLcNKw0X0/gyhQWRZNfGQZCYmw6mHs6pHT
+         kirxoI+mhMLhojsfmeuiLDYFNRfjyOQ/k3N9k4SFQgm6QavnKT6dkTzCxY66B3DMIj/A
+         F8kQ==
+X-Gm-Message-State: AOAM5300AvToSCbNDYlzwY7adgy0x//WWoPE1h3orJCk78hYUd3UHh3F
+        M6TZXDJ5t73kLTe94ZF8Qvo7LmdH/mHVJA7ruLk=
+X-Google-Smtp-Source: ABdhPJy5Xhs6rpWGKFPrnYmW7TFZ77dgsgoI86R53mpTQEudVyvmxRQwAS7TfA+F4jPNbikQYOexeOD7Ea47fu6yVk0=
+X-Received: by 2002:a92:cb49:: with SMTP id f9mr13492557ilq.0.1614620510844;
+ Mon, 01 Mar 2021 09:41:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210301161048.294656001@linuxfoundation.org> <20210301161102.067546003@linuxfoundation.org>
-In-Reply-To: <20210301161102.067546003@linuxfoundation.org>
+References: <20210301161031.684018251@linuxfoundation.org> <20210301161041.907312533@linuxfoundation.org>
+In-Reply-To: <20210301161041.907312533@linuxfoundation.org>
 From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Date:   Mon, 1 Mar 2021 09:41:08 -0800
-Message-ID: <CALCv0x0cp-5R0Bc5wsa5osj6YpxAz_QwihtX_0oD-iq_5b1Chw@mail.gmail.com>
-Subject: Re: [PATCH 5.4 280/340] staging/mt7621-dma: mtk-hsdma.c->hsdma-mt7621.c
+Date:   Mon, 1 Mar 2021 09:41:39 -0800
+Message-ID: <CALCv0x36mPwPwFpB8P6nc4kfu_PB=U81RoY9=q31Osx4sGtC3g@mail.gmail.com>
+Subject: Re: [PATCH 4.19 209/247] staging/mt7621-dma: mtk-hsdma.c->hsdma-mt7621.c
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
@@ -60,11 +60,11 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Sorry, I should have been more clear in my original email, but we
-don't strictly need this in 5.4 as the check only became fatal in 5.10
-(actually, before 5.10, but 5.10 is the first stable release with it).
-Feel free to take or omit this from 5.4.
+don't strictly need this in 4.19 as the check only became fatal in
+5.10 (actually, before 5.10, but 5.10 is the first stable release with
+it). Feel free to take or omit this from 4.19.
 
-On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
+On Mon, Mar 1, 2021 at 8:45 AM Greg Kroah-Hartman
 <gregkh@linuxfoundation.org> wrote:
 >
 > From: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
@@ -88,26 +88,31 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
 >  drivers/staging/mt7621-dma/Makefile       |    2
->  drivers/staging/mt7621-dma/hsdma-mt7621.c |  762 ++++++++++++++++++++++++++++++
->  drivers/staging/mt7621-dma/mtk-hsdma.c    |  762 ------------------------------
->  3 files changed, 763 insertions(+), 763 deletions(-)
+>  drivers/staging/mt7621-dma/hsdma-mt7621.c |  771 ++++++++++++++++++++++++++++++
+>  drivers/staging/mt7621-dma/mtk-hsdma.c    |  771 ------------------------------
+>  3 files changed, 772 insertions(+), 772 deletions(-)
 >  rename drivers/staging/mt7621-dma/{mtk-hsdma.c => hsdma-mt7621.c} (99%)
 >
 > --- a/drivers/staging/mt7621-dma/Makefile
 > +++ b/drivers/staging/mt7621-dma/Makefile
 > @@ -1,4 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_DMA_RALINK) += ralink-gdma.o
 > -obj-$(CONFIG_MTK_HSDMA) += mtk-hsdma.o
 > +obj-$(CONFIG_MTK_HSDMA) += hsdma-mt7621.o
 >
 >  ccflags-y += -I$(srctree)/drivers/dma
 > --- /dev/null
 > +++ b/drivers/staging/mt7621-dma/hsdma-mt7621.c
-> @@ -0,0 +1,762 @@
-> +// SPDX-License-Identifier: GPL-2.0+
+> @@ -0,0 +1,771 @@
 > +/*
 > + *  Copyright (C) 2015, Michael Lee <igvtee@gmail.com>
 > + *  MTK HSDMA support
+> + *
+> + *  This program is free software; you can redistribute it and/or modify it
+> + *  under  the terms of the GNU General         Public License as published by the
+> + *  Free Software Foundation;  either version 2 of the License, or (at your
+> + *  option) any later version.
+> + *
 > + */
 > +
 > +#include <linux/dmaengine.h>
@@ -292,7 +297,7 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +}
 > +
 > +static inline void mtk_hsdma_write(struct mtk_hsdam_engine *hsdma,
-> +                                  unsigned int reg, u32 val)
+> +                                  unsigned reg, u32 val)
 > +{
 > +       writel(val, hsdma->base + reg);
 > +}
@@ -343,7 +348,7 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +       int i;
 > +
 > +       dev_dbg(hsdma->ddev.dev, "tx idx: %d, rx idx: %d\n",
-> +               chan->tx_idx, chan->rx_idx);
+> +                       chan->tx_idx, chan->rx_idx);
 > +
 > +       for (i = 0; i < HSDMA_DESCS_NUM; i++) {
 > +               tx_desc = &chan->tx_ring[i];
@@ -370,7 +375,8 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +       /* init desc value */
 > +       for (i = 0; i < HSDMA_DESCS_NUM; i++) {
 > +               chan->tx_ring[i].addr0 = 0;
-> +               chan->tx_ring[i].flags = HSDMA_DESC_LS0 | HSDMA_DESC_DONE;
+> +               chan->tx_ring[i].flags = HSDMA_DESC_LS0 |
+> +                       HSDMA_DESC_DONE;
 > +       }
 > +       for (i = 0; i < HSDMA_DESCS_NUM; i++) {
 > +               chan->rx_ring[i].addr0 = 0;
@@ -519,9 +525,8 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +                       vchan_cookie_complete(&desc->vdesc);
 > +                       chan_issued = gdma_next_desc(chan);
 > +               }
-> +       } else {
+> +       } else
 > +               dev_dbg(hsdma->ddev.dev, "no desc to complete\n");
-> +       }
 > +
 > +       if (chan_issued)
 > +               set_bit(chan->id, &hsdma->chan_issued);
@@ -540,7 +545,8 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +       if (likely(status & HSDMA_INT_RX_Q0))
 > +               tasklet_schedule(&hsdma->task);
 > +       else
-> +               dev_dbg(hsdma->ddev.dev, "unhandle irq status %08x\n", status);
+> +               dev_dbg(hsdma->ddev.dev, "unhandle irq status %08x\n",
+> +                       status);
 > +       /* clean intr bits */
 > +       mtk_hsdma_write(hsdma, HSDMA_REG_INT_STATUS, status);
 > +
@@ -557,9 +563,8 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +               if (gdma_next_desc(chan)) {
 > +                       set_bit(chan->id, &hsdma->chan_issued);
 > +                       tasklet_schedule(&hsdma->task);
-> +               } else {
+> +               } else
 > +                       dev_dbg(hsdma->ddev.dev, "no desc to issue\n");
-> +               }
 > +       }
 > +       spin_unlock_bh(&chan->vchan.lock);
 > +}
@@ -574,7 +579,7 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +       if (len <= 0)
 > +               return NULL;
 > +
-> +       desc = kzalloc(sizeof(*desc), GFP_ATOMIC);
+> +       desc = kzalloc(sizeof(struct mtk_hsdma_desc), GFP_ATOMIC);
 > +       if (!desc) {
 > +               dev_err(c->device->dev, "alloc memcpy decs error\n");
 > +               return NULL;
@@ -770,8 +775,10 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +               return -EINVAL;
 > +
 > +       hsdma = devm_kzalloc(&pdev->dev, sizeof(*hsdma), GFP_KERNEL);
-> +       if (!hsdma)
+> +       if (!hsdma) {
+> +               dev_err(&pdev->dev, "alloc dma device failed\n");
 > +               return -EINVAL;
+> +       }
 > +
 > +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 > +       base = devm_ioremap_resource(&pdev->dev, res);
@@ -781,8 +788,10 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +       tasklet_init(&hsdma->task, mtk_hsdma_tasklet, (unsigned long)hsdma);
 > +
 > +       irq = platform_get_irq(pdev, 0);
-> +       if (irq < 0)
+> +       if (irq < 0) {
+> +               dev_err(&pdev->dev, "failed to get irq\n");
 > +               return -EINVAL;
+> +       }
 > +       ret = devm_request_irq(&pdev->dev, irq, mtk_hsdma_irq,
 > +                              0, dev_name(&pdev->dev), hsdma);
 > +       if (ret) {
@@ -868,11 +877,16 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > +MODULE_LICENSE("GPL v2");
 > --- a/drivers/staging/mt7621-dma/mtk-hsdma.c
 > +++ /dev/null
-> @@ -1,762 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0+
+> @@ -1,771 +0,0 @@
 > -/*
 > - *  Copyright (C) 2015, Michael Lee <igvtee@gmail.com>
 > - *  MTK HSDMA support
+> - *
+> - *  This program is free software; you can redistribute it and/or modify it
+> - *  under  the terms of the GNU General         Public License as published by the
+> - *  Free Software Foundation;  either version 2 of the License, or (at your
+> - *  option) any later version.
+> - *
 > - */
 > -
 > -#include <linux/dmaengine.h>
@@ -1057,7 +1071,7 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > -}
 > -
 > -static inline void mtk_hsdma_write(struct mtk_hsdam_engine *hsdma,
-> -                                  unsigned int reg, u32 val)
+> -                                  unsigned reg, u32 val)
 > -{
 > -       writel(val, hsdma->base + reg);
 > -}
@@ -1108,7 +1122,7 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > -       int i;
 > -
 > -       dev_dbg(hsdma->ddev.dev, "tx idx: %d, rx idx: %d\n",
-> -               chan->tx_idx, chan->rx_idx);
+> -                       chan->tx_idx, chan->rx_idx);
 > -
 > -       for (i = 0; i < HSDMA_DESCS_NUM; i++) {
 > -               tx_desc = &chan->tx_ring[i];
@@ -1135,7 +1149,8 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > -       /* init desc value */
 > -       for (i = 0; i < HSDMA_DESCS_NUM; i++) {
 > -               chan->tx_ring[i].addr0 = 0;
-> -               chan->tx_ring[i].flags = HSDMA_DESC_LS0 | HSDMA_DESC_DONE;
+> -               chan->tx_ring[i].flags = HSDMA_DESC_LS0 |
+> -                       HSDMA_DESC_DONE;
 > -       }
 > -       for (i = 0; i < HSDMA_DESCS_NUM; i++) {
 > -               chan->rx_ring[i].addr0 = 0;
@@ -1284,9 +1299,8 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > -                       vchan_cookie_complete(&desc->vdesc);
 > -                       chan_issued = gdma_next_desc(chan);
 > -               }
-> -       } else {
+> -       } else
 > -               dev_dbg(hsdma->ddev.dev, "no desc to complete\n");
-> -       }
 > -
 > -       if (chan_issued)
 > -               set_bit(chan->id, &hsdma->chan_issued);
@@ -1305,7 +1319,8 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > -       if (likely(status & HSDMA_INT_RX_Q0))
 > -               tasklet_schedule(&hsdma->task);
 > -       else
-> -               dev_dbg(hsdma->ddev.dev, "unhandle irq status %08x\n", status);
+> -               dev_dbg(hsdma->ddev.dev, "unhandle irq status %08x\n",
+> -                       status);
 > -       /* clean intr bits */
 > -       mtk_hsdma_write(hsdma, HSDMA_REG_INT_STATUS, status);
 > -
@@ -1322,9 +1337,8 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > -               if (gdma_next_desc(chan)) {
 > -                       set_bit(chan->id, &hsdma->chan_issued);
 > -                       tasklet_schedule(&hsdma->task);
-> -               } else {
+> -               } else
 > -                       dev_dbg(hsdma->ddev.dev, "no desc to issue\n");
-> -               }
 > -       }
 > -       spin_unlock_bh(&chan->vchan.lock);
 > -}
@@ -1339,7 +1353,7 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > -       if (len <= 0)
 > -               return NULL;
 > -
-> -       desc = kzalloc(sizeof(*desc), GFP_ATOMIC);
+> -       desc = kzalloc(sizeof(struct mtk_hsdma_desc), GFP_ATOMIC);
 > -       if (!desc) {
 > -               dev_err(c->device->dev, "alloc memcpy decs error\n");
 > -               return NULL;
@@ -1535,8 +1549,10 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > -               return -EINVAL;
 > -
 > -       hsdma = devm_kzalloc(&pdev->dev, sizeof(*hsdma), GFP_KERNEL);
-> -       if (!hsdma)
+> -       if (!hsdma) {
+> -               dev_err(&pdev->dev, "alloc dma device failed\n");
 > -               return -EINVAL;
+> -       }
 > -
 > -       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 > -       base = devm_ioremap_resource(&pdev->dev, res);
@@ -1546,8 +1562,10 @@ On Mon, Mar 1, 2021 at 9:00 AM Greg Kroah-Hartman
 > -       tasklet_init(&hsdma->task, mtk_hsdma_tasklet, (unsigned long)hsdma);
 > -
 > -       irq = platform_get_irq(pdev, 0);
-> -       if (irq < 0)
+> -       if (irq < 0) {
+> -               dev_err(&pdev->dev, "failed to get irq\n");
 > -               return -EINVAL;
+> -       }
 > -       ret = devm_request_irq(&pdev->dev, irq, mtk_hsdma_irq,
 > -                              0, dev_name(&pdev->dev), hsdma);
 > -       if (ret) {
