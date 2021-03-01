@@ -2,129 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46F5329AFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAF8329B10
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378372AbhCBBFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:05:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235946AbhCAS7i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:59:38 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDA2C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 10:58:57 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id m6so12150312pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 10:58:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dehH1srb5wSCPruG5pLg/y+gFzUjxYT/97pbvVhtQ+s=;
-        b=g3raq5ssPuzA1FpBLkGMU/18l9aA0Skg7LNPeqhbhybLfEtc1pez9y1E4hpdxIj6vg
-         VTtPogVFHdmNGHgXE/dcoqA91O9vP4huZzkfJz6iXTnC1xIcRfx+VfwWH4GRWl5anWqs
-         IjbnTAU41YC5fPJYZ6jhEZqNfOdrjs4mgaBEdOjOjki6DImVSzZy/XXca5nqk4bCzTle
-         DF+Y+Kblk26ejRZlLGQwOPZUh2lT16QvwyiyAAsIv/KRGR/GCmbj8hEKKR+EuQiGRoDL
-         VS2+nvUbNVr5WBLoRzJ4EEshQpc/iCE4ZSJXIGY2svdmfUR6L0sVkTUCKejV9dD2HTfi
-         3Jsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dehH1srb5wSCPruG5pLg/y+gFzUjxYT/97pbvVhtQ+s=;
-        b=cf+A4Tg9YPQazi+en33P/VZXOIK609bhqlToPubI4UfOyQTa+iUUjERRo6jICaJgBm
-         CnFqNFpZTWp+BycqPcNtupROEJfTz1U9zRzLKlpXSaLfxAl1u3W4qvUV1gmOyGvjIMtE
-         KlXu92kXAmq7aLjaM/4QyvceE/Hq32EfEIlzYzfiVFocjOwL9X5m04lTQ0wtQG4z8Mns
-         Ja0Exgu9nvageays95+XVscyjVTXYMuCNlH4ki8sxgM9TZEO+UvyNhkuJdvgV0aFPk15
-         spcqOJSSYIjaZ6hHdNGT48XvU8jpL4Dmv7UyKpvsqFbgNpZA81vPgYSEBo4RtV+FHwMB
-         X8Lw==
-X-Gm-Message-State: AOAM533GDmpB2uqs88ky1dGN6mHO1QHe/9MXRNt90NEu5RwITEo/uxmQ
-        tPb+HmvT8OUf2acgscSASowhyA==
-X-Google-Smtp-Source: ABdhPJwwTm+u781GASjPu1pnPgIKPgjBt/7cKp9kBiSMZqrPMimTSqcojwFli98kEyvrUICgHaY53Q==
-X-Received: by 2002:a63:4c55:: with SMTP id m21mr15119963pgl.29.1614625136714;
-        Mon, 01 Mar 2021 10:58:56 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 9sm16806400pgw.61.2021.03.01.10.58.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 10:58:56 -0800 (PST)
-Date:   Mon, 1 Mar 2021 11:58:54 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        arnaud.pouliquen@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 00/16] remoteproc: Add support for detaching a remote
- processor
-Message-ID: <20210301185854.GD3690389@xps15>
-References: <20210223233515.3468677-1-mathieu.poirier@linaro.org>
- <af614b83-de31-f8fe-8b7d-181a71886aa0@foss.st.com>
+        id S1378548AbhCBBGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:06:50 -0500
+Received: from mga06.intel.com ([134.134.136.31]:49056 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240917AbhCATCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:02:52 -0500
+IronPort-SDR: axrsqrwfkdrYjsEv1idMQ0CmWiThvor90tKf8zDA4+WyhyFJPDtMdSyUUG9ym0iRo/9cQGxnu5
+ qK327PXb+tdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="247977008"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="247977008"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 10:59:59 -0800
+IronPort-SDR: 9AtqZ+/g/XE8E5dnue//mblk5Mu7epGgq4velIrovp2wXLot6ybGW9lDf86j8bdDia0L/yp4JC
+ sAgAshYwQz/w==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="444403546"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.116.218]) ([10.212.116.218])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 10:59:56 -0800
+Subject: Re: [PATCH v21 08/26] x86/mm: Introduce _PAGE_COW
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
+ <20210217222730.15819-9-yu-cheng.yu@intel.com>
+ <20210301155234.GF6699@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <5d98a4f7-5882-2e6e-7b76-295b73c17152@intel.com>
+Date:   Mon, 1 Mar 2021 10:59:44 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af614b83-de31-f8fe-8b7d-181a71886aa0@foss.st.com>
+In-Reply-To: <20210301155234.GF6699@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 05:40:49PM +0100, Arnaud POULIQUEN wrote:
-> Hi Mathieu,
+On 3/1/2021 7:52 AM, Borislav Petkov wrote:
+> On Wed, Feb 17, 2021 at 02:27:12PM -0800, Yu-cheng Yu wrote:
+>> @@ -182,7 +206,7 @@ static inline int pud_young(pud_t pud)
+>>   
+>>   static inline int pte_write(pte_t pte)
+>>   {
+>> -	return pte_flags(pte) & _PAGE_RW;
 > 
-> On 2/24/21 12:34 AM, Mathieu Poirier wrote:
-> > Following the work done here [1], this set provides support for the
-> > remoteproc core to release resources associated with a remote processor
-> > without having to switch it off. That way a platform driver can be removed
-> > or the application processor power cycled while the remote processor is
-> > still operating.
-> > 
-> > Modifications for this revision are detailed in the changelog of each patch
-> > but the main difference is that going from RPROC_RUNNING -> RPROC_DETACHED
-> > is no longer supported to avoid dealing tricky resource table issues.
+> Put here a comment along the lines of:
 > 
-> This seems reasonable to me. If necessary, this could be part of a separate series.
+> 	/*
+> 	 * Shadow stack pages are always writable - but not by normal
+> 	 * instructions but only by shadow stack operations. Therefore, the
+> 	 * W=0, D=1 test.
+> 	 */
 > 
-> From test point of view, it is working pretty well on my side.
+> to make it clear what this means.
+> 
+>> +	return (pte_flags(pte) & _PAGE_RW) || pte_shstk(pte);
+>>   }
+>>   
+>>   static inline int pte_huge(pte_t pte)
+>> @@ -314,6 +338,24 @@ static inline pte_t pte_clear_flags(pte_t pte, pteval_t clear)
+>>   	return native_make_pte(v & ~clear);
+>>   }
+>>   
+>> +static inline pte_t pte_make_cow(pte_t pte)
+> 
+> pte_mkcow like the rest of the "pte_mkX" functions.
+> 
+> And below too, for the other newly added pXd_make_* helpers.
+> 
+> 
+>>   static inline pmd_t pmd_mkdirty(pmd_t pmd)
+>>   {
+>> -	return pmd_set_flags(pmd, _PAGE_DIRTY | _PAGE_SOFT_DIRTY);
+>> +	pmdval_t dirty = _PAGE_DIRTY;
+>> +
+>> +	/* Avoid creating (HW)Dirty=1, Write=0 PMDs */
+>> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK) && !(pmd_flags(pmd) & _PAGE_RW))
+> 
+> 						      !(pmd_write(pmd))
+> 
+>> +		dirty = _PAGE_COW;
+>> +
+>> +	return pmd_set_flags(pmd, dirty | _PAGE_SOFT_DIRTY);
+>> +}
+> 
+> ...
+> 
+>>   static inline pud_t pud_mkdirty(pud_t pud)
+>>   {
+>> -	return pud_set_flags(pud, _PAGE_DIRTY | _PAGE_SOFT_DIRTY);
+>> +	pudval_t dirty = _PAGE_DIRTY;
+>> +
+>> +	/* Avoid creating (HW)Dirty=1, Write=0 PUDs */
+>> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK) && !(pud_flags(pud) & _PAGE_RW))
+> 
+> 						      !(pud_write(pud))
+> 
+> 
 
-Thanks for taking a look a this.
-Mathieu
+I will update.  Thanks!
 
-> 
-> Thanks,
-> Arnaud
-> 
-> > 
-> > Applies cleanly on rproc-next (e8b4e9a21af7).  I will rebase on 5.12-rc1 when it
-> > comes out next week.
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> > Arnaud POULIQUEN (1):
-> >   remoteproc: stm32: Move memory parsing to rproc_ops
-> > 
-> > Mathieu Poirier (15):
-> >   remoteproc: Remove useless check in rproc_del()
-> >   remoteproc: Rename function rproc_actuate()
-> >   remoteproc: Add new RPROC_ATTACHED state
-> >   remoteproc: Properly represent the attached state
-> >   remoteproc: Add new get_loaded_rsc_table() to rproc_ops
-> >   remoteproc: stm32: Move resource table setup to rproc_ops
-> >   remoteproc: Add new detach() remoteproc operation
-> >   remoteproc: Introduce function __rproc_detach()
-> >   remoteproc: Introduce function rproc_detach()
-> >   remoteproc: Properly deal with the resource table when attached
-> >   remoteproc: Properly deal with a kernel panic when attached
-> >   remoteproc: Properly deal with a start request when attached
-> >   remoteproc: Properly deal with a stop request when attached
-> >   remoteproc: Properly deal with a detach request when attached
-> >   remoteproc: Refactor rproc delete and cdev release path
-> > 
-> >  drivers/remoteproc/remoteproc_cdev.c     |  21 +-
-> >  drivers/remoteproc/remoteproc_core.c     | 263 ++++++++++++++++++++---
-> >  drivers/remoteproc/remoteproc_internal.h |  10 +
-> >  drivers/remoteproc/remoteproc_sysfs.c    |  17 +-
-> >  drivers/remoteproc/stm32_rproc.c         | 168 +++++++--------
-> >  include/linux/remoteproc.h               |  21 +-
-> >  6 files changed, 362 insertions(+), 138 deletions(-)
-> > 
+--
+Yu-cheng
