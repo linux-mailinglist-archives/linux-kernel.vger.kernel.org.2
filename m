@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F264329D01
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6A0329CB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442795AbhCBCQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:16:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55166 "EHLO mail.kernel.org"
+        id S1347675AbhCBCK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:10:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242167AbhCAToC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E57BC65085;
-        Mon,  1 Mar 2021 17:29:03 +0000 (UTC)
+        id S236189AbhCATgA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:36:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BC9C6511C;
+        Mon,  1 Mar 2021 17:02:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619744;
-        bh=Ptg2P1wBUY7lTOmMuF6I6M1P+5OZgQIKIOZmTHAPdBs=;
+        s=korg; t=1614618167;
+        bh=dGE1v0GCG/8MKspbHGh5FzQxyvr/FyJabl5fOrzZqdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oMAQgddJz6e4Z0ZfEFTX4CKjOqALO4UtdsaD9zbuZgdgFicZPFvKZtmGuFKSf4pko
-         r+iFr+3jDuQBL56en3MnTGr9mrtR6s+RpRthlaJHRwhFgutbvY8RFTg6tpwzJxxQxg
-         sjz96TCDjKGsgBFuKxMQzCW+GUqPtDvyTXKIoJcY=
+        b=ypNzlYlWacAdAiMlOKaPlOW8Zg45eT8m9mLP3161ebYDcdSKk3AGunfzKDOAoMnhg
+         SySa27035N2C66TsLPDFvVkhYVh92JfrgjvMbI9goLppAgsi4elDdeggYrFy2b9D3G
+         ojpEkAQvwQvDdEmvMxUFOctPo2ZVFnFJn7YBB7RQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Laz Lev <lazlev@web.de>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 566/663] media: smipcie: fix interrupt handling and IR timeout
-Date:   Mon,  1 Mar 2021 17:13:34 +0100
-Message-Id: <20210301161209.875296652@linuxfoundation.org>
+        stable@vger.kernel.org, Wim Osterholt <wim@djo.tudelft.nl>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Denis Efremov <efremov@linux.com>,
+        Kurt Garloff <kurt@garloff.de>
+Subject: [PATCH 5.4 290/340] floppy: reintroduce O_NDELAY fix
+Date:   Mon,  1 Mar 2021 17:13:54 +0100
+Message-Id: <20210301161102.563379034@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,109 +41,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Jiri Kosina <jkosina@suse.cz>
 
-commit 6532923237b427ed30cc7b4486f6f1ccdee3c647 upstream.
+commit 8a0c014cd20516ade9654fc13b51345ec58e7be8 upstream.
 
-After the first IR message, interrupts are no longer received. In addition,
-the code generates a timeout IR message of 10ms but sets the timeout value
-to 100ms, so no timeout was ever generated.
+This issue was originally fixed in 09954bad4 ("floppy: refactor open()
+flags handling").
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=204317
+The fix as a side-effect, however, introduce issue for open(O_ACCMODE)
+that is being used for ioctl-only open. I wrote a fix for that, but
+instead of it being merged, full revert of 09954bad4 was performed,
+re-introducing the O_NDELAY / O_NONBLOCK issue, and it strikes again.
 
-Fixes: a49a7a4635de ("media: smipcie: add universal ir capability")
-Tested-by: Laz Lev <lazlev@web.de>
-Cc: stable@vger.kernel.org # v5.1+
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+This is a forward-port of the original fix to current codebase; the
+original submission had the changelog below:
+
+====
+Commit 09954bad4 ("floppy: refactor open() flags handling"), as a
+side-effect, causes open(/dev/fdX, O_ACCMODE) to fail. It turns out that
+this is being used setfdprm userspace for ioctl-only open().
+
+Reintroduce back the original behavior wrt !(FMODE_READ|FMODE_WRITE)
+modes, while still keeping the original O_NDELAY bug fixed.
+
+Link: https://lore.kernel.org/r/nycvar.YFH.7.76.2101221209060.5622@cbobk.fhfr.pm
+Cc: stable@vger.kernel.org
+Reported-by: Wim Osterholt <wim@djo.tudelft.nl>
+Tested-by: Wim Osterholt <wim@djo.tudelft.nl>
+Reported-and-tested-by: Kurt Garloff <kurt@garloff.de>
+Fixes: 09954bad4 ("floppy: refactor open() flags handling")
+Fixes: f2791e7ead ("Revert "floppy: refactor open() flags handling"")
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Denis Efremov <efremov@linux.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/media/pci/smipcie/smipcie-ir.c |   48 ++++++++++++++++++---------------
- 1 file changed, 27 insertions(+), 21 deletions(-)
 
---- a/drivers/media/pci/smipcie/smipcie-ir.c
-+++ b/drivers/media/pci/smipcie/smipcie-ir.c
-@@ -60,38 +60,44 @@ static void smi_ir_decode(struct smi_rc
- {
- 	struct smi_dev *dev = ir->dev;
- 	struct rc_dev *rc_dev = ir->rc_dev;
--	u32 dwIRControl, dwIRData;
--	u8 index, ucIRCount, readLoop;
-+	u32 control, data;
-+	u8 index, ir_count, read_loop;
+---
+ drivers/block/floppy.c |   27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -4063,21 +4063,22 @@ static int floppy_open(struct block_devi
+ 	if (UFDCS->rawcmd == 1)
+ 		UFDCS->rawcmd = 2;
  
--	dwIRControl = smi_read(IR_Init_Reg);
-+	control = smi_read(IR_Init_Reg);
- 
--	if (dwIRControl & rbIRVld) {
--		ucIRCount = (u8) smi_read(IR_Data_Cnt);
-+	dev_dbg(&rc_dev->dev, "ircontrol: 0x%08x\n", control);
- 
--		readLoop = ucIRCount/4;
--		if (ucIRCount % 4)
--			readLoop += 1;
--		for (index = 0; index < readLoop; index++) {
--			dwIRData = smi_read(IR_DATA_BUFFER_BASE + (index * 4));
--
--			ir->irData[index*4 + 0] = (u8)(dwIRData);
--			ir->irData[index*4 + 1] = (u8)(dwIRData >> 8);
--			ir->irData[index*4 + 2] = (u8)(dwIRData >> 16);
--			ir->irData[index*4 + 3] = (u8)(dwIRData >> 24);
-+	if (control & rbIRVld) {
-+		ir_count = (u8)smi_read(IR_Data_Cnt);
-+
-+		dev_dbg(&rc_dev->dev, "ircount %d\n", ir_count);
-+
-+		read_loop = ir_count / 4;
-+		if (ir_count % 4)
-+			read_loop += 1;
-+		for (index = 0; index < read_loop; index++) {
-+			data = smi_read(IR_DATA_BUFFER_BASE + (index * 4));
-+			dev_dbg(&rc_dev->dev, "IRData 0x%08x\n", data);
-+
-+			ir->irData[index * 4 + 0] = (u8)(data);
-+			ir->irData[index * 4 + 1] = (u8)(data >> 8);
-+			ir->irData[index * 4 + 2] = (u8)(data >> 16);
-+			ir->irData[index * 4 + 3] = (u8)(data >> 24);
- 		}
--		smi_raw_process(rc_dev, ir->irData, ucIRCount);
--		smi_set(IR_Init_Reg, rbIRVld);
-+		smi_raw_process(rc_dev, ir->irData, ir_count);
+-	if (!(mode & FMODE_NDELAY)) {
+-		if (mode & (FMODE_READ|FMODE_WRITE)) {
+-			UDRS->last_checked = 0;
+-			clear_bit(FD_OPEN_SHOULD_FAIL_BIT, &UDRS->flags);
+-			check_disk_change(bdev);
+-			if (test_bit(FD_DISK_CHANGED_BIT, &UDRS->flags))
+-				goto out;
+-			if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &UDRS->flags))
+-				goto out;
+-		}
+-		res = -EROFS;
+-		if ((mode & FMODE_WRITE) &&
+-		    !test_bit(FD_DISK_WRITABLE_BIT, &UDRS->flags))
++	if (mode & (FMODE_READ|FMODE_WRITE)) {
++		UDRS->last_checked = 0;
++		clear_bit(FD_OPEN_SHOULD_FAIL_BIT, &UDRS->flags);
++		check_disk_change(bdev);
++		if (test_bit(FD_DISK_CHANGED_BIT, &UDRS->flags))
++			goto out;
++		if (test_bit(FD_OPEN_SHOULD_FAIL_BIT, &UDRS->flags))
+ 			goto out;
  	}
- 
--	if (dwIRControl & rbIRhighidle) {
-+	if (control & rbIRhighidle) {
- 		struct ir_raw_event rawir = {};
- 
-+		dev_dbg(&rc_dev->dev, "high idle\n");
 +
- 		rawir.pulse = 0;
- 		rawir.duration = SMI_SAMPLE_PERIOD * SMI_SAMPLE_IDLEMIN;
- 		ir_raw_event_store_with_filter(rc_dev, &rawir);
--		smi_set(IR_Init_Reg, rbIRhighidle);
- 	}
- 
-+	smi_set(IR_Init_Reg, rbIRVld);
- 	ir_raw_event_handle(rc_dev);
- }
- 
-@@ -150,7 +156,7 @@ int smi_ir_init(struct smi_dev *dev)
- 	rc_dev->dev.parent = &dev->pci_dev->dev;
- 
- 	rc_dev->map_name = dev->info->rc_map;
--	rc_dev->timeout = MS_TO_US(100);
-+	rc_dev->timeout = SMI_SAMPLE_PERIOD * SMI_SAMPLE_IDLEMIN;
- 	rc_dev->rx_resolution = SMI_SAMPLE_PERIOD;
- 
- 	ir->rc_dev = rc_dev;
-@@ -173,7 +179,7 @@ void smi_ir_exit(struct smi_dev *dev)
- 	struct smi_rc *ir = &dev->ir;
- 	struct rc_dev *rc_dev = ir->rc_dev;
- 
--	smi_ir_stop(ir);
- 	rc_unregister_device(rc_dev);
-+	smi_ir_stop(ir);
- 	ir->rc_dev = NULL;
- }
++	res = -EROFS;
++
++	if ((mode & FMODE_WRITE) &&
++			!test_bit(FD_DISK_WRITABLE_BIT, &UDRS->flags))
++		goto out;
++
+ 	mutex_unlock(&open_lock);
+ 	mutex_unlock(&floppy_mutex);
+ 	return 0;
 
 
