@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5FC329CEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F24329CBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442618AbhCBCOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:14:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52977 "EHLO mail.kernel.org"
+        id S1349098AbhCBCLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:11:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238670AbhCATlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:41:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ED04652B5;
-        Mon,  1 Mar 2021 17:35:58 +0000 (UTC)
+        id S235837AbhCATgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:36:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30238652B9;
+        Mon,  1 Mar 2021 17:36:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620158;
-        bh=RZ2lNrtk/ruHMYhO3IkOoY0gjuJVD5j4yXHhcUwXC4k=;
+        s=korg; t=1614620178;
+        bh=hqB9tQxikiMluj3WGhsLKrnKlfHousUjH4XCbkxRiEI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rA5fwYgqEU/Hsj3yfXNagO+QiZDfR5/CYRspwZ3iXQ2xFlpnPNjf+FAslfLrmYXk+
-         UOL7JqW6hcfmu+LfpJpWSoEr2Q1QzDQ9Y/GbQtmS/O5QZsyn8PVPaRQDA8q6Prq5Ax
-         /TzjW6q/xMYGgEaZhtrJgY+FTHPHlGgXvhjUXmX8=
+        b=cR99oY6E5BW2sU1oxoJVrJ5plVMq9vGv6tad5eJCfwEdE92KFY8mfCJ6M3toYse5l
+         8TIMUyID536RghMO66MwuIdf2zooYcBVQveymWuwS4PtksSxCPgy2/P74ZpzQvXFcq
+         r0qpcBUpBjEKrUXQNDk4TU6zulV23lQxvJ0l+EZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 052/775] cpufreq: brcmstb-avs-cpufreq: Free resources in error path
-Date:   Mon,  1 Mar 2021 17:03:40 +0100
-Message-Id: <20210301161204.283675684@linuxfoundation.org>
+Subject: [PATCH 5.11 058/775] soc: qcom: socinfo: Fix an off by one in qcom_show_pmic_model()
+Date:   Mon,  1 Mar 2021 17:03:46 +0100
+Message-Id: <20210301161204.572556912@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,75 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 05f456286fd489558c72a4711d22a5612c965685 ]
+[ Upstream commit 5fb33d8960dc7abdabc6fe599a30c2c99b082ef6 ]
 
-If 'cpufreq_register_driver()' fails, we must release the resources
-allocated in 'brcm_avs_prepare_init()' as already done in the remove
-function.
+These need to be < ARRAY_SIZE() instead of <= ARRAY_SIZE() to prevent
+accessing one element beyond the end of the array.
 
-To do that, introduce a new function 'brcm_avs_prepare_uninit()' in order
-to avoid code duplication. This also makes the code more readable (IMHO).
-
-Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver for Broadcom STB SoCs")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-[ Viresh: Updated Subject ]
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: e9247e2ce577 ("soc: qcom: socinfo: fix printing of pmic_model")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/YAf+o85Z9lgkq3Nw@mwanda
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/brcmstb-avs-cpufreq.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ drivers/soc/qcom/socinfo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
-index 3e31e5d28b79c..e25ccb744187d 100644
---- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
-+++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
-@@ -597,6 +597,16 @@ unmap_base:
- 	return ret;
- }
+diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+index d21530d24253e..6daa3c5771d16 100644
+--- a/drivers/soc/qcom/socinfo.c
++++ b/drivers/soc/qcom/socinfo.c
+@@ -286,7 +286,7 @@ static int qcom_show_pmic_model(struct seq_file *seq, void *p)
+ 	if (model < 0)
+ 		return -EINVAL;
  
-+static void brcm_avs_prepare_uninit(struct platform_device *pdev)
-+{
-+	struct private_data *priv;
-+
-+	priv = platform_get_drvdata(pdev);
-+
-+	iounmap(priv->avs_intr_base);
-+	iounmap(priv->base);
-+}
-+
- static int brcm_avs_cpufreq_init(struct cpufreq_policy *policy)
- {
- 	struct cpufreq_frequency_table *freq_table;
-@@ -732,21 +742,22 @@ static int brcm_avs_cpufreq_probe(struct platform_device *pdev)
- 
- 	brcm_avs_driver.driver_data = pdev;
- 
--	return cpufreq_register_driver(&brcm_avs_driver);
-+	ret = cpufreq_register_driver(&brcm_avs_driver);
-+	if (ret)
-+		brcm_avs_prepare_uninit(pdev);
-+
-+	return ret;
- }
- 
- static int brcm_avs_cpufreq_remove(struct platform_device *pdev)
- {
--	struct private_data *priv;
- 	int ret;
- 
- 	ret = cpufreq_unregister_driver(&brcm_avs_driver);
- 	if (ret)
- 		return ret;
- 
--	priv = platform_get_drvdata(pdev);
--	iounmap(priv->base);
--	iounmap(priv->avs_intr_base);
-+	brcm_avs_prepare_uninit(pdev);
- 
- 	return 0;
- }
+-	if (model <= ARRAY_SIZE(pmic_models) && pmic_models[model])
++	if (model < ARRAY_SIZE(pmic_models) && pmic_models[model])
+ 		seq_printf(seq, "%s\n", pmic_models[model]);
+ 	else
+ 		seq_printf(seq, "unknown (%d)\n", model);
 -- 
 2.27.0
 
