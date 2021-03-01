@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF243299B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D315B3298F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348073AbhCBA23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:28:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43174 "EHLO mail.kernel.org"
+        id S1346910AbhCAXvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:51:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234852AbhCAS3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:29:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 428E5650B3;
-        Mon,  1 Mar 2021 17:39:23 +0000 (UTC)
+        id S239325AbhCASOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:14:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D161865154;
+        Mon,  1 Mar 2021 17:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620363;
-        bh=Xi+lVabsYrHZBkh8p7HoHsOstLPyg4ZYJ4SjuvdVzLQ=;
+        s=korg; t=1614618326;
+        bh=2ofTlYhRMrrJUBm1C8y0Nj+ZwYw0nakXxyN4FisWN2k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B5xrrO/H/wlOSGlLzLtvGZPcQgT520scfvndEE3rshVU4cHqQBpHtwklJkvAa4JOz
-         6+KgLGIkD3NrN0oHdA59S4gfSS2LxMOll+nB7uvHJK4GjU/tBIuVHdr8wJoGOqTIT0
-         pViYqt5ifjqRYVzT1PSmMu089jjMcrDAsQ2JRHt8=
+        b=I2tyxFB5EImIk/Q/LTHQLP0B4N6JTSEqwBmD0Q7cbr2LOcxx1mIWM0gCZemzdoP9x
+         q1O8yt4DGvBVjHk2uRApowM1/C5dh01z682FbTRt1mIUlxvOhqQMDTnhkaUwiK8iBl
+         cjm66MtPdSHxAgZJC+NhgCDfg2kE+IexpTnjuRsw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 126/775] b43: N-PHY: Fix the update of coef for the PHY revision >= 3case
-Date:   Mon,  1 Mar 2021 17:04:54 +0100
-Message-Id: <20210301161207.903389535@linuxfoundation.org>
+Subject: [PATCH 5.10 047/663] arm64: dts: allwinner: H6: Allow up to 150 MHz MMC bus frequency
+Date:   Mon,  1 Mar 2021 17:04:55 +0100
+Message-Id: <20210301161144.101195968@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +41,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit 4773acf3d4b50768bf08e9e97a204819e9ea0895 ]
+[ Upstream commit cfe6c487b9a1abc6197714ec5605716a5428cf03 ]
 
-The documentation for the PHY update [1] states:
+The H6 manual explicitly lists a frequency limit of 150 MHz for the bus
+frequency of the MMC controllers. So far we had no explicit limits in the
+DT, which limited eMMC to the spec defined frequencies, or whatever the
+driver defines (both Linux and FreeBSD use 52 MHz here).
 
-Loop 4 times with index i
+Put those maximum frequencies in the SoC .dtsi, to allow higher speed
+modes (which still would need to be explicitly enabled, per board).
 
-    If PHY Revision >= 3
-        Copy table[i] to coef[i]
-    Otherwise
-        Set coef[i] to 0
+Tested with an eMMC using HS-200 on a Pine H64. Running at the spec'ed
+200 MHz indeed fails with I/O errors, but 150 MHz seems to work stably.
 
-the copy of the table to coef is currently implemented the wrong way
-around, table is being updated from uninitialized values in coeff.
-Fix this by swapping the assignment around.
-
-[1] https://bcm-v4.sipsolutions.net/802.11/PHY/N/RestoreCal/
-
-Fixes: 2f258b74d13c ("b43: N-PHY: implement restoring general configuration")
-Addresses-Coverity: ("Uninitialized scalar variable")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Larry Finger <Larry.Finger@lwfinger.net>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 8f54bd1595b3 ("arm64: allwinner: h6: add device tree nodes for MMC controllers")
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210113152630.28810-6-andre.przywara@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/b43/phy_n.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/broadcom/b43/phy_n.c b/drivers/net/wireless/broadcom/b43/phy_n.c
-index b669dff24b6e0..665b737fbb0d8 100644
---- a/drivers/net/wireless/broadcom/b43/phy_n.c
-+++ b/drivers/net/wireless/broadcom/b43/phy_n.c
-@@ -5311,7 +5311,7 @@ static void b43_nphy_restore_cal(struct b43_wldev *dev)
- 
- 	for (i = 0; i < 4; i++) {
- 		if (dev->phy.rev >= 3)
--			table[i] = coef[i];
-+			coef[i] = table[i];
- 		else
- 			coef[i] = 0;
- 	}
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+index 0361f5f467093..4592fb7a6161d 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
+@@ -436,6 +436,7 @@
+ 			interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&mmc0_pins>;
++			max-frequency = <150000000>;
+ 			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+@@ -452,6 +453,7 @@
+ 			interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&mmc1_pins>;
++			max-frequency = <150000000>;
+ 			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+@@ -468,6 +470,7 @@
+ 			interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&mmc2_pins>;
++			max-frequency = <150000000>;
+ 			status = "disabled";
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
 -- 
 2.27.0
 
