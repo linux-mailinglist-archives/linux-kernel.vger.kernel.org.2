@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24DF329CEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBAD329D22
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442592AbhCBCO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:14:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53022 "EHLO mail.kernel.org"
+        id S1443072AbhCBCSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:18:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240826AbhCATlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:41:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98BED651C5;
-        Mon,  1 Mar 2021 17:16:51 +0000 (UTC)
+        id S235559AbhCATof (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BC9664DE3;
+        Mon,  1 Mar 2021 17:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619012;
-        bh=GcKFfhkIssTDuutgdeiy/2SdhXQg4dTqydtIE0iJoTc=;
+        s=korg; t=1614618924;
+        bh=MYRzRrpG+IHMuJfrBPvXLvD5kn+prmL5VPf+V8lkX4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=stG/g3M7OyrOKBv7wwDBsBXfqGjrYudCrmyXaBq90MwrK2oORKGV77LnGKGdKCLbL
-         U62DJtUSN3+4zgiUN8e9W8F+TKR17+QSxJYpL8zMBgQ7SNfhMPyNRCL5R61Fe9uHsW
-         EpukTTAesBWY7hFqEwU6DcIp23VMBgJam8/ZWPkE=
+        b=hwCrbnmOAgHHowjKngZbABFqVCn0lL0pj8f8rMsccAjI4uWgYccj6i/XrzkSvU2WE
+         ueKD9KGl2aMgfefBGa/D09aCpErI6LtcXOOxoXihhjH6UNloJmjMSr8BRvdkVuyKva
+         LZ/fvM9XAwP13dXnJ/CpMy/QWblpEjzW9xToLanc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Merlijn Wajer <merlijn@wizzup.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 259/663] power: supply: cpcap: Add missing IRQF_ONESHOT to fix regression
-Date:   Mon,  1 Mar 2021 17:08:27 +0100
-Message-Id: <20210301161154.627934029@linuxfoundation.org>
+Subject: [PATCH 5.10 260/663] clk: meson: clk-pll: fix initializing the old rate (fallback) for a PLL
+Date:   Mon,  1 Mar 2021 17:08:28 +0100
+Message-Id: <20210301161154.678847865@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,56 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit e62333e26be649bfc3c167b9f2bbca38b92332c5 ]
+[ Upstream commit 2f290b7c67adf6459a17a4c978102af35cd62e4a ]
 
-Commit 25d76fed7ffe ("phy: cpcap-usb: Use IRQF_ONESHOT") started causing
-errors loading phy-cpcap-usb driver:
+The "rate" parameter in meson_clk_pll_set_rate() contains the new rate.
+Retrieve the old rate with clk_hw_get_rate() so we don't inifinitely try
+to switch from the new rate to the same rate again.
 
-cpcap_battery cpcap_battery.0: failed to register power supply
-genirq: Flags mismatch irq 211. 00002080 (se0conn) vs. 00000080 (se0conn)
-cpcap-usb-phy cpcap-usb-phy.0: could not get irq se0conn: -16
-
-Let's fix this by adding the missing IRQF_ONESHOT to also cpcap-battery
-and cpcap-charger drivers.
-
-Fixes: 25d76fed7ffe ("phy: cpcap-usb: Use IRQF_ONESHOT")
-Reported-by: Merlijn Wajer <merlijn@wizzup.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: 7a29a869434e8b ("clk: meson: Add support for Meson clock controller")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20201226121556.975418-2-martin.blumenstingl@googlemail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/cpcap-battery.c | 2 +-
- drivers/power/supply/cpcap-charger.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/clk/meson/clk-pll.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/cpcap-battery.c b/drivers/power/supply/cpcap-battery.c
-index 295611b3b15e9..7a974b5bd9dd1 100644
---- a/drivers/power/supply/cpcap-battery.c
-+++ b/drivers/power/supply/cpcap-battery.c
-@@ -666,7 +666,7 @@ static int cpcap_battery_init_irq(struct platform_device *pdev,
+diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
+index b17a13e9337c4..9404609b5ebfa 100644
+--- a/drivers/clk/meson/clk-pll.c
++++ b/drivers/clk/meson/clk-pll.c
+@@ -371,7 +371,7 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	if (parent_rate == 0 || rate == 0)
+ 		return -EINVAL;
  
- 	error = devm_request_threaded_irq(ddata->dev, irq, NULL,
- 					  cpcap_battery_irq_thread,
--					  IRQF_SHARED,
-+					  IRQF_SHARED | IRQF_ONESHOT,
- 					  name, ddata);
- 	if (error) {
- 		dev_err(ddata->dev, "could not get irq %s: %i\n",
-diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/supply/cpcap-charger.c
-index c0d452e3dc8b0..804ac7f84c301 100644
---- a/drivers/power/supply/cpcap-charger.c
-+++ b/drivers/power/supply/cpcap-charger.c
-@@ -708,7 +708,7 @@ static int cpcap_usb_init_irq(struct platform_device *pdev,
+-	old_rate = rate;
++	old_rate = clk_hw_get_rate(hw);
  
- 	error = devm_request_threaded_irq(ddata->dev, irq, NULL,
- 					  cpcap_charger_irq_thread,
--					  IRQF_SHARED,
-+					  IRQF_SHARED | IRQF_ONESHOT,
- 					  name, ddata);
- 	if (error) {
- 		dev_err(ddata->dev, "could not get irq %s: %i\n",
+ 	ret = meson_clk_get_pll_settings(rate, parent_rate, &m, &n, pll);
+ 	if (ret)
 -- 
 2.27.0
 
