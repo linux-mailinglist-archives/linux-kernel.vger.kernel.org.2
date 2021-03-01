@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50FB53299E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB94732994F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243299AbhCBAjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:39:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47664 "EHLO mail.kernel.org"
+        id S1344491AbhCBAJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:09:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234419AbhCASdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:33:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EA98650C3;
-        Mon,  1 Mar 2021 17:42:56 +0000 (UTC)
+        id S239753AbhCASUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:20:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4F2B65000;
+        Mon,  1 Mar 2021 17:09:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620577;
-        bh=X3iQd77FCKkj72n3KxqXb/JyOMiOHBUQJJesxBrWpOg=;
+        s=korg; t=1614618544;
+        bh=bPQPvYbXUPUjJOHRKL9WSros6ZRo9eI9F4XnFSeL9pI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xy3dfSKn2DzMDzojyrjKIwfBPTufuQtf0U1p8Er7t0EIEG6VYu7EAt7YeoiY8O1Uo
-         19UgB5hzVM41ESZsaKKfhufpWWvSd6UP5QTm9docMKg39qEwEs57otrhgTRRyuekMp
-         s7Cp/xaSybBH9nBOGhjIN4xkFhF7CMUPX6vdSfow=
+        b=HnIJup5tpDA5aGvXSGvmYVbS/3EumLE9JZbFAWXSHa5UjqV1M+HkJ9TbVUJVQDuHL
+         eECmTgiwqaRRGJKCLt9m8Yl7ISkIawnr8kOu0lpubUo42J9vfu6keJX/U+EmwjoFHA
+         755HU3JR/5LsXHxGiv5/rzVNZAR9ns3b7BdxN6oI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
+        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 173/775] drm/panel: s6e63m0: Fix init sequence again
-Date:   Mon,  1 Mar 2021 17:05:41 +0100
-Message-Id: <20210301161210.182366931@linuxfoundation.org>
+Subject: [PATCH 5.10 098/663] bnxt_en: reverse order of TX disable and carrier off
+Date:   Mon,  1 Mar 2021 17:05:46 +0100
+Message-Id: <20210301161146.580876906@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,143 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Edwin Peer <edwin.peer@broadcom.com>
 
-[ Upstream commit 47b1adc1d2a3b39233a56e183296b335222c9a6d ]
+[ Upstream commit 132e0b65dc2b8bfa9721bfce834191f24fd1d7ed ]
 
-The DSI version of the panel behaved instable and close
-scrutiny of the vendor driver from the Samsung
-GT-S8190 shows a different initialization sequence for
-the DSI mode panel than the DPI mode panel.
+A TX queue can potentially immediately timeout after it is stopped
+and the last TX timestamp on that queue was more than 5 seconds ago with
+carrier still up.  Prevent these intermittent false TX timeouts
+by bringing down carrier first before calling netif_tx_disable().
 
-Make the initialization depend on whether we are in
-DSI or DPI mode and handle the differences.
-
-After this the panel on the GT-I8190 becomes much more
-stable.
-
-Also spell out some more custom DCS commands found in
-the vendor source code to cut down a bit on magic
-where we can.
-
-Fixes: f0aee45ffc8b ("drm/panel: s6e63m0: Fix init sequence")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-Cc: Stephan Gerhold <stephan@gerhold.net>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201205122229.1952980-1-linus.walleij@linaro.org
+Fixes: c0c050c58d84 ("bnxt_en: New Broadcom ethernet driver.")
+Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-samsung-s6e63m0.c | 42 ++++++++++++++-----
- 1 file changed, 32 insertions(+), 10 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c b/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c
-index 6b4e97bfd46ee..bf6d704d4d272 100644
---- a/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6e63m0.c
-@@ -25,6 +25,14 @@
- /* Manufacturer Command Set */
- #define MCS_ELVSS_ON		0xb1
- #define MCS_TEMP_SWIRE		0xb2
-+#define MCS_PENTILE_1		0xb3
-+#define MCS_PENTILE_2		0xb4
-+#define MCS_GAMMA_DELTA_Y_RED	0xb5
-+#define MCS_GAMMA_DELTA_X_RED	0xb6
-+#define MCS_GAMMA_DELTA_Y_GREEN	0xb7
-+#define MCS_GAMMA_DELTA_X_GREEN	0xb8
-+#define MCS_GAMMA_DELTA_Y_BLUE	0xb9
-+#define MCS_GAMMA_DELTA_X_BLUE	0xba
- #define MCS_MIECTL1		0xc0
- #define MCS_BCMODE		0xc1
- #define MCS_ERROR_CHECK		0xd5
-@@ -281,6 +289,7 @@ struct s6e63m0 {
- 	struct backlight_device *bl_dev;
- 	u8 lcd_type;
- 	u8 elvss_pulse;
-+	bool dsi_mode;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 033bfab24ef2f..c7c5c01a783a0 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -8856,9 +8856,10 @@ void bnxt_tx_disable(struct bnxt *bp)
+ 			txr->dev_state = BNXT_DEV_STATE_CLOSING;
+ 		}
+ 	}
++	/* Drop carrier first to prevent TX timeout */
++	netif_carrier_off(bp->dev);
+ 	/* Stop all TX queues */
+ 	netif_tx_disable(bp->dev);
+-	netif_carrier_off(bp->dev);
+ }
  
- 	struct regulator_bulk_data supplies[2];
- 	struct gpio_desc *reset_gpio;
-@@ -395,9 +404,21 @@ static int s6e63m0_check_lcd_type(struct s6e63m0 *ctx)
- 
- static void s6e63m0_init(struct s6e63m0 *ctx)
- {
--	s6e63m0_dcs_write_seq_static(ctx, MCS_PANELCTL,
--				     0x01, 0x27, 0x27, 0x07, 0x07, 0x54, 0x9f,
--				     0x63, 0x8f, 0x1a, 0x33, 0x0d, 0x00, 0x00);
-+	/*
-+	 * We do not know why there is a difference in the DSI mode.
-+	 * (No datasheet.)
-+	 *
-+	 * In the vendor driver this sequence is called
-+	 * "SEQ_PANEL_CONDITION_SET" or "DCS_CMD_SEQ_PANEL_COND_SET".
-+	 */
-+	if (ctx->dsi_mode)
-+		s6e63m0_dcs_write_seq_static(ctx, MCS_PANELCTL,
-+					     0x01, 0x2c, 0x2c, 0x07, 0x07, 0x5f, 0xb3,
-+					     0x6d, 0x97, 0x1d, 0x3a, 0x0f, 0x00, 0x00);
-+	else
-+		s6e63m0_dcs_write_seq_static(ctx, MCS_PANELCTL,
-+					     0x01, 0x27, 0x27, 0x07, 0x07, 0x54, 0x9f,
-+					     0x63, 0x8f, 0x1a, 0x33, 0x0d, 0x00, 0x00);
- 
- 	s6e63m0_dcs_write_seq_static(ctx, MCS_DISCTL,
- 				     0x02, 0x03, 0x1c, 0x10, 0x10);
-@@ -414,40 +435,40 @@ static void s6e63m0_init(struct s6e63m0 *ctx)
- 
- 	s6e63m0_dcs_write_seq_static(ctx, MCS_SRCCTL,
- 				     0x00, 0x8e, 0x07);
--	s6e63m0_dcs_write_seq_static(ctx, 0xb3, 0x6c);
-+	s6e63m0_dcs_write_seq_static(ctx, MCS_PENTILE_1, 0x6c);
- 
--	s6e63m0_dcs_write_seq_static(ctx, 0xb5,
-+	s6e63m0_dcs_write_seq_static(ctx, MCS_GAMMA_DELTA_Y_RED,
- 				     0x2c, 0x12, 0x0c, 0x0a, 0x10, 0x0e, 0x17,
- 				     0x13, 0x1f, 0x1a, 0x2a, 0x24, 0x1f, 0x1b,
- 				     0x1a, 0x17, 0x2b, 0x26, 0x22, 0x20, 0x3a,
- 				     0x34, 0x30, 0x2c, 0x29, 0x26, 0x25, 0x23,
- 				     0x21, 0x20, 0x1e, 0x1e);
- 
--	s6e63m0_dcs_write_seq_static(ctx, 0xb6,
-+	s6e63m0_dcs_write_seq_static(ctx, MCS_GAMMA_DELTA_X_RED,
- 				     0x00, 0x00, 0x11, 0x22, 0x33, 0x44, 0x44,
- 				     0x44, 0x55, 0x55, 0x66, 0x66, 0x66, 0x66,
- 				     0x66, 0x66);
- 
--	s6e63m0_dcs_write_seq_static(ctx, 0xb7,
-+	s6e63m0_dcs_write_seq_static(ctx, MCS_GAMMA_DELTA_Y_GREEN,
- 				     0x2c, 0x12, 0x0c, 0x0a, 0x10, 0x0e, 0x17,
- 				     0x13, 0x1f, 0x1a, 0x2a, 0x24, 0x1f, 0x1b,
- 				     0x1a, 0x17, 0x2b, 0x26, 0x22, 0x20, 0x3a,
- 				     0x34, 0x30, 0x2c, 0x29, 0x26, 0x25, 0x23,
- 				     0x21, 0x20, 0x1e, 0x1e);
- 
--	s6e63m0_dcs_write_seq_static(ctx, 0xb8,
-+	s6e63m0_dcs_write_seq_static(ctx, MCS_GAMMA_DELTA_X_GREEN,
- 				     0x00, 0x00, 0x11, 0x22, 0x33, 0x44, 0x44,
- 				     0x44, 0x55, 0x55, 0x66, 0x66, 0x66, 0x66,
- 				     0x66, 0x66);
- 
--	s6e63m0_dcs_write_seq_static(ctx, 0xb9,
-+	s6e63m0_dcs_write_seq_static(ctx, MCS_GAMMA_DELTA_Y_BLUE,
- 				     0x2c, 0x12, 0x0c, 0x0a, 0x10, 0x0e, 0x17,
- 				     0x13, 0x1f, 0x1a, 0x2a, 0x24, 0x1f, 0x1b,
- 				     0x1a, 0x17, 0x2b, 0x26, 0x22, 0x20, 0x3a,
- 				     0x34, 0x30, 0x2c, 0x29, 0x26, 0x25, 0x23,
- 				     0x21, 0x20, 0x1e, 0x1e);
- 
--	s6e63m0_dcs_write_seq_static(ctx, 0xba,
-+	s6e63m0_dcs_write_seq_static(ctx, MCS_GAMMA_DELTA_X_BLUE,
- 				     0x00, 0x00, 0x11, 0x22, 0x33, 0x44, 0x44,
- 				     0x44, 0x55, 0x55, 0x66, 0x66, 0x66, 0x66,
- 				     0x66, 0x66);
-@@ -704,6 +725,7 @@ int s6e63m0_probe(struct device *dev,
- 	if (!ctx)
- 		return -ENOMEM;
- 
-+	ctx->dsi_mode = dsi_mode;
- 	ctx->dcs_read = dcs_read;
- 	ctx->dcs_write = dcs_write;
- 	dev_set_drvdata(dev, ctx);
+ void bnxt_tx_enable(struct bnxt *bp)
 -- 
 2.27.0
 
