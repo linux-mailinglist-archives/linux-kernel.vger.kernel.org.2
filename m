@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B89A329C48
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4020E329B73
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380438AbhCBBvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:51:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48614 "EHLO mail.kernel.org"
+        id S1348719AbhCBBYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:24:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241717AbhCAT24 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:28:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0F19652C6;
-        Mon,  1 Mar 2021 17:37:36 +0000 (UTC)
+        id S235184AbhCATJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:09:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2B09652C0;
+        Mon,  1 Mar 2021 17:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620257;
-        bh=I378LHQLmI1Vw9vlFkHr7vQGsYoUL8h16QV4zVZM88s=;
+        s=korg; t=1614620260;
+        bh=Dd0Z4bmYto1BQRXCXQ3jQtyh3Wp994OO5xwayXdVi9c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jsdTzJ93L87Ji+5TaQJb1nJXs+S1hcvknFaT+DkaUwThE4YwvsTWBZbfwtXudgQxp
-         Y7U9uYrvRaEe4qKNqIzhObvRZc87slSbvi/8NlMt4rBPq2Zt3Sp2WUE3YZWIoesBZ7
-         3SP1m1yreE3hi1oebo8OpIfTcRlvOU1KhE+RVrfA=
+        b=JPhWWzHwoD/xKlhBCiblWXuFx1aAkt0+MiSO++R7I/AxRRbXuEh2RciQaJa9mbfMW
+         4gv+Rdf3TXUpZLMIKIY0jyBhk/SVnZNOQz0c6WVVRDu8FGh9Ktr/KCaEHGtQJS9232
+         c1OtSXs3aXfF4nJ139BuVTe7fX2Gv2Zwin2XZgX8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 087/775] ath11k: fix a locking bug in ath11k_mac_op_start()
-Date:   Mon,  1 Mar 2021 17:04:15 +0100
-Message-Id: <20210301161205.981251608@linuxfoundation.org>
+        stable@vger.kernel.org, Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
+        Vernon Mauery <vernon.mauery@linux.intel.com>,
+        John Wang <wangzhiqiang.bj@bytedance.com>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 088/775] soc: aspeed: snoop: Add clock control logic
+Date:   Mon,  1 Mar 2021 17:04:16 +0100
+Message-Id: <20210301161206.031406419@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,57 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
 
-[ Upstream commit c202e2ebe1dc454ad54fd0018c023ec553d47284 ]
+[ Upstream commit 3f94cf15583be554df7aaa651b8ff8e1b68fbe51 ]
 
-This error path leads to a Smatch warning:
+If LPC SNOOP driver is registered ahead of lpc-ctrl module, LPC
+SNOOP block will be enabled without heart beating of LCLK until
+lpc-ctrl enables the LCLK. This issue causes improper handling on
+host interrupts when the host sends interrupt in that time frame.
+Then kernel eventually forcibly disables the interrupt with
+dumping stack and printing a 'nobody cared this irq' message out.
 
-	drivers/net/wireless/ath/ath11k/mac.c:4269 ath11k_mac_op_start()
-	error: double unlocked '&ar->conf_mutex' (orig line 4251)
+To prevent this issue, all LPC sub-nodes should enable LCLK
+individually so this patch adds clock control logic into the LPC
+SNOOP driver.
 
-We're not holding the lock when we do the "goto err;" so it leads to a
-double unlock.  The fix is to hold the lock for a little longer.
-
-Fixes: c83c500b55b6 ("ath11k: enable idle power save mode")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-[kvalo@codeaurora.org: move also rcu_assign_pointer() call]
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/YBk4GoeE+yc0wlJH@mwanda
+Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
+Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
+Signed-off-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Link: https://lore.kernel.org/r/20201208091748.1920-1-wangzhiqiang.bj@bytedance.com
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/mac.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/soc/aspeed/aspeed-lpc-snoop.c | 30 ++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
-index c1608f64ea95d..7d799fe6fbd89 100644
---- a/drivers/net/wireless/ath/ath11k/mac.c
-+++ b/drivers/net/wireless/ath/ath11k/mac.c
-@@ -4248,11 +4248,6 @@ static int ath11k_mac_op_start(struct ieee80211_hw *hw)
- 	/* Configure the hash seed for hash based reo dest ring selection */
- 	ath11k_wmi_pdev_lro_cfg(ar, ar->pdev->pdev_id);
+diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+index 682ba0eb4eba1..20acac6342eff 100644
+--- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
++++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+@@ -11,6 +11,7 @@
+  */
  
--	mutex_unlock(&ar->conf_mutex);
--
--	rcu_assign_pointer(ab->pdevs_active[ar->pdev_idx],
--			   &ab->pdevs[ar->pdev_idx]);
--
- 	/* allow device to enter IMPS */
- 	if (ab->hw_params.idle_ps) {
- 		ret = ath11k_wmi_pdev_set_param(ar, WMI_PDEV_PARAM_IDLE_PS_CONFIG,
-@@ -4262,6 +4257,12 @@ static int ath11k_mac_op_start(struct ieee80211_hw *hw)
- 			goto err;
- 		}
+ #include <linux/bitops.h>
++#include <linux/clk.h>
+ #include <linux/interrupt.h>
+ #include <linux/fs.h>
+ #include <linux/kfifo.h>
+@@ -67,6 +68,7 @@ struct aspeed_lpc_snoop_channel {
+ struct aspeed_lpc_snoop {
+ 	struct regmap		*regmap;
+ 	int			irq;
++	struct clk		*clk;
+ 	struct aspeed_lpc_snoop_channel chan[NUM_SNOOP_CHANNELS];
+ };
+ 
+@@ -282,22 +284,42 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
+ 		return -ENODEV;
  	}
+ 
++	lpc_snoop->clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(lpc_snoop->clk)) {
++		rc = PTR_ERR(lpc_snoop->clk);
++		if (rc != -EPROBE_DEFER)
++			dev_err(dev, "couldn't get clock\n");
++		return rc;
++	}
++	rc = clk_prepare_enable(lpc_snoop->clk);
++	if (rc) {
++		dev_err(dev, "couldn't enable clock\n");
++		return rc;
++	}
 +
-+	mutex_unlock(&ar->conf_mutex);
+ 	rc = aspeed_lpc_snoop_config_irq(lpc_snoop, pdev);
+ 	if (rc)
+-		return rc;
++		goto err;
+ 
+ 	rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 0, port);
+ 	if (rc)
+-		return rc;
++		goto err;
+ 
+ 	/* Configuration of 2nd snoop channel port is optional */
+ 	if (of_property_read_u32_index(dev->of_node, "snoop-ports",
+ 				       1, &port) == 0) {
+ 		rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 1, port);
+-		if (rc)
++		if (rc) {
+ 			aspeed_lpc_disable_snoop(lpc_snoop, 0);
++			goto err;
++		}
+ 	}
+ 
++	return 0;
 +
-+	rcu_assign_pointer(ab->pdevs_active[ar->pdev_idx],
-+			   &ab->pdevs[ar->pdev_idx]);
++err:
++	clk_disable_unprepare(lpc_snoop->clk);
++
+ 	return rc;
+ }
+ 
+@@ -309,6 +331,8 @@ static int aspeed_lpc_snoop_remove(struct platform_device *pdev)
+ 	aspeed_lpc_disable_snoop(lpc_snoop, 0);
+ 	aspeed_lpc_disable_snoop(lpc_snoop, 1);
+ 
++	clk_disable_unprepare(lpc_snoop->clk);
 +
  	return 0;
+ }
  
- err:
 -- 
 2.27.0
 
