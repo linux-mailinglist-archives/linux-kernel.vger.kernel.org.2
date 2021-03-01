@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B9D327766
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC78327764
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhCAGIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 01:08:44 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47282 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbhCAGHl (ORCPT
+        id S230521AbhCAGH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 01:07:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231545AbhCAGGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 01:07:41 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12165UBb129615;
-        Mon, 1 Mar 2021 00:05:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614578730;
-        bh=eXn3m1eYJsCAwe2CGJZNEBs+NH+JX/pD6w/lNbuQh6Y=;
-        h=From:To:CC:Subject:Date;
-        b=PWuH4Ynn9c3B/GCH55jzXA51bp9Bixjg8ObyTd5aWFQr+QNPuei/c2/3Ty7s3y2yJ
-         mhSZLbB/T1KZJVn+y4kU5QvHumgasA+UNOX71T4jzerxftWuMaVwFoZ1DSYXB3s6jG
-         HKo5hmyJ10FfMxEenBCU7JCblDKgiUg1ZRbs1Zgs=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12165U4x022384
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 1 Mar 2021 00:05:30 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 1 Mar
- 2021 00:05:30 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 1 Mar 2021 00:05:30 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12165LeV011507;
-        Mon, 1 Mar 2021 00:05:22 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] arm64: dts: ti: k3-am642-evm: Add support for SPI EEPROM
-Date:   Mon, 1 Mar 2021 11:35:18 +0530
-Message-ID: <20210301060518.19550-1-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 1 Mar 2021 01:06:43 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A34BC06174A;
+        Sun, 28 Feb 2021 22:05:58 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id i10so1593482pfk.4;
+        Sun, 28 Feb 2021 22:05:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jMWOZvS2/FrD2N+UR3nKIhFw7VUdZp63CYTyrcaoXAQ=;
+        b=A1/Da6q7HcMaVcf0rFWlkJcK+ylFjr5FyiLab/uZz4/ActeAyTwuXRQgrSsvQO15LN
+         vnYiNNW0NYahMP7mba4jHHo3OB0P8tUhKZA7rOKBOgDLkMsa7AJsxg34Hj4Pm1AzwlpJ
+         ym9Q9d1WbfipieiLeh5i2ozEax0SsRv63PQHWnBxhK5gCWDpLHqqhcPdwzrsDYcf11N3
+         u01g6Kj8R4ZqgXko9Kt/l0Vjszj+8PITtQWWKAOuNKWHXO84QVVEGZPZomQBw+t9StqL
+         WBXN4/vHn7A/0TiRm2ZZGaG+zaFIxw+/FtVKJFZGMeiJKGR2x+t2TuvdCw28fuFWi9Pb
+         7gIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jMWOZvS2/FrD2N+UR3nKIhFw7VUdZp63CYTyrcaoXAQ=;
+        b=qRn0BqmJUWfeTH1rdWGYJ116LQV/A1ghXnd/oqSMM8DspFOeXbsmmMq6xD3NUij1CO
+         Evt5lM/Z07gHSxFWvHORaw35pDJGS7G/YBauN88NR6kbquNf1aBnqpABEXaastJGcKBp
+         Sx0m2O6K4A5kQudIhHQidJZ9GMMj023+CE4K7XCen/8UnXvLJ42hW7wttqbaKDmbS2na
+         1wsOSYe4mAfdTeuueEf7IeqOENHn93VnzINt8ueZwswQcQhh2us/ln9i3L9Q/dpKoIQL
+         0sMzB+BmZTxhh3wHKAceR/6x5KU0s/MHEsWhQRq9yooPD7zRUw/2dN/pP+8NqTJM4xzz
+         S+vA==
+X-Gm-Message-State: AOAM530blUIW3Gz/NqYCHjDW+x+zODsghagL+o68j5Vd8Qd7GmQuzmMa
+        FKxEd6rH7xs+5x8YjEJ5KXg=
+X-Google-Smtp-Source: ABdhPJwvSGDWTbzt7ifBEWQXMedc4nMVANCMx9Nl+u7rPl/h6jNkdeeaAakkQkSM9JH7BApz551y/w==
+X-Received: by 2002:a63:4343:: with SMTP id q64mr12240606pga.109.1614578757854;
+        Sun, 28 Feb 2021 22:05:57 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id c8sm16426326pjv.18.2021.02.28.22.05.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Feb 2021 22:05:57 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, eric.dumazet@gmail.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] inetpeer: use div64_ul() and clamp_val() calculate inet_peer_threshold
+Date:   Mon,  1 Mar 2021 14:05:48 +0800
+Message-Id: <20210301060548.46289-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pinmux details and device tree node for the EEPROM attached to SPI0
-module in main domain.
+In inet_initpeers(), struct inet_peer on IA32 uses 128 bytes in nowdays.
+Get rid of the cascade and use div64_ul() and clamp_val() calculate that
+will not need to be adjusted in the future as suggested by Eric Dumazet.
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Suggested-by: Eric Dumazet <eric.dumazet@gmail.com>
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
 ---
+ net/ipv4/inetpeer.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
-This patch depends on,
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210301055109.17626-3-a-govindraju@ti.com/
-
- arch/arm64/boot/dts/ti/k3-am642-evm.dts | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index bfd849a29655..bc5bd7f896ab 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -139,6 +139,15 @@
- 			AM64X_IOPAD(0x02a8, PIN_OUTPUT, 0) /* (E19) USB0_DRVVBUS */
- 		>;
- 	};
-+
-+	main_spi0_pins_default: main-spi0-pins-default {
-+		pinctrl-single,pins = <
-+			AM64X_IOPAD(0x0210, PIN_INPUT, 0) /* (D13) SPI0_CLK */
-+			AM64X_IOPAD(0x0208, PIN_OUTPUT, 0) /* (D12) SPI0_CS0 */
-+			AM64X_IOPAD(0x0214, PIN_OUTPUT, 0) /* (A13) SPI0_D0 */
-+			AM64X_IOPAD(0x0218, PIN_INPUT, 0) /* (A14) SPI0_D1 */
-+		>;
-+	};
- };
+diff --git a/net/ipv4/inetpeer.c b/net/ipv4/inetpeer.c
+index ff327a62c9ce..da21dfce24d7 100644
+--- a/net/ipv4/inetpeer.c
++++ b/net/ipv4/inetpeer.c
+@@ -65,7 +65,7 @@ EXPORT_SYMBOL_GPL(inet_peer_base_init);
+ #define PEER_MAX_GC 32
  
- &main_uart0 {
-@@ -245,6 +254,19 @@
- 	pinctrl-0 = <&main_usb0_pins_default>;
- };
+ /* Exported for sysctl_net_ipv4.  */
+-int inet_peer_threshold __read_mostly = 65536 + 128;	/* start to throw entries more
++int inet_peer_threshold __read_mostly;	/* start to throw entries more
+ 					 * aggressively at this stage */
+ int inet_peer_minttl __read_mostly = 120 * HZ;	/* TTL under high load: 120 sec */
+ int inet_peer_maxttl __read_mostly = 10 * 60 * HZ;	/* usual time to live: 10 min */
+@@ -73,20 +73,13 @@ int inet_peer_maxttl __read_mostly = 10 * 60 * HZ;	/* usual time to live: 10 min
+ /* Called from ip_output.c:ip_init  */
+ void __init inet_initpeers(void)
+ {
+-	struct sysinfo si;
++	u64 nr_entries;
  
-+&main_spi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&main_spi0_pins_default>;
-+	ti,pindir-d0-out-d1-in = <1>;
-+	eeprom@0 {
-+		compatible = "microchip,93lc46b";
-+		reg = <0>;
-+		spi-max-frequency = <1000000>;
-+		spi-cs-high;
-+		data-size = <16>;
-+	};
-+};
+-	/* Use the straight interface to information about memory. */
+-	si_meminfo(&si);
+-	/* The values below were suggested by Alexey Kuznetsov
+-	 * <kuznet@ms2.inr.ac.ru>.  I don't have any opinion about the values
+-	 * myself.  --SAW
+-	 */
+-	if (si.totalram <= (32768*1024)/PAGE_SIZE)
+-		inet_peer_threshold >>= 1; /* max pool size about 1MB on IA32 */
+-	if (si.totalram <= (16384*1024)/PAGE_SIZE)
+-		inet_peer_threshold >>= 1; /* about 512KB */
+-	if (si.totalram <= (8192*1024)/PAGE_SIZE)
+-		inet_peer_threshold >>= 2; /* about 128KB */
++	 /* 1% of physical memory */
++	nr_entries = div64_ul((u64)totalram_pages() << PAGE_SHIFT,
++			      100 * L1_CACHE_ALIGN(sizeof(struct inet_peer)));
 +
- &sdhci0 {
- 	/* emmc */
- 	bus-width = <8>;
++	inet_peer_threshold = clamp_val(nr_entries, 4096, 65536 + 128);
+ 
+ 	peer_cachep = kmem_cache_create("inet_peer_cache",
+ 			sizeof(struct inet_peer),
 -- 
-2.17.1
+2.29.0
 
