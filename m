@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A463C3297BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1D53297CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237962AbhCAWmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:42:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40268 "EHLO mail.kernel.org"
+        id S1344424AbhCAWyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:54:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238975AbhCARtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:49:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5526650EB;
-        Mon,  1 Mar 2021 16:59:54 +0000 (UTC)
+        id S238513AbhCARtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:49:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52478650EF;
+        Mon,  1 Mar 2021 17:00:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617995;
-        bh=z+5QI17uKhvYxlrgSeQiSpOS8U6KWLX1cITVmnCy1wc=;
+        s=korg; t=1614618003;
+        bh=ZTXcQ/HgkGLx7GOqLgNFOnRAvJ4AQ4FcdaC5wFNq3J0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KYPmFVLWR/PjB19HfkpnI6e0Mgmy2XKVFlL+Iwx4MM7SRtyvi+wth6ZXMHl94wxP2
-         /TBEJI2gy43oK+Wg6tgTGZgBzJRoeQc+FV//VnOIon2bQquT5buZbsPNfHPAhkRQee
-         mkiwU1a8WZaoZeSrE8txPjGfsHQi1bxfzyjoaQj0=
+        b=PO717kT5n03DbR0+Jfpvc+T90s/JBfBv8Pjo84OKso32vQQFIXttl1k7S2O25lf4h
+         ObrO3nq58/gRcspDqgnRPzYglVGdUGu9hyXs+fKpDMa50Bp+FSB1FNc34Qw6Gl5q4x
+         szOxNAC2/kWkZQEoNExg10uVWFtK2KDhb1farNAI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
         Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.4 271/340] crypto: sun4i-ss - checking sg length is not sufficient
-Date:   Mon,  1 Mar 2021 17:13:35 +0100
-Message-Id: <20210301161101.624132755@linuxfoundation.org>
+Subject: [PATCH 5.4 274/340] crypto: sun4i-ss - initialize need_fallback
+Date:   Mon,  1 Mar 2021 17:13:38 +0100
+Message-Id: <20210301161101.774009706@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -41,38 +41,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Corentin Labbe <clabbe@baylibre.com>
 
-commit 7bdcd851fa7eb66e8922aa7f6cba9e2f2427a7cf upstream.
+commit 4ec8977b921fd9d512701e009ce8082cb94b5c1c upstream.
 
-The optimized cipher function need length multiple of 4 bytes.
-But it get sometimes odd length.
-This is due to SG data could be stored with an offset.
+The need_fallback is never initialized and seem to be always true at runtime.
+So all hardware operations are always bypassed.
 
-So the fix is to check also if the offset is aligned with 4 bytes.
-Fixes: 6298e948215f2 ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+Fixes: 0ae1f46c55f87 ("crypto: sun4i-ss - fallback when length is not multiple of blocksize")
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/crypto/sunxi-ss/sun4i-ss-cipher.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/crypto/sunxi-ss/sun4i-ss-cipher.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
 +++ b/drivers/crypto/sunxi-ss/sun4i-ss-cipher.c
-@@ -203,12 +203,12 @@ static int sun4i_ss_cipher_poll(struct s
- 	 * we can use the SS optimized function
- 	 */
- 	while (in_sg && no_chunk == 1) {
--		if (in_sg->length % 4)
-+		if ((in_sg->length | in_sg->offset) & 3u)
- 			no_chunk = 0;
- 		in_sg = sg_next(in_sg);
- 	}
- 	while (out_sg && no_chunk == 1) {
--		if (out_sg->length % 4)
-+		if ((out_sg->length | out_sg->offset) & 3u)
- 			no_chunk = 0;
- 		out_sg = sg_next(out_sg);
- 	}
+@@ -196,7 +196,7 @@ static int sun4i_ss_cipher_poll(struct s
+ 	unsigned int obo = 0;	/* offset in bufo*/
+ 	unsigned int obl = 0;	/* length of data in bufo */
+ 	unsigned long flags;
+-	bool need_fallback;
++	bool need_fallback = false;
+ 
+ 	if (!areq->cryptlen)
+ 		return 0;
 
 
