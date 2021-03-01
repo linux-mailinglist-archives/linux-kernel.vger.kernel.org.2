@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FD1329C4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CE1329B9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380454AbhCBBv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:51:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48800 "EHLO mail.kernel.org"
+        id S1379234AbhCBB1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:27:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241805AbhCAT3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D77526508E;
-        Mon,  1 Mar 2021 17:29:39 +0000 (UTC)
+        id S241107AbhCATMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:12:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AA7865269;
+        Mon,  1 Mar 2021 17:29:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619780;
-        bh=8WCF+oineygjeY4ucIdrkbCSgKBCtwRSbYcTZlESzYo=;
+        s=korg; t=1614619788;
+        bh=v9F3rPspb0CiLc1VvoNlM9/+8X8I7v7LA5L/pB1Kkr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HpWaAwN1lkU1Mk+m4UxIsyOgLcmnoKYycqv3y7Oz2wnmohf2hNE0PBcfG44SUnAIq
-         uMNlGW78Ff84zv4P6Cde1NUPkxA17m8DQrHCgOAG+8pSbx3I3gI5ykjvJiC4qJJFL/
-         L4Too9h0T8sJEtPFznMhhoB9+1cL+Ny2pr+7ezpM=
+        b=dwxPYJ9bqBuZpoKvcAWtBeg71YH7HL0bxLXRi3ZvD1zEJG/hw6Fqs4OL1V1KDv15v
+         0Yrs8BTin1L4Rhuk4G+BRb3D0y3kNQa2dFNcjIa+8TbjthTgN1bvA2ZihvM9Vk4oW0
+         Dpune3LW5nL2YHNenud6fPImKg5Vi6mg3iiYvIrY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH 5.10 578/663] arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
-Date:   Mon,  1 Mar 2021 17:13:46 +0100
-Message-Id: <20210301161210.455729289@linuxfoundation.org>
+        stable@vger.kernel.org, He Zhe <zhe.he@windriver.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.10 581/663] arm64: uprobe: Return EOPNOTSUPP for AARCH32 instruction probing
+Date:   Mon,  1 Mar 2021 17:13:49 +0100
+Message-Id: <20210301161210.611201343@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,52 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+From: He Zhe <zhe.he@windriver.com>
 
-commit c0b15c25d25171db4b70cc0b7dbc1130ee94017d upstream.
+commit d47422d953e258ad587b5edf2274eb95d08bdc7d upstream.
 
-The erratum 1024718 affects Cortex-A55 r0p0 to r2p0. However
-we apply the work around for r0p0 - r1p0. Unfortunately this
-won't be fixed for the future revisions for the CPU. Thus
-extend the work around for all versions of A55, to cover
-for r2p0 and any future revisions.
+As stated in linux/errno.h, ENOTSUPP should never be seen by user programs.
+When we set up uprobe with 32-bit perf and arm64 kernel, we would see the
+following vague error without useful hint.
 
-Cc: stable@vger.kernel.org
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: James Morse <james.morse@arm.com>
-Cc: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20210203230057.3961239-1-suzuki.poulose@arm.com
-[will: Update Kconfig help text]
+The sys_perf_event_open() syscall returned with 524 (INTERNAL ERROR:
+strerror_r(524, [buf], 128)=22)
+
+Use EOPNOTSUPP instead to indicate such cases.
+
+Signed-off-by: He Zhe <zhe.he@windriver.com>
+Link: https://lore.kernel.org/r/20210223082535.48730-1-zhe.he@windriver.com
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/Kconfig             |    2 +-
- arch/arm64/kernel/cpufeature.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/kernel/probes/uprobes.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -520,7 +520,7 @@ config ARM64_ERRATUM_1024718
- 	help
- 	  This option adds a workaround for ARM Cortex-A55 Erratum 1024718.
+--- a/arch/arm64/kernel/probes/uprobes.c
++++ b/arch/arm64/kernel/probes/uprobes.c
+@@ -38,7 +38,7 @@ int arch_uprobe_analyze_insn(struct arch
  
--	  Affected Cortex-A55 cores (r0p0, r0p1, r1p0) could cause incorrect
-+	  Affected Cortex-A55 cores (all revisions) could cause incorrect
- 	  update of the hardware dirty bit when the DBM/AP bits are updated
- 	  without a break-before-make. The workaround is to disable the usage
- 	  of hardware DBM locally on the affected cores. CPUs not affected by
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -1457,7 +1457,7 @@ static bool cpu_has_broken_dbm(void)
- 	/* List of CPUs which have broken DBM support. */
- 	static const struct midr_range cpus[] = {
- #ifdef CONFIG_ARM64_ERRATUM_1024718
--		MIDR_RANGE(MIDR_CORTEX_A55, 0, 0, 1, 0),  // A55 r0p0 -r1p0
-+		MIDR_ALL_VERSIONS(MIDR_CORTEX_A55),
- 		/* Kryo4xx Silver (rdpe => r1p0) */
- 		MIDR_REV(MIDR_QCOM_KRYO_4XX_SILVER, 0xd, 0xe),
- #endif
+ 	/* TODO: Currently we do not support AARCH32 instruction probing */
+ 	if (mm->context.flags & MMCF_AARCH32)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 	else if (!IS_ALIGNED(addr, AARCH64_INSN_SIZE))
+ 		return -EINVAL;
+ 
 
 
