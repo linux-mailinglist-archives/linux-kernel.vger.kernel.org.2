@@ -2,72 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C7A327856
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 08:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB038327852
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 08:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbhCAHjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 02:39:37 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:23376 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232539AbhCAHj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 02:39:29 -0500
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app4 (Coremail) with SMTP id cS_KCgAnoWCrlzxgsYPkAQ--.52399S4;
-        Mon, 01 Mar 2021 15:28:46 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] sata_dwc_460ex: Fix missing check in sata_dwc_isr
-Date:   Mon,  1 Mar 2021 15:28:42 +0800
-Message-Id: <20210301072842.7410-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgAnoWCrlzxgsYPkAQ--.52399S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF4DXFykGw1UXw45Gw4xtFb_yoWfXrb_Ga
-        1xZFn7Wry8Kr1rGr17Ww1rZryIkw48urs3Za4xt3W3X343WF4FqrWDXwn8JwnxWa1FyFnI
-        v3y7C345Cr97GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2kFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
-        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAg0LBlZdtSi7-wACsS
+        id S232544AbhCAHj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 02:39:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36288 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232496AbhCAHjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 02:39:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614584364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=34KjJW6+smFTvdlwXxTHDLwnzuvbuoymQf/sE3k7JDk=;
+        b=vU+v0gpxQZomsgNvE8gpmxUfse2pH+A/rl+TVwbFGvyrWd8cPG1s4z3QEmjtqqVzhvUOGz
+        CNOgbtrM+9vHwXEKis5Iw6Dx2e/rVoIweBr7mXZ+roPJJXen8HgAP06WQiIoWY0oB3d4Cv
+        uQmB3+xzn6iXB4207y2xgFbDmKCiDR4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9E026AF11;
+        Mon,  1 Mar 2021 07:39:24 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 08:39:23 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
+ usage excess
+Message-ID: <YDyaK2wSKc80c4vM@dhcp22.suse.cz>
+References: <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
+ <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
+ <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
+ <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
+ <YDQBh5th9txxEFUm@dhcp22.suse.cz>
+ <cf5ca7a1-7965-f307-22e1-e216316904cf@linux.intel.com>
+ <YDY+PydRUGQpHNaJ@dhcp22.suse.cz>
+ <b5b1944d-846b-3212-fe4a-f10f5fcb87d7@linux.intel.com>
+ <YDi2udQqIML6Vdpo@dhcp22.suse.cz>
+ <781634ee-ffb9-598d-fdb6-0ae6067448b7@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <781634ee-ffb9-598d-fdb6-0ae6067448b7@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ata_qc_from_tag() may return a null pointer and further lead to
-null-pointer-dereference. Add a return value check to avoid such case.
+On Fri 26-02-21 16:56:28, Tim Chen wrote:
+> 
+> 
+> On 2/26/21 12:52 AM, Michal Hocko wrote:
+> 
+> >>
+> >> Michal,
+> >>
+> >> Let's take an extreme case where memcg 1 always generate the
+> >> first event and memcg 2 generates the rest of 128*8-1 events
+> >> and the pattern repeat.
+> > 
+> > I do not follow. Events are per-memcg, aren't they?
+> > 	__this_cpu_read(memcg->vmstats_percpu->targets[target]);
+> > 	[...]
+> > 	__this_cpu_write(memcg->vmstats_percpu->targets[target], next);
+> > 
+> 
+> You are right. My previous reasoning is incorrect as the sampling is done per memcg.
+> I'll do some additional debugging on why memcg is not on the tree.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/ata/sata_dwc_460ex.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/ata/sata_dwc_460ex.c b/drivers/ata/sata_dwc_460ex.c
-index 9dcef6ac643b..0068247ffc06 100644
---- a/drivers/ata/sata_dwc_460ex.c
-+++ b/drivers/ata/sata_dwc_460ex.c
-@@ -548,8 +548,10 @@ static irqreturn_t sata_dwc_isr(int irq, void *dev_instance)
- 		 * active tag.  It is the tag that matches the command about to
- 		 * be completed.
- 		 */
--		qc->ap->link.active_tag = tag;
--		sata_dwc_bmdma_start_by_tag(qc, tag);
-+		if (qc) {
-+			qc->ap->link.active_tag = tag;
-+			sata_dwc_bmdma_start_by_tag(qc, tag);
-+		}
- 
- 		handled = 1;
- 		goto DONE;
+OK, thanks for the confirmation. I think we want to do 2 things. Remove
+the soft limit specific threshold and stay with a single one and
+recognize THPs.
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
