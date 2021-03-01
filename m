@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC653299DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5C0329934
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240013AbhCBAiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:38:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47666 "EHLO mail.kernel.org"
+        id S1344064AbhCBABd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:01:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240027AbhCASdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:33:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA7E2652BE;
-        Mon,  1 Mar 2021 17:36:25 +0000 (UTC)
+        id S239716AbhCASUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:20:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E935652BF;
+        Mon,  1 Mar 2021 17:36:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620186;
-        bh=RrI+sEIYk/NjwARn75vURPzpz5FjfpmTHNColCYARbs=;
+        s=korg; t=1614620191;
+        bh=gDv6SUpSo6UIzShK/ZKS1bJenGb6C1iukfvzRaraFrg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m2xLXk71OxsqKkcb6xZ3FNIsCPaVcsG9F7cl5odOMGGUK/6SQvhRavDiZhVX6eAEu
-         jGsTKY1rNMBbX9hQnwRzQInDyBOANswBESp6hFoStUWUvHUbdJmkQPtwHGsVT9aKW8
-         7hThrEuuLZL6333TUKu8spuuXV9rx4aPlJPCmjqc=
+        b=r35ybL6rO+aY/mtj7emMJ7KjtZ3sgY9aolXO5M6lbyyfNL/AC2CMC4QU2imdKeiFW
+         q2xaircvW2WmGULGZyrzEgY/cL0uu0DV3+JMWDUiwd6E0nFf6hixOCpNy7ocU5ZTc0
+         vS6eLhPxvf6HxdJsBJ3y7G4GvtdvN5qvr+Gg3Ueo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 061/775] Bluetooth: drop HCI device reference before return
-Date:   Mon,  1 Mar 2021 17:03:49 +0100
-Message-Id: <20210301161204.702948790@linuxfoundation.org>
+Subject: [PATCH 5.11 063/775] memory: ti-aemif: Drop child node when jumping out loop
+Date:   Mon,  1 Mar 2021 17:03:51 +0100
+Message-Id: <20210301161204.795297382@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,31 +42,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit 5a3ef03afe7e12982dc3b978f4c5077c907f7501 ]
+[ Upstream commit 94e9dd43cf327366388c8f146bccdc6322c0d999 ]
 
-Call hci_dev_put() to decrement reference count of HCI device hdev if
-fails to duplicate memory.
+Call of_node_put() to decrement the reference count of the child node
+child_np when jumping out of the loop body of
+for_each_available_child_of_node(), which is a macro that increments and
+decrements the reference count of child node. If the loop is broken, the
+reference of the child node should be dropped manually.
 
-Fixes: 0b26ab9dce74 ("Bluetooth: AMP: Handle Accept phylink command status evt")
+Fixes: 5a7c81547c1d ("memory: ti-aemif: introduce AEMIF driver")
 Signed-off-by: Pan Bian <bianpan2016@163.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Link: https://lore.kernel.org/r/20210121090359.61763-1-bianpan2016@163.com
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/a2mp.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/memory/ti-aemif.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/net/bluetooth/a2mp.c b/net/bluetooth/a2mp.c
-index cc26e4c047ad0..463bad58478b2 100644
---- a/net/bluetooth/a2mp.c
-+++ b/net/bluetooth/a2mp.c
-@@ -512,6 +512,7 @@ static int a2mp_createphyslink_req(struct amp_mgr *mgr, struct sk_buff *skb,
- 		assoc = kmemdup(req->amp_assoc, assoc_len, GFP_KERNEL);
- 		if (!assoc) {
- 			amp_ctrl_put(ctrl);
-+			hci_dev_put(hdev);
- 			return -ENOMEM;
+diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
+index 159a16f5e7d67..51d20c2ccb755 100644
+--- a/drivers/memory/ti-aemif.c
++++ b/drivers/memory/ti-aemif.c
+@@ -378,8 +378,10 @@ static int aemif_probe(struct platform_device *pdev)
+ 		 */
+ 		for_each_available_child_of_node(np, child_np) {
+ 			ret = of_aemif_parse_abus_config(pdev, child_np);
+-			if (ret < 0)
++			if (ret < 0) {
++				of_node_put(child_np);
+ 				goto error;
++			}
  		}
- 
+ 	} else if (pdata && pdata->num_abus_data > 0) {
+ 		for (i = 0; i < pdata->num_abus_data; i++, aemif->num_cs++) {
+@@ -405,8 +407,10 @@ static int aemif_probe(struct platform_device *pdev)
+ 		for_each_available_child_of_node(np, child_np) {
+ 			ret = of_platform_populate(child_np, NULL,
+ 						   dev_lookup, dev);
+-			if (ret < 0)
++			if (ret < 0) {
++				of_node_put(child_np);
+ 				goto error;
++			}
+ 		}
+ 	} else if (pdata) {
+ 		for (i = 0; i < pdata->num_sub_devices; i++) {
 -- 
 2.27.0
 
