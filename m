@@ -2,114 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A1E327D8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12922327DA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234093AbhCALua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 06:50:30 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:39590 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234175AbhCALty (ORCPT
+        id S234819AbhCALxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 06:53:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234308AbhCALv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 06:49:54 -0500
-Received: by mail-io1-f72.google.com with SMTP id x6so2252623ioj.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 03:49:39 -0800 (PST)
+        Mon, 1 Mar 2021 06:51:29 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467CDC0617A7;
+        Mon,  1 Mar 2021 03:50:09 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id k9so5083841lfo.12;
+        Mon, 01 Mar 2021 03:50:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=IJw3CqmSaFhjDn+unuI553Asu7wtLovHtuTDpDOVdxg=;
+        b=K+kbu6Hsyu3ePz5h8PJqozV1BiHoeSTUdyxe8PJtVAu89+Mzrti5AkjGOsh4RDXgK0
+         hJbh/PwK+f0ucFTc8rym4KZ+4q/fTyvmWxsbUj0xiNRRWrJp0WZqpsgUtPTJbss6lNGp
+         n2a7X23CPHG2ioXzn+4rNe4GCP52boQOObHphX5H1CiR+Q+e90TUrZDKqQ2vDKKmcgyf
+         Tm0f/2nWymzF9tZSHvroPGUEhhLDslYrWd8EJTlsMQlGKTO+P+9AMaa9FRH1ywmYqeJX
+         oc3CEJuQIWajhWn+DGRAf4RN6hkNvbCvCfrBLbGULmnJR5OHqhQlHRmMJcWcDb1fx/R5
+         Vt6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=DwARR0f16pytt1tCFzY3s3chbtjz6oz+ioNdZQ7XKbE=;
-        b=SRceP7rAbynvp6/0a66vVF2PRZIxUYn58EYH885quj7tkIDFiok4PhG3ZoXLbZxBEv
-         1Ux9G8VIFn5UqIYcGRppX1I+9eUVFOv1Qn07ZPAa5BWN3IbsDaf6NRAeVph/ZvRKPCnh
-         SfruWEj0/ApVAru2QV5ZqJMQZa470jAV343s/BjSz8qEwh+iu64H5nhjMJElhYN0DX38
-         wdSgbjeUgQQFnwULsmXqKxuYTuaN+XxZFOP1aZyzRulYKBx+HL1jrxa1/tCHAXTq4p84
-         f1P2GdWKY0X+omAGSQhVKkph4hGcxTr3fsh4Z9WxNH0Q4aicJq36vANiA4NRzJ8bI89o
-         yY3g==
-X-Gm-Message-State: AOAM532MeSU5uSoQzRvpYbjljyCisPpg4UB2tgx5F5aAUDgSqlbF/zX5
-        apVFMP0PZ6IzmYak7U9f6F0LfKxmI47kf7+Wy/GTSHDklCx9
-X-Google-Smtp-Source: ABdhPJxhD0zPY5Uhs0jKXVz/djbISrGEHK64CWufRALhFr638FsvoBeCA3iDrAmzXrTKoANokDPVKYR/wFXDWPFV2Ltp5x5IG7JS
-MIME-Version: 1.0
-X-Received: by 2002:a92:6a0b:: with SMTP id f11mr12229147ilc.290.1614599353665;
- Mon, 01 Mar 2021 03:49:13 -0800 (PST)
-Date:   Mon, 01 Mar 2021 03:49:13 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ee0e3005bc783400@google.com>
-Subject: KMSAN: uninit-value in dgram_sendmsg
-From:   syzbot <syzbot+a209a964d48b219587cc@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, glider@google.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
-        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=IJw3CqmSaFhjDn+unuI553Asu7wtLovHtuTDpDOVdxg=;
+        b=bVD7TCvXSar164CCzT52oVEocYzwLusH9aNjiGC22IbwK5ITfj1EGObZ6405Hl2g2A
+         6TEWidMLbPHWjRjgRNQ6ADeBCqp79BxOe36HjYc25KuHhwLP4i2Gp/soJuWt2H0y5xnK
+         vpgC6b/cKGRxw2KSfCUR+lwM3YPD3cbKmzxu6dQaQF2KvyoWcxXjtZy16fuZAfNHzNoH
+         L57l+HnTCt2Y4o+/cafM5y79UC3YJj3P24zXx0FFMtZKYnpxfYSOzXmQ9VygH7JhRovE
+         YVrVH5EklWkT6eZMWI+2tZxjogAWlPSrlmsM9oWbzE6B2/By0bcTgPfFGgl45d2dVnMm
+         36XA==
+X-Gm-Message-State: AOAM5307pA0O8ugi44KmaZQ5e920uDj32q2ZaK7wQ2ht1XNOXdRseyDy
+        ijOn5BH76PoXpaAmBNBOuLU=
+X-Google-Smtp-Source: ABdhPJwvASMVwP/2cXSmPprKTDdiBe0Wl8YD5eGj8rM32l7wrqr1t76z9T2UGFkaVSeYnCcqrNcggw==
+X-Received: by 2002:a05:6512:b0d:: with SMTP id w13mr5255900lfu.500.1614599407824;
+        Mon, 01 Mar 2021 03:50:07 -0800 (PST)
+Received: from localhost (crossness-hoof.volia.net. [93.72.107.198])
+        by smtp.gmail.com with ESMTPSA id z14sm2275447lfh.296.2021.03.01.03.50.06
+        (version=TLS1_2 cipher=AES128-SHA bits=128/128);
+        Mon, 01 Mar 2021 03:50:06 -0800 (PST)
+From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: [PATCH v2 0/5] USB Audio Gadget part 1: misc fixes and improvements
+Date:   Mon,  1 Mar 2021 13:49:30 +0200
+Message-Id: <1614599375-8803-1-git-send-email-ruslan.bilovol@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Here are some bug fixes and improvements to
+USB Audio Gadget drivers which I made during
+my work on a new UAC features like feedback endpoint
+implementation and Volume/Mute controls.
 
-syzbot found the following issue on:
+That's nice bugfixes/improvements that I expect get
+applied faster than coming new features thus sent them
+as 'part 1'
 
-HEAD commit:    29ad81a1 arch/x86: add missing include to sparsemem.h
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=13b86466d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c8e3b38ca92283e
-dashboard link: https://syzkaller.appspot.com/bug?extid=a209a964d48b219587cc
-compiler:       Debian clang version 11.0.1-2
-userspace arch: i386
+The new UAC features will be sent as a separate
+patch set (aka 'part 2')
 
-Unfortunately, I don't have any reproducer for this issue yet.
+v2: fixed possible NULL-ptr issue with input parameters
+    validation
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a209a964d48b219587cc@syzkaller.appspotmail.com
+Ruslan Bilovol (5):
+  usb: gadget: f_uac2: always increase endpoint max_packet_size by one
+    audio slot
+  usb: gadget: f_uac1: stop playback on function disable
+  usb: gadget: f_uac2: validate input parameters
+  usb: gadget: f_uac1: validate input parameters
+  usb: gadget: f_uac1: disable IN/OUT ep if unused
 
-=====================================================
-BUG: KMSAN: uninit-value in ieee802154_addr_from_sa include/net/ieee802154_netdev.h:174 [inline]
-BUG: KMSAN: uninit-value in dgram_sendmsg+0x14cb/0x15c0 net/ieee802154/socket.c:660
-CPU: 0 PID: 14314 Comm: syz-executor.3 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:120
- kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
- ieee802154_addr_from_sa include/net/ieee802154_netdev.h:174 [inline]
- dgram_sendmsg+0x14cb/0x15c0 net/ieee802154/socket.c:660
- ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg net/socket.c:672 [inline]
- ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2345
- ___sys_sendmsg net/socket.c:2399 [inline]
- __sys_sendmsg+0x714/0x830 net/socket.c:2432
- __compat_sys_sendmsg net/compat.c:347 [inline]
- __do_compat_sys_sendmsg net/compat.c:354 [inline]
- __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
- __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
- do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
- __do_fast_syscall_32+0x102/0x160 arch/x86/entry/common.c:141
- do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:166
- do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:209
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-RIP: 0023:0xf7fcc549
-Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f55c65fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000380
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ drivers/usb/gadget/function/f_uac1.c | 273 ++++++++++++++++++++++++++---------
+ drivers/usb/gadget/function/f_uac2.c |  41 +++++-
+ 2 files changed, 245 insertions(+), 69 deletions(-)
 
-Local variable ----address.i@__sys_sendmsg created at:
- ___sys_sendmsg net/socket.c:2389 [inline]
- __sys_sendmsg+0x30e/0x830 net/socket.c:2432
- ___sys_sendmsg net/socket.c:2389 [inline]
- __sys_sendmsg+0x30e/0x830 net/socket.c:2432
-=====================================================
+-- 
+1.9.1
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
