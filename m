@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B9D32996E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C80643298FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239778AbhCBAPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:15:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40750 "EHLO mail.kernel.org"
+        id S1347001AbhCAXv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:51:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235849AbhCASXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:23:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 971A765261;
-        Mon,  1 Mar 2021 17:28:41 +0000 (UTC)
+        id S239489AbhCASQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:16:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E11765254;
+        Mon,  1 Mar 2021 17:28:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619722;
-        bh=lJlcJo5vjrIG2dfiBblGpI5tolIwegM+Ah7c4SbmBTA=;
+        s=korg; t=1614619689;
+        bh=Xaen+2tNomgp1Bj/b+Bfg7QrMKTzi8/UYwNT7bTctGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ztJ4RiXQuLLmi1jvzY9uzkwqstvpJesOXAAcEZq5phlqDxdklufL6/dpi17AN+hoZ
-         YhV6UtFQgszRxFKaVtiEOqmagTkBAH7fJ/SjVIJnwgylsTSHvWS9UHDzKoK9T08YGM
-         OiVnLEBEBK/+d8Os4La3phbYHPcLEN1/lnEvSm1U=
+        b=fTYhCwgCH+wWb68wjgdDqbA7Nf1KUT6tLTsPueoAsYwkxvCudEazNjpFTWVoZq+cP
+         QMV3aqhg2n6C32n5ZskMbvYNzRxASugG8HrOGU8qfp7HLZhHhGngOAnmBIUENWnr/H
+         BrP24Z5zk+lRc/YRJO9pZAmCqf3LmayYLb7I7hDM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@ger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH 5.10 527/663] tpm_tis: Clean up locality release
-Date:   Mon,  1 Mar 2021 17:12:55 +0100
-Message-Id: <20210301161207.917410944@linuxfoundation.org>
+        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.10 545/663] crypto: sun4i-ss - checking sg length is not sufficient
+Date:   Mon,  1 Mar 2021 17:13:13 +0100
+Message-Id: <20210301161208.836694175@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,95 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
+From: Corentin Labbe <clabbe@baylibre.com>
 
-commit e42acf104d6e0bd7ccd2f09103d5be5e6d3c637c upstream.
+commit 7bdcd851fa7eb66e8922aa7f6cba9e2f2427a7cf upstream.
 
-The current release locality code seems to be based on the
-misunderstanding that the TPM interrupts when a locality is released:
-it doesn't, only when the locality is acquired.
+The optimized cipher function need length multiple of 4 bytes.
+But it get sometimes odd length.
+This is due to SG data could be stored with an offset.
 
-Furthermore, there seems to be no point in waiting for the locality to
-be released.  All it does is penalize the last TPM user.  However, if
-there's no next TPM user, this is a pointless wait and if there is a
-next TPM user, they'll pay the penalty waiting for the new locality
-(or possibly not if it's the same as the old locality).
-
-Fix the code by making release_locality as simple write to release
-with no waiting for completion.
-
-Cc: stable@ger.kernel.org
-Fixes: 33bafe90824b ("tpm_tis: verify locality released before returning from release_locality")
-Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+So the fix is to check also if the offset is aligned with 4 bytes.
+Fixes: 6298e948215f2 ("crypto: sunxi-ss - Add Allwinner Security System crypto accelerator")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/char/tpm/tpm_tis_core.c |   47 ----------------------------------------
- 1 file changed, 1 insertion(+), 46 deletions(-)
+ drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/char/tpm/tpm_tis_core.c
-+++ b/drivers/char/tpm/tpm_tis_core.c
-@@ -135,58 +135,13 @@ static bool check_locality(struct tpm_ch
- 	return false;
- }
- 
--static bool locality_inactive(struct tpm_chip *chip, int l)
--{
--	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
--	int rc;
--	u8 access;
--
--	rc = tpm_tis_read8(priv, TPM_ACCESS(l), &access);
--	if (rc < 0)
--		return false;
--
--	if ((access & (TPM_ACCESS_VALID | TPM_ACCESS_ACTIVE_LOCALITY))
--	    == TPM_ACCESS_VALID)
--		return true;
--
--	return false;
--}
--
- static int release_locality(struct tpm_chip *chip, int l)
- {
- 	struct tpm_tis_data *priv = dev_get_drvdata(&chip->dev);
--	unsigned long stop, timeout;
--	long rc;
- 
- 	tpm_tis_write8(priv, TPM_ACCESS(l), TPM_ACCESS_ACTIVE_LOCALITY);
- 
--	stop = jiffies + chip->timeout_a;
--
--	if (chip->flags & TPM_CHIP_FLAG_IRQ) {
--again:
--		timeout = stop - jiffies;
--		if ((long)timeout <= 0)
--			return -1;
--
--		rc = wait_event_interruptible_timeout(priv->int_queue,
--						      (locality_inactive(chip, l)),
--						      timeout);
--
--		if (rc > 0)
--			return 0;
--
--		if (rc == -ERESTARTSYS && freezing(current)) {
--			clear_thread_flag(TIF_SIGPENDING);
--			goto again;
--		}
--	} else {
--		do {
--			if (locality_inactive(chip, l))
--				return 0;
--			tpm_msleep(TPM_TIMEOUT);
--		} while (time_before(jiffies, stop));
--	}
--	return -1;
-+	return 0;
- }
- 
- static int request_locality(struct tpm_chip *chip, int l)
+--- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
++++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+@@ -201,12 +201,12 @@ static int sun4i_ss_cipher_poll(struct s
+ 	 * we can use the SS optimized function
+ 	 */
+ 	while (in_sg && no_chunk == 1) {
+-		if (in_sg->length % 4)
++		if ((in_sg->length | in_sg->offset) & 3u)
+ 			no_chunk = 0;
+ 		in_sg = sg_next(in_sg);
+ 	}
+ 	while (out_sg && no_chunk == 1) {
+-		if (out_sg->length % 4)
++		if ((out_sg->length | out_sg->offset) & 3u)
+ 			no_chunk = 0;
+ 		out_sg = sg_next(out_sg);
+ 	}
 
 
