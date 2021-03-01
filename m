@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052E8329BF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A0C329B81
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241233AbhCBBpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:45:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46160 "EHLO mail.kernel.org"
+        id S1348830AbhCBBZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:25:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241421AbhCATVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:21:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FA5065243;
-        Mon,  1 Mar 2021 17:27:16 +0000 (UTC)
+        id S240861AbhCATKz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:10:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B5336523C;
+        Mon,  1 Mar 2021 17:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619637;
-        bh=sL1zLTgzyVQcrdT1sm43KNumDWpFDbBz6iB+WqQirwY=;
+        s=korg; t=1614619570;
+        bh=3OCZHpCE0RGBPpGQbRCSuKdps0Gwoc/FedcVj0rIlrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L6GIPJuqjn0EGmVHbEXr9slXtkYcgmiNwMWUaolWUP+l4pGD5EjHT5gH2vNYBwIS7
-         FwSFpKSsJ3Cl6qHHas/jKFEGBVyTOeKr4BgA8JeiTbnlaUOmYhFvD+J+eJafCOtHNt
-         b5s0gfl8myXS9Lp+DKPSbpkuXFOLf0DFxDwYtm7g=
+        b=hrS4UhH1zCfbnKPYSVegkaVSWX03dERLx+inpoNPxT0VjwgPwm+DTehTdCJ7xeAD7
+         bGosiF8msDNckLRd6Mpmn8rIf1VAPhzH8OFg07LHsVikSRbMMrA6RZMrbqsdbcggw6
+         Pt0FzueHMD5FSwTZAvUl5548TwBtjZYFRjRxQkbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Charles Yeh <charlesyeh522@gmail.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 496/663] USB: serial: pl2303: fix line-speed handling on newer chips
-Date:   Mon,  1 Mar 2021 17:12:24 +0100
-Message-Id: <20210301161206.387314281@linuxfoundation.org>
+        stable@vger.kernel.org, PeiSen Hou <pshou@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 503/663] ALSA: hda/realtek: modify EAPD in the ALC886
+Date:   Mon,  1 Mar 2021 17:12:31 +0100
+Message-Id: <20210301161206.731146915@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,57 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: PeiSen Hou <pshou@realtek.com>
 
-commit 979d9cbe75b922ab1695b8ad5576115774f72e62 upstream.
+commit 4841b8e6318a7f0ae57c4e5ec09032ea057c97a8 upstream.
 
-The latest chip family (HXN) apparently does not support setting the
-line speed using divisors and instead needs to use the direct encoding
-scheme for all rates.
+Modify 0x20 index 7 bit 5 to 1, make the 0x15 EAPD the same as 0x14.
 
-This specifically enables 50, 110, 134, 200 bps and other rates not
-supported by the original chip type.
-
-Fixes: ebd09f1cd417 ("USB: serial: pl2303: add support for PL2303HXN")
-Cc: stable@vger.kernel.org      # 5.5
-Cc: Charles Yeh <charlesyeh522@gmail.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: PeiSen Hou <pshou@realtek.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/e62c5058957f48d8b8953e97135ff108@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/serial/pl2303.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -183,6 +183,7 @@ struct pl2303_type_data {
- 	speed_t max_baud_rate;
- 	unsigned long quirks;
- 	unsigned int no_autoxonxoff:1;
-+	unsigned int no_divisors:1;
- };
- 
- struct pl2303_serial_private {
-@@ -209,6 +210,7 @@ static const struct pl2303_type_data pl2
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1905,6 +1905,7 @@ enum {
+ 	ALC889_FIXUP_FRONT_HP_NO_PRESENCE,
+ 	ALC889_FIXUP_VAIO_TT,
+ 	ALC888_FIXUP_EEE1601,
++	ALC886_FIXUP_EAPD,
+ 	ALC882_FIXUP_EAPD,
+ 	ALC883_FIXUP_EAPD,
+ 	ALC883_FIXUP_ACER_EAPD,
+@@ -2238,6 +2239,15 @@ static const struct hda_fixup alc882_fix
+ 			{ }
+ 		}
  	},
- 	[TYPE_HXN] = {
- 		.max_baud_rate		= 12000000,
-+		.no_divisors		= true,
- 	},
- };
++	[ALC886_FIXUP_EAPD] = {
++		.type = HDA_FIXUP_VERBS,
++		.v.verbs = (const struct hda_verb[]) {
++			/* change to EAPD mode */
++			{ 0x20, AC_VERB_SET_COEF_INDEX, 0x07 },
++			{ 0x20, AC_VERB_SET_PROC_COEF, 0x0068 },
++			{ }
++		}
++	},
+ 	[ALC882_FIXUP_EAPD] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -2510,6 +2520,7 @@ static const struct snd_pci_quirk alc882
+ 	SND_PCI_QUIRK(0x106b, 0x4a00, "Macbook 5,2", ALC889_FIXUP_MBA11_VREF),
  
-@@ -571,8 +573,12 @@ static void pl2303_encode_baud_rate(stru
- 		baud = min_t(speed_t, baud, spriv->type->max_baud_rate);
- 	/*
- 	 * Use direct method for supported baud rates, otherwise use divisors.
-+	 * Newer chip types do not support divisor encoding.
- 	 */
--	baud_sup = pl2303_get_supported_baud_rate(baud);
-+	if (spriv->type->no_divisors)
-+		baud_sup = baud;
-+	else
-+		baud_sup = pl2303_get_supported_baud_rate(baud);
- 
- 	if (baud == baud_sup)
- 		baud = pl2303_encode_baud_rate_direct(buf, baud);
+ 	SND_PCI_QUIRK(0x1071, 0x8258, "Evesham Voyaeger", ALC882_FIXUP_EAPD),
++	SND_PCI_QUIRK(0x13fe, 0x1009, "Advantech MIT-W101", ALC886_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+ 	SND_PCI_QUIRK(0x1458, 0xa0cd, "Gigabyte X570 Aorus Master", ALC1220_FIXUP_CLEVO_P950),
 
 
