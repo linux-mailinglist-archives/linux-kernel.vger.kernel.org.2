@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 901AE32818B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D9632818D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236519AbhCAO46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:56:58 -0500
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:64241
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236699AbhCAO4K (ORCPT
+        id S236667AbhCAO5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:57:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236717AbhCAO4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:56:10 -0500
-X-IronPort-AV: E=Sophos;i="5.81,215,1610406000"; 
-   d="scan'208";a="374413047"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 15:55:24 +0100
-Date:   Mon, 1 Mar 2021 15:55:23 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Saravana Kannan <skannan@codeaurora.org>
-cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org
-Subject: [PATCH] PM / devfreq: fix odd_ptr_err.cocci warnings (fwd)
-Message-ID: <alpine.DEB.2.22.394.2103011553490.2899@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 1 Mar 2021 09:56:22 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C138DC06178C
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:55:41 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id p15so10817773ljc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:55:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tnpOO1HCMDXpZVJ4TRrGsHFf+M4ik5c2oeXAvl9URfQ=;
+        b=FtuktIcgFjkP+lffETe2dQRR3faqxThx7Z+FrZdfTNEpjy2/6i+IwQQbWERlk1QYDB
+         cGoAjzqc4grAlmEK4OMTydKLzH/YOZaHwJeB6/fv7VTqhI3rnmkw74olFgXvHhZd58Uo
+         7Ycqofp8NnLYI0Zg7o2jGUW+YaxMnjQWxO0G8D5Krx2St2mWlOTCvEwicGwbYEwGeLSo
+         kr9tnf2vSqke3OimzUbHMNpiudVKZK5w2xpozmOJWR3vOhfqclNiiIXeNI9mFBf1Y+pe
+         sFM7G/Fa0gN8m/8Ru5Hc12D00IiWQMPj5LF3CUoCOTn5e2tMT7OrRnwXJ1O+Me72g7Oq
+         Pmog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tnpOO1HCMDXpZVJ4TRrGsHFf+M4ik5c2oeXAvl9URfQ=;
+        b=JyAEjqPr3O2cU0GJnCZG8myLG4InosqhWHt9k2/28c41f3PjLKbM3MQNCby2pBkowr
+         SSre1m5BfVgZ7xfZhG/c9w5Cr1ji/q4ESY/FnKWskWMwufTmPYlcaqb//sqj7c+3SxAF
+         LoEoraun/dsaZf3Se8d3ZL7oVrYVvzK9dH7PZiUgHVTjuq4jDXfpwXNcdkzu6XGYOvU+
+         2ZWAMwVqiFMB5I46YimtzlayqbWGz6W8koslPRpvidFDiqhrPQBc0QIaVckils05znLb
+         w29xLpDaNDa256GOZZb8k5Wp88yR7JfUl1OhYxJM+oR0Qqp6u+AOZrpi7eh8f3V55ydS
+         niPw==
+X-Gm-Message-State: AOAM531Z1vReYZoCA8i82Fq1mf+gmiQ7rpf/mMQtIqrggYW18xnTHZRq
+        2qOJQdOzwsH1j8m3SpEvZbYIwr4Wkk/yUt0Q/LxTWw==
+X-Google-Smtp-Source: ABdhPJybRja+1CiW+Qxg0/bCEGHOEl3HR72OhOAPLa0QQOfFepT/r7JpGuivG2pp66Ua3QULP2Q8zfRzX1u/sJEvmJA=
+X-Received: by 2002:a2e:9754:: with SMTP id f20mr7184365ljj.200.1614610540264;
+ Mon, 01 Mar 2021 06:55:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210208222203.22335-1-info@metux.net> <20210208222203.22335-13-info@metux.net>
+In-Reply-To: <20210208222203.22335-13-info@metux.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 1 Mar 2021 15:55:29 +0100
+Message-ID: <CACRpkdZzceUex8no9V6R0oW-3dRhhPypF7HsJ=ggOphJLGixLA@mail.gmail.com>
+Subject: Re: [RFC PATCH 12/12] platform/x86/of: add support for PC Engines APU
+ v2/3/4 boards
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Feb 8, 2021 at 11:22 PM Enrico Weigelt, metux IT consult
+<info@metux.net> wrote:
 
-There seems to be an inconsistency, but the patch proposed by Coccinelle
-does not look correct.  There should be a test on opp_table.
+> +                gpio-regs = <
+> +                    AMD_FCH_GPIO_REG_GPIO57 // led1
+> +                    AMD_FCH_GPIO_REG_GPIO58 // led2
+> +                    AMD_FCH_GPIO_REG_GPIO59_DEVSLP1 // led3
+> +                    AMD_FCH_GPIO_REG_GPIO32_GE1 // modesw
+> +                    AMD_FCH_GPIO_REG_GPIO33_GE2 // simawap
+> +                    AMD_FCH_GPIO_REG_GPIO55_DEVSLP0 // mpcie2
+> +                    AMD_FCH_GPIO_REG_GPIO51 // mpcie3
+> +                >;
 
-julia
+Please don't define registers in the DTS files. Determine the set of registers
+from the compatible string and put them in the driver. If that is not possible,
+the compatible string is not precise enough and needs to indicate properly
+which hardware this is.
 
----------- Forwarded message ----------
-Date: Mon, 1 Mar 2021 16:35:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: kbuild@lists.01.org
-Cc: lkp@intel.com, Julia Lawall <julia.lawall@lip6.fr>
-Subject: [PATCH] PM / devfreq: fix odd_ptr_err.cocci warnings
-
-CC: kbuild-all@lists.01.org
-TO: Saravana Kannan <skannan@codeaurora.org>
-CC: Chanwoo Choi <cw00.choi@samsung.com>
-CC: Sibi Sankar <sibis@codeaurora.org>
-CC: MyungJoo Ham <myungjoo.ham@samsung.com>
-CC: Kyungmin Park <kyungmin.park@samsung.com>
-CC: linux-pm@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-
-From: kernel test robot <lkp@intel.com>
-
-drivers/devfreq/governor_passive.c:318:7-13: inconsistent IS_ERR and PTR_ERR on line 319.
-
- PTR_ERR should access the value just tested by IS_ERR
-
-Semantic patch information:
- There can be false positives in the patch case, where it is the call to
- IS_ERR that is wrong.
-
-Generated by: scripts/coccinelle/tests/odd_ptr_err.cocci
-
-Fixes: 82d4ff586ae2 ("PM / devfreq: Add cpu based scaling support to passive governor")
-CC: Saravana Kannan <skannan@codeaurora.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git devfreq-testing-passive-gov
-head:   82d4ff586ae2fb6d89cad871949004bed3438ccb
-commit: 82d4ff586ae2fb6d89cad871949004bed3438ccb [3/3] PM / devfreq: Add cpu based scaling support to passive governor
-:::::: branch date: 3 hours ago
-:::::: commit date: 3 hours ago
-
-Please take the patch only if it's a positive warning. Thanks!
-
- governor_passive.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---- a/drivers/devfreq/governor_passive.c
-+++ b/drivers/devfreq/governor_passive.c
-@@ -316,7 +316,7 @@ static int cpufreq_passive_register(stru
-
- 			opp_table = dev_pm_opp_get_opp_table(cpu_dev);
- 			if (IS_ERR(devfreq->opp_table)) {
--				ret = PTR_ERR(opp_table);
-+				ret = PTR_ERR(devfreq->opp_table);
- 				goto out;
- 			}
-
+Yours,
+Linus Walleij
