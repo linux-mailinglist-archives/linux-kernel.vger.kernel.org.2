@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276E2329FB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBF2329FB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243549AbhCBDqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:46:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35554 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243761AbhCAVAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:00:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6F85600EF;
-        Mon,  1 Mar 2021 20:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614632391;
-        bh=Ghkh2dd6hiVMkZNxCxWJWFZq3rC/o9YjYgqFCm/vzDw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=itXczhu+y4heRg+ydiqsvq+I4jSomprxCJjrcOS7v4klsW8MIoEBGS3km3ZINRm0S
-         6Kt8HAl+yB08EIBSzgxqIhi224BxavVQQYCoo6p/QvY9gxsg/RL9q8+iSM/kWvh+4D
-         UgV0hhWh17eLkhf7+SaZCVbato6oO3WpJrxgJnrYAhp0oq1p0vcn8969jEKhcKIqT3
-         OJj+5PKADrRdxxUnkhr8fRaQ1Zi+/rQlhqEMv62M9I1wAS5XD7swldHmzUbg46WlJI
-         iZcaSo/+9d2N4djrk4JjnbG4BysjGWXzZ5l992x8g7r3/u6kbTNO+ILVTJ15a+s527
-         P6ZTfIB5Om73g==
-Date:   Tue, 2 Mar 2021 05:59:44 +0900
-From:   Keith Busch <kbusch@kernel.org>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     Daniel Wagner <dwagner@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
- it
-Message-ID: <20210301205944.GE17228@redsun51.ssa.fujisawa.hgst.com>
-References: <a2064070-b511-ba6d-bd64-0b3abc208356@grimberg.me>
- <20210226123534.4oovbzk4wrnfjp64@beryllium.lan>
- <9e209b12-3771-cdca-2c9d-50451061bd2a@suse.de>
- <20210226161355.GG31593@redsun51.ssa.fujisawa.hgst.com>
- <a42d6285-ff32-3e16-b2b1-808d29f2a743@suse.de>
- <20210226171901.GA3949@redsun51.ssa.fujisawa.hgst.com>
- <20210301132639.n3eowtvkms2n5mog@beryllium.lan>
- <786dcef5-148d-ff34-590c-804b331ac519@suse.de>
- <20210301160547.GB17228@redsun51.ssa.fujisawa.hgst.com>
- <b626504c-3427-e8a5-3502-e44a9e79a006@suse.de>
+        id S1347441AbhCBDqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:46:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243893AbhCAVCx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 16:02:53 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B23E9C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 13:02:12 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id o34so13141448qtd.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 13:02:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jFcvnO1HNMuOGWQ7vPwfy1mABKol50jsSED8oqXz3w4=;
+        b=ePyeyOwdtWTmL4mr/ceS1jF1+XYHfY77lFcrAZUpC/oEqU0QquNezyx2LhPIl4LR/a
+         L4TX46cTBScfgJe/KJgEOgs7XiK4voIycvYw6vSytEZDES6LaBscHSc8alq0odANZb9s
+         /5jKUm9XvKFzUk8sWD0yhGBbgyybPTLfwmfyIT53cURtrXHt/jNhxTh9QYzdd3WjfbSI
+         hx2xyiw8WHRhb8TsnF2L/jIx/v9Zg/ZIZMyox3llutp3aMEOG3QdT42kriMYjM0OU9Jx
+         RYwLN2oUSbqkEQTr7um8qkjQIv5QdJMUAWdVBSMH/dFHe1cgtZ4f4QNKAvi94JVzDqGi
+         qXmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jFcvnO1HNMuOGWQ7vPwfy1mABKol50jsSED8oqXz3w4=;
+        b=DgyEbxUbLi7x6DDPp7X7RZyVgIytTCwlgqFet8Qb872np+hlx9MwbewFtcsG1kkrdW
+         0s49xbtdwCP4WMBC4ZnIphnq5K5K11eE0/lkYJfwo207VgvA4mMTi4fMr2hh3a8D+Mf+
+         SaOh+dOtX4Tcy78bDAFw6Kd5I//5TldB2MMwfMWRGeLee9gep1VkL5AyIY3YHqBZlLan
+         qpuKjFRTzGpZVNwDI6NGrJzL5Zxd03umW2hX8tr9amn/NnT7hp277jb6dYoVxhKVQ01H
+         xIshvQ5gv3MoyIKclQqoXcVZf4G8TqO1XuhZatg10ZCasDaL7lrS64v8or3bJNQHCYmG
+         kiGQ==
+X-Gm-Message-State: AOAM532g0WWSX9LdoewZWXsq1CEwafRz1F0i06m+TlrgNhcvhWjPnkFd
+        3f4FdN+gYNxjZIMldLx0dqruOJPinTWFG9LYRvygiQ==
+X-Google-Smtp-Source: ABdhPJxWt9ZuCtybtuGv7AuylOIJp2KNVLEknrmU0SSvKVZCFe2x3Z5EM/Jit4SPKiVVn6DXjz/HGcvdlQz1aew9z4Y=
+X-Received: by 2002:ac8:110e:: with SMTP id c14mr14755625qtj.293.1614632531464;
+ Mon, 01 Mar 2021 13:02:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b626504c-3427-e8a5-3502-e44a9e79a006@suse.de>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <20210123011704.1901835-1-joel@joelfernandes.org>
+ <20210123011704.1901835-3-joel@joelfernandes.org> <0e91838e-4cca-4c3b-cb36-226c098f36c9@oracle.com>
+ <YDTFWZPdmrDuYd91@hirez.programming.kicks-ass.net> <e1ee6187-77a7-dbf2-3e14-adba48460f5b@oracle.com>
+ <CABk29NvX9_RxpZ71ihR7Y_Nhpg0TpBfdXzehptO52VuwOmS2Ww@mail.gmail.com>
+ <c65bde1e-bac9-e6b6-e6c8-78b93f27b8e4@oracle.com> <94f43bb6-501c-2851-de32-6f4356b4a480@oracle.com>
+ <ef574666-26f4-299e-65c8-2348948651f9@oracle.com> <238a7db7-3263-a391-3c57-143e9d422351@oracle.com>
+In-Reply-To: <238a7db7-3263-a391-3c57-143e9d422351@oracle.com>
+From:   Josh Don <joshdon@google.com>
+Date:   Mon, 1 Mar 2021 13:01:57 -0800
+Message-ID: <CABk29NuGDmRADRjcOKN7zbYYsd8yV-KkMwvgokz9-bX2G3YYpQ@mail.gmail.com>
+Subject: Re: [PATCH v10 2/5] sched: CGroup tagging interface for core scheduling
+To:     Chris Hyser <chris.hyser@oracle.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>, benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Ben Segall <bsegall@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 05:53:25PM +0100, Hannes Reinecke wrote:
-> On 3/1/21 5:05 PM, Keith Busch wrote:
-> > On Mon, Mar 01, 2021 at 02:55:30PM +0100, Hannes Reinecke wrote:
-> > > On 3/1/21 2:26 PM, Daniel Wagner wrote:
-> > > > On Sat, Feb 27, 2021 at 02:19:01AM +0900, Keith Busch wrote:
-> > > > > Crashing is bad, silent data corruption is worse. Is there truly no
-> > > > > defense against that? If not, why should anyone rely on this?
-> > > > 
-> > > > If we receive an response for which we don't have a started request, we
-> > > > know that something is wrong. Couldn't we in just reset the connection
-> > > > in this case? We don't have to pretend nothing has happened and
-> > > > continuing normally. This would avoid a host crash and would not create
-> > > > (more) data corruption. Or I am just too naive?
-> > > > 
-> > > This is actually a sensible solution.
-> > > Please send a patch for that.
-> > 
-> > Is a bad frame a problem that can be resolved with a reset?
-> > 
-> > Even if so, the reset doesn't indicate to the user if previous commands
-> > completed with bad data, so it still seems unreliable.
-> > 
-> We need to distinguish two cases here.
-> The one is use receiving a frame with an invalid tag, leading to a crash.
-> This can be easily resolved by issuing a reset, as clearly the command was
-> garbage and we need to invoke error handling (which is reset).
-> 
-> The other case is us receiving a frame with a _duplicate_ tag, ie a tag
-> which is _currently_ valid. This is a case which will fail _even now_, as we
-> have simply no way of detecting this.
-> 
-> So what again do we miss by fixing the first case?
-> Apart from a system which does _not_ crash?
+On Fri, Feb 26, 2021 at 12:08 PM Chris Hyser <chris.hyser@oracle.com> wrote:
+>
+> Update:
+>
+> The clone syscall stress test I have is causing a deadlock with this patchset when
+> compiled with CONFIG_PROVE_RAW_LOCK_NESTING=y. I am able to get stacktraces with
+> nmi_watchdog and am looking through those. Josh was not able to duplicate the
+> deadlock, instead getting an actual warning about kmalloc w/GFP_ATOMIC while
+> under a raw spinlock in the function __sched_core_update_cookie(). When I retry
+> the test with a patch Josh sent, removing the kmalloc() and thus the trigger of
+> the warning, no more deadlock. So some combination of CONFIGs, timing and
+> function calls seems to have found something in this LOCK proving code.
+>
+> -chrish
 
-I'm just saying each case is a symptom of the same problem. The only
-difference from observing one vs the other is a race with the host's
-dispatch. And since you're proposing this patch, it sounds like this
-condition does happen on tcp compared to other transports where we don't
-observe it. I just thought the implication that data corruption happens
-is a alarming.
+I have a patch to remove the dynamic allocation and overall simplify
+the logic here. Will squash that along with the rest of the
+modifications suggested by Peter in the next version.
