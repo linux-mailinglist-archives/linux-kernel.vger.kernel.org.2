@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC0A329E33
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63488329E2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242409AbhCBCyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:54:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37632 "EHLO mail.kernel.org"
+        id S242148AbhCBCxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:53:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242556AbhCAUCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242560AbhCAUCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 15:02:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5B7265202;
-        Mon,  1 Mar 2021 17:57:18 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81F346538B;
+        Mon,  1 Mar 2021 17:57:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621439;
-        bh=Lo9NVBj9GRscMtLKDPl2drY3eoab/S0YPLPy2iCWFsU=;
+        s=korg; t=1614621442;
+        bh=xdwtK9HQ65ecTQvoO3HWmWem0UTQ/rCu+trb4Zi0Edc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pTTRPlIWhlezv2qxaTJHo45kZrDRiF1/wPGHTTs1PWt9DnnApXPkdVuh4EmC1uATE
-         VT9AlHpTFwjUZehJmX3Xy/7+cNQG1LCGu+0nOK/lXICxgmcRpb8aiZi5k5TncjOJp6
-         0z6Tw9vuPGE3fqMuNKYKc/JeWpAZl9hx/o0vW1+w=
+        b=IFklGiGPbnebkwOG641bfJBSs/3uFtlPr3corpehZ/d3gMiT5MWtm1PzfYwTEJ6jZ
+         u+U9P3nHMbL1g4IQ8Svw7zot60aJE1FTd2q9mltPklsNZZnBk7+AagkPINqZYZGQ5E
+         TKM+9noSRnJbtCIJBO/lMDNpe5PAaRSCzrfTyFac=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
+        stable@vger.kernel.org,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 516/775] mhi: Fix double dma free
-Date:   Mon,  1 Mar 2021 17:11:24 +0100
-Message-Id: <20210301161227.024924069@linuxfoundation.org>
+Subject: [PATCH 5.11 517/775] regmap: sdw: use _no_pm functions in regmap_read/write
+Date:   Mon,  1 Mar 2021 17:11:25 +0100
+Message-Id: <20210301161227.075141009@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,55 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Loic Poulain <loic.poulain@linaro.org>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-[ Upstream commit db4e8de1935b0202960e9ebb88ab93e8bd1e66b1 ]
+[ Upstream commit d288a5712ef961e16d588bbdb2d846e00b5ef154 ]
 
-mhi_deinit_chan_ctxt functionthat takes care of unitializing channel
-resources, including unmapping coherent MHI areas, can be called
-from different path in case of controller unregistering/removal:
- - From a client driver remove callback, via mhi_unprepare_channel
- - From mhi_driver_remove that unitialize all channels
+sdw_update_slave_status will be invoked when a codec is attached,
+and the codec driver will initialize the codec with regmap functions
+while the codec device is pm_runtime suspended.
 
-mhi_driver_remove()
-|-> driver->remove()
-|    |-> mhi_unprepare_channel()
-|        |-> mhi_deinit_chan_ctxt()
-|...
-|-> mhi_deinit_chan_ctxt()
+regmap routines currently rely on regular SoundWire IO functions,
+which will call pm_runtime_get_sync()/put_autosuspend.
 
-This leads to double dma freeing...
+This causes a deadlock where the resume routine waits for an
+initialization complete signal that while the initialization complete
+can only be reached when the resume completes.
 
-Fix that by preventing deinit for already uninitialized channel.
+The only solution if we allow regmap functions to be used in resume
+operations as well as during codec initialization is to use _no_pm
+routines. The duty of making sure the bus is operational needs to be
+handled above the regmap level.
 
-Link: https://lore.kernel.org/r/1612894264-15956-1-git-send-email-loic.poulain@linaro.org
-Fixes: a7f422f2f89e ("bus: mhi: Fix channel close issue on driver remove")
-Reported-by: Kalle Valo <kvalo@codeaurora.org>
-Tested-by: Kalle Valo <kvalo@codeaurora.org>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20210210082538.2494-2-manivannan.sadhasivam@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 7c22ce6e21840 ('regmap: Add SoundWire bus support')
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210122070634.12825-6-yung-chuan.liao@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/mhi/core/init.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/base/regmap/regmap-sdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index f0697f433c2f1..08c45457c90fe 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -552,6 +552,9 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
- 	tre_ring = &mhi_chan->tre_ring;
- 	chan_ctxt = &mhi_cntrl->mhi_ctxt->chan_ctxt[mhi_chan->chan];
+diff --git a/drivers/base/regmap/regmap-sdw.c b/drivers/base/regmap/regmap-sdw.c
+index c83be26434e76..966de8a136d90 100644
+--- a/drivers/base/regmap/regmap-sdw.c
++++ b/drivers/base/regmap/regmap-sdw.c
+@@ -13,7 +13,7 @@ static int regmap_sdw_write(void *context, unsigned int reg, unsigned int val)
+ 	struct device *dev = context;
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
  
-+	if (!chan_ctxt->rbase) /* Already uninitialized */
-+		return;
-+
- 	mhi_free_coherent(mhi_cntrl, tre_ring->alloc_size,
- 			  tre_ring->pre_aligned, tre_ring->dma_handle);
- 	vfree(buf_ring->base);
+-	return sdw_write(slave, reg, val);
++	return sdw_write_no_pm(slave, reg, val);
+ }
+ 
+ static int regmap_sdw_read(void *context, unsigned int reg, unsigned int *val)
+@@ -22,7 +22,7 @@ static int regmap_sdw_read(void *context, unsigned int reg, unsigned int *val)
+ 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
+ 	int read;
+ 
+-	read = sdw_read(slave, reg);
++	read = sdw_read_no_pm(slave, reg);
+ 	if (read < 0)
+ 		return read;
+ 
 -- 
 2.27.0
 
