@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B983329C29
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6D1329BF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380223AbhCBBt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:49:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48628 "EHLO mail.kernel.org"
+        id S241130AbhCBBpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:45:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241534AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:26:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B80064F48;
-        Mon,  1 Mar 2021 17:14:47 +0000 (UTC)
+        id S241414AbhCATVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:21:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E145664FD1;
+        Mon,  1 Mar 2021 17:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618888;
-        bh=v1qgq11IQiNc8b4IKEHQ3qeCbnn0O59oU4+m9UbuUIg=;
+        s=korg; t=1614621023;
+        bh=U2+6gTmH/NBd3LfZo/E+AVn8ZOP80TPgObgc60h1xEw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ec1CBlK5FoKpwnyymE9wFGmAAyuRR8tJu+lhLj7+gpKUpq/mjjczIhxZD5OoVLawb
-         rwgpNLgtO6OrR6wQt987bZoRFymuPce8Jw9aUDBpWkUZoBN3361EQ1uNWgP7OpYlu9
-         SvS82rmoPKRk0QTmsQKpsoYh5erEJoD83DcNPgbk=
+        b=pBNJ0g99QYeY8mv2F7n1UtD+0222KYMhkwvdhbfJCjpizj2kuQvwFfQnilOUcYNOd
+         Ol5bU32fPZPbr0buCViSqcI48VapgKXCXtsNCb6gcNyTuIWzX77Qh0LQksnKrRlbZy
+         kgK3Habm9aUosDMdIVJDjAVbQSO4gJgsGfDNoTyU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 254/663] irqchip/imx: IMX_INTMUX should not default to y, unconditionally
-Date:   Mon,  1 Mar 2021 17:08:22 +0100
-Message-Id: <20210301161154.396226994@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 335/775] power: supply: cpcap-charger: Fix power_supply_put on null battery pointer
+Date:   Mon,  1 Mar 2021 17:08:23 +0100
+Message-Id: <20210301161218.176454023@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit a890caeb2ba40ca183969230e204ab144f258357 ]
+[ Upstream commit 39196cfe10dd2b46ee28b44abbc0db4f4cb7822f ]
 
-Merely enabling CONFIG_COMPILE_TEST should not enable additional code.
-To fix this, restrict the automatic enabling of IMX_INTMUX to ARCH_MXC,
-and ask the user in case of compile-testing.
+Currently if the pointer battery is null there is a null pointer
+dereference on the call to power_supply_put.  Fix this by only
+performing the put if battery is not null.
 
-Fixes: 66968d7dfc3f5451 ("irqchip: Add COMPILE_TEST support for IMX_INTMUX")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210208145605.422943-1-geert+renesas@glider.be
+Addresses-Coverity: ("Dereference after null check")
+Fixes: 4bff91bb3231 ("power: supply: cpcap-charger: Fix missing power_supply_put()")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/Kconfig | 3 ++-
+ drivers/power/supply/cpcap-charger.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 2aa79c32ee228..6156a065681bc 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -464,7 +464,8 @@ config IMX_IRQSTEER
- 	  Support for the i.MX IRQSTEER interrupt multiplexer/remapper.
+diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/supply/cpcap-charger.c
+index 2c5f2246c6eaa..22fff01425d63 100644
+--- a/drivers/power/supply/cpcap-charger.c
++++ b/drivers/power/supply/cpcap-charger.c
+@@ -301,8 +301,9 @@ cpcap_charger_get_bat_const_charge_voltage(struct cpcap_charger_ddata *ddata)
+ 				&prop);
+ 		if (!error)
+ 			voltage = prop.intval;
++
++		power_supply_put(battery);
+ 	}
+-	power_supply_put(battery);
  
- config IMX_INTMUX
--	def_bool y if ARCH_MXC || COMPILE_TEST
-+	bool "i.MX INTMUX support" if COMPILE_TEST
-+	default y if ARCH_MXC
- 	select IRQ_DOMAIN
- 	help
- 	  Support for the i.MX INTMUX interrupt multiplexer.
+ 	return voltage;
+ }
 -- 
 2.27.0
 
