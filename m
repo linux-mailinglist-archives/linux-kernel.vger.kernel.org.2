@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D7A329928
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA97329911
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347316AbhCAXws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:52:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39682 "EHLO mail.kernel.org"
+        id S1347183AbhCAXwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:52:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239357AbhCASTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:19:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AFF66520B;
-        Mon,  1 Mar 2021 17:22:05 +0000 (UTC)
+        id S239689AbhCASS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:18:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD0F66520F;
+        Mon,  1 Mar 2021 17:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619326;
-        bh=cuH7aAYOZaYAQgG1PzHdVOOD6HC21+jin1SqcQACh8k=;
+        s=korg; t=1614619333;
+        bh=z/7LLfz4oo1S+fF4fsqYuweOUaU2WwPNetwqDNCj7r4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CJPdT2VfRy+nRU7v3jmu9WCkI9YFgiSW9qABy8foEfD8iDAXp4I3kgIDJvTIFnhEc
-         cMtBPE48KyR2aN4jSYOiKroVd6uJ9tt5MuXFReRQ0tdCOA5ybhReYrHTOA2y3wf1uh
-         khQvDNoTizGeje0pyq5U/hFtFlOvLVFBfSvCCo/U=
+        b=Gao1sD5nBcRzO1Ab1vaa9SYZsuw4dDA2OWVsq8Ql2Mlzd4qpcr/niiE+dQsOT1x2J
+         Rv0uNicvd9zwjwbkRZae2bE7vEaKHxKV8YGx/XiJYiXJX4iXpOpEtyna6GtCdwZ557
+         FO5gc3vZsDtAVEhCeTCh7TEdKu5XwxoyPG+8jeSo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
         Alex Williamson <alex.williamson@redhat.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 414/663] vfio/iommu_type1: Populate full dirty when detach non-pinned group
-Date:   Mon,  1 Mar 2021 17:11:02 +0100
-Message-Id: <20210301161202.359213278@linuxfoundation.org>
+Subject: [PATCH 5.10 416/663] vfio-pci/zdev: fix possible segmentation fault issue
+Date:   Mon,  1 Mar 2021 17:11:04 +0100
+Message-Id: <20210301161202.456721402@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,61 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keqian Zhu <zhukeqian1@huawei.com>
+From: Max Gurtovoy <mgurtovoy@nvidia.com>
 
-[ Upstream commit d0a78f91761fcd837da1e7a4b0f8368873adc646 ]
+[ Upstream commit 7e31d6dc2c78b2a0ba0039ca97ca98a581e8db82 ]
 
-If a group with non-pinned-page dirty scope is detached with dirty
-logging enabled, we should fully populate the dirty bitmaps at the
-time it's removed since we don't know the extent of its previous DMA,
-nor will the group be present to trigger the full bitmap when the user
-retrieves the dirty bitmap.
+In case allocation fails, we must behave correctly and exit with error.
 
-Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
-Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+Fixes: e6b817d4b821 ("vfio-pci/zdev: Add zPCI capabilities to VFIO_DEVICE_GET_INFO")
+Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
 Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/vfio_iommu_type1.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ drivers/vfio/pci/vfio_pci_zdev.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 67e8276389951..a08b2cb4ec66e 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -236,6 +236,18 @@ static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t pgsize)
- 	}
- }
+diff --git a/drivers/vfio/pci/vfio_pci_zdev.c b/drivers/vfio/pci/vfio_pci_zdev.c
+index 2296856340311..1bb7edac56899 100644
+--- a/drivers/vfio/pci/vfio_pci_zdev.c
++++ b/drivers/vfio/pci/vfio_pci_zdev.c
+@@ -74,6 +74,8 @@ static int zpci_util_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
+ 	int ret;
  
-+static void vfio_iommu_populate_bitmap_full(struct vfio_iommu *iommu)
-+{
-+	struct rb_node *n;
-+	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
-+
-+	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
-+		struct vfio_dma *dma = rb_entry(n, struct vfio_dma, node);
-+
-+		bitmap_set(dma->bitmap, 0, dma->size >> pgshift);
-+	}
-+}
-+
- static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu, size_t pgsize)
- {
- 	struct rb_node *n;
-@@ -2415,8 +2427,11 @@ detach_group_done:
- 	 * Removal of a group without dirty tracking may allow the iommu scope
- 	 * to be promoted.
- 	 */
--	if (update_dirty_scope)
-+	if (update_dirty_scope) {
- 		update_pinned_page_dirty_scope(iommu);
-+		if (iommu->dirty_page_tracking)
-+			vfio_iommu_populate_bitmap_full(iommu);
-+	}
- 	mutex_unlock(&iommu->lock);
- }
+ 	cap = kmalloc(cap_size, GFP_KERNEL);
++	if (!cap)
++		return -ENOMEM;
  
+ 	cap->header.id = VFIO_DEVICE_INFO_CAP_ZPCI_UTIL;
+ 	cap->header.version = 1;
+@@ -98,6 +100,8 @@ static int zpci_pfip_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
+ 	int ret;
+ 
+ 	cap = kmalloc(cap_size, GFP_KERNEL);
++	if (!cap)
++		return -ENOMEM;
+ 
+ 	cap->header.id = VFIO_DEVICE_INFO_CAP_ZPCI_PFIP;
+ 	cap->header.version = 1;
 -- 
 2.27.0
 
