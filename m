@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AB2329163
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E8A32916E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241174AbhCAUZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:25:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37622 "EHLO mail.kernel.org"
+        id S242948AbhCAU0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:26:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236460AbhCARGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236559AbhCARGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 12:06:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8797064FF7;
-        Mon,  1 Mar 2021 16:39:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 651EB64FF3;
+        Mon,  1 Mar 2021 16:39:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616793;
-        bh=GwZ4R8K90JSCX+MbLBOortuC8ZzSK8lVI6D7XThw+OU=;
+        s=korg; t=1614616798;
+        bh=K1219+4x7f1hf+7ItOD7OhC21b3+SuIp3BYVlZEIccE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=du8HVtWb/D/sK2hSywGctdtAaqwBRFK7sL6MMnSYzL7FoAFbo4BrqdQrdW8XPCvsN
-         5Eu0+vX3HEY1fT7shS8Gv1rBz7gxzxPVy+jOmjCV8lFWvjclRNMzLHv2rX4HiTIKu7
-         wUJZm+bNH9MR5Dv742ZfCKC1/F2mCY3ozHy9kwgw=
+        b=Buj9NLYg53hXrIjIi7ZFs/lZwGAXibjBY+CWgsxT7A719+PUxuxEUKjn6mQvywayh
+         3/QlKlibkc9CJmn2/N9XCJiw8r43aocmKUzMQ7M/N8oQey0mJWLUXxht+SOMaC+Jo1
+         Ykn8dt0WZMz20erew+TZAlQAbtC0/eNSNfNZHslc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Luo Meng <luomeng12@huawei.com>,
-        Akihiro Tsukada <tskd08@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 090/247] media: qm1d1c0042: fix error return code in qm1d1c0042_init()
-Date:   Mon,  1 Mar 2021 17:11:50 +0100
-Message-Id: <20210301161036.087730247@linuxfoundation.org>
+Subject: [PATCH 4.19 100/247] btrfs: clarify error returns values in __load_free_space_cache
+Date:   Mon,  1 Mar 2021 17:12:00 +0100
+Message-Id: <20210301161036.575967977@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -43,41 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit fcf8d018bdca0453b8d6359062e6bc1512d04c38 ]
+[ Upstream commit 3cc64e7ebfb0d7faaba2438334c43466955a96e8 ]
 
-Fix to return a negative error code from the error handling case
-instead of 0 in function qm1d1c0042_init(), as done elsewhere
-in this function.
+Return value in __load_free_space_cache is not properly set after
+(unlikely) memory allocation failures and 0 is returned instead.
+This is not a problem for the caller load_free_space_cache because only
+value 1 is considered as 'cache loaded' but for clarity it's better
+to set the errors accordingly.
 
-Fixes: ab4d14528fdf ("[media] em28xx: add support for PLEX PX-BCUD (ISDB-S)")
+Fixes: a67509c30079 ("Btrfs: add a io_ctl struct and helpers for dealing with the space cache")
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Acked-by: Akihiro Tsukada <tskd08@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/tuners/qm1d1c0042.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/btrfs/free-space-cache.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/tuners/qm1d1c0042.c b/drivers/media/tuners/qm1d1c0042.c
-index 83ca5dc047ea2..baa9950783b66 100644
---- a/drivers/media/tuners/qm1d1c0042.c
-+++ b/drivers/media/tuners/qm1d1c0042.c
-@@ -343,8 +343,10 @@ static int qm1d1c0042_init(struct dvb_frontend *fe)
- 		if (val == reg_initval[reg_index][0x00])
- 			break;
- 	}
--	if (reg_index >= QM1D1C0042_NUM_REG_ROWS)
-+	if (reg_index >= QM1D1C0042_NUM_REG_ROWS) {
-+		ret = -EINVAL;
- 		goto failed;
-+	}
- 	memcpy(state->regs, reg_initval[reg_index], QM1D1C0042_NUM_REGS);
- 	usleep_range(2000, 3000);
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 652b0b16e93e2..6511cb71986c9 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -743,8 +743,10 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 	while (num_entries) {
+ 		e = kmem_cache_zalloc(btrfs_free_space_cachep,
+ 				      GFP_NOFS);
+-		if (!e)
++		if (!e) {
++			ret = -ENOMEM;
+ 			goto free_cache;
++		}
  
+ 		ret = io_ctl_read_entry(&io_ctl, e, &type);
+ 		if (ret) {
+@@ -753,6 +755,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 		}
+ 
+ 		if (!e->bytes) {
++			ret = -1;
+ 			kmem_cache_free(btrfs_free_space_cachep, e);
+ 			goto free_cache;
+ 		}
+@@ -773,6 +776,7 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
+ 			e->bitmap = kmem_cache_zalloc(
+ 					btrfs_free_space_bitmap_cachep, GFP_NOFS);
+ 			if (!e->bitmap) {
++				ret = -ENOMEM;
+ 				kmem_cache_free(
+ 					btrfs_free_space_cachep, e);
+ 				goto free_cache;
 -- 
 2.27.0
 
