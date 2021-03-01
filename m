@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A97329EE0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35A0329EF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239625AbhCBDOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:14:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43788 "EHLO mail.kernel.org"
+        id S1347401AbhCBDSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:18:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242841AbhCAUUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:20:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E23F2653E8;
-        Mon,  1 Mar 2021 18:04:14 +0000 (UTC)
+        id S243024AbhCAUVa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:21:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94249653EA;
+        Mon,  1 Mar 2021 18:04:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621855;
-        bh=oKSzDqF61nr6aUtGB+t5hAaQn1ggM1TLcNzR1smF+iI=;
+        s=korg; t=1614621858;
+        bh=Ptg2P1wBUY7lTOmMuF6I6M1P+5OZgQIKIOZmTHAPdBs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r7csNPxUJAMWT8g+eAJ6BRxunl/2zFxRQvHJLvaj4FAz+giZ2welY3wT7+BsBmq9m
-         WecC55DBSAvedxhhF7FqBcGIUm/GLA5pQPa5/DJHO3opb15eNtd6DxFh2npCK4cOns
-         u1X88QUXQEWmSy4bkDWxgejBtkMMP/dQV2/qpdYc=
+        b=wSEmSsGpckM82ufUVl97TbZBVp1wto/ZHoBxEYAF18vaxC+qgb6Mf/8MmSoSgTz/V
+         BxOJrL5MeEQm5+PJ92jdTuTWjJsuwSbKlCd3sDUqqPBrreiZrQEW18aVnIzc9e9xsJ
+         wIQ+ck+sxY7KktnEoNjUHJDtT3gu1YsZVhV3/JLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        stable@vger.kernel.org, Laz Lev <lazlev@web.de>,
+        Sean Young <sean@mess.org>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.11 669/775] media: marvell-ccic: power up the device on mclk enable
-Date:   Mon,  1 Mar 2021 17:13:57 +0100
-Message-Id: <20210301161234.443688593@linuxfoundation.org>
+Subject: [PATCH 5.11 670/775] media: smipcie: fix interrupt handling and IR timeout
+Date:   Mon,  1 Mar 2021 17:13:58 +0100
+Message-Id: <20210301161234.495623669@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,39 +40,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lubomir Rintel <lkundrak@v3.sk>
+From: Sean Young <sean@mess.org>
 
-commit 655ae29da72a693cf294bba3c3322e662ff75bd3 upstream.
+commit 6532923237b427ed30cc7b4486f6f1ccdee3c647 upstream.
 
-Writing to REG_CLKCTRL with the power off causes a hang. Enable the
-device first.
+After the first IR message, interrupts are no longer received. In addition,
+the code generates a timeout IR message of 10ms but sets the timeout value
+to 100ms, so no timeout was ever generated.
 
-Cc: stable@vger.kernel.org # 5.10+
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=204317
+
+Fixes: a49a7a4635de ("media: smipcie: add universal ir capability")
+Tested-by: Laz Lev <lazlev@web.de>
+Cc: stable@vger.kernel.org # v5.1+
+Signed-off-by: Sean Young <sean@mess.org>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/media/platform/marvell-ccic/mcam-core.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/pci/smipcie/smipcie-ir.c |   48 ++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 21 deletions(-)
 
---- a/drivers/media/platform/marvell-ccic/mcam-core.c
-+++ b/drivers/media/platform/marvell-ccic/mcam-core.c
-@@ -931,6 +931,7 @@ static int mclk_enable(struct clk_hw *hw
- 		mclk_div = 2;
+--- a/drivers/media/pci/smipcie/smipcie-ir.c
++++ b/drivers/media/pci/smipcie/smipcie-ir.c
+@@ -60,38 +60,44 @@ static void smi_ir_decode(struct smi_rc
+ {
+ 	struct smi_dev *dev = ir->dev;
+ 	struct rc_dev *rc_dev = ir->rc_dev;
+-	u32 dwIRControl, dwIRData;
+-	u8 index, ucIRCount, readLoop;
++	u32 control, data;
++	u8 index, ir_count, read_loop;
+ 
+-	dwIRControl = smi_read(IR_Init_Reg);
++	control = smi_read(IR_Init_Reg);
+ 
+-	if (dwIRControl & rbIRVld) {
+-		ucIRCount = (u8) smi_read(IR_Data_Cnt);
++	dev_dbg(&rc_dev->dev, "ircontrol: 0x%08x\n", control);
+ 
+-		readLoop = ucIRCount/4;
+-		if (ucIRCount % 4)
+-			readLoop += 1;
+-		for (index = 0; index < readLoop; index++) {
+-			dwIRData = smi_read(IR_DATA_BUFFER_BASE + (index * 4));
+-
+-			ir->irData[index*4 + 0] = (u8)(dwIRData);
+-			ir->irData[index*4 + 1] = (u8)(dwIRData >> 8);
+-			ir->irData[index*4 + 2] = (u8)(dwIRData >> 16);
+-			ir->irData[index*4 + 3] = (u8)(dwIRData >> 24);
++	if (control & rbIRVld) {
++		ir_count = (u8)smi_read(IR_Data_Cnt);
++
++		dev_dbg(&rc_dev->dev, "ircount %d\n", ir_count);
++
++		read_loop = ir_count / 4;
++		if (ir_count % 4)
++			read_loop += 1;
++		for (index = 0; index < read_loop; index++) {
++			data = smi_read(IR_DATA_BUFFER_BASE + (index * 4));
++			dev_dbg(&rc_dev->dev, "IRData 0x%08x\n", data);
++
++			ir->irData[index * 4 + 0] = (u8)(data);
++			ir->irData[index * 4 + 1] = (u8)(data >> 8);
++			ir->irData[index * 4 + 2] = (u8)(data >> 16);
++			ir->irData[index * 4 + 3] = (u8)(data >> 24);
+ 		}
+-		smi_raw_process(rc_dev, ir->irData, ucIRCount);
+-		smi_set(IR_Init_Reg, rbIRVld);
++		smi_raw_process(rc_dev, ir->irData, ir_count);
  	}
  
-+	pm_runtime_get_sync(cam->dev);
- 	clk_enable(cam->clk[0]);
- 	mcam_reg_write(cam, REG_CLKCTRL, (mclk_src << 29) | mclk_div);
- 	mcam_ctlr_power_up(cam);
-@@ -944,6 +945,7 @@ static void mclk_disable(struct clk_hw *
+-	if (dwIRControl & rbIRhighidle) {
++	if (control & rbIRhighidle) {
+ 		struct ir_raw_event rawir = {};
  
- 	mcam_ctlr_power_down(cam);
- 	clk_disable(cam->clk[0]);
-+	pm_runtime_put(cam->dev);
++		dev_dbg(&rc_dev->dev, "high idle\n");
++
+ 		rawir.pulse = 0;
+ 		rawir.duration = SMI_SAMPLE_PERIOD * SMI_SAMPLE_IDLEMIN;
+ 		ir_raw_event_store_with_filter(rc_dev, &rawir);
+-		smi_set(IR_Init_Reg, rbIRhighidle);
+ 	}
+ 
++	smi_set(IR_Init_Reg, rbIRVld);
+ 	ir_raw_event_handle(rc_dev);
  }
  
- static unsigned long mclk_recalc_rate(struct clk_hw *hw,
+@@ -150,7 +156,7 @@ int smi_ir_init(struct smi_dev *dev)
+ 	rc_dev->dev.parent = &dev->pci_dev->dev;
+ 
+ 	rc_dev->map_name = dev->info->rc_map;
+-	rc_dev->timeout = MS_TO_US(100);
++	rc_dev->timeout = SMI_SAMPLE_PERIOD * SMI_SAMPLE_IDLEMIN;
+ 	rc_dev->rx_resolution = SMI_SAMPLE_PERIOD;
+ 
+ 	ir->rc_dev = rc_dev;
+@@ -173,7 +179,7 @@ void smi_ir_exit(struct smi_dev *dev)
+ 	struct smi_rc *ir = &dev->ir;
+ 	struct rc_dev *rc_dev = ir->rc_dev;
+ 
+-	smi_ir_stop(ir);
+ 	rc_unregister_device(rc_dev);
++	smi_ir_stop(ir);
+ 	ir->rc_dev = NULL;
+ }
 
 
