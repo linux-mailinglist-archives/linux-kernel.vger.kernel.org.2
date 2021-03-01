@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3408328873
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE41328887
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhCARkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:40:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36256 "EHLO mail.kernel.org"
+        id S238359AbhCARmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:42:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234842AbhCAQ3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:29:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C79764F4D;
-        Mon,  1 Mar 2021 16:22:44 +0000 (UTC)
+        id S234875AbhCAQ3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:29:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F137964EEF;
+        Mon,  1 Mar 2021 16:22:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615764;
-        bh=LtArYRrVe706yt9NdNPEB9Rt4v6t+2TY865VhZcyoZw=;
+        s=korg; t=1614615770;
+        bh=pnj2q4mKwcEOetJykDtwV2xdO7Ak5cmiJLRktgJvHes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qeCHXJDbC0YDAm6HgVWLj5z2EMA7O6is3nMUR+VwqCba0M0/+dk2DLarYmQ9k6WpD
-         GIczs0yARuP9Ybj2+XY+GboWBICJoBWGuCKSacKeaNzYI6E6g97bbaGDRk5bNCNmYc
-         +7EUvtERxRPDINrlplEhyKQL/OsjISWk2WGIWayk=
+        b=yrysth0XK2/k34ckjYO195UMK9NHw67Vm4p+Y8JX4zAF7gmfw+wSka2B5xVBcV8nP
+         QpskzNmjbbOaddSLlkxrnyQFBpLygC50a3wQqZWN2PP7VJf0QYSZUl/8LxdvQ2Qgaw
+         iS0WvLMjp/ctKFKvSdkqnzAM2Gpt4hqfiah565qQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 052/134] dmaengine: fsldma: Fix a resource leak in an error handling path of the probe function
-Date:   Mon,  1 Mar 2021 17:12:33 +0100
-Message-Id: <20210301161016.118779556@linuxfoundation.org>
+        stable@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, KarimAllah Ahmed <karahmed@amazon.de>,
+        Quentin Perret <qperret@google.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 053/134] fdt: Properly handle "no-map" field in the memory region
+Date:   Mon,  1 Mar 2021 17:12:34 +0100
+Message-Id: <20210301161016.171027994@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -40,48 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: KarimAllah Ahmed <karahmed@amazon.de>
 
-[ Upstream commit b202d4e82531a62a33a6b14d321dd2aad491578e ]
+[ Upstream commit 86588296acbfb1591e92ba60221e95677ecadb43 ]
 
-In case of error, the previous 'fsl_dma_chan_probe()' calls must be undone
-by some 'fsl_dma_chan_remove()', as already done in the remove function.
+Mark the memory region with NOMAP flag instead of completely removing it
+from the memory blocks. That makes the FDT handling consistent with the EFI
+memory map handling.
 
-It was added in the remove function in commit 77cd62e8082b ("fsldma: allow
-Freescale Elo DMA driver to be compiled as a module")
-
-Fixes: d3f620b2c4fe ("fsldma: simplify IRQ probing and handling")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201212160614.92576-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: KarimAllah Ahmed <karahmed@amazon.de>
+Signed-off-by: Quentin Perret <qperret@google.com>
+Link: https://lore.kernel.org/r/20210115114544.1830068-2-qperret@google.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/fsldma.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/of/fdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/fsldma.c b/drivers/dma/fsldma.c
-index a5687864e8830..c9a1d59dcb490 100644
---- a/drivers/dma/fsldma.c
-+++ b/drivers/dma/fsldma.c
-@@ -1331,6 +1331,7 @@ static int fsldma_of_probe(struct platform_device *op)
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index e9360d5cbcbac..f90b626269ab6 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1159,7 +1159,7 @@ int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
+ 					phys_addr_t size, bool nomap)
  {
- 	struct fsldma_device *fdev;
- 	struct device_node *child;
-+	unsigned int i;
- 	int err;
+ 	if (nomap)
+-		return memblock_remove(base, size);
++		return memblock_mark_nomap(base, size);
+ 	return memblock_reserve(base, size);
+ }
  
- 	fdev = kzalloc(sizeof(*fdev), GFP_KERNEL);
-@@ -1411,6 +1412,10 @@ static int fsldma_of_probe(struct platform_device *op)
- 	return 0;
- 
- out_free_fdev:
-+	for (i = 0; i < FSL_DMA_MAX_CHANS_PER_DEVICE; i++) {
-+		if (fdev->chan[i])
-+			fsl_dma_chan_remove(fdev->chan[i]);
-+	}
- 	irq_dispose_mapping(fdev->irq);
- 	iounmap(fdev->regs);
- out_free:
 -- 
 2.27.0
 
