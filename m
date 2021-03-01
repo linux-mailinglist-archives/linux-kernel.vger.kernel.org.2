@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4202F329C30
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5310329C00
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380256AbhCBBtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:49:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48648 "EHLO mail.kernel.org"
+        id S1345774AbhCBBq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:46:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241562AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:26:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8FB965232;
-        Mon,  1 Mar 2021 17:25:45 +0000 (UTC)
+        id S241411AbhCATVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:21:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3611864F96;
+        Mon,  1 Mar 2021 17:24:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619546;
-        bh=1feIIokblO6iZ/yFfwciUUr4zza5s6v3Y6/J2DQiWHo=;
+        s=korg; t=1614619470;
+        bh=c6gpCmsCymry7e27fJgHF3wxpi7KEAg6KJWb6r0QVBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Su7IKcwZVTVw251A6DVXMpiBcmZjB89Q0bUfV8AVvumyW8xXgULdPn4dOQlOpvMWh
-         80R6drellb2WkfjnrCSqfT6gE+KkF2lmpaTmOQjTq2i6I5caI+wG8aDqL61lLP6tRb
-         w6AsLLoReW+0xx/ey8h30wDeXMAdXsX9wCPJi5ww=
+        b=AsL2cV7cO73KOqtAdGONWxYQWAS9R2Y15cab2HGPAJO/KNQDMgUmeoYuYXmvXyEFB
+         RM8Ilg384uVxGSlxXjrNJIAeXQdJGVmnRGvAABdan/BoZT7ZvjUlOk0U4zWs6xsWg6
+         52BaUJib5ZnghAPOKCcG/NFRWfgGkf4hybYbSC+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 463/663] NFSv4: Fixes for nfs4_bitmask_adjust()
-Date:   Mon,  1 Mar 2021 17:11:51 +0100
-Message-Id: <20210301161204.776803832@linuxfoundation.org>
+Subject: [PATCH 5.10 466/663] arm64: Add missing ISB after invalidating TLB in __primary_switch
+Date:   Mon,  1 Mar 2021 17:11:54 +0100
+Message-Id: <20210301161204.917767509@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,57 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 45901a231723a5a513ff08477983f3a274a6a910 ]
+[ Upstream commit 9d41053e8dc115c92b8002c3db5f545d7602498b ]
 
-We don't want to ask for the ACL in a WRITE reply, since we don't have
-a preallocated buffer.
+Although there has been a bit of back and forth on the subject, it
+appears that invalidating TLBs requires an ISB instruction when FEAT_ETS
+is not implemented by the CPU.
 
-Instead of checking NFS_INO_INVALID_ACCESS, which is really about
-managing the access cache, we should look at the value of
-NFS_INO_INVALID_OTHER. Also ensure we assign the mode, owner and
-owner_group flags to the correct bit mask.
+>From the bible:
 
-Finally, fix up the check for NFS_INO_INVALID_CTIME to retrieve the
-ctime, and add a check for NFS_INO_INVALID_CHANGE.
+  | In an implementation that does not implement FEAT_ETS, a TLB
+  | maintenance instruction executed by a PE, PEx, can complete at any
+  | time after it is issued, but is only guaranteed to be finished for a
+  | PE, PEx, after the execution of DSB by the PEx followed by a Context
+  | synchronization event
 
-Fixes: 76bd5c016ef4 ("NFSv4: make cache consistency bitmask dynamic")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Add the missing ISB in __primary_switch, just in case.
+
+Fixes: 3c5e9f238bc4 ("arm64: head.S: move KASLR processing out of __enable_mmu()")
+Suggested-by: Will Deacon <will@kernel.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Link: https://lore.kernel.org/r/20210224093738.3629662-3-maz@kernel.org
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4proc.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ arch/arm64/kernel/head.S | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index 0cd5b127f3bb9..a811d42ffbd11 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -5433,15 +5433,16 @@ static void nfs4_bitmask_adjust(__u32 *bitmask, struct inode *inode,
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index d8d9caf02834e..e7550a5289fef 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -985,6 +985,7 @@ SYM_FUNC_START_LOCAL(__primary_switch)
  
- 	if (cache_validity & NFS_INO_INVALID_ATIME)
- 		bitmask[1] |= FATTR4_WORD1_TIME_ACCESS;
--	if (cache_validity & NFS_INO_INVALID_ACCESS)
--		bitmask[0] |= FATTR4_WORD1_MODE | FATTR4_WORD1_OWNER |
--				FATTR4_WORD1_OWNER_GROUP;
--	if (cache_validity & NFS_INO_INVALID_ACL)
--		bitmask[0] |= FATTR4_WORD0_ACL;
--	if (cache_validity & NFS_INO_INVALID_LABEL)
-+	if (cache_validity & NFS_INO_INVALID_OTHER)
-+		bitmask[1] |= FATTR4_WORD1_MODE | FATTR4_WORD1_OWNER |
-+				FATTR4_WORD1_OWNER_GROUP |
-+				FATTR4_WORD1_NUMLINKS;
-+	if (label && label->len && cache_validity & NFS_INO_INVALID_LABEL)
- 		bitmask[2] |= FATTR4_WORD2_SECURITY_LABEL;
--	if (cache_validity & NFS_INO_INVALID_CTIME)
-+	if (cache_validity & NFS_INO_INVALID_CHANGE)
- 		bitmask[0] |= FATTR4_WORD0_CHANGE;
-+	if (cache_validity & NFS_INO_INVALID_CTIME)
-+		bitmask[1] |= FATTR4_WORD1_TIME_METADATA;
- 	if (cache_validity & NFS_INO_INVALID_MTIME)
- 		bitmask[1] |= FATTR4_WORD1_TIME_MODIFY;
- 	if (cache_validity & NFS_INO_INVALID_SIZE)
+ 	tlbi	vmalle1				// Remove any stale TLB entries
+ 	dsb	nsh
++	isb
+ 
+ 	msr	sctlr_el1, x19			// re-enable the MMU
+ 	isb
 -- 
 2.27.0
 
