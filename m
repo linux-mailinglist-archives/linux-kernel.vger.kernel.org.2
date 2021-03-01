@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CBE329811
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CFF0329886
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345060AbhCAXLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:11:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52458 "EHLO mail.kernel.org"
+        id S1346117AbhCAXiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:38:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235711AbhCAR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:56:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF3564F35;
-        Mon,  1 Mar 2021 17:36:50 +0000 (UTC)
+        id S239061AbhCASGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:06:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5523965092;
+        Mon,  1 Mar 2021 17:35:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620210;
-        bh=jWKKJl8qLouYfMuxcdUm0hFicEpzpbqWJNbzLUb0Wgo=;
+        s=korg; t=1614620147;
+        bh=3VYUcoViFPnf+4FXGF+rYTvwNJdrsI5fzYOj7PRVt0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PtE6dslp8aBpU1Vn9POlsqN/9a3+EyXpFqyH8JZEDjzbfNEZGBvy5aYZn+heHXb4O
-         YxquzRWjjwnk7h82tFIEb0SNufrZV2aDsHpBjzaWAdzcRNrREEnZBrWk8bIpk6czN7
-         lS14Qk94IHHnZjoIzWF8Z9NGQOwkz6PLuEXsgXOQ=
+        b=xV2MZBxAB0qmtLOZrIlLeCQa/HvmnoniYxPM3O9woga34n/HyjigYGsyf8Rvi3Nu/
+         AO+x68PsAhnNUOfqZBHdLfvMXcpKZACGDCcDpFUChXUiTKOnFkhtVGzck3w9X/Fy0I
+         6jIpK8QF5Z9szV/D7lMn5QxyP32/6hwS8BMpZteU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Phil Elwell <phil@raspberrypi.com>,
+        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 040/775] staging: vchiq: Fix bulk transfers on 64-bit builds
-Date:   Mon,  1 Mar 2021 17:03:28 +0100
-Message-Id: <20210301161203.701450055@linuxfoundation.org>
+Subject: [PATCH 5.11 048/775] arm64: dts: allwinner: Drop non-removable from SoPine/LTS SD card
+Date:   Mon,  1 Mar 2021 17:03:36 +0100
+Message-Id: <20210301161204.096448716@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,39 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Elwell <phil@raspberrypi.com>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit 88753cc19f087abe0d39644b844e67a59cfb5a3d ]
+[ Upstream commit 941432d007689f3774646e41a1439228b6c6ee0e ]
 
-The recent change to the bulk transfer compat function missed the fact
-the relevant ioctl command is VCHIQ_IOC_QUEUE_BULK_TRANSMIT32, not
-VCHIQ_IOC_QUEUE_BULK_TRANSMIT, as any attempt to send a bulk block
-to the VPU would have shown.
+The SD card on the SoPine SoM module is somewhat concealed, so was
+originally defined as "non-removable".
+However there is a working card-detect pin (tested on two different
+SoM versions), and in certain SoM base boards it might be actually
+accessible at runtime.
+Also the Pine64-LTS shares the SoPine base .dtsi, so inherited the
+non-removable flag, even though the SD card slot is perfectly accessible
+and usable there. (It turns out that just *my* board has a broken card
+detect switch, so I originally thought CD wouldn't work on the LTS.)
 
-Fixes: a4367cd2b231 ("staging: vchiq: convert compat bulk transfer")
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
-Link: https://lore.kernel.org/r/20210105162030.1415213-3-phil@raspberrypi.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Drop the "non-removable" flag to describe the SD card slot properly.
+
+Fixes: c3904a269891 ("arm64: allwinner: a64: add DTSI file for SoPine SoM")
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20210113152630.28810-5-andre.przywara@arm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index 2a8883673ba11..2ca5805b2fce0 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -1717,7 +1717,7 @@ vchiq_compat_ioctl_queue_bulk(struct file *file,
- {
- 	struct vchiq_queue_bulk_transfer32 args32;
- 	struct vchiq_queue_bulk_transfer args;
--	enum vchiq_bulk_dir dir = (cmd == VCHIQ_IOC_QUEUE_BULK_TRANSMIT) ?
-+	enum vchiq_bulk_dir dir = (cmd == VCHIQ_IOC_QUEUE_BULK_TRANSMIT32) ?
- 				  VCHIQ_BULK_TRANSMIT : VCHIQ_BULK_RECEIVE;
- 
- 	if (copy_from_user(&args32, argp, sizeof(args32)))
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
+index c48692b06e1fa..3402cec87035b 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
+@@ -32,7 +32,6 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&mmc0_pins>;
+ 	vmmc-supply = <&reg_dcdc1>;
+-	non-removable;
+ 	disable-wp;
+ 	bus-width = <4>;
+ 	cd-gpios = <&pio 5 6 GPIO_ACTIVE_LOW>; /* PF6 */
 -- 
 2.27.0
 
