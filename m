@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEC7329A79
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7526E329AEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377701AbhCBAsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:48:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53934 "EHLO mail.kernel.org"
+        id S1378268AbhCBBFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:05:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240419AbhCASqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:46:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAC23652F8;
-        Mon,  1 Mar 2021 17:41:00 +0000 (UTC)
+        id S235967AbhCAS6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:58:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2225465311;
+        Mon,  1 Mar 2021 17:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620461;
-        bh=rjrBaSKwO2T6eIlNO9REibMHoK2LueiCIOlW4KbwrIA=;
+        s=korg; t=1614620580;
+        bh=78L9UvpVe9u+2zDPNCLPyU3oexpUEoatpEnz43cPFPc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ivK2UHiJMugEptbDdJ98kvjbdVrv7u/rBM6Y/LlVezdJONVtvU2xjT+OI1Zvo+5Nd
-         Rrp6JlpnmdURkxoo5/YG82V1fadYv2EK+O5E8h4/JyZbU5uDd7NIJVgOvaMSy67Vv9
-         cD2nD3Lf5U8YO+OX3Mt8rJTwO3c1qur8CJPNVnnI=
+        b=ToJ4usS8fMVTI7ulX5kCNokDMrnb050ZFz2gEDBEENyzpc3HiN6WKHaVOL6mE9KHy
+         Jsy5FHm8I+8pvS2+3YLUkqPGkNNSxk/bNNTA3RJ3g0z0cWmWqNmnaCzNURWZvQ8kQp
+         dPDub6naY/NzFVsKDO39tjO83aMyiceW8dkynNxw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Eli Cohen <elic@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 161/775] net/mlx5e: E-switch, Fix rate calculation for overflow
-Date:   Mon,  1 Mar 2021 17:05:29 +0100
-Message-Id: <20210301161209.594545828@linuxfoundation.org>
+Subject: [PATCH 5.11 174/775] drm/panel: mantix: Tweak init sequence
+Date:   Mon,  1 Mar 2021 17:05:42 +0100
+Message-Id: <20210301161210.230643653@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,39 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Parav Pandit <parav@nvidia.com>
+From: Guido Günther <agx@sigxcpu.org>
 
-[ Upstream commit 0e22bfb7c046e7c8ae339f396e78a0976633698c ]
+[ Upstream commit dd396dbc4d7811c1567cc43faa4b9ad68094c44d ]
 
-rate_bytes_ps is a 64-bit field. It passed as 32-bit field to
-apply_police_params(). Due to this when police rate is higher
-than 4Gbps, 32-bit calculation ignores the carry. This results
-in incorrect rate configurationn the device.
+We've seen some (non permanent) burn in and bad white balance
+on some of the panels. Adding this bit from a vendor supplied
+sequence fixes it.
 
-Fix it by performing 64-bit calculation.
-
-Fixes: fcb64c0f5640 ("net/mlx5: E-Switch, add ingress rate support")
-Signed-off-by: Parav Pandit <parav@nvidia.com>
-Reviewed-by: Eli Cohen <elic@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: 72967d5616d3 ("drm/panel: Add panel driver for the Mantix MLAF057WE51-X DSI panel")
+Signed-off-by: Guido Günther <agx@sigxcpu.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/8451831b60d5ecb73a156613d98218a31bd55680.1605688147.git.agx@sigxcpu.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index dd0bfbacad474..717fbaa6ce736 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -5040,7 +5040,7 @@ static int apply_police_params(struct mlx5e_priv *priv, u64 rate,
- 	 */
- 	if (rate) {
- 		rate = (rate * BITS_PER_BYTE) + 500000;
--		rate_mbps = max_t(u32, do_div(rate, 1000000), 1);
-+		rate_mbps = max_t(u64, do_div(rate, 1000000), 1);
- 	}
+diff --git a/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
+index 0c5f22e95c2db..624d17b96a693 100644
+--- a/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
++++ b/drivers/gpu/drm/panel/panel-mantix-mlaf057we51.c
+@@ -22,6 +22,7 @@
+ /* Manufacturer specific Commands send via DSI */
+ #define MANTIX_CMD_OTP_STOP_RELOAD_MIPI 0x41
+ #define MANTIX_CMD_INT_CANCEL           0x4C
++#define MANTIX_CMD_SPI_FINISH           0x90
  
- 	err = mlx5_esw_modify_vport_rate(esw, vport_num, rate_mbps);
+ struct mantix {
+ 	struct device *dev;
+@@ -66,6 +67,10 @@ static int mantix_init_sequence(struct mantix *ctx)
+ 	dsi_generic_write_seq(dsi, 0x80, 0x64, 0x00, 0x64, 0x00, 0x00);
+ 	msleep(20);
+ 
++	dsi_generic_write_seq(dsi, MANTIX_CMD_SPI_FINISH, 0xA5);
++	dsi_generic_write_seq(dsi, MANTIX_CMD_OTP_STOP_RELOAD_MIPI, 0x00, 0x2F);
++	msleep(20);
++
+ 	dev_dbg(dev, "Panel init sequence done\n");
+ 	return 0;
+ }
 -- 
 2.27.0
 
