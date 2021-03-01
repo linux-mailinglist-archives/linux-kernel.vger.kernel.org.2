@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AD93299E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A816F3298D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240058AbhCBAi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:38:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45030 "EHLO mail.kernel.org"
+        id S1346695AbhCAXuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:50:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239920AbhCASdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:33:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A429E64F00;
-        Mon,  1 Mar 2021 17:48:08 +0000 (UTC)
+        id S239337AbhCASLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:11:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D9F064F0C;
+        Mon,  1 Mar 2021 17:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620889;
-        bh=0ExyrjjpQ/CckP5moQJw2qC6duuW8N60lGvhI8jFxLY=;
+        s=korg; t=1614620919;
+        bh=T3mWAzRnWiyZJijb0klKFp2aI48V0LfXLgCxCOcBctc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Le6n6XBYK7e9Qx1M1d4i3UO7xoMLubPKo8TdeDjPvv0s6vZ2Ju3hg+SLSmVBFHIQq
-         5T6eXePLnv4ZV5uDD7wvDFLHFi1KQ+e3yGQksB7YrQgXR4gmgOwfjGiSs9SE/OfdCI
-         431zoWoMQWtfD6knh4Ctzs9eZxu4bhNFVfvXiy6s=
+        b=Bnk3DvzADqzmSaq419W1FUHhOU+RoHMv4mAuUTMb1vHhZRlffpChC/CqPJ1KRXI62
+         BhW+eTgGWVib4fL5ZhsVcGBDprreljeA7k+ykimxSxpEuhvWMYKfC43VpWmfd1enQf
+         wUgb8EFATKc7LQ7ZQTR/xeINwIG+f1AcT9YElL28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 299/775] irqchip/imx: IMX_INTMUX should not default to y, unconditionally
-Date:   Mon,  1 Mar 2021 17:07:47 +0100
-Message-Id: <20210301161216.402851612@linuxfoundation.org>
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 300/775] smp: Process pending softirqs in flush_smp_call_function_from_idle()
+Date:   Mon,  1 Mar 2021 17:07:48 +0100
+Message-Id: <20210301161216.452455647@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,37 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-[ Upstream commit a890caeb2ba40ca183969230e204ab144f258357 ]
+[ Upstream commit f9d34595ae4feed38856b88769e2ba5af22d2548 ]
 
-Merely enabling CONFIG_COMPILE_TEST should not enable additional code.
-To fix this, restrict the automatic enabling of IMX_INTMUX to ARCH_MXC,
-and ask the user in case of compile-testing.
+send_call_function_single_ipi() may wake an idle CPU without sending an
+IPI. The woken up CPU will process the SMP-functions in
+flush_smp_call_function_from_idle(). Any raised softirq from within the
+SMP-function call will not be processed.
+Should the CPU have no tasks assigned, then it will go back to idle with
+pending softirqs and the NOHZ will rightfully complain.
 
-Fixes: 66968d7dfc3f5451 ("irqchip: Add COMPILE_TEST support for IMX_INTMUX")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210208145605.422943-1-geert+renesas@glider.be
+Process pending softirqs on return from flush_smp_call_function_queue().
+
+Fixes: b2a02fc43a1f4 ("smp: Optimize send_call_function_single_ipi()")
+Reported-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lkml.kernel.org/r/20210123201027.3262800-2-bigeasy@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/smp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index b147f22a78f48..d7d1a0fab2c1a 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -457,7 +457,8 @@ config IMX_IRQSTEER
- 	  Support for the i.MX IRQSTEER interrupt multiplexer/remapper.
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 1b6070bf97bb0..aeb0adfa06063 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -14,6 +14,7 @@
+ #include <linux/export.h>
+ #include <linux/percpu.h>
+ #include <linux/init.h>
++#include <linux/interrupt.h>
+ #include <linux/gfp.h>
+ #include <linux/smp.h>
+ #include <linux/cpu.h>
+@@ -449,6 +450,9 @@ void flush_smp_call_function_from_idle(void)
  
- config IMX_INTMUX
--	def_bool y if ARCH_MXC || COMPILE_TEST
-+	bool "i.MX INTMUX support" if COMPILE_TEST
-+	default y if ARCH_MXC
- 	select IRQ_DOMAIN
- 	help
- 	  Support for the i.MX INTMUX interrupt multiplexer.
+ 	local_irq_save(flags);
+ 	flush_smp_call_function_queue(true);
++	if (local_softirq_pending())
++		do_softirq();
++
+ 	local_irq_restore(flags);
+ }
+ 
 -- 
 2.27.0
 
