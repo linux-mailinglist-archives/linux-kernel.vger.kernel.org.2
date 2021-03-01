@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6D1329BF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E279329C5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241130AbhCBBpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:45:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46134 "EHLO mail.kernel.org"
+        id S1380572AbhCBBx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:53:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241414AbhCATVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:21:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E145664FD1;
-        Mon,  1 Mar 2021 17:50:22 +0000 (UTC)
+        id S241873AbhCAT3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:29:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1C5C64F6C;
+        Mon,  1 Mar 2021 17:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621023;
-        bh=U2+6gTmH/NBd3LfZo/E+AVn8ZOP80TPgObgc60h1xEw=;
+        s=korg; t=1614621026;
+        bh=8cMgb4xGAjd8a8wRgt0wH4q4ZXANGpxicI9k8qjckxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pBNJ0g99QYeY8mv2F7n1UtD+0222KYMhkwvdhbfJCjpizj2kuQvwFfQnilOUcYNOd
-         Ol5bU32fPZPbr0buCViSqcI48VapgKXCXtsNCb6gcNyTuIWzX77Qh0LQksnKrRlbZy
-         kgK3Habm9aUosDMdIVJDjAVbQSO4gJgsGfDNoTyU=
+        b=EWLEMU3RB4l5HxIIrOeBfL5/H+/uso21E7YxNbVWR+eyv5y88C5BZnE3kE+7/H8V5
+         c8Vej24Uu/EtLmh+TS4kUufDi0+hfabzE2PT7135ptX2Ap+sJrLPbTgRw/37izK0C8
+         1dJyh8KxGQp5BCTkghmonMfisjPFX2qBGRbMzplU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 335/775] power: supply: cpcap-charger: Fix power_supply_put on null battery pointer
-Date:   Mon,  1 Mar 2021 17:08:23 +0100
-Message-Id: <20210301161218.176454023@linuxfoundation.org>
+        stable@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, KarimAllah Ahmed <karahmed@amazon.de>,
+        Quentin Perret <qperret@google.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 336/775] fdt: Properly handle "no-map" field in the memory region
+Date:   Mon,  1 Mar 2021 17:08:24 +0100
+Message-Id: <20210301161218.225700513@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,39 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: KarimAllah Ahmed <karahmed@amazon.de>
 
-[ Upstream commit 39196cfe10dd2b46ee28b44abbc0db4f4cb7822f ]
+[ Upstream commit 86588296acbfb1591e92ba60221e95677ecadb43 ]
 
-Currently if the pointer battery is null there is a null pointer
-dereference on the call to power_supply_put.  Fix this by only
-performing the put if battery is not null.
+Mark the memory region with NOMAP flag instead of completely removing it
+from the memory blocks. That makes the FDT handling consistent with the EFI
+memory map handling.
 
-Addresses-Coverity: ("Dereference after null check")
-Fixes: 4bff91bb3231 ("power: supply: cpcap-charger: Fix missing power_supply_put()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: KarimAllah Ahmed <karahmed@amazon.de>
+Signed-off-by: Quentin Perret <qperret@google.com>
+Link: https://lore.kernel.org/r/20210115114544.1830068-2-qperret@google.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/cpcap-charger.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/of/fdt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/cpcap-charger.c b/drivers/power/supply/cpcap-charger.c
-index 2c5f2246c6eaa..22fff01425d63 100644
---- a/drivers/power/supply/cpcap-charger.c
-+++ b/drivers/power/supply/cpcap-charger.c
-@@ -301,8 +301,9 @@ cpcap_charger_get_bat_const_charge_voltage(struct cpcap_charger_ddata *ddata)
- 				&prop);
- 		if (!error)
- 			voltage = prop.intval;
-+
-+		power_supply_put(battery);
- 	}
--	power_supply_put(battery);
- 
- 	return voltage;
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index feb0f2d67fc5f..427b534d60d2d 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1147,7 +1147,7 @@ int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
+ 					phys_addr_t size, bool nomap)
+ {
+ 	if (nomap)
+-		return memblock_remove(base, size);
++		return memblock_mark_nomap(base, size);
+ 	return memblock_reserve(base, size);
  }
+ 
 -- 
 2.27.0
 
