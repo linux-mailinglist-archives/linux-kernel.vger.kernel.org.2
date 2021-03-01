@@ -2,227 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7197327C9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAAC327CA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbhCAKvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:51:45 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:64302 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234788AbhCAKvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:51:25 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614595859; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=Z6iFUxoiBsHFARzbI4gTg2kb9vnADIPjoZSG+52+ZEA=; b=fwrsron6iIWKkBS5MCC1VLErty0QbCiOW1G+A0dlkrOUhnZtj23l2HTLUtCfYkVGZfDrvmYg
- UwDKcxxVVhPsIWsUh8kq/aYsODmaJgJBBiH99BwWybXFQObYJ1OeR4RxUJvThiaIR3h0ihyX
- GgodZK6g9o2Ozsrtqls1jnz08pY=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 603cc6f016ba7452010130f8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 10:50:24
- GMT
-Sender: pintu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1FB1CC43465; Mon,  1 Mar 2021 10:50:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-498.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S234877AbhCAKyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:54:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234843AbhCAKyg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:54:36 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51908C06174A;
+        Mon,  1 Mar 2021 02:53:56 -0800 (PST)
+Received: from zn.tnic (p200300ec2f03de00f5cdc1114f0af8a0.dip0.t-ipconnect.de [IPv6:2003:ec:2f03:de00:f5cd:c111:4f0a:f8a0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: pintu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DE0E3C433CA;
-        Mon,  1 Mar 2021 10:50:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DE0E3C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pintu@codeaurora.org
-From:   Pintu Kumar <pintu@codeaurora.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, jaewon31.kim@samsung.com,
-        yuzhao@google.com, shakeelb@google.com, guro@fb.com,
-        mchehab+huawei@kernel.org, xi.fengfei@h3c.com,
-        pintu@codeaurora.org, lokeshgidra@google.com, hannes@cmpxchg.org,
-        nigupta@nvidia.com, famzheng@amazon.com,
-        andrew.a.klychkov@gmail.com, bigeasy@linutronix.de,
-        ping.ping@gmail.com, vbabka@suse.cz, yzaikin@google.com,
-        keescook@chromium.org, mcgrof@kernel.org, corbet@lwn.net
-Cc:     pintu.ping@gmail.com
-Subject: [PATCH] mm: introduce clear all vm events counters
-Date:   Mon,  1 Mar 2021 16:19:26 +0530
-Message-Id: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D974B1EC01B5;
+        Mon,  1 Mar 2021 11:53:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614596035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=l+z6EvWHUXr8TrpNEnVhvv8ICFE3RUbm0QatMsj9WVs=;
+        b=lmIDrifrG9J9CWn1hfPJbaNUZgjQJaOhEJ2IuaLUcXDJZp91e214VJ70yBCAN1OZ2JnG7c
+        ovje2ihhqKrLTYsJ53QB0CIfk304Q99vow/f9p0Yow6kkQf/Mp3xQa3RS3BlNISEmDaC6B
+        f64RmSKbMwyT+wbq5TCkVkZc0+f1e5k=
+Date:   Mon, 1 Mar 2021 11:53:46 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
+Message-ID: <20210301105346.GC6699@zn.tnic>
+References: <cover.1614590788.git.kai.huang@intel.com>
+ <bbfc8c833a62e4b55220834320829df1e17aff41.1614590788.git.kai.huang@intel.com>
+ <20210301100037.GA6699@zn.tnic>
+ <3fce1dd2abd42597bde7ae9496bde7b9596b2797.camel@intel.com>
+ <20210301103043.GB6699@zn.tnic>
+ <7603ef673997b6674f785d333a4f263c749d2cf3.camel@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7603ef673997b6674f785d333a4f263c749d2cf3.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At times there is a need to regularly monitor vm counters while we
-reproduce some issue, or it could be as simple as gathering some system
-statistics when we run some scenario and every time we like to start from
-beginning.
-The current steps are:
-Dump /proc/vmstat
-Run some scenario
-Dump /proc/vmstat again
-Generate some data or graph
-reboot and repeat again
+On Mon, Mar 01, 2021 at 11:40:02PM +1300, Kai Huang wrote:
+> SGX2 means "Enclave Dynamic Memory Management", which supports dynamically
+> adding/removing EPC pages, plus changing page permission, after enclave is
+> initialized. So it allows enclave author to write enclave in more flexible way, and
+> also utilize EPC resource more efficiently.
 
-So, each time we wanted to capture fresh data a reboot is required.
+So how is the enclave author going to use "sgx2" in /proc/cpuinfo? Query
+it to know whether it can start adding/removing EPC pages or is this
+going to be used by scripts?
 
-Thus, in this patch I introduce a way to clear/reset all vm counters to 0
-without rebooting the system.
-With this patch the steps can be:
-Dump /proc/vmstat
-Run some scenario
-Dump /proc/vmstat again
-Generate some data or graph
-Do: echo 1 > /proc/sys/vm/clear_all_vm_events
-Then repeat again
+> Yes I can add "why" into commit message, but isn't the comment after X86_FEATURE_SGX2
+> enough? I think people who are interested in SGX will know what SGX2 is and why SGX2
+> is useful.
 
-Thus, when 1 is written to this file, it resets all the vm counters present
-under /proc/vmstat to its default value or zero.
-The next time when you read /proc/vmstat, each node is filled with default
-or current value.
+The point is, the commit message should say how this flag in
+/proc/cpuinfo is going to be used - not what people interested in sgx
+might and might not know.
 
-There could be few other use cases where this can be useful.
+/proc/cpuinfo is user-visible ABI - you can't add stuff to it just because.
 
-Signed-off-by: Pintu Kumar <pintu@codeaurora.org>
-Signed-off-by: Pintu Agarwal <ping.ping@gmail.com>
----
- Documentation/admin-guide/sysctl/vm.rst |  8 ++++++++
- include/linux/vmstat.h                  |  7 +++++++
- kernel/sysctl.c                         |  9 +++++++++
- mm/vmstat.c                             | 26 ++++++++++++++++++++++++++
- 4 files changed, 50 insertions(+)
-
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-index e35a3f2..54382ab 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -26,6 +26,7 @@ Currently, these files are in /proc/sys/vm:
- 
- - admin_reserve_kbytes
- - block_dump
-+- clear_all_vm_events
- - compact_memory
- - compaction_proactiveness
- - compact_unevictable_allowed
-@@ -112,6 +113,13 @@ block_dump
- block_dump enables block I/O debugging when set to a nonzero value. More
- information on block I/O debugging is in Documentation/admin-guide/laptops/laptop-mode.rst.
- 
-+clear_all_vm_events
-+===================
-+
-+When 1 is written to this file, it resets all the vm counters present under
-+/proc/vmstat to its default value or zeros.
-+The next time when you read /proc/vmstat, each node is filled with default or
-+current value.
- 
- compact_memory
- ==============
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index 773135f..8ab9be5 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -11,6 +11,8 @@
- #include <linux/mmdebug.h>
- 
- extern int sysctl_stat_interval;
-+extern int sysctl_clearvmevents_handler(struct ctl_table *table, int write,
-+	void __user *buffer, size_t *length, loff_t *ppos);
- 
- #ifdef CONFIG_NUMA
- #define ENABLE_NUMA_STAT   1
-@@ -83,6 +85,8 @@ static inline void count_vm_events(enum vm_event_item item, long delta)
- 
- extern void all_vm_events(unsigned long *);
- 
-+extern void clear_all_vm_events(void);
-+
- extern void vm_events_fold_cpu(int cpu);
- 
- #else
-@@ -103,6 +107,9 @@ static inline void __count_vm_events(enum vm_event_item item, long delta)
- static inline void all_vm_events(unsigned long *ret)
- {
- }
-+static inline void clear_all_vm_events(void)
-+{
-+}
- static inline void vm_events_fold_cpu(int cpu)
- {
- }
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index c9fbdd8..25299a4 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -200,6 +200,8 @@ static int min_extfrag_threshold;
- static int max_extfrag_threshold = 1000;
- #endif
- 
-+static int sysctl_clear_vm_events;
-+
- #endif /* CONFIG_SYSCTL */
- 
- #if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_SYSCTL)
-@@ -2891,6 +2893,13 @@ static struct ctl_table vm_table[] = {
- 
- #endif /* CONFIG_COMPACTION */
- 	{
-+		.procname	= "clear_all_vm_events",
-+		.data		= &sysctl_clear_vm_events,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0200,
-+		.proc_handler	= sysctl_clearvmevents_handler,
-+	},
-+	{
- 		.procname	= "min_free_kbytes",
- 		.data		= &min_free_kbytes,
- 		.maxlen		= sizeof(min_free_kbytes),
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index f894216..26b8f81 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -136,6 +136,32 @@ void all_vm_events(unsigned long *ret)
- }
- EXPORT_SYMBOL_GPL(all_vm_events);
- 
-+void clear_all_vm_events(void)
-+{
-+	int cpu;
-+
-+	for_each_online_cpu(cpu) {
-+		struct vm_event_state *this = &per_cpu(vm_event_states, cpu);
-+		int sz = NR_VM_EVENT_ITEMS * sizeof(unsigned long);
-+
-+		memset(this->event, 0, sz);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(clear_all_vm_events);
-+
-+/*
-+ * This is the node to reset all vm events in /proc/vmstat
-+ * via /proc/sys/vm/clear_all_vm_events
-+ */
-+int sysctl_clearvmevents_handler(struct ctl_table *table, int write,
-+	void __user *buffer, size_t *length, loff_t *ppos)
-+{
-+	if (write)
-+		clear_all_vm_events();
-+
-+	return 0;
-+}
-+
- /*
-  * Fold the foreign cpu events into our own.
-  *
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
