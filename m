@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3417329B5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CC8329C88
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345695AbhCBBXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:23:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37334 "EHLO mail.kernel.org"
+        id S1380918AbhCBB4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:56:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240981AbhCATGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:06:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3145665302;
-        Mon,  1 Mar 2021 17:41:42 +0000 (UTC)
+        id S241601AbhCATcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:32:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B651A65303;
+        Mon,  1 Mar 2021 17:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620502;
-        bh=SIG6itTJqTRjzXiaj4rXvEE9CtpP4Jra12eomMQeLiM=;
+        s=korg; t=1614620508;
+        bh=GwEJmiFERp6COY/bVv1LD7Jx8iMrIUfQCXRWYVeMC5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eBokwKSIQiiF/gTdDd+bTVBDrT36wwTbhq6MaqgeAqmh1N7DFwi8Sn7gmNKdeSG4y
-         vshrIxajOISLOKCdj5ZOuJrzT8ZMeqneOlpZmHM7u02A2qcj01A5Y9I6F0c1UCEYgZ
-         PJGXv19F6HYZg4YR6nn20f6gcCGwi5+/Lc6ZuFaM=
+        b=IkDIOYcWnGrORmWNn+VnoX9/R0FNbK9mJ5YiEsmf3goqfURc7cTcqYlSPInpNpXfB
+         0ZnXQgOmTJ2oZHcAY9sfKof8Ju1bXwwPHG8atRuKkxTvdowJVaQlr9cNMZ1MUn6QjF
+         3s7w4ZXO/31mikkYL/dcuGi8vJWMEp+oh4Axo26A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 177/775] crypto: sun4i-ss - linearize buffers content must be kept
-Date:   Mon,  1 Mar 2021 17:05:45 +0100
-Message-Id: <20210301161210.377400600@linuxfoundation.org>
+Subject: [PATCH 5.11 179/775] crypto: arm64/aes-ce - really hide slower algos when faster ones are enabled
+Date:   Mon,  1 Mar 2021 17:05:47 +0100
+Message-Id: <20210301161210.475967803@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,91 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit 583513510a7acd2306787865bcd19ebb2f629d42 ]
+[ Upstream commit 15deb4333cd6d4e1e3216582e4c531ec40a6b060 ]
 
-When running the non-optimized cipher function, SS produce partial random
-output.
-This is due to linearize buffers being reseted after each loop.
+Commit 69b6f2e817e5b ("crypto: arm64/aes-neon - limit exposed routines if
+faster driver is enabled") intended to hide modes from the plain NEON
+driver that are also implemented by the faster bit sliced NEON one if
+both are enabled. However, the defined() CPP function does not detect
+if the bit sliced NEON driver is enabled as a module. So instead, let's
+use IS_ENABLED() here.
 
-For preserving stack, instead of moving them back to start of function,
-I move them in sun4i_ss_ctx.
-
-Fixes: 8d3bcb9900ca ("crypto: sun4i-ss - reduce stack usage")
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+Fixes: 69b6f2e817e5b ("crypto: arm64/aes-neon - limit exposed routines if ...")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 12 ++++--------
- drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h        |  2 ++
- 2 files changed, 6 insertions(+), 8 deletions(-)
+ arch/arm64/crypto/aes-glue.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-index b72de8939497b..19f1aa577ed4d 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
-@@ -233,8 +233,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+diff --git a/arch/arm64/crypto/aes-glue.c b/arch/arm64/crypto/aes-glue.c
+index 34b8a89197be3..cafb5b96be0e6 100644
+--- a/arch/arm64/crypto/aes-glue.c
++++ b/arch/arm64/crypto/aes-glue.c
+@@ -55,7 +55,7 @@ MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 Crypto Extensions");
+ #define aes_mac_update		neon_aes_mac_update
+ MODULE_DESCRIPTION("AES-ECB/CBC/CTR/XTS using ARMv8 NEON");
+ #endif
+-#if defined(USE_V8_CRYPTO_EXTENSIONS) || !defined(CONFIG_CRYPTO_AES_ARM64_BS)
++#if defined(USE_V8_CRYPTO_EXTENSIONS) || !IS_ENABLED(CONFIG_CRYPTO_AES_ARM64_BS)
+ MODULE_ALIAS_CRYPTO("ecb(aes)");
+ MODULE_ALIAS_CRYPTO("cbc(aes)");
+ MODULE_ALIAS_CRYPTO("ctr(aes)");
+@@ -650,7 +650,7 @@ static int __maybe_unused xts_decrypt(struct skcipher_request *req)
+ }
  
- 	while (oleft) {
- 		if (ileft) {
--			char buf[4 * SS_RX_MAX];/* buffer for linearize SG src */
--
- 			/*
- 			 * todo is the number of consecutive 4byte word that we
- 			 * can read from current SG
-@@ -256,12 +254,12 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 				 */
- 				todo = min(rx_cnt * 4 - ob, ileft);
- 				todo = min_t(size_t, todo, mi.length - oi);
--				memcpy(buf + ob, mi.addr + oi, todo);
-+				memcpy(ss->buf + ob, mi.addr + oi, todo);
- 				ileft -= todo;
- 				oi += todo;
- 				ob += todo;
- 				if (!(ob % 4)) {
--					writesl(ss->base + SS_RXFIFO, buf,
-+					writesl(ss->base + SS_RXFIFO, ss->buf,
- 						ob / 4);
- 					ob = 0;
- 				}
-@@ -295,13 +293,11 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 				oo = 0;
- 			}
- 		} else {
--			char bufo[4 * SS_TX_MAX]; /* buffer for linearize SG dst */
--
- 			/*
- 			 * read obl bytes in bufo, we read at maximum for
- 			 * emptying the device
- 			 */
--			readsl(ss->base + SS_TXFIFO, bufo, tx_cnt);
-+			readsl(ss->base + SS_TXFIFO, ss->bufo, tx_cnt);
- 			obl = tx_cnt * 4;
- 			obo = 0;
- 			do {
-@@ -313,7 +309,7 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
- 				 */
- 				todo = min_t(size_t,
- 					     mo.length - oo, obl - obo);
--				memcpy(mo.addr + oo, bufo + obo, todo);
-+				memcpy(mo.addr + oo, ss->bufo + obo, todo);
- 				oleft -= todo;
- 				obo += todo;
- 				oo += todo;
-diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-index 5c291e4a6857b..c242fccb2ab67 100644
---- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-+++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss.h
-@@ -148,6 +148,8 @@ struct sun4i_ss_ctx {
- 	struct reset_control *reset;
- 	struct device *dev;
- 	struct resource *res;
-+	char buf[4 * SS_RX_MAX];/* buffer for linearize SG src */
-+	char bufo[4 * SS_TX_MAX]; /* buffer for linearize SG dst */
- 	spinlock_t slock; /* control the use of the device */
- #ifdef CONFIG_CRYPTO_DEV_SUN4I_SS_PRNG
- 	u32 seed[SS_SEED_LEN / BITS_PER_LONG];
+ static struct skcipher_alg aes_algs[] = { {
+-#if defined(USE_V8_CRYPTO_EXTENSIONS) || !defined(CONFIG_CRYPTO_AES_ARM64_BS)
++#if defined(USE_V8_CRYPTO_EXTENSIONS) || !IS_ENABLED(CONFIG_CRYPTO_AES_ARM64_BS)
+ 	.base = {
+ 		.cra_name		= "__ecb(aes)",
+ 		.cra_driver_name	= "__ecb-aes-" MODE,
 -- 
 2.27.0
 
