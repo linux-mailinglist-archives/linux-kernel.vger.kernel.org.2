@@ -2,39 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DB3329378
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7C8329382
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhCAVUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:20:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57230 "EHLO mail.kernel.org"
+        id S244178AbhCAVXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:23:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237989AbhCARQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:16:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88A086504B;
-        Mon,  1 Mar 2021 16:46:13 +0000 (UTC)
+        id S237987AbhCARQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:16:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B90861606;
+        Mon,  1 Mar 2021 16:46:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617174;
-        bh=5MKwQfX3WVWHiU2ZKh8rkd/E6VooJndjZa/fl8rCdmg=;
+        s=korg; t=1614617176;
+        bh=F3uOmjDRirqlt+F07n7sLAB9NP0IpsyjcYsORllsl2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BEdVA3IC9YRNt5G7LhliJTQdoFDQDzrU65tdmRZ5T8GYIDfpMUvi+qS/4Qkvakk5P
-         YvVBx6VN8aoYCQ3W+7eysHshZ3BsReMuOsx82sYRgxsNXRcizzyhNIWmdcpGx0Yzd4
-         DRiRaK+KT1ANCzbmynKX2SMyc84jf4lKx3lVQ5GM=
+        b=md/xotTxZbPa7/EV779be1vOdENgMqRDP5Ou6cAvvLtmA+uUgqDXA3R4nazP19vTX
+         4+0k6DsQUkdmSMQGecn0W2B+FKX7olSmIJK2LiQD1mGEaPaCz9B+Jf/O+PhHfzzi7F
+         BsA25SU+o2jqugx03umm8mxSj4sDPO53Zfpt9Dp8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Kravetz <mike.kravetz@oracle.com>,
-        Zi Yan <ziy@nvidia.com>, Davidlohr Bueso <dbueso@suse.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 221/247] hugetlb: fix copy_huge_page_from_user contig page struct assumption
-Date:   Mon,  1 Mar 2021 17:14:01 +0100
-Message-Id: <20210301161042.500881839@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 230/247] sparc32: fix a user-triggerable oops in clear_user()
+Date:   Mon,  1 Mar 2021 17:14:10 +0100
+Message-Id: <20210301161042.956038531@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -46,67 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Kravetz <mike.kravetz@oracle.com>
+From: Al Viro <viro@zeniv.linux.org.uk>
 
-commit 3272cfc2525b3a2810a59312d7a1e6f04a0ca3ef upstream.
+commit 7780918b36489f0b2f9a3749d7be00c2ceaec513 upstream.
 
-page structs are not guaranteed to be contiguous for gigantic pages.  The
-routine copy_huge_page_from_user can encounter gigantic pages, yet it
-assumes page structs are contiguous when copying pages from user space.
+Back in 2.1.29 the clear_user() guts (__bzero()) had been merged
+with memset().  Unfortunately, while all exception handlers had been
+copied, one of the exception table entries got lost.  As the result,
+clear_user() starting at 128*n bytes before the end of page and
+spanning between 8 and 127 bytes into the next page would oops when
+the second page is unmapped.  It's trivial to reproduce - all
+it takes is
 
-Since page structs for the target gigantic page are not contiguous, the
-data copied from user space could overwrite other pages not associated
-with the gigantic page and cause data corruption.
+main()
+{
+	int fd = open("/dev/zero", O_RDONLY);
+	char *p = mmap(NULL, 16384, PROT_READ|PROT_WRITE,
+			MAP_PRIVATE|MAP_ANON, -1, 0);
+	munmap(p + 8192, 8192);
+	read(fd, p + 8192 - 128, 192);
+}
 
-Non-contiguous page structs are generally not an issue.  However, they can
-exist with a specific kernel configuration and hotplug operations.  For
-example: Configure the kernel with CONFIG_SPARSEMEM and
-!CONFIG_SPARSEMEM_VMEMMAP.  Then, hotplug add memory for the area where
-the gigantic page will be allocated.
+which had been oopsing since March 1997.  Says something about
+the quality of test coverage... ;-/  And while today sparc32 port
+is nearly dead, back in '97 it had been very much alive; in fact,
+sparc64 had only been in mainline for 3 months by that point...
 
-Link: https://lkml.kernel.org/r/20210217184926.33567-2-mike.kravetz@oracle.com
-Fixes: 8fb5debc5fcd ("userfaultfd: hugetlbfs: add hugetlb_mcopy_atomic_pte for userfaultfd support")
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Zi Yan <ziy@nvidia.com>
-Cc: Davidlohr Bueso <dbueso@suse.de>
-Cc: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Joao Martins <joao.m.martins@oracle.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@kernel.org
+Fixes: v2.1.29
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- mm/memory.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/sparc/lib/memset.S |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4885,17 +4885,19 @@ long copy_huge_page_from_user(struct pag
- 	void *page_kaddr;
- 	unsigned long i, rc = 0;
- 	unsigned long ret_val = pages_per_huge_page * PAGE_SIZE;
-+	struct page *subpage = dst_page;
- 
--	for (i = 0; i < pages_per_huge_page; i++) {
-+	for (i = 0; i < pages_per_huge_page;
-+	     i++, subpage = mem_map_next(subpage, dst_page, i)) {
- 		if (allow_pagefault)
--			page_kaddr = kmap(dst_page + i);
-+			page_kaddr = kmap(subpage);
- 		else
--			page_kaddr = kmap_atomic(dst_page + i);
-+			page_kaddr = kmap_atomic(subpage);
- 		rc = copy_from_user(page_kaddr,
- 				(const void __user *)(src + i * PAGE_SIZE),
- 				PAGE_SIZE);
- 		if (allow_pagefault)
--			kunmap(dst_page + i);
-+			kunmap(subpage);
- 		else
- 			kunmap_atomic(page_kaddr);
+--- a/arch/sparc/lib/memset.S
++++ b/arch/sparc/lib/memset.S
+@@ -142,6 +142,7 @@ __bzero:
+ 	ZERO_LAST_BLOCKS(%o0, 0x48, %g2)
+ 	ZERO_LAST_BLOCKS(%o0, 0x08, %g2)
+ 13:
++	EXT(12b, 13b, 21f)
+ 	be	8f
+ 	 andcc	%o1, 4, %g0
  
 
 
