@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF8232A05D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8B032A062
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240508AbhCBEQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:16:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32908 "EHLO mail.kernel.org"
+        id S243991AbhCBERh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:17:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346226AbhCAXi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:38:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E87AF60200;
-        Mon,  1 Mar 2021 23:38:17 +0000 (UTC)
+        id S1346233AbhCAXjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 18:39:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C9AD60249;
+        Mon,  1 Mar 2021 23:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614641898;
-        bh=Yv06/zKfXgjPnrwxD0Y8kUsnC9VsgPBi5XguS6VqNNc=;
+        s=k20201202; t=1614641904;
+        bh=/zV6h06JG5jlijnHpFKtYtxRo0hsPY/l4HEU6IcCzhg=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=H/txClNl8pRWKV3A8KbJsrmLpi6klSikmoNajWQ35Z8OmCq1wB1uqiTBIro6At+Og
-         nPetTcs5km88bFbFO9U3NLz0j+dc7J4BvNMFGUFttdPU4erx3018Aqajo1eEqvVUvg
-         rgWfPHIYVS59TRBE5RFOqohcAtsQ5gIbYA/YDwueedzQGIDtYJIia55VjLO8NsZhZn
-         0rXPTg1k/TR1ZU1fM76eGynv6BFkTdUK5aBvd2sn3VrTwboaEezzOtE5gP9HFoflNs
-         3jqNasvg3YxDDzfq0HgWyuh4cnPgLjZ3AhPI5uZBK6fngMnHzgDRqipSRdWBuVGNA5
-         FkM4YDanAvtXQ==
+        b=AUnPxAyORBhRgQ3777/7UcvlbPP0zg32kiny4dLoTiep7w+9iLn0PjAsaDtoDrWEQ
+         L+IIQWSDR8Ce132UaNLj3TdYpn04lKIy/X3aNd3zxLCPK4SL6GEr17vEhSbY948PYx
+         QfY7Lzaad2BvxDWZm5pzMBoGGZrDEOx39oyRLCMxjaTRzjj9wnVyvhbYLkhfzqALaF
+         h0fzGpZU5RBFTTvIaiw0UKejYcZipbrD1OOZJkdrKJEpVkv2Hn95hSBrzKI3GZt44S
+         wrX26r0B9O8X53mPJjJuHPuVnsV9bK0VGjpRNEHvlVHCStyET/XaDM3S4GdqyaZvOq
+         FLKrAV9S070+g==
 From:   Mark Brown <broonie@kernel.org>
-To:     Robin Gong <yibin.gong@nxp.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        phone-devel@vger.kernel.org
+Cc:     martin.botka@somainline.org, Andy Gross <agross@kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        marijn.suijten@somainline.org, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Liam Girdwood <lgirdwood@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Axel Lin <axel.lin@ingics.com>, stable@vger.kernel.org
-In-Reply-To: <20210222115229.166620-1-frieder.schrempf@kontron.de>
-References: <20210222115229.166620-1-frieder.schrempf@kontron.de>
-Subject: Re: [PATCH v2] regulator: pca9450: Clear PRESET_EN bit to fix BUCK1/2/3 voltage setting
-Message-Id: <161464183215.31485.14810671512981409540.b4-ty@kernel.org>
+In-Reply-To: <20210225213514.117031-1-konrad.dybcio@somainline.org>
+References: <20210225213514.117031-1-konrad.dybcio@somainline.org>
+Subject: Re: [PATCH] qcom: spmi-regulator: Add support for ULT LV_P50 and ULT P300
+Message-Id: <161464183214.31485.10412405040146742381.b4-ty@kernel.org>
 Date:   Mon, 01 Mar 2021 23:37:12 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -42,13 +45,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 12:52:20 +0100, Schrempf Frieder wrote:
-> The driver uses the DVS registers PCA9450_REG_BUCKxOUT_DVS0 to set the
-> voltage for the buck regulators 1, 2 and 3. This has no effect as the
-> PRESET_EN bit is set by default and therefore the preset values are used
-> instead, which are set to 850 mV.
+On Thu, 25 Feb 2021 22:35:13 +0100, Konrad Dybcio wrote:
+> The ULT LV_P50 shares the same configuration as the other ULT LV_Pxxx
+> and the ULT P300 shares the same as the other ULT Pxxx.
 > 
-> To fix this we clear the PRESET_EN bit at time of initialization.
+> These two regulator types are found on PM8950 and its variants.
 
 Applied to
 
@@ -56,8 +57,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: pca9450: Clear PRESET_EN bit to fix BUCK1/2/3 voltage setting
-      commit: 66f9f2d5d94f374605d829b9e690e8cdc9d0d05d
+[1/1] qcom: spmi-regulator: Add support for ULT LV_P50 and ULT P300
+      commit: b15d870510c0a3910c9980ebceab885a390af60c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
