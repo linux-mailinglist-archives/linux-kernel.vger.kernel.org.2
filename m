@@ -2,99 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A75329EB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94451329ECC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445938AbhCBDC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:02:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
+        id S235681AbhCBDGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:06:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241796AbhCAURO (ORCPT
+        with ESMTP id S236386AbhCAUTy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:17:14 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EC3C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 12:16:34 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id x62so5170608oix.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 12:16:34 -0800 (PST)
+        Mon, 1 Mar 2021 15:19:54 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6350C061793;
+        Mon,  1 Mar 2021 12:18:54 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id h9so3198465qtq.7;
+        Mon, 01 Mar 2021 12:18:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=CpiE1pBrxa73ZoavNQfgfeEm27dty1Q76LBnbbf260Y=;
-        b=HeZobEdHhxUthkkeiQ+zZFdYT0M1eBhINCAyAp+kaPBBn6NWOkA4YCfwK4HlNJ4iO+
-         y7kN2zEX9XByXD8cu0e3agyI1yx43wWMPa4zRq8RFygp2bxl7LENZKDcXqHphOL+lCkc
-         QHP8WGdorrbiHzk6I3IS3qczMfznL23MF7Brb1N8Iabvuw1Dekh5ig3tq8tI0ui5OaOx
-         JEaHPRUFLYaXLWBuVzCQeWftCHO3ssfEf+U6LcircvndN1y+qz1PEuitxjCuSYFtHYkc
-         uLrCoq4vXlEPHKSixRFS6wEXydJbO8UB1gR3PUkiObLUOx+99bUV5BoHJj+/wA+UYFF3
-         BO9Q==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mp4k+nQSXGDqn7U9eUKU+r7sLycvnvmBWd3vV7uluwo=;
+        b=W2kAbS8hMjvWSQ4Asyz+Z++V87f+DaeJ86vlPxkyLcNVk7irjVPlrpQKeCegI0vd6d
+         On58BD2F7c1tpp/+zhfFDbun11yf0bjPP2VFIMQoiK9hfvco81cWQPIU/BJkbIdSZGmx
+         c4NMaCaqmfoHVtxZxTnTRXI0GZP5Pc7x1xChfUtXPgQ2fNpYB0MdJGZWZYdj/WYP9yvJ
+         rnvHIMoKZs0XJ1DROBjFPA7k71xTioQ6DLetESVIOztdE6MmmashkT8XllJZC+x5ZB9M
+         5n71gpHFwTXYJd2qBNBE+jsVZ3Rr03CMF2zvRVroLPnEFSDk9e8+KgTemeaxI9xUcIEk
+         ax2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=CpiE1pBrxa73ZoavNQfgfeEm27dty1Q76LBnbbf260Y=;
-        b=o6R+cfbpu5aL3WiHWVd5KrEXO3SDHvBQDMRQiafbCxyYQMWUgPfJ9v83Z6d7iCaU9m
-         f05KNg0HBhLhNaMQCbRp3b4FziXGa3TnXBxB8/Li5+aEf7N0+vH5/667ENdySbAjeUZE
-         xSuzKEOKo0ifaDfHVmB0VM1aeq674DlPT/n4jkT6lu+LU1xpcXkoWVe66vTYLro9lfA4
-         8Ga0sjKA6bnHYW4x26FDhI6lUabym4ErEjymJVrUDqWkRgPj2NQLwHgZ1A9hVlPG0QFf
-         ucwSuWi00V6yLYCMFWWo5f1ZilvDOOMRncDjP2MD3Ow3ynjAT104RCFsATEh/Gw+fd15
-         XDqg==
-X-Gm-Message-State: AOAM533h0AVPdrjN5TwZOY6hddgbSucpNmsd2XlKC0PW6JZ8UVUFeP1Z
-        9nbTHKHn/0pk1eoaxFGYoqvDHg==
-X-Google-Smtp-Source: ABdhPJyX7Z9XnpFyNuqpfqkjPIdufx/u4bzd7dwJJIfVixRVYr5mvebT1DMOwhkGk2hOtFa5zMskoQ==
-X-Received: by 2002:a05:6808:24d:: with SMTP id m13mr532829oie.165.1614629791975;
-        Mon, 01 Mar 2021 12:16:31 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id t13sm4039319otp.42.2021.03.01.12.16.30
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 01 Mar 2021 12:16:31 -0800 (PST)
-Date:   Mon, 1 Mar 2021 12:16:19 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Yu Zhao <yuzhao@google.com>
-cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org, alex.shi@linux.alibaba.com,
-        vbabka@suse.cz, guro@fb.com, hannes@cmpxchg.org, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com
-Subject: Re: [PATCH v2 3/3] mm: use PF_ONLY_HEAD for PG_active and
- PG_unevictable
-In-Reply-To: <YD1HgmERg3/LuApe@google.com>
-Message-ID: <alpine.LSU.2.11.2103011215260.4616@eggly.anvils>
-References: <20210224084807.2179942-1-yuzhao@google.com> <20210226091718.2927291-1-yuzhao@google.com> <20210226091718.2927291-4-yuzhao@google.com> <20210226121314.GB2723601@casper.infradead.org> <20210301115007.mgw5vthgjoibnjf4@box>
- <YD1HgmERg3/LuApe@google.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=mp4k+nQSXGDqn7U9eUKU+r7sLycvnvmBWd3vV7uluwo=;
+        b=RB+YHdgSj4Xy8xvGml3ImPJCWNGtModrn321OZoWsUkqHnnQ6hvC6ChRXgp/qTJ5lu
+         qmXRmSIKCjVOs7ovkzGDCyVLSeiGlDy7NzoVZtCXSEsiuWxy1gDu9USrxftCd2rfRXrz
+         OHxZaNG31MQCNTbhbgMdXW94Hn+gbk3zA61tI7gwWbLDqHrqILtcOkOcFWnAF8lcMXZV
+         QWb1LDIUk93LtoXsoZS45rIVgZ2nDSDElNTPj0dCIC132HrS+mlCyckG61Y2YAIHDTu3
+         teFo8i36e8JyoLlpOY9vAIze5VQy3nT3oYv1EtGtOYycZk4NlYn8W8LHZPUQ++BWD45N
+         ymTg==
+X-Gm-Message-State: AOAM530Lmn21J0kh1rxHcTNDPV8QC74Ltp/zI7xiXv50K21KbJVnxSlb
+        fRy1CVGUwcF+hfT/jmVIMdw=
+X-Google-Smtp-Source: ABdhPJywBgLoiEyTCbPcxuM3j/wBQ0aS2gCqQfdJye+9bs6IaI7bP4dn6anBRTHyqsW8V2lUAili/g==
+X-Received: by 2002:ac8:6d3d:: with SMTP id r29mr14299839qtu.345.1614629934154;
+        Mon, 01 Mar 2021 12:18:54 -0800 (PST)
+Received: from Gentoo ([156.146.37.135])
+        by smtp.gmail.com with ESMTPSA id i16sm13616399qkk.104.2021.03.01.12.18.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 12:18:53 -0800 (PST)
+Date:   Tue, 2 Mar 2021 01:48:42 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: scsi: qla4xxx: Fix a spello in the file
+ qla4xxx/ql4_os.c
+Message-ID: <YD1MIiurUsyXUdQ2@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210301131736.14236-1-unixbhaskar@gmail.com>
+ <e45931a9-b90e-8894-7081-61298c76abac@infradead.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+aJsZIf8/+7D6BkL"
+Content-Disposition: inline
+In-Reply-To: <e45931a9-b90e-8894-7081-61298c76abac@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021, Yu Zhao wrote:
-> On Mon, Mar 01, 2021 at 02:50:07PM +0300, Kirill A. Shutemov wrote:
-> > On Fri, Feb 26, 2021 at 12:13:14PM +0000, Matthew Wilcox wrote:
-> > > On Fri, Feb 26, 2021 at 02:17:18AM -0700, Yu Zhao wrote:
-> > > > All places but one test, set or clear PG_active and PG_unevictable on
-> > > > small or head pages. Use compound_head() explicitly for that singleton
-> > > > so the rest can rid of redundant compound_head().
-> > > 
-> > > How do you know it's only one place?  I really wish you'd work with me
-> > > on folios.  They make the compiler prove that it's not a tail page.
-> > 
-> > +1 to this.
-> > 
-> > The problem with compound_head() is systemic and ad-hoc solution to few
-> > page flags will only complicate the picture.
-> 
-> Well, I call it an incremental improvement, and how exactly does it
-> complicate the picture?
-> 
-> I see your point: you prefer a complete replacement. But my point is
-> not about the preference; it's about presenting an option: I'm not
-> saying we have to go with this series; I'm saying if you don't want
-> to wait, here is something quick but not perfect.
 
-+1 to this.
+--+aJsZIf8/+7D6BkL
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Hugh
+On 08:56 Mon 01 Mar 2021, Randy Dunlap wrote:
+>On 3/1/21 5:17 AM, Bhaskar Chowdhury wrote:
+>>
+>> s/circuting/circuiting/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>
+>Acked-by: Randy Dunlap <rdunlap@infradead.org>
+>
+>However:
+>In lots of your patches, the subject begins with drivers:
+>and we don't need that.  See the SCSI qla4xxx driver patches, e.g.:
+>
+
+Thanks, Randy....took note...about this ...will practice...
+
+
+>$ git log --oneline drivers/scsi/qla4xxx/
+>5b0ec4cf0494 scsi: qla4xxx: Use iscsi_is_session_online()
+>35f1cad1f928 scsi: qla4xxx: Use standard SAM status definitions
+>3a5b9fa2cc5f scsi: qla4xxx: Remove redundant assignment to variable rval
+>014aced18aff scsi: qla4xxx: Remove in_interrupt() from qla4_82xx_rom_lock()
+>3627668c2e2c scsi: qla4xxx: Remove in_interrupt() from qla4_82xx_idc_lock()
+>a93c38353198 scsi: qla4xxx: Remove in_interrupt()
+>cf4d4d8ebdb8 scsi: qla4xxx: Remove redundant assignment to variable rval
+>5ccdd101351d scsi: qla4xxx: Fix inconsistent format argument type
+>121432e87093 scsi: qla4xxx: Delete unneeded variable 'status' in qla4xxx_process_ddb_changed
+>e3976af5a475 scsi/qla4xxx: Convert to SPDX license identifiers
+>574918e69720 scsi: qla4xxx: Fix an error handling path in 'qla4xxx_get_host_stats()'
+>d10d1df6301d scsi: qla4xxx: Rename function parameter descriptions
+>6e3f4f68821b scsi: qla4xxx: Remove set but unused variable 'status'
+>653557df36e0 scsi: qla4xxx: Supply description for 'code'
+>f67e81641db7 scsi: qla4xxx: Remove three set but unused variables
+>c0ad04b4b6d7 scsi: qla4xxx: Document qla4xxx_process_ddb()'s 'conn_err'
+>fc5fba6e2ae2 scsi: qla4xxx: Repair function documentation headers
+>cdeeb36d8f24 scsi: qla4xxx: Fix some kerneldoc parameter documentation issues
+>67b8b93a559f scsi: qla4xxx: Fix incorrectly named function parameter
+>0d5fea42989e scsi: qla4xxx: Fix-up incorrectly documented parameter
+>
+>> ---
+>>  drivers/scsi/qla4xxx/ql4_os.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
+>> index a4b014e1cd8c..716a5827588c 100644
+>> --- a/drivers/scsi/qla4xxx/ql4_os.c
+>> +++ b/drivers/scsi/qla4xxx/ql4_os.c
+>> @@ -6961,7 +6961,7 @@ static int qla4xxx_sess_conn_setup(struct scsi_qla_host *ha,
+>>  	if (is_reset == RESET_ADAPTER) {
+>>  		iscsi_block_session(cls_sess);
+>>  		/* Use the relogin path to discover new devices
+>> -		 *  by short-circuting the logic of setting
+>> +		 *  by short-circuiting the logic of setting
+>>  		 *  timer to relogin - instead set the flags
+>>  		 *  to initiate login right away.
+>>  		 */
+>> --
+>
+>
+>--
+>~Randy
+>
+
+--+aJsZIf8/+7D6BkL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmA9TB8ACgkQsjqdtxFL
+KRUHjAf/TO4QH3mHeXJuzf+KWFGtHw2RTlnGHaAQAMelPfRV6NanQidCdhgrgvHc
+/SfMeL8KC8Bo7DBXYFTsFGHLQkay5H4r7Kks6h3hOC9N9hMs7j01dyjW/vn8de10
+qFH5SULmHIORiAwCR046Oh/vr7AuNIkZIp8VYoo0909IthwaWq5PdnxVN9o2OTz3
+QZDczSRkFOAavR1oe7Em8PXOHRmBUkDtYELXijZs5RZi8Yn8nvB66v95AcPAIp6w
+ukbxqR3bIZO9FGJgLGZ2ZEBrS/UA0KR0fvbv5wPWRO3tBzO7KQJLawmN+ke24Ixf
+hLUE0Dc2U8LNqLWyXDMrHqtdYh1DJA==
+=U9YB
+-----END PGP SIGNATURE-----
+
+--+aJsZIf8/+7D6BkL--
