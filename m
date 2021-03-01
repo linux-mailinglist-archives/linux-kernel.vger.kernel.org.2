@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E409E3277A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:32:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 520373277A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhCAGcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 01:32:03 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17469 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbhCAG3K (ORCPT
+        id S231901AbhCAGeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 01:34:36 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:39688 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhCAGeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 01:29:10 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603c898c0004>; Sun, 28 Feb 2021 22:28:28 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
- 2021 06:28:28 +0000
-Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 1 Mar 2021 06:28:26 +0000
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>
-CC:     <elic@nvidia.com>
-Subject: [PATCH] vdpa/mlx5: Fix wrong use of bit numbers
-Date:   Mon, 1 Mar 2021 08:28:17 +0200
-Message-ID: <20210301062817.39331-1-elic@nvidia.com>
-X-Mailer: git-send-email 2.30.1
+        Mon, 1 Mar 2021 01:34:06 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1216VLjk088564;
+        Mon, 1 Mar 2021 06:33:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=oGUQGQucCVr3PpyvCjAJH5vBRTzDzIsYDKRZnRf5e/s=;
+ b=fPEKrd5WaxBjPB1UIhydLYCPDeKi/jqwiWdDUIGDxDq4N1ynpQ4ZEy3izJ0xSPEKmdDa
+ B7qrMPH9SZRvqVGtrzlHxqfjn/TsqHdQqEICqyHAILoHGdpFx9zw3Sk3kPMHKU9nEB6E
+ yFbpmId6vmJt9v8cuiFfjlNrdJvjkGu5vTl6kHgIBD58vVkZdbRYQkuobCHF0+mbZ7M5
+ /bu/ZMjcLPeUknoga3PhjaboxkumEuQMEHINx5EQKHH0VPXZDyV71gw73YZVMQKu4B3O
+ di68BJu77vLFJw/V4fwAsZS58WfRvUCrJMdmWhQu9HFGDlS/RpaHuHJCMBUlFOKeJdnO FA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 36ye1m2mxn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Mar 2021 06:33:22 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1216Uqr1070905;
+        Mon, 1 Mar 2021 06:33:20 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 37000v3kqh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Mar 2021 06:33:20 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1216XJvV005416;
+        Mon, 1 Mar 2021 06:33:19 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 01 Mar 2021 06:33:19 +0000
+Date:   Mon, 1 Mar 2021 09:33:12 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     "Darryl T. Agostinelli" <dagostinelli@gmail.com>
+Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8192u avoid flex array of flex array
+Message-ID: <20210301063312.GK2087@kadam>
+References: <20210228010614.162998-1-dagostinelli@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614580108; bh=nZ8RikqyTlTHqW01K1zLOKFk/xXep/HRaVtF/ixnczo=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         Content-Transfer-Encoding:Content-Type;
-        b=dD0mP5OQNqww5n1J5woUoxNMK5ZP21bFHXrrGuX3hqcDczgPIFQKJyLWtsikqNyEj
-         /9X6FVM4cTe/SyEGn4arCHyExJYJc/VAGSphSMj+UQa+tuiwXGIAB1D0B4hisWKqc6
-         O9wCSQY3gY0cvg266vuODv/NF6iW0uDFEaC7bZWHW98OMjhUDJ8c20Dxi15cbdvL23
-         HHWxv7UD4MF9fZ0+iVq6YEYb/PmM0HayWHkYt10qOJs+0qA/xw9In/zTRlwgBz7SW1
-         Bd//cdAdJDAvL3heRntTp8b58NSpFv7qhok8niDoU08GVqaGvGa2gr+7p5RlcFN6N9
-         XkPjn3+Crm6lA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210228010614.162998-1-dagostinelli@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9909 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103010052
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9909 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 suspectscore=0 adultscore=0 malwarescore=0
+ mlxscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103010052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VIRTIO_F_VERSION_1 is a bit number. Use BIT_ULL() with mask
-conditionals.
+On Sat, Feb 27, 2021 at 07:06:14PM -0600, Darryl T. Agostinelli wrote:
+> Undo the flex array in struct ieee80211_info_element.  It is used as the flex
+> array type in other structs (creating a flex array of flex arrays) making
+> sparse unhappy.  This change maintains the intent of the code and satisfies
+> sparse.
+> 
+> Signed-off-by: Darryl T. Agostinelli <dagostinelli@gmail.com>
+> ---
+>  drivers/staging/rtl8192u/ieee80211/ieee80211.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211.h b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
+> index 39f4ddd86796..43bb7aeb35e3 100644
+> --- a/drivers/staging/rtl8192u/ieee80211/ieee80211.h
+> +++ b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
+> @@ -951,7 +951,7 @@ struct rtl_80211_hdr_4addrqos {
+>  struct ieee80211_info_element {
+>  	u8 id;
+>  	u8 len;
+> -	u8 data[];
+> +	u8 data[0];
 
-Also, in mlx5_vdpa_is_little_endian() use BIT_ULL for consistency with
-the rest of the code.
+Nah...  Just ignore Sparse on this.
 
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices=
-")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5=
-_vnet.c
-index dc7031132fff..7d21b857a94a 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -821,7 +821,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev,=
- struct mlx5_vdpa_virtque
- 	MLX5_SET(virtio_q, vq_ctx, event_qpn_or_msix, mvq->fwqp.mqp.qpn);
- 	MLX5_SET(virtio_q, vq_ctx, queue_size, mvq->num_ent);
- 	MLX5_SET(virtio_q, vq_ctx, virtio_version_1_0,
--		 !!(ndev->mvdev.actual_features & VIRTIO_F_VERSION_1));
-+		 !!(ndev->mvdev.actual_features & BIT_ULL(VIRTIO_F_VERSION_1)));
- 	MLX5_SET64(virtio_q, vq_ctx, desc_addr, mvq->desc_addr);
- 	MLX5_SET64(virtio_q, vq_ctx, used_addr, mvq->device_addr);
- 	MLX5_SET64(virtio_q, vq_ctx, available_addr, mvq->driver_addr);
-@@ -1578,7 +1578,7 @@ static void teardown_virtqueues(struct mlx5_vdpa_net =
-*ndev)
- static inline bool mlx5_vdpa_is_little_endian(struct mlx5_vdpa_dev *mvdev)
- {
- 	return virtio_legacy_is_little_endian() ||
--		(mvdev->actual_features & (1ULL << VIRTIO_F_VERSION_1));
-+		(mvdev->actual_features & BIT_ULL(VIRTIO_F_VERSION_1));
- }
-=20
- static __virtio16 cpu_to_mlx5vdpa16(struct mlx5_vdpa_dev *mvdev, u16 val)
---=20
-2.30.1
+regards,
+dan carpenter
 
