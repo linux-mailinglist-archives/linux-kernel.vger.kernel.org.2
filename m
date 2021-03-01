@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2017A3298B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3026032983F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346437AbhCAXrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:47:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
+        id S1345417AbhCAXU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:20:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239373AbhCASIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:08:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92D3E65142;
-        Mon,  1 Mar 2021 17:04:30 +0000 (UTC)
+        id S239235AbhCAR7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:59:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDF33652D4;
+        Mon,  1 Mar 2021 17:38:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618271;
-        bh=SnKcVzzMUHdwdtBhJqXtjLX3ha0ncU+pMmZzlXBggoI=;
+        s=korg; t=1614620320;
+        bh=8w1TZUV8hSH9PhnDkiPf0xwdfKjVcyUm54xyB2G8qoY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wyHH4oWQRsVMMpZO2YJgEXdsl+XBsgADPSYjeRvp9qW6LpQcmP4nesVMH0V6SLyqb
-         pu4hcRYaP0sgHqRbYnDfxAZhf2C4g008so2l4buf32/qYla4NYcPExENi+lHDW/NgB
-         l/u5iRNXPmz8PyhGXYSKcSMComHOhvtW+5e8R5y0=
+        b=XgPgqSWw5LlShG/qMK4O0ERUj4lTgYPoYFp6b/01k0BnJWbmv72a9ELCeA+3wBSBo
+         shIqc0EWjM0j7AC/f9w/hlF9n+Ybqkxw4UCPUytWq3GRdt59E9uWVkKH5Sqrrd8Jj0
+         c+atEPVxRp815EFhfmPsIc0e04hweYFyfYMxBs7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Ford <aford173@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Shay Drory <shayd@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 026/663] arm64: dts: renesas: beacon: Fix audio-1.8V pin enable
-Date:   Mon,  1 Mar 2021 17:04:34 +0100
-Message-Id: <20210301161143.086341099@linuxfoundation.org>
+Subject: [PATCH 5.11 111/775] net/mlx5: Disable devlink reload for multi port slave device
+Date:   Mon,  1 Mar 2021 17:04:39 +0100
+Message-Id: <20210301161207.154146883@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Ford <aford173@gmail.com>
+From: Shay Drory <shayd@nvidia.com>
 
-[ Upstream commit 5a5da0b758b327b727c5392d7f11e046e113a195 ]
+[ Upstream commit d89ddaae1766f8fe571ea6eb63ec098ff556f1dd ]
 
-The fact the audio worked at all was a coincidence because the wrong
-gpio enable was used.  Use the correct GPIO pin to ensure its operation.
+Devlink reload can't be allowed on a multi port slave device, because
+reload of slave device doesn't take effect.
 
-Fixes: a1d8a344f1ca ("arm64: dts: renesas: Introduce r8a774a1-beacon-rzg2m-kit")
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Link: https://lore.kernel.org/r/20201213183759.223246-6-aford173@gmail.com
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+The right flow is to disable devlink reload for multi port slave
+device. Hence, disabling it in mlx5_core probing.
+
+Fixes: 4383cfcc65e7 ("net/mlx5: Add devlink reload")
+Signed-off-by: Shay Drory <shayd@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-index 66c9153b31015..597388f871272 100644
---- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-+++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
-@@ -150,7 +150,7 @@
- 		regulator-name = "audio-1.8V";
- 		regulator-min-microvolt = <1800000>;
- 		regulator-max-microvolt = <1800000>;
--		gpio = <&gpio_exp2 7 GPIO_ACTIVE_HIGH>;
-+		gpio = <&gpio_exp4 1 GPIO_ACTIVE_HIGH>;
- 		enable-active-high;
- 	};
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index ca6f2fc39ea0a..ba1a4ae28097d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -1396,7 +1396,8 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		dev_err(&pdev->dev, "mlx5_crdump_enable failed with error code %d\n", err);
  
+ 	pci_save_state(pdev);
+-	devlink_reload_enable(devlink);
++	if (!mlx5_core_is_mp_slave(dev))
++		devlink_reload_enable(devlink);
+ 	return 0;
+ 
+ err_load_one:
 -- 
 2.27.0
 
