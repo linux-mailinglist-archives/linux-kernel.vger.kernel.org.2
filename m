@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66483329B72
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA72D329C7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348711AbhCBBYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:24:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39720 "EHLO mail.kernel.org"
+        id S1380836AbhCBBz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:55:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239260AbhCATJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:09:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E626C6514C;
-        Mon,  1 Mar 2021 17:04:57 +0000 (UTC)
+        id S241603AbhCATcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:32:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C88BD64F24;
+        Mon,  1 Mar 2021 17:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618298;
-        bh=lQZpzwD2Ik5dNzruvvKN/hUaWU4Dhvpa/vIDh4lQyJY=;
+        s=korg; t=1614620268;
+        bh=Ufa3YiVNWK2HX+ItShYbsrowq+mZJDJvCP5Tih7f3jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MCBeShZqeW5f3ybzhS4RXiVrPrVDJmzG0xpZqsIXp+FmG2fcqWS0PRErMeGEADfax
-         7WVDqBon8uO9HsSTkJ4/AlbepKzpmS6dlnjdyhH9noWSgxyaxJe+WpejxPUoYVF+Ml
-         UHLxUahwNvIUOYKN1ns4Oue4RyPb982SXjtmEp9s=
+        b=T6snDXnS79vhL41TXIpHpciMWqGF52GwRrc7Bt0tELYP1LlxVYvkfxSJhZ2qLfZ2M
+         gcBKXj20n8grwIRFNKte2Z196N3bYwebEqX2VAsR0FaDUndskDInW8dfymKuHO1D2u
+         N29emMm/N02Sb8yhHsrml9ExjDVw4Ow/oTFWej5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilia Mirkin <imirkin@alum.mit.edu>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>
-Subject: [PATCH 5.10 009/663] PCI: qcom: Use PHY_REFCLK_USE_PAD only for ipq8064
-Date:   Mon,  1 Mar 2021 17:04:17 +0100
-Message-Id: <20210301161142.238421813@linuxfoundation.org>
+        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 091/775] iwlwifi: mvm: send stored PPAG command instead of local
+Date:   Mon,  1 Mar 2021 17:04:19 +0100
+Message-Id: <20210301161206.174718264@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ansuel Smith <ansuelsmth@gmail.com>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-commit 2cfef1971aea6119ee27429181d6cb3383031ac2 upstream.
+[ Upstream commit 659844d391826bfc5c8b4d9a06869ed51d859c76 ]
 
-The use of PHY_REFCLK_USE_PAD introduced a regression for apq8064 devices.
-It was tested that while apq doesn't require the padding, ipq SoC must use
-it or the kernel hangs on boot.
+Some change conflicts apparently cause a confusion between a local
+variable being used to send the PPAG command and the introduction of a
+union for this command.  Most parts of the local command were never
+copied from the stored data, so the FW was getting garbage in the
+tables instead of getting valid values.
 
-Link: https://lore.kernel.org/r/20201019165555.8269-1-ansuelsmth@gmail.com
-Fixes: de3c4bf64897 ("PCI: qcom: Add support for tx term offset for rev 2.1.0")
-Reported-by: Ilia Mirkin <imirkin@alum.mit.edu>
-Signed-off-by: Ilia Mirkin <imirkin@alum.mit.edu>
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Acked-by: Stanimir Varbanov <svarbanov@mm-sol.com>
-Cc: stable@vger.kernel.org	# v4.19+
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by completely removing the local and using only the union
+that we have stored in fwrt.
+
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Fixes: f2134f66f40e ("iwlwifi: acpi: support ppag table command v2")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210210135352.d090e0301023.I7d57f4d7da9a3297734c51cf988199323c76916d@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/dwc/pcie-qcom.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/fw.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -395,7 +395,9 @@ static int qcom_pcie_init_2_1_0(struct q
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+index 4d527409428d3..045765fa67bea 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+@@ -990,7 +990,6 @@ int iwl_mvm_ppag_send_cmd(struct iwl_mvm *mvm)
+ {
+ 	u8 cmd_ver;
+ 	int i, j, ret, num_sub_bands, cmd_size;
+-	union iwl_ppag_table_cmd ppag_table;
+ 	s8 *gain;
  
- 	/* enable external reference clock */
- 	val = readl(pcie->parf + PCIE20_PARF_PHY_REFCLK);
--	val &= ~PHY_REFCLK_USE_PAD;
-+	/* USE_PAD is required only for ipq806x */
-+	if (!of_device_is_compatible(node, "qcom,pcie-apq8064"))
-+		val &= ~PHY_REFCLK_USE_PAD;
- 	val |= PHY_REFCLK_SSP_EN;
- 	writel(val, pcie->parf + PCIE20_PARF_PHY_REFCLK);
+ 	if (!fw_has_capa(&mvm->fw->ucode_capa, IWL_UCODE_TLV_CAPA_SET_PPAG)) {
+@@ -1003,15 +1002,13 @@ int iwl_mvm_ppag_send_cmd(struct iwl_mvm *mvm)
+ 		return 0;
+ 	}
  
+-	ppag_table.v1.enabled = mvm->fwrt.ppag_table.v1.enabled;
+-
+ 	cmd_ver = iwl_fw_lookup_cmd_ver(mvm->fw, PHY_OPS_GROUP,
+ 					PER_PLATFORM_ANT_GAIN_CMD,
+ 					IWL_FW_CMD_VER_UNKNOWN);
+ 	if (cmd_ver == 1) {
+ 		num_sub_bands = IWL_NUM_SUB_BANDS;
+ 		gain = mvm->fwrt.ppag_table.v1.gain[0];
+-		cmd_size = sizeof(ppag_table.v1);
++		cmd_size = sizeof(mvm->fwrt.ppag_table.v1);
+ 		if (mvm->fwrt.ppag_ver == 2) {
+ 			IWL_DEBUG_RADIO(mvm,
+ 					"PPAG table is v2 but FW supports v1, sending truncated table\n");
+@@ -1019,7 +1016,7 @@ int iwl_mvm_ppag_send_cmd(struct iwl_mvm *mvm)
+ 	} else if (cmd_ver == 2) {
+ 		num_sub_bands = IWL_NUM_SUB_BANDS_V2;
+ 		gain = mvm->fwrt.ppag_table.v2.gain[0];
+-		cmd_size = sizeof(ppag_table.v2);
++		cmd_size = sizeof(mvm->fwrt.ppag_table.v2);
+ 		if (mvm->fwrt.ppag_ver == 1) {
+ 			IWL_DEBUG_RADIO(mvm,
+ 					"PPAG table is v1 but FW supports v2, sending padded table\n");
+@@ -1039,7 +1036,7 @@ int iwl_mvm_ppag_send_cmd(struct iwl_mvm *mvm)
+ 	IWL_DEBUG_RADIO(mvm, "Sending PER_PLATFORM_ANT_GAIN_CMD\n");
+ 	ret = iwl_mvm_send_cmd_pdu(mvm, WIDE_ID(PHY_OPS_GROUP,
+ 						PER_PLATFORM_ANT_GAIN_CMD),
+-				   0, cmd_size, &ppag_table);
++				   0, cmd_size, &mvm->fwrt.ppag_table);
+ 	if (ret < 0)
+ 		IWL_ERR(mvm, "failed to send PER_PLATFORM_ANT_GAIN_CMD (%d)\n",
+ 			ret);
+-- 
+2.27.0
+
 
 
