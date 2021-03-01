@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A469A328CC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FB1328CC9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:01:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240925AbhCAS6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:58:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46640 "EHLO mail.kernel.org"
+        id S240947AbhCAS6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:58:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235610AbhCAQo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:44:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C99964D9E;
-        Mon,  1 Mar 2021 16:30:37 +0000 (UTC)
+        id S231869AbhCAQoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:44:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D58364EDC;
+        Mon,  1 Mar 2021 16:30:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616238;
-        bh=Ll01cyWGiab8fD3my7tq0cLu3utkQTsjJGI8tYbo7Dc=;
+        s=korg; t=1614616246;
+        bh=tL0qX8ULDxu04MSYKylduHXcbwhx6jNnI/xk/Zxd4+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G/CS6hNz7PWACb3EMNuARmV2g4MW0mec/j7gNbYIMyTh2Aujaf25fgA8Au6+s8ZL6
-         LiQvbMskYT1zHGJ8b1bbz5NSIpAgV5GiQYQvbq+mVTfRG0GQUATYO9LYPh1wosCX0z
-         5Da3O4o+R6dXOBmKlKAR0l6s63pOG2o8j0LTgkQ4=
+        b=x5Qx7YS33dDaFj/OBIogCFQsLN7cGByW+uHUX3ZEBBxp8aGjf7NQZvAs53Lmy/f9X
+         DM3J4q2JTSD6iElmwlweIt6BtHpUuw5Q8lRGHJHD7aq3Ej2f+Ew2nzjBLJt1sa1A43
+         Fn6/EYr1tUQIkvEPpX1cPlnmB6e+MeZ9OF1E64NM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 081/176] regulator: axp20x: Fix reference cout leak
-Date:   Mon,  1 Mar 2021 17:12:34 +0100
-Message-Id: <20210301161024.990115828@linuxfoundation.org>
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 084/176] isofs: release buffer head before return
+Date:   Mon,  1 Mar 2021 17:12:37 +0100
+Message-Id: <20210301161025.142698934@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -42,48 +41,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit e78bf6be7edaacb39778f3a89416caddfc6c6d70 ]
+[ Upstream commit 0a6dc67a6aa45f19bd4ff89b4f468fc50c4b8daa ]
 
-Decrements the reference count of device node and its child node.
+Release the buffer_head before returning error code in
+do_isofs_readdir() and isofs_find_entry().
 
-Fixes: dfe7a1b058bb ("regulator: AXP20x: Add support for regulators subsystem")
+Fixes: 2deb1acc653c ("isofs: fix access to unallocated memory when reading corrupted filesystem")
+Link: https://lore.kernel.org/r/20210118120455.118955-1-bianpan2016@163.com
 Signed-off-by: Pan Bian <bianpan2016@163.com>
-Link: https://lore.kernel.org/r/20210120123313.107640-1-bianpan2016@163.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/axp20x-regulator.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ fs/isofs/dir.c   | 1 +
+ fs/isofs/namei.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/regulator/axp20x-regulator.c b/drivers/regulator/axp20x-regulator.c
-index 376a99b7cf5da..901e3fb65ebf7 100644
---- a/drivers/regulator/axp20x-regulator.c
-+++ b/drivers/regulator/axp20x-regulator.c
-@@ -493,7 +493,7 @@ static int axp20x_set_dcdc_freq(struct platform_device *pdev, u32 dcdcfreq)
- static int axp20x_regulator_parse_dt(struct platform_device *pdev)
- {
- 	struct device_node *np, *regulators;
--	int ret;
-+	int ret = 0;
- 	u32 dcdcfreq = 0;
- 
- 	np = of_node_get(pdev->dev.parent->of_node);
-@@ -508,13 +508,12 @@ static int axp20x_regulator_parse_dt(struct platform_device *pdev)
- 		ret = axp20x_set_dcdc_freq(pdev, dcdcfreq);
- 		if (ret < 0) {
- 			dev_err(&pdev->dev, "Error setting dcdc frequency: %d\n", ret);
--			return ret;
+diff --git a/fs/isofs/dir.c b/fs/isofs/dir.c
+index 947ce22f5b3c3..55df4d80793ba 100644
+--- a/fs/isofs/dir.c
++++ b/fs/isofs/dir.c
+@@ -152,6 +152,7 @@ static int do_isofs_readdir(struct inode *inode, struct file *file,
+ 			printk(KERN_NOTICE "iso9660: Corrupted directory entry"
+ 			       " in block %lu of inode %lu\n", block,
+ 			       inode->i_ino);
++			brelse(bh);
+ 			return -EIO;
  		}
--
- 		of_node_put(regulators);
- 	}
  
--	return 0;
-+	of_node_put(np);
-+	return ret;
- }
+diff --git a/fs/isofs/namei.c b/fs/isofs/namei.c
+index cac468f04820e..558e7c51ce0d4 100644
+--- a/fs/isofs/namei.c
++++ b/fs/isofs/namei.c
+@@ -102,6 +102,7 @@ isofs_find_entry(struct inode *dir, struct dentry *dentry,
+ 			printk(KERN_NOTICE "iso9660: Corrupted directory entry"
+ 			       " in block %lu of inode %lu\n", block,
+ 			       dir->i_ino);
++			brelse(bh);
+ 			return 0;
+ 		}
  
- static int axp20x_set_dcdc_workmode(struct regulator_dev *rdev, int id, u32 workmode)
 -- 
 2.27.0
 
