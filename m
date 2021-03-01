@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C518C329B8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4E3329C1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348937AbhCBB0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:26:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39774 "EHLO mail.kernel.org"
+        id S1380138AbhCBBsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:48:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241143AbhCATMp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:12:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C416D65312;
-        Mon,  1 Mar 2021 17:43:02 +0000 (UTC)
+        id S241489AbhCATZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:25:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D46D64FF6;
+        Mon,  1 Mar 2021 17:07:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620583;
-        bh=+0yWCGYX/eWleYB0xPjxvLFpfpYXEb8nti+BkNJmvRc=;
+        s=korg; t=1614618433;
+        bh=nAeagvxmNBgZwV5lsDPusW+DDwpujxjfC8cx7sKQ4Jk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gkYxdB197TrOal4HYWZrzIxr6keqyh9TOTO/qJMo4QboOxoxpalWikvA5Nnzb/vgO
-         K+IZmmqNTCeSmeUFdxEfghaCYBpQP/1Qhe7TDV7+/xXbTdRwqaFXlWjr+UXXiPxYo5
-         iUV1wwKz9mwu71o2G4ljpA8Mn6n0h/JGOf3RqcTw=
+        b=k1OFBGcRWT1Yv158mTT8dL3atx5JYUyELNy0jomY3OSkQ+GYva59GVjBrCATaoErY
+         Wcuv7G0ePblWNTNBIOCt2bM1YP2CL02ZWebRhG1lLQyJJ/emgMpvMBoptb5UDDHGbo
+         Vvg7CSmZh/LlTu8tx8ouBi9WTTAJKRh3C7Rjanbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 165/775] net: ipa: initialize all resources
+Subject: [PATCH 5.10 085/663] ath11k: fix a locking bug in ath11k_mac_op_start()
 Date:   Mon,  1 Mar 2021 17:05:33 +0100
-Message-Id: <20210301161209.793436218@linuxfoundation.org>
+Message-Id: <20210301161145.937954480@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 25c5a7e89b1de80f4b04ad5365b2e05fefd92279 ]
+[ Upstream commit c202e2ebe1dc454ad54fd0018c023ec553d47284 ]
 
-We configure the minimum and maximum number of various types of IPA
-resources in ipa_resource_config().  It iterates over resource types
-in the configuration data and assigns resource limits to each
-resource group for each type.
+This error path leads to a Smatch warning:
 
-Unfortunately, we are repeatedly initializing the resource data for
-the first type, rather than initializing each of the types whose
-limits are specified.
+	drivers/net/wireless/ath/ath11k/mac.c:4269 ath11k_mac_op_start()
+	error: double unlocked '&ar->conf_mutex' (orig line 4251)
 
-Fix this bug.
+We're not holding the lock when we do the "goto err;" so it leads to a
+double unlock.  The fix is to hold the lock for a little longer.
 
-Fixes: 4a0d7579d466e ("net: ipa: avoid going past end of resource group array")
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c83c500b55b6 ("ath11k: enable idle power save mode")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+[kvalo@codeaurora.org: move also rcu_assign_pointer() call]
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/YBk4GoeE+yc0wlJH@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/ipa_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath11k/mac.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index 84bb8ae927252..eb1c8396bcdd9 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -581,10 +581,10 @@ ipa_resource_config(struct ipa *ipa, const struct ipa_resource_data *data)
- 		return -EINVAL;
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index af427d9051a07..b5bd9b06da89e 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -4213,11 +4213,6 @@ static int ath11k_mac_op_start(struct ieee80211_hw *hw)
+ 	/* Configure the hash seed for hash based reo dest ring selection */
+ 	ath11k_wmi_pdev_lro_cfg(ar, ar->pdev->pdev_id);
  
- 	for (i = 0; i < data->resource_src_count; i++)
--		ipa_resource_config_src(ipa, data->resource_src);
-+		ipa_resource_config_src(ipa, &data->resource_src[i]);
- 
- 	for (i = 0; i < data->resource_dst_count; i++)
--		ipa_resource_config_dst(ipa, data->resource_dst);
-+		ipa_resource_config_dst(ipa, &data->resource_dst[i]);
- 
+-	mutex_unlock(&ar->conf_mutex);
+-
+-	rcu_assign_pointer(ab->pdevs_active[ar->pdev_idx],
+-			   &ab->pdevs[ar->pdev_idx]);
+-
+ 	/* allow device to enter IMPS */
+ 	if (ab->hw_params.idle_ps) {
+ 		ret = ath11k_wmi_pdev_set_param(ar, WMI_PDEV_PARAM_IDLE_PS_CONFIG,
+@@ -4227,6 +4222,12 @@ static int ath11k_mac_op_start(struct ieee80211_hw *hw)
+ 			goto err;
+ 		}
+ 	}
++
++	mutex_unlock(&ar->conf_mutex);
++
++	rcu_assign_pointer(ab->pdevs_active[ar->pdev_idx],
++			   &ab->pdevs[ar->pdev_idx]);
++
  	return 0;
- }
+ 
+ err:
 -- 
 2.27.0
 
