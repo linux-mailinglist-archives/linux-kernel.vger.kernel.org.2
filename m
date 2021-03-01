@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591CC329C6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA51329BE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380721AbhCBBzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:55:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48800 "EHLO mail.kernel.org"
+        id S1379833AbhCBBbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:31:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235787AbhCATal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:30:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E5BA60C3E;
-        Mon,  1 Mar 2021 17:26:35 +0000 (UTC)
+        id S235765AbhCATSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:18:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F199764FA3;
+        Mon,  1 Mar 2021 17:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619595;
-        bh=PyHp6FTIGEZkSazoh/VgMyjz3FE/0K2Am4Dbau1cIDo=;
+        s=korg; t=1614619601;
+        bh=Y5B3CohJ0Xl3YkF/OrgFnybXvjnQMwMebfIgIUc7t1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LGvcMGUXRPVEItrUNm/zJ1//zJYD/v4H5N1O9/8bvKKjosfadYzSQg5Cgx0IVlJoQ
-         KM+6RLIoRXpW+ruN/4ZJUywaIt/NtcDGiOC4EX9MuNypE2V/WEUlrWGg+8msQaNFJ+
-         K23k8Kf8z/CYk4hhFdLKykXfTiat3Sm9JPkslKDI=
+        b=EHk/Y0veaQrPRx5zfKQ09jLbFfWvdYa0usLlSdFStqud7QnhDT3X2Oi3Rh9NsaOia
+         LcVKPhcLfQT40mrIcqUQgCKrSkimwKwipQV+Q1wTDS6ktnA06WLqSLDJavZKN+YeQ5
+         eW3mP3O/xC0rNaVyRnSwOU/V6NjfU+S8TVkjiRao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Coly Li <colyli@suse.de>,
-        Kai Krakow <kai@kaishome.de>, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 511/663] bcache: Move journal work to new flush wq
-Date:   Mon,  1 Mar 2021 17:12:39 +0100
-Message-Id: <20210301161207.133074931@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jan=20Kokem=C3=BCller?= <jan.kokemueller@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.10 513/663] drm/amd/display: Add FPU wrappers to dcn21_validate_bandwidth()
+Date:   Mon,  1 Mar 2021 17:12:41 +0100
+Message-Id: <20210301161207.233869709@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,98 +40,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Krakow <kai@kaishome.de>
+From: Jan Kokemüller <jan.kokemueller@gmail.com>
 
-commit afe78ab46f638ecdf80a35b122ffc92c20d9ae5d upstream.
+commit 41401ac67791810dd880345962339aa1bedd3c0d upstream.
 
-This is potentially long running and not latency sensitive, let's get
-it out of the way of other latency sensitive events.
+dcn21_validate_bandwidth() calls functions that use floating point math.
+On my machine this sometimes results in simd exceptions when there are
+other FPU users such as KVM virtual machines running. The screen freezes
+completely in this case.
 
-As observed in the previous commit, the `system_wq` comes easily
-congested by bcache, and this fixes a few more stalls I was observing
-every once in a while.
+Wrapping the function with DC_FP_START()/DC_FP_END() seems to solve the
+problem. This mirrors the approach used for dcn20_validate_bandwidth.
 
-Let's not make this `WQ_MEM_RECLAIM` as it showed to reduce performance
-of boot and file system operations in my tests. Also, without
-`WQ_MEM_RECLAIM`, I no longer see desktop stalls. This matches the
-previous behavior as `system_wq` also does no memory reclaim:
+Tested on a AMD Ryzen 7 PRO 4750U (Renoir).
 
-> // workqueue.c:
-> system_wq = alloc_workqueue("events", 0, 0);
-
-Cc: Coly Li <colyli@suse.de>
-Cc: stable@vger.kernel.org # 5.4+
-Signed-off-by: Kai Krakow <kai@kaishome.de>
-Signed-off-by: Coly Li <colyli@suse.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=206987
+Signed-off-by: Jan Kokemüller <jan.kokemueller@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/bcache/bcache.h  |    1 +
- drivers/md/bcache/journal.c |    4 ++--
- drivers/md/bcache/super.c   |   16 ++++++++++++++++
- 3 files changed, 19 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c |    2 -
+ drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c |   20 ++++++++++++++++--
+ 2 files changed, 19 insertions(+), 3 deletions(-)
 
---- a/drivers/md/bcache/bcache.h
-+++ b/drivers/md/bcache/bcache.h
-@@ -1001,6 +1001,7 @@ void bch_write_bdev_super(struct cached_
- 
- extern struct workqueue_struct *bcache_wq;
- extern struct workqueue_struct *bch_journal_wq;
-+extern struct workqueue_struct *bch_flush_wq;
- extern struct mutex bch_register_lock;
- extern struct list_head bch_cache_sets;
- 
---- a/drivers/md/bcache/journal.c
-+++ b/drivers/md/bcache/journal.c
-@@ -932,8 +932,8 @@ atomic_t *bch_journal(struct cache_set *
- 		journal_try_write(c);
- 	} else if (!w->dirty) {
- 		w->dirty = true;
--		schedule_delayed_work(&c->journal.work,
--				      msecs_to_jiffies(c->journal_delay_ms));
-+		queue_delayed_work(bch_flush_wq, &c->journal.work,
-+				   msecs_to_jiffies(c->journal_delay_ms));
- 		spin_unlock(&c->journal.lock);
- 	} else {
- 		spin_unlock(&c->journal.lock);
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -49,6 +49,7 @@ static int bcache_major;
- static DEFINE_IDA(bcache_device_idx);
- static wait_queue_head_t unregister_wait;
- struct workqueue_struct *bcache_wq;
-+struct workqueue_struct *bch_flush_wq;
- struct workqueue_struct *bch_journal_wq;
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
+@@ -3248,7 +3248,7 @@ restore_dml_state:
+ bool dcn20_validate_bandwidth(struct dc *dc, struct dc_state *context,
+ 		bool fast_validate)
+ {
+-	bool voltage_supported = false;
++	bool voltage_supported;
+ 	DC_FP_START();
+ 	voltage_supported = dcn20_validate_bandwidth_fp(dc, context, fast_validate);
+ 	DC_FP_END();
+--- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
+@@ -1173,8 +1173,8 @@ void dcn21_calculate_wm(
+ }
  
  
-@@ -2833,6 +2834,8 @@ static void bcache_exit(void)
- 		destroy_workqueue(bcache_wq);
- 	if (bch_journal_wq)
- 		destroy_workqueue(bch_journal_wq);
-+	if (bch_flush_wq)
-+		destroy_workqueue(bch_flush_wq);
- 	bch_btree_exit();
+-bool dcn21_validate_bandwidth(struct dc *dc, struct dc_state *context,
+-		bool fast_validate)
++static noinline bool dcn21_validate_bandwidth_fp(struct dc *dc,
++		struct dc_state *context, bool fast_validate)
+ {
+ 	bool out = false;
  
- 	if (bcache_major)
-@@ -2896,6 +2899,19 @@ static int __init bcache_init(void)
- 	if (!bcache_wq)
- 		goto err;
+@@ -1227,6 +1227,22 @@ validate_out:
  
-+	/*
-+	 * Let's not make this `WQ_MEM_RECLAIM` for the following reasons:
-+	 *
-+	 * 1. It used `system_wq` before which also does no memory reclaim.
-+	 * 2. With `WQ_MEM_RECLAIM` desktop stalls, increased boot times, and
-+	 *    reduced throughput can be observed.
-+	 *
-+	 * We still want to user our own queue to not congest the `system_wq`.
-+	 */
-+	bch_flush_wq = alloc_workqueue("bch_flush", 0, 0);
-+	if (!bch_flush_wq)
-+		goto err;
+ 	return out;
+ }
 +
- 	bch_journal_wq = alloc_workqueue("bch_journal", WQ_MEM_RECLAIM, 0);
- 	if (!bch_journal_wq)
- 		goto err;
++/*
++ * Some of the functions further below use the FPU, so we need to wrap this
++ * with DC_FP_START()/DC_FP_END(). Use the same approach as for
++ * dcn20_validate_bandwidth in dcn20_resource.c.
++ */
++bool dcn21_validate_bandwidth(struct dc *dc, struct dc_state *context,
++		bool fast_validate)
++{
++	bool voltage_supported;
++	DC_FP_START();
++	voltage_supported = dcn21_validate_bandwidth_fp(dc, context, fast_validate);
++	DC_FP_END();
++	return voltage_supported;
++}
++
+ static void dcn21_destroy_resource_pool(struct resource_pool **pool)
+ {
+ 	struct dcn21_resource_pool *dcn21_pool = TO_DCN21_RES_POOL(*pool);
 
 
