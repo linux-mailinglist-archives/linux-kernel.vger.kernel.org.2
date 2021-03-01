@@ -2,112 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC147328075
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D81328077
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236266AbhCAOOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:14:37 -0500
-Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:37555 "EHLO
-        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236318AbhCAONN (ORCPT
+        id S236291AbhCAOOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:14:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236101AbhCAON1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:13:13 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id GjHalOxr1xeWOGjHeljYVt; Mon, 01 Mar 2021 15:12:30 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1614607950; bh=L0dAuQgQKLdEa5YPYaLracpPCikZID+736gr3OzkBo0=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=JZGWbR2tS3LDfKIuD3vKjbe1M+dLC6Jz/j0HzqTCVpk9OFDz65HKgr0CllbQTrBCf
-         aeX9dnEZBX0SsCLXl0yJ6DqV1tQEk5HdgGK9gR6vYcp+HYRgl5kO65RPWqNRmMJOhS
-         McwxlPFUEoUltEcE0NAcJtosX9+FQELuNvnwkpnZJxNtlvwQ2OSwTfY/JYuMNhlcm0
-         hhfeykhouaETfmODeMESp43XghSgNg4H6D5FwUmbeEq8t7HVp1RoGasRcjrGbD0Ofx
-         1qG9+vWg1eNDfKQi368vICdsnhmufFpVGO/DMGCSa8epp/dWBtQn8VF0ZKVAsaJfYh
-         WULxjCM/SuPAw==
-Subject: Re: [PATCH v4] media: add a subsystem profile documentation
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <7ac41052a64ae3cfceaa9d08a82afc9dcf2392c5.1614599129.git.mchehab+huawei@kernel.org>
- <e757851a-91a1-225b-fa6e-3c7d44a6cc5c@xs4all.nl>
- <20210301144741.11a5751b@coco.lan>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <885ddd09-deb5-bc8a-fd93-6a3f4ecdc5ac@xs4all.nl>
-Date:   Mon, 1 Mar 2021 15:12:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Mon, 1 Mar 2021 09:13:27 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F383EC061756;
+        Mon,  1 Mar 2021 06:12:46 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d11so9970036plo.8;
+        Mon, 01 Mar 2021 06:12:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Rvtbe24/4pCbrSbJGa1S0S5IZkxAu81Cy/hj2/HLLCg=;
+        b=n+w0klHtPenxZA/Kz2OD2SFcBvuJj6780NswXPNENrWEz+6TPgTlnbLIOPp5LwyKHk
+         jvY0z4L+pZxaP1U4HrHglO94EQ6Z47F+937fYA8sZfu/V8nIabKWTniZbW58LM03lyAZ
+         EDDN1cH3IKrHd+w6n+igj3wyx/154ROXgESSjvpkBpaEBGfDdelCDRnopeMjMALUEsZF
+         NQYD+HORTQgxdh3CXlvJTpZP0h5gdRi4tgsWkL63LuVCTa2fdXRvR5QrUHsMpOsPvdG8
+         i2/k/Svn3FqlVw8udkVHBUbKg/bwP6CvxT0MgVgIHL8AYH8ldtVkR6ZRkvkqxJbk3feT
+         eGNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Rvtbe24/4pCbrSbJGa1S0S5IZkxAu81Cy/hj2/HLLCg=;
+        b=Txs/ttpU1wx12WWqzuMr8we7PEe5OtIho8gdXQRTmSrbUAGsyIf2aF3xl0s/CwV9wd
+         7nOT6XSJWXVlp2F8GUFXUrZfuER66mBoMoKFO2ahDyhxgk7VOPduWOi/WEogw5ciLhcP
+         G+MIDTtzhz4w89iGVIz4Kr1grUAU8pNutkPb02oeAcwnGLJxnpE8Mzv1+ss5WweN1b6H
+         q3IaHaMl/ricCR7POHrOKaExhlDfMeJUxyM7PHJq4UWr/TfRoHZDXkJDkFjptrrvnX1c
+         2e0IqdnfW8T0Z+sVac/lHW8JpDpKsx9KtVOma0+ZZMR8vAdSgHXsmXJi7wYaKOAuVWlH
+         FbDg==
+X-Gm-Message-State: AOAM533scRQNd4g9/4KLfEr2SIiYJ6WSNWk528hngh8HN7DOhhYQvdZt
+        HJG5Ojm12WB77pzwcjM/L9sc6Knhj1rKDKOls5U0GEdsEe9o6g==
+X-Google-Smtp-Source: ABdhPJxPnN7RkZpSE77Lsn1szHfpSaago2tCmsH7CaVM4PsXwMcCrSprAs76tT/RWTPRvWjOVD2u3O7xhn63pg2cSpU=
+X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr18401612pjx.181.1614607966461;
+ Mon, 01 Mar 2021 06:12:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210301144741.11a5751b@coco.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfEfvgxOn1KQv4tL+mbyYWC6jPjzqXSsPnCSaioN/kGeUjUKb1t7h4WbqQvxkjgZKQD5ZGdXONaUJ4EZsl3dhQlxZpCsmF0GW68uso1UF1vTHDLprc6OP
- uxfYaJTC/SWBE2p6PMaCqgd//dYbojAzHzxFfiaLRO8iq8IN8oJMykyJMCTxOWnj8nBkFB2hMgrOQla3gNolDgfmZ+1zcp5rc6+/C+FH4/+LteUgluR4k+Yn
- eH8R09DHiHobDmjwugaJHrLtjjQR1ys74QWac26CyLXYkWfH6Y6VSfesm+MMyInoD73+cs+RBYdJZfyr3JfoKp1RnWenRzZ9fms4Myge2ke0EVjBr1z3t51Y
- xz2wRSd5aunAZygd0hKjL3ThC3amMknNETilW3rjMpC2bRh8qPreel5Dt5CWypWc4WExiDzo7vBWk7424+e6COkjcouLLFprTSRGRhl0Fbu5L5ztCcpM3KvX
- 2Ib7aC6NS/A6Y+jorLcC9iiQtHJvO53G4fup1g==
+References: <20210228012643.69944-1-ronald@innovation.ch> <20210228012643.69944-5-ronald@innovation.ch>
+In-Reply-To: <20210228012643.69944-5-ronald@innovation.ch>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 1 Mar 2021 16:12:30 +0200
+Message-ID: <CAHp75Vd13nobdyiUbYoTbeoqG4rGP-Vfswcuuy3oYjXgTXzNSw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] HID: apple-ibridge: Add Apple iBridge HID driver for
+ T1 chip.
+To:     =?UTF-8?Q?Ronald_Tschal=C3=A4r?= <ronald@innovation.ch>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/03/2021 14:47, Mauro Carvalho Chehab wrote:
-> Em Mon, 1 Mar 2021 13:27:39 +0100
-> Hans Verkuil <hverkuil@xs4all.nl> escreveu:
-> 
->> Hi Mauro,
->>
-> 
-> Thanks for your review. I'm addressing the points on a v5.
-> 
-> Yet, there's one that, IMHO, we should elaborate more, if we add it to the
-> doc:
-> 
->>> +Provided that your patch is at https://patchwork.linuxtv.org, it should
->>> +be sooner or later handled, so you don't need to re-submit a patch.
->>> +
->>> +Except for bug fixes, we don't usually add new patches to the development
->>> +tree between -rc6 and the next -rc1.
->>> +
->>> +Please notice that the media subsystem is a high traffic one, so it
->>> +could take a while for us to be able to review your patches. Feel free
->>> +to ping if you don't get a feedback in a couple of weeks or to ask
->>> +other developers to publicly add Reviewed-by and, more importantly,
->>> +Tested-by tags.  
->>
->> What I have noticed is that sometimes important bug fixes are missed due
->> to the high traffic volume. I would like to see something along the lines of:
->>
->> "If important bug fixes are not reviewed or picked up within a week of posting,
->> then do not hesitate to ping."
-> 
-> I see your point, but "important" is relative ;-) I mean, a bug
-> is almost always important for the one reporting it. It doesn't
-> necessarily means that such bug is visible by others or if the
-> subsystem's core has a serious bug.
-> 
-> IMO, if we add a paragraph like that, we should better explain what
-> "important" means.
+On Sun, Feb 28, 2021 at 3:30 AM Ronald Tschal=C3=A4r <ronald@innovation.ch>=
+ wrote:
+>
+> The iBridge device provides access to several devices, including:
+> - the Touch Bar
+> - the iSight webcam
+> - the light sensor
+> - the fingerprint sensor
+>
+> This driver provides the core support for managing the iBridge device
+> and the access to the underlying devices. In particular, the
+> functionality for the touch bar and light sensor is exposed via USB HID
+> interfaces, and on devices with the T1 chip one of the HID devices is
+> used for both functions. So this driver creates virtual HID devices, one
+> per top-level report collection on each HID device (for a total of 3
+> virtual HID devices). The sub-drivers then bind to these virtual HID
+> devices.
+>
+> This way the Touch Bar and ALS drivers can be kept in their own modules,
+> while at the same time making them look very much like as if they were
+> connected to the real HID devices. And those drivers then work (mostly)
+> without further changes on MacBooks with the T2 chip that don't need
+> this driver.
 
-Hmm, I consider a fix important if without it the driver can break or
-cause wrong results during normal operation. So not cleanup patches or
-error handling patches.
+Thanks for the contribution.
+Before I'll do a full review, two concerns:
+ - don't do ACPI drivers, please, in the new code. Use platform driver
+infrastructure for that
+ - dependencies (see below)
 
-In any case, I'd rather get some extra 'ping' reminders, than that I
-forget an important patch. In general I'm fine with 'pings' after a
-week.
+...
 
-Regards,
+> +config HID_APPLE_IBRIDGE
+> +       tristate "Apple iBridge"
 
-	Hans
+> +       depends on ACPI
+> +       depends on USB_HID
 
-> 
-> Thanks,
-> Mauro
-> 
+> +       depends on X86 || COMPILE_TEST
 
+I haven't found anything ACPI specific there, so this should be rather
+
+depends on (X86 && ACPI) || COMPILE_TEST
+
+> +       imply HID_SENSOR_HUB
+> +       imply HID_SENSOR_ALS
+> +       help
+> +         This module provides the core support for the Apple T1 chip fou=
+nd
+> +         on 2016 and 2017 MacBookPro's, also known as the iBridge. The d=
+rivers
+> +         for the Touch Bar (apple-touchbar) and light sensor (hid-sensor=
+-hub
+> +         and hid-sensor-als) need to be enabled separately.
+> +
+> +         To compile this driver as a module, choose M here: the
+> +         module will be called apple-ibridge.
+
+--=20
+With Best Regards,
+Andy Shevchenko
