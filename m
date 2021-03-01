@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CB7329A9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CAF1329AC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239233AbhCBA7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:59:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54120 "EHLO mail.kernel.org"
+        id S1348478AbhCBBCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:02:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240720AbhCAStM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:49:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8F8A64EA4;
-        Mon,  1 Mar 2021 17:47:57 +0000 (UTC)
+        id S240789AbhCASxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:53:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43E5D64E60;
+        Mon,  1 Mar 2021 17:48:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620878;
-        bh=WIYhkWcd25TAdtGLp0QqOBwbYMjtmQqQ6jfEtsH3dg4=;
+        s=korg; t=1614620880;
+        bh=SOuethk+Lvc1B4JliQnmJZw9lJz2/4JjD2WjtCynslo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P16tWCaYBp+OxiI5r6p2tQ038E0GrXCLD4ZCEMI3BVJAFSBWhTaO52Ddr7YX1hZPy
-         On8mFZJFvt/BgeW1D+8eZ3wl/9RjQvU9YkTrtf3VsJvJjtMSnu0g+CBTYmxGlUdd+i
-         g/2ozSIaqqo/LcRTWASKsvJzEY3Afke5OrBj2+7c=
+        b=pvG5fMOYnq4dOrPWmgwKtnSLfNAwn2qjKh4jFe2oettWlXDjKMPCaAhAECFcRJEc/
+         HWTJUe6gOsmwTORsbqNjDBpPqqycoB4/ar/gUD7fUbgzjNfUhNZ9FUpH65NwOLtd32
+         56rMLR7qJWTaQ8A/UQmMmZN/8WkpGb+qoiz6ntsY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 313/775] arm64: dts: qcom: qrb5165-rb5: fix pm8009 regulators
-Date:   Mon,  1 Mar 2021 17:08:01 +0100
-Message-Id: <20210301161217.083903326@linuxfoundation.org>
+        syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 314/775] quota: Fix memory leak when handling corrupted quota file
+Date:   Mon,  1 Mar 2021 17:08:02 +0100
+Message-Id: <20210301161217.136370918@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,50 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit c3da02421230639bf6ee5462b70b58f5b7f3b7c6 ]
+[ Upstream commit a4db1072e1a3bd7a8d9c356e1902b13ac5deb8ef ]
 
-Fix pm8009 compatibility string to reference pm8009 revision specific to
-sm8250 platform. Also add S2 regulator to be used for qca639x.
+When checking corrupted quota file we can bail out and leak allocated
+info structure. Properly free info structure on error return.
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Fixes: b1d2674e6121 ("arm64: dts: qcom: Add basic devicetree support for QRB5165 RB5")
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Link: https://lore.kernel.org/r/20201231122348.637917-5-dmitry.baryshkov@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-by: syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com
+Fixes: 11c514a99bb9 ("quota: Sanity-check quota file headers on load")
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ fs/quota/quota_v2.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index f86cc5140d3b9..f13a63ca8efd6 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -122,7 +122,7 @@
- 
- &apps_rsc {
- 	pm8009-rpmh-regulators {
--		compatible = "qcom,pm8009-rpmh-regulators";
-+		compatible = "qcom,pm8009-1-rpmh-regulators";
- 		qcom,pmic-id = "f";
- 
- 		vdd-s1-supply = <&vph_pwr>;
-@@ -131,6 +131,13 @@
- 		vdd-l5-l6-supply = <&vreg_bob>;
- 		vdd-l7-supply = <&vreg_s4a_1p8>;
- 
-+		vreg_s2f_0p95: smps2 {
-+			regulator-name = "vreg_s2f_0p95";
-+			regulator-min-microvolt = <900000>;
-+			regulator-max-microvolt = <952000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
-+		};
-+
- 		vreg_l1f_1p1: ldo1 {
- 			regulator-name = "vreg_l1f_1p1";
- 			regulator-min-microvolt = <1104000>;
+diff --git a/fs/quota/quota_v2.c b/fs/quota/quota_v2.c
+index c21106557a37e..b1467f3921c28 100644
+--- a/fs/quota/quota_v2.c
++++ b/fs/quota/quota_v2.c
+@@ -164,19 +164,24 @@ static int v2_read_file_info(struct super_block *sb, int type)
+ 		quota_error(sb, "Number of blocks too big for quota file size (%llu > %llu).",
+ 		    (loff_t)qinfo->dqi_blocks << qinfo->dqi_blocksize_bits,
+ 		    i_size_read(sb_dqopt(sb)->files[type]));
+-		goto out;
++		goto out_free;
+ 	}
+ 	if (qinfo->dqi_free_blk >= qinfo->dqi_blocks) {
+ 		quota_error(sb, "Free block number too big (%u >= %u).",
+ 			    qinfo->dqi_free_blk, qinfo->dqi_blocks);
+-		goto out;
++		goto out_free;
+ 	}
+ 	if (qinfo->dqi_free_entry >= qinfo->dqi_blocks) {
+ 		quota_error(sb, "Block with free entry too big (%u >= %u).",
+ 			    qinfo->dqi_free_entry, qinfo->dqi_blocks);
+-		goto out;
++		goto out_free;
+ 	}
+ 	ret = 0;
++out_free:
++	if (ret) {
++		kfree(info->dqi_priv);
++		info->dqi_priv = NULL;
++	}
+ out:
+ 	up_read(&dqopt->dqio_sem);
+ 	return ret;
 -- 
 2.27.0
 
