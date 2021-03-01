@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A5D329CDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B148329CCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442478AbhCBCNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:13:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52976 "EHLO mail.kernel.org"
+        id S1442386AbhCBCMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:12:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237892AbhCATix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241740AbhCATix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 14:38:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8A9764F84;
-        Mon,  1 Mar 2021 17:08:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE0B864FFF;
+        Mon,  1 Mar 2021 17:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618533;
-        bh=UdBrVzQ8CwwiswjPWen2fbMXWfm4QqcDF/hQgckq8+g=;
+        s=korg; t=1614618541;
+        bh=VejxEiyxyML83jVdaBmLRIWKWPlBf9I+ntI8vXbTOUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C8O4JWzOYI2lT07UCYFBA/8aEsvbWH2bhwVLCB7Lq3+tu7nFbbevQuj5dabTFgcN7
-         86Q4uSUTZRASFOxx4OmTqjffYq+9lhMP/NMT9fsCb73FJdJMxlYXa63gRaApLIK4ED
-         T+VzSuWSsuV4QcRqMij1Fde8S6Q1zQazLQXsaqEw=
+        b=mBTDiHMZ+gP1ayR0TG8xLjPxB8+z7HLSlP/dhzgx+fyY+hYrr5UhxelWOsmzmDNEZ
+         eHcK8StbO+ldzTTZQ1MIYzaqE341vnRNymxgNlH4Bq7itB1dIso9H5AuvH38VEffT4
+         OuDT+OG2AZssg/7RU2gE7FxLKinAmfZbMFAb2YZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Hancock <robert.hancock@calian.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 121/663] net: axienet: Handle deferred probe on clock properly
-Date:   Mon,  1 Mar 2021 17:06:09 +0100
-Message-Id: <20210301161147.731042238@linuxfoundation.org>
+Subject: [PATCH 5.10 124/663] bpf: Clear subreg_def for global function return values
+Date:   Mon,  1 Mar 2021 17:06:12 +0100
+Message-Id: <20210301161147.873757369@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,74 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Hancock <robert.hancock@calian.com>
+From: Ilya Leoshkevich <iii@linux.ibm.com>
 
-[ Upstream commit 57baf8cc70ea4cf5503c9d42f31f6a86d7f5ff1a ]
+[ Upstream commit 45159b27637b0fef6d5ddb86fc7c46b13c77960f ]
 
-This driver is set up to use a clock mapping in the device tree if it is
-present, but still work without one for backward compatibility. However,
-if getting the clock returns -EPROBE_DEFER, then we need to abort and
-return that error from our driver initialization so that the probe can
-be retried later after the clock is set up.
+test_global_func4 fails on s390 as reported by Yauheni in [1].
 
-Move clock initialization to earlier in the process so we do not waste as
-much effort if the clock is not yet available. Switch to use
-devm_clk_get_optional and abort initialization on any error reported.
-Also enable the clock regardless of whether the controller is using an MDIO
-bus, as the clock is required in any case.
+The immediate problem is that the zext code includes the instruction,
+whose result needs to be zero-extended, into the zero-extension
+patchlet, and if this instruction happens to be a branch, then its
+delta is not adjusted. As a result, the verifier rejects the program
+later.
 
-Fixes: 09a0354cadec267be7f ("net: axienet: Use clock framework to get device clock rate")
-Signed-off-by: Robert Hancock <robert.hancock@calian.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+However, according to [2], as far as the verifier's algorithm is
+concerned and as specified by the insn_no_def() function, branching
+insns do not define anything. This includes call insns, even though
+one might argue that they define %r0.
+
+This means that the real problem is that zero extension kicks in at
+all. This happens because clear_caller_saved_regs() sets BPF_REG_0's
+subreg_def after global function calls. This can be fixed in many
+ways; this patch mimics what helper function call handling already
+does.
+
+  [1] https://lore.kernel.org/bpf/20200903140542.156624-1-yauheni.kaliuta@redhat.com/
+  [2] https://lore.kernel.org/bpf/CAADnVQ+2RPKcftZw8d+B1UwB35cpBhpF5u3OocNh90D9pETPwg@mail.gmail.com/
+
+Fixes: 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
+Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210212040408.90109-1-iii@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/xilinx/xilinx_axienet_main.c | 26 +++++++++----------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ kernel/bpf/verifier.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
-index 9aafd3ecdaa4d..eea0bb7c23ede 100644
---- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
-+++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
-@@ -1805,6 +1805,18 @@ static int axienet_probe(struct platform_device *pdev)
- 	lp->options = XAE_OPTION_DEFAULTS;
- 	lp->rx_bd_num = RX_BD_NUM_DEFAULT;
- 	lp->tx_bd_num = TX_BD_NUM_DEFAULT;
-+
-+	lp->clk = devm_clk_get_optional(&pdev->dev, NULL);
-+	if (IS_ERR(lp->clk)) {
-+		ret = PTR_ERR(lp->clk);
-+		goto free_netdev;
-+	}
-+	ret = clk_prepare_enable(lp->clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Unable to enable clock: %d\n", ret);
-+		goto free_netdev;
-+	}
-+
- 	/* Map device registers */
- 	ethres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	lp->regs = devm_ioremap_resource(&pdev->dev, ethres);
-@@ -1980,20 +1992,6 @@ static int axienet_probe(struct platform_device *pdev)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c09594e70f90a..6c2e4947beaeb 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4786,8 +4786,9 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 					subprog);
+ 			clear_caller_saved_regs(env, caller->regs);
  
- 	lp->phy_node = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
- 	if (lp->phy_node) {
--		lp->clk = devm_clk_get(&pdev->dev, NULL);
--		if (IS_ERR(lp->clk)) {
--			dev_warn(&pdev->dev, "Failed to get clock: %ld\n",
--				 PTR_ERR(lp->clk));
--			lp->clk = NULL;
--		} else {
--			ret = clk_prepare_enable(lp->clk);
--			if (ret) {
--				dev_err(&pdev->dev, "Unable to enable clock: %d\n",
--					ret);
--				goto free_netdev;
--			}
--		}
--
- 		ret = axienet_mdio_setup(lp);
- 		if (ret)
- 			dev_warn(&pdev->dev,
+-			/* All global functions return SCALAR_VALUE */
++			/* All global functions return a 64-bit SCALAR_VALUE */
+ 			mark_reg_unknown(env, caller->regs, BPF_REG_0);
++			caller->regs[BPF_REG_0].subreg_def = DEF_NOT_SUBREG;
+ 
+ 			/* continue with next insn after call */
+ 			return 0;
 -- 
 2.27.0
 
