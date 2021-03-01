@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913E4329A71
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B9F329A0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377668AbhCBAsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:48:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53754 "EHLO mail.kernel.org"
+        id S1348261AbhCBAnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:43:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240387AbhCASqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:46:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A19C9652C9;
-        Mon,  1 Mar 2021 17:38:23 +0000 (UTC)
+        id S240197AbhCASh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:37:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 713CE64F30;
+        Mon,  1 Mar 2021 17:37:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620304;
-        bh=E0cr/6ezm6nBvKdVtXE2sJ7xXAo5B1hcNrNsFh/WUDg=;
+        s=korg; t=1614620236;
+        bh=oqxTi+BraD7Kpr4p4At1meOaCuqrzhllDhk3+X/azAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KrwmnDsoA0xMTcNsckJQYoKcfYzFbhXidYSrxavzlHEdpf6QlbPpTrfeUcPsPApk6
-         TtK0a75GLvvoPBK0/MVh/xBs5ViLSMKRDd0xRGUC1dRPdWtlGrg5i+SGLdcD68jyp9
-         LP71RmV/C+tx8O90zjsfervoWMCQ9P0FQLfkuLt8=
+        b=YadXpCQqqLlEbUVJZxHns+SbE0ly7aNgtamHy23khrplF5rhAsRFET1GhGy7i6xHq
+         4OZyejYdJo8A6WQJgOfYxEG1zccu+fXpdiWWzITeYOt7h0hXAw4I9Pb7A47s5gp3ps
+         ysXAWtH/yp4anp/Ws3Gp/e1X4ezoZZAj0nG/CJiA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org,
+        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 074/775] arm64: dts: armada-3720-turris-mox: rename u-boot mtd partition to a53-firmware
-Date:   Mon,  1 Mar 2021 17:04:02 +0100
-Message-Id: <20210301161205.334513357@linuxfoundation.org>
+Subject: [PATCH 5.11 080/775] iwlwifi: mvm: set enabled in the PPAG command properly
+Date:   Mon,  1 Mar 2021 17:04:08 +0100
+Message-Id: <20210301161205.633818202@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,44 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit a9d9bfcadfb43b856dbcf9419de75f7420d5a225 ]
+[ Upstream commit efaa85cf2294d5e10a724e24356507eeb3836f72 ]
 
-The partition called "u-boot" in reality contains TF-A and U-Boot, and
-TF-A is before U-Boot.
+When version 2 of the PER_PLATFORM_ANT_GAIN_CMD was implemented, we
+started copying the values from the command that we have stored into a
+local instance.  But we accidentally forgot to copy the enabled flag,
+so in practice PPAG is never really enabled.  Fix this by copying the
+flag from our stored data a we should.
 
-Rename this parition to "a53-firmware" to avoid confusion for users,
-since they cannot simply build U-Boot from U-Boot repository and flash
-the resulting image there. Instead they have to build the firmware with
-the sources from the mox-boot-builder repository [1] and flash the
-a53-firmware.bin binary there.
-
-[1] https://gitlab.nic.cz/turris/mox-boot-builder
-
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Fixes: 7109d817db2e ("arm64: dts: marvell: add DTS for Turris Mox")
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Fixes: f2134f66f40e ("iwlwifi: acpi: support ppag table command v2")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210131201908.24d7bf754ad5.I0e8abc2b8747508b6118242533d68c856ca6dffb@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/fw.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-index f5ec3b6447692..d239ab70ed995 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-@@ -205,7 +205,7 @@
- 			};
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+index 313e9f106f465..9e150c01f7b37 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+@@ -997,6 +997,8 @@ int iwl_mvm_ppag_send_cmd(struct iwl_mvm *mvm)
+ 		return 0;
+ 	}
  
- 			partition@20000 {
--				label = "u-boot";
-+				label = "a53-firmware";
- 				reg = <0x20000 0x160000>;
- 			};
- 
++	ppag_table.v1.enabled = mvm->fwrt.ppag_table.v1.enabled;
++
+ 	cmd_ver = iwl_fw_lookup_cmd_ver(mvm->fw, PHY_OPS_GROUP,
+ 					PER_PLATFORM_ANT_GAIN_CMD,
+ 					IWL_FW_CMD_VER_UNKNOWN);
 -- 
 2.27.0
 
