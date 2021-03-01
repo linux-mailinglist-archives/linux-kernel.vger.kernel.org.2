@@ -2,188 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BB6327C1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C66327C20
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbhCAK2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
+        id S234320AbhCAK3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:29:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234318AbhCAK0z (ORCPT
+        with ESMTP id S234394AbhCAK3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:26:55 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F80C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 02:26:15 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id w1so27208760ejf.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:26:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CYgM1id2R9zJf1hAsjLZUpdxdqZwVIb1y9Uy/sRW0so=;
-        b=CqxH24y/MrPZHHCE5raF4mqb78avr5nCEtykSXmHyTa/LYFNhP+XnA02Py1yA6JA7y
-         +iHmBjFq4xV1APtK2uXFFrkF7te1zdNEAbWJgKxlMn9SvDZWP/9N+OxDNbA4hWGnC9Qu
-         35dCWeLietcgJzR8A7YZX4vBp/gqpgVyWE0qY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=CYgM1id2R9zJf1hAsjLZUpdxdqZwVIb1y9Uy/sRW0so=;
-        b=UFTKhl+cgrljVzxk6yfpy5/+n3IlA6jHqW0m1xVq0TqxuLBBP7LWRiXhVWp1dCzK5k
-         YVSg/x8FMMLZr4EmPqfX3Tf7Pug5qclvyEkz9DQ8ilHcC7bZN6L4DEEJmy+2+ssylpTY
-         Upd3u5DtgQgx6hPwsoIB0ZeezHwrLwZUyvep2up2pW8ZneC589gcXYisl0UuFX/sB+M1
-         ycsRGM2E0bsHhknoTmJLKrgFMLUYLfzDX+mtyaJvzHFfIjA3mKtSqjAZp7NYrRa6fxuc
-         mzgXmT0IJTVgxOlNgvGSrk+r7xO4EaNTvsWwM0T+ZilwAtckMo+YRB8Hrg0TE7woeHi1
-         8lhw==
-X-Gm-Message-State: AOAM531yYHl4G4qeCqXKVH4gaHqn26GShc/6luPuqVh3liRJT//D9LK6
-        GsfM5mcvtHiu2KxirwaK7Ojr9e2ftau/KQ==
-X-Google-Smtp-Source: ABdhPJySAf5i3u0T+iImmbvx9C3XNt6X0t7i0/fqs87eiePNTsNAAunuSCHe8czVRrXPOthrB9BuCA==
-X-Received: by 2002:a17:906:4c56:: with SMTP id d22mr15943323ejw.426.1614594373701;
-        Mon, 01 Mar 2021 02:26:13 -0800 (PST)
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com. [209.85.128.48])
-        by smtp.gmail.com with ESMTPSA id t15sm10774720edc.34.2021.03.01.02.26.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 02:26:13 -0800 (PST)
-Received: by mail-wm1-f48.google.com with SMTP id u187so11092424wmg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:26:12 -0800 (PST)
-X-Received: by 2002:a7b:c119:: with SMTP id w25mr14771835wmi.127.1614594372464;
- Mon, 01 Mar 2021 02:26:12 -0800 (PST)
+        Mon, 1 Mar 2021 05:29:09 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086AEC06174A;
+        Mon,  1 Mar 2021 02:28:29 -0800 (PST)
+Date:   Mon, 01 Mar 2021 10:28:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1614594507;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yBEutZAcaqNmgkIlf5JXEYggQE0NqRGs7D3iN5T9Kok=;
+        b=Wys15cimkMu3s3W7ZMCYduex0fuS4WsCewfB+SxICxnL17kh04z2Ei55eDiQ/8w77i5OOf
+        3P70RJ4S6DdCbd3rX8JMynNCN637lxRc7z1SV6m5ge3tgvZjQLW5pmoQipGyprYAS56yCF
+        /5DjmaW6RDxGsL7e6FTpnu6nimK57i8sGOyDpyIM59uRSZ+mKE9GyZRdF8XRo4RjQOIMNs
+        yiZHMZ8y0RBdboo/pMbBOL0OioQvQ8AH/Vfzod1yTdKzvPruSYDJmFDjQn1q94xZfmawDi
+        Fi9XQQGAhh7kYpUuU1jryx1WRW8YZkhYfiUfNQE+CTn5sIYiyS4WVA1QMZFPow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1614594507;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yBEutZAcaqNmgkIlf5JXEYggQE0NqRGs7D3iN5T9Kok=;
+        b=xcmfhSmHKGWL/oR5q+cjaisJOCBS/czHpuzT2y82Nh6Yx+nnbm80WuTWBNt4SjR25HxzdX
+        lbnfiZ2mJ+cefICg==
+From:   "tip-bot2 for Justin Ernst" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/platform] x86/platform/uv: Fix indentation warning in
+ Documentation/ABI/testing/sysfs-firmware-sgi_uv
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Borislav Petkov <bp@suse.de>,
+        Mike Travis <mike.travis@hpe.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210219182852.385297-1-justin.ernst@hpe.com>
+References: <20210219182852.385297-1-justin.ernst@hpe.com>
 MIME-Version: 1.0
-References: <20201214125703.866998-1-acourbot@chromium.org>
- <5319c101-f4a4-9c99-b15d-4999366f7a63@linaro.org> <CAAFQd5AQ8VHiRYkzkd5ZJBPT5_5WO0tyQrwqBEfnMVKYiTugTA@mail.gmail.com>
- <b5d35bbd-ae50-7a09-9edf-ca23d1a4b168@linaro.org> <bc42c936d7a67609b9dc4212b5a34b0d761676ed.camel@ndufresne.ca>
- <CAAFQd5BQv2vu_FSxJjVZLpgcuFi1WHVem_O-0x-vkG1KZJi0eA@mail.gmail.com>
- <CAAFQd5BAT2Xe+_swAe+hMqm_cQVbWJUzkH3dS+8-QHknV=KTjw@mail.gmail.com> <b62575fd-7aac-57fe-b6f7-cf1e94f909f2@linaro.org>
-In-Reply-To: <b62575fd-7aac-57fe-b6f7-cf1e94f909f2@linaro.org>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Mon, 1 Mar 2021 19:26:01 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5DYtmWna91HYYJP_8_xEGm9faggM7ejPC7sbbPso=xvow@mail.gmail.com>
-Message-ID: <CAAFQd5DYtmWna91HYYJP_8_xEGm9faggM7ejPC7sbbPso=xvow@mail.gmail.com>
-Subject: Re: [PATCH] media: venus: use contig vb2 ops
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Alexandre Courbot <acourbot@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <161459450674.20312.3909036140649624505.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 7:22 PM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
->
->
-> On 3/1/21 11:23 AM, Tomasz Figa wrote:
-> > Hi Alex, Stanimir,
-> >
-> > On Wed, Dec 16, 2020 at 12:15 PM Tomasz Figa <tfiga@chromium.org> wrote=
-:
-> >>
-> >> On Wed, Dec 16, 2020 at 4:21 AM Nicolas Dufresne <nicolas@ndufresne.ca=
-> wrote:
-> >>>
-> >>> Le mardi 15 d=C3=A9cembre 2020 =C3=A0 15:54 +0200, Stanimir Varbanov =
-a =C3=A9crit :
-> >>>> Hi Tomasz,
-> >>>>
-> >>>> On 12/15/20 1:47 PM, Tomasz Figa wrote:
-> >>>>> On Tue, Dec 15, 2020 at 8:16 PM Stanimir Varbanov
-> >>>>> <stanimir.varbanov@linaro.org> wrote:
-> >>>>>>
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> Cc: Robin
-> >>>>>>
-> >>>>>> On 12/14/20 2:57 PM, Alexandre Courbot wrote:
-> >>>>>>> This driver uses the SG vb2 ops, but effectively only ever access=
-es the
-> >>>>>>> first entry of the SG table, indicating that it expects a flat la=
-yout.
-> >>>>>>> Switch it to use the contiguous ops to make sure this expected in=
-variant
-> >>>>>>
-> >>>>>> Under what circumstances the sg table will has nents > 1? I came d=
-own to
-> >>>>>> [1] but not sure I got it right.
-> >>>>>>
-> >>>>>> I'm afraid that for systems with low amount of system memory and w=
-hen
-> >>>>>> the memory become fragmented, the driver will not work. That's why=
- I
-> >>>>>> started with sg allocator.
-> >>>>>
-> >>>>> It is exactly the opposite. The vb2-dma-contig allocator is "contig=
-"
-> >>>>> in terms of the DMA (aka IOVA) address space. In other words, it
-> >>>>> guarantees that having one DMA address and length fully describes t=
-he
-> >>>>
-> >>>> Ahh, I missed that part. Looks like I misunderstood videobu2 contig
-> >>>> allocator.
-> >>>
-> >>> I'm learning everyday too, but I'm surprised I don't see a call to
-> >>> vb2_dma_contig_set_max_seg_size() in this driver (I could also just h=
-ave missed
-> >>> a patch when overlooking this thread) ?
-> >>>
-> >>> The reason I'm asking, doc says it should be called by driver support=
-ing IOMMU,
-> >>> which seems to be the case for such drivers (MFC, exynos4-is, exynos-=
-gsc, mtk-
-> >>> mdp, s5p-g2d, hantro, rkvdec, zoran, ti-vpe, ..). I posting it, worst=
- case it's
-> >>> all covered and we are good, otherwise perhaps a downstream patch did=
-n't make it
-> >>> ?
-> >>>
-> >>> /**
-> >>>  * vb2_dma_contig_set_max_seg_size() - configure DMA max segment size
-> >>>  * @dev:        device for configuring DMA parameters
-> >>>  * @size:       size of DMA max segment size to set
-> >>>  *
-> >>>  * To allow mapping the scatter-list into a single chunk in the DMA
-> >>>  * address space, the device is required to have the DMA max segment
-> >>>  * size parameter set to a value larger than the buffer size. Otherwi=
-se,
-> >>>  * the DMA-mapping subsystem will split the mapping into max segment
-> >>>  * size chunks. This function sets the DMA max segment size
-> >>>  * parameter to let DMA-mapping map a buffer as a single chunk in DMA
-> >>>  * address space.
-> >>>  * This code assumes that the DMA-mapping subsystem will merge all
-> >>>  * scatterlist segments if this is really possible (for example when
-> >>>  * an IOMMU is available and enabled).
-> >>>  * Ideally, this parameter should be set by the generic bus code, but=
- it
-> >>>  * is left with the default 64KiB value due to historical litmiations=
- in
-> >>>  * other subsystems (like limited USB host drivers) and there no good
-> >>>  * place to set it to the proper value.
-> >>>  * This function should be called from the drivers, which are known t=
-o
-> >>>  * operate on platforms with IOMMU and provide access to shared buffe=
-rs
-> >>>  * (either USERPTR or DMABUF). This should be done before initializin=
-g
-> >>>  * videobuf2 queue.
-> >>>  */
-> >>
-> >> It does call dma_set_max_seg_size() directly:
-> >> https://elixir.bootlin.com/linux/latest/source/drivers/media/platform/=
-qcom/venus/core.c#L230
-> >>
-> >> Actually, why do we even need a vb2 helper for this?
-> >>
-> >
-> > What's the plan for this patch?
->
-> It will be part of v5.12.
+The following commit has been merged into the x86/platform branch of tip:
 
-Great, thanks!
+Commit-ID:     2430915f8291212f2bd2155176b817c34a18a2b1
+Gitweb:        https://git.kernel.org/tip/2430915f8291212f2bd2155176b817c34a18a2b1
+Author:        Justin Ernst <justin.ernst@hpe.com>
+AuthorDate:    Fri, 19 Feb 2021 12:28:52 -06:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 01 Mar 2021 11:14:25 +01:00
+
+x86/platform/uv: Fix indentation warning in Documentation/ABI/testing/sysfs-firmware-sgi_uv
+
+Commit
+
+  c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
+
+misplaced the first line of a codeblock section, causing the reported
+warning message:
+
+  Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected indentation.
+
+Move the misplaced line below the required blank line to remove the
+warning message.
+
+Fixes: c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Mike Travis <mike.travis@hpe.com>
+Link: https://lkml.kernel.org/r/20210219182852.385297-1-justin.ernst@hpe.com
+---
+ Documentation/ABI/testing/sysfs-firmware-sgi_uv | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
+index 637c668..12ed843 100644
+--- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
++++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
+@@ -39,8 +39,8 @@ Description:
+ 
+ 		The uv_type entry contains the hub revision number.
+ 		This value can be used to identify the UV system version::
+-			"0.*" = Hubless UV ('*' is subtype)
+ 
++			"0.*" = Hubless UV ('*' is subtype)
+ 			"3.0" = UV2
+ 			"5.0" = UV3
+ 			"7.0" = UV4
