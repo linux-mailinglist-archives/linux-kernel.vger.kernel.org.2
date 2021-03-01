@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B346B329C90
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 659F1329C21
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380986AbhCBB5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:57:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50722 "EHLO mail.kernel.org"
+        id S1380155AbhCBBss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:48:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241610AbhCATcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:32:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1601D6517F;
-        Mon,  1 Mar 2021 17:09:49 +0000 (UTC)
+        id S241515AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:26:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48CEC64E22;
+        Mon,  1 Mar 2021 17:10:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618590;
-        bh=DX675dF+c7aBs0VPMu0flNiJY7T+22HCjl74IRur11U=;
+        s=korg; t=1614618601;
+        bh=HuvaGODZbp3hurLAhBmhqPUiJR9JIRrXi8xF1vFELTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FZXYaqvNbehkmdLTVp3lKZvOJKOpG7aMYRqphuDcwNbvMvrUcdJWsC0KDL0TV0ofO
-         9UvMO2eo59wvdawwAjyTfcsnviaIhFWELqDAr0BSUgRCgAimFuMVfoHwKHgy6SIQAm
-         vyq+i/qrSyQGA3HuJpaTD7YzylIHLJUBQdj8DI5w=
+        b=FdRPeAbVU66OgrSDf+zx2NQq39OpZhXyRuu2MHVmhtXDzE/WUs9E+cju2MyQjmvO1
+         qjjpCnY69wq+DBl5eHYfdjAcRH+6QL5HGXrcW5kADLOak036FNfTxQELJnQ1+187xe
+         3E5ebDl4S5PF1GXJ+fpchRu5iDAsbabWe/JR8Zyg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20 ?= 
+        <zhouyanjie@wanyeetech.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 143/663] drm/vc4: hdmi: Take into account the clock doubling flag in atomic_check
-Date:   Mon,  1 Mar 2021 17:06:31 +0100
-Message-Id: <20210301161148.843440907@linuxfoundation.org>
+Subject: [PATCH 5.10 147/663] hwrng: ingenic - Fix a resource leak in an error handling path
+Date:   Mon,  1 Mar 2021 17:06:35 +0100
+Message-Id: <20210301161149.044384121@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,43 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Ripard <maxime@cerno.tech>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 320e84dc6111ecc1c957e2b186d4d2bafee6bde2 ]
+[ Upstream commit c4ff41b93d1f10d1b8be258c31a0436c5769fc00 ]
 
-Commit 63495f6b4aed ("drm/vc4: hdmi: Make sure our clock rate is within
-limits") was intended to compute the pixel rate to make sure we remain
-within the boundaries of what the hardware can provide.
+In case of error, we should call 'clk_disable_unprepare()' to undo a
+previous 'clk_prepare_enable()' call, as already done in the remove
+function.
 
-However, unlike what mode_valid was checking for, we forgot to take
-into account the clock doubling flag that can be set for modes. Let's
-honor that flag if it's there.
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reported-by: Thomas Zimmermann <tzimmermann@suse.de>
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Fixes: 63495f6b4aed ("drm/vc4: hdmi: Make sure our clock rate is within limits")
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201215154243.540115-4-maxime@cerno.tech
+Fixes: 406346d22278 ("hwrng: ingenic - Add hardware TRNG for Ingenic X1830")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Tested-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/char/hw_random/ingenic-trng.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index eaba98e15de46..db06f52de9d91 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -791,6 +791,9 @@ static int vc4_hdmi_encoder_atomic_check(struct drm_encoder *encoder,
- 		pixel_rate = mode->clock * 1000;
+diff --git a/drivers/char/hw_random/ingenic-trng.c b/drivers/char/hw_random/ingenic-trng.c
+index 954a8411d67d2..0eb80f786f4dd 100644
+--- a/drivers/char/hw_random/ingenic-trng.c
++++ b/drivers/char/hw_random/ingenic-trng.c
+@@ -113,13 +113,17 @@ static int ingenic_trng_probe(struct platform_device *pdev)
+ 	ret = hwrng_register(&trng->rng);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register hwrng\n");
+-		return ret;
++		goto err_unprepare_clk;
  	}
  
-+	if (mode->flags & DRM_MODE_FLAG_DBLCLK)
-+		pixel_rate = pixel_rate * 2;
-+
- 	if (pixel_rate > vc4_hdmi->variant->max_pixel_clock)
- 		return -EINVAL;
+ 	platform_set_drvdata(pdev, trng);
  
+ 	dev_info(&pdev->dev, "Ingenic DTRNG driver registered\n");
+ 	return 0;
++
++err_unprepare_clk:
++	clk_disable_unprepare(trng->clk);
++	return ret;
+ }
+ 
+ static int ingenic_trng_remove(struct platform_device *pdev)
 -- 
 2.27.0
 
