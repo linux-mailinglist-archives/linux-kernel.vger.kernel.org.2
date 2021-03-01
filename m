@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9443329A23
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E2B329A54
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377026AbhCBApT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:45:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
+        id S1377407AbhCBArM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:47:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240488AbhCASjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:39:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B35CC65359;
-        Mon,  1 Mar 2021 17:45:37 +0000 (UTC)
+        id S240206AbhCASmp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:42:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D13D61494;
+        Mon,  1 Mar 2021 17:10:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620738;
-        bh=rdndl1Vt5USgrNlMSk+IVIUeMJ8QBwHNNPBzGlVWSKw=;
+        s=korg; t=1614618626;
+        bh=7wUmMVJ0RbdIwCGphAS4ZZkkYvMw+d3aBUfmuLZDRNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GVLoXahBSkXy2wk/kzdyhd0wHII29gYqekH1dxCWMdqTDANgV8f13MHMHe/UhJSil
-         m+uh6Oa89GYLvkm6Yb/h3HJ7GpHpMvOFqW5AKhSvbTecb29YOljnYi+2wxKIAEzZkX
-         R5+g00N6EAYa6mxLewI2xgyX1i0ehm3FsvUkcLJI=
+        b=TZMsPfJjXMYru8Wzxv4ZS2jy/aSk5X7He82QGsWCLgXhs9FBoeQbNmdxj1EqQy//f
+         8ayChIAoPmprQcIyzKYMzeoxQ99fwmTwHLYtnzsLkWz1JGfFpiWvMygqTRW0+lHqmJ
+         zh3fdk57N1l4BGHcS8oHGkxLgPZB8yPjOoBl52YI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Judy Hsiao <judyhsiao@google.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 234/775] ASoC: max98373: Fixes a typo in max98373_feedback_get
-Date:   Mon,  1 Mar 2021 17:06:42 +0100
-Message-Id: <20210301161213.192337858@linuxfoundation.org>
+Subject: [PATCH 5.10 156/663] MIPS: lantiq: Explicitly compare LTQ_EBU_PCC_ISTAT against 0
+Date:   Mon,  1 Mar 2021 17:06:44 +0100
+Message-Id: <20210301161149.487648830@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Judy Hsiao <judyhsiao@google.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit ded055eea679139f11bd808795d9697b430d1c7d ]
+[ Upstream commit c6f2a9e17b9bef7677caddb1626c2402f3e9d2bd ]
 
-The snd_soc_put_volsw in max98373_feedback_get is a typo, change it
-to snd_soc_get_volsw.
+When building xway_defconfig with clang:
 
-Fixes: 349dd23931d1 ("ASoC: max98373: don't access volatile registers in bias level off")
-Signed-off-by: Judy Hsiao <judyhsiao@google.com>
-Link: https://lore.kernel.org/r/20210127135620.1143942-1-judyhsiao@chromium.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+arch/mips/lantiq/irq.c:305:48: error: use of logical '&&' with constant
+operand [-Werror,-Wconstant-logical-operand]
+        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
+                                                      ^ ~~~~~~~~~~~~~~~~~
+arch/mips/lantiq/irq.c:305:48: note: use '&' for a bitwise operation
+        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
+                                                      ^~
+                                                      &
+arch/mips/lantiq/irq.c:305:48: note: remove constant to silence this
+warning
+        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
+                                                     ~^~~~~~~~~~~~~~~~~~~~
+1 error generated.
+
+Explicitly compare the constant LTQ_EBU_PCC_ISTAT against 0 to fix the
+warning. Additionally, remove the unnecessary parentheses as this is a
+simple conditional statement and shorthand '== 0' to '!'.
+
+Fixes: 3645da0276ae ("OF: MIPS: lantiq: implement irq_domain support")
+Link: https://github.com/ClangBuiltLinux/linux/issues/807
+Reported-by: Dmitry Golovin <dima@golovin.in>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/max98373.c | 2 +-
+ arch/mips/lantiq/irq.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index 31d571d4fac1c..746c829312b87 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -190,7 +190,7 @@ static int max98373_feedback_get(struct snd_kcontrol *kcontrol,
- 		}
- 	}
+diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
+index df8eed3875f6d..43c2f271e6ab4 100644
+--- a/arch/mips/lantiq/irq.c
++++ b/arch/mips/lantiq/irq.c
+@@ -302,7 +302,7 @@ static void ltq_hw_irq_handler(struct irq_desc *desc)
+ 	generic_handle_irq(irq_linear_revmap(ltq_domain, hwirq));
  
--	return snd_soc_put_volsw(kcontrol, ucontrol);
-+	return snd_soc_get_volsw(kcontrol, ucontrol);
+ 	/* if this is a EBU irq, we need to ack it or get a deadlock */
+-	if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
++	if (irq == LTQ_ICU_EBU_IRQ && !module && LTQ_EBU_PCC_ISTAT != 0)
+ 		ltq_ebu_w32(ltq_ebu_r32(LTQ_EBU_PCC_ISTAT) | 0x10,
+ 			LTQ_EBU_PCC_ISTAT);
  }
- 
- static const struct snd_kcontrol_new max98373_snd_controls[] = {
 -- 
 2.27.0
 
