@@ -2,175 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D1E328B9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F4165328BA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240215AbhCASiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:38:04 -0500
-Received: from mail-eopbgr50074.outbound.protection.outlook.com ([40.107.5.74]:27414
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233087AbhCAQkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:40:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BWGUiFap0oYedHYhkwMwfTl/DmwcqTnqc1mvjoZ4AJPfXR+gDMr26nKEqrbwbZ5xhYIhQ4wV8VOkrQ8abao/0WrkRuapji7N7/9QMJbW7+YGliil+1w6Ef7aW45Fh6VqJ0YnQS4leoVBLAXaURii/ygsXfNqZAa1gQfM8zeD7jfSMKPag04RJckaB24trswaPFSOSF10QT/8PGQ9QHtcZEn9nYxC++QWHbsEYFtvxEDUn8qPeU3mmNbZHXzHhg/HkgUm1p/q6JY3kvwaBGFYm1/b6F2im8wsVy2KfifdHICegLZz8cHD8B6AXgBRwQWPcoN3eSAlBKXFTmvYXsvLTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gw/xFwOD1RXpOrDERDs2k/M7HiIPOKFF/FZo7HI+FVM=;
- b=Di7CPP4+li8p3l6wAHaU4ANbvTdXqf/USJJhbEWPR3a4OrT+Vck65uf8YgqfZlZtu/akvp7UBHi4BiHWid5slJ6neavMhSdXOKDRr0EF6VXKUDSpimL2aNiWmchD/tO5GfPBcuTydTCaK7QTLSNZanZEabzlkQNiuyur3mTW8sZK2/bRT6LCnycU4k+bRRSY1vY/usqRrLxNwRXfN0lt6fMTR36CHFbTxIZjJ3x1XHZyGH2xowALYIfHBi2IimREfRpxqCJciiUMl1TeoNyNujjN3gQfXlOQOq3F3kebAYk9aV/rxpgCBTSwg83iafvVyJ76bYbEiWWUgU075EPD7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gw/xFwOD1RXpOrDERDs2k/M7HiIPOKFF/FZo7HI+FVM=;
- b=XQcmeq6q3lEDhWjM06BdovlNCOSb0QjyjvO2/A7HptBdxAsHVYIA0u+REhUnxIPeFkA3WNSeQD1WLIpJaWCFFuYXpKnTyNs2nLe8MIEMOUTOGt0DK5khK1EXcyrMzRnttqxCHE3fza0gXeqow6bsikeabc4hI1WFyB0t2uG8bEo=
-Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
- by DBBPR04MB7884.eurprd04.prod.outlook.com (2603:10a6:10:1f2::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.26; Mon, 1 Mar
- 2021 16:39:18 +0000
-Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
- ([fe80::c99c:dbc3:ed75:e6e8]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
- ([fe80::c99c:dbc3:ed75:e6e8%5]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
- 16:39:18 +0000
-From:   Kuldeep Singh <kuldeep.singh@nxp.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ashish Kumar <ashish.kumar@nxp.com>, Han Xu <han.xu@nxp.com>
-Subject: RE: [EXT] Re: [PATCH 2/3] spi: spi-nxp-fspi: Add driver support for
- imx8dxl
-Thread-Topic: [EXT] Re: [PATCH 2/3] spi: spi-nxp-fspi: Add driver support for
- imx8dxl
-Thread-Index: AQHXDoY+gDfnhwGOzEaNbBXq0bNZoqpvH7GAgAAzDSA=
-Date:   Mon, 1 Mar 2021 16:39:18 +0000
-Message-ID: <DB6PR0402MB2758C61D8320CD0A88DC3B38E09A9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
-References: <20210301103230.1816168-1-kuldeep.singh@nxp.com>
- <20210301103230.1816168-3-kuldeep.singh@nxp.com>
- <20210301132539.GB4628@sirena.org.uk>
-In-Reply-To: <20210301132539.GB4628@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [122.176.14.156]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 6203128e-d3e1-4147-5cfc-08d8dcd08ef2
-x-ms-traffictypediagnostic: DBBPR04MB7884:
-x-ms-exchange-minimumurldomainage: kernel.org#8760
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DBBPR04MB7884A554490524CAD197D677E09A9@DBBPR04MB7884.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /LEK13uRZm8H2VasnhHd0+pOX7mPBydYV3wEEHRJwGNPxML4HHsXqC50nEuBdgyExJzqnNDPjrNPbayEDD9ZB4imwiMorVEuLnyI0g+uCzvqJ4S/I4+hoAd4Hwz6uCfQK2MDIHkaoAzeqvbX6xWlqpp48QnDfFnhbNZvZx9yaQyJYD0Yf6o9hNL9Ey8KU240zvUHLHxoveu6kwofrKbjV8Sle7mtLEe6Q6qhV1PsJpih/MUlo0ZVPtsvyaPtpjkYtkelvkKqJQX9QsMpFojG0Cxxtg4EjxHjcSiWu7nI5D3wN/E0kN/4/+UZPaZyeJ+6rEkpOpk1folGPPxeMQOuaFy3O+Y6Wfx685cDKMMySqrb76pWmW+x1x54GaTE2yAv3xB0W/zjLoznsBcaHXI0qkoxUOnibkHuyBilc22RrWozr0Fm+MHsrxWv/q8CQHARuSjj069N8YhALrFpqoWWG7hs/OOZygE9v1ZmxCVRR+BFiieRBSbOr3kbDOnESw5wWKo1SN0J4MQrQxDJsZORghSe+8/hVHrIJbmCx2ZTUU/IIHEknqNBKtUJb0UhIfy57aqcjtkpU4pAH9Sqs5nS4CDxxItYY6AzdewoTX+pqrdsCPpTh6TZGL5BWK/We/NnZjSDfa8v7lIQDKfBMQ6pxg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2758.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(136003)(396003)(376002)(54906003)(186003)(86362001)(26005)(6916009)(83380400001)(316002)(4326008)(71200400001)(966005)(55016002)(478600001)(66574015)(55236004)(9686003)(2906002)(5660300002)(53546011)(76116006)(66476007)(66556008)(6506007)(64756008)(7696005)(8936002)(44832011)(66446008)(66946007)(52536014)(33656002)(8676002)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?7jK44QJVXODM2MjapH0RhMqG6bxj4Y/zgfhvTM13cnSNt/cKqdO6gsLV9mxs?=
- =?us-ascii?Q?mw5TuMdeks9tCv3WVZmYjBx5/GVkObhVWYyqT6dUHqGG3ysyQ06lHDr7B/5X?=
- =?us-ascii?Q?9U+RHvp65HhOw8uOwW7zAwQqQGjVQEA55sHx8do3fVHxJnWF5iAOGNpIMfyp?=
- =?us-ascii?Q?qEa3Trzlp5UL8HpfVNm0iV9Ug9inmyGqu7ixAwVEc3waB585N7fox/kAkR22?=
- =?us-ascii?Q?Q8ekhgjq4M7pJfa0dkOBsgqP7etVGl5nJUZZeBdEp3O/O2SLVY2H83AFTb8R?=
- =?us-ascii?Q?wQwRbQ2HKWkhW7/ENldvkNkUIYsvCD/Yv5KfB5TgzKes/yZ71wU/vdrfmN22?=
- =?us-ascii?Q?u8TOJg5GAUe6mxLAi2V0r2yMegMCkx6ytFaMKDQ4l7wsZ8O5J+VIGsT5tb56?=
- =?us-ascii?Q?+N2lFjXh9FAP4XkGCVymavwuiXb3CXZjbZ70b1J15xq3RVFlcc12ydTgIrOz?=
- =?us-ascii?Q?vOl7dcShy3jhKVZcC0KiYlXjWwqJL57yRVCiM7c9c4bqcJOsJKFmK9L5DC9t?=
- =?us-ascii?Q?AkA5wCA/nQp8WjZlSGflDdsxr8oDE0Akr284ZldWOLc8H4BL7/JdFkss8NB3?=
- =?us-ascii?Q?Za1lzz3XHxnArlYWDMlaLuUh2XOVCxDs+aVxS1NvSHJnZHXRdnRPLeJwZpyy?=
- =?us-ascii?Q?34D6iO9fo37EFMqNJpxh9awHMUyx+GNn/bIGibjCuNLHPBaDCPvPdGZl2nCW?=
- =?us-ascii?Q?cBFJLsLjpBtCOMT8TeFk4T455n+n66H0yUSfEawiCf0dAMfS/RBGCjIXIxXt?=
- =?us-ascii?Q?tCFkpuho1Nx3G6+uXuBqEVUVztmLwHESfQc951P7+baauBdh8MIjEQGadok1?=
- =?us-ascii?Q?8S6eJayXyLJB2l4J64B6vzGDu5ncdJPKGmXV8D17FsGEdDC2lZEx+H90+WeC?=
- =?us-ascii?Q?y5BWPtqV2MrIlxxhqI/eFS0b51UelJvtLD0dSPJa2Yhi7JPEzP0fBdYPC+mt?=
- =?us-ascii?Q?fOCElBURGpi3UAJNfRIcUbRrN+j3E8OwPqXojzD3iNwcPmAx1IKYTND93iLp?=
- =?us-ascii?Q?bg6HS6eeiof+0ftWRWbRtexNUGPehYNE3NIBaX9bxuu0fhRvnbSRjUuaUfq3?=
- =?us-ascii?Q?h4bm+HSOz0twI/3kKsrpouGcsWnw6V7k8+uYi0WpLJR0jhuTsxgzvYjp4ysa?=
- =?us-ascii?Q?i26TtOp8O20bul2+IMwcs26cq3HxQAbI0mhDnpMuAagPU7RFDexA7M4y5DSC?=
- =?us-ascii?Q?PattCDUALXEc3j+dlDJbvv3a8JAkoiw9RmAuCkOTFMDpSN2irtP/LngVfjSW?=
- =?us-ascii?Q?wgjSmiKeE+T4Fp+EzDikwJOUrYi7Nt3MUlTTPckYlzNbCr2hfXJFPfXyCYBb?=
- =?us-ascii?Q?89oqOiTS/H/vPyaoLek4nYn+?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S240245AbhCASiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:38:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233299AbhCAQkQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:40:16 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD13C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 08:39:35 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id z11so26473014lfb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 08:39:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8RorKlKUIwAeZ2vu8I46zt7CBWlrUNEpLpF3jdorkm8=;
+        b=Hx5rm6bgWnW2rzcg2ftQXDvzUq9+b9iZL+48q+8+FVQIhe6LJSSulGtfBsHTS3gkns
+         4oDOY3TvQLXS9UMnfUpKBGeLsmOQoJojGPdx8k3ndakA4m87/EgWxdg5pSOAdnG+g9Bn
+         mzK0T+tRjpSvPlBF/8obIi7KyX0lPLpsKMm6yi+wP4Gx9klCmizayy1TpFqUR4wFLqwi
+         heoKUIkdL09+MasjGb9IM0eI0alY97t9dxVgdKvPxZ9j9ZupH53PSBcQ/g2E9ixxeVTM
+         rEB7rFK05UxoTMMiy78IXLK2TmBvobe9M3FA6wc3TKZg3JyjAUm3L6WIW3u2PniUcELi
+         uVTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8RorKlKUIwAeZ2vu8I46zt7CBWlrUNEpLpF3jdorkm8=;
+        b=uLPe3BfcnH6zOWaABXmFRAti9r4Tmanx7tWU3oz3QO0Arm5szuvi9YeP7tGcyhGN6I
+         vMtdELpyBzCTc9gPdt3Tr1QxgE9GX94I09kSOgOkDmlYX2RmB6EvZqiK6sMMkMGzKsko
+         Jl+As1/MfmA/6CVSvFmSU8sy+GPAbO+9Yes9YcBt0GehRIzkDFcd1k4o0BWLT6qWecE5
+         i3etJegnl4Z7NOoXgnt3r6vhW2965u+azvDvzXiKCR93i+T6p4ksARr3dSeyad+PUncH
+         a5vhFbDUpj3TTiLKXp0AHKxLGfvPAtBsp1V51ybI9DxMrfjn9T8j6WyKapnV1tvUnwfy
+         CCOA==
+X-Gm-Message-State: AOAM533DaA0+pU1QlqbFaX0v2gnKdgX0Cw6lqxkDf0xJl6s5A9RHHrSO
+        /8OaRGm75v2p6jWz6NLB4mfuy+QD2nOmyo4HVnyODA==
+X-Google-Smtp-Source: ABdhPJx0KbzhJIVoM4/GcjChCBVWTV/vBF4C/e1Kdb2FPa+us+EDkJoa0wsgIaAANgRdocbZkBVKQCHsKYU/dtN/IeA=
+X-Received: by 2002:a05:6512:942:: with SMTP id u2mr10175495lft.117.1614616774183;
+ Mon, 01 Mar 2021 08:39:34 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6203128e-d3e1-4147-5cfc-08d8dcd08ef2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2021 16:39:18.1312
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lvv4PDkPOW0T2WfniyxHf9LBObIJ0Z9+n/3sQUAHnQeSpkk1psln493h8yP+KBYgzFhuTSBqaBhG6mlMAxpGzg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7884
+References: <000000000000f1c03b05bc43aadc@google.com> <CALvZod4vGj0P6WKncdKpGaVEb1Ui_fyHm+-hbCJTmbvo43CJ=A@mail.gmail.com>
+ <7b7c4f41-b72e-840f-278a-320b9d97f887@oracle.com> <CALvZod5qODDSxqHqQ=_1roYVGVVvEvP3FnYMnAPQZgvUjxotsw@mail.gmail.com>
+ <YDzaAWK41K4gD35V@dhcp22.suse.cz> <CALvZod4DqOkrJG+7dki=VfzHD1z9jD3XhObpk887zKy=kEk1tA@mail.gmail.com>
+ <YD0OzXTmYm8M58Vo@dhcp22.suse.cz>
+In-Reply-To: <YD0OzXTmYm8M58Vo@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 1 Mar 2021 08:39:22 -0800
+Message-ID: <CALvZod789kHFAjWA8W7=r2=YxJ86uc4WhfgW1juN_YEMCApgqw@mail.gmail.com>
+Subject: Re: possible deadlock in sk_clone_lock
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        syzbot <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Mina Almasry <almasrymina@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-> -----Original Message-----
-> From: Mark Brown <broonie@kernel.org>
-> Sent: Monday, March 1, 2021 6:56 PM
-> To: Kuldeep Singh <kuldeep.singh@nxp.com>
-> Cc: linux-spi@vger.kernel.org; linux-kernel@vger.kernel.org; Ashish Kumar
-> <ashish.kumar@nxp.com>; Han Xu <han.xu@nxp.com>
-> Subject: [EXT] Re: [PATCH 2/3] spi: spi-nxp-fspi: Add driver support for =
-imx8dxl
->=20
-> On Mon, Mar 01, 2021 at 04:02:29PM +0530, Kuldeep Singh wrote:
->=20
-> > This patch is dependent on
-> > https://patchwork.kernel.org/project/spi-devel-general/patch/161459304
-> > 6-23832-1-git-send-email-kuldeep.singh@nxp.com/
->=20
-> Please include human readable descriptions of things like commits and iss=
-ues
-> being discussed in e-mail in your mails, this makes them much easier for
-> humans to read especially when they have no internet access.
-> I do frequently catch up on my mail on flights or while otherwise travell=
-ing so
-> this is even more pressing for me than just being about making things a b=
-it
-> easier to read.
->=20
-> That's a DT binding YAML conversion patch, why would there be a
-> dependency on it?
-
-I have converted bindings to yaml version in the patch and also added imx8d=
-xl compatible along-with the conversion. Please see the difference in compa=
-tible entries from txt to yaml conversion[1].
-Kindly let me know do I need to submit different patch for adding new compa=
-tible or ok to include in the conversion patch itself?
-
-[1]
-Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
-+properties:
-+  compatible:
-+    enum:
-+      - nxp,lx2160a-fspi
-+      - nxp,imx8qxp-fspi
-+      - nxp,imx8mm-fspi
-+      - nxp,imx8dxl-fspi
-
-Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
--Required properties:
--  - compatible : Should be "nxp,lx2160a-fspi"
--			    "nxp,imx8qxp-fspi"
--			    "nxp,imx8mm-fspi"
-
->=20
+On Mon, Mar 1, 2021 at 7:57 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 01-03-21 07:10:11, Shakeel Butt wrote:
+> > On Mon, Mar 1, 2021 at 4:12 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 26-02-21 16:00:30, Shakeel Butt wrote:
+> > > > On Fri, Feb 26, 2021 at 3:14 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> > > > >
+> > > > > Cc: Michal
+> > > > >
+> > > > > On 2/26/21 2:44 PM, Shakeel Butt wrote:
+> > > > > > On Fri, Feb 26, 2021 at 2:09 PM syzbot
+> > > > > > <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com> wrote:
+> > > > > <snip>
+> > > > > >> other info that might help us debug this:
+> > > > > >>
+> > > > > >>  Possible interrupt unsafe locking scenario:
+> > > > > >>
+> > > > > >>        CPU0                    CPU1
+> > > > > >>        ----                    ----
+> > > > > >>   lock(hugetlb_lock);
+> > > > > >>                                local_irq_disable();
+> > > > > >>                                lock(slock-AF_INET);
+> > > > > >>                                lock(hugetlb_lock);
+> > > > > >>   <Interrupt>
+> > > > > >>     lock(slock-AF_INET);
+> > > > > >>
+> > > > > >>  *** DEADLOCK ***
+> > > > > >
+> > > > > > This has been reproduced on 4.19 stable kernel as well [1] and there
+> > > > > > is a reproducer as well.
+> > > > > >
+> > > > > > It seems like sendmsg(MSG_ZEROCOPY) from a buffer backed by hugetlb. I
+> > > > > > wonder if we just need to make hugetlb_lock softirq-safe.
+> > > > > >
+> > > > > > [1] https://syzkaller.appspot.com/bug?extid=6383ce4b0b8ec575ad93
+> > > > >
+> > > > > Thanks Shakeel,
+> > > > >
+> > > > > Commit c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in non-task
+> > > > > context") attempted to address this issue.  It uses a work queue to
+> > > > > acquire hugetlb_lock if the caller is !in_task().
+> > > > >
+> > > > > In another recent thread, there was the suggestion to change the
+> > > > > !in_task to in_atomic.
+> > > > >
+> > > > > I need to do some research on the subtle differences between in_task,
+> > > > > in_atomic, etc.  TBH, I 'thought' !in_task would prevent the issue
+> > > > > reported here.  But, that obviously is not the case.
+> > > >
+> > > > I think the freeing is happening in the process context in this report
+> > > > but it is creating the lock chain from softirq-safe slock to
+> > > > irq-unsafe hugetlb_lock. So, two solutions I can think of are: (1)
+> > > > always defer the freeing of hugetlb pages to a work queue or (2) make
+> > > > hugetlb_lock softirq-safe.
+> > >
+> > > There is __do_softirq so this should be in the soft IRQ context no?
+> > > Is this really reproducible with kernels which have c77c0a8ac4c5
+> > > applied?
 > >
-> >  drivers/spi/spi-nxp-fspi.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
->=20
-> This needs a DT binding update adding the new compatible.
+> > Yes this is softirq context and syzbot has reproduced this on
+> > linux-next 20210224.
+>
+> Then how come this can ever be a problem? in_task() should exclude soft
+> irq context unless I am mistaken.
+>
 
-Please see above for comments.
+If I take the following example of syzbot's deadlock scenario then
+CPU1 is the one freeing the hugetlb pages. It is in the process
+context but has disabled softirqs (see __tcp_close()).
 
-Thanks
-Kuldeep
+        CPU0                    CPU1
+        ----                    ----
+   lock(hugetlb_lock);
+                                local_irq_disable();
+                                lock(slock-AF_INET);
+                                lock(hugetlb_lock);
+   <Interrupt>
+     lock(slock-AF_INET);
+
+So, this deadlock scenario is very much possible.
