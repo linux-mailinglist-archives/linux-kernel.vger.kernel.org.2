@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC99328130
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31411328133
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236515AbhCAOpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:45:10 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:42953 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236463AbhCAOpE (ORCPT
+        id S236524AbhCAOpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:45:22 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:45772 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236497AbhCAOpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:45:04 -0500
-Received: by mail-oi1-f174.google.com with SMTP id l64so18222221oig.9;
-        Mon, 01 Mar 2021 06:44:48 -0800 (PST)
+        Mon, 1 Mar 2021 09:45:06 -0500
+Received: by mail-ot1-f43.google.com with SMTP id d9so16610291ote.12;
+        Mon, 01 Mar 2021 06:44:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=PKi7bPCvLLJYTrOHV7hFTTu/5jhFGP5klWwVnr6aieA=;
-        b=DlbcMpf1w1ALcKDnNlSPFbKh3MnQIIbv+kXu5mYw/nZvyVpFVE4s48FLydh5Ss65mK
-         +umm9DIYyjtAvYPV3gwm8N9qWDhwnTFcenRec0BcRMZfvRr2OqrThLSqteBk7FdsVI6h
-         mERbSfA5ZI4dRH3qJKrUeUrRnPVNjil/AR3WYkqfxyEO3XczdCC6NSC1AU1Gn+Hxj/Vx
-         dlezBBXX0fURqeGQSAz1tixDNqSNrI7kjahtXCVngdcxAQufi5M2UMY5BfmyhTE3zuSq
-         +hiE0TonCxhwZ9PApd5hPlvaRy7InvNgZw1enNz74k/TeOqnC/iwpyP6oyhD7MdXNvxK
-         r51g==
-X-Gm-Message-State: AOAM5338mSGdxCUIlkdiNEUBbfQWY95QDH7kw0KzfCUIiiTwjob4LlIT
-        uZT1s7Njfs1Xe/DnF92dPg==
-X-Google-Smtp-Source: ABdhPJz46z7d74LZoVxgX9NXWDklqW6EA0EXTh0H73eMk1VHLAMfqSG+D8d8AdmHSpqh1RU04a/wQw==
-X-Received: by 2002:a05:6808:1383:: with SMTP id c3mr11689377oiw.153.1614609862895;
-        Mon, 01 Mar 2021 06:44:22 -0800 (PST)
+        bh=n+0MRcMClqJTsWrqj7q8LaJFXf/RAofYD+19AKoxa9k=;
+        b=siTM3F1Pc+BwWqlPBSn5muFLzB1ijqmQvU3Sn0RGImfzPDKDIbeYlrvydLKzxhIwAX
+         4NlqMM6DDAH9NBOVIy2clROMcRrvFD5nTAaX0EYc/NmLQcnwJO9LkU3+BPz0LCDxlfcv
+         3MOSeLgHUhbQ+SzMa1hThISQLgx63770/QcHg9TANhB5aQGxgujlpHjyPgLjR7qXj04F
+         4aEkS/LYS0dQvnXixoOe4i+dWd/9zyBG8zQWcGq8VEZJ2GkJkvEuw1Q77tvn3hj4lU+Z
+         fmP6W/k3jJ6rTOxLcXrIS7tk703P3GvItpVvEq6VLOHbQtrBoH7q5z4PI5HM6+HId5jE
+         GITQ==
+X-Gm-Message-State: AOAM533TxNhSjcbobA1CobcFXnZnfRARgXLUcpj18n+srjC+ahEgFpQR
+        26jlL2S1G7oh+2Evte79hAa3w1cx2A==
+X-Google-Smtp-Source: ABdhPJw3jjWkOsGOY59hbdzMvTj3pbAFkeKJLNy80BCa5WC9ZAQ/y8+VIkj4i1SdIGQi6uhwlE8w2A==
+X-Received: by 2002:a05:6830:4129:: with SMTP id w41mr13999061ott.332.1614609865079;
+        Mon, 01 Mar 2021 06:44:25 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id i20sm1878550otf.17.2021.03.01.06.44.21
+        by smtp.gmail.com with ESMTPSA id h38sm3680265oth.53.2021.03.01.06.44.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 06:44:22 -0800 (PST)
-Received: (nullmailer pid 37859 invoked by uid 1000);
+        Mon, 01 Mar 2021 06:44:24 -0800 (PST)
+Received: (nullmailer pid 37864 invoked by uid 1000);
         Mon, 01 Mar 2021 14:44:21 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, kgunda@codeaurora.org,
-        rnayak@codeaurora.org, devicetree@vger.kernel.org
-In-Reply-To: <1614155592-14060-2-git-send-email-skakit@codeaurora.org>
-References: <1614155592-14060-1-git-send-email-skakit@codeaurora.org> <1614155592-14060-2-git-send-email-skakit@codeaurora.org>
-Subject: Re: [PATCH 1/7] dt-bindings: regulator: Convert regulator bindings to YAML format
+To:     Kuldeep Singh <kuldeep.singh@nxp.com>
+Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ashish Kumar <ashish.kumar@nxp.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+In-Reply-To: <1614593046-23832-1-git-send-email-kuldeep.singh@nxp.com>
+References: <1614593046-23832-1-git-send-email-kuldeep.singh@nxp.com>
+Subject: Re: [PATCH] dt-bindings: spi: Convert NXP flexspi to json schema
 Date:   Mon, 01 Mar 2021 08:44:21 -0600
-Message-Id: <1614609861.067266.37858.nullmailer@robh.at.kernel.org>
+Message-Id: <1614609861.083844.37863.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Feb 2021 14:03:06 +0530, satya priya wrote:
-> Convert regulator bindings from .txt to .yaml format.
+On Mon, 01 Mar 2021 15:34:06 +0530, Kuldeep Singh wrote:
+> Convert the NXP FlexSPI binding to DT schema format using json-schema.
+> Also, update MAINTAINERS to reflect the change.
 > 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
+> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
 > ---
->  .../bindings/regulator/qcom,rpmh-regulator.txt     | 180 ---------------------
->  .../bindings/regulator/qcom,rpmh-regulator.yaml    | 147 +++++++++++++++++
->  2 files changed, 147 insertions(+), 180 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+>  .../bindings/spi/nxp,spi-nxp-fspi.yaml        | 101 ++++++++++++++++++
+>  .../devicetree/bindings/spi/spi-nxp-fspi.txt  |  42 --------
+>  MAINTAINERS                                   |   2 +-
+>  3 files changed, 102 insertions(+), 43 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:13:5: [warning] wrong indentation: expected 2 but found 4 (indentation)
-./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:48:5: [warning] wrong indentation: expected 2 but found 4 (indentation)
-./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:49:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
-./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:50:13: [warning] wrong indentation: expected 10 but found 12 (indentation)
-./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:64:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
-./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:69:9: [warning] wrong indentation: expected 6 but found 8 (indentation)
-./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:83:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
-./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:89:6: [warning] wrong indentation: expected 6 but found 5 (indentation)
-./Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml:95:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
 
 dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml: properties:clocks:maxItems: False schema does not allow 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml: ignoring, error in schema: properties: clocks: maxItems
+warning: no schema found in file: ./Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
+Error: Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.example.dts:26.31-32 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:349: Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.example.dt.yaml] Error 1
+make: *** [Makefile:1380: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1443748
+See https://patchwork.ozlabs.org/patch/1445509
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
