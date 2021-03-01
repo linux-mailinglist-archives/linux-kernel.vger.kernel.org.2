@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9512327E03
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77F0327E08
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhCAMOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:14:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38358 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233678AbhCAMOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:14:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614600803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LWX81NIq8f0HTlR41F5ulW5ntyY1umPX6Os1jeLcYFM=;
-        b=gc7eXgRA/Xx5chcA0AF7OhdTuhhQSZOlXMDwi64gv4faa+qK6VmoTL261F9SMvxlIAeKrw
-        dNTT2UM1I3EwF8Z53er9Q3dLXo4UgBlrF9mW7FMazfDGE9CCF+qFe53tGa/526leU//SCT
-        5EdgRfsqvfqwPkp5urITZeZfz/8qr9w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 659CEADCA;
-        Mon,  1 Mar 2021 12:13:23 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 13:13:22 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH next v3 02/15] mtd: mtdoops: synchronize kmsg_dumper
-Message-ID: <YDzaYqrk3Dv37uDa@alley>
-References: <20210225202438.28985-1-john.ogness@linutronix.de>
- <20210225202438.28985-3-john.ogness@linutronix.de>
+        id S233724AbhCAMPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233429AbhCAMOr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 07:14:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1734FC061788;
+        Mon,  1 Mar 2021 04:14:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=I5VnGAaPxZ0y2ywJ0sQMfHrbJRwx3BFwKw9Ug1bzDd8=; b=PCA1Ce/XsJA09ZivVvyVlxo0RN
+        RYEsoAuPxwIKJ2Xnvvy2vKMxwuN2vtSd+mp/xx83U9BAke+uHJdhWmUmDRSAPAPnF1xGgW9y4AhAy
+        33GWt/MxYyfQoCkJzIiUon76k9ARKbyvxfHjaMQ/tgfVoDQzDESvIWtTp8blGEUepP1IB9qVsRxdx
+        1YhRK0E7QT14vtzqyyHh0VfZd84Nay7uCBEpNBmvn8TbXlqk1v0p+d30/M/xgbGgn+OYm2hbM51gP
+        YKAiZmFwPbRxmm1Ah63LHnZ8wsL35lQ51sOCw5s39QqR5xZ3cugRTaQV8iEfEMUELJqntdRwFaw6u
+        1zkSRBvw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lGhQk-00Fgq1-Pw; Mon, 01 Mar 2021 12:13:51 +0000
+Date:   Mon, 1 Mar 2021 12:13:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Pintu Kumar <pintu@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, jaewon31.kim@samsung.com,
+        yuzhao@google.com, shakeelb@google.com, guro@fb.com,
+        mchehab+huawei@kernel.org, xi.fengfei@h3c.com,
+        lokeshgidra@google.com, hannes@cmpxchg.org, nigupta@nvidia.com,
+        famzheng@amazon.com, andrew.a.klychkov@gmail.com,
+        bigeasy@linutronix.de, ping.ping@gmail.com, vbabka@suse.cz,
+        yzaikin@google.com, keescook@chromium.org, mcgrof@kernel.org,
+        corbet@lwn.net, pintu.ping@gmail.com
+Subject: Re: [PATCH] mm: introduce clear all vm events counters
+Message-ID: <20210301121342.GP2723601@casper.infradead.org>
+References: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210225202438.28985-3-john.ogness@linutronix.de>
+In-Reply-To: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-02-25 21:24:25, John Ogness wrote:
-> The kmsg_dumper can be called from any context and CPU, possibly
-> from multiple CPUs simultaneously. Since the writing of the buffer
-> can occur from a later scheduled work queue, the oops buffer must
-> be protected against simultaneous dumping.
-> 
-> Use an atomic bit to mark when the buffer is protected. Release the
-> protection in between setting the buffer and the actual writing in
-> order for a possible panic (immediate write) to be written during
-> the scheduling of a previous oops (delayed write).
+On Mon, Mar 01, 2021 at 04:19:26PM +0530, Pintu Kumar wrote:
+> +EXPORT_SYMBOL_GPL(clear_all_vm_events);
 
-Just to be sure. You did not use spin lock to prevent problems
-with eventual double unlock in panic(). Do I get it correctly,
-please?
-
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-
-Anyway, it looks good to me.
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-Best Regards,
-Petr
+What module uses this function?
