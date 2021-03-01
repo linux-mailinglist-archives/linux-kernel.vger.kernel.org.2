@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA97329911
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F5B329910
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347183AbhCAXwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:52:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39426 "EHLO mail.kernel.org"
+        id S1347173AbhCAXwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:52:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239689AbhCASS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239690AbhCASS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 13:18:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD0F66520F;
-        Mon,  1 Mar 2021 17:22:12 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B291E6505F;
+        Mon,  1 Mar 2021 17:22:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619333;
-        bh=z/7LLfz4oo1S+fF4fsqYuweOUaU2WwPNetwqDNCj7r4=;
+        s=korg; t=1614619377;
+        bh=ti2nkFNhuDh1GQ9wFtzWqM+BIk4OE9m+OR3PDoFkwnk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gao1sD5nBcRzO1Ab1vaa9SYZsuw4dDA2OWVsq8Ql2Mlzd4qpcr/niiE+dQsOT1x2J
-         Rv0uNicvd9zwjwbkRZae2bE7vEaKHxKV8YGx/XiJYiXJX4iXpOpEtyna6GtCdwZ557
-         FO5gc3vZsDtAVEhCeTCh7TEdKu5XwxoyPG+8jeSo=
+        b=Rg35Nm9iSP3c7Ll09KqlrGoor6lRL8pt3xFXf5XPJ76mECVXWIcMR+kf/ME1o7IHu
+         NmujPcHTN//lrBUebdAoF6UHRyhKvZdgufk3uMBgaDLReceZ9nHJOlOXaq13zzXL65
+         4rKY1rdO/+8HW52qKps6BVeF5hAJQONKLEClKAYA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 416/663] vfio-pci/zdev: fix possible segmentation fault issue
-Date:   Mon,  1 Mar 2021 17:11:04 +0100
-Message-Id: <20210301161202.456721402@linuxfoundation.org>
+Subject: [PATCH 5.10 433/663] PCI: cadence: Fix DMA range mapping early return error
+Date:   Mon,  1 Mar 2021 17:11:21 +0100
+Message-Id: <20210301161203.314157157@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,44 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Gurtovoy <mgurtovoy@nvidia.com>
+From: Krzysztof Wilczyński <kw@linux.com>
 
-[ Upstream commit 7e31d6dc2c78b2a0ba0039ca97ca98a581e8db82 ]
+[ Upstream commit 1002573ee33efef0988a9a546c075a9fa37d2498 ]
 
-In case allocation fails, we must behave correctly and exit with error.
+Function cdns_pcie_host_map_dma_ranges() iterates over a PCIe host bridge
+DMA ranges using the resource_list_for_each_entry() iterator, returning an
+error if cdns_pcie_host_bar_config() fails.
 
-Fixes: e6b817d4b821 ("vfio-pci/zdev: Add zPCI capabilities to VFIO_DEVICE_GET_INFO")
-Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+49e427e6bdd1 ("Merge branch 'pci/host-probe-refactor'") botched a merge so
+it *always* returned after the first DMA range, even if no error occurred.
+
+Fix the error checking so we return early only when an error occurs.
+
+[bhelgaas: commit log]
+Fixes: 49e427e6bdd1 ("Merge branch 'pci/host-probe-refactor'")
+Link: https://lore.kernel.org/r/20210216205935.3112661-1-kw@linux.com
+Signed-off-by: Krzysztof Wilczyński <kw@linux.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci_zdev.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/pci/controller/cadence/pcie-cadence-host.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci_zdev.c b/drivers/vfio/pci/vfio_pci_zdev.c
-index 2296856340311..1bb7edac56899 100644
---- a/drivers/vfio/pci/vfio_pci_zdev.c
-+++ b/drivers/vfio/pci/vfio_pci_zdev.c
-@@ -74,6 +74,8 @@ static int zpci_util_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
- 	int ret;
+diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+index 811c1cb2e8deb..1cb7cfc75d6e4 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence-host.c
++++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+@@ -321,9 +321,10 @@ static int cdns_pcie_host_map_dma_ranges(struct cdns_pcie_rc *rc)
  
- 	cap = kmalloc(cap_size, GFP_KERNEL);
-+	if (!cap)
-+		return -ENOMEM;
+ 	resource_list_for_each_entry(entry, &bridge->dma_ranges) {
+ 		err = cdns_pcie_host_bar_config(rc, entry);
+-		if (err)
++		if (err) {
+ 			dev_err(dev, "Fail to configure IB using dma-ranges\n");
+-		return err;
++			return err;
++		}
+ 	}
  
- 	cap->header.id = VFIO_DEVICE_INFO_CAP_ZPCI_UTIL;
- 	cap->header.version = 1;
-@@ -98,6 +100,8 @@ static int zpci_pfip_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
- 	int ret;
- 
- 	cap = kmalloc(cap_size, GFP_KERNEL);
-+	if (!cap)
-+		return -ENOMEM;
- 
- 	cap->header.id = VFIO_DEVICE_INFO_CAP_ZPCI_PFIP;
- 	cap->header.version = 1;
+ 	return 0;
 -- 
 2.27.0
 
