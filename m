@@ -2,150 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68923327624
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 03:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F67A32762E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 03:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhCACqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 21:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58034 "EHLO
+        id S231549AbhCACtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 21:49:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231833AbhCACp7 (ORCPT
+        with ESMTP id S230386AbhCACtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 21:45:59 -0500
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B77C06174A;
-        Sun, 28 Feb 2021 18:45:18 -0800 (PST)
-Received: by mail-qv1-xf2d.google.com with SMTP id cw15so6734677qvb.11;
-        Sun, 28 Feb 2021 18:45:18 -0800 (PST)
+        Sun, 28 Feb 2021 21:49:02 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78958C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 18:48:22 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id l7so6284863pfd.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 18:48:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=i3RUk30ykIg813PhDPfClgxpavudFjgIE8k7yntSSP0=;
-        b=DjmA8VDvFrsn8iXdNqiZCrwvJrxZ89+xuCzSyzsKcHf04Jl/MrLfHWwb/DgBH00rO5
-         L3WJuXYqIl3ZKbPJgYjlYKOxlmorczUeUFKlZaH2YhRyV4ZPWv2cHbj8Duzu+ubBAl9n
-         cu+lpHARuvwQiwCsphZ5qjP3JV4OSQFlCnmtLEkYlK1MWLPxda4TPU1XDp+zlXw5vT/g
-         1blibaILqFgywxpJnKfeNklUNdY8MT2hkAGPSWaE3qB+aRco/ee4HqJnMtg6WdKpuVhG
-         /QMR/bWfhVCZOkNprS+WCjfUpCvh/X7ktPMHx1hUDPgDIs4/nyDb8wbW0Ih6kpj2V6sZ
-         hz+w==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=sdgzUIE11pldyAg1VjJepNZ8mbZ+IeKDZWhB9JOwN+g=;
+        b=F4O+G0K8h3RcObdvgNunIQn7Oj3rs66YxZ6WW4Jyx9OGFJRzSMHoUBSMER0tWUauhh
+         i7mN1JXXa8/k2RM/MeYyAkHa/shdyg3CQbYiGrZmmDlrEuGYKov3kjHrmNlpG3nFSDVE
+         wZiUV3LIkZKv9hAqLSiMx2PV8H+JKclbCaltrjkTYMf/vX5+IG1aLTRBHAAhRnbalCQe
+         v/Mfh+o1SnzPQMEZmlaNmDixV8qrZxQKuQCu8mSqWBuyV/nHLEImHfv83LFmZIH4jdEs
+         gq/eMNuky1uD6cN6o9qtmXFED+uMo1prKbJY+4NawFfB0GtOgMKxZrafIEbtaTChlc/N
+         7nrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=i3RUk30ykIg813PhDPfClgxpavudFjgIE8k7yntSSP0=;
-        b=Gy2dpwXBxNG/9hHwSugaEgzR9iYLfs+1lE/fSZO3Pz7yDtm1Q+50LTYle1c3/dOYXu
-         1A7sZ2XzUl0DOkpNJKXigY2ly0vqNlIcfoeRicRJ7uHkGJ7KKfEE5Nf8mnE+OUqP6YZ4
-         BhiXimMV8Oemvs71h22zsO7KL5tLHrjJOAOUhKmsHrelOWbsFUVmztecQbanCGYszmyw
-         v4aatoep0jPewHWS4ErwU1UD69cSu0jyfP6DCQNv2Kh6p++9Xc87djCvMBF6vMgfVSAT
-         fSf0vXDfN4RAi6Q8/kLKhKEctBbq80aTzFe/O8YmyLpbZms3J6UXjMjfxfXes/ZN+VM/
-         Vn1g==
-X-Gm-Message-State: AOAM533JeOzks97TG/7kSaOgd8E+TTlpsLXrjaF2yAa05eiMr1BTofF9
-        UzOqP7FiIPjDVAOfB6swvpHQ6LexCWsDew==
-X-Google-Smtp-Source: ABdhPJwRwDQyJUDK4PbtI4Ec3MPStxzu5SaPsooJ9Xc0DKW8MtvvX3+JomDK3l2NY3SrgpAuhnh9uQ==
-X-Received: by 2002:a0c:8c87:: with SMTP id p7mr12959756qvb.46.1614566718155;
-        Sun, 28 Feb 2021 18:45:18 -0800 (PST)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:1d59:a36:514:a21])
-        by smtp.googlemail.com with ESMTPSA id e1sm11949958qkf.99.2021.02.28.18.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Feb 2021 18:45:17 -0800 (PST)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tong Zhang <ztong0001@gmail.com>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] can: c_can_pci: fix use-after-free
-Date:   Sun, 28 Feb 2021 21:45:11 -0500
-Message-Id: <20210301024512.539039-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=sdgzUIE11pldyAg1VjJepNZ8mbZ+IeKDZWhB9JOwN+g=;
+        b=LxE/cmk/++7L/7GD/xNp2xW68Pk/bClRf2HXdeL3/F8gDkferCmiaEVBZ0Tcam/ff5
+         jP9Ha4xZjNSlB+2OvZhHpbHV9LRk9oPKptrWrH2Uu8HdVd0zBlAmeA0mjIVNsNTo5iG3
+         CRJu9f1BdP8g7SqBZrBhtjlrgbVm1tBL8Ja0767rnVWj82Lfm0sLqTrDZ7lpaMAmW0en
+         WQmTVIl4tnvt5p7i77ee26fb0yYohbxrxce1vFHVzeulNTgI4crAAuu7gAwlgohrF2/i
+         kG9YgqGhp9C2ReHEen2QjamHCj8ts/RCmwHuzjhXt/UjOX9iMUHQH4CGQD7NOnBd5V3t
+         9Lsw==
+X-Gm-Message-State: AOAM531yV/6JOStVTUV+RpZcQxARVPoI7ghloFKwt6tMUnmF5K1bpK49
+        ZPcyFzMNtLDDA8k4I28kfKAI2A==
+X-Google-Smtp-Source: ABdhPJx8AKjQ0GL3k7Jzo9eC7CYUBfD4gO4jiqADsb6yGiZj4fEYDAz6uEJy2vMbKdToZeYOU3VtAg==
+X-Received: by 2002:a63:cd08:: with SMTP id i8mr11861442pgg.49.1614566901747;
+        Sun, 28 Feb 2021 18:48:21 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id n184sm5645949pfd.205.2021.02.28.18.48.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Feb 2021 18:48:21 -0800 (PST)
+Subject: =?UTF-8?B?UmU6IOWbnuWkjTogcG9zc2libGUgZGVhZGxvY2sgaW4gaW9fcG9sbF9k?=
+ =?UTF-8?Q?ouble=5fwake_=282=29?=
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
+        syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>,
+        "asml.silence@gmail.com" <asml.silence@gmail.com>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
+References: <000000000000e61a7605bc5ac540@google.com>
+ <900e27f3-6503-ed03-4c58-ccc946df7a6a@kernel.dk>
+ <BYAPR11MB26323CD476CC8CE34E31AC6DFF9A9@BYAPR11MB2632.namprd11.prod.outlook.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6a210838-9ffa-5053-29f7-486c8c65f792@kernel.dk>
+Date:   Sun, 28 Feb 2021 19:48:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <BYAPR11MB26323CD476CC8CE34E31AC6DFF9A9@BYAPR11MB2632.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=gbk
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a UAF in c_can_pci_remove().
-dev is released by free_c_can_dev() and is used by
-pci_iounmap(pdev, priv->base) later.
-To fix this issue, save the mmio address before releasing dev.
+On 2/28/21 7:08 PM, Zhang, Qiang wrote:
+> 
+> 
+> ________________________________________
+> 发件人: Jens Axboe <axboe@kernel.dk>
+> 发送时间: 2021年3月1日 7:08
+> 收件人: syzbot; asml.silence@gmail.com; io-uring@vger.kernel.org; linux-fsdevel@vger.kernel.org; linux-kernel@vger.kernel.org; syzkaller-bugs@googlegroups.com; viro@zeniv.linux.org.uk
+> 主题: Re: possible deadlock in io_poll_double_wake (2)
+> 
+> [Please note: This e-mail is from an EXTERNAL e-mail address]
+> 
+> On 2/27/21 5:42 PM, syzbot wrote:
+>> syzbot has found a reproducer for the following issue on:
+>>
+>> HEAD commit:    5695e516 Merge tag 'io_uring-worker.v3-2021-02-25' of git:..
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=114e3866d00000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=8c76dad0946df1f3
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=28abd693db9e92c160d8
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122ed9b6d00000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d5a292d00000
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com
+>>
+>> ============================================
+>> WARNING: possible recursive locking detected
+>> 5.11.0-syzkaller #0 Not tainted
+>> --------------------------------------------
+>> swapper/1/0 is trying to acquire lock:
+>> ffff88801b2b1130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+>> ffff88801b2b1130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4960
+>>
+>> but task is already holding lock:
+>> ffff88801b2b3130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+>>
+>> other info that might help us debug this:
+>>  Possible unsafe locking scenario:
+>>
+>>        CPU0
+>>        ----
+>>   lock(&runtime->sleep);
+>>   lock(&runtime->sleep);
+>>
+>>  *** DEADLOCK ***
+>>
+>>  May be due to missing lock nesting notation
+>>
+>> 2 locks held by swapper/1/0:
+>>  #0: ffff888147474908 (&group->lock){..-.}-{2:2}, at: _snd_pcm_stream_lock_irqsave+0x9f/0xd0 sound/core/pcm_native.c:170
+>>  #1: ffff88801b2b3130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+>>
+>> stack backtrace:
+>> CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.11.0-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> Call Trace:
+>>  <IRQ>
+>>  __dump_stack lib/dump_stack.c:79 [inline]
+>>  dump_stack+0xfa/0x151 lib/dump_stack.c:120
+>>  print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
+>>  check_deadlock kernel/locking/lockdep.c:2872 [inline]
+>>  validate_chain kernel/locking/lockdep.c:3661 [inline]
+>>  __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4900
+>>  lock_acquire kernel/locking/lockdep.c:5510 [inline]
+>>  lock_acquire+0x1ab/0x730 kernel/locking/lockdep.c:5475
+>>  __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+>>  _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+>>  spin_lock include/linux/spinlock.h:354 [inline]
+>>  io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4960
+>>  __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
+>>  __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
+>>  snd_pcm_update_state+0x46a/0x540 sound/core/pcm_lib.c:203
+>>  snd_pcm_update_hw_ptr0+0xa75/0x1a50 sound/core/pcm_lib.c:464
+>>  snd_pcm_period_elapsed+0x160/0x250 sound/core/pcm_lib.c:1805
+>>  dummy_hrtimer_callback+0x94/0x1b0 sound/drivers/dummy.c:378
+>>  __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+>>  __hrtimer_run_queues+0x609/0xe40 kernel/time/hrtimer.c:1583
+>>  hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
+>>  __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
+>>  invoke_softirq kernel/softirq.c:221 [inline]
+>>  __irq_exit_rcu kernel/softirq.c:422 [inline]
+>>  irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
+>>  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
+>>  </IRQ>
+>>  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
+>> RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
+>> RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:70 [inline]
+>> RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:137 [inline]
+>> RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
+>> RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:516
+>> Code: dd 38 6e f8 84 db 75 ac e8 54 32 6e f8 e8 0f 1c 74 f8 e9 0c 00 00 00 e8 45 32 6e f8 0f 00 2d 4e 4a c5 00 e8 39 32 6e f8 fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 14 3a 6e f8 48 85 db
+>> RSP: 0018:ffffc90000d47d18 EFLAGS: 00000293
+>> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+>> RDX: ffff8880115c3780 RSI: ffffffff89052537 RDI: 0000000000000000
+>> RBP: ffff888141127064 R08: 0000000000000001 R09: 0000000000000001
+>> R10: ffffffff81794168 R11: 0000000000000000 R12: 0000000000000001
+>> R13: ffff888141127000 R14: ffff888141127064 R15: ffff888143331804
+>>  acpi_idle_enter+0x361/0x500 drivers/acpi/processor_idle.c:647
+>>  cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
+>>  cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
+>>  call_cpuidle kernel/sched/idle.c:158 [inline]
+>>  cpuidle_idle_call kernel/sched/idle.c:239 [inline]
+>>  do_idle+0x3e1/0x590 kernel/sched/idle.c:300
+>>  cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:397
+>>  start_secondary+0x274/0x350 arch/x86/kernel/smpboot.c:272
+>>  secondary_startup_64_no_verify+0xb0/0xbb
+> 
+>> This looks very odd, only thing I can think of is someone >doing
+>> poll_wait() twice with different entries but for the same
+>> waitqueue head.
+>>
+> 
+> Hello  Jens Axboe
+> 
+> here poll_wait() twice in waitqueue head 'runtime->sleep'
+> in sound/core/oss/pcm_oss.c
+> 
+> static __poll_t snd_pcm_oss_poll(struct file *file, poll_table * wait) {
+> ...........
+>         if (psubstream != NULL) {
+>                 struct snd_pcm_runtime *runtime = psubstream->runtime;
+>                 poll_wait(file, &runtime->sleep, wait);
+>                 snd_pcm_stream_lock_irq(psubstream);
+>                 if (runtime->status->state != SNDRV_PCM_STATE_DRAINING &&
+>                     (runtime->status->state != SNDRV_PCM_STATE_RUNNING ||
+>                      snd_pcm_oss_playback_ready(psubstream)))
+>                         mask |= EPOLLOUT | EPOLLWRNORM;
+>                 snd_pcm_stream_unlock_irq(psubstream);
+>         }
+>         if (csubstream != NULL) {
+>                 struct snd_pcm_runtime *runtime = csubstream->runtime;
+>                 snd_pcm_state_t ostate;
+>                 poll_wait(file, &runtime->sleep, wait);
+>                 snd_pcm_stream_lock_irq(csubstream);
+> ..........
+> }
+> 
+>  I don't know if there are any other drivers that use the same way ,   can add some judgment in io_poll_double_wake()?
 
-[ 1795.746699] ==================================================================
-[ 1795.747093] BUG: KASAN: use-after-free in c_can_pci_remove+0x34/0x70 [c_can_pci]
-[ 1795.747503] Read of size 8 at addr ffff888103db0be8 by task modprobe/98
-[ 1795.747867]
-[ 1795.747957] CPU: 0 PID: 98 Comm: modprobe Not tainted 5.11.0-11746-g06d5d309a3f1-dirty #56
-[ 1795.748410] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-4
-[ 1795.749025] Call Trace:
-[ 1795.749176]  dump_stack+0x8a/0xb5
-[ 1795.749385]  print_address_description.constprop.0+0x1a/0x140
-[ 1795.749713]  ? c_can_pci_remove+0x34/0x70 [c_can_pci]
-[ 1795.750001]  ? c_can_pci_remove+0x34/0x70 [c_can_pci]
-[ 1795.750285]  kasan_report.cold+0x7f/0x111
-[ 1795.750513]  ? c_can_pci_remove+0x34/0x70 [c_can_pci]
-[ 1795.750797]  c_can_pci_remove+0x34/0x70 [c_can_pci]
-[ 1795.751071]  pci_device_remove+0x62/0xe0
-[ 1795.751308]  device_release_driver_internal+0x148/0x270
-[ 1795.751609]  driver_detach+0x76/0xe0
-[ 1795.751812]  bus_remove_driver+0x7e/0x100
-[ 1795.752051]  pci_unregister_driver+0x28/0xf0
-[ 1795.752286]  __x64_sys_delete_module+0x268/0x300
-[ 1795.752547]  ? __ia32_sys_delete_module+0x300/0x300
-[ 1795.752815]  ? call_rcu+0x3e4/0x580
-[ 1795.753014]  ? fpregs_assert_state_consistent+0x4d/0x60
-[ 1795.753305]  ? exit_to_user_mode_prepare+0x2f/0x130
-[ 1795.753574]  do_syscall_64+0x33/0x40
-[ 1795.753782]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[ 1795.754060] RIP: 0033:0x7f033332dcf7
-[ 1795.754257] Code: 48 89 57 30 48 8b 04 24 48 89 47 38 e9 1d a0 02 00 48 89 f8 48 89 f7 48 89 d6 41
-[ 1795.755248] RSP: 002b:00007ffd06037208 EFLAGS: 00000202 ORIG_RAX: 00000000000000b0
-[ 1795.755655] RAX: ffffffffffffffda RBX: 00007f03333ab690 RCX: 00007f033332dcf7
-[ 1795.756038] RDX: 00000000ffffffff RSI: 0000000000000080 RDI: 0000000000d20b10
-[ 1795.756420] RBP: 0000000000d20ac0 R08: 2f2f2f2f2f2f2f2f R09: 0000000000d20ac0
-[ 1795.756801] R10: fefefefefefefeff R11: 0000000000000202 R12: 0000000000d20ac0
-[ 1795.757183] R13: 0000000000d2abf0 R14: 0000000000000000 R15: 0000000000000001
-[ 1795.757565]
-[ 1795.757651] The buggy address belongs to the page:
-[ 1795.757912] page:(____ptrval____) refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn0
-[ 1795.758427] flags: 0x200000000000000()
-[ 1795.758633] raw: 0200000000000000 ffffea00040f7608 ffff88817fffab18 0000000000000000
-[ 1795.759047] raw: 0000000000000000 0000000000000003 00000000ffffff7f 0000000000000000
-[ 1795.759460] page dumped because: kasan: bad access detected
-[ 1795.759759]
-[ 1795.759845] Memory state around the buggy address:
-[ 1795.760104]  ffff888103db0a80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[ 1795.760490]  ffff888103db0b00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[ 1795.760878] >ffff888103db0b80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[ 1795.761264]                                                           ^
-[ 1795.761618]  ffff888103db0c00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[ 1795.762007]  ffff888103db0c80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[ 1795.762392] ==================================================================
+Right, that's what my post-email investigation led to as well, hence I queued
+this one up:
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/net/can/c_can/c_can_pci.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-worker.v4&id=4a0a6fd611f5109bcfab4a95db836bb27131e3be
 
-diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
-index 406b4847e5dc..a378383a99fb 100644
---- a/drivers/net/can/c_can/c_can_pci.c
-+++ b/drivers/net/can/c_can/c_can_pci.c
-@@ -239,12 +239,13 @@ static void c_can_pci_remove(struct pci_dev *pdev)
- {
- 	struct net_device *dev = pci_get_drvdata(pdev);
- 	struct c_can_priv *priv = netdev_priv(dev);
--
-+	void __iomem *addr = priv->base;
-+  
- 	unregister_c_can_dev(dev);
- 
- 	free_c_can_dev(dev);
- 
--	pci_iounmap(pdev, priv->base);
-+	pci_iounmap(pdev, addr);
- 	pci_disable_msi(pdev);
- 	pci_clear_master(pdev);
- 	pci_release_regions(pdev);
 -- 
-2.25.1
+Jens Axboe
 
