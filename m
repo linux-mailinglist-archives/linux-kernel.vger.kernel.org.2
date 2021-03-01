@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE2D328CF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0796328CCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240896AbhCATCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:02:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47194 "EHLO mail.kernel.org"
+        id S239879AbhCAS7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:59:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235354AbhCAQoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:44:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2AB260241;
-        Mon,  1 Mar 2021 16:30:19 +0000 (UTC)
+        id S235327AbhCAQo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:44:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D472D64D73;
+        Mon,  1 Mar 2021 16:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616220;
-        bh=J5/Ahp1p7dAaaWXEgRpcI0xRuagIwZeR7IGpyTGFHrU=;
+        s=korg; t=1614616226;
+        bh=3TK0yicQuSVWNt6sQ9tEOq0iZyfjg7CppEvx3hHWzFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g8gcFmNoVw/IqaKuWlXQM7sPQDb87Jz1sAnMUAZzw32PQg1g3NIz3E7utLPdZ+k6t
-         U8slZ1Pgss3YzKOCE4oBVBvw6PlhkNj7PEWBGKJly+gkey0DxVKDgE0rctxsyHWBdm
-         ovQYprY8zgEf7B15oWIlwVTVT3+IuszcSsxJwr7k=
+        b=EYsno4ygibq3ouIyNp5JIT1HcTQKY5jv23lzVkahUdj+cosLA68PQXMhWi5SIyva3
+         ODSgCzNKT4UvGSfHXofrn2y5U26Rd3aLpBNlRI/BBYI9k81yedQm8fLBqxbBCL/Ors
+         QJ9t5a567o6sEBKag7D0yNSciopQM+1imBfcpnVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, KarimAllah Ahmed <karahmed@amazon.de>,
-        Quentin Perret <qperret@google.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 076/176] fdt: Properly handle "no-map" field in the memory region
-Date:   Mon,  1 Mar 2021 17:12:29 +0100
-Message-Id: <20210301161024.745081697@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 078/176] power: reset: at91-sama5d2_shdwc: fix wkupdbc mask
+Date:   Mon,  1 Mar 2021 17:12:31 +0100
+Message-Id: <20210301161024.841493761@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -42,39 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KarimAllah Ahmed <karahmed@amazon.de>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 86588296acbfb1591e92ba60221e95677ecadb43 ]
+[ Upstream commit 95aa21a3f1183260db1b0395e03df5bebc5ed641 ]
 
-Mark the memory region with NOMAP flag instead of completely removing it
-from the memory blocks. That makes the FDT handling consistent with the EFI
-memory map handling.
+According to datasheet WKUPDBC mask is b/w bits 26..24.
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: KarimAllah Ahmed <karahmed@amazon.de>
-Signed-off-by: Quentin Perret <qperret@google.com>
-Link: https://lore.kernel.org/r/20210115114544.1830068-2-qperret@google.com
-Signed-off-by: Rob Herring <robh@kernel.org>
+Fixes: f80cb48843987 ("power: reset: at91-shdwc: add new shutdown controller driver")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/fdt.c | 2 +-
+ drivers/power/reset/at91-sama5d2_shdwc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index 6337c394bfe32..6df66fcefbb40 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -1213,7 +1213,7 @@ int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
- 					phys_addr_t size, bool nomap)
- {
- 	if (nomap)
--		return memblock_remove(base, size);
-+		return memblock_mark_nomap(base, size);
- 	return memblock_reserve(base, size);
- }
+diff --git a/drivers/power/reset/at91-sama5d2_shdwc.c b/drivers/power/reset/at91-sama5d2_shdwc.c
+index 037976a1fe40b..c2fab93b556bb 100644
+--- a/drivers/power/reset/at91-sama5d2_shdwc.c
++++ b/drivers/power/reset/at91-sama5d2_shdwc.c
+@@ -36,7 +36,7 @@
+ 
+ #define AT91_SHDW_MR	0x04		/* Shut Down Mode Register */
+ #define AT91_SHDW_WKUPDBC_SHIFT	24
+-#define AT91_SHDW_WKUPDBC_MASK	GENMASK(31, 16)
++#define AT91_SHDW_WKUPDBC_MASK	GENMASK(26, 24)
+ #define AT91_SHDW_WKUPDBC(x)	(((x) << AT91_SHDW_WKUPDBC_SHIFT) \
+ 						& AT91_SHDW_WKUPDBC_MASK)
  
 -- 
 2.27.0
