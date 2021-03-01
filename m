@@ -2,111 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACC03292DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B84032930F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243985AbhCAUx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:53:59 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39032 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237138AbhCARKO (ORCPT
+        id S243980AbhCAU61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:58:27 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:47431 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237271AbhCARLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:10:14 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121H3tcm159164;
-        Mon, 1 Mar 2021 12:08:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=tUITBLLGrO998CeK21GFLsqWb+0czuIx/92TvP387X8=;
- b=HcxUuhp7rSZotnl1Sf9uPXSaHPswNj39dfSj8Wl6P74kzaCWkSUhQ5HiZxxo968uRqFa
- 6V6lGwq3EgXKYfMoiAV5VvdopEqeqQRo/UrqtbOQDBnwNnIhAOzukg+0kCxkiXXjgH3/
- 8ggUMJG7fqsUxBM+GmuwEMkdKWd00h6XtP6YLzZyRLWx+CxNSBiDBFyCaqwZqD/O8nPy
- wCWm1iJkOXtM4Tvv37SFuwUC6UhbThx7rpI3swoULj60MNSI9zQyv5HyGPXSGSxLB2at
- 04St1mqt2kUnA0T9ko/gVMp2IVgoWwIQ/UxFDnLwbQk7Bqprc33Le1+11PGwR8I5AAPm uQ== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3713ku1xgx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 12:08:56 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 121H7JNn027326;
-        Mon, 1 Mar 2021 17:08:54 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 3713s9r0g4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 17:08:54 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 121H8q3B44171682
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Mar 2021 17:08:52 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 29D5F4C044;
-        Mon,  1 Mar 2021 17:08:52 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C15984C040;
-        Mon,  1 Mar 2021 17:08:49 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon,  1 Mar 2021 17:08:49 +0000 (GMT)
-Date:   Mon, 1 Mar 2021 22:38:49 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Subject: Re: [PATCH] sched/fair: Prefer idle CPU to cache affinity
-Message-ID: <20210301170849.GK2028034@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
- <YD0K8Sal4KbxWD23@hirez.programming.kicks-ass.net>
+        Mon, 1 Mar 2021 12:11:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1614618675; x=1646154675;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=knhW153OooCkMJTOHIu7Y0vxJPYJ6BQCSg+JmTykUSQ=;
+  b=lJ1MB21LNNhZkVed/ezgLUgFGErBFexrNnNwx2ZPLKM38Hd9ImhKP/Br
+   YAgtwjbpdOk+eoCq0DJidJ/aL1VSiYCs88VEqJXZYkVjwVZ0X8/dB0rSo
+   xzZIOpxgAh3KeAoa6lrJuUaYTOE3mPVULaeW1QOCDkoxu7AEyvEQWGuYv
+   aqEzZ8BkNViOLv26MhoJVc7vpXArn7L8O21gpOpLkaEO6GrRHpxeo+NsR
+   xmIgq92FA/HPaLk5Zh8zpSaMf+uZ0C39k9EykJycX9TtME7ei6GTxgyWa
+   i2DAEVA+aKuGDXaP728zeBl30to2biv8/30I9Gd7m2CFBLdNd3Rk7zjL8
+   g==;
+IronPort-SDR: 6jTzpMK+R9Uhc4uKLcNMv2ll++emto2GNdFi6/xdgoQwaGQ9qTBnOYzp2RBJdre4cVfB+4mg1F
+ 56BICthPf03UVqGb9q9rvO2eNx4q+jyfvs3Tc8kXd8tjBFARUfWGT6YcrPVKS5jkgpSRzPvw5k
+ u7rAW3nh+LYWiQ0adwu5uz8myUzf877wB6Md72mNTspUgxEi19ij1rC0eTcCbDp0EkHC6ta2gM
+ Pp6Ui/kkRxN6yPsWS3OQvqhzbbu2Lzkj0AFfEhwb97FeUtjIi5BrdoZQvE/iKkgxchKy/5kFjd
+ tXo=
+X-IronPort-AV: E=Sophos;i="5.81,215,1610434800"; 
+   d="scan'208";a="117058762"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Mar 2021 10:09:34 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 1 Mar 2021 10:09:34 -0700
+Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 1 Mar 2021 10:09:31 -0700
+From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+To:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
+Subject: [PATCH v2 0/7] Add I2S-MCC support for Microchip's SAMA7G5
+Date:   Mon, 1 Mar 2021 19:08:58 +0200
+Message-ID: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <YD0K8Sal4KbxWD23@hirez.programming.kicks-ass.net>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-01_12:2021-03-01,2021-03-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 adultscore=0 phishscore=0 bulkscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 impostorscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103010137
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Zijlstra <peterz@infradead.org> [2021-03-01 16:40:33]:
+SAMA7G5 includes an updated version of I2S-MCC, found previously on
+SAM9X60. This controller includes 8 data pins, 4 for playback and 4 for
+capture. For I2S and LEFT_J formats, these pins can be used to
+send/receive up to 8 audio channels. For DSP_A, with TDM, any pins pair
+(DIN/DOUT) from these 4 can be selected to send/receive data. This
+version also includes 2 FIFOs (send and receive).
+This patch set starts by moving the driver's bindings to yaml and
+continues with adding a new compatible for the SAMA7G5 variant, followed
+by the changes needed for I2S/LEFT_J support, TDM pin pair selection and
+FIFO support, exclusively for SAMA7G5.
 
-> On Fri, Feb 26, 2021 at 10:10:29PM +0530, Srikar Dronamraju wrote:
-> > +static int prefer_idler_llc(int this_cpu, int prev_cpu, int sync)
-> > +{
-> > +	struct sched_domain_shared *tsds, *psds;
-> > +	int pnr_busy, pllc_size, tnr_busy, tllc_size, diff;
-> > +
-> > +	tsds = rcu_dereference(per_cpu(sd_llc_shared, this_cpu));
-> > +	tnr_busy = atomic_read(&tsds->nr_busy_cpus);
-> > +	tllc_size = per_cpu(sd_llc_size, this_cpu);
-> > +
-> > +	psds = rcu_dereference(per_cpu(sd_llc_shared, prev_cpu));
-> > +	pnr_busy = atomic_read(&psds->nr_busy_cpus);
-> > +	pllc_size = per_cpu(sd_llc_size, prev_cpu);
-> > +
-> 
-> nr_busy_cpus is NO_HZ_COMMON So this code that consumes it should be
-> too.
+Changes in v2:
+- moved DT binding conversion patch from the beginning to the end of the
+  patch serieses
+- patches that update the DT binding are modified to change .txt file
+  instead of .yaml
 
-Thanks Peter, will take care of this along with other changes including
-calling within rcu_read_lock and checking for tsds and psds after
-rcu_dereference.
+Codrin Ciubotariu (7):
+  dt-bindings: mchp,i2s-mcc: Add SAMA7G5 to binding
+  ASoC: mchp-i2s-mcc: Add compatible for SAMA7G5
+  ASoC: mchp-i2s-mcc: Add multi-channel support for I2S and LEFT_J
+    formats
+  dt-bindings: mchp,i2s-mcc: Add property to specify pin pair for TDM
+  ASoC: mchp-i2s-mcc: Add support to select TDM pins
+  ASoC: mchp-i2s-mcc: Add FIFOs support
+  ASoC: convert Microchip I2SMCC binding to yaml
+
+ .../bindings/sound/mchp,i2s-mcc.yaml          | 108 ++++++++++++
+ .../bindings/sound/mchp-i2s-mcc.txt           |  43 -----
+ sound/soc/atmel/Kconfig                       |   3 +
+ sound/soc/atmel/mchp-i2s-mcc.c                | 161 +++++++++++++++---
+ 4 files changed, 252 insertions(+), 63 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/mchp,i2s-mcc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/sound/mchp-i2s-mcc.txt
 
 -- 
-Thanks and Regards
-Srikar Dronamraju
+2.27.0
+
