@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D1B3298F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2122A329990
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346976AbhCAXvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34256 "EHLO mail.kernel.org"
+        id S1376363AbhCBAXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:23:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239307AbhCASOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:14:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBD7A64F2A;
-        Mon,  1 Mar 2021 17:37:06 +0000 (UTC)
+        id S239864AbhCAS0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:26:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1DBE650AF;
+        Mon,  1 Mar 2021 17:37:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620227;
-        bh=C+lypmXzClL1DQ+g9IH4CZLXoIDxnhDXXUmlOd7aj/Q=;
+        s=korg; t=1614620230;
+        bh=/WUkTsMO3HJouzYpTHEkGeGce2v6s4ecUkrcPoFIDeA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uElnBQHrqllndrKswg4pCPIlJGpjCA/DffcjZ6eDn16ScmzDkEsPCKcXRlUPqAezd
-         ArWREdvQmsWadPryEWlNU6EXDupteqxNOJlbbwP2st43PDuqtuJ5wMDP/sW6ir/rIC
-         OuH8PbPyZpf7gnPK4xUadbJ6h2JSBvsJwia/PFO4=
+        b=eaI7vtYFD64+wiRxq1P8X8XeT/mWx5vg+KgecpyU+TcNmteWTkYS3hNn2Fr7qXU9L
+         52gn9oEM6r0R0f518GcHZNdma9bB2uzHm1oVeJnbudT9rvSKKdtt2G2OPLoHwWt0OK
+         1W+glKc1zE8jecjV+L6xZtdhRoLbzMTBH1MlRkZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
+        stable@vger.kernel.org, Vincent Knecht <vincent.knecht@mailoo.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 077/775] soc: qcom: ocmem: dont return NULL in of_get_ocmem
-Date:   Mon,  1 Mar 2021 17:04:05 +0100
-Message-Id: <20210301161205.485333077@linuxfoundation.org>
+Subject: [PATCH 5.11 078/775] arm64: dts: msm8916: Fix reserved and rfsa nodes unit address
+Date:   Mon,  1 Mar 2021 17:04:06 +0100
+Message-Id: <20210301161205.535222163@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -41,51 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Weiss <luca@z3ntu.xyz>
+From: Vincent Knecht <vincent.knecht@mailoo.org>
 
-[ Upstream commit 01f937ffc4686837d6c43dea80c6ade6cbd2940a ]
+[ Upstream commit d5ae2528b0b56cf054b27d48b0cb85330900082f ]
 
-If ocmem probe fails for whatever reason, of_get_ocmem returned NULL.
-Without this, users must check for both NULL and IS_ERR on the returned
-pointer - which didn't happen in drivers/gpu/drm/msm/adreno/adreno_gpu.c
-leading to a NULL pointer dereference.
+Fix `reserved` and `rfsa` unit address according to their reg address
 
-Reviewed-by: Brian Masney <masneyb@onstation.org>
-Fixes: 88c1e9404f1d ("soc: qcom: add OCMEM driver")
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-Link: https://lore.kernel.org/r/20210130142349.53335-1-luca@z3ntu.xyz
+Fixes: 7258e10e6a0b ("ARM: dts: msm8916: Update reserved-memory")
+
+Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+Link: https://lore.kernel.org/r/20210123104417.518105-1-vincent.knecht@mailoo.org
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/ocmem.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/msm8916.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soc/qcom/ocmem.c b/drivers/soc/qcom/ocmem.c
-index 7f9e9944d1eae..f1875dc31ae2c 100644
---- a/drivers/soc/qcom/ocmem.c
-+++ b/drivers/soc/qcom/ocmem.c
-@@ -189,6 +189,7 @@ struct ocmem *of_get_ocmem(struct device *dev)
- {
- 	struct platform_device *pdev;
- 	struct device_node *devnode;
-+	struct ocmem *ocmem;
+diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+index 402e891a84ab6..d25f6dc751e99 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+@@ -56,7 +56,7 @@
+ 			no-map;
+ 		};
  
- 	devnode = of_parse_phandle(dev->of_node, "sram", 0);
- 	if (!devnode || !devnode->parent) {
-@@ -202,7 +203,12 @@ struct ocmem *of_get_ocmem(struct device *dev)
- 		return ERR_PTR(-EPROBE_DEFER);
- 	}
+-		reserved@8668000 {
++		reserved@86680000 {
+ 			reg = <0x0 0x86680000 0x0 0x80000>;
+ 			no-map;
+ 		};
+@@ -69,7 +69,7 @@
+ 			qcom,client-id = <1>;
+ 		};
  
--	return platform_get_drvdata(pdev);
-+	ocmem = platform_get_drvdata(pdev);
-+	if (!ocmem) {
-+		dev_err(dev, "Cannot get ocmem\n");
-+		return ERR_PTR(-ENODEV);
-+	}
-+	return ocmem;
- }
- EXPORT_SYMBOL(of_get_ocmem);
- 
+-		rfsa@867e00000 {
++		rfsa@867e0000 {
+ 			reg = <0x0 0x867e0000 0x0 0x20000>;
+ 			no-map;
+ 		};
 -- 
 2.27.0
 
