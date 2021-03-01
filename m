@@ -2,39 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41433298B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B73329829
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346362AbhCAXpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:45:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58286 "EHLO mail.kernel.org"
+        id S238456AbhCAXRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:17:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239451AbhCASIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:08:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7C8E64DFB;
-        Mon,  1 Mar 2021 17:25:23 +0000 (UTC)
+        id S239170AbhCAR6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:58:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5E9864F53;
+        Mon,  1 Mar 2021 17:24:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619524;
-        bh=3QYa7lWTWJhX+JOvcM89c6v77rNT3bvBBzcUROKRI/Y=;
+        s=korg; t=1614619468;
+        bh=/hS2dSqWdN4oAme0hnNdRTMKzCSelfT/7EwRHKSEjG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tQAN5DDb+WgxbkizB11w4Ej861a/B52Od5PL8vdkzKs3exKcDyCB0Q1UzPZLxZRWm
-         9D/O9P2TdneuNPAAV/6oYOPa0AZ/nxrKffSbWNxYEUfUwfN0TjtxITZx35rMkJ+ixN
-         +6wbd3FG3gmxkoCW6csS0tBuS3dBwUI/kS1zU6fo=
+        b=zR6Bjx9oPen2n8jKj3QMCIQ990k/NHhXf1z1KaKxWuNi0NOuqWOl+1B66Ro5yrGLM
+         pp/o5CKcHRJufUe+U1J7dBvvQgUCSHD5ffVE3NjMgeOqZf88/w+6TU9EvA4h973dyo
+         aDzde8VnJljtLw54/qc8bppo1SHFZix7QEwZ4iBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hongxiang Lou <louhongxiang@huawei.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 458/663] mm/memory.c: fix potential pte_unmap_unlock pte error
-Date:   Mon,  1 Mar 2021 17:11:46 +0100
-Message-Id: <20210301161204.550675364@linuxfoundation.org>
+Subject: [PATCH 5.10 465/663] KVM: x86/mmu: Expand collapsible SPTE zap for TDP MMU to ZONE_DEVICE and HugeTLB pages
+Date:   Mon,  1 Mar 2021 17:11:53 +0100
+Message-Id: <20210301161204.867425082@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -46,64 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Sean Christopherson <seanjc@google.com>
 
-[ Upstream commit 90a3e375d324b2255b83e3dd29e99e2b05d82aaf ]
+[ Upstream commit c060c72ffeb448fbb5864faa1f672ebfe14dd25f ]
 
-Since commit 42e4089c7890 ("x86/speculation/l1tf: Disallow non privileged
-high MMIO PROT_NONE mappings"), when the first pfn modify is not allowed,
-we would break the loop with pte unchanged.  Then the wrong pte - 1 would
-be passed to pte_unmap_unlock.
+Zap SPTEs that are backed by ZONE_DEVICE pages when zappings SPTEs to
+rebuild them as huge pages in the TDP MMU.  ZONE_DEVICE huge pages are
+managed differently than "regular" pages and are not compound pages.
+Likewise, PageTransCompoundMap() will not detect HugeTLB, so switch
+to PageCompound().
 
-Andi said:
+This matches the similar check in kvm_mmu_zap_collapsible_spte.
 
- "While the fix is correct, I'm not sure if it actually is a real bug.
-  Is there any architecture that would do something else than unlocking
-  the underlying page? If it's just the underlying page then it should
-  be always the same page, so no bug"
-
-Link: https://lkml.kernel.org/r/20210109080118.20885-1-linmiaohe@huawei.com
-Fixes: 42e4089c789 ("x86/speculation/l1tf: Disallow non privileged high MMIO PROT_NONE mappings")
-Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ben Gardon <bgardon@google.com>
+Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20210213005015.1651772-2-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/memory.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index eb5722027160a..f9522481f95cd 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2165,11 +2165,11 @@ static int remap_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 			unsigned long addr, unsigned long end,
- 			unsigned long pfn, pgprot_t prot)
- {
--	pte_t *pte;
-+	pte_t *pte, *mapped_pte;
- 	spinlock_t *ptl;
- 	int err = 0;
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index c842d17240ccb..ffa0bd0e033fb 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1055,7 +1055,8 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
  
--	pte = pte_alloc_map_lock(mm, pmd, addr, &ptl);
-+	mapped_pte = pte = pte_alloc_map_lock(mm, pmd, addr, &ptl);
- 	if (!pte)
- 		return -ENOMEM;
- 	arch_enter_lazy_mmu_mode();
-@@ -2183,7 +2183,7 @@ static int remap_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 		pfn++;
- 	} while (pte++, addr += PAGE_SIZE, addr != end);
- 	arch_leave_lazy_mmu_mode();
--	pte_unmap_unlock(pte - 1, ptl);
-+	pte_unmap_unlock(mapped_pte, ptl);
- 	return err;
- }
+ 		pfn = spte_to_pfn(iter.old_spte);
+ 		if (kvm_is_reserved_pfn(pfn) ||
+-		    !PageTransCompoundMap(pfn_to_page(pfn)))
++		    (!PageCompound(pfn_to_page(pfn)) &&
++		     !kvm_is_zone_device_pfn(pfn)))
+ 			continue;
  
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
 -- 
 2.27.0
 
