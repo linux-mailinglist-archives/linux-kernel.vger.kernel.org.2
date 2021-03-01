@@ -2,157 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB58732A046
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FB732A056
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575587AbhCBD4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:54 -0500
-Received: from mga09.intel.com ([134.134.136.24]:22490 "EHLO mga09.intel.com"
+        id S239486AbhCBEPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:15:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238974AbhCAXf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:35:59 -0500
-IronPort-SDR: HlnfcsYMypjx53YzV7gGLNQArwnGw3dT4/8dHOQJ9tOBOBzNifktcKmr94IrxgoTw4Cj7Kh0t0
- 9Jm4XrsNam3w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186746812"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="186746812"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 15:35:08 -0800
-IronPort-SDR: krdotmT4YSRh9/d6nXnyZScVA5MjrzG8U3ODny94Uqnus2muxE8ugV8GOdpeKe5iMvq55xIBpN
- kLa3RTDRDx6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="427112138"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Mar 2021 15:35:07 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lGs4A-0004n9-Lj; Mon, 01 Mar 2021 23:35:06 +0000
-Date:   Tue, 02 Mar 2021 07:34:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- fba111913e51a934eaad85734254eab801343836
-Message-ID: <603d79f5.02KE/VNDWBEyDda4%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1346153AbhCAXiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 18:38:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CACBA61481;
+        Mon,  1 Mar 2021 23:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614641785;
+        bh=VvLYvJ0aIkonlcmlC5Homj2udF5HvWgNbKU0ABVOuPE=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Q6kuBlTmclg6ZJDHh3R6WSs/uy43Oa/PTlEJEx62NxwJ6Hrg1wlfZYD6aITbK8Lmx
+         pkvRlbXq2zRqDqiOYSGzlLOUq+OQKbhlDSPsgS9bycF2EW+92KnzaCytniLiZDsQv1
+         IJ8V6ZR56rVb1iXjpBirW86Ts48pR2fRf3oEEFP9wePKKxQFAk0+FGUn5jSwc7XrIF
+         Dvyj4DXIDwaT/mrjZQjDbQOb8LZ8BMXwsswpUb9nQ003v5KM9etA5vzNl+PmzjEuxK
+         yyzE6hW+liY5NW1Zc8uQt4B+uf4ViIxo+aPFuQd6fQphQTrZT/BWV11SaLVi98mlcO
+         ctf8/ua2IXiWw==
+From:   Mark Brown <broonie@kernel.org>
+To:     timur@kernel.org, Xiubo.Lee@gmail.com, tiwai@suse.com,
+        Shengjiu Wang <shengjiu.wang@nxp.com>, nicoleotsuka@gmail.com,
+        festevam@gmail.com, perex@perex.cz, alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <1613984990-5534-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1613984990-5534-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] ASoC: fsl_xcvr: move reset assert into runtime_resume
+Message-Id: <161464168098.31144.2631005760387940700.b4-ty@kernel.org>
+Date:   Mon, 01 Mar 2021 23:34:40 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/urgent
-branch HEAD: fba111913e51a934eaad85734254eab801343836  sched/membarrier: fix missing local execution of ipi_sync_rq_state()
+On Mon, 22 Feb 2021 17:09:50 +0800, Shengjiu Wang wrote:
+> Move reset assert into runtime_resume since we
+> cannot rely on reset assert state when the device
+> is put out from suspend.
 
-elapsed time: 720m
+Applied to
 
-configs tested: 95
-configs skipped: 2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks!
 
-gcc tested configs:
-arm                                 defconfig
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                          moxart_defconfig
-m68k                            q40_defconfig
-powerpc                      katmai_defconfig
-alpha                               defconfig
-ia64                             alldefconfig
-powerpc                      makalu_defconfig
-powerpc                      chrp32_defconfig
-i386                             allyesconfig
-mips                        jmr3927_defconfig
-arc                        nsim_700_defconfig
-arm                         nhk8815_defconfig
-arm                            zeus_defconfig
-mips                     cu1830-neo_defconfig
-sh                          rsk7269_defconfig
-mips                         mpc30x_defconfig
-arm                       versatile_defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                 canyonlands_defconfig
-sh                     sh7710voipgw_defconfig
-mips                 decstation_r4k_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20210228
-i386                 randconfig-a005-20210228
-i386                 randconfig-a004-20210228
-i386                 randconfig-a003-20210228
-i386                 randconfig-a001-20210228
-i386                 randconfig-a002-20210228
-x86_64               randconfig-a013-20210301
-x86_64               randconfig-a016-20210301
-x86_64               randconfig-a015-20210301
-x86_64               randconfig-a014-20210301
-x86_64               randconfig-a012-20210301
-x86_64               randconfig-a011-20210301
-i386                 randconfig-a016-20210301
-i386                 randconfig-a012-20210301
-i386                 randconfig-a014-20210301
-i386                 randconfig-a013-20210301
-i386                 randconfig-a011-20210301
-i386                 randconfig-a015-20210301
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+[1/1] ASoC: fsl_xcvr: move reset assert into runtime_resume
+      commit: 0f780e4bef4587f07060109040955d6b6aa179a2
 
-clang tested configs:
-x86_64               randconfig-a006-20210301
-x86_64               randconfig-a001-20210301
-x86_64               randconfig-a004-20210301
-x86_64               randconfig-a002-20210301
-x86_64               randconfig-a005-20210301
-x86_64               randconfig-a003-20210301
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
