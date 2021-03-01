@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9C43282A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14FC63282AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237342AbhCAPht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 10:37:49 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:59960 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237243AbhCAPhd (ORCPT
+        id S236630AbhCAPin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 10:38:43 -0500
+Received: from conuserg-11.nifty.com ([210.131.2.78]:28524 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237266AbhCAPi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 10:37:33 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614613001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qKx7JwT/dd3v06LiZPRPHxdr3Mvak0GPNra5VoMoP1o=;
-        b=nK+Ok5k0MzH/QI6D7htimuCzXA0alrKJWT8+Do3p+0XYuoyqfczSMozW3q7pxLrvoqEoQG
-        oPMTvaQ335ix5FKGXv++7rUZ4aVJ6F7VMOnGN4yrMZzl2f1FpgrAeIWHr6p9NlZRkTny3C
-        mfyauLVxT+Q3OgBC3zcg7KjMex2oaw3NzCRrusUY0dx1/IqU7V4MsxRLGZV5kWXk9MlrMV
-        wEHyxfGS9F24lyJG44eWDWkGw/UUKuuSK4YEEkprmtMx8L6sOyW5Sou/QG0jpLUUuRwAcJ
-        RtksL22s2Aoghop2gfxmOKrLD+2+HdorpWpCy3XJ8Hdm4/73xtrFZPMIIKRAJw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614613001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qKx7JwT/dd3v06LiZPRPHxdr3Mvak0GPNra5VoMoP1o=;
-        b=gygiVZKWsDAhRTr3SxO2Ecx5unMNBPIV7lNOYhJIMVyr4SRI5yLWsQlhx0G1nESn4BdQC1
-        xdWjjxdFYk354aCg==
-To:     Andy Lutomirski <luto@kernel.org>, x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] x86/entry: Fix entry/exit mismatch on failed fast 32-bit syscalls
-In-Reply-To: <04713c6be5ab45357e3406c42d382536f52a64c6.1614104065.git.luto@kernel.org>
-References: <cover.1614104065.git.luto@kernel.org> <04713c6be5ab45357e3406c42d382536f52a64c6.1614104065.git.luto@kernel.org>
-Date:   Mon, 01 Mar 2021 16:36:40 +0100
-Message-ID: <87h7luubqv.fsf@nanos.tec.linutronix.de>
+        Mon, 1 Mar 2021 10:38:27 -0500
+Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 121Fawh6014128;
+        Tue, 2 Mar 2021 00:36:58 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 121Fawh6014128
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614613019;
+        bh=JcQhrllxuFRDL1UZHLujpUigbOErMlV75Eq1H4imx38=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fPftHurlRgDuhPQO2vly13iwVtArvLqq2thObmjs55bm2juNQDrSzWCHUN5GWuMiX
+         vQ6cieuMxG5XN8gFBLed9fCWa3Et0wpSip7AHObAkR2jRB3s3fmHVlzPiiojAPfUJ3
+         bMN2Ufrh9sJBp1PIuoFF5eTNVnybbrYytsBEScRX9RjmJJ+qP6ZB9cQ6PLUkhkZPbl
+         SQjovBgaMaCHIcpiHznFQ3lqH8pz0jA1Cukd46vgFsl/cb88Ko1outwfqcUk06UPl9
+         z00dulm9VLHSH3dJpSUovho8A+uGbZrK9MyIEzNBrK/iWXAzHVodxtJ45bYe70Sv+r
+         mKOw9T55cZuPA==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 1/3] xtensa: stop filling syscall array with sys_ni_syscall
+Date:   Tue,  2 Mar 2021 00:36:54 +0900
+Message-Id: <20210301153656.363839-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23 2021 at 10:15, Andy Lutomirski wrote:
-> On a 32-bit fast syscall that fails to read its arguments from user
-> memory, the kernel currently does syscall exit work but not
-> syscall entry work.  This confuses audit and ptrace.  For example:
->
->     $ ./tools/testing/selftests/x86/syscall_arg_fault_32
->     ...
->     strace: pid 264258: entering, ptrace_syscall_info.op == 2
->     ...
->
-> This is a minimal fix intended for ease of backporting.  A more
-> complete cleanup is coming.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 0b085e68f407 ("x86/entry: Consolidate 32/64 bit syscall entry")
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
->  arch/x86/entry/common.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-> index 0904f5676e4d..cf4dcf346ca8 100644
-> --- a/arch/x86/entry/common.c
-> +++ b/arch/x86/entry/common.c
-> @@ -128,7 +128,8 @@ static noinstr bool __do_fast_syscall_32(struct pt_regs *regs)
->  		regs->ax = -EFAULT;
->  
->  		instrumentation_end();
-> -		syscall_exit_to_user_mode(regs);
-> +		local_irq_disable();
-> +		exit_to_user_mode();
+arch/xtensa/kernel/syscalls/syscalltbl.sh fills missing syscall numbers
+with sys_ni_syscall.
 
-That's still the same as the previous version. The right function (while
-the name is misleading) to invoke here is irqentry_exit_to_user_mode()
-because that invokes exit_to_user_mode_prepare() before
-exit_to_user_mode(). We can rename that function afterwards.
+So, the generated arch/xtensa/include/generated/asm/syscall_table.h
+has no hole.
 
-Thanks,
+Hence, the line:
 
-        tglx
+  [0 ... __NR_syscalls - 1] = (syscall_t)&sys_ni_syscall,
+
+is meaningless.
+
+The number of generated __SYSCALL() macros is the same as __NR_syscalls
+(this is 442 as of v5.11).
+
+Hence, the array size, [__NR_syscalls] is unneeded.
+
+The designated initializer, '[nr] =', is also unneeded.
+
+This file does not need to know __NR_syscalls. Drop the unneeded
+<asm/unistd.h> include directive.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/xtensa/kernel/syscall.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/arch/xtensa/kernel/syscall.c b/arch/xtensa/kernel/syscall.c
+index 2c415fce6801..26fa09ce4d17 100644
+--- a/arch/xtensa/kernel/syscall.c
++++ b/arch/xtensa/kernel/syscall.c
+@@ -17,7 +17,6 @@
+  */
+ #include <linux/uaccess.h>
+ #include <asm/syscall.h>
+-#include <asm/unistd.h>
+ #include <linux/linkage.h>
+ #include <linux/stringify.h>
+ #include <linux/errno.h>
+@@ -28,10 +27,8 @@
+ #include <linux/sched/mm.h>
+ #include <linux/shm.h>
+ 
+-syscall_t sys_call_table[__NR_syscalls] /* FIXME __cacheline_aligned */= {
+-	[0 ... __NR_syscalls - 1] = (syscall_t)&sys_ni_syscall,
+-
+-#define __SYSCALL(nr, entry, nargs)[nr] = (syscall_t)entry,
++syscall_t sys_call_table[] /* FIXME __cacheline_aligned */= {
++#define __SYSCALL(nr, entry, nargs)	(syscall_t)entry,
+ #include <asm/syscall_table.h>
+ #undef __SYSCALL
+ };
+-- 
+2.27.0
+
