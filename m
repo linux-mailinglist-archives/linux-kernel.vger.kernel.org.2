@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8973291CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:33:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776633291D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243501AbhCAUdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:33:19 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45238 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236780AbhCARHf (ORCPT
+        id S243582AbhCAUdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:33:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237215AbhCARH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:07:35 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121H5S4e086163;
-        Mon, 1 Mar 2021 12:06:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=Wdm3eMJllX+CAw+oYxrLR2rUHAOl7IFKsKKtF3ISOsg=;
- b=G4fQngY3IqOaaDZClfqJnCK395q5eKyAT2xM8teHmwlr7iG0N3fLp+74QS6nK59OrC+H
- 0Dmnkcv1+RA5m5+ftnulc5AqH7Ue/47a526ig1ZwugdDcSn2ZntvHrXyKtrsfAJ3ptRA
- 1naC6upYduOhxzsV6RsilnmsoNn3tIHWrg4BsIRQShOLpkD9JEIu2V5Rwpfn2ZsPheKR
- qK5BYjQHSzl3Uz/KT/r8ysQB2L1d91SYbBQDt3ez0AtdTMG2iki94kf48mG+8tqZCpux
- KHZK+6UJjhXCoti5fQUj6fzHxr7vr63jbMsRq1AylPBtf6tE+Ocmz5YSbWjQJJoGaQTs +A== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 370xxaa8a1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 12:06:14 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 121Gwkac021656;
-        Mon, 1 Mar 2021 17:06:07 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 370c59s4dh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Mar 2021 17:06:06 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 121H64jU19202444
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Mar 2021 17:06:04 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B1F17A405F;
-        Mon,  1 Mar 2021 17:06:04 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 41BBCA405B;
-        Mon,  1 Mar 2021 17:06:02 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon,  1 Mar 2021 17:06:02 +0000 (GMT)
-Date:   Mon, 1 Mar 2021 22:36:01 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Rik van Riel <riel@surriel.com>, Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Subject: Re: [PATCH] sched/fair: Prefer idle CPU to cache affinity
-Message-ID: <20210301170601.GJ2028034@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210226164029.122432-1-srikar@linux.vnet.ibm.com>
- <ab046b9d5bcd29b2eb759cd999e2f578a683c673.camel@surriel.com>
- <YD0L6sba9RfXX+tM@hirez.programming.kicks-ass.net>
+        Mon, 1 Mar 2021 12:07:58 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F9BC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:07:17 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id jt13so29615408ejb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:07:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IxFWs0oSU3V/NwnpfCvBJ5DgtOSVkYwO/FOfviidy1k=;
+        b=txCf4l4pnUYHnMMbaJ+nwcAmrJ5ZF3Esp9SrwyXS8fquZcYAjnVSuLO5lqp2yhPo7t
+         Fb2XxDHLr1OOoKy2dU6xNfvpb3FJZg3g+h5R4NHmkbqjpT3+jke2SORlpIISKFF89bld
+         aHlGlQqv4jd3L7V8+5PiwCZNL+6ENSAsrI1C6DDqO/O5CLEKFNgYyEeFMpn0tiUdUt75
+         IK2vBaChZcFbexfDJ2jLW1yDvgY4IdG2Ezb7pPzNkTprW+PabRns1J+fEuElHuDijrW/
+         9TpomORJI745VH06++izgLQa+/AqeHCQOdOIjU1pOBrl9trrPGFQ28egcJs+ltmQPbq2
+         5QeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IxFWs0oSU3V/NwnpfCvBJ5DgtOSVkYwO/FOfviidy1k=;
+        b=lzkbX7SS5FM+9OH+Jr/rXsNfBuRixU83GT3GsBs6LB/Gc7B6lu3jet4iDTcOrDnYGH
+         tZD+co5rMqxu89yBh19Ztudwecp9tOHuqHM7L8dh9Set1NWL7SKvTabZ62+O5aqaW/Ll
+         QtafKA3CQ0a8p4dJs9Alm4bWEwjLZ+KwRVXCN4NP+6S2YHK5b7mzioJEmxw0AF411VRc
+         YDpcJgsnom+7giMrjwjpc22DjBl1RadxU2IumNn2dceVlTTKLIB205DcPChvkljSXm46
+         hJYTNU+8B+FgE/7yX+ZCn1zzyqD5gbYcgh/VbB4ysLVcNWyeTZv5F3BAEgPoACix/M3Z
+         gtvA==
+X-Gm-Message-State: AOAM531shmbjNxkwuVHKllOFiVIZI1DuQ2UKQDrcduBxfdgxMwKRC3PN
+        69wJG0waCuhPFrbAwO6+rHnzOEgL3x7aPu9Kfzw=
+X-Google-Smtp-Source: ABdhPJwbLEh+sPaoVJInF1JOPo6OGCi/xw159FENojhi6Ypp8UP3BIItWWpqAZ6/5OuoDO2WXQ+Z7t0ggHSbBM50uT0=
+X-Received: by 2002:a17:907:2bf6:: with SMTP id gv54mr17291479ejc.514.1614618435996;
+ Mon, 01 Mar 2021 09:07:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <YD0L6sba9RfXX+tM@hirez.programming.kicks-ass.net>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-01_11:2021-03-01,2021-03-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 mlxlogscore=981 bulkscore=0 impostorscore=0
- priorityscore=1501 clxscore=1015 malwarescore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103010137
+References: <20210226021254.3980-1-shy828301@gmail.com> <YDijjovHAer2tiL5@dhcp22.suse.cz>
+ <CAHbLzkoLC-gGZA1GvDZjgTnVFzCTQnLMd4JWzZ6Ge_q63YhWKQ@mail.gmail.com> <YDzaxi91fTg1ww6H@dhcp22.suse.cz>
+In-Reply-To: <YDzaxi91fTg1ww6H@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 1 Mar 2021 09:07:03 -0800
+Message-ID: <CAHbLzkpvWJn3dOrLLPvtyKY6qEs5Nv57rc7K+_+eL35eCDnywg@mail.gmail.com>
+Subject: Re: [PATCH] doc: memcontrol: add description for oom_kill
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peter Zijlstra <peterz@infradead.org> [2021-03-01 16:44:42]:
+On Mon, Mar 1, 2021 at 4:15 AM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 26-02-21 08:42:29, Yang Shi wrote:
+> > On Thu, Feb 25, 2021 at 11:30 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Thu 25-02-21 18:12:54, Yang Shi wrote:
+> > > > When debugging an oom issue, I found the oom_kill counter of memcg is
+> > > > confusing.  At the first glance without checking document, I thought it
+> > > > just counts for memcg oom, but it turns out it counts both global and
+> > > > memcg oom.
+> > >
+> > > Yes, this is the case indeed. The point of the counter was to count oom
+> > > victims from the memcg rather than matching that to the source of the
+> > > oom. Rememeber that this could have been a memcg oom up in the
+> > > hierarchy as well. Counting victims on the oom origin could be equally
+> >
+> > Yes, it is updated hierarchically on v2, but not on v1. I'm supposed
+> > this is because v1 may work in non-hierarchcal mode? If this is the
+> > only reason we may be able to remove this to get aligned with v2 since
+> > non-hierarchal mode is no longer supported.
+>
+> I believe the reson is that v1 can have tasks in the intermediate
+> (non-leaf) memcgs. So you wouldn't have a way to tell whether the oom
+> kill has happened in such a memcg or somewhere down the hierarchy.
 
-> On Sat, Feb 27, 2021 at 02:56:07PM -0500, Rik van Riel wrote:
-> > On Fri, 2021-02-26 at 22:10 +0530, Srikar Dronamraju wrote:
-> 
-> > > +	if (sched_feat(WA_WAKER) && tnr_busy < tllc_size)
-> > > +		return this_cpu;
-> > 
-> > I wonder if we need to use a slightly lower threshold on
-> > very large LLCs, both to account for the fact that the
-> > select_idle_cpu code may not find the single idle CPU
-> > among a dozen busy ones, or because on a system with
-> > hyperthreading we may often be better off picking another
-> > LLC for HT contention issues?
-> > 
-> > Maybe we could use "tnr_busy * 4 <
-> > tllc_size * 3" or
-> > something like that?
-> 
-> How about:
-> 
-> 	tnr_busy < tllc_size / topology_max_smt_threads()
-> 
-> ?
+Aha, I forgot it, that's bad. Although we don't have tasks in
+intermediate nodes in practice, I do understand it is not forbidden as
+cgroup v2.
 
-Isn't topology_max_smt_threads only for x86 as of today?
-Or Am I missing out?
-
-
--- 
-Thanks and Regards
-Srikar Dronamraju
+> --
+> Michal Hocko
+> SUSE Labs
