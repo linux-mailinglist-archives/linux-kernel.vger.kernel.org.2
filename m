@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9B23293BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBD33293B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244566AbhCAVd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:33:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37364 "EHLO mail.kernel.org"
+        id S244348AbhCAVde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:33:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37365 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236936AbhCARSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236768AbhCARSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 12:18:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A67B165053;
-        Mon,  1 Mar 2021 16:47:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A051065054;
+        Mon,  1 Mar 2021 16:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617242;
-        bh=+0VWy69X/f4y3ljDjt2aWGAMtPRtlVRJKjBTcaUhNt8=;
+        s=korg; t=1614617245;
+        bh=tkdfp6IB7m+q6PeaUkHQqLe3S9J4yE5WveKPf4/Z0FI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zCsb+DG74njBHNmewowaTLK9xP0c5tmjbYiG0WxQ4DmO2huprbbX5jxtFkzeFygVO
-         S5KPYM9Cj9nZPT+CHbe+/0AfHvFTcqLW/LjVq5QiMEo+AdB6/+EX/By6vyiP6YpNXP
-         Q93VMgltnmSMZwZ5EDXCXNxxgq2Y0LL37VNC9yU8=
+        b=0xVbKnalpUOidvcH/eN3JZGLc7SIVOPvQSWqjVs8xc8h/clFSjtaspxlC6jqazf8s
+         AJ6mpbyzBDG81Emt2Aj4K9sJ9x8ZzDTYuuKNWftaielgQcc4EztzgkhVAbSjYDJUPn
+         hEj40A5TxrbFmPDl2JGnx4CZY9E5xuLPFFhVT7g4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: [PATCH 4.19 227/247] printk: fix deadlock when kernel panic
-Date:   Mon,  1 Mar 2021 17:14:07 +0100
-Message-Id: <20210301161042.804809149@linuxfoundation.org>
+        stable@vger.kernel.org, Wendy Wang <wendy.wang@intel.com>,
+        Chen Yu <yu.c.chen@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.19 228/247] cpufreq: intel_pstate: Get per-CPU max freq via MSR_HWP_CAPABILITIES if available
+Date:   Mon,  1 Mar 2021 17:14:08 +0100
+Message-Id: <20210301161042.850935117@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -40,109 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muchun Song <songmuchun@bytedance.com>
+From: Chen Yu <yu.c.chen@intel.com>
 
-commit 8a8109f303e25a27f92c1d8edd67d7cbbc60a4eb upstream.
+commit 6f67e060083a84a4cc364eab6ae40c717165fb0c upstream.
 
-printk_safe_flush_on_panic() caused the following deadlock on our
-server:
+Currently, when turbo is disabled (either by BIOS or by the user),
+the intel_pstate driver reads the max non-turbo frequency from the
+package-wide MSR_PLATFORM_INFO(0xce) register.
 
-CPU0:                                         CPU1:
-panic                                         rcu_dump_cpu_stacks
-  kdump_nmi_shootdown_cpus                      nmi_trigger_cpumask_backtrace
-    register_nmi_handler(crash_nmi_callback)      printk_safe_flush
-                                                    __printk_safe_flush
-                                                      raw_spin_lock_irqsave(&read_lock)
-    // send NMI to other processors
-    apic_send_IPI_allbutself(NMI_VECTOR)
-                                                        // NMI interrupt, dead loop
-                                                        crash_nmi_callback
-  printk_safe_flush_on_panic
-    printk_safe_flush
-      __printk_safe_flush
-        // deadlock
-        raw_spin_lock_irqsave(&read_lock)
+However, on asymmetric platforms it is possible in theory that small
+and big core with HWP enabled might have different max non-turbo CPU
+frequency, because MSR_HWP_CAPABILITIES is per-CPU scope according
+to Intel Software Developer Manual.
 
-DEADLOCK: read_lock is taken on CPU1 and will never get released.
+The turbo max freq is already per-CPU in current code, so make
+similar change to the max non-turbo frequency as well.
 
-It happens when panic() stops a CPU by NMI while it has been in
-the middle of printk_safe_flush().
-
-Handle the lock the same way as logbuf_lock. The printk_safe buffers
-are flushed only when both locks can be safely taken. It can avoid
-the deadlock _in this particular case_ at expense of losing contents
-of printk_safe buffers.
-
-Note: It would actually be safe to re-init the locks when all CPUs were
-      stopped by NMI. But it would require passing this information
-      from arch-specific code. It is not worth the complexity.
-      Especially because logbuf_lock and printk_safe buffers have been
-      obsoleted by the lockless ring buffer.
-
-Fixes: cf9b1106c81c ("printk/nmi: flush NMI messages on the system panic")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Cc: <stable@vger.kernel.org>
-Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Link: https://lore.kernel.org/r/20210210034823.64867-1-songmuchun@bytedance.com
+Reported-by: Wendy Wang <wendy.wang@intel.com>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+[ rjw: Subject and changelog edits ]
+Cc: 4.18+ <stable@vger.kernel.org> # 4.18+: a45ee4d4e13b: cpufreq: intel_pstate: Change intel_pstate_get_hwp_max() argument
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/printk/printk_safe.c |   16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/cpufreq/intel_pstate.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/kernel/printk/printk_safe.c
-+++ b/kernel/printk/printk_safe.c
-@@ -55,6 +55,8 @@ struct printk_safe_seq_buf {
- static DEFINE_PER_CPU(struct printk_safe_seq_buf, safe_print_seq);
- static DEFINE_PER_CPU(int, printk_context);
- 
-+static DEFINE_RAW_SPINLOCK(safe_read_lock);
-+
- #ifdef CONFIG_PRINTK_NMI
- static DEFINE_PER_CPU(struct printk_safe_seq_buf, nmi_print_seq);
- #endif
-@@ -190,8 +192,6 @@ static void report_message_lost(struct p
-  */
- static void __printk_safe_flush(struct irq_work *work)
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -1420,11 +1420,9 @@ static void intel_pstate_max_within_limi
+ static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
  {
--	static raw_spinlock_t read_lock =
--		__RAW_SPIN_LOCK_INITIALIZER(read_lock);
- 	struct printk_safe_seq_buf *s =
- 		container_of(work, struct printk_safe_seq_buf, work);
- 	unsigned long flags;
-@@ -205,7 +205,7 @@ static void __printk_safe_flush(struct i
- 	 * different CPUs. This is especially important when printing
- 	 * a backtrace.
- 	 */
--	raw_spin_lock_irqsave(&read_lock, flags);
-+	raw_spin_lock_irqsave(&safe_read_lock, flags);
+ 	cpu->pstate.min_pstate = pstate_funcs.get_min();
+-	cpu->pstate.max_pstate = pstate_funcs.get_max();
+ 	cpu->pstate.max_pstate_physical = pstate_funcs.get_max_physical();
+ 	cpu->pstate.turbo_pstate = pstate_funcs.get_turbo();
+ 	cpu->pstate.scaling = pstate_funcs.get_scaling();
+-	cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu->pstate.scaling;
  
- 	i = 0;
- more:
-@@ -242,7 +242,7 @@ more:
- 
- out:
- 	report_message_lost(s);
--	raw_spin_unlock_irqrestore(&read_lock, flags);
-+	raw_spin_unlock_irqrestore(&safe_read_lock, flags);
- }
- 
- /**
-@@ -288,6 +288,14 @@ void printk_safe_flush_on_panic(void)
- 		raw_spin_lock_init(&logbuf_lock);
+ 	if (hwp_active && !hwp_mode_bdw) {
+ 		unsigned int phy_max, current_max;
+@@ -1432,9 +1430,12 @@ static void intel_pstate_get_cpu_pstates
+ 		intel_pstate_get_hwp_max(cpu->cpu, &phy_max, &current_max);
+ 		cpu->pstate.turbo_freq = phy_max * cpu->pstate.scaling;
+ 		cpu->pstate.turbo_pstate = phy_max;
++		cpu->pstate.max_pstate = HWP_GUARANTEED_PERF(READ_ONCE(cpu->hwp_cap_cached));
+ 	} else {
+ 		cpu->pstate.turbo_freq = cpu->pstate.turbo_pstate * cpu->pstate.scaling;
++		cpu->pstate.max_pstate = pstate_funcs.get_max();
  	}
++	cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu->pstate.scaling;
  
-+	if (raw_spin_is_locked(&safe_read_lock)) {
-+		if (num_online_cpus() > 1)
-+			return;
-+
-+		debug_locks_off();
-+		raw_spin_lock_init(&safe_read_lock);
-+	}
-+
- 	printk_safe_flush();
- }
- 
+ 	if (pstate_funcs.get_aperf_mperf_shift)
+ 		cpu->aperf_mperf_shift = pstate_funcs.get_aperf_mperf_shift();
 
 
