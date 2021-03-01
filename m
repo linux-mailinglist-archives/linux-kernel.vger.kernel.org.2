@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D14328961
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BAE32894D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238820AbhCARzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:55:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36258 "EHLO mail.kernel.org"
+        id S235548AbhCARxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:53:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232476AbhCAQbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232465AbhCAQbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:31:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B29DF64F27;
-        Mon,  1 Mar 2021 16:24:21 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8734D64F2F;
+        Mon,  1 Mar 2021 16:24:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615862;
-        bh=5FauW6J1IEOkgg3VnYsD7Xk4rN8tUkgz0M54MsEALtM=;
+        s=korg; t=1614615865;
+        bh=hWxDsbMzMZ2OFlRpKF848AbSBcGY2OcHglBELFurnXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fl+RJPCmvJyGR3zEuOAPnCezhsOULuZR5zsWvRspFQHNBLAu4c8pBioxR50tK5ctS
-         nMYRra2QDdn7d5GIw3k6pVifkO/vkr7jy/xe+RPClzLvcg5tcJFRUz2CFyh/BCsu4t
-         MNw8g4kGp6dNpEVu13LrQCePx2vfdbJ3KLMMcGCA=
+        b=Z9n+RSIFHsrdgUxhcqEZy16ZnYHljaw4w5Iy6xC2aPycQ8MeG8H5755ckLInaJtBb
+         FDMslfz1BOfO0caQbEeucKoLJB/xKxvRrOao71Y4X3bbyz6EF8QuhhcRE6g67v/16G
+         opAcJr07YCPQ1yanWndog+m6/pLhd1WCcwU+Y8SM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 086/134] arm64: Add missing ISB after invalidating TLB in __primary_switch
-Date:   Mon,  1 Mar 2021 17:13:07 +0100
-Message-Id: <20210301161017.804816014@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 087/134] i2c: brcmstb: Fix brcmstd_send_i2c_cmd condition
+Date:   Mon,  1 Mar 2021 17:13:08 +0100
+Message-Id: <20210301161017.855776983@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -41,47 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Maxime Ripard <maxime@cerno.tech>
 
-[ Upstream commit 9d41053e8dc115c92b8002c3db5f545d7602498b ]
+[ Upstream commit a1858ce0cfe31368b23ba55794e409fb57ced4a4 ]
 
-Although there has been a bit of back and forth on the subject, it
-appears that invalidating TLBs requires an ISB instruction when FEAT_ETS
-is not implemented by the CPU.
+The brcmstb_send_i2c_cmd currently has a condition that is (CMD_RD ||
+CMD_WR) which always evaluates to true, while the obvious fix is to test
+whether the cmd variable passed as parameter holds one of these two
+values.
 
->From the bible:
-
-  | In an implementation that does not implement FEAT_ETS, a TLB
-  | maintenance instruction executed by a PE, PEx, can complete at any
-  | time after it is issued, but is only guaranteed to be finished for a
-  | PE, PEx, after the execution of DSB by the PEx followed by a Context
-  | synchronization event
-
-Add the missing ISB in __primary_switch, just in case.
-
-Fixes: 3c5e9f238bc4 ("arm64: head.S: move KASLR processing out of __enable_mmu()")
-Suggested-by: Will Deacon <will@kernel.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Link: https://lore.kernel.org/r/20210224093738.3629662-3-maz@kernel.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: dd1aa2524bc5 ("i2c: brcmstb: Add Broadcom settop SoC i2c controller driver")
+Reported-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/kernel/head.S | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/i2c/busses/i2c-brcmstb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index aba534959377b..3875423836622 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -846,6 +846,7 @@ __primary_switch:
+diff --git a/drivers/i2c/busses/i2c-brcmstb.c b/drivers/i2c/busses/i2c-brcmstb.c
+index 78792b4d6437c..a658f975605a7 100644
+--- a/drivers/i2c/busses/i2c-brcmstb.c
++++ b/drivers/i2c/busses/i2c-brcmstb.c
+@@ -318,7 +318,7 @@ static int brcmstb_send_i2c_cmd(struct brcmstb_i2c_dev *dev,
+ 		goto cmd_out;
+ 	}
  
- 	tlbi	vmalle1				// Remove any stale TLB entries
- 	dsb	nsh
-+	isb
- 
- 	msr	sctlr_el1, x19			// re-enable the MMU
- 	isb
+-	if ((CMD_RD || CMD_WR) &&
++	if ((cmd == CMD_RD || cmd == CMD_WR) &&
+ 	    bsc_readl(dev, iic_enable) & BSC_IIC_EN_NOACK_MASK) {
+ 		rc = -EREMOTEIO;
+ 		dev_dbg(dev->device, "controller received NOACK intr for %s\n",
 -- 
 2.27.0
 
