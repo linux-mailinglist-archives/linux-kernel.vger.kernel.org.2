@@ -2,30 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0F0327E7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE53327E84
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbhCAMmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:42:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54052 "EHLO mx2.suse.de"
+        id S233549AbhCAMnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:43:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235105AbhCAMmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:42:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 485D4AFCC;
-        Mon,  1 Mar 2021 12:42:04 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 13:42:01 +0100
-From:   Jean Delvare <jdelvare@suse.de>
-To:     zuoqilin1@163.com
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: Re: [PATCH] i2c: sis630: fix spellint typo
-Message-ID: <20210301134201.6cb3acf6@endymion>
-In-Reply-To: <20210301014026.289-1-zuoqilin1@163.com>
-References: <20210301014026.289-1-zuoqilin1@163.com>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S235105AbhCAMni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 07:43:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7ECE64E31;
+        Mon,  1 Mar 2021 12:42:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614602577;
+        bh=dkHBbBE+JY13Jb5tzmDmGMXEzWaZdXecvhBxHseKjcA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RD50p5cN9MF2AnyITW08DvxoHm1Dq5jphMR9sn3nZuC0ggKZdt2AvoR6IZZqC2gZS
+         eumrea+n2N4hsDphhXpQ4Vdzge4TCfzcyTNIO36InzNFJUXnz8X3Iq3b716mrj6tBb
+         wBI2MrSQMe2+vB2a8DEeonoTfXDop11rG+Z5fWJCc32bSzwdrW3OCbzxnbI4fDvdGI
+         S6rtSwKU67xAzJRjqK06+JjQlkVg5cUsJ7muDLRH+rGKkSEWz/DzQ17mf3CiB9ioVu
+         Y+pg+FJI2bYOZKDm/qsUk3xS06xxkPmjXut4PR4uDUz4re6XT7dyjhX0tJOPuAyzZD
+         FKJlj0WbY7DdA==
+Date:   Mon, 1 Mar 2021 13:42:52 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] media: add a subsystem profile documentation
+Message-ID: <20210301134252.3d165cce@coco.lan>
+In-Reply-To: <20210301103133.GK3@valkosipuli.retiisi.eu>
+References: <bbe8dc3119b21317616535b7062811968a89b85e.1614591312.git.mchehab+huawei@kernel.org>
+        <20210301103133.GK3@valkosipuli.retiisi.eu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,36 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi zuoqilin,
+Em Mon, 1 Mar 2021 12:31:34 +0200
+Sakari Ailus <sakari.ailus@iki.fi> escreveu:
 
-On Mon, 01 Mar 2021 09:40:26 +0800, zuoqilin1@163.com wrote:
-> From: zuoqilin <zuoqilin@yulong.com>
+> > +Sensor drivers:
+> > +  Sakari Ailus <sakari.ailus@linux.intel.com>  
 > 
-> change 'adress' to 'address'
+> Could you add me:
 > 
-> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
-> ---
->  drivers/i2c/busses/i2c-sis630.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-sis630.c b/drivers/i2c/busses/i2c-sis630.c
-> index cfb8e04..87d5625 100644
-> --- a/drivers/i2c/busses/i2c-sis630.c
-> +++ b/drivers/i2c/busses/i2c-sis630.c
-> @@ -97,7 +97,7 @@
->  module_param(force, bool, 0);
->  MODULE_PARM_DESC(force, "Forcibly enable the SIS630. DANGEROUS!");
->  
-> -/* SMBus base adress */
-> +/* SMBus base address */
->  static unsigned short smbus_base;
->  
->  /* supported chips */
+> v4l2-async, v4l2-fwnode, v4l2-flash-led-class.
 
-I pointed out 4 issues in your original patch, you fixed only one and
-resubmitted with 3 issues remaining. I give up. Patch rejected, we can
-live with a spelling mistake.
+Adding in v5:
 
--- 
-Jean Delvare
-SUSE L3 Support
+	v4l2-async, v4l2-fwnode, v4l2-flash-led-class and Sensor drivers:
+	  Sakari Ailus <sakari.ailus@linux.intel.com>
+
+
+> 
+> ISP drivers are generally complicated; I wonder if it should be me, Laurent
+> and Hans. It'd be nice to add ISPs, too.
+
+Not sure how to add ISP. I mean, we're actually splitting the drivers
+per API usage. Probably the main part of mapping an ISP into V4L would
+be as codec drivers, but other drivers could be doing something else.
+
+Suggestions?
+
+
+> 
+
+> If the order is reversed, that could be expressed fairly neatly.
+
+
+Thanks,
+Mauro
