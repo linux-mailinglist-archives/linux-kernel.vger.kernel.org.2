@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 695EB32984A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C53329805
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343882AbhCAXY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:24:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54152 "EHLO mail.kernel.org"
+        id S1344133AbhCAXJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:09:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238125AbhCASBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:01:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F66D64E6B;
-        Mon,  1 Mar 2021 16:38:20 +0000 (UTC)
+        id S238889AbhCAR4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:56:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6389264EAE;
+        Mon,  1 Mar 2021 16:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616701;
-        bh=k2d6AosMwifMRnf+jddaycRdCGqS5bevV4V+je0CmgE=;
+        s=korg; t=1614616710;
+        bh=5lR8TtXivwai/tfu7bzbgN48oqjqJcWzd+QPq8cYgo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kYmicHySxfHtm93XbB/PRaq5znNrI7FXSF5H8Ag9ZiR//RHKeROSyHROnLsZCwIYs
-         KLrKMg43mTs+EfcQLbJRqHBnRTlm3RKqjGqmW6YMQ4xssrDChHl7/bqtfkmMg8QUcz
-         QNHbicRFHKb5AU25GTEqVa6Lt6yjaG8mEvF+lnq4=
+        b=auAUs6Vy1vrdIt1ibEOKw2TQNwah17CGrbPJ1m+5Rc5IMzAk5uuSpEoRwEPwPcesz
+         13wS8ZLJtNUrlTfCD7ekkYech7YwIf3REd31K/V0+rvYrkRcAbilC4GupZfGxmBSge
+         bOmMcoNLe+Q9dZLT9Jfsnjitu06vHW6vuJalJBtQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Abdul Haleem <abdhalee@in.ibm.com>,
+        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 058/247] ibmvnic: Set to CLOSED state even on error
-Date:   Mon,  1 Mar 2021 17:11:18 +0100
-Message-Id: <20210301161034.502819013@linuxfoundation.org>
+Subject: [PATCH 4.19 069/247] net: amd-xgbe: Fix NETDEV WATCHDOG transmit queue timeout warning
+Date:   Mon,  1 Mar 2021 17:11:29 +0100
+Message-Id: <20210301161035.058070695@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -42,40 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit d4083d3c00f60a09ad82e3bf17ff57fec69c8aa6 ]
+[ Upstream commit 186edbb510bd60e748f93975989ccba25ee99c50 ]
 
-If set_link_state() fails for any reason, we still cleanup the adapter
-state and cannot recover from a partial close anyway. So set the adapter
-to CLOSED state. That way if a new soft/hard reset is processed, the
-adapter will remain in the CLOSED state until the next ibmvnic_open().
+The current driver calls netif_carrier_off() late in the link tear down
+which can result in a netdev watchdog timeout.
 
-Fixes: 01d9bd792d16 ("ibmvnic: Reorganize device close")
-Signed-off-by: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Reported-by: Abdul Haleem <abdhalee@in.ibm.com>
+Calling netif_carrier_off() immediately after netif_tx_stop_all_queues()
+avoids the warning.
+
+ ------------[ cut here ]------------
+ NETDEV WATCHDOG: enp3s0f2 (amd-xgbe): transmit queue 0 timed out
+ WARNING: CPU: 3 PID: 0 at net/sched/sch_generic.c:461 dev_watchdog+0x20d/0x220
+ Modules linked in: amd_xgbe(E)  amd-xgbe 0000:03:00.2 enp3s0f2: Link is Down
+ CPU: 3 PID: 0 Comm: swapper/3 Tainted: G            E
+ Hardware name: AMD Bilby-RV2/Bilby-RV2, BIOS RBB1202A 10/18/2019
+ RIP: 0010:dev_watchdog+0x20d/0x220
+ Code: 00 49 63 4e e0 eb 92 4c 89 e7 c6 05 c6 e2 c1 00 01 e8 e7 ce fc ff 89 d9 48
+ RSP: 0018:ffff90cfc28c3e88 EFLAGS: 00010286
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000006
+ RDX: 0000000000000007 RSI: 0000000000000086 RDI: ffff90cfc28d63c0
+ RBP: ffff90cfb977845c R08: 0000000000000050 R09: 0000000000196018
+ R10: ffff90cfc28c3ef8 R11: 0000000000000000 R12: ffff90cfb9778000
+ R13: 0000000000000003 R14: ffff90cfb9778480 R15: 0000000000000010
+ FS:  0000000000000000(0000) GS:ffff90cfc28c0000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007f240ff2d9d0 CR3: 00000001e3e0a000 CR4: 00000000003406e0
+ Call Trace:
+  <IRQ>
+  ? pfifo_fast_reset+0x100/0x100
+  call_timer_fn+0x2b/0x130
+  run_timer_softirq+0x3e8/0x440
+  ? enqueue_hrtimer+0x39/0x90
+
+Fixes: e722ec82374b ("amd-xgbe: Update the BelFuse quirk to support SGMII")
+Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/amd/xgbe/xgbe-drv.c  | 1 +
+ drivers/net/ethernet/amd/xgbe/xgbe-mdio.c | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 68d5971c200a1..5518b56c2a967 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -1257,10 +1257,8 @@ static int __ibmvnic_close(struct net_device *netdev)
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
+index 5519eff584417..80cf6af822f72 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
+@@ -1444,6 +1444,7 @@ static void xgbe_stop(struct xgbe_prv_data *pdata)
+ 		return;
  
- 	adapter->state = VNIC_CLOSING;
- 	rc = set_link_state(adapter, IBMVNIC_LOGICAL_LNK_DN);
--	if (rc)
--		return rc;
- 	adapter->state = VNIC_CLOSED;
--	return 0;
-+	return rc;
+ 	netif_tx_stop_all_queues(netdev);
++	netif_carrier_off(pdata->netdev);
+ 
+ 	xgbe_stop_timers(pdata);
+ 	flush_workqueue(pdata->dev_workqueue);
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
+index 8a3a60bb26888..4d5506d928973 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
+@@ -1396,7 +1396,6 @@ static void xgbe_phy_stop(struct xgbe_prv_data *pdata)
+ 	pdata->phy_if.phy_impl.stop(pdata);
+ 
+ 	pdata->phy.link = 0;
+-	netif_carrier_off(pdata->netdev);
+ 
+ 	xgbe_phy_adjust_link(pdata);
  }
- 
- static int ibmvnic_close(struct net_device *netdev)
 -- 
 2.27.0
 
