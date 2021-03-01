@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF68D3299FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB8B329A7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346208AbhCBAlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:41:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47676 "EHLO mail.kernel.org"
+        id S1377727AbhCBAs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:48:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240128AbhCASgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:36:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2520365268;
-        Mon,  1 Mar 2021 17:29:50 +0000 (UTC)
+        id S235960AbhCASq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:46:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 508C964FE3;
+        Mon,  1 Mar 2021 17:01:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619791;
-        bh=VhUdqMxmlCMUNY4o4P0+g6ExMWzhed8BTRHfI5lN4LA=;
+        s=korg; t=1614618075;
+        bh=aorfCsHpkh9ylvQlSx6TyVEKIBH27C58VvVb8wqjNVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KDptCMuvHeZufZ+BGe/3RaEUNVQgOALobeucBvGhf3DYZZbHXor0LuQGn9dw39IZJ
-         lV0h5+fwRL7ufCgEFFFWTdbJzKgwD7FxwqqDoTvSokRxsXEacaxZft5a1ZQj0v/4Wy
-         DYgUwcu9+FIQoKBj496I29sljOZGsBZBQL3bIRX4=
+        b=GEoQHAbXMm+xZOoBrZYka5VNnU4UeaiXpp1h3uZ0Zg9j0h1TBZH5YRwBqjYZ7gvwX
+         jgdFtAgd6DSB9ovgtxvnHtxOrPWA8iSss9m5p40vx/UiJo6Keo/REtkzW0+rIs7JHV
+         NVfVWr739TYMPDI2Yqu+GEFrcs1P5V0IWhjJnsd0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Frank van der Linden <fllinden@amazon.com>,
-        Shaoying Xu <shaoyi@amazon.com>, Will Deacon <will@kernel.org>
-Subject: [PATCH 5.10 582/663] arm64 module: set plt* section addresses to 0x0
-Date:   Mon,  1 Mar 2021 17:13:50 +0100
-Message-Id: <20210301161210.661046412@linuxfoundation.org>
+        stable@vger.kernel.org, qiuguorui1 <qiuguorui1@huawei.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.4 291/340] arm64: kexec_file: fix memory leakage in create_dtb() when fdt_open_into() fails
+Date:   Mon,  1 Mar 2021 17:13:55 +0100
+Message-Id: <20210301161102.613910343@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shaoying Xu <shaoyi@amazon.com>
+From: qiuguorui1 <qiuguorui1@huawei.com>
 
-commit f5c6d0fcf90ce07ee0d686d465b19b247ebd5ed7 upstream.
+commit 656d1d58d8e0958d372db86c24f0b2ea36f50888 upstream.
 
-These plt* and .text.ftrace_trampoline sections specified for arm64 have
-non-zero addressses. Non-zero section addresses in a relocatable ELF would
-confuse GDB when it tries to compute the section offsets and it ends up
-printing wrong symbol addresses. Therefore, set them to zero, which mirrors
-the change in commit 5d8591bc0fba ("module: set ksymtab/kcrctab* section
-addresses to 0x0").
+in function create_dtb(), if fdt_open_into() fails, we need to vfree
+buf before return.
 
-Reported-by: Frank van der Linden <fllinden@amazon.com>
-Signed-off-by: Shaoying Xu <shaoyi@amazon.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210216183234.GA23876@amazon.com
+Fixes: 52b2a8af7436 ("arm64: kexec_file: load initrd and device-tree")
+Cc: stable@vger.kernel.org # v5.0
+Signed-off-by: qiuguorui1 <qiuguorui1@huawei.com>
+Link: https://lore.kernel.org/r/20210218125900.6810-1-qiuguorui1@huawei.com
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/include/asm/module.lds.h |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/kernel/machine_kexec_file.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/include/asm/module.lds.h
-+++ b/arch/arm64/include/asm/module.lds.h
-@@ -1,7 +1,7 @@
- #ifdef CONFIG_ARM64_MODULE_PLTS
- SECTIONS {
--	.plt (NOLOAD) : { BYTE(0) }
--	.init.plt (NOLOAD) : { BYTE(0) }
--	.text.ftrace_trampoline (NOLOAD) : { BYTE(0) }
-+	.plt 0 (NOLOAD) : { BYTE(0) }
-+	.init.plt 0 (NOLOAD) : { BYTE(0) }
-+	.text.ftrace_trampoline 0 (NOLOAD) : { BYTE(0) }
- }
- #endif
+--- a/arch/arm64/kernel/machine_kexec_file.c
++++ b/arch/arm64/kernel/machine_kexec_file.c
+@@ -150,8 +150,10 @@ static int create_dtb(struct kimage *ima
+ 
+ 		/* duplicate a device tree blob */
+ 		ret = fdt_open_into(initial_boot_params, buf, buf_size);
+-		if (ret)
++		if (ret) {
++			vfree(buf);
+ 			return -EINVAL;
++		}
+ 
+ 		ret = setup_dtb(image, initrd_load_addr, initrd_len,
+ 				cmdline, buf);
 
 
