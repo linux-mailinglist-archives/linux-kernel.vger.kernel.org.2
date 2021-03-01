@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA33B329C18
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEE5329C33
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349002AbhCBBsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:48:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46160 "EHLO mail.kernel.org"
+        id S1380283AbhCBBuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:50:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241547AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:24:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C60B65260;
-        Mon,  1 Mar 2021 17:28:47 +0000 (UTC)
+        id S241569AbhCAT1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:27:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 873E065246;
+        Mon,  1 Mar 2021 17:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619727;
-        bh=Lz+3XLTCULspYyzvlhiTLiL1CoYYgRLJv7r9U0NgbVI=;
+        s=korg; t=1614619651;
+        bh=6DKp67QIqSgKPfbHQxhowL4lKik5+/5ti4Hr7GpcmJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MM3hZGPnRvjvgpQjEHAF+jlyA44fulU9f8rV/GRFwcKkJjSbVcRGBLdtt+F4kVRtY
-         /adYSC9+49a4c/6op95duQ2JBgsNw1PYjrsCLKQITtpeFvA7E+pbMqetk3izDapJLZ
-         hjcFht1XyaDyM+IEuyPCwtWmNIEtV1MMFUhiRuv4=
+        b=jJdfVMvnyveplwWJIxHGNYh7XfqSiua1vT6L4CX3qnVZ3XuakXnJmAOAzH64P8XSb
+         4KX4rBjSG0QXxgwSVSUMS9HUskfcxUCxG9Qrg3BYfC0nPxi8tTP5AQSecHji6ji5v7
+         FE5gSHKjNA5irKpHK8gUDp3hm7rzT4j5FC27z2xw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH 5.10 529/663] KEYS: trusted: Fix migratable=1 failing
-Date:   Mon,  1 Mar 2021 17:12:57 +0100
-Message-Id: <20210301161208.020629485@linuxfoundation.org>
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.10 532/663] btrfs: do not warn if we cant find the reloc root when looking up backref
+Date:   Mon,  1 Mar 2021 17:13:00 +0100
+Message-Id: <20210301161208.172565061@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,46 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarkko Sakkinen <jarkko@kernel.org>
+From: Josef Bacik <josef@toxicpanda.com>
 
-commit 8da7520c80468c48f981f0b81fc1be6599e3b0ad upstream.
+commit f78743fbdae1bb31bc9c9233c3590a5048782381 upstream.
 
-Consider the following transcript:
+The backref code is looking for a reloc_root that corresponds to the
+given fs root.  However any number of things could have gone wrong while
+initializing that reloc_root, like ENOMEM while trying to allocate the
+root itself, or EIO while trying to write the root item.  This would
+result in no corresponding reloc_root being in the reloc root cache, and
+thus would return NULL when we do the find_reloc_root() call.
 
-$ keyctl add trusted kmk "new 32 blobauth=helloworld keyhandle=80000000 migratable=1" @u
-add_key: Invalid argument
+Because of this we do not want to WARN_ON().  This presumably was meant
+to catch developer errors, cases where we messed up adding the reloc
+root.  However we can easily hit this case with error injection, and
+thus should not do a WARN_ON().
 
-The documentation has the following description:
-
-  migratable=   0|1 indicating permission to reseal to new PCR values,
-                default 1 (resealing allowed)
-
-The consequence is that "migratable=1" should succeed. Fix this by
-allowing this condition to pass instead of return -EINVAL.
-
-[*] Documentation/security/keys/trusted-encrypted.rst
-
-Cc: stable@vger.kernel.org
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: Mimi Zohar <zohar@linux.ibm.com>
-Cc: David Howells <dhowells@redhat.com>
-Fixes: d00a1c72f7f4 ("keys: add new trusted key-type")
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+CC: stable@vger.kernel.org # 5.10+
+Reported-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/keys/trusted-keys/trusted_tpm1.c |    2 +-
+ fs/btrfs/backref.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/security/keys/trusted-keys/trusted_tpm1.c
-+++ b/security/keys/trusted-keys/trusted_tpm1.c
-@@ -801,7 +801,7 @@ static int getoptions(char *c, struct tr
- 		case Opt_migratable:
- 			if (*args[0].from == '0')
- 				pay->migratable = 0;
--			else
-+			else if (*args[0].from != '1')
- 				return -EINVAL;
- 			break;
- 		case Opt_pcrlock:
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -2624,7 +2624,7 @@ static int handle_direct_tree_backref(st
+ 		/* Only reloc backref cache cares about a specific root */
+ 		if (cache->is_reloc) {
+ 			root = find_reloc_root(cache->fs_info, cur->bytenr);
+-			if (WARN_ON(!root))
++			if (!root)
+ 				return -ENOENT;
+ 			cur->root = root;
+ 		} else {
 
 
