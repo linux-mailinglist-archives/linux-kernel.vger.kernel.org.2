@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB14329A33
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE139329B16
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377135AbhCBApt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:45:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51238 "EHLO mail.kernel.org"
+        id S1378596AbhCBBHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:07:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234540AbhCASjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:39:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D2A0651CF;
-        Mon,  1 Mar 2021 17:17:21 +0000 (UTC)
+        id S240931AbhCATBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:01:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1DAA651D3;
+        Mon,  1 Mar 2021 17:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619042;
-        bh=lqRKLBvKAYvx4AkNz/AZ9rXkrR0NLQWErrsSkOTtLQM=;
+        s=korg; t=1614619049;
+        bh=2NVndUT7dS67kVUETNfHqFdwMr3cq1s8T/7KdfD5vl0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IKmyjaL869kbfe2gFoDFdI5g5lIjbK4HvtWOPmb5/Psd8c9sHsCnZwEN6Dc6saV7G
-         ktjRVUJoNLounCepsx7Jogg+UqfgaJIDEoT63qc8O+/T0aQBGXCXygM7hKo9yiQTkS
-         7vYeN9++U3MQGXJcJ/QLLtOd4E2nZ8t8DJ7dRNGo=
+        b=w8/WPb/SraOtCuU0ZkgjVuhIodqnd5/hTO9wCKiH6PdWKzMlvWFM9383Id4AMUXXb
+         od5XS65VQ9v9hzg4sAjLgGZnmvp+5u72sFBIkwqzG38dOhPaGiqCTQKhHbxItuMe5f
+         4F2YpK3VEXpAXDCe381QapciYKnl1ikI1wmOTej0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 311/663] regulator: s5m8767: Drop regulators OF node reference
-Date:   Mon,  1 Mar 2021 17:09:19 +0100
-Message-Id: <20210301161157.226137926@linuxfoundation.org>
+Subject: [PATCH 5.10 313/663] power: supply: smb347-charger: Fix interrupt usage if interrupt is unavailable
+Date:   Mon,  1 Mar 2021 17:09:21 +0100
+Message-Id: <20210301161157.329350288@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,47 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit a5872bd3398d0ff2ce4c77794bc7837899c69024 ]
+[ Upstream commit 6996312642d2dad3070c3d276c7621f35e721f30 ]
 
-The device node reference obtained with of_get_child_by_name() should be
-dropped on error paths.
+The IRQ=0 could be a valid interrupt number in kernel because interrupt
+numbers are virtual in a modern kernel. Hence fix the interrupt usage in
+a case if interrupt is unavailable by not overriding the interrupt number
+which is used by the driver.
 
-Fixes: 26aec009f6b6 ("regulator: add device tree support for s5m8767")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20210121155914.48034-1-krzk@kernel.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Note that currently Nexus 7 is the only know device which uses SMB347
+kernel diver and it has a properly working interrupt, hence this patch
+doesn't fix any real problems, it's a minor cleanup/improvement.
+
+Fixes: 99298de5df92 ("power: supply: smb347-charger: Replace mutex with IRQ disable/enable")
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/s5m8767.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/power/supply/smb347-charger.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/regulator/s5m8767.c b/drivers/regulator/s5m8767.c
-index 48dd95b3ff45a..7c111bbdc2afa 100644
---- a/drivers/regulator/s5m8767.c
-+++ b/drivers/regulator/s5m8767.c
-@@ -544,14 +544,18 @@ static int s5m8767_pmic_dt_parse_pdata(struct platform_device *pdev,
- 	rdata = devm_kcalloc(&pdev->dev,
- 			     pdata->num_regulators, sizeof(*rdata),
- 			     GFP_KERNEL);
--	if (!rdata)
-+	if (!rdata) {
-+		of_node_put(regulators_np);
- 		return -ENOMEM;
-+	}
+diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply/smb347-charger.c
+index d3bf35ed12cee..8cfbd8d6b4786 100644
+--- a/drivers/power/supply/smb347-charger.c
++++ b/drivers/power/supply/smb347-charger.c
+@@ -137,6 +137,7 @@
+  * @mains_online: is AC/DC input connected
+  * @usb_online: is USB input connected
+  * @charging_enabled: is charging enabled
++ * @irq_unsupported: is interrupt unsupported by SMB hardware
+  * @max_charge_current: maximum current (in uA) the battery can be charged
+  * @max_charge_voltage: maximum voltage (in uV) the battery can be charged
+  * @pre_charge_current: current (in uA) to use in pre-charging phase
+@@ -193,6 +194,7 @@ struct smb347_charger {
+ 	bool			mains_online;
+ 	bool			usb_online;
+ 	bool			charging_enabled;
++	bool			irq_unsupported;
  
- 	rmode = devm_kcalloc(&pdev->dev,
- 			     pdata->num_regulators, sizeof(*rmode),
- 			     GFP_KERNEL);
--	if (!rmode)
-+	if (!rmode) {
-+		of_node_put(regulators_np);
- 		return -ENOMEM;
-+	}
+ 	unsigned int		max_charge_current;
+ 	unsigned int		max_charge_voltage;
+@@ -862,6 +864,9 @@ static int smb347_irq_set(struct smb347_charger *smb, bool enable)
+ {
+ 	int ret;
  
- 	pdata->regulators = rdata;
- 	pdata->opmode = rmode;
++	if (smb->irq_unsupported)
++		return 0;
++
+ 	ret = smb347_set_writable(smb, true);
+ 	if (ret < 0)
+ 		return ret;
+@@ -923,8 +928,6 @@ static int smb347_irq_init(struct smb347_charger *smb,
+ 	ret = regmap_update_bits(smb->regmap, CFG_STAT,
+ 				 CFG_STAT_ACTIVE_HIGH | CFG_STAT_DISABLED,
+ 				 CFG_STAT_DISABLED);
+-	if (ret < 0)
+-		client->irq = 0;
+ 
+ 	smb347_set_writable(smb, false);
+ 
+@@ -1345,6 +1348,7 @@ static int smb347_probe(struct i2c_client *client,
+ 		if (ret < 0) {
+ 			dev_warn(dev, "failed to initialize IRQ: %d\n", ret);
+ 			dev_warn(dev, "disabling IRQ support\n");
++			smb->irq_unsupported = true;
+ 		} else {
+ 			smb347_irq_enable(smb);
+ 		}
+@@ -1357,8 +1361,8 @@ static int smb347_remove(struct i2c_client *client)
+ {
+ 	struct smb347_charger *smb = i2c_get_clientdata(client);
+ 
+-	if (client->irq)
+-		smb347_irq_disable(smb);
++	smb347_irq_disable(smb);
++
+ 	return 0;
+ }
+ 
 -- 
 2.27.0
 
