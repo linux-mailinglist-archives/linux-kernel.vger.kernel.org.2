@@ -2,99 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564B9327DDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01411327DF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232795AbhCAMIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:08:13 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58914 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbhCAMIF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:08:05 -0500
-Date:   Mon, 01 Mar 2021 12:07:20 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614600441;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eydlmhsj2dW8ca+vM6O/qYgUuk81LRTFPhF9FNqZsk0=;
-        b=MgZTOumz9Y4dUgKMYiThAwryGBRcaeTVaI9iXl30uEe5EyZVR6dhlxPnjhWJ96xCDS89Z0
-        7gmyphqTnLEbaborNhRFX/tjII5kxzcahSoG7aBOrxYM+xyvA2RA06ssW6ypXjQOxFk+71
-        nEZT5PrU5MMmg1Y4SmIRLWPbde60f7/dogsKBCL5ZU9CLkDi6nMgM5SmWbmypwVQADWCEo
-        TdqKM1cMlUhFDV+OmQuq7zEN0QYtnv1G4B9TcykZefVaEAl4mTNrGqOoTeEyB7f3xiUWbo
-        EXMuldfpYZkG0L5A1vpQuOlkL3dpPF6EJ92KZNbGnVmFng8UKinvSItkmdV2qA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614600441;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eydlmhsj2dW8ca+vM6O/qYgUuk81LRTFPhF9FNqZsk0=;
-        b=Gvxcn/WThPZxAW+Wg+mQcbbyBGADOf3lRvKyz3lTRSXJVQYiqmbqyFFQigPZqcJT1VT7ea
-        2ucs+m1OISAZIZAA==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/sev-es: Remove subtraction of res variable
-Cc:     Borislav Petkov <bp@suse.de>, Joerg Roedel <jroedel@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210223111130.16201-1-bp@alien8.de>
-References: <20210223111130.16201-1-bp@alien8.de>
+        id S233296AbhCAMMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:12:10 -0500
+Received: from mga01.intel.com ([192.55.52.88]:29289 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233146AbhCAMMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 07:12:05 -0500
+IronPort-SDR: kTRbvG632CVMz2BEBXE5F7D/cA6wShZbE7ju5ineyxUAmbPtRZ6Y+CyA3mnZ5f7GDG8IMtYY6e
+ 7ois48GPeamA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="206048613"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="206048613"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 04:10:19 -0800
+IronPort-SDR: SPCAxCdAecMLLqoTDlPItL7K2jphc+xnG0mvpY6E/DAH8K/05t3iT+nKl4vzN1yyUbHSvp9PML
+ xkFhJTXkqcuA==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="435380055"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 04:08:06 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lGhLA-0098TC-Sb; Mon, 01 Mar 2021 14:07:56 +0200
+Date:   Mon, 1 Mar 2021 14:07:56 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        conghui.chen@intel.com, arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, viresh.kumar@linaro.org
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YDzZHKdrpROgSdg3@smile.fi.intel.com>
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
 MIME-Version: 1.0
-Message-ID: <161460044051.20312.6762065762285788103.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/seves branch of tip:
+On Mon, Mar 01, 2021 at 02:41:35PM +0800, Jie Deng wrote:
+> Add an I2C bus driver for virtio para-virtualization.
+> 
+> The controller can be emulated by the backend driver in
+> any device model software by following the virtio protocol.
+> 
+> The device specification can be found on
+> https://lists.oasis-open.org/archives/virtio-comment/202101/msg00008.html.
+> 
+> By following the specification, people may implement different
+> backend drivers to emulate different controllers according to
+> their needs.
 
-Commit-ID:     bb8dc26937d51b3421b26d9d91cdad3484c34b7e
-Gitweb:        https://git.kernel.org/tip/bb8dc26937d51b3421b26d9d91cdad3484c34b7e
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Tue, 23 Feb 2021 12:03:19 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 01 Mar 2021 12:40:22 +01:00
+...
 
-x86/sev-es: Remove subtraction of res variable
+> +		buf = kzalloc(msgs[i].len, GFP_KERNEL);
+> +		if (!buf)
+> +			break;
+> +
+> +		if (msgs[i].flags & I2C_M_RD) {
 
-vc_decode_insn() calls copy_from_kernel_nofault() by way of
-vc_fetch_insn_kernel() to fetch 15 bytes max of opcodes to decode.
+kzalloc()
 
-copy_from_kernel_nofault() returns negative on error and 0 on success.
-The error case is handled by returning ES_EXCEPTION.
+> +			reqs[i].read_buf = buf;
+> +			sg_init_one(&msg_buf, reqs[i].read_buf, msgs[i].len);
+> +			sgs[outcnt + incnt++] = &msg_buf;
+> +		} else {
+> +			reqs[i].write_buf = buf;
 
-In the success case, the ret variable which contains the return value is
-0 so there's no need to subtract it from MAX_INSN_SIZE when initializing
-the insn buffer for further decoding. Remove it.
+> +			memcpy(reqs[i].write_buf, msgs[i].buf, msgs[i].len);
 
-No functional changes.
+kmemdup() ?
 
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Joerg Roedel <jroedel@suse.de>
-Link: https://lkml.kernel.org/r/20210223111130.16201-1-bp@alien8.de
----
- arch/x86/kernel/sev-es.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> +			sg_init_one(&msg_buf, reqs[i].write_buf, msgs[i].len);
+> +			sgs[outcnt++] = &msg_buf;
+> +		}
 
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 84c1821..1e78f4b 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -267,7 +267,7 @@ static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
- 			return ES_EXCEPTION;
- 		}
- 
--		insn_init(&ctxt->insn, buffer, MAX_INSN_SIZE - res, 1);
-+		insn_init(&ctxt->insn, buffer, MAX_INSN_SIZE, 1);
- 		insn_get_length(&ctxt->insn);
- 	}
- 
+...
+
+> +
+> +
+
+One blank line is enough.
+
+...
+
+
+> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
+> +	if (ret == 0)
+> +		goto err_unlock_free;
+
+> +	else
+
+Redundant.
+
+> +		nr = ret;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
