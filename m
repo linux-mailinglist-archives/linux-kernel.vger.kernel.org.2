@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B8B329A49
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BFF329AFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377312AbhCBAqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:46:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51238 "EHLO mail.kernel.org"
+        id S1378396AbhCBBFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:05:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237533AbhCASmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:42:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAECB6524B;
-        Mon,  1 Mar 2021 17:27:51 +0000 (UTC)
+        id S240663AbhCATAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:00:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C08F165252;
+        Mon,  1 Mar 2021 17:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619672;
-        bh=7A1pKqdKYGdgYqyvoPripE2AZTpzpJRB9fEwNEElYK0=;
+        s=korg; t=1614619678;
+        bh=5b4iKmjWzNs2vQjmZVzQPWUC7qWrapYVRu0bD4UUFFU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uMQD55B1vLyTwgP8L0td6xwlFnV1MnkACPb2cKpKUCVji4Ayta/wbea0xGTk+7q5f
-         I8SjhexlqW++gAYRCjTlX8PL8nAeX0BUx5eohvjXT3Ys0T4ye43H/fcAu8dbnhxAtu
-         hFLVMSRvAg7CRheNKF2css4lZPh9vs2Os6QqgrT0=
+        b=n/Y70vNqTjemcixjF7dHN+PoncALHroNYBLc9V9wNaC3GnYE+bfu/wgqLN1kYYbwn
+         U+/VDdSkuE2mvQ5r/CXSV9q0SpDtVETubp7xhy+mJy2hUVQmkEblZzgdyHaFi2mAoG
+         i6ooCcMIuR18Vi+Pf9GUZ2Yoe4NLDdqmOGctgT3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
         Mika Kuoppala <mika.kuoppala@linux.intel.com>,
+        Prathap Kumar Valsan <prathap.kumar.valsan@intel.com>,
         Akeem G Abodunrin <akeem.g.abodunrin@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Diego Calleja <diegocg@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 5.10 540/663] drm/i915/gt: Flush before changing register state
-Date:   Mon,  1 Mar 2021 17:13:08 +0100
-Message-Id: <20210301161208.580668320@linuxfoundation.org>
+        Hans de Goede <hdegoede@redhat.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.10 541/663] drm/i915/gt: Correct surface base address for renderclear
+Date:   Mon,  1 Mar 2021 17:13:09 +0100
+Message-Id: <20210301161208.633598541@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -45,40 +45,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chris Wilson <chris@chris-wilson.co.uk>
 
-commit d5109f739c9f14a3bda249cb48b16de1065932f0 upstream.
+commit 81ce8f04aa96f7f6cae05770f68b5d15be91f5a2 upstream.
 
-Flush; invalidate; change registers; invalidate; flush.
+The surface_state_base is an offset into the batch, so we need to pass
+the correct batch address for STATE_BASE_ADDRESS.
 
-Will this finally work on every device? Or will Baytrail complain again?
-
-On the positive side, we immediately see the benefit of having hsw-gt1 in
-CI.
-
-Fixes: ace44e13e577 ("drm/i915/gt: Clear CACHE_MODE prior to clearing residuals")
-Testcase: igt/gem_render_tiled_blits # hsw-gt1
+Fixes: 47f8253d2b89 ("drm/i915/gen7: Clear all EU/L3 residual contexts")
 Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
 Cc: Mika Kuoppala <mika.kuoppala@linux.intel.com>
+Cc: Prathap Kumar Valsan <prathap.kumar.valsan@intel.com>
 Cc: Akeem G Abodunrin <akeem.g.abodunrin@intel.com>
-Acked-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210125220247.31701-1-chris@chris-wilson.co.uk
-(cherry picked from commit d30bbd62b1bfd9e0a33c3583c5a9e5d66f60cbd7)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Diego Calleja <diegocg@gmail.com>
 Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
+Cc: <stable@vger.kernel.org> # v5.7+
+Link: https://patchwork.freedesktop.org/patch/msgid/20210210122728.20097-1-chris@chris-wilson.co.uk
+(cherry picked from commit 1914911f4aa08ddc05bae71d3516419463e0c567)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/gt/gen7_renderclear.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/i915/gt/gen7_renderclear.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/drivers/gpu/drm/i915/gt/gen7_renderclear.c
 +++ b/drivers/gpu/drm/i915/gt/gen7_renderclear.c
-@@ -393,6 +393,7 @@ static void emit_batch(struct i915_vma *
- 						     desc_count);
- 
- 	/* Reset inherited context registers */
-+	gen7_emit_pipeline_flush(&cmds);
- 	gen7_emit_pipeline_invalidate(&cmds);
- 	batch_add(&cmds, MI_LOAD_REGISTER_IMM(2));
- 	batch_add(&cmds, i915_mmio_reg_offset(CACHE_MODE_0_GEN7));
+@@ -240,7 +240,7 @@ gen7_emit_state_base_address(struct batc
+ 	/* general */
+ 	*cs++ = batch_addr(batch) | BASE_ADDRESS_MODIFY;
+ 	/* surface */
+-	*cs++ = batch_addr(batch) | surface_state_base | BASE_ADDRESS_MODIFY;
++	*cs++ = (batch_addr(batch) + surface_state_base) | BASE_ADDRESS_MODIFY;
+ 	/* dynamic */
+ 	*cs++ = batch_addr(batch) | BASE_ADDRESS_MODIFY;
+ 	/* indirect */
 
 
