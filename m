@@ -2,633 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E57E328106
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C455328114
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236359AbhCAOfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:35:22 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:11387 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236377AbhCAOex (ORCPT
+        id S236462AbhCAOhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:37:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31283 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236463AbhCAOhI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:34:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1614609291; x=1646145291;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=R+rEBtlLA8THiEC1w9Vvy58iPwaCskE3NIpIhxpD6BQ=;
-  b=irg/jMcQlNtdLc0O0oKetpeWU06/irx1E++2O1p2mW8VqE7xvKMRLl4C
-   WPQ5gDiLabiVsHqwAah9175N5tIzPRu99gADt0yxM+cKsXT6+VqtAykBx
-   b/SJxaKjhRh/AthumMty7fc934b6EzGNNdDX2xY6JsnrrheucjVW9ryxN
-   H12JYCEi4SkK/hVvrjPuvVgt2WzaY7tfRBis6m2kOg6qefVAZBxSpZhJg
-   PsF3OnhNDbEDKvObhO6xMpUi7GWXJy2703UEiNXEkmr9TS6+K/EPD0NuD
-   IPqRIXdMeCLyfUYGtUmk5bbuQYAmITczLDWDgssNE/0pxoX+INyhRkZz2
-   A==;
-IronPort-SDR: miQ/dXs5cw4G1c6U0kb4zAWxFbCqTOgBD0r8a9NjEO/kGhtStVK2jUnL0HEOchUNTwnZ335ftu
- w95bYTEafLBg2NQdlg/U6R+BwaO8agWJ1qLZpJflG9xIGjjgg9YiNjNzf7X4BCwbUPiP6nRXtQ
- 0v1tT20oRLU+orvFvT9nzN5DW0fcx559SHeqil33GkXvVl5Av3UTvJAMJS7hLFOolJCeq9wX9a
- r532mdFc1aWzJiGWMELGl/fSnnI6TO5u5AhVaqmT0oRmX3YasY6QRaHJXBa3FzbMGJRMA18xfu
- FEI=
-X-IronPort-AV: E=Sophos;i="5.81,215,1610434800"; 
-   d="scan'208";a="45819040"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Mar 2021 07:33:27 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 1 Mar 2021 07:33:27 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 1 Mar 2021 07:33:25 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>
-CC:     <ludovic.desroches@microchip.com>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH 4/4] iio: adc: at91-sama5d2: add support for sama7g5 device
-Date:   Mon, 1 Mar 2021 16:32:56 +0200
-Message-ID: <20210301143256.16502-5-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210301143256.16502-1-eugen.hristev@microchip.com>
-References: <20210301143256.16502-1-eugen.hristev@microchip.com>
+        Mon, 1 Mar 2021 09:37:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614609335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hz1YO9pOKdF6lCxgpCIRsUs8IE/9dpDT8udUOXk1C4A=;
+        b=cJ/ppSNAuc1fa+NSgqgN7FqncoLF99jz/nLIl/Nu88eiMWcd7J9E7KL8GsREsyr8Nn4tC1
+        7w8GgPVDoBiyN1X43U6+ee7nmgVroXyZ56JjHKv+E3cvnChvRozAKoSj9KpA3UToELCkC2
+        aplPFgDWwrFPY/AK1kNdXsn07BqT7+g=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-96--MAUeGexNq2aw69V-9s8mg-1; Mon, 01 Mar 2021 09:35:34 -0500
+X-MC-Unique: -MAUeGexNq2aw69V-9s8mg-1
+Received: by mail-yb1-f199.google.com with SMTP id j4so18994157ybt.23
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:35:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Hz1YO9pOKdF6lCxgpCIRsUs8IE/9dpDT8udUOXk1C4A=;
+        b=E/ECyXUUZ4ez1WeoKEyi6feVf2p5v1cG+zSJKjXTjT4VjTU45Kcp3kp0Wi16qqepez
+         q/rdISZFWtY4YdKU65hMlOvOj8qreRumx2rnPwsJxXAtURbsk9qvSANXVr5YkfBt8jkw
+         jeGUEPIwBCGM+XCYQHtjIr6MJ7jPqTLkp7C51ezkWu2z3jfMel9ZD1+Up33a+7EPbXek
+         6XKEqPMVGhb+q/EMzbsHHjwfb7dNeH4oeNSi4CRi/MmWd+7iFruVtiYJnfdpl5dB8idi
+         BPsZ9/6t4Qns82q5/QPpVyvZpCW9eCBVkDQlIVVStyNVy4ogMdY9PbZZQAIzzMRYkL4M
+         G/3w==
+X-Gm-Message-State: AOAM531Xmphy0z+S/qLe4AArJMr7KqaGEMMCFcoqIhO2/+LUnJr30ETv
+        t4d0AkuKO6xPPLDNpmJdZd3B8EzJKmO1Si5eiO5gv/GngY7TTAxR2xP7Mx2FqqebGdTnvvFPB9l
+        XkDwmUZTB0K1aoC1Yhq1yhnh7SxgqbCYz4wDBiV+T
+X-Received: by 2002:a25:ad67:: with SMTP id l39mr24078948ybe.172.1614609333691;
+        Mon, 01 Mar 2021 06:35:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwqY1iRRABW+DhMsbhwQqiX2RBlXVVGL5YmYqJ9mKfrzM653kOdoIcp8z2DxW2B1DjG382/mdaWg3YJjOViiJ8=
+X-Received: by 2002:a25:ad67:: with SMTP id l39mr24078917ybe.172.1614609333458;
+ Mon, 01 Mar 2021 06:35:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia>
+ <20210223223652.GD6000@sequoia> <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
+ <CAHC9VhSaU-3_fs83kEA5bxBf9xMsE29B_O5nXFpROk4=y9kgXw@mail.gmail.com>
+ <20210226040542.1137-1-hdanton@sina.com> <CAFqZXNu8xyeVUcYud9MLF4yp57dSb4FDyOBDyajh+=SwwomNhQ@mail.gmail.com>
+ <20210227023524.15844-1-hdanton@sina.com>
+In-Reply-To: <20210227023524.15844-1-hdanton@sina.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Mon, 1 Mar 2021 15:35:21 +0100
+Message-ID: <CAFqZXNvqz6_RTHDTwKH7J4=DPnngmfXBVE930=y-WQmJL+C-gg@mail.gmail.com>
+Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to sama7g5 ADC which is similar with sama5d2/sam9x60 device.
-Differences are highlighted by compatible.
-Main differences include 16 channels instead of 12 and missing
-resistive touchscreen.
+On Sat, Feb 27, 2021 at 3:35 AM Hillf Danton <hdanton@sina.com> wrote:
+> On Fri, 26 Feb 2021 12:19:35 +0100  Ondrej Mosnacek wrote:
+> > On Fri, Feb 26, 2021 at 5:08 AM Hillf Danton <hdanton@sina.com> wrote:
+> > > On Thu, 25 Feb 2021 20:06:45 -0500 Paul Moore wrote:
+> > > > On Wed, Feb 24, 2021 at 4:35 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > > > > After the switch to RCU, we now have:
+> > > > > 1. Start live conversion of new entries.
+> > > > > 2. Convert existing entries.
+> > > > > 3. RCU-assign the new policy pointer to selinux_state.
+> > > > > [!!! Now actually both old and new sidtab may be referenced by
+> > > > > readers, since there is no synchronization barrier previously provided
+> > > > > by the write lock.]
+> > > > > 4. Wait for synchronize_rcu() to return.
+> > > > > 5. Now only the new sidtab is visible to readers, so the old one can
+> > > > > be destroyed.
+> > > > >
+> > > > > So the race can happen between 3. and 5., if one thread already sees
+> > > > > the new sidtab and adds a new entry there, and a second thread still
+> > > > > has the reference to the old sidtab and also tires to add a new entry;
+> > > > > live-converting to the new sidtab, which it doesn't expect to change
+> > > > > by itself. Unfortunately I failed to realize this when reviewing the
+> > > > > patch :/
+> > > >
+> > > > It is possible I'm not fully understanding the problem and/or missing
+> > > > an important detail - it is rather tricky code, and RCU can be very
+> > > > hard to reason at times - but I think we may be able to solve this
+> > > > with some lock fixes inside sidtab_context_to_sid().  Let me try to
+> > > > explain to see if we are on the same page here ...
+> > > >
+> > > > The problem is when we have two (or more) threads trying to
+> > > > add/convert the same context into a sid; the task with new_sidtab is
+> > > > looking to add a new sidtab entry, while the task with old_sidtab is
+> > > > looking to convert an entry in old_sidtab into a new entry in
+> > > > new_sidtab.  Boom.
+> > > >
+> > > > Looking at the code in sidtab_context_to_sid(), when we have two
+> > > > sidtabs that are currently active (old_sidtab->convert pointer is
+> > > > valid) and a task with old_sidtab attempts to add a new entry to both
+> > > > sidtabs it first adds it to the old sidtab then it also adds it to the
+> > > > new sidtab.  I believe the problem is that in this case while the task
+> > > > grabs the old_sidtab->lock, it never grabs the new_sidtab->lock which
+> > > > allows it to race with tasks that already see only new_sidtab.  I
+> > > > think adding code to sidtab_context_to_sid() which grabs the
+> > > > new_sidtab->lock when adding entries to the new_sidtab *should* solve
+> > > > the problem.
+> > > >
+> > > > Did I miss something important? ;)
+> > >
+> > > If the convert pointer can be derefered without lock, we can opt to
+> > > convert context after building sidtab with the risk of AB BA deadlock
+> > > cut. Below is the minimum change I can think of along your direction.
+> >
+> > We could fix this a bit more easily by just having a shared spinlock
+> > for both (well, *all*) sidtabs. Yes, we'd need to have it all the way
+>
+> Looking forward to reading how to add another BKL,
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
- drivers/iio/adc/at91-sama5d2_adc.c | 287 +++++++++++++++++++++++------
- 1 file changed, 234 insertions(+), 53 deletions(-)
+This is not even remotely comparable to the Big Kernel Lock... 99.9%
+of the time, there will be just one sidtab, otherwise there will be
+just two for a short time during the policy reload, which need to be
+updated in sync anyway.
 
-diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
-index 066d0ad644ca..d61fa32ef294 100644
---- a/drivers/iio/adc/at91-sama5d2_adc.c
-+++ b/drivers/iio/adc/at91-sama5d2_adc.c
-@@ -1,9 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Atmel ADC driver for SAMA5D2 devices and compatible.
-+ * Microchip ADC driver for SAMA5D2/SAMA7G5 devices and compatible.
-  *
-  * Copyright (C) 2015 Atmel,
-- *               2015 Ludovic Desroches <ludovic.desroches@atmel.com>
-+ *               2015 Ludovic Desroches <ludovic.desroches@microchip.com>,
-+ *		 2021 Microchip Technology, Inc.,
-+ *		 2021 Eugen Hristev <eugen.hristev@microchip.com>
-  */
- 
- #include <linux/bitops.h>
-@@ -117,14 +119,26 @@
- #define AT91_SAMA5D2_ISR	0x30
- /* Interrupt Status Register - Pen touching sense status */
- #define AT91_SAMA5D2_ISR_PENS   BIT(31)
-+
-+/* End of Conversion Interrupt Enable Register */
-+#define AT91_SAMA7G5_EOC_IER	0x34
-+/* End of Conversion Interrupt Disable Register */
-+#define AT91_SAMA7G5_EOC_IDR	0x38
-+/* End of Conversion Interrupt Mask Register */
-+#define AT91_SAMA7G5_EOC_IMR	0x3c
-+/* End of Conversion Interrupt Status Register */
-+#define AT91_SAMA7G5_EOC_ISR	0x40
-+
- /* Last Channel Trigger Mode Register */
- #define AT91_SAMA5D2_LCTMR	0x34
- /* Last Channel Compare Window Register */
- #define AT91_SAMA5D2_LCCWR	0x38
- /* Overrun Status Register */
- #define AT91_SAMA5D2_OVER	0x3c
-+#define AT91_SAMA7G5_OVER	0x4c
- /* Extended Mode Register */
- #define AT91_SAMA5D2_EMR	0x40
-+#define AT91_SAMA7G5_EMR	0x50
- /* Extended Mode Register - Oversampling rate */
- #define AT91_SAMA5D2_EMR_OSR(V)			((V) << 16)
- #define AT91_SAMA5D2_EMR_OSR_MASK		GENMASK(17, 16)
-@@ -142,6 +156,9 @@
- /* Channel Offset Register */
- #define AT91_SAMA5D2_COR	0x4c
- #define AT91_SAMA5D2_COR_DIFF_OFFSET	16
-+/* Channel Configuration Register */
-+#define AT91_SAMA7G5_CCR	0x5c
-+#define AT91_SAMA7G5_COR_DIFF_OFFSET	0
- 
- /* Analog Control Register */
- #define AT91_SAMA5D2_ACR	0x94
-@@ -185,6 +202,7 @@
- #define AT91_SAMA5D2_PRESSR	0xbc
- /* Trigger Register */
- #define AT91_SAMA5D2_TRGR	0xc0
-+#define AT91_SAMA7G5_TRGR	0x100
- /* Mask for TRGMOD field of TRGR register */
- #define AT91_SAMA5D2_TRGR_TRGMOD_MASK GENMASK(2, 0)
- /* No trigger, only software trigger can start conversions */
-@@ -214,19 +232,26 @@
- #define AT91_SAMA5D2_WPSR	0xe8
- /* Version Register */
- #define AT91_SAMA5D2_VERSION	0xfc
-+#define AT91_SAMA7G5_VERSION	0x130
- 
- #define AT91_SAMA5D2_HW_TRIG_CNT 3
- #define AT91_SAMA5D2_SINGLE_CHAN_CNT 12
-+#define AT91_SAMA7G5_SINGLE_CHAN_CNT 16
- #define AT91_SAMA5D2_DIFF_CHAN_CNT 6
-+#define AT91_SAMA7G5_DIFF_CHAN_CNT 8
- 
- #define AT91_SAMA5D2_TIMESTAMP_CHAN_IDX (AT91_SAMA5D2_SINGLE_CHAN_CNT + \
- 					 AT91_SAMA5D2_DIFF_CHAN_CNT + 1)
- 
-+#define AT91_SAMA7G5_TIMESTAMP_CHAN_IDX (AT91_SAMA7G5_SINGLE_CHAN_CNT + \
-+					 AT91_SAMA7G5_DIFF_CHAN_CNT + 1)
-+
- #define AT91_SAMA5D2_TOUCH_X_CHAN_IDX (AT91_SAMA5D2_SINGLE_CHAN_CNT + \
- 					 AT91_SAMA5D2_DIFF_CHAN_CNT * 2)
- #define AT91_SAMA5D2_TOUCH_Y_CHAN_IDX   (AT91_SAMA5D2_TOUCH_X_CHAN_IDX + 1)
- #define AT91_SAMA5D2_TOUCH_P_CHAN_IDX   (AT91_SAMA5D2_TOUCH_Y_CHAN_IDX + 1)
- #define AT91_SAMA5D2_MAX_CHAN_IDX	AT91_SAMA5D2_TOUCH_P_CHAN_IDX
-+#define AT91_SAMA7G5_MAX_CHAN_IDX	AT91_SAMA7G5_TIMESTAMP_CHAN_IDX
- 
- #define AT91_SAMA5D2_TOUCH_SAMPLE_PERIOD_US          2000    /* 2ms */
- #define AT91_SAMA5D2_TOUCH_PEN_DETECT_DEBOUNCE_US    200
-@@ -239,8 +264,19 @@
-  * Maximum number of bytes to hold conversion from all channels
-  * without the timestamp.
-  */
--#define AT91_BUFFER_MAX_CONVERSION_BYTES ((AT91_SAMA5D2_SINGLE_CHAN_CNT + \
--					 AT91_SAMA5D2_DIFF_CHAN_CNT) * 2)
-+#define AT91_SAMA5D2_BUFFER_MAX_CONVERSION_BYTES ( \
-+					(AT91_SAMA5D2_SINGLE_CHAN_CNT + \
-+					AT91_SAMA5D2_DIFF_CHAN_CNT) * 2)
-+
-+#define AT91_SAMA7G5_BUFFER_MAX_CONVERSION_BYTES ( \
-+					(AT91_SAMA7G5_SINGLE_CHAN_CNT + \
-+					AT91_SAMA7G5_DIFF_CHAN_CNT) * 2)
-+
-+#define AT91_BUFFER_MAX_CONVERSION_BYTES ( \
-+	(AT91_SAMA7G5_BUFFER_MAX_CONVERSION_BYTES > \
-+	AT91_SAMA5D2_BUFFER_MAX_CONVERSION_BYTES) ? \
-+	AT91_SAMA7G5_BUFFER_MAX_CONVERSION_BYTES : \
-+	AT91_SAMA5D2_BUFFER_MAX_CONVERSION_BYTES)
- 
- /* This total must also include the timestamp */
- #define AT91_BUFFER_MAX_BYTES (AT91_BUFFER_MAX_CONVERSION_BYTES + 8)
-@@ -295,6 +331,27 @@
- 		.indexed = 1,						\
- 	}
- 
-+#define AT91_SAMA7G5_CHAN_DIFF(num, num2, addr)				\
-+	{								\
-+		.type = IIO_VOLTAGE,					\
-+		.differential = 1,					\
-+		.channel = num,						\
-+		.channel2 = num2,					\
-+		.address = addr,					\
-+		.scan_index = num + AT91_SAMA7G5_SINGLE_CHAN_CNT,	\
-+		.scan_type = {						\
-+			.sign = 's',					\
-+			.realbits = 14,					\
-+			.storagebits = 16,				\
-+		},							\
-+		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),		\
-+		.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),	\
-+		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ)|\
-+				BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),	\
-+		.datasheet_name = "CH"#num"-CH"#num2,			\
-+		.indexed = 1,						\
-+	}
-+
- #define AT91_SAMA5D2_CHAN_TOUCH(num, name, mod)				\
- 	{								\
- 		.type = IIO_POSITIONRELATIVE,				\
-@@ -335,6 +392,8 @@ struct at91_adc_soc_info {
- 	unsigned			startup_time;
- 	unsigned			min_sample_rate;
- 	unsigned			max_sample_rate;
-+#define AT91_ADC_SAMA7G5(st)		((st)->soc_info.sama7g5)
-+	bool				sama7g5;
- };
- 
- struct at91_adc_trigger {
-@@ -436,7 +495,7 @@ static const struct at91_adc_trigger at91_adc_trigger_list[] = {
- 	},
- };
- 
--static const struct iio_chan_spec at91_adc_channels[] = {
-+static const struct iio_chan_spec at91_sama5d2_adc_channels[] = {
- 	AT91_SAMA5D2_CHAN_SINGLE(0, 0x50),
- 	AT91_SAMA5D2_CHAN_SINGLE(1, 0x54),
- 	AT91_SAMA5D2_CHAN_SINGLE(2, 0x58),
-@@ -461,6 +520,42 @@ static const struct iio_chan_spec at91_adc_channels[] = {
- 	AT91_SAMA5D2_CHAN_PRESSURE(AT91_SAMA5D2_TOUCH_P_CHAN_IDX, "pressure"),
- };
- 
-+static const struct iio_chan_spec at91_sama7g5_adc_channels[] = {
-+	AT91_SAMA5D2_CHAN_SINGLE(0, 0x60),
-+	AT91_SAMA5D2_CHAN_SINGLE(1, 0x64),
-+	AT91_SAMA5D2_CHAN_SINGLE(2, 0x68),
-+	AT91_SAMA5D2_CHAN_SINGLE(3, 0x6c),
-+	AT91_SAMA5D2_CHAN_SINGLE(4, 0x70),
-+	AT91_SAMA5D2_CHAN_SINGLE(5, 0x74),
-+	AT91_SAMA5D2_CHAN_SINGLE(6, 0x78),
-+	AT91_SAMA5D2_CHAN_SINGLE(7, 0x7c),
-+	AT91_SAMA5D2_CHAN_SINGLE(8, 0x80),
-+	AT91_SAMA5D2_CHAN_SINGLE(9, 0x84),
-+	AT91_SAMA5D2_CHAN_SINGLE(10, 0x88),
-+	AT91_SAMA5D2_CHAN_SINGLE(11, 0x8c),
-+	AT91_SAMA5D2_CHAN_SINGLE(12, 0x90),
-+	AT91_SAMA5D2_CHAN_SINGLE(13, 0x94),
-+	AT91_SAMA5D2_CHAN_SINGLE(14, 0x98),
-+	AT91_SAMA5D2_CHAN_SINGLE(15, 0x9c),
-+	AT91_SAMA7G5_CHAN_DIFF(0, 1, 0x60),
-+	AT91_SAMA7G5_CHAN_DIFF(2, 3, 0x68),
-+	AT91_SAMA7G5_CHAN_DIFF(4, 5, 0x70),
-+	AT91_SAMA7G5_CHAN_DIFF(6, 7, 0x78),
-+	AT91_SAMA7G5_CHAN_DIFF(8, 9, 0x80),
-+	AT91_SAMA7G5_CHAN_DIFF(10, 11, 0x88),
-+	AT91_SAMA7G5_CHAN_DIFF(12, 13, 0x90),
-+	AT91_SAMA7G5_CHAN_DIFF(14, 15, 0x98),
-+	IIO_CHAN_SOFT_TIMESTAMP(AT91_SAMA7G5_TIMESTAMP_CHAN_IDX),
-+};
-+
-+static unsigned int at91_adc_max_chan_idx(struct at91_adc_state *st)
-+{
-+	if (AT91_ADC_SAMA7G5(st))
-+		return AT91_SAMA7G5_MAX_CHAN_IDX;
-+	else
-+		return AT91_SAMA5D2_MAX_CHAN_IDX;
-+}
-+
- static int at91_adc_chan_xlate(struct iio_dev *indio_dev, int chan)
- {
- 	int i;
-@@ -492,6 +587,7 @@ static unsigned int at91_adc_active_scan_mask_to_reg(struct iio_dev *indio_dev)
- {
- 	u32 mask = 0;
- 	u8 bit;
-+	struct at91_adc_state *st = iio_priv(indio_dev);
- 
- 	for_each_set_bit(bit, indio_dev->active_scan_mask,
- 			 indio_dev->num_channels) {
-@@ -500,13 +596,78 @@ static unsigned int at91_adc_active_scan_mask_to_reg(struct iio_dev *indio_dev)
- 		mask |= BIT(chan->channel);
- 	}
- 
--	return mask & GENMASK(11, 0);
-+	return mask & GENMASK(at91_adc_max_chan_idx(st), 0);
-+}
-+
-+static void at91_adc_ccr(struct at91_adc_state *st,
-+			 struct iio_chan_spec const *chan)
-+{
-+	u32 ccr, cur_ccr;
-+
-+	ccr = (BIT(chan->channel) | BIT(chan->channel2));
-+
-+	if (AT91_ADC_SAMA7G5(st)) {
-+		cur_ccr = at91_adc_readl(st, AT91_SAMA7G5_CCR);
-+		ccr <<= AT91_SAMA7G5_COR_DIFF_OFFSET;
-+		if (chan->differential)
-+			at91_adc_writel(st, AT91_SAMA7G5_CCR, cur_ccr | ccr);
-+		else
-+			at91_adc_writel(st, AT91_SAMA7G5_CCR, cur_ccr & ~ccr);
-+	} else {
-+		cur_ccr = at91_adc_readl(st, AT91_SAMA5D2_COR);
-+		ccr <<= AT91_SAMA5D2_COR_DIFF_OFFSET;
-+		if (chan->differential)
-+			at91_adc_writel(st, AT91_SAMA5D2_COR, cur_ccr | ccr);
-+		else
-+			at91_adc_writel(st, AT91_SAMA5D2_COR, cur_ccr & ~ccr);
-+	}
-+}
-+
-+static void at91_adc_irq_status(struct at91_adc_state *st, u32 *status,
-+				u32 *eoc)
-+{
-+	if (AT91_ADC_SAMA7G5(st)) {
-+		*status = at91_adc_readl(st, AT91_SAMA5D2_ISR);
-+		*eoc = at91_adc_readl(st, AT91_SAMA7G5_EOC_ISR);
-+	} else {
-+		*status = *eoc = at91_adc_readl(st, AT91_SAMA5D2_ISR);
-+	}
-+}
-+
-+static void at91_adc_irq_mask(struct at91_adc_state *st, u32 *status, u32 *eoc)
-+{
-+	if (AT91_ADC_SAMA7G5(st)) {
-+		*status = at91_adc_readl(st, AT91_SAMA5D2_IMR);
-+		*eoc = at91_adc_readl(st, AT91_SAMA7G5_EOC_IMR);
-+	} else {
-+		*status = *eoc = at91_adc_readl(st, AT91_SAMA5D2_IMR);
-+	}
-+}
-+
-+static void at91_adc_eoc_dis(struct at91_adc_state *st, unsigned int channel)
-+{
-+	if (!AT91_ADC_SAMA7G5(st))
-+		at91_adc_writel(st, AT91_SAMA5D2_IDR, BIT(channel));
-+	/* for SAMA7G5, Errata recommends not writing to EOC_IDR register */
-+}
-+
-+static void at91_adc_eoc_ena(struct at91_adc_state *st, unsigned int channel)
-+{
-+	if (AT91_ADC_SAMA7G5(st))
-+		at91_adc_writel(st, AT91_SAMA7G5_EOC_IER, BIT(channel));
-+	else
-+		at91_adc_writel(st, AT91_SAMA5D2_IER, BIT(channel));
- }
- 
- static void at91_adc_config_emr(struct at91_adc_state *st)
- {
- 	/* configure the extended mode register */
--	unsigned int emr = at91_adc_readl(st, AT91_SAMA5D2_EMR);
-+	unsigned int emr;
-+
-+	if (AT91_ADC_SAMA7G5(st))
-+		emr = at91_adc_readl(st, AT91_SAMA7G5_EMR);
-+	else
-+		emr = at91_adc_readl(st, AT91_SAMA5D2_EMR);
- 
- 	/* select oversampling per single trigger event */
- 	emr |= AT91_SAMA5D2_EMR_ASTE(1);
-@@ -530,7 +691,10 @@ static void at91_adc_config_emr(struct at91_adc_state *st)
- 		break;
- 	}
- 
--	at91_adc_writel(st, AT91_SAMA5D2_EMR, emr);
-+	if (AT91_ADC_SAMA7G5(st))
-+		at91_adc_writel(st, AT91_SAMA7G5_EMR, emr);
-+	else
-+		at91_adc_writel(st, AT91_SAMA5D2_EMR, emr);
- }
- 
- static int at91_adc_adjust_val_osr(struct at91_adc_state *st, int *val)
-@@ -726,7 +890,12 @@ static int at91_adc_configure_trigger(struct iio_trigger *trig, bool state)
- {
- 	struct iio_dev *indio = iio_trigger_get_drvdata(trig);
- 	struct at91_adc_state *st = iio_priv(indio);
--	u32 status = at91_adc_readl(st, AT91_SAMA5D2_TRGR);
-+	u32 status;
-+
-+	if (AT91_ADC_SAMA7G5(st))
-+		status = at91_adc_readl(st, AT91_SAMA7G5_TRGR);
-+	else
-+		status = at91_adc_readl(st, AT91_SAMA5D2_TRGR);
- 
- 	/* clear TRGMOD */
- 	status &= ~AT91_SAMA5D2_TRGR_TRGMOD_MASK;
-@@ -735,7 +904,10 @@ static int at91_adc_configure_trigger(struct iio_trigger *trig, bool state)
- 		status |= st->selected_trig->trgmod_value;
- 
- 	/* set/unset hw trigger */
--	at91_adc_writel(st, AT91_SAMA5D2_TRGR, status);
-+	if (AT91_ADC_SAMA7G5(st))
-+		at91_adc_writel(st, AT91_SAMA7G5_TRGR, status);
-+	else
-+		at91_adc_writel(st, AT91_SAMA5D2_TRGR, status);
- 
- 	return 0;
- }
-@@ -877,7 +1049,7 @@ static bool at91_adc_current_chan_is_touch(struct iio_dev *indio_dev)
- 
- 	return !!bitmap_subset(indio_dev->active_scan_mask,
- 			       &st->touch_st.channels_bitmask,
--			       AT91_SAMA5D2_MAX_CHAN_IDX + 1);
-+			       at91_adc_max_chan_idx(st) + 1);
- }
- 
- static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
-@@ -905,7 +1077,6 @@ static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
- 			 indio_dev->num_channels) {
- 		struct iio_chan_spec const *chan =
- 					at91_adc_chan_get(indio_dev, bit);
--		u32 cor;
- 
- 		if (!chan)
- 			continue;
-@@ -914,16 +1085,7 @@ static int at91_adc_buffer_prepare(struct iio_dev *indio_dev)
- 		    chan->type == IIO_PRESSURE)
- 			continue;
- 
--		cor = at91_adc_readl(st, AT91_SAMA5D2_COR);
--
--		if (chan->differential)
--			cor |= (BIT(chan->channel) | BIT(chan->channel2)) <<
--				AT91_SAMA5D2_COR_DIFF_OFFSET;
--		else
--			cor &= ~(BIT(chan->channel) <<
--			       AT91_SAMA5D2_COR_DIFF_OFFSET);
--
--		at91_adc_writel(st, AT91_SAMA5D2_COR, cor);
-+		at91_adc_ccr(st, chan);
- 
- 		at91_adc_writel(st, AT91_SAMA5D2_CHER, BIT(chan->channel));
- 	}
-@@ -975,7 +1137,10 @@ static int at91_adc_buffer_postdisable(struct iio_dev *indio_dev)
- 		at91_adc_writel(st, AT91_SAMA5D2_IDR, AT91_SAMA5D2_IER_DRDY);
- 
- 	/* read overflow register to clear possible overflow status */
--	at91_adc_readl(st, AT91_SAMA5D2_OVER);
-+	if (AT91_ADC_SAMA7G5(st))
-+		at91_adc_readl(st, AT91_SAMA7G5_OVER);
-+	else
-+		at91_adc_readl(st, AT91_SAMA5D2_OVER);
- 
- 	/* if we are using DMA we must clear registers and end DMA */
- 	if (st->dma_st.dma_chan)
-@@ -1018,13 +1183,15 @@ static void at91_adc_trigger_handler_nodma(struct iio_dev *indio_dev,
- 	u8 bit;
- 	u32 mask = at91_adc_active_scan_mask_to_reg(indio_dev);
- 	unsigned int timeout = 50;
-+	u32 status, imr, eoc = 0, eoc_imr;
- 
- 	/*
- 	 * Check if the conversion is ready. If not, wait a little bit, and
- 	 * in case of timeout exit with an error.
- 	 */
--	while ((at91_adc_readl(st, AT91_SAMA5D2_ISR) & mask) != mask &&
--	       timeout) {
-+	while (((eoc & mask) != mask) && timeout) {
-+		at91_adc_irq_status(st, &status, &eoc);
-+		at91_adc_irq_mask(st, &imr, &eoc_imr);
- 		usleep_range(50, 100);
- 		timeout--;
- 	}
-@@ -1195,7 +1362,7 @@ static void at91_adc_touch_data_handler(struct iio_dev *indio_dev)
- 	int i = 0;
- 
- 	for_each_set_bit(bit, indio_dev->active_scan_mask,
--			 AT91_SAMA5D2_MAX_CHAN_IDX + 1) {
-+			 at91_adc_max_chan_idx(st) + 1) {
- 		struct iio_chan_spec const *chan =
- 					 at91_adc_chan_get(indio_dev, bit);
- 
-@@ -1262,12 +1429,14 @@ static irqreturn_t at91_adc_interrupt(int irq, void *private)
- {
- 	struct iio_dev *indio = private;
- 	struct at91_adc_state *st = iio_priv(indio);
--	u32 status = at91_adc_readl(st, AT91_SAMA5D2_ISR);
--	u32 imr = at91_adc_readl(st, AT91_SAMA5D2_IMR);
-+	u32 status, eoc, imr, eoc_imr;
- 	u32 rdy_mask = AT91_SAMA5D2_IER_XRDY | AT91_SAMA5D2_IER_YRDY |
- 			AT91_SAMA5D2_IER_PRDY;
- 
--	if (!(status & imr))
-+	at91_adc_irq_status(st, &status, &eoc);
-+	at91_adc_irq_mask(st, &imr, &eoc_imr);
-+
-+	if (!(status & imr) && !(eoc & eoc_imr))
- 		return IRQ_NONE;
- 	if (status & AT91_SAMA5D2_IER_PEN) {
- 		/* pen detected IRQ */
-@@ -1309,7 +1478,6 @@ static int at91_adc_read_info_raw(struct iio_dev *indio_dev,
- 				  struct iio_chan_spec const *chan, int *val)
- {
- 	struct at91_adc_state *st = iio_priv(indio_dev);
--	u32 cor = 0;
- 	u16 tmp_val;
- 	int ret;
- 
-@@ -1355,13 +1523,9 @@ static int at91_adc_read_info_raw(struct iio_dev *indio_dev,
- 
- 	st->chan = chan;
- 
--	if (chan->differential)
--		cor = (BIT(chan->channel) | BIT(chan->channel2)) <<
--		      AT91_SAMA5D2_COR_DIFF_OFFSET;
--
--	at91_adc_writel(st, AT91_SAMA5D2_COR, cor);
-+	at91_adc_ccr(st, chan);
- 	at91_adc_writel(st, AT91_SAMA5D2_CHER, BIT(chan->channel));
--	at91_adc_writel(st, AT91_SAMA5D2_IER, BIT(chan->channel));
-+	at91_adc_eoc_ena(st, chan->channel);
- 	at91_adc_writel(st, AT91_SAMA5D2_CR, AT91_SAMA5D2_CR_START);
- 
- 	ret = wait_event_interruptible_timeout(st->wq_data_available,
-@@ -1378,7 +1542,7 @@ static int at91_adc_read_info_raw(struct iio_dev *indio_dev,
- 		st->conversion_done = false;
- 	}
- 
--	at91_adc_writel(st, AT91_SAMA5D2_IDR, BIT(chan->channel));
-+	at91_adc_eoc_dis(st, st->chan->channel);
- 	at91_adc_writel(st, AT91_SAMA5D2_CHDR, BIT(chan->channel));
- 
- 	/* Needed to ACK the DRDY interruption */
-@@ -1577,14 +1741,14 @@ static int at91_adc_update_scan_mode(struct iio_dev *indio_dev,
- 	struct at91_adc_state *st = iio_priv(indio_dev);
- 
- 	if (bitmap_subset(scan_mask, &st->touch_st.channels_bitmask,
--			  AT91_SAMA5D2_MAX_CHAN_IDX + 1))
-+			  at91_adc_max_chan_idx(st) + 1))
- 		return 0;
- 	/*
- 	 * if the new bitmap is a combination of touchscreen and regular
- 	 * channels, then we are not fine
- 	 */
- 	if (bitmap_intersects(&st->touch_st.channels_bitmask, scan_mask,
--			      AT91_SAMA5D2_MAX_CHAN_IDX + 1))
-+			      at91_adc_max_chan_idx(st) + 1))
- 		return -EINVAL;
- 	return 0;
- }
-@@ -1594,6 +1758,8 @@ static void at91_adc_hw_init(struct iio_dev *indio_dev)
- 	struct at91_adc_state *st = iio_priv(indio_dev);
- 
- 	at91_adc_writel(st, AT91_SAMA5D2_CR, AT91_SAMA5D2_CR_SWRST);
-+	if (AT91_ADC_SAMA7G5(st))
-+		at91_adc_writel(st, AT91_SAMA7G5_EOC_IDR, 0xffffffff);
- 	at91_adc_writel(st, AT91_SAMA5D2_IDR, 0xffffffff);
- 	/*
- 	 * Transfer field must be set to 2 according to the datasheet and
-@@ -1718,18 +1884,27 @@ static int at91_adc_probe(struct platform_device *pdev)
- 	indio_dev->name = dev_name(&pdev->dev);
- 	indio_dev->modes = INDIO_DIRECT_MODE | INDIO_BUFFER_SOFTWARE;
- 	indio_dev->info = &at91_adc_info;
--	indio_dev->channels = at91_adc_channels;
--	indio_dev->num_channels = ARRAY_SIZE(at91_adc_channels);
- 
- 	st = iio_priv(indio_dev);
- 	st->indio_dev = indio_dev;
- 
--	bitmap_set(&st->touch_st.channels_bitmask,
--		   AT91_SAMA5D2_TOUCH_X_CHAN_IDX, 1);
--	bitmap_set(&st->touch_st.channels_bitmask,
--		   AT91_SAMA5D2_TOUCH_Y_CHAN_IDX, 1);
--	bitmap_set(&st->touch_st.channels_bitmask,
--		   AT91_SAMA5D2_TOUCH_P_CHAN_IDX, 1);
-+	st->soc_info.sama7g5 = of_device_is_compatible(pdev->dev.of_node,
-+						       "microchip,sama7g5-adc");
-+
-+	if (AT91_ADC_SAMA7G5(st)) {
-+		indio_dev->channels = at91_sama7g5_adc_channels;
-+		indio_dev->num_channels = ARRAY_SIZE(at91_sama7g5_adc_channels);
-+	} else {
-+		indio_dev->channels = at91_sama5d2_adc_channels;
-+		indio_dev->num_channels = ARRAY_SIZE(at91_sama5d2_adc_channels);
-+
-+		bitmap_set(&st->touch_st.channels_bitmask,
-+			   AT91_SAMA5D2_TOUCH_X_CHAN_IDX, 1);
-+		bitmap_set(&st->touch_st.channels_bitmask,
-+			   AT91_SAMA5D2_TOUCH_Y_CHAN_IDX, 1);
-+		bitmap_set(&st->touch_st.channels_bitmask,
-+			   AT91_SAMA5D2_TOUCH_P_CHAN_IDX, 1);
-+	}
- 
- 	st->oversampling_ratio = AT91_OSR_1SAMPLES;
- 
-@@ -1853,9 +2028,12 @@ static int at91_adc_probe(struct platform_device *pdev)
- 		dev_info(&pdev->dev, "setting up trigger as %s\n",
- 			 st->selected_trig->name);
- 
--	dev_info(&pdev->dev, "version: %x\n",
--		 readl_relaxed(st->base + AT91_SAMA5D2_VERSION));
--
-+	if (AT91_ADC_SAMA7G5(st))
-+		dev_info(&pdev->dev, "version: %x\n",
-+			 at91_adc_readl(st, AT91_SAMA7G5_VERSION));
-+	else
-+		dev_info(&pdev->dev, "version: %x\n",
-+			 at91_adc_readl(st, AT91_SAMA5D2_VERSION));
- 	return 0;
- 
- dma_disable:
-@@ -1957,6 +2135,8 @@ static SIMPLE_DEV_PM_OPS(at91_adc_pm_ops, at91_adc_suspend, at91_adc_resume);
- static const struct of_device_id at91_adc_dt_match[] = {
- 	{
- 		.compatible = "atmel,sama5d2-adc",
-+	}, {
-+		.compatible = "microchip,sama7g5-adc",
- 	}, {
- 		/* sentinel */
- 	}
-@@ -1967,13 +2147,14 @@ static struct platform_driver at91_adc_driver = {
- 	.probe = at91_adc_probe,
- 	.remove = at91_adc_remove,
- 	.driver = {
--		.name = "at91-sama5d2_adc",
-+		.name = "at91-sama5d2-sama7g5_adc",
- 		.of_match_table = at91_adc_dt_match,
- 		.pm = &at91_adc_pm_ops,
- 	},
- };
- module_platform_driver(at91_adc_driver)
- 
--MODULE_AUTHOR("Ludovic Desroches <ludovic.desroches@atmel.com>");
--MODULE_DESCRIPTION("Atmel AT91 SAMA5D2 ADC");
-+MODULE_AUTHOR("Ludovic Desroches <ludovic.desroches@microchip.com>");
-+MODULE_AUTHOR("Eugen Hristev <eugen.hristev@microchip.com>");
-+MODULE_DESCRIPTION("Microchip AT91 SAMA5D2/SAMA7G5 ADC");
- MODULE_LICENSE("GPL v2");
--- 
-2.25.1
+>
+> > up in selinux_state and pass it through to sidtab_init(), but IMHO
+> > that's less bad than trying to get it right with two locks.
+>
+> instead of a nearly pure code churn in order to walk around deadlock.
+
+I wish it were that simple, but it won't work this way. Consider a
+scenario like this:
+1. Thread A acquires the old policy pointer, encounters a new context,
+adds it to the old sidtab as X, but doesn't start adding it to the new
+one yet.
+2. Thread B acquires the new policy pointer, encounters a different
+new context and adds it to the new sidtab as X.
+[Now you end up with two different contexts assigned to the same SID,
+depending on the policy]
+3. Now thread A continues to add the context to the new sidtab, but
+since it reuses the count variable from before, it overwrites the
+entry for X.
+(And even if you fixed that, re-searched the new sidtab, and added the
+new context to the end, you'd end up with the context having different
+SIDs under the old vs. new policy, which is again a messy situation.)
+
+You see, moving the sidtab code around can get you in trouble and
+that's why I'm advocating for using a common lock - it's much easier
+to prove that such change doesn't create new bugs. And as I said
+above, merging the locks won't really have performance consequences,
+so I still believe it to be the better choice here.
+
+--
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
