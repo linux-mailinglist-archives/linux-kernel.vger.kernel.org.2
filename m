@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66042328F9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05846328FD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242369AbhCATxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:53:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47970 "EHLO mx2.suse.de"
+        id S242542AbhCAT6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:58:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236043AbhCAQ6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:58:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614617832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3VDG8U6jJIt3/CZoTt/qFRKFaEBWJcLlgnluTxbsCik=;
-        b=rGMKhxcgo6S3MzF2SP0dm+wGw9IFz/nOVw8gsX9TXPX0MNySZgWceZVBZqcPmWBxDEe/56
-        S8Hix4wkOtA5SAay/ZtFwq21D0RJEKY+hpACdZO3lRer4dlFCHv1Oc9FQzK8fuGtQOCfey
-        eQQ/HK0+EiKv6Xvoc9LLW6mCpfs4rvM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9CA85B018;
-        Mon,  1 Mar 2021 16:57:12 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 17:57:10 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Thomas Meyer <thomas@m3y3r.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-um@lists.infradead.org
-Subject: Re: [PATCH next v3 01/15] um: synchronize kmsg_dumper
-Message-ID: <YD0c5jMDTTKVrU8X@alley>
-References: <20210225202438.28985-1-john.ogness@linutronix.de>
- <20210225202438.28985-2-john.ogness@linutronix.de>
- <YD0TYkWZqcS/VO8Z@alley>
+        id S236122AbhCAQ6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:58:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D0BD64F5A;
+        Mon,  1 Mar 2021 16:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614616585;
+        bh=r/akzR047z3giKvarUyMXMxiaP4ebxAXYihbJubkWHU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=IdtPu6zoBywYjcqoyBUqNITr0eRlQ0a5OcpH9edNLTxBbZOrYyHoRlW+jMVH9Ryfh
+         kobqP2eHoqkcvrig3rNQ2A0QU6zX7DfP9n7Bhdef0syKCPRWqOrFW87bKc8U1TuAXZ
+         WP6zJ9shdsYRmb/gV4S/qIMoEH32KUcE12kqd73Y=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
+        syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 004/247] ntfs: check for valid standard information attribute
+Date:   Mon,  1 Mar 2021 17:10:24 +0100
+Message-Id: <20210301161031.905298809@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
+References: <20210301161031.684018251@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YD0TYkWZqcS/VO8Z@alley>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-03-01 17:16:35, Petr Mladek wrote:
-> On Thu 2021-02-25 21:24:24, John Ogness wrote:
-> > The kmsg_dumper can be called from any context and CPU, possibly
-> > from multiple CPUs simultaneously. Since a static buffer is used
-> > to retrieve the kernel logs, this buffer must be protected against
-> > simultaneous dumping. Skip dumping if another context is already
-> > dumping.
-> > 
-> > Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> > Reviewed-by: Petr Mladek <pmladek@suse.com>
-> > ---
-> >  arch/um/kernel/kmsg_dump.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
-> > index 6516ef1f8274..4869e2cc787c 100644
-> > --- a/arch/um/kernel/kmsg_dump.c
-> > +++ b/arch/um/kernel/kmsg_dump.c
-> > @@ -1,5 +1,6 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  #include <linux/kmsg_dump.h>
-> > +#include <linux/spinlock.h>
-> >  #include <linux/console.h>
-> >  #include <linux/string.h>
-> >  #include <shared/init.h>
-> > @@ -9,6 +10,7 @@
-> >  static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
-> >  				enum kmsg_dump_reason reason)
-> >  {
-> > +	static DEFINE_SPINLOCK(lock);
-> >  	static char line[1024];
-> >  	struct console *con;
-> >  	size_t len = 0;
-> > @@ -29,11 +31,16 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
-> >  	if (con)
-> >  		return;
-> >  
-> > +	if (!spin_trylock(&lock))
-> 
-> I have almost missed this. It is wrong. The last version correctly
-> used
-> 
-> 	if (!spin_trylock_irqsave(&lock, flags))
-> 
-> kmsg_dump(KMSG_DUMP_PANIC) is called in panic() with interrupts
-> disabled. We have to store the flags here.
+From: Rustam Kovhaev <rkovhaev@gmail.com>
 
-Ah, I get always confused with these things. spin_trylock() can
-actually get called in a context with IRQ disabled. So it is not
-as wrong as I thought.
+commit 4dfe6bd94959222e18d512bdf15f6bf9edb9c27c upstream.
 
-But still. panic() and kmsg_dump() can be called in IRQ context.
-So, this function might be called in IRQ context. So, it feels
-more correct to use the _irqsafe variant here.
+Mounting a corrupted filesystem with NTFS resulted in a kernel crash.
 
-I know that there is the trylock so it probably does not matter much.
-Well, the disabled irq might help to serialize the two calls when
-one is in normal context and the other would happen in IRQ one.
+We should check for valid STANDARD_INFORMATION attribute offset and length
+before trying to access it
 
-As I said, using _irqsafe variant looks better to me.
+Link: https://lkml.kernel.org/r/20210217155930.1506815-1-rkovhaev@gmail.com
+Link: https://syzkaller.appspot.com/bug?extid=c584225dabdea2f71969
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Reported-by: syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com
+Tested-by: syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com
+Acked-by: Anton Altaparmakov <anton@tuxera.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/ntfs/inode.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-What do you think, please?
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -654,6 +654,12 @@ static int ntfs_read_locked_inode(struct
+ 	}
+ 	a = ctx->attr;
+ 	/* Get the standard information attribute value. */
++	if ((u8 *)a + le16_to_cpu(a->data.resident.value_offset)
++			+ le32_to_cpu(a->data.resident.value_length) >
++			(u8 *)ctx->mrec + vol->mft_record_size) {
++		ntfs_error(vi->i_sb, "Corrupt standard information attribute in inode.");
++		goto unm_err_out;
++	}
+ 	si = (STANDARD_INFORMATION*)((u8*)a +
+ 			le16_to_cpu(a->data.resident.value_offset));
+ 
 
-Best Regards,
-Petr
 
-PS: Heh, IMHO, I do not use an authoritative style too often. But my
-feeling is that every time I use it then I am proven to be wrong.
-And it has happened again.
