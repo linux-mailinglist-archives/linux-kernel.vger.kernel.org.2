@@ -2,43 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD00329A27
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2DC329AC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377060AbhCBApa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:45:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48122 "EHLO mail.kernel.org"
+        id S1348503AbhCBBDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:03:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240045AbhCASh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:37:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF8265278;
-        Mon,  1 Mar 2021 17:30:33 +0000 (UTC)
+        id S240320AbhCASyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:54:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B158764FE2;
+        Mon,  1 Mar 2021 17:01:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619833;
-        bh=HOUTCrJcmHcR5Q03Wneeq9upSONTgbpPBY5KbWUGft4=;
+        s=korg; t=1614618097;
+        bh=BRpEDm/cP2MPxrelf681uu3+oEKOzcL2HHWlSPtVoX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eL3VkFpkSXfkE81jKilJko2gCSCFHwxlb68rUQWzf57KcMV3/B+cqey0Ec+QmZrIF
-         qhJEQk9+nF0w46eBBpZsZkqLGlzKKyzkydbggyFN4jIwkiNMCLDDD2q7ZiUSqgDGqa
-         t0oROgD9WlJ93nMyJ4y2CKEwqNVRVJieaM9mmkFI=
+        b=Ol/NwIJ9PpiWv1QZNnm+LFxWUeDR5c8zT2uLodwgopBkpKcfFWvYrGaCNKHSXq7mE
+         fIInNCOK0u/syvmTXG7HOiCxLHibwXBN71IB/cm4zosqovgZH9hZJkbVE+JZTbyfYy
+         wNGWeCpqgKapImGt5z1FBuKiqT0NDTDt7MBrsQvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 598/663] hugetlb: fix update_and_free_page contig page struct assumption
-Date:   Mon,  1 Mar 2021 17:14:06 +0100
-Message-Id: <20210301161211.453532925@linuxfoundation.org>
+        stable@vger.kernel.org, Laz Lev <lazlev@web.de>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.4 306/340] media: smipcie: fix interrupt handling and IR timeout
+Date:   Mon,  1 Mar 2021 17:14:10 +0100
+Message-Id: <20210301161103.341856969@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,65 +40,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Kravetz <mike.kravetz@oracle.com>
+From: Sean Young <sean@mess.org>
 
-commit dbfee5aee7e54f83d96ceb8e3e80717fac62ad63 upstream.
+commit 6532923237b427ed30cc7b4486f6f1ccdee3c647 upstream.
 
-page structs are not guaranteed to be contiguous for gigantic pages.  The
-routine update_and_free_page can encounter a gigantic page, yet it assumes
-page structs are contiguous when setting page flags in subpages.
+After the first IR message, interrupts are no longer received. In addition,
+the code generates a timeout IR message of 10ms but sets the timeout value
+to 100ms, so no timeout was ever generated.
 
-If update_and_free_page encounters non-contiguous page structs, we can see
-“BUG: Bad page state in process …” errors.
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=204317
 
-Non-contiguous page structs are generally not an issue.  However, they can
-exist with a specific kernel configuration and hotplug operations.  For
-example: Configure the kernel with CONFIG_SPARSEMEM and
-!CONFIG_SPARSEMEM_VMEMMAP.  Then, hotplug add memory for the area where
-the gigantic page will be allocated.  Zi Yan outlined steps to reproduce
-here [1].
-
-[1] https://lore.kernel.org/linux-mm/16F7C58B-4D79-41C5-9B64-A1A1628F4AF2@nvidia.com/
-
-Link: https://lkml.kernel.org/r/20210217184926.33567-1-mike.kravetz@oracle.com
-Fixes: 944d9fec8d7a ("hugetlb: add support for gigantic page allocation at runtime")
-Signed-off-by: Zi Yan <ziy@nvidia.com>
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Zi Yan <ziy@nvidia.com>
-Cc: Davidlohr Bueso <dbueso@suse.de>
-Cc: "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Joao Martins <joao.m.martins@oracle.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: a49a7a4635de ("media: smipcie: add universal ir capability")
+Tested-by: Laz Lev <lazlev@web.de>
+Cc: stable@vger.kernel.org # v5.1+
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- mm/hugetlb.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1312,14 +1312,16 @@ static inline void destroy_compound_giga
- static void update_and_free_page(struct hstate *h, struct page *page)
+---
+ drivers/media/pci/smipcie/smipcie-ir.c |   48 ++++++++++++++++++---------------
+ 1 file changed, 27 insertions(+), 21 deletions(-)
+
+--- a/drivers/media/pci/smipcie/smipcie-ir.c
++++ b/drivers/media/pci/smipcie/smipcie-ir.c
+@@ -60,39 +60,45 @@ static void smi_ir_decode(struct smi_rc
  {
- 	int i;
-+	struct page *subpage = page;
+ 	struct smi_dev *dev = ir->dev;
+ 	struct rc_dev *rc_dev = ir->rc_dev;
+-	u32 dwIRControl, dwIRData;
+-	u8 index, ucIRCount, readLoop;
++	u32 control, data;
++	u8 index, ir_count, read_loop;
  
- 	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
- 		return;
+-	dwIRControl = smi_read(IR_Init_Reg);
++	control = smi_read(IR_Init_Reg);
  
- 	h->nr_huge_pages--;
- 	h->nr_huge_pages_node[page_to_nid(page)]--;
--	for (i = 0; i < pages_per_huge_page(h); i++) {
--		page[i].flags &= ~(1 << PG_locked | 1 << PG_error |
-+	for (i = 0; i < pages_per_huge_page(h);
-+	     i++, subpage = mem_map_next(subpage, page, i)) {
-+		subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
- 				1 << PG_referenced | 1 << PG_dirty |
- 				1 << PG_active | 1 << PG_private |
- 				1 << PG_writeback);
+-	if (dwIRControl & rbIRVld) {
+-		ucIRCount = (u8) smi_read(IR_Data_Cnt);
++	dev_dbg(&rc_dev->dev, "ircontrol: 0x%08x\n", control);
+ 
+-		readLoop = ucIRCount/4;
+-		if (ucIRCount % 4)
+-			readLoop += 1;
+-		for (index = 0; index < readLoop; index++) {
+-			dwIRData = smi_read(IR_DATA_BUFFER_BASE + (index * 4));
+-
+-			ir->irData[index*4 + 0] = (u8)(dwIRData);
+-			ir->irData[index*4 + 1] = (u8)(dwIRData >> 8);
+-			ir->irData[index*4 + 2] = (u8)(dwIRData >> 16);
+-			ir->irData[index*4 + 3] = (u8)(dwIRData >> 24);
++	if (control & rbIRVld) {
++		ir_count = (u8)smi_read(IR_Data_Cnt);
++
++		dev_dbg(&rc_dev->dev, "ircount %d\n", ir_count);
++
++		read_loop = ir_count / 4;
++		if (ir_count % 4)
++			read_loop += 1;
++		for (index = 0; index < read_loop; index++) {
++			data = smi_read(IR_DATA_BUFFER_BASE + (index * 4));
++			dev_dbg(&rc_dev->dev, "IRData 0x%08x\n", data);
++
++			ir->irData[index * 4 + 0] = (u8)(data);
++			ir->irData[index * 4 + 1] = (u8)(data >> 8);
++			ir->irData[index * 4 + 2] = (u8)(data >> 16);
++			ir->irData[index * 4 + 3] = (u8)(data >> 24);
+ 		}
+-		smi_raw_process(rc_dev, ir->irData, ucIRCount);
+-		smi_set(IR_Init_Reg, rbIRVld);
++		smi_raw_process(rc_dev, ir->irData, ir_count);
+ 	}
+ 
+-	if (dwIRControl & rbIRhighidle) {
++	if (control & rbIRhighidle) {
+ 		struct ir_raw_event rawir = {};
+ 
++		dev_dbg(&rc_dev->dev, "high idle\n");
++
+ 		rawir.pulse = 0;
+ 		rawir.duration = US_TO_NS(SMI_SAMPLE_PERIOD *
+ 					  SMI_SAMPLE_IDLEMIN);
+ 		ir_raw_event_store_with_filter(rc_dev, &rawir);
+-		smi_set(IR_Init_Reg, rbIRhighidle);
+ 	}
+ 
++	smi_set(IR_Init_Reg, rbIRVld);
+ 	ir_raw_event_handle(rc_dev);
+ }
+ 
+@@ -151,7 +157,7 @@ int smi_ir_init(struct smi_dev *dev)
+ 	rc_dev->dev.parent = &dev->pci_dev->dev;
+ 
+ 	rc_dev->map_name = dev->info->rc_map;
+-	rc_dev->timeout = MS_TO_NS(100);
++	rc_dev->timeout = US_TO_NS(SMI_SAMPLE_PERIOD * SMI_SAMPLE_IDLEMIN);
+ 	rc_dev->rx_resolution = US_TO_NS(SMI_SAMPLE_PERIOD);
+ 
+ 	ir->rc_dev = rc_dev;
+@@ -174,7 +180,7 @@ void smi_ir_exit(struct smi_dev *dev)
+ 	struct smi_rc *ir = &dev->ir;
+ 	struct rc_dev *rc_dev = ir->rc_dev;
+ 
+-	smi_ir_stop(ir);
+ 	rc_unregister_device(rc_dev);
++	smi_ir_stop(ir);
+ 	ir->rc_dev = NULL;
+ }
 
 
