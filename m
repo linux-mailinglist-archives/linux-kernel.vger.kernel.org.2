@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A8432890C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02903328949
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238976AbhCARtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:49:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36940 "EHLO mail.kernel.org"
+        id S239127AbhCARx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:53:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231709AbhCAQ37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:29:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44EEB64F1B;
-        Mon,  1 Mar 2021 16:23:45 +0000 (UTC)
+        id S232529AbhCAQcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:32:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 369F864F21;
+        Mon,  1 Mar 2021 16:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615825;
-        bh=x6O3dtjGOI4sJSCTP/KSgpzM9vY1gViK+mI/rO9wgqs=;
+        s=korg; t=1614615856;
+        bh=dZDuYGpAecR4SZKdufLNZDrBQ7R3UW6Uz7HS7zGTTVE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r7yk8IV1N2bf+jYlv/++2GX3W+pizcVXJnvUOHqTjJ5p4leDVsFCtspenuA9eIv4k
-         I9Arr9YfPKUu8TkixW+9CYYDhLf3LNO+Dy/JNxc2GDtOtaY9V1TpCsioGLZdCYx6Nc
-         es77VtkuicrDIcxuCK+G1o8iZJOymmcQSDtNvNJI=
+        b=Xp9ZLCbhs2M1BK1xg1yO9+g5cR4gA66id6MzaUyuoi1zF3MEdYwtCGuEfpxcVmZIY
+         fuwvg7FPqlWrC3ey3WlLX8Kb77ne7SjBanavcIcrhEELGjrf7Bt6Lp8C+euSxKed1w
+         rTl5IGxPA0KutC1U5q4LtGJJ9jfTwTDxep/UnwfQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 066/134] RDMA/rxe: Fix coding error in rxe_recv.c
-Date:   Mon,  1 Mar 2021 17:12:47 +0100
-Message-Id: <20210301161016.801339417@linuxfoundation.org>
+Subject: [PATCH 4.9 067/134] mfd: wm831x-auxadc: Prevent use after free in wm831x_auxadc_read_irq()
+Date:   Mon,  1 Mar 2021 17:12:48 +0100
+Message-Id: <20210301161016.852331865@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -40,65 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Pearson <rpearsonhpe@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 7d9ae80e31df57dd3253e1ec514f0000aa588a81 ]
+[ Upstream commit 26783d74cc6a440ee3ef9836a008a697981013d0 ]
 
-check_type_state() in rxe_recv.c is written as if the type bits in the
-packet opcode were a bit mask which is not correct. This patch corrects
-this code to compare all 3 type bits to the required type.
+The "req" struct is always added to the "wm831x->auxadc_pending" list,
+but it's only removed from the list on the success path.  If a failure
+occurs then the "req" struct is freed but it's still on the list,
+leading to a use after free.
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Link: https://lore.kernel.org/r/20210127214500.3707-1-rpearson@hpe.com
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 78bb3688ea18 ("mfd: Support multiple active WM831x AUXADC conversions")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_recv.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/mfd/wm831x-auxadc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index db6bb026ae902..ece4fe838e755 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -36,21 +36,26 @@
- #include "rxe.h"
- #include "rxe_loc.h"
+diff --git a/drivers/mfd/wm831x-auxadc.c b/drivers/mfd/wm831x-auxadc.c
+index fd789d2eb0f52..9f7ae1e1ebcd6 100644
+--- a/drivers/mfd/wm831x-auxadc.c
++++ b/drivers/mfd/wm831x-auxadc.c
+@@ -98,11 +98,10 @@ static int wm831x_auxadc_read_irq(struct wm831x *wm831x,
+ 	wait_for_completion_timeout(&req->done, msecs_to_jiffies(500));
  
-+/* check that QP matches packet opcode type and is in a valid state */
- static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
- 			    struct rxe_qp *qp)
- {
-+	unsigned int pkt_type;
-+
- 	if (unlikely(!qp->valid))
- 		goto err1;
+ 	mutex_lock(&wm831x->auxadc_lock);
+-
+-	list_del(&req->list);
+ 	ret = req->val;
  
-+	pkt_type = pkt->opcode & 0xe0;
-+
- 	switch (qp_type(qp)) {
- 	case IB_QPT_RC:
--		if (unlikely((pkt->opcode & IB_OPCODE_RC) != 0)) {
-+		if (unlikely(pkt_type != IB_OPCODE_RC)) {
- 			pr_warn_ratelimited("bad qp type\n");
- 			goto err1;
- 		}
- 		break;
- 	case IB_QPT_UC:
--		if (unlikely(!(pkt->opcode & IB_OPCODE_UC))) {
-+		if (unlikely(pkt_type != IB_OPCODE_UC)) {
- 			pr_warn_ratelimited("bad qp type\n");
- 			goto err1;
- 		}
-@@ -58,7 +63,7 @@ static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
- 	case IB_QPT_UD:
- 	case IB_QPT_SMI:
- 	case IB_QPT_GSI:
--		if (unlikely(!(pkt->opcode & IB_OPCODE_UD))) {
-+		if (unlikely(pkt_type != IB_OPCODE_UD)) {
- 			pr_warn_ratelimited("bad qp type\n");
- 			goto err1;
- 		}
+ out:
++	list_del(&req->list);
+ 	mutex_unlock(&wm831x->auxadc_lock);
+ 
+ 	kfree(req);
 -- 
 2.27.0
 
