@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C91A8329F6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 476ED329F6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573967AbhCBD2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:28:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51660 "EHLO mail.kernel.org"
+        id S1573975AbhCBD2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:28:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241831AbhCAUdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:33:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DCC66023C;
-        Mon,  1 Mar 2021 18:47:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614624445;
-        bh=0DlrWYj/bDt5bt3NPev9NpNg2Qh/3IIllLDP6ON9/iY=;
+        id S243436AbhCAUdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:33:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7D1D64DA3;
+        Mon,  1 Mar 2021 18:53:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614624790;
+        bh=3ELhbjMqRRzMMMCjxYb3jrE9yCN1/eAHw8TPFwAgK1g=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AYWNoMpAKvGsjPirsIul9RrB4MYn+LGdt4VyWWbKmH96i9rk9JawWfmAHURsJHq/G
-         tRjX/sEov6mp6NgzKT62ta0uHXeG05QfwTH5TZxHp94nJUHxZtateRk/och1elCS6Y
-         bYcm0BseUUzSvS+rcjaT8iVFd06cBb/K2hCMogdkubNcF/24KfJwWzQ/jp9uPVPXbt
-         mvzzrJcB2q3GuDZL3vwl8fDUPQVUT/no6ZC9rXkj5he+efiUEUR5wiqmkvMXzM1BOZ
-         BDsFuKaDrA62SoIU6AkJLWEX+LHlfFJz0PewEqFFldqpFDN5yTBaI8PwN0BRV+t9Tj
-         mqi+JtoRSN04w==
-Date:   Mon, 1 Mar 2021 10:47:24 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Christoph =?iso-8859-1?Q?B=F6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] crypto: expose needs_key in procfs
-Message-ID: <YD02vJhFkFiARX0q@gmail.com>
-References: <20210301165917.2576180-1-christoph.boehmwalder@linbit.com>
+        b=v1zW3X8zlY6cj6ucIok+Ue2b/pCILK0xYZxkFeRkWrNV1K0VYuvvdsicmN9sNP18+
+         WPaszXpZaxs3H1RkXTkQN/dKdB56MEepPLiy2UMokAaiUromuwEQzYTIZ+5up61rx4
+         IOJSxlOX927LiLJfpHveSSVc7PvEth42ftYMyBZ8=
+Date:   Mon, 1 Mar 2021 19:50:35 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>, stable@vger.kernel.org,
+        Nicolas Dechesne <nicolas.dechesne@linaro.org>
+Subject: Re: [PATCH v2] misc: fastrpc: restrict user apps from sending kernel
+ RPC messages
+Message-ID: <YD03ew7+6v0XPh6l@kroah.com>
+References: <20210212192658.3476137-1-dmitry.baryshkov@linaro.org>
+ <YCeM+0JUEPQQkGsF@kroah.com>
+ <CAA8EJpo-U74KAyoHY=9wutk=iCOBMv6T1Ez-MEogYdPE6X1yCQ@mail.gmail.com>
+ <YD0M4JyBbUrYjFMD@kroah.com>
+ <CAA8EJprTwqFWfPMjLrA2T0rJ=D3btLFHwY33VVJka1Og-9UeAQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210301165917.2576180-1-christoph.boehmwalder@linbit.com>
+In-Reply-To: <CAA8EJprTwqFWfPMjLrA2T0rJ=D3btLFHwY33VVJka1Og-9UeAQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 05:59:17PM +0100, Christoph Böhmwalder wrote:
-> Currently, it is not apparent for userspace users which hash algorithms
-> require a key and which don't. We have /proc/crypto, so add a field
-> with this information there.
+On Mon, Mar 01, 2021 at 08:45:34PM +0300, Dmitry Baryshkov wrote:
+> On Mon, 1 Mar 2021 at 18:48, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Mar 01, 2021 at 06:34:10PM +0300, Dmitry Baryshkov wrote:
+> > > On Sat, 13 Feb 2021 at 11:25, Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Fri, Feb 12, 2021 at 10:26:58PM +0300, Dmitry Baryshkov wrote:
+> > > > > Verify that user applications are not using the kernel RPC message
+> > > > > handle to restrict them from directly attaching to guest OS on the
+> > > > > remote subsystem. This is a port of CVE-2019-2308 fix.
+> > > >
+> > > > A port of the fix of what to what?
+> > >
+> > > I'm sorry for the confusion. It is a port of the original
+> > > Qualcomm/CodeAurora fix to the upstream driver.
+> > >
+> > > See https://source.codeaurora.org/quic/la/kernel/msm-4.9/commit/?id=cc2e11eeb988964af72309f71b0fb21c11ed6ca9,
+> >
+> > So this is a fix from 2019 that you never submitted upstream causing all
+> > of these kernels to be vulnerable?
 > 
-> Signed-off-by: Christoph Böhmwalder <christoph.boehmwalder@linbit.com>
-> 
-> ---
->  crypto/shash.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/crypto/shash.c b/crypto/shash.c
-> index 2e3433ad9762..d3127a0618f2 100644
-> --- a/crypto/shash.c
-> +++ b/crypto/shash.c
-> @@ -477,6 +477,9 @@ static void crypto_shash_show(struct seq_file *m, struct crypto_alg *alg)
->  	seq_printf(m, "type         : shash\n");
->  	seq_printf(m, "blocksize    : %u\n", alg->cra_blocksize);
->  	seq_printf(m, "digestsize   : %u\n", salg->digestsize);
-> +	seq_printf(m, "needs key    : %s\n",
-> +		   crypto_shash_alg_needs_key(salg) ?
-> +		   "yes" : "no");
->  }
->  
+> It seems there is some kind of confusion here.
+> Srinivas and Thierry have developed the fastrpc driver. It is not the
+> same as the driver developed by Qualcomm. However in this case it
+> suffers from the same problem as the original adsprpc driver..
+> We have submitted the fix as soon as we've noticed the issue.
 
-Do you have a specific use case in mind for this information?  Normally, users
-should already know which algorithm they want to use (or set of algorithms they
-might want to use).
+Ah, that makes more sense, thanks.
 
-Also, what about algorithms of type "ahash"?  Shouldn't this field be added for
-them too?
+So really, it's not the same CVE issue, aren't they fun?  :)
 
-Also, what about algorithms such as blake2b-256 which optionally take a key (as
-indicated by CRYPTO_ALG_OPTIONAL_KEY being set)?  So it's not really "yes" or
-"no"; there is a third state as well.
+thanks,
 
-- Eric
+greg k-h
