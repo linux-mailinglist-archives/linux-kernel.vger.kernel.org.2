@@ -2,45 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4595D329C70
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F48329BBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380739AbhCBBzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:55:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49354 "EHLO mail.kernel.org"
+        id S1379481AbhCBB2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:28:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234839AbhCATay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:30:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D4516527C;
-        Mon,  1 Mar 2021 17:30:38 +0000 (UTC)
+        id S241295AbhCATP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:15:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D208764FE5;
+        Mon,  1 Mar 2021 17:01:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619839;
-        bh=3ofKSrfI84QcaQj4jHS6wkeRfvVNXhkb67UHKaav4tE=;
+        s=korg; t=1614618094;
+        bh=wfxjql4rAZGSoFpCGp0+BZwZYE26VtTFaH0Hf54wbMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0wzvWt5oPSyPvVGt/x9klesrv6YjBPgNLFVzCzKzZ7oRFvQ8uDKus/87uNih1Psgf
-         WgyZws5dxkrRTrTqXuNYRVNV1yyLhWOOZoKxdFbAL+HSY9nbqjypvZxeWtwEbRYWLs
-         4/kTMZa2Ndl1rp+OyU9QNAKiFO/FY8ZYEx5AYE+A=
+        b=1JNPXlNP9su0f9eoOChv0GCtsNvBGBdna9r5qQz0umFNMefkbnz1NTSIPihkH+/ZQ
+         eDgS41/BNnT2/IfznbRScqgs7oRAxKSlsfQsc32oV4bFA94uQ3kTlaJw7DisYLvTx3
+         tjyO8HiTVagsr3xry+YApy2ESRf9B/dqK1bdD0XU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        "Tobin C. Harding" <tobin@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, Qian Cai <cai@lca.pw>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 600/663] mm/vmscan: restore zone_reclaim_mode ABI
-Date:   Mon,  1 Mar 2021 17:14:08 +0100
-Message-Id: <20210301161211.542531383@linuxfoundation.org>
+        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH 5.4 305/340] arm64: Extend workaround for erratum 1024718 to all versions of Cortex-A55
+Date:   Mon,  1 Mar 2021 17:14:09 +0100
+Message-Id: <20210301161103.291562586@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,96 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-commit 519983645a9f2ec339cabfa0c6ef7b09be985dd0 upstream.
+commit c0b15c25d25171db4b70cc0b7dbc1130ee94017d upstream.
 
-I went to go add a new RECLAIM_* mode for the zone_reclaim_mode sysctl.
-Like a good kernel developer, I also went to go update the
-documentation.  I noticed that the bits in the documentation didn't
-match the bits in the #defines.
+The erratum 1024718 affects Cortex-A55 r0p0 to r2p0. However
+we apply the work around for r0p0 - r1p0. Unfortunately this
+won't be fixed for the future revisions for the CPU. Thus
+extend the work around for all versions of A55, to cover
+for r2p0 and any future revisions.
 
-The VM never explicitly checks the RECLAIM_ZONE bit.  The bit is,
-however implicitly checked when checking 'node_reclaim_mode==0'.  The
-RECLAIM_ZONE #define was removed in a cleanup.  That, by itself is fine.
-
-But, when the bit was removed (bit 0) the _other_ bit locations also got
-changed.  That's not OK because the bit values are documented to mean
-one specific thing.  Users surely do not expect the meaning to change
-from kernel to kernel.
-
-The end result is that if someone had a script that did:
-
-	sysctl vm.zone_reclaim_mode=1
-
-it would have gone from enabling node reclaim for clean unmapped pages
-to writing out pages during node reclaim after the commit in question.
-That's not great.
-
-Put the bits back the way they were and add a comment so something like
-this is a bit harder to do again.  Update the documentation to make it
-clear that the first bit is ignored.
-
-Link: https://lkml.kernel.org/r/20210219172555.FF0CDF23@viggo.jf.intel.com
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Fixes: 648b5cf368e0 ("mm/vmscan: remove unused RECLAIM_OFF/RECLAIM_ZONE")
-Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-Acked-by: David Rientjes <rientjes@google.com>
-Acked-by: Christoph Lameter <cl@linux.com>
-Cc: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Daniel Wagner <dwagner@suse.de>
-Cc: "Tobin C. Harding" <tobin@kernel.org>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Qian Cai <cai@lca.pw>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: stable@vger.kernel.org
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: James Morse <james.morse@arm.com>
+Cc: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Link: https://lore.kernel.org/r/20210203230057.3961239-1-suzuki.poulose@arm.com
+[will: Update Kconfig help text]
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- Documentation/admin-guide/sysctl/vm.rst |   10 +++++-----
- mm/vmscan.c                             |    9 +++++++--
- 2 files changed, 12 insertions(+), 7 deletions(-)
 
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -978,11 +978,11 @@ that benefit from having their data cach
- left disabled as the caching effect is likely to be more important than
- data locality.
+---
+ arch/arm64/Kconfig             |    2 +-
+ arch/arm64/kernel/cpufeature.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -489,7 +489,7 @@ config ARM64_ERRATUM_1024718
+ 	help
+ 	  This option adds a workaround for ARM Cortex-A55 Erratum 1024718.
  
--zone_reclaim may be enabled if it's known that the workload is partitioned
--such that each partition fits within a NUMA node and that accessing remote
--memory would cause a measurable performance reduction.  The page allocator
--will then reclaim easily reusable pages (those page cache pages that are
--currently not used) before allocating off node pages.
-+Consider enabling one or more zone_reclaim mode bits if it's known that the
-+workload is partitioned such that each partition fits within a NUMA node
-+and that accessing remote memory would cause a measurable performance
-+reduction.  The page allocator will take additional actions before
-+allocating off node pages.
- 
- Allowing zone reclaim to write out pages stops processes that are
- writing large amounts of data from dirtying pages on other nodes. Zone
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4084,8 +4084,13 @@ module_init(kswapd_init)
-  */
- int node_reclaim_mode __read_mostly;
- 
--#define RECLAIM_WRITE (1<<0)	/* Writeout pages during reclaim */
--#define RECLAIM_UNMAP (1<<1)	/* Unmap pages during reclaim */
-+/*
-+ * These bit locations are exposed in the vm.zone_reclaim_mode sysctl
-+ * ABI.  New bits are OK, but existing bits can never change.
-+ */
-+#define RECLAIM_ZONE  (1<<0)   /* Run shrink_inactive_list on the zone */
-+#define RECLAIM_WRITE (1<<1)   /* Writeout pages during reclaim */
-+#define RECLAIM_UNMAP (1<<2)   /* Unmap pages during reclaim */
- 
- /*
-  * Priority for NODE_RECLAIM. This determines the fraction of pages
+-	  Affected Cortex-A55 cores (r0p0, r0p1, r1p0) could cause incorrect
++	  Affected Cortex-A55 cores (all revisions) could cause incorrect
+ 	  update of the hardware dirty bit when the DBM/AP bits are updated
+ 	  without a break-before-make. The workaround is to disable the usage
+ 	  of hardware DBM locally on the affected cores. CPUs not affected by
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1092,7 +1092,7 @@ static bool cpu_has_broken_dbm(void)
+ 	/* List of CPUs which have broken DBM support. */
+ 	static const struct midr_range cpus[] = {
+ #ifdef CONFIG_ARM64_ERRATUM_1024718
+-		MIDR_RANGE(MIDR_CORTEX_A55, 0, 0, 1, 0),  // A55 r0p0 -r1p0
++		MIDR_ALL_VERSIONS(MIDR_CORTEX_A55),
+ #endif
+ 		{},
+ 	};
 
 
