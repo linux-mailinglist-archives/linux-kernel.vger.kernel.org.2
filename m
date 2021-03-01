@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A1BC329CC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74497329D28
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349169AbhCBCMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:12:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51202 "EHLO mail.kernel.org"
+        id S1443122AbhCBCSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:18:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236932AbhCATgm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:36:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F469650C4;
-        Mon,  1 Mar 2021 17:43:30 +0000 (UTC)
+        id S235677AbhCATot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:44:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 508956500F;
+        Mon,  1 Mar 2021 17:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620611;
-        bh=z48XpFlYBWyux+J2/a5onXBUtrHRr7RYVt6Yo8P6K/I=;
+        s=korg; t=1614618577;
+        bh=K+OjDIPYCbxWk0EUBLNudxD/OFd+ePHa1hMiMN+nUjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HxXu0RHe7KU7wsffKdi6jQF6Rs2nuKocJ3hmuaBPu6Rc61SPO+nbS5RK4E83+oSyR
-         2vOk2qMbI/SVYGa1OvpsiJe/ThjeKUII0Z4HdTOTQk/UrCn+bywdlrQuQFRpF4VG+m
-         0ZwO6IY+36v4d8SWarVq6FPNlxChFUqNBMQPCr00=
+        b=XjSjIz/Ar/E99XNe6KnibG9ON5py6fmOecz6dvqln6nUwRIl1ibrpDe5/iib+le28
+         M6u9SNntGZfF/mOKQa6EtjK4vtoaWd+jLVbBza2iA6UZRDPtM2F3UU7gc6SDVeO3tM
+         dCpKCezVQod21iNSpBKvcMiTvN0L+Yx4rfdIUhZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 216/775] MIPS: Compare __SYNC_loongson3_war against 0
-Date:   Mon,  1 Mar 2021 17:06:24 +0100
-Message-Id: <20210301161212.295955210@linuxfoundation.org>
+Subject: [PATCH 5.10 138/663] fbdev: aty: SPARC64 requires FB_ATY_CT
+Date:   Mon,  1 Mar 2021 17:06:26 +0100
+Message-Id: <20210301161148.585856050@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,94 +48,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 8790ccf8daf1a8c53b6cb8ce0c9a109274bd3fa8 ]
+[ Upstream commit c6c90c70db4d9a0989111d6b994d545659410f7a ]
 
-When building with clang when CONFIG_CPU_LOONGSON3_WORKAROUNDS is
-enabled:
+It looks like SPARC64 requires FB_ATY_CT to build without errors,
+so have FB_ATY select FB_ATY_CT if both SPARC64 and PCI are enabled
+instead of using "default y if SPARC64 && PCI", which is not strong
+enough to prevent build errors.
 
- In file included from lib/errseq.c:4:
- In file included from ./include/linux/atomic.h:7:
- ./arch/mips/include/asm/atomic.h:52:1: warning: converting the result of
- '<<' to a boolean always evaluates to true
- [-Wtautological-constant-compare]
- ATOMIC_OPS(atomic64, s64)
- ^
- ./arch/mips/include/asm/atomic.h:40:9: note: expanded from macro
- 'ATOMIC_OPS'
-         return cmpxchg(&v->counter, o, n);
-                ^
- ./arch/mips/include/asm/cmpxchg.h:194:7: note: expanded from macro
- 'cmpxchg'
-         if (!__SYNC_loongson3_war)
-              ^
- ./arch/mips/include/asm/sync.h:147:34: note: expanded from macro
- '__SYNC_loongson3_war'
- # define __SYNC_loongson3_war   (1 << 31)
-                                    ^
+As it currently is, FB_ATY_CT can be disabled, resulting in build
+errors:
 
-While it is not wrong that the result of this shift is always true in a
-boolean context, it is not a problem here. Regardless, the warning is
-really noisy so rather than making the shift a boolean implicitly, use
-it in an equality comparison so the shift is used as an integer value.
+ERROR: modpost: "aty_postdividers" [drivers/video/fbdev/aty/atyfb.ko] undefined!
+ERROR: modpost: "aty_ld_pll_ct" [drivers/video/fbdev/aty/atyfb.ko] undefined!
 
-Fixes: 4d1dbfe6cbec ("MIPS: atomic: Emit Loongson3 sync workarounds within asm")
-Fixes: a91f2a1dba44 ("MIPS: cmpxchg: Omit redundant barriers for Loongson3")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: sparclinux@vger.kernel.org
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-fbdev@vger.kernel.org
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201127031752.10371-1-rdunlap@infradead.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/atomic.h  | 2 +-
- arch/mips/include/asm/cmpxchg.h | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/video/fbdev/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
-index f904084fcb1fd..27ad767915390 100644
---- a/arch/mips/include/asm/atomic.h
-+++ b/arch/mips/include/asm/atomic.h
-@@ -248,7 +248,7 @@ static __inline__ int pfx##_sub_if_positive(type i, pfx##_t * v)	\
- 	 * bltz that can branch	to code outside of the LL/SC loop. As	\
- 	 * such, we don't need to emit another barrier here.		\
- 	 */								\
--	if (!__SYNC_loongson3_war)					\
-+	if (__SYNC_loongson3_war == 0)					\
- 		smp_mb__after_atomic();					\
- 									\
- 	return result;							\
-diff --git a/arch/mips/include/asm/cmpxchg.h b/arch/mips/include/asm/cmpxchg.h
-index 5b0b3a6777ea5..ed8f3f3c4304a 100644
---- a/arch/mips/include/asm/cmpxchg.h
-+++ b/arch/mips/include/asm/cmpxchg.h
-@@ -99,7 +99,7 @@ unsigned long __xchg(volatile void *ptr, unsigned long x, int size)
- 	 * contains a completion barrier prior to the LL, so we don't	\
- 	 * need to emit an extra one here.				\
- 	 */								\
--	if (!__SYNC_loongson3_war)					\
-+	if (__SYNC_loongson3_war == 0)					\
- 		smp_mb__before_llsc();					\
- 									\
- 	__res = (__typeof__(*(ptr)))					\
-@@ -191,7 +191,7 @@ unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
- 	 * contains a completion barrier prior to the LL, so we don't	\
- 	 * need to emit an extra one here.				\
- 	 */								\
--	if (!__SYNC_loongson3_war)					\
-+	if (__SYNC_loongson3_war == 0)					\
- 		smp_mb__before_llsc();					\
- 									\
- 	__res = cmpxchg_local((ptr), (old), (new));			\
-@@ -201,7 +201,7 @@ unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
- 	 * contains a completion barrier after the SC, so we don't	\
- 	 * need to emit an extra one here.				\
- 	 */								\
--	if (!__SYNC_loongson3_war)					\
-+	if (__SYNC_loongson3_war == 0)					\
- 		smp_llsc_mb();						\
- 									\
- 	__res;								\
+diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+index cfb7f5612ef0f..4f02db65dedec 100644
+--- a/drivers/video/fbdev/Kconfig
++++ b/drivers/video/fbdev/Kconfig
+@@ -1269,6 +1269,7 @@ config FB_ATY
+ 	select FB_CFB_IMAGEBLIT
+ 	select FB_BACKLIGHT if FB_ATY_BACKLIGHT
+ 	select FB_MACMODES if PPC
++	select FB_ATY_CT if SPARC64 && PCI
+ 	help
+ 	  This driver supports graphics boards with the ATI Mach64 chips.
+ 	  Say Y if you have such a graphics board.
+@@ -1279,7 +1280,6 @@ config FB_ATY
+ config FB_ATY_CT
+ 	bool "Mach64 CT/VT/GT/LT (incl. 3D RAGE) support"
+ 	depends on PCI && FB_ATY
+-	default y if SPARC64 && PCI
+ 	help
+ 	  Say Y here to support use of ATI's 64-bit Rage boards (or other
+ 	  boards based on the Mach64 CT, VT, GT, and LT chipsets) as a
 -- 
 2.27.0
 
