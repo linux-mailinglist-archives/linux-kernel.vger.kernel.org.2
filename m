@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92489329888
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5BD23298B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346149AbhCAXiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:38:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58184 "EHLO mail.kernel.org"
+        id S1346446AbhCAXrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:47:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239212AbhCASHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:07:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AFE164EC8;
-        Mon,  1 Mar 2021 16:38:37 +0000 (UTC)
+        id S234284AbhCASJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:09:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF6E065066;
+        Mon,  1 Mar 2021 17:23:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616718;
-        bh=EIVnKeBTvCuy8skJ1s58bt5TKX4aecLWzQO1Vfu+E2s=;
+        s=korg; t=1614619419;
+        bh=vGtHvO5vY1/hbyN7DteKHlZkQG5TALIND6rSi4sb7Pk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WrQ8ppczG4Uemy4G5vyt5ZZ603N9ghgb4gw1ewxoQVtsAHGpO64hDDw2zTRAjTLFS
-         nmjgY3rXlqYHQyyriBR9Tgl47lpEHoSKIuiWrH9BLMKRL/szpD8V7YecmsenhPNw6h
-         aD2btN7EiLxJjf1/sDMQ7a2SH3rSon5N/qXTHtJ8=
+        b=OiCN5hGu0ej6oFvqvdTmT3+Mo7mmrIgfffhmpd0LSceoLoQrWvvhsSbHCQzNim7OA
+         JBJnnA5swcd89FihOd9TnRTp+HRe+lgAgbTiZRPhByrLf/iNxSGvn4PULWiK9V8DLl
+         sIDY/LFC6VLEryIeLxJzxcWKj7dQkZKb1aRHbkos=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dave Ertman <david.m.ertman@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 072/247] net: mvneta: Remove per-cpu queue mapping for Armada 3700
-Date:   Mon,  1 Mar 2021 17:11:32 +0100
-Message-Id: <20210301161035.212197791@linuxfoundation.org>
+Subject: [PATCH 5.10 447/663] ice: Fix state bits on LLDP mode switch
+Date:   Mon,  1 Mar 2021 17:11:35 +0100
+Message-Id: <20210301161204.017681548@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
-References: <20210301161031.684018251@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+From: Dave Ertman <david.m.ertman@intel.com>
 
-[ Upstream commit cf9bf871280d9e0a8869d98c2602d29caf69dfa3 ]
+[ Upstream commit 0d4907f65dc8fc5e897ad19956fca1acb3b33bc8 ]
 
-According to Errata #23 "The per-CPU GbE interrupt is limited to Core
-0", we can't use the per-cpu interrupt mechanism on the Armada 3700
-familly.
+DCBX_CAP bits were not being adjusted when switching
+between SW and FW controlled LLDP.
 
-This is correctly checked for RSS configuration, but the initial queue
-mapping is still done by having the queues spread across all the CPUs in
-the system, both in the init path and in the cpu_hotplug path.
+Adjust bits to correctly indicate which mode the
+LLDP logic is in.
 
-Fixes: 2636ac3cc2b4 ("net: mvneta: Add network support for Armada 3700 SoC")
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b94b013eb626 ("ice: Implement DCBNL support")
+Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvneta.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ice/ice.h         | 2 --
+ drivers/net/ethernet/intel/ice/ice_dcb_nl.c  | 4 ++++
+ drivers/net/ethernet/intel/ice/ice_ethtool.c | 7 +++++++
+ 3 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 30a16cf796c7a..fda5dd8c71ebd 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -3022,7 +3022,9 @@ static int mvneta_txq_sw_init(struct mvneta_port *pp,
+diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+index 54cf382fddaf9..5b3f2bb22eba7 100644
+--- a/drivers/net/ethernet/intel/ice/ice.h
++++ b/drivers/net/ethernet/intel/ice/ice.h
+@@ -444,9 +444,7 @@ struct ice_pf {
+ 	struct ice_hw_port_stats stats_prev;
+ 	struct ice_hw hw;
+ 	u8 stat_prev_loaded:1; /* has previous stats been loaded */
+-#ifdef CONFIG_DCB
+ 	u16 dcbx_cap;
+-#endif /* CONFIG_DCB */
+ 	u32 tx_timeout_count;
+ 	unsigned long tx_timeout_last_recovery;
+ 	u32 tx_timeout_recovery_level;
+diff --git a/drivers/net/ethernet/intel/ice/ice_dcb_nl.c b/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
+index 842d44b63480f..8c133a8be6add 100644
+--- a/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
++++ b/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
+@@ -160,6 +160,10 @@ static u8 ice_dcbnl_setdcbx(struct net_device *netdev, u8 mode)
+ {
+ 	struct ice_pf *pf = ice_netdev_to_pf(netdev);
+ 
++	/* if FW LLDP agent is running, DCBNL not allowed to change mode */
++	if (test_bit(ICE_FLAG_FW_LLDP_AGENT, pf->flags))
++		return ICE_DCB_NO_HW_CHG;
++
+ 	/* No support for LLD_MANAGED modes or CEE+IEEE */
+ 	if ((mode & DCB_CAP_DCBX_LLD_MANAGED) ||
+ 	    ((mode & DCB_CAP_DCBX_VER_IEEE) && (mode & DCB_CAP_DCBX_VER_CEE)) ||
+diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+index 69c113a4de7e6..d27b9cb3e8082 100644
+--- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
++++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+@@ -8,6 +8,7 @@
+ #include "ice_fltr.h"
+ #include "ice_lib.h"
+ #include "ice_dcb_lib.h"
++#include <net/dcbnl.h>
+ 
+ struct ice_stats {
+ 	char stat_string[ETH_GSTRING_LEN];
+@@ -1238,6 +1239,9 @@ static int ice_set_priv_flags(struct net_device *netdev, u32 flags)
+ 			status = ice_init_pf_dcb(pf, true);
+ 			if (status)
+ 				dev_warn(dev, "Fail to init DCB\n");
++
++			pf->dcbx_cap &= ~DCB_CAP_DCBX_LLD_MANAGED;
++			pf->dcbx_cap |= DCB_CAP_DCBX_HOST;
+ 		} else {
+ 			enum ice_status status;
+ 			bool dcbx_agent_status;
+@@ -1280,6 +1284,9 @@ static int ice_set_priv_flags(struct net_device *netdev, u32 flags)
+ 			if (status)
+ 				dev_dbg(dev, "Fail to enable MIB change events\n");
+ 
++			pf->dcbx_cap &= ~DCB_CAP_DCBX_HOST;
++			pf->dcbx_cap |= DCB_CAP_DCBX_LLD_MANAGED;
++
+ 			ice_nway_reset(netdev);
+ 		}
  	}
- 
- 	/* Setup XPS mapping */
--	if (txq_number > 1)
-+	if (pp->neta_armada3700)
-+		cpu = 0;
-+	else if (txq_number > 1)
- 		cpu = txq->id % num_present_cpus();
- 	else
- 		cpu = pp->rxq_def % num_present_cpus();
-@@ -3667,6 +3669,11 @@ static int mvneta_cpu_online(unsigned int cpu, struct hlist_node *node)
- 						  node_online);
- 	struct mvneta_pcpu_port *port = per_cpu_ptr(pp->ports, cpu);
- 
-+	/* Armada 3700's per-cpu interrupt for mvneta is broken, all interrupts
-+	 * are routed to CPU 0, so we don't need all the cpu-hotplug support
-+	 */
-+	if (pp->neta_armada3700)
-+		return 0;
- 
- 	spin_lock(&pp->lock);
- 	/*
 -- 
 2.27.0
 
