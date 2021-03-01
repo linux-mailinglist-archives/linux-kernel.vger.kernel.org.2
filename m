@@ -2,67 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9BB327A86
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5CA327A88
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233645AbhCAJOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:14:01 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:57882 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233009AbhCAJN7 (ORCPT
+        id S233772AbhCAJON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:14:13 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:57251 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233009AbhCAJOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:13:59 -0500
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1614589997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eaN0GLkpvxq4H2WhMZJuMDc0+wEhRVfWSwLjNj11LuQ=;
-        b=121e2GMlQ72jXhYmjUf15Hdbe6efchPOnDmntbthSNGfOUOjPfBLZiKHCmfGbGYbBb2vWs
-        kOlT6d3CnZNcVTzM6Bod/NNlBkRNO/KR6hhchZWyhPALp1NDt6u3Qecq7J2dfZ1XDaHKYE
-        L2jYuZwjbdJ0BuY1HgNWMp6KH30aqQf2hqn2x0EhDumWvmUd3DpSDwOaN/ondeM6zXDfQe
-        xQ910hwVg32V1k0knNjOpp/om+456xfZqUTfYIsHZRrEEVdc0g8abU4A1lDDFSmVCteVwt
-        quKXMHdPqMcAuaxIe29C2s9mc/9EHA3nnTtwkmuxAQmg4WP8Jf/43GuB8tUB4A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1614589997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eaN0GLkpvxq4H2WhMZJuMDc0+wEhRVfWSwLjNj11LuQ=;
-        b=Ei1why0BXayLBKwouqVb+nsd81oTknwh7ZuguNBV9QkkPCD0Hd+Aann7VaoN3RD9MF0lUD
-        limwh7JoVumBcLAg==
-To:     Mikael Beckius <mikael.beckius@windriver.com>,
-        anna-maria@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, mikael.beckius@windriver.com
-Subject: Re: Sv: Sv: [PATCH] hrtimer: Interrupt storm on clock_settime
-In-Reply-To: <20210225111814.8383-1-mikael.beckius@windriver.com>
-References: <alpine.DEB.2.21.2102231638540.1861@somnus> <20210225111814.8383-1-mikael.beckius@windriver.com>
-Date:   Mon, 01 Mar 2021 10:13:17 +0100
-Message-ID: <87k0qrtexe.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Mon, 1 Mar 2021 04:14:09 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UPxZNk7_1614590005;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPxZNk7_1614590005)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 01 Mar 2021 17:13:26 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] driver core: Switch to using the new API kobj_to_dev()
+Date:   Mon,  1 Mar 2021 17:13:24 +0800
+Message-Id: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Micke,
+fixed the following coccicheck:
+./include/linux/device.h:590:46-47: WARNING opportunity for
+kobj_to_dev()
 
-On Thu, Feb 25 2021 at 12:18, Mikael Beckius wrote:
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ include/linux/device.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->> The proposed change breaks the reprogramming logic. To keep it working
->> cpu_base::*expires_next is only updated by hrtimer_reprogram() and
->> hrtimer_interrupt(). I will send you a patch for testing in reply to this
->> thread. The patch is compile tested only.
->> 
-> Ok. I kind of guessed that would be the response as I noticed a similar comment
-> during the review of the original patch which introduced the softirq_expires_next
-> logic. Anyway it seemed logical to update softirq_expires_next
-> when updating softirq_next_timer.
+diff --git a/include/linux/device.h b/include/linux/device.h
+index ba66073..31d7137 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -587,7 +587,7 @@ struct device_link {
+ 
+ static inline struct device *kobj_to_dev(struct kobject *kobj)
+ {
+-	return container_of(kobj, struct device, kobj);
++	return kobj_to_dev(kobj);
+ }
+ 
+ /**
+-- 
+1.8.3.1
 
-yes it seems logical to do that, but unfortunately the logic there is a
-bit twisted and could do with some deobfuscation.
-
-Thanks,
-
-        tglx
