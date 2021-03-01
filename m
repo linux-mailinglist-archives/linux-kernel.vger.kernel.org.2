@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDA3329AD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E5D329AA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378065AbhCBBDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:03:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58450 "EHLO mail.kernel.org"
+        id S240461AbhCBA7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:59:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240684AbhCAS4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:56:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14304650BA;
-        Mon,  1 Mar 2021 17:42:31 +0000 (UTC)
+        id S238088AbhCAStl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:49:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AF0264F7E;
+        Mon,  1 Mar 2021 17:08:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620552;
-        bh=RdvtAx1VOMX+S9d5I0NJCu42dZQip1DsfOFTeI8y4Ac=;
+        s=korg; t=1614618517;
+        bh=s/KjInfOI6Bcqyc8z6zHefJ0Y+U7aME1kP5vyxxf3/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u24SIU5sgVWKXYmooyZh5E3u4D9xNtVDtOUZH9DFtocp10IOjUrQZIa6oxmGm2oXQ
-         Ad/JQ0OcCu8AgkX9MEg511ei45BHYtslv0D0hHujLXzr7e/HmuTRpzYy7YCiids1UI
-         kBNgR9vrtTskcCfdkkb2INdq176mFgj8exBZVdmQ=
+        b=n24clUJ0/mrFEshbEJ3bZBsBwR6RqY+yRjAWt5UUADul7U9uicJJ0QQ4KesjZkaxx
+         H/22tFQ94t2uEohLsiye8iGmyLB0CcOHZcJ/GMt6KEMSqT4xiVvtrZFtX9hSDkU1PV
+         0KA3RaXIUxET+ArD6stuAwWFaGE584uw7S9U4cQ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jacopo Mondi <jacopo@jmondi.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 194/775] media: i2c: ov5670: Fix PIXEL_RATE minimum value
-Date:   Mon,  1 Mar 2021 17:06:02 +0100
-Message-Id: <20210301161211.225636049@linuxfoundation.org>
+Subject: [PATCH 5.10 115/663] libbpf: Ignore non function pointer member in struct_ops
+Date:   Mon,  1 Mar 2021 17:06:03 +0100
+Message-Id: <20210301161147.432354479@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +40,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacopo Mondi <jacopo@jmondi.org>
+From: Martin KaFai Lau <kafai@fb.com>
 
-[ Upstream commit dc1eb7c9c290cba52937c9a224b22a400bb0ffd7 ]
+[ Upstream commit d2836dddc95d5dd82c7cb23726c97d8c9147f050 ]
 
-The driver currently reports a single supported value for
-V4L2_CID_PIXEL_RATE and initializes the control's minimum value to 0,
-which is very risky, as userspace might accidentally use it as divider
-when calculating the time duration of a line.
+When libbpf initializes the kernel's struct_ops in
+"bpf_map__init_kern_struct_ops()", it enforces all
+pointer types must be a function pointer and rejects
+others.  It turns out to be too strict.  For example,
+when directly using "struct tcp_congestion_ops" from vmlinux.h,
+it has a "struct module *owner" member and it is set to NULL
+in a bpf_tcp_cc.o.
 
-Fix this by using as minimum the only supported value when registering
-the control.
+Instead, it only needs to ensure the member is a function
+pointer if it has been set (relocated) to a bpf-prog.
+This patch moves the "btf_is_func_proto(kern_mtype)" check
+after the existing "if (!prog) { continue; }".  The original debug
+message in "if (!prog) { continue; }" is also removed since it is
+no longer valid.  Beside, there is a later debug message to tell
+which function pointer is set.
 
-Fixes: 5de35c9b8dcd1 ("media: i2c: Add Omnivision OV5670 5M sensor support")
-Signed-off-by: Jacopo Mondi <jacopo@jmondi.org>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+The "btf_is_func_proto(mtype)" has already been guaranteed
+in "bpf_object__collect_st_ops_relos()" which has been run
+before "bpf_map__init_kern_struct_ops()".  Thus, this check
+is removed.
+
+v2:
+- Remove outdated debug message (Andrii)
+  Remove because there is a later debug message to tell
+  which function pointer is set.
+- Following mtype->type is no longer needed. Remove:
+  "skip_mods_and_typedefs(btf, mtype->type, &mtype_id)"
+- Do "if (!prog)" test before skip_mods_and_typedefs.
+
+Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210212021030.266932-1-kafai@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/ov5670.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/media/i2c/ov5670.c b/drivers/media/i2c/ov5670.c
-index 148fd4e05029a..866c8c2e8f59a 100644
---- a/drivers/media/i2c/ov5670.c
-+++ b/drivers/media/i2c/ov5670.c
-@@ -2084,7 +2084,8 @@ static int ov5670_init_controls(struct ov5670 *ov5670)
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index ad165e6e74bc0..b954db52bb807 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -865,24 +865,24 @@ static int bpf_map__init_kern_struct_ops(struct bpf_map *map,
+ 		if (btf_is_ptr(mtype)) {
+ 			struct bpf_program *prog;
  
- 	/* By default, V4L2_CID_PIXEL_RATE is read only */
- 	ov5670->pixel_rate = v4l2_ctrl_new_std(ctrl_hdlr, &ov5670_ctrl_ops,
--					       V4L2_CID_PIXEL_RATE, 0,
-+					       V4L2_CID_PIXEL_RATE,
-+					       link_freq_configs[0].pixel_rate,
- 					       link_freq_configs[0].pixel_rate,
- 					       1,
- 					       link_freq_configs[0].pixel_rate);
+-			mtype = skip_mods_and_typedefs(btf, mtype->type, &mtype_id);
++			prog = st_ops->progs[i];
++			if (!prog)
++				continue;
++
+ 			kern_mtype = skip_mods_and_typedefs(kern_btf,
+ 							    kern_mtype->type,
+ 							    &kern_mtype_id);
+-			if (!btf_is_func_proto(mtype) ||
+-			    !btf_is_func_proto(kern_mtype)) {
+-				pr_warn("struct_ops init_kern %s: non func ptr %s is not supported\n",
++
++			/* mtype->type must be a func_proto which was
++			 * guaranteed in bpf_object__collect_st_ops_relos(),
++			 * so only check kern_mtype for func_proto here.
++			 */
++			if (!btf_is_func_proto(kern_mtype)) {
++				pr_warn("struct_ops init_kern %s: kernel member %s is not a func ptr\n",
+ 					map->name, mname);
+ 				return -ENOTSUP;
+ 			}
+ 
+-			prog = st_ops->progs[i];
+-			if (!prog) {
+-				pr_debug("struct_ops init_kern %s: func ptr %s is not set\n",
+-					 map->name, mname);
+-				continue;
+-			}
+-
+ 			prog->attach_btf_id = kern_type_id;
+ 			prog->expected_attach_type = kern_member_idx;
+ 
 -- 
 2.27.0
 
