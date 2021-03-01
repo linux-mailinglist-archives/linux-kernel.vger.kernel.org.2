@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DC6329BC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9E6329C09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379579AbhCBB3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:29:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43884 "EHLO mail.kernel.org"
+        id S1345875AbhCBBqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:46:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241334AbhCATRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:17:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6ABC65176;
-        Mon,  1 Mar 2021 17:07:40 +0000 (UTC)
+        id S241522AbhCATXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:23:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11ECB64FF7;
+        Mon,  1 Mar 2021 17:08:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618461;
-        bh=xxHIthO+Tx85OMbCDOiBkQxt46n8uaKklXdfUTJUu7w=;
+        s=korg; t=1614618484;
+        bh=NV9fGt0mpJcVALe3T9Y1RBXJGn2NsdnAAeNVb8PNTtQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wSNZbNVoSe6gcxK7jeCQD+mWvE5o+PZZLg52LOY1bxN8X6fsbeLaZsEziLIpgG1wS
-         On45LkoFfp8RhSAgO0hXQ9bPBiQEF/nI0HCm7Csv0laVouUlNX1n1Ex20+xVSlhzCJ
-         sRd57ZBI+65OW8fVvgurQb7bzEa/LF15gFEoiZWI=
+        b=XQqNhuyVHInIV07JV4OKrhrA2FRh7cXz4UGD96cOnpUwKnAe1RPyRv/cuk1DY5ggW
+         s+dfW1NUZ6AmoeuSVrUTuCshLI/13riJihTj1sSI7fW6htDoa+yXYr3b8tjw0n6ZSt
+         hB3YiUf5aVAR57b0NvKMF9aVkmfA7uTfuhE1Fexg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 094/663] iwlwifi: pnvm: increment the pointer before checking the TLV
-Date:   Mon,  1 Mar 2021 17:05:42 +0100
-Message-Id: <20210301161146.382404789@linuxfoundation.org>
+Subject: [PATCH 5.10 096/663] selftests/bpf: Convert test_xdp_redirect.sh to bash
+Date:   Mon,  1 Mar 2021 17:05:44 +0100
+Message-Id: <20210301161146.484280922@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,50 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Coelho <luciano.coelho@intel.com>
+From: Björn Töpel <bjorn.topel@intel.com>
 
-[ Upstream commit ff11a8ee2d2d0f78514ac9b42fb50c525ca695c7 ]
+[ Upstream commit 732fa32330667a80ce4985ca81b6e9d6b2ad2072 ]
 
-If the SKU_ID doesn't match, we don't increment the pointer and keep
-checking the same TLV over and over again.
+The test_xdp_redirect.sh script uses a bash feature, '&>'. On systems,
+e.g. Debian, where '/bin/sh' is dash, this will not work as
+expected. Use bash in the shebang to get the expected behavior.
 
-We need to increment the pointer in all situtations, namely if the TLV
-is not a SKU_ID, if the SKU_ID matched or if the SKU_ID didn't match.
-So we can increment the pointer already before checking for these
-conditions to solve the problem.
+Further, using 'set -e' means that the error of a command cannot be
+captured without the command being executed with '&&' or '||'. Let us
+restructure the ping-commands, and use them as an if-expression, so
+that we can capture the return value.
 
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Fixes: 6972592850c0 ("iwlwifi: read and parse PNVM file")
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210210172142.de94d366f3ff.I9a5a54906cf0f4ec8af981d6066bfd771152ffb9@changeid
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+v4: Added missing Fixes:, and removed local variables. (Andrii)
+v3: Reintroduced /bin/bash, and kept 'set -e'. (Andrii)
+v2: Kept /bin/sh and removed bashisms. (Randy)
+
+Fixes: 996139e801fd ("selftests: bpf: add a test for XDP redirect")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210211082029.1687666-1-bjorn.topel@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/fw/pnvm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/test_xdp_redirect.sh | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
-index 1e16f83b402b8..37ce4fe136c5e 100644
---- a/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/pnvm.c
-@@ -198,14 +198,14 @@ static int iwl_pnvm_parse(struct iwl_trans *trans, const u8 *data,
- 				     le32_to_cpu(sku_id->data[1]),
- 				     le32_to_cpu(sku_id->data[2]));
+diff --git a/tools/testing/selftests/bpf/test_xdp_redirect.sh b/tools/testing/selftests/bpf/test_xdp_redirect.sh
+index dd80f0c84afb4..c033850886f44 100755
+--- a/tools/testing/selftests/bpf/test_xdp_redirect.sh
++++ b/tools/testing/selftests/bpf/test_xdp_redirect.sh
+@@ -1,4 +1,4 @@
+-#!/bin/sh
++#!/bin/bash
+ # Create 2 namespaces with two veth peers, and
+ # forward packets in-between using generic XDP
+ #
+@@ -57,12 +57,8 @@ test_xdp_redirect()
+ 	ip link set dev veth1 $xdpmode obj test_xdp_redirect.o sec redirect_to_222 &> /dev/null
+ 	ip link set dev veth2 $xdpmode obj test_xdp_redirect.o sec redirect_to_111 &> /dev/null
  
-+			data += sizeof(*tlv) + ALIGN(tlv_len, 4);
-+			len -= ALIGN(tlv_len, 4);
-+
- 			if (trans->sku_id[0] == le32_to_cpu(sku_id->data[0]) &&
- 			    trans->sku_id[1] == le32_to_cpu(sku_id->data[1]) &&
- 			    trans->sku_id[2] == le32_to_cpu(sku_id->data[2])) {
- 				int ret;
- 
--				data += sizeof(*tlv) + ALIGN(tlv_len, 4);
--				len -= ALIGN(tlv_len, 4);
+-	ip netns exec ns1 ping -c 1 10.1.1.22 &> /dev/null
+-	local ret1=$?
+-	ip netns exec ns2 ping -c 1 10.1.1.11 &> /dev/null
+-	local ret2=$?
 -
- 				ret = iwl_pnvm_handle_section(trans, data, len);
- 				if (!ret)
- 					return 0;
+-	if [ $ret1 -eq 0 -a $ret2 -eq 0 ]; then
++	if ip netns exec ns1 ping -c 1 10.1.1.22 &> /dev/null &&
++	   ip netns exec ns2 ping -c 1 10.1.1.11 &> /dev/null; then
+ 		echo "selftests: test_xdp_redirect $xdpmode [PASS]";
+ 	else
+ 		ret=1
 -- 
 2.27.0
 
