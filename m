@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506AC329A0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B6E329A0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348279AbhCBAn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:43:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49644 "EHLO mail.kernel.org"
+        id S1348253AbhCBAnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:43:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240299AbhCASij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:38:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5826E65314;
-        Mon,  1 Mar 2021 17:43:22 +0000 (UTC)
+        id S240191AbhCASh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:37:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7AE365012;
+        Mon,  1 Mar 2021 17:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620602;
-        bh=RbsRnAjVjKH2hfuolaRNlatMWXPRUnHLsvtlKr+1y5c=;
+        s=korg; t=1614618651;
+        bh=wv+7pgcKUHla4PJ1ndnf56SUfG/ahrxUITsC1mxEgYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HIcQ9jTP6UAmvxAm5taob34eAyhnqq0nsOhBFhqpzs96wAoZfcE1FDbb5r9ZkkEqr
-         IbsjOoA710YIOXCSntmTmijFD48v/+T3TKho5r1CqIb5OID/3LN+voGdGkJed3kn9S
-         EKwPzVoD3AEwTL0dXHKuic2oCdhXYOwZGvyu/v1g=
+        b=rf+ptk36n2XCnaxFbyuyCJj/Q2u9jR1gc/M2Q0M7phoeJBbx6ETArLpiIH5O9gKdU
+         I6zOfojPkKY/J66Eyucwfayo+SNxDGx6Nb7YzE6QC28mk5GgDZB8hO2K5Uf9mIV0oR
+         oDoBr13og4FR3uXYo13rPLrjlr0zHsJwm3lmv3o0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        =?UTF-8?q?S=C3=A9bastien=20Szymanski?= 
-        <sebastien.szymanski@armadeus.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 213/775] media: imx7: csi: Fix pad link validation
-Date:   Mon,  1 Mar 2021 17:06:21 +0100
-Message-Id: <20210301161212.159635054@linuxfoundation.org>
+Subject: [PATCH 5.10 135/663] net: enetc: fix destroyed phylink dereference during unbind
+Date:   Mon,  1 Mar 2021 17:06:23 +0100
+Message-Id: <20210301161148.433060661@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rui Miguel Silva <rmfrfs@gmail.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit f5ffb81f51376eb5a12e8c4cb4871426c65bb2af ]
+[ Upstream commit 3af409ca278d4a8d50e91f9f7c4c33b175645cf3 ]
 
-We can not make the assumption that the bound subdev is always a CSI
-mux, in i.MX6UL/i.MX6ULL that is not the case. So, just get the entity
-selected by source directly upstream from the CSI.
+The following call path suggests that calling unregister_netdev on an
+interface that is up will first bring it down.
 
-Fixes: 86e02d07871c ("media: imx5/6/7: csi: Mark a bound video mux as a CSI mux")
-Reported-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Rui Miguel Silva <rmfrfs@gmail.com>
-Tested-by: Fabio Estevam <festevam@gmail.com>
-Tested-by: Sébastien Szymanski <sebastien.szymanski@armadeus.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+enetc_pf_remove
+-> unregister_netdev
+   -> unregister_netdevice_queue
+      -> unregister_netdevice_many
+         -> dev_close_many
+            -> __dev_close_many
+               -> enetc_close
+                  -> enetc_stop
+                     -> phylink_stop
+
+However, enetc first destroys the phylink instance, then calls
+unregister_netdev. This is already dissimilar to the setup (and error
+path teardown path) from enetc_pf_probe, but more than that, it is buggy
+because it is invalid to call phylink_stop after phylink_destroy.
+
+So let's first unregister the netdev (and let the .ndo_stop events
+consume themselves), then destroy the phylink instance, then free the
+netdev.
+
+Fixes: 71b77a7a27a3 ("enetc: Migrate to PHYLINK and PCS_LYNX")
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/imx/imx7-media-csi.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/freescale/enetc/enetc_pf.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/media/imx/imx7-media-csi.c
-index 31e36168f9d0f..ac52b1daf9914 100644
---- a/drivers/staging/media/imx/imx7-media-csi.c
-+++ b/drivers/staging/media/imx/imx7-media-csi.c
-@@ -499,6 +499,7 @@ static int imx7_csi_pad_link_validate(struct v4l2_subdev *sd,
- 				      struct v4l2_subdev_format *sink_fmt)
- {
- 	struct imx7_csi *csi = v4l2_get_subdevdata(sd);
-+	struct media_entity *src;
- 	struct media_pad *pad;
- 	int ret;
+diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+index 06514af0df106..796e3d6f23f09 100644
+--- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
++++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
+@@ -1164,14 +1164,15 @@ static void enetc_pf_remove(struct pci_dev *pdev)
+ 	struct enetc_ndev_priv *priv;
  
-@@ -509,11 +510,21 @@ static int imx7_csi_pad_link_validate(struct v4l2_subdev *sd,
- 	if (!csi->src_sd)
- 		return -EPIPE;
+ 	priv = netdev_priv(si->ndev);
+-	enetc_phylink_destroy(priv);
+-	enetc_mdiobus_destroy(pf);
  
-+	src = &csi->src_sd->entity;
+ 	if (pf->num_vfs)
+ 		enetc_sriov_configure(pdev, 0);
+ 
+ 	unregister_netdev(si->ndev);
+ 
++	enetc_phylink_destroy(priv);
++	enetc_mdiobus_destroy(pf);
 +
-+	/*
-+	 * if the source is neither a CSI MUX or CSI-2 get the one directly
-+	 * upstream from this CSI
-+	 */
-+	if (src->function != MEDIA_ENT_F_VID_IF_BRIDGE &&
-+	    src->function != MEDIA_ENT_F_VID_MUX)
-+		src = &csi->sd.entity;
-+
- 	/*
--	 * find the entity that is selected by the CSI mux. This is needed
-+	 * find the entity that is selected by the source. This is needed
- 	 * to distinguish between a parallel or CSI-2 pipeline.
- 	 */
--	pad = imx_media_pipeline_pad(&csi->src_sd->entity, 0, 0, true);
-+	pad = imx_media_pipeline_pad(src, 0, 0, true);
- 	if (!pad)
- 		return -ENODEV;
+ 	enetc_free_msix(priv);
  
+ 	enetc_free_si_resources(priv);
 -- 
 2.27.0
 
