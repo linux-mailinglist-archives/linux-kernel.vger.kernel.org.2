@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCA932795D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6985B32794D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhCAIf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:35:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50419 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233169AbhCAIdw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:33:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614587545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fFrnFRkq8zlLi/GoDu8cq0p/6I3M8mJKkFwM0TB0eXo=;
-        b=EegYYjKDucrudTv7o0ga2WzJ8JBqfIX35cieJz8XVcC/+b7Rh3JA0ysaOQw7HocXvDtcFt
-        MnaPYRjc3zsOB0xBK2O4p6PX/4i8OWfnhQWu4Ip9PIoLDmzy0phBElSCuOYxbNZo4C9Nkf
-        q6/ieWw7U0AHFcVQ8NnoiVwKJPVXsms=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-590-cNgmDk-fN5Wc8KFNqfl87g-1; Mon, 01 Mar 2021 03:32:23 -0500
-X-MC-Unique: cNgmDk-fN5Wc8KFNqfl87g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57BDE107ACE8;
-        Mon,  1 Mar 2021 08:32:22 +0000 (UTC)
-Received: from [10.36.114.87] (ovpn-114-87.ams2.redhat.com [10.36.114.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C2A346;
-        Mon,  1 Mar 2021 08:32:20 +0000 (UTC)
-Subject: Re: [PATCH v2 1/7] mm,memory_hotplug: Allocate memmap from the added
- memory range
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>, VlastimilBabkavbabka@suse.cz,
-        pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
-References: <20210209133854.17399-1-osalvador@suse.de>
- <20210209133854.17399-2-osalvador@suse.de>
- <60afb5ca-230e-265f-9579-dac66a152c33@redhat.com>
- <20210228185044.GA3929@localhost.localdomain>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <46cd8850-4f6f-6162-474a-a70fc0903cc9@redhat.com>
-Date:   Mon, 1 Mar 2021 09:32:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210228185044.GA3929@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S233167AbhCAIdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:33:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37662 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233060AbhCAIdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 03:33:25 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DE37CAF61;
+        Mon,  1 Mar 2021 08:32:43 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v4 0/3] Cleanup and fixups for vmemmap handling
+Date:   Mon,  1 Mar 2021 09:32:27 +0100
+Message-Id: <20210301083230.30924-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andrew,
 
->>> +		(*online_page_callback)(pfn_to_page(pfn), pageblock_order);
->>> +		pfn += 1 << pageblock_order;
->>
->> pfn += pageblock_nr_pages;
->>
->> Can you add a comment why we can be sure that we are off by  a single pageblock? What about s390x where a MAX_ORDER_NR_PAGES == 4 * pageblock_nr_pages?
->>
->> Would it make thing simpler to just do a
->>
->> while (!IS_ALIGNED(pfn, MAX_ORDER_NR_PAGES)) {
->> 	(*online_page_callback)(pfn_to_page(pfn), 0);
->> 	pfn++;
->> }
-> 
-> Honestly, I did not spend much time thinking on other platforms other
-> than arm64/x86_64.
-> But I think that that would be the universal solution as we do not make
-> any assumptions.
-> 
-> I will replace it.
+Now that 5.12-rc1 is out, and as discussed, here there is a new version on top
+of it.
+Please, consider picking up the series.
+
+Thanks
+
+Original cover letter:
+
+----
+
+Hi,
+
+this series contains cleanups to remove dead code that handles
+unaligned cases for 4K and 1GB pages (patch#1 and patch#2) when
+removing the vemmmap range, and a fix (patch#3) to handle the case
+when two vmemmap ranges intersect the same PMD.
+
+More details can be found in the respective changelogs.
+
+ v3 -> v4:
+ - Rebase on top of 5.12-rc1 as Andrew suggested
+ - Added last Reviewed-by for the last patch
+
+ v2 -> v3:
+ - Make sure we do not clear the PUD entry in case
+   we are not removing the whole range.
+ - Add Reviewed-by
+
+ v1 -> v2:
+ - Remove dead code in remove_pud_table as well
+ - Addessed feedback by David
+ - Place the vmemap functions that take care of unaligned PMDs
+   within CONFIG_SPARSEMEM_VMEMMAP
 
 
-I think you can safely go with
+Oscar Salvador (3):
+  x86/vmemmap: Drop handling of 4K unaligned vmemmap range
+  x86/vmemmap: Drop handling of 1GB vmemmap ranges
+  x86/vmemmap: Handle unpopulated sub-pmd ranges
 
-while (!IS_ALIGNED(pfn, MAX_ORDER_NR_PAGES)) {
-	(*online_page_callback)(pfn_to_page(pfn), pageblock_order);
-	pfn += pageblock_nr_pages;
-}
-
-and maybe add before the loop
-
-VM_BUG_ON(!IS_ALIGNED(pfn, pageblock_nr_pages));
-
-as help for the reader that this always holds.
+ arch/x86/mm/init_64.c | 189 +++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 118 insertions(+), 71 deletions(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.16.3
 
