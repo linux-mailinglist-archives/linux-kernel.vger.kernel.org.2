@@ -2,490 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39622329B13
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D891329B0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378571AbhCBBGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:06:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35099 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240630AbhCATCm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:02:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614625271;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qHdW/eIbIVKy8AipWSRDBE14YFP+txlHOwaoAbjXsdc=;
-        b=C3X/UiVwDT77BMtGzgC0p9o+jC4CZ8Iq/eFeYT3tF+2oRTmP1VqRflwqWIvwvdmYZSl/mY
-        9uoypOTlyjfhhi9Kf1Tk54EVB7ARMYuCl8CwMxqto075XvNBQOXnv8wFWXY/DkOTu6lpUc
-        D8jyigRyy7X+Zol4RndYv9pHMGKpWBM=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-433-82peCqkIMpqvAhYQtHlzGA-1; Mon, 01 Mar 2021 14:01:09 -0500
-X-MC-Unique: 82peCqkIMpqvAhYQtHlzGA-1
-Received: by mail-qv1-f69.google.com with SMTP id dz17so4323735qvb.14
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 11:01:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=qHdW/eIbIVKy8AipWSRDBE14YFP+txlHOwaoAbjXsdc=;
-        b=pRSI64nJYmwWwVB7i2Wh07JHLK3srb1ZHLoK/Q2ZlIwkHAOcMT5eB+xeXvYoE46e8L
-         7Jy+En9u0351TsfbxWrjzQQkAUTG5F2IRpw9cwsQcNiWleLhChUATlPfI7VKCyom7Hs4
-         ojlIQTOQoVq1EQBcuREC04yzPMv37sULkEG2S74kGxCYYfJ79oDhNJdWjWY8SxqA2gad
-         e7ED3oCccKUiFkuZ6ulKREzPHy+u1q0V6XbhS4VX+qTmyWkeBs898ERteuLaNwdHWsAq
-         YjZK++60MFhrp4XljfhRUX7R/iifBnIzQZSYRrWHfQqh8OYpGePppDInspuAHvj2nPXg
-         uELw==
-X-Gm-Message-State: AOAM530RLZS+oHmtnWtPwsyzsabdFRZtdzrrefOUZLf1ZtqJzhz37ntD
-        eVUs4q4YI6rTQwg31qUaxGbe/yQVnnj6Ycx5ugmotiIA0AcKnit19Ek3k14ZTJu+YRZEd/I9nT0
-        mawwZMTI5bT6agVVdGzqHyU4x
-X-Received: by 2002:ac8:5c8f:: with SMTP id r15mr14503085qta.65.1614625268746;
-        Mon, 01 Mar 2021 11:01:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwYVKhGhgQLgVRmGb+q26ZqGt6+H78ZkrUqcAJYXd5Yn6H1UlLDZP5q+/49ejk09OMy+fVhJg==
-X-Received: by 2002:ac8:5c8f:: with SMTP id r15mr14503036qta.65.1614625268385;
-        Mon, 01 Mar 2021 11:01:08 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id g89sm6560239qtd.75.2021.03.01.11.01.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 11:01:08 -0800 (PST)
-Subject: Re: [PATCH V3 XRT Alveo 10/18] fpga: xrt: VSEC platform driver
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
-        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210218064019.29189-1-lizhih@xilinx.com>
- <20210218064019.29189-11-lizhih@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <c574bbef-0165-22dd-f567-0be9f9819676@redhat.com>
-Date:   Mon, 1 Mar 2021 11:01:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210218064019.29189-11-lizhih@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+        id S1378531AbhCBBGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:06:45 -0500
+Received: from mail-dm6nam12on2077.outbound.protection.outlook.com ([40.107.243.77]:9760
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235993AbhCATCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:02:07 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XfcyjOQrTMXi22KDrQePDpgJRdxoAQZL/TL3Ly7skPkeFqsBUQOn52vRPODNGHpmc/QY3Oqd+QNz+hm68PYzhW4m6QHP2zYo5W9MpbQEEqt5T38dgWGHi9zpHgQAj+oUX9Byzuer66wCcybSqa3pGSZ78QHLXJf7IBfpugSoXtIWFkpcMnMYHA3FByd3lJNhA0VnZRnBaJqXwcbao+Y/jl1O4Du/hYZ+yIaGfkB6qsZEUEp93IyUpnWHtRY7WE2/nr+eCO74LnyzXkm1ilaExzeTAv7X3Z73J1sOlXxOPeT3f/NxMp+nWq4oi/pOCvrNc6VKYXMh2wDDNBxQ1uXcLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VYF8mDembdYw5T35qdwlI36S128oAKYH1FSd8RBXvPc=;
+ b=bk/QEgPkYZsvQYlYB+dwO7TRvsanbWIbKqt7u/6HjUkO06CB2ORMTNzfQK/QnA1D9428SNZcEMJke8EF7/TH+YkojICJ98s6rU3zvBz2CVJd8M1aatpcuZ17+fd23Vl9ttJhWG/Nb2ooceSeqBv+Q6QTGg3MobdRK01sE+P2fwF4s7zJY4yI6R8JEXih68A7mT2nr3cMVaZjjmzFyZ8214lqz+DBBMknEqlSqvJ+w5xwJRFKtwcWFS+azYrDL2YOkpL2LmGQFJ/Yl182wg8Q/NJecYp7QZCclGqSnQGSF1TUSq50nwqAbR9xSuizivj9PFbAx18xIZs2GYSzWp2OOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VYF8mDembdYw5T35qdwlI36S128oAKYH1FSd8RBXvPc=;
+ b=F604Gqxmwv8gLxGbz77m38fRLVNp7gUhhTdwHLtEDqw/yHROnykrWuFwBONDBKpepRw0ACOtcYi/ly9UaRpzgfzKOXB6nsdADBrdy2dBfydtXY3eJ98yJU2DHLRFcDjy31vGl6PQ/Q1TSCJDh41OjQUqFbW/3oQI4BhEB7DqlSE=
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
+ by BYAPR05MB6037.namprd05.prod.outlook.com (2603:10b6:a03:d9::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.9; Mon, 1 Mar
+ 2021 19:01:14 +0000
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::5905:ca03:9fa3:ab50]) by BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::5905:ca03:9fa3:ab50%7]) with mapi id 15.20.3912.009; Mon, 1 Mar 2021
+ 19:01:14 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v6 1/9] smp: Run functions concurrently in
+ smp_call_function_many_cond()
+Thread-Topic: [PATCH v6 1/9] smp: Run functions concurrently in
+ smp_call_function_many_cond()
+Thread-Index: AQHXDr3d3TEnHlWiMUmQGWL5BJIAGapvfQIA
+Date:   Mon, 1 Mar 2021 19:01:13 +0000
+Message-ID: <DB46F034-878B-448B-BDBF-C25056C6576C@vmware.com>
+References: <20210220231712.2475218-1-namit@vmware.com>
+ <20210220231712.2475218-2-namit@vmware.com>
+ <YD0gF9VuqKyVUgVS@hirez.programming.kicks-ass.net>
+In-Reply-To: <YD0gF9VuqKyVUgVS@hirez.programming.kicks-ass.net>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.60.0.2.21)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [24.6.216.183]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e4918fb0-2215-4a7d-f960-08d8dce462c2
+x-ms-traffictypediagnostic: BYAPR05MB6037:
+x-microsoft-antispam-prvs: <BYAPR05MB60371C2EE8495925D4A0F18FD09A9@BYAPR05MB6037.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Da0auVpUb6xju8S6eKtTUHuNhuK8bWGiVXPYWu+EzDcxbEMv0IgDf9dgmWUFpT7B6UxgcfSwSQWc8vsw7jRNY3CkbaE5E9GJnPzL85wIPUwtodgT2biGI+2LXGn0PUPGNNwxk0qM65j1dlvt7puGQqmXI7DxPt9kfD0AMBOe+6SErFPIRDLobar0+aeW6K2BEXu/75F7TNgUkjWiYnn+JPAg6dHu3TlBoatWI2Zxn3zR9xHa7Ru8hdDeFEmc+M/XLG/X0X//prokBojwoiBxIV1/AIY8m2s78TmCjJ4KiFxxRkKghZjk7x6H87CzW7vmCdEUNVYGIN3dryZz1nfNVmi6JJcpwDnd/aIMTWZVVvaCe9Qc8ViFcakvXlfJL5HOIG7EShPxeNDNOxu7BeIJ+UBF/Mw62DoXriaNFD8iDdelwze9AnpN0g4khDO162ftadOb6V5kpuuZFwfHNhSVW0RasWf6hUku2mnTAMegxqEimD1AW2fs756G8v0Tsa9UqzKm9s1LEGb5bzmUHYbk7wA29u4CvP6B+uwkorK5PUTa97nOcaGJ4pxKebo1Zf94y5eKNm+zfK0ejwl6p5Q0Cg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(396003)(376002)(346002)(66476007)(36756003)(6916009)(71200400001)(66556008)(64756008)(53546011)(66446008)(33656002)(2906002)(66946007)(6506007)(76116006)(83380400001)(316002)(54906003)(8936002)(8676002)(6486002)(5660300002)(478600001)(186003)(6512007)(4744005)(86362001)(4326008)(2616005)(26005)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?WWdMMGVvNjVlbFVJeUZoTEx4cmhaTDlNVkFqdDNlWkZPTFdrU0Iwb0Z1YWd3?=
+ =?utf-8?B?L3NLdGFWdlJqVjFXYW14TERMRlpqdGo3azhpMTRQUkxySTRBdFRDUEtPZGNY?=
+ =?utf-8?B?SU0xaEtkQkpkTFd6b2VlWXY0a0pMVG1md3owSkxGM3ZLd1BRdFJTZVFyTEZI?=
+ =?utf-8?B?UUwzY3FmQ0lXN0cvYmV0OW5kNTh5YVlsa0hmK1BKTERGc2V6ZEVxTVlnUEEy?=
+ =?utf-8?B?TlU3WDRHT2FMWHRkQ2JPR3c2M0Z4ODRqRDN5WklpK1pTUGJYUTd1NGtvVGZv?=
+ =?utf-8?B?VTBKZ2hDc2tBNVVSQ1NGTCsrMjFjR09VK3NHTWEwa21XcmVmOGdtSHR6VjZj?=
+ =?utf-8?B?bzNPWmpxOTdUZ2k1WlZZeEVQVk9rem00M0pNUG1jUFg3TU55QkFXbG1UcXF3?=
+ =?utf-8?B?UzlrSVJxQ2FqWlg5cVVSaXQrUWJ6ZkdJUWxkdzF0MzVISDJwWFcxUjFPMlk0?=
+ =?utf-8?B?Ri9OcDB0eEZaSlRWQ3VlUjFTbXRVQThrMEJJQlZ3TUZJZzdBZCs2aS9RTVV0?=
+ =?utf-8?B?TGJDZW1aNmxhWm5nbkloRktsUWliY2lMakNySmRIeG1HUVlzSUh6VjRkdEZp?=
+ =?utf-8?B?SzZPaTFTTHRSaU1BNUhPNWxneWhSNVJDbC9HSk1aaG5zVzZsTmpjVFA4d1N0?=
+ =?utf-8?B?UUlwSWtHZFRtUkxpT0hvT3FqOFR0ZTlXOEl1VWFEdlBJWWlWZ3JKdGl3dGxk?=
+ =?utf-8?B?aTV1ZDFROTBvbUNtVUZXVmhWMTJESE5SWENXbkVkVFl6ZW05cndNS0haQjU2?=
+ =?utf-8?B?QU5NS2k3dk1ONVZrUW1uRDJ5YTJnd1o1N1ljRHhLSmRpdzFqQ3lMWTh1U0Q2?=
+ =?utf-8?B?ZTFvQ3J5Mm1KampPdW83RU5Fa2l6eWVCSXZwMWk5OHZBUE9BQUdxdWRMY2RS?=
+ =?utf-8?B?NEcyS2lqdTRIZXpsWmZHY0ZaWWlnT052STdVZFVPbnU3eHpSWjFsczRrb0RG?=
+ =?utf-8?B?Nk1vVTB5UllsakhMRm8xS3I2a2E4UzkxbWtkQkpkZHBYNndpSVpnVnVTcS92?=
+ =?utf-8?B?ck5VY2N0TDBtSm4zR0xRRDJwTGxMbEc1ejNTZStlS1VIVTVQMGRoamw2UmM2?=
+ =?utf-8?B?byttdEVtYVRKcnVLMUFxcm5Fa05EZG5ZRkdjdWp6UmRaY2pPNVMzeDNCc1BH?=
+ =?utf-8?B?SWVnSEpuMUV4dzgxcHl5RGNqYWZMdVBQTk5paUZ6bWYzbEhEVHlIM1graWlz?=
+ =?utf-8?B?NzVBTmMxd1BhWE4wNDI0QXhLODNQYnQwREcyTHNibWZzS25sTnY4VXlIWG1p?=
+ =?utf-8?B?M25NVHhxNkVyNFlvZWpHays5bDQySEhtdzF5UUpjdHNxUVpPOWFKT3FOQ3dP?=
+ =?utf-8?B?bzN5WWtmSlpHSGNtY25ucll4TGtzdmFwWWtabHJuSEJlcW15Rksyd0NXTkNR?=
+ =?utf-8?B?T3BLdUxFYmlFTjFkblhTbVdrUWk0QWxpTFZVNkFsMGE5aGdzTTIxa3I2NFNV?=
+ =?utf-8?B?cWlRWFczQkE5UU1WL2lOVTRJdjJaTUh2aE1YNjBSMVcyRU5qTnVEZ0ZueGJZ?=
+ =?utf-8?B?ci9lNGJ4KytsMkM1dThoRjBuenhDRTY1aVI0Qkpka0hBNEtmRXNlMlV6ZU81?=
+ =?utf-8?B?ZFpaOS9wcU5qckl5akdidUU4OHdZSGlseU5rZEpaZEprcVZPNzhOL1RxVkFI?=
+ =?utf-8?B?bjM2ZjdSMnhWV2I0TCtISmNqL2c0ck9GTGlJR1VRRThaS2dGMzd4d0IzVTIz?=
+ =?utf-8?B?YUJNR0RsSVNUd3EwSzN2eHR0UVlGNnVoK0RKTzJLcmRKRmpPcnpBVldxVlBZ?=
+ =?utf-8?Q?Pb43iFsl77PK3xmLobqyQ2p2GRurNNWnlh3gHi6?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <DDC096FE0308E44A958520528A6DC935@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4776.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4918fb0-2215-4a7d-f960-08d8dce462c2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2021 19:01:13.9514
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IiLzE0psAQ9+Y4gvM+Ork7hOXqyzjZn29bDa+wEIkV7JTE4boHq0zaTcUEHoZuA/xTIkVrAIidLuC/jeN6wzCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB6037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2/17/21 10:40 PM, Lizhi Hou wrote:
-> Add VSEC driver. VSEC is a hardware function discovered by walking
-> PCI Express configure space. A platform device node will be created
-> for it. VSEC provides board logic UUID and few offset of other hardware
-> functions.
-Is this vsec walking infra or is a general find a list of mmio regions that need to be mapped in and do the mapping in as a set of platform drivers ?
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
-> ---
->  drivers/fpga/xrt/lib/xleaf/vsec.c | 359 ++++++++++++++++++++++++++++++
->  1 file changed, 359 insertions(+)
->  create mode 100644 drivers/fpga/xrt/lib/xleaf/vsec.c
->
-> diff --git a/drivers/fpga/xrt/lib/xleaf/vsec.c b/drivers/fpga/xrt/lib/xleaf/vsec.c
-> new file mode 100644
-> index 000000000000..8e5cb22522ec
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/lib/xleaf/vsec.c
-> @@ -0,0 +1,359 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Xilinx Alveo FPGA VSEC Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
-> + */
-> +
-> +#include <linux/platform_device.h>
-> +#include "metadata.h"
-> +#include "xleaf.h"
-> +
-> +#define XRT_VSEC "xrt_vsec"
-> +
-> +#define VSEC_TYPE_UUID		0x50
-> +#define VSEC_TYPE_FLASH		0x51
-> +#define VSEC_TYPE_PLATINFO	0x52
-> +#define VSEC_TYPE_MAILBOX	0x53
-> +#define VSEC_TYPE_END		0xff
-Type of devices, this list can not grow much.
-> +
-> +#define VSEC_UUID_LEN		16
-> +
-> +struct xrt_vsec_header {
-> +	u32		format;
-> +	u32		length;
-> +	u32		entry_sz;
-> +	u32		rsvd;
-> +} __packed;
-> +
-> +#define head_rd(g, r)			\
-> +	ioread32((void *)(g)->base + offsetof(struct xrt_vsec_header, r))
-> +
-> +#define GET_BAR(entry)	(((entry)->bar_rev >> 4) & 0xf)
-> +#define GET_BAR_OFF(_entry)				\
-> +	({ typeof(_entry) entry = (_entry);		\
-> +	 ((entry)->off_lo | ((u64)(entry)->off_hi << 16)); })
-
-A 48 bit value stored in xrt_md_endpoint.bar_off (long)
-
-bar_off should be u64 
-
-> +#define GET_REV(entry)	((entry)->bar_rev & 0xf)
-> +
-I prefer functions over macros.
-> +struct xrt_vsec_entry {
-> +	u8		type;
-> +	u8		bar_rev;
-> +	u16		off_lo;
-> +	u32		off_hi;
-> +	u8		ver_type;
-> +	u8		minor;
-> +	u8		major;
-> +	u8		rsvd0;
-> +	u32		rsvd1;
-> +} __packed;
-> +
-> +#define read_entry(g, i, e)					\
-> +	do {							\
-> +		u32 *p = (u32 *)((g)->base +			\
-> +			sizeof(struct xrt_vsec_header) +	\
-> +			(i) * sizeof(struct xrt_vsec_entry));	\
-> +		u32 off;					\
-> +		for (off = 0;					\
-> +		    off < sizeof(struct xrt_vsec_entry) / 4;	\
-> +		    off++)					\
-> +			*((u32 *)(e) + off) = ioread32(p + off);\
-> +	} while (0)
-This could be a static inline func.
-> +
-> +struct vsec_device {
-> +	u8		type;
-> +	char		*ep_name;
-> +	ulong		size;
-> +	char		*regmap;
-> +};
-> +
-> +static struct vsec_device vsec_devs[] = {
-> +	{
-> +		.type = VSEC_TYPE_UUID,
-> +		.ep_name = XRT_MD_NODE_BLP_ROM,
-> +		.size = VSEC_UUID_LEN,
-> +		.regmap = "vsec-uuid",
-> +	},
-> +	{
-> +		.type = VSEC_TYPE_FLASH,
-> +		.ep_name = XRT_MD_NODE_FLASH_VSEC,
-> +		.size = 4096,
-> +		.regmap = "vsec-flash",
-> +	},
-> +	{
-> +		.type = VSEC_TYPE_PLATINFO,
-> +		.ep_name = XRT_MD_NODE_PLAT_INFO,
-> +		.size = 4,
-> +		.regmap = "vsec-platinfo",
-> +	},
-> +	{
-> +		.type = VSEC_TYPE_MAILBOX,
-> +		.ep_name = XRT_MD_NODE_MAILBOX_VSEC,
-> +		.size = 48,
-> +		.regmap = "vsec-mbx",
-> +	},
-This is a static list, how would a new type be added to this ?
-> +};
-> +
-> +struct xrt_vsec {
-> +	struct platform_device	*pdev;
-> +	void			*base;
-> +	ulong			length;
-> +
-> +	char			*metadata;
-> +	char			uuid[VSEC_UUID_LEN];
-> +};
-> +
-> +static char *type2epname(u32 type)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(vsec_devs); i++) {
-> +		if (vsec_devs[i].type == type)
-> +			return (vsec_devs[i].ep_name);
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static ulong type2size(u32 type)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(vsec_devs); i++) {
-> +		if (vsec_devs[i].type == type)
-> +			return (vsec_devs[i].size);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static char *type2regmap(u32 type)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(vsec_devs); i++) {
-> +		if (vsec_devs[i].type == type)
-> +			return (vsec_devs[i].regmap);
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static int xrt_vsec_add_node(struct xrt_vsec *vsec,
-> +			     void *md_blob, struct xrt_vsec_entry *p_entry)
-> +{
-> +	struct xrt_md_endpoint ep;
-> +	char regmap_ver[64];
-> +	int ret;
-> +
-> +	if (!type2epname(p_entry->type))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * VSEC may have more than 1 mailbox instance for the card
-> +	 * which has more than 1 physical function.
-> +	 * This is not supported for now. Assuming only one mailbox
-> +	 */
-
-are multiple uuid types allowed ?
-
-this says assume 1, but logic will recreate 1+
-
-can you check if a mbx ep exists before creating ?
-
-> +
-> +	snprintf(regmap_ver, sizeof(regmap_ver) - 1, "%d-%d.%d.%d",
-> +		 p_entry->ver_type, p_entry->major, p_entry->minor,
-> +		 GET_REV(p_entry));
-> +	ep.ep_name = type2epname(p_entry->type);
-> +	ep.bar = GET_BAR(p_entry);
-> +	ep.bar_off = GET_BAR_OFF(p_entry);
-here is the bar_off type overlow
-> +	ep.size = type2size(p_entry->type);
-> +	ep.regmap = type2regmap(p_entry->type);
-> +	ep.regmap_ver = regmap_ver;
-> +	ret = xrt_md_add_endpoint(DEV(vsec->pdev), vsec->metadata, &ep);
-> +	if (ret) {
-> +		xrt_err(vsec->pdev, "add ep failed, ret %d", ret);
-> +		goto failed;
-> +	}
-> +
-> +failed:
-> +	return ret;
-> +}
-> +
-> +static int xrt_vsec_create_metadata(struct xrt_vsec *vsec)
-> +{
-> +	struct xrt_vsec_entry entry;
-> +	int i, ret;
-> +
-> +	ret = xrt_md_create(&vsec->pdev->dev, &vsec->metadata);
-> +	if (ret) {
-> +		xrt_err(vsec->pdev, "create metadata failed");
-> +		return ret;
-> +	}
-> +
-> +	for (i = 0; i * sizeof(entry) < vsec->length -
-> +	    sizeof(struct xrt_vsec_header); i++) {
-> +		read_entry(vsec, i, &entry);
-> +		xrt_vsec_add_node(vsec, vsec->metadata, &entry);
-This can fail.
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int xrt_vsec_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
-> +{
-> +	int ret = 0;
-> +
-> +	switch (cmd) {
-> +	case XRT_XLEAF_EVENT:
-> +		/* Does not handle any event. */
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		xrt_err(pdev, "should never been called");
-> +		break;
-> +	}
-This function looks like a noop.  Is anything going to be added to this later ?
-> +
-> +	return ret;
-> +}
-> +
-> +static int xrt_vsec_mapio(struct xrt_vsec *vsec)
-> +{
-> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(vsec->pdev);
-> +	const u32 *bar;
-> +	const u64 *bar_off;
-> +	struct resource *res = NULL;
-> +	ulong addr;
-> +	int ret;
-> +
-> +	if (!pdata || xrt_md_size(DEV(vsec->pdev), pdata->xsp_dtb) == XRT_MD_INVALID_LENGTH) {
-> +		xrt_err(vsec->pdev, "empty metadata");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = xrt_md_get_prop(DEV(vsec->pdev), pdata->xsp_dtb, XRT_MD_NODE_VSEC,
-> +			      NULL, XRT_MD_PROP_BAR_IDX, (const void **)&bar, NULL);
-> +	if (ret) {
-> +		xrt_err(vsec->pdev, "failed to get bar idx, ret %d", ret);
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = xrt_md_get_prop(DEV(vsec->pdev), pdata->xsp_dtb, XRT_MD_NODE_VSEC,
-> +			      NULL, XRT_MD_PROP_OFFSET, (const void **)&bar_off, NULL);
-> +	if (ret) {
-> +		xrt_err(vsec->pdev, "failed to get bar off, ret %d", ret);
-> +		return -EINVAL;
-> +	}
-> +
-> +	xrt_info(vsec->pdev, "Map vsec at bar %d, offset 0x%llx",
-> +		 be32_to_cpu(*bar), be64_to_cpu(*bar_off));
-> +
-> +	xleaf_get_barres(vsec->pdev, &res, be32_to_cpu(*bar));
-> +	if (!res) {
-> +		xrt_err(vsec->pdev, "failed to get bar addr");
-> +		return -EINVAL;
-> +	}
-> +
-> +	addr = res->start + (ulong)be64_to_cpu(*bar_off);
-review this type, addr is ulong and bar_off is not.
-> +
-> +	vsec->base = ioremap(addr, sizeof(struct xrt_vsec_header));
-> +	if (!vsec->base) {
-> +		xrt_err(vsec->pdev, "Map header failed");
-> +		return -EIO;
-> +	}
-
-why the double call on ioremap ?
-
-just do the last one.
-
-> +
-> +	vsec->length = head_rd(vsec, length);
-> +	iounmap(vsec->base);
-> +	vsec->base = ioremap(addr, vsec->length);
-> +	if (!vsec->base) {
-> +		xrt_err(vsec->pdev, "map failed");
-> +		return -EIO;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int xrt_vsec_remove(struct platform_device *pdev)
-> +{
-> +	struct xrt_vsec	*vsec;
-> +
-> +	vsec = platform_get_drvdata(pdev);
-> +
-> +	if (vsec->base) {
-> +		iounmap(vsec->base);
-> +		vsec->base = NULL;
-> +	}
-> +
-> +	vfree(vsec->metadata);
-> +
-> +	return 0;
-> +}
-> +
-> +static int xrt_vsec_probe(struct platform_device *pdev)
-> +{
-> +	struct xrt_vsec	*vsec;
-> +	int			ret = 0;
-> +
-> +	vsec = devm_kzalloc(&pdev->dev, sizeof(*vsec), GFP_KERNEL);
-> +	if (!vsec)
-> +		return -ENOMEM;
-> +
-> +	vsec->pdev = pdev;
-> +	platform_set_drvdata(pdev, vsec);
-> +
-> +	ret = xrt_vsec_mapio(vsec);
-> +	if (ret)
-> +		goto failed;
-> +
-> +	ret = xrt_vsec_create_metadata(vsec);
-> +	if (ret) {
-> +		xrt_err(pdev, "create metadata failed, ret %d", ret);
-> +		goto failed;
-> +	}
-> +	ret = xleaf_create_group(pdev, vsec->metadata);
-> +	if (ret < 0)
-> +		xrt_err(pdev, "create group failed, ret %d", ret);
-> +	else
-> +		ret = 0;
-
-why is it just
-
-if (ret)
-
-  fail ?
-
-Tom
-
-> +
-> +failed:
-> +	if (ret)
-> +		xrt_vsec_remove(pdev);
-> +
-> +	return ret;
-> +}
-> +
-> +static struct xrt_subdev_endpoints xrt_vsec_endpoints[] = {
-> +	{
-> +		.xse_names = (struct xrt_subdev_ep_names []){
-> +			{ .ep_name = XRT_MD_NODE_VSEC },
-> +			{ NULL },
-> +		},
-> +		.xse_min_ep = 1,
-> +	},
-> +	{ 0 },
-> +};
-> +
-> +static struct xrt_subdev_drvdata xrt_vsec_data = {
-> +	.xsd_dev_ops = {
-> +		.xsd_ioctl = xrt_vsec_ioctl,
-> +	},
-> +};
-> +
-> +static const struct platform_device_id xrt_vsec_table[] = {
-> +	{ XRT_VSEC, (kernel_ulong_t)&xrt_vsec_data },
-> +	{ },
-> +};
-> +
-> +static struct platform_driver xrt_vsec_driver = {
-> +	.driver = {
-> +		.name = XRT_VSEC,
-> +	},
-> +	.probe = xrt_vsec_probe,
-> +	.remove = xrt_vsec_remove,
-> +	.id_table = xrt_vsec_table,
-> +};
-> +
-> +void vsec_leaf_init_fini(bool init)
-> +{
-> +	if (init)
-> +		xleaf_register_driver(XRT_SUBDEV_VSEC, &xrt_vsec_driver, xrt_vsec_endpoints);
-> +	else
-> +		xleaf_unregister_driver(XRT_SUBDEV_VSEC);
-> +}
-
+DQoNCj4gT24gTWFyIDEsIDIwMjEsIGF0IDk6MTAgQU0sIFBldGVyIFppamxzdHJhIDxwZXRlcnpA
+aW5mcmFkZWFkLm9yZz4gd3JvdGU6DQo+IA0KPiBPbiBTYXQsIEZlYiAyMCwgMjAyMSBhdCAwMzox
+NzowNFBNIC0wODAwLCBOYWRhdiBBbWl0IHdyb3RlOg0KPj4gKwkJLyoNCj4+ICsJCSAqIENob29z
+ZSB0aGUgbW9zdCBlZmZpY2llbnQgd2F5IHRvIHNlbmQgYW4gSVBJLiBOb3RlIHRoYXQgdGhlDQo+
+PiArCQkgKiBudW1iZXIgb2YgQ1BVcyBtaWdodCBiZSB6ZXJvIGR1ZSB0byBjb25jdXJyZW50IGNo
+YW5nZXMgdG8gdGhlDQo+PiArCQkgKiBwcm92aWRlZCBtYXNrLg0KPj4gKwkJICovDQo+PiArCQlp
+ZiAobnJfY3B1cyA9PSAxKQ0KPj4gKwkJCWFyY2hfc2VuZF9jYWxsX2Z1bmN0aW9uX3NpbmdsZV9p
+cGkobGFzdF9jcHUpOw0KPj4gKwkJZWxzZSBpZiAobGlrZWx5KG5yX2NwdXMgPiAxKSkNCj4+ICsJ
+CQlhcmNoX3NlbmRfY2FsbF9mdW5jdGlvbl9pcGlfbWFzayhjZmQtPmNwdW1hc2tfaXBpKTsNCj4g
+DQo+IEkganVzdCByYW4gaW50byBjb25mbGljdHMgd2l0aCBhbm90aGVyIHBhdGNoIHNldCwgYW5k
+IG5vdGljZWQgdGhhdCB0aGUNCj4gYWJvdmUgc2hvdWxkIHByb2JhYmx5IGJlOg0KPiANCj4gCQlp
+ZiAobnJfY3B1cyA9PSAxKQ0KPiAJCQlzZW5kX2NhbGxfZnVuY3Rpb25fc2luZ2xlX2lwaShsYXN0
+X2NwdSk7DQo+IAkJZWxzZSBpZiAobGlrZWx5KG5yX2NwdXMgPiAxKSkNCj4gCQkJYXJjaF9zZW5k
+X2NhbGxfZnVuY3Rpb25faXBpX21hc2soY2ZkLT5jcHVtYXNrX2lwaSk7DQo+IA0KPiBXaGljaCB3
+aWxsIGF2b2lkIHRoZSBJUEkgd2hlbiBAbGFzdF9jcHUgaXMgaWRsZS4NCg0KR29vZCBwb2ludC4g
+TWFrZXMgb25lIHdvbmRlciB3aGV0aGVyIGFsbCB0aGVzZSBpbnRlci1jb3JlIGNvbW11bmljYXRp
+b24NCih0aHJvdWdoIGNwdV90bGJzdGF0ZS5pc19sYXp5LCBjc2QtPm5vZGUubGxpc3QgYW5kIHRp
+LT5mbGFncykgYXJlDQpyZWFsbHkgbmVjZXNzYXJ5IG9yIGNhbiBiZSBjb21iaW5lZC4NCg0KV2Vs
+bCwgdGhhdOKAmXMgZm9yIGxhdGVyIEkgcHJlc3VtZS4=
