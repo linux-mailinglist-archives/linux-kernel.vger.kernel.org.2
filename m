@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF2E32A06B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B97032A06D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377053AbhCBESz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:18:55 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:61526 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234634AbhCAX5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:57:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614642922; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=1TtZfr/Nw56aZE04sSwSvp/ypG0PsW6ImngAxZkqIkU=; b=kALbgtDeJG1w78NmHYjcRD8u2hqxbZ3zhjhZz6cTBIxDU6iI3BbFQedPYBHpDtvOCvkQ0x3Q
- lrjCezwHKM7vaJKtKV8IkDnG8tXlZ0aubeE/1zJOv983qagPQhfIT+KSla7bQQeULuA8kxny
- T9vr4zFI5pTFoZWela39bgKPTJo=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 603d7eca1d4da3b75d1975ec (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 23:54:50
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C4D9CC43465; Mon,  1 Mar 2021 23:54:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from stor-presley.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4F9DFC433C6;
-        Mon,  1 Mar 2021 23:54:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4F9DFC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Date:   Mon, 1 Mar 2021 15:54:45 -0800
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <huobean@gmail.com>, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: Re: [PATCH] scsi: ufs: Fix incorrect ufshcd_state after
- ufshcd_reset_and_restore()
-Message-ID: <20210301235444.GG12147@stor-presley.qualcomm.com>
-References: <20210301191940.15247-1-adrian.hunter@intel.com>
+        id S1381035AbhCBETr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:19:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239530AbhCBAAs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 19:00:48 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABE0C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 16:00:07 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id l7so8407105pfd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 16:00:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Yq254SkrVPYkKMx5FhkZ8HM8pUWyZebr3dtEMZbEpmQ=;
+        b=KHn/xhSySXn3fRA4EHKz+k28VC/PZO+vrsZfRduXz5+AjuNRnPtkaqYP7JG8TubLUK
+         hRFt1gGOC2heiXHzduKFVFXs6WiNNWTo9WUk1bbPKS7FearKeUx07v9cM4stWQf1NFwh
+         hjPmarpKBnPizLmty2WBpci0eIh5zGs6G1335QdKOSjmkurTJ4o6lnNh+Dilg86EdyeN
+         BXEgibd52Yf/ZU4p/lZ0BEgAgGpRYq99q9OJht/D6eU8oA3GEthcjtvcUzjLYomAKHPT
+         tKUblaWfzhBWf8x51b0mCNbqKFT/cy2V4vN51eytfvDueZwth5rPGG0/tvcITiISQejx
+         s9kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Yq254SkrVPYkKMx5FhkZ8HM8pUWyZebr3dtEMZbEpmQ=;
+        b=Ink8LWTlrDvE5QYe+B6tPb8OdZK4qq5SMIRquJHbbtRpnn1uFSl2euguH5vmLKW5Ka
+         TyfTB5WAdSdIKyQhlQ0EZe9arYnFok635JhreLbicZ6m4NSWuUkalo7TdhYkMg50gxOU
+         wjb8F3e6v9TWbbGFyqkYnWpL9q2EJqXd1PyD3nTg8i5RZo8DN2XcharzZHzWVy+30rN4
+         iq5Ypybk9+R+/AKmlq4p8jX+jom7tE73u+trVen5TIKiIF7ruZwRzJtbt7/bAVPWTl7J
+         VlHekwrcAer/gKNQY9/2Pge5oUL9VvosjOgIgPz2Mvk/NjyCx32Yv5kPb3gG+XPWIoyf
+         IOAw==
+X-Gm-Message-State: AOAM530tUAJIXOxpzZmpTdHRz03pKdXuEGzA0Z7lPBneVs2atrsK8+o4
+        qpSbR1/HkuxIL6VtB/WRsbGpOg==
+X-Google-Smtp-Source: ABdhPJwAT+GcPEZ1FmprKNY55vfpZmbu/uM/M2oFJkKCKneR+u8QUI9ttOwA/hkV3hk1G3YvTkL0eA==
+X-Received: by 2002:a62:16c9:0:b029:1ed:df04:8fcf with SMTP id 192-20020a6216c90000b02901eddf048fcfmr17574872pfw.63.1614643206783;
+        Mon, 01 Mar 2021 16:00:06 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
+        by smtp.gmail.com with ESMTPSA id r16sm18650982pfh.168.2021.03.01.16.00.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 16:00:06 -0800 (PST)
+Date:   Mon, 1 Mar 2021 15:59:59 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jing Liu <jing2.liu@linux.intel.com>
+Cc:     pbonzini@redhat.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: x86: Revise guest_fpu xcomp_bv field
+Message-ID: <YD1//+O57mr2D2Ne@google.com>
+References: <20210225104955.3553-1-jing2.liu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210301191940.15247-1-adrian.hunter@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210225104955.3553-1-jing2.liu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01 2021 at 11:19 -0800, Adrian Hunter wrote:
->If ufshcd_probe_hba() fails it sets ufshcd_state to UFSHCD_STATE_ERROR,
->however, if it is called again, as it is within a loop in
->ufshcd_reset_and_restore(), and succeeds, then it will not set the state
->back to UFSHCD_STATE_OPERATIONAL unless the state was
->UFSHCD_STATE_RESET.
->
->That can result in the state being UFSHCD_STATE_ERROR even though
->ufshcd_reset_and_restore() is successful and returns zero.
->
->Fix by initializing the state to UFSHCD_STATE_RESET in the start of each
->loop in ufshcd_reset_and_restore().  If there is an error,
->ufshcd_reset_and_restore() will change the state to UFSHCD_STATE_ERROR,
->otherwise ufshcd_probe_hba() will have set the state appropriately.
->
->Fixes: 4db7a2360597 ("scsi: ufs: Fix concurrency of error handler and other error recovery paths")
->Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->---
+On Thu, Feb 25, 2021, Jing Liu wrote:
+> XCOMP_BV[63] field indicates that the save area is in the compacted
+> format and XCOMP_BV[62:0] indicates the states that have space allocated
+> in the save area, including both XCR0 and XSS bits enabled by the host
+> kernel. Use xfeatures_mask_all for calculating xcomp_bv and reuse
+> XCOMP_BV_COMPACTED_FORMAT defined by kernel.
+> 
+> Signed-off-by: Jing Liu <jing2.liu@linux.intel.com>
+> ---
+>  arch/x86/kvm/x86.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 1b404e4d7dd8..f115493f577d 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4435,8 +4435,6 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
+>  	return 0;
+>  }
+>  
+> -#define XSTATE_COMPACTION_ENABLED (1ULL << 63)
+> -
+>  static void fill_xsave(u8 *dest, struct kvm_vcpu *vcpu)
+>  {
+>  	struct xregs_state *xsave = &vcpu->arch.guest_fpu->state.xsave;
+> @@ -4494,7 +4492,8 @@ static void load_xsave(struct kvm_vcpu *vcpu, u8 *src)
+>  	/* Set XSTATE_BV and possibly XCOMP_BV.  */
+>  	xsave->header.xfeatures = xstate_bv;
+>  	if (boot_cpu_has(X86_FEATURE_XSAVES))
+> -		xsave->header.xcomp_bv = host_xcr0 | XSTATE_COMPACTION_ENABLED;
+> +		xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
+> +					 xfeatures_mask_all;
 
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
+Doesn't fill_xsave also need to be updated?  Not with xfeatures_mask_all, but
+to account for arch.ia32_xss?  I believe it's a nop with the current code, since
+supported_xss is zero, but it should be fixed, no?
 
-> drivers/scsi/ufs/ufshcd.c | 2 ++
-> 1 file changed, 2 insertions(+)
->
->diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->index 77161750c9fb..91a403afe038 100644
->--- a/drivers/scsi/ufs/ufshcd.c
->+++ b/drivers/scsi/ufs/ufshcd.c
->@@ -7031,6 +7031,8 @@ static int ufshcd_reset_and_restore(struct ufs_hba *hba)
-> 	spin_unlock_irqrestore(hba->host->host_lock, flags);
->
-> 	do {
->+		hba->ufshcd_state = UFSHCD_STATE_RESET;
->+
-> 		/* Reset the attached device */
-> 		ufshcd_device_reset(hba);
->
->-- 
->2.17.1
->
+>  
+>  	/*
+>  	 * Copy each region from the non-compacted offset to the
+> @@ -9912,9 +9911,6 @@ static void fx_init(struct kvm_vcpu *vcpu)
+>  		return;
+>  
+>  	fpstate_init(&vcpu->arch.guest_fpu->state);
+> -	if (boot_cpu_has(X86_FEATURE_XSAVES))
+> -		vcpu->arch.guest_fpu->state.xsave.header.xcomp_bv =
+> -			host_xcr0 | XSTATE_COMPACTION_ENABLED;
+
+Ugh, this _really_ needs a comment in the changelog.  It took me a while to
+realize fpstate_init() does exactly what the new fill_xave() is doing.
+
+And isn't the code in load_xsave() redundant and can be removed?  Any code that
+uses get_xsave_addr() would be have a dependency on load_xsave() if it's not
+redundant, and I can't see how that would work.
+
+>  
+>  	/*
+>  	 * Ensure guest xcr0 is valid for loading
+> -- 
+> 2.18.4
+> 
