@@ -2,153 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFBB8329F95
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48070329F96
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574142AbhCBD3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:29:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239789AbhCAUnx (ORCPT
+        id S237038AbhCBDh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:37:56 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:47616 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242642AbhCAUom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:43:53 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804D7C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 12:43:12 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id s15so13143682qtq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 12:43:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZRRNElgGOrQy90lAfZacJe2AKjVRmRS8fPPCyjr3PWQ=;
-        b=HgcLlGlEVYJ2DUAOt8BTHoX8moTnPbkbi5TLbHhaOzSqYCfAt4OCr3CbyWdoN3/rAr
-         DX5+84PF+iK0J+wr/W9wXk2he5yiS0nA5OQtNqynOx4mCBX3ff4PNF+hlkDXS6+EOxX+
-         3Oevsrmnauh8mSXX2eCEL8Fp4vlZFYVZsvywGIP+ijHykkOx9FtSxzWvwi7fuL0keSML
-         VJe9tjGnUpoz5cgtYiV5F/RlQNhx6iSaM1RF/IKB0vYhzM4WvSdcAOMF8jTU7KpnaT2E
-         8SajaOCpvErUrDlk7L8RtZafk37CxCOmazGfu1TGZjMsLZ6twfJVfqqW8U+f3aZTxMBE
-         QEnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZRRNElgGOrQy90lAfZacJe2AKjVRmRS8fPPCyjr3PWQ=;
-        b=IZoyerrJ4+2KppJHlOlG8hR1u2OcG+vZSh8Xr3GgreWxftDRWZa0MOcHiGBG9rIrGj
-         FZRz/zP2/VtdGyOugcAIq1L4xOtBtMVXzczoB/3/6gImtGILOm/GCbEhlr5gafxbeTya
-         bnXvhLSiq5Y2lt1M5a505UmpAbmvm/7v8FeSMuLMDH96cXDn1d+40THAlcTcqLBI0e2q
-         RRI/cmLJEtf69V/L8IuMG20RtEUT8ANLT9m3mfpAvF+fyyE1Jbw/SLN3tAg2V59KG6eG
-         kLONCxG0QF1Qgr47QM6NYkjZ/KQlXdivKEVrIWVRxb0NYtBYIEpZly3+p0xnB6LbYNYp
-         QXJA==
-X-Gm-Message-State: AOAM532Uc/X1evlgCLCT0BX4yvCDXW6WloL54Pwso5852Db3lrku7L+O
-        IXQ4rB899iNbgrgQwGkUN8x6GYR/WiXbLNG39VSffg==
-X-Google-Smtp-Source: ABdhPJwbDvJqK/vh1C9m3V1Sj0rcvcJFmhmlUNTW5fI3w0G528712vMXZL0d+YbZlJAhnyaPbxP1fUjb008iC2MwH3g=
-X-Received: by 2002:ac8:6f3b:: with SMTP id i27mr3748150qtv.67.1614631391417;
- Mon, 01 Mar 2021 12:43:11 -0800 (PST)
+        Mon, 1 Mar 2021 15:44:42 -0500
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lGpOT-006C0N-V3; Mon, 01 Mar 2021 13:43:54 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lGpOT-0003CY-2q; Mon, 01 Mar 2021 13:43:53 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <CALCv0x1NauG_13DmmzwYaRDaq3qjmvEdyi7=XzF04KR06Q=WHA@mail.gmail.com>
+Date:   Mon, 01 Mar 2021 14:43:51 -0600
+In-Reply-To: <CALCv0x1NauG_13DmmzwYaRDaq3qjmvEdyi7=XzF04KR06Q=WHA@mail.gmail.com>
+        (Ilya Lipnitskiy's message of "Sun, 28 Feb 2021 19:28:13 -0800")
+Message-ID: <m1wnuqhaew.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <000000000000911d3905b459824c@google.com> <000000000000e56a2605b616b2d9@google.com>
- <YD0UjWjQmYgY4Qgh@nuc10> <CACT4Y+YQzTkk=UPNH5g96e+yPYyaPBemmhqXz5oaWEvW9xb-rQ@mail.gmail.com>
- <YD1RE3O4FBkKK32l@nuc10>
-In-Reply-To: <YD1RE3O4FBkKK32l@nuc10>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 1 Mar 2021 21:43:00 +0100
-Message-ID: <CACT4Y+bvWyipjZ6P6gkno0ZHRWPJ-HFGiT3yECqQU37a0E_tgQ@mail.gmail.com>
-Subject: Re: memory leak in bpf
-To:     Rustam Kovhaev <rkovhaev@gmail.com>
-Cc:     syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>,
-        andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1lGpOT-0003CY-2q;;;mid=<m1wnuqhaew.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+ZsUJ86c4hhhX5oCFbgiwx0LuN3v/uMm4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4725]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 539 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (2.1%), b_tie_ro: 10 (1.8%), parse: 1.21
+        (0.2%), extract_message_metadata: 5 (1.0%), get_uri_detail_list: 3.0
+        (0.6%), tests_pri_-1000: 3.5 (0.6%), tests_pri_-950: 1.26 (0.2%),
+        tests_pri_-900: 1.01 (0.2%), tests_pri_-90: 73 (13.6%), check_bayes:
+        72 (13.3%), b_tokenize: 10 (1.8%), b_tok_get_all: 11 (2.0%),
+        b_comp_prob: 3.4 (0.6%), b_tok_touch_all: 44 (8.1%), b_finish: 0.90
+        (0.2%), tests_pri_0: 423 (78.5%), check_dkim_signature: 0.55 (0.1%),
+        check_dkim_adsp: 2.6 (0.5%), poll_dns_idle: 1.04 (0.2%), tests_pri_10:
+        2.2 (0.4%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: exec error: BUG: Bad rss-counter
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 9:39 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
->
-> On Mon, Mar 01, 2021 at 08:05:42PM +0100, Dmitry Vyukov wrote:
-> > On Mon, Mar 1, 2021 at 5:21 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> > >
-> > > On Wed, Dec 09, 2020 at 10:58:10PM -0800, syzbot wrote:
-> > > > syzbot has found a reproducer for the following issue on:
-> > > >
-> > > > HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=11facf17500000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
-> > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159a9613500000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bf7123500000
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
-> > > >
-> > > > Debian GNU/Linux 9 syzkaller ttyS0
-> > > > Warning: Permanently added '10.128.0.9' (ECDSA) to the list of known hosts.
-> > > > executing program
-> > > > executing program
-> > > > executing program
-> > > > BUG: memory leak
-> > > > unreferenced object 0xffff88810efccc80 (size 64):
-> > > >   comm "syz-executor334", pid 8460, jiffies 4294945724 (age 13.850s)
-> > > >   hex dump (first 32 bytes):
-> > > >     c0 cb 14 04 00 ea ff ff c0 c2 11 04 00 ea ff ff  ................
-> > > >     c0 56 3f 04 00 ea ff ff 40 18 38 04 00 ea ff ff  .V?.....@.8.....
-> > > >   backtrace:
-> > > >     [<0000000036ae98a7>] kmalloc_node include/linux/slab.h:575 [inline]
-> > > >     [<0000000036ae98a7>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
-> > > >     [<0000000036ae98a7>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
-> > > >     [<0000000036ae98a7>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
-> > > >     [<0000000036ae98a7>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
-> > > >     [<00000000d2cb93ae>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
-> > > >     [<00000000d2cb93ae>] map_create kernel/bpf/syscall.c:825 [inline]
-> > > >     [<00000000d2cb93ae>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
-> > > >     [<000000008feaf393>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> > > >     [<00000000e1f53cfd>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > >
-> > > >
-> > >
-> > > i am pretty sure that this one is a false positive
-> > > the problem with reproducer is that it does not terminate all of the
-> > > child processes that it spawns
-> > >
-> > > i confirmed that it is a false positive by tracing __fput() and
-> > > bpf_map_release(), i ran reproducer, got kmemleak report, then i
-> > > manually killed those running leftover processes from reproducer and
-> > > then both functions were executed and memory was freed
-> > >
-> > > i am marking this one as:
-> > > #syz invalid
-> >
-> > Hi Rustam,
-> >
-> > Thanks for looking into this.
-> >
-> > I wonder how/where are these objects referenced? If they are not
-> > leaked and referenced somewhere, KMEMLEAK should not report them as
-> > leaks.
-> > So even if this is a false positive for BPF, this is a true positive
-> > bug and something to fix for KMEMLEAK ;)
-> > And syzbot will probably re-create this bug report soon as this still
-> > happens and is not a one-off thing.
->
-> hi Dmitry, i haven't thought of it this way, but i guess you are right,
-> it is a kmemleak bug, ideally kmemleak should be aware that there are
-> still running processes holding references to bpf fd/anonymous inodes
-> which in their turn hold references to allocated bpf maps
+Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com> writes:
 
-KMEMLEAK scans whole memory, so if there are pointers to the object
-anywhere in memory, KMEMLEAK should not report them as leaked. Running
-processes have no direct effect on KMEMLEAK logic.
-So the question is: where are these pointers to these objects? If we
-answer this, we can check how/why KMEMLEAK misses them. Are they
-mangled in some way?
+> Eric, All,
+>
+> The following error appears when running Linux 5.10.18 on an embedded
+> MIPS mt7621 target:
+> [    0.301219] BUG: Bad rss-counter state mm:(ptrval) type:MM_ANONPAGES val:1
+>
+> Being a very generic error, I started digging and added a stack dump
+> before the BUG:
+> Call Trace:
+> [<80008094>] show_stack+0x30/0x100
+> [<8033b238>] dump_stack+0xac/0xe8
+> [<800285e8>] __mmdrop+0x98/0x1d0
+> [<801a6de8>] free_bprm+0x44/0x118
+> [<801a86a8>] kernel_execve+0x160/0x1d8
+> [<800420f4>] call_usermodehelper_exec_async+0x114/0x194
+> [<80003198>] ret_from_kernel_thread+0x14/0x1c
+>
+> So that's how I got to looking at fs/exec.c and noticed quite a few
+> changes last year. Turns out this message only occurs once very early
+> at boot during the very first call to kernel_execve. current->mm is
+> NULL at this stage, so acct_arg_size() is effectively a no-op.
+
+If you believe this is a new error you could bisect the kernel
+to see which change introduced the behavior you are seeing.
+
+> More digging, and I traced the RSS counter increment to:
+> [<8015adb4>] add_mm_counter_fast+0xb4/0xc0
+> [<80160d58>] handle_mm_fault+0x6e4/0xea0
+> [<80158aa4>] __get_user_pages.part.78+0x190/0x37c
+> [<8015992c>] __get_user_pages_remote+0x128/0x360
+> [<801a6d9c>] get_arg_page+0x34/0xa0
+> [<801a7394>] copy_string_kernel+0x194/0x2a4
+> [<801a880c>] kernel_execve+0x11c/0x298
+> [<800420f4>] call_usermodehelper_exec_async+0x114/0x194
+> [<80003198>] ret_from_kernel_thread+0x14/0x1c
+>
+> In fact, I also checked vma_pages(bprm->vma) and lo and behold it is set to 1.
+>
+> How is fs/exec.c supposed to handle implied RSS increments that happen
+> due to page faults when discarding the bprm structure? In this case,
+> the bug-generating kernel_execve call never succeeded, it returned -2,
+> but I didn't trace exactly what failed.
+
+Unless I am mistaken any left over pages should be purged by exit_mmap
+which is called by mmput before mmput calls mmdrop.
+
+AKA it looks very very fishy this happens and this does not look like
+an execve error.
+
+On the other hand it would be good to know why kernel_execve is failing.
+Then the error handling paths could be scrutinized, and we can check to
+see if everything that should happen on an error path does.
+
+> Interestingly, this "BUG:" message is timing-dependent. If I wait a
+> bit before calling free_bprm after bprm_execve the message seems to go
+> away (there are 3 other cores running and calling into kernel_execve
+> at the same time, so there is that). The error also only ever happens
+> once (probably because no more page faults happen?).
+>
+> I don't know enough to propose a proper fix here. Is it decrementing
+> the bprm->mm RSS counter to account for that page fault? Or is
+> current->mm being NULL a bigger problem?
+
+This is call_usermode_helper calls kernel_execve from a kernel thread
+forked by kthreadd.  Which means current->mm == NULL is expected, and
+current->active_mm == &init_mm.
+
+Similarly I bprm->mm having an incremented RSS counter appears correct.
+
+The question is why doesn't that count get consistently cleaned up.
+
+> Apologies in advance, but I have looked hard and do not see a clear
+> resolution for this even in the latest kernel code.
+
+I may be blind but I see two possibilities.
+
+1) There is a memory stomp that happens early on and bad timing causes
+   the memory stomp to result in an elevated rss count.
+
+2) There is a buggy error handling path, and whatever failure you are
+    running into that early in boot walks through that buggy failure
+    path.
+
+I don't think this is a widespread issue or yours would not be the first
+report like this I have seen.
+
+The two productive paths I can see for tracing down your problem are:
+1) git bisect (assuming you have a known good version)
+2) Figuring out what exec failed.
+
+I really think exec_mmap should have cleaned up anything in the mm.  So
+the fact that it doesn't worries me.
+
+Eric
