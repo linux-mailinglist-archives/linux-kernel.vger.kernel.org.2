@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6428232997D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735A93298D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344858AbhCBAU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:20:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41706 "EHLO mail.kernel.org"
+        id S1346646AbhCAXtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:49:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239602AbhCASYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:24:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 441EF65348;
-        Mon,  1 Mar 2021 17:44:31 +0000 (UTC)
+        id S239330AbhCASLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:11:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAEAC65318;
+        Mon,  1 Mar 2021 17:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620671;
-        bh=aX5hJxqw5n5ej0Fl9vYIFNNP+8dvW9NKJkz4v5qLVkE=;
+        s=korg; t=1614620597;
+        bh=nHulc3qNJOD32dHhJbh76NFZMYWASY3FofVxMqXy6bU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PIb9zeA0m4mGKqXbHvIuwUiRcXQ7DBtycDvZWym2AiVbkc2E/yfrsEOK5/RH0uhuP
-         dIZyxoQqzkFOrr7M/h8fC7g2vRwJqZHkbRbkG2uw0cMN8DheV+ob9oj+eOF7BQ2ZAR
-         VRiBNVITHkKCS57RrNMO23KpcRPE/wrUNrG69tcY=
+        b=en+tq0HZG5dODi3mukgHZ8nG09SFgN/d4D8qyaXHOb+FGtGlI3xeyONDIyC7KqpjQ
+         4w5Xv9e9qjdwEAo0mYU63ewJzLd1/IzjIYdoUOCSHfrRhfuwFZT9nUiBcY1/rrzSqf
+         YiBSbOg1X7zl4YBmYeK17nBjwHGVY3rTJvYdjy6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Mimi Zohar <zohar@linux.ibm.com>,
+        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 207/775] evm: Fix memleak in init_desc
-Date:   Mon,  1 Mar 2021 17:06:15 +0100
-Message-Id: <20210301161211.870180855@linuxfoundation.org>
+Subject: [PATCH 5.11 211/775] drm/sun4i: tcon: fix inverted DCLK polarity
+Date:   Mon,  1 Mar 2021 17:06:19 +0100
+Message-Id: <20210301161212.072648373@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,53 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 
-[ Upstream commit ccf11dbaa07b328fa469415c362d33459c140a37 ]
+[ Upstream commit 67f4aeb2b41a0629abde3794d463547f60b0cbdd ]
 
-tmp_tfm is allocated, but not freed on subsequent kmalloc failure, which
-leads to a memory leak.  Free tmp_tfm.
+During commit 88bc4178568b ("drm: Use new
+DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
+macros have been changed to avoid ambiguity but just because of this
+ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
+_SAMPLE_ not _DRIVE_. This leads to DLCK inversion and need to fix but
+instead of swapping phase values, let's adopt an easier approach Maxime
+suggested:
+It turned out that bit 26 of SUN4I_TCON0_IO_POL_REG is dedicated to
+invert DCLK polarity and this makes things really easier than before. So
+let's handle DCLK polarity by adding SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
+as bit 26 and activating according to bus_flags the same way it is done
+for all the other signals polarity.
 
-Fixes: d46eb3699502b ("evm: crypto hash replaced by shash")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-[zohar@linux.ibm.com: formatted/reworded patch description]
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags")
+Suggested-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210114081732.9386-1-giulio.benetti@benettiengineering.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/evm/evm_crypto.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/sun4i/sun4i_tcon.c | 21 ++-------------------
+ drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
+ 2 files changed, 3 insertions(+), 19 deletions(-)
 
-diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-index 168c3b78ac47b..a6dd47eb086da 100644
---- a/security/integrity/evm/evm_crypto.c
-+++ b/security/integrity/evm/evm_crypto.c
-@@ -73,7 +73,7 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
- {
- 	long rc;
- 	const char *algo;
--	struct crypto_shash **tfm, *tmp_tfm;
-+	struct crypto_shash **tfm, *tmp_tfm = NULL;
- 	struct shash_desc *desc;
+diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+index 1e643bc7e786a..9f06dec0fc61d 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
++++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+@@ -569,30 +569,13 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
+ 	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+ 		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
  
- 	if (type == EVM_XATTR_HMAC) {
-@@ -118,13 +118,16 @@ unlock:
- alloc:
- 	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(*tfm),
- 			GFP_KERNEL);
--	if (!desc)
-+	if (!desc) {
-+		crypto_free_shash(tmp_tfm);
- 		return ERR_PTR(-ENOMEM);
-+	}
+-	/*
+-	 * On A20 and similar SoCs, the only way to achieve Positive Edge
+-	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
+-	 * By default TCON works in Negative Edge(Falling Edge),
+-	 * this is why phase is set to 0 in that case.
+-	 * Unfortunately there's no way to logically invert dclk through
+-	 * IO_POL register.
+-	 * The only acceptable way to work, triple checked with scope,
+-	 * is using clock phase set to 0° for Negative Edge and set to 240°
+-	 * for Positive Edge.
+-	 * On A33 and similar SoCs there would be a 90° phase option,
+-	 * but it divides also dclk by 2.
+-	 * Following code is a way to avoid quirks all around TCON
+-	 * and DOTCLOCK drivers.
+-	 */
+-	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
+-		clk_set_phase(tcon->dclk, 240);
+-
+ 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+-		clk_set_phase(tcon->dclk, 0);
++		val |= SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE;
  
- 	desc->tfm = *tfm;
+ 	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
+ 			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
+ 			   SUN4I_TCON0_IO_POL_VSYNC_POSITIVE |
++			   SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE |
+ 			   SUN4I_TCON0_IO_POL_DE_NEGATIVE,
+ 			   val);
  
- 	rc = crypto_shash_init(desc);
- 	if (rc) {
-+		crypto_free_shash(tmp_tfm);
- 		kfree(desc);
- 		return ERR_PTR(rc);
- 	}
+diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+index ee555318e3c2f..e624f6977eb84 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
++++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+@@ -113,6 +113,7 @@
+ #define SUN4I_TCON0_IO_POL_REG			0x88
+ #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
+ #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
++#define SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE		BIT(26)
+ #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
+ #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
+ 
 -- 
 2.27.0
 
