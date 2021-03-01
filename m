@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE733329876
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D233298AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345855AbhCAXeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:34:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
+        id S1346341AbhCAXpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:45:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239082AbhCASFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:05:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0213D64E04;
-        Mon,  1 Mar 2021 17:20:34 +0000 (UTC)
+        id S239444AbhCASIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:08:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 321C56505D;
+        Mon,  1 Mar 2021 17:22:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619235;
-        bh=/yQWPPpYDpsQPtXvR87xm7pGg6ojykL9qZPjFe1zRbQ=;
+        s=korg; t=1614619371;
+        bh=dADZPURVKHXjerYXuzL1c+8UCxzqB8djxneaaQiAYXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q7ELpDDqyv1KbiIQ98Iu2JleAjQ3zAmaQes8V6KHzdyRPOOOJSzR71DHwNcl4ui41
-         DQb+L+H9bXETw9jLN9ni3lcc9J4naW8Sw2Baw4ZW4vVi0VoSCA8/dWBYWI0zCpBCJq
-         YbPtfQ8E8pq/UNxKxbBPotGeKMy5VllBOW4G8hkY=
+        b=GZoISs6fbXoJGnfOVvK5KOGCy88vX0xRNvc7dYRUhvL5Dr5p+RzVYoyHdQFUBirqd
+         aYlzSMXWVT698J50jU0LW7KZ7/eZ29sIoKga0MaDmLUWQKYVBHw8uhBkjv3XT0qVFR
+         EjlpLLzbfFgBF/ip7YgNHz38n+Cxm04SjJDnceRc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        sparclinux@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 381/663] RDMA/rtrs-srv-sysfs: fix missing put_device
-Date:   Mon,  1 Mar 2021 17:10:29 +0100
-Message-Id: <20210301161200.709261079@linuxfoundation.org>
+Subject: [PATCH 5.10 390/663] sparc64: only select COMPAT_BINFMT_ELF if BINFMT_ELF is set
+Date:   Mon,  1 Mar 2021 17:10:38 +0100
+Message-Id: <20210301161201.158319182@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,64 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit e2853c49477d104c01d3c7944e1fb5074eb11d9f ]
+[ Upstream commit 80bddf5c93a99e11fc9faf7e4b575d01cecd45d3 ]
 
-put_device() decreases the ref-count and then the device will be
-cleaned-up, while at is also add missing put_device in
-rtrs_srv_create_once_sysfs_root_folders
+Currently COMPAT on SPARC64 selects COMPAT_BINFMT_ELF unconditionally,
+even when BINFMT_ELF is not enabled. This causes a kconfig warning.
 
-This patch solves a kmemleak error as below:
+Instead, just select COMPAT_BINFMT_ELF if BINFMT_ELF is enabled.
+This builds cleanly with no kconfig warnings.
 
-  unreferenced object 0xffff88809a7a0710 (size 8):
-    comm "kworker/4:1H", pid 113, jiffies 4295833049 (age 6212.380s)
-    hex dump (first 8 bytes):
-      62 6c 61 00 6b 6b 6b a5                          bla.kkk.
-    backtrace:
-      [<0000000054413611>] kstrdup+0x2e/0x60
-      [<0000000078e3120a>] kobject_set_name_vargs+0x2f/0xb0
-      [<00000000f1a17a6b>] dev_set_name+0xab/0xe0
-      [<00000000d5502e32>] rtrs_srv_create_sess_files+0x2fb/0x314 [rtrs_server]
-      [<00000000ed11a1ef>] rtrs_srv_info_req_done+0x631/0x800 [rtrs_server]
-      [<000000008fc5aa8f>] __ib_process_cq+0x94/0x100 [ib_core]
-      [<00000000a9599cb4>] ib_cq_poll_work+0x32/0xc0 [ib_core]
-      [<00000000cfc376be>] process_one_work+0x4bc/0x980
-      [<0000000016e5c96a>] worker_thread+0x78/0x5c0
-      [<00000000c20b8be0>] kthread+0x191/0x1e0
-      [<000000006c9c0003>] ret_from_fork+0x3a/0x50
+WARNING: unmet direct dependencies detected for COMPAT_BINFMT_ELF
+  Depends on [n]: COMPAT [=y] && BINFMT_ELF [=n]
+  Selected by [y]:
+  - COMPAT [=y] && SPARC64 [=y]
 
-Fixes: baa5b28b7a47 ("RDMA/rtrs-srv: Replace device_register with device_initialize and device_add")
-Link: https://lore.kernel.org/r/20210212134525.103456-5-jinpu.wang@cloud.ionos.com
-Signed-off-by: Gioh Kim <gi-oh.kim@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 26b4c912185a ("sparc,sparc64: unify Kconfig files")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: sparclinux@vger.kernel.org
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/sparc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-index 1c5f97102103f..39708ab4f26e5 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c
-@@ -186,6 +186,7 @@ static int rtrs_srv_create_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
- 		err = -ENOMEM;
- 		pr_err("kobject_create_and_add(): %d\n", err);
- 		device_del(&srv->dev);
-+		put_device(&srv->dev);
- 		goto unlock;
- 	}
- 	dev_set_uevent_suppress(&srv->dev, false);
-@@ -211,6 +212,7 @@ rtrs_srv_destroy_once_sysfs_root_folders(struct rtrs_srv_sess *sess)
- 		kobject_put(srv->kobj_paths);
- 		mutex_unlock(&srv->paths_mutex);
- 		device_del(&srv->dev);
-+		put_device(&srv->dev);
- 	} else {
- 		mutex_unlock(&srv->paths_mutex);
- 	}
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index a6ca135442f9a..530b7ec5d3ca9 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -496,7 +496,7 @@ config COMPAT
+ 	bool
+ 	depends on SPARC64
+ 	default y
+-	select COMPAT_BINFMT_ELF
++	select COMPAT_BINFMT_ELF if BINFMT_ELF
+ 	select HAVE_UID16
+ 	select ARCH_WANT_OLD_COMPAT_IPC
+ 	select COMPAT_OLD_SIGACTION
 -- 
 2.27.0
 
