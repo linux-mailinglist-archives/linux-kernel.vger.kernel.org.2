@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717FB327FE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E20327FEC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235886AbhCANq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:46:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45008 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235866AbhCANqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:46:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614606371; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=N2seae7zAZtgooEhZqlxXihiEXq8ZUjfrzDAid5SFmc=;
-        b=NZZN5C2uaKSaSvNbbriwyulgux/csQIzhqmkTgbDWSXtg8WmYNyfva2aXzCLHE6en5knqU
-        OQN6U+tQOQlfFD0o2Bb06fYKp43OYmRpEbMnhhBz+l9EZYwABsg6YZIbA6GmKZ+q8SBnEq
-        53Qa93gA5ghlVoBD2JGMwY+wKbr/Vy0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9638CAB8C;
-        Mon,  1 Mar 2021 13:46:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 126B1DA7D7; Mon,  1 Mar 2021 14:44:17 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs updates for 5.12-rc2
-Date:   Mon,  1 Mar 2021 14:44:16 +0100
-Message-Id: <cover.1614605230.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
+        id S235914AbhCANsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:48:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235905AbhCANr7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:47:59 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC28AC061756;
+        Mon,  1 Mar 2021 05:47:19 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id n10so11586424pgl.10;
+        Mon, 01 Mar 2021 05:47:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3AiRtyjlQ9H1d4qqwhlnedJw0eeCaWbUP2szZD4nDgI=;
+        b=pu8QHjbaK6DWB8LoTGmA5eDmJON7k4B+9cDg2psmuOAADCSH/p1VO+iKMJT4Cwqmqn
+         i+WiuBRAC1dFzzT1kSq7XXb82RrCLSGdwebFZm/J/0WdDpsQErdDSmYklqyVJr+1unC9
+         WwCRwBkky8JR4keLgJA1JU+x6w/V77XCbY3h9wpAeiid5qcz5Tn+UH7jpygRlljCqQet
+         LTMlCJn0Cbtb+f2K44puRAsSeAHa6Cf3PXwakxJz+zWO45JTCO/Ywms1Fd0B1gswS3kr
+         hz2k1CiqaZW641IU7At4A/nEaCfyS/cZF8FKxMMhAsVIKEG4P+cXey5F4DQRWzSCiPZE
+         RoIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3AiRtyjlQ9H1d4qqwhlnedJw0eeCaWbUP2szZD4nDgI=;
+        b=RVKb4bP+rWSjRkijUgrEEJBYwN1S/VmRWvpaFonDiFDp3i9GIt7W+54pNZu0aRRkax
+         bq18SSUBTtSzA1OA5opLdobFRu4fWPk+fCHWVfRaiMfQsJA3cXliAOGpxcdfUgYGOP0f
+         h1EDGU0KGwlXRnLBVuerFskB7UuJw66KmDHJ+ofNMdSgE4kUhEVJktDuy4ujVuyHuHCB
+         zftMW+f7sEQFp3n2izmQl7uoluS+o0bdXl2RnOiItVM+W+Vq5e1ow+xQLDE+nw+0CW/h
+         yfesVD3rxxi+lMkhCp9ya/QvZTFA+VCEfnykmx5FSVV1F7k2x6vw4+p9PL44hX/exQt8
+         8sLg==
+X-Gm-Message-State: AOAM530WipjuAGCjhnQbtGODPB1bFdzatFoqQNLaIf70Ccj7trlBthqi
+        YltuPIXmt8z87q6DuiUDJOFAtGg86mjkReAgGb8=
+X-Google-Smtp-Source: ABdhPJxK+vUSplMDX4f0mQeg2hCMigWmbVMEgASex0bOHAFW9JZLevPge+R1bxMwoFUKsSss3ENFi15a76TMZmhUZ18=
+X-Received: by 2002:a62:8811:0:b029:1ee:b016:85a2 with SMTP id
+ l17-20020a6288110000b02901eeb01685a2mr3282483pfd.40.1614606439212; Mon, 01
+ Mar 2021 05:47:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210301072842.7410-1-dinghao.liu@zju.edu.cn> <CAHp75Vf86_Ccs7wqzbpWbLDZSSJLbMwZ1TX3dwru9JvXUTMR_Q@mail.gmail.com>
+ <44c09a14.a0cbd.177ed8446ea.Coremail.dinghao.liu@zju.edu.cn>
+In-Reply-To: <44c09a14.a0cbd.177ed8446ea.Coremail.dinghao.liu@zju.edu.cn>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 1 Mar 2021 15:47:03 +0200
+Message-ID: <CAHp75VdT04AVzW=C=SubHjUE5_MHBeC0ptHTFSLgKzrSP3HmRQ@mail.gmail.com>
+Subject: Re: Re: [PATCH] sata_dwc_460ex: Fix missing check in sata_dwc_isr
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Kangjie Lu <kjlu@umn.edu>, Jens Axboe <axboe@kernel.dk>,
+        linux-ide@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Sterba <dsterba@suse.cz>
+On Mon, Mar 1, 2021 at 1:20 PM <dinghao.liu@zju.edu.cn> wrote:
+>
+> > On Mon, Mar 1, 2021 at 9:44 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+> > >
+> > > ata_qc_from_tag() may return a null pointer and further lead to
+> > > null-pointer-dereference. Add a return value check to avoid such case.
+> >
+> > Can you elaborate more on this? Is it a real case?
+> > I have a hardware, how can I reproduce this?
+> >
+>
+> In the branch 'if (intpr & SATA_DWC_INTPR_NEWFP)', we call ata_qc_from_tag()
+> and access qc->ap->link.active_tag immediately. If ata_qc_from_tag() returns
+> a null pointer, accessing qc->ap->link.active_tag may crash the system.
 
-Hi,
+Yes, I can see that. My question is how to get into the case when this
+will be true.
 
-first batch of fixes that usually arrive during the merge window code
-freeze. Regressions and stable material. Please pull, thanks.
+> This issue is reported by my static analysis tool, so I don't have the
+> vulnerable input currently.
 
-Regressions:
+Should we blindly follow everything that some (non-ideal) tool
+reports? I don't think so.
+For all my experiments with that hardware, I haven't heard about the
+issue with NULL pointers. Useless checks make code harder to read and
+CPU to waste cycles. It might be maintainers of this driver consider
+otherwise, so not my call.
 
-- fix deadlock in log sync in zoned mode
-
-- fix bugs in subpage mode still wrongly assuming sectorsize == page
-  size
-
-Fixes:
-
-- fix missing kunmap of the Q stripe in RAID6
-
-- block group fixes:
-  - fix race between extent freeing/allocation when using bitmaps
-  - avoid double put of block group when emptying cluster
-
-- swapfile fixes:
-  - fix swapfile writes vs running scrub
-  - fix swapfile activation vs snapshot creation
-
-- fix stale data exposure after cloning a hole with NO_HOLES enabled
-
-- remove tree-checker check that does not work in case information from
-  other leaves is necessary
-
-----------------------------------------------------------------
-The following changes since commit 9d294a685fbcb256ce8c5f7fd88a7596d0f52a8a:
-
-  btrfs: zoned: enable to mount ZONED incompat flag (2021-02-09 02:52:24 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc1-tag
-
-for you to fetch changes up to 6e37d245994189ba757df7dc2950a44d31421ac6:
-
-  btrfs: zoned: fix deadlock on log sync (2021-02-22 18:08:48 +0100)
-
-----------------------------------------------------------------
-Filipe Manana (4):
-      btrfs: avoid checking for RO block group twice during nocow writeback
-      btrfs: fix race between writes to swap files and scrub
-      btrfs: fix race between swap file activation and snapshot creation
-      btrfs: fix stale data exposure after cloning a hole with NO_HOLES enabled
-
-Ira Weiny (1):
-      btrfs: fix raid6 qstripe kmap
-
-Johannes Thumshirn (1):
-      btrfs: zoned: fix deadlock on log sync
-
-Josef Bacik (2):
-      btrfs: tree-checker: do not error out if extent ref hash doesn't match
-      btrfs: avoid double put of block group when emptying cluster
-
-Nikolay Borisov (1):
-      btrfs: fix race between extent freeing/allocation when using bitmaps
-
-Qu Wenruo (2):
-      btrfs: make btrfs_submit_compressed_read() subpage compatible
-      btrfs: make check_compressed_csum() to be subpage compatible
-
- fs/btrfs/block-group.c      | 33 +++++++++++++++++++++++-
- fs/btrfs/block-group.h      |  9 +++++++
- fs/btrfs/compression.c      | 62 +++++++++++++++++++++++++++++++--------------
- fs/btrfs/ctree.h            |  5 ++++
- fs/btrfs/free-space-cache.c | 14 +++++-----
- fs/btrfs/inode.c            | 44 +++++++++++++++++++++++++++-----
- fs/btrfs/raid56.c           | 21 ++++++++-------
- fs/btrfs/reflink.c          | 18 +++++++++++++
- fs/btrfs/scrub.c            |  9 ++++++-
- fs/btrfs/tree-checker.c     | 16 +++---------
- fs/btrfs/tree-log.c         |  3 ---
- 11 files changed, 175 insertions(+), 59 deletions(-)
+-- 
+With Best Regards,
+Andy Shevchenko
