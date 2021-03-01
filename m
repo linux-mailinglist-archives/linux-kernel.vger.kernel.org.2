@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B5D32945F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 23:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D5B329458
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 23:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244864AbhCAV64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:58:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48858 "EHLO mail.kernel.org"
+        id S244428AbhCAV5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:57:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234429AbhCARYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:24:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C7CA6500B;
-        Mon,  1 Mar 2021 16:50:23 +0000 (UTC)
+        id S237762AbhCARYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:24:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAC9764E68;
+        Mon,  1 Mar 2021 16:49:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617424;
-        bh=ucNx6VEpBlGE5re493hq6VyOk2gyu7fa9VODC4SIPKw=;
+        s=korg; t=1614617375;
+        bh=/FEFoX2zk8pVhdAlCodPRc2hw1FXSooj9O12L3FMXms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0acK5WP6EFebycUQAyqTNKR0VLNFuMY1oJaHUnq+MfZiTFQjwN/YnHpQdlA/iDJkP
-         UJvW2c00Uq4BoxiEId1jz4+fNNHfpQYVycJEjgVwqiaj+Ql1SVVccQvr9h0XvlNBmk
-         CABQftRAAs4+LRJ8ZgI9iLpoJR9p8uPB/eAR+Rts=
+        b=YjxiHZGCjC4KHA5Ee9+FwozIqFewcEH46R2gNbJ2dkmx9Jnf3ckTmDHMRWo3qHPmk
+         AGAeZI5G7YjxYX6wc7esMWwR/EJbSZFcwUzk2tmqq172+Rjf80opB11C88dGeLbTLs
+         35P6Xs1nB25h8oWOoTM35VKLjghwwBgnWx44c0VY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 039/340] memory: ti-aemif: Drop child node when jumping out loop
-Date:   Mon,  1 Mar 2021 17:09:43 +0100
-Message-Id: <20210301161050.248340555@linuxfoundation.org>
+        stable@vger.kernel.org, Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
+        Vernon Mauery <vernon.mauery@linux.intel.com>,
+        John Wang <wangzhiqiang.bj@bytedance.com>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 051/340] soc: aspeed: snoop: Add clock control logic
+Date:   Mon,  1 Mar 2021 17:09:55 +0100
+Message-Id: <20210301161050.837687694@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -40,53 +41,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
 
-[ Upstream commit 94e9dd43cf327366388c8f146bccdc6322c0d999 ]
+[ Upstream commit 3f94cf15583be554df7aaa651b8ff8e1b68fbe51 ]
 
-Call of_node_put() to decrement the reference count of the child node
-child_np when jumping out of the loop body of
-for_each_available_child_of_node(), which is a macro that increments and
-decrements the reference count of child node. If the loop is broken, the
-reference of the child node should be dropped manually.
+If LPC SNOOP driver is registered ahead of lpc-ctrl module, LPC
+SNOOP block will be enabled without heart beating of LCLK until
+lpc-ctrl enables the LCLK. This issue causes improper handling on
+host interrupts when the host sends interrupt in that time frame.
+Then kernel eventually forcibly disables the interrupt with
+dumping stack and printing a 'nobody cared this irq' message out.
 
-Fixes: 5a7c81547c1d ("memory: ti-aemif: introduce AEMIF driver")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Link: https://lore.kernel.org/r/20210121090359.61763-1-bianpan2016@163.com
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+To prevent this issue, all LPC sub-nodes should enable LCLK
+individually so this patch adds clock control logic into the LPC
+SNOOP driver.
+
+Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
+Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
+Signed-off-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Link: https://lore.kernel.org/r/20201208091748.1920-1-wangzhiqiang.bj@bytedance.com
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/ti-aemif.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/soc/aspeed/aspeed-lpc-snoop.c | 30 ++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
-index db526dbf71eed..94219d2a2773d 100644
---- a/drivers/memory/ti-aemif.c
-+++ b/drivers/memory/ti-aemif.c
-@@ -378,8 +378,10 @@ static int aemif_probe(struct platform_device *pdev)
- 		 */
- 		for_each_available_child_of_node(np, child_np) {
- 			ret = of_aemif_parse_abus_config(pdev, child_np);
--			if (ret < 0)
-+			if (ret < 0) {
-+				of_node_put(child_np);
- 				goto error;
-+			}
- 		}
- 	} else if (pdata && pdata->num_abus_data > 0) {
- 		for (i = 0; i < pdata->num_abus_data; i++, aemif->num_cs++) {
-@@ -405,8 +407,10 @@ static int aemif_probe(struct platform_device *pdev)
- 		for_each_available_child_of_node(np, child_np) {
- 			ret = of_platform_populate(child_np, NULL,
- 						   dev_lookup, dev);
--			if (ret < 0)
-+			if (ret < 0) {
-+				of_node_put(child_np);
- 				goto error;
-+			}
- 		}
- 	} else if (pdata) {
- 		for (i = 0; i < pdata->num_sub_devices; i++) {
+diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+index f3d8d53ab84de..dbe5325a324d5 100644
+--- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
++++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+@@ -11,6 +11,7 @@
+  */
+ 
+ #include <linux/bitops.h>
++#include <linux/clk.h>
+ #include <linux/interrupt.h>
+ #include <linux/fs.h>
+ #include <linux/kfifo.h>
+@@ -67,6 +68,7 @@ struct aspeed_lpc_snoop_channel {
+ struct aspeed_lpc_snoop {
+ 	struct regmap		*regmap;
+ 	int			irq;
++	struct clk		*clk;
+ 	struct aspeed_lpc_snoop_channel chan[NUM_SNOOP_CHANNELS];
+ };
+ 
+@@ -282,22 +284,42 @@ static int aspeed_lpc_snoop_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
++	lpc_snoop->clk = devm_clk_get(dev, NULL);
++	if (IS_ERR(lpc_snoop->clk)) {
++		rc = PTR_ERR(lpc_snoop->clk);
++		if (rc != -EPROBE_DEFER)
++			dev_err(dev, "couldn't get clock\n");
++		return rc;
++	}
++	rc = clk_prepare_enable(lpc_snoop->clk);
++	if (rc) {
++		dev_err(dev, "couldn't enable clock\n");
++		return rc;
++	}
++
+ 	rc = aspeed_lpc_snoop_config_irq(lpc_snoop, pdev);
+ 	if (rc)
+-		return rc;
++		goto err;
+ 
+ 	rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 0, port);
+ 	if (rc)
+-		return rc;
++		goto err;
+ 
+ 	/* Configuration of 2nd snoop channel port is optional */
+ 	if (of_property_read_u32_index(dev->of_node, "snoop-ports",
+ 				       1, &port) == 0) {
+ 		rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 1, port);
+-		if (rc)
++		if (rc) {
+ 			aspeed_lpc_disable_snoop(lpc_snoop, 0);
++			goto err;
++		}
+ 	}
+ 
++	return 0;
++
++err:
++	clk_disable_unprepare(lpc_snoop->clk);
++
+ 	return rc;
+ }
+ 
+@@ -309,6 +331,8 @@ static int aspeed_lpc_snoop_remove(struct platform_device *pdev)
+ 	aspeed_lpc_disable_snoop(lpc_snoop, 0);
+ 	aspeed_lpc_disable_snoop(lpc_snoop, 1);
+ 
++	clk_disable_unprepare(lpc_snoop->clk);
++
+ 	return 0;
+ }
+ 
 -- 
 2.27.0
 
