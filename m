@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A45B328CC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 980CC328CC3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240865AbhCAS6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:58:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48198 "EHLO mail.kernel.org"
+        id S240824AbhCAS6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:58:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234001AbhCAQoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:44:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6584464F8D;
-        Mon,  1 Mar 2021 16:30:57 +0000 (UTC)
+        id S231851AbhCAQon (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:44:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34DB664F8F;
+        Mon,  1 Mar 2021 16:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616258;
-        bh=SP4ZZYuwmji8tltM8S/pQ5CLELGbEviw/BJyyv4v8Y4=;
+        s=korg; t=1614616266;
+        bh=hU55TOuqiB67RLjiAaZ2n3qpworMIA/dCdDbwYJDSTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v7V92RQxKU/j/cAncqXfa8GOXwVdtNiTIMQuMrNdhSbSdE4z3wMCMe0txuFMQY1R2
-         QSTxjZwyR6HJ7jJ0/fvpfsJ8I4FHzMHIS3YF3tp/lyN8KhfJcSI3yB52M7Oe+UH6pS
-         yUEF2vSBMqDcoLA10YjnMusOq079iJoOZ56gHyPY=
+        b=PT5FeEWyhEfqZok4r1LoapJIJ+VPJjnl02uDV+vLltveScC9B0/Lv8/nbYLvO2Kc7
+         YbKmgYy1NU5DApT4Qraydad5aEd28OnxGSBMqZzCo+oRZSoCiYAqKsbs3wZoa8e1lU
+         l9hT5pIeYcd6eXovFunUHicIBAZU3yA/5AYCIbeo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 088/176] mmc: usdhi6rol0: Fix a resource leak in the error handling path of the probe
-Date:   Mon,  1 Mar 2021 17:12:41 +0100
-Message-Id: <20210301161025.344197795@linuxfoundation.org>
+        stable@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 090/176] amba: Fix resource leak for drivers without .remove
+Date:   Mon,  1 Mar 2021 17:12:43 +0100
+Message-Id: <20210301161025.447222914@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -41,43 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 6052b3c370fb82dec28bcfff6d7ec0da84ac087a ]
+[ Upstream commit de5d7adb89367bbc87b4e5ce7afe7ae9bd86dc12 ]
 
-A call to 'ausdhi6_dma_release()' to undo a previous call to
-'usdhi6_dma_request()' is missing in the error handling path of the probe
-function.
+Consider an amba driver with a .probe but without a .remove callback (e.g.
+pl061_gpio_driver). The function amba_probe() is called to bind a device
+and so dev_pm_domain_attach() and others are called. As there is no remove
+callback amba_remove() isn't called at unbind time however and so calling
+dev_pm_domain_detach() is missed and the pm domain keeps active.
 
-It is already present in the remove function.
+To fix this always use the core driver callbacks and handle missing amba
+callbacks there. For probe refuse registration as a driver without probe
+doesn't make sense.
 
-Fixes: 75fa9ea6e3c0 ("mmc: add a driver for the Renesas usdhi6rol0 SD/SDIO host controller")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201217210922.165340-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 7cfe249475fd ("ARM: AMBA: Add pclk support to AMBA bus infrastructure")
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20210126165835.687514-2-u.kleine-koenig@pengutronix.de
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/usdhi6rol0.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/amba/bus.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mmc/host/usdhi6rol0.c b/drivers/mmc/host/usdhi6rol0.c
-index 64da6a88cfb90..76e31a30b0cf9 100644
---- a/drivers/mmc/host/usdhi6rol0.c
-+++ b/drivers/mmc/host/usdhi6rol0.c
-@@ -1866,10 +1866,12 @@ static int usdhi6_probe(struct platform_device *pdev)
+diff --git a/drivers/amba/bus.c b/drivers/amba/bus.c
+index 8a99fbe5759fe..a82d068a84b4c 100644
+--- a/drivers/amba/bus.c
++++ b/drivers/amba/bus.c
+@@ -279,10 +279,11 @@ static int amba_remove(struct device *dev)
+ {
+ 	struct amba_device *pcdev = to_amba_device(dev);
+ 	struct amba_driver *drv = to_amba_driver(dev->driver);
+-	int ret;
++	int ret = 0;
  
- 	ret = mmc_add_host(mmc);
- 	if (ret < 0)
--		goto e_clk_off;
-+		goto e_release_dma;
+ 	pm_runtime_get_sync(dev);
+-	ret = drv->remove(pcdev);
++	if (drv->remove)
++		ret = drv->remove(pcdev);
+ 	pm_runtime_put_noidle(dev);
  
- 	return 0;
+ 	/* Undo the runtime PM settings in amba_probe() */
+@@ -299,7 +300,9 @@ static int amba_remove(struct device *dev)
+ static void amba_shutdown(struct device *dev)
+ {
+ 	struct amba_driver *drv = to_amba_driver(dev->driver);
+-	drv->shutdown(to_amba_device(dev));
++
++	if (drv->shutdown)
++		drv->shutdown(to_amba_device(dev));
+ }
  
-+e_release_dma:
-+	usdhi6_dma_release(host);
- e_clk_off:
- 	clk_disable_unprepare(host->clk);
- e_free_mmc:
+ /**
+@@ -312,12 +315,13 @@ static void amba_shutdown(struct device *dev)
+  */
+ int amba_driver_register(struct amba_driver *drv)
+ {
+-	drv->drv.bus = &amba_bustype;
++	if (!drv->probe)
++		return -EINVAL;
+ 
+-#define SETFN(fn)	if (drv->fn) drv->drv.fn = amba_##fn
+-	SETFN(probe);
+-	SETFN(remove);
+-	SETFN(shutdown);
++	drv->drv.bus = &amba_bustype;
++	drv->drv.probe = amba_probe;
++	drv->drv.remove = amba_remove;
++	drv->drv.shutdown = amba_shutdown;
+ 
+ 	return driver_register(&drv->drv);
+ }
 -- 
 2.27.0
 
