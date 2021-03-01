@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914C232816D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3541C328163
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236647AbhCAOxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:53:43 -0500
-Received: from conuserg-08.nifty.com ([210.131.2.75]:51173 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236572AbhCAOw7 (ORCPT
+        id S236626AbhCAOwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:52:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236625AbhCAOwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:52:59 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 121Ep9LT003511;
-        Mon, 1 Mar 2021 23:51:10 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 121Ep9LT003511
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614610271;
-        bh=W78l10suX8MoXynQ8dMjtmAO598pNUKAVWNuxNc7ZAY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oJAANXk2BKR3SWBmWyfSjZv08FIIibO5fIngG1gz30DEcYtfScFYPN4qn/3JUgFgJ
-         jdumD7mhdWJJRrxjDVGOOiwEBUJt6yTL4h+8JeAkQb9B5aTWNFqKYIslnLMSehvLLd
-         toRSDLQlF0B2bRtkEEccgb3/F71ydRLVm2pkithPOS1D+NiRNNUSF/LBOS5viGEq2I
-         9wjz9Vp2E3yp8g4UNt9vr6kdEqghrDu7FwHVpfogOveuB5z5A7riybmHv1/Eggogsv
-         i4n2A+2RkOawS9Tjgk+TQM3ga6eCn9tnFoF85zbvkC6gfBYXfS10C2H5YB+kwI3ro6
-         NoMEMJMaHOI+Q==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Stefan Asserhall <stefan.asserhall@xilinx.com>
-Subject: [PATCH 2/2] sparc: syscalls: switch to generic syscallshdr.sh
-Date:   Mon,  1 Mar 2021 23:51:02 +0900
-Message-Id: <20210301145102.358960-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210301145102.358960-1-masahiroy@kernel.org>
-References: <20210301145102.358960-1-masahiroy@kernel.org>
+        Mon, 1 Mar 2021 09:52:14 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671E4C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:51:31 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id d3so25891637lfg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:51:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9BnG6OcLz4MdkA8niW29Ho+/QnSajzdzvM6d+k9RjhA=;
+        b=YdCqs+GMjIwYpuli9n6ChS9KcSVMisnjvmPMVhyTZr1+QgSH6aYWMXdGN7+BX+bC0N
+         RUf1HL4pXH40LSezbd8Vz+YeBJ7BvNhLsUREpDjlwIF02U4C8/cEuCW2e9Aspgz5bkFY
+         RibEIgSjE69BuZ+V0NH9HCiRyAN9/Ur02tR9K6zXnm21K0vf+DdTDJ8rovmSKE7iK4yJ
+         bfxk7TUjcuYiXgH2nyPEGHs2DrOfjmefWHshsYBhF9Ypn74S2M8poDHQSjxLt6yhz5rG
+         g3T8bHOGyMwokI2l2zqTu1bng3ENcQnuLNG8nvpnXGTu3xMVRVvEVWVfwcZoYY1JH8WS
+         PLIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9BnG6OcLz4MdkA8niW29Ho+/QnSajzdzvM6d+k9RjhA=;
+        b=dUX+rorE9ljOayKy3N1MZGEUr2MmpZqYKvXXbevs2k0UGRab0lrpSs2mk2m8/HfQS3
+         RKq6XllWQFujKn5WXMmUtd3AF2WU+AMuPR8clz41BHdCCvs/soqYS7PFS6Aa0iML1ofK
+         RqZXBDie8RLOw9HIV7exe2Hnqo5FkUsMoGWscVmt+1Z2NShtecSZF0pi/bUw15LnPsbf
+         8qdhXTgsvo9zerAfq1UMENdvhvqFFO/EkymzZdsRclmp6Ab/TBfKsCwEufJUcLeT1iFM
+         aUeAg+u9rjoOY6yKZ/FOxDm2PnaW8C53eggD9MZY9gfZpd14nOPCmGALie3LPO6OYSN5
+         ODlA==
+X-Gm-Message-State: AOAM530KTAf/dt2+epLc/DQ1fPZH9pTh5bfK9Em+9k1sGNmmtQcKxWvw
+        AX5SvN+VBJ0bl2P7gfQYrN/8feM5B1MIJPlJkixsJwf6fh8=
+X-Google-Smtp-Source: ABdhPJw2hltL6dqzQRsiwOWELt2s4pnYTKVvz2cutcRv4szIKBMeFXJwGheIGYaQTVosfai7/l6TGb0G57xQwMFnKWs=
+X-Received: by 2002:ac2:4d95:: with SMTP id g21mr10180879lfe.29.1614610289944;
+ Mon, 01 Mar 2021 06:51:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210208222203.22335-1-info@metux.net> <20210208222203.22335-8-info@metux.net>
+In-Reply-To: <20210208222203.22335-8-info@metux.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 1 Mar 2021 15:51:19 +0100
+Message-ID: <CACRpkdb5R+VQrv0QuKa+EYmAMkodRpyv4fV1QCWQ+vcEyd0sZQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 07/12] gpio: amd-fch: add oftree probing support
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many architectures duplicate similar shell scripts.
+On Mon, Feb 8, 2021 at 11:24 PM Enrico Weigelt, metux IT consult
+<info@metux.net> wrote:
 
-This commit converts sparc to use scripts/syscallhdr.sh.
+> Add support for probing via device tree.
+(...)
+> +       pdata->gpio_num = of_property_count_elems_of_size(dev->of_node,
+> +                                                         "gpio-regs",
+> +                                                         sizeof(u32));
+> +       pdata->gpio_reg = devm_kzalloc(dev, sizeof(int)*pdata->gpio_num,
+> +                                      GFP_KERNEL);
+> +       if (!pdata->gpio_reg)
+> +               goto nomem;
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+I don't know what the idea is with this but register are not normally defined
+in the DTS files. The registers are determined from the compatible value.
 
- arch/sparc/kernel/syscalls/Makefile      | 11 +++-----
- arch/sparc/kernel/syscalls/syscallhdr.sh | 36 ------------------------
- 2 files changed, 4 insertions(+), 43 deletions(-)
- delete mode 100644 arch/sparc/kernel/syscalls/syscallhdr.sh
+> +       pdata->gpio_names = devm_kzalloc(dev, sizeof(char*)*pdata->gpio_num,
+> +                                        GFP_KERNEL);
+> +       if (!pdata->gpio_names)
+> +               goto nomem;
+(...)
+> +       ret = of_property_read_string_array(dev->of_node, "gpio-line-names",
+> +                                           pdata->gpio_names, pdata->gpio_num);
 
-diff --git a/arch/sparc/kernel/syscalls/Makefile b/arch/sparc/kernel/syscalls/Makefile
-index 11424f1c8d9e..0f2ea5bcb0d7 100644
---- a/arch/sparc/kernel/syscalls/Makefile
-+++ b/arch/sparc/kernel/syscalls/Makefile
-@@ -6,23 +6,20 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 	  $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
- 
- syscall := $(src)/syscall.tbl
--syshdr := $(srctree)/$(src)/syscallhdr.sh
-+syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
--		   '$(syshdr_abis_$(basetarget))'		\
--		   '$(syshdr_pfx_$(basetarget))'		\
--		   '$(syshdr_offset_$(basetarget))'
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr --abis $(abis) $< $@
- 
- quiet_cmd_systbl = SYSTBL  $@
-       cmd_systbl = $(CONFIG_SHELL) $(systbl) --abis $(abis) $< $@
- 
--syshdr_abis_unistd_32 := common,32
-+$(uapi)/unistd_32.h: abis := common,32
- $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
--syshdr_abis_unistd_64 := common,64
-+$(uapi)/unistd_64.h: abis := common,64
- $(uapi)/unistd_64.h: $(syscall) $(syshdr) FORCE
- 	$(call if_changed,syshdr)
- 
-diff --git a/arch/sparc/kernel/syscalls/syscallhdr.sh b/arch/sparc/kernel/syscalls/syscallhdr.sh
-deleted file mode 100644
-index cf50a75cc0bb..000000000000
---- a/arch/sparc/kernel/syscalls/syscallhdr.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--prefix="$4"
--offset="$5"
--
--fileguard=_UAPI_ASM_SPARC_`basename "$out" | sed \
--	-e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
--	-e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	printf "#ifndef %s\n" "${fileguard}"
--	printf "#define %s\n" "${fileguard}"
--	printf "\n"
--
--	nxt=0
--	while read nr abi name entry compat ; do
--		if [ -z "$offset" ]; then
--			printf "#define __NR_%s%s\t%s\n" \
--				"${prefix}" "${name}" "${nr}"
--		else
--			printf "#define __NR_%s%s\t(%s + %s)\n" \
--				"${prefix}" "${name}" "${offset}" "${nr}"
--		fi
--		nxt=$((nr+1))
--	done
--
--	printf "\n"
--	printf "#ifdef __KERNEL__\n"
--	printf "#define __NR_syscalls\t%s\n" "${nxt}"
--	printf "#endif\n"
--	printf "\n"
--	printf "#endif /* %s */\n" "${fileguard}"
--) > "$out"
--- 
-2.27.0
+And this is already handled by the core.
 
+Yours,
+Linus Walleij
