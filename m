@@ -2,67 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3B1327B08
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAD9327B11
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbhCAJpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:45:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49556 "EHLO mail.kernel.org"
+        id S234139AbhCAJq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:46:26 -0500
+Received: from mga02.intel.com ([134.134.136.20]:12500 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233762AbhCAJpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:45:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56F9E64E31;
-        Mon,  1 Mar 2021 09:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614591870;
-        bh=jMbKvssZVyvSNQWJNR1W7nK6aRXIaaX7YBLAevoZguk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=f+R8r14IUGmmb9F7J+PLfqr2ULV09VqFUMAXbbRrJ0zKM1Ts+559JMmSN/1MVDLvy
-         5lda6UUBbtJInLOr5elJlayYSgs5kerbJe7FaljW8n2c/0uVGuw/gABVf8ZQ22dnV6
-         7yttnCTMjUlD7xOnJltiUn2+/jDHRCKMhkXDKPSxq+AdZcqV9qtYX/SZk9O4/dHtjs
-         8Mzj6ZYexgCS86KlzRbK6dbaMazopJVc0a3KfTLiLuSerNpGQAXq1q9QFiM/NUjTr+
-         La9p5BqCdtr8fkEPa0YByxl3x54Ebwj1k+TogEhpuEAvw2UzbhZCR1f4tshWBqKgsb
-         i8YJ2gjAGJNAg==
-From:   jarkko@kernel.org
-To:     linux-integrity@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>
-Subject: [PATCH] tpm: Remove unintentional dump_stack() call
-Date:   Mon,  1 Mar 2021 11:44:09 +0200
-Message-Id: <20210301094409.14380-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.30.1
+        id S234094AbhCAJpe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 04:45:34 -0500
+IronPort-SDR: c6ryIvsKaEkMSXrM2VHkkvYLiA9Pkeik0sls8k3vXzGjw6uu4CxI0Ug2ihW8XsnHWEdxoGVO7H
+ 4SPv9Hc6ye/w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="173542477"
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="173542477"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 01:44:48 -0800
+IronPort-SDR: fC+0gOq3VyKRbjdhb6WYiOI8P7X7d9wTmSDebKKgDgNAxb1BTpskmXglh4hgq4AMahBMVFHikW
+ PAHwGB7ffLgA==
+X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
+   d="scan'208";a="599267315"
+Received: from jscomeax-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.252.139.76])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 01:44:42 -0800
+From:   Kai Huang <kai.huang@intel.com>
+To:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        Kai Huang <kai.huang@intel.com>
+Subject: [PATCH 01/25] x86/cpufeatures: Make SGX_LC feature bit depend on SGX bit
+Date:   Mon,  1 Mar 2021 22:44:28 +1300
+Message-Id: <0f5c13b8d89355626c343ad78f60807b321baf6f.1614590788.git.kai.huang@intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1614590788.git.kai.huang@intel.com>
+References: <cover.1614590788.git.kai.huang@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarkko Sakkinen <jarkko@kernel.org>
+Move SGX_LC feature bit to CPUID dependency table to make clearing all
+SGX feature bits easier. Also remove clear_sgx_caps() since it is just
+a wrapper of setup_clear_cpu_cap(X86_FEATURE_SGX) now.
 
-Somewhere along the line, probably during a rebase, an unintentional
-dump_stack() got included. Revert this change.
-
-Reported-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Fixes: 90cba8d20f8b ("tpm/ppi: Constify static struct attribute_group")
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Acked-by: Dave Hansen <dave.hansen@intel.com>
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Kai Huang <kai.huang@intel.com>
 ---
- drivers/char/tpm/tpm-chip.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/x86/kernel/cpu/cpuid-deps.c |  1 +
+ arch/x86/kernel/cpu/feat_ctl.c   | 12 +++---------
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-index 19e23fcc6bc8..ddaeceb7e109 100644
---- a/drivers/char/tpm/tpm-chip.c
-+++ b/drivers/char/tpm/tpm-chip.c
-@@ -278,8 +278,6 @@ static void tpm_devs_release(struct device *dev)
- {
- 	struct tpm_chip *chip = container_of(dev, struct tpm_chip, devs);
+diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
+index 42af31b64c2c..d40f8e0a54ce 100644
+--- a/arch/x86/kernel/cpu/cpuid-deps.c
++++ b/arch/x86/kernel/cpu/cpuid-deps.c
+@@ -72,6 +72,7 @@ static const struct cpuid_dep cpuid_deps[] = {
+ 	{ X86_FEATURE_AVX512_FP16,		X86_FEATURE_AVX512BW  },
+ 	{ X86_FEATURE_ENQCMD,			X86_FEATURE_XSAVES    },
+ 	{ X86_FEATURE_PER_THREAD_MBA,		X86_FEATURE_MBA       },
++	{ X86_FEATURE_SGX_LC,			X86_FEATURE_SGX	      },
+ 	{}
+ };
  
--	dump_stack();
+diff --git a/arch/x86/kernel/cpu/feat_ctl.c b/arch/x86/kernel/cpu/feat_ctl.c
+index 3b1b01f2b248..27533a6e04fa 100644
+--- a/arch/x86/kernel/cpu/feat_ctl.c
++++ b/arch/x86/kernel/cpu/feat_ctl.c
+@@ -93,15 +93,9 @@ static void init_vmx_capabilities(struct cpuinfo_x86 *c)
+ }
+ #endif /* CONFIG_X86_VMX_FEATURE_NAMES */
+ 
+-static void clear_sgx_caps(void)
+-{
+-	setup_clear_cpu_cap(X86_FEATURE_SGX);
+-	setup_clear_cpu_cap(X86_FEATURE_SGX_LC);
+-}
 -
- 	/* release the master device reference */
- 	put_device(&chip->dev);
+ static int __init nosgx(char *str)
+ {
+-	clear_sgx_caps();
++	setup_clear_cpu_cap(X86_FEATURE_SGX);
+ 
+ 	return 0;
+ }
+@@ -116,7 +110,7 @@ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
+ 
+ 	if (rdmsrl_safe(MSR_IA32_FEAT_CTL, &msr)) {
+ 		clear_cpu_cap(c, X86_FEATURE_VMX);
+-		clear_sgx_caps();
++		clear_cpu_cap(c, X86_FEATURE_SGX);
+ 		return;
+ 	}
+ 
+@@ -177,6 +171,6 @@ void init_ia32_feat_ctl(struct cpuinfo_x86 *c)
+ 	    !(msr & FEAT_CTL_SGX_LC_ENABLED) || !enable_sgx) {
+ 		if (enable_sgx)
+ 			pr_err_once("SGX disabled by BIOS\n");
+-		clear_sgx_caps();
++		clear_cpu_cap(c, X86_FEATURE_SGX);
+ 	}
  }
 -- 
-2.30.1
+2.29.2
 
