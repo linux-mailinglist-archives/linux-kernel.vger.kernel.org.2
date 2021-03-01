@@ -2,215 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C9C32A033
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AAC32A036
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575502AbhCBD41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:27 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18685 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238284AbhCAW5Q (ORCPT
+        id S1575527AbhCBD4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:56:35 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13014 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239132AbhCAXGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:57:16 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603d70f90004>; Mon, 01 Mar 2021 14:55:53 -0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
- 2021 22:55:52 +0000
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
- 2021 22:55:50 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Mon, 1 Mar 2021 22:55:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y9qWKUqrnjnTYqf51DVnGXnDC+NCg6UTWGjhFNStUgs6f+JLyB/2aLGO7oBc0TrJ0bNxyAiqsgY5AErYMOQwbZ2JvDCS3a/Kgqn+TIWGhcFGUXjZoOXb4fTDVopF0pV3iJ4NGuJo41KK7ZgCi8rDyp6DNxWCOIMeTy0GDmA9u4qlDd2DSXsD4Ii39RKppIde4Z9S83ErzPIdYndVQNsD1nbk1oeFp1TYm2ZVKYTIXIwlukh/pJAkGOX2yFpZbgfoBT6Zoc+gVWGHJH1tysexccR9FbsjHyiBZQwiRWX9w8/KVkrxFKl6TUBYBhqINdTHR1Cj0ybLh0p8rNvI8ZW//A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UcRAqZsNAc5tyn8qB8O86feX/k1gTclG2+wu/Pv3QX0=;
- b=WgQTyQVfC239V7s48Yqcp76BTlxwbwm+M9AMuw3eNzfH3y8/DzTSSeFgv2s2RiqQha6d9z6oC/548yVVHjl9dG4MEXcUP1n3yEbaRlkAZS0fdkBH9hHaoVjUNzu46Odsuy3D9IVMcR2uHZSq2cC38a1ltV06ldj8yuxoU9Ftn4IzYW0t4Rf1mkapRbAN22qVYjUgL5mpXIzJybge2NaVvpor4zuApXdObdlqQm/HuW+Uj/fORwvR8eWyKjZ6k7a1TK7W8ITMf+kL7Cg5Lfe0rAbVJwDKjbziNZIzBFOYp54x1OWPmDRMj3WAdxataACceMuwoI9B60k5xV6Uz1vrww==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from MN2PR12MB4344.namprd12.prod.outlook.com (2603:10b6:208:26e::11)
- by MN2PR12MB4160.namprd12.prod.outlook.com (2603:10b6:208:19a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Mon, 1 Mar
- 2021 22:55:48 +0000
-Received: from MN2PR12MB4344.namprd12.prod.outlook.com
- ([fe80::6412:fe3d:f2:87db]) by MN2PR12MB4344.namprd12.prod.outlook.com
- ([fe80::6412:fe3d:f2:87db%8]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
- 22:55:48 +0000
-From:   Ralph Campbell <rcampbell@nvidia.com>
-To:     Alistair Popple <apopple@nvidia.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
-        "bskeggs@redhat.com" <bskeggs@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        "jglisse@redhat.com" <jglisse@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>
-Subject: RE: [PATCH v3 5/8] mm: Device exclusive memory access
-Thread-Topic: [PATCH v3 5/8] mm: Device exclusive memory access
-Thread-Index: AQHXDA+zUEPg2OP9KEOGgyZB5NMUAapvwr6Q
-Date:   Mon, 1 Mar 2021 22:55:48 +0000
-Message-ID: <MN2PR12MB43449C6419A839E4F5605B6EC29A9@MN2PR12MB4344.namprd12.prod.outlook.com>
-References: <20210226071832.31547-1-apopple@nvidia.com>
- <20210226071832.31547-6-apopple@nvidia.com>
-In-Reply-To: <20210226071832.31547-6-apopple@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Enabled=True;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_SiteId=43083d15-7273-40c1-b7db-39efd9ccc17a;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Owner=rcampbell@nvidia.com;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_SetDate=2021-03-01T22:55:50.8180700Z;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Name=Unrestricted;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_ActionId=a2a37e20-6c80-4404-9a3b-3c1c3dd394b8;
- MSIP_Label_6b558183-044c-4105-8d9c-cea02a2a3d86_Extended_MSFT_Method=Automatic
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [2601:646:8e80:c510:10c8:3f69:ba2e:72f8]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f69f8736-38b6-4757-9a39-08d8dd0527a2
-x-ms-traffictypediagnostic: MN2PR12MB4160:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR12MB4160C5C38C6A63D5DCE82914C29A9@MN2PR12MB4160.namprd12.prod.outlook.com>
-x-header: ProcessedBy-CMR-outbound
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: O2sGsCLzGcijgxrr1EeHuyeyLDVCaZBAChg+Z9uQ8uKOy0HbaqAs88VpsCGQZh8WHqBbvRn30WSY+7ZcUduUAQbNN81C/WZMbpws1osX9UHk6QdBCtLWMvl2974igCh2SHA0j+LGF0a7ayKm0i/fZDBkb8EqWsws+Vlr9C7ir6dzFxpWsiQiJc66Iey3J2AXjp5p6SSLu3hv5AeRqvdnswmatTXpjjwVGgZ312oJi9p4O7YRHn0xgCJfM0LJiMSoCORoWbnFcIdJ5OkXmhAzA/68xjravKoNZ7fIaFItM+gde1b95Ui5oO6yQ3RBrUkV3T0tX1vvTZM/dHNZ4F1DC8tEXyIdElQrnuERjM/oLclO6/jLgm6jVTU6teGi4GfcO+XhRzODuxOrSfSiN106t6x2dqahw91xQdzJEuzf/Z8bhRopOcuy+Jt4cOmwwwcSEhumduNWNCU6v6o5DYj3G7xvui2aZACq5cLd2psrHLqj1kDIZ55GgtT5eso3OgOR+w4iabMU4sN5RN/OCgt6ww==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4344.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(396003)(346002)(376002)(2906002)(9686003)(53546011)(66946007)(71200400001)(54906003)(66476007)(186003)(6506007)(478600001)(110136005)(316002)(64756008)(5660300002)(33656002)(55016002)(66556008)(8676002)(83380400001)(7416002)(7696005)(8936002)(52536014)(66446008)(76116006)(86362001)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?dUrgjAPaX0bcyS0tElQXZNvxmhZqRNVXLGg8cxHPLd/SVtEXUVyPiiuy2wwt?=
- =?us-ascii?Q?szSlOaVAu7I3vlA/bLE1ipGJCBEHJ/dNFjYDOQuqTNqiHbD0xGd7xjYBV6lB?=
- =?us-ascii?Q?ipqtW3mXKyMDdeKBjLRbLWcw+S+u3LM4PAVK+BLS0xus53/9a9YJX6emixcE?=
- =?us-ascii?Q?0+99EbBhJ/MDiWYSkEDO/Dl547kbMyJZnnuLqsg7kl3dCh54/RHfovjinTgh?=
- =?us-ascii?Q?gDY58cefGw2uuxjcim8lJFzk43IZ5NroCTLVV8ykJl2w0VopPOVGLJtxr6vm?=
- =?us-ascii?Q?JMOJV4lUw8Gm921Lz78XpW74JCRiiExHCRBrTSD1AcYV7EBoZ93pvsdZsHuL?=
- =?us-ascii?Q?3QiY/0C8JjPZh6Kzp+UT81pHSdIOMmjJEpRNNPqMIWDs2/GBbkJO0h6ZYusf?=
- =?us-ascii?Q?bUr+KuTreLYhAv14cWj+TX9ZrpgijI9hapGtC9Q307VPrQNi9H0T719a0Hko?=
- =?us-ascii?Q?LBm5Eu7kT+gzYF2WXiPltdUWla/10NKHmFHiXp+OVaFxzhg1C2SXqoHiIZkI?=
- =?us-ascii?Q?TmiAoYudxpXeJFCSvkXqQR/gud3/F3+w093jbV59uH11tiYhaIc3dGWuS6My?=
- =?us-ascii?Q?ofefrCWPPmUwRSeXL06PdV09evN+6/S4JXcwPhFH1Bvcr2Ck1iFz0P0FZBo+?=
- =?us-ascii?Q?Fy8FECLJZyjldrQaWf2JvBeoOLqqiHNRgVtor23B9OfSEdoY04SJS1G5bWr2?=
- =?us-ascii?Q?4EpfeiMPi85N2XI1/PS80M5God6jLaHs30uGlhY6GH7doCWesej7kKLKvuaY?=
- =?us-ascii?Q?6+038fQ4RDND9Fhqe4vdSbyUsQ/Ym3cX9HZZyiC1GZ9V85TDYQQ5tgQmM37T?=
- =?us-ascii?Q?tQtm8TWT6xlFtJnkQrQ6Otu6vaniTMrzkDl3JnpBdoFOL5z9tBXMqMwZhNyM?=
- =?us-ascii?Q?kUE6nYYkF2StNyU/TSsz1eLeoUb7ZhlSBYmk6ZODsjLv5kxrfcVarvv53Rrw?=
- =?us-ascii?Q?rTTh9QPLSssJ+8Q0OVhKOHRJhB6183MRjy+U0uq9pgfD4N1CF/XUD5oIOmH+?=
- =?us-ascii?Q?hjZGX56d0Ib2ooeMCYMnuSqV+vEq+GEJa67Zo12VvST8q2ElAcgVnqh9g0jz?=
- =?us-ascii?Q?R9nmasgIP5VwXvvAZ/sm2XhFIvhhuFd3+kt/0hHFvCES3ZZI67dId/hwZqI9?=
- =?us-ascii?Q?j+V4Bqtwkkkh04vMZvqHfv1PQcGXJUBTUWlT29CvLBAGf8kvlNe4jhOdjbM+?=
- =?us-ascii?Q?hJ6U2v3oIhUXeneXkUXfd6eBYGumOdMffp2RJFSRM4gAOR2eADIjaE7Fd4zD?=
- =?us-ascii?Q?/W99+uv5Ul/KAP3OTgT9pZcFylyAmrwYHs4663y17S/KzYIdVw3TQXjU5QOB?=
- =?us-ascii?Q?qJ5N0b/li+/IYn0BmJtmgLF6tWKGnkvy7pE3wO+4WQD1sQErIDSR5zDhs/GG?=
- =?us-ascii?Q?Z0QrltXIpBqNb2665nNLIVDh6R/I?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 1 Mar 2021 18:06:52 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DqG6b5pxWzjThg;
+        Tue,  2 Mar 2021 07:04:23 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.203.209) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 2 Mar 2021 07:05:55 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <tim.c.chen@linux.intel.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <rjw@rjwysocki.net>,
+        <vincent.guittot@linaro.org>, <bp@alien8.de>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <lenb@kernel.org>, <peterz@infradead.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>
+CC:     <msys.mizuma@gmail.com>, <valentin.schneider@arm.com>,
+        <gregkh@linuxfoundation.org>, <jonathan.cameron@huawei.com>,
+        <juri.lelli@redhat.com>, <mark.rutland@arm.com>,
+        <sudeep.holla@arm.com>, <aubrey.li@linux.intel.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <x86@kernel.org>, <xuwei5@huawei.com>, <prime.zeng@hisilicon.com>,
+        <guodong.xu@linaro.org>, <yangyicong@huawei.com>,
+        <liguozhu@hisilicon.com>, <linuxarm@openeuler.org>,
+        <hpa@zytor.com>, Barry Song <song.bao.hua@hisilicon.com>
+Subject: [RFC PATCH v4 0/3] scheduler: expose the topology of clusters and add cluster scheduler
+Date:   Tue, 2 Mar 2021 11:59:37 +1300
+Message-ID: <20210301225940.16728-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4344.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f69f8736-38b6-4757-9a39-08d8dd0527a2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Mar 2021 22:55:48.1223
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DD7Z3nJYJp9x5nPA9HvtL/Y6hiXYXgbS76gc623jA1kzhMIcivgHZwWIbKrFqAdqVPWhv28g3Bl4Ui5+O93UHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4160
-X-OriginatorOrg: Nvidia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614639353; bh=UcRAqZsNAc5tyn8qB8O86feX/k1gTclG2+wu/Pv3QX0=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
-         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
-         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
-         X-MS-TNEF-Correlator:msip_labels:authentication-results:
-         x-originating-ip:x-ms-publictraffictype:
-         x-ms-office365-filtering-correlation-id:x-ms-traffictypediagnostic:
-         x-ms-exchange-transport-forked:x-microsoft-antispam-prvs:x-header:
-         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
-         x-microsoft-antispam:x-microsoft-antispam-message-info:
-         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
-         Content-Type:Content-Transfer-Encoding:MIME-Version:
-         X-MS-Exchange-CrossTenant-AuthAs:
-         X-MS-Exchange-CrossTenant-AuthSource:
-         X-MS-Exchange-CrossTenant-Network-Message-Id:
-         X-MS-Exchange-CrossTenant-originalarrivaltime:
-         X-MS-Exchange-CrossTenant-fromentityheader:
-         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-         X-MS-Exchange-CrossTenant-userprincipalname:
-         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
-        b=aWShgIOPd2W6kIuuKXzDpWqwYIaz/i7KU9ttu8Njs/vR/k4kQew59ipswv+3eBPjC
-         ravXV11N+/GUZOBvT8ekQauIHnIhty0R+aHA0i/xTvpYCEdC+uKJ9YGIQhXfdAz/jL
-         UmDg5tW7TtHBJg47dYYAgO1tBRb8FbinJ4mHAWkDitJN1UL1SBXnHAmsHIj3OgGreR
-         k4xMUi6wm+0IMgeDW/4VOqLoLFryv8CfVE7MMnWufgQhG+iP0H1o2I88yADi/KFJ3u
-         T75giv2/pOLSCdE8JC/fHXjnb89rcfS6ZH9VAUt1ylswlhLaYLg2HturYxuNmueI7D
-         W9P/Nom2V5edA==
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.203.209]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Alistair Popple <apopple@nvidia.com>
-> Sent: Thursday, February 25, 2021 11:18 PM
-> To: linux-mm@kvack.org; nouveau@lists.freedesktop.org;
-> bskeggs@redhat.com; akpm@linux-foundation.org
-> Cc: linux-doc@vger.kernel.org; linux-kernel@vger.kernel.org; dri-
-> devel@lists.freedesktop.org; John Hubbard <jhubbard@nvidia.com>; Ralph
-> Campbell <rcampbell@nvidia.com>; jglisse@redhat.com; Jason Gunthorpe
-> <jgg@nvidia.com>; hch@infradead.org; daniel@ffwll.ch; Alistair Popple
-> <apopple@nvidia.com>
-> Subject: [PATCH v3 5/8] mm: Device exclusive memory access
->=20
-> Some devices require exclusive write access to shared virtual memory (SVM=
-)
-> ranges to perform atomic operations on that memory. This requires CPU pag=
-e
-> tables to be updated to deny access whilst atomic operations are occurrin=
-g.
->=20
-> In order to do this introduce a new swap entry type (SWP_DEVICE_EXCLUSIVE=
-).
-> When a SVM range needs to be marked for exclusive access by a device all =
-page
-> table mappings for the particular range are replaced with device exclusiv=
-e swap
-> entries. This causes any CPU access to the page to result in a fault.
->=20
-> Faults are resovled by replacing the faulting entry with the original map=
-ping. This
-> results in MMU notifiers being called which a driver uses to update acces=
-s
-> permissions such as revoking atomic access. After notifiers have been cal=
-led the
-> device will no longer have exclusive access to the region.
->=20
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> ---
->  Documentation/vm/hmm.rst |  15 ++++
->  include/linux/rmap.h     |   3 +
->  include/linux/swap.h     |   4 +-
->  include/linux/swapops.h  |  44 ++++++++++-
->  mm/hmm.c                 |   5 ++
->  mm/memory.c              | 108 +++++++++++++++++++++++++-
->  mm/mprotect.c            |   8 ++
->  mm/page_vma_mapped.c     |   9 ++-
->  mm/rmap.c                | 163 +++++++++++++++++++++++++++++++++++++++
->  9 files changed, 352 insertions(+), 7 deletions(-)
-...
-> +int make_device_exclusive_range(struct mm_struct *mm, unsigned long star=
-t,
-> +				unsigned long end, struct page **pages) {
-> +	long npages =3D (end - start) >> PAGE_SHIFT;
-> +	long i;
+ARM64 server chip Kunpeng 920 has 6 or 8 clusters in each NUMA node, and each
+cluster has 4 cpus. All clusters share L3 cache data while each cluster has
+local L3 tag. On the other hand, each cluster will share some internal system
+bus. This means cache is much more affine inside one cluster than across
+clusters.
 
-Nit: you should use unsigned long for 'i' and 'npages' to match start/end.
+    +-----------------------------------+                          +---------+
+    |  +------+    +------+            +---------------------------+         |
+    |  | CPU0 |    | cpu1 |             |    +-----------+         |         |
+    |  +------+    +------+             |    |           |         |         |
+    |                                   +----+    L3     |         |         |
+    |  +------+    +------+   cluster   |    |    tag    |         |         |
+    |  | CPU2 |    | CPU3 |             |    |           |         |         |
+    |  +------+    +------+             |    +-----------+         |         |
+    |                                   |                          |         |
+    +-----------------------------------+                          |         |
+    +-----------------------------------+                          |         |
+    |  +------+    +------+             +--------------------------+         |
+    |  |      |    |      |             |    +-----------+         |         |
+    |  +------+    +------+             |    |           |         |         |
+    |                                   |    |    L3     |         |         |
+    |  +------+    +------+             +----+    tag    |         |         |
+    |  |      |    |      |             |    |           |         |         |
+    |  +------+    +------+             |    +-----------+         |         |
+    |                                   |                          |         |
+    +-----------------------------------+                          |   L3    |
+                                                                   |   data  |
+    +-----------------------------------+                          |         |
+    |  +------+    +------+             |    +-----------+         |         |
+    |  |      |    |      |             |    |           |         |         |
+    |  +------+    +------+             +----+    L3     |         |         |
+    |                                   |    |    tag    |         |         |
+    |  +------+    +------+             |    |           |         |         |
+    |  |      |    |      |            ++    +-----------+         |         |
+    |  +------+    +------+            |---------------------------+         |
+    +-----------------------------------|                          |         |
+    +-----------------------------------|                          |         |
+    |  +------+    +------+            +---------------------------+         |
+    |  |      |    |      |             |    +-----------+         |         |
+    |  +------+    +------+             |    |           |         |         |
+    |                                   +----+    L3     |         |         |
+    |  +------+    +------+             |    |    tag    |         |         |
+    |  |      |    |      |             |    |           |         |         |
+    |  +------+    +------+             |    +-----------+         |         |
+    |                                   |                          |         |
+    +-----------------------------------+                          |         |
+    +-----------------------------------+                          |         |
+    |  +------+    +------+             +--------------------------+         |
+    |  |      |    |      |             |   +-----------+          |         |
+    |  +------+    +------+             |   |           |          |         |
+
+
+There is a similar need for clustering in x86.  Some x86 cores could share L2 caches
+that is similar to the cluster in Kupeng 920 (e.g. on Jacobsville there are 6 clusters
+of 4 Atom cores, each cluster sharing a separate L2, and 24 cores sharing L3).  
+
+Having a sched_domain for clusters will bring two aspects of improvement:
+1. spreading unrelated tasks among clusters, which decreases the contention of resources
+and improve the throughput.
+unrelated tasks might be put randomly without cluster sched_domain:
++-------------------+            +-----------------+
+| +----+   +----+   |            |                 |
+| |task|   |task|   |            |                 |
+| |1   |   |2   |   |            |                 |
+| +----+   +----+   |            |                 |
+|                   |            |                 |
+|       cluster1    |            |     cluster2    |
++-------------------+            +-----------------+
+
+but with cluster sched_domain, they are likely to spread due to LB:
++-------------------+            +-----------------+
+| +----+            |            | +----+          |
+| |task|            |            | |task|          |
+| |1   |            |            | |2   |          |
+| +----+            |            | +----+          |
+|                   |            |                 |
+|       cluster1    |            |     cluster2    |
++-------------------+            +-----------------+
+
+2. gathering related tasks within a cluster, which improves the cache affinity of tasks
+talking with each other.
+Without cluster sched_domain, related tasks might be put randomly. In case task1-8 have
+relationship as below:
+Task1 wakes up task4
+Task2 wakes up task5
+Task3 wakes up task6
+Task4 wakes up task7
+With the tuning of select_idle_cpu() to scan local cluster first, those tasks might
+get a chance to be gathered like:
++---------------------------+    +----------------------+
+| +----+        +-----+     |    | +----+      +-----+  |
+| |task|        |task |     |    | |task|      |task |  |
+| |1   |        | 4   |     |    | |2   |      |5    |  |
+| +----+        +-----+     |    | +----+      +-----+  |
+|                           |    |                      |
+|       cluster1            |    |     cluster2         |
+|                           |    |                      |
+|                           |    |                      |
+| +-----+       +------+    |    | +-----+     +------+ |
+| |task |       | task |    |    | |task |     |task  | |
+| |3    |       |  6   |    |    | |4    |     |8     | |
+| +-----+       +------+    |    | +-----+     +------+ |
++---------------------------+    +----------------------+
+Otherwise, the result might be:
++---------------------------+    +----------------------+
+| +----+        +-----+     |    | +----+      +-----+  |
+| |task|        |task |     |    | |task|      |task |  |
+| |1   |        | 2   |     |    | |5   |      |6    |  |
+| +----+        +-----+     |    | +----+      +-----+  |
+|                           |    |                      |
+|       cluster1            |    |     cluster2         |
+|                           |    |                      |
+|                           |    |                      |
+| +-----+       +------+    |    | +-----+     +------+ |
+| |task |       | task |    |    | |task |     |task  | |
+| |3    |       |  4   |    |    | |7    |     |8     | |
+| +-----+       +------+    |    | +-----+     +------+ |
++---------------------------+    +----------------------+
+
+-v4:
+  * rebased to tip/sched/core with the latest unified code of select_idle_cpu
+  * added Tim's patch for x86 Jacobsville
+  * also added benchmark data of spreading unrelated tasks
+  * avoided the iteration of sched_domain by moving to static_key(addressing
+    Vincent's comment
+  * used acpi_cpu_id for acpi_find_processor_node(addressing Masa's comment)
+
+Barry Song (1):
+  scheduler: add scheduler level for clusters
+
+Jonathan Cameron (1):
+  topology: Represent clusters of CPUs within a die.
+
+Tim Chen (1):
+  scheduler: Add cluster scheduler level for x86
+
+ Documentation/admin-guide/cputopology.rst | 26 ++++++++++--
+ arch/arm64/Kconfig                        |  7 ++++
+ arch/arm64/kernel/topology.c              |  2 +
+ arch/x86/Kconfig                          |  8 ++++
+ arch/x86/include/asm/smp.h                |  7 ++++
+ arch/x86/include/asm/topology.h           |  1 +
+ arch/x86/kernel/cpu/cacheinfo.c           |  1 +
+ arch/x86/kernel/cpu/common.c              |  3 ++
+ arch/x86/kernel/smpboot.c                 | 43 +++++++++++++++++++-
+ drivers/acpi/pptt.c                       | 63 +++++++++++++++++++++++++++++
+ drivers/base/arch_topology.c              | 14 +++++++
+ drivers/base/topology.c                   | 10 +++++
+ include/linux/acpi.h                      |  5 +++
+ include/linux/arch_topology.h             |  5 +++
+ include/linux/sched/cluster.h             | 19 +++++++++
+ include/linux/sched/sd_flags.h            |  9 +++++
+ include/linux/sched/topology.h            |  7 ++++
+ include/linux/topology.h                  | 13 ++++++
+ kernel/sched/core.c                       | 18 +++++++++
+ kernel/sched/fair.c                       | 66 ++++++++++++++++++++++++-------
+ kernel/sched/sched.h                      |  1 +
+ kernel/sched/topology.c                   |  6 +++
+ 22 files changed, 315 insertions(+), 19 deletions(-)
+ create mode 100644 include/linux/sched/cluster.h
+
+-- 
+1.8.3.1
+
