@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FEE329C44
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC33329B75
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380404AbhCBBvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:51:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48630 "EHLO mail.kernel.org"
+        id S1348727AbhCBBZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:25:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241714AbhCAT2x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:28:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3496960230;
-        Mon,  1 Mar 2021 17:47:02 +0000 (UTC)
+        id S235261AbhCATJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:09:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFE476024A;
+        Mon,  1 Mar 2021 17:47:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620822;
-        bh=1uBovl6iDDXC7RYgWTFxw5dV4L4Y64Uw1kzEXWjIrOw=;
+        s=korg; t=1614620825;
+        bh=np4pLtvbnCOYPihpSn9/7tNShNDH24Oz5BOxu8A21GM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NQndu2eejZrBYpfdnvg9tEZ81589ko6rWDpHIpc5qGHh/cuh7I+36w8/2Mxf8eSY0
-         jey4b74Yb2z321cY3F0S7DSW2LW0JWHsEaA5CoHwYwsO8SRoK+RnCDf03yOS9KYbqY
-         vBAAiLoltuyAKcNPGU4vhV9D3LJmlYo42X7PQVck=
+        b=rPFeTQNfi1ln9sM34+3Tk/iaU5dHG8xdgEw1lkoSH5ocqyOnll93DLbjawTUrJ8Q8
+         LC6obXX1WJS3W/d0UV5+KrI+H55XnJm5Rokpc7aqQ9OfhXSZx25kzKisWZnTDH0o/x
+         VMmoHkdzpqH080pGMBHGH6ezwi5GuGazIFUNFaLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 292/775] ima: Free IMA measurement buffer after kexec syscall
-Date:   Mon,  1 Mar 2021 17:07:40 +0100
-Message-Id: <20210301161216.047727071@linuxfoundation.org>
+Subject: [PATCH 5.11 293/775] ASoC: simple-card-utils: Fix device module clock
+Date:   Mon,  1 Mar 2021 17:07:41 +0100
+Message-Id: <20210301161216.095959496@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -43,78 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+From: Sameer Pujar <spujar@nvidia.com>
 
-[ Upstream commit f31e3386a4e92ba6eda7328cb508462956c94c64 ]
+[ Upstream commit 1e30f642cf2939bbdac82ea0dd3071232670b5ab ]
 
-IMA allocates kernel virtual memory to carry forward the measurement
-list, from the current kernel to the next kernel on kexec system call,
-in ima_add_kexec_buffer() function.  This buffer is not freed before
-completing the kexec system call resulting in memory leak.
+If "clocks = <&xxx>" is specified from the CPU or Codec component
+device node, the clock is not getting enabled. Thus audio playback
+or capture fails.
 
-Add ima_buffer field in "struct kimage" to store the virtual address
-of the buffer allocated for the IMA measurement list.
-Free the memory allocated for the IMA measurement list in
-kimage_file_post_load_cleanup() function.
+Fix this by populating "simple_dai->clk" field when clocks property
+is specified from device node as well. Also tidy up by re-organising
+conditional statements of parsing logic.
 
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Suggested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-Fixes: 7b8589cc29e7 ("ima: on soft reboot, save the measurement list")
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Fixes: bb6fc620c2ed ("ASoC: simple-card-utils: add asoc_simple_card_parse_clk()")
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Link: https://lore.kernel.org/r/1612939421-19900-2-git-send-email-spujar@nvidia.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/kexec.h              | 5 +++++
- kernel/kexec_file.c                | 5 +++++
- security/integrity/ima/ima_kexec.c | 2 ++
- 3 files changed, 12 insertions(+)
+ sound/soc/generic/simple-card-utils.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 9e93bef529680..5f61389f5f361 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -300,6 +300,11 @@ struct kimage {
- 	/* Information for loading purgatory */
- 	struct purgatory_info purgatory_info;
- #endif
-+
-+#ifdef CONFIG_IMA_KEXEC
-+	/* Virtual address of IMA measurement buffer for kexec syscall */
-+	void *ima_buffer;
-+#endif
- };
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 6cada4c1e283b..ab31045cfc952 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -172,16 +172,15 @@ int asoc_simple_parse_clk(struct device *dev,
+ 	 *  or device's module clock.
+ 	 */
+ 	clk = devm_get_clk_from_child(dev, node, NULL);
+-	if (!IS_ERR(clk)) {
+-		simple_dai->sysclk = clk_get_rate(clk);
++	if (IS_ERR(clk))
++		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
  
- /* kexec interface functions */
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index b02086d704923..5c3447cf7ad58 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -166,6 +166,11 @@ void kimage_file_post_load_cleanup(struct kimage *image)
- 	vfree(pi->sechdrs);
- 	pi->sechdrs = NULL;
- 
-+#ifdef CONFIG_IMA_KEXEC
-+	vfree(image->ima_buffer);
-+	image->ima_buffer = NULL;
-+#endif /* CONFIG_IMA_KEXEC */
-+
- 	/* See if architecture has anything to cleanup post load */
- 	arch_kimage_file_post_load_cleanup(image);
- 
-diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
-index 206ddcaa5c67a..e29bea3dd4ccd 100644
---- a/security/integrity/ima/ima_kexec.c
-+++ b/security/integrity/ima/ima_kexec.c
-@@ -129,6 +129,8 @@ void ima_add_kexec_buffer(struct kimage *image)
- 		return;
++	if (!IS_ERR(clk)) {
+ 		simple_dai->clk = clk;
+-	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
++		simple_dai->sysclk = clk_get_rate(clk);
++	} else if (!of_property_read_u32(node, "system-clock-frequency",
++					 &val)) {
+ 		simple_dai->sysclk = val;
+-	} else {
+-		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
+-		if (!IS_ERR(clk))
+-			simple_dai->sysclk = clk_get_rate(clk);
  	}
  
-+	image->ima_buffer = kexec_buffer;
-+
- 	pr_debug("kexec measurement buffer for the loaded kernel at 0x%lx.\n",
- 		 kbuf.mem);
- }
+ 	if (of_property_read_bool(node, "system-clock-direction-out"))
 -- 
 2.27.0
 
