@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F62329964
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454AD3298CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347872AbhCBAMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:12:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
+        id S1346598AbhCAXta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:49:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239770AbhCASWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:22:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3FBD64F06;
-        Mon,  1 Mar 2021 17:48:36 +0000 (UTC)
+        id S238943AbhCASJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:09:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 001B16502F;
+        Mon,  1 Mar 2021 17:14:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620917;
-        bh=bIc0N4zkEpzsYuYllFhHuEhyHmNPdVnmw5J1qvhdeWw=;
+        s=korg; t=1614618880;
+        bh=obrB0jTfjVbySPO9TMpEj4XYzHadTDClrf21+n0vvs0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VO0mtLfvENyS7jmsf5ZcOOz0TwB0q7FKn8PP8eceD18c4oLPlFWh/CLLs8dMqw0qI
-         LZAQ1uWiReqyhvPXJO+1mwX7Cfro/Mn9G8XxdC6+m7gRjpH1DUi9FjZ2czzp3KJb0i
-         A2A+AbFptxLEhpT/xW0cJKHgx2OLyqTxkqGXV3Qk=
+        b=tNtqR7rXy9hnb8sg28HTVMWOrpyNg8MZM4yIR8B9U2S1pAzRiWBsCcffWcdFPIroO
+         XrFztDCLjKEwUb0iFZIgaVXiFQO5H1jz7JfUHiLAf/x+TV6X/Txr0AdN/hrv0slv4R
+         nv6KbR3uzQZ7bSkP+hDxwieIfzzBWHM0lHaXTc5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 326/775] dmaengine: owl-dma: Fix a resource leak in the remove function
-Date:   Mon,  1 Mar 2021 17:08:14 +0100
-Message-Id: <20210301161217.729343289@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Richard Weinberger <richard@nod.at>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 251/663] ubifs: Fix memleak in ubifs_init_authentication
+Date:   Mon,  1 Mar 2021 17:08:19 +0100
+Message-Id: <20210301161154.243335109@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 1f0a16f04113f9f0ab0c8e6d3abe661edab549e6 ]
+[ Upstream commit 11b8ab3836454a2600e396f34731e491b661f9d5 ]
 
-A 'dma_pool_destroy()' call is missing in the remove function.
-Add it.
+When crypto_shash_digestsize() fails, c->hmac_tfm
+has not been freed before returning, which leads
+to memleak.
 
-This call is already made in the error handling path of the probe function.
-
-Fixes: 47e20577c24d ("dmaengine: Add Actions Semi Owl family S900 DMA driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201212162535.95727-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 49525e5eecca5 ("ubifs: Add helper functions for authentication support")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/owl-dma.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ubifs/auth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/owl-dma.c b/drivers/dma/owl-dma.c
-index 9fede32641e9e..04202d75f4eed 100644
---- a/drivers/dma/owl-dma.c
-+++ b/drivers/dma/owl-dma.c
-@@ -1245,6 +1245,7 @@ static int owl_dma_remove(struct platform_device *pdev)
- 	owl_dma_free(od);
+diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
+index 8c50de693e1d4..50e88a2ab88ff 100644
+--- a/fs/ubifs/auth.c
++++ b/fs/ubifs/auth.c
+@@ -328,7 +328,7 @@ int ubifs_init_authentication(struct ubifs_info *c)
+ 		ubifs_err(c, "hmac %s is bigger than maximum allowed hmac size (%d > %d)",
+ 			  hmac_name, c->hmac_desc_len, UBIFS_HMAC_ARR_SZ);
+ 		err = -EINVAL;
+-		goto out_free_hash;
++		goto out_free_hmac;
+ 	}
  
- 	clk_disable_unprepare(od->clk);
-+	dma_pool_destroy(od->lli_pool);
- 
- 	return 0;
- }
+ 	err = crypto_shash_setkey(c->hmac_tfm, ukp->data, ukp->datalen);
 -- 
 2.27.0
 
