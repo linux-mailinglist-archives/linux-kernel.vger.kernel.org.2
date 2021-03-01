@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B92329926
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F393299AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347300AbhCAXwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:52:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
+        id S1348025AbhCBA2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:28:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239739AbhCASTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:19:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 107676534E;
-        Mon,  1 Mar 2021 17:44:55 +0000 (UTC)
+        id S240020AbhCAS2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:28:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 637296534F;
+        Mon,  1 Mar 2021 17:45:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620696;
-        bh=RdvySk7ALmoxG7/GzYcbVXfFdanWz8h3ZF6f4wQFiQs=;
+        s=korg; t=1614620705;
+        bh=GvD+pCt/CIV3sJKGMWi1Duu9EOg35dH4ZvSVMHmzIDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gckIrRMQbXVcb56LufOM2ZHAiFho65hK72PWWeVgCW9XMot20kNt64vNCmvKrlDq1
-         xYphWa2LSpTe4jhTVLi1hDs4YH6GHcOfJN0esNo/q9lOGkL9aTXdWFmflMuub1kIYL
-         OwXJYT63/rRAe69y7a/SZjKZ8wKdBT/IXTGUQ8w4=
+        b=WEL36D3X4jpQ+blqcBExuMj75FPp1Ymm71zXQFxBZPez1L67ca0IPGo5d3Dh8J2rV
+         LQ9N7DJDU92rXZitFuXXmt6I7peebFvfhFGAZB2q61HUmYVkmPeizepH7NJtjhFp+D
+         4/OjBz52Z9kkGuNf0r6ElT8Ikflrq6f3t0R5isPk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 247/775] mm: proc: Invalidate TLB after clearing soft-dirty page state
-Date:   Mon,  1 Mar 2021 17:06:55 +0100
-Message-Id: <20210301161213.833821440@linuxfoundation.org>
+Subject: [PATCH 5.11 250/775] ASoC: codecs: add missing max_register in regmap config
+Date:   Mon,  1 Mar 2021 17:06:58 +0100
+Message-Id: <20210301161213.984896645@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,76 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will Deacon <will@kernel.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 912efa17e5121693dfbadae29768f4144a3f9e62 ]
+[ Upstream commit e8820dbddbcad7e91daacf7d42a49d1d04a4e489 ]
 
-Since commit 0758cd830494 ("asm-generic/tlb: avoid potential double
-flush"), TLB invalidation is elided in tlb_finish_mmu() if no entries
-were batched via the tlb_remove_*() functions. Consequently, the
-page-table modifications performed by clear_refs_write() in response to
-a write to /proc/<pid>/clear_refs do not perform TLB invalidation.
-Although this is fine when simply aging the ptes, in the case of
-clearing the "soft-dirty" state we can end up with entries where
-pte_write() is false, yet a writable mapping remains in the TLB.
+For some reason setting max_register was missed from regmap_config.
+Without this cat /sys/kernel/debug/regmap/sdw:0:217:2010:0:1/range
+actually throws below Warning.
 
-Fix this by avoiding the mmu_gather API altogether: managing both the
-'tlb_flush_pending' flag on the 'mm_struct' and explicit TLB
-invalidation for the sort-dirty path, much like mprotect() does already.
+WARNING: CPU: 7 PID: 540 at drivers/base/regmap/regmap-debugfs.c:160
+ regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
+...
+Call trace:
+ regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
+ regmap_reg_ranges_read_file+0xc0/0x2e0
+ full_proxy_read+0x64/0x98
+ vfs_read+0xa8/0x1e0
+ ksys_read+0x6c/0x100
+ __arm64_sys_read+0x1c/0x28
+ el0_svc_common.constprop.3+0x6c/0x190
+ do_el0_svc+0x24/0x90
+ el0_svc+0x14/0x20
+ el0_sync_handler+0x90/0xb8
+ el0_sync+0x158/0x180
+...
 
-Fixes: 0758cd830494 ("asm-generic/tlb: avoid potential double flush”)
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Yu Zhao <yuzhao@google.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lkml.kernel.org/r/20210127235347.1402-2-will@kernel.org
+Fixes: a0aab9e1404a ("ASoC: codecs: add wsa881x amplifier support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210201161429.28060-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/proc/task_mmu.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wsa881x.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 602e3a52884d8..3cec6fbef725e 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1210,7 +1210,6 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
- 	struct mm_struct *mm;
- 	struct vm_area_struct *vma;
- 	enum clear_refs_types type;
--	struct mmu_gather tlb;
- 	int itype;
- 	int rv;
- 
-@@ -1249,7 +1248,6 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
- 			goto out_unlock;
- 		}
- 
--		tlb_gather_mmu(&tlb, mm, 0, -1);
- 		if (type == CLEAR_REFS_SOFT_DIRTY) {
- 			for (vma = mm->mmap; vma; vma = vma->vm_next) {
- 				if (!(vma->vm_flags & VM_SOFTDIRTY))
-@@ -1258,15 +1256,18 @@ static ssize_t clear_refs_write(struct file *file, const char __user *buf,
- 				vma_set_page_prot(vma);
- 			}
- 
-+			inc_tlb_flush_pending(mm);
- 			mmu_notifier_range_init(&range, MMU_NOTIFY_SOFT_DIRTY,
- 						0, NULL, mm, 0, -1UL);
- 			mmu_notifier_invalidate_range_start(&range);
- 		}
- 		walk_page_range(mm, 0, mm->highest_vm_end, &clear_refs_walk_ops,
- 				&cp);
--		if (type == CLEAR_REFS_SOFT_DIRTY)
-+		if (type == CLEAR_REFS_SOFT_DIRTY) {
- 			mmu_notifier_invalidate_range_end(&range);
--		tlb_finish_mmu(&tlb, 0, -1);
-+			flush_tlb_mm(mm);
-+			dec_tlb_flush_pending(mm);
-+		}
- out_unlock:
- 		mmap_write_unlock(mm);
- out_mm:
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index 4530b74f5921b..db87e07b11c94 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -640,6 +640,7 @@ static struct regmap_config wsa881x_regmap_config = {
+ 	.val_bits = 8,
+ 	.cache_type = REGCACHE_RBTREE,
+ 	.reg_defaults = wsa881x_defaults,
++	.max_register = WSA881X_SPKR_STATUS3,
+ 	.num_reg_defaults = ARRAY_SIZE(wsa881x_defaults),
+ 	.volatile_reg = wsa881x_volatile_register,
+ 	.readable_reg = wsa881x_readable_register,
 -- 
 2.27.0
 
