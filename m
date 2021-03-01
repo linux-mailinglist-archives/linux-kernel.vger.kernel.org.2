@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B072329102
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AB2329163
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243143AbhCAUSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 15:18:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35372 "EHLO mail.kernel.org"
+        id S241174AbhCAUZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:25:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236692AbhCAREW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:04:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9754D64FF4;
-        Mon,  1 Mar 2021 16:39:29 +0000 (UTC)
+        id S236460AbhCARGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:06:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8797064FF7;
+        Mon,  1 Mar 2021 16:39:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616770;
-        bh=NzDcQ8lTX9om9ZZH8fgDUHt2fkdvcrw0G/E9TltytjA=;
+        s=korg; t=1614616793;
+        bh=GwZ4R8K90JSCX+MbLBOortuC8ZzSK8lVI6D7XThw+OU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aJ7b6nh2mPW1E8wyrj5U+nIFPbXHUK5J4ngFES0wt8dh8JiF08KPdabx3mvcyyhQS
-         pwD5zkSQD2JV6nhTIyLS6NKVJgvOHV//ZfeYD2nLzA3dsYvKVReCx4e+neVmolykBz
-         c4qxeVzwqqjiQ/PeNzuteOMU7VZvz8kH6657qV4Q=
+        b=du8HVtWb/D/sK2hSywGctdtAaqwBRFK7sL6MMnSYzL7FoAFbo4BrqdQrdW8XPCvsN
+         5Eu0+vX3HEY1fT7shS8Gv1rBz7gxzxPVy+jOmjCV8lFWvjclRNMzLHv2rX4HiTIKu7
+         wUJZm+bNH9MR5Dv742ZfCKC1/F2mCY3ozHy9kwgw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mario Kleiner <mario.kleiner.de@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Luo Meng <luomeng12@huawei.com>,
+        Akihiro Tsukada <tskd08@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 088/247] drm/amd/display: Fix 10/12 bpc setup in DCE output bit depth reduction.
-Date:   Mon,  1 Mar 2021 17:11:48 +0100
-Message-Id: <20210301161035.992143519@linuxfoundation.org>
+Subject: [PATCH 4.19 090/247] media: qm1d1c0042: fix error return code in qm1d1c0042_init()
+Date:   Mon,  1 Mar 2021 17:11:50 +0100
+Message-Id: <20210301161036.087730247@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -41,56 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mario Kleiner <mario.kleiner.de@gmail.com>
+From: Luo Meng <luomeng12@huawei.com>
 
-[ Upstream commit 1916866dfa4aaceba1a70db83fde569387649d93 ]
+[ Upstream commit fcf8d018bdca0453b8d6359062e6bc1512d04c38 ]
 
-In set_clamp(), the comments and definitions for the COLOR_DEPTH_101010
-and COLOR_DEPTH_121212 cases directly contradict the code comment which
-explains how this should work, whereas the COLOR_DEPTH_888 case
-is consistent with the code comments. Comment says the bitmask should
-be chosen to align to the top-most 10 or 12 MSB's on a 14 bit bus, but
-the implementation contradicts that: 10 bit case sets a mask for 12 bpc
-clamping, whereas 12 bit case sets a mask for 14 bpc clamping.
+Fix to return a negative error code from the error handling case
+instead of 0 in function qm1d1c0042_init(), as done elsewhere
+in this function.
 
-Note that during my limited testing on DCE-8.3 (HDMI deep color)
-and DCE-11.2 (DP deep color), this didn't have any obvious ill
-effects, neither did fixing it change anything obvious for the
-better, so this fix may be inconsequential on DCE, and just
-reduce the confusion of innocent bystanders when reading the code
-and trying to investigate problems with 10 bpc+ output.
-
-Fixes: 4562236b3bc0 ("drm/amd/dc: Add dc display driver (v2)")
-
-Signed-off-by: Mario Kleiner <mario.kleiner.de@gmail.com>
-Cc: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: ab4d14528fdf ("[media] em28xx: add support for PLEX PX-BCUD (ISDB-S)")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Luo Meng <luomeng12@huawei.com>
+Acked-by: Akihiro Tsukada <tskd08@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dce/dce_transform.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/media/tuners/qm1d1c0042.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-index ab63d0d0304cb..6fd57cfb112f5 100644
---- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-@@ -429,12 +429,12 @@ static void set_clamp(
- 		clamp_max = 0x3FC0;
- 		break;
- 	case COLOR_DEPTH_101010:
--		/* 10bit MSB aligned on 14 bit bus '11 1111 1111 1100' */
--		clamp_max = 0x3FFC;
-+		/* 10bit MSB aligned on 14 bit bus '11 1111 1111 0000' */
-+		clamp_max = 0x3FF0;
- 		break;
- 	case COLOR_DEPTH_121212:
--		/* 12bit MSB aligned on 14 bit bus '11 1111 1111 1111' */
--		clamp_max = 0x3FFF;
-+		/* 12bit MSB aligned on 14 bit bus '11 1111 1111 1100' */
-+		clamp_max = 0x3FFC;
- 		break;
- 	default:
- 		clamp_max = 0x3FC0;
+diff --git a/drivers/media/tuners/qm1d1c0042.c b/drivers/media/tuners/qm1d1c0042.c
+index 83ca5dc047ea2..baa9950783b66 100644
+--- a/drivers/media/tuners/qm1d1c0042.c
++++ b/drivers/media/tuners/qm1d1c0042.c
+@@ -343,8 +343,10 @@ static int qm1d1c0042_init(struct dvb_frontend *fe)
+ 		if (val == reg_initval[reg_index][0x00])
+ 			break;
+ 	}
+-	if (reg_index >= QM1D1C0042_NUM_REG_ROWS)
++	if (reg_index >= QM1D1C0042_NUM_REG_ROWS) {
++		ret = -EINVAL;
+ 		goto failed;
++	}
+ 	memcpy(state->regs, reg_initval[reg_index], QM1D1C0042_NUM_REGS);
+ 	usleep_range(2000, 3000);
+ 
 -- 
 2.27.0
 
