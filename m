@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31411328133
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBC4328136
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236524AbhCAOpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:45:22 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:45772 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236497AbhCAOpG (ORCPT
+        id S236538AbhCAOpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:45:36 -0500
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:33310 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236512AbhCAOpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:45:06 -0500
-Received: by mail-ot1-f43.google.com with SMTP id d9so16610291ote.12;
-        Mon, 01 Mar 2021 06:44:50 -0800 (PST)
+        Mon, 1 Mar 2021 09:45:09 -0500
+Received: by mail-oi1-f179.google.com with SMTP id a13so18267357oid.0;
+        Mon, 01 Mar 2021 06:44:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=n+0MRcMClqJTsWrqj7q8LaJFXf/RAofYD+19AKoxa9k=;
-        b=siTM3F1Pc+BwWqlPBSn5muFLzB1ijqmQvU3Sn0RGImfzPDKDIbeYlrvydLKzxhIwAX
-         4NlqMM6DDAH9NBOVIy2clROMcRrvFD5nTAaX0EYc/NmLQcnwJO9LkU3+BPz0LCDxlfcv
-         3MOSeLgHUhbQ+SzMa1hThISQLgx63770/QcHg9TANhB5aQGxgujlpHjyPgLjR7qXj04F
-         4aEkS/LYS0dQvnXixoOe4i+dWd/9zyBG8zQWcGq8VEZJ2GkJkvEuw1Q77tvn3hj4lU+Z
-         fmP6W/k3jJ6rTOxLcXrIS7tk703P3GvItpVvEq6VLOHbQtrBoH7q5z4PI5HM6+HId5jE
-         GITQ==
-X-Gm-Message-State: AOAM533TxNhSjcbobA1CobcFXnZnfRARgXLUcpj18n+srjC+ahEgFpQR
-        26jlL2S1G7oh+2Evte79hAa3w1cx2A==
-X-Google-Smtp-Source: ABdhPJw3jjWkOsGOY59hbdzMvTj3pbAFkeKJLNy80BCa5WC9ZAQ/y8+VIkj4i1SdIGQi6uhwlE8w2A==
-X-Received: by 2002:a05:6830:4129:: with SMTP id w41mr13999061ott.332.1614609865079;
-        Mon, 01 Mar 2021 06:44:25 -0800 (PST)
+        bh=J2ZIXJIHgZRZeDGR4OI2DHoLCDtP7CHTCmJZimg406g=;
+        b=rMKnk/RZy0+YkBl2kZYXgtlSzcxGNgkluQn8mq2cSLXM6/whRHxK/gI+pKLQDNvEz9
+         JyMBrJYERbigwdwncQ+zqGCFMQNi76m6Jpyw8os1Nx2xOVnLX/wm378UD4juKIATQBc+
+         HyNZyTDiQUB7htcU9tLgcsZG06paxK4UXYuwhbLfv9ycQtohwiqJXxhzqxxCflmVfZY+
+         hhaKRbfhMdVNId2RDMXBB/J95XABVyadCJV+uqn6dWvMQcW04g92+mYR3Bl7E2J5E5r5
+         6lY87m962XU1/Ic2SnHw6BxnMYv8JSPXqqWrpoXWoruPUGH86XOfsnarKOwXu8HzKwgc
+         J6IA==
+X-Gm-Message-State: AOAM5329F88DEZ/BkPXwH1JNVAs73+aOgt8gEfSpyeivo/LmmM/1ENbC
+        BYDfE5Qz3gcXsgakFmqf8w==
+X-Google-Smtp-Source: ABdhPJwdfoSh104CVJJRArrFpm/81kQs1A+e8U2RsvVCJfYlkMgYgzy/vlQGFHJIYsxPcGk+LpsC5w==
+X-Received: by 2002:aca:5fd4:: with SMTP id t203mr11622994oib.121.1614609868060;
+        Mon, 01 Mar 2021 06:44:28 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h38sm3680265oth.53.2021.03.01.06.44.23
+        by smtp.gmail.com with ESMTPSA id n20sm1167413otj.3.2021.03.01.06.44.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 06:44:24 -0800 (PST)
-Received: (nullmailer pid 37864 invoked by uid 1000);
+        Mon, 01 Mar 2021 06:44:26 -0800 (PST)
+Received: (nullmailer pid 37862 invoked by uid 1000);
         Mon, 01 Mar 2021 14:44:21 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>
-Cc:     devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
-In-Reply-To: <1614593046-23832-1-git-send-email-kuldeep.singh@nxp.com>
-References: <1614593046-23832-1-git-send-email-kuldeep.singh@nxp.com>
-Subject: Re: [PATCH] dt-bindings: spi: Convert NXP flexspi to json schema
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     linux-arm-kernel@lists.infradead.org, mchehab@kernel.org,
+        festevam@gmail.com, linux-imx@nxp.com, robh+dt@kernel.org,
+        kernel@pengutronix.de, shawnguo@kernel.org, p.zabel@pengutronix.de,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        s.hauer@pengutronix.de, linux-rockchip@lists.infradead.org,
+        kernel@collabora.com, ezequiel@collabora.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        gregkh@linuxfoundation.org
+In-Reply-To: <20210226091128.14379-3-benjamin.gaignard@collabora.com>
+References: <20210226091128.14379-1-benjamin.gaignard@collabora.com> <20210226091128.14379-3-benjamin.gaignard@collabora.com>
+Subject: Re: [PATCH v2 2/5] dt-bindings: media: IMX8MQ VPU: document reset usage
 Date:   Mon, 01 Mar 2021 08:44:21 -0600
-Message-Id: <1614609861.083844.37863.nullmailer@robh.at.kernel.org>
+Message-Id: <1614609861.076244.37861.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Mar 2021 15:34:06 +0530, Kuldeep Singh wrote:
-> Convert the NXP FlexSPI binding to DT schema format using json-schema.
-> Also, update MAINTAINERS to reflect the change.
+On Fri, 26 Feb 2021 10:11:25 +0100, Benjamin Gaignard wrote:
+> Document IMX8MQ VPU bindings to add the phandle to the reset driver.
 > 
-> Signed-off-by: Kuldeep Singh <kuldeep.singh@nxp.com>
+> Provide an independent reset driver allow to the both VPUs to share
+> their control/reset hardware block. The reset driver replace what
+> was previously done be using the 'ctrl' registers inside the driver.
+> 
+> This breaks the compatibility between DTB and kernel but the driver
+> is still in staging directory and limited to IMX8MQ SoC.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 > ---
->  .../bindings/spi/nxp,spi-nxp-fspi.yaml        | 101 ++++++++++++++++++
->  .../devicetree/bindings/spi/spi-nxp-fspi.txt  |  42 --------
->  MAINTAINERS                                   |   2 +-
->  3 files changed, 102 insertions(+), 43 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
->  delete mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+>  .../devicetree/bindings/media/nxp,imx8mq-vpu.yaml     | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -70,15 +76,10 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml: properties:clocks:maxItems: False schema does not allow 2
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml: ignoring, error in schema: properties: clocks: maxItems
-warning: no schema found in file: ./Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.yaml
-Error: Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.example.dts:26.31-32 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:349: Documentation/devicetree/bindings/spi/nxp,spi-nxp-fspi.example.dt.yaml] Error 1
-make: *** [Makefile:1380: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.example.dt.yaml: video-codec@38300000: reg: [[942669824, 65536], [942735360, 65536], [942800896, 65536]] is too long
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
 
-See https://patchwork.ozlabs.org/patch/1445509
+See https://patchwork.ozlabs.org/patch/1444845
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
