@@ -2,57 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE68327778
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE5A327786
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhCAGUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 01:20:42 -0500
-Received: from www.zeus03.de ([194.117.254.33]:37308 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231742AbhCAGUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 01:20:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=ZIRmcC0q2JqUE7rjJIBbaLe/g2b
-        rlJMLVonof0TRhU4=; b=Y7F8lUqGuprerzJqDPrjX+UtqTtNKHuweK0HEAaxeV5
-        cZ2mWmIgmmd2eoUjSyg+aFi1ApPpmWHUUxQjVjWJ3L+sNgK15v9nNDJkkeAc4lQo
-        TVXE+gQR6SX8f2PCeeDnpyFyNTQhGvbUOt5jieDXAGpZNg2zNQFKo8vBfNPwYmO0
-        =
-Received: (qmail 486591 invoked from network); 1 Mar 2021 07:19:36 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 1 Mar 2021 07:19:36 +0100
-X-UD-Smtp-Session: l3s3148p1@mFPfmXO8POAgAwDPXwcTAEg0VdM7CcID
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
-        linux-renesas-soc@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: [PATCH] dts: remove c6x dts hard link file
-Date:   Mon,  1 Mar 2021 07:19:24 +0100
-Message-Id: <20210301061924.103145-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.30.0
+        id S231939AbhCAGZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 01:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231864AbhCAGZL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 01:25:11 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CADC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 22:24:29 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id d13-20020a17090abf8db02900c0590648b1so1902393pjs.1
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 22:24:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ArNP2uMW7gBd9O3E1At2VYbyrloUhhFWuEfRdcUZEjk=;
+        b=FmkE8GWV8yLmAy4FQqBaXkvB1sBv0RQ+xcane5Rs5Hhuz1tEJBH/X01FCxfS3oxZkR
+         jVL8zzVXmCvfOqg7kIhSZ0sPFgYq2/eAHQJGVs6Iv6Y8r1MR+LzS1SpJh7M9HkHaqZdk
+         /VjoRJgHDgOyH3AYuRAPnPlneUwZ9KE/MQbkyAQCFpZW17rhEc3FpJfx3qB7ogIBj/ZI
+         FpJKZrKsugP43BKNm96zoNPgBtsPOcjUhk6pLv2UagTvzgyltWaQ6l0kYoW3IXeYxDuD
+         hK7D1wt3himG81sb1Jpgi9YVhdc5tCS6BEiAvLAPvF7MU2ALb6hiEoowNrXu3VYSRfIa
+         Ff2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ArNP2uMW7gBd9O3E1At2VYbyrloUhhFWuEfRdcUZEjk=;
+        b=F8vWaFa2PQBTLgpb27LBQk/DBiEdkIJY9aumGtOnku/bplpqkph8gAtjyB8Q1Rjpxf
+         sJIlaXLzqO8LmPX74AkBhcohY5rEzrCJPUTGd2IhOb1nqlRHBH3uPbUsYSc8x34Fzj8y
+         tFMc1FomOWGOA187tNwGbfFRZpEbrexqYstkERZ39BTQkvFXLmiaDADVyaeRv3zw7KAS
+         qcHnMingC+nMR+Cn05TKekC5idHgoxxPGTvXDT5R1upuPSaEqw7pW+sswzxEdBnuGDZW
+         EUUZaSsu+BbikFKgJXmluT5InREa/aMBgP0UxheTJzjFuhv4Qg35Tpg06kb3GOGBwbQn
+         gqYg==
+X-Gm-Message-State: AOAM5309MmkyljvFcHQ43HXIFygHQXCwMbiNQo+dHPPka6AAmcS5KF7X
+        YIf8wx200g6RU/u0kyIc89TAZQ==
+X-Google-Smtp-Source: ABdhPJxK+/+grHuuVMH/Q+Maq6CdxUlgQreML/kvOOFZmo8+o1ttYQO6LKfeje2r9vpdaoQVSalAzQ==
+X-Received: by 2002:a17:90a:5302:: with SMTP id x2mr16503209pjh.232.1614579868545;
+        Sun, 28 Feb 2021 22:24:28 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.227])
+        by smtp.gmail.com with ESMTPSA id x6sm14304626pfd.12.2021.02.28.22.24.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Feb 2021 22:24:28 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     viro@zeniv.linux.org.uk, jack@suse.cz, amir73il@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
+        shakeelb@google.com, guro@fb.com, songmuchun@bytedance.com,
+        alex.shi@linux.alibaba.com, alexander.h.duyck@linux.intel.com,
+        chris@chrisdown.name, richard.weiyang@gmail.com, vbabka@suse.cz,
+        mathieu.desnoyers@efficios.com, posk@google.com, jannh@google.com,
+        iamjoonsoo.kim@lge.com, daniel.vetter@ffwll.ch, longman@redhat.com,
+        walken@google.com, christian.brauner@ubuntu.com,
+        ebiederm@xmission.com, keescook@chromium.org,
+        krisman@collabora.com, esyr@redhat.com, surenb@google.com,
+        elver@google.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com
+Subject: [PATCH 0/5] Use obj_cgroup APIs to change kmem pages
+Date:   Mon,  1 Mar 2021 14:22:22 +0800
+Message-Id: <20210301062227.59292-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The architecture has gone and indexing software like 'mkid' complains
-about the broken link.
+Since Roman series "The new cgroup slab memory controller" applied. All
+slab objects are changed via the new APIs of obj_cgroup. This new APIs
+introduce a struct obj_cgroup instead of using struct mem_cgroup directly
+to charge slab objects. It prevents long-living objects from pinning the
+original memory cgroup in the memory. But there are still some corner
+objects (e.g. allocations larger than order-1 page on SLUB) which are
+not charged via the API of obj_cgroup. Those objects (include the pages
+which are allocated from buddy allocator directly) are charged as kmem
+pages which still hold a reference to the memory cgroup.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- scripts/dtc/include-prefixes/c6x | 1 -
- 1 file changed, 1 deletion(-)
- delete mode 120000 scripts/dtc/include-prefixes/c6x
+E.g. We know that the kernel stack is charged as kmem pages because the
+size of the kernel stack can be greater than 2 pages (e.g. 16KB on x86_64
+or arm64). If we create a thread (suppose the thread stack is charged to
+memory cgroup A) and then move it from memory cgroup A to memory cgroup
+B. Because the kernel stack of the thread hold a reference to the memory
+cgroup A. The thread can pin the memory cgroup A in the memory even if
+we remove the cgroup A. If we want to see this scenario by using the
+following script. We can see that the system has added 500 dying cgroups.
 
-diff --git a/scripts/dtc/include-prefixes/c6x b/scripts/dtc/include-prefixes/c6x
-deleted file mode 120000
-index 49ded4cae2be..000000000000
---- a/scripts/dtc/include-prefixes/c6x
-+++ /dev/null
-@@ -1 +0,0 @@
--../../../arch/c6x/boot/dts
-\ No newline at end of file
+	#!/bin/bash
+
+	cat /proc/cgroups | grep memory
+
+	cd /sys/fs/cgroup/memory
+	echo 1 > memory.move_charge_at_immigrate
+
+	for i in range{1..500}
+	do
+		mkdir kmem_test
+		echo $$ > kmem_test/cgroup.procs
+		sleep 3600 &
+		echo $$ > cgroup.procs
+		echo `cat kmem_test/cgroup.procs` > cgroup.procs
+		rmdir kmem_test
+	done
+
+	cat /proc/cgroups | grep memory
+
+This patchset aims to make those kmem pages drop the reference to memory
+cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
+of the dying cgroups will not increase if we run the above test script.
+
+Patch 1-3 are using obj_cgroup APIs to charge kmem pages. The remote
+memory cgroup charing APIs is a mechanism to charge kernel memory to a
+given memory cgroup. So I also make it use the APIs of obj_cgroup.
+Patch 4-5 are doing this.
+
+Muchun Song (5):
+  mm: memcontrol: introduce obj_cgroup_{un}charge_page
+  mm: memcontrol: make page_memcg{_rcu} only applicable for non-kmem
+    page
+  mm: memcontrol: reparent the kmem pages on cgroup removal
+  mm: memcontrol: move remote memcg charging APIs to CONFIG_MEMCG_KMEM
+  mm: memcontrol: use object cgroup for remote memory cgroup charging
+
+ fs/buffer.c                          |  10 +-
+ fs/notify/fanotify/fanotify.c        |   6 +-
+ fs/notify/fanotify/fanotify_user.c   |   2 +-
+ fs/notify/group.c                    |   3 +-
+ fs/notify/inotify/inotify_fsnotify.c |   8 +-
+ fs/notify/inotify/inotify_user.c     |   2 +-
+ include/linux/bpf.h                  |   2 +-
+ include/linux/fsnotify_backend.h     |   2 +-
+ include/linux/memcontrol.h           | 109 +++++++++++---
+ include/linux/sched.h                |   6 +-
+ include/linux/sched/mm.h             |  30 ++--
+ kernel/bpf/syscall.c                 |  35 ++---
+ kernel/fork.c                        |   4 +-
+ mm/memcontrol.c                      | 276 ++++++++++++++++++++++-------------
+ mm/page_alloc.c                      |   4 +-
+ 15 files changed, 324 insertions(+), 175 deletions(-)
+
 -- 
-2.30.0
+2.11.0
 
