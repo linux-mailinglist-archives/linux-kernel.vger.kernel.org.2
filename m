@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E37103298DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1665D3299CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346727AbhCAXuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:50:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60794 "EHLO mail.kernel.org"
+        id S1376569AbhCBA33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239341AbhCASLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:11:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 280DC65023;
-        Mon,  1 Mar 2021 17:13:22 +0000 (UTC)
+        id S239929AbhCASbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:31:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2F0D64E4E;
+        Mon,  1 Mar 2021 17:47:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618802;
-        bh=o8ctnPxP1ET9DsnSSXBHqkqtsqOBpLiFKYGoHMlwa5g=;
+        s=korg; t=1614620867;
+        bh=4VMJuXLZYF6F6IUFnR/0lFgQ5BVHVgFfI5Mo/jnu8nI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l+kfzZb99t+iMYZN+99PISaAw6Ei1Nr21W1NvFmmma/A+wdHIsN4RfYGA9wOj4wM6
-         y+sDQ3TKcS6+kb4BmU/mdhkGyakC9otWpq6Mrk8+p6MdGl1bPPvTV6Xj1NFDSCo8Zl
-         QLh8L+LF7rdUGOxyqNhCVkw0hyXw9jz/KH/D9KeY=
+        b=S4j0fbRmld75NJGsYhAtAmzJn/fYwBPidgAVuShtViZRM5MvaBwhghqx+oA6gPO5p
+         mG7lurmeYFytdj3AOJNZpugCEY/j35iH2QOIsn2aaPRLu21RggYMWO0xC/7PS59vBh
+         A/MIcmqI7rn3ZLxrLYx3pQvbDVIC6mISPEeXamQ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Jun Nie <jun.nie@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 222/663] ASoC: qcom: lpass: Fix i2s ctl register bit map
-Date:   Mon,  1 Mar 2021 17:07:50 +0100
-Message-Id: <20210301161152.782345256@linuxfoundation.org>
+Subject: [PATCH 5.11 309/775] clk: meson: clk-pll: make "ret" a signed integer
+Date:   Mon,  1 Mar 2021 17:07:57 +0100
+Message-Id: <20210301161216.891583926@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jun Nie <jun.nie@linaro.org>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit 5e3277ab3baff6db96ae44adf6f85d6f0f6502cc ]
+[ Upstream commit 9e717285f0bd591d716fa0e7418f2cdaf756dd25 ]
 
-Fix bitwidth mapping in i2s ctl register per APQ8016 document.
+The error codes returned by meson_clk_get_pll_settings() are all
+negative. Make "ret" a signed integer in meson_clk_pll_set_rate() to
+make it match with the clk_ops.set_rate API as well as the data type
+returned by meson_clk_get_pll_settings().
 
-Fixes: b5022a36d28f ("ASoC: qcom: lpass: Use regmap_field for i2sctl and dmactl registers")
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
-Signed-off-by: Jun Nie <jun.nie@linaro.org>
-Link: https://lore.kernel.org/r/20210201132941.460360-1-jun.nie@linaro.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 8eed1db1adec6a ("clk: meson: pll: update driver for the g12a")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20201226121556.975418-3-martin.blumenstingl@googlemail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/lpass-apq8016.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/meson/clk-pll.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/lpass-apq8016.c b/sound/soc/qcom/lpass-apq8016.c
-index 0aedb3a0a798a..7c0e774ad0625 100644
---- a/sound/soc/qcom/lpass-apq8016.c
-+++ b/sound/soc/qcom/lpass-apq8016.c
-@@ -250,7 +250,7 @@ static struct lpass_variant apq8016_data = {
- 	.micmode		= REG_FIELD_ID(0x1000, 4, 7, 4, 0x1000),
- 	.micmono		= REG_FIELD_ID(0x1000, 3, 3, 4, 0x1000),
- 	.wssrc			= REG_FIELD_ID(0x1000, 2, 2, 4, 0x1000),
--	.bitwidth		= REG_FIELD_ID(0x1000, 0, 0, 4, 0x1000),
-+	.bitwidth		= REG_FIELD_ID(0x1000, 0, 1, 4, 0x1000),
+diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
+index 9404609b5ebfa..5b932976483fd 100644
+--- a/drivers/clk/meson/clk-pll.c
++++ b/drivers/clk/meson/clk-pll.c
+@@ -365,8 +365,9 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
+ {
+ 	struct clk_regmap *clk = to_clk_regmap(hw);
+ 	struct meson_clk_pll_data *pll = meson_clk_pll_data(clk);
+-	unsigned int enabled, m, n, frac = 0, ret;
++	unsigned int enabled, m, n, frac = 0;
+ 	unsigned long old_rate;
++	int ret;
  
- 	.rdma_dyncclk		= REG_FIELD_ID(0x8400, 12, 12, 2, 0x1000),
- 	.rdma_bursten		= REG_FIELD_ID(0x8400, 11, 11, 2, 0x1000),
+ 	if (parent_rate == 0 || rate == 0)
+ 		return -EINVAL;
 -- 
 2.27.0
 
