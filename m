@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF43932A029
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F396C32A030
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575421AbhCBD4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:07 -0500
-Received: from ms9.eaxlabs.cz ([147.135.177.209]:38660 "EHLO ms9.eaxlabs.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233254AbhCAWlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:41:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=kFsI78mY/ZRsnqmIBcnHXfh7nTVcK0J3fpNvfJ5QymU=;
-        b=FB6mU5YXCt5R4qgHXWiXGdw2IAjfsEkKwNHCKp8N+JrrsZKpQT34V8BhtNqd/cbpVZ/TzXpYvmACGINyRgpUokHqf6loTYJsHN4FMO0RZzcxxyNAB1x2EGaeoOQHlFQmoUUXoVBxqHHPZW6Sh6gL/oPmGUEqSto3uCN9LaZWOng=;
-Received: from [82.99.129.6] (helo=[10.76.6.112])
-        by ms9.eaxlabs.cz with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.84_2)
-        (envelope-from <devik@eaxlabs.cz>)
-        id 1lGrDH-0006uv-Ol; Mon, 01 Mar 2021 23:40:29 +0100
-Subject: Re: [PATCH v2 1/2] tty/serial: Add rx-tx-swap OF option to
- stm32-usart
-To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        id S1575478AbhCBD4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:56:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238022AbhCAWmv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 17:42:51 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3418C061756;
+        Mon,  1 Mar 2021 14:42:05 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id h4so12520427pgf.13;
+        Mon, 01 Mar 2021 14:42:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1ob8ilTZ7fP9ToPkDnHmOh76ZPv3/u0He/IF/nnRVeI=;
+        b=dJ8JWaVZFsf3n8+suDuOq51RKULy7AKpEAqg2ElrcKW2SaMeFxEV7kJFhIXDnbtG7u
+         ZTOfnCR7fKVsNsl1b8pzxq98AdlYZkCZtrdU0hAEwdALFNNAXNKTmxQSEjvIe2l65A/8
+         8QMUtNqrhLgPvQAcCEezG+XJtpbzOdl+YR5me1opaGBTgINZD/8kaeIRyXbFYHGIV3ON
+         Wxiqoa13IRrYdPmMmq2otpwBoghkSqGncqXStv39KwtHh0+16+g2eruCZLkrU+gLRYly
+         SLy2IyQq7COWBtMnXQBmj863uGmSxEk2wTo5F7IH8YNXIpqWg1gF894uP6vixQaxqgO+
+         aIVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1ob8ilTZ7fP9ToPkDnHmOh76ZPv3/u0He/IF/nnRVeI=;
+        b=pnAFH1jUYTfkLedgPonDtWdOoKihBZMPxkYGjzK5EJ28WpmKUGdrjQ9LA5CPxUD/ul
+         LdYBOLLBBWkmOEPu5cxKRPj2RdNtHjq6cWRn+v0m8WCAFtQ8z3pBthAcmjnDo4Q0u8T4
+         /Hza7d+7FZSttDdIE/WfQAY+A5wxCSoWoUH/sl3LbcyrTQ05no8xj+yVoQbXywwsREfL
+         8vQTxaZ2cwQJGHc1KWzMiBzS1d9cuyzpMamSlIjXvkw9HEd+NcAGGojEFism/tVNLCWc
+         KBb75YbP9zVHohGo7GZsUktCQXArR0lUyOD/poYlR8XmMcVzZthDR4wl9K1mjs6kwSXd
+         19Pg==
+X-Gm-Message-State: AOAM533qv5eTWuVe/FBUVBR+cpnvzbXwA/dgFtPtUyRfSYIak6o55xuM
+        PbxAWKsEkxZMEE9xsD15q43/pptHCT8=
+X-Google-Smtp-Source: ABdhPJzTWja55mzBZOErTVLVKh6gqoPvAaLHmLmtRFCk2u7wVugZR5fLk3b8x3mDi1xjlG44KiAf/Q==
+X-Received: by 2002:a62:8606:0:b029:1ed:55db:22b7 with SMTP id x6-20020a6286060000b02901ed55db22b7mr471641pfd.75.1614638524807;
+        Mon, 01 Mar 2021 14:42:04 -0800 (PST)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id m12sm447370pjk.47.2021.03.01.14.42.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 14:42:04 -0800 (PST)
+Subject: Re: [PATCH 5.10 000/661] 5.10.20-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Cc:     devicetree@vger.kernel.org,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-serial@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Le Ray <erwan.leray@st.com>
-References: <CAL_JsqK8+M=Vg0PiDXP2f1LrEp4hSVea6piAASMGu1H=pxme6Q@mail.gmail.com>
- <20210227164157.30971-1-devik@eaxlabs.cz>
- <439a0d7a-cc0e-764b-7ed8-668b5a85f4a7@foss.st.com>
-From:   Martin DEVERA <devik@eaxlabs.cz>
-Message-ID: <fbdce86c-a17f-7626-51e4-9e48ea25001e@eaxlabs.cz>
-Date:   Mon, 1 Mar 2021 23:40:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210301193642.707301430@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <7241e62c-3e7e-1c50-da45-c613fa1f0246@gmail.com>
+Date:   Mon, 1 Mar 2021 14:42:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <439a0d7a-cc0e-764b-7ed8-668b5a85f4a7@foss.st.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210301193642.707301430@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 11:28 AM, Fabrice Gasnier wrote:
-> On 2/27/21 5:41 PM, Martin Devera wrote:
->> STM32 F7/H7 usarts supports RX & TX pin swapping.
->> Add option to turn it on.
->> Tested on STM32MP157.
->>
->> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
->> ---
->>   drivers/tty/serial/stm32-usart.c | 3 ++-
->>   drivers/tty/serial/stm32-usart.h | 1 +
->>   2 files changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
->> index b3675cf25a69..3650c8798061 100644
->> --- a/drivers/tty/serial/stm32-usart.c
->> +++ b/drivers/tty/serial/stm32-usart.c
->> @@ -758,7 +758,7 @@ static void stm32_usart_set_termios(struct uart_port *port,
->>   	cr1 = USART_CR1_TE | USART_CR1_RE;
->>   	if (stm32_port->fifoen)
->>   		cr1 |= USART_CR1_FIFOEN;
->> -	cr2 = 0;
->> +	cr2 = stm32_port->swap ? USART_CR2_SWAP : 0;
-> Hi Martin,
->
-> Same could be done in the startup routine, that enables the port for
-> reception (as described in Documentation/driver-api/serial/driver.rst)
-Hello Fabrice,
+On 3/1/21 11:37 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.20 release.
+> There are 661 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 03 Mar 2021 19:34:53 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.20-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-I already incorporated all your comments but I'm struggling with the one 
-above.
-The code must be in stm32_usart_set_termios too, because CR2 is modified.
-What is the reason to have it in startup() ?
-Is it because USART can be started without calling set_termios at all ? Like
-to reuse bootloader's last settings ?
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-Thanks, Martin
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
