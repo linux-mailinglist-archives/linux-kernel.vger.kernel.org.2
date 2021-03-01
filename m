@@ -2,149 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B38E329813
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA5C3297DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345095AbhCAXLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:11:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235643AbhCAR4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:56:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B541565244;
-        Mon,  1 Mar 2021 17:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614619590;
-        bh=ZPzL+CqYu44aXu40y8ZCOMiRfRIMG8/oPBvPaObIr3s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gYEn5RJ3Mfef3sgRh5YiI/LAAWELFVlNj/dY0/vXvxoCAoO0pL2lHrjxzlwrHPRFd
-         neR7TH1HZw/KauAekCGdPoec131HBDpXB/fsYOcf42eBJtgiLWojlWLHe3rLPMef9+
-         eeACXdwae2/PtW4x2YtNN9cuVRVHruMcn8sc4FE+AWUUzc08RN6cQfnt1vdqLzvO9q
-         tZcN84awgW7nflb0yD/8WQ4rRWTbzDBaHVTnjhYgZyE0EW+yEAZ7Hl1ELrrRH9AN3E
-         h/XkOoF9kYxh9z5/wNnHB7794xu7buCpJQJVsX0WwvKESa8LdxwdANoz7WnwWWeDz5
-         fr7elrAv0AslA==
-Received: by mail-ej1-f52.google.com with SMTP id do6so29709889ejc.3;
-        Mon, 01 Mar 2021 09:26:29 -0800 (PST)
-X-Gm-Message-State: AOAM532nPTPb09YlehYLx/nyMb4SkG8I8KJkZWjxWtotVaINvnyhrCG/
-        pFxziMBrehQgMU+0BUaHwxQbiHoNLCkfMB9Brg==
-X-Google-Smtp-Source: ABdhPJyOAD53zp421XfNIf1VPhW454ubyJ8fUI5lsvwLhC4QNwKq1857Zj2X+boTjz10NPAFKYikcEssPBRwWcFgppU=
-X-Received: by 2002:a17:906:2312:: with SMTP id l18mr17383256eja.468.1614619588116;
- Mon, 01 Mar 2021 09:26:28 -0800 (PST)
+        id S244747AbhCAW7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:59:41 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13209 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238631AbhCARuJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:50:09 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603d29230000>; Mon, 01 Mar 2021 09:49:23 -0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
+ 2021 17:49:20 +0000
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
+ (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
+ 2021 17:46:46 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 1 Mar 2021 17:46:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EFVbnwnrw8qnly/zwDwfbu+B94qDVwSg3iuERtvKOGPh4Y22OMfahxfI9Ie74AvbWF1cwwWy/2Cj7tOcC0VaQUp7KB9Vd6mbI8x+LC2TGzspQMPlZ+XdlDeUyiJk69DJnftqYvmclYhrBGled0gZKsftrOTLi/fiO5N3S6IKPxu73MJ3pfZHJiDvCXcoF6R+orT/fEScVedMvxudcNLDQg2shcxfxPre+ViaV7YoEWhUd7t7Kuu7Kw/k7zGCy8vEVgjOT3fMUrvq1ibbZdxMGO//DhFbC85uCnK+B+aUxeunzv8M7PifAiLwQoKfjXUx4m0iMIahWfewzYK23SffMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y8pdUlkTt7laEoofqh+gCwYtoAFeW/XvvLozoOUJdds=;
+ b=IVoNxQsXijD7eGHGmSHm2UfKhgfr11UZ35gle62wNb/GyVSL7V4Sj9+Dl3t/RQZ2Ux0vmxjriE0Z9W1JmpU2TK/7R6zy1kV0fVtotjmRcYFhEM8ChXKQpoYrNFImoEYAQo10kOW/ZZvJH75HYXZ3JRO+hcDtmt8UlA6fazqpR0dDgqsnzGDLm4rHrm+AeAF1bMXXGiW97ydj17jLuWBRuaoZ4ay/xSO34x5zJehXPjRxXe/pySQvytUsdW++LPgAF332jW8oT954iJuM3ObEMC7c+LGUs61X3Y50emCCprRy7cpeUrXk3kIC6HJ/11Hk2hxmTh5nF6cJhTL5X+1KrA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3833.namprd12.prod.outlook.com (2603:10b6:5:1cf::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Mon, 1 Mar
+ 2021 17:46:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3890.026; Mon, 1 Mar 2021
+ 17:46:43 +0000
+Date:   Mon, 1 Mar 2021 13:46:42 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alistair Popple <apopple@nvidia.com>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <jhubbard@nvidia.com>,
+        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <hch@infradead.org>,
+        <daniel@ffwll.ch>
+Subject: Re: [PATCH v3 1/8] mm: Remove special swap entry functions
+Message-ID: <20210301174642.GP4247@nvidia.com>
+References: <20210226071832.31547-1-apopple@nvidia.com>
+ <20210226071832.31547-2-apopple@nvidia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210226071832.31547-2-apopple@nvidia.com>
+X-ClientProxiedBy: BL0PR0102CA0061.prod.exchangelabs.com
+ (2603:10b6:208:25::38) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-References: <20210225125921.13147-1-will@kernel.org> <CAL_JsqJX=TCCs7=gg486r9TN4NYscMTCLNfqJF9crskKPq-bTg@mail.gmail.com>
- <20210301144153.GA16716@willie-the-truck>
-In-Reply-To: <20210301144153.GA16716@willie-the-truck>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 1 Mar 2021 11:26:14 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ11D-7a3pwLTVd+rHjqDGBb=b8OU_a6h3Co-at+2qMtQ@mail.gmail.com>
-Message-ID: <CAL_JsqJ11D-7a3pwLTVd+rHjqDGBb=b8OU_a6h3Co-at+2qMtQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Fix CMDLINE_EXTEND handling for FDT "bootargs"
-To:     Will Deacon <will@kernel.org>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Daniel Walker <danielwa@cisco.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Max Uvarov <muvarov@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR0102CA0061.prod.exchangelabs.com (2603:10b6:208:25::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Mon, 1 Mar 2021 17:46:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lGmd0-0033mo-3R; Mon, 01 Mar 2021 13:46:42 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614620963; bh=Y8pdUlkTt7laEoofqh+gCwYtoAFeW/XvvLozoOUJdds=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=WQek7+9WJID/D6OIMheZEoOPDcWZGUB5ZPAr6KaS7u8L9vDATkZMXw5QBb4cV4wJ5
+         i1Fs1mBiT0/wKq7K+3SJ3e+x2Oj353Rh9acmIyg8whhpOPl2UiyiXKrZ0ppddJsCwd
+         wtW2k7cZy9GEYxh4c0wKaFoJ0qfsgg3XRYNzjhRQjSLYd3jvDbgL9A2+TdgShRCzNk
+         JLaAA6z/HVfn1lJz2LdyJNRTycw7yntrOgdwqJIFD3An5xh9AEO8heby/yOZE4OcGw
+         AmTK9kotlxGE41E7tqbBe9EM4esvk3ACNAyFCP5MbbpEs1CHImbQ2EIOHj60JN2c1h
+         On9fWJPWy2Z5A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+PPC folks and Daniel W
+On Fri, Feb 26, 2021 at 06:18:25PM +1100, Alistair Popple wrote:
+> Remove the migration and device private entry_to_page() and
+> entry_to_pfn() inline functions and instead open code them directly.
+> This results in shorter code which is easier to understand.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> ---
+>  arch/s390/mm/pgtable.c  |  2 +-
+>  fs/proc/task_mmu.c      | 23 +++++++------------
+>  include/linux/swap.h    |  4 ++--
+>  include/linux/swapops.h | 51 ++++-------------------------------------
+>  mm/hmm.c                |  5 ++--
+>  mm/memcontrol.c         |  2 +-
+>  mm/memory.c             | 10 ++++----
+>  mm/migrate.c            |  6 ++---
+>  mm/page_vma_mapped.c    |  6 ++---
+>  9 files changed, 30 insertions(+), 79 deletions(-)
 
-On Mon, Mar 1, 2021 at 8:42 AM Will Deacon <will@kernel.org> wrote:
->
-> On Mon, Mar 01, 2021 at 08:19:32AM -0600, Rob Herring wrote:
-> > On Thu, Feb 25, 2021 at 6:59 AM Will Deacon <will@kernel.org> wrote:
-> > > We recently [1] enabled support for CMDLINE_EXTEND on arm64, however
-> > > when I started looking at replacing Android's out-of-tree implementation [2]
-> >
-> > Did anyone go read the common, reworked version of all this I
-> > referenced that supports prepend and append. Here it is again[1].
-> > Maybe I should have been more assertive there and said 'extend' is
-> > ambiguous.
->
-> I tried reading that, but (a) most of the series is not in the mailing list
-> archives and (b) the patch that _is_ doesn't touch CMDLINE_EXTEND at all.
-> Right now the code in mainline does the opposite of what it's documented to
-> do.
+I wish you could come up with a more descriptive word that special
+here
 
-Actually, there is a newer version I found:
+What I understand is this is true when the swap_offset is a pfn?
 
-https://lore.kernel.org/linuxppc-dev/1551469472-53043-1-git-send-email-danielwa@cisco.com/
-https://lore.kernel.org/linuxppc-dev/1551469472-53043-2-git-send-email-danielwa@cisco.com/
-https://lore.kernel.org/linuxppc-dev/1551469472-53043-3-git-send-email-danielwa@cisco.com/
+> -static inline struct page *migration_entry_to_page(swp_entry_t entry)
+> -{
+> -	struct page *p = pfn_to_page(swp_offset(entry));
+> -	/*
+> -	 * Any use of migration entries may only occur while the
+> -	 * corresponding page is locked
+> -	 */
+> -	BUG_ON(!PageLocked(compound_head(p)));
+> -	return p;
 
-(Once again, there's some weird threading going on)
+And this constraint has been completely lost?
 
-> > > with the upstream version, I noticed that the two behave significantly
-> > > differently: Android follows the Kconfig help text of appending the
-> > > bootloader arguments to the kernel command line, whereas upstream appends
-> > > the kernel command line to the bootloader arguments. That is, except for
-> > > the EFI stub, which follows the documented behaviour.
-> > >
-> > > I think the documented behaviour is more useful, so this patch series
-> > > reworks the FDT code to follow that and updates the very recently merged
-> > > arm64 idreg early command-line parsing as well.
-> >
-> > I can just as easily argue that the kernel having the last say makes
-> > sense.
->
-> Dunno, I'd say that's what CMDLINE_FORCE is for. Plus you'd be arguing
-> against both the documentation and the EFI stub implementation.
+A comment in front of the is_special_entry explaining all the rule
+would help alot
 
-CMDLINE_FORCE is a complete override, not a merging of command lines.
+Transformation looks fine otherwise
 
-> > Regardless, I'm pretty sure there's someone out there relying on current
-> > behavior. What is the impact of this change to other arches?
->
-> On arm64, I doubt it, as Android is the main user of this (where it's been
-> supported for 9 years with the documented behaviour).
->
-> The other option, then, is reverting CMDLINE_EXTEND from arm64 until this is
-> figured out. I think that's preferable to having divergent behaviour.
->
-> As for other architectures, I think the ATAGs-based solution on arch/arm/
-> gets it right:
->
->   static int __init parse_tag_cmdline(const struct tag *tag)
->   {
->   #if defined(CONFIG_CMDLINE_EXTEND)
->           strlcat(default_command_line, " ", COMMAND_LINE_SIZE);
->           strlcat(default_command_line, tag->u.cmdline.cmdline,
->                   COMMAND_LINE_SIZE);
-
-The question is really whether any arm32 DT based platform depends on
-the current behavior. RiscV could also be relying on current behavior.
-Powerpc also uses the current behavior (and the documentation is also
-wrong there). Changing the behavior in the FDT code means the powerpc
-early PROM code and the FDT code do the opposite.
-
-Arm32 has had current behaviour for 5 years. Powerpc for 1.5 years and
-Risc-V for 2 years. Then there's MIPS which has its own Kconfig
-symbols for this and is its own kind of mess. Either we assume
-existing users didn't really care about the order or we have to
-support both prepend and append.
-
-> For now I think we have two options for arm64: either fix the fdt code,
-> or revert CMDLINE_EXTEND until the PREPEND/APPEND series is merged. Which
-> do you prefer?
-
-Like anything copied across arches, I want someone to look at this
-across all architectures and make this common instead of just copying
-to new arches. The prepend/append series is the closest we've come.
-
-Rob
+Jason
