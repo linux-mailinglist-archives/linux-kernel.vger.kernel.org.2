@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99783328F7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86097328FA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237482AbhCATwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:52:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
+        id S242438AbhCATxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:53:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233391AbhCAQ4y (ORCPT
+        with ESMTP id S236047AbhCAQ6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:56:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2849CC06178A;
-        Mon,  1 Mar 2021 08:56:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=0ZkLluOrTrBUf/RMiNaSJ0dAQzd0kY6PSCyH9eHVbi4=; b=XW1AovFNhTutWc2Rh7syqWIOHv
-        TFgukI3gFpCXM3Xe8jP0V26E69/AeNPDzc6ZFZcr+vSs1fp3y9C9eLCy77srQA7F7AF80T2qBddJE
-        3iGrZFciUfEE1Z1M9bP+76IAqm4y88SoD5k1PjR43xylCW9VkS+OchDRss1e1xUGPved0dswpG4d3
-        3X2XXOiptEylrHNTkZxWyWVCboEu0uPX3nowzT7La+6bT7Hrw3WHsF7wq5cmYX9+8fTg0MY04aEX0
-        CkRC7y/xJIAHWj15hmCVstTTc47G2h/+zklhDiaYGFYgpvtw+ge4EXeMuL+PIwrstUBObHlz2R9zm
-        OQM5ZsqQ==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lGlq2-0004e0-8u; Mon, 01 Mar 2021 16:56:06 +0000
-Subject: Re: [PATCH] drivers: scsi: qla4xxx: Fix a spello in the file
- qla4xxx/ql4_os.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210301131736.14236-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <e45931a9-b90e-8894-7081-61298c76abac@infradead.org>
-Date:   Mon, 1 Mar 2021 08:56:00 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 1 Mar 2021 11:58:10 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77C8C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 08:57:14 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id l7so7692597pfd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 08:57:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uSzfJ/93YMknjPDz4PQh9DdYSErIJ1NNCgMgGR8WQnk=;
+        b=Fx/29T8n9gPHuTiUoMGejmlBgDnStMl7VqnjLeAMCkhNZNdNhrrLidNaIeTH1pnieR
+         +6+TlTt9mH5E8D4hgHJKQYBqJ3iCSK+0+RUIEVFPg5AgWfrmm+bhDs3jagIWurja2Y2Q
+         dlyVbE5gU82jKsuLsjfqPPr3MQRDnNsP7lmTX6LVmc6uV6Jb/NZMyC68qCbotrSaSq9Y
+         jAyOzoqWtteKwF9Sr/eKbeBzux3jt7JJhNgyFsyyxHWQ4KTVRQZQzqJpsuTr+8bP13fT
+         K5CxXHW/1x88TX2W1Zz8ognjItQ94B/GF+NQQfovnpr7J1bapGOwic+9kj69K1J8ZNUz
+         FNVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uSzfJ/93YMknjPDz4PQh9DdYSErIJ1NNCgMgGR8WQnk=;
+        b=irD/aErsGICraaKYBcr9WMqe66vuH/qbme9asPVDEIXAvLQkOuBNshwqtPIqOdfazV
+         zvShilWvHM7dalDQ/R4LvmASTaC6pFjkfmxbE4Bv/ICVTopYFg0nOlf5tnvy4fVlUvE+
+         etRCtQUlJyWmKqFB4gHjcigyM7hWYRvdpzXyu0P3RcejalteogL2MtwMLgSTrFmLMwD3
+         0CT7uYvmLn8z1Iq9kcnEI2yu0GVmx+B+lb2OysMaYGwYOHpT+bIS1WtSKkIMgbXy3yf1
+         XrFB4KUr/4pGkRALDOmzfaiNo2xvM9ep7QlvQFKy89DxXcuLj9n9050SLG68bErcfZAz
+         nf3Q==
+X-Gm-Message-State: AOAM530A4/7dczXVVJdiX0Wm9V50SrM4jGniIuqbanmEnxrgtRIxXLya
+        pg9VBoTq36HnEbwBfwYM9baMWg==
+X-Google-Smtp-Source: ABdhPJy1kElmhwp8IZJODrLqbmCcdia6P1qMdzbtc4xrPIUFjBNDMIL/CpnUSfDz+MJCygAto620rQ==
+X-Received: by 2002:aa7:8ad5:0:b029:1df:5a5a:80e1 with SMTP id b21-20020aa78ad50000b02901df5a5a80e1mr15913031pfd.52.1614617833999;
+        Mon, 01 Mar 2021 08:57:13 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
+        by smtp.gmail.com with ESMTPSA id c4sm11339613pfo.2.2021.03.01.08.57.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 08:57:13 -0800 (PST)
+Date:   Mon, 1 Mar 2021 08:57:06 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH 12/25] x86/sgx: Add helper to update SGX_LEPUBKEYHASHn
+ MSRs
+Message-ID: <YD0c4rEAbx2y5CXT@google.com>
+References: <cover.1614590788.git.kai.huang@intel.com>
+ <6730fbd2f7b26532f09e5a5e416a58f03a66d222.1614590788.git.kai.huang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210301131736.14236-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6730fbd2f7b26532f09e5a5e416a58f03a66d222.1614590788.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 5:17 AM, Bhaskar Chowdhury wrote:
-> 
-> s/circuting/circuiting/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On Mon, Mar 01, 2021, Kai Huang wrote:
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 8c922e68274d..276220d0e4b5 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -696,6 +696,21 @@ static bool __init sgx_page_cache_init(void)
+>  	return true;
+>  }
+>  
+> +
+> +/*
+> + * Update the SGX_LEPUBKEYHASH MSRs to the values specified by caller.
+> + * Bare-metal driver requires to update them to hash of enclave's signer
+> + * before EINIT. KVM needs to update them to guest's virtual MSR values
+> + * before doing EINIT from guest.
+> + */
+> +void sgx_update_lepubkeyhash(u64 *lepubkeyhash)
+> +{
+> +	int i;
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Probably worth adding:
 
-However:
-In lots of your patches, the subject begins with drivers:
-and we don't need that.  See the SCSI qla4xxx driver patches, e.g.:
+	WARN_ON_ONCE(preemptible());
 
-$ git log --oneline drivers/scsi/qla4xxx/
-5b0ec4cf0494 scsi: qla4xxx: Use iscsi_is_session_online()
-35f1cad1f928 scsi: qla4xxx: Use standard SAM status definitions
-3a5b9fa2cc5f scsi: qla4xxx: Remove redundant assignment to variable rval
-014aced18aff scsi: qla4xxx: Remove in_interrupt() from qla4_82xx_rom_lock()
-3627668c2e2c scsi: qla4xxx: Remove in_interrupt() from qla4_82xx_idc_lock()
-a93c38353198 scsi: qla4xxx: Remove in_interrupt()
-cf4d4d8ebdb8 scsi: qla4xxx: Remove redundant assignment to variable rval
-5ccdd101351d scsi: qla4xxx: Fix inconsistent format argument type
-121432e87093 scsi: qla4xxx: Delete unneeded variable 'status' in qla4xxx_process_ddb_changed
-e3976af5a475 scsi/qla4xxx: Convert to SPDX license identifiers
-574918e69720 scsi: qla4xxx: Fix an error handling path in 'qla4xxx_get_host_stats()'
-d10d1df6301d scsi: qla4xxx: Rename function parameter descriptions
-6e3f4f68821b scsi: qla4xxx: Remove set but unused variable 'status'
-653557df36e0 scsi: qla4xxx: Supply description for 'code'
-f67e81641db7 scsi: qla4xxx: Remove three set but unused variables
-c0ad04b4b6d7 scsi: qla4xxx: Document qla4xxx_process_ddb()'s 'conn_err'
-fc5fba6e2ae2 scsi: qla4xxx: Repair function documentation headers
-cdeeb36d8f24 scsi: qla4xxx: Fix some kerneldoc parameter documentation issues
-67b8b93a559f scsi: qla4xxx: Fix incorrectly named function parameter
-0d5fea42989e scsi: qla4xxx: Fix-up incorrectly documented parameter
-
-> ---
->  drivers/scsi/qla4xxx/ql4_os.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-> index a4b014e1cd8c..716a5827588c 100644
-> --- a/drivers/scsi/qla4xxx/ql4_os.c
-> +++ b/drivers/scsi/qla4xxx/ql4_os.c
-> @@ -6961,7 +6961,7 @@ static int qla4xxx_sess_conn_setup(struct scsi_qla_host *ha,
->  	if (is_reset == RESET_ADAPTER) {
->  		iscsi_block_session(cls_sess);
->  		/* Use the relogin path to discover new devices
-> -		 *  by short-circuting the logic of setting
-> +		 *  by short-circuiting the logic of setting
->  		 *  timer to relogin - instead set the flags
->  		 *  to initiate login right away.
->  		 */
-> --
-
-
--- 
-~Randy
-
+> +
+> +	for (i = 0; i < 4; i++)
+> +		wrmsrl(MSR_IA32_SGXLEPUBKEYHASH0 + i, lepubkeyhash[i]);
+> +}
+> +
+>  static int __init sgx_init(void)
+>  {
+>  	int ret;
