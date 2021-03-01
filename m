@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5949E329C4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECBF329B8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380498AbhCBBxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:53:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48598 "EHLO mail.kernel.org"
+        id S1348921AbhCBB0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:26:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241864AbhCAT3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF69D65028;
-        Mon,  1 Mar 2021 17:45:23 +0000 (UTC)
+        id S239556AbhCATKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:10:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D87F365198;
+        Mon,  1 Mar 2021 17:11:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620724;
-        bh=frr9Q74IdcFPXnlqXg0YiQVMnua1tYVFcXImVBBl0h0=;
+        s=korg; t=1614618680;
+        bh=Xdp7RkbAmR5eSRDTFJg/JPFqPfFBtL/+DLixpAY9Mpg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=efgfKUNKlMqlzZOBn8b+yMbLFQkIYrFeg2eg85oX8J1SgCD+vqMhk0y4KhtY8kyAs
-         eRp3q5YTsMsYx4XxOyWUK5cyafdghI9sPURqvTLwgSFMsq5rQyh6HRqzjhcUZKpdqE
-         ZdtM9ShWPYCLn2KRggLIeavIoF9hSMfP92jdDyeo=
+        b=MDdJ5UTBm/BSzpuZv7CTPI6acKvr5D7erU2v+8viXa5noKMSZNiYEAwxl5sfLHFNJ
+         qCa5lAPGbFbnFOVZW0MVTmRBh8SeT8xPw0Xa7HbnrZa14JG3CbYKlrItPv8iAwegZc
+         9sFz7QSqpjYiL7ywyI0mBa0+V/e/P3UuqGVnByJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 256/775] ASoC: qcom: Fix typo error in HDMI regmap config callbacks
-Date:   Mon,  1 Mar 2021 17:07:04 +0100
-Message-Id: <20210301161214.285808997@linuxfoundation.org>
+Subject: [PATCH 5.10 178/663] media: ti-vpe: cal: fix write to unallocated memory
+Date:   Mon,  1 Mar 2021 17:07:06 +0100
+Message-Id: <20210301161150.593841931@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,89 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-[ Upstream commit e681b1a6d706b4e54c3847bb822531b4660234f3 ]
+[ Upstream commit 5a402af5e19f215689e8bf3cc244c21d94eba3c4 ]
 
-Had a typo in lpass platform driver that resulted in crash
-during suspend/resume with an HDMI dongle connected.
+The asd allocated with v4l2_async_notifier_add_fwnode_subdev() must be
+of size cal_v4l2_async_subdev, otherwise access to
+cal_v4l2_async_subdev->phy will go to unallocated memory.
 
-The regmap read/write/volatile regesters validation callbacks in lpass-cpu
-were using MI2S rdma_channels count instead of hdmi_rdma_channels.
-
-This typo error causing to read registers from the regmap beyond the length
-of the mapping created by ioremap().
-
-This fix avoids the need for reducing number hdmi_rdma_channels,
-which is done in
-commit 7dfe20ee92f6 ("ASoC: qcom: Fix number of HDMI RDMA channels on sc7180").
-So reverting the same.
-
-Fixes: 7cb37b7bd0d3c ("ASoC: qcom: Add support for lpass hdmi driver")
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Link: https://lore.kernel.org/r/20210202062727.22469-1-srivasam@codeaurora.org
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Tested-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 8fcb7576ad19 ("media: ti-vpe: cal: Allow multiple contexts per subdev notifier")
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/qcom/lpass-cpu.c    | 8 ++++----
- sound/soc/qcom/lpass-sc7180.c | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/media/platform/ti-vpe/cal.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 73ca24c0a08b7..8e5415c9234f1 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -594,7 +594,7 @@ static bool lpass_hdmi_regmap_writeable(struct device *dev, unsigned int reg)
- 			return true;
- 	}
+diff --git a/drivers/media/platform/ti-vpe/cal.c b/drivers/media/platform/ti-vpe/cal.c
+index 59a0266b1f399..2eef245c31a17 100644
+--- a/drivers/media/platform/ti-vpe/cal.c
++++ b/drivers/media/platform/ti-vpe/cal.c
+@@ -406,7 +406,7 @@ static irqreturn_t cal_irq(int irq_cal, void *data)
+  */
  
--	for (i = 0; i < v->rdma_channels; ++i) {
-+	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
- 		if (reg == LPAIF_HDMI_RDMACTL_REG(v, i))
- 			return true;
- 		if (reg == LPAIF_HDMI_RDMABASE_REG(v, i))
-@@ -640,7 +640,7 @@ static bool lpass_hdmi_regmap_readable(struct device *dev, unsigned int reg)
- 	if (reg == LPASS_HDMITX_APP_IRQSTAT_REG(v))
- 		return true;
+ struct cal_v4l2_async_subdev {
+-	struct v4l2_async_subdev asd;
++	struct v4l2_async_subdev asd; /* Must be first */
+ 	struct cal_camerarx *phy;
+ };
  
--	for (i = 0; i < v->rdma_channels; ++i) {
-+	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
- 		if (reg == LPAIF_HDMI_RDMACTL_REG(v, i))
- 			return true;
- 		if (reg == LPAIF_HDMI_RDMABASE_REG(v, i))
-@@ -667,7 +667,7 @@ static bool lpass_hdmi_regmap_volatile(struct device *dev, unsigned int reg)
- 	if (reg == LPASS_HDMI_TX_LEGACY_ADDR(v))
- 		return true;
- 
--	for (i = 0; i < v->rdma_channels; ++i) {
-+	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
- 		if (reg == LPAIF_HDMI_RDMACURR_REG(v, i))
- 			return true;
- 	}
-@@ -817,7 +817,7 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 		}
- 
- 		lpass_hdmi_regmap_config.max_register = LPAIF_HDMI_RDMAPER_REG(variant,
--					variant->hdmi_rdma_channels);
-+					variant->hdmi_rdma_channels - 1);
- 		drvdata->hdmiif_map = devm_regmap_init_mmio(dev, drvdata->hdmiif,
- 					&lpass_hdmi_regmap_config);
- 		if (IS_ERR(drvdata->hdmiif_map)) {
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 735c9dac28f26..8c168d3c589e9 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -171,7 +171,7 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_channels		= 5,
- 	.hdmi_rdma_reg_base		= 0x64000,
- 	.hdmi_rdma_reg_stride	= 0x1000,
--	.hdmi_rdma_channels		= 3,
-+	.hdmi_rdma_channels		= 4,
- 	.dmactl_audif_start	= 1,
- 	.wrdma_reg_base		= 0x18000,
- 	.wrdma_reg_stride	= 0x1000,
+@@ -472,7 +472,7 @@ static int cal_async_notifier_register(struct cal_dev *cal)
+ 		fwnode = of_fwnode_handle(phy->sensor_node);
+ 		asd = v4l2_async_notifier_add_fwnode_subdev(&cal->notifier,
+ 							    fwnode,
+-							    sizeof(*asd));
++							    sizeof(*casd));
+ 		if (IS_ERR(asd)) {
+ 			phy_err(phy, "Failed to add subdev to notifier\n");
+ 			ret = PTR_ERR(asd);
 -- 
 2.27.0
 
