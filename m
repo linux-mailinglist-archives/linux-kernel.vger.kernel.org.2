@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB293328B22
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AFF328B04
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240149AbhCAS3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:29:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41980 "EHLO mail.kernel.org"
+        id S239668AbhCAS1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:27:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234914AbhCAQio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:38:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A35A164F83;
-        Mon,  1 Mar 2021 16:28:02 +0000 (UTC)
+        id S234837AbhCAQie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:38:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FFB764F3D;
+        Mon,  1 Mar 2021 16:27:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616083;
-        bh=ehKP7QO5ImNt7GFIviZGnspxah34uqGCNzxVUXWwltE=;
+        s=korg; t=1614616028;
+        bh=SNrveaONStfhkIgdfPH3/YzlfHnCc4muwdickba39/o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IDqq0hBRgUZPtzbhrdF8NIx9VXcGxQmVHhKUJm1Yg56Xu1iTJAHwg7iotdWtsbby2
-         IIJwvQiey1LbG7gOX6MRNh0Zwe6Lks5eXrB0GkJ/jpzP3WVsK9AWdg6rWyaVlsfDrx
-         KQx2QC1v8+NBx5sqyWTj7z7Eugt/xQN0hpP/Ur4o=
+        b=mXadaVdJGsYQIhmT/dBrRaefJdMFdkTtvEekLW9B7bz/HnQazHnQpe1BCvp4bs1BC
+         y2V3m8PyZiz7N7nZbm+dVGU2VR+P5xV+iIMRqu5T9G0WmnDDnfPEkq4SuJ1jgLq+QZ
+         mkKdm9PymOVacWogM4Hy48upx36mxk8jtVE3s+us=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH 4.14 004/176] arm64: tegra: Add power-domain for Tegra210 HDA
-Date:   Mon,  1 Mar 2021 17:11:17 +0100
-Message-Id: <20210301161021.167463157@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 4.14 010/176] MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
+Date:   Mon,  1 Mar 2021 17:11:23 +0100
+Message-Id: <20210301161021.465841714@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -40,46 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sameer Pujar <spujar@nvidia.com>
+From: Alexander Lobakin <alobakin@pm.me>
 
-commit 1e0ca5467445bc1f41a9e403d6161a22f313dae7 upstream.
+commit 8ac7c87acdcac156670f9920c8acbd84308ff4b1 upstream.
 
-HDA initialization is failing occasionally on Tegra210 and following
-print is observed in the boot log. Because of this probe() fails and
-no sound card is registered.
+MIPS uses its own declaration of rwdata, and thus it should be kept
+in sync with the asm-generic one. Currently PAGE_ALIGNED_DATA() is
+missing from the linker script, which emits the following ld
+warnings:
 
-  [16.800802] tegra-hda 70030000.hda: no codecs found!
+mips-alpine-linux-musl-ld: warning: orphan section
+`.data..page_aligned' from `arch/mips/kernel/vdso.o' being placed
+in section `.data..page_aligned'
+mips-alpine-linux-musl-ld: warning: orphan section
+`.data..page_aligned' from `arch/mips/vdso/vdso-image.o' being placed
+in section `.data..page_aligned'
 
-Codecs request a state change and enumeration by the controller. In
-failure cases this does not seem to happen as STATETS register reads 0.
+Add the necessary declaration, so the mentioned structures will be
+placed in vmlinux as intended:
 
-The problem seems to be related to the HDA codec dependency on SOR
-power domain. If it is gated during HDA probe then the failure is
-observed. Building Tegra HDA driver into kernel image avoids this
-failure but does not completely address the dependency part. Fix this
-problem by adding 'power-domains' DT property for Tegra210 HDA. Note
-that Tegra186 and Tegra194 HDA do this already.
+ffffffff80630580 D __end_once
+ffffffff80630580 D __start___dyndbg
+ffffffff80630580 D __start_once
+ffffffff80630580 D __stop___dyndbg
+ffffffff80634000 d mips_vdso_data
+ffffffff80638000 d vdso_data
+ffffffff80638580 D _gp
+ffffffff8063c000 T __init_begin
+ffffffff8063c000 D _edata
+ffffffff8063c000 T _sinittext
 
-Fixes: 742af7e7a0a1 ("arm64: tegra: Add Tegra210 support")
-Depends-on: 96d1f078ff0 ("arm64: tegra: Add SOR power-domain for Tegra210")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+->
+
+ffffffff805a4000 D __end_init_task
+ffffffff805a4000 D __nosave_begin
+ffffffff805a4000 D __nosave_end
+ffffffff805a4000 d mips_vdso_data
+ffffffff805a8000 d vdso_data
+ffffffff805ac000 D mmlist_lock
+ffffffff805ac080 D tasklist_lock
+
+Fixes: ebb5e78cc634 ("MIPS: Initial implementation of a VDSO")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Cc: stable@vger.kernel.org # 4.4+
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/nvidia/tegra210.dtsi |    1 +
+ arch/mips/kernel/vmlinux.lds.S |    1 +
  1 file changed, 1 insertion(+)
 
---- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-@@ -810,6 +810,7 @@
- 			 <&tegra_car 128>, /* hda2hdmi */
- 			 <&tegra_car 111>; /* hda2codec_2x */
- 		reset-names = "hda", "hda2hdmi", "hda2codec_2x";
-+		power-domains = <&pd_sor>;
- 		status = "disabled";
- 	};
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -93,6 +93,7 @@ SECTIONS
  
+ 		INIT_TASK_DATA(THREAD_SIZE)
+ 		NOSAVE_DATA
++		PAGE_ALIGNED_DATA(PAGE_SIZE)
+ 		CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+ 		READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+ 		DATA_DATA
 
 
