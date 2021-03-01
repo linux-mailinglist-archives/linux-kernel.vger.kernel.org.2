@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAE1328E60
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F8A328E62
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241774AbhCAT3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:29:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44236 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235820AbhCAQxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:53:02 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614617536; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=U+5ZpAg7k3GbYMv33RTf8RSn8xdW5qBDE9NV7DZ/Z9o=;
-        b=rNwQ0jFHFzkq2MlfMI6+lmnqz7EbgnPPXTLiZ43kunSCGpzEFxBCbAX4N+c2fsPhuxaHld
-        PV7O9RUWl1e1CP+1nLLPzo+42nCvOvSiRmlGAF9r/9dAihywK29Kko26TxEQa0KPaZcsOu
-        eHomxFWrS1Aiol/K/17pi7lYBwFN28s=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9EEC8ADDD;
-        Mon,  1 Mar 2021 16:52:16 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 00E44DA7AA; Mon,  1 Mar 2021 17:50:21 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org,
-        ira.weiny@intel.com, linux-mm@kvack.org
-Subject: [GIT PULL] Kmap conversions for 5.12, take 2
-Date:   Mon,  1 Mar 2021 17:50:13 +0100
-Message-Id: <cover.1614616683.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
+        id S241811AbhCAT3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:29:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50067 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235838AbhCAQxE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:53:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614617497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UgPyarlr6W1bLi3oYMeukIfXXQreFYTHjI6/bdnuDIM=;
+        b=Mcl6V6W+GBThtorJZ+TEzWAIETqTMxviQzJPPuG1Dff63vGL2uPao8Sv3zcCs3KQiMPiV8
+        i6cBvyOzXBKiqjgFlpLUrC4VcurctZIqf3Zjoh+UhLlmntODpwudGppn9x5e8r557Am9Do
+        YvMfVc7mGZ4yR2Sy/ywMflCagxpAtCg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-364-p_Wd3qiHPP-YujrgL27ewA-1; Mon, 01 Mar 2021 11:51:36 -0500
+X-MC-Unique: p_Wd3qiHPP-YujrgL27ewA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2CE950742;
+        Mon,  1 Mar 2021 16:51:34 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.81])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A0B4D10013C1;
+        Mon,  1 Mar 2021 16:51:32 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon,  1 Mar 2021 17:51:34 +0100 (CET)
+Date:   Mon, 1 Mar 2021 17:51:31 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+Message-ID: <20210301165130.GA5351@redhat.com>
+References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Andy,
 
-this pull request contains changes regarding kmap API use and eg.
-conversion from kmap_atomic to kmap_local_page.
+sorry for delay.
 
-Changes against v1 [1]:
+On 02/23, Andy Lutomirski wrote:
+>
+> A while back, I let myself be convinced that kprobes genuinely need to
+> single-step the kernel on occasion, and I decided that this sucked but
+> I could live with it.  it would, however, be Really Really Nice (tm)
+> if we could have a rule that anyone running x86 Linux who single-steps
+> the kernel (e.g. kgdb and nothing else) gets to keep all the pieces
+> when the system falls apart around them.  Specifically, if we don't
+> allow kernel single-stepping and if we suitably limit kernel
+> instruction breakpoints (the latter isn't actually a major problem),
+> then we don't really really need to use IRET to return to the kernel,
+> and that means we can avoid some massive NMI nastiness.
 
-- dropped patches using zero_user
-- retested with my regular fstests-based workloads over the weekend
+Not sure I understand you correctly, I know almost nothing about low-level
+x86  magic.
 
-I'm keeping the original merge changelog as it seems to apply to v2 as
-well.
+But I guess this has nothing to do with uprobes, they do not single-step
+in kernel mode, right?
 
-Please pull, thanks.
+> Uprobes seem to single-step user code for no discernable reason.
+> (They want to trap after executing an out of line instruction, AFAICT.
+> Surely INT3 or even CALL after the out-of-line insn would work as well
+> or better.)
 
-[1] https://lore.kernel.org/lkml/cover.1614090658.git.dsterba@suse.com/
+Uprobes use single-step from the very beginning, probably because this
+is the most simple and "standard" way to implement xol.
 
-The API belongs to memory management but to save cross-tree dependency
-headaches we've agreed to take it through the btrfs tree because there
-are some trivial conversions possible, while the rest will need some
-time and getting the easy cases out of the way would be convenient.
+And please note that CALL/JMP/etc emulation was added much later to fix the
+problems with non-canonical addresses, and this emulation it still incomplete.
 
-The final patchset arrived shortly before merge window, which is not
-perfect, but given that it's straightforward I don't think it's too
-risky.
+Oleg.
 
-I've added it to my for-next branch and it's been in linux-next for more
-than a week.  Meanwhile I've been testing it among my regular branches
-with additional MM related debugging options.
-
-The changes can be grouped:
-
-- function exports, new helpers
-
-- new VM_BUG_ON for additional verification; it's been discussed if it
-  should be VM_BUG_ON or BUG_ON, the former was chosen due to
-  performance reasons
-
-- code replaced by relevant helpers
-
-----------------------------------------------------------------
-The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
-
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git kmap-conversion-for-5.12
-
-for you to fetch changes up to 80cc83842394e5ad3e93487359106aab3420bcb7:
-
-  btrfs: use copy_highpage() instead of 2 kmaps() (2021-02-26 12:45:15 +0100)
-
-----------------------------------------------------------------
-Ira Weiny (6):
-      mm/highmem: Lift memcpy_[to|from]_page to core
-      mm/highmem: Convert memcpy_[to|from]_page() to kmap_local_page()
-      mm/highmem: Introduce memcpy_page(), memmove_page(), and memset_page()
-      mm/highmem: Add VM_BUG_ON() to mem*_page() calls
-      btrfs: use memcpy_[to|from]_page() and kmap_local_page()
-      btrfs: use copy_highpage() instead of 2 kmaps()
-
- fs/btrfs/compression.c  |  6 ++----
- fs/btrfs/lzo.c          |  4 ++--
- fs/btrfs/raid56.c       | 10 +--------
- fs/btrfs/reflink.c      |  6 +-----
- fs/btrfs/send.c         |  7 ++-----
- fs/btrfs/zlib.c         |  5 ++---
- fs/btrfs/zstd.c         |  6 ++----
- include/linux/highmem.h | 56 +++++++++++++++++++++++++++++++++++++++++++++++++
- lib/iov_iter.c          | 14 -------------
- 9 files changed, 68 insertions(+), 46 deletions(-)
