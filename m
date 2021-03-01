@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668CB329BE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B40329C13
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235740AbhCBBim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:38:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45078 "EHLO mail.kernel.org"
+        id S1347626AbhCBBrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:47:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241367AbhCATUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:20:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A04E6528C;
-        Mon,  1 Mar 2021 17:31:28 +0000 (UTC)
+        id S241559AbhCATYN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:24:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BC1D6512E;
+        Mon,  1 Mar 2021 17:03:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619889;
-        bh=vbhUR/A4No+Gdh79vv14FfoQRNr1mpAYBxH2HMMg3h4=;
+        s=korg; t=1614618217;
+        bh=KiPz5d8keEHTvz15eabUZwvjxe7M1UPtTCLWhmaDE/c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gEiGdDWCX9bFoFlTM+hhj9HwHGj1s1XyZ/Ma7qciLhVaUY/YBvCN/SJRtsX4wHH4n
-         pyBh+ltxnNkE/MKhYIuLZm8iaPYXLRVfrv2KFDgXOWqUFOyI0e+1cGZuDgALAd16pP
-         9p4XAO0fa8h3RHiCnJkgK2KnN0ixK64nZA3t+30U=
+        b=wDxFWw4Bl4UiTWYB2PaYOwtgM+9maVeGjemEmEMCUCjT21V0mifewM6d63a3ROx82
+         dk9m1swQX1B3vzL/nare0qHtXdco6A+OJcKXtVt05l/mSwdzw6vo11svlq9/E5KtpY
+         x8kVSgNsBA6tbmmXSDCXBV/TulW6dWGCZNR0O6Q4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 5.10 616/663] mfd: gateworks-gsc: Fix interrupt type
-Date:   Mon,  1 Mar 2021 17:14:24 +0100
-Message-Id: <20210301161212.322709976@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.4 323/340] dm writecache: fix writing beyond end of underlying device when shrinking
+Date:   Mon,  1 Mar 2021 17:14:27 +0100
+Message-Id: <20210301161104.198664803@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Harvey <tharvey@gateworks.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-commit 8d9bf3c3e1451fc8de7b590040a868ade26d6b22 upstream.
+commit 4134455f2aafdfeab50cabb4cccb35e916034b93 upstream.
 
-The Gateworks System Controller has an active-low interrupt.
-Fix the interrupt request type.
+Do not attempt to write any data beyond the end of the underlying data
+device while shrinking it.
 
-Cc: <stable@vger.kernel.org>
-Fixes: d85234994b2f ("mfd: Add Gateworks System Controller core driver")
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+The DM writecache device must be suspended when the underlying data
+device is shrunk.
+
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mfd/gateworks-gsc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm-writecache.c |   18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/drivers/mfd/gateworks-gsc.c
-+++ b/drivers/mfd/gateworks-gsc.c
-@@ -234,7 +234,7 @@ static int gsc_probe(struct i2c_client *
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -142,6 +142,7 @@ struct dm_writecache {
+ 	size_t metadata_sectors;
+ 	size_t n_blocks;
+ 	uint64_t seq_count;
++	sector_t data_device_sectors;
+ 	void *block_start;
+ 	struct wc_entry *entries;
+ 	unsigned block_size;
+@@ -918,6 +919,8 @@ static void writecache_resume(struct dm_
  
- 	ret = devm_regmap_add_irq_chip(dev, gsc->regmap, client->irq,
- 				       IRQF_ONESHOT | IRQF_SHARED |
--				       IRQF_TRIGGER_FALLING, 0,
-+				       IRQF_TRIGGER_LOW, 0,
- 				       &gsc_irq_chip, &irq_data);
- 	if (ret)
- 		return ret;
+ 	wc_lock(wc);
+ 
++	wc->data_device_sectors = i_size_read(wc->dev->bdev->bd_inode) >> SECTOR_SHIFT;
++
+ 	if (WC_MODE_PMEM(wc)) {
+ 		persistent_memory_invalidate_cache(wc->memory_map, wc->memory_map_size);
+ 	} else {
+@@ -1488,6 +1491,10 @@ static bool wc_add_block(struct writebac
+ 	void *address = memory_data(wc, e);
+ 
+ 	persistent_memory_flush_cache(address, block_size);
++
++	if (unlikely(bio_end_sector(&wb->bio) >= wc->data_device_sectors))
++		return true;
++
+ 	return bio_add_page(&wb->bio, persistent_memory_page(address),
+ 			    block_size, persistent_memory_page_offset(address)) != 0;
+ }
+@@ -1559,6 +1566,9 @@ static void __writecache_writeback_pmem(
+ 		if (writecache_has_error(wc)) {
+ 			bio->bi_status = BLK_STS_IOERR;
+ 			bio_endio(bio);
++		} else if (unlikely(!bio_sectors(bio))) {
++			bio->bi_status = BLK_STS_OK;
++			bio_endio(bio);
+ 		} else {
+ 			submit_bio(bio);
+ 		}
+@@ -1602,6 +1612,14 @@ static void __writecache_writeback_ssd(s
+ 			e = f;
+ 		}
+ 
++		if (unlikely(to.sector + to.count > wc->data_device_sectors)) {
++			if (to.sector >= wc->data_device_sectors) {
++				writecache_copy_endio(0, 0, c);
++				continue;
++			}
++			from.count = to.count = wc->data_device_sectors - to.sector;
++		}
++
+ 		dm_kcopyd_copy(wc->dm_kcopyd, &from, 1, &to, 0, writecache_copy_endio, c);
+ 
+ 		__writeback_throttle(wc, wbl);
 
 
