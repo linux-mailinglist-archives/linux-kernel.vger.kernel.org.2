@@ -2,89 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B360332829B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CCD32829E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 16:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237306AbhCAPfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 10:35:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237280AbhCAPfD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 10:35:03 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D836AC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 07:34:21 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id s7so6753308qkg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 07:34:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8o5wiaij5UYSXhiWC+bZXUTl/d5DaYIBBJW4hei8xPE=;
-        b=bVPo7AsBkD8R8JFcQf2asAV0d3tEbYslpk2Yv0YTGryVMqGr2P4So9l4teAnJFOKJ6
-         BlJDhvCnEl1yP771vvgsFpYf7vvL+VumPV36cJbu/7GVpkeXNcKA0WUMXxb+jhiUBb4o
-         KRQosN1OBQYrI+Jz4s2oW2UYqdAkal06R5Ys6XwZTSCFA9F7vdBRT0qkoqruVI8aEvMm
-         oIlmeA74uhxT0FEmRu19flm3kWhe7UjiRkCHiRnW37RxKBmcoXUit723M7EQjqbTd9BU
-         C3gLq4nzI3Eta1hUvlnpF7wUImXHgacyGFyMejJxYI6zIRuZfPUGBzFiF1Afg/g9gc/e
-         bCqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8o5wiaij5UYSXhiWC+bZXUTl/d5DaYIBBJW4hei8xPE=;
-        b=mRTv3nMfDOKdbYSkPOHL7ZAaBrfNBhkd+AiBM1NNISfT7F/upjS9vwX9LL4WbV99pJ
-         5lL1NxpiHBaLFTvuwN2HKgHpQtqEdtcIDd2O63YQk33T6WkdpJtzNVGV8GVxcf0p2Vko
-         xSgqeDFIxx6Fy5kNrfnZPFQynaZABoON6pM1KsRLjumAWozC43HlIgDbWXirLlNz1X4u
-         1WIFrIQywBV+liNBVxHHqb1UI/FelttMdCbRn23P8I7UHKKdyTuGa8/d/ovs4RfnWF6h
-         WPSCofDkr7YPSSll3JSzOWJ1KaidM4zarSjYD6jZD4fohYZTHoStuUqTa2kVZM0IsMyj
-         qzkQ==
-X-Gm-Message-State: AOAM5330A1K6N6VijThCcR8dft9uf4GAtsdjlxnBeFEq5S1JzqU3dCYd
-        r1Qy6VwgG+ohQNnxc8MBe/ACWnsL+e0TXEE99bioWw==
-X-Google-Smtp-Source: ABdhPJxo/QBWJu3JxBMIxRYvNVb7rwJ/f/Rz49LoILx00gkog4kprX4rsfblT5OYcgYiAqe4m6P1J3ezhcTLqoLF2t4=
-X-Received: by 2002:a37:8cd:: with SMTP id 196mr14474597qki.434.1614612861002;
- Mon, 01 Mar 2021 07:34:21 -0800 (PST)
+        id S237310AbhCAPfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 10:35:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237298AbhCAPf1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 10:35:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8393600CF;
+        Mon,  1 Mar 2021 15:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614612886;
+        bh=Psb19aCJa1XXoKCEirAWxvB6lyGvYkploMB0td3VfyM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=K1WusRT4Ojy3cEw3dnO53h++h9o5qbISLepa1U4YYuYgB8SOs/aB1ClDpWUp4rF5W
+         Dg9G6WBdrCvLhWEPZwWXriUPv7Ypc4db0i95YOA1h3nJAyM3uJ5jGyQz3iUPC3iB27
+         M0fOtIqdgPuoCpZVAVZzWT3W+YL7tzEnhDHi+R9y7eh8bbob37AjTS22K8gRCO4cm2
+         CokzZfyu7QcCMln2BScoJrCsoxzIuG9gUzzmx3PLYn/OSONRLVoLjx4ThVjNnIkyvw
+         QroLMMC4cYOdRuU5EH9n5JDdWq73xwkSS2kuNde7eXQv6vNNnUzpH2Al81XyjuRNPy
+         pjK4EKPkmtVWQ==
+Date:   Mon, 1 Mar 2021 16:34:41 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 4/4] HID: i2c-hid: acpi: Drop redundant ACPI_PTR()
+In-Reply-To: <CAO-hwJLWbsj4kDkn3TKdEW0mDv6XdafQEaheCCC0Nyq3=YaOYQ@mail.gmail.com>
+Message-ID: <nycvar.YFH.7.76.2103011633490.12405@cbobk.fhfr.pm>
+References: <20210226193225.47129-1-andriy.shevchenko@linux.intel.com> <20210226193225.47129-4-andriy.shevchenko@linux.intel.com> <CAO-hwJLWbsj4kDkn3TKdEW0mDv6XdafQEaheCCC0Nyq3=YaOYQ@mail.gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20210212192658.3476137-1-dmitry.baryshkov@linaro.org> <YCeM+0JUEPQQkGsF@kroah.com>
-In-Reply-To: <YCeM+0JUEPQQkGsF@kroah.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 1 Mar 2021 18:34:10 +0300
-Message-ID: <CAA8EJpo-U74KAyoHY=9wutk=iCOBMv6T1Ez-MEogYdPE6X1yCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] misc: fastrpc: restrict user apps from sending kernel
- RPC messages
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 13 Feb 2021 at 11:25, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Feb 12, 2021 at 10:26:58PM +0300, Dmitry Baryshkov wrote:
-> > Verify that user applications are not using the kernel RPC message
-> > handle to restrict them from directly attaching to guest OS on the
-> > remote subsystem. This is a port of CVE-2019-2308 fix.
->
-> A port of the fix of what to what?
+On Mon, 1 Mar 2021, Benjamin Tissoires wrote:
 
-I'm sorry for the confusion. It is a port of the original
-Qualcomm/CodeAurora fix to the upstream driver.
+> Hi,
+> 
+> On Fri, Feb 26, 2021 at 8:34 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > The driver depends on ACPI, ACPI_PTR() resolution is always the same.
+> > Otherwise a compiler may produce a warning.
+> >
+> > That said, the rule of thumb either ugly ifdeffery with ACPI_PTR or
+> > none should be used in a driver.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Thanks a lot for the series. This indeed cleans things up.
 
-See https://source.codeaurora.org/quic/la/kernel/msm-4.9/commit/?id=cc2e11eeb988964af72309f71b0fb21c11ed6ca9,
+Indeed, thanks.
 
-> Is this to go only into a stable tree (if so what ones and what is the
-> id in Linus's tree), or is it to go into Linus's tree like normal (if so
-> how can this be a port)?
+> For the series:
+> Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> 
+> Jiri, I wonder where we want to land this one. This is not strictly
+> bug fixes, but we could definitively sneak this one in 5.12-rc1.
+> Well, I should probably run the series on an acpi laptop here before
+> merging, but I'd like to know if delaying to 5.13 is OK or if we need
+> this in 5.12.
 
-It's a port from QCI kernel, not a backport.
-So I'd prefer for it to go into Linus's tree (and then be backported
-to relevant -stable trees).
+I'd like to do it the standard way and have it bake in for-next to see if 
+it really doesn't break anything, so unless there are convicing arguments 
+for 5.12-rcX, I'd rathre queue this for 5.13.
+
+Thanks,
 
 -- 
-With best wishes
-Dmitry
+Jiri Kosina
+SUSE Labs
+
