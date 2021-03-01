@@ -2,176 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAFA327C66
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D558327C63
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbhCAKkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:40:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21626 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234517AbhCAKho (ORCPT
+        id S234582AbhCAKkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:40:18 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:40515 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234531AbhCAKhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:37:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614594971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5J9Aaz6tdGKZ4rbCMsw46yp8g7/dLSF9lej7J4+mUio=;
-        b=hNMSJli1BZMPg3WFMDQhNmVqvwJ5Ul3W19WXMNXugm/ZB/OuCxzHOSpt5HIOWVT+NI2xb1
-        0UaOXIfYXhQPCtp17k8XeaRTBEyBZmWUF7ojmcHSrD+iYPaNVcaFWHANDi0x6+9MVroQ8L
-        ZSeSK6zZWTyvDPLkcAoFUDGMCJXi2tM=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-111-QJ6oBs7GO72ddMkT7SK-ug-1; Mon, 01 Mar 2021 05:36:09 -0500
-X-MC-Unique: QJ6oBs7GO72ddMkT7SK-ug-1
-Received: by mail-yb1-f197.google.com with SMTP id j4so18479678ybt.23
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:36:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5J9Aaz6tdGKZ4rbCMsw46yp8g7/dLSF9lej7J4+mUio=;
-        b=nx0Sn//2r993rc2/ZoSitmGRyxJ7ZIZmNUVL+kuxPminAWtD+ZE9tn0EYlBAaM8Mw9
-         inntMP1n00ULxMQWePPDPuPXCwOFzX2zR3M/tZiBDOluz4RPiaxkE9hDJ/28XyPjUKGF
-         q9yhZVpNaW7JDxkZRaq5B+Shmvw6dCFjymKDA+Rm6f7StMgc1AJ8gIEG/s3a+lL4Ao7k
-         wkBoKXHJTpvO0HqpBbMWzPJOCopAk6JZn7+FRKmLgEt1woAfjuwc+yT0yVmOJO9MmhSG
-         oudhW4yHQy26fKUnv6u1Sqz0FCsZpMKzTuhs1/BsxtgA3JYM+LkP7f6GGXs/jkvD8BsG
-         hkSg==
-X-Gm-Message-State: AOAM530MHVIAhAk1OVcgkz7wao9UReh+En/MQwRxCzIG9NjUyKG2sObb
-        PGM4K1nX7mt+rTcEt7HXaI7xsi3tpxmnNeCCQMZCRXqR+lF8kVPeMWlEemfmDuNiu8GTnjiw5Ws
-        n9wphov3bm9yIm+5A8p5201xPaWzgAhczPsFmEOY/
-X-Received: by 2002:a25:ac4e:: with SMTP id r14mr22127569ybd.340.1614594969008;
-        Mon, 01 Mar 2021 02:36:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwTiwFPpSMH6Tx4ERPceIRnjCT+n6pBqch5IMLSwU9aZ0EuMrlChYo+ypHOVN8J9Hp9JSxKC+ZV19ND3wmJQF8=
-X-Received: by 2002:a25:ac4e:: with SMTP id r14mr22127541ybd.340.1614594968699;
- Mon, 01 Mar 2021 02:36:08 -0800 (PST)
+        Mon, 1 Mar 2021 05:37:15 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121AVgYH020544;
+        Mon, 1 Mar 2021 11:36:16 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=i63qanHvq06PqbvkfcT0nX7SZDJtNaIWa9wC1GqN/1g=;
+ b=UTWhfdYTlpHgopZiO+LUtNP+V5RR/XNoWjs1q7hmvdyeNqAyDzRdYj7JkCZRIoZW811C
+ xPWbHraa2tqB+Zen4IeVTL0iGQxHMhwPZE8DBW6I980t4IJjwDfB4I0VaJPh7/54CMWg
+ BwxxWaXujlhXGRVENLNRkTDk+xbUdviNH6qVZA1MN5nEcMoLB/vm2/uFTD3qmfdCJp5i
+ FWRX49w3xB2WHO84IfQaQ2c7JULqQ/AvpRI9s3d8Rn9va99vY5e1vAXaxogAb3tnmZ/u
+ dxuGr9IXIfdGwIQNNMDN8EX3DCh6iDHCZUxzZtuW6D4SmsCH/PWX+tubbvAJ6KEjNP9r Bg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36yfc3k9tv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Mar 2021 11:36:16 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1AEB3100034;
+        Mon,  1 Mar 2021 11:36:16 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 07CFA227E04;
+        Mon,  1 Mar 2021 11:36:16 +0100 (CET)
+Received: from [10.211.4.172] (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 1 Mar
+ 2021 11:36:14 +0100
+Subject: Re: [PATCH v2 2/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
+To:     Martin Devera <devik@eaxlabs.cz>, <linux-kernel@vger.kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <linux-serial@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Le Ray <erwan.leray@st.com>
+References: <CAL_JsqK8+M=Vg0PiDXP2f1LrEp4hSVea6piAASMGu1H=pxme6Q@mail.gmail.com>
+ <20210227164157.30971-1-devik@eaxlabs.cz>
+ <20210227164157.30971-2-devik@eaxlabs.cz>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <fecd3c15-7796-7c12-6aaa-d77c7407980d@foss.st.com>
+Date:   Mon, 1 Mar 2021 11:36:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210223214346.GB6000@sequoia> <20210223215054.GC6000@sequoia>
- <20210223223652.GD6000@sequoia> <CAFqZXNvfux46_f8gnvVvRYMKoes24nwm2n3sPbMjrB8vKTW00g@mail.gmail.com>
- <CAHC9VhSaU-3_fs83kEA5bxBf9xMsE29B_O5nXFpROk4=y9kgXw@mail.gmail.com>
- <CAFqZXNu8s5edDbSZuSutetTsy58i08vPuP2h-n9=kT34HcPc4w@mail.gmail.com> <CAHC9VhSCs17LEW=QZ2WLeD3-GVzv2RpUJaw7qQNSFWgfEWjkbg@mail.gmail.com>
-In-Reply-To: <CAHC9VhSCs17LEW=QZ2WLeD3-GVzv2RpUJaw7qQNSFWgfEWjkbg@mail.gmail.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Mon, 1 Mar 2021 11:35:56 +0100
-Message-ID: <CAFqZXNufVGD0Sf-K3dKFmJyDOKGPg5jdJ_FPbQz__T8jAHhgYw@mail.gmail.com>
-Subject: Re: [BUG] Race between policy reload sidtab conversion and live conversion
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210227164157.30971-2-devik@eaxlabs.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-01_05:2021-02-26,2021-03-01 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 8:21 PM Paul Moore <paul@paul-moore.com> wrote:
-> On Fri, Feb 26, 2021 at 6:12 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > On Fri, Feb 26, 2021 at 2:07 AM Paul Moore <paul@paul-moore.com> wrote:
-> > > On Wed, Feb 24, 2021 at 4:35 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > > > After the switch to RCU, we now have:
-> > > > 1. Start live conversion of new entries.
-> > > > 2. Convert existing entries.
-> > > > 3. RCU-assign the new policy pointer to selinux_state.
-> > > > [!!! Now actually both old and new sidtab may be referenced by
-> > > > readers, since there is no synchronization barrier previously provided
-> > > > by the write lock.]
-> > > > 4. Wait for synchronize_rcu() to return.
-> > > > 5. Now only the new sidtab is visible to readers, so the old one can
-> > > > be destroyed.
-> > > >
-> > > > So the race can happen between 3. and 5., if one thread already sees
-> > > > the new sidtab and adds a new entry there, and a second thread still
-> > > > has the reference to the old sidtab and also tires to add a new entry;
-> > > > live-converting to the new sidtab, which it doesn't expect to change
-> > > > by itself. Unfortunately I failed to realize this when reviewing the
-> > > > patch :/
-> > >
-> > > It is possible I'm not fully understanding the problem and/or missing
-> > > an important detail - it is rather tricky code, and RCU can be very
-> > > hard to reason at times - but I think we may be able to solve this
-> > > with some lock fixes inside sidtab_context_to_sid().  Let me try to
-> > > explain to see if we are on the same page here ...
-> > >
-> > > The problem is when we have two (or more) threads trying to
-> > > add/convert the same context into a sid; the task with new_sidtab is
-> > > looking to add a new sidtab entry, while the task with old_sidtab is
-> > > looking to convert an entry in old_sidtab into a new entry in
-> > > new_sidtab.  Boom.
-> > >
-> > > Looking at the code in sidtab_context_to_sid(), when we have two
-> > > sidtabs that are currently active (old_sidtab->convert pointer is
-> > > valid) and a task with old_sidtab attempts to add a new entry to both
-> > > sidtabs it first adds it to the old sidtab then it also adds it to the
-> > > new sidtab.  I believe the problem is that in this case while the task
-> > > grabs the old_sidtab->lock, it never grabs the new_sidtab->lock which
-> > > allows it to race with tasks that already see only new_sidtab.  I
-> > > think adding code to sidtab_context_to_sid() which grabs the
-> > > new_sidtab->lock when adding entries to the new_sidtab *should* solve
-> > > the problem.
-> > >
-> > > Did I miss something important? ;)
-> >
-> > Sadly, yes :) Consider this scenario (assuming we fix the locking at
-> > sidtab level):
-> >
-> > If it happens that a new SID (x) is added via the new sidtab and then
-> > another one (y) via the old sidtab, to avoid clash of SIDs, we would
-> > need to leave a "hole" in the old sidtab for SID x. And this will
-> > cause trouble if the thread that has just added SID y, then tries to
-> > translate the context string corresponding to SID x (without re-taking
-> > the RCU read lock and refreshing the policy pointer). Even if we
-> > handle skipping the "holes" in the old sidtab safely, the translation
-> > would then end up adding a duplicate SID entry for the context already
-> > represented by SID x - which is not a state we want to end up in.
->
-> Ah, yes, you're right.  I was only thinking about the problem of
-> adding an entry to the old sidtab, and not the (much more likely case)
-> of an entry being added to the new sidtab.  Bummer.
->
-> Thinking aloud for a moment - what if we simply refused to add new
-> sidtab entries if the task's sidtab pointer is "old"?  Common sense
-> would tell us that this scenario should be very rare at present, and I
-> believe the testing mentioned in this thread adds some weight to that
-> claim.  After all, this only affects tasks which entered into their
-> RCU protected session prior to the policy load RCU sync *AND* are
-> attempting to add a new entry to the sidtab.  That *has* to be a
-> really low percentage, especially on a system that has been up and
-> running for some time.  My gut feeling is this should be safe as well;
-> all of the calling code should have the necessary error handling in
-> place as there are plenty of reasons why we could normally fail to add
-> an entry to the sidtab; memory allocation failures being the most
-> obvious failure point I would suspect.  This obvious downside to such
-> an approach is that those operations which do meet this criteria would
-> fail - and we should likely emit an error in this case - but is this
-> failure really worse than any other transient kernel failure,
 
-No, I don't like this approach at all. Before the sidtab refactor, it
-had been done exactly this way - ENOMEM was returned while the sidtab
-was "frozen" (i.e. while the existing entries were being converted).
-And this was a real nuisance because things would fail randomly during
-policy reload. And it's not just unimportant explicit userspace
-actions that can fail. Any kind of transition can lead to a new SID
-being created and you'd get things like execve(), mkdir(), ... return
--ENOMEM sometimes. (With a low probability, but still...)
 
-I wouldn't compare it to a memory allocation failure, which normally
-starts happening only when the system becomes overloaded. Here the
-user would *awlays* have some probability of getting this error, and
-they couldn't do anything about it.
+On 2/27/21 5:41 PM, Martin Devera wrote:
+> Add new rx-tx-swap property to allow for RX & TX pin swapping.
+> 
+> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
+> ---
+>  Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> index 8631678283f9..45f2a19997da 100644
+> --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> @@ -40,6 +40,10 @@ properties:
+>  
+>    uart-has-rtscts: true
+>  
+> +  rx-tx-swap:
+> +    type: boolean
+> +    maxItems: 1
+> +
 
-> and is
-> attempting to mitigate this failure worth abandoning the RCU approach
-> for the sidtab?
+Hi Martin,
 
-Perhaps it wasn't clear from what I wrote, but I certainly don't want
-to abandon it completely. Just to revert to a safe state until we
-figure out how to do the RCU policy reload safely. The solution with
-two-way conversion seems doable, it's just not a quick and easy fix.
+This could be restricted to st,stm32f7-uart and st,stm32h7-uart
+compatibles. This option isn't available on stm32f4 (e.g. st,stm32-uart
+compatible)
 
---
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+Thanks for your patch,
+Best Regards,
+Fabrice
 
+>    dmas:
+>      minItems: 1
+>      maxItems: 2
+> 
