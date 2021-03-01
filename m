@@ -2,98 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD95E328FB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 864FB32905D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241325AbhCAT4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236524AbhCAQ6M (ORCPT
+        id S242679AbhCAUHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:07:35 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:34560 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236027AbhCAQ7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:58:12 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C836C061756;
-        Mon,  1 Mar 2021 08:57:30 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id q20so11898288pfu.8;
-        Mon, 01 Mar 2021 08:57:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PGGKabR50vKKIaiOMZrIQ/8/zi9WOZxscxD/HgJ2FSw=;
-        b=dw0XSkA3Z+NBejWmUiOq/LwQvIbHDJI3MZU6nib/cdN1f7VOU0Auq3/qylxA2WjcZj
-         SJlKSju4TMMRY2mCBAlzWHtG+2ERYMggx2lYDtCIj3Hr2B5YvUbrgAm0DHEhvhUte7/N
-         j+B/nY5rSwr2HBBoddiaDl3voyORKi2LZzZyXgdyUJ3XnAYWONM3ZJy3LXMJ+dRLTJ3O
-         W/mHjWzuqzGChFkDBg+1VsfUwycrDozak7Zz/+3bJmjheonr+WAgboHanYiqIh1C4+yc
-         iyG4BeGQBqK/ktAMswNq84CROsG/pMJtYn1pZvvNoela2bEomnxPA2EgBFgLCzSDag0S
-         SbzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PGGKabR50vKKIaiOMZrIQ/8/zi9WOZxscxD/HgJ2FSw=;
-        b=ZVUfcj5T1exhWTCvyGA4YlHQVyGvy6Qq2K+4132CjYYU5livsvWHIrCXrkVDSLWOtU
-         MNGUdLyfEpGzMJ7BKyN7GN1XG3Nwa7+0WfDWKSR+ADkKPZYntsiR7U3LyC1jtXSXFNd5
-         RwP1TRyq7nhawj6LCnobsK1N+tUhauGtfjk/g/3/ZY1b3E94o9CoEFBvpg37ENC7xeK1
-         0F8+RM5iEZadXQzDJ4OjhcL2mlQgVP1eAZ2k6M4ghjZ3IEr2izIrS4ROl5V1J+fSPA6y
-         ov0ik+FQp+7YKBwNBHke6D9tbvoQOhzo6QzaO0os5eU0r1a7hcWVQODogLwBvCKSSwe0
-         1l3A==
-X-Gm-Message-State: AOAM530lBuZ+mfIgSt+N3+LcR33NJQv+oK8Nm72rcIvRB35UFrpGH4C4
-        wdTbk51WABMycCcMpVomv/g+VeCuiRVuwfqHD0w=
-X-Google-Smtp-Source: ABdhPJyDvlGKkuDCnUm4ipNLihPj8NDR+SBnD3ZJNC8vg9fJMDtWAQvJ5J7OURUWiChGadMVkh4+1FqQRNjx9QQOcgg=
-X-Received: by 2002:a65:5ac9:: with SMTP id d9mr14437498pgt.74.1614617850155;
- Mon, 01 Mar 2021 08:57:30 -0800 (PST)
+        Mon, 1 Mar 2021 11:59:35 -0500
+Received: from [192.168.254.32] (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id DA81A20B57A1;
+        Mon,  1 Mar 2021 08:58:51 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DA81A20B57A1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1614617932;
+        bh=5iLiT4zCUvpdCRGwIN7OylfYUPKmTAZ9Z3KeVffXDOc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=dS1CAaa3yJ0UPOnsU90ZhqIFUaGnM5whBFQxd4ni8FzqozwSNdhHqCBBMfo4UpdRZ
+         yNWiIqBtGNJ7FyPngJzbZcDNLT1EqeU3tLQjuKaN0CVz+YPzSYOuTqxKLDikiqRP09
+         sQglsDNjAYMPV/CAe9LfgyevWmJNRu5VzfExbUXM=
+Subject: Re: [RFC PATCH v1 1/1] arm64: Unwinder enhancements for reliable
+ stack trace
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <bc4761a47ad08ab7fdd555fc8094beb8fc758d33>
+ <20210223181243.6776-1-madvenka@linux.microsoft.com>
+ <20210223181243.6776-2-madvenka@linux.microsoft.com>
+ <20210224121716.GE50741@C02TD0UTHF1T.local>
+ <4a96b31d-0d16-1f12-fa64-5fdae64cd2d1@linux.microsoft.com>
+ <20210225115825.GB37015@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <0227d386-c392-eb5a-3f52-621a637e46a8@linux.microsoft.com>
+Date:   Mon, 1 Mar 2021 10:58:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210301090519.26192-1-johan@kernel.org> <CAMpxmJXfyM89vfFDQfvOU+CX5EQSp_n_UrbEYC5MP0T-0phc-Q@mail.gmail.com>
-In-Reply-To: <CAMpxmJXfyM89vfFDQfvOU+CX5EQSp_n_UrbEYC5MP0T-0phc-Q@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 1 Mar 2021 18:57:14 +0200
-Message-ID: <CAHp75Vc2NN59qxQ_5W4Uz_N6Nsrz=oKCCGUhizg1BpQuNHfmVg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] gpio: regression fixes
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210225115825.GB37015@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 11:13 AM Bartosz Golaszewski
-<bgolaszewski@baylibre.com> wrote:
-> On Mon, Mar 1, 2021 at 10:05 AM Johan Hovold <johan@kernel.org> wrote:
-> >
-> > Here's a fix for a regression in 5.12 due to the new stub-driver hack,
-> > and a fix for potential list corruption due to missing locking which has
-> > been there since the introduction of the character-device interface in
-> > 4.6.
-> >
-> > Johan
-> >
-> > Changes in v2
-> >  - drop the corresponding drv_set_drvdata() which is no longer needed
-> >    after patch 1/2
-> >  - add Saravanas's reviewed-by tag to patch 2/2
-> >
-> >
-> > Johan Hovold (2):
-> >   gpio: fix NULL-deref-on-deregistration regression
-> >   gpio: fix gpio-device list corruption
-> >
-> >  drivers/gpio/gpiolib.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
 
-> Patches applied, thanks!
 
-Ooops, you are fast!
-Anyway, I have tested with gpio-aggregator (w/o this series it
-sparkles with all possible bugs).
-Tested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+On 2/25/21 5:58 AM, Mark Rutland wrote:
+> On Wed, Feb 24, 2021 at 01:34:09PM -0600, Madhavan T. Venkataraman wrote:
+>> On 2/24/21 6:17 AM, Mark Rutland wrote:
+>>> On Tue, Feb 23, 2021 at 12:12:43PM -0600, madvenka@linux.microsoft.com wrote:
+>>>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>>> 	Termination
+>>>> 	===========
+>>>>
+>>>> 	Currently, the unwinder terminates when both the FP (frame pointer)
+>>>> 	and the PC (return address) of a frame are 0. But a frame could get
+>>>> 	corrupted and zeroed. There needs to be a better check.
+>>>>
+>>>> 	The following special terminating frame and function have been
+>>>> 	defined for this purpose:
+>>>>
+>>>> 	const u64    arm64_last_frame[2] __attribute__ ((aligned (16)));
+>>>>
+>>>> 	void arm64_last_func(void)
+>>>> 	{
+>>>> 	}
+>>>>
+>>>> 	So, set the FP to arm64_last_frame and the PC to arm64_last_func in
+>>>> 	the bottom most frame.
+>>>
+>>> My expectation was that we'd do this per-task, creating an empty frame
+>>> record (i.e. with fp=NULL and lr=NULL) on the task's stack at the
+>>> instant it was created, and chaining this into x29. That way the address
+>>> is known (since it can be derived from the task), and the frame will
+>>> also implicitly check that the callchain terminates on the task stack
+>>> without loops. That also means that we can use it to detect the entry
+>>> code going wrong (e.g. if the SP gets corrupted), since in that case the
+>>> entry code would place the record at a different location.
+>>
+>> That is exactly what this is doing. arm64_last_frame[] is a marker frame
+>> that contains fp=0 and pc=0.
+> 
+> Almost! What I meant was that rather that each task should have its own
+> final/marker frame record on its task task rather than sharing a common
+> global variable.
+> 
+> That way a check for that frame record implicitly checks that a task
+> started at the expected location *on that stack*, which catches
+> additional stack corruption cases (e.g. if we left data on the stack
+> prior to an EL0 entry).
+> 
 
--- 
-With Best Regards,
-Andy Shevchenko
+Ok. I will think about this.
+
+> [...]
+> 
+>>> ... I reckon once we've moved the last of the exception triage out to C
+>>> this will be relatively simple, since all of the exception handlers will
+>>> look like:
+>>>
+>>> | SYM_CODE_START_LOCAL(elX_exception)
+>>> | 	kernel_entry X
+>>> | 	mov	x0, sp
+>>> | 	bl	elX_exception_handler
+>>> | 	kernel_exit X
+>>> | SYM_CODE_END(elX_exception)
+>>>
+>>> ... and so we just need to identify the set of elX_exception functions
+>>> (which we'll never expect to take exceptions from directly). We could be
+>>> strict and reject unwinding into arbitrary bits of the entry code (e.g.
+>>> if we took an unexpected exception), and only permit unwinding to the
+>>> BL.
+>>>
+>>>> 	It can do this if the FP and PC are also recorded elsewhere in the
+>>>> 	pt_regs for comparison. Currently, the FP is also stored in
+>>>> 	regs->regs[29]. The PC is stored in regs->pc. However, regs->pc can
+>>>> 	be changed by lower level functions.
+>>>>
+>>>> 	Create a new field, pt_regs->orig_pc, and record the return address
+>>>> 	PC there. With this, the unwinder can validate the exception frame
+>>>> 	and set a flag so that the caller of the unwinder can know when
+>>>> 	an exception frame is encountered.
+>>>
+>>> I don't understand the case you're trying to solve here. When is
+>>> regs->pc changed in a way that's problematic?
+>>>
+>>
+>> For instance, I used a test driver in which the driver calls a function
+>> pointer which is NULL. The low level fault handler sends a signal to the
+>> task. Looks like it changes regs->pc for this.
+> 
+> I'm struggling to follow what you mean here.
+> 
+> If the kernel branches to NULL, the CPU should raise an instruction
+> abort from the current EL, and our handling of that should terminate the
+> thread via die_kernel_fault(), without returning to the faulting
+> context, and without altering the PC in the faulting context.
+> 
+> Signals are delivered to userspace and alter the userspace PC, not a
+> kernel PC, so this doesn't seem relevant. Do you mean an exception fixup
+> handler rather than a signal?
+> 
+>> When I dump the stack from the low level handler, the comparison with
+>> regs->pc does not work.  But comparison with regs->orig_pc works.
+> 
+> As above, I'm struggling with this; could you share a concrete example? 
+> 
+
+Actually, my bad. I needed the orig_pc because of something that my test
+driver did. And, it slipped my mind entirely.
+
+Thanks for pointing it out. I will fix this in my resend.
+
+Thanks again for your comments.
+
+I am currently studying probing/tracing. As soon as I have a solution for that,
+I will send out the next version. I look forward to the in-depth review.
+
+Thanks,
+
+Madhavan
