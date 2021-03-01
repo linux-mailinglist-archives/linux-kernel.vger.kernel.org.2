@@ -2,155 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D05F328EBB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EAE1328E60
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242168AbhCATfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:35:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55018 "EHLO mail.kernel.org"
+        id S241774AbhCAT3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:29:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44236 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234826AbhCAQyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:54:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 818BE64FC6;
-        Mon,  1 Mar 2021 16:35:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616508;
-        bh=KjTGdvrTao/Hutl7akMMLjpuDKEy9Lb06Sp7O4eFGCI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wjVICU4PBlt0HKhJvR5sJb3MW3uQXfbV8P4VSv3ujm7TRomGCBgyOSFpjw3y9S1rA
-         f2hTmeJO0woO+UyIUMr0nZK6+BSUfDdfBybqBPxUB5AdGKJx80k8FkjV8ARbloSAPq
-         EmIL4bNCFx1em9ikyaSO/OyaaFiDfHv/tJyVqw6Q=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikos Tsironis <ntsironis@arrikto.com>,
-        Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 4.14 176/176] dm era: Update in-core bitset after committing the metadata
-Date:   Mon,  1 Mar 2021 17:14:09 +0100
-Message-Id: <20210301161029.775385618@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
-References: <20210301161020.931630716@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S235820AbhCAQxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:53:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614617536; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=U+5ZpAg7k3GbYMv33RTf8RSn8xdW5qBDE9NV7DZ/Z9o=;
+        b=rNwQ0jFHFzkq2MlfMI6+lmnqz7EbgnPPXTLiZ43kunSCGpzEFxBCbAX4N+c2fsPhuxaHld
+        PV7O9RUWl1e1CP+1nLLPzo+42nCvOvSiRmlGAF9r/9dAihywK29Kko26TxEQa0KPaZcsOu
+        eHomxFWrS1Aiol/K/17pi7lYBwFN28s=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9EEC8ADDD;
+        Mon,  1 Mar 2021 16:52:16 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 00E44DA7AA; Mon,  1 Mar 2021 17:50:21 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org,
+        ira.weiny@intel.com, linux-mm@kvack.org
+Subject: [GIT PULL] Kmap conversions for 5.12, take 2
+Date:   Mon,  1 Mar 2021 17:50:13 +0100
+Message-Id: <cover.1614616683.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikos Tsironis <ntsironis@arrikto.com>
+Hi,
 
-commit 2099b145d77c1d53f5711f029c37cc537897cee6 upstream.
+this pull request contains changes regarding kmap API use and eg.
+conversion from kmap_atomic to kmap_local_page.
 
-In case of a system crash, dm-era might fail to mark blocks as written
-in its metadata, although the corresponding writes to these blocks were
-passed down to the origin device and completed successfully.
+Changes against v1 [1]:
 
-Consider the following sequence of events:
+- dropped patches using zero_user
+- retested with my regular fstests-based workloads over the weekend
 
-1. We write to a block that has not been yet written in the current era
-2. era_map() checks the in-core bitmap for the current era and sees
-   that the block is not marked as written.
-3. The write is deferred for submission after the metadata have been
-   updated and committed.
-4. The worker thread processes the deferred write
-   (process_deferred_bios()) and marks the block as written in the
-   in-core bitmap, **before** committing the metadata.
-5. The worker thread starts committing the metadata.
-6. We do more writes that map to the same block as the write of step (1)
-7. era_map() checks the in-core bitmap and sees that the block is marked
-   as written, **although the metadata have not been committed yet**.
-8. These writes are passed down to the origin device immediately and the
-   device reports them as completed.
-9. The system crashes, e.g., power failure, before the commit from step
-   (5) finishes.
+I'm keeping the original merge changelog as it seems to apply to v2 as
+well.
 
-When the system recovers and we query the dm-era target for the list of
-written blocks it doesn't report the aforementioned block as written,
-although the writes of step (6) completed successfully.
+Please pull, thanks.
 
-The issue is that era_map() decides whether to defer or not a write
-based on non committed information. The root cause of the bug is that we
-update the in-core bitmap, **before** committing the metadata.
+[1] https://lore.kernel.org/lkml/cover.1614090658.git.dsterba@suse.com/
 
-Fix this by updating the in-core bitmap **after** successfully
-committing the metadata.
+The API belongs to memory management but to save cross-tree dependency
+headaches we've agreed to take it through the btrfs tree because there
+are some trivial conversions possible, while the rest will need some
+time and getting the easy cases out of the way would be convenient.
 
-Fixes: eec40579d84873 ("dm: add era target")
-Cc: stable@vger.kernel.org # v3.15+
-Signed-off-by: Nikos Tsironis <ntsironis@arrikto.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/md/dm-era-target.c |   25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+The final patchset arrived shortly before merge window, which is not
+perfect, but given that it's straightforward I don't think it's too
+risky.
 
---- a/drivers/md/dm-era-target.c
-+++ b/drivers/md/dm-era-target.c
-@@ -134,7 +134,7 @@ static int writeset_test_and_set(struct
- {
- 	int r;
- 
--	if (!test_and_set_bit(block, ws->bits)) {
-+	if (!test_bit(block, ws->bits)) {
- 		r = dm_bitset_set_bit(info, ws->md.root, block, &ws->md.root);
- 		if (r) {
- 			/* FIXME: fail mode */
-@@ -1240,8 +1240,10 @@ static void process_deferred_bios(struct
- 	int r;
- 	struct bio_list deferred_bios, marked_bios;
- 	struct bio *bio;
-+	struct blk_plug plug;
- 	bool commit_needed = false;
- 	bool failed = false;
-+	struct writeset *ws = era->md->current_writeset;
- 
- 	bio_list_init(&deferred_bios);
- 	bio_list_init(&marked_bios);
-@@ -1251,9 +1253,11 @@ static void process_deferred_bios(struct
- 	bio_list_init(&era->deferred_bios);
- 	spin_unlock(&era->deferred_lock);
- 
-+	if (bio_list_empty(&deferred_bios))
-+		return;
-+
- 	while ((bio = bio_list_pop(&deferred_bios))) {
--		r = writeset_test_and_set(&era->md->bitset_info,
--					  era->md->current_writeset,
-+		r = writeset_test_and_set(&era->md->bitset_info, ws,
- 					  get_block(era, bio));
- 		if (r < 0) {
- 			/*
-@@ -1261,7 +1265,6 @@ static void process_deferred_bios(struct
- 			 * FIXME: finish.
- 			 */
- 			failed = true;
--
- 		} else if (r == 0)
- 			commit_needed = true;
- 
-@@ -1277,9 +1280,19 @@ static void process_deferred_bios(struct
- 	if (failed)
- 		while ((bio = bio_list_pop(&marked_bios)))
- 			bio_io_error(bio);
--	else
--		while ((bio = bio_list_pop(&marked_bios)))
-+	else {
-+		blk_start_plug(&plug);
-+		while ((bio = bio_list_pop(&marked_bios))) {
-+			/*
-+			 * Only update the in-core writeset if the on-disk one
-+			 * was updated too.
-+			 */
-+			if (commit_needed)
-+				set_bit(get_block(era, bio), ws->bits);
- 			generic_make_request(bio);
-+		}
-+		blk_finish_plug(&plug);
-+	}
- }
- 
- static void process_rpc_calls(struct era *era)
+I've added it to my for-next branch and it's been in linux-next for more
+than a week.  Meanwhile I've been testing it among my regular branches
+with additional MM related debugging options.
 
+The changes can be grouped:
 
+- function exports, new helpers
+
+- new VM_BUG_ON for additional verification; it's been discussed if it
+  should be VM_BUG_ON or BUG_ON, the former was chosen due to
+  performance reasons
+
+- code replaced by relevant helpers
+
+----------------------------------------------------------------
+The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+
+  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git kmap-conversion-for-5.12
+
+for you to fetch changes up to 80cc83842394e5ad3e93487359106aab3420bcb7:
+
+  btrfs: use copy_highpage() instead of 2 kmaps() (2021-02-26 12:45:15 +0100)
+
+----------------------------------------------------------------
+Ira Weiny (6):
+      mm/highmem: Lift memcpy_[to|from]_page to core
+      mm/highmem: Convert memcpy_[to|from]_page() to kmap_local_page()
+      mm/highmem: Introduce memcpy_page(), memmove_page(), and memset_page()
+      mm/highmem: Add VM_BUG_ON() to mem*_page() calls
+      btrfs: use memcpy_[to|from]_page() and kmap_local_page()
+      btrfs: use copy_highpage() instead of 2 kmaps()
+
+ fs/btrfs/compression.c  |  6 ++----
+ fs/btrfs/lzo.c          |  4 ++--
+ fs/btrfs/raid56.c       | 10 +--------
+ fs/btrfs/reflink.c      |  6 +-----
+ fs/btrfs/send.c         |  7 ++-----
+ fs/btrfs/zlib.c         |  5 ++---
+ fs/btrfs/zstd.c         |  6 ++----
+ include/linux/highmem.h | 56 +++++++++++++++++++++++++++++++++++++++++++++++++
+ lib/iov_iter.c          | 14 -------------
+ 9 files changed, 68 insertions(+), 46 deletions(-)
