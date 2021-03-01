@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9499A329C64
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC0A329BAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380644AbhCBBy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:54:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
+        id S1379350AbhCBB1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:27:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241938AbhCAT3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3225E64F02;
-        Mon,  1 Mar 2021 17:48:30 +0000 (UTC)
+        id S241257AbhCATPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:15:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AEB9650FA;
+        Mon,  1 Mar 2021 17:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620911;
-        bh=n76WpIQrSPLMyoQURjtMF9uXbNBqhKxkm5PtyBVfulQ=;
+        s=korg; t=1614618873;
+        bh=np4pLtvbnCOYPihpSn9/7tNShNDH24Oz5BOxu8A21GM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EbFr9wTBdWwa4ojeRErEkABsdSZengRDpr5N20Coe+a3TI6MirGsYPb/YVHEiV2h3
-         8F+zgweFFxlfN5clSxx4zVb1lWqy91jBK6TAxwkELZY3FDSWQFHNz/NsEBgbnv8Rwz
-         rlaSqnCj1Sl+Q4hVy5B7kww+Prih+nmpJ8cVTD2o=
+        b=kbFc8yR1gVZnPh+8eO2drcNprilo0OUIl/TeOH8F3D7lkWz37V7fNuGBU3gvhAIfB
+         rnMMn8Te/eVRO/LcqtgCtkmhK1tb+6EhWinoYGHUdK/3NAgCfyzXAajEcvohR6AsrT
+         zIJssUnwYDrQ+zg/Ov+0OkGrv0i4GnvcuRucMlJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 324/775] dmaengine: fsldma: Fix a resource leak in the remove function
-Date:   Mon,  1 Mar 2021 17:08:12 +0100
-Message-Id: <20210301161217.627913982@linuxfoundation.org>
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 248/663] ASoC: simple-card-utils: Fix device module clock
+Date:   Mon,  1 Mar 2021 17:08:16 +0100
+Message-Id: <20210301161154.091936113@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Sameer Pujar <spujar@nvidia.com>
 
-[ Upstream commit cbc0ad004c03ad7971726a5db3ec84dba3dcb857 ]
+[ Upstream commit 1e30f642cf2939bbdac82ea0dd3071232670b5ab ]
 
-A 'irq_dispose_mapping()' call is missing in the remove function.
-Add it.
+If "clocks = <&xxx>" is specified from the CPU or Codec component
+device node, the clock is not getting enabled. Thus audio playback
+or capture fails.
 
-This is needed to undo the 'irq_of_parse_and_map() call from the probe
-function and already part of the error handling path of the probe function.
+Fix this by populating "simple_dai->clk" field when clocks property
+is specified from device node as well. Also tidy up by re-organising
+conditional statements of parsing logic.
 
-It was added in the probe function only in commit d3f620b2c4fe ("fsldma:
-simplify IRQ probing and handling")
-
-Fixes: 77cd62e8082b ("fsldma: allow Freescale Elo DMA driver to be compiled as a module")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201212160516.92515-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: bb6fc620c2ed ("ASoC: simple-card-utils: add asoc_simple_card_parse_clk()")
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+Link: https://lore.kernel.org/r/1612939421-19900-2-git-send-email-spujar@nvidia.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/fsldma.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/generic/simple-card-utils.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/dma/fsldma.c b/drivers/dma/fsldma.c
-index 0feb323bae1e3..554f70a0c18c0 100644
---- a/drivers/dma/fsldma.c
-+++ b/drivers/dma/fsldma.c
-@@ -1314,6 +1314,7 @@ static int fsldma_of_remove(struct platform_device *op)
- 		if (fdev->chan[i])
- 			fsl_dma_chan_remove(fdev->chan[i]);
- 	}
-+	irq_dispose_mapping(fdev->irq);
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 6cada4c1e283b..ab31045cfc952 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -172,16 +172,15 @@ int asoc_simple_parse_clk(struct device *dev,
+ 	 *  or device's module clock.
+ 	 */
+ 	clk = devm_get_clk_from_child(dev, node, NULL);
+-	if (!IS_ERR(clk)) {
+-		simple_dai->sysclk = clk_get_rate(clk);
++	if (IS_ERR(clk))
++		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
  
- 	iounmap(fdev->regs);
- 	kfree(fdev);
++	if (!IS_ERR(clk)) {
+ 		simple_dai->clk = clk;
+-	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
++		simple_dai->sysclk = clk_get_rate(clk);
++	} else if (!of_property_read_u32(node, "system-clock-frequency",
++					 &val)) {
+ 		simple_dai->sysclk = val;
+-	} else {
+-		clk = devm_get_clk_from_child(dev, dlc->of_node, NULL);
+-		if (!IS_ERR(clk))
+-			simple_dai->sysclk = clk_get_rate(clk);
+ 	}
+ 
+ 	if (of_property_read_bool(node, "system-clock-direction-out"))
 -- 
 2.27.0
 
