@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53AC328CA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4045A328CB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239785AbhCAS4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:56:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47980 "EHLO mail.kernel.org"
+        id S239907AbhCAS5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:57:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233690AbhCAQoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:44:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B3464EEC;
-        Mon,  1 Mar 2021 16:30:48 +0000 (UTC)
+        id S234275AbhCAQok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:44:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BB7164F8E;
+        Mon,  1 Mar 2021 16:31:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616249;
-        bh=DkiN/wfTE9YkG0XOdDXkLLB354QagtYR9k9VQueZTNM=;
+        s=korg; t=1614616261;
+        bh=2AlegfPWe7VT8InloJei9ZvtVPGqBVdNVUtOw36HTCM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CWN3dwCzNdWgc4Or1Fcmoj1s0L2jDGW//4PTMYcbOgHyLwELejK4Mu9EeXckB3Uhs
-         yBA7lXgiFH9e5Q/vkbVFtXARD+hLz0rhyJ0QAE3dLLQN7RTvhYRgryk5XYUT0ykQow
-         bhDHfIKwcN+JRw8oZUQs3la7sR3xQ5aTFYogsW8E=
+        b=07ON2NP+Ac9ONQJh1Q2KjMA2VzFpYndH+MPO2M56+ftDx+R980IQhwT9fzeKP5Jmj
+         R4n6OzLzou66oOZ9Zfe/ZDnbPQpYuNJCJDP9C8Gt9CDjHsTF4MqAy3xrReFDg7YycG
+         dbonB39Myucpj3d6i7FzDnhP5k7seVlnybizzlJM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
+        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 085/176] auxdisplay: ht16k33: Fix refresh rate handling
-Date:   Mon,  1 Mar 2021 17:12:38 +0100
-Message-Id: <20210301161025.194214948@linuxfoundation.org>
+Subject: [PATCH 4.14 089/176] ARM: 9046/1: decompressor: Do not clear SCTLR.nTLSMD for ARMv7+ cores
+Date:   Mon,  1 Mar 2021 17:12:42 +0100
+Message-Id: <20210301161025.395429943@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -40,35 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert@linux-m68k.org>
+From: Vladimir Murzin <vladimir.murzin@arm.com>
 
-[ Upstream commit e89b0a426721a8ca5971bc8d70aa5ea35c020f90 ]
+[ Upstream commit 2acb909750431030b65a0a2a17fd8afcbd813a84 ]
 
-Drop the call to msecs_to_jiffies(), as "HZ / fbdev->refresh_rate" is
-already the number of jiffies to wait.
+It was observed that decompressor running on hardware implementing ARM v8.2
+Load/Store Multiple Atomicity and Ordering Control (LSMAOC), say, as guest,
+would stuck just after:
 
-Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Uncompressing Linux... done, booting the kernel.
+
+The reason is that it clears nTLSMD bit when disabling caches:
+
+  nTLSMD, bit [3]
+
+  When ARMv8.2-LSMAOC is implemented:
+
+    No Trap Load Multiple and Store Multiple to
+    Device-nGRE/Device-nGnRE/Device-nGnRnE memory.
+
+    0b0 All memory accesses by A32 and T32 Load Multiple and Store
+        Multiple at EL1 or EL0 that are marked at stage 1 as
+        Device-nGRE/Device-nGnRE/Device-nGnRnE memory are trapped and
+        generate a stage 1 Alignment fault.
+
+    0b1 All memory accesses by A32 and T32 Load Multiple and Store
+        Multiple at EL1 or EL0 that are marked at stage 1 as
+        Device-nGRE/Device-nGnRE/Device-nGnRnE memory are not trapped.
+
+  This bit is permitted to be cached in a TLB.
+
+  This field resets to 1.
+
+  Otherwise:
+
+  Reserved, RES1
+
+So as effect we start getting traps we are not quite ready for.
+
+Looking into history it seems that mask used for SCTLR clear came from
+the similar code for ARMv4, where bit[3] is the enable/disable bit for
+the write buffer. That not applicable to ARMv7 and onwards, so retire
+that bit from the masks.
+
+Fixes: 7d09e85448dfa78e3e58186c934449aaf6d49b50 ("[ARM] 4393/2: ARMv7: Add uncompressing code for the new CPU Id format")
+Signed-off-by: Vladimir Murzin <vladimir.murzin@arm.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/auxdisplay/ht16k33.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/arm/boot/compressed/head.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index a93ded300740d..eec69213dad4f 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -125,8 +125,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
- {
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
- 
--	schedule_delayed_work(&fbdev->work,
--			      msecs_to_jiffies(HZ / fbdev->refresh_rate));
-+	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
- }
- 
- /*
+diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+index 8ca539bdac356..becd5d4bc3a64 100644
+--- a/arch/arm/boot/compressed/head.S
++++ b/arch/arm/boot/compressed/head.S
+@@ -1088,9 +1088,9 @@ __armv4_mmu_cache_off:
+ __armv7_mmu_cache_off:
+ 		mrc	p15, 0, r0, c1, c0
+ #ifdef CONFIG_MMU
+-		bic	r0, r0, #0x000d
++		bic	r0, r0, #0x0005
+ #else
+-		bic	r0, r0, #0x000c
++		bic	r0, r0, #0x0004
+ #endif
+ 		mcr	p15, 0, r0, c1, c0	@ turn MMU and cache off
+ 		mov	r12, lr
 -- 
 2.27.0
 
