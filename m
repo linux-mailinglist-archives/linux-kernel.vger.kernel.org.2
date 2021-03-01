@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA0E327845
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 08:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5734E327847
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 08:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbhCAH0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 02:26:48 -0500
-Received: from mx3.wp.pl ([212.77.101.9]:5725 "EHLO mx3.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232491AbhCAH0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 02:26:43 -0500
-Received: (wp-smtpd smtp.wp.pl 14851 invoked from network); 1 Mar 2021 08:25:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1614583548; bh=caswnsyka5PEQKPkgMw1QK+L+kDqw+U3lis6uLlqdwQ=;
-          h=From:To:Cc:Subject;
-          b=ij7ENGWGuXkLO6Kdm5TdqpoCfYx7ir/553xjFx4nqgoc20qUabZcbCx+QpNd71lYu
-           B7Y5dDAmyFxMnvxgp9uEj+U238WRDUpZ4Ow4uc9r0NyrbTuofsJvEuX7fD+ARnOGUt
-           3VfO1OeGig5L683pnbm1AykvDBZr5m5g9I9uvD4E=
-Received: from ip4-46-39-164-204.cust.nbox.cz (HELO localhost) (stf_xl@wp.pl@[46.39.164.204])
-          (envelope-sender <stf_xl@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <dinghao.liu@zju.edu.cn>; 1 Mar 2021 08:25:47 +0100
-Date:   Mon, 1 Mar 2021 08:25:47 +0100
-From:   Stanislaw Gruszka <stf_xl@wp.pl>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iwlegacy: Add missing check in il4965_commit_rxon
-Message-ID: <20210301072547.GA118024@wp.pl>
-References: <20210228122522.2513-1-dinghao.liu@zju.edu.cn>
+        id S232529AbhCAH3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 02:29:02 -0500
+Received: from outbound-gw.openxchange.ahost.me ([94.136.40.163]:44512 "EHLO
+        outbound-gw.openxchange.ahost.me" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232286AbhCAH3A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 02:29:00 -0500
+Received: from localhost ([127.0.0.1] helo=outbound-gw.openxchange.ahost.me)
+        by outbound-gw.openxchange.ahost.me with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+        (Exim 4.94)
+        (envelope-from <phillip@squashfs.org.uk>)
+        id 1lGcyD-0005Mf-FP; Mon, 01 Mar 2021 07:27:57 +0000
+Date:   Mon, 1 Mar 2021 07:27:57 +0000 (GMT)
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Message-ID: <2069685113.2081245.1614583677427@webmail.123-reg.co.uk>
+Subject: [PATCH] Squashfs: fix xattr id and id lookup sanity checks
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210228122522.2513-1-dinghao.liu@zju.edu.cn>
-X-WP-MailID: 978dc73fa3a4319775c96140784be0be
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [AbOk]                               
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev22
+X-Originating-IP: 82.69.79.175
+X-Originating-Client: open-xchange-appsuite
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 08:25:22PM +0800, Dinghao Liu wrote:
-> There is one il_set_tx_power() call in this function without
-> return value check. Print error message and return error code
-> on failure just like the other il_set_tx_power() call.
+The checks for maximum metadata block size is
+missing SQUASHFS_BLOCK_OFFSET (the two byte length
+count).
 
-We have few calls for il_set_tx_power(), on some cases we
-check return on some not. That correct as setting tx power
-can be deferred internally if not possible at the moment.
+Cc: stable@vger.kernel.org
+Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
+---
+ fs/squashfs/id.c       | 6 ++++--
+ fs/squashfs/xattr_id.c | 6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/net/wireless/intel/iwlegacy/4965.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/wireless/intel/iwlegacy/4965.c b/drivers/net/wireless/intel/iwlegacy/4965.c
-> index 9fa556486511..3235b8be1894 100644
-> --- a/drivers/net/wireless/intel/iwlegacy/4965.c
-> +++ b/drivers/net/wireless/intel/iwlegacy/4965.c
-> @@ -1361,7 +1361,11 @@ il4965_commit_rxon(struct il_priv *il)
->  		 * We do not commit tx power settings while channel changing,
->  		 * do it now if tx power changed.
->  		 */
-> -		il_set_tx_power(il, il->tx_power_next, false);
-> +		ret = il_set_tx_power(il, il->tx_power_next, false);
-> +		if (ret) {
-> +			IL_ERR("Error sending TX power (%d)\n", ret);
-> +			return ret;
-> +		
-
-This is not good change. We do not check return value of
-il_commit_rxon(), except when creating interface. So this change might
-broke creating interface, what worked otherwise when il_set_tx_power()
-returned error.
-
-Stanislaw
+diff --git a/fs/squashfs/id.c b/fs/squashfs/id.c
+index 11581bf31af4..ea5387679723 100644
+--- a/fs/squashfs/id.c
++++ b/fs/squashfs/id.c
+@@ -97,14 +97,16 @@ __le64 *squashfs_read_id_index_table(struct super_block *sb,
+ 		start = le64_to_cpu(table[n]);
+ 		end = le64_to_cpu(table[n + 1]);
+ 
+-		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
++		if (start >= end || (end - start) >
++				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+ 			kfree(table);
+ 			return ERR_PTR(-EINVAL);
+ 		}
+ 	}
+ 
+ 	start = le64_to_cpu(table[indexes - 1]);
+-	if (start >= id_table_start || (id_table_start - start) > SQUASHFS_METADATA_SIZE) {
++	if (start >= id_table_start || (id_table_start - start) >
++				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+ 		kfree(table);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+diff --git a/fs/squashfs/xattr_id.c b/fs/squashfs/xattr_id.c
+index ead66670b41a..087cab8c78f4 100644
+--- a/fs/squashfs/xattr_id.c
++++ b/fs/squashfs/xattr_id.c
+@@ -109,14 +109,16 @@ __le64 *squashfs_read_xattr_id_table(struct super_block *sb, u64 table_start,
+ 		start = le64_to_cpu(table[n]);
+ 		end = le64_to_cpu(table[n + 1]);
+ 
+-		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
++		if (start >= end || (end - start) >
++				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+ 			kfree(table);
+ 			return ERR_PTR(-EINVAL);
+ 		}
+ 	}
+ 
+ 	start = le64_to_cpu(table[indexes - 1]);
+-	if (start >= table_start || (table_start - start) > SQUASHFS_METADATA_SIZE) {
++	if (start >= table_start || (table_start - start) >
++				(SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+ 		kfree(table);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+-- 
+2.29.2
