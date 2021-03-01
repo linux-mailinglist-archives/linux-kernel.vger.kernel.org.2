@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EDE329787
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1EE32978D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343920AbhCAWiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:38:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S1343969AbhCAWig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238193AbhCARqp (ORCPT
+        with ESMTP id S234734AbhCARrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:46:45 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301BAC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:45:46 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id cw15so7760795qvb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:45:46 -0800 (PST)
+        Mon, 1 Mar 2021 12:47:12 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3693C06178C
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:46:26 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id m6so12015471pfk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 09:46:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PD3JMEGPBMAQ64FzulYdR1M5uBdrgMdbqrpY0r6PxbE=;
-        b=Tb+Vlk0QlCwVJFToJ87JOngaMMv+ji6DZc7e5ZFG7GeUBZVJjVsviwrA3Icbt2It49
-         b+lEbIhvlsmsEC22BJp5Tr3E0FOrWQqGSiNwVwYitmJ85kYrCSYjzNeRUwcgpzmMrRhf
-         2BAqhxxTKLWn5EE9XxRnQyN8q+S02GiuVJjhQGsWQmW8CEumtNaIliPL7K0vyxC1fzXD
-         Xsxf8uXkTKqar0dafQc8CdQDNJLNCpWVHzvRQg6U9fzB9bklS3rMNLXS6p4ASORha0r6
-         ltXeli2TAwCBVF8xorWL+lRT+cu/LEt2G5a7+t/IpNYgIXAJx/xP8rlp3uHvCr0/9eSY
-         K9jw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d6E6zqEbjqh+dwazTT0oLku5dnRE/qNGLB3SDKN9dOw=;
+        b=V3umcLnJr+393bucClK75f1l/HHDLkirK5dzlN9sgGKsRZMDmC6Me94xVCuoN4NqNp
+         qcTL3MjWoKS5pDN7p6Efq6YHyYdSOutxT01s6V1iHqoxv3fl3DBPZ1yhDBuXs3TuxpIq
+         x44r9Aw4XSYNCd/1ff8nPZOpl4BSU001+B8uUpS3H9hKKPntWDWv/vQlCMRTQYDxtHqr
+         1Qgx4hpd6s4+llVp9TFvA6VrVfN8/d6BUhmnB1NLcGkvxMKa7r22sonNJUtVo9JNbzeo
+         SMzTkVuFMlExynASWBJI4bPMPzEpV+Lhcx5au3cj1WGYQSO418KYkVnrAwqbmnuURQLo
+         dT7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PD3JMEGPBMAQ64FzulYdR1M5uBdrgMdbqrpY0r6PxbE=;
-        b=Re1fu8Qogc7Az/nlJk63lmfYn/3IqOzoqeWGnR/cacX79En7lymaJz6IHh4D82lrGo
-         yNjIhtPBszqw981S9yBHCLtEPCJKPSoEPRJ5/+ZDMUF4Ef653h75vVkPhf717ComzpE5
-         C/lB+2XwWnOSxByCUquOddpMKlWhUKTCJZ98qeq1n4npCe6KN1wMPWWQAnPU8mWCM1Rd
-         qBLEQXx/gu7VZ4aJ8IaEx9Y86l/w2fHkE6eiYJBYPrsDi38CIrKiEkqwvtdvJVWn73xE
-         BoBQV5OKHU9tLhAPDBNdAeIGrSCdxKuhE4ay1uTRrCZJl7rXo5FWFabzBcZkvFQjQfZv
-         NOpQ==
-X-Gm-Message-State: AOAM533RlN5oQ9H1Do25xAs6iYUbdQzJI6WV/5Hiypmj3h/CdLiKv0xE
-        dMO6pvPhAzzmiuPZdhufCPy3/tCPlP+LD9j/Y6joSg==
-X-Google-Smtp-Source: ABdhPJztWkIjeVzpCchcDL6XSRsDhMDv4ku/6n6WKul9YqeLxjiUenf3mLa6vOSSBcg1UZWOFGlBLJjYuXt4o7py51M=
-X-Received: by 2002:a0c:b912:: with SMTP id u18mr15823346qvf.2.1614620745294;
- Mon, 01 Mar 2021 09:45:45 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d6E6zqEbjqh+dwazTT0oLku5dnRE/qNGLB3SDKN9dOw=;
+        b=Mp30ooGWAibWQOY7dfMmuJVZsE7KIB5LO9yqJoUZgQkPT5F11anWTXVWKVr2hFvtyE
+         nen+bD0MhciKeAyobKVWGkKkHEJ8w3iWIUoYmBcxxpE/nidpOhoEMxYHHrs6uB+2wlVf
+         /oKRaILTppyBUGxNcTBab3aI9BS8lyT4wGWmD67u2AmV9Y2gj3JgPpe3cec3h8MlOrZy
+         Uu2vSbBe+xwvaatucFhDhbZFRTox7HL8bieavIdA6DE367VAtDZCNu8ctjwmK13xaOJ+
+         6CmkeeBUYf6ocAbVJG6J6DR5rD0Jz583crtdkpGau3JdwzLCuLgzQsh+L435p1jI/8qK
+         WtgA==
+X-Gm-Message-State: AOAM532GU5lDyISFboliRkcpeFWZV/XvM3OYfuTkcLmjoZ9RcovntILL
+        fi9gAi2Vd/P7+vdod3qrOv7Ltg==
+X-Google-Smtp-Source: ABdhPJxwUl3cOs7feycakrWn32IxbWrdJjJSqGzoDLlyubX5TOmfjlzvs4DgizGVyGqux61oa7xILw==
+X-Received: by 2002:a62:7797:0:b029:1ed:7b10:84c2 with SMTP id s145-20020a6277970000b02901ed7b1084c2mr15949057pfc.47.1614620786279;
+        Mon, 01 Mar 2021 09:46:26 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:5d06:6d3c:7b9:20c9])
+        by smtp.gmail.com with ESMTPSA id b1sm19387523pfp.145.2021.03.01.09.46.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 09:46:25 -0800 (PST)
+Date:   Mon, 1 Mar 2021 09:46:19 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yang Weijiang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Subject: Re: [PATCH v2] KVM: nVMX: Sync L2 guest CET states between L1/L2
+Message-ID: <YD0oa99pgXqlS07h@google.com>
+References: <20210225030951.17099-1-weijiang.yang@intel.com>
+ <20210225030951.17099-2-weijiang.yang@intel.com>
 MIME-Version: 1.0
-References: <20210212192658.3476137-1-dmitry.baryshkov@linaro.org>
- <YCeM+0JUEPQQkGsF@kroah.com> <CAA8EJpo-U74KAyoHY=9wutk=iCOBMv6T1Ez-MEogYdPE6X1yCQ@mail.gmail.com>
- <YD0M4JyBbUrYjFMD@kroah.com>
-In-Reply-To: <YD0M4JyBbUrYjFMD@kroah.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 1 Mar 2021 20:45:34 +0300
-Message-ID: <CAA8EJprTwqFWfPMjLrA2T0rJ=D3btLFHwY33VVJka1Og-9UeAQ@mail.gmail.com>
-Subject: Re: [PATCH v2] misc: fastrpc: restrict user apps from sending kernel
- RPC messages
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>, stable@vger.kernel.org,
-        Nicolas Dechesne <nicolas.dechesne@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225030951.17099-2-weijiang.yang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 at 18:48, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Mar 01, 2021 at 06:34:10PM +0300, Dmitry Baryshkov wrote:
-> > On Sat, 13 Feb 2021 at 11:25, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Fri, Feb 12, 2021 at 10:26:58PM +0300, Dmitry Baryshkov wrote:
-> > > > Verify that user applications are not using the kernel RPC message
-> > > > handle to restrict them from directly attaching to guest OS on the
-> > > > remote subsystem. This is a port of CVE-2019-2308 fix.
-> > >
-> > > A port of the fix of what to what?
-> >
-> > I'm sorry for the confusion. It is a port of the original
-> > Qualcomm/CodeAurora fix to the upstream driver.
-> >
-> > See https://source.codeaurora.org/quic/la/kernel/msm-4.9/commit/?id=cc2e11eeb988964af72309f71b0fb21c11ed6ca9,
->
-> So this is a fix from 2019 that you never submitted upstream causing all
-> of these kernels to be vulnerable?
++Vitaly
 
-It seems there is some kind of confusion here.
-Srinivas and Thierry have developed the fastrpc driver. It is not the
-same as the driver developed by Qualcomm. However in this case it
-suffers from the same problem as the original adsprpc driver..
-We have submitted the fix as soon as we've noticed the issue.
+On Thu, Feb 25, 2021, Yang Weijiang wrote:
+> These fields are rarely updated by L1 QEMU/KVM, sync them when L1 is trying to
+> read/write them and after they're changed. If CET guest entry-load bit is not
+> set by L1 guest, migrate them to L2 manaully.
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> 
+> change in v2:
+>  - Per Sean's review feedback, change CET guest states as rarely-updated fields.
+>    And also migrate L1's CET states to L2 if the entry-load bit is not set.
+>  - Opportunistically removed one blank line.
+> ---
+>  arch/x86/kvm/cpuid.c      |  1 -
+>  arch/x86/kvm/vmx/nested.c | 29 +++++++++++++++++++++++++++++
+>  arch/x86/kvm/vmx/vmx.h    |  3 +++
+>  3 files changed, 32 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 46087bca9418..afc97122c05c 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -143,7 +143,6 @@ void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu)
+>  		}
+>  		vcpu->arch.guest_supported_xss =
+>  			(((u64)best->edx << 32) | best->ecx) & supported_xss;
+> -
+>  	} else {
+>  		vcpu->arch.guest_supported_xss = 0;
+>  	}
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 9728efd529a1..1703b8874fad 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2516,6 +2516,12 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>  	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, vmx->msr_autoload.guest.nr);
+>  
+>  	set_cr4_guest_host_mask(vmx);
+> +
+> +	if (kvm_cet_supported()) {
 
-> Shouldn't the porting process go the other way, upstream first and then
-> backport?  That ensures we don't end up with 2 years old bugs like this
-> :(
->
-> Ugh.
->
-> What's going to change in the development process of this code to
-> prevent this from happening again?
+This needs to be conditioned on CET coming from vmcs12, it's on the loading of
+host state on VM-Exit that is unconditional (if CET is supported).
 
--- 
-With best wishes
-Dmitry
+	if (kvm_cet_supported() && vmx->nested.nested_run_pending &&
+	    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+
+I also assume these should be guarded by one of the eVMCS fields, though a quick
+search of the public docs didn't provide a hit on the CET fields.
+
+Vitaly, any idea if these will be GUEST_GRP2 or something else?
+
+> +		vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
+> +		vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
+> +		vmcs_writel(GUEST_INTR_SSP_TABLE, vmcs12->guest_ssp_tbl);
+> +	}
+>  }
