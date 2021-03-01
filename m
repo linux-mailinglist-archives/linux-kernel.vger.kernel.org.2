@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF33A329906
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 835043299C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347084AbhCAXvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:51:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35642 "EHLO mail.kernel.org"
+        id S1376484AbhCBA3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:29:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239542AbhCASRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:17:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F533650CF;
-        Mon,  1 Mar 2021 17:44:14 +0000 (UTC)
+        id S239362AbhCAS3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:29:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAD846534C;
+        Mon,  1 Mar 2021 17:44:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620655;
-        bh=f9NRaC5Oh62uXWYTZTMNKQcmTsrA5jD5yC9ZKfyJqik=;
+        s=korg; t=1614620677;
+        bh=54KiUnhgH/gu9nF7H3ne4ivMcs82IRwTkSTLS8uXcek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tn2rA91sJ/bCaPF8wGlD9cy0BHKD41opmc/hMG1qnccn7pCnVogMTelbtldMidq7e
-         Kg9Xf4jXa3LJkM7oW7vWIZnTY4S+2SJBbo0SZyu1ss0d+V1reQs19Iu6w+1BIYGtPN
-         EAFWbZD3288gB1K9oxSlRB3w4ASaArD3/h3ysEMY=
+        b=0SJNXE3yUqpwb2s9E4+ly8he7jvqWgrXPWvBn0gKIJAh0QVmuDB48BFWPFXXpTE8C
+         c+9TLYz9rUtNLu1GrRKp07qENZeGppn5A7FO/+uVTw0mymJdQNWN0J5vz7Y8o3z8mR
+         2HSsTkUgOt7I0tO5i3JO5bhvOowyLwq7qVoX/H/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, yangerkun <yangerkun@huawei.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Till=20D=C3=B6rges?= <doerges@pre-sense.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 230/775] mtd: phram: use div_u64_rem to stop overwrite len in phram_setup
-Date:   Mon,  1 Mar 2021 17:06:38 +0100
-Message-Id: <20210301161212.995927005@linuxfoundation.org>
+Subject: [PATCH 5.11 232/775] media: uvcvideo: Accept invalid bFormatIndex and bFrameIndex values
+Date:   Mon,  1 Mar 2021 17:06:40 +0100
+Message-Id: <20210301161213.094236945@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,49 +42,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yangerkun <yangerkun@huawei.com>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-[ Upstream commit dc2b3e5cbc8087224fcd8698b0dc56131e0bf37d ]
+[ Upstream commit dc9455ffae02d7b7fb51ba1e007fffcb9dc5d890 ]
 
-We now support user to set erase page size, and use do_div between len
-and erase size to determine the reasonableness for the erase size.
-However, do_div is a macro and will overwrite the value of len. Which
-results a mtd device with unexcepted size. Fix it by use div_u64_rem.
+The Renkforce RF AC4K 300 Action Cam 4K reports invalid bFormatIndex and
+bFrameIndex values when negotiating the video probe and commit controls.
+The UVC descriptors report a single supported format and frame size,
+with bFormatIndex and bFrameIndex both equal to 2, but the video probe
+and commit controls report bFormatIndex and bFrameIndex set to 1.
 
-Fixes: ffad560394de ("mtd: phram: Allow the user to set the erase page size.")
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210125124936.651812-1-yangerkun@huawei.com
+The device otherwise operates correctly, but the driver rejects the
+values and fails the format try operation. Fix it by ignoring the
+invalid indices, and assuming that the format and frame requested by the
+driver are accepted by the device.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=210767
+
+Fixes: 8a652a17e3c0 ("media: uvcvideo: Ensure all probed info is returned to v4l2")
+Reported-by: Till Dörges <doerges@pre-sense.de>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/devices/phram.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/media/usb/uvc/uvc_v4l2.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-index cfd170946ba48..5b04ae6c30573 100644
---- a/drivers/mtd/devices/phram.c
-+++ b/drivers/mtd/devices/phram.c
-@@ -222,6 +222,7 @@ static int phram_setup(const char *val)
- 	uint64_t start;
- 	uint64_t len;
- 	uint64_t erasesize = PAGE_SIZE;
-+	uint32_t rem;
- 	int i, ret;
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index fa06bfa174ad3..c7172b8952a96 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -248,7 +248,9 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
+ 		goto done;
  
- 	if (strnlen(val, sizeof(buf)) >= sizeof(buf))
-@@ -263,8 +264,11 @@ static int phram_setup(const char *val)
+ 	/* After the probe, update fmt with the values returned from
+-	 * negotiation with the device.
++	 * negotiation with the device. Some devices return invalid bFormatIndex
++	 * and bFrameIndex values, in which case we can only assume they have
++	 * accepted the requested format as-is.
+ 	 */
+ 	for (i = 0; i < stream->nformats; ++i) {
+ 		if (probe->bFormatIndex == stream->format[i].index) {
+@@ -257,11 +259,10 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
  		}
  	}
  
-+	if (erasesize)
-+		div_u64_rem(len, (uint32_t)erasesize, &rem);
-+
- 	if (len == 0 || erasesize == 0 || erasesize > len
--	    || erasesize > UINT_MAX || do_div(len, (uint32_t)erasesize) != 0) {
-+	    || erasesize > UINT_MAX || rem) {
- 		parse_err("illegal erasesize or len\n");
- 		goto error;
+-	if (i == stream->nformats) {
+-		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFormatIndex %u\n",
++	if (i == stream->nformats)
++		uvc_trace(UVC_TRACE_FORMAT,
++			  "Unknown bFormatIndex %u, using default\n",
+ 			  probe->bFormatIndex);
+-		return -EINVAL;
+-	}
+ 
+ 	for (i = 0; i < format->nframes; ++i) {
+ 		if (probe->bFrameIndex == format->frame[i].bFrameIndex) {
+@@ -270,11 +271,10 @@ static int uvc_v4l2_try_format(struct uvc_streaming *stream,
+ 		}
  	}
+ 
+-	if (i == format->nframes) {
+-		uvc_trace(UVC_TRACE_FORMAT, "Unknown bFrameIndex %u\n",
++	if (i == format->nframes)
++		uvc_trace(UVC_TRACE_FORMAT,
++			  "Unknown bFrameIndex %u, using default\n",
+ 			  probe->bFrameIndex);
+-		return -EINVAL;
+-	}
+ 
+ 	fmt->fmt.pix.width = frame->wWidth;
+ 	fmt->fmt.pix.height = frame->wHeight;
 -- 
 2.27.0
 
