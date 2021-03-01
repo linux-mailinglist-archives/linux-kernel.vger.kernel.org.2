@@ -2,89 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DA9327D9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8117327DB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 12:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhCALv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 06:51:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
+        id S234903AbhCAL4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 06:56:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234309AbhCALvY (ORCPT
+        with ESMTP id S234389AbhCALv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 06:51:24 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC37C061794
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 03:50:02 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id d3so24961327lfg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 03:50:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3+UEhAxrb3pdEALJdsSgG5yRtHrbuB7y+oF/2tb+rtA=;
-        b=O4xa6E4uEEU9hIiBa38slwGEphrxXrvJN4nNP7qNQl9R+N5t/ni0WCPfg9KGgv/PJS
-         J4yoMROyYQjzho9NPt5Z875ScmJX4eIkCFOn+jGCOAAUpdSQ0gN9h79CHOsn8692dysT
-         lVoes2J+BR3uVXXaJbapMzFRGpgZew7Je2hIRAEg0yK0NKBp0HxwcJb3BoSyUk1TLTOG
-         yQHQZ0wqXVFRCdyjz3Dn8y0POBHrE8IWDFE0W3HtbLNj90D0m0vk+BfVQSeUl3SpBK3A
-         tvG0P8V2cFA5/rFkEEgnC8Vu+6EFsaxuLn5Ynr88x7VC9BoPMrDoyzTn2rvNDQeIi8Zg
-         s8AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3+UEhAxrb3pdEALJdsSgG5yRtHrbuB7y+oF/2tb+rtA=;
-        b=Lj5LvfeK7kgJNNuHjsWyk4cyGV60/OYpCgq+utT3PVl1T5IS0jPXNNiHQxYhYNHLNi
-         wJx5/WjiXKNoHo2CrYYWcfehrHq85UiRLaySlfeLRdpI3krq6PmD82vegcTbKEQndpO4
-         P4cY2n/ZzrslIKj+BqnGrgcePFEWx85Ra7G4yOLV57zrEfq8oLg9fWTXUNV2fDN5TwzF
-         McphYVgBwBxSiz0KYL3jW0fkuos3S0BpcygV8mJX4E51q0+Ay3Hi7vedPaWsR7nbLjqi
-         N4n7eqr2lcpdKL1uZ7LJceJSEzlU10EZyhjESxxFURBGU610IIcm0QmetTY/95LAiZ2U
-         HR2g==
-X-Gm-Message-State: AOAM533gSO0BzEGoTVXkToUPpkLbn8XPcenhtfJwO91zzwR9gpUecDp4
-        fa46uccPR4S+bz03sbaWKWX8Jg==
-X-Google-Smtp-Source: ABdhPJwh6c5qWPWg0F37ArphLQNHvLT3R9XMEvHVo+ZAItUpRqW7U1KzTIwnIJVSqj/jCJoTgiIE7A==
-X-Received: by 2002:ac2:42cc:: with SMTP id n12mr8975485lfl.560.1614599400869;
-        Mon, 01 Mar 2021 03:50:00 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id z28sm1541471ljn.117.2021.03.01.03.50.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 03:50:00 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 3DC06102557; Mon,  1 Mar 2021 14:50:07 +0300 (+03)
-Date:   Mon, 1 Mar 2021 14:50:07 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Yu Zhao <yuzhao@google.com>, akpm@linux-foundation.org,
-        alex.shi@linux.alibaba.com, vbabka@suse.cz, guro@fb.com,
-        hannes@cmpxchg.org, hughd@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mhocko@kernel.org, vdavydov.dev@gmail.com
-Subject: Re: [PATCH v2 3/3] mm: use PF_ONLY_HEAD for PG_active and
- PG_unevictable
-Message-ID: <20210301115007.mgw5vthgjoibnjf4@box>
-References: <20210224084807.2179942-1-yuzhao@google.com>
- <20210226091718.2927291-1-yuzhao@google.com>
- <20210226091718.2927291-4-yuzhao@google.com>
- <20210226121314.GB2723601@casper.infradead.org>
+        Mon, 1 Mar 2021 06:51:59 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B599C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 03:51:19 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lGh4t-0006Kn-7h; Mon, 01 Mar 2021 12:51:07 +0100
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:6e66:a1a4:a449:44cd])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id EEF755EB1B2;
+        Mon,  1 Mar 2021 11:51:02 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 12:51:02 +0100
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexander Stein <alexander.stein@systec-electronic.com>,
+        Federico Vaga <federico.vaga@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] can: c_can: prepare to up the message objects
+ number
+Message-ID: <20210301115102.j5qwmiy2on3ezd4d@pengutronix.de>
+References: <20210225215155.30509-1-dariobin@libero.it>
+ <20210225215155.30509-6-dariobin@libero.it>
+ <20210226083315.cutpxc4iety4qedp@pengutronix.de>
+ <1564374858.544328.1614507493409@mail1.libero.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2dhc5sepxjp7dlct"
 Content-Disposition: inline
-In-Reply-To: <20210226121314.GB2723601@casper.infradead.org>
+In-Reply-To: <1564374858.544328.1614507493409@mail1.libero.it>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 12:13:14PM +0000, Matthew Wilcox wrote:
-> On Fri, Feb 26, 2021 at 02:17:18AM -0700, Yu Zhao wrote:
-> > All places but one test, set or clear PG_active and PG_unevictable on
-> > small or head pages. Use compound_head() explicitly for that singleton
-> > so the rest can rid of redundant compound_head().
-> 
-> How do you know it's only one place?  I really wish you'd work with me
-> on folios.  They make the compiler prove that it's not a tail page.
 
-+1 to this.
+--2dhc5sepxjp7dlct
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The problem with compound_head() is systemic and ad-hoc solution to few
-page flags will only complicate the picture.
+On 28.02.2021 11:18:13, Dario Binacchi wrote:
+> > > +	u32 msg_obj_rx_mask;
+> >=20
+> > Is this variable big enough after you've extended the driver to use 64
+> > mailboxes?
+>=20
+> Yes. I have kept the message assignment policy unchanged, they are equall=
+y=20
+> divided between reception and transmission. Therefore, in the case of 64=
+=20
+> messages, 32 are used for reception and 32 for transmission. So a 32-bit=
+=20
+> variable is enough.
+>=20
+> >=20
+> > If you want to support 128 message objects converting the driver to the
+> > linux bitmap API is another option.
+> >=20
+>=20
+> Do you know if any of the hardware managed by Linux use a D_CAN controlle=
+r=20
+> with 128 message objects?
 
--- 
- Kirill A. Shutemov
+Even the am437x only uses 64 message objects. Ok let's stay with 64 as
+max for now.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--2dhc5sepxjp7dlct
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA81SMACgkQqclaivrt
+76nyPQf/aaa/oKtyI9yNhbSa5NQXHNe7o/CjFKpk5OCavnNpKh0eTRSxmdip+sDT
+PReCAnYwfvQAa4o2zMuW8xR4igotXas/6o2JXY/RLWmihXp3zTHVAuku0aRJlNiE
+ePSAVAof3SdenghvekzLu+y7gk1qgFULQkHyp6AZxY8ABJUowTOrarK5rhD9U8xy
+g8ERGLxVOObBqbDh9yEarTv0mY1PC224uZToSK4v94Bfyh4gUD97iYLknbtHdKhK
+gugf8iOvLfIVB1H2EUvxWL4SzPASF/IGJCKVzyuY3HPMmt31RIGiD14yYoKqBHJB
+/0yOSFgRkH6E24iHYGeP9co18gY0Bw==
+=4J6b
+-----END PGP SIGNATURE-----
+
+--2dhc5sepxjp7dlct--
