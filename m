@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267D43277BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978093277CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbhCAGqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 01:46:20 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:50576 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231185AbhCAGqP (ORCPT
+        id S232132AbhCAGvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 01:51:39 -0500
+Received: from lucky1.263xmail.com ([211.157.147.132]:36764 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232087AbhCAGu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 01:46:15 -0500
-X-UUID: 5cf60434c6cf4d4cb00d51f67e550a93-20210301
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=QVGn0n8BLUxEWDtnLqCxnMqkZncL3xMO0eBBB5gr4Yo=;
-        b=a5mSJaCHnL866iShay96l+2mGVpoy9IQJ27a5k6kPX58pht2IzOkwi9UnC/v/lBYyWNNqoqtqObr77iiBUPEHHOKsgCWq1eDtjO+G8d+hLu0HL5gxnnsl5pziXyMvTNBEyDaQ4vEzQxWqibhpjZ32+1AF578npCdKQ6eOJfnQZs=;
-X-UUID: 5cf60434c6cf4d4cb00d51f67e550a93-20210301
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <irui.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1631696477; Mon, 01 Mar 2021 14:45:32 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
- 2021 14:45:30 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 1 Mar 2021 14:45:29 +0800
-Message-ID: <1614581129.14457.0.camel@mhfsdcap03>
-Subject: Re: [PATCH 1/5] dt-bindings: media: mtk-vcodec: Add dma-ranges
- property
-From:   Irui Wang <irui.wang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Fritz Koenig" <frkoenig@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <linux-mediatek@lists.infradead.org>
-Date:   Mon, 1 Mar 2021 14:45:29 +0800
-In-Reply-To: <20210210225323.GA2961490@robh.at.kernel.org>
-References: <20210203083752.12586-1-irui.wang@mediatek.com>
-         <20210203083752.12586-2-irui.wang@mediatek.com>
-         <20210210225323.GA2961490@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 62560B53CD9D2FC90A2C93FBF883E1ACB0740244722726113DF61E297D86CCD92000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Mon, 1 Mar 2021 01:50:29 -0500
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 5BF44F28BC;
+        Mon,  1 Mar 2021 14:47:53 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P31655T140708449044224S1614581271100343_;
+        Mon, 01 Mar 2021 14:47:52 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <d8ba457f321385b8562c37570316750f>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: mturquette@baylibre.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     mturquette@baylibre.com, robh+dt@kernel.org, sboyd@kernel.org,
+        heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v3 0/4] clk: rockchip: add clock controller for rk3568
+Date:   Mon,  1 Mar 2021 14:47:45 +0800
+Message-Id: <20210301064749.10392-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTAyLTEwIGF0IDE2OjUzIC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gV2VkLCBGZWIgMDMsIDIwMjEgYXQgMDQ6Mzc6NDhQTSArMDgwMCwgSXJ1aSBXYW5nIHdyb3Rl
-Og0KPiA+IEFkZHMgZG1hLXJhbmdlcyBwcm9wZXJ0eSBmb3IgRE1BIGFkZHJlc3NlcyB0cmFuc2xh
-dGlvbi4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBJcnVpIFdhbmcgPGlydWkud2FuZ0BtZWRp
-YXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9tZWRpYS9tZWRpYXRlay12Y29kZWMudHh0IHwgMiArKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
-MiBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9tZWRpYXRlay12Y29kZWMudHh0IGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lZGlhL21lZGlhdGVrLXZjb2RlYy50eHQNCj4gPiBpbmRl
-eCBmODUyNzZlNjI5YmYuLmU0NjQ0ZjhjYWVlOSAxMDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvbWVkaWF0ZWstdmNvZGVjLnR4dA0KPiA+ICsr
-KyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9tZWRpYXRlay12Y29k
-ZWMudHh0DQo+ID4gQEAgLTIzLDYgKzIzLDggQEAgUmVxdWlyZWQgcHJvcGVydGllczoNCj4gPiAg
-LSBpb21tdXMgOiBzaG91bGQgcG9pbnQgdG8gdGhlIHJlc3BlY3RpdmUgSU9NTVUgYmxvY2sgd2l0
-aCBtYXN0ZXIgcG9ydCBhcw0KPiA+ICAgIGFyZ3VtZW50LCBzZWUgRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL2lvbW11L21lZGlhdGVrLGlvbW11LnR4dA0KPiA+ICAgIGZvciBkZXRh
-aWxzLg0KPiA+ICstIGRtYS1yYW5nZXMgOiBkZXNjcmliZXMgaG93IHRoZSBwaHlzaWNhbCBhZGRy
-ZXNzIHNwYWNlIG9mIHRoZSBJT01NVSBtYXBzDQo+ID4gKyAgdG8gbWVtb3J5Lg0KPiANCj4gZG1h
-LXJhbmdlcyBpcyBzdXBwb3NlZCB0byBiZSBpbiBhIGJ1cy9wYXJlbnQgbm9kZS4NCkRlYXIgUm9i
-LA0KDQpUaGUgbXQ4MTkyIGlvbW11IHN1cHBvcnQgMH4xNkdCIGlvdmEuIFdlIHNlcGFyYXRlIGl0
-IHRvIGZvdXIgYmFua3M6DQowfjRHOyA0R344RzsgOEd+MTJHOyAxMkd+MTZHLg0KDQpUaGUgImRt
-YS1yYW5nZXMiIGNvdWxkIGJlIHVzZWQgdG8gYWRqdXN0IHRoZSBiYW5rIHdlIGxvY2F0ZS4NCklm
-IHdlIGRvbid0IHNldCB0aGlzIHByb3BlcnR5LiBUaGUgZGVmYXVsdCByYW5nZSBhbHdheXMgaXMg
-MH40Ry4NCg0KSGVyZSB3ZSBkb24ndCBoYXZlIGFjdHVhbCBidXMvcGFyZW50IGNvbmNlcHQgaGVy
-ZS4gIEFuZCB0aGUgaW92YQ0KcmVxdWlyZW1lbnQgaXMgZm9yIG91ciBIVy4gVGh1cyBwdXQgdGhl
-IHByb3BlcnR5IGluIG91ciBub2RlLg0KDQpJcyB0aGlzIE9LPyBJZiB0aGlzIGlzIG9rIGZvciB5
-b3UsIEkgd2lsbCBwdXQgdGhpcyBtZXNzYWdlIGluIHRoZSBjb21taXQNCm1lc3NhZ2UgYW5kIGJp
-bmRpbmcgaW4gbmV4dCB2ZXJzaW9uLg0KDQpSZWdhcmRzDQo+IA0KPiA+ICBPbmUgb2YgdGhlIHR3
-byBmb2xsb3dpbmcgbm9kZXM6DQo+ID4gIC0gbWVkaWF0ZWssdnB1IDogdGhlIG5vZGUgb2YgdGhl
-IHZpZGVvIHByb2Nlc3NvciB1bml0LCBpZiB1c2luZyBWUFUuDQo+ID4gIC0gbWVkaWF0ZWssc2Nw
-IDogdGhlIG5vZGUgb2YgdGhlIFNDUCB1bml0LCBpZiB1c2luZyBTQ1AuDQo+ID4gLS0gDQo+ID4g
-Mi4yNS4xDQo+ID4gDQoNCg==
+Add the clock tree definition for the new rk3568 SoC.
+
+Change in V3:
+[PATCH v3 1/4]: Fix some code styles.
+[PATCH v3 2/4]: No change.
+[PATCH v3 3/4]: No change.
+[PATCH v3 4/4]: No change.
+
+Change in V2:
+[PATCH v2 1/4]: Convert rockchip,rk3568-cru.txt to YAML,
+                And update commit message.
+[PATCH v2 2/4]: No change.
+[PATCH v2 3/4]: Use arrays to support more core independent div
+settings.
+[PATCH v2 4/4]: Adapter [PATCH v2 3/4] changes.
+
+Elaine Zhang (4):
+  dt-binding: clock: Document rockchip,rk3568-cru bindings
+  clk: rockchip: add dt-binding header for rk3568
+  clk: rockchip: support more core div setting
+  clk: rockchip: add clock controller for rk3568
+
+ .../bindings/clock/rockchip,rk3568-cru.yaml   |   60 +
+ drivers/clk/rockchip/Kconfig                  |    7 +
+ drivers/clk/rockchip/Makefile                 |    1 +
+ drivers/clk/rockchip/clk-cpu.c                |   53 +-
+ drivers/clk/rockchip/clk-px30.c               |    7 +-
+ drivers/clk/rockchip/clk-rk3036.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3128.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3188.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3228.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3288.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3308.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3328.c             |    7 +-
+ drivers/clk/rockchip/clk-rk3368.c             |   14 +-
+ drivers/clk/rockchip/clk-rk3399.c             |   14 +-
+ drivers/clk/rockchip/clk-rk3568.c             | 1726 +++++++++++++++++
+ drivers/clk/rockchip/clk-rv1108.c             |    7 +-
+ drivers/clk/rockchip/clk.h                    |   54 +-
+ include/dt-bindings/clock/rk3568-cru.h        |  926 +++++++++
+ 18 files changed, 2843 insertions(+), 75 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/rockchip,rk3568-cru.yaml
+ create mode 100644 drivers/clk/rockchip/clk-rk3568.c
+ create mode 100644 include/dt-bindings/clock/rk3568-cru.h
+
+-- 
+2.17.1
+
+
 
