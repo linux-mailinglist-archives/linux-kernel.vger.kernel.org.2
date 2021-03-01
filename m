@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA18328FCA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B563032902A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 21:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242483AbhCAT6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:58:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59152 "EHLO mail.kernel.org"
+        id S242708AbhCAUD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 15:03:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236153AbhCAQ6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:58:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46FEF64F5B;
-        Mon,  1 Mar 2021 16:36:30 +0000 (UTC)
+        id S235681AbhCAQ7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:59:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B05B564FE3;
+        Mon,  1 Mar 2021 16:37:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616591;
-        bh=FOYkBGeqyDEKd26/v0UlNBNy5fH1sisv9RVQ0kgNT1E=;
+        s=korg; t=1614616638;
+        bh=5COGKQzqNg1ljGpM7SbGpPQ1mjsAY9IQdisCKOmFDlA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xdrFhcRhc4GHRJEvYliHGbQoS6vFGTN/7Is6m1rajmW0JQJRctTQl1za8CzXUnoY/
-         SFEb//nY7VAmu7wCg5QzlRGZlpakbyGGBkQnkuK6QFbZizzJoTmK4WqbNTbnqv0+s9
-         Qtg6CnoXo19Lov/Ac3kLBEPTeRs/8V9Nfnl7CSQw=
+        b=CBKawYbTdzmsboXdUUv5CczBtVJeEBaFtGE0K0yGIlc+2od1UbPKXwdb/0TP4u0/s
+         eJyYcwLzqK1Ism/1GHut4L7837Bun0HCxHtgMj3PHTmJaexn7blLh9DZN/goyMEOI5
+         GOgUgjv5DMuSc6M0Duts87izyQ1u61nYtrfLHQOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rolf Eike Beer <eb@emlix.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 4.19 006/247] scripts: use pkg-config to locate libcrypto
-Date:   Mon,  1 Mar 2021 17:10:26 +0100
-Message-Id: <20210301161032.008526301@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christopher William Snowhill <chris@kode54.net>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 026/247] Bluetooth: Fix initializing response id after clearing struct
+Date:   Mon,  1 Mar 2021 17:10:46 +0100
+Message-Id: <20210301161032.977024558@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -39,44 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rolf Eike Beer <eb@emlix.com>
+From: Christopher William Snowhill <chris@kode54.net>
 
-commit 2cea4a7a1885bd0c765089afc14f7ff0eb77864e upstream.
+[ Upstream commit a5687c644015a097304a2e47476c0ecab2065734 ]
 
-Otherwise build fails if the headers are not in the default location. While at
-it also ask pkg-config for the libs, with fallback to the existing value.
+Looks like this was missed when patching the source to clear the structures
+throughout, causing this one instance to clear the struct after the response
+id is assigned.
 
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-Cc: stable@vger.kernel.org # 5.6.x
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: eddb7732119d ("Bluetooth: A2MP: Fix not initializing all members")
+Signed-off-by: Christopher William Snowhill <chris@kode54.net>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/Makefile |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/bluetooth/a2mp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -10,6 +10,9 @@
+diff --git a/net/bluetooth/a2mp.c b/net/bluetooth/a2mp.c
+index be9640e9ca006..888813342cfc8 100644
+--- a/net/bluetooth/a2mp.c
++++ b/net/bluetooth/a2mp.c
+@@ -388,9 +388,9 @@ static int a2mp_getampassoc_req(struct amp_mgr *mgr, struct sk_buff *skb,
+ 	hdev = hci_dev_get(req->id);
+ 	if (!hdev || hdev->amp_type == AMP_TYPE_BREDR || tmp) {
+ 		struct a2mp_amp_assoc_rsp rsp;
+-		rsp.id = req->id;
  
- HOST_EXTRACFLAGS += -I$(srctree)/tools/include
+ 		memset(&rsp, 0, sizeof(rsp));
++		rsp.id = req->id;
  
-+CRYPTO_LIBS = $(shell pkg-config --libs libcrypto 2> /dev/null || echo -lcrypto)
-+CRYPTO_CFLAGS = $(shell pkg-config --cflags libcrypto 2> /dev/null)
-+
- hostprogs-$(CONFIG_BUILD_BIN2C)  += bin2c
- hostprogs-$(CONFIG_KALLSYMS)     += kallsyms
- hostprogs-$(CONFIG_LOGO)         += pnmtologo
-@@ -23,8 +26,9 @@ hostprogs-$(CONFIG_SYSTEM_EXTRA_CERTIFIC
- 
- HOSTCFLAGS_sortextable.o = -I$(srctree)/tools/include
- HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
--HOSTLDLIBS_sign-file = -lcrypto
--HOSTLDLIBS_extract-cert = -lcrypto
-+HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
-+HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
-+HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
- 
- always		:= $(hostprogs-y) $(hostprogs-m)
- 
+ 		if (tmp) {
+ 			rsp.status = A2MP_STATUS_COLLISION_OCCURED;
+-- 
+2.27.0
+
 
 
