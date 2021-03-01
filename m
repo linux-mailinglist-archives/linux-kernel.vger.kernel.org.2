@@ -2,144 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD84327729
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 06:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6886232772D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 06:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbhCAFbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 00:31:08 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:52774 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbhCAFak (ORCPT
+        id S233513AbhCAFcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 00:32:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233504AbhCAFcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 00:30:40 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1215TkCd027257;
-        Sun, 28 Feb 2021 23:29:46 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614576586;
-        bh=NytG6h/HO/Y+I6DOr++snFnPKMf5uQm8jZLwmzuHNao=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=XoCNg8HvVXAg3qlzZPDcHPSChWL6H5i3ndH6V/Z+w6TjjPkD2uWxdoNdHZnJBM0Uy
-         A9UU4QOE4V/Cm8JM0P2IK5yQr4QuNU+sIZCdc9HPCqWMvUDvDJKPipKEzL6EjFaAkr
-         TFp/9btAjQQPn+jObLv3CGpx2GPSHCDPFtC0sUMM=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1215TjAI123984
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 28 Feb 2021 23:29:46 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sun, 28
- Feb 2021 23:29:45 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sun, 28 Feb 2021 23:29:45 -0600
-Received: from [10.250.232.211] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1215TeDx117177;
-        Sun, 28 Feb 2021 23:29:41 -0600
-Subject: Re: [PATCH] arm64: dts: ti: k3-j721e-main: Update the speed modes
- supported and their itap delay values for MMCSD subsystems
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210225132736.26429-1-a-govindraju@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <969c38e2-01e8-55a1-b97e-cf72f07fcd62@ti.com>
-Date:   Mon, 1 Mar 2021 10:59:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 1 Mar 2021 00:32:15 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2D3C061786;
+        Sun, 28 Feb 2021 21:31:35 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id p5so9159693plo.4;
+        Sun, 28 Feb 2021 21:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DWE2oaEcv/Vrm8DiUfdqFuMGqFu5B5IgJph0bkFVTfQ=;
+        b=SVR7PDv2YJ3DG5uLeoxFl6BsZxSXMHqt858g+3/bEc7niCvw2MyT8igsFt+S8fqPEN
+         aY/l+EeA5+XiAypAWrFswHGiqAHzjKFJQFKhYVyfajpdTcUTWhMoHrj07jnCDjvbKZHp
+         dNHM/SL3xChH7DMmqM3A+1FkKusD8QsrP4Up/0JWKnhpGVvPwyFY5mWHEyHfCYqruCsH
+         qgafyQ8YO3dSxUm7XZlCNrnJHQMU/LPoZxrTht9lcy4mNhiFlmu3jvs8jwU3nPJkLEVr
+         IyqPy33D4WJSrJdNSeWH5dbVHwQXMFooSy055FMb5RQ61XRmWASv5yy2+1Sd2GTZfGAQ
+         Dr9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DWE2oaEcv/Vrm8DiUfdqFuMGqFu5B5IgJph0bkFVTfQ=;
+        b=K7SNZzRHSRGNqQOb49ScA+KBoqSxrWzT/9Ag0wgAc2i85bKzgXeh0SyJ2IjsNHS6EA
+         KE18HTi4uJpI6mgndpNiJwcyF2SlX+BJtpHZ1vnR8qfFwlF+6hJRphyaSRXQ0xYc97EZ
+         6LB7DKnvfe6DaQh1OOyUvCsVN8hPD0T9gKh35jzixL06CQtMAfnIe5tZvwH8UFXBe7aj
+         XIH+jdokT+Ep3D3/IVpeG4DUiSVDGxd8oIdhDkmn2ihGmKhT8aeJB4rV/bPKSSULNllq
+         tI49K/xZcS93zULR/AkJsqnuprV3nM84+EnxEj9ejk8MtiHfFLNWQxV+qfd9txW4oz7t
+         pyjw==
+X-Gm-Message-State: AOAM532WRs4R+f690eZFUKG4NwPz/EYFNkclEM+Qo5JE2feznid/HTT2
+        3iY/GmY1KyUgpYg+JcA9iT4=
+X-Google-Smtp-Source: ABdhPJxPBDl5256gAoO5B9cfNTDJ3Q9Xo7MUP7YIpU/K3Hj1MsINQPvjcCK8pfVCaI9gPUJujn7Ddg==
+X-Received: by 2002:a17:902:7e82:b029:e4:bba8:bb3 with SMTP id z2-20020a1709027e82b02900e4bba80bb3mr1240826pla.66.1614576694706;
+        Sun, 28 Feb 2021 21:31:34 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:bc4a:36c8:19a:eb9e])
+        by smtp.gmail.com with ESMTPSA id c6sm16692028pfc.94.2021.02.28.21.31.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Feb 2021 21:31:33 -0800 (PST)
+Date:   Sun, 28 Feb 2021 21:31:31 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     "jingle.wu" <jingle.wu@emc.com.tw>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        phoenix@emc.com.tw, dave.wang@emc.com.tw, josh.chen@emc.com.tw
+Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for new devices
+Message-ID: <YDx8M4Rhdi8hW4EO@google.com>
+References: <20210226073537.4926-1-jingle.wu@emc.com.tw>
 MIME-Version: 1.0
-In-Reply-To: <20210225132736.26429-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210226073537.4926-1-jingle.wu@emc.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/02/21 6:57 pm, Aswath Govindraju wrote:
-> According to latest errata of J721e [1], HS400 mode is not supported
-> in MMCSD0 subsystem (i2024) and SDR104 mode is not supported in MMCSD1/2
-> subsystems (i2090). Therefore, replace mmc-hs400-1_8v with mmc-hs200-1_8v
-> in MMCSD0 subsystem and add a sdhci mask to disable SDR104 speed mode.
-> 
-> Also, update the itap delay values for all the MMCSD subsystems according
-> the latest J721e data sheet[2]
-> 
-> [1] - https://www.ti.com/lit/er/sprz455/sprz455.pdf
-> [2] - https://www.ti.com/lit/ds/symlink/tda4vm.pdf
-> 
-> Fixes: e6dc10f200da ("arm64: dts: ti: j721e-main: Add SDHCI nodes")
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Hi Jingle,
 
-Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
-
-Thanks
-Kishon
-
-> ---
->  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> index 8c84dafb7125..f1e7da3dfa27 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
-> @@ -1042,13 +1042,16 @@
->  		assigned-clocks = <&k3_clks 91 1>;
->  		assigned-clock-parents = <&k3_clks 91 2>;
->  		bus-width = <8>;
-> -		mmc-hs400-1_8v;
-> +		mmc-hs200-1_8v;
->  		mmc-ddr-1_8v;
->  		ti,otap-del-sel-legacy = <0xf>;
->  		ti,otap-del-sel-mmc-hs = <0xf>;
->  		ti,otap-del-sel-ddr52 = <0x5>;
->  		ti,otap-del-sel-hs200 = <0x6>;
->  		ti,otap-del-sel-hs400 = <0x0>;
-> +		ti,itap-del-sel-legacy = <0x10>;
-> +		ti,itap-del-sel-mmc-hs = <0xa>;
-> +		ti,itap-del-sel-ddr52 = <0x3>;
->  		ti,trm-icp = <0x8>;
->  		ti,strobe-sel = <0x77>;
->  		dma-coherent;
-> @@ -1069,9 +1072,15 @@
->  		ti,otap-del-sel-sdr25 = <0xf>;
->  		ti,otap-del-sel-sdr50 = <0xc>;
->  		ti,otap-del-sel-ddr50 = <0xc>;
-> +		ti,itap-del-sel-legacy = <0x0>;
-> +		ti,itap-del-sel-sd-hs = <0x0>;
-> +		ti,itap-del-sel-sdr12 = <0x0>;
-> +		ti,itap-del-sel-sdr25 = <0x0>;
-> +		ti,itap-del-sel-ddr50 = <0x2>;
->  		ti,trm-icp = <0x8>;
->  		ti,clkbuf-sel = <0x7>;
->  		dma-coherent;
-> +		sdhci-caps-mask = <0x2 0x0>;
->  	};
+On Fri, Feb 26, 2021 at 03:35:37PM +0800, jingle.wu wrote:
+> @@ -273,10 +318,12 @@ static int __elan_initialize(struct elan_tp_data *data)
+>  	bool woken_up = false;
+>  	int error;
 >  
->  	main_sdhci2: mmc@4f98000 {
-> @@ -1089,9 +1098,15 @@
->  		ti,otap-del-sel-sdr25 = <0xf>;
->  		ti,otap-del-sel-sdr50 = <0xc>;
->  		ti,otap-del-sel-ddr50 = <0xc>;
-> +		ti,itap-del-sel-legacy = <0x0>;
-> +		ti,itap-del-sel-sd-hs = <0x0>;
-> +		ti,itap-del-sel-sdr12 = <0x0>;
-> +		ti,itap-del-sel-sdr25 = <0x0>;
-> +		ti,itap-del-sel-ddr50 = <0x2>;
->  		ti,trm-icp = <0x8>;
->  		ti,clkbuf-sel = <0x7>;
->  		dma-coherent;
-> +		sdhci-caps-mask = <0x2 0x0>;
->  	};
+> -	error = data->ops->initialize(client);
+> -	if (error) {
+> -		dev_err(&client->dev, "device initialize failed: %d\n", error);
+> -		return error;
+> +	if (!(data->quirks & ETP_QUIRK_SET_QUICK_WAKEUP_DEV)) {
+> +		error = data->ops->initialize(client);
+> +		if (error) {
+> +			dev_err(&client->dev, "device initialize failed: %d\n", error);
+> +			return error;
+> +		}
+
+So data->ops->initialize(client) essentially performs reset of the
+controller (we may want to rename it even) and as far as I understand
+you would want to avoid resetting the controller on newer devices,
+right?
+
+My question is how behavior of older devices differ from the new ones
+(are they stay in "undefined" state at power up) and whether it is
+possible to determine if controller is in operating mode. For example,
+what would happen on older devices if we call elan_query_product() below
+without resetting the controller?
+
+I also think that while I can see us skipping reset in resume paths we
+probably want to keep it in probe as we really do not know the state of
+the device (was it powered up properly earlier, etc).
+
+>  	}
 >  
->  	usbss0: cdns-usb@4104000 {
+>  	error = elan_query_product(data);
+> @@ -366,6 +413,8 @@ static int elan_query_device_info(struct elan_tp_data *data)
+>  	if (error)
+>  		return error;
+>  
+> +	data->quirks = elan_i2c_lookup_quirk(data->ic_type, data->product_id);
+> +
+>  	error = elan_get_fwinfo(data->ic_type, data->iap_version,
+>  				&data->fw_validpage_count,
+>  				&data->fw_signature_address,
+> -- 
+> 2.17.1
 > 
+
+Thanks.
+
+-- 
+Dmitry
