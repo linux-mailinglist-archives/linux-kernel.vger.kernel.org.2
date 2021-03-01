@@ -2,244 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CF1327AB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F37327AB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbhCAJZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 04:25:54 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:13985 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233844AbhCAJZw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:25:52 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id 850CBA133F;
-        Mon,  1 Mar 2021 10:25:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=uSJJetc2M6a7
-        lgzm6cOltJ6NC/DZ0gqUW8HqU2UcHXk=; b=JH4+SP78tCJ3pTYlZ48ml+43Yh5P
-        Rs0dcRFPb0F2BNEVQcAzW3IeyRInsp5PuWcHCvQH1/O2NZYGUgUhEUI6WTPSch/m
-        b96yDk1+SB7TRKMU1qteXiL2IPCNfBitX5qqcoI5gxNRC4lpYr+g3Y7Dj96XF0uL
-        VCUILdn51VOVbEsKtwTMzuRyotgnol/QzLT/mCqdizO0UftD+kvin7MVPaH2EvPt
-        oc0m4XMstF6S/NRCzfj3WTI8gWojjdWxIa3Q9P/lS6I9QqzXSbPmNVS32qrrSiad
-        yvCT0miMljfuHH6ImaNxkqSncbKedSWYWZr0zhNuBJ72Pa/un5Nxs4O7Cw==
-Subject: Re: [PATCH v6 5/9] ALSA: virtio: handling control and I/O messages
- for the PCM device
-To:     Takashi Iwai <tiwai@suse.de>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-References: <20210227085956.1700687-1-anton.yakovlev@opensynergy.com>
- <20210227085956.1700687-6-anton.yakovlev@opensynergy.com>
- <s5hsg5gjutg.wl-tiwai@suse.de>
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <b3de8563-1776-4296-2cf5-883c831dfbe8@opensynergy.com>
-Date:   Mon, 1 Mar 2021 10:25:05 +0100
+        id S233910AbhCAJ1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 04:27:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233896AbhCAJ1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 04:27:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F39164E45;
+        Mon,  1 Mar 2021 09:26:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614590813;
+        bh=VHgTRak+sl2GIrklguql/soqsfocI2iCaJWV3c8IHHk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rGWMCEHvjKg+rR1m2mrP0pGyK+uM8DfH1ppCkDe+10csVsmBcl7bTgq8USCqzE3JJ
+         n/OUqPeNZS3ZPs4O3urTjunt9CXRgwZMZxPDIKhjDrv8OA5UrYY5slDEyT4p5o9/J6
+         547SMOJkYMjI4x+w4ZS3ulgWOmZID0JQvMrTD74o=
+Date:   Mon, 1 Mar 2021 10:26:51 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] driver core: Switch to using the new API kobj_to_dev()
+Message-ID: <YDyzW9l0HbYKS79V@kroah.com>
+References: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <s5hsg5gjutg.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1614590004-69592-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.02.2021 12:27, Takashi Iwai wrote:
-> On Sat, 27 Feb 2021 09:59:52 +0100,
-> Anton Yakovlev wrote:
->> +/**
->> + * virtsnd_pcm_event() - Handle the PCM device event notification.
->> + * @snd: VirtIO sound device.
->> + * @event: VirtIO sound event.
->> + *
->> + * Context: Interrupt context.
+On Mon, Mar 01, 2021 at 05:13:24PM +0800, Yang Li wrote:
+> fixed the following coccicheck:
+> ./include/linux/device.h:590:46-47: WARNING opportunity for
+> kobj_to_dev()
 > 
-> OK, then nonatomic PCM flag is invalid...
-
-Well, no. Here, events are kind of independent entities. PCM-related
-events are just a special case of more generic events, which can carry
-any kind of notification/payload. (And at the moment, only XRUN
-notification is supported for PCM substreams.) So it has nothing to do
-with the atomicity of the PCM device itself.
-
-
->> +/**
->> + * virtsnd_pcm_sg_num() - Count the number of sg-elements required to represent
->> + *                        vmalloc'ed buffer.
->> + * @data: Pointer to vmalloc'ed buffer.
->> + * @length: Buffer size.
->> + *
->> + * Context: Any context.
->> + * Return: Number of physically contiguous parts in the @data.
->> + */
->> +static int virtsnd_pcm_sg_num(u8 *data, unsigned int length)
->> +{
->> +     phys_addr_t sg_address;
->> +     unsigned int sg_length;
->> +     int num = 0;
->> +
->> +     while (length) {
->> +             struct page *pg = vmalloc_to_page(data);
->> +             phys_addr_t pg_address = page_to_phys(pg);
->> +             size_t pg_length;
->> +
->> +             pg_length = PAGE_SIZE - offset_in_page(data);
->> +             if (pg_length > length)
->> +                     pg_length = length;
->> +
->> +             if (!num || sg_address + sg_length != pg_address) {
->> +                     sg_address = pg_address;
->> +                     sg_length = pg_length;
->> +                     num++;
->> +             } else {
->> +                     sg_length += pg_length;
->> +             }
->> +
->> +             data += pg_length;
->> +             length -= pg_length;
->> +     }
->> +
->> +     return num;
->> +}
->> +
->> +/**
->> + * virtsnd_pcm_sg_from() - Build sg-list from vmalloc'ed buffer.
->> + * @sgs: Preallocated sg-list to populate.
->> + * @nsgs: The maximum number of elements in the @sgs.
->> + * @data: Pointer to vmalloc'ed buffer.
->> + * @length: Buffer size.
->> + *
->> + * Splits the buffer into physically contiguous parts and makes an sg-list of
->> + * such parts.
->> + *
->> + * Context: Any context.
->> + */
->> +static void virtsnd_pcm_sg_from(struct scatterlist *sgs, int nsgs, u8 *data,
->> +                             unsigned int length)
->> +{
->> +     int idx = -1;
->> +
->> +     while (length) {
->> +             struct page *pg = vmalloc_to_page(data);
->> +             size_t pg_length;
->> +
->> +             pg_length = PAGE_SIZE - offset_in_page(data);
->> +             if (pg_length > length)
->> +                     pg_length = length;
->> +
->> +             if (idx == -1 ||
->> +                 sg_phys(&sgs[idx]) + sgs[idx].length != page_to_phys(pg)) {
->> +                     if (idx + 1 == nsgs)
->> +                             break;
->> +                     sg_set_page(&sgs[++idx], pg, pg_length,
->> +                                 offset_in_page(data));
->> +             } else {
->> +                     sgs[idx].length += pg_length;
->> +             }
->> +
->> +             data += pg_length;
->> +             length -= pg_length;
->> +     }
->> +
->> +     sg_mark_end(&sgs[idx]);
->> +}
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  include/linux/device.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Hmm, I thought there can be already a handy helper to convert vmalloc
-> to sglist, but apparently not.  It should have been trivial to get the
-> page list from vmalloc, e.g.
-> 
-> int vmalloc_to_page_list(void *p, struct page **page_ret)
-> {
->          struct vmap_area *va;
-> 
->          va = find_vmap_area((unsigned long)p);
->          if (!va)
->                  return 0;
->          *page_ret = va->vm->pages;
->          return va->vm->nr_pages;
-> }
-> 
-> Then you can set up the sg list in a single call from the given page
-> list.
-> 
-> But it's just a cleanup, and let's mark it as a room for
-> improvements.
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index ba66073..31d7137 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -587,7 +587,7 @@ struct device_link {
+>  
+>  static inline struct device *kobj_to_dev(struct kobject *kobj)
+>  {
+> -	return container_of(kobj, struct device, kobj);
+> +	return kobj_to_dev(kobj);
+>  }
 
-Yeah, we can take a look into some kind of optimizations here. But I
-suspect, the overall code will look similar. It is not enough just to
-get a list of pages, you also need to build a list of physically
-contiguous regions from it. Because the sg-elements are put into a
-virtqueue that has a limited size. And each sg-element consumes one item
-in the virtqueue. And since the virtqueue itself is shared between all
-substreams, the items of the virtqueue become a scarce resource.
+Did you test this change?  Please do so...
 
+{sigh}
 
-> (snip)
->> +/**
->> + * virtsnd_pcm_msg_complete() - Complete an I/O message.
->> + * @msg: I/O message.
->> + * @written_bytes: Number of bytes written to the message.
->> + *
->> + * Completion of the message means the elapsed period. If transmission is
->> + * allowed, then each completed message is immediately placed back at the end
->> + * of the queue.
->> + *
->> + * For the playback substream, @written_bytes is equal to sizeof(msg->status).
->> + *
->> + * For the capture substream, @written_bytes is equal to sizeof(msg->status)
->> + * plus the number of captured bytes.
->> + *
->> + * Context: Interrupt context. Takes and releases the VirtIO substream spinlock.
->> + */
->> +static void virtsnd_pcm_msg_complete(struct virtio_pcm_msg *msg,
->> +                                  size_t written_bytes)
->> +{
->> +     struct virtio_pcm_substream *vss = msg->substream;
->> +
->> +     /*
->> +      * hw_ptr always indicates the buffer position of the first I/O message
->> +      * in the virtqueue. Therefore, on each completion of an I/O message,
->> +      * the hw_ptr value is unconditionally advanced.
->> +      */
->> +     spin_lock(&vss->lock);
->> +     /*
->> +      * If the capture substream returned an incorrect status, then just
->> +      * increase the hw_ptr by the message size.
->> +      */
->> +     if (vss->direction == SNDRV_PCM_STREAM_PLAYBACK ||
->> +         written_bytes <= sizeof(msg->status)) {
->> +             struct scatterlist *sg;
->> +
->> +             for (sg = &msg->sgs[PCM_MSG_SG_DATA]; sg; sg = sg_next(sg))
->> +                     vss->hw_ptr += sg->length;
-> 
-> So the sg list entries are supposed to be updated?  Or if the length
-> there are constant, we don't need to iterate the sg entries but keep
-> the total length beforehand?
-
-That's one of options. Since the same info can be derived from sg-list,
-I thought it might be not necessary to keep it in some additional field.
-But probably it makes sense to keep total length in the message
-structure itself. Then it will be more flexible (if we will need to
-create non-period sized messages in the future).
-
-
-> 
-> thanks,
-> 
-> Takashi
-> 
-
--- 
-Anton Yakovlev
-Senior Software Engineer
-
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
-
+greg k-h
