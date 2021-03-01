@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AD2329A3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D33E329A1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377193AbhCBAqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:46:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50578 "EHLO mail.kernel.org"
+        id S1376969AbhCBAox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:44:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232127AbhCASjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:39:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFC7C64F9B;
-        Mon,  1 Mar 2021 17:23:18 +0000 (UTC)
+        id S240407AbhCASiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:38:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33DF364EC4;
+        Mon,  1 Mar 2021 16:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619399;
-        bh=1f96oeQVM/BiIMAVZWokvRhoLmRmkBWfKByRvH20G1I=;
+        s=korg; t=1614616712;
+        bh=7K2zvyjv9akWKPPWIj37tFc4FXRluvg3aDLLjLHuAbw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q082dRmC5ONsB+1c1OqgIBdqoZ5jkGnogn9OHvgwvIkKCbNKKj1zn1vQMIN9PIVTr
-         7MFcUpLIyikyEhtX/WNex+G4T86Bhb4539QAHI0Z2D3HyG726JnI5ermrS41h2zpNQ
-         lT302MuVFcZatM0igvuYjhIZZ5iudo3WaceOk3sA=
+        b=STIZgFG/uUjHXDvKoGtrkjG1nmg3LQnf5kUH6+GVwOKk0vbCCZkGsoH3fW2R5NwMd
+         uxweNTSy54kLJouGQD/vDz/VmiBaZ9Rjs/qWthO7EIHQqp/c+M+2qlz3mdIQCV+6yg
+         9COOm+oP3hDe21Alb6afRaUJYGDocVSDn0y1MkEQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
-        Jaroslaw Gawin <jaroslawx.gawin@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Sudheesh Mavila <sudheesh.mavila@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 441/663] i40e: Fix add TC filter for IPv6
-Date:   Mon,  1 Mar 2021 17:11:29 +0100
-Message-Id: <20210301161203.717398943@linuxfoundation.org>
+Subject: [PATCH 4.19 070/247] net: amd-xgbe: Reset link when the link never comes back
+Date:   Mon,  1 Mar 2021 17:11:30 +0100
+Message-Id: <20210301161035.112391119@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
+References: <20210301161031.684018251@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Palczewski <mateusz.palczewski@intel.com>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit 61c1e0eb8375def7c891bfe857bb795a57090526 ]
+[ Upstream commit 84fe68eb67f9499309cffd97c1ba269de125ff14 ]
 
-Fix insufficient distinction between IPv4 and IPv6 addresses
-when creating a filter.
-IPv4 and IPv6 are kept in the same memory area. If IPv6 is added,
-then it's caught by IPv4 check, which leads to err -95.
+Normally, auto negotiation and reconnect should be automatically done by
+the hardware. But there seems to be an issue where auto negotiation has
+to be restarted manually. This happens because of link training and so
+even though still connected to the partner the link never "comes back".
+This needs an auto-negotiation restart.
 
-Fixes: 2f4b411a3d67 ("i40e: Enable cloud filters via tc-flower")
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
-Reviewed-by: Jaroslaw Gawin <jaroslawx.gawin@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Also, a change in xgbe-mdio is needed to get ethtool to recognize the
+link down and get the link change message. This change is only
+required in a backplane connection mode.
+
+Fixes: abf0a1c2b26a ("amd-xgbe: Add support for SFP+ modules")
+Co-developed-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Sudheesh Mavila <sudheesh.mavila@amd.com>
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/amd/xgbe/xgbe-mdio.c   | 2 +-
+ drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c | 8 ++++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 3ca5644785556..59971f62e6268 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -7731,7 +7731,8 @@ int i40e_add_del_cloud_filter_big_buf(struct i40e_vsi *vsi,
- 		return -EOPNOTSUPP;
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
+index 4d5506d928973..156a0bc8ab01d 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-mdio.c
+@@ -1345,7 +1345,7 @@ static void xgbe_phy_status(struct xgbe_prv_data *pdata)
+ 							     &an_restart);
+ 	if (an_restart) {
+ 		xgbe_phy_config_aneg(pdata);
+-		return;
++		goto adjust_link;
+ 	}
  
- 	/* adding filter using src_port/src_ip is not supported at this stage */
--	if (filter->src_port || filter->src_ipv4 ||
-+	if (filter->src_port ||
-+	    (filter->src_ipv4 && filter->n_proto != ETH_P_IPV6) ||
- 	    !ipv6_addr_any(&filter->ip.v6.src_ip6))
- 		return -EOPNOTSUPP;
+ 	if (pdata->phy.link) {
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+index 828d12bf523fe..1a617d6d2bf86 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c
+@@ -2595,6 +2595,14 @@ static int xgbe_phy_link_status(struct xgbe_prv_data *pdata, int *an_restart)
+ 	if (reg & MDIO_STAT1_LSTATUS)
+ 		return 1;
  
-@@ -7760,7 +7761,7 @@ int i40e_add_del_cloud_filter_big_buf(struct i40e_vsi *vsi,
- 			cpu_to_le16(I40E_AQC_ADD_CLOUD_FILTER_MAC_VLAN_PORT);
- 		}
- 
--	} else if (filter->dst_ipv4 ||
-+	} else if ((filter->dst_ipv4 && filter->n_proto != ETH_P_IPV6) ||
- 		   !ipv6_addr_any(&filter->ip.v6.dst_ip6)) {
- 		cld_filter.element.flags =
- 				cpu_to_le16(I40E_AQC_ADD_CLOUD_FILTER_IP_PORT);
++	if (pdata->phy.autoneg == AUTONEG_ENABLE &&
++	    phy_data->port_mode == XGBE_PORT_MODE_BACKPLANE) {
++		if (!test_bit(XGBE_LINK_INIT, &pdata->dev_state)) {
++			netif_carrier_off(pdata->netdev);
++			*an_restart = 1;
++		}
++	}
++
+ 	/* No link, attempt a receiver reset cycle */
+ 	if (phy_data->rrc_count++ > XGBE_RRC_FREQUENCY) {
+ 		phy_data->rrc_count = 0;
 -- 
 2.27.0
 
