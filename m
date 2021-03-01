@@ -2,150 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F4165328BA2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72F1328C4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 19:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240245AbhCASiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:38:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbhCAQkQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:40:16 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD13C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 08:39:35 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id z11so26473014lfb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 08:39:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8RorKlKUIwAeZ2vu8I46zt7CBWlrUNEpLpF3jdorkm8=;
-        b=Hx5rm6bgWnW2rzcg2ftQXDvzUq9+b9iZL+48q+8+FVQIhe6LJSSulGtfBsHTS3gkns
-         4oDOY3TvQLXS9UMnfUpKBGeLsmOQoJojGPdx8k3ndakA4m87/EgWxdg5pSOAdnG+g9Bn
-         mzK0T+tRjpSvPlBF/8obIi7KyX0lPLpsKMm6yi+wP4Gx9klCmizayy1TpFqUR4wFLqwi
-         heoKUIkdL09+MasjGb9IM0eI0alY97t9dxVgdKvPxZ9j9ZupH53PSBcQ/g2E9ixxeVTM
-         rEB7rFK05UxoTMMiy78IXLK2TmBvobe9M3FA6wc3TKZg3JyjAUm3L6WIW3u2PniUcELi
-         uVTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8RorKlKUIwAeZ2vu8I46zt7CBWlrUNEpLpF3jdorkm8=;
-        b=uLPe3BfcnH6zOWaABXmFRAti9r4Tmanx7tWU3oz3QO0Arm5szuvi9YeP7tGcyhGN6I
-         vMtdELpyBzCTc9gPdt3Tr1QxgE9GX94I09kSOgOkDmlYX2RmB6EvZqiK6sMMkMGzKsko
-         Jl+As1/MfmA/6CVSvFmSU8sy+GPAbO+9Yes9YcBt0GehRIzkDFcd1k4o0BWLT6qWecE5
-         i3etJegnl4Z7NOoXgnt3r6vhW2965u+azvDvzXiKCR93i+T6p4ksARr3dSeyad+PUncH
-         a5vhFbDUpj3TTiLKXp0AHKxLGfvPAtBsp1V51ybI9DxMrfjn9T8j6WyKapnV1tvUnwfy
-         CCOA==
-X-Gm-Message-State: AOAM533DaA0+pU1QlqbFaX0v2gnKdgX0Cw6lqxkDf0xJl6s5A9RHHrSO
-        /8OaRGm75v2p6jWz6NLB4mfuy+QD2nOmyo4HVnyODA==
-X-Google-Smtp-Source: ABdhPJx0KbzhJIVoM4/GcjChCBVWTV/vBF4C/e1Kdb2FPa+us+EDkJoa0wsgIaAANgRdocbZkBVKQCHsKYU/dtN/IeA=
-X-Received: by 2002:a05:6512:942:: with SMTP id u2mr10175495lft.117.1614616774183;
- Mon, 01 Mar 2021 08:39:34 -0800 (PST)
+        id S240685AbhCAStF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 13:49:05 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:61012 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235202AbhCAQnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:43:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614616972; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WRPpZ9qj4Um6MCvFHhN5ctHaT2j5wddCNIfkDkOakl8=;
+ b=D1P4yHPVIV96XNUM5HfpMJ7Cg/ooxrPirDvCOcaFnIHYhw3LePzyJL/XPlKOjhrIPXC3dYeh
+ efn5+eBIIEpKRIN8MZaWTtV+aZyzSKQFcVr+vo4mkUKvxNhstW26H6IRq40uNuGT9xIf3OrX
+ C3tAezk+R2lQwuu69l0otHwVuRg=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 603d196f832f19b9ef81d4fd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 16:42:23
+ GMT
+Sender: kgunda=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EB70FC43464; Mon,  1 Mar 2021 16:42:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kgunda)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6927C433C6;
+        Mon,  1 Mar 2021 16:42:21 +0000 (UTC)
 MIME-Version: 1.0
-References: <000000000000f1c03b05bc43aadc@google.com> <CALvZod4vGj0P6WKncdKpGaVEb1Ui_fyHm+-hbCJTmbvo43CJ=A@mail.gmail.com>
- <7b7c4f41-b72e-840f-278a-320b9d97f887@oracle.com> <CALvZod5qODDSxqHqQ=_1roYVGVVvEvP3FnYMnAPQZgvUjxotsw@mail.gmail.com>
- <YDzaAWK41K4gD35V@dhcp22.suse.cz> <CALvZod4DqOkrJG+7dki=VfzHD1z9jD3XhObpk887zKy=kEk1tA@mail.gmail.com>
- <YD0OzXTmYm8M58Vo@dhcp22.suse.cz>
-In-Reply-To: <YD0OzXTmYm8M58Vo@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 1 Mar 2021 08:39:22 -0800
-Message-ID: <CALvZod789kHFAjWA8W7=r2=YxJ86uc4WhfgW1juN_YEMCApgqw@mail.gmail.com>
-Subject: Re: possible deadlock in sk_clone_lock
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        syzbot <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Mina Almasry <almasrymina@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Mar 2021 22:12:21 +0530
+From:   kgunda@codeaurora.org
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
+        lee.jones@linaro.org, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, jacek.anaszewski@gmail.com,
+        pavel@ucw.cz, robh+dt@kernel.org, mark.rutland@arm.com,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH V3 2/2] backlight: qcom-wled: Correct the sync_toggle
+ sequence
+In-Reply-To: <20210301100239.orbt7km6lgjwvzii@maple.lan>
+References: <1614590916-27070-1-git-send-email-kgunda@codeaurora.org>
+ <1614590916-27070-3-git-send-email-kgunda@codeaurora.org>
+ <20210301100239.orbt7km6lgjwvzii@maple.lan>
+Message-ID: <f25a2c8b1bf0eae63a2fe9a31c824f1e@codeaurora.org>
+X-Sender: kgunda@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 7:57 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 01-03-21 07:10:11, Shakeel Butt wrote:
-> > On Mon, Mar 1, 2021 at 4:12 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Fri 26-02-21 16:00:30, Shakeel Butt wrote:
-> > > > On Fri, Feb 26, 2021 at 3:14 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> > > > >
-> > > > > Cc: Michal
-> > > > >
-> > > > > On 2/26/21 2:44 PM, Shakeel Butt wrote:
-> > > > > > On Fri, Feb 26, 2021 at 2:09 PM syzbot
-> > > > > > <syzbot+506c8a2a115201881d45@syzkaller.appspotmail.com> wrote:
-> > > > > <snip>
-> > > > > >> other info that might help us debug this:
-> > > > > >>
-> > > > > >>  Possible interrupt unsafe locking scenario:
-> > > > > >>
-> > > > > >>        CPU0                    CPU1
-> > > > > >>        ----                    ----
-> > > > > >>   lock(hugetlb_lock);
-> > > > > >>                                local_irq_disable();
-> > > > > >>                                lock(slock-AF_INET);
-> > > > > >>                                lock(hugetlb_lock);
-> > > > > >>   <Interrupt>
-> > > > > >>     lock(slock-AF_INET);
-> > > > > >>
-> > > > > >>  *** DEADLOCK ***
-> > > > > >
-> > > > > > This has been reproduced on 4.19 stable kernel as well [1] and there
-> > > > > > is a reproducer as well.
-> > > > > >
-> > > > > > It seems like sendmsg(MSG_ZEROCOPY) from a buffer backed by hugetlb. I
-> > > > > > wonder if we just need to make hugetlb_lock softirq-safe.
-> > > > > >
-> > > > > > [1] https://syzkaller.appspot.com/bug?extid=6383ce4b0b8ec575ad93
-> > > > >
-> > > > > Thanks Shakeel,
-> > > > >
-> > > > > Commit c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in non-task
-> > > > > context") attempted to address this issue.  It uses a work queue to
-> > > > > acquire hugetlb_lock if the caller is !in_task().
-> > > > >
-> > > > > In another recent thread, there was the suggestion to change the
-> > > > > !in_task to in_atomic.
-> > > > >
-> > > > > I need to do some research on the subtle differences between in_task,
-> > > > > in_atomic, etc.  TBH, I 'thought' !in_task would prevent the issue
-> > > > > reported here.  But, that obviously is not the case.
-> > > >
-> > > > I think the freeing is happening in the process context in this report
-> > > > but it is creating the lock chain from softirq-safe slock to
-> > > > irq-unsafe hugetlb_lock. So, two solutions I can think of are: (1)
-> > > > always defer the freeing of hugetlb pages to a work queue or (2) make
-> > > > hugetlb_lock softirq-safe.
-> > >
-> > > There is __do_softirq so this should be in the soft IRQ context no?
-> > > Is this really reproducible with kernels which have c77c0a8ac4c5
-> > > applied?
-> >
-> > Yes this is softirq context and syzbot has reproduced this on
-> > linux-next 20210224.
->
-> Then how come this can ever be a problem? in_task() should exclude soft
-> irq context unless I am mistaken.
->
-
-If I take the following example of syzbot's deadlock scenario then
-CPU1 is the one freeing the hugetlb pages. It is in the process
-context but has disabled softirqs (see __tcp_close()).
-
-        CPU0                    CPU1
-        ----                    ----
-   lock(hugetlb_lock);
-                                local_irq_disable();
-                                lock(slock-AF_INET);
-                                lock(hugetlb_lock);
-   <Interrupt>
-     lock(slock-AF_INET);
-
-So, this deadlock scenario is very much possible.
+On 2021-03-01 15:32, Daniel Thompson wrote:
+> On Mon, Mar 01, 2021 at 02:58:36PM +0530, Kiran Gunda wrote:
+>> As per the current implementation, after FSC (Full Scale Current)
+>> and brightness update the sync bits are transitioned from 
+>> set-then-clear.
+> 
+> This does not makes sense since there are too many verbs. Set and clear
+> are both verbs so in this context: "the code will set the bit and then
+> the code will clear the bit".
+> 
+> Either:
+> 
+> s/transitioned from set-then-clear/set-then-cleared/.
+> 
+> Or:
+> 
+> s/transitioned from set-then-clear/using a set-then-clear approach/.
+> 
+>> But, the FSC and brightness sync takes place during a clear-then-set
+>> transition of the sync bits.
+> 
+> Likewise this no longer makes sense and had also become misleading.
+> Two changes of state, clear and then set, do not usually result in a
+> single transition.
+> 
+> Either:
+> 
+> s/clear-then-set/0 to 1/
+> 
+> Alternatively, if you want to stick exclusively to the set/clear
+> terminology then replace the whole quoted section with:
+> 
+>   But, the FSC and brightness sync takes place when the sync bits are
+>   set (e.g. on a rising edge).
+> 
+> 
+>> So the hardware team recommends a
+>> clear-then-set approach in order to guarantee such a transition
+>> regardless of the previous register state.
+>> 
+>> Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
+> 
+> With one of each of the changes proposed above:
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+> 
+> 
+> Daniel.
+> 
+Apologies for the mistake. I have corrected and submitted the
+V4 series with the "reviewed-by" tag.
+> 
+>> ---
+>>  drivers/video/backlight/qcom-wled.c | 12 ++++++------
+>>  1 file changed, 6 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/drivers/video/backlight/qcom-wled.c 
+>> b/drivers/video/backlight/qcom-wled.c
+>> index aef52b9..19f83ac 100644
+>> --- a/drivers/video/backlight/qcom-wled.c
+>> +++ b/drivers/video/backlight/qcom-wled.c
+>> @@ -337,13 +337,13 @@ static int wled3_sync_toggle(struct wled *wled)
+>> 
+>>  	rc = regmap_update_bits(wled->regmap,
+>>  				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+>> -				mask, mask);
+>> +				mask, WLED3_SINK_REG_SYNC_CLEAR);
+>>  	if (rc < 0)
+>>  		return rc;
+>> 
+>>  	rc = regmap_update_bits(wled->regmap,
+>>  				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
+>> -				mask, WLED3_SINK_REG_SYNC_CLEAR);
+>> +				mask, mask);
+>> 
+>>  	return rc;
+>>  }
+>> @@ -353,17 +353,17 @@ static int wled5_mod_sync_toggle(struct wled 
+>> *wled)
+>>  	int rc;
+>>  	u8 val;
+>> 
+>> -	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
+>> -					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
+>>  	rc = regmap_update_bits(wled->regmap,
+>>  				wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
+>> -				WLED5_SINK_REG_SYNC_MASK, val);
+>> +				WLED5_SINK_REG_SYNC_MASK, 0);
+>>  	if (rc < 0)
+>>  		return rc;
+>> 
+>> +	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
+>> +					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
+>>  	return regmap_update_bits(wled->regmap,
+>>  				  wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
+>> -				  WLED5_SINK_REG_SYNC_MASK, 0);
+>> +				  WLED5_SINK_REG_SYNC_MASK, val);
+>>  }
+>> 
+>>  static int wled_ovp_fault_status(struct wled *wled, bool *fault_set)
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>>  a Linux Foundation Collaborative Project
+>> 
