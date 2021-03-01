@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9486A3297F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBECA329887
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238725AbhCAXGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:06:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49650 "EHLO mail.kernel.org"
+        id S1346133AbhCAXiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:38:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236421AbhCARyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:54:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1326965356;
-        Mon,  1 Mar 2021 17:45:17 +0000 (UTC)
+        id S239197AbhCASHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:07:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 439A96501D;
+        Mon,  1 Mar 2021 17:11:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620718;
-        bh=aVAObzpKYvgk2U20BrBMekk0Q8E7V+FDo8jk51viFRw=;
+        s=korg; t=1614618717;
+        bh=0LQaJDatT3YDnwsGDdgp5WMdhDrI7e+IHtxQjvuU2pQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wjb+dOgArXGURrLEfMTBz+SrZm8BTRY9zO409JYALE+3cZ5eNcc43e2UIjA8DLIPJ
-         2nl74GILva4a+zpY5Fw8ejQfxoFqNEjwchQXT1VTFJsHibEZOS4FmvV13quJ/f4Daq
-         WPidCG7fF/ASmVWC8Y9j5ufRIukAjtqR4ZWTvFd4=
+        b=ipPEiyGq/NKfxxFbh5YgJNyr+q56o21+t76GMKC3tAjIETo+Og4IXfOYIAiC0ep5h
+         XDWmOkZ+VHbTw0nilqQxITDGrL2df+Pl1tuG3wA2ZSewb5XE/3W+udl4FU82iNXRB7
+         O7GCT2MZBPHZYvkX2hVmS2q3M+/ZXDjvLn6E2s8E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 254/775] drm/amdgpu: Prevent shift wrapping in amdgpu_read_mask()
-Date:   Mon,  1 Mar 2021 17:07:02 +0100
-Message-Id: <20210301161214.184953063@linuxfoundation.org>
+Subject: [PATCH 5.10 190/663] media: atomisp: Fix a buffer overflow in debug code
+Date:   Mon,  1 Mar 2021 17:07:18 +0100
+Message-Id: <20210301161151.176045166@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +43,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit c915ef890d5dc79f483e1ca3b3a5b5f1a170690c ]
+[ Upstream commit 625993166b551d633917ca35d4afb7b46d7451b4 ]
 
-If the user passes a "level" value which is higher than 31 then that
-leads to shift wrapping.  The undefined behavior will lead to a
-syzkaller stack dump.
+The "pad" variable is a user controlled string and we haven't properly
+clamped it at this point so the debug code could print from beyond the
+of the array.
 
-Fixes: 5632708f4452 ("drm/amd/powerplay: add dpm force multiple levels on cz/tonga/fiji/polaris (v2)")
+Fixes: a49d25364dfb ("staging/atomisp: Add support for the Intel IPU v2")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/pm/amdgpu_pm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../media/atomisp/pci/atomisp_subdev.c        | 24 ++++++++++++-------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-index 7b6ef05a1d35a..0b5be50b2eeeb 100644
---- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-@@ -1074,7 +1074,7 @@ static ssize_t amdgpu_get_pp_dpm_sclk(struct device *dev,
- static ssize_t amdgpu_read_mask(const char *buf, size_t count, uint32_t *mask)
- {
- 	int ret;
--	long level;
-+	unsigned long level;
- 	char *sub_str = NULL;
- 	char *tmp;
- 	char buf_cpy[AMDGPU_MASK_BUF_MAX + 1];
-@@ -1090,8 +1090,8 @@ static ssize_t amdgpu_read_mask(const char *buf, size_t count, uint32_t *mask)
- 	while (tmp[0]) {
- 		sub_str = strsep(&tmp, delimiter);
- 		if (strlen(sub_str)) {
--			ret = kstrtol(sub_str, 0, &level);
--			if (ret)
-+			ret = kstrtoul(sub_str, 0, &level);
-+			if (ret || level > 31)
- 				return -EINVAL;
- 			*mask |= 1 << level;
- 		} else
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_subdev.c b/drivers/staging/media/atomisp/pci/atomisp_subdev.c
+index 52b9fb18c87f0..dcc2dd981ca60 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_subdev.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_subdev.c
+@@ -349,12 +349,20 @@ static int isp_subdev_get_selection(struct v4l2_subdev *sd,
+ 	return 0;
+ }
+ 
+-static char *atomisp_pad_str[] = { "ATOMISP_SUBDEV_PAD_SINK",
+-				   "ATOMISP_SUBDEV_PAD_SOURCE_CAPTURE",
+-				   "ATOMISP_SUBDEV_PAD_SOURCE_VF",
+-				   "ATOMISP_SUBDEV_PAD_SOURCE_PREVIEW",
+-				   "ATOMISP_SUBDEV_PAD_SOURCE_VIDEO"
+-				 };
++static const char *atomisp_pad_str(unsigned int pad)
++{
++	static const char *const pad_str[] = {
++		"ATOMISP_SUBDEV_PAD_SINK",
++		"ATOMISP_SUBDEV_PAD_SOURCE_CAPTURE",
++		"ATOMISP_SUBDEV_PAD_SOURCE_VF",
++		"ATOMISP_SUBDEV_PAD_SOURCE_PREVIEW",
++		"ATOMISP_SUBDEV_PAD_SOURCE_VIDEO",
++	};
++
++	if (pad >= ARRAY_SIZE(pad_str))
++		return "ATOMISP_INVALID_PAD";
++	return pad_str[pad];
++}
+ 
+ int atomisp_subdev_set_selection(struct v4l2_subdev *sd,
+ 				 struct v4l2_subdev_pad_config *cfg,
+@@ -378,7 +386,7 @@ int atomisp_subdev_set_selection(struct v4l2_subdev *sd,
+ 
+ 	dev_dbg(isp->dev,
+ 		"sel: pad %s tgt %s l %d t %d w %d h %d which %s f 0x%8.8x\n",
+-		atomisp_pad_str[pad], target == V4L2_SEL_TGT_CROP
++		atomisp_pad_str(pad), target == V4L2_SEL_TGT_CROP
+ 		? "V4L2_SEL_TGT_CROP" : "V4L2_SEL_TGT_COMPOSE",
+ 		r->left, r->top, r->width, r->height,
+ 		which == V4L2_SUBDEV_FORMAT_TRY ? "V4L2_SUBDEV_FORMAT_TRY"
+@@ -612,7 +620,7 @@ void atomisp_subdev_set_ffmt(struct v4l2_subdev *sd,
+ 	enum atomisp_input_stream_id stream_id;
+ 
+ 	dev_dbg(isp->dev, "ffmt: pad %s w %d h %d code 0x%8.8x which %s\n",
+-		atomisp_pad_str[pad], ffmt->width, ffmt->height, ffmt->code,
++		atomisp_pad_str(pad), ffmt->width, ffmt->height, ffmt->code,
+ 		which == V4L2_SUBDEV_FORMAT_TRY ? "V4L2_SUBDEV_FORMAT_TRY"
+ 		: "V4L2_SUBDEV_FORMAT_ACTIVE");
+ 
 -- 
 2.27.0
 
