@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D833D329F6C
+	by mail.lfdr.de (Postfix) with ESMTP id 64533329F6B
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1573951AbhCBD22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:28:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50698 "EHLO mail.kernel.org"
+        id S1573943AbhCBD20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:28:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240286AbhCAUdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:33:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB5DE600CC;
-        Mon,  1 Mar 2021 18:45:17 +0000 (UTC)
+        id S239303AbhCAUdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:33:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19032601FC;
+        Mon,  1 Mar 2021 18:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614624318;
-        bh=JOeQMOdStZQ8zOc/AwJ9c5j1aHREEL+GdfyslgS9M9o=;
+        s=korg; t=1614624315;
+        bh=P7QchQAjJ3z7UxYFKNiqMsqZ58g7MJPBzv8ewmFn9ig=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2i3ZjHVip3vPbXRUVsLShgxAnpmCvTWByChMg9OWxcl8TYnxr9H3oAyv4zubxcmWB
-         Wpw83SnykjCJB5auiqfv+pg2NVbvSEAv5T6g0EhWvZcvfPMakLhuh4FvCwaa66dNlC
-         C+z4sFzz7ZjEis+71zW7avyWYbkiaX2vyQSFWVt4=
+        b=xba9RCpXkNpDLudtXj7JznX0LK1WOzqs2Nk73C8uPuqbZNWqMyLP383rLE3y3/L5l
+         fqbj4qnPUc5KVrNawQT56WMMYIo7DwLCDo3tkcu4WWDYX+aLV/ye8cuMxeQCpvc3e1
+         oAfVwIFxLTKW6VNzsc8ywcpMLKsmSi8PoVm3kKY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,12 +32,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         <nakamura.shun@fujitsu.com>, linux-arm-kernel@lists.infradead.org,
         linuxarm@openeuler.org, Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 344/663] perf vendor events arm64: Fix Ampere eMag event typo
-Date:   Mon,  1 Mar 2021 17:09:52 +0100
-Message-Id: <20210301161158.875032711@linuxfoundation.org>
+Subject: [PATCH 5.4 178/340] perf vendor events arm64: Fix Ampere eMag event typo
+Date:   Mon,  1 Mar 2021 17:12:02 +0100
+Message-Id: <20210301161057.070778296@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -71,7 +71,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json b/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
-index 40010a8724b3a..ce6e7e7960579 100644
+index df9201434cb6a..b0a10a219b50d 100644
 --- a/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
 +++ b/tools/perf/pmu-events/arch/arm64/ampere/emag/cache.json
 @@ -114,7 +114,7 @@
