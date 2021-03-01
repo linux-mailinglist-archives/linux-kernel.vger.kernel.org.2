@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6E0329B7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ABF5329C92
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348768AbhCBBZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:25:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39786 "EHLO mail.kernel.org"
+        id S1441845AbhCBB5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:57:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235242AbhCATJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:09:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D7336500C;
-        Mon,  1 Mar 2021 17:09:39 +0000 (UTC)
+        id S242080AbhCATfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:35:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4CC76517C;
+        Mon,  1 Mar 2021 17:09:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618580;
-        bh=fTavofsiTBU1uDvNLu1N1qirRXEC5Cazlo9uY56ffdo=;
+        s=korg; t=1614618585;
+        bh=n3Yh/hmP3aPR62e5I3grG5CCDAEPfbcdB+mvNR/haqY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SZ92I3gefQ15Wi0UA8z1qCW5nNl6K10REuVsAQiwDiIhISlvG8ZxylUVelf2uamTi
-         LhOfvV611UqiiU2XdpoQZ1O55Nu2wQ7Ca3sikRmCu0OvmGulBcBpJmqpPwPqt+O8v2
-         sp+x5ShUOc4kDYTg7p2lGJ2yfLaCmKxH0IoDY6CA=
+        b=QIKNqrrtdFWNdcOgwtwHOJKjZef8PLa9VSpMJGIIDzsODjCsJ/I8cVGVlYDldx8KU
+         NZ/S8cmFIwC6BY4EtJk+w5nT9vQ0beioN18c/Iy5NcpnvGC06nWj4y7i7FRyH95z0c
+         46/EABmmKpuHCTLlZoFTC+/uVJLMlU9sSw3h5NpU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Jialin Zhang <zhangjialin11@huawei.com>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 139/663] drm/gma500: Fix error return code in psb_driver_load()
-Date:   Mon,  1 Mar 2021 17:06:27 +0100
-Message-Id: <20210301161148.640408337@linuxfoundation.org>
+Subject: [PATCH 5.10 141/663] drm/fb-helper: Add missed unlocks in setcmap_legacy()
+Date:   Mon,  1 Mar 2021 17:06:29 +0100
+Message-Id: <20210301161148.744693775@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,36 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jialin Zhang <zhangjialin11@huawei.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 6926872ae24452d4f2176a3ba2dee659497de2c4 ]
+[ Upstream commit 0a260e731d6c4c17547ac275a2cde888a9eb4a3d ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+setcmap_legacy() does not call drm_modeset_unlock_all() in some exits,
+add the missed unlocks with goto to fix it.
 
-Fixes: 5c49fd3aa0ab ("gma500: Add the core DRM files and headers")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jialin Zhang <zhangjialin11@huawei.com>
+Fixes: 964c60063bff ("drm/fb-helper: separate the fb_setcmap helper into atomic and legacy paths")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
 Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201130020216.1906141-1-zhangjialin11@huawei.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20201203144248.418281-1-hslester96@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/psb_drv.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/drm_fb_helper.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/psb_drv.c b/drivers/gpu/drm/gma500/psb_drv.c
-index 34b4aae9a15e3..074f403d7ca07 100644
---- a/drivers/gpu/drm/gma500/psb_drv.c
-+++ b/drivers/gpu/drm/gma500/psb_drv.c
-@@ -313,6 +313,8 @@ static int psb_driver_load(struct drm_device *dev, unsigned long flags)
- 	if (ret)
- 		goto out_err;
+diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
+index 1543d9d109705..8033467db4bee 100644
+--- a/drivers/gpu/drm/drm_fb_helper.c
++++ b/drivers/gpu/drm/drm_fb_helper.c
+@@ -923,11 +923,15 @@ static int setcmap_legacy(struct fb_cmap *cmap, struct fb_info *info)
+ 	drm_modeset_lock_all(fb_helper->dev);
+ 	drm_client_for_each_modeset(modeset, &fb_helper->client) {
+ 		crtc = modeset->crtc;
+-		if (!crtc->funcs->gamma_set || !crtc->gamma_size)
+-			return -EINVAL;
++		if (!crtc->funcs->gamma_set || !crtc->gamma_size) {
++			ret = -EINVAL;
++			goto out;
++		}
  
-+	ret = -ENOMEM;
-+
- 	dev_priv->mmu = psb_mmu_driver_init(dev, 1, 0, 0);
- 	if (!dev_priv->mmu)
- 		goto out_err;
+-		if (cmap->start + cmap->len > crtc->gamma_size)
+-			return -EINVAL;
++		if (cmap->start + cmap->len > crtc->gamma_size) {
++			ret = -EINVAL;
++			goto out;
++		}
+ 
+ 		r = crtc->gamma_store;
+ 		g = r + crtc->gamma_size;
+@@ -940,8 +944,9 @@ static int setcmap_legacy(struct fb_cmap *cmap, struct fb_info *info)
+ 		ret = crtc->funcs->gamma_set(crtc, r, g, b,
+ 					     crtc->gamma_size, NULL);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 	}
++out:
+ 	drm_modeset_unlock_all(fb_helper->dev);
+ 
+ 	return ret;
 -- 
 2.27.0
 
