@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9542B329C78
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3692329BF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:20:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380809AbhCBBzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:55:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48602 "EHLO mail.kernel.org"
+        id S241178AbhCBBpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:45:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241944AbhCAT36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8437465134;
-        Mon,  1 Mar 2021 17:03:49 +0000 (UTC)
+        id S237646AbhCATVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:21:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02D1C64FBC;
+        Mon,  1 Mar 2021 17:37:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618230;
-        bh=LhcZVeNCRJS1Z6vXuuq/RF6MV1TwjipyFenDsbvlGMM=;
+        s=korg; t=1614620276;
+        bh=k6vtMchoWGyWtWELp5BGWeV7s51JHBk/vSco0li3SZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1oyZt2DY80zawgMOGjRSzNlHlW0jpS/aWXYtGHRuYzJsnZ1Bw87ZvSfG1dMBaoBhJ
-         uiJoQrsKUnKMBf0+y5m12rXPC3j18mOUM+a1I8A7/bocFWkx9Y3Xk3n6KRcpEKKTdw
-         vIFHP3zUjdxqnBYqOiGtnr7uS0KiQVqV9cikdnOk=
+        b=qnvECTT9NR79RhsTo6enY9IYNvZf2pp8Yy4i9ylzHFaOw055BWm/aZOnAj6PnmfQ6
+         4GVSHcy2P2koSzAKp44b+/EonIaE3goCBxS9rEwBGIVW2/BPhISk3h3VtU75hR5dRv
+         J8dpaigX9TbMX8gZc5hlqFHVRm1t0QqXWFqFrTLU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 012/663] bfq: Avoid false bfq queue merging
-Date:   Mon,  1 Mar 2021 17:04:20 +0100
-Message-Id: <20210301161142.393649916@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
+        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com,
+        Marco Elver <elver@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 094/775] bpf_lru_list: Read double-checked variable once without lock
+Date:   Mon,  1 Mar 2021 17:04:22 +0100
+Message-Id: <20210301161206.322948484@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +44,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Marco Elver <elver@google.com>
 
-commit 41e76c85660c022c6bf5713bfb6c21e64a487cec upstream.
+[ Upstream commit 6df8fb83301d68ea0a0c0e1cbcc790fcc333ed12 ]
 
-bfq_setup_cooperator() uses bfqd->in_serv_last_pos so detect whether it
-makes sense to merge current bfq queue with the in-service queue.
-However if the in-service queue is freshly scheduled and didn't dispatch
-any requests yet, bfqd->in_serv_last_pos is stale and contains value
-from the previously scheduled bfq queue which can thus result in a bogus
-decision that the two queues should be merged. This bug can be observed
-for example with the following fio jobfile:
+For double-checked locking in bpf_common_lru_push_free(), node->type is
+read outside the critical section and then re-checked under the lock.
+However, concurrent writes to node->type result in data races.
 
-[global]
-direct=0
-ioengine=sync
-invalidate=1
-size=1g
-rw=read
+For example, the following concurrent access was observed by KCSAN:
 
-[reader]
-numjobs=4
-directory=/mnt
+  write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
+   __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
+   __local_list_flush            kernel/bpf/bpf_lru_list.c:298
+   ...
+  read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
+   bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
+   bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
+   ...
 
-where the 4 processes will end up in the one shared bfq queue although
-they do IO to physically very distant files (for some reason I was able to
-observe this only with slice_idle=1ms setting).
+Fix the data races where node->type is read outside the critical section
+(for double-checked locking) by marking the access with READ_ONCE() as
+well as ensuring the variable is only accessed once.
 
-Fix the problem by invalidating bfqd->in_serv_last_pos when switching
-in-service queue.
-
-Fixes: 058fdecc6de7 ("block, bfq: fix in-service-queue check for queue merging")
-CC: stable@vger.kernel.org
-Signed-off-by: Jan Kara <jack@suse.cz>
-Acked-by: Paolo Valente <paolo.valente@linaro.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3a08c2fd7634 ("bpf: LRU List")
+Reported-by: syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com
+Reported-by: syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
+Signed-off-by: Marco Elver <elver@google.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20210209112701.3341724-1-elver@google.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/bfq-iosched.c |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/bpf/bpf_lru_list.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -2937,6 +2937,7 @@ static void __bfq_set_in_service_queue(s
- 	}
+diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
+index 1b6b9349cb857..d99e89f113c43 100644
+--- a/kernel/bpf/bpf_lru_list.c
++++ b/kernel/bpf/bpf_lru_list.c
+@@ -502,13 +502,14 @@ struct bpf_lru_node *bpf_lru_pop_free(struct bpf_lru *lru, u32 hash)
+ static void bpf_common_lru_push_free(struct bpf_lru *lru,
+ 				     struct bpf_lru_node *node)
+ {
++	u8 node_type = READ_ONCE(node->type);
+ 	unsigned long flags;
  
- 	bfqd->in_service_queue = bfqq;
-+	bfqd->in_serv_last_pos = 0;
- }
+-	if (WARN_ON_ONCE(node->type == BPF_LRU_LIST_T_FREE) ||
+-	    WARN_ON_ONCE(node->type == BPF_LRU_LOCAL_LIST_T_FREE))
++	if (WARN_ON_ONCE(node_type == BPF_LRU_LIST_T_FREE) ||
++	    WARN_ON_ONCE(node_type == BPF_LRU_LOCAL_LIST_T_FREE))
+ 		return;
  
- /*
+-	if (node->type == BPF_LRU_LOCAL_LIST_T_PENDING) {
++	if (node_type == BPF_LRU_LOCAL_LIST_T_PENDING) {
+ 		struct bpf_lru_locallist *loc_l;
+ 
+ 		loc_l = per_cpu_ptr(lru->common_lru.local_list, node->cpu);
+-- 
+2.27.0
+
 
 
