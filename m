@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2122A329990
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5729C3298D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376363AbhCBAXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:23:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43156 "EHLO mail.kernel.org"
+        id S1346678AbhCAXt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:49:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239864AbhCAS0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:26:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1DBE650AF;
-        Mon,  1 Mar 2021 17:37:09 +0000 (UTC)
+        id S239350AbhCASLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:11:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7812764FBA;
+        Mon,  1 Mar 2021 17:37:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620230;
-        bh=/WUkTsMO3HJouzYpTHEkGeGce2v6s4ecUkrcPoFIDeA=;
+        s=korg; t=1614620233;
+        bh=GBYnIhzviYEskKBCbud2gg9Box+OSWeHeuOJIooZhPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eaI7vtYFD64+wiRxq1P8X8XeT/mWx5vg+KgecpyU+TcNmteWTkYS3hNn2Fr7qXU9L
-         52gn9oEM6r0R0f518GcHZNdma9bB2uzHm1oVeJnbudT9rvSKKdtt2G2OPLoHwWt0OK
-         1W+glKc1zE8jecjV+L6xZtdhRoLbzMTBH1MlRkZQ=
+        b=RSOw4RElCjt/eEWMby5zYYmlSlVLCufrPZjFQKS0eFAkEgxfJpPB4vmiKp4dvX/WX
+         95ycfZOeBIfN0oQVPHXAanJ/oJBQmojh2nyL3sr6sQqk7P8wJbi6MYnWffiBWDYVha
+         63UTDP/oKbSKlIx6TWDwIlrEqpEA2J6BE7M2Nn6U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Knecht <vincent.knecht@mailoo.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Artem Lapkin <art@khadas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 078/775] arm64: dts: msm8916: Fix reserved and rfsa nodes unit address
-Date:   Mon,  1 Mar 2021 17:04:06 +0100
-Message-Id: <20210301161205.535222163@linuxfoundation.org>
+Subject: [PATCH 5.11 079/775] arm64: dts: meson: fix broken wifi node for Khadas VIM3L
+Date:   Mon,  1 Mar 2021 17:04:07 +0100
+Message-Id: <20210301161205.584625576@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -40,44 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Knecht <vincent.knecht@mailoo.org>
+From: Artem Lapkin <email2tema@gmail.com>
 
-[ Upstream commit d5ae2528b0b56cf054b27d48b0cb85330900082f ]
+[ Upstream commit 39be8f441f78908e97ff913571e10ec03387a63a ]
 
-Fix `reserved` and `rfsa` unit address according to their reg address
+move &sd_emmc_a ... from /* */ commented area, because cant load wifi fw
+without sd-uhs-sdr50 option on VIM3L
 
-Fixes: 7258e10e6a0b ("ARM: dts: msm8916: Update reserved-memory")
+[   11.686590] brcmfmac: brcmf_chip_cores_check: CPU core not detected
+[   11.696382] brcmfmac: brcmf_sdio_probe_attach: brcmf_chip_attach failed!
+[   11.706240] brcmfmac: brcmf_sdio_probe: brcmf_sdio_probe_attach failed
+[   11.715890] brcmfmac: brcmf_ops_sdio_probe: F2 error, probe failed -19...
+[   13.718424] brcmfmac: brcmf_chip_recognition: chip backplane type 15 is not supported
 
-Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
-Link: https://lore.kernel.org/r/20210123104417.518105-1-vincent.knecht@mailoo.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Artem Lapkin <art@khadas.com>
+Fixes: f1bb924e8f5b ("arm64: dts: meson: fix mmc0 tuning error on Khadas VIM3")
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Link: https://lore.kernel.org/r/20210129085041.1408540-1-art@khadas.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/msm8916.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-index 402e891a84ab6..d25f6dc751e99 100644
---- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-@@ -56,7 +56,7 @@
- 			no-map;
- 		};
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+index 4b517ca720597..06de0b1ce7267 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+@@ -89,13 +89,12 @@
+ 	status = "okay";
+ };
  
--		reserved@8668000 {
-+		reserved@86680000 {
- 			reg = <0x0 0x86680000 0x0 0x80000>;
- 			no-map;
- 		};
-@@ -69,7 +69,7 @@
- 			qcom,client-id = <1>;
- 		};
+-&sd_emmc_a {
+-	sd-uhs-sdr50;
+-};
+-
+ &usb {
+ 	phys = <&usb2_phy0>, <&usb2_phy1>;
+ 	phy-names = "usb2-phy0", "usb2-phy1";
+ };
+  */
  
--		rfsa@867e00000 {
-+		rfsa@867e0000 {
- 			reg = <0x0 0x867e0000 0x0 0x20000>;
- 			no-map;
- 		};
++&sd_emmc_a {
++	sd-uhs-sdr50;
++};
 -- 
 2.27.0
 
