@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0796328CCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C42328CED
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239879AbhCAS7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 13:59:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46552 "EHLO mail.kernel.org"
+        id S240040AbhCATCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:02:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235327AbhCAQo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235601AbhCAQo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:44:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D472D64D73;
-        Mon,  1 Mar 2021 16:30:25 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD67E614A7;
+        Mon,  1 Mar 2021 16:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616226;
-        bh=3TK0yicQuSVWNt6sQ9tEOq0iZyfjg7CppEvx3hHWzFI=;
+        s=korg; t=1614616229;
+        bh=ZfP3LrniHAOd0ENsx1niWljaf9BgylEEvfkT1BJMATI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EYsno4ygibq3ouIyNp5JIT1HcTQKY5jv23lzVkahUdj+cosLA68PQXMhWi5SIyva3
-         ODSgCzNKT4UvGSfHXofrn2y5U26Rd3aLpBNlRI/BBYI9k81yedQm8fLBqxbBCL/Ors
-         QJ9t5a567o6sEBKag7D0yNSciopQM+1imBfcpnVE=
+        b=bdaBNhVcca4QQTy50TlQKuT6FKTcw1kF3PIveEWfaD6BjqIRktBaKXpRHcrPoK0tH
+         IFaxCASGVLetzAROqm5KVHXt9NEzYOlESR7vJ0i7jTHYsjoQ9Fj1QYJzVDKoPSzK5M
+         hkuYh3ncCvY4GNmrBdBZyLlS2os6VZmB/wsm4bIc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 078/176] power: reset: at91-sama5d2_shdwc: fix wkupdbc mask
-Date:   Mon,  1 Mar 2021 17:12:31 +0100
-Message-Id: <20210301161024.841493761@linuxfoundation.org>
+Subject: [PATCH 4.14 079/176] rtc: s5m: select REGMAP_I2C
+Date:   Mon,  1 Mar 2021 17:12:32 +0100
+Message-Id: <20210301161024.890241529@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -42,34 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-[ Upstream commit 95aa21a3f1183260db1b0395e03df5bebc5ed641 ]
+[ Upstream commit 1f0cbda3b452b520c5f3794f8f0e410e8bc7386a ]
 
-According to datasheet WKUPDBC mask is b/w bits 26..24.
+The rtc-s5m uses the I2C regmap but doesn't select it in Kconfig so
+depending on the configuration the build may fail. Fix it.
 
-Fixes: f80cb48843987 ("power: reset: at91-shdwc: add new shutdown controller driver")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: 959df7778bbd ("rtc: Enable compile testing for Maxim and Samsung drivers")
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20210114102219.23682-2-brgl@bgdev.pl
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/reset/at91-sama5d2_shdwc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/rtc/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/power/reset/at91-sama5d2_shdwc.c b/drivers/power/reset/at91-sama5d2_shdwc.c
-index 037976a1fe40b..c2fab93b556bb 100644
---- a/drivers/power/reset/at91-sama5d2_shdwc.c
-+++ b/drivers/power/reset/at91-sama5d2_shdwc.c
-@@ -36,7 +36,7 @@
- 
- #define AT91_SHDW_MR	0x04		/* Shut Down Mode Register */
- #define AT91_SHDW_WKUPDBC_SHIFT	24
--#define AT91_SHDW_WKUPDBC_MASK	GENMASK(31, 16)
-+#define AT91_SHDW_WKUPDBC_MASK	GENMASK(26, 24)
- #define AT91_SHDW_WKUPDBC(x)	(((x) << AT91_SHDW_WKUPDBC_SHIFT) \
- 						& AT91_SHDW_WKUPDBC_MASK)
- 
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index 68b76e6ddc1ee..7129442f0dfe2 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -625,6 +625,7 @@ config RTC_DRV_S5M
+ 	tristate "Samsung S2M/S5M series"
+ 	depends on MFD_SEC_CORE || COMPILE_TEST
+ 	select REGMAP_IRQ
++	select REGMAP_I2C
+ 	help
+ 	  If you say yes here you will get support for the
+ 	  RTC of Samsung S2MPS14 and S5M PMIC series.
 -- 
 2.27.0
 
