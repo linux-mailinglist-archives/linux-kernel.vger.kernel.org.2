@@ -2,123 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37D13280B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D153280B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236171AbhCAOXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:23:23 -0500
-Received: from conuserg-12.nifty.com ([210.131.2.79]:26183 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233144AbhCAOWh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:22:37 -0500
-Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 121ELErI008160;
-        Mon, 1 Mar 2021 23:21:15 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 121ELErI008160
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1614608476;
-        bh=/B3Ck59ciEmGWA1YNBhIcTz7DTkHFpnEVGwcAI3okrw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jsMi4cjJbKtDW08TFRVc+sWBQX30vTtqa6tKX7JwMXSGDrMhqLdyJSNOLBYE7feiI
-         YNesElMJXBJw7s6MpzVB3yvCsBFwJUuO2PPpIFYnCWO2LLNs+Lv+uOLxgDoOzIcZ/C
-         4fhnKHmQ3AhJqbNk+k9LcuWxBQx745gpUTTmIJLridTTIIN6T/Q4ZOocW+fazAmPoT
-         Ya8riv037AGeqJ40tjBdF4vVWageRHJHKKnJpsbVY//ZdZ4DveMSoqp4GyRdJRhATs
-         d/8SVVuMBpNyucINoXLjLx2ujo+BOmZLcPK3sEN2pshkh2ZSgtid0Gc1hANlW8Smwr
-         zb3zU/HMkPPeg==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 2/2] m68k: syscalls: switch to generic syscallhdr.sh
-Date:   Mon,  1 Mar 2021 23:21:12 +0900
-Message-Id: <20210301142112.342909-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210301142112.342909-1-masahiroy@kernel.org>
-References: <20210301142112.342909-1-masahiroy@kernel.org>
+        id S233279AbhCAOYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:24:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236107AbhCAOX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:23:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C56764DBA;
+        Mon,  1 Mar 2021 14:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614608564;
+        bh=B1rsUPZZMrJCDAX8ICqDg3gybux1VKOF1jXfynGIiKs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PmSsT55HiPJ8eQyPjRAA0TZeMrqfLPSbSH4IDpOIccciwFvG+BcARUgen0NzI8lQz
+         cbBB1bqNW5/n9UBun4Nsdiq2G0BIo+UmoIlr0r0xDXc3eGwSfjR+sVSMSs+ZPnOzmL
+         TFlKjUcfVUfoCiP573gpjLXpbrlaqW2f4poq/jJCIYK/UezY/tZNnHoqQejYrHq0iJ
+         vrD+cqJ4BwX1Bvk9wM3/lxgsAfQErInO5ow8FeVShGZ60ZUlTZ9yQPMol4cKByANJJ
+         BMTtwNoizSNdWSmaFyBlPx0otvmXMEKBFlo9QdkytSYI/Ghgb7W9VK3bGoeWyLcSMG
+         H+EeLm4tSI/GQ==
+Date:   Mon, 1 Mar 2021 14:21:38 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     dingsenjie@163.com
+Cc:     perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: Re: [PATCH] sound: soc/uniphier: Simplify the return expression of
+ uniphier_aio_startup
+Message-ID: <20210301142138.GA20200@sirena.org.uk>
+References: <20210224085407.22120-1-dingsenjie@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
+Content-Disposition: inline
+In-Reply-To: <20210224085407.22120-1-dingsenjie@163.com>
+X-Cookie: Does not include installation.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Many architectures duplicate similar shell scripts.
 
-This commit converts m68k to use scripts/syscallhdr.sh.
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+On Wed, Feb 24, 2021 at 04:54:07PM +0800, dingsenjie@163.com wrote:
+> From: dingsenjie <dingsenjie@yulong.com>
+>=20
+> Simplify the return expression in the aio-cpu.c.
 
- arch/m68k/kernel/syscalls/Makefile      |  7 ++---
- arch/m68k/kernel/syscalls/syscallhdr.sh | 36 -------------------------
- 2 files changed, 2 insertions(+), 41 deletions(-)
- delete mode 100644 arch/m68k/kernel/syscalls/syscallhdr.sh
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-diff --git a/arch/m68k/kernel/syscalls/Makefile b/arch/m68k/kernel/syscalls/Makefile
-index ad2492cb5568..6713c65a25e1 100644
---- a/arch/m68k/kernel/syscalls/Makefile
-+++ b/arch/m68k/kernel/syscalls/Makefile
-@@ -6,14 +6,11 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')	\
- 	  $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
- 
- syscall := $(src)/syscall.tbl
--syshdr := $(srctree)/$(src)/syscallhdr.sh
-+syshdr := $(srctree)/scripts/syscallhdr.sh
- systbl := $(srctree)/scripts/syscalltbl.sh
- 
- quiet_cmd_syshdr = SYSHDR  $@
--      cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'	\
--		   '$(syshdr_abis_$(basetarget))'		\
--		   '$(syshdr_pfx_$(basetarget))'		\
--		   '$(syshdr_offset_$(basetarget))'
-+      cmd_syshdr = $(CONFIG_SHELL) $(syshdr) --emit-nr $< $@
- 
- quiet_cmd_systbl = SYSTBL  $@
-       cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
-diff --git a/arch/m68k/kernel/syscalls/syscallhdr.sh b/arch/m68k/kernel/syscalls/syscallhdr.sh
-deleted file mode 100644
-index 6f357d68ef44..000000000000
---- a/arch/m68k/kernel/syscalls/syscallhdr.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--
--in="$1"
--out="$2"
--my_abis=`echo "($3)" | tr ',' '|'`
--prefix="$4"
--offset="$5"
--
--fileguard=_UAPI_ASM_M68K_`basename "$out" | sed \
--	-e 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' \
--	-e 's/[^A-Z0-9_]/_/g' -e 's/__/_/g'`
--grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
--	printf "#ifndef %s\n" "${fileguard}"
--	printf "#define %s\n" "${fileguard}"
--	printf "\n"
--
--	nxt=0
--	while read nr abi name entry ; do
--		if [ -z "$offset" ]; then
--			printf "#define __NR_%s%s\t%s\n" \
--				"${prefix}" "${name}" "${nr}"
--		else
--			printf "#define __NR_%s%s\t(%s + %s)\n" \
--				"${prefix}" "${name}" "${offset}" "${nr}"
--		fi
--		nxt=$((nr+1))
--	done
--
--	printf "\n"
--	printf "#ifdef __KERNEL__\n"
--	printf "#define __NR_syscalls\t%s\n" "${nxt}"
--	printf "#endif\n"
--	printf "\n"
--	printf "#endif /* %s */\n" "${fileguard}"
--) > "$out"
--- 
-2.27.0
+--xHFwDpU9dbj6ez1V
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA8+HEACgkQJNaLcl1U
+h9DI+wf+J7pwCNkiy3Tn63s9OgSsXF2YUMxFNLFzCKlrtjD9+V+TelztPZcxkM9E
+Cn3fxKJNPjTBBL76ejhE4T3eJ2YWyHQg4TnRPKCHmsK4Rcnf7zN62RMNZPVgP64i
+de/lI2SAjbsgGyIVgsx5hlemasp2/SdAqoa95nBRG9AKKH/SW3RPptph49X+TsBp
+xauqATD4e2ZD7dvxKOAJo8IZ32WCU32o5+3IrV/iY23dKQZPfTFV78jfllliy0A3
+pW7smM3KkSNrJLYiCKnbRUYSeys+CJLWd0oftGSV8ZE/2cQT1THdN0oFcD+SbUCr
+l62kEdf9zGex3QNolb+PQz0EPgXsPQ==
+=NNS3
+-----END PGP SIGNATURE-----
+
+--xHFwDpU9dbj6ez1V--
