@@ -2,32 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33653329BE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB24329C28
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379792AbhCBBbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:31:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43776 "EHLO mail.kernel.org"
+        id S1380214AbhCBBtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:49:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240859AbhCATSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:18:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26F73652D0;
-        Mon,  1 Mar 2021 17:38:14 +0000 (UTC)
+        id S241535AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:26:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35748652D5;
+        Mon,  1 Mar 2021 17:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620295;
-        bh=sl9LTFd+dzLv/KbZzkIEB1l7ZlNuwkz0u9AYDhqsqsQ=;
+        s=korg; t=1614620306;
+        bh=P+8iDqsVqhEpxgRJHtOxliIYjrl8ulY/Fx+XDMTY+NA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p8JcJ80z/TLeJFotLSnrxDbWusbh101MhofLjBgZRpcIBLTmEtzb3BqN/mfB5dr6V
-         LgQiRBrQuaCjDVxjYDC/qUMcqFCZ4GlSEDj9XleadvOPtTq9IjL9Qx/d0FkMFyFMt0
-         jmHYkeaM+ToHYRgSyGIcaheNc7OACWcPh54Q7K3I=
+        b=O0LhKV45NtkxvOHFDfpYkPGAXKsCsVk4svjfxH7yo04Crc/0GWNaR+vO54Z22NiR/
+         ByXSfbiv2tapGlGdffhClDCq/t6wCMOayO7GVGICf67MSpXeZtImQa7EFCzntkhRXw
+         4y90ev9orDRMLkxX8/e8ooqofcGuDqPRLl2mFduw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 071/775] can: mcp251xfd: mcp251xfd_probe(): fix errata reference
-Date:   Mon,  1 Mar 2021 17:03:59 +0100
-Message-Id: <20210301161205.190323227@linuxfoundation.org>
+Subject: [PATCH 5.11 075/775] opp: Correct debug message in _opp_add_static_v2()
+Date:   Mon,  1 Mar 2021 17:04:03 +0100
+Message-Id: <20210301161205.384112948@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -39,34 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit 28eb119c042e8d3420b577b5b3ea851a111e7b2d ]
+[ Upstream commit d7b9d9b31a3e55dcc9b5c289abfafe31efa5b5c4 ]
 
-This patch fixes the reference to the errata for both the mcp2517fd
-and the mcp2518fd.
+The debug message always prints rate=0 instead of a proper value, fix it.
 
-Fixes: f5b84dedf7eb ("can: mcp25xxfd: mcp25xxfd_probe(): add SPI clk limit related errata information")
-Link: https://lore.kernel.org/r/20210128104644.2982125-2-mkl@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 6c591eec67cb ("OPP: Add helpers for reading the binding properties")
+Tested-by: Peter Geis <pgwipeout@gmail.com>
+Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+[ Viresh: Added Fixes tag ]
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/opp/of.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index f07e8b737d31e..ee39e79927efb 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -2901,7 +2901,7 @@ static int mcp251xfd_probe(struct spi_device *spi)
- 			spi_get_device_id(spi)->driver_data;
+diff --git a/drivers/opp/of.c b/drivers/opp/of.c
+index 03cb387236c4c..d0c0336be39b4 100644
+--- a/drivers/opp/of.c
++++ b/drivers/opp/of.c
+@@ -755,7 +755,6 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
+ 		struct device *dev, struct device_node *np)
+ {
+ 	struct dev_pm_opp *new_opp;
+-	u64 rate = 0;
+ 	u32 val;
+ 	int ret;
+ 	bool rate_not_available = false;
+@@ -772,7 +771,8 @@ static struct dev_pm_opp *_opp_add_static_v2(struct opp_table *opp_table,
  
- 	/* Errata Reference:
--	 * mcp2517fd: DS80000789B, mcp2518fd: DS80000792C 4.
-+	 * mcp2517fd: DS80000792C 5., mcp2518fd: DS80000789C 4.
- 	 *
- 	 * The SPI can write corrupted data to the RAM at fast SPI
- 	 * speeds:
+ 	/* Check if the OPP supports hardware's hierarchy of versions or not */
+ 	if (!_opp_is_supported(dev, opp_table, np)) {
+-		dev_dbg(dev, "OPP not supported by hardware: %llu\n", rate);
++		dev_dbg(dev, "OPP not supported by hardware: %lu\n",
++			new_opp->rate);
+ 		goto free_opp;
+ 	}
+ 
 -- 
 2.27.0
 
