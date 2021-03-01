@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3D5329AD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31C3329A0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348578AbhCBBDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:03:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57762 "EHLO mail.kernel.org"
+        id S1348268AbhCBAnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:43:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240666AbhCASz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:55:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 119086520E;
-        Mon,  1 Mar 2021 17:22:02 +0000 (UTC)
+        id S240294AbhCASic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:38:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAE1B65215;
+        Mon,  1 Mar 2021 17:22:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619323;
-        bh=2LQY/qTDvgFKu0+Tpek0fuHdlZvYWJ3btvBgIRP2FTA=;
+        s=korg; t=1614619347;
+        bh=HJhdCytrX5gp8j5V7AoZ59/hPH5zV/DAbys+BT/9kvQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P7nycRYKdvSZnUorI91J6gHtBlIjNyDe6D35wixEQGd5c3I4bnDy+Tel+pt4sgMTI
-         hpaQdKAcqG9NMcbqBTQ8DF6/k8zxMEpxbAby97I2i+hU5Au50QsDgrRpXtAud2kUPP
-         Gxszb8AqfOTDsQtcL6jIX86Tv+Rb4Yd+jE1xkR5o=
+        b=gEywQUQjOyAL2gWL+74D09IZ7PfOjClS0Qh2Z4fuXxLJtHncg3ph7NF7MhBYHw73M
+         ZTHmX7hXbVc91HxnC3nPNG1uOEQ0zYAUWaepfu4JvvXmbX+FKalTYER561A4OAStdS
+         82Nr/IU2JEShcwE1aoyUc6vlDgEvEflJaRkzj9Q8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Judy Hsiao <judyhsiao@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 413/663] drm/msm/dp: trigger unplug event in msm_dp_display_disable
-Date:   Mon,  1 Mar 2021 17:11:01 +0100
-Message-Id: <20210301161202.308429137@linuxfoundation.org>
+Subject: [PATCH 5.10 420/663] nvmem: core: Fix a resource leak on error in nvmem_add_cells_from_of()
+Date:   Mon,  1 Mar 2021 17:11:08 +0100
+Message-Id: <20210301161202.655738236@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,48 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Judy Hsiao <judyhsiao@google.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit c703d5789590935c573bbd080a2166b72d51a017 ]
+[ Upstream commit 72e008ce307fa2f35f6783997378b32e83122839 ]
 
-1. Trigger the unplug event in msm_dp_display_disable() to shutdown audio
-   properly.
-2. Reset the completion before signal the disconnect event.
+This doesn't call of_node_put() on the error path so it leads to a
+memory leak.
 
-Fixes: 158b9aa74479 ("drm/msm/dp: wait for audio notification before disabling clocks")
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Tested-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixes: 0749aa25af82 ("nvmem: core: fix regression in of_nvmem_cell_get()")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210129171430.11328-2-srinivas.kandagatla@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dp/dp_display.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/nvmem/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index fe0279542a1c2..a2db14f852f11 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -620,8 +620,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	dp_add_event(dp, EV_DISCONNECT_PENDING_TIMEOUT, 0, DP_TIMEOUT_5_SECOND);
- 
- 	/* signal the disconnect event early to ensure proper teardown */
--	dp_display_handle_plugged_change(g_dp_display, false);
- 	reinit_completion(&dp->audio_comp);
-+	dp_display_handle_plugged_change(g_dp_display, false);
- 
- 	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
- 					DP_DP_IRQ_HPD_INT_MASK, true);
-@@ -840,6 +840,9 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
- 
- 	/* wait only if audio was enabled */
- 	if (dp_display->audio_enabled) {
-+		/* signal the disconnect event */
-+		reinit_completion(&dp->audio_comp);
-+		dp_display_handle_plugged_change(dp_display, false);
- 		if (!wait_for_completion_timeout(&dp->audio_comp,
- 				HZ * 5))
- 			DRM_ERROR("audio comp timeout\n");
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index a09ff8409f600..1a3460a8e73ab 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -576,6 +576,7 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+ 				cell->name, nvmem->stride);
+ 			/* Cells already added will be freed later. */
+ 			kfree_const(cell->name);
++			of_node_put(cell->np);
+ 			kfree(cell);
+ 			return -EINVAL;
+ 		}
 -- 
 2.27.0
 
