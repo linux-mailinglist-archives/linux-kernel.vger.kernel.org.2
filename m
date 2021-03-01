@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002B7329418
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7497E3293F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241320AbhCAVrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:47:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238160AbhCARXf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:23:35 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C444C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 09:21:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/Ft4xpiOGsbkSiIzxGO0wDAmkrh0poiXa0IrMPfjA+4=; b=QUsKIMvToHdgZTouzZ7LUvq2A/
-        PRosT3bz694OWdcnOWE8ArpUFf3TX91fqx7xPsHOV8rppEgPJ3pdQpUsPFyYQK2NzvwTH8xKVkJtV
-        JMBmoAzSj4WSZRFklPkN7+C4DyqSiGOa4vhzdeO9IBgDxhbIGDasDEPauM38H76BzNsfTOwflfKN8
-        UPfTgOqCVtvBj+mu03ghJ/63agfxbbbFdr3VqmVSBoKE4KP9yHeHPFDzTfiwINzTrm3eRhkGll+9F
-        6mlJlnUnZ9TxUfoSEwvL5uypk0xQJFqc6r/5KgMYshendGVluLhg6zROkpvsCOVC+xRoR4+UNz9J+
-        gofo/sxw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lGmEY-00G03h-Hn; Mon, 01 Mar 2021 17:21:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B86D0301959;
-        Mon,  1 Mar 2021 18:21:23 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A23662B973BDC; Mon,  1 Mar 2021 18:21:23 +0100 (CET)
-Date:   Mon, 1 Mar 2021 18:21:23 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>, mingo@readhat.com,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        patrick.bellasi@matbug.net, valentin.schneider@arm.com
-Subject: Re: [PATCH v2] sched/pelt: Fix task util_est update filtering
-Message-ID: <YD0ik65KwwU5R4Rv@hirez.programming.kicks-ass.net>
-References: <20210225165820.1377125-1-vincent.donnefort@arm.com>
- <YDi0Ip11fpOubQqz@hirez.programming.kicks-ass.net>
- <b1471e3a-e8c5-3ab4-5db4-0084612ade55@arm.com>
+        id S244468AbhCAVnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:43:42 -0500
+Received: from smtp-31-i2.italiaonline.it ([213.209.12.31]:47059 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237309AbhCARWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:22:32 -0500
+Received: from oxapps-30-132.iol.local ([10.101.8.178])
+        by smtp-31.iol.local with ESMTPA
+        id GmEolCaigVpAbGmEolVksZ; Mon, 01 Mar 2021 18:21:43 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1614619304; bh=ELHHirX/rHrzCr8RdE/L9KdYRZbNnQKFFnNxXi1w8EU=;
+        h=From;
+        b=KwaFNDQUVgU9gM6pxpH76TBUQp8noyQ/Eh7w092d/TTi+bc3SmvKkSjaGfWQOwLjb
+         KptPGEZv7hpzpLPHeo6po+7xervW5W/uvk2vswCft6vzs5tCzji40IrNZDYWiW+mZi
+         2IYCvK9122UJqXAELPcWNI0wbW09GBTv7et1QrbqMjogvj1PF8jYnYFriQqRN+puil
+         ha8doJmsEfsTeaIBcJK2ZCt7mAHdeV5884hzuM+A55F6hEFpILbMe4zHSvCmNkU6FB
+         IRtsX4B0NB/SO7Yh5f13QYgTbsWbbAk05gVHbRTEg4TB8gM5LP/PPAWV/pCJhh0jh3
+         8GgDRGGQQu2Iw==
+X-CNFS-Analysis: v=2.4 cv=WMS64lgR c=1 sm=1 tr=0 ts=603d22a8 cx=a_exe
+ a=iUxb6lXnTT1s429i9ALYXg==:117 a=UPWQtH3J-JgA:10 a=IkcTkHD0fZMA:10
+ a=_gZzKa99_6AA:10 a=bGNZPXyTAAAA:8 a=bAF_0_vCazFOC95qmekA:9 a=QEXdDO2ut3YA:10
+ a=yL4RfsBhuEsimFDS2qtJ:22
+Date:   Mon, 1 Mar 2021 18:21:42 +0100 (CET)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Federico Vaga <federico.vaga@gmail.com>,
+        Alexander Stein <alexander.stein@systec-electronic.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Message-ID: <1037673059.602534.1614619302914@mail1.libero.it>
+In-Reply-To: <20210301113805.jylhc373sip7zmed@pengutronix.de>
+References: <20210228103856.4089-1-dariobin@libero.it>
+ <20210228103856.4089-6-dariobin@libero.it>
+ <20210301113805.jylhc373sip7zmed@pengutronix.de>
+Subject: Re: [PATCH v3 5/6] can: c_can: prepare to up the message objects
+ number
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b1471e3a-e8c5-3ab4-5db4-0084612ade55@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev27
+X-Originating-IP: 87.20.116.197
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: BbLCwLDUl8yEj6k34kETrEsxm0xv+7N3
+x-libjamv: SzWzyhp462U=
+X-CMAE-Envelope: MS4xfBJxX6+FRTbJIR+f3u0MrRX5DYxea0av406W91FF3BXLet5O/Db3PK5csHSd4CDbiUyirNi3JI9H4yA2V24KsJSB82i8fgeEN8T0nbJEU11oCrHoMvNI
+ 9GtzGH8wsnJnbgAV8O0ffyXV6/3sd9I3QnugSr+62lJ7SPSTJOlz6FNeAB50odDwBZ5wwQzS+JkWdz+LM+Se25wo3U/h66oQ9R+9xHt8LExJ8EqhmW2LeOAt
+ c9Bk3PDthzG6uzRrygPJwWMRG2VPkUC8HjP9ET+wdcVfDDWbN2bEdWwk1Dx9ZDVWa3XfoqUDRkwWXfHd00xeeRn/TMNxPon6o6U7pf4E5D+dfUQlgtijP6L/
+ ifXdF7kL0Gjv7qsZ2ZmjmsLSqosNxsQLvTD2mRHa+d65QZLfVpNQC6w35ItpxshHj8rxV1bga0hBJ08yieDaZ69FnjyjYuttf7Ykjxa/cHc1Kf/NEWlzep97
+ L7YR2lHtC1Ix1LGGbJpF0VI5QjrdtKgiw0cGHW+Ju56Pugxk6sEVzllDEfDFXRkEIGHJFtIC7iIDw2UrtCWVWj17ZSrbuO/eLFSTQX8oYQt2pExvLzC6cXMt
+ eT/ROli/IUzoZ/GzVqH5Lmw9Pm1Qofxw9mUHQY4k3TsioQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 05:34:09PM +0100, Dietmar Eggemann wrote:
-> On 26/02/2021 09:41, Peter Zijlstra wrote:
-> > On Thu, Feb 25, 2021 at 04:58:20PM +0000, Vincent Donnefort wrote:
-> >> +#define UTIL_EST_MARGIN (SCHED_CAPACITY_SCALE / 100)
-> >> +
-> >>  /*
-> >> - * Check if a (signed) value is within a specified (unsigned) margin,
-> >> + * Check if a (signed) value is within the (unsigned) util_est margin,
-> >>   * based on the observation that:
-> >>   *
-> >>   *     abs(x) < y := (unsigned)(x + y - 1) < (2 * y - 1)
-> >>   *
-> >> - * NOTE: this only works when value + maring < INT_MAX.
-> >> + * NOTE: this only works when value + UTIL_EST_MARGIN < INT_MAX.
-> >>   */
-> >> -static inline bool within_margin(int value, int margin)
-> >> +static inline bool util_est_within_margin(int value)
-> >>  {
-> >> -	return ((unsigned int)(value + margin - 1) < (2 * margin - 1));
-> >> +	return ((unsigned int)(value + UTIL_EST_MARGIN - 1) <
-> >> +		(2 * UTIL_EST_MARGIN - 1));
-> >>  }
-> > 
-> >> -	if (within_margin(last_ewma_diff, (SCHED_CAPACITY_SCALE / 100)))
-> >> +	if (util_est_within_margin(last_ewma_diff)) {
-> > 
-> > What was the purpose of this change? What was a generic helper is now
-> > super specific.
-> 
-> I guess because it was only ever used in util_est for last_ewma_diff.
-> 
-> It's now used for last_ewma_diff and last_enqueued_diff, still only for
-> util_est though and both times with the same margin
-> (SCHED_CAPACITY_SCALE / 100)).
-> 
-> Vincent D. should be back on Wed from hols.
+Hi Marc,
 
-Fair enough; I've un-done it but kept the rest of the patch.
+> Il 01/03/2021 12:38 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:
+> 
+>  
+> On 28.02.2021 11:38:54, Dario Binacchi wrote:
+> [...]
+> 
+> > @@ -730,7 +728,7 @@ static void c_can_do_tx(struct net_device *dev)
+> >  	while ((idx = ffs(pend))) {
+> >  		idx--;
+> >  		pend &= ~(1 << idx);
+> > -		obj = idx + C_CAN_MSG_OBJ_TX_FIRST;
+> > +		obj = idx + priv->msg_obj_tx_first;
+> >  		c_can_inval_tx_object(dev, IF_TX, obj);
+> >  		can_get_echo_skb(dev, idx, NULL);
+> >  		bytes += priv->dlc[idx];
+> > @@ -740,7 +738,7 @@ static void c_can_do_tx(struct net_device *dev)
+> >  	/* Clear the bits in the tx_active mask */
+> >  	atomic_sub(clr, &priv->tx_active);
+> >  
+> > -	if (clr & (1 << (C_CAN_MSG_OBJ_TX_NUM - 1)))
+> > +	if (clr & (1 << (priv->msg_obj_tx_num - 1)))
+> 
+> Do we need 1UL here, too?
+
+Do you agree if I use the BIT macro ?
+
+Thanks and regards
+Dario
+
+> 
+> Marc
+> 
+> -- 
+> Pengutronix e.K.                 | Marc Kleine-Budde           |
+> Embedded Linux                   | https://www.pengutronix.de  |
+> Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
