@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA0432808C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1436D32808F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhCAOTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:19:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbhCAOTa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:19:30 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FA6C061788;
-        Mon,  1 Mar 2021 06:18:49 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id t9so11283782pjl.5;
-        Mon, 01 Mar 2021 06:18:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jUIzc8lLj6XtpqYO1T593FEkkF9TDkHoYUvicZfI4x8=;
-        b=ZW3F+maDDVfnxE40uemxanV3G4QX+qksbtBzGTQJEVG3UPr7E5xrwXrtde4YoWFKWj
-         5mSAfP87zS+UdeY3I9Kqhcti567vr5W98/03VppM+TvPaKLvochQgz+5/WP8WgH44slf
-         t7gMYjiuhbhhZfdQJSvhdADL0c1GpXIlUaCgQ7QOK9scdrc4m6H0x4GRi+f3EooqnHhg
-         2mMACY6ngLwXvuaqBwNNIgDbN1ciKidtII4fDWQ99PYy071mafcJQAtaHNgoCYAarkML
-         Aj+tBUfc8YFloBHpcQ68H7g2qf+8Nhpg3pqh1VFNd9MxRvx5ID1savNXzJe1/i6woEPV
-         ogAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jUIzc8lLj6XtpqYO1T593FEkkF9TDkHoYUvicZfI4x8=;
-        b=Y8TLFBwV04RvKY+YgNFAoKcMh7KK2h9uoE0AM/XWj8U8vAzVWzi5IqX4wGK6VvnsWR
-         2lesJIqT4xMjFPM6M8uJFwk/OyfFiqAw2RS4aIj5MVRotEhmN63hztz/KLdweJZj9dNE
-         W/sBdxcx1mV8tLqIrMFjkW+mZbBF4nmb7DnKReysN71oqDwfPjgPwr3AwWF2HJniw/7H
-         PjdAzGcBOlpc/YgXc7EOj+ogaInkXJ2vUIGGjY7Ozwg9Ozc7LsvkXAkYUdSrU7Iwmb1G
-         80W7VSEjqK41IR4SOfbUHXgl3pxAGs85Q8I+lYbuNBpdStpSj1uXEx5NuQFGnNY8JcRb
-         HcIQ==
-X-Gm-Message-State: AOAM530pH6Ep2vbbw1SFmMc2q7Y4HNt25XPRQH6GDkMBytnpPBS2mtTl
-        jFwfW3xC3BuHvPmkmEYRP2greAaDuWDMdCE3atA=
-X-Google-Smtp-Source: ABdhPJxOYJQGoQstIsoxRKgXUfDaM33A9TLXKTAz2EIlvhTNMh2lQmh4ng0OLtoC+ZjOfe6rmEnBiAvSWn+y2xOD5L4=
-X-Received: by 2002:a17:90a:db49:: with SMTP id u9mr18431790pjx.181.1614608329327;
- Mon, 01 Mar 2021 06:18:49 -0800 (PST)
+        id S232997AbhCAOUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:20:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232807AbhCAOTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:19:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC28C64E07;
+        Mon,  1 Mar 2021 14:19:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1614608354;
+        bh=k1UvY5aGECSBschfIZbptzWuvhL5cuyW0lixGCaxFHg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IBVrvHn70IusfxbNTfaUa4EiDWHh5ycOe9o0R9NXJzWU2yc0dFLuSDmH85Xb0+mHm
+         KV6VtIHyxBhjug7yQ738Qs4J81vnM3F9ADrUYza04xV/A0NV/2riOyKL69LsFi2rcs
+         QQ96bdbJ4YVP+e/xYB+SuZhyWbzjGVr5ZoVib92I=
+Date:   Mon, 1 Mar 2021 15:19:11 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, sashal@kernel.org, tglx@linutronix.de,
+        wangle6@huawei.com, zhengyejian1@huawei.com
+Subject: Re: [PATCH 4.9.258] futex: fix dead code in attach_to_pi_owner()
+Message-ID: <YDz338EbaQHUP070@kroah.com>
+References: <20210224100923.51315-1-nixiaoming@huawei.com>
+ <20210225091738.GC641347@dell>
 MIME-Version: 1.0
-References: <20210228012643.69944-1-ronald@innovation.ch> <20210228012643.69944-4-ronald@innovation.ch>
-In-Reply-To: <20210228012643.69944-4-ronald@innovation.ch>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 1 Mar 2021 16:18:32 +0200
-Message-ID: <CAHp75Vfd6wZwg9HWJoEwvzAAZR=8K2zDWbz4FZfbbrJBvZS4yQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] HID: core: Export some report item parsing functions.
-To:     =?UTF-8?Q?Ronald_Tschal=C3=A4r?= <ronald@innovation.ch>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210225091738.GC641347@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 3:30 AM Ronald Tschal=C3=A4r <ronald@innovation.ch>=
- wrote:
->
-> These are useful to drivers that need to scan or parse reports
-> themselves.
+On Thu, Feb 25, 2021 at 09:17:38AM +0000, Lee Jones wrote:
+> On Wed, 24 Feb 2021, Xiaoming Ni wrote:
+> 
+> > The handle_exit_race() function is defined in commit 9c3f39860367
+> >  ("futex: Cure exit race"), which never returns -EBUSY. This results
+> > in a small piece of dead code in the attach_to_pi_owner() function:
+> > 
+> > 	int ret = handle_exit_race(uaddr, uval, p); /* Never return -EBUSY */
+> > 	...
+> > 	if (ret == -EBUSY)
+> > 		*exiting = p; /* dead code */
+> > 
+> > The return value -EBUSY is added to handle_exit_race() in upsteam
+> > commit ac31c7ff8624409 ("futex: Provide distinct return value when
+> > owner is exiting"). This commit was incorporated into v4.9.255, before
+> > the function handle_exit_race() was introduced, whitout Modify
+> > handle_exit_race().
+> > 
+> > To fix dead code, extract the change of handle_exit_race() from
+> > commit ac31c7ff8624409 ("futex: Provide distinct return value when owner
+> >  is exiting"), re-incorporated.
+> > 
+> > Fixes: 9c3f39860367 ("futex: Cure exit race")
+> > Cc: stable@vger.kernel.org # v4.9.258
+> > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> > ---
+> >  kernel/futex.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> To clarify, this is not a wholesale back-port from Mainline.
+> 
+> It takes the remaining functional snippet of:
+> 
+>  ac31c7ff8624409 ("futex: Provide distinct return value when owner is exiting")
+> 
+> ... and is the correct fix for this issue.
+> 
+> Reviewed-by: Lee Jones <lee.jones@linaro.org>
 
-...
+Thanks, now queued up.
 
-> -       while ((start =3D fetch_item(start, end, &item)) !=3D NULL)
-> +       while ((start =3D hid_fetch_item(start, end, &item)) !=3D NULL)
->                 dispatch_type[item.type](parser, &item);
-
-> -       while ((next =3D fetch_item(start, end, &item)) !=3D NULL) {
-> +       while ((next =3D hid_fetch_item(start, end, &item)) !=3D NULL) {
->                 start =3D next;
-
-I don't see the full picture, but perhaps you may also introduce
-for_each_hid_item() or so.
-
---=20
-With Best Regards,
-Andy Shevchenko
+greg k-h
