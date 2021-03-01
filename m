@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5153532972F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3207B329720
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245475AbhCAWfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 17:35:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56554 "EHLO mail.kernel.org"
+        id S245314AbhCAWdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 17:33:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237157AbhCARhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:37:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76AE1650B5;
-        Mon,  1 Mar 2021 16:55:02 +0000 (UTC)
+        id S236918AbhCARfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:35:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59F6D64F24;
+        Mon,  1 Mar 2021 16:54:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617703;
-        bh=XF4lalpHJM62Tz3EDNDQZYBVgVUMa/la/4422/LhUC4=;
+        s=korg; t=1614617657;
+        bh=TEaw49BOomwqJohOD4Zy3tOagWEnNXGwXCR/F901DY8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=evMyDDQJw9p04r20xE/OTNwEYEOIELaCHlwBahDy6cULskzcEyH2LxfgWIVgFoqNU
-         t0tJs/obz8ET9Esllg04nY5OaqUXv3bV/U01ntSgL5xhvDUIogN2QCvo+fSsCHH9uu
-         mXFMb7gWUyACRnr0WIoRrnDFtMRS5gUszrLxRIDw=
+        b=VYjsST9Q2Gb/+RBqBpt7vsvbJi0iwtao3OedQw0WlpQiFqpPVvSAdcpLdqtFsGC59
+         k3A6jeFktULVLYfVteo6r2S1aUT/38Emfqirkdl90oCp2N+IgZdJvXQaQBSCXmclku
+         GccwK2Zw7NC7I81TXI4cj0lBFHNmagyir0OhTPOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>,
+        stable@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 137/340] HID: core: detect and skip invalid inputs to snto32()
-Date:   Mon,  1 Mar 2021 17:11:21 +0100
-Message-Id: <20210301161055.058755105@linuxfoundation.org>
+Subject: [PATCH 5.4 150/340] RDMA/mlx5: Use the correct obj_id upon DEVX TIR creation
+Date:   Mon,  1 Mar 2021 17:11:34 +0100
+Message-Id: <20210301161055.699548601@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
 References: <20210301161048.294656001@linuxfoundation.org>
@@ -43,49 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Yishai Hadas <yishaih@nvidia.com>
 
-[ Upstream commit a0312af1f94d13800e63a7d0a66e563582e39aec ]
+[ Upstream commit 8798e4ad0abe0ba1221928a46561981c510be0c6 ]
 
-Prevent invalid (0, 0) inputs to hid-core's snto32() function.
+Use the correct obj_id upon DEVX TIR creation by strictly taking the tirn
+24 bits and not the general obj_id which is 32 bits.
 
-Maybe it is just the dummy device here that is causing this, but
-there are hundreds of calls to snto32(0, 0). Having n (bits count)
-of 0 is causing the current UBSAN trap with a shift value of
-0xffffffff (-1, or n - 1 in this function).
-
-Either of the value to shift being 0 or the bits count being 0 can be
-handled by just returning 0 to the caller, avoiding the following
-complex shift + OR operations:
-
-	return value & (1 << (n - 1)) ? value | (~0U << n) : value;
-
-Fixes: dde5845a529f ("[PATCH] Generic HID layer - code split")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: linux-input@vger.kernel.org
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Fixes: 7efce3691d33 ("IB/mlx5: Add obj create and destroy functionality")
+Link: https://lore.kernel.org/r/20201230130121.180350-2-leon@kernel.org
+Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/hw/mlx5/devx.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 263eca119ff0f..8d202011b2db5 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -1300,6 +1300,9 @@ EXPORT_SYMBOL_GPL(hid_open_report);
- 
- static s32 snto32(__u32 value, unsigned n)
- {
-+	if (!value || !n)
-+		return 0;
-+
- 	switch (n) {
- 	case 8:  return ((__s8)value);
- 	case 16: return ((__s16)value);
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index fd75a9043bf15..4d6f25fdcc0ef 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -1118,7 +1118,9 @@ static void devx_obj_build_destroy_cmd(void *in, void *out, void *din,
+ 		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_RQT);
+ 		break;
+ 	case MLX5_CMD_OP_CREATE_TIR:
+-		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_TIR);
++		*obj_id = MLX5_GET(create_tir_out, out, tirn);
++		MLX5_SET(destroy_tir_in, din, opcode, MLX5_CMD_OP_DESTROY_TIR);
++		MLX5_SET(destroy_tir_in, din, tirn, *obj_id);
+ 		break;
+ 	case MLX5_CMD_OP_CREATE_TIS:
+ 		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_TIS);
 -- 
 2.27.0
 
