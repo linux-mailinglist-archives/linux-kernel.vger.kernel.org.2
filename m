@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C42328CED
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B67F2328CE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240040AbhCATCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:02:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46442 "EHLO mail.kernel.org"
+        id S240821AbhCATBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:01:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235601AbhCAQo1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:44:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD67E614A7;
-        Mon,  1 Mar 2021 16:30:28 +0000 (UTC)
+        id S235600AbhCAQo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:44:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B92D64E04;
+        Mon,  1 Mar 2021 16:30:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616229;
-        bh=ZfP3LrniHAOd0ENsx1niWljaf9BgylEEvfkT1BJMATI=;
+        s=korg; t=1614616235;
+        bh=F4AR67BXz3nXpqNlZtDWcG58VPfZfGdv3CMp9YyTctU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bdaBNhVcca4QQTy50TlQKuT6FKTcw1kF3PIveEWfaD6BjqIRktBaKXpRHcrPoK0tH
-         IFaxCASGVLetzAROqm5KVHXt9NEzYOlESR7vJ0i7jTHYsjoQ9Fj1QYJzVDKoPSzK5M
-         hkuYh3ncCvY4GNmrBdBZyLlS2os6VZmB/wsm4bIc=
+        b=gW1575+BbKp4WB3nTyOimw/9ogp2UgWF/VzmFGeTHm3O/fcscqAXM75/kVJqB4THk
+         b0u9Jr8pGiFVCwmjOiOBJdpJggEitfTIZiaCJpsKA7Q3xEjrteQzbqb9Kfu8VH6teL
+         ixjMX29bcKT8zAn1QYXsbCL7eUGb3Ui7cy3g66ww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 079/176] rtc: s5m: select REGMAP_I2C
-Date:   Mon,  1 Mar 2021 17:12:32 +0100
-Message-Id: <20210301161024.890241529@linuxfoundation.org>
+Subject: [PATCH 4.14 080/176] clocksource/drivers/mxs_timer: Add missing semicolon when DEBUG is defined
+Date:   Mon,  1 Mar 2021 17:12:33 +0100
+Message-Id: <20210301161024.940714440@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -42,35 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 1f0cbda3b452b520c5f3794f8f0e410e8bc7386a ]
+[ Upstream commit 7da390694afbaed8e0f05717a541dfaf1077ba51 ]
 
-The rtc-s5m uses the I2C regmap but doesn't select it in Kconfig so
-depending on the configuration the build may fail. Fix it.
+When DEBUG is defined this error occurs
 
-Fixes: 959df7778bbd ("rtc: Enable compile testing for Maxim and Samsung drivers")
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20210114102219.23682-2-brgl@bgdev.pl
+drivers/clocksource/mxs_timer.c:138:1: error:
+  expected ‘;’ before ‘}’ token
+
+The preceding statement needs a semicolon.
+Replace pr_info() with pr_debug() and remove the unneeded ifdef.
+
+Fixes: eb8703e2ef7c ("clockevents/drivers/mxs: Migrate to new 'set-state' interface")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210118211955.763609-1-trix@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/clocksource/mxs_timer.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index 68b76e6ddc1ee..7129442f0dfe2 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -625,6 +625,7 @@ config RTC_DRV_S5M
- 	tristate "Samsung S2M/S5M series"
- 	depends on MFD_SEC_CORE || COMPILE_TEST
- 	select REGMAP_IRQ
-+	select REGMAP_I2C
- 	help
- 	  If you say yes here you will get support for the
- 	  RTC of Samsung S2MPS14 and S5M PMIC series.
+diff --git a/drivers/clocksource/mxs_timer.c b/drivers/clocksource/mxs_timer.c
+index a03434e9fe8f4..7b8a468cf34f2 100644
+--- a/drivers/clocksource/mxs_timer.c
++++ b/drivers/clocksource/mxs_timer.c
+@@ -152,10 +152,7 @@ static void mxs_irq_clear(char *state)
+ 
+ 	/* Clear pending interrupt */
+ 	timrot_irq_acknowledge();
+-
+-#ifdef DEBUG
+-	pr_info("%s: changing mode to %s\n", __func__, state)
+-#endif /* DEBUG */
++	pr_debug("%s: changing mode to %s\n", __func__, state);
+ }
+ 
+ static int mxs_shutdown(struct clock_event_device *evt)
 -- 
 2.27.0
 
