@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F77328023
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0534332802A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236130AbhCAN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:58:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        id S236079AbhCAN7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:59:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236122AbhCAN6q (ORCPT
+        with ESMTP id S236064AbhCAN7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:58:46 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34D39C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 05:58:05 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id v13so4375996edw.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 05:58:05 -0800 (PST)
+        Mon, 1 Mar 2021 08:59:52 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D72C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 05:59:11 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id r25so18509792ljk.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 05:59:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nKuWC3rVV9sra+4DDgdLnle85IT4vlB1n7DPoNwpayo=;
-        b=STgKjcbbPqlcVj+Yg1do/AfuQIj/wmBwy56Kj0C4VQoXnZHFAiF79BD5kiIcPWzgDB
-         /ZXT0GpsZgkfB8E5WMMZcT285MlbPXod+cZrK1EXjwzKrhy35bATHm0CPmObm0oq2iwE
-         oEI+69fCBlum8d1WP/UXUJFU4vArguEIHlK4IC8nudxpjtvVAcAyL0j06R8Zfiu+2jag
-         SuVppZD1+mT0+pC3MHTdWLPRlXomrKYGro0wq7F2vycFK/G5nxbDhmwfPKJpv0RT4Ihn
-         5eUckBWRXm8wdtgsfsoDYYpwSvGKOLFIDSToQdvRq+F7T+vF6H2YKs+tBmUrTssHgTFq
-         mByg==
+        bh=XcR/dzHVgKkCRGIsBLxsPv1g4tIUIXKwFlYY1CUcxQw=;
+        b=mcd+5Ms0K5O8lJfp+Hg3iiZK5GFnAcw5smpc5fYLfIDm2zwAkiBkL9cqO6YvU+Aaj9
+         knpvZIeLv0NImoj/9CH6n7VLCasnSF7P6PiA2+OPqoGicmxFpv96j4WwVpG5r6V8erqi
+         NDNBjlPg1TAG8NLVBP6F41NcwCH/HiW/88sWLxF/1mKWmQSH337Z5QDul2fQ1AvAGzow
+         j1YRFNWiehgRJvlzc/03LGn3wL3smM5UTuMN/TiU6BA23c7L3yD3D7fRT2O7XHfibsSw
+         jYFmq749oEuVU34DmDpez0xplb9IRHwVaSI3N2QvWz3Zjjmx5ERO8fCzrHGhn8rN7ICw
+         HGqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nKuWC3rVV9sra+4DDgdLnle85IT4vlB1n7DPoNwpayo=;
-        b=OVv48Ote3LINxMSoijMmbuHvP8vQb0CWCTY5yPLH/Gdq0XAngOzitbPCSl70dEH+s9
-         H1MKwNbX82mvVRhxN5hx7PKb/O7aCWEQDApCG6Bgc1GDxuaUveqnjZLHLROWvE8fvDKt
-         Ppt4qe4pLdmpmG4x5B3GhVjyFGf91MUryYbaYh0C49Jt6dOGNTpOBskmF/sBbI64Xhx6
-         3ebU1yu0qWDgTaAe5CzpSWjDXYkNelYtfBsf6unLsndWSrbdEMKGQa6lDXMjKUNhrf04
-         iDE+aUDivbYcUF28wMmkLpEBJn/NG/bKq2GjwRRVOhaPTBAmA4reMZON/xy7jm9IGVLy
-         fosw==
-X-Gm-Message-State: AOAM530ZNU1xiipyNoTKf2NpadRMt7HrdmpW1PDsHuwNQgBAZM5/F2LF
-        rAhYrVBafJ5tVdmdRsDaj3Cd7X7438Tc1lTZg15pFw==
-X-Google-Smtp-Source: ABdhPJwYJDxPiEv3ADUo2gt/NLH8qTuwvXhaLRKLrw+7IP/68NCdtzYiQfFshSLhg0rbOrVB84ornicr77iSkLSXmE0=
-X-Received: by 2002:a05:6402:35c8:: with SMTP id z8mr3291764edc.341.1614607083797;
- Mon, 01 Mar 2021 05:58:03 -0800 (PST)
+        bh=XcR/dzHVgKkCRGIsBLxsPv1g4tIUIXKwFlYY1CUcxQw=;
+        b=dxbaNz25CShDY+HtEG57IYOKWRgbJggtuSHYfIaRl/mbhccuoxLhiVjxr9GkubarHh
+         RkWzXvbzwMX5t/ErgqT4UuC1E81z1oNn11uxgV47Hl4gRKbTu8hfewQvtDajwjJMU9XS
+         c+ksgFzx2XcJeOTFKuiBKgwHWZ5MoOtU5TJF2wGlOtNvJke8puAoqJuxRCXKu9hIsrDJ
+         VlTKfhodIuH1ma5aeV9r5RNkGFIxxdA8swGI3gi1/hKayvj9NXOQG5JGBUKXVYsFmY3e
+         UxgZn5J7W6Bw7BPPTAP4gvE0WKEzBV/J1t41iQFLwYol9aIbEW1ZO+xqiE5cZhhIEy0B
+         Nyow==
+X-Gm-Message-State: AOAM532wwMTeZxv6BQ4V4k87K74KQy0G91oEOZmTPL98T1hNG+dKTf9e
+        AYr0npxg7KwgE+WocxV/E3eV9rP4KdTX8yDSk4CqV8rgV+8=
+X-Google-Smtp-Source: ABdhPJzJxMEWzzKTbRFbxSW4JSBPEDQHkV4eW75ZmlMLtfAi4mE1xdnnyaCGl/I5JiWt40FY5leZnjHaCzDmvkU5m4E=
+X-Received: by 2002:a2e:9754:: with SMTP id f20mr7052483ljj.200.1614607150550;
+ Mon, 01 Mar 2021 05:59:10 -0800 (PST)
 MIME-Version: 1.0
-References: <1614069358-50943-1-git-send-email-yang.lee@linux.alibaba.com>
- <YDTsWR/kXhd96ICI@smile.fi.intel.com> <YDe8/2toCGEH2Mf1@smile.fi.intel.com>
-In-Reply-To: <YDe8/2toCGEH2Mf1@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 1 Mar 2021 14:57:53 +0100
-Message-ID: <CAMpxmJV5go-fHR2RWWdyi5a6ONeXrhC5c958oNZNzszt2aGN9A@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: acpi: Add missing IRQF_ONESHOT
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Yang Li <yang.lee@linux.alibaba.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210228170823.1488-1-dqfext@gmail.com>
+In-Reply-To: <20210228170823.1488-1-dqfext@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 1 Mar 2021 14:58:59 +0100
+Message-ID: <CACRpkdYpO6xXkswSO_wRLJNeeO6LZtT_W+KN-ECRyCc+ybU7VA@mail.gmail.com>
+Subject: Re: [PATCH net] net: dsa: tag_rtl4_a: fix egress tags
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 4:07 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Feb 23, 2021 at 01:51:53PM +0200, Andy Shevchenko wrote:
-> > On Tue, Feb 23, 2021 at 04:35:58PM +0800, Yang Li wrote:
-> > > fixed the following coccicheck:
-> > > ./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
-> > > primary handler requested without IRQF_ONESHOT
-> > >
-> > > Make sure threaded IRQs without a primary handler are always request
-> > > with IRQF_ONESHOT
-> >
-> > Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> Bart, I guess I will collect this in my branch and send you a PR.
-> I have more fixes to that file anyway.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+On Sun, Feb 28, 2021 at 6:08 PM DENG Qingfang <dqfext@gmail.com> wrote:
 
-Fine with me!
+> Commit 86dd9868b878 has several issues, but was accepted too soon
+> before anyone could take a look.
+>
+> - Double free. dsa_slave_xmit() will free the skb if the xmit function
+>   returns NULL, but the skb is already freed by eth_skb_pad(). Use
+>   __skb_put_padto() to avoid that.
+> - Unnecessary allocation. It has been done by DSA core since commit
+>   a3b0b6479700.
+> - A u16 pointer points to skb data. It should be __be16 for network
+>   byte order.
+> - Typo in comments. "numer" -> "number".
+>
+> Fixes: 86dd9868b878 ("net: dsa: tag_rtl4_a: Support also egress tags")
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+
+Ooops I send patches before properly going through the mailbox.
+Oh well things like that happen.
+
+David: ignore my patches to the same tagger and apply this instead!
+
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
