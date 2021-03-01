@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82786329B70
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8876329C38
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348695AbhCBBYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:24:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39682 "EHLO mail.kernel.org"
+        id S1380326AbhCBBuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:50:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239241AbhCATJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:09:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85C6B651EF;
-        Mon,  1 Mar 2021 17:19:45 +0000 (UTC)
+        id S241698AbhCAT2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:28:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BE6965049;
+        Mon,  1 Mar 2021 17:18:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619186;
-        bh=vtMF237ExkEVDQHFBUgK0YVl1AJ14GrnuqdTiQMfXV8=;
+        s=korg; t=1614619109;
+        bh=Lh3KcIpt1rlEQPrwCoRqVQixD8turhgQ73SDjrYTb0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CLaN9qiP+XTVRNkiukEJgxz2LpZAcxDAuoUEPCr60YchZtk5497mK/7za4KD6+ivv
-         qyaR0sJct6vFQE/1Fp1boU08sZmJcXZDmmZIJDNsZL/2LhCDvnZqgBJdEXIRiFT0kA
-         gEko48ihJOZQ5BcLjD5hdPpXVhn/pNvSU9iazs9M=
+        b=iSfUO7rzRsJVYwgRJhsOMtS7Cu8uv6OdlatLwJEZaZmtST3XrjZRz9u2cAgq9/NBz
+         KvRDAI9F8Nustrcq/eMWaWL83r5OIW2reSIAgrd+l2NeJ9Z7fxtlnXenTgSGa+0dNs
+         HFgaISjdB0h5LvllevQxuHHtQm8w7Csg46Ze/C2Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Roja Rani Yarubandi <rojay@codeaurora.org>,
         Akash Asthana <akashast@codeaurora.org>,
         Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 334/663] i2c: qcom-geni: Store DMA mapping data in geni_i2c_dev struct
-Date:   Mon,  1 Mar 2021 17:09:42 +0100
-Message-Id: <20210301161158.375076790@linuxfoundation.org>
+Subject: [PATCH 5.10 335/663] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+Date:   Mon,  1 Mar 2021 17:09:43 +0100
+Message-Id: <20210301161158.425253438@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -42,150 +42,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Roja Rani Yarubandi <rojay@codeaurora.org>
 
-[ Upstream commit 357ee8841d0b7bd822f25fc768afbc0c2ab7e47b ]
+[ Upstream commit e0371298ddc51761be257698554ea507ac8bf831 ]
 
-Store DMA mapping data in geni_i2c_dev struct to enhance DMA mapping
-data scope. For example during shutdown callback to unmap DMA mapping,
-this stored DMA mapping data can be used to call geni_se_tx_dma_unprep
-and geni_se_rx_dma_unprep functions.
+If the hardware is still accessing memory after SMMU translation
+is disabled (as part of smmu shutdown callback), then the
+IOVAs (I/O virtual address) which it was using will go on the bus
+as the physical addresses which will result in unknown crashes
+like NoC/interconnect errors.
 
-Add two helper functions geni_i2c_rx_msg_cleanup and
-geni_i2c_tx_msg_cleanup to unwrap the things after rx/tx FIFO/DMA
-transfers, so that the same can be used in geni_i2c_stop_xfer()
-function during shutdown callback.
+So, implement shutdown callback to i2c driver to stop on-going transfer
+and unmap DMA mappings during system "reboot" or "shutdown".
 
+Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
 Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
 Reviewed-by: Akash Asthana <akashast@codeaurora.org>
 Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-qcom-geni.c | 59 ++++++++++++++++++++++--------
- 1 file changed, 43 insertions(+), 16 deletions(-)
+ drivers/i2c/busses/i2c-qcom-geni.c | 34 ++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
 diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-index dce75b85253c1..4a6dd05d6dbf9 100644
+index 4a6dd05d6dbf9..221cba687fe02 100644
 --- a/drivers/i2c/busses/i2c-qcom-geni.c
 +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-@@ -86,6 +86,9 @@ struct geni_i2c_dev {
- 	u32 clk_freq_out;
- 	const struct geni_i2c_clk_fld *clk_fld;
- 	int suspended;
-+	void *dma_buf;
-+	size_t xfer_len;
-+	dma_addr_t dma_addr;
- };
- 
- struct geni_i2c_err_log {
-@@ -348,14 +351,39 @@ static void geni_i2c_tx_fsm_rst(struct geni_i2c_dev *gi2c)
- 		dev_err(gi2c->se.dev, "Timeout resetting TX_FSM\n");
+@@ -375,6 +375,32 @@ static void geni_i2c_tx_msg_cleanup(struct geni_i2c_dev *gi2c,
+ 	}
  }
  
-+static void geni_i2c_rx_msg_cleanup(struct geni_i2c_dev *gi2c,
-+				     struct i2c_msg *cur)
++static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
 +{
-+	gi2c->cur_rd = 0;
-+	if (gi2c->dma_buf) {
-+		if (gi2c->err)
-+			geni_i2c_rx_fsm_rst(gi2c);
-+		geni_se_rx_dma_unprep(&gi2c->se, gi2c->dma_addr, gi2c->xfer_len);
-+		i2c_put_dma_safe_msg_buf(gi2c->dma_buf, cur, !gi2c->err);
-+	}
-+}
++	int ret;
++	u32 geni_status;
++	struct i2c_msg *cur;
 +
-+static void geni_i2c_tx_msg_cleanup(struct geni_i2c_dev *gi2c,
-+				     struct i2c_msg *cur)
-+{
-+	gi2c->cur_wr = 0;
-+	if (gi2c->dma_buf) {
-+		if (gi2c->err)
-+			geni_i2c_tx_fsm_rst(gi2c);
-+		geni_se_tx_dma_unprep(&gi2c->se, gi2c->dma_addr, gi2c->xfer_len);
-+		i2c_put_dma_safe_msg_buf(gi2c->dma_buf, cur, !gi2c->err);
++	/* Resume device, as runtime suspend can happen anytime during transfer */
++	ret = pm_runtime_get_sync(gi2c->se.dev);
++	if (ret < 0) {
++		dev_err(gi2c->se.dev, "Failed to resume device: %d\n", ret);
++		return;
 +	}
++
++	geni_status = readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
++	if (geni_status & M_GENI_CMD_ACTIVE) {
++		cur = gi2c->cur;
++		geni_i2c_abort_xfer(gi2c);
++		if (cur->flags & I2C_M_RD)
++			geni_i2c_rx_msg_cleanup(gi2c, cur);
++		else
++			geni_i2c_tx_msg_cleanup(gi2c, cur);
++	}
++
++	pm_runtime_put_sync_suspend(gi2c->se.dev);
 +}
 +
  static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
  				u32 m_param)
  {
--	dma_addr_t rx_dma;
-+	dma_addr_t rx_dma = 0;
- 	unsigned long time_left;
- 	void *dma_buf = NULL;
- 	struct geni_se *se = &gi2c->se;
- 	size_t len = msg->len;
-+	struct i2c_msg *cur;
- 
- 	if (!of_machine_is_compatible("lenovo,yoga-c630"))
- 		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
-@@ -372,19 +400,18 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 		geni_se_select_mode(se, GENI_SE_FIFO);
- 		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
- 		dma_buf = NULL;
-+	} else {
-+		gi2c->xfer_len = len;
-+		gi2c->dma_addr = rx_dma;
-+		gi2c->dma_buf = dma_buf;
- 	}
- 
-+	cur = gi2c->cur;
- 	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
- 	if (!time_left)
- 		geni_i2c_abort_xfer(gi2c);
- 
--	gi2c->cur_rd = 0;
--	if (dma_buf) {
--		if (gi2c->err)
--			geni_i2c_rx_fsm_rst(gi2c);
--		geni_se_rx_dma_unprep(se, rx_dma, len);
--		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
--	}
-+	geni_i2c_rx_msg_cleanup(gi2c, cur);
- 
- 	return gi2c->err;
+@@ -654,6 +680,13 @@ static int geni_i2c_remove(struct platform_device *pdev)
+ 	return 0;
  }
-@@ -392,11 +419,12 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 				u32 m_param)
+ 
++static void  geni_i2c_shutdown(struct platform_device *pdev)
++{
++	struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
++
++	geni_i2c_stop_xfer(gi2c);
++}
++
+ static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
  {
--	dma_addr_t tx_dma;
-+	dma_addr_t tx_dma = 0;
- 	unsigned long time_left;
- 	void *dma_buf = NULL;
- 	struct geni_se *se = &gi2c->se;
- 	size_t len = msg->len;
-+	struct i2c_msg *cur;
- 
- 	if (!of_machine_is_compatible("lenovo,yoga-c630"))
- 		dma_buf = i2c_get_dma_safe_msg_buf(msg, 32);
-@@ -413,22 +441,21 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
- 		geni_se_select_mode(se, GENI_SE_FIFO);
- 		i2c_put_dma_safe_msg_buf(dma_buf, msg, false);
- 		dma_buf = NULL;
-+	} else {
-+		gi2c->xfer_len = len;
-+		gi2c->dma_addr = tx_dma;
-+		gi2c->dma_buf = dma_buf;
- 	}
- 
- 	if (!dma_buf) /* Get FIFO IRQ */
- 		writel_relaxed(1, se->base + SE_GENI_TX_WATERMARK_REG);
- 
-+	cur = gi2c->cur;
- 	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
- 	if (!time_left)
- 		geni_i2c_abort_xfer(gi2c);
- 
--	gi2c->cur_wr = 0;
--	if (dma_buf) {
--		if (gi2c->err)
--			geni_i2c_tx_fsm_rst(gi2c);
--		geni_se_tx_dma_unprep(se, tx_dma, len);
--		i2c_put_dma_safe_msg_buf(dma_buf, msg, !gi2c->err);
--	}
-+	geni_i2c_tx_msg_cleanup(gi2c, cur);
- 
- 	return gi2c->err;
- }
+ 	int ret;
+@@ -718,6 +751,7 @@ MODULE_DEVICE_TABLE(of, geni_i2c_dt_match);
+ static struct platform_driver geni_i2c_driver = {
+ 	.probe  = geni_i2c_probe,
+ 	.remove = geni_i2c_remove,
++	.shutdown = geni_i2c_shutdown,
+ 	.driver = {
+ 		.name = "geni_i2c",
+ 		.pm = &geni_i2c_pm_ops,
 -- 
 2.27.0
 
