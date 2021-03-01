@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0D0329A6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB070329A11
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377628AbhCBAsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:48:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51582 "EHLO mail.kernel.org"
+        id S1348304AbhCBAnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:43:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240185AbhCASmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:42:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8B4464DA3;
-        Mon,  1 Mar 2021 17:46:31 +0000 (UTC)
+        id S240355AbhCASit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:38:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 316AB651B4;
+        Mon,  1 Mar 2021 17:12:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620792;
-        bh=XQnAJbcKoe9KTUO3XhMJJoVlbMZBjmlecvReRl3DMBU=;
+        s=korg; t=1614618765;
+        bh=GvD+pCt/CIV3sJKGMWi1Duu9EOg35dH4ZvSVMHmzIDk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ItOBicpTvGe/wdNei6C2Kt/mU6rhpyjfrnszsviD6ttKe0iMGVRdhrjX07/Txvg+0
-         zsC8nUpYYREvo/MHnO0FltwALeqh+QYMpxAdzzCg/mO1nXvnAznBc+qCPuJggGqJzH
-         5M6dxLvAOrpCBOyPouiOkJX6+zp5b1DOF+MXsD+E=
+        b=Izc7h/n2S4UYxQaPygvdP+VvUyZu4FavEZys9EWBeZhmKUtxUDmR0N1K7TVsp5cz7
+         9cd3ZGEVX/v/J+WEknZKQDR0j/mxJEAdZqy1Z9IhpKk+9nPg7nPkni+FZsEX3b/2Vh
+         n7bHg7eO1Qx83PN6Hm2Goc0jWIZKBjMexmMAGFmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 282/775] hwrng: timeriomem - Fix cooldown period calculation
-Date:   Mon,  1 Mar 2021 17:07:30 +0100
-Message-Id: <20210301161215.564965922@linuxfoundation.org>
+Subject: [PATCH 5.10 209/663] ASoC: codecs: add missing max_register in regmap config
+Date:   Mon,  1 Mar 2021 17:07:37 +0100
+Message-Id: <20210301161152.128557363@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit e145f5565dc48ccaf4cb50b7cfc48777bed8c100 ]
+[ Upstream commit e8820dbddbcad7e91daacf7d42a49d1d04a4e489 ]
 
-Ensure cooldown period tolerance of 1% is actually accounted for.
+For some reason setting max_register was missed from regmap_config.
+Without this cat /sys/kernel/debug/regmap/sdw:0:217:2010:0:1/range
+actually throws below Warning.
 
-Fixes: ca3bff70ab32 ("hwrng: timeriomem - Improve performance...")
-Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+WARNING: CPU: 7 PID: 540 at drivers/base/regmap/regmap-debugfs.c:160
+ regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
+...
+Call trace:
+ regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
+ regmap_reg_ranges_read_file+0xc0/0x2e0
+ full_proxy_read+0x64/0x98
+ vfs_read+0xa8/0x1e0
+ ksys_read+0x6c/0x100
+ __arm64_sys_read+0x1c/0x28
+ el0_svc_common.constprop.3+0x6c/0x190
+ do_el0_svc+0x24/0x90
+ el0_svc+0x14/0x20
+ el0_sync_handler+0x90/0xb8
+ el0_sync+0x158/0x180
+...
+
+Fixes: a0aab9e1404a ("ASoC: codecs: add wsa881x amplifier support")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20210201161429.28060-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/hw_random/timeriomem-rng.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wsa881x.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/char/hw_random/timeriomem-rng.c b/drivers/char/hw_random/timeriomem-rng.c
-index e262445fed5f5..f35f0f31f52ad 100644
---- a/drivers/char/hw_random/timeriomem-rng.c
-+++ b/drivers/char/hw_random/timeriomem-rng.c
-@@ -69,7 +69,7 @@ static int timeriomem_rng_read(struct hwrng *hwrng, void *data,
- 		 */
- 		if (retval > 0)
- 			usleep_range(period_us,
--					period_us + min(1, period_us / 100));
-+					period_us + max(1, period_us / 100));
- 
- 		*(u32 *)data = readl(priv->io_base);
- 		retval += sizeof(u32);
+diff --git a/sound/soc/codecs/wsa881x.c b/sound/soc/codecs/wsa881x.c
+index 4530b74f5921b..db87e07b11c94 100644
+--- a/sound/soc/codecs/wsa881x.c
++++ b/sound/soc/codecs/wsa881x.c
+@@ -640,6 +640,7 @@ static struct regmap_config wsa881x_regmap_config = {
+ 	.val_bits = 8,
+ 	.cache_type = REGCACHE_RBTREE,
+ 	.reg_defaults = wsa881x_defaults,
++	.max_register = WSA881X_SPKR_STATUS3,
+ 	.num_reg_defaults = ARRAY_SIZE(wsa881x_defaults),
+ 	.volatile_reg = wsa881x_volatile_register,
+ 	.readable_reg = wsa881x_readable_register,
 -- 
 2.27.0
 
