@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E334329C0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6123F329BB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345940AbhCBBrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:47:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46154 "EHLO mail.kernel.org"
+        id S1379446AbhCBB2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:28:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241556AbhCATYF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:24:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D709650D4;
-        Mon,  1 Mar 2021 17:51:03 +0000 (UTC)
+        id S241183AbhCATPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:15:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 684B5650D7;
+        Mon,  1 Mar 2021 17:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621064;
-        bh=ojeTjuDY35/u129zo93H02dlPVWhaoTGm7cCGJ+NniU=;
+        s=korg; t=1614621075;
+        bh=ci08ei5HyH+4qDC5W+RSA4UAYoxmUtuJQLi2txTgwHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cGXuqon1de8P7gclQi5Tx3zE15oj7dX4R5VnsfKIOx6EjwhFaxMr/fRXDpmjSAtBb
-         kAAUe/RMe8Xtl6AmVRukwnLrUloKuBWJ4jt8dvlAFJ8/yxX0mo33oZhCjT0sIkeCGX
-         BTLBrEDlQ4IYqYfbgGufGXA0n9g2NORzuvUneXNE=
+        b=DxNk+EIohUIBhf1QxWjsubNTX419Bv4pw89m0ZLLk4yb2oi7sfvQCX/mqYyrb+Oq0
+         kW2bk2Q0p1N0oTyfVAqtNeXWtQPiRRBde2yK6+sPmyQq+7jlJIQpZxQJSlg3CDyn+4
+         fFEdawpJgHxRFwjIE3Hg0wiJKxHGydz2KQyO7tUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 381/775] objtool: Fix retpoline detection in asm code
-Date:   Mon,  1 Mar 2021 17:09:09 +0100
-Message-Id: <20210301161220.433822210@linuxfoundation.org>
+        stable@vger.kernel.org, Yong Wu <yong.wu@mediatek.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 384/775] iommu: Switch gather->end to the inclusive end
+Date:   Mon,  1 Mar 2021 17:09:12 +0100
+Message-Id: <20210301161220.581538444@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -39,76 +40,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@redhat.com>
+From: Yong Wu <yong.wu@mediatek.com>
 
-[ Upstream commit 1f9a1b74942485a0a29e7c4a9a9f2fe8aea17766 ]
+[ Upstream commit 862c3715de8f3e5350489240c951d697f04bd8c9 ]
 
-The JMP_NOSPEC macro branches to __x86_retpoline_*() rather than the
-__x86_indirect_thunk_*() wrappers used by C code.  Detect jumps to
-__x86_retpoline_*() as retpoline dynamic jumps.
+Currently gather->end is "unsigned long" which may be overflow in
+arch32 in the corner case: 0xfff00000 + 0x100000(iova + size).
+Although it doesn't affect the size(end - start), it affects the checking
+"gather->end < end"
 
-Presumably this doesn't trigger a user-visible bug.  I only found it
-when testing vmlinux.o validation.
+This patch changes this "end" to the real end address
+(end = start + size - 1). Correspondingly, update the length to
+"end - start + 1".
 
-Fixes: 39b735332cb8 ("objtool: Detect jumps to retpoline thunks")
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lore.kernel.org/r/31f5833e2e4f01e3d755889ac77e3661e906c09f.1611263461.git.jpoimboe@redhat.com
+Fixes: a7d20dc19d9e ("iommu: Introduce struct iommu_iotlb_gather for batching TLB flushes")
+Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+Acked-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210107122909.16317-5-yong.wu@mediatek.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/arch/x86/special.c |  2 +-
- tools/objtool/check.c            |  3 ++-
- tools/objtool/check.h            | 11 +++++++++++
- 3 files changed, 14 insertions(+), 2 deletions(-)
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 2 +-
+ drivers/iommu/mtk_iommu.c                   | 2 +-
+ include/linux/iommu.h                       | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/objtool/arch/x86/special.c b/tools/objtool/arch/x86/special.c
-index fd4af88c0ea52..151b13d0a2676 100644
---- a/tools/objtool/arch/x86/special.c
-+++ b/tools/objtool/arch/x86/special.c
-@@ -48,7 +48,7 @@ bool arch_support_alt_relocation(struct special_alt *special_alt,
- 	 * replacement group.
- 	 */
- 	return insn->offset == special_alt->new_off &&
--	       (insn->type == INSN_CALL || is_static_jump(insn));
-+	       (insn->type == INSN_CALL || is_jump(insn));
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 8ca7415d785d9..c70d6e79f5346 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -2280,7 +2280,7 @@ static void arm_smmu_iotlb_sync(struct iommu_domain *domain,
+ {
+ 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+ 
+-	arm_smmu_tlb_inv_range(gather->start, gather->end - gather->start,
++	arm_smmu_tlb_inv_range(gather->start, gather->end - gather->start + 1,
+ 			       gather->pgsize, true, smmu_domain);
  }
  
- /*
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 2e154f00ccec2..48e22e3c6f186 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -789,7 +789,8 @@ static int add_jump_destinations(struct objtool_file *file)
- 			dest_sec = reloc->sym->sec;
- 			dest_off = reloc->sym->sym.st_value +
- 				   arch_dest_reloc_offset(reloc->addend);
--		} else if (strstr(reloc->sym->name, "_indirect_thunk_")) {
-+		} else if (!strncmp(reloc->sym->name, "__x86_indirect_thunk_", 21) ||
-+			   !strncmp(reloc->sym->name, "__x86_retpoline_", 16)) {
- 			/*
- 			 * Retpoline jumps are really dynamic jumps in
- 			 * disguise, so convert them accordingly.
-diff --git a/tools/objtool/check.h b/tools/objtool/check.h
-index 5ec00a4b891b6..2804848e628e3 100644
---- a/tools/objtool/check.h
-+++ b/tools/objtool/check.h
-@@ -54,6 +54,17 @@ static inline bool is_static_jump(struct instruction *insn)
- 	       insn->type == INSN_JUMP_UNCONDITIONAL;
- }
+diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+index 8e56cec532e71..bfe6ec329f8d5 100644
+--- a/drivers/iommu/mtk_iommu.c
++++ b/drivers/iommu/mtk_iommu.c
+@@ -444,7 +444,7 @@ static void mtk_iommu_iotlb_sync(struct iommu_domain *domain,
+ 				 struct iommu_iotlb_gather *gather)
+ {
+ 	struct mtk_iommu_data *data = mtk_iommu_get_m4u_data();
+-	size_t length = gather->end - gather->start;
++	size_t length = gather->end - gather->start + 1;
  
-+static inline bool is_dynamic_jump(struct instruction *insn)
-+{
-+	return insn->type == INSN_JUMP_DYNAMIC ||
-+	       insn->type == INSN_JUMP_DYNAMIC_CONDITIONAL;
-+}
-+
-+static inline bool is_jump(struct instruction *insn)
-+{
-+	return is_static_jump(insn) || is_dynamic_jump(insn);
-+}
-+
- struct instruction *find_insn(struct objtool_file *file,
- 			      struct section *sec, unsigned long offset);
+ 	if (gather->start == ULONG_MAX)
+ 		return;
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index efa96263b81b3..d63d3e9cc7b67 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -170,7 +170,7 @@ enum iommu_dev_features {
+  * struct iommu_iotlb_gather - Range information for a pending IOTLB flush
+  *
+  * @start: IOVA representing the start of the range to be flushed
+- * @end: IOVA representing the end of the range to be flushed (exclusive)
++ * @end: IOVA representing the end of the range to be flushed (inclusive)
+  * @pgsize: The interval at which to perform the flush
+  *
+  * This structure is intended to be updated by multiple calls to the
+@@ -538,7 +538,7 @@ static inline void iommu_iotlb_gather_add_page(struct iommu_domain *domain,
+ 					       struct iommu_iotlb_gather *gather,
+ 					       unsigned long iova, size_t size)
+ {
+-	unsigned long start = iova, end = start + size;
++	unsigned long start = iova, end = start + size - 1;
  
+ 	/*
+ 	 * If the new page is disjoint from the current range or is mapped at
 -- 
 2.27.0
 
