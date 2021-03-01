@@ -2,143 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEA232A067
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDF032A068
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345194AbhCBESE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:18:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346390AbhCAXqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:46:15 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4C80601FE;
-        Mon,  1 Mar 2021 23:45:25 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 18:45:24 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [x86, build] 6dafca9780:
- WARNING:at_arch/x86/kernel/ftrace.c:#ftrace_verify_code
-Message-ID: <20210301184524.7aa05ac1@gandalf.local.home>
-In-Reply-To: <CABCJKuc8H83b_8_Ccp+Cb7O9x5oEu6sPNq63sjGcAJcgiwy0bw@mail.gmail.com>
-References: <20210301074027.GD12822@xsang-OptiPlex-9020>
-        <CABCJKuc8H83b_8_Ccp+Cb7O9x5oEu6sPNq63sjGcAJcgiwy0bw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1347450AbhCBESa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:18:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346445AbhCAXrw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 18:47:52 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9543AC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 15:47:12 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id o6so665621pjf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 15:47:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hOQErYBU0Jmcx6o4VWiTnlJfnMT/JJge44014ba2W/0=;
+        b=PvDM4zpGo+maq3h18zbqqSLr4xfAHbrF2Y4A8p3mm843j9+T6FQYsPTKKsGBLI7MnE
+         Co6cVVTonKIE8uQRpG5dX35uHM2V1meu0KbFCWLG06Ujwv0UpDTwzTepYtOmN3vad2Zm
+         bkccmXI1xvxTCWkbTycKNmqRVHSs1+h6qdJy4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hOQErYBU0Jmcx6o4VWiTnlJfnMT/JJge44014ba2W/0=;
+        b=J14QK8QLzyALM+IHjKhTW4d/AJO9u9shBu68re1fGApZKFWb2doYEVoFgN/1bZoCS0
+         CmEHYWUVNcKSgeTE5ti2hNY0BRmBl79vYKDeFo8ZXiNaqeZco7VS1ukVeqW1GgEZDxlf
+         hHOCiQQvF1b2KD1FiyniSNZlgGdC70WPyNY03cVHKPtsmmQabzwYD47fQjz6OCU7l39B
+         dEQ7yHn6DoJIL0oGkT9Q98SZfWSLkT8c6dH2lU/a8njdq/P0kMb6lbNP6/YvrJqxT/j2
+         1LNBHfVBxm0bv9DIw3h5E3XoYv9t15N2I/aMZ5H0HuussbPbsdoASriZz+BCsd+xjxEI
+         O/1w==
+X-Gm-Message-State: AOAM533AEnN5eCCFE9EeW5Iog4eOGpI8TG/VmUuoZpACaDoMCLoO8YUJ
+        8cqu39kI/JxSg5yFLtAFAD8x4A==
+X-Google-Smtp-Source: ABdhPJwTbQ9pc38LCgPpVbkkulTN41F1Od+84KaTOP1mJpwQL15bFyw9h0q5Y3c/7j7HRiU4Mh/ynA==
+X-Received: by 2002:a17:902:b70d:b029:e3:6c97:d180 with SMTP id d13-20020a170902b70db02900e36c97d180mr17932232pls.40.1614642432145;
+        Mon, 01 Mar 2021 15:47:12 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a136sm18685061pfa.66.2021.03.01.15.47.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 15:47:11 -0800 (PST)
+Date:   Mon, 1 Mar 2021 15:47:09 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] sysctl: use min() helper for namecmp()
+Message-ID: <202103011546.9AA6D832@keescook>
+References: <20210104083221.21184-1-masahiroy@kernel.org>
+ <CAK7LNARXy_puE7KZp2vjzn_KcW5uZ_ba3O5zFX46yGULjNhpZg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNARXy_puE7KZp2vjzn_KcW5uZ_ba3O5zFX46yGULjNhpZg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Mar 2021 14:14:51 -0800
-Sami Tolvanen <samitolvanen@google.com> wrote:
-
-> Basically, the problem is that ftrace_replace_code() expects to find
-> ideal_nops[NOP_ATOMIC5] here, which in this case is 66:66:66:66:90,
-> while objtool has replaced the __fentry__ call with 0f:1f:44:00:00.
+On Sun, Feb 28, 2021 at 04:44:22PM +0900, Masahiro Yamada wrote:
+> (CC: Andrew Morton)
 > 
-> As ideal_nops changes depending on kernel config and hardware, when
-> CC_USING_NOP_MCOUNT is defined we could either change
-> ftrace_nop_replace() to always use P6_NOP5, or skip
-> ftrace_verify_code() in ftrace_replace_code() for
-> FTRACE_UPDATE_MAKE_CALL.
+> A friendly reminder.
+> 
+> 
+> This is just a minor clean-up.
+> 
+> If nobody picks it up,
+> I hope perhaps Andrew Morton will do.
+> 
+> This patch:
+> https://lore.kernel.org/patchwork/patch/1360092/
+> 
+> 
+> 
+> 
+> 
+> On Mon, Jan 4, 2021 at 5:33 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > Make it slightly readable by using min().
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-So I hacked up the code to get -mnop-record to work on x86, and checked the
-vmlinux and it gives me:
+Acked-by: Kees Cook <keescook@chromium.org>
 
-ffffffff81bc6120 <schedule>:
-ffffffff81bc6120:       0f 1f 44 00 00          nopl   0x0(%rax,%rax,1)
-ffffffff81bc6125:       55                      push   %rbp
-ffffffff81bc6126:       65 48 8b 2c 25 c0 7d 01 00      mov    %gs:0x17dc0,%rbp ffffffff81bc612b: R_X86_64_32S  current_task
-ffffffff81bc612f:       53                      push   %rbx
-ffffffff81bc6130:       48 8b 45 18             mov    0x18(%rbp),%rax
+Feel free to take this via your tree Masahiro. Thanks!
 
+-Kees
 
-Which is the 0f:1f:44:00:00, and it works fine for me.
+> > ---
+> >
+> >  fs/proc/proc_sysctl.c | 7 +------
+> >  1 file changed, 1 insertion(+), 6 deletions(-)
+> >
+> > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> > index 317899222d7f..86341c0f0c40 100644
+> > --- a/fs/proc/proc_sysctl.c
+> > +++ b/fs/proc/proc_sysctl.c
+> > @@ -94,14 +94,9 @@ static void sysctl_print_dir(struct ctl_dir *dir)
+> >
+> >  static int namecmp(const char *name1, int len1, const char *name2, int len2)
+> >  {
+> > -       int minlen;
+> >         int cmp;
+> >
+> > -       minlen = len1;
+> > -       if (minlen > len2)
+> > -               minlen = len2;
+> > -
+> > -       cmp = memcmp(name1, name2, minlen);
+> > +       cmp = memcmp(name1, name2, min(len1, len2));
+> >         if (cmp == 0)
+> >                 cmp = len1 - len2;
+> >         return cmp;
+> > --
+> > 2.27.0
+> >
+> 
+> 
+> -- 
+> Best Regards
+> Masahiro Yamada
 
-Now, that could be because the ideal_nops[NOP_ATOMIC5] is the same, which
-would explain this.
+-- 
+Kees Cook
 
-No, we should *not* change ftrace_nop_replace() to always use any P6_NOP5,
-as there was a reason we did this. Because not all nops are the same, and
-this gets called for *every* function that is traced.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-No, we should not skip ftrace_verify_code() *ever*. (/me was just
-referencing on twitter the scenario where ftrace bricked e1000e cards).
-
-This is probably why I never was much for the compiler conversion into nops,
-because it may chose the wrong one for the architecture.
-
-What we could do, is if the nop chosen by the compiler is not the ideal
-nop, to go back and modify all the nops added by the compiler to the ideal
-one, which would keep it using the most efficient one.
-
-Or, add something like this:
-
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 7edbd5ee5ed4..aef3ea53f931 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -152,12 +152,19 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- {
- 	unsigned long ip = rec->ip;
- 	const char *new, *old;
-+	int ret;
- 
- 	old = ftrace_nop_replace();
- 	new = ftrace_call_replace(ip, addr);
- 
- 	/* Should only be called when module is loaded */
--	return ftrace_modify_code_direct(rec->ip, old, new);
-+	ret = ftrace_modify_code_direct(rec->ip, old, new);
-+	if (__is_defined(CC_USING_NOP_MCOUNT) && ret) {
-+		/* Compiler could have put in P6_NOP5 */
-+		old = P6_NOP5;
-+		ret = ftrace_modify_code_direct(rec->ip, old, new);
-+	}
-+	return ret;
- }
- 
- /*
-@@ -199,6 +206,8 @@ void ftrace_replace_code(int enable)
- 	int ret;
- 
- 	for_ftrace_rec_iter(iter) {
-+		bool old_nop = false;
-+
- 		rec = ftrace_rec_iter_record(iter);
- 
- 		switch (ftrace_test_record(rec, enable)) {
-@@ -208,6 +217,7 @@ void ftrace_replace_code(int enable)
- 
- 		case FTRACE_UPDATE_MAKE_CALL:
- 			old = ftrace_nop_replace();
-+			old_nop = true;
- 			break;
- 
- 		case FTRACE_UPDATE_MODIFY_CALL:
-@@ -217,6 +227,13 @@ void ftrace_replace_code(int enable)
- 		}
- 
- 		ret = ftrace_verify_code(rec->ip, old);
-+
-+		if (__is_defined(CC_USING_NOP_MCOUNT) && ret && old_nop) {
-+			/* Compiler could have put in P6_NOP5 */
-+			old = P6_NOP5;
-+			ret = ftrace_verify_code(rec->ip, old);
-+		}
-+
- 		if (ret) {
- 			ftrace_bug(ret, rec);
- 			return;
-
-
--- Steve
+-- 
+Kees Cook
