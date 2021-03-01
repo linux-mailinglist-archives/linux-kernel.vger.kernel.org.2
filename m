@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0279C329A09
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87240329A40
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348234AbhCBAmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:42:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
+        id S1377243AbhCBAqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:46:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240137AbhCASgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:36:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE64C64E54;
-        Mon,  1 Mar 2021 17:13:46 +0000 (UTC)
+        id S234821AbhCASjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:39:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E0BA64E31;
+        Mon,  1 Mar 2021 17:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618827;
-        bh=IGbafg3/x6fH60vPeu1G56lScjNGHVynlVsoJeT/4SI=;
+        s=korg; t=1614618829;
+        bh=AMAovv1m707oJ1y9ptFW2suwX9WU19RRVpElkic2UbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1fwZ5HTznE2DZrNiwnaSD1kY1KcEw/Tw4o6ncyq9uZuBCUjwjS7I5236TM4EIst2W
-         NMOTF+fVTtk0VphKmKIDHC7X8mdhQHVDC8F6NFBn5R7X8A6xlw3474Xlr3JcLEs3wW
-         T6ZAx6js6jBQmi9iCPOKIZtx6VhvAzc4gaIbZiVY=
+        b=w/yGeLcFLcsoWAHZSCV8H3kcK5WkjF3wTfd16/h3R1PKYLLUCf/zlGuywx+ncaxIG
+         sDUw0D59FLRyUyv/qzZ6FCPFmXS0irGxhj0t6GiOjBgFW38E4vqW0f62fb5T46ivva
+         F70ssxypKOZ9ZZCqqiLoOr1XTabfwwp3lxQeLrDM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 201/663] perf/arm-cmn: Move IRQs when migrating context
-Date:   Mon,  1 Mar 2021 17:07:29 +0100
-Message-Id: <20210301161151.726197554@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 202/663] mtd: parser: imagetag: fix error codes in bcm963xx_parse_imagetag_partitions()
+Date:   Mon,  1 Mar 2021 17:07:30 +0100
+Message-Id: <20210301161151.774797983@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -39,44 +40,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 1c8147ea89c883d1f4e20f1b1d9c879291430102 ]
+[ Upstream commit 12ba8f8ce29fdd277f3100052eddc1afd2f5ea3f ]
 
-If we migrate the PMU context to another CPU, we need to remember to
-retarget the IRQs as well.
+If the kstrtouint() calls fail, then this should return a negative
+error code but it currently returns success.
 
-Fixes: 0ba64770a2f2 ("perf: Add Arm CMN-600 PMU driver")
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/e080640aea4ed8dfa870b8549dfb31221803eb6b.1611839564.git.robin.murphy@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: dd84cb022b31 ("mtd: bcm63xxpart: move imagetag parsing to its own parser")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/YBKFtNaFHGYBj+u4@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/perf/arm-cmn.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/parsers/parser_imagetag.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
-index f3071b5ddaaef..46defb1dcf867 100644
---- a/drivers/perf/arm-cmn.c
-+++ b/drivers/perf/arm-cmn.c
-@@ -1150,7 +1150,7 @@ static int arm_cmn_commit_txn(struct pmu *pmu)
- static int arm_cmn_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
- {
- 	struct arm_cmn *cmn;
--	unsigned int target;
-+	unsigned int i, target;
+diff --git a/drivers/mtd/parsers/parser_imagetag.c b/drivers/mtd/parsers/parser_imagetag.c
+index d69607b482272..fab0949aabba1 100644
+--- a/drivers/mtd/parsers/parser_imagetag.c
++++ b/drivers/mtd/parsers/parser_imagetag.c
+@@ -83,6 +83,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
+ 			pr_err("invalid rootfs address: %*ph\n",
+ 				(int)sizeof(buf->flash_image_start),
+ 				buf->flash_image_start);
++			ret = -EINVAL;
+ 			goto out;
+ 		}
  
- 	cmn = hlist_entry_safe(node, struct arm_cmn, cpuhp_node);
- 	if (cpu != cmn->cpu)
-@@ -1161,6 +1161,8 @@ static int arm_cmn_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
- 		return 0;
+@@ -92,6 +93,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
+ 			pr_err("invalid kernel address: %*ph\n",
+ 				(int)sizeof(buf->kernel_address),
+ 				buf->kernel_address);
++			ret = -EINVAL;
+ 			goto out;
+ 		}
  
- 	perf_pmu_migrate_context(&cmn->pmu, cpu, target);
-+	for (i = 0; i < cmn->num_dtcs; i++)
-+		irq_set_affinity_hint(cmn->dtc[i].irq, cpumask_of(target));
- 	cmn->cpu = target;
- 	return 0;
- }
+@@ -100,6 +102,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
+ 			pr_err("invalid kernel length: %*ph\n",
+ 				(int)sizeof(buf->kernel_length),
+ 				buf->kernel_length);
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
+@@ -108,6 +111,7 @@ static int bcm963xx_parse_imagetag_partitions(struct mtd_info *master,
+ 			pr_err("invalid total length: %*ph\n",
+ 				(int)sizeof(buf->total_length),
+ 				buf->total_length);
++			ret = -EINVAL;
+ 			goto out;
+ 		}
+ 
 -- 
 2.27.0
 
