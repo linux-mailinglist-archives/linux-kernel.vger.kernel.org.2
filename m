@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8181032A009
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 034D232A00A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575180AbhCBDx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:53:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34534 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241351AbhCAWF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:05:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CA236AB8C;
-        Mon,  1 Mar 2021 22:05:14 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 23:05:12 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v1] mm/page_alloc: drop pr_info_ratelimited() in
- alloc_contig_range()
-Message-ID: <20210301220512.GA4425@localhost.localdomain>
-References: <20210301150945.77012-1-david@redhat.com>
+        id S1575189AbhCBDyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:54:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243887AbhCAWGj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 17:06:39 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E61C061788;
+        Mon,  1 Mar 2021 14:05:54 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 841CA2BA;
+        Mon,  1 Mar 2021 22:05:54 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 841CA2BA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614636354; bh=4dMqcg0qv92sCVUfNqP0aiZ9+W8s7Dqb9NzfQxgREOM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=o28ZEQO7sEFvtq1pbJ6WIt9wouywBFzDnT2xefn6KdsSelinLc54wjd7EFXHZcE4f
+         CbH+2rtQbUyTtQRA7w+Sx2nGu0TovfkfATQY5v+hN8E8xCFUpJZWdHLa/Ltjjaw2O1
+         JDVaY8CKmMm4ayWSN1MKF04pwKFpmyyZIQ76xbSQtixOO6XEaGk5cufmh5BiODbLea
+         4h4VtUv5snsDu5+MkQfvWMDHGkuiO2/MUb16EsmO28lR2UrtnVfCar5AedHLNOa1Gw
+         RFULeKN2fypqJPYZxq1KX6HvNzy/gl5u89nuncmT75LARDd2zSbN5JjhDd8seM0Itb
+         xCwep/2EOVg2w==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Joerg Roedel <joro@8bytes.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Damian Tometzki <linux@tometzki.de>
+Subject: Re: [PATCH] docs: reporting-issues.rst: explain how to decode stack
+ traces
+In-Reply-To: <20210215172857.382285-1-linux@leemhuis.info>
+References: <20210215172857.382285-1-linux@leemhuis.info>
+Date:   Mon, 01 Mar 2021 15:05:54 -0700
+Message-ID: <878s7634xp.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301150945.77012-1-david@redhat.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 04:09:45PM +0100, David Hildenbrand wrote:
-> The information that some PFNs are busy is:
-> a) not helpful for ordinary users: we don't even know *who* called
->    alloc_contig_range(). This is certainly not worth a pr_info.*().
-> b) not really helpful for debugging: we don't have any details *why*
->    these PFNs are busy, and that is what we usually care about.
-> c) not complete: there are other cases where we fail alloc_contig_range()
->    using different paths that are not getting recorded.
-> 
-> For example, we reach this path once we succeeded in isolating pageblocks,
-> but failed to migrate some pages - which can happen easily on
-> ZONE_NORMAL (i.e., has_unmovable_pages() is racy) but also on ZONE_MOVABLE
-> i.e., we would have to retry longer to migrate).
-> 
-> For example via virtio-mem when unplugging memory, we can create quite
-> some noise (especially with ZONE_NORMAL) that is not of interest to
-> users - it's expected that some allocations may fail as memory is busy.
-> 
-> Let's just drop that pr_info_ratelimit() and rather implement a dynamic
-> debugging mechanism in the future that can give us a better reason why
-> alloc_contig_range() failed on specific pages.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+Thorsten Leemhuis <linux@leemhuis.info> writes:
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Replace placeholder text about decoding stack traces with a section that
+> properly describes what a typical user should do these days. To make
+> it works for them, add a paragraph in an earlier section to ensure
+> people build their kernels with everything that's needed to decode stack
+> traces later.
+>
+> Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
+> Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+> ---
+> v1->v2
+> * Fix typo pointed out by Randy
+> * include review feedback from Qais and bis Reviewed-by:
+>
+> v1:
+> https://lore.kernel.org/lkml/20210210054823.242262-1-linux@leemhuis.info/
+> ---
+>  .../admin-guide/reporting-issues.rst          | 81 ++++++++++++++-----
+>  1 file changed, 59 insertions(+), 22 deletions(-)
 
+Applied, thanks.
 
--- 
-Oscar Salvador
-SUSE L3
+jon
