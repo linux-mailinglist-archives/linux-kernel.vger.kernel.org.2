@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C278F3277A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 208B23277AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbhCAGfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 01:35:04 -0500
-Received: from mail-m121143.qiye.163.com ([115.236.121.143]:42452 "EHLO
-        mail-m121143.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbhCAGfB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 01:35:01 -0500
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by mail-m121143.qiye.163.com (Hmail) with ESMTPA id 54C0E5401F7;
-        Mon,  1 Mar 2021 14:34:14 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Wang Qing <wangqing@vivo.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arch: mips: sibyte: Return -EFAULT if copy_to_user() fails
-Date:   Mon,  1 Mar 2021 14:33:56 +0800
-Message-Id: <1614580437-19660-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSx9NTkkfTUNNHhlPVkpNSk9OQ0tPTk9OTUJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MjI6ORw*Ej8LHxAOFiofOjhP
-        T0kKCy9VSlVKTUpPTkNLT05PQk9NVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKTkhMNwY+
-X-HM-Tid: 0a77ec7e9452b038kuuu54c0e5401f7
+        id S231815AbhCAGhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 01:37:24 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:44070 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231688AbhCAGhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 01:37:15 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lGcA8-0007L9-FF; Mon, 01 Mar 2021 17:36:13 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Mon, 01 Mar 2021 17:36:12 +1100
+Date:   Mon, 1 Mar 2021 17:36:12 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] crypto: sa2ul - Hide pointer and fix
+ -Wpointer-to-int-cast in dev_dbg()
+Message-ID: <20210301063612.GA28172@gondor.apana.org.au>
+References: <20200826162954.28636-1-krzk@kernel.org>
+ <20200904082804.GB1214@gondor.apana.org.au>
+ <CAJKOXPfktQY_T0UpsZaGv-gUpyWmfrWVbB1yENEBtcJkZv2WKA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJKOXPfktQY_T0UpsZaGv-gUpyWmfrWVbB1yENEBtcJkZv2WKA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The copy_to_user() function returns the number of bytes remaining to be
-copied, but we want to return -EFAULT if the copy doesn't complete.
+On Sat, Feb 27, 2021 at 05:37:49PM +0100, Krzysztof Kozlowski wrote:
+>
+> I think this patch was lost, although you replied that the entire set
+> is applied.
+> 
+> Can you pick it up?
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- arch/mips/sibyte/common/sb_tbprof.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think it was not applicable because the following had already
+been applied:
 
-diff --git a/arch/mips/sibyte/common/sb_tbprof.c b/arch/mips/sibyte/common/sb_tbprof.c
-index f80d7a7..eac125f
---- a/arch/mips/sibyte/common/sb_tbprof.c
-+++ b/arch/mips/sibyte/common/sb_tbprof.c
-@@ -465,7 +465,7 @@ static ssize_t sbprof_tb_read(struct file *filp, char *buf,
- 		if (err) {
- 			*offp = cur_off + cur_count - err;
- 			mutex_unlock(&sbp.lock);
--			return err;
-+			return -EFAULT;
- 		}
- 		pr_debug(DEVNAME ": read from sample %d, %d bytes\n",
- 			 cur_sample, cur_count);
+commit ea066b7a3ddf1e4e5ae749495f0adf12766188b4
+Author: YueHaibing <yuehaibing@huawei.com>
+Date:   Tue Aug 18 22:00:01 2020 +0800
+
+    crypto: sa2ul - Fix pointer-to-int-cast warning
+
+Thanks,
 -- 
-2.7.4
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
