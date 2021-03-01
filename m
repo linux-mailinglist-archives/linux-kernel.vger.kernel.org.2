@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364AB329DB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EB7329DF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 13:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443829AbhCBChJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:37:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242159AbhCATwp (ORCPT
+        id S1444438AbhCBClw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:41:52 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33956 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237822AbhCAT5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:52:45 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DC9C0617A7
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 11:49:27 -0800 (PST)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lGoXg-0000JO-D9; Mon, 01 Mar 2021 20:49:20 +0100
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:bdf1:58e9:8113:f2a1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 2555D5EBC2D;
-        Mon,  1 Mar 2021 19:46:54 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 20:46:53 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
-        Federico Vaga <federico.vaga@gmail.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] can: c_can: prepare to up the message objects
- number
-Message-ID: <20210301194653.egjnrysvfmqusd45@pengutronix.de>
-References: <20210228103856.4089-1-dariobin@libero.it>
- <20210228103856.4089-6-dariobin@libero.it>
- <20210301113805.jylhc373sip7zmed@pengutronix.de>
- <20210301130845.3s45ujmhkazscm6x@pengutronix.de>
- <198393892.577352.1614619471062@mail1.libero.it>
+        Mon, 1 Mar 2021 14:57:47 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121JYAmf104584;
+        Mon, 1 Mar 2021 14:56:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=KdYnacJ38nNqtx282dJOQCrwe0ckmvWKWzfDXRFu2TQ=;
+ b=enitdJ/GuXcmjB0FwI3nSeNvbJ29tjIEqFIAf8FlLCibPRAjiGAMXEzkHclaIhsbt38F
+ n+y6G8DjT0h/yaUsBFUJYXbEPkqPIoLcztwcBMXUVFP8AqwamsCTQzUO4ZVx3r5NOOu4
+ yFB+oLdhXUZzSS64mkj9ZECLicbwfqw/efDdQpTnVliGS8+0rQa/rqhK8tKdr7Guiubf
+ mwLh57AdYBfRVFw3dOtGjwhNGqPbj2a0gfOgU/IgIu23eTZ5aeIHGjb8goglaVa4PXu7
+ ABViDl1FQkL0xJUOKN66W71cvGr9xPXwzlLbkgL5C+I5htjwkWJCD5PseUUbE2qWeEo+ fQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 370td139ye-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Mar 2021 14:56:35 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 121JZ8Gx108318;
+        Mon, 1 Mar 2021 14:56:35 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 370td139xu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Mar 2021 14:56:35 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 121JratB005724;
+        Mon, 1 Mar 2021 19:56:33 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 37150cr1ch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Mar 2021 19:56:33 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 121JuUxP31523300
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Mar 2021 19:56:30 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 021FF4203F;
+        Mon,  1 Mar 2021 19:56:30 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E37F42042;
+        Mon,  1 Mar 2021 19:56:29 +0000 (GMT)
+Received: from osiris (unknown [9.171.39.26])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  1 Mar 2021 19:56:29 +0000 (GMT)
+Date:   Mon, 1 Mar 2021 20:56:28 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Eric Farman <farman@linux.ibm.com>
+Cc:     Wang Qing <wangqing@vivo.com>, Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] s390: cio: Return -EFAULT if copy_to_user() fails
+Message-ID: <YD1G7HLUcp04kr+j@osiris>
+References: <1614600093-13992-1-git-send-email-wangqing@vivo.com>
+ <YDzob/k70ix1g0s+@osiris>
+ <e7edc20c-49d7-9297-7d0e-01f8a55c9c37@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="df4yjeailgg3kxvn"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <198393892.577352.1614619471062@mail1.libero.it>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <e7edc20c-49d7-9297-7d0e-01f8a55c9c37@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-01_13:2021-03-01,2021-03-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ adultscore=0 suspectscore=0 priorityscore=1501 phishscore=0 malwarescore=0
+ mlxlogscore=971 impostorscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103010156
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 01, 2021 at 01:07:26PM -0500, Eric Farman wrote:
+> 
+> 
+> On 3/1/21 8:13 AM, Heiko Carstens wrote:
+> > On Mon, Mar 01, 2021 at 08:01:33PM +0800, Wang Qing wrote:
+> > > The copy_to_user() function returns the number of bytes remaining to be
+> > > copied, but we want to return -EFAULT if the copy doesn't complete.
+> > > 
+> > > Signed-off-by: Wang Qing <wangqing@vivo.com>
+> > > ---
+> > >   drivers/s390/cio/vfio_ccw_ops.c | 4 ++--
+> > >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > Applied, thanks!
+> 
+> There's a third copy_to_user() call in this same routine, that deserves the
+> same treatment. I'll get that fixup applied.
 
---df4yjeailgg3kxvn
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks a lot - I actually realized that there was a third one, but
+blindly assumed that the other patch addressed that (for which the
+original broken commit e06670c5fe3b ("s390: vfio-ap: implement
+VFIO_DEVICE_GET_INFO ioctl") got an amazing number of eight tags ;))
 
-On 01.03.2021 18:24:31, Dario Binacchi wrote:
-> Hi Marc,
->=20
-> > Il 01/03/2021 14:08 Marc Kleine-Budde <mkl@pengutronix.de> ha scritto:
-> >=20
-> > =20
-> > On 01.03.2021 12:38:05, Marc Kleine-Budde wrote:
-> > > On 28.02.2021 11:38:54, Dario Binacchi wrote:
-> > > [...]
-> > >=20
-> > > > @@ -730,7 +728,7 @@ static void c_can_do_tx(struct net_device *dev)
-> > > >  	while ((idx =3D ffs(pend))) {
-> > > >  		idx--;
-> > > >  		pend &=3D ~(1 << idx);
-> > > > -		obj =3D idx + C_CAN_MSG_OBJ_TX_FIRST;
-> > > > +		obj =3D idx + priv->msg_obj_tx_first;
-> > > >  		c_can_inval_tx_object(dev, IF_TX, obj);
-> > > >  		can_get_echo_skb(dev, idx, NULL);
-> > > >  		bytes +=3D priv->dlc[idx];
-> > > > @@ -740,7 +738,7 @@ static void c_can_do_tx(struct net_device *dev)
-> > > >  	/* Clear the bits in the tx_active mask */
-> > > >  	atomic_sub(clr, &priv->tx_active);
-> > > > =20
-> > > > -	if (clr & (1 << (C_CAN_MSG_OBJ_TX_NUM - 1)))
-> > > > +	if (clr & (1 << (priv->msg_obj_tx_num - 1)))
-> > >=20
-> > > Do we need 1UL here, too?
-> >=20
-> > There are several more "1 <<" in the driver. As the right side of the
-> > sift operation can be up to 32, I think you should replace all "1 <<"
-> > with "1UL <<".
->=20
-> Do you agree if I use the BIT macro for all these shift operations?
-
-No, only use BIT(), where you want to set a single bit, use GENMASK()
-for masks.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---df4yjeailgg3kxvn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmA9RKsACgkQqclaivrt
-76k8bwgAseV6n0GjZF7s/1Dg64W063rxRs/X0o6rdNGyZyEgx6gl5hLuF/Z3bCMf
-7mw4mPC0Ub4TEH14CdDb23LW2xXDPyyDgUcE00T2Qmp4GQZACqYJQinvUS7mF6Uv
-T1fHr6ynyjfu1XSkLWespNXbG3rDbbd/78FiT9P3frbCkA4AJR2bUvODbX6fiHNW
-u3KvKUtRx5aJEmHHBRhT95JIRRP4DRPOfs9C8c+S9HtwYPX4+OT8lWde2roUWUPw
-Il8VkTofjEWe6W+bUkAcTa44/fxAoilok3EPtrEuaaDIFrt2o/uERqM3hgZR/xM6
-jY8jIasV+bRLv5XbJbKQCCfzzxoQRQ==
-=M5u4
------END PGP SIGNATURE-----
-
---df4yjeailgg3kxvn--
+I'll keep your patch as a seperate one, since it fixes a different
+upstream patch.
