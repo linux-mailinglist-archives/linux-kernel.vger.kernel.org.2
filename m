@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DE7329FEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 178A5329FEF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1574909AbhCBDvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:51:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
+        id S1574921AbhCBDvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:51:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240557AbhCAVoz (ORCPT
+        with ESMTP id S239576AbhCAVpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:44:55 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A7DC0617AA
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 13:44:12 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lGqKm-00039F-CO; Mon, 01 Mar 2021 22:44:08 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lGqKl-0000fm-O6; Mon, 01 Mar 2021 22:44:07 +0100
-Date:   Mon, 1 Mar 2021 22:44:07 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v5 1/7] pwm: pca9685: Switch to atomic API
-Message-ID: <20210301214407.4xitetvqbsdoer6w@pengutronix.de>
-References: <20201215212228.185517-1-clemens.gruber@pqgruber.com>
+        Mon, 1 Mar 2021 16:45:45 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA06C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 13:45:01 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id u8so19419119ior.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 13:45:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AG6QCjLD//onoydRceqagIS+mLyAwFtF+tcHI/BlJ+I=;
+        b=JbYRN+7Su6fVGhpQZlKkxCxMIJIo13baAMKPCet0QSu2IH6zKX4bNCFz8Bv1rRQvCd
+         WNyrJFWkeAja9m0Vn4mno7FBo4AsQhsrcpVgeXApNR3RgM2/YmOgzfZQQY6lnEBfePJQ
+         fXBHJb1W1phKi9aCvxDQxrC6VEsiOBt6vFPfY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AG6QCjLD//onoydRceqagIS+mLyAwFtF+tcHI/BlJ+I=;
+        b=MiHw/s/PjHPxr9qvSWklWKra6LKl6BYgcOyss4zBjzKBASI+r9ChYXijpWVyvhz4MH
+         8Sx8H0L9Ja/a/5qa0+5WKmYxPs50quunyrWqClmTOG7fDObhbeAsbkEB3Zc8Y2wSlMQw
+         MngjQcxg0+4p08W8K5eyPsNuDlL+alj21Gzi0lmXyWg2N5ZfK7cZmnRuPSlO9t2TxKRq
+         uNgi6UJMvghUIRe1I1DvggmNiJCHi3MMLdFOMcvdjcFzb1W9EXlJp7ai/SNBvIvH/XIa
+         /ejzeINLK6n7VfBfPx2oYl82wAdAOCxIEWu2G404a5ZZ6hZQYfGqt4oBXOOky5I8htnu
+         YQtA==
+X-Gm-Message-State: AOAM530VwbufjF5MEazi56v/oNqydKWGmfSf6Wh9mcx0OWwRYH5OWKkj
+        s7KsM92WPrjI8a+ViOzke0xCIg==
+X-Google-Smtp-Source: ABdhPJwCdnoGlvnlYakB2nGxUKmS8LFKdr2H0do0LAAteJ5O/A0GSk2qP1fHlpK5kZKgoPKZJI0D9w==
+X-Received: by 2002:a02:cc1a:: with SMTP id n26mr18245380jap.21.1614635101126;
+        Mon, 01 Mar 2021 13:45:01 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id l14sm9313390ilh.58.2021.03.01.13.45.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 13:45:00 -0800 (PST)
+Subject: Re: [PATCH 4.19 000/247] 4.19.178-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210301161031.684018251@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <74ed95f3-fc6f-e535-1ff3-48d395ad7186@linuxfoundation.org>
+Date:   Mon, 1 Mar 2021 14:45:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jbzb7vdleqvxvrto"
-Content-Disposition: inline
-In-Reply-To: <20201215212228.185517-1-clemens.gruber@pqgruber.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/1/21 9:10 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.178 release.
+> There are 247 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 03 Mar 2021 16:09:49 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.178-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
---jbzb7vdleqvxvrto
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello Clemens,
+Compiled and booted on my test system. No dmesg regressions.
 
-On Tue, Dec 15, 2020 at 10:22:22PM +0100, Clemens Gruber wrote:
-> +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
-> +		return -EOPNOTSUPP;
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-We agreed on -EINVAL for that one since 2b1c1a5d5148.
-
-Other than that the patch looks ok (but note I only looked quickly).
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---jbzb7vdleqvxvrto
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmA9YCQACgkQwfwUeK3K
-7AlbVggAjhMX1tA5gAqeopKXsYbCnrWvjpnvYNV8amg8MkQxRz878g0aceOQ4EYG
-+cc9M2GflTbj/xdReZ1b7Z6noB4CM+QQkPsIGlf0I8j6eT1qRPBPW6KxR3jhw1+K
-/scoZGR4MOVThQtBAFNvFF6CFV9VXiVUaE/cuw+9jlHuWtITuxYyZLnQsEEzdAOB
-/hZiaLfl/fD9+ApLnYOmnBfyVBhTu7taufPvJYU0HKOtuKs/LIOeCavj0Wyplww3
-377KV2Kyok4ux85pQYZqxz0FEeA1uufVt0RgudlanfbDlBcKgTgryJs5MGVenlkL
-QxXjnI4bYJ3WOp+3aGbPkUZBmAAayQ==
-=ig8H
------END PGP SIGNATURE-----
-
---jbzb7vdleqvxvrto--
+thanks,
+-- Shuah
