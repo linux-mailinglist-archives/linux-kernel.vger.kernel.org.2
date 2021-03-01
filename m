@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DFA329A5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97195329AD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377464AbhCBArY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:47:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53754 "EHLO mail.kernel.org"
+        id S1348586AbhCBBDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:03:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239107AbhCASoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:44:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 562BB6525B;
-        Mon,  1 Mar 2021 17:28:30 +0000 (UTC)
+        id S236013AbhCAS4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:56:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B733765082;
+        Mon,  1 Mar 2021 17:29:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619710;
-        bh=TGmsIkonSlL6CLU2vGKsEzCDPcXORtC9nd7WyseilKI=;
+        s=korg; t=1614619766;
+        bh=eCjytbrzNgFTMozE8yJrwlEMCfqMOUqtSTSS+MWopow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B1cT+neqtrMSpir2HNfEROyW2aRleTRYt8l9zfFfgiWiw9wBcPf9aRK/6DfPRKe4M
-         cVkiSh6niYY7LZ1Hzyc7vT4G0vHJ4Ue2xnmYT9bU02fTDsZOc0uUm+SvWJHdGK3aj3
-         7Hu5uhb/g0bXmUzFueh1o8PUY0TLjpZYPDmjGoPo=
+        b=x6t0ZDERoMgaKZ+Ct4prRLiyqH3i98SV1pP9rhNLdvg4cKL+Uq6kHijkmfjpYYSPB
+         0hYZaCizIwBqjiCLBq1mDwKRue+wxptPAdN3lLxsY16Vf3NWAjkxuwQ3jP0gLpCJes
+         A+AROz4+HU6/bwbtcWG+Hp1oHwTPpSGA0wdKUwPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Timothy E Baldwin <T.E.Baldwin99@members.leeds.ac.uk>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.10 552/663] arm64: ptrace: Fix seccomp of traced syscall -1 (NO_SYSCALL)
-Date:   Mon,  1 Mar 2021 17:13:20 +0100
-Message-Id: <20210301161209.186346098@linuxfoundation.org>
+        stable@vger.kernel.org, Frank Wunderlich <frank-w@public-files.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH 5.10 556/663] dts64: mt7622: fix slow sd card access
+Date:   Mon,  1 Mar 2021 17:13:24 +0100
+Message-Id: <20210301161209.381793399@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,52 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Timothy E Baldwin <T.E.Baldwin99@members.leeds.ac.uk>
+From: Frank Wunderlich <frank-w@public-files.de>
 
-commit df84fe94708985cdfb78a83148322bcd0a699472 upstream.
+commit dc2e76175417e69c41d927dba75a966399f18354 upstream.
 
-Since commit f086f67485c5 ("arm64: ptrace: add support for syscall
-emulation"), if system call number -1 is called and the process is being
-traced with PTRACE_SYSCALL, for example by strace, the seccomp check is
-skipped and -ENOSYS is returned unconditionally (unless altered by the
-tracer) rather than carrying out action specified in the seccomp filter.
+Fix extreme slow speed (200MB takes ~20 min) on writing sdcard on
+bananapi-r64 by adding reset-control for mmc1 like it's done for mmc0/emmc.
 
-The consequence of this is that it is not possible to reliably strace
-a seccomp based implementation of a foreign system call interface in
-which r7/x8 is permitted to be -1 on entry to a system call.
-
-Also trace_sys_enter and audit_syscall_entry are skipped if a system
-call is skipped.
-
-Fix by removing the in_syscall(regs) check restoring the previous
-behaviour which is like AArch32, x86 (which uses generic code) and
-everything else.
-
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Catalin Marinas<catalin.marinas@arm.com>
-Cc: <stable@vger.kernel.org>
-Fixes: f086f67485c5 ("arm64: ptrace: add support for syscall emulation")
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-Tested-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Timothy E Baldwin <T.E.Baldwin99@members.leeds.ac.uk>
-Link: https://lore.kernel.org/r/90edd33b-6353-1228-791f-0336d94d5f8c@majoroak.me.uk
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: 2c002a3049f7 ("arm64: dts: mt7622: add mmc related device nodes")
+Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20210113180919.49523-1-linux@fw-web.de
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/ptrace.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt7622.dtsi |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -1799,7 +1799,7 @@ int syscall_trace_enter(struct pt_regs *
- 
- 	if (flags & (_TIF_SYSCALL_EMU | _TIF_SYSCALL_TRACE)) {
- 		tracehook_report_syscall(regs, PTRACE_SYSCALL_ENTER);
--		if (!in_syscall(regs) || (flags & _TIF_SYSCALL_EMU))
-+		if (flags & _TIF_SYSCALL_EMU)
- 			return NO_SYSCALL;
- 	}
+--- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
+@@ -698,6 +698,8 @@
+ 		clocks = <&pericfg CLK_PERI_MSDC30_1_PD>,
+ 			 <&topckgen CLK_TOP_AXI_SEL>;
+ 		clock-names = "source", "hclk";
++		resets = <&pericfg MT7622_PERI_MSDC1_SW_RST>;
++		reset-names = "hrst";
+ 		status = "disabled";
+ 	};
  
 
 
