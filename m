@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0743D328FA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A50328FA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242554AbhCATyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:54:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59154 "EHLO mail.kernel.org"
+        id S242455AbhCATxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:53:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236130AbhCAQ6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236135AbhCAQ6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:58:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D44364F65;
-        Mon,  1 Mar 2021 16:36:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4506E64F6C;
+        Mon,  1 Mar 2021 16:36:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616588;
-        bh=xHIS3f7IVQbX/I+qb3d7v0ky17cFljNRsAtv1yNGOoo=;
+        s=korg; t=1614616593;
+        bh=/08kOTvtWnoDP/4PO9mP0Dvrc6F4ejLsOtsGp//5fQo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ccrvyguqgK9HPHHBu5kHKyiBdT7u2kpjGa9OPFBoaApDGW62PY1gVSV8ZoTIpTxHv
-         lfOvR8AZlo4m7v8yI2IXBNov3zhYvN7Voa++ZAsrBCB1ksrNqfdcZKINQa99hbGjDZ
-         DK1dEhPcoOF24WQvPsSAkupN6w6ps07Xs/SGXvgk=
+        b=1ZhdH7UdJOVlZpr/O/BjWfQ0jml1hqMxq2+JA6LSA3vEsA/LsjK6X3arNHRFLOf42
+         LTzE3GbXlCRroPwXZmkUbRubNyLb/6uk6QHt/bMwZRrb7j2+2H99tLILdnWK5+Duqi
+         8elcEbXU+g5f3cRFn3jD100/MHUDd6oCcgBzeM2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sameer Pujar <spujar@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH 4.19 005/247] arm64: tegra: Add power-domain for Tegra210 HDA
-Date:   Mon,  1 Mar 2021 17:10:25 +0100
-Message-Id: <20210301161031.956200446@linuxfoundation.org>
+        stable@vger.kernel.org, Rolf Eike Beer <eb@emlix.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4.19 007/247] scripts: set proper OpenSSL include dir also for sign-file
+Date:   Mon,  1 Mar 2021 17:10:27 +0100
+Message-Id: <20210301161032.054489848@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -40,46 +39,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sameer Pujar <spujar@nvidia.com>
+From: Rolf Eike Beer <eb@emlix.com>
 
-commit 1e0ca5467445bc1f41a9e403d6161a22f313dae7 upstream.
+commit fe968c41ac4f4ec9ffe3c4cf16b72285f5e9674f upstream.
 
-HDA initialization is failing occasionally on Tegra210 and following
-print is observed in the boot log. Because of this probe() fails and
-no sound card is registered.
-
-  [16.800802] tegra-hda 70030000.hda: no codecs found!
-
-Codecs request a state change and enumeration by the controller. In
-failure cases this does not seem to happen as STATETS register reads 0.
-
-The problem seems to be related to the HDA codec dependency on SOR
-power domain. If it is gated during HDA probe then the failure is
-observed. Building Tegra HDA driver into kernel image avoids this
-failure but does not completely address the dependency part. Fix this
-problem by adding 'power-domains' DT property for Tegra210 HDA. Note
-that Tegra186 and Tegra194 HDA do this already.
-
-Fixes: 742af7e7a0a1 ("arm64: tegra: Add Tegra210 support")
-Depends-on: 96d1f078ff0 ("arm64: tegra: Add SOR power-domain for Tegra210")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Fixes: 2cea4a7a1885 ("scripts: use pkg-config to locate libcrypto")
+Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+Cc: stable@vger.kernel.org # 5.6.x
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/nvidia/tegra210.dtsi |    1 +
+ scripts/Makefile |    1 +
  1 file changed, 1 insertion(+)
 
---- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-@@ -826,6 +826,7 @@
- 			 <&tegra_car 128>, /* hda2hdmi */
- 			 <&tegra_car 111>; /* hda2codec_2x */
- 		reset-names = "hda", "hda2hdmi", "hda2codec_2x";
-+		power-domains = <&pd_sor>;
- 		status = "disabled";
- 	};
+--- a/scripts/Makefile
++++ b/scripts/Makefile
+@@ -26,6 +26,7 @@ hostprogs-$(CONFIG_SYSTEM_EXTRA_CERTIFIC
  
+ HOSTCFLAGS_sortextable.o = -I$(srctree)/tools/include
+ HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
++HOSTCFLAGS_sign-file.o = $(CRYPTO_CFLAGS)
+ HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
+ HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
+ HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
 
 
