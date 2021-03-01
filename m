@@ -2,109 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C52329AE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B34EB329AE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378181AbhCBBEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:04:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240774AbhCAS5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:57:49 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3EDC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 10:57:08 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id lr13so30198306ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 10:57:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VBUmk+i9RZF3Nn9zKNKIfJ8eYQzXTK2RP3YEZ6TddRQ=;
-        b=ow/f3NXkmHEnlN+4Z8bt+nml4yTmSwkbryiQ0NfTRrAgxIzghIy7YYvSqQh9O340wF
-         8jPZmHA5raqoALA6nGoCXwcmRe4S9wQVqLlOSbbZ3PKgCtgBxwNSs+R4LB1bwFb5EnyO
-         7g+4PzfDJ092qQnngV+6hsV5SpKW9BH3R+iAItz8wFOuKKRxHHcF8+/bxpYgtNwYWM3G
-         UNMeAeRWXn7pgVvzYR9UchvfI3dvCXMJVAZ1gNCsgGTy/oqBIaS9rXJ59MxRoDwDd9Ut
-         A+CatJzZ20jYrfFxZp5h3oWXx6DK3bjDvYOXuGCkBVRwxSdEnHvroIVuWGOqQe5MF1Pl
-         O9iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VBUmk+i9RZF3Nn9zKNKIfJ8eYQzXTK2RP3YEZ6TddRQ=;
-        b=IQDM39M7HmZTduxi5VS0ky0tJy43AdMNLEeEOrMMPWBMwxSWloLVqn4+qgsnKcvkt6
-         EUxzjX4AFAObLpwF1N9dy/GaaiFE6wCAcZi1i0wVb9PRjCioB+pcA+WMtnobqyyu9NYL
-         XZeH5hOLvmDD7hO30ZX0Rclj3+O6N1uclGiKe3qcJEwug7Yael4Q0OWG5bl6qIg+QG6S
-         YeL0hZOUIFblbK5Y5SFApeftRO7hE7DxYu6cFJRWbiOcPOUg0BudxHSjjqS3Dsprt5L8
-         N7/PkuFRosAUqYFKZ+gHhKlrLPJTrUu0HsHb4JB5z89t+BfPSdCXtRGGWw++eBX5D1Sg
-         +e8g==
-X-Gm-Message-State: AOAM533ep5/Cjv+P9cFx/yuapSFcxKcV53fXNA9vcL/SgSe4Knl2zDUs
-        AFdr7HZpySqAypPGvlws0mM=
-X-Google-Smtp-Source: ABdhPJw03B3ZhrHUyXXC6zq2cWZuS4J9LpoEQoH0x7bO5YYNdZbJZI4KABg7zWTrPC85HrVU3T3vkw==
-X-Received: by 2002:a17:906:15cc:: with SMTP id l12mr17472248ejd.280.1614625027158;
-        Mon, 01 Mar 2021 10:57:07 -0800 (PST)
-Received: from localhost.localdomain (dynamic-046-114-039-064.46.114.pool.telefonica.de. [46.114.39.64])
-        by smtp.googlemail.com with ESMTPSA id z17sm8998745eju.27.2021.03.01.10.57.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 10:57:06 -0800 (PST)
-From:   Gon Solo <gonsolo@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Andreas Wendleder <andreas.wendleder@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Perf: Clean generated directory.
-Date:   Mon,  1 Mar 2021 19:56:42 +0100
-Message-Id: <20210301185642.163396-1-gonsolo@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1378190AbhCBBEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:04:42 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:36404 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240781AbhCAS5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:57:52 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614625052; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=BWk43ZFWyb8uTChKPh44k6+sSYpbD1HwdQ8/aJZG5+A=;
+ b=ONHtehLmz6vCsgU2pFv0DUjVW3McoMuDQsjktF7kbAXvQCVZ0kO1/EOEdnVIObZuK48Ou5fJ
+ TzozQ5amksFA9JNjd6q4VjvsELAEax9VqYjnPtZwUw1D8gxL8REGTwRMkoH/GXquGYraaKDE
+ zlWUBDvFEcZQjzftSbv+LbeeqJE=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 603d38fb12935cdcee0ea331 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Mar 2021 18:56:59
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 28C76C43461; Mon,  1 Mar 2021 18:56:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D148C433ED;
+        Mon,  1 Mar 2021 18:56:57 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Mar 2021 10:56:57 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     jhugo@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Gokul Sriram Palanisamy <gokulsri@codeaurora.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        hemantk@codeaurora.org, sricharan@codeaurora.org,
+        ath11k@lists.infradead.org
+Subject: Re: [PATCH v2] bus: mhi: core: Add unique qrtr node id support
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <87o8g291d1.fsf@codeaurora.org>
+References: <1614336169-31467-1-git-send-email-gokulsri@codeaurora.org>
+ <1614336169-31467-2-git-send-email-gokulsri@codeaurora.org>
+ <20210226145245.GB70936@thinkpad> <87k0qrceih.fsf@tynnyri.adurom.net>
+ <10e511e8dfa8d393ec4c4765668fe229@codeaurora.org>
+ <87o8g291d1.fsf@codeaurora.org>
+Message-ID: <e1ee69381ff328712fa010a3de44f70a@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Wendleder <andreas.wendleder@gmail.com>
+Hi Kalle,
 
-Remove generated directory tools/perf/arch/x86/include/generated.
+On 2021-03-01 10:26 AM, Kalle Valo wrote:
+> Bhaumik Bhatt <bbhatt@codeaurora.org> writes:
+> 
+>> On 2021-03-01 03:14 AM, Kalle Valo wrote:
+>>> + ath11k list
+>>> 
+>>> Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
+>>> 
+>>>> On Fri, Feb 26, 2021 at 04:12:49PM +0530, Gokul Sriram Palanisamy
+>>>> wrote:
+>>>>> On platforms with two or more identical mhi
+>>>>> devices, qmi service will run with identical
+>>>>> qrtr-node-id. Because of this identical ID,
+>>>>> host qrtr-lookup cannot register more than one
+>>>>> qmi service with identical node ID. Ultimately,
+>>>>> only one qmi service will be avilable for the
+>>>>> underlying drivers to communicate with.
+>>>>> 
+>>>>> On QCN9000, it implements a unique qrtr-node-id
+>>>>> and qmi instance ID using a unique instance ID
+>>>>> written to a debug register from host driver
+>>>>> soon after SBL is loaded.
+>>>>> 
+>>>>> This change generates a unique instance ID from
+>>>>> PCIe domain number and bus number, writes to the
+>>>>> given debug register just after SBL is loaded so
+>>>>> that it is available for FW when the QMI service
+>>>>> is spawned.
+>>>>> 
+>>>>> sample:
+>>>>> root@OpenWrt:/# qrtr-lookup
+>>>>>   Service Version Instance Node  Port
+>>>>>        15       1        0    8     1 Test service
+>>>>>        69       1        8    8     2 ATH10k WLAN firmware service
+>>>>>        15       1        0   24     1 Test service
+>>>>>        69       1       24   24     2 ATH10k WLAN firmware service
+>>>>> 
+>>>>> Here 8 and 24 on column 3 (QMI Instance ID)
+>>>>> and 4 (QRTR Node ID) are the node IDs that
+>>>>> is unique per mhi device.
+>>>>> 
+>>>>> Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+>>>>> ---
+>>>>>  drivers/bus/mhi/core/boot.c | 14 ++++++++++++++
+>>>>>  1 file changed, 14 insertions(+)
+>>>>> 
+>>>>> diff --git a/drivers/bus/mhi/core/boot.c
+>>>>> b/drivers/bus/mhi/core/boot.c
+>>>>> index c2546bf..5e5dad5 100644
+>>>>> --- a/drivers/bus/mhi/core/boot.c
+>>>>> +++ b/drivers/bus/mhi/core/boot.c
+>>>>> @@ -16,8 +16,12 @@
+>>>>>  #include <linux/random.h>
+>>>>>  #include <linux/slab.h>
+>>>>>  #include <linux/wait.h>
+>>>>> +#include <linux/pci.h>
+>>>>>  #include "internal.h"
+>>>>> 
+>>>>> +#define QRTR_INSTANCE_MASK	0x000000FF
+>>>>> +#define QRTR_INSTANCE_SHIFT	0
+>>>>> +
+>>>>>  /* Setup RDDM vector table for RDDM transfer and program RXVEC */
+>>>>>  void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+>>>>>  		      struct image_info *img_info)
+>>>>> @@ -391,6 +395,9 @@ void mhi_fw_load_handler(struct mhi_controller
+>>>>> *mhi_cntrl)
+>>>>>  	const struct firmware *firmware = NULL;
+>>>>>  	struct image_info *image_info;
+>>>>>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>>>>> +	struct pci_dev *pci_dev = to_pci_dev(mhi_cntrl->cntrl_dev);
+>>>>> +	struct pci_bus *bus = pci_dev->bus;
+>>>>> +	uint32_t instance;
+>>>>>  	const char *fw_name;
+>>>>>  	void *buf;
+>>>>>  	dma_addr_t dma_addr;
+>>>>> @@ -466,6 +473,13 @@ void mhi_fw_load_handler(struct
+>>>>> mhi_controller *mhi_cntrl)
+>>>>>  		return;
+>>>>>  	}
+>>>>> 
+>>>>> +	instance = ((pci_domain_nr(bus) & 0xF) << 4) | (bus->number & 
+>>>>> 0xF);
+>>>>> +	instance &= QRTR_INSTANCE_MASK;
+>>>>> +
+>>>>> +	mhi_write_reg_field(mhi_cntrl, mhi_cntrl->bhi,
+>>>>> +			    BHI_ERRDBG2, QRTR_INSTANCE_MASK,
+>>>>> +			    QRTR_INSTANCE_SHIFT, instance);
+>>>> 
+>>>> You cannot not do this in MHI stack. Why can't you do this in the
+>>>> MHI controller
+>>>> specific to QCN9000? And btw, is QCN9000 supported in mainline?
+>>> 
+>>> I'm not sure what QCN9000 means but I'm guessing it's QCN9074. We 
+>>> have
+>>> initial QCN9074 support in ath11k but there are some issues still so
+>>> it's not enabled by default (yet):
+>>> 
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=ath-next&id=4e80946197a83a6115e308334618449b77696d6a
+>>> 
+>>> And I suspect we have this same qrtr issue with any ath11k PCI 
+>>> device,
+>>> including QCA6390, so this is not a QCN9074 specific problem.
+>>> 
+>>> BTW Gokul, please always CC the ath11k list when submitting patches
+>>> which are related to ath11k.
+>> 
+>> QRTR sits on top of MHI so shouldn't this be handled outside of MHI
+>> after MHI is operational? We cannot allow PCI code in MHI core driver
+>> but this can be handled pre or post MHI power-up in whatever way you
+>> desire that does not have to directly involve MHI.
+> 
+> Sure, makes sense. I was just replying to Mani's question about status
+> of QCN9000 upstream support.
+> 
+> So should we handle this within ath11k, is that the right approach? I
+> also suspect that for QCN9074 and QCA6390 we have to do this a bit
+> differently, so it would be easier to handle the differences between
+> devices (and firmware versions) inside ath11k.
 
-Signed-off-by: Andreas Wendleder <andreas.wendleder@gmail.com>
+Yes, I feel it would be better handled within ath11k. AFAIK, device 
+(QCA/QCN)
+populates the BHI ERRDBG registers when it wants to communicate a 
+certain
+problem/status to the host and it should not be used the other way 
+round,
+where host writes a configuration cookie for the device to boot-up in a
+particular way. It feels hacky as of now unless an actual configuration
+register is used.
+
+As per BHI specification, these registers are permitted to be read-only 
+for
+the host and Read/Write for device only. I also don't see any BHI
+configuration or general purpose registers that can be used to notify 
+this
+cookie. If one is found, we can talk about how to use them and can 
+introduce
+MHI patches for those.
+
+I suggest exploring alternatives to this. I think Hemant and are in 
+agreement
+on this.
+
+Thanks,
+Bhaumik
 ---
- tools/perf/arch/x86/Makefile | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/tools/perf/arch/x86/Makefile b/tools/perf/arch/x86/Makefile
-index 8cc6642fce7a..5a9f9a7bf07d 100644
---- a/tools/perf/arch/x86/Makefile
-+++ b/tools/perf/arch/x86/Makefile
-@@ -10,10 +10,11 @@ PERF_HAVE_JITDUMP := 1
- # Syscall table generation
- #
- 
--out    := $(OUTPUT)arch/x86/include/generated/asm
--header := $(out)/syscalls_64.c
--sys    := $(srctree)/tools/perf/arch/x86/entry/syscalls
--systbl := $(sys)/syscalltbl.sh
-+generated := $(OUTPUT)arch/x86/include/generated
-+out       := $(generated)/asm
-+header    := $(out)/syscalls_64.c
-+sys       := $(srctree)/tools/perf/arch/x86/entry/syscalls
-+systbl    := $(sys)/syscalltbl.sh
- 
- # Create output directory if not already present
- _dummy := $(shell [ -d '$(out)' ] || mkdir -p '$(out)')
-@@ -22,6 +23,6 @@ $(header): $(sys)/syscall_64.tbl $(systbl)
- 	$(Q)$(SHELL) '$(systbl)' $(sys)/syscall_64.tbl 'x86_64' > $@
- 
- clean::
--	$(call QUIET_CLEAN, x86) $(RM) $(header)
-+	$(call QUIET_CLEAN, x86) $(RM) -r $(header) $(generated)
- 
- archheaders: $(header)
--- 
-2.27.0
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
