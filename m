@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9507327B68
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FC3327B72
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhCAKBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:01:13 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:1745 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234210AbhCAJ7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 04:59:04 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603cbabe0000>; Mon, 01 Mar 2021 01:58:22 -0800
-Received: from reg-r-vrt-018-180.nvidia.com (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 1 Mar 2021 09:58:18 +0000
-References: <20210225125501.1792072-1-arnd@kernel.org>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Vlad Buslov <vladbu@nvidia.com>
-To:     Arnd Bergmann <arnd@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Dmytro Linkin <dlinkin@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
-        Eli Britstein <elibr@mellanox.com>,
-        Eli Cohen <eli@mellanox.com>, <netdev@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net/mlx5e: fix mlx5e_tc_tun_update_header_ipv6 dummy
- definition
-In-Reply-To: <20210225125501.1792072-1-arnd@kernel.org>
-Message-ID: <ygnho8g3gprp.fsf@nvidia.com>
-Date:   Mon, 1 Mar 2021 11:57:30 +0200
+        id S231326AbhCAKD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:03:28 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:44556 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234384AbhCAKBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:01:52 -0500
+Received: from zn.tnic (p200300ec2f03de00f5cdc1114f0af8a0.dip0.t-ipconnect.de [IPv6:2003:ec:2f03:de00:f5cd:c111:4f0a:f8a0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 91D1B1EC0419;
+        Mon,  1 Mar 2021 11:00:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1614592857;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=oqWj0M83AyNHIhti3sdU4rfm2PqN8axqw31RH2tZrFM=;
+        b=Gd3d66Zba5ybpq5401nuJcieKJZsZZFgOsowheQCUJFaKxINOxEIsqWM8FIfW/DiC59Uv9
+        f0L3rzjp51B+e/oXqyRLb56vbrQ5n/nEo7OyqkiFZiMvDKUaznpbh2iaKWMvgAdScgF4nJ
+        zjTzrQB4kKlNdtEhXn5nKAxMSfNiDl0=
+Date:   Mon, 1 Mar 2021 11:00:37 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
+Message-ID: <20210301100037.GA6699@zn.tnic>
+References: <cover.1614590788.git.kai.huang@intel.com>
+ <bbfc8c833a62e4b55220834320829df1e17aff41.1614590788.git.kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614592702; bh=5gphWubhgnY39oqs/H/cdG90CAjjo6DZUJCuo5ulKcw=;
-        h=References:User-agent:From:To:CC:Subject:In-Reply-To:Message-ID:
-         Date:MIME-Version:Content-Type:X-Originating-IP:X-ClientProxiedBy;
-        b=ikSRmb9kBasfdP27ka5KWc6SaAXE2tRd8CYF4zIQto2Bt9M1/p7jadQt+qbLO2nM1
-         1QbAarK2Mqj1kZAh5t6jnwQcGrZ+cWUixalxFj3cZePSI7p7nZEun8IHva8i9ZLDLZ
-         /uP/TTY23lk9a4AatQoXVWwjvN+d8AWHBR2wHSscWat2uNwtTtqxSENYtHL2jMvxsN
-         P8EQGMnSJ511DFxHuMFR/DeozGC1kMYqAuodKX/bXHqGKV1Pm3pjOCnthlg8xb6E77
-         PM6pEPCQxGZr+jnuU5rm6S3EVRkmSwJO7dNAUBbIgqgQiZHBOdZzue+BtNAn9+6RzU
-         cFFBE5ZzvlHSw==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <bbfc8c833a62e4b55220834320829df1e17aff41.1614590788.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25 Feb 2021 at 14:54, Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The alternative implementation of this function in a header file
-> is declared as a global symbol, and gets added to every .c file
-> that includes it, which leads to a link error:
->
-> arm-linux-gnueabi-ld: drivers/net/ethernet/mellanox/mlx5/core/en_rx.o: in function `mlx5e_tc_tun_update_header_ipv6':
-> en_rx.c:(.text+0x0): multiple definition of `mlx5e_tc_tun_update_header_ipv6'; drivers/net/ethernet/mellanox/mlx5/core/en_main.o:en_main.c:(.text+0x0): first defined here
->
-> Mark it 'static inline' like the other functions here.
->
-> Fixes: c7b9038d8af6 ("net/mlx5e: TC preparation refactoring for routing update event")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Mon, Mar 01, 2021 at 10:44:29PM +1300, Kai Huang wrote:
+> From: Sean Christopherson <seanjc@google.com>
+> 
+> Add SGX1 and SGX2 feature flags, via CPUID.0x12.0x0.EAX, as scattered
+> features, since adding a new leaf for only two bits would be wasteful.
+> As part of virtualizing SGX, KVM will expose the SGX CPUID leafs to its
+> guest, and to do so correctly needs to query hardware and kernel support
+> for SGX1 and SGX2.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Acked-by: Dave Hansen <dave.hansen@intel.com>
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
 > ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-> index 67de2bf36861..89d5ca91566e 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.h
-> @@ -76,10 +76,12 @@ int mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
->  static inline int
->  mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
->  				struct net_device *mirred_dev,
-> -				struct mlx5e_encap_entry *e) { return -EOPNOTSUPP; }
-> -int mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
-> -				    struct net_device *mirred_dev,
-> -				    struct mlx5e_encap_entry *e)
-> +				struct mlx5e_encap_entry *e)
-> +{ return -EOPNOTSUPP; }
-> +static inline int
-> +mlx5e_tc_tun_update_header_ipv6(struct mlx5e_priv *priv,
-> +				struct net_device *mirred_dev,
-> +				struct mlx5e_encap_entry *e)
->  { return -EOPNOTSUPP; }
->  #endif
->  int mlx5e_tc_tun_route_lookup(struct mlx5e_priv *priv,
+>  arch/x86/include/asm/cpufeatures.h | 2 ++
+>  arch/x86/kernel/cpu/cpuid-deps.c   | 2 ++
+>  arch/x86/kernel/cpu/scattered.c    | 2 ++
+>  3 files changed, 6 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index cc96e26d69f7..9502c445a3e9 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -290,6 +290,8 @@
+>  #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in kernel entry SWAPGS path */
+>  #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split lock */
+>  #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
+> +#define X86_FEATURE_SGX1		(11*32+ 8) /* "" Basic SGX */
+> +#define X86_FEATURE_SGX2        	(11*32+ 9) /* SGX Enclave Dynamic Memory Management (EDMM) */
 
-Thanks Arnd!
+"sgx1" is not gonna show in /proc/cpuinfo but "sgx2" will. Because...?
 
-Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
+Also, you send a patchset once a week - not after two days. Please limit
+your spamming.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
