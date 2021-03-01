@@ -2,37 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0971E329CBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB07329D63
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349143AbhCBCME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:12:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50728 "EHLO mail.kernel.org"
+        id S236189AbhCBC1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:27:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236373AbhCATgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:36:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9B21652C5;
-        Mon,  1 Mar 2021 17:37:33 +0000 (UTC)
+        id S241858AbhCATrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:47:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C60FA65131;
+        Mon,  1 Mar 2021 17:03:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620254;
-        bh=59z9DCx7gWyWXZ01EJHXNaYY1N8ZH3NhkKAdIVFQC9s=;
+        s=korg; t=1614618220;
+        bh=62bPEAtgnrBZ63UwLRFJH8vt9ogszcva3eIdWy3LYXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NiZ1Dp9n0cvP7mpyZKuYcyzpONgld4BKYKd4yIRHtvFDnotXzlm5XAJl2dtVq9HbX
-         POk4Ibsa20Ru8ixWmX9XYmkPpQiVV9wYSZ4JXYBgTZtsHah3NYLhBdKNd9UOIGYy84
-         ixOqrWRNnklw6hxxo3VyYRHONPTUb1Rwks8BF6KA=
+        b=AiVe1MAAHCyEIt5DD6C3hN0CzpBX0SJ+ZPVvNB1Xs1pLR+QEMeZ63u3se8Woc9tkp
+         cSc1+QITYa3bwwM+0WR2SZSzglVy49TK45zXVrDVN9GuFZbYLXT5yhJeAYr2zkKu6b
+         CRyt7v6F7jWIG75zV8kzTV9IlUzkg+kJZXRX7tSg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 069/775] x86/MSR: Filter MSR writes through X86_IOC_WRMSR_REGS ioctl too
-Date:   Mon,  1 Mar 2021 17:03:57 +0100
-Message-Id: <20210301161205.091222005@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Murphy <lists@colorremedies.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Mark Wielaard <mark@klomp.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 5.10 001/663] vmlinux.lds.h: add DWARF v5 sections
+Date:   Mon,  1 Mar 2021 17:04:09 +0100
+Message-Id: <20210301161141.844318190@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,50 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit 02a16aa13574c8526beadfc9ae8cc9b66315fa2d ]
+commit 3c4fa46b30c551b1df2fb1574a684f68bc22067c upstream.
 
-Commit
+We expect toolchains to produce these new debug info sections as part of
+DWARF v5. Add explicit placements to prevent the linker warnings from
+--orphan-section=warn.
 
-  a7e1f67ed29f ("x86/msr: Filter MSR writes")
+Compilers may produce such sections with explicit -gdwarf-5, or based on
+the implicit default version of DWARF when -g is used via DEBUG_INFO.
+This implicit default changes over time, and has changed to DWARF v5
+with GCC 11.
 
-introduced a module parameter to disable writing to the MSR device file
-and tainted the kernel upon writing. As MSR registers can be written by
-the X86_IOC_WRMSR_REGS ioctl too, the same filtering and tainting should
-be applied to the ioctl as well.
+.debug_sup was mentioned in review, but without compilers producing it
+today, let's wait to add it until it becomes necessary.
 
- [ bp: Massage commit message and space out statements. ]
-
-Fixes: a7e1f67ed29f ("x86/msr: Filter MSR writes")
-Signed-off-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210127122456.13939-1-misono.tomohiro@jp.fujitsu.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1922707
+Reported-by: Chris Murphy <lists@colorremedies.com>
+Suggested-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Mark Wielaard <mark@klomp.org>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/msr.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/asm-generic/vmlinux.lds.h |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index 8a67d1fa8dc58..ed8ac6bcbafb2 100644
---- a/arch/x86/kernel/msr.c
-+++ b/arch/x86/kernel/msr.c
-@@ -182,6 +182,13 @@ static long msr_ioctl(struct file *file, unsigned int ioc, unsigned long arg)
- 		err = security_locked_down(LOCKDOWN_MSR);
- 		if (err)
- 			break;
-+
-+		err = filter_write(regs[1]);
-+		if (err)
-+			return err;
-+
-+		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
-+
- 		err = wrmsr_safe_regs_on_cpu(cpu, regs);
- 		if (err)
- 			break;
--- 
-2.27.0
-
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -828,8 +828,13 @@
+ 		/* DWARF 4 */						\
+ 		.debug_types	0 : { *(.debug_types) }			\
+ 		/* DWARF 5 */						\
++		.debug_addr	0 : { *(.debug_addr) }			\
++		.debug_line_str	0 : { *(.debug_line_str) }		\
++		.debug_loclists	0 : { *(.debug_loclists) }		\
+ 		.debug_macro	0 : { *(.debug_macro) }			\
+-		.debug_addr	0 : { *(.debug_addr) }
++		.debug_names	0 : { *(.debug_names) }			\
++		.debug_rnglists	0 : { *(.debug_rnglists) }		\
++		.debug_str_offsets	0 : { *(.debug_str_offsets) }
+ 
+ /* Stabs debugging sections. */
+ #define STABS_DEBUG							\
 
 
