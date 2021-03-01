@@ -2,143 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EBCB327C24
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F53327C27
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 11:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234429AbhCAK3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 05:29:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234417AbhCAK3X (ORCPT
+        id S234467AbhCAKaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 05:30:19 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:10268 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234436AbhCAK3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:29:23 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D99C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 02:28:30 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id y22-20020a1c4b160000b029010b2094f5deso2720492wma.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 02:28:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=fEoK6sj6Vx64waeuaFZ7WzuyFiOIkvvvkXXAhuHJ6n0=;
-        b=CInzuD9yHUVVP/8k0kdY+Ubp/d8ztYs2RdGpZXm/Pov3aldb+lHMFxv+ESoM7LlBKr
-         bDf1GmA541rYTR7nYa21exMDiAbImp0KPPpLF5o/W3/faYxlIBTSvU89DPvH8kFsuEj4
-         caTrnXyj4Ju4lGk9y4Hzl5dpwR5izYha4XeLmVa0SWBR9RhU+SyMjM1wn6PW31IgIgZY
-         yVAoxrbskT/FMRHpyLLmacnTZkmCEUr089CoI9+SwvfI8WF4ssYWPSYzdSjNpsK6KAti
-         d2Ku44Ce3yXJ0yXSQQkMzDHLUoHVJZapYN6xgunsSVdHMLL/TaZVw5n2w9fQA72LbJiD
-         2vag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=fEoK6sj6Vx64waeuaFZ7WzuyFiOIkvvvkXXAhuHJ6n0=;
-        b=X8mafvyMIx0iHrmowzAbHFQlgs5rF++JxshooZCMzcQkGslKKRK6Wp3Kmz69xIM52z
-         t9Wmn++odwmm4ELWQJno36qdm8owEck6IX8al9Tr3a9+yOoxidf90YMKZ7jb/oO2dQ4q
-         dLPF4ldZDjewWvKr0uyrC5l9Nw6jQUPvQG+8EhpNvvmC794sTxI8dyq7mMreZg7O7ErJ
-         nqiVm5ksyj+aP4jBfIyrfydQ8qw/bRC8D3MIzjFT7B6rCkCvVatMwepF2pK0OTf4m3EU
-         bQxMTUQ7KjK0WriysgoghjjTy6E9tjTYAfrWRwaq0T5z9Zo5FBkDz/neTT7YVom/lI2m
-         xEoA==
-X-Gm-Message-State: AOAM533eVRKMZVo0irW5YZ3lC0FJieT+WY+LX0m504kMu/YKq/C1rlZ4
-        3pj38mFoSDWA3cw60CEUiekLUQ==
-X-Google-Smtp-Source: ABdhPJzL/2dtfbTMhhuvxXFnJKC6c5bht+hdeQ08HlMI2CLPQiH+mxyTR+jtNBSYV/UdicarWzgLJw==
-X-Received: by 2002:a7b:cb58:: with SMTP id v24mr15225989wmj.182.1614594509069;
-        Mon, 01 Mar 2021 02:28:29 -0800 (PST)
-Received: from dell ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id o9sm22331888wmc.8.2021.03.01.02.28.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 02:28:28 -0800 (PST)
-Date:   Mon, 1 Mar 2021 10:28:26 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [GIT PULL] Immutable branch between MFD, PWM and RTC due for the
- v5.13 merge window
-Message-ID: <20210301102826.GK641347@dell>
-References: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
+        Mon, 1 Mar 2021 05:29:52 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121ARlbj002304;
+        Mon, 1 Mar 2021 11:28:54 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=0iba9ds30bxpbJDZZJN9+EAyGhkT4XykKVq3jr281PQ=;
+ b=ev38jqefIMorbnUTPQ6Kefjkh03E84Y5ZK++8Ldi7gYQucan/f6wD08NVT6/CKFLffNS
+ nlEkAlj5c9CZPo8MFSJyw7DAIlUpNkeNrFWBuVgWHBPIHz/zk2fWcYYjZ13bECoCu+E+
+ KWM4Q3xsLWNT+W9k6G/9atLaLLX9mo9htQ2vOz02pRnkin4PbJjp7DQcAAOGUNtLIfJV
+ K9CLvDEAq0S7uCw0asm7s5hR0du+DlkluhSeIQ0abFTlysVIY6b+9HRQ2qJkM6YkJc8k
+ K9UTSP9CpNKj37OojLQcG1fKDHi8a1t9Xa1glKCcKcRBgWiKa9Puhc0T0nxt9lg+XFuA Yg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36yfdxua6d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Mar 2021 11:28:54 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 30925100034;
+        Mon,  1 Mar 2021 11:28:53 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0B72922671E;
+        Mon,  1 Mar 2021 11:28:53 +0100 (CET)
+Received: from [10.211.4.172] (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 1 Mar
+ 2021 11:28:51 +0100
+Subject: Re: [PATCH v2 1/2] tty/serial: Add rx-tx-swap OF option to
+ stm32-usart
+To:     Martin Devera <devik@eaxlabs.cz>, <linux-kernel@vger.kernel.org>
+CC:     <devicetree@vger.kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <linux-serial@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Le Ray <erwan.leray@st.com>
+References: <CAL_JsqK8+M=Vg0PiDXP2f1LrEp4hSVea6piAASMGu1H=pxme6Q@mail.gmail.com>
+ <20210227164157.30971-1-devik@eaxlabs.cz>
+From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Message-ID: <439a0d7a-cc0e-764b-7ed8-668b5a85f4a7@foss.st.com>
+Date:   Mon, 1 Mar 2021 11:28:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210124214127.3631530-1-j.neuschaefer@gmx.net>
+In-Reply-To: <20210227164157.30971-1-devik@eaxlabs.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-01_05:2021-02-26,2021-03-01 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enjoy!
+On 2/27/21 5:41 PM, Martin Devera wrote:
+> STM32 F7/H7 usarts supports RX & TX pin swapping.
+> Add option to turn it on.
+> Tested on STM32MP157.
+> 
+> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
+> ---
+>  drivers/tty/serial/stm32-usart.c | 3 ++-
+>  drivers/tty/serial/stm32-usart.h | 1 +
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+> index b3675cf25a69..3650c8798061 100644
+> --- a/drivers/tty/serial/stm32-usart.c
+> +++ b/drivers/tty/serial/stm32-usart.c
+> @@ -758,7 +758,7 @@ static void stm32_usart_set_termios(struct uart_port *port,
+>  	cr1 = USART_CR1_TE | USART_CR1_RE;
+>  	if (stm32_port->fifoen)
+>  		cr1 |= USART_CR1_FIFOEN;
+> -	cr2 = 0;
+> +	cr2 = stm32_port->swap ? USART_CR2_SWAP : 0;
 
-The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
+Hi Martin,
 
-  Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
+Same could be done in the startup routine, that enables the port for
+reception (as described in Documentation/driver-api/serial/driver.rst)
 
-are available in the Git repository at:
+>  	cr3 = readl_relaxed(port->membase + ofs->cr3);
+>  	cr3 &= USART_CR3_TXFTIE | USART_CR3_RXFTCFG_MASK | USART_CR3_RXFTIE
+>  		| USART_CR3_TXFTCFG_MASK;
+> @@ -1078,6 +1078,7 @@ static struct stm32_port *stm32_usart_of_get_port(struct platform_device *pdev)
+>  	stm32_ports[id].hw_flow_control =
+>  		of_property_read_bool (np, "st,hw-flow-ctrl") /*deprecated*/ ||
+>  		of_property_read_bool (np, "uart-has-rtscts");
+> +	stm32_ports[id].swap = of_property_read_bool(np, "rx-tx-swap");
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-pwm-rtc-v5.13
+The swap option/bit is available starting with stm32f7 (e.g. not on
+stm32f4).
 
-for you to fetch changes up to 80629611215d1c5d52ed3cf723fd6d24a5872504:
+This could be added to compatible data, e.g. as done for other
+capabilities in stm32-usart.h. E.g you could add a "has_swap" in struct
+stm32_usart_config, then use it at probe time:
+	if (cfg->has_swap)
+		stm32_ports[id].swap = ...;
 
-  MAINTAINERS: Add entry for Netronix embedded controller (2021-03-01 10:26:17 +0000)
+Thanks for your patch,
+Best regards,
+Fabrice
 
-----------------------------------------------------------------
-Immutable branch between MFD, PWM and RTC due for the v5.13 merge window
-
-----------------------------------------------------------------
-Jonathan Neuschäfer (6):
-      dt-bindings: Add vendor prefix for Netronix, Inc.
-      dt-bindings: mfd: Add binding for Netronix embedded controller
-      mfd: Add base driver for Netronix embedded controller
-      pwm: ntxec: Add driver for PWM function in Netronix EC
-      rtc: New driver for RTC in Netronix embedded controller
-      MAINTAINERS: Add entry for Netronix embedded controller
-
- .../devicetree/bindings/mfd/netronix,ntxec.yaml    |  76 +++++++
- .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
- MAINTAINERS                                        |   9 +
- drivers/mfd/Kconfig                                |  11 +
- drivers/mfd/Makefile                               |   1 +
- drivers/mfd/ntxec.c                                | 221 +++++++++++++++++++++
- drivers/pwm/Kconfig                                |   8 +
- drivers/pwm/Makefile                               |   1 +
- drivers/pwm/pwm-ntxec.c                            | 184 +++++++++++++++++
- drivers/rtc/Kconfig                                |   8 +
- drivers/rtc/Makefile                               |   1 +
- drivers/rtc/rtc-ntxec.c                            | 145 ++++++++++++++
- include/linux/mfd/ntxec.h                          |  37 ++++
- 13 files changed, 704 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
- create mode 100644 drivers/mfd/ntxec.c
- create mode 100644 drivers/pwm/pwm-ntxec.c
- create mode 100644 drivers/rtc/rtc-ntxec.c
- create mode 100644 include/linux/mfd/ntxec.h
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>  	stm32_ports[id].port.line = id;
+>  	stm32_ports[id].cr1_irq = USART_CR1_RXNEIE;
+>  	stm32_ports[id].cr3_irq = 0;
+> diff --git a/drivers/tty/serial/stm32-usart.h b/drivers/tty/serial/stm32-usart.h
+> index cb4f327c46db..2f054e2dc0ab 100644
+> --- a/drivers/tty/serial/stm32-usart.h
+> +++ b/drivers/tty/serial/stm32-usart.h
+> @@ -271,6 +271,7 @@ struct stm32_port {
+>  	int last_res;
+>  	bool tx_dma_busy;	 /* dma tx busy               */
+>  	bool hw_flow_control;
+> +	bool swap;		 /* swap RX & TX pins */
+>  	bool fifoen;
+>  	int wakeirq;
+>  	int rdr_mask;		/* receive data register mask */
+> 
