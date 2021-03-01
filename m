@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A644329879
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB493297FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345906AbhCAXe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:34:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58726 "EHLO mail.kernel.org"
+        id S245249AbhCAXIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:08:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238653AbhCASGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:06:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9BF7650BE;
-        Mon,  1 Mar 2021 17:42:09 +0000 (UTC)
+        id S237436AbhCARyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:54:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E575C6534A;
+        Mon,  1 Mar 2021 17:44:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620530;
-        bh=cyYO7R/YFA4bYhrtrCdcWYU0gJWcDihPwJQksytHu/I=;
+        s=korg; t=1614620674;
+        bh=QWPzJz6EnngoEbpoa1atJPevpbzJNmbk1Zc4XZlRtaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v4QeGCEz/kC9tzqmxlwTulKOlu7r8ezXA+iCPgwy5AB8Mprp5yIPOgzfFheUihZ7h
-         5dbAWi0YU9MzZFrJl8weebkBx/p97k9kJESES0K4FO3BD0eZWq/aZS95tg5o9ELJwn
-         tgPNj6BFskO17paeSk1NOczVSoctn/IczIYSVK84=
+        b=k14onjjVjaTOk94SH0HBfHaWNgMUp8Zr6b/QTbhnHp0wuOs15GfYMnNKWmX20+hzp
+         4mHmNZDSVKWJhBWjv83xo4lKPszgtxrhqVTcAyIte9R47ZtF79z/Y4J2cwEYzTmLVj
+         8yXs9N5qi4tzMZZlcMrtIkstbRxY/xXrjbMrthqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Xiaojun <wangxiaojun11@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 186/775] drm: rcar-du: Fix the return check of of_parse_phandle and of_find_device_by_node
-Date:   Mon,  1 Mar 2021 17:05:54 +0100
-Message-Id: <20210301161210.823060139@linuxfoundation.org>
+Subject: [PATCH 5.11 198/775] media: camss: Fix signedness bug in video_enum_fmt()
+Date:   Mon,  1 Mar 2021 17:06:06 +0100
+Message-Id: <20210301161211.428978664@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -45,59 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Xiaojun <wangxiaojun11@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 8d7d33f6be06f929ac2c5e8ea2323fec272790d4 ]
+[ Upstream commit b00481bdca2d77fdae5f71517c09fd3b30eba57d ]
 
-of_parse_phandle and of_find_device_by_node may return NULL
-which cannot be checked by IS_ERR.
+This test has a problem because we want to know if "k" is -1 or a
+positive value less than "f->index".  But the "f->index" variable is a
+u32 so if "k == -1" then -1 gets type promoted to UINT_MAX which is
+larger than "f->index".  I've added an explicit test to check for -1.
 
-Fixes: 8de707aeb452 ("drm: rcar-du: kms: Initialize CMM instances")
-Signed-off-by: Wang Xiaojun <wangxiaojun11@huawei.com>
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Acked-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-
-[Replace -ENODEV with -EINVAL]
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Fixes: a3d412d4b9f3 ("media: Revert "media: camss: Make use of V4L2_CAP_IO_MC"")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/rcar-du/rcar_du_kms.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/media/platform/qcom/camss/camss-video.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/rcar-du/rcar_du_kms.c b/drivers/gpu/drm/rcar-du/rcar_du_kms.c
-index 72dda446355fe..7015e22872bbe 100644
---- a/drivers/gpu/drm/rcar-du/rcar_du_kms.c
-+++ b/drivers/gpu/drm/rcar-du/rcar_du_kms.c
-@@ -700,10 +700,10 @@ static int rcar_du_cmm_init(struct rcar_du_device *rcdu)
- 		int ret;
+diff --git a/drivers/media/platform/qcom/camss/camss-video.c b/drivers/media/platform/qcom/camss/camss-video.c
+index bd9334af1c734..2fa3214775d58 100644
+--- a/drivers/media/platform/qcom/camss/camss-video.c
++++ b/drivers/media/platform/qcom/camss/camss-video.c
+@@ -579,7 +579,7 @@ static int video_enum_fmt(struct file *file, void *fh, struct v4l2_fmtdesc *f)
+ 			break;
+ 	}
  
- 		cmm = of_parse_phandle(np, "renesas,cmms", i);
--		if (IS_ERR(cmm)) {
-+		if (!cmm) {
- 			dev_err(rcdu->dev,
- 				"Failed to parse 'renesas,cmms' property\n");
--			return PTR_ERR(cmm);
-+			return -EINVAL;
- 		}
- 
- 		if (!of_device_is_available(cmm)) {
-@@ -713,10 +713,10 @@ static int rcar_du_cmm_init(struct rcar_du_device *rcdu)
- 		}
- 
- 		pdev = of_find_device_by_node(cmm);
--		if (IS_ERR(pdev)) {
-+		if (!pdev) {
- 			dev_err(rcdu->dev, "No device found for CMM%u\n", i);
- 			of_node_put(cmm);
--			return PTR_ERR(pdev);
-+			return -EINVAL;
- 		}
- 
- 		of_node_put(cmm);
+-	if (k < f->index)
++	if (k == -1 || k < f->index)
+ 		/*
+ 		 * All the unique pixel formats matching the arguments
+ 		 * have been enumerated (k >= 0 and f->index > 0), or
 -- 
 2.27.0
 
