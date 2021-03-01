@@ -2,96 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9C6329FFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A04EF32A005
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575090AbhCBDxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:53:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244013AbhCAV4o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 16:56:44 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A2FC06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 13:56:03 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id g27so18147193iox.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 13:56:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=m+RNcLgJhTs9T3Wtftg15wVRmRi1wCDJCjKpYbAY0/A=;
-        b=MJQyacUUm3vZ2bwooIZwhAM7UiHVWUMGuNxoldnSizFWUkJFSUuiAxQumxjELNlgrb
-         /eLcQ4Tg0Zhnf92Wx4Os7GEI0/YHaMh0qk35c7gl1Y2664dhnD6PDMN78CIpXohakeCE
-         PCnXCEKP7IK02BuK2uLUqdBuRZkKEYnCTV67M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=m+RNcLgJhTs9T3Wtftg15wVRmRi1wCDJCjKpYbAY0/A=;
-        b=q8qc7dR6YRqtzwY1hcl6EdA4ENkEAoQKb+Olo/wwo/3qvfoSWUYcvtkLYxgw70WgoW
-         cPrB+StnxuAeVJIuLBYsEoTiQFfx6C5yZRcQAElVGtJ+FwP07LiKYfLgfW59wTUvmzAq
-         cdDsbK9+ZNtlgDLvFI06f5Mr4G8jXagbAz8IgzttfyHHShaNQUsqr3ds1gW9AesNlUuF
-         33FdrZXoKe7dyG2dx7L+347PM65igpyUFiojofyZHKxLgs61uQKDA739yn4TiFqHa22n
-         0lSJgSfp9e4LPXQ+0G2cYnFKU3dg/A8b2bXcYtIw9xKX6dmKw99mvVC4wSjLOh9kZtRn
-         87Iw==
-X-Gm-Message-State: AOAM533eNmY9BTSx00WQ6WOWMWyJ5M8Ze/oggOo154rvyTPTRiM/FCm6
-        ByMIToPjz4tRi69uk3lU+RjEbw==
-X-Google-Smtp-Source: ABdhPJxrp3JBhAwUOXubk6UYexoVXauvHts6BTPI4kdtwm1ee8jHrgNFGx0c9fELGfpFRK3RMIH/pw==
-X-Received: by 2002:a05:6602:15cc:: with SMTP id f12mr15114491iow.32.1614635763161;
-        Mon, 01 Mar 2021 13:56:03 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id v3sm4688857ioh.25.2021.03.01.13.56.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 13:56:02 -0800 (PST)
-Subject: Re: [PATCH] kunit: fix checkpatch warning
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Lucas Pires Stankus <lucas.p.stankus@gmail.com>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210226205410.nnwstno5xrsb5ci3@smtp.gmail.com>
- <CAFd5g47ebZFOA6myhJHykt=nG5SwgJmuVAjr=CSkeO06iNg5AA@mail.gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <3196393d-0e6a-d948-c695-3911daaeea4a@linuxfoundation.org>
-Date:   Mon, 1 Mar 2021 14:56:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1575144AbhCBDxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:53:30 -0500
+Received: from ms.lwn.net ([45.79.88.28]:43126 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244765AbhCAV6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 16:58:21 -0500
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 3EEB22B8;
+        Mon,  1 Mar 2021 21:57:40 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3EEB22B8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614635860; bh=i6jQL2vEgTZpDiPscbXFNSE/AGEJG68OoQFCzcs14eY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=m5sBTavMke52rPDsk6aPF9PVFu/38tbTbHO05WGk4Yxo2KFTQSKKW+4HchgwPXhZ2
+         AiNq0lrvJhr6ZD3ClJtjAsAMPB+D/gvmnZBEOHN2Gqo/sS4nX2p8NrX2Kra541iyLe
+         7APV/lFPjTnh3CvcptaIGCGTCeGvifyCY7arlJgzUfUkux4gOBrNEtbvLLF2A4xptP
+         3M8jwv3thGIdhu5HGz95SQsB0M4C6VsiRhqW/SqrIRO4ivW+tSCcHaUTW0qT3PPUOA
+         a+p6Hi7m3CKGtdVtw0AtdNY5EWaa7JMOqXaygxmiFcMYhcxVTDFocH2VqwoP/JxdYz
+         iYWm5kTF3P/Ww==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>, mchehab@kernel.org
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v8 0/3] checkpatch: add verbose mode
+In-Reply-To: <70877984ec78d837159dc643e3ae2b05fd91561c.camel@perches.com>
+References: <20210226093827.12700-1-dwaipayanray1@gmail.com>
+ <87tupu36xi.fsf@meer.lwn.net>
+ <70877984ec78d837159dc643e3ae2b05fd91561c.camel@perches.com>
+Date:   Mon, 01 Mar 2021 14:57:39 -0700
+Message-ID: <87czwi35bg.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <CAFd5g47ebZFOA6myhJHykt=nG5SwgJmuVAjr=CSkeO06iNg5AA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/26/21 2:05 PM, Brendan Higgins wrote:
-> On Fri, Feb 26, 2021 at 12:54 PM Lucas Pires Stankus
-> <lucas.p.stankus@gmail.com> wrote:
->>
->> Tidy up code by fixing the following checkpatch warnings:
->> CHECK: Alignment should match open parenthesis
->> CHECK: Lines should not end with a '('
->>
->> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-> 
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> 
-> Thanks!
-> 
+Joe Perches <joe@perches.com> writes:
 
-Hi Lucas,
+> On Mon, 2021-03-01 at 14:22 -0700, Jonathan Corbet wrote:
+>> Dwaipayan Ray <dwaipayanray1@gmail.com> writes:
+>> 
+>> > Add a new verbose mode to checkpatch. The verbose test
+>> > descriptions are read from the new checkpatch documentation
+>> > file at `Documentation/dev-tools/checkpatch.rst`, which
+>> > is also added by this series.
+>> 
+>> So I can certainly take the doc change, as requested.  Remind me,
+>> though...should I apply the whole set, or will the checkpatch changes go
+>> via another path?
+>
+> There's no dedicated upstream path for checkpatch.
+> So please take the checkpatch changes too.
 
-Please fix your Signed-off-by and resend this patch:
+OK, I have just done that.
 
-WARNING: From:/Signed-off-by: email name mismatch: 'From: Lucas Pires 
-Stankus <lucas.p.stankus@gmail.com>' != 'Signed-off-by: Lucas Stankus 
-<lucas.p.stankus@gmail.com>'
+Thanks,
 
-thanks,
--- Shuah
+jon
