@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB493297FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F10E329865
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245249AbhCAXIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:08:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
+        id S233041AbhCAXbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:31:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237436AbhCARyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:54:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E575C6534A;
-        Mon,  1 Mar 2021 17:44:33 +0000 (UTC)
+        id S238159AbhCASEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:04:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25AF065320;
+        Mon,  1 Mar 2021 17:44:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620674;
-        bh=QWPzJz6EnngoEbpoa1atJPevpbzJNmbk1Zc4XZlRtaY=;
+        s=korg; t=1614620657;
+        bh=szcTyCxuwgUNa++4Ndccoj2lfKzm/iCe/BfGwV47W4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k14onjjVjaTOk94SH0HBfHaWNgMUp8Zr6b/QTbhnHp0wuOs15GfYMnNKWmX20+hzp
-         4mHmNZDSVKWJhBWjv83xo4lKPszgtxrhqVTcAyIte9R47ZtF79z/Y4J2cwEYzTmLVj
-         8yXs9N5qi4tzMZZlcMrtIkstbRxY/xXrjbMrthqk=
+        b=miVWYKEJnsPTPBm0J0wsKCxfgjR3Qgx8IqwQAbrc88NLne7gjmwoG8pCZ7YfLY5nB
+         aW6QKM4TAohInt+Jed5j3MAK8UPcLrSFN96A0OVqHqK4VZva+ScGInLnbV2WZgwSJD
+         bVpCEQkNGS3dXIWV39mgTCi+s4AEvfUK+Xbj8Uf8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 198/775] media: camss: Fix signedness bug in video_enum_fmt()
-Date:   Mon,  1 Mar 2021 17:06:06 +0100
-Message-Id: <20210301161211.428978664@linuxfoundation.org>
+Subject: [PATCH 5.11 202/775] media: media/pci: Fix memleak in empress_init
+Date:   Mon,  1 Mar 2021 17:06:10 +0100
+Message-Id: <20210301161211.623272916@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -43,39 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit b00481bdca2d77fdae5f71517c09fd3b30eba57d ]
+[ Upstream commit 15d0c52241ecb1c9d802506bff6f5c3f7872c0df ]
 
-This test has a problem because we want to know if "k" is -1 or a
-positive value less than "f->index".  But the "f->index" variable is a
-u32 so if "k == -1" then -1 gets type promoted to UINT_MAX which is
-larger than "f->index".  I've added an explicit test to check for -1.
+When vb2_queue_init() fails, dev->empress_dev
+should be released just like other error handling
+paths.
 
-Fixes: a3d412d4b9f3 ("media: Revert "media: camss: Make use of V4L2_CAP_IO_MC"")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+Fixes: 2ada815fc48bb ("[media] saa7134: convert to vb2")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/qcom/camss/camss-video.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/pci/saa7134/saa7134-empress.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-video.c b/drivers/media/platform/qcom/camss/camss-video.c
-index bd9334af1c734..2fa3214775d58 100644
---- a/drivers/media/platform/qcom/camss/camss-video.c
-+++ b/drivers/media/platform/qcom/camss/camss-video.c
-@@ -579,7 +579,7 @@ static int video_enum_fmt(struct file *file, void *fh, struct v4l2_fmtdesc *f)
- 			break;
- 	}
- 
--	if (k < f->index)
-+	if (k == -1 || k < f->index)
- 		/*
- 		 * All the unique pixel formats matching the arguments
- 		 * have been enumerated (k >= 0 and f->index > 0), or
+diff --git a/drivers/media/pci/saa7134/saa7134-empress.c b/drivers/media/pci/saa7134/saa7134-empress.c
+index 39e3c7f8c5b46..76a37fbd84587 100644
+--- a/drivers/media/pci/saa7134/saa7134-empress.c
++++ b/drivers/media/pci/saa7134/saa7134-empress.c
+@@ -282,8 +282,11 @@ static int empress_init(struct saa7134_dev *dev)
+ 	q->lock = &dev->lock;
+ 	q->dev = &dev->pci->dev;
+ 	err = vb2_queue_init(q);
+-	if (err)
++	if (err) {
++		video_device_release(dev->empress_dev);
++		dev->empress_dev = NULL;
+ 		return err;
++	}
+ 	dev->empress_dev->queue = q;
+ 	dev->empress_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+ 					V4L2_CAP_VIDEO_CAPTURE;
 -- 
 2.27.0
 
