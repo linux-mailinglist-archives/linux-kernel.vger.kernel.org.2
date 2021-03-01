@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA3F32882A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 601E332882B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238671AbhCARew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:34:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34258 "EHLO mail.kernel.org"
+        id S238688AbhCARez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:34:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234777AbhCAQ3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234779AbhCAQ3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 11:29:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E137C64EF4;
-        Mon,  1 Mar 2021 16:22:55 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8317C64F4E;
+        Mon,  1 Mar 2021 16:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615776;
-        bh=JOnqecHGGrZ54vlWCamdG+Ry/XnsOxxYZYk9z4sXa+E=;
+        s=korg; t=1614615779;
+        bh=aH4USPk7FyZugFKVh0VvfwY4zfIipxgmVAqQRue1nao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hk5bqSKDLtuq5Xs3NgPdTdRq+/WT9RUsmTwGQD0BfUL67BYef/t6obLgK++l++cl/
-         DzZm3wlONwQ2kK0jaHsV1PTmRf1yEwnav8UMR7ojMo0q3fiYA0YDDvf/MMhcs0svDe
-         /LF4sv9jntU7Cuu32FwSRy0EDF8irlK+aGRqaonQ=
+        b=KUFAfqrFVJrecOMMgfpquzUPCWZXrbYvGBXFykjKUPuO4T6LulyhCSjIPSYbsCiLy
+         1niBcIyYUrkTDvh1PY6Me52r3kZe04cbKxMr2cq8IUcy+bZ/hUwoYNg3ND6BEFdwqe
+         fiQfQiPjfMMyfDM7L4BJCtra0arGZq2ZK7+YXsLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 055/134] power: reset: at91-sama5d2_shdwc: fix wkupdbc mask
-Date:   Mon,  1 Mar 2021 17:12:36 +0100
-Message-Id: <20210301161016.261853920@linuxfoundation.org>
+Subject: [PATCH 4.9 056/134] clocksource/drivers/mxs_timer: Add missing semicolon when DEBUG is defined
+Date:   Mon,  1 Mar 2021 17:12:37 +0100
+Message-Id: <20210301161016.311978912@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -42,34 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 95aa21a3f1183260db1b0395e03df5bebc5ed641 ]
+[ Upstream commit 7da390694afbaed8e0f05717a541dfaf1077ba51 ]
 
-According to datasheet WKUPDBC mask is b/w bits 26..24.
+When DEBUG is defined this error occurs
 
-Fixes: f80cb48843987 ("power: reset: at91-shdwc: add new shutdown controller driver")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+drivers/clocksource/mxs_timer.c:138:1: error:
+  expected ‘;’ before ‘}’ token
+
+The preceding statement needs a semicolon.
+Replace pr_info() with pr_debug() and remove the unneeded ifdef.
+
+Fixes: eb8703e2ef7c ("clockevents/drivers/mxs: Migrate to new 'set-state' interface")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210118211955.763609-1-trix@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/reset/at91-sama5d2_shdwc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clocksource/mxs_timer.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/power/reset/at91-sama5d2_shdwc.c b/drivers/power/reset/at91-sama5d2_shdwc.c
-index 04ca990e8f6cb..dcfc7025f384a 100644
---- a/drivers/power/reset/at91-sama5d2_shdwc.c
-+++ b/drivers/power/reset/at91-sama5d2_shdwc.c
-@@ -36,7 +36,7 @@
+diff --git a/drivers/clocksource/mxs_timer.c b/drivers/clocksource/mxs_timer.c
+index 0ba0a913b41d1..b26c3b84c5b6c 100644
+--- a/drivers/clocksource/mxs_timer.c
++++ b/drivers/clocksource/mxs_timer.c
+@@ -152,10 +152,7 @@ static void mxs_irq_clear(char *state)
  
- #define AT91_SHDW_MR	0x04		/* Shut Down Mode Register */
- #define AT91_SHDW_WKUPDBC_SHIFT	24
--#define AT91_SHDW_WKUPDBC_MASK	GENMASK(31, 16)
-+#define AT91_SHDW_WKUPDBC_MASK	GENMASK(26, 24)
- #define AT91_SHDW_WKUPDBC(x)	(((x) << AT91_SHDW_WKUPDBC_SHIFT) \
- 						& AT91_SHDW_WKUPDBC_MASK)
+ 	/* Clear pending interrupt */
+ 	timrot_irq_acknowledge();
+-
+-#ifdef DEBUG
+-	pr_info("%s: changing mode to %s\n", __func__, state)
+-#endif /* DEBUG */
++	pr_debug("%s: changing mode to %s\n", __func__, state);
+ }
  
+ static int mxs_shutdown(struct clock_event_device *evt)
 -- 
 2.27.0
 
