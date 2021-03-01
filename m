@@ -2,179 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753F9327A3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 10:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCD0327A25
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233296AbhCAI6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:58:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52178 "EHLO
+        id S233706AbhCAI4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:56:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233687AbhCAIzq (ORCPT
+        with ESMTP id S233782AbhCAIxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:55:46 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F42C0617A9;
-        Mon,  1 Mar 2021 00:55:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=nT+kEcM+aa8S0iBxlz/mDwdDkmdldsOoqQNxAu1wpAU=; b=IXcCiK7hgdjGmF1Ma6TFrJ1qqc
-        ZvYZRGq5BxbLRu8GkV44P5i8Yd6yPYtZkZkhpEWJwwoQEdghky/V9qWeAOZCLPdmwN1AD61oSF0M3
-        TGt4pn7IdxHgjCTYY133mOOHC9CHuvXgQkH33gpcEACYGUueoLxrBekw8AKwDs+2CFLZJGVmDSOVN
-        m/rv9JDO+tIJDB0/NwjrjbNdIsQx0b4cfxE6cDbltWnDexFHCnCWuBM1g8SGFJfEWMLh8qyphDmqm
-        oDv6nr7Z8CvqPzf6bq+Ih7PVXIGhdRWAcCD8JBhQb/gb57jt9uI16dfM56sW29GzCkukvINSqJdOl
-        pZivmKOg==;
-Received: from [2001:4bb8:19b:e4b7:cdf9:733f:4874:8eb4] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lGeKC-00FVS3-Qq; Mon, 01 Mar 2021 08:54:47 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Sergey Senozhatsky <senozhatsky@google.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        iommu@lists.linux-foundation.org
-Cc:     Robin Murphy <robin.murphy@arm.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH 4/6] dma-iommu: refactor iommu_dma_alloc_remap
-Date:   Mon,  1 Mar 2021 09:52:34 +0100
-Message-Id: <20210301085236.947011-5-hch@lst.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210301085236.947011-1-hch@lst.de>
-References: <20210301085236.947011-1-hch@lst.de>
+        Mon, 1 Mar 2021 03:53:51 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA020C061756;
+        Mon,  1 Mar 2021 00:53:10 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id q23so18461925lji.8;
+        Mon, 01 Mar 2021 00:53:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:organization:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=z9Lv4jcdbi26OM1Ui5humilwQXIlpCe/CsQxpgRss4E=;
+        b=QC+865VGhYqY1nnmUzvCf/Uf+JOswGXtj8VVmchliFJccyBBoqlHHhmAeJ+TU7PIzO
+         pUT6E//Vkmz8lpo2Li/nkdpZSWwny9axmj80kAEpfAu3zfB0Wqvga02OqhvEKrM9dad3
+         k7UsUYLba/zlRA3MBFzIhsNXw1HsnR+vNSy+3DVuof6ibSEmRxy675rQrcfg/PoXZs+8
+         ujWmvSlODrs2pkZLQwI0ZWbFCJJRm6d/Jo1U04ACXqLuPzh7MClDz4BmEH0CbF2R1cIu
+         zKrZQrQ7F2juFCftheYDsmfhKsIGY7wTVdchBsxgQkloMYbf+vwqzYp44Pn1Dtx0YNJr
+         OiEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=z9Lv4jcdbi26OM1Ui5humilwQXIlpCe/CsQxpgRss4E=;
+        b=pepha1odFc8YM1C27k3a/wFCsKUej/RGrjU3L9uOE87QjDvD4M5Er+RPxnmbQkii6A
+         pShlrbUaN4MxdwAnbXAjqEnNqBcHGACXxrArIalpMAOWnfXPk7JDo5B6KYIKyR65LvWP
+         y5WiUrc/kOgpAQd5GeMJx3cswp57IwaZeRCTaxv0Ti+DF/Hn3zZNftU5wfAzaJW06mFu
+         PiB+7dlJjA2aHrXVIxqSd2BD2SGR6D60qWKiVlv+DC0YsmGFOnSFDF/2oGQuvs5YYOmt
+         ujrQBmDB4/GIVG+kvIhOz3soGcRVgxMTH55nLi80vSk5hcijsGCiQ6GenIoHnGk/CEju
+         6ZKg==
+X-Gm-Message-State: AOAM5300CEgLv6iNctwmKfshNFhMMBHbUvtsb3JIpDBcd0oG0QfjLnZA
+        owfRMenkewNoOEph9ROS3F9ks1wbp/IQFQ==
+X-Google-Smtp-Source: ABdhPJx0eXK0MSbaQC1xYYp0mgHSbB6Rdq3s2XdJWGMyxV/dHaoOcNLjmsdRiBzUER9n8n+0P4DaXA==
+X-Received: by 2002:a2e:8159:: with SMTP id t25mr8753996ljg.84.1614588787470;
+        Mon, 01 Mar 2021 00:53:07 -0800 (PST)
+Received: from [192.168.1.100] ([31.173.83.37])
+        by smtp.gmail.com with ESMTPSA id u13sm1328368ljl.107.2021.03.01.00.53.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 00:53:07 -0800 (PST)
+Subject: Re: [PATCH] arch: mips: sibyte: Return -EFAULT if copy_to_user()
+ fails
+To:     Wang Qing <wangqing@vivo.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1614580437-19660-1-git-send-email-wangqing@vivo.com>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <3a7d2007-b7d2-e428-406c-a6804bff6df0@gmail.com>
+Date:   Mon, 1 Mar 2021 11:53:01 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1614580437-19660-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split out a new helper that only allocates a sg_table worth of
-memory without mapping it into contiguous kernel address space.
+Hello!
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-Tested-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/iommu/dma-iommu.c | 67 ++++++++++++++++++++-------------------
- 1 file changed, 35 insertions(+), 32 deletions(-)
+On 01.03.2021 9:33, Wang Qing wrote:
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 9ab6ee22c11088..b4d7bfffb3a0d2 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -649,23 +649,12 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
- 	return pages;
- }
- 
--/**
-- * iommu_dma_alloc_remap - Allocate and map a buffer contiguous in IOVA space
-- * @dev: Device to allocate memory for. Must be a real device
-- *	 attached to an iommu_dma_domain
-- * @size: Size of buffer in bytes
-- * @dma_handle: Out argument for allocated DMA handle
-- * @gfp: Allocation flags
-- * @prot: pgprot_t to use for the remapped mapping
-- * @attrs: DMA attributes for this allocation
-- *
-- * If @size is less than PAGE_SIZE, then a full CPU page will be allocated,
-+/*
-+ * If size is less than PAGE_SIZE, then a full CPU page will be allocated,
-  * but an IOMMU which supports smaller pages might not map the whole thing.
-- *
-- * Return: Mapped virtual address, or NULL on failure.
-  */
--static void *iommu_dma_alloc_remap(struct device *dev, size_t size,
--		dma_addr_t *dma_handle, gfp_t gfp, pgprot_t prot,
-+static struct page **__iommu_dma_alloc_noncontiguous(struct device *dev,
-+		size_t size, struct sg_table *sgt, gfp_t gfp, pgprot_t prot,
- 		unsigned long attrs)
- {
- 	struct iommu_domain *domain = iommu_get_dma_domain(dev);
-@@ -675,11 +664,7 @@ static void *iommu_dma_alloc_remap(struct device *dev, size_t size,
- 	int ioprot = dma_info_to_prot(DMA_BIDIRECTIONAL, coherent, attrs);
- 	unsigned int count, min_size, alloc_sizes = domain->pgsize_bitmap;
- 	struct page **pages;
--	struct sg_table sgt;
- 	dma_addr_t iova;
--	void *vaddr;
--
--	*dma_handle = DMA_MAPPING_ERROR;
- 
- 	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
- 	    iommu_deferred_attach(dev, domain))
-@@ -706,38 +691,56 @@ static void *iommu_dma_alloc_remap(struct device *dev, size_t size,
- 	if (!iova)
- 		goto out_free_pages;
- 
--	if (sg_alloc_table_from_pages(&sgt, pages, count, 0, size, GFP_KERNEL))
-+	if (sg_alloc_table_from_pages(sgt, pages, count, 0, size, GFP_KERNEL))
- 		goto out_free_iova;
- 
- 	if (!(ioprot & IOMMU_CACHE)) {
- 		struct scatterlist *sg;
- 		int i;
- 
--		for_each_sg(sgt.sgl, sg, sgt.orig_nents, i)
-+		for_each_sg(sgt->sgl, sg, sgt->orig_nents, i)
- 			arch_dma_prep_coherent(sg_page(sg), sg->length);
- 	}
- 
--	if (iommu_map_sg_atomic(domain, iova, sgt.sgl, sgt.orig_nents, ioprot)
-+	if (iommu_map_sg_atomic(domain, iova, sgt->sgl, sgt->orig_nents, ioprot)
- 			< size)
- 		goto out_free_sg;
- 
-+	sgt->sgl->dma_address = iova;
-+	return pages;
-+
-+out_free_sg:
-+	sg_free_table(sgt);
-+out_free_iova:
-+	iommu_dma_free_iova(cookie, iova, size, NULL);
-+out_free_pages:
-+	__iommu_dma_free_pages(pages, count);
-+	return NULL;
-+}
-+
-+static void *iommu_dma_alloc_remap(struct device *dev, size_t size,
-+		dma_addr_t *dma_handle, gfp_t gfp, pgprot_t prot,
-+		unsigned long attrs)
-+{
-+	struct page **pages;
-+	struct sg_table sgt;
-+	void *vaddr;
-+
-+	pages = __iommu_dma_alloc_noncontiguous(dev, size, &sgt, gfp, prot,
-+						attrs);
-+	if (!pages)
-+		return NULL;
-+	*dma_handle = sgt.sgl->dma_address;
-+	sg_free_table(&sgt);
- 	vaddr = dma_common_pages_remap(pages, size, prot,
- 			__builtin_return_address(0));
- 	if (!vaddr)
- 		goto out_unmap;
--
--	*dma_handle = iova;
--	sg_free_table(&sgt);
- 	return vaddr;
- 
- out_unmap:
--	__iommu_dma_unmap(dev, iova, size);
--out_free_sg:
--	sg_free_table(&sgt);
--out_free_iova:
--	iommu_dma_free_iova(cookie, iova, size, NULL);
--out_free_pages:
--	__iommu_dma_free_pages(pages, count);
-+	__iommu_dma_unmap(dev, *dma_handle, size);
-+	__iommu_dma_free_pages(pages, PAGE_ALIGN(size) >> PAGE_SHIFT);
- 	return NULL;
- }
- 
--- 
-2.29.2
+> The copy_to_user() function returns the number of bytes remaining to be
+> copied, but we want to return -EFAULT if the copy doesn't complete.
 
+    Then 'err' is hardly a good name for that variable. :-)
+
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>   arch/mips/sibyte/common/sb_tbprof.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/sibyte/common/sb_tbprof.c b/arch/mips/sibyte/common/sb_tbprof.c
+> index f80d7a7..eac125f
+> --- a/arch/mips/sibyte/common/sb_tbprof.c
+> +++ b/arch/mips/sibyte/common/sb_tbprof.c
+> @@ -465,7 +465,7 @@ static ssize_t sbprof_tb_read(struct file *filp, char *buf,
+>   		if (err) {
+>   			*offp = cur_off + cur_count - err;
+>   			mutex_unlock(&sbp.lock);
+> -			return err;
+> +			return -EFAULT;
+>   		}
+>   		pr_debug(DEVNAME ": read from sample %d, %d bytes\n",
+>   			 cur_sample, cur_count);
+
+MBR, Sergei
