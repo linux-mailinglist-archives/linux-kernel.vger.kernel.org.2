@@ -2,157 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CAE432A069
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EDD32A084
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347459AbhCBESc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:18:32 -0500
-Received: from mga09.intel.com ([134.134.136.24]:23599 "EHLO mga09.intel.com"
+        id S1381201AbhCBEWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:22:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346521AbhCAXtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:49:00 -0500
-IronPort-SDR: aKv9+vjOoIOFpDw3N0hIRJSRXK9uc4NYYOZxEXUNQfgBElD9M5bc7wju3dNVfRYUUQtM+1N3z0
- UQgdmViyNLWA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186749628"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="186749628"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 15:48:14 -0800
-IronPort-SDR: bYAnrE3/3oXoNTA1IyTaSreuw9WUWVEq6AfgBNEqFFPIUtrzqUVrUGrvnNmTbSdwZviqFQzbvs
- jQbpgq6GuatA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="506102784"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Mar 2021 15:48:12 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lGsGp-0004oX-5a; Mon, 01 Mar 2021 23:48:11 +0000
-Date:   Tue, 02 Mar 2021 07:47:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/platform] BUILD SUCCESS
- 2430915f8291212f2bd2155176b817c34a18a2b1
-Message-ID: <603d7d08.K08hTr4MgC17HdT0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1345043AbhCBA1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 19:27:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C00A560249;
+        Mon,  1 Mar 2021 23:54:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614642877;
+        bh=Tdvi9OtnLVM234hz9z/rcWqFTO9DrJy6+2TJJSoPIAQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=jFqSbzE69gzYoKg6IOCrP9SDsqxK7jIDncXARrcohjPzu0CDxw/LHET+b19zxm2uT
+         NGhgex2o2Ahc6eYKW8cOHNzfN/zfL0ozw2SrI9bkkAI7IO+mc8eGIIEpfRCcpi6UPn
+         rWq7dOPf7yKZ1Z4k3p1MlRE7T2Xt9eoY6TdjfYw9auk9/xFPvzpB9CGct9SpJmEA/2
+         ZZG1nGSFBcn6CCfWWQn7Wi9yF3/pLPtrbc9+7Z0GM+XZeC0vUw99pbmYSN3Br8sWYm
+         YvFymertcOSn2OZT68rXeVcLyUWAE//1WBYPjwY+DXJwtSTxIX9AVqP38epQK7KBtV
+         QQ4fIRTYeX2QQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B4530609C6;
+        Mon,  1 Mar 2021 23:54:37 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] hv_netvsc: Fix validation in netvsc_linkstatus_callback()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161464287773.7970.8137891577012683736.git-patchwork-notify@kernel.org>
+Date:   Mon, 01 Mar 2021 23:54:37 +0000
+References: <20210301182530.194775-1-parri.andrea@gmail.com>
+In-Reply-To: <20210301182530.194775-1-parri.andrea@gmail.com>
+To:     Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, decui@microsoft.com,
+        mikelley@microsoft.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/platform
-branch HEAD: 2430915f8291212f2bd2155176b817c34a18a2b1  x86/platform/uv: Fix indentation warning in Documentation/ABI/testing/sysfs-firmware-sgi_uv
+Hello:
 
-elapsed time: 720m
+This patch was applied to netdev/net.git (refs/heads/master):
 
-configs tested: 95
-configs skipped: 2
+On Mon,  1 Mar 2021 19:25:30 +0100 you wrote:
+> Contrary to the RNDIS protocol specification, certain (pre-Fe)
+> implementations of Hyper-V's vSwitch did not account for the status
+> buffer field in the length of an RNDIS packet; the bug was fixed in
+> newer implementations.  Validate the status buffer fields using the
+> length of the 'vmtransfer_page' packet (all implementations), that
+> is known/validated to be less than or equal to the receive section
+> size and not smaller than the length of the RNDIS message.
+> 
+> [...]
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Here is the summary with links:
+  - [net] hv_netvsc: Fix validation in netvsc_linkstatus_callback()
+    https://git.kernel.org/netdev/net/c/3946688edbc5
 
-gcc tested configs:
-arm                                 defconfig
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                          moxart_defconfig
-m68k                            q40_defconfig
-powerpc                      katmai_defconfig
-alpha                               defconfig
-ia64                             alldefconfig
-powerpc                      makalu_defconfig
-powerpc                      chrp32_defconfig
-i386                             allyesconfig
-mips                        jmr3927_defconfig
-arc                        nsim_700_defconfig
-arm                         nhk8815_defconfig
-arm                            zeus_defconfig
-mips                     cu1830-neo_defconfig
-sh                          rsk7269_defconfig
-mips                         mpc30x_defconfig
-arm                       versatile_defconfig
-sparc                               defconfig
-sparc64                             defconfig
-sh                        apsh4ad0a_defconfig
-powerpc                 canyonlands_defconfig
-sh                     sh7710voipgw_defconfig
-mips                 decstation_r4k_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20210228
-i386                 randconfig-a005-20210228
-i386                 randconfig-a004-20210228
-i386                 randconfig-a003-20210228
-i386                 randconfig-a001-20210228
-i386                 randconfig-a002-20210228
-x86_64               randconfig-a013-20210301
-x86_64               randconfig-a016-20210301
-x86_64               randconfig-a015-20210301
-x86_64               randconfig-a014-20210301
-x86_64               randconfig-a012-20210301
-x86_64               randconfig-a011-20210301
-i386                 randconfig-a016-20210301
-i386                 randconfig-a012-20210301
-i386                 randconfig-a014-20210301
-i386                 randconfig-a013-20210301
-i386                 randconfig-a011-20210301
-i386                 randconfig-a015-20210301
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-clang tested configs:
-x86_64               randconfig-a006-20210301
-x86_64               randconfig-a001-20210301
-x86_64               randconfig-a004-20210301
-x86_64               randconfig-a002-20210301
-x86_64               randconfig-a005-20210301
-x86_64               randconfig-a003-20210301
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
