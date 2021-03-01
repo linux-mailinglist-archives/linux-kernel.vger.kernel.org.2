@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E39329956
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C55C3298FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347664AbhCBAK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:10:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39426 "EHLO mail.kernel.org"
+        id S1347025AbhCAXvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:51:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239769AbhCASWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:22:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C7BD65041;
-        Mon,  1 Mar 2021 17:18:19 +0000 (UTC)
+        id S239475AbhCASPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:15:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A25B864E44;
+        Mon,  1 Mar 2021 17:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619100;
-        bh=j3PgkOnwPYUJR7KFodu16s2/Vdsxd6iZaw61a2TTOCU=;
+        s=korg; t=1614621072;
+        bh=vI5IutrOHP5bXNR4pZG3DXG82AODsBZXNP4VxaisRKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F4YMfMKQZWc77SWfR4hBJxq6Ahu38H1BEzcB/oDnUAJfqislEAiPXDEi+JApRlgNP
-         Ux7/qtS2OUXQfykXZdzzYdeJ1Xfv/pwUTsxt9u6rmWNukuaxJocFc2MNGQm0UUEjuB
-         LfKA/dK8imsVDnn21/6FgE3xkaa7gPvAvBHh48Tk=
+        b=LXnf5cQgg44eh/IkBnPWx21tZVBK7leCnH1yIc1q1aMn7/W4uygGl8sbdNm9D+2qe
+         G+cgi8ymuacwzF87VcWpzWWAlRylzMapcnRoBdU8viOSr/BRny3WE4wBSN8ij0KU01
+         31Z8X0epNso8zZ/Ub7L7Kh00EbTPFXNH00JbjGV4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 301/663] RDMA/mlx5: Use the correct obj_id upon DEVX TIR creation
-Date:   Mon,  1 Mar 2021 17:09:09 +0100
-Message-Id: <20210301161156.725784467@linuxfoundation.org>
+Subject: [PATCH 5.11 383/775] scsi: lpfc: Fix ancient double free
+Date:   Mon,  1 Mar 2021 17:09:11 +0100
+Message-Id: <20210301161220.532503280@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
-References: <20210301161141.760350206@linuxfoundation.org>
+In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
+References: <20210301161201.679371205@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yishai Hadas <yishaih@nvidia.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 8798e4ad0abe0ba1221928a46561981c510be0c6 ]
+[ Upstream commit 0be310979e5e1272d4c5b557642df4da4ce7eba4 ]
 
-Use the correct obj_id upon DEVX TIR creation by strictly taking the tirn
-24 bits and not the general obj_id which is 32 bits.
+The "pmb" pointer is freed at the start of the function and then freed
+again in the error handling code.
 
-Fixes: 7efce3691d33 ("IB/mlx5: Add obj create and destroy functionality")
-Link: https://lore.kernel.org/r/20201230130121.180350-2-leon@kernel.org
-Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Link: https://lore.kernel.org/r/YA6E8rO51hE56SVw@mwanda
+Fixes: 92d7f7b0cde3 ("[SCSI] lpfc: NPIV: add NPIV support on top of SLI-3")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mlx5/devx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/lpfc/lpfc_hbadisc.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 9e3d8b8264980..26564e7d34572 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -1067,7 +1067,9 @@ static void devx_obj_build_destroy_cmd(void *in, void *out, void *din,
- 		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_RQT);
- 		break;
- 	case MLX5_CMD_OP_CREATE_TIR:
--		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_TIR);
-+		*obj_id = MLX5_GET(create_tir_out, out, tirn);
-+		MLX5_SET(destroy_tir_in, din, opcode, MLX5_CMD_OP_DESTROY_TIR);
-+		MLX5_SET(destroy_tir_in, din, tirn, *obj_id);
- 		break;
- 	case MLX5_CMD_OP_CREATE_TIS:
- 		MLX5_SET(general_obj_in_cmd_hdr, din, opcode, MLX5_CMD_OP_DESTROY_TIS);
+diff --git a/drivers/scsi/lpfc/lpfc_hbadisc.c b/drivers/scsi/lpfc/lpfc_hbadisc.c
+index 2b6b5fc671feb..e5ace4a4f432a 100644
+--- a/drivers/scsi/lpfc/lpfc_hbadisc.c
++++ b/drivers/scsi/lpfc/lpfc_hbadisc.c
+@@ -1145,13 +1145,14 @@ lpfc_mbx_cmpl_local_config_link(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 	struct lpfc_vport *vport = pmb->vport;
+ 	LPFC_MBOXQ_t *sparam_mb;
+ 	struct lpfc_dmabuf *sparam_mp;
++	u16 status = pmb->u.mb.mbxStatus;
+ 	int rc;
+ 
+-	if (pmb->u.mb.mbxStatus)
+-		goto out;
+-
+ 	mempool_free(pmb, phba->mbox_mem_pool);
+ 
++	if (status)
++		goto out;
++
+ 	/* don't perform discovery for SLI4 loopback diagnostic test */
+ 	if ((phba->sli_rev == LPFC_SLI_REV4) &&
+ 	    !(phba->hba_flag & HBA_FCOE_MODE) &&
+@@ -1214,12 +1215,10 @@ lpfc_mbx_cmpl_local_config_link(struct lpfc_hba *phba, LPFC_MBOXQ_t *pmb)
+ 
+ out:
+ 	lpfc_printf_vlog(vport, KERN_ERR, LOG_TRACE_EVENT,
+-			 "0306 CONFIG_LINK mbxStatus error x%x "
+-			 "HBA state x%x\n",
+-			 pmb->u.mb.mbxStatus, vport->port_state);
+-sparam_out:
+-	mempool_free(pmb, phba->mbox_mem_pool);
++			 "0306 CONFIG_LINK mbxStatus error x%x HBA state x%x\n",
++			 status, vport->port_state);
+ 
++sparam_out:
+ 	lpfc_linkdown(phba);
+ 
+ 	lpfc_printf_vlog(vport, KERN_ERR, LOG_TRACE_EVENT,
 -- 
 2.27.0
 
