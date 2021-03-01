@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB20328828
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421CB32883E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhCARe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:34:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60808 "EHLO mail.kernel.org"
+        id S238123AbhCARgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:36:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234787AbhCAQ3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:29:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F58A64E54;
-        Mon,  1 Mar 2021 16:23:11 +0000 (UTC)
+        id S234798AbhCAQ3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:29:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB9BD64E56;
+        Mon,  1 Mar 2021 16:23:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615792;
-        bh=6PTz06mppItF9gSXAjVn5lJ9usbEM3gnecb9Itra+zQ=;
+        s=korg; t=1614615795;
+        bh=F+AV2NijNyiX/NQXq/tmZAYsujn83pkbZMkgLRnOdvI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mrmyTF33buMIvVG/WdmSM8UZfQN92fPyGNB+35xvw6VC/4STXshVX4sYhD8CBjzkN
-         lF9NKttliF+9sO1kToDEB43TSZlrcPIEZ7aDPtbcbrG5WQZFiOUxDGo+ZAEV6O4pdj
-         4o26sg3jPY/AKCRUdV+KSjds22pffcdZjMLzoyns=
+        b=1d7uvzVTAzCCK4/UnlNMfT+P2vFotHOYXEi2zCPICz2A6vA0plUOHif2J3aV77eGN
+         wfHoXfCtCk6aNXZCBi6gKT5fr8lyReJXomFy2fWDR9B+OGTPnghmZb4NVESeyQRRCO
+         wbOUpeBvfdKTskrKWLl/HCTEj5zocrh/2KLvfwWY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 061/134] mmc: usdhi6rol0: Fix a resource leak in the error handling path of the probe
-Date:   Mon,  1 Mar 2021 17:12:42 +0100
-Message-Id: <20210301161016.560036035@linuxfoundation.org>
+Subject: [PATCH 4.9 062/134] ARM: 9046/1: decompressor: Do not clear SCTLR.nTLSMD for ARMv7+ cores
+Date:   Mon,  1 Mar 2021 17:12:43 +0100
+Message-Id: <20210301161016.601326910@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -41,43 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Vladimir Murzin <vladimir.murzin@arm.com>
 
-[ Upstream commit 6052b3c370fb82dec28bcfff6d7ec0da84ac087a ]
+[ Upstream commit 2acb909750431030b65a0a2a17fd8afcbd813a84 ]
 
-A call to 'ausdhi6_dma_release()' to undo a previous call to
-'usdhi6_dma_request()' is missing in the error handling path of the probe
-function.
+It was observed that decompressor running on hardware implementing ARM v8.2
+Load/Store Multiple Atomicity and Ordering Control (LSMAOC), say, as guest,
+would stuck just after:
 
-It is already present in the remove function.
+Uncompressing Linux... done, booting the kernel.
 
-Fixes: 75fa9ea6e3c0 ("mmc: add a driver for the Renesas usdhi6rol0 SD/SDIO host controller")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201217210922.165340-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+The reason is that it clears nTLSMD bit when disabling caches:
+
+  nTLSMD, bit [3]
+
+  When ARMv8.2-LSMAOC is implemented:
+
+    No Trap Load Multiple and Store Multiple to
+    Device-nGRE/Device-nGnRE/Device-nGnRnE memory.
+
+    0b0 All memory accesses by A32 and T32 Load Multiple and Store
+        Multiple at EL1 or EL0 that are marked at stage 1 as
+        Device-nGRE/Device-nGnRE/Device-nGnRnE memory are trapped and
+        generate a stage 1 Alignment fault.
+
+    0b1 All memory accesses by A32 and T32 Load Multiple and Store
+        Multiple at EL1 or EL0 that are marked at stage 1 as
+        Device-nGRE/Device-nGnRE/Device-nGnRnE memory are not trapped.
+
+  This bit is permitted to be cached in a TLB.
+
+  This field resets to 1.
+
+  Otherwise:
+
+  Reserved, RES1
+
+So as effect we start getting traps we are not quite ready for.
+
+Looking into history it seems that mask used for SCTLR clear came from
+the similar code for ARMv4, where bit[3] is the enable/disable bit for
+the write buffer. That not applicable to ARMv7 and onwards, so retire
+that bit from the masks.
+
+Fixes: 7d09e85448dfa78e3e58186c934449aaf6d49b50 ("[ARM] 4393/2: ARMv7: Add uncompressing code for the new CPU Id format")
+Signed-off-by: Vladimir Murzin <vladimir.murzin@arm.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/usdhi6rol0.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/boot/compressed/head.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mmc/host/usdhi6rol0.c b/drivers/mmc/host/usdhi6rol0.c
-index 1bd5f1a18d4e2..003aecc441223 100644
---- a/drivers/mmc/host/usdhi6rol0.c
-+++ b/drivers/mmc/host/usdhi6rol0.c
-@@ -1866,10 +1866,12 @@ static int usdhi6_probe(struct platform_device *pdev)
- 
- 	ret = mmc_add_host(mmc);
- 	if (ret < 0)
--		goto e_clk_off;
-+		goto e_release_dma;
- 
- 	return 0;
- 
-+e_release_dma:
-+	usdhi6_dma_release(host);
- e_clk_off:
- 	clk_disable_unprepare(host->clk);
- e_free_mmc:
+diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+index a67ed746b0e37..5fa0beba46ee5 100644
+--- a/arch/arm/boot/compressed/head.S
++++ b/arch/arm/boot/compressed/head.S
+@@ -1080,9 +1080,9 @@ __armv4_mmu_cache_off:
+ __armv7_mmu_cache_off:
+ 		mrc	p15, 0, r0, c1, c0
+ #ifdef CONFIG_MMU
+-		bic	r0, r0, #0x000d
++		bic	r0, r0, #0x0005
+ #else
+-		bic	r0, r0, #0x000c
++		bic	r0, r0, #0x0004
+ #endif
+ 		mcr	p15, 0, r0, c1, c0	@ turn MMU and cache off
+ 		mov	r12, lr
 -- 
 2.27.0
 
