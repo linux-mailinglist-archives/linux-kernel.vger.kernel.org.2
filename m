@@ -2,88 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299EB327F76
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31489327F74
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235671AbhCAN1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:27:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34862 "EHLO mail.kernel.org"
+        id S235659AbhCAN1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:27:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35276 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235308AbhCAN10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:27:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C3164DBD;
-        Mon,  1 Mar 2021 13:26:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614605205;
-        bh=y235OLLbbPJD5I84kL0KJV6s4+cN8jpOh60zl77HMVU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SjwYrxF0OKO1FHQA/5DKflI1JOZOptfYnYr4F1sxxaDBJZqrFd6rNCyfvYuzKnv4z
-         hVxlqDZ8qhGumH/XbRpaa3cX17b6qVsU0VIAeD02JViJ4omNqNLbaOmkDhhQzJp08P
-         FrzZPn19iaUtPmE2+jWX2NJAm7uxPa6s5yyAIqz9+Vd8nJr3uGBhQ71bKVB/gAP1QI
-         +PBP7t5HmFAaQxms7ezuv9F9pOqqO77K8k8ptsJpFTW2jmFvDkQrbcxwevSG/568e9
-         F/tSA1RSGlgDwgzFTUOrWIWH+Ci0TqAVySwvA/JrCDm5UN0R6FjicU2ixaUzKkn0uo
-         XkP8NigNWX1Ww==
-Date:   Mon, 1 Mar 2021 13:25:39 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Kuldeep Singh <kuldeep.singh@nxp.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ashish Kumar <ashish.kumar@nxp.com>, Han Xu <han.xu@nxp.com>
-Subject: Re: [PATCH 2/3] spi: spi-nxp-fspi: Add driver support for imx8dxl
-Message-ID: <20210301132539.GB4628@sirena.org.uk>
-References: <20210301103230.1816168-1-kuldeep.singh@nxp.com>
- <20210301103230.1816168-3-kuldeep.singh@nxp.com>
+        id S235308AbhCAN1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:27:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 35008AB8C;
+        Mon,  1 Mar 2021 13:26:40 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 14:26:39 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Hannes Reinecke <hare@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
+ it
+Message-ID: <20210301132639.n3eowtvkms2n5mog@beryllium.lan>
+References: <20210212210929.GA3851@redsun51.ssa.fujisawa.hgst.com>
+ <ddf87227-1ad3-b8be-23ba-460433f70a85@grimberg.me>
+ <73e4914e-f867-c899-954d-4b61ae2b4c33@suse.de>
+ <20210215104020.yyithlo2hkxqvguj@beryllium.lan>
+ <a2064070-b511-ba6d-bd64-0b3abc208356@grimberg.me>
+ <20210226123534.4oovbzk4wrnfjp64@beryllium.lan>
+ <9e209b12-3771-cdca-2c9d-50451061bd2a@suse.de>
+ <20210226161355.GG31593@redsun51.ssa.fujisawa.hgst.com>
+ <a42d6285-ff32-3e16-b2b1-808d29f2a743@suse.de>
+ <20210226171901.GA3949@redsun51.ssa.fujisawa.hgst.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UHN/qo2QbUvPLonB"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210301103230.1816168-3-kuldeep.singh@nxp.com>
-X-Cookie: Body by Nautilus, Brain by Mattel.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210226171901.GA3949@redsun51.ssa.fujisawa.hgst.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Feb 27, 2021 at 02:19:01AM +0900, Keith Busch wrote:
+> Crashing is bad, silent data corruption is worse. Is there truly no
+> defense against that? If not, why should anyone rely on this?
 
---UHN/qo2QbUvPLonB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 01, 2021 at 04:02:29PM +0530, Kuldeep Singh wrote:
-
-> This patch is dependent on
-> https://patchwork.kernel.org/project/spi-devel-general/patch/1614593046-2=
-3832-1-git-send-email-kuldeep.singh@nxp.com/
-
-Please include human readable descriptions of things like commits and
-issues being discussed in e-mail in your mails, this makes them much
-easier for humans to read especially when they have no internet access.
-I do frequently catch up on my mail on flights or while otherwise
-travelling so this is even more pressing for me than just being about
-making things a bit easier to read.
-
-That's a DT binding YAML conversion patch, why would there be a
-dependency on it?
-
->=20
->  drivers/spi/spi-nxp-fspi.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-
-This needs a DT binding update adding the new compatible.
-
---UHN/qo2QbUvPLonB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA861IACgkQJNaLcl1U
-h9DqcAf/UqwancFfxEoW7LdZHLWClxvwX2qbMjZKbxjefy/N55bvEaqOz9RuZsD7
-ZyAbse27gIEB8x7jrBTQw0fSP38TrilHL2rgBqtC67DJA9NXpiFIkPphDbEoSzPz
-SQ1FBZxqVOspVoxRUQlKlPJmrT4YTGgB3ZodtKhZ/KJTdPwk273ladeCHNmTd+fV
-BqnV/g9EFdz0/FYXRYZUCY7gpZv+/T86TEKRRgAVqN5cDh3wWzQ2IoUOHf54IBWm
-DjKheYdyh8mKo8kfIMukBT4/n5qqNgoTH+aQ2UUjVHJP5LX+OlVFsZmS4ekrmrku
-HXVztGhTvtna47uvw36taDMAx7/mcw==
-=qU6p
------END PGP SIGNATURE-----
-
---UHN/qo2QbUvPLonB--
+If we receive an response for which we don't have a started request, we
+know that something is wrong. Couldn't we in just reset the connection
+in this case? We don't have to pretend nothing has happened and
+continuing normally. This would avoid a host crash and would not create
+(more) data corruption. Or I am just too naive?
