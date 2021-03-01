@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D903286DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBD2328782
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 18:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237465AbhCARRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 12:17:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59972 "EHLO mail.kernel.org"
+        id S238318AbhCARYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 12:24:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237848AbhCAQYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:24:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2480764F3E;
-        Mon,  1 Mar 2021 16:21:15 +0000 (UTC)
+        id S234372AbhCAQ0g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:26:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37DAA64F45;
+        Mon,  1 Mar 2021 16:21:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614615676;
-        bh=OZF7VyPZXF1k+HyKccLEAUYuA12AE4l7p/jHgBmKTpE=;
+        s=korg; t=1614615707;
+        bh=vDTgs1r/EZY3fCr1ZtB1xpxMcUKus5eXTZGEv5Z9uYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rESyObtyn2Pv0+KMiIFDZr7rPFbsRiWwLJV7kpuIFCCSeziCOh3dHJLbG1Myo5lBJ
-         UIZBDnGZ/wjS7aunubG/uccvRrAtaWs2d3K7NkmblyAtW/NFy0JrrWmC9rkYUXNcVX
-         FXIqhLKc29+oIhpZm3QA7YsJ5pzJkQ3FGCCaL2Pw=
+        b=Oi3N7RBQVkT7BcSnVVk1BJtfBtZP0TUNMIKTFBQvs8TxnvEvJ8BYLidWS3CWBnxBy
+         PtiABAR2sqPFTMHavu+TqVA5wsNauljYivKIlX4PN2yc/aPezOVwJufHJZT4NiUhbD
+         ehS6z2eyS5Tnyt/mnQCHQQGJ/19z7Gi1UvY/1Oyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rustam Kovhaev <rkovhaev@gmail.com>,
-        syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 003/134] ntfs: check for valid standard information attribute
-Date:   Mon,  1 Mar 2021 17:11:44 +0100
-Message-Id: <20210301161013.751727028@linuxfoundation.org>
+        stable@vger.kernel.org, Corinna Vinschen <vinschen@redhat.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+Subject: [PATCH 4.9 004/134] igb: Remove incorrect "unexpected SYS WRAP" log message
+Date:   Mon,  1 Mar 2021 17:11:45 +0100
+Message-Id: <20210301161013.794609666@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161013.585393984@linuxfoundation.org>
 References: <20210301161013.585393984@linuxfoundation.org>
@@ -42,43 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rustam Kovhaev <rkovhaev@gmail.com>
+From: Corinna Vinschen <vinschen@redhat.com>
 
-commit 4dfe6bd94959222e18d512bdf15f6bf9edb9c27c upstream.
+commit 2643e6e90210e16c978919617170089b7c2164f7 upstream.
 
-Mounting a corrupted filesystem with NTFS resulted in a kernel crash.
+TSAUXC.DisableSystime is never set, so SYSTIM runs into a SYS WRAP
+every 1100 secs on 80580/i350/i354 (40 bit SYSTIM) and every 35000
+secs on 80576 (45 bit SYSTIM).
 
-We should check for valid STANDARD_INFORMATION attribute offset and length
-before trying to access it
+This wrap event sets the TSICR.SysWrap bit unconditionally.
 
-Link: https://lkml.kernel.org/r/20210217155930.1506815-1-rkovhaev@gmail.com
-Link: https://syzkaller.appspot.com/bug?extid=c584225dabdea2f71969
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Reported-by: syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com
-Tested-by: syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com
-Acked-by: Anton Altaparmakov <anton@tuxera.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+However, checking TSIM at interrupt time shows that this event does not
+actually cause the interrupt.  Rather, it's just bycatch while the
+actual interrupt is caused by, for instance, TSICR.TXTS.
+
+The conclusion is that the SYS WRAP is actually expected, so the
+"unexpected SYS WRAP" message is entirely bogus and just helps to
+confuse users.  Drop it.
+
+Signed-off-by: Corinna Vinschen <vinschen@redhat.com>
+Acked-by: Jacob Keller <jacob.e.keller@intel.com>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ntfs/inode.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/intel/igb/igb_main.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -661,6 +661,12 @@ static int ntfs_read_locked_inode(struct
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -5665,8 +5665,6 @@ static void igb_tsync_interrupt(struct i
+ 		event.type = PTP_CLOCK_PPS;
+ 		if (adapter->ptp_caps.pps)
+ 			ptp_clock_event(adapter->ptp_clock, &event);
+-		else
+-			dev_err(&adapter->pdev->dev, "unexpected SYS WRAP");
+ 		ack |= TSINTR_SYS_WRAP;
  	}
- 	a = ctx->attr;
- 	/* Get the standard information attribute value. */
-+	if ((u8 *)a + le16_to_cpu(a->data.resident.value_offset)
-+			+ le32_to_cpu(a->data.resident.value_length) >
-+			(u8 *)ctx->mrec + vol->mft_record_size) {
-+		ntfs_error(vi->i_sb, "Corrupt standard information attribute in inode.");
-+		goto unm_err_out;
-+	}
- 	si = (STANDARD_INFORMATION*)((u8*)a +
- 			le16_to_cpu(a->data.resident.value_offset));
  
 
 
