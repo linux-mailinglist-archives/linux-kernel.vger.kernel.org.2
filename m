@@ -2,290 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00A132A03B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D530332A034
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575554AbhCBD4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:41 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13102 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241061AbhCAXHN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:07:13 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DqG6z6fBrz16FB5;
-        Tue,  2 Mar 2021 07:04:43 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.203.209) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 2 Mar 2021 07:06:16 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <tim.c.chen@linux.intel.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <rjw@rjwysocki.net>,
-        <vincent.guittot@linaro.org>, <bp@alien8.de>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <lenb@kernel.org>, <peterz@infradead.org>,
-        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
-        <bsegall@google.com>, <mgorman@suse.de>
-CC:     <msys.mizuma@gmail.com>, <valentin.schneider@arm.com>,
-        <gregkh@linuxfoundation.org>, <jonathan.cameron@huawei.com>,
-        <juri.lelli@redhat.com>, <mark.rutland@arm.com>,
-        <sudeep.holla@arm.com>, <aubrey.li@linux.intel.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <x86@kernel.org>, <xuwei5@huawei.com>, <prime.zeng@hisilicon.com>,
-        <guodong.xu@linaro.org>, <yangyicong@huawei.com>,
-        <liguozhu@hisilicon.com>, <linuxarm@openeuler.org>,
-        <hpa@zytor.com>, Barry Song <song.bao.hua@hisilicon.com>
-Subject: [RFC PATCH v4 3/3] scheduler: Add cluster scheduler level for x86
-Date:   Tue, 2 Mar 2021 11:59:40 +1300
-Message-ID: <20210301225940.16728-4-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
-In-Reply-To: <20210301225940.16728-1-song.bao.hua@hisilicon.com>
-References: <20210301225940.16728-1-song.bao.hua@hisilicon.com>
+        id S1575510AbhCBD43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:56:29 -0500
+Received: from mga07.intel.com ([134.134.136.100]:52009 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241841AbhCAW7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 17:59:20 -0500
+IronPort-SDR: IBfFtAt6njIT235hj8F62Gx16GCujXyz62MgZ/ThCFZ0BxS6raO2eTFkkGvUUaovHU/4se27DI
+ 4UmHfG4WqTqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="250671443"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="250671443"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 14:57:57 -0800
+IronPort-SDR: tJve8x1cqIyj1Zp29MjKeC6e8QzZkBYQiEg5LY5/Q2mEq6QeMUgOU1orgYtb4aPV0pYaO/g7ns
+ twgRDb4Xl6sA==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="368758360"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 14:57:57 -0800
+Date:   Mon, 1 Mar 2021 15:00:11 -0800
+From:   Jacob Pan <jacob.jun.pan@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux-foundation.org>, <zhangfei.gao@foxmail.com>,
+        <linux-mm@kvack.org>, jacob.jun.pan@intel.com
+Subject: Re: [PATCH v6 08/12] fork: Clear PASID for new mm
+Message-ID: <20210301150011.766e70a3@jacob-builder>
+In-Reply-To: <YDgh53AcQHT+T3L0@otcwcpicx3.sc.intel.com>
+References: <1594684087-61184-1-git-send-email-fenghua.yu@intel.com>
+        <1594684087-61184-9-git-send-email-fenghua.yu@intel.com>
+        <YDYoL/zZ9YaGgwSV@myrica>
+        <YDgh53AcQHT+T3L0@otcwcpicx3.sc.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.203.209]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Chen <tim.c.chen@linux.intel.com>
+Hi Fenghua,
 
-There are x86 CPU architectures (e.g. Jacobsville) where L2 cahce
-is shared among a cluster of cores instead of being exclusive
-to one single core.
+On Thu, 25 Feb 2021 22:17:11 +0000, Fenghua Yu <fenghua.yu@intel.com> wrote:
 
-To prevent oversubscription of L2 cache, load should be
-balanced between such L2 clusters, especially for tasks with
-no shared data.
+> Hi, Jean,
+> 
+> On Wed, Feb 24, 2021 at 11:19:27AM +0100, Jean-Philippe Brucker wrote:
+> > Hi Fenghua,
+> > 
+> > [Trimmed the Cc list]
+> > 
+> > On Mon, Jul 13, 2020 at 04:48:03PM -0700, Fenghua Yu wrote:  
+> > > When a new mm is created, its PASID should be cleared, i.e. the PASID
+> > > is initialized to its init state 0 on both ARM and X86.  
+> > 
+> > I just noticed this patch was dropped in v7, and am wondering whether we
+> > could still upstream it. Does x86 need a child with a new address space
+> > (!CLONE_VM) to inherit the PASID of the parent?  That doesn't make much
+> > sense with regard to IOMMU structures - same PASID indexing multiple
+> > PGDs?  
+> 
+> You are right: x86 should clear mm->pasid when a new mm is created.
+> This patch somehow is losted:(
+> 
+> > 
+> > Currently iommu_sva_alloc_pasid() assumes mm->pasid is always
+> > initialized to 0 and fails on forked tasks. I'm trying to figure out
+> > how to fix this. Could we clear the pasid on fork or does it break the
+> > x86 model?  
+> 
+> x86 calls ioasid_alloc() instead of iommu_sva_alloc_pasid(). So
+We should consolidate at some point, there is no need to store pasid in two
+places.
 
-Also with cluster scheduling policy where tasks are woken up
-in the same L2 cluster, we will benefit from keeping tasks
-related to each other and likely sharing data in the same L2
-cluster.
+> functionality is not a problem without this patch on x86. But I think
+I feel the reason that x86 doesn't care is that mm->pasid is not used
+unless bind_mm is called. For the fork children even mm->pasid is non-zero,
+it has no effect since it is not loaded onto MSRs.
+Perhaps you could also add a check or WARN_ON(!mm->pasid) in load_pasid()?
 
-Add CPU masks of CPUs sharing the L2 cache so we can build such
-L2 cluster scheduler domain.
+> we do need to have this patch in the kernel because PASID is per addr
+> space and two addr spaces shouldn't have the same PASID.
+> 
+Agreed.
 
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- arch/x86/Kconfig                |  8 ++++++++
- arch/x86/include/asm/smp.h      |  7 +++++++
- arch/x86/include/asm/topology.h |  1 +
- arch/x86/kernel/cpu/cacheinfo.c |  1 +
- arch/x86/kernel/cpu/common.c    |  3 +++
- arch/x86/kernel/smpboot.c       | 43 ++++++++++++++++++++++++++++++++++++++++-
- 6 files changed, 62 insertions(+), 1 deletion(-)
+> Who will accept this patch?
+> 
+> Thanks.
+> 
+> -Fenghua
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index d3338a8..40110de 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1009,6 +1009,14 @@ config NR_CPUS
- 	  This is purely to save memory: each supported CPU adds about 8KB
- 	  to the kernel image.
- 
-+config SCHED_CLUSTER
-+	bool "Cluster scheduler support"
-+	default n
-+	help
-+	 Cluster scheduler support improves the CPU scheduler's decision
-+	 making when dealing with machines that have clusters of CPUs
-+	 sharing L2 cache. If unsure say N here.
-+
- config SCHED_SMT
- 	def_bool y if SMP
- 
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index c0538f8..9cbc4ae 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -16,7 +16,9 @@
- DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_die_map);
- /* cpus sharing the last level cache: */
- DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_llc_shared_map);
-+DECLARE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_l2c_shared_map);
- DECLARE_PER_CPU_READ_MOSTLY(u16, cpu_llc_id);
-+DECLARE_PER_CPU_READ_MOSTLY(u16, cpu_l2c_id);
- DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
- 
- static inline struct cpumask *cpu_llc_shared_mask(int cpu)
-@@ -24,6 +26,11 @@ static inline struct cpumask *cpu_llc_shared_mask(int cpu)
- 	return per_cpu(cpu_llc_shared_map, cpu);
- }
- 
-+static inline struct cpumask *cpu_l2c_shared_mask(int cpu)
-+{
-+	return per_cpu(cpu_l2c_shared_map, cpu);
-+}
-+
- DECLARE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_cpu_to_apicid);
- DECLARE_EARLY_PER_CPU_READ_MOSTLY(u32, x86_cpu_to_acpiid);
- DECLARE_EARLY_PER_CPU_READ_MOSTLY(u16, x86_bios_cpu_apicid);
-diff --git a/arch/x86/include/asm/topology.h b/arch/x86/include/asm/topology.h
-index 9239399..2a11ccc 100644
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -103,6 +103,7 @@ static inline void setup_node_to_cpumask_map(void) { }
- #include <asm-generic/topology.h>
- 
- extern const struct cpumask *cpu_coregroup_mask(int cpu);
-+extern const struct cpumask *cpu_clustergroup_mask(int cpu);
- 
- #define topology_logical_package_id(cpu)	(cpu_data(cpu).logical_proc_id)
- #define topology_physical_package_id(cpu)	(cpu_data(cpu).phys_proc_id)
-diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
-index 3ca9be4..0d03a71 100644
---- a/arch/x86/kernel/cpu/cacheinfo.c
-+++ b/arch/x86/kernel/cpu/cacheinfo.c
-@@ -846,6 +846,7 @@ void init_intel_cacheinfo(struct cpuinfo_x86 *c)
- 		l2 = new_l2;
- #ifdef CONFIG_SMP
- 		per_cpu(cpu_llc_id, cpu) = l2_id;
-+		per_cpu(cpu_l2c_id, cpu) = l2_id;
- #endif
- 	}
- 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 35ad848..fb08c73 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -78,6 +78,9 @@
- /* Last level cache ID of each logical CPU */
- DEFINE_PER_CPU_READ_MOSTLY(u16, cpu_llc_id) = BAD_APICID;
- 
-+/* L2 cache ID of each logical CPU */
-+DEFINE_PER_CPU_READ_MOSTLY(u16, cpu_l2c_id) = BAD_APICID;
-+
- /* correctly size the local cpu masks */
- void __init setup_cpu_local_masks(void)
- {
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 02813a7..c85ffa8 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -101,6 +101,8 @@
- 
- DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_llc_shared_map);
- 
-+DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_l2c_shared_map);
-+
- /* Per CPU bogomips and other parameters */
- DEFINE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
- EXPORT_PER_CPU_SYMBOL(cpu_info);
-@@ -501,6 +503,21 @@ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
- 	return topology_sane(c, o, "llc");
- }
- 
-+static bool match_l2c(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
-+{
-+	int cpu1 = c->cpu_index, cpu2 = o->cpu_index;
-+
-+	/* Do not match if we do not have a valid APICID for cpu: */
-+	if (per_cpu(cpu_l2c_id, cpu1) == BAD_APICID)
-+		return false;
-+
-+	/* Do not match if L2 cache id does not match: */
-+	if (per_cpu(cpu_l2c_id, cpu1) != per_cpu(cpu_l2c_id, cpu2))
-+		return false;
-+
-+	return topology_sane(c, o, "l2c");
-+}
-+
- /*
-  * Unlike the other levels, we do not enforce keeping a
-  * multicore group inside a NUMA node.  If this happens, we will
-@@ -522,7 +539,7 @@ static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
- }
- 
- 
--#if defined(CONFIG_SCHED_SMT) || defined(CONFIG_SCHED_MC)
-+#if defined(CONFIG_SCHED_SMT) || defined(CONFIG_SCHED_CLUSTER) || defined(CONFIG_SCHED_MC)
- static inline int x86_sched_itmt_flags(void)
- {
- 	return sysctl_sched_itmt_enabled ? SD_ASYM_PACKING : 0;
-@@ -540,12 +557,21 @@ static int x86_smt_flags(void)
- 	return cpu_smt_flags() | x86_sched_itmt_flags();
- }
- #endif
-+#ifdef CONFIG_SCHED_CLUSTER
-+static int x86_cluster_flags(void)
-+{
-+	return cpu_cluster_flags() | x86_sched_itmt_flags();
-+}
-+#endif
- #endif
- 
- static struct sched_domain_topology_level x86_numa_in_package_topology[] = {
- #ifdef CONFIG_SCHED_SMT
- 	{ cpu_smt_mask, x86_smt_flags, SD_INIT_NAME(SMT) },
- #endif
-+#ifdef CONFIG_SCHED_CLUSTER
-+	{ cpu_clustergroup_mask, x86_cluster_flags, SD_INIT_NAME(CLS) },
-+#endif
- #ifdef CONFIG_SCHED_MC
- 	{ cpu_coregroup_mask, x86_core_flags, SD_INIT_NAME(MC) },
- #endif
-@@ -556,6 +582,9 @@ static int x86_smt_flags(void)
- #ifdef CONFIG_SCHED_SMT
- 	{ cpu_smt_mask, x86_smt_flags, SD_INIT_NAME(SMT) },
- #endif
-+#ifdef CONFIG_SCHED_CLUSTER
-+	{ cpu_clustergroup_mask, x86_cluster_flags, SD_INIT_NAME(CLS) },
-+#endif
- #ifdef CONFIG_SCHED_MC
- 	{ cpu_coregroup_mask, x86_core_flags, SD_INIT_NAME(MC) },
- #endif
-@@ -583,6 +612,7 @@ void set_cpu_sibling_map(int cpu)
- 	if (!has_mp) {
- 		cpumask_set_cpu(cpu, topology_sibling_cpumask(cpu));
- 		cpumask_set_cpu(cpu, cpu_llc_shared_mask(cpu));
-+		cpumask_set_cpu(cpu, cpu_l2c_shared_mask(cpu));
- 		cpumask_set_cpu(cpu, topology_core_cpumask(cpu));
- 		cpumask_set_cpu(cpu, topology_die_cpumask(cpu));
- 		c->booted_cores = 1;
-@@ -598,6 +628,8 @@ void set_cpu_sibling_map(int cpu)
- 		if ((i == cpu) || (has_mp && match_llc(c, o)))
- 			link_mask(cpu_llc_shared_mask, cpu, i);
- 
-+		if ((i == cpu) || (has_mp && match_l2c(c, o)))
-+			link_mask(cpu_l2c_shared_mask, cpu, i);
- 	}
- 
- 	/*
-@@ -649,6 +681,11 @@ const struct cpumask *cpu_coregroup_mask(int cpu)
- 	return cpu_llc_shared_mask(cpu);
- }
- 
-+const struct cpumask *cpu_clustergroup_mask(int cpu)
-+{
-+	return cpu_l2c_shared_mask(cpu);
-+}
-+
- static void impress_friends(void)
- {
- 	int cpu;
-@@ -1332,6 +1369,7 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- 		zalloc_cpumask_var(&per_cpu(cpu_core_map, i), GFP_KERNEL);
- 		zalloc_cpumask_var(&per_cpu(cpu_die_map, i), GFP_KERNEL);
- 		zalloc_cpumask_var(&per_cpu(cpu_llc_shared_map, i), GFP_KERNEL);
-+		zalloc_cpumask_var(&per_cpu(cpu_l2c_shared_map, i), GFP_KERNEL);
- 	}
- 
- 	/*
-@@ -1556,7 +1594,10 @@ static void remove_siblinginfo(int cpu)
- 		cpumask_clear_cpu(cpu, topology_sibling_cpumask(sibling));
- 	for_each_cpu(sibling, cpu_llc_shared_mask(cpu))
- 		cpumask_clear_cpu(cpu, cpu_llc_shared_mask(sibling));
-+	for_each_cpu(sibling, cpu_l2c_shared_mask(cpu))
-+		cpumask_clear_cpu(cpu, cpu_l2c_shared_mask(sibling));
- 	cpumask_clear(cpu_llc_shared_mask(cpu));
-+	cpumask_clear(cpu_l2c_shared_mask(cpu));
- 	cpumask_clear(topology_sibling_cpumask(cpu));
- 	cpumask_clear(topology_core_cpumask(cpu));
- 	cpumask_clear(topology_die_cpumask(cpu));
--- 
-1.8.3.1
 
+Thanks,
+
+Jacob
