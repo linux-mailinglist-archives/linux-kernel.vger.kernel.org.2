@@ -2,121 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262CE3280C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B28C73280C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234338AbhCAO1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:27:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:59112 "EHLO foss.arm.com"
+        id S236308AbhCAO13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:27:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235781AbhCAOZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:25:22 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4D1B61396;
-        Mon,  1 Mar 2021 06:23:51 -0800 (PST)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D7D13F70D;
-        Mon,  1 Mar 2021 06:23:48 -0800 (PST)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v9 6/6] KVM: arm64: Document MTE capability and ioctl
-Date:   Mon,  1 Mar 2021 14:23:15 +0000
-Message-Id: <20210301142315.30920-7-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210301142315.30920-1-steven.price@arm.com>
-References: <20210301142315.30920-1-steven.price@arm.com>
+        id S233426AbhCAOZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:25:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D6EF64DBA;
+        Mon,  1 Mar 2021 14:25:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614608706;
+        bh=2AyFT3heWDrYjZIporM3KVA1yPzZkMjN8fqrhXFySwQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZPfkRP43sq484RRM+wcWVfF5jTryvoZZSK29XOmIBWptTnqGA0j4aad+zoqEt9cbJ
+         M0IvKPdX1h6+qaO/yVN1MY8+bhyuWhAEaDxtcdkvO2QpizLbRkSMyUMVatfyFoKKiv
+         W3TkjmO8e1WlcGIndcjfRizGlXpQ1W5i9iWgoD0YiCsArHvqcShIHLOTmTmdhFckZe
+         innJJVBiWGzBR8dgwTStyeV9jOrl+ZP02WPNW3gKgoZzdBGtx3jJvsUUT5ZIljPCks
+         xFCAmHeewqv3yxZzt2WKmSc2F/7+gw9qMkjLPhfjgxTu6AALygYW99O71z69Mb9rFQ
+         mrSHeZ7JTTopA==
+Date:   Mon, 1 Mar 2021 14:23:59 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] qcom: spmi-regulator: Add support for ULT LV_P50 and ULT
+ P300
+Message-ID: <20210301142359.GA20302@sirena.org.uk>
+References: <20210225213514.117031-1-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/9DWx/yDrRhgMJTb"
+Content-Disposition: inline
+In-Reply-To: <20210225213514.117031-1-konrad.dybcio@somainline.org>
+X-Cookie: I will not forget you.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new capability (KVM_CAP_ARM_MTE) identifies that the kernel supports
-granting a guest access to the tags, and provides a mechanism for the
-VMM to enable it.
 
-A new ioctl (KVM_ARM_MTE_COPY_TAGS) provides a simple way for a VMM to
-access the tags of a guest without having to maintain a PROT_MTE mapping
-in userspace. The above capability gates access to the ioctl.
+--/9DWx/yDrRhgMJTb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Steven Price <steven.price@arm.com>
----
- Documentation/virt/kvm/api.rst | 37 ++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+On Thu, Feb 25, 2021 at 10:35:13PM +0100, Konrad Dybcio wrote:
+> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.or=
+g>
+>=20
+> The ULT LV_P50 shares the same configuration as the other ULT LV_Pxxx
+> and the ULT P300 shares the same as the other ULT Pxxx.
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index aed52b0fc16e..1406ea138127 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -4939,6 +4939,23 @@ KVM_XEN_VCPU_ATTR_TYPE_VCPU_TIME_INFO
- Allows Xen vCPU attributes to be read. For the structure and types,
- see KVM_XEN_VCPU_SET_ATTR above.
- 
-+4.131 KVM_ARM_MTE_COPY_TAGS
-+---------------------------
-+
-+:Capability: KVM_CAP_ARM_MTE
-+:Architectures: arm64
-+:Type: vm ioctl
-+:Parameters: struct kvm_arm_copy_mte_tags
-+:Returns: 0 on success, < 0 on error
-+
-+Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
-+starting address and length of guest memory must be ``PAGE_SIZE`` aligned.
-+
-+The size of the buffer to store the tags is ``(length / MTE_GRANULE_SIZE)``
-+bytes (i.e. 1/16th of the corresponding size). Each byte contains a single tag
-+value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
-+``PTRACE_POKEMTETAGS``.
-+
- 5. The kvm_run structure
- ========================
- 
-@@ -6227,6 +6244,25 @@ KVM_RUN_BUS_LOCK flag is used to distinguish between them.
- This capability can be used to check / enable 2nd DAWR feature provided
- by POWER10 processor.
- 
-+7.23 KVM_CAP_ARM_MTE
-+--------------------
-+
-+:Architectures: arm64
-+:Parameters: none
-+
-+This capability indicates that KVM (and the hardware) supports exposing the
-+Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
-+VMM before the guest will be granted access.
-+
-+When enabled the guest is able to access tags associated with any memory given
-+to the guest. KVM will ensure that the pages are flagged ``PG_mte_tagged`` so
-+that the tags are maintained during swap or hibernation of the host, however
-+the VMM needs to manually save/restore the tags as appropriate if the VM is
-+migrated.
-+
-+When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
-+perform a bulk copy of tags to/from the guest
-+
- 8. Other capabilities.
- ======================
- 
-@@ -6716,3 +6752,4 @@ KVM_XEN_HVM_SET_ATTR, KVM_XEN_HVM_GET_ATTR, KVM_XEN_VCPU_SET_ATTR and
- KVM_XEN_VCPU_GET_ATTR ioctls, as well as the delivery of exception vectors
- for event channel upcalls when the evtchn_upcall_pending field of a vcpu's
- vcpu_info is set.
-+
--- 
-2.20.1
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
+--/9DWx/yDrRhgMJTb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA8+P4ACgkQJNaLcl1U
+h9D/awf9Es7wlrQZ4YCq1/go52seFRhb18M1iMcnmyVLxFtFyQYWuvKBkX8p8ugD
+E3G2z6vK5oswpVnkZfhzldKvOHU9CLwGrry7R0SE6kLdZFq+6+Rq3rN03OEqnGTc
+OsMiSyH3JOcCphbDUoPbs0wOKta/RF0H9s5uIa1Huub1lC/FRM0TW5fI66zb2+c6
+bRClqz8wcVuWtfklG/qYeqA/CXcNjE1yk8rwa7Vwj8/s9h99x2jkOIozgNGSupy1
+bgd5RhanlgWW1BUfMIoRlxncxDLA6BM/NJJu/8M2DQnNSXN/7R4ltcveUpUCcE2m
+zQAF6pDlwjCEbt1wIgdUEVuj8uMvuw==
+=X8Go
+-----END PGP SIGNATURE-----
+
+--/9DWx/yDrRhgMJTb--
