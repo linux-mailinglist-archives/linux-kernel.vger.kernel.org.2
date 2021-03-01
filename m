@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9BB329C0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D1C329C16
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345891AbhCBBqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:46:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46146 "EHLO mail.kernel.org"
+        id S1348984AbhCBBrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:47:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241552AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241554AbhCATYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 14:24:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B2BE64DED;
-        Mon,  1 Mar 2021 17:47:38 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DD9564ED9;
+        Mon,  1 Mar 2021 17:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620859;
-        bh=eCYmHukBaD3Mmz+JfEzIQKfcTJC9IGGpJqg0KxGywGI=;
+        s=korg; t=1614618794;
+        bh=3XJNhc8dqDir7OJsr/oXPv22aujYCTxP9PbKfQ+J9Ho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1fw5RE7yesZ2Fnlb7D8jRrkSDajdo0PvtuQg9vU6g+0tF5se1dR5iKu0waK/jkEM1
-         fKN3EIMQU80Wyh5IwoSp9rDKuPA6u+TBAI2zp/r8bZSknYboh2olGbzz8LNCp9eg9C
-         vPZgr9T0ApitghGDwWkzTx/25jVDg8KJq1/CC68s=
+        b=ViHeVRW5IeB0smeeb5kPFUbMkBuVLWDYt0cNfAYd0ICpFBBk2V3d0uEy/5kux9dXh
+         IsOV7udjJ2Wo5QK12qhX1pebpIERaXr4HWs3bT0JeLzsfM7//Qtzx3e99j/3Zqddbt
+         qAwtV+LUGrclYhkbjQe3H5nETe3ZapHRG7JBlnB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 298/775] ubifs: Fix error return code in alloc_wbufs()
-Date:   Mon,  1 Mar 2021 17:07:46 +0100
-Message-Id: <20210301161216.352028497@linuxfoundation.org>
+Subject: [PATCH 5.10 219/663] ASoC: Intel: sof_sdw: add missing TGL_HDMI quirk for Dell SKU 0A5E
+Date:   Mon,  1 Mar 2021 17:07:47 +0100
+Message-Id: <20210301161152.630341912@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang ShaoBo <bobo.shaobowang@huawei.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 42119dbe571eb419dae99b81dd20fa42f47464e1 ]
+[ Upstream commit f12bbc50f3b14c9b8ed902c6d1da980dd5addcce ]
 
-Fix to return PTR_ERR() error code from the error handling case instead
-fo 0 in function alloc_wbufs(), as done elsewhere in this function.
+We missed adding the TGL_HDMI quirk which is very much needed to
+expose the 4 display pipelines and will be required on TGL topologies.
 
-Fixes: 6a98bc4614de ("ubifs: Add authentication nodes to journal")
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fixes: 9ad9bc59dde10 ('ASoC: Intel: sof_sdw: set proper flags for Dell TGL-H SKU 0A5E')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Link: https://lore.kernel.org/r/20210204203312.27112-3-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/super.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/sof_sdw.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 138b9426c6c18..ddb2ca636c93d 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -838,8 +838,10 @@ static int alloc_wbufs(struct ubifs_info *c)
- 		c->jheads[i].wbuf.jhead = i;
- 		c->jheads[i].grouped = 1;
- 		c->jheads[i].log_hash = ubifs_hash_get_desc(c);
--		if (IS_ERR(c->jheads[i].log_hash))
-+		if (IS_ERR(c->jheads[i].log_hash)) {
-+			err = PTR_ERR(c->jheads[i].log_hash);
- 			goto out;
-+		}
- 	}
- 
- 	/*
+diff --git a/sound/soc/intel/boards/sof_sdw.c b/sound/soc/intel/boards/sof_sdw.c
+index a8d43c87cb5a2..3945cb61b95a0 100644
+--- a/sound/soc/intel/boards/sof_sdw.c
++++ b/sound/soc/intel/boards/sof_sdw.c
+@@ -63,7 +63,8 @@ static const struct dmi_system_id sof_sdw_quirk_table[] = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
+ 			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A5E")
+ 		},
+-		.driver_data = (void *)(SOF_RT711_JD_SRC_JD2 |
++		.driver_data = (void *)(SOF_SDW_TGL_HDMI |
++					SOF_RT711_JD_SRC_JD2 |
+ 					SOF_RT715_DAI_ID_FIX |
+ 					SOF_SDW_FOUR_SPK),
+ 	},
 -- 
 2.27.0
 
