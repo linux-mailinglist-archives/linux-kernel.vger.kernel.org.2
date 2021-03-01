@@ -2,169 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7E3327E33
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61198327E36
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 13:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234918AbhCAMWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 07:22:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234386AbhCAMWZ (ORCPT
+        id S232818AbhCAMXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 07:23:17 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:39520 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234008AbhCAMXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 07:22:25 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210C5C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 04:21:45 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id e10so15686920wro.12
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 04:21:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Gw7vh21OA2GN+c4vAdueJEzrkOpCd8FahG3FhqVfJSo=;
-        b=QbOaPeYXxavfvWwZm75sM0iJMXhJmsLHuf+hAYClzhVA+k+iWTuWFkSmQpQj4TWhTi
-         5jJ3v1RCIl0+4sZwAl6Bf3S5eMx133iTAwJjvmiA/wdo7WaBJQzCVKAw5v0r3yOnfkwj
-         z5mDwqKrhyEIBZH2s3WkV0KYfIXD/OCNLAQbyywDzOTqOTi3tU80m2iPq9Mv5URuoM9H
-         IaRpk8Hh2o107WFgw948pOoaDej0ZI40URY5EILj+OZzYHfeOsrFOR6dErzbsbgXeMCg
-         WNUKrV/BkQb9BgGKS5U2NwiYs+i96RrymY6EUGXEGS6Ful4HE/5aoyjHMfndVcn+K/NJ
-         fWyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Gw7vh21OA2GN+c4vAdueJEzrkOpCd8FahG3FhqVfJSo=;
-        b=AQ017+ZkTrlXNIq50m2jC5tWtKRTIvk3jYoRDvIP/vmKDdAGuJ9oUYoL7CAUN352lG
-         kjuUm04WZceyi/ZY/zOuQhMPPiQJup0bb3q/iLiTN9DMCfnGmyAmlHmQ1K9gobNjlvds
-         SIR6V4USL1cWxnW306bDg6i9MQaL5wbklvNbgHh3zF2Q2FqF3DzzxgzFhH0nv+MJkr6m
-         SSrnwwOfzzthtt1tQTCPw04R6ecablYBPAnP8TwhfahujRM7nm/wBWVpBLJH9zF/SPE1
-         1tOUD9m7OlJzn+M1SQjqhM3vafVfGIS25I0wEtMVvGng2ES99pXfO/7In4bP6sYz9jxr
-         r3Jg==
-X-Gm-Message-State: AOAM5303/byUy+tKX2vlueALq2BHUh9nCLY6ZySUwWmy1LegMx3D4f21
-        tyYIIeF2oNskEOqHg8H61kTwZg==
-X-Google-Smtp-Source: ABdhPJzS7WpgzqniNfjBwwdPG7kTr25w9/adiWOz65ygaVjjmtBJcd7QUoFMbNKuSB7q8BbAxrmEsQ==
-X-Received: by 2002:a05:6000:1545:: with SMTP id 5mr16505065wry.90.1614601303562;
-        Mon, 01 Mar 2021 04:21:43 -0800 (PST)
-Received: from [192.168.0.41] (lns-bzn-59-82-252-144-192.adsl.proxad.net. [82.252.144.192])
-        by smtp.googlemail.com with ESMTPSA id g202sm3775569wme.20.2021.03.01.04.21.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 04:21:43 -0800 (PST)
-Subject: Re: [PATCH v2 07/10] clocksource/drivers/hyper-v: Handle vDSO
- differences inline
-To:     Michael Kelley <mikelley@microsoft.com>, sthemmin@microsoft.com,
-        kys@microsoft.com, wei.liu@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, arnd@arndb.de,
-        linux-hyperv@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-arch@vger.kernel.org
-References: <1614561332-2523-1-git-send-email-mikelley@microsoft.com>
- <1614561332-2523-8-git-send-email-mikelley@microsoft.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <42dc252a-b09a-afeb-6792-9b77669c16e9@linaro.org>
-Date:   Mon, 1 Mar 2021 13:21:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 1 Mar 2021 07:23:06 -0500
+X-UUID: e04229979be24e64a497ae8d3c2e0ca5-20210301
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=gs/svU8lhJHXw6APVwlc6cCBq2DNAv6aE+F+Aj/pGlQ=;
+        b=JdHO5bevxhGPTCgkH57o2TT1mzqvC3ogHkIr2jTrAHQ0wCMoZs8UxhbVbve1JVfX4q0Pd5axby01PIasKMWbbLWYIdwfcQLKDDxxLs8mCbDRvemb6NM48CjaX+LNnlFGZ4PLIcfOQFHx7cJzrWRJJw0UiaMVfRgJnUshd0LDA6M=;
+X-UUID: e04229979be24e64a497ae8d3c2e0ca5-20210301
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1503276849; Mon, 01 Mar 2021 20:22:13 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Mar
+ 2021 20:22:01 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 1 Mar 2021 20:22:01 +0800
+Message-ID: <1614601321.16737.5.camel@mhfsdcap03>
+Subject: Re: [PATCH] i2c: mediatek: Get device clock-stretch time via dts
+From:   Qii Wang <qii.wang@mediatek.com>
+To:     <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
+Date:   Mon, 1 Mar 2021 20:22:01 +0800
+In-Reply-To: <1612348525-13364-1-git-send-email-qii.wang@mediatek.com>
+References: <1612348525-13364-1-git-send-email-qii.wang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <1614561332-2523-8-git-send-email-mikelley@microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 7A2577D5E8F4CF0FD35F7C75FCE434CDC2524106DFD176D68BD41856E5BE214F2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/03/2021 02:15, Michael Kelley wrote:
-> While the driver for the Hyper-V Reference TSC and STIMERs is architecture
-> neutral, vDSO is implemented for x86/x64, but not for ARM64.  Current code
-> calls into utility functions under arch/x86 (and coming, under arch/arm64)
-> to handle the difference.
-> 
-> Change this approach to handle the difference inline based on whether
-> VDSO_CLOCK_MODE_HVCLOCK is present.  The new approach removes code under
-> arch/* since the difference is tied more to the specifics of the Linux
-> implementation than to the architecture.
-> 
-> No functional change.
+SGksDQpPbiBXZWQsIDIwMjEtMDItMDMgYXQgMTg6MzUgKzA4MDAsIHFpaS53YW5nQG1lZGlhdGVr
+LmNvbSB3cm90ZToNCj4gRnJvbTogUWlpIFdhbmcgPHFpaS53YW5nQG1lZGlhdGVrLmNvbT4NCj4g
+DQo+IHRTVSxTVEEvdEhELFNUQS90U1UsU1RPUCBtYXliZSBvdXQgb2Ygc3BlYyBkdWUgdG8gZGV2
+aWNlDQo+IGNsb2NrLXN0cmV0Y2hpbmcgb3IgY2lyY3VpdCBsb3NzLCB3ZSBjb3VsZCBnZXQgZGV2
+aWNlDQo+IGNsb2NrLXN0cmV0Y2ggdGltZSBmcm9tIGR0cyB0byBhZGp1c3QgdGhlc2UgcGFyYW1l
+dGVycw0KPiB0byBtZWV0IHRoZSBzcGVjIHZpYSBFWFRfQ09ORiByZWdpc3Rlci4NCj4gDQo+IFNp
+Z25lZC1vZmYtYnk6IFFpaSBXYW5nIDxxaWkud2FuZ0BtZWRpYXRlay5jb20+DQo+IC0tLQ0KDQpD
+YW4gaXQgbWVyZ2UgaW50byA1LjEyPyBvciBkbyBJIG5lZWQgdG8gcmVzZW5kIHRoZSBwYXRjaD8N
+Cg0KVGhhbmtzLA0KCVFpaQ0K
 
-A suggestion below
-
-
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-> ---
->  arch/x86/include/asm/mshyperv.h    |  4 ----
->  drivers/clocksource/hyperv_timer.c | 10 ++++++++--
->  2 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> index c10dd1c..4f566db 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -27,10 +27,6 @@ static inline u64 hv_get_register(unsigned int reg)
->  	return value;
->  }
->  
-> -#define hv_set_clocksource_vdso(val) \
-> -	((val).vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK)
-> -#define hv_enable_vdso_clocksource() \
-> -	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
->  #define hv_get_raw_timer() rdtsc_ordered()
->  
->  /*
-> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
-> index c73c127..5e5e08aa 100644
-> --- a/drivers/clocksource/hyperv_timer.c
-> +++ b/drivers/clocksource/hyperv_timer.c
-> @@ -372,7 +372,9 @@ static void resume_hv_clock_tsc(struct clocksource *arg)
->  
->  static int hv_cs_enable(struct clocksource *cs)
-
-static __maybe_unused int hv_cs_enable(struct clocksource *cs)
-
->  {
-> -	hv_enable_vdso_clocksource();
-> +#ifdef VDSO_CLOCKMODE_HVCLOCK
-> +	vclocks_set_used(VDSO_CLOCKMODE_HVCLOCK);
-> +#endif
->  	return 0;
->  }
->  
-> @@ -385,6 +387,11 @@ static int hv_cs_enable(struct clocksource *cs)
->  	.suspend= suspend_hv_clock_tsc,
->  	.resume	= resume_hv_clock_tsc,
->  	.enable = hv_cs_enable,
-> +#ifdef VDSO_CLOCKMODE_HVCLOCK
-> +	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
-> +#else
-> +	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
-> +#endif
-
-#ifdef VDSO_CLOCKMODE_HVCLOCK
-	.enable = hv_cs_enable,
-	.vdso_clock_mode = VDSO_CLOCKMODE_HVCLOCK,
-#else
-	.vdso_clock_mode = VDSO_CLOCKMODE_NONE,
-#endif
-
-
-
->  };
->  
->  static u64 notrace read_hv_clock_msr(void)
-> @@ -442,7 +449,6 @@ static bool __init hv_init_tsc_clocksource(void)
->  	tsc_msr = tsc_msr | 0x1 | (u64)phys_addr;
->  	hv_set_register(HV_REGISTER_REFERENCE_TSC, tsc_msr);
->  
-> -	hv_set_clocksource_vdso(hyperv_cs_tsc);
->  	clocksource_register_hz(&hyperv_cs_tsc, NSEC_PER_SEC/100);
->  
->  	hv_sched_clock_offset = hv_read_reference_counter();
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
