@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3DB32A01B
+	by mail.lfdr.de (Postfix) with ESMTP id ED74232A01C
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575315AbhCBDzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:55:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55836 "EHLO
+        id S1575323AbhCBDzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:55:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238255AbhCAWV6 (ORCPT
+        with ESMTP id S242715AbhCAW1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:21:58 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A8BC06178A;
-        Mon,  1 Mar 2021 14:20:25 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id jx13so538432pjb.1;
-        Mon, 01 Mar 2021 14:20:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QyhqjTlxoSSk41wiXpwJuRRVyS45yKpxp8nVn0TLNOw=;
-        b=U5TEeez0jTqEyQE/yN/t/KYGeiA+pvW14Lw600tClHo48aYvvvWYa68LDKv+ywtxRf
-         nuKhm7BmYvKNe1lO1ANXa9SWPQa3TEoLxbHIeYCDwg1VYiFEICnPybWkt6nqHL2FPwWf
-         +XrmFZ/txFotxtmUGLxm6UZpUhkmyyTYqHeoN6BMnpAtXaeXEn2zgOKAy76r0RpB9qff
-         CkikOEDe49/8DMXumqhtXWfMdHlJzMO+pQoK7z96s1jXiiXFb6tXYhozx031rDTrSlRX
-         WuuG5Kc/N3ONRZuTAWKecQZbdbqAx5hG/zMO/l1mfBmA9My6gY0phUR34QClicJDC2Hr
-         0F8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QyhqjTlxoSSk41wiXpwJuRRVyS45yKpxp8nVn0TLNOw=;
-        b=Q8qrARwnMYJ4iVmrOleR7/Ozktz6EIcPubr84ChD41QdyXW8fG1Ay7PxwYKFIpFC8Q
-         9a2mal+C+HFl5auyO5XpdVtaP2n3bi47yiGvha1LK5S6eZq5wqpdBSR32PZwSiUgKjT7
-         CJWK/ZwLIqPd8AGlJUCgPfKb0jO9Aw1v8XCZUolLQWGdpUYJY31TXZZfwUyErFhPJwXA
-         bvuvQtxA3mXTYmHOX+niMNV7fzMRqLFcqEkRh99XbG91cz1hV+aJiQ41vXGvpASUMTlg
-         CsWruhilhV+R1CRgLMoIzyqCsLJLrK3WgXw/BY4nF9DuDl5Xi3A7LkhLLK9nohaKJKx+
-         ApqA==
-X-Gm-Message-State: AOAM532+tn+u2BlEQinf12ih4aPE+LY8mTfHNMBhv5Gf1DBtPqgsTbnJ
-        EAClSxt7ta+DiKQg8y2Cv57UR+ZyPkg=
-X-Google-Smtp-Source: ABdhPJzBGBWVLOegGgD/wbmxmMaVCyxdBA2Sic6cMlt3fgbtbwEQx21C3bElubsX4c8TAWz/ZltUvA==
-X-Received: by 2002:a17:90a:7141:: with SMTP id g1mr1030654pjs.150.1614637225015;
-        Mon, 01 Mar 2021 14:20:25 -0800 (PST)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id iq6sm431103pjb.31.2021.03.01.14.20.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 14:20:24 -0800 (PST)
-Subject: Re: [PATCH 5.4 000/338] 5.4.102-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210301194420.658523615@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <ef02a144-343a-dbbf-a650-a90d179e74ad@gmail.com>
-Date:   Mon, 1 Mar 2021 14:20:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 1 Mar 2021 17:27:49 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AACEC061756;
+        Mon,  1 Mar 2021 14:27:09 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 0E7752B8;
+        Mon,  1 Mar 2021 22:27:09 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0E7752B8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614637629; bh=rSSHnGhzEii1/rrLqGEGh+jMY3cTA7tX064ieLAcReM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=BCLK8l8mBa4gQl2fv8ggTv4uI+/XfCCIEno1aunjEvT2P89j7iK9en1AaDJYCJtCV
+         ejjCEXlv2DiAiJ7hhwdIvZTyHO3Kf/aCs0hzo1kDbk+V9Ez+MgkcEob6/mv0TvOTOh
+         ehtAOS/dMVhKP9nvKaJc1dD5FLd67giB1XQMybTuQ6/+UIRfeOQ9AYVUSgS8rjFD4Z
+         xAzfrr0oDcYEyxktC0vZkHQsfKpTuYLlHILExhsM3xD1a71NG7xMlTenW5L++VNxro
+         Ahk7m9OTjjSaHxeGAQSAf+EDDH29wEv8T0kMaeaIj+aXeaT6y/WrJaYwZmr270zNoc
+         iJ7e8EpZZogxA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 1/2] fs: eventpoll: fix comments & kernel-doc notation
+In-Reply-To: <20210210042526.23174-1-rdunlap@infradead.org>
+References: <20210210042526.23174-1-rdunlap@infradead.org>
+Date:   Mon, 01 Mar 2021 15:27:08 -0700
+Message-ID: <87im6a1pdv.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <20210301194420.658523615@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 11:47 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.102 release.
-> There are 338 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 03 Mar 2021 19:43:25 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.102-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+> Use the documented kernel-doc format for function Return: descriptions.
+> Begin constant values in kernel-doc comments with '%'.
+>
+> Remove kernel-doc "/**" from 2 functions that are not documented with
+> kernel-doc notation.
+>
+> Fix typos, punctuation, & grammar.
+>
+> Also fix a few kernel-doc warnings:
+>
+> ../fs/eventpoll.c:1883: warning: Function parameter or member 'ep' not described in 'ep_loop_check_proc'
+> ../fs/eventpoll.c:1883: warning: Excess function parameter 'priv' description in 'ep_loop_check_proc'
+> ../fs/eventpoll.c:1932: warning: Function parameter or member 'ep' not described in 'ep_loop_check'
+> ../fs/eventpoll.c:1932: warning: Excess function parameter 'from' description in 'ep_loop_check'
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> ---
+> Jon: Al says that he is OK with one of you merging this fs/
+>      (only comments) patch.
+>
+>  fs/eventpoll.c |   52 +++++++++++++++++++++++------------------------
+>  1 file changed, 26 insertions(+), 26 deletions(-)
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Both patches applied, thanks.
+
+jon
