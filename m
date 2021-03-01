@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7060E328E68
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 072C3328E6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 20:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241931AbhCAT3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 14:29:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51730 "EHLO mail.kernel.org"
+        id S235794AbhCATal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 14:30:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236183AbhCAQxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 11:53:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2280564F2D;
-        Mon,  1 Mar 2021 16:34:11 +0000 (UTC)
+        id S236216AbhCAQxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 11:53:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 236A764F30;
+        Mon,  1 Mar 2021 16:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616452;
-        bh=zsJLBzVCRHREkfNwSrGlTpep6kVC51aCL/mSW45vNiY=;
+        s=korg; t=1614616455;
+        bh=8SBkp8bH5dk6Zd6Jddrxf/dmPn5C/bfXmOP9yaiguM4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Cf06taKQfH/QCSf8aM3gVrjl9w647t+Z4kFHERBjVmnxZOBPuTO2+jbb+ykoKWvs
-         m1CyrvE7ZmVs8VT7PlSbStmhpWPuL5JncVQhM1Gz8U1/q6VkfScq68ob1L4Q1HPVSr
-         9hS9by+95zOns3qtaYN0IRrg81BrwQRyxxumusNc=
+        b=wm7NrAuiZPhZjIGvslHWoF8PWesLhvIKgPfVwXbedk2E2hzWbf0PhRcLDXGsvVdHp
+         naGQGsjE8U/ie7XZJxfdO3KF6uCtL4IM14OOYMXKUFj5tzFsagfbvFQWGbXzmIXWpM
+         zb8qdPX57xWOduTAMKSjWvZc/6DuHx9trxWvLaSU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tho Vu <tho.vu.wh@renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        stable@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Coly Li <colyli@suse.com>,
+        Richard Palethorpe <rpalethorpe@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 155/176] usb: renesas_usbhs: Clear pipe running flag in usbhs_pkt_pop()
-Date:   Mon,  1 Mar 2021 17:13:48 +0100
-Message-Id: <20210301161028.714397990@linuxfoundation.org>
+Subject: [PATCH 4.14 156/176] libnvdimm/dimm: Avoid race between probe and available_slots_show()
+Date:   Mon,  1 Mar 2021 17:13:49 +0100
+Message-Id: <20210301161028.766354860@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161020.931630716@linuxfoundation.org>
 References: <20210301161020.931630716@linuxfoundation.org>
@@ -40,37 +43,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+From: Dan Williams <dan.j.williams@intel.com>
 
-commit 9917f0e3cdba7b9f1a23f70e3f70b1a106be54a8 upstream
+commit 7018c897c2f243d4b5f1b94bc6b4831a7eab80fb upstream
 
-Should clear the pipe running flag in usbhs_pkt_pop(). Otherwise,
-we cannot use this pipe after dequeue was called while the pipe was
-running.
+Richard reports that the following test:
 
-Fixes: 8355b2b3082d ("usb: renesas_usbhs: fix the behavior of some usbhs_pkt_handle")
-Reported-by: Tho Vu <tho.vu.wh@renesas.com>
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/1612183640-8898-1-git-send-email-yoshihiro.shimoda.uh@renesas.com
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[sudip: adjust context]
+(while true; do
+     cat /sys/bus/nd/devices/nmem*/available_slots 2>&1 > /dev/null
+ done) &
+
+while true; do
+     for i in $(seq 0 4); do
+         echo nmem$i > /sys/bus/nd/drivers/nvdimm/bind
+     done
+     for i in $(seq 0 4); do
+         echo nmem$i > /sys/bus/nd/drivers/nvdimm/unbind
+     done
+ done
+
+...fails with a crash signature like:
+
+    divide error: 0000 [#1] SMP KASAN PTI
+    RIP: 0010:nd_label_nfree+0x134/0x1a0 [libnvdimm]
+    [..]
+    Call Trace:
+     available_slots_show+0x4e/0x120 [libnvdimm]
+     dev_attr_show+0x42/0x80
+     ? memset+0x20/0x40
+     sysfs_kf_seq_show+0x218/0x410
+
+The root cause is that available_slots_show() consults driver-data, but
+fails to synchronize against device-unbind setting up a TOCTOU race to
+access uninitialized memory.
+
+Validate driver-data under the device-lock.
+
+Fixes: 4d88a97aa9e8 ("libnvdimm, nvdimm: dimm driver and base libnvdimm device-driver infrastructure")
+Cc: <stable@vger.kernel.org>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Coly Li <colyli@suse.com>
+Reported-by: Richard Palethorpe <rpalethorpe@suse.com>
+Acked-by: Richard Palethorpe <rpalethorpe@suse.com>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+[sudip: use device_lock()]
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/renesas_usbhs/fifo.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/nvdimm/dimm_devs.c |   18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/renesas_usbhs/fifo.c
-+++ b/drivers/usb/renesas_usbhs/fifo.c
-@@ -137,6 +137,8 @@ struct usbhs_pkt *usbhs_pkt_pop(struct u
- 			usbhsf_dma_unmap(pkt);
- 		}
+--- a/drivers/nvdimm/dimm_devs.c
++++ b/drivers/nvdimm/dimm_devs.c
+@@ -347,16 +347,16 @@ static ssize_t state_show(struct device
+ }
+ static DEVICE_ATTR_RO(state);
  
-+		usbhs_pipe_running(pipe, 0);
+-static ssize_t available_slots_show(struct device *dev,
+-		struct device_attribute *attr, char *buf)
++static ssize_t __available_slots_show(struct nvdimm_drvdata *ndd, char *buf)
+ {
+-	struct nvdimm_drvdata *ndd = dev_get_drvdata(dev);
++	struct device *dev;
+ 	ssize_t rc;
+ 	u32 nfree;
+ 
+ 	if (!ndd)
+ 		return -ENXIO;
+ 
++	dev = ndd->dev;
+ 	nvdimm_bus_lock(dev);
+ 	nfree = nd_label_nfree(ndd);
+ 	if (nfree - 1 > nfree) {
+@@ -368,6 +368,18 @@ static ssize_t available_slots_show(stru
+ 	nvdimm_bus_unlock(dev);
+ 	return rc;
+ }
 +
- 		__usbhsf_pkt_del(pkt);
- 	}
++static ssize_t available_slots_show(struct device *dev,
++				    struct device_attribute *attr, char *buf)
++{
++	ssize_t rc;
++
++	device_lock(dev);
++	rc = __available_slots_show(dev_get_drvdata(dev), buf);
++	device_unlock(dev);
++
++	return rc;
++}
+ static DEVICE_ATTR_RO(available_slots);
  
+ static struct attribute *nvdimm_attributes[] = {
 
 
