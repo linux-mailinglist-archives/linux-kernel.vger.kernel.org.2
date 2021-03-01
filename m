@@ -2,278 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80EF732A02F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE7A32A02C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575470AbhCBD4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60626 "EHLO
+        id S1575445AbhCBD4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:56:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234773AbhCAWn2 (ORCPT
+        with ESMTP id S1344159AbhCAWuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 17:43:28 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07895C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 14:42:48 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id s16so10826866plr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:42:48 -0800 (PST)
+        Mon, 1 Mar 2021 17:50:11 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DDDC061794
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 14:49:22 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id b130so6789315qkc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:49:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=eE+wCAbXzOx+xliJRDgITRoOiejbPuH1lpWx1d+n1NY=;
-        b=brUBn8I+68ODAQC8lx6Is9c63sYftvC5y0bh9EXjpzfI3qhxHMDodUgbLgV2F15MIC
-         KWhMvu/Mif83OOkvSfYZWC19yQvB5chwZFW+rovHLkCCZOWXjo52se4GtMPgr+dDSRdu
-         kXyThvEaji1xdUSQv00yfGQphIc8cIr/0SFZk=
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xA2EiPMtYi+Gfmg1Yc47LmxZNfLbHszPXKAA6vPAIh8=;
+        b=jYofzajioBOR03n4mCqbrDpH6/uBSr/aENM4iC5Q2rRptMDrqaVIPX0nIF14iyLROZ
+         0RJhJQi0W1CELV1slYYaWGBnwqyUQmUjzRgurOCryijZ4pLbPkuTw2H4JAGuFs9fL/kW
+         iirv9/cgEYCYikSJ/JtOiSHuDX0WkB5obllmQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=eE+wCAbXzOx+xliJRDgITRoOiejbPuH1lpWx1d+n1NY=;
-        b=HinGqYXXnJ24ckcDOilR5QmP0bC18/EmIg0703NWU2KpzmXNA+q3WofYK6Bc6O+UYK
-         h/1y5qCUZ3PDNLG4Kw6ZJQqJ95I0Xb+HSLIgAx8IXftgmHVVEgMFR2La6/Fq3pfIAUHW
-         H1NVb2MR2HJg0yQbfmCVK+9dUM+o+3QVFp+WuBz54fY22EdMiniO1i1uOxFOJzqFd8+4
-         S/GSKQfAgUGCPK+zW8SUYSGGZwMn2bYMsLD450mvb6QDGmAzrQdCWj2PqPcvoRh2q7og
-         J5aEU0lcCne/SxmqZKjKmZ0v3ISnsrh2PsZeMeJu5ZBdlpygoAsSJfVRAyGZYFsRuHbH
-         7C9w==
-X-Gm-Message-State: AOAM532CSon1b+wsD10ozKFpYJ0E6hsNyAEr9YaegBH3S629I3yOi+dX
-        RkxvinvwFrHgxlr1UpqVY9auhg==
-X-Google-Smtp-Source: ABdhPJz8LFXwIKs1W4H053Y5SQ5igvDhUTQUrlfpgjg2cnBDqR7E6oznRP9QHBuryEtXHgxnPGMa+Q==
-X-Received: by 2002:a17:902:7404:b029:e4:503b:f83d with SMTP id g4-20020a1709027404b02900e4503bf83dmr763396pll.35.1614638567557;
-        Mon, 01 Mar 2021 14:42:47 -0800 (PST)
-Received: from localhost (2001-44b8-1113-6700-b18e-89be-e1b2-4959.static.ipv6.internode.on.net. [2001:44b8:1113:6700:b18e:89be:e1b2:4959])
-        by smtp.gmail.com with ESMTPSA id o65sm17286437pfg.44.2021.03.01.14.42.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 14:42:47 -0800 (PST)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 03/15] powerpc/uaccess: Remove __get/put_user_inatomic()
-In-Reply-To: <8732e0c78400c99ec418323ab6b0853b91752be4.1614275314.git.christophe.leroy@csgroup.eu>
-References: <cover.1614275314.git.christophe.leroy@csgroup.eu> <8732e0c78400c99ec418323ab6b0853b91752be4.1614275314.git.christophe.leroy@csgroup.eu>
-Date:   Tue, 02 Mar 2021 09:42:44 +1100
-Message-ID: <87czwio5qz.fsf@dja-thinkpad.axtens.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xA2EiPMtYi+Gfmg1Yc47LmxZNfLbHszPXKAA6vPAIh8=;
+        b=G/K/0TnYwBSQqbA4Fhde/YaXSDO2OXF0/AYOx55VYBjlGwxUtLnAoWKC7Vj6te7ERP
+         hLueGvgG+bwqmJ6DKye36r/LNUcHllYeIoR3JAAGzSANb+oiltw3Vr1TpT/4ujLX8ulm
+         WWPDq7dZs8FB5SLouJb6uBOtOdW9HTMcjzDd6AEtdl/SD1C9msLH15RaZKN7fSWAPLVd
+         QHj0rr9Pl5059K/QjZxn8L3VFcgv89PZHcb53G9tij6R4NGsBG5wScK3KO/3nQTk3HVR
+         q2p+VSjeTmoUFPeKqRRFHE6wTyXgSUGHTjiFXyjcraZGFDTgRmVaUl9QcCpn7mtAFef7
+         RJWA==
+X-Gm-Message-State: AOAM530bh/0iOrwV4Xst2Z6BQuz/F5h1ZrnZo61nTAvT2fLU79+DJqyM
+        UUl5lhXcBOq2DrEBPGoxuNNMDJLnE/ZSlQ==
+X-Google-Smtp-Source: ABdhPJza8Qp8LGS2SRA4D7UElj58Zp4mtDcVi67mcesg2JLE0JG7eVKqSx8QKAs3notN7TLIYzjeBw==
+X-Received: by 2002:a05:620a:1353:: with SMTP id c19mr6265662qkl.392.1614638961925;
+        Mon, 01 Mar 2021 14:49:21 -0800 (PST)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id b27sm2884116qkl.102.2021.03.01.14.49.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Mar 2021 14:49:21 -0800 (PST)
+Received: by mail-yb1-f171.google.com with SMTP id 133so18681553ybd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 14:49:21 -0800 (PST)
+X-Received: by 2002:a25:4e83:: with SMTP id c125mr24079401ybb.343.1614638581776;
+ Mon, 01 Mar 2021 14:43:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <cover.1614624041.git.saiprakash.ranjan@codeaurora.org> <def1a6b37cbb54cb15329765266ed90c2f7aa24e.1614624041.git.saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <def1a6b37cbb54cb15329765266ed90c2f7aa24e.1614624041.git.saiprakash.ranjan@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 1 Mar 2021 14:42:50 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UzhLX4bdRV5gEXZgsbnQW9ViZxC9Vs2TXeSxXu72Dagg@mail.gmail.com>
+Message-ID: <CAD=FV=UzhLX4bdRV5gEXZgsbnQW9ViZxC9Vs2TXeSxXu72Dagg@mail.gmail.com>
+Subject: Re: [PATCHv2 1/4] perf/core: Add support to exclude kernel mode PMU tracing
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        Mattias Nissler <mnissler@chromium.org>,
+        Al Grant <al.grant@arm.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+Hi,
 
-> Since commit 662bbcb2747c ("mm, sched: Allow uaccess in atomic with
-> pagefault_disable()"), __get/put_user() can be used in atomic parts
-> of the code, therefore the __get/put_user_inatomic() introduced
-> by commit e68c825bb016 ("[POWERPC] Add inatomic versions of __get_user
-> and __put_user") have become useless.
-
-I spent some time chasing these macro definitions.
-
-Let me see if I understand you.
-
-__get_user(x, ptr) becomes __get_user_nocheck(..., true)
-__get_user_inatomic() become __get_user_nosleep()
-
-The difference between how __get_user_nosleep() and
-__get_user_nocheck(..., true) operate is that __get_user_nocheck calls
-might_fault() and __get_user_nosleep() does not.
-
-If I understand the commit you reference and mm/memory.c, you're saying
-that we can indeed call might_fault() when page faults are disabled,
-because __might_fault() checks if page faults are disabled and does not
-fire a warning if it is called with page faults disabled.
-
-Therefore, it is safe to remove our _inatomic version that does not call
-might_fault and just to call might_fault unconditionally.
-
-Is that right?
-
-I haven't checked changes you made to the various .c files in fine
-detail but they appear to be entirely mechanical.
-
-> powerpc is the only one having such functions. There is a real
-> intention not to have to provide such _inatomic() helpers, see the
-> comment in might_fault() in mm/memory.c introduced by
-> commit 3ee1afa308f2 ("x86: some lock annotations for user
-> copy paths, v2"):
+On Mon, Mar 1, 2021 at 11:05 AM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
 >
-> 	/*
-> 	 * it would be nicer only to annotate paths which are not under
-> 	 * pagefault_disable, however that requires a larger audit and
-> 	 * providing helpers like get_user_atomic.
-> 	 */
+> Hardware assisted tracing families such as ARM Coresight, Intel PT
+> provides rich tracing capabilities including instruction level
+> tracing and accurate timestamps which are very useful for profiling
+> and also pose a significant security risk. One such example of
+> security risk is when kernel mode tracing is not excluded and these
+> hardware assisted tracing can be used to analyze cryptographic code
+> execution. In this case, even the root user must not be able to infer
+> anything.
 >
-
-I'm not fully sure I understand what you're saying in this part of the
-commit message.
-
-Kind regards,
-Daniel
-
+> To explain it more clearly in the words of a security team member
+> (credits: Mattias Nissler),
 >
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> "Consider a system where disk contents are encrypted and the encryption
+> key is set up by the user when mounting the file system. From that point
+> on the encryption key resides in the kernel. It seems reasonable to
+> expect that the disk encryption key be protected from exfiltration even
+> if the system later suffers a root compromise (or even against insiders
+> that have root access), at least as long as the attacker doesn't
+> manage to compromise the kernel."
+>
+> Here the idea is to protect such important information from all users
+> including root users since root privileges does not have to mean full
+> control over the kernel [1] and root compromise does not have to be
+> the end of the world.
+>
+> But "Peter said even the regular counters can be used for full branch
+> trace, the information isn't as accurate as PT and friends and not easier
+> but is good enough to infer plenty". This would mean that a global tunable
+> config for all kernel mode pmu tracing is more appropriate than the one
+> targeting the hardware assisted instruction tracing.
+>
+> Currently we can exclude kernel mode tracing via perf_event_paranoid
+> sysctl but it has following limitations,
+>
+>  * No option to restrict kernel mode instruction tracing by the
+>    root user.
+>  * Not possible to restrict kernel mode instruction tracing when the
+>    hardware assisted tracing IPs like ARM Coresight ETMs use an
+>    additional interface via sysfs for tracing in addition to perf
+>    interface.
+>
+> So introduce a new config CONFIG_EXCLUDE_KERNEL_PMU_TRACE to exclude
+> kernel mode pmu tracing which will be generic and applicable to all
+> hardware tracing families and which can also be used with other
+> interfaces like sysfs in case of ETMs.
+>
+> [1] https://lwn.net/Articles/796866/
+>
+> Suggested-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Suggested-by: Al Grant <al.grant@arm.com>
+> Tested-by: Denis Nikitin <denik@chromium.org>
+> Link: https://lore.kernel.org/lkml/20201015124522.1876-1-saiprakash.ranjan@codeaurora.org/
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 > ---
->  arch/powerpc/include/asm/uaccess.h            | 37 -------------------
->  arch/powerpc/kernel/align.c                   | 32 ++++++++--------
->  .../kernel/hw_breakpoint_constraints.c        |  2 +-
->  arch/powerpc/kernel/traps.c                   |  2 +-
->  4 files changed, 18 insertions(+), 55 deletions(-)
->
-> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
-> index a08c482b1315..01aea0df4dd0 100644
-> --- a/arch/powerpc/include/asm/uaccess.h
-> +++ b/arch/powerpc/include/asm/uaccess.h
-> @@ -53,11 +53,6 @@ static inline bool __access_ok(unsigned long addr, unsigned long size)
->  #define __put_user(x, ptr) \
->  	__put_user_nocheck((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
->  
-> -#define __get_user_inatomic(x, ptr) \
-> -	__get_user_nosleep((x), (ptr), sizeof(*(ptr)))
-> -#define __put_user_inatomic(x, ptr) \
-> -	__put_user_nosleep((__typeof__(*(ptr)))(x), (ptr), sizeof(*(ptr)))
-> -
->  #ifdef CONFIG_PPC64
->  
->  #define ___get_user_instr(gu_op, dest, ptr)				\
-> @@ -92,9 +87,6 @@ static inline bool __access_ok(unsigned long addr, unsigned long size)
->  #define __get_user_instr(x, ptr) \
->  	___get_user_instr(__get_user, x, ptr)
->  
-> -#define __get_user_instr_inatomic(x, ptr) \
-> -	___get_user_instr(__get_user_inatomic, x, ptr)
-> -
->  extern long __put_user_bad(void);
->  
->  #define __put_user_size(x, ptr, size, retval)			\
-> @@ -141,20 +133,6 @@ __pu_failed:							\
->  	__pu_err;							\
->  })
->  
-> -#define __put_user_nosleep(x, ptr, size)			\
-> -({								\
-> -	long __pu_err;						\
-> -	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
-> -	__typeof__(*(ptr)) __pu_val = (x);			\
-> -	__typeof__(size) __pu_size = (size);			\
-> -								\
-> -	__chk_user_ptr(__pu_addr);				\
-> -	__put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err); \
-> -								\
-> -	__pu_err;						\
-> -})
-> -
-> -
->  /*
->   * We don't tell gcc that we are accessing memory, but this is OK
->   * because we do not write to any memory gcc knows about, so there
-> @@ -320,21 +298,6 @@ do {								\
->  	__gu_err;							\
->  })
->  
-> -#define __get_user_nosleep(x, ptr, size)			\
-> -({								\
-> -	long __gu_err;						\
-> -	__long_type(*(ptr)) __gu_val;				\
-> -	__typeof__(*(ptr)) __user *__gu_addr = (ptr);	\
-> -	__typeof__(size) __gu_size = (size);			\
-> -								\
-> -	__chk_user_ptr(__gu_addr);				\
-> -	__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err); \
-> -	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
-> -								\
-> -	__gu_err;						\
-> -})
-> -
-> -
->  /* more complex routines */
->  
->  extern unsigned long __copy_tofrom_user(void __user *to,
-> diff --git a/arch/powerpc/kernel/align.c b/arch/powerpc/kernel/align.c
-> index c7797eb958c7..83b199026a1e 100644
-> --- a/arch/powerpc/kernel/align.c
-> +++ b/arch/powerpc/kernel/align.c
-> @@ -174,18 +174,18 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
->  
->  		switch (nb) {
->  		case 8:
-> -			ret |= __get_user_inatomic(temp.v[0], p++);
-> -			ret |= __get_user_inatomic(temp.v[1], p++);
-> -			ret |= __get_user_inatomic(temp.v[2], p++);
-> -			ret |= __get_user_inatomic(temp.v[3], p++);
-> +			ret |= __get_user(temp.v[0], p++);
-> +			ret |= __get_user(temp.v[1], p++);
-> +			ret |= __get_user(temp.v[2], p++);
-> +			ret |= __get_user(temp.v[3], p++);
->  			fallthrough;
->  		case 4:
-> -			ret |= __get_user_inatomic(temp.v[4], p++);
-> -			ret |= __get_user_inatomic(temp.v[5], p++);
-> +			ret |= __get_user(temp.v[4], p++);
-> +			ret |= __get_user(temp.v[5], p++);
->  			fallthrough;
->  		case 2:
-> -			ret |= __get_user_inatomic(temp.v[6], p++);
-> -			ret |= __get_user_inatomic(temp.v[7], p++);
-> +			ret |= __get_user(temp.v[6], p++);
-> +			ret |= __get_user(temp.v[7], p++);
->  			if (unlikely(ret))
->  				return -EFAULT;
->  		}
-> @@ -259,18 +259,18 @@ static int emulate_spe(struct pt_regs *regs, unsigned int reg,
->  		p = addr;
->  		switch (nb) {
->  		case 8:
-> -			ret |= __put_user_inatomic(data.v[0], p++);
-> -			ret |= __put_user_inatomic(data.v[1], p++);
-> -			ret |= __put_user_inatomic(data.v[2], p++);
-> -			ret |= __put_user_inatomic(data.v[3], p++);
-> +			ret |= __put_user(data.v[0], p++);
-> +			ret |= __put_user(data.v[1], p++);
-> +			ret |= __put_user(data.v[2], p++);
-> +			ret |= __put_user(data.v[3], p++);
->  			fallthrough;
->  		case 4:
-> -			ret |= __put_user_inatomic(data.v[4], p++);
-> -			ret |= __put_user_inatomic(data.v[5], p++);
-> +			ret |= __put_user(data.v[4], p++);
-> +			ret |= __put_user(data.v[5], p++);
->  			fallthrough;
->  		case 2:
-> -			ret |= __put_user_inatomic(data.v[6], p++);
-> -			ret |= __put_user_inatomic(data.v[7], p++);
-> +			ret |= __put_user(data.v[6], p++);
-> +			ret |= __put_user(data.v[7], p++);
->  		}
->  		if (unlikely(ret))
->  			return -EFAULT;
-> diff --git a/arch/powerpc/kernel/hw_breakpoint_constraints.c b/arch/powerpc/kernel/hw_breakpoint_constraints.c
-> index 867ee4aa026a..675d1f66ab72 100644
-> --- a/arch/powerpc/kernel/hw_breakpoint_constraints.c
-> +++ b/arch/powerpc/kernel/hw_breakpoint_constraints.c
-> @@ -141,7 +141,7 @@ void wp_get_instr_detail(struct pt_regs *regs, struct ppc_inst *instr,
->  {
->  	struct instruction_op op;
->  
-> -	if (__get_user_instr_inatomic(*instr, (void __user *)regs->nip))
-> +	if (__get_user_instr(*instr, (void __user *)regs->nip))
->  		return;
->  
->  	analyse_instr(&op, regs, *instr);
-> diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-> index 1583fd1c6010..1fa36bd08efe 100644
-> --- a/arch/powerpc/kernel/traps.c
-> +++ b/arch/powerpc/kernel/traps.c
-> @@ -864,7 +864,7 @@ static void p9_hmi_special_emu(struct pt_regs *regs)
->  	unsigned long ea, msr, msr_mask;
->  	bool swap;
->  
-> -	if (__get_user_inatomic(instr, (unsigned int __user *)regs->nip))
-> +	if (__get_user(instr, (unsigned int __user *)regs->nip))
->  		return;
->  
->  	/*
-> -- 
-> 2.25.0
+>  init/Kconfig         | 11 +++++++++++
+>  kernel/events/core.c |  3 +++
+>  2 files changed, 14 insertions(+)
+
+I'm not really knowledgeable at all about the perf subsystem so my
+review doesn't hold a lot of weight.  However, Sai's patch seems sane
+to me.
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
