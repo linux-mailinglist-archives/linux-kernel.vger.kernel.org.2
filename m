@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4F7327961
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7990A327962
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 09:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbhCAIhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 03:37:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
+        id S233258AbhCAIhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 03:37:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233224AbhCAIg2 (ORCPT
+        with ESMTP id S233236AbhCAIgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 03:36:28 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF841C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 00:35:47 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id d5so13968300iln.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 00:35:47 -0800 (PST)
+        Mon, 1 Mar 2021 03:36:42 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03798C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 00:35:53 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id l12so15145548wry.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 00:35:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
-        bh=KKv852sVQnXnUt2Mn3kIZ+FZlQyet/KaJu64VXBEcbo=;
-        b=UNdB/3zhBNjCr68E1K+BVi7Zrvu3owUaJf0wsfp+YxTtspFbGixTZFX3Av7RcaGaSx
-         XEg1rg7pIjMh+4gbkODbCWznRL1TKzjtyrAIb2cHZHtHCntMGeNp7OBbSU8LiK+DHjqh
-         M/q//6gulayybuVu7iwL0KmmbWAKfd6G/dJiyyAZPQb9h+slioqhk8PNz70uF8codw2N
-         HDTTJ5Sg/2TgK6o4/6VW+cXEywbD3JMnoh/rTmOk5Dn3mNwnSbl4ZDo4CH2ZQEWhNUb3
-         +ALQpY8v2eflpXhhuoqdSFFl6hfa0y+WdQDQvp6neAVjwNGeprsNHh4krTw106/iutS1
-         Hl9w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=MwglKA+DAbrb5Dd59T4Gm1ugHRDlsailixo4MHU+aYY=;
+        b=NAwXpCLVa0eAaCzgwLgjOk9ETHzLB7vDQt6SYL/1wNcBooJfV1jHg1iOYOc+O67DCl
+         U+4FF5+0T08kv0C5BlrM6/rQvk3u7hc4BV/xYzIArfCHBu8TXOKowLqG4RuPxpBago2O
+         J0WO3iSxPbMZei2jYDw67wtq2i7r1tx8e5hKwKed/d6tflq2EnJQQh+URKTjgCp5LyJ3
+         UC3c0iOFr0svpM6ynXDKodf8tVaCfvIwhrzE8gIp/qMEsngHrtpgoCMDe1ixGjzn7Oea
+         Dr2VmJh9fO1FwTU3yCLFzxOa2Sdx0nh2TpjZkXITsM6I8P0fQHeMgD0WUmopigMj1Iya
+         K0xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=KKv852sVQnXnUt2Mn3kIZ+FZlQyet/KaJu64VXBEcbo=;
-        b=c3LGeGDaNBgTqZo+/xoQjGVPj1/ILE0je0Y0AYEITpsN1lsiY+hV9Dp+DSDiN103cQ
-         c2/YY5P442xTuHUR0PAr4DxT5SCE/K8M4ZKT6yiNa6WlYvdByUx7AWlMv0xXdoYAnYRY
-         QywBdQVmwiRGHvD2tDJxDtC4bPHQDAdU5MyAal+7qHGvbBPnXGnCBtuy+wom26EjpBQD
-         R9IZhdbxhzUO0Bkjur3kfl4fUsgVcJmrrcBy7ZXCAG8CgVqPrMz6ddKaEpDO8K3AcD+e
-         gjLBMkoZ7mVvqEurmJZs4hSPPv/emR1j+tHCwafEjyktxHLj1y+8r4OP+VMpBL1jsTTN
-         w6KA==
-X-Gm-Message-State: AOAM533xaU5Wk9N9aGhLA3IPl5P/o+UnDFmqRVZxzueKt7O5Pq7DO5Mz
-        2jobWYUiZvBKEG8JShHh0hICzhmKZ1hCrlxmuKpmN+NBAlQkEg==
-X-Google-Smtp-Source: ABdhPJwMfWHmrTRiuExVu8hzeMFZ+HbkJE7aUw+9GyD+4KqJnFiIRcXWaICnsorbmPRhZhapT+EEQMZ6/QYztM4P2Fo=
-X-Received: by 2002:a92:c7c2:: with SMTP id g2mr12538301ilk.209.1614587747399;
- Mon, 01 Mar 2021 00:35:47 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=MwglKA+DAbrb5Dd59T4Gm1ugHRDlsailixo4MHU+aYY=;
+        b=IR8nx52oc3WefFTwY4KvknFS/ry8VtMOc0DvJU/t6Z2NPnJaJltONVxydT/o+ElZ/3
+         Zk8jFCY0p9WU1NUJ5vqQ23zDVOzgVWBmUrYH+KIeK6vo9iAv6Gws52QuwZeR29lNoTKt
+         LoQqcIQKtKFZOtOBqC7pJZzUDL7Y/SnbzThAyj22w1uAgHJg9wL/xLJ9M/q/pWQLSQNB
+         EnqEJr8B7BVUNOx6jXFNQT7rKFQZaviWOTAxwJLOVpd+XVgGj3ZIv9XIGkjEsm1BC1wu
+         xZy9BknwTktBUaV5lKpAmXVa4dCQ86v8JMe8E+mxG/tZw5+U24HoJ4kJtiHZenmOXM3I
+         EtxQ==
+X-Gm-Message-State: AOAM5302IKwse9RVtY6Lz5Lo/K+5JkaXjagG4/KS+fmzUtGk5MhJqeA6
+        5BOqd5iiChrWCebvotOec4vjht7yoLlI2w==
+X-Google-Smtp-Source: ABdhPJzq93XcPB1i8ObGsKFy2YyhwhQnHoCqsU4xGsysGl607gMtts2xwZZplJoHiLO2eDUUoikwIw==
+X-Received: by 2002:adf:fb49:: with SMTP id c9mr15813316wrs.72.1614587751771;
+        Mon, 01 Mar 2021 00:35:51 -0800 (PST)
+Received: from dell ([91.110.221.155])
+        by smtp.gmail.com with ESMTPSA id r18sm24814864wro.7.2021.03.01.00.35.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 00:35:51 -0800 (PST)
+Date:   Mon, 1 Mar 2021 08:35:49 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ben Hutchings <ben@decadent.org.uk>, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, torvalds@linux-foundation.org,
+        stable@vger.kernel.org,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>, lwn@lwn.net,
+        jslaby@suse.cz
+Subject: Re: futex breakage in 4.9 stable branch
+Message-ID: <20210301083549.GF641347@dell>
+References: <161408880177110@kroah.com>
+ <66826ac72356b00814f51487dd1008298e52ed9b.camel@decadent.org.uk>
+ <YDygp3WYafzcgt+s@kroah.com>
 MIME-Version: 1.0
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 1 Mar 2021 09:35:11 +0100
-Message-ID: <CA+icZUUjVnBjC4AJTT9LYS4J+QbuQZUVj5XdW+iPmjxxuODVmA@mail.gmail.com>
-Subject: Linux 5.12-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YDygp3WYafzcgt+s@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Please CC me I am not subscribed to LKML ]
-[ Original post see [0] ]
+On Mon, 01 Mar 2021, Greg Kroah-Hartman wrote:
 
-Hi Linus,
+> On Mon, Mar 01, 2021 at 01:13:08AM +0100, Ben Hutchings wrote:
+> > On Tue, 2021-02-23 at 15:00 +0100, Greg Kroah-Hartman wrote:
+> > > I'm announcing the release of the 4.9.258 kernel.
+> > > 
+> > > All users of the 4.9 kernel series must upgrade.
+> > > 
+> > > The updated 4.9.y git tree can be found at:
+> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.9.y
+> > > and can be browsed at the normal kernel.org git web browser:
+> > >         
+> > 
+> > The backported futex fixes are still incomplete/broken in this version.
+> > If I enable lockdep and run the futex self-tests (from 5.10):
+> > 
+> > - on 4.9.246, they pass with no lockdep output
+> > - on 4.9.257 and 4.9.258, they pass but futex_requeue_pi trigers a
+> >   lockdep splat
+> > 
+> > I have a local branch that essentially updates futex and rtmutex in
+> > 4.9-stable to match 4.14-stable.  With this, the tests pass and lockdep
+> > is happy.
+> > 
+> > Unfortunately, that branch has about another 60 commits.  Further, the
+> > more we change futex in 4.9, the more difficult it is going to be to
+> > update the 4.9-rt branch.  But I don't see any better option available
+> > at the moment.
+> > 
+> > Thoughts?
+> 
+> There were some posted futex fixes for 4.9 (and 4.4) on the stable list
+> that I have not gotten to yet.
+> 
+> Hopefully after these are merged (this week), these issues will be
+> resolved.
+> 
+> If not, then yes, they need to be fixed and any help you can provide
+> would be appreciated.
+> 
+> As for "difficulty", yes, it's rough, but the changes backported were
+> required, for obvious reasons :(
 
-Thanks for Linux v5.12-rc1 and all involved people.
+Apologies for the fuss.
 
-[ Delayed merge-window ]
+The back-port become more complex the further back it was taken..
 
-I wondered why there was approx. for 6 days no commits and got an
-answer from an LWN posting "5.12 Merge window delayed".
-Unsure, if there was a posting to LKML?
+Had I known about the self-tests, I would have ensured those were
+passing too, as well as the the build/boot/auto-builder tests
+actually carried out.
 
-Anyway, if you are not able to make your work someone else should jump
-in like Greg did once.
-When Stephen could not do his work someone else jumped in and did the
-Linux-next work.
+Let me know if there's anything further I can do to help.
 
-There should be a clear communication and alternative workflow in such
-situation.
-Why not post such delays on <kernel.org> (if this is the official website)?
-
-[ News - Clang-LTO ]
-
-Always I read your "RC" announcement and would like to see some
-pointers to interesting new stuff.
-( I know "interesting" is very POV. )
-
-Thanks for pointing to the several clean-ups in Linux v5.12-rc1.
-
-As someone active on ClangBuiltLinux - we have now Clang-LTO support
-for arm64 and x86-64.
-
-Some issues I have seen and reported:
-
-[ Issues - iwlwifi / iwldwm ]
-
-I know of a call-trace for users of iwldwm device.
-You will need "iwlwifi: avoid crash on unsupported debug collection"
-patch (see [2]).
-
-[ Issues -usb / xhci ]
-
-I reported xhci-resets every 10min in "[xhci] usb 4-1: reset
-SuperSpeed Gen 1 USB device number 2 using xhci_hcd" thread (see [3]).
-No response, yet.
-
-Some ideas and feedback from me, myself and I.
-
-Have more fun!
-
-Regards,
-- Sedat -
-
-[0] https://marc.info/?l=linux-kernel&m=161455865730695&w=2
-[1] https://lwn.net/Articles/846406/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers.git/
-[3] https://marc.info/?t=161417912800001&r=1&w=2
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
