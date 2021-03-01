@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2D9329C68
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D8C329C85
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380670AbhCBByg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:54:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48586 "EHLO mail.kernel.org"
+        id S1380892AbhCBB40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:56:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241941AbhCAT35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E683D65026;
-        Mon,  1 Mar 2021 17:45:20 +0000 (UTC)
+        id S241561AbhCATcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:32:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0751A65190;
+        Mon,  1 Mar 2021 17:11:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620721;
-        bh=VCXlJRMEOq+5vWVT+/1rbTmZRLrsBta0K2bSLlFzQ8c=;
+        s=korg; t=1614618675;
+        bh=aCzIOW8nxMmO1Kpwz8TKbV75oBREFmR3a8tv0qBT4qQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tjAnkM2IEiji6LIS9GzsQTfbRuYAzRej+C9iDaqo6Ik91J2qixJeg+MRgofpgsvLg
-         X4BiSmpRX6h0xks78MfD+2zEjTjqes5LFC5XakiaMeyAAoeUiMHQ/ezW4cdzUt2jjI
-         +D/gUD8jsfsELjK6EIkphuKjSFd7Mps5wvzRT7wk=
+        b=SobEYYuZz1UnNjxy6+6nJgKc35dyq5k0buFpqoeDuAlPoPM8C5OLLp0OSVJ6bJH4z
+         qXMlIxehWdVByLz00fec6TyheXFMb3zqNNtuXNTCchKvh5HvHBLGQrbetx3LNNmGEu
+         r2aZ0aRls0tZqbRfIGY+acyzgMRHpyfHvSjG/QN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Dehe Gu <gudehe@huawei.com>, Ge Qiu <qiuge@huawei.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 255/775] f2fs: fix a wrong condition in __submit_bio
-Date:   Mon,  1 Mar 2021 17:07:03 +0100
-Message-Id: <20210301161214.235224208@linuxfoundation.org>
+Subject: [PATCH 5.10 176/663] media: imx7: csi: Fix regression for parallel cameras on i.MX6UL
+Date:   Mon,  1 Mar 2021 17:07:04 +0100
+Message-Id: <20210301161150.495935813@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dehe Gu <gudehe@huawei.com>
+From: Fabio Estevam <festevam@gmail.com>
 
-[ Upstream commit 39f71b7e40e21805d6b15fc7750bdd9cab6a5010 ]
+[ Upstream commit 9bac67214fbf4b5f23463f7742ccf69bfe684cbd ]
 
-We should use !F2FS_IO_ALIGNED() to check and submit_io directly.
+Commit 86e02d07871c ("media: imx5/6/7: csi: Mark a bound video mux as
+a CSI mux") made an incorrect assumption that for imx7-media-csi,
+the bound subdev must always be a CSI mux. On i.MX6UL/i.MX6ULL there
+is no CSI mux at all, so do not return an error when the entity is not a
+video mux and assign the IMX_MEDIA_GRP_ID_CSI_MUX group id only when
+appropriate.
 
-Fixes: 8223ecc456d0 ("f2fs: fix to add missing F2FS_IO_ALIGNED() condition")
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Dehe Gu <gudehe@huawei.com>
-Signed-off-by: Ge Qiu <qiuge@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+This is the same approach as done in imx-media-csi.c and it fixes the
+csi probe regression on i.MX6UL.
+
+Tested on a imx6ull-evk board.
+
+Fixes: 86e02d07871c ("media: imx5/6/7: csi: Mark a bound video mux as a CSI mux")
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Rui Miguel Silva <rmfrfs@gmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/data.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/imx/imx7-media-csi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index d72c99d9bd1f4..4d3ebf094f6d7 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -499,7 +499,7 @@ static inline void __submit_bio(struct f2fs_sb_info *sbi,
- 		if (f2fs_lfs_mode(sbi) && current->plug)
- 			blk_finish_plug(current->plug);
+diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/media/imx/imx7-media-csi.c
+index a3f3df9017046..31e36168f9d0f 100644
+--- a/drivers/staging/media/imx/imx7-media-csi.c
++++ b/drivers/staging/media/imx/imx7-media-csi.c
+@@ -1164,12 +1164,12 @@ static int imx7_csi_notify_bound(struct v4l2_async_notifier *notifier,
+ 	struct imx7_csi *csi = imx7_csi_notifier_to_dev(notifier);
+ 	struct media_pad *sink = &csi->sd.entity.pads[IMX7_CSI_PAD_SINK];
  
--		if (F2FS_IO_ALIGNED(sbi))
-+		if (!F2FS_IO_ALIGNED(sbi))
- 			goto submit_io;
+-	/* The bound subdev must always be the CSI mux */
+-	if (WARN_ON(sd->entity.function != MEDIA_ENT_F_VID_MUX))
+-		return -ENXIO;
+-
+-	/* Mark it as such via its group id */
+-	sd->grp_id = IMX_MEDIA_GRP_ID_CSI_MUX;
++	/*
++	 * If the subdev is a video mux, it must be one of the CSI
++	 * muxes. Mark it as such via its group id.
++	 */
++	if (sd->entity.function == MEDIA_ENT_F_VID_MUX)
++		sd->grp_id = IMX_MEDIA_GRP_ID_CSI_MUX;
  
- 		start = bio->bi_iter.bi_size >> F2FS_BLKSIZE_BITS;
+ 	return v4l2_create_fwnode_links_to_pad(sd, sink);
+ }
 -- 
 2.27.0
 
