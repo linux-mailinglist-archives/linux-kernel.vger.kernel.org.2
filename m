@@ -2,142 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E12328110
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D024E32811B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236460AbhCAOgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:36:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236451AbhCAOga (ORCPT
+        id S236432AbhCAOkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:40:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25533 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235441AbhCAOkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:36:30 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2E8C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 06:35:50 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id k13so16602678otn.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:35:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xrKyDD+nXhsE7yBfgO1RnI90ZWxZNc5CQ2d/LEfCEVs=;
-        b=EvKeF2BSaUOR94etd2XM5SP+27aPZLUGZzs1KGL5ozp3QqIlhP9l7Uev0R/xnRUFLA
-         QCqoaDUwAxx2fiB/e3BeaGUpmzf2B2CH64Zogi5aPKi/HCOBOKN7NHV80dJ9+QZvYkBo
-         hiS7KCaxm0Ibdy1C5YhQONar+r2gQU4xiBQTDCYf1xQOsRx11a1uZU0h6LahmJfdyvDm
-         8tkVOiyNJK3KzZrGiJ/6yZg/6YtkPDmxJ3U/ECBkd5WSuCNBSOiCjweK3b6xoUK9kAWx
-         G+dFbejWGnWKFc54JG2G+Y/BQEbPBRoR50nwpCs+Si6MGiFNppqOTX7S0Y6ZQQKExgFv
-         RD9A==
+        Mon, 1 Mar 2021 09:40:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614609517;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tN0JoqBuTFws3QXTxQXFTe91qQ1qRs8yOegCJEJPLIM=;
+        b=aZPsh2c+87mbVgDcIE8BhbV1cyo4h8BA4FurNN18rRlsYPeDkuxcKK0dH3eN1TE7vkskS3
+        +vWFrlxoz9vS5+YfuqwwnAHsnWRKkhb6j8LOVHnoio1dNeu1XExcwL0pIBzVvOP5LOOAlX
+        jYrrKUxn87U2hMH/eyxGfdkwrPNG/aU=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-170-A8Nd7GixOg6TJ1aXBOcapg-1; Mon, 01 Mar 2021 09:38:35 -0500
+X-MC-Unique: A8Nd7GixOg6TJ1aXBOcapg-1
+Received: by mail-pl1-f199.google.com with SMTP id t14so9285420plr.15
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 06:38:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xrKyDD+nXhsE7yBfgO1RnI90ZWxZNc5CQ2d/LEfCEVs=;
-        b=kibgezsXIfIkxLCYE/EFd6OtztUCAiOpDtVy2eJ1AWXEX64cxVxHPvkMceb3ruaCDF
-         DqdiWJvFVPfeYugnCE0uw02su79XVBLmk6jp5DnVVvlmY3DATAgy73wnY+sUIFOX+wTa
-         xinlQ90fkScFCPyIXlJ9lddTljBiiCX7H7wvRYOwq5F7mrjKQGL4XtOYkIPAVAPyPnw1
-         AXDDUBd1GQu5rcvLSY6325r9AXmeutJRDsgx/9jwOwBfEc5rckPq/2ZIORJjwr95q7Xv
-         Eu4SFakl9i9G56iDvHSS1m4c+JhYuVQqtJFYYXUmwQYIchYuxI2PhvIbh+u9gezces6F
-         mZZg==
-X-Gm-Message-State: AOAM531pfIxY4iJM3k61+p+NdcSpSzGCpnIYNdvC7X3u2HE0VhB2joMv
-        JQBEWXYWX/9mlkM63YFxivu2kPpAPBxV80HFlD6AZZB6fYM=
-X-Google-Smtp-Source: ABdhPJxTUWL8+rtDcjvKoi9N7CkFS4lsnhyMXNledGGmivopGZ1Ru6PuusyIpBfINyoQbWRK2lL6xZGgZPlgMLpFOIc=
-X-Received: by 2002:a05:6830:1352:: with SMTP id r18mr14233961otq.283.1614609350048;
- Mon, 01 Mar 2021 06:35:50 -0800 (PST)
+        bh=tN0JoqBuTFws3QXTxQXFTe91qQ1qRs8yOegCJEJPLIM=;
+        b=eE0Q1s0jzFfFST53BpJ6Ir1drPcZ8BxPDyStGbCkeyCz7TnTgwQNvj/934GUzz4ir6
+         bNBrrVFAzfBrtOv8jVcWmcAY8m4TOMPR7jbkCpFxluYkx74dbMrJ0PtY17Kk6u6JKRrk
+         OOftQG8K/v06YKWg0zk4/fzhD2qO++UjCYiuo1FdduCAOJ7ySQ62aWUWs9oOVJjMYX2r
+         5phY1OquI+cK5363d3u38RG94WMx7REiEna4HvRsqv2l/K/FLF1GCQNjHzQMyEMkQbLN
+         IfHTJtpKVi7k1Hg8JO22X3JRF9w7SaFKQRDHmszXkHegdMu8aemC875QmkFcxX3OCVKE
+         +s9A==
+X-Gm-Message-State: AOAM531TFaCj36tB5PCekYnlV6abBvsh/p620jDGjo0xTSOJf8Tmy21o
+        slUHlOXAoaSElc58BOvn8TE0fM1L1RvgMRo+fXG2taN4MV5NHAmR1bom1s0Xc4Oa3Yr3bvL/VCF
+        G5ZD/R5iX5ks9HkYfyxe2b61zFxXeCMKY0TiOOmLy
+X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr17938869pjr.234.1614609514930;
+        Mon, 01 Mar 2021 06:38:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzGK6rtQxDI96aRba38Wa782xikLN30F9jqdHgPqp09r4zd107U4ws7V5mPzZDW6ZcAO36WzP0ctzOD39uOnUY=
+X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr17938853pjr.234.1614609514768;
+ Mon, 01 Mar 2021 06:38:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225090610.242623-1-allen.lkml@gmail.com> <20210225090610.242623-2-allen.lkml@gmail.com>
-In-Reply-To: <20210225090610.242623-2-allen.lkml@gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 1 Mar 2021 15:35:36 +0100
-Message-ID: <CAHUa44F5Ew6U80t7PPmV1J4KunXBm_izBxVrxg=x8azjBz0r9Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] optee: fix tee out of memory failure seen during
- kexec reboot
-To:     Allen Pais <allen.lkml@gmail.com>
-Cc:     zajec5@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        op-tee@lists.trustedfirmware.org,
-        Allen Pais <apais@linux.microsoft.com>
+References: <20210226193225.47129-1-andriy.shevchenko@linux.intel.com> <20210226193225.47129-4-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210226193225.47129-4-andriy.shevchenko@linux.intel.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 1 Mar 2021 15:38:23 +0100
+Message-ID: <CAO-hwJLWbsj4kDkn3TKdEW0mDv6XdafQEaheCCC0Nyq3=YaOYQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] HID: i2c-hid: acpi: Drop redundant ACPI_PTR()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 10:06 AM Allen Pais <allen.lkml@gmail.com> wrote:
+Hi,
+
+On Fri, Feb 26, 2021 at 8:34 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> From: Allen Pais <apais@linux.microsoft.com>
+> The driver depends on ACPI, ACPI_PTR() resolution is always the same.
+> Otherwise a compiler may produce a warning.
 >
-> The following out of memory errors are seen on kexec reboot
-> from the optee core.
+> That said, the rule of thumb either ugly ifdeffery with ACPI_PTR or
+> none should be used in a driver.
 >
-> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
-> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
->
-> tee_shm_release() is not invoked on dma shm buffer.
->
-> Implement .shutdown() method to handle the release of the buffers
-> correctly.
->
-> More info:
-> https://github.com/OP-TEE/optee_os/issues/3637
->
-> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Thanks a lot for the series. This indeed cleans things up.
+
+For the series:
+Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+
+Jiri, I wonder where we want to land this one. This is not strictly
+bug fixes, but we could definitively sneak this one in 5.12-rc1.
+Well, I should probably run the series on an acpi laptop here before
+merging, but I'd like to know if delaying to 5.13 is OK or if we need
+this in 5.12.
+
+Cheers,
+Benjamin
+
 > ---
->  drivers/tee/optee/core.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-
-This looks good to me. Do you have a practical way of testing this on
-QEMU for instance?
-
-Thanks,
-Jens
-
+> v2: no changes
+>  drivers/hid/i2c-hid/i2c-hid-acpi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index cf4718c6d35d..80e2774b5e2a 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -582,6 +582,13 @@ static optee_invoke_fn *get_invoke_func(struct device *dev)
->         return ERR_PTR(-EINVAL);
->  }
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-acpi.c b/drivers/hid/i2c-hid/i2c-hid-acpi.c
+> index a4810f199d59..a6f0257a26de 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-acpi.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-acpi.c
+> @@ -126,7 +126,7 @@ static struct i2c_driver i2c_hid_acpi_driver = {
+>                 .name   = "i2c_hid_acpi",
+>                 .pm     = &i2c_hid_core_pm,
+>                 .probe_type = PROBE_PREFER_ASYNCHRONOUS,
+> -               .acpi_match_table = ACPI_PTR(i2c_hid_acpi_match),
+> +               .acpi_match_table = i2c_hid_acpi_match,
+>         },
 >
-> +/* optee_remove - Device Removal Routine
-> + * @pdev: platform device information struct
-> + *
-> + * optee_remove is called by platform subsystem to alter the driver
-> + * that it should release the device
-> + */
-> +
->  static int optee_remove(struct platform_device *pdev)
->  {
->         struct optee *optee = platform_get_drvdata(pdev);
-> @@ -612,6 +619,18 @@ static int optee_remove(struct platform_device *pdev)
->         return 0;
->  }
->
-> +/* optee_shutdown - Device Removal Routine
-> + * @pdev: platform device information struct
-> + *
-> + * platform_shutdown is called by the platform subsystem to alter
-> + * the driver that a shutdown/reboot(or kexec) is happening and
-> + * device must be disabled.
-> + */
-> +static void optee_shutdown(struct platform_device *pdev)
-> +{
-> +       optee_disable_shm_cache(platform_get_drvdata(pdev));
-> +}
-> +
->  static int optee_probe(struct platform_device *pdev)
->  {
->         optee_invoke_fn *invoke_fn;
-> @@ -738,6 +757,7 @@ MODULE_DEVICE_TABLE(of, optee_dt_match);
->  static struct platform_driver optee_driver = {
->         .probe  = optee_probe,
->         .remove = optee_remove,
-> +       .shutdown = optee_shutdown,
->         .driver = {
->                 .name = "optee",
->                 .of_match_table = optee_dt_match,
+>         .probe_new      = i2c_hid_acpi_probe,
 > --
-> 2.25.1
+> 2.30.0
 >
+
