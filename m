@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BD23298B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F41433298B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346446AbhCAXrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:47:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58158 "EHLO mail.kernel.org"
+        id S1346362AbhCAXpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:45:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234284AbhCASJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:09:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF6E065066;
-        Mon,  1 Mar 2021 17:23:38 +0000 (UTC)
+        id S239451AbhCASIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:08:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7C8E64DFB;
+        Mon,  1 Mar 2021 17:25:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619419;
-        bh=vGtHvO5vY1/hbyN7DteKHlZkQG5TALIND6rSi4sb7Pk=;
+        s=korg; t=1614619524;
+        bh=3QYa7lWTWJhX+JOvcM89c6v77rNT3bvBBzcUROKRI/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OiCN5hGu0ej6oFvqvdTmT3+Mo7mmrIgfffhmpd0LSceoLoQrWvvhsSbHCQzNim7OA
-         JBJnnA5swcd89FihOd9TnRTp+HRe+lgAgbTiZRPhByrLf/iNxSGvn4PULWiK9V8DLl
-         sIDY/LFC6VLEryIeLxJzxcWKj7dQkZKb1aRHbkos=
+        b=tQAN5DDb+WgxbkizB11w4Ej861a/B52Od5PL8vdkzKs3exKcDyCB0Q1UzPZLxZRWm
+         9D/O9P2TdneuNPAAV/6oYOPa0AZ/nxrKffSbWNxYEUfUwfN0TjtxITZx35rMkJ+ixN
+         +6wbd3FG3gmxkoCW6csS0tBuS3dBwUI/kS1zU6fo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Ertman <david.m.ertman@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Hongxiang Lou <louhongxiang@huawei.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 447/663] ice: Fix state bits on LLDP mode switch
-Date:   Mon,  1 Mar 2021 17:11:35 +0100
-Message-Id: <20210301161204.017681548@linuxfoundation.org>
+Subject: [PATCH 5.10 458/663] mm/memory.c: fix potential pte_unmap_unlock pte error
+Date:   Mon,  1 Mar 2021 17:11:46 +0100
+Message-Id: <20210301161204.550675364@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -41,88 +46,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Ertman <david.m.ertman@intel.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 0d4907f65dc8fc5e897ad19956fca1acb3b33bc8 ]
+[ Upstream commit 90a3e375d324b2255b83e3dd29e99e2b05d82aaf ]
 
-DCBX_CAP bits were not being adjusted when switching
-between SW and FW controlled LLDP.
+Since commit 42e4089c7890 ("x86/speculation/l1tf: Disallow non privileged
+high MMIO PROT_NONE mappings"), when the first pfn modify is not allowed,
+we would break the loop with pte unchanged.  Then the wrong pte - 1 would
+be passed to pte_unmap_unlock.
 
-Adjust bits to correctly indicate which mode the
-LLDP logic is in.
+Andi said:
 
-Fixes: b94b013eb626 ("ice: Implement DCBNL support")
-Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+ "While the fix is correct, I'm not sure if it actually is a real bug.
+  Is there any architecture that would do something else than unlocking
+  the underlying page? If it's just the underlying page then it should
+  be always the same page, so no bug"
+
+Link: https://lkml.kernel.org/r/20210109080118.20885-1-linmiaohe@huawei.com
+Fixes: 42e4089c789 ("x86/speculation/l1tf: Disallow non privileged high MMIO PROT_NONE mappings")
+Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice.h         | 2 --
- drivers/net/ethernet/intel/ice/ice_dcb_nl.c  | 4 ++++
- drivers/net/ethernet/intel/ice/ice_ethtool.c | 7 +++++++
- 3 files changed, 11 insertions(+), 2 deletions(-)
+ mm/memory.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index 54cf382fddaf9..5b3f2bb22eba7 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -444,9 +444,7 @@ struct ice_pf {
- 	struct ice_hw_port_stats stats_prev;
- 	struct ice_hw hw;
- 	u8 stat_prev_loaded:1; /* has previous stats been loaded */
--#ifdef CONFIG_DCB
- 	u16 dcbx_cap;
--#endif /* CONFIG_DCB */
- 	u32 tx_timeout_count;
- 	unsigned long tx_timeout_last_recovery;
- 	u32 tx_timeout_recovery_level;
-diff --git a/drivers/net/ethernet/intel/ice/ice_dcb_nl.c b/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
-index 842d44b63480f..8c133a8be6add 100644
---- a/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
-+++ b/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
-@@ -160,6 +160,10 @@ static u8 ice_dcbnl_setdcbx(struct net_device *netdev, u8 mode)
+diff --git a/mm/memory.c b/mm/memory.c
+index eb5722027160a..f9522481f95cd 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2165,11 +2165,11 @@ static int remap_pte_range(struct mm_struct *mm, pmd_t *pmd,
+ 			unsigned long addr, unsigned long end,
+ 			unsigned long pfn, pgprot_t prot)
  {
- 	struct ice_pf *pf = ice_netdev_to_pf(netdev);
+-	pte_t *pte;
++	pte_t *pte, *mapped_pte;
+ 	spinlock_t *ptl;
+ 	int err = 0;
  
-+	/* if FW LLDP agent is running, DCBNL not allowed to change mode */
-+	if (test_bit(ICE_FLAG_FW_LLDP_AGENT, pf->flags))
-+		return ICE_DCB_NO_HW_CHG;
-+
- 	/* No support for LLD_MANAGED modes or CEE+IEEE */
- 	if ((mode & DCB_CAP_DCBX_LLD_MANAGED) ||
- 	    ((mode & DCB_CAP_DCBX_VER_IEEE) && (mode & DCB_CAP_DCBX_VER_CEE)) ||
-diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-index 69c113a4de7e6..d27b9cb3e8082 100644
---- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-@@ -8,6 +8,7 @@
- #include "ice_fltr.h"
- #include "ice_lib.h"
- #include "ice_dcb_lib.h"
-+#include <net/dcbnl.h>
+-	pte = pte_alloc_map_lock(mm, pmd, addr, &ptl);
++	mapped_pte = pte = pte_alloc_map_lock(mm, pmd, addr, &ptl);
+ 	if (!pte)
+ 		return -ENOMEM;
+ 	arch_enter_lazy_mmu_mode();
+@@ -2183,7 +2183,7 @@ static int remap_pte_range(struct mm_struct *mm, pmd_t *pmd,
+ 		pfn++;
+ 	} while (pte++, addr += PAGE_SIZE, addr != end);
+ 	arch_leave_lazy_mmu_mode();
+-	pte_unmap_unlock(pte - 1, ptl);
++	pte_unmap_unlock(mapped_pte, ptl);
+ 	return err;
+ }
  
- struct ice_stats {
- 	char stat_string[ETH_GSTRING_LEN];
-@@ -1238,6 +1239,9 @@ static int ice_set_priv_flags(struct net_device *netdev, u32 flags)
- 			status = ice_init_pf_dcb(pf, true);
- 			if (status)
- 				dev_warn(dev, "Fail to init DCB\n");
-+
-+			pf->dcbx_cap &= ~DCB_CAP_DCBX_LLD_MANAGED;
-+			pf->dcbx_cap |= DCB_CAP_DCBX_HOST;
- 		} else {
- 			enum ice_status status;
- 			bool dcbx_agent_status;
-@@ -1280,6 +1284,9 @@ static int ice_set_priv_flags(struct net_device *netdev, u32 flags)
- 			if (status)
- 				dev_dbg(dev, "Fail to enable MIB change events\n");
- 
-+			pf->dcbx_cap &= ~DCB_CAP_DCBX_HOST;
-+			pf->dcbx_cap |= DCB_CAP_DCBX_LLD_MANAGED;
-+
- 			ice_nway_reset(netdev);
- 		}
- 	}
 -- 
 2.27.0
 
