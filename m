@@ -2,193 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D6E3276B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 05:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E613276B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 05:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233209AbhCAEd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 23:33:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:51336 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231199AbhCAEdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 23:33:31 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 224D11063;
-        Sun, 28 Feb 2021 20:31:45 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.66.89])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3AF3C3F73B;
-        Sun, 28 Feb 2021 20:31:38 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2] mm/memtest: Add ARCH_USE_MEMTEST
-Date:   Mon,  1 Mar 2021 10:02:06 +0530
-Message-Id: <1614573126-7740-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S231532AbhCAEfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 23:35:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231199AbhCAEf1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 23:35:27 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8E4C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 20:34:47 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id j12so10604249pfj.12
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Feb 2021 20:34:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=i9osdsSIkxdstrMXBrLYm99WRkbkxANC4iCZNYOVSSg=;
+        b=gw7NyoPFNgY8PsipPfcdpS5Dvq6DCvUvZC/Zu7eGLdmROfBBAvjceQdCtYjjU02I8W
+         UDpp3JnwhLhSg3zuyPDL1/T6f+EKpoEiBenaEy4Ew/dfE9ciaFJFThiURSj5a6SYlmc/
+         N6WAzxkHla2hMySo6m5Tau4jyHVDyWo+V2n4EgufslgxZgXF81y/qjK/YJOhxfGrAjZC
+         znmZp5pJetDv21bfkrRmPKw+05pGfSru+TSNfrGRmwc/xwnluNQVqK5v8nET4YqaCqXX
+         6aOd6rv31602Eq7w7nMF19qxMYIFe6915IiunIMH1bq7tComEzxEfcRpFiUwRbn92wjb
+         8VuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i9osdsSIkxdstrMXBrLYm99WRkbkxANC4iCZNYOVSSg=;
+        b=jyVdMUFivz4MuS18efiQBK6NkHSiwflUFL0xfwCW9hCg9Erdf542lFDfJzSwAq+9Ze
+         8P4aXpmMdmE8bw+G5aJksmuid9PSAuVqCSuLct3zspDwLD7mplRdbluLwuNpz1k+DwYi
+         0TrXHonUNxnRu9Y1lFSNnj54JP2Qj61Xh0VKS9O4tOZ548bSmILGLi+nFhqOozPXiCpy
+         gaSO2szQWeSJDNldbipcZp90PW7paq1ANAo+SdB73GVgKyQSRKnNq/8+cEYJrgP4Q7cz
+         OUL0dBuK/s2g1eArUSpslHB3C/nvCCo5vCZhPj0yA1Q+0nmvB9uoNzd0kYjCZhY4Zbuy
+         nmpA==
+X-Gm-Message-State: AOAM5330TNwJmuplcP2AmA1Y56DhHsvjPxWRBepCI4+Rh/R1APGfeUso
+        wtZ2s/XaIMvCVr2XmJ52ns/OyaWeu83rCA==
+X-Google-Smtp-Source: ABdhPJyQ5HWnkD2hBCmKGlP5HS2VTvNWDNjZBe7FXjNYQ0jaoIUvqwaRsOvzNQsLismU3TppWAQ5AA==
+X-Received: by 2002:aa7:8ad0:0:b029:1ed:fb30:e5d5 with SMTP id b16-20020aa78ad00000b02901edfb30e5d5mr13667116pfd.79.1614573286763;
+        Sun, 28 Feb 2021 20:34:46 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id c6sm16496906pfc.94.2021.02.28.20.34.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 28 Feb 2021 20:34:46 -0800 (PST)
+Date:   Mon, 1 Mar 2021 10:04:44 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: qcom-hw: fix dereferencing freed memory 'data'
+Message-ID: <20210301043444.rbuauzhiu4n6nkay@vireshk-i7>
+References: <20210228013319.10469-1-shawn.guo@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210228013319.10469-1-shawn.guo@linaro.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-early_memtest() does not get called from all architectures. Hence enabling
-CONFIG_MEMTEST and providing a valid memtest=[1..N] kernel command line
-option might not trigger the memory pattern tests as would be expected in
-normal circumstances. This situation is misleading.
+On 28-02-21, 09:33, Shawn Guo wrote:
+> Commit 67fc209b527d ("cpufreq: qcom-hw: drop devm_xxx() calls from
+> init/exit hooks") introduces an issue of dereferencing freed memory
+> 'data'.  Fix it.
+> 
+> Fixes: 67fc209b527d ("cpufreq: qcom-hw: drop devm_xxx() calls from init/exit hooks")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+> Viresh,
+> 
+> The issue was introduced by v2 of "cpufreq: qcom-hw: drop devm_xxx()
+> calls from init/exit hooks", which misses the conversion of 'data->base'
+> in error path.  Sorry!
+> 
+> Shawn
+> 
+>  drivers/cpufreq/qcom-cpufreq-hw.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index d3c23447b892..bee5d67a8227 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -374,7 +374,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
+>  error:
+>  	kfree(data);
+>  unmap_base:
+> -	iounmap(data->base);
+> +	iounmap(base);
+>  release_region:
+>  	release_mem_region(res->start, resource_size(res));
+>  	return ret;
 
-The change here prevents the above mentioned problem after introducing a
-new config option ARCH_USE_MEMTEST that should be subscribed on platforms
-that call early_memtest(), in order to enable the config CONFIG_MEMTEST.
-Conversely CONFIG_MEMTEST cannot be enabled on platforms where it would
-not be tested anyway.
-
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mips@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This patch applies on v5.12-rc1 and has been tested on arm64 platform.
-But it has been just build tested on all other platforms.
-
-Changes in V2:
-
-- Added ARCH_USE_MEMTEST in the sorted alphabetical order on platforms
-
-Changes in V1:
-
-https://patchwork.kernel.org/project/linux-mm/patch/1612498242-31579-1-git-send-email-anshuman.khandual@arm.com/
-
- arch/arm/Kconfig     | 1 +
- arch/arm64/Kconfig   | 1 +
- arch/mips/Kconfig    | 1 +
- arch/powerpc/Kconfig | 1 +
- arch/x86/Kconfig     | 1 +
- arch/xtensa/Kconfig  | 1 +
- lib/Kconfig.debug    | 9 ++++++++-
- 7 files changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 853aab5ab327..9ab047d4cd0a 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -33,6 +33,7 @@ config ARM
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF
-+	select ARCH_USE_MEMTEST
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select ARCH_WANT_LD_ORPHAN_WARN
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 1f212b47a48a..d4fe5118e9c8 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -67,6 +67,7 @@ config ARM64
- 	select ARCH_KEEP_MEMBLOCK
- 	select ARCH_USE_CMPXCHG_LOCKREF
- 	select ARCH_USE_GNU_PROPERTY
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_USE_SYM_ANNOTATIONS
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d89efba3d8a4..93a4f502f962 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -14,6 +14,7 @@ config MIPS
- 	select ARCH_SUPPORTS_UPROBES
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF if 64BIT
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 386ae12d8523..3778ad17f56a 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -149,6 +149,7 @@ config PPC
- 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC32 || PPC_BOOK3S_64
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS		if PPC_QUEUED_SPINLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS	if PPC_QUEUED_SPINLOCKS
- 	select ARCH_WANT_IPC_PARSE_VERSION
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2792879d398e..2cb76fd5258e 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -100,6 +100,7 @@ config X86
- 	select ARCH_SUPPORTS_LTO_CLANG		if X86_64
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN	if X86_64
- 	select ARCH_USE_BUILTIN_BSWAP
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_USE_SYM_ANNOTATIONS
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index a99dc39f6964..ca51896c53df 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -7,6 +7,7 @@ config XTENSA
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU if MMU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if MMU
- 	select ARCH_HAS_DMA_SET_UNCACHED if MMU
-+	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_WANT_FRAME_POINTERS
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index a2d04c00cda2..2c296535a4b3 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2521,11 +2521,18 @@ config TEST_FPU
- 
- endif # RUNTIME_TESTING_MENU
- 
-+config ARCH_USE_MEMTEST
-+	bool
-+	help
-+	  An architecture should select this when it uses early_memtest()
-+	  during boot process.
-+
- config MEMTEST
- 	bool "Memtest"
-+	depends on ARCH_USE_MEMTEST
- 	help
- 	  This option adds a kernel parameter 'memtest', which allows memtest
--	  to be set.
-+	  to be set and executed.
- 	        memtest=0, mean disabled; -- default
- 	        memtest=1, mean do 1 test pattern;
- 	        ...
+Applied. Thanks.
 -- 
-2.20.1
-
+viresh
