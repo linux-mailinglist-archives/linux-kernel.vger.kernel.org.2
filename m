@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97691329C2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4FD329C47
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380247AbhCBBth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:49:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48630 "EHLO mail.kernel.org"
+        id S1380430AbhCBBvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:51:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241536AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:26:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A63665177;
-        Mon,  1 Mar 2021 17:07:45 +0000 (UTC)
+        id S241718AbhCAT25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:28:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50B8D64F7A;
+        Mon,  1 Mar 2021 17:06:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618466;
-        bh=ZxYl6ktqcOjs+mbTKfyHdPzK2plTyuCgvD4A8+rngdA=;
+        s=korg; t=1614618408;
+        bh=GBYnIhzviYEskKBCbud2gg9Box+OSWeHeuOJIooZhPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HNXzJpR5dl5m+2MrXfss63YItihzAfa5t8MMZmPOg/zWs/I52xmdDALPzuVDoKZNd
-         IYXyHH7MS+7U7eOOn2H1t/P25uXKaidHbwcol8igaGFGqIwz3o9xQ95EwE/lbbBMvR
-         YL6DGj03ePdIykHj7GBqO+9G7E1WerXzt2j4Tk70=
+        b=gk5+InolwbdO4o2cdy0ZMloiVo6o1v7qWmyOYdQn7Pnor0rCd5Imtkk/vTOIbKPWs
+         JHMNhhX2xu3YUI/xCSKUZOugR7NK+8Y3rDe8VqY1fEguV1BeQeTtp0ewu1wqFxAy1X
+         QaF2HmYmGvkmOiefDcz6Qu3GKuVphGj7MympNwPM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 067/663] x86/MSR: Filter MSR writes through X86_IOC_WRMSR_REGS ioctl too
-Date:   Mon,  1 Mar 2021 17:05:15 +0100
-Message-Id: <20210301161145.048760354@linuxfoundation.org>
+        stable@vger.kernel.org, Artem Lapkin <art@khadas.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 077/663] arm64: dts: meson: fix broken wifi node for Khadas VIM3L
+Date:   Mon,  1 Mar 2021 17:05:25 +0100
+Message-Id: <20210301161145.545939473@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,48 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+From: Artem Lapkin <email2tema@gmail.com>
 
-[ Upstream commit 02a16aa13574c8526beadfc9ae8cc9b66315fa2d ]
+[ Upstream commit 39be8f441f78908e97ff913571e10ec03387a63a ]
 
-Commit
+move &sd_emmc_a ... from /* */ commented area, because cant load wifi fw
+without sd-uhs-sdr50 option on VIM3L
 
-  a7e1f67ed29f ("x86/msr: Filter MSR writes")
+[   11.686590] brcmfmac: brcmf_chip_cores_check: CPU core not detected
+[   11.696382] brcmfmac: brcmf_sdio_probe_attach: brcmf_chip_attach failed!
+[   11.706240] brcmfmac: brcmf_sdio_probe: brcmf_sdio_probe_attach failed
+[   11.715890] brcmfmac: brcmf_ops_sdio_probe: F2 error, probe failed -19...
+[   13.718424] brcmfmac: brcmf_chip_recognition: chip backplane type 15 is not supported
 
-introduced a module parameter to disable writing to the MSR device file
-and tainted the kernel upon writing. As MSR registers can be written by
-the X86_IOC_WRMSR_REGS ioctl too, the same filtering and tainting should
-be applied to the ioctl as well.
-
- [ bp: Massage commit message and space out statements. ]
-
-Fixes: a7e1f67ed29f ("x86/msr: Filter MSR writes")
-Signed-off-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210127122456.13939-1-misono.tomohiro@jp.fujitsu.com
+Signed-off-by: Artem Lapkin <art@khadas.com>
+Fixes: f1bb924e8f5b ("arm64: dts: meson: fix mmc0 tuning error on Khadas VIM3")
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Link: https://lore.kernel.org/r/20210129085041.1408540-1-art@khadas.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/msr.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index c0d4098106589..79f900ffde4c5 100644
---- a/arch/x86/kernel/msr.c
-+++ b/arch/x86/kernel/msr.c
-@@ -184,6 +184,13 @@ static long msr_ioctl(struct file *file, unsigned int ioc, unsigned long arg)
- 		err = security_locked_down(LOCKDOWN_MSR);
- 		if (err)
- 			break;
-+
-+		err = filter_write(regs[1]);
-+		if (err)
-+			return err;
-+
-+		add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
-+
- 		err = wrmsr_safe_regs_on_cpu(cpu, regs);
- 		if (err)
- 			break;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+index 4b517ca720597..06de0b1ce7267 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+@@ -89,13 +89,12 @@
+ 	status = "okay";
+ };
+ 
+-&sd_emmc_a {
+-	sd-uhs-sdr50;
+-};
+-
+ &usb {
+ 	phys = <&usb2_phy0>, <&usb2_phy1>;
+ 	phy-names = "usb2-phy0", "usb2-phy1";
+ };
+  */
+ 
++&sd_emmc_a {
++	sd-uhs-sdr50;
++};
 -- 
 2.27.0
 
