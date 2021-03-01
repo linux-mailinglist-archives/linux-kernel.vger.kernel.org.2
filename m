@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 245613297EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 813ED329839
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344765AbhCAXC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:02:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46816 "EHLO mail.kernel.org"
+        id S1345310AbhCAXT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:19:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238754AbhCARvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:51:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87F2A652F5;
-        Mon,  1 Mar 2021 17:40:52 +0000 (UTC)
+        id S234813AbhCASAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:00:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2293765171;
+        Mon,  1 Mar 2021 17:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620453;
-        bh=dPIOmJP3R18DZXnGJJXJSsYn26gESrWgUgiNVrmHrpo=;
+        s=korg; t=1614618447;
+        bh=7O9THxkQKlPNfX8bSXJTRcMgywUHZqzSNO3BAJFCyQw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nH/UO4lXE17oxHjKo0iAaUFPSu7poqqLrmSLCQgF0UigIA4Zz7wA4uZISJKcPqMYB
-         DR9YAfjm8Xjd+1BuEYDZ8c1tU9duwPXOF5qAxefh1Ai4kAWMo527mdau+Iy+KVWfok
-         Vv6gjTM0WjNH8uGLdC/zQsc8leHesJU6dSzia3f0=
+        b=qc2ZArqDKOdiTKUmKDmIxVaKvcVdUs9oPmjp+BAYELCdKvzbW1Sf56h7Hl/frFbBX
+         ahirfSi7d4KJsOERqtfrqIxlhGTnMKT6l1SJJxU9g8nAVl6Td3H+D6VosqTNQdQuzI
+         zsyDoWUhtRQtIdFzxImtDO/IDoeBBFBI++niiFP8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 158/775] Bluetooth: hci_qca: check for SSR triggered flag while suspend
-Date:   Mon,  1 Mar 2021 17:05:26 +0100
-Message-Id: <20210301161209.451696884@linuxfoundation.org>
+Subject: [PATCH 5.10 090/663] iwlwifi: mvm: assign SAR table revision to the command later
+Date:   Mon,  1 Mar 2021 17:05:38 +0100
+Message-Id: <20210301161146.179235242@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit 1bb0c66332babc5cbc4581d962da0b03af9f23e8 ]
+[ Upstream commit 28db1862067cb09ebfdccfbc129a52c6fdb4c4d7 ]
 
-QCA_IBS_DISABLED flag will be set after memorydump started from
-controller.Currently qca_suspend() is waiting for SSR to complete
-based on flag QCA_IBS_DISABLED.Added to check for QCA_SSR_TRIGGERED
-flag too.
+The call to iwl_sar_geo_init() was moved to the end of the
+iwl_mvm_sar_geo_init() function, after the table revision is assigned
+to the FW command.  But the revision is only known after
+iwl_sar_geo_init() is called, so we were always assigning zero to it.
 
-Fixes: 2be43abac5a8 ("Bluetooth: hci_qca: Wait for timeout during suspend")
-Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fix that by moving the assignment code after the iwl_sar_geo_init()
+function is called.
+
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Fixes: 45acebf8d6a6 ("iwlwifi: fix sar geo table initialization")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210210135352.cef55ef3a065.If96c60f08d24c2262c287168a6f0dbd7cf0f8f5c@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_qca.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/fw.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 17a3859326dc7..ff2fb68a45b1e 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -2111,7 +2111,8 @@ static int __maybe_unused qca_suspend(struct device *dev)
- 	    !test_bit(QCA_SSR_TRIGGERED, &qca->flags))
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+index 34a44300a15eb..ad374b25e2550 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/fw.c
+@@ -896,12 +896,10 @@ static int iwl_mvm_sar_geo_init(struct iwl_mvm *mvm)
+ 	if (cmd_ver == 3) {
+ 		len = sizeof(cmd.v3);
+ 		n_bands = ARRAY_SIZE(cmd.v3.table[0]);
+-		cmd.v3.table_revision = cpu_to_le32(mvm->fwrt.geo_rev);
+ 	} else if (fw_has_api(&mvm->fwrt.fw->ucode_capa,
+ 			      IWL_UCODE_TLV_API_SAR_TABLE_VER)) {
+ 		len = sizeof(cmd.v2);
+ 		n_bands = ARRAY_SIZE(cmd.v2.table[0]);
+-		cmd.v2.table_revision = cpu_to_le32(mvm->fwrt.geo_rev);
+ 	} else {
+ 		len = sizeof(cmd.v1);
+ 		n_bands = ARRAY_SIZE(cmd.v1.table[0]);
+@@ -921,6 +919,16 @@ static int iwl_mvm_sar_geo_init(struct iwl_mvm *mvm)
+ 	if (ret)
  		return 0;
  
--	if (test_bit(QCA_IBS_DISABLED, &qca->flags)) {
-+	if (test_bit(QCA_IBS_DISABLED, &qca->flags) ||
-+	    test_bit(QCA_SSR_TRIGGERED, &qca->flags)) {
- 		wait_timeout = test_bit(QCA_SSR_TRIGGERED, &qca->flags) ?
- 					IBS_DISABLE_SSR_TIMEOUT_MS :
- 					FW_DOWNLOAD_TIMEOUT_MS;
++	/*
++	 * Set the revision on versions that contain it.
++	 * This must be done after calling iwl_sar_geo_init().
++	 */
++	if (cmd_ver == 3)
++		cmd.v3.table_revision = cpu_to_le32(mvm->fwrt.geo_rev);
++	else if (fw_has_api(&mvm->fwrt.fw->ucode_capa,
++			    IWL_UCODE_TLV_API_SAR_TABLE_VER))
++		cmd.v2.table_revision = cpu_to_le32(mvm->fwrt.geo_rev);
++
+ 	return iwl_mvm_send_cmd_pdu(mvm,
+ 				    WIDE_ID(PHY_OPS_GROUP, GEO_TX_POWER_LIMIT),
+ 				    0, len, &cmd);
 -- 
 2.27.0
 
