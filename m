@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E730C32997C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C438E3299A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344163AbhCBAUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:20:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41508 "EHLO mail.kernel.org"
+        id S1345055AbhCBA1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:27:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239579AbhCASXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:23:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30120652E4;
-        Mon,  1 Mar 2021 17:39:11 +0000 (UTC)
+        id S240006AbhCAS2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:28:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F781650AD;
+        Mon,  1 Mar 2021 17:39:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620352;
-        bh=DnEXBEgLSQq0dS3zHxsf4TgSIOOsvwY5gs3HOpsBycs=;
+        s=korg; t=1614620355;
+        bh=W0oZqIwJv6gjpUQrHiC3w9wbrXYkCuhkY7788ApI77I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rYqwhIT4Wwb3RmWs7QMuGVAiOsRrbNG5BEwYNybFR69CKXWN5t6TJrK0dvBhBIp/S
-         iH++P2YJg/AgmDQvLNdTGM03gw//6ESm6IlTxeByfLGtWI4BSAm7NvHbj9R5PHn6A6
-         Ag20X+Q+OEkfcXihU5rwr5A2Rr2Sm1sEvCBrvmXM=
+        b=Aqi7vRB6RFWMLT5IgiXHvwoOP+pwcHcUnCGvIDPCcyF9E7yqwinmeMGPE0VDy9X/t
+         PoNT51HvyCaM7ScggCCfMCPUyqZev1l3ZmPS8rN1Vv6mOgUNaxVOIPz9LbMOXxV/Qn
+         7gT1VlnCpF9QZEm/bRsUWczDcAM93I41WQ218Bx4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Arjun Roy <arjunroy@google.com>, Wei Wang <weiwan@google.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 122/775] selftests: mptcp: fix ACKRX debug message
-Date:   Mon,  1 Mar 2021 17:04:50 +0100
-Message-Id: <20210301161207.700705117@linuxfoundation.org>
+Subject: [PATCH 5.11 123/775] tcp: fix SO_RCVLOWAT related hangs under mem pressure
+Date:   Mon,  1 Mar 2021 17:04:51 +0100
+Message-Id: <20210301161207.750462425@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,35 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthieu Baerts <matthieu.baerts@tessares.net>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit f384221a381751508f390b36d0e51bd5a7beb627 ]
+[ Upstream commit f969dc5a885736842c3511ecdea240fbb02d25d9 ]
 
-Info from received MPCapable SYN were printed instead of the ones from
-received MPCapable 3rd ACK.
+While commit 24adbc1676af ("tcp: fix SO_RCVLOWAT hangs with fat skbs")
+fixed an issue vs too small sk_rcvbuf for given sk_rcvlowat constraint,
+it missed to address issue caused by memory pressure.
 
-Fixes: fed61c4b584c ("selftests: mptcp: make 2nd net namespace use tcp syn cookies unconditionally")
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+1) If we are under memory pressure and socket receive queue is empty.
+First incoming packet is allowed to be queued, after commit
+76dfa6082032 ("tcp: allow one skb to be received per socket under memory pressure")
+
+But we do not send EPOLLIN yet, in case tcp_data_ready() sees sk_rcvlowat
+is bigger than skb length.
+
+2) Then, when next packet comes, it is dropped, and we directly
+call sk->sk_data_ready().
+
+3) If application is using poll(), tcp_poll() will then use
+tcp_stream_is_readable() and decide the socket receive queue is
+not yet filled, so nothing will happen.
+
+Even when sender retransmits packets, phases 2) & 3) repeat
+and flow is effectively frozen, until memory pressure is off.
+
+Fix is to consider tcp_under_memory_pressure() to take care
+of global memory pressure or memcg pressure.
+
+Fixes: 24adbc1676af ("tcp: fix SO_RCVLOWAT hangs with fat skbs")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: Arjun Roy <arjunroy@google.com>
+Suggested-by: Wei Wang <weiwan@google.com>
+Reviewed-by: Wei Wang <weiwan@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/net/mptcp/mptcp_connect.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/tcp.h | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/net/mptcp/mptcp_connect.sh b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-index 2cfd87d94db89..e927df83efb91 100755
---- a/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-+++ b/tools/testing/selftests/net/mptcp/mptcp_connect.sh
-@@ -493,7 +493,7 @@ do_transfer()
- 		echo "${listener_ns} SYNRX: ${cl_proto} -> ${srv_proto}: expect ${expect_synrx}, got ${stat_synrx_now_l}"
- 	fi
- 	if [ $expect_ackrx -ne $stat_ackrx_now_l ] ;then
--		echo "${listener_ns} ACKRX: ${cl_proto} -> ${srv_proto}: expect ${expect_synrx}, got ${stat_synrx_now_l}"
-+		echo "${listener_ns} ACKRX: ${cl_proto} -> ${srv_proto}: expect ${expect_ackrx}, got ${stat_ackrx_now_l} "
- 	fi
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 25bbada379c46..244208f6f6c2a 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -1431,8 +1431,13 @@ void tcp_cleanup_rbuf(struct sock *sk, int copied);
+  */
+ static inline bool tcp_rmem_pressure(const struct sock *sk)
+ {
+-	int rcvbuf = READ_ONCE(sk->sk_rcvbuf);
+-	int threshold = rcvbuf - (rcvbuf >> 3);
++	int rcvbuf, threshold;
++
++	if (tcp_under_memory_pressure(sk))
++		return true;
++
++	rcvbuf = READ_ONCE(sk->sk_rcvbuf);
++	threshold = rcvbuf - (rcvbuf >> 3);
  
- 	if [ $retc -eq 0 ] && [ $rets -eq 0 ];then
+ 	return atomic_read(&sk->sk_rmem_alloc) > threshold;
+ }
 -- 
 2.27.0
 
