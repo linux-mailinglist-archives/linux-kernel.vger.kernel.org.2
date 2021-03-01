@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877BF329D19
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7DA329CF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442989AbhCBCRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:17:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55188 "EHLO mail.kernel.org"
+        id S1442626AbhCBCOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:14:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242315AbhCATo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:44:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6800165192;
-        Mon,  1 Mar 2021 17:11:12 +0000 (UTC)
+        id S236793AbhCATmC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:42:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D34F6501C;
+        Mon,  1 Mar 2021 17:11:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618672;
-        bh=nHulc3qNJOD32dHhJbh76NFZMYWASY3FofVxMqXy6bU=;
+        s=korg; t=1614618678;
+        bh=RbsRnAjVjKH2hfuolaRNlatMWXPRUnHLsvtlKr+1y5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qgVS2TEUYbYcuuZ5Y5I9kjziW4z4b6ypb3QKFCCOClkHQFIALm68t2mRsQCNMSQGf
-         y1mTiuN0FrHiM1l4n3CQSStbf3VDqGP76oXXijP3GSLUdzKev+zgf1bn98C+FnBeS9
-         TqNo8p+8FTT88MzI8Bpa6H360HYIBf70bfosIieA=
+        b=JvnpaRxROFk5biJPQz2I7I5GRW/0v8G7k2MnNpZObwBD+LU7gFSgS1ah8mn8wX+nY
+         oMv8qlxCtHAros56CkvxwE16uov0BCMWFEET0UdRlMxzmQMLfaxq+vqP9JFaXA2K52
+         LuPNhDzkT28OrzOGVEqlQNqMo/QUgE3Im0419uaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Giulio Benetti <giulio.benetti@micronovasrl.com>,
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        =?UTF-8?q?S=C3=A9bastien=20Szymanski?= 
+        <sebastien.szymanski@armadeus.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 175/663] drm/sun4i: tcon: fix inverted DCLK polarity
-Date:   Mon,  1 Mar 2021 17:07:03 +0100
-Message-Id: <20210301161150.445161377@linuxfoundation.org>
+Subject: [PATCH 5.10 177/663] media: imx7: csi: Fix pad link validation
+Date:   Mon,  1 Mar 2021 17:07:05 +0100
+Message-Id: <20210301161150.544187438@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,82 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+From: Rui Miguel Silva <rmfrfs@gmail.com>
 
-[ Upstream commit 67f4aeb2b41a0629abde3794d463547f60b0cbdd ]
+[ Upstream commit f5ffb81f51376eb5a12e8c4cb4871426c65bb2af ]
 
-During commit 88bc4178568b ("drm: Use new
-DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
-macros have been changed to avoid ambiguity but just because of this
-ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
-_SAMPLE_ not _DRIVE_. This leads to DLCK inversion and need to fix but
-instead of swapping phase values, let's adopt an easier approach Maxime
-suggested:
-It turned out that bit 26 of SUN4I_TCON0_IO_POL_REG is dedicated to
-invert DCLK polarity and this makes things really easier than before. So
-let's handle DCLK polarity by adding SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
-as bit 26 and activating according to bus_flags the same way it is done
-for all the other signals polarity.
+We can not make the assumption that the bound subdev is always a CSI
+mux, in i.MX6UL/i.MX6ULL that is not the case. So, just get the entity
+selected by source directly upstream from the CSI.
 
-Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags")
-Suggested-by: Maxime Ripard <maxime@cerno.tech>
-Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210114081732.9386-1-giulio.benetti@benettiengineering.com
+Fixes: 86e02d07871c ("media: imx5/6/7: csi: Mark a bound video mux as a CSI mux")
+Reported-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Rui Miguel Silva <rmfrfs@gmail.com>
+Tested-by: Fabio Estevam <festevam@gmail.com>
+Tested-by: Sébastien Szymanski <sebastien.szymanski@armadeus.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/sun4i/sun4i_tcon.c | 21 ++-------------------
- drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
- 2 files changed, 3 insertions(+), 19 deletions(-)
+ drivers/staging/media/imx/imx7-media-csi.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-index 1e643bc7e786a..9f06dec0fc61d 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-@@ -569,30 +569,13 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
- 	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
- 		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
+diff --git a/drivers/staging/media/imx/imx7-media-csi.c b/drivers/staging/media/imx/imx7-media-csi.c
+index 31e36168f9d0f..ac52b1daf9914 100644
+--- a/drivers/staging/media/imx/imx7-media-csi.c
++++ b/drivers/staging/media/imx/imx7-media-csi.c
+@@ -499,6 +499,7 @@ static int imx7_csi_pad_link_validate(struct v4l2_subdev *sd,
+ 				      struct v4l2_subdev_format *sink_fmt)
+ {
+ 	struct imx7_csi *csi = v4l2_get_subdevdata(sd);
++	struct media_entity *src;
+ 	struct media_pad *pad;
+ 	int ret;
  
--	/*
--	 * On A20 and similar SoCs, the only way to achieve Positive Edge
--	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
--	 * By default TCON works in Negative Edge(Falling Edge),
--	 * this is why phase is set to 0 in that case.
--	 * Unfortunately there's no way to logically invert dclk through
--	 * IO_POL register.
--	 * The only acceptable way to work, triple checked with scope,
--	 * is using clock phase set to 0° for Negative Edge and set to 240°
--	 * for Positive Edge.
--	 * On A33 and similar SoCs there would be a 90° phase option,
--	 * but it divides also dclk by 2.
--	 * Following code is a way to avoid quirks all around TCON
--	 * and DOTCLOCK drivers.
--	 */
--	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
--		clk_set_phase(tcon->dclk, 240);
--
- 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
--		clk_set_phase(tcon->dclk, 0);
-+		val |= SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE;
+@@ -509,11 +510,21 @@ static int imx7_csi_pad_link_validate(struct v4l2_subdev *sd,
+ 	if (!csi->src_sd)
+ 		return -EPIPE;
  
- 	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
- 			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
- 			   SUN4I_TCON0_IO_POL_VSYNC_POSITIVE |
-+			   SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE |
- 			   SUN4I_TCON0_IO_POL_DE_NEGATIVE,
- 			   val);
- 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-index ee555318e3c2f..e624f6977eb84 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-@@ -113,6 +113,7 @@
- #define SUN4I_TCON0_IO_POL_REG			0x88
- #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
- #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
-+#define SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE		BIT(26)
- #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
- #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
++	src = &csi->src_sd->entity;
++
++	/*
++	 * if the source is neither a CSI MUX or CSI-2 get the one directly
++	 * upstream from this CSI
++	 */
++	if (src->function != MEDIA_ENT_F_VID_IF_BRIDGE &&
++	    src->function != MEDIA_ENT_F_VID_MUX)
++		src = &csi->sd.entity;
++
+ 	/*
+-	 * find the entity that is selected by the CSI mux. This is needed
++	 * find the entity that is selected by the source. This is needed
+ 	 * to distinguish between a parallel or CSI-2 pipeline.
+ 	 */
+-	pad = imx_media_pipeline_pad(&csi->src_sd->entity, 0, 0, true);
++	pad = imx_media_pipeline_pad(src, 0, 0, true);
+ 	if (!pad)
+ 		return -ENODEV;
  
 -- 
 2.27.0
