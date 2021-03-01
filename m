@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFE6327609
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 03:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D10327615
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 03:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231716AbhCACQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Feb 2021 21:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231318AbhCACQY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Feb 2021 21:16:24 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EF3C061756;
-        Sun, 28 Feb 2021 18:15:43 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id h98so14423826wrh.11;
-        Sun, 28 Feb 2021 18:15:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=p197FIWEaE2McEUmDO7vulDyQknp7Y0aXGmXiZoR9gk=;
-        b=jLRR1icqICKQsq+XZpogC7opN84/0i92ESwpne6yNIZC0SC35y2EfTeV2mgpE6u9I0
-         4OtA81d07GV4pNYkbGT28lxW59QNF7Z18jmdCaPMm0FQVK+U16hpu0Us2+5pJz6JOZL8
-         Ky5493qF0mFbg069mGFhGPlu6opp9kgXdp5XRWmkt0SZd8l7DSLm158BJvSzKuimmu28
-         qN6NIECnZ+IGhR72MpapLBz0sxSCTVeG64HjijZ75pczBj8EcwVcrCH6YlP2zh7o2UXf
-         7A/5l0oX9o/cFmIiaGdMN25SEp0DdZ+BLGhTAicMtSJAeFWnL5gBk+JhgJtu0yaqEQ7p
-         Axiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=p197FIWEaE2McEUmDO7vulDyQknp7Y0aXGmXiZoR9gk=;
-        b=O2jYjp+jmAokrHMKW8bZlcFYLADGmfurgMbrWxB+n8dmYVtnb6z5c7eFsO9tftWiCu
-         2rgghDP1Jlg1UNPgkqYjftUzLW5trKuXDqkWplJu4JMbbFMbH8QkMJBX19d8UUiJluHZ
-         /KNV/hVpEQMMybQcVi34rl6E49cjCWLgxqaOjtYoO7h/A2k/aThLYCecp6DwG7YwX4kN
-         1miiCCYfqaYsC2upNh0cf2Gt9R4QpTE62gvNYjZZt0fkD1bwlddBinxc+c1fNP5qmhUa
-         Z2ytG0cwW/eOn7H3OEccTwG7A6LALpR8EDpY7UmbcovXqeiCRICM67mh/j3DlB77tHCY
-         IMTQ==
-X-Gm-Message-State: AOAM531LHRB+1LZxZaHWlUPxszS3GcnCGe6VOT729QZttniJRsOOqeXZ
-        Due/mo82tdOybXaer2gvXso=
-X-Google-Smtp-Source: ABdhPJzwWmbsIJ7ZKuo+lg9CYdVq/bJlW06zI+kKbGMQW/y3AVVOQ+egxJpvP0DYc0v4rdi5BwL7Yg==
-X-Received: by 2002:a5d:4743:: with SMTP id o3mr486957wrs.108.1614564942279;
-        Sun, 28 Feb 2021 18:15:42 -0800 (PST)
-Received: from [192.168.1.5] ([41.83.217.193])
-        by smtp.gmail.com with ESMTPSA id f17sm23026870wru.31.2021.02.28.18.15.39
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Sun, 28 Feb 2021 18:15:41 -0800 (PST)
-Message-ID: <603c4e4d.1c69fb81.5dc9a.152c@mx.google.com>
-From:   Calantha Camara <amadouneymar794@gmail.com>
-X-Google-Original-From: Calantha Camara
-Content-Type: text/plain; charset="iso-8859-1"
+        id S231742AbhCACVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Feb 2021 21:21:15 -0500
+Received: from spam01.hygon.cn ([110.188.70.11]:54254 "EHLO spam2.hygon.cn"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231364AbhCACVM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Feb 2021 21:21:12 -0500
+Received: from MK-DB.hygon.cn ([172.23.18.60])
+        by spam2.hygon.cn with ESMTP id 1212GjpF002954;
+        Mon, 1 Mar 2021 10:16:45 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from cncheex01.Hygon.cn ([172.23.18.10])
+        by MK-DB.hygon.cn with ESMTP id 1212Gf8n020388;
+        Mon, 1 Mar 2021 10:16:41 +0800 (GMT-8)
+        (envelope-from puwen@hygon.cn)
+Received: from cncheex01.Hygon.cn (172.23.18.10) by cncheex01.Hygon.cn
+ (172.23.18.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1466.3; Mon, 1 Mar 2021
+ 10:16:26 +0800
+Received: from cncheex01.Hygon.cn ([172.23.18.10]) by cncheex01.Hygon.cn
+ ([172.23.18.10]) with mapi id 15.01.1466.003; Mon, 1 Mar 2021 10:16:26 +0800
+From:   Wen Pu <puwen@hygon.cn>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "victording@google.com" <victording@google.com>,
+        "kim.phillips@amd.com" <kim.phillips@amd.com>,
+        "rui.zhang@intel.com" <rui.zhang@intel.com>
+Subject: Re: [RFC PATCH] powercap: Add Hygon Fam18h RAPL support
+Thread-Topic: [RFC PATCH] powercap: Add Hygon Fam18h RAPL support
+Thread-Index: AQHXC3ZtcHkxrsdXYk+yZ96EVY24VKptM5qAgACxH4A=
+Date:   Mon, 1 Mar 2021 02:16:26 +0000
+Message-ID: <6543a335-e84c-29ea-e20b-c56bdd60d1c6@hygon.cn>
+References: <20210225130129.21512-1-puwen@hygon.cn>
+ <0a8f11cfbc761767b7a994f724af3dac124184c9.camel@linux.intel.com>
+In-Reply-To: <0a8f11cfbc761767b7a994f724af3dac124184c9.camel@linux.intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.23.18.44]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EEBAD4DD581A50478C89BF8CEE857CF8@Hygon.cn>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Hi Dear
-To:     Recipients <Calantha@vger.kernel.org>
-Date:   Mon, 01 Mar 2021 02:15:37 +0000
-Reply-To: calanthac20@gmail.com
-X-Mailer: cdcaafe51be8cdb99a1c85906066cad3d0e60e273541515a58395093a7c4e1f0eefb01d7fc4e6278706e9fb8c4dad093c3263345202970888b6b4d817f9e998c032e7d59
+X-MAIL: spam2.hygon.cn 1212GjpF002954
+X-DNSRBL: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-this is about me
-
-My name is Miss Calantha Camara, i was born on 22 -- 3 -- 1992,  never marr=
-ied, l am from Somalia in Africa, =
-
-
-I'M presently residing in a refugee camp in Dakar Senegal as a result of th=
-e political / religious crisis that has been causing problems in my country=
-. Because of this problem I lost my mother and my father during this deadly=
- Political War. That Damaged Thousands of innocent Souls in my country Soma=
-lia.
-
-My Late father was a Successful businessman and also a politician supportin=
-g the Present Government, During this problem  all the members of my family=
- were Murdered in a cold Blood and our family house was set blazed. =
-
-
-But I thank God I was in boarding school when this deadly incident took pla=
-ce. It is only myself who is alive  but i don't have a home right now, I ma=
-naged to make my way to another country Senegal where I am staying now and =
-never pray to go back to my country  Somalia Again.
-
-Please, I have a reason why I contacted you but before that i would like to=
- know about you what you are doing presently. I will tell you more about my=
-self and the reason why I contacted you in my next mail. =
-
-thanks and God bless
-yours calantha
+T24gMjAyMS8yLzI4IDIzOjQyLCBTcmluaXZhcyBQYW5kcnV2YWRhIHdyb3RlOg0KPiBPbiBUaHUs
+IDIwMjEtMDItMjUgYXQgMjE6MDEgKzA4MDAsIFB1IFdlbiB3cm90ZToNCj4+IEVuYWJsZSBIeWdv
+biBGYW0xOGggUkFQTCBzdXBwb3J0IGZvciB0aGUgcG93ZXIgY2FwcGluZyBmcmFtZXdvcmsuDQo+
+Pg0KPiBJZiB0aGlzIHBhdGNoIGlzIHRlc3RlZCBhbmQgd29ya3Mgb24gdGhpcyBwcm9jZXNzb3Is
+IG5vdCBzdXJlIHdoeSB0aGlzDQo+IGlzIFJGQz8NCg0KVGhpcyBwYXRjaCBpcyB0ZXN0ZWQgYW5k
+IHdvcmtzIG9uIEh5Z29uIHByb2Nlc3Nvci4gVGhlICdSRkMnIGlzIGF1dG9tYXRlZA0KZ2VuZXJh
+dGVkIGJ5IG15IHNjcmlwdCA7KQ0KDQpUaGFua3MsDQpQdSBXZW4NCg0KPiBUaGFua3MsDQo+IFNy
+aW5pdmFzDQo+IA0KPj4gU2lnbmVkLW9mZi1ieTogUHUgV2VuIDxwdXdlbkBoeWdvbi5jbj4NCj4+
+IC0tLQ0KPj4gIGRyaXZlcnMvcG93ZXJjYXAvaW50ZWxfcmFwbF9jb21tb24uYyB8IDEgKw0KPj4g
+IGRyaXZlcnMvcG93ZXJjYXAvaW50ZWxfcmFwbF9tc3IuYyAgICB8IDEgKw0KPj4gIDIgZmlsZXMg
+Y2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcG93
+ZXJjYXAvaW50ZWxfcmFwbF9jb21tb24uYw0KPj4gYi9kcml2ZXJzL3Bvd2VyY2FwL2ludGVsX3Jh
+cGxfY29tbW9uLmMNCj4+IGluZGV4IGZkZGEyYTczNzE4Ni4uNzNjZjY4YWY5NzcwIDEwMDY0NA0K
+Pj4gLS0tIGEvZHJpdmVycy9wb3dlcmNhcC9pbnRlbF9yYXBsX2NvbW1vbi5jDQo+PiArKysgYi9k
+cml2ZXJzL3Bvd2VyY2FwL2ludGVsX3JhcGxfY29tbW9uLmMNCj4+IEBAIC0xMDY5LDYgKzEwNjks
+NyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHg4Nl9jcHVfaWQgcmFwbF9pZHNbXQ0KPj4gX19pbml0
+Y29uc3QgPSB7DQo+PiAgDQo+PiAgCVg4Nl9NQVRDSF9WRU5ET1JfRkFNKEFNRCwgMHgxNywgJnJh
+cGxfZGVmYXVsdHNfYW1kKSwNCj4+ICAJWDg2X01BVENIX1ZFTkRPUl9GQU0oQU1ELCAweDE5LCAm
+cmFwbF9kZWZhdWx0c19hbWQpLA0KPj4gKwlYODZfTUFUQ0hfVkVORE9SX0ZBTShIWUdPTiwgMHgx
+OCwgJnJhcGxfZGVmYXVsdHNfYW1kKSwNCj4+ICAJe30NCj4+ICB9Ow0KPj4gIE1PRFVMRV9ERVZJ
+Q0VfVEFCTEUoeDg2Y3B1LCByYXBsX2lkcyk7DQo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wb3dl
+cmNhcC9pbnRlbF9yYXBsX21zci5jDQo+PiBiL2RyaXZlcnMvcG93ZXJjYXAvaW50ZWxfcmFwbF9t
+c3IuYw0KPj4gaW5kZXggNzgyMTNkNGI1YjE2Li5jYzNiMjI4ODFiZmUgMTAwNjQ0DQo+PiAtLS0g
+YS9kcml2ZXJzL3Bvd2VyY2FwL2ludGVsX3JhcGxfbXNyLmMNCj4+ICsrKyBiL2RyaXZlcnMvcG93
+ZXJjYXAvaW50ZWxfcmFwbF9tc3IuYw0KPj4gQEAgLTE1MCw2ICsxNTAsNyBAQCBzdGF0aWMgaW50
+IHJhcGxfbXNyX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4+ICpwZGV2KQ0KPj4gIAlj
+YXNlIFg4Nl9WRU5ET1JfSU5URUw6DQo+PiAgCQlyYXBsX21zcl9wcml2ID0gJnJhcGxfbXNyX3By
+aXZfaW50ZWw7DQo+PiAgCQlicmVhazsNCj4+ICsJY2FzZSBYODZfVkVORE9SX0hZR09OOg0KPj4g
+IAljYXNlIFg4Nl9WRU5ET1JfQU1EOg0KPj4gIAkJcmFwbF9tc3JfcHJpdiA9ICZyYXBsX21zcl9w
+cml2X2FtZDsNCj4+ICAJCWJyZWFrOw0KPg==
