@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B53329D38
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FD9329CB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443225AbhCBCTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:19:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54202 "EHLO mail.kernel.org"
+        id S1349041AbhCBCLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:11:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241087AbhCATpv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:45:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2177564FC3;
-        Mon,  1 Mar 2021 17:50:11 +0000 (UTC)
+        id S235025AbhCATgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:36:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BECA651B7;
+        Mon,  1 Mar 2021 17:16:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621012;
-        bh=9HZj4DqgkYupk2ScCOg7Cy1zlPCdRao4a+r6oGfzYpw=;
+        s=korg; t=1614618973;
+        bh=ivXSUmnXR/wsghv7IWiJAFDPzsr/tFygKa6LPHb9fnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fOrLsBZyVpSimZW6+E4p8eOpmm1ti5NuIjrXtNuTtajWDwMAFIwrxGeG0FuBmqDlb
-         s5zK9q1ci8VSj+NNysVhEMzCTu21PpJG5/Bo1w/jJX6GkEMySCzHPTe/wOBSVZoeNJ
-         JTUIUpGusLuEnnJKXO3u+D387hv9UUIzVIh/7H6c=
+        b=Gzwr7H7mSqEzHsafEUG16IodjOgxBadaPtB294moNwFbwJqN1fCFJOlVA6s3KcwW9
+         si9SYykeIDDMi/u1Dj72wJTiPvOi5NVIKXBEhwL2ETTk8dOuiz3UXG9t0/OFfn2Wu2
+         iZ2WhEbuKMOOKrtj6GgmckMEWiqKA80c+6Qb7Hg4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Benn <evanbenn@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 360/775] platform/chrome: cros_ec_proto: Add LID and BATTERY to default mask
-Date:   Mon,  1 Mar 2021 17:08:48 +0100
-Message-Id: <20210301161219.413358252@linuxfoundation.org>
+        stable@vger.kernel.org, Nicolas Boichat <drinkcat@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Quentin Perret <qperret@google.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 285/663] of/fdt: Make sure no-map does not remove already reserved regions
+Date:   Mon,  1 Mar 2021 17:08:53 +0100
+Message-Id: <20210301161155.927276541@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Benn <evanbenn@chromium.org>
+From: Nicolas Boichat <drinkcat@chromium.org>
 
-[ Upstream commit 852405d8efcbca0e02f14592fb1d1dcd0d3fb508 ]
+[ Upstream commit 8a5a75e5e9e55de1cef5d83ca3589cb4899193ef ]
 
-After 'platform/chrome: cros_ec_proto: Use EC_HOST_EVENT_MASK not BIT'
-some of the flags are not quite correct.
-LID_CLOSED is used to suspend the device, so it makes sense to ignore that.
-BATTERY events are also frequent and causing spurious wakes on elm/hana
-mt8173 devices.
+If the device tree is incorrectly configured, and attempts to
+define a "no-map" reserved memory that overlaps with the kernel
+data/code, the kernel would crash quickly after boot, with no
+obvious clue about the nature of the issue.
 
-Fixes: c214e564acb2 ("platform/chrome: cros_ec_proto: ignore unnecessary wakeups on old ECs")
-Signed-off-by: Evan Benn <evanbenn@chromium.org>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Link: https://lore.kernel.org/r/20201209220306.2.I3291bf83e4884c206b097ede34780e014fa3e265@changeid
+For example, this would happen if we have the kernel mapped at
+these addresses (from /proc/iomem):
+40000000-41ffffff : System RAM
+  40080000-40dfffff : Kernel code
+  40e00000-411fffff : reserved
+  41200000-413e0fff : Kernel data
+
+And we declare a no-map shared-dma-pool region at a fixed address
+within that range:
+mem_reserved: mem_region {
+	compatible = "shared-dma-pool";
+	reg = <0 0x40000000 0 0x01A00000>;
+	no-map;
+};
+
+To fix this, when removing memory regions at early boot (which is
+what "no-map" regions do), we need to make sure that the memory
+is not already reserved. If we do, __reserved_mem_reserve_reg
+will throw an error:
+[    0.000000] OF: fdt: Reserved memory: failed to reserve memory
+   for node 'mem_region': base 0x0000000040000000, size 26 MiB
+and the code that will try to use the region should also fail,
+later on.
+
+We do not do anything for non-"no-map" regions, as memblock
+explicitly allows reserved regions to overlap, and the commit
+that this fixes removed the check for that precise reason.
+
+[ qperret: fixed conflicts caused by the usage of memblock_mark_nomap ]
+
+Fixes: 094cb98179f19b7 ("of/fdt: memblock_reserve /memreserve/ regions in the case of partial overlap")
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Quentin Perret <qperret@google.com>
+Link: https://lore.kernel.org/r/20210115114544.1830068-3-qperret@google.com
+Signed-off-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/chrome/cros_ec_proto.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/of/fdt.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
-index 3ad60190e11c6..aa7f7aa772971 100644
---- a/drivers/platform/chrome/cros_ec_proto.c
-+++ b/drivers/platform/chrome/cros_ec_proto.c
-@@ -526,9 +526,11 @@ int cros_ec_query_all(struct cros_ec_device *ec_dev)
- 		 * power), not wake up.
- 		 */
- 		ec_dev->host_event_wake_mask = U32_MAX &
--			~(EC_HOST_EVENT_MASK(EC_HOST_EVENT_AC_DISCONNECTED) |
-+			~(EC_HOST_EVENT_MASK(EC_HOST_EVENT_LID_CLOSED) |
-+			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_AC_DISCONNECTED) |
- 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY_LOW) |
- 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY_CRITICAL) |
-+			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY) |
- 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_PD_MCU) |
- 			  EC_HOST_EVENT_MASK(EC_HOST_EVENT_BATTERY_STATUS));
- 		/*
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index e4d4a1e7ef7e2..f2e697000b96f 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1149,8 +1149,16 @@ int __init __weak early_init_dt_mark_hotplug_memory_arch(u64 base, u64 size)
+ int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
+ 					phys_addr_t size, bool nomap)
+ {
+-	if (nomap)
++	if (nomap) {
++		/*
++		 * If the memory is already reserved (by another region), we
++		 * should not allow it to be marked nomap.
++		 */
++		if (memblock_is_region_reserved(base, size))
++			return -EBUSY;
++
+ 		return memblock_mark_nomap(base, size);
++	}
+ 	return memblock_reserve(base, size);
+ }
+ 
 -- 
 2.27.0
 
