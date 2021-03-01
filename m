@@ -2,124 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447563280F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F2203280F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 15:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235216AbhCAOdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 09:33:55 -0500
-Received: from mga09.intel.com ([134.134.136.24]:37764 "EHLO mga09.intel.com"
+        id S234900AbhCAOdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 09:33:21 -0500
+Received: from mga01.intel.com ([192.55.52.88]:40501 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234920AbhCAOde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 09:33:34 -0500
-IronPort-SDR: WUqmjz2+7cmm8knymlwuk4Deq0YoC/9orH+2fvmMK6APDGBGWWMcSSk9hIrZAhMzLzOQ5b4CY7
- OUUw2Qf7ddvg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="186593244"
+        id S236379AbhCAOcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 09:32:16 -0500
+IronPort-SDR: QvXHoElGDeee9yA2PaPU8Wi1ahrcSgw/QZ+KT9i63TYLmLJCYJ27Qt1PEcWTSK6k6YeXequ6Ia
+ gVzS8b08Vtsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="206090285"
 X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="186593244"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 06:30:21 -0800
-IronPort-SDR: +jUor3uHIrOHu7cNuKdrJNca23GWGp6ppK/BhRFVTpDQAkN4R4zCKOgK34mdWAgCaP7jB7iKE9
- UPjaSvC57ESQ==
-X-ExtLoop1: 1
+   d="scan'208";a="206090285"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 06:30:26 -0800
+IronPort-SDR: NwcDCNj7XqUq2dqA/wMXN8k6qUH7EnB3cPbBpvBsONTNpZiWHAfkW71mvbZ4evOnT2LbMhsizH
+ oLnGqg0Ar3GA==
 X-IronPort-AV: E=Sophos;i="5.81,215,1610438400"; 
-   d="scan'208";a="505086260"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Mar 2021 06:30:18 -0800
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] software node: Fix device_add_software_node()
-Date:   Mon,  1 Mar 2021 17:30:12 +0300
-Message-Id: <20210301143012.55118-3-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301143012.55118-1-heikki.krogerus@linux.intel.com>
-References: <20210301143012.55118-1-heikki.krogerus@linux.intel.com>
+   d="scan'208";a="383074888"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 06:30:23 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lGjYx-0099w2-Dv; Mon, 01 Mar 2021 16:30:19 +0200
+Date:   Mon, 1 Mar 2021 16:30:19 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Yang Li <yang.lee@linux.alibaba.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] gpiolib: acpi: Add missing IRQF_ONESHOT
+Message-ID: <YDz6e9POQuhzNgkp@smile.fi.intel.com>
+References: <1614069358-50943-1-git-send-email-yang.lee@linux.alibaba.com>
+ <YDTsWR/kXhd96ICI@smile.fi.intel.com>
+ <YDe8/2toCGEH2Mf1@smile.fi.intel.com>
+ <CAMpxmJV5go-fHR2RWWdyi5a6ONeXrhC5c958oNZNzszt2aGN9A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMpxmJV5go-fHR2RWWdyi5a6ONeXrhC5c958oNZNzszt2aGN9A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function device_add_software_node() was meant to
-register the node supplied to it, but only if that node
-wasn't already registered. Right now the function attempts
-to always register the node. That will cause a failure with
-nodes that are already registered.
+On Mon, Mar 01, 2021 at 02:57:53PM +0100, Bartosz Golaszewski wrote:
+> On Thu, Feb 25, 2021 at 4:07 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Tue, Feb 23, 2021 at 01:51:53PM +0200, Andy Shevchenko wrote:
+> > > On Tue, Feb 23, 2021 at 04:35:58PM +0800, Yang Li wrote:
+> > > > fixed the following coccicheck:
+> > > > ./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
+> > > > primary handler requested without IRQF_ONESHOT
+> > > >
+> > > > Make sure threaded IRQs without a primary handler are always request
+> > > > with IRQF_ONESHOT
+> > >
+> > > Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >
+> > Bart, I guess I will collect this in my branch and send you a PR.
+> > I have more fixes to that file anyway.
+> 
+> Fine with me!
 
-Fixing that by incrementing the reference count of the nodes
-that have already been registered, and only registering the
-new nodes. Also, clarifying the behaviour in the function
-documentation.
+Good! So, when you have time, please review [1] and I'll send PR for fixes.
 
-Fixes: e68d0119e328 ("software node: Introduce device_add_software_node()")
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/base/swnode.c    | 26 +++++++++++++++++---------
- include/linux/property.h |  2 +-
- 2 files changed, 18 insertions(+), 10 deletions(-)
+[1]: https://lore.kernel.org/linux-gpio/20210225163320.71267-1-andriy.shevchenko@linux.intel.com/T/#u
 
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index 74db8c971db74..fa3719ef80e4d 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -1005,25 +1005,33 @@ EXPORT_SYMBOL_GPL(fwnode_remove_software_node);
- /**
-  * device_add_software_node - Assign software node to a device
-  * @dev: The device the software node is meant for.
-- * @swnode: The software node.
-+ * @node: The software node.
-  *
-- * This function will register @swnode and make it the secondary firmware node
-- * pointer of @dev. If @dev has no primary node, then @swnode will become the primary
-- * node.
-+ * This function will make @node the secondary firmware node pointer of @dev. If
-+ * @dev has no primary node, then @node will become the primary node. The
-+ * function will register @node automatically if it wasn't already registered.
-  */
--int device_add_software_node(struct device *dev, const struct software_node *swnode)
-+int device_add_software_node(struct device *dev, const struct software_node *node)
- {
-+	struct swnode *swnode;
- 	int ret;
- 
- 	/* Only one software node per device. */
- 	if (dev_to_swnode(dev))
- 		return -EBUSY;
- 
--	ret = software_node_register(swnode);
--	if (ret)
--		return ret;
-+	swnode = software_node_to_swnode(node);
-+	if (swnode) {
-+		kobject_get(&swnode->kobj);
-+	} else {
-+		ret = software_node_register(node);
-+		if (ret)
-+			return ret;
-+
-+		swnode = software_node_to_swnode(node);
-+	}
- 
--	set_secondary_fwnode(dev, software_node_fwnode(swnode));
-+	set_secondary_fwnode(dev, &swnode->fwnode);
- 
- 	return 0;
- }
-diff --git a/include/linux/property.h b/include/linux/property.h
-index dafccfce02624..dd4687b562393 100644
---- a/include/linux/property.h
-+++ b/include/linux/property.h
-@@ -488,7 +488,7 @@ fwnode_create_software_node(const struct property_entry *properties,
- 			    const struct fwnode_handle *parent);
- void fwnode_remove_software_node(struct fwnode_handle *fwnode);
- 
--int device_add_software_node(struct device *dev, const struct software_node *swnode);
-+int device_add_software_node(struct device *dev, const struct software_node *node);
- void device_remove_software_node(struct device *dev);
- 
- int device_create_managed_software_node(struct device *dev,
 -- 
-2.30.1
+With Best Regards,
+Andy Shevchenko
+
 
