@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA35329C66
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D241F329B8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380662AbhCBByd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:54:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48616 "EHLO mail.kernel.org"
+        id S1348913AbhCBB03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:26:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241939AbhCAT35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:29:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 472AF65309;
-        Mon,  1 Mar 2021 17:42:15 +0000 (UTC)
+        id S235235AbhCATJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:09:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E556530C;
+        Mon,  1 Mar 2021 17:42:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620535;
-        bh=7e2n9VU+xj55WjBrI63QGZUyYr5AtlI9nWtaKHlYmSs=;
+        s=korg; t=1614620541;
+        bh=7wUmMVJ0RbdIwCGphAS4ZZkkYvMw+d3aBUfmuLZDRNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GkACZUcHQu72yQ7wpRX3hsCV+yEbO9zd8cVPIlpHczGlGiLkZI+fQceN9vqB567i7
-         mZLNGAfX5RvWj8uS3W3kEFZaxSD/FpzNm0wNSv1YsrJIP1gbKO8Btxd+h7OovtIYI4
-         upHL211qUmO0ID7XxV6sOqwdJvoF3O6Gqphx2eww=
+        b=SzkXei3Lj8OdBw8t2tWT5Zc/YesIhWBjew31yNM+8IiFCa6fnhVpsiI/FZgR49O9i
+         yvEaJR046PqWLKRrzDwPdLfzIscXgijMNS6A/pSO0tJoJ4SXF+JifVwGhXGgtluio+
+         pfih0NgdSm/E/IDDNL0zf8VGBf6tSB1MkVtPZYgU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guchun Chen <guchun.chen@amd.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Chenyang Li <lichenyang@loongson.cn>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 188/775] drm/amdgpu: Fix macro name _AMDGPU_TRACE_H_ in preprocessor if condition
-Date:   Mon,  1 Mar 2021 17:05:56 +0100
-Message-Id: <20210301161210.911377337@linuxfoundation.org>
+Subject: [PATCH 5.11 190/775] MIPS: lantiq: Explicitly compare LTQ_EBU_PCC_ISTAT against 0
+Date:   Mon,  1 Mar 2021 17:05:58 +0100
+Message-Id: <20210301161211.012773558@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
 References: <20210301161201.679371205@linuxfoundation.org>
@@ -42,35 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chenyang Li <lichenyang@loongson.cn>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 956e20eb0fbb206e5e795539db5469db099715c8 ]
+[ Upstream commit c6f2a9e17b9bef7677caddb1626c2402f3e9d2bd ]
 
-Add an underscore in amdgpu_trace.h line 24 "_AMDGPU_TRACE_H".
+When building xway_defconfig with clang:
 
-Fixes: d38ceaf99ed0 ("drm/amdgpu: add core driver (v4)")
-Reviewed-by: Guchun Chen <guchun.chen@amd.com>
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Signed-off-by: Chenyang Li <lichenyang@loongson.cn>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+arch/mips/lantiq/irq.c:305:48: error: use of logical '&&' with constant
+operand [-Werror,-Wconstant-logical-operand]
+        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
+                                                      ^ ~~~~~~~~~~~~~~~~~
+arch/mips/lantiq/irq.c:305:48: note: use '&' for a bitwise operation
+        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
+                                                      ^~
+                                                      &
+arch/mips/lantiq/irq.c:305:48: note: remove constant to silence this
+warning
+        if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
+                                                     ~^~~~~~~~~~~~~~~~~~~~
+1 error generated.
+
+Explicitly compare the constant LTQ_EBU_PCC_ISTAT against 0 to fix the
+warning. Additionally, remove the unnecessary parentheses as this is a
+simple conditional statement and shorthand '== 0' to '!'.
+
+Fixes: 3645da0276ae ("OF: MIPS: lantiq: implement irq_domain support")
+Link: https://github.com/ClangBuiltLinux/linux/issues/807
+Reported-by: Dmitry Golovin <dima@golovin.in>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h | 2 +-
+ arch/mips/lantiq/irq.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
-index 6752d8b131188..ce8dc995c10cf 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_trace.h
-@@ -21,7 +21,7 @@
-  *
-  */
+diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
+index df8eed3875f6d..43c2f271e6ab4 100644
+--- a/arch/mips/lantiq/irq.c
++++ b/arch/mips/lantiq/irq.c
+@@ -302,7 +302,7 @@ static void ltq_hw_irq_handler(struct irq_desc *desc)
+ 	generic_handle_irq(irq_linear_revmap(ltq_domain, hwirq));
  
--#if !defined(_AMDGPU_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-+#if !defined(_AMDGPU_TRACE_H_) || defined(TRACE_HEADER_MULTI_READ)
- #define _AMDGPU_TRACE_H_
- 
- #include <linux/stringify.h>
+ 	/* if this is a EBU irq, we need to ack it or get a deadlock */
+-	if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
++	if (irq == LTQ_ICU_EBU_IRQ && !module && LTQ_EBU_PCC_ISTAT != 0)
+ 		ltq_ebu_w32(ltq_ebu_r32(LTQ_EBU_PCC_ISTAT) | 0x10,
+ 			LTQ_EBU_PCC_ISTAT);
+ }
 -- 
 2.27.0
 
