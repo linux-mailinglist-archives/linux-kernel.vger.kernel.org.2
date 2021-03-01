@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF80329882
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 700F3329808
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 10:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346050AbhCAXhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 18:37:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59384 "EHLO mail.kernel.org"
+        id S1344901AbhCAXJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 18:09:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238947AbhCASHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:07:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53AC6651E7;
-        Mon,  1 Mar 2021 17:19:07 +0000 (UTC)
+        id S238834AbhCAR4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:56:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6899765053;
+        Mon,  1 Mar 2021 17:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619147;
-        bh=RzofuUKyN9DwFW2Y0fKdA4U9YIA7AaYiv9uS/HSHnCA=;
+        s=korg; t=1614619266;
+        bh=/6DgLW5qA0JxQ2bSEwc6oQ+ExbQqEPZfOPn9vpkTUiw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wkph/Mk0IR2l6SsbWc7B4k7J3Wrs+0V2So4OPYLQ6nf8cjoHS30MNwrHDUoiRw7Bp
-         d2zpVgoKJQDLllx6vajzODFYMdNCZBPUBE/AiFFekanQqVvjV5z4ZJHXOe4Dugxn8l
-         ZZN5tq+KbyqJzkE/8SIajU4zpu4axEmp3O6jhhh8=
+        b=ufvWaP0vkWG3P4OKmAYsM7Sfk0irJeoqAkEwp92EmOKJNBcJxtctwVM8GF/HTtk7K
+         DXd49L/GwzBK9yNI/xUzvj2Pzho3uudVD6lV641IC+gcu3OhcfjJWB2cLIGTp0rFG3
+         PxlbkLz8BWw8WOCXjW+zMqL5roG2eoZ6cNA2mXfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Lee Jones <lee.jones@linaro.org>,
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 349/663] mfd: altera-sysmgr: Fix physical address storing more
-Date:   Mon,  1 Mar 2021 17:09:57 +0100
-Message-Id: <20210301161159.116709424@linuxfoundation.org>
+Subject: [PATCH 5.10 362/663] powerpc/uaccess: Avoid might_fault() when user access is enabled
+Date:   Mon,  1 Mar 2021 17:10:10 +0100
+Message-Id: <20210301161159.754306241@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,56 +40,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Alexey Kardashevskiy <aik@ozlabs.ru>
 
-[ Upstream commit b0b5b16b78cea1b2b990a69ab8e07a42ccf7a2ed ]
+[ Upstream commit 7d506ca97b665b95e698a53697dad99fae813c1a ]
 
-A recent fix improved the way the resource gets passed to
-the low-level accessors, but left one warning that appears
-in configurations with a resource_size_t that is wider than
-a pointer:
+The amount of code executed with enabled user space access (unlocked
+KUAP) should be minimal. However with CONFIG_PROVE_LOCKING or
+CONFIG_DEBUG_ATOMIC_SLEEP enabled, might_fault() calls into various
+parts of the kernel, and may even end up replaying interrupts which in
+turn may access user space and forget to restore the KUAP state.
 
-In file included from drivers/mfd/altera-sysmgr.c:19:
-drivers/mfd/altera-sysmgr.c: In function 'sysmgr_probe':
-drivers/mfd/altera-sysmgr.c:148:40: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
-  148 |   regmap = devm_regmap_init(dev, NULL, (void *)res->start,
-      |                                        ^
-include/linux/regmap.h:646:6: note: in definition of macro '__regmap_lockdep_wrapper'
-  646 |   fn(__VA_ARGS__, &_key,     \
-      |      ^~~~~~~~~~~
-drivers/mfd/altera-sysmgr.c:148:12: note: in expansion of macro 'devm_regmap_init'
-  148 |   regmap = devm_regmap_init(dev, NULL, (void *)res->start,
-      |            ^~~~~~~~~~~~~~~~
+The problem places are:
+  1. strncpy_from_user (and similar) which unlock KUAP and call
+     unsafe_get_user -> __get_user_allowed -> __get_user_nocheck()
+     with do_allow=false to skip KUAP as the caller took care of it.
+  2. __unsafe_put_user_goto() which is called with unlocked KUAP.
 
-I had tried a different approach that would store the address
-in the private data as a phys_addr_t, but the easiest solution
-now seems to be to add a double cast to shut up the warning.
+eg:
+  WARNING: CPU: 30 PID: 1 at arch/powerpc/include/asm/book3s/64/kup.h:324 arch_local_irq_restore+0x160/0x190
+  NIP arch_local_irq_restore+0x160/0x190
+  LR  lock_is_held_type+0x140/0x200
+  Call Trace:
+    0xc00000007f392ff8 (unreliable)
+    ___might_sleep+0x180/0x320
+    __might_fault+0x50/0xe0
+    filldir64+0x2d0/0x5d0
+    call_filldir+0xc8/0x180
+    ext4_readdir+0x948/0xb40
+    iterate_dir+0x1ec/0x240
+    sys_getdents64+0x80/0x290
+    system_call_exception+0x160/0x280
+    system_call_common+0xf0/0x27c
 
-As the address is passed to an inline assembly, it is guaranteed
-to not be wider than a register anyway.
+Change __get_user_nocheck() to look at `do_allow` to decide whether to
+skip might_fault(). Since strncpy_from_user/etc call might_fault()
+anyway before unlocking KUAP, there should be no visible change.
 
-Fixes: d9ca7801b6e5 ("mfd: altera-sysmgr: Fix physical address storing hacks")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Drop might_fault() in __unsafe_put_user_goto() as it is only called
+from unsafe_put_user(), which already has KUAP unlocked.
+
+Since keeping might_fault() is still desirable for debugging, add
+calls to it in user_[read|write]_access_begin(). That also allows us
+to drop the is_kernel_addr() test, because there should be no code
+using user_[read|write]_access_begin() in order to access a kernel
+address.
+
+Fixes: de78a9c42a79 ("powerpc: Add a framework for Kernel Userspace Access Protection")
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
+[mpe: Combine with related patch from myself, merge change logs]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210204121612.32721-1-aik@ozlabs.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/altera-sysmgr.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/include/asm/uaccess.h | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/altera-sysmgr.c b/drivers/mfd/altera-sysmgr.c
-index 41076d121dd54..591b300d90953 100644
---- a/drivers/mfd/altera-sysmgr.c
-+++ b/drivers/mfd/altera-sysmgr.c
-@@ -145,7 +145,8 @@ static int sysmgr_probe(struct platform_device *pdev)
- 		sysmgr_config.reg_write = s10_protected_reg_write;
- 
- 		/* Need physical address for SMCC call */
--		regmap = devm_regmap_init(dev, NULL, (void *)res->start,
-+		regmap = devm_regmap_init(dev, NULL,
-+					  (void *)(uintptr_t)res->start,
- 					  &sysmgr_config);
- 	} else {
- 		base = devm_ioremap(dev, res->start, resource_size(res));
+diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+index 501c9a79038c0..f53bfefb4a577 100644
+--- a/arch/powerpc/include/asm/uaccess.h
++++ b/arch/powerpc/include/asm/uaccess.h
+@@ -216,8 +216,6 @@ do {								\
+ #define __put_user_nocheck_goto(x, ptr, size, label)		\
+ do {								\
+ 	__typeof__(*(ptr)) __user *__pu_addr = (ptr);		\
+-	if (!is_kernel_addr((unsigned long)__pu_addr))		\
+-		might_fault();					\
+ 	__chk_user_ptr(ptr);					\
+ 	__put_user_size_goto((x), __pu_addr, (size), label);	\
+ } while (0)
+@@ -313,7 +311,7 @@ do {								\
+ 	__typeof__(size) __gu_size = (size);			\
+ 								\
+ 	__chk_user_ptr(__gu_addr);				\
+-	if (!is_kernel_addr((unsigned long)__gu_addr))		\
++	if (do_allow && !is_kernel_addr((unsigned long)__gu_addr)) \
+ 		might_fault();					\
+ 	barrier_nospec();					\
+ 	if (do_allow)								\
+@@ -508,6 +506,9 @@ static __must_check inline bool user_access_begin(const void __user *ptr, size_t
+ {
+ 	if (unlikely(!access_ok(ptr, len)))
+ 		return false;
++
++	might_fault();
++
+ 	allow_read_write_user((void __user *)ptr, ptr, len);
+ 	return true;
+ }
+@@ -521,6 +522,9 @@ user_read_access_begin(const void __user *ptr, size_t len)
+ {
+ 	if (unlikely(!access_ok(ptr, len)))
+ 		return false;
++
++	might_fault();
++
+ 	allow_read_from_user(ptr, len);
+ 	return true;
+ }
+@@ -532,6 +536,9 @@ user_write_access_begin(const void __user *ptr, size_t len)
+ {
+ 	if (unlikely(!access_ok(ptr, len)))
+ 		return false;
++
++	might_fault();
++
+ 	allow_write_to_user((void __user *)ptr, len);
+ 	return true;
+ }
 -- 
 2.27.0
 
