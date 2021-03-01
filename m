@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C9D329FA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7AF329FA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:00:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238712AbhCBDkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:40:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243525AbhCAUpZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 15:45:25 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F1EC06178C;
-        Mon,  1 Mar 2021 12:44:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=YUYva8CDKxOpu0p3oNxBRvTwbXZx6qUfbDB3s9PPyW0=; b=RfOvodCj29KghMJ/VGhTiCzKRs
-        m3LmQu48Rw3Wt5ddU7QJdT3pCxtvtPc0d/ZOv0OmmeukNxcPn/drNczbsQ6OOdVpmIpzvL119t/vD
-        rilYZWkEANXFOJXRQCS80EgM7SFFhTx+ecs2gnBW1n+/Pn2l9+ettoux/280S0NAn3rSz34mmEJOd
-        lIAAvHvP9nHab+HQNvzneWPZXag+rOrtVVqhBJr7NB/pcwKKot7clj4FYTep/RQEW+8HlJ164KKGG
-        ozhUhVMIny2r5F6crHA43u06q+r1Y1zafmreylIDncHsZtbwOC4dafC7f01LZdAM01x67Slt/m2ob
-        5W1Xa7uw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lGpOy-00GCkN-N3; Mon, 01 Mar 2021 20:44:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 509F83060C5;
-        Mon,  1 Mar 2021 21:44:20 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 437222215BD3A; Mon,  1 Mar 2021 21:44:20 +0100 (CET)
-Date:   Mon, 1 Mar 2021 21:44:20 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        paulmck@kernel.org, mhocko@suse.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH v2 3/3] kernel/smp: add more data to CSD lock debugging
-Message-ID: <YD1SJNDeGcNOO00s@hirez.programming.kicks-ass.net>
-References: <20210301101336.7797-1-jgross@suse.com>
- <20210301101336.7797-4-jgross@suse.com>
- <YD0fTLnQTQ7/M7fx@hirez.programming.kicks-ass.net>
- <c7c1eeb5-21b3-339b-4b25-a6c8df820146@suse.com>
+        id S242318AbhCBDnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:43:47 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:35214 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240983AbhCAUqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:46:35 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lGpQ9-008zyD-9S; Mon, 01 Mar 2021 21:45:37 +0100
+Date:   Mon, 1 Mar 2021 21:45:37 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     arndb@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, brandon_chuang@edge-core.com,
+        wally_wang@accton.com, aken_liu@edge-core.com, gulv@microsoft.com,
+        jolevequ@microsoft.com, xinxliu@microsoft.com,
+        'netdev' <netdev@vger.kernel.org>,
+        'Moshe Shemesh' <moshe@nvidia.com>
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YD1ScQ+w8+1H//Y+@lunn.ch>
+References: <20210215193821.3345-1-don@thebollingers.org>
+ <YDl3f8MNWdZWeOBh@lunn.ch>
+ <000901d70cb2$b2848420$178d8c60$@thebollingers.org>
+ <004f01d70ed5$8bb64480$a322cd80$@thebollingers.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <c7c1eeb5-21b3-339b-4b25-a6c8df820146@suse.com>
+In-Reply-To: <004f01d70ed5$8bb64480$a322cd80$@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 08:16:12PM +0100, J=FCrgen Gro=DF wrote:
-> >    https://lkml.kernel.org/r/20210220231712.2475218-2-namit@vmware.com
->=20
-> They are already in tip locking/core (Ingo applied them).
+> To be more specific, optoe is only replacing the functionality of
+> drivers/net/phy/sfp.c, the functions of sfp_i2c_read() and sfp_i2c_write().
+> These are the routines at the very bottom of the ethtool stack that actually
+> execute the i2c calls to get the data.  The existing routines are very
+> limited, in that they don't handle pages at all.  Hence they can only reach
+> 256 bytes of QSFP EEPROM data and 512 bytes of SFP EEPROM data.  I can
+> propose a shorter cleaner replacement for each of those routines which will
+> provide access to the rest of the data on those devices.
 
-I'm very tempted to undo that :-(
+drivers/net/phy/sfp.c is not the only code making use of this KAPI.
+Any MAC driver can implement the ethtool op calls for reading SFP
+memory. The MAC driver can either directly reply because it has the
+SFP hidden behind firmware, or it can call into the sfp.c code,
+because Linux is driving the SFP.
+
+Moshe is working on the Mellonox MAC drivers. As you say, the current
+sfp.c code is very limited. But once Moshe code is merged, i will do
+the work needed to extend sfp.c to fully support the KAPI. It will
+then work for many more MAC drivers, those using phylink.
+
+For me, the KAPI is the important thing, and less so how the
+implementation underneath works. Ideally, we want one KAPI for
+accessing SFP EEPROMs. Up until now, that KAPI is the ethtool IOCTL.
+But that KAPI is now showing its age, and it causing us problems. So
+we need to replace that KAPI. ethtool has recently moved to using
+netlink messages. So any replacement should be based on netlink. The
+whole network stack is pretty much controlled via netlink. So you will
+find it very difficult to argue for any other form of KAPI within the
+netdev community. Since optoe's KAPI is not netlink based, it is very
+unlikely to be accepted.
+
+But netlink is much more flexible than the older IOCTL interface.
+Please work with us to ensure this new KAPI can work with your use
+cases.
+
+     Andrew
+
