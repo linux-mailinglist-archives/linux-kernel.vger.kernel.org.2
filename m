@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80BD329361
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26492329362
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243345AbhCAVRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:17:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51394 "EHLO mail.kernel.org"
+        id S237876AbhCAVRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:17:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235811AbhCAROC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235877AbhCAROC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Mar 2021 12:14:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DDCD65042;
-        Mon,  1 Mar 2021 16:45:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17E966503C;
+        Mon,  1 Mar 2021 16:45:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617137;
-        bh=gXbvBo7gC3gwCUnskLruRZA2ZXWf8pL0VuSO9q3H7kI=;
+        s=korg; t=1614617140;
+        bh=yr/LtSGrnI3wFjHNkQGTvrPonIPyMXKttkg1Z7P0fps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pu0+jh+sudVj3tCP5KQVHrV3CgY/k08dT1158S6oemOXzq8xYyCNjRTByeIZQfsaR
-         d/Kp4+So5sCS8tEbFKl90qrFEWyrnEka6ufyS7Oi+advwxA2d2WhYe53oUp43y2NcN
-         AkYtpPwDzaRiOKQKsHRMJa/F4qSWDqCj/xADW8h0=
+        b=siG/fAY1+AGWHK/G6gHBDLTD/qX7lsOy8IImMuAK2ngotFso31656X8LhK4W485BB
+         NlU7LS5NzqSdrouDrOqpxWrGAlA4Ah9ghHiQqCzjINr7co/HQFOpYbkbXSHeZy7Ue2
+         gZOwso1zBTxPxsi3WxW8HyWHUivKVqx1Ba0rB65s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, He Zhe <zhe.he@windriver.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 4.19 215/247] arm64: uprobe: Return EOPNOTSUPP for AARCH32 instruction probing
-Date:   Mon,  1 Mar 2021 17:13:55 +0100
-Message-Id: <20210301161042.196645943@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: [PATCH 4.19 216/247] watchdog: mei_wdt: request stop on unregister
+Date:   Mon,  1 Mar 2021 17:13:56 +0100
+Message-Id: <20210301161042.246440384@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
 References: <20210301161031.684018251@linuxfoundation.org>
@@ -39,38 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: He Zhe <zhe.he@windriver.com>
+From: Alexander Usyskin <alexander.usyskin@intel.com>
 
-commit d47422d953e258ad587b5edf2274eb95d08bdc7d upstream.
+commit 740c0a57b8f1e36301218bf549f3c9cc833a60be upstream.
 
-As stated in linux/errno.h, ENOTSUPP should never be seen by user programs.
-When we set up uprobe with 32-bit perf and arm64 kernel, we would see the
-following vague error without useful hint.
+The MEI bus has a special behavior on suspend it destroys
+all the attached devices, this is due to the fact that also
+firmware context is not persistent across power flows.
 
-The sys_perf_event_open() syscall returned with 524 (INTERNAL ERROR:
-strerror_r(524, [buf], 128)=22)
+If watchdog on MEI bus is ticking before suspending the firmware
+times out and reports that the OS is missing watchdog tick.
+Send the stop command to the firmware on watchdog unregistered
+to eliminate the false event on suspend.
+This does not make the things worse from the user-space perspective
+as a user-space should re-open watchdog device after
+suspending before this patch.
 
-Use EOPNOTSUPP instead to indicate such cases.
-
-Signed-off-by: He Zhe <zhe.he@windriver.com>
-Link: https://lore.kernel.org/r/20210223082535.48730-1-zhe.he@windriver.com
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20210124114938.373885-1-tomas.winkler@intel.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/kernel/probes/uprobes.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/watchdog/mei_wdt.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm64/kernel/probes/uprobes.c
-+++ b/arch/arm64/kernel/probes/uprobes.c
-@@ -41,7 +41,7 @@ int arch_uprobe_analyze_insn(struct arch
+--- a/drivers/watchdog/mei_wdt.c
++++ b/drivers/watchdog/mei_wdt.c
+@@ -382,6 +382,7 @@ static int mei_wdt_register(struct mei_w
  
- 	/* TODO: Currently we do not support AARCH32 instruction probing */
- 	if (mm->context.flags & MMCF_AARCH32)
--		return -ENOTSUPP;
-+		return -EOPNOTSUPP;
- 	else if (!IS_ALIGNED(addr, AARCH64_INSN_SIZE))
- 		return -EINVAL;
+ 	watchdog_set_drvdata(&wdt->wdd, wdt);
+ 	watchdog_stop_on_reboot(&wdt->wdd);
++	watchdog_stop_on_unregister(&wdt->wdd);
  
+ 	ret = watchdog_register_device(&wdt->wdd);
+ 	if (ret) {
 
 
