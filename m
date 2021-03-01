@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0838329373
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 172BE329376
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 22:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244473AbhCAVTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 16:19:20 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:49811 "EHLO
+        id S244543AbhCAVTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 16:19:36 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:12062 "EHLO
         esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237279AbhCARPt (ORCPT
+        with ESMTP id S237915AbhCARQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:15:49 -0500
+        Mon, 1 Mar 2021 12:16:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1614618944; x=1646154944;
+  t=1614618963; x=1646154963;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=qxIVc6oSv0cMcN+IvnHsmgb2hZt7rxob4UbuRztljGQ=;
-  b=WX/wAhn6o6B0Xlu/TQ9nnLpblG9m2y3pH5nPgDMGb9BPyXh3ouaaMJnT
-   m/OxUM6ePED6j/da9O/o3aHIBM27Fhb/NW5Agy+lZlV3w+m5GeF8cg97w
-   azGtvyTSikWctq+fvf9hW1NAp4LA00Rh22BoY9Wzf6tYYQhTfGrneqUWM
-   oC/e1d5yeWhzy7cyU1sNxyxFmaM0YTfZpU5XvqkM/dkLZBGK4uetol75a
-   ooglOH7xJme8w9JAO1Rxaa5wnNtDIJo35FVYIMfHclns36S49Svi94OOZ
-   BcVuLSMHaG2g4M6F3uJgNa4iiqkEnoayldBIoqn8F9wB8EYFxXzRyd40V
-   A==;
-IronPort-SDR: ouQp64EpkoFzkGEpe9Edckk9eZxqBHwSFOkVsrV/mS/Eenz4yoe6ULQlNFpZBzIcd5p6RxuBK+
- KXozG9SfEaMGX4mgAEW8eY5HZGhD7f4D4wfjRA8BNKXAClp73rmRKBiR+CHEsVNLkotilokq10
- 1LofJU0NNl55iaH+HKYZgkA2jbgHoKARwilvugl8Q7TjijwRV3qIFTrSNl1pVc/l82wUXUQjAG
- s6MuSYhDdT98yBBbFPAO7CYn2ZYk9OmcWCdKsO75cgeBVZkIFBEybQa/7x3pYXAWxuUELo7P78
- fMI=
+  bh=vdkgfYTBy9vYleTA6P3avwZb1bE3XbCFs6C48vOkcUc=;
+  b=FfZqTrQTQGAREMndXWCozRJUIJSvEQ5+DVsroTnJ02wTuVblD2IKiAQy
+   7kTvOL+jdjyihFJFHuc/LP+n9UxXvNjYsighJz6lH02WiWfSFG8QZlhku
+   WhEfh8mF9jJaNEt7ksgSJRfLDsMUxmgHFjX0eZfk/BsSySbQwwi5bmNqb
+   fzb2cF3cbU0AvH53Q/q/k12thN+2YRhmqx4baczjGVfjb5KOtGMrWEd4H
+   Uyqaq8nYpHiGatwcP1f7UHzvGjUcYd3Qh6rU2DM80OgUeKcTUDCX8zZf5
+   jl6kSdbz8hcnqmLS9Y+LNEWaqBiAIhRrXKXMw9g9ymTLvBflV8UtBnoCg
+   w==;
+IronPort-SDR: Ec1Yoapdx78FvltJ6RUWlVv5975kPSvNmlwSbX/Ove+CBHMc88rLCBqUTMMfaIEnhtIa8zXAUK
+ hg0quGcg6fF2joKvaqdNCCXxgpOu579UITj3xK816gPP8OQlF6QjGsNAcBb/N6mHAPbcYReB94
+ +RHsZW756UNHMarZLyAkMkzGEgbrDAtTMy1Ftc0OLrWJYDvgXJgEH1mRncvdWYIx3y27fKk2+G
+ 8dMrQBS7U/j1VzTBR9dGf8c924Wh7FYUG8T+f6lcrtTgR7O/orDDZeroKoKFdFueI78gr0l9QQ
+ aog=
 X-IronPort-AV: E=Sophos;i="5.81,215,1610434800"; 
-   d="scan'208";a="111511733"
+   d="scan'208";a="111511781"
 Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Mar 2021 10:09:53 -0700
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Mar 2021 10:10:02 -0700
 Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
  chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 1 Mar 2021 10:09:53 -0700
+ 15.1.1979.3; Mon, 1 Mar 2021 10:09:57 -0700
 Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
  chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 1 Mar 2021 10:09:50 -0700
+ 15.1.1979.3 via Frontend Transport; Mon, 1 Mar 2021 10:09:53 -0700
 From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 To:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
@@ -49,9 +49,9 @@ CC:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
         <perex@perex.cz>, <tiwai@suse.com>, <nicolas.ferre@microchip.com>,
         <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
         "Codrin Ciubotariu" <codrin.ciubotariu@microchip.com>
-Subject: [PATCH v2 5/7] ASoC: mchp-i2s-mcc: Add support to select TDM pins
-Date:   Mon, 1 Mar 2021 19:09:03 +0200
-Message-ID: <20210301170905.835091-6-codrin.ciubotariu@microchip.com>
+Subject: [PATCH v2 6/7] ASoC: mchp-i2s-mcc: Add FIFOs support
+Date:   Mon, 1 Mar 2021 19:09:04 +0200
+Message-ID: <20210301170905.835091-7-codrin.ciubotariu@microchip.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
 References: <20210301170905.835091-1-codrin.ciubotariu@microchip.com>
@@ -62,12 +62,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SAMA7G5's I2S-MCC has 4 pairs of DIN/DOUT pins. Since TDM only uses a
-single pair of pins for synchronous capture and playback, the controller
-needs to be told which of the pair is connected. This can be mentioned
-using the "microchip,tdm-data-pair" property from DT. The property is
-optional, useful only if TDM is used. If it's missing, DIN/DOUT 0 pins
-will be used by default.
+I2S-MCC found on SAMA7G5 includes 2 FIFOs (capture and playback). When
+FIFOs are enabled, bits I2SMCC_ISRA.TXLRDYx and I2SMCC_ISRA.TXRRDYx must
+not be used. Bits I2SMCC_ISRB.TXFFRDY and I2SMCC_ISRB.RXFFRDY must be used
+instead.
 
 Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 ---
@@ -75,100 +73,181 @@ Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 Changes in v2:
 - none
 
- sound/soc/atmel/mchp-i2s-mcc.c | 52 +++++++++++++++++++++++++++++++---
- 1 file changed, 48 insertions(+), 4 deletions(-)
+ sound/soc/atmel/mchp-i2s-mcc.c | 76 +++++++++++++++++++++++++---------
+ 1 file changed, 56 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/atmel/mchp-i2s-mcc.c b/sound/soc/atmel/mchp-i2s-mcc.c
-index 52d3f43148dc..515ba3634fdd 100644
+index 515ba3634fdd..673bc16cb46a 100644
 --- a/sound/soc/atmel/mchp-i2s-mcc.c
 +++ b/sound/soc/atmel/mchp-i2s-mcc.c
-@@ -100,6 +100,8 @@
- #define MCHP_I2SMCC_MRA_DATALENGTH_8_BITS_COMPACT	(7 << 1)
+@@ -176,7 +176,7 @@
+  */
+ #define MCHP_I2SMCC_MRB_CRAMODE_REGULAR		(1 << 0)
  
- #define MCHP_I2SMCC_MRA_WIRECFG_MASK		GENMASK(5, 4)
-+#define MCHP_I2SMCC_MRA_WIRECFG_TDM(pin)	(((pin) << 4) & \
-+						 MCHP_I2SMCC_MRA_WIRECFG_MASK)
- #define MCHP_I2SMCC_MRA_WIRECFG_I2S_1_TDM_0	(0 << 4)
- #define MCHP_I2SMCC_MRA_WIRECFG_I2S_2_TDM_1	(1 << 4)
- #define MCHP_I2SMCC_MRA_WIRECFG_I2S_4_TDM_2	(2 << 4)
-@@ -245,6 +247,7 @@ struct mchp_i2s_mcc_dev {
- 	unsigned int				frame_length;
- 	int					tdm_slots;
- 	int					channels;
-+	u8					tdm_data_pair;
- 	unsigned int				gclk_use:1;
- 	unsigned int				gclk_running:1;
- 	unsigned int				tx_rdy:1;
-@@ -589,6 +592,8 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
- 		if (!frame_length)
- 			frame_length = 2 * params_physical_width(params);
- 	} else if (dev->fmt & SND_SOC_DAIFMT_DSP_A) {
-+		mra |= MCHP_I2SMCC_MRA_WIRECFG_TDM(dev->tdm_data_pair);
-+
- 		if (dev->tdm_slots) {
- 			if (channels % 2 && channels * 2 <= dev->tdm_slots) {
- 				/*
-@@ -914,6 +919,45 @@ static const struct of_device_id mchp_i2s_mcc_dt_ids[] = {
- MODULE_DEVICE_TABLE(of, mchp_i2s_mcc_dt_ids);
- #endif
+-#define MCHP_I2SMCC_MRB_FIFOEN			BIT(1)
++#define MCHP_I2SMCC_MRB_FIFOEN			BIT(4)
  
-+static int mchp_i2s_mcc_soc_data_parse(struct platform_device *pdev,
-+				       struct mchp_i2s_mcc_dev *dev)
-+{
-+	int err;
-+
-+	if (!dev->soc) {
-+		dev_err(&pdev->dev, "failed to get soc data\n");
-+		return -ENODEV;
-+	}
-+
-+	if (dev->soc->data_pin_pair_num == 1)
-+		return 0;
-+
-+	err = of_property_read_u8(pdev->dev.of_node, "microchip,tdm-data-pair",
-+				  &dev->tdm_data_pair);
-+	if (err < 0 && err != -EINVAL) {
-+		dev_err(&pdev->dev,
-+			"bad property data for 'microchip,tdm-data-pair': %d",
-+			err);
-+		return err;
-+	}
-+	if (err == -EINVAL) {
-+		dev_info(&pdev->dev,
-+			 "'microchip,tdm-data-pair' not found; assuming DIN/DOUT 0 for TDM\n");
-+		dev->tdm_data_pair = 0;
-+	} else {
-+		if (dev->tdm_data_pair > dev->soc->data_pin_pair_num - 1) {
-+			dev_err(&pdev->dev,
-+				"invalid value for 'microchip,tdm-data-pair': %d\n",
-+				dev->tdm_data_pair);
-+			return -EINVAL;
-+		}
-+		dev_dbg(&pdev->dev, "TMD format on DIN/DOUT %d pins\n",
-+			dev->tdm_data_pair);
-+	}
-+
-+	return 0;
-+}
-+
- static int mchp_i2s_mcc_probe(struct platform_device *pdev)
+ #define MCHP_I2SMCC_MRB_DMACHUNK_MASK		GENMASK(9, 8)
+ #define MCHP_I2SMCC_MRB_DMACHUNK(no_words) \
+@@ -230,6 +230,7 @@ static const struct regmap_config mchp_i2s_mcc_regmap_config = {
+ 
+ struct mchp_i2s_mcc_soc_data {
+ 	unsigned int	data_pin_pair_num;
++	bool		has_fifo;
+ };
+ 
+ struct mchp_i2s_mcc_dev {
+@@ -257,7 +258,7 @@ struct mchp_i2s_mcc_dev {
+ static irqreturn_t mchp_i2s_mcc_interrupt(int irq, void *dev_id)
  {
- 	struct mchp_i2s_mcc_dev *dev;
-@@ -966,10 +1010,10 @@ static int mchp_i2s_mcc_probe(struct platform_device *pdev)
+ 	struct mchp_i2s_mcc_dev *dev = dev_id;
+-	u32 sra, imra, srb, imrb, pendinga, pendingb, idra = 0;
++	u32 sra, imra, srb, imrb, pendinga, pendingb, idra = 0, idrb = 0;
+ 	irqreturn_t ret = IRQ_NONE;
+ 
+ 	regmap_read(dev->regmap, MCHP_I2SMCC_IMRA, &imra);
+@@ -275,24 +276,36 @@ static irqreturn_t mchp_i2s_mcc_interrupt(int irq, void *dev_id)
+ 	 * Tx/Rx ready interrupts are enabled when stopping only, to assure
+ 	 * availability and to disable clocks if necessary
+ 	 */
+-	idra |= pendinga & (MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels) |
+-			    MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
+-	if (idra)
++	if (dev->soc->has_fifo) {
++		idrb |= pendingb & (MCHP_I2SMCC_INT_TXFFRDY |
++				    MCHP_I2SMCC_INT_RXFFRDY);
++	} else {
++		idra |= pendinga & (MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels) |
++				    MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
++	}
++	if (idra || idrb)
+ 		ret = IRQ_HANDLED;
+ 
+-	if ((imra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels)) &&
+-	    (imra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels)) ==
+-	    (idra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels))) {
++	if ((!dev->soc->has_fifo &&
++	     (imra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels)) &&
++	     (imra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels)) ==
++	     (idra & MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels))) ||
++	    (dev->soc->has_fifo && imrb & MCHP_I2SMCC_INT_TXFFRDY)) {
+ 		dev->tx_rdy = 1;
+ 		wake_up_interruptible(&dev->wq_txrdy);
+ 	}
+-	if ((imra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels)) &&
+-	    (imra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels)) ==
+-	    (idra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels))) {
++	if ((!dev->soc->has_fifo &&
++	     (imra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels)) &&
++	     (imra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels)) ==
++	     (idra & MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels))) ||
++	    (dev->soc->has_fifo && imrb & MCHP_I2SMCC_INT_RXFFRDY)) {
+ 		dev->rx_rdy = 1;
+ 		wake_up_interruptible(&dev->wq_rxrdy);
+ 	}
+-	regmap_write(dev->regmap, MCHP_I2SMCC_IDRA, idra);
++	if (dev->soc->has_fifo)
++		regmap_write(dev->regmap, MCHP_I2SMCC_IDRB, idrb);
++	else
++		regmap_write(dev->regmap, MCHP_I2SMCC_IDRA, idra);
+ 
+ 	return ret;
+ }
+@@ -664,6 +677,10 @@ static int mchp_i2s_mcc_hw_params(struct snd_pcm_substream *substream,
+ 		}
  	}
  
- 	dev->soc = of_device_get_match_data(&pdev->dev);
--	if (!dev->soc) {
--		dev_err(&pdev->dev, "failed to get soc data\n");
--		return -ENODEV;
--	}
-+	err = mchp_i2s_mcc_soc_data_parse(pdev, dev);
-+	if (err < 0)
-+		return err;
++	/* enable FIFO if available */
++	if (dev->soc->has_fifo)
++		mrb |= MCHP_I2SMCC_MRB_FIFOEN;
 +
- 	dev->dev = &pdev->dev;
- 	dev->regmap = regmap;
- 	platform_set_drvdata(pdev, dev);
+ 	/*
+ 	 * If we are already running, the wanted setup must be
+ 	 * the same with the one that's currently ongoing
+@@ -726,8 +743,13 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
+ 		if (err == 0) {
+ 			dev_warn_once(dev->dev,
+ 				      "Timeout waiting for Tx ready\n");
+-			regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
+-				     MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels));
++			if (dev->soc->has_fifo)
++				regmap_write(dev->regmap, MCHP_I2SMCC_IDRB,
++					     MCHP_I2SMCC_INT_TXFFRDY);
++			else
++				regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
++					     MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels));
++
+ 			dev->tx_rdy = 1;
+ 		}
+ 	} else {
+@@ -737,8 +759,12 @@ static int mchp_i2s_mcc_hw_free(struct snd_pcm_substream *substream,
+ 		if (err == 0) {
+ 			dev_warn_once(dev->dev,
+ 				      "Timeout waiting for Rx ready\n");
+-			regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
+-				     MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
++			if (dev->soc->has_fifo)
++				regmap_write(dev->regmap, MCHP_I2SMCC_IDRB,
++					     MCHP_I2SMCC_INT_RXFFRDY);
++			else
++				regmap_write(dev->regmap, MCHP_I2SMCC_IDRA,
++					     MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels));
+ 			dev->rx_rdy = 1;
+ 		}
+ 	}
+@@ -765,7 +791,7 @@ static int mchp_i2s_mcc_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	struct mchp_i2s_mcc_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	bool is_playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	u32 cr = 0;
+-	u32 iera = 0;
++	u32 iera = 0, ierb = 0;
+ 	u32 sr;
+ 	int err;
+ 
+@@ -789,7 +815,10 @@ static int mchp_i2s_mcc_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			 * Enable Tx Ready interrupts on all channels
+ 			 * to assure all data is sent
+ 			 */
+-			iera = MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels);
++			if (dev->soc->has_fifo)
++				ierb = MCHP_I2SMCC_INT_TXFFRDY;
++			else
++				iera = MCHP_I2SMCC_INT_TXRDY_MASK(dev->channels);
+ 		} else if (!is_playback && (sr & MCHP_I2SMCC_SR_RXEN)) {
+ 			cr = MCHP_I2SMCC_CR_RXDIS;
+ 			dev->rx_rdy = 0;
+@@ -797,7 +826,10 @@ static int mchp_i2s_mcc_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			 * Enable Rx Ready interrupts on all channels
+ 			 * to assure all data is received
+ 			 */
+-			iera = MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels);
++			if (dev->soc->has_fifo)
++				ierb = MCHP_I2SMCC_INT_RXFFRDY;
++			else
++				iera = MCHP_I2SMCC_INT_RXRDY_MASK(dev->channels);
+ 		}
+ 		break;
+ 	default:
+@@ -815,7 +847,10 @@ static int mchp_i2s_mcc_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		}
+ 	}
+ 
+-	regmap_write(dev->regmap, MCHP_I2SMCC_IERA, iera);
++	if (dev->soc->has_fifo)
++		regmap_write(dev->regmap, MCHP_I2SMCC_IERB, ierb);
++	else
++		regmap_write(dev->regmap, MCHP_I2SMCC_IERA, iera);
+ 	regmap_write(dev->regmap, MCHP_I2SMCC_CR, cr);
+ 
+ 	return 0;
+@@ -903,6 +938,7 @@ static struct mchp_i2s_mcc_soc_data mchp_i2s_mcc_sam9x60 = {
+ 
+ static struct mchp_i2s_mcc_soc_data mchp_i2s_mcc_sama7g5 = {
+ 	.data_pin_pair_num = 4,
++	.has_fifo = true,
+ };
+ 
+ static const struct of_device_id mchp_i2s_mcc_dt_ids[] = {
 -- 
 2.27.0
 
