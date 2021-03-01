@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDF5329D65
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB6E329CF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238125AbhCBCbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 21:31:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55192 "EHLO mail.kernel.org"
+        id S1442635AbhCBCOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 21:14:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241877AbhCATra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:47:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50AC56515B;
-        Mon,  1 Mar 2021 17:06:18 +0000 (UTC)
+        id S232032AbhCATlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:41:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 169FB65160;
+        Mon,  1 Mar 2021 17:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614618378;
-        bh=qYHcelP+1byxYx+bmqXO0RlOMU6hMNfB1M9ZtayTxuY=;
+        s=korg; t=1614618381;
+        bh=j63jNsA8W4gWydGWpODFJVIhG+YXyml+DhvLBEl+VlA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ttew9c5LlBI6BXEKg1meoeu3zNwxhHlW0yqkly6L2lvSS/OZB6z7F6ra5w6YPM1HV
-         52Ya55FYJzYIBHJf13gCBrjfp5KrP4vwZM1L1h5v2+buVJOJqvoHmpMxTsWjkwIbgj
-         oMxnNfjg7Qt3JGpWujURymnrbDVnQ1vopn6urYBo=
+        b=ZSOnHRyIU8IA4qW+6Ka6tiyzt826Yb3nnDhREL3Ir0TARxT7LwcXcW5oUmtFVAjR+
+         bbmtp6jANMF0PbVIcdBDv3syhCanxaWtFP+gfmWYj5K0YZPxLfpF8DWjor2NRREdmZ
+         4eAmBs0q6T1gjUQ9IdZjZrXbDx6ECY7F/otWPKg8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Stefan Wahren <stefan.wahren@i2se.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Phil Elwell <phil@raspberrypi.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 036/663] Bluetooth: hci_qca: Fix memleak in qca_controller_memdump
-Date:   Mon,  1 Mar 2021 17:04:44 +0100
-Message-Id: <20210301161143.582291749@linuxfoundation.org>
+Subject: [PATCH 5.10 037/663] staging: vchiq: Fix bulk userdata handling
+Date:   Mon,  1 Mar 2021 17:04:45 +0100
+Message-Id: <20210301161143.624748939@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,35 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Phil Elwell <phil@raspberrypi.com>
 
-[ Upstream commit 71f8e707557b9bc25dc90a59a752528d4e7c1cbf ]
+[ Upstream commit 96ae327678eceabf455b11a88ba14ad540d4b046 ]
 
-When __le32_to_cpu() fails, qca_memdump should be freed
-just like when vmalloc() fails.
+The addition of the local 'userdata' pointer to
+vchiq_irq_queue_bulk_tx_rx omitted the case where neither BLOCKING nor
+WAITING modes are used, in which case the value provided by the
+caller is not returned to them as expected, but instead it is replaced
+with a NULL. This lack of a suitable context may cause the application
+to crash or otherwise malfunction.
 
-Fixes: d841502c79e3f ("Bluetooth: hci_qca: Collect controller memory dump during SSR")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 4184da4f316a ("staging: vchiq: fix __user annotations")
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+Link: https://lore.kernel.org/r/20210105162030.1415213-2-phil@raspberrypi.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_qca.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 244b8feba5232..5c26c7d941731 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1020,7 +1020,9 @@ static void qca_controller_memdump(struct work_struct *work)
- 			dump_size = __le32_to_cpu(dump->dump_size);
- 			if (!(dump_size)) {
- 				bt_dev_err(hu->hdev, "Rx invalid memdump size");
-+				kfree(qca_memdump);
- 				kfree_skb(skb);
-+				qca->qca_memdump = NULL;
- 				mutex_unlock(&qca->hci_memdump_lock);
- 				return;
- 			}
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index 01125d9f991bb..5bc9b394212b8 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -953,7 +953,7 @@ static int vchiq_irq_queue_bulk_tx_rx(struct vchiq_instance *instance,
+ 	struct vchiq_service *service;
+ 	struct bulk_waiter_node *waiter = NULL;
+ 	bool found = false;
+-	void *userdata = NULL;
++	void *userdata;
+ 	int status = 0;
+ 	int ret;
+ 
+@@ -992,6 +992,8 @@ static int vchiq_irq_queue_bulk_tx_rx(struct vchiq_instance *instance,
+ 			"found bulk_waiter %pK for pid %d", waiter,
+ 			current->pid);
+ 		userdata = &waiter->bulk_waiter;
++	} else {
++		userdata = args->userdata;
+ 	}
+ 
+ 	/*
 -- 
 2.27.0
 
