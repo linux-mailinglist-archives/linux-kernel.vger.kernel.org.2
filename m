@@ -2,151 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1277332A03D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB58732A046
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575575AbhCBD4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 22:56:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239237AbhCAXYL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:24:11 -0500
-Received: from orthanc.universe-factory.net (orthanc.universe-factory.net [IPv6:2001:19f0:6c01:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106CAC061756;
-        Mon,  1 Mar 2021 15:23:31 -0800 (PST)
-Received: from [IPv6:2001:19f0:6c01:100::2] (unknown [IPv6:2001:19f0:6c01:100::2])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by orthanc.universe-factory.net (Postfix) with ESMTPSA id D0F961F5DB;
-        Tue,  2 Mar 2021 00:23:28 +0100 (CET)
-Subject: Re: [PATCH net] net: l2tp: reduce log level when passing up invalid
- packets
-To:     Tom Parkin <tparkin@katalix.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-References: <f2a482212eed80b5ba22cb590e89d3edb290a872.1613760125.git.mschiffer@universe-factory.net>
- <20210219201201.GA4974@katalix.com>
- <2e75a78b-afa2-3776-2695-f9f6ac93eb67@universe-factory.net>
- <20210222114907.GA4943@katalix.com>
- <ec0f874e-b5af-1007-5a83-e3de7399ef29@universe-factory.net>
- <20210222143138.5711048a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210223094722.GB12377@katalix.com>
-From:   Matthias Schiffer <mschiffer@universe-factory.net>
-Message-ID: <1b888cc7-cbc8-c241-6546-7f2e4c85a7e3@universe-factory.net>
-Date:   Tue, 2 Mar 2021 00:23:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1575587AbhCBD4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 22:56:54 -0500
+Received: from mga09.intel.com ([134.134.136.24]:22490 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238974AbhCAXf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 18:35:59 -0500
+IronPort-SDR: HlnfcsYMypjx53YzV7gGLNQArwnGw3dT4/8dHOQJ9tOBOBzNifktcKmr94IrxgoTw4Cj7Kh0t0
+ 9Jm4XrsNam3w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186746812"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="186746812"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 15:35:08 -0800
+IronPort-SDR: krdotmT4YSRh9/d6nXnyZScVA5MjrzG8U3ODny94Uqnus2muxE8ugV8GOdpeKe5iMvq55xIBpN
+ kLa3RTDRDx6Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="427112138"
+Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Mar 2021 15:35:07 -0800
+Received: from kbuild by 16660e54978b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lGs4A-0004n9-Lj; Mon, 01 Mar 2021 23:35:06 +0000
+Date:   Tue, 02 Mar 2021 07:34:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/urgent] BUILD SUCCESS
+ fba111913e51a934eaad85734254eab801343836
+Message-ID: <603d79f5.02KE/VNDWBEyDda4%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210223094722.GB12377@katalix.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="WXBx5OLeOMPUXGDnEaDL67IJbN95HpVXl"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WXBx5OLeOMPUXGDnEaDL67IJbN95HpVXl
-Content-Type: multipart/mixed; boundary="8aTJfq8uzBavlPLVP83iT26qV9zzZLGPx";
- protected-headers="v1"
-From: Matthias Schiffer <mschiffer@universe-factory.net>
-To: Tom Parkin <tparkin@katalix.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Message-ID: <1b888cc7-cbc8-c241-6546-7f2e4c85a7e3@universe-factory.net>
-Subject: Re: [PATCH net] net: l2tp: reduce log level when passing up invalid
- packets
-References: <f2a482212eed80b5ba22cb590e89d3edb290a872.1613760125.git.mschiffer@universe-factory.net>
- <20210219201201.GA4974@katalix.com>
- <2e75a78b-afa2-3776-2695-f9f6ac93eb67@universe-factory.net>
- <20210222114907.GA4943@katalix.com>
- <ec0f874e-b5af-1007-5a83-e3de7399ef29@universe-factory.net>
- <20210222143138.5711048a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210223094722.GB12377@katalix.com>
-In-Reply-To: <20210223094722.GB12377@katalix.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/urgent
+branch HEAD: fba111913e51a934eaad85734254eab801343836  sched/membarrier: fix missing local execution of ipi_sync_rq_state()
 
---8aTJfq8uzBavlPLVP83iT26qV9zzZLGPx
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US-large
-Content-Transfer-Encoding: quoted-printable
+elapsed time: 720m
 
-On 2/23/21 10:47 AM, Tom Parkin wrote:
-> On  Mon, Feb 22, 2021 at 14:31:38 -0800, Jakub Kicinski wrote:
->> On Mon, 22 Feb 2021 17:40:16 +0100 Matthias Schiffer wrote:
->>>>> This will not be sufficient for my usecase: To stay compatible with=
- older
->>>>> versions of fastd, I can't set the T flag in the first packet of th=
-e
->>>>> handshake, as it won't be known whether the peer has a new enough f=
-astd
->>>>> version to understand packets that have this bit set. Luckily, the =
-second
->>>>> handshake byte is always 0 in fastd's protocol, so these packets fa=
-il the
->>>>> tunnel version check and are passed to userspace regardless.
->>>>>
->>>>> I'm aware that this usecase is far outside of the original intentio=
-ns of the
->>>>> code and can only be described as a hack, but I still consider this=
- a
->>>>> regression in the kernel, as it was working fine in the past, witho=
-ut
->>>>> visible warnings.
->>>>>  =20
->>>>
->>>> I'm sorry, but for the reasons stated above I disagree about it bein=
-g
->>>> a regression.
->>>
->>> Hmm, is it common for protocol implementations in the kernel to warn =
-about
->>> invalid packets they receive? While L2TP uses connected sockets and t=
-hus
->>> usually no unrelated packets end up in the socket, a simple UDP port =
-scan
->>> originating from the configured remote address/port will trigger the =
-"short
->>> packet" warning now (nmap uses a zero-length payload for UDP scans by=
+configs tested: 95
+configs skipped: 2
 
->>> default). Log spam caused by a malicous party might also be a concern=
-=2E
->>
->> Indeed, seems like appropriate counters would be a good fit here?
->> The prints are both potentially problematic for security and lossy.
->=20
-> Yes, I agree with this argument.
->=20
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Sounds good, I'll send an updated patch adding a counter for invalid pack=
-ets.
+gcc tested configs:
+arm                                 defconfig
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                          moxart_defconfig
+m68k                            q40_defconfig
+powerpc                      katmai_defconfig
+alpha                               defconfig
+ia64                             alldefconfig
+powerpc                      makalu_defconfig
+powerpc                      chrp32_defconfig
+i386                             allyesconfig
+mips                        jmr3927_defconfig
+arc                        nsim_700_defconfig
+arm                         nhk8815_defconfig
+arm                            zeus_defconfig
+mips                     cu1830-neo_defconfig
+sh                          rsk7269_defconfig
+mips                         mpc30x_defconfig
+arm                       versatile_defconfig
+sparc                               defconfig
+sparc64                             defconfig
+sh                        apsh4ad0a_defconfig
+powerpc                 canyonlands_defconfig
+sh                     sh7710voipgw_defconfig
+mips                 decstation_r4k_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20210228
+i386                 randconfig-a005-20210228
+i386                 randconfig-a004-20210228
+i386                 randconfig-a003-20210228
+i386                 randconfig-a001-20210228
+i386                 randconfig-a002-20210228
+x86_64               randconfig-a013-20210301
+x86_64               randconfig-a016-20210301
+x86_64               randconfig-a015-20210301
+x86_64               randconfig-a014-20210301
+x86_64               randconfig-a012-20210301
+x86_64               randconfig-a011-20210301
+i386                 randconfig-a016-20210301
+i386                 randconfig-a012-20210301
+i386                 randconfig-a014-20210301
+i386                 randconfig-a013-20210301
+i386                 randconfig-a011-20210301
+i386                 randconfig-a015-20210301
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-By now I've found another project affected by the kernel warnings:
-https://github.com/wlanslovenija/tunneldigger/issues/160
+clang tested configs:
+x86_64               randconfig-a006-20210301
+x86_64               randconfig-a001-20210301
+x86_64               randconfig-a004-20210301
+x86_64               randconfig-a002-20210301
+x86_64               randconfig-a005-20210301
+x86_64               randconfig-a003-20210301
 
-
---8aTJfq8uzBavlPLVP83iT26qV9zzZLGPx--
-
---WXBx5OLeOMPUXGDnEaDL67IJbN95HpVXl
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEEZmTnvaa2aYgexS51Fu8/ZMsgHZwFAmA9d28FAwAAAAAACgkQFu8/ZMsgHZyn
-Nw/+K4qRCu8QWJi31cn9WSDjU2xt5V2/0Ag59MvWnrg3aVJJaxsRZC/od2fBih22K3aqpYhpsSEh
-GwXzejjeij8ehOqoLtQkA4yfYXNCuOnpslOsGGS+1McTfO9t7GTZpGjjXycX3DvlsW7orTarq0HS
-fV1cpEFJU828WN2yLB2vQneguTQXYzELDbKwAHwrDi6GtUK6T0C9EUiDkdGey+Z66bO26TRDIPMc
-S6dJmKxJnDPnwuX9fv51OuDhrhyz1Z9fLA91qX4edT3LavTGxaF3O9Eh8XZkmXzux0fiwXEEsrr6
-jI5vJWnVskNr9qqk4eiQB4NghaSD94M8xKoYo2rEAWD+Be5cXg8KDAzOK5YnsyqdXXTCgZSSu/e1
-3sjokjBJHo5WejFiL049YwM3FHNYYk1XErOMXKkfe/EGIl0YrjP30rl4A2wtCj/1Q++uoKGjXgVm
-44lrUPIhx89ydM7VHdqaEy1wM+7GhQc4sC5mUjUGfEd62k9M+Ztk9OyRf7CfMBF8ppZQEbUhu4bD
-GZ4tpOtZBOfN1FEcZ4Yl69X5BcPWoKss/Wgc2uW521vqBIJJt5YqSEY7CMNS/9iMLADorvzCU6/A
-++mupxmimNDTwiIhZKqmPBvkJPGwtGBgLoZhfZZyCmsn/9oq34jNJx9ic00RmPCMLDkO20zVXv/0
-Oo4=
-=BxHj
------END PGP SIGNATURE-----
-
---WXBx5OLeOMPUXGDnEaDL67IJbN95HpVXl--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
