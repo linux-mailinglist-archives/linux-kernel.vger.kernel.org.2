@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BA2329C22
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F15329BCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380163AbhCBBs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:48:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
+        id S1379630AbhCBBaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:30:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241395AbhCAT0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:26:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91DF565216;
-        Mon,  1 Mar 2021 17:22:29 +0000 (UTC)
+        id S241356AbhCATRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:17:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A95265218;
+        Mon,  1 Mar 2021 17:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619350;
-        bh=thHgAPrqsWcG+qiNvwIweEYk04UdE/CSEAnZ8pvA1R4=;
+        s=korg; t=1614619352;
+        bh=yiuWj05qntSQoIZVpSlCXmbJSHclE/b0ngrkouGBBJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OThkLB6leUfpSosgSwp9RDuCQkt0O1hHC4BZ++3kq+OZX2A3sKrUHpJI7w1XYaOEj
-         JsexY8B5Iy7QKioUbHxR1PkypTGvGujtDqmr7Yu6Ru9qoDXdybnLFZgFCE9sL0cQSk
-         G0WOIYhKVN8sT2XH+9ehP8eypgo9bwekCLtc+BTI=
+        b=z8GRHHNN7UK/kczL7XCq5wzntkKj5RVKmYemOTTXwFX+s+5wdhIiFzmoLH3MIbQah
+         k4dhSkP+RCjrz1P4aC52Mx9WFkTAf3mkfVez4gwwYetzRz40WK/AWwJQ7pJ5CeH2Gt
+         hLrMdaY76apeuW3o8AEaiITLZpF+SygitNuuDMQo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 421/663] nvmem: core: skip child nodes not matching binding
-Date:   Mon,  1 Mar 2021 17:11:09 +0100
-Message-Id: <20210301161202.705652911@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 422/663] soundwire: bus: use sdw_update_no_pm when initializing a device
+Date:   Mon,  1 Mar 2021 17:11:10 +0100
+Message-Id: <20210301161202.755974449@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -40,65 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 0445efacec75b85c2a3c176957ee050ba9be53f0 ]
+[ Upstream commit b04c975e654cfdea6d691cd403b5a81cce7e593d ]
 
-The nvmem cell binding applies to all eeprom child nodes matching
-"^.*@[0-9a-f]+$" without taking a compatible into account.
+When a Slave device is resumed, it may resume the bus and restart the
+enumeration. During that process, we absolutely don't want to call
+regular read/write routines which will wait for the resume to
+complete, otherwise a deadlock occurs.
 
-Linux drivers, like at24, are even more extensive and assume
-_all_ at24 eeprom child nodes to be nvmem cells since e888d445ac33
-("nvmem: resolve cells from DT at registration time").
-
-Since df5f3b6f5357 ("dt-bindings: nvmem: stm32: new property for
-data access"), the additionalProperties: True means it's Ok to have
-other properties as long as they don't match "^.*@[0-9a-f]+$".
-
-The barebox bootloader extends the MTD partitions binding to
-EEPROM and can fix up following device tree node:
-
-  &eeprom {
-    partitions {
-      compatible = "fixed-partitions";
-    };
-  };
-
-This is allowed binding-wise, but drivers using nvmem_register()
-like at24 will fail to parse because the function expects all child
-nodes to have a reg property present. This results in the whole
-EEPROM driver probe failing despite the device tree being correct.
-
-Fix this by skipping nodes lacking a reg property instead of
-returning an error. This effectively makes the drivers adhere
-to the binding because all nodes with a unit address must have
-a reg property and vice versa.
-
-Fixes: e888d445ac33 ("nvmem: resolve cells from DT at registration time").
-Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20210129171430.11328-6-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 60ee9be25571 ('soundwire: bus: add PM/no-PM versions of read/write functions')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20210122070634.12825-2-yung-chuan.liao@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvmem/core.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/soundwire/bus.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 1a3460a8e73ab..9b6ab83956c3b 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -545,7 +545,9 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 8eaf31e766773..0345f9af6e865 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -489,6 +489,18 @@ sdw_read_no_pm(struct sdw_slave *slave, u32 addr)
+ 		return buf;
+ }
  
- 	for_each_child_of_node(parent, child) {
- 		addr = of_get_property(child, "reg", &len);
--		if (!addr || (len < 2 * sizeof(u32))) {
-+		if (!addr)
-+			continue;
-+		if (len < 2 * sizeof(u32)) {
- 			dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
- 			return -EINVAL;
- 		}
++static int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val)
++{
++	int tmp;
++
++	tmp = sdw_read_no_pm(slave, addr);
++	if (tmp < 0)
++		return tmp;
++
++	tmp = (tmp & ~mask) | val;
++	return sdw_write_no_pm(slave, addr, tmp);
++}
++
+ /**
+  * sdw_nread() - Read "n" contiguous SDW Slave registers
+  * @slave: SDW Slave
+@@ -1256,7 +1268,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
+ 	val = slave->prop.scp_int1_mask;
+ 
+ 	/* Enable SCP interrupts */
+-	ret = sdw_update(slave, SDW_SCP_INTMASK1, val, val);
++	ret = sdw_update_no_pm(slave, SDW_SCP_INTMASK1, val, val);
+ 	if (ret < 0) {
+ 		dev_err(slave->bus->dev,
+ 			"SDW_SCP_INTMASK1 write failed:%d\n", ret);
+@@ -1271,7 +1283,7 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
+ 	val = prop->dp0_prop->imp_def_interrupts;
+ 	val |= SDW_DP0_INT_PORT_READY | SDW_DP0_INT_BRA_FAILURE;
+ 
+-	ret = sdw_update(slave, SDW_DP0_INTMASK, val, val);
++	ret = sdw_update_no_pm(slave, SDW_DP0_INTMASK, val, val);
+ 	if (ret < 0)
+ 		dev_err(slave->bus->dev,
+ 			"SDW_DP0_INTMASK read failed:%d\n", ret);
 -- 
 2.27.0
 
