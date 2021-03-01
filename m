@@ -2,117 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC78327764
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BB5327767
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 07:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhCAGH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 01:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbhCAGGn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 01:06:43 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A34BC06174A;
-        Sun, 28 Feb 2021 22:05:58 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id i10so1593482pfk.4;
-        Sun, 28 Feb 2021 22:05:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jMWOZvS2/FrD2N+UR3nKIhFw7VUdZp63CYTyrcaoXAQ=;
-        b=A1/Da6q7HcMaVcf0rFWlkJcK+ylFjr5FyiLab/uZz4/ActeAyTwuXRQgrSsvQO15LN
-         vnYiNNW0NYahMP7mba4jHHo3OB0P8tUhKZA7rOKBOgDLkMsa7AJsxg34Hj4Pm1AzwlpJ
-         ym9Q9d1WbfipieiLeh5i2ozEax0SsRv63PQHWnBxhK5gCWDpLHqqhcPdwzrsDYcf11N3
-         u01g6Kj8R4ZqgXko9Kt/l0Vjszj+8PITtQWWKAOuNKWHXO84QVVEGZPZomQBw+t9StqL
-         WBXN4/vHn7A/0TiRm2ZZGaG+zaFIxw+/FtVKJFZGMeiJKGR2x+t2TuvdCw28fuFWi9Pb
-         7gIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jMWOZvS2/FrD2N+UR3nKIhFw7VUdZp63CYTyrcaoXAQ=;
-        b=qRn0BqmJUWfeTH1rdWGYJ116LQV/A1ghXnd/oqSMM8DspFOeXbsmmMq6xD3NUij1CO
-         Evt5lM/Z07gHSxFWvHORaw35pDJGS7G/YBauN88NR6kbquNf1aBnqpABEXaastJGcKBp
-         Sx0m2O6K4A5kQudIhHQidJZ9GMMj023+CE4K7XCen/8UnXvLJ42hW7wttqbaKDmbS2na
-         1wsOSYe4mAfdTeuueEf7IeqOENHn93VnzINt8ueZwswQcQhh2us/ln9i3L9Q/dpKoIQL
-         0sMzB+BmZTxhh3wHKAceR/6x5KU0s/MHEsWhQRq9yooPD7zRUw/2dN/pP+8NqTJM4xzz
-         S+vA==
-X-Gm-Message-State: AOAM530blUIW3Gz/NqYCHjDW+x+zODsghagL+o68j5Vd8Qd7GmQuzmMa
-        FKxEd6rH7xs+5x8YjEJ5KXg=
-X-Google-Smtp-Source: ABdhPJwvSGDWTbzt7ifBEWQXMedc4nMVANCMx9Nl+u7rPl/h6jNkdeeaAakkQkSM9JH7BApz551y/w==
-X-Received: by 2002:a63:4343:: with SMTP id q64mr12240606pga.109.1614578757854;
-        Sun, 28 Feb 2021 22:05:57 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id c8sm16426326pjv.18.2021.02.28.22.05.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 28 Feb 2021 22:05:57 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org, eric.dumazet@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yejune.deng@gmail.com
-Subject: [PATCH] inetpeer: use div64_ul() and clamp_val() calculate inet_peer_threshold
-Date:   Mon,  1 Mar 2021 14:05:48 +0800
-Message-Id: <20210301060548.46289-1-yejune.deng@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        id S231979AbhCAGKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 01:10:20 -0500
+Received: from mga03.intel.com ([134.134.136.65]:15731 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231756AbhCAGJ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 01:09:27 -0500
+IronPort-SDR: BJBonO1s802IITkqYhkqTd4g2BEVteGrrTXGWKpH/RqTDX5IxWLcxEf8/aHKnEessO1W61qh6c
+ 6MXVNNuy8j+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9909"; a="186421916"
+X-IronPort-AV: E=Sophos;i="5.81,214,1610438400"; 
+   d="scan'208";a="186421916"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2021 22:08:26 -0800
+IronPort-SDR: kQhuOOw03RsOEZ4x0hq/nMjmocHhIv2OABgnuXE7jyqCTpCT2t4yiT5xEY7G/GXwToaSaladUm
+ vHWMlVrX9v2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,214,1610438400"; 
+   d="scan'208";a="397575231"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.165])
+  by fmsmga008.fm.intel.com with ESMTP; 28 Feb 2021 22:08:22 -0800
+Date:   Mon, 1 Mar 2021 14:08:22 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     lkp <lkp@intel.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [linux-next:master 5983/6048] h8300-linux-ld: section .data VMA
+ overlaps section __kcrctab VMA
+Message-ID: <20210301060822.GA21746@shbuild999.sh.intel.com>
+References: <202102100211.hNoYGjub-lkp@intel.com>
+ <CAHC9VhRidm6WXr9T+dGG_hZjeS+cKaVkMic_cNJMG-CRqyoSVA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhRidm6WXr9T+dGG_hZjeS+cKaVkMic_cNJMG-CRqyoSVA@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In inet_initpeers(), struct inet_peer on IA32 uses 128 bytes in nowdays.
-Get rid of the cascade and use div64_ul() and clamp_val() calculate that
-will not need to be adjusted in the future as suggested by Eric Dumazet.
+Hi Paul,
 
-Suggested-by: Eric Dumazet <eric.dumazet@gmail.com>
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- net/ipv4/inetpeer.c | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
+On Wed, Feb 10, 2021 at 02:21:41AM +0800, Paul Moore wrote:
+> On Tue, Feb 9, 2021 at 1:09 PM kernel test robot <lkp@intel.com> wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> > head:   59fa6a163ffabc1bf25c5e0e33899e268a96d3cc
+> > commit: 77d8143a5290b38e3331f61f55c0b682699884bc [5983/6048] Merge remote-tracking branch 'selinux/next'
+> > config: h8300-randconfig-r005-20210209 (attached as .config)
+> > compiler: h8300-linux-gcc (GCC) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=77d8143a5290b38e3331f61f55c0b682699884bc
+> >         git remote add linux-next https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> >         git fetch --no-tags linux-next master
+> >         git checkout 77d8143a5290b38e3331f61f55c0b682699884bc
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=h8300
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >    h8300-linux-ld: section .init.text LMA [0000000000430360,00000000004479a1] overlaps section .data LMA [000000000041868c,00000000004489eb]
+> > >> h8300-linux-ld: section .data VMA [0000000000400000,000000000043035f] overlaps section __kcrctab VMA [00000000003fdd74,000000000040007b]
+> > >> h8300-linux-ld: section __kcrctab_gpl VMA [000000000040007c,00000000004025a7] overlaps section .data VMA [0000000000400000,000000000043035f]
+> >    h8300-linux-ld: arch/h8300/kernel/entry.o: in function `resume_kernel':
+> >    (.text+0x29a): undefined reference to `TI_PRE_COUNT'
+> 
+> This really doesn't look like something caused by SELinux ...
 
-diff --git a/net/ipv4/inetpeer.c b/net/ipv4/inetpeer.c
-index ff327a62c9ce..da21dfce24d7 100644
---- a/net/ipv4/inetpeer.c
-+++ b/net/ipv4/inetpeer.c
-@@ -65,7 +65,7 @@ EXPORT_SYMBOL_GPL(inet_peer_base_init);
- #define PEER_MAX_GC 32
- 
- /* Exported for sysctl_net_ipv4.  */
--int inet_peer_threshold __read_mostly = 65536 + 128;	/* start to throw entries more
-+int inet_peer_threshold __read_mostly;	/* start to throw entries more
- 					 * aggressively at this stage */
- int inet_peer_minttl __read_mostly = 120 * HZ;	/* TTL under high load: 120 sec */
- int inet_peer_maxttl __read_mostly = 10 * 60 * HZ;	/* usual time to live: 10 min */
-@@ -73,20 +73,13 @@ int inet_peer_maxttl __read_mostly = 10 * 60 * HZ;	/* usual time to live: 10 min
- /* Called from ip_output.c:ip_init  */
- void __init inet_initpeers(void)
- {
--	struct sysinfo si;
-+	u64 nr_entries;
- 
--	/* Use the straight interface to information about memory. */
--	si_meminfo(&si);
--	/* The values below were suggested by Alexey Kuznetsov
--	 * <kuznet@ms2.inr.ac.ru>.  I don't have any opinion about the values
--	 * myself.  --SAW
--	 */
--	if (si.totalram <= (32768*1024)/PAGE_SIZE)
--		inet_peer_threshold >>= 1; /* max pool size about 1MB on IA32 */
--	if (si.totalram <= (16384*1024)/PAGE_SIZE)
--		inet_peer_threshold >>= 1; /* about 512KB */
--	if (si.totalram <= (8192*1024)/PAGE_SIZE)
--		inet_peer_threshold >>= 2; /* about 128KB */
-+	 /* 1% of physical memory */
-+	nr_entries = div64_ul((u64)totalram_pages() << PAGE_SHIFT,
-+			      100 * L1_CACHE_ALIGN(sizeof(struct inet_peer)));
-+
-+	inet_peer_threshold = clamp_val(nr_entries, 4096, 65536 + 128);
- 
- 	peer_cachep = kmem_cache_create("inet_peer_cache",
- 			sizeof(struct inet_peer),
--- 
-2.29.0
+No, this is not related with SELinux, sorry for the false alarm.
 
+Further check shows it is related with the kernel config and the
+built-out kernel size. With the kernel config, the ROM size is 4MB
+large, and when the config selects many components, its .text and
+.rodata may exceeds the 4MB size limit, causes the "overlaps section"
+errors.
+
+If we trim the kernel config and enable the "CONFIG_TRIM_UNUSED_KSYMS",
+then the compilation can succeed.
+
+For testing kbuild on platforms which has special size limits, one
+thought is the kernel config may need to be chosen specifically.
+
+Thanks,
+Feng
+
+> --
+> paul moore
+> www.paul-moore.com
+> 
