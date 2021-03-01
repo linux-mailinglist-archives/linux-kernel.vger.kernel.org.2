@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B0532A057
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288EB32A04D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239658AbhCBEQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:16:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60936 "EHLO mail.kernel.org"
+        id S238974AbhCBEMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:12:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346154AbhCAXiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 18:38:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 023B5600CD;
-        Mon,  1 Mar 2021 23:36:40 +0000 (UTC)
+        id S1344615AbhCAXgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 18:36:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BE5060240;
+        Mon,  1 Mar 2021 23:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614641801;
-        bh=dg6BeBGISWGF0gV3iR/jlBIXrHb5RFxCFDTOZcWhzpQ=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=feHCcUT4vETo/jlSM0CULkHV1p6YmCQqv2co759EbmZjUppRf62tip3GnWKaSpSak
-         ju/LHU8rFlEqHJWAo8kLNr+vMKiibKHLVLbp/XFZ3/hjoIe1TyK70Feiwnw1ngZ1QX
-         6BRDdf/7O6y7m12tqVokxAP73uanIX1MymcXYBqOUWVdZcMiPF5DrbUYTzF47hJRcW
-         l59bckpzuMQ10OeW/dI9FUNGtLG7lel2fg7ZUToOXRagI8FfEsLJofvwYQYR+OHYe2
-         ECVloriWDG/jEAdZyzdKnvYXoV4b4TE4JBvd23t3FgGm1hpbMzqdVxLvfuJYmhUSxI
-         BSC8AWLB2Bqgw==
+        s=k20201202; t=1614641763;
+        bh=X3zQMo928GW1qVxc5UjuLGk4bT1FV3lRMqtNQ5gZEHQ=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=s1P7a/mjPGC7cZDiw1TfVmHhV0R72JCZggtix7XvoqHKtV3+2Fwj7gNdwveotxJSo
+         Ns08mHLd6d4I0ATAfU5c7q+CHXFWUg8Mp1eFs6Y5mQrIPuxn3goxofVqAziZQTkcZF
+         HOTb8a6fnL61+In1rc16SLanz4mCK4shbNUmoGBPnWObU8K5exmkrDivVHtT6g1YBI
+         aNfRNtO77UHIwhR/FeqXzrJ5i9smW5lMqmZ/+5LSrpX0LfjT/hNvF/nMEQzBvXAj7a
+         CA+FMKRSYJuJyWVDppqtP1eWAxmJrTuUAHCqXzKUsH3TGbk5/2IzgbknebgTdJ85lX
+         vohvxTS4hHU/Q==
 From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>,
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-amlogic@lists.infradead.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
         Jaroslav Kysela <perex@perex.cz>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         Takashi Iwai <tiwai@suse.com>,
-        Colin King <colin.king@canonical.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <20210226185653.1071321-1-colin.king@canonical.com>
-References: <20210226185653.1071321-1-colin.king@canonical.com>
-Subject: Re: [PATCH] ASoC: Intel: boards: sof-wm8804: add check for PLL setting
-Message-Id: <161464168097.31144.7451844470598305958.b4-ty@kernel.org>
+        linux-arm-kernel@lists.infradead.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20210221153024.453583-1-krzk@kernel.org>
+References: <20210221153024.453583-1-krzk@kernel.org>
+Subject: Re: [PATCH] ASoC: constify of_phandle_args in snd_soc_get_dai_name()
+Message-Id: <161464168095.31144.11030304529781910068.b4-ty@kernel.org>
 Date:   Mon, 01 Mar 2021 23:34:40 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -44,11 +49,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Feb 2021 18:56:53 +0000, Colin King wrote:
-> Currently the return from snd_soc_dai_set_pll is not checking for
-> failure, this is the only driver in the kernel that ignores this,
-> so it probably should be added for sake of completeness.  Fix this
-> by adding an error return check.
+On Sun, 21 Feb 2021 16:30:24 +0100, Krzysztof Kozlowski wrote:
+> The pointer to of_phandle_args passed to snd_soc_get_dai_name() and
+> of_xlate_dai_name() implementations is not modified.  Since it is being
+> used only to translate passed OF node to a DAI name, it should not be
+> modified, so mark it as const for correctness and safer code.
 
 Applied to
 
@@ -56,8 +61,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: Intel: boards: sof-wm8804: add check for PLL setting
-      commit: e067855b814600248234a2a7283a7a9006e5aadc
+[1/1] ASoC: constify of_phandle_args in snd_soc_get_dai_name()
+      commit: 54928c5c63c83afd5a1c2a91802a9c37e9a4ff88
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
