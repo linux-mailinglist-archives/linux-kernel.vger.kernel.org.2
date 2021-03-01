@@ -2,57 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0004327FFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA48327F8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Mar 2021 14:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235902AbhCANvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 08:51:02 -0500
-Received: from elvis.franken.de ([193.175.24.41]:33583 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235514AbhCANu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 08:50:57 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lGiwA-0003Jo-00; Mon, 01 Mar 2021 14:50:14 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 745B8C0D76; Mon,  1 Mar 2021 13:33:25 +0100 (CET)
-Date:   Mon, 1 Mar 2021 13:33:25 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        id S235732AbhCANcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 08:32:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42748 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235687AbhCANbu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 08:31:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614605421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CrGiDuiEl2Ly6tBW0cAMgxIDaJs1D1fkCgNkCNLSH9U=;
+        b=N4VlQ3FMWWfIlbuhO+fzOeseGfOQeA3glUwG97djM+Tzs3dojTJs4jtFyHtiVbKHItoNF6
+        3eUcfT0TZUL9mdtoVEujh6Zw2hvPVp2CHsBeikpK8IE6ZtGOIObdjvgr0LYLNbZ+8Ewbqs
+        Wgcth2D9T1Pygfw77H9mKJ2jEM10Vpo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42-DukgsvghNdWornkJcpJfMA-1; Mon, 01 Mar 2021 08:30:18 -0500
+X-MC-Unique: DukgsvghNdWornkJcpJfMA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45440905416;
+        Mon,  1 Mar 2021 13:29:58 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DCCAE60C94;
+        Mon,  1 Mar 2021 13:29:43 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id B270E30736C73;
+        Mon,  1 Mar 2021 14:29:42 +0100 (CET)
+Subject: [PATCH RFC V2 net-next 0/2] Use bulk order-0 page allocator API for
+ page_pool
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, chuck.lever@oracle.com,
+        netdev@vger.kernel.org, linux-nfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mips: smp-bmips: fix CPU mappings
-Message-ID: <20210301123325.GA7863@alpha.franken.de>
-References: <20210223124817.26486-1-noltari@gmail.com>
- <20210224073336.32265-1-noltari@gmail.com>
- <F06822DE-1335-40E8-944D-CACC423FAB87@gmail.com>
+Date:   Mon, 01 Mar 2021 14:29:42 +0100
+Message-ID: <161460522573.3031322.15721946341157092594.stgit@firesoul>
+In-Reply-To: <20210224102603.19524-1-mgorman@techsingularity.net>
+References: <20210224102603.19524-1-mgorman@techsingularity.net>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <F06822DE-1335-40E8-944D-CACC423FAB87@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 07:47:42AM +0100, Álvaro Fernández Rojas wrote:
-> Hi all,
-> 
-> Apparently, this patch was flagged as "Not Applicable" without an
-> explanation. Why?
+This is a followup to Mel Gorman's patchset:
+ - Message-Id: <20210224102603.19524-1-mgorman@techsingularity.net>
+ - https://lore.kernel.org/netdev/20210224102603.19524-1-mgorman@techsingularity.net/
 
-hmm, I probaly wanted to drop the first version, but changed v2. It's
-back to new again and I'm gogin to apply it soon.
+Showing page_pool usage of the API for alloc_pages_bulk().
 
-Sorry about that.
+Maybe Mel Gorman will/can carry these patches?
+(to keep it together with the alloc_pages_bulk API)
 
-Thomas.
+---
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Jesper Dangaard Brouer (2):
+      net: page_pool: refactor dma_map into own function page_pool_dma_map
+      net: page_pool: use alloc_pages_bulk in refill code path
+
+
+ net/core/page_pool.c |  102 +++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 63 insertions(+), 39 deletions(-)
+
+--
+
