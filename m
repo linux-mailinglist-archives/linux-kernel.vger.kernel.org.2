@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9045B329B9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538F0329C8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 12:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379260AbhCBB1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 20:27:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42428 "EHLO mail.kernel.org"
+        id S1380960AbhCBB4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 20:56:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241218AbhCATNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:13:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A3FE651DC;
-        Mon,  1 Mar 2021 17:18:54 +0000 (UTC)
+        id S241719AbhCATdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 14:33:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8B6D651F0;
+        Mon,  1 Mar 2021 17:19:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614619134;
-        bh=kdPZfnhyLLgFaBhJ0YMzqokgBnteLggjcyuRkP5wX9E=;
+        s=korg; t=1614619183;
+        bh=SmWF1GTFjtoXWvYcuXgW5oDTOC+jBNtHG89hVlaooMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p1CsTFzz2EC8IfRGoCFt98r/MsGwoz1cx0379gYXoUaLGyyFhZg0KKf1dHPZhg8pm
-         MttUUElvrIL74NSbAK7irD3WCPBhNs61v6kww/Ff46wIfLtVTrzMwCKIwpz9AOdwve
-         mIFwoJZne6aj+su6/pxIL9pMzUzMigwdLnbilXW8=
+        b=sWICAuKcFS7ZED8YmPKwpzet7i59rigN4EVySIUKOs07PXpbXzdVmaRVShCC6K3/h
+         y9tmVgEErNulf2yyV+xzX7mamwhGVOrFIjwsL1tEhdfKGkry5psQEyd7O1LhCkh5lD
+         nwHj+eGHDfG7kDlenFvJKMz66tpYoP4n+ZmDWRAQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
+        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 327/663] powerpc/sstep: Fix incorrect return from analyze_instr()
-Date:   Mon,  1 Mar 2021 17:09:35 +0100
-Message-Id: <20210301161158.030084676@linuxfoundation.org>
+Subject: [PATCH 5.10 333/663] ARM: 9046/1: decompressor: Do not clear SCTLR.nTLSMD for ARMv7+ cores
+Date:   Mon,  1 Mar 2021 17:09:41 +0100
+Message-Id: <20210301161158.327754858@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
 References: <20210301161141.760350206@linuxfoundation.org>
@@ -43,55 +40,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
+From: Vladimir Murzin <vladimir.murzin@arm.com>
 
-[ Upstream commit 718aae916fa6619c57c348beaedd675835cf1aa1 ]
+[ Upstream commit 2acb909750431030b65a0a2a17fd8afcbd813a84 ]
 
-We currently just percolate the return value from analyze_instr()
-to the caller of emulate_step(), especially if it is a -1.
+It was observed that decompressor running on hardware implementing ARM v8.2
+Load/Store Multiple Atomicity and Ordering Control (LSMAOC), say, as guest,
+would stuck just after:
 
-For one particular case (opcode = 4) for instructions that aren't
-currently emulated, we are returning 'should not be single-stepped'
-while we should have returned 0 which says 'did not emulate, may
-have to single-step'.
+Uncompressing Linux... done, booting the kernel.
 
-Fixes: 930d6288a26787 ("powerpc: sstep: Add support for maddhd, maddhdu, maddld instructions")
-Signed-off-by: Ananth N Mavinakayanahalli <ananth@linux.ibm.com>
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Tested-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Reviewed-by: Sandipan Das <sandipan@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/161157999039.64773.14950289716779364766.stgit@thinktux.local
+The reason is that it clears nTLSMD bit when disabling caches:
+
+  nTLSMD, bit [3]
+
+  When ARMv8.2-LSMAOC is implemented:
+
+    No Trap Load Multiple and Store Multiple to
+    Device-nGRE/Device-nGnRE/Device-nGnRnE memory.
+
+    0b0 All memory accesses by A32 and T32 Load Multiple and Store
+        Multiple at EL1 or EL0 that are marked at stage 1 as
+        Device-nGRE/Device-nGnRE/Device-nGnRnE memory are trapped and
+        generate a stage 1 Alignment fault.
+
+    0b1 All memory accesses by A32 and T32 Load Multiple and Store
+        Multiple at EL1 or EL0 that are marked at stage 1 as
+        Device-nGRE/Device-nGnRE/Device-nGnRnE memory are not trapped.
+
+  This bit is permitted to be cached in a TLB.
+
+  This field resets to 1.
+
+  Otherwise:
+
+  Reserved, RES1
+
+So as effect we start getting traps we are not quite ready for.
+
+Looking into history it seems that mask used for SCTLR clear came from
+the similar code for ARMv4, where bit[3] is the enable/disable bit for
+the write buffer. That not applicable to ARMv7 and onwards, so retire
+that bit from the masks.
+
+Fixes: 7d09e85448dfa78e3e58186c934449aaf6d49b50 ("[ARM] 4393/2: ARMv7: Add uncompressing code for the new CPU Id format")
+Signed-off-by: Vladimir Murzin <vladimir.murzin@arm.com>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/lib/sstep.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/arm/boot/compressed/head.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
-index b18bce1a209fa..edd4b275bd6a5 100644
---- a/arch/powerpc/lib/sstep.c
-+++ b/arch/powerpc/lib/sstep.c
-@@ -1380,6 +1380,11 @@ int analyse_instr(struct instruction_op *op, const struct pt_regs *regs,
- 
- #ifdef __powerpc64__
- 	case 4:
-+		/*
-+		 * There are very many instructions with this primary opcode
-+		 * introduced in the ISA as early as v2.03. However, the ones
-+		 * we currently emulate were all introduced with ISA 3.0
-+		 */
- 		if (!cpu_has_feature(CPU_FTR_ARCH_300))
- 			return -1;
- 
-@@ -1407,7 +1412,7 @@ int analyse_instr(struct instruction_op *op, const struct pt_regs *regs,
- 		 * There are other instructions from ISA 3.0 with the same
- 		 * primary opcode which do not have emulation support yet.
- 		 */
--		return -1;
-+		goto unknown_opcode;
+diff --git a/arch/arm/boot/compressed/head.S b/arch/arm/boot/compressed/head.S
+index 3a392983ac079..a0de09f994d88 100644
+--- a/arch/arm/boot/compressed/head.S
++++ b/arch/arm/boot/compressed/head.S
+@@ -1175,9 +1175,9 @@ __armv4_mmu_cache_off:
+ __armv7_mmu_cache_off:
+ 		mrc	p15, 0, r0, c1, c0
+ #ifdef CONFIG_MMU
+-		bic	r0, r0, #0x000d
++		bic	r0, r0, #0x0005
+ #else
+-		bic	r0, r0, #0x000c
++		bic	r0, r0, #0x0004
  #endif
- 
- 	case 7:		/* mulli */
+ 		mcr	p15, 0, r0, c1, c0	@ turn MMU and cache off
+ 		mov	r0, #0
 -- 
 2.27.0
 
