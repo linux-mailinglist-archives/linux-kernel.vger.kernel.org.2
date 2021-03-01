@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEA8329A8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0279C329A09
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 11:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239699AbhCBA5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 19:57:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53878 "EHLO mail.kernel.org"
+        id S1348234AbhCBAmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 19:42:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240639AbhCASsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:48:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2264F6023B;
-        Mon,  1 Mar 2021 17:46:28 +0000 (UTC)
+        id S240137AbhCASgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:36:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE64C64E54;
+        Mon,  1 Mar 2021 17:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614620789;
-        bh=COfQtmskVanvlMHQLp4Xvo01CLDTaAfFlWPbsTYwp0g=;
+        s=korg; t=1614618827;
+        bh=IGbafg3/x6fH60vPeu1G56lScjNGHVynlVsoJeT/4SI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lqxEmZUJ3fWQQAGhGc3Rb/Ax4FZf7BSPtHY0UEvT6jIL4oDTReMWrxOJWdkfFWmrS
-         jZ6W0I/Dx0FCw6mb3MoQ6c2EqE4DsNKFfPT8ojBLafbDtd6YBWZlXloGzQOGCOllHg
-         Hm1MOAKrlle7d0ePbOFo4/b18OSJMRXQjyyxc6Kc=
+        b=1fwZ5HTznE2DZrNiwnaSD1kY1KcEw/Tw4o6ncyq9uZuBCUjwjS7I5236TM4EIst2W
+         NMOTF+fVTtk0VphKmKIDHC7X8mdhQHVDC8F6NFBn5R7X8A6xlw3474Xlr3JcLEs3wW
+         T6ZAx6js6jBQmi9iCPOKIZtx6VhvAzc4gaIbZiVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wayne Lin <Wayne.Lin@amd.com>,
-        Lyude Paul <lyude@redhat.com>, Imre Deak <imre.deak@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 281/775] drm/dp_mst: Dont cache EDIDs for physical ports
+        stable@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 201/663] perf/arm-cmn: Move IRQs when migrating context
 Date:   Mon,  1 Mar 2021 17:07:29 +0100
-Message-Id: <20210301161215.516904085@linuxfoundation.org>
+Message-Id: <20210301161151.726197554@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Imre Deak <imre.deak@intel.com>
+From: Robin Murphy <robin.murphy@arm.com>
 
-[ Upstream commit 4b8878eefa0a3b65e2e016db49014ea66fb9fd45 ]
+[ Upstream commit 1c8147ea89c883d1f4e20f1b1d9c879291430102 ]
 
-Caching EDIDs for physical ports prevents updating the EDID if a port
-gets reconnected via a Connection Status Notification message, fix this.
+If we migrate the PMU context to another CPU, we need to remember to
+retarget the IRQs as well.
 
-Fixes: db1a07956968 ("drm/dp_mst: Handle SST-only branch device case")
-Cc: Wayne Lin <Wayne.Lin@amd.com>
-Cc: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Imre Deak <imre.deak@intel.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210201120145.350258-2-imre.deak@intel.com
-(cherry picked from commit 468091531c2e5c49f55d8c6f1d036ce997d24e13)
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Fixes: 0ba64770a2f2 ("perf: Add Arm CMN-600 PMU driver")
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/r/e080640aea4ed8dfa870b8549dfb31221803eb6b.1611839564.git.robin.murphy@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/perf/arm-cmn.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index b11c0522a4410..405501c74e400 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -2302,7 +2302,8 @@ drm_dp_mst_port_add_connector(struct drm_dp_mst_branch *mstb,
- 	}
+diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+index f3071b5ddaaef..46defb1dcf867 100644
+--- a/drivers/perf/arm-cmn.c
++++ b/drivers/perf/arm-cmn.c
+@@ -1150,7 +1150,7 @@ static int arm_cmn_commit_txn(struct pmu *pmu)
+ static int arm_cmn_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
+ {
+ 	struct arm_cmn *cmn;
+-	unsigned int target;
++	unsigned int i, target;
  
- 	if (port->pdt != DP_PEER_DEVICE_NONE &&
--	    drm_dp_mst_is_end_device(port->pdt, port->mcs)) {
-+	    drm_dp_mst_is_end_device(port->pdt, port->mcs) &&
-+	    port->port_num >= DP_MST_LOGICAL_PORT_0) {
- 		port->cached_edid = drm_get_edid(port->connector,
- 						 &port->aux.ddc);
- 		drm_connector_set_tile_property(port->connector);
+ 	cmn = hlist_entry_safe(node, struct arm_cmn, cpuhp_node);
+ 	if (cpu != cmn->cpu)
+@@ -1161,6 +1161,8 @@ static int arm_cmn_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
+ 		return 0;
+ 
+ 	perf_pmu_migrate_context(&cmn->pmu, cpu, target);
++	for (i = 0; i < cmn->num_dtcs; i++)
++		irq_set_affinity_hint(cmn->dtc[i].irq, cpumask_of(target));
+ 	cmn->cpu = target;
+ 	return 0;
+ }
 -- 
 2.27.0
 
