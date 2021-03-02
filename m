@@ -2,119 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CD532A143
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCBC32A144
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347547AbhCBFdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 00:33:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38424 "EHLO
+        id S1378896AbhCBFeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 00:34:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574441AbhCBDfv (ORCPT
+        with ESMTP id S236436AbhCBDhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 22:35:51 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC34EC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:33:38 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id s8so23517770edd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:33:38 -0800 (PST)
+        Mon, 1 Mar 2021 22:37:42 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA40BC0617AA
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:36:06 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id m11so21288409lji.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:36:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QHkKhS85lTO/1ZkryMnHdjoXWEHU3orWJwuliOPijEg=;
-        b=un1zylhUbUa9CBvR67wBcwPZvQL0x4JmNFowwQWRDdGYxu6J0OgWJEqn+3PtBd+4QC
-         cqbNNIeSXYA8G6vSnR2uWbYjsgGQb5v/h7oL7jXxuD/VBFphR/pct3mB6r/X2pupGg/4
-         SX0eqVTO0JkgI1bmn9LswXNbdaya2hfY4NIFZphT51UPaWZdFK1euP4fmMjsJ/0gWvHH
-         5MQKmxtzMf+qFdDzOGUkl/xaAxZrFsRaD+xCnHywqcc6II2p9p2dKXMlqjkktBRuwj7O
-         L/YYyNBuR6P8AD/3Fbh94FYwxPajGC5dQCIpOaLmcM/6zN0em2h1wm4dnam+wALgryIF
-         VUzg==
+        bh=Bz8uBe6K2P4L9vYFmzU92KcgY6OwUuT5aKcfnajTyTg=;
+        b=nkB9r6nlkun78l+tTKiB4tMDKf8CVmwjMOSIPEbEjNd/Nsk2XEBNYxNAojcBzAYLbk
+         AZ3qK4rVhYuFxAla4ozwFJtYD6Z/O9p4yeXZSEk0nk7YbhHS5lPs/vuhEz3978eNX5AX
+         LtqI+33Hy9KMfhUx1wQVkD0jWXw0lzhf4B0Kvyv2KVTZpep4bje6Zrz3lpx8w7lS2Ba/
+         Ug6WUvlub1YxrFZctmw4sFRV3100p1Tskm/QI44+PhyTHAD2zkAS8opGBhLwCozw2gYJ
+         CpEePgQiSg0GZQN703Eua+bpSAfSr8N72ruBvYM+xHPikZHkpvGIEMslReFyG3+gg62d
+         EW/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QHkKhS85lTO/1ZkryMnHdjoXWEHU3orWJwuliOPijEg=;
-        b=dFzxmtVPk+PLFAgcuV9A3I/fyUZW2ilN6KwL9XEQFalV55LdtiMfC7Yw8LV/Mnd66R
-         XYgqr0mLnSdy3eWbRmGs0vA5UzKTbfYlkJ9TfspDg0Kk0PJ6ZpTnYvjElUWwBPV1kBv9
-         xSgu3KuFkyIiCu9al0+I9Gp5LrJgVfxzqlpIZe/79wKgy+1S9Cj888G1k66pZeKInTf3
-         0J2W6cM80sAPshLVKCVG5mEIqDACeJn/Z4V/RTgT343matWwGFb8pVjgMrggPGiAHvnn
-         qa2Pcaq8jZ1zxnEXZNZPv9U8RxSV7HyS1e2oxeZSgVgqw8Xb343AKoUXgAwwRxfQb6bS
-         Vdmg==
-X-Gm-Message-State: AOAM5320htKgus2jpt19cUelnBtAizk1MOF7Si7tmhMTMEhy9+P/RiEk
-        y9Nikaxn/mRaV9RtB9+1jtHBSoMJyRUpx44SCJBeoA==
-X-Google-Smtp-Source: ABdhPJy6/ka8tGagcwE2L5RBcYi+8/lqcA+6OxdF6mdgjEfsgOsYpbXmbns7gGEU/XAr64+OyUVXGqCAa0atgxuU9hs=
-X-Received: by 2002:a05:6402:1152:: with SMTP id g18mr19307291edw.18.1614656017366;
- Mon, 01 Mar 2021 19:33:37 -0800 (PST)
+        bh=Bz8uBe6K2P4L9vYFmzU92KcgY6OwUuT5aKcfnajTyTg=;
+        b=sRqBK8ntRjTABQOR1Gz5N2h2R87PbJuergc4Oxv9W8qRysLtpTZrjbAJ7Es4hcQr7v
+         5acTdXY5a3ZykzlDiy/s3HdaIHKwIHBG82gLGWiAbMWiDwxqOogectCKXSsAwhtY9E30
+         j1hf1lQCEmV/+xzKwkpxXYHeN+9WSoJ6AQ5kY4XebR383Ux1falRnliN1CMSVtsagCXH
+         G/Vs1LXnYzW8pQKYARmqgI+/mCcyFn45MV1QXmUKu+mN8m9odshegZJT2YClr+y+F8nA
+         5p7M+R7GNU0GGEYHtmYH0QW4GZtJ9thOu9x3XxBT5GKBDTIiIi4wlxZG4lfjbNLXb1oK
+         ljZw==
+X-Gm-Message-State: AOAM530jcvaGMaTflE83kM8jAf2AZFUh2RBQjqdqzfnuU4XZ9/m/tPXA
+        ts8hsMJPJbVKpM156N9x4e4U6xZhrz9MRd7MiBqBMg==
+X-Google-Smtp-Source: ABdhPJzJtFE+1oSFYwIpEGPFNzE9zYTgKDQwzxAeND6Yrtul3/tDAbpsz02NMRsNm2sVGPuN4J8NCXA5gSql+ypr8no=
+X-Received: by 2002:a2e:9cc4:: with SMTP id g4mr2003504ljj.34.1614656164850;
+ Mon, 01 Mar 2021 19:36:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20210226205126.GX4662@dread.disaster.area> <CAPcyv4iDefA3Y0wUW=p080SYAsM_2TPJba-V-sxdK_BeJMkmsw@mail.gmail.com>
- <20210226212748.GY4662@dread.disaster.area> <CAPcyv4jryJ32R5vOwwEdoU3V8C0B7zu_pCt=7f6A3Gk-9h6Dfg@mail.gmail.com>
- <20210227223611.GZ4662@dread.disaster.area> <CAPcyv4h7XA3Jorcy_J+t9scw0A4KdT2WEwAhE-Nbjc=C2qmkMw@mail.gmail.com>
- <20210228223846.GA4662@dread.disaster.area> <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
- <20210301224640.GG4662@dread.disaster.area> <CAPcyv4iTqDJApZY0o_Q0GKn93==d2Gta2NM5x=upf=3JtTia7Q@mail.gmail.com>
- <20210302024227.GH4662@dread.disaster.area>
-In-Reply-To: <20210302024227.GH4662@dread.disaster.area>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 1 Mar 2021 19:33:28 -0800
-Message-ID: <CAPcyv4ja8gnTR1E-Ge5etm+y69cHwdWN6Bg79wPPF4M=C-w79A@mail.gmail.com>
-Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
-        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
-        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
+References: <20210301062227.59292-1-songmuchun@bytedance.com>
+ <20210301062227.59292-3-songmuchun@bytedance.com> <CALvZod7sysj0+wrzLTXnwn7s_Gf-V2eFPJ6cLcoRmR0LdAFk0Q@mail.gmail.com>
+ <CAMZfGtVhgPzGXrLp12Z=r_FYuyqOoza9tOkPZ0N1=cHR+ataQA@mail.gmail.com>
+In-Reply-To: <CAMZfGtVhgPzGXrLp12Z=r_FYuyqOoza9tOkPZ0N1=cHR+ataQA@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 1 Mar 2021 19:35:53 -0800
+Message-ID: <CALvZod6TmaG7QnxeM65sCzVJBTGfb34q50=0no391Ciww4ZzCQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 2/5] mm: memcontrol: make page_memcg{_rcu}
+ only applicable for non-kmem page
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>, bristot@redhat.com,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Peter Oskolkov <posk@google.com>, Jann Horn <jannh@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Waiman Long <longman@redhat.com>,
+        Michel Lespinasse <walken@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, krisman@collabora.com,
+        esyr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
+        Marco Elver <elver@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 6:42 PM Dave Chinner <david@fromorbit.com> wrote:
-[..]
-> We do not need a DAX specific mechanism to tell us "DAX device
-> gone", we need a generic block device interface that tells us "range
-> of block device is gone".
+On Mon, Mar 1, 2021 at 7:03 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> On Tue, Mar 2, 2021 at 2:11 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > On Sun, Feb 28, 2021 at 10:25 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> > >
+> > > We want to reuse the obj_cgroup APIs to reparent the kmem pages when
+> > > the memcg offlined. If we do this, we should store an object cgroup
+> > > pointer to page->memcg_data for the kmem pages.
+> > >
+> > > Finally, page->memcg_data can have 3 different meanings.
+> > >
+> > >   1) For the slab pages, page->memcg_data points to an object cgroups
+> > >      vector.
+> > >
+> > >   2) For the kmem pages (exclude the slab pages), page->memcg_data
+> > >      points to an object cgroup.
+> > >
+> > >   3) For the user pages (e.g. the LRU pages), page->memcg_data points
+> > >      to a memory cgroup.
+> > >
+> > > Currently we always get the memcg associated with a page via page_memcg
+> > > or page_memcg_rcu. page_memcg_check is special, it has to be used in
+> > > cases when it's not known if a page has an associated memory cgroup
+> > > pointer or an object cgroups vector. Because the page->memcg_data of
+> > > the kmem page is not pointing to a memory cgroup in the later patch,
+> > > the page_memcg and page_memcg_rcu cannot be applicable for the kmem
+> > > pages. In this patch, we introduce page_memcg_kmem to get the memcg
+> > > associated with the kmem pages. And make page_memcg and page_memcg_rcu
+> > > no longer apply to the kmem pages.
+> > >
+> > > In the end, there are 4 helpers to get the memcg associated with a
+> > > page. The usage is as follows.
+> > >
+> > >   1) Get the memory cgroup associated with a non-kmem page (e.g. the LRU
+> > >      pages).
+> > >
+> > >      - page_memcg()
+> > >      - page_memcg_rcu()
+> >
+> > Can you rename these to page_memcg_lru[_rcu] to make them explicitly
+> > for LRU pages?
+>
+> Yes. Will do. Thanks.
+>
 
-This is the crux of the disagreement. The block_device is going away
-*and* the dax_device is going away. The dax_device removal implies one
-set of actions (direct accessed pfns invalid) the block device removal
-implies another (block layer sector access offline). corrupted_range
-is blurring the notification for 2 different failure domains. Look at
-the nascent idea to mount a filesystem on dax sans a block device.
-Look at the existing plumbing for DM to map dax_operations through a
-device stack. Look at the pushback Ruan got for adding a new
-block_device operation for corrupted_range().
-
-> The reason that the block device is gone is irrelevant to the
-> filesystem. The type of block device is also irrelevant. If the
-> filesystem isn't using DAX (e.g. dax=never mount option) even when
-> it is on a DAX capable device, then it just doesn't care about
-> invalidating DAX mappings because it has none. But it still may care
-> about shutting down the filesystem because the block device is gone.
-
-Sure, let's have a discussion about a block_device gone notification,
-and a dax_device gone notification.
-
-> This is why we need to communicate what error occurred, not what
-> action a device driver thinks needs to be taken.
-
-The driver is only an event producer in this model, whatever the
-consumer does at the other end is not its concern. There may be a
-generic consumer and a filesystem specific consumer.
-
-> The error is
-> important to the filesystem, the action might be completely
-> irrelevant. And, as we know now, shutdown on DAX enable filesystems
-> needs to imply DAX mapping invalidation in all cases, not just when
-> the device disappears from under the filesystem.
-
-Sure.
+Please follow Johannes' suggestion regarding page_memcg_kmem() and
+then no need to rename these.
