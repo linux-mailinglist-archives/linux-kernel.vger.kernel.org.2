@@ -2,228 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4466032A180
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7319F32A184
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577461AbhCBGWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:22:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381108AbhCBEUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:20:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10601601FA;
-        Tue,  2 Mar 2021 04:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614658812;
-        bh=vOXe667EPdjWGQsTKUtkqDCOaVMfZzzv1gKuybI2dY0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L1kyoFKot1Kt8f7W4hCqI5IH94AhK754adlGNmVtpxPkcbfg9avxDjyA2O0V9Qc0S
-         IxkKHipP2SW9wUeu24TYYBdvLZ+4I2xR2z143/TLpjKgMbMqDAO8gBP2bfwT9zzR4V
-         QC8iUBSau8+NM4+mFPpQiON1v8M6pzt2ld2Uqf7DYt/uCYJvEnEBHY+w4/GvkGaP+w
-         zrdBcLTEvUSRZvrGA4BekWHPt9g6ELAMHsTlcesh86/7VH4uw8KcE8pp0Kn2QAIKl/
-         Yjg73tWlyQNzE43tFugRdnXhz1G6QYFZSDawHuNU8Csnm4tInD3p86w2wgO9oTh6cc
-         fsPxUuCUkmqlA==
-Date:   Mon, 1 Mar 2021 20:20:10 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Huang Jianan <huangjianan@oppo.com>,
-        linux-f2fs-devel@lists.sourceforge.net, zhangshiming@oppo.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [f2fs-dev] [PATCH 3/3] f2fs: check if swapfile is
- section-alligned
-Message-ID: <YD28+iVg4sjS3+22@google.com>
-References: <20210227120231.136559-1-huangjianan@oppo.com>
- <20210227120231.136559-3-huangjianan@oppo.com>
- <b4ae58b2-3325-6cdf-26b4-b77810d33bbc@huawei.com>
+        id S1577477AbhCBGWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:22:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1576031AbhCBEXR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 23:23:17 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59EA4C06178C
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 20:22:37 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id e6so13031399pgk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 20:22:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=elM1zjwBJSQBpl/quKbnHA4lgGWxjH0JrhX/IRautFw=;
+        b=S8q0CflZIm2643Put3EV+hTcBCMksy/5FECh9eMjvyTxpSxSO3I6AudhkrPLxaQZ+d
+         0NkVPHj1lrpcxhhtnG+mlRAdzVGRLlgoGkCw5axRNij2VFwev2LEc2u89ZITrKrR6sGW
+         J+F4KZKuQA012ZdPKaI6YaC9eE2JU9o4JEsRJKrOFiXEtHpa/og80HFKcFAR48jnykmK
+         HnkYTXdJFdvSkoogh6saIA+CifU8TnZbn5jPY/kaD4UeYjecReNUvHeGN9AnnGofScRc
+         pZ0axVwDG6sSaz3pTuoJl/qrSxUeA9O76+xvvIZbO2TpkCtlbTT18ZPC5hK7tI8+pNRm
+         IfoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=elM1zjwBJSQBpl/quKbnHA4lgGWxjH0JrhX/IRautFw=;
+        b=g/oNK8m6QAPveMZdzLn3hPO1+em+EGZznAGmkpCH1sk+Dx7h0lrat1RxwJEVY59qBv
+         o7kyGlJNByxyqbUw/TdcTtHuCrZjZTgJHFn2cgxLzCevIIDPPO9JQ9oGjbZdcoNx2GLH
+         2NCOvcIVNJ+uuEWojYc+bNjKxZDf8v4zBRHKZMvj+SwWXLMIAAReVUJTM9BJGuwtd90T
+         9/+5Mhj4Ltxt/ciDjHhOZReobZ33mvMGn6ojuB9HpQU1buIyrW7Dv2Ikw3jd2VPmXPaV
+         6rBSqse7bnFMZdQubn/7oYl34SiRL5lCYWBdxHCT5mMDz431eqJQWOxPq3jELLgC1vfj
+         TQTg==
+X-Gm-Message-State: AOAM533V5S2NmjyDigosgf0ujpDLrM/STKpaT8s2QbBdZxWKxHjLQ0gK
+        ybFFmifcPD1bLcPZiwYVpVM=
+X-Google-Smtp-Source: ABdhPJwplW9mkO60eotfrXiajqyI4lu6t+Z+tQxmd1o2ufcqNn4sGsxH1iHYBaPGeULR7ybT7H6xog==
+X-Received: by 2002:a62:16c9:0:b029:1ed:df04:8fcf with SMTP id 192-20020a6216c90000b02901eddf048fcfmr18408932pfw.63.1614658956954;
+        Mon, 01 Mar 2021 20:22:36 -0800 (PST)
+Received: from localhost.localdomain (80.251.221.29.16clouds.com. [80.251.221.29])
+        by smtp.gmail.com with ESMTPSA id b14sm1134534pji.14.2021.03.01.20.22.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 20:22:36 -0800 (PST)
+From:   Artem Lapkin <email2tema@gmail.com>
+X-Google-Original-From: Artem Lapkin <art@khadas.com>
+To:     narmstrong@baylibre.com
+Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        christianshewitt@gmail.com, art@khadas.com, nick@khadas.com,
+        gouwa@khadas.com
+Subject: [PATCH] drm: meson_drv add shutdown function
+Date:   Tue,  2 Mar 2021 12:22:02 +0800
+Message-Id: <20210302042202.3728113-1-art@khadas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b4ae58b2-3325-6cdf-26b4-b77810d33bbc@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/01, Chao Yu wrote:
-> Hi Jianan,
+Problem: random stucks on reboot stage about 1/20 stuck/reboots
+// debug kernel log
+[    4.496660] reboot: kernel restart prepare CMD:(null)
+[    4.498114] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
+[    4.503949] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
+...STUCK...
 
-Merged 1/3 and 2/3, so please post v2 on 3/3.
+Solution: add shutdown function to meson_drm driver 
+// debug kernel log
+[    5.231896] reboot: kernel restart prepare CMD:(null)
+[    5.246135] [drm:meson_drv_shutdown]
+...
+[    5.259271] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown begin
+[    5.274688] meson_ee_pwrc c883c000.system-controller:power-controller: shutdown domain 0:VPU...
+[    5.338331] reboot: Restarting system
+[    5.358293] psci: PSCI_0_2_FN_SYSTEM_RESET reboot_mode:0 cmd:(null)
+bl31 reboot reason: 0xd
+bl31 reboot reason: 0x0
+system cmd  1.
+...REBOOT...
 
-Thanks,
+Tested: on VIM1 VIM2 VIM3 VIM3L khadas sbcs - 1000+ successful reboots
+and Odroid boards, WeTek Play2 (GXBB)
 
-> 
-> On 2021/2/27 20:02, Huang Jianan via Linux-f2fs-devel wrote:
-> > If the swapfile isn't created by pin and fallocate, it cann't be
-> 
-> Typo:
-> 
-> can't
-> 
-> > guaranteed section-aligned, so it may be selected by f2fs gc. When
-> > gc_pin_file_threshold is reached, the address of swapfile may change,
-> > but won't be synchroniz to swap_extent, so swap will write to wrong
-> 
-> synchronized
-> 
-> > address, which will cause data corruption.
-> > 
-> > Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-> > Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-> > ---
-> >   fs/f2fs/data.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 63 insertions(+)
-> > 
-> > diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> > index 4dbc1cafc55d..3e523d6e4643 100644
-> > --- a/fs/f2fs/data.c
-> > +++ b/fs/f2fs/data.c
-> > @@ -3781,11 +3781,63 @@ int f2fs_migrate_page(struct address_space *mapping,
-> >   #endif
-> >   #ifdef CONFIG_SWAP
-> > +static int f2fs_check_file_aligned(struct inode *inode)
-> 
-> f2fs_check_file_alignment() or f2fs_is_file_aligned()?
-> 
-> > +{
-> > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> > +	block_t main_blkaddr = SM_I(sbi)->main_blkaddr;
-> > +	block_t cur_lblock;
-> > +	block_t last_lblock;
-> > +	block_t pblock;
-> > +	unsigned long len;
-> > +	unsigned long nr_pblocks;
-> > +	unsigned int blocks_per_sec = sbi->blocks_per_seg * sbi->segs_per_sec;
-> 
-> unsigned int blocks_per_sec = BLKS_PER_SEC(sbi);
-> 
-> > +	int ret;
-> > +
-> > +	cur_lblock = 0;
-> > +	last_lblock = bytes_to_blks(inode, i_size_read(inode));
-> > +	len = i_size_read(inode);
-> > +
-> > +	while (cur_lblock < last_lblock) {
-> > +		struct f2fs_map_blocks map;
-> > +		pgoff_t next_pgofs;
-> > +
-> > +		memset(&map, 0, sizeof(map));
-> > +		map.m_lblk = cur_lblock;
-> > +		map.m_len = bytes_to_blks(inode, len) - cur_lblock;
-> 
-> map.m_len = last_lblock - cur_lblock;
-> 
-> > +		map.m_next_pgofs = &next_pgofs;
-> 
-> map.m_next_pgofs = NULL;
-> map.m_next_extent = NULL;
-> 
-> > +		map.m_seg_type = NO_CHECK_TYPE;
-> 
-> map.m_may_create = false;
-> 
-> > +
-> > +		ret = f2fs_map_blocks(inode, &map, 0, F2FS_GET_BLOCK_FIEMAP);
-> > +
-> 
-> Unneeded blank line.
-> 
-> > +		if (ret)
-> > +			goto err_out;
-> > +
-> > +		/* hole */
-> > +		if (!(map.m_flags & F2FS_MAP_FLAGS))
-> 
-> ret = -ENOENT;
-> 
-> > +			goto err_out;
-> > +
-> > +		pblock = map.m_pblk;
-> > +		nr_pblocks = map.m_len;
-> > +
-> > +		if ((pblock - main_blkaddr) & (blocks_per_sec - 1) ||
-> > +			nr_pblocks & (blocks_per_sec - 1))
-> 
-> ret = -EINVAL;
-> 
-> > +			goto err_out;
-> > +
-> > +		cur_lblock += nr_pblocks;
-> > +	}
-> > +
-> > +	return 0;
-> > +err_out:
-> > +	pr_err("swapon: swapfile isn't section-aligned\n");
-> 
-> We should show above message only after we fail in check condition:
-> 
-> 	if ((pblock - main_blkaddr) & (blocks_per_sec - 1) ||
-> 		nr_pblocks & (blocks_per_sec - 1)) {
-> 		f2fs_err(sbi, "Swapfile does not align to section");
-> 		goto err_out;
-> 	}
-> 
-> And please use f2fs_{err,warn,info..} macro rather than pr_{err,warn,info..}.
-> 
-> Could you please fix above related issues in check_swap_activate_fast() as well.
-> 
-> > +	return -EINVAL;
-> 
-> return ret;
-> 
-> > +}
-> > +
-> >   static int check_swap_activate_fast(struct swap_info_struct *sis,
-> >   				struct file *swap_file, sector_t *span)
-> >   {
-> >   	struct address_space *mapping = swap_file->f_mapping;
-> >   	struct inode *inode = mapping->host;
-> > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> >   	sector_t cur_lblock;
-> >   	sector_t last_lblock;
-> >   	sector_t pblock;
-> > @@ -3793,6 +3845,7 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
-> >   	sector_t highest_pblock = 0;
-> >   	int nr_extents = 0;
-> >   	unsigned long nr_pblocks;
-> > +	unsigned int blocks_per_sec = sbi->blocks_per_seg * sbi->segs_per_sec;
-> 
-> Ditto,
-> 
-> >   	u64 len;
-> >   	int ret;
-> > @@ -3827,6 +3880,13 @@ static int check_swap_activate_fast(struct swap_info_struct *sis,
-> >   		pblock = map.m_pblk;
-> >   		nr_pblocks = map.m_len;
-> > +		if ((pblock - SM_I(sbi)->main_blkaddr) & (blocks_per_sec - 1) ||
-> > +			nr_pblocks & (blocks_per_sec - 1)) {
-> > +			pr_err("swapon: swapfile isn't section-aligned\n");
-> 
-> Ditto,
-> 
-> > +			ret = -EINVAL;
-> > +			goto out;
-> > +		}
-> > +
-> >   		if (cur_lblock + nr_pblocks >= sis->max)
-> >   			nr_pblocks = sis->max - cur_lblock;
-> > @@ -3878,6 +3938,9 @@ static int check_swap_activate(struct swap_info_struct *sis,
-> >   	if (PAGE_SIZE == F2FS_BLKSIZE)
-> >   		return check_swap_activate_fast(sis, swap_file, span);
-> > +	if (f2fs_check_file_aligned(inode))
-> 
-> ret = f2fs_check_file_aligned();
-> if (ret)
-> 	return ret;
-> 
-> Thanks,
-> 
-> > +		return -EINVAL;
-> > +
-> >   	blocks_per_page = bytes_to_blks(inode, PAGE_SIZE);
-> >   	/*
-> > 
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+Tested-by: Christian Hewitt <christianshewitt@gmail.com>
+Signed-off-by: Artem Lapkin <art@khadas.com>
+
+---
+ drivers/gpu/drm/meson/meson_drv.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+index 42c5d3246..693bb1293 100644
+--- a/drivers/gpu/drm/meson/meson_drv.c
++++ b/drivers/gpu/drm/meson/meson_drv.c
+@@ -482,6 +482,16 @@ static int meson_probe_remote(struct platform_device *pdev,
+ 	return count;
+ }
+ 
++static void meson_drv_shutdown(struct platform_device *pdev)
++{
++	struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
++	struct drm_device *drm = priv->drm;
++
++	DRM_DEBUG_DRIVER("\n");
++	drm_kms_helper_poll_fini(drm);
++	drm_atomic_helper_shutdown(drm);
++}
++
+ static int meson_drv_probe(struct platform_device *pdev)
+ {
+ 	struct component_match *match = NULL;
+@@ -553,6 +563,7 @@ static const struct dev_pm_ops meson_drv_pm_ops = {
+ 
+ static struct platform_driver meson_drm_platform_driver = {
+ 	.probe      = meson_drv_probe,
++	.shutdown   = meson_drv_shutdown,
+ 	.driver     = {
+ 		.name	= "meson-drm",
+ 		.of_match_table = dt_match,
+-- 
+2.25.1
+
