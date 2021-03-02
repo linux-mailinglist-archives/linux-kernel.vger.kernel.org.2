@@ -2,204 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4F132A13F
+	by mail.lfdr.de (Postfix) with ESMTP id 3966C32A13E
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347524AbhCBFdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 00:33:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
+        id S1347566AbhCBFcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 00:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574318AbhCBDcr (ORCPT
+        with ESMTP id S1574308AbhCBDac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 22:32:47 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEB2C061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:29:54 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id a7so20207747iok.12
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:29:54 -0800 (PST)
+        Mon, 1 Mar 2021 22:30:32 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4EAC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:29:51 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id o9so5328757iow.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:29:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/oSnREyYrWKG+GDU2KGVslzs3LByzyb9v1lKNygr+Ko=;
-        b=JgGhZOXgftXhq7TXErJ6G7/K05dkAsj2JjgJ7Z2eH18cGA1VybdJtjzKhT3ileBuUg
-         HbJXD6MXYmPzayWk6SjpXW6ExGatWy4Nbq4FzXqASbFngTOuIN0BzuJy8o8EaMJxu0BT
-         4U/ZTA34TexqinD3bmlvBFByIAts6DM56SLcA=
+         :cc:content-transfer-encoding;
+        bh=QHLKhdUUdwdRLFZK3F36sZslkyOvdxJOY0pkf8sRrCY=;
+        b=jVCCiWqHUoHLga4iGh8Ma+SZk6bvTG5vcI1KcHM9X+lCng6cHpNJWedN/NJdIhs3M2
+         BycoDJBxIfYb7xwcFLXuuUznHddk7IH4F+O6VkpYMqT+77S+TzoYZ5FDkau2cT6/zCAa
+         QRcmLxr3lG2yTcKxtBBX0AVpJTBqvKhOELByBjXvmyZ70Z2TNIGU8+Qw6DqzAp1J37Hi
+         8+kxkBXfZVvhXWQe8msmkkdruC8gwKS/r/GbzqHtV0MtOnsgR+yPilfbe0BIEA/x4sHa
+         07hPcsugXNL3GR5nxWfcJi6R9aFpDH8a6UDB51IlBUov9YQ/dbTLriP213PB3ujw+WKC
+         fiQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/oSnREyYrWKG+GDU2KGVslzs3LByzyb9v1lKNygr+Ko=;
-        b=nPhyHSbdvUhnvOzOAAvgBzOHAutlWykpWpfXaLuz1S9c4SkLNlkE3xmXv2DVF15yAu
-         lmSj1yiGWdyDiwn22fYZWiou6VCpvmWTAuWxrObwHOMYcJr+EvtKGnz3OyKZrr1rKus8
-         hiK/YSGw6buWzD1X1pzWgDHWtW3TXUaxhRLh5VZk4W1s1VV5SdhCZkXFpoZgeZX37nrj
-         CkzIAeRkG0QYSaNmxfEv9n42S38vQ7L1Q9FtcYiq6Up6gX5CIN+4u2cFfSuc0fHrAMSh
-         brgjVRfxEDFB9LAL7ZHSb+PU1LPvCVGrnF+dWKAd8ANJ3G/EFWE4bp+Ws7ZvxzA0EqA6
-         lyag==
-X-Gm-Message-State: AOAM533e+3izAwHWpctJ41U4VmK/dgqxIY/gqzIBfSw1HTyVDPbNP/DP
-        CwvIm4cH6P/fsXvtr1Gcii/bO3Kaj/d9NLF6C+eEvQ==
-X-Google-Smtp-Source: ABdhPJxzr57zJCc25ckeIBrGxo++RkaMAkrRqjbXM5OOdHjCr4Tm/07WtOIE1wlUN3i/7yo1ecJgqD82Qv2G31tg9lc=
-X-Received: by 2002:a02:2a4a:: with SMTP id w71mr18725045jaw.43.1614655793569;
- Mon, 01 Mar 2021 19:29:53 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QHLKhdUUdwdRLFZK3F36sZslkyOvdxJOY0pkf8sRrCY=;
+        b=bX1TCHPFJy0N1wzU4t7pZ/C0D/wY1JwBKVLMl+j/by7FvVVFNGVR1xYtALtAEnUuo2
+         9fZuafresjBKKUjrY4xIzFp+OPlDN4n/BcXMHDhTxhwgOVWAvbtlthyK7LElWXADWD+k
+         D6MSqFew8pyEiL26HF9hRlLUYUzUvglpUnR+n8FNPKHY5ftJ4A08Ib1oOOOUrRlkPmkJ
+         gkZ3GCqgxdr9hOrvy4QlfFniFy1lXxL7yZqgYCaq65AkzLH251FvkkUQgAtgxDQ4SRAU
+         j/plcbTb1sA7ulBqGAAb1DrofeazKNVBGqZkZetIv++7zZT8paXGqroB/HkPmXUexAYx
+         dk4Q==
+X-Gm-Message-State: AOAM532jLVC7bpludosCiebWQi1qsX+j066GmkfQT8xh72SaS4q3O33b
+        InMauVAiDPxIoRimOgcJuds/w1qFPnZPVLVrHuYedEWONOUDMw==
+X-Google-Smtp-Source: ABdhPJwZFxbYkaK1x/n2mPmqwrkdkJfTD3bFbuvnwCTUAnk14zDPZ6u4tK6pUXcU11f7peeTlXIx6q7ZXdV+9FAv9Rc=
+X-Received: by 2002:a6b:5818:: with SMTP id m24mr16051243iob.144.1614655790958;
+ Mon, 01 Mar 2021 19:29:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225175000.824661-1-enric.balletbo@collabora.com>
-In-Reply-To: <20210225175000.824661-1-enric.balletbo@collabora.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 2 Mar 2021 11:29:27 +0800
-Message-ID: <CAJMQK-gcGY+i2CrUDK49_b4dNY9zbwxcMyW3E94aSz8dzV-3fg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] soc: mediatek: pm-domains: Add a meaningful power
- domain name
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+References: <20210228044625.171151-1-ztong0001@gmail.com> <da187130-8a73-8490-4c70-aed3055081bf@suse.de>
+In-Reply-To: <da187130-8a73-8490-4c70-aed3055081bf@suse.de>
+From:   Tong Zhang <ztong0001@gmail.com>
+Date:   Mon, 1 Mar 2021 22:29:40 -0500
+Message-ID: <CAA5qM4BunmAAgq3jf7+=3H_z+RN4EriuJbpmyMOi3JioUOFwbQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/fb-helper: only unmap if buffer not null
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 1:50 AM Enric Balletbo i Serra
-<enric.balletbo@collabora.com> wrote:
+Hi Tomas,
+
+I think the issue could be possibly caused by the following,
+Please correct me if I'm wrong.
+
+drm_fb_helper_single_fb_probe() can fail with
+"Cannot find any crtc or sizes"
+which will cause fb_helper->funcs->fb_probe not being called,
+thus fb_helper->buffer remains NULL --
+Since there could be the case that the fb_probe is never called,
+a subsequent modprobe -r will cause the following
+drm_client_buffer_vunmap(NULL) in drm_fbdev_cleanup()
+
+Best,
+- Tong
+
+On Mon, Mar 1, 2021 at 3:26 AM Thomas Zimmermann <tzimmermann@suse.de> wrot=
+e:
 >
-> Add the power domains names to the power domain struct so we
-> have meaningful name for every power domain. This also removes the
-> following debugfs error message.
+> Hi
 >
->   [    2.242068] debugfs: Directory 'power-domain' with parent 'pm_genpd' already present!
->   [    2.249949] debugfs: Directory 'power-domain' with parent 'pm_genpd' already present!
->   [    2.257784] debugfs: Directory 'power-domain' with parent 'pm_genpd' already present!
->   ...
+> Am 28.02.21 um 05:46 schrieb Tong Zhang:
+> > drm_fbdev_cleanup() can be called when fb_helper->buffer is null, hence
+> > fb_helper->buffer should be checked before calling
+> > drm_client_buffer_vunmap(). This buffer is also checked in
+> > drm_client_framebuffer_delete(), so we should also do the same thing fo=
+r
+> > drm_client_buffer_vunmap().
 >
-> Fixes: 59b644b01cf4 ("soc: mediatek: Add MediaTek SCPSYS power domains")
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
+> I think a lot of drivers are affected by this problem; probably most of
+> the ones that use the generic fbdev code. How did you produce the error?
 >
->  drivers/soc/mediatek/mt8173-pm-domains.h | 10 ++++++++++
->  drivers/soc/mediatek/mtk-pm-domains.c    |  6 +++++-
->  drivers/soc/mediatek/mtk-pm-domains.h    |  2 ++
->  3 files changed, 17 insertions(+), 1 deletion(-)
+> What I'm more concerned about is why the buffer is NULL. Was ther eno
+> hotplug event? Do you have a display attached?
 >
-> diff --git a/drivers/soc/mediatek/mt8173-pm-domains.h b/drivers/soc/mediatek/mt8173-pm-domains.h
-> index 3e8ee5dabb43..654c717e5467 100644
-> --- a/drivers/soc/mediatek/mt8173-pm-domains.h
-> +++ b/drivers/soc/mediatek/mt8173-pm-domains.h
-> @@ -12,24 +12,28 @@
+> Best regards
+> Thomas
 >
->  static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
->         [MT8173_POWER_DOMAIN_VDEC] = {
-> +               .name = "vdec",
->                 .sta_mask = PWR_STATUS_VDEC,
->                 .ctl_offs = SPM_VDE_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = GENMASK(12, 12),
->         },
->         [MT8173_POWER_DOMAIN_VENC] = {
-> +               .name = "venc",
->                 .sta_mask = PWR_STATUS_VENC,
->                 .ctl_offs = SPM_VEN_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = GENMASK(15, 12),
->         },
->         [MT8173_POWER_DOMAIN_ISP] = {
-> +               .name = "isp",
->                 .sta_mask = PWR_STATUS_ISP,
->                 .ctl_offs = SPM_ISP_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = GENMASK(13, 12),
->         },
->         [MT8173_POWER_DOMAIN_MM] = {
-> +               .name = "mm",
->                 .sta_mask = PWR_STATUS_DISP,
->                 .ctl_offs = SPM_DIS_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
-> @@ -40,18 +44,21 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
->                 },
->         },
->         [MT8173_POWER_DOMAIN_VENC_LT] = {
-> +               .name = "venc_lt",
->                 .sta_mask = PWR_STATUS_VENC_LT,
->                 .ctl_offs = SPM_VEN2_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = GENMASK(15, 12),
->         },
->         [MT8173_POWER_DOMAIN_AUDIO] = {
-> +               .name = "audio",
->                 .sta_mask = PWR_STATUS_AUDIO,
->                 .ctl_offs = SPM_AUDIO_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = GENMASK(15, 12),
->         },
->         [MT8173_POWER_DOMAIN_USB] = {
-> +               .name = "usb",
->                 .sta_mask = PWR_STATUS_USB,
->                 .ctl_offs = SPM_USB_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
-> @@ -59,18 +66,21 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
->                 .caps = MTK_SCPD_ACTIVE_WAKEUP,
->         },
->         [MT8173_POWER_DOMAIN_MFG_ASYNC] = {
-> +               .name = "mfg_async",
->                 .sta_mask = PWR_STATUS_MFG_ASYNC,
->                 .ctl_offs = SPM_MFG_ASYNC_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = 0,
->         },
->         [MT8173_POWER_DOMAIN_MFG_2D] = {
-> +               .name = "mfg_2d",
->                 .sta_mask = PWR_STATUS_MFG_2D,
->                 .ctl_offs = SPM_MFG_2D_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = GENMASK(13, 12),
->         },
->         [MT8173_POWER_DOMAIN_MFG] = {
-> +               .name = "mfg",
->                 .sta_mask = PWR_STATUS_MFG,
->                 .ctl_offs = SPM_MFG_PWR_CON,
->                 .sram_pdn_bits = GENMASK(13, 8),
-> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
-> index b7f697666bdd..694d6ea6de1d 100644
-> --- a/drivers/soc/mediatek/mtk-pm-domains.c
-> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
-> @@ -438,7 +438,11 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
->                 goto err_unprepare_subsys_clocks;
->         }
 >
-> -       pd->genpd.name = node->name;
-> +       if (!pd->data->name)
-> +               pd->genpd.name = node->name;
-> +       else
-> +               pd->genpd.name = pd->data->name;
-> +
->         pd->genpd.power_off = scpsys_power_off;
->         pd->genpd.power_on = scpsys_power_on;
+> >
+> > [  199.128742] RIP: 0010:drm_client_buffer_vunmap+0xd/0x20
+> > [  199.129031] Code: 43 18 48 8b 53 20 49 89 45 00 49 89 55 08 5b 44 89=
+ e0 41 5c 41 5d 41 5e 5d
+> > c3 0f 1f 00 53 48 89 fb 48 8d 7f 10 e8 73 7d a1 ff <48> 8b 7b 10 48 8d =
+73 18 5b e9 75 53 fc ff 0
+> > f 1f 44 00 00 48 b8 00
+> > [  199.130041] RSP: 0018:ffff888103f3fc88 EFLAGS: 00010282
+> > [  199.130329] RAX: 0000000000000001 RBX: 0000000000000000 RCX: fffffff=
+f8214d46d
+> > [  199.130733] RDX: 1ffffffff079c6b9 RSI: 0000000000000246 RDI: fffffff=
+f83ce35c8
+> > [  199.131119] RBP: ffff888103d25458 R08: 0000000000000001 R09: fffffbf=
+ff0791761
+> > [  199.131505] R10: ffffffff83c8bb07 R11: fffffbfff0791760 R12: 0000000=
+000000000
+> > [  199.131891] R13: ffff888103d25468 R14: ffff888103d25418 R15: ffff888=
+103f18120
+> > [  199.132277] FS:  00007f36fdcbb6a0(0000) GS:ffff88815b400000(0000) kn=
+lGS:0000000000000000
+> > [  199.132721] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  199.133033] CR2: 0000000000000010 CR3: 0000000103d26000 CR4: 0000000=
+0000006f0
+> > [  199.133420] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
+000000000
+> > [  199.133807] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
+000000400
+> > [  199.134195] Call Trace:
+> > [  199.134333]  drm_fbdev_cleanup+0x179/0x1a0
+> > [  199.134562]  drm_fbdev_client_unregister+0x2b/0x40
+> > [  199.134828]  drm_client_dev_unregister+0xa8/0x180
+> > [  199.135088]  drm_dev_unregister+0x61/0x110
+> > [  199.135315]  mgag200_pci_remove+0x38/0x52 [mgag200]
+> > [  199.135586]  pci_device_remove+0x62/0xe0
+> > [  199.135806]  device_release_driver_internal+0x148/0x270
+> > [  199.136094]  driver_detach+0x76/0xe0
+> > [  199.136294]  bus_remove_driver+0x7e/0x100
+> > [  199.136521]  pci_unregister_driver+0x28/0xf0
+> > [  199.136759]  __x64_sys_delete_module+0x268/0x300
+> > [  199.137016]  ? __ia32_sys_delete_module+0x300/0x300
+> > [  199.137285]  ? call_rcu+0x3e4/0x580
+> > [  199.137481]  ? fpregs_assert_state_consistent+0x4d/0x60
+> > [  199.137767]  ? exit_to_user_mode_prepare+0x2f/0x130
+> > [  199.138037]  do_syscall_64+0x33/0x40
+> > [  199.138237]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  199.138517] RIP: 0033:0x7f36fdc3dcf7
+> >
+> > Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> > ---
+> >   drivers/gpu/drm/drm_fb_helper.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_h=
+elper.c
+> > index b9a616737c0e..f6baa2046124 100644
+> > --- a/drivers/gpu/drm/drm_fb_helper.c
+> > +++ b/drivers/gpu/drm/drm_fb_helper.c
+> > @@ -2048,7 +2048,7 @@ static void drm_fbdev_cleanup(struct drm_fb_helpe=
+r *fb_helper)
+> >
+> >       if (shadow)
+> >               vfree(shadow);
+> > -     else
+> > +     else if (fb_helper->buffer)
+> >               drm_client_buffer_vunmap(fb_helper->buffer);
+> >
+> >       drm_client_framebuffer_delete(fb_helper->buffer);
+> >
 >
-> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
-> index 141dc76054e6..21a4e113bbec 100644
-> --- a/drivers/soc/mediatek/mtk-pm-domains.h
-> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
-> @@ -76,6 +76,7 @@ struct scpsys_bus_prot_data {
->
->  /**
->   * struct scpsys_domain_data - scp domain data for power on/off flow
-> + * @name: The name of the power domain.
->   * @sta_mask: The mask for power on/off status bit.
->   * @ctl_offs: The offset for main power control register.
->   * @sram_pdn_bits: The mask for sram power control bits.
-> @@ -85,6 +86,7 @@ struct scpsys_bus_prot_data {
->   * @bp_smi: bus protection for smi subsystem
->   */
->  struct scpsys_domain_data {
-> +       const char *name;
->         u32 sta_mask;
->         int ctl_offs;
->         u32 sram_pdn_bits;
 > --
-> 2.30.0
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+> (HRB 36809, AG N=C3=BCrnberg)
+> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 >
