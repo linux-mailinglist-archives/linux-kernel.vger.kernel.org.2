@@ -2,76 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AC332A1E6
+	by mail.lfdr.de (Postfix) with ESMTP id B164A32A1E8
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836428AbhCBHCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:02:18 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:13402 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1575085AbhCBGSn (ORCPT
+        id S1836436AbhCBHCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:02:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234298AbhCBGTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:18:43 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DqRgL5T2kzjTLM;
-        Tue,  2 Mar 2021 14:14:54 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 2 Mar 2021 14:16:12 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <gregkh@linuxfoundation.org>, <rikard.falkeborn@gmail.com>,
-        <zbr@ioremap.net>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH] w1: ds2708 and ds2781 use the new API kobj_to_dev()
-Date:   Tue, 2 Mar 2021 14:17:02 +0800
-Message-ID: <1614665822-12258-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 2 Mar 2021 01:19:07 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6BEC061756;
+        Mon,  1 Mar 2021 22:17:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=d2MqYRJZqPh/ig/USH9cDjBVqoJMcv2qSGD9YIsxUlQ=; b=DD/Efs2KfzSQdQ3nhGP8zSHcy9
+        GGLhpF4Ti5rXapjckWXpyOCGlthkD5HJF2VuzIk72LooBlvFzIMT5MamifAExLdHosBoNnSjLMpN2
+        E3Z6y3E6boDnWDndgy6sNKHgfYIhyzwRbvIaICHUu9TPy6dQ8Og3+7M17Qi/p1IwlhPjRVCvpCs4T
+        cNol/qHvOl22dMWsdqjmWRAr4HH9ufPRLIsJtnJG5BZ72vyLjbNLUH+HrH3EtpB36nZthFI95k1Fl
+        FdKwHMyaGnbBNQRraKgt6OY0ysBSS+rQ34xVVpZAx8X42gfs6sC+6wa1CVz9943JKchXUNR1V3nHz
+        ddabJDaw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lGyLK-000107-IP; Tue, 02 Mar 2021 06:17:14 +0000
+To:     LKML <linux-kernel@vger.kernel.org>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: linux-next-20210302: build problems with certs
+Message-ID: <e1c15c74-82ce-3a69-44de-a33af9b320ea@infradead.org>
+Date:   Mon, 1 Mar 2021 22:17:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix the below warnning which reported by coccicheck.
-/drivers/w1/slaves/w1_ds2780.c:93:60-61: WARNING opportunity for
-kobj_to_dev().
-/drivers/w1/slaves/w1_ds2781.c:90:60-61: WARNING opportunity for
-kobj_to_dev().
+I'm just guessing here, but I think that some of the certs build
+infrastructure doesn't handle O=subdir, which is what I use all
+of the time.
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/w1/slaves/w1_ds2780.c | 2 +-
- drivers/w1/slaves/w1_ds2781.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+$ mkdir build64
+$ make ARCH=x86_64 O=build64 all
 
-diff --git a/drivers/w1/slaves/w1_ds2780.c b/drivers/w1/slaves/w1_ds2780.c
-index c281fe5..9dcb5a5 100644
---- a/drivers/w1/slaves/w1_ds2780.c
-+++ b/drivers/w1/slaves/w1_ds2780.c
-@@ -90,7 +90,7 @@ static ssize_t w1_slave_read(struct file *filp, struct kobject *kobj,
- 			     struct bin_attribute *bin_attr, char *buf,
- 			     loff_t off, size_t count)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	return w1_ds2780_io(dev, buf, off, count, 0);
- }
- 
-diff --git a/drivers/w1/slaves/w1_ds2781.c b/drivers/w1/slaves/w1_ds2781.c
-index f0d393a..2cb7c02 100644
---- a/drivers/w1/slaves/w1_ds2781.c
-+++ b/drivers/w1/slaves/w1_ds2781.c
-@@ -87,7 +87,7 @@ static ssize_t w1_slave_read(struct file *filp, struct kobject *kobj,
- 			     struct bin_attribute *bin_attr, char *buf,
- 			     loff_t off, size_t count)
- {
--	struct device *dev = container_of(kobj, struct device, kobj);
-+	struct device *dev = kobj_to_dev(kobj);
- 	return w1_ds2781_io(dev, buf, off, count, 0);
- }
- 
+  EXTRACT_CERTS   ../
+At main.c:154:
+- SSL error:0909006C:PEM routines:get_name:no start line: crypto/pem/pem_lib.c:745
+extract-cert: ../: Is a directory
+make[2]: [../certs/Makefile:119: certs/x509_revocation_list] Error 1 (ignored)
+
+
 -- 
-2.7.4
-
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
