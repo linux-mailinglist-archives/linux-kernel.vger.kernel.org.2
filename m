@@ -2,145 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC45732A0C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC4E32A0C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:25:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576515AbhCBEaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:30:09 -0500
-Received: from mail-qk1-f173.google.com ([209.85.222.173]:46231 "EHLO
-        mail-qk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380418AbhCBBvH (ORCPT
+        id S1576527AbhCBEaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1380482AbhCBBxC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 20:51:07 -0500
-Received: by mail-qk1-f173.google.com with SMTP id a9so4237671qkn.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 17:50:52 -0800 (PST)
+        Mon, 1 Mar 2021 20:53:02 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F3FC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 17:51:18 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id u8so19988261ior.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 17:51:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ChiCCkiCsXQxiUixofhODiitqcy5zpCs8hKaFZVKRjI=;
+        b=XH9FrLA/2st5+fTiC6HJTOSf1MwNIWxkjsihf73fTh7kndO6L7cbplAGk5wrk3f+Bd
+         J65pMiwHsVzExSIZAIqmYrj64nyh2BDfz+hwVYfokEn0+0RtC0wVX3/5YWF1x9TlyfXi
+         qHM1MDkz3jgzQTAo5gqt8jAd0mGP+w3XT4U14=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0KVTqboDCl1Az8bsYJmElz04gJXte4nzJLkiWdnKi5k=;
-        b=cOyp4c3ta0bevqQIeVc+nmaH0YbTR1xffRrrifBJXbyqoPPnAlUP+M81Q6vLzemzoC
-         bUTGqc3NwToOA86F1EHdA4pX7F+RGVMevGhBzV9nuYMUuj+qVvhi7bKqU07VWpEzW7W1
-         3+UFHELQDYrZzFDPNNnRdrQMLkrxQT8vHcfPy5vQvEBKRHL42YZtJXpwx56e8G5p8MS/
-         2fiu0jEwarRH/h5As91hiAXIQd6zfZ1nPjtKML+WUXwdolwEQv+D6PuOdXOnIJScO7Na
-         yx8Ma8TOm/3rONpnc4riusSqE0hAUV1D/Le0mK7U7/8/KMdGY8vrVMvAInZbT49AMtB0
-         hTIA==
-X-Gm-Message-State: AOAM532mbgTqrwLOG61HcsA2zK+HTKVOlbB2KkpDbtWfXO7NOEiymqFD
-        eZNHi9n0/o9k+xr6ofusBC+f0CbZP+wARuSf0ZI=
-X-Google-Smtp-Source: ABdhPJxFAgMOETsGnNqG2H9IKI5B/vR18Es8sLaOnFL7LhMzmWVguuwAjZjsavB0uTlMILUbSeDSYuOMiT7TUjZCazA=
-X-Received: by 2002:ae9:efc4:: with SMTP id d187mr17849810qkg.316.1614649826892;
- Mon, 01 Mar 2021 17:50:26 -0800 (PST)
+        bh=ChiCCkiCsXQxiUixofhODiitqcy5zpCs8hKaFZVKRjI=;
+        b=qmM+GpFTjcspvLJeCimORrgx94r76GuFuDeiMz0GgqIAkIrVpn6nvUbjlsmbiLdu+V
+         JlVUUWY5vNbFPYA3bOXYmHhmiREOtiQfysqriG7TUmEJNZIpuT/Xyz+ekfadMXdAwu+y
+         oy8AfPcpSW9nuuXQXtXtNHleT1iFHOEZLuFtqCzUHFDw2YK2X9OranMoCw9oNzg0PUZ3
+         FDiEuWLVyUvXDtxvMzBAxs8S1+qvqagzKRSZeRAO/7VjZF7ddNbIhyqeHJD6uXVJhtjg
+         sMolPdIK5yd322lMiuzAQmJi00PjoK4l8xMN0/7Ucl5/MqglS3fFZ2oPVif2eZSJj/6u
+         e8+A==
+X-Gm-Message-State: AOAM530iCwe6eFBMsDZliGYdopDe84QG5t1M7wOfEKhH0i1/yaz/6K/9
+        2e3Ucxo/NjnCBPXUepvWsobcD0JjeFpzHbOAwpDX8w==
+X-Google-Smtp-Source: ABdhPJz3J7j717c/uTMNBy/qHIbiLcuAWjx+u4Udcm5tqf42hVMrgjAO+VnjYWDCI+qnDYI83S2kk8HmE46Ww7MQ2FE=
+X-Received: by 2002:a02:1704:: with SMTP id 4mr19127370jah.121.1614649877502;
+ Mon, 01 Mar 2021 17:51:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20210301140409.184570-1-namhyung@kernel.org> <20210301140409.184570-5-namhyung@kernel.org>
- <YD0jR7ENbD7u01Zq@krava>
-In-Reply-To: <YD0jR7ENbD7u01Zq@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 2 Mar 2021 10:50:15 +0900
-Message-ID: <CAM9d7cgNpEzaPYin=PUw9+WCecbUCQaNXAsMFOXnLBHcK8xotw@mail.gmail.com>
-Subject: Re: [PATCH 04/11] perf test: Fix cpu and thread map leaks in
- sw_clock_freq test
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+References: <20210223142908.23374-1-youghand@codeaurora.org>
+In-Reply-To: <20210223142908.23374-1-youghand@codeaurora.org>
+From:   Abhishek Kumar <kuabhs@chromium.org>
+Date:   Mon, 1 Mar 2021 17:51:05 -0800
+Message-ID: <CACTWRwti94_VXpFZZhZKJhhJ_YUb1mCWjR2AtD_Rqwe6-GOGHQ@mail.gmail.com>
+Subject: Re: [PATCH v3] ath10k: skip the wait for completion to recovery in
+ shutdown path
+To:     Youghandhar Chintala <youghand@codeaurora.org>
+Cc:     ath10k <ath10k@lists.infradead.org>,
+        ath10k-review.external@qti.qualcomm.com,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>, Leo Yan <leo.yan@linaro.org>
+        Douglas Anderson <dianders@chromium.org>,
+        Brian Norris <briannorris@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+This patch seems to address the comments on v2. Overall this patch LGTM.
 
-On Tue, Mar 2, 2021 at 2:24 AM Jiri Olsa <jolsa@redhat.com> wrote:
+Reviewed-by: Abhishek Kumar <kuabhs@chromium.org>
+
+On Tue, Feb 23, 2021 at 6:29 AM Youghandhar Chintala
+<youghand@codeaurora.org> wrote:
 >
-> On Mon, Mar 01, 2021 at 11:04:02PM +0900, Namhyung Kim wrote:
-> > The evlist has the maps with its own refcounts so we don't need to set
-> > the pointers to NULL.  Otherwise following error was reported by Asan.
-> >
-> > Also change the goto label since it doesn't need to have two.
-> >
-> >   # perf test -v 25
-> >   25: Software clock events period values        :
-> >   --- start ---
-> >   test child forked, pid 149154
-> >   mmap size 528384B
-> >   mmap size 528384B
-> >
-> >   =================================================================
-> >   ==149154==ERROR: LeakSanitizer: detected memory leaks
-> >
-> >   Direct leak of 32 byte(s) in 1 object(s) allocated from:
-> >     #0 0x7fef5cd071f8 in __interceptor_realloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:164
-> >     #1 0x56260d5e8b8e in perf_thread_map__realloc /home/namhyung/project/linux/tools/lib/perf/threadmap.c:23
-> >     #2 0x56260d3df7a9 in thread_map__new_by_tid util/thread_map.c:63
-> >     #3 0x56260d2ac6b2 in __test__sw_clock_freq tests/sw-clock.c:65
-> >     #4 0x56260d26d8fb in run_test tests/builtin-test.c:428
-> >     #5 0x56260d26d8fb in test_and_print tests/builtin-test.c:458
-> >     #6 0x56260d26fa53 in __cmd_test tests/builtin-test.c:679
-> >     #7 0x56260d26fa53 in cmd_test tests/builtin-test.c:825
-> >     #8 0x56260d2dbb64 in run_builtin /home/namhyung/project/linux/tools/perf/perf.c:313
-> >     #9 0x56260d165a88 in handle_internal_command /home/namhyung/project/linux/tools/perf/perf.c:365
-> >     #10 0x56260d165a88 in run_argv /home/namhyung/project/linux/tools/perf/perf.c:409
-> >     #11 0x56260d165a88 in main /home/namhyung/project/linux/tools/perf/perf.c:539
-> >     #12 0x7fef5c83cd09 in __libc_start_main ../csu/libc-start.c:308
-> >
-> >     ...
-> >   test child finished with 1
-> >   ---- end ----
-> >   Software clock events period values      : FAILED!
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/tests/sw-clock.c | 12 ++++--------
-> >  1 file changed, 4 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/tools/perf/tests/sw-clock.c b/tools/perf/tests/sw-clock.c
-> > index a49c9e23053b..74988846be1d 100644
-> > --- a/tools/perf/tests/sw-clock.c
-> > +++ b/tools/perf/tests/sw-clock.c
-> > @@ -42,8 +42,8 @@ static int __test__sw_clock_freq(enum perf_sw_ids clock_id)
-> >               .disabled = 1,
-> >               .freq = 1,
-> >       };
-> > -     struct perf_cpu_map *cpus;
-> > -     struct perf_thread_map *threads;
-> > +     struct perf_cpu_map *cpus = NULL;
-> > +     struct perf_thread_map *threads = NULL;
-> >       struct mmap *md;
-> >
-> >       attr.sample_freq = 500;
-> > @@ -66,14 +66,11 @@ static int __test__sw_clock_freq(enum perf_sw_ids clock_id)
-> >       if (!cpus || !threads) {
-> >               err = -ENOMEM;
-> >               pr_debug("Not enough memory to create thread/cpu maps\n");
-> > -             goto out_free_maps;
-> > +             goto out_delete_evlist;
-> >       }
-> >
-> >       perf_evlist__set_maps(&evlist->core, cpus, threads);
-> >
-> > -     cpus    = NULL;
-> > -     threads = NULL;
+> Currently in the shutdown callback we wait for recovery to complete
+> before freeing up the resources. This results in additional two seconds
+> delay during the shutdown and thereby increase the shutdown time.
 >
-> hum, so IIUC we added these and the other you remove in your patches long time ago,
-> because there was no refcounting at that time, right?
-
-It seems my original patch just set the maps directly.
-
-  bc96b361cbf9 perf tests: Add a test case for checking sw clock event frequency
-
-And after that Adrian changed it to use the set_maps() helper.
-
-  c5e6bd2ed3e8 perf tests: Fix software clock events test setting maps
-
-It seems we already had the refcounting at the moment.  And then the libperf
-renaming happened later.
-
-Thanks,
-Namhyung
+> As an attempt to take less time during shutdown, remove the wait for
+> recovery completion in the shutdown callback and added an API to freeing
+> the reosurces in which they were common for shutdown and removing
+> the module.
+>
+> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
+>
+> Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
+> Change-Id: I65bc27b5adae1fedc7f7b367ef13aafbd01f8c0c
+> ---
+> Changes from v2:
+> -Corrected commit text and added common API for freeing the
+>  resources for shutdown and unloading the module
+> ---
+>  drivers/net/wireless/ath/ath10k/snoc.c | 29 ++++++++++++++++++--------
+>  1 file changed, 20 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index 84666f72bdfa..70b3f2bd1c81 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1781,17 +1781,11 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+>         return ret;
+>  }
+>
+> -static int ath10k_snoc_remove(struct platform_device *pdev)
+> +static int ath10k_snoc_free_resources(struct ath10k *ar)
+>  {
+> -       struct ath10k *ar = platform_get_drvdata(pdev);
+>         struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+>
+> -       ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc remove\n");
+> -
+> -       reinit_completion(&ar->driver_recovery);
+> -
+> -       if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+> -               wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
+> +       ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc free resources\n");
+>
+>         set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
+>
+> @@ -1805,12 +1799,29 @@ static int ath10k_snoc_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> +static int ath10k_snoc_remove(struct platform_device *pdev)
+> +{
+> +       struct ath10k *ar = platform_get_drvdata(pdev);
+> +       struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+> +
+> +       ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc remove\n");
+> +
+> +       reinit_completion(&ar->driver_recovery);
+> +
+> +       if (test_bit(ATH10K_SNOC_FLAG_RECOVERY, &ar_snoc->flags))
+> +               wait_for_completion_timeout(&ar->driver_recovery, 3 * HZ);
+> +
+> +       ath10k_snoc_free_resources(ar);
+> +
+> +       return 0;
+> +}
+> +
+>  static void ath10k_snoc_shutdown(struct platform_device *pdev)
+>  {
+>         struct ath10k *ar = platform_get_drvdata(pdev);
+>
+>         ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc shutdown\n");
+> -       ath10k_snoc_remove(pdev);
+> +       ath10k_snoc_free_resources(ar);
+>  }
+>
+>  static struct platform_driver ath10k_snoc_driver = {
+> --
+> 2.29.0
+>
