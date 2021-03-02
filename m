@@ -2,267 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2042332AE3A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD00032AE3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384595AbhCBWmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:42:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378849AbhCBWIH (ORCPT
+        id S1384758AbhCBWm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:42:56 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12369 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1837977AbhCBWN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:08:07 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4B2C061788;
-        Tue,  2 Mar 2021 14:07:22 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id u125so4235566wmg.4;
-        Tue, 02 Mar 2021 14:07:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OIgE+S3zci/UH6xW3d3ehPyhifGUmQRCQTPHW4b+dG4=;
-        b=ERunMCDUlscuYZSl9jBOamJx68giB2u/0hSno9gt+opud6Ztkksya3JOsaPDsk3+vP
-         Gh5tr9gY5DGKpfFBEhKLEiZTlqSfp1vatvFUCciThZSsiFakijUvCIC1EmN0viR1C/m3
-         HbvYNYFTpTgyC9D85PFuDcRAV8NkQQYBXiJovvUJCcgzw9z5jrGR/eTi44km/ctf92u8
-         dowluEASHgpTTh9vEhpNXkPvc6Qz4eyeZtgqypaioqFlSgg8OKS6io5bfUCmiro3RREj
-         8c5hTivAPxM+q0GTo+RhEY/aykHmuABFxuPLIejUXoBjr5Q9376NYSn/DKuO2PR23y8a
-         CyXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OIgE+S3zci/UH6xW3d3ehPyhifGUmQRCQTPHW4b+dG4=;
-        b=O3QVJQIFaL68Jd9s9JXsQJlMzsKlJoWPAxCh0N6/i32+sJ6VJxGL/B9L6n77+1GNk9
-         dZMzaYALdaWVfGnhrGhm7tKxP54T3/raI1jFBEFni/c7uDKnv11WrXfjOqe6dlDuVpk4
-         JzefKckz3sGAh96A5IF+XMuBBtRjQwnrhASDg6zt9XhamQNcCzzjyHaNj/vSoogEkd7H
-         XtHX4so0ve9iDbB/ZA749n2UCZEsYBXmDVvE9eN85rV4rMl+YgMgyy5hxG/M+IbYfMzv
-         UYCB79D/IXr4SL4eJyXtWqrt/9eGB/8CkH7J8VI05NJqJhvnNs+Ost6jHUu0RELi8MEc
-         TiUA==
-X-Gm-Message-State: AOAM532baZawUlB1kKtD0gGzLWdtz6vPUuiUBxU/wReUdEInwODtobFU
-        p4fC+I8hh0f8+sJcWdUCw5gagr4eA0l7rw==
-X-Google-Smtp-Source: ABdhPJwfVNdtyJtjd3MPE+EsjbdFDTlKOdcWLZ3/rm9W10vQhHyorlNh1pm18P0i7uhrDWptMjxbOw==
-X-Received: by 2002:a1c:a791:: with SMTP id q139mr5840247wme.20.1614722841441;
-        Tue, 02 Mar 2021 14:07:21 -0800 (PST)
-Received: from sf (tunnel547699-pt.tunnel.tserv1.lon2.ipv6.he.net. [2001:470:1f1c:3e6::2])
-        by smtp.gmail.com with ESMTPSA id i10sm18380436wrs.11.2021.03.02.14.07.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 14:07:20 -0800 (PST)
-Date:   Tue, 2 Mar 2021 22:07:16 +0000
-From:   Sergei Trofimovich <slyich@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: 5.11 regression: "ia64: add support for TIF_NOTIFY_SIGNAL"
- breaks ia64 boot
-Message-ID: <20210302220716.0b6f72ae@sf>
-In-Reply-To: <20210223080830.23bccdbf@sf>
-References: <20210222230519.73f3e239@sf>
-        <cc658b61-530e-90bf-3858-36cc60468a24@kernel.dk>
-        <20210222235359.75d1a912@sf>
-        <d6cc2bfc-374c-6fb8-9c63-65b3dfebdf3e@kernel.dk>
-        <30a833d8-44a0-284d-4fe4-e9a52f407043@kernel.dk>
-        <a7e9e9a3-e5a2-fad0-560e-82c9819a60e7@kernel.dk>
-        <20210223080830.23bccdbf@sf>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 2 Mar 2021 17:13:59 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603eb87d0002>; Tue, 02 Mar 2021 14:13:17 -0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
+ 2021 22:13:15 +0000
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
+ 2021 22:08:25 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Tue, 2 Mar 2021 22:08:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VVTI6QQaqzcdAgRW3AK4cLE0F/+s9fc0xAyclHLsbBRbliDGgAv9kaxQZc1P1Otyw0HXASQurKZNn5fu9tlYMOZOMQkNAeYNbCMZ39ivUKmqoOX+JlFvhX+VtGtXahmpEL0WKr8j5VqmfsfzJqSzMhNTYKhonuMv13FSKJiT9GY9UaMqH1dXktXxap1ruzImNL/BdPCN/++iPVNhr2yyIvdCmTBs2gvNiLdlELoTql0NdG17epwtPdtAXTdx40IOebUvSTny15rmqStxK8eOvM9Wj/smfPbBrYs65UoSJBoZEEjn/1sks9YAIV6UrmYjjpAkzfo9ZDIuxO+09M1VBg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RypgdQ13sxBsHXvYYgu32NR7rdgR5XVbnvNdjrfqb5E=;
+ b=Wb7hQSAjwebeFH60lIaQXKZ2nWrS7IfMDTq11sBTZl2lLzPebhbMmszqk73Pg7RMrqHR4LfQo+Is7U1r0Kg4wjELg+H2H4bzMlSn4qUjpVMwjyGLVgncLDrHt8D9EGRlktUBqSTKYaXvfFeRYHvnL36aMlyzgxxliX83TJZ/mwK1SBj+W9fRB17U0+lD8wA/nDFK6hLP0GzZK3NUJUNYwSlh/MLSJDhvWhRrZ9S2rTNtC65gY1a3Kc9DvWQEPSLPqg6treIPUNLc6Z1a51c5I6r68HaDSQ7rZ+dkIvMLs8ajYavB7NvTNTsEtSekTcWlH7c+i9mt1S90fIlguGXbaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
+ by MN2PR12MB3872.namprd12.prod.outlook.com (2603:10b6:208:168::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Tue, 2 Mar
+ 2021 22:08:22 +0000
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::a1b1:5d8:47d7:4b60]) by MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::a1b1:5d8:47d7:4b60%7]) with mapi id 15.20.3890.028; Tue, 2 Mar 2021
+ 22:08:22 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Alistair Popple <apopple@nvidia.com>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <jhubbard@nvidia.com>,
+        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <jgg@nvidia.com>,
+        <hch@infradead.org>, <daniel@ffwll.ch>
+Subject: Re: [PATCH v3 4/8] mm/rmap: Split migration into its own function
+Date:   Tue, 2 Mar 2021 17:08:15 -0500
+X-Mailer: MailMate (1.14r5757)
+Message-ID: <E93F89E1-3CE2-4CA3-97D9-6BCED78E1001@nvidia.com>
+In-Reply-To: <20210226071832.31547-5-apopple@nvidia.com>
+References: <20210226071832.31547-1-apopple@nvidia.com>
+ <20210226071832.31547-5-apopple@nvidia.com>
+Content-Type: multipart/signed;
+        boundary="=_MailMate_6AC1FF45-9158-42AD-A419-9574088A750B_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [216.228.112.22]
+X-ClientProxiedBy: MN2PR05CA0026.namprd05.prod.outlook.com
+ (2603:10b6:208:c0::39) To MN2PR12MB3823.namprd12.prod.outlook.com
+ (2603:10b6:208:168::26)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.2.62.13] (216.228.112.22) by MN2PR05CA0026.namprd05.prod.outlook.com (2603:10b6:208:c0::39) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.9 via Frontend Transport; Tue, 2 Mar 2021 22:08:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 95f9009d-9650-4b25-2547-08d8ddc7b16b
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3872:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB387241F83492D81B57531F91C2999@MN2PR12MB3872.namprd12.prod.outlook.com>
+X-Header: ProcessedBy-CMR-outbound
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GAy1zuUDlEVCDWc4qO0NJCP+H2bJVQ6wsS7FmNua68Q6eYlE5OwYs8+jLpmMyaWJso3Krj8mfX4FKC1VjCYbwTVPWfp7lhkK7ZAg167n7dAW5LmhcPqXM58d3hYqXEDgIj0lbg0Iwj48/K+/+Cjsio9AJ/YMTuyAJD+EBpr6ASYJoZiFUq6q27iN8zCH0y5hqQP/btqwYLXZzDft2VzKjR1FLKzVeLnawQcVvbMO+yOao0HLzHATJo7HIv8tUvhKWpo8nxUE6LAZGqTKfbV8tDpvJT5gVEi3DD97JIkB5NhtrXm2gV4DrUgNK+/zM/2+xI3PChiVwny56jLqVj7PmwdcFog3UtGTO09T27GDmfR8VAnsU7iamy3CV6JSMDLQmIehCMR7dz0i2SkPOuyI7dCO8NYy4FbKHAkSd3D6XRkeRhNM46dVrb7wMhZizofem2jRyssnRDF96kfsAx5a5iL+S+3vLl7PcMxBJdh6ka1HrvC6OFahsjqk3k1WXHuIZsQabtOrhJAvNwqPDwLMg6Cd8LV+r084nldEEItTGdHiQ1vrgxjezbCkNIBzl0fadRisvsIFYLZUhmBFj/L178hN1Tfvf+bIZXiikNk5EDo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(136003)(376002)(39860400002)(346002)(8676002)(2906002)(36756003)(6486002)(8936002)(186003)(53546011)(7416002)(33656002)(86362001)(33964004)(478600001)(2616005)(26005)(16526019)(83380400001)(956004)(66946007)(66476007)(5660300002)(235185007)(4326008)(37006003)(66556008)(6862004)(6666004)(6636002)(316002)(16576012)(45980500001)(72826003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RzF4R2NpNXQvanRtdmdhWEVDTE5VOS81SWY5TlRBRW5yVnk0cEZiM1o3Y2dC?=
+ =?utf-8?B?ZFVGbWF2UTVEb2JxbmlKZ2pnbmhsS1JyTUhDMFM5Vi9SWk5rRnVHZWlZVlJH?=
+ =?utf-8?B?Ym14QjlsTGR3SDZxazVqWjU1bWJGOUJIMVAvb2c3MVd4NnpMQTVNaU9ld1gw?=
+ =?utf-8?B?WlZRUjhUS2twVTAwWEhhMWxqaVh6YzVDZm1rK3B1amtVNVRxL3lMc0I0M1pa?=
+ =?utf-8?B?OGlMeGNoMS9IMm1Qc0FCdVRzSHFsK3VCbWMrcWphSG52cVJmL25zckhyYmsy?=
+ =?utf-8?B?Mk40TUQ0Nk9od2Z5UGk3d2VZVlg0TUdnZjQ1UWZaaUtlTHR0c3IvTDFpcWdU?=
+ =?utf-8?B?cVROMmw5NGdlbjZzTGVQallEQkVNYzJpdzc2VThQUmFlRmdmZFYvRi9jV2Zm?=
+ =?utf-8?B?Yk04YUFKalVxQWhZVHJvNUpub0t0RWdINzhPRlNmSnZpNTk5eWF3SWpaR25S?=
+ =?utf-8?B?MWlTdEpDeVppMFdoWFFIUTMvZDdlOWVEWDgvUlVUSEpxQ3FreFpBaGgrTVFi?=
+ =?utf-8?B?VkxLSEFMTnN6Y1JsVVozUC9tYmwwNmRFODlIVkRHdHZuWDVwQTFCb3NZb3Qx?=
+ =?utf-8?B?c3JuaVRzaDlRUlAyT3ovWmZDSWxrSnJyUDZYNEYyaFl3OGZtYW1BZkFyUnEv?=
+ =?utf-8?B?OWk1c3dNU05Pb1d6NTZGOWt6cmJXRWhmT2FmcDBPMk1Dam9mbUxZOFVVV1NQ?=
+ =?utf-8?B?WWdnUEpUTUNUSXRRSEF3UlNVTDJ3cEVvS1IrM1F4eXFad1lFZWUyeGZYYi9E?=
+ =?utf-8?B?bkRxWFdQV0dCM1ZnR29zRjBaSGc3NjA1Y2NFQmdtend4N1o1WVVjMEVNTURJ?=
+ =?utf-8?B?VUJWMCt2T0hwS1pXVDBVWnFzMnBydG16WmxiamFlZGJDUm1FU0tSL3kwRkZm?=
+ =?utf-8?B?V0FVbmdUTWN1YXZSeW1RMmxUUy9ZV0VJbHJHTzh6VURsREJ0QzdaaTFTbnRW?=
+ =?utf-8?B?cFo5VHE5aXUxeEg4QTg4dDJOT2IwRXVyMEh6STBYb3V0ZGs5NVhMWHd1ZVVl?=
+ =?utf-8?B?MEx0dVF3Q3BXK0tLQVozN3pidlBUS3hPTC9KYU1DK2VxZjNKQVJUa29SMGpI?=
+ =?utf-8?B?Tks2ZnZ5VjN4eE5Lb095Z0ZNSWhESFhldjA1NURKUTZHYmVwVkRMZHU4VWFu?=
+ =?utf-8?B?NmdVY0JKOGVJTFpkUTNWVFlUQk15REtzRWdjZkQrSW9XcnB5VzZXenpZUzhl?=
+ =?utf-8?B?cERLZWxSN01zNHUvOFhKajVjSWZFWFVvdkRyUGkrQ1F5Zk85L0xRVXlTTDBX?=
+ =?utf-8?B?b2pISkJGWmhhOWYwSHBSa0FlTkVkVGJRNVRwVTB6RkgwMWJuMnI1aEduTHly?=
+ =?utf-8?B?MlJTQWNBTWhNd1NpdDRCTk9zcU1HT1pVOHIzTEQxN0VvbVV4bzAxUlBNRkJu?=
+ =?utf-8?B?UHROZmhwdUM2QjNITXhrOXEzSUtXY1ZYSTMwT0IrMVk1TTFTaXBESW85SnIw?=
+ =?utf-8?B?QTNJTEVqL0pJZkozMnIzUGFBZlBOWmtsb3V3STNiTTBRUDZLbzROaDB1alI5?=
+ =?utf-8?B?K0NWT0pLZGJLSUozUVhDSEFQNDVoMlovaFpwWnBJM0FTd2h0Z0plWFR6S29l?=
+ =?utf-8?B?WDg4azk0cU1GY2FISkJueXZHSDJhOUd5a2RnN2xKNkJvMUV3NjlXYnE2d293?=
+ =?utf-8?B?NDhJbzNBRG45ZkhhSXoyeWVaMXFMcW1zTUVIUmttYURPZTFLWXRDVjVJem5L?=
+ =?utf-8?B?STd2ZVY3OVNYU3g3TVhJTDcwVzV2c2I4Rm1taUJCdGRSTWN3R2R5WTIzQnM5?=
+ =?utf-8?Q?wNl5JoNdS0bhMfwQxLsgqqmLDjg0wHZYDmJNhyF?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95f9009d-9650-4b25-2547-08d8ddc7b16b
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 22:08:22.0363
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WQCmOzZqo+DkoocBlQ/+GoJA6vq/jZSy7M/141rUVAVYMSg7FQ2jdzWAz4M1hVdH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3872
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614723197; bh=70/aSWgmEbCaBsQQZXx/gYqdKWYogko9i/UtfOSND0M=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:
+         Authentication-Results:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-MS-PublicTrafficType:
+         X-MS-Office365-Filtering-Correlation-Id:X-MS-TrafficTypeDiagnostic:
+         X-MS-Exchange-Transport-Forked:X-Microsoft-Antispam-PRVS:X-Header:
+         X-MS-Oob-TLC-OOBClassifiers:X-MS-Exchange-SenderADCheck:
+         X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+         X-Forefront-Antispam-Report:X-MS-Exchange-AntiSpam-MessageData:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+         X-MS-Exchange-CrossTenant-FromEntityHeader:
+         X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
+         X-MS-Exchange-CrossTenant-UserPrincipalName:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=NAo7oHz/fM3lElrP091HQvEXQX4ESI0nHyA4WnwOzKFk0+F0zeSpcXP5ng+pgW1kV
+         oWezxvknxsiRzHOuI/aWQb8LSCZkusX7URW1q+3de2/qQqlYfWytmcO6ObMUaB5CIp
+         LLYk9QzWKZIEFNZ3rklEEIAe3BboGF4l/XnrcIOHTfbxO+eJwP6iDVtcUw1YOMG2TF
+         PlEF1BmlSPeVwJ8Q3vOsgqwzwhBLAz10prkjaQVgykwZgi4AVOnww2LldPigQ1CHHZ
+         /LO/aWgb38yZSCziipNP/9otPIfDBs9ys+5QyIpbWn/s3whMYF50s7zsbEUBUTSpeG
+         EDrE8bme+i/Fg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Feb 2021 08:08:30 +0000
-Sergei Trofimovich <slyich@gmail.com> wrote:
+--=_MailMate_6AC1FF45-9158-42AD-A419-9574088A750B_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> On Mon, 22 Feb 2021 17:43:58 -0700
-> Jens Axboe <axboe@kernel.dk> wrote:
-> 
-> > On 2/22/21 5:41 PM, Jens Axboe wrote:  
-> > > On 2/22/21 5:34 PM, Jens Axboe wrote:    
-> > >> On 2/22/21 4:53 PM, Sergei Trofimovich wrote:    
-> > >>> On Mon, 22 Feb 2021 16:34:50 -0700
-> > >>> Jens Axboe <axboe@kernel.dk> wrote:
-> > >>>    
-> > >>>> On 2/22/21 4:05 PM, Sergei Trofimovich wrote:    
-> > >>>>> Hia Jens!
-> > >>>>>
-> > >>>>> Tried 5.11 on rx3600 box and noticed it has
-> > >>>>> a problem handling init (5.10 booted fine):
-> > >>>>>
-> > >>>>> INIT: version 2.98 booting
-> > >>>>>
-> > >>>>>    OpenRC 0.42.1 is starting up Gentoo Linux (ia64)
-> > >>>>>
-> > >>>>> mkdir `/run/openrc': Read-only file system
-> > >>>>> mkdir `/run/openrc/starting': No such file or directory
-> > >>>>> mkdir `/run/openrc/started': No such file or directory
-> > >>>>> mkdir `/run/openrc/stopping': No such file or directory
-> > >>>>> mkdir `/run/openrc/inactive': No such file or directory
-> > >>>>> mkdir `/run/openrc/wasinactive': No such file or directory
-> > >>>>> mkdir `/run/openrc/failed': No such file or directory
-> > >>>>> mkdir `/run/openrc/hotplugged': No such file or directory
-> > >>>>> mkdir `/run/openrc/daemons': No such file or directory
-> > >>>>> mkdir `/run[   14.595059] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> > >>>>> [   14.599059] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-> > >>>>>
-> > >>>>> I suspect we build bad signal stack frame for userspace.
-> > >>>>>
-> > >>>>> With a bit of #define DEBUG_SIG 1 enabled the signals are SIGCHLD:
-> > >>>>>
-> > >>>>> [   34.969771] SIG deliver (gendepends.sh:69): sig=17 sp=60000fffff6aeaa0 ip=a000000000040740 handler=000000004b4c59b6
-> > >>>>> [   34.969948] SIG deliver (init:1): sig=17 sp=60000fffff1ccc50 ip=a000000000040740 handler=000000004638b9e5
-> > >>>>> [   34.969948] SIG deliver (gendepends.sh:69): sig=17 sp=60000fffff6adf90 ip=a000000000040740 handler=000000004b4c59b6
-> > >>>>> [   34.973948] SIG deliver (init:1): sig=17 sp=60000fffff1cc140 ip=a000000000040740 handler=000000004638b9e5
-> > >>>>> [   34.973948] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> > >>>>> [   34.973948] SIG deliver (gendepends.sh:69): sig=17 sp=60000fffff6ad480 ip=a000000000040740 handler=000000004b4c59b6
-> > >>>>> [   34.973948] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-> > >>>>>
-> > >>>>> Bisect points at:
-> > >>>>>
-> > >>>>> commit b269c229b0e89aedb7943c06673b56b6052cf5e5
-> > >>>>> Author: Jens Axboe <axboe@kernel.dk>
-> > >>>>> Date:   Fri Oct 9 14:49:43 2020 -0600
-> > >>>>>
-> > >>>>>     ia64: add support for TIF_NOTIFY_SIGNAL
-> > >>>>>
-> > >>>>>     Wire up TIF_NOTIFY_SIGNAL handling for ia64.
-> > >>>>>
-> > >>>>>     Cc: linux-ia64@vger.kernel.org
-> > >>>>>     [axboe: added fixes from Mike Rapoport <rppt@kernel.org>]
-> > >>>>>     Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> > >>>>>
-> > >>>>> diff --git a/arch/ia64/include/asm/thread_info.h b/arch/ia64/include/asm/thread_info.h
-> > >>>>> index 64a1011f6812..51d20cb37706 100644
-> > >>>>> --- a/arch/ia64/include/asm/thread_info.h
-> > >>>>> +++ b/arch/ia64/include/asm/thread_info.h
-> > >>>>> @@ -103,6 +103,7 @@ struct thread_info {
-> > >>>>>  #define TIF_SYSCALL_TRACE      2       /* syscall trace active */
-> > >>>>>  #define TIF_SYSCALL_AUDIT      3       /* syscall auditing active */
-> > >>>>>  #define TIF_SINGLESTEP         4       /* restore singlestep on return to user mode */
-> > >>>>> +#define TIF_NOTIFY_SIGNAL      5       /* signal notification exist */
-> > >>>>>  #define TIF_NOTIFY_RESUME      6       /* resumption notification requested */
-> > >>>>>  #define TIF_MEMDIE             17      /* is terminating due to OOM killer */
-> > >>>>>  #define TIF_MCA_INIT           18      /* this task is processing MCA or INIT */
-> > >>>>> @@ -115,6 +116,7 @@ struct thread_info {
-> > >>>>>  #define _TIF_SINGLESTEP                (1 << TIF_SINGLESTEP)
-> > >>>>>  #define _TIF_SYSCALL_TRACEAUDIT        (_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT|_TIF_SINGLESTEP)
-> > >>>>>  #define _TIF_NOTIFY_RESUME     (1 << TIF_NOTIFY_RESUME)
-> > >>>>> +#define _TIF_NOTIFY_SIGNAL     (1 << TIF_NOTIFY_SIGNAL)
-> > >>>>>  #define _TIF_SIGPENDING                (1 << TIF_SIGPENDING)
-> > >>>>>  #define _TIF_NEED_RESCHED      (1 << TIF_NEED_RESCHED)
-> > >>>>>  #define _TIF_MCA_INIT          (1 << TIF_MCA_INIT)
-> > >>>>> @@ -124,7 +126,7 @@ struct thread_info {
-> > >>>>>
-> > >>>>>  /* "work to do on user-return" bits */
-> > >>>>>  #define TIF_ALLWORK_MASK       (_TIF_SIGPENDING|_TIF_NOTIFY_RESUME|_TIF_SYSCALL_AUDIT|\
-> > >>>>> -                                _TIF_NEED_RESCHED|_TIF_SYSCALL_TRACE)
-> > >>>>> +                                _TIF_NEED_RESCHED|_TIF_SYSCALL_TRACE|_TIF_NOTIFY_SIGNAL)
-> > >>>>>  /* like TIF_ALLWORK_BITS but sans TIF_SYSCALL_TRACE or TIF_SYSCALL_AUDIT */
-> > >>>>>  #define TIF_WORK_MASK          (TIF_ALLWORK_MASK&~(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT))
-> > >>>>>
-> > >>>>> diff --git a/arch/ia64/kernel/process.c b/arch/ia64/kernel/process.c
-> > >>>>> index 6b61a703bcf5..8d4e1cab9190 100644
-> > >>>>> --- a/arch/ia64/kernel/process.c
-> > >>>>> +++ b/arch/ia64/kernel/process.c
-> > >>>>> @@ -171,7 +171,8 @@ do_notify_resume_user(sigset_t *unused, struct sigscratch *scr, long in_syscall)
-> > >>>>>         }
-> > >>>>>
-> > >>>>>         /* deal with pending signal delivery */
-> > >>>>> -       if (test_thread_flag(TIF_SIGPENDING)) {
-> > >>>>> +       if (test_thread_flag(TIF_SIGPENDING) ||
-> > >>>>> +           test_thread_flag(TIF_NOTIFY_SIGNAL)) {
-> > >>>>>                 local_irq_enable();     /* force interrupt enable */
-> > >>>>>                 ia64_do_signal(scr, in_syscall);
-> > >>>>>
-> > >>>>> which looks benign, but it enables a bit of conditional
-> > >>>>> TIF_NOTIFY_SIGNAL handling I don't understand.
-> > >>>>>
-> > >>>>> Can you help me get what is the interaction between
-> > >>>>> TIF_NOTIFY_SIGNAL and TIF_SIGPENDING for
-> > >>>>> simple processes without io_uring use case?
-> > >>>>>
-> > >>>>> I wonder if it's ia64_do_signal()' generates a signal
-> > >>>>> delivery when it should not.      
-> > >>>>
-> > >>>> Can you test:
-> > >>>>
-> > >>>> https://marc.info/?l=linux-ia64&m=161187407609443&w=1
-> > >>>>
-> > >>>> with the addition mentioned here:    
-> > >>>
-> > >>> Not enough:
-> > >>>
-> > >>> mkdir `/run/openrc': Read-only file system
-> > >>> mkdir `/run/openrc/starting': No such file or directory
-> > >>> mkdir `/run/openrc/started': No such file or directory
-> > >>> mkdir `/run/openrc/stopping': No such file or directory
-> > >>> mkdir `/run/openrc/inactive': No such file or directory
-> > >>> mkdir `/run/openrc/wasinactive': No such file or directory
-> > >>> mkdir `/run/openrc/failed': No such file or directory
-> > >>> mkdir `/run/openrc/hotplugged': No such file or directory
-> > >>> mkdir `/run/openrc/daemons': No such file or directory
-> > >>> [   14.554357] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> > >>> [   14.554357] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-> > >>> mkdir `/run/openrc/options': No such file or directory
-> > >>> mkdir `/run/openrc/exclusive': No such file or directory
-> > >>> mkdir `/run/openrc/scheduled': No such file or directory
-> > >>> mkdir `/run/openrc/tmp': No such file or directory
-> > >>>    
-> > >>>> https://marc.info/?l=linux-ia64&m=161187470709706&w=1
-> > >>>>
-> > >>>> if needed?    
-> > >>>
-> > >>> Two patches above do fix the boot \o/ But have a lot of spam about
-> > >>> 'signal 0' delivery to a bunch of processes:
-> > >>>
-> > >>>  * Mounting /proc ...
-> > >>>  [ ok ]
-> > >>>  * Mounting /run ...
-> > >>>  * /run/openrc: creating directory
-> > >>>  * /run/lock: creating directory
-> > >>>  * /run/lock: correcting owner
-> > >>>  * Caching service dependencies ...
-> > >>>  [ ok ]
-> > >>>  * Mounting /sys ...
-> > >>>  [ ok ]
-> > >>>  * Mounting debug filesystem ...
-> > >>>  [ ok ]
-> > >>>  * Mounting efivarfs filesystem ...
-> > >>>  [ ok ]
-> > >>>  * sysfs: caught unknown signal 0
-> > >>>  * openrc: caught unknown signal 0
-> > >>>  * Mounting cgroup filesystem ...    
-> > >>
-> > >> That's an improvement! Let me take a look at this tonight and see if I
-> > >> can figure out what's going on. But yes, it's the ia64 signal delivery
-> > >> being just different enough from the norm that it apparently triggers
-> > >> some weirdness.    
-> > > 
-> > > Is this any better?    
-> > 
-> > And if that one works, can you try this basic variant?  
-> 
-> Both patches boot successfully without 'caught unknown signal 0' spam \o/
-> 
-> > diff --git a/arch/ia64/kernel/signal.c b/arch/ia64/kernel/signal.c
-> > index e67b22fc3c60..c1b299760bf7 100644
-> > --- a/arch/ia64/kernel/signal.c
-> > +++ b/arch/ia64/kernel/signal.c
-> > @@ -341,7 +341,8 @@ ia64_do_signal (struct sigscratch *scr, long in_syscall)
-> >  	 * need to push through a forced SIGSEGV.
-> >  	 */
-> >  	while (1) {
-> > -		get_signal(&ksig);
-> > +		if (!get_signal(&ksig))
-> > +			break;
-> >  
-> >  		/*
-> >  		 * get_signal() may have run a debugger (via notify_parent())
-> > 
+On 26 Feb 2021, at 2:18, Alistair Popple wrote:
 
-Should I send the patch in `git am`-able form or the patch 
-already queued up in some other form?
+> Migration is currently implemented as a mode of operation for
+> try_to_unmap_one() generally specified by passing the TTU_MIGRATION fla=
+g
+> or in the case of splitting a huge anonymous page TTU_SPLIT_FREEZE.
+>
+> However it does not have much in common with the rest of the unmap
+> functionality of try_to_unmap_one() and thus splitting it into a
+> separate function reduces the complexity of try_to_unmap_one() making i=
+t
+> more readable.
+>
+> Several simplifications can also be made in try_to_migrate_one() based
+> on the following observations:
+>
+>  - All users of TTU_MIGRATION also set TTU_IGNORE_MLOCK.
+>  - No users of TTU_MIGRATION ever set TTU_IGNORE_HWPOISON.
+>  - No users of TTU_MIGRATION ever set TTU_BATCH_FLUSH.
+>
+> TTU_SPLIT_FREEZE is a special case of migration used when splitting an
+> anonymous page. This is most easily dealt with by calling the correct
+> function from unmap_page() in mm/huge_memory.c  - either
+> try_to_migrate() for PageAnon or try_to_unmap().
+>
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> ---
+>  include/linux/rmap.h |   4 +-
+>  mm/huge_memory.c     |  10 +-
+>  mm/migrate.c         |   9 +-
+>  mm/rmap.c            | 352 +++++++++++++++++++++++++++++++------------=
 
--- 
+>  4 files changed, 269 insertions(+), 106 deletions(-)
+>
+> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+> index 7f1ee411bd7b..77fa17de51d7 100644
+> --- a/include/linux/rmap.h
+> +++ b/include/linux/rmap.h
+> @@ -86,8 +86,6 @@ struct anon_vma_chain {
+>  };
+>
+>  enum ttu_flags {
+> -	TTU_MIGRATION		=3D 0x1,	/* migration mode */
+> -
+>  	TTU_SPLIT_HUGE_PMD	=3D 0x4,	/* split huge PMD if any */
 
-  Sergei
+It implies freeze in try_to_migrate() and no freeze in try_to_unmap(). I =
+think
+we need some comments here, above try_to_migrate(), and above try_to_unma=
+p()
+to clarify the implication.
+
+>  	TTU_IGNORE_MLOCK	=3D 0x8,	/* ignore mlock */
+>  	TTU_IGNORE_HWPOISON	=3D 0x20,	/* corrupted page is recoverable */
+> @@ -96,7 +94,6 @@ enum ttu_flags {
+>  					 * do a final flush if necessary */
+>  	TTU_RMAP_LOCKED		=3D 0x80,	/* do not grab rmap lock:
+>  					 * caller holds it */
+> -	TTU_SPLIT_FREEZE	=3D 0x100,		/* freeze pte under splitting thp */
+>  };
+>
+>  #ifdef CONFIG_MMU
+> @@ -193,6 +190,7 @@ static inline void page_dup_rmap(struct page *page,=
+ bool compound)
+>  int page_referenced(struct page *, int is_locked,
+>  			struct mem_cgroup *memcg, unsigned long *vm_flags);
+>
+> +bool try_to_migrate(struct page *page, enum ttu_flags flags);
+>  bool try_to_unmap(struct page *, enum ttu_flags flags);
+>
+>  /* Avoid racy checks */
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index d00b93dc2d9e..357052a4567b 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2351,16 +2351,16 @@ void vma_adjust_trans_huge(struct vm_area_struc=
+t *vma,
+>
+>  static void unmap_page(struct page *page)
+>  {
+> -	enum ttu_flags ttu_flags =3D TTU_IGNORE_MLOCK |
+> -		TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
+> +	enum ttu_flags ttu_flags =3D TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD;
+>  	bool unmap_success;
+>
+>  	VM_BUG_ON_PAGE(!PageHead(page), page);
+>
+>  	if (PageAnon(page))
+> -		ttu_flags |=3D TTU_SPLIT_FREEZE;
+> -
+> -	unmap_success =3D try_to_unmap(page, ttu_flags);
+> +		unmap_success =3D try_to_migrate(page, ttu_flags);
+> +	else
+> +		unmap_success =3D try_to_unmap(page, ttu_flags |
+> +						TTU_IGNORE_MLOCK);
+
+I think we need a comment here about why anonymous pages need try_to_migr=
+ate()
+and others need try_to_unmap().
+
+Thanks.
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_6AC1FF45-9158-42AD-A419-9574088A750B_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmA+t08PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKMPcP/iragrQDG9fHhAhGaOLXryO1NDTUnr6ZKG/E
+wyWsTmjtZx0bbypoiil6dpZ64CJYMpFSNYg8Ric0xM365ylSNmNpdCGA+D1Ilwxg
+ghSiI7u9c2nNvMH0v79CQ6QKgU14dCYzZY7+Wy3z8HY8kdLOrLx3hOKNB7bjdlVu
+V4bKKWhsdJpIGgbI9RnKzzsI8GI2/OASdR9X7vXlqk8eL+LtGud6T/ZjS9XzogSz
+QXOoaGVVQ6VwOsA/L4lfBE+vQnLQMEYgSFXgMPhUh38Ku8pujjkJiuCLngKGk4Yk
+KZrFzO94kgpdPpcV/9l6SD8tpFNI+qDSylDw/jNNgKz+NHY9r5XOKa6Tare7u4jc
+wF30wUbpx+b4U9dxfi0CCfKKckbY8u4+X2PF12+V6KTNkW3Zl98tIYebZsczR1pd
+bc1iPwRXM0bNbi6L7jaSHGhgTx3329NR2NVLNWRNiTO1KgWq7JOZBN+sSEZ3U1kO
+XGkKhAwYIfE+R94oekR0wcxOzpeU3Ah1vXHHeki+LeExiML0Usz2NFqknNbdp/UO
+ETAr7hDX3sTUu4OALPNfUA8AEyDt9m4Ea1xwE7FXRAEJPBmHboty1sC1/xkgb22C
+zDz62isPdgZD5PhRf3jvxEKF/KRfd4S9Lpe6IWKv+wLeNauHRhWr018tz2AMkeFy
+EFG3uxhp
+=tDGm
+-----END PGP SIGNATURE-----
+
+--=_MailMate_6AC1FF45-9158-42AD-A419-9574088A750B_=--
