@@ -2,93 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2722732A245
+	by mail.lfdr.de (Postfix) with ESMTP id 9804D32A246
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836927AbhCBHVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:21:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349258AbhCBG6C (ORCPT
+        id S1836934AbhCBHVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:21:43 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:11265 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1441884AbhCBG7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:58:02 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F4DC06178A;
-        Mon,  1 Mar 2021 22:57:22 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id p8so6808519ejb.10;
-        Mon, 01 Mar 2021 22:57:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gKUeJiCjz76ZYfYznUcE/FJF+AgYNAVfjdNl+41kQHM=;
-        b=DSJUrWolKcsUJPc/uOpsS82Fd5ta60KGvcOI5BhLQJhg4BRNQknqSbQl89mvmiaGzW
-         a6NGhlfgMwndx9LH/PVebtAwVtxdafFmRePToI2HugybUOS52TllZMb1EVav1ggkY5iL
-         lw/PWq3eo/8KIebucPB+Rr/xSCCsc2DURjnDcF9wEJ8LZBsWQ/ODeHLqlJL/3/8t2s5s
-         O4i62GN2i2/GSLIwh1bLypX0H5AnocVcjU98WiAEJHGJ2ttH9xWOkeyT2KNO/Ro6u/9p
-         qSBStt5DOeUrlSJn4RDUMjZZCBp5TcrfB5FE7i1YBQ7A3KbniDC3FB7mDwOjR+WiN5xP
-         54ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gKUeJiCjz76ZYfYznUcE/FJF+AgYNAVfjdNl+41kQHM=;
-        b=ezQlFiYYhqtTONl2f/RAIGdBinefGmbW+s6LovWEqMtUlMXi7WwRrjUaZaH7PFt+bu
-         99rdRLTabxKEcZoJO/kM9ZaY1QqGbSC6I0lAYK5wJh4WL2KtGfbiNURCcHXwonw1P6+n
-         lg8D4Rb81oVq2ZUIxL1YvNMFXXHRcYnPKHpWPE11w9w4XQLGBba+IobHIq1P2rtHM8jZ
-         20jdI6Kwn7GXiN8xmdourKixNTYOI7D1hbxdFXPQPNZKLiDxKUxfktESEYHd+94y+nia
-         LSbjvnjUH+FCfOQ16fuubCPMUm2EzIzwdcDtCoZ9dhMH1UDZ7wh+Q2CgzyD26UbVi2Eg
-         Nzxw==
-X-Gm-Message-State: AOAM532hjJaYyUozibjoiUmTOzcJHOuncmYZy5UG1GNx/CkWd/5F+oht
-        2xJBOLwuvFhG39pc9dl7+7fibd4ZF0TqxLhvGqk=
-X-Google-Smtp-Source: ABdhPJyZ11FjQVbO8yuH7NZDCm0O4aX40diBY4KJiBSEC2ZlV/UhSlNjI03TY9W42r4dQE6y8dFTRFb3y0R42Q+tJuM=
-X-Received: by 2002:a17:906:5ac2:: with SMTP id x2mr19485321ejs.486.1614668241339;
- Mon, 01 Mar 2021 22:57:21 -0800 (PST)
+        Tue, 2 Mar 2021 01:59:06 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210302065823epoutp048fa107cac9b71a9699ca2ccf593f04b1~odERmfiDx2996229962epoutp04K
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:58:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210302065823epoutp048fa107cac9b71a9699ca2ccf593f04b1~odERmfiDx2996229962epoutp04K
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614668303;
+        bh=ro5ltOW//usS2b3pAkuEm/Xj2HGAyfHiEMleWfYf0tI=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=vO3hh6vauhSvD+PmlK9q6mP15wQ4v+FRuNFP2x4ynU+5X+n5M46p70134oC7fCJCm
+         PEheJtZREq6CAuO0Q51M4P83WVvPvTbE6V96J2bPqZXL86DM4YrqV4eeyn9nJZaohq
+         9CxPmbXKl6R8wl6X8QnAxac6v/IsESXpIV+47jwI=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210302065823epcas1p2c1394e538bab0ae4ae5517a0f37103c6~odERTF_X80548305483epcas1p21;
+        Tue,  2 Mar 2021 06:58:23 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.162]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DqSdV3mGPz4x9QK; Tue,  2 Mar
+        2021 06:58:22 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3D.55.10463.D02ED306; Tue,  2 Mar 2021 15:58:21 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210302065821epcas1p13e2a6d136316daa635e407f9216db505~odEPoOcnl0465604656epcas1p1B;
+        Tue,  2 Mar 2021 06:58:21 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210302065821epsmtrp16c6a59a649be4bdabc4e1f71fb12f95d~odEPmVOnb2336823368epsmtrp1d;
+        Tue,  2 Mar 2021 06:58:21 +0000 (GMT)
+X-AuditID: b6c32a38-efbff700000028df-e4-603de20dc499
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        EE.FE.08745.D02ED306; Tue,  2 Mar 2021 15:58:21 +0900 (KST)
+Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210302065821epsmtip2b73dea60d54f4aceb132b34985e133a4~odEPavb9n1094410944epsmtip2Z;
+        Tue,  2 Mar 2021 06:58:21 +0000 (GMT)
+From:   "Sungjong Seo" <sj1557.seo@samsung.com>
+To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>,
+        <namjae.jeon@samsung.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        "'Chaitanya Kulkarni'" <chaitanya.kulkarni@wdc.com>,
+        <sj1557.seo@samsung.com>
+In-Reply-To: <20210302050521.6059-3-hyeongseok@gmail.com>
+Subject: RE: [PATCH v4 2/2] exfat: add support ioctl and FITRIM function
+Date:   Tue, 2 Mar 2021 15:58:20 +0900
+Message-ID: <04aa01d70f31$6de160a0$49a421e0$@samsung.com>
 MIME-Version: 1.0
-References: <20210302062214.29627-1-jslaby@suse.cz> <20210302062214.29627-34-jslaby@suse.cz>
-In-Reply-To: <20210302062214.29627-34-jslaby@suse.cz>
-From:   Max Filippov <jcmvbkbc@gmail.com>
-Date:   Mon, 1 Mar 2021 22:57:10 -0800
-Message-ID: <CAMo8BfKCY2TP43y=EM5CHxoGwRLykUVELvLyCos94PRj6t5RMg@mail.gmail.com>
-Subject: Re: [PATCH 34/44] tty: do not check tty_unregister_driver's return value
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>, Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQGcWnf6BTkYMyzP2LJXG6KPoRfNLgF8rXkvAXOJ+PyqzitREA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjk+LIzCtJLcpLzFFi42LZdlhTX5f3kW2CwdVFhhazbr9msfg78ROT
+        xZ69J1ksLu+aw2bxY3q9xZZ/R1gd2Dx2zrrL7tG3ZRWjx+dNch7tB7qZAliicmwyUhNTUosU
+        UvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgHYrKZQl5pQChQISi4uV
+        9O1sivJLS1IVMvKLS2yVUgtScgoMDQr0ihNzi0vz0vWS83OtDA0MjEyBKhNyMrae/M9acJyt
+        ouXjSaYGxpWsXYycHBICJhLr799j6mLk4hAS2MEo8WTdS1YI5xOQ09oPViUk8JlRYvnaPJiO
+        Vz/fQxXtYpToPbmVHcJ5yShx8cVHFpAqNgFdiSc3fjKD2CICHhKPm46B7WAWmMYo8evcc7Cx
+        nAKWErd2HAazhYGKtq49ygRiswioSDzauhZsEC9QzaYDDxghbEGJkzOfgMWZBeQltr+dwwxx
+        koLE7k9HWSGWOUlcvnKSEaJGRGJ2ZxszyGIJgU4OicnLH7FANLhI/Ls7GapZWOLV8S3sELaU
+        xMv+Nii7XuL//LXsEM0tjBIPP20Duo4DyLGXeH/JAsRkFtCUWL9LH6JcUWLn77lQe/kk3n3t
+        YYWo5pXoaBOCKFGR+P5hJwvMpis/rjJNYFSaheSzWUg+m4Xkg1kIyxYwsqxiFEstKM5NTy02
+        LDBBju1NjOCEqWWxg3Hu2w96hxiZOBgPMUpwMCuJ8J78bJkgxJuSWFmVWpQfX1Sak1p8iNEU
+        GNYTmaVEk/OBKTuvJN7Q1MjY2NjCxMzczNRYSZw3yeBBvJBAemJJanZqakFqEUwfEwenVAPT
+        9O+2mQbGF2LPZcgYJu07y9tc+lBn9fG+JS++im7h7lz8ye3agT023b/Ox0lU/DSZFPjg2uzG
+        aw6a3xqVGFZdPDiFk7GwPyJS42T85Jt2CVyTl0d+b43dWiD5xzU/TOqLbuenXbtUw79F+p4V
+        Wvbe/+DUx4yz/2Xfseddfvb8zNUiLx9Y3jmvdnHT5Z9unxx7H3pOPl/yMYpb3evGh8ifvO0L
+        DsQuDpOUfXn+5T3Fw3LrpdSURLeW3Tr/cYO86IolHWff6xhWcT65vbtXxedTj7R6jEZNvUyX
+        55IDAWr/bz1/tzZh4w8WxxAhW+7qozKtmf1R677JCmvrzxS/+Xx5WH3FvLpGzqaJmfX7bbre
+        K7EUZyQaajEXFScCABqf4IEhBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGLMWRmVeSWpSXmKPExsWy7bCSvC7vI9sEg43XhCxm3X7NYvF34icm
+        iz17T7JYXN41h83ix/R6iy3/jrA6sHnsnHWX3aNvyypGj8+b5DzaD3QzBbBEcdmkpOZklqUW
+        6dslcGVsPfmfteA4W0XLx5NMDYwrWbsYOTkkBEwkXv18D2RzcQgJ7GCUON5ygL2LkQMoISVx
+        cJ8mhCkscfhwMUTJc0aJczc6GEF62QR0JZ7c+MkMYosIeEnsb3rNDlLELDCDUWLTgllQQ7cz
+        Svxsm8cGUsUpYClxa8dhsM3CAh4SW9ceZQKxWQRUJB5tXcsCYvMC1Ww68IARwhaUODnzCQvI
+        FcwCehJtG8HCzALyEtvfzmGGeEBBYveno6wQRzhJXL5yEqpGRGJ2ZxvzBEbhWUgmzUKYNAvJ
+        pFlIOhYwsqxilEwtKM5Nzy02LDDKSy3XK07MLS7NS9dLzs/dxAiOGi2tHYx7Vn3QO8TIxMF4
+        iFGCg1lJhPfkZ8sEId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rwXuk7GCwmkJ5akZqemFqQWwWSZ
+        ODilGpiYvkuGOzVEmfznmTbng3vtgTM9eg8vNp5YxTJl74M1GxhsPk1T07nqMGvrPdMi6aQ0
+        HaNLO15vyb9i9euC4ITNIvsO3fsjfj1RgreQ88nKqb27VH1NDp84cOvl/5W7Nkx31TzaoX9Q
+        k/uT4/dbXi1p4vvXVPjXP852Ot+e4LL70y4+95kcbM/fPufZfbHG/eX8I/+uu7jsXdXSPN32
+        RU/NolP9Ckwmsa80AzW3CDfUbTk4Z3lYX9nCjSJaiZK1Pru5pv5+cnW2Uil3K1//q0ilFzuP
+        yM0TPtv7a/k+R4OdDd+WfVebLaq3n/Xuepk4F4n+0G2Ht337+E/BNPzpyT1WM0zzHix/vU/m
+        sZbRh6aTGUosxRmJhlrMRcWJAJkda+gJAwAA
+X-CMS-MailID: 20210302065821epcas1p13e2a6d136316daa635e407f9216db505
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210302050556epcas1p2f830c64b70cbc1bbd6f48292d3556802
+References: <20210302050521.6059-1-hyeongseok@gmail.com>
+        <CGME20210302050556epcas1p2f830c64b70cbc1bbd6f48292d3556802@epcas1p2.samsung.com>
+        <20210302050521.6059-3-hyeongseok@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 10:22 PM Jiri Slaby <jslaby@suse.cz> wrote:
->
-> These drivers check tty_unregister_driver return value. But they don't
-> handle a failure correctly (they free the driver in any case). So stop
-> checking tty_unregister_driver return value and remove also the prints.
->
-> In the next patch, tty_unregister_driver's return type will be switched
-> to void.
->
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: David Sterba <dsterba@suse.com>
+> Add FITRIM ioctl to enable discarding unused blocks while mounted.
+> As current exFAT doesn't have generic ioctl handler, add empty ioctl
+> function first, and add FITRIM handler.
+> 
+> Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+> Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
 > ---
->  arch/xtensa/platforms/iss/console.c | 6 +-----
->  drivers/tty/amiserial.c             | 8 ++------
->  drivers/tty/ipwireless/tty.c        | 7 +------
->  drivers/tty/moxa.c                  | 4 +---
->  drivers/tty/serial/kgdb_nmi.c       | 4 +---
->  drivers/tty/synclink_gt.c           | 5 +----
->  6 files changed, 7 insertions(+), 27 deletions(-)
+>  fs/exfat/balloc.c   | 80 +++++++++++++++++++++++++++++++++++++++++++++
+>  fs/exfat/dir.c      |  5 +++
+>  fs/exfat/exfat_fs.h |  4 +++
+>  fs/exfat/file.c     | 53 ++++++++++++++++++++++++++++++
+>  4 files changed, 142 insertions(+)
+> 
 
-Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
+It looks better than v3.
+Thanks for your work!
 
--- 
-Thanks.
--- Max
+Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
+
+BTW, there is still a problem that the alloc/free cluster operation waits
+until the trimfs operation is finished.
+Any ideas for improvement in the future are welcome. :)
+
