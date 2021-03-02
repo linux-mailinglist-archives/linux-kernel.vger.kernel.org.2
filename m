@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B6E32A14A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1008132A14D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576961AbhCBFfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 00:35:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
+        id S1576978AbhCBFfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 00:35:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242895AbhCBDor (ORCPT
+        with ESMTP id S243377AbhCBDqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 22:44:47 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF9CC0617AB
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:44:44 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id n10so12963835pgl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:44:44 -0800 (PST)
+        Mon, 1 Mar 2021 22:46:04 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2845C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:46:06 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id q20so12946161pfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:46:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=6ocpLpD/YC8p2XAnodhqPke9yP3AITZZa1l575H6MVw=;
-        b=JHRHOhgiaoddDWynTZrpm0LW4LFDXMQcRKcMcbdOJtmyfINwmNDmZaMLymueC48zTF
-         LXjl5N8e8EOpVd1LA5MbOCgSlxkj1RdR2BeQM6PI5jAgFWEm7XBADNEzXblAl9KqDfDi
-         PuTLvXSY63nOrAGOOCChUi0melOu/i/F+YJ15x0bo0t+RP0sMtujH7oEcHRuiCexKX1m
-         hvpQ4OVX15bWs6b2Nq3+l1fkBIJcEoA7Z4rJJy0RyXkdYpbwOF7q1LXvIUMqeLmnDqFT
-         u51n3nxiN4UR94MMNwleVgVd6peH3XMEfodhWsISfD9FlpHhIae/MdRoLXtPEUzVnJ22
-         XUzA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=lZ9D5nQ78UicwZ05zNOlu/xqak1dEhzdw1oZvwOpVzc=;
+        b=HwjgFy0H8CYtyaCnrlXuMDGwjDjwRv9yZvu7+uHKaio+bBddEiURo41nalRCFef/2w
+         4QeTMaiR7qZgYBUQoO6zoLuPAqzjMFqAbnKK+C/wXWo845P3qOLiIWHgO/VGGn2TNVfw
+         kda5wS9FXhmcPNx4B0Iz5Np9A7s/XHFJ854u45gV+XrKT1G4MU6PaqTLjSJUHA/uYce3
+         6KcaaW0vNEIRf5kYP+TWzCL0y59TwrNuQNlEPgeQmi5wk3cjs7oBxZOcSiuOQzQN5Gow
+         dHUHe/+Ess7m7xjMGV23v+SpJVDvqZYK/Az4yI3LcvTZyAIuW2fCzWGdOtLZrjhjCiOA
+         +TGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=6ocpLpD/YC8p2XAnodhqPke9yP3AITZZa1l575H6MVw=;
-        b=Mq+BEXwLOx2py34EKjjropoJjGzbzTOayPRr97+SRzKh3wO3ct14trdAqJTRBL/vI5
-         rH49m+boTQF0qH0qFA7TttVb82FeA85uYwKyPFm3ffSeHd0+Dmrzvh1+ONaThbw6K0pr
-         jfI2H11kV0NrjoDDTeO9rPNT37Da/PV1w5ZiKWUT9yOQiQioktYIiKpZKkT53cJ2Vn1o
-         CDy1PWtfOzyBtVwzur6BycmvoHe0YHyPSCzbMiG8uW8v5vQf4dfj8AOBWpfi1Qnrl203
-         46dUe67VMEW/NxcRdF1ZbeK9WYberD6zaG9FPiaTFbCYxutIDSdi/cEz6CEDTf/fLq2u
-         vMug==
-X-Gm-Message-State: AOAM531iZ0NmwAY/xhsSioicnxOV/0yFpzXTO7Shnyx360h8mmVzXA25
-        uuYI2ZyqnSXx7JRCUh1YyAmJFA==
-X-Google-Smtp-Source: ABdhPJx/Q+oofnFLde6CKHvTI9rHRmh2kqI4wTqTF5wpOq8Djwac9vMGULsXLHbE4mwfBcRp/551Ww==
-X-Received: by 2002:a63:374f:: with SMTP id g15mr16584551pgn.212.1614656684033;
-        Mon, 01 Mar 2021 19:44:44 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lZ9D5nQ78UicwZ05zNOlu/xqak1dEhzdw1oZvwOpVzc=;
+        b=HSWvvdfsIGuNGayVDEDLg6JVIN28CfH1lLGmCxCbK7nhlgfWm/2Nfs19O9JG1PpIiL
+         QbljwLfAkE0loAvK2z8f4II6aDmyQ8WYvOhkLWbJN5q6Tbgmt2fpPg6bAHrXwVRh6LsM
+         hKDBqcAtIsj058ItAftrr1vEwDxato3rvHsaLBOWp/FV1U5dtwzyjhE6TqVouY9TiXKc
+         YYq0w1oxHzm7aTisE28KefoPpwF7NH8D4k8jwcj5B49n7J6jmU6oG4NRgZHuMjmCPVVR
+         qIHcz9wbNfLVg68F9ozp0UokRZrjwoACfrtqyjMkPi83GLAA/NB8DknitQh6Q4teRX2A
+         AFDA==
+X-Gm-Message-State: AOAM5307lazmmIzdPg5WRCSXobNFGmg5CTjrC4fDtjScIWeEMgD+e2h4
+        mr0I8Gj40aZioNiYlDJFaRDqQw==
+X-Google-Smtp-Source: ABdhPJzxZSZ5SrS7qXhH7FcGzN7Bjt06r2mQWyGyqU1jpmDGCpiC22JfGV9oIF3ajzkSRvVj7FnrhA==
+X-Received: by 2002:a62:b50d:0:b029:1ed:c0d:3778 with SMTP id y13-20020a62b50d0000b02901ed0c0d3778mr1631518pfe.72.1614656766299;
+        Mon, 01 Mar 2021 19:46:06 -0800 (PST)
 Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id l19sm1018928pjt.16.2021.03.01.19.44.43
+        by smtp.gmail.com with ESMTPSA id f3sm18598942pfe.25.2021.03.01.19.46.05
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Mar 2021 19:44:43 -0800 (PST)
-Date:   Tue, 2 Mar 2021 09:14:41 +0530
+        Mon, 01 Mar 2021 19:46:05 -0800 (PST)
+Date:   Tue, 2 Mar 2021 09:16:03 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
         virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
-        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
-        conghui.chen@intel.com, arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         yu1.wang@intel.com, shuo.a.liu@intel.com
 Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210302034441.dcmrx4ughbtusolg@vireshk-i7>
+Message-ID: <20210302034603.4vt5ix5oxjtiilg7@vireshk-i7>
 References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
  <20210301115441.a4s5xzwm6d6ohz7f@vireshk-i7>
  <YDzZdc9+6hEvIDS1@smile.fi.intel.com>
  <YDzZocYCA8UC1FCW@smile.fi.intel.com>
+ <CAK8P3a1g_UXKVnDfDEfj=swqgUNb+bu+1O7mDMfCt55o0w0jxw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YDzZocYCA8UC1FCW@smile.fi.intel.com>
+In-Reply-To: <CAK8P3a1g_UXKVnDfDEfj=swqgUNb+bu+1O7mDMfCt55o0w0jxw@mail.gmail.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-03-21, 14:10, Andy Shevchenko wrote:
-> On Mon, Mar 01, 2021 at 02:09:25PM +0200, Andy Shevchenko wrote:
-> > On Mon, Mar 01, 2021 at 05:24:41PM +0530, Viresh Kumar wrote:
-> > > On 01-03-21, 14:41, Jie Deng wrote:
-> > > > +/**
-> > > > + * struct virtio_i2c_req - the virtio I2C request structure
-> > > > + * @out_hdr: the OUT header of the virtio I2C message
-> > > > + * @write_buf: contains one I2C segment being written to the device
-> > > > + * @read_buf: contains one I2C segment being read from the device
-> > > > + * @in_hdr: the IN header of the virtio I2C message
-> > > > + */
-> > > > +struct virtio_i2c_req {
-> > > > +	struct virtio_i2c_out_hdr out_hdr;
-> > > > +	u8 *write_buf;
-> > > > +	u8 *read_buf;
-> > > > +	struct virtio_i2c_in_hdr in_hdr;
-> > > > +};
-> > > 
-> > > I am not able to appreciate the use of write/read bufs here as we
-> > > aren't trying to read/write data in the same transaction. Why do we
-> > > have two bufs here as well as in specs ?
-> > 
-> > I²C and SMBus support bidirectional transfers as well. I think two buffers is
-> > the right thing to do.
-> 
-> Strictly speaking "half duplex".
+On 01-03-21, 16:46, Arnd Bergmann wrote:
+> But the driver does not support this at all: the sglist always has three
+> members as Viresh says: outhdr, msgbuf and inhdr. It then uses a
+> bounce buffer for the actual data transfer, and this always goes either
+> one way or the other.
 
-Half duplex is what this driver implemented, i.e. only one side can
-send a msg at once, we don't need two buffers for that for sure.
-
-Though we need two buffers if we are ever going to support full
-duplex.
+Yes and if the driver doesn't support the specification fully then it
+should say so in a comment at least and also fail in case someone
+tries a full duplex transfer..
 
 -- 
 viresh
