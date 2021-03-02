@@ -2,150 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E956532A17B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7D932A178
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577417AbhCBGWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:22:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29929 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238536AbhCBEMM (ORCPT
+        id S1577393AbhCBGVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:21:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236705AbhCBELG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:12:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614658201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AiqlnBbL124RbFr+ZWPEGMV28LDKcaWTVjjFw6NK3tk=;
-        b=TQOZdzLifOpWklyQOjUJX1Q5EKxpvcxnbdflGoCRrYVDeIwzlxNsaX1GgPZuhh47rdQqa2
-        4aKcaTN7sjN0UIfTgHJ9nAhUsJ4NIhuRofOzRao3yGeB+XhkBERE9nOaZk0f1QvpVjLLXB
-        cbrwSOa3nzoFHPHIDMC4L7OSTqn7TAM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-Z7l6R31lOImEgMGWxzuctg-1; Mon, 01 Mar 2021 23:05:43 -0500
-X-MC-Unique: Z7l6R31lOImEgMGWxzuctg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BCDC107ACE3;
-        Tue,  2 Mar 2021 04:05:42 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-215.pek2.redhat.com [10.72.13.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A4F5E1A7D9;
-        Tue,  2 Mar 2021 04:05:37 +0000 (UTC)
-Subject: Re: [RFC PATCH 10/10] vhost/vdpa: return configuration bytes read and
- written to user space
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210216094454.82106-1-sgarzare@redhat.com>
- <20210216094454.82106-11-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <4d682ff2-9663-d6ac-d5bf-616b2bf96e1a@redhat.com>
-Date:   Tue, 2 Mar 2021 12:05:35 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        Mon, 1 Mar 2021 23:11:06 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8458C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 20:09:38 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id d15so3148999wrv.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 20:09:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UCeThmfIe2FMGTwXvgjfzTMdkfhIc6RQTvnKJCcY5ww=;
+        b=LNxuVnPiqlYI2Cx/+1uZU4/zNU60ZGkrfkAKcoAm5JIJhyLMktvkzk0UxUxTLTcI62
+         xTW87eL1gCXwBvU8WDbErA5qHRvowXR7ujNi/lM/n6mlzvIO3o9KaMxp7qd/D+BtbQHs
+         5ewCRTCf3QOfcHSjynbUjqyHxHAXq/n6v8/MuI64uA/mxJ60ocIY4nwzN76+h2sOAQP1
+         wdIlaVF/tWe/GR0RWvBDiJ8WwPkqoH9JuOIvZ32liz1vup8CKghAWtwQv+Ibsjh74f3c
+         1NZgpFMCZSxhTADVjoKdhBo0kPIeh4okPjgXsMDbrK3eoDdgDjkonbeEZG4huVSs6viL
+         W2zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UCeThmfIe2FMGTwXvgjfzTMdkfhIc6RQTvnKJCcY5ww=;
+        b=S8Ay7FPajQhFExgCVL6eGh13X07tBz4TlMHMG4llbsDo0wLsTtH4LF2r9DhMsi2g4d
+         5yFZ6cMahEkyCdVuPi8DSPtB+ANw2QpOJ6/Zs2nwcI9U+V4FeQv5rLzhtYypiEGTvedZ
+         zhyopu9YEkN59huTL+GYJXo/mbpPmyyz/mHLjHePKA6OTRY1l2o1FY6U7GDqYVoq1N5C
+         YkY9S4cN95GYEqoCIqe2iiwTZe1d9/S/fCd55+rfI5h4eTK3fGdgodNZXCBZWiY//097
+         reLgNTHapY586LO+6YVoScFCrJTRshCH61JYqbRpx3UrDeV4HGt48CA2Fj2D7Gdmc98U
+         fG8Q==
+X-Gm-Message-State: AOAM533NtZo+LgR7DfQlaAXViFw2cwAnzqkmGD6X4IOKVW7A1A/jNd7g
+        PLgGGxCIi/sJchXNTtCEZWC7n7Ufd4jIZNeLcl9x9w==
+X-Google-Smtp-Source: ABdhPJzijNchW1FMIfoiLAJ0Ttpyzpbys0MHDzxBDPZkoOMnfy4ukVWMfctUZImukgxlah95MvrEo9XOk88RgshTCDg=
+X-Received: by 2002:adf:d236:: with SMTP id k22mr12735707wrh.144.1614658177426;
+ Mon, 01 Mar 2021 20:09:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210216094454.82106-11-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210301115833.382364-1-anup.patel@wdc.com>
+In-Reply-To: <20210301115833.382364-1-anup.patel@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Tue, 2 Mar 2021 09:39:26 +0530
+Message-ID: <CAAhSdy1hR8v6UL_sLo367M90AcxVz8RXt03ccBdvqByTbt3qfw@mail.gmail.com>
+Subject: Re: [PATCH v4] RISC-V: Use SBI SRST extension when available
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/2/16 5:44 下午, Stefano Garzarella wrote:
-> vdpa_get_config() and vdpa_set_config() now return the amount
-> of bytes read and written, so let's return them to the user space.
+On Mon, Mar 1, 2021 at 5:29 PM Anup Patel <anup.patel@wdc.com> wrote:
 >
-> We also modify vhost_vdpa_config_validate() to return 0 (bytes read
-> or written) instead of an error, when the buffer length is 0.
+> The SBI SRST extension provides a standard way to poweroff and
+> reboot the system irrespective to whether Linux RISC-V S-mode
+> is running natively (HS-mode) or inside Guest/VM (VS-mode).
 >
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> The SBI SRST extension is available in latest SBI v0.3-draft
+> specification at: https://github.com/riscv/riscv-sbi-doc.
+>
+> This patch extends Linux RISC-V SBI implementation to detect
+> and use SBI SRST extension.
+>
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
 > ---
->   drivers/vhost/vdpa.c | 26 +++++++++++++++-----------
->   1 file changed, 15 insertions(+), 11 deletions(-)
+
+I missed adding changelog here so here it is ...
+
+Changes since v3:
+ - Rebased on Linux-5.12-rc1
+ - Check SBI spec version when probing for SRST extension
+Changes since v2:
+ - Rebased on Linux-5.10-rc5
+ - Updated patch as-per SBI SRST extension available in the latest
+   SBI v0.3-draft specification
+Changes since v1:
+ - Updated patch as-per latest SBI SRST extension draft spec where
+   we have only one SBI call with "reset_type" parameter
+
+Regards,
+Anup
+
+>  arch/riscv/include/asm/sbi.h | 16 ++++++++++++++
+>  arch/riscv/kernel/sbi.c      | 41 +++++++++++++++++++++++++++++++++---
+>  2 files changed, 54 insertions(+), 3 deletions(-)
 >
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index 21eea2be5afa..b754c53171a7 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -191,9 +191,6 @@ static ssize_t vhost_vdpa_config_validate(struct vhost_vdpa *v,
->   	struct vdpa_device *vdpa = v->vdpa;
->   	u32 size = vdpa->config->get_config_size(vdpa);
->   
-> -	if (c->len == 0)
-> -		return -EINVAL;
-> -
->   	return min(c->len, size);
->   }
->   
-> @@ -204,6 +201,7 @@ static long vhost_vdpa_get_config(struct vhost_vdpa *v,
->   	struct vhost_vdpa_config config;
->   	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
->   	ssize_t config_size;
-> +	long ret;
->   	u8 *buf;
->   
->   	if (copy_from_user(&config, c, size))
-> @@ -217,15 +215,18 @@ static long vhost_vdpa_get_config(struct vhost_vdpa *v,
->   	if (!buf)
->   		return -ENOMEM;
->   
-> -	vdpa_get_config(vdpa, config.off, buf, config_size);
-> -
-> -	if (copy_to_user(c->buf, buf, config_size)) {
-> -		kvfree(buf);
-> -		return -EFAULT;
-> +	ret = vdpa_get_config(vdpa, config.off, buf, config_size);
-> +	if (ret < 0) {
-> +		ret = -EFAULT;
-> +		goto out;
->   	}
->   
-> +	if (copy_to_user(c->buf, buf, config_size))
-> +		ret = -EFAULT;
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index 99895d9c3bdd..8add0209c9c7 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -27,6 +27,7 @@ enum sbi_ext_id {
+>         SBI_EXT_IPI = 0x735049,
+>         SBI_EXT_RFENCE = 0x52464E43,
+>         SBI_EXT_HSM = 0x48534D,
+> +       SBI_EXT_SRST = 0x53525354,
+>  };
+>
+>  enum sbi_ext_base_fid {
+> @@ -70,6 +71,21 @@ enum sbi_hsm_hart_status {
+>         SBI_HSM_HART_STATUS_STOP_PENDING,
+>  };
+>
+> +enum sbi_ext_srst_fid {
+> +       SBI_EXT_SRST_RESET = 0,
+> +};
 > +
-> +out:
->   	kvfree(buf);
-> -	return 0;
-> +	return ret;
->   }
->   
->   static long vhost_vdpa_set_config(struct vhost_vdpa *v,
-> @@ -235,6 +236,7 @@ static long vhost_vdpa_set_config(struct vhost_vdpa *v,
->   	struct vhost_vdpa_config config;
->   	unsigned long size = offsetof(struct vhost_vdpa_config, buf);
->   	ssize_t config_size;
-> +	long ret;
->   	u8 *buf;
->   
->   	if (copy_from_user(&config, c, size))
-> @@ -248,10 +250,12 @@ static long vhost_vdpa_set_config(struct vhost_vdpa *v,
->   	if (IS_ERR(buf))
->   		return PTR_ERR(buf);
->   
-> -	vdpa_set_config(vdpa, config.off, buf, config_size);
-> +	ret = vdpa_set_config(vdpa, config.off, buf, config_size);
-> +	if (ret < 0)
-> +		ret = -EFAULT;
->   
->   	kvfree(buf);
-> -	return 0;
-> +	return ret;
->   }
-
-
-So I wonder whether it's worth to return the number of bytes since we 
-can't propogate the result to driver or driver doesn't care about that.
-
-Thanks
-
-
->   
->   static long vhost_vdpa_get_features(struct vhost_vdpa *v, u64 __user *featurep)
-
+> +enum sbi_srst_reset_type {
+> +       SBI_SRST_RESET_TYPE_SHUTDOWN = 0,
+> +       SBI_SRST_RESET_TYPE_COLD_REBOOT,
+> +       SBI_SRST_RESET_TYPE_WARM_REBOOT,
+> +};
+> +
+> +enum sbi_srst_reset_reason {
+> +       SBI_SRST_RESET_REASON_NONE = 0,
+> +       SBI_SRST_RESET_REASON_SYS_FAILURE,
+> +};
+> +
+>  #define SBI_SPEC_VERSION_DEFAULT       0x1
+>  #define SBI_SPEC_VERSION_MAJOR_SHIFT   24
+>  #define SBI_SPEC_VERSION_MAJOR_MASK    0x7f
+> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+> index f4a7db3d309e..49155588e56c 100644
+> --- a/arch/riscv/kernel/sbi.c
+> +++ b/arch/riscv/kernel/sbi.c
+> @@ -7,6 +7,7 @@
+>
+>  #include <linux/init.h>
+>  #include <linux/pm.h>
+> +#include <linux/reboot.h>
+>  #include <asm/sbi.h>
+>  #include <asm/smp.h>
+>
+> @@ -501,6 +502,32 @@ int sbi_remote_hfence_vvma_asid(const unsigned long *hart_mask,
+>  }
+>  EXPORT_SYMBOL(sbi_remote_hfence_vvma_asid);
+>
+> +static void sbi_srst_reset(unsigned long type, unsigned long reason)
+> +{
+> +       sbi_ecall(SBI_EXT_SRST, SBI_EXT_SRST_RESET, type, reason,
+> +                 0, 0, 0, 0);
+> +       pr_warn("%s: type=0x%lx reason=0x%lx failed\n",
+> +               __func__, type, reason);
+> +}
+> +
+> +static int sbi_srst_reboot(struct notifier_block *this,
+> +                          unsigned long mode, void *cmd)
+> +{
+> +       sbi_srst_reset((mode == REBOOT_WARM || mode == REBOOT_SOFT) ?
+> +                      SBI_SRST_RESET_TYPE_WARM_REBOOT :
+> +                      SBI_SRST_RESET_TYPE_COLD_REBOOT,
+> +                      SBI_SRST_RESET_REASON_NONE);
+> +       return NOTIFY_DONE;
+> +}
+> +
+> +static struct notifier_block sbi_srst_reboot_nb;
+> +
+> +static void sbi_srst_power_off(void)
+> +{
+> +       sbi_srst_reset(SBI_SRST_RESET_TYPE_SHUTDOWN,
+> +                      SBI_SRST_RESET_REASON_NONE);
+> +}
+> +
+>  /**
+>   * sbi_probe_extension() - Check if an SBI extension ID is supported or not.
+>   * @extid: The extension ID to be probed.
+> @@ -577,22 +604,30 @@ void __init sbi_init(void)
+>                         sbi_get_firmware_id(), sbi_get_firmware_version());
+>                 if (sbi_probe_extension(SBI_EXT_TIME) > 0) {
+>                         __sbi_set_timer = __sbi_set_timer_v02;
+> -                       pr_info("SBI v0.2 TIME extension detected\n");
+> +                       pr_info("SBI TIME extension detected\n");
+>                 } else {
+>                         __sbi_set_timer = __sbi_set_timer_v01;
+>                 }
+>                 if (sbi_probe_extension(SBI_EXT_IPI) > 0) {
+>                         __sbi_send_ipi  = __sbi_send_ipi_v02;
+> -                       pr_info("SBI v0.2 IPI extension detected\n");
+> +                       pr_info("SBI IPI extension detected\n");
+>                 } else {
+>                         __sbi_send_ipi  = __sbi_send_ipi_v01;
+>                 }
+>                 if (sbi_probe_extension(SBI_EXT_RFENCE) > 0) {
+>                         __sbi_rfence    = __sbi_rfence_v02;
+> -                       pr_info("SBI v0.2 RFENCE extension detected\n");
+> +                       pr_info("SBI RFENCE extension detected\n");
+>                 } else {
+>                         __sbi_rfence    = __sbi_rfence_v01;
+>                 }
+> +               if (sbi_probe_extension(SBI_EXT_SRST) > 0 &&
+> +                   sbi_minor_version() >= 3) {
+> +                       pr_info("SBI SRST extension detected\n");
+> +                       pm_power_off = sbi_srst_power_off;
+> +                       sbi_srst_reboot_nb.notifier_call = sbi_srst_reboot;
+> +                       sbi_srst_reboot_nb.priority = 192;
+> +                       register_restart_handler(&sbi_srst_reboot_nb);
+> +               }
+>         } else {
+>                 __sbi_set_timer = __sbi_set_timer_v01;
+>                 __sbi_send_ipi  = __sbi_send_ipi_v01;
+> --
+> 2.25.1
+>
