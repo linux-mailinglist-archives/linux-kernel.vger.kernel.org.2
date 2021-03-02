@@ -2,242 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C4E32AD54
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6969932AD60
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379042AbhCBVoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:44:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1577336AbhCBSug (ORCPT
+        id S1837452AbhCBVql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:46:41 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34760 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1835279AbhCBSvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:50:36 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911E9C061D7F
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 10:49:45 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id t9so2515201pjl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:49:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u7W2UvT3BWsclOQ3yTE8be/4H7Rp18TFIX3NsdArnfs=;
-        b=fdWtSvbArknoqc3tctztg3CfLtN6oa1RT2Ctuk6ZULuCcZAl60XEHp43+QQeHFFaAJ
-         FFhPcZC8JpOoVCczGD3DsCoKg6l1WpMbxk7bUB8pdW776cFGLNKcC6QilLf3wMtjjWwT
-         +bniJlp2NS043sM4XAolJTL7t9rc3TyzN2GCk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u7W2UvT3BWsclOQ3yTE8be/4H7Rp18TFIX3NsdArnfs=;
-        b=Hk1Sez3Fy8nDDxl+xtWvSzM1W6urhe+bkp8rIHHHeEjeEw8lDQ7zGw6MD0kLhgW6LB
-         6k9J2nL5zYCHqCskGx8V2uTJtmMSCu+XL87CfueTW53B+Z8yAyfk2qdLMGKmx2KePhPu
-         gYOoetai9OF2O5G5FkpxEtAsjnYrapebkiKeisIh8D8+js2ZOfgJsE6TK1jMpCxlQshC
-         m1m2xUzSAlyZxfVhQxx9dMZMawVQSUhk2Di0omYzNV/nOmF8JeMkeNxk9PiBCI4fqLMQ
-         FsUjUxyDSEgH1v2Nf6SpO6nkyHz/QrL4bXFdQPKoXhsuszI0EHvEKzy9wNYNqNbKHyvF
-         34rg==
-X-Gm-Message-State: AOAM53190MTMYECpD019MHYjmWgv4E0nPniS+qoNI9u6WiRC35fEEvOx
-        xHxwkGeFowTdvyCo89dx7Rh9NYf1TLe9Gw==
-X-Google-Smtp-Source: ABdhPJzWqsO37yRTPl4RLQZHFXevT+YiB6QEB9fGxBb2zPHJ+7Rft4IGQ9LfLwXJ/BHnBZaphA1rQw==
-X-Received: by 2002:a17:90a:154e:: with SMTP id y14mr5831607pja.229.1614710985126;
-        Tue, 02 Mar 2021 10:49:45 -0800 (PST)
-Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:9c83:cccc:4c1:7b17])
-        by smtp.gmail.com with ESMTPSA id 140sm21800839pfv.83.2021.03.02.10.49.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 10:49:44 -0800 (PST)
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-To:     marcel@holtmann.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-bluetooth@vger.kernel.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Subject: [PATCH v2 1/1] Bluetooth: Remove unneeded commands for suspend
-Date:   Tue,  2 Mar 2021 10:49:36 -0800
-Message-Id: <20210302104931.v2.1.Ifcac8bd85b5339135af8e08370bacecc518b1c35@changeid>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-In-Reply-To: <20210302184936.619740-1-abhishekpandit@chromium.org>
-References: <20210302184936.619740-1-abhishekpandit@chromium.org>
+        Tue, 2 Mar 2021 13:51:51 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122IgaOj005470;
+        Tue, 2 Mar 2021 10:50:50 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=X2ud8GF51iDNqBPRYdRv8p0r1IpZQqXQWQVf6NQ4fSA=;
+ b=bfBrxud0Gpf6YJDc9w9CgUpPuXvIvyGX6Mlq+UejQMOI++jBsYBFMgrntrXQKVMjKgnw
+ NtSVi+sQKUuHSQC7yoSNXror6Zb+iYFX8ffUm/IE95AtCogCZiJWOBFnM7Re1ngCBVGG
+ FUtf/bi2a6sXoF0Spq3gx+O7cOSYPf2tTLw= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3706nnd9u2-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 02 Mar 2021 10:50:50 -0800
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 2 Mar 2021 10:50:39 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vzf2neRSc/LM4ruILOb5R3GuhWqX1D9BaMkLC0V1x3YwW9d2gyqhvS+pJQCcXk8+1ESjjmTQW2KlzXeyh67nzt4+LcVnKAotHgdK7vNFAq508TMf4fgP4tUAV2soZZiqR7x54ymIfCVlPuU0MnbXNxs9zUCJaN8GWrWPbx4rRPz+9No5UTjlinJiB5mo4FS/KtLQOR6NAgxK5P/kAJAdO+ULxUYpiyK5COQYAimhxH/2bFsyfHNa/K/wUTylA0vaY+oira9I/HrCByAzaonx57B7QcvGNai0VmimGxea5fJbAE1CAaepvuvfkrnj6m2fAufflBGjUZCkJX+Ia5uRpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X2ud8GF51iDNqBPRYdRv8p0r1IpZQqXQWQVf6NQ4fSA=;
+ b=iepMFW6j/Ifwr4AmQrCOhtYfQ0aRuIuS7p+PSNKl94/W9goRTq+ZpAPM66M9K5podGkk654/UwWBC5/eiQvcOlaCVCAcwHou0LrLP1JkjYLGww8ATKjq1icMe/KqbhmJJx/l+8fAT0y+/WIfl9WZOXcBlXfPi+ZroROdaSjyrTX2N0+b03BexNx7n3zvgwUxZbP2X3vEn+W4822Vho3VG+csPKkLMVIKJz7xRjAK0uzlamShqt0DxrDFewvb+LAijuR9jH158ei3h5qQa+sjWr/OhRq82dw+tinFfb2TsUmUi7YaXCpaFWgHqHP6Y4wEgC7sJ4E2Hz6wAjpK20oLXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY5PR15MB3555.namprd15.prod.outlook.com (2603:10b6:a03:1f5::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23; Tue, 2 Mar
+ 2021 18:50:37 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3890.029; Tue, 2 Mar 2021
+ 18:50:37 +0000
+Date:   Tue, 2 Mar 2021 10:50:32 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <akpm@linux-foundation.org>, <shakeelb@google.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm: memcontrol: fix kernel stack account
+Message-ID: <YD6I+DLH0SLnSgo8@carbon.dhcp.thefacebook.com>
+References: <20210302073733.8928-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210302073733.8928-1-songmuchun@bytedance.com>
+X-Originating-IP: [2620:10d:c090:400::5:68d2]
+X-ClientProxiedBy: MWHPR03CA0017.namprd03.prod.outlook.com
+ (2603:10b6:300:117::27) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:68d2) by MWHPR03CA0017.namprd03.prod.outlook.com (2603:10b6:300:117::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Tue, 2 Mar 2021 18:50:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 62a8fffb-53b4-4887-7e8b-08d8ddac1176
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3555:
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3555922BD5362B82021D12C3BE999@BY5PR15MB3555.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sirsQYydMtn6Op02xvQxtVyt5MqUfyc+x2ftaw01ufpl5KjZMGfwqlKzmfVrsnpiIFHfC2PcC0OzihwWX84kKz/bq5l+wJJrILcqLajHYQAsTlKwTeAeAt7rDfrfLaioEp7W+8CiywnA4SSCCO3svevqLkKdts7RlCGNzh4Av1cuEpJSizLtqRWbFhpI69hN6yY22MmdKs6HANNUxOoB7dUBJLNiRmXb8u5zjV6O7zWZXr6hq2JAYUuwBblpRCrD/Atkkv6JCChIodZn5D0KZFuiALZcOVFZKjY+isG8B4bst76P+e8RM4IT24WjE08HjsD9876AF+d7BD2QjaXwVEVRyBzc7ivcaT/asye4lZAY1T8gV7Nla2oMO4+o4AHLGr7JK9Bt6TDsU+m/9D6IE99q47GNE47gXFPNmjvvbkjxSghgO3lIRSDnyITnD9oBBMPYRq3VotBeadUJpUaWAtCsVGYrpvOLJ2GvsnaXE4uAJ+/Alr2rQbgT9WHxLCgHoP5iVCMOgQfK78/kXHXedd/wZ+GWHxYy7sMSHK7gzdkWJfa//t4cIDCrsLZJ0Df/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(396003)(39860400002)(376002)(16526019)(86362001)(186003)(6916009)(316002)(6666004)(2906002)(66946007)(83380400001)(478600001)(66556008)(5660300002)(6506007)(66476007)(9686003)(15650500001)(8936002)(4326008)(8676002)(52116002)(7696005)(55016002)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4XG30YzY7tn1TWc/sa5tbykGRVaqnVqWw532F3ZIkmSN75f0lfgI+nQFvKrY?=
+ =?us-ascii?Q?/Du1NqsGB0xMQiN217hTIUxmbcZiecJ75O4hFxWUXWmz1NoMqAQas6GIvxR7?=
+ =?us-ascii?Q?Mhz/L9vZt8HvmqFdEcRq3sj2PL14YInjjdvKfOCMX61l30Ofelx5e+aM4M+i?=
+ =?us-ascii?Q?yOIrNLhe7vNJvXslk99clIxsaJMGOxakLlQVN0ijBsMS/tteUHE/c3mR9gtG?=
+ =?us-ascii?Q?ESQr26rPXk+/R4ZTDQoGiTMoNtXhbO8klBlR6G2NxbSkEmHQWYFZqa4+H3Eb?=
+ =?us-ascii?Q?0ym0v/lBgL6Lv1IcZADiEWip9RwT6N2TQ54i+dT9/E+boiDIWbLDlrYNrfGi?=
+ =?us-ascii?Q?6fUDKHi+N0qrwW23ugu+GERFNobluOXRhqUFpXc39JnFW2KOJgWnqIJZARHG?=
+ =?us-ascii?Q?vx4YkyC9LVoEDXa3vlHIYIGVgzGSjCVwZT+KmtOLbcIVvYRk+RRXwqJGRTdX?=
+ =?us-ascii?Q?vv3QusiEMo27TQ0YjMCVCr9W21K3p0S5eOphDsIVvh21P1NZrMkYt+UuvEI5?=
+ =?us-ascii?Q?DVJgoq1qy8DHjvoRgB5PJl5P/NbDk2BaxcEHhPsaJDvOuFvug8OC9lPlea9g?=
+ =?us-ascii?Q?ObN3KF2zvHsB7CY8CCL6ZptSO0LYzVBsYw61XSDjOC3TQtUcBx3Xsk8nh5V+?=
+ =?us-ascii?Q?7y4omf1lSpDfSaBngGaN+dkOadpN04+Yj7XZ2f3LnjrNiVhdf5lIndCYrItp?=
+ =?us-ascii?Q?8PtBrnP7Pp+bn1R4ZnxsobvpwqzlwtmrieLFc05cI5+sEmCJalbCKZ1rLI+5?=
+ =?us-ascii?Q?SZHsYnyX095msFxDKjpUda9AQ6ZhfW8w2VJ/rVm3K5djheLe+Yh8hCHkSAKu?=
+ =?us-ascii?Q?1+/eex+o0JNRlXony7dSVvs0POW2IeXm+YTJFQY0bU5nD8EdCStZ+bVFd6Vs?=
+ =?us-ascii?Q?DQNKKBTEzV8lBa6c87rDML6cntXUBPlD16mltxsBw0lD9htMkJtPXY+8/gsZ?=
+ =?us-ascii?Q?Xl2q2YLHVIl9jGoW+StTrk6gkmH3ygeYqTrxDCB5keAneyvemXo83yN79jJl?=
+ =?us-ascii?Q?HCKywpqTop/6pKro7bryCzc2H5gWelDB5NwAcCxJG/VVlz7deTUsOg5Lbw6/?=
+ =?us-ascii?Q?3DSmTqaUoLgvfTMJfqYTCSSgONUiG1Iu8vp+/rKKoKwJyu2Lb+wD7XSfi4bL?=
+ =?us-ascii?Q?YGevvgNxVHA7MYAaZ1ho5jKfvh4Pm5rAe9A53cgv1j3owk5khoC19jDS9VrJ?=
+ =?us-ascii?Q?wWzSqxZiuOWR7ZN+7igMnsP/nU/8Fg1noU3bnR9UVpIpaGddxFS6fWglUfjs?=
+ =?us-ascii?Q?xhnW3cbzrC3ggAgQNkYbB2zTEXySPQ+fD93OM13qlfo2SMVtYUdqSohiWJER?=
+ =?us-ascii?Q?9xVMSmAeNUV4GmwTBEe+ELaUF5yLN00vWzlk+/5cjWJ+fw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62a8fffb-53b4-4887-7e8b-08d8ddac1176
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 18:50:37.3025
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TPPLHWNSUzN9UTn45CU4A7sa1Gv+jfNDKTK0TDkzJYcQDqmYnAy333kiv5XXxMdh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3555
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ suspectscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501
+ adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
+ spamscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020143
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During suspend, there are a few scan enable and set event filter
-commands that don't need to be sent unless there are actual BR/EDR
-devices capable of waking the system. Check the HCI_PSCAN bit before
-writing scan enable and use a new dev flag, HCI_EVENT_FILTER_CONFIGURED
-to control whether to clear the event filter.
+On Tue, Mar 02, 2021 at 03:37:33PM +0800, Muchun Song wrote:
+> The alloc_thread_stack_node() cannot guarantee that allocated stack pages
+> are in the same node when CONFIG_VMAP_STACK. Because we do not specify
+> __GFP_THISNODE to __vmalloc_node_range(). Fix it by caling
+> mod_lruvec_page_state() for each page one by one.
 
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Alain Michaud <alainm@chromium.org>
----
+Hm, I actually wonder if it makes any sense to split the stack over multiple
+nodes? Maybe we should fix this instead?
 
-Changes in v2:
-* Removed hci_dev_lock from hci_cc_set_event_filter since flags are
-  set/cleared atomically
-
- include/net/bluetooth/hci.h |  1 +
- net/bluetooth/hci_event.c   | 24 ++++++++++++++++++++
- net/bluetooth/hci_request.c | 44 +++++++++++++++++++++++--------------
- 3 files changed, 52 insertions(+), 17 deletions(-)
-
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index ba2f439bc04d34..ea4ae551c42687 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -320,6 +320,7 @@ enum {
- 	HCI_BREDR_ENABLED,
- 	HCI_LE_SCAN_INTERRUPTED,
- 	HCI_WIDEBAND_SPEECH_ENABLED,
-+	HCI_EVENT_FILTER_CONFIGURED,
- 
- 	HCI_DUT_MODE,
- 	HCI_VENDOR_DIAG,
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 67668be3461e93..6eadc999ea1474 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -395,6 +395,26 @@ static void hci_cc_write_scan_enable(struct hci_dev *hdev, struct sk_buff *skb)
- 	hci_dev_unlock(hdev);
- }
- 
-+static void hci_cc_set_event_filter(struct hci_dev *hdev, struct sk_buff *skb)
-+{
-+	__u8 status = *((__u8 *)skb->data);
-+	struct hci_cp_set_event_filter *cp;
-+	void *sent;
-+
-+	BT_DBG("%s status 0x%2.2x", hdev->name, status);
-+
-+	sent = hci_sent_cmd_data(hdev, HCI_OP_SET_EVENT_FLT);
-+	if (!sent || status)
-+		return;
-+
-+	cp = (struct hci_cp_set_event_filter *)sent;
-+
-+	if (cp->flt_type == HCI_FLT_CLEAR_ALL)
-+		hci_dev_clear_flag(hdev, HCI_EVENT_FILTER_CONFIGURED);
-+	else
-+		hci_dev_set_flag(hdev, HCI_EVENT_FILTER_CONFIGURED);
-+}
-+
- static void hci_cc_read_class_of_dev(struct hci_dev *hdev, struct sk_buff *skb)
- {
- 	struct hci_rp_read_class_of_dev *rp = (void *) skb->data;
-@@ -3328,6 +3348,10 @@ static void hci_cmd_complete_evt(struct hci_dev *hdev, struct sk_buff *skb,
- 		hci_cc_write_scan_enable(hdev, skb);
- 		break;
- 
-+	case HCI_OP_SET_EVENT_FLT:
-+		hci_cc_set_event_filter(hdev, skb);
-+		break;
-+
- 	case HCI_OP_READ_CLASS_OF_DEV:
- 		hci_cc_read_class_of_dev(hdev, skb);
- 		break;
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index e55976db4403e7..75a42178c82d9b 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -1131,14 +1131,14 @@ static void hci_req_clear_event_filter(struct hci_request *req)
- {
- 	struct hci_cp_set_event_filter f;
- 
--	memset(&f, 0, sizeof(f));
--	f.flt_type = HCI_FLT_CLEAR_ALL;
--	hci_req_add(req, HCI_OP_SET_EVENT_FLT, 1, &f);
-+	if (!hci_dev_test_flag(req->hdev, HCI_BREDR_ENABLED))
-+		return;
- 
--	/* Update page scan state (since we may have modified it when setting
--	 * the event filter).
--	 */
--	__hci_req_update_scan(req);
-+	if (hci_dev_test_flag(req->hdev, HCI_EVENT_FILTER_CONFIGURED)) {
-+		memset(&f, 0, sizeof(f));
-+		f.flt_type = HCI_FLT_CLEAR_ALL;
-+		hci_req_add(req, HCI_OP_SET_EVENT_FLT, 1, &f);
-+	}
- }
- 
- static void hci_req_set_event_filter(struct hci_request *req)
-@@ -1147,6 +1147,10 @@ static void hci_req_set_event_filter(struct hci_request *req)
- 	struct hci_cp_set_event_filter f;
- 	struct hci_dev *hdev = req->hdev;
- 	u8 scan = SCAN_DISABLED;
-+	bool scanning = test_bit(HCI_PSCAN, &hdev->flags);
-+
-+	if (!hci_dev_test_flag(hdev, HCI_BREDR_ENABLED))
-+		return;
- 
- 	/* Always clear event filter when starting */
- 	hci_req_clear_event_filter(req);
-@@ -1167,12 +1171,13 @@ static void hci_req_set_event_filter(struct hci_request *req)
- 		scan = SCAN_PAGE;
- 	}
- 
--	if (scan)
-+	if (scan && !scanning) {
- 		set_bit(SUSPEND_SCAN_ENABLE, hdev->suspend_tasks);
--	else
-+		hci_req_add(req, HCI_OP_WRITE_SCAN_ENABLE, 1, &scan);
-+	} else if (!scan && scanning) {
- 		set_bit(SUSPEND_SCAN_DISABLE, hdev->suspend_tasks);
--
--	hci_req_add(req, HCI_OP_WRITE_SCAN_ENABLE, 1, &scan);
-+		hci_req_add(req, HCI_OP_WRITE_SCAN_ENABLE, 1, &scan);
-+	}
- }
- 
- static void cancel_adv_timeout(struct hci_dev *hdev)
-@@ -1315,9 +1320,14 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
- 
- 		hdev->advertising_paused = true;
- 		hdev->advertising_old_state = old_state;
--		/* Disable page scan */
--		page_scan = SCAN_DISABLED;
--		hci_req_add(&req, HCI_OP_WRITE_SCAN_ENABLE, 1, &page_scan);
-+
-+		/* Disable page scan if enabled */
-+		if (test_bit(HCI_PSCAN, &hdev->flags)) {
-+			page_scan = SCAN_DISABLED;
-+			hci_req_add(&req, HCI_OP_WRITE_SCAN_ENABLE, 1,
-+				    &page_scan);
-+			set_bit(SUSPEND_SCAN_DISABLE, hdev->suspend_tasks);
-+		}
- 
- 		/* Disable LE passive scan if enabled */
- 		if (hci_dev_test_flag(hdev, HCI_LE_SCAN)) {
-@@ -1328,9 +1338,6 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
- 		/* Disable advertisement filters */
- 		hci_req_add_set_adv_filter_enable(&req, false);
- 
--		/* Mark task needing completion */
--		set_bit(SUSPEND_SCAN_DISABLE, hdev->suspend_tasks);
--
- 		/* Prevent disconnects from causing scanning to be re-enabled */
- 		hdev->scanning_paused = true;
- 
-@@ -1364,7 +1371,10 @@ void hci_req_prepare_suspend(struct hci_dev *hdev, enum suspended_state next)
- 		hdev->suspended = false;
- 		hdev->scanning_paused = false;
- 
-+		/* Clear any event filters and restore scan state */
- 		hci_req_clear_event_filter(&req);
-+		__hci_req_update_scan(&req);
-+
- 		/* Reset passive/background scanning to normal */
- 		__hci_update_background_scan(&req);
- 		/* Enable all of the advertisement filters */
--- 
-2.30.1.766.gb4fecdf3b7-goog
-
+> 
+> Fixes: 991e7673859e ("mm: memcontrol: account kernel stack per node")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  kernel/fork.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index d66cd1014211..6e2201feb524 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -379,14 +379,19 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
+>  	void *stack = task_stack_page(tsk);
+>  	struct vm_struct *vm = task_stack_vm_area(tsk);
+>  
+> +	if (vm) {
+> +		int i;
+>  
+> -	/* All stack pages are in the same node. */
+> -	if (vm)
+> -		mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
+> -				      account * (THREAD_SIZE / 1024));
+> -	else
+> +		BUG_ON(vm->nr_pages != THREAD_SIZE / PAGE_SIZE);
+> +
+> +		for (i = 0; i < THREAD_SIZE / PAGE_SIZE; i++)
+> +			mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STACK_KB,
+> +					      account * (PAGE_SIZE / 1024));
+> +	} else {
+> +		/* All stack pages are in the same node. */
+>  		mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
+>  				      account * (THREAD_SIZE / 1024));
+> +	}
+>  }
+>  
+>  static int memcg_charge_kernel_stack(struct task_struct *tsk)
+> -- 
+> 2.11.0
+> 
