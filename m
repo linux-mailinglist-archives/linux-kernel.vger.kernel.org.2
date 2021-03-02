@@ -2,196 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64D032A2D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687DA32A2CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:59:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837644AbhCBIdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377357AbhCBISv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:18:51 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9035C06121E
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:17:18 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id d19so10849577plr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 00:17:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=9IvSzdbIQqhRyiLJGvOnZfh3hjug63Y1v74jXsaZzZ4=;
-        b=vjq0i7utFQfq/ROgloM8fVCwD3GgQjSjJzxE39PPfoolW/2BTnmUwVxfnbfg/xE8xf
-         nurEyFcMwK9nSlqkfz+TWWrBExl5stjBN3maC6gC31KMD3tBteKgPHUq12s7UUgkwI9M
-         vp0ePmNo9Ra+e+AbeLvDNxW6QBHsadhycldlmZuWH02z7uHsyD1QYqllyYU3eT01p+fk
-         N2vJPKSArl7dvqr7FyBPla3CszX6Ce2ByDzrrm12jXWuSi0kZ2yktEAiVYRWZrBI7lA/
-         KBQ/BHPJUdBBRMuJLk+UJD/X8LruP9bdJ6Fiw9PV3Pmud28l2jlck5kQNw4n2qMFnBC6
-         lbqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=9IvSzdbIQqhRyiLJGvOnZfh3hjug63Y1v74jXsaZzZ4=;
-        b=H5xo520YHf+anUCbN0hsQGM54Ro7yJ2O2iR5n0e3pRiOS0fQ6Zvq7ZjwClhIPZVok+
-         sFVf6W82zOPnNdQ9Jjp/EhBQRdZvBGFaylTL+zLvpxC8lV2aPnbu2UijMAE8T2pZwlZB
-         p4OoLaAkj2Eqs32ml6YfaBYi5CMP9lUpD8fcHGI8h5Pm5TkQAMV3A9dwZ3iNI/xBgi33
-         i0mhqMQ64vzgFnp1uYwG35V9S9vjWTNCAytlauGZ03dQ+U4z7Sihnk3wvCwZwoGsz2Dv
-         sQfeIP+uuX2EyAKUYhc/z1rayhlxpCK50OawkCWx84D5wIOLjM3g1Rl+sQdJ7mnHyq64
-         XgtQ==
-X-Gm-Message-State: AOAM533jsoGSrygoETYiIDwBDFliwE8cPRDkeJIlFjeA9NFuK2dwke4n
-        vmqa0lOLy66+QylpGmZeLV2Tt2pfFoZy
-X-Google-Smtp-Source: ABdhPJyCXCm/dfyyzcTbG52l5hOFatdhe7phOhVOcb2mXZhlI38K9zFUo51+s70nURdhIGdIur5gyGdzY6gm
-Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
-X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:e829:dc2a:968a:1370])
- (user=vipinsh job=sendgmr) by 2002:a05:6a00:23c5:b029:1e6:2f2e:a438 with SMTP
- id g5-20020a056a0023c5b02901e62f2ea438mr19154226pfc.75.1614673038114; Tue, 02
- Mar 2021 00:17:18 -0800 (PST)
-Date:   Tue,  2 Mar 2021 00:17:05 -0800
-In-Reply-To: <20210302081705.1990283-1-vipinsh@google.com>
-Message-Id: <20210302081705.1990283-3-vipinsh@google.com>
-Mime-Version: 1.0
-References: <20210302081705.1990283-1-vipinsh@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-From:   Vipin Sharma <vipinsh@google.com>
-To:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com
-Cc:     corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vipin Sharma <vipinsh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1837592AbhCBIdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:33:13 -0500
+Received: from mga17.intel.com ([192.55.52.151]:40586 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1377246AbhCBISi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:18:38 -0500
+IronPort-SDR: N6kvv+IgM9DU2Mpz7OC5g4OEpxsVZP9ralCx60D2yhEcfChcTfgBKZT5uY+pHkCUDe+H7Xc6ar
+ vJvl5YEdfcag==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="166609999"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="166609999"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 00:17:56 -0800
+IronPort-SDR: Zk/qHBoeVuRAu6KOKJGR9bqTbUrVEs9uQYZ5/TOXES1oPZbRbHVpCa6l/96qY+eBWB24cU8XmB
+ cSSzrX/ee9/w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="444649690"
+Received: from unknown (HELO [10.239.154.55]) ([10.239.154.55])
+  by orsmga001.jf.intel.com with ESMTP; 02 Mar 2021 00:17:49 -0800
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <20210301115441.a4s5xzwm6d6ohz7f@vireshk-i7>
+ <16efea9f-d606-4cf9-9213-3c1cf9b1a906@intel.com>
+ <20210302034323.gkqymzngyqofrdsr@vireshk-i7>
+ <b99b18e1-06a5-f526-a885-dc663da3612b@intel.com>
+ <20210302072431.ml4veczbelyjbhkt@vireshk-i7>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <720f5c0a-032c-b7af-4ca6-cd5adca77c37@intel.com>
+Date:   Tue, 2 Mar 2021 16:17:48 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210302072431.ml4veczbelyjbhkt@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation of miscellaneous cgroup controller. This new controller is
-used to track and limit the usage of scalar resources.
 
-Signed-off-by: Vipin Sharma <vipinsh@google.com>
-Reviewed-by: David Rientjes <rientjes@google.com>
----
- Documentation/admin-guide/cgroup-v1/index.rst |  1 +
- Documentation/admin-guide/cgroup-v1/misc.rst  |  4 ++
- Documentation/admin-guide/cgroup-v2.rst       | 69 ++++++++++++++++++-
- 3 files changed, 72 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
+On 2021/3/2 15:24, Viresh Kumar wrote:
+> On 02-03-21, 14:24, Jie Deng wrote:
+>> Not for the full duplex. As Paolo explained in those links.
+>> We defined a combined request called "write-read request"
+>>
+>> "
+>> This is when a write is followed by a read: the master
+>> starts off the transmission with a write, then sends a second START,
+>> then continues with a read from the same address.
+> I think above talks about the real I2C protocol at bus level ?
+>
+>> In theory there's no difference between one multi-segment transaction
+>> and many single-segment transactions _in a single-master scenario_.
+>>
+>> However, it is a plausible configuration to have multiple guests sharing
+>> an I2C host device as if they were multiple master.
+>>
+>> So the spec should provide a way at least to support for transactions with
+>> 1 write and 1 read segment in one request to the same address.
+>> "
+>>  From the perspective of specification design, it hopes to provide more
+>> choices
+>> while from the perspective of specific implementation, we can choose what we
+>> need
+>> as long as it does not violate the specification.
+> That is fine, but what I was not able to understand was how do we get
+> to know if we should expect both write and read bufs after the out
+> header or only one of them ?
+>
+> I think I have understood that part now, we need to look at incnt and
+> outcnt and make out what kind of transfer we need to do.
+>
+> - If outcnt == 1 and incnt == 2, then it is read operation.
+> - If outcnt == 2 and incnt == 1, then it is write operation.
+> - If outcnt == 2 and incnt == 2, then it is read-write operation.
+>
+> Anything else is invalid. Is my understanding correct here ?
+Correct.  By checking the sequences of descriptor's R/W in the virtqueue,
+You can know the type of request. A simple state machine can be used to
+classify in this case.
 
-diff --git a/Documentation/admin-guide/cgroup-v1/index.rst b/Documentation/admin-guide/cgroup-v1/index.rst
-index 226f64473e8e..99fbc8a64ba9 100644
---- a/Documentation/admin-guide/cgroup-v1/index.rst
-+++ b/Documentation/admin-guide/cgroup-v1/index.rst
-@@ -17,6 +17,7 @@ Control Groups version 1
-     hugetlb
-     memcg_test
-     memory
-+    misc
-     net_cls
-     net_prio
-     pids
-diff --git a/Documentation/admin-guide/cgroup-v1/misc.rst b/Documentation/admin-guide/cgroup-v1/misc.rst
-new file mode 100644
-index 000000000000..661614c24df3
---- /dev/null
-+++ b/Documentation/admin-guide/cgroup-v1/misc.rst
-@@ -0,0 +1,4 @@
-+===============
-+Misc controller
-+===============
-+Please refer "Misc" documentation in Documentation/admin-guide/cgroup-v2.rst
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 1de8695c264b..74777323b7fd 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -63,8 +63,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
-        5-7-1. RDMA Interface Files
-      5-8. HugeTLB
-        5.8-1. HugeTLB Interface Files
--     5-8. Misc
--       5-8-1. perf_event
-+     5-9. Misc
-+       5.9-1 Miscellaneous cgroup Interface Files
-+       5.9-2 Migration and Ownership
-+     5-10. Others
-+       5-10-1. perf_event
-      5-N. Non-normative information
-        5-N-1. CPU controller root cgroup process behaviour
-        5-N-2. IO controller root cgroup process behaviour
-@@ -2163,6 +2166,68 @@ HugeTLB Interface Files
- Misc
- ----
- 
-+The Miscellaneous cgroup provides the resource limiting and tracking
-+mechanism for the scalar resources which cannot be abstracted like the other
-+cgroup resources. Controller is enabled by the CONFIG_CGROUP_MISC config
-+option.
-+
-+The first two resources added to the miscellaneous controller are Secure
-+Encrypted Virtualization (SEV) ASIDs and SEV - Encrypted State (SEV-ES) ASIDs.
-+These limited ASIDs are used for encrypting virtual machines memory on the AMD
-+platform.
-+
-+Misc Interface Files
-+~~~~~~~~~~~~~~~~~~~~
-+
-+Miscellaneous controller provides 3 interface files:
-+
-+  misc.capacity
-+        A read-only flat-keyed file shown only in the root cgroup.  It shows
-+        miscellaneous scalar resources available on the platform along with
-+        their quantities::
-+
-+	  $ cat misc.capacity
-+	  sev 50
-+	  sev_es 10
-+
-+  misc.current
-+        A read-only flat-keyed file shown in the non-root cgroups.  It shows
-+        the current usage of the resources in the cgroup and its children.::
-+
-+	  $ cat misc.current
-+	  sev 3
-+	  sev_es 0
-+
-+  misc.max
-+        A read-write flat-keyed file shown in the non root cgroups. Allowed
-+        maximum usage of the resources in the cgroup and its children.::
-+
-+	  $ cat misc.max
-+	  sev max
-+	  sev_es 4
-+
-+	Limit can be set by::
-+
-+	  # echo sev 1 > misc.max
-+
-+	Limit can be set to max by::
-+
-+	  # echo sev max > misc.max
-+
-+        Limits can be set higher than the capacity value in the misc.capacity
-+        file.
-+
-+Migration and Ownership
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+A miscellaneous scalar resource is charged to the cgroup in which it is used
-+first, and stays charged to that cgroup until that resource is freed. Migrating
-+a process to a different cgroup does not move the charge to the destination
-+cgroup where the process has moved.
-+
-+Others
-+------
-+
- perf_event
- ~~~~~~~~~~
- 
--- 
-2.30.1.766.gb4fecdf3b7-goog
+O I  I   : read request.
 
+O O I  : write request.
+
+O O I I : read-write request.
+
+But if only using the first two types like in this driver, the backend 
+will be much easier to
+implement since the request is fixed to 3 descriptors and we only need 
+to check the second
+descriptor to know the type.
+>
+>> Since the current Linux driver doesn't use this mechanism. I'm considering
+>> to move
+>> the "struct virtio_i2c_req" into the driver and use one "buf" instead.
+> Linux can very much have its own definition of the structure and so I
+> am not in favor of any such structure in the spec as well, it confuses
+> people (like me) :).
+>
