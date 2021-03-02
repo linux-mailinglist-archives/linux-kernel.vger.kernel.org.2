@@ -2,90 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6448232A42E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F58632A430
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379963AbhCBKWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:22:05 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:45504 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1349531AbhCBKEk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:04:40 -0500
-X-UUID: 16e25da9c9184a91ab13600ee2c71c55-20210302
-X-UUID: 16e25da9c9184a91ab13600ee2c71c55-20210302
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <biao.huang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1400073638; Tue, 02 Mar 2021 18:03:50 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 2 Mar 2021 18:03:50 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 2 Mar 2021 18:03:49 +0800
-From:   Biao Huang <biao.huang@mediatek.com>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-CC:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <biao.huang@mediatek.com>,
-        <srv_heupstream@mediatek.com>
-Subject: [v2 PATCH] net: ethernet: mtk-star-emac: fix wrong unmap in RX handling
-Date:   Tue, 2 Mar 2021 18:03:45 +0800
-Message-ID: <20210302100345.27982-2-biao.huang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210302100345.27982-1-biao.huang@mediatek.com>
-References: <20210302100345.27982-1-biao.huang@mediatek.com>
+        id S1379994AbhCBKXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:23:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349554AbhCBKFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 05:05:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D14FB64F12;
+        Tue,  2 Mar 2021 10:04:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614679461;
+        bh=F7EFwzdiJGCuUJUM4rhmyuct8ZJs4bkPmXvvBTimuS4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eWQYvRA+/QbPaWtGg12DWWxHmts3dBQRib7AsddTMsqcEAwURGHsaHiGDP6KI+3ln
+         OVdUKwOsJlf0nMX/97t7gPDyhRmnTP+933CyJGhHS+W0pdIwtRD0+t8y+/9bXaxK6S
+         3tF3HSpnXyOaZngWyd/Vum4UDv5Wx4usuYHMep4bytRtl5eNXrp52nftzv+cUBmBkv
+         iOVde5WikU6HpKF7Qz7M9KW4wWl9A/R6uXRjkXp/vA8Bf5HiapCfMEXuEcqQkx1AIU
+         FHvIs/gc+16X65JroeDchcU/j2sxxEKSFFRFXKbpSqHHxt4EdmDBYjt/EDXPQs6fVd
+         qnpAUjW3GIMew==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     x86@kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v3 0/2] x86/setup: consolidate early memory reservations
+Date:   Tue,  2 Mar 2021 12:04:04 +0200
+Message-Id: <20210302100406.22059-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mtk_star_dma_unmap_rx() should unmap the dma_addr of old skb rather than
-that of new skb.
-Assign new_dma_addr to desc_data.dma_addr after all handling of old skb
-ends to avoid unexpected receive side error.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-Fixes: f96e9641e92b ("net: ethernet: mtk-star-emac: fix error path in RX handling")
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Biao Huang <biao.huang@mediatek.com>
----
- drivers/net/ethernet/mediatek/mtk_star_emac.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Hi,
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-index a8641a407c06..84b3f56a9965 100644
---- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
-+++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-@@ -1225,9 +1225,7 @@ static int mtk_star_receive_packet(struct mtk_star_priv *priv)
- 		goto push_new_skb;
- 	}
- 
--	desc_data.dma_addr = new_dma_addr;
--
--	/* We can't fail anymore at this point: it's safe to unmap the skb. */
-+	/* We can't fail anymore at this point: it's safe to unmap the old skb. */
- 	mtk_star_dma_unmap_rx(priv, &desc_data);
- 
- 	skb_put(desc_data.skb, desc_data.len);
-@@ -1236,6 +1234,9 @@ static int mtk_star_receive_packet(struct mtk_star_priv *priv)
- 	desc_data.skb->dev = ndev;
- 	netif_receive_skb(desc_data.skb);
- 
-+	/* update dma_addr for new skb */
-+	desc_data.dma_addr = new_dma_addr;
-+
- push_new_skb:
- 	desc_data.len = skb_tailroom(new_skb);
- 	desc_data.skb = new_skb;
+David noticed that we do some of memblock_reserve() calls after allocations
+are possible:
+
+https://lore.kernel.org/lkml/6ba6bde3-1520-5cd0-f987-32d543f0b79f@redhat.com
+
+The below patches consolidate early memory reservations done during
+setup_arch() so that memory used by firmware, bootloader, kernel text/data
+and the memory that should be excluded from the available memory for
+whatever other reason is reserved before memblock allocations are possible.
+
+The patches are rebased on v5.12-rc1 and I think x86 tree is the best way
+to merge them.
+
+v3:
+* rebase on v5.12-rc1
+
+v2: https://lore.kernel.org/lkml/20210128105711.10428-1-rppt@kernel.org
+* get rid of trim_platform_memory_ranges() and call trim_snb_memory()
+  directly, per Boris comments
+* massage changelog and comments to use passive voice, per Boris
+* add Acked-by and Reviewed-by, thanks Boris and David
+
+v1: https://lore.kernel.org/lkml/20210115083255.12744-1-rppt@kernel.org
+
+Mike Rapoport (2):
+  x86/setup: consolidate early memory reservations
+  x86/setup: merge several reservations of start of the memory
+
+ arch/x86/kernel/setup.c | 95 ++++++++++++++++++++---------------------
+ 1 file changed, 46 insertions(+), 49 deletions(-)
+
 -- 
-2.18.0
+2.28.0
 
