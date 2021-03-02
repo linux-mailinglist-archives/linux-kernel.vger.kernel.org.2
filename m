@@ -2,153 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E3D32B6F3
+	by mail.lfdr.de (Postfix) with ESMTP id C86B932B6F4
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 11:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356716AbhCCKsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:48:08 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1075 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2361009AbhCBXKn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 18:10:43 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603ec5c50000>; Tue, 02 Mar 2021 15:09:57 -0800
-Received: from [10.2.62.164] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
- 2021 23:09:55 +0000
-Message-ID: <e177e381-4461-f85d-14e1-a17739b12e5e@nvidia.com>
-Date:   Tue, 2 Mar 2021 15:09:56 -0800
+        id S1356742AbhCCKsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:48:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2361017AbhCBXLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 18:11:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41D5564EC9;
+        Tue,  2 Mar 2021 23:10:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614726638;
+        bh=ItBmd4sAHE6X1z9zTZ3sUEN0p3nvvqLsAfjqagRywdc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=L5NAVBcToL/EdMyr8d463suXTn1Uff0KfAiCAs8c3MgknaFuSzX0768IuiFS/nKqO
+         63bFgTOBMJZGDK436Hb25TqKrZE3D++KVJ4MenlMozsvwDM1nS+bHzXj4A13Kekj/7
+         UHYpQxa+GrY4ruQtFYkW5yRm0gGeOv26m4Qmt8W2/mdKlQ/R8PvFjgIPLrinlK2J8Y
+         gbmBPGixViRGcJNI5o9Wo4Lq2LXJNUdYhpp01u0HnCggp6kH/88GKbuY0kosq25HZX
+         7IIfMx5fXRStKlzuqzOw8dt7abmw25ZM5UM3DO+x/HzT3FGp9Glmi+nxyT+swv+eFE
+         P7ek26IydSg/Q==
+Date:   Tue, 2 Mar 2021 15:10:37 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com" 
+        <syzbot+e74a6857f2d0efe3ad81@syzkaller.appspotmail.com>,
+        Jakub Kicinski <jakub.kicinski@netronome.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        Quentin Monnet <quentin.monnet@netronome.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH] netdevsim: init u64 stats for 32bit hardware
+Message-ID: <20210302151037.2dc70600@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CACT4Y+Zv-p56cbs3P7ZEUXdYaN7jXB4AELG5=S19wVH4kj3a9g@mail.gmail.com>
+References: <20210128024316.1425-1-hdanton@sina.com>
+        <20210128105830.7d8aa91d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <60139ef4.1c69fb81.8d2f9.f26bSMTPIN_ADDED_MISSING@mx.google.com>
+        <CACT4Y+Z7152DKY=TKOUe17=z=yJmO3oTYmD66Qa-eOmV+XZCsw@mail.gmail.com>
+        <603e0005.1c69fb81.e3eed.6025SMTPIN_ADDED_MISSING@mx.google.com>
+        <CACT4Y+Zv-p56cbs3P7ZEUXdYaN7jXB4AELG5=S19wVH4kj3a9g@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:86.0) Gecko/20100101
- Thunderbird/86.0
-Subject: Re: [PATCH v2] mm: vmstat: add cma statistics
-Content-Language: en-US
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        <joaodias@google.com>, <surenb@google.com>
-References: <20210302183346.3707237-1-minchan@kernel.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <20210302183346.3707237-1-minchan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614726597; bh=r7vcFFXe7sgEJ2nO7wop6ul+G25XAZLjT/ih8UIr5ZY=;
-        h=Message-ID:Date:MIME-Version:User-Agent:Subject:Content-Language:
-         To:CC:References:From:In-Reply-To:Content-Type:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=otFRU1NrfFpUyud3otr8gxO/NMyl+NyBW51NnOAf1WDFKK6mjjMBSxks4mDhA0WzS
-         FP6gxqMio5XH5tc2laaweumc2rLbr115K3i2Tu7iDV/Q4FHPGzC+NqWh+nNbsO1Z4D
-         6k51zsvPtuyvyA6GB9hMk2dQv6wpiDqijfUw5odI9hACt+Vi4zru3xMak56keWb823
-         hI3qe2hJr60xOmcRyCPMHpgBXRMwcfJKSBIU1JnbrNzfBkq/FHSb8pPLW1sAL1BD/c
-         gpkcWm2+8xePhqw5zn/qlW3P3CW8+mCOxCqqX46+qtaprraSqGvVGSNnl9RwS6vOdY
-         OHp1AWIJn3y4g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/2/21 10:33, Minchan Kim wrote:
-> Since CMA is used more widely, it's worth to have CMA
-> allocation statistics into vmstat. With it, we could
-> know how agressively system uses cma allocation and
-> how often it fails.
+On Tue, 2 Mar 2021 12:55:47 +0100 Dmitry Vyukov wrote:
+> On Tue, Mar 2, 2021 at 10:06 AM Hillf Danton <hdanton@sina.com> wrote:
+> > On Mar 2, 2021 at 16:40 Dmitry Vyukov wrote:
+> > >I hoped this would get at least into 5.12. syzbot can't start testing  
+> > >arm32 because of this.  
+
+FWIW the submission never got into patchwork or lore so we had 
+no public source to apply from.
+
+> > Or what is more feasible is you send a fix to Jakub today.  
 > 
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
-> * from v1 - https://lore.kernel.org/linux-mm/20210217170025.512704-1-minchan@kernel.org/
->    * change alloc_attempt with alloc_success - jhubbard
->    * item per line for vm_event_item - jhubbard
-> 
->   include/linux/vm_event_item.h |  4 ++++
->   mm/cma.c                      | 12 +++++++++---
->   mm/vmstat.c                   |  4 ++++
->   3 files changed, 17 insertions(+), 3 deletions(-)
-> 
+> So far I can't figure out how to make git work with my Gmail account
+> with 1.5-factor auth enabled, neither password nor asp work...
 
-Seems reasonable, and the diffs look good.
-
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
-> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-> index 18e75974d4e3..21d7c7f72f1c 100644
-> --- a/include/linux/vm_event_item.h
-> +++ b/include/linux/vm_event_item.h
-> @@ -70,6 +70,10 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
->   #endif
->   #ifdef CONFIG_HUGETLB_PAGE
->   		HTLB_BUDDY_PGALLOC, HTLB_BUDDY_PGALLOC_FAIL,
-> +#endif
-> +#ifdef CONFIG_CMA
-> +		CMA_ALLOC_SUCCESS,
-> +		CMA_ALLOC_FAIL,
->   #endif
->   		UNEVICTABLE_PGCULLED,	/* culled to noreclaim list */
->   		UNEVICTABLE_PGSCANNED,	/* scanned for reclaimability */
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 23d4a97c834a..04ca863d1807 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -435,13 +435,13 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->   	int ret = -ENOMEM;
->   
->   	if (!cma || !cma->count || !cma->bitmap)
-> -		return NULL;
-> +		goto out;
->   
->   	pr_debug("%s(cma %p, count %zu, align %d)\n", __func__, (void *)cma,
->   		 count, align);
->   
->   	if (!count)
-> -		return NULL;
-> +		goto out;
->   
->   	mask = cma_bitmap_aligned_mask(cma, align);
->   	offset = cma_bitmap_aligned_offset(cma, align);
-> @@ -449,7 +449,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->   	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
->   
->   	if (bitmap_count > bitmap_maxno)
-> -		return NULL;
-> +		goto out;
->   
->   	for (;;) {
->   		mutex_lock(&cma->lock);
-> @@ -506,6 +506,12 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->   	}
->   
->   	pr_debug("%s(): returned %p\n", __func__, page);
-> +out:
-> +	if (page)
-> +		count_vm_event(CMA_ALLOC_SUCCESS);
-> +	else
-> +		count_vm_event(CMA_ALLOC_FAIL);
-> +
->   	return page;
->   }
->   
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 97fc32a53320..d8c32a33208d 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1305,6 +1305,10 @@ const char * const vmstat_text[] = {
->   #ifdef CONFIG_HUGETLB_PAGE
->   	"htlb_buddy_alloc_success",
->   	"htlb_buddy_alloc_fail",
-> +#endif
-> +#ifdef CONFIG_CMA
-> +	"cma_alloc_success",
-> +	"cma_alloc_fail",
->   #endif
->   	"unevictable_pgs_culled",
->   	"unevictable_pgs_scanned",
-> 
+LMK if you get overly frustrated, I can get the patch from my inbox and
+resend it for you :)
