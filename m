@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E1732A7F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBC932A804
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579382AbhCBQrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:47:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46498 "EHLO mail.kernel.org"
+        id S1579620AbhCBQ7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:59:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351409AbhCBOW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:22:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 787F064FC6;
-        Tue,  2 Mar 2021 11:59:42 +0000 (UTC)
+        id S1351401AbhCBOWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:22:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C2BA64FD0;
+        Tue,  2 Mar 2021 11:59:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686383;
-        bh=CTUYJnv8MliY6J4+/hZzZcFP6aNEEDo1FTIlzbrUvho=;
+        s=k20201202; t=1614686384;
+        bh=nzfBEvURGIAy8Ojlx75w2U2uuZQ96+VrmVDH4xtSifc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H/YNq1OZZD1CV3lXXOHdzjCfx4A0MlzaPT676QtletGBwmyBEfupA7Cf0baVj2HX8
-         lR/l/njacwglldCMvtX4zctPsrdM8vT91/isotBPe1xhWD+RVFNUN33ZNHIvCS/6gX
-         Cfzv/Q7VSjwYKTJW6gpTT9S1+kGhEs/thtAbpkwLsn4CHPfKuDjKZxf/cCgv+hndkz
-         1fRqzlyx5ppqYu0Q+/NODcggTPVJ3khdev5m00v0f368Mm1jvyIg2HAuVX+N5Uewbe
-         wW/lIu3ddIlyr1P7oT5qG98m+s1QfxOXMN5P0QExcqyZ7ARciUmG/KhnvZG5UIllWU
-         lWmXy+tCbi95Q==
+        b=fh7Wqo75nrcHGosrRNwmmBobQdjP00NpkMkfbG7BmBWQlboh1je0oBvVaUMWdo7vQ
+         15Ft/ZeNKWQsTkSml0t3duwww44swuNW+WK1dmA/cH/5kfXgm9YUULivTKTD01v7A7
+         cZBd/JHpSq+WUdiikXGjW+BOhl+bOebicXdYGAbxpxQbSX+tHhzbO69CKpeSN0yBZY
+         jmYcoB4wn6vkx2oktHVECFKLjpwlMnyTh8DItDLYD2iuwMOGErkiWAMipZeaf+ys3i
+         a4SdjBgre9GZVOSA8bppL0VK4rgWvwmcLRN3hOGjqRWpp3i3y23NJZ3NE/JqzzhE4T
+         dbWt5tVVllwlA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 5/8] x86, build: use objtool mcount
-Date:   Tue,  2 Mar 2021 06:59:32 -0500
-Message-Id: <20210302115935.63777-5-sashal@kernel.org>
+Cc:     Martin Kaiser <martin@kaiser.cx>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.4 6/8] PCI: xgene-msi: Fix race in installing chained irq handler
+Date:   Tue,  2 Mar 2021 06:59:33 -0500
+Message-Id: <20210302115935.63777-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115935.63777-1-sashal@kernel.org>
 References: <20210302115935.63777-1-sashal@kernel.org>
@@ -42,33 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sami Tolvanen <samitolvanen@google.com>
+From: Martin Kaiser <martin@kaiser.cx>
 
-[ Upstream commit 6dafca97803309c3cb5148d449bfa711e41ddef2 ]
+[ Upstream commit a93c00e5f975f23592895b7e83f35de2d36b7633 ]
 
-Select HAVE_OBJTOOL_MCOUNT if STACK_VALIDATION is selected to use
-objtool to generate __mcount_loc sections for dynamic ftrace with
-Clang and gcc <5 (later versions of gcc use -mrecord-mcount).
+Fix a race where a pending interrupt could be received and the handler
+called before the handler's data has been setup, by converting to
+irq_set_chained_handler_and_data().
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
+See also 2cf5a03cb29d ("PCI/keystone: Fix race in installing chained IRQ
+handler").
+
+Based on the mail discussion, it seems ok to drop the error handling.
+
+Link: https://lore.kernel.org/r/20210115212435.19940-3-martin@kaiser.cx
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/host/pci-xgene-msi.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 1bee1c6a9891..2e2ddc864ea9 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -94,6 +94,7 @@ config X86
- 	select HAVE_CONTEXT_TRACKING		if X86_64
- 	select HAVE_COPY_THREAD_TLS
- 	select HAVE_C_RECORDMCOUNT
-+	select HAVE_OBJTOOL_MCOUNT		if STACK_VALIDATION
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DEBUG_STACKOVERFLOW
- 	select HAVE_DMA_API_DEBUG
+diff --git a/drivers/pci/host/pci-xgene-msi.c b/drivers/pci/host/pci-xgene-msi.c
+index a6456b578269..b6a099371ad2 100644
+--- a/drivers/pci/host/pci-xgene-msi.c
++++ b/drivers/pci/host/pci-xgene-msi.c
+@@ -393,13 +393,9 @@ static int xgene_msi_hwirq_alloc(unsigned int cpu)
+ 		if (!msi_group->gic_irq)
+ 			continue;
+ 
+-		irq_set_chained_handler(msi_group->gic_irq,
+-					xgene_msi_isr);
+-		err = irq_set_handler_data(msi_group->gic_irq, msi_group);
+-		if (err) {
+-			pr_err("failed to register GIC IRQ handler\n");
+-			return -EINVAL;
+-		}
++		irq_set_chained_handler_and_data(msi_group->gic_irq,
++			xgene_msi_isr, msi_group);
++
+ 		/*
+ 		 * Statically allocate MSI GIC IRQs to each CPU core.
+ 		 * With 8-core X-Gene v1, 2 MSI GIC IRQs are allocated
 -- 
 2.30.1
 
