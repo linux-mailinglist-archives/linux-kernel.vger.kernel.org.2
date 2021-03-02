@@ -2,94 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A58632AA0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C61132AA18
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581531AbhCBS6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:58:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1449112AbhCBQPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:15:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C071B64E7C;
-        Tue,  2 Mar 2021 16:13:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614701626;
-        bh=XcaDjWsURv/8uZujGdas5wp5M1JZxAMhhXQc0wmkd0Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PMdaxma/dPA8gQWX512Tik+zy7s5XhBA/c3U6rfgto/T+dowq5GR7QoNwNlgJtmt+
-         pRn42HIPQeCSPnqb+0ZGZfA+D4sTTN37fgPCB2+fFB+RBCsKt+O+SNkaGlWkMcORZ6
-         YcJBK6kC5WlqOP1WLs2urMyZLKwPVlhxjphw/wi/kpnSU7DWHQiRKhsCuUpjMMo/af
-         ibld2EvNF/AjyFkXJAhEIijJxJoEZg9vgBFdHsT9lBNTNn2t7HdAKPeqUWnzaAVhw8
-         rTIfSQAcYXobOMi96H7vpWqbCeSxvFoQFWm1Uwrv/i6BcKy4ahkt/oyK5U33ZCgBRv
-         WjAepb457Ne5Q==
-Date:   Tue, 2 Mar 2021 16:12:39 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     Rob Herring <robh@kernel.org>, Jon Hunter <jonathanh@nvidia.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 3/5] ASoC: audio-graph-card: Add bindings for sysclk
- and pll
-Message-ID: <20210302161239.GM4522@sirena.org.uk>
-References: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
- <1614276364-13655-4-git-send-email-spujar@nvidia.com>
- <CAL_Jsq+9esDGw7ZCLnZS_KLmLUFyVenz83ohgNKFK3bdPD2ouQ@mail.gmail.com>
- <0ea5b885-2610-8f12-569d-15a8eff50c10@nvidia.com>
+        id S1581564AbhCBS6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1449142AbhCBQPw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:15:52 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D79C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:14:49 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d15e:6060:f6a9:3ce5])
+        by laurent.telenet-ops.be with bizsmtp
+        id bUEl2400S0v3pQi01UElpr; Tue, 02 Mar 2021 17:14:46 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lH7fZ-004ChD-JT; Tue, 02 Mar 2021 17:14:45 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lH7fY-00FwSS-VM; Tue, 02 Mar 2021 17:14:44 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] sh: Use generic GGC library routines
+Date:   Tue,  2 Mar 2021 17:14:39 +0100
+Message-Id: <20210302161439.3799589-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rCb8EA+9TsBVtA92"
-Content-Disposition: inline
-In-Reply-To: <0ea5b885-2610-8f12-569d-15a8eff50c10@nvidia.com>
-X-Cookie: Friction is a drag.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The C implementations of __ashldi3(), __ashrdi3__(), and __lshrdi3() in
+arch/sh/lib/ are identical to the generic C implementations in lib/.
+Reduce duplication by switching SH to the generic versions.
 
---rCb8EA+9TsBVtA92
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Update the include path in arch/sh/boot/compressed accordingly.
 
-On Tue, Mar 02, 2021 at 12:33:04PM +0530, Sameer Pujar wrote:
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Against sh/for-next, tested on landisk and qemu/rts7751r2d.
 
-> This was targetted for external audio codecs. Their internal clock
-> management is not exposed with the clock framework. Instead ASoC provides
-> callbacks to set this up on Codec side. There are many references where t=
-his
-> is followed with some hardcoded settings in the drivers.
+Note that it also works without the change to arch/sh/boot/compressed/,
+as lib/ashldi3.c can be reached via both include/uapi/../../lib/ashldi3.c
+and arch/sh/boot/compressed/../../../../lib/ashldi3.c.
 
-> Are you suggesting to instead expose codec internal clocks and manage via
-> generic clock bindings? Would this mean each codec driver has to implement
-> these clock APIs (for ex: set_rate()) and program registers accordingly?
+Palmer tried a similar thing before:
+https://lore.kernel.org/linux-arch/20170523220546.16758-1-palmer@dabbelt.com/
+but initially it broke the SH build due to a missing change to
+arch/sh/boot/compressed/, and the later update never got picked up.
+In the mean time, arch/sh/boot/compressed/ was changed, so his patch no
+longer applies.
 
-Yes, that's what we should be doing.
+Similar for the other architectures, I guess?
+---
+ arch/sh/Kconfig                   |  3 +++
+ arch/sh/boot/compressed/ashldi3.c |  4 ++--
+ arch/sh/lib/Makefile              |  4 +---
+ arch/sh/lib/ashldi3.c             | 30 -----------------------------
+ arch/sh/lib/ashrdi3.c             | 32 -------------------------------
+ arch/sh/lib/lshrdi3.c             | 30 -----------------------------
+ 6 files changed, 6 insertions(+), 97 deletions(-)
+ delete mode 100644 arch/sh/lib/ashldi3.c
+ delete mode 100644 arch/sh/lib/ashrdi3.c
+ delete mode 100644 arch/sh/lib/lshrdi3.c
 
-> For a platform, different audio cards can be plugged in. In that case, ea=
-ch
-> codec has to be updated to follow this. Wouldn't it be simpler to use
-> available ASoC callbacks?
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index e798e55915c2337f..468e475c02d184bd 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -19,6 +19,9 @@ config SUPERH
+ 	select GENERIC_CMOS_UPDATE if SH_SH03 || SH_DREAMCAST
+ 	select GENERIC_IDLE_POLL_SETUP
+ 	select GENERIC_IRQ_SHOW
++	select GENERIC_LIB_ASHLDI3
++	select GENERIC_LIB_ASHRDI3
++	select GENERIC_LIB_LSHRDI3
+ 	select GENERIC_PCI_IOMAP if PCI
+ 	select GENERIC_SCHED_CLOCK
+ 	select GENERIC_STRNCPY_FROM_USER
+diff --git a/arch/sh/boot/compressed/ashldi3.c b/arch/sh/boot/compressed/ashldi3.c
+index 7cebd646df839b48..7c12121702309e8c 100644
+--- a/arch/sh/boot/compressed/ashldi3.c
++++ b/arch/sh/boot/compressed/ashldi3.c
+@@ -1,2 +1,2 @@
+-// SPDX-License-Identifier: GPL-2.0-only
+-#include "../../lib/ashldi3.c"
++// SPDX-License-Identifier: GPL-2.0-or-later
++#include "../../../../lib/ashldi3.c"
+diff --git a/arch/sh/lib/Makefile b/arch/sh/lib/Makefile
+index eb473d373ca43a4b..d20a0768b31fa2b6 100644
+--- a/arch/sh/lib/Makefile
++++ b/arch/sh/lib/Makefile
+@@ -7,9 +7,7 @@ lib-y  = delay.o memmove.o memchr.o \
+ 	 checksum.o strlen.o div64.o div64-generic.o
+ 
+ # Extracted from libgcc
+-obj-y += movmem.o ashldi3.o ashrdi3.o lshrdi3.o \
+-	 ashlsi3.o ashrsi3.o ashiftrt.o lshrsi3.o \
+-	 udiv_qrnnd.o
++obj-y += movmem.o ashlsi3.o ashrsi3.o ashiftrt.o lshrsi3.o udiv_qrnnd.o
+ 
+ udivsi3-y			:= udivsi3_i4i-Os.o
+ 
+diff --git a/arch/sh/lib/ashldi3.c b/arch/sh/lib/ashldi3.c
+deleted file mode 100644
+index e5afe0935847427f..0000000000000000
+--- a/arch/sh/lib/ashldi3.c
++++ /dev/null
+@@ -1,30 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <linux/module.h>
+-
+-#include "libgcc.h"
+-
+-long long __ashldi3(long long u, word_type b)
+-{
+-	DWunion uu, w;
+-	word_type bm;
+-
+-	if (b == 0)
+-		return u;
+-
+-	uu.ll = u;
+-	bm = 32 - b;
+-
+-	if (bm <= 0) {
+-		w.s.low = 0;
+-		w.s.high = (unsigned int) uu.s.low << -bm;
+-	} else {
+-		const unsigned int carries = (unsigned int) uu.s.low >> bm;
+-
+-		w.s.low = (unsigned int) uu.s.low << b;
+-		w.s.high = ((unsigned int) uu.s.high << b) | carries;
+-	}
+-
+-	return w.ll;
+-}
+-
+-EXPORT_SYMBOL(__ashldi3);
+diff --git a/arch/sh/lib/ashrdi3.c b/arch/sh/lib/ashrdi3.c
+deleted file mode 100644
+index ae263fbf25383b70..0000000000000000
+--- a/arch/sh/lib/ashrdi3.c
++++ /dev/null
+@@ -1,32 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <linux/module.h>
+-
+-#include "libgcc.h"
+-
+-long long __ashrdi3(long long u, word_type b)
+-{
+-	DWunion uu, w;
+-	word_type bm;
+-
+-	if (b == 0)
+-		return u;
+-
+-	uu.ll = u;
+-	bm = 32 - b;
+-
+-	if (bm <= 0) {
+-		/* w.s.high = 1..1 or 0..0 */
+-		w.s.high =
+-		    uu.s.high >> 31;
+-		w.s.low = uu.s.high >> -bm;
+-	} else {
+-		const unsigned int carries = (unsigned int) uu.s.high << bm;
+-
+-		w.s.high = uu.s.high >> b;
+-		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
+-	}
+-
+-	return w.ll;
+-}
+-
+-EXPORT_SYMBOL(__ashrdi3);
+diff --git a/arch/sh/lib/lshrdi3.c b/arch/sh/lib/lshrdi3.c
+deleted file mode 100644
+index 33eaa1edbc3c0656..0000000000000000
+--- a/arch/sh/lib/lshrdi3.c
++++ /dev/null
+@@ -1,30 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-#include <linux/module.h>
+-
+-#include "libgcc.h"
+-
+-long long __lshrdi3(long long u, word_type b)
+-{
+-	DWunion uu, w;
+-	word_type bm;
+-
+-	if (b == 0)
+-		return u;
+-
+-	uu.ll = u;
+-	bm = 32 - b;
+-
+-	if (bm <= 0) {
+-		w.s.high = 0;
+-		w.s.low = (unsigned int) uu.s.high >> -bm;
+-	} else {
+-		const unsigned int carries = (unsigned int) uu.s.high << bm;
+-
+-		w.s.high = (unsigned int) uu.s.high >> b;
+-		w.s.low = ((unsigned int) uu.s.low >> b) | carries;
+-	}
+-
+-	return w.ll;
+-}
+-
+-EXPORT_SYMBOL(__lshrdi3);
+-- 
+2.25.1
 
-If we want to use standard DT to describe things we need to use standard
-bindings to do it. =20
-
---rCb8EA+9TsBVtA92
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+Y/YACgkQJNaLcl1U
-h9Dfkwf/VV5E+1E4QxiC9xMRf7CW6kQ6uOQUAIFgRWw7AeHnhEAPA0LxXX+G9DuH
-AYLLxx8/XoQDfbuG6WC+i7VomWK2rYpg4jo1G/f93iHFiG7AhXmr4crkEUXnKoUF
-6Qou31wOajsXqhh2SlOGM3EEcA73s6eMksiGFuvazFjRHQKk7V91PcAmlujX9qUA
-tsn+gsy6ebjriTqxMJ0atPeKsawOlaTYvDQkefn+3DV6RtjHA7i6x+0IKxdPhbV9
-ZVKc/q+sAdXJCjnGln9qDe1dRCoS3CYVvgZvteN4MH8+AC49Wm9DEIW+UNvS2XE4
-eWrZTbtnc4Fqg3WqfsVOAM70RK1+cw==
-=kyqj
------END PGP SIGNATURE-----
-
---rCb8EA+9TsBVtA92--
