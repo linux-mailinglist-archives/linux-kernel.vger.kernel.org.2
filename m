@@ -2,216 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 479B432A4EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3403632A52F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383462AbhCBLfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:35:15 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:50619 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239242AbhCBLWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:22:33 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DqZSc4Rq1z9v0XH;
-        Tue,  2 Mar 2021 12:21:04 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 43cCyl6SrVuX; Tue,  2 Mar 2021 12:21:04 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DqZSc2SqKz9v0XG;
-        Tue,  2 Mar 2021 12:21:04 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 928738B7AF;
-        Tue,  2 Mar 2021 12:21:05 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id YFKLrjJMMdVn; Tue,  2 Mar 2021 12:21:05 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DACDB8B75F;
-        Tue,  2 Mar 2021 12:21:04 +0100 (CET)
-Subject: Re: [RFC PATCH v1] powerpc: Enable KFENCE for PPC32
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <51c397a23631d8bb2e2a6515c63440d88bf74afd.1614674144.git.christophe.leroy@csgroup.eu>
- <CANpmjNPOJfL_qsSZYRbwMUrxnXxtF5L3k9hursZZ7k9H1jLEuA@mail.gmail.com>
- <b9dc8d35-a3b0-261a-b1a4-5f4d33406095@csgroup.eu>
- <CAG_fn=WFffkVzqC9b6pyNuweFhFswZfa8RRio2nL9-Wq10nBbw@mail.gmail.com>
- <f806de26-daf9-9317-fdaa-a0f7a32d8fe0@csgroup.eu>
- <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <08a96c5d-4ae7-03b4-208f-956226dee6bb@csgroup.eu>
-Date:   Tue, 2 Mar 2021 12:21:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1350112AbhCBLwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:52:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1383531AbhCBLgM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:36:12 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3503C061788;
+        Tue,  2 Mar 2021 03:22:05 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id e7so30726912lft.2;
+        Tue, 02 Mar 2021 03:22:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UXsyTscw9zuLBva4U3+AGU7LQRHCPXqRCSzHFPwdbsg=;
+        b=MZO0fEml85aBPb+L0zZijvlr73xZelJgEhc1czmKIkPN1WA/Ao2bmG2eEpQn9/5Cnv
+         5gmNhukOhWRqrabru5ZLRuQIe19Ppw7xvec8e8WVtDNcFX2YXjsaC2KTFuDBS9V1HR8A
+         q2i1pBwu3M4Yx/RPucxQRLZb8JTWF/n+Sj3BAiypZKcIHbe/VxT6ElkveIjI5YIc+/Sq
+         95ldH1eekOw0jmoqo6CncpYd7lOJmwl+A2aFdkIzc4avBbz6tjukMFbxvrmgqU6g6YQp
+         p+7yRGMFPKujcTuilLJVt6o0YRGvr4xgMdYCwR/jU1wQP+aK3vfpkWUCxmjOo2tTyiVN
+         SMNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UXsyTscw9zuLBva4U3+AGU7LQRHCPXqRCSzHFPwdbsg=;
+        b=co4w4BK+tYPc7i3YlJwE5NmG0xa5CB9QDnaZtAyI5azSdmPpUxAk2mxj7wgVeusHhU
+         weg+DDy2gXh6+7a/kXcj+PGfES1fP+5iz5+JwtnBFp6z+K0W65t8rPfnew3ZBInvirPR
+         dMNfjyc0z516kdqQFLxSDFCG7yZ2cU9+RbLuSK9F4Q/AAKHZql4X7kUadAxsSucIQ2gm
+         VM5B6JB6fVeXoqoELrEbMZAfQmmqOjE3hQRwGd+nbtjSQrRB9npAtFqIfp0ve1D2As+B
+         j74y8wQwfozRpa6s7E0mhUAkLsQWa7zw2WeBFo+6nXRtzdSXGz3my7A+uMr2qT+V2RPn
+         upkA==
+X-Gm-Message-State: AOAM5335Xi1MJEgz0cV360dSZPFFZyvRS+uZ46tBujSRQkYXB4AWLvW9
+        HaDY8HHwUZmdnkBc5TIpnCo=
+X-Google-Smtp-Source: ABdhPJxRymJixfSpthjYFtxI7AlxBgvrcbqGsXaXA/6qsfInz7jYNSYRX1M8a7spc/pgycwZXoi9BQ==
+X-Received: by 2002:a05:6512:2356:: with SMTP id p22mr11522329lfu.3.1614684124467;
+        Tue, 02 Mar 2021 03:22:04 -0800 (PST)
+Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.gmail.com with ESMTPSA id w7sm2691078lft.0.2021.03.02.03.22.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 03:22:03 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Fertser <fercerpav@gmail.com>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/5] Add missing reset controls to NVIDIA Tegra ASoC drivers
+Date:   Tue,  2 Mar 2021 14:21:18 +0300
+Message-Id: <20210302112123.24161-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CANpmjNPGj4C2rr2FbSD+FC-GnWUvJrtdLyX5TYpJE_Um8CGu1Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+This series adds missing hardware reset controls to I2S and AC97 drivers.
+Currently drivers happen to work properly because reset is implicitly
+deasserted by tegra-clk driver, but clk driver shouldn't touch the resets
+and we need to fix it because this breaks other Tegra drivers. Previously
+we fixed the resets of the AHUB and HDMI codec drivers, but turned out
+that we missed the I2C and AC97 drivers.
 
-Le 02/03/2021 à 10:53, Marco Elver a écrit :
-> On Tue, 2 Mar 2021 at 10:27, Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->> Le 02/03/2021 à 10:21, Alexander Potapenko a écrit :
->>>> [   14.998426] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
->>>> [   14.998426]
->>>> [   15.007061] Invalid read at 0x(ptrval):
->>>> [   15.010906]  finish_task_switch.isra.0+0x54/0x23c
->>>> [   15.015633]  kunit_try_run_case+0x5c/0xd0
->>>> [   15.019682]  kunit_generic_run_threadfn_adapter+0x24/0x30
->>>> [   15.025099]  kthread+0x15c/0x174
->>>> [   15.028359]  ret_from_kernel_thread+0x14/0x1c
->>>> [   15.032747]
->>>> [   15.034251] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
->>>> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
->>>> [   15.045811] ==================================================================
->>>> [   15.053324]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
->>>> [   15.053324]     Expected report_matches(&expect) to be true, but is false
->>>> [   15.068359]     not ok 21 - test_invalid_access
->>>
->>> The test expects the function name to be test_invalid_access, i. e.
->>> the first line should be "BUG: KFENCE: invalid read in
->>> test_invalid_access".
->>> The error reporting function unwinds the stack, skips a couple of
->>> "uninteresting" frames
->>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L43)
->>> and uses the first "interesting" one frame to print the report header
->>> (https://elixir.bootlin.com/linux/v5.12-rc1/source/mm/kfence/report.c#L226).
->>>
->>> It's strange that test_invalid_access is missing altogether from the
->>> stack trace - is that expected?
->>> Can you try printing the whole stacktrace without skipping any frames
->>> to see if that function is there?
->>>
->>
->> Booting with 'no_hash_pointers" I get the following. Does it helps ?
->>
->> [   16.837198] ==================================================================
->> [   16.848521] BUG: KFENCE: invalid read in finish_task_switch.isra.0+0x54/0x23c
->> [   16.848521]
->> [   16.857158] Invalid read at 0xdf98800a:
->> [   16.861004]  finish_task_switch.isra.0+0x54/0x23c
->> [   16.865731]  kunit_try_run_case+0x5c/0xd0
->> [   16.869780]  kunit_generic_run_threadfn_adapter+0x24/0x30
->> [   16.875199]  kthread+0x15c/0x174
->> [   16.878460]  ret_from_kernel_thread+0x14/0x1c
->> [   16.882847]
->> [   16.884351] CPU: 0 PID: 111 Comm: kunit_try_catch Tainted: G    B
->> 5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty #4674
->> [   16.895908] NIP:  c016eb8c LR: c02f50dc CTR: c016eb38
->> [   16.900963] REGS: e2449d90 TRAP: 0301   Tainted: G    B
->> (5.12.0-rc1-s3k-dev-01534-g4f14ae75edf0-dirty)
->> [   16.911386] MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 22000004  XER: 00000000
->> [   16.918153] DAR: df98800a DSISR: 20000000
->> [   16.918153] GPR00: c02f50dc e2449e50 c1140d00 e100dd24 c084b13c 00000008 c084b32b c016eb38
->> [   16.918153] GPR08: c0850000 df988000 c0d10000 e2449eb0 22000288
->> [   16.936695] NIP [c016eb8c] test_invalid_access+0x54/0x108
->> [   16.942125] LR [c02f50dc] kunit_try_run_case+0x5c/0xd0
->> [   16.947292] Call Trace:
->> [   16.949746] [e2449e50] [c005a5ec] finish_task_switch.isra.0+0x54/0x23c (unreliable)
-> 
-> The "(unreliable)" might be a clue that it's related to ppc32 stack
-> unwinding. Any ppc expert know what this is about?
-> 
->> [   16.957443] [e2449eb0] [c02f50dc] kunit_try_run_case+0x5c/0xd0
->> [   16.963319] [e2449ed0] [c02f63ec] kunit_generic_run_threadfn_adapter+0x24/0x30
->> [   16.970574] [e2449ef0] [c004e710] kthread+0x15c/0x174
->> [   16.975670] [e2449f30] [c001317c] ret_from_kernel_thread+0x14/0x1c
->> [   16.981896] Instruction dump:
->> [   16.984879] 8129d608 38e7eb38 81020280 911f004c 39000000 995f0024 907f0028 90ff001c
->> [   16.992710] 3949000a 915f0020 3d40c0d1 3d00c085 <8929000a> 3908adb0 812a4b98 3d40c02f
->> [   17.000711] ==================================================================
->> [   17.008223]     # test_invalid_access: EXPECTATION FAILED at mm/kfence/kfence_test.c:636
->> [   17.008223]     Expected report_matches(&expect) to be true, but is false
->> [   17.023243]     not ok 21 - test_invalid_access
-> 
-> On a fault in test_invalid_access, KFENCE prints the stack trace based
-> on the information in pt_regs. So we do not think there's anything we
-> can do to improve stack printing pe-se.
+Thanks to Paul Fertser for testing the pending clk patches and finding
+that audio got broken on Tegra20 AC100 netbook because of the missing I2S
+reset.
 
-stack printing, probably not. Would be good anyway to mark the last level [unreliable] as the ppc does.
+Dmitry Osipenko (5):
+  reset: Allow devm_reset_control_array_get() to get resets in a
+    released state
+  reset: Add devm_reset_control_array_get_exclusive_released()
+  ASoC: tegra20: ac97: Add reset control
+  ASoC: tegra20: i2s: Add reset control
+  ASoC: tegra30: i2s: Add reset control
 
-IIUC, on ppc the address in the stack frame of the caller is written by the caller. In most tests, 
-there is some function call being done before the fault, for instance 
-test_kmalloc_aligned_oob_read() does a call to kunit_do_assertion which populates the address of the 
-call in the stack. However this is fragile.
+ drivers/reset/core.c           |  8 ++++++--
+ include/linux/reset.h          | 20 +++++++++++++------
+ sound/soc/tegra/tegra20_ac97.c | 21 ++++++++++++++++++++
+ sound/soc/tegra/tegra20_ac97.h |  1 +
+ sound/soc/tegra/tegra20_i2s.c  | 31 +++++++++++++++++++++++++++++
+ sound/soc/tegra/tegra20_i2s.h  |  1 +
+ sound/soc/tegra/tegra30_ahub.c | 14 ++++++++++---
+ sound/soc/tegra/tegra30_i2s.c  | 36 +++++++++++++++++++++++++++++++++-
+ sound/soc/tegra/tegra30_i2s.h  |  1 +
+ 9 files changed, 121 insertions(+), 12 deletions(-)
 
-This works for function calls because in order to call a subfunction, a function has to set up a 
-stack frame in order to same the value in the Link Register, which contains the address of the 
-function's parent and that will be clobbered by the sub-function call.
+-- 
+2.29.2
 
-However, it cannot be done by exceptions, because exceptions can happen in a function that has no 
-stack frame (because that function has no need to call a subfunction and doesn't need to same 
-anything on the stack). If the exception handler was writting the caller's address in the stack 
-frame, it would in fact write it in the parent's frame, leading to a mess.
-
-But in fact the information is in pt_regs, it is in regs->nip so KFENCE should be able to use that 
-instead of the stack.
-
-> 
-> What's confusing is that it's only this test, and none of the others.
-> Given that, it might be code-gen related, which results in some subtle
-> issue with stack unwinding. There are a few things to try, if you feel
-> like it:
-> 
-> -- Change the unwinder, if it's possible for ppc32.
-
-I don't think it is possible.
-
-> 
-> -- Add code to test_invalid_access(), to get the compiler to emit
-> different code. E.g. add a bunch (unnecessary) function calls, or add
-> barriers, etc.
-
-The following does the trick
-
-diff --git a/mm/kfence/kfence_test.c b/mm/kfence/kfence_test.c
-index 4acf4251ee04..22550676cd1f 100644
---- a/mm/kfence/kfence_test.c
-+++ b/mm/kfence/kfence_test.c
-@@ -631,8 +631,11 @@ static void test_invalid_access(struct kunit *test)
-  		.addr = &__kfence_pool[10],
-  		.is_write = false,
-  	};
-+	char *buf;
-
-+	buf = test_alloc(test, 4, GFP_KERNEL, ALLOCATE_RIGHT);
-  	READ_ONCE(__kfence_pool[10]);
-+	test_free(buf);
-  	KUNIT_EXPECT_TRUE(test, report_matches(&expect));
-  }
-
-
-But as I said above, this is fragile. If for some reason one day test_alloc() gets inlined, it may 
-not work anymore.
-
-
-> 
-> -- Play with compiler options. We already pass
-> -fno-optimize-sibling-calls for kfence_test.o to avoid tail-call
-> optimizations that'd hide stack trace entries. But perhaps there's
-> something ppc-specific we missed?
-> 
-> Well, the good thing is that KFENCE detects the bad access just fine.
-> Since, according to the test, everything works from KFENCE's side, I'd
-> be happy to give my Ack:
-> 
->    Acked-by: Marco Elver <elver@google.com>
-> 
-
-Thanks
-Christophe
