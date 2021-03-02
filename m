@@ -2,215 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D559232ACED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0884B32AD5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383797AbhCBVSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:18:20 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52208 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1580883AbhCBSWL (ORCPT
+        id S1837432AbhCBVqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:46:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1581400AbhCBSvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:22:11 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122HfHdq144663;
-        Tue, 2 Mar 2021 12:44:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=1cE9khy75oU83lu8wyMDxQ8z9MewDjMD8OjM3nj/glA=;
- b=hjIbu0Ad/Pi5g95Yzy8H9E+6mV4odt6ygc73PVrWseQ8GYnZ1NPrndTOZqKTQdzpyKfb
- 7Zjm6XhB0i5tC2rFYSVndZZxkgi4wzDKBZ5U7mu5p99v3OASh4ZfNwKTU4UILkqfLjEI
- c2rM8E5C2wibyUUQJ2QpgIbGdfNEHSiItbhsa/IjmIo95mylm756mmFfho9w4KHBSwBM
- cOlilqPq6DvXV5PmMoCr9pe1S+bOqZ8d/64qO77Z3eM8lOFlrmfHIGQrmb9MCajOqXqt
- W8aBh2LhCCsdoUovqdVIHaE0fZPb6iA+dtFm3MiKq5vueceYU/QwtLXfopj72Mrs2MkB Bg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 371rwfa1y7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 12:44:50 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 122HfJfX144796;
-        Tue, 2 Mar 2021 12:44:49 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 371rwfa1xs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 12:44:49 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 122Hgqb7025442;
-        Tue, 2 Mar 2021 17:44:47 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 370c59t465-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 17:44:47 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 122Hijmf47513962
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 2 Mar 2021 17:44:45 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA1705204E;
-        Tue,  2 Mar 2021 17:44:44 +0000 (GMT)
-Received: from ibm-vm.ibmuc.com (unknown [9.145.10.194])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 888C552052;
-        Tue,  2 Mar 2021 17:44:44 +0000 (GMT)
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH v5 3/3] s390/kvm: VSIE: correctly handle MVPG when in VSIE
-Date:   Tue,  2 Mar 2021 18:44:43 +0100
-Message-Id: <20210302174443.514363-4-imbrenda@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210302174443.514363-1-imbrenda@linux.ibm.com>
-References: <20210302174443.514363-1-imbrenda@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 spamscore=0 lowpriorityscore=0 adultscore=0
- impostorscore=0 phishscore=0 clxscore=1015 bulkscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103020136
+        Tue, 2 Mar 2021 13:51:11 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493F4C06121D
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:45:24 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id v6so23299588ybk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:45:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=31LBsCqBADvCpwzM4dtkr4Bc7blALb2wIAK9gYaWhMs=;
+        b=kS+5o5XBkzLc3LmDd6zKQMYAuWgKUI6LLx3EbzgFmquNFDjVDHug4e2ci5RKwhpouv
+         VVuT1KFIc9aXLqunWf8KHi5v7W2wv6IwPI2vaE9KX8jG9HYagIYkHTKgzMLHzBCuGnNK
+         UjfX2ngfLmM6c9p5QiTC84kEjXMWiUrev3jxbjX+44pDzb/IgADhqAA4ZCrXhynw+ZYi
+         MTn/SvoOXusyQv7OrY4ZjVsOs9g2qhKp3x7f3NL+E7OOdkNUL9hyJZjdJHq1KbQm7epV
+         XL6c8z/xRYVaQW5EsKawM6ca+OALA+TYEFzyQqtZDbaEUcRTaChXPS0ar6xCN7N/CpJH
+         MmsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=31LBsCqBADvCpwzM4dtkr4Bc7blALb2wIAK9gYaWhMs=;
+        b=ThlHCQ5ANQcaSDn1qauOAWcZHYYDtY21Q8AOtYBl93POVOKa/kJ/Wof2ls4cLRzsoX
+         a3tIPsbecjZrrZdSm/4ycsNGwEbX2CvVJRgCbg4NZokxIKuHA9EkGYpwSjkqOu8EUkWT
+         ORIE0LyR2QgVPLRZrENLbbcncdfYZ/iuOy5da8ohfVCCirdhMEwiLpIPPei6FIlF56Uk
+         rGT+Sk/qMTml7VH83B2gUuh9DJ/VCjDPjbYAxoISliNCVOClHa2BekXqQP2ht6w2+9IA
+         n4SvcfSHq/5eX6vDE/TaBaW5wzM0eNDtWCtDnOat33f0RNBrYRPX0qyh5/tlOAadefLY
+         oHzQ==
+X-Gm-Message-State: AOAM532JdP7ZegueO8SjLktiDAD5H71mTu0ozwqVhD3RXDN1drXu5Sdf
+        klww+E2IF2j7TNHUH9wuFYpxQKKiEgU=
+X-Google-Smtp-Source: ABdhPJyYVqoHThTfgm90OvuP8GR7yf04ZCAHuwXMm516iqEPId3kVxuI/Pa5ino5Q8mZ7DarEExzCDflhl8=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:805d:6324:3372:6183])
+ (user=seanjc job=sendgmr) by 2002:a25:557:: with SMTP id 84mr33333812ybf.291.1614707123536;
+ Tue, 02 Mar 2021 09:45:23 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue,  2 Mar 2021 09:45:15 -0800
+In-Reply-To: <20210302174515.2812275-1-seanjc@google.com>
+Message-Id: <20210302174515.2812275-3-seanjc@google.com>
+Mime-Version: 1.0
+References: <20210302174515.2812275-1-seanjc@google.com>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [PATCH 2/2] KVM: nSVM: Add helper to synthesize nested VM-Exit
+ without collateral
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correctly handle the MVPG instruction when issued by a VSIE guest.
+Add a helper to consolidate boilerplate for nested VM-Exits that don't
+provide any data in exit_info_*.
 
-Fixes: a3508fbe9dc6d ("KVM: s390: vsie: initial support for nested virtualization")
-Cc: stable@vger.kernel.org
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Acked-by: Janosch Frank <frankja@linux.ibm.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
+No functional change intended.
+
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/s390/kvm/vsie.c | 98 +++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 93 insertions(+), 5 deletions(-)
+ arch/x86/kvm/svm/nested.c | 55 +++++----------------------------------
+ arch/x86/kvm/svm/svm.c    |  6 +----
+ arch/x86/kvm/svm/svm.h    |  9 +++++++
+ 3 files changed, 16 insertions(+), 54 deletions(-)
 
-diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
-index 78b604326016..48aab6290a77 100644
---- a/arch/s390/kvm/vsie.c
-+++ b/arch/s390/kvm/vsie.c
-@@ -417,11 +417,6 @@ static void unshadow_scb(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
- 		memcpy((void *)((u64)scb_o + 0xc0),
- 		       (void *)((u64)scb_s + 0xc0), 0xf0 - 0xc0);
- 		break;
--	case ICPT_PARTEXEC:
--		/* MVPG only */
--		memcpy((void *)((u64)scb_o + 0xc0),
--		       (void *)((u64)scb_s + 0xc0), 0xd0 - 0xc0);
--		break;
- 	}
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 93a61ed76e5b..307c11125391 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -797,12 +797,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
  
- 	if (scb_s->ihcpu != 0xffffU)
-@@ -983,6 +978,95 @@ static int handle_stfle(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
- 	return 0;
+ static void nested_svm_triple_fault(struct kvm_vcpu *vcpu)
+ {
+-	struct vcpu_svm *svm = to_svm(vcpu);
+-
+-	svm->vmcb->control.exit_code   = SVM_EXIT_SHUTDOWN;
+-	svm->vmcb->control.exit_info_1 = 0;
+-	svm->vmcb->control.exit_info_2 = 0;
+-	nested_svm_vmexit(svm);
++	nested_svm_simple_vmexit(to_svm(vcpu), SVM_EXIT_SHUTDOWN);
  }
  
-+/*
-+ * Get a register for a nested guest.
-+ * @vcpu the vcpu of the guest
-+ * @vsie_page the vsie_page for the nested guest
-+ * @reg the register number, the upper 4 bits are ignored.
-+ * returns: the value of the register.
-+ */
-+static u64 vsie_get_register(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page, u8 reg)
-+{
-+	/* no need to validate the parameter and/or perform error handling */
-+	reg &= 0xf;
-+	switch (reg) {
-+	case 15:
-+		return vsie_page->scb_s.gg15;
-+	case 14:
-+		return vsie_page->scb_s.gg14;
-+	default:
-+		return vcpu->run->s.regs.gprs[reg];
-+	}
-+}
-+
-+static int vsie_handle_mvpg(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
-+{
-+	struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
-+	unsigned long pei_dest, pei_src, src, dest, mask;
-+	u64 *pei_block = &vsie_page->scb_o->mcic;
-+	int edat, rc_dest, rc_src;
-+	union ctlreg0 cr0;
-+
-+	cr0.val = vcpu->arch.sie_block->gcr[0];
-+	edat = cr0.edat && test_kvm_facility(vcpu->kvm, 8);
-+	mask = _kvm_s390_logical_to_effective(&scb_s->gpsw, PAGE_MASK);
-+
-+	dest = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 16) & mask;
-+	src = vsie_get_register(vcpu, vsie_page, scb_s->ipb >> 20) & mask;
-+
-+	rc_dest = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, dest, &pei_dest);
-+	rc_src = kvm_s390_shadow_fault(vcpu, vsie_page->gmap, src, &pei_src);
-+	/*
-+	 * Either everything went well, or something non-critical went wrong
-+	 * e.g. because of a race. In either case, simply retry.
-+	 */
-+	if (rc_dest == -EAGAIN || rc_src == -EAGAIN || (!rc_dest && !rc_src)) {
-+		retry_vsie_icpt(vsie_page);
-+		return -EAGAIN;
-+	}
-+	/* Something more serious went wrong, propagate the error */
-+	if (rc_dest < 0)
-+		return rc_dest;
-+	if (rc_src < 0)
-+		return rc_src;
-+
-+	/* The only possible suppressing exception: just deliver it */
-+	if (rc_dest == PGM_TRANSLATION_SPEC || rc_src == PGM_TRANSLATION_SPEC) {
-+		clear_vsie_icpt(vsie_page);
-+		rc_dest = kvm_s390_inject_program_int(vcpu, PGM_TRANSLATION_SPEC);
-+		WARN_ON_ONCE(rc_dest);
-+		return 1;
-+	}
-+
-+	/*
-+	 * Forward the PEI intercept to the guest if it was a page fault, or
-+	 * also for segment and region table faults if EDAT applies.
-+	 */
-+	if (edat) {
-+		rc_dest = rc_dest == PGM_ASCE_TYPE ? rc_dest : 0;
-+		rc_src = rc_src == PGM_ASCE_TYPE ? rc_src : 0;
-+	} else {
-+		rc_dest = rc_dest != PGM_PAGE_TRANSLATION ? rc_dest : 0;
-+		rc_src = rc_src != PGM_PAGE_TRANSLATION ? rc_src : 0;
-+	}
-+	if (!rc_dest && !rc_src) {
-+		pei_block[0] = pei_dest;
-+		pei_block[1] = pei_src;
-+		return 1;
-+	}
-+
-+	retry_vsie_icpt(vsie_page);
-+
-+	/*
-+	 * The host has edat, and the guest does not, or it was an ASCE type
-+	 * exception. The host needs to inject the appropriate DAT interrupts
-+	 * into the guest.
-+	 */
-+	if (rc_dest)
-+		return inject_fault(vcpu, rc_dest, dest, 1);
-+	return inject_fault(vcpu, rc_src, src, 0);
-+}
-+
- /*
-  * Run the vsie on a shadow scb and a shadow gmap, without any further
-  * sanity checks, handling SIE faults.
-@@ -1071,6 +1155,10 @@ static int do_vsie_run(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
- 		if ((scb_s->ipa & 0xf000) != 0xf000)
- 			scb_s->ipa += 0x1000;
- 		break;
-+	case ICPT_PARTEXEC:
-+		if (scb_s->ipa == 0xb254)
-+			rc = vsie_handle_mvpg(vcpu, vsie_page);
-+		break;
- 	}
- 	return rc;
+ int svm_allocate_nested(struct vcpu_svm *svm)
+@@ -1027,50 +1022,11 @@ static void nested_svm_inject_exception_vmexit(struct vcpu_svm *svm)
+ 	nested_svm_vmexit(svm);
  }
+ 
+-static void nested_svm_smi(struct vcpu_svm *svm)
+-{
+-	svm->vmcb->control.exit_code = SVM_EXIT_SMI;
+-	svm->vmcb->control.exit_info_1 = 0;
+-	svm->vmcb->control.exit_info_2 = 0;
+-
+-	nested_svm_vmexit(svm);
+-}
+-
+-static void nested_svm_nmi(struct vcpu_svm *svm)
+-{
+-	svm->vmcb->control.exit_code = SVM_EXIT_NMI;
+-	svm->vmcb->control.exit_info_1 = 0;
+-	svm->vmcb->control.exit_info_2 = 0;
+-
+-	nested_svm_vmexit(svm);
+-}
+-
+-static void nested_svm_intr(struct vcpu_svm *svm)
+-{
+-	trace_kvm_nested_intr_vmexit(svm->vmcb->save.rip);
+-
+-	svm->vmcb->control.exit_code   = SVM_EXIT_INTR;
+-	svm->vmcb->control.exit_info_1 = 0;
+-	svm->vmcb->control.exit_info_2 = 0;
+-
+-	nested_svm_vmexit(svm);
+-}
+-
+ static inline bool nested_exit_on_init(struct vcpu_svm *svm)
+ {
+ 	return vmcb_is_intercept(&svm->nested.ctl, INTERCEPT_INIT);
+ }
+ 
+-static void nested_svm_init(struct vcpu_svm *svm)
+-{
+-	svm->vmcb->control.exit_code   = SVM_EXIT_INIT;
+-	svm->vmcb->control.exit_info_1 = 0;
+-	svm->vmcb->control.exit_info_2 = 0;
+-
+-	nested_svm_vmexit(svm);
+-}
+-
+-
+ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+@@ -1084,7 +1040,7 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
+ 			return -EBUSY;
+ 		if (!nested_exit_on_init(svm))
+ 			return 0;
+-		nested_svm_init(svm);
++		nested_svm_simple_vmexit(svm, SVM_EXIT_INIT);
+ 		return 0;
+ 	}
+ 
+@@ -1102,7 +1058,7 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
+ 			return -EBUSY;
+ 		if (!nested_exit_on_smi(svm))
+ 			return 0;
+-		nested_svm_smi(svm);
++		nested_svm_simple_vmexit(svm, SVM_EXIT_SMI);
+ 		return 0;
+ 	}
+ 
+@@ -1111,7 +1067,7 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
+ 			return -EBUSY;
+ 		if (!nested_exit_on_nmi(svm))
+ 			return 0;
+-		nested_svm_nmi(svm);
++		nested_svm_simple_vmexit(svm, SVM_EXIT_NMI);
+ 		return 0;
+ 	}
+ 
+@@ -1120,7 +1076,8 @@ static int svm_check_nested_events(struct kvm_vcpu *vcpu)
+ 			return -EBUSY;
+ 		if (!nested_exit_on_intr(svm))
+ 			return 0;
+-		nested_svm_intr(svm);
++		trace_kvm_nested_intr_vmexit(svm->vmcb->save.rip);
++		nested_svm_simple_vmexit(svm, SVM_EXIT_INTR);
+ 		return 0;
+ 	}
+ 
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 54610270f66a..9fe9076d4b8b 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2203,12 +2203,8 @@ static int emulate_svm_instr(struct kvm_vcpu *vcpu, int opcode)
+ 	int ret;
+ 
+ 	if (is_guest_mode(vcpu)) {
+-		svm->vmcb->control.exit_code = guest_mode_exit_codes[opcode];
+-		svm->vmcb->control.exit_info_1 = 0;
+-		svm->vmcb->control.exit_info_2 = 0;
+-
+ 		/* Returns '1' or -errno on failure, '0' on success. */
+-		ret = nested_svm_vmexit(svm);
++		ret = nested_svm_simple_vmexit(svm, guest_mode_exit_codes[opcode]);
+ 		if (ret)
+ 			return ret;
+ 		return 1;
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index fbbb26dd0f73..c4a433c66a33 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -444,6 +444,15 @@ int svm_allocate_nested(struct vcpu_svm *svm);
+ int nested_svm_vmrun(struct kvm_vcpu *vcpu);
+ void nested_svm_vmloadsave(struct vmcb *from_vmcb, struct vmcb *to_vmcb);
+ int nested_svm_vmexit(struct vcpu_svm *svm);
++
++static inline int nested_svm_simple_vmexit(struct vcpu_svm *svm, u32 exit_code)
++{
++	svm->vmcb->control.exit_code   = exit_code;
++	svm->vmcb->control.exit_info_1 = 0;
++	svm->vmcb->control.exit_info_2 = 0;
++	return nested_svm_vmexit(svm);
++}
++
+ int nested_svm_exit_handled(struct vcpu_svm *svm);
+ int nested_svm_check_permissions(struct kvm_vcpu *vcpu);
+ int nested_svm_check_exception(struct vcpu_svm *svm, unsigned nr,
 -- 
-2.26.2
+2.30.1.766.gb4fecdf3b7-goog
 
