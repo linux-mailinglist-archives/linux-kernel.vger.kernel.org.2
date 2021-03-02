@@ -2,100 +2,385 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BA232AA02
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:11:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA6C32AA15
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380989AbhCBSzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:55:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242529AbhCBQIQ (ORCPT
+        id S1581550AbhCBS6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:58:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26851 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1449113AbhCBQPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:08:16 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1BDC06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:07:15 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id h10so25813157edl.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:07:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GIfeSEfmL8wAyn5TADy2HISNOXLZvpkt9t432wxDvWY=;
-        b=vyZbsxwrlYxjFHO7Cc7mMvqFh/M7mu7PpuET7PCvtmDP+W6Pv+1+rgFEO8TybiCyJy
-         9Yp4qA1gQZKIOM1b0ubIdVbOZdkXiwSnFfKWMlJKpnimsInqzhxXlCsA2lBsUWgM6eYX
-         /+XjZB2k7crAsVNBDYRJiOr1sVSuT7a/hS7vYq8K16p4/nexvblVwrqHINLPERKhbxr4
-         rJt8O8BOsN8acrKZgulVsP/wbz0w2+lkOk1i6H2ujGil7vAQS28r7UI8b92LGMpyl2jK
-         HJgTq1hX8BNTHmathm0HmsPyAjuhdfZ4CE7bPy4ogkzmuv7gIHFnvRPmzc+bpdTjH9ub
-         Z4Eg==
+        Tue, 2 Mar 2021 11:15:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614701604;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xj617NCTkcQlVOBgs3nUDfsN/jKMhqs1NUx4EljorXw=;
+        b=NUTsKroQDTIqYViB7/mlLw0+TkfnK9Glf9jYubjcrM9Vb1ExYr3uHjTHey8CGZywB2VqZ8
+        7Bmd6XqbOauXIR1t7tJCjERiXzaUhMDcqYUSefsswLXzriTc2f0zRZBuVs0nFuyOIwBRhi
+        pwAcz9gdqK3cg/z1J34d7bWisko2aa8=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-qPf26Gg_OTG7hM0SM1a6Jg-1; Tue, 02 Mar 2021 11:09:10 -0500
+X-MC-Unique: qPf26Gg_OTG7hM0SM1a6Jg-1
+Received: by mail-qv1-f70.google.com with SMTP id u8so15287765qvm.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:09:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GIfeSEfmL8wAyn5TADy2HISNOXLZvpkt9t432wxDvWY=;
-        b=Lo4p0AForbJ923Iz+5gstyNW7RtX3Rdrfd4GE14Pbwm7GoSnYW9JoQwsOfHzz20EwS
-         Kx+v2EpjmuMrnGlUmEVffwe3FDCNgLGtKSWzGBRFKtYlgC9O5FUVfnUqggNYDxsYz17y
-         KpyiIvrC/C0tWbo34sPg/PZ2gfG3/WmOZOLGav1D6TyqWSPbio+me5gzzEHEIVgBKQ/i
-         s0NmuYNOs0fqrJgLdubGaqyPcHIeEr//KHTMItvZxyCrD7lRHA7fA13u1BQfl1pYvMTc
-         5VJtJAjGmEQQxVNUuVI9ojVk8f72t0LC3vqGwSZicY+g8AROWZLUTtUZT8HO3Y9Wb3Bn
-         1vlQ==
-X-Gm-Message-State: AOAM530Y+woqgCI6ZqE+AUliRjLLFibd8ngs5toJAumpbjHeU8MNi/Ux
-        0EYN799B91Y+bIVmL8MCOdtXhgsRQ8Wn8cWrPHhDHA==
-X-Google-Smtp-Source: ABdhPJwHuw1y3Y/v8jdMtjN1ZkyeSqxulDA1RDfV0AnDqqIe93CMsVo0jEsYKuMl36cJANkKqZoyE2G7jIaraKzXkGU=
-X-Received: by 2002:aa7:d588:: with SMTP id r8mr21122916edq.88.1614701233853;
- Tue, 02 Mar 2021 08:07:13 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Xj617NCTkcQlVOBgs3nUDfsN/jKMhqs1NUx4EljorXw=;
+        b=M5cBNGVXwdeyLSVhR84corKg7sjWJ21Go0wFpy4CVqP4qDWM8fd1mDGHdu0blQ8U7X
+         B9JC1cbkV2PwYt3RVr8sGnbjH7dJKbrhfi5VgVB0fFA5nMiTuE7Jp0MUwSl9GWcsDF1t
+         4erjaM7DzFHA8Ispr4zktdbeMqaTVb9QHu3o9hSKNcza27ciqGSnB4JCo1+T8nUrc1AQ
+         XDbxaV2XWXcBJIe5qyz6n5XymesNWBfRiupyV6GzyzMzzKzXSk5pCNzdl3dsmGvq4Dau
+         2WxnFHKxkfkc+S2O/CgUNQ2ocLaBmVJXaNBH+5VQIe1/ZB8Y43wGA7A7t9OocxPLBNej
+         2nVg==
+X-Gm-Message-State: AOAM531Z5UGVaPHKG56ar6oMdYRH8z1e2nAFW5j+rDmLFkzFeRQ2tvcx
+        W5LY+u9EEBirvaTrwc0lzA1ISO9B1TqUROss6MLvDQs0J6a5B5y9SL9r6/Qg+VyPPMQOFv4ZaE9
+        0o+0jseEupU2WyRIBkqFvePzz
+X-Received: by 2002:a05:622a:254:: with SMTP id c20mr19101087qtx.387.1614701350179;
+        Tue, 02 Mar 2021 08:09:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxPgp9285reKXXR5zjKwXh6Fk/hEiFPTHqxCo3e1OBX7LNY5TcUk/WK9fFTfyQiSgC4mCBgVw==
+X-Received: by 2002:a05:622a:254:: with SMTP id c20mr19101057qtx.387.1614701349880;
+        Tue, 02 Mar 2021 08:09:09 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 79sm401850qki.37.2021.03.02.08.09.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 08:09:09 -0800 (PST)
+Subject: Re: [PATCH V3 XRT Alveo 11/18] fpga: xrt: UCS platform driver
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
+Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
+        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-12-lizhih@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <3e4edfaa-e90d-1889-cd05-41107e730c18@redhat.com>
+Date:   Tue, 2 Mar 2021 08:09:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210224185316.17942-1-brgl@bgdev.pl> <CACRpkdZ915TABrSt0A_1tM3Jt_op4gcCY1b-d2ocM7wjKJFoPA@mail.gmail.com>
- <b188690a-31e5-fca9-1226-9dbf7c9f9448@linuxfoundation.org>
-In-Reply-To: <b188690a-31e5-fca9-1226-9dbf7c9f9448@linuxfoundation.org>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 2 Mar 2021 17:07:02 +0100
-Message-ID: <CAMpxmJUu3x7iCT=Zsung1TFU-f2qY-oTujoDNkF+sMG4SXJXgw@mail.gmail.com>
-Subject: Re: [PATCH] selftests: gpio: update .gitignore
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Kent Gibson <warthog618@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Bamvor Jian Zhang <bamv2005@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210218064019.29189-12-lizhih@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 4:27 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> On 3/2/21 7:44 AM, Linus Walleij wrote:
-> > On Wed, Feb 24, 2021 at 7:53 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> >> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >>
-> >> The executable that we build for GPIO selftests was renamed to
-> >> gpio-mockup-cdev. Let's update .gitignore so that we don't show it
-> >> as an untracked file.
-> >>
-> >> Fixes: 8bc395a6a2e2 ("selftests: gpio: rework and simplify test implementation")
-> >> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> >
-> > Yours,
-> > Linus Walleij
-> >
->
->
-> Thank you. I will queue this up.
->
-> thanks,
-> -- Shuah
 
-Hi Shuah,
+On 2/17/21 10:40 PM, Lizhi Hou wrote:
+> Add UCS driver. UCS is a hardware function discovered by walking xclbin
+What does UCS stand for ? add to commit log
+> metadata. A platform device node will be created for it.
+> UCS enables/disables the dynamic region clocks.
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
+> ---
+>  drivers/fpga/xrt/include/xleaf/ucs.h |  24 +++
+>  drivers/fpga/xrt/lib/xleaf/ucs.c     | 235 +++++++++++++++++++++++++++
+>  2 files changed, 259 insertions(+)
+>  create mode 100644 drivers/fpga/xrt/include/xleaf/ucs.h
+>  create mode 100644 drivers/fpga/xrt/lib/xleaf/ucs.c
+>
+> diff --git a/drivers/fpga/xrt/include/xleaf/ucs.h b/drivers/fpga/xrt/include/xleaf/ucs.h
+> new file mode 100644
+> index 000000000000..a5ef0e100e12
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/include/xleaf/ucs.h
 
-Please let me queue this through the GPIO tree as I have some more
-development coming up this cycle that will require this. This will be
-a new driver + selftests so it will all have to go through the GPIO
-tree anyway.
+This header is only used by ucs.c, so is it needed ?
 
-Bart
+could the enum be defined in ucs.c ?
+
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Header file for XRT UCS Leaf Driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Lizhi Hou <Lizhi.Hou@xilinx.com>
+> + */
+> +
+> +#ifndef _XRT_UCS_H_
+> +#define _XRT_UCS_H_
+> +
+> +#include "xleaf.h"
+> +
+> +/*
+> + * UCS driver IOCTL calls.
+> + */
+> +enum xrt_ucs_ioctl_cmd {
+> +	XRT_UCS_CHECK = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
+> +	XRT_UCS_ENABLE,
+no disable ?
+> +};
+> +
+> +#endif	/* _XRT_UCS_H_ */
+> diff --git a/drivers/fpga/xrt/lib/xleaf/ucs.c b/drivers/fpga/xrt/lib/xleaf/ucs.c
+> new file mode 100644
+> index 000000000000..ae762c8fddbb
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/xleaf/ucs.c
+> @@ -0,0 +1,235 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Xilinx Alveo FPGA UCS Driver
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
+> + */
+> +
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/io.h>
+> +#include "metadata.h"
+> +#include "xleaf.h"
+> +#include "xleaf/ucs.h"
+> +#include "xleaf/clock.h"
+> +
+> +#define UCS_ERR(ucs, fmt, arg...)   \
+> +	xrt_err((ucs)->pdev, fmt "\n", ##arg)
+> +#define UCS_WARN(ucs, fmt, arg...)  \
+> +	xrt_warn((ucs)->pdev, fmt "\n", ##arg)
+> +#define UCS_INFO(ucs, fmt, arg...)  \
+> +	xrt_info((ucs)->pdev, fmt "\n", ##arg)
+> +#define UCS_DBG(ucs, fmt, arg...)   \
+> +	xrt_dbg((ucs)->pdev, fmt "\n", ##arg)
+> +
+> +#define XRT_UCS		"xrt_ucs"
+> +
+> +#define CHANNEL1_OFFSET			0
+> +#define CHANNEL2_OFFSET			8
+> +
+> +#define CLK_MAX_VALUE			6400
+> +
+> +struct ucs_control_status_ch1 {
+> +	unsigned int shutdown_clocks_latched:1;
+> +	unsigned int reserved1:15;
+> +	unsigned int clock_throttling_average:14;
+> +	unsigned int reserved2:2;
+> +};
+Likely needs to be packed and/or the unsigned int changed to u32
+> +
+> +struct xrt_ucs {
+> +	struct platform_device	*pdev;
+> +	void __iomem		*ucs_base;
+> +	struct mutex		ucs_lock; /* ucs dev lock */
+> +};
+> +
+> +static inline u32 reg_rd(struct xrt_ucs *ucs, u32 offset)
+> +{
+> +	return ioread32(ucs->ucs_base + offset);
+> +}
+> +
+> +static inline void reg_wr(struct xrt_ucs *ucs, u32 val, u32 offset)
+> +{
+> +	iowrite32(val, ucs->ucs_base + offset);
+> +}
+> +
+> +static void xrt_ucs_event_cb(struct platform_device *pdev, void *arg)
+> +{
+> +	struct platform_device	*leaf;
+> +	struct xrt_event *evt = (struct xrt_event *)arg;
+> +	enum xrt_events e = evt->xe_evt;
+> +	enum xrt_subdev_id id = evt->xe_subdev.xevt_subdev_id;
+> +	int instance = evt->xe_subdev.xevt_subdev_instance;
+> +
+> +	switch (e) {
+> +	case XRT_EVENT_POST_CREATION:
+> +		break;
+> +	default:
+> +		xrt_dbg(pdev, "ignored event %d", e);
+> +		return;
+> +	}
+this switch is a noop, remove
+> +
+> +	if (id != XRT_SUBDEV_CLOCK)
+> +		return;
+> +
+> +	leaf = xleaf_get_leaf_by_id(pdev, XRT_SUBDEV_CLOCK, instance);
+> +	if (!leaf) {
+> +		xrt_err(pdev, "does not get clock subdev");
+> +		return;
+> +	}
+> +
+> +	xleaf_ioctl(leaf, XRT_CLOCK_VERIFY, NULL);
+> +	xleaf_put_leaf(pdev, leaf);
+> +}
+> +
+> +static void ucs_check(struct xrt_ucs *ucs, bool *latched)
+> +{
+
+checking but not returning status, change to returning int.
+
+this function is called but xrt_ucs_leaf_ioctl which does return status.
+
+> +	struct ucs_control_status_ch1 *ucs_status_ch1;
+> +	u32 status;
+> +
+> +	mutex_lock(&ucs->ucs_lock);
+> +	status = reg_rd(ucs, CHANNEL1_OFFSET);
+> +	ucs_status_ch1 = (struct ucs_control_status_ch1 *)&status;
+> +	if (ucs_status_ch1->shutdown_clocks_latched) {
+> +		UCS_ERR(ucs,
+> +			"Critical temperature or power event, kernel clocks have been stopped.");
+> +		UCS_ERR(ucs,
+> +			"run 'xbutil valiate -q' to continue. See AR 73398 for more details.");
+This error message does not seem like it would be useful, please review.
+> +		/* explicitly indicate reset should be latched */
+> +		*latched = true;
+> +	} else if (ucs_status_ch1->clock_throttling_average >
+> +	    CLK_MAX_VALUE) {
+> +		UCS_ERR(ucs, "kernel clocks %d exceeds expected maximum value %d.",
+> +			ucs_status_ch1->clock_throttling_average,
+> +			CLK_MAX_VALUE);
+> +	} else if (ucs_status_ch1->clock_throttling_average) {
+> +		UCS_ERR(ucs, "kernel clocks throttled at %d%%.",
+> +			(ucs_status_ch1->clock_throttling_average /
+> +			 (CLK_MAX_VALUE / 100)));
+> +	}
+> +	mutex_unlock(&ucs->ucs_lock);
+> +}
+> +
+> +static void ucs_enable(struct xrt_ucs *ucs)
+> +{
+> +	reg_wr(ucs, 1, CHANNEL2_OFFSET);
+lock ?
+> +}
+> +
+> +static int
+> +xrt_ucs_leaf_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
+> +{
+> +	struct xrt_ucs		*ucs;
+> +	int			ret = 0;
+> +
+> +	ucs = platform_get_drvdata(pdev);
+> +
+> +	switch (cmd) {
+> +	case XRT_XLEAF_EVENT:
+> +		xrt_ucs_event_cb(pdev, arg);
+> +		break;
+> +	case XRT_UCS_CHECK: {
+brace not needed here
+> +		ucs_check(ucs, (bool *)arg);
+> +		break;
+> +	}
+> +	case XRT_UCS_ENABLE:
+> +		ucs_enable(ucs);
+> +		break;
+> +	default:
+> +		xrt_err(pdev, "unsupported cmd %d", cmd);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int ucs_remove(struct platform_device *pdev)
+> +{
+> +	struct xrt_ucs *ucs;
+> +
+> +	ucs = platform_get_drvdata(pdev);
+> +	if (!ucs) {
+
+is this possible ?
+
+Tom
+
+> +		xrt_err(pdev, "driver data is NULL");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (ucs->ucs_base)
+> +		iounmap(ucs->ucs_base);
+> +
+> +	platform_set_drvdata(pdev, NULL);
+> +	devm_kfree(&pdev->dev, ucs);
+> +
+> +	return 0;
+> +}
+> +
+> +static int ucs_probe(struct platform_device *pdev)
+> +{
+> +	struct xrt_ucs *ucs = NULL;
+> +	struct resource *res;
+> +	int ret;
+> +
+> +	ucs = devm_kzalloc(&pdev->dev, sizeof(*ucs), GFP_KERNEL);
+> +	if (!ucs)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, ucs);
+> +	ucs->pdev = pdev;
+> +	mutex_init(&ucs->ucs_lock);
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	ucs->ucs_base = ioremap(res->start, res->end - res->start + 1);
+> +	if (!ucs->ucs_base) {
+> +		UCS_ERR(ucs, "map base %pR failed", res);
+> +		ret = -EFAULT;
+> +		goto failed;
+> +	}
+> +	ucs_enable(ucs);
+> +
+> +	return 0;
+> +
+> +failed:
+> +	ucs_remove(pdev);
+> +	return ret;
+> +}
+> +
+> +static struct xrt_subdev_endpoints xrt_ucs_endpoints[] = {
+> +	{
+> +		.xse_names = (struct xrt_subdev_ep_names[]) {
+> +			{ .ep_name = XRT_MD_NODE_UCS_CONTROL_STATUS },
+> +			{ NULL },
+> +		},
+> +		.xse_min_ep = 1,
+> +	},
+> +	{ 0 },
+> +};
+> +
+> +static struct xrt_subdev_drvdata xrt_ucs_data = {
+> +	.xsd_dev_ops = {
+> +		.xsd_ioctl = xrt_ucs_leaf_ioctl,
+> +	},
+> +};
+> +
+> +static const struct platform_device_id xrt_ucs_table[] = {
+> +	{ XRT_UCS, (kernel_ulong_t)&xrt_ucs_data },
+> +	{ },
+> +};
+> +
+> +static struct platform_driver xrt_ucs_driver = {
+> +	.driver = {
+> +		.name = XRT_UCS,
+> +	},
+> +	.probe = ucs_probe,
+> +	.remove = ucs_remove,
+> +	.id_table = xrt_ucs_table,
+> +};
+> +
+> +void ucs_leaf_init_fini(bool init)
+> +{
+> +	if (init)
+> +		xleaf_register_driver(XRT_SUBDEV_UCS, &xrt_ucs_driver, xrt_ucs_endpoints);
+> +	else
+> +		xleaf_unregister_driver(XRT_SUBDEV_UCS);
+> +}
+
