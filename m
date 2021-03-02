@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BAD32A9AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044A432A9B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581296AbhCBSlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:41:51 -0500
-Received: from mga14.intel.com ([192.55.52.115]:28994 "EHLO mga14.intel.com"
+        id S1378770AbhCBSph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:45:37 -0500
+Received: from mga14.intel.com ([192.55.52.115]:29013 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379842AbhCBPxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:53:20 -0500
-IronPort-SDR: Hf7Ghe9knhi58dM7OWlsYb0h8H3uRSQk65A8yuFoqYIAlSpPqO/JFiFDg/+Iap3Di2sBF8+AVA
- k85bCjaTsZ3w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="186186272"
+        id S1839023AbhCBP4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:56:07 -0500
+IronPort-SDR: JmGAddyfFXeSFTjweAZPtC6ojW61iU6VvUeGzbZrLN6WQQ7foDKmmHEyrGl4CjASLlBzJcMdXG
+ zpArI4yUdm0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="186186383"
 X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="186186272"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:48:39 -0800
-IronPort-SDR: ZWMAlJ2mLUsr3nnYma+Y/37oQXdEFnsMWLnqaRfluAqw5eGWOjfUpgwWSNip3C2hKkv/aYMzfJ
- KhlCHSS2FNtw==
+   d="scan'208";a="186186383"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:48:59 -0800
+IronPort-SDR: wVcckAcNDKw1mDHGz+UUI2L2TTkTW5I2/4Wo5ktkxjiscoWYocw50CK5sKaXUQ9rdx93cMNjjx
+ 9hZ/1V4OL7bw==
 X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="444796643"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:48:37 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lH7GF-009Q7Q-29; Tue, 02 Mar 2021 17:48:35 +0200
-Date:   Tue, 2 Mar 2021 17:48:35 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v1 1/4] gpiolib: Unify the checks on fwnode type
-Message-ID: <YD5eU8LrMnq2dlUU@smile.fi.intel.com>
-References: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
+   d="scan'208";a="406772369"
+Received: from hhuan26-mobl1.amr.corp.intel.com (HELO arkane-mobl1.gar.corp.intel.com) ([10.212.216.3])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Mar 2021 07:48:57 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "Borislav Petkov" <bp@alien8.de>, "Kai Huang" <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, jarkko@kernel.org,
+        luto@kernel.org, dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
+References: <cover.1614590788.git.kai.huang@intel.com>
+ <bbfc8c833a62e4b55220834320829df1e17aff41.1614590788.git.kai.huang@intel.com>
+ <20210301100037.GA6699@zn.tnic>
+ <3fce1dd2abd42597bde7ae9496bde7b9596b2797.camel@intel.com>
+ <20210301103043.GB6699@zn.tnic>
+ <7603ef673997b6674f785d333a4f263c749d2cf3.camel@intel.com>
+ <20210301105346.GC6699@zn.tnic>
+ <e509c6c1e3644861edafb18e4045b813f9f344b3.camel@intel.com>
+ <20210301113257.GD6699@zn.tnic>
+ <0adc41774945bf9d6e6a72a93b83c80aa8c59544.camel@intel.com>
+Date:   Tue, 02 Mar 2021 09:48:56 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302153451.50593-1-andriy.shevchenko@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel Corp
+Message-ID: <op.0zmwm1ogwjvjmi@arkane-mobl1.gar.corp.intel.com>
+In-Reply-To: <0adc41774945bf9d6e6a72a93b83c80aa8c59544.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 05:34:48PM +0200, Andy Shevchenko wrote:
-> We have (historically) different approaches how we identify the type
-> of a given fwnode. Let's standardize them across the library code.
+On Mon, 01 Mar 2021 05:43:06 -0600, Kai Huang <kai.huang@intel.com> wrote:
 
-This patch has one functional mistake (see below), otherwise I will anyway wait
-for people to comment on the series.
+> On Mon, 2021-03-01 at 12:32 +0100, Borislav Petkov wrote:
+>> On Tue, Mar 02, 2021 at 12:28:27AM +1300, Kai Huang wrote:
+>> > I think some script can utilize /proc/cpuinfo. For instance, admin  
+>> can have
+>> > automation tool/script to deploy enclave (with sgx2) apps, and that  
+>> script can check
+>> > whether platform supports sgx2 or not, before it can deploy those  
+>> enclave apps. Or
+>> > enclave author may just want to check /proc/cpuinfo to know whether  
+>> the machine can
+>> > be used for testing sgx2 enclave or not.
+>>
+>> This doesn't sound like a concrete use of this. So you can hide it
+>> initially with "" until you guys have a use case. Exposing it later is
+>> always easy vs exposing it now and then not being able to change it
+>> anymore.
+>>
+>
+> Hi Haitao, Jarkko,
+>
+> Do you have more concrete use case of needing "sgx2" in /proc/cpuinfo?
+>
 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpiolib.c | 28 +++++++++++++---------------
->  1 file changed, 13 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index adf55db080d8..484ac92903ab 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -3678,11 +3678,12 @@ EXPORT_SYMBOL_GPL(fwnode_gpiod_get_index);
->   */
->  int gpiod_count(struct device *dev, const char *con_id)
->  {
-> +	const struct fwnode_handle *fwnode = dev_fwnode(dev);
+I don't have specific use cases so far. But I think users would expect all  
+sub-features supported by the cpu in /proc/cpuinfo. And it is a more  
+convenient and readily available tool than cpuid for verifying sgx2  
+enabled in HW. So it'd be just nice for cpuinfo to be consistent with  
+cpuid output.
 
-It should be
-
-	const struct fwnode_handle *fwnode = dev ? dev_fwnode(dev) : NULL;
-
->  	int count = -ENOENT;
->  
-> -	if (IS_ENABLED(CONFIG_OF) && dev && dev->of_node)
-> +	if (is_of_node(fwnode))
->  		count = of_gpio_get_count(dev, con_id);
-> -	else if (IS_ENABLED(CONFIG_ACPI) && dev && ACPI_HANDLE(dev))
-> +	else if (is_acpi_node(fwnode))
->  		count = acpi_gpio_count(dev, con_id);
->  
->  	if (count < 0)
-> @@ -3820,18 +3821,17 @@ struct gpio_desc *__must_check gpiod_get_index(struct device *dev,
->  	int ret;
->  	/* Maybe we have a device name, maybe not */
->  	const char *devname = dev ? dev_name(dev) : "?";
-> +	const struct fwnode_handle *fwnode = dev ? dev_fwnode(dev) : NULL;
->  
->  	dev_dbg(dev, "GPIO lookup for consumer %s\n", con_id);
->  
-> -	if (dev) {
-> -		/* Using device tree? */
-> -		if (IS_ENABLED(CONFIG_OF) && dev->of_node) {
-> -			dev_dbg(dev, "using device tree for GPIO lookup\n");
-> -			desc = of_find_gpio(dev, con_id, idx, &lookupflags);
-> -		} else if (ACPI_COMPANION(dev)) {
-> -			dev_dbg(dev, "using ACPI for GPIO lookup\n");
-> -			desc = acpi_find_gpio(dev, con_id, idx, &flags, &lookupflags);
-> -		}
-> +	/* Using device tree? */
-> +	if (is_of_node(fwnode)) {
-> +		dev_dbg(dev, "using device tree for GPIO lookup\n");
-> +		desc = of_find_gpio(dev, con_id, idx, &lookupflags);
-> +	} else if (is_acpi_node(fwnode)) {
-> +		dev_dbg(dev, "using ACPI for GPIO lookup\n");
-> +		desc = acpi_find_gpio(dev, con_id, idx, &flags, &lookupflags);
->  	}
->  
->  	/*
-> @@ -3915,9 +3915,6 @@ struct gpio_desc *fwnode_get_named_gpiod(struct fwnode_handle *fwnode,
->  	struct gpio_desc *desc = ERR_PTR(-ENODEV);
->  	int ret;
->  
-> -	if (!fwnode)
-> -		return ERR_PTR(-EINVAL);
-> -
->  	if (is_of_node(fwnode)) {
->  		desc = gpiod_get_from_of_node(to_of_node(fwnode),
->  					      propname, index,
-> @@ -3933,7 +3930,8 @@ struct gpio_desc *fwnode_get_named_gpiod(struct fwnode_handle *fwnode,
->  
->  		acpi_gpio_update_gpiod_flags(&dflags, &info);
->  		acpi_gpio_update_gpiod_lookup_flags(&lflags, &info);
-> -	}
-> +	} else
-> +		return ERR_PTR(-EINVAL);
->  
->  	/* Currently only ACPI takes this path */
->  	ret = gpiod_request(desc, label);
-> -- 
-> 2.30.1
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks
+Haitao
