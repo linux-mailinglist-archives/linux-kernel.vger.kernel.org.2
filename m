@@ -2,83 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539AB32A099
+	by mail.lfdr.de (Postfix) with ESMTP id C49B632A09A
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576154AbhCBEZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:25:26 -0500
-Received: from mga05.intel.com ([192.55.52.43]:62889 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377782AbhCBAso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:48:44 -0500
-IronPort-SDR: O17Dm/16mWT8W9NlsSQ86fiByzNnoBD4ICqDyMcaQsBKtTPoPapkcMMf03AZexJohuK/9Axyn7
- qaRXM9nkqscA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="271645401"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="271645401"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:48:03 -0800
-IronPort-SDR: DNJkPt3igpY/dyB8xh/RC/2FzxjiRvtglHy2RTkZde7Ub0jiFXLBkmGvLHHmv6HW9q5H3ZJ1kZ
- OVmGIvCN24tw==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="517630897"
-Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.197.33]) ([10.212.197.33])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 16:48:01 -0800
-Subject: Re: [PATCH v5 05/14] vfio/mdev: idxd: add basic mdev registration and
- helper functions
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com,
-        tglx@linutronix.de, vkoul@kernel.org, megha.dey@intel.com,
-        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
-        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        eric.auger@redhat.com, parav@mellanox.com, netanelg@mellanox.com,
-        shahafs@mellanox.com, pbonzini@redhat.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
- <161255840486.339900.5478922203128287192.stgit@djiang5-desk3.ch.intel.com>
- <20210210235924.GJ4247@nvidia.com>
- <b41828e1-ab67-856b-f2c0-6215106ba813@intel.com>
- <20210302002922.GC4247@nvidia.com>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <3dd57aa0-3f64-d8cd-8f61-d91d7b1a1bdd@intel.com>
-Date:   Mon, 1 Mar 2021 17:48:00 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1576163AbhCBEZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:25:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378023AbhCBAuI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 19:50:08 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A531C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 16:49:28 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id e3so8696161pfj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 16:49:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=muqxZfcDQiiUg5ZPKg0Ezp+w/e0QAiVsgc1LytNSRdk=;
+        b=QChrouQVA6ya0+EX2yuCQGAX2Yjq+RaPpBLZW9UZlub8RV/ITRPRJgxyO3ScMKrJw6
+         w9KoWFwJxHfHHPU3kyEx3Y0H5PImKpxhJSH5rukwcoxt+a85Ks6M0YyhIRO1q3kiZCtz
+         V8COI+COCCog2xxhBbD/lsVVEQsy5VMSsFt0Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=muqxZfcDQiiUg5ZPKg0Ezp+w/e0QAiVsgc1LytNSRdk=;
+        b=dlUpf7WXajgBU70JobJWYvzLDb4A0KWCRvxLMsS+KS7h/TW9euvu9KRfaOzRKjUitO
+         dZSXCVGpb3OTjrCUaC1FADpqFDnNdLedEVse8oLvn0Q2QQPEalVzvtBgKxloLIqIM0sj
+         5L7I+CmbPuyI6muRE5ffOpBg3n1Pp1P/lfAaBWj2sCJTvMrsrcpkXKpL1wZtcW17IpKP
+         Z/1kQg4s0tpP0/daD6pdHAEWH8Xj6cpbO7lXfevDHYHpbqopzFPAD35/d39UtROL5dc1
+         lvDCB+CeAu88q7r+aAvhzP3VhA35vpZLaw+ho7+AznEK1TgQqbaWco+p5nkq6c2NPhv+
+         jtQg==
+X-Gm-Message-State: AOAM533UXlEBvmFNiDy6OMX7rkCFCYvIPRu1m/i/XWrtP8yK6XrKPsHK
+        S9P1Z52v3MB/v3X6lWK2hM1mLA==
+X-Google-Smtp-Source: ABdhPJx9voOFjP/+lhp6qXXgNKpt2KA4xlsMPdBNMSEG0/QicK5N1Pq8z3ol4jP70uhJTwQyxOa95g==
+X-Received: by 2002:a63:574c:: with SMTP id h12mr16067517pgm.79.1614646167946;
+        Mon, 01 Mar 2021 16:49:27 -0800 (PST)
+Received: from senozhatsky.flets-east.jp ([2409:10:2e40:5100:d5d7:1a61:2cdf:273c])
+        by smtp.gmail.com with ESMTPSA id q34sm17978743pgl.92.2021.03.01.16.49.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 16:49:27 -0800 (PST)
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Tomasz Figa <tfiga@chromium.org>, Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: [PATCH] v4l-compliance: re-introduce NON_COHERENT and cache hints tests
+Date:   Tue,  2 Mar 2021 09:49:22 +0900
+Message-Id: <20210302004922.32052-1-senozhatsky@chromium.org>
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+In-Reply-To: <20210302004624.31294-1-senozhatsky@chromium.org>
+References: <20210302004624.31294-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20210302002922.GC4247@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This returns back non-coherent (previously known as NON_COHERENT)
+memory flag and buffer cache management hints testing (for VB2_MEMORY_MMAP
+buffers).
 
-On 3/1/2021 5:29 PM, Jason Gunthorpe wrote:
-> On Mon, Mar 01, 2021 at 05:23:47PM -0700, Dave Jiang wrote:
->> So after looking at the code in vfio_pci_intrs.c, I agree that the set_irqs
->> code between VFIO_PCI and this driver can be made in common. Given that Alex
->> doesn't want a vfio_pci device embedded in the driver,
-> idxd isn't a vfio_pci so it would be improper to do something like
-> that here anyhow.
->
->> I think we'll need some sort of generic VFIO device that can be used
->> from the vfio_pci side and vfio_mdev side to pass down in order to
->> have common support library functions.
-> Why do you need more layers?
->
-> Just make some helper functions to manage this and build them into
-> their own struct and function family. All this needs is some callback
-> to for the end driver to hook in the raw device programming and some
-> entry points to direct the emulation access to the module.
->
-> It should be fully self contained and completely unrelated to vfio_pci
->
-Maybe I'm looking at this wrong. I see a some code in vfio_pci_intrs.c 
-that we can reuse with some changes here and there. But, I think see 
-where you are getting at with just common functions for mdev side. Let 
-me create it just for IMS emulation and then we can go from there trying 
-to figure if that's the right path to go down or if we need to share 
-code with vfio_pci.
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+---
+ utils/common/cv4l-helpers.h                 |  8 +--
+ utils/common/v4l-helpers.h                  |  8 ++-
+ utils/v4l2-compliance/v4l2-test-buffers.cpp | 65 ++++++++++++++++++---
+ 3 files changed, 66 insertions(+), 15 deletions(-)
+
+diff --git a/utils/common/cv4l-helpers.h b/utils/common/cv4l-helpers.h
+index 712efde6..3cee372b 100644
+--- a/utils/common/cv4l-helpers.h
++++ b/utils/common/cv4l-helpers.h
+@@ -754,17 +754,17 @@ public:
+ 	int g_fd(unsigned index, unsigned plane) const { return v4l_queue_g_fd(this, index, plane); }
+ 	void s_fd(unsigned index, unsigned plane, int fd) { v4l_queue_s_fd(this, index, plane, fd); }
+ 
+-	int reqbufs(cv4l_fd *fd, unsigned count = 0)
++	int reqbufs(cv4l_fd *fd, unsigned count = 0, unsigned int flags = 0)
+ 	{
+-		return v4l_queue_reqbufs(fd->g_v4l_fd(), this, count);
++		return v4l_queue_reqbufs(fd->g_v4l_fd(), this, count, flags);
+ 	}
+ 	bool has_create_bufs(cv4l_fd *fd) const
+ 	{
+ 		return v4l_queue_has_create_bufs(fd->g_v4l_fd(), this);
+ 	}
+-	int create_bufs(cv4l_fd *fd, unsigned count, const v4l2_format *fmt = NULL)
++	int create_bufs(cv4l_fd *fd, unsigned count, const v4l2_format *fmt = NULL, unsigned int flags = 0)
+ 	{
+-		return v4l_queue_create_bufs(fd->g_v4l_fd(), this, count, fmt);
++		return v4l_queue_create_bufs(fd->g_v4l_fd(), this, count, fmt, flags);
+ 	}
+ 	int mmap_bufs(cv4l_fd *fd, unsigned from = 0)
+ 	{
+diff --git a/utils/common/v4l-helpers.h b/utils/common/v4l-helpers.h
+index f96b3c38..c09cd987 100644
+--- a/utils/common/v4l-helpers.h
++++ b/utils/common/v4l-helpers.h
+@@ -1515,7 +1515,7 @@ static inline int v4l_queue_querybufs(struct v4l_fd *f, struct v4l_queue *q, uns
+ }
+ 
+ static inline int v4l_queue_reqbufs(struct v4l_fd *f,
+-		struct v4l_queue *q, unsigned count)
++		struct v4l_queue *q, unsigned count, unsigned int flags = 0)
+ {
+ 	struct v4l2_requestbuffers reqbufs;
+ 	int ret;
+@@ -1523,6 +1523,7 @@ static inline int v4l_queue_reqbufs(struct v4l_fd *f,
+ 	reqbufs.type = q->type;
+ 	reqbufs.memory = q->memory;
+ 	reqbufs.count = count;
++	reqbufs.flags = flags;
+ 	/*
+ 	 * Problem: if REQBUFS returns an error, did it free any old
+ 	 * buffers or not?
+@@ -1547,7 +1548,7 @@ static inline bool v4l_queue_has_create_bufs(struct v4l_fd *f, const struct v4l_
+ 
+ static inline int v4l_queue_create_bufs(struct v4l_fd *f,
+ 		struct v4l_queue *q, unsigned count,
+-		const struct v4l2_format *fmt)
++		const struct v4l2_format *fmt, unsigned int flags = 0)
+ {
+ 	struct v4l2_create_buffers createbufs;
+ 	int ret;
+@@ -1555,6 +1556,7 @@ static inline int v4l_queue_create_bufs(struct v4l_fd *f,
+ 	createbufs.format.type = q->type;
+ 	createbufs.memory = q->memory;
+ 	createbufs.count = count;
++	createbufs.flags = flags;
+ 	if (fmt) {
+ 		createbufs.format = *fmt;
+ 	} else {
+@@ -1733,7 +1735,7 @@ static inline void v4l_queue_free(struct v4l_fd *f, struct v4l_queue *q)
+ 	v4l_ioctl(f, VIDIOC_STREAMOFF, &q->type);
+ 	v4l_queue_release_bufs(f, q, 0);
+ 	v4l_queue_close_exported_fds(q);
+-	v4l_queue_reqbufs(f, q, 0);
++	v4l_queue_reqbufs(f, q, 0, 0);
+ }
+ 
+ static inline void v4l_queue_buffer_update(const struct v4l_queue *q,
+diff --git a/utils/v4l2-compliance/v4l2-test-buffers.cpp b/utils/v4l2-compliance/v4l2-test-buffers.cpp
+index e40461bd..6555c0cb 100644
+--- a/utils/v4l2-compliance/v4l2-test-buffers.cpp
++++ b/utils/v4l2-compliance/v4l2-test-buffers.cpp
+@@ -663,6 +663,10 @@ int testReqBufs(struct node *node)
+ 		fail_on_test(q.reqbufs(node, 0));
+ 
+ 		for (m = V4L2_MEMORY_MMAP; m <= V4L2_MEMORY_DMABUF; m++) {
++			bool cache_hints_cap = false;
++			bool consistent;
++
++			cache_hints_cap = q.g_capabilities() & V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS;
+ 			if (!(node->valid_memorytype & (1 << m)))
+ 				continue;
+ 			cv4l_queue q2(i, m);
+@@ -678,8 +682,17 @@ int testReqBufs(struct node *node)
+ 			reqbufs.count = 1;
+ 			reqbufs.type = i;
+ 			reqbufs.memory = m;
++			reqbufs.flags = V4L2_FLAG_MEMORY_NON_COHERENT;
+ 			fail_on_test(doioctl(node, VIDIOC_REQBUFS, &reqbufs));
+-			fail_on_test(check_0(reqbufs.reserved, sizeof(reqbufs.reserved)));
++			consistent = reqbufs.flags & V4L2_FLAG_MEMORY_NON_COHERENT;
++			if (!cache_hints_cap) {
++				fail_on_test(consistent);
++			} else {
++				if (m == V4L2_MEMORY_MMAP)
++					fail_on_test(!consistent);
++				else
++					fail_on_test(consistent);
++			}
+ 			q.reqbufs(node);
+ 
+ 			ret = q.create_bufs(node, 0);
+@@ -692,9 +705,32 @@ int testReqBufs(struct node *node)
+ 			node->g_fmt(crbufs.format, i);
+ 			crbufs.count = 1;
+ 			crbufs.memory = m;
++			crbufs.flags = V4L2_FLAG_MEMORY_NON_COHERENT;
+ 			fail_on_test(doioctl(node, VIDIOC_CREATE_BUFS, &crbufs));
+ 			fail_on_test(check_0(crbufs.reserved, sizeof(crbufs.reserved)));
+ 			fail_on_test(crbufs.index != q.g_buffers());
++
++			consistent = crbufs.flags & V4L2_FLAG_MEMORY_NON_COHERENT;
++			if (!cache_hints_cap) {
++				fail_on_test(consistent);
++			} else {
++				if (m == V4L2_MEMORY_MMAP)
++					fail_on_test(!consistent);
++				else
++					fail_on_test(consistent);
++			}
++
++			if (cache_hints_cap) {
++				/*
++				 * Different memory consistency model. Should fail for MMAP
++				 * queues which support cache hints.
++				 */
++				crbufs.flags = 0;
++				if (m == V4L2_MEMORY_MMAP)
++					fail_on_test(doioctl(node, VIDIOC_CREATE_BUFS, &crbufs) != EINVAL);
++				else
++					fail_on_test(doioctl(node, VIDIOC_CREATE_BUFS, &crbufs));
++			}
+ 			q.reqbufs(node);
+ 
+ 			fail_on_test(q.create_bufs(node, 1));
+@@ -1207,10 +1243,16 @@ static int setupMmap(struct node *node, cv4l_queue &q)
+ 		fail_on_test(buf.querybuf(node, i));
+ 		fail_on_test(buf.check(q, Unqueued, i));
+ 
+-		flags = buf.g_flags();
+-		flags |= V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
+-		flags |= V4L2_BUF_FLAG_NO_CACHE_CLEAN;
+-		buf.s_flags(flags);
++		/*
++		 * Do not set cache hints for all the buffers, but only on
++		 * some of them, so that we can test more cases.
++		 */
++		if (i == 0) {
++			flags = buf.g_flags();
++			flags |= V4L2_BUF_FLAG_NO_CACHE_INVALIDATE;
++			flags |= V4L2_BUF_FLAG_NO_CACHE_CLEAN;
++			buf.s_flags(flags);
++		}
+ 
+ 		for (unsigned p = 0; p < buf.g_num_planes(); p++) {
+ 			// Try a random offset
+@@ -1250,8 +1292,15 @@ static int setupMmap(struct node *node, cv4l_queue &q)
+ 		}
+ 		flags = buf.g_flags();
+ 		if (cache_hints) {
+-			fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
+-			fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
++			if (i == 0) {
++				/* We do expect cache hints on this buffer */
++				fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE));
++				fail_on_test(!(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN));
++			} else {
++				/* We expect no cache hints on this buffer */
++				fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE);
++				fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN);
++			}
+ 		} else if (node->might_support_cache_hints) {
+ 			fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_INVALIDATE);
+ 			fail_on_test(flags & V4L2_BUF_FLAG_NO_CACHE_CLEAN);
+@@ -1341,7 +1390,7 @@ int testMmap(struct node *node, struct node *node_m2m_cap, unsigned frame_count,
+ 			have_createbufs = false;
+ 		if (have_createbufs) {
+ 			q.reqbufs(node);
+-			q.create_bufs(node, 2, &cur_fmt);
++			q.create_bufs(node, 2, &cur_fmt, V4L2_FLAG_MEMORY_NON_COHERENT);
+ 			fail_on_test(setupMmap(node, q));
+ 			q.munmap_bufs(node);
+ 			q.reqbufs(node, 2);
+-- 
+2.27.0
+
