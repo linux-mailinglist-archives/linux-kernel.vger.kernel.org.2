@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4B332A803
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 482D032A81D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579602AbhCBQ7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351427AbhCBOYM (ORCPT
+        id S1579800AbhCBRJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 12:09:55 -0500
+Received: from conuserg-07.nifty.com ([210.131.2.74]:49029 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377916AbhCBO15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:24:12 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBE7C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 06:23:26 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id w7so2357826wmb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 06:23:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i4Ux0jV9jTZg+jzngXb8yOeSpc8cRPS43A0idXjYxTM=;
-        b=KReUW+8dHb0H8llHJeSCs24ub3qMFrTI70eyphhZIUkAVsypaJQUlDpPUxvZF6wLZ4
-         Lq1AdUodLt1NuEDdokR5YC+efz2a0XUbT2sOQmUECJ5DnAeO5kPgL6l/Zxqpqn3GPSi5
-         IAo7cuyfCnIvxHpVBykyQaxusc+9OnIxVEUZB1b+yW9hnqfv9sH/xq9YlXJTGP0jpiVT
-         +4VdspJS5T+iGpjMzxZ2OXt/12TpKfGZoTWyhzodj90UVXcaMDTjaz63cN+Ew3rcxbFT
-         oQPUd5OowHBrmPgVcxLUINQ5UzqUjv6g8CEZVmpDu+9rNGK5ulzbo/EGonW/BU9tpBb2
-         BMuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i4Ux0jV9jTZg+jzngXb8yOeSpc8cRPS43A0idXjYxTM=;
-        b=JiSnXkC4pQkfI6OfiAcnDe8s7O3eHwPD7bDmnS73KREmuC9rYYdcjxxN/Rs9O8BipM
-         oUL3EamJqKMmz0DDTHR1VLwYV0GnU6SF8y+C+fSBHKav453sMzJbVPNzB7iPhxO8rPl4
-         hgvcLCAatdy8wYfkuL8isL7OnjC+Zfd/bkRl3FDbgKTZULKGqpCrrpMAdCchM/c3x1TF
-         B0fV/rRlPOJNJ83oR6kwbjf1RQR8PaV9Z9bim4XcT6W8Vh0yBsWuv2k2Kb7dO+w+a9ZL
-         WB+kAd9vqeHV1DPX6PW5Djwu96vx9LueemlXpzqLBgRpeq/FBNj47FOtVKiVIiSLLlz6
-         9ksA==
-X-Gm-Message-State: AOAM533rkywcNcCZnBf/OrE1DmeosPiET1M+fQyHhZuR/SBl//BsuKCn
-        xZkBcPii0rHRiU0tG1WGnaB33TR1GykShfEd78+18Q==
-X-Google-Smtp-Source: ABdhPJwGU5BWmh08eb2nSi2S+WfLgwvQL61Puep5g+dxhEIogIfzY5iIWFTsuSVF6UlcgeHraldfDenhide6lLApKdM=
-X-Received: by 2002:a7b:c776:: with SMTP id x22mr3586771wmk.98.1614695004780;
- Tue, 02 Mar 2021 06:23:24 -0800 (PST)
+        Tue, 2 Mar 2021 09:27:57 -0500
+Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 122EQHl6026843;
+        Tue, 2 Mar 2021 23:26:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 122EQHl6026843
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1614695178;
+        bh=bLEqHI17Ar/SUMtdax+/xBfsUNtwhENj2/0NG79lDvo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oooBct/xk1fbRtlHVwyg+ErdW47YEUgDt0S+faQnyruGtnHNq67wKjrNwFbJs9vEj
+         7y0TWRWFhZK8GTveTfr3WsTxxoZIfwuwQUudPn3Thn6Lg/B8TZEQUkRf+SKHDPBIVX
+         iJlr+ip6aGhofo0ms8iFv2r96/AD+gW+SBeMCciZYepR/Iw4mz6qQGpHg3y2I05IZI
+         lc5ZDspqZwKj9xj0DJH1+WQhRQf147O9HYKJ2Z7f4R4+AI3xjlAkBAsC8+U38xJBnh
+         Q18uJjXcxovrqKSBUSXHi0Pl618k4IXmdAjL0aDphpVx6348NuXoprHQB9O4LBoBUh
+         U4R1lPuWsTSSA==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: [PATCH] kbuild: show warning for 'make headers_check'
+Date:   Tue,  2 Mar 2021 23:26:14 +0900
+Message-Id: <20210302142614.505888-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210224164835.3497311-1-mathieu.poirier@linaro.org> <YD41GUtuq8fVa4Q6@kernel.org>
-In-Reply-To: <YD41GUtuq8fVa4Q6@kernel.org>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Tue, 2 Mar 2021 14:23:14 +0000
-Message-ID: <CAJ9a7ViKLg8vjBnuA1eWh8b5-PN7RryefyOV1qoX9Zu362Eq8Q@mail.gmail.com>
-Subject: Re: [PATCH 0/6] coresight: Patches for v5.12 (perf tools)
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+Since commit 7ecaf069da52 ("kbuild: move headers_check rule to
+usr/include/Makefile"), the headers_check target is no-op.
 
+This stub target is remaining here in case some scripts still invoke
+'make headers_check'. In order to prompt people to remove stale code,
+show a noisy warning message if used. The stub will be really removed
+after the Linux 5.15 release.
 
-On Tue, 2 Mar 2021 at 12:52, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> Em Wed, Feb 24, 2021 at 09:48:29AM -0700, Mathieu Poirier escreveu:
-> > Good day Arnaldo,
-> >
-> > I noticed there is a couple of patchsets [1][2] that haven't made it
-> > to your tree for the coming v5.12 cycle.  Do you think that can still
-> > be done?
-> >
-> > I tallied the patches here to make it easier for you to pick up.
-> >
-> > Applies cleanly on perf/core (84b7725536d8)
-> >
-> > Thanks,
-> > Mathieu
-> >
-> > [1]. https://lore.kernel.org/lkml/20210202214040.32349-1-mike.leach@linaro.org/
-> > [2]. https://lore.kernel.org/lkml/20210213113220.292229-1-leo.yan@linaro.org/
->
-> These are not applying right now, I've pushed what I have to
-> tmp.perf/core, please take a look, I'll get back to this after
-> processing fixes for v5.12 and what is outstanding for v5.13.
->
-> - Arnaldo
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-I've tried [1] on both Linux-5.12-rc1 and your tmp.perf/core and it
-applies cleanly on both.
+ Makefile | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Let me know if there is anything else I can try.
-
-Thanks
-
-Mike
-
-
-
+diff --git a/Makefile b/Makefile
+index f9b54da2fca0..a3336d9b4a22 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1339,7 +1339,11 @@ headers: $(version_h) scripts_unifdef uapi-asm-generic archheaders archscripts
+ # Deprecated. It is no-op now.
+ PHONY += headers_check
+ headers_check:
+-	@:
++	@echo >&2 "=================== WARNING ==================="
++	@echo >&2 "Since Linux 5.5, 'make headers_check' is no-op,"
++	@echo >&2 "and will be removed after Linux 5.15 release."
++	@echo >&2 "Please remove headers_check from your scripts."
++	@echo >&2 "==============================================="
+ 
+ ifdef CONFIG_HEADERS_INSTALL
+ prepare: headers
 -- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+2.27.0
+
