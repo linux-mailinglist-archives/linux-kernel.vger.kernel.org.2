@@ -2,70 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E25432A391
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4597332A38E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382276AbhCBJIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:08:30 -0500
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:38071 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378001AbhCBIxz (ORCPT
+        id S1382260AbhCBJIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:08:17 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1921 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378018AbhCBIxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:53:55 -0500
-Received: by mail-wm1-f54.google.com with SMTP id n4so1797162wmq.3;
-        Tue, 02 Mar 2021 00:53:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QnekdLhk3AFB+nJq9zqt7UdfG6HkqQEO7yDItxf4rqE=;
-        b=RxHxt7JH6at2T6f0WpUH8SC4sgeFXFn3MqkTAz3VNaP8rN4VPb2jcKPYj2bMHGQMiz
-         Uva+rDHVNsKwtwdoa3MaTOOvOf1oUPWwOXXsNxyOEw5iHTqp60IBLF+eNNgjdh1AHCYo
-         SKSzrg4NIPspjchy6KsTd6nR/E5nGE8tjq3zwra4oqTRItzAgqamWabH/ItmDl/3qwEZ
-         FK5UqU5OxlePEOJSljxprmO0Cj5fzCXjkSufGJq7jyhCVeCP/RjkO+niMKufycuA8pHd
-         d4yPpll1igxIShwN37i0T31uy+rZyALxc4CIaw0r5bSwQBCF2rUotiuRyyCLkLNrVArr
-         /yEw==
-X-Gm-Message-State: AOAM5300WRLwgPPIloDYhJppvOSJs/xiImsjnlW60ZoyjGLLwXc0cUTS
-        JtMuY43XO4kJXvL9Ezn3fz0=
-X-Google-Smtp-Source: ABdhPJyH0Kyadrx7w80V1cPKEKbNj7Qxh6MtS/xT5R2Cbx/ULBxm0HgJZUE5NdoWU3yky1HYte32SA==
-X-Received: by 2002:a7b:cd81:: with SMTP id y1mr2913609wmj.51.1614675174463;
-        Tue, 02 Mar 2021 00:52:54 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id h10sm26256201wrp.22.2021.03.02.00.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 00:52:53 -0800 (PST)
-Date:   Tue, 2 Mar 2021 09:52:52 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 2/3] ARM: dts: exynos: Add charger supply for I9100
-Message-ID: <20210302085252.ipcqocxg3u6q3dtd@kozik-lap>
-References: <20210130172747.2022977-1-timon.baetz@protonmail.com>
- <20210130172747.2022977-3-timon.baetz@protonmail.com>
+        Tue, 2 Mar 2021 03:53:54 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B603dfcea0002>; Tue, 02 Mar 2021 00:52:58 -0800
+Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
+ 2021 08:52:55 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <jhubbard@nvidia.com>,
+        <rcampbell@nvidia.com>, <jglisse@redhat.com>, <jgg@nvidia.com>,
+        <daniel@ffwll.ch>
+Subject: Re: [PATCH v3 1/8] mm: Remove special swap entry functions
+Date:   Tue, 2 Mar 2021 19:52:53 +1100
+Message-ID: <2110609.1zlQqR5hOE@nvdebian>
+In-Reply-To: <20210226155909.GA2907711@infradead.org>
+References: <20210226071832.31547-1-apopple@nvidia.com> <20210226071832.31547-2-apopple@nvidia.com> <20210226155909.GA2907711@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210130172747.2022977-3-timon.baetz@protonmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614675178; bh=Q3KJiry9KyGM4bq+yenpeuhX/mI9emX6OFn6eNSXghg=;
+        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+         MIME-Version:Content-Transfer-Encoding:Content-Type:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=dsu+1waYJQ7mqyv3AqpWc1eGn2uJdvbYr5/iNbgdcM0TKiIQTQh8JHHCNijiQjUUf
+         EJP+ja4ILdram33pqB4lCLWhSVsECM/8l5SOVdZXTtYrVTlGcWZgCDPjJ2YzG4pYXI
+         STyeVXGtNaS8EV2CYHHsTdnVdS2Dol2WMH8fKy1PJoaEhBx8SRB9cfUPxg/9cjK9cK
+         kf6s5gY/VIse5I8b7CBhYBQiKFQIuYpFBSPKt+fxSyPlTCLXtg5uUddehOmZFX9Ebo
+         LXja9zY84Af/ktvtHgmQeel83G4QfOfL/kBuBfZ/d1ZX5GHIBGhMFETZtVOCJlT2Bd
+         qxtZaFFgBfb1A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 05:29:31PM +0000, Timon Baetz wrote:
-> The regulator is used for charging control by max8997_charger driver.
+On Saturday, 27 February 2021 2:59:09 AM AEDT Christoph Hellwig wrote:
+> > -		struct page *page = migration_entry_to_page(entry);
+> > +		struct page *page = pfn_to_page(swp_offset(entry));
 > 
-> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> ---
->  arch/arm/boot/dts/exynos4210-i9100.dts | 2 ++
->  1 file changed, 2 insertions(+)
+> I wonder if keeping a single special_entry_to_page() helper would still
+> me a useful.  But I'm not entirely sure.  There are also two more open
+> coded copies of this in the THP migration code.
 
-Thanks, applied.
+I think it might be if only to clearly document where these entries are used. 
+Will add it for the next version to see what it looks like.
 
-Best regards,
-Krzysztof
+> > -#define free_swap_and_cache(e) ({(is_migration_entry(e) || 
+is_device_private_entry(e));})
+> > -#define swapcache_prepare(e) ({(is_migration_entry(e) || 
+is_device_private_entry(e));})
+> > +#define free_swap_and_cache(e) is_special_entry(e)
+> > +#define swapcache_prepare(e) is_special_entry(e)
+> 
+> Staring at this I'm really, really confused at what this is doing.
+> 
+> Looking a little closer these are the !CONFIG_SWAP stubs, but it could
+> probably use a comment or two.
+
+Will do, thanks.
+
+ - Alistair
+ 
+> >  	} else if (is_migration_entry(entry)) {
+> > -		page = migration_entry_to_page(entry);
+> > +		page = pfn_to_page(swp_offset(entry));
+> >  
+> >  		rss[mm_counter(page)]++;
+> >  
+> > @@ -737,7 +737,7 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct 
+mm_struct *src_mm,
+> >  			set_pte_at(src_mm, addr, src_pte, pte);
+> >  		}
+> >  	} else if (is_device_private_entry(entry)) {
+> > -		page = device_private_entry_to_page(entry);
+> > +		page = pfn_to_page(swp_offset(entry));
+> >  
+> >  		/*
+> >  		 * Update rss count even for unaddressable pages, as
+> > @@ -1274,7 +1274,7 @@ static unsigned long zap_pte_range(struct mmu_gather 
+*tlb,
+> >  
+> >  		entry = pte_to_swp_entry(ptent);
+> >  		if (is_device_private_entry(entry)) {
+> > -			struct page *page = device_private_entry_to_page(entry);
+> > +			struct page *page = pfn_to_page(swp_offset(entry));
+> >  
+> >  			if (unlikely(details && details->check_mapping)) {
+> >  				/*
+> > @@ -1303,7 +1303,7 @@ static unsigned long zap_pte_range(struct mmu_gather 
+*tlb,
+> >  		else if (is_migration_entry(entry)) {
+> >  			struct page *page;
+> >  
+> > -			page = migration_entry_to_page(entry);
+> > +			page = pfn_to_page(swp_offset(entry));
+> >  			rss[mm_counter(page)]--;
+> >  		}
+> >  		if (unlikely(!free_swap_and_cache(entry)))
+> > @@ -3271,7 +3271,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> >  			migration_entry_wait(vma->vm_mm, vmf->pmd,
+> >  					     vmf->address);
+> >  		} else if (is_device_private_entry(entry)) {
+> > -			vmf->page = device_private_entry_to_page(entry);
+> > +			vmf->page = pfn_to_page(swp_offset(entry));
+> >  			ret = vmf->page->pgmap->ops->migrate_to_ram(vmf);
+> >  		} else if (is_hwpoison_entry(entry)) {
+> >  			ret = VM_FAULT_HWPOISON;
+> > diff --git a/mm/migrate.c b/mm/migrate.c
+> > index 20ca887ea769..72adcc3d8f5b 100644
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -321,7 +321,7 @@ void __migration_entry_wait(struct mm_struct *mm, 
+pte_t *ptep,
+> >  	if (!is_migration_entry(entry))
+> >  		goto out;
+> >  
+> > -	page = migration_entry_to_page(entry);
+> > +	page = pfn_to_page(swp_offset(entry));
+> >  
+> >  	/*
+> >  	 * Once page cache replacement of page migration started, page_count
+> > @@ -361,7 +361,7 @@ void pmd_migration_entry_wait(struct mm_struct *mm, 
+pmd_t *pmd)
+> >  	ptl = pmd_lock(mm, pmd);
+> >  	if (!is_pmd_migration_entry(*pmd))
+> >  		goto unlock;
+> > -	page = migration_entry_to_page(pmd_to_swp_entry(*pmd));
+> > +	page = pfn_to_page(swp_offset(pmd_to_swp_entry(*pmd)));
+> >  	if (!get_page_unless_zero(page))
+> >  		goto unlock;
+> >  	spin_unlock(ptl);
+> > @@ -2437,7 +2437,7 @@ static int migrate_vma_collect_pmd(pmd_t *pmdp,
+> >  			if (!is_device_private_entry(entry))
+> >  				goto next;
+> >  
+> > -			page = device_private_entry_to_page(entry);
+> > +			page = pfn_to_page(swp_offset(entry));
+> >  			if (!(migrate->flags &
+> >  				MIGRATE_VMA_SELECT_DEVICE_PRIVATE) ||
+> >  			    page->pgmap->owner != migrate->pgmap_owner)
+> > diff --git a/mm/page_vma_mapped.c b/mm/page_vma_mapped.c
+> > index 86e3a3688d59..34230d08556a 100644
+> > --- a/mm/page_vma_mapped.c
+> > +++ b/mm/page_vma_mapped.c
+> > @@ -96,7 +96,7 @@ static bool check_pte(struct page_vma_mapped_walk *pvmw)
+> >  		if (!is_migration_entry(entry))
+> >  			return false;
+> >  
+> > -		pfn = migration_entry_to_pfn(entry);
+> > +		pfn = swp_offset(entry);
+> >  	} else if (is_swap_pte(*pvmw->pte)) {
+> >  		swp_entry_t entry;
+> >  
+> > @@ -105,7 +105,7 @@ static bool check_pte(struct page_vma_mapped_walk 
+*pvmw)
+> >  		if (!is_device_private_entry(entry))
+> >  			return false;
+> >  
+> > -		pfn = device_private_entry_to_pfn(entry);
+> > +		pfn = swp_offset(entry);
+> >  	} else {
+> >  		if (!pte_present(*pvmw->pte))
+> >  			return false;
+> > @@ -200,7 +200,7 @@ bool page_vma_mapped_walk(struct page_vma_mapped_walk 
+*pvmw)
+> >  				if (is_migration_entry(pmd_to_swp_entry(*pvmw->pmd))) {
+> >  					swp_entry_t entry = pmd_to_swp_entry(*pvmw->pmd);
+> >  
+> > -					if (migration_entry_to_page(entry) != page)
+> > +					if (pfn_to_page(swp_offset(entry)) != page)
+> >  						return not_found(pvmw);
+> >  					return true;
+> >  				}
+> ---end quoted text---
+> 
+
+
+
 
