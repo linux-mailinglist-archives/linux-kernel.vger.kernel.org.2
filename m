@@ -2,143 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D55932A546
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2832132A535
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350425AbhCBMVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 07:21:22 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:51238 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1383694AbhCBL5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:57:42 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 232CA1A0716;
-        Tue,  2 Mar 2021 12:30:57 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 494451A06FF;
-        Tue,  2 Mar 2021 12:30:50 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8515F402B4;
-        Tue,  2 Mar 2021 12:30:42 +0100 (CET)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, kstewart@linuxfoundation.org, allison@lohutok.net,
-        shengjiu.wang@nxp.com, tglx@linutronix.de, info@metux.net,
-        ckeepax@opensource.wolfsonmicro.com, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: wm8960: Remove bitclk relax condition
-Date:   Tue,  2 Mar 2021 19:18:11 +0800
-Message-Id: <1614683891-29255-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1443620AbhCBMLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:11:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350044AbhCBLv0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:51:26 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAAAC06178A;
+        Tue,  2 Mar 2021 03:41:38 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 711CD1F45192
+Subject: Re: [PATCH 5.10 000/661] 5.10.20-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Suram Suram <suram@nxp.com>
+References: <20210301193642.707301430@linuxfoundation.org>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <32a6c609-642c-71cf-0a84-d5e8ccd104b1@collabora.com>
+Date:   Tue, 2 Mar 2021 11:38:36 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210301193642.707301430@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
+On 01/03/2021 19:37, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.20 release.
+> There are 661 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 03 Mar 2021 19:34:53 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.20-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Using a higher bitclk then expected doesn't always work.
-Here is an example:
 
-aplay -Dhw:0,0 -d 5 -r 48000 -f S24_LE -c 2 audio48k24b2c.wav
+I've been through the KernelCI results for v5.10.20-rc2 and made
+this manual reply, hoping to eventually get it all automated.
 
-In this case, the required bitclk is 48000 * 24 * 2 = 2304000
-but the closest bitclk that can be derived is 3072000. Since
-the clock is faster than expected, it will start to send bytes
-from the next channel so the sound will be corrupted.
 
-Fixes: 82bab88910ee ("ASoC: codec: wm8960: Relax bit clock computation when using PLL")
-Fixes: 3c01b9ee2ab9 ("ASoC: codec: wm8960: Relax bit clock computation")
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/wm8960.c | 29 +++--------------------------
- 1 file changed, 3 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index df351519a3a6..368bec1dfbdb 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -608,10 +608,6 @@ static const int bclk_divs[] = {
-  *		- lrclk      = sysclk / dac_divs
-  *		- 10 * bclk  = sysclk / bclk_divs
-  *
-- *	If we cannot find an exact match for (sysclk, lrclk, bclk)
-- *	triplet, we relax the bclk such that bclk is chosen as the
-- *	closest available frequency greater than expected bclk.
-- *
-  * @wm8960: codec private data
-  * @mclk: MCLK used to derive sysclk
-  * @sysclk_idx: sysclk_divs index for found sysclk
-@@ -629,7 +625,7 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
- {
- 	int sysclk, bclk, lrclk;
- 	int i, j, k;
--	int diff, closest = mclk;
-+	int diff;
- 
- 	/* marker for no match */
- 	*bclk_idx = -1;
-@@ -653,12 +649,6 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
- 					*bclk_idx = k;
- 					break;
- 				}
--				if (diff > 0 && closest > diff) {
--					*sysclk_idx = i;
--					*dac_idx = j;
--					*bclk_idx = k;
--					closest = diff;
--				}
- 			}
- 			if (k != ARRAY_SIZE(bclk_divs))
- 				break;
-@@ -676,10 +666,6 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-  *		- freq_out    = sysclk * sysclk_divs
-  *		- 10 * sysclk = bclk * bclk_divs
-  *
-- * 	If we cannot find an exact match for (sysclk, lrclk, bclk)
-- * 	triplet, we relax the bclk such that bclk is chosen as the
-- * 	closest available frequency greater than expected bclk.
-- *
-  * @component: component structure
-  * @freq_in: input frequency used to derive freq out via PLL
-  * @sysclk_idx: sysclk_divs index for found sysclk
-@@ -697,14 +683,12 @@ int wm8960_configure_pll(struct snd_soc_component *component, int freq_in,
- {
- 	struct wm8960_priv *wm8960 = snd_soc_component_get_drvdata(component);
- 	int sysclk, bclk, lrclk, freq_out;
--	int diff, closest, best_freq_out;
-+	int diff;
- 	int i, j, k;
- 
- 	bclk = wm8960->bclk;
- 	lrclk = wm8960->lrclk;
--	closest = freq_in;
- 
--	best_freq_out = -EINVAL;
- 	*sysclk_idx = *dac_idx = *bclk_idx = -1;
- 
- 	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-@@ -725,18 +709,11 @@ int wm8960_configure_pll(struct snd_soc_component *component, int freq_in,
- 					*bclk_idx = k;
- 					return freq_out;
- 				}
--				if (diff > 0 && closest > diff) {
--					*sysclk_idx = i;
--					*dac_idx = j;
--					*bclk_idx = k;
--					closest = diff;
--					best_freq_out = freq_out;
--				}
- 			}
- 		}
- 	}
- 
--	return best_freq_out;
-+	return -EINVAL;
- }
- static int wm8960_configure_clocking(struct snd_soc_component *component)
- {
--- 
-2.27.0
+First there was one build regression with the arm
+realview_defconfig:
 
+kernel/rcu/tree.c:683:2: error: implicit declaration of function ‘IRQ_WORK_INIT’; did you mean ‘IRQMASK_I_BIT’? [-Werror=implicit-function-declaration]
+  IRQ_WORK_INIT(late_wakeup_func);
+  ^~~~~~~~~~~~~
+  IRQMASK_I_BIT
+kernel/rcu/tree.c:683:2: error: invalid initializer
+
+
+Full log:
+
+  https://storage.kernelci.org/stable-rc/linux-5.10.y/v5.10.19-662-g92929e15cdc0/arm/realview_defconfig/gcc-8/build.log
+
+
+There were also a few new build warnings.  Here's a comparison of
+the number of builds that completed with no warnings, with at
+least one warning, and with an error between current stable and
+stable-rc:
+
+              pass  warn  error
+v5.10.19      188      6      0  
+v5.10.20-rc2  180     15      1
+
+Full details for these 2 revisions respectively:
+
+  https://kernelci.org/build/stable/branch/linux-5.10.y/kernel/v5.10.19/
+  https://kernelci.org/build/stable-rc/branch/linux-5.10.y/kernel/v5.10.19-662-g92929e15cdc0/
+
+
+
+Then on the runtime testing side, there was one boot regression
+detected on imx8mp-evk as detailed here:
+
+  https://kernelci.org/test/case/id/603d69ec2924db6b9baddcb2/
+
+I've re-run a couple of tests with both v5.10.19 and v5.10.20-rc2
+and also got a failure with v5.10.19, so it looks like it's not
+really a new regression but more of an intermittent problem.
+Bisections are not enabled in NXP's lab so we don't have results
+about which commit caused it.  We should chase this up, I've
+already asked if they're OK to enable bisection.  Then we may
+bisect with an older revision that is really booting to find the
+root cause...
+
+
+
+Presumably it's not OK to have this build error in the v5.10.20
+release, assuming the boot regression is not new and can be
+ignored, but that's your call.  So it seems a bit early for
+KernelCI to stamp it with Tested-by, even though it was tested
+but it's more a matter of clarifying the semantics and whether
+Tested-by implicitly means "works for me".  What do you think?
+
+Best wishes,
+Guillaume
