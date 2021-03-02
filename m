@@ -2,155 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B2F32AACE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE0132AA95
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839888AbhCBTzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:55:22 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:36193 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1573777AbhCBRVT (ORCPT
+        id S1349208AbhCBTs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1573994AbhCBRVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:21:19 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id D23F91680;
-        Tue,  2 Mar 2021 12:20:07 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 02 Mar 2021 12:20:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=fqcxahMGQ/LpWS5cFw6l6zICf1y
-        BecEtYn+u6PFqW4Y=; b=ZFCP42xG1e0drDMBaJZBcTwLBJpW0Z8R5Xc0K/ykaE6
-        wcr16Jh8TpZU4Ipwo63TMEvOAak1LpNjkT/peND6UQl5KL7olZW2tYAz43fmqVEz
-        7VLTG/MkszGSwSTnKvcOc4aP5XRIIedX2OId+DuGcHtjRwx2uXJzWpE+Cq1kAFB9
-        s8noZNv4Evw1F6Qw4EIlTfavbN6xtz0F15OxCAVR5Qg128bx8yFP3ew7aDuZG/lg
-        m8h3XJMF0pIkoeYYqzSXSTbyLONWQWRTQKC5jP40WrbcQBcT2XACty0RdgU7J14y
-        rA4Gk+8Q+BZ5ZZXUDAnDgZ13xcYFOMpJ+ydtuspyJew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=fqcxah
-        MGQ/LpWS5cFw6l6zICf1yBecEtYn+u6PFqW4Y=; b=hqQbDvplG/MTjFwVrioyuq
-        ceDIiAlBJdltt/bG0YN2Bd31Prs6PNAEEFBkQHDbZlE+JL7Z4LN5x6NM5CPeN5Zc
-        HIUaY8XlZ2Le/x9YMvnZzlrPICgVn29SOmeh1o1tZPNAhip+ZJvPqONp/jtDnmVy
-        0XXa269J4/z/mW8R1QNfaDuQujO6X2KlGMCVLEOXT/6jZlc+OVpttBdnbMYkaRI7
-        /Enr8Gt1hW+jPCIpwBiYCsUySS+91fzCpaXkRdwnUIz1JHCjf23bvTcnCRbtpp2J
-        9NBXm9RLBeNTWaNr5zxEiv3lcBFfI3YmscyKvCsU3gMYUF32eU4gKmDnPr55V1lw
-        ==
-X-ME-Sender: <xms:xnM-YJJi7z80xusS2hVNgf2GLhyoiYcG4IoyAOhj65i_uZbWAVw8mQ>
-    <xme:xnM-YFJACg4lasBuhVbkj4NN6u3ba8LojPOPtiNooz6AEKzRODgpA8wBgcxIQkHSk
-    vxP3M9Jq6TTWHXeYP0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddttddgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:xnM-YBtnH49AA_70nvcj_ruuTU2wUpVELhCmGlNnrZGEptuCT9nNeg>
-    <xmx:xnM-YKaUyOLxx5HPifUaPeY9nRlFYpPSxNv4WZR7xFSSJOxIhjaO6A>
-    <xmx:xnM-YAYzQP6ltghft5EJNxICOyOrbVf9rgDmWYLNawt92EWhQstmBQ>
-    <xmx:x3M-YPzEEi8gsY8Y41yyzq9w7VBRsCWzZBf34HFen-hxDKNddE3d1A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B34F11080069;
-        Tue,  2 Mar 2021 12:20:04 -0500 (EST)
-Date:   Tue, 2 Mar 2021 18:20:02 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v6 2/2] hwspinlock: add sun6i hardware spinlock support
-Message-ID: <20210302172002.4yygufnrmrbultk5@gilmour>
-References: <cover.1614430467.git.wilken.gottwalt@posteo.net>
- <d7c7bb2adac0ad9171a407b29b33b384724172ab.1614430467.git.wilken.gottwalt@posteo.net>
- <20210301131305.wrsonoqwcm6ua2e2@hendrix>
- <20210301150608.014b807b@monster.powergraphx.local>
+        Tue, 2 Mar 2021 12:21:08 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99556C061226
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 09:20:07 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id e2so18680249ilu.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 09:20:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=sh65LRoHuVRPsDGLX3GRGcPTnOnIBRMJupzc4IzVU6I=;
+        b=AfbsNmqFy3S+qFtMhETZmS844x2HF/0yBZ/jrJr1YMJAqHbgJLTsDcfogzB2kw1XOw
+         AquhGcMSG+qEbPYJq5m0Tk87wcK+YdmBByortG8WCmlJrEmchr2qhGQQLSF5u6ZtdzC9
+         iQu5iXWf7PjECJA2Rr2p4kbd7iJ9mxiTnpWVuiZtrPxbT+3sNxSa0ccOBVsgKD1rYgT1
+         Z8i1jcVbmJZ2AVyIdHVKusmFOOzIZipI9o1PpC8aot8Pm2EdA8V4V9dHOun4Zz5lT8Zr
+         jqnIZdJx70LcowSimTzN7dzI87Z1Xhfk2cpL8AM7eGqof4GEEQis7WINrOASV8lyg2EJ
+         yNwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sh65LRoHuVRPsDGLX3GRGcPTnOnIBRMJupzc4IzVU6I=;
+        b=Ad6RoWzS70rFIUXzz59udAiCeP04pZ82Ruy8eHYP66wqt9S9ID6vTS+CvHowKqn0P3
+         zluyHjzB61RiNZ+63JdYcWgTsxcMPtEz9BfoqiGErp323cgh9//fgC4H939RdannrG75
+         EwzgwR+Mg5bQPomahgcLRfX63bUnBKMLFHt97ioRDjImZD4pn49jq9RgD5s37Rv3bdCz
+         RzpA/i9TsIcZK78bFteqH17Ki83d751AsPnQweS+VwsQ3Vu61VcKChHZPwZFMiwwvTdh
+         mxANqatHvTgtmJF0Vdhd/Vh/KHTu1Z4jnXMFyPD+cOY6Ha2vUUCcRHzoDRKE1glEKydI
+         rlSQ==
+X-Gm-Message-State: AOAM531q/7wpdv0o7tW2OFhpFP4+aWUbXMclXLwHe5k3qz8Ogdpaga32
+        PGipd3ClJb9TcF/tyD00RlDZEw==
+X-Google-Smtp-Source: ABdhPJw+5VByLAeYJ0ZImVbSIH16qdrKcxtii9v5iNC7h4UskOQCi+I26+ogy2SG7ou1/1yMWtg9Gw==
+X-Received: by 2002:a92:cd8a:: with SMTP id r10mr18146014ilb.110.1614705606961;
+        Tue, 02 Mar 2021 09:20:06 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t9sm10913710iln.61.2021.03.02.09.20.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 09:20:06 -0800 (PST)
+Subject: Re: possible deadlock in io_poll_double_wake (2)
+To:     syzbot <syzbot+28abd693db9e92c160d8@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <000000000000a52fb105bc71e7b8@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <586d357d-8c4c-8875-3a1c-0599a0a64da0@kernel.dk>
+Date:   Tue, 2 Mar 2021 10:20:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tqi2ksux5rirg6t7"
-Content-Disposition: inline
-In-Reply-To: <20210301150608.014b807b@monster.powergraphx.local>
+In-Reply-To: <000000000000a52fb105bc71e7b8@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/28/21 9:18 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> possible deadlock in io_poll_double_wake
+> 
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.11.0-syzkaller #0 Not tainted
+> --------------------------------------------
+> syz-executor.0/10241 is trying to acquire lock:
+> ffff888012e09130 (&runtime->sleep){..-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+> ffff888012e09130 (&runtime->sleep){..-.}-{2:2}, at: io_poll_double_wake+0x25f/0x6a0 fs/io_uring.c:4921
+> 
+> but task is already holding lock:
+> ffff888013b00130 (&runtime->sleep){..-.}-{2:2}, at: __wake_up_common_lock+0xb4/0x130 kernel/sched/wait.c:137
+> 
+> other info that might help us debug this:
+>  Possible unsafe locking scenario:
+> 
+>        CPU0
+>        ----
+>   lock(&runtime->sleep);
+>   lock(&runtime->sleep);
+> 
+>  *** DEADLOCK ***
+> 
+>  May be due to missing lock nesting notation
 
---tqi2ksux5rirg6t7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Since the fix is in yet this keeps failing (and I didn't get it), I looked
+closer at this report. While the names of the locks are the same, they are
+really two different locks. So let's try this...
 
-Hi,
+#syz test: git://git.kernel.dk/linux-block syzbot-test
 
-On Mon, Mar 01, 2021 at 03:06:08PM +0100, Wilken Gottwalt wrote:
-> On Mon, 1 Mar 2021 14:13:05 +0100
-> Maxime Ripard <mripard@kernel.org> wrote:
->=20
-> > On Sat, Feb 27, 2021 at 02:03:54PM +0100, Wilken Gottwalt wrote:
-> > > Adds the sun6i_hwspinlock driver for the hardware spinlock unit found=
- in
-> > > most of the sun6i compatible SoCs.
-> > >
-> > > This unit provides at least 32 spinlocks in hardware. The implementat=
-ion
-> > > supports 32, 64, 128 or 256 32bit registers. A lock can be taken by
-> > > reading a register and released by writing a 0 to it. This driver
-> > > supports all 4 spinlock setups, but for now only the first setup (32
-> > > locks) seem to exist in available devices. This spinlock unit is shar=
-ed
-> > > between all ARM cores and the embedded companion core. All of them can
-> > > take/release a lock with a single cycle operation. It can be used to
-> > > sync access to devices shared by the ARM cores and the companion core.
-> > >
-> > > There are two ways to check if a lock is taken. The first way is to r=
-ead
-> > > a lock. If a 0 is returned, the lock was free and is taken now. If an=
- 1
-> > > is returned, the caller has to try again. Which means the lock is tak=
-en.
-> > > The second way is to read a 32bit wide status register where every bit
-> > > represents one of the 32 first locks. According to the datasheets this
-> > > status register supports only the 32 first locks. This is the reason =
-the
-> > > first way (lock read/write) approach is used to be able to cover all =
-256
-> > > locks in future devices. The driver also reports the amount of suppor=
-ted
-> > > locks via debugfs.
-> > >
-> > > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
->=20
-> Nope, I had to replace the devm_hwspin_lock_register function by the
-> hwspin_lock_register function because like Bjorn pointed out that it can
-> fail and needs to handled correctly. And having a devm_* function does not
-> play well with the non-devm clock/reset functions and winding back if an
-> error occurs. It also messes with the call order in the remove function. =
-So
-> I went back to the classic way where I have full control over the call or=
-der.
+-- 
+Jens Axboe
 
-If you're talking about the clock and reset line reassertion, I don't
-really see what the trouble is. Sure, it's not going to be in the exact
-same order in remove, but it's still going to execute in the proper
-order (ie, clock disable, then reset disable, then clock put and reset
-put). And you can use devm_add_action if you want to handle things
-automatically.
-
-Maxime
-
---tqi2ksux5rirg6t7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYD5zwQAKCRDj7w1vZxhR
-xaDiAQDMz37kWOKq3Qu484wmOKDZzBgFivNJyBTXbWkiIsd2GAD7BmUi/T0QepTY
-cwXZGdtNPkV2THt+8qnofZfOF4oPQAo=
-=8SgK
------END PGP SIGNATURE-----
-
---tqi2ksux5rirg6t7--
