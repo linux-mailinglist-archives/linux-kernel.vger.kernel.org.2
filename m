@@ -2,183 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F8932A255
+	by mail.lfdr.de (Postfix) with ESMTP id F2E3B32A256
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241402AbhCBHn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:43:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379154AbhCBHRZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:17:25 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A73BC0617A9;
-        Mon,  1 Mar 2021 23:16:44 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id b8so19077925oti.7;
-        Mon, 01 Mar 2021 23:16:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cvv8ZYn5o9fAfH88FdY8LKHoCI4AuWaKRHSz9HOIfo4=;
-        b=vI8VnN1HjfU5ubeo7oar9dcdw1FjnOapzOUa/JjKEJraWJy9ZQU6i4W0TkH/AdUQpt
-         7UwZM9RLL2RxaPjfvrniGkjDOXP/GCypNlutbjhLaWYvn21EnvR1WyK7216zGRG3LTxG
-         k8RRzr82MnRXdExbacTsojVsNRUeI74IOedc1laMQqIP2rQkDprVmTxG+3v9B27PTOFT
-         kGuOQ9mNaJVC7QN4aCkSay4XLodac4r7pb/D6RJWY+tFPVNf0OTDrhuHHVIIkzDwx2rF
-         Wys6Rpbl/k53nXWjn5ZlLLSTmoXhe7mwdgsRyz+OPVZG8KVpE9xWjRKNso+QevBxvWjL
-         AioQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cvv8ZYn5o9fAfH88FdY8LKHoCI4AuWaKRHSz9HOIfo4=;
-        b=qYf+VodDGDyqVUOrFFOJn+ZI066lLvXCwqWwzakqJW/2Ay+Zph9VnCEV6O/75jjZXH
-         swFMecPiKMu3mlk+hsiAp58eywl9vu8RiTc3nc/1OrpTzZselSwp067GE80XlIsKCnHR
-         htqg7yiHQUH+FKLyvcXKVvtBkCv1taQp4b6oq3jVJ9FaBDzEJ8H2fhCaYyDhGVFeqhjw
-         R8uDpV8WB66Rr8EojJu+jze6WsYJHKOJJcgpsMJxEe0P8JAzdNch6Xjvid9ca1XzfDhk
-         QWf1qg+RhB97hwrystkRpF1mZt6S7lQAbRgKFQi4tqCDkY6+iXjWVxCbH2WPeX4AGopN
-         6DWQ==
-X-Gm-Message-State: AOAM533OD48rROe02ChlrelRF5bGMvrpAf0ai75i2KkOxekeaqSir8sQ
-        YDO/oY1hwzNBC6cBmevzP4Tf8JoM8FyriFVvsJQ=
-X-Google-Smtp-Source: ABdhPJzbn+DmG8b0+YAooZV+sW8jO+BCSIm8/zqlbYXznrB9TaRejeGUUFs9CqxMhBQNv9z4O2KzuD0odgsc7iwM9wA=
-X-Received: by 2002:a9d:4b99:: with SMTP id k25mr16608843otf.327.1614669404078;
- Mon, 01 Mar 2021 23:16:44 -0800 (PST)
+        id S1376684AbhCBHqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:46:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60852 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1836643AbhCBHTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 02:19:25 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C64C2AC54;
+        Tue,  2 Mar 2021 07:18:40 +0000 (UTC)
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Daniel Wagner <dwagner@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <a2064070-b511-ba6d-bd64-0b3abc208356@grimberg.me>
+ <20210226123534.4oovbzk4wrnfjp64@beryllium.lan>
+ <9e209b12-3771-cdca-2c9d-50451061bd2a@suse.de>
+ <20210226161355.GG31593@redsun51.ssa.fujisawa.hgst.com>
+ <a42d6285-ff32-3e16-b2b1-808d29f2a743@suse.de>
+ <20210226171901.GA3949@redsun51.ssa.fujisawa.hgst.com>
+ <20210301132639.n3eowtvkms2n5mog@beryllium.lan>
+ <786dcef5-148d-ff34-590c-804b331ac519@suse.de>
+ <20210301160547.GB17228@redsun51.ssa.fujisawa.hgst.com>
+ <b626504c-3427-e8a5-3502-e44a9e79a006@suse.de>
+ <20210301205944.GE17228@redsun51.ssa.fujisawa.hgst.com>
+From:   Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH] nvme-tcp: Check if request has started before processing
+ it
+Message-ID: <8eb26510-03e1-7923-0f47-2a8d3d539963@suse.de>
+Date:   Tue, 2 Mar 2021 08:18:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <1605177598-23501-1-git-send-email-gene.chen.richtek@gmail.com>
- <1605177598-23501-5-git-send-email-gene.chen.richtek@gmail.com>
- <74b127eb-9a3c-20c9-5692-b00b982f4da3@gmail.com> <CAE+NS34qR9f2LOpvxTBDF4OR=Xq-SFP+uHdWe3dZ5x8xggS8kA@mail.gmail.com>
- <20210115073241.GC3975472@dell>
-In-Reply-To: <20210115073241.GC3975472@dell>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Tue, 2 Mar 2021 15:16:34 +0800
-Message-ID: <CAE+NS37hVMVJA04ZmdcfKvw05ga1-vT=fGRAf=bh17XOJHEh4A@mail.gmail.com>
-Subject: Re: [PATCH v7 04/11] mfd: mt6360: Combine mt6360 pmic/ldo resources
- into mt6360 regulator resources
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>, sre@kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, ChiYuan Huang <cy_huang@richtek.com>,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210301205944.GE17228@redsun51.ssa.fujisawa.hgst.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lee Jones <lee.jones@linaro.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8815=E6=97=
-=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=883:32=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Fri, 15 Jan 2021, Gene Chen wrote:
->
-> > Matthias Brugger <matthias.bgg@gmail.com> =E6=96=BC 2021=E5=B9=B41=E6=
-=9C=8812=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=888:32=E5=AF=AB=E9=81=
-=93=EF=BC=9A
-> > >
-> > >
-> > >
-> > > On 12/11/2020 11:39, Gene Chen wrote:
-> > > > From: Gene Chen <gene_chen@richtek.com>
-> > > >
-> > > > Combine mt6360 pmic/ldo resources into mt6360 regulator resources
-> > > > to simplify the similar resources object.
-> > > >
-> > > > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > > > Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-> > > > ---
-> > > >  drivers/mfd/mt6360-core.c | 11 +++--------
-> > > >  1 file changed, 3 insertions(+), 8 deletions(-)
-> > > >
-> > > > diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> > > > index 692e47b..5119e51 100644
-> > > > --- a/drivers/mfd/mt6360-core.c
-> > > > +++ b/drivers/mfd/mt6360-core.c
-> > > > @@ -265,7 +265,7 @@ static const struct resource mt6360_led_resourc=
-es[] =3D {
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_FLED1_STRB_TO_EVT, "fled1_strb_to=
-_evt"),
-> > > >  };
-> > > >
-> > > > -static const struct resource mt6360_pmic_resources[] =3D {
-> > > > +static const struct resource mt6360_regulator_resources[] =3D {
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_PGB_EVT, "buck1_pgb_evt"),
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OC_EVT, "buck1_oc_evt"),
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_BUCK1_OV_EVT, "buck1_ov_evt"),
-> > > > @@ -278,9 +278,6 @@ static const struct resource mt6360_pmic_resour=
-ces[] =3D {
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_OC_EVT, "ldo7_oc_evt"),
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO6_PGB_EVT, "ldo6_pgb_evt"),
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO7_PGB_EVT, "ldo7_pgb_evt"),
-> > > > -};
-> > > > -
-> > > > -static const struct resource mt6360_ldo_resources[] =3D {
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO1_OC_EVT, "ldo1_oc_evt"),
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO2_OC_EVT, "ldo2_oc_evt"),
-> > > >       DEFINE_RES_IRQ_NAMED(MT6360_LDO3_OC_EVT, "ldo3_oc_evt"),
-> > > > @@ -298,10 +295,8 @@ static const struct mfd_cell mt6360_devs[] =3D=
- {
-> > > >                   NULL, 0, 0, "mediatek,mt6360-chg"),
-> > > >       OF_MFD_CELL("mt6360-led", mt6360_led_resources,
-> > > >                   NULL, 0, 0, "mediatek,mt6360-led"),
-> > > > -     OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
-> > > > -                 NULL, 0, 0, "mediatek,mt6360-pmic"),
-> > > > -     OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
-> > > > -                 NULL, 0, 0, "mediatek,mt6360-ldo"),
-> > > > +     OF_MFD_CELL("mt6360-regulator", mt6360_regulator_resources,
-> > > > +                 NULL, 0, 0, "mediatek,mt6360-regulator"),
-> > >
-> > > As discussed with the MFD maintainer [1], the regulator (and probably=
- all cells)
-> > > shouldn't have a DT binding.
-> > >
-> > > So please send a new version which fixes that.
-> > >
-> > > Regards,
-> > > Matthias
-> > >
-> > > [1] https://lore.kernel.org/linux-mediatek/20210111164118.GE4728@sire=
-na.org.uk/
->
-> I don't think Mark is correct here.
->
-> We usually do implement compatible strings for sub-devices and they do
-> tend to have their own device nodes.
->
-> It's a very long time ago since I coded this up myself, but from
-> memory, you can't have 2 devices share a compatible string.
->
+On 3/1/21 9:59 PM, Keith Busch wrote:
+> On Mon, Mar 01, 2021 at 05:53:25PM +0100, Hannes Reinecke wrote:
+>> On 3/1/21 5:05 PM, Keith Busch wrote:
+>>> On Mon, Mar 01, 2021 at 02:55:30PM +0100, Hannes Reinecke wrote:
+>>>> On 3/1/21 2:26 PM, Daniel Wagner wrote:
+>>>>> On Sat, Feb 27, 2021 at 02:19:01AM +0900, Keith Busch wrote:
+>>>>>> Crashing is bad, silent data corruption is worse. Is there truly no
+>>>>>> defense against that? If not, why should anyone rely on this?
+>>>>>
+>>>>> If we receive an response for which we don't have a started request, we
+>>>>> know that something is wrong. Couldn't we in just reset the connection
+>>>>> in this case? We don't have to pretend nothing has happened and
+>>>>> continuing normally. This would avoid a host crash and would not create
+>>>>> (more) data corruption. Or I am just too naive?
+>>>>>
+>>>> This is actually a sensible solution.
+>>>> Please send a patch for that.
+>>>
+>>> Is a bad frame a problem that can be resolved with a reset?
+>>>
+>>> Even if so, the reset doesn't indicate to the user if previous commands
+>>> completed with bad data, so it still seems unreliable.
+>>>
+>> We need to distinguish two cases here.
+>> The one is use receiving a frame with an invalid tag, leading to a crash.
+>> This can be easily resolved by issuing a reset, as clearly the command was
+>> garbage and we need to invoke error handling (which is reset).
+>>
+>> The other case is us receiving a frame with a _duplicate_ tag, ie a tag
+>> which is _currently_ valid. This is a case which will fail _even now_, as we
+>> have simply no way of detecting this.
+>>
+>> So what again do we miss by fixing the first case?
+>> Apart from a system which does _not_ crash?
+> 
+> I'm just saying each case is a symptom of the same problem. The only
+> difference from observing one vs the other is a race with the host's
+> dispatch. And since you're proposing this patch, it sounds like this
+> condition does happen on tcp compared to other transports where we don't
+> observe it. I just thought the implication that data corruption happens
+> is a alarming.
+> 
+Oh yes, it is.
+But sadly TCP inherently suffers from this, as literally anyone can
+spoof frames on the network.
+Other transports like RDMA or FC do not suffer to that extend as
+spoofing frames there is far more elaborate, and not really possible
+without dedicated hardware equipment.
 
-Either Mark or Lee suggestion is work.
-Is there a conclusion that we can apply it?
-If MFD is already supported of_compatible, we prefer use of_compatible mapp=
-ing.
+That's why there is header and data digest; that will protect you
+against accidental frame corruption (as this case clearly is; the
+remainder of the frame is filled with zeroes).
+It would not protect you against deliberate frame corruption; that's why
+there is TPAR 8010 (TLS encryption for NVMe-TCP).
 
-> > Should I use parent's device to find sub-devices of_node if without
-> > compatible name?
-> > I trace the function mfd_add_device,
-> >
-> > if (IS_ENABLED(CONFIG_OF) && parent->of_node && cell->of_compatible) {
-> >     .....
-> >     ret =3D mfd_match_of_node_to_dev(pdev, np, cell);
-> >     .....
-> > }
-> >
-> > which is binding mfd sub-device with compatible. Does it be removed in
-> > the feature?
-> >
-> > > >       OF_MFD_CELL("mt6360-tcpc", NULL,
-> > > >                   NULL, 0, 0, "mediatek,mt6360-tcpc"),
-> > > >  };
-> > > >
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+Be it as it may, none of these methods are in use here, and none of
+these methods can be made mandatory. So we need to deal with the case at
+hand.
+
+And in my opinion crashing is the _worst_ options of all.
+Tear the connection down, reset the thing, whatever.
+
+But do not crash.
+Customers tend to have a very dim view on crashing machines, and have a
+very limited capacity for being susceptible to our reasoning in these cases.
+
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke		           Kernel Storage Architect
+hare@suse.de			                  +49 911 74053 688
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
