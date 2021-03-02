@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E623C32A801
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E1732A7F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579568AbhCBQ67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:58:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47764 "EHLO mail.kernel.org"
+        id S1579382AbhCBQrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:47:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377909AbhCBO1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:27:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 505A264FC9;
-        Tue,  2 Mar 2021 11:59:41 +0000 (UTC)
+        id S1351409AbhCBOW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:22:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 787F064FC6;
+        Tue,  2 Mar 2021 11:59:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686382;
-        bh=EN+8mv8T3yg6CH9bMuNhDmN22IweqqPq3XDER+/w9Ds=;
+        s=k20201202; t=1614686383;
+        bh=CTUYJnv8MliY6J4+/hZzZcFP6aNEEDo1FTIlzbrUvho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kIWdcC5rj5XUrh6pNlf2YIxwmvfgGkFX7q8t+Rm41+o3H5PnuykW/22oZNlgSR0z6
-         YpQCDk7bQi2cKikeD9V+gMcBkREcqMxfluJrQ44BwTc6p7/7Z7dW3+iKlTWxfcmrJb
-         ZJGv+pcX1xUR84OrxHSPfvvzn+a6zjRQrgSk5HKuUpeA2nX/lcE2xXhLkJWcfIF7Ug
-         98prNrkIToNdAjGGEOaqfDkHptnSVz5n6mzFCVmabr3Z01ecHQZZOUwgyb7pt+t8n5
-         WxIaz5m9h4muvlwrstambC0z8b9yavPgtFOl+0JfGFGRy7rqZbYi9t/Dl797JuQOSA
-         Hex65Ki+X8Ydw==
+        b=H/YNq1OZZD1CV3lXXOHdzjCfx4A0MlzaPT676QtletGBwmyBEfupA7Cf0baVj2HX8
+         lR/l/njacwglldCMvtX4zctPsrdM8vT91/isotBPe1xhWD+RVFNUN33ZNHIvCS/6gX
+         Cfzv/Q7VSjwYKTJW6gpTT9S1+kGhEs/thtAbpkwLsn4CHPfKuDjKZxf/cCgv+hndkz
+         1fRqzlyx5ppqYu0Q+/NODcggTPVJ3khdev5m00v0f368Mm1jvyIg2HAuVX+N5Uewbe
+         wW/lIu3ddIlyr1P7oT5qG98m+s1QfxOXMN5P0QExcqyZ7ARciUmG/KhnvZG5UIllWU
+         lWmXy+tCbi95Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andreas Larsson <andreas@gaisler.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, sparclinux@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 4/8] sparc32: Limit memblock allocation to low memory
-Date:   Tue,  2 Mar 2021 06:59:31 -0500
-Message-Id: <20210302115935.63777-4-sashal@kernel.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 5/8] x86, build: use objtool mcount
+Date:   Tue,  2 Mar 2021 06:59:32 -0500
+Message-Id: <20210302115935.63777-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115935.63777-1-sashal@kernel.org>
 References: <20210302115935.63777-1-sashal@kernel.org>
@@ -43,40 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andreas Larsson <andreas@gaisler.com>
+From: Sami Tolvanen <samitolvanen@google.com>
 
-[ Upstream commit bda166930c37604ffa93f2425426af6921ec575a ]
+[ Upstream commit 6dafca97803309c3cb5148d449bfa711e41ddef2 ]
 
-Commit cca079ef8ac29a7c02192d2bad2ffe4c0c5ffdd0 changed sparc32 to use
-memblocks instead of bootmem, but also made high memory available via
-memblock allocation which does not work together with e.g. phys_to_virt
-and can lead to kernel panic.
+Select HAVE_OBJTOOL_MCOUNT if STACK_VALIDATION is selected to use
+objtool to generate __mcount_loc sections for dynamic ftrace with
+Clang and gcc <5 (later versions of gcc use -mrecord-mcount).
 
-This changes back to only low memory being allocatable in the early
-stages, now using memblock allocation.
-
-Signed-off-by: Andreas Larsson <andreas@gaisler.com>
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/sparc/mm/init_32.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
-index 3b7092d9ea8f..4abe4bf08377 100644
---- a/arch/sparc/mm/init_32.c
-+++ b/arch/sparc/mm/init_32.c
-@@ -240,6 +240,9 @@ unsigned long __init bootmem_init(unsigned long *pages_avail)
- 	reserve_bootmem((bootmap_pfn << PAGE_SHIFT), size, BOOTMEM_DEFAULT);
- 	*pages_avail -= PAGE_ALIGN(size) >> PAGE_SHIFT;
- 
-+	/* Only allow low memory to be allocated via memblock allocation */
-+	memblock_set_current_limit(max_low_pfn << PAGE_SHIFT);
-+
- 	return max_pfn;
- }
- 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 1bee1c6a9891..2e2ddc864ea9 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -94,6 +94,7 @@ config X86
+ 	select HAVE_CONTEXT_TRACKING		if X86_64
+ 	select HAVE_COPY_THREAD_TLS
+ 	select HAVE_C_RECORDMCOUNT
++	select HAVE_OBJTOOL_MCOUNT		if STACK_VALIDATION
+ 	select HAVE_DEBUG_KMEMLEAK
+ 	select HAVE_DEBUG_STACKOVERFLOW
+ 	select HAVE_DMA_API_DEBUG
 -- 
 2.30.1
 
