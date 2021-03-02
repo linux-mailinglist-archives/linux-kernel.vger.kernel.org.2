@@ -2,106 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5849032A3FC
+	by mail.lfdr.de (Postfix) with ESMTP id C98D832A3FD
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349534AbhCBKEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:04:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
+        id S1349542AbhCBKEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:04:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382323AbhCBJvt (ORCPT
+        with ESMTP id S1382703AbhCBJv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:51:49 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234CCC061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:50:17 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id j12so13451706pfj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:50:17 -0800 (PST)
+        Tue, 2 Mar 2021 04:51:59 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25ECCC061797
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:50:45 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id hs11so34045582ejc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:50:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xtndLsEaN7tzdKD5K+JvWGojXPONwlybi1fJYBg5XAo=;
-        b=rnvConHGygj2YhM2noKk4i8f9KE2eVEJk8eUsStiUtGPjRlsxwwNAk5uBxwRdha7ex
-         BIItuCJDjifrVzkoDGaBpx6O0ycunRZSESsDup7TGLsL/tvOJs2KY7CGLQLmSolxYong
-         wfc0GmfKrRDdW5oh1Zcd4BirHBdVHXij3GmRm+dWUjP+VdZiZJyD3+Rkj+AuVAkxNg4c
-         7MhsKnYV7NG8cYvePLZJ9g5woJcV1Jqz8AiyzDYxvfbKfniMEKtZol3bLPgenTdzwJry
-         CKXmmLNQDgo6ntiJtDQDUlc8J4GKLU5paTbVDj2V8HTT8W0EUVwGODGvUHVbssLoD0DV
-         E7EQ==
+         :cc:content-transfer-encoding;
+        bh=5hxO8geRKHzNtxA9y8z7MoBEUJzs0Nb88tjxqpIWGmE=;
+        b=ntP+ugCJeq/Nswd5B80CT/rGJ7OiG/heEnQUO+CvJ8S5nzSAB0Jjv7gbFPKtQFdtgY
+         UGkA1r/XS8UmHNHg1+UBJdB2/rI/+SFu+hwskOhJuV0rKRHSZ9YddwrZqj/N9sAzLFnd
+         b+mP/HypjVWLhrP9oImLXl8op+D5xCo2qV4x8h31Z57APSxsEO3MTikg+gHyn0AicN8T
+         cV98ROiUZv0tUBZxpAZwtOx/yfmprwtiFb9VP3Wv8rNLTbzD5JnBqSa7VOc/P1e4oMSi
+         fBqn4sucdXrg0qXBQlMulbzrw2o5pxkZ0kYVa6V/Ta21olXTsob+BUurnnV1pHlvvIq5
+         v+Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xtndLsEaN7tzdKD5K+JvWGojXPONwlybi1fJYBg5XAo=;
-        b=mjXLF92IO07/TIg+qiE8nMNpU38I0YXKXmcIChnz0HPIAqXnLIysEmD7DbMtJL2LGB
-         JH6hGeEgZ2Jk2upSaGWyyQt+eDo0eHYLVU7si19dupjz9iJ6drnAreE07PH2q75y8h2g
-         fvG/aBI1b/r66O8ZilWp6JOM/aGhhk3W/RuvXqA+ffP9Qz982txx0KWYYBuJH1URBTby
-         8gmN5mcjh1EYGknql6NMPZvGvwaoO/U4VOKrqD5TQvb4rvPWdVLCV2YV1qsF9Ol3UV2m
-         sH2abF5VWhIItL68TPZewU92a2zzF9gFEJ38IYGxCXaKF/gJFRg/d73PrtpSAwfyVLyX
-         uMTg==
-X-Gm-Message-State: AOAM530EbdNT7ZC9lQFG6HJggIA3dk/pmgANPkW2yZ3kHZ4av3WFuKSm
-        7u+hMSdk3/URDm3iBb6L1ddjoqwlVdmwFGCczFR3Jwr3Ku6cm2Xx
-X-Google-Smtp-Source: ABdhPJyBL4+o7TN0CcugFT0hUMqIrP+PY3j9837YOq+x3Hw/7QAYa8H9G+jv5QvX/cjzNIkRQwaQQXcgTHFBxeGxdIY=
-X-Received: by 2002:a65:6645:: with SMTP id z5mr17097527pgv.273.1614678616654;
- Tue, 02 Mar 2021 01:50:16 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5hxO8geRKHzNtxA9y8z7MoBEUJzs0Nb88tjxqpIWGmE=;
+        b=n8corE9ZzDyUX81QCas1ig5Wo2v1+YZNMithBwUhfZf1rGA5aOSdShUT50eD6wPyyH
+         0eNsGfbmNawtmpcexFOnf9nSzV0bYPdlhTax31DgjXy17KNg1oHTvot3CAvA87JoCB5K
+         NtTYbazB0DbvQ+LP8DG4VL35zOvwPZmCrKCictvNEBfhYONh61pskccIcxbStY8HUAS9
+         0OxeG0PEp0zo1esNUZtTWZ1MQAsyxum2cp9F/gb/cRBMbS5eSbVM7NYFxLCCkLg2M9Ia
+         Vd7ll2RYu/zhc+UxArepkZfG+otDRKcdCzw/5U3WcFHqjqYyaGuA3DZigGFAUiUfQzM1
+         jdyw==
+X-Gm-Message-State: AOAM532dwuQOxidcBiJKkpAHXA2Jag9pjbT50cqQlHtjazKYHYCXtuTC
+        w5HARX/pAipaNUUtbFrC9cH4NoTFK7/Q3G54cPpJjw==
+X-Google-Smtp-Source: ABdhPJzzRBsP3yJj7bEN/TJZ8X9qd/bTeDJ0LE+/H87gPbR1wkDmLEE25vLUJaPk0WmkiFVMQSEslUMSynFO1/qPjVU=
+X-Received: by 2002:a17:906:444d:: with SMTP id i13mr19536087ejp.170.1614678643555;
+ Tue, 02 Mar 2021 01:50:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20210302073733.8928-1-songmuchun@bytedance.com>
- <YD36+i1PZX/CH1jf@dhcp22.suse.cz> <CAMZfGtX=EmE8iOLfO3duCyMWOmu-OYra9Rk4mKsknds+5MueMg@mail.gmail.com>
- <YD4GkRnTN6RK5CyG@dhcp22.suse.cz>
-In-Reply-To: <YD4GkRnTN6RK5CyG@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 2 Mar 2021 17:49:39 +0800
-Message-ID: <CAMZfGtW1prn96mq-J4dA+_nERkq4YLi7EaL+bACMDPZNJVe0BA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix kernel stack account
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+References: <20210301193642.707301430@linuxfoundation.org> <CA+G9fYuK0k0FsnSk4egKOO=B0pV80bjp+f5E-0xPOfbPugQPxg@mail.gmail.com>
+In-Reply-To: <CA+G9fYuK0k0FsnSk4egKOO=B0pV80bjp+f5E-0xPOfbPugQPxg@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Mar 2021 15:20:32 +0530
+Message-ID: <CA+G9fYsivUPRRQgMXpnA_XdXH8i2wx_DPH70t+6OzHkjOaswrg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/661] 5.10.20-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
         Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+        Guenter Roeck <linux@roeck-us.net>,
+        LTP List <ltp@lists.linux.it>, Arnd Bergmann <arnd@arndb.de>,
+        Jiri Slaby <jirislaby@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 5:34 PM Michal Hocko <mhocko@suse.com> wrote:
+Hi Greg and Linus,
+
+On Tue, 2 Mar 2021 at 12:45, Naresh Kamboju <naresh.kamboju@linaro.org> wro=
+te:
 >
-> On Tue 02-03-21 17:23:42, Muchun Song wrote:
-> > On Tue, Mar 2, 2021 at 4:44 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Tue 02-03-21 15:37:33, Muchun Song wrote:
-> > > > The alloc_thread_stack_node() cannot guarantee that allocated stack pages
-> > > > are in the same node when CONFIG_VMAP_STACK. Because we do not specify
-> > > > __GFP_THISNODE to __vmalloc_node_range(). Fix it by caling
-> > > > mod_lruvec_page_state() for each page one by one.
-> > >
-> > > What is the actual problem you are trying to address by this patch?
-> > > 991e7673859e has deliberately dropped the per page accounting. Can you
-> > > explain why that was incorrect? There surely is some imprecision
-> > > involved but does it matter and is it even observable?
+> On Tue, 2 Mar 2021 at 01:21, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 > >
-> > When I read the code of account_kernel_stack(), I see a comment that
-> > says "All stack pages are in the same node". I am confused about this.
-> > IIUC, there is no guarantee about this. Right?
+> > This is the start of the stable review cycle for the 5.10.20 release.
+> > There are 661 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 03 Mar 2021 19:34:53 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patc=
+h-5.10.20-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 >
-> Yes there is no guarantee indeed. Please always make sure to describe
-> the underlying reasoning for the patch. Subject of this patch refers to
-> a fix without explaining the actual problem. If a change is motivated by
-> code reading then make it explicit. Also if you are refering to a
-> different commit by Fixes: tag then it would be really helpful to
-> explicitly mention why that commit is incorrect or cause a visible
-> problems.
+>
+> Results from Linaro=E2=80=99s test farm.
+> Regressions detected on all devices (arm64, arm, x86_64 and i386).
+>
+> hangup01    1  TFAIL  :  hangup01.c:133: unexpected message 3
+>
+> This failure is specific to stable-rc 5.10 and 5.11.
+> Test PASS on mainline and Linux next kernel.
+>
 
-Got it. Thanks for your teaching.
+I have reverted these two patches and the test case got PASS
+on Linux version 5.10.20-rc2.
 
->
-> > Yeah, imprecision may
-> > not be a problem. But if this is what we did deliberately, I think that
-> > it is better to add a comment there. Thanks.
->
-> Yes the comment is quite confusing. I suspect it meant to say
->         /* All stack pages are accounted to the same node */
->
-> --
-> Michal Hocko
-> SUSE Labs
+hangup01 1 TPASS : child process exited with status 0
+
+   Linus Torvalds <torvalds@linux-foundation.org>
+       tty: implement read_iter
+
+   Linus Torvalds <torvalds@linux-foundation.org>
+       tty: convert tty_ldisc_ops 'read()' function to take a kernel pointe=
+r
+
+ref:
+https://lkft.validation.linaro.org/scheduler/job/2330549#L1667
+https://lkft.validation.linaro.org/scheduler/job/2330550#L1202
+
+- Naresh
