@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DA2C32A21E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FA932A219
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836618AbhCBHSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:18:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39968 "EHLO mx2.suse.de"
+        id S1381394AbhCBHSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:18:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39600 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1835904AbhCBGZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:25:36 -0500
+        id S1835899AbhCBGZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 01:25:18 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0EF5CB03D;
+        by mx2.suse.de (Postfix) with ESMTP id 2F3DFB03E;
         Tue,  2 Mar 2021 06:22:22 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.cz>, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 38/44] USB: serial/io_edgeport, drop unneeded forward declarations
-Date:   Tue,  2 Mar 2021 07:22:08 +0100
-Message-Id: <20210302062214.29627-38-jslaby@suse.cz>
+        Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 39/44] tty: synclink_gt, drop unneeded forward declarations
+Date:   Tue,  2 Mar 2021 07:22:09 +0100
+Message-Id: <20210302062214.29627-39-jslaby@suse.cz>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302062214.29627-1-jslaby@suse.cz>
 References: <20210302062214.29627-1-jslaby@suse.cz>
@@ -37,80 +37,139 @@ which are not really needed, i.e. the definition of the function is
 before its first use.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/serial/io_edgeport.c | 41 --------------------------------
- 1 file changed, 41 deletions(-)
+ drivers/tty/synclink_gt.c | 57 +--------------------------------------
+ 1 file changed, 1 insertion(+), 56 deletions(-)
 
-diff --git a/drivers/usb/serial/io_edgeport.c b/drivers/usb/serial/io_edgeport.c
-index a493670c06e6..54b476a228d6 100644
---- a/drivers/usb/serial/io_edgeport.c
-+++ b/drivers/usb/serial/io_edgeport.c
-@@ -265,35 +265,7 @@ static atomic_t CmdUrbs = ATOMIC_INIT(0);
+diff --git a/drivers/tty/synclink_gt.c b/drivers/tty/synclink_gt.c
+index 4727a41158b0..1db908f62fde 100644
+--- a/drivers/tty/synclink_gt.c
++++ b/drivers/tty/synclink_gt.c
+@@ -137,37 +137,14 @@ MODULE_PARM_DESC(maxframe, "Maximum frame size used by device (4096 to 65535)");
+  */
+ static struct tty_driver *serial_driver;
  
- /* local function prototypes */
- 
--/* function prototypes for all URB callbacks */
--static void edge_interrupt_callback(struct urb *urb);
--static void edge_bulk_in_callback(struct urb *urb);
--static void edge_bulk_out_data_callback(struct urb *urb);
--static void edge_bulk_out_cmd_callback(struct urb *urb);
+-static int  open(struct tty_struct *tty, struct file * filp);
+-static void close(struct tty_struct *tty, struct file * filp);
+-static void hangup(struct tty_struct *tty);
+-static void set_termios(struct tty_struct *tty, struct ktermios *old_termios);
 -
--/* function prototypes for the usbserial callbacks */
--static int edge_open(struct tty_struct *tty, struct usb_serial_port *port);
- static void edge_close(struct usb_serial_port *port);
--static int edge_write(struct tty_struct *tty, struct usb_serial_port *port,
--					const unsigned char *buf, int count);
--static int edge_write_room(struct tty_struct *tty);
--static int edge_chars_in_buffer(struct tty_struct *tty);
--static void edge_throttle(struct tty_struct *tty);
--static void edge_unthrottle(struct tty_struct *tty);
--static void edge_set_termios(struct tty_struct *tty,
--					struct usb_serial_port *port,
--					struct ktermios *old_termios);
--static int  edge_ioctl(struct tty_struct *tty,
--					unsigned int cmd, unsigned long arg);
--static void edge_break(struct tty_struct *tty, int break_state);
--static int  edge_tiocmget(struct tty_struct *tty);
--static int  edge_tiocmset(struct tty_struct *tty,
--					unsigned int set, unsigned int clear);
--static int  edge_startup(struct usb_serial *serial);
--static void edge_disconnect(struct usb_serial *serial);
--static void edge_release(struct usb_serial *serial);
--static int edge_port_probe(struct usb_serial_port *port);
--static void edge_port_remove(struct usb_serial_port *port);
+-static int  write(struct tty_struct *tty, const unsigned char *buf, int count);
+-static int put_char(struct tty_struct *tty, unsigned char ch);
+-static void send_xchar(struct tty_struct *tty, char ch);
+ static void wait_until_sent(struct tty_struct *tty, int timeout);
+-static int  write_room(struct tty_struct *tty);
+-static void flush_chars(struct tty_struct *tty);
+ static void flush_buffer(struct tty_struct *tty);
+-static void tx_hold(struct tty_struct *tty);
+ static void tx_release(struct tty_struct *tty);
  
- /* function prototypes for all of our local functions */
- 
-@@ -309,8 +281,6 @@ static void handle_new_lsr(struct edgeport_port *edge_port, __u8 lsrData,
- static int  send_iosp_ext_cmd(struct edgeport_port *edge_port, __u8 command,
- 				__u8 param);
- static int  calc_baud_rate_divisor(struct device *dev, int baud_rate, int *divisor);
--static int  send_cmd_write_baud_rate(struct edgeport_port *edge_port,
--				int baudRate);
- static void change_port_settings(struct tty_struct *tty,
- 				struct edgeport_port *edge_port,
- 				struct ktermios *old_termios);
-@@ -321,19 +291,8 @@ static int  write_cmd_usb(struct edgeport_port *edge_port,
- static void send_more_port_data(struct edgeport_serial *edge_serial,
- 				struct edgeport_port *edge_port);
- 
--static int sram_write(struct usb_serial *serial, __u16 extAddr, __u16 addr,
--					__u16 length, const __u8 *data);
--static int rom_read(struct usb_serial *serial, __u16 extAddr, __u16 addr,
--						__u16 length, __u8 *data);
- static int rom_write(struct usb_serial *serial, __u16 extAddr, __u16 addr,
- 					__u16 length, const __u8 *data);
--static void get_manufacturing_desc(struct edgeport_serial *edge_serial);
--static void get_boot_desc(struct edgeport_serial *edge_serial);
--static void load_application_firmware(struct edgeport_serial *edge_serial);
+-static int  ioctl(struct tty_struct *tty, unsigned int cmd, unsigned long arg);
+-static int  chars_in_buffer(struct tty_struct *tty);
+-static void throttle(struct tty_struct * tty);
+-static void unthrottle(struct tty_struct * tty);
+-static int set_break(struct tty_struct *tty, int break_state);
 -
--static void unicode_to_ascii(char *string, int buflen,
--				__le16 *unicode, int unicode_size);
--
+ /*
+- * generic HDLC support and callbacks
++ * generic HDLC support
+  */
+-#if SYNCLINK_GENERIC_HDLC
+ #define dev_to_port(D) (dev_to_hdlc(D)->priv)
+-static void hdlcdev_tx_done(struct slgt_info *info);
+-static void hdlcdev_rx(struct slgt_info *info, char *buf, int size);
+-static int  hdlcdev_init(struct slgt_info *info);
+-static void hdlcdev_exit(struct slgt_info *info);
+-#endif
  
- /* ************************************************************************ */
- /* ************************************************************************ */
+ 
+ /*
+@@ -186,9 +163,6 @@ struct cond_wait {
+ 	wait_queue_entry_t wait;
+ 	unsigned int data;
+ };
+-static void init_cond_wait(struct cond_wait *w, unsigned int data);
+-static void add_cond_wait(struct cond_wait **head, struct cond_wait *w);
+-static void remove_cond_wait(struct cond_wait **head, struct cond_wait *w);
+ static void flush_cond_wait(struct cond_wait **head);
+ 
+ /*
+@@ -443,12 +417,8 @@ static void shutdown(struct slgt_info *info);
+ static void program_hw(struct slgt_info *info);
+ static void change_params(struct slgt_info *info);
+ 
+-static int  register_test(struct slgt_info *info);
+-static int  irq_test(struct slgt_info *info);
+-static int  loopback_test(struct slgt_info *info);
+ static int  adapter_test(struct slgt_info *info);
+ 
+-static void reset_adapter(struct slgt_info *info);
+ static void reset_port(struct slgt_info *info);
+ static void async_mode(struct slgt_info *info);
+ static void sync_mode(struct slgt_info *info);
+@@ -457,14 +427,12 @@ static void rx_stop(struct slgt_info *info);
+ static void rx_start(struct slgt_info *info);
+ static void reset_rbufs(struct slgt_info *info);
+ static void free_rbufs(struct slgt_info *info, unsigned int first, unsigned int last);
+-static void rdma_reset(struct slgt_info *info);
+ static bool rx_get_frame(struct slgt_info *info);
+ static bool rx_get_buf(struct slgt_info *info);
+ 
+ static void tx_start(struct slgt_info *info);
+ static void tx_stop(struct slgt_info *info);
+ static void tx_set_idle(struct slgt_info *info);
+-static unsigned int free_tbuf_count(struct slgt_info *info);
+ static unsigned int tbuf_bytes(struct slgt_info *info);
+ static void reset_tbufs(struct slgt_info *info);
+ static void tdma_reset(struct slgt_info *info);
+@@ -472,26 +440,10 @@ static bool tx_load(struct slgt_info *info, const char *buf, unsigned int count)
+ 
+ static void get_signals(struct slgt_info *info);
+ static void set_signals(struct slgt_info *info);
+-static void enable_loopback(struct slgt_info *info);
+ static void set_rate(struct slgt_info *info, u32 data_rate);
+ 
+-static int  bh_action(struct slgt_info *info);
+-static void bh_handler(struct work_struct *work);
+ static void bh_transmit(struct slgt_info *info);
+-static void isr_serial(struct slgt_info *info);
+-static void isr_rdma(struct slgt_info *info);
+ static void isr_txeom(struct slgt_info *info, unsigned short status);
+-static void isr_tdma(struct slgt_info *info);
+-
+-static int  alloc_dma_bufs(struct slgt_info *info);
+-static void free_dma_bufs(struct slgt_info *info);
+-static int  alloc_desc(struct slgt_info *info);
+-static void free_desc(struct slgt_info *info);
+-static int  alloc_bufs(struct slgt_info *info, struct slgt_desc *bufs, int count);
+-static void free_bufs(struct slgt_info *info, struct slgt_desc *bufs, int count);
+-
+-static int  alloc_tmp_rbuf(struct slgt_info *info);
+-static void free_tmp_rbuf(struct slgt_info *info);
+ 
+ static void tx_timeout(struct timer_list *t);
+ static void rx_timeout(struct timer_list *t);
+@@ -509,10 +461,6 @@ static int  tx_abort(struct slgt_info *info);
+ static int  rx_enable(struct slgt_info *info, int enable);
+ static int  modem_input_wait(struct slgt_info *info,int arg);
+ static int  wait_mgsl_event(struct slgt_info *info, int __user *mask_ptr);
+-static int  tiocmget(struct tty_struct *tty);
+-static int  tiocmset(struct tty_struct *tty,
+-				unsigned int set, unsigned int clear);
+-static int set_break(struct tty_struct *tty, int break_state);
+ static int  get_interface(struct slgt_info *info, int __user *if_mode);
+ static int  set_interface(struct slgt_info *info, int if_mode);
+ static int  set_gpio(struct slgt_info *info, struct gpio_desc __user *gpio);
+@@ -526,9 +474,6 @@ static int  set_xctrl(struct slgt_info *info, int if_mode);
+ /*
+  * driver functions
+  */
+-static void add_device(struct slgt_info *info);
+-static void device_init(int adapter_num, struct pci_dev *pdev);
+-static int  claim_resources(struct slgt_info *info);
+ static void release_resources(struct slgt_info *info);
+ 
+ /*
 -- 
 2.30.1
 
