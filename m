@@ -2,147 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7C232A50B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A13932A50E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442281AbhCBLql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:46:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:49816 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344596AbhCBLaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:30:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 663B01042;
-        Tue,  2 Mar 2021 03:29:18 -0800 (PST)
-Received: from [10.57.48.219] (unknown [10.57.48.219])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 08EA73F73C;
-        Tue,  2 Mar 2021 03:29:15 -0800 (PST)
-Subject: Re: [RFC 02/13] driver core: Introduce MMIO configuration
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     f.fainelli@gmail.com, robh+dt@kernel.org, ardb@kernel.org,
-        hch@infradead.org, narmstrong@baylibre.com, dwmw2@infradead.org,
-        linux@armlinux.org.uk, catalin.marinas@arm.com, arnd@arndb.de,
-        will@kernel.org
-References: <20210226140305.26356-1-nsaenzjulienne@suse.de>
- <20210226140305.26356-3-nsaenzjulienne@suse.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <644fd416-ab64-f1cc-ffb0-ea5649e3b600@arm.com>
-Date:   Tue, 2 Mar 2021 11:29:10 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S1442663AbhCBLqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347523AbhCBLbg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:31:36 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1D8C06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 03:30:32 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id t25so13641588pga.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 03:30:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TKcFkhM8Mf5DiRPH37Ng7ifpctLWMXPxIAc63q2YCdc=;
+        b=STh1OiHiN3RIX3HBgcV9cNh+gyrXDrSjs+yTS/x+kts2F/gPdGop3OxANQsWwz1PTv
+         JTnRE9eMpVVbVq9og+Q5gdkjwX+2PuRATcx+sYWgU5KIYCnXmtL52ehxz79ifFORxLgs
+         eYUjOtMlD8m+37T0fPp+NqB1Qcq07p8BTq5gI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TKcFkhM8Mf5DiRPH37Ng7ifpctLWMXPxIAc63q2YCdc=;
+        b=YHJsjC18ASedCDoSEFZG3KjSKb6p9RmVqVJdQm2rHrtAXbExGivwQbr3gKqcAFnJ+i
+         snMRl0NJMw0EA+y+h1jd/PpRYviI7bcrfwa2R0Bw5j6BgP7uyOlPGmtmwZ0jAbjIeRB0
+         Ud2mpEjCKuXYU6oP+ObIRjDQaScbTVcRd36scvQYKOqPr/UzIGA5iPMotOyil9FJIeT9
+         iTVvjKe765hdofg6VrrmEBk0UabI/cSXnS/I0eZtGdNlhAnNmRbf6aS96CyFhvW0AncD
+         xkopqvjmAdXVSfHzP7O/ktRfSc5xFNmCvv1O9EZi5y6+/a9kOeXg3f/pqqxf7avr6TLD
+         KKAg==
+X-Gm-Message-State: AOAM531uEiHduyYf5Ob4Gu8FUfXBmKynme/aE9heZ7S+VadYbmprMkrC
+        fN1ip8n6/GpSsU96x8b35ZRZzP/kRophl4sdUqGtig==
+X-Google-Smtp-Source: ABdhPJwBgRaP7xzFKc8KjHOOHQlUJLofabevE4D9pSBMT3XRudmsTh+IeR6puUqZDyGDZajOd3aOQ/x6HgQHHW5CLqc=
+X-Received: by 2002:a63:515a:: with SMTP id r26mr17916655pgl.257.1614684632012;
+ Tue, 02 Mar 2021 03:30:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210226140305.26356-3-nsaenzjulienne@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <1612348525-13364-1-git-send-email-qii.wang@mediatek.com>
+In-Reply-To: <1612348525-13364-1-git-send-email-qii.wang@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Tue, 2 Mar 2021 19:30:21 +0800
+Message-ID: <CAATdQgCoLB-iOcxN2ptDmqD69FnyUen5XeRTq=LCCfXmWkBeWw@mail.gmail.com>
+Subject: Re: [PATCH] i2c: mediatek: Get device clock-stretch time via dts
+To:     qii.wang@mediatek.com
+Cc:     wsa@the-dreams.de, srv_heupstream <srv_heupstream@mediatek.com>,
+        leilk.liu@mediatek.com, open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-i2c@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-26 14:02, Nicolas Saenz Julienne wrote:
-> Some devices might inadvertently sit on buses that don't support 64bit
-> MMIO access, and need a mechanism to query these limitations without
-> prejudice to other buses in the system (i.e. defaulting to 32bit access
-> system wide isn't an option).
-> 
-> Introduce a new bus callback, 'mmio_configure(),' which will take care
-> of populating the relevant device properties based on the bus'
-> limitations.
+Hi Qii,
 
-Devil's advocate: there already exist workarounds for 8-bit and/or 
-16-bit accesses not working in various places, does it make sense for a 
-64-bit workaround to be so wildly different and disjoint?
-
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+On Wed, Feb 3, 2021 at 6:43 PM <qii.wang@mediatek.com> wrote:
+>
+> From: Qii Wang <qii.wang@mediatek.com>
+>
+> tSU,STA/tHD,STA/tSU,STOP maybe out of spec due to device
+> clock-stretching or circuit loss, we could get device
+> clock-stretch time from dts to adjust these parameters
+> to meet the spec via EXT_CONF register.
+>
+> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
 > ---
->   arch/Kconfig               | 8 ++++++++
->   drivers/base/dd.c          | 6 ++++++
->   include/linux/device.h     | 3 +++
->   include/linux/device/bus.h | 3 +++
->   4 files changed, 20 insertions(+)
-> 
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 2bb30673d8e6..ba7f246b6b9d 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -1191,6 +1191,14 @@ config ARCH_SPLIT_ARG64
->   config ARCH_HAS_ELFCORE_COMPAT
->   	bool
->   
-> +config ARCH_HAS_64BIT_MMIO_BROKEN
-> +	bool
-> +	depends on 64BIT
-
-As mentioned previously, 32-bit systems may not need the overrides for 
-kernel I/O accessors, but they could still need the same workarounds for 
-the memory-mapping implications (if this is to be a proper generic 
-mechanism).
-
-> +	default n
-
-Tip: it is always redundant to state that.
-
-Robin.
-
-> +	help
-> +	   Arch might contain busses unable to perform 64bit mmio accessses on
-> +	   an otherwise 64bit system.
+>  drivers/i2c/busses/i2c-mt65xx.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+> index 2ffd2f3..47c7255 100644
+> --- a/drivers/i2c/busses/i2c-mt65xx.c
+> +++ b/drivers/i2c/busses/i2c-mt65xx.c
+> @@ -245,6 +245,7 @@ struct mtk_i2c {
+>         u16 irq_stat;                   /* interrupt status */
+>         unsigned int clk_src_div;
+>         unsigned int speed_hz;          /* The speed in transfer */
+> +       unsigned int clock_stretch_ns;
+>         enum mtk_trans_op op;
+>         u16 timing_reg;
+>         u16 high_speed_reg;
+> @@ -607,7 +608,8 @@ static int mtk_i2c_check_ac_timing(struct mtk_i2c *i2c,
+>         else
+>                 clk_ns = sample_ns / 2;
+>
+> -       su_sta_cnt = DIV_ROUND_UP(spec->min_su_sta_ns, clk_ns);
+> +       su_sta_cnt = DIV_ROUND_UP(spec->min_su_sta_ns + i2c->clock_stretch_ns,
+> +                                 clk_ns);
+>         if (su_sta_cnt > max_sta_cnt)
+>                 return -1;
+>
+> @@ -1171,6 +1173,8 @@ static int mtk_i2c_parse_dt(struct device_node *np, struct mtk_i2c *i2c)
+>         if (i2c->clk_src_div == 0)
+>                 return -EINVAL;
+>
+> +       of_property_read_u32(np, "clock-stretch-ns", &i2c->clock_stretch_ns);
 > +
->   source "kernel/gcov/Kconfig"
->   
->   source "scripts/gcc-plugins/Kconfig"
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 9179825ff646..8086ce8f17a6 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -538,6 +538,12 @@ static int really_probe(struct device *dev, struct device_driver *drv)
->   			goto probe_failed;
->   	}
->   
-> +	if (dev->bus->mmio_configure) {
-> +		ret = dev->bus->mmio_configure(dev);
-> +		if (ret)
-> +			goto probe_failed;
-> +	}
-> +
->   	if (driver_sysfs_add(dev)) {
->   		pr_err("%s: driver_sysfs_add(%s) failed\n",
->   		       __func__, dev_name(dev));
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index ba660731bd25..bd94aa0cbd72 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -553,6 +553,9 @@ struct device {
->   #ifdef CONFIG_DMA_OPS_BYPASS
->   	bool			dma_ops_bypass : 1;
->   #endif
-> +#if defined(CONFIG_ARCH_HAS_64BIT_MMIO_BROKEN)
-> +	bool			mmio_64bit_broken:1;
-> +#endif
->   };
->   
->   /**
-> diff --git a/include/linux/device/bus.h b/include/linux/device/bus.h
-> index 1ea5e1d1545b..680dfc3b4744 100644
-> --- a/include/linux/device/bus.h
-> +++ b/include/linux/device/bus.h
-> @@ -59,6 +59,8 @@ struct fwnode_handle;
->    *		bus supports.
->    * @dma_configure:	Called to setup DMA configuration on a device on
->    *			this bus.
-> + * @mmio_configure:	Called to setup MMIO configuration on a device on
-> + *			this bus.
->    * @pm:		Power management operations of this bus, callback the specific
->    *		device driver's pm-ops.
->    * @iommu_ops:  IOMMU specific operations for this bus, used to attach IOMMU
-> @@ -103,6 +105,7 @@ struct bus_type {
->   	int (*num_vf)(struct device *dev);
->   
->   	int (*dma_configure)(struct device *dev);
-> +	int (*mmio_configure)(struct device *dev);
->   
->   	const struct dev_pm_ops *pm;
->   
-> 
+
+I think this new property "clock-stretch-ns" is for the same purpose of
+"i2c-scl-falling-time-ns" + "i2c-scl-rising-time-ns" defined in
+Documentation/devicetree/bindings/i2c/i2c.txt?
+
+>         i2c->have_pmic = of_property_read_bool(np, "mediatek,have-pmic");
+>         i2c->use_push_pull =
+>                 of_property_read_bool(np, "mediatek,use-push-pull");
+> --
+> 1.9.1
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
