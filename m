@@ -2,320 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE1432AD46
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C013E32AD47
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381889AbhCBVe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:34:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
+        id S1381937AbhCBVfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:35:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1581138AbhCBSkS (ORCPT
+        with ESMTP id S1581201AbhCBSlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:40:18 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25135C06178C;
-        Tue,  2 Mar 2021 10:39:37 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id ci14so18201992ejc.7;
-        Tue, 02 Mar 2021 10:39:37 -0800 (PST)
+        Tue, 2 Mar 2021 13:41:21 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3098C061793;
+        Tue,  2 Mar 2021 10:40:38 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id t16so1477368ott.3;
+        Tue, 02 Mar 2021 10:40:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bDq+uSHy9qG8xIZZAYzUb7kIqDxntgb1pyeClvc6+Is=;
-        b=NIgJvP6WN7rb/ZCzL4ND19BrTSOt3f9LlsQC3OdBbQTF707PT/lZliBXugjzNCz6Gk
-         8zUxWJKwsHZE4A9mKe7jL2VAVJ5Dm0WoSi3r73mUeetQvT5lmI0QpG5Yj1ZTLpb4+Y23
-         QIulozFfe2r0ofj3DEkiuipr76690VPMI1keppf132Xt7I6p5gkiyVzaRy+4v0skn0iE
-         JDaRyY0GJ8qc2Pge3vvy+9FU0PRSIo73oeyA21o4pzHUvhr7kho82g7KHVSk2FW0oi/w
-         4ctdMWidQhCT8p35HA4mKibksdXJojVhZbgS54iOr08SlYYH2DoS6+jb7Bgbu05fRvDr
-         TbZg==
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qB9LhBC6WJ1vsZnTTPyg5MI435u9QEsdl7KnS4+9LHM=;
+        b=tci9PPqrsyeqMgUJ31savLHkC75p7+Kydh6ZDKlqouNlxkOR3DdvaBNlWROKVW9BqP
+         mgiklIy7z67l1g1ZfbIQz/J4w77IIm3dIFdLN1tW/u0Oac4PpmovzleLagoSd+yWeJPB
+         IbrVO5ec4/H+cIilMJeNCJTBmRV7r7XJhLMBaket7+NXMzflEhfZCjsJl0GO43YSoUGX
+         TPX8eWD3mwTVbvXzEqFp0d1oEgZMqe6VcZXK+VbWzyHskMU/xKUsPeCIgxV9Uzz4XPTa
+         ntCfJEF0hU0QTi5Z0VZTlgS+mBcco8T+BQEYP8DKF7xIfvP91z/tfeRvs2gG0GYDj0Zn
+         i55Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bDq+uSHy9qG8xIZZAYzUb7kIqDxntgb1pyeClvc6+Is=;
-        b=CzdJu+PWe86jqOJjIcX9o3jUbd185r9O+WJuz04xHHjyUx+64xVufHOhMJ+B6QiMyx
-         UB9a3oadS1iZOkBiNGP3qkMSEtCfPWrSrmSywhTGhHYy0Yz7EatCUOqI2+4pFxJ0J+/X
-         QQP/5/SVow3tbOd1opoV4YLAXRXMjEz8MT83ekD2AqKo/FVbBD61XSRq74TSux7ugU+e
-         iDt50ZgHtbAl3Q1IOZ15BTEawukYgoemy5a+3IAmcqq/4P6CpDlCGqi2zZIcEeHirBGs
-         Cm5/4Qe9R4XD6c26qynPJOQPZsuvigH7qcnm9PG+Eup7XiI2o6HBzQHXBLhhX+one6Ul
-         6Bag==
-X-Gm-Message-State: AOAM532grZFcQulrXMalbLT50PuzQFDmZ3LonsK97D3HkX63xb/S3bPJ
-        9dcLOq7V64yaCYv6cZ8WiIiZU1XJ4vvsXLCjii8=
-X-Google-Smtp-Source: ABdhPJxX8omMoV3lUfJBkGpOWtbJJX+BlKCUswyygUARGLIs7afYswojj3J5T417q4McmSweFqYAhp/c1VbqI8nFzJ4=
-X-Received: by 2002:a17:906:2dda:: with SMTP id h26mr15603384eji.163.1614710375143;
- Tue, 02 Mar 2021 10:39:35 -0800 (PST)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=qB9LhBC6WJ1vsZnTTPyg5MI435u9QEsdl7KnS4+9LHM=;
+        b=cV0/BGtqXv/SAVAxYv9C6uG1jpA1+cFga1dTEpruSW6gyT4ssN7x3WuMggrLUM2DJs
+         5lKgyvNgVrgpwfPiW6LnmnxmR/DXVCFRw3vorfarhFLJEosG5MowcZ1pX2Kyx2/eqm21
+         GIL6qzbe4HxHPeLnPdQ+iI97pIT3uwOlvFJIPvqBEUTKq7T745xrso1epkLbpd7u0jR2
+         rL4ZlYS/Bk0gFxEvgh1MzYM7Y/ASoQ9qde5EmKKS9mCuqrkVTumXHoPHYPN95IHTlm9U
+         hB2aav1/ov6xYCfPxZk9p2rieFR5qUajmpSXDdco9h1nhk8qvUf4oqJEcYzmsbexdAjK
+         V3AQ==
+X-Gm-Message-State: AOAM532hDgNMXQ7T3cnFLey5gWOCqYvfIMyDWIP+RxUUBm7X7ofzl1Fr
+        geDaIDX3pK2AG1VOeDwfB6eF5rfFjvo=
+X-Google-Smtp-Source: ABdhPJzXuIalh+O1BmyLbgVvpAiZrSaCpee4INIKxp6MkYeNZS00ZQnCRNtfgJiK4BKeFPcrB1E5wA==
+X-Received: by 2002:a05:6830:1d57:: with SMTP id p23mr19385484oth.35.1614710437968;
+        Tue, 02 Mar 2021 10:40:37 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u126sm4291821oig.55.2021.03.02.10.40.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 10:40:37 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 4.4 00/93] 4.4.259-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210301161006.881950696@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <99109388-1f32-6355-ccd2-08d3f268effa@roeck-us.net>
+Date:   Tue, 2 Mar 2021 10:40:35 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210301172151.281814-1-Frank.Li@nxp.com> <0d135a2b-02d0-f05b-918b-c4253d67caf9@intel.com>
- <CAHrpEqQrB5rb-cbV19LQ-EDeCjSw+6O7D3wbsRYWWcDwTYBU=Q@mail.gmail.com> <42a468dd-24e0-355e-c3b9-a12ddee8dd3a@intel.com>
-In-Reply-To: <42a468dd-24e0-355e-c3b9-a12ddee8dd3a@intel.com>
-From:   Zhi Li <lznuaa@gmail.com>
-Date:   Tue, 2 Mar 2021 12:39:23 -0600
-Message-ID: <CAHrpEqQNvAxUhsU89P2ArAZiNxLMqTkf5ez+8RZPqkfSx9FRiA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mmc: cqhci: fix random crash when remove mmc module
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     riteshh@codeaurora.org, asutoshd@codeaurora.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>, haibo.chen@nxp.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210301161006.881950696@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 10:25 AM Adrian Hunter <adrian.hunter@intel.com> wro=
-te:
->
-> On 2/03/21 5:12 pm, Zhi Li wrote:
-> >
-> >
-> > On Tue, Mar 2, 2021 at 1:03 AM Adrian Hunter <adrian.hunter@intel.com <=
-mailto:adrian.hunter@intel.com>> wrote:
-> >
-> >     On 1/03/21 7:21 pm, Frank Li wrote:
-> >     > [ 6684.493350] Unable to handle kernel paging request at virtual =
-address ffff800011c5b0f0
-> >     > [ 6684.498531] mmc0: card 0001 removed
-> >     > [ 6684.501556] Mem abort info:
-> >     > [ 6684.509681]   ESR =3D 0x96000047
-> >     > [ 6684.512786]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> >     > [ 6684.518394]   SET =3D 0, FnV =3D 0
-> >     > [ 6684.521707]   EA =3D 0, S1PTW =3D 0
-> >     > [ 6684.524998] Data abort info:
-> >     > [ 6684.528236]   ISV =3D 0, ISS =3D 0x00000047
-> >     > [ 6684.532986]   CM =3D 0, WnR =3D 1
-> >     > [ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D0000=
-000081b22000
-> >     > [ 6684.543923] [ffff800011c5b0f0] pgd=3D00000000bffff003, p4d=3D0=
-0000000bffff003, pud=3D00000000bfffe003, pmd=3D00000000900e1003, pte=3D0000=
-000000000000
-> >     > [ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
-> >     > [ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm =
-sdhci cqhci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash=
-_desc caamalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexc=
-an can_dev caam error [last unloaded: mmc_core]
-> >     > [ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5=
-.10.9-01410-g3ba33182767b-dirty #10
-> >     > [ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
-> >     > [ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
-> >     >
-> >     > [ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=
-=3D--)
-> >     > [ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
-> >     > ^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.61=
-7085] lr : cqhci_request+0x314/0x4e8 [cqhci]
-> >     > [ 6684.626734] sp : ffff80001243b9f0
-> >     > [ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
-> >     > [ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
-> >     > [ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
-> >     > [ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
-> >     > [ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
-> >     > [ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
-> >     > [ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
-> >     > [ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
-> >     > [ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
-> >     > [ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
-> >     > [ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
-> >     > [ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
-> >     > [ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
-> >     > [ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
-> >     > [ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
-> >     > [ 6684.709854] Call trace:
-> >     > [ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
-> >     > [ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
-> >     > [ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
-> >     > [ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
-> >     >
-> >     > cqhci_request was called after cqhci_disable.
-> >     >
-> >     > cqhci_disable                                 cqhci_request
-> >     > {                                             {
-> >     >       dmam_free_coherent();  (1) free
-> >     >                                                   if(!cq_host->en=
-able)
-> >     >                                                        return
-> >     >                                        (2) pass check here
-> >     >       cq_host->enable =3D false;
-> >     >
-> >     >                                                   task_desc=3D ge=
-t_desc(cq_host,tag);
-> >     >                                                              ^^^^=
- crash here
-> >     >                                          (3) access memory which =
-is already free
-> >     >
-> >     > }                                             }
-> >     >
-> >     > Signed-off-by: Frank Li <Frank.Li@nxp.com <mailto:Frank.Li@nxp.co=
-m>>
-> >     > ---
-> >     >  drivers/mmc/host/cqhci-core.c | 18 ++++++++++++++----
-> >     >  1 file changed, 14 insertions(+), 4 deletions(-)
-> >     >
-> >     > diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqh=
-ci-core.c
-> >     > index 93b0432bb601..36d292261e50 100644
-> >     > --- a/drivers/mmc/host/cqhci-core.c
-> >     > +++ b/drivers/mmc/host/cqhci-core.c
-> >     > @@ -389,6 +389,7 @@ static void cqhci_off(struct mmc_host *mmc)
-> >     >  static void cqhci_disable(struct mmc_host *mmc)
-> >     >  {
-> >     >       struct cqhci_host *cq_host =3D mmc->cqe_private;
-> >     > +     unsigned long flags;
-> >     >
-> >     >       if (!cq_host->enabled)
-> >     >               return;
-> >     > @@ -397,6 +398,11 @@ static void cqhci_disable(struct mmc_host *m=
-mc)
-> >     >
-> >     >       __cqhci_disable(cq_host);
-> >     >
-> >     > +     /* need wait for cqhci_request finish before free memory */
-> >     > +     spin_lock_irqsave(&cq_host->lock, flags);
-> >     > +     cq_host->enabled =3D false;
-> >     > +     spin_unlock_irqrestore(&cq_host->lock, flags);
-> >     > +
-> >     >       dmam_free_coherent(mmc_dev(mmc), cq_host->data_size,
-> >     >                          cq_host->trans_desc_base,
-> >     >                          cq_host->trans_desc_dma_base);
-> >     > @@ -408,7 +414,6 @@ static void cqhci_disable(struct mmc_host *mm=
-c)
-> >     >       cq_host->trans_desc_base =3D NULL;
-> >     >       cq_host->desc_base =3D NULL;
-> >     >
-> >     > -     cq_host->enabled =3D false;
-> >     >  }
-> >     >
-> >     >  static void cqhci_prep_task_desc(struct mmc_request *mrq,
-> >     > @@ -612,6 +617,13 @@ static int cqhci_request(struct mmc_host *mm=
-c, struct mmc_request *mrq)
-> >     >                       cq_host->ops->enable(mmc);
-> >     >       }
-> >     >
-> >     > +     spin_lock_irqsave(&cq_host->lock, flags);
-> >     > +     if (!cq_host->enabled) {
-> >     > +             pr_err("%s: cqhci: not enabled\n", mmc_hostname(mmc=
-));
-> >     > +             err =3D -EINVAL;
-> >     > +             goto out_unlock;
-> >     > +     }
-> >     > +
-> >     >       if (mrq->data) {
-> >     >               cqhci_prep_task_desc(mrq, cq_host, tag);
-> >     >
-> >     > @@ -619,14 +631,12 @@ static int cqhci_request(struct mmc_host *m=
-mc, struct mmc_request *mrq)
-> >     >               if (err) {
-> >     >                       pr_err("%s: cqhci: failed to setup tx desc:=
- %d\n",
-> >     >                              mmc_hostname(mmc), err);
-> >     > -                     return err;
-> >     > +                     goto out_unlock;
-> >     >               }
-> >     >       } else {
-> >     >               cqhci_prep_dcmd_desc(mmc, mrq);
-> >     >       }
-> >     >
-> >     > -     spin_lock_irqsave(&cq_host->lock, flags);
-> >     > -
-> >     >       if (cq_host->recovery_halt) {
-> >     >               err =3D -EBUSY;
-> >     >               goto out_unlock;
-> >     >
-> >
-> >     Please try the following instead:
-> >
-> >
-> >     diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
-> >     index c2e70b757dd1..dfc8d2877115 100644
-> >     --- a/drivers/mmc/core/bus.c
-> >     +++ b/drivers/mmc/core/bus.c
-> >     @@ -399,11 +399,6 @@ void mmc_remove_card(struct mmc_card *card)
-> >             mmc_remove_card_debugfs(card);
-> >      #endif
-> >
-> >     -       if (host->cqe_enabled) {
-> >     -               host->cqe_ops->cqe_disable(host);
-> >     -               host->cqe_enabled =3D false;
-> >     -       }
-> >     -
-> >             if (mmc_card_present(card)) {
-> >                     if (mmc_host_is_spi(card->host)) {
-> >                             pr_info("%s: SPI card removed\n",
-> >     @@ -416,6 +411,11 @@ void mmc_remove_card(struct mmc_card *card)
-> >                     of_node_put(card->dev.of_node);
-> >             }
-> >
-> >     +       if (host->cqe_enabled) {
-> >     +               host->cqe_ops->cqe_disable(host);
-> >     +               host->cqe_enabled =3D false;
-> >     +       }
-> >     +
-> >             put_device(&card->dev);
-> >      }
-> >
-> >
-> > Actually this is my first solution,  it can't resolve issues 100% and j=
-ust reduce possibility.
-> >
-> > One core run                                                           =
-               The another core run
-> > mmc_remove_card                                                        =
-        mmc_mq_queue_rq
-> > {                                                                      =
-                        {
-> >
-> >                                                                        =
-                                      if (mmc_card_removed(mq->card)) {
-> >                                                                        =
-                                                       req->rq_flags |=3D R=
-QF_QUIET;
-> >                                                                        =
-                                                        return BLK_STS_IOER=
-R;
-> >                                                                        =
-                                       }
-> >                                                                        =
-                                       //pass check here
-> >         device_del(&card->dev);
->
-> Deleting the card device removes it from the block driver
-> (i.e. mmc_blk_remove()), which cleans up the request queues,
-> so the scenario you describe here should never happen.
->
-> Can you determine if mmc_blk_remove() is called and whether
-> it cleans up blk queues?
->
+On 3/1/21 8:12 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.259 release.
+> There are 93 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 03 Mar 2021 16:09:49 +0000.
+> Anything received after that time might be too late.
+> 
 
-yes, mmc_blk_remove is called.
-Let me run my test case. It takes at least 24 hours.
 
->
->
-> >         //free resource here
-> >         host->cqe_ops->cqe_disable(host);
-> >
-> >                                                                        =
-                                       call  cqhci_request
-> >                                                                        =
-                                         //kernel dump here to access memor=
-y that is already free.
-> >
-> > }                                                                      =
-                         }
-> >
-> > There is one fundamental problem that there is NOT read lock when check=
-ing mmc_card_removed, and write lock for updating md->card.
-> > The risk conditions always exist between queue request and card remove.
-> >
-> > There are no issues for non-command queue host controllers, it just cau=
-ses a redundant cmd sent by host,  cmd will be timeout.  Just an expected I=
-O error
-> > happened. Maybe just errors code is different.
-> >
-> > But Cmd queue is different,  cmd queue disabled  function free memory r=
-esources. if risk conditions happen, there are kernel dump.
-> >
-> >
-> >
->
+Building nios2:allnoconfig ... failed
+--------------
+Error log:
+arch/nios2/kernel/sys_nios2.c: In function 'sys_cacheflush':
+arch/nios2/kernel/sys_nios2.c:38:6: error: implicit declaration of function 'mmap_read_lock_killable'; did you mean 'mutex_lock_killable'?
+
+
+This problem affects all nios2 builds in v4.4.y ... v5.4.y.
+
+Guenter
