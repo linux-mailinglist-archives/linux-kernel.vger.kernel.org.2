@@ -2,104 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DCD32A7B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFD432A7C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579085AbhCBQ2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:28:13 -0500
-Received: from mga12.intel.com ([192.55.52.136]:14370 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1572968AbhCBOIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:08:11 -0500
-IronPort-SDR: 0ho4jQ7YmMGLKIMRynxwbKypLuRqpAsXzkAUdJbjoRvn6gv9LV1bS3inYT75cjoVwPrQQGXDYp
- W1i/3oVry+IQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="166052176"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="166052176"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 05:56:35 -0800
-IronPort-SDR: VEMh6AVOuh5XXgXupaOVaZ6/yGrxmzRpuG1sow66gz5dwH9lWho6rakMIbOBiWOXRMWsktXOrg
- 1AB1Qy8lvtLQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="599675853"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 02 Mar 2021 05:56:33 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 265E8F4; Tue,  2 Mar 2021 15:56:33 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH v1 5/5] mfd: intel_quark_i2c_gpio: Reuse BAR definitions for MFD cell indexing
-Date:   Tue,  2 Mar 2021 15:56:20 +0200
-Message-Id: <20210302135620.89958-5-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
-References: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
+        id S1839554AbhCBQgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:36:47 -0500
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:35308 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1443708AbhCBOLA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:11:00 -0500
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.13]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee3603e441a544-909db; Tue, 02 Mar 2021 21:56:44 +0800 (CST)
+X-RM-TRANSID: 2ee3603e441a544-909db
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.0.144.162])
+        by rmsmtp-syy-appsvr07-12007 (RichMail) with SMTP id 2ee7603e4418325-20d03;
+        Tue, 02 Mar 2021 21:56:44 +0800 (CST)
+X-RM-TRANSID: 2ee7603e4418325-20d03
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     broonie@kernel.org, paul@crapouillou.net, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH v2] ASoC: codec: Omit superfluous error message in  jz4760_codec_probe()
+Date:   Tue,  2 Mar 2021 21:56:30 +0800
+Message-Id: <20210302135630.11456-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's convenient and less error prone to use definitions to address
-different cells in an array. For this purpose we may reuse existing
-BAR definitions.
+The function devm_platform_ioremap_resource has already contained
+error message, so remove the redundant dev_err here.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 ---
- drivers/mfd/intel_quark_i2c_gpio.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+Changes from v1
+ - to streamline the code.
+---
+ sound/soc/codecs/jz4760.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
-index 7af22d1399e1..40871ce34e82 100644
---- a/drivers/mfd/intel_quark_i2c_gpio.c
-+++ b/drivers/mfd/intel_quark_i2c_gpio.c
-@@ -98,14 +98,6 @@ static struct mfd_cell_acpi_match intel_quark_acpi_match_gpio = {
- };
+diff --git a/sound/soc/codecs/jz4760.c b/sound/soc/codecs/jz4760.c
+index e8f28ccc145a..5ae0e312bcfc 100644
+--- a/sound/soc/codecs/jz4760.c
++++ b/sound/soc/codecs/jz4760.c
+@@ -841,11 +841,8 @@ static int jz4760_codec_probe(struct platform_device *pdev)
+ 	codec->dev = dev;
  
- static struct mfd_cell intel_quark_mfd_cells[] = {
--	{
--		.id = MFD_GPIO_BAR,
--		.name = "gpio-dwapb",
--		.acpi_match = &intel_quark_acpi_match_gpio,
--		.num_resources = ARRAY_SIZE(intel_quark_gpio_res),
--		.resources = intel_quark_gpio_res,
--		.ignore_resource_conflicts = true,
--	},
- 	{
- 		.id = MFD_I2C_BAR,
- 		.name = "i2c_designware",
-@@ -114,6 +106,14 @@ static struct mfd_cell intel_quark_mfd_cells[] = {
- 		.resources = intel_quark_i2c_res,
- 		.ignore_resource_conflicts = true,
- 	},
-+	{
-+		.id = MFD_GPIO_BAR,
-+		.name = "gpio-dwapb",
-+		.acpi_match = &intel_quark_acpi_match_gpio,
-+		.num_resources = ARRAY_SIZE(intel_quark_gpio_res),
-+		.resources = intel_quark_gpio_res,
-+		.ignore_resource_conflicts = true,
-+	},
- };
+ 	codec->base = devm_platform_ioremap_resource(pdev, 0);
+-	if (IS_ERR(codec->base)) {
+-		ret = PTR_ERR(codec->base);
+-		dev_err(dev, "Failed to ioremap mmio memory: %d\n", ret);
+-		return ret;
+-	}
++	if (IS_ERR(codec->base))
++		return PTR_ERR(codec->base);
  
- static const struct pci_device_id intel_quark_mfd_ids[] = {
-@@ -245,11 +245,11 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
- 	if (ret)
- 		return ret;
- 
--	ret = intel_quark_i2c_setup(pdev, &intel_quark_mfd_cells[1]);
-+	ret = intel_quark_i2c_setup(pdev, &intel_quark_mfd_cells[MFD_I2C_BAR]);
- 	if (ret)
- 		goto err_unregister_i2c_clk;
- 
--	ret = intel_quark_gpio_setup(pdev, &intel_quark_mfd_cells[0]);
-+	ret = intel_quark_gpio_setup(pdev, &intel_quark_mfd_cells[MFD_GPIO_BAR]);
- 	if (ret)
- 		goto err_unregister_i2c_clk;
- 
+ 	codec->regmap = devm_regmap_init(dev, NULL, codec,
+ 					&jz4760_codec_regmap_config);
 -- 
-2.30.1
+2.18.2
+
+
 
