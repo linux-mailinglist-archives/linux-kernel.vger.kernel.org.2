@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7994432AE4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E8F32AE3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838111AbhCBXEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 18:04:31 -0500
-Received: from mail.lindev.ch ([5.39.83.55]:48420 "EHLO mail.lindev.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2360342AbhCBWTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:19:33 -0500
-X-Greylist: delayed 390 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Mar 2021 17:19:32 EST
-Received: from lindev.ch (unknown [87.122.230.249])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bero@lindev.ch)
-        by mail.lindev.ch (Postfix) with ESMTPSA id A1E5D3FDB5;
-        Tue,  2 Mar 2021 23:12:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lindev.ch; s=dkim;
-        t=1614723132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TUxpnoeeEAmGStcGyZVTJQci34Njw6wuoLazbxteiW8=;
-        b=wtKjSnC3gNfEJtvMAGPqt8lHrnQ0v0rHJvBXa1w87prkCqiFFsKCg54SdVGtGADwzaHzkc
-        FPtel9tRrC9keBhASU94jqII0kk8+IwRiAlCi1aGkUWCMo210Luk54fDHoIaGLvGARXNSY
-        lRGWH64U1+zxlqhUTpEK6NENrj8XyBk=
-From:   =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@lindev.ch>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@lindev.ch>
-Subject: [PATCH] Fix ld-version.sh script if LLD was built with LLD_VENDOR
-Date:   Tue,  2 Mar 2021 23:12:11 +0100
-Message-Id: <20210302221211.1620858-1-bero@lindev.ch>
-X-Mailer: git-send-email 2.30.1
+        id S1384630AbhCBWmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:42:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1837966AbhCBWNZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 17:13:25 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C67C061793;
+        Tue,  2 Mar 2021 14:13:02 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id l18so2982646pji.3;
+        Tue, 02 Mar 2021 14:13:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ecJdeElUJJMHQInqnrUdxKE6tvq3liGqZTibkwGHoVs=;
+        b=Bv7oItXOzwQ5jTvhfpQBY23MXVSkBq20atwzF0Fqb3BMnilW5VGKvbJuSNvBL/cekv
+         WPVEQRrN1XTdNZhilwQ5f7IPe4JRG7vdtOIZuPph5Zkh+lYI5kAMYtb0Rd4pl+OjdW6L
+         eNqgTa4t6FMjbuAhZBBkzl5W653fD4zuWS+F9VeODl8y5Mz3UhlHNfdwI3D6pIaMA9wa
+         dg28DA7SY+yFj+6dg/J5J2UtuBVbajokO2pqze4Ef9JTHUtm2FReM1J2wdlMC21fhBB8
+         3W9mmUG1iYEfdb5EqPSu2v00Q96neJba8TR1YMwp3PABZqqVCwCTszhjpoYm6JaSZYxw
+         YAsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ecJdeElUJJMHQInqnrUdxKE6tvq3liGqZTibkwGHoVs=;
+        b=lOtJHUUeEK+aMFI6TKgMC4UU2L6o5k7WkCYGI36xOiHuluh2Ub0YMZ9KV8jvSfVYVf
+         Juiy7kpDKkRMkgBkQ9nG+nKQYBUPqrNKL39+A3Rk8qUfNYBmYk7Jq7AlCQVwvVQxf6PQ
+         qNDqDzr+sOskqo/itadb0Cm2H1jsFQnAW71Lmt0PDUWcbTn4MS14Y67/9HxKr4/aEVv9
+         4avgfnGwHpQenvHFtKxVffnywC3+YHjwPBwzZSAjruGu59XKD8zuSrdZj6a/tWBqF5GD
+         GQLgdu0/Ry2UeXyjTRuFG4+nfxX/Wp+kMymBi8USVRoGEsTX4limuJcJDEQgumaS2Bs+
+         LsFg==
+X-Gm-Message-State: AOAM533txlqFDaUTxQ4MYOK1Vm+38LmSoMFc6f7hyKcyzAEVbXujK5Kj
+        4LuSNofkXcL2kSCNCt3ZSsf0cEnVvk8=
+X-Google-Smtp-Source: ABdhPJzHZVRRlzh5pPqCJL/XMPk4KLXZ9ENteJe7elO2v1SWB+RimM1rFWjfYePeaSYthxrzHj+4mA==
+X-Received: by 2002:a17:90b:3890:: with SMTP id mu16mr6450923pjb.9.1614723181599;
+        Tue, 02 Mar 2021 14:13:01 -0800 (PST)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id b22sm22220334pfo.23.2021.03.02.14.13.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 14:13:00 -0800 (PST)
+Subject: Re: [PATCH 5.10 000/657] 5.10.20-rc4 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210302192700.399054668@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <b5362ba2-e0df-382c-65af-ea880296ff9b@gmail.com>
+Date:   Tue, 2 Mar 2021 14:12:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210302192700.399054668@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If LLD was built with -DLLD_VENDOR="xyz", ld.lld --version output
-will prefix LLD_VENDOR. Since LLD_VENDOR can contain spaces, the
-LLD identifier isn't guaranteed to be $2 either.
+On 3/2/21 11:28 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.20 release.
+> There are 657 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 04 Mar 2021 19:25:07 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.20-rc4.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Adjust the version checker to handle such versions of lld.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernel:
 
-Signed-off-by: Bernhard Rosenkränzer <bero@lindev.ch>
----
- scripts/ld-version.sh | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/scripts/ld-version.sh b/scripts/ld-version.sh
-index a463273509b5..4c042a306e22 100755
---- a/scripts/ld-version.sh
-+++ b/scripts/ld-version.sh
-@@ -49,6 +49,18 @@ elif [ "$1" = LLD ]; then
- 	min_version=$lld_min_version
- 	name=LLD
- 	disp_name=LLD
-+elif echo "$@" |grep -q ' LLD '; then
-+	# if LLD was built with -DLLD_VENDOR="xyz", it ld.lld --version
-+	# says "xyz LLD [...]". Since LLD_VENDOR may contain spaces, we
-+	# don't know the exact position of "LLD" and the version info
-+	# at this point
-+	while [ "$1" != "LLD" ]; do
-+		shift
-+	done
-+	version=$2
-+	min_version=$lld_min_version
-+	name=LLD
-+	disp_name=LLD
- else
- 	echo "$orig_args: unknown linker" >&2
- 	exit 1
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.30.1
-
+Florian
