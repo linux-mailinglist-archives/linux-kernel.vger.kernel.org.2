@@ -2,70 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C0B32A31D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A395032A315
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381890AbhCBIrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:47:20 -0500
-Received: from mga11.intel.com ([192.55.52.93]:8982 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1381685AbhCBIbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:31:45 -0500
-IronPort-SDR: PHKlo9dePJ1n8uOQvcMFozG2INT9ufL5fn9Gti0Xp8x2LgFSawb9a85AjoHizLmr6m02B7XLf2
- joHmKJBXp/JA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="183340455"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="183340455"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 00:27:36 -0800
-IronPort-SDR: X48LF1vSvlfDH+mntuNDOUikuDyU5dXy1/6HejuRlt9XVne9Qfu/JD9DY3Yuz4GQG6/5tHZQv1
- wG+YzVJHRVCw==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="406613529"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 00:27:31 -0800
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH v2 3/3] soundwire: intel: add master quirks for bus clash and parity
-Date:   Tue,  2 Mar 2021 16:27:20 +0800
-Message-Id: <20210302082720.12322-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210302082720.12322-1-yung-chuan.liao@linux.intel.com>
-References: <20210302082720.12322-1-yung-chuan.liao@linux.intel.com>
+        id S1381815AbhCBIqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:46:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377821AbhCBI3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:29:10 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30123C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 00:28:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=QIDoycnXV4u4apFX/LX0JZIstXHhhjNZbn+dJEAjxXY=; b=VjVyB7rFd93m5C2LrWCFcP6i5P
+        +JDCMN11DWzqdn4erC+f+L0KTco+yE21te+GYXWOgGV4f7I3aLfwC8m+mprhVHkix7l0sJCuVojEg
+        bRKwvsvzM2cuRghPI3plbQgNYEIa5H5CjF/6ehIfy36bCG5iIZUVZNRjjrJ+XwA4rYw2+OGlsei9M
+        PYjueUjNPmK/Vrv4GPpT9DqLs56O0seUMs0QCEqMg6feXogi/FCJB71lj/QIubGJAFb/f0If/uZo6
+        Quh1g5M+EHgMufJzYI9rIoL/2VEFSXp6ve5/iab/0yMKtV5sHzk7S+M3g8LZJk+wuvTwfj5bihU7d
+        UaT3ZKnQ==;
+Received: from [2601:1c0:6280:3f0::3ba4] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lH0O7-0002OX-QD; Tue, 02 Mar 2021 08:28:16 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, Anton Blanchard <anton@samba.org>
+Subject: [PATCH] powerpc: iommu: fix build when neither PCI or IBMVIO is set
+Date:   Tue,  2 Mar 2021 00:28:11 -0800
+Message-Id: <20210302082811.8671-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have declarations and bus support, add quirks for Intel
-platforms.
+When neither CONFIG_PCI nor CONFIG_IBMVIO is enabled:
 
-Co-developed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+../arch/powerpc/kernel/iommu.c:178:30: error: 'fail_iommu_bus_notifier' defined but not used [-Werror=unused-variable]
+  178 | static struct notifier_block fail_iommu_bus_notifier = {
+
+If only that struct is bounded by 2 #if defined() phrases (PCI && IBMVIO):
+
+../arch/powerpc/kernel/iommu.c:162:12: error: 'fail_iommu_bus_notify' defined but not used [-Werror=unused-function]
+  162 | static int fail_iommu_bus_notify(struct notifier_block *nb,
+
+If that function is also guarded by 2 #if defined() phrases:
+
+In file included from ../include/linux/dma-mapping.h:7,
+                 from ../arch/powerpc/kernel/iommu.c:19:
+../include/linux/device.h:131:26: error: 'dev_attr_fail_iommu' defined but not used [-Werror=unused-variable]
+  131 |  struct device_attribute dev_attr_##_name = __ATTR_RW(_name)
+../arch/powerpc/kernel/iommu.c:160:8: note: in expansion of macro 'DEVICE_ATTR_RW'
+  160 | static DEVICE_ATTR_RW(fail_iommu);
+
+and the snowball continues to grow.
+Next I got this one:
+
+../arch/powerpc/kernel/iommu.c: In function 'iommu_range_alloc':
+../arch/powerpc/kernel/iommu.c:234:6: error: implicit declaration of function 'should_fail_iommu'; did you mean 'should_failslab'? [-Werror=implicit-function-declaration]
+  234 |  if (should_fail_iommu(dev))
+
+and
+
+../arch/powerpc/kernel/iommu.c: In function 'should_fail_iommu':
+../arch/powerpc/kernel/iommu.c:122:50: error: 'fail_iommu' undeclared (first use in this function)
+  122 |  return dev->archdata.fail_iommu && should_fail(&fail_iommu, 1);
+
+So combine CONFIG_FAIL_IOMMU && (CONFIG_PCI || CONFIG_IBMVIO)
+to decide on building some of this code/data.
+
+This came from a .config file from the kernel test robot, but it was
+not for this particular build problem.
+
+Fixes: d6b9a81b2a45 ("powerpc: IOMMU fault injection")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Anton Blanchard <anton@samba.org>
 ---
- drivers/soundwire/intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+Found/seen in v5.12-rc1.
 
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index a2d5cdaa9998..c1fdc85d0a74 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -1286,6 +1286,9 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
- 	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
- 		prop->hw_disabled = true;
- 
-+	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH |
-+		SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY;
-+
- 	return 0;
+ arch/powerpc/kernel/iommu.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+--- lnx-512-rc1.orig/arch/powerpc/kernel/iommu.c
++++ lnx-512-rc1/arch/powerpc/kernel/iommu.c
+@@ -115,7 +115,13 @@ static int __init setup_iommu_pool_hash(
  }
+ subsys_initcall(setup_iommu_pool_hash);
  
--- 
-2.17.1
-
+-#ifdef CONFIG_FAIL_IOMMU
++#if defined(CONFIG_FAIL_IOMMU) && \
++   (defined(CONFIG_PCI) || defined(CONFIG_IBMVIO))
++
++static bool should_fail_iommu(struct device *dev)
++{
++	return dev->archdata.fail_iommu && should_fail(&fail_iommu, 1);
++}
+ 
+ static DECLARE_FAULT_ATTR(fail_iommu);
+ 
+@@ -125,11 +131,6 @@ static int __init setup_fail_iommu(char
+ }
+ __setup("fail_iommu=", setup_fail_iommu);
+ 
+-static bool should_fail_iommu(struct device *dev)
+-{
+-	return dev->archdata.fail_iommu && should_fail(&fail_iommu, 1);
+-}
+-
+ static int __init fail_iommu_debugfs(void)
+ {
+ 	struct dentry *dir = fault_create_debugfs_attr("fail_iommu",
