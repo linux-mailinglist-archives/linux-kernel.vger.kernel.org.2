@@ -2,112 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0714932A8ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B11532A96A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580420AbhCBSDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:03:03 -0500
-Received: from aposti.net ([89.234.176.197]:39826 "EHLO aposti.net"
+        id S1835146AbhCBSWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:22:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1575646AbhCBPYR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:24:17 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     od@zcrc.me, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 1/2] dt-bindings: media: Document RDA5807 FM radio bindings
-Date:   Tue,  2 Mar 2021 14:42:35 +0000
-Message-Id: <20210302144236.72824-1-paul@crapouillou.net>
+        id S1447428AbhCBPdS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:33:18 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDFE964F34;
+        Tue,  2 Mar 2021 14:56:06 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 09:56:05 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Chen <peter.chen@kernel.org>
+Cc:     Pawel Laszczak <pawell@cadence.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jacob Wen <jian.w.wen@oracle.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 0/2] tracing: Detect unsafe dereferencing of pointers
+ from trace events
+Message-ID: <20210302095605.7b2881cd@gandalf.local.home>
+In-Reply-To: <20210302082355.GA8633@nchen>
+References: <20210226185909.100032746@goodmis.org>
+        <CAHk-=wiWF=ah_q1HBVUth2vuBx2TieN8U331y5FhXiehX-+=TQ@mail.gmail.com>
+        <20210227141802.5c9aca91@oasis.local.home>
+        <20210227190831.56956c80@oasis.local.home>
+        <BYAPR07MB5381637CFA12C3988CA06550DD9A9@BYAPR07MB5381.namprd07.prod.outlook.com>
+        <20210302082355.GA8633@nchen>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for the devicetree bindings of the RDA5807 FM radio
-I2C chip from Unisoc.
+On Tue, 2 Mar 2021 16:23:55 +0800
+Peter Chen <peter.chen@kernel.org> wrote:
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- .../bindings/media/i2c/rda,rda5807.yaml       | 67 +++++++++++++++++++
- 1 file changed, 67 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/media/i2c/rda,rda5807.yaml
+s it looks like it uses %pa which IIUC from the printk code, it
+> > >> dereferences the pointer to find it's virtual address. The event has
+> > >> this as the field:
+> > >>
+> > >>                 __field(struct cdns3_trb *, start_trb_addr)
+> > >>
+> > >> Assigns it with:
+> > >>
+> > >>                 __entry->start_trb_addr = req->trb;
+> > >>
+> > >> And prints that with %pa, which will dereference pointer at the time of
+> > >> reading, where the address in question may no longer be around. That
+> > >> looks to me as a potential bug.  
+> 
+> Steven, thanks for reporting. Do you mind sending patch to fix it?
+> If you have no time to do it, I will do it later.
+> 
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/rda,rda5807.yaml b/Documentation/devicetree/bindings/media/i2c/rda,rda5807.yaml
-new file mode 100644
-index 000000000000..f50e54a722eb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/i2c/rda,rda5807.yaml
-@@ -0,0 +1,67 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/i2c/rda,rda5807.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Unisoc Communications RDA5807 FM radio receiver
-+
-+maintainers:
-+  - Paul Cercueil <paul@crapouillou.net>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - rda,rda5807
-+
-+  reg:
-+    description: I2C address.
-+    maxItems: 1
-+
-+  power-supply: true
-+
-+  rda,lnan:
-+    description: Use LNAN input port.
-+    type: boolean
-+
-+  rda,lnap:
-+    description: Use LNAP input port.
-+    type: boolean
-+
-+  rda,analog-out:
-+    description: Enable analog audio output.
-+    type: boolean
-+
-+  rda,i2s-out:
-+    description: Enable I2S digital audio output.
-+    type: boolean
-+
-+  rda,lna-microamp:
-+    description: LNA working current, in micro-amperes.
-+    default: 2500
-+    enum: [1800, 2100, 2500, 3000]
-+
-+required:
-+  - compatible
-+  - reg
-+  - power-supply
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c0 {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      radio@11 {
-+        compatible = "rda,rda5807";
-+        reg = <0x11>;
-+
-+        power-supply = <&ldo6>;
-+
-+        rda,lnan;
-+        rda,lnap;
-+        rda,analog-out;
-+      };
-+    };
--- 
-2.30.1
+I would have already fixed it, but I wasn't exactly sure how this is used.
 
+In Documentation/core-api/printk-formats.rst we have:
+
+   Physical address types phys_addr_t
+   ----------------------------------
+
+   ::
+
+           %pa[p]  0x01234567 or 0x0123456789abcdef
+
+   For printing a phys_addr_t type (and its derivatives, such as
+   resource_size_t) which can vary based on build options, regardless of the
+   width of the CPU data path.
+
+So it only looks like it is used to for the size of the pointer.
+
+I guess something like this might work:
+
+diff --git a/drivers/usb/cdns3/cdns3-trace.h b/drivers/usb/cdns3/cdns3-trace.h
+index 8648c7a7a9dd..d3b8624fc427 100644
+--- a/drivers/usb/cdns3/cdns3-trace.h
++++ b/drivers/usb/cdns3/cdns3-trace.h
+@@ -214,7 +214,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+ 		__field(int, no_interrupt)
+ 		__field(int, start_trb)
+ 		__field(int, end_trb)
+-		__field(struct cdns3_trb *, start_trb_addr)
++		__field(phys_addr_t, start_trb_addr)
+ 		__field(int, flags)
+ 		__field(unsigned int, stream_id)
+ 	),
+@@ -230,7 +230,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+ 		__entry->no_interrupt = req->request.no_interrupt;
+ 		__entry->start_trb = req->start_trb;
+ 		__entry->end_trb = req->end_trb;
+-		__entry->start_trb_addr = req->trb;
++		__entry->start_trb_addr = *(const phys_addr_t *)req->trb;
+ 		__entry->flags = req->flags;
+ 		__entry->stream_id = req->request.stream_id;
+ 	),
+@@ -244,7 +244,7 @@ DECLARE_EVENT_CLASS(cdns3_log_request,
+ 		__entry->status,
+ 		__entry->start_trb,
+ 		__entry->end_trb,
+-		__entry->start_trb_addr,
++		/* %pa dereferences */ &__entry->start_trb_addr,
+ 		__entry->flags,
+ 		__entry->stream_id
+ 	)
+
+
+Can you please test it? I don't have the hardware, but I also want to make
+sure I don't break anything.
+
+Thanks,
+
+-- Steve
