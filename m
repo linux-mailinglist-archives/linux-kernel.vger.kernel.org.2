@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0A832AA3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FB132A9FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581692AbhCBTQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:16:49 -0500
-Received: from mail-vs1-f54.google.com ([209.85.217.54]:38237 "EHLO
-        mail-vs1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1839566AbhCBQh2 (ORCPT
+        id S1576139AbhCBSs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:48:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1839026AbhCBP4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:37:28 -0500
-Received: by mail-vs1-f54.google.com with SMTP id l192so10913296vsd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:36:36 -0800 (PST)
+        Tue, 2 Mar 2021 10:56:12 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC17C0617A7;
+        Tue,  2 Mar 2021 06:32:28 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id bd6so12198568edb.10;
+        Tue, 02 Mar 2021 06:32:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Am1a6SP1lIBYmPhsqzqN/wdobE8TF1PX/9qBt9ePMdE=;
+        b=qPtUCPCo1olJ3B9E9rwQl3QrypoiL2tKAnbCXopbsVVBvw6fdTNtawzozZGwFXz9iD
+         nkNmfJBtOt0HAx1f5PQcv2NihpNJOlvlihR8p1m/IM3pVH569sQLwLPFCUCuUWsEfdCF
+         O31nNIGaHoyyyg5I1+2lsMGm+JiELOeE5H2FW0FkcMn/ci+wwD+SVB8y2wFXldhx5HAe
+         6tb/a0SLA1S3UHWpp9LA+X+j3o4gsoO5JrDE5aJMhXSeIO3esejgrc4NSgr1TSqbgTPV
+         IWaZOXr1KGhthoVJwBftWZZxkJ0cX8Dr0SZ4gSDW026KtIUbeXWp01oTUl5uGkT7TA2A
+         7eog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KIHxy2MH0U5p3wSVrHtjrqodVtUE1t1KDTaIUnigDW4=;
-        b=CFLcRbF419AArF8j6kYceW3Fe7wF9rzDe/aYpKGAuAAM33u3ycMHKLlrAt5NZ9UE6S
-         D7U5GTvdI+AZsR/tBzN6kJ0ajFBMtBDXMQBvBEOKxgGHlxXJeSDP9g5Uu7e/togF2ny1
-         IrPTcvgdcVS+tnzU8+5c3hgM2pdVCjHr2hhjS+CRgrDl4bvDpuiAqfSAsSgCeZ+s27ZJ
-         3Gfz+eJBWrfVeaMk4ZVXJSs39jlLy5eOfdrSpmUQaLOhcVPiJW1fsot+sFgDfGn/K78L
-         UaXKfuEIO3C8VqhT70CMGPtdvVYL46bmbTzPJE6U0KzgAu5W5Nj4Oq+To+tSnRaULEXH
-         jxow==
-X-Gm-Message-State: AOAM533CL+x2+tNfnlTJeSrSLEEu/0zx5VnJgOF20WaFmCAU48FQsuqs
-        +GhfyUBvhvyxwJuxExspbaIXbQvzp6CCggu8cMmwQOgjf24=
-X-Google-Smtp-Source: ABdhPJzrg0G5QeNeHFj1kuSdPw0AzLBz9LAImTbZlPsa0SvOOKlz2FImxa5JEylhcOwUREkyfEsRxh5TxoDWOCNX5PQ=
-X-Received: by 2002:ac5:ce04:: with SMTP id j4mr7993409vki.1.1614695300432;
- Tue, 02 Mar 2021 06:28:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20210214161348.369023-1-timur@kernel.org> <20210214161348.369023-4-timur@kernel.org>
- <CAMuHMdULKZCJevVJcp7TxzLdWLjsQPhE8hqxhnztNi9bjT_cEw@mail.gmail.com>
- <CANpmjNNm-4s16_KQ1_NqFN4XOESJh4_=33LHQzt+p4V0Cy=Xzw@mail.gmail.com>
- <CAMuHMdWWsZ-vTGZCeLtcwLTuBYpeP0STfhrK37wiwmyfsQ798A@mail.gmail.com>
- <YD49x/UGUq6MSE39@alley> <8893ff08-1e50-316c-f632-cd37be1690d5@suse.cz>
- <CAMuHMdUB4DZxHo=j1+EsSsoGCdWmDO9mBo0cUtAH4OYHy3sBzw@mail.gmail.com> <20210302090811.620ae7d0@gandalf.local.home>
-In-Reply-To: <20210302090811.620ae7d0@gandalf.local.home>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 2 Mar 2021 15:28:09 +0100
-Message-ID: <CAMuHMdVYJ0ydFEZ+xPLt27J9pBW+B8pJNPBDZ2Vw5g5k1atarg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] [v4] lib/vsprintf: no_hash_pointers prints all
- addresses as unhashed
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, Petr Mladek <pmladek@suse.com>,
-        Marco Elver <elver@google.com>, Timur Tabi <timur@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        roman.fietze@magna.com, Kees Cook <keescook@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Pavel Machek <pavel@ucw.cz>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Am1a6SP1lIBYmPhsqzqN/wdobE8TF1PX/9qBt9ePMdE=;
+        b=SjK/UYGf7Uib20J2c9Ca4Fsai9QJ0YFnajwFqcKpE104J6cRuOEal1IziaV+6IvSkv
+         l0Ce2oaqVCXSPylJtnHE3ebxxlhgVr+/Z4wUifSeyuBKGEjwPOzW+pihMAHbQ/P59Mvp
+         0IOHq4i28+gaegRRxpz2lUdMk3D4UD2HdNI28vuD2CAi8f8cq2Jxpbewp59sr5J4V6bN
+         iH1tDBbOE8o/knkTtA4MuacQgVSlra/6lg3u4sjlZr76Jyr9OAfTtScjvYTghA86FPvb
+         AzRXsKQBj/0JMIcpLe+ckcEWMvtW01G9ksy6Ru1ijH/o1tQ1i3bN3lq1Xuh9aggImLMJ
+         5qUA==
+X-Gm-Message-State: AOAM532K24Bz8eZyaevVr3tPMwsuU9wjNVMKwLJD+b28CqXMyLkAeoHk
+        hzH00MURrEcjcovK7qOE62M=
+X-Google-Smtp-Source: ABdhPJxTPYjmiTLFJ/xr+8hRvlCShkvbocmTzo0rrgQEVYCzRgTmO4kwRNJxOTG7nk/s8afYethq0w==
+X-Received: by 2002:a50:a086:: with SMTP id 6mr20503152edo.70.1614695547654;
+        Tue, 02 Mar 2021 06:32:27 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
+        by smtp.googlemail.com with ESMTPSA id s13sm17250242edr.86.2021.03.02.06.32.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 02 Mar 2021 06:32:27 -0800 (PST)
+Message-ID: <1988de01138118e8361b90acce25332adb2c1e24.camel@gmail.com>
+Subject: Re: [PATCH v25 4/4] scsi: ufs: Add HPB 2.0 support
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        SEUNGUK SHIN <seunguk.shin@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+Date:   Tue, 02 Mar 2021 15:32:25 +0100
+In-Reply-To: <DM6PR04MB6575372560ACA643845C891CFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p8>
+         <CGME20210226073233epcms2p80fca2dffabea03143a9414838f757633@epcms2p5>
+         <20210226073525epcms2p5e7ddd6e92b2f76b2b3dcded49f8ff256@epcms2p5>
+         <fb70bf48fab65474bf2f15a436852ccf9a3db026.camel@gmail.com>
+         <DM6PR04MB6575372560ACA643845C891CFC999@DM6PR04MB6575.namprd04.prod.outlook.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+On Tue, 2021-03-02 at 13:15 +0000, Avri Altman wrote:
+> > 
+> > On Fri, 2021-02-26 at 16:35 +0900, Daejun Park wrote:
+> > > +static void ufshpb_set_unmap_cmd(unsigned char *cdb, struct
+> > > ufshpb_region *rgn)
+> > > +{
+> > > +       cdb[0] = UFSHPB_WRITE_BUFFER;
+> > > +       cdb[1] = rgn ? UFSHPB_WRITE_BUFFER_INACT_SINGLE_ID :
+> > > +                         UFSHPB_WRITE_BUFFER_INACT_ALL_ID;
+> > 
+> > Here is wrong,
+> > Valid HPB Region is (0 ~ (Ceiling( Region size calculated by
+> > bHPBRegionSize )- 1) ). how do you know the region==0 is not
+> > a single normal region?
+> 
+> Please note that rgn  here is a ufshpb_region *rgn
+> 
+I see, thanks. 
 
-On Tue, Mar 2, 2021 at 3:08 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> On Tue, 2 Mar 2021 14:49:42 +0100
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > So this is basically a kernel tinyfication issue, right? Is that still pursued
-> > > today? Are there better config options suitable for this than CONFIG_DEBUG_KERNEL?
-> >
-> > As long as I hear about products running Linux on SoCs with 10 MiB of
-> > SRAM, I think the answer is yes.
-> > I'm not immediately aware of a better config option.  There are no more
-> > TINY options left, and EXPERT selects DEBUG_KERNEL.
->
-> Since the trace_printk() uses the same type of notice, I wonder if we could
-> make this into a helper function and just pass in the top part.
->
-> +       pr_warn("**********************************************************\n");
-> +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> +       pr_warn("**                                                      **\n");
->
->
-> +       pr_warn("** This system shows unhashed kernel memory addresses   **\n");
-> +       pr_warn("** via the console, logs, and other interfaces. This    **\n");
-> +       pr_warn("** might reduce the security of your system.            **\n");
->
-> Only the above section is really unique. The rest can be a boiler plate.
+> Thanks,
+> Avri
 
-Good idea. drivers/iommu/iommu-debugfs.c has a third copy.
-
-> +       pr_warn("**                                                      **\n");
-> +       pr_warn("** If you see this message and you are not debugging    **\n");
-> +       pr_warn("** the kernel, report this immediately to your system   **\n");
-> +       pr_warn("** administrator!                                       **\n");
-> +       pr_warn("**                                                      **\n");
-> +       pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
-> +       pr_warn("**********************************************************\n");
-
-Fortunately gcc is already smart enough to deduplicate identical strings,
-but only in the same source file.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
