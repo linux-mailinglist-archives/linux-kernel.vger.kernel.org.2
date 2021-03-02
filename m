@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BCE32A487
+	by mail.lfdr.de (Postfix) with ESMTP id 9444332A488
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383220AbhCBKvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:51:52 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:41702 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1379949AbhCBKWF (ORCPT
+        id S1383231AbhCBKwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379957AbhCBKWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 05:22:05 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122AHmce015298;
-        Tue, 2 Mar 2021 11:20:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=AHNRA07W/8XeOi1fcP+UwN+hE9l5HeWlAvjNP7Od2XQ=;
- b=K44Nf8dxpJTK46y0qHK1yIq2djKmoAPatyObmNxYQPiIHtUDRntpEEGxwmjemolYJOln
- TwbbG4a5qd9k9WdP1v6bqkilm8txSV4YWh2FMjdeyLo0GsgGF4KSKVWDkXaI3jzl75y+
- x84hXPiJBBmoociIaR/6Cv4F1QVmeyaMRocSFDuzJ7i0ljHCHU0VoSRtZyMIprqvkHEP
- Gsq7KBRJwOD0nOLLa0NZI6Q1MTY1hjGfS1xcN/CMXD4DTnGW0mdvpZNxSbwWD3l50Yfj
- r6gBbq9PjvdEQl60wr1Shi3WdX2iPAmaoNBZQ8kSJnLQpKWrnkDlvCnxz13uddjcsCbQ 8g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36yf9q1dun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 11:20:10 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 93F86100034;
-        Tue,  2 Mar 2021 11:20:09 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 717022C38D2;
-        Tue,  2 Mar 2021 11:20:09 +0100 (CET)
-Received: from [10.211.13.170] (10.75.127.50) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Mar
- 2021 11:20:08 +0100
-Subject: Re: [PATCH v2 1/2] tty/serial: Add rx-tx-swap OF option to
- stm32-usart
-To:     Martin DEVERA <devik@eaxlabs.cz>, <linux-kernel@vger.kernel.org>
-CC:     <devicetree@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        <linux-serial@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Le Ray <erwan.leray@st.com>
-References: <CAL_JsqK8+M=Vg0PiDXP2f1LrEp4hSVea6piAASMGu1H=pxme6Q@mail.gmail.com>
- <20210227164157.30971-1-devik@eaxlabs.cz>
- <439a0d7a-cc0e-764b-7ed8-668b5a85f4a7@foss.st.com>
- <fbdce86c-a17f-7626-51e4-9e48ea25001e@eaxlabs.cz>
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Message-ID: <019b62e9-ec9b-d366-ee77-59c980d66a07@foss.st.com>
-Date:   Tue, 2 Mar 2021 11:20:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16E0C06178C;
+        Tue,  2 Mar 2021 02:20:46 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id s16so11752617plr.9;
+        Tue, 02 Mar 2021 02:20:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d11v9IAqVbtRrrz4bJn+a0ncXxedyZNk4F00Rwt6DFw=;
+        b=UXRCu+os0fc4GJYjB0rPkfKJfzT3HB6VKvcp+L6pJbf5n0mJAW7MNFHoEWgsj3RIy+
+         qah0cPjcFyFDVstfGMNoOi+TXq/W52zGc8jVTx3cA1tnK92DTiG9hq4hTX+KL2FDjhXE
+         tZA/p0tg3hZZvnwN5ptN//msrcLBo7mH4PmqtJRmRjsAxwaAZRVepyfRVaPrlsOxsPC9
+         5PDoNlTIwZlGlWH1YXVukOmxHkpNrqsQ0V/XZk7TcSwwG6IMMhHncSDo+BwZWlXbtec5
+         PwUmq/Pq5H5M3KO1cRbreyg5/j5hJgykepwelLcFUJMxJgLnrX0D+9UG6DqTkmjC7Fo/
+         4eZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d11v9IAqVbtRrrz4bJn+a0ncXxedyZNk4F00Rwt6DFw=;
+        b=RwpLJckudagG6nyPHp6U/TwxFKt40dvL2UjbfRubSmvSltN+NVOtfE7FjjOTVrj16K
+         muqFk3BmcIB/xd9aUjNc4JNtMcQtkjn5o40nYgWAcB2UQwQ9bEyNQ65eO9zdU72HhUZ8
+         5wuut6eqaZB0ObXlnpX9gobI0ijSPXoQ3M/vGjcluWPtCVySIeqih4i7jsBmaUjOnX0K
+         5mFGv17rKpuvxLa2TOTjHSpgeaYfFJiUYHwO4sNWzv+jSqwASzXfEuPLbRr/jStvt/Vh
+         Xiri1mTb1RnOVdTsszLENp604qdz3PGp5gQvJH9dl3IgiwF1zMB8wE/2H92FPmuYThQR
+         vYdw==
+X-Gm-Message-State: AOAM530kFxXtyaLwyYjAv75qcDD1q7JvWqqU69bmqHQP01JbPp7Mo2tX
+        uscw61R5gFoT8o6vddnv8yXDLhIptIklIHodFdYaCK8OMtVPdA==
+X-Google-Smtp-Source: ABdhPJzx0RIk9mIvqlpQYKrINVEPciiP5+tibyqxibsLaORkcZ0fGoB1ReSu1J7FcRe6nYxrNdTDZXz93X4TQS5wr+E=
+X-Received: by 2002:a17:90a:4fc1:: with SMTP id q59mr3832574pjh.129.1614680446053;
+ Tue, 02 Mar 2021 02:20:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <fbdce86c-a17f-7626-51e4-9e48ea25001e@eaxlabs.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-02_03:2021-03-01,2021-03-02 signatures=0
+References: <20210301072842.7410-1-dinghao.liu@zju.edu.cn> <CAHp75Vf86_Ccs7wqzbpWbLDZSSJLbMwZ1TX3dwru9JvXUTMR_Q@mail.gmail.com>
+ <44c09a14.a0cbd.177ed8446ea.Coremail.dinghao.liu@zju.edu.cn>
+ <CAHp75VdT04AVzW=C=SubHjUE5_MHBeC0ptHTFSLgKzrSP3HmRQ@mail.gmail.com> <56ec2ffd.a3db1.177f1db3d26.Coremail.dinghao.liu@zju.edu.cn>
+In-Reply-To: <56ec2ffd.a3db1.177f1db3d26.Coremail.dinghao.liu@zju.edu.cn>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 2 Mar 2021 12:20:29 +0200
+Message-ID: <CAHp75VctFSqxpSfCP=XDSd_QsqX6kpEN+VtKQQU7Xp_wpN52gw@mail.gmail.com>
+Subject: Re: Re: Re: [PATCH] sata_dwc_460ex: Fix missing check in sata_dwc_isr
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Kangjie Lu <kjlu@umn.edu>, Jens Axboe <axboe@kernel.dk>,
+        linux-ide@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 11:40 PM, Martin DEVERA wrote:
-> On 3/1/21 11:28 AM, Fabrice Gasnier wrote:
->> On 2/27/21 5:41 PM, Martin Devera wrote:
->>> STM32 F7/H7 usarts supports RX & TX pin swapping.
->>> Add option to turn it on.
->>> Tested on STM32MP157.
->>>
->>> Signed-off-by: Martin Devera <devik@eaxlabs.cz>
->>> ---
->>>   drivers/tty/serial/stm32-usart.c | 3 ++-
->>>   drivers/tty/serial/stm32-usart.h | 1 +
->>>   2 files changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/tty/serial/stm32-usart.c
->>> b/drivers/tty/serial/stm32-usart.c
->>> index b3675cf25a69..3650c8798061 100644
->>> --- a/drivers/tty/serial/stm32-usart.c
->>> +++ b/drivers/tty/serial/stm32-usart.c
->>> @@ -758,7 +758,7 @@ static void stm32_usart_set_termios(struct
->>> uart_port *port,
->>>       cr1 = USART_CR1_TE | USART_CR1_RE;
->>>       if (stm32_port->fifoen)
->>>           cr1 |= USART_CR1_FIFOEN;
->>> -    cr2 = 0;
->>> +    cr2 = stm32_port->swap ? USART_CR2_SWAP : 0;
->> Hi Martin,
->>
->> Same could be done in the startup routine, that enables the port for
->> reception (as described in Documentation/driver-api/serial/driver.rst)
-> Hello Fabrice,
-> 
-> I already incorporated all your comments but I'm struggling with the one
-> above.
-> The code must be in stm32_usart_set_termios too, because CR2 is modified.
+On Tue, Mar 2, 2021 at 9:34 AM <dinghao.liu@zju.edu.cn> wrote:
+> > On Mon, Mar 1, 2021 at 1:20 PM <dinghao.liu@zju.edu.cn> wrote:
+> > > > On Mon, Mar 1, 2021 at 9:44 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
 
-Hi Martin,
+...
 
-Yes, sure,
+> > > This issue is reported by my static analysis tool, so I don't have the
+> > > vulnerable input currently.
+> >
+> > Should we blindly follow everything that some (non-ideal) tool
+> > reports? I don't think so.
+> > For all my experiments with that hardware, I haven't heard about the
+> > issue with NULL pointers. Useless checks make code harder to read and
+> > CPU to waste cycles. It might be maintainers of this driver consider
+> > otherwise, so not my call.
+> >
+>
+> Thanks for your advice. I also checked all use of ata_qc_from_tag() in the
+> whole kernel and found all of them had return value checks except for the
+> calls in sata_dwc_isr(), which is odd.
 
-> What is the reason to have it in startup() ?
+Thanks for this information, it makes sense to me. Perhaps you need to
+put this into the commit message to justify the need of the change.
 
-RX is enabled at both places. So the swap setting should be there too.
+> There is no issue currently does not
+> mean it will never happen in the future. So I suggest the maintainer of function
+> sata_dwc_isr() to fix this issue.
 
-> Is it because USART can be started without calling set_termios at all ?
 
-Yes, that's what the driver API expects: "startup(port)" ... "Enable the
-port for reception."
 
-Best Regards,
-Fabrice
-
-> Like
-> to reuse bootloader's last settings ?
-> 
-> Thanks, Martin
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
