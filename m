@@ -2,163 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6230432A1D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 655C932A1D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836287AbhCBHAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:00:13 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:14488 "EHLO pegase1.c-s.fr"
+        id S1836303AbhCBHAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:00:32 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:32561 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1577117AbhCBFol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 00:44:41 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DqQzJ4fNTz9txSF;
-        Tue,  2 Mar 2021 06:43:40 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 7uVCM7tm9mbF; Tue,  2 Mar 2021 06:43:40 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DqQzJ3kTVz9txSD;
-        Tue,  2 Mar 2021 06:43:40 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4AC858B77B;
-        Tue,  2 Mar 2021 06:43:41 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 2Rkp5Zmdjb-s; Tue,  2 Mar 2021 06:43:41 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AE7DB8B75F;
-        Tue,  2 Mar 2021 06:43:40 +0100 (CET)
-Subject: Re: [PATCH V2] mm: Generalize HUGETLB_PAGE_SIZE_VARIABLE
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org
-Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>
-References: <1614661987-23881-1-git-send-email-anshuman.khandual@arm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <a3772544-1e84-1969-b71c-ea2a3d013471@csgroup.eu>
-Date:   Tue, 2 Mar 2021 06:43:39 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <1614661987-23881-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S1347607AbhCBFtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 00:49:39 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614664146; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=yZsIaCfh8FbjzuiZo8LpdyLwybvUiHmG/8YEbRVzzB8=; b=U6FieYeBeauyet7U2Gc4WZjlzSbTCvssvSq7L01E5MRBzPcGFH/YGqnzt/tMmLF4c8VXRmBw
+ cPHXMePv8/n4C1b7i1c1Uxay10uSMKXuARwtNTKl2qlue0nMzFW1hXdNMjHzcI2ie988khBk
+ q94d+WyjnOd2LM8xjsrRKHyv8XY=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 603dd1b21d4da3b75ddb86ca (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 05:48:34
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D80F2C43462; Tue,  2 Mar 2021 05:48:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D5018C433CA;
+        Tue,  2 Mar 2021 05:48:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D5018C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rajendra Nayak <rnayak@codeaurora.org>
+Subject: [PATCH 1/2] dt-bindings: power: rpmpd: Add sc7280 to rpmpd binding
+Date:   Tue,  2 Mar 2021 11:18:11 +0530
+Message-Id: <1614664092-9394-1-git-send-email-rnayak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add compatible and constants for the power domains exposed by the RPMH
+in the Qualcomm Technologies Inc sc7280 platform.
 
+Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+---
+ Documentation/devicetree/bindings/power/qcom,rpmpd.yaml |  1 +
+ include/dt-bindings/power/qcom-rpmpd.h                  | 11 +++++++++++
+ 2 files changed, 12 insertions(+)
 
-Le 02/03/2021 à 06:13, Anshuman Khandual a écrit :
-> HUGETLB_PAGE_SIZE_VARIABLE need not be defined for each individual
-> platform subscribing it. Instead just make it generic.
-> 
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: linux-ia64@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Suggested-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This change was originally suggested in an earilier discussion. This
-> applies on v5.12-rc1 and has been build tested on all applicable
-> platforms i.e ia64 and powerpc.
-> 
-> https://patchwork.kernel.org/project/linux-mm/patch/1613024531-19040-3-git-send-email-anshuman.khandual@arm.com/
-> 
-> Changes in V2:
-> 
-> - Added a description for HUGETLB_PAGE_SIZE_VARIABLE
+diff --git a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
+index 1ea21ac..e2179a6 100644
+--- a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
++++ b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
+@@ -25,6 +25,7 @@ properties:
+       - qcom,qcs404-rpmpd
+       - qcom,sdm660-rpmpd
+       - qcom,sc7180-rpmhpd
++      - qcom,sc7280-rpmhpd
+       - qcom,sdm845-rpmhpd
+       - qcom,sdx55-rpmhpd
+       - qcom,sm8150-rpmhpd
+diff --git a/include/dt-bindings/power/qcom-rpmpd.h b/include/dt-bindings/power/qcom-rpmpd.h
+index d711e25..0679fd1 100644
+--- a/include/dt-bindings/power/qcom-rpmpd.h
++++ b/include/dt-bindings/power/qcom-rpmpd.h
+@@ -55,6 +55,17 @@
+ #define SC7180_LCX	6
+ #define SC7180_MSS	7
+ 
++/* SC7280 Power Domain Indexes */
++#define SC7280_CX	0
++#define SC7280_CX_AO	1
++#define SC7280_EBI	2
++#define SC7280_GFX	3
++#define SC7280_MX	4
++#define SC7280_MX_AO	5
++#define SC7280_LMX	6
++#define SC7280_LCX	7
++#define SC7280_MSS	8
++
+ /* SDM845 Power Domain performance levels */
+ #define RPMH_REGULATOR_LEVEL_RETENTION	16
+ #define RPMH_REGULATOR_LEVEL_MIN_SVS	48
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
-You are doing more than adding a description: you are making it user selectable. Is that what you want ?
-
-> - Added HUGETLB_PAGE dependency while selecting HUGETLB_PAGE_SIZE_VARIABLE
-> 
-> Changes in V1:
-> 
-> https://patchwork.kernel.org/project/linux-mm/patch/1614577853-7452-1-git-send-email-anshuman.khandual@arm.com/
-> 
->   arch/ia64/Kconfig    | 6 +-----
->   arch/powerpc/Kconfig | 6 +-----
->   mm/Kconfig           | 9 +++++++++
->   3 files changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-> index 2ad7a8d29fcc..dccf5bfebf48 100644
-> --- a/arch/ia64/Kconfig
-> +++ b/arch/ia64/Kconfig
-> @@ -32,6 +32,7 @@ config IA64
->   	select TTY
->   	select HAVE_ARCH_TRACEHOOK
->   	select HAVE_VIRT_CPU_ACCOUNTING
-> +	select HUGETLB_PAGE_SIZE_VARIABLE if HUGETLB_PAGE
->   	select VIRT_TO_BUS
->   	select GENERIC_IRQ_PROBE
->   	select GENERIC_PENDING_IRQ if SMP
-> @@ -82,11 +83,6 @@ config STACKTRACE_SUPPORT
->   config GENERIC_LOCKBREAK
->   	def_bool n
->   
-> -config HUGETLB_PAGE_SIZE_VARIABLE
-> -	bool
-> -	depends on HUGETLB_PAGE
-> -	default y
-> -
->   config GENERIC_CALIBRATE_DELAY
->   	bool
->   	default y
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index 3778ad17f56a..3fdec3e53256 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -232,6 +232,7 @@ config PPC
->   	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
->   	select HAVE_PERF_REGS
->   	select HAVE_PERF_USER_STACK_DUMP
-> +	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
->   	select MMU_GATHER_RCU_TABLE_FREE
->   	select MMU_GATHER_PAGE_SIZE
->   	select HAVE_REGS_AND_STACK_ACCESS_API
-> @@ -416,11 +417,6 @@ config HIGHMEM
->   
->   source "kernel/Kconfig.hz"
->   
-> -config HUGETLB_PAGE_SIZE_VARIABLE
-> -	bool
-> -	depends on HUGETLB_PAGE && PPC_BOOK3S_64
-> -	default y
-> -
->   config MATH_EMULATION
->   	bool "Math emulation"
->   	depends on 4xx || PPC_8xx || PPC_MPC832x || BOOKE
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 24c045b24b95..64f1e0503e4f 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -274,6 +274,15 @@ config ARCH_ENABLE_HUGEPAGE_MIGRATION
->   config ARCH_ENABLE_THP_MIGRATION
->   	bool
->   
-> +config HUGETLB_PAGE_SIZE_VARIABLE
-> +	bool "Allows dynamic pageblock_order"
-> +	def_bool n
-> +	depends on HUGETLB_PAGE
-> +	help
-> +	  Allows the pageblock_order value to be dynamic instead of just standard
-> +	  HUGETLB_PAGE_ORDER when there are multiple HugeTLB page sizes available
-> +	  on a platform.
-> +
->   config CONTIG_ALLOC
->   	def_bool (MEMORY_ISOLATION && COMPACTION) || CMA
->   
-> 
