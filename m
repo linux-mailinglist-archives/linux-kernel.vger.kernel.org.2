@@ -2,168 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA4E32A165
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F4C32A16A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577249AbhCBF5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 00:57:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574749AbhCBDuV (ORCPT
+        id S1577282AbhCBF5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 00:57:52 -0500
+Received: from mail-40137.protonmail.ch ([185.70.40.137]:62832 "EHLO
+        mail-40137.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1574962AbhCBDwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 22:50:21 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5647EC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:49:39 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id w33so3322895qte.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:49:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=ZbL7iDf69hlzwqkc6NzrMLoJvVkzyQ+FvI+vFzZ08d4=;
-        b=o9LkyvGY/U8KxGWCyh84kUqsaR8sPxQuYGPQ7Mqef+aMG0/zzi6lCKyHUx5rlmdYIa
-         MkLjWk9OGCEuzhdDhrEmNdlaAzkPINRFfZQQbGrAUeQtOJpc/lim2Z9pjqDTaQq4lV0k
-         WxcHlmQYxMjzvHb0ggQxD7kM9OH7k6zGFi1FpWYna5oYq/b9u2WsvU5MZAccIRZY+cJL
-         Mr+vSRjdYMbRKQZJDC1Msi2vInsX5M1Fv0/2bUuWOueQ0vYWFHXtXxX/6msLPspIQBjM
-         y8I/H2d5mBbK5Xe/2T1gpNGKSgKyIdohTuMISC2ApVvfTMi+Z0zEngcG8oh1cO1+RMvj
-         95rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=ZbL7iDf69hlzwqkc6NzrMLoJvVkzyQ+FvI+vFzZ08d4=;
-        b=o2aexq2AIOBYGNKjyrz6j/aa0K3LxOAHpIIPNxE9P0mpb+4u/QkOt+H2APa9GB2Po9
-         kKIzMNT6QqJLGg+mBI7ATu2o1IwX+Vl/fABfIx52wfVwuDMyN4pfkndvIaVuUUEcF5WX
-         JJLE9DzOh/QC4Cko6gI0i6+uPx47NsLJ1UOOzdk6/vCZLUfLieb2mYMYD+SqPi+BrS2j
-         tNP02O3FrRoCS+0DC0VHh+iUc7zf6Gb4/OsZfxGJYlnZZZjdH6w3XgcbALJpXxRyPWoA
-         eSyQuo/5LuiWnLXXFOPvYhTiaySmFNZ5x8jzZ7k8INmL4mcuuMOvJRUOGQJ+fSVOhICS
-         ihwQ==
-X-Gm-Message-State: AOAM533LmHOh8AmblfvSltsZ82KZ2PYaG9gwsQvytTxKIeIWWg22rFe4
-        gslXBkZZRAq8iQ6gAeC2B2bUAHGeyCg=
-X-Google-Smtp-Source: ABdhPJxis0dwyugcQQ1kiO8VHH//AYPG/mIiLh14d/OFo2jEVb750b43cqWKjT1imH/ZcOkvb8EBnMVBXfU=
-Sender: "varmam via sendgmr" <varmam@legoland2.mtv.corp.google.com>
-X-Received: from legoland2.mtv.corp.google.com ([2620:15c:211:1:21ce:285b:ee78:5f93])
- (user=varmam job=sendgmr) by 2002:a0c:f7d1:: with SMTP id f17mr4150377qvo.38.1614656978519;
- Mon, 01 Mar 2021 19:49:38 -0800 (PST)
-Date:   Mon,  1 Mar 2021 19:49:28 -0800
-Message-Id: <20210302034928.3761098-1-varmam@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH] fs: Improve eventpoll logging to stop indicting timerfd
-From:   Manish Varma <varmam@google.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manish Varma <varmam@google.com>,
-        Kelly Rossmoyer <krossmo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 1 Mar 2021 22:52:03 -0500
+Date:   Tue, 02 Mar 2021 03:51:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1614657077;
+        bh=6Lqc99WHAgZVxNlrSG4NdxKORMThqAvTsVgRaszZvUo=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=pow8k2LzpEfvSdv7fU6cmpTWqEofb0PWomerf42KjWf3J8T22fCLi8lmo4lWdxDAi
+         ZycHNc0ron5tWGsZzdiVy1eK/8AydwarBaJ5NviNecVV5jpx/79a8A1PQ13toUDY6Z
+         +8BZxztIVuYF7xqzg30eBqCxeV7axv0aWTngpjDE=
+To:     "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "phone-devel@vger.kernel.org" <phone-devel@vger.kernel.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     "agross@kernel.org" <agross@kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "konrad.dybcio@somainline.org" <konrad.dybcio@somainline.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH] arm64: dts: qcom: msm8996: Add usb3 interrupts
+Message-ID: <dvfyYKA9vnJdunbQ1CL-dgjXtv_1wYpRnezdc3PHoCyrgmfi5KP0Dn4MtaumQEpHIQAHL9tTdqcaCK7YJWyrdWXCrPeGd4uMh-nFeu7xQYw=@protonmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-timerfd doesn't create any wakelocks, but eventpoll can.  When it does,
-it names them after the underlying file descriptor, and since all
-timerfd file descriptors are named "[timerfd]" (which saves memory on
-systems like desktops with potentially many timerfd instances), all
-wakesources created as a result of using the eventpoll-on-timerfd idiom
-are called... "[timerfd]".
+Add hs_phy_irq and ss_phy_irq to usb3.
 
-However, it becomes impossible to tell which "[timerfd]" wakesource is
-affliated with which process and hence troubleshooting is difficult.
-
-This change addresses this problem by changing the way eventpoll and
-timerfd file descriptors (and thus the eventpoll-on-timerfd wakesources)
-are named:
-
-1) timerfd descriptors are now named "[timerfdN:P]", where N is a
-monotonically increasing integer for each timerfd instance created and P
-is the command string of the creating process.
-2) the top-level per-process eventpoll wakesource is now named "epoll:P"
-(instead of just "eventpoll"), where P, again, is the command string of
-the creating process
-3) individual per-underlying-filedescriptor eventpoll wakesources are
-now named "epollitem:P.F", where P is the command string of the creating
-process and F is the name of the underlying file descriptor.
-
-All together, that will give us names like the following:
-
-1) timerfd file descriptor: [timerfd14:system_server]
-2) eventpoll top-level per-process wakesource: epoll:system_server
-3) eventpoll-on-timerfd per-descriptor wakesource:
-epollitem:system_server.[timerfd14:system_server]
-
-Co-developed-by: Kelly Rossmoyer <krossmo@google.com>
-Signed-off-by: Kelly Rossmoyer <krossmo@google.com>
-Signed-off-by: Manish Varma <varmam@google.com>
+Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
 ---
- fs/eventpoll.c | 10 ++++++++--
- fs/timerfd.c   | 11 ++++++++++-
- 2 files changed, 18 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-index 185252d8f4c7..af28be4285f8 100644
---- a/fs/eventpoll.c
-+++ b/fs/eventpoll.c
-@@ -1451,15 +1451,21 @@ static int ep_create_wakeup_source(struct epitem *epi)
- {
- 	struct name_snapshot n;
- 	struct wakeup_source *ws;
-+	char task_comm_buf[sizeof(current->comm)];
-+	char buf[64];
+diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qc=
+om/msm8996.dtsi
+index 7eef07e73e25..b4b8d6305a05 100644
+--- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
+@@ -1754,6 +1754,10 @@ usb3: usb@6af8800 {
+ =09=09=09#size-cells =3D <1>;
+ =09=09=09ranges;
+
++=09=09=09interrupts =3D <GIC_SPI 347 IRQ_TYPE_LEVEL_HIGH>,
++=09=09=09=09     <GIC_SPI 243 IRQ_TYPE_LEVEL_HIGH>;
++=09=09=09interrupt-names =3D "hs_phy_irq", "ss_phy_irq";
 +
-+	get_task_comm(task_comm_buf, current);
- 
- 	if (!epi->ep->ws) {
--		epi->ep->ws = wakeup_source_register(NULL, "eventpoll");
-+		snprintf(buf, sizeof(buf), "epoll:%s", task_comm_buf);
-+		epi->ep->ws = wakeup_source_register(NULL, buf);
- 		if (!epi->ep->ws)
- 			return -ENOMEM;
- 	}
- 
- 	take_dentry_name_snapshot(&n, epi->ffd.file->f_path.dentry);
--	ws = wakeup_source_register(NULL, n.name.name);
-+	snprintf(buf, sizeof(buf), "epollitem:%s.%s", task_comm_buf, n.name.name);
-+	ws = wakeup_source_register(NULL, buf);
- 	release_dentry_name_snapshot(&n);
- 
- 	if (!ws)
-diff --git a/fs/timerfd.c b/fs/timerfd.c
-index c5509d2448e3..4249e8c9a38c 100644
---- a/fs/timerfd.c
-+++ b/fs/timerfd.c
-@@ -46,6 +46,8 @@ struct timerfd_ctx {
- 	bool might_cancel;
- };
- 
-+static atomic_t instance_count = ATOMIC_INIT(0);
-+
- static LIST_HEAD(cancel_list);
- static DEFINE_SPINLOCK(cancel_lock);
- 
-@@ -391,6 +393,9 @@ SYSCALL_DEFINE2(timerfd_create, int, clockid, int, flags)
- {
- 	int ufd;
- 	struct timerfd_ctx *ctx;
-+	char task_comm_buf[sizeof(current->comm)];
-+	char file_name_buf[32];
-+	int instance;
- 
- 	/* Check the TFD_* constants for consistency.  */
- 	BUILD_BUG_ON(TFD_CLOEXEC != O_CLOEXEC);
-@@ -427,7 +432,11 @@ SYSCALL_DEFINE2(timerfd_create, int, clockid, int, flags)
- 
- 	ctx->moffs = ktime_mono_to_real(0);
- 
--	ufd = anon_inode_getfd("[timerfd]", &timerfd_fops, ctx,
-+	instance = atomic_inc_return(&instance_count);
-+	get_task_comm(task_comm_buf, current);
-+	snprintf(file_name_buf, sizeof(file_name_buf), "[timerfd%d:%s]",
-+		 instance, task_comm_buf);
-+	ufd = anon_inode_getfd(file_name_buf, &timerfd_fops, ctx,
- 			       O_RDWR | (flags & TFD_SHARED_FCNTL_FLAGS));
- 	if (ufd < 0)
- 		kfree(ctx);
--- 
-2.30.0.617.g56c4b15f3c-goog
+ =09=09=09clocks =3D <&gcc GCC_SYS_NOC_USB3_AXI_CLK>,
+ =09=09=09=09<&gcc GCC_USB30_MASTER_CLK>,
+ =09=09=09=09<&gcc GCC_AGGRE2_USB3_AXI_CLK>,
+--
+2.30.1
 
