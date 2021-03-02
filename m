@@ -2,268 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD5F32A3D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8879832A3C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:21:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382594AbhCBJkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:40:06 -0500
-Received: from regular1.263xmail.com ([211.150.70.206]:42332 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838103AbhCBJUC (ORCPT
+        id S1379105AbhCBJjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1837945AbhCBJPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:20:02 -0500
-Received: from localhost (unknown [192.168.167.235])
-        by regular1.263xmail.com (Postfix) with ESMTP id BD4561B4F;
-        Tue,  2 Mar 2021 17:13:40 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost (unknown [61.183.83.60])
-        by smtp.263.net (postfix) whith ESMTP id P19727T140184846857984S1614676420050086_;
-        Tue, 02 Mar 2021 17:13:41 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <a3313f4476994487b62986d71a2f37a4>
-X-RL-SENDER: huangjianghui@uniontech.com
-X-SENDER: huangjianghui@uniontech.com
-X-LOGIN-NAME: huangjianghui@uniontech.com
-X-FST-TO: alex.shi@linux.alibaba.com
-X-SENDER-IP: 61.183.83.60
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Date:   Tue, 2 Mar 2021 17:13:39 +0800
-From:   huangjianghui <huangjianghui@uniontech.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Harry Wei <harryxiyou@gmail.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PATCH Documentation translations:translate
- sound/hd-audio/controls to chinese
-Message-ID: <20210302091339.GA12203@akg>
-Reply-To: huangjianghui@uniontech.com
-References: <20210301122019.80234-1-huangjianghui@uniontech.com>
- <8735xe4lsb.fsf@meer.lwn.net>
- <20210302032220.GA938@akg>
- <e9937016-3b09-fb43-8fbf-a6c9b21597ac@linux.alibaba.com>
+        Tue, 2 Mar 2021 04:15:34 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3C6C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:14:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=49Y/bM7V5+vZPPMYr7x9jzIuao/NFEnVpdlRIeBL2L4=; b=XeQa13IOQD7m0Ih07YnKbtDqAo
+        EFqoQLpXXG/A3cRi0y8aLzQy1D4MKpNb03qSq9k5Bk/y6X3DGiT5U7U+OSbg3Gqe889xAN0Oj4i5R
+        qj/T/9uysS2AScSf1mcnwPPD5xeo4orVuNPToxaZ+QnXYMNoP1ikqs0czb1tRRyi2ibLH/d6xfebs
+        ZnIv/VHsc7in6kPF9CYx3kf14AqEZlZeSGJTTp4iSKhVHowDtXlBdBUtCMTheKg4UqyQAXmRYNBq3
+        B38yeuHWXbJzuTe8/077LnW1YvMz0cR08TaOlVQZaFO76stUZ5YUn1RHKFLFPF/ltWySZgdmbEOUo
+        SkaPSYsQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lH16R-00GrhU-0l; Tue, 02 Mar 2021 09:14:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 291A030018A;
+        Tue,  2 Mar 2021 10:14:02 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 12034234E17C3; Tue,  2 Mar 2021 10:14:02 +0100 (CET)
+Date:   Tue, 2 Mar 2021 10:14:01 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, rui.zhang@intel.com,
+        dave.hansen@intel.com, andi.kleen@intel.com, len.brown@intel.com
+Subject: Re: [PATCH] x86/tsc: mark tsc reliable for qualified platforms
+Message-ID: <YD4B2TG7JPqFChhR@hirez.programming.kicks-ass.net>
+References: <1614653572-19941-1-git-send-email-feng.tang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gb2312
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e9937016-3b09-fb43-8fbf-a6c9b21597ac@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1614653572-19941-1-git-send-email-feng.tang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 03:34:33PM +0800, Alex Shi wrote:
-> 
-> 
-> 在 2021/3/2 上午11:22, huangjianghui 写道:
-> >>
-> > In the next patch ,I deleted the index of the untranstated files,and i
-> > used checkpatch.pl to detect doc errors and tried to built the htmldocs
-> > on my pc.
-> > 
-> > Thanks,
-> > 
-> > Huang Jianghui
-> 
-> Hi Jianghui,
-> 
-> we usually include patch into email instead of attach it as attachment.
-> You can try use 'git send-email' to post your patches.
-> 
-> Thanks
-> Alex
-> 
-> 
+On Tue, Mar 02, 2021 at 10:52:52AM +0800, Feng Tang wrote:
+> @@ -1193,6 +1193,17 @@ static void __init check_system_tsc_reliable(void)
+>  #endif
+>  	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE))
+>  		tsc_clocksource_reliable = 1;
+> +
+> +	/*
+> +	 * Ideally the socket number should be checked, but this is called
+> +	 * by tsc_init() which is in early boot phase and the socket numbers
+> +	 * may not be available. Use 'nr_online_nodes' as a fallback solution
+> +	 */
+> +	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC)
+> +		&& boot_cpu_has(X86_FEATURE_NONSTOP_TSC)
+> +		&& boot_cpu_has(X86_FEATURE_TSC_ADJUST)
+> +		&& nr_online_nodes <= 2)
+> +		tsc_clocksource_reliable = 1;
 
-I am sorry to do those, my patch is shown below:
-
-Signed-off-by: hjh <huangjianghui@uniontech.com>
----
- Documentation/translations/zh_CN/index.rst    |   1 +
- .../zh_CN/sound/hd-audio/controls.rst         | 102 ++++++++++++++++++
- .../zh_CN/sound/hd-audio/index.rst            |  14 +++
- .../translations/zh_CN/sound/index.rst        |  22 ++++
- 4 files changed, 139 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/controls.rst
- create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/index.rst
- create mode 100644 Documentation/translations/zh_CN/sound/index.rst
-
-diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
-index be6f11176200..2767dacfe86d 100644
---- a/Documentation/translations/zh_CN/index.rst
-+++ b/Documentation/translations/zh_CN/index.rst
-@@ -20,6 +20,7 @@
-    process/index
-    filesystems/index
-    arm64/index
-+   sound/index
-
- 目录和表格
- ----------
-diff --git a/Documentation/translations/zh_CN/sound/hd-audio/controls.rst b/Documentation/translations/zh_CN/sound/hd-audio/controls.rst
-new file mode 100644
-index 000000000000..54c028ab9a40
---- /dev/null
-+++ b/Documentation/translations/zh_CN/sound/hd-audio/controls.rst
-@@ -0,0 +1,102 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Chinese translator: Huang Jianghui <huangjianghui@uniontech.com>
-+---------------------------------------------------------------------
-+.. include:: ../../disclaimer-zh_CN.rst
-+以下为正文
-+---------------------------------------------------------------------
-+======================================
-+高清音频编解码器特定混音器控件
-+======================================
-+
-+
-+此文件解释特定于编解码器的混音器控件.
-+
-+瑞昱编解码器
-+------------
-+
-+声道模式
-+  这是一个用于更改环绕声道设置的枚举控件,仅在环绕声道打开时显示出现。
-+  它给出要使用的通道数:"2ch","4ch","6ch"，和"8ch"。根据配置，这还控
-+  制多I/O插孔的插孔重分配。
-+
-+自动静音模式
-+  这是一个枚举控件，用于更改耳机和线路输出插孔的自动静音行为。如果内
-+  置扬声器、耳机和/或线路输出插孔在机器上可用，则显示该控件。当只有
-+  耳机或者线路输出的时候，它给出”禁用“和”启用“状态。当启用后，插孔插
-+  入后扬声器会自动静音。
-+
-+  当耳机和线路输出插孔都存在时，它给出”禁用“、”仅扬声器“和”线路输出+扬
-+  声器“。当”仅扬声器“被选择，插入耳机或者线路输出插孔可使扬声器静音，
-+  但不会使线路输出静音。当线路输出+扬声器被选择，插入耳机插孔会同时使扬
-+  声器和线路输出静音。
-+
-+
-+矽玛特编解码器
-+--------------
-+
-+模拟环回
-+   此控件启用/禁用模拟环回电路。只有在编解码器提示中将”lookback“设置为真
-+   时才会出现(见HD-Audio.txt)。请注意，在某些编解码器上，模拟环回和正常
-+   PCM播放是独占的,即当此选项打开时，您将听不到任何PCM流。
-+
-+交换中置/低频
-+   交换中置和低频通道顺序，通常情况下，左侧对应中置，右侧对应低频,启动此
-+   项后，左边低频，右边中置。
-+
-+耳机作为线路输出
-+   当此控制开启时，将耳机视为线路输出插孔。也就是说，耳机不会自动静音其他
-+   线路输出，没有耳机放大器被设置到引脚上。
-+
-+麦克风插口模式、线路插孔模式等
-+   这些枚举控制输入插孔引脚的方向和偏置。根据插孔类型，它可以设置为”麦克风
-+   输入“和”线路输入“以确定输入偏置,或者当引脚是环绕声道的多I/O插孔时，它
-+   可以设置为”线路输出“。
-+
-+
-+威盛编解码器
-+------------
-+
-+智能5.1
-+   一个枚举控件，用于为环绕输出重新分配多个I/O插孔的任务。当它打开时，相应
-+   的输入插孔（通常是线路输入和麦克风输入）被切换为环绕和中央低频输出插孔。
-+
-+独立耳机
-+   启用此枚举控制时，耳机输出从单个流（第三个PCM，如hw:0,2）而不是主流路由。
-+   如果耳机DAC与侧边或中央低频通道DAC共享，则DAC将自动切换到耳机。
-+
-+环回混合
-+   一个用于确定是否启动了模拟环回路由的枚举控件。当它启用后，模拟环回路由到
-+   前置通道。同样，耳机与扬声器输出也采用相同的路径。作为一个副作用，当设置
-+   此模式后，单个音量控制将不再适用于耳机和扬声器，因为只有一个DAC连接到混
-+   音器小部件。
-+
-+动态电源控制
-+   此控件决定是否启动每个插孔的动态电源控制检测。启用时，根据插孔的插入情况
-+   动态更改组件的电源状态（D0/D3）以节省电量消耗。但是，如果您的系统没有提
-+   供正确的插孔检测，这将无法工作;在这种情况下，请关闭此控件。
-+
-+插孔检测
-+   此控件仅为VT1708编解码器提供，它不会为每个插孔插拔提供适当的未请求事件。
-+   当此控件打开，驱动将轮询插孔检测，以便耳机自动静音可以工作，而关闭此控
-+   件将降低功耗。
-+
-+
-+科胜讯编解码器
-+--------------
-+
-+自动静音模式
-+   见瑞昱解码器
-+
-+
-+
-+模拟编解码器
-+------------
-+
-+通道模式
-+   这是一个用于更改环绕声道设置的枚举控件,仅在环绕声道可用时显示。它提供了能
-+   被使用的通道数:”2ch“、”4ch“和”6ch“。根据配置，这还控制多I/O插孔的插孔重
-+   分配。
-+
-+独立耳机
-+   启动此枚举控制后，耳机输出从单个流（第三个PCM，如hw:0,2）而不是主流路由。
-diff --git a/Documentation/translations/zh_CN/sound/hd-audio/index.rst b/Documentation/translations/zh_CN/sound/hd-audio/index.rst
-new file mode 100644
-index 000000000000..d9885d53b069
---- /dev/null
-+++ b/Documentation/translations/zh_CN/sound/hd-audio/index.rst
-@@ -0,0 +1,14 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+.. include:: ../../disclaimer-zh_CN.rst
-+
-+:Original: :doc:`../../../../sound/hd-audio/index`
-+:Translator: Huang Jianghui <huangjianghui@uniontech.com>
-+
-+
-+高清音频
-+========
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   controls
-diff --git a/Documentation/translations/zh_CN/sound/index.rst b/Documentation/translations/zh_CN/sound/index.rst
-new file mode 100644
-index 000000000000..28d5dca34a63
---- /dev/null
-+++ b/Documentation/translations/zh_CN/sound/index.rst
-@@ -0,0 +1,22 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :doc:`../../../sound/index`
-+:Translator: Huang Jianghui <huangjianghui@uniontech.com>
-+
-+
-+====================
-+Linux 声音子系统文档
-+====================
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   hd-audio/index
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
---
-2.20.1
-
-Thanks,
-Huang Jianghui
-
-
+Logical operators go at the end of a line and alignment is with the (,
+not the code block after it.
