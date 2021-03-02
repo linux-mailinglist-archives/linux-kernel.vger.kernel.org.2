@@ -2,83 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64ACF32A149
+	by mail.lfdr.de (Postfix) with ESMTP id D5B6E32A14A
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576932AbhCBFfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 00:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40582 "EHLO
+        id S1576961AbhCBFfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 00:35:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242190AbhCBDni (ORCPT
+        with ESMTP id S242895AbhCBDor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 22:43:38 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05C4AC0617A7
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:43:40 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id r25so21180133ljk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:43:40 -0800 (PST)
+        Mon, 1 Mar 2021 22:44:47 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF9CC0617AB
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:44:44 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id n10so12963835pgl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:44:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3B0Sx20A1r9upf4Kb0C/kpU0MZoTOmOraXVoNYgXq+0=;
-        b=vhnQXwzEG4fSKT+nNG8JUDOp8WuwtYyM9Vz5u8UuMP5J6E6kOng7zABNCZkGIvqO/Z
-         lF4txvkAhYVRIOspQwJRhpV/pfvlYUWQ8uOzwdf7klS7QjLw4GNL+ZBCxj7jb1kaXaWW
-         2EVpdc+nUpLUFYKejU4N1/NkqXpsK+iNO2iUhOD5PzWkGPjRXlFH5Vq9hI5nweviVxJ0
-         NpiRLjezGtQ6dFxliVjEln5wPhPJNrZsZ1EAFlEqOtxnHA3L0FT4PBwuk8yR82LJKP06
-         vMlaRaiuezL4cMfKgC2gSDIA/EiixC0Hmd9+1A8bYAQyOZYqpDyERlYiqDTLSGk7L7Vd
-         2HCw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=6ocpLpD/YC8p2XAnodhqPke9yP3AITZZa1l575H6MVw=;
+        b=JHRHOhgiaoddDWynTZrpm0LW4LFDXMQcRKcMcbdOJtmyfINwmNDmZaMLymueC48zTF
+         LXjl5N8e8EOpVd1LA5MbOCgSlxkj1RdR2BeQM6PI5jAgFWEm7XBADNEzXblAl9KqDfDi
+         PuTLvXSY63nOrAGOOCChUi0melOu/i/F+YJ15x0bo0t+RP0sMtujH7oEcHRuiCexKX1m
+         hvpQ4OVX15bWs6b2Nq3+l1fkBIJcEoA7Z4rJJy0RyXkdYpbwOF7q1LXvIUMqeLmnDqFT
+         u51n3nxiN4UR94MMNwleVgVd6peH3XMEfodhWsISfD9FlpHhIae/MdRoLXtPEUzVnJ22
+         XUzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3B0Sx20A1r9upf4Kb0C/kpU0MZoTOmOraXVoNYgXq+0=;
-        b=d7Np2TcWsN/EOtVYBncew8gHra0dYRwhhZsffFI01J9io+bH7ZxD9o6iWo2mshvIcK
-         LjlD6kT/IAAms4lfJcCrd7hY3UzgZS3T6MYwtViw5hQevzrPMEzZcFGhgeoBf5LMTHT/
-         EkyPq3H3z437qfz64YcXP2cPjmMyPZ7eO4RikQ2sgsBDzhDwy1xR7dhqzDU2EDRfrYRV
-         u3+Y+ywWZk0x6KT9FGaAPfxfmJs6Jqb9sDlY6D6RIoq155FC1qmJcGT8LN1PdNOPiuM1
-         uWoDe7qGjWKKJ8rGsOaVr3GsERLbH9PKWFFIGPvhS14zEhxG396xjRZnl03IJEu4+yI8
-         vElw==
-X-Gm-Message-State: AOAM531bsOiRktupf1yHJQKI3F2OaJtGa2f+FG9OgkwJ6U9crikUwgn9
-        qJRzVITsDIr8JShJTRoKXFIctAaOOYt197X4qFrWXQ==
-X-Google-Smtp-Source: ABdhPJyC5KTWWfJMUVQrljO6hX8iwyh7wkZlnr5yI6GC2wySp0634pLrU6si7GQKQAf9+DCrxQr24mvnkUGVPNVCw6o=
-X-Received: by 2002:a2e:7d03:: with SMTP id y3mr9224356ljc.0.1614656619239;
- Mon, 01 Mar 2021 19:43:39 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=6ocpLpD/YC8p2XAnodhqPke9yP3AITZZa1l575H6MVw=;
+        b=Mq+BEXwLOx2py34EKjjropoJjGzbzTOayPRr97+SRzKh3wO3ct14trdAqJTRBL/vI5
+         rH49m+boTQF0qH0qFA7TttVb82FeA85uYwKyPFm3ffSeHd0+Dmrzvh1+ONaThbw6K0pr
+         jfI2H11kV0NrjoDDTeO9rPNT37Da/PV1w5ZiKWUT9yOQiQioktYIiKpZKkT53cJ2Vn1o
+         CDy1PWtfOzyBtVwzur6BycmvoHe0YHyPSCzbMiG8uW8v5vQf4dfj8AOBWpfi1Qnrl203
+         46dUe67VMEW/NxcRdF1ZbeK9WYberD6zaG9FPiaTFbCYxutIDSdi/cEz6CEDTf/fLq2u
+         vMug==
+X-Gm-Message-State: AOAM531iZ0NmwAY/xhsSioicnxOV/0yFpzXTO7Shnyx360h8mmVzXA25
+        uuYI2ZyqnSXx7JRCUh1YyAmJFA==
+X-Google-Smtp-Source: ABdhPJx/Q+oofnFLde6CKHvTI9rHRmh2kqI4wTqTF5wpOq8Djwac9vMGULsXLHbE4mwfBcRp/551Ww==
+X-Received: by 2002:a63:374f:: with SMTP id g15mr16584551pgn.212.1614656684033;
+        Mon, 01 Mar 2021 19:44:44 -0800 (PST)
+Received: from localhost ([122.171.124.15])
+        by smtp.gmail.com with ESMTPSA id l19sm1018928pjt.16.2021.03.01.19.44.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Mar 2021 19:44:43 -0800 (PST)
+Date:   Tue, 2 Mar 2021 09:14:41 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        conghui.chen@intel.com, arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210302034441.dcmrx4ughbtusolg@vireshk-i7>
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <20210301115441.a4s5xzwm6d6ohz7f@vireshk-i7>
+ <YDzZdc9+6hEvIDS1@smile.fi.intel.com>
+ <YDzZocYCA8UC1FCW@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210301062227.59292-1-songmuchun@bytedance.com>
- <20210301062227.59292-5-songmuchun@bytedance.com> <YD2RuPzikjPnI82h@carbon.dhcp.thefacebook.com>
-In-Reply-To: <YD2RuPzikjPnI82h@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 1 Mar 2021 19:43:27 -0800
-Message-ID: <CALvZod4rWvMJdnbfMm4SGtj0WyqDzvH8RY9G32y=NLNCZqJ2Gg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] mm: memcontrol: move remote memcg charging APIs to CONFIG_MEMCG_KMEM
-To:     Roman Gushchin <guro@fb.com>,
-        Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, esyr@redhat.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YDzZocYCA8UC1FCW@smile.fi.intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 5:16 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Mon, Mar 01, 2021 at 02:22:26PM +0800, Muchun Song wrote:
-> > The remote memcg charing APIs is a mechanism to charge kernel memory
-> > to a given memcg. So we can move the infrastructure to the scope of
-> > the CONFIG_MEMCG_KMEM.
->
-> This is not a good idea, because there is nothing kmem-specific
-> in the idea of remote charging, and we definitely will see cases
-> when user memory is charged to the process different from the current.
->
+On 01-03-21, 14:10, Andy Shevchenko wrote:
+> On Mon, Mar 01, 2021 at 02:09:25PM +0200, Andy Shevchenko wrote:
+> > On Mon, Mar 01, 2021 at 05:24:41PM +0530, Viresh Kumar wrote:
+> > > On 01-03-21, 14:41, Jie Deng wrote:
+> > > > +/**
+> > > > + * struct virtio_i2c_req - the virtio I2C request structure
+> > > > + * @out_hdr: the OUT header of the virtio I2C message
+> > > > + * @write_buf: contains one I2C segment being written to the device
+> > > > + * @read_buf: contains one I2C segment being read from the device
+> > > > + * @in_hdr: the IN header of the virtio I2C message
+> > > > + */
+> > > > +struct virtio_i2c_req {
+> > > > +	struct virtio_i2c_out_hdr out_hdr;
+> > > > +	u8 *write_buf;
+> > > > +	u8 *read_buf;
+> > > > +	struct virtio_i2c_in_hdr in_hdr;
+> > > > +};
+> > > 
+> > > I am not able to appreciate the use of write/read bufs here as we
+> > > aren't trying to read/write data in the same transaction. Why do we
+> > > have two bufs here as well as in specs ?
+> > 
+> > I²C and SMBus support bidirectional transfers as well. I think two buffers is
+> > the right thing to do.
+> 
+> Strictly speaking "half duplex".
 
-Indeed and which remind me: what happened to the "Charge loop device
-i/o to issuing cgroup" series? That series was doing remote charging
-for user pages.
+Half duplex is what this driver implemented, i.e. only one side can
+send a msg at once, we don't need two buffers for that for sure.
+
+Though we need two buffers if we are ever going to support full
+duplex.
+
+-- 
+viresh
