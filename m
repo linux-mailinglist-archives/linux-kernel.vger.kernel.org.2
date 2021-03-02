@@ -2,113 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D691732B71B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A35FC32B721
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357329AbhCCKtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:49:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233697AbhCBXzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 18:55:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B795064F3E;
-        Tue,  2 Mar 2021 23:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614728406;
-        bh=ABt6OaQXxSJrMIjXTxRUKwBVgyxYbL5f4ep+5/xdFyc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Tkkem2oFlI1G1THjSLzD4GWKMuu6c1oAjs5gVoZiQX4uYNKmDbMiez0y3mIYMdfug
-         81ryaxQ+Cvn4hv8vnt0EOR2b6oTbqE/Od33uLrmQiYKvOMAyxj9H2pTM/XoG1tfq9O
-         qfhBl8TNnpBuyF/8hpzYUcX7B0aTRFOcEsfd88TDPED8WamgHhBkbh0L5Hd6GrA9K3
-         Fadx3KhH4jOmxyjI/KQjIziXyIX+ljcWgtENVaex78BjrH7eySg1uypIdehht7/4er
-         oBvK25rSSfu8TBFpGxwBVvHECX/wrP2QuqxaosNeeQENeeaQ1dQzjJ0OM5sb+QH6B1
-         xnVSezNHkytmw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A594160192;
-        Tue,  2 Mar 2021 23:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1357430AbhCCKtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:49:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234050AbhCBX4L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 18:56:11 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83094C0611BC;
+        Tue,  2 Mar 2021 15:40:35 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id j2so8820275wrx.9;
+        Tue, 02 Mar 2021 15:40:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wU9np/B17g0hNZmy/Vroj0jnabzNoYbqEuJBn3uOdp0=;
+        b=dWOWMX5aUSCmikpv4jmURB+ixRNSIv+Ruhe0w6BiKpkGo2hF12Jns8VMi+PecWrTKH
+         KSO13mX2ekuj1CFpHJwCyz3vCItzZWK5GaBkTgbGqNP7alexXl2cjnI7JKR+a+GFvmyP
+         7Agb1uGfY4BQgE1/dz+6SeGDwClB6ivCIodpzRuhdRIgAINMRluOle41s0stTPdHIqWo
+         DITVfTF9uBwADOKoA3Rdh7oF7w9huhO8Y9/TXcB3qtp+AlBLwsQsBI9AO4WD8mOyrlbE
+         MHCDV7UElVYyZiL4zMpZ0KJPkAaprcrfXNkzODIXi8Z48LlZNN+FyRMUY3tc9p24Gchn
+         hlzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wU9np/B17g0hNZmy/Vroj0jnabzNoYbqEuJBn3uOdp0=;
+        b=I2U0FqMBiKxjYYO5m6sOzelP4y7F4UyBUsXTUERBpksXVCcZWV4edmM2wnfkcfN7rx
+         WFYlHHURqR0i2Xw1nk75+iRIdS9ChktAPNAppv9VBfZ6+8rP6iQ00e2Rqxl+tDAg8mVn
+         uEdEZqlHCcm21Vw/tBs70FQGKcvhHZ130x98ZOU4+ds0KgZ/TkdslzXLdpjZD8CyBIKE
+         jBbBN48fZ4SS407HmJtI/e/ymcls5zdnhSTP2OCSgo0GjyMcEpq19HJT1U6a+St76tv+
+         SHrI4WgbHNnxmKlV6O0p9p9z85OJoAICBfko1v/4JtqQtsidH339p0XZ0OA8t/J7l2v+
+         KIdw==
+X-Gm-Message-State: AOAM532j3UfoHPdaAtxlvicDqKZnOET4C8gb0ke/Gp10YIsAOAq6XxNk
+        5aOIcDhW/ze2E/apPif9ecTn+PFfHVWoaJZ+
+X-Google-Smtp-Source: ABdhPJwQBbSuTwmfw9yI7mii+7ZHMW5JGbKQkmgQRNkqqxg7ZFhAA37Ivyy4VG5bJnI/A1ODf++iKw==
+X-Received: by 2002:a5d:6cd2:: with SMTP id c18mr23533074wrc.330.1614728434318;
+        Tue, 02 Mar 2021 15:40:34 -0800 (PST)
+Received: from sf (tunnel547699-pt.tunnel.tserv1.lon2.ipv6.he.net. [2001:470:1f1c:3e6::2])
+        by smtp.gmail.com with ESMTPSA id z25sm4972693wmi.23.2021.03.02.15.40.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 15:40:33 -0800 (PST)
+Date:   Tue, 2 Mar 2021 23:40:31 +0000
+From:   Sergei Trofimovich <slyich@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        linux-ia64@vger.kernel.org, "Dmitry V . Levin" <ldv@altlinux.org>
+Subject: Re: [PATCH] ia64: fix ia64_syscall_get_set_arguments() for
+ break-based syscalls
+Message-ID: <20210302234024.73bf0c14@sf>
+In-Reply-To: <20210221002554.333076-1-slyfox@gentoo.org>
+References: <20210221002554.333076-1-slyfox@gentoo.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 1/1] stmmac: intel: Fix mdio bus registration issue for
- TGL-H/ADL-S
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161472840667.3168.1105400631486899998.git-patchwork-notify@kernel.org>
-Date:   Tue, 02 Mar 2021 23:40:06 +0000
-References: <20210302085721.3168-1-vee.khee.wong@intel.com>
-In-Reply-To: <20210302085721.3168-1-vee.khee.wong@intel.com>
-To:     Wong Vee Khee <vee.khee.wong@intel.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        muhammad.husaini.zulkifli@intel.com,
-        noor.azura.ahmad.tarmizi@intel.com, weifeng.voon@intel.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Sun, 21 Feb 2021 00:25:53 +0000
+Sergei Trofimovich <slyfox@gentoo.org> wrote:
 
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Tue,  2 Mar 2021 16:57:21 +0800 you wrote:
-> On Intel platforms which consist of two Ethernet Controllers such as
-> TGL-H and ADL-S, a unique MDIO bus id is required for MDIO bus to be
-> successful registered:
+> In https://bugs.gentoo.org/769614 Dmitry noticed that
+> `ptrace(PTRACE_GET_SYSCALL_INFO)` does not work for syscalls called
+> via glibc's syscall() wrapper.
 > 
-> [   13.076133] sysfs: cannot create duplicate filename '/class/mdio_bus/stmmac-1'
-> [   13.083404] CPU: 8 PID: 1898 Comm: systemd-udevd Tainted: G     U            5.11.0-net-next #106
-> [   13.092410] Hardware name: Intel Corporation Alder Lake Client Platform/AlderLake-S ADP-S DRR4 CRB, BIOS ADLIFSI1.R00.1494.B00.2012031421 12/03/2020
-> [   13.105709] Call Trace:
-> [   13.108176]  dump_stack+0x64/0x7c
-> [   13.111553]  sysfs_warn_dup+0x56/0x70
-> [   13.115273]  sysfs_do_create_link_sd.isra.2+0xbd/0xd0
-> [   13.120371]  device_add+0x4df/0x840
-> [   13.123917]  ? complete_all+0x2a/0x40
-> [   13.127636]  __mdiobus_register+0x98/0x310 [libphy]
-> [   13.132572]  stmmac_mdio_register+0x1c5/0x3f0 [stmmac]
-> [   13.137771]  ? stmmac_napi_add+0xa5/0xf0 [stmmac]
-> [   13.142493]  stmmac_dvr_probe+0x806/0xee0 [stmmac]
-> [   13.147341]  intel_eth_pci_probe+0x1cb/0x250 [dwmac_intel]
-> [   13.152884]  pci_device_probe+0xd2/0x150
-> [   13.156897]  really_probe+0xf7/0x4d0
-> [   13.160527]  driver_probe_device+0x5d/0x140
-> [   13.164761]  device_driver_attach+0x4f/0x60
-> [   13.168996]  __driver_attach+0xa2/0x140
-> [   13.172891]  ? device_driver_attach+0x60/0x60
-> [   13.177300]  bus_for_each_dev+0x76/0xc0
-> [   13.181188]  bus_add_driver+0x189/0x230
-> [   13.185083]  ? 0xffffffffc0795000
-> [   13.188446]  driver_register+0x5b/0xf0
-> [   13.192249]  ? 0xffffffffc0795000
-> [   13.195577]  do_one_initcall+0x4d/0x210
-> [   13.199467]  ? kmem_cache_alloc_trace+0x2ff/0x490
-> [   13.204228]  do_init_module+0x5b/0x21c
-> [   13.208031]  load_module+0x2a0c/0x2de0
-> [   13.211838]  ? __do_sys_finit_module+0xb1/0x110
-> [   13.216420]  __do_sys_finit_module+0xb1/0x110
-> [   13.220825]  do_syscall_64+0x33/0x40
-> [   13.224451]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   13.229515] RIP: 0033:0x7fc2b1919ccd
-> [   13.233113] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 93 31 0c 00 f7 d8 64 89 01 48
-> [   13.251912] RSP: 002b:00007ffcea2e5b98 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-> [   13.259527] RAX: ffffffffffffffda RBX: 0000560558920f10 RCX: 00007fc2b1919ccd
-> [   13.266706] RDX: 0000000000000000 RSI: 00007fc2b1a881e3 RDI: 0000000000000012
-> [   13.273887] RBP: 0000000000020000 R08: 0000000000000000 R09: 0000000000000000
-> [   13.281036] R10: 0000000000000012 R11: 0000000000000246 R12: 00007fc2b1a881e3
-> [   13.288183] R13: 0000000000000000 R14: 0000000000000000 R15: 00007ffcea2e5d58
-> [   13.295389] libphy: mii_bus stmmac-1 failed to register
+> ia64 has two ways to call syscalls from userspace: via `break` and via
+> `eps` instructions.
 > 
-> [...]
+> The difference is in stack layout:
+> 
+> 1. `eps` creates simple stack frame: no locals, in{0..7} == out{0..8}
+> 2. `break` uses userspace stack frame: may be locals (glibc provides
+>    one), in{0..7} == out{0..8}.
+> 
+> Both work fine in syscall handling cde itself.
+> 
+> But `ptrace(PTRACE_GET_SYSCALL_INFO)` uses unwind mechanism to
+> re-extract syscall arguments but it does not account for locals.
+> 
+> The change always skips locals registers. It should not change `eps`
+> path as kernel's handler already enforces locals=0 and fixes `break`.
+> 
+> Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
+> 
+> CC: Oleg Nesterov <oleg@redhat.com>
+> CC: linux-ia64@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> CC: Andrew Morton <akpm@linux-foundation.org>
+> Reported-by: Dmitry V. Levin <ldv@altlinux.org>
+> Bug: https://bugs.gentoo.org/769614
+> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+> ---
+>  arch/ia64/kernel/ptrace.c | 24 ++++++++++++++++++------
+>  1 file changed, 18 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
+> index c3490ee2daa5..e14f5653393a 100644
+> --- a/arch/ia64/kernel/ptrace.c
+> +++ b/arch/ia64/kernel/ptrace.c
+> @@ -2013,27 +2013,39 @@ static void syscall_get_set_args_cb(struct unw_frame_info *info, void *data)
+>  {
+>  	struct syscall_get_set_args *args = data;
+>  	struct pt_regs *pt = args->regs;
+> -	unsigned long *krbs, cfm, ndirty;
+> +	unsigned long *krbs, cfm, ndirty, nlocals, nouts;
+>  	int i, count;
+>  
+>  	if (unw_unwind_to_user(info) < 0)
+>  		return;
+>  
+> +	/*
+> +	 * We get here via a few paths:
+> +	 * - break instruction: cfm is shared with caller.
+> +	 *   syscall args are in out= regs, locals are non-empty.
+> +	 * - epsinstruction: cfm is set by br.call
+> +	 *   locals don't exist.
+> +	 *
+> +	 * For both cases argguments are reachable in cfm.sof - cfm.sol.
+> +	 * CFM: [ ... | sor: 17..14 | sol : 13..7 | sof : 6..0 ]
+> +	 */
+>  	cfm = pt->cr_ifs;
+> +	nlocals = (cfm >> 7) & 0x7f; /* aka sol */
+> +	nouts = (cfm & 0x7f) - nlocals; /* aka sof - sol */
+>  	krbs = (unsigned long *)info->task + IA64_RBS_OFFSET/8;
+>  	ndirty = ia64_rse_num_regs(krbs, krbs + (pt->loadrs >> 19));
+>  
+>  	count = 0;
+>  	if (in_syscall(pt))
+> -		count = min_t(int, args->n, cfm & 0x7f);
+> +		count = min_t(int, args->n, nouts);
+>  
+> +	/* Iterate over outs. */
+>  	for (i = 0; i < count; i++) {
+> +		int j = ndirty + nlocals + i + args->i;
+>  		if (args->rw)
+> -			*ia64_rse_skip_regs(krbs, ndirty + i + args->i) =
+> -				args->args[i];
+> +			*ia64_rse_skip_regs(krbs, j) = args->args[i];
+>  		else
+> -			args->args[i] = *ia64_rse_skip_regs(krbs,
+> -				ndirty + i + args->i);
+> +			args->args[i] = *ia64_rse_skip_regs(krbs, j);
+>  	}
+>  
+>  	if (!args->rw) {
+> -- 
+> 2.30.1
+> 
 
-Here is the summary with links:
-  - [net,1/1] stmmac: intel: Fix mdio bus registration issue for TGL-H/ADL-S
-    https://git.kernel.org/netdev/net/c/fa706dce2f2d
+Andrew, would it be fine to pass it through misc tree?
+Or should it go through Oleg as it's about ptrace?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+-- 
 
-
+  Sergei
