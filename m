@@ -2,53 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A073D32AD59
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEC332AD19
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382510AbhCBVp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:45:56 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:60491 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1577345AbhCBSuf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:50:35 -0500
-Received: from relay8-d.mail.gandi.net (unknown [217.70.183.201])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id D24963AFE0D
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 16:34:57 +0000 (UTC)
-X-Originating-IP: 86.206.8.148
-Received: from xps13.stephanxp.local (lfbn-tou-1-491-148.w86-206.abo.wanadoo.fr [86.206.8.148])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id AFD691BF209;
-        Tue,  2 Mar 2021 16:32:20 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Md Sadre Alam <mdalam@codeaurora.org>, miquel.raynal@bootlin.com,
-        mani@kernel.org, boris.brezillon@collabora.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     sricharan@codeaurora.org
-Subject: Re: [PATCH 4/5] mtd: rawnand: qcom: Add helper to configure location register
-Date:   Tue,  2 Mar 2021 17:32:20 +0100
-Message-Id: <20210302163220.23133-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1614109141-7531-4-git-send-email-mdalam@codeaurora.org>
-References: 
+        id S1381683AbhCBVXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:23:16 -0500
+Received: from gecko.sbs.de ([194.138.37.40]:45318 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1352057AbhCBS3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 13:29:36 -0500
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 122GXF5L002099
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 2 Mar 2021 17:33:15 +0100
+Received: from md1za8fc.ad001.siemens.net ([167.87.44.113])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 122GXBHR025192;
+        Tue, 2 Mar 2021 17:33:14 +0100
+From:   Henning Schild <henning.schild@siemens.com>
+To:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-watchdog@vger.kernel.org
+Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Henning Schild <henning.schild@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Haener <michael.haener@siemens.com>
+Subject: [PATCH 4/4] platform/x86: pmc_atom: improve critclk_systems matching for Siemens PCs
+Date:   Tue,  2 Mar 2021 17:33:09 +0100
+Message-Id: <20210302163309.25528-5-henning.schild@siemens.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210302163309.25528-1-henning.schild@siemens.com>
+References: <20210302163309.25528-1-henning.schild@siemens.com>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: f41e2468e9020cc79fae3e6ccae44fd9c515dcb9
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-02-23 at 19:39:00 UTC, Md Sadre Alam wrote:
-> Create a nandc_set_read_loc() helper to abstract the
-> configuration of the location register.
-> 
-> QPIC v2 onwards features a separate location register
-> for the last codeword, so introducing this extra helper
-> which will simplify the addition of QPIC v2 support.
-> 
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+From: Henning Schild <henning.schild@siemens.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+Siemens industrial PCs unfortunately can not always be properly
+identified the way we used to. An earlier commit introduced code that
+allows proper identification without looking at DMI strings that could
+differ based on product branding.
+Switch over to that proper way and revert commits that used to collect
+the machines based on unstable strings.
 
-Miquel
+Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
+Fixes: e8796c6c69d1 ("platform/x86: pmc_atom: Add Siemens CONNECT ...")
+Fixes: f110d252ae79 ("platform/x86: pmc_atom: Add Siemens SIMATIC ...")
+Fixes: ad0d315b4d4e ("platform/x86: pmc_atom: Add Siemens SIMATIC ...")
+Tested-by: Michael Haener <michael.haener@siemens.com>
+Signed-off-by: Henning Schild <henning.schild@siemens.com>
+---
+ drivers/platform/x86/pmc_atom.c | 39 ++++++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/platform/x86/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
+index ca684ed760d1..03344f5502ad 100644
+--- a/drivers/platform/x86/pmc_atom.c
++++ b/drivers/platform/x86/pmc_atom.c
+@@ -13,6 +13,7 @@
+ #include <linux/io.h>
+ #include <linux/platform_data/x86/clk-pmc-atom.h>
+ #include <linux/platform_data/x86/pmc_atom.h>
++#include <linux/platform_data/x86/simatic-ipc.h>
+ #include <linux/platform_device.h>
+ #include <linux/pci.h>
+ #include <linux/seq_file.h>
+@@ -424,30 +425,31 @@ static const struct dmi_system_id critclk_systems[] = {
+ 		},
+ 	},
+ 	{
+-		.ident = "SIMATIC IPC227E",
++		.ident = "SIEMENS AG",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
+-			DMI_MATCH(DMI_PRODUCT_VERSION, "6ES7647-8B"),
+-		},
+-	},
+-	{
+-		.ident = "SIMATIC IPC277E",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
+-			DMI_MATCH(DMI_PRODUCT_VERSION, "6AV7882-0"),
+-		},
+-	},
+-	{
+-		.ident = "CONNECT X300",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "SIEMENS AG"),
+-			DMI_MATCH(DMI_PRODUCT_VERSION, "A5E45074588"),
+ 		},
+ 	},
+ 
+ 	{ /*sentinel*/ }
+ };
+ 
++static int pmc_clk_is_critical(const struct dmi_system_id *d)
++{
++	int ret = true;
++	u32 station_id;
++
++	if (!strcmp(d->ident, "SIEMENS AG")) {
++		if (dmi_walk(simatic_ipc_find_dmi_entry_helper, &station_id))
++			ret = false;
++		else
++			ret = (station_id == SIMATIC_IPC_IPC227E ||
++			       station_id == SIMATIC_IPC_IPC277E);
++	}
++
++	return ret;
++}
++
+ static int pmc_setup_clks(struct pci_dev *pdev, void __iomem *pmc_regmap,
+ 			  const struct pmc_data *pmc_data)
+ {
+@@ -462,8 +464,9 @@ static int pmc_setup_clks(struct pci_dev *pdev, void __iomem *pmc_regmap,
+ 	clk_data->base = pmc_regmap; /* offset is added by client */
+ 	clk_data->clks = pmc_data->clks;
+ 	if (d) {
+-		clk_data->critical = true;
+-		pr_info("%s critclks quirk enabled\n", d->ident);
++		clk_data->critical = pmc_clk_is_critical(d);
++		if (clk_data->critical)
++			pr_info("%s critclks quirk enabled\n", d->ident);
+ 	}
+ 
+ 	clkdev = platform_device_register_data(&pdev->dev, "clk-pmc-atom",
+-- 
+2.26.2
+
