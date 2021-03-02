@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA72832AD08
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DAB32ACFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837335AbhCBVTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:19:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
+        id S1448126AbhCBVSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:18:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244199AbhCBS06 (ORCPT
+        with ESMTP id S1835152AbhCBSWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:26:58 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0FAC061797
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 10:17:55 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id l7so10138871pfd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:17:55 -0800 (PST)
+        Tue, 2 Mar 2021 13:22:45 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F939C061222
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 10:22:04 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id h22so20929429otr.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:22:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xjoxtDeZVJmNWTGHn0H0lCFPaR4VqFxzOXXzxPha6EE=;
-        b=rhf3oxsfGGo53nh4GOrvv+Y0oL6pgnfzdfDpSwL7grZyiEvJt5I8RnPJS5gLORMQB0
-         tRi7n2bU9MDbNOfjCGBZkGIxHX6BEDDZIy2lDJYe8a1Tm1roXPMLfVn0AOeWh8LZeZeU
-         FqWXR1qCpf4FZiIQaY5P2nzD1yAKZaB9Uz+eDvyM/DJ8zlkRRaaQfYAopSSW/tPdEp1Q
-         22RfhArWksh0wudozmgGGspI4Y5Xovj21C16DjDxn2UQSJPfFbYD0FczMShFUuKe5zzZ
-         v5KMNSX/rRFjJZ80FDpwSg3GNJcrcVIGQiAqVHhe86EohH18ykIYcMmy1+kzLFGSShj7
-         xTcQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0V4NppJX6K9gT+Ur7cLKD7613ioC61Z7I5irbavVEYA=;
+        b=qZefZTyNlgwXtOJORNJkek/yKCs0FmZ9ALgW1by4vpG5bJAQfZq3eomusKgQ8/z2mx
+         8LD5RIo89t0oMYXgZKB/8fczTMZrkgHwPLF3nqN402fRBaDGwsxF1zBjtZhp0flog0+Z
+         v7ggvwi5ltm0QKKv31ayWCzdiVMEvRFKNC+2i9CqyN3W/F1Nsz3eOTJ4mcTKXTKmIHh5
+         t2gorb9E8bsOjMG2l5Tkgx++aJqiv0G2G/Er0RGhvKwYiXimecwOg4OvUfQRyPGqkFz9
+         6n2QJI9sJKmejbKwoEK/iVCcv0xjIv2lcard5q/7OFPnKzSiPYiJ7wlbxxB7tO788EYF
+         zZ6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xjoxtDeZVJmNWTGHn0H0lCFPaR4VqFxzOXXzxPha6EE=;
-        b=ERi14X/5Ya4H22IxBvbrMrkyPfBHB2sUCnHnZ4apB2ARXBBiac/BUYVVkwsyDYqETd
-         LzHQMubSJMzt5iuNqbJjGqIXGlOmE8n0o3oDJImiD7R+id/Zc38LAw3cl8CsNHC/QSX7
-         DeOWkI9lI2pfWQDwX/8mYNm/8ZRPWc9uLa00Qu+SapPq5YuViJWl04CyPpSbbqPnlk/0
-         U9Um037/kOjJrK2deAkSAyRYmjBvVVFSEPxZrnd6OVMVbbCPrDEjXl0XdGjAbM2+XWbl
-         c3YAzmI6QT2h4Mu3+/IuYIsgi0NvCIxQvW6XjNUgF2wxxHjj4ufMX4FCSAvB1Gdwuvat
-         dhkA==
-X-Gm-Message-State: AOAM533M53zkLzoIXDr9pzh9K2IpU4roTWdWC8DZbll/cunIyQXDxPC2
-        sBA9mM3jweLK25IjLImQ1mXoCg==
-X-Google-Smtp-Source: ABdhPJyir8Hi4ETXFhsFfHVZO9TJ7tP2YR7BNYQHcZZJV1WrhVCyOwHfDk/SeDwYG/5ICfDidf0ZYw==
-X-Received: by 2002:aa7:948d:0:b029:1ed:a489:dd7a with SMTP id z13-20020aa7948d0000b02901eda489dd7amr4446965pfk.29.1614709074340;
-        Tue, 02 Mar 2021 10:17:54 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
-        by smtp.gmail.com with ESMTPSA id o127sm21816244pfg.202.2021.03.02.10.17.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 10:17:53 -0800 (PST)
-Date:   Tue, 2 Mar 2021 10:17:47 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: Re: [PATCH 0/2] KVM: x86: Emulate L2 triple fault without killing L1
-Message-ID: <YD6BS0PR/+d6iC5Q@google.com>
-References: <20210302174515.2812275-1-seanjc@google.com>
- <04aa253c-9708-d707-3ee9-7595da4029ad@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0V4NppJX6K9gT+Ur7cLKD7613ioC61Z7I5irbavVEYA=;
+        b=irZZxG4TZbKm3fXIfBOrJ5mrEU0kLn+ah2KNX295q4wlFAe4ymDt9WozUEQo20sYpk
+         7YexZOdtrMZY29rO1mFEoZwglU1/RERlz95gZAG23ZWfkk6UnrdFVEAS3p8ruxKeMe7S
+         6RyrlEccnp4noFHQ0MAzWWOx4ziDS7g1sXcTBj457BcDycZDneie+gQ3ckOkwygw1D0c
+         eTaehJYWOCV+nKTm5DkbtjazWDL4EEr3SjV988XItocHeirW9JiCtekUtGmElX9ZSPhL
+         9OTMwpiGZO9Mlmz9D0Doz/C6ccfJwTz0OO0Dr1we+N+b88NOHsccBqt5TKlcgsEZJySc
+         +NYg==
+X-Gm-Message-State: AOAM5322oo74hSHfWJYFN1XWbGNJ9lbAz3ccTQQbUZHy9OLTu4ocFDkV
+        gdIST5LFkJRx19NG8pzh8bIlDml9DvlDdoTvSf8=
+X-Google-Smtp-Source: ABdhPJw/O9H/z+8HtBNlXU2R7NoSuNGK2lWWhXxmL6qIo44ysXAjAd/0dli43h1o0mtYbmCSY7UnIUQZyTODGiJkNjg=
+X-Received: by 2002:a05:6830:408f:: with SMTP id x15mr832415ott.132.1614709323593;
+ Tue, 02 Mar 2021 10:22:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04aa253c-9708-d707-3ee9-7595da4029ad@redhat.com>
+References: <1614581387-14843-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1614581387-14843-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 2 Mar 2021 13:21:52 -0500
+Message-ID: <CADnq5_MvyeR83qQM8+jqkg63QxYkZeRG5jpA1w7p7+5n4mcD_A@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Remove unnecessary conversion to bool
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021, Paolo Bonzini wrote:
-> On 02/03/21 18:45, Sean Christopherson wrote:
-> > If KVM (L0) intercepts #GP, but L1 does not, then L2 can kill L1 by
-> > triggering triple fault.  On both VMX and SVM, if the CPU hits a fault
-> > while vectoring an injected #DF (or I supposed any #DF), any intercept
-> > from the hypervisor takes priority over triple fault.  #PF is unlikely to
-> > be intercepted by L0 but not L1.  The bigger problem is #GP, which is
-> > intercepted on both VMX and SVM if enable_vmware_backdoor=1, and is also
-> > now intercepted for the lovely VMRUN/VMLOAD/VMSAVE errata.
-> > 
-> > Based on kvm/queue, commit fe5f0041c026 ("KVM/SVM: Move vmenter.S exception
-> > fixups out of line").  x86.c and svm/nested.c conflict with kvm/master.
-> > They are minor and straighforward, but let me know if you want me to post
-> > a version based on kvm/master for easier inclusion into 5.12.
-> 
-> I think it would be too intrusive.  Let's stick this in 5.13 only.
+Applied.  Thanks!
 
-Hmm, agreed, especially since most of the paths are not properly tested.  In
-that case, probably best to also drop stable@kernel.org?
+Alex
+
+On Mon, Mar 1, 2021 at 1:50 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warnings:
+>
+> ./drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c:298:33-38:
+> WARNING: conversion to bool not needed here.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
+> index 3398540..fbefbba 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp_cm.c
+> @@ -295,7 +295,7 @@ bool dpp3_program_gamcor_lut(
+>         cm_helper_program_gamcor_xfer_func(dpp_base->ctx, params, &gam_regs);
+>
+>         dpp3_program_gammcor_lut(dpp_base, params->rgb_resulted, params->hw_points_num,
+> -                       next_mode == LUT_RAM_A ? true:false);
+> +                                next_mode == LUT_RAM_A);
+>
+>         //select Gamma LUT to use for next frame
+>         REG_UPDATE(CM_GAMCOR_CONTROL, CM_GAMCOR_SELECT, next_mode == LUT_RAM_A ? 0:1);
+> --
+> 1.8.3.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
