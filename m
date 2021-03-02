@@ -2,229 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7222532A9C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA0732A9CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581337AbhCBSuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:50:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51670 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1448976AbhCBQDL (ORCPT
+        id S1581390AbhCBSvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:51:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1449002AbhCBQDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:03:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614700856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sT+3MBs93ZkS6Kl/MHPW0L5wZEKnpVkvAcVrn9n7a8o=;
-        b=g2UbuiIbetPzDwg018SZSbqGIcdZJt2wgJ5sq5/9tLMv6YBksttAIyYo+0NC9so0B1a5PD
-        b6HZtkRNOCJJ8ehSPajOQ/vTTbQI58ZMHkLUJ2GGDXQ3LKFrqxToJKyT1I4Vr8DXuR7Tms
-        DjQaNOt8InSj4gnKsfhSwQah4EjQAYw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-fR8QzrH2MFOitEjz-uD3ag-1; Tue, 02 Mar 2021 11:00:41 -0500
-X-MC-Unique: fR8QzrH2MFOitEjz-uD3ag-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B71DE801A87;
-        Tue,  2 Mar 2021 16:00:39 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-140.rdu2.redhat.com [10.10.114.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A7DA5FC3A;
-        Tue,  2 Mar 2021 16:00:34 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 975FB22054F; Tue,  2 Mar 2021 11:00:33 -0500 (EST)
-Date:   Tue, 2 Mar 2021 11:00:33 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Subject: Re: [RFC PATCH] fuse: Clear SGID bit when setting mode in setacl
-Message-ID: <20210302160033.GD220334@redhat.com>
-References: <20210226183357.28467-1-lhenriques@suse.de>
- <20210301163324.GC186178@redhat.com>
- <YD0wbmulcBVZ7VZy@suse.de>
+        Tue, 2 Mar 2021 11:03:32 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11710C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:02:21 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id o10so14103287pgg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:02:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=svOHLaBnqkDfLhE0cZ4LJEE36nGBqyQ9USTfjmqqgrQ=;
+        b=Lt+J5F4Qzn5XcdVTLUz5v5KhazZ3GtoSKi4eCwnhUyfDVP7CjIdTe7wrEupIgJjMIA
+         HlEZVtJ4zbOe7b76HD6dAnG1S4mTkKoSoRXAJchNJGjm5jbrHl2vNE2e9zX2776arIOf
+         UdKsWBRwTk9ywichOZb2Ro3wb2a2Z+VxipxSFch75SK8FHkGV246bAofC+niKQpJXehf
+         72HdOj0vU8M5ay2vJJwK40EHtP0D4bsWr/cHZQsOdFTq+DzNSkk9AJFiElG6TSAEPQtk
+         W/sjo/MiPdD35E2LyD3d1O6fbxO62upDmumlXFe+R2chC97vx6mTl3qzaOix0UNu7QPy
+         uqmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=svOHLaBnqkDfLhE0cZ4LJEE36nGBqyQ9USTfjmqqgrQ=;
+        b=j4mtmI5NjgGkHLj6Qp9EeHqw8xQRne3qAILppEJfdg8BtBWCgNt8A/iNo4ffCCnshV
+         r1Ea9BLYYtEO/i006y7s7OwJjlF/tU6ezGxD/Y+2UWJ1cZubkTuslRKrm65ZBFC63e/a
+         V4OeQkS210hOTQ57CHBjb5ZGBsr5M0zB/6n1+5hUb2DICiaTvTtq0q+EyJJL84Y+QGDs
+         Zpq4puESFOkQ7mA/HUsChRewXkNe7+gUJWnBQbQmfNCn8QOt4CrPHNyMK1l0JYLUKiKY
+         ndwlZqmiM5/PnncuwTxDXfKxFLTsmZw2fn7UAaD/Q5UPlQwHTcOTe92uo2vY/lCzTEie
+         goYA==
+X-Gm-Message-State: AOAM533Wzq2LEKFP/jJJGHJBUANcKNC1JkE19s8EjN0OHj9Ln/qUOg67
+        aH8MlFzGDa4RfboUMD3SQy8QbA==
+X-Google-Smtp-Source: ABdhPJw8fIoq/1KmCJqNQp/hD/uLuk0oH7QC1JQ5gpW5sqU026irp8qx8M6uJ7zNiZLj0GP87RUJYw==
+X-Received: by 2002:a62:7d17:0:b029:1ee:3bbe:fa5f with SMTP id y23-20020a627d170000b02901ee3bbefa5fmr3727106pfc.67.1614700940422;
+        Tue, 02 Mar 2021 08:02:20 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:805d:6324:3372:6183])
+        by smtp.gmail.com with ESMTPSA id ie12sm3763220pjb.52.2021.03.02.08.02.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 08:02:19 -0800 (PST)
+Date:   Tue, 2 Mar 2021 08:02:13 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH 02/25] x86/cpufeatures: Add SGX1 and SGX2 sub-features
+Message-ID: <YD5hhah9Sgj1YGqw@google.com>
+References: <cover.1614590788.git.kai.huang@intel.com>
+ <bbfc8c833a62e4b55220834320829df1e17aff41.1614590788.git.kai.huang@intel.com>
+ <20210301100037.GA6699@zn.tnic>
+ <3fce1dd2abd42597bde7ae9496bde7b9596b2797.camel@intel.com>
+ <20210301103043.GB6699@zn.tnic>
+ <7603ef673997b6674f785d333a4f263c749d2cf3.camel@intel.com>
+ <20210301105346.GC6699@zn.tnic>
+ <e509c6c1e3644861edafb18e4045b813f9f344b3.camel@intel.com>
+ <20210301113257.GD6699@zn.tnic>
+ <0adc41774945bf9d6e6a72a93b83c80aa8c59544.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YD0wbmulcBVZ7VZy@suse.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0adc41774945bf9d6e6a72a93b83c80aa8c59544.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 06:20:30PM +0000, Luis Henriques wrote:
-> On Mon, Mar 01, 2021 at 11:33:24AM -0500, Vivek Goyal wrote:
-> > On Fri, Feb 26, 2021 at 06:33:57PM +0000, Luis Henriques wrote:
-> > > Setting file permissions with POSIX ACLs (setxattr) isn't clearing the
-> > > setgid bit.  This seems to be CVE-2016-7097, detected by running fstest
-> > > generic/375 in virtiofs.  Unfortunately, when the fix for this CVE landed
-> > > in the kernel with commit 073931017b49 ("posix_acl: Clear SGID bit when
-> > > setting file permissions"), FUSE didn't had ACLs support yet.
+On Tue, Mar 02, 2021, Kai Huang wrote:
+> On Mon, 2021-03-01 at 12:32 +0100, Borislav Petkov wrote:
+> > On Tue, Mar 02, 2021 at 12:28:27AM +1300, Kai Huang wrote:
+> > > I think some script can utilize /proc/cpuinfo. For instance, admin can have
+> > > automation tool/script to deploy enclave (with sgx2) apps, and that script can check
+> > > whether platform supports sgx2 or not, before it can deploy those enclave apps. Or
+> > > enclave author may just want to check /proc/cpuinfo to know whether the machine can
+> > > be used for testing sgx2 enclave or not.
 > > 
-> > Hi Luis,
+> > This doesn't sound like a concrete use of this. So you can hide it
+> > initially with "" until you guys have a use case. Exposing it later is
+> > always easy vs exposing it now and then not being able to change it
+> > anymore.
 > > 
-> > Interesting. I did not know that "chmod" can lead to clearing of SGID
-> > as well. Recently we implemented FUSE_HANDLE_KILLPRIV_V2 flag which
-> > means that file server is responsible for clearing of SUID/SGID/caps
-> > as per following rules.
-> > 
-> >     - caps are always cleared on chown/write/truncate
-> >     - suid is always cleared on chown, while for truncate/write it is cleared
-> >       only if caller does not have CAP_FSETID.
-> >     - sgid is always cleared on chown, while for truncate/write it is cleared
-> >       only if caller does not have CAP_FSETID as well as file has group execute
-> >       permission.
-> > 
-> > And we don't have anything about "chmod" in this list. Well, I will test
-> > this and come back to this little later.
-> > 
-> > I see following comment in fuse_set_acl().
-> > 
-> >                 /*
-> >                  * Fuse userspace is responsible for updating access
-> >                  * permissions in the inode, if needed. fuse_setxattr
-> >                  * invalidates the inode attributes, which will force
-> >                  * them to be refreshed the next time they are used,
-> >                  * and it also updates i_ctime.
-> >                  */
-> > 
-> > So looks like that original code has been written with intent that
-> > file server is responsible for updating inode permissions. I am
-> > assuming this will include clearing of S_ISGID if needed.
-> > 
-> > But question is, does file server has enough information to be able
-> > to handle proper clearing of S_ISGID info. IIUC, file server will need
-> > two pieces of information atleast.
-> > 
-> > - gid of the caller.
-> > - Whether caller has CAP_FSETID or not.
-> > 
-> > I think we have first piece of information but not the second one. May
-> > be we need to send this in fuse_setxattr_in->flags. And file server
-> > can drop CAP_FSETID while doing setxattr().
-> > 
-> > What about "gid" info. We don't change to caller's uid/gid while doing
-> > setxattr(). So host might not clear S_ISGID or clear it when it should
-> > not. I am wondering that can we switch to caller's uid/gid in setxattr(),
-> > atleast while setting acls.
 > 
-> Thank for looking into this.  To be honest, initially I thought that the
-> fix should be done in the server too, but when I looked into the code I
-> couldn't find an easy way to get that done (without modifying the data
-> being passed from the kernel in setxattr).
+> Hi Haitao, Jarkko,
 > 
-> So, what I've done was to look at what other filesystems were doing in the
-> ACL code, and that's where I found out about this CVE.  The CVE fix for
-> the other filesystems looked easy enough to be included in FUSE too.
+> Do you have more concrete use case of needing "sgx2" in /proc/cpuinfo?
 
-Hi Luis,
+The KVM use case is to query /proc/cpuinfo to see if sgx2 can be enabled in a
+guest.
 
-I still feel that it should probably be fixed in virtiofsd, given fuse client
-is expecting file server to take care of any change of mode (file
-permission bits).
+The counter-argument to that is we might want sgx2 in /proc/cpuinfo to mean sgx2
+is enabled in hardware _and_ supported by the kernel.  Userspace can grep for
+sgx in /proc/cpuinfo, and use cpuid to discover sgx2, so it's not a blocker.
 
-I wrote a proof of concept patch and this should fix this. But it
-drop CAP_FSETID always. So I will need to modify kernel to pass
-this information to file server and that should properly fix
-generic/375. 
-
-Please have a look. This applies on top of fuse acl support V4 patches
-I had posted. I have pushed all the patches on a temporary git branch
-as well.
-
-https://github.com/rhvgoyal/qemu/commits/acl-sgid
-
-Vivek
-
-
-Subject: virtiofsd: Switch creds, drop FSETID for system.posix_acl_access xattr
-
-When posix access acls are set on a file, it can lead to adjusting file
-permissions (mode) as well. If caller does not have CAP_FSETID and it
-also does not have membership of owner group, this will lead to clearing
-SGID bit in mode.
-
-Current fuse code is written in such a way that it expects file server
-to take care of chaning file mode (permission), if there is a need.
-Right now, host kernel does not clear SGID bit because virtiofsd is
-running as root and has CAP_FSETID. For host kernel to clear SGID,
-virtiofsd need to switch to gid of caller in guest and also drop
-CAP_FSETID (if caller did not have it to begin with).
-
-This is a proof of concept patch which switches to caller's uid/gid
-and alwasys drops CAP_FSETID in lo_setxattr(system.posix_acl_access).
-This should fix the xfstest generic/375 test case.
-
-This patch is not complete yet. Kernel should pass information when
-to drop CAP_FSETID and when not to. I will look into modifying
-kernel to pass this information to file server.
-
-Reported-by: Luis Henriques <lhenriques@suse.de>
-Yet-to-be-signed-off-by: Vivek Goyal <vgoyal@redhat.com>
----
- tools/virtiofsd/passthrough_ll.c |   28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
-
-Index: rhvgoyal-qemu/tools/virtiofsd/passthrough_ll.c
-===================================================================
---- rhvgoyal-qemu.orig/tools/virtiofsd/passthrough_ll.c	2021-03-02 08:06:20.539820330 -0500
-+++ rhvgoyal-qemu/tools/virtiofsd/passthrough_ll.c	2021-03-02 10:46:40.901334665 -0500
-@@ -172,7 +172,7 @@ struct lo_data {
-     int user_killpriv_v2, killpriv_v2;
-     /* If set, virtiofsd is responsible for setting umask during creation */
-     bool change_umask;
--    int user_posix_acl;
-+    int user_posix_acl, posix_acl;
- };
- 
- static const struct fuse_opt lo_opts[] = {
-@@ -677,6 +677,7 @@ static void lo_init(void *userdata, stru
-         fuse_log(FUSE_LOG_DEBUG, "lo_init: enabling posix acl\n");
-         conn->want |= FUSE_CAP_POSIX_ACL | FUSE_CAP_DONT_MASK;
-         lo->change_umask = true;
-+        lo->posix_acl = true;
-     } else {
-         /* User either did not specify anything or wants it disabled */
-         fuse_log(FUSE_LOG_DEBUG, "lo_init: disabling posix_acl\n");
-@@ -2981,12 +2982,37 @@ static void lo_setxattr(fuse_req_t req,
- 
-     sprintf(procname, "%i", inode->fd);
-     if (S_ISREG(inode->filetype) || S_ISDIR(inode->filetype)) {
-+        bool switched_creds = false;
-+        struct lo_cred old = {};
-+
-         fd = openat(lo->proc_self_fd, procname, O_RDONLY);
-         if (fd < 0) {
-             saverr = errno;
-             goto out;
-         }
-+
-+        if (lo->posix_acl && !strcmp(name, "system.posix_acl_access")) {
-+            ret = lo_change_cred(req, &old, false);
-+            if (ret) {
-+                saverr = ret;
-+                goto out;
-+            }
-+            ret = drop_effective_cap("FSETID", NULL);
-+            if (ret != 0) {
-+                lo_restore_cred(&old, false);
-+                saverr = ret;
-+                goto out;
-+            }
-+            switched_creds = true;
-+        }
-+
-         ret = fsetxattr(fd, name, value, size, flags);
-+
-+        if (switched_creds) {
-+            if (gain_effective_cap("FSETID"))
-+                fuse_log(FUSE_LOG_ERR, "Failed to gain CAP_FSETID\n");
-+            lo_restore_cred(&old, false);
-+        }
-     } else {
-         /* fchdir should not fail here */
-         assert(fchdir(lo->proc_self_fd) == 0);
-
+That being said, adding some form of capability/versioning to SGX seems
+inevitable, not sure it's worth witholding sgx2 from /proc/cpuinfo.
