@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2726632A66F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 553DB32A68A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384062AbhCBO2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 09:28:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52778 "EHLO mail.kernel.org"
+        id S1574407AbhCBPPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:15:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235805AbhCBMnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:43:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76E2264F89;
-        Tue,  2 Mar 2021 11:58:08 +0000 (UTC)
+        id S1447308AbhCBMwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:52:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1251764F93;
+        Tue,  2 Mar 2021 11:58:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686289;
-        bh=4uGQELwLZagY/IK4FP7dfoQCXh4e10xNgKa3H6sin2g=;
+        s=k20201202; t=1614686295;
+        bh=d8hGjX/SB1l4nrdLN25D8NZopX6PW0ZmFicRvXHeO+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lp7ai+CfapAFWwSs0gGg5J5ZnGaN7wqJUd9/UiPYGwoxr6IN+sUaVEBBsCwaJfi92
-         q7vP3lmkCubhyhFV5WdBiNtP4QoaOQp6wL7z1DXEiwpDFMQqENccgUUCpnRMZyZzun
-         NkJ2zWgVGkxJiGsC8yAf5OUsvyP2KmZJHD1n8LCsmmNCee+XpXGwEZvPeDtER6J4EK
-         Dwhc2tonD8KT027I0KK+UG2pkssgypW89Abb6rdv5SIgq/uE3gQoSl5Wkm1WyatbUG
-         hqgHs9MIuOlI11UB6iDt5VWznZfKKvwpaG2VxYjz8+VBD/nj16pF9MfSnbnK3ToDJF
-         iMpwSBD0gpF3w==
+        b=eNS7xH6jV0ASFex0xcotvCojYJsnsZITGwGac+u6VG5o5zpLr7ln8p4eTM5At/zkV
+         O5IyANbLWbC6W1Q6+kFh+ZQQH5/DpIhPaVe7vvBAeZ1ie7IF0LuHrWLa7GdNW0aB2C
+         44392lFVOkmmhzQHwafL2CszyCFb3RVnEYOLO8TTuGkBTwL/Q2hhWXGPV7QVobdEDK
+         NfW5SBdbTWCWhAFFSdRuks9H7TkQl9F+wzzk+w3i7M127JCGkvRpExeTe9yM+IcjrS
+         M6/sE2vJjkK6ie9wKGrwErvvSVCP9BSTDgZNfF7IXoMc1bqtjwm58PDb0xuaMnJS7f
+         zAHrylP8WtN0w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tj <ml.linux@elloe.vision>, Joerg Roedel <jroedel@suse.de>,
-        Sasha Levin <sashal@kernel.org>,
-        iommu@lists.linux-foundation.org
-Subject: [PATCH AUTOSEL 5.4 15/33] iommu/amd: Fix performance counter initialization
-Date:   Tue,  2 Mar 2021 06:57:31 -0500
-Message-Id: <20210302115749.62653-15-sashal@kernel.org>
+Cc:     =?UTF-8?q?Ronald=20Tschal=C3=A4r?= <ronald@innovation.ch>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 19/33] Input: applespi - don't wait for responses to commands indefinitely.
+Date:   Tue,  2 Mar 2021 06:57:35 -0500
+Message-Id: <20210302115749.62653-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115749.62653-1-sashal@kernel.org>
 References: <20210302115749.62653-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -43,115 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+From: Ronald Tschalär <ronald@innovation.ch>
 
-[ Upstream commit 6778ff5b21bd8e78c8bd547fd66437cf2657fd9b ]
+[ Upstream commit 0ce1ac23149c6da939a5926c098c270c58c317a0 ]
 
-Certain AMD platforms enable power gating feature for IOMMU PMC,
-which prevents the IOMMU driver from updating the counter while
-trying to validate the PMC functionality in the init_iommu_perf_ctr().
-This results in disabling PMC support and the following error message:
+The response to a command may never arrive or it may be corrupted (and
+hence dropped) for some reason. While exceedingly rare, when it did
+happen it blocked all further commands. One way to fix this was to
+do a suspend/resume. However, recovering automatically seems like a
+nicer option. Hence this puts a time limit (1 sec) on how long we're
+willing to wait for a response, after which we assume it got lost.
 
-    "AMD-Vi: Unable to read/write to IOMMU perf counter"
-
-To workaround this issue, disable power gating temporarily by programming
-the counter source to non-zero value while validating the counter,
-and restore the prior state afterward.
-
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Tested-by: Tj (Elloe Linux) <ml.linux@elloe.vision>
-Link: https://lore.kernel.org/r/20210208122712.5048-1-suravee.suthikulpanit@amd.com
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Ronald Tschalär <ronald@innovation.ch>
+Link: https://lore.kernel.org/r/20210217190718.11035-1-ronald@innovation.ch
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/amd_iommu_init.c | 45 +++++++++++++++++++++++++---------
- 1 file changed, 34 insertions(+), 11 deletions(-)
+ drivers/input/keyboard/applespi.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/amd_iommu_init.c b/drivers/iommu/amd_iommu_init.c
-index 31d7e2d4f304..ad714ff375f8 100644
---- a/drivers/iommu/amd_iommu_init.c
-+++ b/drivers/iommu/amd_iommu_init.c
-@@ -12,6 +12,7 @@
- #include <linux/acpi.h>
- #include <linux/list.h>
- #include <linux/bitmap.h>
-+#include <linux/delay.h>
- #include <linux/slab.h>
- #include <linux/syscore_ops.h>
- #include <linux/interrupt.h>
-@@ -253,6 +254,8 @@ static enum iommu_init_state init_state = IOMMU_START_STATE;
- static int amd_iommu_enable_interrupts(void);
- static int __init iommu_go_to_state(enum iommu_init_state state);
- static void init_device_table_dma(void);
-+static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
-+				u8 fxn, u64 *value, bool is_write);
+diff --git a/drivers/input/keyboard/applespi.c b/drivers/input/keyboard/applespi.c
+index d38398526965..a4b7422de534 100644
+--- a/drivers/input/keyboard/applespi.c
++++ b/drivers/input/keyboard/applespi.c
+@@ -48,6 +48,7 @@
+ #include <linux/efi.h>
+ #include <linux/input.h>
+ #include <linux/input/mt.h>
++#include <linux/ktime.h>
+ #include <linux/leds.h>
+ #include <linux/module.h>
+ #include <linux/spinlock.h>
+@@ -400,7 +401,7 @@ struct applespi_data {
+ 	unsigned int			cmd_msg_cntr;
+ 	/* lock to protect the above parameters and flags below */
+ 	spinlock_t			cmd_msg_lock;
+-	bool				cmd_msg_queued;
++	ktime_t				cmd_msg_queued;
+ 	enum applespi_evt_type		cmd_evt_type;
  
- static bool amd_iommu_pre_enabled = true;
+ 	struct led_classdev		backlight_info;
+@@ -716,7 +717,7 @@ static void applespi_msg_complete(struct applespi_data *applespi,
+ 		wake_up_all(&applespi->drain_complete);
  
-@@ -1672,13 +1675,11 @@ static int __init init_iommu_all(struct acpi_table_header *table)
- 	return 0;
- }
+ 	if (is_write_msg) {
+-		applespi->cmd_msg_queued = false;
++		applespi->cmd_msg_queued = 0;
+ 		applespi_send_cmd_msg(applespi);
+ 	}
  
--static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
--				u8 fxn, u64 *value, bool is_write);
--
--static void init_iommu_perf_ctr(struct amd_iommu *iommu)
-+static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
- {
-+	int retry;
- 	struct pci_dev *pdev = iommu->dev;
--	u64 val = 0xabcd, val2 = 0, save_reg = 0;
-+	u64 val = 0xabcd, val2 = 0, save_reg, save_src;
+@@ -758,8 +759,16 @@ static int applespi_send_cmd_msg(struct applespi_data *applespi)
+ 		return 0;
  
- 	if (!iommu_feature(iommu, FEATURE_PC))
- 		return;
-@@ -1686,17 +1687,39 @@ static void init_iommu_perf_ctr(struct amd_iommu *iommu)
- 	amd_iommu_pc_present = true;
- 
- 	/* save the value to restore, if writable */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false) ||
-+	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, false))
- 		goto pc_false;
- 
--	/* Check if the performance counters can be written to */
--	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
--	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
--	    (val != val2))
-+	/*
-+	 * Disable power gating by programing the performance counter
-+	 * source to 20 (i.e. counts the reads and writes from/to IOMMU
-+	 * Reserved Register [MMIO Offset 1FF8h] that are ignored.),
-+	 * which never get incremented during this init phase.
-+	 * (Note: The event is also deprecated.)
-+	 */
-+	val = 20;
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 8, &val, true))
- 		goto pc_false;
- 
-+	/* Check if the performance counters can be written to */
-+	val = 0xabcd;
-+	for (retry = 5; retry; retry--) {
-+		if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true) ||
-+		    iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false) ||
-+		    val2)
-+			break;
+ 	/* check whether send is in progress */
+-	if (applespi->cmd_msg_queued)
+-		return 0;
++	if (applespi->cmd_msg_queued) {
++		if (ktime_ms_delta(ktime_get(), applespi->cmd_msg_queued) < 1000)
++			return 0;
 +
-+		/* Wait about 20 msec for power gating to disable and retry. */
-+		msleep(20);
++		dev_warn(&applespi->spi->dev, "Command %d timed out\n",
++			 applespi->cmd_evt_type);
++
++		applespi->cmd_msg_queued = 0;
++		applespi->write_active = false;
 +	}
-+
- 	/* restore */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
-+	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true) ||
-+	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, true))
-+		goto pc_false;
-+
-+	if (val != val2)
- 		goto pc_false;
  
- 	pci_info(pdev, "IOMMU performance counters supported\n");
+ 	/* set up packet */
+ 	memset(packet, 0, APPLESPI_PACKET_SIZE);
+@@ -856,7 +865,7 @@ static int applespi_send_cmd_msg(struct applespi_data *applespi)
+ 		return sts;
+ 	}
+ 
+-	applespi->cmd_msg_queued = true;
++	applespi->cmd_msg_queued = ktime_get_coarse();
+ 	applespi->write_active = true;
+ 
+ 	return 0;
+@@ -1908,7 +1917,7 @@ static int __maybe_unused applespi_resume(struct device *dev)
+ 	applespi->drain = false;
+ 	applespi->have_cl_led_on = false;
+ 	applespi->have_bl_level = 0;
+-	applespi->cmd_msg_queued = false;
++	applespi->cmd_msg_queued = 0;
+ 	applespi->read_active = false;
+ 	applespi->write_active = false;
+ 
 -- 
 2.30.1
 
