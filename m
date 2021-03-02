@@ -2,115 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9394E32A8F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7C232A907
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580449AbhCBSDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:03:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38674 "EHLO mail.kernel.org"
+        id S1580547AbhCBSEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:04:31 -0500
+Received: from mga05.intel.com ([192.55.52.43]:12211 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1578525AbhCBPYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:24:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECFEE64F2F;
-        Tue,  2 Mar 2021 15:24:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614698642;
-        bh=IrNN0AID3YGfmGdzydEWNqVZIr3VxKBZ4AD1PLT3A54=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s9alLJsicIDJdy9j3gC3rcF92phcwBEE0otKMBxcTzov/+uV+UUdUAUC/rHGWL3el
-         BLkYQdW2zLBep7Ck9vg456yF8Epr7GhUUcc4CRPMcJGKdCv2ifTTMbsoTIMXRQ+Flj
-         FXmydfQo+FrIWuLrVKHQxIsLTZS4cnqz6kCnasmGh0OcynAZYQq3VAJVK9LQwQ/lTF
-         8cxMw2jYEg6RN8dE1VJpo7fIUFHaA7b+KeQwJkCgZofLhR3gtdy9IIzIOBvyPWw/rp
-         MrYwrHnMb/YZPhTkTS1RfTY565RjDOgxgo+dhJQCoogHMhxhjDQDw3AlvwKAxehPKy
-         eLf08y8HCMDAw==
-Date:   Tue, 2 Mar 2021 17:23:43 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] integrity: Load mokx variables into the blacklist
- keyring
-Message-ID: <YD5Yf1gqvoKKRL+C@kernel.org>
-References: <161433310139.902181.11787442834918634133.stgit@warthog.procyon.org.uk>
- <161433313205.902181.2502803393898221637.stgit@warthog.procyon.org.uk>
+        id S1578609AbhCBPZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:25:40 -0500
+IronPort-SDR: bW4FfnQgh3ihktPy/M+arrdN3WnxS4kWyhDpYxFXAcuM4tTcxcOgHDaNQvb8Oe3/bK2d6jewvb
+ wRe9J3AUJCrw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="271855152"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="271855152"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:23:53 -0800
+IronPort-SDR: HU0vsqQzXgRuwC/sr7+jTF8HC9Xo43qDRsVxiqxRtRt3PElTVxrAHN1GuXX8PkUn6XG+RnT8zW
+ FlRJQEoZu9fw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="595827848"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP; 02 Mar 2021 07:23:53 -0800
+Received: from [10.252.140.135] (kliang2-MOBL.ccr.corp.intel.com [10.252.140.135])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 6E0C15808BA;
+        Tue,  2 Mar 2021 07:23:52 -0800 (PST)
+Subject: Re: [PATCH] perf test: Test case 27 fails on s390 and non-x86
+ platforms
+To:     Thomas Richter <tmricht@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        heiko.carstens@de.ibm.com,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+References: <20210302133119.3325530-1-tmricht@linux.ibm.com>
+ <abcf63c1-8a15-14af-b449-77a943c94121@linux.intel.com>
+ <7a14f6b6-967f-93bf-a030-44e358374502@linux.ibm.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <785fc599-24c5-6eda-2807-2b79a9d89315@linux.intel.com>
+Date:   Tue, 2 Mar 2021 10:23:51 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161433313205.902181.2502803393898221637.stgit@warthog.procyon.org.uk>
+In-Reply-To: <7a14f6b6-967f-93bf-a030-44e358374502@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 09:52:12AM +0000, David Howells wrote:
-> From: Eric Snowberg <eric.snowberg@oracle.com>
-> 
-> During boot the Secure Boot Forbidden Signature Database, dbx,
-> is loaded into the blacklist keyring.  Systems booted with shim
-> have an equivalent Forbidden Signature Database called mokx.
-> Currently mokx is only used by shim and grub, the contents are
-> ignored by the kernel.
-> 
-> Add the ability to load mokx into the blacklist keyring during boot.
-> 
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> Suggested-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Jarkko Sakkinen <jarkko@kernel.org>
-> Link: https://lore.kernel.org/r/20210122181054.32635-5-eric.snowberg@oracle.com/ # v5
-> Link: https://lore.kernel.org/r/c33c8e3839a41e9654f41cc92c7231104931b1d7.camel@HansenPartnership.com/
-> Link: ohttps://lore.kernel.org/r/161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk/
 
-For all:
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+On 3/2/2021 9:48 AM, Thomas Richter wrote:
+> On 3/2/21 3:03 PM, Liang, Kan wrote:
+>>
+>> + Athira Rajeev
+>>
+>> On 3/2/2021 8:31 AM, Thomas Richter wrote:
+>>> Executing perf test 27 fails on s390:
+>>>    [root@t35lp46 perf]# ./perf test -Fv 27
+>>>    27: Sample parsing
+>>>    --- start ---
+>>>    ---- end ----
+>>>    Sample parsing: FAILED!
+>>>    [root@t35lp46 perf]#
+>>>
+>>> The root cause is
+>>> commit c7444297fd3769 ("perf test: Support PERF_SAMPLE_WEIGHT_STRUCT")
+>>> This commit introduced a test case for PERF_SAMPLE_WEIGHT_STRUCT
+>>> but does not adjust non-x86 weak linkage functions.
+>>>
+>>> The error is in test__sample_parsing() --> do_test()
+>>> Function do_test() defines two structures of type struct perf_sample named
+>>> sample and sample_out. The first sets member sample.ins_lat = 117
+>>>
+>>> Structure sample_out is constructed dynamically using functions
+>>> perf_event__synthesize_sample() and evsel__parse_sample().
+>>> Both functions have an x86 specific function version which sets member
+>>> ins_lat. The weak common functions do not set member ins_lat.
+>>>
+>>
+>> I don't think Power supports the instruction latency. As a request from Athira Rajeev, I moved the PERF_SAMPLE_WEIGHT_STRUCT to the X86 specific codes.
+>> https://lore.kernel.org/lkml/D97FEF4F-DD88-4760-885E-9A6161A9B48B@linux.vnet.ibm.com/
+>> https://lore.kernel.org/lkml/1612540912-6562-1-git-send-email-kan.liang@linux.intel.com/
+>>
+>> I don't think we want to add the ins_lat back in the weak common functions.
+>>
+>> Could you please update the perf test and don't apply the PERF_SAMPLE_WEIGHT_STRUCT for the non-X86 platform?
+> 
+> I used offical linux git tree
+>   [root@t35lp46 perf]# git tag | fgrep 5.12
+> v5.12-rc1
+> [root@t35lp46 perf]#
+> 
+> So this change is in the pipe. I do not plan to revert individual patches.
 
-/Jarkko
+No, we shouldn't revert the patch.
+I mean can you fix the issue in perf test?
+Don't test ins_lat or PERF_SAMPLE_WEIGHT_STRUCT for a non-X86 platform.
 
-> ---
+>>
+>>
+>>> Later in function samples_same() both data in variable sample and sample_out
+>>> are compared. The comparison fails because sample.ins_lat is 117
+>>> and samples_out.ins_lat is 0, the weak functions never set member ins_lat.
+>>>
+>>> Output after:
+>>>    [root@t35lp46 perf]# ./perf test -Fv 27
+>>>    27: Sample parsing
+>>>    --- start ---
+>>>    ---- end ----
+>>>    Sample parsing: Ok
+>>> [root@t35lp46 perf]#
+>>>
+>>> Fixes:
+>>> commit c7444297fd3769 ("perf test: Support PERF_SAMPLE_WEIGHT_STRUCT")
+>>
+>> I think the regression should start from
+>> commit fbefe9c2f87f ("perf tools: Support arch specific PERF_SAMPLE_WEIGHT_STRUCT processing")
+>>
+>>
+>> Thanks,
+>> Kan
 > 
->  security/integrity/platform_certs/load_uefi.c |   20 ++++++++++++++++++--
->  1 file changed, 18 insertions(+), 2 deletions(-)
+> Kan,
 > 
-> diff --git a/security/integrity/platform_certs/load_uefi.c b/security/integrity/platform_certs/load_uefi.c
-> index ee4b4c666854..f290f78c3f30 100644
-> --- a/security/integrity/platform_certs/load_uefi.c
-> +++ b/security/integrity/platform_certs/load_uefi.c
-> @@ -132,8 +132,9 @@ static int __init load_moklist_certs(void)
->  static int __init load_uefi_certs(void)
->  {
->  	efi_guid_t secure_var = EFI_IMAGE_SECURITY_DATABASE_GUID;
-> -	void *db = NULL, *dbx = NULL;
-> -	unsigned long dbsize = 0, dbxsize = 0;
-> +	efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
-> +	void *db = NULL, *dbx = NULL, *mokx = NULL;
-> +	unsigned long dbsize = 0, dbxsize = 0, mokxsize = 0;
->  	efi_status_t status;
->  	int rc = 0;
->  
-> @@ -175,6 +176,21 @@ static int __init load_uefi_certs(void)
->  		kfree(dbx);
->  	}
->  
-> +	mokx = get_cert_list(L"MokListXRT", &mok_var, &mokxsize, &status);
-> +	if (!mokx) {
-> +		if (status == EFI_NOT_FOUND)
-> +			pr_debug("mokx variable wasn't found\n");
-> +		else
-> +			pr_info("Couldn't get mokx list\n");
-> +	} else {
-> +		rc = parse_efi_signature_list("UEFI:MokListXRT",
-> +					      mokx, mokxsize,
-> +					      get_handler_for_dbx);
-> +		if (rc)
-> +			pr_err("Couldn't parse mokx signatures %d\n", rc);
-> +		kfree(mokx);
-> +	}
-> +
->  	/* Load the MokListRT certs */
->  	rc = load_moklist_certs();
->  
+> I do not follow you. Your commit c7444297fd3769d10c7ffb52c81d71503b3e268f
+> adds this line
 > 
+> @@ -242,6 +245,7 @@ static int do_test(u64 sample_type, u64 sample_regs, u64 read_format)
+>                  .cgroup         = 114,
+>                  .data_page_size = 115,
+>                  .code_page_size = 116,
+> +               .ins_lat        = 117,
 > 
+> And this assignment 117 breaks the test. As mentioned before, member ins_lat is never touched
+> by the weak functions.
+> 
+
+Here is the timeline for the patches.
+
+1. The commit c7444297fd3769 and other SPR patches are merged at 
+2021-02-08. At that time, I don't think we have this issue. perf test 
+should work well.
+2. Athira Rajeev told me that Power doesn't support instruction latency. 
+So I submitted a patch which create weak functions and move the ins_lat 
+into X86 specific.
+3. The patch (commit fbefe9c2f87f) was finally merged at 2021-02-18. We 
+should observe the perf test at this time.
+
+As my understanding, "Fixes" should log the commit where an issue starts 
+to be observed. If someone tries to backport the fix later, they have an 
+idea where to put it.
+
+Thanks,
+Kan
+
