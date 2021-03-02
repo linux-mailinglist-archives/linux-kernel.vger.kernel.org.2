@@ -2,260 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C8532A966
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8517032A90E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580868AbhCBSVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:21:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39680 "EHLO mail.kernel.org"
+        id S1580614AbhCBSFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:05:23 -0500
+Received: from mga04.intel.com ([192.55.52.120]:37209 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1578832AbhCBP10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:27:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D0A664EFC;
-        Tue,  2 Mar 2021 15:18:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614698288;
-        bh=8soWKlSoVNnPoAkd1PBkbCRz19PnjYruzmRd9uawI4k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cAql3LROA80o+6BbuPrq0OpDbb1VtcJlTGtODpnzz0LSiYJm2ImPp337OWZFMSopa
-         sdj9bFtFwiwxGbAhKvOMf94lUIJ5EXexwluSfcydDbRGg8w0fOIhWLRMgPr2c3adoq
-         xYaWlamsJ9SILroE1anTVnZC7nHe4gtdM4DFUTFCiMXiMghQW1dwHEZh6fndRbTl0/
-         y7Rd3uyoINbXLGF0n3ZVKgaooEprCmZh9OmB3kx9n7V4uzUr2RLXu+qQirofHNegJc
-         J/jnYSbComqBoqnJQu1HwKic82qv2aSpMfw+ZqgRVNvqQbdMG45tAmfgMFwlGNtFyk
-         T88+cpI42tGGQ==
-Date:   Tue, 2 Mar 2021 17:17:58 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH v3 1/2] x86/setup: consolidate early memory reservations
-Message-ID: <YD5XJrtJDgdmMt42@kernel.org>
-References: <20210302100406.22059-1-rppt@kernel.org>
- <20210302100406.22059-2-rppt@kernel.org>
- <20210302130409.GA2962@MiWiFi-R3L-srv>
+        id S1578621AbhCBP0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:26:10 -0500
+IronPort-SDR: xwwTgPqNIGtIcItdHkCbVPABvcWBbLEIZf+ICBb0evkqYAPxBYI+zmIyKxYq6FOOly4u0gk0bJ
+ phFQRlXrIQAg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="184413558"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="184413558"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:18:40 -0800
+IronPort-SDR: skEIL9E3dQJ6buXLwqK1bhkGgbC6hZSNvhnm5oHvLslyt83GOX0RUcekAj91MDAinJLir/ZMRN
+ ZWY0sQj19kHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="427525494"
+Received: from lkp-server02.sh.intel.com (HELO 2482ff9f8ac0) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Mar 2021 07:18:38 -0800
+Received: from kbuild by 2482ff9f8ac0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lH6nG-0000U9-0g; Tue, 02 Mar 2021 15:18:38 +0000
+Date:   Tue, 02 Mar 2021 23:18:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/net-fddi-skfp-smt] BUILD SUCCESS WITH
+ WARNING 800290b4db3c7818e10af88f757b09b59588241c
+Message-ID: <603e5741.xl0IdreUvDN+SaA+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302130409.GA2962@MiWiFi-R3L-srv>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 09:04:09PM +0800, Baoquan He wrote:
-> On 03/02/21 at 12:04pm, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > The early reservations of memory areas used by the firmware, bootloader,
-> > kernel text and data are spread over setup_arch(). Moreover, some of them
-> > happen *after* memblock allocations, e.g trim_platform_memory_ranges() and
-> > trim_low_memory_range() are called after reserve_real_mode() that allocates
-> > memory.
-> > 
-> > There was no corruption of these memory regions because memblock always
-> > allocates memory either from the end of memory (in top-down mode) or above
-> > the kernel image (in bottom-up mode). However, the bottom up mode is going
-> > to be updated to span the entire memory [1] to avoid limitations caused by
-> > KASLR.
-> > 
-> > Consolidate early memory reservations in a dedicated function to improve
-> > robustness against future changes. Having the early reservations in one
-> > place also makes it clearer what memory must be reserved before we allow
-> > memblock allocations.
-> > 
-> > [1] https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb.com
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > Acked-by: Borislav Petkov <bp@suse.de>
-> > ---
-> >  arch/x86/kernel/setup.c | 92 ++++++++++++++++++++---------------------
-> >  1 file changed, 44 insertions(+), 48 deletions(-)
-> > 
-> > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> > index d883176ef2ce..3e3c6036b023 100644
-> > --- a/arch/x86/kernel/setup.c
-> > +++ b/arch/x86/kernel/setup.c
-> > @@ -645,18 +645,6 @@ static void __init trim_snb_memory(void)
-> >  	}
-> >  }
-> >  
-> > -/*
-> > - * Here we put platform-specific memory range workarounds, i.e.
-> > - * memory known to be corrupt or otherwise in need to be reserved on
-> > - * specific platforms.
-> > - *
-> > - * If this gets used more widely it could use a real dispatch mechanism.
-> > - */
-> > -static void __init trim_platform_memory_ranges(void)
-> > -{
-> > -	trim_snb_memory();
-> > -}
-> > -
-> >  static void __init trim_bios_range(void)
-> >  {
-> >  	/*
-> > @@ -729,7 +717,38 @@ static void __init trim_low_memory_range(void)
-> >  {
-> >  	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
-> >  }
-> > -	
-> > +
-> > +static void __init early_reserve_memory(void)
-> > +{
-> > +	/*
-> > +	 * Reserve the memory occupied by the kernel between _text and
-> > +	 * __end_of_kernel_reserve symbols. Any kernel sections after the
-> > +	 * __end_of_kernel_reserve symbol must be explicitly reserved with a
-> > +	 * separate memblock_reserve() or they will be discarded.
-> > +	 */
-> > +	memblock_reserve(__pa_symbol(_text),
-> > +			 (unsigned long)__end_of_kernel_reserve - (unsigned long)_text);
-> > +
-> > +	/*
-> > +	 * Make sure page 0 is always reserved because on systems with
-> > +	 * L1TF its contents can be leaked to user processes.
-> > +	 */
-> > +	memblock_reserve(0, PAGE_SIZE);
-> > +
-> > +	early_reserve_initrd();
-> > +
-> > +	if (efi_enabled(EFI_BOOT))
-> > +		efi_memblock_x86_reserve_range();
-> > +
-> > +	memblock_x86_reserve_range_setup_data();
-> 
-> This patch looks good to me, thanks for the effort.
-> 
-> While at it, wondering if we can rename the above function to
-> memblock_reserve_setup_data() just as its e820 counterpart
-> e820__reserve_setup_data(), adding 'x86' to a function under arch/x86
-> seems redundant.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/net-fddi-skfp-smt
+branch HEAD: 800290b4db3c7818e10af88f757b09b59588241c  net: fddi: skfp: smt: Replace one-element array with flexible-array member
 
-I'd rather keep these names for now. First, it's easier to dig to them in the git
-history and second, I'm planning more changes in this area and these names
-are as good as FIXME: to remind what still needs to be checked :)
- 
-> FWIW,
-> 
-> Reviewed-by: Baoquan He <bhe@redhat.com>
+possible Warning in current branch:
 
-Thanks!
- 
-> Thanks
-> Baoquan
-> 
-> > +
-> > +	reserve_ibft_region();
-> > +	reserve_bios_regions();
-> > +
-> > +	trim_snb_memory();
-> > +	trim_low_memory_range();
-> > +}
-> > +
-> >  /*
-> >   * Dump out kernel offset information on panic.
-> >   */
-> > @@ -764,29 +783,6 @@ dump_kernel_offset(struct notifier_block *self, unsigned long v, void *p)
-> >  
-> >  void __init setup_arch(char **cmdline_p)
-> >  {
-> > -	/*
-> > -	 * Reserve the memory occupied by the kernel between _text and
-> > -	 * __end_of_kernel_reserve symbols. Any kernel sections after the
-> > -	 * __end_of_kernel_reserve symbol must be explicitly reserved with a
-> > -	 * separate memblock_reserve() or they will be discarded.
-> > -	 */
-> > -	memblock_reserve(__pa_symbol(_text),
-> > -			 (unsigned long)__end_of_kernel_reserve - (unsigned long)_text);
-> > -
-> > -	/*
-> > -	 * Make sure page 0 is always reserved because on systems with
-> > -	 * L1TF its contents can be leaked to user processes.
-> > -	 */
-> > -	memblock_reserve(0, PAGE_SIZE);
-> > -
-> > -	early_reserve_initrd();
-> > -
-> > -	/*
-> > -	 * At this point everything still needed from the boot loader
-> > -	 * or BIOS or kernel text should be early reserved or marked not
-> > -	 * RAM in e820. All other memory is free game.
-> > -	 */
-> > -
-> >  #ifdef CONFIG_X86_32
-> >  	memcpy(&boot_cpu_data, &new_cpu_data, sizeof(new_cpu_data));
-> >  
-> > @@ -910,8 +906,18 @@ void __init setup_arch(char **cmdline_p)
-> >  
-> >  	parse_early_param();
-> >  
-> > -	if (efi_enabled(EFI_BOOT))
-> > -		efi_memblock_x86_reserve_range();
-> > +	/*
-> > +	 * Do some memory reservations *before* memory is added to
-> > +	 * memblock, so memblock allocations won't overwrite it.
-> > +	 * Do it after early param, so we could get (unlikely) panic from
-> > +	 * serial.
-> > +	 *
-> > +	 * After this point everything still needed from the boot loader or
-> > +	 * firmware or kernel text should be early reserved or marked not
-> > +	 * RAM in e820. All other memory is free game.
-> > +	 */
-> > +	early_reserve_memory();
-> > +
-> >  #ifdef CONFIG_MEMORY_HOTPLUG
-> >  	/*
-> >  	 * Memory used by the kernel cannot be hot-removed because Linux
-> > @@ -938,9 +944,6 @@ void __init setup_arch(char **cmdline_p)
-> >  
-> >  	x86_report_nx();
-> >  
-> > -	/* after early param, so could get panic from serial */
-> > -	memblock_x86_reserve_range_setup_data();
-> > -
-> >  	if (acpi_mps_check()) {
-> >  #ifdef CONFIG_X86_LOCAL_APIC
-> >  		disable_apic = 1;
-> > @@ -1032,8 +1035,6 @@ void __init setup_arch(char **cmdline_p)
-> >  	 */
-> >  	find_smp_config();
-> >  
-> > -	reserve_ibft_region();
-> > -
-> >  	early_alloc_pgt_buf();
-> >  
-> >  	/*
-> > @@ -1054,8 +1055,6 @@ void __init setup_arch(char **cmdline_p)
-> >  	 */
-> >  	sev_setup_arch();
-> >  
-> > -	reserve_bios_regions();
-> > -
-> >  	efi_fake_memmap();
-> >  	efi_find_mirror();
-> >  	efi_esrt_init();
-> > @@ -1081,9 +1080,6 @@ void __init setup_arch(char **cmdline_p)
-> >  
-> >  	reserve_real_mode();
-> >  
-> > -	trim_platform_memory_ranges();
-> > -	trim_low_memory_range();
-> > -
-> >  	init_mem_mapping();
-> >  
-> >  	idt_setup_early_pf();
-> > -- 
-> > 2.28.0
-> > 
-> 
+arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
+arch/alpha/include/asm/string.h:37:11: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
+arch/sparc/include/asm/string.h:15:25: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
+arch/sparc/include/asm/string.h:18:29: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct DInfo' at offset 48 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct FInfo' at offset 48 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:228:29: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
+drivers/gpu/drm/mga/mga_ioc32.c:70:2: warning: 'memcpy' offset [21, 80] from the object at 'init' is out of the bounds of referenced subobject 'chipset' with type 'int' at offset 16 [-Warray-bounds]
+drivers/gpu/drm/radeon/si_dpm.c:2350:20: warning: array subscript 1 is above array bounds of 'SISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]' {aka 'struct SISLANDS_SMC_HW_PERFORMANCE_LEVEL[1]'} [-Warray-bounds]
+drivers/ide/ide-ioctls.c:213:2: warning: 'memcpy' offset [3, 7] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
+drivers/media/common/siano/smscoreapi.c:1003:24: warning: array subscript 1 is above array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
+drivers/media/platform/qcom/venus/hfi_cmds.c:57:11: warning: array subscript 1 is above array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
+drivers/media/platform/qcom/venus/hfi_msgs.c:246:35: warning: array subscript 1 is above array bounds of 'u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
+drivers/message/fusion/mptlan.c:759:28: warning: array subscript 1 is above array bounds of 'U32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
+drivers/scsi/aacraid/aachba.c:3970:18: warning: array subscript 1 is above array bounds of 'struct sge_ieee1212[1]' [-Warray-bounds]
+drivers/scsi/mpt3sas/mpt3sas_ctl.c:3257:63: warning: array subscript 24 is above array bounds of 'U16[1]' {aka 'short unsigned int[1]'} [-Warray-bounds]
+drivers/staging/rtl8188eu/core/rtw_wlan_util.c:665:65: warning: array subscript 2 is above array bounds of 'u8[1]' {aka 'unsigned char[1]'} [-Warray-bounds]
+fs/nfsd/nfsfh.c:191:41: warning: array subscript 1 is above array bounds of '__u32[1]' {aka 'unsigned int[1]'} [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [21, 80] from the object at 'init' is out of the bounds of referenced subobject 'chipset' with type 'int' at offset 16 [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [25, 28] from the object at 'threshold' is out of the bounds of referenced subobject 'low' with type 'struct iw_quality' at offset 20 [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [49, 84] from the object at 'link_usettings' is out of the bounds of referenced subobject 'base' with type 'struct ethtool_link_settings' at offset 0 [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct DInfo' at offset 48 [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [65, 80] from the object at 'entry' is out of the bounds of referenced subobject 'user_info' with type 'struct FInfo' at offset 48 [-Warray-bounds]
+include/linux/fortify-string.h:22:29: warning: '__builtin_memset' offset [19, 32] from the object at 'karg' is out of the bounds of referenced subobject 'buffer_rel_condition' with type 'short unsigned int' at offset 16 [-Warray-bounds]
+include/uapi/linux/bcache.h:109:32: warning: 'memcpy' offset [17, 24] from the object at 'alloc' is out of the bounds of referenced subobject 'key' with type 'struct bkey' at offset 0 [-Warray-bounds]
+net/core/flow_dissector.c:831:3: warning: 'memcpy' offset [33, 48] from the object at 'flow_keys' is out of the bounds of referenced subobject 'ipv6_src' with type '__u32[4]' {aka 'unsigned int[4]'} at offset 16 [-Warray-bounds]
+net/sctp/sm_make_chunk.c:3150:4: warning: 'memcpy' offset [17, 28] from the object at 'addr' is out of the bounds of referenced subobject 'v4' with type 'struct sockaddr_in' at offset 0 [-Warray-bounds]
 
--- 
-Sincerely yours,
-Mike.
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allmodconfig
+|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|   |-- drivers-media-common-siano-smscoreapi.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
+|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+|   |-- drivers-scsi-mpt3sas-mpt3sas_ctl.c:warning:array-subscript-is-above-array-bounds-of-U16-aka-short-unsigned-int
+|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
+|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
+|-- alpha-allyesconfig
+|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|   `-- arch-alpha-include-asm-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|-- arc-allyesconfig
+|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
+|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
+|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
+|-- arm-allmodconfig
+|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
+|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
+|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
+|-- arm-allyesconfig
+|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
+|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
+|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
+|-- arm-randconfig-r023-20210302
+|   `-- net-sctp-sm_make_chunk.c:warning:memcpy-offset-from-the-object-at-addr-is-out-of-the-bounds-of-referenced-subobject-v4-with-type-struct-sockaddr_in-at-offset
+|-- arm-randconfig-r034-20210301
+|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+|   |-- drivers-scsi-mpt3sas-mpt3sas_ctl.c:warning:array-subscript-is-above-array-bounds-of-U16-aka-short-unsigned-int
+|   |-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
+|   |-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|   |-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-link_usettings-is-out-of-the-bounds-of-referenced-subobject-base-with-type-struct-ethtool_link_settings-at-offset
+|   `-- include-linux-fortify-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|-- h8300-randconfig-p001-20210302
+|   `-- drivers-media-common-siano-smscoreapi.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|-- i386-randconfig-a004-20210302
+|   |-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-entry-is-out-of-the-bounds-of-referenced-subobject-user_info-with-type-struct-DInfo-at-offset
+|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-entry-is-out-of-the-bounds-of-referenced-subobject-user_info-with-type-struct-FInfo-at-offset
+|-- i386-randconfig-a011-20210302
+|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|   `-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+|-- i386-randconfig-s001-20210302
+|   |-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|-- ia64-allmodconfig
+|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|   |-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|   |-- drivers-media-common-siano-smscoreapi.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
+|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+|   |-- drivers-scsi-mpt3sas-mpt3sas_ctl.c:warning:array-subscript-is-above-array-bounds-of-U16-aka-short-unsigned-int
+|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
+|   |-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
+|   |-- include-uapi-linux-bcache.h:warning:memcpy-offset-from-the-object-at-alloc-is-out-of-the-bounds-of-referenced-subobject-key-with-type-struct-bkey-at-offset
+|   |-- net-core-flow_dissector.c:warning:memcpy-offset-from-the-object-at-flow_keys-is-out-of-the-bounds-of-referenced-subobject-ipv6_src-with-type-__u32-aka-unsigned-int-at-offset
+|   `-- net-sctp-sm_make_chunk.c:warning:memcpy-offset-from-the-object-at-addr-is-out-of-the-bounds-of-referenced-subobject-v4-with-type-struct-sockaddr_in-at-offset
+|-- mips-allyesconfig
+|   |-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|   `-- include-linux-fortify-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|-- mips-randconfig-r026-20210302
+|   |-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-entry-is-out-of-the-bounds-of-referenced-subobject-user_info-with-type-struct-DInfo-at-offset
+|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-entry-is-out-of-the-bounds-of-referenced-subobject-user_info-with-type-struct-FInfo-at-offset
+|-- parisc-randconfig-r025-20210302
+|   |-- drivers-ide-ide-ioctls.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|   |-- include-uapi-linux-bcache.h:warning:memcpy-offset-from-the-object-at-alloc-is-out-of-the-bounds-of-referenced-subobject-key-with-type-struct-bkey-at-offset
+|   `-- net-core-flow_dissector.c:warning:memcpy-offset-from-the-object-at-flow_keys-is-out-of-the-bounds-of-referenced-subobject-ipv6_src-with-type-__u32-aka-unsigned-int-at-offset
+|-- powerpc-allyesconfig
+|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-init-is-out-of-the-bounds-of-referenced-subobject-chipset-with-type-int-at-offset
+|-- powerpc64-allyesconfig
+|   `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-threshold-is-out-of-the-bounds-of-referenced-subobject-low-with-type-struct-iw_quality-at-offset
+|-- riscv-allmodconfig
+|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
+|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
+|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
+|-- riscv-rv32_defconfig
+|   `-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|-- sh-allmodconfig
+|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
+|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
+|-- sparc-allyesconfig
+|   |-- arch-sparc-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|   |-- arch-sparc-include-asm-string.h:warning:__builtin_memset-offset-from-the-object-at-karg-is-out-of-the-bounds-of-referenced-subobject-buffer_rel_condition-with-type-short-unsigned-int-at-offset
+|   |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+|   |-- drivers-media-common-siano-smscoreapi.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_cmds.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-media-platform-qcom-venus-hfi_msgs.c:warning:array-subscript-is-above-array-bounds-of-u32-aka-unsigned-int
+|   |-- drivers-message-fusion-mptlan.c:warning:array-subscript-is-above-array-bounds-of-U32-aka-unsigned-int
+|   |-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+|   |-- drivers-scsi-mpt3sas-mpt3sas_ctl.c:warning:array-subscript-is-above-array-bounds-of-U16-aka-short-unsigned-int
+|   |-- drivers-staging-rtl8188eu-core-rtw_wlan_util.c:warning:array-subscript-is-above-array-bounds-of-u8-aka-unsigned-char
+|   `-- fs-nfsd-nfsfh.c:warning:array-subscript-is-above-array-bounds-of-__u32-aka-unsigned-int
+`-- x86_64-randconfig-a001-20210302
+    |-- drivers-gpu-drm-mga-mga_ioc32.c:warning:memcpy-offset-from-the-object-at-init-is-out-of-the-bounds-of-referenced-subobject-chipset-with-type-int-at-offset
+    |-- drivers-gpu-drm-radeon-si_dpm.c:warning:array-subscript-is-above-array-bounds-of-SISLANDS_SMC_HW_PERFORMANCE_LEVEL-aka-struct-SISLANDS_SMC_HW_PERFORMANCE_LEVEL
+    `-- drivers-scsi-aacraid-aachba.c:warning:array-subscript-is-above-array-bounds-of-struct-sge_ieee1212
+
+elapsed time: 725m
+
+configs tested: 92
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                          ep93xx_defconfig
+arm                     am200epdkit_defconfig
+powerpc                        warp_defconfig
+powerpc                     pq2fads_defconfig
+arm                        mvebu_v7_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc                 mpc8540_ads_defconfig
+arm                         s3c2410_defconfig
+sh                        dreamcast_defconfig
+mips                      maltaaprp_defconfig
+nios2                         10m50_defconfig
+arm                        realview_defconfig
+sh                   sh7770_generic_defconfig
+arm                         s5pv210_defconfig
+openrisc                 simple_smp_defconfig
+m68k                        stmark2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210302
+i386                 randconfig-a003-20210302
+i386                 randconfig-a002-20210302
+i386                 randconfig-a004-20210302
+i386                 randconfig-a006-20210302
+i386                 randconfig-a001-20210302
+i386                 randconfig-a016-20210302
+i386                 randconfig-a012-20210302
+i386                 randconfig-a014-20210302
+i386                 randconfig-a013-20210302
+i386                 randconfig-a011-20210302
+i386                 randconfig-a015-20210302
+x86_64               randconfig-a006-20210302
+x86_64               randconfig-a001-20210302
+x86_64               randconfig-a004-20210302
+x86_64               randconfig-a002-20210302
+x86_64               randconfig-a005-20210302
+x86_64               randconfig-a003-20210302
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210302
+x86_64               randconfig-a016-20210302
+x86_64               randconfig-a015-20210302
+x86_64               randconfig-a014-20210302
+x86_64               randconfig-a012-20210302
+x86_64               randconfig-a011-20210302
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
