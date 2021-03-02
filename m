@@ -2,198 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE88232A13B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4F132A13F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344590AbhCBF1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 00:27:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37130 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1574056AbhCBD2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 22:28:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0054864DA1;
-        Tue,  2 Mar 2021 03:28:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614655689;
-        bh=njnpqWgDUywctLU8re245zucCInirLZ0Faloa4U9qbI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GvL/x9Tpqz6m8FQXD5ws5fn/ZM69cUoM3sgNDVBxnwB+hYeHHhjRrh4qTIK5VB/0m
-         vmIKCf042K4H9/ZSOe4n49g9257ztZmVzEQRuMFbUuTDKVhmEGU+xy71qEzvsOeQZC
-         Wyuc1K6VafR9bO0pQoh2aC8dwS8fdgR+f6pmSWQVfc0sViPhMou67WMOSD9SWNu+Ti
-         E4+jqHitv53Zqra/Y6SgZzxoaXGhHMi5IS1S6Fy70iCBMFfCR5KObs0Wh7WCwf9OWx
-         IlkI5IaZ05Vi79Nb6iCae7TOrlCKATr3ZBpShdsPaoaY9gd8vc6hhziUVZjD3wKVOP
-         pOrQVXU52iREg==
-Date:   Mon, 1 Mar 2021 19:28:05 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "jack@suse.cz" <jack@suse.cz>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        "hch@lst.de" <hch@lst.de>, "rgoldwyn@suse.de" <rgoldwyn@suse.de>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
-        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
-        "fnstml-iaas@cn.fujitsu.com" <fnstml-iaas@cn.fujitsu.com>
-Subject: Re: Question about the "EXPERIMENTAL" tag for dax in XFS
-Message-ID: <20210302032805.GM7272@magnolia>
-References: <20210226190454.GD7272@magnolia>
- <CAPcyv4iJiYsM5FQdpMvCi24aCi7RqUnnxC6sM0umFqiN+Q59cg@mail.gmail.com>
- <20210226205126.GX4662@dread.disaster.area>
- <CAPcyv4iDefA3Y0wUW=p080SYAsM_2TPJba-V-sxdK_BeJMkmsw@mail.gmail.com>
- <20210226212748.GY4662@dread.disaster.area>
- <CAPcyv4jryJ32R5vOwwEdoU3V8C0B7zu_pCt=7f6A3Gk-9h6Dfg@mail.gmail.com>
- <20210227223611.GZ4662@dread.disaster.area>
- <CAPcyv4h7XA3Jorcy_J+t9scw0A4KdT2WEwAhE-Nbjc=C2qmkMw@mail.gmail.com>
- <20210228223846.GA4662@dread.disaster.area>
- <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
+        id S1347524AbhCBFdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 00:33:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1574318AbhCBDcr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Mar 2021 22:32:47 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEB2C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:29:54 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id a7so20207747iok.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:29:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/oSnREyYrWKG+GDU2KGVslzs3LByzyb9v1lKNygr+Ko=;
+        b=JgGhZOXgftXhq7TXErJ6G7/K05dkAsj2JjgJ7Z2eH18cGA1VybdJtjzKhT3ileBuUg
+         HbJXD6MXYmPzayWk6SjpXW6ExGatWy4Nbq4FzXqASbFngTOuIN0BzuJy8o8EaMJxu0BT
+         4U/ZTA34TexqinD3bmlvBFByIAts6DM56SLcA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/oSnREyYrWKG+GDU2KGVslzs3LByzyb9v1lKNygr+Ko=;
+        b=nPhyHSbdvUhnvOzOAAvgBzOHAutlWykpWpfXaLuz1S9c4SkLNlkE3xmXv2DVF15yAu
+         lmSj1yiGWdyDiwn22fYZWiou6VCpvmWTAuWxrObwHOMYcJr+EvtKGnz3OyKZrr1rKus8
+         hiK/YSGw6buWzD1X1pzWgDHWtW3TXUaxhRLh5VZk4W1s1VV5SdhCZkXFpoZgeZX37nrj
+         CkzIAeRkG0QYSaNmxfEv9n42S38vQ7L1Q9FtcYiq6Up6gX5CIN+4u2cFfSuc0fHrAMSh
+         brgjVRfxEDFB9LAL7ZHSb+PU1LPvCVGrnF+dWKAd8ANJ3G/EFWE4bp+Ws7ZvxzA0EqA6
+         lyag==
+X-Gm-Message-State: AOAM533e+3izAwHWpctJ41U4VmK/dgqxIY/gqzIBfSw1HTyVDPbNP/DP
+        CwvIm4cH6P/fsXvtr1Gcii/bO3Kaj/d9NLF6C+eEvQ==
+X-Google-Smtp-Source: ABdhPJxzr57zJCc25ckeIBrGxo++RkaMAkrRqjbXM5OOdHjCr4Tm/07WtOIE1wlUN3i/7yo1ecJgqD82Qv2G31tg9lc=
+X-Received: by 2002:a02:2a4a:: with SMTP id w71mr18725045jaw.43.1614655793569;
+ Mon, 01 Mar 2021 19:29:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jzV2RUij2BEvDJLLiK_67Nf1v3M6-jRLKf32x4iOzqng@mail.gmail.com>
+References: <20210225175000.824661-1-enric.balletbo@collabora.com>
+In-Reply-To: <20210225175000.824661-1-enric.balletbo@collabora.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Tue, 2 Mar 2021 11:29:27 +0800
+Message-ID: <CAJMQK-gcGY+i2CrUDK49_b4dNY9zbwxcMyW3E94aSz8dzV-3fg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] soc: mediatek: pm-domains: Add a meaningful power
+ domain name
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 12:55:53PM -0800, Dan Williams wrote:
-> On Sun, Feb 28, 2021 at 2:39 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Sat, Feb 27, 2021 at 03:40:24PM -0800, Dan Williams wrote:
-> > > On Sat, Feb 27, 2021 at 2:36 PM Dave Chinner <david@fromorbit.com> wrote:
-> > > > On Fri, Feb 26, 2021 at 02:41:34PM -0800, Dan Williams wrote:
-> > > > > On Fri, Feb 26, 2021 at 1:28 PM Dave Chinner <david@fromorbit.com> wrote:
-> > > > > > On Fri, Feb 26, 2021 at 12:59:53PM -0800, Dan Williams wrote:
-> > > > it points to, check if it points to the PMEM that is being removed,
-> > > > grab the page it points to, map that to the relevant struct page,
-> > > > run collect_procs() on that page, then kill the user processes that
-> > > > map that page.
-> > > >
-> > > > So why can't we walk the ptescheck the physical pages that they
-> > > > map to and if they map to a pmem page we go poison that
-> > > > page and that kills any user process that maps it.
-> > > >
-> > > > i.e. I can't see how unexpected pmem device unplug is any different
-> > > > to an MCE delivering a hwpoison event to a DAX mapped page.
-> > >
-> > > I guess the tradeoff is walking a long list of inodes vs walking a
-> > > large array of pages.
-> >
-> > Not really. You're assuming all a filesystem has to do is invalidate
-> > everything if a device goes away, and that's not true. Finding if an
-> > inode has a mapping that spans a specific device in a multi-device
-> > filesystem can be a lot more complex than that. Just walking inodes
-> > is easy - determining whihc inodes need invalidation is the hard
-> > part.
-> 
-> That inode-to-device level of specificity is not needed for the same
-> reason that drop_caches does not need to be specific. If the wrong
-> page is unmapped a re-fault will bring it back, and re-fault will fail
-> for the pages that are successfully removed.
-> 
-> > That's where ->corrupt_range() comes in - the filesystem is already
-> > set up to do reverse mapping from physical range to inode(s)
-> > offsets...
-> 
-> Sure, but what is the need to get to that level of specificity with
-> the filesystem for something that should rarely happen in the course
-> of normal operation outside of a mistake?
-
-I can't tell if we're conflating the "a bunch of your pmem went bad"
-case with the "all your dimms fell out of the machine" case.
-
-If, say, a single cacheline's worth of pmem goes bad on a node with 2TB
-of pmem, I certainly want that level of specificity.  Just notify the
-users of the dead piece, don't flush the whole machine down the drain.
-
-> > > There's likely always more pages than inodes, but perhaps it's more
-> > > efficient to walk the 'struct page' array than sb->s_inodes?
-> >
-> > I really don't see you seem to be telling us that invalidation is an
-> > either/or choice. There's more ways to convert physical block
-> > address -> inode file offset and mapping index than brute force
-> > inode cache walks....
-> 
-> Yes, but I was trying to map it to an existing mechanism and the
-> internals of drop_pagecache_sb() are, in coarse terms, close to what
-> needs to happen here.
-
-Yes.  XFS (with rmap enabled) can do all the iteration and walking in
-that function except for the invalidate_mapping_* call itself.  The goal
-of this series is first to wire up a callback within both the block and
-pmem subsystems so that they can take notifications and reverse-map them
-through the storage stack until they reach an fs superblock.
-
-Once the information has reached XFS, it can use its own reverse
-mappings to figure out which pages of which inodes are now targetted.
-The future of DAX hw error handling can be that you throw the spitwad at
-us, and it's our problem to distill that into mm invalidation calls.
-XFS' reverse mapping data is indexed by storage location and isn't
-sharded by address_space, so (except for the DIMMs falling out), we
-don't need to walk the entire inode list or scan the entire mapping.
-
-Between XFS and DAX and mm, the mm already has the invalidation calls,
-xfs already has the distiller, and so all we need is that first bit.
-The current mm code doesn't fully solve the problem, nor does it need
-to, since it handles DRAM errors acceptably* already.
-
-* Actually, the hwpoison code should _also_ be calling ->corrupted_range
-when DRAM goes bad so that we can detect metadata failures and either
-reload the buffer or (if it was dirty) shut down.
-
-> >
-> > .....
-> >
-> > > > IOWs, what needs to happen at this point is very filesystem
-> > > > specific. Assuming that "device unplug == filesystem dead" is not
-> > > > correct, nor is specifying a generic action that assumes the
-> > > > filesystem is dead because a device it is using went away.
-> > >
-> > > Ok, I think I set this discussion in the wrong direction implying any
-> > > mapping of this action to a "filesystem dead" event. It's just a "zap
-> > > all ptes" event and upper layers recover from there.
-> >
-> > Yes, that's exactly what ->corrupt_range() is intended for. It
-> > allows the filesystem to lock out access to the bad range
-> > and then recover the data. Or metadata, if that's where the bad
-> > range lands. If that recovery fails, it can then report a data
-> > loss/filesystem shutdown event to userspace and kill user procs that
-> > span the bad range...
-> >
-> > FWIW, is this notification going to occur before or after the device
-> > has been physically unplugged?
-> 
-> Before. This will be operations that happen in the pmem driver
-> ->remove() callback.
-> 
-> > i.e. what do we do about the
-> > time-of-unplug-to-time-of-invalidation window where userspace can
-> > still attempt to access the missing pmem though the
-> > not-yet-invalidated ptes? It may not be likely that people just yank
-> > pmem nvdimms out of machines, but with NVMe persistent memory
-> > spaces, there's every chance that someone pulls the wrong device...
-> 
-> The physical removal aspect is only theoretical today. While the pmem
-> driver has a ->remove() path that's purely a software unbind
-> operation. That said the vulnerability window today is if a process
-> acquires a dax mapping, the pmem device hosting that filesystem goes
-> through an unbind / bind cycle, and then a new filesystem is created /
-> mounted. That old pte may be able to access data that is outside its
-> intended protection domain.
-> 
-> Going forward, for buses like CXL, there will be a managed physical
-> remove operation via PCIE native hotplug. The flow there is that the
-> PCIE hotplug driver will notify the OS of a pending removal, trigger
-> ->remove() on the pmem driver, and then notify the technician (slot
-> status LED) that the card is safe to pull.
-
-Well, that's a relief.  Can we cancel longterm RDMA leases now too?
-<duck>
-
---D
+On Fri, Feb 26, 2021 at 1:50 AM Enric Balletbo i Serra
+<enric.balletbo@collabora.com> wrote:
+>
+> Add the power domains names to the power domain struct so we
+> have meaningful name for every power domain. This also removes the
+> following debugfs error message.
+>
+>   [    2.242068] debugfs: Directory 'power-domain' with parent 'pm_genpd' already present!
+>   [    2.249949] debugfs: Directory 'power-domain' with parent 'pm_genpd' already present!
+>   [    2.257784] debugfs: Directory 'power-domain' with parent 'pm_genpd' already present!
+>   ...
+>
+> Fixes: 59b644b01cf4 ("soc: mediatek: Add MediaTek SCPSYS power domains")
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>
+>  drivers/soc/mediatek/mt8173-pm-domains.h | 10 ++++++++++
+>  drivers/soc/mediatek/mtk-pm-domains.c    |  6 +++++-
+>  drivers/soc/mediatek/mtk-pm-domains.h    |  2 ++
+>  3 files changed, 17 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/soc/mediatek/mt8173-pm-domains.h b/drivers/soc/mediatek/mt8173-pm-domains.h
+> index 3e8ee5dabb43..654c717e5467 100644
+> --- a/drivers/soc/mediatek/mt8173-pm-domains.h
+> +++ b/drivers/soc/mediatek/mt8173-pm-domains.h
+> @@ -12,24 +12,28 @@
+>
+>  static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>         [MT8173_POWER_DOMAIN_VDEC] = {
+> +               .name = "vdec",
+>                 .sta_mask = PWR_STATUS_VDEC,
+>                 .ctl_offs = SPM_VDE_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(11, 8),
+>                 .sram_pdn_ack_bits = GENMASK(12, 12),
+>         },
+>         [MT8173_POWER_DOMAIN_VENC] = {
+> +               .name = "venc",
+>                 .sta_mask = PWR_STATUS_VENC,
+>                 .ctl_offs = SPM_VEN_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(11, 8),
+>                 .sram_pdn_ack_bits = GENMASK(15, 12),
+>         },
+>         [MT8173_POWER_DOMAIN_ISP] = {
+> +               .name = "isp",
+>                 .sta_mask = PWR_STATUS_ISP,
+>                 .ctl_offs = SPM_ISP_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(11, 8),
+>                 .sram_pdn_ack_bits = GENMASK(13, 12),
+>         },
+>         [MT8173_POWER_DOMAIN_MM] = {
+> +               .name = "mm",
+>                 .sta_mask = PWR_STATUS_DISP,
+>                 .ctl_offs = SPM_DIS_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(11, 8),
+> @@ -40,18 +44,21 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>                 },
+>         },
+>         [MT8173_POWER_DOMAIN_VENC_LT] = {
+> +               .name = "venc_lt",
+>                 .sta_mask = PWR_STATUS_VENC_LT,
+>                 .ctl_offs = SPM_VEN2_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(11, 8),
+>                 .sram_pdn_ack_bits = GENMASK(15, 12),
+>         },
+>         [MT8173_POWER_DOMAIN_AUDIO] = {
+> +               .name = "audio",
+>                 .sta_mask = PWR_STATUS_AUDIO,
+>                 .ctl_offs = SPM_AUDIO_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(11, 8),
+>                 .sram_pdn_ack_bits = GENMASK(15, 12),
+>         },
+>         [MT8173_POWER_DOMAIN_USB] = {
+> +               .name = "usb",
+>                 .sta_mask = PWR_STATUS_USB,
+>                 .ctl_offs = SPM_USB_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(11, 8),
+> @@ -59,18 +66,21 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>                 .caps = MTK_SCPD_ACTIVE_WAKEUP,
+>         },
+>         [MT8173_POWER_DOMAIN_MFG_ASYNC] = {
+> +               .name = "mfg_async",
+>                 .sta_mask = PWR_STATUS_MFG_ASYNC,
+>                 .ctl_offs = SPM_MFG_ASYNC_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(11, 8),
+>                 .sram_pdn_ack_bits = 0,
+>         },
+>         [MT8173_POWER_DOMAIN_MFG_2D] = {
+> +               .name = "mfg_2d",
+>                 .sta_mask = PWR_STATUS_MFG_2D,
+>                 .ctl_offs = SPM_MFG_2D_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(11, 8),
+>                 .sram_pdn_ack_bits = GENMASK(13, 12),
+>         },
+>         [MT8173_POWER_DOMAIN_MFG] = {
+> +               .name = "mfg",
+>                 .sta_mask = PWR_STATUS_MFG,
+>                 .ctl_offs = SPM_MFG_PWR_CON,
+>                 .sram_pdn_bits = GENMASK(13, 8),
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> index b7f697666bdd..694d6ea6de1d 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> @@ -438,7 +438,11 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>                 goto err_unprepare_subsys_clocks;
+>         }
+>
+> -       pd->genpd.name = node->name;
+> +       if (!pd->data->name)
+> +               pd->genpd.name = node->name;
+> +       else
+> +               pd->genpd.name = pd->data->name;
+> +
+>         pd->genpd.power_off = scpsys_power_off;
+>         pd->genpd.power_on = scpsys_power_on;
+>
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+> index 141dc76054e6..21a4e113bbec 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+> @@ -76,6 +76,7 @@ struct scpsys_bus_prot_data {
+>
+>  /**
+>   * struct scpsys_domain_data - scp domain data for power on/off flow
+> + * @name: The name of the power domain.
+>   * @sta_mask: The mask for power on/off status bit.
+>   * @ctl_offs: The offset for main power control register.
+>   * @sram_pdn_bits: The mask for sram power control bits.
+> @@ -85,6 +86,7 @@ struct scpsys_bus_prot_data {
+>   * @bp_smi: bus protection for smi subsystem
+>   */
+>  struct scpsys_domain_data {
+> +       const char *name;
+>         u32 sta_mask;
+>         int ctl_offs;
+>         u32 sram_pdn_bits;
+> --
+> 2.30.0
+>
