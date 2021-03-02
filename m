@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3610F32A791
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6935E32A7DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1839326AbhCBQRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:17:14 -0500
-Received: from server.popeproductions.net ([185.62.137.90]:50736 "EHLO
-        server.popeproductions.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1447488AbhCBNkn (ORCPT
+        id S1379771AbhCBQnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:43:23 -0500
+Received: from m15114.mail.126.com ([220.181.15.114]:36482 "EHLO
+        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1448323AbhCBOTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:40:43 -0500
-Received: from [::1] (port=50416 helo=server.popeproductions.net)
-        by server.popeproductions.net with esmtpa (Exim 4.93)
-        (envelope-from <twitter@popeproductions.net>)
-        id 1lF4Ch-0006hC-JC; Thu, 25 Feb 2021 00:08:27 +0000
-MIME-Version: 1.0
-Date:   Thu, 25 Feb 2021 00:08:24 +0000
-From:   Julianna Stefan Ndoi <twitter@popeproductions.net>
-To:     undisclosed-recipients:;
-Subject: Greetings
-Reply-To: maryp1799_8335@yahoo.co.jp
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <e8ba63637ff205ca9212fb18d8f97cd9@popeproductions.net>
-X-Sender: twitter@popeproductions.net
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server.popeproductions.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - popeproductions.net
-X-Get-Message-Sender-Via: server.popeproductions.net: authenticated_id: twitter@popeproductions.net
-X-Authenticated-Sender: server.popeproductions.net: twitter@popeproductions.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        Tue, 2 Mar 2021 09:19:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=OPG3GVG7sSDGQxYhC6
+        +zVbtEJXQAdC07eA7ZoSNv4No=; b=Qx/XyouHvf6y0/pucxfUJguPL7uEZFS9Wm
+        amleEYwiSrEUwrTyWJXf804BMBo04eKHEBzfa8GlTRL6sYCE6ZjKAIGlEszMaspu
+        C33nM5XhA0GQ7x5PkFgLrGsXd+MxUsqLi8jV/EfUHdqeai1Qc9iffu1uZ9YP7+c8
+        /DhMwygEg=
+Received: from pek-lpd-ccm3.wrs.com (unknown [60.247.85.82])
+        by smtp7 (Coremail) with SMTP id DsmowACXnW1CCT5gLDO0OQ--.27060S2;
+        Tue, 02 Mar 2021 17:45:44 +0800 (CST)
+From:   Zhaolong Zhang <zhangzl2013@126.com>
+To:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhaolong Zhang <zhangzl2013@126.com>
+Subject: [PATCH] ext4: fix bh ref count on error paths
+Date:   Tue,  2 Mar 2021 17:42:31 +0800
+Message-Id: <1614678151-70481-1-git-send-email-zhangzl2013@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DsmowACXnW1CCT5gLDO0OQ--.27060S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWrGF1ruF13ZFW5CFyxuFg_yoW3tFX_G3
+        4xXF48Gws8Xws7uws8Gw13Xrn2vrW8Krs5uF97ta15tFyjyr98CrnxAFZxZF1UWF4Sgr98
+        Gr1xZF1IkF92gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRRT5l5UUUUU==
+X-Originating-IP: [60.247.85.82]
+X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbitQhJz1pEDFNYdgAAsU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+__ext4_journalled_writepage should drop bhs' ref count on error paths
 
+Signed-off-by: Zhaolong Zhang <zhangzl2013@126.com>
+---
+ fs/ext4/inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 650c5acd2f2d..a79a9ea58c56 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1938,13 +1938,13 @@ static int __ext4_journalled_writepage(struct page *page,
+ 	if (!ret)
+ 		ret = err;
+ 
+-	if (!ext4_has_inline_data(inode))
+-		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
+-				       NULL, bput_one);
+ 	ext4_set_inode_state(inode, EXT4_STATE_JDATA);
+ out:
+ 	unlock_page(page);
+ out_no_pagelock:
++	if (!inline_data && page_bufs)
++		ext4_walk_page_buffers(NULL, page_bufs, 0, len,
++				       NULL, bput_one);
+ 	brelse(inode_bh);
+ 	return ret;
+ }
 -- 
-Greetings my beloved,
-My name is Mrs.Julianna Stefan Ndoi,I am a deaf woman and also a cancer
-patient who had decided to donate what I have to you for God's works. I
-want to donate $8.5 million to you so that you will use part of the this
-fund to help the poor ones,while you use the rest for your family.If you
-are interested,Respond now for more details on how to receive this fund.
+2.26.1
 
-Regards,
-Mrs.Julianna,greeting from the sick bed
-**************************************
-Saludos mi amado,
-Mi nombre es Sra. Julianna Stefan Ndoi, soy una hermana sorda ... Soy
-una paciente de c?ncer que ten?a
-Decid? donarles lo que tengo para las obras de Dios. Quiero donar
-$ 8.5 millones para usted para que use parte de este fondo para ayudar
-los pobres, mientras que el resto lo usas para tu familia.
-interesado, responda ahora para obtener m?s detalles sobre c?mo recibir
-este fondo.
-
-Saludos,
-Se?ora Julianna, saludando desde la cama de enferma
