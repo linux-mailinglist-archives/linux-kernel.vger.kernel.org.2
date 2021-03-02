@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBB832A6FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B2A32A6FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838972AbhCBPzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:55:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        id S1838949AbhCBPzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:55:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351198AbhCBNgD (ORCPT
+        with ESMTP id S1351175AbhCBNeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:36:03 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F25C061222
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:34:41 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id y12so11009930ljj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:34:41 -0800 (PST)
+        Tue, 2 Mar 2021 08:34:20 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E068C06121E
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 05:33:22 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 18so22710111lff.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 05:33:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=trttDswvIhw2oDhe4C3a6PzGyGhkWdNUCZs/hbkrosU=;
-        b=kA0bv1fdcuJE5OD4Ch0Xe3/9GlOQhj9izk8RaMMbxY7NuDsOcPSvU1XulaCJQF4TOw
-         BZ0S/hEDI+Ag/y+OEOwKNL1T+gZ6Npq2lDmDs/ABA6WLOJCoO2MHDZFUoaUhjMWHkgBn
-         TvlYq8/uELxO3YX2gAEMkpnJGwaxdOo0EjzCTcsDmSA8Vm6E8IsRSiJ/d5gnKGWOQuBF
-         XlCB6FePI7UXzXU21pvqOt14nlAhiIvscewHL5gcKz46rgZ4EabCUxBGdLI8w3r6E6eq
-         qM0DaDd76MM+lLbpxbagWYepW8qa7JCDcxfBUn0iarE70/Gy4lbUN0aeK0B/QDUbWqJl
-         RcfA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iSy8XDFMp0a7WSm8SRUUoPZjrV8zT9TVzmc4W+YVnt0=;
+        b=muTIlCk5kkvjyji32omYwf+paO3hraugCWesSpuLQsEWurrOtv2LkuCl6kR08bkfvg
+         A6GnCuAbiavXpP6X+RWNX7lHIkfAB0M8pik4fuBcTkyX+KWS7eB9P4AK6fMy4PSjqHzF
+         5KnqjvDB2QI67xes/P70H8yoAXPOvpsDSCaT/bAAzGvwusGzda3XPI3AQOJyQi94scJI
+         iWF71bvf56zWzmx0LJMa9rlv1NqnmUgyPwP6B9pW9/y5uzP1wyMeFMFpdmE7RlmwwPKa
+         +ahhi2xIdYnuy0TnkKnyvj4yGAq+UjuJmNT5XjAaepghP6qYE+xKENxLMqwATj0/K4B+
+         fTFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=trttDswvIhw2oDhe4C3a6PzGyGhkWdNUCZs/hbkrosU=;
-        b=nX8MA3qX/D5sFltOFoeSrNXWlUOZLln7pNaUvZXiN6KPNYz3svZECCtDcPFni0y11g
-         cL4ha6UgOcJA1rYgmqu09wCChmyDtwhBzImzi+GcAla/zPas6cvco2+tWwni4rem/JKv
-         1YnkhZ/2FW8qENYoKEmmSJY59vu3sg18Hx9lWEkej9kgvpfcoF4T9CeKqr4pyXaXCy83
-         4LGbhL8xaflc1u0L1YxQqBE6Tp0tTDswUMz0RN5ufoUf76SGp1GGmodUOJ3YnmeUf/5C
-         +uuCzgOfJsOdOFru3VibzApIt23JKwUHzrUR4b3vpZ8s5R3WNKxe1XaGNk1KIddCLgFd
-         LVMw==
-X-Gm-Message-State: AOAM5326RXzrF1Q70KZvvFIDtZQf6MXiW5TPczAyGbTdtuYGXFixtGlE
-        osZEtYKfT4JEbU2Rtjrqz1E=
-X-Google-Smtp-Source: ABdhPJxSNaI2fHIJG2oPtipihm74JWCeKU5GjFEkhJDXuPSc0+PkRrAdK7z/Czosp2hPguDnE2WcEA==
-X-Received: by 2002:a2e:8ec6:: with SMTP id e6mr12212234ljl.257.1614692079637;
-        Tue, 02 Mar 2021 05:34:39 -0800 (PST)
-Received: from msi.localdomain (vmpool.ut.mephi.ru. [85.143.112.90])
-        by smtp.gmail.com with ESMTPSA id s5sm483782lfd.284.2021.03.02.05.34.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 05:34:39 -0800 (PST)
-From:   Nikolay Kyx <knv418@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Suraj Upadhyay <usuraj35@gmail.com>,
-        Aditya Srivastava <yashsri421@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8192e: remove redundant variable shadowing
-Date:   Tue,  2 Mar 2021 16:32:17 +0300
-Message-Id: <20210302133217.145994-1-knv418@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iSy8XDFMp0a7WSm8SRUUoPZjrV8zT9TVzmc4W+YVnt0=;
+        b=U5rVtUXKRuYAFcpl9CoQpAMWwzLJZSeiTPfNmgxTTlNgAX7uZV5FyS6GxgIj8F36u7
+         i9kg8wQ2VfDQZDhXZKl7kVd9dc0I25HHLpO5/H3ni2skpjZ2v3Ab1nsrOYomoXBi6554
+         88jwFKYb2IlejpslA68DOoCUtZs3itTCgNyI3YhCYUxLFMUaFR9X6awr4oQ7l9GoWHvk
+         AjPRNBv9TS+Y7mOvl324mTXfCR2aE1RFDGBl57tQNIIUlyEyJS35CabWZSS786Rf0adS
+         Wko4tv9XY+ch4kAzsQ28sLP8Z9cN7Pm9dGFAsPVQtlrwxPys8eV3S4yGNPIjw6E+g0tT
+         V84A==
+X-Gm-Message-State: AOAM530g/E4jK4EVWPuANcSuTpXX5rfGA9xRyZ8M4wisEdhtB2D57NQz
+        J92PF/2QC6+NzOB3nS845npqg0As7tMnAbjJhARREA==
+X-Google-Smtp-Source: ABdhPJx92UylmzN7UzJit4KOHJg5xSFTK0EOobHZawkbLd9lf5/TSOXqApb0TItqvbUM4jSbHtr8kr6+qxcDjcviWwI=
+X-Received: by 2002:a05:6512:547:: with SMTP id h7mr12700579lfl.529.1614692000450;
+ Tue, 02 Mar 2021 05:33:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210208222203.22335-1-info@metux.net> <20210208222203.22335-12-info@metux.net>
+ <CACRpkdYbOX_RDqwxaiugtYB4vSpSKChvKsPjcB_vv3Q74QeG2Q@mail.gmail.com> <c5ed2b27-21a2-5a07-8dd9-e080f9a6cd98@metux.net>
+In-Reply-To: <c5ed2b27-21a2-5a07-8dd9-e080f9a6cd98@metux.net>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Mar 2021 14:33:09 +0100
+Message-ID: <CACRpkdZ1PvA6822YYPwzHNvVrvd+bNFRLwpQ=RRrXpitWmnrxQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 11/12] platform/x86: skeleton for oftree based board
+ device initialization
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function rtl92e_start_adapter() automatic variable 'i' referenced only
-within certain loops, used as iteration counter. Control flow can't get
-into such loop w/o 'i = 0' assignment.
+On Fri, Feb 12, 2021 at 12:54 PM Enrico Weigelt, metux IT consult
+<lkml@metux.net> wrote:
+> On 12.02.21 10:58, Linus Walleij wrote:
 
-It's redundant to shadow this variable by creating scope around loop.
+> > If the usecase is to explicitly work around deployed firmware that cannot
+> > and will not be upgraded/fixed by describing the hardware using DT
+> > instead, based on just the DMI ID then we should spell that out
+> > explicitly.
+>
+> Okay, maybe I should have stated this more clearly.
+>
+> OTOH, the scope is also a little bit greater: certain external cards
+> that don't need much special handling for the card itself, just
+> enumerate devices (and connections between them) using existing drivers.
+>
+> That's a pretty common scenario in industrial backplane systems, where
+> we have lots of different (even application specific) cards, usually
+> composed of standard chips, that can be identified by some ID, but
+> cannot describe themselves. We have to write lots of specific drivers
+> for them, usually just for instantiating existing drivers. (we rarely
+> see such code going towards mainline).
+>
+> A similar case (mainlined) seems to be the RCAR display unit - they're
+> using dt overlays that are built into the driver and applied by it
+> based on the detected DU at runtime. RCAR seems to be a pure DT
+> platform, so that's an obvious move. APU2/3/4 is ACPI based, so I went
+> in a different direction - but I'm now investigating how to make DT
+> overlays work on an ACPI platform (eg. needs some initial nodes, ...)
+> In case that's successful, I'll rework my RFC to use overlays, and
+> it will become much smaller (my oftree core changes then won't be
+> necessary anymore).
 
-This patch fixes the following sparse warning:
+I understand. I have had the same problem with trying to fix 96boards
+mezzanines.
 
-warning: symbol 'i' shadows an earlier one
+I also tried to sidestep the DT overlays, and it was generally disliked.
+The DT people have made up their mind that overlays is what they
+want to use for this type of stuff.
 
-Signed-off-by: Nikolay Kyx <knv418@gmail.com>
----
- drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-index ff843d7ec606..8cd085ebea81 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-@@ -800,12 +800,10 @@ bool rtl92e_start_adapter(struct net_device *dev)
- 	}
- 	rtl92e_writew(dev, ATIMWND, 2);
- 	rtl92e_writew(dev, BCN_INTERVAL, 100);
--	{
--		int i;
- 
--		for (i = 0; i < QOS_QUEUE_NUM; i++)
--			rtl92e_writel(dev, WDCAPARA_ADD[i], 0x005e4332);
--	}
-+	for (i = 0; i < QOS_QUEUE_NUM; i++)
-+		rtl92e_writel(dev, WDCAPARA_ADD[i], 0x005e4332);
-+
- 	rtl92e_writeb(dev, 0xbe, 0xc0);
- 
- 	rtl92e_config_mac(dev);
--- 
-2.30.1
-
+Yours,
+Linus Walleij
