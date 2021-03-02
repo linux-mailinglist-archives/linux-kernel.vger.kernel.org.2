@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8219C32A5F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC90D32A577
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1447523AbhCBNlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 08:41:25 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51194 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350677AbhCBMWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:22:53 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 122C5MZe088295;
-        Tue, 2 Mar 2021 06:05:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1614686722;
-        bh=qA6jv361Vc1+x0jYalhA2uiLqg90xU60dYC38iYq+tU=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ZDPYVw9Nc/Cq0JSbP4oYjkV6MM2e9hbKdRvZO0T4+pf+ZcR4ynCEgJrG7JIAOKZUu
-         HLjcZrRXPj8cHLKpGKAB6q43/LHlbxEsk+dWhrQTOsq8KDagRQDfeZ1IiO+Cp/TEEM
-         TMV0258a3t0FPbR6BsVYKd9tiNuhGa92DRc36U6Y=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 122C5MSB110635
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 2 Mar 2021 06:05:22 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Mar
- 2021 06:05:22 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 2 Mar 2021 06:05:21 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 122C5L8r081329;
-        Tue, 2 Mar 2021 06:05:21 -0600
-Date:   Tue, 2 Mar 2021 17:35:20 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] arm64: dts: ti: k3-j7200-som-p0: Add nodes for OSPI0
-Message-ID: <20210302120518.4xe3dwd5v6hr2tav@ti.com>
-References: <20210301195850.31868-1-p.yadav@ti.com>
- <20210301195850.31868-4-p.yadav@ti.com>
- <876caefd-b53e-0d1d-422c-cc3255774d88@ti.com>
+        id S1447152AbhCBMmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:42:43 -0500
+Received: from mga17.intel.com ([192.55.52.151]:58109 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1443555AbhCBML2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:11:28 -0500
+IronPort-SDR: S2Nuc8ih+592qCF194o7bPup1sNTwVPF/+CY6B3NwPMEeg3kXALWbzES06hH0J9pByhzVlS3iV
+ 3ANL+E2OixTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="166668153"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="166668153"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 04:06:37 -0800
+IronPort-SDR: R3TnxNNhCdKddKie29fSnND3/BYknL6xmNS6Lq2TdoGsNb+S8ZRwswqLAXCsekCNJThMfLXnCu
+ iEnIWea47dkA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="398979659"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.165])
+  by fmsmga008.fm.intel.com with ESMTP; 02 Mar 2021 04:06:35 -0800
+Date:   Tue, 2 Mar 2021 20:06:34 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Qais Yousef <qais.yousef@arm.com>, andi.kleen@intel.com
+Subject: Re: [PATCH] clocksource: don't run watchdog forever
+Message-ID: <20210302120634.GB76460@shbuild999.sh.intel.com>
+References: <1614653665-20905-1-git-send-email-feng.tang@intel.com>
+ <YD4CdQqX5Lea1rB5@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <876caefd-b53e-0d1d-422c-cc3255774d88@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YD4CdQqX5Lea1rB5@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/03/21 01:10PM, Vignesh Raghavendra wrote:
-> 
-> 
-> On 3/2/21 1:28 AM, Pratyush Yadav wrote:
-> > +
-> > +	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins-default {
-> > +		pinctrl-single,pins = <
-> > +			J721E_WKUP_IOPAD(0x0000, PIN_OUTPUT, 0) /* MCU_OSPI0_CLK */
-> > +			J721E_WKUP_IOPAD(0x002c, PIN_OUTPUT, 0) /* MCU_OSPI0_CSn0 */
-> > +			J721E_WKUP_IOPAD(0x000c, PIN_INPUT, 0)  /* MCU_OSPI0_D0 */
-> > +			J721E_WKUP_IOPAD(0x0010, PIN_INPUT, 0)  /* MCU_OSPI0_D1 */
-> > +			J721E_WKUP_IOPAD(0x0014, PIN_INPUT, 0)  /* MCU_OSPI0_D2 */
-> > +			J721E_WKUP_IOPAD(0x0018, PIN_INPUT, 0)  /* MCU_OSPI0_D3 */
-> > +			J721E_WKUP_IOPAD(0x001c, PIN_INPUT, 0)  /* MCU_OSPI0_D4 */
-> > +			J721E_WKUP_IOPAD(0x0020, PIN_INPUT, 0)  /* MCU_OSPI0_D5 */
-> > +			J721E_WKUP_IOPAD(0x0024, PIN_INPUT, 0)  /* MCU_OSPI0_D6 */
-> > +			J721E_WKUP_IOPAD(0x0028, PIN_INPUT, 0)  /* MCU_OSPI0_D7 */
-> > +			J721E_WKUP_IOPAD(0x0008, PIN_INPUT_PULLDOWN, 0)  /* MCU_OSPI0_DQS */
-> > +		>;
-> > +	};
-> 
-> There is a pulldown resistor on the board right? So, internal pulldown
-> is unnecessary and may even cause conflicts.
+Hi Peter,
 
-Right. Will fix.
+On Tue, Mar 02, 2021 at 10:16:37AM +0100, Peter Zijlstra wrote:
+> On Tue, Mar 02, 2021 at 10:54:24AM +0800, Feng Tang wrote:
+> > clocksource watchdog runs every 500ms, which creates some OS noise.
+> > As the clocksource wreckage (especially for those that has per-cpu
+> > reading hook) usually happens shortly after CPU is brought up or
+> > after system resumes from sleep state, so add a time limit for
+> > clocksource watchdog to only run for a period of time, and make
+> > sure it run at least twice for each CPU.
+> > 
+> > Regarding performance data, there is no improvement data with the
+> > micro-benchmarks we have like hackbench/netperf/fio/will-it-scale
+> > etc. But it obviously reduces periodic timer interrupts, and may
+> > help in following cases:
+> > * When some CPUs are isolated to only run scientific or high
+> >   performance computing tasks on a NOHZ_FULL kernel, where there
+> >   is almost no interrupts, this could make it more quiet
+> > * On a cluster which runs a lot of systems in parallel with
+> >   barriers there are always enough systems which run the watchdog
+> >   and make everyone else wait
+> > 
+> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> 
+> Urgh.. so this hopes and prays that the TSC wrackage happens in the
+> first 10 minutes after boot.
 
--- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Yes, the 10 minutes part is only based on our past experience and we
+can make it longer. But if there was real case that the wrackage happened
+long after CPU is brought up like days, then this patch won't help much.
+
+> Given the previous patch, the watchdog wouldn't be running at all on
+> modern machines, so why wreck it for the old machines where it's
+> actually needed?
+
+Yes, this is for the older x86 machines and some other architectures. 
+
+Thanks,
+Feng
+
+
