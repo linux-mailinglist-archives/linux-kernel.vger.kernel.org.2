@@ -2,63 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD9832A398
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0509A32A3B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:20:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837890AbhCBJJY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Mar 2021 04:09:24 -0500
-Received: from mx1.emlix.com ([136.243.223.33]:42308 "EHLO mx1.emlix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1837775AbhCBI6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 03:58:39 -0500
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id 13EBE5F93E;
-        Tue,  2 Mar 2021 09:49:29 +0100 (CET)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] Kconfig: fix help text of TRACEPOINT_BENCHMARK
-Date:   Tue, 02 Mar 2021 09:49:28 +0100
-Message-ID: <1863065.aFVDpXsuPd@devpool47>
-Organization: emlix GmbH
+        id S1378985AbhCBJdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:33:21 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:13833 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1837891AbhCBJJ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:09:27 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DqW3y4QwFz7s3j;
+        Tue,  2 Mar 2021 16:47:58 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 2 Mar 2021
+ 16:49:36 +0800
+Subject: Re: [PATCH] f2fs: fix compile warning
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210302084458.15077-1-yuchao0@huawei.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <b7a214b4-5d51-5a47-79a1-1592063552d7@huawei.com>
+Date:   Tue, 2 Mar 2021 16:49:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210302084458.15077-1-yuchao0@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
----
- kernel/trace/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2021/3/2 16:44, Chao Yu wrote:
+> node.c:2750:13: note: in expansion of macro ‘min’
+>     nrpages = min(last_offset - i, BIO_MAX_PAGES);
 
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 9c266b93cbc0..7fa82778c3e6 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -694,7 +694,7 @@ config TRACEPOINT_BENCHMARK
- 	help
- 	 This option creates the tracepoint "benchmark:benchmark_event".
- 	 When the tracepoint is enabled, it kicks off a kernel thread that
--	 goes into an infinite loop (calling cond_sched() to let other tasks
-+	 goes into an infinite loop (calling cond_resched() to let other tasks
- 	 run), and calls the tracepoint. Each iteration will record the time
- 	 it took to write to the tracepoint and the next iteration that
- 	 data will be passed to the tracepoint itself. That is, the tracepoint
--- 
-2.30.1
+Oh, after I rebase to last dev branch, compile warning is gone as
+we changed to use bio_max_segs() rather than min().
 
--- 
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-Fon +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 Göttingen, Germany
-Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
-Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
+Please ignore this patch.
 
-emlix - smart embedded open source
-
-
-
+Thanks,
