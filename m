@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBEA32A20D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9D932A204
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376348AbhCBHRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:17:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39904 "EHLO mx2.suse.de"
+        id S1349408AbhCBHQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:16:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39616 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1835884AbhCBGYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 01:24:43 -0500
+        id S1835872AbhCBGYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 01:24:18 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6EE01AFE2;
+        by mx2.suse.de (Postfix) with ESMTP id A462BAFEA;
         Tue,  2 Mar 2021 06:22:18 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH 17/44] net: nfc: nci: drop nci_uart_default_recv
-Date:   Tue,  2 Mar 2021 07:21:47 +0100
-Message-Id: <20210302062214.29627-17-jslaby@suse.cz>
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        linux390@de.ibm.com, linux-s390@vger.kernel.org
+Subject: [PATCH 18/44] tty: con3215, remove tasklet for tty_wakeup
+Date:   Tue,  2 Mar 2021 07:21:48 +0100
+Message-Id: <20210302062214.29627-18-jslaby@suse.cz>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302062214.29627-1-jslaby@suse.cz>
 References: <20210302062214.29627-1-jslaby@suse.cz>
@@ -33,46 +34,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nci_uart_register returns -EINVAL immediately when nu->ops.recv is not
-set. So the same 'if' later never triggers so nci_uart_default_recv is
-never used. Drop it.
+tty_wakeup is safe to be called from all contexts. No need to schedule
+a tasklet for that. Let us call it directly like in other drivers.
+
+And delete the tasklet completely.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
+Cc: Martin Schwidefsky <schwidefsky@de.ibm.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: linux390@de.ibm.com
+Cc: linux-s390@vger.kernel.org
 ---
- net/nfc/nci/uart.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/s390/char/con3215.c | 20 +-------------------
+ 1 file changed, 1 insertion(+), 19 deletions(-)
 
-diff --git a/net/nfc/nci/uart.c b/net/nfc/nci/uart.c
-index 5cf7d3729d5f..9958b37d8f9d 100644
---- a/net/nfc/nci/uart.c
-+++ b/net/nfc/nci/uart.c
-@@ -387,12 +387,6 @@ static int nci_uart_send(struct nci_uart *nu, struct sk_buff *skb)
- 	return 0;
+diff --git a/drivers/s390/char/con3215.c b/drivers/s390/char/con3215.c
+index 671efee612af..5923a1f133ef 100644
+--- a/drivers/s390/char/con3215.c
++++ b/drivers/s390/char/con3215.c
+@@ -85,7 +85,6 @@ struct raw3215_info {
+ 	int written;		      /* number of bytes in write requests */
+ 	struct raw3215_req *queued_read; /* pointer to queued read requests */
+ 	struct raw3215_req *queued_write;/* pointer to queued write requests */
+-	struct tasklet_struct tlet;   /* tasklet to invoke tty_wakeup */
+ 	wait_queue_head_t empty_wait; /* wait queue for flushing */
+ 	struct timer_list timer;      /* timer for delayed output */
+ 	int line_pos;		      /* position on the line (for tabs) */
+@@ -329,21 +328,6 @@ static inline void raw3215_try_io(struct raw3215_info *raw)
+ 	}
  }
  
--/* -- Default recv handler -- */
--static int nci_uart_default_recv(struct nci_uart *nu, struct sk_buff *skb)
+-/*
+- * Call tty_wakeup from tasklet context
+- */
+-static void raw3215_wakeup(unsigned long data)
 -{
--	return nci_recv_frame(nu->ndev, skb);
+-	struct raw3215_info *raw = (struct raw3215_info *) data;
+-	struct tty_struct *tty;
+-
+-	tty = tty_port_tty_get(&raw->port);
+-	if (tty) {
+-		tty_wakeup(tty);
+-		tty_kref_put(tty);
+-	}
 -}
 -
- int nci_uart_register(struct nci_uart *nu)
- {
- 	if (!nu || !nu->ops.open ||
-@@ -402,10 +396,6 @@ int nci_uart_register(struct nci_uart *nu)
- 	/* Set the send callback */
- 	nu->ops.send = nci_uart_send;
+ /*
+  * Try to start the next IO and wake up processes waiting on the tty.
+  */
+@@ -352,7 +336,7 @@ static void raw3215_next_io(struct raw3215_info *raw, struct tty_struct *tty)
+ 	raw3215_mk_write_req(raw);
+ 	raw3215_try_io(raw);
+ 	if (tty && RAW3215_BUFFER_SIZE - raw->count >= RAW3215_MIN_SPACE)
+-		tasklet_schedule(&raw->tlet);
++		tty_wakeup(tty);
+ }
  
--	/* Install default handlers if not overridden */
--	if (!nu->ops.recv)
--		nu->ops.recv = nci_uart_default_recv;
--
- 	/* Add this driver in the driver list */
- 	if (nci_uart_drivers[nu->driver]) {
- 		pr_err("driver %d is already registered\n", nu->driver);
+ /*
+@@ -644,7 +628,6 @@ static struct raw3215_info *raw3215_alloc_info(void)
+ 
+ 	timer_setup(&info->timer, raw3215_timeout, 0);
+ 	init_waitqueue_head(&info->empty_wait);
+-	tasklet_init(&info->tlet, raw3215_wakeup, (unsigned long)info);
+ 	tty_port_init(&info->port);
+ 
+ 	return info;
+@@ -936,7 +919,6 @@ static void tty3215_close(struct tty_struct *tty, struct file * filp)
+ 	tty->closing = 1;
+ 	/* Shutdown the terminal */
+ 	raw3215_shutdown(raw);
+-	tasklet_kill(&raw->tlet);
+ 	tty->closing = 0;
+ 	tty_port_tty_set(&raw->port, NULL);
+ }
 -- 
 2.30.1
 
