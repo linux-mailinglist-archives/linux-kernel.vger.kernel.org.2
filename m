@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9056D32A4C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C37032A4D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442180AbhCBLQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:16:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32036 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1838499AbhCBKza (ORCPT
+        id S1446535AbhCBLSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:18:02 -0500
+Received: from mout.kundenserver.de ([217.72.192.73]:58633 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1838561AbhCBK4x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:55:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614682443;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iGoIdvlUz0nc9AN8ZEH5WnSE27CeiPYPvS6gyByubs0=;
-        b=LvYVhp2SG4F52XxIhQf6m0Ch+VA+VZ4MDb3/GYcEz+G7ewNDd46rNLSEum8Ke3UBUq6+zu
-        UHY31qu9xSI9DWcRCrGEIL8bI3YEVXpW/SXHZHRDe3zyBncKMrvdA2ew1XGNBeysJ1SYtE
-        bVkQEnzxnpvla3mpwh2678w3J1zYD8Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-V1K4Oah_PzeYFrWjqcNxZQ-1; Tue, 02 Mar 2021 05:53:59 -0500
-X-MC-Unique: V1K4Oah_PzeYFrWjqcNxZQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A3A6801976;
-        Tue,  2 Mar 2021 10:53:58 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-124.pek2.redhat.com [10.72.13.124])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 473455D9D3;
-        Tue,  2 Mar 2021 10:53:52 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-References: <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
- <20210222023040-mutt-send-email-mst@kernel.org>
- <22fe5923-635b-59f0-7643-2fd5876937c2@oracle.com>
- <fae0bae7-e4cd-a3aa-57fe-d707df99b634@redhat.com>
- <20210223082536-mutt-send-email-mst@kernel.org>
- <3ff5fd23-1db0-2f95-4cf9-711ef403fb62@oracle.com>
- <20210224000057-mutt-send-email-mst@kernel.org>
- <52836a63-4e00-ff58-50fb-9f450ce968d7@oracle.com>
- <20210228163031-mutt-send-email-mst@kernel.org>
- <2cb51a6d-afa0-7cd1-d6f2-6b153186eaca@redhat.com>
- <20210302043419-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <178f8ea7-cebd-0e81-3dc7-10a058d22c07@redhat.com>
-Date:   Tue, 2 Mar 2021 18:53:50 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        Tue, 2 Mar 2021 05:56:53 -0500
+Received: from mail-wm1-f47.google.com ([209.85.128.47]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MWzbr-1lJap01VGb-00XIbh; Tue, 02 Mar 2021 11:54:19 +0100
+Received: by mail-wm1-f47.google.com with SMTP id n4so2210381wmq.3;
+        Tue, 02 Mar 2021 02:54:19 -0800 (PST)
+X-Gm-Message-State: AOAM531PfHCGTnwKqf4Xca8S6I4j7fUd6pXrkwopqJwyO5GPhRUNGCUP
+        rQnofa//7fuFoxNYTzaPk53TbSs7qqcyjCaznWE=
+X-Google-Smtp-Source: ABdhPJwSy1Zm9Mymlo1hNSTEvNea2JqPihM0NDsdqQ4z0ab+tRCjmNhlJs5SPzaIvZ02aT2eYQCACTgNAzu/Id76t/U=
+X-Received: by 2002:a05:600c:4f11:: with SMTP id l17mr3405660wmq.38.1614682458937;
+ Tue, 02 Mar 2021 02:54:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210302043419-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
+ <CAK8P3a1ZXbodV07TTErnQunCLWOBnzRiVdLCxBD743fn-6FbXg@mail.gmail.com>
+ <56fdef9a-b373-32f2-6dac-e687caa813c8@intel.com> <YD4KovxeoNG/c8QC@stefanha-x1.localdomain>
+In-Reply-To: <YD4KovxeoNG/c8QC@stefanha-x1.localdomain>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 2 Mar 2021 11:54:02 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a23L-Y0vzJTb5w1MkumaYAJQ6Owiq6RZ2XE=i8gBMTUZw@mail.gmail.com>
+Message-ID: <CAK8P3a23L-Y0vzJTb5w1MkumaYAJQ6Owiq6RZ2XE=i8gBMTUZw@mail.gmail.com>
+Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     Jie Deng <jie.deng@intel.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:gF0XgA0E5NC4LDXr21/b567gTU0xy0MQFYkHv+4rdqtRDoDZiBb
+ bI9+BvBZDafPfhbcySdS7YnBoPEkq31Fkfo5z6OnVOnrzncPdsrhBoWlmokCMRLtJULXy7U
+ 5+m4xnWEk3w7SmQ+/dV6XH0AEz7GtXYBpDnWq3E1ct1ItUYDxCcBJPDBzNNC99fDTbeMdKD
+ a+C2FYpG8ygzJ+R9ZPOMg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vjcPgti2woE=:JBOJcGWnz+Uvvppff19JPY
+ eMN1rU3e0Xhd67jckah4dd3wl/kTrzR3Co+OsU7o8DHAX9Ps81aRewDkGLfmDe5qMUNVEhF/x
+ Xb9naahW/uSxUo7ze/6x1I0NsTM08wBYrwsNSHi+AnmY4UMSgoAf8rPLFuuFJLsfZjpPUOSNz
+ VO0dhjXlnPGMZQN8dA/P3cuxxuPqpb4Cg/Z7Ax9ajm0+2XiV9kMRv2riOL34bTEWVvLCx+Eyw
+ Erj3K7e17ZsGJlARuk+ZqQpioITVziD4n747e03IeiVZaiQmyMUugWY8tpOXyrNFecx/Bk6np
+ 2zmdvJ7JT93U///nWSq4n/00XQeo3lWXjb2z/qT5hX1V9ueTcF3gWlOiVSTgt4euiQfkRL34o
+ 5mf8mO2JF1McAJjdnQibudjdiJvNQgDV9ZkumRUQGGcdGZll+gW7+EX6U8WQVBB/n+hA7ZXOf
+ PZ8PtF/T02zo/RpIVhSoKYCX1ovX0YKGWxD5SzoQdUb3TG8hi/KZ6yTxUQAAYpRW6wabap7fZ
+ mmZG/1YOOZzBx2oWOXTs7bYfpRb5+m3vR9u01ZVJbq4zbhIowCs0eaWqvCzhQY97g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/3/2 5:47 下午, Michael S. Tsirkin wrote:
-> On Mon, Mar 01, 2021 at 11:56:50AM +0800, Jason Wang wrote:
->> On 2021/3/1 5:34 上午, Michael S. Tsirkin wrote:
->>> On Wed, Feb 24, 2021 at 10:24:41AM -0800, Si-Wei Liu wrote:
->>>>> Detecting it isn't enough though, we will need a new ioctl to notify
->>>>> the kernel that it's a legacy guest. Ugh :(
->>>> Well, although I think adding an ioctl is doable, may I know what the use
->>>> case there will be for kernel to leverage such info directly? Is there a
->>>> case QEMU can't do with dedicate ioctls later if there's indeed
->>>> differentiation (legacy v.s. modern) needed?
->>> BTW a good API could be
->>>
->>> #define VHOST_SET_ENDIAN _IOW(VHOST_VIRTIO, ?, int)
->>> #define VHOST_GET_ENDIAN _IOW(VHOST_VIRTIO, ?, int)
->>>
->>> we did it per vring but maybe that was a mistake ...
->>
->> Actually, I wonder whether it's good time to just not support legacy driver
->> for vDPA. Consider:
->>
->> 1) It's definition is no-normative
->> 2) A lot of budren of codes
->>
->> So qemu can still present the legacy device since the config space or other
->> stuffs that is presented by vhost-vDPA is not expected to be accessed by
->> guest directly. Qemu can do the endian conversion when necessary in this
->> case?
->>
->> Thanks
->>
-> Overall I would be fine with this approach but we need to avoid breaking
-> working userspace, qemu releases with vdpa support are out there and
-> seem to work for people. Any changes need to take that into account
-> and document compatibility concerns.
-
-
-Agree, let me check.
-
-
->   I note that any hardware
-> implementation is already broken for legacy except on platforms with
-> strong ordering which might be helpful in reducing the scope.
-
-
-Yes.
-
-Thanks
-
-
+On Tue, Mar 2, 2021 at 10:51 AM Stefan Hajnoczi <stefanha@redhat.com> wrote:
+> On Tue, Mar 02, 2021 at 10:42:06AM +0800, Jie Deng wrote:
+> > > > +/*
+> > > > + * Definitions for virtio I2C Adpter
+> > > > + *
+> > > > + * Copyright (c) 2021 Intel Corporation. All rights reserved.
+> > > > + */
+> > > > +
+> > > > +#ifndef _UAPI_LINUX_VIRTIO_I2C_H
+> > > > +#define _UAPI_LINUX_VIRTIO_I2C_H
+> > > Why is this a uapi header? Can't this all be moved into the driver
+> > > itself?
 >
+> Linux VIRTIO drivers provide a uapi header with structs and constants
+> that describe the device interface. This allows other software like
+> QEMU, other operating systems, etc to reuse these headers instead of
+> redefining everything.
 >
+> These files should contain:
+> 1. Device-specific feature bits (VIRTIO_<device>_F_<feature>)
+> 2. VIRTIO Configuration Space layout (struct virtio_<device>_config)
+> 3. Virtqueue request layout (struct virtio_<device>_<req/resp>)
+>
+> For examples, see <linux/virtio_net.h> and <linux/virtio_blk.h>.
 
+Ok, makes sense. So it's not strictly uapi but just helpful for
+virtio applications to reference these. I suppose it is slightly harder
+when building qemu on other operating systems though, how does
+it get these headers on BSD or Windows?
+
+       Arnd
