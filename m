@@ -2,178 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B9232ADE5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0516732ADE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360107AbhCBWQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:16:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350794AbhCBUZj (ORCPT
+        id S2360117AbhCBWQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:16:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49269 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1376685AbhCBU0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:25:39 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C24D8C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 12:24:54 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id w3so1571464oti.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 12:24:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=rMkgjXu4HqK6AGDgPAImtrd+WKS0Hl1peOdH+4k/40k=;
-        b=MKNfDFW9y7HE6vqY/Kti99VHmPpEZu6BfTtHm9fp4+lu/79NT4UgN7yjAZgmGDJA+P
-         3QS/eB1EXyO+Vvsq2qjzzzsJCPWyoefukxqLEy4hvqNhdOdk1CIjjGZAb12x/0WiOX6y
-         sBohPMz8+S/mnIX1ExsIohkId4JO+PDvVKRLh2JjJA77+PoTQUC6eru+yu+F80WHxf6Z
-         W8BX2CZ9ULy7OIJTNGmD2lw2ezfuGn4lZNcnURDHv2yoLDHGzV6R2YZy3jqsP+VnczzI
-         idMW9278VPnyt+RJPWdr10w1NNmgdrzEMsUasvvsq+xFWjh3g7eqmQL41qjt4BozM0jB
-         5dxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=rMkgjXu4HqK6AGDgPAImtrd+WKS0Hl1peOdH+4k/40k=;
-        b=R3MtkSCaSasLVahPPtJs8AEMR8ITlVgz1NwFHz9qrP5z9VisghGZx2hfRh/4z3n+Pn
-         s/i24Du0p0030gfduy/UY8gYpLXi7XsSGdFdl4xKcfeu0qfdAOGoZu9AEikOoBfiywbR
-         pZ0tOQdqAuEFpDuTQeFGNxgF9s8sY2Hdqz+bC4JURtAykdVbRrsQgsIDepwmWIQIXBVz
-         hzf1XYbTxHMIVlrhjFPADcq0v8WTc5GzIpTocEl3J6djIcWUcRzPZjwEoAnVbiXEtPHO
-         2PO8sUFMoWHK7+voApSyUCaxe7qx+hAQCaDGtFSehZVBUSZwdSLlZovd/S9V7yroMQOf
-         FyqA==
-X-Gm-Message-State: AOAM530iyyxLf0wd550knnNLH1ZRFRGoWetaJbh0A2y4eXJyU3ux3WXL
-        A5u2XQ5QylWnIzzNqH7q6ITieuw+XwnCcw==
-X-Google-Smtp-Source: ABdhPJzyHceXXb047BveFKynelFazGRdbf+UR2pJ1+1z2T8M5lo5k0X69WsSl5cfmMlh1X7clmabKQ==
-X-Received: by 2002:a9d:701e:: with SMTP id k30mr19258139otj.157.1614716693963;
-        Tue, 02 Mar 2021 12:24:53 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id m34sm2754046otc.25.2021.03.02.12.24.52
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 02 Mar 2021 12:24:53 -0800 (PST)
-Date:   Tue, 2 Mar 2021 12:24:41 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Zhou Guanghui <zhouguanghui1@huawei.com>
-cc:     Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        wangkefeng.wang@huawei.com, guohanjun@huawei.com,
-        dingtianhong@huawei.com, chenweilong@huawei.com,
-        rui.xiang@huawei.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH] mm/memcg: set memcg when split pages
-In-Reply-To: <YD4CciUX0/eXFLM0@dhcp22.suse.cz>
-Message-ID: <alpine.LSU.2.11.2103021157160.8450@eggly.anvils>
-References: <20210302013451.118701-1-zhouguanghui1@huawei.com> <YD4CciUX0/eXFLM0@dhcp22.suse.cz>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Tue, 2 Mar 2021 15:26:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614716715;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AmdeilkZy5my5BaewYbWUF4KhKDlpNZDCAG43ifNAhg=;
+        b=hPRrSBmnWa34HgpGf6PJFx8KUtOnBZY6nwkddcZkto/x+7K3EtEM7ho/PzoTzqaf4Y8ACK
+        Bw2XQNTfO3Gz/1poptkvblwqvTmotwEYv5I0aRSnU5F87HwqCscvUWBca6nADS5O9WvOkr
+        sKjAe2+5o53uEZjXG6xeyPXOnH9HrbE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-VhlCqdJ_PiOCR1Y-xeJ06A-1; Tue, 02 Mar 2021 15:25:14 -0500
+X-MC-Unique: VhlCqdJ_PiOCR1Y-xeJ06A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A3C5871106;
+        Tue,  2 Mar 2021 20:25:12 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.160])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 466316F7EF;
+        Tue,  2 Mar 2021 20:25:10 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue,  2 Mar 2021 21:25:12 +0100 (CET)
+Date:   Tue, 2 Mar 2021 21:25:09 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+Message-ID: <20210302202508.GA21871@redhat.com>
+References: <CALCETrXzXv-V3A3SpN_Pdj_PNG8Gw0AVsZD7+VO-q_xCAu2T2A@mail.gmail.com>
+ <20210301165130.GA5351@redhat.com>
+ <CALCETrU2Rc4ejSoYyWgbk00U8tSc=aZDaj0mm+Ep62wOirZG7g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrU2Rc4ejSoYyWgbk00U8tSc=aZDaj0mm+Ep62wOirZG7g@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021, Michal Hocko wrote:
-> [Cc Johannes for awareness and fixup Nick's email]
-> 
-> On Tue 02-03-21 01:34:51, Zhou Guanghui wrote:
-> > When split page, the memory cgroup info recorded in first page is
-> > not copied to tail pages. In this case, when the tail pages are
-> > freed, the uncharge operation is not performed. As a result, the
-> > usage of this memcg keeps increasing, and the OOM may occur.
-> > 
-> > So, the copying of first page's memory cgroup info to tail pages
-> > is needed when split page.
-> 
-> I was not aware that alloc_pages_exact is used for accounted allocations
-> but git grep told me otherwise so this is not a theoretical one. Both
-> users (arm64 and s390 kvm) are quite recent AFAICS. split_page is also
-> used in dma allocator but I got lost in indirection so I have no idea
-> whether there are any users there.
+On 03/01, Andy Lutomirski wrote:
+>
+> On Mon, Mar 1, 2021 at 8:51 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> >
+> > But I guess this has nothing to do with uprobes, they do not single-step
+> > in kernel mode, right?
+>
+> They single-step user code, though, and the code that makes this work
+> is quite ugly.  Single-stepping on x86 is a mess.
 
-Yes, it's a bit worrying that such a low-level thing as split_page()
-can now get caught up in memcg accounting, but I suppose that's okay.
+But this doesn't really differ from, say, gdb doing si ? OK, except uprobes
+have to hook DIE_DEBUG. Nevermind...
 
-I feel rather strongly that whichever way it is done, THP splitting
-and split_page() should use the same interface to memcg.
+> > > Uprobes seem to single-step user code for no discernable reason.
+> > > (They want to trap after executing an out of line instruction, AFAICT.
+> > > Surely INT3 or even CALL after the out-of-line insn would work as well
+> > > or better.)
+> >
+> > Uprobes use single-step from the very beginning, probably because this
+> > is the most simple and "standard" way to implement xol.
+> >
+> > And please note that CALL/JMP/etc emulation was added much later to fix the
+> > problems with non-canonical addresses, and this emulation it still incomplete.
+>
+> Is there something like a uprobe test suite?
 
-And a look at mem_cgroup_split_huge_fixup() suggests that nowadays
-there need to be css_get()s too - or better, a css_get_many().
+Afaik, no.
 
-Its #ifdef CONFIG_TRANSPARENT_HUGEPAGE should be removed, rename
-it mem_cgroup_split_page_fixup(), and take order from caller.
+> How maintained /
 
-Though I've never much liked that separate pass: would it be
-better page by page, like this copy_page_memcg() does?  Though
-mem_cgroup_disabled() and css_getting make that less appealing.
+Add Srikar who sent the initial implementation. I can only say that I am glad that
+./scripts/get_maintainer.pl no longer mentions me ;) I did some changes (including
+emulation) but a) this was a long ago and b) only because I was forced^W asked to
+fix the numerous bugs in this code.
 
-Hugh
+> actively used is uprobe?
 
-> 
-> The page itself looks reasonable to me.
-> 
-> > Signed-off-by: Zhou Guanghui <zhouguanghui1@huawei.com>
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> 
-> Minor nit
-> 
-> > ---
-> >  include/linux/memcontrol.h | 10 ++++++++++
-> >  mm/page_alloc.c            |  4 +++-
-> >  2 files changed, 13 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index e6dc793d587d..c7e2b4421dc1 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -867,6 +867,12 @@ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg);
-> >  extern bool cgroup_memory_noswap;
-> >  #endif
-> >  
-> > +static inline void copy_page_memcg(struct page *dst, struct page *src)
-> > +{
-> > +	if (src->memcg_data)
-> > +		dst->memcg_data = src->memcg_data;
-> 
-> I would just drop the test. The struct page is a single cache line which
-> is dirty by the reference count so another store will unlikely be
-> noticeable even when NULL is stored here and you safe a conditional.
-> 
-> > +}
-> > +
-> >  struct mem_cgroup *lock_page_memcg(struct page *page);
-> >  void __unlock_page_memcg(struct mem_cgroup *memcg);
-> >  void unlock_page_memcg(struct page *page);
-> > @@ -1291,6 +1297,10 @@ mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
-> >  {
-> >  }
-> >  
-> > +static inline void copy_page_memcg(struct page *dst, struct page *src)
-> > +{
-> > +}
-> > +
-> >  static inline struct mem_cgroup *lock_page_memcg(struct page *page)
-> >  {
-> >  	return NULL;
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index 3e4b29ee2b1e..ee0a63dc1c9b 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -3307,8 +3307,10 @@ void split_page(struct page *page, unsigned int order)
-> >  	VM_BUG_ON_PAGE(PageCompound(page), page);
-> >  	VM_BUG_ON_PAGE(!page_count(page), page);
-> >  
-> > -	for (i = 1; i < (1 << order); i++)
-> > +	for (i = 1; i < (1 << order); i++) {
-> >  		set_page_refcounted(page + i);
-> > +		copy_page_memcg(page + i, page);
-> > +	}
-> >  	split_page_owner(page, 1 << order);
-> >  }
-> >  EXPORT_SYMBOL_GPL(split_page);
-> > -- 
-> > 2.25.0
-> > 
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
+I have no idea, sorry ;)
+
+Oleg.
+
