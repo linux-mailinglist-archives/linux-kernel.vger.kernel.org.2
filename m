@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B492D32A3E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9F132A3EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577732AbhCBJwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:52:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378868AbhCBJcB (ORCPT
+        id S1577782AbhCBJw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:52:58 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:57169 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238168AbhCBJgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:32:01 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EC7C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 01:31:13 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id l22so1626868wme.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 01:31:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=duqySNS7K2RXV+A+no11hnCWpUd9p0lgrM9odevZ3Ko=;
-        b=KybiIHEHfVSg3YhOS1sOgCd+YntEv3ioQBT6wh7u/BT45PH7GWuqA/X23Y58kK9uqv
-         6In53BefBhjfG5PWhh+8ykxb+dkd2NB96/fqfr5bsCa3F56syAj2XgWXR1U+riEuZIBK
-         XLg20tRKCRtnlIkXl+yyesmt3HuYnd2N/SRHFpWm/k7aFk68CONLlnhXXMSa5T9aDpKy
-         5jSWLHwp+w67XhmEtTS0iUnmBst6SHL6vQEfshvOeauqCwfLeWrGRkF2hhdEBd0jC8H4
-         Kz7nfImcRvgBNavSpFSs8Jz63S025faWMvwgTRrcBvTtVfN0h45L9XyCascOfBa479rK
-         LAow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=duqySNS7K2RXV+A+no11hnCWpUd9p0lgrM9odevZ3Ko=;
-        b=erimcoYsDBPtWjh5KriwHslfRVpdhkuz1ZolO4/rxoyFwyKaFmMZ5p0vsEk+AjGvQk
-         /COzFkE59CXbeh/Ey41ozxImM4V6zc2Dh38vqM1NVH5VBSZM5asbMQDobI2tRfiXJcWz
-         8s1oBj/T962FcRr63vIY+VJ67vwHUQIf+9lwtvthpPNVke7UViLKWuYHCP02BCHQAIi7
-         FuoXCoXHeTDA2G7pv7ibtO5P77hjV2jOAGbSIRdyXLzucfIfTqsDDKMJbBmBgMWYwsSv
-         cuvRBEO7gEdqRBWLLPBIw4bhRaKBpqnf4/ZBki4rKDc+e5VL6urGok0EJFwpIZN1O9bU
-         u6Uw==
-X-Gm-Message-State: AOAM533u4SEg3lCy1EgQ1yZh0wF9c7SWHVjxrdWzsxlhU1X1lz6DFVFD
-        xnHX4hBty6hvGM6NfF6r35HLYw==
-X-Google-Smtp-Source: ABdhPJxIml2cSRQmyrAOS0vFHxqQG8C+95GOs0WSZY9gEUVuk5drR143w/v2r/4g0i7bWLO+GtoX+g==
-X-Received: by 2002:a05:600c:49aa:: with SMTP id h42mr3132506wmp.49.1614677472184;
-        Tue, 02 Mar 2021 01:31:12 -0800 (PST)
-Received: from dell ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id a6sm2557430wmm.0.2021.03.02.01.31.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 01:31:11 -0800 (PST)
-Date:   Tue, 2 Mar 2021 09:31:09 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-rc 1/2] RDMA/mlx5: Set correct kernel-doc identifier
-Message-ID: <20210302093109.GA2690909@dell>
-References: <20210302074214.1054299-1-leon@kernel.org>
- <20210302074214.1054299-2-leon@kernel.org>
+        Tue, 2 Mar 2021 04:36:20 -0500
+Received: from mail-oi1-f175.google.com ([209.85.167.175]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MZSJa-1lJswr442A-00WXqO; Tue, 02 Mar 2021 10:32:24 +0100
+Received: by mail-oi1-f175.google.com with SMTP id 21so11704221oiq.7;
+        Tue, 02 Mar 2021 01:32:23 -0800 (PST)
+X-Gm-Message-State: AOAM531hF36/sThj2owRkXrHWycqP6E58oQ72Gtd09/crl6sgULoNidy
+        xbqaI+a6gfGt6u3woA6Wy30SzN8uOAzTUeF4/IM=
+X-Google-Smtp-Source: ABdhPJx5XWp8Ki1644NUPJ6YSXBsqLQpbCENNWA/2WM/vGVPVyb7m95NYVRO672W5xEbCNFsN9VAYmGWDNBc6nbj8WI=
+X-Received: by 2002:aca:4fd3:: with SMTP id d202mr2418133oib.11.1614677542554;
+ Tue, 02 Mar 2021 01:32:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210302074214.1054299-2-leon@kernel.org>
+References: <20210226140305.26356-1-nsaenzjulienne@suse.de> <20210226140305.26356-10-nsaenzjulienne@suse.de>
+In-Reply-To: <20210226140305.26356-10-nsaenzjulienne@suse.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Tue, 2 Mar 2021 10:32:06 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1t3yCD4vXF803nL=n3Y3hD1MOPOAEZwZA+782N64PXTA@mail.gmail.com>
+Message-ID: <CAK8P3a1t3yCD4vXF803nL=n3Y3hD1MOPOAEZwZA+782N64PXTA@mail.gmail.com>
+Subject: Re: [RFC 09/13] iommu/arm-smmu: Make use of dev_64bit_mmio_supported()
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:legnmUJMED7xyeS16jB9arlUrQNnIgwgh0Z/SL2rsGfiqTRbTOf
+ NtLEy8RNEn3XAqm45/VVsbBmfEhlqKHUNMatEBQRFkw+fk/l4iQTqfr/y/pY660ApdUonl1
+ u5t9+H1J39ZVaEgGEudbaI6UPC19yGDsriGVsyDm7Jv2e8Raqqn+gjb4N3Y41W2xyPOVgZR
+ jUN3F9jgyIQY2/SHGhpBw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0C2k/V7y7uE=:fNubMXZuJeLDiEayPIlmPO
+ T9mI1e+Jz0jaPmEc7aGXw1MNZbKVyXPCcVgIgdlodX4XiHJQsstiDKmhfoeJhgEGpqtiMEB0H
+ TEcW9tKynn5Bo3J6DUx+DqtEZyAA3o3KqkRxnC90+eCsZlgMuW9Q6/576B2gmtfPliJZ1LKhF
+ N5odR4H0+kEqMatbPIuOVMHO2pkigboCgPcjOe9b0J1J1R09+EYW/cQuFYGUrVkYxk4GUi7eR
+ xP4NycU9z8xkNpqw7mW5/9wEC/sbq89xg5KiG9sgsJlSg0qv+xiiGUypQ1bAah2JYf/m3/Obs
+ UTuDlVEWk2tq+Mltn1BIE8vgvBsGoYK2R2Wbs1kL08KSaw1nflMqLF/Vg4pSNeY1gPXBFNrCB
+ 7TYXVVMVYBNehSzpl7KJatUDVYtlxvZ7eRGZiV8v0Y0U77tLjNUWhayAY4n8WUZG5LrBXAY0v
+ DSr8r/vYhuWlpajUAqeL+86aMoqIr2Fx8i69ovGUcRR8bzs2UZTkf884XjzHPu1pQAZtoQRWD
+ bby7RVVLkA3/KzImJCypKlV5wsNhXNG7TxZSHRyMdMqPxHVeBLLaoNdMJgvXg6UkojOGZGows
+ ncSjhSEEcarsD+Vi6q82Y11V9578RYmeeQ
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 02 Mar 2021, Leon Romanovsky wrote:
+On Fri, Feb 26, 2021 at 3:03 PM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
 
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> The W=1 allmodconfig build produces the following warning:
-> drivers/infiniband/hw/mlx5/odp.c:1086: warning: wrong kernel-doc identifier on line:
->   * Parse a series of data segments for page fault handling.
-> 
-> Fix it by changing /** to be /* as it is written in kernel-doc documentation.
-> 
-> Fixes: 5e769e444d26 ("RDMA/hw/mlx5/odp: Fix formatting and add missing descriptions in 'pagefault_data_segments()'")
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/hw/mlx5/odp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-> index 374698186662..b103555b1f5d 100644
-> --- a/drivers/infiniband/hw/mlx5/odp.c
-> +++ b/drivers/infiniband/hw/mlx5/odp.c
-> @@ -1082,7 +1082,7 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
->  	return ret ? ret : npages;
+>         if (smmu->impl && unlikely(smmu->impl->write_reg))
+>                 smmu->impl->write_reg(smmu, page, offset, val);
+> -       else
+> +       else if (dev_64bit_mmio_supported(smmu->dev))
+>                 writel_relaxed(val, arm_smmu_page(smmu, page) + offset);
+> +       else
+> +               hi_lo_writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
 >  }
-> 
-> -/**
-> +/*
 
-This is not the correct fix.
+This is a writel_relaxed(), not a writeq_relaxed(), so I suppose you don't
+have to change it at all.
 
-Kernel-doc is asking for the function name.
+> +       else if (dev_64bit_mmio_supported(smmu->dev))
+> +               return readq_relaxed(arm_smmu_page(smmu, page) + offset);
+> +       else
+> +               return hi_lo_readq_relaxed(arm_smmu_page(smmu, page) + offset);
+> }
 
->   * Parse a series of data segments for page fault handling.
->   *
->   * @dev:  Pointer to mlx5 IB device
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I see this pattern repeat across multiple drivers. I think Christoph
+had originally
+suggested folding the if/else logic into the writel_relaxed() that is defined in
+include/linux/io-64-nonatomic-hi-lo.h, but of course that doesn't work if you
+need to pass a device pointer.
+
+It might still make sense to have another wrapper in that same file though,
+something like
+
+static inline hi_lo_writeq_relaxed_if_possible(struct device *dev, __u64 val,
+                    volatile void __iomem *addr)
+{
+       if (dev_64bit_mmio_supported(smmu->dev)) {
+              readq_relaxed(arm_smmu_page(smmu, page) + offset);
+       } else {
+               writel_relaxed(val >> 32, addr + 4);
+               writel_relaxed(val, addr);
+       }
+}
+
+         Arnd
