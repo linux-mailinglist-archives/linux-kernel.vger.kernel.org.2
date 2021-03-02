@@ -2,170 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A397832B69B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 11:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDCD32B6A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 11:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2359929AbhCBWFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:05:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55957 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1836004AbhCBTfh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:35:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614713638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k2tAxTOM3le04nLES9bO5umweVJR0tmM+PhCQruIT4c=;
-        b=UE3jzZmm1oW1sq1aQLYZ0h/uMPBOrdbH6VIbDGtm9RH0u63ALtMFDGjuHAuxwcxbjK4kmQ
-        rmCIoRk9VsFy6szV0h8Lys+icLne2YKmjrrkwoWemthZpCa4NbRQ0ScFZZ5DFsyzl73CRn
-        K5WXpZCbSvo89W9vE/O2HWTzFauqTyQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-262-onwqXGNnNJSXq5Pm0X9_Mg-1; Tue, 02 Mar 2021 14:33:54 -0500
-X-MC-Unique: onwqXGNnNJSXq5Pm0X9_Mg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 117EA107ACC7;
-        Tue,  2 Mar 2021 19:33:53 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B014760CC5;
-        Tue,  2 Mar 2021 19:33:52 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com
-Subject: [PATCH 15/23] KVM: x86: Move XSETBV emulation to common code
-Date:   Tue,  2 Mar 2021 14:33:35 -0500
-Message-Id: <20210302193343.313318-16-pbonzini@redhat.com>
-In-Reply-To: <20210302193343.313318-1-pbonzini@redhat.com>
-References: <20210302193343.313318-1-pbonzini@redhat.com>
+        id S2360017AbhCBWPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:15:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350486AbhCBUGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 15:06:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 194D064F1B;
+        Tue,  2 Mar 2021 20:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614715482;
+        bh=1qHRyBVHOEB7rQ+dSwRc5D7fVjkexI9qBQ/9YhEBTC4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MKyvsAcsdWPnarCj2AG9e2LAkktgq63xe9mAP9jevTGnWKq5fRIu6+UC7nTXqd+ky
+         oeKTmygSN6taDIK5V+O0QWGkCNkNPTYSwiOdu3tYqwG6X1/qLemPPVE6D1WMotSKfF
+         r7udteQ+xmECh955d92aIACL1AGgFm7cDwCGI3G4E+3RDhdCKXE+tdqurfpexsZMSA
+         le+MQbeCg7bA/stynbUOPNLzFbOtlsNunDwxz0qocZUV/bHvJWpb/3dSfsZUa1ZjaJ
+         HlOTEkR9KIILf/LvJepJiTwhvZcMnRtTrWRnblrJRWipah3opvBB9g0FwLASX9R4Oi
+         z2DM//Nkhvvow==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id BEBFB352259C; Tue,  2 Mar 2021 12:04:41 -0800 (PST)
+Date:   Tue, 2 Mar 2021 12:04:41 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        stern@rowland.harvard.edu, parri.andrea@gmail.com,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210302200441.GA3729@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302195758.GQ2696@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210302195758.GQ2696@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+On Tue, Mar 02, 2021 at 11:57:58AM -0800, Paul E. McKenney wrote:
+> On Tue, Mar 02, 2021 at 07:46:27PM +0100, Björn Töpel wrote:
+> > Hi!
+> > 
+> > Firstly; The long Cc-list is to reach the LKMM-folks.
+> > 
+> > Some background; the XDP sockets use a ring-buffer to communicate
+> > between the kernel and userland. It's a
+> > single-consumer/single-producer ring, and described in
+> > net/xdp/xsk_queue.h.
+> > 
+> > --8<---
+> > /* The structure of the shared state of the rings are the same as the
+> >  * ring buffer in kernel/events/ring_buffer.c. For the Rx and completion
+> >  * ring, the kernel is the producer and user space is the consumer. For
+> >  * the Tx and fill rings, the kernel is the consumer and user space is
+> >  * the producer.
+> >  *
+> >  * producer                         consumer
+> >  *
+> >  * if (LOAD ->consumer) {           LOAD ->producer
+> >  *                    (A)           smp_rmb()       (C)
+> >  *    STORE $data                   LOAD $data
+> >  *    smp_wmb()       (B)           smp_mb()        (D)
+> >  *    STORE ->producer              STORE ->consumer
+> >  * }
+> >  *
+> >  * (A) pairs with (D), and (B) pairs with (C).
+> > ...
+> > -->8---
+> > 
+> > I'd like to replace the smp_{r,w,}mb() barriers with acquire-release
+> > semantics [1], without breaking existing userspace applications.
+> > 
+> > So, I figured I'd use herd7 and the LKMM model to build a litmus test
+> > for the barrier version, then for the acquire-release version, and
+> > finally permutations of both.
+> > 
+> > The idea is to use a one element ring, with a state machine outlined
+> > in the litmus test.
+> > 
+> > The basic test for the existing smp_{r,w,}mb() barriers looks like:
+> > 
+> > $ cat spsc-rb+1p1c.litmus
+> > C spsc-rb+1p1c
+> > 
+> > // Stupid one entry ring:
+> > // prod cons     allowed action       prod cons
+> > //    0    0 =>       prod          =>   1    0
+> > //    0    1 =>       cons          =>   0    0
+> > //    1    0 =>       cons          =>   1    1
+> > //    1    1 =>       prod          =>   0    1
+> > 
+> > { prod = 1; }
+> > 
+> > // Here, we start at prod==1,cons==0, data==0, i.e. producer has
+> > // written data=0, so from here only the consumer can start, and should
+> > // consume data==0. Afterwards, producer can continue and write 1 to
+> > // data. Can we enter state prod==0, cons==1, but consumer observerd
+> > // the write of 1?
+> > 
+> > P0(int *prod, int *cons, int *data)
+> > {
+> >     int p;
+> >     int c;
+> >     int cond = 0;
+> > 
+> >     p = READ_ONCE(*prod);
+> >     c = READ_ONCE(*cons);
+> >     if (p == 0)
+> >         if (c == 0)
+> >             cond = 1;
+> >     if (p == 1)
+> >         if (c == 1)
+> >             cond = 1;
+> > 
+> >     if (cond) {
+> >         smp_mb();
+> >         WRITE_ONCE(*data, 1);
+> >         smp_wmb();
+> >         WRITE_ONCE(*prod, p ^ 1);
+> >     }
+> > }
+> > 
+> > P1(int *prod, int *cons, int *data)
+> > {
+> >     int p;
+> >     int c;
+> >     int d = -1;
+> >     int cond = 0;
+> > 
+> >     p = READ_ONCE(*prod);
+> >     c = READ_ONCE(*cons);
+> >     if (p == 1)
+> >         if (c == 0)
+> >             cond = 1;
+> >     if (p == 0)
+> >         if (c == 1)
+> >             cond = 1;
+> > 
+> >     if (cond == 1) {
+> >         smp_rmb();
+> >         d = READ_ONCE(*data);
+> >         smp_mb();
+> >         WRITE_ONCE(*cons, c ^ 1);
+> >     }
+> > }
+> 
+> Before digging in too deeply, does the following simplification
+> still capture your intent?
+> 
+> P0(int *prod, int *cons, int *data)
+> {
+>     int p;
+>     int cond = 0;
+> 
+>     p = READ_ONCE(*prod);
+>     if (p == READ_ONCE(*cons))
+>             cond = 1;
+>     if (cond) {
+> 	smp_mb();
+>         WRITE_ONCE(*data, 1);
+>         smp_wmb();
+>         WRITE_ONCE(*prod, p ^ 1);
+>     }
+> }
+> 
+> P1(int *prod, int *cons, int *data)
+> {
+>     int c;
+>     int d = -1;
+>     int cond = 0;
+> 
+>     c = READ_ONCE(*cons);
+>     if (READ_ONCE(*prod) == c)
+>             cond = 1;
+> 
+>     if (cond == 1) {
+>         smp_rmb();
+>         d = READ_ONCE(*data);
+>         smp_mb();
+>         WRITE_ONCE(*cons, c ^ 1);
+>     }
+> }
 
-Move the entirety of XSETBV emulation to x86.c, and assign the
-function directly to both VMX's and SVM's exit handlers, i.e. drop the
-unnecessary trampolines.
+And if the answer is "yes", how about this one?
 
-No functional change intended.
+P0(int *prod, int *cons, int *data)
+{
+    int p;
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210205005750.3841462-6-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/asm/kvm_host.h |  2 +-
- arch/x86/kvm/svm/svm.c          | 11 +----------
- arch/x86/kvm/vmx/vmx.c          | 11 +----------
- arch/x86/kvm/x86.c              | 13 ++++++++-----
- 4 files changed, 11 insertions(+), 26 deletions(-)
+    p = READ_ONCE(*prod);
+    if (p == READ_ONCE(*cons)) {
+        WRITE_ONCE(*data, 1);
+        smp_wmb();
+        WRITE_ONCE(*prod, p ^ 1);
+    }
+}
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 85ccbd4b7c52..b396e854c7db 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1542,7 +1542,7 @@ void kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val);
- unsigned long kvm_get_cr8(struct kvm_vcpu *vcpu);
- void kvm_lmsw(struct kvm_vcpu *vcpu, unsigned long msw);
- void kvm_get_cs_db_l_bits(struct kvm_vcpu *vcpu, int *db, int *l);
--int kvm_set_xcr(struct kvm_vcpu *vcpu, u32 index, u64 xcr);
-+int kvm_emulate_xsetbv(struct kvm_vcpu *vcpu);
- 
- int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr);
- int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr);
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 5815fedf978e..fcea45f40d76 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2346,15 +2346,6 @@ static int wbinvd_interception(struct kvm_vcpu *vcpu)
- 	return kvm_emulate_wbinvd(vcpu);
- }
- 
--static int xsetbv_interception(struct kvm_vcpu *vcpu)
--{
--	u64 new_bv = kvm_read_edx_eax(vcpu);
--	u32 index = kvm_rcx_read(vcpu);
--
--	int err = kvm_set_xcr(vcpu, index, new_bv);
--	return kvm_complete_insn_gp(vcpu, err);
--}
--
- static int rdpru_interception(struct kvm_vcpu *vcpu)
- {
- 	kvm_queue_exception(vcpu, UD_VECTOR);
-@@ -3156,7 +3147,7 @@ static int (*const svm_exit_handlers[])(struct kvm_vcpu *vcpu) = {
- 	[SVM_EXIT_WBINVD]                       = wbinvd_interception,
- 	[SVM_EXIT_MONITOR]			= monitor_interception,
- 	[SVM_EXIT_MWAIT]			= mwait_interception,
--	[SVM_EXIT_XSETBV]			= xsetbv_interception,
-+	[SVM_EXIT_XSETBV]			= kvm_emulate_xsetbv,
- 	[SVM_EXIT_RDPRU]			= rdpru_interception,
- 	[SVM_EXIT_EFER_WRITE_TRAP]		= efer_trap,
- 	[SVM_EXIT_CR0_WRITE_TRAP]		= cr_trap,
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 50810d471462..0df836897447 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5216,15 +5216,6 @@ static int handle_wbinvd(struct kvm_vcpu *vcpu)
- 	return kvm_emulate_wbinvd(vcpu);
- }
- 
--static int handle_xsetbv(struct kvm_vcpu *vcpu)
--{
--	u64 new_bv = kvm_read_edx_eax(vcpu);
--	u32 index = kvm_rcx_read(vcpu);
--
--	int err = kvm_set_xcr(vcpu, index, new_bv);
--	return kvm_complete_insn_gp(vcpu, err);
--}
--
- static int handle_apic_access(struct kvm_vcpu *vcpu)
- {
- 	if (likely(fasteoi)) {
-@@ -5686,7 +5677,7 @@ static int (*kvm_vmx_exit_handlers[])(struct kvm_vcpu *vcpu) = {
- 	[EXIT_REASON_APIC_WRITE]              = handle_apic_write,
- 	[EXIT_REASON_EOI_INDUCED]             = handle_apic_eoi_induced,
- 	[EXIT_REASON_WBINVD]                  = handle_wbinvd,
--	[EXIT_REASON_XSETBV]                  = handle_xsetbv,
-+	[EXIT_REASON_XSETBV]                  = kvm_emulate_xsetbv,
- 	[EXIT_REASON_TASK_SWITCH]             = handle_task_switch,
- 	[EXIT_REASON_MCE_DURING_VMENTRY]      = handle_machine_check,
- 	[EXIT_REASON_GDTR_IDTR]		      = handle_desc,
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 1d2bc89431a2..8dc69ff3d205 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -984,14 +984,17 @@ static int __kvm_set_xcr(struct kvm_vcpu *vcpu, u32 index, u64 xcr)
- 	return 0;
- }
- 
--int kvm_set_xcr(struct kvm_vcpu *vcpu, u32 index, u64 xcr)
-+int kvm_emulate_xsetbv(struct kvm_vcpu *vcpu)
- {
--	if (static_call(kvm_x86_get_cpl)(vcpu) == 0)
--		return __kvm_set_xcr(vcpu, index, xcr);
-+	if (static_call(kvm_x86_get_cpl)(vcpu) != 0 ||
-+	    __kvm_set_xcr(vcpu, kvm_rcx_read(vcpu), kvm_read_edx_eax(vcpu))) {
-+		kvm_inject_gp(vcpu, 0);
-+		return 1;
-+	}
- 
--	return 1;
-+	return kvm_skip_emulated_instruction(vcpu);
- }
--EXPORT_SYMBOL_GPL(kvm_set_xcr);
-+EXPORT_SYMBOL_GPL(kvm_emulate_xsetbv);
- 
- bool kvm_is_valid_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
- {
--- 
-2.26.2
+P1(int *prod, int *cons, int *data)
+{
+    int c;
+    int d = -1;
 
+    c = READ_ONCE(*cons);
+    if (READ_ONCE(*prod) == c) {
+        smp_rmb();
+        d = READ_ONCE(*data);
+        smp_mb();
+        WRITE_ONCE(*cons, c ^ 1);
+    }
+}
 
+							Thanx, Paul
+
+> > exists( 1:d=1 /\ prod=0 /\ cons=1 );
+> > 
+> > --
+> > 
+> > The weird state changing if-statements is because that I didn't get
+> > '&&' and '||' to work with herd.
+> > 
+> > When this is run:
+> > 
+> > $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
+> > Test spsc-rb+1p1c Allowed
+> > States 2
+> > 1:d=0; cons=1; prod=0;
+> > 1:d=0; cons=1; prod=1;
+> > No
+> > Witnesses
+> > Positive: 0 Negative: 2
+> > Condition exists (1:d=1 /\ prod=0 /\ cons=1)
+> > Observation spsc-rb+1p1c Never 0 2
+> > Time spsc-rb+1p1c 0.04
+> > Hash=b399756d6a1301ca5bda042f32130791
+> > 
+> > Now to my question; In P0 there's an smp_mb(). Without that, the d==1
+> > can be observed from P1 (consumer):
+> > 
+> > $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
+> > Test spsc-rb+1p1c Allowed
+> > States 3
+> > 1:d=0; cons=1; prod=0;
+> > 1:d=0; cons=1; prod=1;
+> > 1:d=1; cons=1; prod=0;
+> > Ok
+> > Witnesses
+> > Positive: 1 Negative: 2
+> > Condition exists (1:d=1 /\ prod=0 /\ cons=1)
+> > Observation spsc-rb+1p1c Sometimes 1 2
+> > Time spsc-rb+1p1c 0.04
+> > Hash=0047fc21fa77da9a9aee15e35ec367ef
+> > 
+> > In commit c7f2e3cd6c1f ("perf: Optimize ring-buffer write by depending
+> > on control dependencies") removes the corresponding smp_mb(), and also
+> > the circular buffer in circular-buffers.txt (pre commit 6c43c091bdc5
+> > ("documentation: Update circular buffer for
+> > load-acquire/store-release")) is missing the smp_mb() at the
+> > producer-side.
+> > 
+> > I'm trying to wrap my head around why it's OK to remove the smp_mb()
+> > in the cases above? I'm worried that the current XDP socket ring
+> > implementation (which is missing smp_mb()) might be broken.
+> > 
+> > 
+> > If you read this far, thanks! :-)
+> > Björn
+> > 
+> > 
+> > [1] https://lore.kernel.org/bpf/20210301104318.263262-2-bjorn.topel@gmail.com/
