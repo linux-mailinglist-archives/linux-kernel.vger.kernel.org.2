@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536F532A850
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EDE32A83C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1580156AbhCBRaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 12:30:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
+        id S1580000AbhCBRVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 12:21:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444277AbhCBPG3 (ORCPT
+        with ESMTP id S1448626AbhCBPHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:06:29 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 543C1C0698CE
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:01:06 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id k185so17009880qkb.17
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:01:06 -0800 (PST)
+        Tue, 2 Mar 2021 10:07:48 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A065C0698D0
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:01:11 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id v13so10265626wrs.21
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:01:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=fnu4kZLmantAPLgmfgZ7PZzVHqXbW8DjkSliDC/e8I8=;
-        b=uUNW1RSwz/PPPl1Ua1IuQ64hOM0R+lTodrWU3UbAefyenAEai8RA0+im6R8w77uKKJ
-         g4DVj/KqEe1TwMkcz/Ygt9jjIn5f38pgXuncyWnVA/+aa/N++uGeKO34r+o678oP9Mq8
-         67RAjq0NNwnf+jsn3QGIHhc250LRidVe1EfBP+5OIoO/7rtNLutaZrtEM1c24NPrdROO
-         AFGrLf0EhJQzjScHxY2yPE6vMV/MjHb4X61lyzoWiVZ4RX2UG8RcNll2OE8OrY1N1eKg
-         6/SG5RQNSa0TOnAV1pRMMAOGJJqvxbtGjwYBUsH85FOGQKa/2mvXOYVgOo4Aa+FxfQOa
-         yteA==
+        bh=5Zt+as2f0a/zAo23kFlziOtkEY/5uJ8Xq9YYontT/aE=;
+        b=oy/UdeB5LbnLjtFmM/dbYim6mMzp2qHYBSC13VZs9FaJTFSyaT5CDRtQj/Eb4TG+BN
+         0qtiQe0mzOlHVdur176OUctyO9lmahpfO/cGM2Iz8/eLYjlye4xly371PfFUU6L1dmsW
+         flOfBgxFPo02Ph1rABAUHRoOy8BisQRcd1qsoH8uwGogHwNT1F7aM+pl3qwYmMwE3rZ9
+         EOf4aVi4DTalvrWxvq7Nfmlls3aOTfLbQl8kPnYd+v0IKHNr1fcEHNU1ksLlXUbt8htj
+         tPYk6Ic5sJ+UTglqHEL5gmqam/FGCqcrJCZzjWFrHaxx9v8IRAOvLk/SYa3HSSkqCdAe
+         wljw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=fnu4kZLmantAPLgmfgZ7PZzVHqXbW8DjkSliDC/e8I8=;
-        b=fveHV5coVWupwIgZsMnMaxTE8IEQu6k/wniyXUyvG2vR2kqbavho4Y1i1oZnSDFyZU
-         d/1McMB6VLVFXejsiga7dffPKLrm/mG1tTGPxbULD804clhlovgE4cRUhH18H86jxukf
-         1WxrkOTOoZrmOqH8g8a52jumx9Al/37rBHlBeWa7Cu3sLBM9KiZNoUheI0/F2B9SPpU+
-         Fcde9UdNp5pd9sXmyzJKRrCZLC+T7pvk8RylDhseIRyZfNqxKy3kLgH/7Mf+pvGN8ppL
-         kzEea8xGtVvYriyOnIiUj75+AoBhMovi5VFqIpAhY6XReArHO80oA5j3ASofg2OL0mRa
-         UrdA==
-X-Gm-Message-State: AOAM532X9p6MxTWKp2iBkPHds2mxD4ZcJVBdR+8TDIBwQO8HrmhJjGFu
-        Dc7xo0YgChVUwnLtK3ng5+/AFPOmLP8N
-X-Google-Smtp-Source: ABdhPJw8Dq6/V08jN1owoo4yABfxU5wp1FwJVtfeIaUa56rS2EjFaWfxxNpGQxARvmsP7DWrgv0nk/HKhje6
+        bh=5Zt+as2f0a/zAo23kFlziOtkEY/5uJ8Xq9YYontT/aE=;
+        b=fPkSh3y8i4BivXScpxQG54p3JXEyUKL/9JnIGktQ9jjs7Xo926f3Jjpi8yb5V1h/mx
+         o/0hTILPTU1b9/BVB5l4pciGC6SGPtv71XSRVD9iEku037zgm7FtSEP0a9e89rU/sSGh
+         4axOKM6SuNwU2cS+jrRJEXoTsungel1ky4TcaTRRLR6D6ZuzElL15k+P0IVgmcYnUzE/
+         PgnkB134nYmC+ZwaCfPKTbmAV7kxjrIOouCEBTNgB1tD7tbkFy2aSmqYrWBXopwRj0Wj
+         t8RBZb1u/ljlmkYiQDeyhAfBOo2omntHrZAV0P7TBc+plfHleqfKLlKEdvoIszng3XtU
+         5MfQ==
+X-Gm-Message-State: AOAM531kFgkuMHI+ecbOM9ZD4SQnOL0ge/Yf/mtl30R0gvqYUnux3ATA
+        QQzX8o0gF4UqRp91Fnr6zQlOW60CHEH7
+X-Google-Smtp-Source: ABdhPJxty67guDux2vyMCWfPogWra+Q8rpbOely2ebtEwkY4f4QkKw5qaFq5tmMfz2TLhcjiBewjHI5nTeut
 Sender: "qperret via sendgmr" <qperret@r2d2-qp.c.googlers.com>
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a0c:c78c:: with SMTP id
- k12mr3964748qvj.47.1614697265404; Tue, 02 Mar 2021 07:01:05 -0800 (PST)
-Date:   Tue,  2 Mar 2021 14:59:56 +0000
+ (user=qperret job=sendgmr) by 2002:a05:600c:2254:: with SMTP id
+ a20mr4602912wmm.115.1614697269979; Tue, 02 Mar 2021 07:01:09 -0800 (PST)
+Date:   Tue,  2 Mar 2021 14:59:58 +0000
 In-Reply-To: <20210302150002.3685113-1-qperret@google.com>
-Message-Id: <20210302150002.3685113-27-qperret@google.com>
+Message-Id: <20210302150002.3685113-29-qperret@google.com>
 Mime-Version: 1.0
 References: <20210302150002.3685113-1-qperret@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH v3 26/32] KVM: arm64: Introduce PROT_NONE mappings for stage 2
+Subject: [PATCH v3 28/32] KVM: arm64: Add kvm_pgtable_stage2_idmap_greedy()
 From:   Quentin Perret <qperret@google.com>
 To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
         james.morse@arm.com, julien.thierry.kdev@gmail.com,
@@ -67,116 +67,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once we start unmapping portions of memory from the host stage 2 (such
-as e.g. the hypervisor memory sections, or pages that belong to
-protected guests), we will need a way to track page ownership. And
-given that all mappings in the host stage 2 will be identity-mapped, we
-can use the host stage 2 page-table itself as a simplistic rmap.
+Add a new map function to the KVM page-table library that allows to
+greedily create block identity-mappings. This will be useful to create
+lazily the host stage 2 page-table as it will own most of memory and
+will always be identity mapped.
 
-As a first step towards this, introduce a new protection attribute
-in the stage 2 page table code, called KVM_PGTABLE_PROT_NONE, which
-allows to annotate portions of the IPA space as inaccessible. For
-simplicity, PROT_NONE mappings are created as invalid mappings with a
-software bit set.
+The new helper function creates the mapping in 2 steps: it first walks
+the page-table to compute the largest possible granule that can be used
+to idmap a given address without overriding existing incompatible
+mappings; and then creates a mapping accordingly.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/include/asm/kvm_pgtable.h |  2 ++
- arch/arm64/kvm/hyp/pgtable.c         | 26 ++++++++++++++++++++++++--
- 2 files changed, 26 insertions(+), 2 deletions(-)
+ arch/arm64/include/asm/kvm_pgtable.h |  37 +++++++++
+ arch/arm64/kvm/hyp/pgtable.c         | 119 +++++++++++++++++++++++++++
+ 2 files changed, 156 insertions(+)
 
 diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-index 9935dbae2cc1..c9f6ed76e0ad 100644
+index c9f6ed76e0ad..e51dcce69a5e 100644
 --- a/arch/arm64/include/asm/kvm_pgtable.h
 +++ b/arch/arm64/include/asm/kvm_pgtable.h
-@@ -80,6 +80,7 @@ struct kvm_pgtable {
-  * @KVM_PGTABLE_PROT_W:		Write permission.
-  * @KVM_PGTABLE_PROT_R:		Read permission.
-  * @KVM_PGTABLE_PROT_DEVICE:	Device attributes.
-+ * @KVM_PGTABLE_PROT_NONE:	No permission.
-  */
- enum kvm_pgtable_prot {
- 	KVM_PGTABLE_PROT_X			= BIT(0),
-@@ -87,6 +88,7 @@ enum kvm_pgtable_prot {
- 	KVM_PGTABLE_PROT_R			= BIT(2),
+@@ -96,6 +96,16 @@ enum kvm_pgtable_prot {
+ #define PAGE_HYP_RO		(KVM_PGTABLE_PROT_R)
+ #define PAGE_HYP_DEVICE		(PAGE_HYP | KVM_PGTABLE_PROT_DEVICE)
  
- 	KVM_PGTABLE_PROT_DEVICE			= BIT(3),
-+	KVM_PGTABLE_PROT_NONE			= BIT(4),
- };
++/**
++ * struct kvm_mem_range - Range of Intermediate Physical Addresses
++ * @start:	Start of the range.
++ * @end:	End of the range.
++ */
++struct kvm_mem_range {
++	u64 start;
++	u64 end;
++};
++
+ /**
+  * enum kvm_pgtable_walk_flags - Flags to control a depth-first page-table walk.
+  * @KVM_PGTABLE_WALK_LEAF:		Visit leaf entries, including invalid
+@@ -379,4 +389,31 @@ int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size);
+ int kvm_pgtable_walk(struct kvm_pgtable *pgt, u64 addr, u64 size,
+ 		     struct kvm_pgtable_walker *walker);
  
- #define PAGE_HYP		(KVM_PGTABLE_PROT_R | KVM_PGTABLE_PROT_W)
++/**
++ * kvm_pgtable_stage2_idmap_greedy() - Identity-map an Intermediate Physical
++ *				       Address with a leaf entry at the highest
++ *				       possible level.
++ * @pgt:	Page-table structure initialised by kvm_pgtable_*_init().
++ * @addr:	Input address to identity-map.
++ * @prot:	Permissions and attributes for the mapping.
++ * @range:	Boundaries of the maximum memory region to map.
++ * @mc:		Cache of pre-allocated memory from which to allocate page-table
++ *		pages.
++ *
++ * This function attempts to install high-level identity-mappings covering @addr
++ * without overriding existing mappings with incompatible permissions or
++ * attributes. An existing table entry may be coalesced into a block mapping
++ * if and only if it covers @addr and all its leafs are either invalid and/or
++ * have permissions and attributes strictly matching @prot. The mapping is
++ * guaranteed to be contained within the boundaries specified by @range at call
++ * time. If only a subset of the memory specified by @range is mapped (because
++ * of e.g. alignment issues or existing incompatible mappings), @range will be
++ * updated accordingly.
++ *
++ * Return: 0 on success, negative error code on failure.
++ */
++int kvm_pgtable_stage2_idmap_greedy(struct kvm_pgtable *pgt, u64 addr,
++				    enum kvm_pgtable_prot prot,
++				    struct kvm_mem_range *range,
++				    void *mc);
+ #endif	/* __ARM64_KVM_PGTABLE_H__ */
 diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index bdd6e3d4eeb6..8e7059fcfd40 100644
+index 8aa01a9e2603..6897d771e2b2 100644
 --- a/arch/arm64/kvm/hyp/pgtable.c
 +++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -48,6 +48,8 @@
- 					 KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W | \
- 					 KVM_PTE_LEAF_ATTR_HI_S2_XN)
- 
-+#define KVM_PTE_LEAF_SW_BIT_PROT_NONE	BIT(55)
-+
- struct kvm_pgtable_walk_data {
- 	struct kvm_pgtable		*pgt;
- 	struct kvm_pgtable_walker	*walker;
-@@ -120,6 +122,16 @@ static bool kvm_pte_valid(kvm_pte_t pte)
- 	return pte & KVM_PTE_VALID;
+@@ -987,3 +987,122 @@ void kvm_pgtable_stage2_destroy(struct kvm_pgtable *pgt)
+ 	pgt->mm_ops->free_pages_exact(pgt->pgd, pgd_sz);
+ 	pgt->pgd = NULL;
  }
- 
-+static bool kvm_pte_prot_none(kvm_pte_t pte)
-+{
-+	return pte & KVM_PTE_LEAF_SW_BIT_PROT_NONE;
-+}
 +
-+static inline bool stage2_is_permanent_mapping(kvm_pte_t pte)
-+{
-+	return kvm_pte_prot_none(pte);
-+}
++struct stage2_reduce_range_data {
++	kvm_pte_t attr;
++	u64 target_addr;
++	u32 start_level;
++	struct kvm_mem_range *range;
++};
 +
- static bool kvm_pte_table(kvm_pte_t pte, u32 level)
- {
- 	if (level == KVM_PGTABLE_MAX_LEVELS - 1)
-@@ -182,7 +194,8 @@ static kvm_pte_t kvm_init_valid_leaf_pte(u64 pa, kvm_pte_t attr, u32 level)
- 
- 	pte |= attr & (KVM_PTE_LEAF_ATTR_LO | KVM_PTE_LEAF_ATTR_HI);
- 	pte |= FIELD_PREP(KVM_PTE_TYPE, type);
--	pte |= KVM_PTE_VALID;
-+	if (!kvm_pte_prot_none(pte))
-+		pte |= KVM_PTE_VALID;
- 
- 	return pte;
- }
-@@ -317,7 +330,7 @@ static int hyp_map_set_prot_attr(enum kvm_pgtable_prot prot,
- 	u32 ap = (prot & KVM_PGTABLE_PROT_W) ? KVM_PTE_LEAF_ATTR_LO_S1_AP_RW :
- 					       KVM_PTE_LEAF_ATTR_LO_S1_AP_RO;
- 
--	if (!(prot & KVM_PGTABLE_PROT_R))
-+	if (!(prot & KVM_PGTABLE_PROT_R) || (prot & KVM_PGTABLE_PROT_NONE))
- 		return -EINVAL;
- 
- 	if (prot & KVM_PGTABLE_PROT_X) {
-@@ -489,6 +502,13 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
- 			    PAGE_S2_MEMATTR(NORMAL);
- 	u32 sh = KVM_PTE_LEAF_ATTR_LO_S2_SH_IS;
- 
-+	if (prot & KVM_PGTABLE_PROT_NONE) {
-+		if (prot != KVM_PGTABLE_PROT_NONE)
-+			return -EINVAL;
-+		attr |= KVM_PTE_LEAF_SW_BIT_PROT_NONE;
-+		goto out;
++static int __stage2_reduce_range(struct stage2_reduce_range_data *data, u64 addr)
++{
++	u32 level = data->start_level;
++
++	for (; level < KVM_PGTABLE_MAX_LEVELS; level++) {
++		u64 granule = kvm_granule_size(level);
++		u64 start = ALIGN_DOWN(data->target_addr, granule);
++		u64 end = start + granule;
++
++		/*
++		 * The pinned address is in the current range, try one level
++		 * deeper.
++		 */
++		if (start == ALIGN_DOWN(addr, granule))
++			continue;
++
++		/*
++		 * Make sure the current range is a reduction of the existing
++		 * range before updating it.
++		 */
++		if (data->range->start <= start && end <= data->range->end) {
++			data->start_level = level;
++			data->range->start = start;
++			data->range->end = end;
++			return 0;
++		}
 +	}
 +
- 	if (!(prot & KVM_PGTABLE_PROT_X))
- 		attr |= KVM_PTE_LEAF_ATTR_HI_S2_XN;
- 	else if (device)
-@@ -502,6 +522,8 @@ static int stage2_map_set_prot_attr(enum kvm_pgtable_prot prot,
- 
- 	attr |= FIELD_PREP(KVM_PTE_LEAF_ATTR_LO_S2_SH, sh);
- 	attr |= KVM_PTE_LEAF_ATTR_LO_S2_AF;
++	return -EINVAL;
++}
 +
-+out:
- 	data->attr = attr;
- 	return 0;
- }
++#define KVM_PTE_LEAF_S2_COMPAT_MASK	(KVM_PTE_LEAF_ATTR_S2_PERMS | \
++					 KVM_PTE_LEAF_ATTR_LO_S2_MEMATTR | \
++					 KVM_PTE_LEAF_SW_BIT_PROT_NONE)
++
++static int stage2_reduce_range_walker(u64 addr, u64 end, u32 level,
++				      kvm_pte_t *ptep,
++				      enum kvm_pgtable_walk_flags flag,
++				      void * const arg)
++{
++	struct stage2_reduce_range_data *data = arg;
++	kvm_pte_t attr;
++	int ret;
++
++	if (addr < data->range->start || addr >= data->range->end)
++		return 0;
++
++	attr = *ptep & KVM_PTE_LEAF_S2_COMPAT_MASK;
++	if (!attr || attr == data->attr)
++		return 0;
++
++	/*
++	 * An existing mapping with incompatible protection attributes is
++	 * 'pinned', so reduce the range if we hit one.
++	 */
++	ret = __stage2_reduce_range(data, addr);
++	if (ret)
++		return ret;
++
++	return -EAGAIN;
++}
++
++static int stage2_reduce_range(struct kvm_pgtable *pgt, u64 addr,
++			       enum kvm_pgtable_prot prot,
++			       struct kvm_mem_range *range)
++{
++	struct stage2_reduce_range_data data = {
++		.start_level	= pgt->start_level,
++		.range		= range,
++		.target_addr	= addr,
++	};
++	struct kvm_pgtable_walker walker = {
++		.cb		= stage2_reduce_range_walker,
++		.flags		= KVM_PGTABLE_WALK_LEAF,
++		.arg		= &data,
++	};
++	int ret;
++
++	data.attr = stage2_get_prot_attr(prot) & KVM_PTE_LEAF_S2_COMPAT_MASK;
++	if (!data.attr)
++		return -EINVAL;
++
++	/* Reduce the kvm_mem_range to a granule size */
++	ret = __stage2_reduce_range(&data, range->end);
++	if (ret)
++		return ret;
++
++	/* Walk the range to check permissions and reduce further if needed */
++	do {
++		ret = kvm_pgtable_walk(pgt, range->start, range->end, &walker);
++	} while (ret == -EAGAIN);
++
++	return ret;
++}
++
++int kvm_pgtable_stage2_idmap_greedy(struct kvm_pgtable *pgt, u64 addr,
++				    enum kvm_pgtable_prot prot,
++				    struct kvm_mem_range *range,
++				    void *mc)
++{
++	u64 size;
++	int ret;
++
++	ret = stage2_reduce_range(pgt, addr, prot, range);
++	if (ret)
++		return ret;
++
++	size = range->end - range->start;
++	return kvm_pgtable_stage2_map(pgt, range->start, size, range->start,
++				      prot, mc);
++}
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
