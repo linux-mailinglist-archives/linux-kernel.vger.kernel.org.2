@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3204F32A09C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D8D32A09E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576179AbhCBEZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:25:41 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6323 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234419AbhCBAvf (ORCPT
+        id S1576198AbhCBE0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:26:01 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13016 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234662AbhCBAwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 19:51:35 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603d8bee0000>; Mon, 01 Mar 2021 16:50:54 -0800
-Received: from HQMAIL111.nvidia.com (172.20.187.18) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
- 2021 00:50:49 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.108)
- by HQMAIL111.nvidia.com (172.20.187.18) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Tue, 2 Mar 2021 00:50:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NiyBOLOBfKc1tHcI8cZixv/dTIRDlOdwjbwnRls/pXd1lxK3cjBxv2Yl6sPz6fsX0+RHT9FaNs1bSlSNW4q+m0S2dgo5jTLY24C1KOln9QWVIk2A4U8/4LpCcG7zgYsdrV7ciJ4d/X44TO4m+DyCeCBxJwlj/5+yvYlL8XMmw+zJxWCdnWvLrwglEzWtojZYdMGu+U8sOI6eEfzYlhfyDdkfVo6WMzxe4zLo5hBKgHYs7puke9zimi1GoDdfk4nY3yomTRhX5D+RY5qS8TBr3el+0fCUrTGVEGTbHx48qdeTULWqd1fS9kdUoSci2I0FHmHwBpilgW5WGBFXq3ZQNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sucyUN9nqzV4VNQbY8vYSj8n0i41rfSbF+hOFTFMJAo=;
- b=D5vF2m0ASv/evq38IBr8fD4PhLmjwG1sPHDTCQjIsqwRc/KPMpFiBEstmKcE2/ZaRwwP7cthsLvV+SJidzb0bcZGQS2W7D0I2SDizOm1RCCjmpKXi1sPYL+b+zhPECRVgHJtLIISiwE8TO+mxH2nOstqQXMfK8mUHxWxrepZRxjW6XeNBC18zqEs885JsEhf56wfBvj41ueqc6iql0EWNtsKE7ww7j7uzRjrMfwSwnuzfyuAwpqqhwvQQYc/vhMfDZFOx9gKRL32bFPq0gZlOld73CYSKz/czKY9BRvocXo7U2vh+VrhhJWtknS22KyrpZptO8JOpQMBjp+1ghg+OA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BYAPR12MB3528.namprd12.prod.outlook.com (2603:10b6:a03:138::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Tue, 2 Mar
- 2021 00:50:48 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::4c46:77c0:7d7:7e43]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::4c46:77c0:7d7:7e43%6]) with mapi id 15.20.3890.028; Tue, 2 Mar 2021
- 00:50:48 +0000
-Date:   Mon, 1 Mar 2021 20:50:46 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dave Jiang <dave.jiang@intel.com>
-CC:     <alex.williamson@redhat.com>, <kwankhede@nvidia.com>,
-        <tglx@linutronix.de>, <vkoul@kernel.org>, <megha.dey@intel.com>,
-        <jacob.jun.pan@intel.com>, <ashok.raj@intel.com>,
-        <yi.l.liu@intel.com>, <baolu.lu@intel.com>, <kevin.tian@intel.com>,
-        <sanjay.k.kumar@intel.com>, <tony.luck@intel.com>,
-        <dan.j.williams@intel.com>, <eric.auger@redhat.com>,
-        <parav@mellanox.com>, <netanelg@mellanox.com>,
-        <shahafs@mellanox.com>, <pbonzini@redhat.com>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>
-Subject: Re: [PATCH v5 05/14] vfio/mdev: idxd: add basic mdev registration
- and helper functions
-Message-ID: <20210302005046.GD4247@nvidia.com>
-References: <161255810396.339900.7646244556839438765.stgit@djiang5-desk3.ch.intel.com>
- <161255840486.339900.5478922203128287192.stgit@djiang5-desk3.ch.intel.com>
- <20210210235924.GJ4247@nvidia.com>
- <b41828e1-ab67-856b-f2c0-6215106ba813@intel.com>
- <20210302002922.GC4247@nvidia.com>
- <3dd57aa0-3f64-d8cd-8f61-d91d7b1a1bdd@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <3dd57aa0-3f64-d8cd-8f61-d91d7b1a1bdd@intel.com>
-X-ClientProxiedBy: MN2PR15CA0003.namprd15.prod.outlook.com
- (2603:10b6:208:1b4::16) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
+        Mon, 1 Mar 2021 19:52:20 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DqJS20nb5zjV6q;
+        Tue,  2 Mar 2021 08:49:38 +0800 (CST)
+Received: from [127.0.0.1] (10.40.188.144) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Tue, 2 Mar 2021
+ 08:51:09 +0800
+Subject: Re: [PATCH] w1: ds2708 and ds2781 use the new API kobj_to_dev()
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Tian Tao <tiantao6@hisilicon.com>
+CC:     <zbr@ioremap.net>, <rikard.falkeborn@gmail.com>,
+        <linux-kernel@vger.kernel.org>
+References: <1614603535-24046-1-git-send-email-tiantao6@hisilicon.com>
+ <YDzne3KtnGJD1J0E@kroah.com>
+From:   "tiantao (H)" <tiantao6@huawei.com>
+Message-ID: <9be69246-fb8b-27dc-c459-0f9aa25c5c88@huawei.com>
+Date:   Tue, 2 Mar 2021 08:51:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR15CA0003.namprd15.prod.outlook.com (2603:10b6:208:1b4::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23 via Frontend Transport; Tue, 2 Mar 2021 00:50:47 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lGtFO-003O7A-6d; Mon, 01 Mar 2021 20:50:46 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614646254; bh=sucyUN9nqzV4VNQbY8vYSj8n0i41rfSbF+hOFTFMJAo=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=pQSrD7KlQU5IsU1bQ8Pa/7ANhiRiZttrdYqXCxFCHDM/ncFjXq182fFGjHrLn9OIZ
-         wMijha1qzqZtf0GJS+WIZoEKWLQ2QuAVjLKlDljRiWkiTOnD8puzWwRN9lwLIaOm8i
-         JT0IzVhbUMP4D0L+BiDnCyKNNk7otgdA8DkTbfen4Rmqhm6Lz1nhRBAsQ/eJf6mSlB
-         ALjStNjtniuN9fKAC41np23YVykg4PvXXW37ew28s7zEDiXAwc0x8bglaMkmZYsXLW
-         S3U+7ed1FWDlBHCgobWu+UDCTKNcUN8H7Ku/f9NYPl3UozSCTAlDjzT6IFbYmu4N3L
-         Gs/nQnHun35KQ==
+In-Reply-To: <YDzne3KtnGJD1J0E@kroah.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.188.144]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 05:48:00PM -0700, Dave Jiang wrote:
-> 
-> On 3/1/2021 5:29 PM, Jason Gunthorpe wrote:
-> > On Mon, Mar 01, 2021 at 05:23:47PM -0700, Dave Jiang wrote:
-> > > So after looking at the code in vfio_pci_intrs.c, I agree that the set_irqs
-> > > code between VFIO_PCI and this driver can be made in common. Given that Alex
-> > > doesn't want a vfio_pci device embedded in the driver,
-> > idxd isn't a vfio_pci so it would be improper to do something like
-> > that here anyhow.
-> > 
-> > > I think we'll need some sort of generic VFIO device that can be used
-> > > from the vfio_pci side and vfio_mdev side to pass down in order to
-> > > have common support library functions.
-> > Why do you need more layers?
-> > 
-> > Just make some helper functions to manage this and build them into
-> > their own struct and function family. All this needs is some callback
-> > to for the end driver to hook in the raw device programming and some
-> > entry points to direct the emulation access to the module.
-> > 
-> > It should be fully self contained and completely unrelated to vfio_pci
-> > 
-> Maybe I'm looking at this wrong. I see a some code in vfio_pci_intrs.c that
-> we can reuse with some changes here and there. But, I think see where you
-> are getting at with just common functions for mdev side. Let me create it
-> just for IMS emulation and then we can go from there trying to figure if
-> that's the right path to go down or if we need to share code with vfio_pci.
+Hi:
 
-If it really is very common it could all be consolidated in a
-vfio_utils.c kind of thing that all the places can use.
+在 2021/3/1 21:09, Greg KH 写道:
+> On Mon, Mar 01, 2021 at 08:58:55PM +0800, Tian Tao wrote:
+>> fix the below warnning:
+>> /drivers/w1/slaves/w1_ds2780.c:93:60-61: WARNING opportunity for
+>> kobj_to_dev()
+> What creates that warning?
+This is reported by coccicheck.
+>
+>
+>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>> ---
+>>   drivers/w1/slaves/w1_ds2780.c | 3 ++-
+>>   drivers/w1/slaves/w1_ds2781.c | 2 +-
+>>   2 files changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/w1/slaves/w1_ds2780.c b/drivers/w1/slaves/w1_ds2780.c
+>> index c281fe5..3cde1bb 100644
+>> --- a/drivers/w1/slaves/w1_ds2780.c
+>> +++ b/drivers/w1/slaves/w1_ds2780.c
+>> @@ -90,7 +90,8 @@ static ssize_t w1_slave_read(struct file *filp, struct kobject *kobj,
+>>   			     struct bin_attribute *bin_attr, char *buf,
+>>   			     loff_t off, size_t count)
+>>   {
+>> -	struct device *dev = container_of(kobj, struct device, kobj);
+>> +	struct device *dev = kobj_to_dev(kobj);
+>> +
+> Why the extra line here, but not in the other chunk?
 
-There is nothing wrong with splitting pieces of vfio_pci out.
+This is reported by checkpatch.
 
-Jason
+tiantao@ubuntu:~/mailline/linux-next$ ./scripts/checkpatch.pl 
+drivers/w1/slaves/w1_ds2780.c
+
+WARNING: Missing a blank line after declarations
+#94: FILE: drivers/w1/slaves/w1_ds2780.c:94:
++       struct device *dev = kobj_to_dev(kobj);
++       return w1_ds2780_io(dev, buf, off, count, 0);
+
+>
+> Consistancy is key :)
+>
+> Please fix up.
+>
+> thanks,
+>
+> greg k-h
+> .
+>
+
