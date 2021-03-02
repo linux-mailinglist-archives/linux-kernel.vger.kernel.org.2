@@ -2,217 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25C832AA5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FA332AA50
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1835746AbhCBTSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:18:55 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:10191 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1579551AbhCBQ65 (ORCPT
+        id S1835693AbhCBTSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379907AbhCBQ6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:58:57 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id D10B9A17C5;
-        Tue,  2 Mar 2021 17:48:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=Iq2O+faTDVb2
-        vlZ2E3J4cQ1DqJ4S6FQ6CtKxj20OPQk=; b=GQmy+uqTDKQMXUfXaTOMxHbzM90U
-        Xc12b7KSYDXBgpIBWyic2EXqMqnCUxPk524Jtg+/ttlnits6oevMe0UEhs0kZ3G6
-        fLPxvbCMKlqGQREzs8NC4Tf2vDS8VuvGUqdtoXqyNOXlbP7ZJrxFDdMoY8UNQ1Jf
-        Gom5ot4aEZLMb/yVb4I0vThpupY/Ubn3h//xuliIuM8i9XZLjKy8rx8lIG/RkBzz
-        wr0TSgASOkRarqr3Q7H2EsUEdDgxVD2os7bIJzQ/hfmdrIOc1JLQ6IhxAGO3b6QY
-        ynoyIAXC/u5I3NueXPuwGKyOPVbXdH1mvIopY8o+efoknKEN8NMq/4hhsQ==
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-To:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v7 9/9] ALSA: virtio: introduce device suspend/resume support
-Date:   Tue, 2 Mar 2021 17:47:09 +0100
-Message-ID: <20210302164709.3142702-10-anton.yakovlev@opensynergy.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210302164709.3142702-1-anton.yakovlev@opensynergy.com>
-References: <20210302164709.3142702-1-anton.yakovlev@opensynergy.com>
+        Tue, 2 Mar 2021 11:58:19 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C89C061222;
+        Tue,  2 Mar 2021 08:53:59 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id u16so2619486wrt.1;
+        Tue, 02 Mar 2021 08:53:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kfPm/MmuHPyrXBT7pNFqsbQwaiDlFHhCn7fgYFeu560=;
+        b=hctPdJW/dPVgJ1xsTxJMTvAmcnNlhUGPfqNozV8+fE1LtQNVt1cRtFpPCPEu+6jwNH
+         K3jepAkAnz6keN5HcMJzFUdReqiJJhG+6/hqaoxsiGThlmB7/ofnfMZLBWvRuZts6Lda
+         Gcx5L6W79retykYR6Fa7uGVGu9HqDkxGPwhRhnaZy0GR1bu82botLt5GEYGdjO3g09Gc
+         ogRvtqFoUh/x6msYMc3pyCHc4lP5jC4tVSun7QhDh4cQM5s6xisILE+oseG2liqL4xlP
+         /rO+apF6MH0+kGNILspQVlL/dOsIp6jBamTzOQrC5d1kQ6VchuL66eoEGVtURFYUwoT1
+         dbmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kfPm/MmuHPyrXBT7pNFqsbQwaiDlFHhCn7fgYFeu560=;
+        b=hqV8XW7kVQhhMhBv2ENjyyST0p5RvOlb3jSZy0Dfz+BDZM3DTi4PrNpZMZ5eLcbjF5
+         mRGe+/68pwzqcbrjL1Bp6ytlPfMXTXT7eJR/o/ddLhDprgzrfcpJEzKqvZNiurgjJ5K7
+         /pyB/pgofzSm5v0kZST+XaAK0Im/UABsU8+Pe1z7IUwUFV0bRXCEGBeXMQwRnXRE7n1o
+         OgbOix10Fl1vG+Zfk4wk6osY3uViV3PR/jpwUUgqYucvbp7NYsyF7I/+ltlSS6wyeyXn
+         vtzWH8FO/p6KXegrZkAdCPFVuhXfBD226dnjRCKJXQUcPLC465gaApfn4vGKQl8jOZKh
+         v5dw==
+X-Gm-Message-State: AOAM530993iGVMUBwNZl9xs4nAtw9EuxaTyCWJOnNK3VJSlmDJGrwiYI
+        jxWmsREgDXI+ozhlHH0jXBDo7PHlILhy0Q==
+X-Google-Smtp-Source: ABdhPJxXElj6RcrAJn+xaBwYo7URkz5TdLX+KTvayClag0RjH5JFA0HXEoGf5v9LMODPagMEoQnqOg==
+X-Received: by 2002:a5d:6810:: with SMTP id w16mr9328385wru.333.1614704037903;
+        Tue, 02 Mar 2021 08:53:57 -0800 (PST)
+Received: from [192.168.1.10] (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
+        by smtp.gmail.com with ESMTPSA id v6sm29753390wrx.32.2021.03.02.08.53.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 08:53:57 -0800 (PST)
+Subject: Re: [PATCH 01/12] Documentation: add BCM6328 pincontroller binding
+ documentation
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210225164216.21124-1-noltari@gmail.com>
+ <20210225164216.21124-2-noltari@gmail.com>
+ <CACRpkdbjhTfQ4EcjndgE_Y7_uCT2ohadTjj-rrQAFNm+c0whRg@mail.gmail.com>
+ <CACRpkdaN3pYMDiPkk109SwOKF56Oxe14_bC5edftGGG0PL7VsA@mail.gmail.com>
+From:   =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
+Message-ID: <418daebd-b35b-2edc-6f33-591bd97ba1f9@gmail.com>
+Date:   Tue, 2 Mar 2021 17:53:56 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <CACRpkdaN3pYMDiPkk109SwOKF56Oxe14_bC5edftGGG0PL7VsA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All running PCM substreams are stopped on device suspend and restarted
-on device resume.
+Hi Linus,
 
-Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
----
- sound/virtio/virtio_card.c    | 56 +++++++++++++++++++++++++++++++++++
- sound/virtio/virtio_pcm.h     |  3 ++
- sound/virtio/virtio_pcm_ops.c | 33 ++++++++++++++++-----
- 3 files changed, 85 insertions(+), 7 deletions(-)
+I think it's better if we leave the interrupts out for now.
+It's not critical and it can be added later.
 
-diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
-index 1c03fcc41c3b..ae9128063917 100644
---- a/sound/virtio/virtio_card.c
-+++ b/sound/virtio/virtio_card.c
-@@ -362,6 +362,58 @@ static void virtsnd_remove(struct virtio_device *vdev)
- 	kfree(snd->event_msgs);
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+/**
-+ * virtsnd_freeze() - Suspend device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_freeze(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+	unsigned int i;
-+
-+	virtsnd_disable_event_vq(snd);
-+	virtsnd_ctl_msg_cancel_all(snd);
-+
-+	vdev->config->del_vqs(vdev);
-+	vdev->config->reset(vdev);
-+
-+	for (i = 0; i < snd->nsubstreams; ++i)
-+		cancel_work_sync(&snd->substreams[i].elapsed_period);
-+
-+	kfree(snd->event_msgs);
-+	snd->event_msgs = NULL;
-+
-+	return 0;
-+}
-+
-+/**
-+ * virtsnd_restore() - Resume device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_restore(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+	int rc;
-+
-+	rc = virtsnd_find_vqs(snd);
-+	if (rc)
-+		return rc;
-+
-+	virtio_device_ready(vdev);
-+
-+	virtsnd_enable_event_vq(snd);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
- static const struct virtio_device_id id_table[] = {
- 	{ VIRTIO_ID_SOUND, VIRTIO_DEV_ANY_ID },
- 	{ 0 },
-@@ -374,6 +426,10 @@ static struct virtio_driver virtsnd_driver = {
- 	.validate = virtsnd_validate,
- 	.probe = virtsnd_probe,
- 	.remove = virtsnd_remove,
-+#ifdef CONFIG_PM_SLEEP
-+	.freeze = virtsnd_freeze,
-+	.restore = virtsnd_restore,
-+#endif
- };
- 
- static int __init init(void)
-diff --git a/sound/virtio/virtio_pcm.h b/sound/virtio/virtio_pcm.h
-index 1353fdc9bd69..062eb8e8f2cf 100644
---- a/sound/virtio/virtio_pcm.h
-+++ b/sound/virtio/virtio_pcm.h
-@@ -31,6 +31,8 @@ struct virtio_pcm_msg;
-  * @xfer_xrun: Data underflow/overflow state (0 - no xrun, 1 - xrun).
-  * @stopped: True if the substream is stopped and must be released on the device
-  *           side.
-+ * @suspended: True if the substream is suspended and must be reconfigured on
-+ *             the device side at resume.
-  * @msgs: Allocated I/O messages.
-  * @nmsgs: Number of allocated I/O messages.
-  * @msg_last_enqueued: Index of the last I/O message added to the virtqueue.
-@@ -52,6 +54,7 @@ struct virtio_pcm_substream {
- 	bool xfer_enabled;
- 	bool xfer_xrun;
- 	bool stopped;
-+	bool suspended;
- 	struct virtio_pcm_msg **msgs;
- 	unsigned int nmsgs;
- 	int msg_last_enqueued;
-diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
-index 0682a2df6c8c..f8bfb87624be 100644
---- a/sound/virtio/virtio_pcm_ops.c
-+++ b/sound/virtio/virtio_pcm_ops.c
-@@ -115,6 +115,7 @@ static int virtsnd_pcm_open(struct snd_pcm_substream *substream)
- 				      SNDRV_PCM_HW_PARAM_PERIODS);
- 
- 	vss->stopped = !!virtsnd_pcm_msg_pending_num(vss);
-+	vss->suspended = false;
- 
- 	/*
- 	 * If the substream has already been used, then the I/O queue may be in
-@@ -272,16 +273,31 @@ static int virtsnd_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct virtio_device *vdev = vss->snd->vdev;
- 	struct virtio_snd_msg *msg;
- 
--	if (virtsnd_pcm_msg_pending_num(vss)) {
--		dev_err(&vdev->dev, "SID %u: invalid I/O queue state\n",
--			vss->sid);
--		return -EBADFD;
-+	if (!vss->suspended) {
-+		if (virtsnd_pcm_msg_pending_num(vss)) {
-+			dev_err(&vdev->dev, "SID %u: invalid I/O queue state\n",
-+				vss->sid);
-+			return -EBADFD;
-+		}
-+
-+		vss->buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
-+		vss->hw_ptr = 0;
-+		vss->msg_last_enqueued = -1;
-+	} else {
-+		struct snd_pcm_runtime *runtime = substream->runtime;
-+		unsigned int buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
-+		unsigned int period_bytes = snd_pcm_lib_period_bytes(substream);
-+		int rc;
-+
-+		rc = virtsnd_pcm_dev_set_params(vss, buffer_bytes, period_bytes,
-+						runtime->channels,
-+						runtime->format, runtime->rate);
-+		if (rc)
-+			return rc;
- 	}
- 
--	vss->buffer_bytes = snd_pcm_lib_buffer_bytes(substream);
--	vss->hw_ptr = 0;
- 	vss->xfer_xrun = false;
--	vss->msg_last_enqueued = -1;
-+	vss->suspended = false;
- 	vss->msg_count = 0;
- 
- 	msg = virtsnd_pcm_ctl_msg_alloc(vss, VIRTIO_SND_R_PCM_PREPARE,
-@@ -336,6 +352,9 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 		}
- 
- 		return virtsnd_ctl_msg_send_sync(snd, msg);
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		vss->suspended = true;
-+		fallthrough;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 		vss->stopped = true;
- 		fallthrough;
--- 
-2.30.1
+Best regards,
+Álvaro.
 
-
+El 02/03/2021 a las 16:23, Linus Walleij escribió:
+> On Tue, Mar 2, 2021 at 3:57 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>> On Thu, Feb 25, 2021 at 5:42 PM Álvaro Fernández Rojas
+>> <noltari@gmail.com> wrote:
+>>
+>>> Add binding documentation for the pincontrol core found in BCM6328 SoCs.
+>>>
+>>> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+>>> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+>> (...)
+>>> +  interrupts-extended:
+>>> +    description:
+>>> +      One interrupt per each of the 4 GPIO ports supported by the controller,
+>>> +      sorted by port number ascending order.
+>>> +    minItems: 4
+>>> +    maxItems: 4
+>>
+>> I don't know if this is advisable, there are different ways
+>> of specifying interrupts so this may become ambiguous,
+>> I think Rob will know how/if to do this though.
+> 
+> After reading the code I conclude this gpiochip is hierarchical so this should
+> just be dropped, and we only need interrupt-parent assigned. The
+> driver will know the hardware offsets between the interrupt parent
+> and the GPIO block, this is generally the case for
+> hierarchical interrupt controllers.
+> 
+> Yours,
+> Linus Walleij
+> 
