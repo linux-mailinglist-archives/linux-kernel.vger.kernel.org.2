@@ -2,107 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73DB32AE5C
+	by mail.lfdr.de (Postfix) with ESMTP id 6672232AE5B
 	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838237AbhCBXGt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Mar 2021 18:06:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46608 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1376685AbhCBWe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:34:28 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA84464F2D;
-        Tue,  2 Mar 2021 22:33:36 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 17:33:35 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Li Huafei <lihuafei1@huawei.com>, gregory.herrero@oracle.com,
-        catalin.marinas@arm.com, christophe.leroy@csgroup.eu,
-        linux-kernel@vger.kernel.org, zhangjinhao2@huawei.com,
-        yangjihong1@huawei.com, xukuohai@huawei.com,
-        linux-arm-kernel@lists.infradead.org,
-        Chen Jun <chenjun102@huawei.com>
-Subject: Re: [PATCH] recordmcount: Fix the wrong use of w* in
- arm64_is_fake_mcount()
-Message-ID: <20210302173335.71eded37@gandalf.local.home>
-In-Reply-To: <20210302173058.28fd3d36@gandalf.local.home>
-References: <20210225140747.10818-1-lihuafei1@huawei.com>
-        <20210225094426.7729b9cc@gandalf.local.home>
-        <20210225160116.GA13604@willie-the-truck>
-        <20210302173058.28fd3d36@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1838227AbhCBXGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 18:06:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377782AbhCBWee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 17:34:34 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E7DC061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 14:33:52 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id r23so26089027ljh.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 14:33:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aHp3sOBhNVG2z21fEC5nTsyRiHJNdtFKTVUSbILsbhc=;
+        b=ZS/VhMSd3AAuXIJcy+MFcS0NXV1EQ4IYXoq1/6lldjXI/rRvpGh0BThVrxwXFoiX0K
+         UKpRi0U2HUmyhBuDuRMlboovXP678k0wC4io8y964qYD2X0/g+vCr/TesHwpqfP/FnSJ
+         M0Yo3fDAIt63ruryZtsSlzqSSkuD2jhVmX6OZwYJcBoaOkt3O1ph4vuk1lHJ++IlpKWs
+         GtxfKtlHV9zGhqPCGT55XCKT5xu/X/UjhDtfZAcW9bZNDlU/iTXgRbclQZ5y9WcDqbw3
+         FLWpNpKEvCguEXvq0990sFhuL1MO5nmysQ2Fhtmjg9zLuQ+12VUDQplLx3oFsdaEzavG
+         VOjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aHp3sOBhNVG2z21fEC5nTsyRiHJNdtFKTVUSbILsbhc=;
+        b=Gf6LO8JhtmagWoZKfm6FWyd01dPa8IK/FK+q6+nnU035wj1KJVbcCOKF6pME1H+OsT
+         e4bzwhDypV8XHHNZEaaf5nvhtaP39YSsEdL+h5x+x6P5fYEltKbdV6WuOF9kcfBf9z3n
+         dCtBrUns7365bW6PMKRHxtLmrRmlPI38YhRhTUyiZw0LM9xpA5/bHZF1ScNf9HUk9WpV
+         wpyjV1Xh7AM5W9+P7FXh17214pCeGKcOuFY+twbpxhZWn9vQAZ3EHRTLu+bFpNUg1+v7
+         uupYR/anZcnGbfbYFfvQjaStStWA5r1Vcd6u9bOu1s5ZqQP2wGGhYEcj3SYeQodJ8fCO
+         BzRg==
+X-Gm-Message-State: AOAM533o6/8xuF/9aZa0OdY0U24WHnKYYVtQE6nUJVrUbCqw5WcZJLjO
+        YGdEri1I9kib+tFZKMqMF7DFJQfidZmZ0VyTWy48CQ==
+X-Google-Smtp-Source: ABdhPJww/wJF01NlHj2uUUXXZ3qb7y9gB9grBjIx9xxfrcRRhyi/ZmXUTOC8lBxHPcSNgwJlir4Q1+sRJRHe/MT0YoE=
+X-Received: by 2002:a2e:b008:: with SMTP id y8mr4382857ljk.233.1614724430576;
+ Tue, 02 Mar 2021 14:33:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+References: <20210302210646.3044738-1-nathan@kernel.org>
+In-Reply-To: <20210302210646.3044738-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 2 Mar 2021 14:33:38 -0800
+Message-ID: <CAKwvOdn42+2bFOMvJpJUuvmM1cj3V6uNEJWfwBWCRFMXtvQfcA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] Makefile: Remove '--gcc-toolchain' flag
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Mar 2021 17:30:58 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Tue, Mar 2, 2021 at 1:07 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> This is not necessary anymore now that we specify '--prefix=', which
+> tells clang exactly where to find the GNU cross tools. This has been
+> verified with self compiled LLVM 10.0.1 and LLVM 13.0.0 as well as a
+> distribution version of LLVM 11.1.0 without binutils in the LLVM
+> toolchain locations.
+>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-> I just realized that I received this patch twice, and thought it was the
-> same patch! Chen was three days ahead of you, so he get's the credit ;-)
-> 
->  https://lore.kernel.org/r/20210222135840.56250-1-chenjun102@huawei.com
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 
-I'm applying this patch (same one here but came earlier).
+I see this pattern still being used in
+arch/arm64/kernel/vdso32/Makefile, but that can be separate cleanups.
 
-Will, you still OK with your acked-by on it?
+> ---
+>  Makefile | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index f9b54da2fca0..c20f0ad8be73 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -568,10 +568,6 @@ ifneq ($(CROSS_COMPILE),)
+>  CLANG_FLAGS    += --target=$(notdir $(CROSS_COMPILE:%-=%))
+>  GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
+>  CLANG_FLAGS    += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
+> -GCC_TOOLCHAIN  := $(realpath $(GCC_TOOLCHAIN_DIR)/..)
+> -endif
+> -ifneq ($(GCC_TOOLCHAIN),)
+> -CLANG_FLAGS    += --gcc-toolchain=$(GCC_TOOLCHAIN)
+>  endif
+>  ifneq ($(LLVM_IAS),1)
+>  CLANG_FLAGS    += -no-integrated-as
+>
+> base-commit: 7a7fd0de4a9804299793e564a555a49c1fc924cb
+> --
+> 2.31.0.rc0.75.gec125d1bc1
+>
 
--- Steve
 
-From 999340d51174ce4141dd723105d4cef872b13ee9 Mon Sep 17 00:00:00 2001
-From: Chen Jun <chenjun102@huawei.com>
-Date: Mon, 22 Feb 2021 13:58:40 +0000
-Subject: [PATCH] ftrace: Have recordmcount use w8 to read relp->r_info in
- arm64_is_fake_mcount
-
-On little endian system, Use aarch64_be(gcc v7.3) downloaded from
-linaro.org to build image with CONFIG_CPU_BIG_ENDIAN = y,
-CONFIG_FTRACE = y, CONFIG_DYNAMIC_FTRACE = y.
-
-gcc will create symbols of _mcount but recordmcount can not create
-mcount_loc for *.o.
-aarch64_be-linux-gnu-objdump -r fs/namei.o | grep mcount
-00000000000000d0 R_AARCH64_CALL26  _mcount
-...
-0000000000007190 R_AARCH64_CALL26  _mcount
-
-The reason is than funciton arm64_is_fake_mcount can not work correctly.
-A symbol of _mcount in *.o compiled with big endian compiler likes:
-00 00 00 2d 00 00 01 1b
-w(rp->r_info) will return 0x2d instead of 0x011b. Because w() takes
-uint32_t as parameter, which truncates rp->r_info.
-
-Use w8() instead w() to read relp->r_info
-
-Link: https://lkml.kernel.org/r/20210222135840.56250-1-chenjun102@huawei.com
-
-Fixes: ea0eada45632 ("recordmcount: only record relocation of type R_AARCH64_CALL26 on arm64.")
-Acked-by: Will Deacon <will@kernel.org>
-Signed-off-by: Chen Jun <chenjun102@huawei.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- scripts/recordmcount.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/recordmcount.c b/scripts/recordmcount.c
-index b9c2ee7ab43f..cce12e1971d8 100644
---- a/scripts/recordmcount.c
-+++ b/scripts/recordmcount.c
-@@ -438,7 +438,7 @@ static int arm_is_fake_mcount(Elf32_Rel const *rp)
- 
- static int arm64_is_fake_mcount(Elf64_Rel const *rp)
- {
--	return ELF64_R_TYPE(w(rp->r_info)) != R_AARCH64_CALL26;
-+	return ELF64_R_TYPE(w8(rp->r_info)) != R_AARCH64_CALL26;
- }
- 
- /* 64-bit EM_MIPS has weird ELF64_Rela.r_info.
 -- 
-2.25.4
-
+Thanks,
+~Nick Desaulniers
