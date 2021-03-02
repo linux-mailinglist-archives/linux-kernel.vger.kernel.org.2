@@ -2,86 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C9C32AE41
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5987932AE3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575071AbhCBWnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:43:22 -0500
-Received: from sonic308-55.consmr.mail.gq1.yahoo.com ([98.137.68.31]:42081
-        "EHLO sonic308-55.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1838040AbhCBWO7 (ORCPT
+        id S1574949AbhCBWnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:43:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1838010AbhCBWOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:14:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1614723223; bh=IoJyUk4Nbh+2Yi6LTvulv/umucSKxOqnBZJ9GCPOcw0=; h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject:Reply-To; b=mXmmAAXWDd5KucDFiZfAUgJisY7bNyIius9akQPBlsZwy1SIN47u7bi0Ny00fi8feqKioQ5r6pim8uxkF2d/3JSfmwgb4JOUY8vCqZGw1C3GIQ3X4f61YhxZICuUF3dSUyYOJXYlIqnJRU8a0MZOoJCF6RnXPkHM8ydIkVlKW6qE+4QwRq4fxp+/UVXdRvLyWblm9HVYP5bmY3NGJXaXUoDhsNFb/OSPEFTYWjR0VvBscthitk3PFf2fcRqwzWdguBsKCCbtZm2GOTUJ5t+CfIvc4Ul/YEZ1uQLeWmlzklS16E48KZFRAtRRXwR9I0Pps0kESvxqsTwdaNHzV/GZGA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1614723223; bh=nSnUWLqFKDj7l9bM1P39OX0x1yrMMRmmaL3EhCjtJCx=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=rOYTDKaXbjAv4DTWQ7Xtp37OxaOtsXeuLmCgTQRmFIbUvhUurioNr4X5P4ZanOj4+IWNLQg7/azXXFvyOp1D37JAnvj1/SaMRbYRs5nLIvRlZQ4ecSsVsZDzY6HG4dLle+p+5kgJWeGF3DweTTJUhewQJ+KCco7fRNQNzKLRvKUTsWrcN5tMDRARzFOaDtRjRUJ7xoEyXbi8DGeYAtLpMuamDDBXcR03eiKjdHA+PXqlrowJ+3P7L+ydm4AUC+sZ8rYpwwbaFS0P7QmxymFWLonp2QsFJGNjWUAo7bQB9vcVNQQ2D9n16Jo/RNbHG8lSbq+ggQU3suzSurm3CT8T/w==
-X-YMail-OSG: kiwJ1NIVM1nIwCu0XcoAuO0BzwhSgO437LZSUF7P.no3b2g6XUtdD8dOwiY8wkB
- NxZ6k1U0c5s6nQAZNHnsQDujVap0Ji90jOxdhqDGB5g9A12.c6b32XE9kFmcsGORB9U7xP1CnqHY
- _57WTOMUY7jpnCZ2MCz8A4gh9CIqpE.8xMOr7cGtuJ_Jmt1qZvoEfc7MdKDAFBfdg3kNpDXIb3o9
- 13st_.3h.oqeFo7ePsUodU6j1OtdSEu8xkS6Xg4fJtlfOiHRk.4pMRXBZ7vaeKZHw4R60zhLiz9J
- K495DAaTeUEfI183oOFXAPf.wBybp9rBH1nw5pIqVT8fJ160Un2b63IeVzQsb.RbXg0Kij2u7Kxa
- _nU8grCaoBjtIWjzKJM2PJ5hqKmVfn14TAbTQOwSro6pomLlGZSAEYdDSt5v_porEk4Q7kuIgEtQ
- Z9Nrzs34EO0kTi4BGSulr53ahzuAB_9NAGBgn1q8u1_TsgRQMbDbO1x5LCmHhdPzTNKYYf.vr4V6
- FnXCJPYRJrg85SB1O0874MvguA73OoZqdfTfh4.KZb.IFGjdjJMCbtUaHWpm9yNsPCBzRuFqeBHQ
- YtJsPU6lo1hTRPHffH_kaP65Fqc34e5d310ejnd6.eej6SMpzeMy2mTy4uZvoTkGKtIVeBr1vKUI
- iXP2UYdjEKG6uR.pZbNT.xydPcl57LBudbw644Negp94MgKTgTd7uMG7e0wNYQdgIWd.0wPFMgMr
- g40.d_XX4jizXZP6p7kkg.uHoFP2NM7zLYi5k9EUbpQy_o0BHgPTy5ertlcDF9SrwMUCEYX.4WDc
- ua_ql6MFz8Hfe3ybOQtoiGrO9l10egzYcfhD_Os.7SnLMlPVL2LjHbidCqz6nU6Ker.q9PRYv8Io
- WLFvsTOIDN9MAV_nMv90AhOWZwsrVlAm.wwpSCBlK_1oZRBLQCGT1zitl_XRea1cjtPXhisJO10j
- fZ3iBSDTii.WbO3ac5N7nYL7m6H9LWztP4kPcKIPhs8Z9yKQO6hL5U_wuC2zcP2wNpOIsq5B4Dro
- s4ye39T0qSH1ObNHHhXrkCE4f7AVKkFxzHETKudBG3fmqc7s52xJM98byyoWaTjdbEU8Vp84rVn0
- NQQmy_XIFa0KDBzL4PyRdjxO6ckMXLgR3Zsu8bolLZH_ChG84Iaw1_O41MPdu8qAyqRYKr0mw7hN
- OiPyvJOA5V0gWocwX7q6M8rWc0SHFa6tXPMyWPjTl0VkHukO3viopv5IFfkLaLkK4wzUrk3DcBYy
- fGmm_ZSc5xuMsJBcwKLcwotujMQOyLWtZtF1WsdhtkgQzS3AnkM2XAwPbdIeZDvlWlDccNQwErMN
- an_XK3HKn7Ia01jxA39j.JwwmuPuCc99qEQcyPfKScNV.FdxSvs3V.TcOmwJMMsJt55rVrEEI98s
- cvPAmfYogjxTLuCiOR7zrVy7Pofpkh6W3SmBVXmaqUDQaM0KWrlSExDJakmLEeqCaPGGT9MlqAnL
- OYqWeptnwlOcZMl8Y1A7d4f9OgHbUiLH7DMPmeXmQ7WD4WOAD2Cru1d7hqjaP4gHrtebPDemqkoM
- Re41hosA_swxRfYOf3TJiItadXgMySMw5e8eSF62ZIoo5gJTV3gHLpJLRPlOapaLZoiHf4H71ohU
- gVWAqBarrYM8hJP1brvfFAg30FqeNeiU0TAW5x5yukfAlL.zF2jCRhVTOW_FxXvUxafMbd5iEVEC
- 6I3roJt74TXTt8Y60Yere.Lv_Tbk1MiOrMWiYRMa_KX5XQ2ajOVrGYvuIOGp.JUYsN0DgvfaNRtV
- mrVLxWDa5UExj5nFfcZI5_.1.2BNgRRtHsam9CdOlb.yIuJiP4g4rGPCXtRli3_Xa.Yvp0UEPKSa
- .wxZ8TuNvU3hDkuWRdeP_wCb_Xdy1Ivi6jRSNz3PBc4Ww.JO3zFgXDXYtMoKCtWkE6zuZP4yhkqA
- M_XrzDOyOfEo6m.LNgsIqNNEAKfyhxVMmadMdmtLGbp2J1O7TUS3MvDbXJAz.GcxM9CVi_vT0qcI
- uM0nI9FstEyo4JfrW5fjKmIkt0i1yUCv8DyOE0ofawmNdQ5CpLbGEkD_OUT_LHcvktRdlBeAs67E
- dLjOgX7GZZIpqbBwTu1.Mkt0qLXIDzpECapinf4zqqep_UQrnt3eqvnpyeknK4ab0PNFQhpdq1QU
- hYAhMXdozJXp.jEA6L18QY8AjBg90zDV5.6u8tEzmDMornWBvmjDbcvlr6HzItNPqlnuAqT7K28B
- .LOzf3Qnb.FB50gEfww510IWFwvwjg8WvWphGwyAeIk3_9RPGbwdNhQrfhLOE4bC4kXXBiwD4Qzr
- rQ4fwn.pubC59fYxm95i3zqhInCqfkNS.zGPJ8eDMmcMWw.G5EliVKhS2CNTC.S6oc1pTY2PoLYg
- MejlGUFHaJN.2dqaH8mZ0CwI3C9mQ1FNXv9QNQF8xIE3117sxFU1613c2TCOLuW3HxGEsLlH6d5F
- DL8GzSbpDNUYSWuEN.E38YOGnfoZCzzgSnCHGYOw8SlbT.fvoMzHmfi.5wX0uq7awXWygfaUnh9v
- mWJETy6dMmIpDgX_ZAM6rT_o1souRHP2UtWDrWrbbKBak7z5mLvwBTIchH.cj7PPoBmL.cPJHEDo
- -
-X-Sonic-MF: <alex_y_xu@yahoo.ca>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.gq1.yahoo.com with HTTP; Tue, 2 Mar 2021 22:13:43 +0000
-Received: by smtp404.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 4d896f5c720e3fb92b3aad8e7a720f1c;
-          Tue, 02 Mar 2021 22:13:39 +0000 (UTC)
-Date:   Tue, 02 Mar 2021 17:13:35 -0500
-From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Subject: Re: 5.12-rc1 regression: freezing iou-mgr/wrk failed
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1614646241.av51lk2de4.none.ref@localhost>
-        <1614646241.av51lk2de4.none@localhost>
-        <ad672889-2757-142b-9259-3e0aee6d8078@kernel.dk>
-        <fd148797-d8cb-7597-8612-83ddfafac425@kernel.dk>
-        <8cd026a0-ada6-9ae5-9ea1-a685b482173c@kernel.dk>
-In-Reply-To: <8cd026a0-ada6-9ae5-9ea1-a685b482173c@kernel.dk>
-MIME-Version: 1.0
-Message-Id: <1614722744.btwkumq4s4.none@localhost>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: WebService/1.1.17828 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.9.1)
+        Tue, 2 Mar 2021 17:14:43 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0740C061756
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 14:14:03 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id u11so12831707plg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 14:14:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=XDhLDlA7wOplGFamjT4K7zKlFkgvTAE9QL1XyjFvOsc=;
+        b=sd2FTMkBPXXegbTUNAhOlv9maEhFBJlouq+pp2KidTfWFWPZF0o2RUPEJkZBv9FQxH
+         Fgce1oFciBiQAR84qmTz36B86X7bB3k64odIITSeZicROnt9HDGtdCqvoP4ByMdYszTq
+         6xaDylMzL7bgq8DG4XxjDsPH9ZtDcTKB4WfIPcoANemaEKxCXvrBduAkU+3Y6B1yA5ny
+         U2yMDLjHBv83fjZXg3m+Ugksexc5MKdWPO2lkMdm55tKjHN11+ZvWOMbL03ylOs1JlHK
+         imUkrjtgT3NBKTst2tTduGG7c0fby7CIVCs6om6+0n1ta0I58Vom2AVSKvS1iFIXIMdl
+         oRig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=XDhLDlA7wOplGFamjT4K7zKlFkgvTAE9QL1XyjFvOsc=;
+        b=KifsuYqh8fKwnB44VJLblXFZwK6W2HO35rppilH7cxrwu+b2Z4WduI7YwWQJ9iYUDn
+         JpUSzIOUBH1+NSVuldSSweDjWp3h/mkAFpARISvkqf+SG0sJdMZLAhSadYPkToY+9yS+
+         Q7YrJ/WiChuPzy6bwNlWUVkKgbe6gQGTtp+YF0vvqlRrFKlFa1GM4xGkEkUQ+yNnd+1D
+         2KoA8jPPWssVIjfn798Lkty5FSMvPFS5fvWtFy8aZQt6szKnzXycFBHhZZqotixViSp5
+         NShnjcZYhScsbCgU1/P/M+VDTNAiPHneLpN89UKjqamKqQaTYq0qiAzM1UosuLOOabDE
+         Pp+A==
+X-Gm-Message-State: AOAM530tl2YHCeawP0CP4Zh47ZuIn9RNxehz4nB2huIwyGrivnoqC36t
+        x4+8v/Gl4LuCioWVTuno41M=
+X-Google-Smtp-Source: ABdhPJyuohi1SRleuhxLWB79FXmAMCrkjWwjAcT21IL23kTWYfb/MdizZ1exA7+4lv0b2Lj8iNaBYw==
+X-Received: by 2002:a17:90a:6393:: with SMTP id f19mr6459601pjj.230.1614723242990;
+        Tue, 02 Mar 2021 14:14:02 -0800 (PST)
+Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id k16sm14944397pfp.161.2021.03.02.14.14.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Mar 2021 14:14:02 -0800 (PST)
+From:   Nadav Amit <nadav.amit@gmail.com>
+Message-Id: <82EE79B6-B29C-41FE-AA81-13C14E7F9D95@gmail.com>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_4BFAC9DF-DC92-4E59-8E57-8D5CB5F1FBBE";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [RFC PATCH v2 0/2] mm: fix races due to deferred TLB flushes
+Date:   Tue, 2 Mar 2021 14:14:00 -0800
+In-Reply-To: <20210302221314.GR397383@xz-x1>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+References: <20201225092529.3228466-1-namit@vmware.com>
+ <20210302221314.GR397383@xz-x1>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I tried 29be7fc03d ("io_uring: ensure that threads freeze on suspend")=20
-and it seems to work OK. The system suspends fine and no errors are=20
-printed to the kernel log.
 
-I am using Gentoo on the machine in question.
+--Apple-Mail=_4BFAC9DF-DC92-4E59-8E57-8D5CB5F1FBBE
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-I didn't test the other patches you supplied. Let me know if there's=20
-anything you would like me to test.
 
-Thanks,
-Alex.
+
+> On Mar 2, 2021, at 2:13 PM, Peter Xu <peterx@redhat.com> wrote:
+>=20
+> On Fri, Dec 25, 2020 at 01:25:27AM -0800, Nadav Amit wrote:
+>> From: Nadav Amit <namit@vmware.com>
+>>=20
+>> This patch-set went from v1 to RFCv2, as there is still an ongoing
+>> discussion regarding the way of solving the recently found races due =
+to
+>> deferred TLB flushes. These patches are only sent for reference for =
+now,
+>> and can be applied later if no better solution is taken.
+>>=20
+>> In a nutshell, write-protecting PTEs with deferred TLB flushes was =
+mostly
+>> performed while holding mmap_lock for write. This prevented =
+concurrent
+>> page-fault handler invocations from mistakenly assuming that a page =
+is
+>> write-protected when in fact, due to the deferred TLB flush, other =
+CPU
+>> could still write to the page. Such a write can cause a memory
+>> corruption if it takes place after the page was copied (in
+>> cow_user_page()), and before the PTE was flushed (by wp_page_copy()).
+>>=20
+>> However, the userfaultfd and soft-dirty mechanisms did not take
+>> mmap_lock for write, but only for read, which made such races =
+possible.
+>> Since commit 09854ba94c6a ("mm: do_wp_page() simplification") these
+>> races became more likely to take place as non-COW'd pages are more
+>> likely to be COW'd instead of being reused. Both of the races that
+>> these patches are intended to resolve were produced on v5.10.
+>>=20
+>> To avoid the performance overhead some alternative solutions that do =
+not
+>> require to acquire mmap_lock for write were proposed, specifically =
+for
+>> userfaultfd. So far no better solution that can be backported was
+>> proposed for the soft-dirty case.
+>>=20
+>> v1->RFCv2:
+>> - Better (i.e., correct) description of the userfaultfd buggy case =
+[Yu]
+>> - Patch for the soft-dirty case
+>=20
+> Nadav,
+>=20
+> Do you plan to post a new version to fix the tlb corrupt issue that =
+this series
+> wanted to solve?
+
+Yes, yes. Sorry for that. Will do so later today.
+
+Regards,
+Nadav
+
+--Apple-Mail=_4BFAC9DF-DC92-4E59-8E57-8D5CB5F1FBBE
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEESJL3osl5Ymx/w9I1HaAqSabaD1oFAmA+uKgACgkQHaAqSaba
+D1p3Rw/+Onwg67Ys7jPTdP45YUycZqYIZb5Oh/Va0r2uWnSlq7hDx8zgQAFYR8Hu
+vv9Y8KAJYLqrsYbq5XTnP6WQzqT4bILmdVNk7cgE2BSNt6o2BYjfD/Ofaom+v2xz
+TEiJJNG9CdMFQgoCBV16HspSw61xA1gDAj+cqajoWZMXXaddyjf7Mxyw0iGeHudV
++AD5YvC3bBHiqYrqeyQtRVRKeTC3OjBf8QOG1NoRiIHYxbFojYTt7BDurQdngGne
+b1XIRo9pPY1pXvp1w8r6gIGOElLSLTryq4rXkA7T15T8dO6lrQ6QY29k3axqi4Ma
+oESNusuxwZ+Tbpn92XHpi06Nze4fchj0bJaoGS88tWak5euNx0BoLOiBOYnqqe4D
+fWyqpYTCatYuHpSIPMipCqwC3mW9Eba3np6HSl2jhgYyInw0m8FP5nq61IuQZvqh
+O72k0Bga7Jr5G1/LuwVx9bVqjAGhllJP63hXhGezwBU45bfj1WwoY5YSY2t1Uqe0
+hpmeqD/LyNubXjPdfIReahYvwgU5gKF+n8zGszHYaiWKMwm2YcC5Xwkqje8aErI8
+lZnqRECkQ7KEiOrfOOrKR991RC4ReMAhlKBySIshJrm8mZ3FhsdGjgHTa8NXJ03R
+g1Jn3C+UC0OsdhE9yKPwDHNNGd2povRln9GiA1vaDZiFkBLa0WM=
+=49XM
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_4BFAC9DF-DC92-4E59-8E57-8D5CB5F1FBBE--
