@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288CB32A5C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:23:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE3932A5C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:23:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576482AbhCBNNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 08:13:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
+        id S1578155AbhCBNOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 08:14:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350256AbhCBMOh (ORCPT
+        with ESMTP id S1350251AbhCBMOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 07:14:37 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A4FC061223;
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE388C061224;
         Tue,  2 Mar 2021 04:11:07 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id q23so23610613lji.8;
-        Tue, 02 Mar 2021 04:11:06 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id y12so10685174ljj.12;
+        Tue, 02 Mar 2021 04:11:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1cBynbltPC/InmbROCWOZHkosuVmX3nGRVytxcl7VwE=;
-        b=r++83xuUqykpCl3Sr4jAoNZBtD/vX6lzmQznlni2WA5b2DmU2xcwxq0yk1Y9YJ+Bid
-         RcnDYa4YjltAn60IaC4ElzzrKqBAq2ysu7zosdlB+LVhdV+edp1/vdzfWobsXeesWkF+
-         2U4rW0YUy+c4UT+LnNmVTxLSQSaMRqRu6ivjCb11udta0LkKhg4ht1PigvO6XuMTlTN1
-         B0PEW61NSlSFCJiMFWL2LS9CmqdBWBoKNoeqtAk9Ue6qGIXs0758F8veWJwM0biLzyiO
-         Jf6sYY73NaiFEAMFQaI0AI4519ZdRbBbkUKWvHN08aOZLNkU7e/otx+gt/fcHfvNkDCK
-         oH7A==
+        bh=vI52iVvTMj5vx3Qwhb9RbRYQIWf8TgkxUBk2dPsjIEo=;
+        b=GxitPjxoQK3G7UACfRQBWbc8BUczJxFSzvqrjYE+qbNDkNf/YRbfWeAOWCRdA8m552
+         nN0L3QK/apYnH5q/QyYHdgCFuGN+bQcjleHcSjuxOzuv7/PmB1axZtSAPzG9774A7zzr
+         EiFktC2iiDbFa0cTVZYKpvUcA28WasompsaXDSDEwniXtVBCEQZjm3oD8Nc9JtBnmFIy
+         dhG84w6gFRPG/YRC3ep79X0pW1v0ej7EZaWKuB+uw2+eK1+AnMJvoYyZMBAou3cNPrri
+         roO/F21i8o6WQrlDKb2x42RPzjtdlEloTi/T2C/wnUgehBciQRO3CBZoPX0hG5j2ebCa
+         muig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1cBynbltPC/InmbROCWOZHkosuVmX3nGRVytxcl7VwE=;
-        b=hxxdO6Uh3b93IxgMylisN+iRjQRUxQJ/AylHoObfS35DnhfEaq//8tkJeUYsrwR6Sk
-         WBUnj2WQSjL1aboiEbgpz4hipa4A1qfIVlrdlIPNTWdAPG8ZRigPnmtubGNpjF399VnW
-         DRzuqbIM1org1qRpMLfkNskzlOhcchmn2LXdNGt2V/34PFqShwgV4LSVLLfy8t+RUBKq
-         RfNRl+7c8N+iSeJiS1zMpV6Z4+8wzI7qtgSaIbw9CKr8wpQn+QTHFIbWmeOcVklAbIQW
-         edy4NQWQMHdwiR7PwPw98cdXbLneZis0gOd9dzNIvoiICFDEgrDGsVuGJW63ZWkAfMzC
-         oGww==
-X-Gm-Message-State: AOAM5304q0SKxxEJlX12BwPGWM1h0HHBhblNYlc/TKQhGHXCV8qD66mn
-        9SWTlkCxrD5No/vRLtldcry8VAQk3/c=
-X-Google-Smtp-Source: ABdhPJyEz2KPtWcHCDUoukP6lQVLCVS3CFvJ7dUmYfwhhOLE9qyRDyDTMQDFAdj9QlAI7olinMR7IQ==
-X-Received: by 2002:a2e:9c8e:: with SMTP id x14mr9990711lji.312.1614687065578;
-        Tue, 02 Mar 2021 04:11:05 -0800 (PST)
+        bh=vI52iVvTMj5vx3Qwhb9RbRYQIWf8TgkxUBk2dPsjIEo=;
+        b=QFj4wXNy1fH29hz7KtknGMKP96wTFw/GGfL8I//QTCBhzqED7N1v5+1nTTTKDIvgDS
+         eSZONvjwiqZ+Zono6wgYJJk1pOrBcSRRhCrEKGvFIFSeoCOy9JeAcrxaRmgfJJrFG20+
+         u3z4dGe1CyVCm+5gQS1TIlbDRH8rO7huS7F+YhOt51wOx1toVH4gnCMwvQ8AFdVVGo4S
+         E7pXWO6r99LiKJJbk6/vXy75UXMGSlznghzzY0aLzbTpgioXHqXMcxw6a0HxFkQBQCPA
+         HV0UOgqi8occ1oYapVQ+a/fak6peQAEJeJ9o7uCWsnAx4Nkwsgl1T0gi4BRt4X3lPPKS
+         2OoQ==
+X-Gm-Message-State: AOAM530ZOHDEMia5IycwTrOaQ6LR7VsbO7/12672kXw9/iSU8d0EfAvD
+        QL3+wvpVwHVTqOOvN83U3NQ=
+X-Google-Smtp-Source: ABdhPJxrzpqD6vklbao4mk5rxBwx2FGtuTYLwakzadqUitTLix+kb3N9htr9sGpzzj19XruIdfLUwA==
+X-Received: by 2002:a2e:80c4:: with SMTP id r4mr12172050ljg.87.1614687066215;
+        Tue, 02 Mar 2021 04:11:06 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
         by smtp.gmail.com with ESMTPSA id d21sm835097ljo.55.2021.03.02.04.11.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -56,9 +56,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Matt Merhar <mattmerhar@protonmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 08/14] ARM: tegra: acer-a500: Specify all CPU cores as cooling devices
-Date:   Tue,  2 Mar 2021 15:09:57 +0300
-Message-Id: <20210302121003.15058-9-digetx@gmail.com>
+Subject: [PATCH v3 09/14] ARM: tegra: acer-a500: Rename avdd to vdda of touchscreen node
+Date:   Tue,  2 Mar 2021 15:09:58 +0300
+Message-Id: <20210302121003.15058-10-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210302121003.15058-1-digetx@gmail.com>
 References: <20210302121003.15058-1-digetx@gmail.com>
@@ -68,46 +68,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CPU0 is unplugged the cooling device can not rebind to CPU1. And if
-CPU0 is plugged in again, the cooling device may fail to initialize.
+Rename avdd supply to vdda of the touchscreen node. The old supply name
+was incorrect.
 
-If the CPUs are mapped with the physical CPU0 to Linux numbering
-CPU1, the cooling device mapping will fail.
-
-Hence specify all CPU cores as a cooling devices in the device-tree.
-
-Suggested-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-index 64a303cc5395..8a98e4a9d994 100644
+index 8a98e4a9d994..d852527db707 100644
 --- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
 +++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-@@ -841,9 +841,10 @@ cpu0: cpu@0 {
- 			#cooling-cells = <2>;
- 		};
+@@ -449,7 +449,7 @@ touchscreen@4c {
  
--		cpu@1 {
-+		cpu1: cpu@1 {
- 			cpu-supply = <&vdd_cpu>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			#cooling-cells = <2>;
- 		};
- 	};
+ 			reset-gpios = <&gpio TEGRA_GPIO(Q, 7) GPIO_ACTIVE_LOW>;
  
-@@ -1073,7 +1074,8 @@ trip1: cpu-crit {
- 			cooling-maps {
- 				map0 {
- 					trip = <&trip0>;
--					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
- 				};
- 			};
- 		};
+-			avdd-supply = <&vdd_3v3_sys>;
++			vdda-supply = <&vdd_3v3_sys>;
+ 			vdd-supply  = <&vdd_3v3_sys>;
+ 
+ 			atmel,wakeup-method = <ATMEL_MXT_WAKEUP_I2C_SCL>;
 -- 
 2.29.2
 
