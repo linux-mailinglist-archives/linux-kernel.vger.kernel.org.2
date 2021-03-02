@@ -2,184 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA4832ADDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0412432ADCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2360035AbhCBWQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:16:01 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:54408 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1836513AbhCBUJe (ORCPT
+        id S1838019AbhCBWOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:14:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43391 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1381236AbhCBTmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:09:34 -0500
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lHApo-008erx-4l; Tue, 02 Mar 2021 12:37:32 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lHApn-0003YR-5S; Tue, 02 Mar 2021 12:37:32 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <CALCv0x1NauG_13DmmzwYaRDaq3qjmvEdyi7=XzF04KR06Q=WHA@mail.gmail.com>
-        <m1wnuqhaew.fsf@fess.ebiederm.org>
-        <CALCv0x1Wka10b-mgb1wRHW-W-qRaZOKvJ_-ptq85Hj849PFPSw@mail.gmail.com>
-Date:   Tue, 02 Mar 2021 13:37:30 -0600
-In-Reply-To: <CALCv0x1Wka10b-mgb1wRHW-W-qRaZOKvJ_-ptq85Hj849PFPSw@mail.gmail.com>
-        (Ilya Lipnitskiy's message of "Mon, 1 Mar 2021 23:59:36 -0800")
-Message-ID: <m1blc1gxdx.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 2 Mar 2021 14:42:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614713975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cSnNe9ZPgO5E0WpOmTYQKeyWN6kgimAwSV4Hm5qeUs4=;
+        b=SAJdbFRj4Yt9Vo1unKptar6tvnuNPaBbKI8iOqR5STrHfJQ1loVS0XqFSEzTKxdoSkV4kJ
+        a9QI3mCY75B3pLpCmOjNmBeSq9fO48Rfd7u2mggqzXP2luAbltejCX5fWWmYCo+VR1qxin
+        oUaG9QRX20KHBblvUs3UrouCvfzOtnE=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-ZUJagxdLNA6JdEbk8G7nNA-1; Tue, 02 Mar 2021 14:39:31 -0500
+X-MC-Unique: ZUJagxdLNA6JdEbk8G7nNA-1
+Received: by mail-wr1-f72.google.com with SMTP id v1so1085446wru.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 11:39:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cSnNe9ZPgO5E0WpOmTYQKeyWN6kgimAwSV4Hm5qeUs4=;
+        b=pv/JeSC7dObluvQD4ZoqQH5zOrtiENx7O9RG34wnnrUFjgsH5GjIAj6Ph+wPws/TJ9
+         YWchSbPYXBfHBdAaVmG7yOUiMHkBkElIKulONx21C3FMl3/0DBsxdUpA0JINbuBOEC+Q
+         svY2qc4ct59NLNiz0oy8Pl5Rh1oOJUYBehDEk8JyinneHJScUZVhKgQ4SIMl+yRHkKRJ
+         NZ9i7HNVcKzLmr3jMIe041z3nLgguhzs3vtuhcTJGlgXCZtTOD99ngligJL94c9MwBN1
+         bJQvcWmLYQhpYFyc1ZdTafoQnTaY5gMIjUxrMQFJbBtz+gbxW4KHUc0pXDk+Sh5GlHg0
+         LlcA==
+X-Gm-Message-State: AOAM531oTuh/IFSpv8Cu9NQGhLC0waUgkhhQlYqpd618UC5okNiVe89V
+        J7YEqMBlt98rNrEhrN3L6iVIcUWUgtp/CmFsfKfIDFjg/M3eYrvagxRtf1zVy4ApnYxZWXsO7dh
+        wM6iU4N6z1TRixvF0eWS6KPS3
+X-Received: by 2002:adf:b355:: with SMTP id k21mr23901242wrd.156.1614713970673;
+        Tue, 02 Mar 2021 11:39:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwcX+o0N0KVQBN6n2wK/GxJzWg1PiwtIfJxXLOWMn7SvlPUiFri43p4z/7EOeEDrXOMtOkqqg==
+X-Received: by 2002:adf:b355:: with SMTP id k21mr23901212wrd.156.1614713970208;
+        Tue, 02 Mar 2021 11:39:30 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id a124sm3518464wmh.39.2021.03.02.11.39.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Mar 2021 11:39:29 -0800 (PST)
+Subject: Re: [PATCH] KVM: SVM: Clear the CR4 register on reset
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     wanpengli@tencent.com, kvm@vger.kernel.org, seanjc@google.com,
+        joro@8bytes.org, x86@kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, vkuznets@redhat.com,
+        tglx@linutronix.de, jmattson@google.com
+References: <161471109108.30811.6392805173629704166.stgit@bmoger-ubuntu>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <454cb7d4-9f50-42e1-6908-d659491ba140@redhat.com>
+Date:   Tue, 2 Mar 2021 20:39:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lHApn-0003YR-5S;;;mid=<m1blc1gxdx.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+S5nebCJXRDYw+vNfn8hVxJO/OOiW8n5E=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 564 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 9 (1.6%), b_tie_ro: 8 (1.3%), parse: 1.27 (0.2%),
-        extract_message_metadata: 14 (2.6%), get_uri_detail_list: 2.8 (0.5%),
-        tests_pri_-1000: 14 (2.5%), tests_pri_-950: 1.44 (0.3%),
-        tests_pri_-900: 1.12 (0.2%), tests_pri_-90: 120 (21.3%), check_bayes:
-        118 (21.0%), b_tokenize: 11 (1.9%), b_tok_get_all: 9 (1.6%),
-        b_comp_prob: 3.4 (0.6%), b_tok_touch_all: 91 (16.1%), b_finish: 1.04
-        (0.2%), tests_pri_0: 382 (67.8%), check_dkim_signature: 0.73 (0.1%),
-        check_dkim_adsp: 2.3 (0.4%), poll_dns_idle: 0.53 (0.1%), tests_pri_10:
-        3.2 (0.6%), tests_pri_500: 13 (2.3%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: exec error: BUG: Bad rss-counter
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <161471109108.30811.6392805173629704166.stgit@bmoger-ubuntu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com> writes:
+On 02/03/21 19:51, Babu Moger wrote:
+> This problem was reported on a SVM guest while executing kexec.
+> Kexec fails to load the new kernel when the PCID feature is enabled.
+> 
+> When kexec starts loading the new kernel, it starts the process by
+> resetting the vCPU's and then bringing each vCPU online one by one.
+> The vCPU reset is supposed to reset all the register states before the
+> vCPUs are brought online. However, the CR4 register is not reset during
+> this process. If this register is already setup during the last boot,
+> all the flags can remain intact. The X86_CR4_PCIDE bit can only be
+> enabled in long mode. So, it must be enabled much later in SMP
+> initialization.  Having the X86_CR4_PCIDE bit set during SMP boot can
+> cause a boot failures.
+> 
+> Fix the issue by resetting the CR4 register in init_vmcb().
+> 
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> ---
+>   arch/x86/kvm/svm/svm.c |    1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index c636021b066b..baee91c1e936 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1200,6 +1200,7 @@ static void init_vmcb(struct vcpu_svm *svm)
+>   	init_sys_seg(&save->ldtr, SEG_TYPE_LDT);
+>   	init_sys_seg(&save->tr, SEG_TYPE_BUSY_TSS16);
+>   
+> +	svm_set_cr4(&svm->vcpu, 0);
+>   	svm_set_efer(&svm->vcpu, 0);
+>   	save->dr6 = 0xffff0ff0;
+>   	kvm_set_rflags(&svm->vcpu, X86_EFLAGS_FIXED);
+> 
 
-> On Mon, Mar 1, 2021 at 12:43 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com> writes:
->>
->> > Eric, All,
->> >
->> > The following error appears when running Linux 5.10.18 on an embedded
->> > MIPS mt7621 target:
->> > [    0.301219] BUG: Bad rss-counter state mm:(ptrval) type:MM_ANONPAGES val:1
->> >
->> > Being a very generic error, I started digging and added a stack dump
->> > before the BUG:
->> > Call Trace:
->> > [<80008094>] show_stack+0x30/0x100
->> > [<8033b238>] dump_stack+0xac/0xe8
->> > [<800285e8>] __mmdrop+0x98/0x1d0
->> > [<801a6de8>] free_bprm+0x44/0x118
->> > [<801a86a8>] kernel_execve+0x160/0x1d8
->> > [<800420f4>] call_usermodehelper_exec_async+0x114/0x194
->> > [<80003198>] ret_from_kernel_thread+0x14/0x1c
->> >
->> > So that's how I got to looking at fs/exec.c and noticed quite a few
->> > changes last year. Turns out this message only occurs once very early
->> > at boot during the very first call to kernel_execve. current->mm is
->> > NULL at this stage, so acct_arg_size() is effectively a no-op.
->>
->> If you believe this is a new error you could bisect the kernel
->> to see which change introduced the behavior you are seeing.
->>
->> > More digging, and I traced the RSS counter increment to:
->> > [<8015adb4>] add_mm_counter_fast+0xb4/0xc0
->> > [<80160d58>] handle_mm_fault+0x6e4/0xea0
->> > [<80158aa4>] __get_user_pages.part.78+0x190/0x37c
->> > [<8015992c>] __get_user_pages_remote+0x128/0x360
->> > [<801a6d9c>] get_arg_page+0x34/0xa0
->> > [<801a7394>] copy_string_kernel+0x194/0x2a4
->> > [<801a880c>] kernel_execve+0x11c/0x298
->> > [<800420f4>] call_usermodehelper_exec_async+0x114/0x194
->> > [<80003198>] ret_from_kernel_thread+0x14/0x1c
->> >
->> > In fact, I also checked vma_pages(bprm->vma) and lo and behold it is set to 1.
->> >
->> > How is fs/exec.c supposed to handle implied RSS increments that happen
->> > due to page faults when discarding the bprm structure? In this case,
->> > the bug-generating kernel_execve call never succeeded, it returned -2,
->> > but I didn't trace exactly what failed.
->>
->> Unless I am mistaken any left over pages should be purged by exit_mmap
->> which is called by mmput before mmput calls mmdrop.
-> Good to know. Some more digging and I can say that we hit this error
-> when trying to unmap PFN 0 (is_zero_pfn(pfn) returns TRUE,
-> vm_normal_page returns NULL, zap_pte_range does not decrement
-> MM_ANONPAGES RSS counter). Is my understanding correct that PFN 0 is
-> usable, but special? Or am I totally off the mark here?
+Queued, thanks.
 
-It would be good to know if that is the page that get_user_pages_remote
-returned to copy_string_kernel.  The zero page that is always zero,
-should never be returned when a writable mapping is desired.
+Paolo
 
-> Here is the (optimized) stack trace when the counter does not get decremented:
-> [<8015b078>] vm_normal_page+0x114/0x1a8
-> [<8015dc98>] unmap_page_range+0x388/0xacc
-> [<8015e5a0>] unmap_vmas+0x6c/0x98
-> [<80166194>] exit_mmap+0xd8/0x1ac
-> [<800290c0>] mmput+0x58/0xf8
-> [<801a6f8c>] free_bprm+0x2c/0xc4
-> [<801a8890>] kernel_execve+0x160/0x1d8
-> [<800420e0>] call_usermodehelper_exec_async+0x114/0x194
-> [<80003198>] ret_from_kernel_thread+0x14/0x1c
->
->>
->> AKA it looks very very fishy this happens and this does not look like
->> an execve error.
-> I think you are right, I'm probably wrong to bother you. However,
-> since the thread is already started, let me add linux-mm here :)
-
-It happens during exec.  I don't mind looking and pointing you a useful
-direction.
-
->>
->> On the other hand it would be good to know why kernel_execve is failing.
->> Then the error handling paths could be scrutinized, and we can check to
->> see if everything that should happen on an error path does.
-> I can check on this, but likely it's the init system not doing things
-> quite in the right order on my platform, or something similar. The
-> error is ENOENT from do_open_execat().
-
-That does narrow things down considerably.
-After the error all we do is:
-Clear in_execve and fs->in_exec.
-Return from bprm_execve
-Call free_bprm
-Which does:
-	if (bprm->mm) {
-		acct_arg_size(bprm, 0);
-		mmput(bprm->mm);
-	}
-
-So it really needs to be the mmput that cleans things up.\
-
-I would really verify the correspondence between what get_arg_page
-returns and what gets freed in mmput if it is not too difficult.
-I think it should just be a page or two.
-
-Eric
