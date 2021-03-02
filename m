@@ -2,110 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246FD32A292
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:52:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C52F132A2B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346778AbhCBIK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 03:10:26 -0500
-Received: from mga03.intel.com ([134.134.136.65]:13743 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1837395AbhCBHyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:54:25 -0500
-IronPort-SDR: 79wHa5Pjg43kCZ6LIEZXIBv0IWqIBMPYhFa+zoYkz3s5w+uvgPqXDoLMdXq96jzmh/sJ8Ghim0
- fCfCL3ufhF1Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186782248"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="186782248"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 23:51:18 -0800
-IronPort-SDR: rRLCUJqweNM8xiqk/1TUkIdq0Zb+mCgiA0ko5v3fufJG+lBob8szTNJz08aOmL/JoQgBzs7l6W
- eMALVJM2ekkQ==
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="406597610"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 23:51:15 -0800
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH v2 3/3] soundwire: Intel: add DMI quirk for Dell SKU 0A3E
-Date:   Tue,  2 Mar 2021 15:51:05 +0800
-Message-Id: <20210302075105.11515-4-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210302075105.11515-1-yung-chuan.liao@linux.intel.com>
-References: <20210302075105.11515-1-yung-chuan.liao@linux.intel.com>
+        id S1376922AbhCBIR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 03:17:58 -0500
+Received: from us2-ob1-2.mailhostbox.com ([162.210.70.53]:33520 "EHLO
+        us2-ob1-2.mailhostbox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1381525AbhCBIEu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:04:50 -0500
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+        (using TLSv1 with cipher AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hello@oswalpalash.com)
+        by us2.outbound.mailhostbox.com (Postfix) with ESMTPSA id 0A033182368;
+        Tue,  2 Mar 2021 07:52:32 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oswalpalash.com;
+        s=20160715; t=1614671552;
+        bh=YKuKXn7CtU6RhyLQwQluFj130cGpc9IGAnjZZJFeVVE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=Lfo10Fxoj4Txyqp5sG0f65YzV8ZfBgebaECWow+ymbWhoR20ZppHtLqqAT9Xblyb4
+         irTD9rU1ihF/EYvgqqYIZvj9BCNvPPaB+TNvsjaFAHzsmI0tTrXAUGs6WLzH232mZ/
+         smrrbth05VC7l/e0UF64+1rBUq7VpXaq22m5iK+k=
+Received: by mail-lf1-f52.google.com with SMTP id f1so29848632lfu.3;
+        Mon, 01 Mar 2021 23:52:31 -0800 (PST)
+X-Gm-Message-State: AOAM532l5VBwgkorHS/jrdX95qyv8gDkk9PqLVPi9W8letE31qBywysL
+        Np3BozAvvwBnRzhVRNeZW3QDC8XdJKZ0j7d4oc4=
+X-Google-Smtp-Source: ABdhPJxY6cyizpRdsLSaQCkJcStJRYN3Q+Hpq26TtcHaPZNqeqn8edElaDBFE65cAzpurPBt3srBdHzYvresyCXBIqg=
+X-Received: by 2002:a19:7ed6:: with SMTP id z205mr11535045lfc.12.1614671550346;
+ Mon, 01 Mar 2021 23:52:30 -0800 (PST)
+MIME-Version: 1.0
+References: <YC/3n585TNJ500Ps@kernel.org>
+In-Reply-To: <YC/3n585TNJ500Ps@kernel.org>
+From:   Palash Oswal <hello@oswalpalash.com>
+Date:   Tue, 2 Mar 2021 13:22:18 +0530
+X-Gmail-Original-Message-ID: <CAGyP=7eV=CfgCp1OKt1mDN0erz5Zq40ePapJvF0wCnHfzOR=Xg@mail.gmail.com>
+Message-ID: <CAGyP=7eV=CfgCp1OKt1mDN0erz5Zq40ePapJvF0wCnHfzOR=Xg@mail.gmail.com>
+Subject: Re: [PATCH] ima: Replacing deprecated strlcpy with strscpy ~~~~~~~~~ Replace
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=ermhMbhX c=1 sm=1 tr=0
+        a=Lq6r7wnCGV6iLQba78UrEg==:117 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10
+        a=8_4whJBMvIpeHjROzMMA:9 a=QEXdDO2ut3YA:10 a=gME-wNpD-40A:10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Apologies for the in-accurate description. This patch is covered under
+the patch-set by Romain Perier ( https://lkml.org/lkml/2021/2/22/739 )
+and can be disregarded.
 
-We've been handling ACPI issues on early versions of the product with
-a local ACPI initrd override but now that we have the possibility of a
-kernel quirk let's get rid of the initrd override. This helps make
-sure that the kernel will support all versions of the BIOS, with or
-without updates.
+Best Regards,
+Palash
 
-Co-developed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
----
- drivers/soundwire/dmi-quirks.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/drivers/soundwire/dmi-quirks.c b/drivers/soundwire/dmi-quirks.c
-index 249e476e49ea..82061c1d9835 100644
---- a/drivers/soundwire/dmi-quirks.c
-+++ b/drivers/soundwire/dmi-quirks.c
-@@ -32,6 +32,29 @@ static const struct adr_remap hp_spectre_360[] = {
- 	{}
- };
- 
-+/*
-+ * The initial version of the Dell SKU 0A3E did not expose the devices
-+ * on the correct links.
-+ */
-+static const struct adr_remap dell_sku_0A3E[] = {
-+	/* rt715 on link0 */
-+	{
-+		0x00020025d071100,
-+		0x00021025d071500
-+	},
-+	/* rt711 on link1 */
-+	{
-+		0x000120025d130800,
-+		0x000120025d071100,
-+	},
-+	/* rt1308 on link2 */
-+	{
-+		0x000220025d071500,
-+		0x000220025d130800
-+	},
-+	{}
-+};
-+
- static const struct dmi_system_id adr_remap_quirk_table[] = {
- 	{
- 		.matches = {
-@@ -40,6 +63,13 @@ static const struct dmi_system_id adr_remap_quirk_table[] = {
- 		},
- 		.driver_data = (void *)hp_spectre_360,
- 	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "0A3E")
-+		},
-+		.driver_data = (void *)dell_sku_0A3E,
-+	},
- 	{}
- };
- 
--- 
-2.17.1
-
+On Fri, Feb 19, 2021 at 11:09 PM Jarkko Sakkinen <jarkko@kernel.org> wrote:
+>
+> Reply-To:
+> In-Reply-To: <20210219084038.GA7564@g3.oswalpalash.com>
+>
+> On Fri, Feb 19, 2021 at 02:10:38PM +0530, Palash Oswal wrote:
+> > The strlcpy() function is unsafe in that the source buffer length
+> > is unbounded or possibly be non NULL terminated. This can cause
+> > memory over-reads, crashes, etc.
+> >
+> > Link: https://github.com/KSPP/linux/issues/89
+> > Signed-off-by: Palash Oswal <hello@oswalpalash.com>
+>
+> The long description does not explain what the commit does, and
+> does not include any details about deprecation of strlcpy(), which
+> at least I'm not aware of.
+>
+> I don't think *length* ever is NULL terminated. The first sentence
+> is somewhat weird. Also strlcpy() does have a bounds check.
+>
+> Generally, the description and reasoning is sloppy to say the
+> least.
+>
+> /Jarkko
+>
+>
+> > ---
+> >  security/integrity/ima/ima_api.c    | 2 +-
+> >  security/integrity/ima/ima_policy.c | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+> > index 1dd70dc68ffd..2f3b8257181d 100644
+> > --- a/security/integrity/ima/ima_api.c
+> > +++ b/security/integrity/ima/ima_api.c
+> > @@ -399,7 +399,7 @@ const char *ima_d_path(const struct path *path, char **pathbuf, char *namebuf)
+> >       }
+> >
+> >       if (!pathname) {
+> > -             strlcpy(namebuf, path->dentry->d_name.name, NAME_MAX);
+> > +             strscpy(namebuf, path->dentry->d_name.name, NAME_MAX);
+> >               pathname = namebuf;
+> >       }
+> >
+> > diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> > index 9b45d064a87d..010839aef6ba 100644
+> > --- a/security/integrity/ima/ima_policy.c
+> > +++ b/security/integrity/ima/ima_policy.c
+> > @@ -791,7 +791,7 @@ static int __init ima_init_arch_policy(void)
+> >               char rule[255];
+> >               int result;
+> >
+> > -             result = strlcpy(rule, *rules, sizeof(rule));
+> > +             strscpy(rule, *rules, sizeof(rule));
+> >
+> >               INIT_LIST_HEAD(&arch_policy_entry[i].list);
+> >               result = ima_parse_rule(rule, &arch_policy_entry[i]);
+> >
+> > base-commit: f6692213b5045dc461ce0858fb18cf46f328c202
+> > --
+> > 2.27.0
+> >
+> >
