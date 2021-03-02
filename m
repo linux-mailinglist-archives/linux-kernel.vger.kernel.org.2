@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C189E32A437
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4085732A438
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382840AbhCBK1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 05:27:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
+        id S1382857AbhCBK1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 05:27:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838287AbhCBKJS (ORCPT
+        with ESMTP id S1379913AbhCBKLz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:09:18 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29666C061756;
-        Tue,  2 Mar 2021 02:08:37 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id k9so10466502lfo.12;
-        Tue, 02 Mar 2021 02:08:37 -0800 (PST)
+        Tue, 2 Mar 2021 05:11:55 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BEDDC061756;
+        Tue,  2 Mar 2021 02:10:40 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 2so18668819ljr.5;
+        Tue, 02 Mar 2021 02:10:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sfUQ5KkuJugRcswoXUIYuj0VO0djxRHGJcsWdg+KZjU=;
-        b=SREfkOV5YjngyaW6kgRMW6XmqLOOigj8+ADhOCMufJ1iRRUMuNBWbHsCqjUzWWt6RG
-         vqIWfYG3W9ZJBvpHPygONmzb9jyvmYo8JlsNZVPPu26vKOGFUwdYvLcDbUFzTizQbxIb
-         k8M8URlvwnPCw7E3jD0s1PQEzjVkb3vAtm/RzPLZz/HA+RAnsuPv2IY0fZ8ErMCiHdPX
-         MGTznypCqMUo8xtrz2aXggKnx251MUiU6sL9p9EiQNgPxi+9DUtfgEWN74vOmC/iqW6x
-         sPA1esYehtYg6JsvtvY6gu/9od9X3IhrHgWd4s6JP+PMEP+KwUhwvqa9BOOYZqjs7tra
-         hcxQ==
+        bh=MUVbcHIyLqhYYbDiH9mnFrDuNemoNACUpRApum/EFvk=;
+        b=QV5R4sSgWwClqhOQuWp+XSdvtSAmTbK5YBw42LvaIBL2A+5ogh0Rlhd+q3MiTwp6OI
+         DzGogxpLU0sbmLDt+oSJzW6iACiQP0cwATbmJc3oZMfiQ8xw9/oZfPPoa5rbtsJgItbV
+         Bamdu/TispHr0dNO+zMZ//ktqCAJiVkP8htqJbE/nEv0uYUg24lvs1opvSrJFQsZGNtT
+         oZ7h196QRYnP2n/a3sJvoCV86qzcJmqUue2eV+A5uSff5oUg6abM6kVQ77A6s9LfOVVz
+         R92/NH60u0Vwf7uVqDfxvsRf+4LA9uGap4YCDfYG6JzsQC4lzNbTt7x1oQhXb67YYzSP
+         Qbfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=sfUQ5KkuJugRcswoXUIYuj0VO0djxRHGJcsWdg+KZjU=;
-        b=Rdm7PfEZ7RNQj01dcYqo1P0H4VUDDDRonoiWWmVvYTkCr2YBbnqP//WmgtvoQJAsla
-         R4nqL+HISPxpcLs7LnesuCboE2T/IdNoa+QPtf5vgM0tenJGMrSjhcN5aSdllSTT3Qu1
-         zEZ3KyaajiGpwHZxKiepf1s08A/cr5alFchEHDcQKRzNCsmRJ5yugrHoBxAXMqKOCaE7
-         BsGIhQ+7Pp5g4035UXX9gdi3mxzRyQcvshZG6B0JESiTLC97i3Zz1hVO3tn4iUJLBhKm
-         rVr5nj0hvxLjL1IA6cPzcP04zZ2IfAyMcfbl03unwpsLAlANyWKB+wsWB2xNB4ersG1U
-         p+/Q==
-X-Gm-Message-State: AOAM530+umB0GBY+2Koe//HsWYYQCQ6xY7D/XwTIudyOlnS32anyt6GA
-        ZWFKHickiZ8KIYuQpoXfoe8=
-X-Google-Smtp-Source: ABdhPJzmMFbGapGmoNeZO/smtuHVHtf3ixjTLxqIfeAXFo+Ap5rq6rMyT/sYvROMWjn9/0O+wvBcMg==
-X-Received: by 2002:a05:6512:547:: with SMTP id h7mr12285352lfl.529.1614679715517;
-        Tue, 02 Mar 2021 02:08:35 -0800 (PST)
+        bh=MUVbcHIyLqhYYbDiH9mnFrDuNemoNACUpRApum/EFvk=;
+        b=Tur2uJ4+/3ohGGcGcgIKEkP0Pb5Qd1Y1F9mKv2jnV8YMoPqABtmLJkNF/SYygFyppI
+         kPGbB7VJXeqm9Zb5uXqwNy/qDncr/pl34meacVTtLOoiJaWLNgUtHWUKYbl+wYzd9HQw
+         uiSzULrtMVJYpsTPYxSFIiSJlVyrhcvwimLoR2YloV+tOKNphFX2De4MJvp8oyHPNMXl
+         7MyaQclzPTrHGKnfvSke2nBdZzALmTeH0AdQWAUgda1N37iZsxOLeJjOI9IjpO5NdCIC
+         Vr5jQCZBTXV5jdm4qw7QX/dGZ7IDw0A0WGHm3lLeqnNPt7+pKK+Wjylu/tLaQA/IiD5M
+         QPJA==
+X-Gm-Message-State: AOAM531Re3u494/BoELozGnDRMTfNkIbo7Y97zXsLs54I62Pcjvh0Thl
+        Hvsbwbr6vW0cXofEcJrkmRE=
+X-Google-Smtp-Source: ABdhPJyLnU8qRoh0II4AD+zk5fkGCHCk6RCCFKs4aj0Bal3Fk1RXNzdq9+VItxOItoEBUi/ycazFLw==
+X-Received: by 2002:a2e:b4c3:: with SMTP id r3mr2464989ljm.232.1614679838530;
+        Tue, 02 Mar 2021 02:10:38 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id g10sm1725052lfe.90.2021.03.02.02.08.34
+        by smtp.gmail.com with ESMTPSA id c16sm2571001lfb.36.2021.03.02.02.10.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 02:08:34 -0800 (PST)
+        Tue, 02 Mar 2021 02:10:38 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Johnny Chuang <johnny.chuang.emc@gmail.com>,
-        Jasper Korten <jja2000@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] Input: elants_i2c - fix division by zero if firmware reports zero phys size
-Date:   Tue,  2 Mar 2021 13:08:24 +0300
-Message-Id: <20210302100824.3423-1-digetx@gmail.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/2] power: supply: smb347-charger: Improve interrupt initialization
+Date:   Tue,  2 Mar 2021 13:10:26 +0300
+Message-Id: <20210302101027.4505-1-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -66,44 +61,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Touchscreen firmware of ASUS Transformer TF700T reports zeros for the phys
-size. Hence check whether the size is zero and don't set the resolution in
-this case.
+A previous commit attempted to fix IRQ usage in a case where interrupt
+is failed to initialize, but it missed couple more cases that could be
+improved. The interrupt could be undefined and then everything related
+to interrupt shouldn't be touched by driver. Secondly, we shouldn't ignore
+errors that aren't directly related to enabling interrupt in hardware,
+like enabling h/w write-access or requesting interrupt. Improve interrupt
+initialization in the driver in order to handle the missing cases.
 
-Reported-by: Jasper Korten <jja2000@gmail.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
+ drivers/power/supply/smb347-charger.c | 58 +++++++++++++++++----------
+ 1 file changed, 36 insertions(+), 22 deletions(-)
 
-Please note that ASUS TF700T isn't yet supported by upstream kernel,
-hence this is not a critical fix.
-
- drivers/input/touchscreen/elants_i2c.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index 4c2b579f6c8b..a2e1cc4192b0 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -1441,14 +1441,16 @@ static int elants_i2c_probe(struct i2c_client *client,
+diff --git a/drivers/power/supply/smb347-charger.c b/drivers/power/supply/smb347-charger.c
+index 8cfbd8d6b478..ee13cd5d2b04 100644
+--- a/drivers/power/supply/smb347-charger.c
++++ b/drivers/power/supply/smb347-charger.c
+@@ -911,11 +911,14 @@ static int smb347_irq_init(struct smb347_charger *smb,
+ {
+ 	int ret;
  
- 	touchscreen_parse_properties(ts->input, true, &ts->prop);
+-	ret = devm_request_threaded_irq(smb->dev, client->irq, NULL,
+-					smb347_interrupt, IRQF_ONESHOT,
+-					client->name, smb);
+-	if (ret < 0)
+-		return ret;
++	smb->irq_unsupported = true;
++
++	/*
++	 * Interrupt pin is optional. If it is connected, we setup the
++	 * interrupt support here.
++	 */
++	if (!client->irq)
++		return 0;
  
--	if (ts->chip_id == EKTF3624) {
-+	if (ts->chip_id == EKTF3624 && ts->phy_x && ts->phy_y) {
- 		/* calculate resolution from size */
- 		ts->x_res = DIV_ROUND_CLOSEST(ts->prop.max_x, ts->phy_x);
- 		ts->y_res = DIV_ROUND_CLOSEST(ts->prop.max_y, ts->phy_y);
- 	}
+ 	ret = smb347_set_writable(smb, true);
+ 	if (ret < 0)
+@@ -931,7 +934,25 @@ static int smb347_irq_init(struct smb347_charger *smb,
  
--	input_abs_set_res(ts->input, ABS_MT_POSITION_X, ts->x_res);
--	input_abs_set_res(ts->input, ABS_MT_POSITION_Y, ts->y_res);
-+	if (ts->x_res > 0)
-+		input_abs_set_res(ts->input, ABS_MT_POSITION_X, ts->x_res);
-+	if (ts->y_res > 0)
-+		input_abs_set_res(ts->input, ABS_MT_POSITION_Y, ts->y_res);
- 	if (ts->major_res > 0)
- 		input_abs_set_res(ts->input, ABS_MT_TOUCH_MAJOR, ts->major_res);
+ 	smb347_set_writable(smb, false);
  
+-	return ret;
++	if (ret < 0) {
++		dev_warn(smb->dev, "failed to initialize IRQ: %d\n", ret);
++		dev_warn(smb->dev, "disabling IRQ support\n");
++		return 0;
++	}
++
++	ret = devm_request_threaded_irq(smb->dev, client->irq, NULL,
++					smb347_interrupt, IRQF_ONESHOT,
++					client->name, smb);
++	if (ret)
++		return ret;
++
++	smb->irq_unsupported = false;
++
++	ret = smb347_irq_enable(smb);
++	if (ret < 0)
++		return ret;
++
++	return 0;
+ }
+ 
+ /*
+@@ -1120,9 +1141,13 @@ static int smb347_get_property(struct power_supply *psy,
+ 	struct i2c_client *client = to_i2c_client(smb->dev);
+ 	int ret;
+ 
+-	disable_irq(client->irq);
++	if (!smb->irq_unsupported)
++		disable_irq(client->irq);
++
+ 	ret = smb347_get_property_locked(psy, prop, val);
+-	enable_irq(client->irq);
++
++	if (!smb->irq_unsupported)
++		enable_irq(client->irq);
+ 
+ 	return ret;
+ }
+@@ -1339,20 +1364,9 @@ static int smb347_probe(struct i2c_client *client,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/*
+-	 * Interrupt pin is optional. If it is connected, we setup the
+-	 * interrupt support here.
+-	 */
+-	if (client->irq) {
+-		ret = smb347_irq_init(smb, client);
+-		if (ret < 0) {
+-			dev_warn(dev, "failed to initialize IRQ: %d\n", ret);
+-			dev_warn(dev, "disabling IRQ support\n");
+-			smb->irq_unsupported = true;
+-		} else {
+-			smb347_irq_enable(smb);
+-		}
+-	}
++	ret = smb347_irq_init(smb, client);
++	if (ret)
++		return ret;
+ 
+ 	return 0;
+ }
 -- 
 2.29.2
 
