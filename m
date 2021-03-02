@@ -2,185 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B9132A17E
+	by mail.lfdr.de (Postfix) with ESMTP id C7C4432A17F
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1577443AbhCBGWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:22:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20041 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239568AbhCBEQD (ORCPT
+        id S1577452AbhCBGWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1381078AbhCBEUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 23:16:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614658473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DTs5bTdT/130awTFS1tu5ijWxNu0Rt9MlaERqm9NUPU=;
-        b=exvsORoxsheubC+CIm1xbrEzodG1sq0d3jV2NACEp1AYvPrWgEcNg7XSqQAVLRR0CHVmwA
-        0PB9E1Ewd7x5NHteq2zq1PkO3HdU1k/h2mvxvn19+/5xuGDlKuWetU1+4vJ9oSKmMFcogJ
-        KOeX00K7WZoJYg4wwOdVErizW4EJ5PU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-O1ppRP1lMXWwFuAq_kwXYA-1; Mon, 01 Mar 2021 23:14:32 -0500
-X-MC-Unique: O1ppRP1lMXWwFuAq_kwXYA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43D3A1868405;
-        Tue,  2 Mar 2021 04:14:31 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-215.pek2.redhat.com [10.72.13.215])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A424D5C730;
-        Tue,  2 Mar 2021 04:14:22 +0000 (UTC)
-Subject: Re: [RFC PATCH 01/10] vdpa: add get_config_size callback in
- vdpa_config_ops
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210216094454.82106-1-sgarzare@redhat.com>
- <20210216094454.82106-2-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <5de4cd5b-04cb-46ca-1717-075e5e8542fd@redhat.com>
-Date:   Tue, 2 Mar 2021 12:14:13 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        Mon, 1 Mar 2021 23:20:30 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E76C061756;
+        Mon,  1 Mar 2021 20:19:46 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id l2so13053091pgb.1;
+        Mon, 01 Mar 2021 20:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ygpumBoGjcJPpkOrRtRnwo2svO0zz3+ZRmAmaq7w9/4=;
+        b=ddnplYiySQgFy4fjExd3GlUYK8UxyFRNV8CriQ47JYNi0i2wvNMAQ0UOwuTNWu3Oj4
+         pBRwzKQTEYPNaXakFhmSK+fGpV3t2giPQ5MbnLME2ZHZFBgwJX5Wj5qS5o6pJDhryf0Q
+         9uYUD6USOw8ItWO0HaPQvophDEB1rZBRmBMBYVGAXJnrWGrxVX0YBT1BgKuhHYpyZS4g
+         gLoA7p4/zw2Hn60LwCF9hGq5xTZJkl5ODHrEBWKvI03E++1d3ttS/EzPDqhvhccWi6TU
+         /xC+F6yzd2zDNt7QCP6OYsmFj8MfRebMElScBnep9jwX6F0aTeS7PZ0wko7zw9IXB0LD
+         AEHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ygpumBoGjcJPpkOrRtRnwo2svO0zz3+ZRmAmaq7w9/4=;
+        b=Xo6fIDOiuk7ixX5Zc0GTlX2xbj1pFfUK7xJ6ARehUNzVr8xIGPuqjsq8pv6tpMoyNJ
+         EtASWUG5PzMqymk91xVW+3+iICUIRQ4guZYEDty9FPnXYAVqnaZOpsMz7xYK3Hy9LZTR
+         TecdRtULu7XrQnancwA5l9F0cOjbuZUPRHGMrLJFTBesiF6xvPXwyfVLVsbT7mCbJIIJ
+         U9XtQo8dcFM5vgLHyNnhZOCQ8ZeLsAP7k226jyqlTqhfTXaKq4iucHZWfeuL2RwI1tCn
+         FkLwrF7NTmIwN4Ma8b+rKDeUBze74TBVcFFgM1wLTg1se81VUWTghTAo+CSbtOVYWlEF
+         HGHw==
+X-Gm-Message-State: AOAM531zpbdyO1cE7Qcu/7qzZroi4o0Z3CPP0JlXxtkxMnXLw9OWwRb6
+        KImS5j1Vd1xGRoycOahN4HsY4upqbv4=
+X-Google-Smtp-Source: ABdhPJxeYGndjRbxs7qyJCzcsYIKmkjKDNlzyb7+7kVsPSbhP/3N2CTua9HAIbQuRHOKPqI5HbV8wQ==
+X-Received: by 2002:a63:4e26:: with SMTP id c38mr16616807pgb.81.1614658785561;
+        Mon, 01 Mar 2021 20:19:45 -0800 (PST)
+Received: from stbirv-lnx-3.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 1sm6701316pfh.90.2021.03.01.20.19.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 20:19:45 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-mips@vger.kernel.org
+Cc:     rppt@kernel.org, fancer.lancer@gmail.com, guro@fb.com,
+        akpm@linux-foundation.org, paul@crapouillou.net,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com (open list:BROADCOM BMIPS MIPS
+        ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] MIPS: BMIPS: Reserve exception base to prevent corruption
+Date:   Mon,  1 Mar 2021 20:19:38 -0800
+Message-Id: <20210302041940.3663823-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
+References: <20210301092241.i7dxo7zbg3ar55d6@mobilestation>
 MIME-Version: 1.0
-In-Reply-To: <20210216094454.82106-2-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+BMIPS is one of the few platforms that do change the exception base.
+After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+with kernel_end") we started seeing BMIPS boards fail to boot with the
+built-in FDT being corrupted.
 
-On 2021/2/16 5:44 下午, Stefano Garzarella wrote:
-> This new callback is used to get the size of the configuration space
-> of vDPA devices.
->
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->   include/linux/vdpa.h              | 4 ++++
->   drivers/vdpa/ifcvf/ifcvf_main.c   | 6 ++++++
->   drivers/vdpa/mlx5/net/mlx5_vnet.c | 6 ++++++
->   drivers/vdpa/vdpa_sim/vdpa_sim.c  | 9 +++++++++
->   4 files changed, 25 insertions(+)
->
-> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> index 4ab5494503a8..fddf42b17573 100644
-> --- a/include/linux/vdpa.h
-> +++ b/include/linux/vdpa.h
-> @@ -150,6 +150,9 @@ struct vdpa_iova_range {
->    * @set_status:			Set the device status
->    *				@vdev: vdpa device
->    *				@status: virtio device status
-> + * @get_config_size:		Get the size of the configuration space
-> + *				@vdev: vdpa device
-> + *				Returns size_t: configuration size
+Before the cited commit, early allocations would be in the [kernel_end,
+RAM_END] range, but after commit they would be within [RAM_START +
+PAGE_SIZE, RAM_END].
 
+The custom exception base handler that is installed by
+bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+memory region allocated by unflatten_and_copy_device_tree() thus
+corrupting the FDT used by the kernel.
 
-Rethink about this, how much we could gain by introducing a dedicated 
-ops here? E.g would it be simpler if we simply introduce a 
-max_config_size to vdpa device?
+To fix this, we need to perform an early reservation of the custom
+exception that is going to be installed and this needs to happen at
+plat_mem_setup() time to ensure that unflatten_and_copy_device_tree()
+finds a space that is suitable, away from reserved memory.
 
-Thanks
+Huge thanks to Serget for analysing and proposing a solution to this
+issue.
 
+Fixes: Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+Thomas,
 
->    * @get_config:			Read from device specific configuration space
->    *				@vdev: vdpa device
->    *				@offset: offset from the beginning of
-> @@ -231,6 +234,7 @@ struct vdpa_config_ops {
->   	u32 (*get_vendor_id)(struct vdpa_device *vdev);
->   	u8 (*get_status)(struct vdpa_device *vdev);
->   	void (*set_status)(struct vdpa_device *vdev, u8 status);
-> +	size_t (*get_config_size)(struct vdpa_device *vdev);
->   	void (*get_config)(struct vdpa_device *vdev, unsigned int offset,
->   			   void *buf, unsigned int len);
->   	void (*set_config)(struct vdpa_device *vdev, unsigned int offset,
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index 7c8bbfcf6c3e..2443271e17d2 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -332,6 +332,11 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
->   	return IFCVF_QUEUE_ALIGNMENT;
->   }
->   
-> +static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
-> +{
-> +	return sizeof(struct virtio_net_config);
-> +}
-> +
->   static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
->   				  unsigned int offset,
->   				  void *buf, unsigned int len)
-> @@ -392,6 +397,7 @@ static const struct vdpa_config_ops ifc_vdpa_ops = {
->   	.get_device_id	= ifcvf_vdpa_get_device_id,
->   	.get_vendor_id	= ifcvf_vdpa_get_vendor_id,
->   	.get_vq_align	= ifcvf_vdpa_get_vq_align,
-> +	.get_config_size	= ifcvf_vdpa_get_config_size,
->   	.get_config	= ifcvf_vdpa_get_config,
->   	.set_config	= ifcvf_vdpa_set_config,
->   	.set_config_cb  = ifcvf_vdpa_set_config_cb,
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 10e9b09932eb..78043ee567b6 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1814,6 +1814,11 @@ static void mlx5_vdpa_set_status(struct vdpa_device *vdev, u8 status)
->   	ndev->mvdev.status |= VIRTIO_CONFIG_S_FAILED;
->   }
->   
-> +static size_t mlx5_vdpa_get_config_size(struct vdpa_device *vdev)
-> +{
-> +	return sizeof(struct virtio_net_config);
-> +}
-> +
->   static void mlx5_vdpa_get_config(struct vdpa_device *vdev, unsigned int offset, void *buf,
->   				 unsigned int len)
->   {
-> @@ -1900,6 +1905,7 @@ static const struct vdpa_config_ops mlx5_vdpa_ops = {
->   	.get_vendor_id = mlx5_vdpa_get_vendor_id,
->   	.get_status = mlx5_vdpa_get_status,
->   	.set_status = mlx5_vdpa_set_status,
-> +	.get_config_size = mlx5_vdpa_get_config_size,
->   	.get_config = mlx5_vdpa_get_config,
->   	.set_config = mlx5_vdpa_set_config,
->   	.get_generation = mlx5_vdpa_get_generation,
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index d5942842432d..779ae6c144d7 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -439,6 +439,13 @@ static void vdpasim_set_status(struct vdpa_device *vdpa, u8 status)
->   	spin_unlock(&vdpasim->lock);
->   }
->   
-> +static size_t vdpasim_get_config_size(struct vdpa_device *vdpa)
-> +{
-> +	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-> +
-> +	return vdpasim->dev_attr.config_size;
-> +}
-> +
->   static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
->   			     void *buf, unsigned int len)
->   {
-> @@ -566,6 +573,7 @@ static const struct vdpa_config_ops vdpasim_config_ops = {
->   	.get_vendor_id          = vdpasim_get_vendor_id,
->   	.get_status             = vdpasim_get_status,
->   	.set_status             = vdpasim_set_status,
-> +	.get_config_size        = vdpasim_get_config_size,
->   	.get_config             = vdpasim_get_config,
->   	.set_config             = vdpasim_set_config,
->   	.get_generation         = vdpasim_get_generation,
-> @@ -593,6 +601,7 @@ static const struct vdpa_config_ops vdpasim_batch_config_ops = {
->   	.get_vendor_id          = vdpasim_get_vendor_id,
->   	.get_status             = vdpasim_get_status,
->   	.set_status             = vdpasim_set_status,
-> +	.get_config_size        = vdpasim_get_config_size,
->   	.get_config             = vdpasim_get_config,
->   	.set_config             = vdpasim_set_config,
->   	.get_generation         = vdpasim_get_generation,
+This is intended as a stop-gap solution for 5.12-rc1 and to be picked up
+by the stable team for 5.11. We should find a safer way to avoid these
+problems for 5.13 maybe.
+
+ arch/mips/bmips/setup.c       | 22 ++++++++++++++++++++++
+ arch/mips/include/asm/traps.h |  2 ++
+ 2 files changed, 24 insertions(+)
+
+diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
+index 31bcfa4e08b9..0088bd45b892 100644
+--- a/arch/mips/bmips/setup.c
++++ b/arch/mips/bmips/setup.c
+@@ -149,6 +149,26 @@ void __init plat_time_init(void)
+ 	mips_hpt_frequency = freq;
+ }
+ 
++static void __init bmips_ebase_reserve(void)
++{
++	phys_addr_t base, size = VECTORSPACING * 64;
++
++	switch (current_cpu_type()) {
++	default:
++	case CPU_BMIPS4350:
++		return;
++	case CPU_BMIPS3300:
++	case CPU_BMIPS4380:
++		base = 0x0400;
++		break;
++	case CPU_BMIPS5000:
++		base = 0x1000;
++		break;
++	}
++
++	memblock_reserve(base, size);
++}
++
+ void __init plat_mem_setup(void)
+ {
+ 	void *dtb;
+@@ -169,6 +189,8 @@ void __init plat_mem_setup(void)
+ 
+ 	__dt_setup_arch(dtb);
+ 
++	bmips_ebase_reserve();
++
+ 	for (q = bmips_quirk_list; q->quirk_fn; q++) {
+ 		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
+ 					     q->compatible)) {
+diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
+index 6aa8f126a43d..0ba6bb7f9618 100644
+--- a/arch/mips/include/asm/traps.h
++++ b/arch/mips/include/asm/traps.h
+@@ -14,6 +14,8 @@
+ #define MIPS_BE_FIXUP	1		/* return to the fixup code */
+ #define MIPS_BE_FATAL	2		/* treat as an unrecoverable error */
+ 
++#define VECTORSPACING 0x100	/* for EI/VI mode */
++
+ extern void (*board_be_init)(void);
+ extern int (*board_be_handler)(struct pt_regs *regs, int is_fixup);
+ 
+-- 
+2.25.1
 
