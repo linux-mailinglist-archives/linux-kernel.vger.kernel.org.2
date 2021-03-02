@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA7632A7F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B6A32A809
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:28:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579276AbhCBQqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:46:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45606 "EHLO mail.kernel.org"
+        id S1579705AbhCBQ7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:59:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1448344AbhCBOUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 09:20:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9D2C64FCA;
-        Tue,  2 Mar 2021 11:59:31 +0000 (UTC)
+        id S1351395AbhCBOWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:22:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B65F764FCB;
+        Tue,  2 Mar 2021 11:59:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686372;
-        bh=VPRE832pU0+LBG5pWKgG1aQ+yt+O0wX0qot67RDjVa4=;
+        s=k20201202; t=1614686373;
+        bh=HAHCf/VyvL/BDirKz3srbwwm7Y/wDsom2wujpSsazBQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RalFa7TDSIMnawl/3mKoRCf682EYRYV1ekAnqATjOvQHCy3UKL/D0pcroKzcoKmSy
-         IEM1J+eJGvc3XooWDrgG27+xXooCuM3s/0zk4vvs+QuBI/6lKcbS1B5YRfmz+bgtbP
-         jQXjV289Cmhpq/90Pji75x0zv3uOjv1f5z/zxKJhfeZctqqaspsn7txezTA44yH79k
-         6PpEM9I1DlCuRIkZqF9HQv48kO0KS+zyBUzIFNmPpr/AqiO4h9ZlxsXjhAcTE1IKf+
-         5QA6NcbrIvc5acdAB7COQy5aCbs1NQ3Lq5FvWTxl45sAB8w5yrfff+h1GV7rBclb9f
-         Pczyv5bErj2xg==
+        b=SxNhDG3vFrESELPocy4WPZN6cFIFbifCnlvM4f0PZXLuaPP1M/bIZk2lp/X1vgcGS
+         wtMD5LiX4Wb27tCRYaAV0qcRZU+Bsx/s3S1DteROFLvMxgwtideR/SrXe2Xwb9RKbv
+         ZVHIiMJAotDmtveVSDKX9UUwcZCLAY54D0gFffW8RFlM923UkwrIsuL5X2ese2jmi8
+         hchle1TrDbA3lyyB0Di3KgUGPkqjx7/RVv6XBFk1fg1mnh/eAbLsDk0Ig/bCEy1TsS
+         jY8jjSgmfQUDEOlVs5Ao15uclyRqqx8XxsswPF6H4v3HMkjSkG04q3kuvSNNclByIG
+         54qmq2XO5kkNA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Aswath Govindraju <a-govindraju@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 08/10] misc: eeprom_93xx46: Add quirk to support Microchip 93LC46B eeprom
-Date:   Tue,  2 Mar 2021 06:59:19 -0500
-Message-Id: <20210302115921.63636-8-sashal@kernel.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 09/10] s390/smp: __smp_rescan_cpus() - move cpumask away from stack
+Date:   Tue,  2 Mar 2021 06:59:20 -0500
+Message-Id: <20210302115921.63636-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115921.63636-1-sashal@kernel.org>
 References: <20210302115921.63636-1-sashal@kernel.org>
@@ -42,89 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aswath Govindraju <a-govindraju@ti.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit f6f1f8e6e3eea25f539105d48166e91f0ab46dd1 ]
+[ Upstream commit 62c8dca9e194326802b43c60763f856d782b225c ]
 
-A dummy zero bit is sent preceding the data during a read transfer by the
-Microchip 93LC46B eeprom (section 2.7 of[1]). This results in right shift
-of data during a read. In order to ignore this bit a quirk can be added to
-send an extra zero bit after the read address.
+Avoid a potentially large stack frame and overflow by making
+"cpumask_t avail" a static variable. There is no concurrent
+access due to the existing locking.
 
-Add a quirk to ignore the zero bit sent before data by adding a zero bit
-after the read address.
-
-[1] - https://www.mouser.com/datasheet/2/268/20001749K-277859.pdf
-
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-Link: https://lore.kernel.org/r/20210105105817.17644-3-a-govindraju@ti.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/eeprom/eeprom_93xx46.c | 15 +++++++++++++++
- include/linux/eeprom_93xx46.h       |  2 ++
- 2 files changed, 17 insertions(+)
+ arch/s390/kernel/smp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index 94cc035aa841..a6409a362eb3 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -38,6 +38,10 @@ static const struct eeprom_93xx46_devtype_data atmel_at93c46d_data = {
- 		  EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH,
- };
- 
-+static const struct eeprom_93xx46_devtype_data microchip_93lc46b_data = {
-+	.quirks = EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE,
-+};
-+
- struct eeprom_93xx46_dev {
- 	struct spi_device *spi;
- 	struct eeprom_93xx46_platform_data *pdata;
-@@ -58,6 +62,11 @@ static inline bool has_quirk_instruction_length(struct eeprom_93xx46_dev *edev)
- 	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH;
- }
- 
-+static inline bool has_quirk_extra_read_cycle(struct eeprom_93xx46_dev *edev)
-+{
-+	return edev->pdata->quirks & EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE;
-+}
-+
- static int eeprom_93xx46_read(void *priv, unsigned int off,
- 			      void *val, size_t count)
+diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
+index cba8e56cd63d..54eb8fe95212 100644
+--- a/arch/s390/kernel/smp.c
++++ b/arch/s390/kernel/smp.c
+@@ -727,7 +727,7 @@ static int smp_add_core(struct sclp_core_entry *core, cpumask_t *avail,
+ static int __smp_rescan_cpus(struct sclp_core_info *info, bool early)
  {
-@@ -99,6 +108,11 @@ static int eeprom_93xx46_read(void *priv, unsigned int off,
- 		dev_dbg(&edev->spi->dev, "read cmd 0x%x, %d Hz\n",
- 			cmd_addr, edev->spi->max_speed_hz);
- 
-+		if (has_quirk_extra_read_cycle(edev)) {
-+			cmd_addr <<= 1;
-+			bits += 1;
-+		}
-+
- 		spi_message_init(&m);
- 
- 		t[0].tx_buf = (char *)&cmd_addr;
-@@ -366,6 +380,7 @@ static void select_deassert(void *context)
- static const struct of_device_id eeprom_93xx46_of_table[] = {
- 	{ .compatible = "eeprom-93xx46", },
- 	{ .compatible = "atmel,at93c46d", .data = &atmel_at93c46d_data, },
-+	{ .compatible = "microchip,93lc46b", .data = &microchip_93lc46b_data, },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, eeprom_93xx46_of_table);
-diff --git a/include/linux/eeprom_93xx46.h b/include/linux/eeprom_93xx46.h
-index 885f587a3555..affe4d1d7d4a 100644
---- a/include/linux/eeprom_93xx46.h
-+++ b/include/linux/eeprom_93xx46.h
-@@ -16,6 +16,8 @@ struct eeprom_93xx46_platform_data {
- #define EEPROM_93XX46_QUIRK_SINGLE_WORD_READ		(1 << 0)
- /* Instructions such as EWEN are (addrlen + 2) in length. */
- #define EEPROM_93XX46_QUIRK_INSTRUCTION_LENGTH		(1 << 1)
-+/* Add extra cycle after address during a read */
-+#define EEPROM_93XX46_QUIRK_EXTRA_READ_CYCLE		BIT(2)
- 
- 	/*
- 	 * optional hooks to control additional logic
+ 	struct sclp_core_entry *core;
+-	cpumask_t avail;
++	static cpumask_t avail;
+ 	bool configured;
+ 	u16 core_id;
+ 	int nr, i;
 -- 
 2.30.1
 
