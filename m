@@ -2,237 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E714C32B719
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6459A32B71A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357288AbhCCKtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:49:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232917AbhCBXvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 18:51:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 481D864F45;
-        Tue,  2 Mar 2021 23:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614729020;
-        bh=mD9oG7Zn/uIeJEBEoZqcRpiShRlD9VUAPEWMowEB/fY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=R4QCmm//yfC21yKBgDEZF8tbH3abijkWkFXS63v48Ul2N9hT825pjCGZ5hCyVcBnf
-         5kEVjfcaVlw4K97a1eTXvOn2TmM5rwFQp1juKYb9K5atFDOzcPMXsvv/ijg4SuKMdc
-         5Xvg7nPO8JoW3+vH10eb86w7rW9RBNS6RcneolnawfC1RS82RiXE7acqSP+GNI7PNw
-         lIpCVcJhztCVQgunQvN2AkyahMLv+kuAzpBFoLeR8VxpaI8EQnWb/39y3z102Ye6cg
-         biwAiKTqe7tApMHLRCB+zrNYjfdg8IQLyyR2Zs+Ycn9D8qH1OSHT1mbAJ/wuwhY8qF
-         E92VipNgz/lUw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id DF3183522829; Tue,  2 Mar 2021 15:50:19 -0800 (PST)
-Date:   Tue, 2 Mar 2021 15:50:19 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
-        joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210302235019.GT2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
+        id S1357313AbhCCKtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:49:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233634AbhCBXyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 18:54:43 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691CEC0617AB
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 15:53:51 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id n195so22566911ybg.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 15:53:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bil8NB7FtyMQm2LWvHudKINIt601VCCkCAtNfJdlFqs=;
+        b=EZ95T+rNXENXimY3pzATLXSNLha9hbHpdO3IWfbrrXDxmRhX0t0UT20WlzRGlBerOk
+         mq1NCpaPbKg1hTYF2hKaXxT5G0ERcltjSoANnaSWufp95sXwyhd/GI244y4LkMUoCUHZ
+         Z19jUkS8cd148IrrUXF66k4R8S6+4popTpoYvji5vTjm5y4B+aq5ZgLuBPp5voboqZ+s
+         Io/ahydOa4fmHqkxp/oM2uJ657wsmEB5Hqu4va7hQGmTclSDZj5rI7Can4zlSACYE9L4
+         BuXEF6JeOOAB3qJ1Y17e2EYxh23ouR9mmUQ8t+Sp1as6Nspiq+yKmrxKEJ5XBspw+hIi
+         Ti8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bil8NB7FtyMQm2LWvHudKINIt601VCCkCAtNfJdlFqs=;
+        b=Z61XSh64GneNhGqQrm75ma+LTgBJm+IdQ487NNL4ebfHYl/4xvoxodyHE38+wcgfMd
+         uf7LyyI/XNfgDQr571fdg9S3xKoM4IfvpLwvuR2suiVfEtUn7Bgy3V7et8X4UVP9y8Ph
+         zgCl3GX2eHwtsFTFGSJvmQbWLdbmOTxcAjd2btXI1Rqjh6J1cV67XzFtUxvhlLksGzJk
+         I9Km1YomwAjHWmduLaMjuchl756eVZrTUebh2veN/OrVZtxes+tWae3mnqZCEDk1RFAm
+         z7Krw7RKKipsH2L0xK9c2Szm52TxoMnA6nklDE7DAO8DqSoWNkOVZpUburslDZUXolOh
+         HEcw==
+X-Gm-Message-State: AOAM533uLdGJVHN/RHjblavLe1D4M/WoT5tIqV5TRW92ZLhtXdj9Nep3
+        QEPWXJBWKrUEJmyWZGqhmaR/EnU9yk00u5ZFKBqVug==
+X-Google-Smtp-Source: ABdhPJyPySea+4ZAWR4FCDlNGShhv6ZqZfVIbq+FwDY0XtpNacbMtnX9ErF6UqxXj8O2Gl4NQDcqnTDjJgXoxKMbDrU=
+X-Received: by 2002:a5b:751:: with SMTP id s17mr34290248ybq.111.1614729230287;
+ Tue, 02 Mar 2021 15:53:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210302211446.GA1541641@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
+ <20210112174507.GA23780@redhat.com> <CAJuCfpFQz=x-LvONO3c4iqjKP4NKJMgUuiYc8HACKHAv1Omu0w@mail.gmail.com>
+ <20210113142202.GC22493@dhcp22.suse.cz> <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
+ <20210126135254.GP827@dhcp22.suse.cz> <CAJuCfpEnMyo9XAnoF+q1j9EkC0okZfUxxdAFhzhPJi+adJYqjw@mail.gmail.com>
+ <CAJuCfpF861zhp8yR_pYx8gb+WMrORAZ0tbzcKtKxaj7L=jzw+Q@mail.gmail.com> <CAJuCfpFzxiBXp1rdY=H=bX+eOAVGOe72_FxwC-NTWF4fhUO26g@mail.gmail.com>
+In-Reply-To: <CAJuCfpFzxiBXp1rdY=H=bX+eOAVGOe72_FxwC-NTWF4fhUO26g@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 2 Mar 2021 15:53:39 -0800
+Message-ID: <CAJuCfpEOE8=L1fT4FSauy65cS82M_kW3EzTgH89ewE9HudL=VA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
+        Tim Murray <timmurray@google.com>,
+        linux-mm <linux-mm@kvack.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        stable <stable@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 04:14:46PM -0500, Alan Stern wrote:
-> On Tue, Mar 02, 2021 at 07:46:27PM +0100, Björn Töpel wrote:
-> > Hi!
-> > 
-> > Firstly; The long Cc-list is to reach the LKMM-folks.
-> > 
-> > Some background; the XDP sockets use a ring-buffer to communicate
-> > between the kernel and userland. It's a
-> > single-consumer/single-producer ring, and described in
-> > net/xdp/xsk_queue.h.
-> > 
-> > --8<---
-> > /* The structure of the shared state of the rings are the same as the
-> >  * ring buffer in kernel/events/ring_buffer.c. For the Rx and completion
-> >  * ring, the kernel is the producer and user space is the consumer. For
-> >  * the Tx and fill rings, the kernel is the consumer and user space is
-> >  * the producer.
-> >  *
-> >  * producer                         consumer
-> >  *
-> >  * if (LOAD ->consumer) {           LOAD ->producer
-> >  *                    (A)           smp_rmb()       (C)
-> >  *    STORE $data                   LOAD $data
-> >  *    smp_wmb()       (B)           smp_mb()        (D)
-> >  *    STORE ->producer              STORE ->consumer
-> >  * }
-> >  *
-> >  * (A) pairs with (D), and (B) pairs with (C).
-> > ...
-> > -->8---
-> > 
-> > I'd like to replace the smp_{r,w,}mb() barriers with acquire-release
-> > semantics [1], without breaking existing userspace applications.
-> > 
-> > So, I figured I'd use herd7 and the LKMM model to build a litmus test
-> > for the barrier version, then for the acquire-release version, and
-> > finally permutations of both.
-> > 
-> > The idea is to use a one element ring, with a state machine outlined
-> > in the litmus test.
-> > 
-> > The basic test for the existing smp_{r,w,}mb() barriers looks like:
-> > 
-> > $ cat spsc-rb+1p1c.litmus
-> > C spsc-rb+1p1c
-> > 
-> > // Stupid one entry ring:
-> > // prod cons     allowed action       prod cons
-> > //    0    0 =>       prod          =>   1    0
-> > //    0    1 =>       cons          =>   0    0
-> > //    1    0 =>       cons          =>   1    1
-> > //    1    1 =>       prod          =>   0    1
-> > 
-> > { prod = 1; }
-> > 
-> > // Here, we start at prod==1,cons==0, data==0, i.e. producer has
-> > // written data=0, so from here only the consumer can start, and should
-> > // consume data==0. Afterwards, producer can continue and write 1 to
-> > // data. Can we enter state prod==0, cons==1, but consumer observerd
-> > // the write of 1?
-> > 
-> > P0(int *prod, int *cons, int *data)
-> > {
-> >     int p;
-> >     int c;
-> >     int cond = 0;
-> > 
-> >     p = READ_ONCE(*prod);
-> >     c = READ_ONCE(*cons);
-> >     if (p == 0)
-> >         if (c == 0)
-> >             cond = 1;
-> >     if (p == 1)
-> >         if (c == 1)
-> >             cond = 1;
-> > 
-> >     if (cond) {
-> >         smp_mb();
-> >         WRITE_ONCE(*data, 1);
-> >         smp_wmb();
-> >         WRITE_ONCE(*prod, p ^ 1);
-> >     }
-> > }
-> > 
-> > P1(int *prod, int *cons, int *data)
-> > {
-> >     int p;
-> >     int c;
-> >     int d = -1;
-> >     int cond = 0;
-> > 
-> >     p = READ_ONCE(*prod);
-> >     c = READ_ONCE(*cons);
-> >     if (p == 1)
-> >         if (c == 0)
-> >             cond = 1;
-> >     if (p == 0)
-> >         if (c == 1)
-> >             cond = 1;
-> > 
-> >     if (cond == 1) {
-> >         smp_rmb();
-> >         d = READ_ONCE(*data);
-> >         smp_mb();
-> >         WRITE_ONCE(*cons, c ^ 1);
-> >     }
-> > }
-> > 
-> > exists( 1:d=1 /\ prod=0 /\ cons=1 );
-> > 
-> > --
-> > 
-> > The weird state changing if-statements is because that I didn't get
-> > '&&' and '||' to work with herd.
-> > 
-> > When this is run:
-> > 
-> > $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
-> > Test spsc-rb+1p1c Allowed
-> > States 2
-> > 1:d=0; cons=1; prod=0;
-> > 1:d=0; cons=1; prod=1;
-> > No
-> > Witnesses
-> > Positive: 0 Negative: 2
-> > Condition exists (1:d=1 /\ prod=0 /\ cons=1)
-> > Observation spsc-rb+1p1c Never 0 2
-> > Time spsc-rb+1p1c 0.04
-> > Hash=b399756d6a1301ca5bda042f32130791
-> > 
-> > Now to my question; In P0 there's an smp_mb(). Without that, the d==1
-> > can be observed from P1 (consumer):
-> > 
-> > $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
-> > Test spsc-rb+1p1c Allowed
-> > States 3
-> > 1:d=0; cons=1; prod=0;
-> > 1:d=0; cons=1; prod=1;
-> > 1:d=1; cons=1; prod=0;
-> > Ok
-> > Witnesses
-> > Positive: 1 Negative: 2
-> > Condition exists (1:d=1 /\ prod=0 /\ cons=1)
-> > Observation spsc-rb+1p1c Sometimes 1 2
-> > Time spsc-rb+1p1c 0.04
-> > Hash=0047fc21fa77da9a9aee15e35ec367ef
-> 
-> This result is wrong, apparently because of a bug in herd7.  There 
-> should be control dependencies from each of the two loads in P0 to each 
-> of the two stores, but herd7 doesn't detect them.
-> 
-> Maybe Luc can find some time to check whether this really is a bug and 
-> if it is, fix it.
+On Mon, Feb 1, 2021 at 9:34 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Thu, Jan 28, 2021 at 11:08 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Thu, Jan 28, 2021 at 11:51 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > On Tue, Jan 26, 2021 at 5:52 AM 'Michal Hocko' via kernel-team
+> > > <kernel-team@android.com> wrote:
+> > > >
+> > > > On Wed 20-01-21 14:17:39, Jann Horn wrote:
+> > > > > On Wed, Jan 13, 2021 at 3:22 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > > On Tue 12-01-21 09:51:24, Suren Baghdasaryan wrote:
+> > > > > > > On Tue, Jan 12, 2021 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> > > > > > > >
+> > > > > > > > On 01/12, Michal Hocko wrote:
+> > > > > > > > >
+> > > > > > > > > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
+> > > > > > > > >
+> > > > > > > > > > What we want is the ability for one process to influence another process
+> > > > > > > > > > in order to optimize performance across the entire system while leaving
+> > > > > > > > > > the security boundary intact.
+> > > > > > > > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
+> > > > > > > > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
+> > > > > > > > > > and CAP_SYS_NICE for influencing process performance.
+> > > > > > > > >
+> > > > > > > > > I have to say that ptrace modes are rather obscure to me. So I cannot
+> > > > > > > > > really judge whether MODE_READ is sufficient. My understanding has
+> > > > > > > > > always been that this is requred to RO access to the address space. But
+> > > > > > > > > this operation clearly has a visible side effect. Do we have any actual
+> > > > > > > > > documentation for the existing modes?
+> > > > > > > > >
+> > > > > > > > > I would be really curious to hear from Jann and Oleg (now Cced).
+> > > > > > > >
+> > > > > > > > Can't comment, sorry. I never understood these security checks and never tried.
+> > > > > > > > IIUC only selinux/etc can treat ATTACH/READ differently and I have no idea what
+> > > > > > > > is the difference.
+> > > > >
+> > > > > Yama in particular only does its checks on ATTACH and ignores READ,
+> > > > > that's the difference you're probably most likely to encounter on a
+> > > > > normal desktop system, since some distros turn Yama on by default.
+> > > > > Basically the idea there is that running "gdb -p $pid" or "strace -p
+> > > > > $pid" as a normal user will usually fail, but reading /proc/$pid/maps
+> > > > > still works; so you can see things like detailed memory usage
+> > > > > information and such, but you're not supposed to be able to directly
+> > > > > peek into a running SSH client and inject data into the existing SSH
+> > > > > connection, or steal the cryptographic keys for the current
+> > > > > connection, or something like that.
+> > > > >
+> > > > > > > I haven't seen a written explanation on ptrace modes but when I
+> > > > > > > consulted Jann his explanation was:
+> > > > > > >
+> > > > > > > PTRACE_MODE_READ means you can inspect metadata about processes with
+> > > > > > > the specified domain, across UID boundaries.
+> > > > > > > PTRACE_MODE_ATTACH means you can fully impersonate processes with the
+> > > > > > > specified domain, across UID boundaries.
+> > > > > >
+> > > > > > Maybe this would be a good start to document expectations. Some more
+> > > > > > practical examples where the difference is visible would be great as
+> > > > > > well.
+> > > > >
+> > > > > Before documenting the behavior, it would be a good idea to figure out
+> > > > > what to do with perf_event_open(). That one's weird in that it only
+> > > > > requires PTRACE_MODE_READ, but actually allows you to sample stuff
+> > > > > like userspace stack and register contents (if perf_event_paranoid is
+> > > > > 1 or 2). Maybe for SELinux things (and maybe also for Yama), there
+> > > > > should be a level in between that allows fully inspecting the process
+> > > > > (for purposes like profiling) but without the ability to corrupt its
+> > > > > memory or registers or things like that. Or maybe perf_event_open()
+> > > > > should just use the ATTACH mode.
+> > > >
+> > > > Thanks for the clarification. I still cannot say I would have a good
+> > > > mental picture. Having something in Documentation/core-api/ sounds
+> > > > really needed. Wrt to perf_event_open it sounds really odd it can do
+> > > > more than other places restrict indeed. Something for the respective
+> > > > maintainer but I strongly suspect people simply copy the pattern from
+> > > > other places because the expected semantic is not really clear.
+> > > >
+> > >
+> > > Sorry, back to the matters of this patch. Are there any actionable
+> > > items for me to take care of before it can be accepted? The only
+> > > request from Andrew to write a man page is being worked on at
+> > > https://lore.kernel.org/linux-mm/20210120202337.1481402-1-surenb@google.com/
+> > > and I'll follow up with the next version. I also CC'ed stable@ for
+> > > this to be included into 5.10 per Andrew's request. That CC was lost
+> > > at some point, so CC'ing again.
+> > >
+> > > I do not see anything else on this patch to fix. Please chime in if
+> > > there are any more concerns, otherwise I would ask Andrew to take it
+> > > into mm-tree and stable@ to apply it to 5.10.
+> > > Thanks!
+> >
+> > process_madvise man page V2 is posted at:
+> > https://lore.kernel.org/linux-mm/20210129070340.566340-1-surenb@google.com/
+>
+> process_madvise man page V3 is posted at:
+> https://lore.kernel.org/linux-mm/20210202053046.1653012-1-surenb@google.com/
+>
 
-I agree that herd7's control dependency tracking could be improved.
+Hi Andrew,
+A friendly reminder to please include this patch into mm tree.
+There seem to be no more questions or objections.
+The man page you requested is accepted here:
+https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=a144f458bad476a3358e3a45023789cb7bb9f993
+stable is CC'ed and this patch should go into 5.10 and later kernels
+The patch has been:
+Acked-by: Minchan Kim <minchan@kernel.org>
+Acked-by: David Rientjes <rientjes@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-But sadly, it is currently doing exactly what I asked Luc to make it do,
-which is to confine the control dependency to its "if" statement.  But as
-usual I wasn't thinking globally enough.  And I am not exactly sure what
-to ask for.  Here a store to a local was control-dependency ordered after
-a read, and so that should propagate to a read from that local variable.
-Maybe treat local variables as if they were registers, so that from
-herd7's viewpoint the READ_ONCE()s are able to head control-dependency
-chains in multiple "if" statements?
+If you want me to resend it, please let me know.
+Thanks,
+Suren.
 
-Thoughts?
 
-							Thanx, Paul
-
-> > In commit c7f2e3cd6c1f ("perf: Optimize ring-buffer write by depending
-> > on control dependencies") removes the corresponding smp_mb(), and also
-> > the circular buffer in circular-buffers.txt (pre commit 6c43c091bdc5
-> > ("documentation: Update circular buffer for
-> > load-acquire/store-release")) is missing the smp_mb() at the
-> > producer-side.
-> > 
-> > I'm trying to wrap my head around why it's OK to remove the smp_mb()
-> > in the cases above? I'm worried that the current XDP socket ring
-> > implementation (which is missing smp_mb()) might be broken.
-> 
-> Because of the control dependencies, the smp_mb isn't needed.  The 
-> dependencies will order both of the stores after both of the loads.
-> 
-> Alan Stern
+> >
+> > >
+> > >
+> > > > --
+> > > > Michal Hocko
+> > > > SUSE Labs
+> > > >
+> > > > --
+> > > > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> > > >
