@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3767A32AD66
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAA032AD7C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837537AbhCBVru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:47:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
+        id S1837725AbhCBV6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:58:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381231AbhCBS4i (ORCPT
+        with ESMTP id S1581627AbhCBTA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:56:38 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8023C0611BC
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 10:46:06 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id 4so10405013qtc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:46:06 -0800 (PST)
+        Tue, 2 Mar 2021 14:00:57 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F738C061A27
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 10:46:09 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id u8so15635410qvm.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 10:46:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=pDw5a8xkwlwJrFheedicuJ7ZkUuVv2t+v7LNaWJm4Dw=;
-        b=Ygk5jcCgeatzea90Rb8bzEwERdMBWJFL7meF/8n+9C1z76ccYNoc3o2KHJs49c9YS9
-         +rED1LRhDhhfZQrVJkSnnRdejrl1l/JXRTuDtcFlvwFXdsr6wWnOW/xNRcHG8+WBe4Yb
-         WSUWTNcl7oNaDRe8m2fCdRaYBmA1vX0xKIJA/cCqU1oHZ8fnhVJPmR7yDURMfrk9M0z0
-         bTdi/oemt2W0JE3Qu6l2YHFXzLd5nJ84yxHKqXrQfB/seJYeJ1osrih0tN+q0gmF6i1r
-         1RzQGwI6nk4DVdJ6a1GDGTSLqYs/gkZ2qFom4DxeaJDP3wDuxXgXxo1D0vc0eT6FZ0+L
-         byLw==
+        bh=yssg349CIQcpusokJYUAbzu7BIQqlN4sh1bHcP1NJ8k=;
+        b=ErDuGBDftepRR4OYZpswTC6tmPwDS8yB53aypu/42YKgFqbqnAGsFo+VNVcCZ98tS4
+         LKYeb3A15u0xi54RX3uLZK9VBam6kPhbLVfbO5EPrsWM/7FM7i3Yjgo+2XZ1bjBKijR+
+         QndDzLzFLHN1LcG72D2ixeApjOruIK06aBt6OZDWLC/cMvtAtrsOxRdIMSjkGC2+sfEg
+         ToL/umXHkuxZv/yoymGi1+ngHX3ab3v4Eoa3T7M4Q0mPgm62xNCEpiwfqnQ5dFgF4yN8
+         m/Kl/jX9s+X2zlJCc8RtK5/NIVo7V+zLDPwoL/VxV9id8H/4vMppnofbMplq7I5JhWIG
+         Kcbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=pDw5a8xkwlwJrFheedicuJ7ZkUuVv2t+v7LNaWJm4Dw=;
-        b=QYIL+uOsXReDM9JuQYEvENYNfuUYNCCsau2ALLe5fsRCHBwGXRfd3ldEYsRdISB0vl
-         yxguhdDZaODQVuDpxgP/rEOFDnXuHou2Dmt1ievUlMoUelu4x43xo3j5ht5g4UgTzS4r
-         cj071fdYjR9lIce20D53eXKwym3wqVysM4z6Z9q7hr4mPsnHErz9V/KpQjHmNArXo+NZ
-         2xVzU96cZCLZ/e5vuNAZtZuTPSIxhfNk8SUfat4SmNx0jfwhteBznFQVzzYXBKoYVXxS
-         rnd9nJpEDkRNDFBbwOA1Q5KUwaWtrcnyR6+z5W7gsXKED48ALKF1pFb6mYJK8dWAzqqb
-         7KBg==
-X-Gm-Message-State: AOAM531mca6VnQqlWwjCxsMo1jslWs7VWWdsZdVQFBfUP0Imq5MHeJiL
-        OJahbm2Xnd3lUoAaaYqVQxa4jZW36Yw=
-X-Google-Smtp-Source: ABdhPJy3aPjJhvDHE+DIXi6sA+MkP5OXW5n7T3/Tf9elJsyZ3fz2ZUT3gXs7k0/Itw25dW+LTYzmWA5qGC4=
+        bh=yssg349CIQcpusokJYUAbzu7BIQqlN4sh1bHcP1NJ8k=;
+        b=P12A9Rku0CZfyVfszVC9gQus0g1KHjrDZ+wBrkHU7a/9Ojo2MxdsTs+dMq3B7wdL61
+         dkiTp+XWIxaTWjSrKM5o1MdbE8pozB/XxiJc0RgLTTzgNehRvV+WtRrxJSrJtuNgqeEB
+         YpDM0syge+2jeTBRYwL8Pthb3G/bg7msOtMngAUmfEd4UxqMn4s/+YCIrNP1xPJX8G40
+         kbhGHELZUqriczjmIv+r1AsvEfhAB9C2X1UDR7c82ZkgKnX7b5/6nezKoGd7i4/V17dn
+         hTgL52yUpUg4t4t9hueW8CKUTx4HpRpC/LyJTXizUxELWqiAZiGpH078hJ7RcdwMisAk
+         o0xQ==
+X-Gm-Message-State: AOAM530Cd7JC3JkJrhJ3uPIIy5ypEX7NpJoNQJ/VTWWOGDsydlcFPx1W
+        YsLCOHa1j6GGNKq9fqP6APP6Cp2YVrI=
+X-Google-Smtp-Source: ABdhPJyrDbObIs1DThtN5Ro3gDtAE1iGh/GjGP6Ti2k30XVBdhgm3at2LNs7pWUWgjLMUTKAU1r92bsSnm0=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:805d:6324:3372:6183])
- (user=seanjc job=sendgmr) by 2002:a0c:b7a1:: with SMTP id l33mr20824163qve.17.1614710766083;
- Tue, 02 Mar 2021 10:46:06 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a0c:9ba4:: with SMTP id o36mr4947619qve.31.1614710768589;
+ Tue, 02 Mar 2021 10:46:08 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  2 Mar 2021 10:45:33 -0800
+Date:   Tue,  2 Mar 2021 10:45:34 -0800
 In-Reply-To: <20210302184540.2829328-1-seanjc@google.com>
-Message-Id: <20210302184540.2829328-9-seanjc@google.com>
+Message-Id: <20210302184540.2829328-10-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210302184540.2829328-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [PATCH 08/15] KVM: x86/mmu: Set the C-bit in the PDPTRs and LM pseudo-PDPTRs
+Subject: [PATCH 09/15] KVM: x86/mmu: Mark the PAE roots as decrypted for
+ shadow paging
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,13 +70,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the C-bit in SPTEs that are set outside of the normal MMU flows,
-specifically the PDPDTRs and the handful of special cased "LM root"
-entries, all of which are shadow paging only.
+Set the PAE roots used as decrypted to play nice with SME when KVM is
+using shadow paging.  Explicitly skip setting the C-bit when loading
+CR3 for PAE shadow paging, even though it's completely ignored by the
+CPU.  The extra documentation is nice to have.
 
-Note, the direct-mapped-root PDPTR handling is needed for the scenario
-where paging is disabled in the guest, in which case KVM uses a direct
-mapped MMU even though TDP is disabled.
+Note, there are several subtleties at play with NPT.  In addition to
+legacy shadow paging, the PAE roots are used for SVM's NPT when either
+KVM is 32-bit (uses PAE paging) or KVM is 64-bit and shadowing 32-bit
+NPT.  However, 32-bit Linux, and thus KVM, doesn't support SME.  And
+64-bit KVM can happily set the C-bit in CR3.  This also means that
+keeping __sme_set(root) for 32-bit KVM when NPT is enabled is
+conceptually wrong, but functionally ok since SME is 64-bit only.
+Leave it as is to avoid unnecessary pollution.
 
 Fixes: d0ec49d4de90 ("kvm/x86/svm: Support Secure Memory Encryption within KVM")
 Cc: stable@vger.kernel.org
@@ -83,32 +90,91 @@ Cc: Brijesh Singh <brijesh.singh@amd.com>
 Cc: Tom Lendacky <thomas.lendacky@amd.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 24 ++++++++++++++++++++++--
+ arch/x86/kvm/svm/svm.c |  7 +++++--
+ 2 files changed, 27 insertions(+), 4 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 59b1709a55b4..ddf1845f072e 100644
+index ddf1845f072e..45fe97b3b25d 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3251,7 +3251,8 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
- 
- 			root = mmu_alloc_root(vcpu, i << (30 - PAGE_SHIFT),
- 					      i << 30, PT32_ROOT_LEVEL, true);
--			vcpu->arch.mmu->pae_root[i] = root | PT_PRESENT_MASK;
-+			vcpu->arch.mmu->pae_root[i] = root | PT_PRESENT_MASK |
-+						      shadow_me_mask;
- 		}
- 		vcpu->arch.mmu->root_hpa = __pa(vcpu->arch.mmu->pae_root);
- 	} else
-@@ -3303,7 +3304,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
- 	 * or a PAE 3-level page table. In either case we need to be aware that
- 	 * the shadow page table may be a PAE or a long mode page table.
+@@ -48,6 +48,7 @@
+ #include <asm/memtype.h>
+ #include <asm/cmpxchg.h>
+ #include <asm/io.h>
++#include <asm/set_memory.h>
+ #include <asm/vmx.h>
+ #include <asm/kvm_page_track.h>
+ #include "trace.h"
+@@ -3313,8 +3314,9 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+ 	 * tables are allocated and initialized at root creation as there is no
+ 	 * equivalent level in the guest's NPT to shadow.  Allocate the tables
+ 	 * on demand, as running a 32-bit L1 VMM is very rare.  Unlike 32-bit
+-	 * NPT, the PDP table doesn't need to be in low mem.  Preallocate the
+-	 * pages so that the PAE roots aren't leaked on failure.
++	 * NPT, the PDP table doesn't need to be in low mem, and doesn't need
++	 * to be decrypted.  Preallocate the pages so that the PAE roots aren't
++	 * leaked on failure.
  	 */
--	pm_mask = PT_PRESENT_MASK;
-+	pm_mask = PT_PRESENT_MASK | shadow_me_mask;
- 	if (vcpu->arch.mmu->shadow_root_level == PT64_ROOT_4LEVEL)
- 		pm_mask |= PT_ACCESSED_MASK | PT_WRITABLE_MASK | PT_USER_MASK;
+ 	if (vcpu->arch.mmu->shadow_root_level == PT64_ROOT_4LEVEL &&
+ 	    (!vcpu->arch.mmu->pae_root || !vcpu->arch.mmu->lm_root)) {
+@@ -5234,6 +5236,8 @@ slot_handle_leaf(struct kvm *kvm, struct kvm_memory_slot *memslot,
  
+ static void free_mmu_pages(struct kvm_mmu *mmu)
+ {
++	if (!tdp_enabled && mmu->pae_root)
++		set_memory_encrypted((unsigned long)mmu->pae_root, 1);
+ 	free_page((unsigned long)mmu->pae_root);
+ 	free_page((unsigned long)mmu->lm_root);
+ }
+@@ -5271,6 +5275,22 @@ static int __kvm_mmu_create(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
+ 	for (i = 0; i < 4; ++i)
+ 		mmu->pae_root[i] = 0;
+ 
++	/*
++	 * CR3 is only 32 bits when PAE paging is used, thus it's impossible to
++	 * get the CPU to treat the PDPTEs as encrypted.  Decrypt the page so
++	 * that KVM's writes and the CPU's reads get along.  Note, this is
++	 * only necessary when using shadow paging, as 64-bit NPT can get at
++	 * the C-bit even when shadowing 32-bit NPT, and SME isn't supported
++	 * by 32-bit kernels (when KVM itself uses 32-bit NPT).
++	 */
++	if (!tdp_enabled)
++		set_memory_decrypted((unsigned long)mmu->pae_root, 1);
++	else
++		WARN_ON_ONCE(shadow_me_mask);
++
++	for (i = 0; i < 4; ++i)
++		mmu->pae_root[i] = 0;
++
+ 	return 0;
+ }
+ 
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 54610270f66a..4769cf8bf2fd 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3908,15 +3908,18 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long root,
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+ 	unsigned long cr3;
+ 
+-	cr3 = __sme_set(root);
+ 	if (npt_enabled) {
+-		svm->vmcb->control.nested_cr3 = cr3;
++		svm->vmcb->control.nested_cr3 = __sme_set(root);
+ 		vmcb_mark_dirty(svm->vmcb, VMCB_NPT);
+ 
+ 		/* Loading L2's CR3 is handled by enter_svm_guest_mode.  */
+ 		if (!test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
+ 			return;
+ 		cr3 = vcpu->arch.cr3;
++	} else if (vcpu->arch.mmu->shadow_root_level >= PT64_ROOT_4LEVEL) {
++		cr3 = __sme_set(root);
++	} else {
++		cr3 = root;
+ 	}
+ 
+ 	svm->vmcb->save.cr3 = cr3;
 -- 
 2.30.1.766.gb4fecdf3b7-goog
 
