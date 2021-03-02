@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A441132ACF4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBE532AD48
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1443337AbhCBVSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 16:18:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S1382219AbhCBVfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 16:35:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835141AbhCBSWm (ORCPT
+        with ESMTP id S1581253AbhCBSlk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:22:42 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E74C061221;
-        Tue,  2 Mar 2021 10:22:02 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id h98so20896623wrh.11;
-        Tue, 02 Mar 2021 10:22:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=AQZcXfo9G8LYSteYT7WgoA4705B6+cwG5ceOPpfI2d4=;
-        b=XIV83jFogb46lKfrgPuVxB/tFK0vWOCkKWI13X9lyiPtf8qEEBZWiTabOC9JOa3a7R
-         qnBXcLYuM2xPstI1EcIVEvB6Fy6PiTw7alSXwFlPQdvIGLupwPXHwA5sUW1mpGGia3MH
-         Se3qfIFC18lNh3Xk/UbrUnuEoc5R3iy07GGN7iSz4ue0IRBEt63iu8UtfGfMmWX4dw7Q
-         tEuQuewux4gLQGBVstMpSd+zxg1mgo+3P4pqBjpcvG63V75KoP+0BhaBnqN99eKY7zZl
-         jXm5ifxaKbY83wouO0baO1zyNtFtAaa+zCC9JNgwevOnJF3iRLxz2Px0nOXr8OB9M0wv
-         qiVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AQZcXfo9G8LYSteYT7WgoA4705B6+cwG5ceOPpfI2d4=;
-        b=gPCTHe0dP4RRWaEMipJFGpwKhBNC40rCyKeqyY452pqAjPsD9J3PKHYL/t4QVGuoHB
-         pV40tJkq8J3NHnQHQUpfh+xxnumA/qT/i1ySKmGn19pvehh7hfXQiGa88AkfmVH0ztn0
-         FHC/ewHh/y+ivj72pMxj/mqRg1oKpJBSVSnnEHWZNhnxWQGwtV3Z4O8aBmWjWKKdA/P/
-         bXr8okrELFvBZQLx+YSZrhQEcKDzpvWrlN3R866JX0l0j+Sn07XShlqkddrFbrRsYGaB
-         J6JnzqoczSugRXKhm6KnMLa4yvvnIEVrDiQ5/p1plEXtClZJaThADC9v0d/LSXRcPgit
-         6W3w==
-X-Gm-Message-State: AOAM532Eo53g2U918qo4bNsKWD3AfvhB09v0Yh2ICgHW4oNCvOvAJNUi
-        A1em6XOicFI4z1fKQbUeKuJZiteqGfMuzQ==
-X-Google-Smtp-Source: ABdhPJzGv6nlyivrup6XRDHj9bD9muewR9tZMzPIZYbK67oH8JrdLMi+RfLEOQvPJhPoOPYtms6HHg==
-X-Received: by 2002:adf:f3c2:: with SMTP id g2mr17115509wrp.300.1614709320670;
-        Tue, 02 Mar 2021 10:22:00 -0800 (PST)
-Received: from [192.168.1.10] (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id h2sm35071052wrq.81.2021.03.02.10.21.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Mar 2021 10:22:00 -0800 (PST)
-Subject: Re: [PATCH] gpio: regmap: fix direction register check
-To:     Michael Walle <michael@walle.cc>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210302180621.12301-1-noltari@gmail.com>
- <c05bf9228206786a09f4f17160a2edf9@walle.cc>
-From:   =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
-Message-ID: <bb5b8af1-6f7e-e2a0-0fcb-0de44447c1e6@gmail.com>
-Date:   Tue, 2 Mar 2021 19:21:59 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Tue, 2 Mar 2021 13:41:40 -0500
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A11CC0617AA;
+        Tue,  2 Mar 2021 10:25:12 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id E9D8DC800CF;
+        Tue,  2 Mar 2021 19:25:10 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id 7N4Koj22s0Eg; Tue,  2 Mar 2021 19:25:10 +0100 (CET)
+Received: from wsembach-tuxedo.fritz.box (p200300E37f234700Cc4188a7f2F8D6B8.dip0.t-ipconnect.de [IPv6:2003:e3:7f23:4700:cc41:88a7:f2f8:d6b8])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 8974CC800CE;
+        Tue,  2 Mar 2021 19:25:10 +0100 (CET)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     wse@tuxedocomputers.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        alsa-devel@vger.kernel.org
+Cc:     Eckhart Mohr <e.mohr@tuxedocomputers.com>, stable@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: Add quirk for Intel NUC 10
+Date:   Tue,  2 Mar 2021 19:25:05 +0100
+Message-Id: <20210302182505.24366-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <c05bf9228206786a09f4f17160a2edf9@walle.cc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+ALSA: hda/realtek: Add quirk for Intel NUC 10
 
-El 02/03/2021 a las 19:16, Michael Walle escribió:
-> Am 2021-03-02 19:06, schrieb Álvaro Fernández Rojas:
->> If there's a direction register, we should also have dat or set 
->> registers.
->> However, we only need one of them, not both.
-> 
-> Can you give some more context or an example? If there is a direction
-> register, we'd need to set and get the value, no?
+This adds a new SND_PCI_QUIRK(...) and applies it to the Intel NUC 10
+devices. This fixes the issue of the devices not having audio input and
+output on the headset jack because the kernel does not recognize when
+something is plugged in.
 
-I've just realized that I need to set reg_set_base to the same value as 
-reg_dat_base in my case.
-Please, ignore this patch and excuse me :$.
+The new quirk was inspired by the quirk for the Intel NUC 8 devices, but
+it turned out that the NUC 10 uses another pin. This information was
+acquired by black box testing likely pins.
 
-> 
-> -michael
-> 
->> Fixes: ebe363197e52 ("gpio: add a reusable generic gpio_chip using 
->> regmap")
->> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
->> ---
->>  drivers/gpio/gpio-regmap.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
->> index 23b0a8572f53..5a9fca00b5e8 100644
->> --- a/drivers/gpio/gpio-regmap.c
->> +++ b/drivers/gpio/gpio-regmap.c
->> @@ -194,7 +194,7 @@ struct gpio_regmap *gpio_regmap_register(const
->> struct gpio_regmap_config *config
->>
->>      /* if we have a direction register we need both input and output */
->>      if ((config->reg_dir_out_base || config->reg_dir_in_base) &&
->> -        (!config->reg_dat_base || !config->reg_set_base))
->> +        (!config->reg_dat_base && !config->reg_set_base))
->>          return ERR_PTR(-EINVAL);
->>
->>      /* we don't support having both registers simultaneously for now */
+Co-developed-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Eckhart Mohr <e.mohr@tuxedocomputers.com>
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+Cc: <stable@vger.kernel.org>
+---
+Forgot to add the "From"-line
+
+From d281364b8ca6c054a0e5ce20caa599bf7d08160d Mon Sep 17 00:00:00 2001
+From: Werner Sembach <wse@tuxedocomputers.com>
+Date: Fri, 26 Feb 2021 13:54:30 +0100
+Subject: [PATCH] Fix Intel NUC10 no output and input on headset jack
+
+---
+ sound/pci/hda/patch_realtek.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 290645516313..c14d624dbaf1 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6362,6 +6362,7 @@ enum {
+ 	ALC269_FIXUP_LEMOTE_A1802,
+ 	ALC269_FIXUP_LEMOTE_A190X,
+ 	ALC256_FIXUP_INTEL_NUC8_RUGGED,
++	ALC256_FIXUP_INTEL_NUC10,
+ 	ALC255_FIXUP_XIAOMI_HEADSET_MIC,
+ 	ALC274_FIXUP_HP_MIC,
+ 	ALC274_FIXUP_HP_HEADSET_MIC,
+@@ -7744,6 +7745,15 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MODE
+ 	},
++	[ALC256_FIXUP_INTEL_NUC10] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE
++	},
+ 	[ALC255_FIXUP_XIAOMI_HEADSET_MIC] = {
+ 		.type = HDA_FIXUP_VERBS,
+ 		.v.verbs = (const struct hda_verb[]) {
+@@ -8183,6 +8193,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1c06, 0x2013, "Lemote A1802", ALC269_FIXUP_LEMOTE_A1802),
+ 	SND_PCI_QUIRK(0x1c06, 0x2015, "Lemote A190X", ALC269_FIXUP_LEMOTE_A190X),
+ 	SND_PCI_QUIRK(0x8086, 0x2080, "Intel NUC 8 Rugged", ALC256_FIXUP_INTEL_NUC8_RUGGED),
++	SND_PCI_QUIRK(0x8086, 0x2081, "Intel NUC 10", ALC256_FIXUP_INTEL_NUC10),
+ 
+ #if 0
+ 	/* Below is a quirk table taken from the old code.
+-- 
+2.25.1
+
