@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57A432ADD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F6732ADDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1838038AbhCBWO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:14:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1839813AbhCBToq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:44:46 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F89EC06178A;
-        Tue,  2 Mar 2021 11:44:04 -0800 (PST)
-Received: from zn.tnic (p200300ec2f068c00543f0f7c5f9166fd.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:8c00:543f:f7c:5f91:66fd])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ECE371EC0105;
-        Tue,  2 Mar 2021 20:44:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1614714243;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=IGZC7Oux/tWM6r4nS+D/ePQALQcIumclBu+U+Em2dKA=;
-        b=Wcd4qA06f5nAkiingAG8IrYXipICsS/XvfYqmVrZkPDFn2sEV5O7ST8t5NsPiSjCaDUjMc
-        YY+FuX/ZuNsWOfLopeDESjsUnV7D+InJiNlBicdfHH4UXsqHmgYCd43tNE8QDZQDOAYKmA
-        eHa+Dufd7Ne+31WcIrKP6tHo40RI2Yk=
-Date:   Tue, 2 Mar 2021 20:43:53 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 6/7] x86/boot/compressed/64: Check SEV encryption in
- 32-bit boot-path
-Message-ID: <20210302194353.GH15469@zn.tnic>
-References: <20210210102135.30667-1-joro@8bytes.org>
- <20210210102135.30667-7-joro@8bytes.org>
+        id S1840101AbhCBWPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:15:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51440 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349042AbhCBUER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 15:04:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A79D8AC24;
+        Tue,  2 Mar 2021 19:48:02 +0000 (UTC)
+From:   Michal Suchanek <msuchanek@suse.de>
+To:     netdev@vger.kernel.org
+Cc:     Michal Suchanek <msuchanek@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Dany Madden <drt@linux.ibm.com>, Lijun Pan <ljp@linux.ibm.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ibmvnic: Fix possibly uninitialized old_num_tx_queues variable warning.
+Date:   Tue,  2 Mar 2021 20:47:47 +0100
+Message-Id: <20210302194747.21704-1-msuchanek@suse.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210210102135.30667-7-joro@8bytes.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 11:21:34AM +0100, Joerg Roedel wrote:
-> +	/*
-> +	 * Store the sme_me_mask as an indicator that SEV is active. It will be
-> +	 * set again in startup_64().
+GCC 7.5 reports:
+../drivers/net/ethernet/ibm/ibmvnic.c: In function 'ibmvnic_reset_init':
+../drivers/net/ethernet/ibm/ibmvnic.c:5373:51: warning: 'old_num_tx_queues' may be used uninitialized in this function [-Wmaybe-uninitialized]
+../drivers/net/ethernet/ibm/ibmvnic.c:5373:6: warning: 'old_num_rx_queues' may be used uninitialized in this function [-Wmaybe-uninitialized]
 
-So why bother? Or does something needs it before that?
+The variable is initialized only if(reset) and used only if(reset &&
+something) so this is a false positive. However, there is no reason to
+not initialize the variables unconditionally avoiding the warning.
 
-...
+Fixes: 635e442f4a48 ("ibmvnic: merge ibmvnic_reset_init and ibmvnic_init")
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+---
+ drivers/net/ethernet/ibm/ibmvnic.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-> +SYM_FUNC_START(sev_startup32_cbit_check)
-
-s/sev_startup32_cbit_check/startup32_check_sev_cbit/
-
-I guess.
-
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 118a4bd3f877..3bad762083c5 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -5219,16 +5219,14 @@ static int ibmvnic_reset_init(struct ibmvnic_adapter *adapter, bool reset)
+ {
+ 	struct device *dev = &adapter->vdev->dev;
+ 	unsigned long timeout = msecs_to_jiffies(20000);
+-	u64 old_num_rx_queues, old_num_tx_queues;
++	u64 old_num_rx_queues = adapter->req_rx_queues;
++	u64 old_num_tx_queues = adapter->req_tx_queues;
+ 	int rc;
+ 
+ 	adapter->from_passive_init = false;
+ 
+-	if (reset) {
+-		old_num_rx_queues = adapter->req_rx_queues;
+-		old_num_tx_queues = adapter->req_tx_queues;
++	if (reset)
+ 		reinit_completion(&adapter->init_done);
+-	}
+ 
+ 	adapter->init_done_rc = 0;
+ 	rc = ibmvnic_send_crq_init(adapter);
 -- 
-Regards/Gruss,
-    Boris.
+2.26.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
