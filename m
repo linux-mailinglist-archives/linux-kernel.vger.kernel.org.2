@@ -2,80 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6062532A1DE
+	by mail.lfdr.de (Postfix) with ESMTP id D14B332A1DF
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836367AbhCBHBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:01:21 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:25945 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347797AbhCBF7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 00:59:39 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1614664756; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=SDD1P47XNaiUZrFMTSvgy2G91aczIhSVqpNha7zFNTg=; b=kGu3dPq0Lb1CBYuOZWc04lJ9qYQP95E0tn8jxkMgqCollwBWj7z8hnnRhQAEmYju0VfI8nMP
- yiDy75rl/0CUG3EuRp3OnLG3HeuMAPidcPD0hrVGxWOWi9IjlziN/4KfFFllWfPnldZcIgT5
- 5q/rGCfWhZzi0VaxiTQ9SgKyeWY=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 603dd4171d4da3b75de04427 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Mar 2021 05:58:47
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CEB27C43464; Tue,  2 Mar 2021 05:58:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09D31C433CA;
-        Tue,  2 Mar 2021 05:58:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 09D31C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     linux-wireless@vger.kernel.org,
-        Luca Coelho <luciano.coelho@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH] iwlwifi: fix ARCH=i386 compilation warnings
-References: <20210302011640.1276636-1-pierre-louis.bossart@linux.intel.com>
-Date:   Tue, 02 Mar 2021 07:58:40 +0200
-In-Reply-To: <20210302011640.1276636-1-pierre-louis.bossart@linux.intel.com>
-        (Pierre-Louis Bossart's message of "Mon, 1 Mar 2021 19:16:37 -0600")
-Message-ID: <87k0qq85bj.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1836377AbhCBHBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:01:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1577344AbhCBGEZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 01:04:25 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029BEC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 22:03:42 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id 105so19003879otd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 22:03:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=tBhpCAA1jPbTnLiEd7jXA8BiYncum4qnQ5XpzF97iQg=;
+        b=ms0IMW24z3+h8/kEwL2uJqzBZnp9BvI/flyVqA+bL8lBcGyDtGnMX7yYiW8WrQjevj
+         BOSIm4v30W774hCRni3r02ZTRBocJsycPL8rTdiRo1NgUboqrnAcg1Ts2YzX60YEjdMy
+         Hq7+b4v0aZtv1Dm9dGcwtr1E4ql3QRJ9DU7BchDd5xHVdCyUH8poiWf+u3F516mnr+1Z
+         U73l1siBOEfhEQ885ZXc8949NNkYX8o4zmBIjELuN87owYx0fhM7w/JwI+nzDDwAMsr1
+         kJMn5nQusZ0DhCD3KPUnt93iXhUvFcgLfR52qNCHM1bxTKK3nIkp+kf2o3WwIbLjKk7p
+         fMNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=tBhpCAA1jPbTnLiEd7jXA8BiYncum4qnQ5XpzF97iQg=;
+        b=Ne1VLRKDXvQSep3EY3pYPZDATbnh1eRHyRz/0uySjXa9xfrU9qOvp81KYhf24e1MXn
+         ASw74dpLsrjSpDgtlmFTeKmQMBPfBG3iYyQHSXHekAGFA84TR+KzLEqS4kJqv2WDzVp+
+         kzKrAh6muPNnS+sbcNpN5lrslb565Y8fiZ78fW3MhjDVQtpmWZqZQESTV3CWGQ7a/JMs
+         wiy0Sc2rjnRbDqtAfeFvO81dw9ED3XRSavlSXqQw7g5exd5y/68yNUjQxPzOpdJmja9m
+         KM/ZsJLlR64VZFbp3KWi/ShLVArSxi6SdsAdrOesWrHabDUEucsIh7dOkLTZ9oslgmNj
+         96+g==
+X-Gm-Message-State: AOAM533mi7kzsAyyG85WCdPkGCeGDcm2Bw7ER7ucVdaRhgZfdHgRwnlf
+        DWfxAppCzn9hbjbsaOyjsq281Q==
+X-Google-Smtp-Source: ABdhPJzGl9CU/c+ASlckrwohDeSS2vlX3mr80dlrxGTph/s+yDJ0I9fXJJpkpBpIojX+HmctCZy9Hg==
+X-Received: by 2002:a05:6830:239a:: with SMTP id l26mr6541916ots.280.1614665022032;
+        Mon, 01 Mar 2021 22:03:42 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x126sm3854510oix.5.2021.03.01.22.03.40
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 01 Mar 2021 22:03:41 -0800 (PST)
+Date:   Mon, 1 Mar 2021 22:03:26 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 3/4] mm: /proc/sys/vm/stat_refresh skip checking known
+ negative stats
+In-Reply-To: <YD2IGxfOE5AgYuzc@carbon.dhcp.thefacebook.com>
+Message-ID: <alpine.LSU.2.11.2103012158540.7549@eggly.anvils>
+References: <alpine.LSU.2.11.2102251502240.13363@eggly.anvils> <alpine.LSU.2.11.2102251512170.13363@eggly.anvils> <YDw67lSx5vLTgx/O@carbon.dhcp.thefacebook.com> <alpine.LSU.2.11.2103011301010.4832@eggly.anvils>
+ <YD2IGxfOE5AgYuzc@carbon.dhcp.thefacebook.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com> writes:
+vmstat_refresh() can occasionally catch nr_zone_write_pending and
+nr_writeback when they are transiently negative.  The reason is partly
+that the interrupt which decrements them in test_clear_page_writeback()
+can come in before __test_set_page_writeback() got to increment them;
+but transient negatives are still seen even when that is prevented, and
+I am not yet certain why (but see Roman's note below).  Those stats are
+not buggy, they have never been seen to drift away from 0 permanently:
+so just avoid the annoyance of showing a warning on them.
 
-> An unsigned long variable should rely on '%lu' format strings, not '%zd'
->
-> Fixes: a1a6a4cf49ece ("iwlwifi: pnvm: implement reading PNVM from UEFI")
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
-> warnings found with v5.12-rc1 and next-20210301
+Similarly avoid showing a warning on nr_free_cma: CMA users have seen
+that one reported negative from /proc/sys/vm/stat_refresh too, but it
+does drift away permanently: I believe that's because its incrementation
+and decrementation are decided by page migratetype, but the migratetype
+of a pageblock is not guaranteed to be constant.
 
-Luca, can I take this to wireless-drivers?
+Roman Gushchin points out:
+For performance reasons, vmstat counters are incremented and decremented
+using per-cpu batches.  vmstat_refresh() flushes the per-cpu batches on
+all CPUs, to get values as accurate as possible; but this method is not
+atomic, so the resulting value is not always precise.  As a consequence,
+for those counters whose actual value is close to 0, a small negative
+value may occasionally be reported.  If the value is small and the state
+is transient, it is not an indication of an error.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Link: https://lore.kernel.org/linux-mm/20200714173747.3315771-1-guro@fb.com/
+Reported-by: Roman Gushchin <guro@fb.com>
+Signed-off-by: Hugh Dickins <hughd@google.com>
+---
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+ mm/vmstat.c |   15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+--- vmstat2/mm/vmstat.c	2021-02-25 11:56:18.000000000 -0800
++++ vmstat3/mm/vmstat.c	2021-02-25 12:42:15.000000000 -0800
+@@ -1840,6 +1840,14 @@ int vmstat_refresh(struct ctl_table *tab
+ 	if (err)
+ 		return err;
+ 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++) {
++		/*
++		 * Skip checking stats known to go negative occasionally.
++		 */
++		switch (i) {
++		case NR_ZONE_WRITE_PENDING:
++		case NR_FREE_CMA_PAGES:
++			continue;
++		}
+ 		val = atomic_long_read(&vm_zone_stat[i]);
+ 		if (val < 0) {
+ 			pr_warn("%s: %s %ld\n",
+@@ -1856,6 +1864,13 @@ int vmstat_refresh(struct ctl_table *tab
+ 	}
+ #endif
+ 	for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
++		/*
++		 * Skip checking stats known to go negative occasionally.
++		 */
++		switch (i) {
++		case NR_WRITEBACK:
++			continue;
++		}
+ 		val = atomic_long_read(&vm_node_stat[i]);
+ 		if (val < 0) {
+ 			pr_warn("%s: %s %ld\n",
