@@ -2,257 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF5132AA32
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB1732AA30
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444831AbhCBTPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:15:43 -0500
-Received: from mga12.intel.com ([192.55.52.136]:29520 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1575986AbhCBQ1g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:27:36 -0500
-IronPort-SDR: 16g1samh0KtiwftXCsWwO0jXcl30lI8G0xIFOkqc+vevOy6i+Pe4a2TJzyM06qW99qEHnI6/YF
- x4Y67tvN3mQw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="166115447"
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="166115447"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 08:25:40 -0800
-IronPort-SDR: tN2qvoStxQIhOI3/TYy7Qn4U6HwToXwgn1e8LErlsMfNEes7WgXn3eeLf1LFah3xscK0mAYNij
- hLOTbEIy6FqQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
-   d="scan'208";a="399090999"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by fmsmga008.fm.intel.com with ESMTP; 02 Mar 2021 08:25:38 -0800
-Subject: Re: [PATCH 1/1] mmc: cqhci: fix random crash when remove mmc module
-To:     Zhi Li <lznuaa@gmail.com>
-Cc:     riteshh@codeaurora.org, asutoshd@codeaurora.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>, haibo.chen@nxp.com
-References: <20210301172151.281814-1-Frank.Li@nxp.com>
- <0d135a2b-02d0-f05b-918b-c4253d67caf9@intel.com>
- <CAHrpEqQrB5rb-cbV19LQ-EDeCjSw+6O7D3wbsRYWWcDwTYBU=Q@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <42a468dd-24e0-355e-c3b9-a12ddee8dd3a@intel.com>
-Date:   Tue, 2 Mar 2021 18:25:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1444864AbhCBTPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:15:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35096 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1576868AbhCBQ1h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:27:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614702364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uQDTZD6aOWiMURqa+q3U34pq64jagkHulsjJuj+2YBU=;
+        b=ZT9xGl97g/sXXq/hwM8zWSS5Ry24pAVekMLGhbWULwpJgSP5bAgp7NWfZdye7PUzkuXPYk
+        BBlH0dgMmMEIf6Attyo47lJOLfpZLT0cnXrCsVtIY9F5Dh9k7+xQTyPTFZzNrlR1zmkTSU
+        GwownLSSMfnGOU9ABVkYa5uKaT/sSD0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-fVq9UChuNJKzzTSwRO_jGQ-1; Tue, 02 Mar 2021 11:26:00 -0500
+X-MC-Unique: fVq9UChuNJKzzTSwRO_jGQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2A008100CCC1;
+        Tue,  2 Mar 2021 16:25:59 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-140.rdu2.redhat.com [10.10.114.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CC9910023AE;
+        Tue,  2 Mar 2021 16:25:55 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 8A18622054F; Tue,  2 Mar 2021 11:25:54 -0500 (EST)
+Date:   Tue, 2 Mar 2021 11:25:54 -0500
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Subject: Re: [RFC PATCH] fuse: Clear SGID bit when setting mode in setacl
+Message-ID: <20210302162554.GE220334@redhat.com>
+References: <20210226183357.28467-1-lhenriques@suse.de>
+ <20210301163324.GC186178@redhat.com>
+ <YD0wbmulcBVZ7VZy@suse.de>
+ <20210302160033.GD220334@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHrpEqQrB5rb-cbV19LQ-EDeCjSw+6O7D3wbsRYWWcDwTYBU=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302160033.GD220334@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/03/21 5:12 pm, Zhi Li wrote:
+On Tue, Mar 02, 2021 at 11:00:33AM -0500, Vivek Goyal wrote:
+> On Mon, Mar 01, 2021 at 06:20:30PM +0000, Luis Henriques wrote:
+> > On Mon, Mar 01, 2021 at 11:33:24AM -0500, Vivek Goyal wrote:
+> > > On Fri, Feb 26, 2021 at 06:33:57PM +0000, Luis Henriques wrote:
+> > > > Setting file permissions with POSIX ACLs (setxattr) isn't clearing the
+> > > > setgid bit.  This seems to be CVE-2016-7097, detected by running fstest
+> > > > generic/375 in virtiofs.  Unfortunately, when the fix for this CVE landed
+> > > > in the kernel with commit 073931017b49 ("posix_acl: Clear SGID bit when
+> > > > setting file permissions"), FUSE didn't had ACLs support yet.
+> > > 
+> > > Hi Luis,
+> > > 
+> > > Interesting. I did not know that "chmod" can lead to clearing of SGID
+> > > as well. Recently we implemented FUSE_HANDLE_KILLPRIV_V2 flag which
+> > > means that file server is responsible for clearing of SUID/SGID/caps
+> > > as per following rules.
+> > > 
+> > >     - caps are always cleared on chown/write/truncate
+> > >     - suid is always cleared on chown, while for truncate/write it is cleared
+> > >       only if caller does not have CAP_FSETID.
+> > >     - sgid is always cleared on chown, while for truncate/write it is cleared
+> > >       only if caller does not have CAP_FSETID as well as file has group execute
+> > >       permission.
+> > > 
+> > > And we don't have anything about "chmod" in this list. Well, I will test
+> > > this and come back to this little later.
+> > > 
+> > > I see following comment in fuse_set_acl().
+> > > 
+> > >                 /*
+> > >                  * Fuse userspace is responsible for updating access
+> > >                  * permissions in the inode, if needed. fuse_setxattr
+> > >                  * invalidates the inode attributes, which will force
+> > >                  * them to be refreshed the next time they are used,
+> > >                  * and it also updates i_ctime.
+> > >                  */
+> > > 
+> > > So looks like that original code has been written with intent that
+> > > file server is responsible for updating inode permissions. I am
+> > > assuming this will include clearing of S_ISGID if needed.
+> > > 
+> > > But question is, does file server has enough information to be able
+> > > to handle proper clearing of S_ISGID info. IIUC, file server will need
+> > > two pieces of information atleast.
+> > > 
+> > > - gid of the caller.
+> > > - Whether caller has CAP_FSETID or not.
+> > > 
+> > > I think we have first piece of information but not the second one. May
+> > > be we need to send this in fuse_setxattr_in->flags. And file server
+> > > can drop CAP_FSETID while doing setxattr().
+> > > 
+> > > What about "gid" info. We don't change to caller's uid/gid while doing
+> > > setxattr(). So host might not clear S_ISGID or clear it when it should
+> > > not. I am wondering that can we switch to caller's uid/gid in setxattr(),
+> > > atleast while setting acls.
+> > 
+> > Thank for looking into this.  To be honest, initially I thought that the
+> > fix should be done in the server too, but when I looked into the code I
+> > couldn't find an easy way to get that done (without modifying the data
+> > being passed from the kernel in setxattr).
+> > 
+> > So, what I've done was to look at what other filesystems were doing in the
+> > ACL code, and that's where I found out about this CVE.  The CVE fix for
+> > the other filesystems looked easy enough to be included in FUSE too.
 > 
+> Hi Luis,
 > 
-> On Tue, Mar 2, 2021 at 1:03 AM Adrian Hunter <adrian.hunter@intel.com <mailto:adrian.hunter@intel.com>> wrote:
-> 
->     On 1/03/21 7:21 pm, Frank Li wrote:
->     > [ 6684.493350] Unable to handle kernel paging request at virtual address ffff800011c5b0f0
->     > [ 6684.498531] mmc0: card 0001 removed
->     > [ 6684.501556] Mem abort info:
->     > [ 6684.509681]   ESR = 0x96000047
->     > [ 6684.512786]   EC = 0x25: DABT (current EL), IL = 32 bits
->     > [ 6684.518394]   SET = 0, FnV = 0
->     > [ 6684.521707]   EA = 0, S1PTW = 0
->     > [ 6684.524998] Data abort info:
->     > [ 6684.528236]   ISV = 0, ISS = 0x00000047
->     > [ 6684.532986]   CM = 0, WnR = 1
->     > [ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000081b22000
->     > [ 6684.543923] [ffff800011c5b0f0] pgd=00000000bffff003, p4d=00000000bffff003, pud=00000000bfffe003, pmd=00000000900e1003, pte=0000000000000000
->     > [ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
->     > [ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cqhci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc caamalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexcan can_dev caam error [last unloaded: mmc_core]
->     > [ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5.10.9-01410-g3ba33182767b-dirty #10
->     > [ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
->     > [ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
->     >
->     > [ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
->     > [ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
->     > ^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.617085] lr : cqhci_request+0x314/0x4e8 [cqhci]
->     > [ 6684.626734] sp : ffff80001243b9f0
->     > [ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
->     > [ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
->     > [ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
->     > [ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
->     > [ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
->     > [ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
->     > [ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
->     > [ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
->     > [ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
->     > [ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
->     > [ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
->     > [ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
->     > [ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
->     > [ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
->     > [ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
->     > [ 6684.709854] Call trace:
->     > [ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
->     > [ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
->     > [ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
->     > [ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
->     >
->     > cqhci_request was called after cqhci_disable.
->     >
->     > cqhci_disable                                 cqhci_request
->     > {                                             {
->     >       dmam_free_coherent();  (1) free
->     >                                                   if(!cq_host->enable)
->     >                                                        return
->     >                                        (2) pass check here
->     >       cq_host->enable = false;
->     >
->     >                                                   task_desc= get_desc(cq_host,tag);
->     >                                                              ^^^^ crash here
->     >                                          (3) access memory which is already free
->     >
->     > }                                             }
->     >
->     > Signed-off-by: Frank Li <Frank.Li@nxp.com <mailto:Frank.Li@nxp.com>>
->     > ---
->     >  drivers/mmc/host/cqhci-core.c | 18 ++++++++++++++----
->     >  1 file changed, 14 insertions(+), 4 deletions(-)
->     >
->     > diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
->     > index 93b0432bb601..36d292261e50 100644
->     > --- a/drivers/mmc/host/cqhci-core.c
->     > +++ b/drivers/mmc/host/cqhci-core.c
->     > @@ -389,6 +389,7 @@ static void cqhci_off(struct mmc_host *mmc)
->     >  static void cqhci_disable(struct mmc_host *mmc)
->     >  {
->     >       struct cqhci_host *cq_host = mmc->cqe_private;
->     > +     unsigned long flags;
->     > 
->     >       if (!cq_host->enabled)
->     >               return;
->     > @@ -397,6 +398,11 @@ static void cqhci_disable(struct mmc_host *mmc)
->     > 
->     >       __cqhci_disable(cq_host);
->     > 
->     > +     /* need wait for cqhci_request finish before free memory */
->     > +     spin_lock_irqsave(&cq_host->lock, flags);
->     > +     cq_host->enabled = false;
->     > +     spin_unlock_irqrestore(&cq_host->lock, flags);
->     > +
->     >       dmam_free_coherent(mmc_dev(mmc), cq_host->data_size,
->     >                          cq_host->trans_desc_base,
->     >                          cq_host->trans_desc_dma_base);
->     > @@ -408,7 +414,6 @@ static void cqhci_disable(struct mmc_host *mmc)
->     >       cq_host->trans_desc_base = NULL;
->     >       cq_host->desc_base = NULL;
->     > 
->     > -     cq_host->enabled = false;
->     >  }
->     > 
->     >  static void cqhci_prep_task_desc(struct mmc_request *mrq,
->     > @@ -612,6 +617,13 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
->     >                       cq_host->ops->enable(mmc);
->     >       }
->     > 
->     > +     spin_lock_irqsave(&cq_host->lock, flags);
->     > +     if (!cq_host->enabled) {
->     > +             pr_err("%s: cqhci: not enabled\n", mmc_hostname(mmc));
->     > +             err = -EINVAL;
->     > +             goto out_unlock;
->     > +     }
->     > +
->     >       if (mrq->data) {
->     >               cqhci_prep_task_desc(mrq, cq_host, tag);
->     > 
->     > @@ -619,14 +631,12 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
->     >               if (err) {
->     >                       pr_err("%s: cqhci: failed to setup tx desc: %d\n",
->     >                              mmc_hostname(mmc), err);
->     > -                     return err;
->     > +                     goto out_unlock;
->     >               }
->     >       } else {
->     >               cqhci_prep_dcmd_desc(mmc, mrq);
->     >       }
->     > 
->     > -     spin_lock_irqsave(&cq_host->lock, flags);
->     > -
->     >       if (cq_host->recovery_halt) {
->     >               err = -EBUSY;
->     >               goto out_unlock;
->     >
-> 
->     Please try the following instead:
-> 
-> 
->     diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
->     index c2e70b757dd1..dfc8d2877115 100644
->     --- a/drivers/mmc/core/bus.c
->     +++ b/drivers/mmc/core/bus.c
->     @@ -399,11 +399,6 @@ void mmc_remove_card(struct mmc_card *card)
->             mmc_remove_card_debugfs(card);
->      #endif
-> 
->     -       if (host->cqe_enabled) {
->     -               host->cqe_ops->cqe_disable(host);
->     -               host->cqe_enabled = false;
->     -       }
->     -
->             if (mmc_card_present(card)) {
->                     if (mmc_host_is_spi(card->host)) {
->                             pr_info("%s: SPI card removed\n",
->     @@ -416,6 +411,11 @@ void mmc_remove_card(struct mmc_card *card)
->                     of_node_put(card->dev.of_node);
->             }
-> 
->     +       if (host->cqe_enabled) {
->     +               host->cqe_ops->cqe_disable(host);
->     +               host->cqe_enabled = false;
->     +       }
->     +
->             put_device(&card->dev);
->      }
-> 
-> 
-> Actually this is my first solution,  it can't resolve issues 100% and just reduce possibility. 
-> 
-> One core run                                                                          The another core run
-> mmc_remove_card                                                                mmc_mq_queue_rq
-> {                                                                                              {
->                                                                
->                                                                                                              if (mmc_card_removed(mq->card)) {
->                                                                                                                               req->rq_flags |= RQF_QUIET; 
->                                                                                                                                return BLK_STS_IOERR;
->                                                                                                               }
->                                                                                                               //pass check here
->         device_del(&card->dev); 
+> I still feel that it should probably be fixed in virtiofsd, given fuse client
+> is expecting file server to take care of any change of mode (file
+> permission bits).
 
-Deleting the card device removes it from the block driver
-(i.e. mmc_blk_remove()), which cleans up the request queues,
-so the scenario you describe here should never happen.
+Havid said that, there is one disadvantage of relying on server to
+do this. Now idmapped mount patches have been merged. If virtiofs
+were to ever support idmapped mounts, this will become an issue.
+Server does not know about idmapped mounts, and it does not have
+information on how to shift inode gid to determine if SGID should
+be cleared or not.
 
-Can you determine if mmc_blk_remove() is called and whether
-it cleans up blk queues?
+So if we were to keep possible future support of idmapped mounts in mind,
+then solving it in client makes more sense.  (/me is afraid that there
+might be other dependencies like this elsewhere).
 
+Miklos, WDYT.
 
->         //free resource here
->         host->cqe_ops->cqe_disable(host);  
->        
->                                                                                                               call  cqhci_request
->                                                                                                                 //kernel dump here to access memory that is already free. 
+Thanks
+Vivek
+
 > 
-> }                                                                                               }
->  
-> There is one fundamental problem that there is NOT read lock when checking mmc_card_removed, and write lock for updating md->card.  
-> The risk conditions always exist between queue request and card remove. 
+> I wrote a proof of concept patch and this should fix this. But it
+> drop CAP_FSETID always. So I will need to modify kernel to pass
+> this information to file server and that should properly fix
+> generic/375. 
 > 
-> There are no issues for non-command queue host controllers, it just causes a redundant cmd sent by host,  cmd will be timeout.  Just an expected IO error 
-> happened. Maybe just errors code is different.  
+> Please have a look. This applies on top of fuse acl support V4 patches
+> I had posted. I have pushed all the patches on a temporary git branch
+> as well.
 > 
-> But Cmd queue is different,  cmd queue disabled  function free memory resources. if risk conditions happen, there are kernel dump.     
+> https://github.com/rhvgoyal/qemu/commits/acl-sgid
 > 
->      
+> Vivek
 > 
+> 
+> Subject: virtiofsd: Switch creds, drop FSETID for system.posix_acl_access xattr
+> 
+> When posix access acls are set on a file, it can lead to adjusting file
+> permissions (mode) as well. If caller does not have CAP_FSETID and it
+> also does not have membership of owner group, this will lead to clearing
+> SGID bit in mode.
+> 
+> Current fuse code is written in such a way that it expects file server
+> to take care of chaning file mode (permission), if there is a need.
+> Right now, host kernel does not clear SGID bit because virtiofsd is
+> running as root and has CAP_FSETID. For host kernel to clear SGID,
+> virtiofsd need to switch to gid of caller in guest and also drop
+> CAP_FSETID (if caller did not have it to begin with).
+> 
+> This is a proof of concept patch which switches to caller's uid/gid
+> and alwasys drops CAP_FSETID in lo_setxattr(system.posix_acl_access).
+> This should fix the xfstest generic/375 test case.
+> 
+> This patch is not complete yet. Kernel should pass information when
+> to drop CAP_FSETID and when not to. I will look into modifying
+> kernel to pass this information to file server.
+> 
+> Reported-by: Luis Henriques <lhenriques@suse.de>
+> Yet-to-be-signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> ---
+>  tools/virtiofsd/passthrough_ll.c |   28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
+> 
+> Index: rhvgoyal-qemu/tools/virtiofsd/passthrough_ll.c
+> ===================================================================
+> --- rhvgoyal-qemu.orig/tools/virtiofsd/passthrough_ll.c	2021-03-02 08:06:20.539820330 -0500
+> +++ rhvgoyal-qemu/tools/virtiofsd/passthrough_ll.c	2021-03-02 10:46:40.901334665 -0500
+> @@ -172,7 +172,7 @@ struct lo_data {
+>      int user_killpriv_v2, killpriv_v2;
+>      /* If set, virtiofsd is responsible for setting umask during creation */
+>      bool change_umask;
+> -    int user_posix_acl;
+> +    int user_posix_acl, posix_acl;
+>  };
+>  
+>  static const struct fuse_opt lo_opts[] = {
+> @@ -677,6 +677,7 @@ static void lo_init(void *userdata, stru
+>          fuse_log(FUSE_LOG_DEBUG, "lo_init: enabling posix acl\n");
+>          conn->want |= FUSE_CAP_POSIX_ACL | FUSE_CAP_DONT_MASK;
+>          lo->change_umask = true;
+> +        lo->posix_acl = true;
+>      } else {
+>          /* User either did not specify anything or wants it disabled */
+>          fuse_log(FUSE_LOG_DEBUG, "lo_init: disabling posix_acl\n");
+> @@ -2981,12 +2982,37 @@ static void lo_setxattr(fuse_req_t req,
+>  
+>      sprintf(procname, "%i", inode->fd);
+>      if (S_ISREG(inode->filetype) || S_ISDIR(inode->filetype)) {
+> +        bool switched_creds = false;
+> +        struct lo_cred old = {};
+> +
+>          fd = openat(lo->proc_self_fd, procname, O_RDONLY);
+>          if (fd < 0) {
+>              saverr = errno;
+>              goto out;
+>          }
+> +
+> +        if (lo->posix_acl && !strcmp(name, "system.posix_acl_access")) {
+> +            ret = lo_change_cred(req, &old, false);
+> +            if (ret) {
+> +                saverr = ret;
+> +                goto out;
+> +            }
+> +            ret = drop_effective_cap("FSETID", NULL);
+> +            if (ret != 0) {
+> +                lo_restore_cred(&old, false);
+> +                saverr = ret;
+> +                goto out;
+> +            }
+> +            switched_creds = true;
+> +        }
+> +
+>          ret = fsetxattr(fd, name, value, size, flags);
+> +
+> +        if (switched_creds) {
+> +            if (gain_effective_cap("FSETID"))
+> +                fuse_log(FUSE_LOG_ERR, "Failed to gain CAP_FSETID\n");
+> +            lo_restore_cred(&old, false);
+> +        }
+>      } else {
+>          /* fchdir should not fail here */
+>          assert(fchdir(lo->proc_self_fd) == 0);
 
