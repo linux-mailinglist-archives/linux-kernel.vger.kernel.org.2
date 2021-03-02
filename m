@@ -2,109 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F7A32A9C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E2F32A9DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 19:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581366AbhCBSux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449013AbhCBQDc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:03:32 -0500
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8987BC0617A9
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:02:25 -0800 (PST)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D755D1C0B88; Tue,  2 Mar 2021 16:55:34 +0100 (CET)
-Date:   Tue, 2 Mar 2021 16:55:34 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>,
-        linux-leds <linux-leds@vger.kernel.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        malliamireddy009@gmail.com, yixin.zhu@intel.com
-Subject: Re: [PATCH v3 2/2] leds: lgm: Add LED controller driver for LGM SoC
-Message-ID: <20210302155534.GA19849@duo.ucw.cz>
-References: <49ebc8e27958cb77cde36e5f95ad530803259907.1607591119.git.mallikarjunax.reddy@linux.intel.com>
- <dfd39387b1f72eb22a29bad516398a47b20c47bc.1607591119.git.mallikarjunax.reddy@linux.intel.com>
- <CAMuHMdW=M6wougrQMjBdTfFQzPbEQOM-Svq=DTQi8Rvzabxc_g@mail.gmail.com>
+        id S1835271AbhCBSvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:51:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1445780AbhCBQHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:07:08 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19E7961494;
+        Tue,  2 Mar 2021 15:58:29 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 10:58:27 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [x86, build] 6dafca9780:
+ WARNING:at_arch/x86/kernel/ftrace.c:#ftrace_verify_code
+Message-ID: <20210302105827.3403656c@gandalf.local.home>
+In-Reply-To: <YD4DM6uAETid7j4l@hirez.programming.kicks-ass.net>
+References: <20210301074027.GD12822@xsang-OptiPlex-9020>
+        <CABCJKuc8H83b_8_Ccp+Cb7O9x5oEu6sPNq63sjGcAJcgiwy0bw@mail.gmail.com>
+        <20210301184524.7aa05ac1@gandalf.local.home>
+        <CABCJKudQme=bcNJtNCORUpBnVA_Pkr2Zk_3Nu2EsfnuoE7LJ3g@mail.gmail.com>
+        <20210301201526.65ce7f1c@oasis.local.home>
+        <YD4DM6uAETid7j4l@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdW=M6wougrQMjBdTfFQzPbEQOM-Svq=DTQi8Rvzabxc_g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2 Mar 2021 10:19:47 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
---KsGdsel6WgEHnImy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Mon, Mar 01, 2021 at 08:15:26PM -0500, Steven Rostedt wrote:
+> > diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+> > index 7edbd5ee5ed4..e8afc765e00a 100644
+> > --- a/arch/x86/kernel/ftrace.c
+> > +++ b/arch/x86/kernel/ftrace.c
+> > @@ -36,6 +36,7 @@
+> >  #ifdef CONFIG_DYNAMIC_FTRACE
+> >  
+> >  static int ftrace_poke_late = 0;
+> > +static const char p6_nop[] = { P6_NOP5 };  
+> 
+> I don't understand this approach, why not simply rewrite all the nops at
+> boot and not worry about it when modifying the code later?
 
-Hi!
+That was one of the suggestions I made in the first reply. But it's more
+complex than that. Because the CC_USING_NOP_MCOUNT was added for other
+architectures (currently only s390 and parisc uses it), it simply skips the
+process of initializing the mcount/fentry into nops if the compiler had
+already done it.
 
-> > --- /dev/null
-> > +++ b/drivers/leds/blink/Kconfig
-> > @@ -0,0 +1,20 @@
-> > +menuconfig LEDS_BLINK
-> > +       bool "LED Blink support"
-> > +       depends on LEDS_CLASS
-> > +       help
-> > +         This option enables blink support for the leds class.
-> > +         If unsure, say Y.
->=20
-> What is the purpose of the LEDS_BLINK config symbol?
-> Blink support for the leds class is always available, regardless of the
-> value of this symbol, and controlled for individual drivers by filling
-> in the led_classdev.blink_set() callback.
+But because x86 is the only architecture daft enough to have different nops
+with different "performance" depending on what hardware it's booted on, it's
+a bit "special".
 
-We don't really need the symbol.
+If we have to convert nops at boot up in case the compiler gets it wrong,
+than why bother having the compiler try in the first place?
 
-> > +if LEDS_BLINK
-> > +
-> > +config LEDS_BLINK_LGM
-> > +       tristate "LED support for Intel LGM SoC series"
-> > +       depends on LEDS_CLASS
-> > +       depends on MFD_SYSCON
-> > +       depends on OF
-> > +       help
-> > +         Parallel to serial conversion, which is also called SSO contr=
-oller,
-> > +         can drive external shift register for LED outputs.
-> > +         This enables LED support for Serial Shift Output controller(S=
-SO).
->=20
-> What's so special about this driver that it needs a new "blink" subdir?
-> Isn't it an ordinary LED driver?
-> Looking at the code filling in the .blink_set() callback, the hardware
-> blink feature seems to be even optional?
+In other words, the only changes I see is the one I just made, or we rip
+out CC_USING_NOP_MCOUNT for x86 completely.
 
-So idea is to start putting drivers into subdirectories, because we
-have too many of them at the moment.
-
-simple/blink/flash/rgb, or something like that.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---KsGdsel6WgEHnImy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYD5f9gAKCRAw5/Bqldv6
-8l5kAJ9h0LDI6czkDFin/4mLftjT1OgocACgh0SaQO7AXg+i11GYB3ZAl8Zzmrs=
-=brLz
------END PGP SIGNATURE-----
-
---KsGdsel6WgEHnImy--
+-- Steve
