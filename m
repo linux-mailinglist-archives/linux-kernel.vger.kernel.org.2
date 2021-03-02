@@ -2,113 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C8732A1A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC6932A1B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347828AbhCBGor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 01:44:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344172AbhCBFQv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 00:16:51 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F2DC0617A7
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 21:16:10 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id e3so9082784pfj.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 21:16:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4mH1U5hmRiBJDETEHndXgS3KJ6e28Mw9ydwzu03eWw4=;
-        b=nwpCyK0iP5UVbEhsxmHF1eDSoFkSf6v31SprFws8MBXvfV8kZk0zOn9HdkuQTj5VFl
-         DHXkAHSBJ7hKXzdctcfji4rwEWPFY1eRR/XUjaOrv4AGhRIoIcKd3XeHgtjz5GCCFyfF
-         hga6flGcmQ35V1mAULa7VobjHGx0SRkHtgO1QwYtjwu39EVmk/25Wqi9lm4TunasxKc2
-         ioAym6abRRu8XJFyvaqrKJx1HyG58pNVBL4wRpuGDa1kpMdvk9n0t3WelIePZ51QNcM0
-         CF+8uRJOMKH8j5yE9y6Muu2+0RnwBfp4fy2m3vP/T7kg7f5niGvAyXF+UCj+DLEdeEvl
-         UZQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4mH1U5hmRiBJDETEHndXgS3KJ6e28Mw9ydwzu03eWw4=;
-        b=t6USwDJetjwU6vTG1viGXsXhRLy1hQ/zmlxD21fzXSIll346+KZGA58rPadUd9oypg
-         0wch/2oQO0+v8ehN0zZ+XoQj5E8FiL0V0gc43YchIGRBGvy7XzIbOK3xyHB5U5lh7bsi
-         u5XHS81u8vQnW970OkFLh5bPeNYGO41BklXboPcKuYoER24UOEAcZJl4smSGO02VQvuz
-         2QgmrukNOAts9R6NdxLRNk8WlEu2wp/DIwa2jwXZp7oE9f0O5YJIn6fLh844bBAI+kmg
-         jEMFN/airehnmK0jyQ+OsMw2GjrBcXgxmtaIBO6I9heDz2X3EN/RnufIXSAijF5lhci1
-         mpWA==
-X-Gm-Message-State: AOAM532zol5FHFwHLyfqMgAGTJx8FalzkerCQ33cBRpPLlbPATXPc7G5
-        urWrOH5m0AtbjxVAg/87wpblhQ==
-X-Google-Smtp-Source: ABdhPJzmiA6hD+GzKRZZid3z0wFpBgbppacW3gsHNUoN4y6JRvnPgz6fC463RGmEkEMHORl0u2ACew==
-X-Received: by 2002:a63:f202:: with SMTP id v2mr16507126pgh.24.1614662170327;
-        Mon, 01 Mar 2021 21:16:10 -0800 (PST)
-Received: from localhost ([122.171.124.15])
-        by smtp.gmail.com with ESMTPSA id s12sm1726674pgj.70.2021.03.01.21.16.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Mar 2021 21:16:09 -0800 (PST)
-Date:   Tue, 2 Mar 2021 10:46:07 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
+        id S236404AbhCBGyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 01:54:54 -0500
+Received: from mail-eopbgr70047.outbound.protection.outlook.com ([40.107.7.47]:9088
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1381333AbhCBFUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 00:20:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ifsRdxRrRTkYgf+59HwevtexaRPAzqbpHBgyx2tS5pmI4guLQQln+qvjBrurG1gIv1xJYhtdHhSddrMIc8kooJfkqGHfr3a3SNhx2i/L5/jgo/iMz7fE0SudCShsl9h1FIv4dBAN8WCBj66GeujF/X/0NYYPT0r9WZ6GXn7QJnS3mz/DrTZCBe9Qli0q/lNR2HH+dP+web0xE0DJ6o0GZJ81QrZN6jx21Z+7pglCRq0YCijYvaHPtVRkwRdzWdHfDA95kWxBxkOysviMObv2FtafmYPqTRRtbj84kp9kINNsiXIWW1hvtCTQ2rcYJ1OtPQGhbz/yFjM5MNjtUHo3Ow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JrSpHxl7EtR9QktsNP7nQMKiNZWNeg6JnsBKKtaZNXY=;
+ b=kL/nEf8k5toHLg9gKhZg/3O3lGrHcYQYwns0ooz2C0qz90Woi4wBe76f2P7ugEFkzFIW/lxcaVtvM45ZLemzYgWYnoyPs8He8IkpUxyOt8IX8tkH4+EblkXYtw+duqUK74YDibH6tmEr28Ls/D6TYX71FUtmpnxIqOlTUZVTcI+N1Dl7s8go5BRouKJD5HmdDCzMtkopfGz/wHCTu1Nr71XGJzKJJh+wgcqjds4BiHypAo3ok4FIyoBULyEM4Nftu0eVfNNH2Gd3VXhw7rIVK37UqNCqwImJ80f2b1jWP+ETyfARlDcB727i4ugHrk/vfzo7Q3aegVaXNf29I2I0wA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JrSpHxl7EtR9QktsNP7nQMKiNZWNeg6JnsBKKtaZNXY=;
+ b=lGkNnLfcP1c/mtBnIz6mMc3HptusLrCynO1HZaX2G3MKyXfmFU3XGGV6UaWI2T5Z2md9N08nBGupbMGCDD+zXIrhTAS0XWvQ0IvZ00XNeXEHOttdyhDYSco70s9r6PTfweCupN8TpHLeHs2nERvUi+vKGXfXQkgXaClaQyGV/ME=
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com (2603:10a6:4:96::7)
+ by DB6PR04MB3128.eurprd04.prod.outlook.com (2603:10a6:6:10::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Tue, 2 Mar
+ 2021 05:19:57 +0000
+Received: from DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8]) by DB6PR0402MB2758.eurprd04.prod.outlook.com
+ ([fe80::c99c:dbc3:ed75:e6e8%5]) with mapi id 15.20.3890.028; Tue, 2 Mar 2021
+ 05:19:56 +0000
+From:   Kuldeep Singh <kuldeep.singh@nxp.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Subject: Re: [PATCH v5] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210302051607.gul2w66xpsffzpnm@vireshk-i7>
-References: <00f826ffe1b6b4f5fb41de2b55ad6b8783b7ff45.1614579846.git.jie.deng@intel.com>
- <CAK8P3a1ZXbodV07TTErnQunCLWOBnzRiVdLCxBD743fn-6FbXg@mail.gmail.com>
- <20210302040114.rg6bb32g2bsivsgf@vireshk-i7>
- <20210302042233.7ppagwjk3rah3uh3@vireshk-i7>
- <5e66fc1b-81d3-341e-4864-adb021e9ce1e@intel.com>
+        Ashish Kumar <ashish.kumar@nxp.com>, Han Xu <han.xu@nxp.com>
+Subject: RE: [EXT] Re: [PATCH 2/3] spi: spi-nxp-fspi: Add driver support for
+ imx8dxl
+Thread-Topic: [EXT] Re: [PATCH 2/3] spi: spi-nxp-fspi: Add driver support for
+ imx8dxl
+Thread-Index: AQHXDoY+gDfnhwGOzEaNbBXq0bNZoqpvH7GAgAAzDSCAAAv2gIAAx0ug
+Date:   Tue, 2 Mar 2021 05:19:56 +0000
+Message-ID: <DB6PR0402MB275830516E1930F051982B88E0999@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+References: <20210301103230.1816168-1-kuldeep.singh@nxp.com>
+ <20210301103230.1816168-3-kuldeep.singh@nxp.com>
+ <20210301132539.GB4628@sirena.org.uk>
+ <DB6PR0402MB2758C61D8320CD0A88DC3B38E09A9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+ <20210301171111.GE4628@sirena.org.uk>
+In-Reply-To: <20210301171111.GE4628@sirena.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [122.176.14.156]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c0efa184-bb66-48ad-5190-08d8dd3ad1b3
+x-ms-traffictypediagnostic: DB6PR04MB3128:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR04MB3128A33374977046F25F63BEE0999@DB6PR04MB3128.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qgZ2wUNE5RfapT0pqmpAmYT3JqAT4447FeqwPCXeSqTbN9tkO8u6gJQmYbGUSsdQdT5Zn05QiLpDKtwexUyvv6j7TiHDXp9NTi5IwsVR/ITEOps+a3rEqXQfgaSQ55L2Ajp9vqCEAGwcFw+H9pCCOCaQ6toF2y1kA8Prlqp46lwHc+0kOEPskuPqfr4skC4zJgcn4d+E0skXglxE0MzwKDbW1pllnd0+AAeOou8R6DzOnkL6AXglztmS0k4Z3bYkOL+dhzNjZJZ7ekrb/bV2GVfiqpedc0bXoFtFU1C4QnHX82fu7bJCN8Zv3IuoyTiU+wHWkp7+T3nniWEUV4NEvbz83hqQ/27aoWLKOTCPkxoDGDpjfDDt0CZ/oiuzQDcH22KDOiOqASDdGj9Jrll+Kn9BPpfw6yNO3RSzVSlKrwqFK7MzA+UpayXLyp+0RIPIp4R+ODjSYNB2Tq/waQKUd5Rm61Lsr60tMVHE1TGlERLh2AfYxDYwHHWJD4FXaPnoe4hf0hJOEp65xC7UglTJM55vzWhTr6WVyxUnWjpXEVjP/EZ5PSHEA6Fl1zVhiQgL
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2758.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(39860400002)(136003)(396003)(478600001)(66556008)(86362001)(4326008)(8676002)(4744005)(52536014)(55236004)(44832011)(33656002)(71200400001)(2906002)(186003)(5660300002)(316002)(66446008)(64756008)(66476007)(6916009)(66946007)(9686003)(7696005)(54906003)(26005)(55016002)(76116006)(6506007)(8936002)(32563001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?C5gHWyRgxnMMcHBCJBf5waZlV1MDghmXWdzmXkDXk1Yl3FCB+r5H8C7CalJB?=
+ =?us-ascii?Q?hklyZznM92wjePHB0itwCpeM+909d/4Y9MHF5I4dxS270gfX9ZEAXc37OAAx?=
+ =?us-ascii?Q?JXq3hp7HSUbjP7erT3T/HoxY9ugUJ1hlyUzCXDHVINy1ctwYBIwrGc1uL40R?=
+ =?us-ascii?Q?aaHDeeioPyq5YzoVF1/VDFjIuRegRFzL+4XS7vjt2Cp5/PIt+4+vyDiZFSKt?=
+ =?us-ascii?Q?7bL/oofj/1fF+DpZb+x/aiWxng6pIFJu3i3lkqwMsLRdV42o8ooTJTp52KM0?=
+ =?us-ascii?Q?9RWySllKnoM7k7nemECqV2t1UA/oX6n/cHKEHjS6Y1hYkqwrkqiD01kHvLb9?=
+ =?us-ascii?Q?SzeuOkubZxjY9X+SY3S+sXucCxag41r4pFQwddM7Ewt8++HG1yD1MMOnLnd5?=
+ =?us-ascii?Q?JJltunT412FKHNB8jxE2wgPsj4zYAbmSJBDp3TGyWwS1fFncOJ54UxCWUHOC?=
+ =?us-ascii?Q?pz3P85w24YKdObkAlje/yCPB1PaWxaI8Vz8b0qpe48IipI8Mb51upnoqUzMf?=
+ =?us-ascii?Q?pXUBGDypT+peljOFdUYjmM3B7lpVY2DMlcmKvjuHB3QZAkspFzdUyN1JAnMc?=
+ =?us-ascii?Q?pDYTp2FtU3QQJ+e5pMYmdkixgxDVywkxl60lg5BmTSaWfKfbBh28H3+Pe3Tn?=
+ =?us-ascii?Q?trjmbaCb5fGT7V82mdSCTc3BhB8dQ+6cja8w5R6hvnNcYtCrrmJFKt8F1sRY?=
+ =?us-ascii?Q?DObGm3fD+KlNaHGR2qRZzr3JUoUevekpkmx5BdtslS/iwPP1+CEjToX884Ff?=
+ =?us-ascii?Q?tSvYqWBB4yd45i6y4Qzx6wVlpMbdhszic4Rrh6mqTBknhCG+nojAizcn2A+Z?=
+ =?us-ascii?Q?ib7ZTZ5dE0PMyrLtCgKt3hFO8zcl2j//zidENVgSTIWviWnUdTKt+F3veJLV?=
+ =?us-ascii?Q?BGPg+QBTEZmZnJCgkA5eF9fL+0SCgMySQc7BzyYZNYnrKWv0V2QteFSr1eqn?=
+ =?us-ascii?Q?aGSiTU/rGNUqCtA+UsslY07LdfSfzbPGUzcafYp9E9IwM449YwkqXtSrkgnm?=
+ =?us-ascii?Q?okCVpTEER99xtFEt60kez+XZRuRnorSzINc0VEgyT5LRDTUR8Ow4hdZpGrkO?=
+ =?us-ascii?Q?XFlE4NfBNNHrfrzJ/GYylz6nQu4fWt3DIijT6zds4+diNmPw++zwV/YOPWw5?=
+ =?us-ascii?Q?SodkN0NxjMKtwJ5iWibTAV2asi6A2X3rIk+92148xW5K7oSLju32hkFXMSTE?=
+ =?us-ascii?Q?izp12cFFIbpUavXCXcee3c29aD95Cg9mvxj8K61+WbOchr5UKUYay9ccGMwG?=
+ =?us-ascii?Q?ep6h3d9emOVi1HkVZ8NFhgd6QOVPGRplygzdcZQ1YwipS2i/imRNRdc0uUHA?=
+ =?us-ascii?Q?s0QnlUFFP3uoimSvQF0QNtvS?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e66fc1b-81d3-341e-4864-adb021e9ce1e@intel.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2758.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0efa184-bb66-48ad-5190-08d8dd3ad1b3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2021 05:19:56.8037
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4e0NCaXLazsCOSfriG8qrPCVmpYDh67a9et6xY2o99UT+4IaZUr5D+5mtLk+M0ft7apPzeRJmYwzZ7xUVMuLyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR04MB3128
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-03-21, 13:06, Jie Deng wrote:
-> Yeah. Actually, the backend only needs "struct virtio_i2c_out_hdr out_hdr"
-> and "struct virtio_i2c_in_hdr in_hdr" for communication. So we only need to
-> keep
-> the first two in uapi and move "struct virtio_i2c_req" into the driver.
-> 
-> But Jason wanted to include "struct virtio_i2c_req" in uapi. He explained in
-> this link
-> https://lists.linuxfoundation.org/pipermail/virtualization/2020-October/050222.html.
-> Do you agree with that explanation ?
+> > I have converted bindings to yaml version in the patch and also added
+> imx8dxl compatible along-with the conversion. Please see the difference i=
+n
+> compatible entries from txt to yaml conversion[1].
+> > Kindly let me know do I need to submit different patch for adding new
+> compatible or ok to include in the conversion patch itself?
+>=20
+> Your YAML binding conversion should have been a standalone patch only
+> doing that conversion, the new compatible should have been split out and
+> gone first - each patch should only do one thing as covered in submitting=
+-
+> patches.rst.  As things stand the changelog for the conversion is mislead=
+ing
+> since it doesn't mention the new compatible.
 
-I am not sure I understood his reasoning well, but it doesn't make any
-sense to keep this in uapi header if this is never going to get
-transferred over the wire.
+Thanks Mark for mentioning.
+I will send compatible adding patch with this series and post yaml conversi=
+on later.
 
-Moreover, the struct virtio_i2c_req in spec is misleading to me and
-rather creates unnecessary confusion. There is no structure like this
-which ever get passed here, but rather there are multiple vq
-transactions which take place, one with just the out header, then one
-with buffer and finally one with in header.
-
-I am not sure what's the right way of documenting it or if this is a
-standard virtio world follows.
-
--- 
-viresh
+Regards
+Kuldeep
