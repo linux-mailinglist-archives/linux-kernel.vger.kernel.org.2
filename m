@@ -2,91 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D58532B717
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B451132B71F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 12:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357254AbhCCKtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 3 Mar 2021 05:49:07 -0500
-Received: from mga12.intel.com ([192.55.52.136]:4468 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231838AbhCBXtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 18:49:40 -0500
-IronPort-SDR: cpvKoa2amG/VNtTsYZeuoTrtQbqRKEk5UWbojAfbEIGfxODZQkeeC34u0XQ+eWqi1OY78DX5kn
- JDeTt6hVbfag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="166281817"
-X-IronPort-AV: E=Sophos;i="5.81,218,1610438400"; 
-   d="scan'208";a="166281817"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 15:46:35 -0800
-IronPort-SDR: hv/iD/ygCIE8H3t1ule/ZVIvikOyUAjmtov+tEKECJNvBd4KKG97ozZ+KyDdeZWNtPmhqWwCMy
- sPoFp9TN6UxQ==
-X-IronPort-AV: E=Sophos;i="5.81,218,1610438400"; 
-   d="scan'208";a="406967876"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.177.76]) ([10.212.177.76])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 15:46:32 -0800
-Subject: Re: [PATCH v21 08/26] x86/mm: Introduce _PAGE_COW
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210217222730.15819-1-yu-cheng.yu@intel.com>
- <20210217222730.15819-9-yu-cheng.yu@intel.com>
- <20210301155234.GF6699@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <167f58a3-20ef-7210-1d66-cf25f4a9bbef@intel.com>
-Date:   Tue, 2 Mar 2021 15:46:31 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S1357388AbhCCKtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 3 Mar 2021 05:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234085AbhCBX4L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 18:56:11 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5ED5C061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 15:47:16 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id u4so26278491ljh.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 15:47:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LS4d4uUxDq7yhtpjLQE7kDOpsO4KYhMcEce+00T9U+s=;
+        b=b2YvmtWceuUdn6lRyC69kZzsj1GrBVdKv/s37uBMpqnrZeFSFFX3v7i6xMxDXM0DR1
+         3S5dN2pEfvAef3sPnfgVkmEU3K7V/vJq9ZpXQW43ps/9hu1KxRmJiYKJ3P1wDPufQdln
+         b482GFvnPEz8YRgub0ODGDSMeNZWts5Z1KBKxazzoxwhkFFIIEr49PX7KisrzY4L8d29
+         2DF1zgd6B1P/twHqi/XfuHR3dUcQjsFZdjpD7PTqTJty0smvB+kLU1cs4/8RagQVII2S
+         lJGjneBExfZnY4mmoqynG7aZlywjm/znyxLx4Ppbl/Pkv8lbwfth9qPpS4zT1fvo0/eU
+         bkVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LS4d4uUxDq7yhtpjLQE7kDOpsO4KYhMcEce+00T9U+s=;
+        b=Jl4pMd1T0yLvMY68VvRMQoek5+CGgBfRvH48kagZ5mPX4x3jyqzzh8V75Hk+U8jOf9
+         9mAFR6ZsN7//Y3q7nKaI0tbH8ofk7d7gCDPY/f7Xv6tUeeNktwUP54a1AJTU+9+uez0q
+         idobO9NX1cevpQlm65XUR3/W23TgjuBk6vC8sArkKpl7kxDKWctfY/kKB3VVv6RoP+3v
+         flrCk4C7PpC+OTi8lKln3HUpE0ianLbyYHGsnQkBMVB5FekXhO3hvFqbsv3y/NNeTL5E
+         hcPshXQNAl6qB2Zk0ugjNcLlT3947r2hhEjwOA5AiEE+t8KMmcAjsy0XLFqSy9WY04qs
+         xIzQ==
+X-Gm-Message-State: AOAM533qDrJOZdpxNdkXEDTB5e4kzIbASWoTrnHfi6UgMnPKuXgXzqc8
+        4LV0Fh3Tx7ZVaEQROBaXzIE=
+X-Google-Smtp-Source: ABdhPJy5L1J338j45dySxGdt1O0nFPc4P4bq9ZZ67C0FYOxtdRwp0t/z2lccEUEyzMGMCigXG4BIZw==
+X-Received: by 2002:a2e:3c13:: with SMTP id j19mr13431079lja.130.1614728835186;
+        Tue, 02 Mar 2021 15:47:15 -0800 (PST)
+Received: from localhost.localdomain (h-98-128-229-129.NA.cust.bahnhof.se. [98.128.229.129])
+        by smtp.gmail.com with ESMTPSA id j15sm1974359lfm.138.2021.03.02.15.47.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Mar 2021 15:47:14 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH] mfd: stmpe: Revert "Constify static struct resource"
+Date:   Wed,  3 Mar 2021 00:47:10 +0100
+Message-Id: <20210302234710.74455-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <20210301155234.GF6699@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/2021 7:52 AM, Borislav Petkov wrote:
-> On Wed, Feb 17, 2021 at 02:27:12PM -0800, Yu-cheng Yu wrote:
+Andy noted that constification of some static resource structs in
+intel_quark_i2c_gpio.c were incorrect. It turns out there is another
+change from the same series that is also incorrect in stmpe.c.
+These structures are modified at init and can not be made const.
 
-[...]
+This reverts commit 8d7b3a6dac4eae22c58b0853696cbd256966741b.
 
->>   static inline pmd_t pmd_mkdirty(pmd_t pmd)
->>   {
->> -	return pmd_set_flags(pmd, _PAGE_DIRTY | _PAGE_SOFT_DIRTY);
->> +	pmdval_t dirty = _PAGE_DIRTY;
->> +
->> +	/* Avoid creating (HW)Dirty=1, Write=0 PMDs */
->> +	if (cpu_feature_enabled(X86_FEATURE_SHSTK) && !(pmd_flags(pmd) & _PAGE_RW))
-> 
-> 						      !(pmd_write(pmd))
-> 
+Fixes: 8d7b3a6dac4e ("mfd: stmpe: Constify static struct resource")
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+I went through the series and this was the only additional issue I
+found. Sorry about that.
 
-There is a problem of doing that: pmd_write() is defined after this 
-function.  Maybe we can declare it first, or leave this as-is?
+ drivers/mfd/stmpe.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---
-Yu-cheng
+diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
+index 90f3292230c9..1aee3b3253fc 100644
+--- a/drivers/mfd/stmpe.c
++++ b/drivers/mfd/stmpe.c
+@@ -312,7 +312,7 @@ EXPORT_SYMBOL_GPL(stmpe_set_altfunc);
+  * GPIO (all variants)
+  */
+ 
+-static const struct resource stmpe_gpio_resources[] = {
++static struct resource stmpe_gpio_resources[] = {
+ 	/* Start and end filled dynamically */
+ 	{
+ 		.flags	= IORESOURCE_IRQ,
+@@ -336,7 +336,7 @@ static const struct mfd_cell stmpe_gpio_cell_noirq = {
+  * Keypad (1601, 2401, 2403)
+  */
+ 
+-static const struct resource stmpe_keypad_resources[] = {
++static struct resource stmpe_keypad_resources[] = {
+ 	{
+ 		.name	= "KEYPAD",
+ 		.flags	= IORESOURCE_IRQ,
+@@ -357,7 +357,7 @@ static const struct mfd_cell stmpe_keypad_cell = {
+ /*
+  * PWM (1601, 2401, 2403)
+  */
+-static const struct resource stmpe_pwm_resources[] = {
++static struct resource stmpe_pwm_resources[] = {
+ 	{
+ 		.name	= "PWM0",
+ 		.flags	= IORESOURCE_IRQ,
+@@ -445,7 +445,7 @@ static struct stmpe_variant_info stmpe801_noirq = {
+  * Touchscreen (STMPE811 or STMPE610)
+  */
+ 
+-static const struct resource stmpe_ts_resources[] = {
++static struct resource stmpe_ts_resources[] = {
+ 	{
+ 		.name	= "TOUCH_DET",
+ 		.flags	= IORESOURCE_IRQ,
+@@ -467,7 +467,7 @@ static const struct mfd_cell stmpe_ts_cell = {
+  * ADC (STMPE811)
+  */
+ 
+-static const struct resource stmpe_adc_resources[] = {
++static struct resource stmpe_adc_resources[] = {
+ 	{
+ 		.name	= "STMPE_TEMP_SENS",
+ 		.flags	= IORESOURCE_IRQ,
+-- 
+2.30.1
+
