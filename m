@@ -2,89 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CA632A249
+	by mail.lfdr.de (Postfix) with ESMTP id C79B132A24A
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 15:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1381398AbhCBH30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 02:29:26 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19579 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1836485AbhCBHDw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 02:03:52 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B603de32e0001>; Mon, 01 Mar 2021 23:03:10 -0800
-Received: from [10.25.103.152] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Mar
- 2021 07:03:07 +0000
-Subject: Re: [RFC PATCH 3/5] ASoC: audio-graph-card: Add bindings for sysclk
- and pll
-To:     Rob Herring <robh@kernel.org>
-CC:     Mark Brown <broonie@kernel.org>, Jon Hunter <jonathanh@nvidia.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1614276364-13655-1-git-send-email-spujar@nvidia.com>
- <1614276364-13655-4-git-send-email-spujar@nvidia.com>
- <CAL_Jsq+9esDGw7ZCLnZS_KLmLUFyVenz83ohgNKFK3bdPD2ouQ@mail.gmail.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <0ea5b885-2610-8f12-569d-15a8eff50c10@nvidia.com>
-Date:   Tue, 2 Mar 2021 12:33:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1381427AbhCBHbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 02:31:10 -0500
+Received: from mga03.intel.com ([134.134.136.65]:10203 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1836603AbhCBHEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 02:04:36 -0500
+IronPort-SDR: yxhffZ72o/qL89tMRcB/+xSNbosCw9OUwYSKiudYAlai9W4kYsjQrTm8zIJL6O3Gtz2ycv6JhU
+ bJhncZ1Pk5Qw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186771396"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="186771396"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2021 23:03:54 -0800
+IronPort-SDR: 7IzRiX8E44ofpMaGwotx0lKalu9xYiLpFVU1Q1E1mAI+eQeYkweZVB3EWtP5QkMe3OSeVHKg0j
+ pKddNgteuoow==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="585794184"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by orsmga005.jf.intel.com with ESMTP; 01 Mar 2021 23:03:52 -0800
+Subject: Re: [PATCH 1/1] mmc: cqhci: fix random crash when remove mmc module
+To:     Frank Li <lznuaa@gmail.com>, riteshh@codeaurora.org,
+        asutoshd@codeaurora.org, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        haibo.chen@nxp.com
+References: <20210301172151.281814-1-Frank.Li@nxp.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <0d135a2b-02d0-f05b-918b-c4253d67caf9@intel.com>
+Date:   Tue, 2 Mar 2021 09:04:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+9esDGw7ZCLnZS_KLmLUFyVenz83ohgNKFK3bdPD2ouQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210301172151.281814-1-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614668590; bh=mtH3d+wKblfOn6NGGlgdJ6FIympBFVhrzgmGLQmLWbs=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=LLRZtTv1H9RTl+yAYiBhRtJwAxwJ/aDjcHCbLRGLD9/OflQs4B/3Znyi1X+Uoxe9d
-         qeBFOdLIBMz6zVF0BCinxrZGh6L5MTdXnzTtILf0n7+xFkU6OyHhGf1rDXevCZ0wDH
-         RRi0r2+KGv09ATJ3lwlWt+wup6LDiaPMqNYbt65jnNkupzaxPV39S7+R3DvUeBtROx
-         iezCuNx2B36jlT+b3xqncuQgZMuEffxb5yUDntI7+RTOuEzC4oZZlM5zrQ8opkrntH
-         I5flCEmPFwZHRpdPbvxpVzjQWMRQPwzCw9j9trFnKMHXb1nVc1nV6otfYBLHdJY+HX
-         EXqMjJxKQ8Adw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/03/21 7:21 pm, Frank Li wrote:
+> [ 6684.493350] Unable to handle kernel paging request at virtual address ffff800011c5b0f0
+> [ 6684.498531] mmc0: card 0001 removed
+> [ 6684.501556] Mem abort info:
+> [ 6684.509681]   ESR = 0x96000047
+> [ 6684.512786]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [ 6684.518394]   SET = 0, FnV = 0
+> [ 6684.521707]   EA = 0, S1PTW = 0
+> [ 6684.524998] Data abort info:
+> [ 6684.528236]   ISV = 0, ISS = 0x00000047
+> [ 6684.532986]   CM = 0, WnR = 1
+> [ 6684.536129] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000081b22000
+> [ 6684.543923] [ffff800011c5b0f0] pgd=00000000bffff003, p4d=00000000bffff003, pud=00000000bfffe003, pmd=00000000900e1003, pte=0000000000000000
+> [ 6684.557915] Internal error: Oops: 96000047 [#1] PREEMPT SMP
+> [ 6684.564240] Modules linked in: sdhci_esdhc_imx(-) sdhci_pltfm sdhci cqhci mmc_block mmc_core fsl_jr_uio caam_jr caamkeyblob_desc caamhash_desc caamalg_desc crypto_engine rng_core authenc libdes crct10dif_ce flexcan can_dev caam error [last unloaded: mmc_core]
+> [ 6684.587281] CPU: 0 PID: 79138 Comm: kworker/0:3H Not tainted 5.10.9-01410-g3ba33182767b-dirty #10
+> [ 6684.596160] Hardware name: Freescale i.MX8DXL EVK (DT)
+> [ 6684.601320] Workqueue: kblockd blk_mq_run_work_fn
+> 
+> [ 6684.606094] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> [ 6684.612286] pc : cqhci_request+0x148/0x4e8 [cqhci]
+> ^GMessage from syslogd@  at Thu Jan  1 01:51:24 1970 ...[ 6684.617085] lr : cqhci_request+0x314/0x4e8 [cqhci]
+> [ 6684.626734] sp : ffff80001243b9f0
+> [ 6684.630049] x29: ffff80001243b9f0 x28: ffff00002c3dd000
+> [ 6684.635367] x27: 0000000000000001 x26: 0000000000000001
+> [ 6684.640690] x25: ffff00002c451000 x24: 000000000000000f
+> [ 6684.646007] x23: ffff000017e71c80 x22: ffff00002c451000
+> [ 6684.651326] x21: ffff00002c0f3550 x20: ffff00002c0f3550
+> [ 6684.656651] x19: ffff000017d46880 x18: ffff00002cea1500
+> [ 6684.661977] x17: 0000000000000000 x16: 0000000000000000
+> [ 6684.667294] x15: 000001ee628e3ed1 x14: 0000000000000278
+> [ 6684.672610] x13: 0000000000000001 x12: 0000000000000001
+> [ 6684.677927] x11: 0000000000000000 x10: 0000000000000000
+> [ 6684.683243] x9 : 000000000000002b x8 : 0000000000001000
+> [ 6684.688560] x7 : 0000000000000010 x6 : ffff00002c0f3678
+> [ 6684.693886] x5 : 000000000000000f x4 : ffff800011c5b000
+> [ 6684.699211] x3 : 000000000002d988 x2 : 0000000000000008
+> [ 6684.704537] x1 : 00000000000000f0 x0 : 0002d9880008102f
+> [ 6684.709854] Call trace:
+> [ 6684.712313]  cqhci_request+0x148/0x4e8 [cqhci]
+> [ 6684.716803]  mmc_cqe_start_req+0x58/0x68 [mmc_core]
+> [ 6684.721698]  mmc_blk_mq_issue_rq+0x460/0x810 [mmc_block]
+> [ 6684.727018]  mmc_mq_queue_rq+0x118/0x2b0 [mmc_block]
+> 
+> cqhci_request was called after cqhci_disable.
+> 
+> cqhci_disable                                 cqhci_request
+> {                                             {
+> 	dmam_free_coherent();  (1) free
+>                                                   if(!cq_host->enable)
+>                                                        return
+> 				         (2) pass check here
+> 	cq_host->enable = false;
+> 
+>                                                   task_desc= get_desc(cq_host,tag);
+>                                                              ^^^^ crash here
+>                                          (3) access memory which is already free
+> 
+> }                                             }
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/mmc/host/cqhci-core.c | 18 ++++++++++++++----
+>  1 file changed, 14 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+> index 93b0432bb601..36d292261e50 100644
+> --- a/drivers/mmc/host/cqhci-core.c
+> +++ b/drivers/mmc/host/cqhci-core.c
+> @@ -389,6 +389,7 @@ static void cqhci_off(struct mmc_host *mmc)
+>  static void cqhci_disable(struct mmc_host *mmc)
+>  {
+>  	struct cqhci_host *cq_host = mmc->cqe_private;
+> +	unsigned long flags;
+>  
+>  	if (!cq_host->enabled)
+>  		return;
+> @@ -397,6 +398,11 @@ static void cqhci_disable(struct mmc_host *mmc)
+>  
+>  	__cqhci_disable(cq_host);
+>  
+> +	/* need wait for cqhci_request finish before free memory */
+> +	spin_lock_irqsave(&cq_host->lock, flags);
+> +	cq_host->enabled = false;
+> +	spin_unlock_irqrestore(&cq_host->lock, flags);
+> +
+>  	dmam_free_coherent(mmc_dev(mmc), cq_host->data_size,
+>  			   cq_host->trans_desc_base,
+>  			   cq_host->trans_desc_dma_base);
+> @@ -408,7 +414,6 @@ static void cqhci_disable(struct mmc_host *mmc)
+>  	cq_host->trans_desc_base = NULL;
+>  	cq_host->desc_base = NULL;
+>  
+> -	cq_host->enabled = false;
+>  }
+>  
+>  static void cqhci_prep_task_desc(struct mmc_request *mrq,
+> @@ -612,6 +617,13 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+>  			cq_host->ops->enable(mmc);
+>  	}
+>  
+> +	spin_lock_irqsave(&cq_host->lock, flags);
+> +	if (!cq_host->enabled) {
+> +		pr_err("%s: cqhci: not enabled\n", mmc_hostname(mmc));
+> +		err = -EINVAL;
+> +		goto out_unlock;
+> +	}
+> +
+>  	if (mrq->data) {
+>  		cqhci_prep_task_desc(mrq, cq_host, tag);
+>  
+> @@ -619,14 +631,12 @@ static int cqhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
+>  		if (err) {
+>  			pr_err("%s: cqhci: failed to setup tx desc: %d\n",
+>  			       mmc_hostname(mmc), err);
+> -			return err;
+> +			goto out_unlock;
+>  		}
+>  	} else {
+>  		cqhci_prep_dcmd_desc(mmc, mrq);
+>  	}
+>  
+> -	spin_lock_irqsave(&cq_host->lock, flags);
+> -
+>  	if (cq_host->recovery_halt) {
+>  		err = -EBUSY;
+>  		goto out_unlock;
+> 
+
+Please try the following instead:
 
 
-On 3/2/2021 7:40 AM, Rob Herring wrote:
-> External email: Use caution opening links or attachments
->
->
-> On Thu, Feb 25, 2021 at 12:06 PM Sameer Pujar <spujar@nvidia.com> wrote:
->> ASoC core provides callbacks snd_soc_dai_set_sysclk() and
->> snd_soc_dai_set_pll() for system clock (sysclk) and pll configurations
->> respectively. Add bindings for flexible sysclk or pll configurations
->> which can be driven from CPU/Codec DAI or endpoint subnode from DT.
->> This in turn helps to avoid hard codings in driver and makes it more
->> generic.
->>
->> Also add system-clock related bindings, "system-clock-direction-out"
->> and "system-clock-frequency", which are already supported.
-> This all looks like duplication of what the clock binding can provide.
-> We don't need 2 ways to describe clocks in DT.
+diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
+index c2e70b757dd1..dfc8d2877115 100644
+--- a/drivers/mmc/core/bus.c
++++ b/drivers/mmc/core/bus.c
+@@ -399,11 +399,6 @@ void mmc_remove_card(struct mmc_card *card)
+ 	mmc_remove_card_debugfs(card);
+ #endif
+ 
+-	if (host->cqe_enabled) {
+-		host->cqe_ops->cqe_disable(host);
+-		host->cqe_enabled = false;
+-	}
+-
+ 	if (mmc_card_present(card)) {
+ 		if (mmc_host_is_spi(card->host)) {
+ 			pr_info("%s: SPI card removed\n",
+@@ -416,6 +411,11 @@ void mmc_remove_card(struct mmc_card *card)
+ 		of_node_put(card->dev.of_node);
+ 	}
+ 
++	if (host->cqe_enabled) {
++		host->cqe_ops->cqe_disable(host);
++		host->cqe_enabled = false;
++	}
++
+ 	put_device(&card->dev);
+ }
+ 
 
-This was targetted for external audio codecs. Their internal clock 
-management is not exposed with the clock framework. Instead ASoC 
-provides callbacks to set this up on Codec side. There are many 
-references where this is followed with some hardcoded settings in the 
-drivers.
-
-Are you suggesting to instead expose codec internal clocks and manage 
-via generic clock bindings? Would this mean each codec driver has to 
-implement these clock APIs (for ex: set_rate()) and program registers 
-accordingly?
-For a platform, different audio cards can be plugged in. In that case, 
-each codec has to be updated to follow this. Wouldn't it be simpler to 
-use available ASoC callbacks?
