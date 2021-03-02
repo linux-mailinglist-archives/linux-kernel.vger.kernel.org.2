@@ -2,142 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7C532A0A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2EC32A0A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576292AbhCBE1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:27:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379152AbhCBBMk (ORCPT
+        id S1576305AbhCBE1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:27:20 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43012 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233166AbhCBBOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 20:12:40 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36EAC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 17:11:57 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id m6so12736118pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 17:11:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=tQRylwC7FAvN0F/bBIP0t+688gl4yvy+odRc0feyS9Y=;
-        b=ubLOcq546XToAmmbIzobC3s9/PaSLx+F7qRU09TugZmKZvcIYC7K3xN9r4kFDnUyct
-         RjO+Bqoa4QbBXm7E4yKECn9DKgCSICZMx2Pa9Sty9pXQObB0TbXbZy98vpn/h8xcqSqU
-         FDcqVnFN4mDN2CtGWQCdJbIa8vOfQbBHiNhra1Epi0723A9ihUA+qqtl2IqYpuMhCMYt
-         ISeJkppdLOgosn/udWRTBGvGBrMKQ2QCERUbrRP5QJGxUcBJZ2gzu//ZeA4DNLp7XSn0
-         BWlEc6K2Y4XkdHRfW5FI72B8bNIFwum+qfMhG3sSsCZH29n3jHTp723nQ5Tge+2SKZJc
-         mVnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tQRylwC7FAvN0F/bBIP0t+688gl4yvy+odRc0feyS9Y=;
-        b=po2p1p9wI5yR/5Ypkwkx7s8yId91NPZOd4B2iwVelFSFQ0V2c9gUOc61dnELxczzd3
-         vGU7C83+UBGYAyUJLDeSgFt9Oo7u0MGUHjHRQBwg3lpq0/sQIQ7YYfw4ZkGRHyqx+Gbz
-         xKIrS6l4ivf0FB6d/QJswvg2V4oxmm7UuLQsObOvjUX6FZ0Vu8kRkkVh1Tkniy8qm8hq
-         586TJt+MAt7zWS1BR89LFsC8c0KgQ/ay6dqfYYpyoGGd5ozi6qMuK2yiaYAMcXqL0Hns
-         dbEEiavzvuuCMb2c/G9LU+mA6+hU/ekAmom3X/UuBxWGPdC7WIbEopBEUXWIuR94PzXL
-         6nPQ==
-X-Gm-Message-State: AOAM533KgRfcqdK/DxfhwBrErJOCJBhh/r5CaqIoURaqHUfUvvatPVLi
-        X4zCFfCY7yJ6okkanmxQp74CRg==
-X-Google-Smtp-Source: ABdhPJz8pXTcLwjj9y4NqTFdKoDduP1GxO11UXuy+b7zDcI+ZpzXGmVr/eIR2Ef/gxi2a5qjaz2AMg==
-X-Received: by 2002:a62:43:0:b029:1cd:2de2:5a24 with SMTP id 64-20020a6200430000b02901cd2de25a24mr1066069pfa.27.1614647517023;
-        Mon, 01 Mar 2021 17:11:57 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id t6sm17740991pgp.57.2021.03.01.17.11.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Mar 2021 17:11:56 -0800 (PST)
-Subject: Re: 5.12-rc1 regression: freezing iou-mgr/wrk failed
-To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-References: <1614646241.av51lk2de4.none.ref@localhost>
- <1614646241.av51lk2de4.none@localhost>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ad672889-2757-142b-9259-3e0aee6d8078@kernel.dk>
-Date:   Mon, 1 Mar 2021 18:11:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 1 Mar 2021 20:14:18 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122147Jw028017;
+        Mon, 1 Mar 2021 17:12:17 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=ThN+ehv/zMIPsztTY0/Oc35AMeSc5RecSzsa87omAco=;
+ b=M9alM8+oJnTILnBZEDHmMVLdcDVxYxKxIsH66hkzDvuGNWqJdDq/d3iV02dIOO+jzMDg
+ 1qO40mIyK7ExrEtjNrFinafblX9J8NCiBeR3dwHsqMOZdXGSod/LFJQi0mdU4S2vfgrU
+ jGw62O8DOJL68s3WumjI2qLRW1wh6VA9sAc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36ymsrkb4t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 01 Mar 2021 17:12:17 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 1 Mar 2021 17:12:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CFgkXgtBltvjKoxSRwzLkeIcUdQvSdguGWmmgHVsNGSXal34YV54UZFiFu3uhjCenmw0rvqPIIJxeNzNvI7F5ogK2fv5s5c1D1I+g5bhkMgJ/JvxxfivQwHOx5wTOo30RZ/STo+pCtw8vZITZz3KOrCXj/DhmLDkphoOVdvnFflcTxMGf5S2viYYOcHzyJzM1hZCyBijySrX37TpVhaMm4MleMCatuY1B8HQlESG3HnpHY5lQdqFQz1UTm+akxQ90KR9kstg18C/WfEOeN37D2aWPec2CljypvSOL5TTjzYAt1GwW53AyQX+6tl8lO020ZqtAQP/LxR/Q9B2SFJR5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ThN+ehv/zMIPsztTY0/Oc35AMeSc5RecSzsa87omAco=;
+ b=JelpgbSUx8hdt9hJQy+QLwo6yIRyRQlSdidB/QCaOIASn/H+EXpl3mUpjegCbA3Qa1cal/4xGnKvlZutQJhunHETrORhFmss040eMZGy5XK76f0+0sZ7E5n0TwJ61QDUyzp/zOAnlpxjikstx4uhPT1XUVkq94b74mJ48+S7pyRUGaidNzDkv83DUInDAgHagorJF9nRnwYvIa/Lva+PbdK2x8mdRQrP9vf9E0vlCM0eSA+G0rYNj2vEQF/fFRRoc+Y5bJKdmKWFtdbfG/VfLqjiTCCMl/5fNT1RMq0rtaSxMfIsafx3PquPHbbVGQTn2XTyZzcHD7hfM4gN1vP4LA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY5PR15MB3604.namprd15.prod.outlook.com (2603:10b6:a03:1b1::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.28; Tue, 2 Mar
+ 2021 01:12:14 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3890.028; Tue, 2 Mar 2021
+ 01:12:14 +0000
+Date:   Mon, 1 Mar 2021 17:12:06 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     <viro@zeniv.linux.org.uk>, <jack@suse.cz>, <amir73il@gmail.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
+        <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <shakeelb@google.com>, <alex.shi@linux.alibaba.com>,
+        <alexander.h.duyck@linux.intel.com>, <chris@chrisdown.name>,
+        <richard.weiyang@gmail.com>, <vbabka@suse.cz>,
+        <mathieu.desnoyers@efficios.com>, <posk@google.com>,
+        <jannh@google.com>, <iamjoonsoo.kim@lge.com>,
+        <daniel.vetter@ffwll.ch>, <longman@redhat.com>,
+        <walken@google.com>, <christian.brauner@ubuntu.com>,
+        <ebiederm@xmission.com>, <keescook@chromium.org>,
+        <krisman@collabora.com>, <esyr@redhat.com>, <surenb@google.com>,
+        <elver@google.com>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, <duanxiongchun@bytedance.com>
+Subject: Re: [PATCH 0/5] Use obj_cgroup APIs to change kmem pages
+Message-ID: <YD2Q5q2HfKXPnDte@carbon.dhcp.thefacebook.com>
+References: <20210301062227.59292-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210301062227.59292-1-songmuchun@bytedance.com>
+X-Originating-IP: [2620:10d:c090:400::5:642c]
+X-ClientProxiedBy: MWHPR03CA0019.namprd03.prod.outlook.com
+ (2603:10b6:300:117::29) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <1614646241.av51lk2de4.none@localhost>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:642c) by MWHPR03CA0019.namprd03.prod.outlook.com (2603:10b6:300:117::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Tue, 2 Mar 2021 01:12:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 853f6be1-e95b-4870-028a-08d8dd183671
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3604:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR15MB36041AF69DBCB2399C92A3EFBE999@BY5PR15MB3604.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DGa9ezh9b9HTJ+8mJG/YXutljqETSReBFQQDyvsL/74Sp6KXOYVMMhI1wT9hk1Dpwwwe04kLirrsV0M8AmDcOeETjQI1QcvyTvqFFjgkdnjrVkcqIGgHy18Lb31cVCcbO7xOFKrrXkqjeV76u6LW3jU3WY43icyfUCG8V/Q7di4FnvXKNZfa8DKmvMnswNZ6HZ/YBajzDyNlORoLOJ9NBkLEd38FZsz26clknqhetIZRIp3wGeNkivPfxazE6cf7FUj1SYKM+Av9nZ2cUvBFeISq57U4tlvxANjrxWoH7WSPPy0wrWbc9u/4wLKeCNOa3VK9Oqe84UUhSQSvFSbD3zbuzebXXPdzxb4U8YpEpH3n7gxw6UFIbp+yABoK/YFMiOrY+62tZ3lozvlSRpHeB4ek0s05gxqC1fce/jRlLGUrQGkYUXGZiu1OTSvxU3JzAfB6V6990bO8n3Cjyh1PxlEd9r6x3QubDxrKtfs+B6MbUjedmazabC30t0nx5eL+clrNZJK7hjKK5cGow9f9+w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(366004)(376002)(346002)(396003)(66556008)(66946007)(66476007)(83380400001)(7416002)(6506007)(186003)(6666004)(16526019)(7406005)(52116002)(7696005)(6916009)(9686003)(8936002)(2906002)(55016002)(86362001)(316002)(5660300002)(4326008)(8676002)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?sPxJZpCkDMm8Th2YcoHrjIscrOnug66+AElC7ZJKwWukPJw3CnuCA9vORfLt?=
+ =?us-ascii?Q?V+cG+CahxAiSS1B66tgSmpcfSSKiJyVmnO4YaqVYOrU96P3PPzn9T3H43Ni6?=
+ =?us-ascii?Q?/Okmu2UGRwnXVUM+ZdbzadMXfI06Iyq/jxuofdCCGqwjkPwnxLUp3nh5CLOK?=
+ =?us-ascii?Q?udf3JP6m3QcIHigQAqMjSHoV++LS++iddSU1nGSsWEaBSNgsZOqm+SFyx0il?=
+ =?us-ascii?Q?n4sLWa8AIxyopi9W9o78nRoKBYQxWWG6TUcsYYN+Kd+OEcVtmGI8IPn4/zzf?=
+ =?us-ascii?Q?iuwYZWoV1ImNiiC2zGyZ6roYD3NT3XwPZStUIU7rDSS3eDzWLC7UN+16sc7C?=
+ =?us-ascii?Q?vQaoybBpGUpak0UMfsyigZ8zS53DD3sCSnmClLCBg/DrGvpHI9wADKyfoJRk?=
+ =?us-ascii?Q?p+gsTVLrwf5lwEypYJIhaFcqWe9wxtmqmLrDC+1TL+J4ddHA7YnIrqJ9i3Rl?=
+ =?us-ascii?Q?kp63CVKfkukUWrbBmK/+nVDcKzYE9wlJr0RGwBnxpYmZt6vfk1UM9dkohHOe?=
+ =?us-ascii?Q?ycItNZQIScqhnUcuGyqc2b3t7L3LYiNxW697kK4QfHgddGeNrOlMTnsQSwuN?=
+ =?us-ascii?Q?ROx4eWyJp/zPRBgxLbdTvXgba/w6z4M7GX45Q12k0TRbnT0qsm3OUc6NpUqN?=
+ =?us-ascii?Q?Z4DOwL1UWAn5b7xU1odSffkKXob/iVsxN6hwDVR3DIZZ7F0bh9T1BHVlVZrk?=
+ =?us-ascii?Q?jWx4HAnu1jsIiU3y42Fmp4JDSaPCJV0l7SpNSjWbp4TTVZJA3Un6GqsgSvcs?=
+ =?us-ascii?Q?bRvFM2XwrgV6LrqlhUo7I9DIiSh73Oo+ma/BEpB9I3Ag1B21qDoY9BJB+7hh?=
+ =?us-ascii?Q?Ku30jNTyLmUIDwmQy4yOg2Ei+76EodZtDIxfwB91qiTC1+WwXm5/m5MOhudQ?=
+ =?us-ascii?Q?nWP4mkFjIpfNTioI9nIFzH7pe7HSymBcklgQvYHrvL+i0xEBhMXrnk7L9ASj?=
+ =?us-ascii?Q?Ltitoq7yZVfuUWwYBLQI+c7K2O59tbWj+Xt/rJB2MHFnxlpj55JNkHo3X/7Y?=
+ =?us-ascii?Q?3v98dOCV3IG5DONP8w6Od75SRETbWX81nqcTF+plAQMjdpQc2DQxUoZep4Vt?=
+ =?us-ascii?Q?jOQKlCx6gqhRa7mXKf2FQ1alL9mBtksqxkZlkpVkb9uhIpegMi9EbciiA+b+?=
+ =?us-ascii?Q?vwkTqHKtdeZcm9qsJVjGLgHgocPMUllOd0GCE3I5lclKBwv0vo/kA46I+lvs?=
+ =?us-ascii?Q?U6PKEOsCZ0Zm/mkMEEOZwNEqpkznHE2yqn5MEAvMC+v6XYW7Hib9eCpCYtpH?=
+ =?us-ascii?Q?Jgjtdt1t5KkDrBafmAXGxUDzJIjP1EcL1QAyZgC3FU2hzsBdowoTHvfu3HLX?=
+ =?us-ascii?Q?AHs3FXnxRxKpTqFeGDISjJWYRJg8isRUvn9S27MVnc/wog=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 853f6be1-e95b-4870-028a-08d8dd183671
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 01:12:14.0821
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +gu6Y3UUUxJ4m3kVw7hKqfTqSLmQA7hnuAMJXLFsy5G1i9566LxF1y/zKxu+jiOB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3604
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-01_15:2021-03-01,2021-03-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ suspectscore=0 impostorscore=0 malwarescore=0 spamscore=0 clxscore=1011
+ priorityscore=1501 adultscore=0 mlxlogscore=999 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020004
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 5:57 PM, Alex Xu (Hello71) wrote:
-> Hi,
+Hi Muchun!
+
+On Mon, Mar 01, 2021 at 02:22:22PM +0800, Muchun Song wrote:
+> Since Roman series "The new cgroup slab memory controller" applied. All
+> slab objects are changed via the new APIs of obj_cgroup. This new APIs
+> introduce a struct obj_cgroup instead of using struct mem_cgroup directly
+> to charge slab objects. It prevents long-living objects from pinning the
+> original memory cgroup in the memory. But there are still some corner
+> objects (e.g. allocations larger than order-1 page on SLUB) which are
+> not charged via the API of obj_cgroup. Those objects (include the pages
+> which are allocated from buddy allocator directly) are charged as kmem
+> pages which still hold a reference to the memory cgroup.
+
+Yes, this is a good idea, large kmallocs should be treated the same
+way as small ones.
+
 > 
-> On Linux 5.12-rc1, I am unable to suspend to RAM. The system freezes for 
-> about 40 seconds and then continues operation. The following messages 
-> are printed to the kernel log:
+> E.g. We know that the kernel stack is charged as kmem pages because the
+> size of the kernel stack can be greater than 2 pages (e.g. 16KB on x86_64
+> or arm64). If we create a thread (suppose the thread stack is charged to
+> memory cgroup A) and then move it from memory cgroup A to memory cgroup
+> B. Because the kernel stack of the thread hold a reference to the memory
+> cgroup A. The thread can pin the memory cgroup A in the memory even if
+> we remove the cgroup A. If we want to see this scenario by using the
+> following script. We can see that the system has added 500 dying cgroups.
 > 
-> [  240.650300] PM: suspend entry (deep)
-> [  240.650748] Filesystems sync: 0.000 seconds
-> [  240.725605] Freezing user space processes ...
-> [  260.739483] Freezing of tasks failed after 20.013 seconds (3 tasks refusing to freeze, wq_busy=0):
-> [  260.739497] task:iou-mgr-446     state:S stack:    0 pid:  516 ppid:   439 flags:0x00004224
-> [  260.739504] Call Trace:
-> [  260.739507]  ? sysvec_apic_timer_interrupt+0xb/0x81
-> [  260.739515]  ? pick_next_task_fair+0x197/0x1cde
-> [  260.739519]  ? sysvec_reschedule_ipi+0x2f/0x6a
-> [  260.739522]  ? asm_sysvec_reschedule_ipi+0x12/0x20
-> [  260.739525]  ? __schedule+0x57/0x6d6
-> [  260.739529]  ? del_timer_sync+0xb9/0x115
-> [  260.739533]  ? schedule+0x63/0xd5
-> [  260.739536]  ? schedule_timeout+0x219/0x356
-> [  260.739540]  ? __next_timer_interrupt+0xf1/0xf1
-> [  260.739544]  ? io_wq_manager+0x73/0xb1
-> [  260.739549]  ? io_wq_create+0x262/0x262
-> [  260.739553]  ? ret_from_fork+0x22/0x30
-> [  260.739557] task:iou-mgr-517     state:S stack:    0 pid:  522 ppid:   439 flags:0x00004224
-> [  260.739561] Call Trace:
-> [  260.739563]  ? sysvec_apic_timer_interrupt+0xb/0x81
-> [  260.739566]  ? pick_next_task_fair+0x16f/0x1cde
-> [  260.739569]  ? sysvec_apic_timer_interrupt+0xb/0x81
-> [  260.739571]  ? asm_sysvec_apic_timer_interrupt+0x12/0x20
-> [  260.739574]  ? __schedule+0x5b7/0x6d6
-> [  260.739578]  ? del_timer_sync+0x70/0x115
-> [  260.739581]  ? schedule_timeout+0x211/0x356
-> [  260.739585]  ? __next_timer_interrupt+0xf1/0xf1
-> [  260.739588]  ? io_wq_check_workers+0x15/0x11f
-> [  260.739592]  ? io_wq_manager+0x69/0xb1
-> [  260.739596]  ? io_wq_create+0x262/0x262
-> [  260.739600]  ? ret_from_fork+0x22/0x30
-> [  260.739603] task:iou-wrk-517     state:S stack:    0 pid:  523 ppid:   439 flags:0x00004224
-> [  260.739607] Call Trace:
-> [  260.739609]  ? __schedule+0x5b7/0x6d6
-> [  260.739614]  ? schedule+0x63/0xd5
-> [  260.739617]  ? schedule_timeout+0x219/0x356
-> [  260.739621]  ? __next_timer_interrupt+0xf1/0xf1
-> [  260.739624]  ? task_thread.isra.0+0x148/0x3af
-> [  260.739628]  ? task_thread_unbound+0xa/0xa
-> [  260.739632]  ? task_thread_bound+0x7/0x7
-> [  260.739636]  ? ret_from_fork+0x22/0x30
-> [  260.739647] OOM killer enabled.
-> [  260.739648] Restarting tasks ... done.
-> [  260.740077] PM: suspend exit
+> 	#!/bin/bash
 > 
-> and then a set of similar messages except with s2idle instead of deep.
+> 	cat /proc/cgroups | grep memory
 > 
-> Reverting 5695e51619 ("Merge tag 'io_uring-worker.v3-2021-02-25' of 
-> git://git.kernel.dk/linux-block") appears to resolve the issue. I have 
-> not yet bisected further. Let me know which troubleshooting steps I 
-> should perform next.
+> 	cd /sys/fs/cgroup/memory
+> 	echo 1 > memory.move_charge_at_immigrate
+> 
+> 	for i in range{1..500}
+> 	do
+> 		mkdir kmem_test
+> 		echo $$ > kmem_test/cgroup.procs
+> 		sleep 3600 &
+> 		echo $$ > cgroup.procs
+> 		echo `cat kmem_test/cgroup.procs` > cgroup.procs
+> 		rmdir kmem_test
+> 	done
+> 
+> 	cat /proc/cgroups | grep memory
 
-Can you try and pull in:
+Well, moving processes between cgroups always created a lot of issues
+and corner cases and this one is definitely not the worst. So this problem
+looks a bit artificial, unless I'm missing something. But if it doesn't
+introduce any new performance costs and doesn't make the code more complex,
+I have nothing against.
 
-git://git.kernel.dk/linux-block io_uring-5.12
+Btw, can you, please, run the spell-checker on commit logs? There are many
+typos (starting from the title of the series, I guess), which make the patchset
+look less appealing.
 
-and see if that resolves it? I usually always run -git on my laptop as
-well, but something broke it in the merge window so I need to figure
-out what that is first...
+Thank you!
 
-What distro are you running?
-
--- 
-Jens Axboe
-
+> 
+> This patchset aims to make those kmem pages drop the reference to memory
+> cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
+> of the dying cgroups will not increase if we run the above test script.
+> 
+> Patch 1-3 are using obj_cgroup APIs to charge kmem pages. The remote
+> memory cgroup charing APIs is a mechanism to charge kernel memory to a
+> given memory cgroup. So I also make it use the APIs of obj_cgroup.
+> Patch 4-5 are doing this.
+> 
+> Muchun Song (5):
+>   mm: memcontrol: introduce obj_cgroup_{un}charge_page
+>   mm: memcontrol: make page_memcg{_rcu} only applicable for non-kmem
+>     page
+>   mm: memcontrol: reparent the kmem pages on cgroup removal
+>   mm: memcontrol: move remote memcg charging APIs to CONFIG_MEMCG_KMEM
+>   mm: memcontrol: use object cgroup for remote memory cgroup charging
+> 
+>  fs/buffer.c                          |  10 +-
+>  fs/notify/fanotify/fanotify.c        |   6 +-
+>  fs/notify/fanotify/fanotify_user.c   |   2 +-
+>  fs/notify/group.c                    |   3 +-
+>  fs/notify/inotify/inotify_fsnotify.c |   8 +-
+>  fs/notify/inotify/inotify_user.c     |   2 +-
+>  include/linux/bpf.h                  |   2 +-
+>  include/linux/fsnotify_backend.h     |   2 +-
+>  include/linux/memcontrol.h           | 109 +++++++++++---
+>  include/linux/sched.h                |   6 +-
+>  include/linux/sched/mm.h             |  30 ++--
+>  kernel/bpf/syscall.c                 |  35 ++---
+>  kernel/fork.c                        |   4 +-
+>  mm/memcontrol.c                      | 276 ++++++++++++++++++++++-------------
+>  mm/page_alloc.c                      |   4 +-
+>  15 files changed, 324 insertions(+), 175 deletions(-)
+> 
+> -- 
+> 2.11.0
+> 
