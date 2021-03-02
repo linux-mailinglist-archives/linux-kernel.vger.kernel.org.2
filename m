@@ -2,145 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A38732A0DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A175C32A0DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1576750AbhCBEcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Mar 2021 23:32:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1444369AbhCBClX (ORCPT
+        id S1576759AbhCBEcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Mar 2021 23:32:23 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:26732 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1444479AbhCBCmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 21:41:23 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA124C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 18:40:38 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d12so10309649pfo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 18:40:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wKdwd3EXr+qvpaNjnApPgsZ1TqeT6YoEl+a2s3Vhn8E=;
-        b=YLHSoiLWPHQmyEziMFZ16E0wMzPhXE5clX+FEfrB+iWvQUJbgPYIcXQaAm+BJi24DM
-         rfnprmnCSGouek1FuZnLUJ/F0dT7Xs3/3ZPlxjFM41iHJliWQfYjyV94mJjlKofORkzG
-         7z5svMOIcJnXfMsIyidc+My/DbzTsm+DUw6jG8J1VLfXhOFvyBJg+SwwSLhn1N7XAbz0
-         OePa2vq1nTFXKuFsernooCHMZeblpl4TUluZ3mJ5Cso/bIroVYhmIZWwj+CbOg2b20p9
-         IjHWWUQrxLLjjxl+gUmEIITNXHOKHRLwRGSmnT5eD4rsYlFyeK3wV5RNOrw+eb+8tPvr
-         4INA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wKdwd3EXr+qvpaNjnApPgsZ1TqeT6YoEl+a2s3Vhn8E=;
-        b=moy7a2IjsT9+xmEtKs+L1YtvX66PaiPTx+3LufR3xsMJqepIn2z2Af0sIY2Z4GRW0J
-         cLBE4/TLkLS6GdzPck9Mxqsmbec4STqxNpAOBbRZYjGukIl8IJi132wbNvpQzzSaeTYa
-         b0YbXY+5YEzt0TaWfluNegt2BovOVZmfL75cB3bUcZrEvKHdsR8dbq/42bTeDlE/82K/
-         1K7scuu14Kvj7/vs76E00iwQAYGJJlALD1R1HyFyy2MrsVzlZryGrP3Exqg0t0ro8iaa
-         vBNL3Pqea+GYg7XC0P3nSgezuoVyBPlPKjSPCfEbebhVsGhOntFlvOlaa2yNewPjKVI9
-         0Gyw==
-X-Gm-Message-State: AOAM531/CQaLxEWoLgDyFFlxs8j48F5h4qvhhW/sFAWnzM7jtNVzhaAc
-        jtlstX+C85WrJfPt6QxfuygqZA==
-X-Google-Smtp-Source: ABdhPJyCbgfEJFceqNMao5ob7MSKXqnTjEuUCVngShm+uQB228TBN4s1f2hgMsTg4qi2bVs96rCJEg==
-X-Received: by 2002:a63:389:: with SMTP id 131mr16203398pgd.316.1614652838045;
-        Mon, 01 Mar 2021 18:40:38 -0800 (PST)
-Received: from google.com ([2620:15c:201:2:85f9:f0dd:5527:51b4])
-        by smtp.gmail.com with ESMTPSA id o21sm795708pjp.42.2021.03.01.18.40.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 18:40:37 -0800 (PST)
-Date:   Mon, 1 Mar 2021 18:40:32 -0800
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [x86, build] 6dafca9780:
- WARNING:at_arch/x86/kernel/ftrace.c:#ftrace_verify_code
-Message-ID: <YD2loOkd/AYqKPB6@google.com>
-References: <20210301074027.GD12822@xsang-OptiPlex-9020>
- <CABCJKuc8H83b_8_Ccp+Cb7O9x5oEu6sPNq63sjGcAJcgiwy0bw@mail.gmail.com>
- <20210301184524.7aa05ac1@gandalf.local.home>
- <CABCJKudQme=bcNJtNCORUpBnVA_Pkr2Zk_3Nu2EsfnuoE7LJ3g@mail.gmail.com>
- <20210301201526.65ce7f1c@oasis.local.home>
+        Mon, 1 Mar 2021 21:42:22 -0500
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210302024135epoutp03e8f876914bf499e7871e51c2dc8299f6~oZkEJ5eij3126931269epoutp03g
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:41:35 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210302024135epoutp03e8f876914bf499e7871e51c2dc8299f6~oZkEJ5eij3126931269epoutp03g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1614652895;
+        bh=DPkLryloKgyBs38GGzZTdVgStVHNl4wTh2ZZQesbDAM=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=QTnoaHIOQ2mQryy+Y80j9NDxSSWuor0w5I3GPR0Ckh8t11iaF1FnpcqSozDNiukfS
+         AR2I9kOpYxwBQMmpq8AoGwv35tdPvE/0Yi78i2pA4ETolenJRahaVuF2qqz613Eyc2
+         M8ROcng09l6ZFsjXluyI6ZfJiDiaWYL9pM4grdzI=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210302024135epcas1p1cef446dc3b5619236506db9647e0d828~oZkDntMB-2439824398epcas1p1R;
+        Tue,  2 Mar 2021 02:41:35 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.159]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DqLxB2Y9tz4x9Pq; Tue,  2 Mar
+        2021 02:41:34 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        34.8F.02418.ED5AD306; Tue,  2 Mar 2021 11:41:34 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210302024133epcas1p27452f6ce2841c1e2a5100405c91b5a75~oZkCS5dQw1004210042epcas1p2a;
+        Tue,  2 Mar 2021 02:41:33 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210302024133epsmtrp1bc53d0483881ee0db9002d572c0302a9~oZkCSQCpd0110001100epsmtrp16;
+        Tue,  2 Mar 2021 02:41:33 +0000 (GMT)
+X-AuditID: b6c32a35-c0dff70000010972-d4-603da5decfd0
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5C.6B.08745.DD5AD306; Tue,  2 Mar 2021 11:41:33 +0900 (KST)
+Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210302024133epsmtip11ae9ea15c2e4fce7a65096633344f620~oZkCH6bYD1131711317epsmtip1h;
+        Tue,  2 Mar 2021 02:41:33 +0000 (GMT)
+From:   "Sungjong Seo" <sj1557.seo@samsung.com>
+To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>,
+        <namjae.jeon@samsung.com>
+Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sj1557.seo@samsung.com>
+In-Reply-To: <20210225093333.144829-1-hyeongseok@gmail.com>
+Subject: RE: [PATCH] exfat: fix erroneous discard when clear cluster bit
+Date:   Tue, 2 Mar 2021 11:41:33 +0900
+Message-ID: <000001d70f0d$8e882ec0$ab988c40$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210301201526.65ce7f1c@oasis.local.home>
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQHUPDa1bJ9R3vCNj0JBjwAxCWVZpwLSYI5Bql8LToA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmk+LIzCtJLcpLzFFi42LZdlhTT/feUtsEgy0LhCz+TvzEZLFn70kW
+        i8u75rBZ/Jheb7Hl3xFWB1aPnbPusnv0bVnF6PF5k1wAc1SOTUZqYkpqkUJqXnJ+SmZeuq2S
+        d3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QRiWFssScUqBQQGJxsZK+nU1RfmlJqkJG
+        fnGJrVJqQUpOgaFBgV5xYm5xaV66XnJ+rpWhgYGRKVBlQk7GqWmP2QresFacbP/M2sD4lKWL
+        kZNDQsBE4uqGiexdjFwcQgI7GCU2PZ3MDOF8YpR4t+4jK4TzmVHi2qO7bDAtrS+WskEkdjFK
+        fHx4G6r/JaPE9f69rCBVbAK6Ek9u/GQGsUUEPCQeNx1jArGZBeIlFu84DjaJU8BaYv7SBYwg
+        tjBQzcPXD8B6WQRUJDoePmYHsXkFLCVeXVvAAmELSpyc+YQFYo68xPa3c5ghLlKQ2P3pKCvE
+        LiuJdaf6GSFqRCRmd7ZB1fxllzjyjQ/CdpFYeGkLE4QtLPHq+BZ2CFtK4mV/G5RdL/F//lqw
+        xyQEWhglHn7aBtTAAeTYS7y/ZAFiMgtoSqzfpQ9Rriix8/dcqLV8Eu++9rBCVPNKdLQJQZSo
+        SHz/sJMFZtOVH1eZJjAqzULy2Cwkj81C8sAshGULGFlWMYqlFhTnpqcWGxYYIkf2JkZwatQy
+        3cE48e0HvUOMTByMhxglOJiVRHhPfrZMEOJNSaysSi3Kjy8qzUktPsRoCgzqicxSosn5wOSc
+        VxJvaGpkbGxsYWJmbmZqrCTOm2TwIF5IID2xJDU7NbUgtQimj4mDU6qBKSDzcchnocTNfDmm
+        NaLbnbdPXbnrgoPIkn/CU+Jit8ffnpcf7Mkxd8GrOC99H8/a518YPjbrllz6de/5BWHb+/0a
+        /H+LTl07f1BeLddTtcKGQ352cdzabRGb20z7vzW8ivnTrDpZ0CHdpWeXgHDZxdsav3lMv+5T
+        uPmz3dRkYe2bZsY1aVknayZ7/vliJe2zbpKjZ4q3Vv3f3OOrFGI0dBwWbwjdNW/jmurvWW+X
+        xU7aye7Exr1fI8Tqkdu8LwvyF8wr4jFvFrlxjNt0/5Sfoee+sBzXb/pv9vHwVe/a+cqnzjeW
+        qr/0m2KYPOP5zCDxyWwpfrNX1c80UVZUZJikfWpiu31OeJf4jf2xKrdPKLEUZyQaajEXFScC
+        AKzNqMYWBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNLMWRmVeSWpSXmKPExsWy7bCSnO7dpbYJBo3fjS3+TvzEZLFn70kW
+        i8u75rBZ/Jheb7Hl3xFWB1aPnbPusnv0bVnF6PF5k1wAcxSXTUpqTmZZapG+XQJXxqlpj9kK
+        3rBWnGz/zNrA+JSli5GTQ0LARKL1xVK2LkYuDiGBHYwSl19cZOpi5ABKSEkc3KcJYQpLHD5c
+        DFHynFGiacpVJpBeNgFdiSc3fjKD2CICXhL7m16zg9jMAokSZ5a0sUI09DBKdPdvAGvgFLCW
+        mL90ASOILSzgIfHw9QNWEJtFQEWi4+FjsGZeAUuJV9cWsEDYghInZz5hATmCWUBPom0jI8R8
+        eYntb+cwQ9yvILH701FWiBusJNad6oeqEZGY3dnGPIFReBaSSbMQJs1CMmkWko4FjCyrGCVT
+        C4pz03OLDQuM8lLL9YoTc4tL89L1kvNzNzGC40NLawfjnlUf9A4xMnEwHmKU4GBWEuE9+dky
+        QYg3JbGyKrUoP76oNCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQYm9xBBx0ON
+        UywVKzevWXHVVipt1USHrzrGBmsmhCy5dkzx4byqB0E1pxsyTn8qk/rvWbHNqnLCi5Urbiz/
+        3bfl3i5mS5sdQoFKE58lvSpK4K9+8a2FSfrbXp8j8xXmbqtdPO/b3COGs5LOlrKfbd4ylyGw
+        JvTLqad396/U0Hn6g39T+qLUuJKDVWIfyl8LlHA+6lIS3/7t70Ox9xaRjB3XK+JtHUvcZH8/
+        i/jvt/KWzpWgcsZjlgcL751Y4nck3bPsRuHMqn5J/l1fV02/d2wXz6zP1Z2Jl5vnP9vI0d+4
+        qXyB7j+e5VwfHl7p/WsYF7kzeMrqKu7DV87yvVjnK/XNJ4JfModh3iKmx62tU96KWyqxFGck
+        GmoxFxUnAgCmmKEh/gIAAA==
+X-CMS-MailID: 20210302024133epcas1p27452f6ce2841c1e2a5100405c91b5a75
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210225093351epcas1p40377b00fb3532e734e4a7a1233ee72e1
+References: <CGME20210225093351epcas1p40377b00fb3532e734e4a7a1233ee72e1@epcas1p4.samsung.com>
+        <20210225093333.144829-1-hyeongseok@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 08:15:26PM -0500, Steven Rostedt wrote:
-> On Mon, 1 Mar 2021 16:03:51 -0800
-> Sami Tolvanen <samitolvanen@google.com> wrote:
-> > 
-> > >                 ret = ftrace_verify_code(rec->ip, old);
-> > > +
-> > > +               if (__is_defined(CC_USING_NOP_MCOUNT) && ret && old_nop) {
-> > > +                       /* Compiler could have put in P6_NOP5 */
-> > > +                       old = P6_NOP5;
-> > > +                       ret = ftrace_verify_code(rec->ip, old);
-> > > +               }
-> > > +  
-> > 
-> > Wouldn't that still hit WARN(1) in the initial ftrace_verify_code()
-> > call if ideal_nops doesn't match?
+> Subject: [PATCH] exfat: fix erroneous discard when clear cluster bit
 > 
-> That was too quickly written ;-)
+> If mounted with discard option, exFAT issues discard command when clear
+> cluster bit to remove file. But the input parameter of cluster-to-sector
+> calculation is abnormally adds reserved cluster size which is 2, leading
+> to discard unrelated sectors included in target+2 cluster.
 > 
-> Take 2:
-> 
-> [ with fixes for setting p6_nop ]
+> Fixes: 1e49a94cf707 ("exfat: add bitmap operations")
+> Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+> ---
+>  fs/exfat/balloc.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks, I tested this with the config from the build bot, and I can
-confirm that it fixes the issue for me.
+Looks good.
 
-I also tested a quick patch to disable the __fentry__ conversion in
-objtool, and it seems to work too, but it's probably a good idea to
-fix the issue with CC_USING_NOP_MCOUNT in any case.
+Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
 
-diff --git a/Makefile b/Makefile
-index f9b54da2fca0..536fea073d5b 100644
---- a/Makefile
-+++ b/Makefile
-@@ -863,9 +863,6 @@ ifdef CONFIG_FTRACE_MCOUNT_USE_CC
-     endif
-   endif
- endif
--ifdef CONFIG_FTRACE_MCOUNT_USE_OBJTOOL
--  CC_FLAGS_USING	+= -DCC_USING_NOP_MCOUNT
--endif
- ifdef CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
-   ifdef CONFIG_HAVE_C_RECORDMCOUNT
-     BUILD_C_RECORDMCOUNT := y
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 068cdb41f76f..497e00c1cb69 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1047,21 +1047,9 @@ static int add_call_destinations(struct objtool_file *file)
- 			insn->type = INSN_NOP;
- 		}
- 
--		if (mcount && !strcmp(insn->call_dest->name, "__fentry__")) {
--			if (reloc) {
--				reloc->type = R_NONE;
--				elf_write_reloc(file->elf, reloc);
--			}
--
--			elf_write_insn(file->elf, insn->sec,
--				       insn->offset, insn->len,
--				       arch_nop_insn(insn->len));
--
--			insn->type = INSN_NOP;
--
-+		if (mcount && !strcmp(insn->call_dest->name, "__fentry__"))
- 			list_add_tail(&insn->mcount_loc_node,
- 				      &file->mcount_loc_list);
--		}
- 
- 		/*
- 		 * Whatever stack impact regular CALLs have, should be undone
+Thanks for your work!
+Could you remove the wrong comments above set/clear/find bitmap functions
+together?
 
-Sami
