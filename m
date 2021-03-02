@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6C532A53C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBBD32A53A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446717AbhCBMND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 07:13:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
+        id S1446667AbhCBMMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 07:12:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350096AbhCBLyB (ORCPT
+        with ESMTP id S1350097AbhCBLyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 06:54:01 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8F8C06178C;
-        Tue,  2 Mar 2021 03:51:42 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id f1so30840688lfu.3;
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030FDC061793;
+        Tue,  2 Mar 2021 03:51:43 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id p15so14621375ljc.13;
         Tue, 02 Mar 2021 03:51:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PmzRd7ne9yP74dYg3lDIMJ/jrvhsKEQVEGvRcfpnvR0=;
-        b=DCQX8jLGEIrXvqbGyWJTaR0MHS/tIYyw50B+/ULFgox6dbfww7qwR50ulh0OGziijW
-         CUXAvJm9dkkr+uXga9CpjSB3QnMcdNYl5YlH6+hFMN47BRVVq+WVlk3J59PyFeO/FTkI
-         iYhceT3qDe2VF/SxY/GEDMH55uYr/GHaIhJz5rQBO3BnFpgJPI8DTbsxY59HhF1alolM
-         BoG3wyu54qf2nTpEDdHMDI+qrD38j2sz8H90uy0XdMjje2Q/xobGrdvJwQvXX9igWlOw
-         WnwdQniFduJMd7gkSviN9zHrBVZuXphSyzjn+P+3jeOFP5A58tDUZNp1ryuDS2+cBbTX
-         +AMw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=S2GajrmIPPhVShSD9htWQH0c4G3php+jiJW9ohFhNDc=;
+        b=a5NQi+dCliDqU3MZIq+HV1G7Hv02G5jQ0YFeFVSZ05AtJzCjeBzkUuynfOhQQrsZT1
+         +YSsRtVpekBd60kcBJL2wZWhFrnVdIdyrp3DSFSOWq1WzwaYFoydtpytUmoE0LGo+hdO
+         PuGVU8a7n1MgPrQ7uD84HL4NdY0tcJJqyy/73Tn7geG0d8+OJ/L6G9tACVPZ2XiikmkB
+         8xUYvwGXLOeQaQ40VYUTwDc76BfOwVoEAC0TkyYDzy3gjltu1B9iZZB8P4rwmF/C7iJp
+         1WzbACU6/uQmiq7wUMQ9euWMHbDN13X8WKiyvtMHHG93/hAHrsj8syG3lMQgRgJZTn7i
+         qwGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PmzRd7ne9yP74dYg3lDIMJ/jrvhsKEQVEGvRcfpnvR0=;
-        b=UK43ckXcPomfqtRWteX8Amg3TRaDgwuWfdqWIDkDGuNpP+1cYXhyvVFjmKoO25gNEo
-         5IsQ07dZrAlMleKus+Qzyxs98JknkalhgthtQtMtFzGa6vkGunBr44DCjzBVDO6OEVfx
-         4z+xmtWpNBzyzmNH4ZLgU04/i2rRjffsAfNqI5lframtkAWyC4V75EaD6Dz++23WPxLo
-         gBJZtGC+Xm2Rp16BgIh+eujNnpqV8CYSobr+vW7qGDqGYfYVGaIbZhaeYY9lVwZD8wax
-         ceaXtgQmJidKW8+K5uRTXWnZVIpmPHM2eqwLW/1KwQ5H1TKQZv1MgIRBe/VI1boRXxbY
-         pKBg==
-X-Gm-Message-State: AOAM531a6MN4Ai/M6CKZ417nBNTb/qnkdzpVcVmBUYysDS3ZSh1Iaf9e
-        4qnx5xPhoUP8hQ93TiTCh2M=
-X-Google-Smtp-Source: ABdhPJzcvY41ZqULKyhqNo9CbbjMJVxagadNnyAQMOTeRMSXApWYGM3qO/jLueLjZbvJ0+dxOPTRvA==
-X-Received: by 2002:ac2:4e04:: with SMTP id e4mr11764215lfr.39.1614685900913;
-        Tue, 02 Mar 2021 03:51:40 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=S2GajrmIPPhVShSD9htWQH0c4G3php+jiJW9ohFhNDc=;
+        b=GQNboFbL8xcfNKc1TudNyrDTxPKpsrRoATSM39RhQliQU29yJlNr6bYWzUOhU9pD0G
+         FPEhGW8VauBFSw/OqAbEaHhNh3JuUpFA6e6UhDCzwoE/H7morsz4i4hjgYoF4FvN8Jns
+         9SUeHEfXedd/ns3afH5EozuWQaI85p0Q/w5Y4imV64lEvjfxGgUwZG4U2DMuqBzEEcJF
+         Kb1AQT59jFT3u1yWniNwPbq+uZcsOgzc/L4Ys3SLI6KGMAjo9wae3d1cIL7WJTae9NwV
+         81HNN7g4HnqKxEKQgCoyUZG+9aZQpOogmwyfA7/3nczzvfE/8kIv+nf8EczCL8/MAUE8
+         zdHQ==
+X-Gm-Message-State: AOAM53112BJoqeth2ol8GhddOLMPc/s2tbIZSNXQ6PqqPCIJ99NUXGNB
+        +zXRI5jNN2umGXHdCZgCWiA=
+X-Google-Smtp-Source: ABdhPJyI63/HAHDw1/qnwJWecxidCq4Nihj3lXQGz7sFgGtD9auDUtWwRaK52RQSayhmGEumTOeeSw==
+X-Received: by 2002:a2e:b4c8:: with SMTP id r8mr6000300ljm.57.1614685901553;
+        Tue, 02 Mar 2021 03:51:41 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
         by smtp.gmail.com with ESMTPSA id f4sm2720151lja.69.2021.03.02.03.51.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 03:51:40 -0800 (PST)
+        Tue, 02 Mar 2021 03:51:41 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -57,49 +57,42 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Stephen Boyd <sboyd@kernel.org>
 Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/6] Couple improvements for Tegra clk driver
-Date:   Tue,  2 Mar 2021 14:51:11 +0300
-Message-Id: <20210302115117.9375-1-digetx@gmail.com>
+Subject: [PATCH v3 1/6] clk: tegra30: Use 300MHz for video decoder by default
+Date:   Tue,  2 Mar 2021 14:51:12 +0300
+Message-Id: <20210302115117.9375-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210302115117.9375-1-digetx@gmail.com>
+References: <20210302115117.9375-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series fixes couple minor standalone problems of the Tegra clk
-driver.
+The 600MHz is a too high clock rate for some SoC versions for the video
+decoder hardware and this may cause stability issues. Use 300MHz for the
+video decoder by default, which is supported by all hardware versions.
 
-Changelog:
+Fixes: ed1a2459e20c ("clk: tegra: Add Tegra20/30 EMC clock implementation")
+Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ drivers/clk/tegra/clk-tegra30.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v3: - Added acks from Thierry Reding that he gave to v2.
-
-    - Added new patch "clk: tegra: Don't allow zero clock rate for PLLs".
-
-v2: - Added these new patches:
-
-      clk: tegra: Halve SCLK rate on Tegra20
-      MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
-
-v1: - Collected clk patches into a single series.
-
-Dmitry Osipenko (6):
-  clk: tegra30: Use 300MHz for video decoder by default
-  clk: tegra: Fix refcounting of gate clocks
-  clk: tegra: Ensure that PLLU configuration is applied properly
-  clk: tegra: Halve SCLK rate on Tegra20
-  MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
-  clk: tegra: Don't allow zero clock rate for PLLs
-
- CREDITS                             |  6 +++
- MAINTAINERS                         |  4 +-
- drivers/clk/tegra/clk-periph-gate.c | 72 +++++++++++++++++++----------
- drivers/clk/tegra/clk-periph.c      | 11 +++++
- drivers/clk/tegra/clk-pll.c         | 12 +++--
- drivers/clk/tegra/clk-tegra20.c     |  6 +--
- drivers/clk/tegra/clk-tegra30.c     |  2 +-
- 7 files changed, 77 insertions(+), 36 deletions(-)
-
+diff --git a/drivers/clk/tegra/clk-tegra30.c b/drivers/clk/tegra/clk-tegra30.c
+index 16dbf83d2f62..a33688b2359e 100644
+--- a/drivers/clk/tegra/clk-tegra30.c
++++ b/drivers/clk/tegra/clk-tegra30.c
+@@ -1245,7 +1245,7 @@ static struct tegra_clk_init_table init_table[] __initdata = {
+ 	{ TEGRA30_CLK_GR3D, TEGRA30_CLK_PLL_C, 300000000, 0 },
+ 	{ TEGRA30_CLK_GR3D2, TEGRA30_CLK_PLL_C, 300000000, 0 },
+ 	{ TEGRA30_CLK_PLL_U, TEGRA30_CLK_CLK_MAX, 480000000, 0 },
+-	{ TEGRA30_CLK_VDE, TEGRA30_CLK_PLL_C, 600000000, 0 },
++	{ TEGRA30_CLK_VDE, TEGRA30_CLK_PLL_C, 300000000, 0 },
+ 	{ TEGRA30_CLK_SPDIF_IN_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
+ 	{ TEGRA30_CLK_I2S0_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
+ 	{ TEGRA30_CLK_I2S1_SYNC, TEGRA30_CLK_CLK_MAX, 24000000, 0 },
 -- 
 2.29.2
 
