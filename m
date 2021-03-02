@@ -2,141 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBC632AA08
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BA232AA02
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1581508AbhCBS5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 13:57:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
+        id S1380989AbhCBSzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 13:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1839126AbhCBQFo (ORCPT
+        with ESMTP id S242529AbhCBQIQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:05:44 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5967BC061794
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 07:56:08 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id h9so5216678qtq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 07:56:08 -0800 (PST)
+        Tue, 2 Mar 2021 11:08:16 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1BDC06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 08:07:15 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id h10so25813157edl.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 08:07:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tNdOP429TQBqbFjtRfcboNnC/yDVMr5sai/pD5T/IRg=;
-        b=IlpWwYdHCRDOk3kWpi+d9K5sL2BkH9JZ1CEz1ZKimdPVIRwTuGRq3u8IVkuopTydJj
-         arkp2Jdxkb6AEwpjHEzEBCdWsa3q3RVDDAD6bSnR4o1EyuK4taQfQjgDPmaAJ9E1rc7M
-         d4jHzAyynuq2BzJCokhaQdMM8AN7WuMyNhHQlCWn80oKplc03XM+gFnGwD3Z51x4lbml
-         2TCJwmgtS2OfBFJdEHlD5w8ufPSSU3VTgvHICNQAxeKAsegXHKO2hfv/m04PEbTEcSNF
-         E3mw5ycnDw+JDvecUfy1I1YGGLn5VeegekbNe2l96F37r1kFSVfRi5rflI3VL2KtZugd
-         9xdA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GIfeSEfmL8wAyn5TADy2HISNOXLZvpkt9t432wxDvWY=;
+        b=vyZbsxwrlYxjFHO7Cc7mMvqFh/M7mu7PpuET7PCvtmDP+W6Pv+1+rgFEO8TybiCyJy
+         9Yp4qA1gQZKIOM1b0ubIdVbOZdkXiwSnFfKWMlJKpnimsInqzhxXlCsA2lBsUWgM6eYX
+         /+XjZB2k7crAsVNBDYRJiOr1sVSuT7a/hS7vYq8K16p4/nexvblVwrqHINLPERKhbxr4
+         rJt8O8BOsN8acrKZgulVsP/wbz0w2+lkOk1i6H2ujGil7vAQS28r7UI8b92LGMpyl2jK
+         HJgTq1hX8BNTHmathm0HmsPyAjuhdfZ4CE7bPy4ogkzmuv7gIHFnvRPmzc+bpdTjH9ub
+         Z4Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tNdOP429TQBqbFjtRfcboNnC/yDVMr5sai/pD5T/IRg=;
-        b=r/4aDCrTVu+Qbs6HoQVFUkflkvu4y7whbbO9pbJGWJ6Gq47WvhpjopnrsgBO6cdJuk
-         u00Uuf9A4FEOzKDHwTCD0N1XVwht1zkuN3sKt74I0/OoWFitScQNCjlaqyAF14VuwofI
-         rm8Th+ffOvjGnYnquZZuI+E+74C3VDrYMgiQv4FbJSQXGjZwWqmw6UfzOSQiF+/A/XyC
-         dga8ITD6d7a0arD8vHxwHTS4z0W1QgPeuWZKyWYrF2rTIejRsuyhte732DSGN84iQZtj
-         FAhTn/KkvPI9ZsyR5PQMKKIzm5apvsHkSnIDkZ2Fk/whobbUazKYHT6jLocadSqRoQBo
-         yEFQ==
-X-Gm-Message-State: AOAM532fzuXZxFPH4nWdBjh+2dMZ6BntSl1VtKv9TiJp08hJwCAdRc+k
-        zf5TQHYgWgevLwvzQBFd1CY6Hg==
-X-Google-Smtp-Source: ABdhPJyOfWYuIhZl4tG2VoD6q45/j1mxf/N5hHiy8YupUY6yiNz/e3N1wA6PcoAeeK96MehQQtO/QA==
-X-Received: by 2002:ac8:7392:: with SMTP id t18mr17887295qtp.104.1614700567462;
-        Tue, 02 Mar 2021 07:56:07 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id o7sm1251394qkb.104.2021.03.02.07.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 07:56:06 -0800 (PST)
-Date:   Tue, 2 Mar 2021 10:56:05 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     pintu@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-doc@vger.kernel.org, jaewon31.kim@samsung.com,
-        yuzhao@google.com, shakeelb@google.com, guro@fb.com,
-        mchehab+huawei@kernel.org, xi.fengfei@h3c.com,
-        lokeshgidra@google.com, nigupta@nvidia.com, famzheng@amazon.com,
-        andrew.a.klychkov@gmail.com, bigeasy@linutronix.de,
-        ping.ping@gmail.com, vbabka@suse.cz, yzaikin@google.com,
-        keescook@chromium.org, mcgrof@kernel.org, corbet@lwn.net,
-        pintu.ping@gmail.com
-Subject: Re: [PATCH] mm: introduce clear all vm events counters
-Message-ID: <YD5gFYalXJh0dMLn@cmpxchg.org>
-References: <1614595766-7640-1-git-send-email-pintu@codeaurora.org>
- <YD0EOyW3pZXDnuuJ@cmpxchg.org>
- <419bb403c33b7e48291972df938d0cae@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GIfeSEfmL8wAyn5TADy2HISNOXLZvpkt9t432wxDvWY=;
+        b=Lo4p0AForbJ923Iz+5gstyNW7RtX3Rdrfd4GE14Pbwm7GoSnYW9JoQwsOfHzz20EwS
+         Kx+v2EpjmuMrnGlUmEVffwe3FDCNgLGtKSWzGBRFKtYlgC9O5FUVfnUqggNYDxsYz17y
+         KpyiIvrC/C0tWbo34sPg/PZ2gfG3/WmOZOLGav1D6TyqWSPbio+me5gzzEHEIVgBKQ/i
+         s0NmuYNOs0fqrJgLdubGaqyPcHIeEr//KHTMItvZxyCrD7lRHA7fA13u1BQfl1pYvMTc
+         5VJtJAjGmEQQxVNUuVI9ojVk8f72t0LC3vqGwSZicY+g8AROWZLUTtUZT8HO3Y9Wb3Bn
+         1vlQ==
+X-Gm-Message-State: AOAM530Y+woqgCI6ZqE+AUliRjLLFibd8ngs5toJAumpbjHeU8MNi/Ux
+        0EYN799B91Y+bIVmL8MCOdtXhgsRQ8Wn8cWrPHhDHA==
+X-Google-Smtp-Source: ABdhPJwHuw1y3Y/v8jdMtjN1ZkyeSqxulDA1RDfV0AnDqqIe93CMsVo0jEsYKuMl36cJANkKqZoyE2G7jIaraKzXkGU=
+X-Received: by 2002:aa7:d588:: with SMTP id r8mr21122916edq.88.1614701233853;
+ Tue, 02 Mar 2021 08:07:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <419bb403c33b7e48291972df938d0cae@codeaurora.org>
+References: <20210224185316.17942-1-brgl@bgdev.pl> <CACRpkdZ915TABrSt0A_1tM3Jt_op4gcCY1b-d2ocM7wjKJFoPA@mail.gmail.com>
+ <b188690a-31e5-fca9-1226-9dbf7c9f9448@linuxfoundation.org>
+In-Reply-To: <b188690a-31e5-fca9-1226-9dbf7c9f9448@linuxfoundation.org>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 2 Mar 2021 17:07:02 +0100
+Message-ID: <CAMpxmJUu3x7iCT=Zsung1TFU-f2qY-oTujoDNkF+sMG4SXJXgw@mail.gmail.com>
+Subject: Re: [PATCH] selftests: gpio: update .gitignore
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Kent Gibson <warthog618@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Bamvor Jian Zhang <bamv2005@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 04:00:34PM +0530, pintu@codeaurora.org wrote:
-> On 2021-03-01 20:41, Johannes Weiner wrote:
-> > On Mon, Mar 01, 2021 at 04:19:26PM +0530, Pintu Kumar wrote:
-> > > At times there is a need to regularly monitor vm counters while we
-> > > reproduce some issue, or it could be as simple as gathering some
-> > > system
-> > > statistics when we run some scenario and every time we like to start
-> > > from
-> > > beginning.
-> > > The current steps are:
-> > > Dump /proc/vmstat
-> > > Run some scenario
-> > > Dump /proc/vmstat again
-> > > Generate some data or graph
-> > > reboot and repeat again
-> > 
-> > You can subtract the first vmstat dump from the second to get the
-> > event delta for the scenario run. That's what I do, and I'd assume
-> > most people are doing. Am I missing something?
-> 
-> Thanks so much for your comments.
-> Yes in most cases it works.
-> 
-> But I guess there are sometimes where we need to compare with fresh data
-> (just like reboot) at least for some of the counters.
-> Suppose we wanted to monitor pgalloc_normal and pgfree.
+On Tue, Mar 2, 2021 at 4:27 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 3/2/21 7:44 AM, Linus Walleij wrote:
+> > On Wed, Feb 24, 2021 at 7:53 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >
+> >> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >>
+> >> The executable that we build for GPIO selftests was renamed to
+> >> gpio-mockup-cdev. Let's update .gitignore so that we don't show it
+> >> as an untracked file.
+> >>
+> >> Fixes: 8bc395a6a2e2 ("selftests: gpio: rework and simplify test implementation")
+> >> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> >
+> > Yours,
+> > Linus Walleij
+> >
+>
+>
+> Thank you. I will queue this up.
+>
+> thanks,
+> -- Shuah
 
-Hopefully these would already be balanced out pretty well before you
-run a test, or there is a risk that whatever outstanding allocations
-there are can cause a large number of frees during your test that
-don't match up to your recorded allocation events. Resetting to zero
-doesn't eliminate the risk of such background noise.
+Hi Shuah,
 
-> Or, suppose we want to monitor until the field becomes non-zero..
-> Or, how certain values are changing compared to fresh reboot.
-> Or, suppose we want to reset all counters after boot and start capturing
-> fresh stats.
+Please let me queue this through the GPIO tree as I have some more
+development coming up this cycle that will require this. This will be
+a new driver + selftests so it will all have to go through the GPIO
+tree anyway.
 
-Again, there simply is no mathematical difference between
-
-	reset events to 0
-	run test
-	look at events - 0
-
-and
-
-	read events baseline
-	run test
-	look at events - baseline
-
-> Some of the counters could be growing too large and too fast. Will there be
-> chances of overflow ?
-> Then resetting using this could help without rebooting.
-
-Overflows are just a fact of life on 32 bit systems. However, they can
-also be trivially handled - you can always subtract a ulong start
-state from a ulong end state and get a reliable delta of up to 2^32
-events, whether the end state has overflowed or not.
-
-The bottom line is that the benefit of this patch adds a minor
-convenience for something that can already be done in userspace. But
-the downside is that there would be one more possible source of noise
-for kernel developers to consider when looking at a bug report. Plus
-the extra code and user interface that need to be maintained.
-
-I don't think we should merge this patch.
+Bart
