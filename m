@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D2432A5B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0F132A5C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442702AbhCBNGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 08:06:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
+        id S1577053AbhCBNNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 08:13:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350255AbhCBMOh (ORCPT
+        with ESMTP id S1350253AbhCBMOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Mar 2021 07:14:37 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D80C0611C0;
-        Tue,  2 Mar 2021 04:11:09 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id m11so22748469lji.10;
-        Tue, 02 Mar 2021 04:11:09 -0800 (PST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDA0C0611C1;
+        Tue,  2 Mar 2021 04:11:10 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id e7so30935712lft.2;
+        Tue, 02 Mar 2021 04:11:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Vf+9cpXQr7hrQ9itCdssJG4n/IaJKoI9Dc3YxNuM01M=;
-        b=a79JNTAmxtvNJ5JGuSE0z336l1mDz/zK5uQW46fWtOKbjeUZMVxjS5M02Z+V1jX7+s
-         Mc0Rc0LWXtHQKlNebHfmdKZn5QxH+4LMVRx0O6TXKeIRsGuso9q5LkJPzuk09EhMWHml
-         /1BQQNn2gkxFWR9dLZbj6OW4bRZpBKjEt8koEz30KOosrC0BjrQu5r2lt2bsxVt6FHGv
-         PY9ySGUrspX7uUei7VTeXiLTbc0NjZBUMtqS9IaMeAHaUL6Tr7uftQwd+U56QRy+iu56
-         4DQxbnno/OnhVBkFCUuzwwovOJyF2Yrn/HNa5vkfpsPl46lqu1Y3O/R5CXDTMDSzabks
-         dp+w==
+        bh=//LXOze+13I5z/FYLaqJrmRyfxqFIxZ8QuJGcysQP04=;
+        b=PBymluNP9Zh2xhcLL29I2vufCWp2WmkcBOw6zOaiV3T0wH5pAKjtqNMIofxV70gYTs
+         uTFwEGnH+2Il4DM0zHaykyRNX+uU5+TTjYBIsBX/TxNb5sdd0vEvH9j3m2/1e8VPT386
+         oKuatlG47+P5xLcqqZZTT/tAabKO8+FkGiSfSOeNsqUiklqWHWqveEZgUBu7OdO30OHa
+         7FyjOYhv8f0XlrcF5jSzC/4elu9L4qHGFwEh47zH5vxL018j85xpRdMOl0fBumZ4IFZ3
+         1m9ZW4mW6LcCwmT7SNXpPhHuSUy9YN2yDk7l2i6q1pmnHfHuiLtdqk7A3KL7KIzQNJHF
+         P+gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Vf+9cpXQr7hrQ9itCdssJG4n/IaJKoI9Dc3YxNuM01M=;
-        b=UEhwA0N1sM2V3bzXdYzv6fy5oQoCR7fgvSvQ+FcXjOwF6AlUV60pwp3Wg30+9i2O+Z
-         Rk6zzMMCzvYIrqBz2z799z1VaDArMXNmod7nww9/rRGhUPO/MBBX53+HbRavpUkIDp/r
-         UsZrXb2lvd3nHYh1mXl12+swCOPSn+vEStw1FVCZ/A5mjrhd3pFKZjAfnx/dUGEeOaiT
-         PmYh81Lu5JEecamvLH7YlOx/oQYeDz7RBYK4vtIb3Y56d3sgPm097pEr/jgWikP2cgcm
-         6gEf3lnmdL8J5M+YZjyAMED1EbS/53ESxQZbIgHnqOizxzSZZ/0Gwf5hK8paZgitU9uR
-         Ac0A==
-X-Gm-Message-State: AOAM5319Wt5IRsXsudD2qDhjPH43226kZaTYk5zsO9XkwbxpC7k0dA2F
-        3P804Chg8GA/wIPIVbmUnsI=
-X-Google-Smtp-Source: ABdhPJx17FjX9XMyDkvkanTtQAXGc7m7HBy2dzBAzTomZweAQ3sJUw+Dvy01XtoDy/oWcwRGzJb0fQ==
-X-Received: by 2002:a2e:8e87:: with SMTP id z7mr575457ljk.142.1614687068046;
+        bh=//LXOze+13I5z/FYLaqJrmRyfxqFIxZ8QuJGcysQP04=;
+        b=gUeqWVW5AvFAjtus2HJMDnffpO81MZG0V1H1wlO6XaTfFB9oQxPtaT9Y1Ke9PVtJnH
+         ky4sUoIMYqa+D5/Ul/SaBFy6iAxFaGGUxvjrVLQ8EYL0uANth8TXDazQD0nDd0dAcH4y
+         aRWOkipB4TOQQr/Ptf4/r30FrNLjmXzEYqvXuanSkmX331zo/7Sg+Jsuk5IlP78exA7F
+         3Lf6GXZOM5OcSfBEiit3gU2nqrNZButdtpCkWUmT9Vc7IOjvYhHekxw4X0Ql10H/zOZv
+         O6ZwsSE0Y8AU0FNduA9uTwtolI1WsHUHTkavYJYIVCdrkKLQyENnO/MuuhL0q0qAVByf
+         Q2lA==
+X-Gm-Message-State: AOAM533BJJ4Q8C9GOMUrNc2QZR3qRcA/TWq0h+Z3mKb9oktq4OQzWN5A
+        sygZgduQdLgipvrBWpEefH8=
+X-Google-Smtp-Source: ABdhPJwKWZQjR0ql5n7CtMw8VEPhL+WJ38WtRHAwpV7KihkNQQjzOAFy7N2NT82ZQiDz31FjyViRwA==
+X-Received: by 2002:a05:6512:131c:: with SMTP id x28mr12147110lfu.387.1614687068649;
         Tue, 02 Mar 2021 04:11:08 -0800 (PST)
 Received: from localhost.localdomain (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.gmail.com with ESMTPSA id d21sm835097ljo.55.2021.03.02.04.11.07
+        by smtp.gmail.com with ESMTPSA id d21sm835097ljo.55.2021.03.02.04.11.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 04:11:07 -0800 (PST)
+        Tue, 02 Mar 2021 04:11:08 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -56,9 +56,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Matt Merhar <mattmerhar@protonmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 12/14] ARM: tegra: Specify CPU suspend OPP in device-tree
-Date:   Tue,  2 Mar 2021 15:10:01 +0300
-Message-Id: <20210302121003.15058-13-digetx@gmail.com>
+Subject: [PATCH v3 13/14] ARM: tegra: Specify memory suspend OPP in device-tree
+Date:   Tue,  2 Mar 2021 15:10:02 +0300
+Message-Id: <20210302121003.15058-14-digetx@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210302121003.15058-1-digetx@gmail.com>
 References: <20210302121003.15058-1-digetx@gmail.com>
@@ -68,64 +68,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Specify CPU suspend OPP in a device-tree, just for consistency. Now CPU
-will always suspend on the same frequency.
+Specify memory suspend OPP in a device-tree, just for consistency.
+Now memory will always suspend on the same frequency.
 
 Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20
 Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
 Tested-by: Dmitry Osipenko <digetx@gmail.com> # A500 T20 and Nexus7 T30
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/boot/dts/tegra20-cpu-opp.dtsi | 2 ++
- arch/arm/boot/dts/tegra30-cpu-opp.dtsi | 3 +++
- 2 files changed, 5 insertions(+)
+ arch/arm/boot/dts/tegra124-peripherals-opp.dtsi | 5 +++++
+ arch/arm/boot/dts/tegra20-peripherals-opp.dtsi  | 1 +
+ arch/arm/boot/dts/tegra30-peripherals-opp.dtsi  | 3 +++
+ 3 files changed, 9 insertions(+)
 
-diff --git a/arch/arm/boot/dts/tegra20-cpu-opp.dtsi b/arch/arm/boot/dts/tegra20-cpu-opp.dtsi
-index 702a635e88e7..135de316383b 100644
---- a/arch/arm/boot/dts/tegra20-cpu-opp.dtsi
-+++ b/arch/arm/boot/dts/tegra20-cpu-opp.dtsi
-@@ -9,12 +9,14 @@ opp@216000000,750 {
- 			clock-latency-ns = <400000>;
- 			opp-supported-hw = <0x0F 0x0003>;
+diff --git a/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
+index 49d9420a3289..781ac8601030 100644
+--- a/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
++++ b/arch/arm/boot/dts/tegra124-peripherals-opp.dtsi
+@@ -128,24 +128,28 @@ opp@204000000,800 {
+ 			opp-microvolt = <800000 800000 1150000>;
+ 			opp-hz = /bits/ 64 <204000000>;
+ 			opp-supported-hw = <0x0003>;
++			opp-suspend;
+ 		};
+ 
+ 		opp@204000000,950 {
+ 			opp-microvolt = <950000 950000 1150000>;
+ 			opp-hz = /bits/ 64 <204000000>;
+ 			opp-supported-hw = <0x0008>;
++			opp-suspend;
+ 		};
+ 
+ 		opp@204000000,1050 {
+ 			opp-microvolt = <1050000 1050000 1150000>;
+ 			opp-hz = /bits/ 64 <204000000>;
+ 			opp-supported-hw = <0x0010>;
++			opp-suspend;
+ 		};
+ 
+ 		opp@204000000,1110 {
+ 			opp-microvolt = <1110000 1110000 1150000>;
+ 			opp-hz = /bits/ 64 <204000000>;
+ 			opp-supported-hw = <0x0004>;
++			opp-suspend;
+ 		};
+ 
+ 		opp@264000000,800 {
+@@ -360,6 +364,7 @@ opp@204000000 {
+ 			opp-hz = /bits/ 64 <204000000>;
+ 			opp-supported-hw = <0x001F>;
+ 			opp-peak-kBps = <3264000>;
++			opp-suspend;
+ 		};
+ 
+ 		opp@264000000 {
+diff --git a/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
+index b84afecea154..ef3ad2e5f270 100644
+--- a/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
++++ b/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
+@@ -68,6 +68,7 @@ opp@216000000 {
+ 			opp-microvolt = <1000000 1000000 1300000>;
  			opp-hz = /bits/ 64 <216000000>;
+ 			opp-supported-hw = <0x000F>;
 +			opp-suspend;
  		};
  
- 		opp@216000000,800 {
- 			clock-latency-ns = <400000>;
- 			opp-supported-hw = <0x0F 0x0004>;
- 			opp-hz = /bits/ 64 <216000000>;
-+			opp-suspend;
- 		};
- 
- 		opp@312000000,750 {
-diff --git a/arch/arm/boot/dts/tegra30-cpu-opp.dtsi b/arch/arm/boot/dts/tegra30-cpu-opp.dtsi
-index 0f7135006d19..72f2fe26cc0e 100644
---- a/arch/arm/boot/dts/tegra30-cpu-opp.dtsi
-+++ b/arch/arm/boot/dts/tegra30-cpu-opp.dtsi
-@@ -45,18 +45,21 @@ opp@204000000,800 {
- 			clock-latency-ns = <100000>;
- 			opp-supported-hw = <0x1F 0x31FE>;
+ 		opp@300000000 {
+diff --git a/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
+index cbe84d25e726..2c9780319725 100644
+--- a/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
++++ b/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
+@@ -128,12 +128,14 @@ opp@204000000,1000 {
+ 			opp-microvolt = <1000000 1000000 1350000>;
  			opp-hz = /bits/ 64 <204000000>;
+ 			opp-supported-hw = <0x0007>;
 +			opp-suspend;
  		};
  
- 		opp@204000000,850 {
- 			clock-latency-ns = <100000>;
- 			opp-supported-hw = <0x1F 0x0C01>;
+ 		opp@204000000,1250 {
+ 			opp-microvolt = <1250000 1250000 1350000>;
  			opp-hz = /bits/ 64 <204000000>;
+ 			opp-supported-hw = <0x0008>;
 +			opp-suspend;
  		};
  
- 		opp@204000000,912 {
- 			clock-latency-ns = <100000>;
- 			opp-supported-hw = <0x1F 0x0200>;
+ 		opp@333500000,1000 {
+@@ -312,6 +314,7 @@ opp@204000000 {
  			opp-hz = /bits/ 64 <204000000>;
+ 			opp-supported-hw = <0x000F>;
+ 			opp-peak-kBps = <1632000>;
 +			opp-suspend;
  		};
  
- 		opp@312000000,850 {
+ 		opp@333500000 {
 -- 
 2.29.2
 
