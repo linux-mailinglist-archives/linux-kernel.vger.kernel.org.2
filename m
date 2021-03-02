@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694CF32A648
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C889132A64B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1448301AbhCBOTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 09:19:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50610 "EHLO mail.kernel.org"
+        id S1448377AbhCBOUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 09:20:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1444802AbhCBMgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:36:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07FD764F3E;
-        Tue,  2 Mar 2021 11:56:25 +0000 (UTC)
+        id S1344120AbhCBMiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:38:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E6F064F0B;
+        Tue,  2 Mar 2021 11:56:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686186;
-        bh=ab5hniXl98VxlN0bmfQq67BF1biy4T23u0IOq90Wync=;
+        s=k20201202; t=1614686188;
+        bh=u2P5i4xmHCSSHOMVfd8dvwLyx+VXBqLuGZ/cmQoff18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=arUhwyV+0TP+8O9VzQNPkHnzq9cpRy1KLhXbs54gCctgkx6mLhADmT0ZOYL3qVdcn
-         c4cxFhc543j5SikmydAVJi24LysOFA2IaHgRzNNqrQjk0VsXpwPJsHLb0eR83iNMa3
-         ng2h0ViLjmdZO9GbeQPQ7art/6uoZlyMl6nzn6EsLEB01hNM2VrkxM1G6xLuv4Ztcq
-         Gz6DcCvsAVyc8hCylaKWoiHgxn3UVJWuIC6gU2EqzKduAvS5AyT6JC4Hgw0y0Nw/It
-         qi8mUDwknWXSqXxtGwsaUfVSNxysUO1dQinwQG7TvzHzGmpPqH6idUjwsmMrNS4dYG
-         o9+yaFAF1A0ng==
+        b=M7WJ2feZixRyl5TiAN5qxOKOB/3l7QHfQXb9iDGYsE+xKVNT3Bi/AVfiRb6jiJlSf
+         E3tJXs+BqPgS64e+zCoyLhM1KKpYkmLQlMKyi6KbEv5UzAyr0ROPdFSq87+8IlFk+b
+         KouXBxcxO3kefLzmw6GB7un3Fsy3hen7oihh7dIifcW4V1CB0VnbojDm+hceiWMbtJ
+         uT+aQohNWQkzq+RU0DYdauT6WAWWS37JuGpqUZg/Jocb8BmdP6Or1vywqE7mYiMXkp
+         VZEFF/zKN41fZ294gnZDNnMnzsfGHWUMsXK8xtGpCY/SnlJhgs7/FHJxLYFP9bdaU5
+         xxF9905tMKReQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 40/52] kbuild: clamp SUBLEVEL to 255
-Date:   Tue,  2 Mar 2021 06:55:21 -0500
-Message-Id: <20210302115534.61800-40-sashal@kernel.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 41/52] PCI: Fix pci_register_io_range() memory leak
+Date:   Tue,  2 Mar 2021 06:55:22 -0500
+Message-Id: <20210302115534.61800-41-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115534.61800-1-sashal@kernel.org>
 References: <20210302115534.61800-1-sashal@kernel.org>
@@ -42,50 +42,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 9b82f13e7ef316cdc0a8858f1349f4defce3f9e0 ]
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Right now if SUBLEVEL becomes larger than 255 it will overflow into the
-territory of PATCHLEVEL, causing havoc in userspace that tests for
-specific kernel version.
+[ Upstream commit f6bda644fa3a7070621c3bf12cd657f69a42f170 ]
 
-While userspace code tests for MAJOR and PATCHLEVEL, it doesn't test
-SUBLEVEL at any point as ABI changes don't happen in the context of
-stable tree.
+Kmemleak reports:
 
-Thus, to avoid overflows, simply clamp SUBLEVEL to it's maximum value in
-the context of LINUX_VERSION_CODE. This does not affect "make
-kernelversion" and such.
+  unreferenced object 0xc328de40 (size 64):
+    comm "kworker/1:1", pid 21, jiffies 4294938212 (age 1484.670s)
+    hex dump (first 32 bytes):
+      00 00 00 00 00 00 00 00 e0 d8 fc eb 00 00 00 00  ................
+      00 00 10 fe 00 00 00 00 00 00 00 00 00 00 00 00  ................
 
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+  backtrace:
+    [<ad758d10>] pci_register_io_range+0x3c/0x80
+    [<2c7f139e>] of_pci_range_to_resource+0x48/0xc0
+    [<f079ecc8>] devm_of_pci_get_host_bridge_resources.constprop.0+0x2ac/0x3ac
+    [<e999753b>] devm_of_pci_bridge_init+0x60/0x1b8
+    [<a895b229>] devm_pci_alloc_host_bridge+0x54/0x64
+    [<e451ddb0>] rcar_pcie_probe+0x2c/0x644
+
+In case a PCI host driver's probe is deferred, the same I/O range may be
+allocated again, and be ignored, causing a memory leak.
+
+Fix this by (a) letting logic_pio_register_range() return -EEXIST if the
+passed range already exists, so pci_register_io_range() will free it, and
+by (b) making pci_register_io_range() not consider -EEXIST an error
+condition.
+
+Link: https://lore.kernel.org/r/20210202100332.829047-1-geert+renesas@glider.be
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ drivers/pci/pci.c | 4 ++++
+ lib/logic_pio.c   | 3 +++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index 0b9ae470a714..bcd11b3d4ced 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1246,9 +1246,15 @@ define filechk_utsrelease.h
- endef
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 790393d1e318..a53e25d75d04 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -4022,6 +4022,10 @@ int pci_register_io_range(struct fwnode_handle *fwnode, phys_addr_t addr,
+ 	ret = logic_pio_register_range(range);
+ 	if (ret)
+ 		kfree(range);
++
++	/* Ignore duplicates due to deferred probing */
++	if (ret == -EEXIST)
++		ret = 0;
+ #endif
  
- define filechk_version.h
--	echo \#define LINUX_VERSION_CODE $(shell                         \
--	expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 0$(SUBLEVEL)); \
--	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))'
-+	if [ $(SUBLEVEL) -gt 255 ]; then                                 \
-+		echo \#define LINUX_VERSION_CODE $(shell                 \
-+		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + 255); \
-+	else                                                             \
-+		echo \#define LINUX_VERSION_CODE $(shell                 \
-+		expr $(VERSION) \* 65536 + 0$(PATCHLEVEL) \* 256 + $(SUBLEVEL)); \
-+	fi;                                                              \
-+	echo '#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) +  \
-+	((c) > 255 ? 255 : (c)))'
- endef
- 
- $(version_h): FORCE
+ 	return ret;
+diff --git a/lib/logic_pio.c b/lib/logic_pio.c
+index f32fe481b492..07b4b9a1f54b 100644
+--- a/lib/logic_pio.c
++++ b/lib/logic_pio.c
+@@ -28,6 +28,8 @@ static DEFINE_MUTEX(io_range_mutex);
+  * @new_range: pointer to the IO range to be registered.
+  *
+  * Returns 0 on success, the error code in case of failure.
++ * If the range already exists, -EEXIST will be returned, which should be
++ * considered a success.
+  *
+  * Register a new IO range node in the IO range list.
+  */
+@@ -51,6 +53,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
+ 	list_for_each_entry(range, &io_range_list, list) {
+ 		if (range->fwnode == new_range->fwnode) {
+ 			/* range already there */
++			ret = -EEXIST;
+ 			goto end_register;
+ 		}
+ 		if (range->flags == LOGIC_PIO_CPU_MMIO &&
 -- 
 2.30.1
 
