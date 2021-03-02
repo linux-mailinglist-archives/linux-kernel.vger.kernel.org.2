@@ -2,132 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4301132AB95
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACB532ABF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 21:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1837051AbhCBUaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 15:30:22 -0500
-Received: from smtprelay0189.hostedemail.com ([216.40.44.189]:60110 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1344390AbhCBRtC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:49:02 -0500
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave05.hostedemail.com (Postfix) with ESMTP id 1C213180322EC;
-        Tue,  2 Mar 2021 17:46:09 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id E7A51181B3E89;
-        Tue,  2 Mar 2021 17:42:53 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:973:988:989:1260:1261:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1544:1593:1594:1605:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3865:3866:3867:3868:3870:3871:3872:3874:4031:5007:6996:7652:7903:10004:11026:11658:11914:12043:12296:12297:12438:12760:12986:13018:13019:13161:13184:13229:13439:13869:14093:14097:14659:14721:21063:21080:21433:21451:21627:21740:21939:21972:30005:30012:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: home60_3c159ee276be
-X-Filterd-Recvd-Size: 4972
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  2 Mar 2021 17:42:52 +0000 (UTC)
-Message-ID: <053b06c47f08631675c295b5c893b90be4248347.camel@perches.com>
-Subject: linux-kernel janitorial RFP: Mark static arrays as const
-From:   Joe Perches <joe@perches.com>
-To:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        cocci <cocci@systeme.lip6.fr>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Date:   Tue, 02 Mar 2021 09:42:51 -0800
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1447749AbhCBU6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 15:58:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50864 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1580523AbhCBSEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 13:04:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614707013; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n1odR/9HIGhwlY9C1AyzEeD9zVtoOxcaXyC3jT9R5QA=;
+        b=mhn55k0DONsD3wIp8Y4XJ+X3wOcLKsU59xYYRmNFqFD+QjAosw1o2FIWwtx5jlg+NpN1V2
+        ouNrtZEnOxpvriwCNjlJy7wqODo8p4hk0mPHctHPbURfVHoNkPcwQjIEI/MOqW3MjEvirA
+        0NUxQFMzmWUtvo7yPaIJ1/xeVtbPxME=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B3B66AD87;
+        Tue,  2 Mar 2021 17:43:33 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 18:43:23 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sched/cpuacct: Fix charge cpuacct.usage_sys
+ incorrently.
+Message-ID: <YD55OxQrJ54PWgs+@blackbook>
+References: <20200420070453.76815-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dFxZORNm+VieO2OP"
+Content-Disposition: inline
+In-Reply-To: <20200420070453.76815-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here is a possible opportunity to reduce data usage in the kernel.
 
-$ git grep -P -n '^static\s+(?!const|struct)(?:\w+\s+){1,3}\w+\s*\[\s*\]' drivers/ | \
-  grep -v __initdata | \
-  wc -l
-3250
+--dFxZORNm+VieO2OP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Meaning there are ~3000 declarations of arrays with what appears to be
-file static const content that are not marked const.
+Hello.
 
-So there are many static arrays that could be marked const to move the
-compiled object code from data to text minimizing the total amount of
-exposed r/w data.
+(Sorry for necroposting, found this upstream reference only now.)
 
-However, I do not know of a mechanism using coccinelle to determine
-whether or not any of these static declarations are ever modified.
+On Mon, Apr 20, 2020 at 03:04:53PM +0800, Muchun Song <songmuchun@bytedance.com> wrote:
+>  /* Time spent by the tasks of the CPU accounting group executing in ... */
+> @@ -339,7 +340,7 @@ void cpuacct_charge(struct task_struct *tsk, u64 cputime)
+>  {
+>  	struct cpuacct *ca;
+>  	int index = CPUACCT_STAT_SYSTEM;
+> -	struct pt_regs *regs = task_pt_regs(tsk);
+> +	struct pt_regs *regs = get_irq_regs() ? : task_pt_regs(tsk);
+I've read the discussion in [1] but I don't think this approach is
+correct either (and I don't know what is better :-/).
 
-So it appears that each instance of these declarations might need
-manual inspection.
+I only have a qualitative proof:
 
-But for arrays declared inside functions, it's much more likely that
-the static declaration without const is done with the intent to modify
-the array:
+host:~ # uname -r
+5.10.16-1-default
 
-(note the difference in the git grep with a leading '^\s+')
+host:~ # systemd-run -p CPUAccounting=yes sh -c 'time sh -c "i=0 ; while [ \"\$i\" -lt 10000 ] ; do i=\$((\$i+1)) ; cat /proc/slabinfo >/dev/null ; done" ; sleep inf'
+Running as unit: run-r101b9f53efcb4d2a9bfb65feb6f120ca.service
 
-$ git grep -Pn '^\s+static\s+(?!const|struct)(?:\w+\s+){1,3}\w+\s*\[\s*\]' drivers/ | \
-  grep -v __initdata | \
-  wc -l
-323
+host:~ # cat /sys/fs/cgroup/cpuacct/system.slice/run-r101b9f53efcb4d2a9bfb65feb6f120ca.service/cpuacct.usage{,_user,_sys}
+16138535165
+14332580468
+1805954697
 
-------------- For instance: (head -10 of the git grep for file statics)
+(See that sys/user ~ 0.1)
 
-drivers/accessibility/speakup/keyhelp.c:18:static u_short masks[] = { 32, 16, 8, 4, 2, 1 };
-drivers/accessibility/speakup/keyhelp.c:26:static u_char funcvals[] = {
-drivers/accessibility/speakup/main.c:2059:static spkup_hand spkup_handler[] = {
-drivers/accessibility/speakup/speakup_acntpc.c:35:static unsigned int synth_portlist[] = { 0x2a8, 0 };
-drivers/accessibility/speakup/speakup_decpc.c:133:static int synth_portlist[] = { 0x340, 0x350, 0x240, 0x250, 0 };
-drivers/accessibility/speakup/speakup_dectlk.c:110:static int ap_defaults[] = {122, 89, 155, 110, 208, 240, 200, 106, 306};
-drivers/accessibility/speakup/speakup_dectlk.c:111:static int g5_defaults[] = {86, 81, 86, 84, 81, 80, 83, 83, 73};
-drivers/accessibility/speakup/speakup_dtlk.c:34:static unsigned int synth_portlist[] = {
-drivers/accessibility/speakup/speakup_keypc.c:34:static unsigned int synth_portlist[] = { 0x2a8, 0 };
-drivers/acpi/ac.c:137:static enum power_supply_property ac_props[] = {
+host:~ # journalctl -u run-r101b9f53efcb4d2a9bfb65feb6f120ca.service
+-- Logs begin at Tue 2021-03-02 18:06:41 CET, end at Tue 2021-03-02 18:27:45 CET. --
+Mar 02 18:27:29 host systemd[1]: Started /usr/bin/sh -c time sh -c "i=0 ; while [ \"\$i\" -lt 10000 ] ; do i=\$((\$i+1)) ; cat /proc/slabinfo >/dev/null ; done" ; sleep inf.
+Mar 02 18:27:45 host sh[19117]: real        0m15.543s
+Mar 02 18:27:45 host sh[19117]: user        0m10.752s
+Mar 02 18:27:45 host sh[19117]: sys        0m5.379s
 
-For drivers/accessibility/speakup/keyhelp.c:18:static u_short masks[] = { 32, 16, 8, 4, 2, 1 };
+(See that sys/user ~ 0.5)
 
-masks is only used in static function say_key and should be const and
-perhaps the declaration might be better moved into that function.
+host:~ # cat /sys/fs/cgroup/cpuacct/system.slice/run-r101b9f53efcb4d2a9bfb65feb6f120ca.service/cpuacct.stat
+user 415
+system 1209
 
-For drivers/accessibility/speakup/keyhelp.c:26:static u_char funcvals[] = {
+(See that sys/user ~ 3.0 :-o)
 
-funcvals is only used in static function spk_handle_help and should be const
-and perhaps the declaration might be better moved into that function.
-
-For drivers/accessibility/speakup/main.c:2059:static spkup_hand spkup_handler[] = {
-
-spkup_handler is only used in static function do_spkup and should be const
-and perhaps the declaration might be better moved into that function.
-
-etc... for speakup
-
-For drivers/acpi/ac.c:137:static enum power_supply_property ac_props[] = {
-
-array ac_props is assigned as a reference in acpi_ac_add as a 
-"const enum power_supply_property *" member of a struct power_supply_desc.
-
-------------- For instance: (head -10 of the git grep for function statics)
-
-drivers/acpi/apei/apei-base.c:781:	static u8 whea_uuid_str[] = "ed855e0c-6c90-47bf-a62a-26de0fc5ad5c";
-drivers/block/amiflop.c:1051:	static unsigned char CRCTable1[] = {
-drivers/block/amiflop.c:1070:	static unsigned char CRCTable2[] = {
-drivers/block/drbd/drbd_nl.c:872:	static char units[] = { 'K', 'M', 'G', 'T', 'P', 'E' };
-drivers/block/drbd/drbd_proc.c:224:	static char write_ordering_chars[] = {
-drivers/block/drbd/drbd_receiver.c:4363:	static enum drbd_conns c_tab[] = {
-drivers/char/pcmcia/synclink_cs.c:3717:	static unsigned char patterns[] =
-drivers/cpufreq/intel_pstate.c:1515:	static int silvermont_freq_table[] = {
-drivers/cpufreq/intel_pstate.c:1530:	static int airmont_freq_table[] = {
-drivers/dma/xgene-dma.c:360:	static u8 flyby_type[] = {
-
-Some of these could be const, but some could not.  For instance:
-
-For drivers/acpi/apei/apei-base.c:781:	static u8 whea_uuid_str[] = "ed855e0c-6c90-47bf-a62a-26de0fc5ad5c";
-
-whea_uuid_str is assigned as a reference in "int apei_osc_setup(void)"
-a struct acpi_osc_context where .uuid_str is not declared as const char *.
+The expectation is that significant amount of the loop is spent in
+kernel (dumping slabinfo). I can't tell which of the ratios fits the
+reality best but the cpuacct.usage_sys still seems too low.
 
 
+Michal
 
+[1] https://lore.kernel.org/lkml/20200416141833.50663-1-songmuchun@bytedance.com/
 
+--dFxZORNm+VieO2OP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmA+eTUACgkQia1+riC5
+qShN+Q//e89E9MA7Ku6PURFKldbhEMpFwuI48vsYuDg1b7OwMtWqk0kpOfhSjjKD
+N0nP0aMALG1fl9oISUDBzth4CGOzmo28LIlao/f0LGLC+ThJyM48oCEFP44C3VUt
+hJv4UqEIVHTW7DCuH+lLhU/Tbvwn5TJZoSYdQDwHWsfVlPpO7Ov3mwqlqQlAsr/s
+nXW+uaz3rjWq8n1L/Q0RK1jbChCLHftF0YG7EBP/5SC0CjN7vnyIIZQQMat8K8qi
+cbnum0nW4yInY/XBQsUTU13Htk1DB5/c/fqpQurkcp32b8VYMWoV4FrhEhcHSrgD
+9XWAA/mvRvzjWIHItgtzQcmBQTz1Kkh+4kjDwHT5Xsl12HCxhPXslkoS4lHIKafu
+pN3THfUofKeyvRENqcmttDxzWJ74iVSYgs3zmz6nmhpfs2k5HwKF2UEiUeUMLwUd
+IMdb0rDVD5QhH7JoJ+j8MZQB5nrwrrESdwzV3NCptmxUnyZxarra4fxEM1Cds0Cj
+wbZlu6KYSrNlwcIG77P03nsTOKWFHKq/CDITvHvCQK1hJYilmW+MPC2DFcLfciRq
+cFvcn24Mcg6BRBrTvbr5rnhc4mB+MF48K2MckXr+2mk98g1u2JlTYQ2XYj4IgQwq
+egBnSR90ckz9QD/FSGxJ3ob1CDdmY9DAixP21GbSVKBy6Brfa6A=
+=xqAD
+-----END PGP SIGNATURE-----
+
+--dFxZORNm+VieO2OP--
