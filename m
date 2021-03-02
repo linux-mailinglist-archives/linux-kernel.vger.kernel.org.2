@@ -2,135 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0A532AD93
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABC532AD94
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:31:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2359572AbhCBWBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:01:03 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11220 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1443639AbhCBTOE (ORCPT
+        id S2359584AbhCBWBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:01:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1444882AbhCBTPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 14:14:04 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122J5EEV027328;
-        Tue, 2 Mar 2021 14:11:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=qAG5xfr4ga6rSb4QwNCXooGmvsPVXs5R9sVsHP8bXoA=;
- b=PPpuxSi0/UCL2gTG3sVe/HkOKSKROzr8kukgK499nYD6lWWpvgrjOkWfbqop6pVGtOLg
- mDEEGIaTMzdpuT2h6KBn8hRVBKZOM21+s8YB8PX3Ncyn6rHwI7IZbAbpGMxsmXJuPU34
- hjr/mnw+R29JkRIT+CgY5t6wvMDSzd8ZDUNTHaxcrNTtOWh1SKHmee3QLcgQRX4EwQJI
- DPI8WjvJYAPn727pExdd9EK1dN/KeibgwqaO6OWEP+zFxGGVZhAHz8fO6FxqH/ShMERM
- Hg52fCZZTGRtux9s2IdtP5MlbG/Q9P+SarQ9wfzK1O+nuNb2c1ssRQTc/OVnLdq/l37x aw== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 371u728crb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 14:10:59 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 122J2Y1U003611;
-        Tue, 2 Mar 2021 19:09:51 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma02dal.us.ibm.com with ESMTP id 3710sqms21-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Mar 2021 19:09:51 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 122J9oT729360502
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 2 Mar 2021 19:09:50 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 82619BE053;
-        Tue,  2 Mar 2021 19:09:50 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5EF4EBE051;
-        Tue,  2 Mar 2021 19:09:49 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.44.137])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  2 Mar 2021 19:09:49 +0000 (GMT)
-Subject: Re: [PATCH 40/44] tty: hvc, drop unneeded forward declarations
-To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20210302062214.29627-1-jslaby@suse.cz>
- <20210302062214.29627-40-jslaby@suse.cz>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <4f3c0b03-4a1b-3007-97c3-560afe5f9ab4@linux.ibm.com>
-Date:   Tue, 2 Mar 2021 11:09:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 2 Mar 2021 14:15:51 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBAF8C06178B
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 11:15:06 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id 18so12985456qty.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 11:15:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZikdE+7DLZ1JD1DCu42GT/9qzzNugvdBEIi0wizGvrk=;
+        b=a1kPDI4zlBu3FH6xgGwR3rM1zw+SD2IE9rgAdEYCwLTPe8nEUz3IXJj7Kbi7lp0jiw
+         XnG2LY4NdTuzPmB0meHsurRhxIJDKlpJDFRMsIsUWFeerN/1CVf4fgAJ1C3wkMV+Xha9
+         Wsl/+Gh/6VNyU5bu15DBWcuqnZhGk9sNYdoRJzbNIYMmLHo16FnCRQ9kdTUioTMS2iCC
+         lAO1UWusfuac4oS9Zr1PDVzKxldBN1eRCQhFQZH3VobDjA3h4HG/IRP1pK0DHhuNjaSd
+         qauqR09WqiEdbxKeQ8S/p/XbBCCyzOrog8H136f8RvNIXAa+DwVMJiElmC/6YYXaSb7u
+         5CLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZikdE+7DLZ1JD1DCu42GT/9qzzNugvdBEIi0wizGvrk=;
+        b=D+dJVYL6Yk+lMfOVWwYXV1klhBiJ00gJFRJeEC4vXX8Nw+CJ6KjfZr/+pOyadq5ZXT
+         xIWpBkdeBjbXwxaEebhwRvJKDVn7pQaCsZhSC2d/DfvcUI4QsWsvbTXRQVD6V1qkQZ89
+         bZTDMv9K9MFVwZ3ULGjvodLbhxxrDQ5d52H57bg8h11pmNTL9LS3yXFgtPscqInUQBYv
+         9YZcorATLXs81cBATsMzBQNoYJhOEYiqHlP0j3//M5cceLH5s8a7T9LEVe2T93kpDrRA
+         70IivXitF+lpvFtApvUjd5biOvsp5SIbQEM7+5WH2zZXPgkYBvdAq02H/CUMPNTZnsVN
+         p8vQ==
+X-Gm-Message-State: AOAM5323/bdJOFH2Tusrw8ztuF+2D/zk1D7crVLaiLgtyf57s6tJVNpB
+        K9n+yOkdc9dDhAiI9aP+Dl7DqX5+PzHAGRbQR6D8xA==
+X-Google-Smtp-Source: ABdhPJwaBXK1fev/fK3G9E1MCoG39LnfYsI8hMqs7jeZ3GlJrcuQG7zIP81C8cwBRXcx0ZLyRiqVKDopT4stCfWTxuE=
+X-Received: by 2002:a05:622a:c9:: with SMTP id p9mr18909276qtw.337.1614712505694;
+ Tue, 02 Mar 2021 11:15:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210302062214.29627-40-jslaby@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 impostorscore=0 spamscore=0
- mlxlogscore=999 adultscore=0 priorityscore=1501 suspectscore=0 bulkscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103020144
+References: <0000000000006305c005bc8ba7f0@google.com> <CACT4Y+YFtUHzWcU3VBvxsdq-V_4hN_ZDs4riZiHPt4f0cy8ryA@mail.gmail.com>
+ <CAHC9VhTxrGgBDW_439HeSP=_F9Jt2_cYrrQ7DtAXtKG4evGb9g@mail.gmail.com>
+In-Reply-To: <CAHC9VhTxrGgBDW_439HeSP=_F9Jt2_cYrrQ7DtAXtKG4evGb9g@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 2 Mar 2021 20:14:54 +0100
+Message-ID: <CACT4Y+YEu3f059=nGu9KxTi4sg6-POtziQ+0jx-KN2adjGJHRg@mail.gmail.com>
+Subject: Re: KASAN: use-after-free Read in cipso_v4_genopt
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     syzbot <syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com>,
+        David Miller <davem@davemloft.net>, dsahern@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/1/21 10:22 PM, Jiri Slaby wrote:
-> Forward declarations make the code larger and rewrites harder. Harder as
-> they are often omitted from global changes. Remove forward declarations
-> which are not really needed, i.e. the definition of the function is
-> before its first use.
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: linuxppc-dev@lists.ozlabs.org
+On Tue, Mar 2, 2021 at 5:10 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> On Tue, Mar 2, 2021 at 6:03 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+>
+> ...
+>
+> > Besides these 2 crashes, we've also seen one on a 4.19 based kernel, see below.
+> > Based on the reports with mismatching stacks, it looks like
+> > cipso_v4_genopt is doing some kind of wild pointer access (uninit
+> > pointer?).
+>
+> Hmm, interesting.  Looking quickly at the stack dump, it appears that
+> the problem occurs (at least in the recent kernel) when accessing the
+> cipso_v4_doi.tags[] array which is embedded in the cipso_v4_doi
+> struct.  Based on the code in cipso_v4_genopt() it doesn't appear that
+> we are shooting past the end of the array/struct and the cipso_v4_doi
+> struct appears to be refcounted correctly in cipso_v4_doi_getdef() and
+> cipso_v4_doi_putdef().  I'll look at it some more today to see if
+> something jumps out at me, but obviously a reproducer would be very
+> helpful if you are able to find one.
+>
+> It's also worth adding that this code really hasn't changed much in a
+> *long* time, not that this means it isn't broken, just that it might
+> also be worth looking at other odd memory bugs to see if there is
+> chance they are wandering around and stomping on memory ...
 
-Reviewed-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-
-> ---
->  drivers/tty/hvc/hvcs.c | 25 -------------------------
->  1 file changed, 25 deletions(-)
-> 
-> diff --git a/drivers/tty/hvc/hvcs.c b/drivers/tty/hvc/hvcs.c
-> index c90848919644..0b89d878a108 100644
-> --- a/drivers/tty/hvc/hvcs.c
-> +++ b/drivers/tty/hvc/hvcs.c
-> @@ -290,36 +290,11 @@ static LIST_HEAD(hvcs_structs);
->  static DEFINE_SPINLOCK(hvcs_structs_lock);
->  static DEFINE_MUTEX(hvcs_init_mutex);
-> 
-> -static void hvcs_unthrottle(struct tty_struct *tty);
-> -static void hvcs_throttle(struct tty_struct *tty);
-> -static irqreturn_t hvcs_handle_interrupt(int irq, void *dev_instance);
-> -
-> -static int hvcs_write(struct tty_struct *tty,
-> -		const unsigned char *buf, int count);
-> -static int hvcs_write_room(struct tty_struct *tty);
-> -static int hvcs_chars_in_buffer(struct tty_struct *tty);
-> -
-> -static int hvcs_has_pi(struct hvcs_struct *hvcsd);
-> -static void hvcs_set_pi(struct hvcs_partner_info *pi,
-> -		struct hvcs_struct *hvcsd);
->  static int hvcs_get_pi(struct hvcs_struct *hvcsd);
->  static int hvcs_rescan_devices_list(void);
-> 
-> -static int hvcs_partner_connect(struct hvcs_struct *hvcsd);
->  static void hvcs_partner_free(struct hvcs_struct *hvcsd);
-> 
-> -static int hvcs_enable_device(struct hvcs_struct *hvcsd,
-> -		uint32_t unit_address, unsigned int irq, struct vio_dev *dev);
-> -
-> -static int hvcs_open(struct tty_struct *tty, struct file *filp);
-> -static void hvcs_close(struct tty_struct *tty, struct file *filp);
-> -static void hvcs_hangup(struct tty_struct * tty);
-> -
-> -static int hvcs_probe(struct vio_dev *dev,
-> -		const struct vio_device_id *id);
-> -static int hvcs_remove(struct vio_dev *dev);
-> -static int __init hvcs_module_init(void);
-> -static void __exit hvcs_module_exit(void);
->  static int hvcs_initialize(void);
-> 
->  #define HVCS_SCHED_READ	0x00000001
-> 
-
+Not sure if it's the root cause or not, but I am looking at this
+reference drop in cipso_v4_doi_remove:
+https://elixir.bootlin.com/linux/v5.12-rc1/source/net/ipv4/cipso_ipv4.c#L522
+The thing is that it does not remove from the list if reference is not
+0, right? So what if I send 1000 of netlink remove messages? Will it
+drain refcount to 0?
+I did not read all involved code, but the typical pattern is to drop
+refcount and always remove from the list. Then the last use will
+delete the object.
+Does it make any sense?
