@@ -2,117 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA37632AE40
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C9C32AE41
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Mar 2021 03:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1575033AbhCBWnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 17:43:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24495 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1838013AbhCBWOr (ORCPT
+        id S1575071AbhCBWnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 17:43:22 -0500
+Received: from sonic308-55.consmr.mail.gq1.yahoo.com ([98.137.68.31]:42081
+        "EHLO sonic308-55.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1838040AbhCBWO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 17:14:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614723199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RgrkBLWaczOeqQTff2g/95Kfq5YOvV0sqxm2G8mQr4A=;
-        b=XbAlsDBKcFQ0ZLOP/zPV55MWKTB8LMdECDAU65aAwyZ23gywfs9+WaaNGQq+ZM1uB1HASO
-        oYyFnHzRg8A9I1PnN3Hl6jjxXeITpkQ0NDpBnu0G/x2YylVNyQOujRJdF/Wz5mxpubgPDg
-        QVFcWQYdRZB+I4IJv5tYc3dVju+Mb3A=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-EFmInfSUOciDCZKHPkzkOg-1; Tue, 02 Mar 2021 17:13:18 -0500
-X-MC-Unique: EFmInfSUOciDCZKHPkzkOg-1
-Received: by mail-qk1-f199.google.com with SMTP id b78so14756533qkg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 14:13:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RgrkBLWaczOeqQTff2g/95Kfq5YOvV0sqxm2G8mQr4A=;
-        b=smLJosiQA9MRwsvZ96u6tkWe7vKH5ziyOyl7Nrhb1wD4+aF/oSq3oP1go65GALmLVF
-         VH6FHG+puFIZtkgCg7ftiTW7HO943L94J0hOpvmIALN+HCazwHCzeeoQRUKthiXHSWjr
-         hcI8tdJuGlThBRuwah+M9Zrj7UdJ8KqwJJAzIq898z2aGNLaU4bUYaM1QAHrHKFWMcT9
-         5//UF5fE3yPMnLP+K0u/zhWdFLn81dT2SJbTquywa4VptEKz0Rexmu0ajXVCXjyw0PKy
-         2JiebICYQV7pTGV2kE8+xCH+mDmDiXdeUtlJCQ7h917TMNH2kzMx2g/x8TDKK9y04ohk
-         HvCA==
-X-Gm-Message-State: AOAM531X1GuCEy4B4SFNZ8dExvHQW4Lamir0yV4KfzC6PeR3ArIlpH2o
-        4BVNQTk92V2gRiTmdvMZrY/RX7AuQLVWm6e8p0SX0Ij7UUmUbdwUBgKhy2dSM3LSKWAVQjVm3p5
-        SQmwHc4p5SXUFSroLh2wwvtZ2
-X-Received: by 2002:a05:620a:7d5:: with SMTP id 21mr21527707qkb.152.1614723197526;
-        Tue, 02 Mar 2021 14:13:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx7N8Q3yZs7J3+r8/sk5Pk7MA/Ko5kqHnTnwLeq6CHm2n6WsMtve016icqtR8gj9uxg9PCdWQ==
-X-Received: by 2002:a05:620a:7d5:: with SMTP id 21mr21527688qkb.152.1614723197290;
-        Tue, 02 Mar 2021 14:13:17 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
-        by smtp.gmail.com with ESMTPSA id l65sm16042905qkf.113.2021.03.02.14.13.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 14:13:16 -0800 (PST)
-Date:   Tue, 2 Mar 2021 17:13:14 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH v2 0/2] mm: fix races due to deferred TLB flushes
-Message-ID: <20210302221314.GR397383@xz-x1>
-References: <20201225092529.3228466-1-namit@vmware.com>
+        Tue, 2 Mar 2021 17:14:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1614723223; bh=IoJyUk4Nbh+2Yi6LTvulv/umucSKxOqnBZJ9GCPOcw0=; h=Date:From:Subject:To:Cc:References:In-Reply-To:From:Subject:Reply-To; b=mXmmAAXWDd5KucDFiZfAUgJisY7bNyIius9akQPBlsZwy1SIN47u7bi0Ny00fi8feqKioQ5r6pim8uxkF2d/3JSfmwgb4JOUY8vCqZGw1C3GIQ3X4f61YhxZICuUF3dSUyYOJXYlIqnJRU8a0MZOoJCF6RnXPkHM8ydIkVlKW6qE+4QwRq4fxp+/UVXdRvLyWblm9HVYP5bmY3NGJXaXUoDhsNFb/OSPEFTYWjR0VvBscthitk3PFf2fcRqwzWdguBsKCCbtZm2GOTUJ5t+CfIvc4Ul/YEZ1uQLeWmlzklS16E48KZFRAtRRXwR9I0Pps0kESvxqsTwdaNHzV/GZGA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1614723223; bh=nSnUWLqFKDj7l9bM1P39OX0x1yrMMRmmaL3EhCjtJCx=; h=X-Sonic-MF:Date:From:Subject:To:From:Subject; b=rOYTDKaXbjAv4DTWQ7Xtp37OxaOtsXeuLmCgTQRmFIbUvhUurioNr4X5P4ZanOj4+IWNLQg7/azXXFvyOp1D37JAnvj1/SaMRbYRs5nLIvRlZQ4ecSsVsZDzY6HG4dLle+p+5kgJWeGF3DweTTJUhewQJ+KCco7fRNQNzKLRvKUTsWrcN5tMDRARzFOaDtRjRUJ7xoEyXbi8DGeYAtLpMuamDDBXcR03eiKjdHA+PXqlrowJ+3P7L+ydm4AUC+sZ8rYpwwbaFS0P7QmxymFWLonp2QsFJGNjWUAo7bQB9vcVNQQ2D9n16Jo/RNbHG8lSbq+ggQU3suzSurm3CT8T/w==
+X-YMail-OSG: kiwJ1NIVM1nIwCu0XcoAuO0BzwhSgO437LZSUF7P.no3b2g6XUtdD8dOwiY8wkB
+ NxZ6k1U0c5s6nQAZNHnsQDujVap0Ji90jOxdhqDGB5g9A12.c6b32XE9kFmcsGORB9U7xP1CnqHY
+ _57WTOMUY7jpnCZ2MCz8A4gh9CIqpE.8xMOr7cGtuJ_Jmt1qZvoEfc7MdKDAFBfdg3kNpDXIb3o9
+ 13st_.3h.oqeFo7ePsUodU6j1OtdSEu8xkS6Xg4fJtlfOiHRk.4pMRXBZ7vaeKZHw4R60zhLiz9J
+ K495DAaTeUEfI183oOFXAPf.wBybp9rBH1nw5pIqVT8fJ160Un2b63IeVzQsb.RbXg0Kij2u7Kxa
+ _nU8grCaoBjtIWjzKJM2PJ5hqKmVfn14TAbTQOwSro6pomLlGZSAEYdDSt5v_porEk4Q7kuIgEtQ
+ Z9Nrzs34EO0kTi4BGSulr53ahzuAB_9NAGBgn1q8u1_TsgRQMbDbO1x5LCmHhdPzTNKYYf.vr4V6
+ FnXCJPYRJrg85SB1O0874MvguA73OoZqdfTfh4.KZb.IFGjdjJMCbtUaHWpm9yNsPCBzRuFqeBHQ
+ YtJsPU6lo1hTRPHffH_kaP65Fqc34e5d310ejnd6.eej6SMpzeMy2mTy4uZvoTkGKtIVeBr1vKUI
+ iXP2UYdjEKG6uR.pZbNT.xydPcl57LBudbw644Negp94MgKTgTd7uMG7e0wNYQdgIWd.0wPFMgMr
+ g40.d_XX4jizXZP6p7kkg.uHoFP2NM7zLYi5k9EUbpQy_o0BHgPTy5ertlcDF9SrwMUCEYX.4WDc
+ ua_ql6MFz8Hfe3ybOQtoiGrO9l10egzYcfhD_Os.7SnLMlPVL2LjHbidCqz6nU6Ker.q9PRYv8Io
+ WLFvsTOIDN9MAV_nMv90AhOWZwsrVlAm.wwpSCBlK_1oZRBLQCGT1zitl_XRea1cjtPXhisJO10j
+ fZ3iBSDTii.WbO3ac5N7nYL7m6H9LWztP4kPcKIPhs8Z9yKQO6hL5U_wuC2zcP2wNpOIsq5B4Dro
+ s4ye39T0qSH1ObNHHhXrkCE4f7AVKkFxzHETKudBG3fmqc7s52xJM98byyoWaTjdbEU8Vp84rVn0
+ NQQmy_XIFa0KDBzL4PyRdjxO6ckMXLgR3Zsu8bolLZH_ChG84Iaw1_O41MPdu8qAyqRYKr0mw7hN
+ OiPyvJOA5V0gWocwX7q6M8rWc0SHFa6tXPMyWPjTl0VkHukO3viopv5IFfkLaLkK4wzUrk3DcBYy
+ fGmm_ZSc5xuMsJBcwKLcwotujMQOyLWtZtF1WsdhtkgQzS3AnkM2XAwPbdIeZDvlWlDccNQwErMN
+ an_XK3HKn7Ia01jxA39j.JwwmuPuCc99qEQcyPfKScNV.FdxSvs3V.TcOmwJMMsJt55rVrEEI98s
+ cvPAmfYogjxTLuCiOR7zrVy7Pofpkh6W3SmBVXmaqUDQaM0KWrlSExDJakmLEeqCaPGGT9MlqAnL
+ OYqWeptnwlOcZMl8Y1A7d4f9OgHbUiLH7DMPmeXmQ7WD4WOAD2Cru1d7hqjaP4gHrtebPDemqkoM
+ Re41hosA_swxRfYOf3TJiItadXgMySMw5e8eSF62ZIoo5gJTV3gHLpJLRPlOapaLZoiHf4H71ohU
+ gVWAqBarrYM8hJP1brvfFAg30FqeNeiU0TAW5x5yukfAlL.zF2jCRhVTOW_FxXvUxafMbd5iEVEC
+ 6I3roJt74TXTt8Y60Yere.Lv_Tbk1MiOrMWiYRMa_KX5XQ2ajOVrGYvuIOGp.JUYsN0DgvfaNRtV
+ mrVLxWDa5UExj5nFfcZI5_.1.2BNgRRtHsam9CdOlb.yIuJiP4g4rGPCXtRli3_Xa.Yvp0UEPKSa
+ .wxZ8TuNvU3hDkuWRdeP_wCb_Xdy1Ivi6jRSNz3PBc4Ww.JO3zFgXDXYtMoKCtWkE6zuZP4yhkqA
+ M_XrzDOyOfEo6m.LNgsIqNNEAKfyhxVMmadMdmtLGbp2J1O7TUS3MvDbXJAz.GcxM9CVi_vT0qcI
+ uM0nI9FstEyo4JfrW5fjKmIkt0i1yUCv8DyOE0ofawmNdQ5CpLbGEkD_OUT_LHcvktRdlBeAs67E
+ dLjOgX7GZZIpqbBwTu1.Mkt0qLXIDzpECapinf4zqqep_UQrnt3eqvnpyeknK4ab0PNFQhpdq1QU
+ hYAhMXdozJXp.jEA6L18QY8AjBg90zDV5.6u8tEzmDMornWBvmjDbcvlr6HzItNPqlnuAqT7K28B
+ .LOzf3Qnb.FB50gEfww510IWFwvwjg8WvWphGwyAeIk3_9RPGbwdNhQrfhLOE4bC4kXXBiwD4Qzr
+ rQ4fwn.pubC59fYxm95i3zqhInCqfkNS.zGPJ8eDMmcMWw.G5EliVKhS2CNTC.S6oc1pTY2PoLYg
+ MejlGUFHaJN.2dqaH8mZ0CwI3C9mQ1FNXv9QNQF8xIE3117sxFU1613c2TCOLuW3HxGEsLlH6d5F
+ DL8GzSbpDNUYSWuEN.E38YOGnfoZCzzgSnCHGYOw8SlbT.fvoMzHmfi.5wX0uq7awXWygfaUnh9v
+ mWJETy6dMmIpDgX_ZAM6rT_o1souRHP2UtWDrWrbbKBak7z5mLvwBTIchH.cj7PPoBmL.cPJHEDo
+ -
+X-Sonic-MF: <alex_y_xu@yahoo.ca>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.gq1.yahoo.com with HTTP; Tue, 2 Mar 2021 22:13:43 +0000
+Received: by smtp404.mail.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 4d896f5c720e3fb92b3aad8e7a720f1c;
+          Tue, 02 Mar 2021 22:13:39 +0000 (UTC)
+Date:   Tue, 02 Mar 2021 17:13:35 -0500
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: Re: 5.12-rc1 regression: freezing iou-mgr/wrk failed
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1614646241.av51lk2de4.none.ref@localhost>
+        <1614646241.av51lk2de4.none@localhost>
+        <ad672889-2757-142b-9259-3e0aee6d8078@kernel.dk>
+        <fd148797-d8cb-7597-8612-83ddfafac425@kernel.dk>
+        <8cd026a0-ada6-9ae5-9ea1-a685b482173c@kernel.dk>
+In-Reply-To: <8cd026a0-ada6-9ae5-9ea1-a685b482173c@kernel.dk>
 MIME-Version: 1.0
+Message-Id: <1614722744.btwkumq4s4.none@localhost>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201225092529.3228466-1-namit@vmware.com>
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: WebService/1.1.17828 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.9.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 25, 2020 at 01:25:27AM -0800, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
-> 
-> This patch-set went from v1 to RFCv2, as there is still an ongoing
-> discussion regarding the way of solving the recently found races due to
-> deferred TLB flushes. These patches are only sent for reference for now,
-> and can be applied later if no better solution is taken.
-> 
-> In a nutshell, write-protecting PTEs with deferred TLB flushes was mostly
-> performed while holding mmap_lock for write. This prevented concurrent
-> page-fault handler invocations from mistakenly assuming that a page is
-> write-protected when in fact, due to the deferred TLB flush, other CPU
-> could still write to the page. Such a write can cause a memory
-> corruption if it takes place after the page was copied (in
-> cow_user_page()), and before the PTE was flushed (by wp_page_copy()).
-> 
-> However, the userfaultfd and soft-dirty mechanisms did not take
-> mmap_lock for write, but only for read, which made such races possible.
-> Since commit 09854ba94c6a ("mm: do_wp_page() simplification") these
-> races became more likely to take place as non-COW'd pages are more
-> likely to be COW'd instead of being reused. Both of the races that
-> these patches are intended to resolve were produced on v5.10.
-> 
-> To avoid the performance overhead some alternative solutions that do not
-> require to acquire mmap_lock for write were proposed, specifically for
-> userfaultfd. So far no better solution that can be backported was
-> proposed for the soft-dirty case.
-> 
-> v1->RFCv2:
-> - Better (i.e., correct) description of the userfaultfd buggy case [Yu]
-> - Patch for the soft-dirty case
+I tried 29be7fc03d ("io_uring: ensure that threads freeze on suspend")=20
+and it seems to work OK. The system suspends fine and no errors are=20
+printed to the kernel log.
 
-Nadav,
+I am using Gentoo on the machine in question.
 
-Do you plan to post a new version to fix the tlb corrupt issue that this series
-wanted to solve?
+I didn't test the other patches you supplied. Let me know if there's=20
+anything you would like me to test.
 
 Thanks,
-
--- 
-Peter Xu
-
+Alex.
