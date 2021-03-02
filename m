@@ -2,516 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812E732A847
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B926332A88A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383052AbhCBR15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 12:27:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33038 "EHLO mail.kernel.org"
+        id S1351709AbhCBRsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 12:48:11 -0500
+Received: from mga04.intel.com ([192.55.52.120]:35710 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1446363AbhCBPHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:07:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90FA464F2C;
-        Tue,  2 Mar 2021 15:06:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614697561;
-        bh=Aie7QeEvF7SF5lCxsaKIMM0zTqfdvM1ifBVRVXEEm70=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HXY0Q2E9C3iZN96lX8UPVpAJ3cbbiiqNcZ/WR0TUP2lM0eGnaGQBrm8rH5MaJstVn
-         ipQwfz0hirDKm/MB7s1Yx5vAufJO5NJzUJpF3GsbwLQKa1T9JWvZwfxk+CqDINo0ht
-         ntdIMmqyNbpThbww11QMdgZrjAVddAZEzCT3ZpTJWwsoFeRPJYjWnvyR8AxziBser/
-         NBu7AJfERGMQCcOai4KF/zEa58XCAK5Ba2WNJTKE9pglKb66ADX4bQT1PLXJzBm9pw
-         wZLdR1CzkLQGV4pUE4pcvtnYBZlDh9O2YlbPXnACxgK2iAH1qUPIDPWwXla4aptju/
-         elc3cjLu6r09g==
-Date:   Tue, 2 Mar 2021 09:05:58 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] xfs: Replace one-element arrays with flexible-array
- members
-Message-ID: <20210302150558.GA198498@embeddedor>
+        id S1573782AbhCBPNv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:13:51 -0500
+IronPort-SDR: dx9XuLqeK0TtJoDiLJifNnIPaVDclBrDoFlaWuBB7L3eKz7a29HPFGQghJ/I37DU53x7jUUYYU
+ VhYAedcdG7nQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="184407291"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="184407291"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:06:31 -0800
+IronPort-SDR: nCZf4m0fIcNr0lM3tYhWS5qUqhcVPJbY5hXtRObSvBZyV1EgQh4U3EudaNnCLQf3LQxJj2YovM
+ aWcs6f+N8SLw==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="399055993"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 07:06:29 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lH6bT-009PhQ-87; Tue, 02 Mar 2021 17:06:27 +0200
+Date:   Tue, 2 Mar 2021 17:06:27 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] parport: Introduce module_parport_driver() helper
+ macro
+Message-ID: <YD5Uc7j2MAFbFWZ3@smile.fi.intel.com>
+References: <20210216110741.1286-1-andriy.shevchenko@linux.intel.com>
+ <YDkpzZ8jL7O9HJuG@smile.fi.intel.com>
+ <YDwmznD58ZtOwHgb@debian>
+ <YDzaC2ahcHCrCI8V@smile.fi.intel.com>
+ <CADVatmP7V+pbpUC4xV+BmNzbfudPE5S0tT-6CgUKbQrC-FMrBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADVatmP7V+pbpUC4xV+BmNzbfudPE5S0tT-6CgUKbQrC-FMrBA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+On Tue, Mar 02, 2021 at 02:51:45PM +0000, Sudip Mukherjee wrote:
+> On Mon, Mar 1, 2021 at 12:12 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Sun, Feb 28, 2021 at 11:27:10PM +0000, Sudip Mukherjee wrote:
+> > > On Fri, Feb 26, 2021 at 07:03:09PM +0200, Andy Shevchenko wrote:
+> > > > On Tue, Feb 16, 2021 at 01:07:39PM +0200, Andy Shevchenko wrote:
+> > > > > Introduce module_parport_driver() helper macro to reduce boilerplate
+> > > > > in the existing and new code.
+> > > >
+> > > > Sudip, any comments on this?
+> > >
+> > > Sorry for the delay in reply.
+> > > lgtm. I think there are few more drivers which can also use this new helper.
+> > > Will you like to do them also?
+> >
+> > Yes, that's the (slow going) plan.
+> >
+> > > Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+> >
+> > Thanks! I considered that you take it thru parport tree. Do you have something
+> > else in mind?
+> 
+> I dont have a separate parport tree (parport is not under active
+> development to have a separate tree). I send everything parport
+> related to Greg and then he adds it to his tree.
 
-Refactor the code according to the use of flexible-array members in
-multiple structures, instead of one-element arrays. Also, make use of
-the new struct_size() helper to properly calculate the size of multiple
-structures that contain flexible-array members.
+MAINTAINERS doesn't show this. But good to know.
 
-Below are the results of running xfstests for groups shutdown and log
-with the following configuration in local.config:
+> I guess in this case if Greg agrees it can go via Mark's tree as the
+> series will also have SPI related patches.
 
-export TEST_DEV=/dev/sda3
-export TEST_DIR=/mnt/test
-export SCRATCH_DEV=/dev/sda4
-export SCRATCH_MNT=/mnt/scratch
+Okay, if Greg wants to handle this himself, I think I have to resend (he wasn't
+in the Cc list). Otherwise Mark can also apply this if Greg is okay (but sounds
+like I have to resend anyway to let him understand what's going on here).
 
-The size for both partitions /dev/sda3 and /dev/sda4 is 25GB.
-
-These are the results of running ./check -g shutdown and ./check -g
-log, respectively, on 5.11.0-next-20210301 kernel _without_ this patch
-applied:
-
-gustavo@beefy:~/git/xfstests$ time sudo ./check -g shutdown 2>&1 | tee xfs-shutdown-no-patch.out
-FSTYP         -- xfs (debug)
-PLATFORM      -- Linux/x86_64 beefy 5.11.0-next-20210301 #4 SMP Mon Mar 1 05:42:06 CST 2021
-MKFS_OPTIONS  -- -f -bsize=4096 /dev/sda4
-MOUNT_OPTIONS -- /dev/sda4 /mnt/scratch
-
-generic/042 2s ...  2s
-generic/043 13s ...  13s
-generic/044 14s ...  14s
-generic/045 18s ...  18s
-generic/046 14s ...  14s
-generic/047 20s ...  22s
-generic/048 51s ...  50s
-generic/049 9s ...  8s
-generic/050 2s ...  1s
-generic/051 76s ...  75s
-generic/052 1s ...  2s
-generic/054 31s ...  30s
-generic/055 16s ...  21s
-generic/388 89s ...  75s
-generic/392 5s ...  5s
-generic/417 11s ...  11s
-generic/461 21s ...  22s
-generic/468 3s ...  3s
-generic/474 1s ...  1s
-generic/475 86s ...  93s
-generic/505 2s ...  2s
-generic/506 2s ...  2s
-generic/507     [not run] file system doesn't support chattr +AsSu
-generic/508 1s ...  1s
-generic/530 10s ...  10s
-generic/536 3s ...  2s
-generic/599 1s ...  1s
-generic/622 23s ...  24s
-xfs/051 18s ...  18s
-xfs/079 15s ...  14s
-xfs/121 6s ...  16s
-xfs/181 12s ...  15s
-xfs/212 1s ...  3s
-Ran: generic/042 generic/043 generic/044 generic/045 generic/046 generic/047 generic/048 generic/049 generic/050 generic/051 generic/052 generic/054 generic/055 generic/388 generic/392 generic/417 generic/461 generic/468 generic/474 generic/475 generic/505 generic/506 generic/507 generic/508 generic/530 generic/536 generic/599 generic/622 xfs/051 xfs/079 xfs/121 xfs/181 xfs/212
-Not run: generic/507
-Passed all 33 tests
-
-gustavo@beefy:~/git/xfstests$ time sudo ./check -g log 2>&1 | tee xfs-log-no-patch.out
-FSTYP         -- xfs (debug)
-PLATFORM      -- Linux/x86_64 beefy 5.11.0-next-20210301 #4 SMP Mon Mar 1 05:42:06 CST 2021
-MKFS_OPTIONS  -- -f -bsize=4096 /dev/sda4
-MOUNT_OPTIONS -- /dev/sda4 /mnt/scratch
-
-generic/034 1s ...  1s
-generic/039 1s ...  1s
-generic/040 5s ...  5s
-generic/041 7s ...  7s
-generic/043 13s ...  13s
-generic/044 14s ...  14s
-generic/045 18s ...  18s
-generic/046 14s ...  14s
-generic/051 76s ...  76s
-generic/052 1s ...  2s
-generic/054 30s ...  48s
-generic/055 23s ...  15s
-generic/056 1s ...  1s
-generic/057 1s ...  1s
-generic/059 2s ...  2s
-generic/065 1s ...  1s
-generic/066 1s ...  2s
-generic/073 1s ...  1s
-generic/090 1s ...  1s
-generic/101 1s ...  1s
-generic/104 1s ...  1s
-generic/106 1s ...  1s
-generic/107 1s ...  1s
-generic/177 1s ...  1s
-generic/311 67s ...  67s
-generic/321 2s ...  2s
-generic/322 1s ...  2s
-generic/325 1s ...  1s
-generic/335 1s ...  1s
-generic/336 2s ...  1s
-generic/341 1s ...  1s
-generic/342 1s ...  1s
-generic/343 1s ...  1s
-generic/376 1s ...  1s
-generic/388 75s ...  97s
-generic/417 15s ...  12s
-generic/455     [not run] This test requires a valid $LOGWRITES_DEV
-generic/457     [not run] This test requires a valid $LOGWRITES_DEV
-generic/475 88s ...  89s
-generic/479 2s ...  2s
-generic/480 1s ...  1s
-generic/481 1s ...  1s
-generic/483 7s ...  6s
-generic/489 1s ...  1s
-generic/498 1s ...  1s
-generic/501 61s ...  63s
-generic/502 1s ...  1s
-generic/509 1s ...  1s
-generic/510 1s ...  1s
-generic/512 1s ...  1s
-generic/520 16s ...  17s
-generic/526 2s ...  1s
-generic/527 0s ...  1s
-generic/534 0s ...  1s
-generic/535 2s ...  1s
-generic/546 3s ...  3s
-generic/547 2s ...  2s
-generic/552 1s ...  1s
-generic/557 1s ...  2s
-generic/588 2s ...  1s
-shared/002 9s ...  9s
-xfs/011 18s ...  18s
-xfs/029 1s ...  1s
-xfs/051 18s ...  18s
-xfs/057 23s ...  23s
-xfs/079 14s ...  14s
-xfs/095 1s ...  1s
-xfs/119 3s ...  3s
-xfs/121 6s ...  6s
-xfs/141 14s ...  26s
-xfs/181 14s ...  14s
-xfs/216 3s ...  2s
-xfs/217 2s ...  2s
-xfs/439 [not run] test requires XFS bug_on_assert to be off, turn it off to run the test
-Ran: generic/034 generic/039 generic/040 generic/041 generic/043 generic/044 generic/045 generic/046 generic/051 generic/052 generic/054 generic/055 generic/056 generic/057 generic/059 generic/065 generic/066 generic/073 generic/090 generic/101 generic/104 generic/106 generic/107 generic/177 generic/311 generic/321 generic/322 generic/325 generic/335 generic/336 generic/341 generic/342 generic/343 generic/376 generic/388 generic/417 generic/455 generic/457 generic/475 generic/479 generic/480 generic/481 generic/483 generic/489 generic/498 generic/501 generic/502 generic/509 generic/510 generic/512 generic/520 generic/526 generic/527 generic/534 generic/535 generic/546 generic/547 generic/552 generic/557 generic/588 shared/002 xfs/011 xfs/029 xfs/051 xfs/057 xfs/079 xfs/095 xfs/119 xfs/121 xfs/141 xfs/181 xfs/216 xfs/217 xfs/439
-Not run: generic/455 generic/457 xfs/439
-Passed all 74 tests
-
-These are the results of running ./check -g shutdown and ./check -g
-log, respectively, on 5.11.0-xfstests-patched-next-20210301+ kernel
-_with_ this patch applied on top:
-
-gustavo@beefy:~/git/xfstests$ time sudo ./check -g shutdown 2>&1 | tee xfs-shutdown-patched.out
-FSTYP         -- xfs (debug)
-PLATFORM      -- Linux/x86_64 beefy 5.11.0-xfstests-patched-next-20210301+ #10 SMP Mon Mar 1 17:36:20 CST 2021
-MKFS_OPTIONS  -- -f -bsize=4096 /dev/sda4
-MOUNT_OPTIONS -- /dev/sda4 /mnt/scratch
-
-generic/042 2s ...  3s
-generic/043 13s ...  12s
-generic/044 14s ...  15s
-generic/045 18s ...  18s
-generic/046 14s ...  15s
-generic/047 21s ...  21s
-generic/048 51s ...  51s
-generic/049 9s ...  8s
-generic/050 1s ...  2s
-generic/051 76s ...  77s
-generic/052 6s ...  2s
-generic/054 35s ...  48s
-generic/055 16s ...  17s
-generic/388 77s ...  73s
-generic/392 7s ...  5s
-generic/417 13s ...  11s
-generic/461 22s ...  21s
-generic/468 2s ...  3s
-generic/474 2s ...  1s
-generic/475 90s ...  96s
-generic/505 3s ...  3s
-generic/506 1s ...  2s
-generic/507     [not run] file system doesn't support chattr +AsSu
-generic/508 2s ...  10s
-generic/530 9s ...  13s
-generic/536 2s ...  1s
-generic/599 1s ...  1s
-generic/622 24s ...  25s
-xfs/051 18s ...  18s
-xfs/079 14s ...  13s
-xfs/121 6s ...  8s
-xfs/181 11s ...  14s
-xfs/212 2s ...  1s
-Ran: generic/042 generic/043 generic/044 generic/045 generic/046 generic/047 generic/048 generic/049 generic/050 generic/051 generic/052 generic/054 generic/055 generic/388 generic/392 generic/417 generic/461 generic/468 generic/474 generic/475 generic/505 generic/506 generic/507 generic/508 generic/530 generic/536 generic/599 generic/622 xfs/051 xfs/079 xfs/121 xfs/181 xfs/212
-Not run: generic/507
-Passed all 33 tests
-
-gustavo@beefy:~/git/xfstests$ time sudo ./check -g log 2>&1 | tee xfs-log-patched.out
-FSTYP         -- xfs (debug)
-PLATFORM      -- Linux/x86_64 beefy 5.11.0-xfstests-patched-next-20210301+ #10 SMP Mon Mar 1 17:36:20 CST 2021
-MKFS_OPTIONS  -- -f -bsize=4096 /dev/sda4
-MOUNT_OPTIONS -- /dev/sda4 /mnt/scratch
-
-generic/034 1s ...  1s
-generic/039 1s ...  1s
-generic/040 5s ...  5s
-generic/041 7s ...  7s
-generic/043 12s ...  13s
-generic/044 15s ...  15s
-generic/045 18s ...  18s
-generic/046 15s ...  14s
-generic/051 77s ...  76s
-generic/052 2s ...  1s
-generic/054 48s ...  29s
-generic/055 17s ...  16s
-generic/056 1s ...  1s
-generic/057 1s ...  1s
-generic/059 2s ...  2s
-generic/065 1s ...  1s
-generic/066 1s ...  1s
-generic/073 1s ...  1s
-generic/090 1s ...  1s
-generic/101 1s ...  1s
-generic/104 1s ...  1s
-generic/106 1s ...  1s
-generic/107 1s ...  1s
-generic/177 1s ...  1s
-generic/311 68s ...  68s
-generic/321 2s ...  2s
-generic/322 1s ...  1s
-generic/325 2s ...  1s
-generic/335 1s ...  1s
-generic/336 1s ...  1s
-generic/341 1s ...  1s
-generic/342 1s ...  1s
-generic/343 1s ...  1s
-generic/376 1s ...  1s
-generic/388 73s ...  83s
-generic/417 11s ...  11s
-generic/455     [not run] This test requires a valid $LOGWRITES_DEV
-generic/457     [not run] This test requires a valid $LOGWRITES_DEV
-generic/475 96s ...  83s
-generic/479      2s
-generic/480 2s ...  1s
-generic/481 0s ...  1s
-generic/483 7s ...  7s
-generic/489 1s ...  1s
-generic/498 1s ...  1s
-generic/501 63s ...  61s
-generic/502 1s ...  1s
-generic/509 1s ...  1s
-generic/510 1s ...  1s
-generic/512 1s ...  1s
-generic/520 16s ...  16s
-generic/526 1s ...  1s
-generic/527 1s ...  1s
-generic/534 1s ...  1s
-generic/535 1s ...  1s
-generic/546 4s ...  4s
-generic/547 2s ...  2s
-generic/552 1s ...  1s
-generic/557 1s ...  1s
-generic/588 2s ...  1s
-shared/002 8s ...  9s
-xfs/011 18s ...  18s
-xfs/029 1s ...  1s
-xfs/051 18s ...  18s
-xfs/057 23s ...  24s
-xfs/079 13s ...  14s
-xfs/095 2s ...  1s
-xfs/119 3s ...  3s
-xfs/121 8s ...  6s
-xfs/141 18s ...  12s
-xfs/181 14s ...  12s
-xfs/216 3s ...  2s
-xfs/217 2s ...  2s
-xfs/439 [not run] test requires XFS bug_on_assert to be off, turn it off to run the test
-Ran: generic/034 generic/039 generic/040 generic/041 generic/043 generic/044 generic/045 generic/046 generic/051 generic/052 generic/054 generic/055 generic/056 generic/057 generic/059 generic/065 generic/066 generic/073 generic/090 generic/101 generic/104 generic/106 generic/107 generic/177 generic/311 generic/321 generic/322 generic/325 generic/335 generic/336 generic/341 generic/342 generic/343 generic/376 generic/388 generic/417 generic/455 generic/457 generic/475 generic/479 generic/480 generic/481 generic/483 generic/489 generic/498 generic/501 generic/502 generic/509 generic/510 generic/512 generic/520 generic/526 generic/527 generic/534 generic/535 generic/546 generic/547 generic/552 generic/557 generic/588 shared/002 xfs/011 xfs/029 xfs/051 xfs/057 xfs/079 xfs/095 xfs/119 xfs/121 xfs/141 xfs/181 xfs/216 xfs/217 xfs/439
-Not run: generic/455 generic/457 xfs/439
-Passed all 74 tests
-
-Notice that the test results before and after this patch is applied are
-identical and successful. Other tests might need to be run in order to
-verify everything is working as expected. For such tests, the intervention
-of the maintainers might be needed.
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
-
-Link: https://github.com/KSPP/linux/issues/79
-Build-tested-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/lkml/603e3177.WsvTXRpcLn5wdYW6%25lkp@intel.com/
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/xfs/libxfs/xfs_log_format.h | 12 +++++------
- fs/xfs/xfs_extfree_item.c      | 39 +++++++++++++++-------------------
- fs/xfs/xfs_ondisk.h            |  8 +++----
- 3 files changed, 27 insertions(+), 32 deletions(-)
-
-diff --git a/fs/xfs/libxfs/xfs_log_format.h b/fs/xfs/libxfs/xfs_log_format.h
-index 8bd00da6d2a4..9934a465b441 100644
---- a/fs/xfs/libxfs/xfs_log_format.h
-+++ b/fs/xfs/libxfs/xfs_log_format.h
-@@ -574,7 +574,7 @@ typedef struct xfs_efi_log_format {
- 	uint16_t		efi_size;	/* size of this item */
- 	uint32_t		efi_nextents;	/* # extents to free */
- 	uint64_t		efi_id;		/* efi identifier */
--	xfs_extent_t		efi_extents[1];	/* array of extents to free */
-+	xfs_extent_t		efi_extents[];	/* array of extents to free */
- } xfs_efi_log_format_t;
- 
- typedef struct xfs_efi_log_format_32 {
-@@ -582,7 +582,7 @@ typedef struct xfs_efi_log_format_32 {
- 	uint16_t		efi_size;	/* size of this item */
- 	uint32_t		efi_nextents;	/* # extents to free */
- 	uint64_t		efi_id;		/* efi identifier */
--	xfs_extent_32_t		efi_extents[1];	/* array of extents to free */
-+	xfs_extent_32_t		efi_extents[];	/* array of extents to free */
- } __attribute__((packed)) xfs_efi_log_format_32_t;
- 
- typedef struct xfs_efi_log_format_64 {
-@@ -590,7 +590,7 @@ typedef struct xfs_efi_log_format_64 {
- 	uint16_t		efi_size;	/* size of this item */
- 	uint32_t		efi_nextents;	/* # extents to free */
- 	uint64_t		efi_id;		/* efi identifier */
--	xfs_extent_64_t		efi_extents[1];	/* array of extents to free */
-+	xfs_extent_64_t		efi_extents[];	/* array of extents to free */
- } xfs_efi_log_format_64_t;
- 
- /*
-@@ -603,7 +603,7 @@ typedef struct xfs_efd_log_format {
- 	uint16_t		efd_size;	/* size of this item */
- 	uint32_t		efd_nextents;	/* # of extents freed */
- 	uint64_t		efd_efi_id;	/* id of corresponding efi */
--	xfs_extent_t		efd_extents[1];	/* array of extents freed */
-+	xfs_extent_t		efd_extents[];	/* array of extents freed */
- } xfs_efd_log_format_t;
- 
- typedef struct xfs_efd_log_format_32 {
-@@ -611,7 +611,7 @@ typedef struct xfs_efd_log_format_32 {
- 	uint16_t		efd_size;	/* size of this item */
- 	uint32_t		efd_nextents;	/* # of extents freed */
- 	uint64_t		efd_efi_id;	/* id of corresponding efi */
--	xfs_extent_32_t		efd_extents[1];	/* array of extents freed */
-+	xfs_extent_32_t		efd_extents[];	/* array of extents freed */
- } __attribute__((packed)) xfs_efd_log_format_32_t;
- 
- typedef struct xfs_efd_log_format_64 {
-@@ -619,7 +619,7 @@ typedef struct xfs_efd_log_format_64 {
- 	uint16_t		efd_size;	/* size of this item */
- 	uint32_t		efd_nextents;	/* # of extents freed */
- 	uint64_t		efd_efi_id;	/* id of corresponding efi */
--	xfs_extent_64_t		efd_extents[1];	/* array of extents freed */
-+	xfs_extent_64_t		efd_extents[];	/* array of extents freed */
- } xfs_efd_log_format_64_t;
- 
- /*
-diff --git a/fs/xfs/xfs_extfree_item.c b/fs/xfs/xfs_extfree_item.c
-index 93223ebb3372..5ed3ea93071c 100644
---- a/fs/xfs/xfs_extfree_item.c
-+++ b/fs/xfs/xfs_extfree_item.c
-@@ -73,8 +73,8 @@ static inline int
- xfs_efi_item_sizeof(
- 	struct xfs_efi_log_item *efip)
- {
--	return sizeof(struct xfs_efi_log_format) +
--	       (efip->efi_format.efi_nextents - 1) * sizeof(xfs_extent_t);
-+	return struct_size(&efip->efi_format, efi_extents,
-+			   efip->efi_format.efi_nextents);
- }
- 
- STATIC void
-@@ -153,17 +153,14 @@ xfs_efi_init(
- 
- {
- 	struct xfs_efi_log_item	*efip;
--	uint			size;
- 
- 	ASSERT(nextents > 0);
--	if (nextents > XFS_EFI_MAX_FAST_EXTENTS) {
--		size = (uint)(sizeof(struct xfs_efi_log_item) +
--			((nextents - 1) * sizeof(xfs_extent_t)));
--		efip = kmem_zalloc(size, 0);
--	} else {
-+	if (nextents > XFS_EFI_MAX_FAST_EXTENTS)
-+		efip = kmem_zalloc(struct_size(efip, efi_format.efi_extents,
-+					       nextents), 0);
-+	else
- 		efip = kmem_cache_zalloc(xfs_efi_zone,
- 					 GFP_KERNEL | __GFP_NOFAIL);
--	}
- 
- 	xfs_log_item_init(mp, &efip->efi_item, XFS_LI_EFI, &xfs_efi_item_ops);
- 	efip->efi_format.efi_nextents = nextents;
-@@ -186,12 +183,12 @@ xfs_efi_copy_format(xfs_log_iovec_t *buf, xfs_efi_log_format_t *dst_efi_fmt)
- {
- 	xfs_efi_log_format_t *src_efi_fmt = buf->i_addr;
- 	uint i;
--	uint len = sizeof(xfs_efi_log_format_t) + 
--		(src_efi_fmt->efi_nextents - 1) * sizeof(xfs_extent_t);  
-+	size_t len = struct_size(src_efi_fmt, efi_extents,
-+				 src_efi_fmt->efi_nextents);
- 	uint len32 = sizeof(xfs_efi_log_format_32_t) + 
--		(src_efi_fmt->efi_nextents - 1) * sizeof(xfs_extent_32_t);  
-+		src_efi_fmt->efi_nextents * sizeof(xfs_extent_32_t);
- 	uint len64 = sizeof(xfs_efi_log_format_64_t) + 
--		(src_efi_fmt->efi_nextents - 1) * sizeof(xfs_extent_64_t);  
-+		src_efi_fmt->efi_nextents * sizeof(xfs_extent_64_t);
- 
- 	if (buf->i_len == len) {
- 		memcpy((char *)dst_efi_fmt, (char*)src_efi_fmt, len);
-@@ -254,7 +251,7 @@ xfs_efd_item_sizeof(
- 	struct xfs_efd_log_item *efdp)
- {
- 	return sizeof(xfs_efd_log_format_t) +
--	       (efdp->efd_format.efd_nextents - 1) * sizeof(xfs_extent_t);
-+	       efdp->efd_format.efd_nextents * sizeof(xfs_extent_t);
- }
- 
- STATIC void
-@@ -328,14 +325,12 @@ xfs_trans_get_efd(
- 
- 	ASSERT(nextents > 0);
- 
--	if (nextents > XFS_EFD_MAX_FAST_EXTENTS) {
--		efdp = kmem_zalloc(sizeof(struct xfs_efd_log_item) +
--				(nextents - 1) * sizeof(struct xfs_extent),
--				0);
--	} else {
-+	if (nextents > XFS_EFD_MAX_FAST_EXTENTS)
-+		efdp = kmem_zalloc(struct_size(efip, efi_format.efi_extents,
-+					nextents), 0);
-+	else
- 		efdp = kmem_cache_zalloc(xfs_efd_zone,
- 					GFP_KERNEL | __GFP_NOFAIL);
--	}
- 
- 	xfs_log_item_init(tp->t_mountp, &efdp->efd_item, XFS_LI_EFD,
- 			  &xfs_efd_item_ops);
-@@ -747,9 +742,9 @@ xlog_recover_efd_commit_pass2(
- 
- 	efd_formatp = item->ri_buf[0].i_addr;
- 	ASSERT((item->ri_buf[0].i_len == (sizeof(xfs_efd_log_format_32_t) +
--		((efd_formatp->efd_nextents - 1) * sizeof(xfs_extent_32_t)))) ||
-+		(efd_formatp->efd_nextents * sizeof(xfs_extent_32_t)))) ||
- 	       (item->ri_buf[0].i_len == (sizeof(xfs_efd_log_format_64_t) +
--		((efd_formatp->efd_nextents - 1) * sizeof(xfs_extent_64_t)))));
-+		(efd_formatp->efd_nextents * sizeof(xfs_extent_64_t)))));
- 
- 	xlog_recover_release_intent(log, XFS_LI_EFI, efd_formatp->efd_efi_id);
- 	return 0;
-diff --git a/fs/xfs/xfs_ondisk.h b/fs/xfs/xfs_ondisk.h
-index 0aa87c210104..f58e0510385a 100644
---- a/fs/xfs/xfs_ondisk.h
-+++ b/fs/xfs/xfs_ondisk.h
-@@ -118,10 +118,10 @@ xfs_check_ondisk_structs(void)
- 	/* log structures */
- 	XFS_CHECK_STRUCT_SIZE(struct xfs_buf_log_format,	88);
- 	XFS_CHECK_STRUCT_SIZE(struct xfs_dq_logformat,		24);
--	XFS_CHECK_STRUCT_SIZE(struct xfs_efd_log_format_32,	28);
--	XFS_CHECK_STRUCT_SIZE(struct xfs_efd_log_format_64,	32);
--	XFS_CHECK_STRUCT_SIZE(struct xfs_efi_log_format_32,	28);
--	XFS_CHECK_STRUCT_SIZE(struct xfs_efi_log_format_64,	32);
-+	XFS_CHECK_STRUCT_SIZE(struct xfs_efd_log_format_32,	16);
-+	XFS_CHECK_STRUCT_SIZE(struct xfs_efd_log_format_64,	16);
-+	XFS_CHECK_STRUCT_SIZE(struct xfs_efi_log_format_32,	16);
-+	XFS_CHECK_STRUCT_SIZE(struct xfs_efi_log_format_64,	16);
- 	XFS_CHECK_STRUCT_SIZE(struct xfs_extent_32,		12);
- 	XFS_CHECK_STRUCT_SIZE(struct xfs_extent_64,		16);
- 	XFS_CHECK_STRUCT_SIZE(struct xfs_log_dinode,		176);
 -- 
-2.27.0
+With Best Regards,
+Andy Shevchenko
+
 
