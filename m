@@ -2,163 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08AC32A7B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3376A32A7B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579048AbhCBQ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 11:28:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58544 "EHLO mx2.suse.de"
+        id S1579137AbhCBQ20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:28:26 -0500
+Received: from mga03.intel.com ([134.134.136.65]:44894 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239578AbhCBN44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:56:56 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614693328; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2zHzG0WPsx3xKiPqPnMCcC9JpT/COf8SAqNxgYPDcwI=;
-        b=oL4v99bE7SLyOQloEmxBm5+k/xMRvTkk4pt/OG8qvLA6b9DdiRhtxaD+0nUB4F5N4OQcsj
-        Ic/6CdYJx/OPu8rlCqsNQGpM38HYhSfsHpGptacoyamFaVFqs7/yek3tHvqyg/+qcdd+DL
-        OfjwuhDgZRqJTg+9ADLiziF6AFqEqM8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5718AAFF5;
-        Tue,  2 Mar 2021 13:55:28 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 14:55:26 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Thomas Meyer <thomas@m3y3r.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Oleg Nesterov <oleg@redhat.com>, Wei Li <liwei391@huawei.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
-        linux-hyperv@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kgdb-bugreport@lists.sourceforge.net
-Subject: Re: [PATCH next v3 12/15] printk: introduce a kmsg_dump iterator
-Message-ID: <YD5DzldNpnzuECaA@alley>
-References: <20210225202438.28985-1-john.ogness@linutronix.de>
- <20210225202438.28985-13-john.ogness@linutronix.de>
- <YD0tbVV+hZOFvWyB@alley>
- <87lfb5pu8c.fsf@jogness.linutronix.de>
+        id S1572964AbhCBOIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 09:08:11 -0500
+IronPort-SDR: JCOriTqhmGKnOVL0jQVhndI2abA15pRi7AZI4upZD3VUr4nsGlSI/i4kkbAujHSVK/7oIlT6kf
+ XprIOS0TcmJw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="186875217"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="186875217"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 05:56:28 -0800
+IronPort-SDR: Q2ZY2kVnXUvFNuxZ7PPIS4LFb0xzEqZIQwIPijJ6pPw/wXtWGuKqdNHERs+9huzTC+0dqKSvEP
+ CLaw4fjunQsw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="595799610"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga006.fm.intel.com with ESMTP; 02 Mar 2021 05:56:27 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id A52BAF4; Tue,  2 Mar 2021 15:56:26 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH v1 1/5] mfd: intel_quark_i2c_gpio: revert "Constify static struct resources"
+Date:   Tue,  2 Mar 2021 15:56:16 +0200
+Message-Id: <20210302135620.89958-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lfb5pu8c.fsf@jogness.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-03-02 14:20:51, John Ogness wrote:
-> On 2021-03-01, Petr Mladek <pmladek@suse.com> wrote:
-> >> diff --git a/arch/powerpc/kernel/nvram_64.c b/arch/powerpc/kernel/nvram_64.c
-> >> index 532f22637783..5a64b24a91c2 100644
-> >> --- a/arch/powerpc/kernel/nvram_64.c
-> >> +++ b/arch/powerpc/kernel/nvram_64.c
-> >> @@ -681,13 +680,14 @@ static void oops_to_nvram(struct kmsg_dumper *dumper,
-> >>  		return;
-> >>  
-> >>  	if (big_oops_buf) {
-> >> -		kmsg_dump_get_buffer(dumper, false,
-> >> +		kmsg_dump_rewind(&iter);
-> >
-> > It would be nice to get rid of the kmsg_dump_rewind(&iter) calls
-> > in all callers.
-> >
-> > A solution might be to create the following in include/linux/kmsg_dump.h
-> >
-> > Then we could do the following at the beginning of both
-> > kmsg_dump_get_buffer() and kmsg_dump_get_line():
-> >
-> > 	u64 clear_seq = latched_seq_read_nolock(&clear_seq);
-> >
-> > 	if (iter->cur_seq < clear_seq)
-> > 		cur_seq = clear_seq;
-> 
-> I suppose we need to add this part anyway, if we want to enforce that
-> records before @clear_seq are not to be available for dumpers.
+The structures are used as place holders, so they are modified at run-time.
+Obviously they may not be constants.
 
-Yup.
+  BUG: unable to handle page fault for address: d0643220
+  ...
+  CPU: 0 PID: 110 Comm: modprobe Not tainted 5.11.0+ #1
+  Hardware name: Intel Corp. QUARK/GalileoGen2, BIOS 0x01000200 01/01/2014
+  EIP: intel_quark_mfd_probe+0x93/0x1c0 [intel_quark_i2c_gpio]
 
-> > It might be better to avoid the infinite loop. We could do the following:
-> >
-> > static void check_and_set_iter(struct kmsg_dump_iter)
-> > {
-> > 	if (iter->cur_seq == 0 && iter->next_seq == U64_MAX) {
-> > 		kmsg_dump_rewind(iter);
-> > }
-> >
-> > and call this at the beginning of both kmsg_dump_get_buffer()
-> > and kmsg_dump_get_line()
-> >
-> > What do you think?
-> 
-> On a technical level, it does not make any difference. It is pure
-> cosmetic.
+This partially reverts the commit c4a164f41554d2899bed94bdcc499263f41787b4.
 
-Yup.
+While at it, add a comment to avoid similar changes in the future.
 
-> Personally, I prefer the rewind directly before the kmsg_dump_get calls
-> because it puts the initializer directly next to the user.
-> 
-> As an example to illustrate my view, I prefer:
-> 
->     for (i = 0; i < n; i++)
->         ...;
-> 
-> instead of:
-> 
->     int i = 0;
-> 
->     ...
-> 
->     for (; i < n; i++)
->         ...;
-> 
-> Also, I do not really like the special use of 0/U64_MAX to identify
-> special actions of the kmsg_dump_get functions.
+Fixes: c4a164f41554 ("mfd: Constify static struct resources")
+Cc: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/mfd/intel_quark_i2c_gpio.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Fair enough.
+diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
+index 55a9e017edee..124c0ee84169 100644
+--- a/drivers/mfd/intel_quark_i2c_gpio.c
++++ b/drivers/mfd/intel_quark_i2c_gpio.c
+@@ -72,7 +72,8 @@ static const struct dmi_system_id dmi_platform_info[] = {
+ 	{}
+ };
+ 
+-static const struct resource intel_quark_i2c_res[] = {
++/* This is used as a place holder and will be modified at run-time */
++static struct resource intel_quark_i2c_res[] = {
+ 	[INTEL_QUARK_IORES_MEM] = {
+ 		.flags = IORESOURCE_MEM,
+ 	},
+@@ -85,7 +86,8 @@ static struct mfd_cell_acpi_match intel_quark_acpi_match_i2c = {
+ 	.adr = MFD_ACPI_MATCH_I2C,
+ };
+ 
+-static const struct resource intel_quark_gpio_res[] = {
++/* This is used as a place holder and will be modified at run-time */
++static struct resource intel_quark_gpio_res[] = {
+ 	[INTEL_QUARK_IORES_MEM] = {
+ 		.flags = IORESOURCE_MEM,
+ 	},
+-- 
+2.30.1
 
-> > Note that I do not resist on it. But it might make the API easier to
-> > use from my POV.
-> 
-> Since you do not resist, I will keep the API the same for v4. But I will
-> add the @clear_seq check to the kmsg_dump_get functions.
-
-Go for it.
-
-Best Regards,
-Petr
