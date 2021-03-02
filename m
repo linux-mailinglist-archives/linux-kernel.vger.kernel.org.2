@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CCC32A3CB
+	by mail.lfdr.de (Postfix) with ESMTP id 7601032A3CA
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382538AbhCBJjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 04:39:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42532 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1837953AbhCBJQE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:16:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614676473;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=WYVZDzb7gHIYm3imGALkt41Cwtj1qA0Mv6difRe4t9U=;
-        b=XhLeTgA7vUhVdWKHRbs0IY5gswglJJ9S12a80c+L1YASfHS3xKcs++1c2dvUxg85JTxXlJ
-        LgDLoVlC+wC7LVehcRh70cRkS0TVmTIzMMl/2Px7n7WXZRNgqrN5WT7rDVATU/lKT7wlWn
-        9ltO9UqBzuJYhYnB8C1PG9dRx6W/hVM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-mQrM1frOMlG3b2oYMD35iA-1; Tue, 02 Mar 2021 04:14:31 -0500
-X-MC-Unique: mQrM1frOMlG3b2oYMD35iA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4EB3D1005501;
-        Tue,  2 Mar 2021 09:14:30 +0000 (UTC)
-Received: from hp-dl380pg8-01.lab.eng.pek2.redhat.com (hp-dl380pg8-01.lab.eng.pek2.redhat.com [10.73.8.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2383D10016FA;
-        Tue,  2 Mar 2021 09:14:20 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] vhost-vdpa: honor CAP_IPC_LOCK
-Date:   Tue,  2 Mar 2021 04:14:18 -0500
-Message-Id: <20210302091418.7226-1-jasowang@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        id S1382530AbhCBJjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 04:39:39 -0500
+Received: from vmi485042.contaboserver.net ([161.97.139.209]:38110 "EHLO
+        gentwo.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1837942AbhCBJPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:15:42 -0500
+X-Greylist: delayed 344 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Mar 2021 04:15:41 EST
+Received: by gentwo.de (Postfix, from userid 1001)
+        id C7556B00C98; Tue,  2 Mar 2021 10:14:53 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.de (Postfix) with ESMTP id C5F01B00C5F;
+        Tue,  2 Mar 2021 10:14:53 +0100 (CET)
+Date:   Tue, 2 Mar 2021 10:14:53 +0100 (CET)
+From:   Christoph Lameter <cl@gentwo.de>
+To:     Xunlei Pang <xlpang@linux.alibaba.com>
+cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Wen Yang <wenyang@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>, Pekka Enberg <penberg@gmail.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        David Rientjes <rientjes@google.com>,
+        linux-kernel@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 3/3] mm/slub: Use percpu partial free counter
+In-Reply-To: <1597061872-58724-4-git-send-email-xlpang@linux.alibaba.com>
+Message-ID: <alpine.DEB.2.22.394.2103021012010.860725@gentwo.de>
+References: <1597061872-58724-1-git-send-email-xlpang@linux.alibaba.com> <1597061872-58724-4-git-send-email-xlpang@linux.alibaba.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CAP_IPC_LOCK is set we should not check locked memory against
-rlimit as what has been implemented in mlock().
+On Mon, 10 Aug 2020, Xunlei Pang wrote:
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vhost/vdpa.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/slab.h b/mm/slab.h
+> index c85e2fa..a709a70 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -616,7 +616,7 @@ struct kmem_cache_node {
+>  #ifdef CONFIG_SLUB
+>  	unsigned long nr_partial;
+>  	struct list_head partial;
+> -	atomic_long_t partial_free_objs;
+> +	atomic_long_t __percpu *partial_free_objs;
 
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index ef688c8c0e0e..e93572e2e344 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -638,7 +638,8 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
- 	mmap_read_lock(dev->mm);
- 
- 	lock_limit = rlimit(RLIMIT_MEMLOCK) >> PAGE_SHIFT;
--	if (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit) {
-+	if (!capable(CAP_IPC_LOCK) &&
-+	    (npages + atomic64_read(&dev->mm->pinned_vm) > lock_limit)) {
- 		ret = -ENOMEM;
- 		goto unlock;
- 	}
--- 
-2.18.1
+A percpu counter is never atomic. Just use unsigned long and use this_cpu
+operations for this thing. That should cut down further on the overhead.
 
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1775,11 +1775,21 @@ static void discard_slab(struct kmem_cache *s, struct page *page)
+>  /*
+>   * Management of partially allocated slabs.
+>   */
+> +static inline long get_partial_free(struct kmem_cache_node *n)
+> +{
+> +	long nr = 0;
+> +	int cpu;
+> +
+> +	for_each_possible_cpu(cpu)
+> +		nr += atomic_long_read(per_cpu_ptr(n->partial_free_objs, cpu));
+
+this_cpu_read(*n->partial_free_objs)
+
+>  static inline void
+>  __update_partial_free(struct kmem_cache_node *n, long delta)
+>  {
+> -	atomic_long_add(delta, &n->partial_free_objs);
+> +	atomic_long_add(delta, this_cpu_ptr(n->partial_free_objs));
+
+this_cpu_add()
+
+and so on.
