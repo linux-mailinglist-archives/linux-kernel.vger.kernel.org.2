@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADDB32A676
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3219A32A68E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:45:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1448552AbhCBPFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:05:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42022 "EHLO mx2.suse.de"
+        id S1378851AbhCBPSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:18:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350774AbhCBMts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:49:48 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614689304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LmimWd63WkUfPWADlD3zBnnPZ6h7AIB2oXCZzzXjlJw=;
-        b=mPQMTl8fVDM8qIPI5TkL3p1CaW2GOGMEx9OkvNmBms+ceLRjwgbXn3z390vKN806puhD2k
-        cPbmjYXeCCaGE9ANqE0n2RVQRigw7DJw/ZEIEEfKc7+D/QJoydsSU0laPEz2jkqbC1h/5V
-        vNprbyefwf+gWEYUGsnXZPAtZlcKSbg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DFAE3AF63;
-        Tue,  2 Mar 2021 12:48:23 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 13:48:23 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH next v3 02/15] mtd: mtdoops: synchronize kmsg_dumper
-Message-ID: <YD40FzHeLkpMXkxn@alley>
-References: <20210225202438.28985-1-john.ogness@linutronix.de>
- <20210225202438.28985-3-john.ogness@linutronix.de>
- <YDzaYqrk3Dv37uDa@alley>
- <87tuptq1fc.fsf@jogness.linutronix.de>
+        id S1447175AbhCBMvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:51:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B6664F64;
+        Tue,  2 Mar 2021 12:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614689420;
+        bh=WmVH+zXDxgTi+YtrZbgW5+vNGhWdHs8/AxaMBHbxCdQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JOBXeQ9VgXV/INC2xKi/GmKK5Jz8qBkQE1lP2pI7N7hra2/rj3o82DhBbnmejOsD+
+         kS3mZQmhKgrVKhM5r5CkDmzN72lwR8HHeEx/nOaoukXsrnWGrd9kRF8HeUN+1A/Fbn
+         LHlWGVaY+jiXAyxfGUsnshRfCYHVUv2BFKKGDt85aaO7JSbcLc1z2AiEJtn9wQoQBb
+         VdWkv6Njxgxdm1EcBOGRJM+Asw4knR4E12b6uMezB08a+u75W/faj5qrkcChDq/rjB
+         1tadEPDuDCjI01DDPQKS7Rw5SyRrOgFk2PAW9lTZ5IzvuyowpogOYOTkMLnR6mF9ER
+         8SyvF+No0caLQ==
+Date:   Tue, 2 Mar 2021 12:49:13 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] ASoC: soc-core: Prevent warning if no DMI table is
+ present
+Message-ID: <20210302124913.GC4522@sirena.org.uk>
+References: <20210302092712.310705-1-jonathanh@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s9fJI615cBHmzTOP"
 Content-Disposition: inline
-In-Reply-To: <87tuptq1fc.fsf@jogness.linutronix.de>
+In-Reply-To: <20210302092712.310705-1-jonathanh@nvidia.com>
+X-Cookie: Friction is a drag.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-03-02 11:45:27, John Ogness wrote:
-> On 2021-03-01, Petr Mladek <pmladek@suse.com> wrote:
-> >> The kmsg_dumper can be called from any context and CPU, possibly
-> >> from multiple CPUs simultaneously. Since the writing of the buffer
-> >> can occur from a later scheduled work queue, the oops buffer must
-> >> be protected against simultaneous dumping.
-> >> 
-> >> Use an atomic bit to mark when the buffer is protected. Release the
-> >> protection in between setting the buffer and the actual writing in
-> >> order for a possible panic (immediate write) to be written during
-> >> the scheduling of a previous oops (delayed write).
-> >
-> > Just to be sure. You did not use spin lock to prevent problems
-> > with eventual double unlock in panic(). Do I get it correctly,
-> > please?
-> 
-> I do not understand what possible double unlock you are referring to.
 
-I was wrong. I meant the tricks that are under in console drivrers,
-for example:
+--s9fJI615cBHmzTOP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-static void mvebu_uart_console_write(struct console *co, const char *s,
-				     unsigned int count)
-{
-	int locked = 1;
+On Tue, Mar 02, 2021 at 09:27:12AM +0000, Jon Hunter wrote:
+> Many systems do not provide a DMI table and on these systems a warning,
+> such as the following, is printed on boot ...
+>=20
+>  WARNING KERN tegra-audio-graph-card sound: ASoC: no DMI vendor name!
+>=20
+> If DMI support is enabled in the kernel, there is no simple way to
+> detect if a DMI table is table or not. Note that the variable
+> 'dmi_available' is not exported and so cannot be used by kernel modules.
 
-	if (oops_in_progress)
-		locked = spin_trylock_irqsave(&port->lock, flags);
-	else
-		spin_lock_irqsave(&port->lock, flags);
+We could fix that, or provide an accessor function?  Or only warn if
+we're on an ACPI system (which we can check from a module).  This really
+does feel like something we should be warning about on systems that are
+supposed to have DMI information available as standard.
 
-	/* do the job */
+--s9fJI615cBHmzTOP
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	if (locked)
-		spin_unlock_irqrestore(&port->lock, flags);
-}
+-----BEGIN PGP SIGNATURE-----
 
-But this is not a problem here because the kmsg dumper bails out
-when the lock could not be taken.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmA+NEgACgkQJNaLcl1U
+h9CQDAf/Z48cJOMLdkoZSxTL6NDL7fNrb3cLcBfyh2VSzLXYRiPg9xSEGtxMEtZH
+Nt77fAQr36jGJj5+ArLxHIZp3t0baGveNLoWOLR+0V2nq3ySxgUfKElwV5gQ/Xwy
+NJLtb0s9AzeYnM6docqPn5mdfTHKidIEVtcdprYrPo4TGT5XwUayn5Nj037keTda
+HFDHscgSyFqEwFEQs6qwAHfNocGEakSbtsmFD+tC2GCupq1gx3pJm1i/rS50b4U6
+jiEj+pP2OPhGKj103UKc+wNByNfGPVo5p0fhKqrklHnAFC1B4ZXXWHqU7Xa/soVq
+v1Ou/xkvrjI+ckyeeLLDpPMx2bjaYg==
+=zWGP
+-----END PGP SIGNATURE-----
 
-> I chose not to use spinlocks because I wanted something that does not
-> cause any scheduling or preemption side-effects for mtd. The mtd dumper
-> sometimes dumps directly, sometimes delayed (via scheduled work), and
-> they use different mtd callbacks in different contexts.
->
-> mtd_write() expects to be called in a non-atomic context. The callbacks
-> can take a mutex.
-
-Makes sense. Could you please mention this in the commit message?
-
-Best Regards,
-Petr
+--s9fJI615cBHmzTOP--
