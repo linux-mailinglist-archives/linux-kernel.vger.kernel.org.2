@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3FA32A660
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4381932A68C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384254AbhCBOoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 09:44:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52420 "EHLO mail.kernel.org"
+        id S1578411AbhCBPQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:16:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1447022AbhCBMmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:42:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 081BA64F88;
-        Tue,  2 Mar 2021 11:58:04 +0000 (UTC)
+        id S1447306AbhCBMwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:52:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E28164F8C;
+        Tue,  2 Mar 2021 11:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614686285;
-        bh=Mccf3R6kHz/HtciRF6yLl1u/jttp5MYGnjXhRjj6s04=;
+        s=k20201202; t=1614686286;
+        bh=uk69YBXcdAyp0nQw0aevjIpokhcshJLj47jy1NPiWt8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JyhcZE/R/BXgBEJFAdZ84bU4XhtDHMDTG+v7BBqy1EQzbqj3WPxGH96rWVrSgXvCh
-         MXIPNwkTSZYPgb4acCOd4L3C0aexmDOXjYKDFv4JE1oMEmnYPXQ6Yi0706htpDtaMT
-         f765amlJF69IyNy816Qc46tRKr+JK8bILPnsn6gUwaGirF429HYR6ZMpQhY0cZv4Fq
-         1hxyQJ3zRrLxKC4s9ZU/uDhLAcHNliqb2W8sFiGYZP0Sq3h5q4BfBlHopF8rlUZELw
-         hUYykekBVG5KRj6qSASJSEsxvVKMGQvsAGBcdUTJM6RYXeflgI4TN3jdKUdDSfin0Z
-         QfAQI14rgjYhA==
+        b=kkxXAxMNdqFX0z6Qc/ILAcXkrhxkRDWtpIzG6CNsckuaA+2UHCykJuId+3LmnByLK
+         HUXv9iGE+DIYQ1VkvNtEuEcHazO+diM5JHedhKR/R+D1D8qL9SfCsFCyujykH9xqXw
+         dR/7SELlrqmq0TJHzHF11kR4pwHR58qv7yWpxT7OEwjp3wiCW8Fecm0ge/1/Y8We+1
+         Ghq7IC26rOjZVZd5xmKeb6RfBhb+NTFfjCKZm/tVvh8M9zNCXWtl3Y4mixtPIWNJK7
+         bmlddcTFpwXbTcrDWEuFTJhQjmezHi+akiJ1EJk4ZyNkqBH1PeLsHwykBjBOKtkG9U
+         mwqBMi3/Y/QAg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.4 12/33] powerpc/perf: Record counter overflow always if SAMPLE_IP is unset
-Date:   Tue,  2 Mar 2021 06:57:28 -0500
-Message-Id: <20210302115749.62653-12-sashal@kernel.org>
+Cc:     =?UTF-8?q?Filipe=20La=C3=ADns?= <lains@riseup.net>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 13/33] HID: logitech-dj: add support for the new lightspeed connection iteration
+Date:   Tue,  2 Mar 2021 06:57:29 -0500
+Message-Id: <20210302115749.62653-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210302115749.62653-1-sashal@kernel.org>
 References: <20210302115749.62653-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -42,78 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Filipe Laíns <lains@riseup.net>
 
-[ Upstream commit d137845c973147a22622cc76c7b0bc16f6206323 ]
+[ Upstream commit fab3a95654eea01d6b0204995be8b7492a00d001 ]
 
-While sampling for marked events, currently we record the sample only
-if the SIAR valid bit of Sampled Instruction Event Register (SIER) is
-set. SIAR_VALID bit is used for fetching the instruction address from
-Sampled Instruction Address Register(SIAR). But there are some
-usecases, where the user is interested only in the PMU stats at each
-counter overflow and the exact IP of the overflow event is not
-required. Dropping SIAR invalid samples will fail to record some of
-the counter overflows in such cases.
+This new connection type is the new iteration of the Lightspeed
+connection and will probably be used in some of the newer gaming
+devices. It is currently use in the G Pro X Superlight.
 
-Example of such usecase is dumping the PMU stats (event counts) after
-some regular amount of instructions/events from the userspace (ex: via
-ptrace). Here counter overflow is indicated to userspace via signal
-handler, and captured by monitoring and enabling I/O signaling on the
-event file descriptor. In these cases, we expect to get
-sample/overflow indication after each specified sample_period.
+This patch should be backported to older versions, as currently the
+driver will panic when seing the unsupported connection. This isn't
+an issue when using the receiver that came with the device, as Logitech
+has been using different PIDs when they change the connection type, but
+is an issue when using a generic receiver (well, generic Lightspeed
+receiver), which is the case of the one in the Powerplay mat. Currently,
+the only generic Ligthspeed receiver we support, and the only one that
+exists AFAIK, is ther Powerplay.
 
-Perf event attribute will not have PERF_SAMPLE_IP set in the
-sample_type if exact IP of the overflow event is not requested. So
-while profiling if SAMPLE_IP is not set, just record the counter
-overflow irrespective of SIAR_VALID check.
+As it stands, the driver will panic when seeing a G Pro X Superlight
+connected to the Powerplay receiver and won't send any input events to
+userspace! The kernel will warn about this so the issue should be easy
+to identify, but it is still very worrying how hard it will fail :(
 
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-[mpe: Reflow comment and if formatting]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1612516492-1428-1-git-send-email-atrajeev@linux.vnet.ibm.com
+[915977.398471] logitech-djreceiver 0003:046D:C53A.0107: unusable device of type UNKNOWN (0x0f) connected on slot 1
+
+Signed-off-by: Filipe Laíns <lains@riseup.net>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/perf/core-book3s.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/hid/hid-logitech-dj.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index 02fc75ddcbb3..6f013e418834 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -2077,7 +2077,17 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 			left += period;
- 			if (left <= 0)
- 				left = period;
--			record = siar_valid(regs);
-+
-+			/*
-+			 * If address is not requested in the sample via
-+			 * PERF_SAMPLE_IP, just record that sample irrespective
-+			 * of SIAR valid check.
-+			 */
-+			if (event->attr.sample_type & PERF_SAMPLE_IP)
-+				record = siar_valid(regs);
-+			else
-+				record = 1;
-+
- 			event->hw.last_period = event->hw.sample_period;
- 		}
- 		if (left < 0x80000000LL)
-@@ -2095,9 +2105,10 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
- 	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
- 	 * these cases.
- 	 */
--	if (event->attr.exclude_kernel && record)
--		if (is_kernel_addr(mfspr(SPRN_SIAR)))
--			record = 0;
-+	if (event->attr.exclude_kernel &&
-+	    (event->attr.sample_type & PERF_SAMPLE_IP) &&
-+	    is_kernel_addr(mfspr(SPRN_SIAR)))
-+		record = 0;
- 
- 	/*
- 	 * Finally record data if requested.
+diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
+index e5550a5bf49d..82fb9b639ca0 100644
+--- a/drivers/hid/hid-logitech-dj.c
++++ b/drivers/hid/hid-logitech-dj.c
+@@ -994,7 +994,12 @@ static void logi_hidpp_recv_queue_notif(struct hid_device *hdev,
+ 		workitem.reports_supported |= STD_KEYBOARD;
+ 		break;
+ 	case 0x0d:
+-		device_type = "eQUAD Lightspeed 1_1";
++		device_type = "eQUAD Lightspeed 1.1";
++		logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
++		workitem.reports_supported |= STD_KEYBOARD;
++		break;
++	case 0x0f:
++		device_type = "eQUAD Lightspeed 1.2";
+ 		logi_hidpp_dev_conn_notif_equad(hdev, hidpp_report, &workitem);
+ 		workitem.reports_supported |= STD_KEYBOARD;
+ 		break;
 -- 
 2.30.1
 
