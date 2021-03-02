@@ -2,260 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2B632A6E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C3432A770
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 18:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1836889AbhCBPy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:54:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39433 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1447467AbhCBNaG (ORCPT
+        id S1449159AbhCBQQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 11:16:00 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:45950 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376682AbhCBNiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 08:30:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614691719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q3lcceJNMuhGV5gOmnXWRxilJICm39vdcV7GSA5hqqM=;
-        b=Z9WPlybCjIkKKhwkpqjGXME2cxfZjG/qzUdHfNLkssq8Zkt22TVVbuauNpE+Zsttm54I6/
-        BAqaTiojGt8xANXWEGv8PSTBeQ9LowlyaPOQuXEyBIZWN9PGSd4f2Onax0b+Qy9KWg6Z1Z
-        WFTTn5w3x9wqhTAFTu5w3QqoM4IBBwY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-yCJ1Q7l7Pfy3sCOqMUzYCg-1; Tue, 02 Mar 2021 08:04:18 -0500
-X-MC-Unique: yCJ1Q7l7Pfy3sCOqMUzYCg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5637B85EE62;
-        Tue,  2 Mar 2021 13:04:16 +0000 (UTC)
-Received: from localhost (ovpn-12-141.pek2.redhat.com [10.72.12.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AD4CF5C1C2;
-        Tue,  2 Mar 2021 13:04:11 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 21:04:09 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH v3 1/2] x86/setup: consolidate early memory reservations
-Message-ID: <20210302130409.GA2962@MiWiFi-R3L-srv>
-References: <20210302100406.22059-1-rppt@kernel.org>
- <20210302100406.22059-2-rppt@kernel.org>
+        Tue, 2 Mar 2021 08:38:46 -0500
+Date:   Tue, 2 Mar 2021 16:08:21 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Roman Gushchin <guro@fb.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, Kamal Dasu <kdasu.kdev@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        <iamjoonsoo.kim@lge.com>, <riel@surriel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] memblock: do not start bottom-up allocations with
+ kernel_end
+Message-ID: <20210302130821.m6uw7wajumaxjxyj@mobilestation>
+References: <20201217201214.3414100-1-guro@fb.com>
+ <20201217201214.3414100-2-guro@fb.com>
+ <23fc1ef9-7342-8bc2-d184-d898107c52b2@gmail.com>
+ <20210228090041.GO1447004@kernel.org>
+ <8cbafe95-0f8c-a9b7-2dc9-cded846622fd@gmail.com>
+ <20210228230811.wdae7oaaf3mbpgwl@mobilestation>
+ <2e973fa8-5f2b-6840-0874-9c15fa0ebea0@gmail.com>
+ <YDy3xo3bMCqFtDhI@kernel.org>
+ <YD23KbTlOzl60mqS@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210302100406.22059-2-rppt@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <YD23KbTlOzl60mqS@carbon.dhcp.thefacebook.com>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/02/21 at 12:04pm, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, Mar 01, 2021 at 07:55:21PM -0800, Roman Gushchin wrote:
+> On Mon, Mar 01, 2021 at 11:45:42AM +0200, Mike Rapoport wrote:
+> > On Sun, Feb 28, 2021 at 07:50:45PM -0800, Florian Fainelli wrote:
+> > > Hi Serge,
+> > > 
+> > > On 2/28/2021 3:08 PM, Serge Semin wrote:
+> > > > Hi folks,
+> > > > What you've got here seems a more complicated problem than it
+> > > > could originally look like. Please, see my comments below.
+> > > > 
+> > > > (Note I've discarded some of the email logs, which of no interest
+> > > > to the discovered problem. Please also note that I haven't got any
+> > > > Broadcom hardware to test out a solution suggested below.)
+> > > > 
+> > > > On Sun, Feb 28, 2021 at 10:19:51AM -0800, Florian Fainelli wrote:
+> > > >> Hi Mike,
+> > > >>
+> > > >> On 2/28/2021 1:00 AM, Mike Rapoport wrote:
+> > > >>> Hi Florian,
+> > > >>>
+> > > >>> On Sat, Feb 27, 2021 at 08:18:47PM -0800, Florian Fainelli wrote:
+> > > >>>>
+> > > > 
+> > > >>>> [...]
+> > > > 
+> > > >>>>
+> > > >>>> Hi Roman, Thomas and other linux-mips folks,
+> > > >>>>
+> > > >>>> Kamal and myself have been unable to boot v5.11 on MIPS since this
+> > > >>>> commit, reverting it makes our MIPS platforms boot successfully. We do
+> > > >>>> not see a warning like this one in the commit message, instead what
+> > > >>>> happens appear to be a corrupted Device Tree which prevents the parsing
+> > > >>>> of the "rdb" node and leading to the interrupt controllers not being
+> > > >>>> registered, and the system eventually not booting.
+> > > >>>>
+> > > >>>> The Device Tree is built-into the kernel image and resides at
+> > > >>>> arch/mips/boot/dts/brcm/bcm97435svmb.dts.
+> > > >>>>
+> > > >>>> Do you have any idea what could be wrong with MIPS specifically here?
+> > > > 
+> > > > Most likely the problem you've discovered has been there for quite
+> > > > some time. The patch you are referring to just caused it to be
+> > > > triggered by extending the early allocation range. See before that
+> > > > patch was accepted the early memory allocations had been performed
+> > > > in the range:
+> > > > [kernel_end, RAM_END].
+> > > > The patch changed that, so the early allocations are done within
+> > > > [RAM_START + PAGE_SIZE, RAM_END].
+> > > > 
+> > > > In normal situations it's safe to do that as long as all the critical
+> > > > memory regions (including the memory residing a space below the
+> > > > kernel) have been reserved. But as soon as a memory with some critical
+> > > > structures haven't been reserved, the kernel may allocate it to be used
+> > > > for instance for early initializations with obviously unpredictable but
+> > > > most of the times unpleasant consequences.
+> > > > 
+> > > >>>
+> > > >>> Apparently there is a memblock allocation in one of the functions called
+> > > >>> from arch_mem_init() between plat_mem_setup() and
+> > > >>> early_init_fdt_reserve_self().
+> > > > 
+> > > > Mike, alas according to the log provided by Florian that's not the reason
+> > > > of the problem. Please, see my considerations below.
+> > > > 
+> > > >> [...]
+> > > >>
+> > > >> [    0.000000] Linux version 5.11.0-g5695e5161974 (florian@localhost)
+> > > >> (mipsel-linux-gcc (GCC) 8.3.0, GNU ld (GNU Binutils) 2.32) #84 SMP Sun
+> > > >> Feb 28 10:01:50 PST 2021
+> > > >> [    0.000000] CPU0 revision is: 00025b00 (Broadcom BMIPS5200)
+> > > >> [    0.000000] FPU revision is: 00130001
+> > > > 
+> > > >> [    0.000000] memblock_add: [0x00000000-0x0fffffff]
+> > > >> early_init_dt_scan_memory+0x160/0x1e0
+> > > >> [    0.000000] memblock_add: [0x20000000-0x4fffffff]
+> > > >> early_init_dt_scan_memory+0x160/0x1e0
+> > > >> [    0.000000] memblock_add: [0x90000000-0xcfffffff]
+> > > >> early_init_dt_scan_memory+0x160/0x1e0
+> > > > 
+> > > > Here the memory has been added to the memblock allocator.
+> > > > 
+> > > >> [    0.000000] MIPS: machine is Broadcom BCM97435SVMB
+> > > >> [    0.000000] earlycon: ns16550a0 at MMIO32 0x10406b00 (options '')
+> > > >> [    0.000000] printk: bootconsole [ns16550a0] enabled
+> > > > 
+> > > >> [    0.000000] memblock_reserve: [0x00aa7600-0x00aaa0a0]
+> > > >> setup_arch+0x128/0x69c
+> > > > 
+> > > > Here the fdt memory has been reserved. (Note it's built into the
+> > > > kernel.)
+> > > > 
+> > > >> [    0.000000] memblock_reserve: [0x00010000-0x018313cf]
+> > > >> setup_arch+0x1f8/0x69c
+> > > > 
+> > > > Here the kernel itself together with built-in dtb have been reserved.
+> > > > So far so good.
+> > > > 
+> > > >> [    0.000000] Initrd not found or empty - disabling initrd
+> > > > 
+> > > >> [    0.000000] memblock_alloc_try_nid: 10913 bytes align=0x40 nid=-1
+> > > >> from=0x00000000 max_addr=0x00000000
+> > > >> early_init_dt_alloc_memory_arch+0x40/0x84
+> > > >> [    0.000000] memblock_reserve: [0x00001000-0x00003aa0]
+> > > >> memblock_alloc_range_nid+0xf8/0x198
+> > > >> [    0.000000] memblock_alloc_try_nid: 32680 bytes align=0x4 nid=-1
+> > > >> from=0x00000000 max_addr=0x00000000
+> > > >> early_init_dt_alloc_memory_arch+0x40/0x84
+> > > >> [    0.000000] memblock_reserve: [0x00003aa4-0x0000ba4b]
+> > > >> memblock_alloc_range_nid+0xf8/0x198
+> > > > 
+> > > > The log above most likely belongs to the call-chain:
+> > > > setup_arch()
+> > > > +-> arch_mem_init()
+> > > >     +-> device_tree_init() - BMIPS specific method
+> > > >         +-> unflatten_and_copy_device_tree()
+> > > > 
+> > > > So to speak here we've copied the fdt from the original space
+> > > > [0x00aa7600-0x00aaa0a0] into [0x00001000-0x00003aa0] and unflattened
+> > > > it to [0x00003aa4-0x0000ba4b].
+> > > > 
+> > > > The problem is that a bit later the next call-chain is performed:
+> > > > setup_arch()
+> > > > +-> plat_smp_setup()
+> > > >     +-> mp_ops->smp_setup(); - registered by prom_init()->register_bmips_smp_ops();
+> > > >         +-> if (!board_ebase_setup)
+> > > >                  board_ebase_setup = &bmips_ebase_setup;
+> > > > 
+> > > > So at the moment of the CPU traps initialization the bmips_ebase_setup()
+> > > > method is called. What trap_init() does isn't compatible with the
+> > > > allocation performed by the unflatten_and_copy_device_tree() method.
+> > > > See the next comment.
+> > > > 
+> > > >> [    0.000000] memblock_alloc_try_nid: 25 bytes align=0x4 nid=-1
+> > > >> from=0x00000000 max_addr=0x00000000
+> > > >> early_init_dt_alloc_memory_arch+0x40/0x84
+> > 
+> > ...
+> > 
+> > > >> [    0.000000] Inode-cache hash table entries: 16384 (order: 4, 65536
+> > > >> bytes, linear)
+> > > > 
+> > > >> [    0.000000] memblock_reserve: [0x00000000-0x000003ff]
+> > > >> trap_init+0x70/0x4e8
+> > > > 
+> > > > Most likely someplace here the corruption has happened. The log above
+> > > > has just reserved a memory for NMI/reset vectors:
+> > > > arch/mips/kernel/traps.c: trap_init(void): Line 2373.
+> > > > 
+> > > > But then the board_ebase_setup() pointer is dereferenced and called,
+> > > > which has been initialized with bmips_ebase_setup() earlier and which
+> > > > overwrites the ebase variable with: 0x80001000 as this is
+> > > > CPU_BMIPS5000 CPU. So any further calls of the functions like
+> > > > set_handler()/set_except_vector()/set_vi_srs_handler()/etc may cause a
+> > > > corruption of the memory above 0x80001000, which as we have discovered
+> > > > belongs to fdt and unflattened device tree.
+> > > > 
+> > > >> [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+> > > >> [    0.000000] Memory: 2045268K/2097152K available (8226K kernel code,
+> > > >> 1070K rwdata, 1336K rodata, 13808K init, 260K bss, 51884K reserved, 0K
+> > > >> cma-reserved, 1835008K highmem)
+> > > >> [    0.000000] SLUB: HWalign=128, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+> > > >> [    0.000000] rcu: Hierarchical RCU implementation.
+> > > >> [    0.000000] rcu:     RCU event tracing is enabled.
+> > > >> [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay
+> > > >> is 25 jiffies.
+> > > >> [    0.000000] NR_IRQS: 256
+> > > > 
+> > > >> [    0.000000] OF: Bad cell count for /rdb
+> > > >> [    0.000000] irq_bcm7038_l1: failed to remap intc L1 registers
+> > > >> [    0.000000] OF: of_irq_init: children remain, but no parents
+> > > > 
+> > > > So here is the first time we have got the consequence of the corruption
+> > > > popped up. Luckily it's just the "Bad cells count" error. We could have
+> > > > got much less obvious log here up to getting a crash at some place
+> > > > further...
+> > > > 
+> > > >> [    0.000000] random: get_random_bytes called from
+> > > >> start_kernel+0x444/0x654 with crng_init=0
+> > > >> [    0.000000] sched_clock: 32 bits at 250 Hz, resolution 4000000ns,
+> > > >> wraps every 8589934590000000ns
+> > > > 
+> > > >>
+> > > >> and with your patch applied which unfortunately did not work we have the
+> > > >> following:
+> > > >>
+> > > >> [...]
+> > > > 
+> > > > So a patch like this shall workaround the corruption:
+> > > > 
+> > > > --- a/arch/mips/bmips/setup.c
+> > > > +++ b/arch/mips/bmips/setup.c
+> > > > @@ -174,6 +174,8 @@ void __init plat_mem_setup(void)
+> > > >  
+> > > >  	__dt_setup_arch(dtb);
+> > > >  
+> > > > +	memblock_reserve(0x0, 0x1000 + 0x100*64);
+> > > > +
+> > > >  	for (q = bmips_quirk_list; q->quirk_fn; q++) {
+> > > >  		if (of_flat_dt_is_compatible(of_get_flat_dt_root(),
+> > > >  					     q->compatible)) {
+> > > 
+> > > This patch works, thanks a lot for the troubleshooting and analysis! How
+> > > about the following which would be more generic and works as well and
+> > > should be more universal since it does not require each architecture to
+> > > provide an appropriate call to memblock_reserve():
+> > > 
+> > > diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> > > index e0352958e2f7..b0a173b500e8 100644
+> > > --- a/arch/mips/kernel/traps.c
+> > > +++ b/arch/mips/kernel/traps.c
+> > > @@ -2367,10 +2367,7 @@ void __init trap_init(void)
+> > > 
+> > >         if (!cpu_has_mips_r2_r6) {
+> > >                 ebase = CAC_BASE;
+> > > -               ebase_pa = virt_to_phys((void *)ebase);
+> > >                 vec_size = 0x400;
+> > > -
+> > > -               memblock_reserve(ebase_pa, vec_size);
+> > >         } else {
+> > >                 if (cpu_has_veic || cpu_has_vint)
+> > >                         vec_size = 0x200 + VECTORSPACING*64;
+> > > @@ -2410,6 +2407,14 @@ void __init trap_init(void)
+> > > 
+> > >         if (board_ebase_setup)
+> > >                 board_ebase_setup();
+> > > +
+> > > +       /* board_ebase_setup() can change the exception base address
+> > > +        * reserve it now after changes were made.
+> > > +        */
+> > > +       if (!cpu_has_mips_r2_r6) {
+> > > +               ebase_pa = virt_to_phys((void *)ebase);
+> > > +               memblock_reserve(ebase_pa, vec_size);
+> > > +       }
 > 
-> The early reservations of memory areas used by the firmware, bootloader,
-> kernel text and data are spread over setup_arch(). Moreover, some of them
-> happen *after* memblock allocations, e.g trim_platform_memory_ranges() and
-> trim_low_memory_range() are called after reserve_real_mode() that allocates
-> memory.
+> Hi folks!
 > 
-> There was no corruption of these memory regions because memblock always
-> allocates memory either from the end of memory (in top-down mode) or above
-> the kernel image (in bottom-up mode). However, the bottom up mode is going
-> to be updated to span the entire memory [1] to avoid limitations caused by
-> KASLR.
+> First, I'm really sorry for breaking things and also being silent for last
+> couple of days: I was almost completely offline. Thank you for working on
+> this!
 > 
-> Consolidate early memory reservations in a dedicated function to improve
-> robustness against future changes. Having the early reservations in one
-> place also makes it clearer what memory must be reserved before we allow
-> memblock allocations.
-> 
-> [1] https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb.com
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Borislav Petkov <bp@suse.de>
-> ---
->  arch/x86/kernel/setup.c | 92 ++++++++++++++++++++---------------------
->  1 file changed, 44 insertions(+), 48 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index d883176ef2ce..3e3c6036b023 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -645,18 +645,6 @@ static void __init trim_snb_memory(void)
->  	}
->  }
->  
-> -/*
-> - * Here we put platform-specific memory range workarounds, i.e.
-> - * memory known to be corrupt or otherwise in need to be reserved on
-> - * specific platforms.
-> - *
-> - * If this gets used more widely it could use a real dispatch mechanism.
-> - */
-> -static void __init trim_platform_memory_ranges(void)
-> -{
-> -	trim_snb_memory();
-> -}
-> -
->  static void __init trim_bios_range(void)
->  {
->  	/*
-> @@ -729,7 +717,38 @@ static void __init trim_low_memory_range(void)
->  {
->  	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
->  }
-> -	
-> +
-> +static void __init early_reserve_memory(void)
-> +{
-> +	/*
-> +	 * Reserve the memory occupied by the kernel between _text and
-> +	 * __end_of_kernel_reserve symbols. Any kernel sections after the
-> +	 * __end_of_kernel_reserve symbol must be explicitly reserved with a
-> +	 * separate memblock_reserve() or they will be discarded.
-> +	 */
-> +	memblock_reserve(__pa_symbol(_text),
-> +			 (unsigned long)__end_of_kernel_reserve - (unsigned long)_text);
-> +
-> +	/*
-> +	 * Make sure page 0 is always reserved because on systems with
-> +	 * L1TF its contents can be leaked to user processes.
-> +	 */
-> +	memblock_reserve(0, PAGE_SIZE);
-> +
-> +	early_reserve_initrd();
-> +
-> +	if (efi_enabled(EFI_BOOT))
-> +		efi_memblock_x86_reserve_range();
-> +
-> +	memblock_x86_reserve_range_setup_data();
-
-This patch looks good to me, thanks for the effort.
-
-While at it, wondering if we can rename the above function to
-memblock_reserve_setup_data() just as its e820 counterpart
-e820__reserve_setup_data(), adding 'x86' to a function under arch/x86
-seems redundant.
-
-FWIW,
-
-Reviewed-by: Baoquan He <bhe@redhat.com>
-
-Thanks
-Baoquan
-
-> +
-> +	reserve_ibft_region();
-> +	reserve_bios_regions();
-> +
-> +	trim_snb_memory();
-> +	trim_low_memory_range();
-> +}
-> +
->  /*
->   * Dump out kernel offset information on panic.
->   */
-> @@ -764,29 +783,6 @@ dump_kernel_offset(struct notifier_block *self, unsigned long v, void *p)
->  
->  void __init setup_arch(char **cmdline_p)
->  {
-> -	/*
-> -	 * Reserve the memory occupied by the kernel between _text and
-> -	 * __end_of_kernel_reserve symbols. Any kernel sections after the
-> -	 * __end_of_kernel_reserve symbol must be explicitly reserved with a
-> -	 * separate memblock_reserve() or they will be discarded.
-> -	 */
-> -	memblock_reserve(__pa_symbol(_text),
-> -			 (unsigned long)__end_of_kernel_reserve - (unsigned long)_text);
-> -
-> -	/*
-> -	 * Make sure page 0 is always reserved because on systems with
-> -	 * L1TF its contents can be leaked to user processes.
-> -	 */
-> -	memblock_reserve(0, PAGE_SIZE);
-> -
-> -	early_reserve_initrd();
-> -
-> -	/*
-> -	 * At this point everything still needed from the boot loader
-> -	 * or BIOS or kernel text should be early reserved or marked not
-> -	 * RAM in e820. All other memory is free game.
-> -	 */
-> -
->  #ifdef CONFIG_X86_32
->  	memcpy(&boot_cpu_data, &new_cpu_data, sizeof(new_cpu_data));
->  
-> @@ -910,8 +906,18 @@ void __init setup_arch(char **cmdline_p)
->  
->  	parse_early_param();
->  
-> -	if (efi_enabled(EFI_BOOT))
-> -		efi_memblock_x86_reserve_range();
-> +	/*
-> +	 * Do some memory reservations *before* memory is added to
-> +	 * memblock, so memblock allocations won't overwrite it.
-> +	 * Do it after early param, so we could get (unlikely) panic from
-> +	 * serial.
-> +	 *
-> +	 * After this point everything still needed from the boot loader or
-> +	 * firmware or kernel text should be early reserved or marked not
-> +	 * RAM in e820. All other memory is free game.
-> +	 */
-> +	early_reserve_memory();
-> +
->  #ifdef CONFIG_MEMORY_HOTPLUG
->  	/*
->  	 * Memory used by the kernel cannot be hot-removed because Linux
-> @@ -938,9 +944,6 @@ void __init setup_arch(char **cmdline_p)
->  
->  	x86_report_nx();
->  
-> -	/* after early param, so could get panic from serial */
-> -	memblock_x86_reserve_range_setup_data();
-> -
->  	if (acpi_mps_check()) {
->  #ifdef CONFIG_X86_LOCAL_APIC
->  		disable_apic = 1;
-> @@ -1032,8 +1035,6 @@ void __init setup_arch(char **cmdline_p)
->  	 */
->  	find_smp_config();
->  
-> -	reserve_ibft_region();
-> -
->  	early_alloc_pgt_buf();
->  
->  	/*
-> @@ -1054,8 +1055,6 @@ void __init setup_arch(char **cmdline_p)
->  	 */
->  	sev_setup_arch();
->  
-> -	reserve_bios_regions();
-> -
->  	efi_fake_memmap();
->  	efi_find_mirror();
->  	efi_esrt_init();
-> @@ -1081,9 +1080,6 @@ void __init setup_arch(char **cmdline_p)
->  
->  	reserve_real_mode();
->  
-> -	trim_platform_memory_ranges();
-> -	trim_low_memory_range();
-> -
->  	init_mem_mapping();
->  
->  	idt_setup_early_pf();
-> -- 
-> 2.28.0
+> > 
+> > With this it's still possible to have memblock allocations around ebase_pa
+> > before it is reserved.
+> > 
+> > I think we have two options here to solve it in more or less generic way:
+> > 
+> > * split the reservation of ebase from traps_init() and move it earlier to
+> > setup_arch(). I didn't check what board_ebase_setup() do, if they need to
+> > allocate memory it would not work.
 > 
 
+> It seems that it doesn't allocate any memory, so it sounds like a good option.
+> But doesn't the ebase initialization depend on the memblock allocator?
+> 
+> I see in trap_init():
+>     if (!cpu_has_mips_r2_r6) {
+>         ...
+>     } else {
+>         ...
+> 	ebase_pa = memblock_phys_alloc(vec_size, 1 << fls(vec_size));
+> 	...
+> 	if (!IS_ENABLED(CONFIG_EVA) && !WARN_ON(ebase_pa >= 0x20000000))
+> 	    ebase = CKSEG0ADDR(ebase_pa);
+>         else
+>             ebase = (unsigned long)phys_to_virt(ebase_pa);
+
+Yeap, this seems like the best option for now. Of course we need to
+reserve the memory only if the system needs that like in case of non
+MIPS R2-R5 archs. In addition a custom ebase value must be taken into
+account. The later is the hardest part to achieve. ebase is a global
+variable. So we need to thoroughly scan all the MIPS platforms which
+update it and make sure it's done before the reservation is
+performed. 
+
+> 
+> 
+> > 
+> > * add an API to memblock to set lower limit for allocations and then set
+> > the lower limit, to e.g. kernel load address in arch_mem_init(). This may
+> > add complexity for configurations with relocatable kernel and kaslr.
+> 
+> This option looks more like a workaround to me, but maybe it's ok too.
+
+Agree. The first one is better.
+
+-Sergey
+
+> 
+> Thanks!
