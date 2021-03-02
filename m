@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E357F32A4BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA9A32A4D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 16:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446422AbhCBLMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 06:12:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
+        id S1838662AbhCBLSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 06:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1838470AbhCBKy4 (ORCPT
+        with ESMTP id S1838652AbhCBK5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 05:54:56 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA0CC061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:54:15 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id b18so12868871wrn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Mar 2021 02:54:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WTqhktbSK+pb9FujmiEWqSsD3Ov6W1SagmahMe1crb4=;
-        b=eekxItstzdek5bmY3Fy4eehDypAbrdub+lzL53FCHxqePg1RLZDjbEEHCxfe7H5MeL
-         towuuIVEYAu76BFuny9l7i0558AzCjJQwktgvVC56VAIPG5pefsy7m+wYCgrwh0OwpNx
-         tZb3O6EXXH7lqAbnkqYPREIe4oOmXsySzOSAbCE85QopRCcIKKht9ZcDJ0rpP7mYKEnK
-         vviYTzhYaT90BQj+oIszMmWAJJrLlYs+e3CcNZ6yaJkA99jdrNtqgOWem7BKqI0WnguT
-         SlYzp+ZW5ClaM4W0z+R77lXtqsS8NOCLuyQkkuFQ36eA8CGjqoL3YiRE2anwN2GEu1oP
-         fZ7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WTqhktbSK+pb9FujmiEWqSsD3Ov6W1SagmahMe1crb4=;
-        b=hqYRnBhpG6h2uPdt/eTyvzmSr13rp7bu5NMZBiogh+hbScxFZuNgI2gH8ALwcAh24+
-         0x2WKEypL94nIUZKSTcSqlRDXuS9V2EYE0c2USngmT1sav2MVSFVCSy7G1bmyBlDcMtC
-         GjzvQtOZD439u+bQH15izCU3vG0HOqRCutz+NjmLVDhV3z4QSWZKRWKuhoSQsrkT2LN7
-         /ruW/vKaJ8qxPy+DnKVL74pEFcTe35W7vKQ+vNNy88ZMpJtymBN04Yi1rrX2N9MztxmE
-         5uoucJKXy6wQfEZtWDiZ64ChfFiCkR8t6XxCm7BlHz/qyiseaGZnN+gIz/Jk2k+6ZaG4
-         tnoQ==
-X-Gm-Message-State: AOAM530fI5Aop3uFxFhaBMolRSNC3F+Nu0KlDBAz6oM0SoTGr3ih2ZAT
-        kVipOKqVGrwMEBvTZu790o7OknPc9UTmtg==
-X-Google-Smtp-Source: ABdhPJz2NeMkaA+BYqC42OXCin/GZFMyb6o91RKMQqOLxd9eWe0+cyjePPdLgXfy8TyNxcUMz/i6ZA==
-X-Received: by 2002:a5d:4c81:: with SMTP id z1mr6493646wrs.85.1614682454582;
-        Tue, 02 Mar 2021 02:54:14 -0800 (PST)
-Received: from localhost.localdomain (67.red-83-54-30.dynamicip.rima-tde.net. [83.54.30.67])
-        by smtp.gmail.com with ESMTPSA id v5sm2270407wmh.2.2021.03.02.02.54.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Mar 2021 02:54:14 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     vkoul@kernel.org
-Cc:     kishon@ti.com, linux-phy@lists.infradead.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        neil@brown.name
-Subject: [PATCH] phy: ralink: phy-mt7621-pci: fix XTAL bitmask
-Date:   Tue,  2 Mar 2021 11:54:12 +0100
-Message-Id: <20210302105412.16221-1-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 2 Mar 2021 05:57:46 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659B3C06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Mar 2021 02:57:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2eshro0EBJZzpkPKK7nfRXtPRAYkSjHS/ySnSYAHp50=; b=urHH3W5/bTO9iADelvx1Y72tEG
+        dJFApZyeIEx1PMFBS+mVXLS524rjrXxDrj3J0wNPiPHpCKx45/Fmyyxocu57hgUQuEWb9jpEAGpMG
+        NjZhEZo0xYIHwLBi6RL9gMa8AmpwsFByVOJpnd26tWc8Cf3YSR2M8EZ8qIq9y8zylP25XhbVYH13x
+        ZwZB6eDq2OZyEaNJoVUj5r5tP8XHbfbjNeGILKQHFblOquOQ48uQCLkyK0T26ZEsyV7eDN8oT4TcN
+        mqSn0OxRHwxBhsLXkqbM/s6erUtpKv3umrseK+uxfzyIKqyIFnY2jiRYAJNosnjfvOUYUvAgclLKn
+        gQsl5GXg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lH2hT-00GyQB-W9; Tue, 02 Mar 2021 10:56:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1B9893003E1;
+        Tue,  2 Mar 2021 11:56:21 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ECB5C234E17DB; Tue,  2 Mar 2021 11:56:20 +0100 (CET)
+Date:   Tue, 2 Mar 2021 11:56:20 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     valentin.schneider@arm.com, vincent.guittot@linaro.org,
+        mgorman@suse.de, mingo@kernel.org, dietmar.eggemann@arm.com,
+        morten.rasmussen@arm.com, linux-kernel@vger.kernel.org,
+        linuxarm@openeuler.org, xuwei5@huawei.com, liguozhu@hisilicon.com,
+        tiantao6@hisilicon.com, wanghuiqiang@huawei.com,
+        prime.zeng@hisilicon.com, jonathan.cameron@huawei.com,
+        guodong.xu@linaro.org, yangyicong@huawei.com,
+        Meelis Roos <mroos@linux.ee>
+Subject: Re: [PATCH v4] sched/topology: fix the issue groups don't span
+ domain->span for NUMA diameter > 2
+Message-ID: <YD4Z1K6Vb0+u0JQz@hirez.programming.kicks-ass.net>
+References: <20210224030944.15232-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210224030944.15232-1-song.bao.hua@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When this was rewriten to get mainlined and start to
-use 'linux/bitfield.h' headers, XTAL_MASK was wrong.
-It must mask three bits but only two were used. Hence
-properly fix it to make things work.
+On Wed, Feb 24, 2021 at 04:09:44PM +1300, Barry Song wrote:
+> As long as NUMA diameter > 2, building sched_domain by sibling's child
+> domain will definitely create a sched_domain with sched_group which will
+> span out of the sched_domain:
+> 
+>                +------+         +------+        +-------+       +------+
+>                | node |  12     |node  | 20     | node  |  12   |node  |
+>                |  0   +---------+1     +--------+ 2     +-------+3     |
+>                +------+         +------+        +-------+       +------+
+> 
+> domain0        node0            node1            node2          node3
+> 
+> domain1        node0+1          node0+1          node2+3        node2+3
+>                                                  +
+> domain2        node0+1+2                         |
+>              group: node0+1                      |
+>                group:node2+3 <-------------------+
+> 
+> when node2 is added into the domain2 of node0, kernel is using the child
+> domain of node2's domain2, which is domain1(node2+3). Node 3 is outside
+> the span of the domain including node0+1+2.
+> 
+> This will make load_balance() run based on screwed avg_load and group_type
+> in the sched_group spanning out of the sched_domain, and it also makes
+> select_task_rq_fair() pick an idle CPU outside the sched_domain.
+> 
+> Real servers which suffer from this problem include Kunpeng920 and 8-node
+> Sun Fire X4600-M2, at least.
+> 
+> Here we move to use the *child* domain of the *child* domain of node2's
+> domain2 as the new added sched_group. At the same, we re-use the lower
+> level sgc directly.
+>                +------+         +------+        +-------+       +------+
+>                | node |  12     |node  | 20     | node  |  12   |node  |
+>                |  0   +---------+1     +--------+ 2     +-------+3     |
+>                +------+         +------+        +-------+       +------+
+> 
+> domain0        node0            node1          +- node2          node3
+>                                                |
+> domain1        node0+1          node0+1        | node2+3        node2+3
+>                                                |
+> domain2        node0+1+2                       |
+>              group: node0+1                    |
+>                group:node2 <-------------------+
+> 
+> While the lower level sgc is re-used, this patch only changes the remote
+> sched_groups for those sched_domains playing grandchild trick, therefore,
+> sgc->next_update is still safe since it's only touched by CPUs that have
+> the group span as local group. And sgc->imbalance is also safe because
+> sd_parent remains the same in load_balance and LB only tries other CPUs
+> from the local group.
+> Moreover, since local groups are not touched, they are still getting
+> roughly equal size in a TL. And should_we_balance() only matters with
+> local groups, so the pull probability of those groups are still roughly
+> equal.
+> 
 
-Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- drivers/phy/ralink/phy-mt7621-pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Reported-by: Valentin Schneider <valentin.schneider@arm.com>
+> Tested-by: Meelis Roos <mroos@linux.ee>
+> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 
-diff --git a/drivers/phy/ralink/phy-mt7621-pci.c b/drivers/phy/ralink/phy-mt7621-pci.c
-index 9a610b414b1f..84ee2b5c2228 100644
---- a/drivers/phy/ralink/phy-mt7621-pci.c
-+++ b/drivers/phy/ralink/phy-mt7621-pci.c
-@@ -62,7 +62,7 @@
- 
- #define RG_PE1_FRC_MSTCKDIV			BIT(5)
- 
--#define XTAL_MASK				GENMASK(7, 6)
-+#define XTAL_MASK				GENMASK(8, 6)
- 
- #define MAX_PHYS	2
- 
--- 
-2.25.1
-
+Thanks!
