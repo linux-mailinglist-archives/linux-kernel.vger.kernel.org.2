@@ -2,128 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8937432A66D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE5032A672
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 17:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384483AbhCBPEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 10:04:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51896 "EHLO mail.kernel.org"
+        id S1384550AbhCBPFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 10:05:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1444876AbhCBMle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 07:41:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D5C964F3C;
-        Tue,  2 Mar 2021 12:34:46 +0000 (UTC)
+        id S1444811AbhCBMlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Mar 2021 07:41:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6B4164F0D;
+        Tue,  2 Mar 2021 12:36:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614688487;
-        bh=vlKIJY5iGYuDx0D/+TOPIhzkP8FYk7iynomdRFUC8Gw=;
+        s=k20201202; t=1614688565;
+        bh=aIU8ufo2x+haijSAUpLIr8X8Yfx2CeP0Z0v54Zc1His=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gFpUN6D0ZqW7VHJRs0LylNTpImF5qCmAe0mJhKf8o4jyJFh/9QMzIzZktD8WQNyrh
-         ZJvwvGvh7lR5SPSo4GMqyRp4igI3xjqBClNSkPDVtJwAdB/PkQGJylwfxvffB+xiom
-         e3W/TvjEivIKL+ZNCMh5EjnLduBKPbEY0cPLDDLyGQrXBFWq4hoO7zMSxGkguBpmUh
-         vpEl7WXTjgJ953inRyenEyfdZXQSMkIExxNMaak9OMZWlBpusZKI9Sn2ETD8V9icuh
-         8lYcfDz5zJRfGc/P3/lBW5bLFog54gLVVqAZfbwyW4KwhQCDMEzdUzTUgwI35cLTRL
-         UfZXACjyQ5Ylg==
-Date:   Tue, 2 Mar 2021 13:34:44 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Stable <stable@vger.kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 01/13] rcu/nocb: Fix potential missed nocb_timer rearm
-Message-ID: <20210302123444.GA97498@lothringen>
-References: <20210223001011.127063-1-frederic@kernel.org>
- <20210223001011.127063-2-frederic@kernel.org>
- <20210224183709.GI2743@paulmck-ThinkPad-P72>
- <20210224220606.GA3179@lothringen>
- <20210302014829.GK2696@paulmck-ThinkPad-P72>
+        b=OvlAIbDDGqpyHt1/I0gE+IzgvV8cMbvrtpyqL+omBoz9+g7MUwc47tJWF6NsdxDdJ
+         wL5uDQQWVZzEf1UXDmoxU0aLwdE6WVq/VsgsQ+WpdXSKmjmT9U2xWXwyiHz/IHrsJC
+         bzfUPGVdeGcS4wNfhZO9dBWrWrANeUKV0fv1KoUZmjnw1sqSo37DwCTkbk1A0mqFA4
+         6bTVA+PXOHdWbn7MYrcqvlsqsFHGsNPSKMvKXRBCoE0NOZgQ5tx1m4dERmpYcgMKXO
+         z3YAXo8zDixfLGFJr8S+9oPTKUQ4C/CIIIcJYOSsO/xE9KJJyKgUTS97lefeUz2YmO
+         /Y76PIpxBdmrA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AD82B40CD9; Tue,  2 Mar 2021 09:36:02 -0300 (-03)
+Date:   Tue, 2 Mar 2021 09:36:02 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH] perf trace: Ensure read cmdlines are null terminated.
+Message-ID: <YD4xMrrbRqhIuLmV@kernel.org>
+References: <20210226221431.1985458-1-irogers@google.com>
+ <CAM9d7ci2GpSuj88qAphQxBSEvaOoQg=9r8ah5GjrdFojSQ-28w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210302014829.GK2696@paulmck-ThinkPad-P72>
+In-Reply-To: <CAM9d7ci2GpSuj88qAphQxBSEvaOoQg=9r8ah5GjrdFojSQ-28w@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 05:48:29PM -0800, Paul E. McKenney wrote:
-> On Wed, Feb 24, 2021 at 11:06:06PM +0100, Frederic Weisbecker wrote:
-> > On Wed, Feb 24, 2021 at 10:37:09AM -0800, Paul E. McKenney wrote:
-> > > On Tue, Feb 23, 2021 at 01:09:59AM +0100, Frederic Weisbecker wrote:
-> > > > Two situations can cause a missed nocb timer rearm:
-> > > > 
-> > > > 1) rdp(CPU A) queues its nocb timer. The grace period elapses before
-> > > >    the timer get a chance to fire. The nocb_gp kthread is awaken by
-> > > >    rdp(CPU B). The nocb_cb kthread for rdp(CPU A) is awaken and
-> > > >    process the callbacks, again before the nocb_timer for CPU A get a
-> > > >    chance to fire. rdp(CPU A) queues a callback and wakes up nocb_gp
-> > > >    kthread, cancelling the pending nocb_timer without resetting the
-> > > >    corresponding nocb_defer_wakeup.
-> > > 
-> > > As discussed offlist, expanding the above scenario results in this
-> > > sequence of steps:
+Em Mon, Mar 01, 2021 at 04:50:50PM +0900, Namhyung Kim escreveu:
+> Hi Ian,
 > 
-> I renumbered the CPUs, since the ->nocb_gp_kthread would normally be
-> associated with CPU 0.  If the first CPU to enqueue a callback was also
-> CPU 0, nocb_gp_wait() might clear that CPU's ->nocb_defer_wakeup, which
-> would prevent this scenario from playing out.  (But admittedly only if
-> some other CPU handled by this same ->nocb_gp_kthread used its bypass.)
-
-Ok good point.
-
+> On Sat, Feb 27, 2021 at 7:14 AM Ian Rogers <irogers@google.com> wrote:
+> >
+> > Issue detected by address sanitizer.
+> >
+> > Fixes: cd4ceb63438e (perf util: Save pid-cmdline mapping into tracing header)
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 > 
-> > > 1.	There are no callbacks queued for any CPU covered by CPU 0-2's
-> > > 	->nocb_gp_kthread.
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Thanks,
+> Namhyung
 > 
-> And ->nocb_gp_kthread is associated with CPU 0.
-> 
-> > > 2.	CPU 1 enqueues its first callback with interrupts disabled, and
-> > > 	thus must defer awakening its ->nocb_gp_kthread.  It therefore
-> > > 	queues its rcu_data structure's ->nocb_timer.
-> 
-> At this point, CPU 1's rdp->nocb_defer_wakeup is RCU_NOCB_WAKE.
+> > ---
+> >  tools/perf/util/trace-event-read.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/tools/perf/util/trace-event-read.c b/tools/perf/util/trace-event-read.c
+> > index f507dff713c9..8a01af783310 100644
+> > --- a/tools/perf/util/trace-event-read.c
+> > +++ b/tools/perf/util/trace-event-read.c
+> > @@ -361,6 +361,7 @@ static int read_saved_cmdline(struct tep_handle *pevent)
+> >                 pr_debug("error reading saved cmdlines\n");
+> >                 goto out;
+> >         }
+> > +       buf[ret] = '\0';
+> >
+> >         parse_saved_cmdline(pevent, buf, size);
+> >         ret = 0;
+> > --
+> > 2.30.1.766.gb4fecdf3b7-goog
+> >
 
-Right.
+-- 
 
-> > > 7.	The grace period ends, so rcu_gp_kthread awakens the
-> > > 	->nocb_gp_kthread, which in turn awakens both CPU 1's and
-> > > 	CPU 2's ->nocb_cb_kthread.
-> 
-> And then ->nocb_cb_kthread sleeps waiting for more callbacks.
-
-Yep
-
-> > I managed to recollect some pieces of my brain. So keep the above but
-> > let's change the point 10:
-> > 
-> > 10.	CPU 1 enqueues its second callback, this time with interrupts
-> >  	enabled so it can wake directly	->nocb_gp_kthread.
-> > 	It does so with calling __wake_nocb_gp() which also cancels the
-> 
-> wake_nocb_gp() in current -rcu, correct?
-
-Heh, right.
-
-> > > So far so good, but why isn't the timer still queued from back in step 2?
-> > > What am I missing here?  Either way, could you please update the commit
-> > > logs to tell the full story?  At some later time, you might be very
-> > > happy that you did.  ;-)
-> > > 
-> > > > 2) The "nocb_bypass_timer" ends up calling wake_nocb_gp() which deletes
-> > > >    the pending "nocb_timer" (note they are not the same timers) for the
-> > > >    given rdp without resetting the matching state stored in nocb_defer
-> > > >    wakeup.
-> 
-> Would like to similarly expand this one, or would you prefer to rest your
-> case on Case 1) above?
-
-I was about to say that we can skip that one, the changelog will already be
-big enough but the "Fixes:" tag refers to the second scenario, since it's the
-oldest vulnerable commit AFAICS.
-
-> > > > Fixes: d1b222c6be1f (rcu/nocb: Add bypass callback queueing)
-
-Thanks.
+- Arnaldo
