@@ -2,150 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A0B32AA34
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BE332AA35
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 20:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1444889AbhCBTPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 14:15:55 -0500
-Received: from mail-pf1-f176.google.com ([209.85.210.176]:39602 "EHLO
-        mail-pf1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1576891AbhCBQ1k (ORCPT
+        id S1576559AbhCBTQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 14:16:01 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:35746 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238765AbhCBQ3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:27:40 -0500
-Received: by mail-pf1-f176.google.com with SMTP id e3so10162511pfj.6;
-        Tue, 02 Mar 2021 08:27:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rhSN6EJUjlxVTEYhX0PMy9XPYvHtkvkyN9nKIz9f20o=;
-        b=YoVGlzjeO1eDA4DGEGUIRhx/CsANqRjZmmV1mtJcCMvhOTaBNc8xeA8Cz273jx7BU4
-         6ae8lUeEwIfd+GGcj1Psnavf4GFPtx5tgpONp/QSbc6J/qbRRoZ5y0RRcE4kEv/I3+Ex
-         wG8/j03pl/jGptI1wzzu6ocZgtasulHi7zHTLc/JBjy/HH/WgLKcICpGo6LI+WVKRhTl
-         KyU6XHUD8omThzHdx/pZiTzuWKohHgfSe/I6fIBy2NabQP/eWoJ3VFKlh0wsZHjO12Ag
-         HAa8iLswP6iSPGqb+B3AfaGjImtL+zlCqoCpEAWcOWDDEz0PGfUeOM6HFQau3mexQzYT
-         9LlQ==
-X-Gm-Message-State: AOAM531YICZjt2t0hkN1aBl3jGtFx2lJDe7PJToM7rb7aYucnA9qj/0M
-        UHFA/2fAo3vTpcKF5Ek2G6o=
-X-Google-Smtp-Source: ABdhPJxHlIacQIDI0Jp1SP0zuONV5jNgKRu1emvm93y9yY7Dyrwvw7WvrPzaO7ylYa5Y+2D2/O0jvA==
-X-Received: by 2002:a65:448c:: with SMTP id l12mr18859525pgq.386.1614702416119;
-        Tue, 02 Mar 2021 08:26:56 -0800 (PST)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id v3sm20806728pff.217.2021.03.02.08.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 08:26:54 -0800 (PST)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id D41AA403DC; Tue,  2 Mar 2021 16:26:53 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 16:26:53 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Borislav Petkov <bp@alien8.de>, Jessica Yu <jeyu@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH/RFC 1/2] init/initramfs.c: allow asynchronous unpacking
-Message-ID: <20210302162653.GO4332@42.do-not-panic.com>
-References: <20210224142909.2092914-1-linux@rasmusvillemoes.dk>
- <20210224142909.2092914-2-linux@rasmusvillemoes.dk>
+        Tue, 2 Mar 2021 11:29:13 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122GP8lr028821;
+        Tue, 2 Mar 2021 16:28:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=mIMowcrbj4TgmNWttx2aM+yXkbCVccyVmHGqavTctpY=;
+ b=pOdQQ0Mp3n5dC55GVf7pCLe0iOnzBQysIf1EQXn2CdiSLVqJOBBWu5WAr14FQP6n1tbe
+ 7kuEmbovtYA0Wwco6KHoS2ygDw9aR1DFD2mRZdP2ksgz0D6LQovtJGf6hSsJkR3YLcqL
+ inpkCVxns9NZqraa9sMV9HByrbaAMUh6VXTZB3zPj2g1cN307xLc/eLwZoHBNwLQEumD
+ OmBST9g+tGO/xeRAVjXZ+a0mxDfScbufXu23Rupb3hzXBeClEJdGwtQ9zhwWseLcqBqT
+ n/JFylhR1V8PS8b7lbS9Et53vCOBrN4exsRs935vb2vewenQXb4tmrUC71Pa5r8IcR2j EQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 36yeqn07fe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 16:28:19 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 122GOxL3018297;
+        Tue, 2 Mar 2021 16:28:16 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 37000x7q6q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Mar 2021 16:28:16 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 122GSErF019697;
+        Tue, 2 Mar 2021 16:28:14 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Mar 2021 16:28:13 +0000
+Date:   Tue, 2 Mar 2021 19:28:05 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        kbuild@lists.01.org, kbuild test robot <lkp@intel.com>,
+        kbuild-all@lists.01.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: drivers/pinctrl/qcom/pinctrl-lpass-lpi.c:458 lpi_config_set()
+ error: uninitialized symbol 'strength'.
+Message-ID: <20210302162805.GV2222@kadam>
+References: <20210227092152.GC2087@kadam>
+ <CACRpkdbWtBA-ptCF7prizoP1D9cshWgpt8r4CGRRfxwcXiX61g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210224142909.2092914-2-linux@rasmusvillemoes.dk>
+In-Reply-To: <CACRpkdbWtBA-ptCF7prizoP1D9cshWgpt8r4CGRRfxwcXiX61g@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103020129
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9911 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 mlxlogscore=999 suspectscore=0 malwarescore=0
+ impostorscore=0 bulkscore=0 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 03:29:08PM +0100, Rasmus Villemoes wrote:
-> This is primarily motivated by an embedded ppc target, where unpacking
-> even the rather modest sized initramfs takes 0.6 seconds, which is
-> long enough that the external watchdog becomes unhappy that it doesn't
-> get enough attention soon enough.
+On Tue, Mar 02, 2021 at 04:47:01PM +0100, Linus Walleij wrote:
+> On Sat, Feb 27, 2021 at 10:22 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
 > 
-> But normal desktops might benefit as well. On my mostly stock Ubuntu
-> kernel, my initramfs is a 26M xz-compressed blob, decompressing to
-> around 126M. That takes almost two seconds.
+> > New smatch warnings:
+> > drivers/pinctrl/qcom/pinctrl-lpass-lpi.c:458 lpi_config_set() error: uninitialized symbol 'strength'.
+> >
+> > Old smatch warnings:
+> > drivers/pinctrl/qcom/pinctrl-lpass-lpi.c:457 lpi_config_set() error: uninitialized symbol 'pullup'.
 > 
-> So add an initramfs_async= kernel parameter, allowing the main init
-> process to proceed to handling device_initcall()s without waiting for
-> populate_rootfs() to finish.
-> 
-> Should one of those initcalls need something from the initramfs (say,
-> a kernel module or a firmware blob), it will simply wait for the
-> initramfs unpacking to be done before proceeding, which should in
-> theory make this completely safe to always enable. But if some driver
-> pokes around in the filesystem directly and not via one of the
-> official kernel interfaces (i.e. request_firmware*(),
-> call_usermodehelper*) that theory may not hold - also, I certainly
-> might have missed a spot when sprinkling wait_for_initramfs().
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
->  .../admin-guide/kernel-parameters.txt         | 12 +++++
->  drivers/base/firmware_loader/main.c           |  2 +
->  include/linux/initrd.h                        |  7 +++
->  init/initramfs.c                              | 51 ++++++++++++++++++-
->  init/main.c                                   |  1 +
->  kernel/umh.c                                  |  2 +
->  usr/Kconfig                                   | 10 ++++
->  7 files changed, 84 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 0ac883777318..e9aca86d429b 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -1820,6 +1820,18 @@
->  			initcall functions.  Useful for debugging built-in
->  			modules and initcalls.
->  
-> +	initramfs_async= [KNL] Normally, the initramfs image is
-> +			unpacked synchronously, before most devices
-> +			are initialized. When the initramfs is huge,
-> +			or on slow CPUs, this can take a significant
-> +			amount of time. Setting this option means the
-> +			unpacking is instead done in a background
-> +			thread, allowing the main init process to
-> +			begin calling device_initcall()s while the
-> +			initramfs is being unpacked.
-> +			Format: <bool>
-> +			Default set by CONFIG_INITRAMFS_ASYNC.
-> +
->  	initrd=		[BOOT] Specify the location of the initial ramdisk
->  
->  	initrdmem=	[KNL] Specify a physical address and size from which to
-> diff --git a/drivers/base/firmware_loader/main.c b/drivers/base/firmware_loader/main.c
-> index 78355095e00d..4fdb8219cd08 100644
-> --- a/drivers/base/firmware_loader/main.c
-> +++ b/drivers/base/firmware_loader/main.c
-> @@ -15,6 +15,7 @@
->  #include <linux/kernel_read_file.h>
->  #include <linux/module.h>
->  #include <linux/init.h>
-> +#include <linux/initrd.h>
->  #include <linux/timer.h>
->  #include <linux/vmalloc.h>
->  #include <linux/interrupt.h>
-> @@ -504,6 +505,7 @@ fw_get_filesystem_firmware(struct device *device, struct fw_priv *fw_priv,
->  	if (!path)
->  		return -ENOMEM;
->  
-> +	wait_for_initramfs();
+> I don't think these are real problems, but maybe there is some way to explicitly
+> express that so that smatch knows as well?
 
-Some folks might want this to not wait, say for folks who use built-in
-firmware, but for such use cases a new API which *purposely* only look
-for builtin-firmware would resolve that. The only case I think think of
-that folks may explicitly want this today is in
-arch/x86/kernel/cpu/microcode/, see get_builtin_firmware() calls, those
-should use a proper API, not a hack-in solution like that.
-I think Boris was working on this long ago, but he's as usual busy.
+They will call syzbot warning at runtime as well.  Syzbot complains
+about the read, and not that the value is important for flow analysis.
 
-But since this use the builtin stuff directly it is not affected. And
-even if it was affected by this delay, it would have been before.
+regards,
+dan carpenter
 
-Other than what Linus pointed out, I see no reason why folks could
-experiment with this, in fact I welcome it.
-
-  Luis
