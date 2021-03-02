@@ -2,140 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31A432A141
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB9F32A14C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Mar 2021 14:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347586AbhCBFdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Mar 2021 00:33:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1574438AbhCBDfv (ORCPT
+        id S1576970AbhCBFfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Mar 2021 00:35:20 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:38622 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S241666AbhCBDpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Mar 2021 22:35:51 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 427DAC06178C
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Mar 2021 19:31:05 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id n132so8405413iod.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Mar 2021 19:31:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BBOxEfv6278yvseUKPxhXaovmz5fmbYaJegMD+mzGcc=;
-        b=NVi1PAqo8H18cNR4mvatM4ZWDOArYfp818zLm+r4YpiXSt3pM4Dz1uIntWaLQmOFo3
-         iDv9m16+fcvXUFf6J37hmwavL4scyxTBTBs4sexJb7nRoTDhRQRgdxMzi2LeyA4XRq3D
-         lG9tWK88l6HDPF5o5627veKfK7x3jwuWnOCp0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BBOxEfv6278yvseUKPxhXaovmz5fmbYaJegMD+mzGcc=;
-        b=SQ6uQTyCHyTfkvgkFc/zp15zc3f0XEnlRvscJ+xiC1BjFSAawoJ3dGimgKVTKZuGhi
-         ui/qXCcxmS0CJGFIJ+mby1En/5IgAkHJ6miPC6dbhIeIxneKg1DEh7Za8m36CVMeEbZY
-         rt1jJbkoacX/Heaibk0h2kN32es5nCYvI78OTKdnXELIenbFqzi1tgv83lIsfEZNVaTo
-         l3S8/ZO/6Npw/0y/sy6D2Nbu2MMfT0jDVs9T+tceG7rE3o1GrhDD0wpklZgBj+1DE44x
-         4NN8c+Apje4px1U3ljQwp8PlVnm/RL4WoQImBdKTQrk8n2IMvo1dR4J46rW+fsepZgtz
-         trkQ==
-X-Gm-Message-State: AOAM530KQgoFJ+fyvEo1dRol5zxRixTHjC39zKHW3pATNGje0DrZ0jbP
-        q7LZyGB9PNbYP9jl5AmGO+0UyTsNOb+04zH8FlXVFg==
-X-Google-Smtp-Source: ABdhPJzTK9I8n6u6kduFOGVuL/KvBOB/tB/VdAiM8b2HzM/XScC3ekjFe4AceZrrWZ35aljPWFT3RHxsxmUA4HLtBdE=
-X-Received: by 2002:a6b:7319:: with SMTP id e25mr15613358ioh.0.1614655864631;
- Mon, 01 Mar 2021 19:31:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20210225175000.824661-1-enric.balletbo@collabora.com> <20210225175000.824661-4-enric.balletbo@collabora.com>
-In-Reply-To: <20210225175000.824661-4-enric.balletbo@collabora.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 2 Mar 2021 11:30:38 +0800
-Message-ID: <CAJMQK-gT0+OC_KgBMzRzcPAZFHdNWyhzG2v2q9fX9-hc2-8oGQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] soc: mediatek: pm-domains: Add a power domain names
- for mt8167
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
+        Mon, 1 Mar 2021 22:45:10 -0500
+X-UUID: 6b60a1727ea7474a98c3eb43c446b254-20210302
+X-UUID: 6b60a1727ea7474a98c3eb43c446b254-20210302
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <biao.huang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1007115575; Tue, 02 Mar 2021 11:33:31 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 2 Mar 2021 11:33:30 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 2 Mar 2021 11:33:28 +0800
+From:   Biao Huang <biao.huang@mediatek.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+CC:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <biao.huang@mediatek.com>,
+        <srv_heupstream@mediatek.com>
+Subject: [PATCH] net: ethernet: mtk-star-emac: fix wrong unmap in RX handling
+Date:   Tue, 2 Mar 2021 11:33:23 +0800
+Message-ID: <20210302033323.25830-1-biao.huang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 1:50 AM Enric Balletbo i Serra
-<enric.balletbo@collabora.com> wrote:
->
-> Add the power domains names for the mt8167 SoC.
->
-> Fixes: 207f13b419a6 ("soc: mediatek: pm-domains: Add support for mt8167")
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->
->  drivers/soc/mediatek/mt8167-pm-domains.h | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/soc/mediatek/mt8167-pm-domains.h b/drivers/soc/mediatek/mt8167-pm-domains.h
-> index ad0b8dfa0527..15559ddf26e4 100644
-> --- a/drivers/soc/mediatek/mt8167-pm-domains.h
-> +++ b/drivers/soc/mediatek/mt8167-pm-domains.h
-> @@ -15,6 +15,7 @@
->
->  static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
->         [MT8167_POWER_DOMAIN_MM] = {
-> +               .name = "mm",
->                 .sta_mask = PWR_STATUS_DISP,
->                 .ctl_offs = SPM_DIS_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
-> @@ -26,6 +27,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
->                 .caps = MTK_SCPD_ACTIVE_WAKEUP,
->         },
->         [MT8167_POWER_DOMAIN_VDEC] = {
-> +               .name = "vdec",
->                 .sta_mask = PWR_STATUS_VDEC,
->                 .ctl_offs = SPM_VDE_PWR_CON,
->                 .sram_pdn_bits = GENMASK(8, 8),
-> @@ -33,6 +35,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
->                 .caps = MTK_SCPD_ACTIVE_WAKEUP,
->         },
->         [MT8167_POWER_DOMAIN_ISP] = {
-> +               .name = "isp",
->                 .sta_mask = PWR_STATUS_ISP,
->                 .ctl_offs = SPM_ISP_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
-> @@ -40,6 +43,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
->                 .caps = MTK_SCPD_ACTIVE_WAKEUP,
->         },
->         [MT8167_POWER_DOMAIN_MFG_ASYNC] = {
-> +               .name = "mfg_async",
->                 .sta_mask = MT8167_PWR_STATUS_MFG_ASYNC,
->                 .ctl_offs = SPM_MFG_ASYNC_PWR_CON,
->                 .sram_pdn_bits = 0,
-> @@ -50,18 +54,21 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8167[] = {
->                 },
->         },
->         [MT8167_POWER_DOMAIN_MFG_2D] = {
-> +               .name = "mfg_2d",
->                 .sta_mask = MT8167_PWR_STATUS_MFG_2D,
->                 .ctl_offs = SPM_MFG_2D_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = GENMASK(15, 12),
->         },
->         [MT8167_POWER_DOMAIN_MFG] = {
-> +               .name = "mfg",
->                 .sta_mask = PWR_STATUS_MFG,
->                 .ctl_offs = SPM_MFG_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = GENMASK(15, 12),
->         },
->         [MT8167_POWER_DOMAIN_CONN] = {
-> +               .name = "conn",
->                 .sta_mask = PWR_STATUS_CONN,
->                 .ctl_offs = SPM_CONN_PWR_CON,
->                 .sram_pdn_bits = GENMASK(8, 8),
-> --
-> 2.30.0
->
+mtk_star_dma_unmap_rx() should unmap the dma_addr of old skb rather than
+that of new skb.
+Assign new_dma_addr to desc_data.dma_addr after all handling of old skb
+ends to avoid unexpected receive side error.
+
+Fixes: f96e9641e92b ("net: ethernet: mtk-star-emac: fix error path in RX handling")
+Signed-off-by: Biao Huang <biao.huang@mediatek.com>
+---
+ drivers/net/ethernet/mediatek/mtk_star_emac.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+index a8641a407c06..96d2891f1675 100644
+--- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
++++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
+@@ -1225,8 +1225,6 @@ static int mtk_star_receive_packet(struct mtk_star_priv *priv)
+ 		goto push_new_skb;
+ 	}
+ 
+-	desc_data.dma_addr = new_dma_addr;
+-
+ 	/* We can't fail anymore at this point: it's safe to unmap the skb. */
+ 	mtk_star_dma_unmap_rx(priv, &desc_data);
+ 
+@@ -1236,6 +1234,9 @@ static int mtk_star_receive_packet(struct mtk_star_priv *priv)
+ 	desc_data.skb->dev = ndev;
+ 	netif_receive_skb(desc_data.skb);
+ 
++	/* update dma_addr for new skb */
++	desc_data.dma_addr = new_dma_addr;
++
+ push_new_skb:
+ 	desc_data.len = skb_tailroom(new_skb);
+ 	desc_data.skb = new_skb;
+-- 
+2.18.0
+
